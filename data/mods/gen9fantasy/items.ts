@@ -13,5 +13,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 10000,
 		gen: 9,
+		shortDesc: "Holder's Stellar-type attacks have 1.2x power.",
 	},
 };
