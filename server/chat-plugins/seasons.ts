@@ -142,15 +142,17 @@ export function generateFormatSchedule() {
 	return new ScheduleGenerator().generate();
 }
 
+// Nihilslave: i don't think we need this 2, so commented out
 export async function getLadderTop(format: string) {
-	try {
-		const results = await Net(`https://${Config.routes.root}/ladder/?format=${toID(format)}&json`).get();
-		const reply = JSON.parse(results);
-		return reply.toplist;
-	} catch (e) {
-		Monitor.crashlog(e, "A season ladder request");
-		return null;
-	}
+	return null;
+	// try {
+	// 	const results = await Net(`https://${Config.routes.root}/ladder/?format=${toID(format)}&json`).get();
+	// 	const reply = JSON.parse(results);
+	// 	return reply.toplist;
+	// } catch (e) {
+	// 	Monitor.crashlog(e, "A season ladder request");
+	// 	return null;
+	// }
 }
 
 export async function updateBadgeholders() {
@@ -159,25 +161,25 @@ export async function updateBadgeholders() {
 	if (!data.badgeholders[period]) {
 		data.badgeholders[period] = {};
 	}
-	for (const formatName of data.formatSchedule[findPeriod()]) {
-		const formatid = `gen${Dex.gen}${formatName}`;
-		const response = await getLadderTop(formatid);
-		if (!response) continue; // ??
-		const newHolders: Record<string, string[]> = {};
-		for (const [i, row] of response.entries()) {
-			let badgeType = null;
-			for (const type in BADGE_THRESHOLDS) {
-				if ((i + 1) <= BADGE_THRESHOLDS[type]) {
-					badgeType = type;
-					break;
-				}
-			}
-			if (!badgeType) break;
-			if (!newHolders[badgeType]) newHolders[badgeType] = [];
-			newHolders[badgeType].push(row.userid);
-		}
-		data.badgeholders[period][formatid] = newHolders;
-	}
+	// for (const formatName of data.formatSchedule[findPeriod()]) {
+	// 	const formatid = `gen${Dex.gen}${formatName}`;
+	// 	const response = await getLadderTop(formatid);
+	// 	if (!response) continue; // ??
+	// 	const newHolders: Record<string, string[]> = {};
+	// 	for (const [i, row] of response.entries()) {
+	// 		let badgeType = null;
+	// 		for (const type in BADGE_THRESHOLDS) {
+	// 			if ((i + 1) <= BADGE_THRESHOLDS[type]) {
+	// 				badgeType = type;
+	// 				break;
+	// 			}
+	// 		}
+	// 		if (!badgeType) break;
+	// 		if (!newHolders[badgeType]) newHolders[badgeType] = [];
+	// 		newHolders[badgeType].push(row.userid);
+	// 	}
+	// 	data.badgeholders[period][formatid] = newHolders;
+	// }
 	saveData();
 }
 
