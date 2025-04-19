@@ -104,7 +104,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{generation: 6, level: 66, gender: "F", perfectIVs: 3, moves: ["dragonrush", "earthquake", "brickbreak", "gigaimpact"], pokeball: "cherishball"},
 		],
 	},
-	vespiquen: {
+	vespiquenfantasy: {
 		learnset: {
 			xianxingzhiling: ["9M"],
 			acrobatics: ["9M", "8M", "7M", "6M", "5M"],
