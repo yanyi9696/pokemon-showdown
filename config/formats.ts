@@ -19,6 +19,15 @@ The column value will be ignored for repeat sections.
 
 export const Formats: import('../sim/dex-formats').FormatList = [
 
+	{
+		section: "FC",
+	},
+	{
+		name: "[Gen 9] FC OU",
+		mod: 'gen9fantasy',
+		ruleset: ['Standard', 'Sleep Moves Clause', '!Sleep Clause Mod', 'Max Level=85'],
+		banlist: ['Uber', 'AG', 'Arena Trap', 'Moody', 'Sand Veil', 'Shadow Tag', 'Snow Cloak', 'King\'s Rock', 'Razor Fang', 'Baton Pass', 'Last Respects', 'Shed Tail'],
+	},
 	// S/V Singles
 	///////////////////////////////////////////////////////////////////
 
