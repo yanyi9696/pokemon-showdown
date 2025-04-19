@@ -22,16 +22,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "Example New Move for Gen 9 Fantasy. Has a 100% chance to raise the user's Special Attack by 1 stage.",
 		shortDesc: "Example Move. 100% chance to raise the user's Sp. Atk by 1."
 	},
-	xianxing: {
+	xianxingzhiling: {
 		num: 10001,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		name: "Xianxing",
-		pp: 25,
+		name: "先行指令",
+		pp: 16,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
-		volatileStatus: 'xianxing',
+		volatileStatus: '先行指令',
 		condition: {
 			onFractionalPriorityPriority: -2,
 			onFractionalPriority(priority, pokemon) {
@@ -41,7 +41,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Bug",
 		contestType: "Clever",
-		desc: "使用之后技能会优先出手",
-		shortDesc: "使用之后技能会优先出手"
+		desc: "比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。",
+		shortDesc: "比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。"
 	}
 };
