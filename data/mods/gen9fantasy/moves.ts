@@ -1,11 +1,34 @@
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+	fantasymove: {
+		num: 10000,
+		accuracy: 100,
+		basePower: 1,
+		category: "Special",
+		name: "Fantasy Move",
+		pp: 25,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		secondary: {
+			chance: 100,
+			self: {
+				boosts: {
+					spa: 1,
+				},
+			},
+		},
+		target: "normal",
+		type: "Stellar",
+		contestType: "Clever",
+		desc: "Example New Move for Gen 9 Fantasy. Has a 100% chance to raise the user's Special Attack by 1 stage.",
+		shortDesc: "Example Move. 100% chance to raise the user's Sp. Atk by 1."
+	},
 	xianxingzhiling: {
 		num: 10001,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
 		name: "先行指令",
-		pp: 10,
+		pp: 16,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
 		volatileStatus: '先行指令',
@@ -41,7 +64,5 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Clever",
-		desc: "自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。",
-		shortDesc: "自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。"
 	},
 };

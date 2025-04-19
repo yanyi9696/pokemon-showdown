@@ -2,7 +2,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	garchomp: {
 		inherit: true,
 		otherFormes: ["Garchomp-幻想·龙之舞", "Garchomp-Mega"],
-		formeOrder: ["Garchomp", "Garchomp-幻想·龙之舞", "Garchomp-Mega","Garchomp-Mega-Fantasy"],
+		formeOrder: ["Garchomp", "Garchomp-Fantasy", "Garchomp-Mega","Garchomp-Mega-Fantasy"],
 	},
 	garchompfantasy: {
 		num: 445,
@@ -16,7 +16,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 95,
 		color: "Blue",
 		eggGroups: ["Monster", "Dragon"],
-		otherFormes: ["Garchomp-Mega","Garchomp-Mega-Fantasy"],
+		otherFormes: ["Garchomp-Mega"],
 	},
 	garchompmegafantasy: {
 		num: 445,
