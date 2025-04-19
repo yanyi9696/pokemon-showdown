@@ -1,12 +1,12 @@
 export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
 	garchomp: {
 		inherit: true,
-		otherFormes: ["Garchomp-Fantasy", "Garchomp-Mega"],
+		otherFormes: ["Garchomp-幻想-龙之舞", "Garchomp-Mega"],
 		formeOrder: ["Garchomp", "Garchomp-Fantasy", "Garchomp-Mega","Garchomp-Mega-Fantasy"],
 	},
 	garchompfantasy: {
 		num: 445,
-		name: "幻想烈咬陆鲨-龙之舞",
+		name: "Garchomp-幻想-龙之舞",
 		baseSpecies: "Garchomp",
 		forme: "Fantasy",
 		types: ["Dragon", "Ground"],
@@ -35,11 +35,11 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	vespiquen: {
 		inherit: true,
 		otherFormes: ["vespiquen-Fantasy"],
-		formeOrder: ["vespiquen", "vespiquen-Fantasy"],
+		formeOrder: ["vespiquen", "vespiquen-幻想-蜂巢防护"],
 	},
 	vespiquenfantasy: {
 		num: 416,
-		name: "幻想蜂女王-蜂巢防护",
+		name: "vespiquen-幻想-蜂巢防护",
 		baseSpecies: "vespiquen",
 		forme: "Fantasy",
 		types: ["Bug", "Flying"],
