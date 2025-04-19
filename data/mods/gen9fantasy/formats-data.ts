@@ -2,6 +2,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	garchompfantasy: {
 		tier: "OU",
 	},
+	garchompmegafantasy: {
+		tier: "(Uber)",
+	},
+	vespiquenfantasy: {
+		tier: "(Uber)",
+	},
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",
