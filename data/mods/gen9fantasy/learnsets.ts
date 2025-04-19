@@ -107,6 +107,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	vespiquenfantasy: {
 		learnset: {
 			xianxingzhiling: ["9M"],
+			fuzhuzhiling: ["9M"],
+			leechlife: ["9M"],
+			firstimpression: ["9M"],
+			syrupbomb: ["9L28"],
 			acrobatics: ["9M", "8M", "7M", "6M", "5M"],
 			aerialace: ["9M", "7M", "6M", "5M", "4M"],
 			agility: ["9M"],

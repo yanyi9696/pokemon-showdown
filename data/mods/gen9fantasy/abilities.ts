@@ -1,5 +1,5 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
-	fengchaofanghu: {
+	fengchao: {
 		onDamage(damage, target, source, effect) {
 			if (effect.effectType !== 'Move') {
 				if (effect.effectType === 'Ability') this.add('-activate', source, 'ability: ' + effect.name);
@@ -13,7 +13,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return 0;
 			}
 		},
-		name: "蜂巢防护",
+		name: "Fengchao",
 		rating: 3.5,
 		num: 10001,
 		shortDesc: "虫属性的弱点消失，不会受到攻击以外的伤害。",
