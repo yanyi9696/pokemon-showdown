@@ -17,4 +17,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Blue",
 		eggGroups: ["Monster", "Dragon"],
 	},
+	vespiquen: {
+		inherit: true,
+		abilities: { 0: "Pressure", 1: "Fengchao", H: "Unnerve" },
+	},
 };
