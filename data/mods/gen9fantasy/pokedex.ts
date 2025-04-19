@@ -6,7 +6,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	garchompfantasy: {
 		num: 445,
-		name: "Garchomp-Fantasy",
+		name: "幻想烈咬陆鲨-龙之舞",
 		baseSpecies: "Garchomp",
 		forme: "Fantasy",
 		types: ["Dragon", "Ground"],
@@ -39,7 +39,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	vespiquenfantasy: {
 		num: 416,
-		name: "vespiquen-Fantasy",
+		name: "幻想蜂女王-蜂巢防护",
 		baseSpecies: "vespiquen",
 		forme: "Fantasy",
 		types: ["Bug", "Flying"],
