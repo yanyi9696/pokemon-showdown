@@ -138,6 +138,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	ogerponhearthflame: {
 		tier: "(Uber)",
 	},
+	ogerponhearthflametera: {
+		tier: "(Uber)",
+	},
 	palafin: {
 		tier: "(Uber)",
 	},
