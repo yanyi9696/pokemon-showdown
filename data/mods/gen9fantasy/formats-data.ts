@@ -2,4 +2,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	garchompfantasy: {
 		tier: "OU",
 	},
+	gholdengo: {
+		tier: "(Uber)",
+	},
 };
