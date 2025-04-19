@@ -4,6 +4,7 @@
 export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		section: "FC",
+		column: 0,
 	},
 	{
 		name: "[Gen 9] FC OU",
