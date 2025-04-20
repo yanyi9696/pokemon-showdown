@@ -2,6 +2,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	garchompfantasy: {
 		tier: "OU",
 	},
+	garchompmegafantasy: {
+		tier: "(Uber)",
+	},
+	vespiquenfantasy: {
+		tier: "RU",
+	},
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",
@@ -213,13 +219,22 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	ironcrown: {
 		tier: "OU",
 	},
+	ogerponwellspringtera: {
+		tier: "OU",
+	},
 	serperior: {
 		tier: "OU",
 	},
 	ursaluna: {
 		tier: "OU",
 	},
+	ogerponcornerstonetera: {
+		tier: "UUBL",
+	},
 	tinglu: {
 		tier: "UU",
+	},
+	ogerpontealtera: {
+		tier: "RU",
 	},
 };
