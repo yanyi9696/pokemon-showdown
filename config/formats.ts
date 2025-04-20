@@ -23,17 +23,22 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		section: "FC",
 	},
 	{
-		name: "[Gen 9] FC UB",
+		name: "[Gen 9] FC Uber",
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause'],
-		banlist: ['ND AG', 'Shedinja', 'Assist', 'Baton Pass'],
+		banlist: ['ND AG', 'Shedinja', 'Assist', 'Baton Pass',
+			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
+		],
 	},
 	{
 		name: "[Gen 9] FC Ubers UU",
 		mod: 'gen9fantasy',
-		ruleset: ['[Gen 9] National Dex Ubers'],
-		banlist: [
-			'Arceus-Normal', 'Arceus-Dark', 'Arceus-Ground', 'Chien-Pao', 'Deoxys-Attack', 'Eternatus', 'Giratina-Origin',
+		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause'],
+		banlist: ['ND Uber', 'ND AG',
+			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
+			'Arceus-Normal', 'Arceus-Dark', 'Arceus-Ground', 'Calyrex-Ice', 'Chien-Pao', 'Deoxys-Attack', 'Eternatus', 'Giratina-Origin',
 			'Groudon-Primal', 'Ho-Oh', 'Kyogre-Primal', 'Lugia', 'Lunala', 'Marshadow', 'Melmetal', 'Mewtwo-Mega-Y', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra',
 			'Salamence-Mega', 'Smeargle', 'Yveltal', 'Zacian-Crowned', 'Zygarde-50%',
 			// UUBL
