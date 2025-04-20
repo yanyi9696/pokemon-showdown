@@ -12,6 +12,18 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	shedinja: {
 		tier: "AG",
 	},
+	melmetal: {
+		tier: "Uber",
+	},
+	terapagos: {
+		tier: "Uber",
+	},
+	terapagosterastal: {
+		tier: "Uber",
+	},
+	terapagosstellar: {
+		tier: "Uber",
+	},
 	alakazammega: {
 		tier: "(Uber)",
 	},
@@ -178,15 +190,6 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "(Uber)",
 	},
 	spectrier: {
-		tier: "(Uber)",
-	},
-	terapagos: {
-		tier: "Uber",
-	},
-	terapagosterastal: {
-		tier: "Uber",
-	},
-	terapagosstellar: {
 		tier: "(Uber)",
 	},
 	ursalunabloodmoon: {
