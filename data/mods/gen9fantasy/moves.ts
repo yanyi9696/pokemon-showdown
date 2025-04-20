@@ -4,11 +4,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		name: "先行指令",
+		name: "xianxingzhiling",
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
-		volatileStatus: '先行指令',
+		volatileStatus: 'xianxingzhiling',
 		condition: {
 			onFractionalPriorityPriority: -2,
 			onFractionalPriority(priority, pokemon) {
@@ -31,7 +31,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			return bp;
 		},
 		category: "Special",
-		name: "辅助指令",
+		name: "fuzhuzhiling",
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
