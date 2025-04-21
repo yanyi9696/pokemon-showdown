@@ -65,7 +65,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 	{
 		name: "[Gen 9] FC UUBL",
-		mod: 'gen9',
+		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] National Dex'],
 		banlist: ['ND OU', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
@@ -74,7 +74,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 	{
 		name: "[Gen 9] FC UU",
-		mod: 'gen9',
+		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] National Dex'],
 		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
@@ -83,7 +83,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 	{
 		name: "[Gen 9] FC RUBL",
-		mod: 'gen9',
+		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] National Dex'],
 		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
@@ -92,7 +92,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 	{
 		name: "[Gen 9] FC RU",
-		mod: 'gen9',
+		mod: 'gen9fantasy',
 		searchShow: false,
 		ruleset: ['[Gen 9] National Dex UU'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
