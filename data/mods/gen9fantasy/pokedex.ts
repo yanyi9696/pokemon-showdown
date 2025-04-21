@@ -34,13 +34,13 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	vespiquen: {
 		inherit: true,
-		otherFormes: ["vespiquen-Fantasy"],
-		formeOrder: ["vespiquen", "vespiquen-Fantasy"],
+		otherFormes: ["Vespiquen-Fantasy"],
+		formeOrder: ["Vespiquen", "Vespiquen-Fantasy"],
 	},
 	vespiquenfantasy: {
 		num: 416,
-		name: "vespiquen-Fantasy",
-		baseSpecies: "vespiquen",
+		name: "Vespiquen-Fantasy",
+		baseSpecies: "Vespiquen",
 		forme: "Fantasy",
 		types: ["Bug", "Flying"],
 		gender: "F",
@@ -52,6 +52,11 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Combee",
 		evoLevel: 21,
 		eggGroups: ["Bug"],
+	},
+	aegislash: {
+		inherit: true,
+		otherFormes: ["Aegislash-Blade","Aegislash-Fantasy","Aegislash-Blade-Fantasy",],
+		formeOrder: ["Aegislash", "Aegislash-Fantasy","Aegislash-Blade","Aegislash-Blade-Fantasy",],
 	},
 	aegislashfantasy: {
 		num: 681,
