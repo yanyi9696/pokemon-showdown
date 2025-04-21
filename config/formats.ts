@@ -43,7 +43,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Salamence-Mega', 'Smeargle', 'Yveltal', 'Zacian-Crowned', 'Zygarde-50%',
 			// UUBL
 			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Chi-Yu', 'Flutter Mane', 'Groudon', 'Kyogre', 'Kyurem-Black',
-			'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Power Construct', 'Ultranecrozium Z', 'Last Respects',
+			'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z', 'Last Respects',
 		],
 	},
 	{
