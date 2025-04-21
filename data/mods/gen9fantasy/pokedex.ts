@@ -42,7 +42,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "vespiquen-Fantasy",
 		baseSpecies: "vespiquen",
 		forme: "Fantasy",
-		types: ["Bug", "Flying"],
+		types: ["Bug", "Ground"],
 		gender: "F",
 		baseStats: { hp: 70, atk: 80, def: 102, spa: 80, spd: 102, spe: 40 },
 		abilities: { 0: "Supersweet Syrup", 1: "Queenly Majesty", H: "Fengchao" },
