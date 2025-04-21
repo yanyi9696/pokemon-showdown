@@ -22,19 +22,6 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		section: "FC",
 	},
 	{
-		name: "[Gen 9] FC OU",
-		mod: 'gen9fantasy',
-		ruleset: ['Standard', 'Sleep Moves Clause', '!Sleep Clause Mod', 'Max Level=85'],
-		banlist: ['Uber', 'AG', 'Arena Trap', 'Moody', 'Sand Veil', 'Shadow Tag', 'Snow Cloak', 'King\'s Rock', 'Razor Fang', 'Baton Pass', 'Last Respects', 'Shed Tail'],
-		onSwitchIn(pokemon) {
-			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
-		},
-	},
-
-	{
-		section: "FC",
-	},
-	{
 		name: "[Gen 9] FC Uber",
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause'],
@@ -42,6 +29,9 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 		],
+		onSwitchIn(pokemon) {
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+		},
 	},
 	{
 		name: "[Gen 9] FC Ubers UU",
@@ -57,6 +47,9 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Chi-Yu', 'Flutter Mane', 'Groudon', 'Kyogre', 'Kyurem-Black',
 			'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z',
 		],
+		onSwitchIn(pokemon) {
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+		},
 	},
 	{
 		name: "[Gen 9] FC OU",
@@ -66,6 +59,9 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
 		],
+		onSwitchIn(pokemon) {
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+		},
 	},
 	
 	// S/V Singles
