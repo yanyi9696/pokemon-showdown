@@ -84,4 +84,5 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Mineral"],
 		requiredAbility: "Stance Change",
 		battleOnly: "Aegislash-Fantasy",
-};
+	},
+}
