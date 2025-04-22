@@ -74,27 +74,33 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 15,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1, slicing: 1 },
-		// 技能使用后添加钢刺状态到敌方场地
-		onAfterHit(target, source, move) {
-			if (!move.hasSheerForce && source.hp) {
-				// 给敌方场地添加钢刺状态
-				for (const side of source.side.foeSidesWithConditions()) {
-					side.addSideCondition('steelsurge'); // 钢刺与隐形岩类似
-				}
-			}
-		},
-		// 技能使用后为目标场地添加钢刺状态
-		onAfterSubDamage(damage, target, source, move) {
-			if (!move.hasSheerForce && source.hp) {
-				for (const side of source.side.foeSidesWithConditions()) {
-					side.addSideCondition('steelsurge');
-				}
-			}
-		},		
-		secondary: null,
-		target: "adjacentFoe",
-		type: "Normal",
-		contestType: "Cool",
+    // 技能使用后添加钢刺状态到敌方场地
+    onAfterHit(target, source, move) {
+        if (!move.hasSheerForce && source.hp) {
+            // 给敌方场地添加钢刺状态
+            for (const side of source.side.foeSidesWithConditions()) {
+                side.addSideCondition('steelsurge'); // 使用钢刺状态
+            }
+        }
+    },
+    // 钢刺状态的效果
+    condition: {
+        onSideStart(side) {
+            this.add('-sidestart', side, 'move: Mijianbairenchuan');
+        },
+        // 当敌方宝可梦交换上场时，受到钢刺状态的伤害
+        onSwitchIn(pokemon) {
+            if (pokemon.hasItem('heavydutyboots')) return; // 受Heavy Duty Boots保护
+            const steelHazard = this.dex.getActiveMove('Stealth Rock'); // 使用隐形岩的效果
+            steelHazard.type = 'Steel'; // 修改为钢类型
+            const typeMod = this.clampIntRange(pokemon.runEffectiveness(steelHazard), -6, 6); // 计算伤害
+            this.damage(pokemon.maxhp * (2 ** typeMod) / 8); // 计算并造成伤害
+        },
+    },
+    secondary: null,
+    target: "adjacentFoe",
+    type: "Steel", // 钢属性
+    contestType: "Cool",
 		desc: "令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。",
 		shortDesc: "令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。"
 	}	
