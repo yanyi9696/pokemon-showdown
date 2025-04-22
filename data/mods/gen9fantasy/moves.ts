@@ -7,14 +7,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "xianxingzhiling",
 		pp: 10,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, metronome: 1 },
+		flags: { snatch: 1, metronome: 1 },
 		volatileStatus: 'xianxingzhiling',
-		condition: {
-			onFractionalPriorityPriority: -2,
-			onFractionalPriority(priority, pokemon) {
-				if (priority <= 0) return 0.1;
-			},
-		},
 		onTryHit(target, source, move) {
 			const atk = source.getStat('atk', false, true);
 			const spa = source.getStat('spa', false, true);
@@ -25,8 +19,25 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				this.boost({ spa: 2 }, source); // 特攻较高，提升特攻2级
 			}
 		},
+		condition: {
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'move: xianxingzhiling'); // 确保状态已激活
+			},
+	
+			// 提升优先级
+			onFractionalPriorityPriority: -2,
+			onFractionalPriority(priority, pokemon) {
+				if (priority <= 0) return 0.1; // 提升优先级
+			},
+	
+			// 宝可梦离场时清除优先级提升
+			onSwitchOut(pokemon) {
+				this.add('-end', pokemon, 'move: xianxingzhiling'); // 离场时清除状态
+			}
+		},
 		target: "normal",
 		type: "Bug",
+		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Clever",
 		desc: "比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。",
 		shortDesc: "比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。"
