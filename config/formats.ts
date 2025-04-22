@@ -37,7 +37,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC Ubers UU",
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause'],
-		banlist: ['ND Uber', 'ND AG',
+		banlist: ['ND AG',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
 			'Arceus-Normal', 'Arceus-Dark', 'Arceus-Ground', 'Calyrex-Ice', 'Chien-Pao', 'Deoxys-Attack', 'Eternatus', 'Giratina-Origin',
