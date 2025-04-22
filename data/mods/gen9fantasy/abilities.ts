@@ -59,5 +59,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Sujun", 
 		rating: 3,
 		num: 10001,
+		shortDesc: "即使使出了使用后下一回合自己将无法动弹的招式后，自己也不会陷入无法动弹状态。",	
 	}
 };
