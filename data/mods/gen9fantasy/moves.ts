@@ -35,7 +35,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				this.add('-end', pokemon, 'move: xianxingzhiling'); // 离场时清除状态
 			}
 		},
-		target: "normal",
+		target: "self",
 		type: "Bug",
 		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Clever",
