@@ -79,7 +79,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (!move.hasSheerForce && source.hp) {
 				// 给敌方场地添加钢刺状态
 				for (const side of source.side.foeSidesWithConditions()) {
-					side.addSideCondition('gmaxsteelsurge'); // 钢刺与隐形岩类似
+					side.addSideCondition('steelsurge'); // 钢刺与隐形岩类似
 				}
 			}
 		},
@@ -87,7 +87,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onAfterSubDamage(damage, target, source, move) {
 			if (!move.hasSheerForce && source.hp) {
 				for (const side of source.side.foeSidesWithConditions()) {
-					side.addSideCondition('gmaxsteelsurge');
+					side.addSideCondition('steelsurge');
 				}
 			}
 		},		
