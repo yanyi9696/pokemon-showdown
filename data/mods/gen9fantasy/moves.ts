@@ -15,6 +15,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				if (priority <= 0) return 0.1;
 			},
 		},
+		onTryHit(target, source, move) {
+			const atk = source.getStat('atk', false, true);
+			const spa = source.getStat('spa', false, true);
+	
+			if (atk > spa) {
+				this.boost({ atk: 2 }, source); // 物攻较高，提升物攻2级
+			} else {
+				this.boost({ spa: 2 }, source); // 特攻较高，提升特攻2级
+			}
+		},
 		target: "normal",
 		type: "Bug",
 		contestType: "Clever",
