@@ -65,4 +65,37 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。",
 		shortDesc: "自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。"
 	},
+	mijianbairenchuan: {
+		num: 10002,
+		accuracy: 90,
+		basePower: 65,
+		category: "Physical",
+		name: "Mijianbairenchuan", 
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1, slicing: 1 },
+		// 技能使用后添加钢刺状态到敌方场地
+		onAfterHit(target, source, move) {
+			if (!move.hasSheerForce && source.hp) {
+				// 给敌方场地添加钢刺状态
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('gmaxsteelsurge'); // 钢刺与隐形岩类似
+				}
+			}
+		},
+		// 技能使用后为目标场地添加钢刺状态
+		onAfterSubDamage(damage, target, source, move) {
+			if (!move.hasSheerForce && source.hp) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('gmaxsteelsurge');
+				}
+			}
+		},		
+		secondary: null,
+		target: "adjacentFoe",
+		type: "Normal",
+		contestType: "Cool",
+		desc: "令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。",
+		shortDesc: "令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。"
+	}	
 };

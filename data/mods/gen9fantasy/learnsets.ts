@@ -208,6 +208,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	aegislashfantasy: {
 		learnset: {
+			mijianbairenchuan: ["9M"],
 			poltergeist: ["9M"],
 			tachyoncutter: ["9M"],
 			behemothblade: ["9M"],
