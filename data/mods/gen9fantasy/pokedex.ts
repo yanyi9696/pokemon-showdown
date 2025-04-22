@@ -96,7 +96,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	samurottfantasy: {
 		num: 503,
 		name: "Samurott",
-		types: ["Water", "Normal"],
+		types: ["Normal", "Water"],
 		genderRatio: { M: 0.875, F: 0.125 },
 		baseStats: { hp: 95, atk: 100, def: 85, spa: 108, spd: 70, spe: 70 },
 		abilities: { 0: "sujun", H: "Sharpness" },
