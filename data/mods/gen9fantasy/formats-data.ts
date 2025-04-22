@@ -12,7 +12,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "(Uber)",
 	},
 	aegislashbladefantasy: {
-		tier: "(Uber)",
+		tier: "Illegal",
 	},
 	//上为幻想，下为分级变动
 	shedinja: {
