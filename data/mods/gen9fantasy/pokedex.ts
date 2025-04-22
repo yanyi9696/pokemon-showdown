@@ -88,4 +88,23 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredAbility: "Stance Change",
 		battleOnly: "Aegislash-Fantasy",
 	},
+	samurott: {
+		inherit: true,
+		otherFormes: ["Samurott-Fantasy"],
+		formeOrder: ["Samurott", "Samurott-Hisui", "Samurott-Fantasy"],
+	},
+	samurottfantasy: {
+		num: 503,
+		name: "Samurott",
+		types: ["Water", "Normal"],
+		genderRatio: { M: 0.875, F: 0.125 },
+		baseStats: { hp: 95, atk: 100, def: 85, spa: 108, spd: 70, spe: 70 },
+		abilities: { 0: "sujun", H: "Sharpness" },
+		heightm: 1.5,
+		weightkg: 94.6,
+		color: "Blue",
+		prevo: "Dewott",
+		evoLevel: 36,
+		eggGroups: ["Field"],
+	},
 }
