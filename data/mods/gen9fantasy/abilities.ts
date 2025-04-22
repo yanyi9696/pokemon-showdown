@@ -21,7 +21,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	stancechange: {
 		onModifyMovePriority: 1,
 		onModifyMove(move, attacker, defender) {
-			if (attacker.species.baseSpecies !== 'Aegislash' || attacker.transformed) return;
+			if (attacker.species.baseSpecies !== 'Aegislash-Fantasy' || attacker.transformed) return;
 			if (move.category === 'Status' && move.id !== 'kingsshield') return;
 			const targetForme = (move.id === 'kingsshield' ? 'Aegislash-Fantasy' : 'Aegislash-Blade-Fantasy');
 			if (attacker.species.name !== targetForme) attacker.formeChange(targetForme);
