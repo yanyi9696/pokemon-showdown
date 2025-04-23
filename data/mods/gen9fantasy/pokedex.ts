@@ -99,7 +99,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	aegislashbladefantasy: {
 		num: 681,
 		name: "Aegislash-Blade-Fantasy",
-		baseSpecies: "Aegislash-Fantasy",
+		baseSpecies: "Aegislash",
 		forme: "Blade",
 		types: ["Steel", "Ghost"],
 		baseStats: { hp: 60, atk: 150, def: 50, spa: 150, spd: 50, spe: 60 },
