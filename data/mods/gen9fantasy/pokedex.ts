@@ -135,7 +135,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	urshifufantasy: {
 		num: 892,
-		name: "Urshifu-Shunjiliou",
+		name: "Urshifu-Fantasy",
 		baseForme: "Single-Strike",
 		types: ["Fighting", "Electric"],
 		genderRatio: { M: 0.875, F: 0.125 },
