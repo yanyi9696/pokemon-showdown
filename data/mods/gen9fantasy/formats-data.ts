@@ -20,6 +20,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	goodrahisuifantasy: {
 		tier: "OU",
 	},
+	urshifufantasy: {
+		tier: "OU",
+	},
+	urshifurapidstrikefantasy: {
+		tier: "OU",
+	},
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",
