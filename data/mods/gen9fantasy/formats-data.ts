@@ -17,6 +17,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	samurottfantasy: {
 		tier: "RUBL",
 	},
+	goodrahisuifantasy: {
+		tier: "OU",
+	},
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",
