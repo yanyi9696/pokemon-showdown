@@ -1,21 +1,15 @@
 export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormatsDataTable = {
-	garchompfantasy: {
-		tier: "OU",
-	},
-	garchompmegafantasy: {
-		tier: "(Uber)",
-	},
-	vespiquenfantasy: {
-		tier: "RUBL",
-	},
 	aegislashfantasy: {
 		tier: "(Uber)",
 	},
 	aegislashbladefantasy: {
 		tier: "(Uber)",
 	},
-	samurottfantasy: {
-		tier: "RUBL",
+	garchompmegafantasy: {
+		tier: "(Uber)",
+	},
+	garchompfantasy: {
+		tier: "OU",
 	},
 	goodrahisuifantasy: {
 		tier: "OU",
@@ -25,6 +19,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	},
 	urshifurapidstrikefantasy: {
 		tier: "OU",
+	},
+	samurottfantasy: {
+		tier: "RUBL",
+	},
+	vespiquenfantasy: {
+		tier: "RUBL",
 	},
 	//上为幻想，下为分级变动
 	shedinja: {
