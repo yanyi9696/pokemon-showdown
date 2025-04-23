@@ -61,6 +61,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	aegislashfantasy: {
 		num: 681,
 		name: "Aegislash-Fantasy",
+		baseSpecies: "Aegislash",
+		forme: "Fantasy",
 		baseForme: "Shield",
 		types: ["Steel", "Ghost"],
 		baseStats: { hp: 60, atk: 50, def: 150, spa: 50, spd: 150, spe: 60 },
@@ -96,6 +98,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	samurottfantasy: {
 		num: 503,
 		name: "Samurott-Fantasy",
+		baseSpecies: "Samurott",
+		forme: "Fantasy",
 		types: ["Normal", "Water"],
 		genderRatio: { M: 0.875, F: 0.125 },
 		baseStats: { hp: 95, atk: 100, def: 85, spa: 108, spd: 70, spe: 70 },
