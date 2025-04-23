@@ -6,7 +6,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "(Uber)",
 	},
 	vespiquenfantasy: {
-		tier: "RU",
+		tier: "RUBL",
 	},
 	aegislashfantasy: {
 		tier: "(Uber)",
