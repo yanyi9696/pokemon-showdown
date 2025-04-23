@@ -111,15 +111,15 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredAbility: "Stance Change",
 		battleOnly: "Aegislash-Fantasy",
 	},
-	goodra: {
+	goodrahisui: {
 		inherit: true,
-		otherFormes: ["Goodra-Hisui","Goodra-Hisui-Fantasy"],
+		otherFormes: ["Goodra","Goodra-Hisui-Fantasy"],
 		formeOrder: ["Goodra", "Goodra-Hisui","Goodra-Hisui-Fantasy"],
 	},
 	goodrahisuifantasy: {
 		num: 706,
 		name: "Goodra-Hisui-Fantasy",
-		baseSpecies: "Goodra",
+		baseSpecies: "Goodra-Hisui",
 		forme: "Hisui",
 		types: ["Bug", "Dragon"],
 		baseStats: { hp: 80, atk: 100, def: 100, spa: 110, spd: 150, spe: 60 },
