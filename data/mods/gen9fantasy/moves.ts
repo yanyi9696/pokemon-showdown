@@ -107,6 +107,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Electric",
+		desc: "必定能够先制攻击。攻击必定击中要害",
+		shortDesc: "必定能够先制攻击。攻击必定击中要害"
 	},
 	zuishenluanda: {
 		num: 10004,
@@ -128,6 +130,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Poison",
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 80 },
+		desc: "连续攻击1~3次,一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45。",
+		shortDesc: "连续攻击1~3次,一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45。"
 	},
 	biansuzhefan: {
 		num: 10005,
@@ -143,5 +147,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Poison",
 		contestType: "Cute",
+		desc: "使用者在攻击目标后会替换后备宝可梦上场。",
+		shortDesc: "使用者在攻击目标后会替换后备宝可梦上场。"
 	},
 };
