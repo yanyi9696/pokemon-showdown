@@ -1,4 +1,18 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	stancechange: {
+		onModifyMovePriority: 1,
+		onModifyMove(move, attacker, defender) {
+			if (attacker.species.baseSpecies !== 'Aegislash-Fantasy' || attacker.transformed) return;
+			if (move.category === 'Status' && move.id !== 'kingsshield') return;
+			const targetForme = (move.id === 'kingsshield' ? 'Aegislash-Fantasy' : 'Aegislash-Blade-Fantasy');
+			if (attacker.species.name !== targetForme) attacker.formeChange(targetForme);
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
+		name: "Stance Change",
+		rating: 4,
+		num: 176,
+	},
+	//以下为自制特性
 	fengchao: {
 		onEffectivenessPriority: -1,
 		onEffectiveness(typeMod, target, type, move) {
@@ -31,19 +45,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10000,
 		shortDesc: "虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8。",	
 	},
-	stancechange: {
-		onModifyMovePriority: 1,
-		onModifyMove(move, attacker, defender) {
-			if (attacker.species.baseSpecies !== 'Aegislash-Fantasy' || attacker.transformed) return;
-			if (move.category === 'Status' && move.id !== 'kingsshield') return;
-			const targetForme = (move.id === 'kingsshield' ? 'Aegislash-Fantasy' : 'Aegislash-Blade-Fantasy');
-			if (attacker.species.name !== targetForme) attacker.formeChange(targetForme);
-		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
-		name: "Stance Change",
-		rating: 4,
-		num: 176,
-	},
 	sujun: {
 		onModifyMove(move, pokemon) {
 			// 调试：检查技能的副作用
@@ -63,27 +64,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	huibizaisheng: {
 		onEmergencyExit(target) {
+			// 如果不能交换，或已经强制交换，则不处理
 			if (!this.canSwitch(target.side) || target.forceSwitchFlag || target.switchFlag) return;
+			// 计算恢复的HP：最大HP的1/4
+			const healAmount = target.baseMaxhp / 4;
+			// 回复HP
+			target.heal(healAmount);
+			// 设置切换标志，触发交换
 			for (const side of this.sides) {
 				for (const active of side.active) {
-					active.switchFlag = false;
+					active.switchFlag = false; // 清除其他宝可梦的交换标志
 				}
 			}
-			target.switchFlag = true;
+			target.switchFlag = true; // 设置当前宝可梦的交换标志
+			// 激活特性效果
 			this.add('-activate', target, 'ability: Emergency Exit');
-			// 计算恢复的HP：已损失HP的一半
-			const damageTaken = target.maxhp - target.hp;
-			const healAmount = damageTaken / 2;
-			// 确保恢复值不会超过最大HP
-			const actualHealAmount = Math.min(healAmount, target.maxhp - target.hp);
-			// 回复HP
-			target.heal(actualHealAmount);
-			this.add('-heal', target, actualHealAmount);
+			// 输出回复信息
+			this.add('-heal', target, healAmount);
 		},
 		flags: {},
-		name: "Huibizaisheng",
-		rating: 1,
-		num: 194,
-		shortDesc: "HP变为一半时,为了回避危险,会退回到同行队伍中并回复自身已损HP的1/2。",	
+		name: "Emergency Exit",
+		rating: 2.5,
+		num: 10002,
+		shortDesc: "HP变为一半时,为了回避危险,会退回到同行队伍中并回复自身最大HP的1/4。",
 	},
 };
