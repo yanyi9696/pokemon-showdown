@@ -465,6 +465,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	urshifufantasy: {
 		learnset: {
+			dianshanshunji: ["9M"],
+			plasmafists: ["9M"],
+			supercellslam: ["9M"],
 			acrobatics: ["9M", "8M"],
 			aerialace: ["9M", "9L12", "8L12"],
 			attract: ["8M"],
@@ -532,6 +535,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	urshifurapidstrikefantasy: {
 		learnset: {
+			zuishenluanda: ["9M"],
+			poisonjab: ["9M"],
+			biansuzhefan: ["9M"],
 			acrobatics: ["9M", "8M"],
 			aerialace: ["9M", "9L12", "8L12"],
 			attract: ["8M"],
