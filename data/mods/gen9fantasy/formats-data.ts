@@ -26,11 +26,17 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	illumisefantasy: {
 		tier: "UU",
 	},
+	glaliemegafantasy: {
+		tier: "UU",
+	},
 	samurottfantasy: {
 		tier: "RUBL",
 	},
 	vespiquenfantasy: {
 		tier: "RUBL",
+	},
+	glaliefantasy: {
+		tier: "RU",
 	},
 	//上为幻想，下为分级变动
 	shedinja: {
