@@ -1,28 +1,3 @@
-import { Dex } from '../../../sim/dex'; // 只导入 Dex (命名导出)
-import ID from '../../../sim/dex'; // 默认导入 ID
-import { Items } from './items'; // 引入你的 Mod 道具定义
-// import { ID } from '../../../sim/dex-species'; // 注释掉或删除这行
-
-// 获取你的 Mod 道具 ID 列表
-const modItemIDs: ID[] = []; // 明确类型为 ID[]
-for (const id in Items) {
-	if (!Object.prototype.hasOwnProperty.call(Items, id)) continue;
-	modItemIDs.push(Dex.toID(id)); // 使用 Dex.toID 确保是小写 ID 格式
-}
-
-// 创建包含 Mod 道具 ID 的 Set
-const fantasyItemSet = new Set(modItemIDs);
-
-// 注入到全局 window 对象
-// 这段代码理论上会在服务器和客户端都尝试执行
-// 在服务器端，window 是 undefined，不会出错
-// 在客户端，window 存在，会成功注入
-if (typeof window !== 'undefined') {
-	// 明确告诉 TypeScript window 上可以有这个属性
-	(window as any).Gen9FantasyModItemIDs = fantasyItemSet;
-	console.log('[Fantasy Mod] Gen9FantasyModItemIDs injected:', fantasyItemSet); // 添加日志确认注入
-}
-
 export const Scripts: ModdedBattleScriptsData = {
 	gen: 9,
 	init() {
