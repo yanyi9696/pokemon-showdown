@@ -220,8 +220,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	glaliefantasy: {
 		num: 362,
-		name: "Glalie",
-		baseSpecies: "Glalie-Fantasy",
+		name: "Glalie-Fantasy",
+		baseSpecies: "Glalie",
 		forme: "Fantasy",
 		types: ["Ice", "Dark"],
 		baseStats: { hp: 100, atk: 80, def: 100, spa: 80, spd: 100, spe: 80 },
@@ -236,8 +236,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	glaliemegafantasy: {
 		num: 362,
-		name: "Glalie-Mega",
-		baseSpecies: "Glalie-Mega-Fantasy",
+		name: "Glalie-Mega-Fantasy",
+		baseSpecies: "Glalie-Mega",
 		forme: "Mega",
 		types: ["Ice", "Dark"],
 		baseStats: { hp: 100, atk: 140, def: 80, spa: 140, spd: 80, spe: 100 },
