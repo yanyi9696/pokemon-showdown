@@ -20,6 +20,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	urshifurapidstrikefantasy: {
 		tier: "OU",
 	},
+	volbeatfantasy: {
+		tier: "UU",
+	},
+	illumisefantasy: {
+		tier: "UU",
+	},
 	samurottfantasy: {
 		tier: "RUBL",
 	},
