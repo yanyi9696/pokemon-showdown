@@ -74,6 +74,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 计算恢复的HP：已损失HP的一半
 			const damageTaken = target.maxhp - target.hp;
 			const healAmount = damageTaken / 2;
+			// 确保恢复值不会超过最大HP
+			const actualHealAmount = Math.min(healAmount, target.maxhp - target.hp);
+			// 回复HP
 			target.heal(healAmount);
 			this.add('-heal', target, healAmount);
 		},
