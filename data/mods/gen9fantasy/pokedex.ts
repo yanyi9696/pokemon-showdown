@@ -20,6 +20,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoType: "useItem",
 		evoItem: "Dusk Stone",
 		eggGroups: ["Mineral"],
+		spriteid: 'aegislash',
 	},
 	aegislashbladefantasy: {
 		num: 681,
@@ -35,6 +36,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Mineral"],
 		requiredAbility: "Stance Change",
 		battleOnly: "Aegislash-Fantasy",
+		spriteid: 'aegislash-blade',
 	},
 	garchomp: {
 		inherit: true,
@@ -54,6 +56,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Blue",
 		eggGroups: ["Monster", "Dragon"],
 		otherFormes: ["Garchomp-Mega-Fantasy"],
+		spriteid: 'garchomp',
 	},
 	garchompmegafantasy: {
 		num: 445,
@@ -68,6 +71,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Blue",
 		eggGroups: ["Monster", "Dragon"],
 		requiredItem: "Garchompite",
+		spriteid: 'garchomp-mega',
 	},
 	urshifu: {
 		inherit: true,
@@ -92,6 +96,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoType: "other",
 		evoCondition: "Defeat the Single Strike Tower",
 		eggGroups: ["Undiscovered"],
+		spriteid: 'urshifu',
 	},
 	urshifurapidstrikefantasy: {
 		num: 892,
@@ -109,6 +114,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoType: "other",
 		evoCondition: "Defeat the Rapid Strike Tower",
 		eggGroups: ["Undiscovered"],
+		spriteid: 'urshifu-rapidstrike',
 	},
 	goodra: {
 		inherit: true,
@@ -130,6 +136,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 50,
 		evoCondition: "during rain",
 		eggGroups: ["Dragon"],
+		spriteid: 'goodra-hisui',
 	},
 	decidueye: {
 		inherit: true,
@@ -151,6 +158,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Dartrix",
 		evoLevel: 36,
 		eggGroups: ["Flying"],
+		spriteid: 'decidueye-hisui',
 	},
 	golisopod: {
 		inherit: true,
@@ -171,6 +179,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Wimpod",
 		evoLevel: 30,
 		eggGroups: ["Bug", "Water 3"],
+		spriteid: 'golisopod',
 	},
 	volbeat: {
 		inherit: true,
@@ -191,6 +200,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Bug", "Human-Like"],
 		mother: 'illumise',
+		spriteid: 'volbeat',
 	},
 	illumise: {
 		inherit: true,
@@ -211,6 +221,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Bug", "Human-Like"],
 		mother: 'illumise',
+		spriteid: 'illumise',
 	},
 	vespiquen: {
 		inherit: true,
@@ -232,6 +243,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Combee",
 		evoLevel: 21,
 		eggGroups: ["Bug"],
+		spriteid: 'vespiquen',
 	},
 	samurott: {
 		inherit: true,
@@ -253,6 +265,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Dewott",
 		evoLevel: 36,
 		eggGroups: ["Field"],
+		spriteid: 'samurott',
 	},
 	glalie: {
 		inherit: true,
@@ -274,6 +287,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 42,
 		eggGroups: ["Fairy", "Mineral"],
 		otherFormes: ["Glalie-Mega-Fantasy"],
+		spriteid: 'glalie',
 	},
 	glaliemegafantasy: {
 		num: 362,
@@ -288,5 +302,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Fairy", "Mineral"],
 		requiredItem: "Glalitite",
+		spriteid: 'glalie-mega',
 	},
 }
