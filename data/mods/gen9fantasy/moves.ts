@@ -138,7 +138,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 70,
 		category: "Physical",
-		name: "U-turn",
+		name: "Biansuzhefan",
 		pp: 20,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
