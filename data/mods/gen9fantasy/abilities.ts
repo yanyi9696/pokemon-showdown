@@ -83,7 +83,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.add('-heal', target, healAmount);
 		},
 		flags: {},
-		name: "Emergency Exit",
+		name: "Huibizaisheng",
 		rating: 2.5,
 		num: 10002,
 		shortDesc: "HP变为一半时,为了回避危险,会退回到同行队伍中并回复自身最大HP的1/4。",
