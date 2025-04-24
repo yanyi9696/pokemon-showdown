@@ -2077,7 +2077,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Bullet Seed",
 		pp: 30,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, metronome: 1, bullet: 1 },
+		flags: { protect: 1, mirror: 1, metronome: 1, bullet: 1, shooting: 1 },
 		multihit: [2, 5],
 		secondary: null,
 		target: "normal",
@@ -4278,7 +4278,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Dragon Darts",
 		pp: 10,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, metronome: 1, noparentalbond: 1 },
+		flags: { protect: 1, mirror: 1, metronome: 1, noparentalbond: 1, shooting: 1 },
 		multihit: 2,
 		smartTarget: true,
 		secondary: null,
@@ -13867,7 +13867,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Pin Missile",
 		pp: 20,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, metronome: 1 },
+		flags: { protect: 1, mirror: 1, metronome: 1, shooting: 1 },
 		multihit: [2, 5],
 		secondary: null,
 		target: "normal",
@@ -17813,7 +17813,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Snipe Shot",
 		pp: 15,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, metronome: 1 },
+		flags: { protect: 1, mirror: 1, metronome: 1, shooting: 1 },
 		critRatio: 2,
 		tracksTarget: true,
 		secondary: null,
@@ -18310,7 +18310,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Spirit Shackle",
 		pp: 10,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, metronome: 1 },
+		flags: { protect: 1, mirror: 1, metronome: 1, shooting: 1 },
 		secondary: {
 			chance: 100,
 			onHit(target, source, move) {
@@ -20096,7 +20096,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Thousand Arrows",
 		pp: 10,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, nonsky: 1 },
+		flags: { protect: 1, mirror: 1, nonsky: 1, shooting: 1  },
 		onEffectiveness(typeMod, target, type, move) {
 			if (move.type !== 'Ground') return;
 			if (!target) return; // avoid crashing when called from a chat plugin
@@ -20775,7 +20775,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Triple Arrows",
 		pp: 10,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, metronome: 1 },
+		flags: { protect: 1, mirror: 1, metronome: 1, shooting: 1 },
 		critRatio: 2,
 		secondaries: [
 			{
