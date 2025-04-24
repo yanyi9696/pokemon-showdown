@@ -64,23 +64,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	huibizaisheng: {
 		onEmergencyExit(target) {
-			// 如果不能交换，或已经强制交换，则不处理
 			if (!this.canSwitch(target.side) || target.forceSwitchFlag || target.switchFlag) return;
-			// 计算恢复的HP：最大HP的1/4
-			const healAmount = target.baseMaxhp / 4;
-			// 回复HP
-			target.heal(healAmount);
-			// 设置切换标志，触发交换
 			for (const side of this.sides) {
 				for (const active of side.active) {
-					active.switchFlag = false; // 清除其他宝可梦的交换标志
+					active.switchFlag = false;
 				}
 			}
-			target.switchFlag = true; // 设置当前宝可梦的交换标志
-			// 激活特性效果
-			this.add('-activate', target, 'ability: Emergency Exit');
-			// 输出回复信息
-			this.add('-heal', target, healAmount);
+			target.switchFlag = true;
+			this.add('-activate', target, 'Huibizaisheng');
+		},
+		onSwitchOut(pokemon) {
+			pokemon.heal(pokemon.baseMaxhp / 3);
 		},
 		flags: {},
 		name: "Huibizaisheng",
