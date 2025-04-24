@@ -74,12 +74,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.add('-activate', target, 'Huibizaisheng');
 		},
 		onSwitchOut(pokemon) {
-			pokemon.heal(pokemon.baseMaxhp / 3);
+			pokemon.heal(pokemon.baseMaxhp / 4);
 		},
 		flags: {},
 		name: "Huibizaisheng",
 		rating: 2.5,
 		num: 10002,
-		shortDesc: "HP变为一半时,为了回避危险,会退回到同行队伍中并回复自身最大HP的1/4。",
+		shortDesc: "HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4。",
 	},
 };
