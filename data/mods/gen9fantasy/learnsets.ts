@@ -990,7 +990,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			xscissor: ["8M", "7M"],
 		},
 	},
-	decidueyehisui: {
+	decidueyehisuifantasy: {
 		learnset: {
 			thousandarrows: ["9M"],
 			spikes: ["9M"],
