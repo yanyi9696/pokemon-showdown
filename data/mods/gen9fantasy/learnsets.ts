@@ -2,6 +2,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	garchompfantasy: {
 		learnset: {
 			dragondance: ["9M"],
+			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M"],
 			aquatail: ["7T", "6T", "5T", "4T"],
 			attract: ["8M", "7M", "6M", "5M", "4M"],
@@ -110,6 +111,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			fuzhuzhiling: ["9M"],
 			leechlife: ["9M"],
 			firstimpression: ["9M"],
+			//幻想增添技能
 			syrupbomb: ["9L28"],
 			acrobatics: ["9M", "8M", "7M", "6M", "5M"],
 			aerialace: ["9M", "7M", "6M", "5M", "4M"],
@@ -223,6 +225,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			glaiverush: ["9M"],
 			kowtowcleave: ["9M"],
 			ceaselessedge: ["9M"],
+			//幻想增添技能
 			aerialace: ["8L1", "7M", "7L1", "6M", "6L1"],
 			afteryou: ["7T", "6T"],
 			airslash: ["8M"],
@@ -296,6 +299,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			mijianbairenchuan: ["9M"],
 			wavecrash: ["9M"],
 			glaiverush: ["9M"],
+			//幻想增添技能
 			aerialace: ["9M", "9L29", "7M", "6M", "5M"],
 			airslash: ["9M"],
 			aquajet: ["9L34", "7L34", "6L33", "5L33"],
@@ -395,6 +399,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			bugbuzz: ["9M"],
 			signalbeam: ["9M"],
 			flipturn: ["9M"],
+			//幻想增添技能
 			absorb: ["9L1"],
 			acidspray: ["9M", "9L1"],
 			blizzard: ["9M"],
@@ -468,6 +473,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dianshanshunji: ["9M"],
 			plasmafists: ["9M"],
 			supercellslam: ["9M"],
+			//幻想增添技能
 			acrobatics: ["9M", "8M"],
 			aerialace: ["9M", "9L12", "8L12"],
 			attract: ["8M"],
@@ -536,8 +542,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	urshifurapidstrikefantasy: {
 		learnset: {
 			zuishenluanda: ["9M"],
-			poisonjab: ["9M"],
+			gunkshot: ["9M"],
 			biansuzhefan: ["9M"],
+			//幻想增添技能
 			acrobatics: ["9M", "8M"],
 			aerialace: ["9M", "9L12", "8L12"],
 			attract: ["8M"],
