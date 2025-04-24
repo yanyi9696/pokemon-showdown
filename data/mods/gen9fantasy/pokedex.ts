@@ -237,7 +237,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	glaliemegafantasy: {
 		num: 362,
 		name: "Glalie-Mega-Fantasy",
-		baseSpecies: "Glalie-Mega",
+		baseSpecies: "Glalie",
 		forme: "Mega",
 		types: ["Ice", "Dark"],
 		baseStats: { hp: 100, atk: 140, def: 80, spa: 140, spd: 80, spe: 100 },
