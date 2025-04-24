@@ -77,8 +77,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 确保恢复值不会超过最大HP
 			const actualHealAmount = Math.min(healAmount, target.maxhp - target.hp);
 			// 回复HP
-			target.heal(healAmount);
-			this.add('-heal', target, healAmount);
+			target.heal(actualHealAmount);
+			this.add('-heal', target, actualHealAmount);
 		},
 		flags: {},
 		name: "Huibizaisheng",
