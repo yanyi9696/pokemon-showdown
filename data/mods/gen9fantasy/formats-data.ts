@@ -26,6 +26,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	illumisefantasy: {
 		tier: "UU",
 	},
+	golisopodfantasy: {
+		tier: "UU",
+	},
 	glaliemegafantasy: {
 		tier: "UU",
 	},

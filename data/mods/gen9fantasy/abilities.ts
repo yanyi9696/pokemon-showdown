@@ -60,5 +60,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3,
 		num: 10001,
 		shortDesc: "即使使出了使用后下一回合自己将无法动弹的招式后，自己也不会陷入无法动弹状态。",	
-	}
+	},
+	huibizaisheng: {
+		onEmergencyExit(target) {
+			if (!this.canSwitch(target.side) || target.forceSwitchFlag || target.switchFlag) return;
+			for (const side of this.sides) {
+				for (const active of side.active) {
+					active.switchFlag = false;
+				}
+			}
+			target.switchFlag = true;
+			this.add('-activate', target, 'ability: Emergency Exit');
+			// 计算恢复的HP：已损失HP的一半
+			const damageTaken = target.maxhp - target.hp;
+			const healAmount = damageTaken / 2;
+			target.heal(healAmount);
+			this.add('-heal', target, healAmount);
+		},
+		flags: {},
+		name: "Emergency Exit",
+		rating: 1,
+		num: 194,
+		shortDesc: "HP变为一半时,为了回避危险,会退回到同行队伍中并回复自身已损HP的1/2。",	
+	},
 };
