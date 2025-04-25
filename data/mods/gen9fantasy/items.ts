@@ -17,6 +17,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	toxtricityz: {
 		name: "Toxtricity Z",
+		spritenum: 686,
 		onTakeItem: false, // Z纯晶不能被移除
 		zMove: "Chaopinyaogunpoyinbo",
 		zMoveFrom: "Overdrive",

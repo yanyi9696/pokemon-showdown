@@ -236,7 +236,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 1,
 		priority: 0,
 		flags: { sound: 1, bypasssub: 1 }, 
-		isZ: true,
+		isZ: "toxtricityz",
 		target: "allAdjacentFoes",
 		type: 'Normal', // 占位符，将被修改
 		onPrepareHit(target, source, move) {
