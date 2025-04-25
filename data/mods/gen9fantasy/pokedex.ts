@@ -344,4 +344,23 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Glalitite",
 		spriteid: 'glalie-mega',
 	},
+	stonjourner: {
+		inherit: true,
+		otherFormes: ["Stonjourner-Fantasy"],
+		formeOrder: ["Stonjourner",  "Stonjourner-Fantasy"],
+	},
+	stonjournerfantasy: {
+		num: 503,
+		name: "Stonjourner-Fantasy",
+		baseSpecies: "Stonjourner",
+		forme: "Fantasy",
+		types: ["Normal", "Rock"],
+		baseStats: { hp: 100, atk: 125, def: 135, spa: 20, spd: 75, spe: 85 },
+		abilities: { 0: "Power Spot", 1: "Mishizhen" },
+		heightm: 2.5,
+		weightkg: 520,
+		color: "Gray",
+		eggGroups: ["Mineral"],
+		spriteid: 'stonjourner',
+	},
 }

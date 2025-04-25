@@ -1,4 +1,27 @@
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+	overdrive: {
+		num: 786,
+		accuracy: 100,
+		basePower: 80,
+		category: "Special",
+		name: "Overdrive",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, sound: 1, bypasssub: 1 },
+		onModifyType(move, pokemon) {
+			// 检查宝可梦的物种名称是否为 'Toxtricity-Low-Key-Fantasy'
+			if (pokemon.species.name === 'Toxtricity-Low-Key-Fantasy') {
+				// 如果是，则将技能类型更改为 'Ice'
+				move.type = 'Ice';
+			}
+		},
+		secondary: null,
+		target: "allAdjacentFoes",
+		type: "Electric",
+		desc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。",
+		shortDesc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。"
+	},
+		//以下为自制技能
 	xianxingzhiling: {
 		num: 10001,
 		accuracy: true,
@@ -203,28 +226,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Tough",
 		desc: "攻击目标造成伤害。20%几率令目标的防御降低1级。",
 		shortDesc: "攻击目标造成伤害。20%几率令目标的防御降低1级。"
-	},
-	overdrive: {
-		num: 786,
-		accuracy: 100,
-		basePower: 80,
-		category: "Special",
-		name: "Overdrive",
-		pp: 10,
-		priority: 0,
-		flags: { protect: 1, mirror: 1, sound: 1, bypasssub: 1 },
-		onModifyType(move, pokemon) {
-			// 检查宝可梦的物种名称是否为 'Toxtricity-Low-Key-Fantasy'
-			if (pokemon.species.name === 'Toxtricity-Low-Key-Fantasy') {
-				// 如果是，则将技能类型更改为 'Ice'
-				move.type = 'Ice';
-			}
-		},
-		secondary: null,
-		target: "allAdjacentFoes",
-		type: "Electric",
-		desc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。",
-		shortDesc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。"
 	},
 	chaopinyaogunpoyinbo: {
 		num: 10009, 
