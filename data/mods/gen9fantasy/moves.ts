@@ -150,4 +150,58 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "使用者在攻击目标后会替换后备宝可梦上场。",
 		shortDesc: "使用者在攻击目标后会替换后备宝可梦上场。"
 	},
+	chuanyun: {
+		num: 10006,
+		accuracy: true,
+		basePower: 80,
+		category: "Physical",
+		name: "Chuanyun",
+		pp: 15,
+		priority: 0,
+		flags: { mirror: 1, distance: 1, metronome: 1, shooting: 1 },
+		secondary: null,
+		target: "any",
+		type: "Flying",
+		contestType: "Cool",
+		desc: "可以无视守住进行攻击。攻击必定命中在场上的目标。",
+		shortDesc: "可以无视守住进行攻击。攻击必定命中在场上的目标。"
+	},
+	shenjian: {
+		num: 10007,
+		accuracy: 100,
+		basePower: 40,
+		category: "Physical",
+		name: "Shenjian",
+		pp: 5,
+		priority: 1,
+		flags: { protect: 1, mirror: 1, distance: 1, metronome: 1, shooting: 1 },
+		willCrit: true,
+		secondary: null,
+		target: "any",
+		type: "Normal",
+		contestType: "Cool",
+		desc: "必定能够先制攻击。攻击必定击中要害。",
+		shortDesc: "必定能够先制攻击。攻击必定击中要害。"
+	},
+	yanzu: {
+		num: 10008,
+		accuracy: 100,
+		basePower: 80,
+		category: "Physical",
+		name: "Yanzu",
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1, shooting: 1 },
+		secondary: {
+			chance: 20,
+			boosts: {
+				def: -1,
+			},
+		},
+		target: "normal",
+		type: "Rock",
+		contestType: "Tough",
+		desc: "攻击目标造成伤害。20%几率令目标的防御降低1级。",
+		shortDesc: "攻击目标造成伤害。20%几率令目标的防御降低1级。"
+	},
 };
