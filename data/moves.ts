@@ -13575,9 +13575,20 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, sound: 1, bypasssub: 1 },
+		onModifyType(move, pokemon) {
+			// 检查宝可梦的物种名称是否为 'Toxtricity-Low-Key-Fantasy'
+			if (pokemon.species.name === 'Toxtricity-Low-Key-Fantasy') {
+				// 如果是，则将技能类型更改为 'Ice'
+				move.type = 'Ice';
+			} else {
+				move.type = 'Electric';
+			}
+		},
 		secondary: null,
 		target: "allAdjacentFoes",
 		type: "Electric",
+		desc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。",
+		shortDesc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。"
 	},
 	overheat: {
 		num: 315,

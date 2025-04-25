@@ -227,7 +227,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Electric",
 		desc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。",
 		shortDesc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。"
-		
 	},
 	chaopinyaogunpoyinbo: {
 		num: 10009, 
