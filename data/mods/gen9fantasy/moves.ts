@@ -237,7 +237,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { sound: 1, bypasssub: 1 }, 
 		isZ: "toxtricityz",
 		target: "allAdjacentFoes",
-		type: 'Stellar', // 占位符，将被修改
+		type: 'Electric', // 占位符，将被修改
 		onPrepareHit(target, source, move) {
 			this.attrLastMove('[anim] Overdrive'); 
 			if (source.species.name === 'Toxtricity-Fantasy') { // 确认形态名称

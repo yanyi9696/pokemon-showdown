@@ -828,7 +828,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		},
 		onModifyType(move, pokemon) {
 			if (pokemon.species.name === 'Morpeko-Hangry') {
-				move.type = 'Ice';
+				move.type = 'Dark';
 			} else {
 				move.type = 'Electric';
 			}
