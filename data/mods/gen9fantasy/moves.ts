@@ -218,8 +218,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (pokemon.species.name === 'Toxtricity-Low-Key-Fantasy') {
 				// 如果是，则将技能类型更改为 'Ice'
 				move.type = 'Ice';
-			} else {
-				move.type = 'Electric';
 			}
 		},
 		secondary: null,

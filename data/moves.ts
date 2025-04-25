@@ -828,13 +828,13 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		},
 		onModifyType(move, pokemon) {
 			if (pokemon.species.name === 'Morpeko-Hangry') {
-				move.type = 'Dark';
+				move.type = 'Ice';
 			} else {
 				move.type = 'Electric';
 			}
 		},
 		target: "normal",
-		type: "Ice",
+		type: "Electric",
 	},
 	aurorabeam: {
 		num: 62,
