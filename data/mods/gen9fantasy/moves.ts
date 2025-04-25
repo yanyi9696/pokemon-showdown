@@ -204,4 +204,75 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "攻击目标造成伤害。20%几率令目标的防御降低1级。",
 		shortDesc: "攻击目标造成伤害。20%几率令目标的防御降低1级。"
 	},
+	overdrive: {
+		num: 786,
+		accuracy: 100,
+		basePower: 80,
+		category: "Special",
+		name: "Overdrive",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, sound: 1, bypasssub: 1 },
+		onModifyType(move, pokemon) {
+			// 检查宝可梦的物种名称是否为 'Toxtricity-Low-Key-Fantasy'
+			if (pokemon.species.name === 'Toxtricity-Low-Key-Fantasy') {
+				// 如果是，则将技能类型更改为 'Ice'
+				move.type = 'Ice';
+			}
+		},
+		secondary: null,
+		target: "allAdjacentFoes",
+		type: "Electric",
+		desc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。",
+		shortDesc: "幻想颤弦蝾螈-低调形态携带时, 破音变为冰系。"
+		
+	},
+	chaopinyaogunpoyinbo: {
+		num: 10009, 
+		accuracy: true,
+		basePower: 0, // 动态设置
+		category: "Special",
+		name: "Chaopinyaogunpoyinbo",
+		pp: 1,
+		priority: 0,
+		flags: { sound: 1, bypasssub: 1 }, 
+		isZ: true,
+		target: "allAdjacentFoes",
+		type: 'Normal', // 占位符，将被修改
+		onPrepareHit(target, source, move) {
+			this.attrLastMove('[anim] Overdrive'); // 可以考虑使用自定义动画名
+			if (source.species.name === 'Toxtricity-Fantasy') { // 确认形态名称
+				move.type = 'Electric';
+				move.basePower = 195;
+			} else if (source.species.name === 'Toxtricity-Low-Key-Fantasy') { // 确认形态名称
+				move.type = 'Ice';
+				move.basePower = 185;
+			} else {
+				this.add('-fail', source, 'move: Chaopinyaogunpoyinbo', '[invalid user]');
+				return false; // 使用者错误则招式失败
+			}
+		},
+		onHit(target, source, move) {
+			// Toxtricity-Fantasy (高调) 的效果：对每个命中的目标施加剧毒或麻痹
+			if (source.species.name === 'Toxtricity-Fantasy') {
+				if (!target.status) { // 如果目标没有异常状态
+					if (this.random(2) === 0) {
+						target.trySetStatus('tox', source, move);
+					} else {
+						target.trySetStatus('par', source, move);
+					}
+				}
+			}
+		},
+		self: {
+			// Toxtricity-Low-Key-Fantasy (低调) 的效果：提升自身能力
+			onHit(source, target, move) { // self.onHit 在命中所有目标后执行一次
+				if (source.species.name === 'Toxtricity-Low-Key-Fantasy') {
+					 this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, source, source, move);
+				}
+			},
+		},
+		desc: "攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时, 会使对手全体宝可梦陷入中剧毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时, 令使用者的攻击、防御、特攻、特防和速度提升1级。",
+		shortDesc: "高调形态使用会使对手全体陷入中剧毒或麻痹状态。低调形态使用令攻击、防御、特攻、特防和速度提升1级。"
+	}
 };
