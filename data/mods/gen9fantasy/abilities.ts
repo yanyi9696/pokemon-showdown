@@ -106,12 +106,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	mishizhen: {
 		onSourceModifyDamage(damage, source, target, move) {
-			let typeMod = target.getMoveHitData(move).typeMod; // 获取技能与目标的相性
-			// 直接反转 typeMod，无论它是正数还是负数
-			this.debug('Mishizhen: Reversing Effectiveness');
-			typeMod = -typeMod; // 反转相性
-			// 返回修改后的 typeMod，影响伤害计算
-			return typeMod;
+			if (target.getMoveHitData(move).typeMod > 0) {
+				this.debug('Mishizhen: Reversing Effectiveness');
+				return this.chainModify(-1);
+			}
+			if (target.getMoveHitData(move).typeMod < 0) {
+				this.debug('Mishizhen: Reversing Effectiveness');
+				return this.chainModify(-1);
+			}
 		},
 		flags: { breakable: 1 },
 		name: "Mishizhen",
