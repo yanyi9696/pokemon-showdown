@@ -169,6 +169,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		num: 849,
 		name: "Toxtricity-Fantasy",
 		baseForme: "Amped",
+		baseSpecies: "Toxtricity",
 		forme: "Fantasy",
 		types: ["Electric", "Poison"],
 		baseStats: { hp: 95, atk: 98, def: 70, spa: 124, spd: 70, spe: 95 },
@@ -197,7 +198,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 30,
 		eggGroups: ["Human-Like"],
 		canGigantamax: "G-Max Stun Shock",
-		spriteid: 'toxtricity-lowkey',
+		spriteid: 'toxtricity-low-key',
 	},
 	golisopod: {
 		inherit: true,
