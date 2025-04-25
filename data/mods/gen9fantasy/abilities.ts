@@ -114,12 +114,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.debug('Mishizhen: Reversing Effectiveness');
 				typeMod = -typeMod; // 如果typeMod < 0, 将其颠倒为 > 0
 			}
-			return typeMod; // 返回反转后的typeMod值
 		},
 		flags: { breakable: 1 },
 		name: "Mishizhen",
 		rating: 1,
-		num: 1004,
+		num: 10004,
 		shortDesc: "拥有此特性的宝可梦属性相性颠倒后原本效果绝佳的变为效果不好, 原本效果不好的变为效果绝佳, 原本没有效果的保持没有效果。",
 	},
 };
