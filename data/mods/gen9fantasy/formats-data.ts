@@ -50,6 +50,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	glaliefantasy: {
 		tier: "RU",
 	},
+	stonjournerfantasy: {
+		tier: "RU",
+	},
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",
