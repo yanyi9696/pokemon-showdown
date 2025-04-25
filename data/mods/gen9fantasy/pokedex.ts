@@ -350,7 +350,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		formeOrder: ["Stonjourner",  "Stonjourner-Fantasy"],
 	},
 	stonjournerfantasy: {
-		num: 503,
+		num: 874,
 		name: "Stonjourner-Fantasy",
 		baseSpecies: "Stonjourner",
 		forme: "Fantasy",
