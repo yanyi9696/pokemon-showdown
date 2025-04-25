@@ -114,6 +114,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.debug('Mishizhen: Reversing Effectiveness');
 				typeMod = -typeMod; // 如果typeMod < 0, 将其颠倒为 > 0
 			}
+			 // 返回修改后的typeMod，影响后续的伤害计算
+			 return this.chainModify(typeMod)
 		},
 		flags: { breakable: 1 },
 		name: "Mishizhen",
