@@ -218,6 +218,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (pokemon.species.name === 'Toxtricity-Low-Key-Fantasy') {
 				// 如果是，则将技能类型更改为 'Ice'
 				move.type = 'Ice';
+			} else {
+				move.type = 'Electric';
 			}
 		},
 		secondary: null,
@@ -238,9 +240,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { sound: 1, bypasssub: 1 }, 
 		isZ: "toxtricityz",
 		target: "allAdjacentFoes",
-		type: 'Normal', // 占位符，将被修改
+		type: 'Stellar', // 占位符，将被修改
 		onPrepareHit(target, source, move) {
-			this.attrLastMove('[anim] Overdrive'); // 可以考虑使用自定义动画名
+			this.attrLastMove('[anim] Overdrive'); 
 			if (source.species.name === 'Toxtricity-Fantasy') { // 确认形态名称
 				move.type = 'Electric';
 				move.basePower = 195;
