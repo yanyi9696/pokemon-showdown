@@ -104,4 +104,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10003,
 		shortDesc: "拥有此特性的宝可梦在使用射击类招式时,无视防御方的能力变化与特性,直接给予伤害。",
 	},
+	mishizhen: {
+		onSourceModifyDamage(damage, source, target, move) {
+			let typeMod = target.getMoveHitData(move).typeMod; // 获取技能与目标的相性
+			if (typeMod > 0) {
+				this.debug('Mishizhen: Reversing Effectiveness');
+				typeMod = -typeMod; // 如果typeMod > 0, 将其颠倒为 < 0
+			} else if (typeMod < 0) {
+				this.debug('Mishizhen: Reversing Effectiveness');
+				typeMod = -typeMod; // 如果typeMod < 0, 将其颠倒为 > 0
+			}
+			return typeMod; // 返回反转后的typeMod值
+		},
+		flags: { breakable: 1 },
+		name: "Mishizhen",
+		rating: 1,
+		num: 1004,
+		shortDesc: "拥有此特性的宝可梦属性相性颠倒后原本效果绝佳的变为效果不好, 原本效果不好的变为效果绝佳, 原本没有效果的保持没有效果。",
+	},
 };
