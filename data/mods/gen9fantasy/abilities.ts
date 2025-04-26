@@ -126,6 +126,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mishizhen",
 		rating: 1,
 		num: 10004,
-		shortDesc: "拥有此特性的宝可梦属性相性颠倒后原本效果绝佳的变为效果不好, 原本效果不好的变为效果绝佳, 原本没有效果的保持没有效果。",
+		shortDesc: "属性相性颠倒。原本效果绝佳的变为效果不好, 效果不好的变为效果绝佳, 没有效果的保持没有效果。",
 	},
 };
