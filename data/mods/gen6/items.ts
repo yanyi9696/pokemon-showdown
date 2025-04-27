@@ -1,4 +1,4 @@
-export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
+export const Items: {[k: string]: ModdedItemData} = {
 	aguavberry: {
 		inherit: true,
 		onUpdate(pokemon) {
@@ -25,10 +25,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
-	fastball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
-	},
 	figyberry: {
 		inherit: true,
 		onUpdate(pokemon) {
@@ -42,10 +38,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				pokemon.addVolatile('confusion');
 			}
 		},
-	},
-	heavyball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
 	},
 	iapapaberry: {
 		inherit: true,
@@ -64,16 +56,12 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	jabocaberry: {
 		inherit: true,
 		onDamagingHit(damage, target, source, move) {
-			if (move.category === 'Physical' && !source.hasAbility('magicguard')) {
+			if (move.category === 'Physical') {
 				if (target.eatItem()) {
 					this.damage(source.baseMaxhp / 8, source, target, null, true);
 				}
 			}
 		},
-	},
-	levelball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
 	},
 	lifeorb: {
 		inherit: true,
@@ -82,14 +70,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				this.damage(source.baseMaxhp / 10, source, source, this.dex.items.get('lifeorb'));
 			}
 		},
-	},
-	loveball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
-	},
-	lureball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
 	},
 	machobrace: {
 		inherit: true,
@@ -112,10 +92,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	magostberry: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	moonball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
 	},
 	nanabberry: {
 		inherit: true,
@@ -152,7 +128,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	rowapberry: {
 		inherit: true,
 		onDamagingHit(damage, target, source, move) {
-			if (move.category === 'Special' && !source.hasAbility('magicguard')) {
+			if (move.category === 'Special') {
 				if (target.eatItem()) {
 					this.damage(source.baseMaxhp / 8, source, target, null, true);
 				}

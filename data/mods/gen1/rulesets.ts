@@ -1,8 +1,8 @@
-export const Rulesets: import('../../../sim/dex-formats').ModdedFormatDataTable = {
+export const Rulesets: {[k: string]: ModdedFormatData} = {
 	standard: {
 		effectType: 'ValidatorRule',
 		name: 'Standard',
-		ruleset: ['Obtainable', 'Desync Clause Mod', 'Sleep Clause Mod', 'Freeze Clause Mod', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod'],
+		ruleset: ['Obtainable', 'Desync Clause Mod', 'Sleep Clause Mod', 'Freeze Clause Mod', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod'],
 		banlist: ['Dig', 'Fly'],
 	},
 	'350cupmod': {
@@ -22,7 +22,6 @@ export const Rulesets: import('../../../sim/dex-formats').ModdedFormatDataTable 
 					newSpecies.baseStats[stat] = this.clampIntRange(newSpecies.baseStats[stat] * 2, 1, 255);
 					newSpecies.bst += newSpecies.baseStats[stat];
 				}
-				newSpecies.baseStats['spd'] = newSpecies.baseStats['spa'];
 			}
 			return newSpecies;
 		},
@@ -36,7 +35,7 @@ export const Rulesets: import('../../../sim/dex-formats').ModdedFormatDataTable 
 		},
 		onModifySpecies(species) {
 			const newSpecies = this.dex.deepClone(species);
-			const stats: { [k: string]: number } = {
+			const stats: {[k: string]: number} = {
 				hp: newSpecies.baseStats.spe,
 				atk: newSpecies.baseStats.spa,
 				def: newSpecies.baseStats.def,
@@ -67,7 +66,6 @@ export const Rulesets: import('../../../sim/dex-formats').ModdedFormatDataTable 
 				newSpecies.baseStats[stat] = this.clampIntRange(newSpecies.baseStats[stat] * scale / pst, 1, 255);
 				newSpecies.bst += newSpecies.baseStats[stat];
 			}
-			newSpecies.baseStats['spd'] = newSpecies.baseStats['spa'];
 			return newSpecies;
 		},
 	},

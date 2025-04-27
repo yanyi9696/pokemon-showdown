@@ -1,39 +1,39 @@
-export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
+export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 	pikachuoriginal: {
 		inherit: true,
-		abilities: { 0: "Static" },
+		abilities: {0: "Static"},
 	},
 	pikachuhoenn: {
 		inherit: true,
-		abilities: { 0: "Static" },
+		abilities: {0: "Static"},
 	},
 	pikachusinnoh: {
 		inherit: true,
-		abilities: { 0: "Static" },
+		abilities: {0: "Static"},
 	},
 	pikachuunova: {
 		inherit: true,
-		abilities: { 0: "Static" },
+		abilities: {0: "Static"},
 	},
 	pikachukalos: {
 		inherit: true,
-		abilities: { 0: "Static" },
+		abilities: {0: "Static"},
 	},
 	pikachualola: {
 		inherit: true,
-		abilities: { 0: "Static" },
+		abilities: {0: "Static"},
 	},
 	pikachupartner: {
 		inherit: true,
-		abilities: { 0: "Static" },
+		abilities: {0: "Static"},
 	},
 	koffing: {
 		inherit: true,
-		abilities: { 0: "Levitate" },
+		abilities: {0: "Levitate"},
 	},
 	weezing: {
 		inherit: true,
-		abilities: { 0: "Levitate" },
+		abilities: {0: "Levitate"},
 	},
 	ralts: {
 		inherit: true,
@@ -80,32 +80,31 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	heatran: {
 		inherit: true,
-		abilities: { 0: "Flash Fire", H: "Flame Body" },
-		unreleasedHidden: true,
+		abilities: {0: "Flash Fire"},
 	},
 	aegislash: {
 		inherit: true,
-		baseStats: { hp: 60, atk: 50, def: 150, spa: 50, spd: 150, spe: 60 },
+		baseStats: {hp: 60, atk: 50, def: 150, spa: 50, spd: 150, spe: 60},
 	},
 	aegislashblade: {
 		inherit: true,
-		baseStats: { hp: 60, atk: 150, def: 50, spa: 150, spd: 50, spe: 60 },
+		baseStats: {hp: 60, atk: 150, def: 50, spa: 150, spd: 50, spe: 60},
 	},
 	pumpkaboosmall: {
 		inherit: true,
-		abilities: { 0: "Pickup", 1: "Frisk" },
+		abilities: {0: "Pickup", 1: "Frisk"},
 	},
 	pumpkaboolarge: {
 		inherit: true,
-		abilities: { 0: "Pickup", 1: "Frisk" },
+		abilities: {0: "Pickup", 1: "Frisk"},
 	},
 	gourgeistsmall: {
 		inherit: true,
-		abilities: { 0: "Pickup", 1: "Frisk" },
+		abilities: {0: "Pickup", 1: "Frisk"},
 	},
 	gourgeistlarge: {
 		inherit: true,
-		abilities: { 0: "Pickup", 1: "Frisk" },
+		abilities: {0: "Pickup", 1: "Frisk"},
 	},
 	hawlucha: {
 		inherit: true,
@@ -132,11 +131,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoType: "levelExtra",
 		evoCondition: "near a special magnetic field",
 	},
-	crabominable: {
-		inherit: true,
-		evoType: "levelExtra",
-		evoCondition: "at Mount Lanakila",
-	},
 	lycanroc: {
 		inherit: true,
 		evoCondition: "in Pokemon Sun/Ultra Sun",
@@ -147,35 +141,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	tapukoko: {
 		inherit: true,
-		abilities: { 0: "Electric Surge" },
+		abilities: {0: "Electric Surge"},
 	},
 	tapulele: {
 		inherit: true,
-		abilities: { 0: "Psychic Surge" },
+		abilities: {0: "Psychic Surge"},
 	},
 	tapubulu: {
 		inherit: true,
-		abilities: { 0: "Grassy Surge" },
+		abilities: {0: "Grassy Surge"},
 	},
 	tapufini: {
 		inherit: true,
-		abilities: { 0: "Misty Surge" },
+		abilities: {0: "Misty Surge"},
 	},
-	pyroak: {
+	justyke: {
 		inherit: true,
-		baseStats: { hp: 120, atk: 70, def: 105, spa: 95, spd: 90, spe: 60 },
-		abilities: { 0: "Rock Head", 1: "Battle Armor", H: "White Smoke" },
+		abilities: {0: "Levitate", 1: "Bulletproof", H: "Justified"},
 	},
-	voodoom: {
+	equilibra: {
 		inherit: true,
-		baseStats: { hp: 90, atk: 85, def: 80, spa: 105, spd: 80, spe: 110 },
-	},
-	mumbao: {
-		inherit: true,
-		unreleasedHidden: true,
-	},
-	jumbao: {
-		inherit: true,
-		unreleasedHidden: true,
+		baseStats: {hp: 102, atk: 50, def: 96, spa: 133, spd: 118, spe: 60},
+		abilities: {0: "Levitate", 1: "Bulletproof", H: "Justified"},
 	},
 };

@@ -1,4 +1,4 @@
-export const TypeChart: import('../../../sim/dex-data').ModdedTypeDataTable = {
+export const TypeChart: {[k: string]: ModdedTypeData | null} = {
 	electric: {
 		inherit: true,
 		damageTaken: {

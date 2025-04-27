@@ -1,4 +1,4 @@
-export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
+export const Items: {[k: string]: ModdedItemData} = {
 	abomasite: {
 		inherit: true,
 		isNonstandard: null,
@@ -60,12 +60,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
-	bignugget: {
-		inherit: true,
-		fling: {
-			basePower: 30,
-		},
-	},
 	blastoisinite: {
 		inherit: true,
 		isNonstandard: null,
@@ -75,10 +69,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		isNonstandard: null,
 	},
 	blueorb: {
-		inherit: true,
-		isNonstandard: null,
-	},
-	blukberry: {
 		inherit: true,
 		isNonstandard: null,
 	},
@@ -149,10 +139,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	dreadplate: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	dreamball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
 	},
 	durinberry: {
 		inherit: true,
@@ -449,10 +435,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
-	pinapberry: {
-		inherit: true,
-		isNonstandard: null,
-	},
 	pinsirite: {
 		inherit: true,
 		isNonstandard: null,
@@ -513,10 +495,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
-	safariball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
-	},
 	sailfossil: {
 		inherit: true,
 		isNonstandard: null,
@@ -568,10 +546,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	spookyplate: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	sportball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
 	},
 	steelgem: {
 		inherit: true,

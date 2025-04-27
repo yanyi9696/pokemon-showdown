@@ -7,9 +7,8 @@
  * @license MIT
  */
 
-import { exec, type ExecException, type ExecOptions } from 'child_process';
-import { crashlogger, FS } from "../lib";
-import * as pathModule from 'path';
+import {exec, ExecException, ExecOptions} from 'child_process';
+import {crashlogger, FS, Utils} from "../lib";
 
 const MONITOR_CLEAN_TIMEOUT = 2 * 60 * 60 * 1000;
 
@@ -47,7 +46,7 @@ export class TimedCounter extends Map<string, [number, number]> {
 // (4 is currently unused)
 // 5 = supposedly completely silent, but for now a lot of PS output doesn't respect loglevel
 if (('Config' in global) &&
-	(typeof Config.loglevel !== 'number' || Config.loglevel < 0 || Config.loglevel > 5)) {
+		(typeof Config.loglevel !== 'number' || Config.loglevel < 0 || Config.loglevel > 5)) {
 	Config.loglevel = 2;
 }
 
@@ -60,31 +59,31 @@ export const Monitor = new class {
 	tickets = new TimedCounter();
 
 	activeIp: string | null = null;
-	networkUse: { [k: string]: number } = {};
-	networkCount: { [k: string]: number } = {};
-	hotpatchLock: { [k: string]: { by: string, reason: string } } = {};
+	networkUse: {[k: string]: number} = {};
+	networkCount: {[k: string]: number} = {};
+	hotpatchLock: {[k: string]: {by: string, reason: string}} = {};
 
 	TimedCounter = TimedCounter;
 
 	updateServerLock = false;
 	cleanInterval: NodeJS.Timeout | null = null;
 	/**
-	 * Inappropriate userid : has the user logged in since the FR
+	 * Inappropriate userid : number of times the name has been forcerenamed
 	 */
-	readonly forceRenames = new Map<ID, boolean>();
+	readonly forceRenames = new Utils.Multiset<ID>();
 
 	/*********************************************************
 	 * Logging
 	 *********************************************************/
-	crashlog(err: any, source = 'The main process', details: AnyObject | null = null) {
-		const error = (err || {}) as Error;
+	crashlog(error: Error, source = 'The main process', details: AnyObject | null = null) {
+		if (!error) error = {} as any;
 		if ((error.stack || '').startsWith('@!!@')) {
 			try {
 				const stack = (error.stack || '');
 				const nlIndex = stack.indexOf('\n');
 				[error.name, error.message, source, details] = JSON.parse(stack.slice(4, nlIndex));
 				error.stack = stack.slice(nlIndex + 1);
-			} catch {}
+			} catch (e) {}
 		}
 		const crashType = crashlogger(error, source, details);
 		Rooms.global.reportCrash(error, source);
@@ -92,13 +91,6 @@ export const Monitor = new class {
 			Config.autolockdown = false;
 			Rooms.global.startLockdown(error);
 		}
-	}
-
-	logPath(path: string) {
-		if (Config.logsdir) {
-			return FS(pathModule.join(Config.logsdir, path));
-		}
-		return FS(pathModule.join('logs', path));
 	}
 
 	log(text: string) {
@@ -145,7 +137,7 @@ export const Monitor = new class {
 	slow(text: string) {
 		const logRoom = Rooms.get('slowlog');
 		if (logRoom) {
-			logRoom.add(`|c|~|/log ${text}`).update();
+			logRoom.add(`|c|&|/log ${text}`).update();
 		} else {
 			this.warn(text);
 		}
@@ -214,7 +206,7 @@ export const Monitor = new class {
 		if (Config.noipchecks || Config.nothrottle) return false;
 		const count = this.battlePreps.increment(ip, 3 * 60 * 1000)[0];
 		if (count <= 12) return false;
-		if (count < 120 && Punishments.isSharedIp(ip)) return false;
+		if (count < 120 && Punishments.sharedIps.has(ip)) return false;
 		connection.popup('Due to high load, you are limited to 12 battles and team validations every 3 minutes.');
 		return true;
 	}
@@ -244,7 +236,7 @@ export const Monitor = new class {
 		if (Config.noipchecks || Config.nothrottle) return false;
 		const [count] = this.netRequests.increment(ip, 1 * 60 * 1000);
 		if (count <= 10) return false;
-		if (count < 120 && Punishments.isSharedIp(ip)) return false;
+		if (count < 120 && Punishments.sharedIps.has(ip)) return false;
 		return true;
 	}
 
@@ -254,7 +246,7 @@ export const Monitor = new class {
 	countTickets(ip: string) {
 		if (Config.noipchecks || Config.nothrottle) return false;
 		const count = this.tickets.increment(ip, 60 * 60 * 1000)[0];
-		if (Punishments.isSharedIp(ip)) {
+		if (Punishments.sharedIps.has(ip)) {
 			return count >= 20;
 		} else {
 			return count >= 5;
@@ -286,7 +278,7 @@ export const Monitor = new class {
 		for (const i in this.networkUse) {
 			buf += `${this.networkUse[i]}\t${this.networkCount[i]}\t${i}\n`;
 		}
-		void Monitor.logPath('networkuse.tsv').write(buf);
+		void FS('logs/networkuse.tsv').write(buf);
 	}
 
 	clearNetworkUse() {
@@ -300,7 +292,7 @@ export const Monitor = new class {
 	 * Counts roughly the size of an object to have an idea of the server load.
 	 */
 	sizeOfObject(object: AnyObject) {
-		const objectCache = new Set<[] | object>();
+		const objectCache: Set<[] | object> = new Set();
 		const stack: any[] = [object];
 		let bytes = 0;
 
@@ -333,7 +325,7 @@ export const Monitor = new class {
 	sh(command: string, options: ExecOptions = {}): Promise<[number, string, string]> {
 		return new Promise((resolve, reject) => {
 			exec(command, options, (error: ExecException | null, stdout: string | Buffer, stderr: string | Buffer) => {
-				resolve([error?.code || 0, `${stdout}`, `${stderr}`]);
+				resolve([error?.code || 0, '' + stdout, '' + stderr]);
 			});
 		});
 	}
@@ -341,11 +333,11 @@ export const Monitor = new class {
 	async version() {
 		let hash;
 		try {
-			await FS('.git/index').copyFile(Monitor.logPath('.gitindex').path);
-			const index = Monitor.logPath('.gitindex');
+			await FS('.git/index').copyFile('logs/.gitindex');
+			const index = FS('logs/.gitindex');
 			const options = {
 				cwd: __dirname,
-				env: { GIT_INDEX_FILE: index.path },
+				env: {GIT_INDEX_FILE: index.path},
 			};
 
 			let [code, stdout, stderr] = await this.sh(`git add -A`, options);
@@ -357,7 +349,7 @@ export const Monitor = new class {
 
 			await this.sh(`git reset`, options);
 			await index.unlinkIfExists();
-		} catch {}
+		} catch (err) {}
 		return hash;
 	}
 };

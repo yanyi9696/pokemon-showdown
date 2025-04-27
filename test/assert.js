@@ -20,7 +20,7 @@ assert.bounded = function (value, range, message) {
 		actual: value,
 		expected: `[${range[0]}, ${range[1]}]`,
 		operator: '\u2208',
-		message,
+		message: message,
 		stackStartFunction: assert.bounded,
 	});
 };
@@ -31,7 +31,7 @@ assert.atLeast = function (value, threshold, message) {
 		actual: value,
 		expected: `${threshold}`,
 		operator: '>=',
-		message,
+		message: message,
 		stackStartFunction: assert.atLeast,
 	});
 };
@@ -42,20 +42,8 @@ assert.atMost = function (value, threshold, message) {
 		actual: value,
 		expected: `${threshold}`,
 		operator: '<=',
-		message,
+		message: message,
 		stackStartFunction: assert.atMost,
-	});
-};
-
-assert.legalTeam = function (team, formatName, message) {
-	require('../dist/sim/dex').Dex.formats.validate(formatName);
-	const format = require('../dist/sim/team-validator').TeamValidator.get(formatName);
-	// console.log(`${formatName}: ${[...format.ruleTable.keys()].join(', ')}`);
-	const actual = format.validateTeam(team);
-	if (actual === null) return;
-	throw new AssertionError({
-		message: message || "Expected team to be valid, but it was rejected because:\n" + actual.join("\n"),
-		stackStartFunction: assert.legalTeam,
 	});
 };
 
@@ -81,16 +69,6 @@ assert.fullHP = function (pokemon, message) {
 	throw new AssertionError({
 		message: message || `Expected ${pokemon} to be fully healed, not at ${pokemon.hp}/${pokemon.maxhp}.`,
 		stackStartFunction: assert.fullHP,
-	});
-};
-
-assert.hasAbility = function (pokemon, ability, message) {
-	const actual = pokemon.ability;
-	const expected = toID(ability);
-	if (actual === expected) return;
-	throw new AssertionError({
-		message: message || `Expected ${pokemon} ability to be ${expected}, not ${actual}.`,
-		stackStartFunction: assert.hasAbility,
 	});
 };
 
@@ -126,7 +104,7 @@ assert.cantMove = function (fn, pokemon, move, unavailable, message) {
 	} else {
 		try {
 			fn();
-		} catch {
+		} catch (e) {
 			return;
 		}
 	}
@@ -170,7 +148,7 @@ assert.hurtsBy = function (pokemon, damage, fn, message) {
 	const actual = prevHP - pokemon.hp;
 	if (actual === damage) return;
 	throw new AssertionError({
-		actual,
+		actual: actual,
 		expected: damage,
 		operator: '===',
 		message: message || `Expected ${pokemon} to be hurt by ${damage}, not by ${actual}.`,
@@ -198,33 +176,9 @@ assert.sets = function (getter, value, fn, message) {
 		actual: finalValue,
 		expected: value,
 		operator: '===',
-		message,
+		message: message,
 		stackStartFunction: assert.sets,
 	});
-};
-
-// .throws() does not currently work with Promises.
-assert.throwsAsync = async function (fn, message) {
-	try {
-		await fn();
-	} catch {
-		return; // threw
-	}
-	throw new AssertionError({
-		message: message || `Expected function to throw an error.`,
-		stackStartFunction: assert.throwsAsync,
-	});
-};
-
-assert.doesNotThrowAsync = async function (fn, message) {
-	try {
-		await fn();
-	} catch (e) {
-		throw new AssertionError({
-			message: message || `Expected function not to throw an error (threw ${e}).`,
-			stackStartFunction: assert.doesNotThrowAsync,
-		});
-	}
 };
 
 assert.strictEqual = () => {
@@ -259,7 +213,7 @@ assert.false = function (value, message) {
 		actual: `!${value}`,
 		expected: true,
 		operator: '===',
-		message,
+		message: message,
 		stackStartFunction: assert.false,
 	});
 };
@@ -268,7 +222,7 @@ for (const methodName of assertMethods) {
 	assert.false[methodName] = function (...args) {
 		try {
 			assert[methodName].apply(null, args);
-		} catch {
+		} catch (err) {
 			return;
 		}
 		throw new AssertionError({

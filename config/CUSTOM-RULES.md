@@ -7,7 +7,7 @@ Pokémon Showdown supports custom rules in three ways:
 
 - Tournaments, using the command `/tour rules RULES` (see the [Tournament command help][tour-help])
 
-- Custom formats on your side server, by editing `config/formats.ts`
+- Custom formats on your side server, by editing `config/formats.js`
 
   [tour-help]: https://www.smogon.com/forums/threads/pok%C3%A9mon-showdown-forum-rules-resources-read-here-first.3570628/#post-6777489
 
@@ -83,19 +83,9 @@ Syntax is identical to bans, just replace `-` with `+`, like:
 
 More specific always trumps less specific:
 
-`- all pokemon, + Uber, - Giratina, + Giratina-Altered` - allow only Ubers other than Giratina-Origin
-
-`- all pokemon, + Giratina-Altered, - Giratina, + Uber` - allow only Ubers other than Giratina-Origin
+`- all Pokemon, + Uber, - Giratina, + Giratina-Altered` - allow only Ubers other than Giratina-Origin
 
 `- Nonexistent, + Necturna` - don't allow anything from outside the game, except the CAP Necturna
-
-Except `all pokemon`, which removes all bans/unbans of pokemon before it:
-
-`- all pokemon, + Pikachu, + Raichu` - allow Pikachu and Raichu
-
-`+ Pikachu, - all pokemon, + Raichu` - allow only Raichu
-
-(Note that `all pokemon` does not affect obtainability rules. `+ all pokemon` will not allow CAPs or anything like that.)
 
 For equally specific rules, the last rule wins:
 
@@ -138,7 +128,7 @@ Whitelisting
 
 Instead of a banlist, you can have a list of allowed things:
 
-`- all pokemon, + Charmander, + Squirtle, + Bulbasaur` - allow only Kanto starters
+`- all Pokemon, + Charmander, + Squirtle, + Bulbasaur` - allow only Kanto starters
 
 `- all moves, + move: Metronome` - allow only the move Metronome
 
@@ -180,7 +170,7 @@ Custom rules can have more complicated behavior. They can also include other rul
 
 `Alola Pokedex` - allow only Pokémon in the Alola Pokédex (US/UM)
 
-`Galar Pokedex` - allow only Pokémon in the Galar Pokédex (SW/SH) [Ban Pokémon you can catch in the adventures but are not listed in the Pokédex like Ultra Beasts and Landorus]
+(There is no `Galar Pokedex` rule, `-Nonexistent` covers it in Gen 8.)
 
 ### Clauses
 

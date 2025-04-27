@@ -4,18 +4,34 @@
 'use strict';
 
 const assert = require('../assert');
-const { testSet } = require('./tools');
+const {testNotBothMoves, testSet} = require('./tools');
 
-describe('[Gen 7] Random Battle (slow)', () => {
-	const options = { format: 'gen7randombattle' };
+describe('[Gen 7] Random Battle', () => {
+	const options = {format: 'gen7randombattle'};
 
-	it('should not give mega evolution abilities to base formes', () => {
-		testSet('manectricmega', { rounds: 1, ...options }, set => {
-			assert(set.ability !== 'Intimidate', 'Mega Manectric should not have Intimidate before it mega evolves');
-		});
+	it('should not generate Calm Mind + Yawn', () => {
+		testNotBothMoves('chimecho', options, 'calmmind', 'yawn');
 	});
 
-	it('should not give Ursaring Eviolite', () => {
-		testSet('ursaring', options, set => assert.notEqual(set.item, 'Eviolite'));
+	it('should not generate Roar + Protect', () => {
+		testNotBothMoves('heatran', options, 'roar', 'protect');
+		testNotBothMoves('vaporeon', options, 'roar', 'protect');
+		testNotBothMoves('walrein', options, 'roar', 'protect');
+		testNotBothMoves('bastiodon', options, 'roar', 'protect');
+	});
+
+	it('should not generate Dragon Tail as the only STAB move', () => {
+		// Mono-Dragon Pokémon chosen as test dummies for simplicity
+		testSet('druddigon', options, set => {
+			if (set.moves.includes('dragontail')) {
+				assert(set.moves.includes('outrage'), `Druddigon: got ${set.moves}`);
+			}
+		});
+
+		testSet('goodra', options, set => {
+			if (set.moves.includes('dragontail')) {
+				assert(set.moves.includes('dracometeor') || set.moves.includes('dragonpulse'), `Goodra: got ${set.moves}`);
+			}
+		});
 	});
 });

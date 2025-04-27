@@ -2,16 +2,12 @@
 
 /**
  * The server port - the port to run Pokemon Showdown under
- *
- * @type {number}
  */
 exports.port = 8000;
 
 /**
  * The server address - the address at which Pokemon Showdown should be hosting
  *   This should be kept set to 0.0.0.0 unless you know what you're doing.
- *
- * @type {string}
  */
 exports.bindaddress = '0.0.0.0';
 
@@ -133,8 +129,6 @@ exports.debugdexsearchprocesses = true;
  * Pokemon of the Day - put a pokemon's name here to make it Pokemon of the Day
  *   The PotD will always be in the #2 slot (not #1 so it won't be a lead)
  *   in every Random Battle team.
- *
- * @type {ID}
  */
 exports.potd = '';
 
@@ -245,7 +239,6 @@ exports.reportjoinsperiod = 0;
  * report battles - shows messages like "OU battle started" in the lobby
  *   This feature can lag larger servers - turn this off if your server is
  *   getting more than 160 or so users.
- *  @type {boolean | string[] | string}
  */
 exports.reportbattles = true;
 
@@ -273,20 +266,6 @@ exports.nothrottle = false;
  * Removes all ip-based alt checking.
  */
 exports.noipchecks = false;
-
-/**
- * controls the behavior of the /battlesearch command
- *
- * valid values are:
- *   - true: disables battlesearch entirely
- *   - false: enables the node.js /battlesearch
- * 	   (uses either node fs or ripgrep for searching)
- *   - 'psbattletools': defaults to the psbattletools /battlesearch (normally available as /alternatebattlesearch)
- * 	   (uses psbattletools, which must be installed, for searching)
- *
- * @type {boolean | 'psbattletools'}
- */
-exports.nobattlesearch = false;
 
 /**
  * allow punishmentmonitor to lock users with multiple roombans.
@@ -339,8 +318,6 @@ exports.laddermodchat = false;
  * forced timer - force the timer on for all battles
  *   Players will be unable to turn it off.
  *   This setting can also be turned on with the command /forcetimer.
- *
- * @type {boolean}
  */
 exports.forcetimer = false;
 
@@ -420,8 +397,6 @@ exports.inactiveuserthreshold = 1000 * 60 * 60;
  * autolockdown - whether or not to automatically kill the server when it is
  * in lockdown mode and the final battle finishes.  This is potentially useful
  * to prevent forgetting to restart after a lockdown where battles are finished.
- *
- * @type {boolean}
  */
 exports.autolockdown = true;
 
@@ -434,6 +409,21 @@ exports.autolockdown = true;
  * no authority. You cannot log into a trusted (g+/r%) user account this way.
  */
 exports.noguestsecurity = false;
+
+/**
+ * Custom avatars.
+ * This allows you to specify custom avatar images for users on your server.
+ * Place custom avatar files under the /config/avatars/ directory.
+ * Users must be specified as userids -- that is, you must make the name all
+ * lowercase and remove non-alphanumeric characters.
+ *
+ * Your server *must* be registered in order for your custom avatars to be
+ * displayed in the client.
+ * @type {{[userid: string]: string}}
+ */
+exports.customavatars = {
+	// 'userid': 'customavatar.png'
+};
 
 /**
  * tourroom - specify a room to receive tournament announcements (defaults to
@@ -477,7 +467,7 @@ exports.disablehotpatchall = false;
  * Battles involving user IDs which begin with one of the prefixes configured here
  * will be unaffected by various battle privacy commands such as /modjoin, /hideroom
  * or /ionext.
- * @type {string[] | undefined}
+ * @type {string[]}
  */
 exports.forcedpublicprefixes = [];
 
@@ -555,7 +545,7 @@ exports.chatlogreader = 'fs';
  */
 exports.grouplist = [
 	{
-		symbol: '~',
+		symbol: '&',
 		id: "admin",
 		name: "Administrator",
 		inherit: '@',
@@ -565,7 +555,7 @@ exports.grouplist = [
 		console: true,
 		bypassall: true,
 		lockdown: true,
-		promote: '~u',
+		promote: '&u',
 		roomowner: true,
 		roombot: true,
 		roommod: true,
@@ -651,7 +641,7 @@ exports.grouplist = [
 		timer: true,
 		modlog: true,
 		alts: '%u',
-		bypassblocks: 'u%@~',
+		bypassblocks: 'u%@&~',
 		receiveauthmessages: true,
 		gamemoderation: true,
 		jeopardy: true,
@@ -659,6 +649,14 @@ exports.grouplist = [
 		minigame: true,
 		modchat: true,
 		hiderank: true,
+	},
+	{
+		symbol: '\u25B8',
+		id: "sectionleader",
+		name: "Section Leader",
+		inherit: '+',
+
+		roomonly: true,
 	},
 	{
 		// Bots are ranked below Driver/Mod so that Global Bots can be kept out

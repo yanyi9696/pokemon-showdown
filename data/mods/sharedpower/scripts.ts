@@ -1,12 +1,11 @@
 export const Scripts: ModdedBattleScriptsData = {
+	gen: 8,
 	field: {
 		suppressingWeather() {
 			for (const pokemon of this.battle.getAllActive()) {
 				const innates = Object.keys(pokemon.volatiles).filter(x => x.startsWith('ability:'));
 				if (pokemon && !pokemon.ignoringAbility() &&
-					(pokemon.getAbility().suppressWeather || innates.some(x => (
-						this.battle.dex.abilities.get(x.replace('ability:', '')).suppressWeather
-					)))) {
+					(pokemon.getAbility().suppressWeather || innates.some(x => this.battle.dex.abilities.get(x).suppressWeather))) {
 					return true;
 				}
 			}
@@ -39,7 +38,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				((this.volatiles['gastroacid'] ||
 					(neutralizinggas && (this.ability !== ('neutralizinggas' as ID) ||
 						this.m.abils?.includes('ability:neutralizinggas'))
-					)) && !this.getAbility().flags['cantsuppress']
+					)) && !this.getAbility().isPermanent
 				)
 			);
 		},

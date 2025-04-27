@@ -5,29 +5,25 @@ const common = require('./../../common');
 
 let battle;
 
-describe('Anger Point', () => {
-	afterEach(() => {
+describe('Anger Point', function () {
+	afterEach(function () {
 		battle.destroy();
 	});
 
-	it('should maximize Attack when hit by a critical hit', () => {
-		battle = common.createBattle([[
-			{ species: "Cryogonal", ability: 'noguard', moves: ['frostbreath'] },
-		], [
-			{ species: "Primeape", ability: 'angerpoint', moves: ['endure'] },
-		]]);
+	it('should maximize Attack when hit by a critical hit', function () {
+		battle = common.createBattle();
+		battle.setPlayer('p1', {team: [{species: "Cryogonal", ability: 'noguard', moves: ['frostbreath']}]});
+		battle.setPlayer('p2', {team: [{species: "Primeape", ability: 'angerpoint', moves: ['endure']}]});
 		const angerMon = battle.p2.active[0];
 
-		battle.makeChoices();
+		battle.makeChoices('move frostbreath', 'move endure');
 		assert.statStage(angerMon, 'atk', 6);
 	});
 
-	it('should maximize Attack when hit by a critical hit even if the foe has Mold Breaker', () => {
-		battle = common.createBattle([[
-			{ species: "Haxorus", ability: 'moldbreaker', item: 'scopelens', moves: ['focusenergy', 'falseswipe'] },
-		], [
-			{ species: "Primeape", ability: 'angerpoint', moves: ['defensecurl'] },
-		]]);
+	it('should maximize Attack when hit by a critical hit even if the foe has Mold Breaker', function () {
+		battle = common.createBattle();
+		battle.setPlayer('p1', {team: [{species: "Haxorus", ability: 'moldbreaker', item: 'scopelens', moves: ['focusenergy', 'falseswipe']}]});
+		battle.setPlayer('p2', {team: [{species: "Primeape", ability: 'angerpoint', moves: ['defensecurl']}]});
 		const angerMon = battle.p2.active[0];
 
 		battle.makeChoices('move focusenergy', 'move defensecurl');
@@ -35,12 +31,10 @@ describe('Anger Point', () => {
 		assert.statStage(angerMon, 'atk', 6);
 	});
 
-	it('should not maximize Attack when dealing a critical hit', () => {
-		battle = common.createBattle([[
-			{ species: "Cryogonal", ability: 'noguard', moves: ['endure'] },
-		], [
-			{ species: "Primeape", ability: 'angerpoint', moves: ['stormthrow'] },
-		]]);
+	it('should not maximize Attack when dealing a critical hit', function () {
+		battle = common.createBattle();
+		battle.setPlayer('p1', {team: [{species: "Cryogonal", ability: 'noguard', moves: ['endure']}]});
+		battle.setPlayer('p2', {team: [{species: "Primeape", ability: 'angerpoint', moves: ['stormthrow']}]});
 		const [defender, angerMon] = [battle.p1.active[0], battle.p2.active[0]];
 
 		battle.makeChoices('move endure', 'move stormthrow');
@@ -48,12 +42,10 @@ describe('Anger Point', () => {
 		assert.statStage(angerMon, 'atk', 0);
 	});
 
-	it('should not maximize Attack when behind a substitute', () => {
-		battle = common.createBattle([[
-			{ species: "Cryogonal", ability: 'noguard', item: 'laggingtail', moves: ['frostbreath'] },
-		], [
-			{ species: "Primeape", ability: 'angerpoint', moves: ['substitute'] },
-		]]);
+	it('should not maximize Attack when behind a substitute', function () {
+		battle = common.createBattle();
+		battle.setPlayer('p1', {team: [{species: "Cryogonal", ability: 'noguard', item: 'laggingtail', moves: ['frostbreath']}]});
+		battle.setPlayer('p2', {team: [{species: "Primeape", ability: 'angerpoint', moves: ['substitute']}]});
 		const angerMon = battle.p2.active[0];
 
 		battle.makeChoices('move frostbreath', 'move substitute');

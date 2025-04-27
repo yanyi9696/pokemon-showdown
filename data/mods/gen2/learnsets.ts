@@ -1,4 +1,4 @@
-export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTable = {
+export const Learnsets: {[k: string]: ModdedLearnsetData} = {
 	missingno: {
 		learnset: {
 			blizzard: ["1M"],
@@ -2051,7 +2051,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		},
 		encounters: [
 			{generation: 1, level: 18},
-			{generation: 1, level: 15},
 		],
 	},
 	ninetales: {
@@ -2286,7 +2285,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		},
 		encounters: [
 			{generation: 1, level: 22},
-			{generation: 1, level: 3},
 		],
 	},
 	zubat: {
@@ -4304,9 +4302,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			takedown: ["1M"],
 			toxic: ["2M", "1M"],
 		},
-		encounters: [
-			{generation: 1, level: 16},
-		],
 	},
 	ponyta: {
 		learnset: {
@@ -5007,7 +5002,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		},
 		encounters: [
 			{generation: 1, level: 25},
-			{generation: 1, level: 15, japan: true},
 			{generation: 2, level: 5},
 		],
 	},
@@ -5936,7 +5930,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			curse: ["2M"],
 			detect: ["2M"],
 			doubleedge: ["1M"],
-			doublekick: ["2L1", "1L1", "1S0"],
+			doublekick: ["2L1", "1L1"],
 			doubleteam: ["2M", "1M"],
 			dynamicpunch: ["2M"],
 			endure: ["2M", "2L41"],
@@ -5947,7 +5941,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			hiddenpower: ["2M"],
 			highjumpkick: ["2L26", "1L48"],
 			jumpkick: ["2L16", "1L38"],
-			meditate: ["2L6", "1L1", "1S0"],
+			meditate: ["2L6", "1L1"],
 			megakick: ["2L46", "1M", "1L53"],
 			megapunch: ["1M"],
 			metronome: ["1M"],
@@ -5975,20 +5969,17 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			thief: ["2M"],
 			toxic: ["2M", "1M"],
 		},
-		eventData: [
-			{generation: 1, level: 20, moves: ["doublekick", "meditate"]},
-		],
 		encounters: [
 			{generation: 1, level: 30},
 		],
 	},
 	hitmonchan: {
 		learnset: {
-			agility: ["2L7", "1L1", "1S0"],
+			agility: ["2L7", "1L1"],
 			attract: ["2M"],
 			bide: ["1M"],
 			bodyslam: ["1M"],
-			cometpunch: ["2L1", "1L1", "1S0"],
+			cometpunch: ["2L1", "1L1"],
 			counter: ["2L50", "1M", "1L53"],
 			curse: ["2M"],
 			detect: ["2M", "2L44"],
@@ -6028,9 +6019,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			thunderpunch: ["2M", "2L26", "1L43"],
 			toxic: ["2M", "1M"],
 		},
-		eventData: [
-			{generation: 1, level: 20, moves: ["cometpunch", "agility"]},
-		],
 		encounters: [
 			{generation: 1, level: 30},
 		],
@@ -6638,7 +6626,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		],
 		encounters: [
 			{generation: 1, level: 25},
-			{generation: 1, level: 15, japan: true},
 		],
 	},
 	horsea: {
@@ -7593,11 +7580,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dragonrage: ["1S0"],
 			flail: ["2L30"],
 			reversal: ["2S2"],
-			splash: ["2L1", "2S2", "2S1", "1L1", "1S0"],
+			splash: ["2L1", "2S2", "2S1", "1L1"],
 			tackle: ["2L15", "1L15"],
 		},
 		eventData: [
-			{generation: 1, level: 15, moves: ["splash", "dragonrage"], japan: true},
+			{generation: 1, level: 5, moves: ["dragonrage"], japan: true},
 			{generation: 2, level: 5, shiny: 1, moves: ["splash", "bubble"]},
 			{generation: 2, level: 5, shiny: 1, moves: ["splash", "reversal"]},
 		],
@@ -8172,13 +8159,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			takedown: ["1M"],
 			thief: ["2M"],
 			toxic: ["2M", "1M"],
-			watergun: ["2L19", "1M", "1L1", "1S1"],
+			watergun: ["2L19", "1M", "1L1"],
 			whirlpool: ["2M"],
-			withdraw: ["2L1", "2S0", "1L1", "1S1"],
+			withdraw: ["2L1", "2S0", "1L1"],
 		},
 		eventData: [
 			{generation: 2, level: 5, shiny: 1, moves: ["constrict", "withdraw", "rockthrow"]},
-			{generation: 1, level: 20, moves: ["watergun", "withdraw"]},
 		],
 		encounters: [
 			{generation: 1, level: 30},
@@ -8253,7 +8239,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			flail: ["2E"],
 			frustration: ["2M"],
 			gigadrain: ["2M"],
-			harden: ["2L1", "2S0", "1L1", "1S1"],
+			harden: ["2L1", "2S0", "1L1"],
 			hiddenpower: ["2M"],
 			hydropump: ["1L49"],
 			icebeam: ["2T", "1M"],
@@ -8273,7 +8259,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			rollout: ["2M"],
 			sandattack: ["2L28"],
 			sandstorm: ["2M"],
-			scratch: ["2L1", "2S0", "1L1", "1S1"],
+			scratch: ["2L1", "2S0", "1L1"],
 			slash: ["1L39"],
 			sleeptalk: ["2M"],
 			snore: ["2M"],
@@ -8287,7 +8273,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		},
 		eventData: [
 			{generation: 2, level: 5, shiny: 1, moves: ["scratch", "harden", "rockthrow"]},
-			{generation: 1, level: 20, moves: ["scratch", "harden"]},
 		],
 		encounters: [
 			{generation: 1, level: 30},

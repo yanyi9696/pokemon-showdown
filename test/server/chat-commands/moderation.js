@@ -6,17 +6,17 @@
 'use strict';
 
 const assert = require('assert').strict;
-const moderation = require('../../../dist/server/chat-commands/moderation');
+const moderation = require('../../../.server-dist/chat-commands/moderation');
 
-const { makeUser } = require('../../users-utils');
+const {makeUser} = require('../../users-utils');
 
-describe('room promotions', function () {
+describe('room promotions', () => {
 	before(() => {
 		Rooms.global.addChatRoom('Promotion Testing');
 		this.room = Rooms.get('promotiontesting');
 
 		this.user = makeUser('Annika', '127.0.0.1');
-		this.user.setGroup('~');
+		this.user.setGroup('&');
 
 		this.targetUser = makeUser('Heart of Etheria', '127.0.0.1');
 	});

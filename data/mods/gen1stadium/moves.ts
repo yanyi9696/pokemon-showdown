@@ -1,84 +1,4 @@
-export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
-	bide: {
-		inherit: true,
-		priority: 0,
-		accuracy: true,
-		condition: {
-			durationCallback(target, source, effect) {
-				return this.random(3, 5);
-			},
-			onStart(pokemon) {
-				this.effectState.totalDamage = 0;
-				this.effectState.lastDamage = 0;
-				this.add('-start', pokemon, 'Bide');
-			},
-			onHit(target, source, move) {
-				if (source && source !== target && move.category !== 'Physical' && move.category !== 'Special') {
-					const damage = this.effectState.totalDamage;
-					this.effectState.totalDamage += damage;
-					this.effectState.lastDamage = damage;
-					this.effectState.sourceSlot = source.getSlot();
-				}
-			},
-			onDamage(damage, target, source, move) {
-				if (!source || source.isAlly(target)) return;
-				if (!move || move.effectType !== 'Move') return;
-				if (!damage && this.effectState.lastDamage > 0) {
-					damage = this.effectState.totalDamage;
-				}
-				this.effectState.totalDamage += damage;
-				this.effectState.lastDamage = damage;
-				this.effectState.sourceSlot = source.getSlot();
-			},
-			onAfterSetStatus(status, pokemon) {
-				// Sleep, freeze, and partial trap will just pause duration.
-				if (pokemon.volatiles['flinch']) {
-					this.effectState.duration!++;
-				} else if (pokemon.volatiles['partiallytrapped']) {
-					this.effectState.duration!++;
-				} else {
-					switch (status.id) {
-					case 'slp':
-					case 'frz':
-						this.effectState.duration!++;
-						break;
-					}
-				}
-			},
-			onBeforeMove(pokemon, t, move) {
-				if (this.effectState.duration === 1) {
-					this.add('-end', pokemon, 'Bide');
-					if (!this.effectState.totalDamage) {
-						this.debug("Bide failed because no damage was taken");
-						this.add('-fail', pokemon);
-						return false;
-					}
-					const target = this.getAtSlot(this.effectState.sourceSlot);
-					if (target.isSemiInvulnerable()) {
-						this.add('-message', 'The foe ' + target.name + ' can\'t be hit while flying!');
-						pokemon.removeVolatile('bide');
-						return false;
-					}
-					this.actions.moveHit(target, pokemon, move, { damage: this.effectState.totalDamage * 2 } as ActiveMove);
-					pokemon.removeVolatile('bide');
-					return false;
-				}
-				this.add('-activate', pokemon, 'Bide');
-				return false;
-			},
-			onDisableMove(pokemon) {
-				if (!pokemon.hasMove('bide')) {
-					return;
-				}
-				for (const moveSlot of pokemon.moveSlots) {
-					if (moveSlot.id !== 'bide') {
-						pokemon.disableMove(moveSlot.id);
-					}
-				}
-			},
-		},
-		type: "???", // Will look as Normal but it's STAB-less
-	},
+export const Moves: {[k: string]: ModdedMoveData} = {
 	bind: {
 		inherit: true,
 		// FIXME: onBeforeMove() {},
@@ -128,16 +48,26 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	haze: {
 		inherit: true,
 		onHit(target, source) {
-			this.add('-activate', target, 'move: Haze');
-			this.add('-clearallboost', '[silent]');
+			this.add('-clearallboost');
 			for (const pokemon of this.getAllActive()) {
 				pokemon.clearBoosts();
-				pokemon.cureStatus(true);
+				// This should cure the status of both Pokemon, and subsequently recalculate stats to remove the Paralysis/Burn Speed Drop.
+				pokemon.cureStatus();
 				for (const id of Object.keys(pokemon.volatiles)) {
 					pokemon.removeVolatile(id);
-					this.add('-end', pokemon, id, '[silent]');
+					this.add('-end', pokemon, id);
 				}
 				pokemon.recalculateStats!();
+			}
+		},
+	},
+	highjumpkick: {
+		inherit: true,
+		desc: "If this attack misses the target, the user takes 1 HP of damage.",
+		shortDesc: "User takes 1 HP damage it would have dealt if miss.",
+		onMoveFail(target, source, move) {
+			if (!target.types.includes('Ghost')) {
+				this.directDamage(1, source);
 			}
 		},
 	},
@@ -145,6 +75,34 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		onMoveFail(target, source, move) {
 			source.addVolatile('mustrecharge');
+		},
+	},
+	jumpkick: {
+		inherit: true,
+		desc: "If this attack misses the target, the user 1HP of damage.",
+		shortDesc: "User takes 1 HP damage if miss.",
+		onMoveFail(target, source, move) {
+			this.damage(1, source);
+		},
+	},
+	leechseed: {
+		inherit: true,
+		onHit() {},
+		condition: {
+			onStart(target) {
+				this.add('-start', target, 'move: Leech Seed');
+			},
+			onAfterMoveSelfPriority: 1,
+			onAfterMoveSelf(pokemon) {
+				const leecher = this.getAtSlot(pokemon.volatiles['leechseed'].sourceSlot);
+				if (!leecher || leecher.fainted || leecher.hp <= 0) {
+					this.debug('Nothing to leech into');
+					return;
+				}
+				const toLeech = this.clampIntRange(Math.floor(pokemon.maxhp / 16), 1);
+				const damage = this.damage(toLeech, pokemon, leecher);
+				if (damage) this.heal(damage, leecher, pokemon);
+			},
 		},
 	},
 	psywave: {
@@ -161,13 +119,19 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		condition: {
 			// Rage lock
+			duration: 255,
 			onStart(target, source, effect) {
 				this.effectState.move = 'rage';
 			},
 			onLockMove: 'rage',
+			onTryHit(target, source, move) {
+				if (target.boosts.atk < 6 && move.id === 'disable') {
+					this.boost({atk: 1});
+				}
+			},
 			onHit(target, source, move) {
-				if (target.boosts.atk < 6 && (move.category !== 'Status' || move.id === 'disable')) {
-					this.boost({ atk: 1 });
+				if (target.boosts.atk < 6 && move.category !== 'Status') {
+					this.boost({atk: 1});
 				}
 			},
 		},
@@ -208,17 +172,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
 	substitute: {
 		inherit: true,
-		onTryHit(target) {
-			if (target.volatiles['substitute']) {
-				this.add('-fail', target, 'move: Substitute');
-				return null;
-			}
-			// Stadium fixes the 25% = you die gag
-			if (target.hp <= target.maxhp / 4) {
-				this.add('-fail', target, 'move: Substitute', '[weak]');
-				return null;
-			}
-		},
 		condition: {
 			onStart(target) {
 				this.add('-start', target, 'Substitute');
@@ -245,14 +198,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				}
 				if (move.volatileStatus && target === source) return;
 				let damage = this.actions.getDamage(source, target, move);
-				if (damage && damage > target.volatiles['substitute'].hp) {
-					damage = target.volatiles['substitute'].hp;
-				}
-				if (!damage && damage !== 0) return null;
+				if (!damage) return null;
 				damage = this.runEvent('SubDamage', target, source, move, damage);
-				if (!damage && damage !== 0) return damage;
+				if (!damage) return damage;
 				target.volatiles['substitute'].hp -= damage;
-				this.lastDamage = damage;
+				source.lastDamage = damage;
 				if (target.volatiles['substitute'].hp <= 0) {
 					this.debug('Substitute broke');
 					target.removeVolatile('substitute');
@@ -263,14 +213,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				// Drain/recoil does not happen if the substitute breaks
 				if (target.volatiles['substitute']) {
 					if (move.recoil) {
-						this.damage(this.clampIntRange(Math.floor(damage * move.recoil[0] / move.recoil[1]), 1), source, target, 'recoil');
+						this.damage(Math.round(damage * move.recoil[0] / move.recoil[1]), source, target, 'recoil');
 					}
 				}
 				this.runEvent('AfterSubDamage', target, source, move, damage);
 				// Add here counter damage
 				const lastAttackedBy = target.getLastAttackedBy();
 				if (!lastAttackedBy) {
-					target.attackedBy.push({ source, move: move.id, damage, slot: source.getSlot(), thisTurn: true });
+					target.attackedBy.push({source: source, move: move.id, damage: damage, slot: source.getSlot(), thisTurn: true});
 				} else {
 					lastAttackedBy.move = move.id;
 					lastAttackedBy.damage = damage;
@@ -287,7 +237,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
 	struggle: {
 		inherit: true,
-		ignoreImmunity: { 'Normal': true },
+		ignoreImmunity: {'Normal': true},
 	},
 	wrap: {
 		inherit: true,

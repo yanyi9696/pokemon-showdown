@@ -1,6 +1,5 @@
-import { Utils } from '../lib/utils';
-import type { ConditionData } from './dex-conditions';
-import { assignMissingFields, BasicEffect, toID } from './dex-data';
+import {Utils} from '../lib';
+import {BasicEffect, toID} from './dex-data';
 
 /**
  * Describes the acceptable target(s) of a move.
@@ -26,45 +25,27 @@ export type MoveTarget =
 
 /** Possible move flags. */
 interface MoveFlags {
-	allyanim?: 1; // The move plays its animation when used on an ally.
-	bypasssub?: 1; // Ignores a target's substitute.
+	authentic?: 1; // Ignores a target's substitute.
 	bite?: 1; // Power is multiplied by 1.5 when used by a Pokemon with the Ability Strong Jaw.
 	bullet?: 1; // Has no effect on Pokemon with the Ability Bulletproof.
-	cantusetwice?: 1; // The user cannot select this move after a previous successful use.
 	charge?: 1; // The user is unable to make a move between turns.
 	contact?: 1; // Makes contact.
 	dance?: 1; // When used by a Pokemon, other Pokemon with the Ability Dancer can attempt to execute the same move.
 	defrost?: 1; // Thaws the user if executed successfully while the user is frozen.
 	distance?: 1; // Can target a Pokemon positioned anywhere in a Triple Battle.
-	failcopycat?: 1; // Cannot be selected by Copycat.
-	failencore?: 1; // Encore fails if target used this move.
-	failinstruct?: 1; // Cannot be repeated by Instruct.
-	failmefirst?: 1; // Cannot be selected by Me First.
-	failmimic?: 1; // Cannot be copied by Mimic.
-	futuremove?: 1; // Targets a slot, and in 2 turns damages that slot.
 	gravity?: 1; // Prevented from being executed or selected during Gravity's effect.
 	heal?: 1; // Prevented from being executed or selected during Heal Block's effect.
-	metronome?: 1; // Can be selected by Metronome.
 	mirror?: 1; // Can be copied by Mirror Move.
-	mustpressure?: 1; // Additional PP is deducted due to Pressure when it ordinarily would not.
-	noassist?: 1; // Cannot be selected by Assist.
+	mystery?: 1; // Unknown effect.
 	nonsky?: 1; // Prevented from being executed or selected in a Sky Battle.
-	noparentalbond?: 1; // Cannot be made to hit twice via Parental Bond.
-	nosketch?: 1; // Cannot be copied by Sketch.
-	nosleeptalk?: 1; // Cannot be selected by Sleep Talk.
-	pledgecombo?: 1; // Gems will not activate. Cannot be redirected by Storm Drain / Lightning Rod.
 	powder?: 1; // Has no effect on Pokemon which are Grass-type, have the Ability Overcoat, or hold Safety Goggles.
 	protect?: 1; // Blocked by Detect, Protect, Spiky Shield, and if not a Status move, King's Shield.
 	pulse?: 1; // Power is multiplied by 1.5 when used by a Pokemon with the Ability Mega Launcher.
 	punch?: 1; // Power is multiplied by 1.2 when used by a Pokemon with the Ability Iron Fist.
 	recharge?: 1; // If this move is successful, the user must recharge on the following turn and cannot make a move.
 	reflectable?: 1; // Bounced back to the original user by Magic Coat or the Ability Magic Bounce.
-	slicing?: 1; // Power is multiplied by 1.5 when used by a Pokemon with the Ability Sharpness.
 	snatch?: 1; // Can be stolen from the original user and instead used by another Pokemon using Snatch.
 	sound?: 1; // Has no effect on Pokemon with the Ability Soundproof.
-	wind?: 1; // Activates the Wind Power and Wind Rider Abilities.
-	shooting?: 1; // 拥有破竹特性的宝可梦在使用射击类招式时，无视防御方的能力变化与特性，直接给予伤害。
-	
 }
 
 export interface HitEffect {
@@ -108,9 +89,6 @@ export interface MoveEventMethods {
 	beforeMoveCallback?: (this: Battle, pokemon: Pokemon, target: Pokemon | null, move: ActiveMove) => boolean | void;
 	beforeTurnCallback?: (this: Battle, pokemon: Pokemon, target: Pokemon) => void;
 	damageCallback?: (this: Battle, pokemon: Pokemon, target: Pokemon) => number | false;
-	priorityChargeCallback?: (this: Battle, pokemon: Pokemon) => void;
-
-	onDisableMove?: (this: Battle, pokemon: Pokemon) => void;
 
 	onAfterHit?: CommonHandlers['VoidSourceMove'];
 	onAfterSubDamage?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void;
@@ -136,13 +114,14 @@ export interface MoveEventMethods {
 	onMoveFail?: CommonHandlers['VoidMove'];
 	onModifyType?: (this: Battle, move: ActiveMove, pokemon: Pokemon, target: Pokemon) => void;
 	onModifyTarget?: (
-		this: Battle, relayVar: { target: Pokemon }, pokemon: Pokemon, target: Pokemon, move: ActiveMove
+		this: Battle, relayVar: {target: Pokemon}, pokemon: Pokemon, target: Pokemon, move: ActiveMove
 	) => void;
 	onPrepareHit?: CommonHandlers['ResultMove'];
 	onTry?: CommonHandlers['ResultSourceMove'];
 	onTryHit?: CommonHandlers['ExtResultSourceMove'];
 	onTryHitField?: CommonHandlers['ResultMove'];
-	onTryHitSide?: (this: Battle, side: Side, source: Pokemon, move: ActiveMove) => boolean | null | "" | void;
+	onTryHitSide?: (this: Battle, side: Side, source: Pokemon, move: ActiveMove) => boolean |
+	 null | "" | void;
 	onTryImmunity?: CommonHandlers['ResultMove'];
 	onTryMove?: CommonHandlers['ResultSourceMove'];
 	onUseMoveMessage?: CommonHandlers['VoidSourceMove'];
@@ -160,7 +139,7 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	type: string;
 	priority: number;
 	target: MoveTarget;
-	flags: MoveFlags;
+	flags: AnyObject;
 	/** Hidden Power */
 	realMove?: string;
 
@@ -174,10 +153,10 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	 * ID of the Z-Crystal that calls the move.
 	 * `true` for Z-Powered status moves like Z-Encore.
 	 */
-	isZ?: boolean | IDEntry;
+	isZ?: boolean | string;
 	zMove?: {
 		basePower?: number,
-		effect?: IDEntry,
+		effect?: string,
 		boost?: SparseBoostsTable,
 	};
 
@@ -185,7 +164,7 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	// -------------
 	/**
 	 * `true` for Max moves like Max Airstream. If its a G-Max moves, this is
-	 * the species name of the Gigantamax Pokemon that can use this G-Max move.
+	 * the species ID of the Gigantamax Pokemon that can use this G-Max move.
 	 */
 	isMax?: boolean | string;
 	maxMove?: {
@@ -194,13 +173,13 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 
 	// Hit effects
 	// -----------
-	ohko?: boolean | 'Ice';
+	ohko?: boolean | string;
 	thawsTarget?: boolean;
 	heal?: number[] | null;
 	forceSwitch?: boolean;
-	selfSwitch?: 'copyvolatile' | 'shedtail' | boolean;
-	selfBoost?: { boosts?: SparseBoostsTable };
-	selfdestruct?: 'always' | 'ifHit' | boolean;
+	selfSwitch?: string | boolean;
+	selfBoost?: {boosts?: SparseBoostsTable};
+	selfdestruct?: string | boolean;
 	breaksProtect?: boolean;
 	/**
 	 * Note that this is only "true" recoil. Other self-damage, like Struggle,
@@ -216,7 +195,6 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	secondary?: SecondaryEffect | null;
 	secondaries?: SecondaryEffect[] | null;
 	self?: SecondaryEffect | null;
-	hasSheerForce?: boolean;
 
 	// Hit effect modifiers
 	// --------------------
@@ -225,38 +203,23 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	basePowerModifier?: number;
 	critModifier?: number;
 	critRatio?: number;
-	/**
-	 * Pokemon for the attack stat. Ability and Item damage modifiers still come from the real attacker.
-	 */
-	overrideOffensivePokemon?: 'target' | 'source';
-	/**
-	 * Physical moves use attack stat modifiers, special moves use special attack stat modifiers.
-	 */
-	overrideOffensiveStat?: StatIDExceptHP;
-	/**
-	 * Pokemon for the defense stat. Ability and Item damage modifiers still come from the real defender.
-	 */
-	overrideDefensivePokemon?: 'target' | 'source';
-	/**
-	 * uses modifiers that match the new stat
-	 */
-	overrideDefensiveStat?: StatIDExceptHP;
+	defensiveCategory?: 'Physical' | 'Special' | 'Status';
 	forceSTAB?: boolean;
 	ignoreAbility?: boolean;
 	ignoreAccuracy?: boolean;
 	ignoreDefensive?: boolean;
 	ignoreEvasion?: boolean;
-	ignoreImmunity?: boolean | { [typeName: string]: boolean };
+	ignoreImmunity?: boolean | {[k: string]: boolean};
 	ignoreNegativeOffensive?: boolean;
 	ignoreOffensive?: boolean;
 	ignorePositiveDefensive?: boolean;
 	ignorePositiveEvasion?: boolean;
 	multiaccuracy?: boolean;
 	multihit?: number | number[];
-	multihitType?: 'parentalbond';
+	multihitType?: string;
 	noDamageVariance?: boolean;
-	nonGhostTarget?: MoveTarget;
-	pressureTarget?: MoveTarget;
+	nonGhostTarget?: string;
+	pressureTarget?: string;
 	spreadModifier?: number;
 	sleepUsable?: boolean;
 	/**
@@ -268,15 +231,19 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	 * situations, rather than just targeting a slot. (Stalwart, Snipe Shot)
 	 */
 	tracksTarget?: boolean;
+	useTargetOffensive?: boolean;
+	useSourceDefensiveAsOffensive?: boolean;
 	willCrit?: boolean;
-	callsMove?: boolean;
 
 	// Mechanics flags
 	// ---------------
 	hasCrashDamage?: boolean;
 	isConfusionSelfHit?: boolean;
+	isFutureMove?: boolean;
+	noMetronome?: string[];
+	noSketch?: boolean;
 	stallingMove?: boolean;
-	baseMove?: ID;
+	baseMove?: string;
 }
 
 export type ModdedMoveData = MoveData | Partial<Omit<MoveData, 'name'>> & {
@@ -287,9 +254,6 @@ export type ModdedMoveData = MoveData | Partial<Omit<MoveData, 'name'>> & {
 	longWhipBoost?: boolean,
 	gen?: number,
 };
-
-export interface MoveDataTable { [moveid: IDEntry]: MoveData }
-export interface ModdedMoveDataTable { [moveid: IDEntry]: ModdedMoveData }
 
 export interface Move extends Readonly<BasicEffect & MoveData> {
 	readonly effectType: 'Move';
@@ -320,10 +284,12 @@ export interface ActiveMove extends MutableMove {
 	hit: number;
 	moveHitData?: MoveHitData;
 	ability?: Ability;
+	aerilateBoosted?: boolean;
 	allies?: Pokemon[];
 	auraBooster?: Pokemon;
 	causedCrashDamage?: boolean;
 	forceStatus?: ID;
+	galvanizeBoosted?: boolean;
 	hasAuraBreak?: boolean;
 	hasBounced?: boolean;
 	hasSheerForce?: boolean;
@@ -332,21 +298,18 @@ export interface ActiveMove extends MutableMove {
 	lastHit?: boolean;
 	magnitude?: number;
 	negateSecondary?: boolean;
+	normalizeBoosted?: boolean;
+	pixilateBoosted?: boolean;
 	pranksterBoosted?: boolean;
+	refrigerateBoosted?: boolean;
 	selfDropped?: boolean;
-	selfSwitch?: 'copyvolatile' | 'shedtail' | boolean;
+	selfSwitch?: ID | boolean;
 	spreadHit?: boolean;
+	stab?: number;
 	statusRoll?: string;
-	/** Hardcode to make Tera Stellar STAB work with multihit moves */
-	stellarBoosted?: boolean;
 	totalDamage?: number | false;
-	typeChangerBoosted?: Effect;
 	willChangeForme?: boolean;
 	infiltrates?: boolean;
-	ruinedAtk?: Pokemon;
-	ruinedDef?: Pokemon;
-	ruinedSpA?: Pokemon;
-	ruinedSpD?: Pokemon;
 
 	/**
 	 * Has this move been boosted by a Z-crystal or used by a Dynamax Pokemon? Usually the same as
@@ -358,7 +321,7 @@ export interface ActiveMove extends MutableMove {
 type MoveCategory = 'Physical' | 'Special' | 'Status';
 
 export class DataMove extends BasicEffect implements Readonly<BasicEffect & MoveData> {
-	declare readonly effectType: 'Move';
+	readonly effectType: 'Move';
 	/** Move type. */
 	readonly type: string;
 	/** Move target. */
@@ -370,9 +333,9 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 	/** Critical hit ratio. Defaults to 1. */
 	readonly critRatio: number;
 	/** Will this move always or never be a critical hit? */
-	declare readonly willCrit?: boolean;
+	readonly willCrit?: boolean;
 	/** Can this move OHKO foes? */
-	declare readonly ohko?: boolean | 'Ice';
+	readonly ohko?: boolean | string;
 	/**
 	 * Base move type. This is the move type as specified by the games,
 	 * tracked because it often differs from the real move type.
@@ -390,11 +353,6 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 	 */
 	readonly secondaries: SecondaryEffect[] | null;
 	/**
-	 * Moves manually boosted by Sheer Force that don't have secondary effects.
-	 * e.g. Jet Punch
-	 */
-	readonly hasSheerForce: boolean;
-	/**
 	 * Move priority. Higher priorities go before lower priorities,
 	 * trumping the Speed stat.
 	 */
@@ -402,21 +360,14 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 	/** Move category. */
 	readonly category: MoveCategory;
 	/**
-	 * Pokemon for the attack stat. Ability and Item damage modifiers still come from the real attacker.
+	 * Category that changes which defense to use when calculating
+	 * move damage.
 	 */
-	readonly overrideOffensivePokemon?: 'target' | 'source';
-	/**
-	 * Physical moves use attack stat modifiers, special moves use special attack stat modifiers.
-	 */
-	readonly overrideOffensiveStat?: StatIDExceptHP;
-	/**
-	 * Pokemon for the defense stat. Ability and Item damage modifiers still come from the real defender.
-	 */
-	readonly overrideDefensivePokemon?: 'target' | 'source';
-	/**
-	 * uses modifiers that match the new stat
-	 */
-	readonly overrideDefensiveStat?: StatIDExceptHP;
+	readonly defensiveCategory?: MoveCategory;
+	/** Uses the target's Atk/SpA as the attacking stat, instead of the user's. */
+	readonly useTargetOffensive: boolean;
+	/** Use the user's Def/SpD as the attacking stat, instead of Atk/SpA. */
+	readonly useSourceDefensiveAsOffensive: boolean;
 	/** Whether or not this move ignores negative attack boosts. */
 	readonly ignoreNegativeOffensive: boolean;
 	/** Whether or not this move ignores positive defense boosts. */
@@ -428,38 +379,35 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 	/**
 	 * Whether or not this move ignores type immunities. Defaults to
 	 * true for Status moves and false for Physical/Special moves.
-	 *
-	 * If an Object, its keys represent the types whose immunities are
-	 * ignored, and its values should only be true.
 	 */
-	readonly ignoreImmunity: { [typeName: string]: boolean } | boolean;
+	readonly ignoreImmunity: AnyObject | boolean;
 	/** Base move PP. */
 	readonly pp: number;
 	/** Whether or not this move can receive PP boosts. */
 	readonly noPPBoosts: boolean;
 	/** How many times does this move hit? */
-	declare readonly multihit?: number | number[];
+	readonly multihit?: number | number[];
 	/** Is this move a Z-Move? */
-	readonly isZ: boolean | IDEntry;
+	readonly isZ: boolean | string;
 	/* Z-Move fields */
-	declare readonly zMove?: {
+	readonly zMove?: {
 		basePower?: number,
-		effect?: IDEntry,
+		effect?: string,
 		boost?: SparseBoostsTable,
 	};
-	/** Is this move a Max move? string = Gigantamax species name */
+	/** Is this move a Max move? */
 	readonly isMax: boolean | string;
 	/** Max/G-Max move fields */
-	declare readonly maxMove?: {
+	readonly maxMove?: {
 		basePower: number,
 	};
 	readonly flags: MoveFlags;
 	/** Whether or not the user must switch after using this move. */
-	readonly selfSwitch?: 'copyvolatile' | 'shedtail' | boolean;
+	readonly selfSwitch?: ID | boolean;
 	/** Move target only used by Pressure. */
-	readonly pressureTarget: MoveTarget;
+	readonly pressureTarget: string;
 	/** Move target used if the user is not a Ghost type (for Curse). */
-	readonly nonGhostTarget: MoveTarget;
+	readonly nonGhostTarget: string;
 	/** Whether or not the move ignores abilities. */
 	readonly ignoreAbility: boolean;
 	/**
@@ -472,41 +420,44 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 	/** Whether or not this move hit multiple targets. */
 	readonly spreadHit: boolean;
 	/** Modifier that affects damage when multiple targets are hit. */
-	declare readonly spreadModifier?: number;
+	readonly spreadModifier?: number;
 	/**  Modifier that affects damage when this move is a critical hit. */
-	declare readonly critModifier?: number;
+	readonly critModifier?: number;
 	/** Forces the move to get STAB even if the type doesn't match. */
 	readonly forceSTAB: boolean;
+	/** True if it can't be copied with Sketch. */
+	readonly noSketch: boolean;
+	/** STAB multiplier (can be modified by other effects) (default 1.5). */
+	readonly stab?: number;
 
 	readonly volatileStatus?: ID;
 
 	constructor(data: AnyObject) {
 		super(data);
+		data = this;
 
 		this.fullname = `move: ${this.name}`;
 		this.effectType = 'Move';
 		this.type = Utils.getString(data.type);
 		this.target = data.target;
-		this.basePower = Number(data.basePower);
+		this.basePower = Number(data.basePower!);
 		this.accuracy = data.accuracy!;
 		this.critRatio = Number(data.critRatio) || 1;
 		this.baseMoveType = Utils.getString(data.baseMoveType) || this.type;
 		this.secondary = data.secondary || null;
 		this.secondaries = data.secondaries || (this.secondary && [this.secondary]) || null;
-		this.hasSheerForce = !!(data.hasSheerForce && !this.secondaries);
 		this.priority = Number(data.priority) || 0;
 		this.category = data.category!;
-		this.overrideOffensiveStat = data.overrideOffensiveStat || undefined;
-		this.overrideOffensivePokemon = data.overrideOffensivePokemon || undefined;
-		this.overrideDefensiveStat = data.overrideDefensiveStat || undefined;
-		this.overrideDefensivePokemon = data.overrideDefensivePokemon || undefined;
+		this.defensiveCategory = data.defensiveCategory || undefined;
+		this.useTargetOffensive = !!data.useTargetOffensive;
+		this.useSourceDefensiveAsOffensive = !!data.useSourceDefensiveAsOffensive;
 		this.ignoreNegativeOffensive = !!data.ignoreNegativeOffensive;
 		this.ignorePositiveDefensive = !!data.ignorePositiveDefensive;
 		this.ignoreOffensive = !!data.ignoreOffensive;
 		this.ignoreDefensive = !!data.ignoreDefensive;
 		this.ignoreImmunity = (data.ignoreImmunity !== undefined ? data.ignoreImmunity : this.category === 'Status');
-		this.pp = Number(data.pp);
-		this.noPPBoosts = !!(data.noPPBoosts ?? data.isZ);
+		this.pp = Number(data.pp!);
+		this.noPPBoosts = !!data.noPPBoosts;
 		this.isZ = data.isZ || false;
 		this.isMax = data.isMax || false;
 		this.flags = data.flags || {};
@@ -517,10 +468,12 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 		this.damage = data.damage!;
 		this.spreadHit = data.spreadHit || false;
 		this.forceSTAB = !!data.forceSTAB;
+		this.noSketch = !!data.noSketch;
+		this.stab = data.stab || undefined;
 		this.volatileStatus = typeof data.volatileStatus === 'string' ? (data.volatileStatus as ID) : undefined;
 
-		if (this.category !== 'Status' && !data.maxMove && this.id !== 'struggle') {
-			this.maxMove = { basePower: 1 };
+		if (this.category !== 'Status' && !this.maxMove && this.id !== 'struggle') {
+			this.maxMove = {basePower: 1};
 			if (this.isMax || this.isZ) {
 				// already initialized to 1
 			} else if (!this.basePower) {
@@ -559,10 +512,10 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 				}
 			}
 		}
-		if (this.category !== 'Status' && !data.zMove && !this.isZ && !this.isMax && this.id !== 'struggle') {
+		if (this.category !== 'Status' && !this.zMove && !this.isZ && !this.isMax && this.id !== 'struggle') {
 			let basePower = this.basePower;
 			this.zMove = {};
-			if (Array.isArray(data.multihit)) basePower *= 3;
+			if (Array.isArray(this.multihit)) basePower *= 3;
 			if (!basePower) {
 				this.zMove.basePower = 100;
 			} else if (basePower >= 140) {
@@ -589,10 +542,7 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 		}
 
 		if (!this.gen) {
-			// special handling for gen8 gmax moves (all of them have num 1000 but they are part of gen8)
-			if (this.num >= 827 && !this.isMax) {
-				this.gen = 9;
-			} else if (this.num >= 743) {
+			if (this.num >= 743) {
 				this.gen = 8;
 			} else if (this.num >= 622) {
 				this.gen = 7;
@@ -610,11 +560,8 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 				this.gen = 1;
 			}
 		}
-		assignMissingFields(this, data);
 	}
 }
-
-const EMPTY_MOVE = Utils.deepFreeze(new DataMove({ name: '', exists: false }));
 
 export class DexMoves {
 	readonly dex: ModdedDex;
@@ -627,12 +574,13 @@ export class DexMoves {
 
 	get(name?: string | Move): Move {
 		if (name && typeof name !== 'string') return name;
-		const id = name ? toID(name.trim()) : '' as ID;
+
+		name = (name || '').trim();
+		const id = toID(name);
 		return this.getByID(id);
 	}
 
 	getByID(id: ID): Move {
-		if (id === '') return EMPTY_MOVE;
 		let move = this.moveCache.get(id);
 		if (move) return move;
 		if (this.dex.data.Aliases.hasOwnProperty(id)) {
@@ -656,25 +604,12 @@ export class DexMoves {
 			if (move.gen > this.dex.gen) {
 				(move as any).isNonstandard = 'Future';
 			}
-			if (this.dex.parentMod) {
-				// If move is exactly identical to parentMod's move, reuse parentMod's copy
-				const parentMod = this.dex.mod(this.dex.parentMod);
-				if (moveData === parentMod.data.Moves[id]) {
-					const parentMove = parentMod.moves.getByID(id);
-					if (
-						move.isNonstandard === parentMove.isNonstandard &&
-						move.desc === parentMove.desc && move.shortDesc === parentMove.shortDesc
-					) {
-						move = parentMove;
-					}
-				}
-			}
 		} else {
 			move = new DataMove({
 				name: id, exists: false,
 			});
 		}
-		if (move.exists) this.moveCache.set(id, this.dex.deepFreeze(move));
+		if (move.exists) this.moveCache.set(id, move);
 		return move;
 	}
 
@@ -684,7 +619,7 @@ export class DexMoves {
 		for (const id in this.dex.data.Moves) {
 			moves.push(this.getByID(id as ID));
 		}
-		this.allCache = Object.freeze(moves);
+		this.allCache = moves;
 		return this.allCache;
 	}
 }

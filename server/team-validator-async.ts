@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { TeamValidator } from '../sim/team-validator';
+import {TeamValidator} from '../sim/team-validator';
 
 export class TeamValidatorAsync {
 	format: Format;
@@ -16,16 +16,13 @@ export class TeamValidatorAsync {
 		this.format = Dex.formats.get(format);
 	}
 
-	validateTeam(team: string, options?: { removeNicknames?: boolean, user?: ID }) {
+	validateTeam(team: string, options?: {removeNicknames?: boolean}) {
 		let formatid = this.format.id;
 		if (this.format.customRules) formatid += '@@@' + this.format.customRules.join(',');
-		if (team.length > (25 * 1024 - 6)) { // don't even let it go to the child process
-			return Promise.resolve('0Your team is over 25KB. Please use a smaller team.');
-		}
-		return PM.query({ formatid, options, team });
+		return PM.query({formatid, options, team});
 	}
 
-	static get(this: void, format: string) {
+	static get(format: string) {
 		return new TeamValidatorAsync(format);
 	}
 }
@@ -36,12 +33,12 @@ export const get = TeamValidatorAsync.get;
  * Process manager
  *********************************************************/
 
-import { QueryProcessManager } from '../lib/process-manager';
+import {QueryProcessManager} from '../lib/process-manager';
 
 export const PM = new QueryProcessManager<{
-	formatid: string, options?: { removeNicknames?: boolean }, team: string,
+	formatid: string, options?: {removeNicknames?: boolean}, team: string,
 }>(module, message => {
-	const { formatid, options, team } = message;
+	const {formatid, options, team} = message;
 	const parsedTeam = Teams.unpack(team);
 
 	if (Config.debugvalidatorprocesses && process.send) {
@@ -69,11 +66,11 @@ export const PM = new QueryProcessManager<{
 	// console.log('FROM: ' + message.substr(pipeIndex2 + 1));
 	// console.log('TO: ' + packedTeam);
 	return '1' + packedTeam;
-}, 2 * 60 * 1000);
+});
 
 if (!PM.isParentProcess) {
 	// This is a child process!
-	global.Config = require('./config-loader').Config;
+	global.Config = require('./config-loader');
 
 	global.Monitor = {
 		crashlog(error: Error, source = 'A team validator process', details: AnyObject | null = null) {

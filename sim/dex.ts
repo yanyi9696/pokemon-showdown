@@ -30,26 +30,26 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import * as Data from './dex-data';
-import { Condition, DexConditions } from './dex-conditions';
-import { DataMove, DexMoves } from './dex-moves';
-import { Item, DexItems } from './dex-items';
-import { Ability, DexAbilities } from './dex-abilities';
-import { Species, DexSpecies } from './dex-species';
-import { Format, DexFormats } from './dex-formats';
-import { Utils } from '../lib/utils';
+import {Condition, DexConditions} from './dex-conditions';
+import {DataMove, DexMoves} from './dex-moves';
+import {Item, DexItems} from './dex-items';
+import {Ability, DexAbilities} from './dex-abilities';
+import {Species, DexSpecies} from './dex-species';
+import {Format, DexFormats} from './dex-formats';
+import {Utils} from '../lib';
 
-const BASE_MOD = 'gen9' as ID;
-const DATA_DIR = path.resolve(__dirname, '../data');
-const MODS_DIR = path.resolve(DATA_DIR, './mods');
+const BASE_MOD = 'gen8' as ID;
+const DATA_DIR = path.resolve(__dirname, '../.data-dist');
+const MODS_DIR = path.resolve(__dirname, '../.data-dist/mods');
 
-const dexes: { [mod: string]: ModdedDex } = Object.create(null);
+const dexes: {[mod: string]: ModdedDex} = Object.create(null);
 
 type DataType =
 	'Abilities' | 'Rulesets' | 'FormatsData' | 'Items' | 'Learnsets' | 'Moves' |
-	'Natures' | 'Pokedex' | 'Scripts' | 'Conditions' | 'TypeChart' | 'PokemonGoData';
+	'Natures' | 'Pokedex' | 'Scripts' | 'Conditions' | 'TypeChart';
 const DATA_TYPES: (DataType | 'Aliases')[] = [
 	'Abilities', 'Rulesets', 'FormatsData', 'Items', 'Learnsets', 'Moves',
-	'Natures', 'Pokedex', 'Scripts', 'Conditions', 'TypeChart', 'PokemonGoData',
+	'Natures', 'Pokedex', 'Scripts', 'Conditions', 'TypeChart',
 ];
 
 const DATA_FILES = {
@@ -62,30 +62,28 @@ const DATA_FILES = {
 	Moves: 'moves',
 	Natures: 'natures',
 	Pokedex: 'pokedex',
-	PokemonGoData: 'pokemongo',
 	Scripts: 'scripts',
 	Conditions: 'conditions',
 	TypeChart: 'typechart',
 };
 
-/** Unfortunately we do for..in too much to want to deal with the casts */
-export interface DexTable<T> { [id: string]: T }
-export interface AliasesTable { [id: IDEntry]: string }
+interface DexTable<T> {
+	[key: string]: T;
+}
 
 interface DexTableData {
-	Abilities: DexTable<import('./dex-abilities').AbilityData>;
-	Aliases: DexTable<string>;
-	Rulesets: DexTable<import('./dex-formats').FormatData>;
-	Items: DexTable<import('./dex-items').ItemData>;
-	Learnsets: DexTable<import('./dex-species').LearnsetData>;
-	Moves: DexTable<import('./dex-moves').MoveData>;
-	Natures: DexTable<import('./dex-data').NatureData>;
-	Pokedex: DexTable<import('./dex-species').SpeciesData>;
-	FormatsData: DexTable<import('./dex-species').SpeciesFormatsData>;
-	PokemonGoData: DexTable<import('./dex-species').PokemonGoData>;
+	Abilities: DexTable<AbilityData>;
+	Aliases: {[id: string]: string};
+	Rulesets: DexTable<FormatData>;
+	FormatsData: DexTable<import('./dex-species').ModdedSpeciesFormatsData>;
+	Items: DexTable<ItemData>;
+	Learnsets: DexTable<LearnsetData>;
+	Moves: DexTable<MoveData>;
+	Natures: DexTable<NatureData>;
+	Pokedex: DexTable<SpeciesData>;
 	Scripts: DexTable<AnyObject>;
-	Conditions: DexTable<import('./dex-conditions').ConditionData>;
-	TypeChart: DexTable<import('./dex-data').TypeData>;
+	Conditions: DexTable<EffectData>;
+	TypeChart: DexTable<TypeData>;
 }
 interface TextTableData {
 	Abilities: DexTable<AbilityText>;
@@ -122,8 +120,6 @@ export class ModdedDex {
 	textCache: TextTableData | null;
 
 	deepClone = Utils.deepClone;
-	deepFreeze = Utils.deepFreeze;
-	Multiset = Utils.Multiset;
 
 	readonly formats: DexFormats;
 	readonly abilities: DexAbilities;
@@ -158,14 +154,14 @@ export class ModdedDex {
 		return this.loadData();
 	}
 
-	get dexes(): { [mod: string]: ModdedDex } {
+	get dexes(): {[mod: string]: ModdedDex} {
 		this.includeMods();
 		return dexes;
 	}
 
 	mod(mod: string | undefined): ModdedDex {
 		if (!dexes['base'].modsLoaded) dexes['base'].includeMods();
-		return dexes[mod || 'base'].includeData();
+		return dexes[mod || 'base'];
 	}
 
 	forGen(gen: number) {
@@ -212,11 +208,12 @@ export class ModdedDex {
 	 */
 	getName(name: any): string {
 		if (typeof name !== 'string' && typeof name !== 'number') return '';
-		name = `${name}`.replace(/[|\s[\],\u202e]+/g, ' ').trim();
+		name = ('' + name).replace(/[|\s[\],\u202e]+/g, ' ').trim();
 		if (name.length > 18) name = name.substr(0, 18).trim();
 
 		// remove zalgo
 		name = name.replace(
+			// eslint-disable-next-line max-len
 			/[\u0300-\u036f\u0483-\u0489\u0610-\u0615\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06ED\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]{3,}/g,
 			''
 		);
@@ -230,11 +227,11 @@ export class ModdedDex {
 	 * Also checks immunity to some statuses.
 	 */
 	getImmunity(
-		source: { type: string } | string,
-		target: { getTypes: () => string[] } | { types: string[] } | string[] | string
+		source: {type: string} | string,
+		target: {getTypes: () => string[]} | {types: string[]} | string[] | string
 	): boolean {
 		const sourceType: string = typeof source !== 'string' ? source.type : source;
-		// @ts-expect-error really wish TS would support this
+		// @ts-ignore
 		const targetTyping: string[] | string = target.getTypes?.() || target.types || target;
 		if (Array.isArray(targetTyping)) {
 			for (const type of targetTyping) {
@@ -248,11 +245,11 @@ export class ModdedDex {
 	}
 
 	getEffectiveness(
-		source: { type: string } | string,
-		target: { getTypes: () => string[] } | { types: string[] } | string[] | string
+		source: {type: string} | string,
+		target: {getTypes: () => string[]} | {types: string[]} | string[] | string
 	): number {
 		const sourceType: string = typeof source !== 'string' ? source.type : source;
-		// @ts-expect-error really wish TS would support this
+		// @ts-ignore
 		const targetTyping: string[] | string = target.getTypes?.() || target.types || target;
 		let totalTypeMod = 0;
 		if (Array.isArray(targetTyping)) {
@@ -285,8 +282,8 @@ export class ModdedDex {
 			shortDesc: '',
 		};
 		for (let i = this.gen; i < dexes['base'].gen; i++) {
-			const curDesc = entry[`gen${i}` as keyof typeof entry]?.desc;
-			const curShortDesc = entry[`gen${i}` as keyof typeof entry]?.shortDesc;
+			const curDesc = entry[`gen${i}`]?.desc;
+			const curShortDesc = entry[`gen${i}`]?.shortDesc;
 			if (!descs.desc && curDesc) {
 				descs.desc = curDesc;
 			}
@@ -317,13 +314,13 @@ export class ModdedDex {
 		return moveCopy;
 	}
 
-	getHiddenPower(ivs: StatsTable) {
+	getHiddenPower(ivs: AnyObject) {
 		const hpTypes = [
 			'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel',
 			'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark',
 		];
 		const tr = this.trunc;
-		const stats = { hp: 31, atk: 31, def: 31, spe: 31, spa: 31, spd: 31 };
+		const stats = {hp: 31, atk: 31, def: 31, spe: 31, spa: 31, spd: 31};
 		if (this.gen <= 2) {
 			// Gen 2 specific Hidden Power check. IVs are still treated 0-31 so we get them 0-15
 			const atkDV = tr(ivs.atk / 2);
@@ -342,8 +339,8 @@ export class ModdedDex {
 			let hpPowerX = 0;
 			let i = 1;
 			for (const s in stats) {
-				hpTypeX += i * (ivs[s as StatID] % 2);
-				hpPowerX += i * (tr(ivs[s as StatID] / 2) % 2);
+				hpTypeX += i * (ivs[s] % 2);
+				hpPowerX += i * (tr(ivs[s] / 2) % 2);
 				i *= 2;
 			}
 			return {
@@ -358,29 +355,27 @@ export class ModdedDex {
 	 * Truncate a number into an unsigned 32-bit integer, for
 	 * compatibility with the cartridge games' math systems.
 	 */
-	trunc(this: void, num: number, bits = 0) {
+	trunc(num: number, bits = 0) {
 		if (bits) return (num >>> 0) % (2 ** bits);
 		return num >>> 0;
 	}
 
 	dataSearch(
-		target: string,
-		searchIn?: ('Pokedex' | 'Moves' | 'Abilities' | 'Items' | 'Natures' | 'TypeChart')[] | null,
-		isInexact?: boolean
+		target: string, searchIn?: ('Pokedex' | 'Moves' | 'Abilities' | 'Items' | 'Natures')[] | null, isInexact?: boolean
 	): AnyObject[] | null {
 		if (!target) return null;
 
 		searchIn = searchIn || ['Pokedex', 'Moves', 'Abilities', 'Items', 'Natures'];
 
 		const searchObjects = {
-			Pokedex: 'species', Moves: 'moves', Abilities: 'abilities', Items: 'items', Natures: 'natures', TypeChart: 'types',
+			Pokedex: 'species', Moves: 'moves', Abilities: 'abilities', Items: 'items', Natures: 'natures',
 		} as const;
 		const searchTypes = {
-			Pokedex: 'pokemon', Moves: 'move', Abilities: 'ability', Items: 'item', Natures: 'nature', TypeChart: 'type',
+			Pokedex: 'pokemon', Moves: 'move', Abilities: 'ability', Items: 'item', Natures: 'nature',
 		} as const;
 		let searchResults: AnyObject[] | null = [];
 		for (const table of searchIn) {
-			const res = this[searchObjects[table]].get(target);
+			const res: AnyObject = this[searchObjects[table]].get(target);
 			if (res.exists && res.gen <= this.gen) {
 				searchResults.push({
 					isInexact,
@@ -402,14 +397,14 @@ export class ModdedDex {
 			maxLd = 2;
 		}
 		searchResults = null;
-		for (const table of [...searchIn, 'Aliases'] as const) {
-			const searchObj = this.data[table] as DexTable<any>;
+		for (const table of [...searchIn, 'Aliases'] as DataType[]) {
+			const searchObj = this.data[table];
 			if (!searchObj) continue;
 
 			for (const j in searchObj) {
 				const ld = Utils.levenshtein(cmpTarget, j, maxLd);
 				if (ld <= maxLd) {
-					const word = searchObj[j].name || j;
+					const word = searchObj[j].name || searchObj[j].species || j;
 					const results = this.dataSearch(word, searchIn, word);
 					if (results) {
 						searchResults = results;
@@ -422,7 +417,7 @@ export class ModdedDex {
 		return searchResults;
 	}
 
-	loadDataFile(basePath: string, dataType: DataType | 'Aliases'): AnyObject | void {
+	loadDataFile(basePath: string, dataType: DataType | 'Aliases'): AnyObject {
 		try {
 			const filePath = basePath + DATA_FILES[dataType];
 			const dataObject = require(filePath);
@@ -433,11 +428,12 @@ export class ModdedDex {
 				throw new TypeError(`${filePath}, if it exists, must export an object whose '${dataType}' property is an Object`);
 			}
 			return dataObject[dataType];
-		} catch (e: any) {
+		} catch (e) {
 			if (e.code !== 'MODULE_NOT_FOUND' && e.code !== 'ENOENT') {
 				throw e;
 			}
 		}
+		return {};
 	}
 
 	loadTextFile(
@@ -485,13 +481,11 @@ export class ModdedDex {
 	loadData(): DexTableData {
 		if (this.dataCache) return this.dataCache;
 		dexes['base'].includeMods();
-		const dataCache: { [k in keyof DexTableData]?: any } = {};
+		const dataCache: {[k in keyof DexTableData]?: any} = {};
 
 		const basePath = this.dataDir + '/';
 
-		const Scripts = this.loadDataFile(basePath, 'Scripts') || {};
-		// We want to inherit most of Scripts but not this.
-		const init = Scripts.init;
+		const Scripts = this.loadDataFile(basePath, 'Scripts');
 		this.parentMod = this.isBase ? '' : (Scripts.inherit || 'base');
 
 		let parentDex;
@@ -509,20 +503,17 @@ export class ModdedDex {
 			this.includeFormats();
 		}
 		for (const dataType of DATA_TYPES.concat('Aliases')) {
-			dataCache[dataType] = this.loadDataFile(basePath, dataType);
+			const BattleData = this.loadDataFile(basePath, dataType);
+			if (BattleData !== dataCache[dataType]) dataCache[dataType] = Object.assign(BattleData, dataCache[dataType]);
 			if (dataType === 'Rulesets' && !parentDex) {
 				for (const format of this.formats.all()) {
-					dataCache.Rulesets[format.id] = { ...format, ruleTable: null };
+					BattleData[format.id] = {...format, ruleTable: null};
 				}
 			}
 		}
 		if (parentDex) {
 			for (const dataType of DATA_TYPES) {
 				const parentTypedData: DexTable<any> = parentDex.data[dataType];
-				if (!dataCache[dataType] && !init) {
-					dataCache[dataType] = parentTypedData;
-					continue;
-				}
 				const childTypedData: DexTable<any> = dataCache[dataType] || (dataCache[dataType] = {});
 				for (const entryId in parentTypedData) {
 					if (childTypedData[entryId] === null) {
@@ -530,14 +521,23 @@ export class ModdedDex {
 						delete childTypedData[entryId];
 					} else if (!(entryId in childTypedData)) {
 						// If it doesn't exist it's inherited from the parent data
-						childTypedData[entryId] = parentTypedData[entryId];
-					} else if (childTypedData[entryId]?.inherit) {
+						if (dataType === 'Pokedex') {
+							// Pokedex entries can be modified too many different ways
+							// e.g. inheriting different formats-data/learnsets
+							childTypedData[entryId] = this.deepClone(parentTypedData[entryId]);
+						} else {
+							childTypedData[entryId] = parentTypedData[entryId];
+						}
+					} else if (childTypedData[entryId] && childTypedData[entryId].inherit) {
 						// {inherit: true} can be used to modify only parts of the parent data,
 						// instead of overwriting entirely
 						delete childTypedData[entryId].inherit;
 
-						// Merge parent and child's entry, with child overwriting parent.
-						childTypedData[entryId] = { ...parentTypedData[entryId], ...childTypedData[entryId] };
+						// Merge parent into children entry, preserving existing childs' properties.
+						for (const key in parentTypedData[entryId]) {
+							if (key in childTypedData[entryId]) continue;
+							childTypedData[entryId][key] = parentTypedData[entryId][key];
+						}
 					}
 				}
 			}
@@ -550,7 +550,7 @@ export class ModdedDex {
 		this.dataCache = dataCache as DexTableData;
 
 		// Execute initialization script.
-		if (init) init.call(this);
+		if (Scripts.init) Scripts.init.call(this);
 
 		return this.dataCache;
 	}
@@ -563,11 +563,11 @@ export class ModdedDex {
 
 dexes['base'] = new ModdedDex();
 
-// "gen9" is an alias for the current base data
+// "gen8" is an alias for the current base data
 dexes[BASE_MOD] = dexes['base'];
 
 export const Dex = dexes['base'];
-export declare namespace Dex {
+export namespace Dex {
 	export type Species = import('./dex-species').Species;
 	export type Item = import('./dex-items').Item;
 	export type Move = import('./dex-moves').Move;
@@ -576,16 +576,6 @@ export declare namespace Dex {
 	export type HitEffect = import('./dex-moves').HitEffect;
 	export type SecondaryEffect = import('./dex-moves').SecondaryEffect;
 	export type RuleTable = import('./dex-formats').RuleTable;
-
-	export type GenderName = 'M' | 'F' | 'N' | '';
-	export type StatIDExceptHP = 'atk' | 'def' | 'spa' | 'spd' | 'spe';
-	export type StatID = 'hp' | StatIDExceptHP;
-	export type StatsExceptHPTable = { [stat in StatIDExceptHP]: number };
-	export type StatsTable = { [stat in StatID]: number };
-	export type SparseStatsTable = Partial<StatsTable>;
-	export type BoostID = StatIDExceptHP | 'accuracy' | 'evasion';
-	export type BoostsTable = { [boost in BoostID]: number };
-	export type SparseBoostsTable = Partial<BoostsTable>;
 }
 
 export default Dex;

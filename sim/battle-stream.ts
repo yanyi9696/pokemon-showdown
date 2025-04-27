@@ -9,10 +9,9 @@
  * @license MIT
  */
 
-import { Streams, Utils } from '../lib';
-import { Teams } from './teams';
-import { Battle, extractChannelMessages } from './battle';
-import type { ChoiceRequest } from './side';
+import {Streams, Utils} from '../lib';
+import {Teams} from './teams';
+import {Battle} from './battle';
 
 /**
  * Like string.split(delimiter), but only recognizes the first `limit`
@@ -58,13 +57,13 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 		this.battle = null;
 	}
 
-	override _write(chunk: string) {
+	_write(chunk: string) {
 		if (this.noCatch) {
 			this._writeLines(chunk);
 		} else {
 			try {
 				this._writeLines(chunk);
-			} catch (err: any) {
+			} catch (err) {
 				this.pushError(err, true);
 				return;
 			}
@@ -85,11 +84,9 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 		if (this.replay) {
 			if (type === 'update') {
 				if (this.replay === 'spectator') {
-					const channelMessages = extractChannelMessages(data, [0]);
-					this.push(channelMessages[0].join('\n'));
+					this.push(data.replace(/\n\|split\|p[1234]\n(?:[^\n]*)\n([^\n]*)/g, '\n$1'));
 				} else {
-					const channelMessages = extractChannelMessages(data, [-1]);
-					this.push(channelMessages[-1].join('\n'));
+					this.push(data.replace(/\n\|split\|p[1234]\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'));
 				}
 			}
 			return;
@@ -137,9 +134,10 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 			this.battle!.inputLog.push(`>forcelose ${message}`);
 			break;
 		case 'reseed':
-			this.battle!.resetRNG(message as PRNGSeed);
+			const seed = message ? message.split(',').map(Number) as PRNGSeed : null;
+			this.battle!.resetRNG(seed);
 			// could go inside resetRNG, but this makes using it in `eval` slightly less buggy
-			this.battle!.inputLog.push(`>reseed ${this.battle!.prng.getSeed()}`);
+			this.battle!.inputLog.push(`>reseed ${this.battle!.prng.seed.join(',')}`);
 			break;
 		case 'tiebreak':
 			this.battle!.tiebreak();
@@ -204,15 +202,12 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 					result = result.replace(/\n/g, '\n||');
 					battle.add('', '<<< ' + result);
 				}
-			} catch (e: any) {
+			} catch (e) {
 				battle.add('', '<<< error: ' + e.message);
 			}
 			break;
 		case 'requestlog':
 			this.push(`requesteddata\n${this.battle!.inputLog.join('\n')}`);
-			break;
-		case 'requestexport':
-			this.push(`requesteddata\n${this.battle!.prngSeed}\n${this.battle!.inputLog.join('\n')}`);
 			break;
 		case 'requestteam':
 			message = message.trim();
@@ -224,9 +219,6 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 			const team = Teams.pack(side.team);
 			this.push(`requesteddata\n${team}`);
 			break;
-		case 'show-openteamsheets':
-			this.battle!.showOpenTeamSheets();
-			break;
 		case 'version':
 		case 'version-origin':
 			break;
@@ -235,13 +227,13 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 		}
 	}
 
-	override _writeEnd() {
+	_writeEnd() {
 		// if battle already ended, we don't need to pushEnd.
 		if (!this.atEOF) this.pushEnd();
 		this._destroy();
 	}
 
-	override _destroy() {
+	_destroy() {
 		if (this.battle) this.battle.destroy();
 	}
 }
@@ -289,13 +281,12 @@ export function getPlayerStreams(stream: BattleStream) {
 			const [type, data] = splitFirst(chunk, `\n`);
 			switch (type) {
 			case 'update':
-				const channelMessages = extractChannelMessages(data, [-1, 0, 1, 2, 3, 4]);
-				streams.omniscient.push(channelMessages[-1].join('\n'));
-				streams.spectator.push(channelMessages[0].join('\n'));
-				streams.p1.push(channelMessages[1].join('\n'));
-				streams.p2.push(channelMessages[2].join('\n'));
-				streams.p3.push(channelMessages[3].join('\n'));
-				streams.p4.push(channelMessages[4].join('\n'));
+				streams.omniscient.push(Battle.extractUpdateForSide(data, 'omniscient'));
+				streams.spectator.push(Battle.extractUpdateForSide(data, 'spectator'));
+				streams.p1.push(Battle.extractUpdateForSide(data, 'p1'));
+				streams.p2.push(Battle.extractUpdateForSide(data, 'p2'));
+				streams.p3.push(Battle.extractUpdateForSide(data, 'p3'));
+				streams.p4.push(Battle.extractUpdateForSide(data, 'p4'));
 				break;
 			case 'sideupdate':
 				const [side, sideData] = splitFirst(data, `\n`);
@@ -349,7 +340,7 @@ export abstract class BattlePlayer {
 		this.log.push(line);
 	}
 
-	abstract receiveRequest(request: ChoiceRequest): void;
+	abstract receiveRequest(request: AnyObject): void;
 
 	receiveError(error: Error) {
 		throw error;
@@ -364,7 +355,7 @@ export class BattleTextStream extends Streams.ReadWriteStream {
 	readonly battleStream: BattleStream;
 	currentMessage: string;
 
-	constructor(options: { debug?: boolean }) {
+	constructor(options: {debug?: boolean}) {
 		super();
 		this.battleStream = new BattleStream(options);
 		this.currentMessage = '';
@@ -379,8 +370,8 @@ export class BattleTextStream extends Streams.ReadWriteStream {
 		this.pushEnd();
 	}
 
-	override _write(message: string | Buffer) {
-		this.currentMessage += `${message}`;
+	_write(message: string | Buffer) {
+		this.currentMessage += '' + message;
 		const index = this.currentMessage.lastIndexOf('\n');
 		if (index >= 0) {
 			void this.battleStream.write(this.currentMessage.slice(0, index));
@@ -388,7 +379,7 @@ export class BattleTextStream extends Streams.ReadWriteStream {
 		}
 	}
 
-	override _writeEnd() {
+	_writeEnd() {
 		return this.battleStream.writeEnd();
 	}
 }

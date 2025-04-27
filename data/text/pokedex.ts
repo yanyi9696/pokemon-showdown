@@ -1,4 +1,4 @@
-export const PokedexText: { [id: IDEntry]: PokedexText } = {
+export const PokedexText: {[k: string]: PokedexText} = {
 	bulbasaur: {
 		name: "Bulbasaur",
 	},
@@ -293,14 +293,8 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	growlithe: {
 		name: "Growlithe",
 	},
-	growlithehisui: {
-		name: "Growlithe-Hisui",
-	},
 	arcanine: {
 		name: "Arcanine",
-	},
-	arcaninehisui: {
-		name: "Arcanine-Hisui",
 	},
 	poliwag: {
 		name: "Poliwag",
@@ -473,14 +467,8 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	voltorb: {
 		name: "Voltorb",
 	},
-	voltorbhisui: {
-		name: "Voltorb-Hisui",
-	},
 	electrode: {
 		name: "Electrode",
-	},
-	electrodehisui: {
-		name: "Electrode-Hisui",
 	},
 	exeggcute: {
 		name: "Exeggcute",
@@ -695,9 +683,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	typhlosion: {
 		name: "Typhlosion",
 	},
-	typhlosionhisui: {
-		name: "Typhlosion-Hisui",
-	},
 	totodile: {
 		name: "Totodile",
 	},
@@ -815,14 +800,8 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	wooper: {
 		name: "Wooper",
 	},
-	wooperpaldea: {
-		name: "Wooper-Paldea",
-	},
 	quagsire: {
 		name: "Quagsire",
-	},
-	quagsirepaldea: {
-		name: "Quagsire-Paldea",
 	},
 	espeon: {
 		name: "Espeon",
@@ -875,9 +854,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	qwilfish: {
 		name: "Qwilfish",
 	},
-	qwilfishhisui: {
-		name: "Qwilfish-Hisui",
-	},
 	scizor: {
 		name: "Scizor",
 	},
@@ -895,9 +871,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	sneasel: {
 		name: "Sneasel",
-	},
-	sneaselhisui: {
-		name: "Sneasel-Hisui",
 	},
 	teddiursa: {
 		name: "Teddiursa",
@@ -1841,14 +1814,8 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	dialga: {
 		name: "Dialga",
 	},
-	dialgaorigin: {
-		name: "Dialga-Origin",
-	},
 	palkia: {
 		name: "Palkia",
-	},
-	palkiaorigin: {
-		name: "Palkia-Origin",
 	},
 	heatran: {
 		name: "Heatran",
@@ -1963,9 +1930,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	samurott: {
 		name: "Samurott",
-	},
-	samurotthisui: {
-		name: "Samurott-Hisui",
 	},
 	patrat: {
 		name: "Patrat",
@@ -2108,17 +2072,11 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	lilligant: {
 		name: "Lilligant",
 	},
-	lilliganthisui: {
-		name: "Lilligant-Hisui",
-	},
 	basculin: {
 		name: "Basculin",
 	},
 	basculinbluestriped: {
 		name: "Basculin-Blue-Striped",
-	},
-	basculinwhitestriped: {
-		name: "Basculin-White-Striped",
 	},
 	sandile: {
 		name: "Sandile",
@@ -2198,14 +2156,8 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	zorua: {
 		name: "Zorua",
 	},
-	zoruahisui: {
-		name: "Zorua-Hisui",
-	},
 	zoroark: {
 		name: "Zoroark",
-	},
-	zoroarkhisui: {
-		name: "Zoroark-Hisui",
 	},
 	minccino: {
 		name: "Minccino",
@@ -2381,9 +2333,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	braviary: {
 		name: "Braviary",
 	},
-	braviaryhisui: {
-		name: "Braviary-Hisui",
-	},
 	vullaby: {
 		name: "Vullaby",
 	},
@@ -2506,9 +2455,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	greninja: {
 		name: "Greninja",
-	},
-	greninjabond: {
-		name: "Greninja-Bond",
 	},
 	greninjaash: {
 		name: "Greninja-Ash",
@@ -2669,14 +2615,8 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	sliggoo: {
 		name: "Sliggoo",
 	},
-	sliggoohisui: {
-		name: "Sliggoo-Hisui",
-	},
 	goodra: {
 		name: "Goodra",
-	},
-	goodrahisui: {
-		name: "Goodra-Hisui",
 	},
 	klefki: {
 		name: "Klefki",
@@ -2716,9 +2656,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	avalugg: {
 		name: "Avalugg",
-	},
-	avalugghisui: {
-		name: "Avalugg-Hisui",
 	},
 	noibat: {
 		name: "Noibat",
@@ -2767,9 +2704,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	decidueye: {
 		name: "Decidueye",
-	},
-	decidueyehisui: {
-		name: "Decidueye-Hisui",
 	},
 	litten: {
 		name: "Litten",
@@ -3517,33 +3451,6 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	calyrexshadow: {
 		name: "Calyrex-Shadow",
-	},
-	wyrdeer: {
-		name: "Wyrdeer",
-	},
-	kleavor: {
-		name: "Kleavor",
-	},
-	ursaluna: {
-		name: "Ursaluna",
-	},
-	basculegion: {
-		name: "Basculegion",
-	},
-	basculegionf: {
-		name: "Basculegion-F",
-	},
-	sneasler: {
-		name: "Sneasler",
-	},
-	overqwil: {
-		name: "Overqwil",
-	},
-	enamorus: {
-		name: "Enamorus",
-	},
-	enamorustherian: {
-		name: "Enamorus-Therian",
 	},
 	missingno: {
 		name: "MissingNo.",

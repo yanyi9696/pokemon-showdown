@@ -1,4 +1,4 @@
-export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDataTable = {
+export const Conditions: {[k: string]: ModdedConditionData} = {
 	brn: {
 		name: 'brn',
 		effectType: 'Status',
@@ -18,7 +18,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		inherit: true,
 		onBeforeMovePriority: 2,
 		onBeforeMove(pokemon) {
-			if (this.randomChance(63, 256)) {
+			if (this.randomChance(1, 4)) {
 				this.add('cant', pokemon, 'par');
 				return false;
 			}
@@ -29,16 +29,12 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Status',
 		onStart(target, source, sourceEffect) {
 			if (sourceEffect && sourceEffect.effectType === 'Move') {
-				this.add('-status', target, 'slp', `[from] move: ${sourceEffect.name}`);
+				this.add('-status', target, 'slp', '[from] move: ' + sourceEffect.name);
 			} else {
 				this.add('-status', target, 'slp');
 			}
 			// 1-6 turns
 			this.effectState.time = this.random(2, 8);
-
-			if (target.removeVolatile('nightmare')) {
-				this.add('-end', target, 'Nightmare', '[silent]');
-			}
 		},
 		onBeforeMovePriority: 10,
 		onBeforeMove(pokemon, target, move) {
@@ -63,7 +59,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			return false;
 		},
 		onModifyMove() {},
-		onDamagingHit() {},
+		onHit() {},
 		onAfterMoveSecondary(target, source, move) {
 			if ((move.secondary && move.secondary.status === 'brn') || move.statusRoll === 'brn') {
 				target.cureStatus();
@@ -192,7 +188,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			const move = this.dex.moves.get(this.effectState.move);
 			if (move.id) {
 				this.debug('Forcing into ' + move.id);
-				this.queue.changeAction(pokemon, { choice: 'move', moveid: move.id });
+				this.queue.changeAction(pokemon, {choice: 'move', moveid: move.id});
 			}
 		},
 	},
@@ -223,7 +219,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		},
 		onStallMove() {
 			const counter = Math.floor(this.effectState.counter) || 127;
-			this.debug(`Success chance: ${Math.round(counter * 1000 / 255) / 10}% (${counter}/255)`);
+			this.debug("Success chance: " + Math.round(counter * 1000 / 255) / 10 + "% (" + counter + "/255)");
 			return this.randomChance(counter, 255);
 		},
 		onRestart() {

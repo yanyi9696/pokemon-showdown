@@ -1,4 +1,4 @@
-export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormatsDataTable = {
+export const FormatsData: {[k: string]: ModdedSpeciesFormatsData} = {
 	bulbasaur: {
 		tier: "LC",
 	},
@@ -6,6 +6,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	venusaur: {
+		randomBattleMoves: ["hiddenpowerfire", "hiddenpowerice", "leechseed", "naturepower", "powerwhip", "sleeppowder", "sludgebomb", "swordsdance", "synthesis"],
 		tier: "(OU)",
 		doublesTier: "DOU",
 	},
@@ -16,6 +17,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	charizard: {
+		randomBattleMoves: ["airslash", "dragonpulse", "fireblast", "focusblast", "hiddenpowergrass", "roost"],
 		tier: "NU",
 		doublesTier: "DOU",
 	},
@@ -27,6 +29,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	blastoise: {
+		randomBattleMoves: ["icebeam", "protect", "rapidspin", "scald", "toxic"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -37,7 +40,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	butterfree: {
-		tier: "PU",
+		randomBattleMoves: ["bugbuzz", "hiddenpowerrock", "psychic", "quiverdance", "sleeppowder", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	weedle: {
@@ -47,7 +51,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	beedrill: {
-		tier: "PU",
+		randomBattleMoves: ["agility", "batonpass", "drillrun", "endeavor", "poisonjab", "toxicspikes", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	pidgey: {
@@ -57,44 +62,51 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	pidgeot: {
-		tier: "PU",
+		randomBattleMoves: ["bravebird", "heatwave", "quickattack", "return", "roost", "uturn", "workup"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	rattata: {
 		tier: "LC",
 	},
 	raticate: {
-		tier: "PU",
+		randomBattleMoves: ["crunch", "facade", "flamewheel", "suckerpunch", "swordsdance", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	spearow: {
 		tier: "LC",
 	},
 	fearow: {
-		tier: "PU",
+		randomBattleMoves: ["doubleedge", "drillpeck", "drillrun", "pursuit", "quickattack", "return", "roost", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	ekans: {
 		tier: "LC",
 	},
 	arbok: {
-		tier: "PU",
+		randomBattleMoves: ["aquatail", "coil", "earthquake", "glare", "gunkshot", "rest", "seedbomb", "suckerpunch"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	pichu: {
 		tier: "LC",
 	},
 	pikachu: {
+		randomBattleMoves: ["extremespeed", "focuspunch", "grassknot", "hiddenpowerice", "substitute", "thunderbolt"],
 		tier: "NFE",
 	},
 	raichu: {
-		tier: "PU",
+		randomBattleMoves: ["encore", "focusblast", "grassknot", "hiddenpowerice", "nastyplot", "thunderbolt", "voltswitch"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	sandshrew: {
 		tier: "LC",
 	},
 	sandslash: {
+		randomBattleMoves: ["earthquake", "rapidspin", "stealthrock", "stoneedge", "swordsdance", "xscissor"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -105,6 +117,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	nidoqueen: {
+		randomBattleMoves: ["earthpower", "fireblast", "icebeam", "sludgewave", "stealthrock", "toxicspikes"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -115,6 +128,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	nidoking: {
+		randomBattleMoves: ["earthpower", "fireblast", "icebeam", "sludgewave", "substitute", "superpower"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -125,6 +139,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	clefable: {
+		randomBattleMoves: ["calmmind", "doubleedge", "icebeam", "softboiled", "stealthrock", "thunderbolt", "thunderwave"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -132,6 +147,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	ninetales: {
+		randomBattleMoves: ["fireblast", "nastyplot", "painsplit", "solarbeam", "substitute", "willowisp"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -142,7 +158,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	wigglytuff: {
-		tier: "PU",
+		randomBattleMoves: ["doubleedge", "fireblast", "healbell", "protect", "stealthrock", "toxic", "wish"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	zubat: {
@@ -153,6 +170,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	crobat: {
+		randomBattleMoves: ["bravebird", "heatwave", "roost", "sludgebomb", "superfang", "taunt", "toxic", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -163,24 +181,28 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	vileplume: {
-		tier: "PU",
+		randomBattleMoves: ["aromatherapy", "gigadrain", "hiddenpowerfire", "leechseed", "sleeppowder", "sludgebomb", "synthesis"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	bellossom: {
-		tier: "PU",
+		randomBattleMoves: ["gigadrain", "hiddenpowerfire", "hiddenpowerrock", "leafstorm", "leechseed", "sleeppowder", "stunspore", "synthesis"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	paras: {
 		tier: "LC",
 	},
 	parasect: {
-		tier: "PU",
+		randomBattleMoves: ["aromatherapy", "leechseed", "seedbomb", "spore", "stunspore", "synthesis", "xscissor"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	venonat: {
 		tier: "LC",
 	},
 	venomoth: {
+		randomBattleMoves: ["bugbuzz", "quiverdance", "roost", "sleeppowder", "substitute"],
 		tier: "RUBL",
 		doublesTier: "DUU",
 	},
@@ -188,6 +210,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	dugtrio: {
+		randomBattleMoves: ["aerialace", "earthquake", "memento", "stealthrock", "stoneedge", "suckerpunch"],
 		tier: "(OU)",
 		doublesTier: "DUU",
 	},
@@ -195,20 +218,23 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	persian: {
-		tier: "PU",
+		randomBattleMoves: ["bite", "fakeout", "return", "switcheroo", "taunt", "uturn", "waterpulse"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	psyduck: {
 		tier: "LC",
 	},
 	golduck: {
-		tier: "PU",
+		randomBattleMoves: ["calmmind", "focusblast", "hydropump", "icebeam", "psyshock"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	mankey: {
 		tier: "LC",
 	},
 	primeape: {
+		randomBattleMoves: ["closecombat", "honeclaws", "icepunch", "stoneedge", "uturn"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -216,6 +242,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	arcanine: {
+		randomBattleMoves: ["closecombat", "extremespeed", "flareblitz", "hiddenpowergrass", "morningsun", "wildcharge", "willowisp"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
@@ -226,10 +253,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	poliwrath: {
+		randomBattleMoves: ["bulkup", "circlethrow", "focuspunch", "rest", "sleeptalk", "substitute", "toxic", "waterfall"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	politoed: {
+		randomBattleMoves: ["encore", "focusblast", "hiddenpowergrass", "hypnosis", "icebeam", "protect", "scald", "toxic"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -241,6 +270,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	alakazam: {
+		randomBattleMoves: ["calmmind", "encore", "focusblast", "psychic", "psyshock", "shadowball"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
@@ -251,6 +281,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	machamp: {
+		randomBattleMoves: ["bulkup", "bulletpunch", "dynamicpunch", "icepunch", "payback", "stoneedge", "substitute"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -261,13 +292,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	victreebel: {
-		tier: "PU",
+		randomBattleMoves: ["growth", "powerwhip", "sleeppowder", "sludgebomb", "suckerpunch", "sunnyday", "weatherball"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	tentacool: {
 		tier: "LC",
 	},
 	tentacruel: {
+		randomBattleMoves: ["gigadrain", "icebeam", "protect", "rapidspin", "scald", "toxic", "toxicspikes"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
@@ -278,6 +311,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	golem: {
+		randomBattleMoves: ["earthquake", "explosion", "rockblast", "stealthrock", "suckerpunch", "toxic"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -285,17 +319,20 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	rapidash: {
-		tier: "PU",
+		randomBattleMoves: ["drillrun", "flareblitz", "megahorn", "morningsun", "wildcharge", "willowisp"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	slowpoke: {
 		tier: "LC",
 	},
 	slowbro: {
+		randomBattleMoves: ["calmmind", "icebeam", "psyshock", "scald", "slackoff", "thunderwave", "toxic"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	slowking: {
+		randomBattleMoves: ["fireblast", "grassknot", "icebeam", "nastyplot", "psychic", "surf", "trickroom"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -307,39 +344,45 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	magnezone: {
+		randomBattleMoves: ["flashcannon", "hiddenpowerfire", "thunderbolt", "toxic", "voltswitch"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
 	farfetchd: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "bravebird", "leafblade", "quickattack", "swordsdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	doduo: {
 		tier: "LC",
 	},
 	dodrio: {
-		tier: "PU",
+		randomBattleMoves: ["bravebird", "pursuit", "quickattack", "return", "roost"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	seel: {
 		tier: "LC",
 	},
 	dewgong: {
-		tier: "PU",
+		randomBattleMoves: ["icebeam", "protect", "rest", "sleeptalk", "surf", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	grimer: {
 		tier: "LC",
 	},
 	muk: {
-		tier: "PU",
+		randomBattleMoves: ["brickbreak", "curse", "firepunch", "gunkshot", "icepunch", "poisonjab", "rest", "shadowsneak"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	shellder: {
 		tier: "LC",
 	},
 	cloyster: {
-		tier: "Uber",
+		randomBattleMoves: ["hydropump", "iceshard", "iciclespear", "rapidspin", "rockblast", "shellsmash", "spikes"],
+		tier: "OU",
 		doublesTier: "DOU",
 	},
 	gastly: {
@@ -350,6 +393,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	gengar: {
+		randomBattleMoves: ["focusblast", "shadowball", "sludgebomb", "substitute", "thunderbolt", "trick", "willowisp"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -357,6 +401,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	steelix: {
+		randomBattleMoves: ["curse", "earthquake", "gyroball", "roar", "stealthrock", "stoneedge", "toxic"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -364,20 +409,23 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	hypno: {
-		tier: "PU",
+		randomBattleMoves: ["foulplay", "protect", "psychic", "thunderwave", "toxic", "wish"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	krabby: {
 		tier: "LC",
 	},
 	kingler: {
-		tier: "PU",
+		randomBattleMoves: ["agility", "crabhammer", "return", "superpower", "swordsdance", "xscissor"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	voltorb: {
 		tier: "LC",
 	},
 	electrode: {
+		randomBattleMoves: ["foulplay", "hiddenpowergrass", "taunt", "thunderbolt", "voltswitch"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -385,6 +433,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	exeggutor: {
+		randomBattleMoves: ["gigadrain", "hiddenpowerfire", "leechseed", "protect", "psychic", "sleeppowder", "substitute"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -392,21 +441,25 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	marowak: {
-		tier: "PU",
+		randomBattleMoves: ["bonemerang", "doubleedge", "earthquake", "firepunch", "stoneedge", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	tyrogue: {
 		tier: "LC",
 	},
 	hitmonlee: {
+		randomBattleMoves: ["closecombat", "earthquake", "fakeout", "stoneedge", "suckerpunch"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	hitmonchan: {
+		randomBattleMoves: ["bulkup", "closecombat", "drainpunch", "icepunch", "machpunch", "rapidspin", "stoneedge"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	hitmontop: {
+		randomBattleMoves: ["closecombat", "machpunch", "rapidspin", "stoneedge", "suckerpunch", "toxic"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
@@ -414,6 +467,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	lickilicky: {
+		randomBattleMoves: ["bodyslam", "earthquake", "healbell", "powerwhip", "protect", "swordsdance", "toxic", "wish"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -421,6 +475,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	weezing: {
+		randomBattleMoves: ["fireblast", "haze", "painsplit", "sludgebomb", "willowisp"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -428,10 +483,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	rhydon: {
+		randomBattleMoves: ["earthquake", "megahorn", "rockblast", "stealthrock", "stoneedge"],
 		tier: "RU",
 		doublesTier: "NFE",
 	},
 	rhyperior: {
+		randomBattleMoves: ["earthquake", "icepunch", "megahorn", "rockpolish", "stoneedge"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -439,11 +496,13 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	chansey: {
+		randomBattleMoves: ["aromatherapy", "seismictoss", "softboiled", "stealthrock", "toxic"],
 		tier: "UUBL",
 		doublesTier: "NFE",
 	},
 	blissey: {
-		tier: "OU",
+		randomBattleMoves: ["aromatherapy", "protect", "seismictoss", "softboiled", "stealthrock", "thunderwave", "toxic"],
+		tier: "(OU)",
 		doublesTier: "DUU",
 	},
 	tangela: {
@@ -451,10 +510,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	tangrowth: {
+		randomBattleMoves: ["earthquake", "hiddenpowerfire", "leechseed", "powerwhip", "rockslide", "sleeppowder", "synthesis"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	kangaskhan: {
+		randomBattleMoves: ["doubleedge", "earthquake", "fakeout", "focuspunch", "return", "substitute", "suckerpunch"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -465,6 +526,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	kingdra: {
+		randomBattleMoves: ["dracometeor", "dragondance", "hiddenpowerelectric", "hydropump", "icebeam", "outrage", "raindance", "waterfall"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
@@ -472,13 +534,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	seaking: {
-		tier: "PU",
+		randomBattleMoves: ["drillrun", "icebeam", "megahorn", "return", "waterfall"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	staryu: {
 		tier: "LC",
 	},
 	starmie: {
+		randomBattleMoves: ["hydropump", "icebeam", "psyshock", "rapidspin", "recover", "thunderbolt", "trick"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
@@ -486,14 +550,17 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	mrmime: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "encore", "hiddenpowerfighting", "nastyplot", "psychic", "substitute", "thunderbolt"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	scyther: {
+		randomBattleMoves: ["aerialace", "batonpass", "brickbreak", "bugbite", "quickattack", "roost", "swordsdance"],
 		tier: "RU",
 		doublesTier: "NFE",
 	},
 	scizor: {
+		randomBattleMoves: ["bugbite", "bulletpunch", "pursuit", "roost", "superpower", "swordsdance", "uturn"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -501,6 +568,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	jynx: {
+		randomBattleMoves: ["focusblast", "icebeam", "lovelykiss", "nastyplot", "psyshock", "substitute", "trick"],
 		tier: "NUBL",
 		doublesTier: "DUU",
 	},
@@ -512,6 +580,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	electivire: {
+		randomBattleMoves: ["earthquake", "flamethrower", "focuspunch", "icepunch", "substitute", "wildcharge"],
 		tier: "RU",
 		doublesTier: "DOU",
 	},
@@ -522,14 +591,17 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	magmortar: {
+		randomBattleMoves: ["fireblast", "focusblast", "hiddenpowergrass", "substitute", "thunderbolt"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	pinsir: {
+		randomBattleMoves: ["closecombat", "earthquake", "quickattack", "stealthrock", "stoneedge", "swordsdance", "xscissor"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	tauros: {
+		randomBattleMoves: ["doubleedge", "earthquake", "pursuit", "retaliate", "stoneedge"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -537,14 +609,17 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	gyarados: {
+		randomBattleMoves: ["bounce", "dragondance", "earthquake", "icefang", "stoneedge", "substitute", "waterfall"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	lapras: {
+		randomBattleMoves: ["healbell", "hydropump", "icebeam", "substitute", "thunderbolt", "toxic"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	ditto: {
+		randomBattleMoves: ["transform"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -552,41 +627,50 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	vaporeon: {
+		randomBattleMoves: ["icebeam", "protect", "roar", "scald", "toxic", "wish"],
 		tier: "(OU)",
 		doublesTier: "DOU",
 	},
 	jolteon: {
+		randomBattleMoves: ["batonpass", "hiddenpowerice", "signalbeam", "substitute", "thunderbolt", "voltswitch"],
 		tier: "(OU)",
 		doublesTier: "DOU",
 	},
 	flareon: {
-		tier: "PU",
+		randomBattleMoves: ["facade", "flamecharge", "rest", "sleeptalk"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	espeon: {
+		randomBattleMoves: ["batonpass", "calmmind", "hiddenpowerfire", "morningsun", "psychic", "psyshock", "signalbeam"],
 		tier: "(OU)",
 		doublesTier: "DOU",
 	},
 	umbreon: {
+		randomBattleMoves: ["foulplay", "protect", "toxic", "wish"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	leafeon: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "leafblade", "return", "substitute", "swordsdance", "xscissor"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	glaceon: {
-		tier: "PU",
+		randomBattleMoves: ["hiddenpowerground", "icebeam", "protect", "shadowball", "wish"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	porygon: {
 		tier: "LC",
 	},
 	porygon2: {
+		randomBattleMoves: ["discharge", "icebeam", "recover", "toxic", "triattack"],
 		tier: "UU",
 		doublesTier: "NFE",
 	},
 	porygonz: {
+		randomBattleMoves: ["agility", "darkpulse", "hiddenpowerfighting", "icebeam", "nastyplot", "thunderbolt", "triattack", "trick"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -594,6 +678,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	omastar: {
+		randomBattleMoves: ["hiddenpowergrass", "icebeam", "shellsmash", "spikes", "stealthrock", "surf"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -601,10 +686,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	kabutops: {
+		randomBattleMoves: ["aquajet", "rapidspin", "stealthrock", "stoneedge", "superpower", "swordsdance", "waterfall"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	aerodactyl: {
+		randomBattleMoves: ["aquatail", "doubleedge", "earthquake", "roost", "stealthrock", "stoneedge", "taunt"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -612,18 +699,22 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	snorlax: {
+		randomBattleMoves: ["bodyslam", "crunch", "curse", "earthquake", "firepunch", "pursuit", "rest"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	articuno: {
-		tier: "PU",
+		randomBattleMoves: ["hurricane", "icebeam", "roost", "substitute", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	zapdos: {
+		randomBattleMoves: ["heatwave", "hiddenpowerice", "roost", "substitute", "thunderbolt", "toxic"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
 	moltres: {
+		randomBattleMoves: ["fireblast", "hiddenpowergrass", "hurricane", "roost", "substitute", "toxic", "uturn", "willowisp"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -631,17 +722,21 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	dragonair: {
+		randomBattleMoves: ["dragondance", "outrage", "rest", "sleeptalk", "waterfall"],
 		tier: "NFE",
 	},
 	dragonite: {
+		randomBattleMoves: ["dragondance", "earthquake", "extremespeed", "firepunch", "outrage", "roost"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	mewtwo: {
+		randomBattleMoves: ["aurasphere", "calmmind", "fireblast", "icebeam", "psystrike", "recover", "taunt"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	mew: {
+		randomBattleMoves: ["aurasphere", "fireblast", "nastyplot", "psychic", "softboiled", "stealthrock", "taunt", "uturn", "willowisp"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -652,7 +747,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	meganium: {
-		tier: "PU",
+		randomBattleMoves: ["aromatherapy", "dragontail", "gigadrain", "leechseed", "lightscreen", "reflect", "synthesis", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	cyndaquil: {
@@ -662,6 +758,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	typhlosion: {
+		randomBattleMoves: ["eruption", "fireblast", "focusblast", "hiddenpowergrass", "hiddenpowerrock"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -672,6 +769,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	feraligatr: {
+		randomBattleMoves: ["aquajet", "dragondance", "earthquake", "icepunch", "superpower", "swordsdance", "waterfall"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -679,34 +777,39 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	furret: {
-		tier: "PU",
+		randomBattleMoves: ["aquatail", "doubleedge", "firepunch", "shadowclaw", "trick", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	hoothoot: {
 		tier: "LC",
 	},
 	noctowl: {
-		tier: "PU",
+		randomBattleMoves: ["airslash", "magiccoat", "nightshade", "reflect", "roost", "toxic", "whirlwind"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	ledyba: {
 		tier: "LC",
 	},
 	ledian: {
-		tier: "PU",
+		randomBattleMoves: ["encore", "lightscreen", "reflect", "roost", "toxic", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	spinarak: {
 		tier: "LC",
 	},
 	ariados: {
-		tier: "PU",
+		randomBattleMoves: ["agility", "batonpass", "poisonjab", "toxicspikes", "xscissor"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	chinchou: {
 		tier: "LC",
 	},
 	lanturn: {
+		randomBattleMoves: ["healbell", "icebeam", "scald", "thunderbolt", "thunderwave", "voltswitch"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -717,6 +820,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	togekiss: {
+		randomBattleMoves: ["airslash", "aurasphere", "batonpass", "nastyplot", "roost", "thunderwave"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
@@ -724,6 +828,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	xatu: {
+		randomBattleMoves: ["heatwave", "lightscreen", "psychic", "reflect", "roost", "thunderwave", "toxic", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -734,6 +839,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	ampharos: {
+		randomBattleMoves: ["agility", "focusblast", "healbell", "hiddenpowergrass", "hiddenpowerice", "thunderbolt", "toxic", "voltswitch"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -744,6 +850,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	azumarill: {
+		randomBattleMoves: ["aquajet", "doubleedge", "icepunch", "superpower", "waterfall"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -751,7 +858,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	sudowoodo: {
-		tier: "PU",
+		randomBattleMoves: ["earthquake", "stealthrock", "stoneedge", "suckerpunch", "toxic", "woodhammer"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	hoppip: {
@@ -761,13 +869,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	jumpluff: {
-		tier: "PU",
+		randomBattleMoves: ["acrobatics", "encore", "energyball", "leechseed", "sleeppowder", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	aipom: {
 		tier: "LC",
 	},
 	ambipom: {
+		randomBattleMoves: ["fakeout", "lowkick", "pursuit", "return", "switcheroo", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -775,13 +885,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	sunflora: {
-		tier: "PU",
+		randomBattleMoves: ["earthpower", "encore", "gigadrain", "hiddenpowerrock", "solarbeam", "sunnyday"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	yanma: {
 		tier: "NFE",
 	},
 	yanmega: {
+		randomBattleMoves: ["airslash", "bugbuzz", "hiddenpowerground", "protect", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -789,13 +901,16 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	quagsire: {
+		randomBattleMoves: ["earthquake", "encore", "recover", "scald", "toxic"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	murkrow: {
+		randomBattleMoves: ["foulplay", "roost", "taunt", "thunderwave", "toxic"],
 		tier: "NFE",
 	},
 	honchkrow: {
+		randomBattleMoves: ["bravebird", "heatwave", "pursuit", "roost", "substitute", "suckerpunch", "superpower"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -804,40 +919,48 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	mismagius: {
+		randomBattleMoves: ["hiddenpowerfighting", "nastyplot", "shadowball", "taunt", "thunderbolt"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	unown: {
-		tier: "PU",
+		randomBattleMoves: ["hiddenpowerpsychic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	wynaut: {
 		tier: "LC",
 	},
 	wobbuffet: {
+		randomBattleMoves: ["counter", "destinybond", "encore", "mirrorcoat"],
 		tier: "UUBL",
 		doublesTier: "DUU",
 	},
 	girafarig: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "calmmind", "hypervoice", "psychic", "thunderbolt"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	pineco: {
 		tier: "LC",
 	},
 	forretress: {
+		randomBattleMoves: ["gyroball", "rapidspin", "spikes", "stealthrock", "toxic", "voltswitch"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
 	dunsparce: {
-		tier: "PU",
+		randomBattleMoves: ["bite", "bodyslam", "coil", "glare", "headbutt", "rockslide", "roost"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	gligar: {
+		randomBattleMoves: ["earthquake", "roost", "stealthrock", "taunt", "toxic", "uturn"],
 		tier: "UU",
 		doublesTier: "NFE",
 	},
 	gliscor: {
+		randomBattleMoves: ["batonpass", "earthquake", "icefang", "protect", "substitute", "swordsdance", "taunt", "toxic"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -845,18 +968,22 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	granbull: {
-		tier: "PU",
+		randomBattleMoves: ["closecombat", "crunch", "healbell", "return", "thunderwave", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	qwilfish: {
+		randomBattleMoves: ["destinybond", "poisonjab", "spikes", "taunt", "thunderwave", "toxicspikes", "waterfall"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	shuckle: {
-		tier: "PU",
+		randomBattleMoves: ["encore", "protect", "stealthrock", "toxic", "wrap"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	heracross: {
+		randomBattleMoves: ["closecombat", "facade", "earthquake", "megahorn", "stoneedge"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -864,6 +991,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	weavile: {
+		randomBattleMoves: ["icepunch", "iceshard", "lowkick", "nightslash", "pursuit", "swordsdance"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
@@ -871,14 +999,16 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	ursaring: {
-		tier: "PU",
+		randomBattleMoves: ["closecombat", "crunch", "earthquake", "facade", "protect", "swordsdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	slugma: {
 		tier: "LC",
 	},
 	magcargo: {
-		tier: "PU",
+		randomBattleMoves: ["hiddenpowerrock", "lavaplume", "recover", "stealthrock", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	swinub: {
@@ -889,32 +1019,38 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	mamoswine: {
+		randomBattleMoves: ["earthquake", "endeavor", "iceshard", "iciclecrash", "stealthrock", "superpower"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	corsola: {
-		tier: "PU",
+		randomBattleMoves: ["powergem", "recover", "scald", "stealthrock", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	remoraid: {
 		tier: "LC",
 	},
 	octillery: {
-		tier: "PU",
+		randomBattleMoves: ["energyball", "fireblast", "hydropump", "icebeam", "thunderwave"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	delibird: {
-		tier: "PU",
+		randomBattleMoves: ["aerialace", "icebeam", "iceshard", "rapidspin"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	mantyke: {
 		tier: "LC",
 	},
 	mantine: {
-		tier: "PU",
+		randomBattleMoves: ["airslash", "hydropump", "icebeam", "raindance", "rest", "scald", "sleeptalk"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	skarmory: {
+		randomBattleMoves: ["bravebird", "roost", "spikes", "stealthrock", "whirlwind"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
@@ -922,6 +1058,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	houndoom: {
+		randomBattleMoves: ["darkpulse", "fireblast", "hiddenpowergrass", "nastyplot", "suckerpunch"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -929,30 +1066,37 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	donphan: {
+		randomBattleMoves: ["earthquake", "headsmash", "iceshard", "rapidspin", "seedbomb", "stealthrock"],
 		tier: "(OU)",
 		doublesTier: "DUU",
 	},
 	stantler: {
-		tier: "PU",
+		randomBattleMoves: ["doubleedge", "earthquake", "jumpkick", "megahorn", "suckerpunch"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	smeargle: {
+		randomBattleMoves: ["memento", "spikes", "spore", "stealthrock", "whirlwind"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	miltank: {
+		randomBattleMoves: ["bodyslam", "earthquake", "healbell", "milkdrink", "stealthrock"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	raikou: {
+		randomBattleMoves: ["calmmind", "extrasensory", "hiddenpowerice", "substitute", "thunderbolt", "voltswitch"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	entei: {
+		randomBattleMoves: ["extremespeed", "flareblitz", "hiddenpowergrass", "ironhead", "stoneedge"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	suicune: {
+		randomBattleMoves: ["calmmind", "hiddenpowerelectric", "hydropump", "icebeam", "rest", "roar", "scald", "sleeptalk"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -963,18 +1107,22 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	tyranitar: {
+		randomBattleMoves: ["crunch", "fireblast", "pursuit", "stealthrock", "stoneedge", "superpower"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	lugia: {
+		randomBattleMoves: ["aeroblast", "earthquake", "roost", "substitute", "toxic", "whirlwind"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	hooh: {
+		randomBattleMoves: ["bravebird", "earthquake", "flamecharge", "roost", "sacredfire", "substitute"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	celebi: {
+		randomBattleMoves: ["batonpass", "earthpower", "gigadrain", "hiddenpowerice", "leafstorm", "nastyplot", "psychic", "recover", "stealthrock", "uturn"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
@@ -985,6 +1133,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	sceptile: {
+		randomBattleMoves: ["acrobatics", "earthquake", "gigadrain", "hiddenpowerfire", "leafblade", "leechseed", "substitute", "swordsdance"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -992,10 +1141,11 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	combusken: {
-		tier: "PUBL",
+		tier: "NFE",
 		doublesTier: "DUU",
 	},
 	blaziken: {
+		randomBattleMoves: ["flareblitz", "highjumpkick", "protect", "stoneedge", "swordsdance"],
 		tier: "Uber",
 		doublesTier: "DOU",
 	},
@@ -1006,6 +1156,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	swampert: {
+		randomBattleMoves: ["earthquake", "icebeam", "protect", "roar", "scald", "stealthrock", "toxic"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -1013,14 +1164,16 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	mightyena: {
-		tier: "PU",
+		randomBattleMoves: ["crunch", "facade", "firefang", "howl", "suckerpunch"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	zigzagoon: {
 		tier: "LC",
 	},
 	linoone: {
-		tier: "PUBL",
+		randomBattleMoves: ["bellydrum", "extremespeed", "seedbomb", "shadowclaw"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	wurmple: {
@@ -1030,14 +1183,16 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	beautifly: {
-		tier: "PU",
+		randomBattleMoves: ["bugbuzz", "hiddenpowerground", "psychic", "quiverdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	cascoon: {
 		tier: "NFE",
 	},
 	dustox: {
-		tier: "PU",
+		randomBattleMoves: ["bugbuzz", "quiverdance", "roost", "sludgebomb", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	lotad: {
@@ -1047,6 +1202,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	ludicolo: {
+		randomBattleMoves: ["gigadrain", "hydropump", "icebeam", "raindance", "scald"],
 		tier: "NU",
 		doublesTier: "DOU",
 	},
@@ -1057,13 +1213,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	shiftry: {
-		tier: "PU",
+		randomBattleMoves: ["darkpulse", "hiddenpowerfire", "leafstorm", "naturepower", "seedbomb", "suckerpunch", "swordsdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	taillow: {
 		tier: "LC",
 	},
 	swellow: {
+		randomBattleMoves: ["bravebird", "facade", "protect", "quickattack", "uturn"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1071,7 +1229,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	pelipper: {
-		tier: "PU",
+		randomBattleMoves: ["hurricane", "icebeam", "roost", "scald", "tailwind", "toxic", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	ralts: {
@@ -1081,10 +1240,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	gardevoir: {
+		randomBattleMoves: ["calmmind", "focusblast", "painsplit", "psychic", "substitute", "thunderbolt", "trick", "willowisp"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	gallade: {
+		randomBattleMoves: ["closecombat", "drainpunch", "nightslash", "substitute", "swordsdance", "trick", "zenheadbutt"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1092,13 +1253,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	masquerain: {
-		tier: "PU",
+		randomBattleMoves: ["airslash", "bugbuzz", "hydropump", "quiverdance", "roost"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	shroomish: {
 		tier: "LC",
 	},
 	breloom: {
+		randomBattleMoves: ["bulletseed", "focuspunch", "machpunch", "spore", "stoneedge", "substitute", "swordsdance"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -1106,22 +1269,25 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	vigoroth: {
-		tier: "PUBL",
-		doublesTier: "NFE",
+		randomBattleMoves: ["bulkup", "earthquake", "return", "slackoff", "taunt", "toxic"],
+		tier: "NFE",
 	},
 	slaking: {
-		tier: "PU",
+		randomBattleMoves: ["earthquake", "nightslash", "pursuit", "retaliate", "return"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	nincada: {
 		tier: "LC",
 	},
 	ninjask: {
+		randomBattleMoves: ["aerialace", "substitute", "swordsdance", "xscissor"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	shedinja: {
-		tier: "PU",
+		randomBattleMoves: ["shadowclaw", "shadowsneak", "swordsdance", "willowisp", "xscissor"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	whismur: {
@@ -1131,13 +1297,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	exploud: {
-		tier: "PU",
+		randomBattleMoves: ["fireblast", "focusblast", "hypervoice", "lowkick", "surf"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	makuhita: {
 		tier: "LC",
 	},
 	hariyama: {
+		randomBattleMoves: ["bulletpunch", "closecombat", "facade", "fakeout", "stoneedge"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1145,6 +1313,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	probopass: {
+		randomBattleMoves: ["earthpower", "powergem", "stealthrock", "toxic", "voltswitch"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1152,15 +1321,18 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	delcatty: {
-		tier: "PU",
+		randomBattleMoves: ["doubleedge", "fakeout", "icebeam", "suckerpunch", "thunderwave"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	sableye: {
+		randomBattleMoves: ["foulplay", "nightshade", "recover", "taunt", "willowisp"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
 	mawile: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "firefang", "ironhead", "substitute", "suckerpunch", "swordsdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	aron: {
@@ -1170,6 +1342,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	aggron: {
+		randomBattleMoves: ["aquatail", "earthquake", "headsmash", "heavyslam", "rockpolish", "stealthrock", "thunderwave"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1177,6 +1350,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	medicham: {
+		randomBattleMoves: ["bulletpunch", "highjumpkick", "icepunch", "thunderpunch", "trick", "zenheadbutt"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1184,23 +1358,28 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	manectric: {
+		randomBattleMoves: ["flamethrower", "hiddenpowerice", "overheat", "switcheroo", "thunderbolt", "voltswitch"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	plusle: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "hiddenpowerice", "nastyplot", "thunderbolt", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	minun: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "encore", "nastyplot", "thunderbolt", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	volbeat: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "bugbuzz", "encore", "substitute", "tailglow", "thunderwave"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	illumise: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "bugbuzz", "encore", "substitute", "thunderwave", "wish"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	budew: {
@@ -1211,6 +1390,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	roserade: {
+		randomBattleMoves: ["gigadrain", "hiddenpowerfire", "leafstorm", "sleeppowder", "sludgebomb", "spikes", "synthesis", "toxicspikes"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -1218,13 +1398,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	swalot: {
-		tier: "PU",
+		randomBattleMoves: ["earthquake", "encore", "painsplit", "protect", "sludgebomb", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	carvanha: {
 		tier: "LC",
 	},
 	sharpedo: {
+		randomBattleMoves: ["crunch", "earthquake", "icebeam", "protect", "waterfall", "zenheadbutt"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -1232,17 +1414,20 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	wailord: {
-		tier: "PU",
+		randomBattleMoves: ["hiddenpowergrass", "hydropump", "icebeam", "surf", "waterspout"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	numel: {
 		tier: "LC",
 	},
 	camerupt: {
+		randomBattleMoves: ["earthpower", "hiddenpowergrass", "lavaplume", "roar", "stealthrock"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	torkoal: {
+		randomBattleMoves: ["earthquake", "lavaplume", "protect", "rapidspin", "stealthrock", "toxic", "yawn"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1250,11 +1435,13 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	grumpig: {
-		tier: "PU",
+		randomBattleMoves: ["focusblast", "healbell", "psychic", "shadowball", "thunderwave", "trick", "whirlwind"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	spinda: {
-		tier: "PU",
+		randomBattleMoves: ["return", "suckerpunch", "superpower", "trickroom"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	trapinch: {
@@ -1264,6 +1451,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	flygon: {
+		randomBattleMoves: ["earthquake", "firepunch", "outrage", "roost", "stoneedge", "superpower", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -1271,6 +1459,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	cacturne: {
+		randomBattleMoves: ["drainpunch", "seedbomb", "spikes", "substitute", "suckerpunch", "swordsdance"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1278,36 +1467,43 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	altaria: {
+		randomBattleMoves: ["dracometeor", "dragondance", "earthquake", "fireblast", "healbell", "outrage", "roost"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	zangoose: {
+		randomBattleMoves: ["closecombat", "facade", "nightslash", "quickattack", "swordsdance"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	seviper: {
-		tier: "PU",
+		randomBattleMoves: ["earthquake", "flamethrower", "gigadrain", "sludgebomb", "suckerpunch", "switcheroo"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	lunatone: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "earthpower", "hiddenpowerrock", "moonlight", "psychic", "rockpolish", "stealthrock", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	solrock: {
-		tier: "PU",
+		randomBattleMoves: ["explosion", "lightscreen", "morningsun", "reflect", "rockslide", "stealthrock", "willowisp"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	barboach: {
 		tier: "LC",
 	},
 	whiscash: {
-		tier: "PU",
+		randomBattleMoves: ["dragondance", "earthquake", "icebeam", "waterfall"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	corphish: {
 		tier: "LC",
 	},
 	crawdaunt: {
+		randomBattleMoves: ["crunch", "dragondance", "superpower", "taunt", "waterfall"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1315,6 +1511,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	claydol: {
+		randomBattleMoves: ["earthquake", "icebeam", "protect", "rapidspin", "stealthrock", "toxic"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -1322,6 +1519,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	cradily: {
+		randomBattleMoves: ["earthquake", "recover", "rockslide", "seedbomb", "stealthrock", "swordsdance", "toxic"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1329,6 +1527,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	armaldo: {
+		randomBattleMoves: ["aquatail", "earthquake", "rapidspin", "rockblast", "stealthrock", "swordsdance", "xscissor"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1336,52 +1535,62 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	milotic: {
+		randomBattleMoves: ["dragontail", "haze", "icebeam", "recover", "scald", "toxic"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	castform: {
-		tier: "PU",
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	castformsunny: {
+		randomBattleMoves: ["icebeam", "solarbeam", "sunnyday", "weatherball"],
 	},
 	castformrainy: {
+		randomBattleMoves: ["icebeam", "raindance", "thunder", "weatherball"],
 	},
 	castformsnowy: {},
 	kecleon: {
-		tier: "PU",
+		randomBattleMoves: ["foulplay", "recover", "stealthrock", "thunderwave", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	shuppet: {
 		tier: "LC",
 	},
 	banette: {
-		tier: "PU",
+		randomBattleMoves: ["pursuit", "shadowclaw", "shadowsneak", "trick", "willowisp"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	duskull: {
 		tier: "LC",
 	},
 	dusclops: {
+		randomBattleMoves: ["nightshade", "rest", "sleeptalk", "willowisp"],
 		tier: "UU",
 		doublesTier: "NFE",
 	},
 	dusknoir: {
+		randomBattleMoves: ["earthquake", "icepunch", "painsplit", "shadowsneak", "willowisp", "trick"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	tropius: {
-		tier: "PU",
+		randomBattleMoves: ["airslash", "leechseed", "protect", "substitute", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	chingling: {
 		tier: "LC",
 	},
 	chimecho: {
-		tier: "PU",
+		randomBattleMoves: ["calmmind", "healingwish", "psychic", "recover", "shadowball", "toxic", "yawn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	absol: {
+		randomBattleMoves: ["fireblast", "nightslash", "psychocut", "pursuit", "suckerpunch", "superpower", "swordsdance"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1389,10 +1598,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	glalie: {
-		tier: "PU",
+		randomBattleMoves: ["earthquake", "explosion", "icebeam", "spikes", "taunt"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	froslass: {
+		randomBattleMoves: ["destinybond", "icebeam", "shadowball", "spikes", "taunt", "thunderwave"],
 		tier: "UUBL",
 		doublesTier: "DUU",
 	},
@@ -1403,26 +1614,31 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	walrein: {
-		tier: "PU",
+		randomBattleMoves: ["encore", "icebeam", "protect", "roar", "surf", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	clamperl: {
 		tier: "LC",
 	},
 	huntail: {
-		tier: "PU",
+		randomBattleMoves: ["icebeam", "return", "shellsmash", "waterfall"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	gorebyss: {
+		randomBattleMoves: ["hydropump", "icebeam", "shellsmash", "signalbeam", "substitute"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	relicanth: {
-		tier: "PU",
+		randomBattleMoves: ["doubleedge", "earthquake", "headsmash", "stealthrock", "waterfall"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	luvdisc: {
-		tier: "PU",
+		randomBattleMoves: ["icebeam", "protect", "surf", "toxic", "sweetkiss"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	bagon: {
@@ -1432,6 +1648,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	salamence: {
+		randomBattleMoves: ["aquatail", "brickbreak", "dracometeor", "dragondance", "earthquake", "fireblast", "outrage", "roost"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -1443,58 +1660,72 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	metagross: {
+		randomBattleMoves: ["agility", "bulletpunch", "earthquake", "meteormash", "pursuit", "stealthrock", "zenheadbutt"],
 		tier: "(OU)",
 		doublesTier: "DOU",
 	},
 	regirock: {
+		randomBattleMoves: ["drainpunch", "protect", "rockslide", "stealthrock", "thunderwave", "toxic"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	regice: {
+		randomBattleMoves: ["focusblast", "icebeam", "rockpolish", "rest", "sleeptalk", "thunderbolt"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	registeel: {
+		randomBattleMoves: ["ironhead", "curse", "protect", "rest", "sleeptalk", "stealthrock", "toxic"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	latias: {
+		randomBattleMoves: ["calmmind", "dracometeor", "healingwish", "hiddenpowerfire", "psyshock", "roost", "surf"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
 	latios: {
+		randomBattleMoves: ["dracometeor", "hiddenpowerfire", "psyshock", "roost", "surf", "trick"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	kyogre: {
+		randomBattleMoves: ["calmmind", "icebeam", "rest", "sleeptalk", "surf", "thunder", "waterspout"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	groudon: {
+		randomBattleMoves: ["dragonclaw", "earthquake", "firepunch", "stealthrock", "stoneedge", "swordsdance", "thunderwave"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	rayquaza: {
+		randomBattleMoves: ["dracometeor", "dragondance", "earthquake", "extremespeed", "outrage", "swordsdance", "vcreate"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	jirachi: {
+		randomBattleMoves: ["bodyslam", "firepunch", "icepunch", "ironhead", "substitute", "uturn", "wish"],
 		tier: "OU",
 		doublesTier: "DUber",
 	},
 	deoxys: {
+		randomBattleMoves: ["hiddenpowerfire", "icebeam", "lightscreen", "psychoboost", "reflect", "stealthrock"],
 		tier: "Uber",
 		doublesTier: "DUU",
 	},
 	deoxysattack: {
+		randomBattleMoves: ["extremespeed", "hiddenpowerfire", "icebeam", "psychoboost", "superpower", "stealthrock"],
 		tier: "Uber",
 		doublesTier: "DUU",
 	},
 	deoxysdefense: {
+		randomBattleMoves: ["magiccoat", "recover", "seismictoss", "spikes", "taunt", "toxic"],
 		tier: "Uber",
 		doublesTier: "DUU",
 	},
 	deoxysspeed: {
+		randomBattleMoves: ["icebeam", "lightscreen", "psychoboost", "reflect", "spikes", "stealthrock", "superpower", "taunt"],
 		tier: "Uber",
 		doublesTier: "DUU",
 	},
@@ -1505,7 +1736,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	torterra: {
-		tier: "PU",
+		randomBattleMoves: ["earthquake", "rockpolish", "stealthrock", "stoneedge", "synthesis", "woodhammer"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	chimchar: {
@@ -1515,7 +1747,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	infernape: {
-		tier: "(OU)",
+		randomBattleMoves: ["closecombat", "flareblitz", "hiddenpowerice", "machpunch", "overheat", "swordsdance", "thunderpunch", "uturn"],
+		tier: "OU",
 		doublesTier: "DOU",
 	},
 	piplup: {
@@ -1525,6 +1758,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	empoleon: {
+		randomBattleMoves: ["agility", "grassknot", "hydropump", "icebeam", "protect", "scald", "stealthrock", "toxic"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -1535,6 +1769,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	staraptor: {
+		randomBattleMoves: ["bravebird", "closecombat", "doubleedge", "quickattack", "roost", "uturn"],
 		tier: "UUBL",
 		doublesTier: "DUU",
 	},
@@ -1542,14 +1777,16 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	bibarel: {
-		tier: "PU",
+		randomBattleMoves: ["curse", "quickattack", "rest", "waterfall"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	kricketot: {
 		tier: "LC",
 	},
 	kricketune: {
-		tier: "PU",
+		randomBattleMoves: ["brickbreak", "bugbite", "nightslash", "return", "swordsdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	shinx: {
@@ -1559,20 +1796,23 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	luxray: {
-		tier: "PU",
+		randomBattleMoves: ["crunch", "facade", "icefang", "superpower", "voltswitch", "wildcharge"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	cranidos: {
 		tier: "LC",
 	},
 	rampardos: {
-		tier: "PU",
+		randomBattleMoves: ["crunch", "earthquake", "firepunch", "headsmash", "rockpolish", "superpower"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	shieldon: {
 		tier: "LC",
 	},
 	bastiodon: {
+		randomBattleMoves: ["metalburst", "protect", "roar", "rockblast", "stealthrock", "toxic"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1580,36 +1820,43 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	wormadam: {
-		tier: "PU",
+		randomBattleMoves: ["gigadrain", "hiddenpowerrock", "leafstorm", "protect", "signalbeam", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	wormadamsandy: {
-		tier: "PU",
+		randomBattleMoves: ["earthquake", "protect", "rockblast", "stealthrock", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	wormadamtrash: {
-		tier: "PU",
+		randomBattleMoves: ["ironhead", "protect", "stealthrock", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	mothim: {
-		tier: "PU",
+		randomBattleMoves: ["airslash", "bugbuzz", "hiddenpowerground", "quiverdance", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	combee: {
 		tier: "LC",
 	},
 	vespiquen: {
-		tier: "PU",
+		randomBattleMoves: ["attackorder", "protect", "roost", "substitute", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	pachirisu: {
-		tier: "PU",
+		randomBattleMoves: ["protect", "superfang", "thunderwave", "toxic", "voltswitch"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	buizel: {
 		tier: "LC",
 	},
 	floatzel: {
+		randomBattleMoves: ["aquajet", "batonpass", "bulkup", "crunch", "icepunch", "switcheroo", "taunt", "waterfall"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1617,14 +1864,18 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	cherrim: {
-		tier: "PU",
+		randomBattleMoves: ["energyball", "healingwish", "hiddenpowerrock", "naturepower"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
-	cherrimsunshine: {},
+	cherrimsunshine: {
+		randomBattleMoves: ["naturepower", "solarbeam", "sunnyday", "weatherball"],
+	},
 	shellos: {
 		tier: "LC",
 	},
 	gastrodon: {
+		randomBattleMoves: ["earthquake", "icebeam", "recover", "scald", "toxic"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -1632,6 +1883,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	drifblim: {
+		randomBattleMoves: ["acrobatics", "destinybond", "disable", "shadowball", "substitute", "willowisp"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1639,20 +1891,23 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	lopunny: {
-		tier: "PU",
+		randomBattleMoves: ["firepunch", "healingwish", "icepunch", "jumpkick", "return", "switcheroo", "thunderpunch"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	glameow: {
 		tier: "LC",
 	},
 	purugly: {
-		tier: "PU",
+		randomBattleMoves: ["fakeout", "hypnosis", "return", "suckerpunch", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	stunky: {
 		tier: "LC",
 	},
 	skuntank: {
+		randomBattleMoves: ["crunch", "fireblast", "poisonjab", "pursuit", "suckerpunch", "taunt"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1660,14 +1915,17 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	bronzong: {
+		randomBattleMoves: ["earthquake", "hypnosis", "lightscreen", "psychic", "reflect", "stealthrock", "toxic"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
 	chatot: {
-		tier: "PU",
+		randomBattleMoves: ["chatter", "heatwave", "hiddenpowerground", "hypervoice", "nastyplot", "substitute", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	spiritomb: {
+		randomBattleMoves: ["calmmind", "darkpulse", "foulplay", "rest", "shadowsneak", "sleeptalk", "willowisp"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1678,21 +1936,23 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	garchomp: {
+		randomBattleMoves: ["aquatail", "earthquake", "fireblast", "outrage", "stealthrock", "stoneedge", "swordsdance"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	riolu: {
-		tier: "PUBL",
-		doublesTier: "LC",
+		tier: "LC",
 	},
 	lucario: {
-		tier: "OU",
+		randomBattleMoves: ["closecombat", "crunch", "extremespeed", "icepunch", "swordsdance"],
+		tier: "(OU)",
 		doublesTier: "DOU",
 	},
 	hippopotas: {
 		tier: "LC",
 	},
 	hippowdon: {
+		randomBattleMoves: ["earthquake", "icefang", "slackoff", "stealthrock", "toxic", "whirlwind"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
@@ -1700,6 +1960,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	drapion: {
+		randomBattleMoves: ["aquatail", "crunch", "earthquake", "poisonjab", "pursuit", "swordsdance", "taunt", "toxicspikes"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1707,148 +1968,191 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	toxicroak: {
-		tier: "(OU)",
+		randomBattleMoves: ["drainpunch", "focuspunch", "icepunch", "substitute", "suckerpunch", "swordsdance"],
+		tier: "OU",
 		doublesTier: "DOU",
 	},
 	carnivine: {
-		tier: "PU",
+		randomBattleMoves: ["leechseed", "powerwhip", "return", "sleeppowder", "substitute", "swordsdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	finneon: {
 		tier: "LC",
 	},
 	lumineon: {
-		tier: "PU",
+		randomBattleMoves: ["icebeam", "protect", "scald", "toxic", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	snover: {
 		tier: "LC",
 	},
 	abomasnow: {
+		randomBattleMoves: ["blizzard", "earthquake", "hiddenpowerfire", "iceshard", "leechseed", "woodhammer"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
 	rotom: {
+		randomBattleMoves: ["hiddenpowerice", "shadowball", "substitute", "painsplit", "thunderbolt", "trick", "voltswitch", "willowisp"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	rotomheat: {
+		randomBattleMoves: ["hiddenpowergrass", "overheat", "painsplit", "thunderbolt", "thunderwave", "trick", "voltswitch", "willowisp"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	rotomwash: {
+		randomBattleMoves: ["hiddenpowerice", "hydropump", "painsplit", "thunderbolt", "thunderwave", "trick", "voltswitch", "willowisp"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	rotomfrost: {
-		tier: "PUBL",
+		randomBattleMoves: ["blizzard", "hiddenpowerfire", "painsplit", "substitute", "thunderbolt", "trick", "voltswitch", "willowisp"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	rotomfan: {
+		randomBattleMoves: ["airslash", "painsplit", "substitute", "thunderbolt", "trick", "voltswitch", "willowisp"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	rotommow: {
+		randomBattleMoves: ["hiddenpowerfire", "leafstorm", "painsplit", "thunderbolt", "thunderwave", "trick", "voltswitch", "willowisp"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	uxie: {
+		randomBattleMoves: ["healbell", "lightscreen", "memento", "psychic", "reflect", "stealthrock", "thunderwave", "uturn", "yawn"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	mesprit: {
+		randomBattleMoves: ["calmmind", "hiddenpowerfire", "icebeam", "psychic", "stealthrock", "thunderbolt", "trick", "uturn"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	azelf: {
+		randomBattleMoves: ["energyball", "fireblast", "nastyplot", "psychic", "stealthrock", "taunt", "thunderbolt", "trick", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	dialga: {
+		randomBattleMoves: ["aurasphere", "dracometeor", "dragontail", "fireblast", "stealthrock", "thunderbolt"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	palkia: {
+		randomBattleMoves: ["dracometeor", "dragontail", "fireblast", "hydropump", "spacialrend", "surf", "thunderbolt"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	heatran: {
+		randomBattleMoves: ["earthpower", "fireblast", "flashcannon", "hiddenpowerice", "lavaplume", "protect", "roar", "stealthrock", "toxic"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	regigigas: {
-		tier: "PU",
+		randomBattleMoves: ["confuseray", "return", "rockslide", "substitute", "thunderwave"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	giratina: {
+		randomBattleMoves: ["calmmind", "dragontail", "dragonpulse", "rest", "sleeptalk", "willowisp"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	giratinaorigin: {
+		randomBattleMoves: ["dracometeor", "earthquake", "hiddenpowerfire", "shadowsneak", "willowisp"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	cresselia: {
+		randomBattleMoves: ["calmmind", "hiddenpowerfighting", "moonlight", "psychic", "thunderwave", "toxic"],
 		tier: "RUBL",
 		doublesTier: "DOU",
 	},
 	phione: {
-		tier: "PU",
+		randomBattleMoves: ["healbell", "icebeam", "scald", "toxic", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	manaphy: {
+		randomBattleMoves: ["energyball", "icebeam", "surf", "tailglow"],
 		tier: "Uber",
 		doublesTier: "DUU",
 	},
 	darkrai: {
+		randomBattleMoves: ["darkpulse", "darkvoid", "focusblast", "nastyplot", "substitute"],
 		tier: "Uber",
 		doublesTier: "DUU",
 	},
 	shaymin: {
+		randomBattleMoves: ["earthpower", "hiddenpowerfire", "leechseed", "psychic", "seedflare", "rest", "substitute"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	shayminsky: {
+		randomBattleMoves: ["airslash", "earthpower", "hiddenpowerfire", "hiddenpowerice", "leechseed", "seedflare", "substitute"],
 		tier: "Uber",
 		doublesTier: "DOU",
 	},
 	arceus: {
+		randomBattleMoves: ["earthquake", "extremespeed", "recover", "shadowclaw", "swordsdance"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	arceusbug: {
+		randomBattleMoves: ["earthquake", "recover", "stoneedge", "swordsdance", "xscissor"],
 	},
 	arceusdark: {
+		randomBattleMoves: ["calmmind", "judgment", "recover", "refresh"],
 	},
 	arceusdragon: {
+		randomBattleMoves: ["earthquake", "extremespeed", "outrage", "swordsdance"],
 	},
 	arceuselectric: {
+		randomBattleMoves: ["calmmind", "icebeam", "judgment", "recover", "substitute"],
 	},
 	arceusfighting: {
+		randomBattleMoves: ["calmmind", "darkpulse", "icebeam", "judgment", "recover", "toxic"],
 	},
 	arceusfire: {
+		randomBattleMoves: ["calmmind", "fireblast", "judgment", "recover", "thunderbolt"],
 	},
 	arceusflying: {
+		randomBattleMoves: ["calmmind", "focusblast", "judgment", "recover", "substitute"],
 	},
 	arceusghost: {
+		randomBattleMoves: ["calmmind", "focusblast", "judgment", "recover", "roar", "willowisp"],
 	},
 	arceusgrass: {
+		randomBattleMoves: ["calmmind", "earthpower", "icebeam", "judgment", "recover", "thunderwave"],
 	},
 	arceusground: {
+		randomBattleMoves: ["calmmind", "icebeam", "judgment", "recover", "willowisp"],
 	},
 	arceusice: {
+		randomBattleMoves: ["calmmind", "fireblast", "icebeam", "recover", "thunderbolt"],
 	},
 	arceuspoison: {
+		randomBattleMoves: ["flamethrower", "icebeam", "recover", "sludgebomb", "stealthrock", "willowisp"],
 	},
 	arceuspsychic: {
+		randomBattleMoves: ["calmmind", "darkpulse", "judgment", "recover", "willowisp"],
 	},
 	arceusrock: {
+		randomBattleMoves: ["earthquake", "stoneedge", "swordsdance", "recover"],
 	},
 	arceussteel: {
+		randomBattleMoves: ["calmmind", "judgment", "recover", "thunderbolt", "willowisp"],
 	},
 	arceuswater: {
+		randomBattleMoves: ["brickbreak", "extremespeed", "recover", "swordsdance", "waterfall"],
 	},
 	victini: {
+		randomBattleMoves: ["blueflare", "boltstrike", "focusblast", "thunderbolt", "trick", "uturn", "vcreate"],
 		tier: "UU",
 		doublesTier: "DOU",
 	},
@@ -1859,6 +2163,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	serperior: {
+		randomBattleMoves: ["calmmind", "dragonpulse", "gigadrain", "hiddenpowerfire", "leechseed", "substitute"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1869,6 +2174,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	emboar: {
+		randomBattleMoves: ["earthquake", "fireblast", "flareblitz", "grassknot", "headsmash", "superpower", "wildcharge"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -1879,6 +2185,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	samurott: {
+		randomBattleMoves: ["aquajet", "grassknot", "icebeam", "megahorn", "superpower", "swordsdance", "waterfall"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1886,7 +2193,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	watchog: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "hypnosis", "return", "substitute", "superfang", "swordsdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	lillipup: {
@@ -1896,13 +2204,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	stoutland: {
-		tier: "PU",
+		randomBattleMoves: ["crunch", "return", "superpower", "thunderwave", "wildcharge"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	purrloin: {
 		tier: "LC",
 	},
 	liepard: {
+		randomBattleMoves: ["darkpulse", "encore", "hiddenpowerfire", "nastyplot", "thunderwave"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1910,27 +2220,31 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	simisage: {
-		tier: "PU",
+		randomBattleMoves: ["focusblast", "gigadrain", "hiddenpowerrock", "leechseed", "nastyplot", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	pansear: {
 		tier: "LC",
 	},
 	simisear: {
-		tier: "PU",
+		randomBattleMoves: ["fireblast", "focusblast", "grassknot", "hiddenpowerrock", "nastyplot", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	panpour: {
 		tier: "LC",
 	},
 	simipour: {
-		tier: "PUBL",
+		randomBattleMoves: ["focusblast", "hiddenpowergrass", "hydropump", "icebeam", "nastyplot", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	munna: {
 		tier: "LC",
 	},
 	musharna: {
+		randomBattleMoves: ["batonpass", "calmmind", "healbell", "hiddenpowerground", "moonlight", "psychic", "signalbeam", "toxic", "trickroom"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1941,14 +2255,16 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	unfezant: {
-		tier: "PU",
+		randomBattleMoves: ["hypnosis", "pluck", "return", "roost", "tailwind", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	blitzle: {
 		tier: "LC",
 	},
 	zebstrika: {
-		tier: "PU",
+		randomBattleMoves: ["hiddenpowergrass", "overheat", "thunderbolt", "voltswitch", "wildcharge"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	roggenrola: {
@@ -1958,6 +2274,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	gigalith: {
+		randomBattleMoves: ["earthquake", "explosion", "rockblast", "stealthrock", "stoneedge", "superpower"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -1965,18 +2282,21 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	swoobat: {
-		tier: "PU",
+		randomBattleMoves: ["airslash", "calmmind", "heatwave", "roost", "storedpower"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	drilbur: {
 		tier: "LC",
 	},
 	excadrill: {
+		randomBattleMoves: ["earthquake", "ironhead", "rapidspin", "rockslide", "swordsdance"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	audino: {
-		tier: "PU",
+		randomBattleMoves: ["doubleedge", "healbell", "magiccoat", "protect", "toxic", "wish"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	timburr: {
@@ -1987,6 +2307,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "NFE",
 	},
 	conkeldurr: {
+		randomBattleMoves: ["bulkup", "drainpunch", "icepunch", "machpunch", "thunderpunch"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -1997,14 +2318,17 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	seismitoad: {
+		randomBattleMoves: ["earthquake", "hydropump", "raindance", "sludgewave", "stealthrock", "toxic"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	throh: {
-		tier: "PUBL",
+		randomBattleMoves: ["bulkup", "icepunch", "payback", "rest", "sleeptalk", "stormthrow", "substitute"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	sawk: {
+		randomBattleMoves: ["bulkup", "closecombat", "earthquake", "icepunch", "stoneedge"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -2015,7 +2339,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	leavanny: {
-		tier: "PU",
+		randomBattleMoves: ["batonpass", "leafblade", "swordsdance", "xscissor"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	venipede: {
@@ -2025,6 +2350,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	scolipede: {
+		randomBattleMoves: ["aquatail", "earthquake", "megahorn", "rockslide", "spikes", "swordsdance"],
 		tier: "NUBL",
 		doublesTier: "DUU",
 	},
@@ -2032,6 +2358,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	whimsicott: {
+		randomBattleMoves: ["encore", "gigadrain", "leechseed", "stunspore", "taunt", "uturn"],
 		tier: "RU",
 		doublesTier: "DOU",
 	},
@@ -2039,14 +2366,17 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	lilligant: {
+		randomBattleMoves: ["gigadrain", "hiddenpowerfire", "hiddenpowerrock", "petaldance", "quiverdance", "sleeppowder"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	basculin: {
+		randomBattleMoves: ["aquajet", "crunch", "superpower", "waterfall", "zenheadbutt"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	basculinbluestriped: {
+		randomBattleMoves: ["aquajet", "crunch", "superpower", "waterfall", "zenheadbutt"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -2057,6 +2387,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	krookodile: {
+		randomBattleMoves: ["crunch", "earthquake", "pursuit", "stealthrock", "stoneedge", "superpower"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -2064,17 +2395,20 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	darmanitan: {
+		randomBattleMoves: ["earthquake", "flareblitz", "rockslide", "superpower", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	maractus: {
-		tier: "PU",
+		randomBattleMoves: ["gigadrain", "hiddenpowerfire", "leechseed", "spikes", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	dwebble: {
 		tier: "LC",
 	},
 	crustle: {
+		randomBattleMoves: ["earthquake", "rockblast", "shellsmash", "spikes", "stealthrock", "stoneedge", "xscissor"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2082,10 +2416,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	scrafty: {
+		randomBattleMoves: ["crunch", "dragondance", "highjumpkick", "icepunch", "zenheadbutt"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	sigilyph: {
+		randomBattleMoves: ["cosmicpower", "psychoshift", "roost", "storedpower"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2093,6 +2429,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	cofagrigus: {
+		randomBattleMoves: ["haze", "hiddenpowerfighting", "nastyplot", "painsplit", "shadowball", "trickroom", "willowisp"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -2100,6 +2437,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	carracosta: {
+		randomBattleMoves: ["aquajet", "earthquake", "icebeam", "shellsmash", "stealthrock", "stoneedge", "waterfall"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -2107,6 +2445,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	archeops: {
+		randomBattleMoves: ["acrobatics", "earthquake", "headsmash", "pluck", "roost", "stoneedge", "uturn"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2114,6 +2453,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	garbodor: {
+		randomBattleMoves: ["gunkshot", "haze", "painsplit", "spikes", "toxicspikes"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -2121,6 +2461,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	zoroark: {
+		randomBattleMoves: ["darkpulse", "flamethrower", "focusblast", "nastyplot", "suckerpunch", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
@@ -2128,6 +2469,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	cinccino: {
+		randomBattleMoves: ["bulletseed", "encore", "rockblast", "tailslap", "uturn"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2135,10 +2477,10 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	gothorita: {
-		tier: "PUBL",
-		doublesTier: "NFE",
+		tier: "NFE",
 	},
 	gothitelle: {
+		randomBattleMoves: ["calmmind", "hiddenpowerfighting", "psychic", "rest", "thunderbolt", "trick"],
 		tier: "UUBL",
 		doublesTier: "DUU",
 	},
@@ -2149,6 +2491,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	reuniclus: {
+		randomBattleMoves: ["calmmind", "focusblast", "psychic", "recover", "shadowball", "trickroom"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -2156,7 +2499,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	swanna: {
-		tier: "PUBL",
+		randomBattleMoves: ["hurricane", "icebeam", "raindance", "roost", "surf"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	vanillite: {
@@ -2166,24 +2510,28 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	vanilluxe: {
-		tier: "PU",
+		randomBattleMoves: ["autotomize", "explosion", "flashcannon", "hiddenpowerground", "icebeam"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	deerling: {
 		tier: "LC",
 	},
 	sawsbuck: {
+		randomBattleMoves: ["batonpass", "doubleedge", "hornleech", "megahorn", "naturepower", "return", "substitute", "swordsdance"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	emolga: {
-		tier: "PU",
+		randomBattleMoves: ["acrobatics", "encore", "roost", "thunderbolt", "toxic", "uturn"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	karrablast: {
 		tier: "LC",
 	},
 	escavalier: {
+		randomBattleMoves: ["ironhead", "megahorn", "pursuit", "return", "swordsdance"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2191,6 +2539,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	amoonguss: {
+		randomBattleMoves: ["clearsmog", "gigadrain", "hiddenpowerfire", "spore", "stunspore", "synthesis"],
 		tier: "RU",
 		doublesTier: "DOU",
 	},
@@ -2198,10 +2547,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	jellicent: {
+		randomBattleMoves: ["icebeam", "recover", "scald", "shadowball", "toxic", "willowisp"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	alomomola: {
+		randomBattleMoves: ["protect", "scald", "toxic", "waterfall", "wish"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -2209,6 +2560,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	galvantula: {
+		randomBattleMoves: ["bugbuzz", "gigadrain", "hiddenpowerice", "thunder", "voltswitch"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2217,6 +2569,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "LC",
 	},
 	ferrothorn: {
+		randomBattleMoves: ["gyroball", "leechseed", "powerwhip", "protect", "spikes", "stealthrock", "toxic"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
@@ -2227,6 +2580,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	klinklang: {
+		randomBattleMoves: ["geargrind", "return", "shiftgear", "wildcharge"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2237,6 +2591,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	eelektross: {
+		randomBattleMoves: ["flamethrower", "gigadrain", "hiddenpowerice", "superpower", "thunderbolt", "uturn"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -2244,7 +2599,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	beheeyem: {
-		tier: "PU",
+		randomBattleMoves: ["hiddenpowerfighting", "psychic", "thunderbolt", "trick", "trickroom"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	litwick: {
@@ -2254,6 +2610,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	chandelure: {
+		randomBattleMoves: ["calmmind", "energyball", "fireblast", "hiddenpowerfighting", "shadowball", "substitute"],
 		tier: "UUBL",
 		doublesTier: "DOU",
 	},
@@ -2264,6 +2621,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	haxorus: {
+		randomBattleMoves: ["aquatail", "dragondance", "earthquake", "outrage", "superpower", "swordsdance"],
 		tier: "(OU)",
 		doublesTier: "DUU",
 	},
@@ -2271,10 +2629,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	beartic: {
-		tier: "PU",
+		randomBattleMoves: ["aquajet", "iciclecrash", "stoneedge", "superpower", "swordsdance"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	cryogonal: {
+		randomBattleMoves: ["hiddenpowerfire", "icebeam", "rapidspin", "recover", "reflect", "toxic"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2282,21 +2642,25 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	accelgor: {
+		randomBattleMoves: ["bugbuzz", "encore", "focusblast", "gigadrain", "hiddenpowerrock", "spikes", "yawn"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
 	stunfisk: {
-		tier: "PU",
+		randomBattleMoves: ["discharge", "earthpower", "rest", "scald", "sleeptalk", "stealthrock", "toxic"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	mienfoo: {
 		tier: "LC",
 	},
 	mienshao: {
+		randomBattleMoves: ["batonpass", "highjumpkick", "stoneedge", "swordsdance", "substitute", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	druddigon: {
+		randomBattleMoves: ["dragontail", "earthquake", "glare", "outrage", "stealthrock", "suckerpunch"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2304,6 +2668,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	golurk: {
+		randomBattleMoves: ["drainpunch", "earthquake", "icepunch", "rockpolish", "shadowpunch", "stealthrock"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -2311,10 +2676,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	bisharp: {
+		randomBattleMoves: ["ironhead", "lowkick", "nightslash", "suckerpunch", "swordsdance"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	bouffalant: {
+		randomBattleMoves: ["earthquake", "headcharge", "megahorn", "stoneedge", "swordsdance"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2322,6 +2689,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	braviary: {
+		randomBattleMoves: ["bravebird", "bulkup", "return", "roost", "superpower", "uturn"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
@@ -2329,14 +2697,17 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "LC",
 	},
 	mandibuzz: {
+		randomBattleMoves: ["bravebird", "foulplay", "roost", "taunt", "toxic", "whirlwind"],
 		tier: "NU",
 		doublesTier: "DUU",
 	},
 	heatmor: {
-		tier: "PU",
+		randomBattleMoves: ["fireblast", "gigadrain", "suckerpunch", "superpower"],
+		tier: "(NU)",
 		doublesTier: "DUU",
 	},
 	durant: {
+		randomBattleMoves: ["honeclaws", "ironhead", "rockslide", "superpower", "xscissor"],
 		tier: "RU",
 		doublesTier: "DUU",
 	},
@@ -2347,73 +2718,90 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "NFE",
 	},
 	hydreigon: {
-		tier: "(OU)",
+		randomBattleMoves: ["darkpulse", "dracometeor", "flamethrower", "focusblast", "roost", "uturn"],
+		tier: "OU",
 		doublesTier: "DOU",
 	},
 	larvesta: {
 		tier: "LC",
 	},
 	volcarona: {
+		randomBattleMoves: ["bugbuzz", "fierydance", "fireblast", "gigadrain", "hiddenpowerground", "quiverdance", "roost"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	cobalion: {
+		randomBattleMoves: ["closecombat", "hiddenpowerice", "ironhead", "stealthrock", "stoneedge", "swordsdance", "taunt", "thunderwave", "voltswitch"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	terrakion: {
+		randomBattleMoves: ["closecombat", "earthquake", "quickattack", "stealthrock", "stoneedge", "swordsdance"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	virizion: {
+		randomBattleMoves: ["calmmind", "closecombat", "focusblast", "gigadrain", "leafblade", "hiddenpowerice", "stoneedge", "swordsdance"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	tornadus: {
+		randomBattleMoves: ["acrobatics", "bulkup", "focusblast", "heatwave", "hurricane", "superpower", "taunt", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	tornadustherian: {
+		randomBattleMoves: ["focusblast", "heatwave", "hurricane", "superpower", "uturn"],
 		tier: "Uber",
 		doublesTier: "DUU",
 	},
 	thundurus: {
+		randomBattleMoves: ["focusblast", "hiddenpowerice", "nastyplot", "thunderbolt", "thunderwave", "voltswitch"],
 		tier: "Uber",
 		doublesTier: "DOU",
 	},
 	thundurustherian: {
+		randomBattleMoves: ["agility", "focusblast", "grassknot", "hiddenpowerice", "nastyplot", "thunderbolt"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	reshiram: {
+		randomBattleMoves: ["blueflare", "dracometeor", "dragonpulse", "roost", "stoneedge", "tailwind"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	zekrom: {
+		randomBattleMoves: ["boltstrike", "dracometeor", "focusblast", "honeclaws", "outrage", "roost", "substitute", "voltswitch"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	landorus: {
+		randomBattleMoves: ["earthpower", "focusblast", "hiddenpowerice", "psychic", "rockpolish", "rockslide"],
 		tier: "Uber",
 		doublesTier: "DUU",
 	},
 	landorustherian: {
+		randomBattleMoves: ["earthquake", "hiddenpowerice", "rockpolish", "stealthrock", "stoneedge", "swordsdance", "superpower", "uturn"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	kyurem: {
+		randomBattleMoves: ["dracometeor", "dragonpulse", "earthpower", "focusblast", "icebeam", "outrage", "roost", "substitute"],
 		tier: "UUBL",
 		doublesTier: "DUU",
 	},
 	kyuremblack: {
+		randomBattleMoves: ["dragonclaw", "earthpower", "fusionbolt", "icebeam", "roost", "substitute"],
 		tier: "OU",
 		doublesTier: "DOU",
 	},
 	kyuremwhite: {
+		randomBattleMoves: ["dracometeor", "earthpower", "focusblast", "fusionflare", "icebeam", "roost", "substitute"],
 		tier: "Uber",
 		doublesTier: "DUber",
 	},
 	keldeo: {
+		randomBattleMoves: ["calmmind", "hiddenpowergrass", "hydropump", "icywind", "scald", "secretsword", "substitute"],
 		tier: "OU",
 		doublesTier: "DUU",
 	},
@@ -2422,12 +2810,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		doublesTier: "DUU",
 	},
 	meloetta: {
+		randomBattleMoves: ["calmmind", "focusblast", "psychic", "shadowball", "uturn"],
 		tier: "UU",
 		doublesTier: "DUU",
 	},
 	meloettapirouette: {
+		randomBattleMoves: ["closecombat", "icepunch", "relicsong", "return", "shadowclaw"],
 	},
 	genesect: {
+		randomBattleMoves: ["bugbuzz", "flamethrower", "icebeam", "rockpolish", "thunderbolt", "uturn"],
 		tier: "Uber",
 		doublesTier: "DOU",
 	},

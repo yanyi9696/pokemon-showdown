@@ -11,7 +11,7 @@ Installing
 
     ./pokemon-showdown
 
-(Requires Node.js v16+)
+(Requires Node.js v12+)
 
 If your distro package manager has an old Node.js version, the simplest way to upgrade is `n` – usually no root necessary:
 
@@ -22,7 +22,7 @@ If your distro package manager has an old Node.js version, the simplest way to u
 Detailed installation instructions
 ------------------------------------------------------------------------
 
-Pokémon Showdown requires you to have [Node.js][6] installed, v14.x or later.
+Pokémon Showdown requires you to have [Node.js][6] installed, v12.x or later.
 
 Next, obtain a copy of Pokémon Showdown. If you're reading this outside of GitHub, you've probably already done this. If you're reading this in GitHub, there's a "Clone or download" button near the top right (it's green). I recommend the "Open in Desktop" method - you need to install GitHub Desktop which is more work than "Download ZIP", but it makes it much easier to update in the long run (it lets you use the `/updateserver` command).
 
@@ -35,8 +35,6 @@ Replace `LOCATION` with the location Pokémon Showdown is in (ending up with, fo
 This will set your command line's location to Pokémon Showdown's folder. You'll have to do this each time you open a command line to run commands for Pokémon Showdown.
 
 Copy `config/config-example.js` into `config/config.js`, and edit as you please.
-
-If you're on Windows, you may need to link Git's UNIX commands to your `PATH` in order to build Pokémon Showdown. Git provides directions to do so [here](https://github.com/git-for-windows/git/wiki/FAQ#running-without-git-bash).
 
 Congratulations, you're done setting up Pokémon Showdown.
 
@@ -67,13 +65,13 @@ If you truly want to host the client yourself, there is [a repository for the Po
 Setting up an Administrator account
 ------------------------------------------------------------------------
 
-Once your server is up, you probably want to make yourself an Administrator (~) on it.
+Once your server is up, you probably want to make yourself an Administrator (&) on it.
 
 ### config/usergroups.csv
 
 To become an Administrator, create a file named `config/usergroups.csv` containing
 
-    USER,~
+    USER,&
 
 Replace `USER` with the username that you would like to become an Administrator. Do not put a space between the comma and the ampersand.
 

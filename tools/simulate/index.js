@@ -32,17 +32,22 @@ if (process.argv[2]) {
 		out('  Displays this reference');
 		out('');
 		out('Please refer to tools/SIMULATE.md for full documentation');
-		process.exit(help ? 0 : 1);
+		process.exit(+!help);
 	}
 }
 
-require('child_process').execSync('node ' + __dirname + "/../../build");
-const Dex = require('../../sim/dex').Dex;
-global.Config = { allowrequestingties: false };
+const child_process = require('child_process');
+const path = require('path');
+const shell = cmd => child_process.execSync(cmd, {stdio: 'inherit', cwd: path.resolve(__dirname, '../..')});
+shell('node build');
+
+const Dex = require('../../.sim-dist/dex').Dex;
+global.toID = require('../../.sim-dist/dex').Dex.getId;
+global.Config = {allowrequestingties: false};
 Dex.includeModData();
 
-const { ExhaustiveRunner } = require('../../sim/tools/exhaustive-runner');
-const { MultiRandomRunner } = require('../../sim/tools/multi-random-runner');
+const {ExhaustiveRunner} = require('../../.sim-dist/tools/exhaustive-runner');
+const {MultiRandomRunner} = require('../../.sim-dist/tools/multi-random-runner');
 
 // Tracks whether some promises threw errors that weren't caught so we can log
 // and exit with a non-zero status to fail any tests. This "shouldn't happen"
@@ -53,7 +58,7 @@ const RejectionTracker = new class {
 	}
 
 	onUnhandledRejection(reason, promise) {
-		this.unhandled.push({ reason, promise });
+		this.unhandled.push({reason, promise});
 	}
 
 	onRejectionHandled(promise) {
@@ -90,11 +95,8 @@ function missing(dep) {
 	}
 }
 
-function shell(cmd) {
-	require('child_process').execSync(cmd, { stdio: 'inherit', cwd: __dirname });
-}
 function parseFlags(argv) {
-	if (!(argv.length > 3 || argv.length === 3 && argv[2].startsWith('-'))) return { _: argv.slice(2) };
+	if (!(argv.length > 3 || argv.length === 3 && argv[2].startsWith('-'))) return {_: argv.slice(2)};
 	if (missing('minimist')) shell('npm install minimist');
 	return require('minimist')(argv.slice(2));
 }
@@ -105,7 +107,7 @@ case 'multi':
 case 'random':
 	{
 		const argv = parseFlags(process.argv);
-		const options = { totalGames: 100, ...argv };
+		const options = Object.assign({totalGames: 100}, argv);
 		options.totalGames = Number(argv._[1] || argv.num) || options.totalGames;
 		if (argv.seed) options.prng = argv.seed.split(',').map(s => Number(s));
 		// Run options.totalGames, exiting with the number of games with errors.

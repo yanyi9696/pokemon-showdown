@@ -1,4 +1,4 @@
-export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
+export const Items: {[k: string]: ModdedItemData} = {
 	aguavberry: {
 		inherit: true,
 		onUpdate() {},
@@ -28,7 +28,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onResidualSubOrder: 4,
 		onResidual(pokemon) {
 			if (pokemon.hp <= pokemon.maxhp / 2) {
-				if (this.runEvent('TryHeal', pokemon, null, this.effect, 20) && pokemon.useItem()) {
+				if (this.runEvent('TryHeal', pokemon) && pokemon.useItem()) {
 					this.heal(20);
 				}
 			}
@@ -37,41 +37,33 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	blackbelt: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Fighting') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move && move.type === 'Fighting') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	blackglasses: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Dark') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move && move.type === 'Dark') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	charcoal: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Fire') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move && move.type === 'Fire') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	dragonfang: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Dragon') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move && move.type === 'Dragon') {
+				return basePower * 1.1;
 			}
 		},
 	},
@@ -81,10 +73,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		isBerry: true,
 		num: 208,
 		gen: 3,
-		isNonstandard: "Unobtainable",
-	},
-	fastball: {
-		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
 	figyberry: {
@@ -111,17 +99,11 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	hardstone: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Rock') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move && move.type === 'Rock') {
+				return basePower * 1.1;
 			}
 		},
-	},
-	heavyball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
 	},
 	iapapaberry: {
 		inherit: true,
@@ -168,10 +150,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			return accuracy * 0.95;
 		},
 	},
-	levelball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
-	},
 	liechiberry: {
 		inherit: true,
 		onUpdate() {},
@@ -185,28 +163,13 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	lightball: {
 		inherit: true,
-		onModifySpA(spa, pokemon) {
-			if (pokemon.species.name === 'Pikachu') {
-				return this.chainModify(2);
-			}
-		},
-		onBasePower() {},
-	},
-	loveball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
-	},
-	lureball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
+		onModifyAtk() {},
 	},
 	magnet: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Electric') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Electric') {
+				return basePower * 1.1;
 			}
 		},
 	},
@@ -223,45 +186,33 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	metalcoat: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Steel') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Steel') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	miracleseed: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Grass') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Grass') {
+				return basePower * 1.1;
 			}
 		},
 	},
-	moonball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
-	},
 	mysticwater: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Water') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Water') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	nevermeltice: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Ice') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Ice') {
+				return basePower * 1.1;
 			}
 		},
 	},
@@ -289,18 +240,19 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	poisonbarb: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Poison') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Poison') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	quickclaw: {
 		inherit: true,
-		onFractionalPriority() {},
-		// implemented in Pokemon#getActionSpeed()
+		onFractionalPriority(priority, pokemon) {
+			if (this.randomChance(1, 5)) {
+				return 0.1;
+			}
+		},
 	},
 	salacberry: {
 		inherit: true,
@@ -315,41 +267,33 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	seaincense: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Water') {
-				return this.chainModify(1.05);
+		onBasePower(basePower, user, target, move) {
+			if (move && move.type === 'Water') {
+				return basePower * 1.05;
 			}
 		},
 	},
 	sharpbeak: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Flying') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move && move.type === 'Flying') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	silkscarf: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Normal') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Normal') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	silverpowder: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Bug') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Bug') {
+				return basePower * 1.1;
 			}
 		},
 	},
@@ -369,27 +313,19 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	softsand: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Ground') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Ground') {
+				return basePower * 1.1;
 			}
 		},
 	},
 	spelltag: {
 		inherit: true,
-		onBasePower() {},
-		onModifyAtkPriority: 1,
-		onModifyAtk(atk, user, target, move) {
-			if (move?.type === 'Ghost') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Ghost') {
+				return basePower * 1.1;
 			}
 		},
-	},
-	sportball: {
-		inherit: true,
-		isNonstandard: "Unobtainable",
 	},
 	starfberry: {
 		inherit: true,
@@ -404,11 +340,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	twistedspoon: {
 		inherit: true,
-		onBasePower() {},
-		onModifySpAPriority: 1,
-		onModifySpA(spa, user, target, move) {
-			if (move?.type === 'Psychic') {
-				return this.chainModify(1.1);
+		onBasePower(basePower, user, target, move) {
+			if (move.type === 'Psychic') {
+				return basePower * 1.1;
 			}
 		},
 	},

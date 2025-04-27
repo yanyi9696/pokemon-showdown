@@ -1,10 +1,10 @@
-export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDataTable = {
+export const Conditions: {[k: string]: ModdedConditionData} = {
 	slp: {
 		name: 'slp',
 		effectType: 'Status',
 		onStart(target, source, sourceEffect) {
 			if (sourceEffect && sourceEffect.effectType === 'Move') {
-				this.add('-status', target, 'slp', `[from] move: ${sourceEffect.name}`);
+				this.add('-status', target, 'slp', '[from] move: ' + sourceEffect.name);
 			} else {
 				this.add('-status', target, 'slp');
 			}
@@ -12,10 +12,6 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			this.effectState.time = this.random(2, 6);
 			// Turns spent using Sleep Talk/Snore immediately before switching out while asleep
 			this.effectState.skippedTime = 0;
-
-			if (target.removeVolatile('nightmare')) {
-				this.add('-end', target, 'Nightmare', '[silent]');
-			}
 		},
 		onSwitchIn(target) {
 			this.effectState.time += this.effectState.skippedTime;
@@ -42,9 +38,9 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 	},
 	frz: {
 		inherit: true,
-		onDamagingHit(damage, target, source, move) {
+		onHit(target, source, move) {
 			// don't count Hidden Power or Weather Ball as Fire-type
-			if (this.dex.moves.get(move.id).type === 'Fire' && move.category !== 'Status') {
+			if (move.thawsTarget || this.dex.moves.get(move.id).type === 'Fire' && move.category !== 'Status') {
 				target.cureStatus();
 			}
 		},

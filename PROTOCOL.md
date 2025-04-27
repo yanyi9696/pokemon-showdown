@@ -9,7 +9,7 @@ Showdown directly using WebSocket:
 
     ws://sim.smogon.com:8000/showdown/websocket
       or
-    wss://sim3.psim.us/showdown/websocket
+    wss://sim.smogon.com/showdown/websocket
 
 Client implementations you might want to look at for reference include:
 
@@ -40,7 +40,7 @@ Messages from the user to the server are in the form:
 
 `ROOMID` can optionally be left blank if unneeded (commands like `/join lobby`
 can be sent anywhere). Responses will be sent to a PM box with no username
-(so `|/command` is equivalent to `|/pm ~, /command`).
+(so `|/command` is equivalent to `|/pm &, /command`).
 
 `TEXT` can contain newlines, in which case it'll be treated the same
 way as if each line were sent to the room separately.
@@ -144,7 +144,7 @@ represented by a space), and the rest of the string being their username.
 
 `|uhtml|NAME|HTML`
 
-> We received an HTML message (NAME) that can change what it's displaying,
+> We recieved an HTML message (NAME) that can change what it's displaying,
 > this is used in things like our Polls system, for example.
 
 `|uhtmlchange|NAME|HTML`
@@ -237,10 +237,10 @@ represented by a space), and the rest of the string being their username.
 > You just connected to the server, and we're giving you some information you'll need to log in.
 >
 > If you're already logged in and have session cookies, you can make an HTTP GET request to
-> `https://play.pokemonshowdown.com/api/upkeep?challstr=CHALLSTR`
+> `https://play.pokemonshowdown.com/action.php?act=upkeep&challstr=CHALLSTR`
 >
-> Otherwise, you'll need to make an HTTP POST request to `https://play.pokemonshowdown.com/api/login`
-> with the data `name=USERNAME&pass=PASSWORD&challstr=CHALLSTR`
+> Otherwise, you'll need to make an HTTP POST request to `https://play.pokemonshowdown.com/action.php`
+> with the data `act=login&name=USERNAME&pass=PASSWORD&challstr=CHALLSTR`
 >
 > `USERNAME` is your username and `PASSWORD` is your password, and `CHALLSTR`
 > is the value you got from `|challstr|`. Note that `CHALLSTR` contains `|`
@@ -305,7 +305,7 @@ represented by a space), and the rest of the string being their username.
 `|tournament|update|JSON`
 
 > `JSON` is a JSON object representing the changes in the tournament
-> since the last update you received or the start of the tournament.
+> since the last update you recieved or the start of the tournament.
 > These include:
 >
     format: the tournament's custom name or the format being used
@@ -416,12 +416,12 @@ Battles
 Battle rooms will have a mix of room messages and battle messages. [Battle
 messages are documented in `SIM-PROTOCOL.md`][sim-protocol].
 
-  [sim-protocol]: ./sim/SIM-PROTOCOL.md
+  [sim-protocol]: https://github.com/smogon/pokemon-showdown/blob/master/sim/SIM-PROTOCOL.md
 
 To make decisions in battle, players should use the `/choose` command,
 [also documented in `SIM-PROTOCOL.md`][sending-decisions].
 
-  [sending-decisions]: ./sim/SIM-PROTOCOL.md#sending-decisions
+  [sending-decisions]: https://github.com/smogon/pokemon-showdown/blob/master/sim/SIM-PROTOCOL.md#sending-decisions
 
 ### Starting battles through challenges
 
@@ -459,7 +459,7 @@ To accept a challenge you received from someone, send:
     /utm TEAM
     /accept USERNAME
 
-Teams are in [packed format](./sim/TEAMS.md#packed-format). `TEAM` can also be
+Teams are in packed format (see "Team format" below). `TEAM` can also be
 `null`, if the format doesn't require user-built teams, such as Random Battle.
 
 Invalid teams will send a `|popup|` with validation errors, and the `/accept`
@@ -478,9 +478,7 @@ If the challenge is accepted, you will receive a room initialization message.
 `JSON.searching` will be an array of format IDs you're currently searching for
 games in.
 
-`JSON.games` will be a `{roomid: title}` table of games you're currently in,
-or `null` if you're in no games.
-
+`JSON.games` will be a `{roomid: title}` table of games you're currently in.
 Note that this includes ALL games, so `|updatesearch|` will be sent when you
 start/end challenge battles, and even non-Pokémon games like Mafia.
 
@@ -498,9 +496,67 @@ To cancel searching, send:
 
 ### Team format
 
-Pokémon Showdown always sends teams over the protocol in packed format. For
-details about how to convert and read this format, see [sim/TEAMS.md](./sim/TEAMS.md).
+Pokémon Showdown's main way of representing teams is in packed format. This
+format is implemented in `Teams.pack` and `Teams.unpack` in `sim/teams.ts`.
 
 If you're not using JavaScript and don't want to reimplement these conversions,
-[Pokémon Showdown's command-line client](./COMMANDLINE.md) can convert between
-packed teams and JSON using standard IO.
+[Pokémon Showdown's command-line client][command-line] can convert between packed teams and
+JSON using standard IO.
+
+  [command-line]: https://github.com/smogon/pokemon-showdown/blob/master/COMMANDLINE.md
+
+If you really want to write your own converter, the format looks something like
+this:
+
+```
+Lumineon||focussash|1|defog,scald,icebeam,uturn||85,85,85,85,85,85||||83|]
+Glaceon||lifeorb||toxic,hiddenpowerground,shadowball,icebeam||81,,85,85,85,85||,0,,,,||83|]
+Crabominable||choiceband|1|closecombat,earthquake,stoneedge,icehammer||85,85,85,85,85,85||||83|]
+Toxicroak||lifeorb|1|drainpunch,suckerpunch,gunkshot,substitute||85,85,85,85,85,85||||79|]
+Bouffalant||choiceband||earthquake,megahorn,headcharge,superpower||85,85,85,85,85,85||||83|]
+Qwilfish||blacksludge|H|thunderwave,destinybond,liquidation,painsplit||85,85,85,85,85,85||||83|
+```
+
+(Line breaks added for readability - this is all one line normally.)
+
+The format is a list of pokemon delimited by `]`, where every Pokémon is:
+
+```
+NICKNAME|SPECIES|ITEM|ABILITY|MOVES|NATURE|EVS|GENDER|IVS|SHINY|LEVEL|HAPPINESS,POKEBALL,HIDDENPOWERTYPE
+```
+
+- `SPECIES` is left blank if it's identical to `NICKNAME`
+
+- `ABILITY` is `0`, `1`, or `H` if it's the ability from the corresponding slot
+  for the Pokémon. It can also be an ability string, for Hackmons etc.
+
+- `MOVES` is a comma-separated list of move IDs.
+
+- `NATURE` left blank means Serious, except in Gen 1-2, where it means no Nature.
+
+- `EVS` and `IVS` are comma-separated in standard order:
+  HP, Atk, Def, SpA, SpD, Spe. EVs left blank are 0, IVs left blank are 31.
+  If all EVs or IVs are blank, the commas can all be left off.
+
+- `EVS` represent AVs in Pokémon Let's Go.
+
+- `IVS` represent DVs in Gen 1-2. The IV will be divided by 2 and rounded down,
+  to become DVs (so the default of 31 IVs is converted to 15 DVs).
+
+- `IVS` is post-hyper-training: pre-hyper-training IVs are represented in
+  `HIDDENPOWERTYPE`
+
+- `SHINY` is `S` for shiny, and blank for non-shiny.
+
+- `LEVEL` is left blank for level 100.
+
+- `HAPPINESS` is left blank for 255.
+
+- `POKEBALL` is left blank if it's a regular Poké Ball.
+
+- `HIDDENPOWERTYPE` is left blank if the Pokémon is not Hyper Trained, if
+  Hyper Training doesn't affect IVs, or if it's represented by a move in
+  the moves list.
+
+- If `POKEBALL` and `HIDDENPOWERTYPE` are both blank, the commas will be left
+  off.

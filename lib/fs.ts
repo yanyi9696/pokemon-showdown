@@ -23,25 +23,20 @@
 
 import * as fs from 'fs';
 import * as pathModule from 'path';
-import { ReadStream, WriteStream } from './streams';
+import {ReadStream, WriteStream} from './streams';
 
-// not sure why it's necessary to use path.sep, but testing with Windows showed it was
-const DIST = `${pathModule.sep}dist${pathModule.sep}`;
-// account for pwd/dist/lib
-const ROOT_PATH = pathModule.resolve(__dirname, __dirname.includes(DIST) ? '..' : '', '..');
+const ROOT_PATH = pathModule.resolve(__dirname, '..');
 
 interface PendingUpdate {
 	isWriting: boolean; // true: waiting on a call to FS.write, false: waiting on a throttle
 	pendingDataFetcher: (() => string | Buffer) | null;
 	pendingOptions: AnyObject | null;
 	throttleTime: number; // throttling until time (0 for no throttle)
-	throttleTimer: NodeJS.Timeout | null;
+	throttleTimer: NodeJS.Timer | null;
 }
 
-declare const __fsState: { pendingUpdates: Map<string, PendingUpdate> };
-// config needs to be declared here since we access it as global.Config?.nofswriting
-// (so we can use it without the global)
-declare const global: { __fsState: typeof __fsState, Config: any };
+declare const __fsState: {pendingUpdates: Map<string, PendingUpdate>};
+declare const global: {__fsState: typeof __fsState};
 if (!global.__fsState) {
 	global.__fsState = {
 		pendingUpdates: new Map(),
@@ -59,7 +54,7 @@ export class FSPath {
 		return new FSPath(pathModule.dirname(this.path));
 	}
 
-	read(options: AnyObject | BufferEncoding = 'utf8'): Promise<string> {
+	read(options: AnyObject | string = 'utf8'): Promise<string> {
 		if (typeof options !== 'string' && options.encoding === undefined) {
 			options.encoding = 'utf8';
 		}
@@ -74,10 +69,10 @@ export class FSPath {
 		if (typeof options !== 'string' && options.encoding === undefined) {
 			options.encoding = 'utf8';
 		}
-		return fs.readFileSync(this.path, options as { encoding: 'utf8' });
+		return fs.readFileSync(this.path, options as {encoding: 'utf8'});
 	}
 
-	readBuffer(options: AnyObject | BufferEncoding = {}): Promise<Buffer> {
+	readBuffer(options: AnyObject | string = {}): Promise<Buffer> {
 		return new Promise((resolve, reject) => {
 			fs.readFile(this.path, options, (err, data) => {
 				err ? reject(err) : resolve(data as Buffer);
@@ -86,7 +81,7 @@ export class FSPath {
 	}
 
 	readBufferSync(options: AnyObject | string = {}) {
-		return fs.readFileSync(this.path, options as { encoding: null });
+		return fs.readFileSync(this.path, options as {encoding: null});
 	}
 
 	exists(): Promise<boolean> {
@@ -113,14 +108,14 @@ export class FSPath {
 	readIfExistsSync() {
 		try {
 			return fs.readFileSync(this.path, 'utf8');
-		} catch (err: any) {
+		} catch (err) {
 			if (err.code !== 'ENOENT') throw err;
 		}
 		return '';
 	}
 
 	write(data: string | Buffer, options: AnyObject = {}) {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
 			fs.writeFile(this.path, data, options, err => {
 				err ? reject(err) : resolve();
@@ -129,7 +124,7 @@ export class FSPath {
 	}
 
 	writeSync(data: string | Buffer, options: AnyObject = {}) {
-		if (global.Config?.nofswriting) return;
+		if (Config.nofswriting) return;
 		return fs.writeFileSync(this.path, data, options);
 	}
 
@@ -162,7 +157,7 @@ export class FSPath {
 	 * with synchronous code; just use `safeWriteSync`.
 	 */
 	writeUpdate(dataFetcher: () => string | Buffer, options: AnyObject = {}) {
-		if (global.Config?.nofswriting) return;
+		if (Config.nofswriting) return;
 		const pendingUpdate: PendingUpdate | undefined = __fsState.pendingUpdates.get(this.path);
 
 		const throttleTime = options.throttle ? Date.now() + options.throttle : 0;
@@ -210,7 +205,7 @@ export class FSPath {
 		if (!pendingUpdate) throw new Error(`FS: Pending update not found`);
 		if (pendingUpdate.isWriting) throw new Error(`FS: Conflicting update`);
 
-		const { pendingDataFetcher: dataFetcher, pendingOptions: options } = pendingUpdate;
+		const {pendingDataFetcher: dataFetcher, pendingOptions: options} = pendingUpdate;
 		if (!dataFetcher || !options) {
 			// no pending update
 			__fsState.pendingUpdates.delete(this.path);
@@ -235,7 +230,7 @@ export class FSPath {
 	}
 
 	append(data: string | Buffer, options: AnyObject = {}) {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
 			fs.appendFile(this.path, data, options, err => {
 				err ? reject(err) : resolve();
@@ -244,12 +239,12 @@ export class FSPath {
 	}
 
 	appendSync(data: string | Buffer, options: AnyObject = {}) {
-		if (global.Config?.nofswriting) return;
+		if (Config.nofswriting) return;
 		return fs.appendFileSync(this.path, data, options);
 	}
 
 	symlinkTo(target: string) {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
 			fs.symlink(target, this.path, err => {
 				err ? reject(err) : resolve();
@@ -258,12 +253,12 @@ export class FSPath {
 	}
 
 	symlinkToSync(target: string) {
-		if (global.Config?.nofswriting) return;
+		if (Config.nofswriting) return;
 		return fs.symlinkSync(target, this.path);
 	}
 
 	copyFile(dest: string) {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
 			fs.copyFile(this.path, dest, err => {
 				err ? reject(err) : resolve();
@@ -272,7 +267,7 @@ export class FSPath {
 	}
 
 	rename(target: string) {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
 			fs.rename(this.path, target, err => {
 				err ? reject(err) : resolve();
@@ -281,7 +276,7 @@ export class FSPath {
 	}
 
 	renameSync(target: string) {
-		if (global.Config?.nofswriting) return;
+		if (Config.nofswriting) return;
 		return fs.renameSync(this.path, target);
 	}
 
@@ -297,37 +292,32 @@ export class FSPath {
 		return fs.readdirSync(this.path);
 	}
 
-	async readdirIfExists(): Promise<string[]> {
-		if (await this.exists()) return this.readdir();
-		return Promise.resolve([]);
-	}
-
-	readdirIfExistsSync() {
-		if (this.existsSync()) return this.readdirSync();
-		return [];
-	}
-
 	createReadStream() {
 		return new FileReadStream(this.path);
 	}
 
 	createWriteStream(options = {}): WriteStream {
-		if (global.Config?.nofswriting) {
-			return new WriteStream({ write() {} });
+		if (Config.nofswriting) {
+			// @ts-ignore
+			return new WriteStream({write() {}});
 		}
+		// @ts-ignore
 		return new WriteStream(fs.createWriteStream(this.path, options));
 	}
 
-	createAppendStream(options: AnyObject = {}): WriteStream {
-		if (global.Config?.nofswriting) {
-			return new WriteStream({ write() {} });
+	createAppendStream(options = {}): WriteStream {
+		if (Config.nofswriting) {
+			// @ts-ignore
+			return new WriteStream({write() {}});
 		}
+		// @ts-ignore
 		options.flags = options.flags || 'a';
+		// @ts-ignore
 		return new WriteStream(fs.createWriteStream(this.path, options));
 	}
 
 	unlinkIfExists() {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
 			fs.unlink(this.path, err => {
 				if (err && err.code === 'ENOENT') return resolve();
@@ -337,30 +327,30 @@ export class FSPath {
 	}
 
 	unlinkIfExistsSync() {
-		if (global.Config?.nofswriting) return;
+		if (Config.nofswriting) return;
 		try {
 			fs.unlinkSync(this.path);
-		} catch (err: any) {
+		} catch (err) {
 			if (err.code !== 'ENOENT') throw err;
 		}
 	}
 
 	async rmdir(recursive?: boolean) {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
-			fs.rmdir(this.path, { recursive }, err => {
+			fs.rmdir(this.path, {recursive}, err => {
 				err ? reject(err) : resolve();
 			});
 		});
 	}
 
 	rmdirSync(recursive?: boolean) {
-		if (global.Config?.nofswriting) return;
-		return fs.rmdirSync(this.path, { recursive });
+		if (Config.nofswriting) return;
+		return fs.rmdirSync(this.path, {recursive});
 	}
 
 	mkdir(mode: string | number = 0o755) {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
 			fs.mkdir(this.path, mode, err => {
 				err ? reject(err) : resolve();
@@ -369,12 +359,12 @@ export class FSPath {
 	}
 
 	mkdirSync(mode: string | number = 0o755) {
-		if (global.Config?.nofswriting) return;
+		if (Config.nofswriting) return;
 		return fs.mkdirSync(this.path, mode);
 	}
 
 	mkdirIfNonexistent(mode: string | number = 0o755) {
-		if (global.Config?.nofswriting) return Promise.resolve();
+		if (Config.nofswriting) return Promise.resolve();
 		return new Promise<void>((resolve, reject) => {
 			fs.mkdir(this.path, mode, err => {
 				if (err && err.code === 'EEXIST') return resolve();
@@ -384,10 +374,10 @@ export class FSPath {
 	}
 
 	mkdirIfNonexistentSync(mode: string | number = 0o755) {
-		if (global.Config?.nofswriting) return;
+		if (Config.nofswriting) return;
 		try {
 			fs.mkdirSync(this.path, mode);
-		} catch (err: any) {
+		} catch (err) {
 			if (err.code !== 'EEXIST') throw err;
 		}
 	}
@@ -399,7 +389,7 @@ export class FSPath {
 	async mkdirp(mode: string | number = 0o755) {
 		try {
 			await this.mkdirIfNonexistent(mode);
-		} catch (err: any) {
+		} catch (err) {
 			if (err.code !== 'ENOENT') throw err;
 			await this.parentDir().mkdirp(mode);
 			await this.mkdirIfNonexistent(mode);
@@ -413,7 +403,7 @@ export class FSPath {
 	mkdirpSync(mode: string | number = 0o755) {
 		try {
 			this.mkdirIfNonexistentSync(mode);
-		} catch (err: any) {
+		} catch (err) {
 			if (err.code !== 'ENOENT') throw err;
 			this.parentDir().mkdirpSync(mode);
 			this.mkdirIfNonexistentSync(mode);
@@ -480,9 +470,9 @@ class FileReadStream extends ReadStream {
 		this.atEOF = false;
 	}
 
-	override _read(size = 16384): Promise<void> {
+	_read(size = 16384): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
-			if (this.atEOF) return void resolve();
+			if (this.atEOF) return resolve();
 			this.ensureCapacity(size);
 			void this.fd.then(fd => {
 				fs.read(fd, this.buf, this.bufEnd, size, null, (err, bytesRead, buf) => {
@@ -501,7 +491,7 @@ class FileReadStream extends ReadStream {
 		});
 	}
 
-	override _destroy() {
+	_destroy() {
 		return new Promise<void>(resolve => {
 			void this.fd.then(fd => {
 				fs.close(fd, () => resolve());
@@ -515,5 +505,5 @@ function getFs(path: string) {
 }
 
 export const FS = Object.assign(getFs, {
-	FileReadStream, FSPath, ROOT_PATH,
+	FileReadStream, FSPath,
 });

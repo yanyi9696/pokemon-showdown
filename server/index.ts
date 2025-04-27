@@ -24,7 +24,7 @@
  *
  *   It exports the global table `Rooms.rooms`.
  *
- * Dex - from sim/dex.ts
+ * Dex - from .sim-dist/dex.ts
  *
  *   Handles getting data about Pokemon, items, etc.
  *
@@ -43,89 +43,101 @@
  *
  * @license MIT
  */
-require('source-map-support').install();
+
 // NOTE: This file intentionally doesn't use too many modern JavaScript
 // features, so that it doesn't crash old versions of Node.js, so we
-// can successfully print the "We require Node.js 18+" message.
+// can successfully print the "We require Node.js 8+" message.
 
-// Check for version
-const nodeVersion = parseInt(process.versions.node);
-if (isNaN(nodeVersion) || nodeVersion < 18) {
-	throw new Error("We require Node.js version 18 or later; you're using " + process.version);
+// Check for version and dependencies
+try {
+	// I've gotten enough reports by people who don't use the launch
+	// script that this is worth repeating here
+	[].flatMap(x => x);
+} catch (e) {
+	throw new Error("We require Node.js version 12 or later; you're using " + process.version);
 }
 
-import { FS, Repl } from '../lib';
+try {
+	require.resolve('../.sim-dist/index');
+	const sucraseVersion = require('sucrase').getVersion().split('.');
+	if (
+		parseInt(sucraseVersion[0]) < 3 ||
+		(parseInt(sucraseVersion[0]) === 3 && parseInt(sucraseVersion[1]) < 12)
+	) {
+		throw new Error("Sucrase version too old");
+	}
+} catch (e) {
+	throw new Error("Dependencies are unmet; run `node build` before launching Pokemon Showdown again.");
+}
+
+import {FS, Repl} from '../lib';
+
+/*********************************************************
+ * Load configuration
+ *********************************************************/
+
+import * as ConfigLoader from './config-loader';
+global.Config = ConfigLoader.Config;
+
+import {Monitor} from './monitor';
+global.Monitor = Monitor;
+global.__version = {head: ''};
+void Monitor.version().then((hash: any) => {
+	global.__version.tree = hash;
+});
+
+if (Config.watchconfig) {
+	FS(require.resolve('../config/config')).onModify(() => {
+		try {
+			global.Config = ConfigLoader.load(true);
+			Monitor.notice('Reloaded ../config/config.js');
+		} catch (e) {
+			Monitor.adminlog("Error reloading ../config/config.js: " + e.stack);
+		}
+	});
+}
 
 /*********************************************************
  * Set up most of our globals
- * This is in a function because swc runs `import` before any code,
- * and many of our imports require the `Config` global to be set up.
  *********************************************************/
-function setupGlobals() {
-	const ConfigLoader = require('./config-loader');
-	global.Config = ConfigLoader.Config;
 
-	const { Monitor } = require('./monitor');
-	global.Monitor = Monitor;
-	global.__version = { head: '' };
-	void Monitor.version().then((hash: any) => {
-		global.__version.tree = hash;
-	});
-	Repl.cleanup();
+import {Dex} from '../sim/dex';
+global.Dex = Dex;
+global.toID = Dex.toID;
 
-	if (Config.watchconfig) {
-		FS('config/config.js').onModify(() => {
-			try {
-				global.Config = ConfigLoader.load(true);
-				// ensure that battle prefixes configured via the chat plugin are not overwritten
-				// by battle prefixes manually specified in config.js
-				Chat.plugins['username-prefixes']?.prefixManager.refreshConfig(true);
-				Monitor.notice('Reloaded ../config/config.js');
-			} catch (e: any) {
-				Monitor.adminlog("Error reloading ../config/config.js: " + e.stack);
-			}
-		});
-	}
+import {Teams} from '../sim/teams';
+global.Teams = Teams;
 
-	const { Dex } = require('../sim/dex');
-	global.Dex = Dex;
-	global.toID = Dex.toID;
+import {LoginServer} from './loginserver';
+global.LoginServer = LoginServer;
 
-	const { Teams } = require('../sim/teams');
-	global.Teams = Teams;
+import {Ladders} from './ladders';
+global.Ladders = Ladders;
 
-	const { LoginServer } = require('./loginserver');
-	global.LoginServer = LoginServer;
+import {Chat} from './chat';
+global.Chat = Chat;
 
-	const { Ladders } = require('./ladders');
-	global.Ladders = Ladders;
+import {Users} from './users';
+global.Users = Users;
 
-	const { Chat } = require('./chat');
-	global.Chat = Chat;
+import {Punishments} from './punishments';
+global.Punishments = Punishments;
 
-	const { Users } = require('./users');
-	global.Users = Users;
+import {Rooms} from './rooms';
+global.Rooms = Rooms;
+// We initialize the global room here because roomlogs.ts needs the Rooms global
+Rooms.global = new Rooms.GlobalRoomState();
 
-	const { Punishments } = require('./punishments');
-	global.Punishments = Punishments;
+import * as Verifier from './verifier';
+global.Verifier = Verifier;
+Verifier.PM.spawn();
 
-	const { Rooms } = require('./rooms');
-	global.Rooms = Rooms;
-	// We initialize the global room here because roomlogs.ts needs the Rooms global
-	Rooms.global = new Rooms.GlobalRoomState();
+import {Tournaments} from './tournaments';
+global.Tournaments = Tournaments;
 
-	const Verifier = require('./verifier');
-	global.Verifier = Verifier;
-	Verifier.PM.spawn();
-
-	const { Tournaments } = require('./tournaments');
-	global.Tournaments = Tournaments;
-
-	const { IPTools } = require('./ip-tools');
-	global.IPTools = IPTools;
-	void IPTools.loadHostsAndRanges();
-}
-setupGlobals();
+import {IPTools} from './ip-tools';
+global.IPTools = IPTools;
+void IPTools.loadHostsAndRanges();
 
 if (Config.crashguard) {
 	// graceful crash - allow current battles to finish before restarting
@@ -142,7 +154,7 @@ if (Config.crashguard) {
  * Start networking processes to be connected to
  *********************************************************/
 
-import { Sockets } from './sockets';
+import {Sockets} from './sockets';
 global.Sockets = Sockets;
 
 export function listen(port: number, bindAddress: string, workerCount: number) {
@@ -189,7 +201,7 @@ if (Config.startuphook) {
 if (Config.ofemain) {
 	try {
 		require.resolve('node-oom-heapdump');
-	} catch (e: any) {
+	} catch (e) {
 		if (e.code !== 'MODULE_NOT_FOUND') throw e; // should never happen
 		throw new Error(
 			'node-oom-heapdump is not installed, but it is a required dependency if Config.ofe is set to true! ' +

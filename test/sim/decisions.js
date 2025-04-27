@@ -2,112 +2,112 @@
 
 const assert = require('./../assert');
 const common = require('./../common');
-const Utils = require('../../dist/lib/utils').Utils;
+const Utils = require('../../.lib-dist/utils').Utils;
 const BASE_TEAM_ORDER = [1, 2, 3, 4, 5, 6];
 
 const SINGLES_TEAMS = {
 	illusion: [[
-		{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Charmander', ability: 'blaze', moves: ['tackle'] },
-		{ species: 'Charmeleon', ability: 'blaze', moves: ['tackle'] },
-		{ species: 'Zoroark', ability: 'illusion', moves: ['tackle'] },
+		{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Charmander', ability: 'blaze', moves: ['tackle']},
+		{species: 'Charmeleon', ability: 'blaze', moves: ['tackle']},
+		{species: 'Zoroark', ability: 'illusion', moves: ['tackle']},
 	], [
-		{ species: 'Squirtle', ability: 'torrent', moves: ['tackle'] },
-		{ species: 'Wartortle', ability: 'torrent', moves: ['tackle'] },
+		{species: 'Squirtle', ability: 'torrent', moves: ['tackle']},
+		{species: 'Wartortle', ability: 'torrent', moves: ['tackle']},
 	]],
 	full: [[
-		{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Charmander', ability: 'blaze', moves: ['tackle'] },
-		{ species: 'Charmeleon', ability: 'blaze', moves: ['tackle'] },
-		{ species: 'Charizard', ability: 'blaze', moves: ['tackle'] },
+		{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Charmander', ability: 'blaze', moves: ['tackle']},
+		{species: 'Charmeleon', ability: 'blaze', moves: ['tackle']},
+		{species: 'Charizard', ability: 'blaze', moves: ['tackle']},
 	], [
-		{ species: 'Squirtle', ability: 'torrent', moves: ['tackle'] },
-		{ species: 'Wartortle', ability: 'torrent', moves: ['tackle'] },
+		{species: 'Squirtle', ability: 'torrent', moves: ['tackle']},
+		{species: 'Wartortle', ability: 'torrent', moves: ['tackle']},
 	]],
 };
 
 const DOUBLES_TEAMS = {
 	forcePass: [[
-		{ species: 'Bulbasaur', ability: 'overgrow', moves: ['lunardance'] },
-		{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-		{ species: 'Latias', ability: 'levitate', moves: ['roost'] },
+		{species: 'Bulbasaur', ability: 'overgrow', moves: ['lunardance']},
+		{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+		{species: 'Latias', ability: 'levitate', moves: ['roost']},
 	], [
-		{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-		{ species: 'Clefable', ability: 'unaware', moves: ['recover'] },
+		{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+		{species: 'Clefable', ability: 'unaware', moves: ['recover']},
 	]],
 	full: [[
-		{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Charmander', ability: 'blaze', moves: ['tackle'] },
-		{ species: 'Charmeleon', ability: 'blaze', moves: ['tackle'] },
-		{ species: 'Charizard', ability: 'blaze', moves: ['tackle'] },
+		{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Charmander', ability: 'blaze', moves: ['tackle']},
+		{species: 'Charmeleon', ability: 'blaze', moves: ['tackle']},
+		{species: 'Charizard', ability: 'blaze', moves: ['tackle']},
 	], [
-		{ species: 'Squirtle', ability: 'torrent', moves: ['tackle'] },
-		{ species: 'Wartortle', ability: 'torrent', moves: ['tackle'] },
+		{species: 'Squirtle', ability: 'torrent', moves: ['tackle']},
+		{species: 'Wartortle', ability: 'torrent', moves: ['tackle']},
 	]],
 	default: [[
-		{ species: 'Latias', ability: 'overgrow', moves: ['lunardance'] },
-		{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-		{ species: 'Bulbasaur', ability: 'levitate', moves: ['synthesis'] },
-		{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+		{species: 'Latias', ability: 'overgrow', moves: ['lunardance']},
+		{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+		{species: 'Bulbasaur', ability: 'levitate', moves: ['synthesis']},
+		{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 	], [
-		{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-		{ species: 'Clefable', ability: 'unaware', moves: ['recover'] },
+		{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+		{species: 'Clefable', ability: 'unaware', moves: ['recover']},
 	]],
 };
 
 const TRIPLES_TEAMS = {
 	forcePass: [[
-		{ species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis'] },
-		{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-		{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-		{ species: 'Venusaur', ability: 'overgrow', moves: ['synthesis'] },
+		{species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis']},
+		{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+		{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+		{species: 'Venusaur', ability: 'overgrow', moves: ['synthesis']},
 	], [
-		{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-		{ species: 'Clefable', ability: 'unaware', moves: ['recover'] },
-		{ species: 'Latias', ability: 'blaze', moves: ['roost'] },
+		{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+		{species: 'Clefable', ability: 'unaware', moves: ['recover']},
+		{species: 'Latias', ability: 'blaze', moves: ['roost']},
 	]],
 	full: [[
-		{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
-		{ species: 'Charmander', ability: 'blaze', moves: ['tackle'] },
-		{ species: 'Charmeleon', ability: 'blaze', moves: ['tackle'] },
-		{ species: 'Charizard', ability: 'blaze', moves: ['tackle'] },
+		{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
+		{species: 'Charmander', ability: 'blaze', moves: ['tackle']},
+		{species: 'Charmeleon', ability: 'blaze', moves: ['tackle']},
+		{species: 'Charizard', ability: 'blaze', moves: ['tackle']},
 	], [
-		{ species: 'Squirtle', ability: 'torrent', moves: ['tackle'] },
-		{ species: 'Wartortle', ability: 'torrent', moves: ['tackle'] },
-		{ species: 'Blastoise', ability: 'torrent', moves: ['tackle'] },
+		{species: 'Squirtle', ability: 'torrent', moves: ['tackle']},
+		{species: 'Wartortle', ability: 'torrent', moves: ['tackle']},
+		{species: 'Blastoise', ability: 'torrent', moves: ['tackle']},
 	]],
 	default: [[
-		{ species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis'] },
-		{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-		{ species: 'Latias', ability: 'levitate', moves: ['roost'] },
-		{ species: 'Venusaur', ability: 'overgrow', moves: ['synthesis'] },
+		{species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis']},
+		{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+		{species: 'Latias', ability: 'levitate', moves: ['roost']},
+		{species: 'Venusaur', ability: 'overgrow', moves: ['synthesis']},
 	], [
-		{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-		{ species: 'Clefable', ability: 'unaware', moves: ['recover'] },
-		{ species: 'Latias', ability: 'blaze', moves: ['roost'] },
+		{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+		{species: 'Clefable', ability: 'unaware', moves: ['recover']},
+		{species: 'Latias', ability: 'blaze', moves: ['roost']},
 	]],
 };
 
 let battle;
 
-describe('Choices', () => {
-	afterEach(() => {
+describe('Choices', function () {
+	afterEach(function () {
 		battle.destroy();
 	});
 
-	describe('Generic', () => {
-		it('should wait for players to send their choices and run them as soon as they are all received', done => {
+	describe('Generic', function () {
+		it('should wait for players to send their choices and run them as soon as they are all received', function (done) {
 			battle = common.createBattle();
-			battle.setPlayer('p1', { team: [{ species: "Mew", ability: 'synchronize', moves: ['recover'] }] });
-			battle.setPlayer('p2', { team: [{ species: "Rhydon", ability: 'prankster', moves: ['sketch'] }] });
+			battle.setPlayer('p1', {team: [{species: "Mew", ability: 'synchronize', moves: ['recover']}]});
+			battle.setPlayer('p2', {team: [{species: "Rhydon", ability: 'prankster', moves: ['sketch']}]});
 
 			setTimeout(() => {
 				battle.choose('p2', 'move 1');
@@ -120,12 +120,12 @@ describe('Choices', () => {
 		});
 	});
 
-	describe('Move requests', () => {
-		it('should allow specifying moves', () => {
+	describe('Move requests', function () {
+		it('should allow specifying moves', function () {
 			const MOVES = [['growl', 'tackle'], ['growl', 'scratch']];
 			battle = common.createBattle([
-				[{ species: "Bulbasaur", ability: 'Overgrow', moves: MOVES[0] }],
-				[{ species: "Charmander", ability: 'Blaze', moves: MOVES[1] }],
+				[{species: "Bulbasaur", ability: 'Overgrow', moves: MOVES[0]}],
+				[{species: "Charmander", ability: 'Blaze', moves: MOVES[1]}],
 			]);
 
 			const activeMons = battle.sides.map(side => side.active[0]);
@@ -155,17 +155,14 @@ describe('Choices', () => {
 			}
 		});
 
-		it(`should allow specifying move targets`, () => {
-			battle = common.createBattle({ gameType: 'doubles' }, [[
-				{ species: "Gastrodon", ability: 'stickyhold', moves: ['gastroacid'] },
-				{ species: "Venusaur", ability: 'noguard', moves: ['leechseed'] },
-			], [
-				{ species: "Tyranitar", ability: 'unnerve', moves: ['knockoff'] },
-				{ species: "Zapdos", ability: 'pressure', moves: ['glare'] }],
+		it('should allow specifying move targets', function () {
+			battle = common.createBattle({gameType: 'doubles'}, [
+				[{species: "Gastrodon", ability: 'stickyhold', moves: ['gastroacid']}, {species: "Venusaur", ability: 'thickfat', moves: ['leechseed']}],
+				[{species: "Tyranitar", ability: 'unnerve', moves: ['knockoff']}, {species: "Zapdos", ability: 'pressure', moves: ['thunderwave']}],
 			]);
 			const p2active = battle.p2.active;
 
-			battle.makeChoices('move gastroacid 1, move leechseed 2', 'move knockoff -2, move glare -1');
+			battle.makeChoices('move gastroacid 1, move leechseed 2', 'move knockoff -2, move thunderwave -1');
 			assert.equal(battle.turn, 2);
 
 			assert(p2active[0].volatiles['gastroacid']);
@@ -174,42 +171,42 @@ describe('Choices', () => {
 			assert.equal(p2active[0].status, 'par');
 		});
 
-		it('should disallow specifying move targets for targetless moves (randomNormal)', () => {
-			battle = common.createBattle({ gameType: 'doubles' }, [
-				[{ species: "Dragonite", ability: 'multiscale', moves: ['outrage'] }, { species: "Blastoise", ability: 'torrent', moves: ['rest'] }],
-				[{ species: "Tyranitar", ability: 'unnerve', moves: ['dragondance'] }, { species: "Zapdos", ability: 'pressure', moves: ['roost'] }],
+		it('should disallow specifying move targets for targetless moves (randomNormal)', function () {
+			battle = common.createBattle({gameType: 'doubles'}, [
+				[{species: "Dragonite", ability: 'multiscale', moves: ['outrage']}, {species: "Blastoise", ability: 'torrent', moves: ['rest']}],
+				[{species: "Tyranitar", ability: 'unnerve', moves: ['dragondance']}, {species: "Zapdos", ability: 'pressure', moves: ['roost']}],
 			]);
 
 			assert.cantTarget(() => battle.p1.chooseMove('outrage', 1), 'outrage');
 		});
 
-		it('should disallow specifying move targets for targetless moves (scripted)', () => {
-			battle = common.createBattle({ gameType: 'doubles' }, [
-				[{ species: "Dragonite", ability: 'multiscale', moves: ['counter'] }, { species: "Blastoise", ability: 'torrent', moves: ['rest'] }],
-				[{ species: "Tyranitar", ability: 'unnerve', moves: ['bodyslam'] }, { species: "Zapdos", ability: 'pressure', moves: ['drillpeck'] }],
+		it('should disallow specifying move targets for targetless moves (scripted)', function () {
+			battle = common.createBattle({gameType: 'doubles'}, [
+				[{species: "Dragonite", ability: 'multiscale', moves: ['counter']}, {species: "Blastoise", ability: 'torrent', moves: ['rest']}],
+				[{species: "Tyranitar", ability: 'unnerve', moves: ['bodyslam']}, {species: "Zapdos", ability: 'pressure', moves: ['drillpeck']}],
 			]);
 
 			assert.cantTarget(() => battle.p1.chooseMove('counter', 2), 'counter');
 		});
 
-		it('should disallow specifying move targets for targetless moves (self)', () => {
-			battle = common.createBattle({ gameType: 'doubles' }, [
-				[{ species: "Dragonite", ability: 'multiscale', moves: ['roost'] }, { species: "Blastoise", ability: 'torrent', moves: ['rest'] }],
-				[{ species: "Tyranitar", ability: 'unnerve', moves: ['dragondance'] }, { species: "Zapdos", ability: 'pressure', moves: ['roost'] }],
+		it('should disallow specifying move targets for targetless moves (self)', function () {
+			battle = common.createBattle({gameType: 'doubles'}, [
+				[{species: "Dragonite", ability: 'multiscale', moves: ['roost']}, {species: "Blastoise", ability: 'torrent', moves: ['rest']}],
+				[{species: "Tyranitar", ability: 'unnerve', moves: ['dragondance']}, {species: "Zapdos", ability: 'pressure', moves: ['roost']}],
 			]);
 
 			assert.cantTarget(() => battle.p1.chooseMove('roost', -2), 'roost');
 		});
 
-		it('should allow specifying switch targets', () => {
+		it('should allow specifying switch targets', function () {
 			battle = common.createBattle([[
-				{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] },
-				{ species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] },
-				{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+				{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']},
+				{species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']},
+				{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-				{ species: 'Charmeleon', ability: 'blaze', moves: ['scratch'] },
-				{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+				{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+				{species: 'Charmeleon', ability: 'blaze', moves: ['scratch']},
+				{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 			]]);
 
 			battle.makeChoices('switch 2', 'switch 3');
@@ -228,18 +225,18 @@ describe('Choices', () => {
 			assert.species(battle.p2.active[0], 'Charmeleon');
 		});
 
-		it('should allow shifting the Pokémon on the left to the center', () => {
-			battle = common.gen(5).createBattle({ gameType: 'triples' });
-			battle.setPlayer('p1', { team: [
-				{ species: "Pineco", ability: 'sturdy', moves: ['harden'] },
-				{ species: "Geodude", ability: 'sturdy', moves: ['defensecurl'] },
-				{ species: "Gastly", ability: 'levitate', moves: ['spite'] },
-			] });
-			battle.setPlayer('p2', { team: [
-				{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-				{ species: "Aggron", ability: 'sturdy', moves: ['irondefense'] },
-				{ species: "Golem", ability: 'sturdy', moves: ['defensecurl'] },
-			] });
+		it('should allow shifting the Pokémon on the left to the center', function () {
+			battle = common.gen(5).createBattle({gameType: 'triples'});
+			battle.setPlayer('p1', {team: [
+				{species: "Pineco", ability: 'sturdy', moves: ['harden']},
+				{species: "Geodude", ability: 'sturdy', moves: ['defensecurl']},
+				{species: "Gastly", ability: 'levitate', moves: ['spite']},
+			]});
+			battle.setPlayer('p2', {team: [
+				{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+				{species: "Aggron", ability: 'sturdy', moves: ['irondefense']},
+				{species: "Golem", ability: 'sturdy', moves: ['defensecurl']},
+			]});
 			const [p1, p2] = battle.sides;
 			battle.makeChoices('move harden, move defensecurl, shift', 'move roost, move irondefense, shift');
 
@@ -251,18 +248,18 @@ describe('Choices', () => {
 			}
 		});
 
-		it('should allow shifting the Pokémon on the right to the center', () => {
-			battle = common.gen(5).createBattle({ gameType: 'triples' });
-			battle.setPlayer('p1', { team: [
-				{ species: "Pineco", ability: 'sturdy', moves: ['harden'] },
-				{ species: "Geodude", ability: 'sturdy', moves: ['defensecurl'] },
-				{ species: "Gastly", ability: 'levitate', moves: ['spite'] },
-			] });
-			battle.setPlayer('p2', { team: [
-				{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-				{ species: "Aggron", ability: 'sturdy', moves: ['irondefense'] },
-				{ species: "Golem", ability: 'sturdy', moves: ['defensecurl'] },
-			] });
+		it('should allow shifting the Pokémon on the right to the center', function () {
+			battle = common.gen(5).createBattle({gameType: 'triples'});
+			battle.setPlayer('p1', {team: [
+				{species: "Pineco", ability: 'sturdy', moves: ['harden']},
+				{species: "Geodude", ability: 'sturdy', moves: ['defensecurl']},
+				{species: "Gastly", ability: 'levitate', moves: ['spite']},
+			]});
+			battle.setPlayer('p2', {team: [
+				{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+				{species: "Aggron", ability: 'sturdy', moves: ['irondefense']},
+				{species: "Golem", ability: 'sturdy', moves: ['defensecurl']},
+			]});
 			battle.makeChoices('shift, default, default', 'shift, default, default');
 
 			for (const [index, species] of ['Geodude', 'Pineco', 'Gastly'].entries()) {
@@ -273,18 +270,18 @@ describe('Choices', () => {
 			}
 		});
 
-		it('should shift the Pokémon as a standard priority move action', () => {
-			battle = common.gen(5).createBattle({ gameType: 'triples' });
-			battle.setPlayer('p1', { team: [
-				{ species: "Pineco", ability: 'sturdy', moves: ['harden'] },
-				{ species: "Geodude", ability: 'sturdy', moves: ['suckerpunch'] },
-				{ species: "Gastly", ability: 'levitate', moves: ['spite'] },
-			] });
-			battle.setPlayer('p2', { team: [
-				{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-				{ species: "Aggron", ability: 'sturdy', moves: ['earthquake'] },
-				{ species: "Golem", ability: 'sturdy', moves: ['defensecurl'] },
-			] });
+		it('should shift the Pokémon as a standard priority move action', function () {
+			battle = common.gen(5).createBattle({gameType: 'triples'});
+			battle.setPlayer('p1', {team: [
+				{species: "Pineco", ability: 'sturdy', moves: ['harden']},
+				{species: "Geodude", ability: 'sturdy', moves: ['suckerpunch']},
+				{species: "Gastly", ability: 'levitate', moves: ['spite']},
+			]});
+			battle.setPlayer('p2', {team: [
+				{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+				{species: "Aggron", ability: 'sturdy', moves: ['earthquake']},
+				{species: "Golem", ability: 'sturdy', moves: ['defensecurl']},
+			]});
 			battle.makeChoices('shift, move suckerpunch 2, shift', 'shift, move earthquake, shift');
 
 			for (const [index, species] of ['Gastly', 'Pineco', 'Geodude'].entries()) {
@@ -301,10 +298,10 @@ describe('Choices', () => {
 			assert.equal(battle.p2.active[1].hp, battle.p2.active[1].maxhp);
 		});
 
-		it('should force Struggle usage on move attempt for no valid moves', () => {
+		it('should force Struggle usage on move attempt for no valid moves', function () {
 			battle = common.createBattle();
-			battle.setPlayer('p1', { team: [{ species: "Mew", ability: 'synchronize', moves: ['recover'] }] });
-			battle.setPlayer('p2', { team: [{ species: "Rhydon", ability: 'prankster', moves: ['sketch'] }] });
+			battle.setPlayer('p1', {team: [{species: "Mew", ability: 'synchronize', moves: ['recover']}]});
+			battle.setPlayer('p2', {team: [{species: "Rhydon", ability: 'prankster', moves: ['sketch']}]});
 
 			// First turn
 			battle.makeChoices('move 1', 'move 1');
@@ -317,10 +314,10 @@ describe('Choices', () => {
 			assert.equal(battle.p2.active[0].lastMove.id, 'struggle');
 		});
 
-		it('should not force Struggle usage on move attempt for valid moves', () => {
+		it('should not force Struggle usage on move attempt for valid moves', function () {
 			battle = common.createBattle();
-			battle.setPlayer('p1', { team: [{ species: "Mew", ability: 'synchronize', moves: ['recover'] }] });
-			battle.setPlayer('p2', { team: [{ species: "Rhydon", ability: 'prankster', moves: ['struggle', 'surf'] }] });
+			battle.setPlayer('p1', {team: [{species: "Mew", ability: 'synchronize', moves: ['recover']}]});
+			battle.setPlayer('p2', {team: [{species: "Rhydon", ability: 'prankster', moves: ['struggle', 'surf']}]});
 
 			battle.makeChoices('move recover', 'move surf');
 
@@ -328,10 +325,10 @@ describe('Choices', () => {
 			assert.notEqual(battle.p2.active[0].lastMove.id, 'struggle');
 		});
 
-		it('should not force Struggle usage on move attempt when choosing a disabled move', () => {
+		it('should not force Struggle usage on move attempt when choosing a disabled move', function () {
 			battle = common.createBattle();
-			battle.setPlayer('p1', { team: [{ species: "Mew", item: 'assaultvest', ability: 'synchronize', moves: ['recover', 'icebeam'] }] });
-			battle.setPlayer('p2', { team: [{ species: "Rhydon", item: '', ability: 'prankster', moves: ['surf'] }] });
+			battle.setPlayer('p1', {team: [{species: "Mew", item: 'assaultvest', ability: 'synchronize', moves: ['recover', 'icebeam']}]});
+			battle.setPlayer('p2', {team: [{species: "Rhydon", item: '', ability: 'prankster', moves: ['surf']}]});
 			const failingAttacker = battle.p1.active[0];
 			battle.p2.chooseMove(1);
 
@@ -344,10 +341,10 @@ describe('Choices', () => {
 			assert.notEqual(failingAttacker.lastMove && failingAttacker.lastMove.id, 'struggle');
 		});
 
-		it('should send meaningful feedback to players if they try to use a disabled move', () => {
-			battle = common.createBattle({ strictChoices: false });
-			battle.setPlayer('p1', { team: [{ species: "Skarmory", ability: 'sturdy', moves: ['spikes', 'roost'] }] });
-			battle.setPlayer('p2', { team: [{ species: "Smeargle", ability: 'owntempo', moves: ['imprison', 'spikes'] }] });
+		it('should send meaningful feedback to players if they try to use a disabled move', function () {
+			battle = common.createBattle({strictChoices: false});
+			battle.setPlayer('p1', {team: [{species: "Skarmory", ability: 'sturdy', moves: ['spikes', 'roost']}]});
+			battle.setPlayer('p2', {team: [{species: "Smeargle", ability: 'owntempo', moves: ['imprison', 'spikes']}]});
 
 			battle.makeChoices('move spikes', 'move imprison');
 
@@ -361,13 +358,13 @@ describe('Choices', () => {
 			assert(buffer.some(message => message.startsWith('p1\n|request|') && JSON.parse(message.slice(12)).active[0].moves[0].disabled));
 		});
 
-		it('should send meaningful feedback to players if they try to switch a trapped Pokémon out', () => {
-			battle = common.createBattle({ strictChoices: false });
-			battle.setPlayer('p1', { team: [
-				{ species: "Scizor", ability: 'swarm', moves: ['bulletpunch'] },
-				{ species: "Azumarill", ability: 'sapsipper', moves: ['aquajet'] },
-			] });
-			battle.setPlayer('p2', { team: [{ species: "Gothitelle", ability: 'shadowtag', moves: ['calmmind'] }] });
+		it('should send meaningful feedback to players if they try to switch a trapped Pokémon out', function () {
+			battle = common.createBattle({strictChoices: false});
+			battle.setPlayer('p1', {team: [
+				{species: "Scizor", ability: 'swarm', moves: ['bulletpunch']},
+				{species: "Azumarill", ability: 'sapsipper', moves: ['aquajet']},
+			]});
+			battle.setPlayer('p2', {team: [{species: "Gothitelle", ability: 'shadowtag', moves: ['calmmind']}]});
 
 			const buffer = [];
 			battle.send = (type, data) => {
@@ -380,16 +377,16 @@ describe('Choices', () => {
 		});
 	});
 
-	describe('Switch requests', () => {
-		it('should allow specifying switch targets', () => {
+	describe('Switch requests', function () {
+		it('should allow specifying switch targets', function () {
 			battle = common.createBattle([[
-				{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-				{ species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] },
-				{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+				{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+				{species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']},
+				{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: 'Latias', ability: 'blaze', moves: ['lunardance'] },
-				{ species: 'Charmeleon', ability: 'blaze', moves: ['scratch'] },
-				{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+				{species: 'Latias', ability: 'blaze', moves: ['lunardance']},
+				{species: 'Charmeleon', ability: 'blaze', moves: ['scratch']},
+				{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 			]]);
 
 			battle.makeChoices('move lunardance', 'move lunardance');
@@ -399,15 +396,15 @@ describe('Choices', () => {
 			assert.species(battle.p2.active[0], 'Charizard');
 		});
 
-		it('should allow passing when there are not enough available switch-ins', () => {
-			battle = common.createBattle({ gameType: 'doubles' }, [[
-				{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-				{ species: 'Ivysaur', ability: 'overgrow', moves: ['lunardance'] },
-				{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+		it('should allow passing when there are not enough available switch-ins', function () {
+			battle = common.createBattle({gameType: 'doubles'}, [[
+				{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+				{species: 'Ivysaur', ability: 'overgrow', moves: ['lunardance']},
+				{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: 'Latias', ability: 'blaze', moves: ['lunardance'] },
-				{ species: 'Charmeleon', ability: 'blaze', moves: ['lunardance'] },
-				{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+				{species: 'Latias', ability: 'blaze', moves: ['lunardance']},
+				{species: 'Charmeleon', ability: 'blaze', moves: ['lunardance']},
+				{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 			]]);
 
 			battle.makeChoices('move lunardance, move lunardance', 'move lunardance, move lunardance');
@@ -426,17 +423,17 @@ describe('Choices', () => {
 			assert.fainted(battle.p2.active[1]);
 		});
 
-		it('should allow passing when there are not enough available switch-ins even if an active Pokémon is not fainted', () => {
-			battle = common.gen(5).createBattle({ gameType: 'triples' }, [[
-				{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] },
-				{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-				{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-				{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+		it('should allow passing when there are not enough available switch-ins even if an active Pokémon is not fainted', function () {
+			battle = common.gen(5).createBattle({gameType: 'triples'}, [[
+				{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']},
+				{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+				{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+				{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-				{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-				{ species: 'Latias', ability: 'blaze', moves: ['lunardance'] },
-				{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+				{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+				{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+				{species: 'Latias', ability: 'blaze', moves: ['lunardance']},
+				{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 			]]);
 
 			battle.makeChoices('move tackle 2, move healingwish, move lunardance', 'move scratch 2, move healingwish, move lunardance');
@@ -452,17 +449,17 @@ describe('Choices', () => {
 			}
 		});
 
-		it('should disallow passing when there are enough available switch-ins', () => {
-			battle = common.createBattle({ gameType: 'doubles' }, [[
-				{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-				{ species: 'Bulbasaur', ability: 'overgrow', moves: ['lunardance'] },
-				{ species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] },
-				{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+		it('should disallow passing when there are enough available switch-ins', function () {
+			battle = common.createBattle({gameType: 'doubles'}, [[
+				{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+				{species: 'Bulbasaur', ability: 'overgrow', moves: ['lunardance']},
+				{species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']},
+				{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: 'Latias', ability: 'blaze', moves: ['lunardance'] },
-				{ species: 'Charmander', ability: 'blaze', moves: ['lunardance'] },
-				{ species: 'Charmeleon', ability: 'blaze', moves: ['scratch'] },
-				{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+				{species: 'Latias', ability: 'blaze', moves: ['lunardance']},
+				{species: 'Charmander', ability: 'blaze', moves: ['lunardance']},
+				{species: 'Charmeleon', ability: 'blaze', moves: ['scratch']},
+				{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 			]]);
 
 			battle.makeChoices('move lunardance, move lunardance', 'move lunardance, move lunardance');
@@ -487,23 +484,23 @@ describe('Choices', () => {
 		});
 	});
 
-	describe('Team Preview requests', () => {
-		it('should allow specifying the team order', () => {
+	describe('Team Preview requests', function () {
+		it('should allow specifying the team order', function () {
 			const TEAMS = [[
-				{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] },
-				{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-				{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-				{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+				{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']},
+				{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+				{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+				{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-				{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-				{ species: 'Latias', ability: 'blaze', moves: ['lunardance'] },
-				{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+				{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+				{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+				{species: 'Latias', ability: 'blaze', moves: ['lunardance']},
+				{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 			]];
 
 			for (let i = 0; i < 10; i++) {
 				const teamOrder = [BASE_TEAM_ORDER, BASE_TEAM_ORDER].map(teamOrder => Utils.shuffle(teamOrder.slice(0, 4)));
-				battle = common.createBattle({ preview: true }, TEAMS);
+				battle = common.createBattle({preview: true}, TEAMS);
 				battle.makeChoices(`team ${teamOrder[0].join('')}`, `team ${teamOrder[1].join('')}`);
 				for (const [index, pokemon] of battle.p1.pokemon.entries()) {
 					assert.species(pokemon, TEAMS[0][teamOrder[0][index] - 1].species);
@@ -516,10 +513,10 @@ describe('Choices', () => {
 			}
 		});
 
-		it('should autocomplete a single-slot choice in Singles', () => {
+		it('should autocomplete a single-slot choice in Singles', function () {
 			// Backwards-compatibility with the client. It should be useful for 3rd party bots/clients (Android?)
 			for (let i = 0; i < 5; i++) {
-				battle = common.createBattle({ preview: true }, SINGLES_TEAMS.full);
+				battle = common.createBattle({preview: true}, SINGLES_TEAMS.full);
 				const teamOrder = Utils.shuffle(BASE_TEAM_ORDER.slice()).slice(0, 1);
 				const fullTeamOrder = teamOrder.concat(BASE_TEAM_ORDER.filter(elem => !teamOrder.includes(elem)));
 
@@ -533,9 +530,9 @@ describe('Choices', () => {
 			}
 		});
 
-		it('should allow specifying the team order in a slot-per-slot basis in Singles with Illusion', () => {
+		it('should allow specifying the team order in a slot-per-slot basis in Singles with Illusion', function () {
 			for (let i = 0; i < 5; i++) {
-				battle = common.createBattle({ preview: true }, SINGLES_TEAMS.illusion);
+				battle = common.createBattle({preview: true}, SINGLES_TEAMS.illusion);
 				const teamOrder = Utils.shuffle(BASE_TEAM_ORDER.slice());
 
 				battle.makeChoices(`team ${teamOrder.join('')}`, 'default');
@@ -548,9 +545,9 @@ describe('Choices', () => {
 			}
 		});
 
-		it('should allow specifying the team order in a slot-per-slot basis in Doubles', () => {
+		it('should allow specifying the team order in a slot-per-slot basis in Doubles', function () {
 			for (let i = 0; i < 5; i++) {
-				battle = common.createBattle({ preview: true, gameType: 'doubles' }, DOUBLES_TEAMS.full);
+				battle = common.createBattle({preview: true, gameType: 'doubles'}, DOUBLES_TEAMS.full);
 				const teamOrder = Utils.shuffle(BASE_TEAM_ORDER.slice());
 
 				battle.makeChoices(`team ${teamOrder.join('')}`, 'default');
@@ -563,9 +560,9 @@ describe('Choices', () => {
 			}
 		});
 
-		it('should allow specifying the team order in a slot-per-slot basis in Triples', () => {
+		it('should allow specifying the team order in a slot-per-slot basis in Triples', function () {
 			for (let i = 0; i < 5; i++) {
-				battle = common.gen(5).createBattle({ preview: true, gameType: 'triples' }, TRIPLES_TEAMS.full);
+				battle = common.gen(5).createBattle({preview: true, gameType: 'triples'}, TRIPLES_TEAMS.full);
 				const teamOrder = Utils.shuffle(BASE_TEAM_ORDER.slice());
 
 				battle.makeChoices(`team ${teamOrder.join('')}`, 'default');
@@ -578,9 +575,9 @@ describe('Choices', () => {
 			}
 		});
 
-		it('should autocomplete multi-slot choices', () => {
+		it('should autocomplete multi-slot choices', function () {
 			for (let i = 0; i < 5; i++) {
-				battle = common.createBattle({ preview: true }, SINGLES_TEAMS.full);
+				battle = common.createBattle({preview: true}, SINGLES_TEAMS.full);
 				const teamOrder = Utils.shuffle(BASE_TEAM_ORDER.slice()).slice(0, 2);
 				const fullTeamOrder = teamOrder.concat(BASE_TEAM_ORDER.filter(elem => !teamOrder.includes(elem)));
 
@@ -595,11 +592,11 @@ describe('Choices', () => {
 		});
 	});
 
-	describe('Logging', () => {
-		it('should privately log the ID of chosen moves', () => {
+	describe('Logging', function () {
+		it('should privately log the ID of chosen moves', function () {
 			battle = common.createBattle([
-				[{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl'] }],
-				[{ species: "Charmander", ability: 'blaze', moves: ['scratch', 'growl'] }],
+				[{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl']}],
+				[{species: "Charmander", ability: 'blaze', moves: ['scratch', 'growl']}],
 			]);
 			battle.makeChoices('move 1', 'move growl');
 
@@ -608,13 +605,13 @@ describe('Choices', () => {
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
-		it('should privately log the target of targeted chosen moves', () => {
-			battle = common.createBattle({ gameType: 'doubles' }, [[
-				{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle'] },
-				{ species: "Ivysaur", ability: 'overgrow', moves: ['tackle'] },
+		it('should privately log the target of targetted chosen moves', function () {
+			battle = common.createBattle({gameType: 'doubles'}, [[
+				{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle']},
+				{species: "Ivysaur", ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: "Charmander", ability: 'blaze', moves: ['scratch'] },
-				{ species: "Charizard", ability: 'blaze', moves: ['scratch'] },
+				{species: "Charmander", ability: 'blaze', moves: ['scratch']},
+				{species: "Charizard", ability: 'blaze', moves: ['scratch']},
 			]]);
 			battle.makeChoices('move tackle +1, move tackle +2', 'move scratch +2, move scratch +1');
 
@@ -623,13 +620,13 @@ describe('Choices', () => {
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
-		it('should not log the target of targetless chosen moves', () => {
-			battle = common.createBattle({ gameType: 'doubles' }, [[
-				{ species: "Bulbasaur", ability: 'overgrow', moves: ['magnitude'] },
-				{ species: "Ivysaur", ability: 'overgrow', moves: ['rockslide'] },
+		it('should not log the target of targetless chosen moves', function () {
+			battle = common.createBattle({gameType: 'doubles'}, [[
+				{species: "Bulbasaur", ability: 'overgrow', moves: ['magnitude']},
+				{species: "Ivysaur", ability: 'overgrow', moves: ['rockslide']},
 			], [
-				{ species: "Charmander", ability: 'blaze', moves: ['scratch'] },
-				{ species: "Charizard", ability: 'blaze', moves: ['scratch'] },
+				{species: "Charmander", ability: 'blaze', moves: ['scratch']},
+				{species: "Charizard", ability: 'blaze', moves: ['scratch']},
 			]]);
 			battle.makeChoices('move magnitude, move rockslide', 'move scratch +1, move scratch +1');
 
@@ -638,10 +635,10 @@ describe('Choices', () => {
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
-		it('should privately log the user intention of mega evolving', () => {
+		it('should privately log the user intention of mega evolving', function () {
 			battle = common.createBattle([
-				[{ species: "Venusaur", item: 'venusaurite', ability: 'overgrow', moves: ['tackle'] }],
-				[{ species: "Blastoise", item: 'blastoisinite', ability: 'blaze', moves: ['tailwhip'] }],
+				[{species: "Venusaur", item: 'venusaurite', ability: 'overgrow', moves: ['tackle']}],
+				[{species: "Blastoise", item: 'blastoisinite', ability: 'blaze', moves: ['tailwhip']}],
 			]);
 			battle.makeChoices('move tackle mega', 'move tailwhip mega');
 
@@ -650,10 +647,10 @@ describe('Choices', () => {
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
-		it('should privately log the user intention of mega evolving for Mega-X and Mega-Y', () => {
+		it('should privately log the user intention of mega evolving for Mega-X and Mega-Y', function () {
 			battle = common.createBattle([
-				[{ species: "Charizard", item: 'charizarditex', ability: 'blaze', moves: ['scratch'] }],
-				[{ species: "Charizard", item: 'charizarditey', ability: 'blaze', moves: ['ember'] }],
+				[{species: "Charizard", item: 'charizarditex', ability: 'blaze', moves: ['scratch']}],
+				[{species: "Charizard", item: 'charizarditey', ability: 'blaze', moves: ['ember']}],
 			]);
 			battle.makeChoices('move scratch mega', 'move ember mega');
 
@@ -662,15 +659,15 @@ describe('Choices', () => {
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
-		it('should privately log the target of switches', () => {
+		it('should privately log the target of switches', function () {
 			battle = common.createBattle([[
-				{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle'] },
-				{ species: "Ivysaur", ability: 'overgrow', moves: ['tackle'] },
-				{ species: "Venusaur", ability: 'overgrow', moves: ['tackle'] },
+				{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle']},
+				{species: "Ivysaur", ability: 'overgrow', moves: ['tackle']},
+				{species: "Venusaur", ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: "Charmander", ability: 'blaze', moves: ['scratch'] },
-				{ species: "Charmeleon", ability: 'blaze', moves: ['scratch'] },
-				{ species: "Charizard", ability: 'blaze', moves: ['scratch'] },
+				{species: "Charmander", ability: 'blaze', moves: ['scratch']},
+				{species: "Charmeleon", ability: 'blaze', moves: ['scratch']},
+				{species: "Charizard", ability: 'blaze', moves: ['scratch']},
 			]]);
 
 			battle.makeChoices('switch 2', 'switch 3');
@@ -680,17 +677,17 @@ describe('Choices', () => {
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
-		it('should privately log the team order chosen', () => {
-			battle = common.createBattle({ preview: true }, [[
-				{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] },
-				{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-				{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-				{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+		it('should privately log the team order chosen', function () {
+			battle = common.createBattle({preview: true}, [[
+				{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']},
+				{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+				{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+				{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 			], [
-				{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-				{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-				{ species: 'Latias', ability: 'blaze', moves: ['lunardance'] },
-				{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+				{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+				{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+				{species: 'Latias', ability: 'blaze', moves: ['lunardance']},
+				{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 			]]);
 
 			battle.makeChoices('team 1342', 'team 1234');
@@ -700,18 +697,18 @@ describe('Choices', () => {
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
-		it('should privately log shifting decisions for the Pokémon on the left', () => {
-			battle = common.gen(5).createBattle({ gameType: 'triples' });
-			battle.setPlayer('p1', { team: [
-				{ species: "Pineco", ability: 'sturdy', moves: ['harden'] },
-				{ species: "Geodude", ability: 'sturdy', moves: ['defensecurl'] },
-				{ species: "Gastly", ability: 'levitate', moves: ['haze'] },
-			] });
-			battle.setPlayer('p2', { team: [
-				{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-				{ species: "Aggron", ability: 'sturdy', moves: ['irondefense'] },
-				{ species: "Golem", ability: 'sturdy', moves: ['defensecurl'] },
-			] });
+		it('should privately log shifting decisions for the Pokémon on the left', function () {
+			battle = common.gen(5).createBattle({gameType: 'triples'});
+			battle.setPlayer('p1', {team: [
+				{species: "Pineco", ability: 'sturdy', moves: ['harden']},
+				{species: "Geodude", ability: 'sturdy', moves: ['defensecurl']},
+				{species: "Gastly", ability: 'levitate', moves: ['haze']},
+			]});
+			battle.setPlayer('p2', {team: [
+				{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+				{species: "Aggron", ability: 'sturdy', moves: ['irondefense']},
+				{species: "Golem", ability: 'sturdy', moves: ['defensecurl']},
+			]});
 			battle.makeChoices('shift, move defensecurl, move haze', 'move roost, move irondefense, move defensecurl');
 
 			const logText = battle.inputLog.join('\n');
@@ -719,18 +716,18 @@ describe('Choices', () => {
 			assert(logText.includes(subString), `${logText} does not include ${subString}`);
 		});
 
-		it('should privately log shifting decisions for the Pokémon on the right', () => {
-			battle = common.gen(5).createBattle({ gameType: 'triples' });
-			battle.setPlayer('p1', { team: [
-				{ species: "Pineco", ability: 'sturdy', moves: ['harden'] },
-				{ species: "Geodude", ability: 'sturdy', moves: ['defensecurl'] },
-				{ species: "Gastly", ability: 'levitate', moves: ['haze'] },
-			] });
-			battle.setPlayer('p2', { team: [
-				{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-				{ species: "Aggron", ability: 'sturdy', moves: ['irondefense'] },
-				{ species: "Golem", ability: 'sturdy', moves: ['defensecurl'] },
-			] });
+		it('should privately log shifting decisions for the Pokémon on the right', function () {
+			battle = common.gen(5).createBattle({gameType: 'triples'});
+			battle.setPlayer('p1', {team: [
+				{species: "Pineco", ability: 'sturdy', moves: ['harden']},
+				{species: "Geodude", ability: 'sturdy', moves: ['defensecurl']},
+				{species: "Gastly", ability: 'levitate', moves: ['haze']},
+			]});
+			battle.setPlayer('p2', {team: [
+				{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+				{species: "Aggron", ability: 'sturdy', moves: ['irondefense']},
+				{species: "Golem", ability: 'sturdy', moves: ['defensecurl']},
+			]});
 
 			battle.makeChoices('move harden, move defensecurl, shift', 'move roost, move irondefense, move defensecurl');
 
@@ -741,14 +738,14 @@ describe('Choices', () => {
 	});
 });
 
-describe('Choice extensions', () => {
-	describe('Undo', () => {
+describe('Choice extensions', function () {
+	describe('Undo', function () {
 		const MODES = ['revoke', 'override'];
 		for (const mode of MODES) {
-			it(`should disallow to ${mode} decisions after every player has sent an unrevoked action`, () => {
-				battle = common.createBattle({ cancel: true });
-				battle.setPlayer('p1', { team: [{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl'] }] });
-				battle.setPlayer('p2', { team: [{ species: "Charmander", ability: 'blaze', moves: ['tackle', 'growl'] }] });
+			it(`should disallow to ${mode} decisions after every player has sent an unrevoked action`, function () {
+				battle = common.createBattle({cancel: true});
+				battle.setPlayer('p1', {team: [{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl']}]});
+				battle.setPlayer('p2', {team: [{species: "Charmander", ability: 'blaze', moves: ['tackle', 'growl']}]});
 
 				battle.choose('p1', 'move tackle');
 				battle.choose('p2', 'move growl');
@@ -762,10 +759,10 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p2.active[0].lastMove.id, 'growl');
 			});
 
-			it(`should support to ${mode} move decisions`, () => {
-				battle = common.createBattle({ cancel: true });
-				battle.setPlayer('p1', { team: [{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl'] }] });
-				battle.setPlayer('p2', { team: [{ species: "Charmander", ability: 'blaze', moves: ['tackle', 'growl'] }] });
+			it(`should support to ${mode} move decisions`, function () {
+				battle = common.createBattle({cancel: true});
+				battle.setPlayer('p1', {team: [{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl']}]});
+				battle.setPlayer('p2', {team: [{species: "Charmander", ability: 'blaze', moves: ['tackle', 'growl']}]});
 
 				battle.choose('p1', 'move tackle');
 				assert(!battle.p1.activeRequest.noCancel);
@@ -776,10 +773,10 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p1.active[0].lastMove.id, 'growl');
 			});
 
-			it(`should disallow to ${mode} move decisions for maybe-disabled Pokémon`, () => {
-				battle = common.createBattle({ cancel: true });
-				battle.setPlayer('p1', { team: [{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl', 'synthesis'] }] });
-				battle.setPlayer('p2', { team: [{ species: "Charmander", ability: 'blaze', moves: ['scratch'] }] });
+			it(`should disallow to ${mode} move decisions for maybe-disabled Pokémon`, function () {
+				battle = common.createBattle({cancel: true});
+				battle.setPlayer('p1', {team: [{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl', 'synthesis']}]});
+				battle.setPlayer('p2', {team: [{species: "Charmander", ability: 'blaze', moves: ['scratch']}]});
 
 				const target = battle.p1.active[0];
 				target.maybeDisabled = true;
@@ -795,10 +792,10 @@ describe('Choice extensions', () => {
 				assert.equal(target.lastMove.id, 'tackle');
 			});
 
-			it(`should disallow to ${mode} move decisions by default`, () => {
+			it(`should disallow to ${mode} move decisions by default`, function () {
 				battle = common.createBattle();
-				battle.setPlayer('p1', { team: [{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl'] }] });
-				battle.setPlayer('p2', { team: [{ species: "Charmander", ability: 'blaze', moves: ['tackle', 'growl'] }] });
+				battle.setPlayer('p1', {team: [{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle', 'growl']}]});
+				battle.setPlayer('p2', {team: [{species: "Charmander", ability: 'blaze', moves: ['tackle', 'growl']}]});
 
 				battle.choose('p1', 'move tackle');
 				assert(battle.p1.activeRequest.noCancel);
@@ -811,15 +808,15 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p2.active[0].lastMove.id, 'growl');
 			});
 
-			it(`should support to ${mode} switch decisions on move requests`, () => {
+			it(`should support to ${mode} switch decisions on move requests`, function () {
 				const TEAMS = [[
-					{ species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis'] },
-					{ species: 'Ivysaur', ability: 'overgrow', moves: ['synthesis'] },
-					{ species: 'Venusaur', ability: 'overgrow', moves: ['synthesis'] },
+					{species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis']},
+					{species: 'Ivysaur', ability: 'overgrow', moves: ['synthesis']},
+					{species: 'Venusaur', ability: 'overgrow', moves: ['synthesis']},
 				], [
-					{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
+					{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
 				]];
-				battle = common.createBattle({ cancel: true }, TEAMS);
+				battle = common.createBattle({cancel: true}, TEAMS);
 
 				battle.choose('p1', 'switch 2');
 				assert(!battle.p1.activeRequest.noCancel);
@@ -832,7 +829,7 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p1.active[0].lastMove.id, 'synthesis');
 
 				battle.destroy();
-				battle = common.createBattle({ cancel: true }, TEAMS);
+				battle = common.createBattle({cancel: true}, TEAMS);
 
 				battle.choose('p1', 'switch 2');
 				assert(!battle.p1.activeRequest.noCancel);
@@ -844,14 +841,14 @@ describe('Choice extensions', () => {
 				}
 			});
 
-			it(`should disallow to ${mode} switch decisions on move requests for maybe-trapped Pokémon`, () => {
+			it(`should disallow to ${mode} switch decisions on move requests for maybe-trapped Pokémon`, function () {
 				const TEAMS = [[
-					{ species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis'] },
-					{ species: 'Ivysaur', ability: 'overgrow', moves: ['synthesis'] },
+					{species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis']},
+					{species: 'Ivysaur', ability: 'overgrow', moves: ['synthesis']},
 				], [
-					{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
+					{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
 				]];
-				battle = common.createBattle({ cancel: true }, TEAMS);
+				battle = common.createBattle({cancel: true}, TEAMS);
 
 				battle.p1.active[0].maybeTrapped = true;
 				battle.makeRequest();
@@ -866,15 +863,15 @@ describe('Choice extensions', () => {
 				assert.species(battle.p1.active[0], 'Ivysaur');
 			});
 
-			it(`should disallow to ${mode} switch decisions on move requests for unconfirmed trapping-immune Pokémon that would otherwise be trapped`, () => {
-				battle = common.createBattle({ cancel: true, legality: true }, [
+			it(`should disallow to ${mode} switch decisions on move requests for unconfirmed trapping-immune Pokémon that would otherwise be trapped`, function () {
+				battle = common.createBattle({cancel: true, pokemon: true, legality: true}, [
 					[
-						{ species: 'Starmie', ability: 'naturalcure', moves: ['reflecttype', 'recover'] },
-						{ species: 'Mandibuzz', ability: 'overcoat', moves: ['knockoff'] },
-					], [
-						{ species: 'Zoroark', ability: 'illusion', moves: ['shadowball, focusblast'] },
-						{ species: 'Gothitelle', ability: 'competitive', moves: ['calmmind'] },
-						{ species: 'Gengar', ability: 'levitate', moves: ['shadowball, focusblast'] },
+						{species: 'Starmie', ability: 'naturalcure', moves: ['reflecttype', 'recover']},
+						{species: 'Mandibuzz', ability: 'overcoat', moves: ['knockoff']},
+					], 	[
+						{species: 'Zoroark', ability: 'illusion', moves: ['shadowball, focusblast']},
+						{species: 'Gothitelle', ability: 'competitive', moves: ['calmmind']},
+						{species: 'Gengar', ability: 'levitate', moves: ['shadowball, focusblast']},
 					],
 				]);
 				const target = battle.p1.active[0];
@@ -901,13 +898,13 @@ describe('Choice extensions', () => {
 				assert.species(battle.p1.active[0], 'Mandibuzz');
 			});
 
-			it(`should disallow to ${mode} switch decisions on move requests by default`, () => {
+			it(`should disallow to ${mode} switch decisions on move requests by default`, function () {
 				const TEAMS = [[
-					{ species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis'] },
-					{ species: 'Ivysaur', ability: 'overgrow', moves: ['synthesis'] },
-					{ species: 'Venusaur', ability: 'overgrow', moves: ['synthesis'] },
+					{species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis']},
+					{species: 'Ivysaur', ability: 'overgrow', moves: ['synthesis']},
+					{species: 'Venusaur', ability: 'overgrow', moves: ['synthesis']},
 				], [
-					{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
+					{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
 				]];
 				battle = common.createBattle(TEAMS);
 
@@ -935,17 +932,17 @@ describe('Choice extensions', () => {
 				}
 			});
 
-			it(`should support to ${mode} shift decisions on move requests`, () => {
+			it(`should support to ${mode} shift decisions on move requests`, function () {
 				const TEAMS = [[
-					{ species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis'] },
-					{ species: 'Ivysaur', ability: 'overgrow', moves: ['synthesis'] },
-					{ species: 'Venusaur', ability: 'overgrow', moves: ['synthesis'] },
+					{species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis']},
+					{species: 'Ivysaur', ability: 'overgrow', moves: ['synthesis']},
+					{species: 'Venusaur', ability: 'overgrow', moves: ['synthesis']},
 				], [
-					{ species: 'Aggron', ability: 'sturdy', moves: ['irondefense'] },
-					{ species: 'Aggron', ability: 'sturdy', moves: ['irondefense'] },
-					{ species: 'Aggron', ability: 'sturdy', moves: ['irondefense'] },
+					{species: 'Aggron', ability: 'sturdy', moves: ['irondefense']},
+					{species: 'Aggron', ability: 'sturdy', moves: ['irondefense']},
+					{species: 'Aggron', ability: 'sturdy', moves: ['irondefense']},
 				]];
-				battle = common.gen(5).createBattle({ gameType: 'triples', cancel: true }, TEAMS);
+				battle = common.gen(5).createBattle({gameType: 'triples', cancel: true}, TEAMS);
 
 				battle.choose('p1', 'shift, move 1, move 1');
 				assert(!battle.p1.activeRequest.noCancel);
@@ -958,7 +955,7 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p1.active[0].lastMove.id, 'synthesis');
 
 				battle.destroy();
-				battle = common.gen(5).createBattle({ gameType: 'triples', cancel: true }, TEAMS);
+				battle = common.gen(5).createBattle({gameType: 'triples', cancel: true}, TEAMS);
 
 				battle.choose('p1', 'move 1, move 1, shift');
 				assert(!battle.p1.activeRequest.noCancel);
@@ -971,17 +968,17 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p1.active[2].lastMove.id, 'synthesis');
 			});
 
-			it(`should disallow to ${mode} shift decisions by default`, () => {
+			it(`should disallow to ${mode} shift decisions by default`, function () {
 				const TEAMS = [[
-					{ species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis'] },
-					{ species: 'Ivysaur', ability: 'overgrow', moves: ['growth'] },
-					{ species: 'Venusaur', ability: 'overgrow', moves: ['synthesis'] },
+					{species: 'Bulbasaur', ability: 'overgrow', moves: ['synthesis']},
+					{species: 'Ivysaur', ability: 'overgrow', moves: ['growth']},
+					{species: 'Venusaur', ability: 'overgrow', moves: ['synthesis']},
 				], [
-					{ species: 'Aggron', ability: 'sturdy', moves: ['irondefense'] },
-					{ species: 'Aggron', ability: 'sturdy', moves: ['irondefense'] },
-					{ species: 'Aggron', ability: 'sturdy', moves: ['irondefense'] },
+					{species: 'Aggron', ability: 'sturdy', moves: ['irondefense']},
+					{species: 'Aggron', ability: 'sturdy', moves: ['irondefense']},
+					{species: 'Aggron', ability: 'sturdy', moves: ['irondefense']},
 				]];
-				battle = common.gen(5).createBattle({ gameType: 'triples' }, TEAMS);
+				battle = common.gen(5).createBattle({gameType: 'triples'}, TEAMS);
 
 				battle.choose('p1', 'shift, move 1, move 1');
 				assert(battle.p1.activeRequest.noCancel);
@@ -995,7 +992,7 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p1.active[0].lastMove.id, 'growth');
 
 				battle.destroy();
-				battle = common.gen(5).createBattle({ gameType: 'triples' }, TEAMS);
+				battle = common.gen(5).createBattle({gameType: 'triples'}, TEAMS);
 
 				battle.choose('p1', 'move 1, move 1, shift');
 				assert(battle.p1.activeRequest.noCancel);
@@ -1009,17 +1006,17 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p1.active[2].lastMove.id, 'growth');
 			});
 
-			it(`should support to ${mode} switch decisions on double switch requests`, () => {
-				battle = common.createBattle({ cancel: true });
-				battle.setPlayer('p1', { team: [
-					{ species: "Deoxys-Attack", ability: 'pressure', moves: ['explosion'] },
-					{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle'] },
-					{ species: "Chikorita", ability: 'overgrow', moves: ['tackle'] },
-				] });
-				battle.setPlayer('p2', { team: [
-					{ species: "Caterpie", ability: 'shielddust', moves: ['tackle'] },
-					{ species: "Charmander", ability: 'blaze', moves: ['tackle'] },
-				] });
+			it(`should support to ${mode} switch decisions on double switch requests`, function () {
+				battle = common.createBattle({cancel: true});
+				battle.setPlayer('p1', {team: [
+					{species: "Deoxys-Attack", ability: 'pressure', moves: ['explosion']},
+					{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle']},
+					{species: "Chikorita", ability: 'overgrow', moves: ['tackle']},
+				]});
+				battle.setPlayer('p2', {team: [
+					{species: "Caterpie", ability: 'shielddust', moves: ['tackle']},
+					{species: "Charmander", ability: 'blaze', moves: ['tackle']},
+				]});
 
 				battle.makeChoices('move explosion', 'move tackle');
 
@@ -1033,18 +1030,18 @@ describe('Choice extensions', () => {
 				assert.equal(battle.p2.active[0].species.name, 'Charmander');
 			});
 
-			it(`should support to ${mode} pass decisions on double switch requests`, () => {
-				battle = common.createBattle({ cancel: true, gameType: 'doubles' });
-				battle.setPlayer('p1', { team: [
-					{ species: "Deoxys-Attack", ability: 'pressure', moves: ['explosion'] },
-					{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle'] },
-					{ species: "Chikorita", ability: 'overgrow', moves: ['tackle'] },
-				] });
-				battle.setPlayer('p2', { team: [
-					{ species: "Caterpie", ability: 'shielddust', moves: ['tackle'] },
-					{ species: "Charmander", ability: 'blaze', moves: ['tackle'] },
-					{ species: "Cyndaquil", ability: 'blaze', moves: ['tackle'] },
-				] });
+			it(`should support to ${mode} pass decisions on double switch requests`, function () {
+				battle = common.createBattle({cancel: true, gameType: 'doubles'});
+				battle.setPlayer('p1', {team: [
+					{species: "Deoxys-Attack", ability: 'pressure', moves: ['explosion']},
+					{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle']},
+					{species: "Chikorita", ability: 'overgrow', moves: ['tackle']},
+				]});
+				battle.setPlayer('p2', {team: [
+					{species: "Caterpie", ability: 'shielddust', moves: ['tackle']},
+					{species: "Charmander", ability: 'blaze', moves: ['tackle']},
+					{species: "Cyndaquil", ability: 'blaze', moves: ['tackle']},
+				]});
 
 				battle.makeChoices('move explosion, move tackle 1', 'move tackle 1, move tackle 1');
 
@@ -1058,19 +1055,19 @@ describe('Choice extensions', () => {
 				}
 			});
 
-			it(`should disallow to ${mode} switch decisions on switch requests by default`, () => {
+			it(`should disallow to ${mode} switch decisions on switch requests by default`, function () {
 				const TEAMS = [[
-					{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-					{ species: 'Clefable', ability: 'unaware', moves: ['healingwish'] },
-					{ species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] },
-					{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+					{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+					{species: 'Clefable', ability: 'unaware', moves: ['healingwish']},
+					{species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']},
+					{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 				], [
-					{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-					{ species: 'Charmeleon', ability: 'blaze', moves: ['scratch'] },
-					{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+					{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+					{species: 'Charmeleon', ability: 'blaze', moves: ['scratch']},
+					{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 				]];
 
-				battle = common.createBattle({ gameType: 'doubles', cancel: true }, TEAMS);
+				battle = common.createBattle({gameType: 'doubles', cancel: true}, TEAMS);
 				battle.makeChoices('move lunardance, move healingwish', 'move scratch 1, move scratch 1');
 
 				battle.choose('p1', 'switch 3, switch 4');
@@ -1087,18 +1084,18 @@ describe('Choice extensions', () => {
 				}
 			});
 
-			it(`should disallow to ${mode} pass decisions on switch requests by default`, () => {
+			it(`should disallow to ${mode} pass decisions on switch requests by default`, function () {
 				const TEAMS = [[
-					{ species: 'Latias', ability: 'levitate', moves: ['lunardance'] },
-					{ species: 'Clefable', ability: 'overgrow', moves: ['healingwish'] },
-					{ species: 'Venusaur', ability: 'overgrow', moves: ['tackle'] },
+					{species: 'Latias', ability: 'levitate', moves: ['lunardance']},
+					{species: 'Clefable', ability: 'overgrow', moves: ['healingwish']},
+					{species: 'Venusaur', ability: 'overgrow', moves: ['tackle']},
 				], [
-					{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] },
-					{ species: 'Charmeleon', ability: 'blaze', moves: ['scratch'] },
-					{ species: 'Charizard', ability: 'blaze', moves: ['scratch'] },
+					{species: 'Charmander', ability: 'blaze', moves: ['scratch']},
+					{species: 'Charmeleon', ability: 'blaze', moves: ['scratch']},
+					{species: 'Charizard', ability: 'blaze', moves: ['scratch']},
 				]];
 
-				battle = common.createBattle({ gameType: 'doubles' }, TEAMS);
+				battle = common.createBattle({gameType: 'doubles'}, TEAMS);
 				battle.makeChoices('move lunardance, move healingwish', 'move scratch 1, move scratch 1');
 
 				battle.choose('p1', 'pass, switch 3');
@@ -1115,17 +1112,17 @@ describe('Choice extensions', () => {
 				}
 			});
 
-			it(`should disallow to ${mode} switch decisions on double switch requests by default`, () => {
+			it(`should disallow to ${mode} switch decisions on double switch requests by default`, function () {
 				battle = common.createBattle();
-				battle.setPlayer('p1', { team: [
-					{ species: "Deoxys-Attack", ability: 'pressure', moves: ['explosion'] },
-					{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle'] },
-					{ species: "Chikorita", ability: 'overgrow', moves: ['tackle'] },
-				] });
-				battle.setPlayer('p2', { team: [
-					{ species: "Caterpie", ability: 'shielddust', moves: ['tackle'] },
-					{ species: "Charmander", ability: 'blaze', moves: ['tackle'] },
-				] });
+				battle.setPlayer('p1', {team: [
+					{species: "Deoxys-Attack", ability: 'pressure', moves: ['explosion']},
+					{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle']},
+					{species: "Chikorita", ability: 'overgrow', moves: ['tackle']},
+				]});
+				battle.setPlayer('p2', {team: [
+					{species: "Caterpie", ability: 'shielddust', moves: ['tackle']},
+					{species: "Charmander", ability: 'blaze', moves: ['tackle']},
+				]});
 
 				battle.makeChoices('move explosion', 'move tackle');
 
@@ -1139,18 +1136,18 @@ describe('Choice extensions', () => {
 				assert.species(battle.p2.active[0], 'Charmander');
 			});
 
-			it(`should disallow to ${mode} pass decisions on double switch requests by default`, () => {
-				battle = common.createBattle({ gameType: 'doubles' });
-				battle.setPlayer('p1', { team: [
-					{ species: "Deoxys-Attack", ability: 'pressure', moves: ['explosion'] },
-					{ species: "Bulbasaur", ability: 'overgrow', moves: ['tackle'] },
-					{ species: "Chikorita", ability: 'overgrow', moves: ['tackle'] },
-				] });
-				battle.setPlayer('p2', { team: [
-					{ species: "Caterpie", ability: 'shielddust', moves: ['tackle'] },
-					{ species: "Charmander", ability: 'blaze', moves: ['tackle'] },
-					{ species: "Cyndaquil", ability: 'blaze', moves: ['tackle'] },
-				] });
+			it(`should disallow to ${mode} pass decisions on double switch requests by default`, function () {
+				battle = common.createBattle({gameType: 'doubles'});
+				battle.setPlayer('p1', {team: [
+					{species: "Deoxys-Attack", ability: 'pressure', moves: ['explosion']},
+					{species: "Bulbasaur", ability: 'overgrow', moves: ['tackle']},
+					{species: "Chikorita", ability: 'overgrow', moves: ['tackle']},
+				]});
+				battle.setPlayer('p2', {team: [
+					{species: "Caterpie", ability: 'shielddust', moves: ['tackle']},
+					{species: "Charmander", ability: 'blaze', moves: ['tackle']},
+					{species: "Cyndaquil", ability: 'blaze', moves: ['tackle']},
+				]});
 
 				battle.makeChoices('move explosion, move tackle 1', 'move tackle 1, move tackle 1');
 
@@ -1165,10 +1162,10 @@ describe('Choice extensions', () => {
 				}
 			});
 
-			it(`should support to ${mode} team order action on team preview requests`, () => {
-				battle = common.createBattle({ preview: true, cancel: true }, [
-					[{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] }, { species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] }],
-					[{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] }, { species: 'Charmeleon', ability: 'blaze', moves: ['scratch'] }],
+			it(`should support to ${mode} team order action on team preview requests`, function () {
+				battle = common.createBattle({preview: true, cancel: true}, [
+					[{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']}, {species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']}],
+					[{species: 'Charmander', ability: 'blaze', moves: ['scratch']}, {species: 'Charmeleon', ability: 'blaze', moves: ['scratch']}],
 				]);
 
 				battle.choose('p1', 'team 12');
@@ -1181,9 +1178,9 @@ describe('Choice extensions', () => {
 				}
 				battle.destroy();
 
-				battle = common.createBattle({ preview: true, cancel: true }, [
-					[{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] }, { species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] }],
-					[{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] }, { species: 'Charmeleon', ability: 'blaze', moves: ['scratch'] }],
+				battle = common.createBattle({preview: true, cancel: true}, [
+					[{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']}, {species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']}],
+					[{species: 'Charmander', ability: 'blaze', moves: ['scratch']}, {species: 'Charmeleon', ability: 'blaze', moves: ['scratch']}],
 				]);
 
 				battle.choose('p1', 'team 21');
@@ -1196,10 +1193,10 @@ describe('Choice extensions', () => {
 				}
 			});
 
-			it(`should disallow to ${mode} team order action on team preview requests by default`, () => {
-				battle = common.createBattle({ preview: true }, [
-					[{ species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle'] }, { species: 'Ivysaur', ability: 'overgrow', moves: ['tackle'] }],
-					[{ species: 'Charmander', ability: 'blaze', moves: ['scratch'] }, { species: 'Charmeleon', ability: 'blaze', moves: ['scratch'] }],
+			it(`should disallow to ${mode} team order action on team preview requests by default`, function () {
+				battle = common.createBattle({preview: true}, [
+					[{species: 'Bulbasaur', ability: 'overgrow', moves: ['tackle']}, {species: 'Ivysaur', ability: 'overgrow', moves: ['tackle']}],
+					[{species: 'Charmander', ability: 'blaze', moves: ['scratch']}, {species: 'Charmeleon', ability: 'blaze', moves: ['scratch']}],
 				]);
 
 				battle.choose('p1', 'team 12');
@@ -1216,21 +1213,21 @@ describe('Choice extensions', () => {
 	});
 });
 
-describe('Choice internals', () => {
-	afterEach(() => {
+describe('Choice internals', function () {
+	afterEach(function () {
 		battle.destroy();
 	});
 
-	it('should allow input of move commands in a per Pokémon basis', () => {
-		battle = common.createBattle({ gameType: 'doubles' });
-		battle.setPlayer('p1', { team: [
-			{ species: "Mew", ability: 'synchronize', moves: ['recover'] },
-			{ species: "Bulbasaur", ability: 'overgrow', moves: ['growl', 'synthesis'] },
-		] });
-		battle.setPlayer('p2', { team: [
-			{ species: "Pupitar", ability: 'shedskin', moves: ['surf'] }, // faster than Bulbasaur
-			{ species: "Arceus", ability: 'multitype', moves: ['calmmind'] },
-		] });
+	it('should allow input of move commands in a per Pokémon basis', function () {
+		battle = common.createBattle({gameType: 'doubles'});
+		battle.setPlayer('p1', {team: [
+			{species: "Mew", ability: 'synchronize', moves: ['recover']},
+			{species: "Bulbasaur", ability: 'overgrow', moves: ['growl', 'synthesis']},
+		]});
+		battle.setPlayer('p2', {team: [
+			{species: "Pupitar", ability: 'shedskin', moves: ['surf']}, // faster than Bulbasaur
+			{species: "Arceus", ability: 'multitype', moves: ['calmmind']},
+		]});
 		const [p1, p2] = battle.sides;
 
 		assert.equal(battle.turn, 1);
@@ -1239,7 +1236,7 @@ describe('Choice internals', () => {
 		p1.chooseMove(1);
 		p2.chooseMove(1);
 		p2.chooseMove(1);
-		battle.commitChoices();
+		battle.commitDecisions();
 
 		assert.equal(battle.turn, 2);
 		assert.statStage(p2.active[0], 'atk', -1);
@@ -1248,7 +1245,7 @@ describe('Choice internals', () => {
 		p1.chooseMove('synthesis');
 		p2.chooseMove('surf');
 		p2.chooseMove('calmmind');
-		battle.commitChoices();
+		battle.commitDecisions();
 
 		assert.equal(battle.turn, 3);
 		assert.fullHP(p1.active[1]);
@@ -1257,24 +1254,24 @@ describe('Choice internals', () => {
 		p1.chooseMove('2');
 		p2.chooseMove('1');
 		p2.chooseMove('calmmind');
-		battle.commitChoices();
+		battle.commitDecisions();
 
 		assert.equal(battle.turn, 4);
 		assert.fullHP(p1.active[1]);
 	});
 
-	it('should allow input of switch commands in a per Pokémon basis', () => {
-		battle = common.createBattle({ gameType: 'doubles' });
-		battle.setPlayer('p1', { team: [
-			{ species: "Mew", ability: 'synchronize', moves: ['selfdestruct'] },
-			{ species: "Bulbasaur", ability: 'overgrow', moves: ['selfdestruct'] },
-			{ species: "Koffing", ability: 'levitate', moves: ['smog'] },
-			{ species: "Ekans", ability: 'shedskin', moves: ['leer'] },
-		] });
-		battle.setPlayer('p2', { team: [
-			{ species: "Deoxys-Defense", ability: 'pressure', moves: ['recover'] },
-			{ species: "Arceus", ability: 'multitype', moves: ['recover'] },
-		] });
+	it('should allow input of switch commands in a per Pokémon basis', function () {
+		battle = common.createBattle({gameType: 'doubles'});
+		battle.setPlayer('p1', {team: [
+			{species: "Mew", ability: 'synchronize', moves: ['selfdestruct']},
+			{species: "Bulbasaur", ability: 'overgrow', moves: ['selfdestruct']},
+			{species: "Koffing", ability: 'levitate', moves: ['smog']},
+			{species: "Ekans", ability: 'shedskin', moves: ['leer']},
+		]});
+		battle.setPlayer('p2', {team: [
+			{species: "Deoxys-Defense", ability: 'pressure', moves: ['recover']},
+			{species: "Arceus", ability: 'multitype', moves: ['recover']},
+		]});
 		const [p1, p2] = battle.sides;
 
 		assert.equal(battle.turn, 1);
@@ -1282,30 +1279,30 @@ describe('Choice internals', () => {
 		p1.chooseMove('selfdestruct');
 		p2.chooseMove('recover');
 		p2.chooseMove('recover');
-		battle.commitChoices();
+		battle.commitDecisions();
 
 		assert.fainted(p1.active[0]);
 		assert.fainted(p1.active[1]);
 		p1.chooseSwitch(4);
 		p1.chooseSwitch(3);
-		battle.commitChoices();
+		battle.commitDecisions();
 		assert.equal(battle.turn, 2);
 		assert.equal(p1.active[0].name, 'Ekans');
 		assert.equal(p1.active[1].name, 'Koffing');
 	});
 
-	it('should allow input of move and switch commands in a per Pokémon basis', () => {
-		battle = common.createBattle({ gameType: 'doubles' });
-		battle.setPlayer('p1', { team: [
-			{ species: "Mew", ability: 'synchronize', moves: ['recover'] },
-			{ species: "Bulbasaur", ability: 'overgrow', moves: ['growl', 'synthesis'] },
-			{ species: "Koffing", ability: 'levitate', moves: ['smog'] },
-			{ species: "Ekans", ability: 'shedskin', moves: ['leer'] },
-		] });
-		battle.setPlayer('p2', { team: [
-			{ species: "Deoxys-Defense", ability: 'pressure', moves: ['recover'] },
-			{ species: "Arceus", ability: 'multitype', moves: ['recover'] },
-		] });
+	it('should allow input of move and switch commands in a per Pokémon basis', function () {
+		battle = common.createBattle({gameType: 'doubles'});
+		battle.setPlayer('p1', {team: [
+			{species: "Mew", ability: 'synchronize', moves: ['recover']},
+			{species: "Bulbasaur", ability: 'overgrow', moves: ['growl', 'synthesis']},
+			{species: "Koffing", ability: 'levitate', moves: ['smog']},
+			{species: "Ekans", ability: 'shedskin', moves: ['leer']},
+		]});
+		battle.setPlayer('p2', {team: [
+			{species: "Deoxys-Defense", ability: 'pressure', moves: ['recover']},
+			{species: "Arceus", ability: 'multitype', moves: ['recover']},
+		]});
 		const [p1, p2] = battle.sides;
 
 		assert.equal(battle.turn, 1);
@@ -1316,7 +1313,7 @@ describe('Choice internals', () => {
 			`Expected switch to fail`
 		);
 		p2.choose('move recover, move recover');
-		battle.commitChoices();
+		battle.commitDecisions();
 
 		assert.equal(battle.turn, 2);
 		assert.equal(p1.active[0].name, 'Mew');
@@ -1329,24 +1326,24 @@ describe('Choice internals', () => {
 			`Expected switch to fail`
 		);
 		p2.choose('move recover, move recover');
-		battle.commitChoices();
+		battle.commitDecisions();
 
 		assert.equal(battle.turn, 3);
 		assert.equal(p1.active[0].name, 'Bulbasaur');
 		assert.equal(p1.active[1].name, 'Ekans');
 	});
 
-	it('should empty the actions list when undoing a move', () => {
-		battle = common.createBattle({ gameType: 'doubles', cancel: true });
-		battle.setPlayer('p1', { team: [
-			{ species: "Pineco", ability: 'sturdy', moves: ['selfdestruct'] },
-			{ species: "Geodude", ability: 'sturdy', moves: ['selfdestruct'] },
-			{ species: "Koffing", ability: 'levitate', moves: ['smog'] },
-		] });
-		battle.setPlayer('p2', { team: [
-			{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-			{ species: "Aggron", ability: 'sturdy', moves: ['irondefense'] },
-		] });
+	it('should empty the actions list when undoing a move', function () {
+		battle = common.createBattle({gameType: 'doubles', cancel: true});
+		battle.setPlayer('p1', {team: [
+			{species: "Pineco", ability: 'sturdy', moves: ['selfdestruct']},
+			{species: "Geodude", ability: 'sturdy', moves: ['selfdestruct']},
+			{species: "Koffing", ability: 'levitate', moves: ['smog']},
+		]});
+		battle.setPlayer('p2', {team: [
+			{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+			{species: "Aggron", ability: 'sturdy', moves: ['irondefense']},
+		]});
 		const p1 = battle.p1;
 
 		p1.chooseMove(1);
@@ -1360,17 +1357,17 @@ describe('Choice internals', () => {
 		assert.fainted(p1.active[1]);
 	});
 
-	it('should empty the actions list when undoing a switch', () => {
-		battle = common.createBattle({ gameType: 'doubles', cancel: true });
-		battle.setPlayer('p1', { team: [
-			{ species: "Pineco", ability: 'sturdy', moves: ['selfdestruct'] },
-			{ species: "Geodude", ability: 'sturdy', moves: ['selfdestruct'] },
-			{ species: "Koffing", ability: 'levitate', moves: ['smog'] },
-		] });
-		battle.setPlayer('p2', { team: [
-			{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-			{ species: "Aggron", ability: 'sturdy', moves: ['irondefense'] },
-		] });
+	it('should empty the actions list when undoing a switch', function () {
+		battle = common.createBattle({gameType: 'doubles', cancel: true});
+		battle.setPlayer('p1', {team: [
+			{species: "Pineco", ability: 'sturdy', moves: ['selfdestruct']},
+			{species: "Geodude", ability: 'sturdy', moves: ['selfdestruct']},
+			{species: "Koffing", ability: 'levitate', moves: ['smog']},
+		]});
+		battle.setPlayer('p2', {team: [
+			{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+			{species: "Aggron", ability: 'sturdy', moves: ['irondefense']},
+		]});
 		const p1 = battle.p1;
 
 		battle.makeChoices('move selfdestruct, move selfdestruct', 'move roost, move irondefense');
@@ -1385,17 +1382,17 @@ describe('Choice internals', () => {
 		assert.species(p1.active[1], 'Koffing');
 	});
 
-	it('should empty the actions list when undoing a pass', () => {
-		battle = common.createBattle({ gameType: 'doubles', cancel: true });
-		battle.setPlayer('p1', { team: [
-			{ species: "Pineco", ability: 'sturdy', moves: ['selfdestruct'] },
-			{ species: "Geodude", ability: 'sturdy', moves: ['selfdestruct'] },
-			{ species: "Koffing", ability: 'levitate', moves: ['smog'] },
-		] });
-		battle.setPlayer('p2', { team: [
-			{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-			{ species: "Aggron", ability: 'sturdy', moves: ['irondefense'] },
-		] });
+	it('should empty the actions list when undoing a pass', function () {
+		battle = common.createBattle({gameType: 'doubles', cancel: true});
+		battle.setPlayer('p1', {team: [
+			{species: "Pineco", ability: 'sturdy', moves: ['selfdestruct']},
+			{species: "Geodude", ability: 'sturdy', moves: ['selfdestruct']},
+			{species: "Koffing", ability: 'levitate', moves: ['smog']},
+		]});
+		battle.setPlayer('p2', {team: [
+			{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+			{species: "Aggron", ability: 'sturdy', moves: ['irondefense']},
+		]});
 		const p1 = battle.p1;
 
 		battle.makeChoices('move selfdestruct, move selfdestruct', 'move roost, move irondefense');
@@ -1410,19 +1407,19 @@ describe('Choice internals', () => {
 		assert.species(p1.active[1], 'Koffing');
 	});
 
-	it('should empty the actions list when undoing a shift', () => {
-		battle = common.gen(5).createBattle({ gameType: 'triples', cancel: true });
+	it('should empty the actions list when undoing a shift', function () {
+		battle = common.gen(5).createBattle({gameType: 'triples', cancel: true});
 		battle.supportCancel = true;
-		battle.setPlayer('p1', { team: [
-			{ species: "Pineco", ability: 'sturdy', moves: ['selfdestruct'] },
-			{ species: "Geodude", ability: 'sturdy', moves: ['selfdestruct'] },
-			{ species: "Gastly", ability: 'levitate', moves: ['lick'] },
-		] });
-		battle.setPlayer('p2', { team: [
-			{ species: "Skarmory", ability: 'sturdy', moves: ['roost'] },
-			{ species: "Aggron", ability: 'sturdy', moves: ['irondefense'] },
-			{ species: "Golem", ability: 'sturdy', moves: ['defensecurl'] },
-		] });
+		battle.setPlayer('p1', {team: [
+			{species: "Pineco", ability: 'sturdy', moves: ['selfdestruct']},
+			{species: "Geodude", ability: 'sturdy', moves: ['selfdestruct']},
+			{species: "Gastly", ability: 'levitate', moves: ['lick']},
+		]});
+		battle.setPlayer('p2', {team: [
+			{species: "Skarmory", ability: 'sturdy', moves: ['roost']},
+			{species: "Aggron", ability: 'sturdy', moves: ['irondefense']},
+			{species: "Golem", ability: 'sturdy', moves: ['defensecurl']},
+		]});
 		const p1 = battle.p1;
 
 		p1.chooseShift();
@@ -1437,3 +1434,4 @@ describe('Choice internals', () => {
 		assert.false.fainted(p1.active[1]);
 	});
 });
+

@@ -1,4 +1,4 @@
-export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
+export const Items: {[k: string]: ModdedItemData} = {
 	adamantorb: {
 		inherit: true,
 		isNonstandard: "Unobtainable",

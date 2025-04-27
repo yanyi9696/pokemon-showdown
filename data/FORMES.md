@@ -51,9 +51,9 @@ Cosmetic formes are not listed in the `otherFormes` array, only in the `cosmetic
 
 `{name: "Gastrodon", baseForme: "West", cosmeticFormes: ["gastodoneast"]}`
 
-You will still be able to get a data entry for a cosmetic forme with `Dex.species.get` as normal, though, such as `Dex.species.get('gastrodon-east')`:
+You will still be able to get a data entry for a cosmetic forme with `species.get` as normal, though:
 
-`{name: "Gastrodon-East", forme: "East", baseSpecies: "Gastrodon"}`
+`{name: "Gastodon-East", forme: "East", baseSpecies: "Gastrodon"}`
 
 
 Visual formes
@@ -113,7 +113,7 @@ Some Pokémon change forme in the middle of a battle. These forme changes do res
 
 List of all in-battle forme changes:
 
-- Ash-Greninja (Battle Bond)
+- Ash Greninja (Battle Bond)
 - Mimikyu (Disguise)
 - Cherrim (Flower Gift)
 - Castform (Forecast)

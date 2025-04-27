@@ -3,7 +3,7 @@
  * Some moves have had major changes, such as Bite's typing.
  */
 
-export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+export const Moves: {[k: string]: ModdedMoveData} = {
 	acid: {
 		inherit: true,
 		secondary: {
@@ -17,8 +17,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	amnesia: {
 		inherit: true,
 		boosts: {
-			spa: 2,
 			spd: 2,
+			spa: 2,
 		},
 	},
 	aurorabeam: {
@@ -34,26 +34,60 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		priority: 0,
 		accuracy: true,
+		ignoreEvasion: true,
 		condition: {
+			duration: 2,
+			durationCallback(target, source, effect) {
+				return this.random(3, 4);
+			},
 			onStart(pokemon) {
-				this.effectState.damage = 0;
-				this.effectState.time = this.random(2, 4);
+				this.effectState.totalDamage = 0;
+				this.effectState.lastDamage = 0;
 				this.add('-start', pokemon, 'Bide');
 			},
+			onHit(target, source, move) {
+				if (source && source !== target && move.category !== 'Physical' && move.category !== 'Special') {
+					const damage = this.effectState.totalDamage;
+					this.effectState.totalDamage += damage;
+					this.effectState.lastDamage = damage;
+					this.effectState.sourceSlot = source.getSlot();
+				}
+			},
+			onDamage(damage, target, source, move) {
+				if (!source || source.isAlly(target)) return;
+				if (!move || move.effectType !== 'Move') return;
+				if (!damage && this.effectState.lastDamage > 0) {
+					damage = this.effectState.totalDamage;
+				}
+				this.effectState.totalDamage += damage;
+				this.effectState.lastDamage = damage;
+				this.effectState.sourceSlot = source.getSlot();
+			},
+			onAfterSetStatus(status, pokemon) {
+				// Sleep, freeze, and partial trap will just pause duration.
+				if (pokemon.volatiles['flinch']) {
+					this.effectState.duration++;
+				} else if (pokemon.volatiles['partiallytrapped']) {
+					this.effectState.duration++;
+				} else {
+					switch (status.id) {
+					case 'slp':
+					case 'frz':
+						this.effectState.duration++;
+						break;
+					}
+				}
+			},
 			onBeforeMove(pokemon, t, move) {
-				const currentMove = this.dex.getActiveMove('bide');
-				this.effectState.damage += this.lastDamage;
-				this.effectState.time--;
-				if (!this.effectState.time) {
-					this.add('-end', pokemon, currentMove);
-					if (!this.effectState.damage) {
-						this.debug("Bide failed because no damage was stored");
+				if (this.effectState.duration === 1) {
+					this.add('-end', pokemon, 'Bide');
+					if (!this.effectState.totalDamage) {
+						this.debug("Bide failed due to 0 damage taken");
 						this.add('-fail', pokemon);
-						pokemon.removeVolatile('bide');
 						return false;
 					}
-					const target = this.getRandomTarget(pokemon, 'Pound');
-					this.actions.moveHit(target, pokemon, currentMove, { damage: this.effectState.damage * 2 } as ActiveMove);
+					const target = this.getAtSlot(this.effectState.sourceSlot);
+					this.actions.moveHit(target, pokemon, move, {damage: this.effectState.totalDamage * 2} as ActiveMove);
 					pokemon.removeVolatile('bide');
 					return false;
 				}
@@ -76,13 +110,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	bind: {
 		inherit: true,
 		ignoreImmunity: true,
+		volatileStatus: 'partiallytrapped',
 		self: {
 			volatileStatus: 'partialtrappinglock',
 		},
-		onTryMove(source, target) {
-			if (target.volatiles['mustrecharge']) {
-				target.removeVolatile('mustrecharge');
-				this.hint("In Gen 1, partial trapping moves negate the recharge turn of Hyper Beam, even if they miss.", true);
+		// FIXME: onBeforeMove(pokemon, target) {target.removeVolatile('mustrecharge')}
+		onHit(target, source) {
+			/**
+			 * The duration of the partially trapped must be always renewed to 2
+			 * so target doesn't move on trapper switch out as happens in gen 1.
+			 * However, this won't happen if there's no switch and the trapper is
+			 * about to end its partial trapping.
+			 **/
+			if (target.volatiles['partiallytrapped']) {
+				if (source.volatiles['partialtrappinglock'] && source.volatiles['partialtrappinglock'].duration > 1) {
+					target.volatiles['partiallytrapped'].duration = 2;
+				}
 			}
 		},
 	},
@@ -123,13 +166,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		accuracy: 75,
 		pp: 10,
+		volatileStatus: 'partiallytrapped',
 		self: {
 			volatileStatus: 'partialtrappinglock',
 		},
-		onTryMove(source, target) {
-			if (target.volatiles['mustrecharge']) {
-				target.removeVolatile('mustrecharge');
-				this.hint("In Gen 1, partial trapping moves negate the recharge turn of Hyper Beam, even if they miss.", true);
+		// FIXME: onBeforeMove(pokemon, target) {target.removeVolatile('mustrecharge')}
+		onHit(target, source) {
+			/**
+			 * The duration of the partially trapped must be always renewed to 2
+			 * so target doesn't move on trapper switch out as happens in gen 1.
+			 * However, this won't happen if there's no switch and the trapper is
+			 * about to end its partial trapping.
+			 **/
+			if (target.volatiles['partiallytrapped']) {
+				if (source.volatiles['partialtrappinglock'] && source.volatiles['partialtrappinglock'].duration > 1) {
+					target.volatiles['partiallytrapped'].duration = 2;
+				}
 			}
 		},
 	},
@@ -144,10 +196,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
 	conversion: {
 		inherit: true,
+		volatileStatus: 'conversion',
+		accuracy: true,
 		target: "normal",
 		onHit(target, source) {
-			source.setType(target.getTypes(true));
-			this.add('-start', source, 'typechange', source.types.join('/'), '[from] move: Conversion', `[of] ${target}`);
+			source.types = target.types;
+			this.add('-start', source, 'typechange', source.types.join(', '), '[from] move: Conversion', '[of] ' + source);
 		},
 	},
 	counter: {
@@ -189,7 +243,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
 			return 2 * this.lastDamage;
 		},
-		flags: { contact: 1, protect: 1, metronome: 1 },
 	},
 	crabhammer: {
 		inherit: true,
@@ -198,57 +251,49 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	dig: {
 		inherit: true,
 		basePower: 100,
-		condition: {},
-		onTryMove(attacker, defender, move) {
-			if (attacker.removeVolatile('twoturnmove')) {
-				attacker.removeVolatile('invulnerability');
-				return;
-			}
-			this.add('-prepare', attacker, move.name);
-			attacker.addVolatile('twoturnmove', defender);
-			attacker.addVolatile('invulnerability', defender);
-			return null;
+		condition: {
+			duration: 2,
+			onLockMove: 'dig',
+			onInvulnerability(target, source, move) {
+				if (move.id === 'swift') return true;
+				this.add('-message', 'The foe ' + target.name + ' can\'t be hit underground!');
+				return false;
+			},
+			onDamage(damage, target, source, move) {
+				if (!move || move.effectType !== 'Move') return;
+				if (!source) return;
+				if (move.id === 'earthquake') {
+					this.add('-message', 'The foe ' + target.name + ' can\'t be hit underground!');
+					return null;
+				}
+			},
 		},
 	},
 	disable: {
-		num: 50,
-		accuracy: 55,
-		basePower: 0,
-		category: "Status",
-		name: "Disable",
-		pp: 20,
-		priority: 0,
-		flags: { protect: 1, mirror: 1, bypasssub: 1, metronome: 1 },
-		volatileStatus: 'disable',
-		onTryHit(target) {
-			// This function should not return if the checks are met. Adding && undefined ensures this happens.
-			return target.moveSlots.some(ms => ms.pp > 0) &&
-				!('disable' in target.volatiles) &&
-				undefined;
-		},
+		inherit: true,
 		condition: {
-			onStart(pokemon) {
-				// disable can only select moves that have pp > 0, hence the onTryHit modification
-				const moveSlot = this.sample(pokemon.moveSlots.filter(ms => ms.pp > 0));
-				this.add('-start', pokemon, 'Disable', moveSlot.move);
-				this.effectState.move = moveSlot.id;
-				// 1-8 turns (which will in effect translate to 0-7 missed turns for the target)
-				this.effectState.time = this.random(1, 9);
+			duration: 4,
+			durationCallback(target, source, effect) {
+				const duration = this.random(1, 7);
+				return duration;
 			},
+			onStart(pokemon) {
+				if (!this.queue.willMove(pokemon)) {
+					this.effectState.duration++;
+				}
+				const moves = pokemon.moves;
+				const move = this.dex.moves.get(this.sample(moves));
+				this.add('-start', pokemon, 'Disable', move.name);
+				this.effectState.move = move.id;
+				return;
+			},
+			onResidualOrder: 14,
 			onEnd(pokemon) {
 				this.add('-end', pokemon, 'Disable');
 			},
-			onBeforeMovePriority: 6,
-			onBeforeMove(pokemon, target, move) {
-				pokemon.volatiles['disable'].time--;
-				if (!pokemon.volatiles['disable'].time) {
-					pokemon.removeVolatile('disable');
-					return;
-				}
-				if (pokemon.volatiles['bide']) move = this.dex.getActiveMove('bide');
+			onBeforeMove(attacker, defender, move) {
 				if (move.id === this.effectState.move) {
-					this.add('cant', pokemon, 'Disable', move);
-					pokemon.removeVolatile('twoturnmove');
+					this.add('cant', attacker, 'Disable', move);
 					return false;
 				}
 			},
@@ -260,9 +305,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				}
 			},
 		},
-		secondary: null,
-		target: "normal",
-		type: "Normal",
 	},
 	dizzypunch: {
 		inherit: true,
@@ -292,28 +334,43 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		accuracy: 70,
 		basePower: 15,
+		volatileStatus: 'partiallytrapped',
 		self: {
 			volatileStatus: 'partialtrappinglock',
 		},
-		onTryMove(source, target) {
-			if (target.volatiles['mustrecharge']) {
-				target.removeVolatile('mustrecharge');
-				this.hint("In Gen 1, partial trapping moves negate the recharge turn of Hyper Beam, even if they miss.", true);
+		// FIXME: onBeforeMove(pokemon, target) {target.removeVolatile('mustrecharge')}
+		onHit(target, source) {
+			/**
+			 * The duration of the partially trapped must be always renewed to 2
+			 * so target doesn't move on trapper switch out as happens in gen 1.
+			 * However, this won't happen if there's no switch and the trapper is
+			 * about to end its partial trapping.
+			 **/
+			if (target.volatiles['partiallytrapped']) {
+				if (source.volatiles['partialtrappinglock'] && source.volatiles['partialtrappinglock'].duration > 1) {
+					target.volatiles['partiallytrapped'].duration = 2;
+				}
 			}
 		},
 	},
 	fly: {
 		inherit: true,
-		condition: {},
-		onTryMove(attacker, defender, move) {
-			if (attacker.removeVolatile('twoturnmove')) {
-				attacker.removeVolatile('invulnerability');
-				return;
-			}
-			this.add('-prepare', attacker, move.name);
-			attacker.addVolatile('twoturnmove', defender);
-			attacker.addVolatile('invulnerability', defender);
-			return null;
+		condition: {
+			duration: 2,
+			onLockMove: 'fly',
+			onInvulnerability(target, source, move) {
+				if (move.id === 'swift') return true;
+				this.add('-message', 'The foe ' + target.name + ' can\'t be hit while flying!');
+				return false;
+			},
+			onDamage(damage, target, source, move) {
+				if (!move || move.effectType !== 'Move') return;
+				if (!source || source.isAlly(target)) return;
+				if (move.id === 'gust' || move.id === 'thunder') {
+					this.add('-message', 'The foe ' + target.name + ' can\'t be hit while flying!');
+					return null;
+				}
+			},
 		},
 	},
 	focusenergy: {
@@ -344,43 +401,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	haze: {
 		inherit: true,
 		onHit(target, source) {
-			this.add('-activate', target, 'move: Haze');
-			this.add('-clearallboost', '[silent]');
+			this.add('-clearallboost');
 			for (const pokemon of this.getAllActive()) {
 				pokemon.clearBoosts();
+
 				if (pokemon !== source) {
-					pokemon.cureStatus(true);
+					// Clears the status from the opponent
+					pokemon.setStatus('');
 				}
 				if (pokemon.status === 'tox') {
-					pokemon.setStatus('psn', null, null, true);
+					pokemon.setStatus('psn');
 				}
-				pokemon.updateSpeed();
-				// should only clear a specific set of volatiles
-				// while technically the toxic counter shouldn't be cleared, the preserved toxic counter is never used again
-				// in-game, so it is equivalent to just clear it.
-				const silentHack = '|[silent]';
-				const silentHackVolatiles = ['disable', 'confusion'];
-				const hazeVolatiles: { [key: string]: string } = {
-					'disable': '',
-					'confusion': '',
-					'mist': 'Mist',
-					'focusenergy': 'move: Focus Energy',
-					'leechseed': 'move: Leech Seed',
-					'lightscreen': 'Light Screen',
-					'reflect': 'Reflect',
-					'residualdmg': 'Toxic counter',
-				};
-				for (const v in hazeVolatiles) {
-					if (!pokemon.removeVolatile(v)) {
-						continue;
-					}
-					if (silentHackVolatiles.includes(v)) {
-						// these volatiles have their own onEnd method that prints, so to avoid
-						// double printing and ensure they are still silent, we need to tack on a
-						// silent attribute at the end
-						this.log[this.log.length - 1] += silentHack;
+				for (const id of Object.keys(pokemon.volatiles)) {
+					if (id === 'residualdmg') {
+						pokemon.volatiles[id].counter = 0;
 					} else {
-						this.add('-end', pokemon, hazeVolatiles[v], '[silent]');
+						pokemon.removeVolatile(id);
+						this.add('-end', pokemon, id);
 					}
 				}
 			}
@@ -390,13 +427,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	highjumpkick: {
 		inherit: true,
 		onMoveFail(target, source, move) {
-			this.directDamage(1, source, target);
+			if (!target.types.includes('Ghost')) {
+				this.directDamage(1, source, target);
+			}
 		},
 	},
 	jumpkick: {
 		inherit: true,
 		onMoveFail(target, source, move) {
-			this.directDamage(1, source, target);
+			if (!target.types.includes('Ghost')) {
+				this.directDamage(1, source, target);
+			}
 		},
 	},
 	karatechop: {
@@ -443,7 +484,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "Light Screen",
 		pp: 30,
 		priority: 0,
-		flags: { metronome: 1 },
+		flags: {},
 		volatileStatus: 'lightscreen',
 		onTryHit(pokemon) {
 			if (pokemon.volatiles['lightscreen']) {
@@ -458,9 +499,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "self",
 		type: "Psychic",
 	},
+	metronome: {
+		inherit: true,
+		noMetronome: ["Metronome", "Struggle"],
+		secondary: null,
+		target: "self",
+		type: "Normal",
+	},
 	mimic: {
 		inherit: true,
-		flags: { protect: 1, bypasssub: 1, metronome: 1 },
 		onHit(target, source) {
 			const moveslot = source.moves.indexOf('mimic');
 			if (moveslot < 0) return false;
@@ -488,42 +535,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (!foe?.lastMove || foe.lastMove.id === 'mirrormove') {
 				return false;
 			}
-			pokemon.side.lastSelectedMove = foe.lastMove.id;
 			this.actions.useMove(foe.lastMove.id, pokemon);
-		},
-	},
-	mist: {
-		inherit: true,
-		condition: {
-			onStart(pokemon) {
-				this.add('-start', pokemon, 'Mist');
-			},
-			onTryBoost(boost, target, source, effect) {
-				if (effect.effectType === 'Move' && effect.category !== 'Status') return;
-				if (source && target !== source) {
-					let showMsg = false;
-					let i: BoostID;
-					for (i in boost) {
-						if (boost[i]! < 0) {
-							delete boost[i];
-							showMsg = true;
-						}
-					}
-					if (showMsg && !(effect as ActiveMove).secondaries) {
-						this.add('-activate', target, 'move: Mist');
-					}
-				}
-			},
 		},
 	},
 	nightshade: {
 		inherit: true,
 		ignoreImmunity: true,
 		basePower: 1,
-	},
-	petaldance: {
-		inherit: true,
-		onMoveFail() {},
 	},
 	poisonsting: {
 		inherit: true,
@@ -537,8 +555,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: {
 			chance: 33,
 			boosts: {
-				spa: -1,
 				spd: -1,
+				spa: -1,
 			},
 		},
 	},
@@ -561,15 +579,19 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		condition: {
 			// Rage lock
+			duration: 255,
 			onStart(target, source, effect) {
 				this.effectState.move = 'rage';
-				this.effectState.accuracy = 255;
 			},
 			onLockMove: 'rage',
+			onTryHit(target, source, move) {
+				if (target.boosts.atk < 6 && move.id === 'disable') {
+					this.boost({atk: 1});
+				}
+			},
 			onHit(target, source, move) {
-				// Disable and exploding moves boost Rage even if they miss/fail, so they are dealt with separately.
-				if (target.boosts.atk < 6 && (move.category !== 'Status' && !move.selfdestruct)) {
-					this.boost({ atk: 1 });
+				if (target.boosts.atk < 6 && move.category !== 'Status') {
+					this.boost({atk: 1});
 				}
 			},
 		},
@@ -583,30 +605,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		critRatio: 1,
 		target: "normal",
-		onTryMove(attacker, defender, move) {
-			if (attacker.removeVolatile('twoturnmove')) {
-				attacker.removeVolatile('invulnerability');
-				return;
-			}
-			this.add('-prepare', attacker, move.name);
-			attacker.addVolatile('twoturnmove', defender);
-			return null;
-		},
 	},
 	recover: {
 		inherit: true,
 		heal: null,
 		onHit(target) {
 			if (target.hp === target.maxhp) return false;
-			// Fail when health is 255 or 511 less than max, unless it is divisible by 256
-			if (
-				target.hp === target.maxhp ||
-				((target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) && target.hp % 256 !== 0)
-			) {
-				this.hint(
-					"In Gen 1, recovery moves fail if (user's maximum HP - user's current HP + 1) is divisible by 256, " +
-					"unless the current hp is also divisible by 256."
-				);
+			// Fail when health is 255 or 511 less than max
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511) || target.hp === target.maxhp) {
+				this.hint("In Gen 1, recovery moves fail if (user's maximum HP - user's current HP + 1) is divisible by 256.");
 				return false;
 			}
 			this.heal(Math.floor(target.maxhp / 2), target, target);
@@ -620,7 +627,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "Reflect",
 		pp: 20,
 		priority: 0,
-		flags: { metronome: 1 },
+		flags: {},
 		volatileStatus: 'reflect',
 		onTryHit(pokemon) {
 			if (pokemon.volatiles['reflect']) {
@@ -641,15 +648,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onTry() {},
 		onHit(target, source, move) {
 			if (target.hp === target.maxhp) return false;
-			// Fail when health is 255 or 511 less than max, unless it is divisible by 256
-			if (
-				target.hp === target.maxhp ||
-				((target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) && target.hp % 256 !== 0)
-			) {
-				this.hint(
-					"In Gen 1, recovery moves fail if (user's maximum HP - user's current HP + 1) is divisible by 256, " +
-					"unless the current hp is also divisible by 256."
-				);
+			// Fail when health is 255 or 511 less than max
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) {
+				this.hint("In Gen 1, recovery moves fail if (user's maximum HP - user's current HP + 1) is divisible by 256.");
 				return false;
 			}
 			if (!target.setStatus('slp', source, move)) return false;
@@ -691,23 +692,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	skullbash: {
 		inherit: true,
 		onTryMove(attacker, defender, move) {
-			if (attacker.removeVolatile('twoturnmove')) {
-				attacker.removeVolatile('invulnerability');
+			if (attacker.removeVolatile(move.id)) {
 				return;
 			}
 			this.add('-prepare', attacker, move.name);
-			attacker.addVolatile('twoturnmove', defender);
-			return null;
-		},
-	},
-	skyattack: {
-		inherit: true,
-		onTryMove(attacker, defender, move) {
-			if (attacker.removeVolatile('twoturnmove')) {
-				attacker.removeVolatile('invulnerability');
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
 				return;
 			}
-			this.add('-prepare', attacker, move.name);
 			attacker.addVolatile('twoturnmove', defender);
 			return null;
 		},
@@ -723,37 +714,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			status: 'psn',
 		},
 	},
-	solarbeam: {
-		inherit: true,
-		onTryMove(attacker, defender, move) {
-			if (attacker.removeVolatile('twoturnmove')) {
-				attacker.removeVolatile('invulnerability');
-				return;
-			}
-			this.add('-prepare', attacker, move.name);
-			attacker.addVolatile('twoturnmove', defender);
-			return null;
-		},
-	},
-	sonicboom: {
-		inherit: true,
-		ignoreImmunity: true,
-		basePower: 1,
-	},
 	softboiled: {
 		inherit: true,
 		heal: null,
 		onHit(target) {
 			if (target.hp === target.maxhp) return false;
-			// Fail when health is 255 or 511 less than max, unless it is divisible by 256
-			if (
-				target.hp === target.maxhp ||
-				((target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511)) && target.hp % 256 !== 0)
-			) {
-				this.hint(
-					"In Gen 1, recovery moves fail if (user's maximum HP - user's current HP + 1) is divisible by 256, " +
-					"unless the current hp is also divisible by 256."
-				);
+			// Fail when health is 255 or 511 less than max
+			if (target.hp === (target.maxhp - 255) || target.hp === (target.maxhp - 511) || target.hp === target.maxhp) {
+				this.hint("In Gen 1, recovery moves fail if (user's maximum HP - user's current HP + 1) is divisible by 256.");
 				return false;
 			}
 			this.heal(Math.floor(target.maxhp / 2), target, target);
@@ -773,7 +741,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "Substitute",
 		pp: 10,
 		priority: 0,
-		flags: { metronome: 1 },
 		volatileStatus: 'substitute',
 		onTryHit(target) {
 			if (target.volatiles['substitute']) {
@@ -782,6 +749,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 			// We only prevent when hp is less than one quarter.
 			// If you use substitute at exactly one quarter, you faint.
+			if (target.hp === target.maxhp / 4) target.faint();
 			if (target.hp < target.maxhp / 4) {
 				this.add('-fail', target, 'move: Substitute', '[weak]');
 				return null;
@@ -817,12 +785,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				// NOTE: In future generations the damage is capped to the remaining HP of the
 				// Substitute, here we deliberately use the uncapped damage when tracking lastDamage etc.
 				// Also, multi-hit moves must always deal the same damage as the first hit for any subsequent hits
-				let uncappedDamage = move.hit > 1 ? this.lastDamage : this.actions.getDamage(source, target, move);
-				if (move.id === 'bide') uncappedDamage = source.volatiles['bide'].damage * 2;
-				if (!uncappedDamage && uncappedDamage !== 0) return null;
+				let uncappedDamage = move.hit > 1 ? source.lastDamage : this.actions.getDamage(source, target, move);
+				if (!uncappedDamage) return null;
 				uncappedDamage = this.runEvent('SubDamage', target, source, move, uncappedDamage);
-				if (!uncappedDamage && uncappedDamage !== 0) return uncappedDamage;
-				this.lastDamage = uncappedDamage;
+				if (!uncappedDamage) return uncappedDamage;
+				source.lastDamage = uncappedDamage;
 				target.volatiles['substitute'].hp -= uncappedDamage > target.volatiles['substitute'].hp ?
 					target.volatiles['substitute'].hp : uncappedDamage;
 				if (target.volatiles['substitute'].hp <= 0) {
@@ -831,33 +798,20 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				} else {
 					this.add('-activate', target, 'Substitute', '[damage]');
 				}
-				// Drain/recoil/secondary effect confusion do not happen if the substitute breaks
+				// Drain/recoil does not happen if the substitute breaks
 				if (target.volatiles['substitute']) {
 					if (move.recoil) {
-						this.damage(this.clampIntRange(Math.floor(uncappedDamage * move.recoil[0] / move.recoil[1]), 1),
-							source, target, 'recoil');
+						this.damage(Math.round(uncappedDamage * move.recoil[0] / move.recoil[1]), source, target, 'recoil');
 					}
 					if (move.drain) {
-						const amount = this.clampIntRange(Math.floor(uncappedDamage * move.drain[0] / move.drain[1]), 1);
-						this.lastDamage = amount;
-						this.heal(amount, source, target, 'drain');
-					}
-					if (move.secondary?.volatileStatus === 'confusion') {
-						const secondary = move.secondary;
-						if (secondary.chance === undefined || this.randomChance(Math.ceil(secondary.chance * 256 / 100) - 1, 256)) {
-							target.addVolatile(move.secondary.volatileStatus, source, move);
-							this.hint(
-								"In Gen 1, moves that inflict confusion as a secondary effect can confuse targets with a Substitute, " +
-								"as long as the move does not break the Substitute."
-							);
-						}
+						this.heal(Math.ceil(uncappedDamage * move.drain[0] / move.drain[1]), source, target, 'drain');
 					}
 				}
 				this.runEvent('AfterSubDamage', target, source, move, uncappedDamage);
 				// Add here counter damage
 				const lastAttackedBy = target.getLastAttackedBy();
 				if (!lastAttackedBy) {
-					target.attackedBy.push({ source, move: move.id, damage: uncappedDamage, slot: source.getSlot(), thisTurn: true });
+					target.attackedBy.push({source: source, move: move.id, damage: uncappedDamage, slot: source.getSlot(), thisTurn: true});
 				} else {
 					lastAttackedBy.move = move.id;
 					lastAttackedBy.damage = uncappedDamage;
@@ -871,21 +825,28 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "self",
 		type: "Normal",
+		flags: {},
 	},
 	superfang: {
 		inherit: true,
 		ignoreImmunity: true,
 		basePower: 1,
 	},
-	thrash: {
-		inherit: true,
-		onMoveFail() {},
-	},
 	thunder: {
 		inherit: true,
 		secondary: {
 			chance: 10,
 			status: 'par',
+		},
+	},
+	thunderwave: {
+		inherit: true,
+		accuracy: 100,
+		onTryHit(target) {
+			if (target.hasType('Ground')) {
+				this.add('-immune', target);
+				return null;
+			}
 		},
 	},
 	triattack: {
@@ -908,13 +869,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		accuracy: 85,
 		ignoreImmunity: true,
+		volatileStatus: 'partiallytrapped',
 		self: {
 			volatileStatus: 'partialtrappinglock',
 		},
-		onTryMove(source, target) {
-			if (target.volatiles['mustrecharge']) {
-				target.removeVolatile('mustrecharge');
-				this.hint("In Gen 1, partial trapping moves negate the recharge turn of Hyper Beam, even if they miss.", true);
+		// FIXME: onBeforeMove(pokemon, target) {target.removeVolatile('mustrecharge')}
+		onHit(target, source) {
+			/**
+			 * The duration of the partially trapped must be always renewed to 2
+			 * so target doesn't move on trapper switch out as happens in gen 1.
+			 * However, this won't happen if there's no switch and the trapper is
+			 * about to end its partial trapping.
+			 **/
+			if (target.volatiles['partiallytrapped']) {
+				if (source.volatiles['partialtrappinglock'] && source.volatiles['partialtrappinglock'].duration > 1) {
+					target.volatiles['partiallytrapped'].duration = 2;
+				}
 			}
 		},
 	},

@@ -1,4 +1,4 @@
-export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
+export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 	milotic: {
 		inherit: true,
 		evoType: 'levelExtra',

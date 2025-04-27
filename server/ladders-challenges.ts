@@ -1,4 +1,4 @@
-import type { ChallengeType } from './room-battle';
+import type {ChallengeType} from './room-battle';
 
 /**
  * A bundle of:
@@ -77,7 +77,7 @@ export class GameChallenge extends AbstractChallenge {
  */
 export class BattleInvite extends AbstractChallenge {
 	declare acceptCommand: string;
-	override destroy(accepted?: boolean) {
+	destroy(accepted?: boolean) {
 		if (accepted) return;
 
 		const room = Rooms.get(this.roomid);
@@ -159,14 +159,6 @@ export class Challenges extends Map<ID, Challenge[]> {
 			) {
 				return challenge;
 			}
-		}
-		return null;
-	}
-	searchByRoom(userid: ID, roomid: RoomID) {
-		const challenges = this.get(userid);
-		if (!challenges) return null;
-		for (const challenge of challenges) {
-			if (challenge.roomid === roomid) return challenge;
 		}
 		return null;
 	}

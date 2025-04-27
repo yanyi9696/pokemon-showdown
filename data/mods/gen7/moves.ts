@@ -1,4 +1,4 @@
-export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+export const Moves: {[k: string]: ModdedMoveData} = {
 	"10000000voltthunderbolt": {
 		inherit: true,
 		isNonstandard: null,
@@ -126,19 +126,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		onHit(target, source, move) {
 			let success = false;
-			if (!target.volatiles['substitute'] || move.infiltrates) success = !!this.boost({ evasion: -1 });
+			if (!target.volatiles['substitute'] || move.infiltrates) success = !!this.boost({evasion: -1});
+			const removeTarget = [
+				'reflect', 'lightscreen', 'auroraveil', 'safeguard', 'mist', 'spikes', 'toxicspikes', 'stealthrock', 'stickyweb',
+			];
 			const removeAll = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb'];
-			const removeTarget = ['reflect', 'lightscreen', 'auroraveil', 'safeguard', 'mist', ...removeAll];
 			for (const targetCondition of removeTarget) {
 				if (target.side.removeSideCondition(targetCondition)) {
 					if (!removeAll.includes(targetCondition)) continue;
-					this.add('-sideend', target.side, this.dex.conditions.get(targetCondition).name, '[from] move: Defog', `[of] ${source}`);
+					this.add('-sideend', target.side, this.dex.conditions.get(targetCondition).name, '[from] move: Defog', '[of] ' + source);
 					success = true;
 				}
 			}
 			for (const sideCondition of removeAll) {
 				if (source.side.removeSideCondition(sideCondition)) {
-					this.add('-sideend', source.side, this.dex.conditions.get(sideCondition).name, '[from] move: Defog', `[of] ${source}`);
+					this.add('-sideend', source.side, this.dex.conditions.get(sideCondition).name, '[from] move: Defog', '[of] ' + source);
 					success = true;
 				}
 			}
@@ -148,12 +150,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	devastatingdrake: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	dive: {
-		inherit: true,
-		flags: {
-			contact: 1, charge: 1, protect: 1, mirror: 1, nonsky: 1, metronome: 1, nosleeptalk: 1, noassist: 1, failinstruct: 1,
-		},
 	},
 	dizzypunch: {
 		inherit: true,
@@ -167,10 +163,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
-	dragonhammer: {
-		inherit: true,
-		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
-	},
 	dragonrage: {
 		inherit: true,
 		isNonstandard: null,
@@ -182,7 +174,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	electricterrain: {
 		inherit: true,
 		condition: {
-			effectType: 'Terrain',
 			duration: 5,
 			durationCallback(source, effect) {
 				if (source?.hasItem('terrainextender')) {
@@ -213,7 +204,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onFieldStart(field, source, effect) {
 				if (effect && effect.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Electric Terrain', `[from] ability: ${effect}`, `[of] ${source}`);
+					this.add('-fieldstart', 'move: Electric Terrain', '[from] ability: ' + effect, '[of] ' + source);
 				} else {
 					this.add('-fieldstart', 'move: Electric Terrain');
 				}
@@ -244,39 +235,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	flash: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	floralhealing: {
-		inherit: true,
-		onHit(target, source) {
-			let success = false;
-			if (this.field.isTerrain('grassyterrain')) {
-				success = !!this.heal(this.modify(target.baseMaxhp, 0.667));
-			} else {
-				success = !!this.heal(Math.ceil(target.baseMaxhp * 0.5));
-			}
-			if (success && !target.isAlly(source)) {
-				target.staleness = 'external';
-			}
-			if (!success) {
-				this.add('-fail', target, 'heal');
-				return null;
-			}
-			return success;
-		},
-	},
-	fly: {
-		inherit: true,
-		onTryMove(attacker, defender, move) {
-			if (attacker.removeVolatile(move.id)) {
-				return;
-			}
-			this.add('-prepare', attacker, move.name);
-			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
-				return;
-			}
-			attacker.addVolatile('twoturnmove', defender);
-			return null;
-		},
 	},
 	foresight: {
 		inherit: true,
@@ -316,7 +274,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	grassyterrain: {
 		inherit: true,
 		condition: {
-			effectType: 'Terrain',
 			duration: 5,
 			durationCallback(source, effect) {
 				if (source?.hasItem('terrainextender')) {
@@ -337,7 +294,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onFieldStart(field, source, effect) {
 				if (effect && effect.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Grassy Terrain', `[from] ability: ${effect}`, `[of] ${source}`);
+					this.add('-fieldstart', 'move: Grassy Terrain', '[from] ability: ' + effect, '[of] ' + source);
 				} else {
 					this.add('-fieldstart', 'move: Grassy Terrain');
 				}
@@ -364,15 +321,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
 	healbell: {
 		inherit: true,
-		onHit(target, source) {
+		onHit(pokemon, source) {
 			this.add('-activate', source, 'move: Heal Bell');
+			const side = pokemon.side;
 			let success = false;
-			const allies = [...target.side.pokemon, ...target.side.allySide?.pokemon || []];
-			for (const ally of allies) {
-				if (ally.hasAbility('soundproof') && !this.suppressingAbility(ally)) {
-					this.add('-immune', ally, '[from] ability: Soundproof');
-					continue;
-				}
+			for (const ally of side.pokemon) {
+				if (ally.hasAbility('soundproof')) continue;
 				if (ally.cureStatus()) success = true;
 			}
 			return success;
@@ -390,7 +344,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onSwitchIn(target) {
 				if (!target.fainted) {
 					target.heal(target.maxhp);
-					target.clearStatus();
+					target.setStatus('');
 					this.add('-heal', target, target.getHealth, '[from] move: Healing Wish');
 					target.side.removeSlotCondition(target, 'healingwish');
 				}
@@ -400,25 +354,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	healorder: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	healpulse: {
-		inherit: true,
-		onHit(target, source) {
-			let success = false;
-			if (source.hasAbility('megalauncher')) {
-				success = !!this.heal(this.modify(target.baseMaxhp, 0.75));
-			} else {
-				success = !!this.heal(Math.ceil(target.baseMaxhp * 0.5));
-			}
-			if (success && !target.isAlly(source)) {
-				target.staleness = 'external';
-			}
-			if (!success) {
-				this.add('-fail', target, 'heal');
-				return null;
-			}
-			return success;
-		},
 	},
 	heartstamp: {
 		inherit: true,
@@ -506,7 +441,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
 	howl: {
 		inherit: true,
-		flags: { snatch: 1, metronome: 1 },
+		flags: {snatch: 1},
 		boosts: {
 			atk: 1,
 		},
@@ -578,13 +513,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					}
 				}
 				if (this.checkMoveMakesContact(move, source, target)) {
-					this.boost({ atk: -2 }, source, target, this.dex.getActiveMove("King's Shield"));
+					this.boost({atk: -2}, source, target, this.dex.getActiveMove("King's Shield"));
 				}
 				return this.NOT_FAIL;
 			},
 			onHit(target, source, move) {
 				if (move.isZOrMaxPowered && this.checkMoveMakesContact(move, source, target)) {
-					this.boost({ atk: -2 }, source, target, this.dex.getActiveMove("King's Shield"));
+					this.boost({atk: -2}, source, target, this.dex.getActiveMove("King's Shield"));
 				}
 			},
 		},
@@ -617,7 +552,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onSwitchIn(target) {
 				if (!target.fainted) {
 					target.heal(target.maxhp);
-					target.clearStatus();
+					target.setStatus('');
 					for (const moveSlot of target.moveSlots) {
 						moveSlot.pp = moveSlot.maxpp;
 					}
@@ -651,6 +586,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	metronome: {
+		inherit: true,
+		noMetronome: [
+			"After You", "Assist", "Baneful Bunker", "Beak Blast", "Belch", "Bestow", "Celebrate", "Chatter", "Copycat", "Counter", "Covet", "Crafty Shield", "Destiny Bond", "Detect", "Diamond Storm", "Dragon Ascent", "Endure", "Feint", "Fleur Cannon", "Focus Punch", "Follow Me", "Freeze Shock", "Helping Hand", "Hold Hands", "Hyperspace Fury", "Hyperspace Hole", "Ice Burn", "Instruct", "King's Shield", "Light of Ruin", "Mat Block", "Me First", "Metronome", "Mimic", "Mind Blown", "Mirror Coat", "Mirror Move", "Nature Power", "Origin Pulse", "Photon Geyser", "Plasma Fists", "Precipice Blades", "Protect", "Quash", "Quick Guard", "Rage Powder", "Relic Song", "Secret Sword", "Shell Trap", "Sketch", "Sleep Talk", "Snarl", "Snatch", "Snore", "Spectral Thief", "Spiky Shield", "Spotlight", "Steam Eruption", "Struggle", "Switcheroo", "Techno Blast", "Thief", "Thousand Arrows", "Thousand Waves", "Transform", "Trick", "V-create", "Wide Guard",
+		],
+	},
 	miracleeye: {
 		inherit: true,
 		isNonstandard: null,
@@ -662,58 +603,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	mirrorshot: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	moongeistbeam: {
-		inherit: true,
-		flags: { protect: 1, mirror: 1, metronome: 1 },
-	},
-	moonlight: {
-		inherit: true,
-		onHit(pokemon) {
-			let factor = 0.5;
-			switch (pokemon.effectiveWeather()) {
-			case 'sunnyday':
-			case 'desolateland':
-				factor = 0.667;
-				break;
-			case 'raindance':
-			case 'primordialsea':
-			case 'sandstorm':
-			case 'hail':
-				factor = 0.25;
-				break;
-			}
-			const success = !!this.heal(this.modify(pokemon.maxhp, factor));
-			if (!success) {
-				this.add('-fail', pokemon, 'heal');
-				return null;
-			}
-			return success;
-		},
-	},
-	morningsun: {
-		inherit: true,
-		onHit(pokemon) {
-			let factor = 0.5;
-			switch (pokemon.effectiveWeather()) {
-			case 'sunnyday':
-			case 'desolateland':
-				factor = 0.667;
-				break;
-			case 'raindance':
-			case 'primordialsea':
-			case 'sandstorm':
-			case 'hail':
-				factor = 0.25;
-				break;
-			}
-			const success = !!this.heal(this.modify(pokemon.maxhp, factor));
-			if (!success) {
-				this.add('-fail', pokemon, 'heal');
-				return null;
-			}
-			return success;
-		},
 	},
 	mudbomb: {
 		inherit: true,
@@ -730,10 +619,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	naturalgift: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	naturesmadness: {
-		inherit: true,
-		flags: { protect: 1, mirror: 1, metronome: 1 },
 	},
 	needlearm: {
 		inherit: true,
@@ -759,18 +644,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
-	pollenpuff: {
-		inherit: true,
-		flags: { protect: 1, mirror: 1, metronome: 1, bullet: 1 },
-		onHit(target, source) {
-			if (source.isAlly(target)) {
-				if (!this.heal(Math.floor(target.baseMaxhp * 0.5))) {
-					this.add('-immune', target);
-					return null;
-				}
-			}
-		},
-	},
 	powder: {
 		inherit: true,
 		isNonstandard: null,
@@ -782,7 +655,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	psychicterrain: {
 		inherit: true,
 		condition: {
-			effectType: 'Terrain',
 			duration: 5,
 			durationCallback(source, effect) {
 				if (source?.hasItem('terrainextender')) {
@@ -814,7 +686,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onFieldStart(field, source, effect) {
 				if (effect && effect.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Psychic Terrain', `[from] ability: ${effect}`, `[of] ${source}`);
+					this.add('-fieldstart', 'move: Psychic Terrain', '[from] ability: ' + effect, '[of] ' + source);
 				} else {
 					this.add('-fieldstart', 'move: Psychic Terrain');
 				}
@@ -841,13 +713,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	punishment: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	purify: {
-		inherit: true,
-		onHit(target, source) {
-			if (!target.cureStatus()) return false;
-			this.heal(Math.ceil(source.maxhp * 0.5), source);
-		},
 	},
 	pursuit: {
 		inherit: true,
@@ -942,21 +807,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
-	shoreup: {
-		inherit: true,
-		onHit(pokemon) {
-			let factor = 0.5;
-			if (this.field.isWeather('sandstorm')) {
-				factor = 0.667;
-			}
-			const success = !!this.heal(this.modify(pokemon.maxhp, factor));
-			if (!success) {
-				this.add('-fail', pokemon, 'heal');
-				return null;
-			}
-			return success;
-		},
-	},
 	signalbeam: {
 		inherit: true,
 		isNonstandard: null,
@@ -1036,24 +886,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
-	sunsteelstrike: {
-		inherit: true,
-		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
-	},
 	supersonicskystrike: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	swallow: {
-		inherit: true,
-		onHit(pokemon) {
-			const layers = pokemon.volatiles['stockpile']?.layers || 1;
-			const healAmount = [0.25, 0.5, 1];
-			const success = !!this.heal(this.modify(pokemon.maxhp, healAmount[layers - 1]));
-			if (!success) this.add('-fail', pokemon, 'heal');
-			pokemon.removeVolatile('stockpile');
-			return success || null;
-		},
 	},
 	switcheroo: {
 		inherit: true,
@@ -1073,7 +908,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				if (myItem) source.item = myItem.id;
 				return false;
 			}
-			this.add('-activate', source, 'move: Trick', `[of] ${target}`);
+			this.add('-activate', source, 'move: Trick', '[of] ' + target);
 			if (myItem) {
 				target.setItem(myItem);
 				this.add('-item', target, myItem, '[from] move: Switcheroo');
@@ -1091,30 +926,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	synchronoise: {
 		inherit: true,
 		isNonstandard: null,
-	},
-	synthesis: {
-		inherit: true,
-		onHit(pokemon) {
-			let factor = 0.5;
-			switch (pokemon.effectiveWeather()) {
-			case 'sunnyday':
-			case 'desolateland':
-				factor = 0.667;
-				break;
-			case 'raindance':
-			case 'primordialsea':
-			case 'sandstorm':
-			case 'hail':
-				factor = 0.25;
-				break;
-			}
-			const success = !!this.heal(this.modify(pokemon.maxhp, factor));
-			if (!success) {
-				this.add('-fail', pokemon, 'heal');
-				return null;
-			}
-			return success;
-		},
 	},
 	tailglow: {
 		inherit: true,
@@ -1173,7 +984,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				if (myItem) source.item = myItem.id;
 				return false;
 			}
-			this.add('-activate', source, 'move: Trick', `[of] ${target}`);
+			this.add('-activate', source, 'move: Trick', '[of] ' + target);
 			if (myItem) {
 				target.setItem(myItem);
 				this.add('-item', target, myItem, '[from] move: Trick');

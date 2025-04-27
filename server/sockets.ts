@@ -15,11 +15,11 @@ import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
 import * as path from 'path';
-import { crashlogger, ProcessManager, Streams, Repl } from '../lib';
-import { IPTools } from './ip-tools';
-import { type ChannelID, extractChannelMessages } from '../sim/battle';
+import {crashlogger, ProcessManager, Streams, Repl} from '../lib';
+import {IPTools} from './ip-tools';
 
 type StreamWorker = ProcessManager.StreamWorker;
+type ChannelID = 0 | 1 | 2 | 3 | 4;
 
 export const Sockets = new class {
 	async onSpawn(worker: StreamWorker) {
@@ -59,7 +59,7 @@ export const Sockets = new class {
 			}
 		}
 	}
-	onUnspawn(this: void, worker: StreamWorker) {
+	onUnspawn(worker: StreamWorker) {
 		Users.socketDisconnectAll(worker, worker.workerid);
 	}
 
@@ -75,7 +75,7 @@ export const Sockets = new class {
 				const cloudenv = (require as any)('cloud-env');
 				bindAddress = cloudenv.get('IP', bindAddress);
 				port = cloudenv.get('PORT', port);
-			} catch {}
+			} catch (e) {}
 		}
 		if (bindAddress !== undefined) {
 			Config.bindaddress = bindAddress;
@@ -87,7 +87,7 @@ export const Sockets = new class {
 			workerCount = (Config.workers !== undefined ? Config.workers : 1);
 		}
 
-		PM.env = { PSPORT: Config.port, PSBINDADDR: Config.bindaddress || '0.0.0.0', PSNOSSL: Config.ssl ? 0 : 1 };
+		PM.env = {PSPORT: Config.port, PSBINDADDR: Config.bindaddress || '0.0.0.0', PSNOSSL: Config.ssl ? 0 : 1};
 		PM.subscribeSpawn(worker => void this.onSpawn(worker));
 		PM.subscribeUnspawn(this.onUnspawn);
 
@@ -145,7 +145,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 
 	isTrustedProxyIp: (ip: string) => boolean;
 
-	receivers: { [k: string]: (this: ServerStream, data: string) => void } = {
+	receivers: {[k: string]: (this: ServerStream, data: string) => void} = {
 		'$'(data) {
 			// $code
 			// eslint-disable-next-line no-eval
@@ -254,12 +254,11 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 				null, null, null, null, null,
 			];
 			const message = data.substr(nlLoc + 1);
-			const channelMessages = extractChannelMessages(message, [0, 1, 2, 3, 4]);
 			const roomChannel = this.roomChannels.get(roomid);
 			for (const [curSocketid, curSocket] of room) {
 				const channelid = roomChannel?.get(curSocketid) || 0;
-				if (!messages[channelid]) messages[channelid] = channelMessages[channelid].join('\n');
-				curSocket.write(messages[channelid]);
+				if (!messages[channelid]) messages[channelid] = this.extractChannel(message, channelid);
+				curSocket.write(messages[channelid]!);
 			}
 		},
 	};
@@ -294,13 +293,13 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 				if (!fs.statSync(key).isFile()) throw new Error();
 				try {
 					key = fs.readFileSync(key);
-				} catch (e: any) {
+				} catch (e) {
 					crashlogger(
 						new Error(`Failed to read the configured SSL private key PEM file:\n${e.stack}`),
 						`Socket process ${process.pid}`
 					);
 				}
-			} catch {
+			} catch (e) {
 				console.warn('SSL private key config values will not support HTTPS server option values in the future. Please set it to use the absolute path of its PEM file.');
 				key = config.ssl.options.key;
 			}
@@ -311,13 +310,13 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 				if (!fs.statSync(cert).isFile()) throw new Error();
 				try {
 					cert = fs.readFileSync(cert);
-				} catch (e: any) {
+				} catch (e) {
 					crashlogger(
 						new Error(`Failed to read the configured SSL certificate PEM file:\n${e.stack}`),
 						`Socket process ${process.pid}`
 					);
 				}
-			} catch {
+			} catch (e) {
 				console.warn('SSL certificate config values will not support HTTPS server option values in the future. Please set it to use the absolute path of its PEM file.');
 				cert = config.ssl.options.cert;
 			}
@@ -325,8 +324,8 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 			if (key && cert) {
 				try {
 					// In case there are additional SSL config settings besides the key and cert...
-					this.serverSsl = https.createServer({ ...config.ssl.options, key, cert });
-				} catch (e: any) {
+					this.serverSsl = https.createServer({...config.ssl.options, key, cert});
+				} catch (e) {
 					crashlogger(new Error(`The SSL settings are misconfigured:\n${e.stack}`), `Socket process ${process.pid}`);
 				}
 			}
@@ -344,7 +343,8 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 				// console.log(`static rq: ${req.socket.remoteAddress}:${req.socket.remotePort} -> ${req.socket.localAddress}:${req.socket.localPort} - ${req.method} ${req.url} ${req.httpVersion} - ${req.rawHeaders.join('|')}`);
 				req.resume();
 				req.addListener('end', () => {
-					if (config.customhttpresponse?.(req, res)) {
+					if (config.customhttpresponse &&
+							config.customhttpresponse(req, res)) {
 						return;
 					}
 
@@ -370,7 +370,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 
 			this.server.on('request', staticRequestHandler);
 			if (this.serverSsl) this.serverSsl.on('request', staticRequestHandler);
-		} catch (e: any) {
+		} catch (e) {
 			if (e.message === 'disablenodestatic') {
 				console.log('node-static is disabled');
 			} else {
@@ -384,7 +384,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 		// and doing things on our server.
 
 		const sockjs: typeof import('sockjs') = (require as any)('sockjs');
-		const options: import('sockjs').ServerOptions & { faye_server_options?: { [key: string]: any } } = {
+		const options: import('sockjs').ServerOptions & {faye_server_options?: {[key: string]: any}} = {
 			sockjs_url: `//play.pokemonshowdown.com/js/lib/sockjs-1.4.0-nwjsfix.min.js`,
 			prefix: '/showdown',
 			log(severity: string, message: string) {
@@ -395,8 +395,8 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 		if (config.wsdeflate !== null) {
 			try {
 				const deflate = (require as any)('permessage-deflate').configure(config.wsdeflate);
-				options.faye_server_options = { extensions: [deflate] };
-			} catch {
+				options.faye_server_options = {extensions: [deflate]};
+			} catch (e) {
 				crashlogger(
 					new Error("Dependency permessage-deflate is not installed or is otherwise unaccessable. No message compression will take place until server restart."),
 					"Sockets"
@@ -417,13 +417,32 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 
 		if (this.serverSsl) {
 			server.installHandlers(this.serverSsl, {});
-			// @ts-expect-error if appssl exists, then `config.ssl` must also exist
+			// @ts-ignore - if appssl exists, then `config.ssl` must also exist
 			this.serverSsl.listen(config.ssl.port, config.bindaddress);
-			// @ts-expect-error if appssl exists, then `config.ssl` must also exist
+			// @ts-ignore - if appssl exists, then `config.ssl` must also exist
 			console.log(`Worker ${PM.workerid} now listening for SSL on port ${config.ssl.port}`);
 		}
 
 		console.log(`Test your server at http://${config.bindaddress === '0.0.0.0' ? 'localhost' : config.bindaddress}:${config.port}`);
+	}
+
+	extractChannel(message: string, channelid: -1 | ChannelID) {
+		if (channelid === -1) {
+			// Grab all privileged messages
+			return message.replace(/\n\|split\|p[1234]\n([^\n]*)\n(?:[^\n]*)/g, '\n$1');
+		}
+
+		// Grab privileged messages channel has access to
+		switch (channelid) {
+		case 1: message = message.replace(/\n\|split\|p1\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
+		case 2: message = message.replace(/\n\|split\|p2\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
+		case 3: message = message.replace(/\n\|split\|p3\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
+		case 4: message = message.replace(/\n\|split\|p4\n([^\n]*)\n(?:[^\n]*)/g, '\n$1'); break;
+		}
+
+		// Discard remaining privileged messages
+		// Note: the last \n? is for privileged messages that are empty when non-privileged
+		return message.replace(/\n\|split\|(?:[^\n]*)\n(?:[^\n]*)\n\n?/g, '\n');
 	}
 
 	/**
@@ -435,7 +454,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 		for (const socket of this.sockets.values()) {
 			try {
 				socket.destroy();
-			} catch {}
+			} catch (e) {}
 		}
 		this.sockets.clear();
 		this.rooms.clear();
@@ -458,11 +477,11 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 			// address from connection request headers.
 			try {
 				socket.destroy();
-			} catch {}
+			} catch (e) {}
 			return;
 		}
 
-		const socketid = `${++this.socketCounter}`;
+		const socketid = '' + (++this.socketCounter);
 		this.sockets.set(socketid, socket);
 
 		let socketip = socket.remoteAddress;
@@ -505,7 +524,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 		});
 	}
 
-	override _write(data: string) {
+	_write(data: string) {
 		// console.log('worker received: ' + data);
 
 		const receiver = this.receivers[data.charAt(0)];
@@ -540,7 +559,7 @@ if (!PM.isParentProcess) {
 	if (Config.sockets) {
 		try {
 			require.resolve('node-oom-heapdump');
-		} catch (e: any) {
+		} catch (e) {
 			if (e.code !== 'MODULE_NOT_FOUND') throw e; // should never happen
 			throw new Error(
 				'node-oom-heapdump is not installed, but it is a required dependency if Config.ofesockets is set to true! ' +

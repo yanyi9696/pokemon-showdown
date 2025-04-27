@@ -1,24 +1,4 @@
-export const Items: import('../sim/dex-items').ItemDataTable = {
-	abilityshield: {
-		name: "Ability Shield",
-		spritenum: 746,
-		fling: {
-			basePower: 30,
-		},
-		ignoreKlutz: true,
-		// Neutralizing Gas protection implemented in Pokemon.ignoringAbility() within sim/pokemon.ts
-		// and in Neutralizing Gas itself within data/abilities.ts
-		onSetAbility(ability, target, source, effect) {
-			if (effect && effect.effectType === 'Ability' && effect.name !== 'Trace') {
-				this.add('-ability', source, effect);
-			}
-			this.add('-block', target, 'item: Ability Shield');
-			return null;
-		},
-		// Mold Breaker protection implemented in Battle.suppressingAbility() within sim/battle.ts
-		num: 1881,
-		gen: 9,
-	},
+export const Items: {[itemid: string]: ItemData} = {
 	abomasite: {
 		name: "Abomasite",
 		spritenum: 575,
@@ -64,26 +44,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 545,
 		gen: 5,
 	},
-	adamantcrystal: {
-		name: "Adamant Crystal",
-		spritenum: 741,
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.num === 483 && (move.type === 'Steel' || move.type === 'Dragon')) {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		onTakeItem(item, pokemon, source) {
-			if (source?.baseSpecies.num === 483 || pokemon.baseSpecies.num === 483) {
-				return false;
-			}
-			return true;
-		},
-		forcedForme: "Dialga-Origin",
-		itemUser: ["Dialga-Origin"],
-		num: 1777,
-		gen: 8,
-	},
 	adamantorb: {
 		name: "Adamant Orb",
 		spritenum: 4,
@@ -92,7 +52,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onBasePowerPriority: 15,
 		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.num === 483 && (move.type === 'Steel' || move.type === 'Dragon')) {
+			if (move && user.baseSpecies.name === 'Dialga' && (move.type === 'Steel' || move.type === 'Dragon')) {
 				return this.chainModify([4915, 4096]);
 			}
 		},
@@ -106,15 +66,17 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		fling: {
 			basePower: 30,
 		},
+		onBoostPriority: 1,
+		onBoost(boost, target) {
+			target.itemState.lastAtk = target.boosts['atk'];
+		},
 		onAfterBoost(boost, target, source, effect) {
-			// Adrenaline Orb activates if Intimidate is blocked by an ability like Hyper Cutter,
-			// which deletes boost.atk,
-			// but not if the holder's attack is already at -6 (or +6 if it has Contrary),
-			// which sets boost.atk to 0
-			if (target.boosts['spe'] === 6 || boost.atk === 0) {
+			const noAtkChange = boost.atk! < 0 && target.boosts['atk'] === -6 && target.itemState.lastAtk === -6;
+			const noContraryAtkChange = boost.atk! > 0 && target.boosts['atk'] === 6 && target.itemState.lastAtk === 6;
+			if (target.boosts['spe'] === 6 || noAtkChange || noContraryAtkChange) {
 				return;
 			}
-			if (effect.name === 'Intimidate') {
+			if (effect.id === 'intimidate') {
 				target.useItem();
 			}
 		},
@@ -161,16 +123,15 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Dragon",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, pokemon.baseMaxhp / 3)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
-			this.heal(pokemon.baseMaxhp / 3);
+			this.heal(pokemon.baseMaxhp * 0.33);
 			if (pokemon.getNature().minus === 'spd') {
 				pokemon.addVolatile('confusion');
 			}
@@ -193,7 +154,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onDamagingHit(damage, target, source, move) {
 			this.add('-enditem', target, 'Air Balloon');
 			target.item = '';
-			this.clearEffectState(target.itemState);
+			target.itemState = {id: '', target};
 			this.runEvent('AfterUseItem', target, null, null, this.dex.items.get('airballoon'));
 		},
 		onAfterSubDamage(damage, target, source, effect) {
@@ -201,7 +162,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			if (effect.effectType === 'Move') {
 				this.add('-enditem', target, 'Air Balloon');
 				target.item = '';
-				this.clearEffectState(target.itemState);
+				target.itemState = {id: '', target};
 				this.runEvent('AfterUseItem', target, null, null, this.dex.items.get('airballoon'));
 			}
 		},
@@ -270,13 +231,12 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Ground",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onEat(pokemon) {
-			this.boost({ spd: 1 });
+			this.boost({spd: 1});
 		},
 		num: 205,
 		gen: 3,
@@ -324,8 +284,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onDisableMove(pokemon) {
 			for (const moveSlot of pokemon.moveSlots) {
-				const move = this.dex.moves.get(moveSlot.id);
-				if (move.category === 'Status' && move.id !== 'mefirst') {
+				if (this.dex.moves.get(moveSlot.move).category === 'Status') {
 					pokemon.disableMove(moveSlot.id);
 				}
 			}
@@ -347,15 +306,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 6,
 		isNonstandard: "Past",
 	},
-	auspiciousarmor: {
-		name: "Auspicious Armor",
-		spritenum: 753,
-		fling: {
-			basePower: 30,
-		},
-		num: 2344,
-		gen: 9,
-	},
 	babiriberry: {
 		name: "Babiri Berry",
 		spritenum: 17,
@@ -366,7 +316,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Steel' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -436,14 +386,13 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onUpdate(pokemon) {
 			if (pokemon.hp <= pokemon.maxhp / 2) {
-				if (this.runEvent('TryHeal', pokemon, null, this.effect, 20) && pokemon.useItem()) {
+				if (this.runEvent('TryHeal', pokemon) && pokemon.useItem()) {
 					this.heal(20);
 				}
 			}
 		},
 		num: 43,
 		gen: 2,
-		isNonstandard: "Past",
 	},
 	berrysweet: {
 		name: "Berry Sweet",
@@ -453,15 +402,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 1111,
 		gen: 8,
-	},
-	bignugget: {
-		name: "Big Nugget",
-		spritenum: 27,
-		fling: {
-			basePower: 130,
-		},
-		num: 581,
-		gen: 5,
 	},
 	bigroot: {
 		name: "Big Root",
@@ -504,21 +444,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 241,
 		gen: 2,
 	},
-	blackglasses: {
-		name: "Black Glasses",
-		spritenum: 35,
-		fling: {
-			basePower: 30,
-		},
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (move && move.type === 'Dark') {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		num: 240,
-		gen: 2,
-	},
 	blacksludge: {
 		name: "Black Sludge",
 		spritenum: 34,
@@ -536,6 +461,21 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 281,
 		gen: 4,
+	},
+	blackglasses: {
+		name: "Black Glasses",
+		spritenum: 35,
+		fling: {
+			basePower: 30,
+		},
+		onBasePowerPriority: 15,
+		onBasePower(basePower, user, target, move) {
+			if (move && move.type === 'Dark') {
+				return this.chainModify([4915, 4096]);
+			}
+		},
+		num: 240,
+		gen: 2,
 	},
 	blastoisinite: {
 		name: "Blastoisinite",
@@ -568,18 +508,19 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 	blueorb: {
 		name: "Blue Orb",
 		spritenum: 41,
-		onSwitchInPriority: -1,
 		onSwitchIn(pokemon) {
-			if (pokemon.isActive && pokemon.baseSpecies.name === 'Kyogre' && !pokemon.transformed) {
-				pokemon.formeChange('Kyogre-Primal', this.effect, true);
+			if (pokemon.isActive && pokemon.baseSpecies.name === 'Kyogre') {
+				this.queue.insertChoice({choice: 'runPrimal', pokemon: pokemon});
 			}
+		},
+		onPrimal(pokemon) {
+			pokemon.formeChange('Kyogre-Primal', this.effect, true);
 		},
 		onTakeItem(item, source) {
 			if (source.baseSpecies.baseSpecies === 'Kyogre') return false;
 			return true;
 		},
 		itemUser: ["Kyogre"],
-		isPrimalOrb: true,
 		num: 535,
 		gen: 6,
 		isNonstandard: "Past",
@@ -595,7 +536,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onEat: false,
 		num: 165,
 		gen: 3,
-		isNonstandard: "Past",
 	},
 	blunderpolicy: {
 		name: "Blunder Policy",
@@ -606,34 +546,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		// Item activation located in scripts.js
 		num: 1121,
 		gen: 8,
-	},
-	boosterenergy: {
-		name: "Booster Energy",
-		spritenum: 745,
-		fling: {
-			basePower: 30,
-		},
-		onSwitchInPriority: -2,
-		onStart(pokemon) {
-			this.effectState.started = true;
-			((this.effect as any).onUpdate as (p: Pokemon) => void).call(this, pokemon);
-		},
-		onUpdate(pokemon) {
-			if (!this.effectState.started || pokemon.transformed) return;
-
-			if (pokemon.hasAbility('protosynthesis') && !this.field.isWeather('sunnyday') && pokemon.useItem()) {
-				pokemon.addVolatile('protosynthesis');
-			}
-			if (pokemon.hasAbility('quarkdrive') && !this.field.isTerrain('electricterrain') && pokemon.useItem()) {
-				pokemon.addVolatile('quarkdrive');
-			}
-		},
-		onTakeItem(item, source) {
-			if (source.baseSpecies.tags.includes("Paradox")) return false;
-			return true;
-		},
-		num: 1880,
-		gen: 9,
 	},
 	bottlecap: {
 		name: "Bottle Cap",
@@ -687,7 +599,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Bug"],
 		num: 909,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	buginiumz: {
 		name: "Buginium Z",
@@ -715,7 +626,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Genesect-Burn"],
 		num: 118,
 		gen: 5,
-		isNonstandard: "Past",
 	},
 	cameruptite: {
 		name: "Cameruptite",
@@ -801,7 +711,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Rock' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -842,7 +752,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 16,
 		gen: 4,
 		isPokeball: true,
-		isNonstandard: "Unobtainable",
 	},
 	chestoberry: {
 		name: "Chesto Berry",
@@ -876,7 +785,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onSourceModifyDamage(damage, source, target, move) {
 			if (
 				move.type === 'Normal' &&
-				(!target.volatiles['substitute'] || move.flags['bypasssub'] || (move.infiltrates && this.gen >= 6))
+				(!target.volatiles['substitute'] || move.flags['authentic'] || (move.infiltrates && this.gen >= 6))
 			) {
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
@@ -903,7 +812,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Genesect-Chill"],
 		num: 119,
 		gen: 5,
-		isNonstandard: "Past",
 	},
 	chippedpot: {
 		name: "Chipped Pot",
@@ -922,7 +830,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onStart(pokemon) {
 			if (pokemon.volatiles['choicelock']) {
-				this.debug('removing choicelock');
+				this.debug('removing choicelock: ' + pokemon.volatiles['choicelock']);
 			}
 			pokemon.removeVolatile('choicelock');
 		},
@@ -946,7 +854,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onStart(pokemon) {
 			if (pokemon.volatiles['choicelock']) {
-				this.debug('removing choicelock');
+				this.debug('removing choicelock: ' + pokemon.volatiles['choicelock']);
 			}
 			pokemon.removeVolatile('choicelock');
 		},
@@ -969,7 +877,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onStart(pokemon) {
 			if (pokemon.volatiles['choicelock']) {
-				this.debug('removing choicelock');
+				this.debug('removing choicelock: ' + pokemon.volatiles['choicelock']);
 			}
 			pokemon.removeVolatile('choicelock');
 		},
@@ -995,7 +903,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Fighting' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -1019,30 +927,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 3,
 		isNonstandard: "Past",
 	},
-	clearamulet: {
-		name: "Clear Amulet",
-		spritenum: 747,
-		fling: {
-			basePower: 30,
-		},
-		onTryBoostPriority: 1,
-		onTryBoost(boost, target, source, effect) {
-			if (source && target === source) return;
-			let showMsg = false;
-			let i: BoostID;
-			for (i in boost) {
-				if (boost[i]! < 0) {
-					delete boost[i];
-					showMsg = true;
-				}
-			}
-			if (showMsg && !(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
-				this.add('-fail', target, 'unboost', '[from] item: Clear Amulet', `[of] ${target}`);
-			}
-		},
-		num: 1882,
-		gen: 9,
-	},
 	cloversweet: {
 		name: "Clover Sweet",
 		spritenum: 707,
@@ -1062,7 +946,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Flying' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -1086,7 +970,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Dark' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -1099,27 +983,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onEat() { },
 		num: 198,
 		gen: 4,
-	},
-	cornerstonemask: {
-		name: "Cornerstone Mask",
-		spritenum: 758,
-		fling: {
-			basePower: 60,
-		},
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.name.startsWith('Ogerpon-Cornerstone')) {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		onTakeItem(item, source) {
-			if (source.baseSpecies.baseSpecies === 'Ogerpon') return false;
-			return true;
-		},
-		forcedForme: "Ogerpon-Cornerstone",
-		itemUser: ["Ogerpon-Cornerstone"],
-		num: 2406,
-		gen: 9,
 	},
 	cornnberry: {
 		name: "Cornn Berry",
@@ -1144,19 +1007,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 5,
 		isNonstandard: "Past",
 	},
-	covertcloak: {
-		name: "Covert Cloak",
-		spritenum: 750,
-		fling: {
-			basePower: 30,
-		},
-		onModifySecondaries(secondaries) {
-			this.debug('Covert Cloak prevent secondary');
-			return secondaries.filter(effect => !!(effect.self || effect.dustproof));
-		},
-		num: 1885,
-		gen: 9,
-	},
 	crackedpot: {
 		name: "Cracked Pot",
 		spritenum: 719,
@@ -1178,8 +1028,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onFractionalPriority(priority, pokemon) {
 			if (
 				priority <= 0 &&
-				(pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-					pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony))
+				(pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony')))
 			) {
 				if (pokemon.eatItem()) {
 					this.add('-activate', pokemon, 'item: Custap Berry', '[consumed]');
@@ -1228,7 +1077,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Dark"],
 		num: 919,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	darkiniumz: {
 		name: "Darkinium Z",
@@ -1277,7 +1125,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Clamperl"],
 		num: 227,
 		gen: 3,
-		isNonstandard: "Past",
 	},
 	deepseatooth: {
 		name: "Deep Sea Tooth",
@@ -1294,7 +1141,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Clamperl"],
 		num: 226,
 		gen: 3,
-		isNonstandard: "Past",
 	},
 	destinyknot: {
 		name: "Destiny Knot",
@@ -1304,7 +1150,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onAttractPriority: -100,
 		onAttract(target, source) {
-			this.debug(`attract intercepted: ${target} from ${source}`);
+			this.debug('attract intercepted: ' + target + ' from ' + source);
 			if (!source || source === target) return;
 			if (!source.volatiles['attract']) source.addVolatile('attract', target);
 		},
@@ -1356,7 +1202,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Genesect-Douse"],
 		num: 116,
 		gen: 5,
-		isNonstandard: "Past",
 	},
 	dracoplate: {
 		name: "Draco Plate",
@@ -1377,6 +1222,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Dragon",
 		num: 311,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	dragonfang: {
 		name: "Dragon Fang",
@@ -1421,7 +1267,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Dragon"],
 		num: 918,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	dragonscale: {
 		name: "Dragon Scale",
@@ -1429,7 +1274,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		fling: {
 			basePower: 30,
 		},
-		num: 235,
+		num: 250,
 		gen: 2,
 	},
 	dragoniumz: {
@@ -1463,6 +1308,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Dark",
 		num: 312,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	dreamball: {
 		name: "Dream Ball",
@@ -1528,6 +1374,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Ground",
 		num: 305,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	eeviumz: {
 		name: "Eevium Z",
@@ -1548,9 +1395,8 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onAfterMoveSecondaryPriority: 2,
 		onAfterMoveSecondary(target, source, move) {
-			if (source && source !== target && target.hp && move && move.category !== 'Status' && !move.flags['futuremove']) {
-				if (!this.canSwitch(target.side) || target.forceSwitchFlag || target.beingCalledBack || target.isSkyDropped()) return;
-				if (target.volatiles['commanding'] || target.volatiles['commanded']) return;
+			if (source && source !== target && target.hp && move && move.category !== 'Status' && !move.isFutureMove) {
+				if (!this.canSwitch(target.side) || target.forceSwitchFlag || target.beingCalledBack) return;
 				for (const pokemon of this.getAllActive()) {
 					if (pokemon.switchFlag === true) return;
 				}
@@ -1583,7 +1429,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			if (eject) {
 				if (target.hp) {
 					if (!this.canSwitch(target.side)) return;
-					if (target.volatiles['commanding'] || target.volatiles['commanded']) return;
 					for (const pokemon of this.getAllActive()) {
 						if (pokemon.switchFlag === true) return;
 					}
@@ -1608,7 +1453,8 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 120,
 		isGem: true,
 		onSourceTryPrimaryHit(target, source, move) {
-			if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+			const pledges = ['firepledge', 'grasspledge', 'waterpledge'];
+			if (target === source || move.category === 'Status' || pledges.includes(move.id)) return;
 			if (move.type === 'Electric' && source.useItem()) {
 				source.addVolatile('gem');
 			}
@@ -1631,7 +1477,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Electric"],
 		num: 915,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	electricseed: {
 		name: "Electric Seed",
@@ -1639,13 +1484,13 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		fling: {
 			basePower: 10,
 		},
-		onSwitchInPriority: -1,
 		onStart(pokemon) {
 			if (!pokemon.ignoringItem() && this.field.isTerrain('electricterrain')) {
 				pokemon.useItem();
 			}
 		},
-		onTerrainChange(pokemon) {
+		onAnyTerrainStart() {
+			const pokemon = this.effectState.target;
 			if (this.field.isTerrain('electricterrain')) {
 				pokemon.useItem();
 			}
@@ -1668,6 +1513,15 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 7,
 		isNonstandard: "Past",
 	},
+	energypowder: {
+		name: "Energy Powder",
+		spritenum: 123,
+		fling: {
+			basePower: 30,
+		},
+		num: 34,
+		gen: 2,
+	},
 	enigmaberry: {
 		name: "Enigma Berry",
 		spritenum: 124,
@@ -1684,7 +1538,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, pokemon.baseMaxhp / 4)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat() { },
 		num: 208,
@@ -1737,21 +1591,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 7,
 		isNonstandard: "Past",
 	},
-	fairyfeather: {
-		name: "Fairy Feather",
-		spritenum: 754,
-		fling: {
-			basePower: 10,
-		},
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (move && move.type === 'Fairy') {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		num: 2401,
-		gen: 9,
-	},
 	fairygem: {
 		name: "Fairy Gem",
 		spritenum: 611,
@@ -1780,7 +1619,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Fairy"],
 		num: 920,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	fastball: {
 		name: "Fast Ball",
@@ -1817,7 +1655,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Fighting"],
 		num: 904,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	fightiniumz: {
 		name: "Fightinium Z",
@@ -1840,16 +1677,15 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Bug",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, pokemon.baseMaxhp / 3)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
-			this.heal(pokemon.baseMaxhp / 3);
+			this.heal(pokemon.baseMaxhp * 0.33);
 			if (pokemon.getNature().minus === 'atk') {
 				pokemon.addVolatile('confusion');
 			}
@@ -1862,7 +1698,8 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 141,
 		isGem: true,
 		onSourceTryPrimaryHit(target, source, move) {
-			if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+			const pledges = ['firepledge', 'grasspledge', 'waterpledge'];
+			if (target === source || move.category === 'Status' || pledges.includes(move.id)) return;
 			if (move.type === 'Fire' && source.useItem()) {
 				source.addVolatile('gem');
 			}
@@ -1885,7 +1722,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Fire"],
 		num: 912,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	firestone: {
 		name: "Fire Stone",
@@ -1927,6 +1763,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Fighting",
 		num: 303,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	flameorb: {
 		name: "Flame Orb",
@@ -1962,6 +1799,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Fire",
 		num: 298,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	floatstone: {
 		name: "Float Stone",
@@ -2012,7 +1850,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Flying"],
 		num: 905,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	flyiniumz: {
 		name: "Flyinium Z",
@@ -2067,7 +1904,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 1105,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	fossilizeddino: {
 		name: "Fossilized Dino",
@@ -2077,7 +1913,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 1108,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	fossilizeddrake: {
 		name: "Fossilized Drake",
@@ -2087,7 +1922,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 1107,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	fossilizedfish: {
 		name: "Fossilized Fish",
@@ -2097,7 +1931,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 1106,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	friendball: {
 		name: "Friend Ball",
@@ -2115,7 +1948,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onFractionalPriority: -0.1,
 		num: 316,
 		gen: 4,
-		isNonstandard: "Past",
 	},
 	galaricacuff: {
 		name: "Galarica Cuff",
@@ -2158,13 +1990,12 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Ice",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onEat(pokemon) {
-			this.boost({ def: 1 });
+			this.boost({def: 1});
 		},
 		num: 202,
 		gen: 3,
@@ -2239,7 +2070,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Ghost"],
 		num: 910,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	ghostiumz: {
 		name: "Ghostium Z",
@@ -2281,7 +2111,8 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 172,
 		isGem: true,
 		onSourceTryPrimaryHit(target, source, move) {
-			if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+			const pledges = ['firepledge', 'grasspledge', 'waterpledge'];
+			if (target === source || move.category === 'Status' || pledges.includes(move.id)) return;
 			if (move.type === 'Grass' && source.useItem()) {
 				source.addVolatile('gem');
 			}
@@ -2304,7 +2135,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Grass"],
 		num: 914,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	grassiumz: {
 		name: "Grassium Z",
@@ -2324,13 +2154,13 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		fling: {
 			basePower: 10,
 		},
-		onSwitchInPriority: -1,
 		onStart(pokemon) {
 			if (!pokemon.ignoringItem() && this.field.isTerrain('grassyterrain')) {
 				pokemon.useItem();
 			}
 		},
-		onTerrainChange(pokemon) {
+		onAnyTerrainStart() {
+			const pokemon = this.effectState.target;
 			if (this.field.isTerrain('grassyterrain')) {
 				pokemon.useItem();
 			}
@@ -2370,26 +2200,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 286,
 		gen: 4,
 	},
-	griseouscore: {
-		name: "Griseous Core",
-		spritenum: 743,
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.num === 487 && (move.type === 'Ghost' || move.type === 'Dragon')) {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		onTakeItem(item, pokemon, source) {
-			if (source?.baseSpecies.num === 487 || pokemon.baseSpecies.num === 487) {
-				return false;
-			}
-			return true;
-		},
-		forcedForme: "Giratina-Origin",
-		itemUser: ["Giratina-Origin"],
-		num: 1779,
-		gen: 8,
-	},
 	griseousorb: {
 		name: "Griseous Orb",
 		spritenum: 180,
@@ -2402,7 +2212,14 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 				return this.chainModify([4915, 4096]);
 			}
 		},
-		itemUser: ["Giratina"],
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 487) || pokemon.baseSpecies.num === 487) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Giratina-Origin",
+		itemUser: ["Giratina-Origin"],
 		num: 112,
 		gen: 4,
 	},
@@ -2434,7 +2251,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Ground"],
 		num: 907,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	groundiumz: {
 		name: "Groundium Z",
@@ -2472,7 +2288,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Dragon' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -2508,27 +2324,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 4,
 		isPokeball: true,
 	},
-	hearthflamemask: {
-		name: "Hearthflame Mask",
-		spritenum: 760,
-		fling: {
-			basePower: 60,
-		},
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.name.startsWith('Ogerpon-Hearthflame')) {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		onTakeItem(item, source) {
-			if (source.baseSpecies.baseSpecies === 'Ogerpon') return false;
-			return true;
-		},
-		forcedForme: "Ogerpon-Hearthflame",
-		itemUser: ["Ogerpon-Hearthflame"],
-		num: 2408,
-		gen: 9,
-	},
 	heatrock: {
 		name: "Heat Rock",
 		spritenum: 193,
@@ -2553,7 +2348,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 1120,
 		gen: 8,
-		// Hazard Immunity implemented in moves.ts
+		// Hazard Immunity implemented in moves.js
 	},
 	helixfossil: {
 		name: "Helix Fossil",
@@ -2614,16 +2409,15 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Dark",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, pokemon.baseMaxhp / 3)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
-			this.heal(pokemon.baseMaxhp / 3);
+			this.heal(pokemon.baseMaxhp * 0.33);
 			if (pokemon.getNature().minus === 'def') {
 				pokemon.addVolatile('confusion');
 			}
@@ -2659,7 +2453,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Ice"],
 		num: 917,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	icestone: {
 		name: "Ice Stone",
@@ -2689,6 +2482,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Ice",
 		num: 302,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	iciumz: {
 		name: "Icium Z",
@@ -2741,6 +2535,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Bug",
 		num: 308,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	ironball: {
 		name: "Iron Ball",
@@ -2779,6 +2574,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Steel",
 		num: 313,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	jabocaberry: {
 		name: "Jaboca Berry",
@@ -2789,7 +2585,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Dragon",
 		},
 		onDamagingHit(damage, target, source, move) {
-			if (move.category === 'Physical' && source.hp && source.isActive && !source.hasAbility('magicguard')) {
+			if (move.category === 'Physical' && source.hp && source.isActive) {
 				if (target.eatItem()) {
 					this.damage(source.baseMaxhp / (target.hasAbility('ripen') ? 4 : 8), source, target);
 				}
@@ -2819,7 +2615,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Ghost' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -2843,7 +2639,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Poison' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -2872,7 +2668,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			}
 		},
 		onEat(pokemon) {
-			this.boost({ def: 1 });
+			this.boost({def: 1});
 		},
 		num: 687,
 		gen: 6,
@@ -2956,8 +2752,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Flying",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
@@ -3009,7 +2804,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 255,
 		gen: 3,
-		isNonstandard: "Past",
 	},
 	leafstone: {
 		name: "Leaf Stone",
@@ -3031,10 +2825,9 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 				return critRatio + 2;
 			}
 		},
-		itemUser: ["Farfetch\u2019d", "Farfetch\u2019d-Galar", "Sirfetch\u2019d"],
+		itemUser: ["Farfetch\u2019d", "Sirfetch\u2019d"],
 		num: 259,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	leftovers: {
 		name: "Leftovers",
@@ -3091,13 +2884,12 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Grass",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onEat(pokemon) {
-			this.boost({ atk: 1 });
+			this.boost({atk: 1});
 		},
 		num: 201,
 		gen: 3,
@@ -3112,7 +2904,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			return this.chainModify([5324, 4096]);
 		},
 		onAfterMoveSecondarySelf(source, target, move) {
-			if (source && source !== target && move && move.category !== 'Status' && !source.forceSwitchFlag) {
+			if (source && source !== target && move && move.category !== 'Status') {
 				this.damage(source.baseMaxhp / 10, source, source, this.dex.items.get('lifeorb'));
 			}
 		},
@@ -3138,7 +2930,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 				return this.chainModify(2);
 			}
 		},
-		itemUser: ["Pikachu", "Pikachu-Cosplay", "Pikachu-Rock-Star", "Pikachu-Belle", "Pikachu-Pop-Star", "Pikachu-PhD", "Pikachu-Libre", "Pikachu-Original", "Pikachu-Hoenn", "Pikachu-Sinnoh", "Pikachu-Unova", "Pikachu-Kalos", "Pikachu-Alola", "Pikachu-Partner", "Pikachu-Starter", "Pikachu-World"],
+		itemUser: ["Pikachu"],
 		num: 236,
 		gen: 2,
 	},
@@ -3151,21 +2943,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		// implemented in the corresponding thing
 		num: 269,
 		gen: 4,
-	},
-	loadeddice: {
-		name: "Loaded Dice",
-		spritenum: 751,
-		fling: {
-			basePower: 30,
-		},
-		// partially implemented in sim/battle-actions.ts:BattleActions#hitStepMoveHitLoop
-		onModifyMove(move) {
-			if (move.multiaccuracy) {
-				delete move.multiaccuracy;
-			}
-		},
-		num: 1886,
-		gen: 9,
 	},
 	lopunnite: {
 		name: "Lopunnite",
@@ -3286,26 +3063,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 2,
 		isPokeball: true,
 	},
-	lustrousglobe: {
-		name: "Lustrous Globe",
-		spritenum: 742,
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.num === 484 && (move.type === 'Water' || move.type === 'Dragon')) {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		onTakeItem(item, pokemon, source) {
-			if (source?.baseSpecies.num === 484 || pokemon.baseSpecies.num === 484) {
-				return false;
-			}
-			return true;
-		},
-		forcedForme: "Palkia-Origin",
-		itemUser: ["Palkia-Origin"],
-		num: 1778,
-		gen: 8,
-	},
 	lustrousorb: {
 		name: "Lustrous Orb",
 		spritenum: 265,
@@ -3314,7 +3071,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onBasePowerPriority: 15,
 		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.num === 484 && (move.type === 'Water' || move.type === 'Dragon')) {
+			if (move && user.baseSpecies.name === 'Palkia' && (move.type === 'Water' || move.type === 'Dragon')) {
 				return this.chainModify([4915, 4096]);
 			}
 		},
@@ -3352,7 +3109,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 215,
 		gen: 3,
-		isNonstandard: "Past",
 	},
 	magmarizer: {
 		name: "Magmarizer",
@@ -3387,16 +3143,15 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Ghost",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, pokemon.baseMaxhp / 3)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
-			this.heal(pokemon.baseMaxhp / 3);
+			this.heal(pokemon.baseMaxhp * 0.33);
 			if (pokemon.getNature().minus === 'spe') {
 				pokemon.addVolatile('confusion');
 			}
@@ -3424,18 +3179,9 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			if (!this.activeMove) return false;
 			if (this.activeMove.id !== 'knockoff' && this.activeMove.id !== 'thief' && this.activeMove.id !== 'covet') return false;
 		},
-		num: 137,
+		num: 0,
 		gen: 2,
 		isNonstandard: "Past",
-	},
-	maliciousarmor: {
-		name: "Malicious Armor",
-		spritenum: 744,
-		fling: {
-			basePower: 30,
-		},
-		num: 1861,
-		gen: 9,
 	},
 	manectite: {
 		name: "Manectite",
@@ -3465,7 +3211,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			}
 		},
 		onEat(pokemon) {
-			this.boost({ spd: 1 });
+			this.boost({spd: 1});
 		},
 		num: 688,
 		gen: 6,
@@ -3487,15 +3233,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 1,
 		gen: 1,
 		isPokeball: true,
-	},
-	masterpieceteacup: {
-		name: "Masterpiece Teacup",
-		spritenum: 757,
-		fling: {
-			basePower: 80,
-		},
-		num: 2404,
-		gen: 9,
 	},
 	mawilite: {
 		name: "Mawilite",
@@ -3530,6 +3267,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Grass",
 		num: 301,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	medichamite: {
 		name: "Medichamite",
@@ -3597,12 +3335,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 6,
 		isNonstandard: "Past",
 	},
-	metalalloy: {
-		name: "Metal Alloy",
-		spritenum: 761,
-		num: 2482,
-		gen: 9,
-	},
 	metalcoat: {
 		name: "Metal Coat",
 		spritenum: 286,
@@ -3633,7 +3365,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Ditto"],
 		num: 257,
 		gen: 2,
-		isNonstandard: "Past",
 	},
 	metronome: {
 		name: "Metronome",
@@ -3655,15 +3386,10 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 					pokemon.removeVolatile('metronome');
 					return;
 				}
-				if (move.callsMove) return;
 				if (this.effectState.lastMove === move.id && pokemon.moveLastTurnResult) {
 					this.effectState.numConsecutive++;
-				} else if (pokemon.volatiles['twoturnmove']) {
-					if (this.effectState.lastMove !== move.id) {
-						this.effectState.numConsecutive = 1;
-					} else {
-						this.effectState.numConsecutive++;
-					}
+				} else if (pokemon.volatiles['twoturnmove'] && this.effectState.lastMove !== move.id) {
+					this.effectState.numConsecutive = 1;
 				} else {
 					this.effectState.numConsecutive = 0;
 				}
@@ -3727,8 +3453,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Rock",
 		},
 		onResidual(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
@@ -3780,6 +3505,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Psychic",
 		num: 307,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	miracleseed: {
 		name: "Miracle Seed",
@@ -3796,61 +3522,19 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 239,
 		gen: 2,
 	},
-	mirrorherb: {
-		name: "Mirror Herb",
-		spritenum: 748,
-		fling: {
-			basePower: 30,
-		},
-		onFoeAfterBoost(boost, target, source, effect) {
-			if (effect?.name === 'Opportunist' || effect?.name === 'Mirror Herb') return;
-			if (!this.effectState.boosts) this.effectState.boosts = {} as SparseBoostsTable;
-			const boostPlus = this.effectState.boosts;
-			let i: BoostID;
-			for (i in boost) {
-				if (boost[i]! > 0) {
-					boostPlus[i] = (boostPlus[i] || 0) + boost[i]!;
-					this.effectState.ready = true;
-				}
-			}
-		},
-		onAnySwitchInPriority: -3,
-		onAnySwitchIn() {
-			if (!this.effectState.ready || !this.effectState.boosts) return;
-			(this.effectState.target as Pokemon).useItem();
-		},
-		onAnyAfterMove() {
-			if (!this.effectState.ready || !this.effectState.boosts) return;
-			(this.effectState.target as Pokemon).useItem();
-		},
-		onResidualOrder: 29,
-		onResidual(pokemon) {
-			if (!this.effectState.ready || !this.effectState.boosts) return;
-			(this.effectState.target as Pokemon).useItem();
-		},
-		onUse(pokemon) {
-			this.boost(this.effectState.boosts, pokemon);
-		},
-		onEnd() {
-			delete this.effectState.boosts;
-			delete this.effectState.ready;
-		},
-		num: 1883,
-		gen: 9,
-	},
 	mistyseed: {
 		name: "Misty Seed",
 		spritenum: 666,
 		fling: {
 			basePower: 10,
 		},
-		onSwitchInPriority: -1,
 		onStart(pokemon) {
 			if (!pokemon.ignoringItem() && this.field.isTerrain('mistyterrain')) {
 				pokemon.useItem();
 			}
 		},
-		onTerrainChange(pokemon) {
+		onAnyTerrainStart() {
+			const pokemon = this.effectState.target;
 			if (this.field.isTerrain('mistyterrain')) {
 				pokemon.useItem();
 			}
@@ -3967,7 +3651,8 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 307,
 		isGem: true,
 		onSourceTryPrimaryHit(target, source, move) {
-			if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+			const pledges = ['firepledge', 'grasspledge', 'waterpledge'];
+			if (target === source || move.category === 'Status' || pledges.includes(move.id)) return;
 			if (move.type === 'Normal' && source.useItem()) {
 				source.addVolatile('gem');
 			}
@@ -3995,7 +3680,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Fire' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -4023,7 +3708,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 314,
 		gen: 4,
-		isNonstandard: "Past",
 	},
 	oldamber: {
 		name: "Old Amber",
@@ -4049,7 +3733,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, 10)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
 			this.heal(10);
@@ -4085,7 +3769,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 500,
 		gen: 4,
 		isPokeball: true,
-		isNonstandard: "Unobtainable",
 	},
 	passhoberry: {
 		name: "Passho Berry",
@@ -4097,7 +3780,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Water' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -4121,7 +3804,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Psychic' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -4184,13 +3867,12 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Poison",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onEat(pokemon) {
-			this.boost({ spa: 1 });
+			this.boost({spa: 1});
 		},
 		num: 204,
 		gen: 3,
@@ -4242,7 +3924,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onEat: false,
 		num: 168,
 		gen: 3,
-		isNonstandard: "Past",
 	},
 	pinsirite: {
 		name: "Pinsirite",
@@ -4332,7 +4013,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Poison"],
 		num: 906,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	poisoniumz: {
 		name: "Poisonium Z",
@@ -4534,7 +4214,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Psychic"],
 		num: 916,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	psychicseed: {
 		name: "Psychic Seed",
@@ -4542,13 +4221,13 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		fling: {
 			basePower: 10,
 		},
-		onSwitchInPriority: -1,
 		onStart(pokemon) {
 			if (!pokemon.ignoringItem() && this.field.isTerrain('psychicterrain')) {
 				pokemon.useItem();
 			}
 		},
-		onTerrainChange(pokemon) {
+		onAnyTerrainStart() {
+			const pokemon = this.effectState.target;
 			if (this.field.isTerrain('psychicterrain')) {
 				pokemon.useItem();
 			}
@@ -4571,26 +4250,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 7,
 		isNonstandard: "Past",
 	},
-	punchingglove: {
-		name: "Punching Glove",
-		spritenum: 749,
-		fling: {
-			basePower: 30,
-		},
-		onBasePowerPriority: 23,
-		onBasePower(basePower, attacker, defender, move) {
-			if (move.flags['punch']) {
-				this.debug('Punching Glove boost');
-				return this.chainModify([4506, 4096]);
-			}
-		},
-		onModifyMovePriority: 1,
-		onModifyMove(move) {
-			if (move.flags['punch']) delete move.flags['contact'];
-		},
-		num: 1884,
-		gen: 9,
-	},
 	qualotberry: {
 		name: "Qualot Berry",
 		spritenum: 371,
@@ -4612,8 +4271,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 	},
 	quickclaw: {
 		onFractionalPriorityPriority: -2,
-		onFractionalPriority(priority, pokemon, target, move) {
-			if (move.category === "Status" && pokemon.hasAbility("myceliummight")) return;
+		onFractionalPriority(priority, pokemon) {
 			if (priority <= 0 && this.randomChance(1, 5)) {
 				this.add('-activate', pokemon, 'item: Quick Claw');
 				return 0.1;
@@ -4641,7 +4299,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Ditto"],
 		num: 274,
 		gen: 4,
-		isNonstandard: "Past",
 	},
 	rabutaberry: {
 		name: "Rabuta Berry",
@@ -4720,6 +4377,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 327,
 		gen: 4,
+		isNonstandard: "Past",
 	},
 	razzberry: {
 		name: "Razz Berry",
@@ -4768,18 +4426,19 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 	redorb: {
 		name: "Red Orb",
 		spritenum: 390,
-		onSwitchInPriority: -1,
 		onSwitchIn(pokemon) {
-			if (pokemon.isActive && pokemon.baseSpecies.name === 'Groudon' && !pokemon.transformed) {
-				pokemon.formeChange('Groudon-Primal', this.effect, true);
+			if (pokemon.isActive && pokemon.baseSpecies.name === 'Groudon') {
+				this.queue.insertChoice({choice: 'runPrimal', pokemon: pokemon});
 			}
+		},
+		onPrimal(pokemon) {
+			pokemon.formeChange('Groudon-Primal', this.effect, true);
 		},
 		onTakeItem(item, source) {
 			if (source.baseSpecies.baseSpecies === 'Groudon') return false;
 			return true;
 		},
 		itemUser: ["Groudon"],
-		isPrimalOrb: true,
 		num: 534,
 		gen: 6,
 		isNonstandard: "Past",
@@ -4810,7 +4469,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Grass' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -4862,7 +4521,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 315,
 		gen: 4,
-		isNonstandard: "Past",
 	},
 	rockmemory: {
 		name: "Rock Memory",
@@ -4878,7 +4536,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Rock"],
 		num: 908,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	rockiumz: {
 		name: "Rockium Z",
@@ -4913,16 +4570,9 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		fling: {
 			basePower: 100,
 		},
-		onSwitchInPriority: -1,
-		onStart(pokemon) {
-			if (!pokemon.ignoringItem() && this.field.getPseudoWeather('trickroom')) {
-				pokemon.useItem();
-			}
-		},
-		onAnyPseudoWeatherChange() {
-			const pokemon = this.effectState.target;
+		onUpdate(pokemon) {
 			if (this.field.getPseudoWeather('trickroom')) {
-				pokemon.useItem(pokemon);
+				pokemon.useItem();
 			}
 		},
 		boosts: {
@@ -4955,7 +4605,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 318,
 		gen: 4,
-		isNonstandard: "Past",
 	},
 	roseliberry: {
 		name: "Roseli Berry",
@@ -4967,7 +4616,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Fairy' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -4990,7 +4639,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Dark",
 		},
 		onDamagingHit(damage, target, source, move) {
-			if (move.category === 'Special' && source.hp && source.isActive && !source.hasAbility('magicguard')) {
+			if (move.category === 'Special' && source.hp && source.isActive) {
 				if (target.eatItem()) {
 					this.damage(source.baseMaxhp / (target.hasAbility('ripen') ? 4 : 8), source, target);
 				}
@@ -5009,6 +4658,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: "Zamazenta-Crowned",
 		itemUser: ["Zamazenta-Crowned"],
 		num: 1104,
 		gen: 8,
@@ -5022,6 +4672,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: "Zacian-Crowned",
 		itemUser: ["Zacian-Crowned"],
 		num: 1103,
 		gen: 8,
@@ -5048,7 +4699,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 647,
 		gen: 6,
-		isNonstandard: "Past",
 	},
 	safariball: {
 		name: "Safari Ball",
@@ -5094,13 +4744,12 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Fighting",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onEat(pokemon) {
-			this.boost({ spe: 1 });
+			this.boost({spe: 1});
 		},
 		num: 203,
 		gen: 3,
@@ -5173,7 +4822,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 254,
 		gen: 3,
-		isNonstandard: "Past",
 	},
 	sharpbeak: {
 		name: "Sharp Beak",
@@ -5225,7 +4873,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onAfterMoveSecondarySelfPriority: -1,
 		onAfterMoveSecondarySelf(pokemon, target, move) {
-			if (move.totalDamage && !pokemon.forceSwitchFlag) {
+			if (move.totalDamage) {
 				this.heal(move.totalDamage / 8, pokemon);
 			}
 		},
@@ -5255,7 +4903,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Genesect-Shock"],
 		num: 117,
 		gen: 5,
-		isNonstandard: "Past",
 	},
 	shucaberry: {
 		name: "Shuca Berry",
@@ -5267,7 +4914,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Ground' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -5325,7 +4972,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, pokemon.baseMaxhp / 4)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
 			this.heal(pokemon.baseMaxhp / 4);
@@ -5362,6 +5009,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Flying",
 		num: 306,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	slowbronite: {
 		name: "Slowbronite",
@@ -5506,6 +5154,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Water",
 		num: 299,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	spookyplate: {
 		name: "Spooky Plate",
@@ -5526,6 +5175,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Ghost",
 		num: 310,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	sportball: {
 		name: "Sport Ball",
@@ -5543,8 +5193,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Psychic",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
@@ -5617,7 +5266,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Steel"],
 		num: 911,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	steeliumz: {
 		name: "Steelium Z",
@@ -5688,13 +5336,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Rock",
 		num: 309,
 		gen: 4,
-	},
-	strangeball: {
-		name: "Strange Ball",
-		spritenum: 308,
-		num: 1785,
-		gen: 8,
-		isPokeball: true,
 		isNonstandard: "Unobtainable",
 	},
 	strawberrysweet: {
@@ -5738,15 +5379,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 1116,
 		gen: 8,
 	},
-	syrupyapple: {
-		name: "Syrupy Apple",
-		spritenum: 755,
-		fling: {
-			basePower: 30,
-		},
-		num: 2402,
-		gen: 9,
-	},
 	tamatoberry: {
 		name: "Tamato Berry",
 		spritenum: 486,
@@ -5769,7 +5401,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Bug' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -5824,10 +5456,9 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 				return this.chainModify(2);
 			}
 		},
-		itemUser: ["Marowak", "Marowak-Alola", "Marowak-Alola-Totem", "Cubone"],
+		itemUser: ["Marowak", "Cubone"],
 		num: 258,
 		gen: 2,
-		isNonstandard: "Past",
 	},
 	throatspray: {
 		name: "Throat Spray",
@@ -5896,6 +5527,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Poison",
 		num: 304,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	tr00: {
 		name: "TR00",
@@ -5905,7 +5537,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1130,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr01: {
 		name: "TR01",
@@ -5915,7 +5546,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1131,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr02: {
 		name: "TR02",
@@ -5925,7 +5555,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 730,
 		num: 1132,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr03: {
 		name: "TR03",
@@ -5935,7 +5564,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 731,
 		num: 1133,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr04: {
 		name: "TR04",
@@ -5945,7 +5573,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 731,
 		num: 1134,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr05: {
 		name: "TR05",
@@ -5955,7 +5582,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 735,
 		num: 1135,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr06: {
 		name: "TR06",
@@ -5965,7 +5591,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 735,
 		num: 1136,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr07: {
 		name: "TR07",
@@ -5975,7 +5600,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 722,
 		num: 1137,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr08: {
 		name: "TR08",
@@ -5985,7 +5609,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 733,
 		num: 1138,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr09: {
 		name: "TR09",
@@ -5995,7 +5618,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 733,
 		num: 1139,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr10: {
 		name: "TR10",
@@ -6005,7 +5627,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 725,
 		num: 1140,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr11: {
 		name: "TR11",
@@ -6015,7 +5636,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1141,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr12: {
 		name: "TR12",
@@ -6025,7 +5645,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1142,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr13: {
 		name: "TR13",
@@ -6035,7 +5654,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1143,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr14: {
 		name: "TR14",
@@ -6045,7 +5663,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1144,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr15: {
 		name: "TR15",
@@ -6055,7 +5672,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 730,
 		num: 1145,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr16: {
 		name: "TR16",
@@ -6065,7 +5681,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 731,
 		num: 1146,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr17: {
 		name: "TR17",
@@ -6075,7 +5690,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1147,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr18: {
 		name: "TR18",
@@ -6085,7 +5699,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 727,
 		num: 1148,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr19: {
 		name: "TR19",
@@ -6095,7 +5708,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1149,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr20: {
 		name: "TR20",
@@ -6105,7 +5717,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1150,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr21: {
 		name: "TR21",
@@ -6115,7 +5726,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 722,
 		num: 1151,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr22: {
 		name: "TR22",
@@ -6125,7 +5735,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 724,
 		num: 1152,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr23: {
 		name: "TR23",
@@ -6135,7 +5744,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 725,
 		num: 1153,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr24: {
 		name: "TR24",
@@ -6145,7 +5753,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 736,
 		num: 1154,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr25: {
 		name: "TR25",
@@ -6155,7 +5762,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1155,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr26: {
 		name: "TR26",
@@ -6165,7 +5771,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1156,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr27: {
 		name: "TR27",
@@ -6175,7 +5780,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1157,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr28: {
 		name: "TR28",
@@ -6185,7 +5789,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 727,
 		num: 1158,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr29: {
 		name: "TR29",
@@ -6195,7 +5798,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1159,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr30: {
 		name: "TR30",
@@ -6205,7 +5807,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1160,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr31: {
 		name: "TR31",
@@ -6215,7 +5816,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 729,
 		num: 1161,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr32: {
 		name: "TR32",
@@ -6225,7 +5825,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 737,
 		num: 1162,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr33: {
 		name: "TR33",
@@ -6235,7 +5834,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 728,
 		num: 1163,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr34: {
 		name: "TR34",
@@ -6245,7 +5843,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1164,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr35: {
 		name: "TR35",
@@ -6255,7 +5852,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1165,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr36: {
 		name: "TR36",
@@ -6265,7 +5861,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 730,
 		num: 1166,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr37: {
 		name: "TR37",
@@ -6275,7 +5870,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 737,
 		num: 1167,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr38: {
 		name: "TR38",
@@ -6285,7 +5879,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1168,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr39: {
 		name: "TR39",
@@ -6295,7 +5888,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 722,
 		num: 1169,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr40: {
 		name: "TR40",
@@ -6305,7 +5897,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1170,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr41: {
 		name: "TR41",
@@ -6315,7 +5906,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 730,
 		num: 1171,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr42: {
 		name: "TR42",
@@ -6325,7 +5915,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1172,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr43: {
 		name: "TR43",
@@ -6335,7 +5924,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 730,
 		num: 1173,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr44: {
 		name: "TR44",
@@ -6345,7 +5933,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1174,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr45: {
 		name: "TR45",
@@ -6355,7 +5942,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 731,
 		num: 1175,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr46: {
 		name: "TR46",
@@ -6365,7 +5951,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 729,
 		num: 1176,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr47: {
 		name: "TR47",
@@ -6375,7 +5960,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 736,
 		num: 1177,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr48: {
 		name: "TR48",
@@ -6385,7 +5969,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 722,
 		num: 1178,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr49: {
 		name: "TR49",
@@ -6395,7 +5978,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1179,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr50: {
 		name: "TR50",
@@ -6405,7 +5987,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 732,
 		num: 1180,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr51: {
 		name: "TR51",
@@ -6415,7 +5996,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 736,
 		num: 1181,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr52: {
 		name: "TR52",
@@ -6425,7 +6005,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 729,
 		num: 1182,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr53: {
 		name: "TR53",
@@ -6435,7 +6014,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 722,
 		num: 1183,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr54: {
 		name: "TR54",
@@ -6445,7 +6023,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 724,
 		num: 1184,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr55: {
 		name: "TR55",
@@ -6455,7 +6032,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 730,
 		num: 1185,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr56: {
 		name: "TR56",
@@ -6465,7 +6041,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 722,
 		num: 1186,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr57: {
 		name: "TR57",
@@ -6475,7 +6050,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 724,
 		num: 1187,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr58: {
 		name: "TR58",
@@ -6485,7 +6059,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 737,
 		num: 1188,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr59: {
 		name: "TR59",
@@ -6495,7 +6068,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 732,
 		num: 1189,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr60: {
 		name: "TR60",
@@ -6505,7 +6077,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 727,
 		num: 1190,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr61: {
 		name: "TR61",
@@ -6515,7 +6086,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 727,
 		num: 1191,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr62: {
 		name: "TR62",
@@ -6525,7 +6095,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 736,
 		num: 1192,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr63: {
 		name: "TR63",
@@ -6535,7 +6104,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 726,
 		num: 1193,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr64: {
 		name: "TR64",
@@ -6545,7 +6113,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 722,
 		num: 1194,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr65: {
 		name: "TR65",
@@ -6555,7 +6122,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 732,
 		num: 1195,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr66: {
 		name: "TR66",
@@ -6565,7 +6131,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 723,
 		num: 1196,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr67: {
 		name: "TR67",
@@ -6575,7 +6140,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 725,
 		num: 1197,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr68: {
 		name: "TR68",
@@ -6585,7 +6149,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 737,
 		num: 1198,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr69: {
 		name: "TR69",
@@ -6595,7 +6158,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1199,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr70: {
 		name: "TR70",
@@ -6605,7 +6167,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 729,
 		num: 1200,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr71: {
 		name: "TR71",
@@ -6615,7 +6176,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 732,
 		num: 1201,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr72: {
 		name: "TR72",
@@ -6625,7 +6185,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 732,
 		num: 1202,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr73: {
 		name: "TR73",
@@ -6635,7 +6194,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 724,
 		num: 1203,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr74: {
 		name: "TR74",
@@ -6645,7 +6203,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 729,
 		num: 1204,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr75: {
 		name: "TR75",
@@ -6655,7 +6212,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 726,
 		num: 1205,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr76: {
 		name: "TR76",
@@ -6665,7 +6221,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 726,
 		num: 1206,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr77: {
 		name: "TR77",
@@ -6675,7 +6230,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 732,
 		num: 1207,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr78: {
 		name: "TR78",
@@ -6685,7 +6239,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 724,
 		num: 1208,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr79: {
 		name: "TR79",
@@ -6695,7 +6248,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 729,
 		num: 1209,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr80: {
 		name: "TR80",
@@ -6705,7 +6257,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 733,
 		num: 1210,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr81: {
 		name: "TR81",
@@ -6715,7 +6266,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 737,
 		num: 1211,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr82: {
 		name: "TR82",
@@ -6725,7 +6275,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1212,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr83: {
 		name: "TR83",
@@ -6735,7 +6284,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1213,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr84: {
 		name: "TR84",
@@ -6745,7 +6293,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 731,
 		num: 1214,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr85: {
 		name: "TR85",
@@ -6755,7 +6302,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 721,
 		num: 1215,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr86: {
 		name: "TR86",
@@ -6765,7 +6311,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 733,
 		num: 1216,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr87: {
 		name: "TR87",
@@ -6775,7 +6320,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 725,
 		num: 1217,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr88: {
 		name: "TR88",
@@ -6785,7 +6329,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 730,
 		num: 1218,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr89: {
 		name: "TR89",
@@ -6795,7 +6338,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 723,
 		num: 1219,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr90: {
 		name: "TR90",
@@ -6805,7 +6347,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 738,
 		num: 1220,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr91: {
 		name: "TR91",
@@ -6815,7 +6356,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 724,
 		num: 1221,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr92: {
 		name: "TR92",
@@ -6825,7 +6365,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 738,
 		num: 1222,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr93: {
 		name: "TR93",
@@ -6835,7 +6374,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 737,
 		num: 1223,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr94: {
 		name: "TR94",
@@ -6845,7 +6383,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 725,
 		num: 1224,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr95: {
 		name: "TR95",
@@ -6855,7 +6392,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 737,
 		num: 1225,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr96: {
 		name: "TR96",
@@ -6865,7 +6401,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 727,
 		num: 1226,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr97: {
 		name: "TR97",
@@ -6875,7 +6410,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 734,
 		num: 1227,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr98: {
 		name: "TR98",
@@ -6885,7 +6419,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 731,
 		num: 1228,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	tr99: {
 		name: "TR99",
@@ -6895,7 +6428,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 722,
 		num: 1229,
 		gen: 8,
-		isNonstandard: "Past",
 	},
 	twistedspoon: {
 		name: "Twisted Spoon",
@@ -6944,15 +6476,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 7,
 		isNonstandard: "Past",
 	},
-	unremarkableteacup: {
-		name: "Unremarkable Teacup",
-		spritenum: 756,
-		fling: {
-			basePower: 80,
-		},
-		num: 2403,
-		gen: 9,
-	},
 	upgrade: {
 		name: "Up-Grade",
 		spritenum: 523,
@@ -6968,26 +6491,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		fling: {
 			basePower: 60,
 		},
-		// Partially implemented in Pokemon.effectiveWeather() in sim/pokemon.ts
-		onStart(pokemon) {
-			if (!pokemon.ignoringItem()) return;
-			if (['sunnyday', 'raindance', 'desolateland', 'primordialsea'].includes(this.field.effectiveWeather())) {
-				this.runEvent('WeatherChange', pokemon, pokemon, this.effect);
-			}
-		},
-		onUpdate(pokemon) {
-			if (!this.effectState.inactive) return;
-			this.effectState.inactive = false;
-			if (['sunnyday', 'raindance', 'desolateland', 'primordialsea'].includes(this.field.effectiveWeather())) {
-				this.runEvent('WeatherChange', pokemon, pokemon, this.effect);
-			}
-		},
-		onEnd(pokemon) {
-			if (['sunnyday', 'raindance', 'desolateland', 'primordialsea'].includes(this.field.effectiveWeather())) {
-				this.runEvent('WeatherChange', pokemon, pokemon, this.effect);
-			}
-			this.effectState.inactive = true;
-		},
+		// Implemented in statuses.js, moves.js, and abilities.js
 		num: 1123,
 		gen: 8,
 	},
@@ -7015,7 +6519,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Electric' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 				if (target.eatItem()) {
 					this.debug('-50% reduction');
@@ -7033,7 +6537,8 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		spritenum: 528,
 		isGem: true,
 		onSourceTryPrimaryHit(target, source, move) {
-			if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+			const pledges = ['firepledge', 'grasspledge', 'waterpledge'];
+			if (target === source || move.category === 'Status' || pledges.includes(move.id)) return;
 			if (move.type === 'Water' && source.useItem()) {
 				source.addVolatile('gem');
 			}
@@ -7056,7 +6561,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		itemUser: ["Silvally-Water"],
 		num: 913,
 		gen: 7,
-		isNonstandard: "Past",
 	},
 	waterstone: {
 		name: "Water Stone",
@@ -7106,7 +6610,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 317,
 		gen: 4,
-		isNonstandard: "Past",
 	},
 	weaknesspolicy: {
 		name: "Weakness Policy",
@@ -7125,27 +6628,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 639,
 		gen: 6,
-	},
-	wellspringmask: {
-		name: "Wellspring Mask",
-		spritenum: 759,
-		fling: {
-			basePower: 60,
-		},
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.name.startsWith('Ogerpon-Wellspring')) {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		onTakeItem(item, source) {
-			if (source.baseSpecies.baseSpecies === 'Ogerpon') return false;
-			return true;
-		},
-		forcedForme: "Ogerpon-Wellspring",
-		itemUser: ["Ogerpon-Wellspring"],
-		num: 2407,
-		gen: 9,
 	},
 	wepearberry: {
 		name: "Wepear Berry",
@@ -7168,7 +6650,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 646,
 		gen: 6,
-		isNonstandard: "Past",
 	},
 	whiteherb: {
 		name: "White Herb",
@@ -7190,13 +6671,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 					this.add('-clearnegativeboost', pokemon, '[silent]');
 				}
 			},
-		},
-		onAnySwitchInPriority: -2,
-		onAnySwitchIn() {
-			((this.effect as any).onUpdate as (p: Pokemon) => void).call(this, this.effectState.target);
-		},
-		onStart(pokemon) {
-			((this.effect as any).onUpdate as (p: Pokemon) => void).call(this, pokemon);
 		},
 		onUpdate(pokemon) {
 			let activate = false;
@@ -7240,16 +6714,15 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			type: "Rock",
 		},
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 &&
-				pokemon.hasAbility('gluttony') && pokemon.abilityState.gluttony)) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
 				pokemon.eatItem();
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, pokemon.baseMaxhp / 3)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
-			this.heal(pokemon.baseMaxhp / 3);
+			this.heal(pokemon.baseMaxhp * 0.33);
 			if (pokemon.getNature().minus === 'spa') {
 				pokemon.addVolatile('confusion');
 			}
@@ -7282,7 +6755,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Ice' && target.getMoveHitData(move).typeMod > 0) {
-				const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+				const hitSub = target.volatiles['substitute'] && !move.flags['authentic'] && !(move.infiltrates && this.gen >= 6);
 				if (hitSub) return;
 
 				if (target.eatItem()) {
@@ -7315,6 +6788,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		forcedForme: "Arceus-Electric",
 		num: 300,
 		gen: 4,
+		isNonstandard: "Unobtainable",
 	},
 	zoomlens: {
 		name: "Zoom Lens",
@@ -7339,12 +6813,9 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		name: "Berserk Gene",
 		spritenum: 388,
 		onUpdate(pokemon) {
-			if (pokemon.useItem()) {
-				pokemon.addVolatile('confusion');
-			}
-		},
-		boosts: {
-			atk: 2,
+			this.boost({atk: 2});
+			pokemon.addVolatile('confusion');
+			pokemon.setItem('');
 		},
 		num: 0,
 		gen: 2,
@@ -7358,14 +6829,14 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			basePower: 80,
 			type: "Poison",
 		},
-		onResidualOrder: 10,
+		onResidualOrder: 5,
 		onResidual(pokemon) {
 			if (pokemon.hp <= pokemon.maxhp / 2) {
 				pokemon.eatItem();
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, 10)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
 			this.heal(10);
@@ -7424,14 +6895,14 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 			basePower: 80,
 			type: "Psychic",
 		},
-		onResidualOrder: 10,
+		onResidualOrder: 5,
 		onResidual(pokemon) {
 			if (pokemon.hp <= pokemon.maxhp / 2) {
 				pokemon.eatItem();
 			}
 		},
 		onTryEatItem(item, pokemon) {
-			if (!this.runEvent('TryHeal', pokemon, null, this.effect, 30)) return false;
+			if (!this.runEvent('TryHeal', pokemon)) return false;
 		},
 		onEat(pokemon) {
 			this.heal(30);
@@ -7627,30 +7098,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: -1,
 		gen: 6,
-		isNonstandard: "CAP",
-	},
-	vilevial: {
-		name: "Vile Vial",
-		spritenum: 752,
-		fling: {
-			basePower: 60,
-		},
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (user.baseSpecies.num === -66 && ['Poison', 'Flying'].includes(move.type)) {
-				return this.chainModify([4915, 4096]);
-			}
-		},
-		onTakeItem(item, pokemon, source) {
-			if (source?.baseSpecies.num === -66 || pokemon.baseSpecies.num === -66) {
-				return false;
-			}
-			return true;
-		},
-		forcedForme: "Venomicon-Epilogue",
-		itemUser: ["Venomicon-Epilogue"],
-		num: -2,
-		gen: 8,
 		isNonstandard: "CAP",
 	},
 };

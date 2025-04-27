@@ -1,4 +1,4 @@
-export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+export const Moves: {[k: string]: ModdedMoveData} = {
 	aeroblast: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -47,11 +47,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
-	iceball: {
-		inherit: true,
-		desc: "If this move is successful, the user is locked into this move and cannot make another move until it misses, 5 turns have passed, or the attack cannot be used. Power doubles with each successful hit of this move and doubles again if Defense Curl was used previously by the user. If this move is called by Sleep Talk, the move is used for one turn. If this move hits an active Disguise or Ice Face during the effect, the power multiplier is paused but the turn counter is not, potentially allowing the multiplier to be used on the user's next move after this effect ends.",
-		shortDesc: "Power doubles with each hit. Repeats for 5 turns.",
-	},
 	landswrath: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -99,11 +94,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	roaroftime: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
-	},
-	rollout: {
-		inherit: true,
-		desc: "If this move is successful, the user is locked into this move and cannot make another move until it misses, 5 turns have passed, or the attack cannot be used. Power doubles with each successful hit of this move and doubles again if Defense Curl was used previously by the user. If this move is called by Sleep Talk, the move is used for one turn. If this move hits an active Disguise or Ice Face during the effect, the power multiplier is paused but the turn counter is not, potentially allowing the multiplier to be used on the user's next move after this effect ends.",
-		shortDesc: "Power doubles with each hit. Repeats for 5 turns.",
 	},
 	sacredfire: {
 		inherit: true,

@@ -1,4 +1,4 @@
-export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+export const Conditions: {[k: string]: ConditionData} = {
 	brn: {
 		name: 'brn',
 		effectType: 'Status',
@@ -6,7 +6,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			if (sourceEffect && sourceEffect.id === 'flameorb') {
 				this.add('-status', target, 'brn', '[from] item: Flame Orb');
 			} else if (sourceEffect && sourceEffect.effectType === 'Ability') {
-				this.add('-status', target, 'brn', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
+				this.add('-status', target, 'brn', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
 			} else {
 				this.add('-status', target, 'brn');
 			}
@@ -22,19 +22,15 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		effectType: 'Status',
 		onStart(target, source, sourceEffect) {
 			if (sourceEffect && sourceEffect.effectType === 'Ability') {
-				this.add('-status', target, 'par', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
+				this.add('-status', target, 'par', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
 			} else {
 				this.add('-status', target, 'par');
 			}
 		},
-		onModifySpePriority: -101,
 		onModifySpe(spe, pokemon) {
-			// Paralysis occurs after all other Speed modifiers, so evaluate all modifiers up to this point first
-			spe = this.finalModify(spe);
 			if (!pokemon.hasAbility('quickfeet')) {
-				spe = Math.floor(spe * 50 / 100);
+				return this.chainModify(0.5);
 			}
-			return spe;
 		},
 		onBeforeMovePriority: 1,
 		onBeforeMove(pokemon) {
@@ -49,19 +45,15 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		effectType: 'Status',
 		onStart(target, source, sourceEffect) {
 			if (sourceEffect && sourceEffect.effectType === 'Ability') {
-				this.add('-status', target, 'slp', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
+				this.add('-status', target, 'slp', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
 			} else if (sourceEffect && sourceEffect.effectType === 'Move') {
-				this.add('-status', target, 'slp', `[from] move: ${sourceEffect.name}`);
+				this.add('-status', target, 'slp', '[from] move: ' + sourceEffect.name);
 			} else {
 				this.add('-status', target, 'slp');
 			}
 			// 1-3 turns
 			this.effectState.startTime = this.random(2, 5);
 			this.effectState.time = this.effectState.startTime;
-
-			if (target.removeVolatile('nightmare')) {
-				this.add('-end', target, 'Nightmare', '[silent]');
-			}
 		},
 		onBeforeMovePriority: 10,
 		onBeforeMove(pokemon, target, move) {
@@ -85,13 +77,12 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		effectType: 'Status',
 		onStart(target, source, sourceEffect) {
 			if (sourceEffect && sourceEffect.effectType === 'Ability') {
-				this.add('-status', target, 'frz', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
+				this.add('-status', target, 'frz', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
 			} else {
 				this.add('-status', target, 'frz');
 			}
 			if (target.species.name === 'Shaymin-Sky' && target.baseSpecies.baseSpecies === 'Shaymin') {
 				target.formeChange('Shaymin', this.effect, true);
-				target.regressionForme = false;
 			}
 		},
 		onBeforeMovePriority: 10,
@@ -106,17 +97,12 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onModifyMove(move, pokemon) {
 			if (move.flags['defrost']) {
-				this.add('-curestatus', pokemon, 'frz', `[from] move: ${move}`);
-				pokemon.clearStatus();
+				this.add('-curestatus', pokemon, 'frz', '[from] move: ' + move);
+				pokemon.setStatus('');
 			}
 		},
-		onAfterMoveSecondary(target, source, move) {
-			if (move.thawsTarget) {
-				target.cureStatus();
-			}
-		},
-		onDamagingHit(damage, target, source, move) {
-			if (move.type === 'Fire' && move.category !== 'Status') {
+		onHit(target, source, move) {
+			if (move.thawsTarget || move.type === 'Fire' && move.category !== 'Status') {
 				target.cureStatus();
 			}
 		},
@@ -126,7 +112,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		effectType: 'Status',
 		onStart(target, source, sourceEffect) {
 			if (sourceEffect && sourceEffect.effectType === 'Ability') {
-				this.add('-status', target, 'psn', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
+				this.add('-status', target, 'psn', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
 			} else {
 				this.add('-status', target, 'psn');
 			}
@@ -144,7 +130,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			if (sourceEffect && sourceEffect.id === 'toxicorb') {
 				this.add('-status', target, 'tox', '[from] item: Toxic Orb');
 			} else if (sourceEffect && sourceEffect.effectType === 'Ability') {
-				this.add('-status', target, 'tox', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
+				this.add('-status', target, 'tox', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
 			} else {
 				this.add('-status', target, 'tox');
 			}
@@ -164,15 +150,12 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		name: 'confusion',
 		// this is a volatile status
 		onStart(target, source, sourceEffect) {
-			if (sourceEffect?.id === 'lockedmove') {
+			if (sourceEffect && sourceEffect.id === 'lockedmove') {
 				this.add('-start', target, 'confusion', '[fatigue]');
-			} else if (sourceEffect?.effectType === 'Ability') {
-				this.add('-start', target, 'confusion', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
 			} else {
 				this.add('-start', target, 'confusion');
 			}
-			const min = sourceEffect?.id === 'axekick' ? 3 : 2;
-			this.effectState.time = this.random(min, 6);
+			this.effectState.time = this.random(2, 6);
 		},
 		onEnd(target) {
 			this.add('-end', target, 'confusion');
@@ -191,7 +174,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			this.activeTarget = pokemon;
 			const damage = this.actions.getConfusionDamage(pokemon, 40);
 			if (typeof damage !== 'number') throw new Error("Confusion damage not dealt");
-			const activeMove = { id: this.toID('confused'), effectType: 'Move', type: '???' };
+			const activeMove = {id: this.toID('confused'), effectType: 'Move', type: '???'};
 			this.damage(damage, pokemon, pokemon, activeMove as ActiveMove);
 			return false;
 		},
@@ -228,7 +211,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			return this.random(5, 7);
 		},
 		onStart(pokemon, source) {
-			this.add('-activate', pokemon, 'move: ' + this.effectState.sourceEffect, `[of] ${source}`);
+			this.add('-activate', pokemon, 'move: ' + this.effectState.sourceEffect, '[of] ' + source);
 			this.effectState.boundDivisor = source.hasItem('bindingband') ? 6 : 8;
 		},
 		onResidualOrder: 13,
@@ -292,7 +275,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			// note that this is not updated for moves called by other moves
 			// i.e. if Dig is called by Metronome, lastMoveTargetLoc will still be the user's location
 			let moveTargetLoc: number = attacker.lastMoveTargetLoc!;
-			if (effect.sourceEffect && this.dex.moves.get(effect.id).target !== 'self') {
+			if (effect.sourceEffect && this.dex.moves.get(effect.id).target === 'normal') {
 				// this move was called by another move such as Metronome
 				// and needs a random target to be determined this turn
 				// it will already have one by now if there is any valid target
@@ -375,18 +358,8 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	futuremove: {
 		// this is a slot condition
 		name: 'futuremove',
-		onStart(target) {
-			this.effectState.targetSlot = target.getSlot();
-			this.effectState.endingTurn = (this.turn - 1) + 2;
-			if (this.effectState.endingTurn >= 254) {
-				this.hint(`In Gen 8+, Future attacks will never resolve when used on the 255th turn or later.`);
-			}
-		},
+		duration: 3,
 		onResidualOrder: 3,
-		onResidual(target: Pokemon) {
-			if (this.getOverflowedTurnCount() < this.effectState.endingTurn) return;
-			target.side.removeSlotCondition(this.getAtSlot(this.effectState.targetSlot), 'futuremove');
-		},
 		onEnd(target) {
 			const data = this.effectState;
 			// time's up; time to hit! :D
@@ -406,14 +379,12 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			if (data.source.hasAbility('normalize') && this.gen >= 6) {
 				data.moveData.type = 'Normal';
 			}
+			if (data.source.hasAbility('adaptability') && this.gen >= 6) {
+				data.moveData.stab = 2;
+			}
 			const hitMove = new this.dex.Move(data.moveData) as ActiveMove;
 
 			this.actions.trySpreadMoveHit([target], data.source, hitMove, true);
-			if (data.source.isActive && data.source.hasItem('lifeorb') && this.gen >= 5) {
-				this.singleEvent('AfterMoveSecondarySelf', data.source.getItem(), data.source.itemState, data.source, target, data.source.getItem());
-			}
-			this.activeMove = null;
-
 			this.checkWin();
 		},
 	},
@@ -424,6 +395,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			this.effectState.sourceEffect = sourceEffect;
 			this.add('-activate', source, 'healreplacement');
 		},
+		onSwitchInPriority: 1,
 		onSwitchIn(target) {
 			if (!target.fainted) {
 				target.heal(target.maxhp);
@@ -444,7 +416,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			// this.effectState.counter should never be undefined here.
 			// However, just in case, use 1 if it is undefined.
 			const counter = this.effectState.counter || 1;
-			this.debug(`Success chance: ${Math.round(100 / counter)}%`);
+			this.debug("Success chance: " + Math.round(100 / counter) + "%");
 			const success = this.randomChance(1, counter);
 			if (!success) delete pokemon.volatiles['stall'];
 			return success;
@@ -493,7 +465,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onFieldStart(field, source, effect) {
 			if (effect?.effectType === 'Ability') {
 				if (this.gen <= 5) this.effectState.duration = 0;
-				this.add('-weather', 'RainDance', '[from] ability: ' + effect.name, `[of] ${source}`);
+				this.add('-weather', 'RainDance', '[from] ability: ' + effect, '[of] ' + source);
 			} else {
 				this.add('-weather', 'RainDance');
 			}
@@ -528,7 +500,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			}
 		},
 		onFieldStart(field, source, effect) {
-			this.add('-weather', 'PrimordialSea', '[from] ability: ' + effect.name, `[of] ${source}`);
+			this.add('-weather', 'PrimordialSea', '[from] ability: ' + effect, '[of] ' + source);
 		},
 		onFieldResidualOrder: 1,
 		onFieldResidual() {
@@ -550,10 +522,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			return 5;
 		},
 		onWeatherModifyDamage(damage, attacker, defender, move) {
-			if (move.id === 'hydrosteam' && !attacker.hasItem('utilityumbrella')) {
-				this.debug('Sunny Day Hydro Steam boost');
-				return this.chainModify(1.5);
-			}
 			if (defender.hasItem('utilityumbrella')) return;
 			if (move.type === 'Fire') {
 				this.debug('Sunny Day fire boost');
@@ -567,7 +535,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onFieldStart(battle, source, effect) {
 			if (effect?.effectType === 'Ability') {
 				if (this.gen <= 5) this.effectState.duration = 0;
-				this.add('-weather', 'SunnyDay', '[from] ability: ' + effect.name, `[of] ${source}`);
+				this.add('-weather', 'SunnyDay', '[from] ability: ' + effect, '[of] ' + source);
 			} else {
 				this.add('-weather', 'SunnyDay');
 			}
@@ -606,7 +574,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			}
 		},
 		onFieldStart(field, source, effect) {
-			this.add('-weather', 'DesolateLand', '[from] ability: ' + effect.name, `[of] ${source}`);
+			this.add('-weather', 'DesolateLand', '[from] ability: ' + effect, '[of] ' + source);
 		},
 		onImmunity(type, pokemon) {
 			if (pokemon.hasItem('utilityumbrella')) return;
@@ -642,7 +610,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onFieldStart(field, source, effect) {
 			if (effect?.effectType === 'Ability') {
 				if (this.gen <= 5) this.effectState.duration = 0;
-				this.add('-weather', 'Sandstorm', '[from] ability: ' + effect.name, `[of] ${source}`);
+				this.add('-weather', 'Sandstorm', '[from] ability: ' + effect, '[of] ' + source);
 			} else {
 				this.add('-weather', 'Sandstorm');
 			}
@@ -672,7 +640,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onFieldStart(field, source, effect) {
 			if (effect?.effectType === 'Ability') {
 				if (this.gen <= 5) this.effectState.duration = 0;
-				this.add('-weather', 'Hail', '[from] ability: ' + effect.name, `[of] ${source}`);
+				this.add('-weather', 'Hail', '[from] ability: ' + effect, '[of] ' + source);
 			} else {
 				this.add('-weather', 'Hail');
 			}
@@ -689,39 +657,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			this.add('-weather', 'none');
 		},
 	},
-	snowscape: {
-		name: 'Snowscape',
-		effectType: 'Weather',
-		duration: 5,
-		durationCallback(source, effect) {
-			if (source?.hasItem('icyrock')) {
-				return 8;
-			}
-			return 5;
-		},
-		onModifyDefPriority: 10,
-		onModifyDef(def, pokemon) {
-			if (pokemon.hasType('Ice') && this.field.isWeather('snowscape')) {
-				return this.modify(def, 1.5);
-			}
-		},
-		onFieldStart(field, source, effect) {
-			if (effect?.effectType === 'Ability') {
-				if (this.gen <= 5) this.effectState.duration = 0;
-				this.add('-weather', 'Snowscape', '[from] ability: ' + effect.name, `[of] ${source}`);
-			} else {
-				this.add('-weather', 'Snowscape');
-			}
-		},
-		onFieldResidualOrder: 1,
-		onFieldResidual() {
-			this.add('-weather', 'Snowscape', '[upkeep]');
-			if (this.field.isWeather('snowscape')) this.eachEvent('Weather');
-		},
-		onFieldEnd() {
-			this.add('-weather', 'none');
-		},
-	},
 	deltastream: {
 		name: 'DeltaStream',
 		effectType: 'Weather',
@@ -729,12 +664,12 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onEffectivenessPriority: -1,
 		onEffectiveness(typeMod, target, type, move) {
 			if (move && move.effectType === 'Move' && move.category !== 'Status' && type === 'Flying' && typeMod > 0) {
-				this.add('-fieldactivate', 'Delta Stream');
+				this.add('-activate', '', 'deltastream');
 				return 0;
 			}
 		},
 		onFieldStart(field, source, effect) {
-			this.add('-weather', 'DeltaStream', '[from] ability: ' + effect.name, `[of] ${source}`);
+			this.add('-weather', 'DeltaStream', '[from] ability: ' + effect, '[of] ' + source);
 		},
 		onFieldResidualOrder: 1,
 		onFieldResidual() {
@@ -749,8 +684,8 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	dynamax: {
 		name: 'Dynamax',
 		noCopy: true,
+		duration: 3,
 		onStart(pokemon) {
-			this.effectState.turns = 0;
 			pokemon.removeVolatile('minimize');
 			pokemon.removeVolatile('substitute');
 			if (pokemon.volatiles['torment']) {
@@ -760,11 +695,12 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			if (['cramorantgulping', 'cramorantgorging'].includes(pokemon.species.id) && !pokemon.transformed) {
 				pokemon.formeChange('cramorant');
 			}
-			this.add('-start', pokemon, 'Dynamax', pokemon.gigantamax ? 'Gmax' : '');
+			this.add('-start', pokemon, 'Dynamax');
+			if (pokemon.gigantamax) this.add('-formechange', pokemon, pokemon.species.name + '-Gmax');
 			if (pokemon.baseSpecies.name === 'Shedinja') return;
 
 			// Changes based on dynamax level, 2 is max (at LVL 10)
-			const ratio = 1.5 + (pokemon.dynamaxLevel * 0.05);
+			const ratio = 2; // TODO: Implement Dynamax levels
 
 			pokemon.maxhp = Math.floor(pokemon.maxhp * ratio);
 			pokemon.hp = Math.floor(pokemon.hp * ratio);
@@ -788,54 +724,13 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			return null;
 		},
 		onResidualPriority: -100,
-		onResidual() {
-			this.effectState.turns++;
-		},
 		onEnd(pokemon) {
 			this.add('-end', pokemon, 'Dynamax');
+			if (pokemon.gigantamax) this.add('-formechange', pokemon, pokemon.species.name);
 			if (pokemon.baseSpecies.name === 'Shedinja') return;
 			pokemon.hp = pokemon.getUndynamaxedHP();
 			pokemon.maxhp = pokemon.baseMaxhp;
 			this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-		},
-	},
-
-	// Commander needs two conditions so they are implemented here
-	// Dondozo
-	commanded: {
-		name: "Commanded",
-		noCopy: true,
-		onStart(pokemon) {
-			this.boost({ atk: 2, spa: 2, spe: 2, def: 2, spd: 2 }, pokemon);
-		},
-		onDragOutPriority: 2,
-		onDragOut() {
-			return false;
-		},
-		// Prevents Shed Shell allowing a swap
-		onTrapPokemonPriority: -11,
-		onTrapPokemon(pokemon) {
-			pokemon.trapped = true;
-		},
-	},
-	// Tatsugiri
-	commanding: {
-		name: "Commanding",
-		noCopy: true,
-		onDragOutPriority: 2,
-		onDragOut() {
-			return false;
-		},
-		// Prevents Shed Shell allowing a swap
-		onTrapPokemonPriority: -11,
-		onTrapPokemon(pokemon) {
-			pokemon.trapped = true;
-		},
-		// Dodging moves is handled in BattleActions#hitStepInvulnerabilityEvent
-		// This is here for moves that manually call this event like Perish Song
-		onInvulnerability: false,
-		onBeforeTurn(pokemon) {
-			this.queue.cancelAction(pokemon);
 		},
 	},
 
@@ -873,19 +768,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				}
 			}
 			return [type];
-		},
-	},
-	rolloutstorage: {
-		name: 'rolloutstorage',
-		duration: 2,
-		onBasePower(relayVar, source, target, move) {
-			let bp = Math.max(1, move.basePower);
-			bp *= 2 ** source.volatiles['rolloutstorage'].contactHitCount;
-			if (source.volatiles['defensecurl']) {
-				bp *= 2;
-			}
-			source.removeVolatile('rolloutstorage');
-			return bp;
 		},
 	},
 };

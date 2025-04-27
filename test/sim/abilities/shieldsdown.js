@@ -5,42 +5,40 @@ const common = require('./../../common');
 
 let battle;
 
-describe('Shields Down', () => {
-	afterEach(() => {
+describe('Shields Down', function () {
+	afterEach(function () {
 		battle.destroy();
 	});
 
-	it(`should be immune to status until below 50%`, () => {
+	it('should be immune to status until below 50%', function () {
 		battle = common.createBattle([[
-			{ species: 'Minior', ability: 'shieldsdown', moves: ['splash'] },
+			{species: 'Minior', ability: 'shieldsdown', moves: ['splash']},
 		], [
-			{ species: 'Mew', ability: 'noguard', moves: ['glare', 'superfang'] },
+			{species: 'Mew', ability: 'pickup', moves: ['glare', 'superfang']},
 		]]);
-		const minior = battle.p1.active[0];
 		battle.makeChoices();
-		assert.false(minior.status);
+		assert.false(battle.p1.active[0].status);
 		battle.makeChoices('auto', 'move superfang');
 		battle.makeChoices();
-		assert.false(minior.status);
+		assert.false(battle.p1.active[0].status);
 		battle.makeChoices('auto', 'move superfang');
 		battle.makeChoices();
-		assert.equal(minior.status, 'par');
+		assert.equal(battle.p1.active[0].status, 'par');
 	});
 
-	it(`should be immune to status until below 50% in all formes`, () => {
+	it('should be immune to status until below 50% in all formes', function () {
 		battle = common.createBattle([[
-			{ species: 'Minior-Blue', ability: 'shieldsdown', moves: ['splash'] },
+			{species: 'Minior-Blue', ability: 'shieldsdown', moves: ['splash']},
 		], [
-			{ species: 'Mew', ability: 'noguard', moves: ['glare', 'superfang'] },
+			{species: 'Mew', ability: 'pickup', moves: ['glare', 'superfang']},
 		]]);
-		const minior = battle.p1.active[0];
 		battle.makeChoices();
-		assert.false(minior.status);
+		assert.false(battle.p1.active[0].status);
 		battle.makeChoices('auto', 'move superfang');
 		battle.makeChoices();
-		assert.false(minior.status);
+		assert.false(battle.p1.active[0].status);
 		battle.makeChoices('auto', 'move superfang');
 		battle.makeChoices();
-		assert.equal(minior.status, 'par');
+		assert.equal(battle.p1.active[0].status, 'par');
 	});
 });

@@ -7,27 +7,24 @@
 'use strict';
 
 const assert = require("../assert");
-const Teams = require('./../../dist/sim/teams').Teams;
-const { TeamValidator, PokemonSources } = require('../../dist/sim/team-validator');
+const Teams = require('./../../.sim-dist/teams').Teams;
+const TeamValidator = require('../../.sim-dist/team-validator').TeamValidator;
 
 /**
  * Unit test helper for Pokemon sets
  *
  * @param {ID} pokemon the ID of the Pokemon whose set is to be tested
- * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean, seed?: PRNGSeed}} options
+ * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean}} options
  * @param {(set: RandomTeamsTypes.RandomSet) => void} test a function called on each set
  */
 function testSet(pokemon, options, test) {
+	const generator = Teams.getGenerator(options.format);
 	const rounds = options.rounds || 1000;
 
 	const isDoubles = options.isDoubles || (options.format && options.format.includes('doubles'));
 	const isDynamax = options.isDynamax || !(options.format && options.format.includes('nodmax'));
-	const generator = Teams.getGenerator(options.format, [0, 0, 0, 0]);
 	for (let i = 0; i < rounds; i++) {
-		// If undefined, test lead 1/6 of the time
-		const isLead = options.isLead === undefined ? i % 6 === 2 : options.isLead;
-		generator.setSeed(options.seed || [i, i, i, i]);
-		const set = generator.randomSet(pokemon, {}, isLead, isDoubles, isDynamax);
+		const set = generator.randomSet(pokemon, {}, options.isLead, isDoubles, isDynamax);
 		test(set);
 	}
 }
@@ -36,12 +33,11 @@ function testSet(pokemon, options, test) {
  * Tests that a Pokémon always gets STAB moves.
  *
  * @param {ID} pokemon
- * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean, seed?: PRNGSeed}} options
- * @param {string[] | undefined} types
+ * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean}} options
  */
-function testHasSTAB(pokemon, options, types = undefined) {
+function testHasSTAB(pokemon, options) {
 	const dex = Dex.forFormat(options.format || 'gen8randombattle');
-	types = types || dex.species.get(pokemon).types;
+	const types = dex.species.get(pokemon).types;
 	testSet(pokemon, options, set => {
 		assert(
 			set.moves.some(move => types.includes(dex.moves.get(move).type)),
@@ -54,7 +50,7 @@ function testHasSTAB(pokemon, options, types = undefined) {
  * Tests that a Pokémon does not get two moves together.
  *
  * @param {ID} pokemon the ID of the Pokemon whose set is to be tested
- * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean, seed?: PRNGSeed}} options
+ * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean}} options
  * @param {ID} move1
  * @param {ID} move2
  */
@@ -68,26 +64,10 @@ function testNotBothMoves(pokemon, options, move1, move2) {
 }
 
 /**
- * Tests that a Pokémon does not get two copies of Hidden Power.
- *
- * @param {ID} pokemon the ID of the Pokemon whose set is to be tested
- * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean, seed?: PRNGSeed}} options
- */
-function testHiddenPower(pokemon, options) {
-	testSet(pokemon, options, set => {
-		assert.equal(set.moves.length, 4, `fewer than 4 moves (got ${JSON.stringify(set.moves)})`);
-		assert(
-			set.moves.filter(m => m.startsWith('hiddenpower')).length < 2,
-			`multiple Hidden Power moves (got ${JSON.stringify(set.moves)})`
-		);
-	});
-}
-
-/**
  * Tests that a Pokémon always gets a move.
  *
  * @param {ID} pokemon the ID of the Pokemon whose set is to be tested
- * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean, seed?: PRNGSeed}} options
+ * @param {{format?: string, rounds?: number, isDoubles?: boolean, isLead?: boolean, isDynamax?: boolean}} options
  * @param {ID} move
  */
 function testAlwaysHasMove(pokemon, options, move) {
@@ -102,16 +82,15 @@ function testAlwaysHasMove(pokemon, options, move) {
 /**
  * Unit test helper for Pokemon teams
  *
- * @param {{format?: string, rounds?: number, seed?: PRNGSeed}} options
+ * @param {{format?: string, rounds?: number}} options
  * @param {(team: RandomTeamsTypes.RandomSet[]) => void} test a function called on each team
  */
 function testTeam(options, test) {
+	const generator = Teams.getGenerator(options.format);
 	const rounds = options.rounds || 1000;
 
-	const generator = Teams.getGenerator(options.format, [0, 0, 0, 0]);
 	for (let i = 0; i < rounds; i++) {
-		generator.setSeed(options.seed || [i, i, i, i].join(','));
-		const team = generator.getTeam();
+		const team = generator.randomTeam();
 		test(team);
 	}
 }
@@ -119,54 +98,28 @@ function testTeam(options, test) {
 /**
  * Checks if a set is valid.
  *
- * @param {Format} format the format that the team is being validated in
+ * @param {number} genNumber
  * @param {RandomTeamsTypes.RandomSet} set
  */
-function assertSetValidity(format, set) {
-	const dex = Dex.forFormat(format);
+function isValidSet(genNumber, set) {
+	const dex = Dex.mod(`gen${genNumber}`);
 	const species = dex.species.get(set.species || set.name);
-	const setString = JSON.stringify(set);
-
-	// According to Random Battles room staff, we should not ensure that HP IVs are valid for
-	// BSS formats. This is because level 100 Pokémon can be hypertrained
-	// and then automatically downleveled to level 100 for the Battle Spot.
-	if (!format.id.includes('bss')) {
-		const valid = (new TeamValidator(format))
-			.validateStats(set, species, new PokemonSources())
-			// Suppress errors about mistaken EV quantities
-			.filter(f => !f.includes(' EVs'));
-		assert.equal(valid.length, 0, `Invalid stats: ${valid} (set: ${setString})`);
-	}
-
-	// We check `dex.gen` here because Format#gen is 0 in the current gen, while ModdedDex#gen is never 0.
-	assert(species.exists, `The species "${species.name}" does not exist. (set: ${setString})`);
-	assert(species.gen <= dex.gen, `The species "${species.name}" is from a newer generation. (set: ${setString})`);
-
+	if (!species.exists || species.gen > genNumber) return false;
 	if (set.item) {
 		const item = dex.items.get(set.item);
-		assert(item.exists, `The item "${item.name}" does not exist. (set: ${setString})`);
-		assert(item.gen <= dex.gen, `The item "${item.name}" is from a newer generation. (set: ${setString})`);
+		if (!item.exists || item.gen > genNumber) {
+			return false;
+		}
 	}
-
 	if (set.ability && set.ability !== 'None') {
 		const ability = dex.abilities.get(set.ability);
-		assert(ability.exists, `The ability "${ability.name}" does not exist. (set: ${setString})`);
-		assert(ability.gen <= dex.gen, `The ability "${ability.name}" is from a newer generation. (set: ${setString})`);
-	} else {
-		assert(dex.gen < 3, `This set does not have an ability, but is intended for use in Gen 3 or later. (set: ${setString})`);
+		if (!ability.exists || ability.gen > genNumber) {
+			return false;
+		}
+	} else if (genNumber >= 3) {
+		return false;
 	}
-
-	// Arceus plate check
-	if (
-		species.baseSpecies === 'Arceus' &&
-		species.types[0] !== 'Normal' &&
-		(dex.gen !== 7 || !set.item.endsWith(' Z')) &&
-		format.team !== 'randomHC'
-	) {
-		assert(set.item.endsWith(' Plate'), `${species.name} doesn't have a Plate (got "${set.item}" instead)`);
-	}
-
-	assert(set.moves.filter(m => m.startsWith('hiddenpower')).length <= 1, `This set has multiple Hidden Power moves. (set: ${setString})`);
+	return true;
 }
 
 /**
@@ -187,9 +140,8 @@ function validateLearnset(move, set, tier, mod = 'gen8') {
 exports.testSet = testSet;
 exports.testAlwaysHasMove = testAlwaysHasMove;
 exports.testNotBothMoves = testNotBothMoves;
-exports.testHiddenPower = testHiddenPower;
 exports.testTeam = testTeam;
 exports.testHasSTAB = testHasSTAB;
 
-exports.assertSetValidity = assertSetValidity;
+exports.isValidSet = isValidSet;
 exports.validateLearnset = validateLearnset;

@@ -1,4 +1,4 @@
-export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+export const Abilities: {[k: string]: ModdedAbilityData} = {
 	cutecharm: {
 		inherit: true,
 		onDamagingHit(damage, target, source, move) {
@@ -51,19 +51,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
-	forecast: {
-		inherit: true,
-		flags: {},
-	},
-	hustle: {
-		inherit: true,
-		onSourceModifyAccuracy(accuracy, target, source, move) {
-			const physicalTypes = ['Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel'];
-			if (physicalTypes.includes(move.type) && typeof accuracy === 'number') {
-				return this.chainModify([3277, 4096]);
-			}
-		},
-	},
 	intimidate: {
 		inherit: true,
 		onStart(pokemon) {
@@ -85,20 +72,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (target.volatiles['substitute']) {
 					this.add('-immune', target);
 				} else {
-					this.boost({ atk: -1 }, target, pokemon, null, true);
+					this.boost({atk: -1}, target, pokemon, null, true);
 				}
 			}
 		},
 	},
 	lightningrod: {
 		onFoeRedirectTarget(target, source, source2, move) {
-			// don't count Hidden Power as Electric-type
-			if (this.dex.moves.get(move.id).type !== 'Electric') return;
+			if (move.type !== 'Electric') return;
 			if (this.validTarget(this.effectState.target, source, move.target)) {
 				return this.effectState.target;
 			}
 		},
-		flags: { breakable: 1 },
+		isBreakable: true,
 		name: "Lightning Rod",
 		rating: 0,
 		num: 32,
@@ -176,16 +162,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	trace: {
 		inherit: true,
-		onUpdate() {},
-		onStart(pokemon) {
+		onUpdate(pokemon) {
+			if (!pokemon.isStarted) return;
 			const target = pokemon.side.randomFoe();
 			if (!target || target.fainted) return;
 			const ability = target.getAbility();
+			const bannedAbilities = ['forecast', 'multitype', 'trace'];
+			if (bannedAbilities.includes(target.ability)) {
+				return;
+			}
 			if (pokemon.setAbility(ability)) {
-				this.add('-ability', pokemon, ability, '[from] ability: Trace', `[of] ${target}`);
+				this.add('-ability', pokemon, ability, '[from] ability: Trace', '[of] ' + target);
 			}
 		},
-		flags: {},
 	},
 	truant: {
 		inherit: true,

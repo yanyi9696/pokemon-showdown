@@ -9,7 +9,6 @@ import * as https from 'https';
 import * as http from 'http';
 import * as url from 'url';
 import * as Streams from './streams';
-declare const Config: any;
 
 export interface PostData {
 	[key: string]: string | number;
@@ -76,7 +75,7 @@ export class NetStream extends Streams.ReadWriteStream {
 			}
 		}
 
-		const protocol = url.parse(this.uri).protocol;
+		const protocol = url.parse(this.uri).protocol as string;
 		const net = protocol === 'https:' ? https : http;
 
 		let resolveResponse: ((value: http.IncomingMessage | null) => void) | null;
@@ -97,9 +96,6 @@ export class NetStream extends Streams.ReadWriteStream {
 
 			response.on('data', data => {
 				this.push(data);
-			});
-			response.on('error', error => {
-				if (!this.atEOF) this.pushError(error, true);
 			});
 			response.on('end', () => {
 				if (this.state === 'open') this.state = 'success';
@@ -146,11 +142,11 @@ export class NetStream extends Streams.ReadWriteStream {
 		let out = '';
 		for (const key in data) {
 			if (out) out += `&`;
-			out += `${key}=${encodeURIComponent(`${data[key]}`)}`;
+			out += `${key}=${encodeURIComponent('' + data[key])}`;
 		}
 		return out;
 	}
-	override _write(data: string | Buffer): Promise<void> | void {
+	_write(data: string | Buffer): Promise<void> | void {
 		if (!this.nodeWritableStream) {
 			throw new Error("You must specify opts.writable to write to a request.");
 		}
@@ -166,17 +162,15 @@ export class NetStream extends Streams.ReadWriteStream {
 			this.drainListeners.push(resolve);
 		});
 	}
-	override _read() {
+	_read() {
 		this.nodeReadableStream?.resume();
 	}
-	override _pause() {
+	_pause() {
 		this.nodeReadableStream?.pause();
 	}
 }
 export class NetRequest {
 	uri: string;
-	/** Response from last request, made so response stuff is available without being hacky */
-	response?: http.IncomingMessage;
 	constructor(uri: string) {
 		this.uri = uri;
 	}
@@ -207,7 +201,6 @@ export class NetRequest {
 	async get(opts: NetRequestOptions = {}): Promise<string> {
 		const stream = this.getStream(opts);
 		const response = await stream.response;
-		if (response) this.response = response;
 		if (response && response.statusCode !== 200) {
 			throw new HttpError(response.statusMessage || "Connection error", response.statusCode, await stream.readAll());
 		}

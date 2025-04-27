@@ -13,21 +13,6 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 		}
 	},
-	pokemon: {
-		inherit: true,
-		getActionSpeed() {
-			let speed = this.getStat('spe', false, false);
-			const trickRoomCheck = this.battle.ruleTable.has('twisteddimensionmod') ?
-				!this.battle.field.getPseudoWeather('trickroom') : this.battle.field.getPseudoWeather('trickroom');
-			if (trickRoomCheck) {
-				speed = -speed;
-			}
-			if (this.battle.quickClawRoll && this.hasItem('quickclaw')) {
-				speed = 65535;
-			}
-			return speed;
-		},
-	},
 	actions: {
 		inherit: true,
 		modifyDamage(baseDamage, pokemon, target, move, suppressMessages = false) {
@@ -50,7 +35,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			// and the user's ally, like Earthquake and Explosion, don't get affected by spread modifiers
 			if (move.spreadHit && move.target === 'allAdjacentFoes') {
 				const spreadModifier = move.spreadModifier || 0.5;
-				this.battle.debug(`Spread modifier: ${spreadModifier}`);
+				this.battle.debug('Spread modifier: ' + spreadModifier);
 				baseDamage = this.battle.modify(baseDamage, spreadModifier);
 			}
 
@@ -71,18 +56,16 @@ export const Scripts: ModdedBattleScriptsData = {
 			// Mod 2 (Damage is floored after all multipliers are in)
 			baseDamage = Math.floor(this.battle.runEvent('ModifyDamagePhase2', pokemon, target, move, baseDamage));
 
+			// this is not a modifier
+			baseDamage = this.battle.randomizer(baseDamage);
+
 			// STAB
-			// The "???" type never gets STAB
-			// Not even if you Roost in Gen 4 and somehow manage to use
-			// Struggle in the same turn.
-			// (On second thought, it might be easier to get a MissingNo.)
-			if (type !== '???') {
-				let stab: number | [number, number] = 1;
-				if (move.forceSTAB || pokemon.hasType(type)) {
-					stab = 1.5;
-				}
-				stab = this.battle.runEvent('ModifySTAB', pokemon, target, move, stab);
-				baseDamage = this.battle.modify(baseDamage, stab);
+			if (move.forceSTAB || type !== '???' && pokemon.hasType(type)) {
+				// The "???" type never gets STAB
+				// Not even if you Roost in Gen 4 and somehow manage to use
+				// Struggle in the same turn.
+				// (On second thought, it might be easier to get a MissingNo.)
+				baseDamage = this.battle.modify(baseDamage, move.stab || 1.5);
 			}
 			// types
 			let typeMod = target.runEffectiveness(move);
@@ -108,18 +91,13 @@ export const Scripts: ModdedBattleScriptsData = {
 			// Final modifier.
 			baseDamage = this.battle.runEvent('ModifyDamage', pokemon, target, move, baseDamage);
 
-			// this is not a modifier
-			baseDamage = this.battle.randomizer(baseDamage);
-
 			if (!Math.floor(baseDamage)) {
 				return 1;
 			}
 
 			return Math.floor(baseDamage);
 		},
-		useMoveInner(moveOrMoveName, pokemon, options) {
-			let sourceEffect = options?.sourceEffect;
-			let target = options?.target;
+		useMoveInner(moveOrMoveName, pokemon, target, sourceEffect, zMove) {
 			if (!sourceEffect && this.battle.effect.id) sourceEffect = this.battle.effect;
 			if (sourceEffect && sourceEffect.id === 'instruct') sourceEffect = null;
 
@@ -163,7 +141,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			let movename = move.name;
 			if (move.id === 'hiddenpower') movename = 'Hidden Power';
 			if (sourceEffect) attrs += `|[from]${this.dex.conditions.get(sourceEffect)}`;
-			this.battle.addMove('move', pokemon, movename, `${target}${attrs}`);
+			this.battle.addMove('move', pokemon, movename, target + attrs);
 
 			if (!target) {
 				this.battle.attrLastMove('[notarget]');
@@ -171,7 +149,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				return false;
 			}
 
-			const { targets, pressureTargets } = pokemon.getMoveTargets(move, target);
+			const {targets, pressureTargets} = pokemon.getMoveTargets(move, target);
 
 			if (!sourceEffect || sourceEffect.id === 'pursuit') {
 				let extraPP = 0;
@@ -237,7 +215,7 @@ export const Scripts: ModdedBattleScriptsData = {
 						lacksTarget = !target.isAdjacent(pokemon);
 					}
 				}
-				if (lacksTarget && !move.flags['futuremove']) {
+				if (lacksTarget && !move.isFutureMove) {
 					this.battle.attrLastMove('[notarget]');
 					this.battle.add('-notarget', pokemon);
 					return false;
@@ -328,7 +306,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			let boost: number;
 			if (accuracy !== true) {
 				if (!move.ignoreAccuracy) {
-					boosts = this.battle.runEvent('ModifyBoost', pokemon, null, null, { ...pokemon.boosts });
+					boosts = this.battle.runEvent('ModifyBoost', pokemon, null, null, {...pokemon.boosts});
 					boost = this.battle.clampIntRange(boosts['accuracy'], -6, 6);
 					if (boost > 0) {
 						accuracy *= boostTable[boost];
@@ -337,7 +315,7 @@ export const Scripts: ModdedBattleScriptsData = {
 					}
 				}
 				if (!move.ignoreEvasion) {
-					boosts = this.battle.runEvent('ModifyBoost', target, null, null, { ...target.boosts });
+					boosts = this.battle.runEvent('ModifyBoost', target, null, null, {...target.boosts});
 					boost = this.battle.clampIntRange(boosts['evasion'], -6, 6);
 					if (boost > 0) {
 						accuracy /= boostTable[boost];
@@ -417,7 +395,7 @@ export const Scripts: ModdedBattleScriptsData = {
 						accuracy = move.accuracy;
 						if (accuracy !== true) {
 							if (!move.ignoreAccuracy) {
-								boosts = this.battle.runEvent('ModifyBoost', pokemon, null, null, { ...pokemon.boosts });
+								boosts = this.battle.runEvent('ModifyBoost', pokemon, null, null, {...pokemon.boosts});
 								boost = this.battle.clampIntRange(boosts['accuracy'], -6, 6);
 								if (boost > 0) {
 									accuracy *= boostTable[boost];
@@ -426,7 +404,7 @@ export const Scripts: ModdedBattleScriptsData = {
 								}
 							}
 							if (!move.ignoreEvasion) {
-								boosts = this.battle.runEvent('ModifyBoost', target, null, null, { ...target.boosts });
+								boosts = this.battle.runEvent('ModifyBoost', target, null, null, {...target.boosts});
 								boost = this.battle.clampIntRange(boosts['evasion'], -6, 6);
 								if (boost > 0) {
 									accuracy /= boostTable[boost];
@@ -460,7 +438,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 
 			if (move.recoil && move.totalDamage) {
-				this.battle.damage(this.calcRecoilDamage(move.totalDamage, move, pokemon), pokemon, target, 'recoil');
+				this.battle.damage(this.calcRecoilDamage(move.totalDamage, move), pokemon, target, 'recoil');
 			}
 
 			if (target && pokemon !== target) target.gotAttacked(move, damage, pokemon);

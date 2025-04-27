@@ -4,17 +4,15 @@ Contributing to Pokémon Showdown
 Building and running
 ------------------------------------------------------------------------
 
-[README.md](./README.md) contains most of the relevant information here.
+The README contains most of the relevant information here.
+
+https://github.com/smogon/pokemon-showdown/blob/master/README.md
 
 Our build script does most of the work here: You can mostly just run `./pokemon-showdown` to start a server. (Windows users will have to replace `./whatever` with `node whatever`, every time it appears)
-
-If you are unable to access a local server due to your browser forcing you to use HTTPS, try disabling "DNS over HTTPS" (Firefox) or "Async DNS resolver" (Chrome, in chrome://flags on Windows and Linux). If the problem persists, you can file an issue.
 
 PS has other useful command-line invocations, which you can investigate with `./pokemon-showdown help`.
 
 Unit tests can be run with `npm test`. You can run specific unit tests with `npx mocha -g "text"`, which will run all unit tests whose name contains "text", or you can just edit the unit test from `it` to `it.only`.
-
-Packaging for npm is done by running `./build decl && npm publish`. Only Zarel has the NPM credentials to do this, but feel free to request a new NPM package if you need something.
 
 
 Contributing
@@ -30,7 +28,7 @@ Also useful is the Suggestions forum (you don't need to worry about approval if 
 
 Also useful is the Mechanics Bugs kanban board: https://github.com/smogon/pokemon-showdown/projects/3
 
-There's no need to worry about code standards too much (unit tests will automatically catch most of what we care about, we'll point out the rest if you make a pull request), but they're here if you want them.
+There's no need to worry about code standards too much (unit tests will automatically catch most of what we care about, we'll point out the rest if you make a pull request), but there here if you want them.
 
 We try to respond to pull requests within a few days, but feel free to bump yours if it seems like we forget about it. Sometimes we did, and sometimes there might be a miscommunication in terms of who is waiting for what.
 
@@ -60,8 +58,6 @@ Buttons and links that say "Click here" or "Look at this" are bad for a number o
 
 In addition, blind users in particular navigate by link text, so a blind user will have a much harder time figuring out where a link goes if it only says "click here".
 
-For similar reasons, buttons should not say "Yes" or "No" or "Confirm". Instead of "Delete this file? [Yes] [No]", you should just use "[Delete] [Cancel]". This is especially important for complex questions where it could be easy to lose track of which side is "yes" and which side is "no".
-
 ### D3. Remove unnecessary clicks
 
 Whenever you give a user a button to click, always think, "In what situations would a user want to click this? In what situations would a user not want to click this?" Dialogs like "Are you sure?" can often be replaced with just doing the thing with an "Undo" button. Buttons to show more details can often be replaced with simply showing more details by default.
@@ -72,21 +68,13 @@ Similar to unnecessary clicks - if a user has a large screen and you show them a
 
 ### D5. Affordances are important
 
-An affordance is a hint for what you're supposed to do. A button looking like a physical button you can click is an example of an affordance. Or a button you can't use not looking clickable.
-
 This is why we depart from flat design: Years of UX research have taught us that it's important for buttons look like buttons. Making clickable things "look 3D and pressable" or underlining them is good practice. We can't always do this (dropdown menus would look pretty ugly if every item was beveled and embossed) but we do what we can.
 
 ### D6. Feedback is important
 
-Users should be shown enough information not to be confused about what's going on.
-
 If a button doesn't react instantly, it should be replaced with a "Loading" screen or some other indication that it's doing something. If something's failed, it should come with an error message so the user knows what's wrong.
 
 There's a famous story of a CEO of a company who clicked the "email everyone" button, but it didn't react, so he clicked it a few more times, accidentally spamming a bunch of users and getting their company marked as spam by a bunch of email services.
-
-This is why we notify for ignored messages once per session. If your friend sends you "here is the code for you to use" and you say "I never got it", there needs to be some way to understand what happened. Options can exist, but options that hide the fact that you turned them on should be avoided.
-
-Part of this overlaps with D5 (buttons that shouldn't be clicked multiple times should be disabled after the first click), but part of this is about not hiding information if it would confuse users. This does conflict with D1 (less is better) a bit, so a useful rule is that if the user has trouble understanding what's going on (e.g. because you replaced some text with a confusing symbol), you've taken D1 too far.
 
 
 Comment standards
@@ -128,14 +116,14 @@ BAD:
 
 ```ts
 // if ten seconds have passed and the user is staff
-if (now > then + 10_000 && '~@%'.includes(user.tempGroup)) {
+if (now > then + 10_000 && '&@%'.includes(user.tempGroup)) {
 ```
 
 GOOD:
 
 ```ts
 const tenSecondsPassed = now > then + 10_000;
-const userIsStaff = '~@%'.includes(user.tempGroup);
+const userIsStaff = '&@%'.includes(user.tempGroup);
 if (tenSecondsPassed && userIsStaff) {
 ```
 
@@ -247,7 +235,7 @@ Our current quote convention is to use:
 - `'` as in `'fireblast'` for any string not meant to be displayed to the user; i.e. IDs
 - `"` as in `"Fire Blast"` for any string meant to be displayed verbatim to the user; i.e. names (i.e. usernames, move names, etc), most English text, and help entries of chat commands
 
-As far as I know, we don't use strings for anything else, but if you need to use strings in a way that doesn't conform to the above three, ask Zarel on Discord to decide (and default to `` ` `` in lieu of a decision).
+As far as I know, we don't use strings for anything else, but if you need to use strings in a way that doesn't conform to the above three, ask Zarel in the Development chatroom to decide (and default to `` ` `` in lieu of a decision).
 
 Unfortunately, since this is not a convention the linter can test for (and also because our older string standards predate PS), a lot of existing code is wrong on this, so you can't look at surrounding code to get an idea of what the convention should be. Refer to the above paragraph as the definitive rule.
 
@@ -279,13 +267,13 @@ If Water Absorb doesn't absorb Thunder Wave, Water Absorb's TryHit handler retur
 
 We prefer using `||` instead of `??` for fallback, for a few reasons:
 
+- `sucrase` (our TypeScript to JavaScript compiler) makes `??` rather more complicated than ideal.
+
 - We rarely treat `0` or `''` differently from `null` (the same reason we use `!foo` instead of `foo == null` for null checks)
 
 - TypeScript does not actually allow us to have "non-empty strings" or "positive integers" as a type, so we have to deal with those cases no matter what.
 
 If, at a future point, TypeScript does allow us to constrain types better, we might consider using `??` for clarity. But for now, I see no reason to use `??` except in very niche situations where the difference matters.
-
-It is, of course, completely fine to use `??` in the cases where we don't want `0` or `''` or `false` to fall back to something else.
 
 
 Modern JavaScript/TypeScript syntax convention
@@ -297,11 +285,9 @@ In general, we prefer modern ways of writing things as long as they're supported
 
 - `.forEach`: Don't use; we always prefer `for`...`of` for readability as well as perf (others like `map`/`filter` are fine, though)
 
-- `.reduce`: we usually prefer `for`...`of` for readability, but you can use it in code that you code-own if you really want to
+- Multiline template strings: A frequent source of bugs, so we prefer to explicitly use `\n` and concatenate over multiple lines.
 
-- Multiline template strings: A frequent source of bugs (and also weird for readability), so we prefer to explicitly use `\n` and concatenate over multiple lines.
-
-- `async`/`await`: We prefer it for readability, but in certain cases we use raw Promises or even callbacks for performance. Don't worry about it too much; we usually won't nitpick code that uses any async implementation (although we might insist on `async`/`await` if the readability difference is huge).
+- `async`/`await`: We prefer it for readability, but in certain cases we use raw Promises or even callbacks for performance. Don't worry about it too much; we usually won't nitpick code that uses any async implementation (although we might insist on `async`/`await` if the reability difference is huge).
 
 - getters/setters/`Proxy`: We are generally very anti-magic. There are certain places in the code we do use magic where it's massively DRYer (or for historical reasons), but we prefer to explicitly mark that setting a variable is actually running a function with many and varied side effects. Please have a better reason than "`.foo` is less visual clutter than `.getFoo()`".
 
@@ -317,9 +303,7 @@ We oppose the usual JavaScript culture of casually adding dependencies from NPM.
 
 There are, of course, a lot of libraries like SockJS doing valuable things that we shouldn't reimplement ourselves. However, most libraries on NPM have very different priorities than we do (not caring about performance or bugs in subdependencies).
 
-A common reason given for preferring dependencies is because someone else is more likely to have encountered and fixed bugs. But in practice many dependencies are worse-maintained than Showdown. And many bugs come from misusing a dependency.
-
-In practice, for any dependency we could reimplement in around 30 lines of code, we'll write it ourselves and maintain it in `lib/`. Such maintenance is usually worth avoiding a `left-pad` situation, and also is generally better for performance, and also helps us easily craft the API to be most convenient for our own use-case.
+But in practice, for any dependency we could reimplement in around 30 lines of code, we'll write it ourselves and maintain it in `lib/`. Such maintenance is usually worth avoiding a `left-pad` situation, and also is generally better for performance, and also helps us easily craft the API to be most convenient for our own use-case.
 
 To be clear, we're not _opposed_ to new dependencies and will accept them where they make sense. But we try to avoid them more most than other Node projects do.
 
@@ -327,4 +311,18 @@ To be clear, we're not _opposed_ to new dependencies and will accept them where 
 `package-lock.json`
 ------------------------------------------------------------------------
 
-In the past, we didn't use `package-lock`. The reasons are historical. We do now. If you see a project without package-lock, feel free to add it.
+We don't use `package-lock`. This is against NPM's (and most others') official advice that we should.
+
+: First, what's `package-lock` and why is it recommended? `package-lock.json` is basically a snapshot of the `node_modules/` directory. You can think of it like `node_modules.zip`, except more human-readable, and requires an internet connection to unzip.
+
+: The main advantage of adding it to Git is that it lets you know exactly the state of `node_modules/` at the time the programmer commits it. So if a dependency breaks, it's easier to trace exactly when it broke.
+
+: It also makes sure `node_modules/` is exactly the same between different development environments, so differences don't cause bugs to appear for some developers but not others.
+
+This comes with a number of disadvantages. The biggest one is that it causes package-lock changes to appear in random commits, which can outright lead to merge conflicts. It also makes diffs in general significantly less readable. It also [introduces security vulnerabilities](https://snyk.io/blog/why-npm-lockfiles-can-be-a-security-blindspot-for-injecting-malicious-modules/).
+
+The biggest supposed advantage (ensure everyone's on the same version) isn't even an advantage! We'd specify the versions as `4.15.4` instead of `^4.15.4` if we wanted everyone on the same version, rather than the latest version. Writing `^4.15.4` is an explicit choice to opt into automatic updating.
+
+We can still have everyone on the same version if we all re-run `npm install`, which we would STILL have to do if we were using a package-lock file. The package-lock file does not improve this situation.
+
+(The last time we polled our developers, most supported not having a `package-lock` file.)

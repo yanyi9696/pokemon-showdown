@@ -1,4 +1,4 @@
-import { FS, Utils } from '../../lib';
+import {FS, Utils} from '../../lib';
 
 const DAY = 24 * 60 * 60 * 1000;
 const SPOTLIGHT_FILE = 'config/chat-plugins/spotlights.json';
@@ -7,28 +7,11 @@ const NUMBER_REGEX = /^\s*[0-9]+\s*$/;
 /** legacy - string = just url, arr is [url, width, height] */
 type StoredImage = string | [string, number, number];
 
-interface Spotlight {
-	image?: StoredImage;
-	description: string;
-	time: number;
-}
-
-export let spotlights: {
-	[roomid: string]: { [k: string]: Spotlight[] },
-} = {};
+export let spotlights: {[k: string]: {[k: string]: {image?: StoredImage, description: string}[]}} = {};
 
 try {
 	spotlights = JSON.parse(FS(SPOTLIGHT_FILE).readIfExistsSync() || "{}");
-	for (const roomid in spotlights) {
-		for (const k in spotlights[roomid]) {
-			for (const spotlight of spotlights[roomid][k]) {
-				if (!spotlight.time) {
-					spotlight.time = Date.now();
-				}
-			}
-		}
-	}
-} catch (e: any) {
+} catch (e) {
 	if (e.code !== 'MODULE_NOT_FOUND' && e.code !== 'ENOENT') throw e;
 }
 if (!spotlights || typeof spotlights !== 'object') spotlights = {};
@@ -52,11 +35,11 @@ function nextDaily() {
 
 const midnight = new Date();
 midnight.setHours(24, 0, 0, 0);
-let timeout = setTimeout(nextDaily, midnight.getTime() - Date.now());
+let timeout = setTimeout(nextDaily, midnight.valueOf() - Date.now());
 
 export async function renderSpotlight(roomid: RoomID, key: string, index: number) {
 	let imgHTML = '';
-	const { image, description } = spotlights[roomid][key][index];
+	const {image, description} = spotlights[roomid][key][index];
 
 	if (image) {
 		if (Array.isArray(image)) {
@@ -66,9 +49,8 @@ export async function renderSpotlight(roomid: RoomID, key: string, index: number
 			try {
 				const [width, height] = await Chat.fitImage(image, 150, 300);
 				imgHTML = `<td><img src="${image}" width="${width}" height="${height}" style="vertical-align:middle;"></td>`;
-				// eslint-disable-next-line require-atomic-updates
 				spotlights[roomid][key][index].image = [image, width, height];
-			} catch {}
+			} catch (err) {}
 		}
 	}
 
@@ -81,56 +63,14 @@ export const pages: Chat.PageTable = {
 	async spotlights(query, user, connection) {
 		this.title = 'Daily Spotlights';
 		const room = this.requireRoom();
-		query.shift(); // roomid
-		const sortType = toID(query.shift());
-		if (sortType && !['time', 'alphabet'].includes(sortType)) {
-			throw new Chat.ErrorMessage(`Invalid sorting type '${sortType}' - must be either 'time', 'alphabet', or not provided.`);
-		}
 
-		let buf = `<div class="pad ladder">`;
-		buf += `<div class="pad">`;
-		buf += `<button style="float:right;" class="button" name="send" value="/join view-spotlights-${room.roomid}${sortType ? '-' + sortType : ''}">`;
-		buf += `<i class="fa fa-refresh"></i> Refresh</button>`;
-		buf += `<h2>Daily Spotlights</h2>`;
-		// for posterity, all these switches are futureproofing for more sort types
-		if (sortType) {
-			let title = '';
-			switch (sortType) {
-			case 'time':
-				title = 'latest time updated';
-				break;
-			default:
-				title = 'alphabetical';
-				break;
-			}
-			buf += `(sorted by ${title})<br />`;
-		}
+		let buf = `<div class="pad ladder"><h2>Daily Spotlights</h2>`;
 		if (!spotlights[room.roomid]) {
 			buf += `<p>This room has no daily spotlights.</p></div>`;
 		} else {
-			const sortedKeys = Utils.sortBy(Object.keys(spotlights[room.roomid]), key => {
-				switch (sortType) {
-				case 'time': {
-					// find most recently added/updated spotlight in that key, sort all by that
-					const sortedSpotlights = Utils.sortBy(spotlights[room.roomid][key].slice(), k => -k.time);
-					return -sortedSpotlights[0].time;
-				}
-				// sort alphabetically by key otherwise
-				default:
-					return key;
-				}
-			});
-			for (const key of sortedKeys) {
+			for (const key in spotlights[room.roomid]) {
 				buf += `<table style="margin-bottom:30px;"><th colspan="2"><h3>${key}:</h3></th>`;
-				const keys = Utils.sortBy(spotlights[room.roomid][key].slice(), spotlight => {
-					switch (sortType) {
-					case 'time':
-						return -spotlight.time;
-					default:
-						return spotlight.description;
-					}
-				});
-				for (const [i] of keys.entries()) {
+				for (const [i] of spotlights[room.roomid][key].entries()) {
 					const html = await renderSpotlight(room.roomid, key, i);
 					buf += `<tr><td>${i ? i : 'Current'}</td><td>${html}</td></tr>`;
 					if (!user.can('announce', null, room)) break;
@@ -145,26 +85,24 @@ export const pages: Chat.PageTable = {
 export const commands: Chat.ChatCommands = {
 	removedaily(target, room, user) {
 		room = this.requireRoom();
-		if (!room.persist) throw new Chat.ErrorMessage("This command is unavailable in temporary rooms.");
+		if (!room.persist) return this.errorReply("This command is unavailable in temporary rooms.");
 		let [key, rest] = target.split(',');
 		key = toID(key);
 		if (!key) return this.parse('/help daily');
-		if (!spotlights[room.roomid][key]) throw new Chat.ErrorMessage(`Cannot find a daily spotlight with name '${key}'`);
+		if (!spotlights[room.roomid][key]) return this.errorReply(`Cannot find a daily spotlight with name '${key}'`);
 
 		this.checkCan('announce', null, room);
 		if (rest) {
 			const queueNumber = parseInt(rest);
-			if (isNaN(queueNumber) || queueNumber < 1) throw new Chat.ErrorMessage("Invalid queue number");
+			if (isNaN(queueNumber) || queueNumber < 1) return this.errorReply("Invalid queue number");
 			if (queueNumber >= spotlights[room.roomid][key].length) {
-				throw new Chat.ErrorMessage(`Queue number needs to be between 1 and ${spotlights[room.roomid][key].length - 1}`);
+				return this.errorReply(`Queue number needs to be between 1 and ${spotlights[room.roomid][key].length - 1}`);
 			}
 			spotlights[room.roomid][key].splice(queueNumber, 1);
 			saveSpotlights();
 
 			this.modlog(`DAILY REMOVE`, `${key}[${queueNumber}]`);
-			this.privateModAction(
-				`${user.name} removed the ${queueNumber}th entry from the queue of the daily spotlight named '${key}'.`
-			);
+			this.sendReply(`Removed the ${queueNumber}th entry from the queue of the daily spotlight named '${key}'.`);
 		} else {
 			spotlights[room.roomid][key].shift();
 			if (!spotlights[room.roomid][key].length) {
@@ -172,28 +110,27 @@ export const commands: Chat.ChatCommands = {
 			}
 			saveSpotlights();
 			this.modlog(`DAILY REMOVE`, key);
-			this.privateModAction(`${user.name} successfully removed the daily spotlight named '${key}'.`);
+			this.sendReply(`The daily spotlight named '${key}' has been successfully removed.`);
 		}
-		Chat.refreshPageFor(`spotlights-${room.roomid}`, room);
 	},
 	swapdailies: 'swapdaily',
 	swapdaily(target, room, user) {
 		room = this.requireRoom();
-		if (!room.persist) throw new Chat.ErrorMessage("This command is unavailable in temporary rooms.");
-		if (!spotlights[room.roomid]) throw new Chat.ErrorMessage("There are no dailies for this room.");
+		if (!room.persist) return this.errorReply("This command is unavailable in temporary rooms.");
+		if (!spotlights[room.roomid]) return this.errorReply("There are no dailies for this room.");
 		this.checkCan('announce', null, room);
 
 		const [key, indexStringA, indexStringB] = target.split(',').map(index => toID(index));
 		if (!indexStringB) return this.parse('/help daily');
-		if (!spotlights[room.roomid][key]) throw new Chat.ErrorMessage(`Cannot find a daily spotlight with name '${key}'`);
+		if (!spotlights[room.roomid][key]) return this.errorReply(`Cannot find a daily spotlight with name '${key}'`);
 		if (!(NUMBER_REGEX.test(indexStringA) && NUMBER_REGEX.test(indexStringB))) {
-			throw new Chat.ErrorMessage("Queue numbers must be numbers.");
+			return this.errorReply("Queue numbers must be numbers.");
 		}
 		const indexA = parseInt(indexStringA);
 		const indexB = parseInt(indexStringB);
 		const queueLength = spotlights[room.roomid][key].length;
 		if (indexA < 1 || indexB < 1 || indexA >= queueLength || indexB >= queueLength) {
-			throw new Chat.ErrorMessage(`Queue numbers must between 1 and the length of the queue (${queueLength}).`);
+			return this.errorReply(`Queue numbers must between 1 and the length of the queue (${queueLength}).`);
 		}
 
 		const dailyA = spotlights[room.roomid][key][indexA];
@@ -205,14 +142,13 @@ export const commands: Chat.ChatCommands = {
 
 		this.modlog(`DAILY QUEUE SWAP`, key, `${indexA} with ${indexB}`);
 		this.privateModAction(`${user.name} swapped the queued dailies for '${key}' at queue numbers ${indexA} and ${indexB}.`);
-		Chat.refreshPageFor(`spotlights-${room.roomid}`, room);
 	},
 	queuedaily: 'setdaily',
 	queuedailyat: 'setdaily',
 	replacedaily: 'setdaily',
 	async setdaily(target, room, user, connection, cmd) {
 		room = this.requireRoom();
-		if (!room.persist) throw new Chat.ErrorMessage("This command is unavailable in temporary rooms.");
+		if (!room.persist) return this.errorReply("This command is unavailable in temporary rooms.");
 		let key, indexString, rest;
 		if (cmd.endsWith('at') || cmd === 'replacedaily') {
 			[key, indexString, ...rest] = target.split(',');
@@ -221,16 +157,16 @@ export const commands: Chat.ChatCommands = {
 		}
 		key = toID(key);
 		if (!key) return this.parse('/help daily');
-		if (key.length > 20) throw new Chat.ErrorMessage("Spotlight names can be a maximum of 20 characters long.");
+		if (key.length > 20) return this.errorReply("Spotlight names can be a maximum of 20 characters long.");
 		if (key === 'constructor') return false;
 		if (!spotlights[room.roomid]) spotlights[room.roomid] = {};
 		const queueLength = spotlights[room.roomid][key]?.length || 0;
 
-		if (indexString && !NUMBER_REGEX.test(indexString)) throw new Chat.ErrorMessage("The queue number must be a number.");
+		if (indexString && !NUMBER_REGEX.test(indexString)) return this.errorReply("The queue number must be a number.");
 
 		const index = (indexString ? parseInt(indexString) : queueLength);
 		if (indexString && (index < 1 || index > queueLength)) {
-			throw new Chat.ErrorMessage(`Queue numbers must be between 1 and the length of the queue (${queueLength}).`);
+			return this.errorReply(`Queue numbers must be between 1 and the length of the queue (${queueLength}).`);
 		}
 
 		this.checkCan('announce', null, room);
@@ -241,16 +177,16 @@ export const commands: Chat.ChatCommands = {
 			img = img.trim();
 			try {
 				[width, height] = await Chat.fitImage(img);
-			} catch {
-				throw new Chat.ErrorMessage(`Invalid image url: ${img}`);
+			} catch (e) {
+				return this.errorReply(`Invalid image url: ${img}`);
 			}
 		}
 		const desc = rest.join(',');
 		if (Chat.stripFormatting(desc).length > 500) {
-			throw new Chat.ErrorMessage("Descriptions can be at most 500 characters long.");
+			return this.errorReply("Descriptions can be at most 500 characters long.");
 		}
 		if (img) img = [img, width, height] as StoredImage;
-		const obj = { image: img, description: desc, time: Date.now() };
+		const obj = {image: img, description: desc};
 		if (!spotlights[room.roomid][key]) spotlights[room.roomid][key] = [];
 		if (cmd === 'setdaily') {
 			spotlights[room.roomid][key].shift();
@@ -273,27 +209,26 @@ export const commands: Chat.ChatCommands = {
 			}
 		}
 		saveSpotlights();
-		Chat.refreshPageFor(`spotlights-${room.roomid}`, room);
 	},
 	async daily(target, room, user) {
 		room = this.requireRoom();
-		if (!room.persist) throw new Chat.ErrorMessage("This command is unavailable in temporary rooms.");
+		if (!room.persist) return this.errorReply("This command is unavailable in temporary rooms.");
 		const key = toID(target);
 		if (!key) return this.parse('/help daily');
 
 		if (!spotlights[room.roomid]?.[key]) {
-			throw new Chat.ErrorMessage(`Cannot find a daily spotlight with name '${key}'`);
+			return this.errorReply(`Cannot find a daily spotlight with name '${key}'`);
 		}
 
 		if (!this.runBroadcast()) return;
 
-		const { image, description } = spotlights[room.roomid][key][0];
+		const {image, description} = spotlights[room.roomid][key][0];
 		const html = await renderSpotlight(room.roomid, key, 0);
 
 		this.sendReplyBox(html);
-		if (!this.broadcasting && user.can('ban', null, room, 'setdaily')) {
+		if (!this.broadcasting && user.can('ban', null, room, 'daily')) {
 			const code = Utils.escapeHTML(description).replace(/\n/g, '<br />');
-			this.sendReplyBox(`<details><summary>Source</summary><code style="white-space: pre-wrap; display: table; tab-size: 3">/setdaily ${key},${image ? `${image},` : ''}${code}</code></details>`);
+			this.sendReplyBox(`<details><summary>Source</summary><code style="white-space: pre-wrap; display: table; tab-size: 3">/setdaily ${key},${image},${code}</code></details>`);
 		}
 		room.update();
 	},
@@ -301,37 +236,33 @@ export const commands: Chat.ChatCommands = {
 	dailies: 'viewspotlights',
 	viewspotlights(target, room, user) {
 		room = this.requireRoom();
-		if (!room.persist) throw new Chat.ErrorMessage("This command is unavailable in temporary rooms.");
-		target = toID(target);
-		return this.parse(`/join view-spotlights-${room.roomid}${target ? `-${target}` : ''}`);
+		if (!room.persist) return this.errorReply("This command is unavailable in temporary rooms.");
+		return this.parse(`/join view-spotlights-${room.roomid}`);
 	},
 
 	dailyhelp() {
 		this.sendReply(
 			`|html|<details class="readmore"><summary><code>/daily [name]</code>: shows the daily spotlight.<br />` +
-			`<code>!daily [name]</code>: shows the daily spotlight to everyone. Requires: + % @ # ~<br />` +
-			`<code>/setdaily [name], [image], [description]</code>: sets the daily spotlight. Image can be left out. Requires: % @ # ~</summary>` +
-			`<code>/queuedaily [name], [image], [description]</code>: queues a daily spotlight. At midnight, the spotlight with this name will automatically switch to the next queued spotlight. Image can be left out. Requires: % @ # ~<br />` +
-			`<code>/queuedailyat [name], [queue number], [image], [description]</code>: inserts a daily spotlight into the queue at the specified number (starting from 1). Requires: % @ # ~<br />` +
-			`<code>/replacedaily [name], [queue number], [image], [description]</code>: replaces the daily spotlight queued at the specified number. Requires: % @ # ~<br />` +
-			`<code>/removedaily [name][, queue number]</code>: if no queue number is provided, deletes all queued and current spotlights with the given name. If a number is provided, removes a specific future spotlight from the queue. Requires: % @ # ~<br />` +
-			`<code>/swapdaily [name], [queue number], [queue number]</code>: swaps the two queued spotlights at the given queue numbers. Requires: % @ # ~<br />` +
-			`<code>/viewspotlights [sorter]</code>: shows all current spotlights in the room. For staff, also shows queued spotlights.` +
-			`[sorter] can either be unset, 'time', or 'alphabet'. These sort by either the time added, or alphabetical order.` +
+			`<code>!daily [name]</code>: shows the daily spotlight to everyone. Requires: + % @ # &<br />` +
+			`<code>/setdaily [name], [image], [description]</code>: sets the daily spotlight. Image can be left out. Requires: % @ # &</summary>` +
+			`<code>/queuedaily [name], [image], [description]</code>: queues a daily spotlight. At midnight, the spotlight with this name will automatically switch to the next queued spotlight. Image can be left out. Requires: % @ # &<br />` +
+			`<code>/queuedailyat [name], [queue number], [image], [description]</code>: inserts a daily spotlight into the queue at the specified number (starting from 1). Requires: % @ # &<br />` +
+			`<code>/replacedaily [name], [queue number], [image], [description]</code>: replaces the daily spotlight queued at the specified number. Requires: % @ # &<br />` +
+			`<code>/removedaily [name][, queue number]</code>: if no queue number is provided, deletes all queued and current spotlights with the given name. If a number is provided, removes a specific future spotlight from the queue. Requires: % @ # &<br />` +
+			`<code>/swapdaily [name], [queue number], [queue number]</code>: swaps the two queued spotlights at the given queue numbers. Requires: % @ # &<br />` +
+			`<code>/viewspotlights</code>: shows all current spotlights in the room. For staff, also shows queued spotlights.` +
 			`</details>`
 		);
 	},
 };
 
-export const handlers: Chat.Handlers = {
-	onRenameRoom(oldID, newID) {
-		if (spotlights[oldID]) {
-			if (!spotlights[newID]) spotlights[newID] = {};
-			Object.assign(spotlights[newID], spotlights[oldID]);
-			delete spotlights[oldID];
-			saveSpotlights();
-		}
-	},
+export const onRenameRoom: Rooms.RenameHandler = (oldID, newID) => {
+	if (spotlights[oldID]) {
+		if (!spotlights[newID]) spotlights[newID] = {};
+		Object.assign(spotlights[newID], spotlights[oldID]);
+		delete spotlights[oldID];
+		saveSpotlights();
+	}
 };
 
 process.nextTick(() => {
