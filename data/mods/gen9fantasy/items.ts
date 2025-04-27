@@ -48,7 +48,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		fling: {
 			basePower: 30,
 		},
-		// 禁用变化招式
 		onDisableMove(pokemon) {
 			for (const moveSlot of pokemon.moveSlots) {
 				const move = this.dex.moves.get(moveSlot.id);
@@ -57,17 +56,34 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				}
 			}
 		},
-		// 无视免疫
-		onEffectiveness(typeMod, target, type, move) {
-			if (!move || move.category === 'Status') return;
-			// 原本免疫 → 改成正常
-			if (this.dex.getEffectiveness(move, type) === 0) {
-				return 0;
+		// 禁用变化招式
+		onModifyMove(move, source, target) {
+			if (!move.ignoreImmunity) move.ignoreImmunity = {};
+			if (move.ignoreImmunity !== true) {
+				// 先给所有属性开启无视免疫
+				move.ignoreImmunity['Fighting'] = true;
+				move.ignoreImmunity['Normal'] = true;
+				move.ignoreImmunity['Electric'] = true;
+				move.ignoreImmunity['Poison'] = true;
+				move.ignoreImmunity['Ground'] = true;
+				move.ignoreImmunity['Psychic'] = true;
+				move.ignoreImmunity['Ghost'] = true;
+				move.ignoreImmunity['Dragon'] = true;
+		
+				// 判断目标是否有飘浮特性，且特性未被破格
+				if (target && target.hasAbility('levitate') && !target.ignoringAbility()) {
+					move.ignoreImmunity['Ground'] = false;
+				}
+		
+				// 判断目标是否持有气球
+				if (target && target.hasItem('airballoon')) {
+					move.ignoreImmunity['Ground'] = false;
+				}
 			}
 		},
 		num: 10002,
 		gen: 9,
 		desc: "在携带该道具后，使用的招式无视属性免疫，但无法使用变化招式。",
 		shortDesc: "在携带该道具后，使用的招式无视属性免疫，但无法使用变化招式。",
-	},	
+	},
 };
