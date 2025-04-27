@@ -128,4 +128,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10004,
 		shortDesc: "属性相性颠倒。原本效果绝佳的变为效果不好, 效果不好的变为效果绝佳, 没有效果的保持没有效果。",
 	},
+	juren: {
+		onModifyWeightPriority: 1,
+		onModifyWeight(weighthg) {
+			return weighthg * 2;
+		},
+		onSourceModifyDamage(damage, source, target, move) {
+			this.debug('Juren damage reduction');
+			return this.chainModify(0.9);
+		},
+		flags: { breakable: 1 },
+		name: "Juren",
+		rating: 2,
+		num: 10005,
+		shortDesc: "所有招式造成的伤害降低1/10, 自身体重变为正常的两倍。",
+	},
 };
