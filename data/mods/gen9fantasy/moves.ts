@@ -62,8 +62,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Bug",
 		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Clever",
-		desc: "比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。",
-		shortDesc: "比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。"
+		desc: "先行指令。比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。",
+		shortDesc: "先行指令。比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。"
 	},
 	fuzhuzhiling: {
 		num: 10002,
@@ -85,11 +85,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Clever",
-		desc: "自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。",
-		shortDesc: "自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。"
+		desc: "辅助指令。自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。",
+		shortDesc: "辅助指令。自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。"
 	},
 	mijianbairenchuan: {
-		num: 10002,
+		num: 10003,
 		accuracy: 90,
 		basePower: 65,
 		category: "Physical",
@@ -114,11 +114,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: {}, // Sheer Force-boosted
 		target: "normal",
 		type: "Normal",
-		desc: "令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。",
-		shortDesc: "令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。"
+		desc: "秘剑·百仞川。令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。",
+		shortDesc: "秘剑·百仞川。令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。"
 	},
 	dianshanshunji: {
-		num: 10003,
+		num: 10004,
 		accuracy: 100,
 		basePower: 45,
 		category: "Physical",
@@ -130,11 +130,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Electric",
-		desc: "必定能够先制攻击。攻击必定击中要害",
-		shortDesc: "必定能够先制攻击。攻击必定击中要害"
+		desc: "电闪瞬击。必定能够先制攻击。攻击必定击中要害",
+		shortDesc: "电闪瞬击。必定能够先制攻击。攻击必定击中要害"
 	},
 	zuishenluanda: {
-		num: 10004,
+		num: 10005,
 		accuracy: 90,
 		basePower: 15,
 		basePowerCallback(pokemon, target, move) {
@@ -153,11 +153,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Poison",
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 80 },
-		desc: "连续攻击1~3次,一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45。",
-		shortDesc: "连续攻击1~3次,一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45。"
+		desc: "醉神乱打。连续攻击1~3次,一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45。",
+		shortDesc: "醉神乱打。连续攻击1~3次,一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45。"
 	},
 	biansuzhefan: {
-		num: 10005,
+		num: 10006,
 		accuracy: 100,
 		basePower: 70,
 		category: "Physical",
@@ -170,11 +170,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Poison",
 		contestType: "Cute",
-		desc: "使用者在攻击目标后会替换后备宝可梦上场。",
-		shortDesc: "使用者在攻击目标后会替换后备宝可梦上场。"
+		desc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场。",
+		shortDesc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场。"
 	},
 	chuanyun: {
-		num: 10006,
+		num: 10007,
 		accuracy: true,
 		basePower: 80,
 		category: "Physical",
@@ -186,11 +186,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "any",
 		type: "Flying",
 		contestType: "Cool",
-		desc: "可以无视守住进行攻击。攻击必定命中在场上的目标。",
-		shortDesc: "可以无视守住进行攻击。攻击必定命中在场上的目标。"
+		desc: "穿云。可以无视守住进行攻击。攻击必定命中在场上的目标。",
+		shortDesc: "穿云。可以无视守住进行攻击。攻击必定命中在场上的目标。"
 	},
 	shenjian: {
-		num: 10007,
+		num: 10008,
 		accuracy: 100,
 		basePower: 40,
 		category: "Physical",
@@ -203,11 +203,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "any",
 		type: "Normal",
 		contestType: "Cool",
-		desc: "必定能够先制攻击。攻击必定击中要害。",
-		shortDesc: "必定能够先制攻击。攻击必定击中要害。"
+		desc: "神箭。必定能够先制攻击。攻击必定击中要害。",
+		shortDesc: "神箭。必定能够先制攻击。攻击必定击中要害。"
 	},
 	yanzu: {
-		num: 10008,
+		num: 10009,
 		accuracy: 100,
 		basePower: 80,
 		category: "Physical",
@@ -224,11 +224,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Rock",
 		contestType: "Tough",
-		desc: "攻击目标造成伤害。20%几率令目标的防御降低1级。",
-		shortDesc: "攻击目标造成伤害。20%几率令目标的防御降低1级。"
+		desc: "岩镞。攻击目标造成伤害。20%几率令目标的防御降低1级。",
+		shortDesc: "岩镞。攻击目标造成伤害。20%几率令目标的防御降低1级。"
 	},
 	chaopinyaogunpoyinbo: {
-		num: 10009, 
+		num: 10010, 
 		accuracy: true,
 		basePower: 0, // 动态设置
 		category: "Special",
@@ -272,7 +272,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				}
 			},
 		},
-		desc: "攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时, 会使对手全体宝可梦陷入中剧毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时, 令使用者的攻击、防御、特攻、特防和速度提升1级。",
-		shortDesc: "高调形态使用会使对手全体陷入中剧毒或麻痹状态。低调形态使用令攻击、防御、特攻、特防和速度提升1级。"
+		desc: "超频摇滚破音波。攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时, 会使对手全体宝可梦陷入中剧毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时, 令使用者的攻击、防御、特攻、特防和速度提升1级。",
+		shortDesc: "超频摇滚破音波。高调形态使用会使对手全体陷入中剧毒或麻痹状态。低调形态使用令攻击、防御、特攻、特防和速度提升1级。"
 	}
 };

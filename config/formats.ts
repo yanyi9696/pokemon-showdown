@@ -31,6 +31,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
 	},
 	{
@@ -49,6 +50,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
 	},
 	{
@@ -61,6 +63,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
 	},
 	{
@@ -70,6 +73,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: ['ND OU', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
 	},
 	{
@@ -79,6 +83,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
 	},
 	{
@@ -88,6 +93,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
 	},
 	{
@@ -98,6 +104,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
 	},
 	
