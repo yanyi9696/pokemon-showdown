@@ -274,5 +274,37 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		desc: "超频摇滚破音波。攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时, 会使对手全体宝可梦陷入中剧毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时, 令使用者的攻击、防御、特攻、特防和速度提升1级。",
 		shortDesc: "超频摇滚破音波。高调形态使用会使对手全体陷入中剧毒或麻痹状态。低调形态使用令攻击、防御、特攻、特防和速度提升1级。"
-	}
+	},
+		yaojingzhiya: {
+		num: 10011, 
+		accuracy: 95,
+		basePower: 65,
+		category: "Physical",
+		name: "Yaojingzhiya",
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1, bite: 1 },
+		secondaries: [
+			{
+				chance: 30,
+				onHit(target, source, move) {
+					// 随机一个状态
+					const statuses = ['brn', 'par', 'frz'];
+					const status = this.sample(statuses);
+					if (target.setStatus(status, source, move)) {
+						this.add('-status', target, status);
+					}
+				},
+			},
+			{
+				chance: 10,
+				volatileStatus: 'flinch',
+			},
+		],
+		target: "normal",
+		type: "Fairy",
+		contestType: "Cool",
+		desc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩。",
+		shortDesc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩。"
+	},
 };

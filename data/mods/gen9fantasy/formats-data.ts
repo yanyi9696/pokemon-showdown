@@ -26,9 +26,6 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},
-	toxtricitylowkeyfantasy: {
-		tier: "RU",
-	},
 	volbeatfantasy: {
 		tier: "UU",
 	},
@@ -51,6 +48,13 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "RU",
 	},
 	stonjournerfantasy: {
+		tier: "RU",
+	},
+	//还未定分级的宝可梦
+	toxtricitylowkeyfantasy: {
+		tier: "RU",
+	},
+	granbullfantasy: {
 		tier: "RU",
 	},
 	//上为幻想，下为分级变动
