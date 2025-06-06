@@ -4248,6 +4248,10 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				if (!pokemon.activeTurns) {
 					this.effectState.duration! += 1;
 				}
+				// 每回合结束 攻击和速度+1
+				if (pokemon.hp) {
+					this.boost({atk: 1, spe: 1}, pokemon);
+				}
 			},
 			onModifyAtkPriority: 5,
 			onModifyAtk(atk, pokemon) {
@@ -4262,7 +4266,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		},
 		flags: {},
 		name: "Slow Start",
-		rating: -1,
+		rating: 2,
 		num: 112,
 	},
 	slushrush: {

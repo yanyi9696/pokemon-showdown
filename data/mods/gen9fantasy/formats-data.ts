@@ -60,6 +60,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	kricketunefantasy: {
 		tier: "RU",
 	},
+	regigigasfantasy: {
+		tier: "RU",
+	},
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",
