@@ -148,4 +148,34 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10005,
 		shortDesc: "演奏家。拥有此特性的宝可梦使出的声音招式会变为无属性, 并拥有1.5倍本系威力提升。",
 	},
+	moshushizhihong: {
+		onAfterMoveSecondarySelf(source, target, move) {
+			if (!move || !target || source.switchFlag === true) return;
+			if (target !== source && move.category !== 'Status') {
+				if (!target.item) return; // 没有道具就啥也不做
+
+				if (!source.item && !source.volatiles['gem'] && move.id !== 'fling') {
+				// 如果自己没道具，偷对方的
+					const stolenItem = target.takeItem(source);
+					if (!stolenItem) return;
+					if (!source.setItem(stolenItem)) {
+						target.item = stolenItem.id;
+						return;
+					}
+					this.add('-item', source, stolenItem, '[from] ability: Magician\'s Red', `[of] ${target}`);
+				} else {
+					// 如果自己有道具，让对方道具失效
+					const removedItem = target.takeItem(source);
+					if (removedItem) {
+						this.add('-enditem', target, removedItem.name, '[from] ability: Magician\'s Red', `[of] ${source}`);
+					}
+				}
+			}
+		},
+		flags: {},
+		name: "Moshushizhihong",
+		rating: 3,
+		num: 10006,
+		shortDesc: "魔术师之红。造成伤害时, 如果自身没有携带道具则获得目标道具；如果自身已携带道具则使目标在战斗结束前失去其携带物品。",
+	},
 };
