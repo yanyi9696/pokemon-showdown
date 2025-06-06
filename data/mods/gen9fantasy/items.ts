@@ -70,4 +70,40 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "幻之标靶。在携带该道具后, 虽然无法使用变化招式, 但使用的原本属性相性没有效果的招式会变为有效果。",
 		shortDesc: "幻之标靶。在携带该道具后, 使用的招式无视属性免疫, 但无法使用变化招式。",
 	},	
+	fantasylifeorb: {
+	name: "Fantasy Life Orb",
+	spritenum: 249, // 暂用 Life Orb 图标
+	fling: {
+		basePower: 30,
+	},
+	onResidual(pokemon) {
+		this.damage(pokemon.baseMaxhp / 10, pokemon, pokemon, this.dex.items.get('fantasylifeorb'));
+	},
+	onTryMove(pokemon, target, move) {
+		if (move.id === 'rest') {
+			if (pokemon.volatiles['fantasylifeorbrestrict']) {
+				this.add('-fail', pokemon, move.name);
+				return false;
+			} else {
+				pokemon.addVolatile('fantasylifeorbrestrict');
+			}
+		}
+	},
+	onUpdate(pokemon) {
+		// 检查异常状态是否被移除，如果移除了就强制加回来
+		if (pokemon.statusState.fantasylifeorbstored) {
+			if (!pokemon.status) {
+				pokemon.setStatus(pokemon.statusState.fantasylifeorbstored);
+				this.add('-message', `${pokemon.name} 的异常状态无法解除！`);
+			}
+		} else if (pokemon.status) {
+			// 第一次记录异常状态
+			pokemon.statusState.fantasylifeorbstored = pokemon.status;
+		}
+	},
+	num: 10003,
+	gen: 9,
+	desc: "幻之生命宝珠。携带后, 不受异常状态效果影响, 但异常状态将无法解除, 回合结束时损失最大HP的1/10。",
+	shortDesc: "幻之生命宝珠。异常状态效果无效, 不能被解除, 每回合损失1/10最大HP。",
+	},	
 };

@@ -14,6 +14,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		// Damage reduction is handled directly in the sim/battle.js damage function
 		onResidualOrder: 10,
 		onResidual(pokemon) {
+			if (pokemon.hasItem('fantasylifeorb')) return;
 			this.damage(pokemon.baseMaxhp / 16);
 		},
 	},
@@ -29,6 +30,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onModifySpePriority: -101,
 		onModifySpe(spe, pokemon) {
+			if (pokemon.hasItem('fantasylifeorb')) return spe;
 			// Paralysis occurs after all other Speed modifiers, so evaluate all modifiers up to this point first
 			spe = this.finalModify(spe);
 			if (!pokemon.hasAbility('quickfeet')) {
@@ -38,6 +40,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onBeforeMovePriority: 1,
 		onBeforeMove(pokemon) {
+			if (pokemon.hasItem('fantasylifeorb')) return true;
 			if (this.randomChance(1, 4)) {
 				this.add('cant', pokemon, 'par');
 				return false;
@@ -65,6 +68,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onBeforeMovePriority: 10,
 		onBeforeMove(pokemon, target, move) {
+			if (pokemon.hasItem('fantasylifeorb')) return true;
 			if (pokemon.hasAbility('earlybird')) {
 				pokemon.statusState.time--;
 			}
@@ -96,6 +100,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onBeforeMovePriority: 10,
 		onBeforeMove(pokemon, target, move) {
+			if (pokemon.hasItem('fantasylifeorb')) return true;
 			if (move.flags['defrost']) return;
 			if (this.randomChance(1, 5)) {
 				pokemon.cureStatus();
@@ -133,6 +138,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onResidualOrder: 9,
 		onResidual(pokemon) {
+			if (pokemon.hasItem('fantasylifeorb')) return;
 			this.damage(pokemon.baseMaxhp / 8);
 		},
 	},
@@ -154,6 +160,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onResidualOrder: 9,
 		onResidual(pokemon) {
+			if (pokemon.hasItem('fantasylifeorb')) return;
 			if (this.effectState.stage < 15) {
 				this.effectState.stage++;
 			}
