@@ -79,31 +79,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	onResidual(pokemon) {
 		this.damage(pokemon.baseMaxhp / 10, pokemon, pokemon, this.dex.items.get('fantasylifeorb'));
 	},
-	onTryMove(pokemon, target, move) {
-		if (move.id === 'rest') {
-			if (pokemon.volatiles['fantasylifeorbrestrict']) {
-				this.add('-fail', pokemon, move.name);
-				return false;
-			} else {
-				pokemon.addVolatile('fantasylifeorbrestrict');
-			}
-		}
-	},
-	onUpdate(pokemon) {
-		// 检查异常状态是否被移除，如果移除了就强制加回来
-		if (pokemon.statusState.fantasylifeorbstored) {
-			if (!pokemon.status) {
-				pokemon.setStatus(pokemon.statusState.fantasylifeorbstored);
-				this.add('-message', `${pokemon.name} 的异常状态无法解除！`);
-			}
-		} else if (pokemon.status) {
-			// 第一次记录异常状态
-			pokemon.statusState.fantasylifeorbstored = pokemon.status;
-		}
-	},
+	//不受异常状态效果影响的效果分别写在各个异常状态里了
 	num: 10003,
 	gen: 9,
-	desc: "幻之生命宝珠。携带后, 不受异常状态效果影响, 但异常状态将无法解除, 回合结束时损失最大HP的1/10。",
-	shortDesc: "幻之生命宝珠。异常状态效果无效, 不能被解除, 每回合损失1/10最大HP。",
+	desc: "幻之生命宝珠。携带后, 不受异常状态效果影响, 但处于异常状态下的宝可梦, 回合结束时将损失最大HP的1/10。",
+	shortDesc: "幻之生命宝珠。异常状态效果无效, 但异常状态下每回合损失1/10最大HP。",
 	},	
 };
