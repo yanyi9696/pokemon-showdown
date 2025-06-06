@@ -57,6 +57,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	granbullfantasy: {
 		tier: "RU",
 	},
+	kricketunefantasy: {
+		tier: "RU",
+	},
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",
