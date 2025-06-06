@@ -63,6 +63,18 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	regigigasfantasy: {
 		tier: "RU",
 	},
+	sawsbuckfantasy: {
+		tier: "RU",
+	},
+	sawsbucksummerfantasy: {
+		tier: "RU",
+	},
+	sawsbuckautumnfantasy: {
+		tier: "RU",
+	},
+	sawsbuckwinterfantasy: {
+		tier: "RU",
+	},
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",

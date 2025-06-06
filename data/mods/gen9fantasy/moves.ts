@@ -275,7 +275,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "超频摇滚破音波。攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时, 会使对手全体宝可梦陷入中剧毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时, 令使用者的攻击、防御、特攻、特防和速度提升1级。",
 		shortDesc: "超频摇滚破音波。高调形态使用会使对手全体陷入中剧毒或麻痹状态。低调形态使用令攻击、防御、特攻、特防和速度提升1级。"
 	},
-		yaojingzhiya: {
+	yaojingzhiya: {
 		num: 10011, 
 		accuracy: 95,
 		basePower: 65,
@@ -306,5 +306,68 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Cool",
 		desc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩。",
 		shortDesc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩。"
+	},
+	lujiao: {
+		num: 10012,
+		accuracy: 100,
+	    basePower: 90,
+	    category: "Physical",
+	    name: "Lu Jiao",
+	    pp: 10,
+	    priority: 0,
+	    flags: { contact: 1, protect: 1, mirror: 1 },
+	    onModifyType(move, pokemon) {
+		    switch (pokemon.species.name) {
+			    case 'Sawsbuck-Fantasy':
+				    move.type = 'Fairy';
+				    break;
+			    case 'Sawsbuck-Summer-Fantasy':
+				    move.type = 'Grass';
+				    break;
+			    case 'Sawsbuck-Autumn-Fantasy':
+				    move.type = 'Ground';
+				    break;
+			    case 'Sawsbuck-Winter-Fantasy':
+				    move.type = 'Ice';
+				    break;
+		    }
+	    },
+	    secondary: {
+		    chance: 50,
+		    boosts: {
+			    def: -1,
+		    },
+	    },
+	    target: "normal",
+	    type: "Normal",
+		desc: "鹿角。招式的属性会根据使用者的形态改变, 春:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低1级。",
+		shortDesc: "鹿角。招式的属性随形态改变。50%几率令目标的防御降低1级。"
+	},
+	huanji: {
+		num: 10013,
+		accuracy: true,
+	    basePower: 0,
+	    category: "Status",
+	    name: "Huan Ji",
+	    pp: 10,
+	    priority: 0,
+	    flags: { snatch: 1 },
+	    boosts: {
+		    atk: 1,
+		    spe: 1,
+	    },
+	    onHit(pokemon) {
+		    if (pokemon.baseSpecies.baseSpecies === 'Sawsbuck' && !pokemon.transformed) {
+			    const formeOrder = ['Sawsbuck-Fantasy', 'Sawsbuck-Summer-Fantasy', 'Sawsbuck-Autumn-Fantasy', 'Sawsbuck-Winter-Fantasy'];
+			    const currentForme = pokemon.species.name;
+			    const currentIndex = formeOrder.indexOf(currentForme);
+			    const nextForme = formeOrder[(currentIndex + 1) % formeOrder.length];
+			    pokemon.formeChange(nextForme, this.effect, false, '0', '[msg]');
+		    }
+	    },
+	    target: "self",
+	    type: "Normal",
+		desc: "换季。提高自身物攻与速度各1级。萌芽鹿使用该招式后, 按季节顺序进行形态变化。",
+		shortDesc: "换季。提高自身物攻与速度各1级。萌芽鹿使用该招式后, 按季节顺序进行形态变化。"
 	},
 };
