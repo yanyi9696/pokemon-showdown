@@ -390,7 +390,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		formeOrder: ["Kricketune",  "Kricketune-Fantasy"],
 	},
 	kricketunefantasy: {
-		num: 210,
+		num: 402,
 		name: "Kricketune-Fantasy",
 		baseSpecies: "Kricketune",
 		forme: "Fantasy",
