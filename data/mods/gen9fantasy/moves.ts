@@ -189,22 +189,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "穿云。可以无视守住进行攻击。攻击必定命中在场上的目标。",
 		shortDesc: "穿云。可以无视守住进行攻击。攻击必定命中在场上的目标。"
 	},
-	shenjian: {
+	souyusheji: {
 		num: 10008,
 		accuracy: 100,
-		basePower: 40,
+		basePower: 15,
 		category: "Physical",
-		name: "Shenjian",
-		pp: 5,
+		name: "Souyusheji",
+		pp: 20,
 		priority: 1,
 		flags: { protect: 1, mirror: 1, distance: 1, metronome: 1, shooting: 1 },
-		willCrit: true,
+		multihit: [2, 5],
 		secondary: null,
 		target: "any",
 		type: "Normal",
 		contestType: "Cool",
-		desc: "神箭。必定能够先制攻击。攻击必定击中要害。",
-		shortDesc: "神箭。必定能够先制攻击。攻击必定击中要害。"
+		desc: "薮雨射击。连续攻击２～５次。必定能够先制攻击。",
+		shortDesc: "薮雨射击。连续攻击２～５次。必定能够先制攻击。"
 	},
 	yanzu: {
 		num: 10009,

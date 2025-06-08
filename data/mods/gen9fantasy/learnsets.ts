@@ -997,7 +997,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			axekick: ["9M"],
 			feint: ["9M"],
 			chuanyun: ["9M"],
-			shenjian: ["9M"],
+			souyusheji: ["9M"],
 			yanzu: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M"],
