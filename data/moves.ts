@@ -6158,7 +6158,11 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pp: 10,
 		flags: { contact: 1, protect: 1, mirror: 1, gravity: 1, distance: 1, nonsky: 1, metronome: 1 },
 		onEffectiveness(typeMod, target, type, move) {
-			return typeMod + this.dex.getEffectiveness('Flying', type);
+		// 飞行属性克制的属性有：草、格斗、虫
+		if (['Grass', 'Fighting', 'Bug'].includes(type)) {
+			return typeMod + 1;
+		}
+		return typeMod;
 		},
 		priority: 0,
 		secondary: null,

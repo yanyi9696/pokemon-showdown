@@ -1529,6 +1529,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	regigigasfantasy: {
 		learnset: {
+			kingsshield: ["9M"],
 			meteormash: ["9M"],
 			irondefense: ["9M"],
 			//幻想增添技能

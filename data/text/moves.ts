@@ -2229,8 +2229,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	flyingpress: {
 		name: "Flying Press",
-		desc: "This move combines Flying in its type effectiveness against the target. Damage doubles and no accuracy check is done if the target has used Minimize while active.",
-		shortDesc: "Combines Flying in its type effectiveness.",
+		desc: "此招式拥有飞行属性所拥有的克制面。若目标处于缩小状态，本招式必定命中且伤害翻倍。",
+		shortDesc: "此招式拥有飞行属性所拥有的克制面。",
 	},
 	focusblast: {
 		name: "Focus Blast",
