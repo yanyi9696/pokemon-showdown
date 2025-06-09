@@ -324,6 +324,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "预兆之剑。计算伤害时按防守方的特防计算, 不是防御。",
 		shortDesc: "预兆之剑。计算伤害时按防守方的特防计算, 不是防御。"
 	},
+	dongchadaji: {
+		num: 533,
+		accuracy: 100,
+		basePower: 90,
+		category: "Physical",
+		name: "Dongchadaji",
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		ignoreEvasion: true,
+		ignoreDefensive: true,
+		secondary: null,
+		target: "normal",
+		type: "Psychic",
+		contestType: "Cool",
+		desc: "洞察打击。无视目标的能力阶级变化进行攻击。",
+		shortDesc: "洞察打击。无视目标的能力阶级变化进行攻击。"
+	},
 	lujiao: {
 		num: 10013,
 		accuracy: 100,
