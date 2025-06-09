@@ -66,6 +66,12 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	delphoxfantasy: {
 		tier: "RU",
 	},
+	absolfantasy: {
+		tier: "RU",
+	},
+	absolmegafantasy: {
+		tier: "RU",
+	},
 	sawsbuckfantasy: {
 		tier: "RU",
 	},

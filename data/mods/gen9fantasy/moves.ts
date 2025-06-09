@@ -307,8 +307,25 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩。",
 		shortDesc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩。"
 	},
+	yuzhaozhijian: {
+		num: 1012,
+		accuracy: 100,
+		basePower: 85,
+		category: "Physical",
+		overrideDefensiveStat: 'spd',
+		name: "yuzhaozhijian",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, slicing: 1 },
+		secondary: null,
+		target: "normal",
+		type: "Fighting",
+		contestType: "Beautiful",
+		desc: "预兆之剑。计算伤害时按防守方的特防计算, 不是防御。",
+		shortDesc: "预兆之剑。计算伤害时按防守方的特防计算, 不是防御。"
+	},
 	lujiao: {
-		num: 10012,
+		num: 10013,
 		accuracy: 100,
 	    basePower: 90,
 	    category: "Physical",
@@ -344,7 +361,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "鹿角。招式的属性随形态改变。50%几率令目标的防御降低1级。"
 	},
 	huanji: {
-		num: 10013,
+		num: 10014,
 		accuracy: true,
 	    basePower: 0,
 	    category: "Status",
