@@ -501,6 +501,22 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Absolite",
 		spriteid: 'absol-mega',
 	},
+	hawlucha: {
+		inherit: true,
+		otherFormes: ["Hawlucha-Fantasy"],
+		formeOrder: ["Hawlucha",  "Hawlucha-Fantasy"],
+	},
+	hawluchafantasy: {
+		num: 701,
+		name: "Hawlucha-Fantasy",
+		types: ["Fighting", "Flying"],
+		baseStats: { hp: 78, atk: 92, def: 75, spa: 74, spd: 63, spe: 118 },
+		abilities: { 0: "Limber", 1: "Gale Wings", H: "Scrappy" },
+		heightm: 0.8,
+		weightkg: 21.5,
+		color: "Green",
+		eggGroups: ["Flying", "Human-Like"],
+	},
 	sawsbuck: {
 		inherit: true,
 		otherFormes: ["Sawsbuck-Fantasy", "Sawsbuck-Summer", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter", "Sawsbuck-Winter-Fantasy"],
