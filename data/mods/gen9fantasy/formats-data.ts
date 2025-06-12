@@ -1,4 +1,10 @@
 export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormatsDataTable = {
+	regigigasfantasy: {
+		tier: "Uber",
+	},
+	absolmegafantasy: {
+		tier: "(Uber)",
+	},
 	aegislashfantasy: {
 		tier: "(Uber)",
 	},
@@ -23,13 +29,16 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	decidueyehisuifantasy: {
 		tier: "UUBL",
 	},
+	delphoxfantasy: {
+		tier: "UUBL",
+	},
+	kricketunefantasy: {
+		tier: "UUBL",
+	},
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},
-	volbeatfantasy: {
-		tier: "UU",
-	},
-	illumisefantasy: {
+	granbullfantasy: {
 		tier: "UU",
 	},
 	golisopodfantasy: {
@@ -38,55 +47,53 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	glaliemegafantasy: {
 		tier: "UU",
 	},
+	illumisefantasy: {
+		tier: "UU",
+	},
+	sawsbuckfantasy: {
+		tier: "UU",
+	},
+	sawsbucksummerfantasy: {
+		tier: "UU",
+	},
+	sawsbuckautumnfantasy: {
+		tier: "UU",
+	},
+	sawsbuckwinterfantasy: {
+		tier: "UU",
+	},
+	volbeatfantasy: {
+		tier: "UU",
+	},
+	cursolafantasy: {
+		tier: "RUBL",
+	},
 	samurottfantasy: {
+		tier: "RUBL",
+	},
+	stakatakafantasy: {
+		tier: "RUBL",
+	},
+	toxtricitylowkeyfantasy: {
 		tier: "RUBL",
 	},
 	vespiquenfantasy: {
 		tier: "RUBL",
 	},
+	absolfantasy: {
+		tier: "RU",
+	},
 	glaliefantasy: {
+		tier: "RU",
+	},
+	hawluchafantasy: {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
 		tier: "RU",
 	},
 	//还未定分级的宝可梦
-	toxtricitylowkeyfantasy: {
-		tier: "RU",
-	},
-	granbullfantasy: {
-		tier: "RU",
-	},
-	kricketunefantasy: {
-		tier: "RU",
-	},
-	regigigasfantasy: {
-		tier: "RU",
-	},
-	delphoxfantasy: {
-		tier: "RU",
-	},
-	absolfantasy: {
-		tier: "RU",
-	},
-	absolmegafantasy: {
-		tier: "RU",
-	},
-	hawluchafantasy: {
-		tier: "RU",
-	},
-	sawsbuckfantasy: {
-		tier: "RU",
-	},
-	sawsbucksummerfantasy: {
-		tier: "RU",
-	},
-	sawsbuckautumnfantasy: {
-		tier: "RU",
-	},
-	sawsbuckwinterfantasy: {
-		tier: "RU",
-	},
+
 	//上为幻想，下为分级变动
 	shedinja: {
 		tier: "AG",
