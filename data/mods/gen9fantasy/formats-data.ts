@@ -304,6 +304,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	ogerponwellspringtera: {
 		tier: "OU",
 	},
+	regigigas: {
+		tier: "OU",
+	},
 	serperior: {
 		tier: "OU",
 	},

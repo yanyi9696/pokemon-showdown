@@ -176,7 +176,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	chuanyun: {
 		num: 10007,
 		accuracy: true,
-		basePower: 80,
+		basePower: 90,
 		category: "Physical",
 		name: "Chuanyun",
 		pp: 15,
@@ -201,7 +201,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		multihit: [2, 5],
 		secondary: null,
 		target: "any",
-		type: "Normal",
+		type: "Steel",
 		contestType: "Cool",
 		desc: "薮雨射击。连续攻击２～５次。必定能够先制攻击。",
 		shortDesc: "薮雨射击。连续攻击２～５次。必定能够先制攻击。"

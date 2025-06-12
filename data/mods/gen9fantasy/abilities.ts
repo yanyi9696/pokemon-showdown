@@ -164,10 +164,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					}
 					this.add('-item', source, stolenItem, '[from] ability: Magician\'s Red', `[of] ${target}`);
 				} else {
-					// 如果自己有道具，让对方道具失效
+					// 如果自己有道具，且本次攻击是超能系技能，则让对方道具失效
+				if (move.type === 'Psychic') {
 					const removedItem = target.takeItem(source);
 					if (removedItem) {
 						this.add('-enditem', target, removedItem.name, '[from] ability: Magician\'s Red', `[of] ${source}`);
+						}
 					}
 				}
 			}
@@ -176,6 +178,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Moshushizhihong",
 		rating: 3,
 		num: 10006,
-		shortDesc: "魔术师之红。造成伤害时, 如果自身没有携带道具则获得目标道具；如果自身已携带道具则使目标在战斗结束前失去其携带物品。",
+		shortDesc: "魔术师之红。造成伤害时，如果自身没有携带道具则获得目标道具；如果自身已携带道具，则使目标在受到超能系技能攻击后失去其携带物品。",
 	},
 };

@@ -1322,6 +1322,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			headlongrush: ["9M"],
 			yaojingzhiya: ["9M"],
+			spikes: ["9M"],
+			partingshot: ["9M"],
 			//幻想增添技能
 			attract: ["7M", "7V", "6M", "5M", "4M", "3M"],
 			bite: ["9L7", "7L7", "7V", "6L7", "5L7", "4L7", "3L13"],
