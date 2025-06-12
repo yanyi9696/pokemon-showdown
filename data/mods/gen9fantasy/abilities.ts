@@ -43,7 +43,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Fengchao",
 		rating: 4,
 		num: 10000,
-		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8。",	
+		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍, 使用虫属性招式时会回复最大HP的1/8。",	
 	},
 	sujun: {
 		onModifyMove(move, pokemon) {
@@ -60,7 +60,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Sujun", 
 		rating: 3,
 		num: 10001,
-		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后，自己也不会陷入无法动弹状态。",	
+		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后, 自己也不会陷入无法动弹状态。",	
 	},
 	huibizaisheng: {
 		onEmergencyExit(target) {
@@ -80,7 +80,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Huibizaisheng",
 		rating: 2.5,
 		num: 10002,
-		shortDesc: "回避再生。HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4。",
+		shortDesc: "回避再生。HP变为一半时, 为了回避危险, 会退回到同行队伍中。交换下场时, 回复自身最大HP的1/4。",
 	},
 	puozhu: {
 		onStart(pokemon) {
@@ -178,6 +178,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Moshushizhihong",
 		rating: 3,
 		num: 10006,
-		shortDesc: "魔术师之红。造成伤害时，如果自身没有携带道具则获得目标道具；如果自身已携带道具，则使目标在受到超能系技能攻击后失去其携带物品。",
+		shortDesc: "魔术师之红。造成伤害时, 如果自身没有携带道具则获得目标道具; 如果自身已携带道具, 则使目标在受到超能系技能攻击后失去其携带物品。",
 	},
 };
