@@ -319,7 +319,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { protect: 1, mirror: 1, slicing: 1 },
 		secondary: null,
 		target: "normal",
-		type: "Fighting",
+		type: "Dark",
 		contestType: "Beautiful",
 		desc: "预兆之剑。计算伤害时按防守方的特防计算, 不是防御。",
 		shortDesc: "预兆之剑。计算伤害时按防守方的特防计算, 不是防御。"
