@@ -41,6 +41,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Dusk Stone",
 		eggGroups: ["Mineral"],
 		spriteid: 'aegislash',
+		otherFormes: ["Aegislash-Blade-Fantasy"],
+		formeOrder: ["Aegislash-Fantasy", "Aegislash-Blade-Fantasy"],
 	},
 	aegislashbladefantasy: {
 		num: 681,
