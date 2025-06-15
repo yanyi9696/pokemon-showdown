@@ -460,7 +460,8 @@ exports.appealurl = '';
  * replsocketprefix - the prefix for the repl sockets to be listening on
  * replsocketmode - the file mode bits to use for the repl sockets
  */
-exports.repl = true;
+exports.repl = false ;
+exports.nofswriting = true
 exports.replsocketprefix = './logs/repl/';
 exports.replsocketmode = 0o600;
 
