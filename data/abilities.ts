@@ -4438,9 +4438,12 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 	stancechange: {
 		onModifyMovePriority: 1,
 		onModifyMove(move, attacker, defender) {
-			if (attacker.species.baseSpecies !== 'Aegislash-Fantasy' || attacker.transformed) return;
+			if (!['Aegislash', 'Aegislash-Fantasy'].includes(attacker.species.baseSpecies) || attacker.transformed) return;
 			if (move.category === 'Status' && move.id !== 'kingsshield') return;
-			const targetForme = (move.id === 'kingsshield' ? 'Aegislash-Fantasy' : 'Aegislash-Blade-Fantasy');
+			const isFantasy = attacker.species.name.includes('Fantasy');
+			const targetForme = (move.id === 'kingsshield'
+			? (isFantasy ? 'Aegislash-Fantasy' : 'Aegislash')
+			: (isFantasy ? 'Aegislash-Blade-Fantasy' : 'Aegislash-Blade'));
 			if (attacker.species.name !== targetForme) attacker.formeChange(targetForme);
 		},
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
