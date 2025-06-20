@@ -4436,6 +4436,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		num: 192,
 	},
 	stancechange: {
+		onModifyMovePriority: 1,
 		onModifyMove(move, attacker, defender) {
 			// 不是 Aegislash 系列 或者 变身状态的，跳过
 			if (!['Aegislash', 'Aegislash-Blade', 'Aegislash-Fantasy', 'Aegislash-Blade-Fantasy'].includes(attacker.species.name) || attacker.transformed) return;
