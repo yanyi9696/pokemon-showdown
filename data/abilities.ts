@@ -4438,21 +4438,9 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 	stancechange: {
 		onModifyMovePriority: 1,
 		onModifyMove(move, attacker, defender) {
-			// 不是 Aegislash 系列 或者 变身状态的，跳过
-			if (!['Aegislash', 'Aegislash-Blade', 'Aegislash-Fantasy', 'Aegislash-Blade-Fantasy'].includes(attacker.species.name) || attacker.transformed) return;
-
-			// 如果是变化招式且不是 King's Shield，跳过
-			if (move.category === 'Status' && move.id !== 'kingshield') return;
-
-			// 确定目标形态
-			let targetForme;
-			if (move.id === 'kingshield') {
-				targetForme = attacker.species.name.includes('Fantasy') ? 'Aegislash-Fantasy' : 'Aegislash';
-			} else {
-				targetForme = attacker.species.name.includes('Fantasy') ? 'Aegislash-Blade-Fantasy' : 'Aegislash-Blade';
-			}
-
-			// 切换形态
+			if (attacker.species.baseSpecies !== 'Aegislash-Fantasy' || attacker.transformed) return;
+			if (move.category === 'Status' && move.id !== 'kingsshield') return;
+			const targetForme = (move.id === 'kingsshield' ? 'Aegislash-Fantasy' : 'Aegislash-Blade-Fantasy');
 			if (attacker.species.name !== targetForme) attacker.formeChange(targetForme);
 		},
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },

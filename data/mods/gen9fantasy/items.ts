@@ -77,7 +77,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		basePower: 30,
 	},
 	onResidual(pokemon) {
-		this.damage(pokemon.baseMaxhp / 10, pokemon, pokemon, this.dex.items.get('fantasylifeorb'));
+  		if (pokemon.status && ['brn', 'par', 'slp', 'frz', 'psn', 'tox'].includes(pokemon.status)) {
+    		this.damage(pokemon.baseMaxhp / 10, pokemon, pokemon, this.dex.items.get('fantasylifeorb'));
+  		}
 	},
 	//不受异常状态效果影响的效果分别写在各个异常状态里了
 	num: 10003,
