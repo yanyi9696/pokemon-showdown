@@ -402,6 +402,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	    },
 	    target: "self",
 	    type: "Normal",
+		zMove: { effect: 'clearnegativeboost' },
 		desc: "换季。提高自身物攻与速度各1级。萌芽鹿使用该招式后, 按季节顺序进行形态变化。",
 		shortDesc: "换季。提高自身物攻与速度各1级。萌芽鹿使用该招式后, 按季节顺序进行形态变化。"
 	},
