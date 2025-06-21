@@ -131,7 +131,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10004,
 		shortDesc: "迷石阵。属性相性颠倒。原本效果绝佳的变为效果不好, 效果不好的变为效果绝佳, 没有效果的保持没有效果。",
 	},
-	yanzoujia: {
+	tianlaizhiyin: {
 		onModifyTypePriority: -1,
 		onModifyType(move, pokemon) {
 			if (move.flags['sound'] && !pokemon.volatiles['dynamax']) {
@@ -146,10 +146,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		flags: {},
-		name: "Yanzoujia",
-		rating: 2.5,
+		name: "Tianlaizhiyin",
+		rating: 3,
 		num: 10005,
-		shortDesc: "演奏家。拥有此特性的宝可梦使出的声音招式会变为无属性, 并拥有1.5倍本系威力提升。",
+		shortDesc: "天籁之音。拥有此特性的宝可梦使出的声音招式会变为无属性, 并拥有1.5倍本系威力提升。",
 	},
 	moshushizhihong: {
 		onAfterMoveSecondarySelf(source, target, move) {
