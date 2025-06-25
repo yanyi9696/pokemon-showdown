@@ -547,7 +547,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		formeOrder: ["Sawsbuck","Sawsbuck-Fantasy", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter-Fantasy"],
 	},
 	sawsbuckfantasy: {
-		num: 586,
+		num: 100001,
 		name: "Sawsbuck-Fantasy",
 		baseForme: "Spring",
 		types: ["Normal", "Fairy"],
