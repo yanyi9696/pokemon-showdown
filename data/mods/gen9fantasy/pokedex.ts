@@ -543,15 +543,13 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	sawsbuck: {
 		inherit: true,
-		otherFormes: ["Sawsbuck-Fantasy", "Sawsbuck-Summer", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter", "Sawsbuck-Winter-Fantasy"],
-		formeOrder: ["Sawsbuck","Sawsbuck-Fantasy", "Sawsbuck-Summer", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter", "Sawsbuck-Winter-Fantasy"],
+		otherFormes: ["Sawsbuck-Fantasy", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter-Fantasy"],
+		formeOrder: ["Sawsbuck","Sawsbuck-Fantasy", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter-Fantasy"],
 	},
 	sawsbuckfantasy: {
 		num: 586,
 		name: "Sawsbuck-Fantasy",
 		baseForme: "Spring",
-		baseSpecies: "Sawsbuck",
-		forme: "Fantasy",
 		types: ["Normal", "Fairy"],
 		baseStats: { hp: 80, atk: 120, def: 80, spa: 60, spd: 80, spe: 105 },
 		abilities: { 0: "Chlorophyll", 1: "Sap Sipper", H: "Serene Grace" },
@@ -561,6 +559,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Deerling",
 		evoLevel: 34,
 		eggGroups: ["Field"],
+		cosmeticFormes: ["Sawsbuck-Summer", "Sawsbuck-Autumn", "Sawsbuck-Winter"],
+		formeOrder: ["Sawsbuck","Sawsbuck-Fantasy", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter-Fantasy"],
 	},
 	sawsbucksummerfantasy: {
 		num: 586,
