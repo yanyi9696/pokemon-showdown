@@ -347,7 +347,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		mother: 'illumise',
 		spriteid: 'illumise',
 	},
-		sawsbuck: {
+	sawsbuck: {
 		inherit: true,
 		otherFormes: ["Sawsbuck-Fantasy", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter-Fantasy"],
 		formeOrder: ["Sawsbuck","Sawsbuck-Fantasy", "Sawsbuck-Summer-Fantasy", "Sawsbuck-Autumn-Fantasy", "Sawsbuck-Winter-Fantasy"],

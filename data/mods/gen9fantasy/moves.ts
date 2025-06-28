@@ -63,7 +63,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Clever",
 		desc: "先行指令。比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。",
-		shortDesc: "先行指令。比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手。"
+		shortDesc: "先行指令。物攻或特攻较高的一项+2。使用后相同优先度内优先行动"
 	},
 	fuzhuzhiling: {
 		num: 10002,
@@ -86,7 +86,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		maxMove: { basePower: 130 },
 		contestType: "Clever",
 		desc: "辅助指令。自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。",
-		shortDesc: "辅助指令。自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力。"
+		shortDesc: "辅助指令。每有1项能力上升, 威力+20。自身能力下降不影响威力"
 	},
 	mijianbairenchuan: {
 		num: 10003,
@@ -153,8 +153,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Poison",
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 80 },
-		desc: "醉神乱打。连续攻击1~3次,一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45。",
-		shortDesc: "醉神乱打。连续攻击1~3次,一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45。"
+		desc: "醉神乱打。连续攻击1~3次, 每一击都必定击中要害。第二次攻击威力增加到30, 第三次攻击威力增加到45。",
+		shortDesc: "醉神乱打。连续攻击1~3次, 每一击都必定击中要害。每次击中威力提高。"
 	},
 	biansuzhefan: {
 		num: 10006,
@@ -305,7 +305,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Fairy",
 		contestType: "Cool",
 		desc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩。",
-		shortDesc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩。"
+		shortDesc: "妖精之牙。30%灼伤/麻痹/冰冻, 10%畏缩。"
 	},
 	yuzhaozhijian: {
 		num: 1012,
@@ -376,7 +376,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	    target: "normal",
 	    type: "Normal",
 		desc: "鹿角。招式的属性会根据使用者的形态改变, 春:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低1级。",
-		shortDesc: "鹿角。招式的属性随形态改变。50%几率令目标的防御降低1级。"
+		shortDesc: "鹿角。招式的属性随形态改变。50%令目标的防御降低1级。"
 	},
 	huanji: {
 		num: 10014,
@@ -404,6 +404,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	    type: "Normal",
 		zMove: { effect: 'clearnegativeboost' },
 		desc: "换季。提高自身物攻与速度各1级。萌芽鹿使用该招式后, 按季节顺序进行形态变化。",
-		shortDesc: "换季。提高自身物攻与速度各1级。萌芽鹿使用该招式后, 按季节顺序进行形态变化。"
+		shortDesc: "换季。自身物攻与速度+1。萌芽鹿使用后按季节顺序变形。"
 	},
 };
