@@ -8,8 +8,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		itemUser: ["Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy"], // 再次确认形态名称
 		num: 10000, 
 		gen: 9,
-		desc: "颤弦蝾螈Z。颤弦蝾螈携带后，可以把破音转化成特殊的Ｚ招式：超频摇滚破音波。",
-		shortDesc: "颤弦蝾螈Z。颤弦蝾螈携带后，可以把破音转化成特殊的Ｚ招式：超频摇滚破音波。",
+		desc: "颤弦蝾螈Z。颤弦蝾螈携带后, 可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波。",
+		shortDesc: "颤弦蝾螈Z。颤弦蝾螈携带后, 可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波。",
 	}, 
 	fantasypowerlens: {
 		name: "Fantasy Power Lens",
@@ -40,7 +40,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		num: 10001,
 		gen: 9,
 		desc: "幻之力量镜。携带后, 虽然攻击将无法击中要害, 但命中不满100%的非变化类技能命中率与威力会提升1.2倍。",
-		shortDesc: "幻之力量镜。携带后, 虽然攻击将无法击中要害, 但命中不满100%的非变化类技能命中率与威力会提升1.2倍。",
+		shortDesc: "攻击无法击中要害, 命中不满100%的非变化技能威力与命中率提升1.2倍。",
 	},
 	fantasyringtarget: {
 		name: "Fantasy Ring Target",
