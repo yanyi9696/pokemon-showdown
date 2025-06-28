@@ -357,6 +357,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
         name: "Sawsbuck-Fantasy",
         baseSpecies: "Sawsbuck",
         forme: "Spring",
+		spriteid: "sawsbuck",
         types: ["Normal", "Fairy"],
         baseStats: { hp: 80, atk: 120, def: 80, spa: 60, spd: 80, spe: 105 },
         abilities: { 0: "Chlorophyll", 1: "Sap Sipper", H: "Serene Grace" },
