@@ -43,13 +43,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		shortDesc: "攻击无法击中要害, 命中不满100%的非变化技能威力与命中率提升1.2倍。",
 	},
 	fantasyringtarget: {
-		name: "Fantasy Ring Target",
-		spritenum: 410, // 随便用 Ring Target 的图标
-		fling: {
-			basePower: 30,
-		},
-		// 禁用变化招式
-		onDisableMove(pokemon) {
+	name: "Fantasy Ring Target",
+		spritenum: 410,
+		fling: { basePower: 30 },
+		onStart(pokemon) {
 			for (const moveSlot of pokemon.moveSlots) {
 				const move = this.dex.moves.get(moveSlot.id);
 				if (move.category === 'Status') {
@@ -57,12 +54,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				}
 			}
 		},
-		// 无视免疫
-		onEffectiveness(typeMod, target, type, move) {
-			if (!move || move.category === 'Status') return;
-			// 原本免疫 → 改成正常
-			if (this.dex.getEffectiveness(move, type) === 0) {
-				return 0;
+		onModifyMove(move, pokemon) {
+			if (move.category !== 'Status') {
+				move.ignoreImmunity = true;
 			}
 		},
 		num: 10002,
