@@ -19,28 +19,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	fengchao: {
 		onEffectivenessPriority: -1,
 		onEffectiveness(typeMod, target, type, move) {
-			if (move && move.effectType === 'Move' && move.category !== 'Status' && type === 'Bug' && typeMod > 0) {
+			if (!target || target.getAbility().id !== 'fengchao') return;
+			if (type === 'Bug' && typeMod > 0) {
 				this.add('-activate', target, 'ability: Fengchao');
-				return 0; // Bug-type attacks no longer have effectiveness changes
+				return 0;
 			}
+			return typeMod;
 		},
-		onModifyAtkPriority: 5,
-		onModifyAtk(atk, attacker, defender, move) {
+
+		onBasePowerPriority: 23,
+		onBasePower(basePower, attacker, defender, move) {
+			if (attacker.getAbility().id !== 'fengchao') return;
 			if (move.type === 'Bug') {
 				this.debug('Fengchao Bug move power boost');
-				return this.chainModify(1.5); // Increase Bug-type move attack power by 1.5x
+				return this.chainModify(1.5);
 			}
 		},
-		onModifySpAPriority: 5,
-		onModifySpA(atk, attacker, defender, move) {
-			if (move.type === 'Bug') {
-				this.debug('Fengchao Bug move special attack boost');
-				return this.chainModify(1.5); // Increase Bug-type move special attack power by 1.5x
-			}
-		},
+
 		onAfterMove(pokemon, target, move) {
+			if (pokemon.getAbility().id !== 'fengchao') return;
 			if (move.type === 'Bug') {
-				this.heal(pokemon.baseMaxhp / 8); // Heal 1/8 of max HP after using Bug-type move
+				this.heal(pokemon.baseMaxhp / 8);
 			}
 		},
 		name: "Fengchao",
