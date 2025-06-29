@@ -215,7 +215,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Normal", "Bug"],
 		baseStats: { hp: 77, atk: 35, def: 101, spa: 155, spd: 101, spe: 65 },
-		abilities: { 0: "Swarm", 1: "tianlaizhiyin", H: "Technician" },
+		abilities: { 0: "Swarm", 1: "Tianlaizhiyin", H: "Technician" },
 		heightm: 1,
 		weightkg: 25.5,
 		color: "Red",

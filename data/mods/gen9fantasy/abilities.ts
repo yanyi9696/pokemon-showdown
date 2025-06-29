@@ -177,4 +177,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10006,
 		shortDesc: "魔术师之红。造成伤害时, 如果自身没有携带道具则获得目标道具; 如果自身已携带道具, 则使目标在受到超能系技能攻击后失去其携带物品。",
 	},
+	mountaineer: {
+		onDamage(damage, target, source, effect) {
+			if (effect && effect.id === 'stealthrock') {
+				return false;
+			}
+		},
+		onTryHit(target, source, move) {
+			if (move.type === 'Rock' && !target.activeTurns) {
+				this.add('-immune', target, '[from] ability: Mountaineer');
+				return null;
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Mountaineer",
+		rating: 3,
+		num: -2,
+		shortDesc: "登山者。登场的那一回合自身免疫岩石伤害, 免疫岩石系招式的效果。",
+	},
 };
