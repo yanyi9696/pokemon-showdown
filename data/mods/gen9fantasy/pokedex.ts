@@ -173,7 +173,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["Ground", "Fighting"],
 		genderRatio: { M: 0.875, F: 0.125 },
 		baseStats: { hp: 88, atk: 137, def: 80, spa: 40, spd: 100, spe: 85 },
-		abilities: { 0: "Puozhu", H: "Scrappy" },
+		abilities: { 0: "Pozhu", H: "Scrappy" },
 		heightm: 1.6,
 		weightkg: 37,
 		color: "Brown",

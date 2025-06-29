@@ -19,7 +19,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	fengchao: {
 		onEffectivenessPriority: -1,
 		onEffectiveness(typeMod, target, type, move) {
-			if (!target || target.getAbility().id !== 'fengchao') return;
+			if (!target || target.getAbility().id !== 'fengchao') return typeMod;
+			if (move?.ignoreAbility) return typeMod;  // Mold Breaker / Teravolt / Turboblaze / pozhu 射击无视
+
 			if (type === 'Bug' && typeMod > 0) {
 				this.add('-activate', target, 'ability: Fengchao');
 				return 0;
@@ -84,24 +86,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10002,
 		shortDesc: "回避再生。HP变为一半时, 为了回避危险, 会退回到同行队伍中。交换下场时, 回复自身最大HP的1/4。",
 	},
-	puozhu: {
-		onStart(pokemon) {
-			this.add('-ability', pokemon, 'Puozhu');
-		},
+	pozhu: {
 		onModifyMove(move, pokemon) {
-			// 如果招式具有射击标签（shooting）
 			if (move.flags['shooting']) {
-				// 忽视目标的特性
 				move.ignoreAbility = true;
-				// 输出消息，告知玩家特性正在忽视目标特性
-				this.add('-message', `${pokemon.name}的射击类招式忽视了目标的能力变化与特性！`);
-				// 添加忽视目标防御变化和闪避率的标记
-				move.ignoreDefensive = true;  // 忽视目标的防御变化（如通过能力提升的防御）
-				move.ignoreEvasion = true;    // 忽视目标的闪避率（无视闪避提升）
+				move.ignoreDefensive = true;
+				move.ignoreEvasion = true;
+				this.add('-message', `${pokemon.name}的射击类招式无视目标能力变化与特性！`);
 			}
 		},
 		flags: {},
-		name: "Puozhu",
+		name: "Pozhu",
 		rating: 3,
 		num: 10003,
 		shortDesc: "破竹。拥有此特性的宝可梦在使用射击类招式时,无视防御方的能力变化与特性,直接给予伤害。",
