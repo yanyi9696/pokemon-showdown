@@ -192,7 +192,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		flags: { breakable: 1 },
 		name: "Mountaineer",
 		rating: 3,
-		num: -2,
-		shortDesc: "登山者。登场的那一回合自身免疫岩石伤害, 免疫岩石系招式的效果。",
+		num: 10007,
+		shortDesc: "攀登者。登场的那一回合自身免疫岩石伤害, 免疫隐形岩。",
 	},
 };
