@@ -194,6 +194,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Moshushizhihong",
 		rating: 3,
 		num: 10006,
-		shortDesc: "魔术师之红。造成伤害时, 若自身没有携带道具则获得目标道具；若已持有道具, 则使目标在受到超能系技能攻击后失去道具。",
+		shortDesc: "魔术师之红。造成伤害时, 若未持有道道具则获得目标道具; 若已持有道具, 则使目标在受到超能系技能攻击后失去道具。",
 	},
 };
