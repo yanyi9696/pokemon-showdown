@@ -1,9 +1,12 @@
-export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormatsDataTable = {
+import {FantasySpeciesFormatsData} from './types';
+
+export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	regigigasfantasy: {
 		tier: "Uber",
 	},
 	absolmegafantasy: {
 		tier: "(Uber)",
+		abilities: { 0: "Adaptability" },
 	},
 	aegislashfantasy: {
 		tier: "(Uber)",
@@ -13,6 +16,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	},
 	garchompmegafantasy: {
 		tier: "(Uber)",
+		abilities: {0: "Sand Rush"},
 	},
 	garchompfantasy: {
 		tier: "OU",
