@@ -40,6 +40,7 @@ export const Scripts: ModdedBattleScriptsData = {
 					pokemon.baseAbility = newAbility as ID;
 					pokemon.setAbility(newAbility);
 					this.battle.add('-mega', pokemon.fullname, megaFantasySpecies.name, item.name);
+					this.battle.add('-ability', pokemon, newAbility);
 					pokemon.canMegaEvo = null; // 标记为已 Mega 进化
 					this.battle.runEvent('AfterMega', pokemon);
 					return true; // Mega 进化成功
