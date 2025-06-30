@@ -15,6 +15,25 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4,
 		num: 176,
 	},
+	//以下为CAP特性
+		mountaineer: {
+		onDamage(damage, target, source, effect) {
+			if (effect && effect.id === 'stealthrock') {
+				return false;
+			}
+		},
+		onTryHit(target, source, move) {
+			if (move.type === 'Rock' && !target.activeTurns) {
+				this.add('-immune', target, '[from] ability: Mountaineer');
+				return null;
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Mountaineer",
+		rating: 3,
+		num: -2,
+		shortDesc: "攀登者。交换时,拥有此特性的宝可梦可以不受所有岩石系攻击和隐形岩伤害。",
+	},
 	//以下为自制特性
 	fengchao: {
 		onEffectivenessPriority: -1,
@@ -47,7 +66,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Fengchao",
 		rating: 4,
 		num: 10000,
-		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍, 使用虫属性招式时会回复最大HP的1/8。",	
+		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8。",	
 	},
 	sujun: {
 		onModifyMove(move, pokemon) {
@@ -64,7 +83,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Sujun", 
 		rating: 3,
 		num: 10001,
-		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后, 自己也不会陷入无法动弹状态。",	
+		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后,自己也不会陷入无法动弹状态。",	
 	},
 	huibizaisheng: {
 		onEmergencyExit(target) {
@@ -84,7 +103,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Huibizaisheng",
 		rating: 2.5,
 		num: 10002,
-		shortDesc: "回避再生。HP变为一半时, 为了回避危险, 会退回到同行队伍中。交换下场时, 回复自身最大HP的1/4。",
+		shortDesc: "回避再生。HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4。",
 	},
 	pozhu: {
 		onModifyMove(move, pokemon) {
@@ -123,7 +142,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mishizhen",
 		rating: 1,
 		num: 10004,
-		shortDesc: "迷石阵。属性相性颠倒。原本效果绝佳的变为效果不好, 效果不好的变为效果绝佳, 没有效果的保持没有效果。",
+		shortDesc: "迷石阵。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果。",
 	},
 	tianlaizhiyin: {
 		onModifyTypePriority: -1,
@@ -143,7 +162,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Tianlaizhiyin",
 		rating: 3,
 		num: 10005,
-		shortDesc: "天籁之音。拥有此特性的宝可梦使出的声音招式会变为无属性, 并拥有1.5倍本系威力提升。",
+		shortDesc: "天籁之音。拥有此特性的宝可梦使出的声音招式会变为无属性,并拥有1.5倍本系威力提升。",
 	},
 	moshushizhihong: {
 		onAfterMoveSecondarySelf(source, target, move) {
@@ -175,24 +194,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Moshushizhihong",
 		rating: 3,
 		num: 10006,
-		shortDesc: "魔术师之红。造成伤害时, 如果自身没有携带道具则获得目标道具; 如果自身已携带道具, 则使目标在受到超能系技能攻击后失去其携带物品。",
-	},
-	mountaineer: {
-		onDamage(damage, target, source, effect) {
-			if (effect && effect.id === 'stealthrock') {
-				return false;
-			}
-		},
-		onTryHit(target, source, move) {
-			if (move.type === 'Rock' && !target.activeTurns) {
-				this.add('-immune', target, '[from] ability: Mountaineer');
-				return null;
-			}
-		},
-		flags: { breakable: 1 },
-		name: "Mountaineer",
-		rating: 3,
-		num: 10007,
-		shortDesc: "攀登者。登场的那一回合自身免疫岩石伤害, 免疫隐形岩。",
+		shortDesc: "魔术师之红。造成伤害时,若无道具,获得目标道具;若有道具,使目标在受到超能系技能攻击后失去道具。",
 	},
 };
