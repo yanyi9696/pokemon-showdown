@@ -1670,7 +1670,7 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	slowstart: {
 		name: "Slow Start",
-		shortDesc: "登场之后的5回合内攻击和速度减半, 期间每回合结束攻击和速度会上升1级。",
+		shortDesc: "登场之后的5回合内攻击和速度减半,期间每回合结束攻击和速度会上升1级。",
 		gen7: {
 			desc: "On switch-in, this Pokemon's Attack and Speed are halved for 5 turns. During the effect, if this Pokemon uses a generic Z-Move based on a special move, its Special Attack is halved during damage calculation.",
 		},
