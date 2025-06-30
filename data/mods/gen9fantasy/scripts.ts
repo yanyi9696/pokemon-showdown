@@ -1,3 +1,5 @@
+import { FormatsData } from './formats-data';
+
 export const Scripts: ModdedBattleScriptsData = {
 	gen: 9,
 	init() {
@@ -34,6 +36,9 @@ export const Scripts: ModdedBattleScriptsData = {
 				) {
 					// 执行向 Mega Fantasy 形态的 Mega 进化
 					pokemon.formeChange(megaFantasySpecies, item, true);
+					const newAbility = FormatsData[megaFantasySpecies.id]?.abilities?.[0] ?? megaFantasySpecies.abilities[0];
+					pokemon.baseAbility = newAbility as ID;
+					pokemon.setAbility(newAbility);
 					this.battle.add('-mega', pokemon.fullname, megaFantasySpecies.name, item.name);
 					pokemon.canMegaEvo = null; // 标记为已 Mega 进化
 					this.battle.runEvent('AfterMega', pokemon);
