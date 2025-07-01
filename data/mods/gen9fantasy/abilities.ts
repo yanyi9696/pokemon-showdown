@@ -71,10 +71,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 
 		onAfterMoveSecondarySelf(pokemon, target, move) {
-			if (pokemon.getAbility().id !== 'fengchao') return;
-			if (!(move as any)?.fengchaoBoost) return;
-			this.add('-activate', pokemon, 'ability: Fengchao');
-			this.heal(pokemon.baseMaxhp / 8);
+		if (pokemon.getAbility().id !== 'fengchao') return;
+		if (!(move as any)?.fengchaoBoost) return;
+		this.add('-activate', pokemon, 'ability: Fengchao');
+		this.heal(pokemon.baseMaxhp / 8, pokemon, undefined, this.dex.abilities.get('fengchao'));
 		},
 		name: "Fengchao",
 		rating: 4,
