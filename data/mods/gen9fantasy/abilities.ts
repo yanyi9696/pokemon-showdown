@@ -47,8 +47,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onEffectivenessPriority: -1,
 		onEffectiveness(typeMod, target, type, move) {
 			if (!target || target.getAbility().id !== 'fengchao') return typeMod;
-			if (move?.ignoreAbility) return typeMod;  // Mold Breaker / Teravolt / Turboblaze / pozhu 射击无视
-
+			if (move?.ignoreAbility) return typeMod;
 			if (type === 'Bug' && typeMod > 0) {
 				this.add('-activate', target, 'ability: Fengchao');
 				return 0;
@@ -65,11 +64,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 
-		onAfterMove(pokemon, target, move) {
-			if (pokemon.getAbility().id !== 'fengchao') return;
-			if (move.type === 'Bug') {
-				this.heal(pokemon.baseMaxhp / 8);
+		onModifyMove(move, pokemon) {
+			if (pokemon.getAbility().id === 'fengchao' && move.type === 'Bug') {
+				(move as any).fengchaoBoost = true;
 			}
+		},
+
+		onAfterMoveSecondarySelf(pokemon, target, move) {
+			if (pokemon.getAbility().id !== 'fengchao') return;
+			if (!(move as any)?.fengchaoBoost) return;
+			this.add('-activate', pokemon, 'ability: Fengchao');
+			this.heal(pokemon.baseMaxhp / 8);
 		},
 		name: "Fengchao",
 		rating: 4,
