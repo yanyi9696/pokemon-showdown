@@ -34,6 +34,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: -2,
 		shortDesc: "攀登者。交换时,拥有此特性的宝可梦可以不受所有岩石系攻击和隐形岩伤害。",
 	},
+		persistent: {
+		// implemented in the corresponding move
+		flags: {},
+		name: "Persistent",
+		rating: 3,
+		num: -4,
+		shortDesc: "坚守。使用招式时，重力/回复封锁/神秘守护/顺风/空间效果可多持续2个回合。",
+	},
 	//以下为自制特性
 	fengchao: {
 		onEffectivenessPriority: -1,
