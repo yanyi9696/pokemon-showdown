@@ -30,6 +30,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	urshifurapidstrikefantasy: {
 		tier: "OU",
 	},
+	vespiquenfantasy: {
+		tier: "OU",
+	},
 	decidueyehisuifantasy: {
 		tier: "UUBL",
 	},
@@ -79,9 +82,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	toxtricitylowkeyfantasy: {
-		tier: "RUBL",
-	},
-	vespiquenfantasy: {
 		tier: "RUBL",
 	},
 	absolfantasy: {
