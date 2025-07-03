@@ -33,6 +33,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
 	},
 	{
 		name: "[Gen 9] FC Ubers UU",
@@ -52,6 +60,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
 	},
 	{
 		name: "[Gen 9] FC OU",
@@ -65,6 +81,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
 	},
 	{
 		name: "[Gen 9] FC UUBL",
@@ -74,6 +98,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
 		},
 	},
 	{
@@ -85,6 +117,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
 	},
 	{
 		name: "[Gen 9] FC RUBL",
@@ -94,6 +134,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
 		},
 	},
 	{
@@ -105,6 +153,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
 		},
 	},
 	

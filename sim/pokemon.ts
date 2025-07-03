@@ -1439,6 +1439,13 @@ export class Pokemon {
 			this.knownType = true;
 			this.apparentType = this.terastallized;
 		}
+		const newSpecies = this.species; // 此时 this.species 已经是新形态
+        // 检查新形态是否是您的自定义宝可梦
+        if (!this.battle.dex.species.get(newSpecies.id).exists) {
+            // 如果是，就发送包含新形态属性和种族值的数据
+            this.battle.add('-start', this, 'typechange', newSpecies.types.join('/'), '[silent]');
+            this.battle.add('-start', this, 'fantasystats', Object.values(newSpecies.baseStats).join('/'), '[silent]');
+        }
 		return true;
 	}
 
