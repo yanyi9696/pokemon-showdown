@@ -1171,6 +1171,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			iciclespear: ["9M"],
 			stormthrow: ["9M"],
 			frostbreath: ["9M"],
+			shiftgear: ["9M"],
 			//幻想增添技能
 			acid: ["9L1", "8L1"],
 			acidspray: ["9M", "9L1", "8L1"],
