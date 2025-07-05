@@ -21,7 +21,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			// 确保“willCrit”永远为 false，禁用暴击
 			move.willCrit = false;
 		},
-		onSourceModifyAccuracy(accuracy, source, target, move) {
+		onModifyAccuracy(accuracy, source, target, move) {
+			if (typeof accuracy !== 'number') return accuracy;
 			// 只对命中率小于 100% 且非 Status 类型的技能进行提升。
 			if (accuracy < 100 && move.category !== 'Status') {
 				this.debug('Fantasy Power Lens: Increasing Accuracy');
