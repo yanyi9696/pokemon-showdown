@@ -16,33 +16,47 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		spritenum: 359,
 		fling: {
 			basePower: 100,
-		},
+	},
 		onModifyMove(move, source) {
-			// 确保“willCrit”永远为 false，禁用暴击
 			move.willCrit = false;
-		},
-		onModifyAccuracyPriority: -1, // 新增：设置一个很低的优先级，确保它在活力等特性之后执行
-		onModifyAccuracy(accuracy, source, target, move) {
-			if (typeof accuracy !== 'number') return accuracy;
-			// 只对命中率小于 100% 且非 Status 类型的技能进行提升。
-			if (accuracy < 100 && move.category !== 'Status') {
-				this.debug('Fantasy Power Lens: Increasing Accuracy');
-				return this.chainModify([4915, 4096]); // 提升命中率1.2倍
-			}
-			return accuracy;  // 不影响满100%命中的技能
-		},
-		onBasePowerPriority: -1, // 新增：设置一个很低的优先级，确保它在活力等特性之后执行
-		onBasePower(basePower, source, target, move) { 
-			if (move.category === 'Status' || typeof move.accuracy !== 'number') return;
 
-			let effectiveAccuracy = move.accuracy;
-			if (source.ability === 'hustle' && move.category === 'Physical') {
-				effectiveAccuracy *= 0.8;
-			}
+			// UI显示逻辑：我们需要在这里“预判”Hustle的效果
+			// 因为onModifyMove执行时，Hustle还没作用
+			if (move.category === 'Status' || move.accuracy === true) return;
 
-			if (effectiveAccuracy < 100) {
-				this.debug('Fantasy Power Lens: Boosting power');
-				return this.chainModify([4915, 4096]); // 提升威力1.2倍
+			let isHustleAffected = (source.hasAbility('hustle') && move.category === 'Physical');
+			
+			// 条件1: 技能本身命中不满100
+			// 条件2: 技能是100命中，但会被Hustle影响，从而变得不满100
+			if (move.accuracy < 100 || (move.accuracy === 100 && isHustleAffected)) {
+				this.debug('Fantasy Power Lens: Updating UI accuracy');
+				// 直接修改move对象的accuracy属性来更新UI显示
+				// 注意：Hustle的0.8倍显示是引擎内置的，我们只需再乘1.2即可
+				move.accuracy *= 1.2;
+			}
+		},
+		// 实际计算逻辑：
+		// 1. 清理标记
+		onBeforeMove(pokemon, target, move) {
+			if (pokemon.m.fantasypowerlens_boost) {
+				delete pokemon.m.fantasypowerlens_boost;
+			}
+		},
+		// 2. 计算命中（低优先级，在Hustle之后）
+		onSourceModifyAccuracyPriority: -2,
+		onSourceModifyAccuracy(accuracy, source, target, move) {
+			if (typeof accuracy === 'number' && accuracy < 100 && move.category !== 'Status') {
+				this.debug('Fantasy Power Lens: Increasing final accuracy');
+				if (!source.m) source.m = {};
+				source.m.fantasypowerlens_boost = true;
+				return this.chainModify([4915, 4096]); // 1.2倍
+			}
+		},
+		// 3. 计算伤害（根据标记）
+		onSourceModifyDamage(damage, source, target, move) {
+			if (source.m?.fantasypowerlens_boost) {
+				this.debug('Fantasy Power Lens: Increasing damage');
+				return this.chainModify([4915, 4096]); // 1.2倍
 			}
 		},
 		num: 10001,
