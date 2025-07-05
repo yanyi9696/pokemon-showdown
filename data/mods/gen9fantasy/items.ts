@@ -31,7 +31,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
         if (move.category === 'Status' || move.accuracy === true) return;
         
         // 预判Hustle是否会生效
-        const isHustleAffected = source.hasAbility('Hustle') && move.category === 'Physical';
+        const isHustleAffected = source.hasAbility('hustle') && move.category === 'Physical';
         
         // 核心判断：
         // 1. 技能原始命中 < 100
