@@ -20,6 +20,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onModifyMove(move, source) {
 			// 确保“willCrit”永远为 false，禁用暴击
 			move.willCrit = false;
+			if (move.accuracy !== true && typeof move.accuracy === 'number' && move.category !== 'Status' && move.accuracy < 100) {
+			this.debug('Fantasy Power Lens: Increasing accuracy for display');
+			move.accuracy *= 1.2;
+			}
 		},
 		onModifyAccuracy(accuracy, source, target, move) {
 			if (typeof accuracy !== 'number') return accuracy;
