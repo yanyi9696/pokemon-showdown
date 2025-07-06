@@ -53,6 +53,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	glaliemegafantasy: {
 		tier: "UU",
+		abilities: {0: "Refrigerate"},		
 	},
 	illumisefantasy: {
 		tier: "UU",
