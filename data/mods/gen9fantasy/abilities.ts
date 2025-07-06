@@ -47,6 +47,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onEffectivenessPriority: -1,
 		onEffectiveness(typeMod, target, type, move) {
 			if (!target || target.getAbility().id !== 'fengchao') return typeMod;
+			if (!move) return typeMod;
+			if (move?.id === 'stealthrock') return typeMod; // 显式排除隐形岩
 			if (move?.ignoreAbility) return typeMod;
 			if (type === 'Bug' && typeMod > 0) {
 				this.add('-activate', target, 'ability: Fengchao');
