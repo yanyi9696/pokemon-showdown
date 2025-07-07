@@ -12,6 +12,32 @@ export const Scripts: ModdedBattleScriptsData = {
 	},
 	// 添加 actions 属性来覆盖对战行为
 	actions: {
+		switchIn(pokemon: Pokemon, pos: number, source?: Effect | null, isDrag?: boolean) {
+			// 首先，我们必须执行原始的 switchIn 逻辑。
+			// 我们在原型链上找到它，就像我们对 runMegaEvo 所做的那样。
+			// @ts-ignore
+			const baseImplementation = this.battle.actions.__proto__?.switchIn;
+			if (!baseImplementation) {
+				this.battle.debug("错误：找不到基础 switchIn 实现。");
+				return false;
+			}
+
+			// 调用原始函数并储存其结果
+			const result = baseImplementation.call(this, pokemon, pos, source, isDrag);
+
+			// 现在，在原始逻辑运行之后，我们添加我们的修复。
+			// 检查刚刚上场的宝可梦是否是我们的自定义 Mega 形态。
+			if (pokemon.species.isMega && pokemon.species.name.endsWith('-Fantasy')) {
+				// 宝可梦的特性名已经是正确的了，但它的效果可能处于“休眠”状态。
+				// 我们再次调用 setAbility 来“唤醒”这些效果。
+				// 第三个参数 'true' 可以防止“（宝可梦）的特性是（xxx）！”这类信息重复显示在对战日志中。
+				pokemon.setAbility(pokemon.getAbility(), null, true);
+			}
+
+			// 返回原始调用的结果
+			return result;
+		},
+
 		// 覆盖 runMegaEvo 方法
 		runMegaEvo(pokemon: Pokemon) {
 			const speciesid = pokemon.species.id;
@@ -36,7 +62,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				) {
 					// 执行向 Mega Fantasy 形态的 Mega 进化
 					pokemon.formeChange(megaFantasySpecies, item, true);
-					const newAbility = FormatsData[megaFantasySpecies.id]?.abilities?.[0] ?? megaFantasySpecies.abilities[0];
+					const newAbility = megaFantasySpecies.abilities[0];
 					pokemon.baseAbility = newAbility as ID;
 					pokemon.setAbility(newAbility);
 					this.battle.add('-mega', pokemon.fullname, megaFantasySpecies.name, item.name);
