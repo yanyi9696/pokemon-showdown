@@ -1,20 +1,21 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 fantasysachetfling: {
     name: 'FantasySachetFling',
-    duration: 1, // 状态只持续一瞬间
+    duration: 1,
     onStart(target, source, sourceEffect) {
-        // 这个 onStart 会在状态附加时立刻执行
         const bannedAbilities = ['lingeringaroma', 'mummy'];
-        const targetAbility = target.getAbility(); 
-		if (bannedAbilities.includes(targetAbility.id) || (targetAbility as any).isPermanent) {
-			return;
-		}
+        const targetAbility = target.getAbility();
+        
+        if (bannedAbilities.includes(targetAbility.id) || (targetAbility as any).isPermanent) {
+            return;
+        }
+
         const oldAbility = target.setAbility('lingeringaroma');
         if (oldAbility) {
-            // 判断来源是道具投掷
+            // 永久化修改
+            target.baseAbility = 'lingeringaroma' as ID;
+
             if (sourceEffect && sourceEffect.effectType === 'Item') {
-                 // --- 修正的代码在这里！---
-                 // 检查 source 是否存在，并使用 source.name
                  if (source) {
                     this.add('-ability', target, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + source.name);
                  } else {

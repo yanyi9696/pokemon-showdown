@@ -111,32 +111,56 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		fling: {
 			basePower: 10,
 			volatileStatus: 'fantasysachetfling',
-		} as any, // 使用 as any 来绕过类型检查
+		} as any,
 		onDamagingHit(damage, target, source, move) {
 			if (!move.flags['contact'] || source === target) return;
-			let holder: Pokemon | undefined;
-			let affected: Pokemon | undefined;
+
+			// 调试信息：事件触发
+			this.debug(`Fantasy Sachet: onDamagingHit triggered by ${source.name}'s ${move.name} on ${target.name}`);
+
+			// 1. 检查攻击方 (source) 是否持有道具
 			if (source.hasItem('fantasysachet')) {
-				holder = source;
-				affected = target;
-			} else if (target.hasItem('fantasysachet')) {
-				holder = target;
-				affected = source;
-			} else {
-				return;
+				const affected = target;
+				const bannedAbilities = ['lingeringaroma', 'mummy'];
+				const affectedAbilityId = affected.ability;
+				const affectedAbility = this.dex.abilities.get(affectedAbilityId);
+
+				this.debug(`Fantasy Sachet (Attacker Check): Target ${affected.name}'s ability is ${affectedAbility.name}`);
+
+				if (affectedAbility && !bannedAbilities.includes(affectedAbilityId) && !(affectedAbility as any).isPermanent) {
+					if (source.useItem()) {
+						this.debug(`Fantasy Sachet (Attacker Check): Conditions met, using item.`);
+						// 同时修改基础特性和当前特性，使其永久生效
+						affected.baseAbility = 'lingeringaroma' as ID;
+						affected.setAbility('lingeringaroma');
+						this.add('-activate', source, 'item: Fantasy Sachet');
+						this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet');
+					}
+				} else {
+					this.debug(`Fantasy Sachet (Attacker Check): Conditions failed.`);
+				}
 			}
-			const bannedAbilities = ['lingeringaroma', 'mummy'];
-			const affectedAbilityId = affected.getAbility().id;
-			const affectedAbility = this.dex.abilities.get(affectedAbilityId);
-			if (!affectedAbility) return;
-			if (bannedAbilities.includes(affectedAbilityId) || (affectedAbility as any).isPermanent) {
-				return;
-			}
-			if (holder.useItem()) {
-				const oldAbility = affected.setAbility('lingeringaroma');
-				if (oldAbility) {
-					this.add('-activate', holder, 'item: Fantasy Sachet');
-					this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet');
+
+			// 2. 检查被攻击方 (target) 是否持有道具
+			if (target.hasItem('fantasysachet')) {
+				const affected = source;
+				const bannedAbilities = ['lingeringaroma', 'mummy'];
+				const affectedAbilityId = affected.ability;
+				const affectedAbility = this.dex.abilities.get(affectedAbilityId);
+
+				this.debug(`Fantasy Sachet (Defender Check): Attacker ${affected.name}'s ability is ${affectedAbility.name}`);
+
+				if (affectedAbility && !bannedAbilities.includes(affectedAbilityId) && !(affectedAbility as any).isPermanent) {
+					if (target.useItem()) {
+						this.debug(`Fantasy Sachet (Defender Check): Conditions met, using item.`);
+						// 同时修改基础特性和当前特性，使其永久生效
+						affected.baseAbility = 'lingeringaroma' as ID;
+						affected.setAbility('lingeringaroma');
+						this.add('-activate', target, 'item: Fantasy Sachet');
+						this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet');
+					}
+				} else {
+					this.debug(`Fantasy Sachet (Defender Check): Conditions failed.`);
 				}
 			}
 		},
