@@ -411,7 +411,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 70,
 		basePower: 100,
 		category: "Special",
-		name: "	Yuan Neng Shi Fang",
+		name: "Yuan Neng Shi Fang",
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
