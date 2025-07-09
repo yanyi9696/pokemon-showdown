@@ -290,8 +290,8 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	cutecharm: {
 		name: "Cute Charm",
-		desc: "There is a 30% chance a Pokemon making contact with this Pokemon will become infatuated if it is of the opposite gender.",
-		shortDesc: "30% chance of infatuating Pokemon of the opposite gender if they make contact.",
+		desc: "接触时有30%机率使对手着迷。受到的伤害降低10%,若对手为异性则伤害再降低20%。",
+		shortDesc: "接触时有30%机率使对手着迷。受到的伤害降低10%,若对手为异性则伤害再降低20%。",
 		gen4: {
 			desc: "There is a 30% chance a Pokemon making contact with this Pokemon will become infatuated if it is of the opposite gender. This effect does not happen if this Pokemon did not lose HP from the attack.",
 		},

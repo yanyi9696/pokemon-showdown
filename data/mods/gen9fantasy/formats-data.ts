@@ -42,6 +42,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	kricketunefantasy: {
 		tier: "UUBL",
 	},
+	mienshaofantasy: {
+		tier: "UUBL",
+	},
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},
