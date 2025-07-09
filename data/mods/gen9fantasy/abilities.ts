@@ -78,7 +78,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		this.add('-activate', pokemon, 'ability: Fengchao');
 		this.heal(pokemon.baseMaxhp / 8, pokemon, undefined, this.dex.abilities.get('fengchao'));
 		},
-		name: "Fengchao",
+		name: "Feng Chao",
 		rating: 4,
 		num: 10000,
 		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8。",	
@@ -95,7 +95,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		flags: {},
-		name: "Sujun", 
+		name: "Su Jun", 
 		rating: 3,
 		num: 10001,
 		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后,自己也不会陷入无法动弹状态。",	
@@ -115,7 +115,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			pokemon.heal(pokemon.baseMaxhp / 4);
 		},
 		flags: {},
-		name: "Huibizaisheng",
+		name: "Hui Bi Zai Sheng",
 		rating: 2.5,
 		num: 10002,
 		shortDesc: "回避再生。HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4。",
@@ -130,7 +130,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		flags: {},
-		name: "Pozhu",
+		name: "Po Zhu",
 		rating: 3,
 		num: 10003,
 		shortDesc: "破竹。拥有此特性的宝可梦在使用射击类招式时,无视防御方的能力变化与特性,直接给予伤害。",
@@ -154,7 +154,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			return typeMod;
 		},
 		flags: { breakable: 1 },
-		name: "Mishizhen",
+		name: "Mi Shi Zhen",
 		rating: 1,
 		num: 10004,
 		shortDesc: "迷石阵。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果。",
@@ -174,7 +174,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		flags: {},
-		name: "Tianlaizhiyin",
+		name: "Tian Lai Zhi Yin",
 		rating: 3,
 		num: 10005,
 		shortDesc: "天籁之音。拥有此特性的宝可梦使出的声音招式会变为无属性,并拥有1.5倍本系威力提升。",
@@ -206,7 +206,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		flags: {},
-		name: "Moshushizhihong",
+		name: "Mo Shu Shi Zhi Hong",
 		rating: 3,
 		num: 10006,
 		shortDesc: "魔术师之红。造成伤害时,若无道具,获得目标道具;若有道具,使目标在受到超能系技能攻击后失去道具。",
