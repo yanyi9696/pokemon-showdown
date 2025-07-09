@@ -105,4 +105,44 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "幻之生命宝珠。携带后, 不受异常状态效果影响, 但处于异常状态下的宝可梦, 回合结束时将损失最大HP的1/10。",
 		shortDesc: "幻之生命宝珠。异常状态效果无效, 但异常状态下每回合损失1/10最大HP。",
 	},
+	fantasysachet: {
+		name: "Fantasy Sachet",
+		spritenum: 691, // 用Sachet的图标
+		fling: {
+			basePower: 10,
+			volatileStatus: 'fantasysachetfling',
+		} as any, // 使用 as any 来绕过类型检查
+		onDamagingHit(damage, target, source, move) {
+			if (!move.flags['contact'] || source === target) return;
+			let holder: Pokemon | undefined;
+			let affected: Pokemon | undefined;
+			if (source.hasItem('fantasysachet')) {
+				holder = source;
+				affected = target;
+			} else if (target.hasItem('fantasysachet')) {
+				holder = target;
+				affected = source;
+			} else {
+				return;
+			}
+			const bannedAbilities = ['lingeringaroma', 'mummy'];
+			const affectedAbilityId = affected.getAbility().id;
+			const affectedAbility = this.dex.abilities.get(affectedAbilityId);
+			if (!affectedAbility) return;
+			if (bannedAbilities.includes(affectedAbilityId) || (affectedAbility as any).isPermanent) {
+				return;
+			}
+			if (holder.useItem()) {
+				const oldAbility = affected.setAbility('lingeringaroma');
+				if (oldAbility) {
+					this.add('-activate', holder, 'item: Fantasy Sachet');
+					this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet');
+				}
+			}
+		},
+		num: 10004,
+		gen: 9,
+		desc: "幻之香袋。携带道具后, 当接触对方或被对方接触时, 将对方的特性更改为甩不掉的气味, 生效一次后消失。",
+		shortDesc: "幻之香袋。当接触对方或被对方接触时, 将对方的特性更改为甩不掉的气味。",
+	},
 };
