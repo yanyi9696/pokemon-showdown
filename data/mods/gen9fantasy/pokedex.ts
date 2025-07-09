@@ -102,7 +102,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	golurkfantasy: {
 		num: 623,
-		name: "Golurk",
+		name: "Golurk-Fantasy",
 		baseSpecies: "Golurk",
 		forme: "Fantasy",
 		types: ["Ground", "Ghost"],
