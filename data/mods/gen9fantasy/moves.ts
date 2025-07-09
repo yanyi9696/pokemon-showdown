@@ -426,7 +426,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "normal",
 		type: "Ghost", 
-		desc: "用攻击或特攻较高的一项伤害对手,并使其陷入麻痹状态。",
-		shortDesc: "比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。让对手陷入麻痹状态。"
+		desc: "比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。让对手陷入麻痹状态。",
+		shortDesc: "用攻击或特攻较高的一项伤害对手,并使其陷入麻痹状态。"
 	},
 };
