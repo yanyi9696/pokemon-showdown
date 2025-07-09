@@ -21,6 +21,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	garchompfantasy: {
 		tier: "OU",
 	},
+	golurkfantasy: {
+		tier: "OU",
+	},
 	goodrahisuifantasy: {
 		tier: "OU",
 	},

@@ -406,4 +406,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "换季。提高自身物攻与速度各1级。萌芽鹿使用该招式后, 按季节顺序进行形态变化。",
 		shortDesc: "换季。自身物攻与速度+1。萌芽鹿使用后按季节顺序变形。"
 	},
+	yuannengshifang: {
+		num: 10015,
+		accuracy: 70,
+		basePower: 100,
+		category: "Special",
+		name: "源能释放",
+		pp: 5,
+		priority: 0,
+		flags: { protect: 1, mirror: 1 },
+		onModifyMove(move, pokemon) {
+			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
+				move.category = 'Physical';
+			}
+		},
+		secondary: {
+			chance: 100,
+			status: 'par',
+		},
+		target: "normal",
+		type: "Dragon", 
+		desc: "源能释放。用攻击或特攻较高的一项伤害对手,并使其陷入麻痹状态。",
+		shortDesc: "源能释放。比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。让对手陷入麻痹状态。"
+	},
 };
