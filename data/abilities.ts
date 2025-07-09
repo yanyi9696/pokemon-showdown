@@ -690,6 +690,22 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		num: 126,
 	},
 	corrosion: {
+	    onModifyMove(move, pokemon, target) {
+			// 检查1：确保招式是“毒”属性
+			if (move.type !== 'Poison') return;
+			// 检查2：确保目标存在且拥有“钢”属性
+			// target?.hasType('Steel') 是一种安全的写法，即使目标不存在也不会报错
+			if (target?.hasType('Steel')) {
+				// 关键逻辑：为这个即将使用的招式动态添加一个 onEffectiveness 函数
+				// 这个函数会覆盖常规的属性克制计算
+				move.onEffectiveness = function (typeMod, t, type, m) {
+					// 当系统检测到目标属性(type)是'Steel'时，
+					// 我们不返回默认的 -1 (效果不佳)，而是强制返回 1 (效果绝佳)
+					if (type === 'Steel') return 1;
+				};
+			}
+		},
+    	// 原特性效果说明：这个特性的中毒效果是在游戏核心逻辑中实现的，
 		// Implemented in sim/pokemon.js:Pokemon#setStatus
 		flags: {},
 		name: "Corrosion",

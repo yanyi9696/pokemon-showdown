@@ -264,7 +264,7 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	corrosion: {
 		name: "Corrosion",
-		shortDesc: "This Pokemon can poison or badly poison a Pokemon regardless of its typing.",
+		shortDesc: "可以使钢属性和毒属性的宝可梦也陷入中毒状态,毒系招式对钢系效果绝佳。",
 	},
 	costar: {
 		name: "Costar",

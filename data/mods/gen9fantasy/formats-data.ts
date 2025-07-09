@@ -64,6 +64,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sawsbuckfantasy: {
 		tier: "UU",
 	},
+	salazzlefantasy: {
+		tier: "UU",
+	},
 	sawsbucksummerfantasy: {
 		tier: "UU",
 	},
