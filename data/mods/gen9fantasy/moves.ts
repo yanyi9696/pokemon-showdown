@@ -93,7 +93,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 90,
 		basePower: 65,
 		category: "Physical",
-		name: "MiJianBaiRenChuan",
+		name: "Mi Jian Bai Ren Chuan",
 		pp: 15,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1, slicing: 1 },
@@ -115,7 +115,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Normal",
 		desc: "秘剑·百仞川。令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。",
-		shortDesc: "秘剑·百仞川。令目标场地进入钢刺状态，使交换上场的宝可梦受到伤害。"
+		shortDesc: "秘剑·百仞川。令目标场地进入钢刺状态。"
 	},
 	dianshanshunji: {
 		num: 10004,
