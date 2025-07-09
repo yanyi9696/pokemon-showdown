@@ -112,34 +112,37 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			basePower: 10,
 			volatileStatus: 'fantasysachetfling',
 		} as any,
-		// 新增：专门处理【主动攻击】的事件
-		onAfterHit(target, source, move) {
-			// 必须是接触招式，且攻击方(source)是道具持有者
-			if (!move || !move.flags['contact'] || !source.hasItem('fantasysachet')) return;
-			// 目标不能是自己或队友
-			if (target.isAlly(source) || target === source) return;
 
-			const affected = target;
-			const bannedAbilities = ['lingeringaroma', 'mummy'];
-			const affectedAbilityId = affected.ability;
-			const affectedAbility = this.dex.abilities.get(affectedAbilityId);
+		// 方案A：处理【主动攻击】。当持有者使用接触招式时，动态给招式附加 onHit 效果
+		onModifyMove(move, pokemon) {
+			if (!move.flags['contact'] || !pokemon.hasItem('fantasysachet')) return;
+			
+			// 动态为这个招式添加 onHit 事件
+			move.onHit = (target, source) => {
+				// 确保 source 和 target 存在且不是队友
+				if (!source || !target || target.isAlly(source) || target === source) return;
 
-			if (affectedAbility && !bannedAbilities.includes(affectedAbilityId) && !(affectedAbility as any).isPermanent) {
-				if (source.useItem()) {
-					// 永久修改特性
-					affected.baseAbility = 'lingeringaroma' as ID;
-					affected.setAbility('lingeringaroma');
-					this.add('-activate', source, 'item: Fantasy Sachet');
-					this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet');
+				const affected = target;
+				const bannedAbilities = ['lingeringaroma', 'mummy'];
+				const affectedAbilityId = affected.ability;
+				const affectedAbility = this.dex.abilities.get(affectedAbilityId);
+
+				if (affectedAbility && !bannedAbilities.includes(affectedAbilityId) && !(affectedAbility as any).isPermanent) {
+					// 'this' 在这里指向 Battle 对象，是正确的
+					if (source.useItem()) {
+						affected.baseAbility = 'lingeringaroma' as ID;
+						affected.setAbility('lingeringaroma');
+						this.add('-activate', source, 'item: Fantasy Sachet');
+						this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet');
+					}
 				}
-			}
+			};
 		},
-		// 修改：现在只负责【被动防御】
+
+		// 方案B：处理【被动防御】。当持有者被接触招式命中时触发
 		onDamagingHit(damage, target, source, move) {
-			// 必须是接触招式，且被攻击方(target)是道具持有者
 			if (!move.flags['contact'] || !target.hasItem('fantasysachet')) return;
-			// 攻击方不能是自己或队友
-			if (source.isAlly(target) || source === target) return;
+			if (!source || source.isAlly(target) || source === target) return;
 
 			const affected = source;
 			const bannedAbilities = ['lingeringaroma', 'mummy'];
@@ -148,7 +151,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 
 			if (affectedAbility && !bannedAbilities.includes(affectedAbilityId) && !(affectedAbility as any).isPermanent) {
 				if (target.useItem()) {
-					// 永久修改特性
 					affected.baseAbility = 'lingeringaroma' as ID;
 					affected.setAbility('lingeringaroma');
 					this.add('-activate', target, 'item: Fantasy Sachet');
