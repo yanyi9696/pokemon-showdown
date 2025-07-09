@@ -18,6 +18,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
 	},
+	empoleonfantasy: {	
+		tier: "OU",
+	},
 	garchompfantasy: {
 		tier: "OU",
 	},
