@@ -88,6 +88,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	cursolafantasy: {
 		tier: "RUBL",
 	},
+	dusknoirfantasy: {
+		tier: "RUBL",
+	},
 	samurottfantasy: {
 		tier: "RUBL",
 	},
