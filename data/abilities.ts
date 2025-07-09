@@ -690,17 +690,23 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		num: 126,
 	},
 	corrosion: {
-	    onModifyMove(move, pokemon, target) {
-			// 检查1：确保招式是“毒”属性
+		onModifyMove(move, pokemon, target) {
+			// 检查1：确保我们只修改“毒”属性的招式
 			if (move.type !== 'Poison') return;
 			// 检查2：确保目标存在且拥有“钢”属性
-			// target?.hasType('Steel') 是一种安全的写法，即使目标不存在也不会报错
 			if (target?.hasType('Steel')) {
-				// 关键逻辑：为这个即将使用的招式动态添加一个 onEffectiveness 函数
-				// 这个函数会覆盖常规的属性克制计算
+				/*关键修正：忽略免疫性
+				 * 这行代码告诉对战引擎，在本次攻击中，无视目标基于属性的免疫。
+				 * 这就解决了毒系招式无法命中钢系宝可梦的根本问题。
+				 */
+				move.ignoreImmunity = true;
+				/* 关键逻辑：修改克制倍率
+				 * 这个函数现在可以被正常调用了，因为它已经越过了免疫检查。
+				 * 我们在这里将毒对钢的伤害倍率从“无效”改为“效果绝佳”。
+				 */
 				move.onEffectiveness = function (typeMod, t, type, m) {
-					// 当系统检测到目标属性(type)是'Steel'时，
-					// 我们不返回默认的 -1 (效果不佳)，而是强制返回 1 (效果绝佳)
+					// 当系统计算对'Steel'属性的克制时，返回1，代表效果绝佳(x2)
+					// 在很多引擎中，typeMod的计算方式是：1=绝佳, 0=普通, -1=抵抗
 					if (type === 'Steel') return 1;
 				};
 			}
