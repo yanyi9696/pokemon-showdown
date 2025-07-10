@@ -279,7 +279,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// --- “黑雾”效果结束 ---
 		},
 		flags: { cantsuppress: 1 },
-		name: "Xue Nü",
+		name: "Xue Nv",
 		rating: 2.5,
 		num: 10009,
 		shortDesc: "雪女。在第一次登场以及被打倒时，会创造一次黑雾。",
