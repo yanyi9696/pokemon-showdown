@@ -1,6 +1,10 @@
 import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
+	altariamegafantasy: {
+		tier: "Uber",
+		abilities: {0: "Tian Lai Zhi Yin"},		
+	},
 	regigigasfantasy: {
 		tier: "Uber",
 	},
@@ -38,6 +42,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	vespiquenfantasy: {
 		tier: "OU",
+	},
+	altariafantasy: {
+		tier: "UUBL",
 	},
 	decidueyehisuifantasy: {
 		tier: "UUBL",

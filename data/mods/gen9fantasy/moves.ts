@@ -426,7 +426,44 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "normal",
 		type: "Ghost", 
-		desc: "比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。让对手陷入麻痹状态。",
-		shortDesc: "用攻击或特攻较高的一项伤害对手,并使其陷入麻痹状态。"
+		desc: "源能释放。比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。让对手陷入麻痹状态。",
+		shortDesc: "源能释放。攻击＞特攻变为物理招式,并使其陷入麻痹状态。"
+	},
+	longzhige: {
+		num: 10016,
+		accuracy: 100,
+		basePower: 35,
+		category: "Special", 
+		name: "Long Zhi Ge",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, sound: 1 }, 
+		volatileStatus: 'partiallytrapped', 
+		secondary: null,
+		target: "normal",
+		type: "Dragon", 
+		desc: "龙之歌。使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下。",
+		shortDesc: "龙之歌。在4~5回合内束缚对手,持续造成伤害并使其无法换下。"
+	},
+	huanzhiwu: {
+		num: 10017,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Huan Zhi Wu",
+		pp: 20,
+		priority: 0,
+		flags: { snatch: 1, dance: 1, metronome: 1 },
+		boosts: {
+			spa: 1, 
+			spe: 1, 
+		},
+		secondary: null,
+		target: "self",
+		type: "Psychic", 
+		zMove: { effect: 'clearnegativeboost' },
+		contestType: "Beautiful", 
+		desc: "幻之舞。提高自身特攻与速度各1级。",
+		shortDesc: "幻之舞。提高自身特攻与速度各1级。"
 	},
 };
