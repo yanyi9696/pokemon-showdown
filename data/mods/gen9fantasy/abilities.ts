@@ -248,7 +248,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10008,
 		shortDesc: "雪之力。在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%。",
 	},
-	xuenü: {
+	xuenv: {
 		onStart(pokemon) {
 			// 检查该宝可梦是否已经触发过这个登场效果
 			// 'this.effectState.triggered' 是一个临时的状态，用于防止重复触发
