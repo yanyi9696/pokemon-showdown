@@ -270,7 +270,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Bao Xue Zhi Li", 
 		rating: 4.5, 
 		num: 10009, 
-		shortDesc: "暴雪之力。登场时天气变为雪天。在雪天天气下,招式威力提升30%。",
+		shortDesc: "暴雪之力。兼备降雪和雪之力这两种特性。",
 	},
 	xuenv: {
 		onStart(pokemon) {
