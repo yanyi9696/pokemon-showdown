@@ -54,6 +54,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},
+	crobatfantasy: {
+		tier: "UU",
+	},
 	granbullfantasy: {
 		tier: "UU",
 	},

@@ -211,4 +211,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10006,
 		shortDesc: "魔术师之红。造成伤害时,若无道具,获得目标道具;若有道具,使目标在受到超能系技能攻击后失去道具。",
 	},
+	jiqususheng: {
+		onAfterMoveSecondarySelfPriority: -1,
+		onAfterMoveSecondarySelf(pokemon, target, move) {
+			if (move.totalDamage && !pokemon.forceSwitchFlag) {
+				this.add('-ability', pokemon, this.effect, '[from] move: ' + move.name);
+				this.heal((move.totalDamage / 3) | 0, pokemon);
+			}
+		},
+		flags: {},
+		name: "Ji Qu Shu Sheng",
+		rating: 3,
+		num: 10007,
+		shortDesc: "汲取苏生。在攻击对方成功造成伤害时,携带者的HP会恢复其所造成伤害的1/3。",
+	},
 };
