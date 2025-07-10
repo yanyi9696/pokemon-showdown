@@ -220,12 +220,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		flags: {},
-		name: "Ji Qu Shu Sheng",
+		name: "Ji Qu Su Sheng",
 		rating: 3,
 		num: 10007,
 		shortDesc: "汲取苏生。在攻击对方成功造成伤害时,携带者的HP会恢复其所造成伤害的1/3。",
 	},
-	sandforce: {
+	xuezhili: {
 		onBasePowerPriority: 21,
 		onBasePower(basePower, attacker, defender, move) {
 			// 检查当前天气是否为“雪天或冰雹”（hail 或 snow）

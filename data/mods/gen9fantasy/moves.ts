@@ -443,7 +443,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Dragon", 
 		desc: "龙之歌。使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下。",
-		shortDesc: "龙之歌。在4~5回合内束缚对手,持续造成伤害并使其无法换下。"
+		shortDesc: "龙之歌。困住并伤害目标4~5回合。"
 	},
 	huanzhiwu: {
 		num: 10017,

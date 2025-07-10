@@ -417,7 +417,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Poison", "Flying"],
 		baseStats: { hp: 85, atk: 100, def: 85, spa: 40, spd: 85, spe: 140 },
-		abilities: { 0: "Inner Focus", 1: "jiqususheng", H: "Infiltrator" },
+		abilities: { 0: "Inner Focus", 1: "Ji Qu Su Sheng", H: "Infiltrator" },
 		heightm: 1.8,
 		weightkg: 75,
 		color: "Purple",
