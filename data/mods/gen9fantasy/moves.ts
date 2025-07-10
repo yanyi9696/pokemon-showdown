@@ -310,7 +310,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	yuzhaozhijian: {
 		num: 1012,
 		accuracy: 100,
-		basePower: 85,
+		basePower: 95,
 		category: "Physical",
 		overrideDefensiveStat: 'spd',
 		name: "Yu Zhao Zhi Jian",

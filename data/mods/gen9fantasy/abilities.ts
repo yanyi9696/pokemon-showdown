@@ -225,4 +225,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10007,
 		shortDesc: "汲取苏生。在攻击对方成功造成伤害时,携带者的HP会恢复其所造成伤害的1/3。",
 	},
+	sandforce: {
+		onBasePowerPriority: 21,
+		onBasePower(basePower, attacker, defender, move) {
+			// 检查当前天气是否为“雪天或冰雹”（hail 或 snow）
+			if (this.field.isWeather(['hail', 'snow'])) {
+				// 在对战日志中显示调试信息
+				this.debug('Snow Force boost');
+				// 将招式威力进行连锁修正，提升 30%
+				// 1.3 倍的精确分数表示是 [5325, 4096]
+				return this.chainModify([5325, 4096]);
+			}
+		},
+		// 在受到特定类型影响时触发（用于免疫冰雹伤害）
+		onImmunity(type, pokemon) {
+			// 在一些版本中，冰雹会造成伤害，这可以提供免疫
+			if (type === 'hail') return false;
+		},
+		flags: {},
+		name: "Xue Zhi Li",
+		rating: 3,
+		num: 10008,
+		shortDesc: "雪之力。在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%。",
+	},
 };
