@@ -64,6 +64,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},
+	abomasnowmegafantasy: {
+		tier: "UU",
+		abilities: {0: "Bao Xue Zhi Li"},	
+	},
 	crobatfantasy: {
 		tier: "UU",
 	},
@@ -115,6 +119,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	toxtricitylowkeyfantasy: {
 		tier: "RUBL",
+	},
+	abomasnowfantasy: {
+		tier: "RU",
 	},
 	absolfantasy: {
 		tier: "RU",

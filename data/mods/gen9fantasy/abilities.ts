@@ -248,6 +248,30 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10008,
 		shortDesc: "雪之力。在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%。",
 	},
+	baoxuezhili: {
+		// 效果1: 来自“降雪”的登场发动天气效果
+		onStart(pokemon) {
+			this.add('-ability', pokemon, 'Bao Xue Zhi Li'); // 在日志中显示特性发动信息
+			this.field.setWeather('snow'); // 将天气设置为“雪天”
+		},
+		// 效果2: 来自“雪之力”的威力提升
+		onBasePowerPriority: 21,
+		onBasePower(basePower, attacker, defender, move) {
+			if (this.field.isWeather(['hail', 'snow'])) {
+				this.debug('Blizzard Force boost');
+				return this.chainModify([5325, 4096]); // 威力提升30%
+			}
+		},
+		// 效果3: 来自“雪之力”的伤害免疫
+		onImmunity(type, pokemon) {
+			if (type === 'hail') return false; // 免疫冰雹伤害
+		},
+	    flags: {},
+		name: "Bao Xue Zhi Li", 
+		rating: 4.5, 
+		num: 10009, 
+		shortDesc: "暴雪之力。登场时天气变为雪天。在雪天天气下,招式威力提升30%。",
+	},
 	xuenv: {
 		onStart(pokemon) {
 			// 检查该宝可梦是否已经触发过这个登场效果
@@ -281,7 +305,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		flags: { cantsuppress: 1 },
 		name: "Xue Nv",
 		rating: 2.5,
-		num: 10009,
+		num: 10010,
 		shortDesc: "雪女。在第一次登场以及被打倒时，会创造一次黑雾。",
 	},
 };
