@@ -163,6 +163,38 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			}
 		},
 	},
+	{
+		name: "[Gen 9] FC Free-For-All",
+		mod: 'gen9fantasy',
+		gameType: 'freeforall',
+		rated: false,
+		tournamentShow: false,
+		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', '!Sleep Clause Mod', '!Evasion Items Clause'],
+		    banlist: [
+        // 来自 FC Ubers 的核心禁用项
+        'ND AG', 'Shedinja', 'Assist', 'Baton Pass',
+        'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+        'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
+        
+        // 来自官方 Free-For-All，用于平衡4人对战的禁用项
+        'Dondozo', 'Acupressure', 'Aromatic Mist', 'Coaching',
+        'Court Change', 'Decorate', 'Dragon Cheer', 'Final Gambit', 'Flatter', 'Fling', 'Floral Healing', 'Follow Me', 'Heal Pulse', 'Heart Swap',
+        'Malignant Chain', 'Poison Fang', 'Rage Powder', 'Skill Swap', 'Spicy Extract', 'Swagger', 'Toxic', 'Toxic Spikes',
+    	],
+		onSwitchIn(pokemon) {
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
+	},
+	
 	
 	// S/V Singles
 	///////////////////////////////////////////////////////////////////
