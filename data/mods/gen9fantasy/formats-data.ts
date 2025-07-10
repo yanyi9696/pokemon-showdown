@@ -19,7 +19,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 	},
 	frosmothfantasy: {
-		tier: "OU",
+		tier: "(Uber)",
 	},
 	garchompmegafantasy: {
 		tier: "(Uber)",
