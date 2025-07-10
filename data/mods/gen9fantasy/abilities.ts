@@ -221,7 +221,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Ji Qu Su Sheng",
-		rating: 3,
+		rating: 3.5,
 		num: 10007,
 		shortDesc: "汲取苏生。在攻击对方成功造成伤害时,携带者的HP会恢复其所造成伤害的1/3。",
 	},
@@ -247,5 +247,41 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3,
 		num: 10008,
 		shortDesc: "雪之力。在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%。",
+	},
+	xuenü: {
+		onStart(pokemon) {
+			// 检查该宝可梦是否已经触发过这个登场效果
+			// 'this.effectState.triggered' 是一个临时的状态，用于防止重复触发
+			if (this.effectState.triggered) return;
+			this.effectState.triggered = true;
+			// 在对战日志中显示特性发动信息
+			this.add('-ability', pokemon, this.effect.name, '[from] onStart');
+			// --- “黑雾”效果开始 ---
+			// 在对战日志中显示“所有能力变化都被清除了”
+			this.add('-clearallboost');
+			// 遍历场上所有活跃的宝可梦
+			for (const target of this.getAllActive()) {
+				// 清除该宝可梦的所有能力等级变化
+				target.clearBoosts();
+			}
+			// --- “黑雾”效果结束 ---
+		},
+		// 当宝可梦因任何原因濒死时触发
+		onFaint(pokemon, source, effect) {
+			// 现在，无论宝可梦如何陷入濒死，下面的代码都会执行。
+			// 在对战日志中显示特性发动信息
+	        this.add('-ability', pokemon, this.effect.name, '[from] onFaint');
+			// --- “黑雾”效果开始 ---
+			this.add('-clearallboost');
+			for (const target of this.getAllActive()) {
+				target.clearBoosts();
+			}
+			// --- “黑雾”效果结束 ---
+		},
+		flags: { cantsuppress: 1 },
+		name: "Xue Nü",
+		rating: 2.5,
+		num: 10009,
+		shortDesc: "雪女。在第一次登场以及被打倒时，会创造一次黑雾。",
 	},
 };
