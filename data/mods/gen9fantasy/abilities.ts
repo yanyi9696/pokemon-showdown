@@ -249,22 +249,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "雪之力。在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%。",
 	},
 	baoxuezhili: {
-		// 效果1: 来自“降雪”的登场发动天气效果
-		onStart(source) {
-			this.add('-ability', source, 'Bao Xue Zhi Li'); // 在日志中显示特性发动信息
-			this.field.setWeather('snow'); // 将天气设置为“雪天”
-		},
+	// 效果1: 来自“降雪”的登场发动天气效果
+	onStart(source) {
+		this.field.setWeather('snow');
+	},
 		// 效果2: 来自“雪之力”的威力提升
 		onBasePowerPriority: 21,
 		onBasePower(basePower, attacker, defender, move) {
 			if (this.field.isWeather(['hail', 'snow'])) {
 				this.debug('Blizzard Force boost');
-				return this.chainModify([5325, 4096]); // 威力提升30%
+				return this.chainModify([5325, 4096]);
 			}
 		},
 		// 效果3: 来自“雪之力”的伤害免疫
 		onImmunity(type, pokemon) {
-			if (type === 'hail') return false; // 免疫冰雹伤害
+			if (type === 'hail') return false;
 		},
 	    flags: {},
 		name: "Bao Xue Zhi Li", 
