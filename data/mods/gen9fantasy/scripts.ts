@@ -65,6 +65,7 @@ export const Scripts: ModdedBattleScriptsData = {
 					const newAbility = megaFantasySpecies.abilities[0];
 					pokemon.baseAbility = newAbility as ID;
 					pokemon.setAbility(newAbility);
+					this.battle.singleEvent('Start', this.dex.abilities.get(newAbility), {}, pokemon);
 					this.battle.add('-mega', pokemon.fullname, megaFantasySpecies.name, item.name);
 					this.battle.add('-ability', pokemon, newAbility);
 					pokemon.canMegaEvo = null; // 标记为已 Mega 进化
