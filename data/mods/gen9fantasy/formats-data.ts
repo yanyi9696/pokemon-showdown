@@ -46,6 +46,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	vespiquenfantasy: {
 		tier: "OU",
 	},
+	abomasnowmegafantasy: {
+		tier: "UUBL",
+		abilities: {0: "Bao Xue Zhi Li"},	
+	},
 	altariafantasy: {
 		tier: "UUBL",
 	},
@@ -63,10 +67,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	toxtricityfantasy: {
 		tier: "UUBL",
-	},
-	abomasnowmegafantasy: {
-		tier: "UU",
-		abilities: {0: "Bao Xue Zhi Li"},	
 	},
 	crobatfantasy: {
 		tier: "UU",

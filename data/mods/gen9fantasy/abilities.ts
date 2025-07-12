@@ -250,8 +250,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	baoxuezhili: {
 		// 效果1: 来自“降雪”的登场发动天气效果
-		onStart(pokemon) {
-			this.add('-ability', pokemon, 'Bao Xue Zhi Li'); // 在日志中显示特性发动信息
+		onStart(source) {
+			this.add('-ability', source, 'Bao Xue Zhi Li'); // 在日志中显示特性发动信息
 			this.field.setWeather('snow'); // 将天气设置为“雪天”
 		},
 		// 效果2: 来自“雪之力”的威力提升

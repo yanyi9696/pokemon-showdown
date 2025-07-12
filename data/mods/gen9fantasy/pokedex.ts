@@ -712,7 +712,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Abomasnow",
 		forme: "Fantasy",
 		types: ["Grass", "Ice"],
-		baseStats: { hp: 110, atk: 92, def: 90, spa: 92, spd: 100, spe: 60 },
+		baseStats: { hp: 110, atk: 127, def: 75, spa: 127, spd: 85, spe: 20 },
 		abilities: { 0: "Snow Warning", 1: "Xue Zhi Li", H: "Soundproof" },
 		heightm: 2.2,
 		weightkg: 135.5,
