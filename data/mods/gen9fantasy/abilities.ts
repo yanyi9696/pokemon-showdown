@@ -228,8 +228,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	xuezhili: {
 		onBasePowerPriority: 21,
 		onBasePower(basePower, attacker, defender, move) {
-			// 检查当前天气是否为“雪天或冰雹”（hail 或 snow）
-			if (this.field.isWeather(['hail', 'snow'])) {
+			// 检查当前天气是否为“雪天或冰雹”（hail 或 snowscape）
+			if (this.field.isWeather(['hail', 'snowscape'])) {
 				// 在对战日志中显示调试信息
 				this.debug('Snow Force boost');
 				// 将招式威力进行连锁修正，提升 30%
@@ -251,12 +251,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	baoxuezhili: {
 	// 效果1: 来自“降雪”的登场发动天气效果
 	onStart(source) {
-		this.field.setWeather('snow');
+		this.field.setWeather('snowscape');
 	},
 		// 效果2: 来自“雪之力”的威力提升
 		onBasePowerPriority: 21,
 		onBasePower(basePower, attacker, defender, move) {
-			if (this.field.isWeather(['hail', 'snow'])) {
+			if (this.field.isWeather(['hail', 'snowscape'])) {
 				this.debug('Blizzard Force boost');
 				return this.chainModify([5325, 4096]);
 			}
