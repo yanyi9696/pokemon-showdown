@@ -3810,6 +3810,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	froslassfantasy: {
 		learnset: {
+			freezedry: ["9M"],
 			trickortreat: ["9M"],
 			huanzhiwu: ["9M"],
 			moonblast: ["9M"],
