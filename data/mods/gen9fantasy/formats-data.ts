@@ -37,6 +37,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	goodrahisuifantasy: {
 		tier: "OU",
 	},
+	magnezonefantasy: {
+		tier: "OU",
+	},
 	urshifufantasy: {
 		tier: "OU",
 	},
