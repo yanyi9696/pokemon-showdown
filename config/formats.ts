@@ -93,7 +93,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC UUBL",
 		mod: 'gen9fantasy',
-		ruleset: ['[Gen 9] FC OU', 'FC Mega Ban Check'],
+		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
