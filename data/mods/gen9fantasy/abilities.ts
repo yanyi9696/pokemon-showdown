@@ -79,7 +79,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		this.heal(pokemon.baseMaxhp / 8, pokemon, undefined, this.dex.abilities.get('fengchao'));
 		},
 		name: "Feng Chao",
-		rating: 4,
+		rating: 5,
 		num: 10000,
 		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8。",	
 	},
@@ -155,7 +155,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: { breakable: 1 },
 		name: "Mi Shi Zhen",
-		rating: 1,
+		rating: 1.5,
 		num: 10004,
 		shortDesc: "迷石阵。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果。",
 	},
@@ -175,7 +175,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Tian Lai Zhi Yin",
-		rating: 3,
+		rating: 4,
 		num: 10005,
 		shortDesc: "天籁之音。拥有此特性的宝可梦使出的声音招式会变为无属性,并拥有1.5倍本系威力提升。",
 	},
@@ -306,5 +306,25 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 2.5,
 		num: 10010,
 		shortDesc: "雪女。在第一次登场以及被打倒时，会创造一次黑雾。",
+	},
+	zhengfa: {
+		onSourceEffectiveness(typeMod, target, type, move) {
+			// 确保这是一个火属性招式
+			if (move.type !== 'Fire') {
+				return;
+			}
+			// 当这个火属性招式正准备对一个“水”属性产生效果时
+			// 我们直接将效果的倍率设定为“效果绝佳”
+			if (type === 'Water') {
+				this.debug('Evaporation ability makes Fire move super effective!');
+				// 返回 1 代表“效果绝佳”（2倍伤害）
+				return 1;
+			}
+		},
+	    flags: {},
+		name: "Zheng Fa",
+		rating: 3,
+		num: 10011,
+		shortDesc: "蒸发。使用的火属性招式会对水属性宝可梦造成效果绝佳。",
 	},
 };

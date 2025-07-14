@@ -126,6 +126,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	toxtricitylowkeyfantasy: {
 		tier: "RUBL",
 	},
+	volcanionfantasy: {
+		tier: "RUBL",
+	},
 	abomasnowfantasy: {
 		tier: "RU",
 	},
