@@ -107,12 +107,27 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	fantasysachet: {
 		name: "Fantasy Sachet",
-		spritenum: 691, // 用Sachet的图标
+		spritenum: 691,
 		fling: {
 			basePower: 10,
 			volatileStatus: 'fantasysachetfling',
 		} as any,
-
+		onTryBoost(boost: {[key: string]: number}, target: Pokemon, source: Pokemon | null, effect: Effect | null) {
+			let hasBoost = false;
+			// 遍历所有即将发生的能力变化
+			for (const i in boost) {
+				// 只要有任何一项能力是提升的 (值 > 0)
+				if (boost[i] > 0) {
+					hasBoost = true;
+					// 就从即将发生的变化中，把这一项删除
+					delete boost[i];
+				}
+			}
+			// 只要确实有能力提升被阻止了，就显示消息
+			if (hasBoost) {
+				this.add('-fail', target, 'unboost', '[from] item: Fantasy Sachet');
+			}
+		},
 		// 方案A：处理【主动攻击】。当持有者使用接触招式时，动态给招式附加 onHit 效果
 		onModifyMove(move, pokemon) {
 			if (!move.flags['contact'] || !pokemon.hasItem('fantasysachet')) return;
@@ -160,7 +175,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 10004,
 		gen: 9,
-		desc: "幻之香袋。携带道具后,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失。",
-		shortDesc: "幻之香袋。当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味。",
+		desc: "幻之香袋。携带道具后将无法提升能力,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失。",
+		shortDesc: "幻之香袋。无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味。",
 	},
 };
