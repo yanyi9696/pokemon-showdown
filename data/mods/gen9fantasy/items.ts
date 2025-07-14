@@ -94,6 +94,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		fling: {
 			basePower: 30,
 		},
+		onSourceModifyDamage(damage, source, target, move) {
+			// 检查道具持有者(target)是否存在主要异常状态
+			if (target.status) {
+				this.debug('幻之生命宝珠:因异常状态,获得伤害减免15%。');
+				// 使用 chainModify 来应用乘算修饰。4096 * 0.85 ≈ 3481
+				return this.chainModify(3481 / 4096);
+			}
+		},
 		onResidual(pokemon) {
 			if (pokemon.status && ['brn', 'par', 'slp', 'frz', 'psn', 'tox'].includes(pokemon.status)) {
 				this.damage(pokemon.baseMaxhp / 10, pokemon, pokemon, this.dex.items.get('fantasylifeorb'));
@@ -102,8 +110,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		//不受异常状态效果影响的效果分别写在各个异常状态里了
 		num: 10003,
 		gen: 9,
-		desc: "幻之生命宝珠。携带后,不受异常状态效果影响,但处于异常状态下的宝可梦,回合结束时将损失最大HP的1/10。",
-		shortDesc: "幻之生命宝珠。异常状态效果无效,但异常状态下每回合损失1/10最大HP。",
+		desc: "幻之生命宝珠。携带后, 不受异常状态效果影响,处于异常状态下的宝可梦,受到的伤害降低15%,但回合结束时将损失最大HP的1/10。",
+		shortDesc: "幻之生命宝珠。异常状态效果无效,异常状态下伤害减免15%,每回合损血1/10。",
 	},
 	fantasysachet: {
 		name: "Fantasy Sachet",
