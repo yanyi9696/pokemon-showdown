@@ -49,7 +49,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				// 推导潜在的 Mega Fantasy ID
 				// 例如: 'garchompfantasy' -> 'garchomp-mega-fantasy'
 				const baseName = speciesid.substring(0, speciesid.length - 'fantasy'.length);
-				const potentialMegaFantasyId = `${baseName}-mega-fantasy`;
+				const potentialMegaFantasyId = `${baseName}-Mega-Fantasy`;
 				const megaFantasySpecies = this.dex.species.get(potentialMegaFantasyId);
 
 				// 检查：Mega Fantasy 形态是否存在、是否是 Mega 形态、宝可梦能否进化、
@@ -60,20 +60,6 @@ export const Scripts: ModdedBattleScriptsData = {
 					pokemon.canMegaEvo &&
 					item.id === megaFantasySpecies.requiredItem?.toLowerCase() // 直接检查 requiredItem
 				) {
-				// 1. 获取目标 Mega 形态的标准 ID
-				const megaId = megaFantasySpecies.id;
-				
-				// 2. 检查该 ID 是否在当前对战的分级中被禁用
-				// this.battle.format.ruleTable 会访问当前对战的规则表
-				const isBanned = this.battle.format.ruleTable?.isBanned(megaId);
-				
-				// 3. 如果被禁用，则阻止进化并返回提示
-				if (isBanned) {
-					// 向对战日志发送一条消息，告诉玩家为什么不能进化
-					this.battle.add('-cant', pokemon, 'message: This Pokémon\'s Mega Evolution is banned in this tier!');
-					// 返回 false，中断 Mega 进化过程
-					return false; 
-				}
 					// 执行向 Mega Fantasy 形态的 Mega 进化
 					pokemon.formeChange(megaFantasySpecies, item, true);
 					const newAbility = megaFantasySpecies.abilities[0];

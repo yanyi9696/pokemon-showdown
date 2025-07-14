@@ -24,7 +24,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC Uber",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause'],
+		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check'],
 		banlist: ['ND AG', 'Shedinja', 'Assist', 'Baton Pass',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
@@ -45,7 +45,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC Ubers UU",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause'],
+		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check'],
 		banlist: ['ND AG',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
@@ -72,7 +72,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC OU",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard NatDex'],
+		ruleset: ['Standard NatDex', 'FC Mega Ban Check'],
 		banlist: [
 			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
@@ -93,7 +93,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC UUBL",
 		mod: 'gen9fantasy',
-		ruleset: ['[Gen 9] FC OU'],
+		ruleset: ['[Gen 9] FC OU', 'FC Mega Ban Check'],
 		banlist: ['ND OU', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
@@ -111,7 +111,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC UU",
 		mod: 'gen9fantasy',
-		ruleset: ['[Gen 9] National Dex'],
+		ruleset: ['[Gen 9] National Dex', 'FC Mega Ban Check'],
 		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
@@ -129,7 +129,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC RUBL",
 		mod: 'gen9fantasy',
-		ruleset: ['[Gen 9] National Dex'],
+		ruleset: ['[Gen 9] National Dex', 'FC Mega Ban Check'],
 		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
@@ -148,7 +148,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC RU",
 		mod: 'gen9fantasy',
 		searchShow: false,
-		ruleset: ['[Gen 9] National Dex UU'],
+		ruleset: ['[Gen 9] National Dex UU', 'FC Mega Ban Check'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
@@ -169,7 +169,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		gameType: 'freeforall',
 		rated: false,
 		tournamentShow: false,
-		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', '!Sleep Clause Mod', '!Evasion Items Clause'],
+		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', '!Sleep Clause Mod', '!Evasion Items Clause', 'FC Mega Ban Check'],
 		    banlist: [
         // 来自 FC Ubers 的核心禁用项
         'ND AG', 'Shedinja', 'Assist', 'Baton Pass',

@@ -2943,4 +2943,43 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			return newSpecies;
 		},
 	},
+	fcmegabancheck: {
+		effectType: 'ValidatorRule',
+		name: 'FC Mega Ban Check',
+		desc: "Checks if a Pokemon's Mega Evolution is banned in the current tier during team validation.",
+		onValidateSet(set) {
+			// 首先，获取宝可梦和道具的信息
+			const species = this.dex.species.get(set.species);
+			const item = this.dex.items.get(set.item);
+
+			// 如果没带Mega石，就直接跳过，没问题
+			if (!item.megaStone) return;
+
+			let megaSpecies = null;
+
+			// ---- 核心检查逻辑 ----
+			// 检查我们自定义的 "Fantasy" 宝可梦
+			if (species.name.endsWith('-Fantasy')) {
+				// 根据基础名字推断Mega形态的ID
+				const baseName = species.id.substring(0, species.id.length - 'Fantasy'.length);
+				const potentialMegaFantasyId = `${baseName}-Mega-Fantasy`;
+				megaSpecies = this.dex.species.get(potentialMegaFantasyId);
+			} else if (item.megaEvolves === species.baseSpecies) {
+				// 检查官方的、普通的Mega宝可梦
+				megaSpecies = this.dex.species.get(item.megaStone);
+			}
+
+			// 如果我们成功找到了一个将要进化成的Mega形态
+			if (megaSpecies?.exists) {
+				// 就检查这个Mega形态是否在当前分级的禁玩列表 (banlist) 中
+				if (this.ruleTable.isBannedSpecies(megaSpecies)) {
+					// 如果被禁用了，就返回错误信息给组队界面
+					return [
+						`${species.name} 持有 ${item.name} 的配置在此分级中不合法。`,
+						`原因: 其Mega进化形态 (${megaSpecies.name}) 在此分级被禁止使用。`,
+					];
+				}
+			}
+		},
+	},
 };
