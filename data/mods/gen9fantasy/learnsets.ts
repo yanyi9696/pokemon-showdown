@@ -4596,6 +4596,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			moonblast: ["9M"],
 			chabuduowanan: ["9M"],
 			tidyup: ["9M"],
+			huanzhiwu: ["9M"],
 			//幻想增添技能
 			afteryou: ["8L28", "7T", "7L41", "6T", "6L40", "5T", "5L40"],
 			allyswitch: ["8M", "7T"],
