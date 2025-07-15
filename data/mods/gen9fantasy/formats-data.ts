@@ -25,6 +25,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
 	},
+	pecharuntfantasy: {
+		tier: "(Uber)",
+	},
 	empoleonfantasy: {	
 		tier: "OU",
 	},
