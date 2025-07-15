@@ -71,6 +71,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		spritenum: 410,
 		fling: { basePower: 30 },
 		onStart(pokemon) {
+        // 新增：在宝可梦登场时显示提示信息，暴露道具
+        this.add('-message', `${pokemon.name}的幻之标靶正在锁定目标!`);
 			for (const moveSlot of pokemon.moveSlots) {
 				const move = this.dex.moves.get(moveSlot.id);
 				if (move.category === 'Status') {
@@ -85,8 +87,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 10002,
 		gen: 9,
-		desc: "幻之标靶。在携带该道具后,虽然无法使用变化招式,但使用的原本属性相性没有效果的招式会变为有效果。",
-		shortDesc: "幻之标靶。在携带该道具后,使用的招式无视属性免疫,但无法使用变化招式。",
+		desc: "幻之标靶。携带后,登场会暴露道具,虽然无法使用变化招式,但使用的原本属性相性没有效果的招式会变为有效果。",
+		shortDesc: "幻之标靶。登场时暴露道具,使用的招式无视属性免疫,但无法使用变化招式。",
 	},
 	fantasylifeorb: {
 		name: "Fantasy Life Orb",
