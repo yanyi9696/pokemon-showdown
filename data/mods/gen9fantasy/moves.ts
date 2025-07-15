@@ -466,4 +466,37 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "幻之舞。提高自身特攻与速度各1级。",
 		shortDesc: "幻之舞。提高自身特攻与速度各1级。"
 	},
+	chabuduowanan: {
+		num: 10018,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Cha Bu Duo Wan An",
+		pp: 10,
+		priority: 0,
+		flags: {},
+		// 1. 回合开始时，为使用者添加一个临时的 'chabuduowanan' 状态
+		priorityChargeCallback(source) {
+			source.addVolatile('chabuduowanan');
+		},
+		// 核心效果
+		terrain: 'mistyterrain',
+		selfSwitch: true,
+		secondary: null,
+		condition: {
+			duration: 1, // 持续1回合
+			onBeforeMovePriority: 100, // 确保在出招前高优先级执行
+			onBeforeMove(source, target, move) {
+				// 检查使用者将要出的招式是否是“差不多晚安”
+				if (move.id !== 'chabuduowanan') return;
+				// 如果是，就显示准备信息
+				this.add('-prepare', source, '差不多晚安', '[premajor]');
+			},
+		},
+		target: "all",
+		type: "Fairy", 
+		zMove: { effect: 'clearallboosts' }, 
+		desc: "差不多晚安。接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换。",
+		shortDesc: "差不多晚安。和后备宝可梦替换并使场地变为持续5回合的薄雾场地。"
+	},
 };

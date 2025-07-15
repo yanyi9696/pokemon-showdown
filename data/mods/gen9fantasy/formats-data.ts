@@ -28,6 +28,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	pecharuntfantasy: {
 		tier: "(Uber)",
 	},
+	audinomegafantasy: {
+		tier: "OU",
+		abilities: {0: "Unaware"},	
+	},
 	empoleonfantasy: {	
 		tier: "OU",
 	},
@@ -60,6 +64,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Bao Xue Zhi Li"},	
 	},
 	altariafantasy: {
+		tier: "UUBL",
+	},
+	audinofantasy: {
 		tier: "UUBL",
 	},
 	decidueyehisuifantasy: {
