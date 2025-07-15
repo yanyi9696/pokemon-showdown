@@ -497,6 +497,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Fairy", 
 		zMove: { effect: 'clearallboosts' }, 
 		desc: "差不多晚安。接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换。",
-		shortDesc: "差不多晚安。和后备宝可梦替换并使场地变为持续5回合的薄雾场地。"
+		shortDesc: "差不多晚安。交替并使场地变为持续5回合的薄雾场地。"
 	},
 };
