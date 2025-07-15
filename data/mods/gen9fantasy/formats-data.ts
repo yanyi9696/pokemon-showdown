@@ -43,6 +43,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magnezonefantasy: {
 		tier: "OU",
 	},
+	miloticfantasy: {
+		tier: "OU",
+	},
 	urshifufantasy: {
 		tier: "OU",
 	},
@@ -96,10 +99,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	illumisefantasy: {
 		tier: "UU",
 	},
-	sawsbuckfantasy: {
+	salazzlefantasy: {
 		tier: "UU",
 	},
-	salazzlefantasy: {
+	sawsbuckfantasy: {
 		tier: "UU",
 	},
 	sawsbucksummerfantasy: {
