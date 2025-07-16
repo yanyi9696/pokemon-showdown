@@ -32,6 +32,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.add('-ability', pokemon, currentAbility.name, '[silent]');
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -59,6 +61,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.add('-ability', pokemon, currentAbility.name, '[silent]');
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -80,6 +84,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.add('-ability', pokemon, currentAbility.name, '[silent]');
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -98,6 +104,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.add('-ability', pokemon, currentAbility.name, '[silent]');
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -116,6 +124,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.add('-ability', pokemon, currentAbility.name, '[silent]');
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -134,6 +144,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.add('-ability', pokemon, currentAbility.name, '[silent]');
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -153,6 +165,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.add('-ability', pokemon, currentAbility.name, '[silent]');
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -184,6 +198,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.add('-ability', pokemon, currentAbility.name, '[silent]');
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
