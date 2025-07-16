@@ -371,7 +371,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Audino",
 		forme: "Mega",
 		types: ["Normal", "Fairy"],
-		baseStats: { hp: 103, atk: 30, def: 126, spa: 120, spd: 136, spe: 50 },
+		baseStats: { hp: 103, atk: 35, def: 126, spa: 115, spd: 136, spe: 50 },
 		abilities: { 0: "Unaware" },
 		heightm: 1.5,
 		weightkg: 32,
