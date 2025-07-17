@@ -327,4 +327,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10011,
 		shortDesc: "蒸发。使用的火属性招式会对水属性宝可梦造成效果绝佳。",
 	},
+	tiekai: {
+		onSourceModifyDamage(damage, source, target, move) {
+			// 获取招式的属性相克倍率
+			const typeMod = target.getMoveHitData(move).typeMod;
+			// 检查招式是否为“效果一般”(typeMod === 1) 或 “效果不好”(typeMod < 1)
+			// 我们排除了免疫情况 (typeMod === 0)，因为那时伤害已经为0
+			if (typeMod > 0 && typeMod <= 1) {
+				this.debug('Iron Armor neutralize'); // 输出调试信息，方便追踪
+				return this.chainModify(0.75); // 将伤害乘以0.75
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Tie Kai",
+		rating: 3.5,
+		num: 10012,
+		shortDesc: "铁铠。效果一般和效果不好招式造成的伤害降低1/4。",
+	},
 };
