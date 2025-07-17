@@ -499,4 +499,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "差不多晚安。接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换。",
 		shortDesc: "差不多晚安。交替并使场地变为持续5回合的薄雾场地。"
 	},
+	chiyanbodong: {
+		num: 10019,
+		accuracy: 100,
+		basePower: 85,
+		category: "Special",
+		name: "Chi Yan Bo Dong",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, distance: 1, metronome: 1, pulse: 1 },
+		secondary: {
+			chance: 20,
+			status: 'brn' 
+		},
+		target: "any",
+		type: "Fire",
+		contestType: "Beautiful",
+		desc: "炽炎波动。攻击目标造成伤害。有20%几率使目标陷入灼伤状态。",
+		shortDesc: "炽焰波动。有20%几率使目标陷入灼伤状态。"
+	},
 };
