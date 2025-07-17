@@ -12,6 +12,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: { 0: "Adaptability" },
 	},
+	aggronmegafantasy: {
+		tier: "(Uber)",
+		abilities: { 0: "Filter" },
+	},
 	aegislashfantasy: {
 		tier: "(Uber)",
 	},
@@ -132,6 +136,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	volbeatfantasy: {
 		tier: "UU",
+	},
+	aggronfantasy: {
+		tier: "RUBL",
 	},
 	cursolafantasy: {
 		tier: "RUBL",
