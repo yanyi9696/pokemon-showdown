@@ -35,7 +35,14 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			// 你可以保留或自定义这里的提示信息
 			this.add('-message', `${pokemon.name}的幻之标靶正在锁定目标!`);
 		},
-		// 当状态被移除时（例如因为 onTakeItem），会自动发送 -end 消息，无需额外代码
+		// 状态被移除
+		onDisableMove(pokemon) {
+			for (const moveSlot of pokemon.moveSlots) {
+				if (this.dex.moves.get(moveSlot.id).category === 'Status') {
+					pokemon.disableMove(moveSlot.id);
+				}
+			}
+		},
 	},
 	brn: {
 		name: 'brn',

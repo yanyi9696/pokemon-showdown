@@ -73,14 +73,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onStart(pokemon) {
 			// 核心改动：给宝可梦附加一个不稳定的状态，这个状态将负责UI显示
 			pokemon.addVolatile('fantasyringtarget');
-
-			// 保留你原有的禁用变化招式的逻辑
-			for (const moveSlot of pokemon.moveSlots) {
-				const move = this.dex.moves.get(moveSlot.id);
-				if (move.category === 'Status') {
-					pokemon.disableMove(moveSlot.id);
-				}
-			}
 		},
 		onModifyMove(move, pokemon) {
 			if (move.category !== 'Status') {
