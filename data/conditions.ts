@@ -1,32 +1,42 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-fantasysachetfling: {
-    name: 'FantasySachetFling',
-    duration: 1,
-    onStart(target, source, sourceEffect) {
-        const bannedAbilities = ['lingeringaroma', 'mummy'];
-        const targetAbility = target.getAbility();
-        
-        if (bannedAbilities.includes(targetAbility.id) || (targetAbility as any).isPermanent) {
-            return;
-        }
+	fantasysachetfling: {
+		name: 'FantasySachetFling',
+		duration: 1,
+		onStart(target, source, sourceEffect) {
+			const bannedAbilities = ['lingeringaroma', 'mummy'];
+			const targetAbility = target.getAbility();
 
-        const oldAbility = target.setAbility('lingeringaroma');
-        if (oldAbility) {
-            // 永久化修改
-            target.baseAbility = 'lingeringaroma' as ID;
+			if (bannedAbilities.includes(targetAbility.id) || (targetAbility as any).isPermanent) {
+				return;
+			}
 
-            if (sourceEffect && sourceEffect.effectType === 'Item') {
-                 if (source) {
-                    this.add('-ability', target, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + source.name);
-                 } else {
-                    this.add('-ability', target, 'Lingering Aroma', '[from] item: Fantasy Sachet');
-                 }
-            } else {
-                 this.add('-ability', target, 'Lingering Aroma');
-            }
-        }
-    },
-},
+			const oldAbility = target.setAbility('lingeringaroma');
+			if (oldAbility) {
+				// 永久化修改
+				target.baseAbility = 'lingeringaroma' as ID;
+
+				if (sourceEffect && sourceEffect.effectType === 'Item') {
+					if (source) {
+						this.add('-ability', target, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + source.name);
+					} else {
+						this.add('-ability', target, 'Lingering Aroma', '[from] item: Fantasy Sachet');
+					}
+				} else {
+					this.add('-ability', target, 'Lingering Aroma');
+				}
+			}
+		},
+	},
+	fantasyringtarget: {
+		name: 'Fantasy Ring Target',
+		onStart(pokemon) {
+			// 这条指令会告诉客户端显示状态标签，[from] item 会让它看起来像是从道具来的
+			this.add('-start', pokemon, 'Fantasy Ring Target', '[from] item: Fantasy Ring Target');
+			// 你可以保留或自定义这里的提示信息
+			this.add('-message', `${pokemon.name}的幻之标靶正在锁定目标!`);
+		},
+		// 当状态被移除时（例如因为 onTakeItem），会自动发送 -end 消息，无需额外代码
+	},
 	brn: {
 		name: 'brn',
 		effectType: 'Status',
