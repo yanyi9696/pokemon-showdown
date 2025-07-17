@@ -12,7 +12,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 
 			const oldAbility = target.setAbility('lingeringaroma');
 			if (oldAbility) {
-				// 永久化修改
 				target.baseAbility = 'lingeringaroma' as ID;
 
 				if (sourceEffect && sourceEffect.effectType === 'Item') {
