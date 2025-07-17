@@ -74,9 +74,12 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
         // 新增：在宝可梦登场时显示提示信息，暴露道具
         this.add('-message', `${pokemon.name}的幻之标靶正在锁定目标!`);
 		this.add('-item', pokemon, 'Fantasy Ring Target');
+		},
+		onDisableMove(pokemon) {
 			for (const moveSlot of pokemon.moveSlots) {
 				const move = this.dex.moves.get(moveSlot.id);
 				if (move.category === 'Status') {
+					// 禁用这个招式
 					pokemon.disableMove(moveSlot.id);
 				}
 			}
