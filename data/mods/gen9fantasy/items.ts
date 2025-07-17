@@ -71,15 +71,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		spritenum: 410,
 		fling: { basePower: 30 },
 		onStart(pokemon) {
-			// 在宝可梦登场时显示提示信息，暴露道具
-			this.add('-message', `${pokemon.name}的幻之标靶正在锁定目标!`);
-			this.add('-item', pokemon, 'Fantasy Ring Target');
-		},
-		onBeforeMove(pokemon, target, move) {
-			// 持续阻止变化招式的使用
-			if (move.category === 'Status') {
-				this.add('-fail', pokemon, move, '[from] item: Fantasy Ring Target');
-				return false;
+        // 新增：在宝可梦登场时显示提示信息，暴露道具
+        this.add('-message', `${pokemon.name}的幻之标靶正在锁定目标!`);
+		this.add('-item', pokemon, 'Fantasy Ring Target');
+			for (const moveSlot of pokemon.moveSlots) {
+				const move = this.dex.moves.get(moveSlot.id);
+				if (move.category === 'Status') {
+					pokemon.disableMove(moveSlot.id);
+				}
 			}
 		},
 		onModifyMove(move, pokemon) {

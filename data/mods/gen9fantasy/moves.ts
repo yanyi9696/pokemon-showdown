@@ -154,7 +154,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 80 },
 		desc: "醉神乱打。连续攻击1~3次, 每一击都必定击中要害。第二次攻击威力增加到30, 第三次攻击威力增加到45。",
-		shortDesc: "醉神乱打。连续攻击1~3次, 每一击都必定击中要害。每次击中威力提高。"
+		shortDesc: "醉神乱打。连续攻击1~3次, 必定击中要害。每次击中威力提高。"
 	},
 	biansuzhefan: {
 		num: 10006,
