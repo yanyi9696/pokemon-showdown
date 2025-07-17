@@ -71,17 +71,20 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		spritenum: 410,
 		fling: { basePower: 30 },
 		onStart(pokemon) {
-			// 核心改动：给宝可梦附加一个不稳定的状态，这个状态将负责UI显示
-			pokemon.addVolatile('fantasyringtarget');
+			// 新增：在宝可梦登场时显示提示信息，暴露道具
+			this.add('-message', `${pokemon.name}的幻之标靶正在锁定目标!`);
+			this.add('-item', pokemon, 'Fantasy Ring Target');
+			for (const moveSlot of pokemon.moveSlots) {
+				const move = this.dex.moves.get(moveSlot.id);
+				if (move.category === 'Status') {
+					pokemon.disableMove(moveSlot.id);
+				}
+			}
 		},
 		onModifyMove(move, pokemon) {
 			if (move.category !== 'Status') {
 				move.ignoreImmunity = true;
 			}
-		},
-		// 新增：当道具被移除（如拍落）时，也要移除对应的状态
-		onTakeItem(item, pokemon) {
-			pokemon.removeVolatile('fantasyringtarget');
 		},
 		num: 10002,
 		gen: 9,

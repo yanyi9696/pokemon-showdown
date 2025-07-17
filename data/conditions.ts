@@ -27,23 +27,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			}
 		},
 	},
-	fantasyringtarget: {
-		name: 'Fantasy Ring Target',
-		onStart(pokemon) {
-			// 这条指令会告诉客户端显示状态标签，[from] item 会让它看起来像是从道具来的
-			this.add('-start', pokemon, 'Fantasy Ring Target', '[from] item: Fantasy Ring Target');
-			// 你可以保留或自定义这里的提示信息
-			this.add('-message', `${pokemon.name}的幻之标靶正在锁定目标!`);
-		},
-		// 状态被移除
-		onDisableMove(pokemon) {
-			for (const moveSlot of pokemon.moveSlots) {
-				if (this.dex.moves.get(moveSlot.id).category === 'Status') {
-					pokemon.disableMove(moveSlot.id);
-				}
-			}
-		},
-	},
+
 	brn: {
 		name: 'brn',
 		effectType: 'Status',
