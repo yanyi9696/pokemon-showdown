@@ -86,7 +86,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	electivirefantasy: {
-		tier: "(Uber)",
+		tier: "UUBL",
 	},
 	flygonfantasy: {
 		tier: "UUBL",
@@ -386,6 +386,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ceruledge: {
 		tier: "OU",
 	},
+	glimmora: {
+		tier: "OU",
+	},
 	garganacl: {
 		tier: "OU",
 	},
@@ -395,10 +398,19 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerponwellspringtera: {
 		tier: "OU",
 	},
+	pelipper: {
+		tier: "OU",
+	},
 	regigigas: {
 		tier: "OU",
 	},
+	rillaboom: {
+		tier: "OU",
+	},
 	serperior: {
+		tier: "OU",
+	},
+	skeledirge: {
 		tier: "OU",
 	},
 	ursaluna: {
@@ -407,8 +419,23 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerponcornerstonetera: {
 		tier: "UUBL",
 	},
+	ogerpon: {
+		tier: "UU",
+	},
+	pecharunt: {
+		tier: "UU",
+	},
+	tapufini: {
+		tier: "UU",
+	},
 	tinglu: {
 		tier: "UU",
+	},
+	cloyster: {
+		tier: "RUBL",
+	},
+	polteageist: {
+		tier: "RUBL",
 	},
 	ogerpontealtera: {
 		tier: "RU",
