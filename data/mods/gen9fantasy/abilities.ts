@@ -394,7 +394,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10013,
 		shortDesc: "极智能。以攻击和特攻中较高的一项的数值,使出物理技能和特殊技能。",
 	},
-	jiguangxizhe: {
+	jiguangxingzhe: {
 		onStart(source) {
 			// 检查场上是否已经有极光幕
 			if (source.side.getSideCondition('auroraveil')) {

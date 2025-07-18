@@ -868,7 +868,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		// 修改 onTry 函数以接受 move 参数
 		onTry(source, target, move) {
 			// 如果是由“极光行者”特性发动的，则跳过天气检查
-			if (move?.sourceEffect === 'ability:jiguangxizhe') {
+			if (move?.sourceEffect === 'ability:jiguangxingzhe') {
 				return;
 			}
 			// 否则，执行原来的天气检查
