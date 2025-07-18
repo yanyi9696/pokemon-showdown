@@ -414,20 +414,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	huoshanxingzhe: {
 		onStart(source) {
-			if (source.side.getSideCondition('firepledge')) {
+			// ✅ 改动1: 检查对手的场地
+			if (source.side.foe.getSideCondition('firepledge')) {
 				return;
 			}
 			this.add('-ability', source, '火山行者');
-			// 为己方场地添加 "firepledge" 状态
-			source.side.addSideCondition('firepledge', source);
+			// ✅ 改动2: 将火海施加到对手的场地 (foe)
+			source.side.foe.addSideCondition('firepledge', source);
 		},
+		
 		onEnd(source) {
-			const seaOfFire = source.side.getSideCondition('firepledge');	
-			// ✅ 最终修改：
-			// 检查火海是否存在，并且其持续时间是否为0。
-			// 只有我们特性创造的火海，持续时间才为0。
+			// ✅ 改动3: 从对手的场地获取火海状态
+			const seaOfFire = source.side.foe.getSideCondition('firepledge');
+			
 			if (seaOfFire && seaOfFire.duration === 0) {
-				source.side.removeSideCondition('firepledge');
+				// ✅ 改动4: 从对手的场地移除火海
+				source.side.foe.removeSideCondition('firepledge');
 			}
 		},
 	    flags: {},
