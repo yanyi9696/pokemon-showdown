@@ -1,4 +1,24 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	seaoffire: {
+		name: 'Sea of Fire',
+		// 删除了 duration: 4 这一行
+		// 当状态开始时，在战斗日志中显示消息
+		onSideStart(side) {
+			this.add('-sidestart', side, 'move: Sea of Fire');
+		},
+		// 在回合结束时触发伤害效果
+		onResidualOrder: 5,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (!pokemon.hasType('Fire')) {
+				this.damage(pokemon.baseMaxhp / 8, pokemon);
+			}
+		},
+		// 当状态结束时，在战斗日志中显示消息
+		onSideEnd(side) {
+			this.add('-sideend', side, 'move: Sea of Fire');
+		},
+	},
 	fantasysachetfling: {
 		name: 'FantasySachetFling',
 		duration: 1,
