@@ -26,6 +26,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	aegislashbladefantasy: {
 		tier: "(Uber)",
 	},
+	enteifantasy: {
+		tier: "(Uber)",
+	},
 	frosmothfantasy: {
 		tier: "(Uber)",
 	},

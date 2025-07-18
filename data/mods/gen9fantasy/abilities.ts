@@ -406,10 +406,34 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 我们将 source 作为发动者传递，以便正确计算光之黏土的效果
 			source.side.addSideCondition('auroraveil', source);
 		},
-		flags: { cantsuppress: 1 },
+	    flags: {},
 		name: "Ji Guang Xing Zhe",
 		rating: 4,
 		num: 10014,
 		shortDesc: "极光行者。首次出场时,开启极光幕,携带光之黏土则持续8回合。",
+	},
+	huoshanxingzhe: {
+		onStart(source) {
+			if (source.side.getSideCondition('firepledge')) {
+				return;
+			}
+			this.add('-ability', source, '火山行者');
+			// 为己方场地添加 "firepledge" 状态
+			source.side.addSideCondition('firepledge', source);
+		},
+		onEnd(source) {
+			const seaOfFire = source.side.getSideCondition('firepledge');	
+			// ✅ 最终修改：
+			// 检查火海是否存在，并且其持续时间是否为0。
+			// 只有我们特性创造的火海，持续时间才为0。
+			if (seaOfFire && seaOfFire.duration === 0) {
+				source.side.removeSideCondition('firepledge');
+			}
+		},
+	    flags: {},
+		name: "Huo Shan Xing Zhe",
+		rating: 4,
+		num: 10015,
+		shortDesc: "火山行者。登场时创造火海，直到离场或失去该特性。",
 	},
 };

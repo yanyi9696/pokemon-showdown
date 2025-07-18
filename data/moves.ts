@@ -5631,8 +5631,13 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		},
 		condition: {
 			duration: 4,
-			onSideStart(targetSide) {
+			// ✅ 第一个改动：让函数接收 source 参数
+			onSideStart(targetSide, source) {
 				this.add('-sidestart', targetSide, 'Fire Pledge');
+				// ✅ 第二个改动：直接使用 source 参数进行判断
+				if (source?.hasAbility('huoshanxingzhe')) {
+					this.effectState.duration = 0;
+				}
 			},
 			onResidualOrder: 5,
 			onResidualSubOrder: 1,
