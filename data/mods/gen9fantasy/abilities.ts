@@ -308,19 +308,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "雪女。在第一次登场以及被打倒时，会创造一次黑雾。",
 	},
 	zhengfa: {
-		onSourceEffectiveness(typeMod, target, type, move) {
-			// 确保这是一个火属性招式
-			if (move.type !== 'Fire') {
-				return;
-			}
-			// 当这个火属性招式正准备对一个“水”属性产生效果时
-			// 我们直接将效果的倍率设定为“效果绝佳”
-			if (type === 'Water') {
-				this.debug('Evaporation ability makes Fire move super effective!');
-				// 返回 1 代表“效果绝佳”（2倍伤害）
-				return 1;
-			}
-		},
+	    onModifyMove(move, pokemon, target) {
+        // 检查1：确保我们只修改“火”属性的招式
+        if (move.type !== 'Fire') return;
+
+        // 检查2：确保目标存在且拥有“水”属性
+        if (target?.hasType('Water')) {
+            /* 关键逻辑：修改克制倍率
+             * 我们不再依赖于特性本身的 onSourceEffectiveness 事件，
+             * 而是直接给这个招式本身（仅限本次使用）附加一个临时的
+             * onEffectiveness 函数。这让我们的意图更加明确。
+             */
+            move.onEffectiveness = function (typeMod, t, type, m) {
+                // 当系统正在计算对'Water'属性的克制效果时...
+                if (type === 'Water') {
+                    this.debug('Zheng Fa ability is making Fire super effective against Water!');
+                    // ...我们强制返回 1，代表“效果绝佳”(2x)。
+                    return 1;
+                }
+            };
+        }
+    },
 	    flags: {},
 		name: "Zheng Fa",
 		rating: 3,
