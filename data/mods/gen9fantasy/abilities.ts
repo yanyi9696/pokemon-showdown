@@ -348,8 +348,50 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: { breakable: 1 },
 		name: "Tie Kai",
-		rating: 3.5,
+		rating: 3,
 		num: 10012,
 		shortDesc: "铁铠。效果一般和效果不好招式造成的伤害降低1/4。",
+	},
+	jizhineng: {
+		onModifyMove(move, attacker) {
+			// 步骤 1: 检查是否为伤害招式，并比较双攻
+			if (move.category === 'Status') return;
+			const atk = attacker.getStat('atk', false, true);
+			const spa = attacker.getStat('spa', false, true);
+			// 如果是物理招式，但特攻更高，则给招式打上一个标记
+			// 表示“在计算攻击力时，请使用特攻的数值”
+			if (move.category === 'Physical' && spa > atk) {
+				this.add('-ability', attacker, '极智能');
+				move.overrideOffensiveStat = 'spa'; // 打上标记
+			} 
+			// 如果是特殊招式，但物攻更高，也打上标记
+			// 表示“在计算特攻力时，请使用物攻的数值”
+			else if (move.category === 'Special' && atk > spa) {
+				this.add('-ability', attacker, '极智能');
+				move.overrideOffensiveStat = 'atk'; // 打上标记
+			}
+		},
+		// 步骤 2: 在伤害计算的不同阶段，根据标记替换数值
+		onModifyAtk(atk, attacker, defender, move) {
+			// 当游戏引擎来获取“攻击(atk)”数值时，检查标记
+			// 如果标记是 'spa'，说明我们需要用特攻来代替
+			if (move.overrideOffensiveStat === 'spa') {
+				this.debug('极智能: 攻击(atk)数值被特攻(spa)替代');
+				return attacker.getStat('spa', false, true); // 返回特攻数值
+			}
+		},
+		onModifySpA(spa, attacker, defender, move) {
+			// 当游戏引擎来获取“特攻(spa)”数值时，检查标记
+			// 如果标记是 'atk'，说明我们需要用物攻来代替
+			if (move.overrideOffensiveStat === 'atk') {
+				this.debug('极智能: 特攻(spa)数值被攻击(atk)替代');
+				return attacker.getStat('atk', false, true); // 返回物攻数值
+			}
+		},
+	    flags: {},
+		name: "Ji Zhi Neng",
+		rating: 3.5,
+		num: 10013,
+		shortDesc: "极智能。以攻击和特攻中较高的一项的数值,使出物理技能和特殊技能。",
 	},
 };

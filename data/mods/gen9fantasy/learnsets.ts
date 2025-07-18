@@ -5060,12 +5060,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			volttackle: ["9M"],
 			zingzap: ["9M"],
-			shiftgear: ["9M"],
 			irontail: ["9M"],
-			metalburst: ["9M"],
 			knockoff: ["9M"],
-			drainpunch: ["9M"],
 			spikyshield: ["9M"],
+			shoreup: ["9M"],
 			//幻想增添技能
 			bite: ["9L28", "9S0"],
 			blizzard: ["9M"],
