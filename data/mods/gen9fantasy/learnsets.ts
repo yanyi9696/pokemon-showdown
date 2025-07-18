@@ -1274,6 +1274,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			biansuzhefan: ["9M"],
 			torchsong: ["9M"],
 			nastyplot: ["9M"],
+			clangoroussoul: ["9M"],
 			//幻想增添技能
 			acid: ["9L1", "8L1"],
 			acidspray: ["9M", "9L1", "8L1"],
@@ -1945,7 +1946,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zenheadbutt: ["9M", "7T", "6T"],
 		},
 	},
-	cursola: {
+	cursolafantasy: {
 		learnset: {
 			wideguard: ["9M"],
 			muddywater: ["9M"],
@@ -4443,7 +4444,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			bittermalice: ["9M"],
 			thief: ["9M"],
 			bodypress: ["9M"],
-			shellsmash: ["9M"],
+			irondefense: ["9M"],
 			//幻想增添技能
 			acidspray: ["9M"],
 			astonish: ["9L1"],

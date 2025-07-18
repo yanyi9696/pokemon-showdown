@@ -22,9 +22,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	aegislashbladefantasy: {
 		tier: "(Uber)",
 	},
-	electivirefantasy: {
-		tier: "(Uber)",
-	},
 	frosmothfantasy: {
 		tier: "(Uber)",
 	},
@@ -33,6 +30,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Sand Rush"},
 	},
 	pecharuntfantasy: {
+		tier: "(Uber)",
+	},
+	vespiquenfantasy: {
 		tier: "(Uber)",
 	},
 	audinomegafantasy: {
@@ -54,6 +54,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ironthornsfantasy: {
 		tier: "OU",
 	},
+	kricketunefantasy: {
+		tier: "OU",
+	},
 	magnezonefantasy: {
 		tier: "OU",
 	},
@@ -64,9 +67,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	urshifurapidstrikefantasy: {
-		tier: "OU",
-	},
-	vespiquenfantasy: {
 		tier: "OU",
 	},
 	abomasnowmegafantasy: {
@@ -85,10 +85,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	delphoxfantasy: {
 		tier: "UUBL",
 	},
-	flygonfantasy: {
-		tier: "UUBL",
+	electivirefantasy: {
+		tier: "(Uber)",
 	},
-	kricketunefantasy: {
+	flygonfantasy: {
 		tier: "UUBL",
 	},
 	magmortarfantasy: {
@@ -97,7 +97,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mienshaofantasy: {
 		tier: "UUBL",
 	},
-	toxtricityfantasy: {
+	toxtricitylowkeyfantasy: {
 		tier: "UUBL",
 	},
 	crobatfantasy: {
@@ -137,7 +137,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sawsbuckwinterfantasy: {
 		tier: "UU",
 	},
+	toxtricityfantasy: {
+		tier: "UU",
+	},
 	volbeatfantasy: {
+		tier: "UU",
+	},
+	volcanionfantasy: {
 		tier: "UU",
 	},
 	aggronfantasy: {
@@ -149,16 +155,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	dusknoirfantasy: {
 		tier: "RUBL",
 	},
-	samurottfantasy: {
-		tier: "RUBL",
-	},
 	stakatakafantasy: {
-		tier: "RUBL",
-	},
-	toxtricitylowkeyfantasy: {
-		tier: "RUBL",
-	},
-	volcanionfantasy: {
 		tier: "RUBL",
 	},
 	abomasnowfantasy: {
@@ -171,6 +168,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	hawluchafantasy: {
+		tier: "RU",
+	},
+	samurottfantasy: {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
