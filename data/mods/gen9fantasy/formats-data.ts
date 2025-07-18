@@ -5,6 +5,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Tian Lai Zhi Yin"},		
 	},
+	metagrossmegafantasy: {
+		tier: "Uber",
+		abilities: {0: "Tough Claws"},	
+	},
 	regigigasfantasy: {
 		tier: "Uber",
 	},
@@ -55,6 +59,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	magnezonefantasy: {
+		tier: "OU",
+	},
+	metagrossfantasy: {
 		tier: "OU",
 	},
 	miloticfantasy: {
