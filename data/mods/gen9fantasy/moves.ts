@@ -518,4 +518,64 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "炽炎波动。攻击目标造成伤害。有20%几率使目标陷入灼伤状态。",
 		shortDesc: "炽焰波动。有20%几率使目标陷入灼伤状态。"
 	},
+	fengxing: {
+		num: 10020,
+		accuracy: 100,
+		basePower: 80,
+		category: "Special",
+		name: "Feng Xing",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		/**
+		 * @description 在计算伤害前动态修改基础威力。
+		 * 这是实现威力加成效果的地方。
+		 * @param {number} basePower - 招式的原始基础威力。
+		 * @param {import('../sim/pokemon').Pokemon} pokemon - 使用此招式的宝可梦。
+		 * @returns {number} - 修改后的最终基础威力。
+		 */
+		onBasePower(basePower, pokemon) {
+			let newPower = basePower;
+			// 定义需要检查的基础宝可梦ID列表（小写）
+			const legendaries = ['hooh', 'raikou', 'entei', 'suicune'];
+			// 遍历使用者所在队伍的每一只宝可梦
+			for (const ally of pokemon.side.pokemon) {
+				// 【已移除】不再检查宝可梦是否濒死
+
+				// 获取宝可梦的物种ID（例如 'suicunefantasy'）
+				const speciesId = ally.species.id;
+				// 检查该宝可梦的物种ID是否以列表中的任何一个名字开头
+				for (const legendary of legendaries) {
+					if (speciesId.startsWith(legendary)) {
+						// 如果条件符合，威力+20
+						newPower += 20;
+						// 调试信息，可以在对战日志中看到威力加成的过程
+						this.debug(`凤行: 威力因队伍中的 ${ally.name} 提升了`);
+						// 找到后就跳出内层循环，避免重复计算
+						break;
+					}
+				}
+			}
+			return newPower;
+		},
+		/**
+		 * @description 在招式即将使用时修改招式的属性。
+		 * 这是实现伤害类型自适应效果的地方。
+		 * @param {import('../sim/dex-moves').Move} move - 正在使用的招式对象。
+		 * @param {import('../sim/pokemon').Pokemon} pokemon - 使用此招式的宝可梦。
+		 */
+		onModifyMove(move, pokemon) {
+			// 比较使用者的攻击和特攻数值
+			// pokemon.getStat('atk', false, true) 会获取包括能力变化在内的最终攻击力
+			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
+				// 如果攻击力更高，将这个招式的类别（category）从“Special”变为“Physical”
+				move.category = 'Physical';
+			}
+		},
+		target: "any",
+		type: "Normal",
+		contestType: "Beautiful",
+		desc: "凤行。比较自己的攻击和特攻，用数值相对较高的一项给予对方伤害。队伍中每有一只凤王/雷公/炎帝/水君威力+20。",
+		shortDesc: "凤行。队中凤王与凤王卫队每有一只威力+20,攻击＞特攻变为物理招式。"
+	},
 };

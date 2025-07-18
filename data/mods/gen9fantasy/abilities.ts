@@ -305,7 +305,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Xue Nv",
 		rating: 2.5,
 		num: 10010,
-		shortDesc: "雪女。在第一次登场以及被打倒时，会创造一次黑雾。",
+		shortDesc: "雪女。在首次出场以及被打倒时，会创造一次黑雾。",
 	},
 	zhengfa: {
 	    onModifyMove(move, pokemon, target) {
@@ -393,5 +393,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3.5,
 		num: 10013,
 		shortDesc: "极智能。以攻击和特攻中较高的一项的数值,使出物理技能和特殊技能。",
+	},
+	jiguangxizhe: {
+		onStart(source) {
+			// 检查场上是否已经有极光幕
+			if (source.side.getSideCondition('auroraveil')) {
+				return;
+			}
+			// 在对战日志中显示特性发动信息
+			this.add('-ability', source, '极光行者');
+			// 为己方场地添加极光幕状态
+			// 我们将 source 作为发动者传递，以便正确计算光之黏土的效果
+			source.side.addSideCondition('auroraveil', source);
+		},
+		flags: { cantsuppress: 1 },
+		name: "Ji Guang Xing Zhe",
+		rating: 4,
+		num: 10014,
+		shortDesc: "极光行者。首次出场时,开启极光幕,携带光之黏土则持续8回合。",
 	},
 };
