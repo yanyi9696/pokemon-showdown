@@ -5630,14 +5630,20 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			}
 		},
 		condition: {
+			// 默认持续时间，用于技能联动
 			duration: 4,
-			// ✅ 第一个改动：让函数接收 source 参数
 			onSideStart(targetSide, source) {
 				this.add('-sidestart', targetSide, 'Fire Pledge');
-				// ✅ 第二个改动：直接使用 source 参数进行判断
-				if (source?.hasAbility('huoshanxingzhe')) {
+                
+				// ================ 这就是你想要的“特判” ================
+				const effect = this.effect;
+				// 检查效果的来源是不是“火山行者”特性
+				if (effect?.sourceEffect && (effect.sourceEffect as any).id === 'huoshanxingzhe') {
+					// 如果是，就把持续时间改为0 (永久)
 					this.effectState.duration = 0;
 				}
+				// 如果不是，就使用上面默认的 duration: 4
+				// ====================================================
 			},
 			onResidualOrder: 5,
 			onResidualSubOrder: 1,
