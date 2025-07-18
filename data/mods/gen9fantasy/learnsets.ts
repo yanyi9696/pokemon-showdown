@@ -5522,6 +5522,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	metagrossfantasy: {
 		learnset: {
 			shiftgear: ["9M"],
+			metalburst: ["9M"],
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
 			//幻想增添技能
@@ -5643,6 +5644,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	metagrossmegafantasy: {
 		learnset: {
 			shiftgear: ["9M"],
+			metalburst: ["9M"],
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
 			//幻想增添技能
