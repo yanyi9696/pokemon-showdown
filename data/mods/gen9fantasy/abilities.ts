@@ -396,6 +396,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	jiguangxingzhe: {
 		onStart(source) {
+			// ✅ 新增检查：如果这个特性已经触发过，则直接返回
+			if (this.effectState.triggered) return;
 			if (source.side.getSideCondition('auroraveil')) {
 				return;
 			}
