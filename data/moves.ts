@@ -877,6 +877,11 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		condition: {
 			duration: 5,
 			durationCallback(target, source, effect) {
+				// 特判：如果效果来源是“极光行者”特性，直接返回8回合
+				if (effect?.id === 'jiguangxingzhe') {
+					return 8;
+				}
+				// 否则，执行原来的光之黏土检查逻辑
 				if (source?.hasItem('lightclay')) {
 					return 8;
 				}
