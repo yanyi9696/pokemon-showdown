@@ -865,21 +865,20 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		priority: 0,
 		flags: { snatch: 1, metronome: 1 },
 		sideCondition: 'auroraveil',
-		// 修改 onTry 函数以接受 move 参数
 		onTry(source, target, move) {
-			// 如果是由“极光行者”特性发动的，则跳过天气检查
-			if (move?.sourceEffect === 'ability:jiguangxingzhe') {
+			// 这部分逻辑保持原样，允许特性无视天气
+			if ((source as any).jiguangxingzheIsActivating) {
 				return;
 			}
-			// 否则，执行原来的天气检查
 			return this.field.isWeather(['hail', 'snowscape']);
 		},
 		condition: {
 			duration: 5,
+			// ✅ 最终修正：在这里检查宝可梦身上的“标签”
 			durationCallback(target, source, effect) {
-				// 特判：如果效果来源是“极光行者”特性，直接返回8回合
-				if (effect?.id === 'jiguangxingzhe') {
-					return 8;
+				// 如果来源宝可梦身上有我们贴的临时“标签”
+				if (source && (source as any).jiguangxingzheIsActivating) {
+					return 8; // 直接返回8回合
 				}
 				// 否则，执行原来的光之黏土检查逻辑
 				if (source?.hasItem('lightclay')) {

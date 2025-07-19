@@ -396,21 +396,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	jiguangxingzhe: {
 		onStart(source) {
-			// 检查场上是否已经有极光幕
 			if (source.side.getSideCondition('auroraveil')) {
 				return;
 			}
-			// 在对战日志中显示特性发动信息
 			this.add('-ability', source, '极光行者');
-			// 为己方场地添加极光幕状态
-			// 我们将 source 作为发动者传递，以便正确计算光之黏土的效果
+			// 步骤1: 在自己身上贴上一个临时“标签”
+			(source as any).jiguangxingzheIsActivating = true;
+			// 步骤2: 开启极光幕
 			source.side.addSideCondition('auroraveil', source);
+			// 步骤3: 立刻撕掉“标签”，避免影响后续操作
+			delete (source as any).jiguangxingzheIsActivating;
 		},
 	    flags: {},
 		name: "Ji Guang Xing Zhe",
 		rating: 4,
 		num: 10014,
-		shortDesc: "极光行者。首次出场时,开启极光幕,携带光之黏土则持续8回合。",
+		shortDesc: "极光行者。首次出场时,开启持续8回合的极光幕。",
 	},
 	huoshanxingzhe: {
 		// 当拥有此特性的宝可梦登场或获得此特性时触发
