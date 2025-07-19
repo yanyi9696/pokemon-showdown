@@ -56,8 +56,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Salamence-Mega', 'Smeargle', 'Yveltal', 'Zacian-Crowned', 'Zygarde-50%', 
 			// UUBL
 			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Chi-Yu', 'Flutter Mane', 'Groudon', 'Kyogre', 'Kyurem-Black',
-			'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z', 
-			'Altaria-Mega-Fantasy + Altarianite', 'Regigigas-Fantasy', 'Metagross-Fantasy + Metagrossite'
+			'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z','Altaria-Mega-Fantasy', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy'
 		],
 		onSwitchIn(pokemon) {
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');

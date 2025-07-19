@@ -2948,35 +2948,49 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		name: 'FC Mega Ban Check',
 		desc: "Checks if a Pokemon's Mega Evolution is banned in the current tier during team validation.",
 		onValidateSet(set) {
-			// 首先，获取宝可梦和道具的信息
+			// 获取宝可梦和道具的信息
 			const species = this.dex.species.get(set.species);
 			const item = this.dex.items.get(set.item);
 
-			// 如果没带Mega石，就直接跳过，没问题
+			// 如果没有携带Mega石，则无需检查
 			if (!item.megaStone) return;
 
 			let megaSpecies = null;
 
-			// ---- 核心检查逻辑 ----
-			// 检查我们自定义的 "Fantasy" 宝可梦
-			if (species.name.endsWith('-Fantasy')) {
-				// 根据基础名字推断Mega形态的ID
-				const baseName = species.id.substring(0, species.id.length - 'Fantasy'.length);
-				const potentialMegaFantasyId = `${baseName}-Mega-Fantasy`;
+			// --- 核心检查逻辑 (已修改) ---
+
+			// 检查普通宝可梦的Mega进化
+			if (item.megaEvolves === species.baseSpecies) {
+				// 首先，获取标准的Mega形态
+				const standardMega = this.dex.species.get(item.megaStone);
+				
+				// 然后，检查是否存在一个对应的自定义 "-Fantasy" Mega形态
+				// 例如，如果 standardMega 是 "Altaria-Mega"，这里会检查 "Altaria-Mega-Fantasy" 是否存在
+				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
+
+				// 如果自定义的-Fantasy Mega形态存在，我们就用它来进行禁用检查
+				if (fantasyMega.exists) {
+					megaSpecies = fantasyMega;
+				} else {
+					// 否则，回退到检查标准的Mega形态
+					megaSpecies = standardMega;
+				}
+			} 
+			// 保留原有的对-Fantasy基础形态宝可梦的检查，以防未来有这种需求
+			else if (species.name.endsWith('-Fantasy')) {
+				const baseName = species.id.substring(0, species.id.length - 'fantasy'.length);
+				const potentialMegaFantasyId = `${baseName}-mega-fantasy`;
 				megaSpecies = this.dex.species.get(potentialMegaFantasyId);
-			} else if (item.megaEvolves === species.baseSpecies) {
-				// 检查官方的、普通的Mega宝可梦
-				megaSpecies = this.dex.species.get(item.megaStone);
 			}
 
 			// 如果我们成功找到了一个将要进化成的Mega形态
 			if (megaSpecies?.exists) {
-				// 就检查这个Mega形态是否在当前分级的禁玩列表 (banlist) 中
+				// 就检查这个Mega形态是否在当前分级的禁用列表 (banlist) 中
 				if (this.ruleTable.isBannedSpecies(megaSpecies)) {
-					// 如果被禁用了，就返回错误信息给组队界面
+					// 如果被禁用了，就返回更清晰的错误信息给组队界面
 					return [
-						`${species.name} 持有 ${item.name} 的配置在此分级中不合法。`,
-						`原因: 其Mega进化形态 (${megaSpecies.name}) 在此分级被禁止使用。`,
+						`${species.name} with ${item.name} is not legal in this tier.`,
+						`Reason: Its Mega Evolution (${megaSpecies.name}) is banned in this tier.`,
 					];
 				}
 			}
