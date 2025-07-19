@@ -70,6 +70,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	miloticfantasy: {
 		tier: "OU",
 	},
+	raikoufantasy: {
+		tier: "OU",
+	},
 	urshifufantasy: {
 		tier: "OU",
 	},

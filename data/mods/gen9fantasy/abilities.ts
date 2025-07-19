@@ -447,6 +447,36 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Huo Shan Xing Zhe",
 		rating: 4,
 		num: 10015,
-		shortDesc: "火山行者。登场时创造火海，直到离场或失去该特性。",
+		shortDesc: "火山行者。登场时创造火海,直到离场或失去该特性。",
+	},
+	leitingxingzhe: {
+		onStart(pokemon) {
+			this.add('-ability', pokemon, 'Thundering Walker');
+			// 我们使用 this.dex.abilities.get() 来获取完整的特性对象
+			this.field.addPseudoWeather('iondeluge', pokemon, this.dex.abilities.get(pokemon.ability));	
+			this.hint("The battlefield is engulfed in plasma! Normal-type moves become Electric-type!");
+		},
+		onEnd(pokemon) {
+			// 当宝可梦离场或特性消失时，移除由该特性发动的 "等离子浴"
+			const pseudoWeather = this.field.getPseudoWeather('iondeluge');
+			// 我们将 pseudoWeather 视为 any 类型，这样就可以访问 .source 属性了
+			if (pseudoWeather && (pseudoWeather as any).source === pokemon) {
+				this.field.removePseudoWeather('iondeluge');
+				this.hint("The plasma on the battlefield dissipated.");
+			}
+		},
+		onTryHit(target, source, move) {
+			// 如果目标是地面属性，且招式是电属性
+			if (target.hasType('Ground') && move.type === 'Electric') {
+				// 返回 true，允许招式命中，无视免疫
+				// this.add('-message', `The plasma allows the Electric-type move to hit the Ground-type!`);
+				return true;
+			}
+		},
+	    flags: {},
+		name: "Lei Ting Xing Zhe",
+		rating: 4,
+		num: 10016,
+		shortDesc: "雷霆行者。登场时创造火海,直到离场或失去该特性。",
 	},
 };
