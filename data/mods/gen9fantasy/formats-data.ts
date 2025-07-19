@@ -36,6 +36,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
 	},
+	metagrossfantasy: {
+		tier: "(Uber)",
+	},
 	pecharuntfantasy: {
 		tier: "(Uber)",
 	},
@@ -62,9 +65,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	magnezonefantasy: {
-		tier: "OU",
-	},
-	metagrossfantasy: {
 		tier: "OU",
 	},
 	miloticfantasy: {

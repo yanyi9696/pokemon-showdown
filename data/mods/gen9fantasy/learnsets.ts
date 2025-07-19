@@ -5061,6 +5061,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			volttackle: ["9M"],
 			zingzap: ["9M"],
 			paraboliccharge: ["9M"],
+			risingvoltage: ["9M"],
 			irontail: ["9M"],
 			knockoff: ["9M"],
 			spikyshield: ["9M"],
@@ -5522,9 +5523,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	metagrossfantasy: {
 		learnset: {
 			shiftgear: ["9M"],
-			metalburst: ["9M"],
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
+			rapidspin: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "9L72", "8M", "8L72", "7L41", "6L38", "5L38", "5S4", "4L44", "3L66"],
@@ -5644,9 +5645,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	metagrossmegafantasy: {
 		learnset: {
 			shiftgear: ["9M"],
-			metalburst: ["9M"],
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
+			rapidspin: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "9L72", "8M", "8L72", "7L41", "6L38", "5L38", "5S4", "4L44", "3L66"],
