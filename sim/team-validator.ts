@@ -2457,6 +2457,21 @@ export class TeamValidator {
 		set: Partial<PokemonSet> = {}
 	): string | null {
 		const dex = this.dex;
+
+		// 在这里添加您的特判逻辑 (这是正确的版本)
+		const baseSpeciesId = toID(originalSpecies.baseSpecies);
+		const fantasyId = (baseSpeciesId + 'fantasy') as ID;
+		
+		// 1. 先尝试获取 "fantasy" 形态的对象
+		const fantasySpecies = this.dex.species.get(fantasyId);
+		// 2. 然后检查这个对象的 .exists 属性
+		if (fantasySpecies.exists) {
+			// 如果存在，则将本次检查要用的宝可梦对象替换为那个 "fantasy" 形态
+			// 这样，后续所有的技能池学习检查都会基于 "fantasy" 形态的 learnset
+			originalSpecies = fantasySpecies;
+		}
+		// 特判逻辑结束
+
 		if (!setSources.size()) throw new Error(`Bad sources passed to checkCanLearn`);
 
 		move = dex.moves.get(move);
