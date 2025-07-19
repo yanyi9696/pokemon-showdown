@@ -465,21 +465,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.hint("The plasma on the battlefield dissipated.");
 			}
 		},
-		onModifyMove(move) {
-			if (move.type === 'Electric') {
-				move.ignoreImmunity = {'Electric': true}; // 允许命中地面属性
-			}
-		},
-		onSourceModifyDamage(damage, source, target, move) {
-			if (move.type === 'Electric' && this.dex.getImmunity('Electric', target)) {
-				this.debug('Leitingxingzhe weaken against immune target');
-				return this.chainModify(0.5);
+		onModifyMove(move, pokemon, target) {
+			// 1. 只对电属性招式生效
+			if (move.type !== 'Electric') return;
+			// 2. 检查目标是否为地面系
+			if (target?.hasType('Ground')) {
+				// 3. 允许招式无视免疫
+				move.ignoreImmunity = true;
+				// 4. 动态修改本次招式的克制计算规则
+				if (!move.onEffectiveness) { // 这是一个好的编程习惯，确保不覆盖已有的同名函数
+					move.onEffectiveness = function (typeMod, t, type) {
+						// 当计算对"Ground"属性的克制倍率时，强制返回"效果不好"
+						if (type === 'Ground') {
+							return -1; // -1 代表 0.5倍伤害 (效果不好)
+						}
+					};
+				}
 			}
 		},
 	    flags: {},
 		name: "Lei Ting Xing Zhe",
 		rating: 4,
 		num: 10016,
-		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式会击中地面属性但伤害减半。",
+		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式会击中地面属性但效果不好。",
 	},
 };
