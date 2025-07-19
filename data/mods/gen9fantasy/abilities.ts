@@ -453,17 +453,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	leitingxingzhe: {
 		onStart(pokemon) {
 			this.add('-ability', pokemon, '雷霆行者');
-			// 我们使用 this.dex.abilities.get() 来获取完整的特性对象
-			this.field.addPseudoWeather('iondeluge', pokemon, this.dex.abilities.get(pokemon.ability));	
-			this.hint("The battlefield is engulfed in plasma! Normal-type moves become Electric-type!");
+			// 登场时立即创造场地
+			this.field.addPseudoWeather('iondeluge', pokemon, this.dex.abilities.get(pokemon.ability));
 		},
 		onEnd(pokemon) {
-			// 当宝可梦离场或特性消失时，移除由该特性发动的 "等离子浴"
-			const pseudoWeather = this.field.getPseudoWeather('iondeluge');
-			// 我们将 pseudoWeather 视为 any 类型，这样就可以访问 .source 属性了
-			if (pseudoWeather && (pseudoWeather as any).source === pokemon) {
-				this.field.removePseudoWeather('iondeluge');
-				this.hint("The plasma on the battlefield dissipated.");
+			// 离场时，我们直接移除所有由“雷霆行者”创造的“等离子浴”效果
+			// 这样可以确保效果干净利落地消失
+			this.field.removePseudoWeather('iondeluge');
+		},
+		// [新增逻辑] 每回合结束时检查并刷新场地
+		onResidual(pokemon) {
+			// 检查场上是否还存在“等离子浴”效果
+			if (!this.field.getPseudoWeather('iondeluge')) {
+				// 如果不存在，则重新创造一次
+				this.field.addPseudoWeather('iondeluge', pokemon, this.dex.abilities.get(pokemon.ability));
 			}
 		},
 		onModifyMove(move, pokemon, target) {
