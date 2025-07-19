@@ -477,6 +477,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Lei Ting Xing Zhe",
 		rating: 4,
 		num: 10016,
-		shortDesc: "雷霆行者。登场时创造火海,直到离场或失去该特性。",
+		shortDesc: "雷霆行者。登场时创造等离子浴，直到离场或失去该特性。电属性的招式可以击中地面属性。",
 	},
 };
