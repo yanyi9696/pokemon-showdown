@@ -465,16 +465,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.hint("The plasma on the battlefield dissipated.");
 			}
 		},
-		onEffectiveness(typeMod, target, type, move) {
-			if (move.type === 'Electric' && type === 'Ground') {
-				this.debug('Lei Ting Xing Zhe: Electric moves are not very effective vs Ground');
-				return -1;
+		onModifyMove(move) {
+			if (move.type === 'Electric') {
+				move.ignoreImmunity = {'Electric': true}; // 允许命中地面属性
+			}
+		},
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.type === 'Electric' && this.dex.getImmunity('Electric', target)) {
+				this.debug('Leitingxingzhe weaken against immune target');
+				return this.chainModify(0.5);
 			}
 		},
 	    flags: {},
 		name: "Lei Ting Xing Zhe",
 		rating: 4,
 		num: 10016,
-		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式会击中地面属性但效果不好。",
+		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式会击中地面属性但伤害减半。",
 	},
 };
