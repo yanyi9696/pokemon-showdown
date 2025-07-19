@@ -451,7 +451,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	leitingxingzhe: {
 		onStart(pokemon) {
-			this.add('-ability', pokemon, 'Thundering Walker');
+			this.add('-ability', pokemon, '雷霆行者');
 			// 我们使用 this.dex.abilities.get() 来获取完整的特性对象
 			this.field.addPseudoWeather('iondeluge', pokemon, this.dex.abilities.get(pokemon.ability));	
 			this.hint("The battlefield is engulfed in plasma! Normal-type moves become Electric-type!");
@@ -465,12 +465,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.hint("The plasma on the battlefield dissipated.");
 			}
 		},
-		onTryHit(target, source, move) {
-			// 如果目标是地面属性，且招式是电属性
-			if (target.hasType('Ground') && move.type === 'Electric') {
-				// 返回 true，允许招式命中，无视免疫
-				// this.add('-message', `The plasma allows the Electric-type move to hit the Ground-type!`);
-				return true;
+		onModifyMove(move) {
+			// 如果招式是电属性 (包括被等离子浴改变后的招式)
+			if (move.type === 'Electric') {
+				// 给这个招式附加一个“无视电属性免疫”的属性
+				// 这和“胆量”特性让一般系打鬼系的原理是一样的
+				move.ignoreImmunity = {'Electric': true};
 			}
 		},
 	    flags: {},
