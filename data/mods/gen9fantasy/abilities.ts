@@ -396,18 +396,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	jiguangxingzhe: {
 		onStart(source) {
-			// ✅ 新增检查：如果这个特性已经触发过，则直接返回
-			if (this.effectState.triggered) return;
+			// 1. 首次登场检查：检查永久标记，如果已触发过，则直接停止
+			if ((source as any).jiguangxingzheTriggered) return;
+			// 2. 场地检查：如果场上已经有极光幕，也停止
 			if (source.side.getSideCondition('auroraveil')) {
 				return;
 			}
+			// --- 执行特性效果 ---
 			this.add('-ability', source, '极光行者');
-			// 步骤1: 在自己身上贴上一个临时“标签”
+			// 3. “贴标签”：为auroraveil技能传递信息，让它知道要开8回合
 			(source as any).jiguangxingzheIsActivating = true;
-			// 步骤2: 开启极光幕
 			source.side.addSideCondition('auroraveil', source);
-			// 步骤3: 立刻撕掉“标签”，避免影响后续操作
-			delete (source as any).jiguangxingzheIsActivating;
+			delete (source as any).jiguangxingzheIsActivating; // 立刻“撕掉标签”
+			// 4. 设置永久标记：在宝可梦身上“记忆”已经发动过一次
+			(source as any).jiguangxingzheTriggered = true;
 		},
 	    flags: {},
 		name: "Ji Guang Xing Zhe",
