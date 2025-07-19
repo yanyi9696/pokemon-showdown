@@ -1193,8 +1193,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			axekick: ["9M"],
 			feint: ["9M"],
 			chuanyun: ["9M"],
-			souyusheji: ["9M"],
-			yanzu: ["9M"],
+			baoyulihuai: ["9M"],
+			yanjian: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M"],
 			aircutter: ["9M"],
@@ -4950,7 +4950,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	magmortarfantasy: {
 		learnset: {
-			chiyanbodong: ["9M"],
+			yanzhibodong: ["9M"],
 			dragonpulse: ["9M"],
 			dracometeor: ["9M"],
 			darkpulse: ["9M"],

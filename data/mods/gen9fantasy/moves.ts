@@ -189,12 +189,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "穿云。可以无视守住进行攻击。攻击必定命中在场上的目标。",
 		shortDesc: "穿云。可以无视守住进行攻击。攻击必定命中在场上的目标。"
 	},
-	souyusheji: {
+	baoyulihua: {
 		num: 10008,
 		accuracy: 100,
 		basePower: 15,
 		category: "Physical",
-		name: "Sou Yu She Ji",
+		name: "Bao Yu Li Hua",
 		pp: 20,
 		priority: 1,
 		flags: { protect: 1, mirror: 1, distance: 1, metronome: 1, shooting: 1 },
@@ -203,15 +203,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "any",
 		type: "Steel",
 		contestType: "Cool",
-		desc: "薮雨射击。连续攻击２～５次。必定能够先制攻击。",
-		shortDesc: "薮雨射击。连续攻击２～５次。必定能够先制攻击。"
+		desc: "暴雨梨花。连续攻击２～５次。必定能够先制攻击。",
+		shortDesc: "暴雨梨花。连续攻击２～５次。必定能够先制攻击。"
 	},
-	yanzu: {
+	yanjian: {
 		num: 10009,
 		accuracy: 100,
 		basePower: 80,
 		category: "Physical",
-		name: "Yan Zu",
+		name: "Yan Jian",
 		pp: 15,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1, shooting: 1 },
@@ -224,8 +224,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Rock",
 		contestType: "Tough",
-		desc: "岩镞。攻击目标造成伤害。20%几率令目标的防御降低1级。",
-		shortDesc: "岩镞。攻击目标造成伤害。20%几率令目标的防御降低1级。"
+		desc: "岩箭。攻击目标造成伤害。20%几率令目标的防御降低1级。",
+		shortDesc: "岩箭。攻击目标造成伤害。20%几率令目标的防御降低1级。"
 	},
 	chaopinyaogunpoyinbo: {
 		num: 10010, 
@@ -499,12 +499,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "差不多晚安。接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换。",
 		shortDesc: "差不多晚安。交替并使场地变为持续5回合的薄雾场地。"
 	},
-	chiyanbodong: {
+	yanzhibodong: {
 		num: 10019,
 		accuracy: 100,
 		basePower: 85,
 		category: "Special",
-		name: "Chi Yan Bo Dong",
+		name: "Yan Zhi Bo Dong",
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, distance: 1, metronome: 1, pulse: 1 },
@@ -515,8 +515,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "any",
 		type: "Fire",
 		contestType: "Beautiful",
-		desc: "炽炎波动。攻击目标造成伤害。有20%几率使目标陷入灼伤状态。",
-		shortDesc: "炽焰波动。有20%几率使目标陷入灼伤状态。"
+		desc: "炎之波动。攻击目标造成伤害。有20%几率使目标陷入灼伤状态。",
+		shortDesc: "炎之波动。有20%几率使目标陷入灼伤状态。"
 	},
 	fengxing: {
 		num: 10020,
