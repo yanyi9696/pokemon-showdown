@@ -721,36 +721,46 @@ export class TeamValidator {
 		}
 
 		if (!set.ability) set.ability = 'No Ability';
+		// 在这里添加针对特性的特判逻辑
+		let validationSpecies = species;
+		const baseSpeciesIdForAbility = toID(validationSpecies.baseSpecies);
+		const fantasyIdForAbility = (baseSpeciesIdForAbility + 'fantasy') as ID;
+		const fantasySpeciesForAbility = this.dex.species.get(fantasyIdForAbility);
+		if (fantasySpeciesForAbility.exists) {
+			validationSpecies = fantasySpeciesForAbility;
+		}
+		// 特判逻辑结束
+
 		if (ruleTable.has('obtainableabilities')) {
 			if (dex.gen <= 2 || dex.currentMod === 'gen7letsgo') {
 				set.ability = 'No Ability';
 			} else {
 				if (!ability.name || ability.name === 'No Ability') {
 					problems.push(`${name} needs to have an ability.`);
-				} else if (!Object.values(species.abilities).includes(ability.name)) {
+				} else if (!Object.values(validationSpecies.abilities).includes(ability.name)) {
 					if (tierSpecies.abilities[0] === ability.name) {
-						set.ability = species.abilities[0];
+						set.ability = validationSpecies.abilities[0];
 					} else {
 						problems.push(`${name} can't have ${set.ability}.`);
 					}
 				}
-				if (ability.name === species.abilities['H']) {
+				if (ability.name === validationSpecies.abilities['H']) {
 					setSources.isHidden = true;
 
-					let unreleasedHidden = species.unreleasedHidden;
+					let unreleasedHidden = validationSpecies.unreleasedHidden;
 					if (unreleasedHidden === 'Past' && this.minSourceGen < dex.gen) unreleasedHidden = false;
 
 					if (unreleasedHidden && ruleTable.has('-unreleased')) {
 						problems.push(`${name}'s Hidden Ability is unreleased.`);
-					} else if (dex.gen === 7 && ['entei', 'suicune', 'raikou'].includes(species.id) && this.minSourceGen > 1) {
+					} else if (dex.gen === 7 && ['entei', 'suicune', 'raikou'].includes(validationSpecies.id) && this.minSourceGen > 1) {
 						problems.push(`${name}'s Hidden Ability is only available from Virtual Console, which is not allowed in this format.`);
 					} else if (dex.gen === 6 && ability.name === 'Symbiosis' &&
 						(set.species.endsWith('Orange') || set.species.endsWith('White'))) {
 						problems.push(`${name}'s Hidden Ability is unreleased for the Orange and White forms.`);
-					} else if (dex.gen === 5 && set.level < 10 && (species.maleOnlyHidden || species.gender === 'N')) {
+					} else if (dex.gen === 5 && set.level < 10 && (validationSpecies.maleOnlyHidden || validationSpecies.gender === 'N')) {
 						problems.push(`${name} must be at least level 10 to have a Hidden Ability.`);
 					}
-					if (species.maleOnlyHidden) {
+					if (validationSpecies.maleOnlyHidden) {
 						if (set.gender && set.gender !== 'M') {
 							problems.push(`${name} must be male to have a Hidden Ability.`);
 						}
