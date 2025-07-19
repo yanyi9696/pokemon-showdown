@@ -451,22 +451,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "火山行者。登场时创造火海,直到离场或失去该特性。",
 	},
 	leitingxingzhe: {
+		// onStart 和 onEnd 确保登场和离场时能正确处理
 		onStart(pokemon) {
 			this.add('-ability', pokemon, '雷霆行者');
 			// 登场时立即创造场地
-			this.field.addPseudoWeather('iondeluge', pokemon, this.dex.abilities.get(pokemon.ability));
+			this.field.addPseudoWeather('iondeluge');
 		},
 		onEnd(pokemon) {
-			// 离场时，我们直接移除所有由“雷霆行者”创造的“等离子浴”效果
-			// 这样可以确保效果干净利落地消失
+			// 离场时，直接移除场地效果
 			this.field.removePseudoWeather('iondeluge');
 		},
-		// [新增逻辑] 每回合结束时检查并刷新场地
-		onResidual(pokemon) {
+		onBeforeMove(pokemon) {
 			// 检查场上是否还存在“等离子浴”效果
 			if (!this.field.getPseudoWeather('iondeluge')) {
 				// 如果不存在，则重新创造一次
-				this.field.addPseudoWeather('iondeluge', pokemon, this.dex.abilities.get(pokemon.ability));
+				this.add('-message', `${pokemon.name} 的“雷霆行者”特性再次引发了等离子浴！`); // 添加一条提示信息
+				this.field.addPseudoWeather('iondeluge');
 			}
 		},
 		onModifyMove(move, pokemon, target) {
