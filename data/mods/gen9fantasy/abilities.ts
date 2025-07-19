@@ -465,18 +465,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.hint("The plasma on the battlefield dissipated.");
 			}
 		},
-		onModifyMove(move) {
-			// 如果招式是电属性 (包括被等离子浴改变后的招式)
-			if (move.type === 'Electric') {
-				// 给这个招式附加一个“无视电属性免疫”的属性
-				// 这和“胆量”特性让一般系打鬼系的原理是一样的
-				move.ignoreImmunity = {'Electric': true};
+		onEffectiveness(typeMod, target, type, move) {
+			if (move.type === 'Electric' && type === 'Ground') {
+				this.debug('Lei Ting Xing Zhe: Electric moves are not very effective vs Ground');
+				return -1;
 			}
 		},
 	    flags: {},
 		name: "Lei Ting Xing Zhe",
 		rating: 4,
 		num: 10016,
-		shortDesc: "雷霆行者。登场时创造等离子浴，直到离场或失去该特性。电属性的招式可以击中地面属性。",
+		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式会击中地面属性但效果不好。",
 	},
 };
