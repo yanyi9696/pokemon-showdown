@@ -2947,7 +2947,8 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		effectType: 'ValidatorRule',
 		name: 'FC Teambuilder Correction',
 		desc: "Corrects a selected -Mega-Fantasy species in the teambuilder to its proper base form and Mega Stone.",
-		onValidateSet(set) {
+		// 使用 onChangeSet 事件来确保在所有验证之前最先运行
+		onChangeSet(set) {
 			const species = this.dex.species.get(set.species);
 
 			// 这个规则只处理在编辑器里直接选择-Mega-Fantasy的情况
