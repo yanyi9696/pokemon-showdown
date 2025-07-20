@@ -2946,49 +2946,37 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 	fcmegabancheck: {
 		effectType: 'ValidatorRule',
 		name: 'FC Mega Ban Check',
-		desc: "Handles validation for custom Mega Evolutions, correcting teambuilder choices and checking for bans.",
+		desc: "Checks if a Pokemon's Mega Evolution is banned, based on its base form.",
 		onValidateSet(set) {
 			const species = this.dex.species.get(set.species);
 			const item = this.dex.items.get(set.item);
 
-			// --- 这是全新的核心逻辑 ---
-			// Part 1: 主动修正基础形态
-			// 检查条件：是不是一个普通宝可梦 + 带着对应的Mega石
-			if (item.megaStone && item.megaEvolves === species.baseSpecies) {
-				// 推断标准的Mega形态 (e.g., Metagross-Mega)
-				const standardMega = this.dex.species.get(item.megaStone);
-				// 检查是否存在对应的-Fantasy Mega形态 (e.g., Metagross-Mega-Fantasy)
-				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
+			// 如果没有携带Mega石，则无需检查
+			if (!item.megaStone) return;
 
+			// 如果携带的Mega石和宝可梦不匹配，也跳过
+			if (item.megaEvolves !== species.baseSpecies.replace('-Fantasy', '')) return;
+
+			// 1. 先从Mega石获取标准的Mega形态
+			const standardMega = this.dex.species.get(item.megaStone);
+			if (!standardMega.exists) return;
+
+			let megaTarget = standardMega; // 默认进化目标是标准Mega
+
+			// 2. 只有当基础形态是-Fantasy时，才去寻找-Fantasy Mega形态
+			if (species.name.endsWith('-Fantasy')) {
+				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
 				if (fantasyMega.exists) {
-					// 如果存在，说明玩家的意图是使用Fantasy Mega。
-					// 我们需要检查基础形态是否需要被修正为-Fantasy版本。
-					const baseFantasySpecies = this.dex.species.get(species.id + '-fantasy');
-					if (baseFantasySpecies.exists) {
-						// 将队伍中的普通形态 (Metagross) 修正为-Fantasy形态 (Metagross-Fantasy)
-						set.species = baseFantasySpecies.name;
-					}
+					megaTarget = fantasyMega; // 如果存在，则更新进化目标
 				}
 			}
 			
-			// --- Ban Check 逻辑 (保持不变) ---
-			// Part 2: 检查配置是否会被禁用
-			// 重新获取信息，因为set.species可能已被修改
-			const finalSpecies = this.dex.species.get(set.species);
-			const finalItem = this.dex.items.get(set.item);
-
-			if (finalItem.megaStone) {
-				const standardMega = this.dex.species.get(finalItem.megaStone);
-				if (!standardMega.exists) return;
-				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
-				const megaTarget = fantasyMega.exists ? fantasyMega : standardMega;
-
-				if (this.ruleTable.isBannedSpecies(megaTarget)) {
-					return [
-						`${finalSpecies.name} with ${finalItem.name} is not legal in this tier.`,
-						`Reason: Its Mega Evolution (${megaTarget.name}) is banned in this tier.`,
-					];
-				}
+			// 3. 检查最终的进化目标是否在禁用列表中
+			if (this.ruleTable.isBannedSpecies(megaTarget)) {
+				return [
+					`${species.name} with ${item.name} is not legal in this tier.`,
+					`Reason: Its Mega Evolution (${megaTarget.name}) is banned in this tier.`,
+				];
 			}
 		},
 	},
