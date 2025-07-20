@@ -2943,40 +2943,26 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			return newSpecies;
 		},
 	},
-	fcmegabancheck: {
+	fcteambuildercorrection: {
 		effectType: 'ValidatorRule',
-		name: 'FC Mega Ban Check',
-		desc: "Checks if a Pokemon's Mega Evolution is banned, based on its base form.",
+		name: 'FC Teambuilder Correction',
+		desc: "Corrects a selected -Mega-Fantasy species in the teambuilder to its proper base form and Mega Stone.",
 		onValidateSet(set) {
 			const species = this.dex.species.get(set.species);
-			const item = this.dex.items.get(set.item);
 
-			// 如果没有携带Mega石，则无需检查
-			if (!item.megaStone) return;
-
-			// 如果携带的Mega石和宝可梦不匹配，也跳过
-			if (item.megaEvolves !== species.baseSpecies.replace('-Fantasy', '')) return;
-
-			// 1. 先从Mega石获取标准的Mega形态
-			const standardMega = this.dex.species.get(item.megaStone);
-			if (!standardMega.exists) return;
-
-			let megaTarget = standardMega; // 默认进化目标是标准Mega
-
-			// 2. 只有当基础形态是-Fantasy时，才去寻找-Fantasy Mega形态
-			if (species.name.endsWith('-Fantasy')) {
-				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
-				if (fantasyMega.exists) {
-					megaTarget = fantasyMega; // 如果存在，则更新进化目标
+			// 这个规则只处理在编辑器里直接选择-Mega-Fantasy的情况
+			if (species.name.endsWith('-Mega-Fantasy')) {
+				// 1. 修正为正确的基础-Fantasy形态
+				const baseFantasy = this.dex.species.get(species.name.replace('-Mega-Fantasy', '-Fantasy'));
+				if (baseFantasy.exists) {
+					set.species = baseFantasy.name;
 				}
-			}
-			
-			// 3. 检查最终的进化目标是否在禁用列表中
-			if (this.ruleTable.isBannedSpecies(megaTarget)) {
-				return [
-					`${species.name} with ${item.name} is not legal in this tier.`,
-					`Reason: Its Mega Evolution (${megaTarget.name}) is banned in this tier.`,
-				];
+
+				// 2. 自动添加正确的Mega石
+				const standardMega = this.dex.species.get(species.name.replace('-Fantasy', ''));
+				if (standardMega.exists && standardMega.requiredItem) {
+					set.item = standardMega.requiredItem;
+				}
 			}
 		},
 	},
