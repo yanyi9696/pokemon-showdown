@@ -37,6 +37,17 @@ export const Scripts: ModdedBattleScriptsData = {
 			// 执行变身，这个函数会正确处理所有状态，包括特性。
 			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
 
+			// --- 重点修改 ---
+			// 1. 发送标准的 `-mega` 动画指令
+			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem);
+
+			// 2. 发送一个 `-start` 指令，用于触发你想要的【客户端动画】
+			this.battle.add('-start', pokemon, 'ability: ' + pokemon.getAbility().name);
+
+			// 3. 同时，为了兼容性，仍然在右侧文本日志中显示一次特性信息
+			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] ability: ' + pokemon.getAbility().name, '[silent]');
+			// --- 修改结束 ---
+
 			// 标记玩家已经使用过Mega进化
 			const side = pokemon.side;
 			for (const ally of side.pokemon) {
