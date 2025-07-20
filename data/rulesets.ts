@@ -2946,56 +2946,47 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 	fcmegabancheck: {
 		effectType: 'ValidatorRule',
 		name: 'FC Mega Ban Check',
-		desc: "Checks if a Pokemon's Mega Evolution is banned in the current tier during team validation.",
+		desc: "Handles validation for custom Mega Evolutions, correcting teambuilder choices and checking for bans.",
 		onValidateSet(set) {
-			const species = this.dex.species.get(set.species);
-			const item = this.dex.items.get(set.item);
+			let species = this.dex.species.get(set.species);
+			let item = this.dex.items.get(set.item);
 
-			// 如果没有携带Mega石，则无需检查
-			if (!item.megaStone) return;
-			
-			// 如果这个Mega石与基础宝可梦不匹配，也跳过
-			// 这一步很重要，可以防止比如给“喷火龙-Fantasy”带“妙蛙花进化石”时发生逻辑错误
-			if (item.megaEvolves !== species.baseSpecies.replace(/-Fantasy$/, '')) return;
-
-			let megaSpecies = null;
-			
-			// --- 全新统一的核心检查逻辑 ---
-
-			// 1. 先从Mega石获取标准的Mega形态信息
-			const standardMega = this.dex.species.get(item.megaStone);
-			
-			// 2. 无论基础形态是不是-Fantasy，都优先检查是否存在对应的-Fantasy Mega形态
-			//    例如，对于 Altaria + Altarianite, standardMega 是 Altaria-Mega, 我们就检查 Altaria-Mega-Fantasy 是否存在。
-			//    对于 Charizard-Fantasy + CharizarditeX, standardMega 是 Charizard-Mega-X, 我们就检查 Charizard-Mega-X-Fantasy 是否存在。
-			const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
-
-			// 3. 决定最终要进化成哪个形态
-			if (fantasyMega.exists) {
-				// 如果-Fantasy Mega形态存在，它就是目标
-				megaSpecies = fantasyMega;
-			} else {
-				// 否则，目标就是标准的Mega形态
-				// 注意：如果基础宝可梦是-Fantasy，但没有对应的-Fantasy Mega，我们不允许它进化成普通Mega形态
-				if (!species.name.endsWith('-Fantasy')) {
-					megaSpecies = standardMega;
+			// Part 1: 修正队伍编辑器中的直接选择
+			// 如果玩家直接选了一个 -Mega-Fantasy 形态
+			if (species.name.endsWith('-Mega-Fantasy')) {
+				const baseFantasySpecies = this.dex.species.get(species.name.replace('-Mega-Fantasy', '-Fantasy'));
+				if (baseFantasySpecies.exists) {
+					set.species = baseFantasySpecies.name; // 修正为基础形态
+				} else {
+					set.species = species.baseSpecies.replace('-Mega', '');
 				}
+
+				const standardMega = this.dex.species.get(species.name.replace('-Fantasy', ''));
+				if (standardMega.exists && standardMega.requiredItem) {
+					set.item = standardMega.requiredItem; // 自动添加Mega石
+				}
+				
+				// 因为 set 被修改了, 我们需要重新获取 species 和 item 的信息
+				species = this.dex.species.get(set.species);
+				item = this.dex.items.get(set.item);
 			}
 
-			// 4. 如果我们找到了一个确定的Mega形态
-			if (megaSpecies?.exists) {
-				// 就检查这个Mega形态是否在当前分级的禁用列表 (banlist) 中
-				if (this.ruleTable.isBannedSpecies(megaSpecies)) {
-					// 如果被禁用了，就返回错误信息
-					return [
-						`${species.name} with ${item.name} is not legal in this tier.`,
-						`Reason: Its Mega Evolution (${megaSpecies.name}) is banned in this tier.`,
-					];
-				}
-			} else if (species.name.endsWith('-Fantasy')) {
-				// 如果基础宝可梦是-Fantasy，但经过上面的逻辑没找到对应的-Fantasy Mega形态，
-				// 这意味着它不能Mega进化，也需要阻止
-				return [`${species.name} cannot Mega Evolve with ${item.name} as it has no corresponding Fantasy Mega Evolution.`];
+			// Part 2: 检查配置是否会被禁用
+			// 只有携带Mega石的宝可梦才需要后续检查
+			if (!item.megaStone) return;
+
+			// 推断Mega进化的目标
+			const standardMega = this.dex.species.get(item.megaStone);
+			if (!standardMega.exists) return;
+			const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
+			const megaTarget = fantasyMega.exists ? fantasyMega : standardMega;
+
+			// 检查进化目标是否在禁用列表中
+			if (this.ruleTable.isBannedSpecies(megaTarget)) {
+				return [
+					`${species.name} with ${item.name} is not legal in this tier.`,
+					`Reason: Its Mega Evolution (${megaTarget.name}) is banned in this tier.`,
+				];
 			}
 		},
 	},
