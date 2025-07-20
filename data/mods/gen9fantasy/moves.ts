@@ -154,7 +154,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 80 },
 		desc: "醉神乱打。连续攻击1~3次, 每一击都必定击中要害。第二次攻击威力增加到30, 第三次攻击威力增加到45。",
-		shortDesc: "醉神乱打。连续攻击1~3次,必定击中要害。每次击中威力提高"
+		shortDesc: "醉神乱打。连续攻击1~3次,必定击中要害。每次击中威力↑"
 	},
 	biansuzhefan: {
 		num: 10006,
@@ -576,6 +576,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		contestType: "Beautiful",
 		desc: "凤行。比较自己的攻击和特攻，用数值相对较高的一项给予对方伤害。队伍中每有一只凤王/雷公/炎帝/水君威力+20。",
-		shortDesc: "凤行。队中每只凤王与凤王卫队威力+20,攻击＞特攻变为物理"
+		shortDesc: "凤行。队中每只凤王与凤王卫队威力+20,攻击＞特攻变物理"
 	},
 };
