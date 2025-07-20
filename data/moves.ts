@@ -874,13 +874,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		},
 		condition: {
 			duration: 5,
-			// ✅ 最终修正：在这里检查宝可梦身上的“标签”
+			// ✅ 最终修正：移除特性的特判，恢复为只检查光之黏土
 			durationCallback(target, source, effect) {
-				// 如果来源宝可梦身上有我们贴的临时“标签”
-				if (source && (source as any).jiguangxingzheIsActivating) {
-					return 8; // 直接返回8回合
-				}
-				// 否则，执行原来的光之黏土检查逻辑
 				if (source?.hasItem('lightclay')) {
 					return 8;
 				}

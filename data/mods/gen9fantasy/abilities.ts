@@ -404,7 +404,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 			// --- 执行特性效果 ---
 			this.add('-ability', source, '极光行者');
-			// 3. “贴标签”：为auroraveil技能传递信息，让它知道要开8回合
+			// 3. “贴标签”：为auroraveil技能传递信息，让它知道要开5回合
 			(source as any).jiguangxingzheIsActivating = true;
 			source.side.addSideCondition('auroraveil', source);
 			delete (source as any).jiguangxingzheIsActivating; // 立刻“撕掉标签”
@@ -415,7 +415,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Ji Guang Xing Zhe",
 		rating: 4,
 		num: 10014,
-		shortDesc: "极光行者。首次出场时,开启持续8回合的极光幕。",
+		shortDesc: "极光行者。首次出场时,可以使己方场地进入5回合极光幕状态,如果使用者携带光之黏土则持续8回合。",
 	},
 	huoshanxingzhe: {
 		// 当拥有此特性的宝可梦登场或获得此特性时触发
