@@ -2943,26 +2943,51 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			return newSpecies;
 		},
 	},
-	fcteambuildercorrection: {
+	fcmegabancheck: {
 		effectType: 'ValidatorRule',
-		name: 'FC Teambuilder Correction',
-		desc: "Corrects a selected -Mega-Fantasy species in the teambuilder to its proper base form and Mega Stone.",
-		// 使用 onChangeSet 事件来确保在所有验证之前最先运行
-		onChangeSet(set) {
+		name: 'FC Mega Ban Check',
+		desc: "Checks if a Pokemon's Mega Evolution is banned, with special handling for -Fantasy forms.",
+		onValidateSet(set) {
 			const species = this.dex.species.get(set.species);
+			const item = this.dex.items.get(set.item);
 
-			// 这个规则只处理在编辑器里直接选择-Mega-Fantasy的情况
-			if (species.name.endsWith('-Mega-Fantasy')) {
-				// 1. 修正为正确的基础-Fantasy形态
-				const baseFantasy = this.dex.species.get(species.name.replace('-Mega-Fantasy', '-Fantasy'));
-				if (baseFantasy.exists) {
-					set.species = baseFantasy.name;
+			// 1. 如果没带Mega石，直接跳过
+			if (!item.megaStone) return;
+
+			let megaToCheck = null;
+
+			// 2. 核心逻辑：通过名字解析来手动关联
+			//    例如：从 "Metagross-Fantasy" 提取 "Metagross"
+			const baseName = species.name.replace('-Fantasy', '');
+
+			//    然后检查 Metagrossite 的 megaEvolves 属性是否等于 "Metagross"
+			if (item.megaEvolves === baseName) {
+				// 关联成功！
+				// 3. 获取标准Mega形态 (例如 "Metagross-Mega")
+				const standardMega = this.dex.species.get(item.megaStone);
+				// 4. 尝试寻找对应的 -Mega-Fantasy 形态
+				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
+
+				if (fantasyMega.exists) {
+					// 如果-Mega-Fantasy存在，它就是我们要检查的对象
+					megaToCheck = fantasyMega;
+				} else if (species.name.endsWith('-Fantasy')) {
+					// 如果-Mega-Fantasy不存在，但基础形态是-Fantasy，说明定义不完整，不进行检查
+					megaToCheck = null;
+				} else {
+					// 如果基础形态是原版，就检查标准Mega形态
+					megaToCheck = standardMega;
 				}
+			}
 
-				// 2. 自动添加正确的Mega石
-				const standardMega = this.dex.species.get(species.name.replace('-Fantasy', ''));
-				if (standardMega.exists && standardMega.requiredItem) {
-					set.item = standardMega.requiredItem;
+			// 5. 如果成功找到了要检查的Mega形态
+			if (megaToCheck?.exists) {
+				// 6. 检查它是否在banlist中
+				if (this.ruleTable.isBannedSpecies(megaToCheck)) {
+					return [
+						`${species.name} with ${item.name} is not legal.`,
+						`Reason: Its Mega Evolution (${megaToCheck.name}) is banned in this tier.`,
+					];
 				}
 			}
 		},
