@@ -32,7 +32,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mountaineer",
 		rating: 3,
 		num: -2,
-		shortDesc: "攀登者。交换时,拥有此特性的宝可梦可以不受所有岩石系攻击和隐形岩伤害。",
+		shortDesc: "攀登者。交换时,拥有此特性的宝可梦可以不受所有岩石系攻击和隐形岩伤害",
 	},
 		persistent: {
 		// implemented in the corresponding move
@@ -40,7 +40,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Persistent",
 		rating: 3,
 		num: -4,
-		shortDesc: "坚守。使用招式时，重力/回复封锁/神秘守护/顺风/空间效果可多持续2个回合。",
+		shortDesc: "坚守。使用招式时，重力/回复封锁/神秘守护/顺风/空间效果可多持续2个回合",
 	},
 	//以下为自制特性
 	fengchao: {
@@ -81,7 +81,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Feng Chao",
 		rating: 5,
 		num: 10000,
-		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8。",	
+		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8",	
 	},
 	sujun: {
 		onModifyMove(move, pokemon) {
@@ -98,7 +98,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Su Jun", 
 		rating: 3,
 		num: 10001,
-		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后,自己也不会陷入无法动弹状态。",	
+		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后,自己也不会陷入无法动弹状态",	
 	},
 	huibizaisheng: {
 		onEmergencyExit(target) {
@@ -118,7 +118,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Hui Bi Zai Sheng",
 		rating: 3.5,
 		num: 10002,
-		shortDesc: "回避再生。HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4。",
+		shortDesc: "回避再生。HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4",
 	},
 	pozhu: {
 		onModifyMove(move, pokemon) {
@@ -133,7 +133,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Po Zhu",
 		rating: 3,
 		num: 10003,
-		shortDesc: "破竹。拥有此特性的宝可梦在使用射击类招式时,无视防御方的能力变化与特性,直接给予伤害。",
+		shortDesc: "破竹。拥有此特性的宝可梦在使用射击类招式时,无视防御方的能力变化与特性,直接给予伤害",
 	},
 	mishizhen: {
 		onEffectiveness(typeMod, target, type, move) {
@@ -157,7 +157,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mi Shi Zhen",
 		rating: 1.5,
 		num: 10004,
-		shortDesc: "迷石阵。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果。",
+		shortDesc: "迷石阵。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果",
 	},
 	tianlaizhiyin: {
 		onModifyTypePriority: -1,
@@ -177,7 +177,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Tian Lai Zhi Yin",
 		rating: 4.5,
 		num: 10005,
-		shortDesc: "天籁之音。拥有此特性的宝可梦使出的声音招式会变为无属性,并拥有1.5倍本系威力提升。",
+		shortDesc: "天籁之音。拥有此特性的宝可梦使出的声音招式会变为无属性,并拥有1.5倍本系威力提升",
 	},
 	moshushizhihong: {
 		onAfterMoveSecondarySelf(source, target, move) {
@@ -209,7 +209,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mo Shu Shi Zhi Hong",
 		rating: 3,
 		num: 10006,
-		shortDesc: "魔术师之红。造成伤害时,若无道具,获得目标道具;若有道具,使目标在受到超能系技能攻击后失去道具。",
+		shortDesc: "魔术师之红。造成伤害时,若无道具,获得目标道具;若有道具,使目标在受到超能系技能攻击后失去道具",
 	},
 	jiqususheng: {
 		onAfterMoveSecondarySelfPriority: -1,
@@ -223,7 +223,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Ji Qu Su Sheng",
 		rating: 3.5,
 		num: 10007,
-		shortDesc: "汲取苏生。在攻击对方成功造成伤害时,携带者的HP会恢复其所造成伤害的1/3。",
+		shortDesc: "汲取苏生。在攻击对方成功造成伤害时,携带者的HP会恢复其所造成伤害的1/3",
 	},
 	xuezhili: {
 		onBasePowerPriority: 21,
@@ -246,7 +246,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Xue Zhi Li",
 		rating: 3,
 		num: 10008,
-		shortDesc: "雪之力。在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%。",
+		shortDesc: "雪之力。在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%",
 	},
 	baoxuezhili: {
 	// 效果1: 来自“降雪”的登场发动天气效果
@@ -269,7 +269,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Bao Xue Zhi Li", 
 		rating: 4.5, 
 		num: 10009, 
-		shortDesc: "暴雪之力。兼备降雪和雪之力这两种特性。",
+		shortDesc: "暴雪之力。兼备降雪和雪之力这两种特性",
 	},
 	xuenv: {
 		onStart(pokemon) {
@@ -305,7 +305,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Xue Nv",
 		rating: 3,
 		num: 10010,
-		shortDesc: "雪女。在首次出场以及被打倒时，会创造一次黑雾。",
+		shortDesc: "雪女。在首次出场以及被打倒时，会创造一次黑雾",
 	},
 	zhengfa: {
 	    onModifyMove(move, pokemon, target) {
@@ -333,7 +333,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Zheng Fa",
 		rating: 3.5,
 		num: 10011,
-		shortDesc: "蒸发。使用的火属性招式会对水属性宝可梦造成效果绝佳。",
+		shortDesc: "蒸发。使用的火属性招式会对水属性宝可梦造成效果绝佳",
 	},
 	tiekai: {
 		onSourceModifyDamage(damage, source, target, move) {
@@ -350,7 +350,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Tie Kai",
 		rating: 3,
 		num: 10012,
-		shortDesc: "铁铠。效果一般和效果不好招式造成的伤害降低1/4。",
+		shortDesc: "铁铠。效果一般和效果不好招式造成的伤害降低1/4",
 	},
 	jizhineng: {
 		onModifyMove(move, attacker) {
@@ -392,7 +392,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Ji Zhi Neng",
 		rating: 3.5,
 		num: 10013,
-		shortDesc: "极智能。以攻击和特攻中较高的一项的数值,使出物理技能和特殊技能。",
+		shortDesc: "极智能。以攻击和特攻中较高的一项的数值,使出物理技能和特殊技能",
 	},
 	jiguangxingzhe: {
 		onStart(source) {
@@ -415,7 +415,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Ji Guang Xing Zhe",
 		rating: 4,
 		num: 10014,
-		shortDesc: "极光行者。首次出场时,可以使己方场地进入5回合极光幕状态,如果使用者携带光之黏土则持续8回合。",
+		shortDesc: "极光行者。首次出场时,可以使己方场地进入5回合极光幕状态,如果使用者携带光之黏土则持续8回合",
 	},
 	huoshanxingzhe: {
 		// 当拥有此特性的宝可梦登场或获得此特性时触发
@@ -495,7 +495,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Lei Ting Xing Zhe",
 		rating: 4,
 		num: 10016,
-		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式会击中地面属性但效果不好。",
+		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式能击中地面属性但效果不好",
 	},
 	woju: {
 		// onStart 在宝可梦登场时触发
@@ -525,6 +525,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Wo Ju",
 		rating: 4.5,
 		num: 10017,
-		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居。",
+		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居",
 	},
 };

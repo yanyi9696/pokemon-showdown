@@ -2229,8 +2229,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	flyingpress: {
 		name: "Flying Press",
-		desc: "此招式拥有飞行属性在属性相克中的克制, 舍去微弱。若目标处于缩小状态, 本招式必定命中且伤害翻倍。",
-		shortDesc: "此招式拥有飞行属性在属性相克中的克制, 舍去微弱。",
+		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于缩小状态,本招式必定命中且伤害翻倍",
+		shortDesc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱",
 	},
 	focusblast: {
 		name: "Focus Blast",
@@ -5729,7 +5729,7 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	shelter: {
 		name: "Shelter",
-		desc: "使用者恢复其最大HP的一半, 向上取整。",
+		desc: "使用者恢复其最大HP的一半, 向上取整",
 		shortDesc: "令使用者回复自身50%最大HP",
 	},
 	shiftgear: {
