@@ -1,16 +1,28 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	woju: {
-    name: 'Woju', // 建议用英文或拼音ID，方便调试
+    name: '蜗居', // 建议用英文或拼音ID，方便调试
 
 		// 效果1：闪避率变化 (你的实现是正确的，我们保留它)
 		onStart(target, source, effect) {
 			this.add('-start', target, 'Woju', '[from] ability: Wo Ju');
 			this.add('-message', `${target.name} 躲进了它的壳里！`);
-			this.boost({evasion: -1}, target, target, this.effect);
+			
+			// [!fix] 尝试降低闪避，并记录是否成功
+			const success = this.boost({evasion: -1}, target, target, this.effect);
+			if (success) {
+				// 如果成功降低了闪避，就在状态里做一个标记
+				this.effectState.boosted = true;
+			}
 		},
 		onEnd(target) {
-			// 在状态结束时，之前由该状态引起的能力变化会自动恢复，所以不需要手动 unboost 或 boost({evasion: 1})
-			// 引擎会自动处理，这样更安全。
+			// [!fix] 检查之前是否成功降低了闪避
+			if (this.effectState.boosted) {
+				// 如果做了标记，就手动把闪避恢复回来
+				this.boost({evasion: 1}, target, target, this.effect);
+				// 清除标记，为下一次做准备
+				this.effectState.boosted = false; 
+			}
+
 			this.add('-end', target, 'Woju');
 			this.add('-message', `${target.name} 从壳里探出头来！`);
 		},
