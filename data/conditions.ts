@@ -1,6 +1,6 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	woju: {
-    name: '蜗居', // 建议用英文或拼音ID，方便调试
+    name: 'Woju', // 建议用英文或拼音ID，方便调试
 
 		// 效果1：闪避率变化 (你的实现是正确的，我们保留它)
 		onStart(target, source, effect) {
