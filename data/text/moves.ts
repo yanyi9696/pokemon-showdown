@@ -5729,8 +5729,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	shelter: {
 		name: "Shelter",
-		desc: "Raises the user's Defense by 2 stages.",
-		shortDesc: "Raises the user's Defense by 2.",
+		desc: "使用者恢复其最大HP的一半, 向上取整。",
+		shortDesc: "令使用者回复自身50%最大HP",
 	},
 	shiftgear: {
 		name: "Shift Gear",

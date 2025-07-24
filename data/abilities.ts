@@ -832,15 +832,15 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		},
 		onSourceModifyDamage(damage, source, target, move) {
         this.debug('Cute Charm reduces damage');
-        // 第一步：无条件降低10%的伤害
-        // this.chainModify(0.9) 会将伤害乘以 0.9
-        let damageMultiplier = 0.9;
+        // 第一步：无条件降低20%的伤害
+        // this.chainModify(0.8) 会将伤害乘以 0.8
+        let damageMultiplier = 0.8;
         // 第二步：检查性别并额外降低伤害
         // 确保攻击方和防御方都有性别，且性别不同
         if (source.gender && target.gender && source.gender !== target.gender) {
             this.debug('Cute Charm reduces damage further against opposite gender');
-            // 在原有基础上再降低20% (0.9 * 0.8 = 0.72)
-            damageMultiplier *= 0.8;
+            // 在原有基础上再降低10% (0.8 * 0.9 = 0.72)
+            damageMultiplier *= 0.9;
         }
         // 应用最终的伤害修正
         return this.chainModify(damageMultiplier);

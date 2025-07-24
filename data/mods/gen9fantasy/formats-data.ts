@@ -36,6 +36,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
 	},
+	kricketunefantasy: {
+		tier: "(Uber)",
+	},
 	metagrossfantasy: {
 		tier: "(Uber)",
 	},
@@ -52,16 +55,19 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	empoleonfantasy: {	
 		tier: "OU",
 	},
+	flygonfantasy: {
+		tier: "OU",
+	},
 	garchompfantasy: {
 		tier: "OU",
 	},
 	golurkfantasy: {
 		tier: "OU",
 	},
-	goodrahisuifantasy: {
+	goodrafantasy: {
 		tier: "OU",
 	},
-	kricketunefantasy: {
+	goodrahisuifantasy: {
 		tier: "OU",
 	},
 	magnezonefantasy: {
@@ -73,11 +79,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	raikoufantasy: {
 		tier: "OU",
 	},
+	suicunefantasy: {
+		tier: "OU",
+	},
 	urshifufantasy: {
 		tier: "OU",
 	},
 	urshifurapidstrikefantasy: {
-		tier: "OU",
+		tier: "UU",
 	},
 	abomasnowmegafantasy: {
 		tier: "UUBL",
@@ -98,9 +107,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	electivirefantasy: {
 		tier: "UUBL",
 	},
-	flygonfantasy: {
-		tier: "UUBL",
-	},
 	ironthornsfantasy: {
 		tier: "UUBL",
 	},
@@ -110,11 +116,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mienshaofantasy: {
 		tier: "UUBL",
 	},
-	suicunefantasy: {
+	toxtricityfantasy: {
 		tier: "UUBL",
 	},
 	toxtricitylowkeyfantasy: {
 		tier: "UUBL",
+	},
+	absolfantasy: {
+		tier: "UU",
 	},
 	crobatfantasy: {
 		tier: "UU",
@@ -138,9 +147,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	meganiumfantasy: {
 		tier: "UU",
 	},
-	salazzlefantasy: {
-		tier: "UU",
-	},
 	sawsbuckfantasy: {
 		tier: "UU",
 	},
@@ -151,9 +157,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	sawsbuckwinterfantasy: {
-		tier: "UU",
-	},
-	toxtricityfantasy: {
 		tier: "UU",
 	},
 	volbeatfantasy: {
@@ -171,13 +174,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	dusknoirfantasy: {
 		tier: "RUBL",
 	},
+	salazzlefantasy: {
+		tier: "RUBL",
+	},
 	stakatakafantasy: {
 		tier: "RUBL",
 	},
 	abomasnowfantasy: {
-		tier: "RU",
-	},
-	absolfantasy: {
 		tier: "RU",
 	},
 	glaliefantasy: {
