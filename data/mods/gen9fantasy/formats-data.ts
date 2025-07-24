@@ -52,6 +52,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Unaware"},	
 	},
+	dragalgefantasy: {	
+		tier: "OU",
+	},
 	empoleonfantasy: {	
 		tier: "OU",
 	},
