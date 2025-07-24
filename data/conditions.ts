@@ -1,29 +1,23 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	woju: {
 		name: '蜗居',
-		// 【修正】当状态开始时，增加降低闪避的效果
 		onStart(pokemon) {
 			this.add('-start', pokemon, 'woju', '[from] ability: 蜗居');
 			this.add('-message', `${pokemon.name} 缩进了它的壳里！`);
-			
-			// 【保留】降低一级闪避率
 			this.boost({evasion: -1}, pokemon, pokemon, this.dex.abilities.get('woju'));
 		},
-		// 【修正】当状态结束时，增加恢复闪避的效果
 		onEnd(pokemon) {
 			this.add('-end', pokemon, 'woju', '[from] ability: 蜗居');
 			this.add('-message', `${pokemon.name} 从壳里钻了出来！`);
-
-			// 【保留】将之前降低的闪避率恢复回来
 			this.boost({evasion: 1}, pokemon, pokemon, this.dex.abilities.get('woju'));
 		},
-        // 【新增】在使用招式前，解除“蜗居”状态
-        onBeforeMovePriority: 100, // 设置一个高优先级确保先执行
-		onBeforeMove(pokemon) {
-			// onBeforeMove 逻辑应该在这里，直接管理这个状态本身
+        // 【核心修正】替换 onBeforeMove 为 onTryMove
+		onTryMove(pokemon, target, move) {
+			// 在宝可梦尝试使用招式时，如果正处于“蜗居”状态，就解除它
 			if (pokemon.volatiles['woju']) {
 				pokemon.removeVolatile('woju');
 			}
+			// 这个事件默认需要返回 true 才能让招式继续，所以我们不加 return false
 		},
 	},
 	seaoffire: {

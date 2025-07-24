@@ -503,10 +503,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				pokemon.addVolatile('woju');
 			}
 		},
-		// 【移除】onBeforeMove 已被移动到 conditions.ts
-		// onBeforeMove(pokemon, target, move) { ... }
-
-		// 【保留】在回合结束时，重新进入“蜗居”状态
 		onResidualOrder: 27,
 		onResidual(pokemon) {
 			if (!pokemon.fainted && !pokemon.volatiles['woju']) {
@@ -515,29 +511,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		
 		/*
-		 * 【新增】从 conditions.ts 移动过来的战斗效果逻辑
-		 * 这些效果只有在宝可梦拥有 'woju' 这个 volatile status 时才会触发
+		 * 【最终修正】彻底移除所有错误的优先级设置代码行
+		 * 这些事件会以默认优先级执行，这对于实现所需效果是足够的。
 		 */
-		onAnyModifyBoost(boosts, pokemon) {
-			const wojuUser = this.effectState.target;
-			// 确保场上存在处于“蜗居”状态的宝可梦
-			if (!wojuUser.volatiles['woju']) return;
-
-			if (wojuUser === pokemon) return;
-			if (wojuUser === this.activePokemon && pokemon === this.activeTarget) {
-				boosts.def = 0;
-				boosts.spd = 0;
-				boosts.evasion = 0;
+		onFoeModifyAtk(atk, attacker, defender, move) {
+			// defender 就是拥有“蜗居”特性的宝可梦
+			if (defender.volatiles['woju']) {
+				this.debug('Woju ignoring attacker ATK boosts');
+				// 返回攻击方不计算能力提升的基础攻击力
+				return attacker.getStat('atk', false, true);
 			}
-			if (wojuUser === this.activeTarget && pokemon === this.activePokemon) {
-				boosts.atk = 0;
-				boosts.spa = 0;
-				boosts.accuracy = 0;
+		},
+		onFoeModifySpA(spa, attacker, defender, move) {
+			// defender 就是拥有“蜗居”特性的宝可梦
+			if (defender.volatiles['woju']) {
+				this.debug('Woju ignoring attacker SPA boosts');
+				// 返回攻击方不计算能力提升的基础特攻
+				return attacker.getStat('spa', false, true);
 			}
 		},
 
+		// 【保留】以下这些事件的写法是正确的，因为它们能直接获取到目标（target/pokemon）
 		onSourceModifyDamage(damage, source, target, move) {
-			// 只在目标（拥有“蜗居”特性者）处于“蜗居”状态时生效
 			if (!target.volatiles['woju']) return;
 
 			let mod = 1.0;
@@ -575,7 +570,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 			return this.chainModify(mod);
 		},
-
 		onModifySpDPriority: 6,
 		onModifySpD(spd, pokemon) {
 			if (pokemon.volatiles['woju'] && this.field.isWeather('sandstorm') && pokemon.hasType('Rock')) {
@@ -588,6 +582,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return this.modify(def, 1 / 1.5);
 			}
 		},
+
 		flags: {
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, notransform: 1,
 		},
