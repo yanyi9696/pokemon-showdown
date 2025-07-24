@@ -498,27 +498,94 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式会击中地面属性但效果不好。",
 	},
 	woju: {
-		// 当宝可梦登场或获得此特性时触发
 		onStart(pokemon) {
 			if (!pokemon.volatiles['woju']) {
-				// 为宝可梦附加“蜗居”状态
 				pokemon.addVolatile('woju');
 			}
 		},
-		onBeforeMove(pokemon, target, move) {
-			// 如果正处于蜗居状态，则在使用招式前解除
-			if (pokemon.volatiles['woju']) {
-				pokemon.removeVolatile('woju');
-			}
-		},
-		// 在回合结束时触发，设置一个较晚的顺序（例如27）
-		// 以确保在天气伤害、场地回复等效果之后结算
+		// 【移除】onBeforeMove 已被移动到 conditions.ts
+		// onBeforeMove(pokemon, target, move) { ... }
+
+		// 【保留】在回合结束时，重新进入“蜗居”状态
 		onResidualOrder: 27,
 		onResidual(pokemon) {
-			// 如果宝可梦没有陷入濒死且不处于蜗居状态（意味着它本回合行动过）
 			if (!pokemon.fainted && !pokemon.volatiles['woju']) {
-				// 重新进入蜗居状态
 				pokemon.addVolatile('woju');
+			}
+		},
+		
+		/*
+		 * 【新增】从 conditions.ts 移动过来的战斗效果逻辑
+		 * 这些效果只有在宝可梦拥有 'woju' 这个 volatile status 时才会触发
+		 */
+		onAnyModifyBoost(boosts, pokemon) {
+			const wojuUser = this.effectState.target;
+			// 确保场上存在处于“蜗居”状态的宝可梦
+			if (!wojuUser.volatiles['woju']) return;
+
+			if (wojuUser === pokemon) return;
+			if (wojuUser === this.activePokemon && pokemon === this.activeTarget) {
+				boosts.def = 0;
+				boosts.spd = 0;
+				boosts.evasion = 0;
+			}
+			if (wojuUser === this.activeTarget && pokemon === this.activePokemon) {
+				boosts.atk = 0;
+				boosts.spa = 0;
+				boosts.accuracy = 0;
+			}
+		},
+
+		onSourceModifyDamage(damage, source, target, move) {
+			// 只在目标（拥有“蜗居”特性者）处于“蜗居”状态时生效
+			if (!target.volatiles['woju']) return;
+
+			let mod = 1.0;
+			const weather = this.field.getWeather();
+			const terrain = this.field.getTerrain();
+
+			// --- 天气相关伤害修正 ---
+			if (weather.id === 'sunnyday' || weather.id === 'desolateland') {
+				if (move.type === 'Fire') mod /= 1.5;
+				if (move.type === 'Water') mod /= 0.5;
+			} else if (weather.id === 'raindance' || weather.id === 'primordialsea') {
+				if (move.type === 'Water') mod /= 1.5;
+				if (move.type === 'Fire') mod /= 0.5;
+			}
+			if (move.id === 'hydrosteam' && weather.id === 'sunnyday') mod /= 1.5;
+			if (move.id === 'weatherball' && weather.id !== '' && weather.id !== 'deltastream') mod /= 2;
+
+			// --- 场地相关伤害修正 ---
+			if (target.isGrounded()) {
+				if (terrain.id === 'electricterrain' && move.type === 'Electric') mod /= 1.3;
+				if (terrain.id === 'grassyterrain' && move.type === 'Grass') mod /= 1.3;
+				if (terrain.id === 'psychicterrain' && move.type === 'Psychic') mod /= 1.3;
+				if (terrain.id === 'mistyterrain' && move.type === 'Dragon') mod /= 0.5;
+				if (terrain.id === 'grassyterrain' && ['earthquake', 'magnitude', 'bulldoze'].includes(move.id)) {
+					mod /= 0.5;
+				}
+				if (source.isGrounded()) {
+					if (terrain.id === 'psychicterrain' && move.id === 'expandingforce') mod /= 1.5;
+					if (terrain.id === 'mistyterrain' && move.id === 'mistyexplosion') mod /= 1.5;
+					if (terrain.id === 'electricterrain' && move.id === 'risingvoltage') mod /= 2;
+					if (terrain.id !== '' && move.id === 'terrainpulse') mod /= 2;
+				}
+			}
+			if (terrain.id === 'electricterrain' && move.id === 'psyblade') mod /= 1.5;
+
+			return this.chainModify(mod);
+		},
+
+		onModifySpDPriority: 6,
+		onModifySpD(spd, pokemon) {
+			if (pokemon.volatiles['woju'] && this.field.isWeather('sandstorm') && pokemon.hasType('Rock')) {
+				return this.modify(spd, 1 / 1.5);
+			}
+		},
+		onModifyDefPriority: 6,
+		onModifyDef(def, pokemon) {
+			if (pokemon.volatiles['woju'] && this.field.isWeather('snowscape') && pokemon.hasType('Ice')) {
+				return this.modify(def, 1 / 1.5);
 			}
 		},
 		flags: {
