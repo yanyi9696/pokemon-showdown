@@ -1,4 +1,78 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	woju: {
+    name: 'Woju', // 建议用英文或拼音ID，方便调试
+
+		// 效果1：闪避率变化 (你的实现是正确的，我们保留它)
+		onStart(target, source, effect) {
+			this.add('-start', target, 'Woju', '[from] ability: Wo Ju');
+			this.add('-message', `${target.name} 躲进了它的壳里！`);
+			this.boost({evasion: -1}, target, target, this.effect);
+		},
+		onEnd(target) {
+			// 在状态结束时，之前由该状态引起的能力变化会自动恢复，所以不需要手动 unboost 或 boost({evasion: 1})
+			// 引擎会自动处理，这样更安全。
+			this.add('-end', target, 'Woju');
+			this.add('-message', `${target.name} 从壳里探出头来！`);
+		},
+
+		// 效果2：无视对手能力变化 (使用更标准的“纯朴”实现方式)
+		// a) 当“蜗居”宝可梦攻击时，无视对手的防御和闪避能力提升
+		onModifyMove(move, pokemon) {
+			move.ignoreDefensive = true;
+			move.ignoreEvasion = true;
+		},
+		// b) 当“蜗居”宝可梦被攻击时，无视对手的攻击和命中能力提升
+		onTryHit(target, source, move) {
+			move.ignoreOffensive = true;
+		},
+
+		// 效果3：不受天气和场地影响 (统一处理)
+		// a) 免疫天气的直接伤害（如沙暴、冰雹），和属性提升（如雪天加防、沙暴加特防）
+		onWeatherModifyDamage(damage, pokemon) {
+			// 如果是沙暴或冰雹的伤害，直接免疫
+			if (this.field.getWeather().id === 'sandstorm' || this.field.getWeather().id === 'hail' || this.field.getWeather().id === 'snowscape') {
+				if (damage > 0) {
+					this.hint("Woju's shell blocks the weather's effect!");
+				}
+				return 0; // 返回0，伤害变为0
+			}
+			// 对于其他天气（晴天、雨天）的伤害加成，在 onDamage 中处理
+		},
+		// b) 统一处理所有伤害修正，包括天气和场地
+		onDamage(damage, target, source, effect) {
+			// effect.effectType === 'Move' 确保我们只处理招式伤害
+			if (effect && effect.effectType === 'Move') {
+				let finalMod = 1;
+				const weather = this.field.getWeather();
+				const terrain = this.field.getTerrain();
+
+				// 逆转天气带来的威力变化
+				 if (this.field.suppressingWeather()) {
+					// 如果有无天气等特性，则不计算
+				} else if (weather.id === 'sunnyday' || weather.id === 'desolateland') {
+					if (effect.type === 'Fire') finalMod /= 1.5;
+					if (effect.type === 'Water') finalMod /= 0.5;
+				} else if (weather.id === 'raindance' || weather.id === 'primordialsea') {
+					if (effect.type === 'Water') finalMod /= 1.5;
+					if (effect.type === 'Fire') finalMod /= 0.5;
+				}
+				
+				// 逆转场地带来的威力变化
+				if (target.isGrounded()) {
+					if (terrain.id === 'electricterrain' && effect.type === 'Electric') finalMod /= 1.3;
+					if (terrain.id === 'grassyterrain' && effect.type === 'Grass') finalMod /= 1.3;
+					if (terrain.id === 'psychicterrain' && effect.type === 'Psychic') finalMod /= 1.3;
+					if (terrain.id === 'mistyterrain' && effect.type === 'Dragon') finalMod /= 0.5;
+				}
+				
+				// 如果计算出了修正值，就应用它
+				if (finalMod !== 1) {
+					this.hint("Woju's shell blocks the environmental effect!");
+					return this.modify(damage, finalMod);
+				}
+			}
+		},
+	},
 	seaoffire: {
 		name: 'Sea of Fire',
 		// 删除了 duration: 4 这一行
