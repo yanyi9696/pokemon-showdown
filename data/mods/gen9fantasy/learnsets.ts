@@ -6525,6 +6525,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			strengthsap: ["9M"],
 			synthesis: ["9M"],
 			toxic: ["9M"],
+			clearsmog: ["9M"],
 			//幻想增添技能
 			absorb: ["9L1"],
 			bodypress: ["9M"],

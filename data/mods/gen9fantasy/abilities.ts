@@ -116,7 +116,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Hui Bi Zai Sheng",
-		rating: 2.5,
+		rating: 3.5,
 		num: 10002,
 		shortDesc: "回避再生。HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4。",
 	},
@@ -175,7 +175,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Tian Lai Zhi Yin",
-		rating: 4,
+		rating: 4.5,
 		num: 10005,
 		shortDesc: "天籁之音。拥有此特性的宝可梦使出的声音招式会变为无属性,并拥有1.5倍本系威力提升。",
 	},
@@ -303,7 +303,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: { cantsuppress: 1 },
 		name: "Xue Nv",
-		rating: 2.5,
+		rating: 3,
 		num: 10010,
 		shortDesc: "雪女。在首次出场以及被打倒时，会创造一次黑雾。",
 	},
@@ -331,7 +331,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
     },
 	    flags: {},
 		name: "Zheng Fa",
-		rating: 3,
+		rating: 3.5,
 		num: 10011,
 		shortDesc: "蒸发。使用的火属性招式会对水属性宝可梦造成效果绝佳。",
 	},
@@ -496,5 +496,40 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4,
 		num: 10016,
 		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式会击中地面属性但效果不好。",
+	},
+	woju: {
+		// 当宝可梦登场或获得此特性时触发
+		onStart(pokemon) {
+			if (!pokemon.volatiles['woju']) {
+				// 为宝可梦附加“蜗居”状态
+				pokemon.addVolatile('woju');
+			}
+		},
+		// 在宝可梦使用招式前触发，优先级设为100以确保最先执行
+		onBeforeMovePriority: 100,
+		onBeforeMove(pokemon, target, move) {
+			// 如果正处于蜗居状态，则在使用招式前解除
+			if (pokemon.volatiles['woju']) {
+				pokemon.removeVolatile('woju');
+				// 在战斗日志中显示消息，让玩家知道状态变化
+			}
+		},
+		// 在回合结束时触发，设置一个较晚的顺序（例如27）
+		// 以确保在天气伤害、场地回复等效果之后结算
+		onResidualOrder: 27,
+		onResidual(pokemon) {
+			// 如果宝可梦没有陷入濒死且不处于蜗居状态（意味着它本回合行动过）
+			if (!pokemon.fainted && !pokemon.volatiles['woju']) {
+				// 重新进入蜗居状态
+				pokemon.addVolatile('woju');
+			}
+		},
+		flags: {
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, notransform: 1,
+		},
+		name: "Wo Ju",
+		rating: 4.5,
+		num: 10017,
+		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居。",
 	},
 };

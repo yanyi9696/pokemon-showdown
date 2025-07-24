@@ -1,4 +1,98 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	woju: {
+		name: '蜗居',
+		// 【修改】当状态开始时，增加降低闪避的效果
+		onStart(pokemon) {
+			this.add('-start', pokemon, '蜗居', '[from] ability: 蜗居');
+			this.add('-message', `${pokemon.name} 缩进了它的壳里！`);
+			
+			// 【新增】降低一级闪避率
+			this.boost({evasion: -1}, pokemon, pokemon, this.dex.conditions.get('woju'));
+		},
+		// 【修改】当状态结束时，增加恢复闪避的效果
+		onEnd(pokemon) {
+			this.add('-end', pokemon, '蜗居', '[from] ability: 蜗居');
+			this.add('-message', `${pokemon.name} 从壳里钻了出来！`);
+
+			// 【新增】将之前降低的闪避率恢复回来
+			// 注意：这里是+1，用来抵消之前的-1
+			this.boost({evasion: 1}, pokemon, pokemon, this.dex.conditions.get('woju'));
+		},
+		onAnyModifyBoost(boosts, pokemon) {
+			const wojuUser = this.effectState.target;
+			if (wojuUser === pokemon) return;
+			if (wojuUser === this.activePokemon && pokemon === this.activeTarget) {
+				boosts.def = 0;
+				boosts.spd = 0;
+				// 攻击时，自己的闪避率惩罚依然存在，但无视目标的闪避率提升
+				boosts.evasion = 0;
+			}
+			if (wojuUser === this.activeTarget && pokemon === this.activePokemon) {
+				boosts.atk = 0;
+				boosts.spa = 0;
+				boosts.accuracy = 0;
+			}
+		},
+		/**
+		 * 核心效果：伤害修正
+		 * 抵消所有天气、场地的伤害变化，并提供基础减伤
+		 */
+		onSourceModifyDamage(damage, source, target, move) {
+			let mod = 1.0;
+			const weather = this.field.getWeather();
+			const terrain = this.field.getTerrain();
+
+			// --- 天气相关伤害修正 ---
+			if (weather.id === 'sunnyday' || weather.id === 'desolateland') {
+				if (move.type === 'Fire') mod /= 1.5;
+				if (move.type === 'Water') mod /= 0.5;
+			} else if (weather.id === 'raindance' || weather.id === 'primordialsea') {
+				if (move.type === 'Water') mod /= 1.5;
+				if (move.type === 'Fire') mod /= 0.5;
+			}
+			// 特判受天气影响的招式
+			if (move.id === 'hydrosteam' && weather.id === 'sunnyday') mod /= 1.5;
+			if (move.id === 'weatherball' && weather.id !== '' && weather.id !== 'deltastream') mod /= 2;
+
+			// --- 场地相关伤害修正 (仅对地面上的宝可梦生效) ---
+			if (target.isGrounded()) {
+				// 抵消场地对一般属性招式的威力加成
+				if (terrain.id === 'electricterrain' && move.type === 'Electric') mod /= 1.3;
+				if (terrain.id === 'grassyterrain' && move.type === 'Grass') mod /= 1.3;
+				if (terrain.id === 'psychicterrain' && move.type === 'Psychic') mod /= 1.3;
+				if (terrain.id === 'mistyterrain' && move.type === 'Dragon') mod /= 0.5;
+
+				// 抵消场地对特定招式的威力 *降低* 效果
+				if (terrain.id === 'grassyterrain' && ['earthquake', 'magnitude', 'bulldoze'].includes(move.id)) {
+					mod /= 0.5; // 威力本应x0.5，我们除以0.5把它变回来
+				}
+				
+				// 特判受场地影响的招式
+				if (source.isGrounded()) {
+					if (terrain.id === 'psychicterrain' && move.id === 'expandingforce') mod /= 1.5;
+					if (terrain.id === 'mistyterrain' && move.id === 'mistyexplosion') mod /= 1.5;
+					if (terrain.id === 'electricterrain' && move.id === 'risingvoltage') mod /= 2;
+					if (terrain.id !== '' && move.id === 'terrainpulse') mod /= 2;
+				}
+			}
+			// 精神剑不受是否在地面上影响
+			if (terrain.id === 'electricterrain' && move.id === 'psyblade') mod /= 1.5;
+
+			return this.chainModify(mod);
+		},
+		onModifySpDPriority: 6,
+		onModifySpD(spd, pokemon) {
+			if (this.field.isWeather('sandstorm') && pokemon.hasType('Rock')) {
+				return this.modify(spd, 1 / 1.5);
+			}
+		},
+		onModifyDefPriority: 6,
+		onModifyDef(def, pokemon) {
+			if (this.field.isWeather('snowscape') && pokemon.hasType('Ice')) {
+				return this.modify(def, 1 / 1.5);
+			}
+		},
+	},
 	seaoffire: {
 		name: 'Sea of Fire',
 		// 删除了 duration: 4 这一行
