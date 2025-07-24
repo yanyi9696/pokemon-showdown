@@ -3,7 +3,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		name: '蜗居',
 		// 【修改】当状态开始时，增加降低闪避的效果
 		onStart(pokemon) {
-			this.add('-start', pokemon, '蜗居', '[from] ability: 蜗居');
+			this.add('-start', pokemon, 'woju', '[from] ability: 蜗居');
 			this.add('-message', `${pokemon.name} 缩进了它的壳里！`);
 			
 			// 【新增】降低一级闪避率
@@ -11,7 +11,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		// 【修改】当状态结束时，增加恢复闪避的效果
 		onEnd(pokemon) {
-			this.add('-end', pokemon, '蜗居', '[from] ability: 蜗居');
+			this.add('-end', pokemon, 'woju', '[from] ability: 蜗居');
 			this.add('-message', `${pokemon.name} 从壳里钻了出来！`);
 
 			// 【新增】将之前降低的闪避率恢复回来
