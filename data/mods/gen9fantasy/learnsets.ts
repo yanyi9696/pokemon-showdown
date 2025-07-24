@@ -6518,7 +6518,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			workup: ["8M"],
 		},
 	},
-	wochien: {
+	wochienfantasy: {
 		learnset: {
 			nastyplot: ["9M"],
 			punishment: ["9M"],

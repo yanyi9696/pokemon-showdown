@@ -788,7 +788,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	wochienfantasy: {
 		num: 1001,
-		name: "Wo-Chien",
+		name: "Wo-Chien-Fantasy",
 		baseSpecies: "Wo-Chien",
 		forme: "Fantasy",
 		types: ["Dark", "Grass"],
