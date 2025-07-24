@@ -1,25 +1,4 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-	woju: {
-		name: '蜗居',
-		onStart(pokemon) {
-			this.add('-start', pokemon, 'woju', '[from] ability: 蜗居');
-			this.add('-message', `${pokemon.name} 缩进了它的壳里！`);
-			this.boost({evasion: -1}, pokemon, pokemon, this.dex.abilities.get('woju'));
-		},
-		onEnd(pokemon) {
-			this.add('-end', pokemon, 'woju', '[from] ability: 蜗居');
-			this.add('-message', `${pokemon.name} 从壳里钻了出来！`);
-			this.boost({evasion: 1}, pokemon, pokemon, this.dex.abilities.get('woju'));
-		},
-        // 【核心修正】替换 onBeforeMove 为 onTryMove
-		onTryMove(pokemon, target, move) {
-			// 在宝可梦尝试使用招式时，如果正处于“蜗居”状态，就解除它
-			if (pokemon.volatiles['woju']) {
-				pokemon.removeVolatile('woju');
-			}
-			// 这个事件默认需要返回 true 才能让招式继续，所以我们不加 return false
-		},
-	},
 	seaoffire: {
 		name: 'Sea of Fire',
 		// 删除了 duration: 4 这一行
