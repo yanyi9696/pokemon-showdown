@@ -505,13 +505,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				pokemon.addVolatile('woju');
 			}
 		},
-		// 在宝可梦使用招式前触发，优先级设为100以确保最先执行
-		onBeforeMovePriority: 100,
 		onBeforeMove(pokemon, target, move) {
 			// 如果正处于蜗居状态，则在使用招式前解除
 			if (pokemon.volatiles['woju']) {
 				pokemon.removeVolatile('woju');
-				// 在战斗日志中显示消息，让玩家知道状态变化
 			}
 		},
 		// 在回合结束时触发，设置一个较晚的顺序（例如27）
