@@ -235,7 +235,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Fire", "Fairy"],
 		genderRatio: { M: 0.875, F: 0.125 },
-		baseStats: { hp: 75, atk: 55, def: 72, spa: 128, spd: 100, spe: 104 },
+		baseStats: { hp: 75, atk: 62, def: 72, spa: 121, spd: 100, spe: 104 },
 		abilities: { 0: "Blaze", H: "Mo Shu Shi Zhi Hong" },
 		heightm: 1.5,
 		weightkg: 39,
