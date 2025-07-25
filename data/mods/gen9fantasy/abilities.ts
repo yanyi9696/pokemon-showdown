@@ -430,23 +430,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		// 当此特性因为任何原因结束时触发
 		// (例如：宝可梦交换离场、濒死、被胃酸、或特性被交换)
 		onEnd(source) {
-			// 获取对手场上的火海状态
-			const seaOfFire = source.side.foe.getSideCondition('seaoffire');
-			// 如果火海不存在，或者来源不是这个特性，则无需处理
-			if (!seaOfFire) return;
-
-			// 关键检查：场上是否还有其他的“火山行者”？
+			// 步骤1：这个检查逻辑是正确的，我们保留它。
+			// 它确保只有在最后一个“火山行者”离场时，才执行后面的清除代码。
 			for (const pokemon of this.getAllActive()) {
-				// 如果找到一个不是自己、且拥有火山行者特性的宝可梦，
-				// 那么“光环”效果应继续存在，所以直接返回。
 				if (pokemon !== source && pokemon.hasAbility('huoshanxingzhe')) {
 					return;
 				}
 			}
-			// 如果循环结束都没有找到其他“火山行者”，说明这是最后一个了。
-			// 此时，移除火海。
-			this.add('-message', '随着火山行者的离去，火海平息了。'); // 可以自定义提示信息
-			source.side.foe.removeSideCondition('seaoffire');
+
+			// 步骤2：这是新的清除逻辑。
+			// 它会遍历场上所有的边（我方和敌方），并清除所有火海。
+			this.add('-message', '随着火山行者的离去，火海平息了。');
+			for (const side of this.sides) {
+				if (side.getSideCondition('seaoffire')) {
+					side.removeSideCondition('seaoffire');
+				}
+			}
 		},
 	    flags: {},
 		name: "Huo Shan Xing Zhe",
