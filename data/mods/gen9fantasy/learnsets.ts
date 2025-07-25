@@ -1935,7 +1935,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			mistyexplosion: ["9M"],
 			craftyshield: ["9M"],
 			mysticalpower: ["9M"],
-			huanzhiwu: ["9M"],
 			//幻想增添技能
 			agility: ["9M"],
 			allyswitch: ["7T"],
