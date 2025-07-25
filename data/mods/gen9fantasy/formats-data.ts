@@ -59,6 +59,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	corviknightfantasy: {	
 		tier: "OU",
 	},
+	delphoxfantasy: {
+		tier: "OU",
+	},
 	empoleonfantasy: {	
 		tier: "OU",
 	},
@@ -111,9 +114,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	decidueyehisuifantasy: {
-		tier: "UUBL",
-	},
-	delphoxfantasy: {
 		tier: "UUBL",
 	},
 	dragalgefantasy: {	
