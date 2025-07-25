@@ -456,6 +456,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerpon: {
 		tier: "UU",
 	},
+	ogerpontealtera: {
+		tier: "UU",
+	},
 	pecharunt: {
 		tier: "UU",
 	},
@@ -470,8 +473,5 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	polteageist: {
 		tier: "RUBL",
-	},
-	ogerpontealtera: {
-		tier: "RU",
 	},
 };
