@@ -30,10 +30,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 		],
 		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
-			this.add('-ability', pokemon, currentAbility.name, '[silent]');
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -59,10 +62,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z','Altaria-Mega-Fantasy', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy'
 		],
 		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
-			this.add('-ability', pokemon, currentAbility.name, '[silent]');
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -82,10 +88,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
 		],
 		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
-			this.add('-ability', pokemon, currentAbility.name, '[silent]');
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -102,10 +111,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
-			this.add('-ability', pokemon, currentAbility.name, '[silent]');
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -122,10 +134,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] National Dex', 'FC Mega Ban Check'],
 		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
-			this.add('-ability', pokemon, currentAbility.name, '[silent]');
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -142,10 +157,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] National Dex', 'FC Mega Ban Check'],
 		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
-			this.add('-ability', pokemon, currentAbility.name, '[silent]');
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -163,10 +181,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] National Dex UU', 'FC Mega Ban Check'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
-			this.add('-ability', pokemon, currentAbility.name, '[silent]');
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
@@ -196,10 +217,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
         'Malignant Chain', 'Poison Fang', 'Rage Powder', 'Skill Swap', 'Spicy Extract', 'Swagger', 'Toxic', 'Toxic Spikes',
     	],
 		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
-			this.add('-ability', pokemon, currentAbility.name, '[silent]');
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 		onAfterMega(pokemon) {
 			// 检查Mega后的新形态是否是您的自定义宝可梦
