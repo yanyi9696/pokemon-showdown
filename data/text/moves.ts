@@ -5729,8 +5729,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	shelter: {
 		name: "Shelter",
-		desc: "使用者恢复其最大HP的一半, 向上取整",
-		shortDesc: "令使用者回复自身50%最大HP",
+		desc: "The user restores 1/2 of its maximum HP, rounded half up.",
+		shortDesc: "Heals the user by 50% of its max HP.",
 	},
 	shiftgear: {
 		name: "Shift Gear",

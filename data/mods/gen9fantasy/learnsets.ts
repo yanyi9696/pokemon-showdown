@@ -1934,6 +1934,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			mistyexplosion: ["9M"],
 			craftyshield: ["9M"],
 			mysticalpower: ["9M"],
+			huanzhiwu: ["9M"],
 			//幻想增添技能
 			agility: ["9M"],
 			allyswitch: ["7T"],
@@ -5159,6 +5160,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			irontail: ["9M"],
 			knockoff: ["9M"],
 			spikyshield: ["9M"],
+			drainpunch: ["9M"],
 			//幻想增添技能
 			bite: ["9L28", "9S0"],
 			blizzard: ["9M"],
@@ -6523,9 +6525,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			nastyplot: ["9M"],
 			punishment: ["9M"],
 			strengthsap: ["9M"],
-			synthesis: ["9M"],
-			toxic: ["9M"],
-			clearsmog: ["9M"],
 			//幻想增添技能
 			absorb: ["9L1"],
 			bodypress: ["9M"],

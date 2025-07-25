@@ -101,6 +101,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezinggalarfantasy: {
 		tier: "OU",
 	},
+	wochienfantasy: {
+		tier: "OU",
+	},
 	altariafantasy: {
 		tier: "UUBL",
 	},
@@ -132,9 +135,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	toxtricitylowkeyfantasy: {
-		tier: "UUBL",
-	},
-	wochienfantasy: {
 		tier: "UUBL",
 	},
 	absolfantasy: {

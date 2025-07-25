@@ -39,18 +39,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 
 		// 效果3：不受天气和场地影响 (统一处理)
-		// a) 免疫天气的直接伤害（如沙暴、冰雹），和属性提升（如雪天加防、沙暴加特防）
-		onWeatherModifyDamage(damage, pokemon) {
-			// 如果是沙暴或冰雹的伤害，直接免疫
-			if (this.field.getWeather().id === 'sandstorm' || this.field.getWeather().id === 'hail' || this.field.getWeather().id === 'snowscape') {
-				if (damage > 0) {
-					this.hint("Woju's shell blocks the weather's effect!");
-				}
-				return 0; // 返回0，伤害变为0
-			}
-			// 对于其他天气（晴天、雨天）的伤害加成，在 onDamage 中处理
-		},
-		// b) 统一处理所有伤害修正，包括天气和场地
+		// a) 统一处理所有伤害修正，包括天气和场地
 		onDamage(damage, target, source, effect) {
 			// effect.effectType === 'Move' 确保我们只处理招式伤害
 			if (effect && effect.effectType === 'Move') {
@@ -79,7 +68,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				
 				// 如果计算出了修正值，就应用它
 				if (finalMod !== 1) {
-					this.hint("Woju's shell blocks the environmental effect!");
+					this.hint("蜗居在壳中挡住了环境对招式威力的影响!");
 					return this.modify(damage, finalMod);
 				}
 			}
