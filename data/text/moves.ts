@@ -5729,8 +5729,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	shelter: {
 		name: "Shelter",
-		desc: "The user restores 1/2 of its maximum HP, rounded half up.",
-		shortDesc: "Heals the user by 50% of its max HP.",
+		desc: "Raises the user's Defense by 2 stages.",
+		shortDesc: "Raises the user's Defense by 2.",
 	},
 	shiftgear: {
 		name: "Shift Gear",
