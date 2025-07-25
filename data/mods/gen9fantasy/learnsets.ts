@@ -598,6 +598,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	goodrahisuifantasy: {
 		learnset: {
+			biansuzhefan: ["9M"],
 			poisonjab: ["9M"],
 			clearsmog: ["9M"],
 			//幻想增添技能
