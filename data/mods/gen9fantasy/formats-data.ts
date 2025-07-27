@@ -219,6 +219,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	melmetal: {
 		tier: "Uber",
 	},
+	regigigas: {
+		tier: "Uber",
+	},
 	terapagos: {
 		tier: "Uber",
 	},
@@ -433,9 +436,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	pelipper: {
-		tier: "OU",
-	},
-	regigigas: {
 		tier: "OU",
 	},
 	rillaboom: {
