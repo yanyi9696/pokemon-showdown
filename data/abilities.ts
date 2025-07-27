@@ -4282,22 +4282,28 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				this.add('-start', target, 'ability: Slow Start');
 			},
 			onResidual(pokemon) {
+				// 这个判断是为了让“慢启动”的倒计时从上场后的下一个回合才开始计算，
+				// 保证了负面效果会持续整整5个回合。
 				if (!pokemon.activeTurns) {
 					this.effectState.duration! += 1;
 				}
-				// 每回合结束 攻击和速度+1
-				if (pokemon.hp) {
+				// 只有当宝可梦存活（hp > 0）并且不在上场的第一个回合时 (activeTurns > 0)，
+				// 才执行攻击和速度的提升。
+				if (pokemon.hp && pokemon.activeTurns) {
 					this.boost({atk: 1, spe: 1}, pokemon);
 				}
 			},
+			// 在计算攻击力时，将最终数值减半
 			onModifyAtkPriority: 5,
 			onModifyAtk(atk, pokemon) {
 				return this.chainModify(0.5);
 			},
+			// 在计算速度时，将最终数值减半
 			onModifySpe(spe, pokemon) {
 				return this.chainModify(0.5);
 			},
 			onEnd(target) {
+				// 5回合后状态结束，在对战中显示提示信息
 				this.add('-end', target, 'Slow Start');
 			},
 		},
