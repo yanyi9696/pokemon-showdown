@@ -3911,6 +3911,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			trickortreat: ["9M"],
 			huanzhiwu: ["9M"],
 			moonblast: ["9M"],
+			moonlight: ["9M"],
 			freezingglare: ["9M"],
 			encore: ["9M"],
 			nastyplot: ["9M"],
