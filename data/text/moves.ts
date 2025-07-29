@@ -5729,8 +5729,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	shelter: {
 		name: "Shelter",
-		desc: "Raises the user's Defense by 2 stages.",
-		shortDesc: "Raises the user's Defense by 2.",
+		desc: "提高自身防御2级。进入4回合的水流环状态。",
+		shortDesc: "提高自身防御2级。进入4回合的水流环状态。",
 	},
 	shiftgear: {
 		name: "Shift Gear",
