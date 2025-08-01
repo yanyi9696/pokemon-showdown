@@ -5729,8 +5729,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	shelter: {
 		name: "Shelter",
-		desc: "提高自身防御2级。进入4回合的水流环状态。",
-		shortDesc: "提高自身防御2级。进入4回合的水流环状态。",
+		desc: "提高自身防御2级并回复自身1/8最大HP。进入4回合的水流环状态",
+		shortDesc: "提高自身防御2级并回复1/8最大HP。附着4回合的水流环",
 	},
 	shiftgear: {
 		name: "Shift Gear",
