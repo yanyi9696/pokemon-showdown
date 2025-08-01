@@ -1,4 +1,23 @@
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+	veeveevolley: {
+		num: 741,
+		accuracy: true,
+		basePower: 0,
+		basePowerCallback(pokemon) {
+			const bp = Math.floor((pokemon.happiness * 10) / 25) || 1;
+			this.debug(`BP: ${bp}`);
+			return bp;
+		},
+		category: "Physical",
+		name: "Veevee Volley",
+		pp: 20,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1 },
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		contestType: "Cute",
+	},
 	overdrive: {
 		num: 786,
 		accuracy: 100,
