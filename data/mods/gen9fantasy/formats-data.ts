@@ -84,6 +84,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	goodrahisuifantasy: {
 		tier: "OU",
 	},
+	lopunnymegafantasy: {
+		tier: "OU",
+		abilities: {0: "Pixilate"},	
+	},
 	magnezonefantasy: {
 		tier: "OU",
 	},
@@ -209,6 +213,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	hawluchafantasy: {
+		tier: "RU",
+	},
+	lopunnyfantasy: {
 		tier: "RU",
 	},
 	samurottfantasy: {
