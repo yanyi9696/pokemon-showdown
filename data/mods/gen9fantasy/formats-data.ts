@@ -52,6 +52,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Bao Xue Zhi Li"},	
 	},
+	aerodactylmegafantasy: {
+		tier: "OU",
+		abilities: {0: "Tough Claws"},	
+	},
 	audinomegafantasy: {
 		tier: "OU",
 		abilities: {0: "Unaware"},	
@@ -106,6 +110,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	wochienfantasy: {
 		tier: "OU",
+	},
+	aerodactylfantasy: {
+		tier: "UUBL",
 	},
 	altariafantasy: {
 		tier: "UUBL",
