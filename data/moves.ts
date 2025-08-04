@@ -6155,26 +6155,22 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		contestType: "Clever",
 	},
 	flyingpress: {
-		num: 560,
-		accuracy: 95,
-		basePower: 100,
-		category: "Physical",
-		name: "Flying Press",
-		pp: 10,
-		flags: { contact: 1, protect: 1, mirror: 1, gravity: 1, distance: 1, nonsky: 1, metronome: 1 },
+		num: 560, 
+		accuracy: 95, 
+		basePower: 100, 
+		category: "Physical", 
+		name: "Flying Press", 
+		pp: 10, 
+		flags: {contact: 1, protect: 1, mirror: 1, gravity: 1, distance: 1, nonsky: 1, metronome: 1 },
 		onEffectiveness(typeMod, target, type, move) {
-		// 飞行属性克制的属性有：草、格斗、虫
-		if (['Grass', 'Fighting', 'Bug'].includes(type)) {
-			return typeMod + 1;
-		}
-		return typeMod;
+			return typeMod + this.dex.getEffectiveness('Flying', type);
 		},
-		priority: 0,
-		secondary: null,
-		target: "any",
-		type: "Fighting",
-		zMove: { basePower: 170 },
-		contestType: "Tough",
+		priority: 0, 
+		secondary: null, 
+		target: "any", 
+		type: "Fighting", 
+		zMove: { basePower: 170 }, 
+		contestType: "Tough", 
 	},
 	focusblast: {
 		num: 411,

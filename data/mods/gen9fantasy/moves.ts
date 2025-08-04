@@ -3,6 +3,30 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
 	},
+	flyingpress: {
+		num: 560,
+		accuracy: 95,
+		basePower: 100,
+		category: "Physical",
+		name: "Flying Press",
+		pp: 10,
+		flags: { contact: 1, protect: 1, mirror: 1, gravity: 1, distance: 1, nonsky: 1, metronome: 1 },
+		onEffectiveness(typeMod, target, type, move) {
+		// 飞行属性克制的属性有：草、格斗、虫
+		if (['Grass', 'Fighting', 'Bug'].includes(type)) {
+			return typeMod + 1;
+		}
+		return typeMod;
+		},
+		priority: 0,
+		secondary: null,
+		target: "any",
+		type: "Fighting",
+		zMove: { basePower: 170 },
+		contestType: "Tough",
+		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于缩小状态,本招式必定命中且伤害翻倍",
+		shortDesc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱",
+	},
 	overdrive: {
 		num: 786,
 		accuracy: 100,
