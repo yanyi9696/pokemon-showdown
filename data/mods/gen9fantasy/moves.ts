@@ -25,6 +25,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "幻想颤弦蝾螈-低调形态携带时,破音变为冰系",
 		shortDesc: "幻想颤弦蝾螈-低调形态携带时,破音变为冰系"
 	},
+	shelter: {
+		num: 842,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Shelter",
+		pp: 5,
+		priority: 0,
+		flags: { snatch: 1, heal: 1, metronome: 1 },
+		heal: [1, 2],
+		volatileStatus: 'shelter',
+		secondary: null,
+		target: "self",
+		type: "Steel",
+		desc: "回复自身1/2最大HP",
+		shortDesc: "回复自身1/2最大HP"
+	},
 		//以下为自制技能
 	xianxingzhiling: {
 		num: 10001,

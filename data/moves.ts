@@ -16944,25 +16944,10 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { snatch: 1, metronome: 1 },
-		heal: [1, 8],
 		boosts: {
 			def: 2,
 		},
 		volatileStatus: 'shelter',
-
-		condition: {
-			duration: 4,
-			onStart(pokemon) {
-				this.add('-start', pokemon, 'Aqua Ring');
-			},
-			onResidualOrder: 6,
-			onResidual(pokemon) {
-				this.heal(pokemon.baseMaxhp / 16);
-			},
-			onEnd(pokemon) {
-				this.add('-end', pokemon, 'Aqua Ring');
-			}
-		},
 		secondary: null,
 		target: "self",
 		type: "Steel",

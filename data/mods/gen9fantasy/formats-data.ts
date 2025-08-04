@@ -45,6 +45,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	pecharuntfantasy: {
 		tier: "(Uber)",
 	},
+	suicunefantasy: {
+		tier: "(Uber)",
+	},
 	vespiquenfantasy: {
 		tier: "(Uber)",
 	},
@@ -97,9 +100,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	raikoufantasy: {
 		tier: "OU",
 	},
-	suicunefantasy: {
-		tier: "OU",
-	},
 	urshifufantasy: {
 		tier: "OU",
 	},
@@ -110,9 +110,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	weezinggalarfantasy: {
-		tier: "OU",
-	},
-	wochienfantasy: {
 		tier: "OU",
 	},
 	aerodactylfantasy: {
@@ -146,6 +143,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	toxtricitylowkeyfantasy: {
+		tier: "UUBL",
+	},
+	wochienfantasy: {
 		tier: "UUBL",
 	},
 	absolfantasy: {
