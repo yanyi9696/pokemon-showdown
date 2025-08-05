@@ -133,7 +133,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC UU",
 		mod: 'gen9fantasy',
-		ruleset: ['[Gen 9] National Dex', 'FC Mega Ban Check'],
+		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
@@ -156,7 +156,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC RUBL",
 		mod: 'gen9fantasy',
-		ruleset: ['[Gen 9] National Dex', 'FC Mega Ban Check'],
+		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
@@ -180,7 +180,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC RU",
 		mod: 'gen9fantasy',
 		searchShow: false,
-		ruleset: ['[Gen 9] National Dex UU', 'FC Mega Ban Check'],
+		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
