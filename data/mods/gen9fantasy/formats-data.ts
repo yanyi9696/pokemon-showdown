@@ -350,6 +350,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	lucariomega: {
 		tier: "(Uber)",
 	},
+	lugia: {
+		tier: "(Uber)",
+	},
 	magearna: {
 		tier: "(Uber)",
 	},
