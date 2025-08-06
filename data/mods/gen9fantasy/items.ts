@@ -23,42 +23,43 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
             delete pokemon.m.fantasypowerlens_boost;
         }
     },
-    // 此函数现在是核心，负责所有判断和设置标记
+    // 此函数的核心职责是判断是否需要增益，并设置一个临时标记
     onModifyMove(move, source) {
         move.willCrit = false; // 禁用暴击
 
         // 对于不适用或必中的技能，直接返回
         if (move.category === 'Status' || move.accuracy === true) return;
         
-        // 预判Hustle是否会生效
+        // 判断宝可梦是否拥有“活力”特性，并且使用的是物理技能
         const isHustleAffected = source.hasAbility('hustle') && move.category === 'Physical';
         
-        // 核心判断：
-        // 1. 技能原始命中 < 100
-        // 2. 或，技能原始命中是100，但会被Hustle影响
+        // 核心判断逻辑：
+        // 1. 技能的原始命中率小于100
+        // 2. 或者，技能的原始命中率等于100，但会受到“活力”特性的影响
         if (move.accuracy < 100 || (move.accuracy === 100 && isHustleAffected)) {
-            // 确认需要增益，设置标记，后续函数会读取这个标记
+            // 如果满足条件，就给宝可梦对象添加一个临时标记
+            // 后续的事件处理器会检查这个标记来决定是否生效
             if (!source.m) source.m = {};
             source.m.fantasypowerlens_boost = true;
             this.debug('Fantasy Power Lens: Flag set for boost.');
-
-            // 同时，处理UI显示问题
-            move.accuracy *= 1.2;
-            this.debug('Fantasy Power Lens: UI accuracy updated.');
         }
     },
-    // 这个函数现在只根据标记执行，不再进行判断
+    // 此事件处理器根据标记来提升命中率
     onSourceModifyAccuracy(accuracy, source, target, move) {
         if (source.m?.fantasypowerlens_boost) {
             this.debug('Fantasy Power Lens: Applying accuracy boost.');
-            return this.chainModify([4915, 4096]); // 1.2倍
+            // this.chainModify 是标准的倍率修正方法，[4915, 4096] 約等於 1.2
+            return this.chainModify([4915, 4096]);
         }
     },
-    // 这个函数也只根据标记执行
-    onSourceModifyDamage(damage, source, target, move) {
+    // 【代码修改处】
+    // 我们将原先的 onSourceModifyDamage 替换为 onBasePower
+    // onBasePower 直接修改技能的基础威力，效果更稳定，且更符合道具描述
+    onBasePower(basePower, source, target, move) {
+        // 同样检查那个临时标记
         if (source.m?.fantasypowerlens_boost) {
-            this.debug('Fantasy Power Lens: Applying damage boost.');
-            return this.chainModify([4915, 4096]); // 1.2倍
+            this.debug('Fantasy Power Lens: Applying damage boost via onBasePower.');
+            return this.chainModify([4915, 4096]); // 威力提升1.2倍
         }
     },
 		num: 10001,

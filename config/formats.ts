@@ -179,7 +179,6 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC RU",
 		mod: 'gen9fantasy',
-		searchShow: false,
 		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
