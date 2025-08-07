@@ -18,47 +18,37 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			basePower: 100,
     },
     // 效果1：禁用暴击。
-    onModifyMove(move, source) {
+    onModifyMove(move) {
         move.willCrit = false;
     },
-    // 效果2：设置增益标记。
-    onPrepareHit(source, target, move) {
-        if (move.category === 'Status' || !source.hasItem('fantasypowerlens')) return;
-
-        // 【代码修改处】
-        // 在进行数字比较前，必须先检查 move.accuracy 是不是 number 类型。
-        // 这样就解决了你发现的 ts(2365) 报错。
-        if (typeof move.accuracy === 'number') {
-            const isHustleAffected = source.hasAbility('hustle') && move.category === 'Physical';
-            
-            // 核心判断逻辑
-            if (move.accuracy < 100 || (move.accuracy === 100 && isHustleAffected)) {
-                // 在这里设置标记
-                if (!source.m) source.m = {};
-                source.m.fantasypowerlens_boost = true;
-                this.debug('Fantasy Power Lens: Flag set onPrepareHit.');
-            }
-        }
-    },
-    // 效果3：应用命中率加成。
+    // 效果2：提升命中率。
     onSourceModifyAccuracy(accuracy, source, target, move) {
-        if (source.m?.fantasypowerlens_boost) {
-            this.debug('Fantasy Power Lens: Applying accuracy boost.');
+        // 首先，检查是不是变化类招式。如果是，则道具不生效。
+        if (move.category === 'Status') return;
+
+        // 然后，再检查招式命中率的类型
+        if (typeof move.accuracy !== 'number') return;
+
+        // 在这里进行完整的条件判断
+        const isHustleAffected = source.hasAbility('hustle') && move.category === 'Physical';
+        if (move.accuracy < 100 || (move.accuracy === 100 && isHustleAffected)) {
+            this.debug('Fantasy Power Lens boosting accuracy');
             return this.chainModify([4915, 4096]); // 1.2倍
         }
     },
-    // 效果4：应用威力加成。
+    // 效果3：提升威力。
     onBasePower(basePower, source, target, move) {
-        if (source.m?.fantasypowerlens_boost) {
-            this.debug('Fantasy Power Lens: Applying damage boost via onBasePower.');
+        // 变化类招式没有威力，直接返回。
+        if (move.category === 'Status') return;
+        
+        // 检查招式的原始命中率是否为数字。
+        if (typeof move.accuracy !== 'number') return;
+
+        // 在这里重复一次完整的条件判断
+        const isHustleAffected = source.hasAbility('hustle') && move.category === 'Physical';
+        if (move.accuracy < 100 || (move.accuracy === 100 && isHustleAffected)) {
+            this.debug('Fantasy Power Lens boosting power');
             return this.chainModify([4915, 4096]); // 1.2倍
-        }
-    },
-    // 效果5：清理标记。
-    onAfterMove(source, target, move) {
-        if (source.m?.fantasypowerlens_boost) {
-            delete source.m.fantasypowerlens_boost;
-            this.debug('Fantasy Power Lens: Flag cleaned up onAfterMove.');
         }
     },
 		num: 10001,
