@@ -17,25 +17,24 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		fling: {
 			basePower: 100,
 	},
-    // 效果1：修改招式属性。此事件在回合开始前运行。
-    // 我们在这里禁用暴击。
-    onModifyMove(move, pokemon) {
+    // 效果1 & 2：判断与设置。
+    // 我们将所有“出招前”的逻辑都整合回 onModifyMove，这是最稳定可靠的地方。
+    onModifyMove(move, source) {
+        // 禁用暴击
         move.willCrit = false;
-    },
-    // 效果2：在即将出招时设置增益标记。这是最关键的一步。
-    // onTryMove 在宝可梦确认要使用该招式时触发，时机完美。
-    onTryMove(source, target, move) {
+
         // 对于不适用或必中的技能，直接返回
         if (move.category === 'Status' || move.accuracy === true) return;
 
         // 判断宝可梦是否拥有“活力”特性，并且使用的是物理技能
         const isHustleAffected = source.hasAbility('hustle') && move.category === 'Physical';
         
-        // 核心判断逻辑
+        // 核心判断逻辑：如果满足条件...
         if (move.accuracy < 100 || (move.accuracy === 100 && isHustleAffected)) {
-            // 设置标记，后续的命中和威力加成事件会读取这个标记
+            // ...就设置增益标记。
+            if (!source.m) source.m = {};
             source.m.fantasypowerlens_boost = true;
-            this.debug('Fantasy Power Lens: Flag set onTryMove.');
+            this.debug('Fantasy Power Lens: Flag set onModifyMove.');
         }
     },
     // 效果3：应用命中率加成
@@ -52,7 +51,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
             return this.chainModify([4915, 4096]); // 1.2倍
         }
     },
-    // 效果5：清理标记。在招式完全结束后触发，避免影响下一回合。
+    // 效果5：清理标记。使用 onAfterMoveSecondary 来解决多段攻击的问题。
     onAfterMoveSecondary(target, source, move) {
         if (source?.m?.fantasypowerlens_boost) {
             delete source.m.fantasypowerlens_boost;
