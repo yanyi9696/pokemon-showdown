@@ -16,46 +16,49 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		spritenum: 359,
 		fling: {
 			basePower: 100,
-	},
-    // 效果1 & 2：判断与设置。
-    // 我们将所有“出招前”的逻辑都整合回 onModifyMove，这是最稳定可靠的地方。
+    },
+    // 效果1：禁用暴击。
     onModifyMove(move, source) {
-        // 禁用暴击
         move.willCrit = false;
+    },
+    // 效果2：设置增益标记。
+    onPrepareHit(source, target, move) {
+        if (move.category === 'Status' || !source.hasItem('fantasypowerlens')) return;
 
-        // 对于不适用或必中的技能，直接返回
-        if (move.category === 'Status' || move.accuracy === true) return;
-
-        // 判断宝可梦是否拥有“活力”特性，并且使用的是物理技能
-        const isHustleAffected = source.hasAbility('hustle') && move.category === 'Physical';
-        
-        // 核心判断逻辑：如果满足条件...
-        if (move.accuracy < 100 || (move.accuracy === 100 && isHustleAffected)) {
-            // ...就设置增益标记。
-            if (!source.m) source.m = {};
-            source.m.fantasypowerlens_boost = true;
-            this.debug('Fantasy Power Lens: Flag set onModifyMove.');
+        // 【代码修改处】
+        // 在进行数字比较前，必须先检查 move.accuracy 是不是 number 类型。
+        // 这样就解决了你发现的 ts(2365) 报错。
+        if (typeof move.accuracy === 'number') {
+            const isHustleAffected = source.hasAbility('hustle') && move.category === 'Physical';
+            
+            // 核心判断逻辑
+            if (move.accuracy < 100 || (move.accuracy === 100 && isHustleAffected)) {
+                // 在这里设置标记
+                if (!source.m) source.m = {};
+                source.m.fantasypowerlens_boost = true;
+                this.debug('Fantasy Power Lens: Flag set onPrepareHit.');
+            }
         }
     },
-    // 效果3：应用命中率加成
+    // 效果3：应用命中率加成。
     onSourceModifyAccuracy(accuracy, source, target, move) {
         if (source.m?.fantasypowerlens_boost) {
             this.debug('Fantasy Power Lens: Applying accuracy boost.');
             return this.chainModify([4915, 4096]); // 1.2倍
         }
     },
-    // 效果4：应用威力加成
+    // 效果4：应用威力加成。
     onBasePower(basePower, source, target, move) {
         if (source.m?.fantasypowerlens_boost) {
             this.debug('Fantasy Power Lens: Applying damage boost via onBasePower.');
             return this.chainModify([4915, 4096]); // 1.2倍
         }
     },
-    // 效果5：清理标记。使用 onAfterMoveSecondary 来解决多段攻击的问题。
-    onAfterMoveSecondary(target, source, move) {
-        if (source?.m?.fantasypowerlens_boost) {
+    // 效果5：清理标记。
+    onAfterMove(source, target, move) {
+        if (source.m?.fantasypowerlens_boost) {
             delete source.m.fantasypowerlens_boost;
-            this.debug('Fantasy Power Lens: Flag cleaned up after move.');
+            this.debug('Fantasy Power Lens: Flag cleaned up onAfterMove.');
         }
     },
 		num: 10001,
