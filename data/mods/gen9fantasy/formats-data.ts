@@ -443,9 +443,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	glimmora: {
 		tier: "OU",
 	},
-	goodrahisui: {
-		tier: "OU",
-	},
 	ironcrown: {
 		tier: "OU",
 	},
@@ -469,6 +466,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	ogerponcornerstonetera: {
 		tier: "UUBL",
+	},
+	goodrahisui: {
+		tier: "UU",
 	},
 	ogerpon: {
 		tier: "UU",
