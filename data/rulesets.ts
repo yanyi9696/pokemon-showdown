@@ -2954,30 +2954,27 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			// 1. 如果没带Mega石，直接跳过
 			if (!item.megaStone) return;
 
+			// 检查携带Mega石的宝可梦是否与其Mega石对应
+			// 例如: Aggron 拿着 Aggronite. item.megaEvolves ('Aggron') === species.baseSpecies ('Aggron')
+			// 对于-Fantasy形态, 例如 Aggron-Fantasy, species.baseSpecies 也是 'Aggron'
+			if (item.megaEvolves !== species.baseSpecies) return;
+
 			let megaToCheck = null;
 
-			// 2. 核心逻辑：通过名字解析来手动关联
-			//    例如：从 "Metagross-Fantasy" 提取 "Metagross"
-			const baseName = species.name.replace('-Fantasy', '');
+			// 2. 判断当前宝可梦是否为-Fantasy形态
+			if (species.name.endsWith('-Fantasy')) {
+				// 3. 如果是-Fantasy形态，则寻找并检查对应的-Mega-Fantasy形态
+				const standardMega = this.dex.species.get(item.megaStone); // 例如 Aggron-Mega
+				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy'); // 例如 Aggron-Mega-Fantasy
 
-			//    然后检查 Metagrossite 的 megaEvolves 属性是否等于 "Metagross"
-			if (item.megaEvolves === baseName) {
-				// 关联成功！
-				// 3. 获取标准Mega形态 (例如 "Metagross-Mega")
-				const standardMega = this.dex.species.get(item.megaStone);
-				// 4. 尝试寻找对应的 -Mega-Fantasy 形态
-				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
-
-				if (fantasyMega.exists) {
-					// 如果-Mega-Fantasy存在，它就是我们要检查的对象
+				if (fantasyMega?.exists) {
 					megaToCheck = fantasyMega;
-				} else if (species.name.endsWith('-Fantasy')) {
-					// 如果-Mega-Fantasy不存在，但基础形态是-Fantasy，说明定义不完整，不进行检查
-					megaToCheck = null;
-				} else {
-					// 如果基础形态是原版，就检查标准Mega形态
-					megaToCheck = standardMega;
 				}
+				// 如果对应的-Mega-Fantasy不存在，megaToCheck将保持null，不进行检查
+				
+			} else {
+				// 4. 如果是普通形态，则检查标准的Mega形态
+				megaToCheck = this.dex.species.get(item.megaStone); // 例如 Aggron-Mega
 			}
 
 			// 5. 如果成功找到了要检查的Mega形态

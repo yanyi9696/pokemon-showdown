@@ -437,10 +437,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ceruledge: {
 		tier: "OU",
 	},
+	garganacl: {
+		tier: "OU",
+	},
 	glimmora: {
 		tier: "OU",
 	},
-	garganacl: {
+	goodrahisui: {
 		tier: "OU",
 	},
 	ironcrown: {
