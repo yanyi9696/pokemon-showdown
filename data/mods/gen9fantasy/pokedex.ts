@@ -830,7 +830,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Dark", "Grass"],
 		gender: "N",
-		baseStats: { hp: 85, atk: 85, def: 100, spa: 95, spd: 135, spe: 70 },
+		baseStats: { hp: 85, atk: 90, def: 100, spa: 100, spd: 135, spe: 70 },
 		abilities: { 0: "Tablets of Ruin", H: "Wo Ju" },
 		heightm: 1.5,
 		weightkg: 74.2,
