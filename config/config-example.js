@@ -393,7 +393,7 @@ exports.logchat = false;
 /**
  * logchallenges - whether to log challenge battles. Useful for tournament servers.
  */
-exports.logchallenges = false;
+exports.logchallenges = true;
 
 /**
  * loguserstats - how often (in milliseconds) to write user stats to the
@@ -461,7 +461,7 @@ exports.appealurl = '';
  * replsocketmode - the file mode bits to use for the repl sockets
  */
 exports.repl = false;
-exports.nofswriting = true;
+exports.nofswriting = false;
 exports.replsocketprefix = './logs/repl/';
 exports.replsocketmode = 0o600;
 
