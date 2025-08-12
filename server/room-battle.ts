@@ -842,6 +842,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (this.room.rated && !this.options.isBestOfSubBattle) {
 			void this.updateLadder(p1score, winnerid);
 		} else if (Config.logchallenges) {
+			console.log(`[DEBUG] Attempting to log battle: rated=${this.room.rated}, logchallenges=${Config.logchallenges}, logData=${!!this.logData}`);
 			void this.logBattle(p1score);
 		} else if (!this.options.isBestOfSubBattle) {
 			this.logData = null;
@@ -883,9 +884,17 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		p1score: number, p1rating: AnyObject | null = null, p2rating: AnyObject | null = null,
 		p3rating: AnyObject | null = null, p4rating: AnyObject | null = null
 	) {
-		if (Dex.formats.get(this.format, true).noLog) return;
+		console.log(`[DEBUG] logBattle called for room ${this.room.roomid}, format: ${this.format}`);
+		if (Dex.formats.get(this.format, true).noLog) {
+			console.log(`[DEBUG] Format ${this.format} has noLog=true, skipping`);
+			return;
+		}
 		const logData = this.logData;
-		if (!logData) return;
+		console.log(`[DEBUG] logData exists: ${!!logData}, logData content:`, logData ? 'present' : 'null');
+		if (!logData) {
+			console.log(`[DEBUG] No logData available, cannot log battle`);
+			return;
+		}
 		this.logData = null; // deallocate to save space
 		logData.log = this.room.getLog(-1).split('\n'); // replay log (exact damage)
 
