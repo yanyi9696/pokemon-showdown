@@ -135,27 +135,33 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			move.onAfterMoveSecondary = (target, source) => {
 				if (!source || !target || target.isAlly(source) || target === source) return;
 
-				const affected = target;
-				const sachetHolder = source;
+				if (source.useItem()) {
+					this.add('-activate', source, 'item: Fantasy Sachet');
 
-				// 移除外层的检查，只保留最基本的判断
-				if (sachetHolder.useItem()) {
-					this.add('-activate', sachetHolder, 'item: Fantasy Sachet');
+					const affected = target;
+					// 建立一个权威的、不可更改特性的“黑名单”
+					const unchangeableAbilities = [
+						// 官方永久特性
+						'asone', 'battlebond', 'comatose', 'commander', 'disguise', 'gulpmissile', 'hadronengine', 'iceface', 
+						'multitype', 'orichalcumpulse', 'powerconstruct', 'protosynthesis', 'quarkdrive', 'rkssystem', 'schooling', 'shieldsdown', 
+						'stancechange', 'terashift', 'zenmode', 'zerotohero',
+						// 效果相关特性
+						'lingeringaroma', 'mummy',
+						// 你的自定义永久特性
+						'woju',
+					];
 
-					const affectedAbility = this.dex.abilities.get(affected.ability);
-					const isPermanent = !!(affectedAbility as any).isPermanent;
-					const isProtectedByShield = affected.hasItem('abilityshield');
-					const alreadyHasAbility = affected.ability === 'lingeringaroma' || affected.ability === 'mummy';
-
-					if (isProtectedByShield) {
+					if (unchangeableAbilities.includes(affected.ability)) {
+						// 如果对方的特性在此名单中，则判定失败
+						this.add('-fail', source);
+					} else if (affected.hasItem('abilityshield')) {
+						// 对特性护具的检查保持不变
 						this.add('-block', affected, 'item: Ability Shield');
-					} else if (alreadyHasAbility || isPermanent) {
-						// 将 isPermanent 检查移到内部，与已有特性的情况合并处理
-						this.add('-fail', sachetHolder);
 					} else {
+						// 成功改变特性
 						affected.baseAbility = 'lingeringaroma' as ID;
 						affected.setAbility('lingeringaroma');
-						this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + sachetHolder);
+						this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + source);
 					}
 				}
 			};
@@ -165,23 +171,28 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (!move.flags['contact'] || !target.hasItem('fantasysachet')) return;
 			if (!source || source.isAlly(target) || source === target) return;
 
-			const affected = source;
 			const sachetHolder = target;
-			
-			// 移除外层的检查，只保留最基本的判断
+
 			if (sachetHolder.useItem()) {
 				this.add('-activate', sachetHolder, 'item: Fantasy Sachet');
 
-				const affectedAbility = this.dex.abilities.get(affected.ability);
-				const isPermanent = !!(affectedAbility as any).isPermanent;
-				const isProtectedByShield = affected.hasItem('abilityshield');
-				const alreadyHasAbility = affected.ability === 'lingeringaroma' || affected.ability === 'mummy';
-				
-				if (isProtectedByShield) {
-					this.add('-block', affected, 'item: Ability Shield');
-				} else if (alreadyHasAbility || isPermanent) {
-					// 将 isPermanent 检查移到内部，与已有特性的情况合并处理
+				const affected = source;
+				// 同样在这里使用权威的“黑名单”
+				const unchangeableAbilities = [
+						// 官方永久特性
+						'asone', 'battlebond', 'comatose', 'commander', 'disguise', 'gulpmissile', 'hadronengine', 'iceface', 
+						'multitype', 'orichalcumpulse', 'powerconstruct', 'protosynthesis', 'quarkdrive', 'rkssystem', 'schooling', 'shieldsdown', 
+						'stancechange', 'terashift', 'zenmode', 'zerotohero',
+						// 效果相关特性
+						'lingeringaroma', 'mummy',
+						// 你的自定义永久特性
+						'woju',
+				];
+
+				if (unchangeableAbilities.includes(affected.ability)) {
 					this.add('-fail', sachetHolder);
+				} else if (affected.hasItem('abilityshield')) {
+					this.add('-block', affected, 'item: Ability Shield');
 				} else {
 					affected.baseAbility = 'lingeringaroma' as ID;
 					affected.setAbility('lingeringaroma');
