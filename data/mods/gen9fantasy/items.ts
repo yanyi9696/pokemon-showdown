@@ -118,67 +118,74 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		} as any,
 		onTryBoost(boost: {[key: string]: number}, target: Pokemon, source: Pokemon | null, effect: Effect | null) {
 			let hasBoost = false;
-			// 遍历所有即将发生的能力变化
 			for (const i in boost) {
-				// 只要有任何一项能力是提升的 (值 > 0)
 				if (boost[i] > 0) {
 					hasBoost = true;
-					// 就从即将发生的变化中，把这一项删除
 					delete boost[i];
 				}
 			}
-			// 只要确实有能力提升被阻止了，就显示消息
 			if (hasBoost) {
 				this.add('-fail', target, 'boost', '[from] item: Fantasy Sachet');
 			}
 		},
 
-		// 方案A修正：处理【主动攻击】
-		// 使用 onModifyMove 为接触招式附加 onAfterMoveSecondary 效果
 		onModifyMove(move, pokemon) {
 			if (!move.flags['contact'] || !pokemon.hasItem('fantasysachet')) return;
 			
-			// 动态为这个招式添加 onAfterMoveSecondary 事件，它在招式完全结束后触发
 			move.onAfterMoveSecondary = (target, source) => {
-				// 确保 source 和 target 存在且不是队友
 				if (!source || !target || target.isAlly(source) || target === source) return;
 
 				const affected = target;
-				const bannedAbilities = ['lingeringaroma', 'mummy'];
-				const affectedAbilityId = affected.ability;
-				const affectedAbility = this.dex.abilities.get(affectedAbilityId);
+				const sachetHolder = source;
 
-				if (affectedAbility && !bannedAbilities.includes(affectedAbilityId) && !(affectedAbility as any).isPermanent) {
-					// 'this' 在这里指向 Battle 对象
-					// 只有在道具成功使用（消耗）时才改变特性
-					if (source.useItem()) {
+				// 移除外层的检查，只保留最基本的判断
+				if (sachetHolder.useItem()) {
+					this.add('-activate', sachetHolder, 'item: Fantasy Sachet');
+
+					const affectedAbility = this.dex.abilities.get(affected.ability);
+					const isPermanent = !!(affectedAbility as any).isPermanent;
+					const isProtectedByShield = affected.hasItem('abilityshield');
+					const alreadyHasAbility = affected.ability === 'lingeringaroma' || affected.ability === 'mummy';
+
+					if (isProtectedByShield) {
+						this.add('-block', affected, 'item: Ability Shield');
+					} else if (alreadyHasAbility || isPermanent) {
+						// 将 isPermanent 检查移到内部，与已有特性的情况合并处理
+						this.add('-fail', sachetHolder);
+					} else {
 						affected.baseAbility = 'lingeringaroma' as ID;
 						affected.setAbility('lingeringaroma');
-						this.add('-activate', source, 'item: Fantasy Sachet');
-						this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + source);
+						this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + sachetHolder);
 					}
 				}
 			};
 		},
 
-		// 方案B：处理【被动防御】（此部分逻辑正确，无需修改）
-		// 当持有者被接触招式命中时触发
 		onDamagingHit(damage, target, source, move) {
 			if (!move.flags['contact'] || !target.hasItem('fantasysachet')) return;
 			if (!source || source.isAlly(target) || source === target) return;
 
 			const affected = source;
-			const bannedAbilities = ['lingeringaroma', 'mummy'];
-			const affectedAbilityId = affected.ability;
-			const affectedAbility = this.dex.abilities.get(affectedAbilityId);
+			const sachetHolder = target;
+			
+			// 移除外层的检查，只保留最基本的判断
+			if (sachetHolder.useItem()) {
+				this.add('-activate', sachetHolder, 'item: Fantasy Sachet');
 
-			if (affectedAbility && !bannedAbilities.includes(affectedAbilityId) && !(affectedAbility as any).isPermanent) {
-				// 只有在道具成功使用（消耗）时才改变特性
-				if (target.useItem()) {
+				const affectedAbility = this.dex.abilities.get(affected.ability);
+				const isPermanent = !!(affectedAbility as any).isPermanent;
+				const isProtectedByShield = affected.hasItem('abilityshield');
+				const alreadyHasAbility = affected.ability === 'lingeringaroma' || affected.ability === 'mummy';
+				
+				if (isProtectedByShield) {
+					this.add('-block', affected, 'item: Ability Shield');
+				} else if (alreadyHasAbility || isPermanent) {
+					// 将 isPermanent 检查移到内部，与已有特性的情况合并处理
+					this.add('-fail', sachetHolder);
+				} else {
 					affected.baseAbility = 'lingeringaroma' as ID;
 					affected.setAbility('lingeringaroma');
-					this.add('-activate', target, 'item: Fantasy Sachet');
-					this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + target);
+					this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + sachetHolder);
 				}
 			}
 		},
