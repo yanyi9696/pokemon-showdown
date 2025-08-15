@@ -690,28 +690,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		num: 126,
 	},
 	corrosion: {
-		onModifyMove(move, pokemon, target) {
-			// 检查1：确保我们只修改“毒”属性的招式
-			if (move.type !== 'Poison') return;
-			// 检查2：确保目标存在且拥有“钢”属性
-			if (target?.hasType('Steel')) {
-				/*关键修正：忽略免疫性
-				 * 这行代码告诉对战引擎，在本次攻击中，无视目标基于属性的免疫。
-				 * 这就解决了毒系招式无法命中钢系宝可梦的根本问题。
-				 */
-				move.ignoreImmunity = true;
-				/* 关键逻辑：修改克制倍率
-				 * 这个函数现在可以被正常调用了，因为它已经越过了免疫检查。
-				 * 我们在这里将毒对钢的伤害倍率从“无效”改为“效果绝佳”。
-				 */
-				move.onEffectiveness = function (typeMod, t, type, m) {
-					// 当系统计算对'Steel'属性的克制时，返回1，代表效果绝佳(x2)
-					// 在很多引擎中，typeMod的计算方式是：1=绝佳, 0=普通, -1=抵抗
-					if (type === 'Steel') return 1;
-				};
-			}
-		},
-    	// 原特性效果说明：这个特性的中毒效果是在游戏核心逻辑中实现的，
 		// Implemented in sim/pokemon.js:Pokemon#setStatus
 		flags: {},
 		name: "Corrosion",
@@ -830,24 +808,9 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				}
 			}
 		},
-		onSourceModifyDamage(damage, source, target, move) {
-        this.debug('Cute Charm reduces damage');
-        // 第一步：无条件降低20%的伤害
-        // this.chainModify(0.8) 会将伤害乘以 0.8
-        let damageMultiplier = 0.8;
-        // 第二步：检查性别并额外降低伤害
-        // 确保攻击方和防御方都有性别，且性别不同
-        if (source.gender && target.gender && source.gender !== target.gender) {
-            this.debug('Cute Charm reduces damage further against opposite gender');
-            // 在原有基础上再降低10% (0.8 * 0.9 = 0.72)
-            damageMultiplier *= 0.9;
-        }
-        // 应用最终的伤害修正
-        return this.chainModify(damageMultiplier);
-    },
 		flags: {},
 		name: "Cute Charm",
-		rating: 2,
+		rating: 0.5,
 		num: 56,
 	},
 	damp: {
@@ -4282,34 +4245,24 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				this.add('-start', target, 'ability: Slow Start');
 			},
 			onResidual(pokemon) {
-				// 这个判断是为了让“慢启动”的倒计时从上场后的下一个回合才开始计算，
-				// 保证了负面效果会持续整整5个回合。
 				if (!pokemon.activeTurns) {
 					this.effectState.duration! += 1;
 				}
-				// 只有当宝可梦存活（hp > 0）并且不在上场的第一个回合时 (activeTurns > 0)，
-				// 才执行攻击和速度的提升。
-				if (pokemon.hp && pokemon.activeTurns) {
-					this.boost({atk: 1, spe: 1}, pokemon);
-				}
 			},
-			// 在计算攻击力时，将最终数值减半
 			onModifyAtkPriority: 5,
 			onModifyAtk(atk, pokemon) {
 				return this.chainModify(0.5);
 			},
-			// 在计算速度时，将最终数值减半
 			onModifySpe(spe, pokemon) {
 				return this.chainModify(0.5);
 			},
 			onEnd(target) {
-				// 5回合后状态结束，在对战中显示提示信息
 				this.add('-end', target, 'Slow Start');
 			},
 		},
 		flags: {},
 		name: "Slow Start",
-		rating: 2,
+		rating: -1,
 		num: 112,
 	},
 	slushrush: {
