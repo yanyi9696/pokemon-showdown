@@ -63,6 +63,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "self",
 		type: "Steel",
+		zMove: { effect: 'clearnegativeboost' },
 		desc: "回复自身1/2最大HP",
 		shortDesc: "回复自身1/2最大HP"
 	},
@@ -159,6 +160,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: {}, // Sheer Force-boosted
 		target: "normal",
 		type: "Normal",
+		zMove: { basePower: 140 },
+		maxMove: { basePower: 120 },
 		desc: "秘剑·百仞川。令目标场地进入钢刺状态,使交换上场的宝可梦受到伤害",
 		shortDesc: "秘剑·百仞川。令目标场地进入钢刺状态"
 	},
@@ -175,6 +178,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Electric",
+		zMove: { basePower: 100 },
+		maxMove: { basePower: 100 },
 		desc: "电闪瞬击。必定能够先制攻击。攻击必定击中要害",
 		shortDesc: "电闪瞬击。必定能够先制攻击。攻击必定击中要害"
 	},
@@ -196,8 +201,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Poison",
-		zMove: { basePower: 120 },
-		maxMove: { basePower: 80 },
+		zMove: { basePower: 175 },
+		maxMove: { basePower: 90 },
 		desc: "醉神乱打。连续攻击1~3次,每一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45",
 		shortDesc: "醉神乱打。连续攻击1~3次,必定击中要害。每次击中威力↑"
 	},
@@ -214,6 +219,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Poison",
+		zMove: { basePower: 140 },
+		maxMove: { basePower: 85 },
 		contestType: "Cute",
 		desc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场",
 		shortDesc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场"
@@ -230,6 +237,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "any",
 		type: "Flying",
+		zMove: { basePower: 175 },
+		maxMove: { basePower: 130 },
 		contestType: "Cool",
 		desc: "穿云。可以无视守住进行攻击。攻击必定命中在场上的目标",
 		shortDesc: "穿云。可以无视守住进行攻击。攻击必定命中在场上的目标"
@@ -247,6 +256,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "any",
 		type: "Steel",
+		zMove: { basePower: 100 },
+		maxMove: { basePower: 90 },
 		contestType: "Cool",
 		desc: "暴雨梨花。连续攻击２～５次。必定能够先制攻击",
 		shortDesc: "暴雨梨花。连续攻击２～５次。必定能够先制攻击"
@@ -268,6 +279,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "normal",
 		type: "Rock",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 130 },
 		contestType: "Tough",
 		desc: "岩箭。攻击目标造成伤害。20%几率令目标的防御降低1级",
 		shortDesc: "岩箭。攻击目标造成伤害。20%几率令目标的防御降低1级"
@@ -348,6 +361,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		],
 		target: "normal",
 		type: "Fairy",
+		zMove: { basePower: 120 },
+		maxMove: { basePower: 120 },
 		contestType: "Cool",
 		desc: "妖精之牙。有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩",
 		shortDesc: "妖精之牙。30%灼伤/麻痹/冰冻,10%畏缩"
@@ -365,6 +380,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Dark",
+		zMove: { basePower: 175 },
+		maxMove: { basePower: 130 },
 		contestType: "Beautiful",
 		desc: "预兆之剑。计算伤害时按防守方的特防计算,不是防御",
 		shortDesc: "预兆之剑。计算伤害时按防守方的特防计算,不是防御"
@@ -383,6 +400,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Psychic",
+		zMove: { basePower: 175 },
+		maxMove: { basePower: 130 },
 		contestType: "Cool",
 		desc: "洞察打击。无视目标的能力阶级变化进行攻击",
 		shortDesc: "洞察打击。无视目标的能力阶级变化进行攻击"
@@ -420,6 +439,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	    },
 	    target: "normal",
 	    type: "Normal",
+		zMove: { basePower: 175 },
+		maxMove: { basePower: 130 },
 		desc: "鹿角。招式的属性会根据使用者的形态改变,春:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低1级",
 		shortDesc: "鹿角。招式的属性随形态改变。50%令目标的防御降低1级"
 	},
@@ -471,6 +492,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "normal",
 		type: "Ghost", 
+		zMove: { basePower: 120 },
+		maxMove: { basePower: 110 },
 		desc: "源能释放。比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。让对手陷入麻痹状态",
 		shortDesc: "源能释放。攻击＞特攻变为物理招式,并使其陷入麻痹状态"
 	},
@@ -487,6 +510,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Dragon", 
+		zMove: { basePower: 100 },
+		maxMove: { basePower: 90 },
 		desc: "龙之歌。使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下",
 		shortDesc: "龙之歌。困住并伤害目标4~5回合"
 	},
@@ -540,7 +565,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "all",
 		type: "Fairy", 
-		zMove: { effect: 'clearallboosts' }, 
+		zMove: { effect: 'healreplacement' },
 		desc: "差不多晚安。接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换",
 		shortDesc: "差不多晚安。交替并使场地变为持续5回合的薄雾场地"
 	},
@@ -559,6 +584,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "any",
 		type: "Fire",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 130 },
 		contestType: "Beautiful",
 		desc: "炎之波动。攻击目标造成伤害。有20%几率使目标陷入灼伤状态",
 		shortDesc: "炎之波动。有20%几率使目标陷入灼伤状态"
@@ -619,6 +646,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "any",
 		type: "Normal",
+		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
 		contestType: "Beautiful",
 		desc: "凤行。比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。队伍中每有一只凤王/雷公/炎帝/水君威力+20",
 		shortDesc: "凤行。队中每只凤王与凤王卫队威力+20,攻击＞特攻变物理"

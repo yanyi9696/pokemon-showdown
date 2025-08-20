@@ -1,10 +1,10 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	woju: {
-    name: 'Woju', // 建议用英文或拼音ID，方便调试
+    name: 'Wo Ju', // 建议用英文或拼音ID，方便调试
 
 		// 效果1：闪避率变化 (你的实现是正确的，我们保留它)
 		onStart(target, source, effect) {
-			this.add('-start', target, 'Woju', '[from] ability: Wo Ju');
+			this.add('-start', target, 'Wo Ju', '[from] ability: Wo Ju');
 			this.add('-message', `${target.name} 躲进了它的壳里！`);
 			
 			// [!fix] 尝试降低闪避，并记录是否成功
@@ -23,7 +23,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				this.effectState.boosted = false; 
 			}
 
-			this.add('-end', target, 'Woju');
+			this.add('-end', target, 'Wo Ju');
 			this.add('-message', `${target.name} 从壳里探出头来！`);
 		},
 

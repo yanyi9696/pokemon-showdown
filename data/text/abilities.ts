@@ -264,7 +264,7 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	corrosion: {
 		name: "Corrosion",
-		shortDesc: "可以使钢属性和毒属性的宝可梦也陷入中毒状态,毒系招式对钢系效果绝佳。",
+		shortDesc: "This Pokemon can poison or badly poison a Pokemon regardless of its typing.",
 	},
 	costar: {
 		name: "Costar",
@@ -290,8 +290,8 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	cutecharm: {
 		name: "Cute Charm",
-		desc: "接触时有30%机率使对手着迷。受到的伤害降低20%,若对手为异性则伤害再降低10%。",
-		shortDesc: "接触时有30%机率使对手着迷。受到的伤害降低20%,若对手为异性则伤害再降低10%。",
+		desc: "There is a 30% chance a Pokemon making contact with this Pokemon will become infatuated if it is of the opposite gender.",
+		shortDesc: "30% chance of infatuating Pokemon of the opposite gender if they make contact.",
 		gen4: {
 			desc: "There is a 30% chance a Pokemon making contact with this Pokemon will become infatuated if it is of the opposite gender. This effect does not happen if this Pokemon did not lose HP from the attack.",
 		},
@@ -1670,7 +1670,7 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	slowstart: {
 		name: "Slow Start",
-		shortDesc: "登场之后的5回合内攻击和速度减半,期间每回合结束攻击和速度会上升1级。",
+		shortDesc: "On switch-in, this Pokemon's Attack and Speed are halved for 5 turns.",
 		gen7: {
 			desc: "On switch-in, this Pokemon's Attack and Speed are halved for 5 turns. During the effect, if this Pokemon uses a generic Z-Move based on a special move, its Special Attack is halved during damage calculation.",
 		},

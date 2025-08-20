@@ -26,6 +26,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Cute Charm",
 		rating: 3,
 		num: 56,
+		shortDesc: "接触时有30%机率使对手着迷。受到的伤害降低20%,若对手为异性则伤害再降低10%",
 	},
 	slowstart: {
 		onStart(pokemon) {
@@ -72,6 +73,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Slow Start",
 		rating: 4,
 		num: 112,
+		shortDesc: "登场之后的5回合内攻击和速度减半,期间每回合结束攻击和速度会上升1级",
 	},
 	stancechange: {
 		onModifyMovePriority: 1,
@@ -117,6 +119,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Corrosion",
 		rating: 3.5,
 		num: 212,
+		shortDesc: "可以使钢属性和毒属性的宝可梦也陷入中毒状态,毒系招式对钢系效果绝佳",
 	},
 	//以下为CAP特性
 		mountaineer: {
