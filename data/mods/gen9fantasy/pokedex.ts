@@ -451,7 +451,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	mimikyufantasy: {
 		num: 778,
 		name: "Mimikyu-Fantasy",
-		baseForme: "Mimikyu",
+		baseSpecies: "Mimikyu",
+		baseForme: "Disguised",
 		forme: "Fantasy",
 		types: ["Ghost", "Fairy"],
 		baseStats: { hp: 75, atk: 120, def: 100, spa: 50, spd: 105, spe: 96 },
