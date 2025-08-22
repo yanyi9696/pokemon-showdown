@@ -751,9 +751,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "重画皮。仿照眼前宝可梦的模样重画皮,永久获得对方的特性",
 	},
 	muhouheishou: {
+		// 当这个特性的宝可梦作为攻击方时，在伤害计算阶段触发
 		onSourceModifyDamage(damage, source, target, move) {
+			// 检查目标的HP是否小于等于一半
 			if (target.hp * 2 <= target.maxhp) {
-				this.debug('Mastermind boost');
+				// 在对战日志中打印调试信息，方便确认特性是否触发
+				this.debug('Mu Hou Hei Shou boost!');
+				// 将最终伤害乘以1.5
 				return this.chainModify(1.5);
 			}
 		},
