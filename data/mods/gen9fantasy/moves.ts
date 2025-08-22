@@ -140,7 +140,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "self",
 		type: "Bug",
-		zMove: { effect: 'clearnegativeboost' },
+		zMove: { boost: { atk: 1 } },
 		contestType: "Clever",
 		// 更新招式描述以匹配新的效果
 		desc: "先行指令。比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手,但再次使用会失败",
