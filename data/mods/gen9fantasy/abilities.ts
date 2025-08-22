@@ -94,50 +94,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	disguise: {
 		onDamagePriority: 1,
 		onDamage(damage, target, source, effect) {
-			if (effect?.effectType === 'Move' && target.species.baseSpecies === 'Mimikyu' && !target.transformed) {
+			if (effect?.effectType === 'Move' && ['mimikyu', 'mimikyutotem', 'mimikyufantasy'].includes(target.species.id)) {
 				this.add('-activate', target, 'ability: Disguise');
-
-				const speciesid = target.species.id;
-				let targetForme = '';
-				if (speciesid === 'mimikyu') {
-					targetForme = 'Mimikyu-Busted';
-				} else if (speciesid === 'mimikyufantasy') {
-					targetForme = 'Mimikyu-Busted-Fantasy';
-				} else if (speciesid === 'mimikyutotem') {
-					targetForme = 'Mimikyu-Busted-Totem';
-				}
-				
-				if (targetForme) {
-					target.formeChange(targetForme, this.effect, true);
-					
-					// 需求一：手动播报获得了“重画皮”
-					this.add('-ability', target, 'Chong Hua Pi', '[from] ability: Disguise');
-
-					// 需求二：使用sethp代替damage，不再显示伤害消息
-					const damageToTake = this.clampIntRange(target.baseMaxhp / 8, 1);
-					target.sethp(target.hp - damageToTake);
-					
-					const possibleTargets = target.adjacentFoes().filter(
-						(opponent: Pokemon) => !opponent.getAbility().flags['notrace'] && opponent.ability !== 'noability'
-					);
-					if (possibleTargets.length) {
-						const opponent = this.sample(possibleTargets);
-						const ability = opponent.getAbility();
-						
-						// 需求一：原有的播报作为第二步
-						this.add('-ability', target, ability, '[from] ability: Chong Hua Pi', `[of] ${opponent}`);
-						
-						target.setAbility(ability);
-						target.baseAbility = ability.id; 
-					}
-				}
-				
+				this.effectState.busted = true;
 				return 0;
 			}
 		},
 		onCriticalHit(target, source, move) {
 			if (!target) return;
-			if (target.species.baseSpecies !== 'Mimikyu' || target.transformed) {
+			if (!['mimikyu', 'mimikyutotem', 'mimikyufantasy'].includes(target.species.id)) {
 				return;
 			}
 			const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
@@ -148,9 +113,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		onEffectiveness(typeMod, target, type, move) {
 			if (!target || move.category === 'Status') return;
-			if (target.species.baseSpecies !== 'Mimikyu' || target.transformed) {
+			if (!['mimikyu', 'mimikyutotem', 'mimikyufantasy'].includes(target.species.id)) {
 				return;
 			}
+
 			const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
 			if (hitSub) return;
 
@@ -158,7 +124,51 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			return 0;
 		},
 		onUpdate(pokemon) {
-			// 此函数不再需要任何逻辑
+			if (['mimikyu', 'mimikyutotem', 'mimikyufantasy'].includes(pokemon.species.id) && this.effectState.busted) {
+				// --- 原有逻辑：形态变化 ---
+				let speciesid = '';
+				let isFantasy = false;
+				if (pokemon.species.id === 'mimikyutotem') {
+					speciesid = 'Mimikyu-Busted-Totem';
+				} else if (pokemon.species.id === 'mimikyu') {
+					speciesid = 'Mimikyu-Busted';
+				} else if (pokemon.species.id === 'mimikyufantasy') {
+					speciesid = 'Mimikyu-Busted-Fantasy';
+					isFantasy = true; // 标记这是幻想形态
+				}
+				
+				pokemon.formeChange(speciesid, this.effect, true);
+				this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(speciesid));
+
+				// --- 新增逻辑：仅对幻想形态执行“重画皮”效果 ---
+				if (isFantasy) {
+					// 1. 显示一次“重画皮”
+					this.add('-ability', pokemon, 'Chong Hua Pi', '[from] ability: Disguise');
+
+					// 2. 参照“复制”的逻辑，筛选目标
+					const possibleTargets = pokemon.adjacentFoes().filter(
+						target => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
+					);
+
+					if (possibleTargets.length) {
+						// 3. 如果找到目标，执行永久复制
+						const target = this.sample(possibleTargets);
+						const ability = target.getAbility();
+						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
+						
+						// 关键：同时设置当前和基础特性，实现“永久”效果
+						pokemon.setAbility(ability);
+						pokemon.baseAbility = ability.id;
+					} else {
+						// 4. 如果没有可复制的目标，则将特性永久变为“重画皮”
+						pokemon.setAbility('chonghuapi');
+						pokemon.baseAbility = 'chonghuapi' as ID; 
+					}
+				}
+				
+				// 重置状态，防止重复触发
+				this.effectState.busted = false;
+			}
 		},
 		flags: {
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
