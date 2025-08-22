@@ -109,7 +109,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				
 				if (targetForme) {
 					target.formeChange(targetForme, this.effect, true);
-					this.damage(target.baseMaxhp / 8, target, target, this.dex.species.get(targetForme));
+					
+					// 需求一：手动播报获得了“重画皮”
+					this.add('-ability', target, 'Chong Hua Pi', '[from] ability: Disguise');
+
+					// 需求二：使用sethp代替damage，不再显示伤害消息
+					const damageToTake = this.clampIntRange(target.baseMaxhp / 8, 1);
+					target.sethp(target.hp - damageToTake);
 					
 					const possibleTargets = target.adjacentFoes().filter(
 						(opponent: Pokemon) => !opponent.getAbility().flags['notrace'] && opponent.ability !== 'noability'
@@ -117,10 +123,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					if (possibleTargets.length) {
 						const opponent = this.sample(possibleTargets);
 						const ability = opponent.getAbility();
+						
+						// 需求一：原有的播报作为第二步
 						this.add('-ability', target, ability, '[from] ability: Chong Hua Pi', `[of] ${opponent}`);
 						
 						target.setAbility(ability);
-						target.baseAbility = ability.id; // 永久固定特性
+						target.baseAbility = ability.id; 
 					}
 				}
 				
@@ -702,7 +710,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居",
 	},
 	chonghuapi: {
-		// 这个特性现在只是一个占位符，不需要任何代码
+		// onStart 会在每次宝可梦登场时触发
+		onStart(pokemon) {
+			const possibleTargets = pokemon.adjacentFoes().filter(
+				(target: Pokemon) => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
+			);
+
+			if (!possibleTargets.length) return;
+
+			const target = this.sample(possibleTargets);
+			const ability = target.getAbility();
+
+			this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
+			
+			// 关键修正：同时设置当前和基础特性，确保复制永久生效
+			pokemon.setAbility(ability);
+			pokemon.baseAbility = ability.id;
+		},
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
 		name: "Chong Hua Pi",
 		rating: 4,
