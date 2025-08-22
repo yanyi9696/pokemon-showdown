@@ -142,27 +142,30 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 				// --- 新增逻辑：仅对幻想形态执行“重画皮”效果 ---
 				if (isFantasy) {
-					// 1. 显示一次“重画皮”
 					this.add('-ability', pokemon, 'Chong Hua Pi', '[from] ability: Disguise');
 
-					// 2. 参照“复制”的逻辑，筛选目标
+					// 修正点 1：将 target 改为 pokemon
 					const possibleTargets = pokemon.adjacentFoes().filter(
-						target => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
+						(target: Pokemon) => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
 					);
 
 					if (possibleTargets.length) {
-						// 3. 如果找到目标，执行永久复制
+						// 修正点 1：将 target 改为 pokemon
 						const target = this.sample(possibleTargets);
 						const ability = target.getAbility();
 						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
 						
-						// 关键：同时设置当前和基础特性，实现“永久”效果
 						pokemon.setAbility(ability);
 						pokemon.baseAbility = ability.id;
+
+						// 修正点 2：使用 (ability as any) 来访问 onStart
+						if ((ability as any).onStart) {
+							// 修正点 1：将 target 改为 pokemon
+							(ability as any).onStart.call(this, pokemon);
+						}
 					} else {
-						// 4. 如果没有可复制的目标，则将特性永久变为“重画皮”
 						pokemon.setAbility('chonghuapi');
-						pokemon.baseAbility = 'chonghuapi' as ID; 
+						pokemon.baseAbility = 'chonghuapi' as ID;
 					}
 				}
 				
