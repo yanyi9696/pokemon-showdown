@@ -91,6 +91,85 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4,
 		num: 176,
 	},
+	disguise: {
+		onDamagePriority: 1,
+		onDamage(damage, target, source, effect) {
+			// 修改点 1: 将检测 target.species.id 改为检测 target.species.baseSpecies
+			// 这样一来，无论是 'Mimikyu' 还是 'Mimikyu-Fantasy'，只要基础物种是 'Mimikyu'，此特性就会生效。
+			if (effect?.effectType === 'Move' && target.species.baseSpecies === 'Mimikyu' && !target.transformed) {
+				this.add('-activate', target, 'ability: Disguise');
+				// 设置一个临时状态，告诉 onUpdate 函数画皮已经被破坏
+				this.effectState.busted = true;
+				// 返回 0 来抵消本次伤害
+
+				// --- 修正代码开始 ---
+				// 我们使用 (target as any) 来告诉 TypeScript 允许我们附加一个自定义属性
+				if (source && source.ability) {
+					(target as any).chonghuapiSourceAbility = source.getAbility().id;
+				}
+				// --- 修正代码结束 ---
+
+				return 0;
+			}
+		},
+		onCriticalHit(target, source, move) {
+			if (!target) return;
+			// 修改点 2: 同样，这里也改为检测 baseSpecies
+			// 这能确保在画皮抵挡伤害时，不会显示“击中要害”的提示信息。
+			if (target.species.baseSpecies !== 'Mimikyu' || target.transformed) {
+				return;
+			}
+			const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+			if (hitSub) return;
+
+			if (!target.runImmunity(move.type)) return;
+			return false;
+		},
+		onEffectiveness(typeMod, target, type, move) {
+			if (!target || move.category === 'Status') return;
+			// 修改点 3: 同样，这里也改为检测 baseSpecies
+			// 这能确保在画皮抵挡伤害时，不会显示“效果绝佳”的提示信息。
+			if (target.species.baseSpecies !== 'Mimikyu' || target.transformed) {
+				return;
+			}
+			const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+			if (hitSub) return;
+
+			if (!target.runImmunity(move.type)) return;
+			return 0;
+		},
+		onUpdate(pokemon) {
+			// 修改点 4: 这是最关键的修改，处理形态变换
+			// 检查宝可梦的基础物种是否为 'Mimikyu' 并且它的画皮已经被破坏了
+			if (pokemon.species.baseSpecies === 'Mimikyu' && this.effectState.busted) {
+				// 获取当前形态的ID，例如 'mimikyu' 或 'mimikyufantasy'
+				const speciesid = pokemon.species.id;
+				// 根据当前形态ID，确定要变换的目标形态
+				let targetForme = '';
+				if (speciesid === 'mimikyu') {
+					targetForme = 'Mimikyu-Busted';
+				} else if (speciesid === 'mimikyufantasy') {
+					targetForme = 'Mimikyu-Busted-Fantasy';
+				} else if (speciesid === 'mimikyutotem') {
+					targetForme = 'Mimikyu-Busted-Totem';
+				}
+				
+				// 如果成功找到了一个目标“现形”形态，就执行变换
+				if (targetForme) {
+					pokemon.formeChange(targetForme, this.effect, true);
+					// 形态变换后，扣除其最大HP的1/8
+					this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(targetForme));
+				}
+			}
+		},
+		flags: {
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
+			breakable: 1, notransform: 1,
+		},
+		name: "Disguise",
+		rating: 3.5,
+		num: 209,
+	},
 	corrosion: {
 		onModifyMove(move, pokemon, target) {
 			// 检查1：确保我们只修改“毒”属性的招式
@@ -631,5 +710,32 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4.5,
 		num: 10017,
 		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居",
+	},
+	chonghuapi: {
+		onStart(pokemon) {
+			const sourceAbilityId = (pokemon as any).chonghuapiSourceAbility;
+
+			if (!sourceAbilityId) return;
+
+			const sourceAbility = this.dex.abilities.get(sourceAbilityId);
+			if (sourceAbility.flags['notrace'] || sourceAbility.id === 'noability') {
+				this.add('-fail', pokemon, 'ability: Chong Hua Pi', sourceAbility.name);
+				delete (pokemon as any).chonghuapiSourceAbility; 
+				return;
+			}
+			
+			if (pokemon.setAbility(sourceAbility)) {
+				this.add('-ability', pokemon, sourceAbility, '[from] ability: Chong Hua Pi');
+			}
+			
+			delete (pokemon as any).chonghuapiSourceAbility; 
+		},
+		flags: {
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1, notransform: 1,
+		},
+		name: "Chong Hua Pi",
+		rating: 4,
+		num: 10018,
+		shortDesc: "重画皮。仿照打破画皮的宝可梦的模样重画皮,永久获得对方的特性",
 	},
 };

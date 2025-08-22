@@ -139,6 +139,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mienshaofantasy: {
 		tier: "UUBL",
 	},
+	mimikyufantasy: {
+		tier: "UUBL",
+	},
+	mimikyubustedfantasy: {
+		tier: "UUBL",
+	},
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},

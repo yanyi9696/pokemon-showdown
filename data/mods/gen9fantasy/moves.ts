@@ -652,4 +652,55 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "凤行。比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。队伍中每有一只凤王/雷公/炎帝/水君威力+20",
 		shortDesc: "凤行。队中每只凤王与凤王卫队威力+20,攻击＞特攻变物理"
 	},
+	popipa: {
+		num: 10021,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Po Pi Pa",
+		pp: 10,
+		priority: 0,
+		flags: { metronome: 1 },
+		/**
+		 * @description onTry 在招式尝试使用时触发，用于检查使用者自身的状态
+		 */
+		onTry(source) {
+			// 检查1: 使用者的HP是否低于最大HP的一半。如果是，招式失败。
+			if (source.hp <= source.maxhp / 2) {
+				this.add('-fail', source, 'move: Po Pi Pa', '[weak]');
+				this.hint("HP must be greater than 50% to use Po Pi Pa.");
+				return false;
+			}
+			// 检查2: 使用者是否已经有替身了。如果是，招式失败。
+			if (source.volatiles['substitute']) {
+				this.add('-fail', source, 'move: Po Pi Pa');
+				this.hint("Po Pi Pa cannot be used while a substitute is up.");
+				return false;
+			}
+		},
+		/**
+		 * @description onHit 在招式成功命中目标后触发，用于执行招式的核心效果
+		 */
+		onHit(target, source) {
+			// 计算需要消耗的HP（最大HP的一半）
+			const hpCost = Math.floor(source.maxhp / 2);
+			
+			// 使用 directDamage 扣除使用者的HP。这个函数会处理HP扣减，并确保使用者不会因此而立刻濒死。
+			// 如果HP成功扣除...
+			if (this.directDamage(hpCost, source, source)) {
+				// 效果1: 为使用者创建替身
+				source.addVolatile('substitute', source);
+				// 手动设置替身的HP，使其等于所消耗的HP量
+				source.volatiles['substitute'].hp = hpCost;
+				
+				// 效果2: 使目标陷入诅咒状态
+				target.addVolatile('curse', source);
+			}
+		},
+		target: "normal",
+		type: "Ghost",
+		zMove: { effect: 'heal' },
+		desc: "破皮帕。用自己最大HP的一半制造出替身,并使目标进入诅咒状态。如果自身HP不超过最大HP的一半,此招式会失败",
+		shortDesc: "破皮帕。消耗50%HP制造替身并诅咒对手",
+	},
 };
