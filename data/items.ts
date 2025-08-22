@@ -3756,7 +3756,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onTakeItem: false,
 		zMove: "Let's Snuggle Forever",
 		zMoveFrom: "Play Rough",
-		itemUser: ["Mimikyu", "Mimikyu-Busted", "Mimikyu-Totem", "Mimikyu-Busted-Totem"],
+		itemUser: ["Mimikyu", "Mimikyu-Busted", "Mimikyu-Totem", "Mimikyu-Busted-Totem", "Mimikyu-Fantasy", "Mimikyu-Busted-Fantasy"],
 		num: 924,
 		isNonstandard: "Past",
 		gen: 7,
