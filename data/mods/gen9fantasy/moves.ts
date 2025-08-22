@@ -29,6 +29,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Cool",
+		desc: "威力基数为80,附带穿透效果。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
+		shortDesc: "80威力 +目标每有1项能力上升, 威力+20,有穿透效果",
 	},
 	flyingpress: {
 		num: 560,
