@@ -751,13 +751,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "重画皮。仿照眼前宝可梦的模样重画皮,永久获得对方的特性",
 	},
 	muhouheishou: {
-		// 当这个特性的宝可梦作为攻击方时，在伤害计算阶段触发
-		onSourceModifyDamage(damage, source, target, move) {
-			// 检查目标的HP是否小于等于一半
-			if (target.hp * 2 <= target.maxhp) {
-				// 在对战日志中打印调试信息，方便确认特性是否触发
-				this.debug('Mu Hou Hei Shou boost!');
-				// 将最终伤害乘以1.5
+		// 物理攻击修正
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			// 检查防御方 (defender) 的HP是否小于等于一半
+			if (defender.hp * 2 <= defender.maxhp) {
+				this.debug('Mu Hou Hei Shou (ATK) boost');
+				// 将攻击方 (attacker) 的攻击 (atk) 数值临时乘以 1.5
+				return this.chainModify(1.5);
+			}
+		},
+		// 特殊攻击修正
+		onModifySpAPriority: 5,
+		onModifySpA(spa, attacker, defender, move) {
+			// 同样，检查防御方 (defender) 的HP
+			if (defender.hp * 2 <= defender.maxhp) {
+				this.debug('Mu Hou Hei Shou (SPA) boost');
+				// 将攻击方 (attacker) 的特攻 (spa) 数值临时乘以 1.5
 				return this.chainModify(1.5);
 			}
 		},
