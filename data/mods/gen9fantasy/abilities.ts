@@ -269,10 +269,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 
 		onAfterMoveSecondarySelf(pokemon, target, move) {
-		if (pokemon.getAbility().id !== 'fengchao') return;
-		if (!(move as any)?.fengchaoBoost) return;
-		this.add('-activate', pokemon, 'ability: Fengchao');
-		this.heal(pokemon.baseMaxhp / 8, pokemon, undefined, this.dex.abilities.get('fengchao'));
+			if (pokemon.getAbility().id !== 'fengchao') return;
+			if (!(move as any)?.fengchaoBoost) return;
+			this.add('-activate', pokemon, 'ability: Fengchao');
+			// 触发回血时，来源宝可梦就是使用者自身
+			// this.heal 的第三个参数是 'source' (来源)
+			// 我们将 undefined 改为 pokemon
+			this.heal(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.abilities.get('fengchao'));
 		},
 		name: "Feng Chao",
 		rating: 5,
