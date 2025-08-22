@@ -101,14 +101,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				// 设置一个临时状态，告诉 onUpdate 函数画皮已经被破坏
 				this.effectState.busted = true;
 				// 返回 0 来抵消本次伤害
-
-				// --- 修正代码开始 ---
-				// 我们使用 (target as any) 来告诉 TypeScript 允许我们附加一个自定义属性
-				if (source && source.ability) {
-					(target as any).chonghuapiSourceAbility = source.getAbility().id;
-				}
-				// --- 修正代码结束 ---
-
 				return 0;
 			}
 		},
@@ -712,30 +704,31 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居",
 	},
 	chonghuapi: {
+		// onStart 在宝可梦获得此特性时触发，也就是形态变换完成的一瞬间
 		onStart(pokemon) {
-			const sourceAbilityId = (pokemon as any).chonghuapiSourceAbility;
+			// 1. 筛选出所有可以复制的目标（场上的对手）
+			//    过滤条件和“复制”特性完全一致：对方的特性不能有'notrace'标签
+			const possibleTargets = pokemon.adjacentFoes().filter(
+				target => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
+			);
 
-			if (!sourceAbilityId) return;
+			// 如果没有可复制的目标，就什么都不做
+			if (!possibleTargets.length) return;
 
-			const sourceAbility = this.dex.abilities.get(sourceAbilityId);
-			if (sourceAbility.flags['notrace'] || sourceAbility.id === 'noability') {
-				this.add('-fail', pokemon, 'ability: Chong Hua Pi', sourceAbility.name);
-				delete (pokemon as any).chonghuapiSourceAbility; 
-				return;
-			}
-			
-			if (pokemon.setAbility(sourceAbility)) {
-				this.add('-ability', pokemon, sourceAbility, '[from] ability: Chong Hua Pi');
-			}
-			
-			delete (pokemon as any).chonghuapiSourceAbility; 
+			// 2. 从所有可复制的目标中随机选择一个（在双打中）
+			const target = this.sample(possibleTargets);
+			const ability = target.getAbility();
+
+			// 3. 宣布并永久设置新特性
+			//    setAbility会永久改变宝可梦的特性，直到战斗结束
+			this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
+			pokemon.setAbility(ability);
 		},
-		flags: {
-			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1, notransform: 1,
-		},
+		// 和“复制”保持一致的flags，让这个特性本身不能被复制
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
 		name: "Chong Hua Pi",
 		rating: 4,
 		num: 10018,
-		shortDesc: "重画皮。仿照打破画皮的宝可梦的模样重画皮,永久获得对方的特性",
+		shortDesc: "仿照眼前宝可梦的模样重画皮，永久获得对方的特性。",
 	},
 };
