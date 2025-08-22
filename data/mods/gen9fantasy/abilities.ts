@@ -94,20 +94,41 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	disguise: {
 		onDamagePriority: 1,
 		onDamage(damage, target, source, effect) {
-			// 修改点 1: 将检测 target.species.id 改为检测 target.species.baseSpecies
-			// 这样一来，无论是 'Mimikyu' 还是 'Mimikyu-Fantasy'，只要基础物种是 'Mimikyu'，此特性就会生效。
 			if (effect?.effectType === 'Move' && target.species.baseSpecies === 'Mimikyu' && !target.transformed) {
 				this.add('-activate', target, 'ability: Disguise');
-				// 设置一个临时状态，告诉 onUpdate 函数画皮已经被破坏
-				this.effectState.busted = true;
-				// 返回 0 来抵消本次伤害
+
+				const speciesid = target.species.id;
+				let targetForme = '';
+				if (speciesid === 'mimikyu') {
+					targetForme = 'Mimikyu-Busted';
+				} else if (speciesid === 'mimikyufantasy') {
+					targetForme = 'Mimikyu-Busted-Fantasy';
+				} else if (speciesid === 'mimikyutotem') {
+					targetForme = 'Mimikyu-Busted-Totem';
+				}
+				
+				if (targetForme) {
+					target.formeChange(targetForme, this.effect, true);
+					this.damage(target.baseMaxhp / 8, target, target, this.dex.species.get(targetForme));
+					
+					const possibleTargets = target.adjacentFoes().filter(
+						(opponent: Pokemon) => !opponent.getAbility().flags['notrace'] && opponent.ability !== 'noability'
+					);
+					if (possibleTargets.length) {
+						const opponent = this.sample(possibleTargets);
+						const ability = opponent.getAbility();
+						this.add('-ability', target, ability, '[from] ability: Chong Hua Pi', `[of] ${opponent}`);
+						
+						target.setAbility(ability);
+						target.baseAbility = ability.id; // 永久固定特性
+					}
+				}
+				
 				return 0;
 			}
 		},
 		onCriticalHit(target, source, move) {
 			if (!target) return;
-			// 修改点 2: 同样，这里也改为检测 baseSpecies
-			// 这能确保在画皮抵挡伤害时，不会显示“击中要害”的提示信息。
 			if (target.species.baseSpecies !== 'Mimikyu' || target.transformed) {
 				return;
 			}
@@ -119,8 +140,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		onEffectiveness(typeMod, target, type, move) {
 			if (!target || move.category === 'Status') return;
-			// 修改点 3: 同样，这里也改为检测 baseSpecies
-			// 这能确保在画皮抵挡伤害时，不会显示“效果绝佳”的提示信息。
 			if (target.species.baseSpecies !== 'Mimikyu' || target.transformed) {
 				return;
 			}
@@ -131,45 +150,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			return 0;
 		},
 		onUpdate(pokemon) {
-			// 检查宝可梦的基础物种是否为 'Mimikyu' 并且它的画皮已经被破坏了
-			if (pokemon.species.baseSpecies === 'Mimikyu' && this.effectState.busted) {
-				// 获取当前形态的ID
-				const speciesid = pokemon.species.id;
-				// 根据当前形态ID，确定要变换的目标形态
-				let targetForme = '';
-				if (speciesid === 'mimikyu') {
-					targetForme = 'Mimikyu-Busted';
-				} else if (speciesid === 'mimikyufantasy') {
-					targetForme = 'Mimikyu-Busted-Fantasy';
-				} else if (speciesid === 'mimikyutotem') {
-					targetForme = 'Mimikyu-Busted-Totem';
-				}
-				
-				// 如果成功找到了一个目标“现形”形态，就执行变换
-				if (targetForme) {
-					pokemon.formeChange(targetForme, this.effect, true);
-					// 形态变换后，扣除其最大HP的1/8
-					this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(targetForme));
-					
-					// 立即执行“重画皮”的复制逻辑
-					
-					// 修正点1: 将 target 改为 pokemon
-					// 修正点2: 为 opponent 添加 : Pokemon 类型注解
-					const possibleTargets = pokemon.adjacentFoes().filter(
-						(opponent: Pokemon) => !opponent.getAbility().flags['notrace'] && opponent.ability !== 'noability'
-					);
-					if (possibleTargets.length) {
-						const opponent = this.sample(possibleTargets);
-						const ability = opponent.getAbility();
-						// 修正点1: 将 target 改为 pokemon
-						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${opponent}`);
-						// 修正点1: 将 target 改为 pokemon
-						pokemon.setAbility(ability);
-					}
-					// 重置状态，防止重复触发
-					this.effectState.busted = false;
-				}
-			}
+			// 此函数不再需要任何逻辑
 		},
 		flags: {
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
