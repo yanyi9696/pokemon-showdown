@@ -704,25 +704,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居",
 	},
 	chonghuapi: {
-		// onStart 在宝可梦获得此特性时触发，也就是形态变换完成的一瞬间
-		onStart(pokemon) {
-			// 1. 筛选出所有可以复制的目标（场上的对手）
-			//    过滤条件和“复制”特性完全一致：对方的特性不能有'notrace'标签
+		// onUpdate 会在每个回合触发
+		onUpdate(pokemon) {
+			// 1. 筛选出所有可以复制的目标
 			const possibleTargets = pokemon.adjacentFoes().filter(
 				target => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
 			);
 
-			// 如果没有可复制的目标，就什么都不做
+			// 2. 如果没有找到可复制的目标, 则直接结束本次尝试
+			//    宝可梦会保留 Chong Hua Pi 特性, 等待下一回合再次尝试
 			if (!possibleTargets.length) return;
 
-			// 2. 从所有可复制的目标中随机选择一个（在双打中）
+			// 3. 如果找到了目标, 就执行复制
 			const target = this.sample(possibleTargets);
 			const ability = target.getAbility();
 
-			// 3. 宣布并永久设置新特性
-			//    setAbility会永久改变宝可梦的特性，直到战斗结束
 			this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
 			pokemon.setAbility(ability);
+			
+			// 关键点：一旦复制成功, 宝可梦的特性不再是 "Chong Hua Pi",
+			// 因此下一回合这个 onUpdate 就不会再被触发, 完美实现了一次性触发。
 		},
 		// 和“复制”保持一致的flags，让这个特性本身不能被复制
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
