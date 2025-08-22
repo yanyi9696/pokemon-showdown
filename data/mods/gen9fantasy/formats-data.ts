@@ -90,10 +90,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	goodrahisuifantasy: {
 		tier: "OU",
 	},
-	lopunnymegafantasy: {
-		tier: "OU",
-		abilities: {0: "Pixilate"},	
-	},
 	magnezonefantasy: {
 		tier: "OU",
 	},
@@ -112,14 +108,17 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	urshifufantasy: {
 		tier: "OU",
 	},
-	urshifurapidstrikefantasy: {
-		tier: "UU",
-	},
 	weezingfantasy: {
 		tier: "OU",
 	},
 	weezinggalarfantasy: {
 		tier: "OU",
+	},
+	wochienfantasy: {
+		tier: "OU",
+	},
+	absolfantasy: {
+		tier: "UUBL",
 	},
 	aerodactylfantasy: {
 		tier: "UUBL",
@@ -128,6 +127,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	audinofantasy: {
+		tier: "UUBL",
+	},
+	crobatfantasy: {
 		tier: "UUBL",
 	},
 	decidueyehisuifantasy: {
@@ -145,10 +147,11 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ironthornsfantasy: {
 		tier: "UUBL",
 	},
-	magmortarfantasy: {
+	lopunnymegafantasy: {
 		tier: "UUBL",
+		abilities: {0: "Pixilate"},	
 	},
-	mienshaofantasy: {
+	magmortarfantasy: {
 		tier: "UUBL",
 	},
 	toxtricityfantasy: {
@@ -157,14 +160,8 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	toxtricitylowkeyfantasy: {
 		tier: "UUBL",
 	},
-	wochienfantasy: {
+	volcanionfantasy: {
 		tier: "UUBL",
-	},
-	absolfantasy: {
-		tier: "UU",
-	},
-	crobatfantasy: {
-		tier: "UU",
 	},
 	froslassfantasy: {
 		tier: "UU",
@@ -185,6 +182,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	meganiumfantasy: {
 		tier: "UU",
 	},
+	mienshaofantasy: {
+		tier: "UU",
+	},
 	sawsbuckfantasy: {
 		tier: "UU",
 	},
@@ -197,10 +197,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sawsbuckwinterfantasy: {
 		tier: "UU",
 	},
-	volbeatfantasy: {
+	urshifurapidstrikefantasy: {
 		tier: "UU",
 	},
-	volcanionfantasy: {
+	volbeatfantasy: {
 		tier: "UU",
 	},
 	aggronfantasy: {
@@ -476,6 +476,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ursaluna: {
 		tier: "OU",
 	},
+	corviknight: {
+		tier: "UUBL",
+	},
 	ogerponcornerstonetera: {
 		tier: "UUBL",
 	},
@@ -495,6 +498,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	tinglu: {
+		tier: "UU",
+	},
+	volcanion: {
 		tier: "UU",
 	},
 	cloyster: {

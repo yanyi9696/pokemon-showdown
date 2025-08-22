@@ -6529,6 +6529,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			nastyplot: ["9M"],
 			punishment: ["9M"],
 			strengthsap: ["9M"],
+			synthesis: ["9M"],
 			ragepowder: ["9M"],
 			//幻想增添技能
 			absorb: ["9L1"],
