@@ -131,10 +131,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			return 0;
 		},
 		onUpdate(pokemon) {
-			// 修改点 4: 这是最关键的修改，处理形态变换
 			// 检查宝可梦的基础物种是否为 'Mimikyu' 并且它的画皮已经被破坏了
 			if (pokemon.species.baseSpecies === 'Mimikyu' && this.effectState.busted) {
-				// 获取当前形态的ID，例如 'mimikyu' 或 'mimikyufantasy'
+				// 获取当前形态的ID
 				const speciesid = pokemon.species.id;
 				// 根据当前形态ID，确定要变换的目标形态
 				let targetForme = '';
@@ -151,6 +150,24 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					pokemon.formeChange(targetForme, this.effect, true);
 					// 形态变换后，扣除其最大HP的1/8
 					this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(targetForme));
+					
+					// 立即执行“重画皮”的复制逻辑
+					
+					// 修正点1: 将 target 改为 pokemon
+					// 修正点2: 为 opponent 添加 : Pokemon 类型注解
+					const possibleTargets = pokemon.adjacentFoes().filter(
+						(opponent: Pokemon) => !opponent.getAbility().flags['notrace'] && opponent.ability !== 'noability'
+					);
+					if (possibleTargets.length) {
+						const opponent = this.sample(possibleTargets);
+						const ability = opponent.getAbility();
+						// 修正点1: 将 target 改为 pokemon
+						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${opponent}`);
+						// 修正点1: 将 target 改为 pokemon
+						pokemon.setAbility(ability);
+					}
+					// 重置状态，防止重复触发
+					this.effectState.busted = false;
 				}
 			}
 		},
@@ -704,28 +721,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居",
 	},
 	chonghuapi: {
-		// onUpdate 会在每个回合触发
-		onUpdate(pokemon) {
-			// 1. 筛选出所有可以复制的目标
-			const possibleTargets = pokemon.adjacentFoes().filter(
-				target => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
-			);
-
-			// 2. 如果没有找到可复制的目标, 则直接结束本次尝试
-			//    宝可梦会保留 Chong Hua Pi 特性, 等待下一回合再次尝试
-			if (!possibleTargets.length) return;
-
-			// 3. 如果找到了目标, 就执行复制
-			const target = this.sample(possibleTargets);
-			const ability = target.getAbility();
-
-			this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
-			pokemon.setAbility(ability);
-			
-			// 关键点：一旦复制成功, 宝可梦的特性不再是 "Chong Hua Pi",
-			// 因此下一回合这个 onUpdate 就不会再被触发, 完美实现了一次性触发。
-		},
-		// 和“复制”保持一致的flags，让这个特性本身不能被复制
+		// 这个特性现在只是一个占位符，不需要任何代码
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
 		name: "Chong Hua Pi",
 		rating: 4,
