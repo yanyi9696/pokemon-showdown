@@ -734,6 +734,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			const target = this.sample(possibleTargets);
 			const ability = target.getAbility();
 
+	        this.add('-ability', pokemon, 'Chong Hua Pi');
+
 			this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
 			
 			// 关键修正：同时设置当前和基础特性，确保复制永久生效
