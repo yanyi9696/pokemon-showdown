@@ -746,6 +746,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Chong Hua Pi",
 		rating: 4,
 		num: 10018,
-		shortDesc: "仿照眼前宝可梦的模样重画皮，永久获得对方的特性。",
+		shortDesc: "重画皮。仿照眼前宝可梦的模样重画皮,永久获得对方的特性",
+	},
+	muhouheishou: {
+		onSourceModifyDamage(damage, source, target, move) {
+			if (target.hp * 2 <= target.maxhp) {
+				this.debug('Mastermind boost');
+				return this.chainModify(1.5);
+			}
+		},
+	    flags: {},
+		name: "Mu Hou Hei Shou",
+		num: 10019,
+		rating: 2.5,
+		shortDesc: "幕后黑手。如果目标的HP为其最大HP的1/2或以下,对其造成的伤害提升1.5倍",
 	},
 };

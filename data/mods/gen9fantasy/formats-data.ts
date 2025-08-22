@@ -136,6 +136,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	electivirefantasy: {
 		tier: "UUBL",
 	},
+	honchkrowfantasy: {
+		tier: "UUBL",
+	},
 	ironthornsfantasy: {
 		tier: "UUBL",
 	},

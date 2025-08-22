@@ -3,6 +3,33 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
 	},
+	punishment: {
+		num: 386,
+		accuracy: 100,
+		basePower: 0,
+		basePowerCallback(pokemon, target) {
+			let power = 80 + 20 * target.positiveBoosts();
+			if (power > 200) power = 200;
+			this.debug(`BP: ${power}`);
+			return power;
+		},
+		category: "Physical",
+		isNonstandard: "Past",
+		name: "Punishment",
+		pp: 5,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		// 在这里添加穿透效果
+		// This flag makes the move ignore the effects of screens (Reflect, Light Screen, Aurora Veil),
+		// Safeguard, and Substitute.
+		infiltrates: true, // 新增：赋予技能穿透效果
+		secondary: null,
+		target: "normal",
+		type: "Dark",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 130 },
+		contestType: "Cool",
+	},
 	flyingpress: {
 		num: 560,
 		accuracy: 95,
