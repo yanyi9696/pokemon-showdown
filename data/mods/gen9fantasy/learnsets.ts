@@ -7239,7 +7239,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			poltergeist: ["9M"],
 			spiritshackle: ["9M"],
 			chuanyun: ["9M"],
-			yanjian: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "8M"],
 			agility: ["9M", "9L24", "8M", "8L24"],

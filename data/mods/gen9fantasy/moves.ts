@@ -104,8 +104,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { snatch: 1, metronome: 1 },
+		// 保留 volatileStatus 属性，这是让招式附加状态并为后续失败提供判断依据的关键
 		volatileStatus: 'xianxingzhiling',
 		onTryHit(target, source, move) {
+			// 核心改动：在招式尝试命中时，首先检查状态
+			// 如果使用者身上已经存在 'xianxingzhiling' 状态，则直接返回 false，使招式失败
+			if (source.volatiles['xianxingzhiling']) {
+				return false;
+			}
+			
+			// 只有在检查通过后（即第一次使用时），才执行能力提升
 			const atk = source.getStat('atk', false, true);
 			const spa = source.getStat('spa', false, true);
 	
@@ -117,26 +125,26 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		condition: {
 			onStart(pokemon) {
-				this.add('-start', pokemon, 'move: xianxingzhiling'); // 确保状态已激活
+				this.add('-start', pokemon, 'move: xianxingzhiling');
 			},
-	
-			// 提升优先级
 			onFractionalPriorityPriority: -2,
 			onFractionalPriority(priority, pokemon) {
-				if (priority <= 0) return 0.1; // 提升优先级
+				if (priority <= 0) return 0.1;
 			},
-	
-			// 宝可梦离场时清除优先级提升
 			onSwitchOut(pokemon) {
-				this.add('-end', pokemon, 'move: xianxingzhiling'); // 离场时清除状态
+				pokemon.removeVolatile('xianxingzhiling');
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'move: xianxingzhiling');
 			}
 		},
 		target: "self",
 		type: "Bug",
 		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Clever",
-		desc: "先行指令。比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手",
-		shortDesc: "先行指令。物攻或特攻较高的一项+2。使用后先制+0.5"
+		// 更新招式描述以匹配新的效果
+		desc: "先行指令。比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手,但再次使用会失败",
+		shortDesc: "物攻或特攻较高的一项+2,获得先制+0.5。再次使用会失败"
 	},
 	fuzhuzhiling: {
 		num: 10002,
