@@ -97,6 +97,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	miloticfantasy: {
 		tier: "OU",
 	},
+	mimikyufantasy: {
+		tier: "OU",
+	},
+	mimikyubustedfantasy: {
+		tier: "OU",
+	},
 	raikoufantasy: {
 		tier: "OU",
 	},
@@ -137,12 +143,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	mienshaofantasy: {
-		tier: "UUBL",
-	},
-	mimikyufantasy: {
-		tier: "UUBL",
-	},
-	mimikyubustedfantasy: {
 		tier: "UUBL",
 	},
 	toxtricityfantasy: {
