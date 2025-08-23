@@ -185,6 +185,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mienshaofantasy: {
 		tier: "UU",
 	},
+	salazzlefantasy: {
+		tier: "UU",
+	},
 	sawsbuckfantasy: {
 		tier: "UU",
 	},
@@ -210,9 +213,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	dusknoirfantasy: {
-		tier: "RUBL",
-	},
-	salazzlefantasy: {
 		tier: "RUBL",
 	},
 	stakatakafantasy: {
