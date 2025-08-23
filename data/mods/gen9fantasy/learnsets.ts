@@ -7138,8 +7138,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	honchkrowfantasy: {
 		learnset: {
 			beatup: ["9M"],
-			fierywrath: ["9M"],
 			punishment: ["9M"],
+			throatchop: ["9M"],
+			fierywrath: ["9M"],
+			partingshot: ["9M"],
 			chuanyun: ["9M"],
 			swordsdance: ["9M"],
 			brine: ["9M"],
