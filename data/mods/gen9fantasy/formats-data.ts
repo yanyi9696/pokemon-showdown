@@ -66,7 +66,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Unaware"},	
 	},
-	corviknightfantasy: {	
+	chandelurefantasy: {
+		tier: "OU",
+	},
+	corviknightfantasy: {
 		tier: "OU",
 	},
 	delphoxfantasy: {
