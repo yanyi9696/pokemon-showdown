@@ -780,15 +780,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	shichong: {
 		onTryHit(target, source, move) {
 			if (target !== source && move.type === 'Bug') {
-				if (this.heal(target.baseMaxhp / 8)) {
-					this.add('-ability', target, '食虫', '[from] move: ' + move.name);
-					this.add('-heal', target, target.getHealth, '[from] ability: 食虫');
-				} else {
-					this.add('-immune', target, '[from] ability: 食虫');
-				}
+				// 步骤 1: 显示一条清晰的、标准的免疫/吸收信息
+				// 这条信息会告诉玩家是“食虫”特性使攻击无效了
+				this.add('-immune', target, '[from] ability: 食虫');
 
+				// 步骤 2: 执行回血
+				// this.heal() 会在成功回血时自动显示 "HP was restored"
+				// 我们不需要再手动添加回血信息了
+				this.heal(target.baseMaxhp / 8);
+
+				// 步骤 3: 对手扣血
+				// 这部分代码已经是正确的
 				this.damage(source.baseMaxhp / 8, source, target, target.getAbility());
 
+				// 步骤 4: 中断攻击，使其无效
 				return null;
 			}
 		},
