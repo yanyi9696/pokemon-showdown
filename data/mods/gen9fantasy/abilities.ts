@@ -777,4 +777,25 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 2.5,
 		shortDesc: "幕后黑手。如果目标的HP为其最大HP的1/2或以下,对其造成的伤害提升1.5倍",
 	},
+	shichong: {
+		onTryHit(target, source, move) {
+			if (target !== source && move.type === 'Bug') {
+				if (this.heal(target.baseMaxhp / 8)) {
+					this.add('-ability', target, '食虫', '[from] move: ' + move.name);
+					this.add('-heal', target, target.getHealth, '[from] ability: 食虫');
+				} else {
+					this.add('-immune', target, '[from] ability: 食虫');
+				}
+
+				this.damage(source.baseMaxhp / 8, source, target, target.getAbility());
+
+				return null;
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Shi Chong",
+		num: 10020,
+		rating: 3.5,
+		shortDesc: "食虫。受到虫属性招式攻击时回复1/8最大HP,对手损失1/8最大HP;免疫虫属性伤害",
+	},
 };
