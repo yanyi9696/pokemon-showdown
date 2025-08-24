@@ -93,9 +93,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magnezonefantasy: {
 		tier: "OU",
 	},
-	miloticfantasy: {
-		tier: "OU",
-	},
 	mimikyufantasy: {
 		tier: "OU",
 	},
@@ -129,9 +126,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	audinofantasy: {
 		tier: "UUBL",
 	},
-	crobatfantasy: {
-		tier: "UUBL",
-	},
 	decidueyehisuifantasy: {
 		tier: "UUBL",
 	},
@@ -154,6 +148,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magmortarfantasy: {
 		tier: "UUBL",
 	},
+	miloticfantasy: {
+		tier: "UUBL",
+	},
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},
@@ -167,6 +164,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	carnivinefantasy: {
+		tier: "UU",
+	},
+	crobatfantasy: {
 		tier: "UU",
 	},
 	froslassfantasy: {
