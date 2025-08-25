@@ -120,13 +120,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezinggalarfantasy: {
 		tier: "OU",
 	},
-	absolfantasy: {
-		tier: "UUBL",
-	},
 	aerodactylfantasy: {
-		tier: "UUBL",
-	},
-	altariafantasy: {
 		tier: "UUBL",
 	},
 	audinofantasy: {
@@ -171,6 +165,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	wochienfantasy: {
 		tier: "UUBL",
+	},
+	absolfantasy: {
+		tier: "UU",
+	},
+	altariafantasy: {
+		tier: "UU",
 	},
 	crobatfantasy: {
 		tier: "UU",
@@ -495,6 +495,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	garchomp: {
+		tier: "UUBL",
+	},
+	garchompmega: {
 		tier: "UUBL",
 	},
 	ogerponcornerstonetera: {
