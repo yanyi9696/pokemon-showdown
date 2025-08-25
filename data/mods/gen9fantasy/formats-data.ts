@@ -87,9 +87,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	golurkfantasy: {
 		tier: "OU",
 	},
-	goodrafantasy: {
-		tier: "OU",
-	},
 	goodrahisuifantasy: {
 		tier: "OU",
 	},
@@ -133,6 +130,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	electivirefantasy: {
+		tier: "UUBL",
+	},
+	goodrafantasy: {
 		tier: "UUBL",
 	},
 	honchkrowfantasy: {
