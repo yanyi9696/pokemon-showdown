@@ -211,6 +211,40 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 212,
 		shortDesc: "可以使钢属性和毒属性的宝可梦也陷入中毒状态,毒系招式对钢系效果绝佳",
 	},
+	stalwart: {
+		// --------------------------------------------------
+		// 1. 原有的“坚毅”效果 - 无视吸引招式
+		// --------------------------------------------------
+		onModifyMovePriority: 1,
+		onModifyMove(move) {
+			// 这部分代码通过设置一个 'tracksTarget' 标志，
+			// 来告诉系统该宝可梦的招式会无视对手的重定向效果（如“看我嘛”）。
+			// 核心逻辑在对战引擎的其他部分处理，但这个标志是必须的。
+			move.tracksTarget = move.target !== 'scripted';
+		},
+
+		// --------------------------------------------------
+		// 2. 新增的免疫效果 - 不会无法自由使出招式
+		// --------------------------------------------------
+		onTryAddVolatile(status, target, source, effect) {
+			// 定义一个列表，包含所有我们想要免疫的状态的ID。
+			const blockedStatuses = ['attract', 'taunt', 'encore', 'torment', 'disable', 'healblock'];
+
+			// 检查当前正要施加的状态（status.id）是否在我们的黑名单里。
+			if (blockedStatuses.includes(status.id)) {
+				// 如果是，就在对战日志中显示免疫信息。
+				// 这样玩家就能知道是特性“坚毅”阻止了状态变化。
+				this.add('-immune', target, '[from] ability: Stalwart');
+				// 返回 null 会中断状态施加的流程，从而实现免疫。
+				return null;
+			}
+		},
+		flags: {},
+		name: "Stalwart",
+		rating: 2, 
+		num: 242,
+		shortDesc: "攻击原本选定的目标。不会进入着迷、再来一次、挑衅、无理取闹、定身法和回复封锁状态",
+	},
 	//以下为CAP特性
 		mountaineer: {
 		onDamage(damage, target, source, effect) {
