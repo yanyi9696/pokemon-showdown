@@ -172,6 +172,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	altariafantasy: {
 		tier: "UU",
 	},
+	armarougefantasy: {
+		tier: "OU",
+	},
+	ceruledgefantasy: {
+		tier: "OU",
+	},
 	crobatfantasy: {
 		tier: "UU",
 	},
@@ -459,9 +465,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	banettemega: {
-		tier: "OU",
-	},
-	ceruledge: {
 		tier: "OU",
 	},
 	garganacl: {
