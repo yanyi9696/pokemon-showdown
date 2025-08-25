@@ -756,6 +756,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
 		contestType: "Clever",
+		desc: "铸铠波。使用者将造成伤害的50%转化为自身的HP",
+		shortDesc: "铸铠波。使用者将造成伤害的50%转化为自身的HP",
 	},
 	juenianpo: {
 		num: 10023,
@@ -778,5 +780,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 190 },
 		maxMove: { basePower: 140 },
 		contestType: "Tough",
+		desc: "绝念破。令使用者的防御和特防下降1级",
+		shortDesc: "绝念破。令使用者的防御和特防下降1级",
 	},
 };
