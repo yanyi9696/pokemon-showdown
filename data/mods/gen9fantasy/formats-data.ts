@@ -157,6 +157,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	miloticfantasy: {
 		tier: "UUBL",
 	},
+	slitherwingfantasy: {
+		tier: "UUBL",
+	},
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},
@@ -168,9 +171,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	wochienfantasy: {
 		tier: "UUBL",
-	},
-	carnivinefantasy: {
-		tier: "UU",
 	},
 	crobatfantasy: {
 		tier: "UU",
@@ -219,6 +219,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	aggronfantasy: {
+		tier: "RUBL",
+	},
+	carnivinefantasy: {
 		tier: "RUBL",
 	},
 	cursolafantasy: {
@@ -489,6 +492,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	corviknight: {
+		tier: "UUBL",
+	},
+	garchomp: {
 		tier: "UUBL",
 	},
 	ogerponcornerstonetera: {
