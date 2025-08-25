@@ -173,10 +173,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	armarougefantasy: {
-		tier: "OU",
+		tier: "UU",
 	},
 	ceruledgefantasy: {
-		tier: "OU",
+		tier: "UU",
 	},
 	crobatfantasy: {
 		tier: "UU",
