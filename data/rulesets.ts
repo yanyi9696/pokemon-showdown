@@ -1,6 +1,11 @@
 // Note: These are the rules that formats use
 
 import type { Learnset } from "../sim/dex-species";
+// --- START: 使用下面这几行最终正确的导入 ---
+import type { ModdedDex } from '../sim/dex';
+import type { Format, RuleTable } from '../sim/dex-formats';
+import type { TeamValidator } from '../sim/team-validator';
+// --- END: 最终修正 ---
 
 // The list of formats is stored in config/formats.js
 export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
@@ -2986,6 +2991,36 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 						`Reason: Its Mega Evolution (${megaToCheck.name}) is banned in this tier.`,
 					];
 				}
+			}
+		},
+	},
+	fantasymegarule: {
+		effectType: 'ValidatorRule',
+		name: 'Fantasy Mega Rule',
+		desc: "Automatically corrects directly selected -Mega-Fantasy Pokémon with the correct base form and Mega Stones set to them.",
+		onChangeSet(this: TeamValidator, set: any, _format: Format) {
+			// 最终修正：2. 所有数据访问都通过 this.dex
+			const species = this.dex.species.get(set.species);
+
+			if (!species.name.endsWith('-Mega-Fantasy')) return;
+
+			const baseFantasyName = species.name.replace('-Mega', '');
+			const baseFantasySpecies = this.dex.species.get(baseFantasyName);
+
+			if (!baseFantasySpecies.exists) return;
+
+			const standardMegaId = this.dex.toID(species.name.replace('-Fantasy', ''));
+			let megaStone = '';
+			for (const item of this.dex.items.all()) {
+				if (this.dex.toID(item.megaStone) === standardMegaId) {
+					megaStone = item.name;
+					break;
+				}
+			}
+
+			if (megaStone) {
+				set.species = baseFantasyName;
+				set.item = megaStone;
 			}
 		},
 	},
