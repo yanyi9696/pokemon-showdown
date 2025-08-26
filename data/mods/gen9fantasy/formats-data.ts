@@ -58,6 +58,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Bao Xue Zhi Li"},	
 	},
+	aerodactylfantasy: {
+		tier: "OU",
+	},
 	aerodactylmegafantasy: {
 		tier: "OU",
 		abilities: {0: "Tough Claws"},	
@@ -65,9 +68,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	audinomegafantasy: {
 		tier: "OU",
 		abilities: {0: "Unaware"},	
-	},
-	chandelurefantasy: {
-		tier: "OU",
 	},
 	corviknightfantasy: {
 		tier: "OU",
@@ -117,10 +117,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezinggalarfantasy: {
 		tier: "OU",
 	},
-	aerodactylfantasy: {
+	audinofantasy: {
 		tier: "UUBL",
 	},
-	audinofantasy: {
+	chandelurefantasy: {
 		tier: "UUBL",
 	},
 	decidueyehisuifantasy: {
@@ -130,9 +130,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	electivirefantasy: {
-		tier: "UUBL",
-	},
-	goodrafantasy: {
 		tier: "UUBL",
 	},
 	honchkrowfantasy: {
@@ -184,15 +181,18 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	froslassfantasy: {
 		tier: "UU",
 	},
+	glaliemegafantasy: {
+		tier: "UU",
+		abilities: {0: "Refrigerate"},		
+	},
 	granbullfantasy: {
 		tier: "UU",
 	},
 	golisopodfantasy: {
 		tier: "UU",
 	},
-	glaliemegafantasy: {
+	goodrafantasy: {
 		tier: "UU",
-		abilities: {0: "Refrigerate"},		
 	},
 	illumisefantasy: {
 		tier: "UU",
