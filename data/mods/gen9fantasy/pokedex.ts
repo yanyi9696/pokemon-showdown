@@ -118,7 +118,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 395,
 		color: "Gray",
 		eggGroups: ["Monster"],
-		requiredItem: "aggronitefantasy",
+		requiredItem: "Aggronite-Fantasy",
 		spriteid: 'aggron-mega',
 	},
 	dragapult: {

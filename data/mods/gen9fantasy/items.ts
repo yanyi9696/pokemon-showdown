@@ -12,6 +12,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		num: 667,
 		gen: 6,
 		isNonstandard: "Past",
+		desc: "让波士可多拉-幻想携带后, 在战斗时可以进行超级进化",
+		shortDesc: "让波士可多拉-幻想携带后, 在战斗时可以进行超级进化",
 	},
 	//以下为自制道具
 	toxtricityz: {
