@@ -1463,7 +1463,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Normal", "Ghost"],
 		baseStats: { hp: 65, atk: 120, def: 135, spa: 35, spd: 135, spe: 35 },
-		abilities: { 0: "Pressure", 1: "Intimidate", H: "Mind's Eye" },
+		abilities: { 0: "Pressure", 1: "Shou Hun", H: "Mind's Eye" },
 		heightm: 2.2,
 		weightkg: 106.6,
 		color: "Black",

@@ -835,4 +835,25 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3.5,
 		shortDesc: "食虫。受到虫属性招式攻击时回复1/8最大HP,对手损失1/8最大HP;免疫虫属性伤害",
 	},
+	shouhun: {
+		// 当任何宝可梦倒下时触发，设置一个优先级
+		onAnyFaintPriority: 1, 
+		onAnyFaint() {
+			// this.effectState.target 指的是拥有这个“收魂”特性的宝可梦
+			const source = this.effectState.target;
+			// 如果该宝可梦已经满血或者不在场上，则不触发效果
+			if (source.hp >= source.maxhp || !source.isActive) {
+				return;
+			}
+			// 在战斗日志中显示特性发动的信息
+			this.add('-ability', source, '收魂'); 
+			// 为宝可梦恢复其最大HP的1/4
+			this.heal(source.maxhp / 4, source); 
+		},
+		flags: {},
+		name: "Shou Hun",
+		num: 10021,
+		rating: 2,
+		shortDesc: "收魂。每当场上有宝可梦被打倒时,恢复1/4的最大HP",
+	},
 };
