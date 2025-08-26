@@ -727,8 +727,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (this.directDamage(hpCost, source, source)) {
 				// 效果1: 为使用者创建替身
 				source.addVolatile('substitute', source);
-				// 手动设置替身的HP，使其等于所消耗的HP量
-				source.volatiles['substitute'].hp = hpCost;
+				// 将替身的HP手动设置为最大HP的1/4，而不是消耗的HP量
+				source.volatiles['substitute'].hp = Math.floor(source.maxhp / 4);
 				
 				// 效果2: 使目标陷入诅咒状态
 				target.addVolatile('curse', source);
@@ -737,7 +737,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Ghost",
 		zMove: { effect: 'heal' },
-		desc: "破皮帕。用自己最大HP的一半制造出替身,并使目标进入诅咒状态。如果自身HP不超过最大HP的一半,此招式会失败",
+		desc: "破皮帕。用自己最大HP的一半制造出等同于等同1/4最大HP的替身,并使目标进入诅咒状态。如果自身HP不超过最大HP的一半,此招式会失败",
 		shortDesc: "破皮帕。消耗50%HP制造替身并诅咒对手",
 	},
 	zhukaibo: {
