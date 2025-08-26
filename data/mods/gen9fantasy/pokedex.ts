@@ -109,7 +109,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	aggronmegafantasy: {
 		num: 306,
 		name: "Aggron-Mega-Fantasy",
-		baseSpecies: "Aggron-Fantasy",
+		baseSpecies: "Aggron",
 		forme: "Mega",
 		types: ["Steel", "Dragon"],
 		baseStats: { hp: 70, atk: 150, def: 240, spa: 60, spd: 80, spe: 30 },
@@ -118,7 +118,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 395,
 		color: "Gray",
 		eggGroups: ["Monster"],
-		requiredItem: "Aggronite-Fantasy",
+		requiredItem: "Aggronite",
 		spriteid: 'aggron-mega',
 	},
 	dragapult: {
