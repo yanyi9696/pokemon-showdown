@@ -18,7 +18,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		num: 376,
 		name: "Metagross-Mega-Fantasy",
 		baseSpecies: "Metagross",
-		preMegaForme: "Metagross-Fantasy",
 		forme: "Mega",
 		types: ["Steel", "Psychic"],
 		gender: "N",
