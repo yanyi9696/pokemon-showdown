@@ -109,7 +109,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	aggronmegafantasy: {
 		num: 306,
 		name: "Aggron-Mega-Fantasy",
-		baseSpecies: "Aggron",
+		baseSpecies: "Aggron-Fantasy",
 		forme: "Mega",
 		types: ["Steel", "Dragon"],
 		baseStats: { hp: 70, atk: 150, def: 240, spa: 60, spd: 80, spe: 30 },
