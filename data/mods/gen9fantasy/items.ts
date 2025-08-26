@@ -1,4 +1,19 @@
 export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
+		aggronitefantasy: {
+		name: "Aggronite-Fantasy",
+		spritenum: 578,
+		megaStone: "Aggron-Mega-Fantasy",
+		megaEvolves: "Aggron-Fantasy",
+		itemUser: ["Aggron-Fantasy"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 667,
+		gen: 6,
+		isNonstandard: "Past",
+	},
+	//以下为自制道具
 	toxtricityz: {
 		name: "Toxtricity Z",
 		spritenum: 686,
