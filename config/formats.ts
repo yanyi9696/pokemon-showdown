@@ -210,6 +210,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Adjust Level = 50',
 			'Max Team Size = 6',    
 			'Picked Team Size = 4', 
+			'FC Mega Ban Check'
 		],
 		banlist: [
 			// 你要求禁用的宝可梦分类
