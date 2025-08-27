@@ -207,7 +207,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Standard Doubles', 
 			'NatDex Mod',       
 			'Item Clause = 1',  
-			'!! Adjust Level = 50', 
+			'Adjust Level = 50',
 			'Max Team Size = 6',    
 			'Picked Team Size = 4', 
 		],
