@@ -647,7 +647,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Victreebel",
 		forme: "Fantasy",
 		types: ["Grass", "Poison"],
-		baseStats: { hp: 110, atk: 130, def: 70, spa: 70, spd: 70, spe: 70 },
+		baseStats: { hp: 105, atk: 135, def: 70, spa: 70, spd: 70, spe: 70 },
 		abilities: { 0: "Chlorophyll", 1: "Shi Chong", H: "Corrosion" },
 		heightm: 1.7,
 		weightkg: 15.5,
