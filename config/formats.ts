@@ -200,6 +200,32 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	{
+		name: "[Gen 9] FC Champions Doubles",
+		mod: 'gen9',
+		gameType: 'doubles',
+		ruleset: [
+			'Standard Doubles', 
+			'NatDex Mod',       
+			'Item Clause = 1',  
+			'!! Adjust Level = 50', 
+			'Max Team Size = 6',    
+			'Picked Team Size = 4', 
+		],
+		banlist: [
+			// 你要求禁用的宝可梦分类
+			'Restricted Legendary', // 禁用所有一级神
+			'Sub-Legendary',      // 禁用所有二级神 (三鸟、三犬、三云等)
+			'Mythical',           // 禁用所有幻兽 (梦幻、玛夏多等)
+			'Paradox',            // 禁用所有悖谬宝可梦
+			'Ultra Beast',        // 禁用所有究极异兽
+			'Shedinja',           // 禁用脱壳忍者
+			'Mega',               // 禁用所有Mega进化
+		],
+		unbanlist: [
+			'Mega',               // 但我们在这里特例解禁某一类
+		],
+	},
+	{
 		name: "[Gen 9] FC Free-For-All",
 		mod: 'gen9fantasy',
 		gameType: 'freeforall',
