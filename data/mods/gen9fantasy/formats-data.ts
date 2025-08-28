@@ -26,6 +26,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	aegislashbladefantasy: {
 		tier: "(Uber)",
 	},
+	aerodactylmegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Tough Claws"},	
+	},
 	dragapultfantasy: {
 		tier: "(Uber)",
 	},
@@ -60,10 +64,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	aerodactylfantasy: {
 		tier: "OU",
-	},
-	aerodactylmegafantasy: {
-		tier: "OU",
-		abilities: {0: "Tough Claws"},	
 	},
 	audinomegafantasy: {
 		tier: "OU",
@@ -197,9 +197,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	illumisefantasy: {
 		tier: "UU",
 	},
-	meganiumfantasy: {
-		tier: "UU",
-	},
 	mienshaofantasy: {
 		tier: "UU",
 	},
@@ -234,6 +231,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	dusknoirfantasy: {
+		tier: "RUBL",
+	},
+	meganiumfantasy: {
 		tier: "RUBL",
 	},
 	stakatakafantasy: {
