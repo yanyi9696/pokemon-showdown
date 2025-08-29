@@ -6200,6 +6200,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	weezingfantasy: {
 		learnset: {
+			biansuzhefan: ["9M"],
 			knockoff: ["9M"],
 			obstruct: ["9M"],
 			recover: ["9M"],
