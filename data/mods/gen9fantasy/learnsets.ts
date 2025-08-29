@@ -7795,8 +7795,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			tripleaxel: ["9M"],
 			iceshard: ["9M"],
 			haze: ["9M"],
+			aquacutter: ["9M"],
 			sacredsword: ["9M"],
-			yuzhaozhijian: ["9M"],
 			yuannengshifang: ["9M"],
 			//幻想增添技能
 			allyswitch: ["9L42"],
