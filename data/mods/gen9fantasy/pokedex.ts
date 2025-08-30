@@ -443,7 +443,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Flygon",
 		forme: "Fantasy",
 		types: ["Bug", "Dragon"],
-		baseStats: { hp: 80, atk: 120, def: 80, spa: 80, spd: 80, spe: 100 },
+		baseStats: { hp: 80, atk: 130, def: 80, spa: 80, spd: 80, spe: 100 },
 		abilities: { 0: "Levitate", H: "Tinted Lens" },
 		heightm: 2,
 		weightkg: 82,
