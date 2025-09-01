@@ -519,28 +519,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
 		onModifyMove(move, pokemon) {
-			// 物特攻判断逻辑保持不变
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
 				move.category = 'Physical';
 			}
-			// 关键改动：在招式修改阶段检查状态
-			const volatile = pokemon.volatiles['yuannengshifang'];
-			if (volatile) {
-				// 检查“成功标记” (effectState.lastTurnMoved)
-				if (volatile.lastTurnMoved) {
-					(move as any).consecutive = true;
-				}
-				// 无论如何，在检查后立刻重置标记，确保它不会被下一回合误用
-				volatile.lastTurnMoved = false;
-			}
 		},
+
 		onBasePower(basePower, pokemon, target, move) {
-			if ((move as any).consecutive) {
+			const volatile = pokemon.volatiles['yuannengshifang'];
+			if (volatile?.hitCount > 1) {
 				return this.chainModify(1.5);
 			}
 		},
+		
 		onPrepareHit(source, target, move) {
-			if ((move as any).consecutive) {
+			const volatile = source.volatiles['yuannengshifang'];
+			if (volatile?.hitCount > 1) {
 				if (!move.secondaries) move.secondaries = [];
 				move.secondaries.push({
 					chance: 100,
@@ -549,28 +542,39 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				});
 			}
 		},
+
 		onHit(target, source, move) {
-			if ((move as any).consecutive) {
+			const volatile = source.volatiles['yuannengshifang'];
+			if (volatile?.hitCount > 1) {
 				source.trySetStatus('par', source);
 			}
 		},
+		
 		onAfterMove(source) {
 			source.addVolatile('yuannengshifang');
-			// 获取刚刚添加的状态，并设置成功标记为 true
-			const volatile = source.volatiles['yuannengshifang'];
-			if (volatile) {
-				volatile.lastTurnMoved = true;
-			}
 		},
+		
 		condition: {
-			duration: 2, 
+			duration: 2,
 			onStart(pokemon) {
+				this.effectState.hitCount = 1;
 				this.add('-start', pokemon, 'volatile:yuannengshifang', '[silent]');
-				// 状态开始时，默认没有成功标记
-				this.effectState.lastTurnMoved = false;
+			},
+			onRestart(pokemon) {
+				this.effectState.hitCount++;
+				this.effectState.duration = 2;
 			},
 			onEnd(pokemon) {
 				this.add('-end', pokemon, 'volatile:yuannengshifang', '[silent]');
+			},
+			// 新增：重置逻辑
+			// 这个函数只会在宝可梦拥有 yuannengshifang 状态时，在它出招前触发
+			onBeforeMove(pokemon, target, move) {
+				// 如果宝可梦要使用的招式不是“源能释放”自己
+				if (move.id !== 'yuannengshifang') {
+					// 就移除“源能释放”的连续状态，打断连续
+					pokemon.removeVolatile('yuannengshifang');
+				}
 			},
 		},
 		target: "normal",
