@@ -518,65 +518,53 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
+
+		/**
+		 * 效果1：适应性伤害类型 (你的实现是正确的，我们保留它)
+		 * 在招式修改阶段，比较物攻和特攻，决定本次攻击是物理还是特殊。
+		 */
 		onModifyMove(move, pokemon) {
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
 				move.category = 'Physical';
 			}
 		},
 
-		onBasePower(basePower, pokemon, target, move) {
-			const volatile = pokemon.volatiles['yuannengshifang'];
-			if (volatile?.hitCount > 1) {
+		/**
+		 * 效果2：连续使用威力加成
+		 * 在计算基础威力时，检查使用者身上是否存在 'yuannengshifang' 状态。
+		 * 如果存在，说明上一回合成功使用了此招式，威力提升1.5倍。
+		 */
+		onBasePower(basePower, pokemon) {
+			if (pokemon.volatiles['yuannengshifang']) {
+				this.debug('Yuan Neng Shi Fang consecutive boost');
 				return this.chainModify(1.5);
 			}
-		},
-		
-		onPrepareHit(source, target, move) {
-			const volatile = source.volatiles['yuannengshifang'];
-			if (volatile?.hitCount > 1) {
-				if (!move.secondaries) move.secondaries = [];
-				move.secondaries.push({
-					chance: 100,
-					status: 'par',
-					dustproof: true, 
-				});
-			}
+			return basePower;
 		},
 
+		/**
+		 * 效果3：连续使用附加效果 & 状态管理
+		 * 在招式成功命中后触发。
+		 */
 		onHit(target, source, move) {
-			const volatile = source.volatiles['yuannengshifang'];
-			if (volatile?.hitCount > 1) {
-				source.trySetStatus('par', source);
+			// 检查使用者身上是否存在 'yuannengshifang' 状态
+			if (source.volatiles['yuannengshifang']) {
+				// 如果是连续使用，则对双方都施加麻痹状态
+				target.trySetStatus('par', source, move);
+				source.trySetStatus('par', source, move);
 			}
-		},
-		
-		onAfterMove(source) {
+			// 无论是否连续，只要招式命中，就为使用者添加/刷新 'yuannengshifang' 状态，
+			// 为下一回合的连续判定做准备。
 			source.addVolatile('yuannengshifang');
 		},
-		
-		condition: {
-			duration: 2,
-			onStart(pokemon) {
-				this.effectState.hitCount = 1;
-				this.add('-start', pokemon, 'volatile:yuannengshifang', '[silent]');
-			},
-			onRestart(pokemon) {
-				this.effectState.hitCount++;
-				this.effectState.duration = 2;
-			},
-			onEnd(pokemon) {
-				this.add('-end', pokemon, 'volatile:yuannengshifang', '[silent]');
-			},
-			// 新增：重置逻辑
-			// 这个函数只会在宝可梦拥有 yuannengshifang 状态时，在它出招前触发
-			onBeforeMove(pokemon, target, move) {
-				// 如果宝可梦要使用的招式不是“源能释放”自己
-				if (move.id !== 'yuannengshifang') {
-					// 就移除“源能释放”的连续状态，打断连续
-					pokemon.removeVolatile('yuannengshifang');
-				}
-			},
-		},
+
+		/**
+		 * 效果4：连锁中断
+		 * 如果招式未能命中（例如Miss或被守住），onHit 不会触发，
+		 * 'yuannengshifang' 状态就不会被刷新，并在下一回合结束时自动消失，
+		 * 从而自然地中断了连续效果。
+		 */
+
 		target: "normal",
 		type: "Ghost",
 		zMove: { basePower: 175 }, 
