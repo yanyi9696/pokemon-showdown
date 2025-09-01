@@ -518,25 +518,29 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
-		// 1. 将此招式与一个同名的易变状态关联起来
-		volatileStatus: 'yuannengshifang',
-
 		onModifyMove(move, pokemon) {
+			// 物特攻判断逻辑保持不变
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
 				move.category = 'Physical';
 			}
+			// 关键改动：在招式修改阶段检查状态
+			const volatile = pokemon.volatiles['yuannengshifang'];
+			if (volatile) {
+				// 检查“成功标记” (effectState.lastTurnMoved)
+				if (volatile.lastTurnMoved) {
+					(move as any).consecutive = true;
+				}
+				// 无论如何，在检查后立刻重置标记，确保它不会被下一回合误用
+				volatile.lastTurnMoved = false;
+			}
 		},
 		onBasePower(basePower, pokemon, target, move) {
-			// 2. 检查使用者身上是否存在 'yuannengshifang' 状态
-			//    如果存在，说明上一回合使用了此招式，判定为连续使用
-			if (pokemon.volatiles['yuannengshifang']) {
-				this.debug('源能释放: 判定为连续使用，威力提升！');
+			if ((move as any).consecutive) {
 				return this.chainModify(1.5);
 			}
 		},
 		onPrepareHit(source, target, move) {
-			// 同样检查 'yuannengshifang' 状态，用于触发强行
-			if (source.volatiles['yuannengshifang']) {
+			if ((move as any).consecutive) {
 				if (!move.secondaries) move.secondaries = [];
 				move.secondaries.push({
 					chance: 100,
@@ -546,27 +550,28 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 		},
 		onHit(target, source, move) {
-			// 同样检查 'yuannengshifang' 状态，用于麻痹使用者
-			if (source.volatiles['yuannengshifang']) {
-				this.debug('源能释放: 判定为连续使用，触发自身麻痹！');
+			if ((move as any).consecutive) {
 				source.trySetStatus('par', source);
 			}
 		},
-		// 3. 招式使用后，为使用者添加/刷新 'yuannengshifang' 状态
 		onAfterMove(source) {
 			source.addVolatile('yuannengshifang');
+			// 获取刚刚添加的状态，并设置成功标记为 true
+			const volatile = source.volatiles['yuannengshifang'];
+			if (volatile) {
+				volatile.lastTurnMoved = true;
+			}
 		},
-		// 4. 定义 'yuannengshifang' 这个状态的具体效果
 		condition: {
-			// 状态持续2回合。这意味着它会持续到下一回合的出招前，
-			// 如果下一回合没有使用“源能释放”来刷新它，它就会在回合结束时消失。
-			duration: 2,
+			duration: 2, 
 			onStart(pokemon) {
-				this.add('-start', pokemon, 'volatile:yuannengshifang');
+				this.add('-start', pokemon, 'volatile:yuannengshifang', '[silent]');
+				// 状态开始时，默认没有成功标记
+				this.effectState.lastTurnMoved = false;
 			},
 			onEnd(pokemon) {
-				this.add('-end', pokemon, 'volatile:yuannengshifang');
-			}
+				this.add('-end', pokemon, 'volatile:yuannengshifang', '[silent]');
+			},
 		},
 		target: "normal",
 		type: "Ghost",
