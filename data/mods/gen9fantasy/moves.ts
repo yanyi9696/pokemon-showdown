@@ -518,46 +518,54 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
+		// 1. 将此招式与一个同名的易变状态关联起来
+		volatileStatus: 'yuannengshifang',
+
 		onModifyMove(move, pokemon) {
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
 				move.category = 'Physical';
 			}
 		},
 		onBasePower(basePower, pokemon, target, move) {
-			// 连续使用的1.5倍威力加成，这个效果保持不变
-			if (pokemon.lastMove && pokemon.lastMove.id === move.id) {
+			// 2. 检查使用者身上是否存在 'yuannengshifang' 状态
+			//    如果存在，说明上一回合使用了此招式，判定为连续使用
+			if (pokemon.volatiles['yuannengshifang']) {
+				this.debug('源能释放: 判定为连续使用，威力提升！');
 				return this.chainModify(1.5);
 			}
 		},
-		/**
-		 * onPrepareHit 事件：在招式准备命中时触发
-		 * 这是实现条件性触发“强行”的关键
-		 */
 		onPrepareHit(source, target, move) {
-			// 检查是否为连续使用
-			if (source.lastMove && source.lastMove.id === move.id) {
-				this.debug('源能释放: 连续使用，麻痹目标！');
-				// 如果是连续使用，就动态地为这次招式加上追加效果
-				// 注意：这里要用 secondaries (复数)
+			// 同样检查 'yuannengshifang' 状态，用于触发强行
+			if (source.volatiles['yuannengshifang']) {
 				if (!move.secondaries) move.secondaries = [];
 				move.secondaries.push({
 					chance: 100,
 					status: 'par',
-					// dustproof: true 确保该效果不会被“洁净之躯”等特性阻挡
-					// 同时，这也是一个标记，告诉我们这是可以被“强行”移除的
 					dustproof: true, 
 				});
 			}
 		},
-		/**
-		 * onHit 事件：只处理使用者自身的麻痹效果
-		 * 因为这个效果不是secondary，所以“强行”永远无法影响它
-		 */
 		onHit(target, source, move) {
-			if (source.lastMove && source.lastMove.id === move.id) {
-				this.debug('源能释放: 连续使用，自身麻痹！');
-				// 使用者自身的麻痹效果，逻辑不变
+			// 同样检查 'yuannengshifang' 状态，用于麻痹使用者
+			if (source.volatiles['yuannengshifang']) {
+				this.debug('源能释放: 判定为连续使用，触发自身麻痹！');
 				source.trySetStatus('par', source);
+			}
+		},
+		// 3. 招式使用后，为使用者添加/刷新 'yuannengshifang' 状态
+		onAfterMove(source) {
+			source.addVolatile('yuannengshifang');
+		},
+		// 4. 定义 'yuannengshifang' 这个状态的具体效果
+		condition: {
+			// 状态持续2回合。这意味着它会持续到下一回合的出招前，
+			// 如果下一回合没有使用“源能释放”来刷新它，它就会在回合结束时消失。
+			duration: 2,
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'volatile:yuannengshifang');
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'volatile:yuannengshifang');
 			}
 		},
 		target: "normal",
