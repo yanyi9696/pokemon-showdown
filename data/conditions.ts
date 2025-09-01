@@ -1,13 +1,18 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	yuannengshifang: {
 		name: 'yuannengshifang',
-		// 持续时间为2回合。
-		// 这意味着状态会在招式使用的那一回合（第1回合）和紧接着的下一回合（第2回合）持续。
-		// 如果在第2回合再次使用“源能释放”，状态会被刷新；如果使用其他招式，状态则会在第2回合结束后消失。
 		duration: 2,
 		onStart(pokemon) {
-			// 这个消息是 [silent]（无声的），不会显示在对战日志中，只用于后台逻辑。
 			this.add('-start', pokemon, 'Yuan Neng Shi Fang', '[silent]');
+		},
+		/**
+		 * [关键补充] onRestart 事件
+		 * 当一个已经拥有此状态的宝可梦再次被施加这个状态时（即连续使用源能释放时），
+		 * onRestart 事件会被触发。我们在这里明确地将持续时间重置为2，
+		 * 这确保了连锁不会中断。
+		 */
+		onRestart(pokemon) {
+			this.effectState.duration = 2;
 		},
 		onEnd(pokemon) {
 			this.add('-end', pokemon, 'Yuan Neng Shi Fang', '[silent]');

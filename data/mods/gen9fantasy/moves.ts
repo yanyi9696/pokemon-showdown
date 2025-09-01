@@ -518,54 +518,29 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
-
-		// [不变] 适应性伤害逻辑
+		// 比较物攻和特攻，决定伤害类型
 		onModifyMove(move, pokemon) {
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
 				move.category = 'Physical';
 			}
 		},
-
-		// [不变] 威力加成逻辑
+		// 检查上一回合的状态，提升威力
 		onBasePower(basePower, pokemon) {
 			if (pokemon.volatiles['yuannengshifang']) {
-				this.debug('Yuan Neng Shi Fang consecutive boost');
 				return this.chainModify(1.5);
 			}
 			return basePower;
 		},
-
-		/**
-		 * [关键改动 1]
-		 * 在 onHit 事件中，我们为 move 对象附加一个临时的成功标志。
-		 * onHit 只在招式成功命中时运行，这使得它成为完美的标志设置点。
-		 */
+		// 检查上一回合的状态以施加麻痹，并在成功命中后刷新/添加新状态
 		onHit(target, source, move) {
+			// 如果是连续使用，则麻痹双方
 			if (source.volatiles['yuannengshifang']) {
 				target.trySetStatus('par', source, move);
 				source.trySetStatus('par', source, move);
 			}
-			// 在 move 对象上设置一个临时的成功标志。
-			// 我们使用 (move as any) 来告诉 TypeScript 编译器，我们知道自己在做什么，
-			// 这是在有意地为一个对象动态添加属性。
-			(move as any).didSuccess = true;
+			// 只要命中，就添加/刷新状态。这会触发 conditions.ts 中的 onStart 或 onRestart
+			source.addVolatile('yuannengshifang');
 		},
-
-		/**
-		 * [关键改动 2]
-		 * 在 onAfterMoveSecondarySelf 中，我们检查上面设置的标志。
-		 */
-		onAfterMoveSecondarySelf(pokemon, target, move) {
-			// 检查我们之前在 onHit 中设置的成功标志是否存在。
-			if ((move as any).didSuccess) {
-				// 如果存在，说明招式成功，添加/刷新连锁状态。
-				pokemon.addVolatile('yuannengshifang');
-			} else {
-				// 如果不存在，说明招式失败（Miss、守住、无效等），移除状态，中断连锁。
-				pokemon.removeVolatile('yuannengshifang');
-			}
-		},
-
 		target: "normal",
 		type: "Ghost",
 		zMove: { basePower: 175 }, 
