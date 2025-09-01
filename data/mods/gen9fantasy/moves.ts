@@ -519,21 +519,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
 
-		/**
-		 * 效果1：适应性伤害类型 (你的实现是正确的，我们保留它)
-		 * 在招式修改阶段，比较物攻和特攻，决定本次攻击是物理还是特殊。
-		 */
+		// [不变] 适应性伤害逻辑
 		onModifyMove(move, pokemon) {
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
 				move.category = 'Physical';
 			}
 		},
 
-		/**
-		 * 效果2：连续使用威力加成
-		 * 在计算基础威力时，检查使用者身上是否存在 'yuannengshifang' 状态。
-		 * 如果存在，说明上一回合成功使用了此招式，威力提升1.5倍。
-		 */
+		// [不变] 威力加成逻辑
 		onBasePower(basePower, pokemon) {
 			if (pokemon.volatiles['yuannengshifang']) {
 				this.debug('Yuan Neng Shi Fang consecutive boost');
@@ -543,27 +536,35 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 
 		/**
-		 * 效果3：连续使用附加效果 & 状态管理
-		 * 在招式成功命中后触发。
+		 * [关键改动 1]
+		 * 在 onHit 事件中，我们为 move 对象附加一个临时的成功标志。
+		 * onHit 只在招式成功命中时运行，这使得它成为完美的标志设置点。
 		 */
 		onHit(target, source, move) {
-			// 检查使用者身上是否存在 'yuannengshifang' 状态
 			if (source.volatiles['yuannengshifang']) {
-				// 如果是连续使用，则对双方都施加麻痹状态
 				target.trySetStatus('par', source, move);
 				source.trySetStatus('par', source, move);
 			}
-			// 无论是否连续，只要招式命中，就为使用者添加/刷新 'yuannengshifang' 状态，
-			// 为下一回合的连续判定做准备。
-			source.addVolatile('yuannengshifang');
+			// 在 move 对象上设置一个临时的成功标志。
+			// 我们使用 (move as any) 来告诉 TypeScript 编译器，我们知道自己在做什么，
+			// 这是在有意地为一个对象动态添加属性。
+			(move as any).didSuccess = true;
 		},
 
 		/**
-		 * 效果4：连锁中断
-		 * 如果招式未能命中（例如Miss或被守住），onHit 不会触发，
-		 * 'yuannengshifang' 状态就不会被刷新，并在下一回合结束时自动消失，
-		 * 从而自然地中断了连续效果。
+		 * [关键改动 2]
+		 * 在 onAfterMoveSecondarySelf 中，我们检查上面设置的标志。
 		 */
+		onAfterMoveSecondarySelf(pokemon, target, move) {
+			// 检查我们之前在 onHit 中设置的成功标志是否存在。
+			if ((move as any).didSuccess) {
+				// 如果存在，说明招式成功，添加/刷新连锁状态。
+				pokemon.addVolatile('yuannengshifang');
+			} else {
+				// 如果不存在，说明招式失败（Miss、守住、无效等），移除状态，中断连锁。
+				pokemon.removeVolatile('yuannengshifang');
+			}
+		},
 
 		target: "normal",
 		type: "Ghost",
