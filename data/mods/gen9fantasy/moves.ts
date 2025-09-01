@@ -512,27 +512,61 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	yuannengshifang: {
 		num: 10015,
 		accuracy: 80,
-		basePower: 60,
+		basePower: 90,
 		category: "Special",
 		name: "Yuan Neng Shi Fang",
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
+		/**
+		 * onModifyMove 事件：根据使用者的攻击和特攻数值，动态改变招式类型。
+		 * @param {Move} move - 当前招式。
+		 * @param {Pokemon} pokemon - 使用者。
+		 */
 		onModifyMove(move, pokemon) {
+			// 比较攻击（atk）和特攻（spa）
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
+				// 如果攻击更高，则将招式类别变为“物理（Physical）”
 				move.category = 'Physical';
 			}
 		},
+		/**
+		 * onBasePower 事件：在计算伤害前动态修改威力。
+		 * @param {number} basePower - 基础威力。
+		 * @param {Pokemon} pokemon - 使用者。
+		 * @param {Pokemon} target - 目标。
+		 * @param {Move} move - 当前招式。
+		 * @returns {number | void} - 返回修改后的威力。
+		 */
+		onBasePower(basePower, pokemon, target, move) {
+			// 检查使用者上一个使用的招式ID是否与当前招式ID相同
+			if (pokemon.lastMove && pokemon.lastMove.id === move.id) {
+				this.debug('Yuan Neng Shi Fang consecutive use boost');
+				// 如果是连续使用，威力提升1.5倍
+				return this.chainModify(1.5);
+			}
+		},
+		/**
+		 * secondary 效果：定义对目标的追加效果。
+		 */
 		secondary: {
-			chance: 100,
-			status: 'par',
+			chance: 100, // 100% 的几率
+			status: 'par', // 使目标陷入麻痹（par）状态
+		},
+		/**
+		 * onAfterMove 事件：在招式执行后触发，用于处理对使用者自身的效果。
+		 * @param {Pokemon} pokemon - 使用者。
+		 */
+		onAfterMove(pokemon) {
+			// 尝试给使用者自身附加麻痹状态
+			pokemon.trySetStatus('par', pokemon);
 		},
 		target: "normal",
-		type: "Ghost", 
-		zMove: { basePower: 120 },
-		maxMove: { basePower: 110 },
-		desc: "源能释放。比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。让对手陷入麻痹状态",
-		shortDesc: "源能释放。攻击＞特攻变为物理招式,并使其陷入麻痹状态"
+		type: "Ghost",
+		zMove: { basePower: 175 }, 
+		maxMove: { basePower: 130 }, 
+		desc: "源能释放。比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。连续使用时,威力将提升1.5倍,但双方都将陷入麻痹",
+		shortDesc: "源能释放。连用威力提升1.5倍,双方麻痹,攻击＞特攻变物理"
 	},
 	longzhige: {
 		num: 10016,
