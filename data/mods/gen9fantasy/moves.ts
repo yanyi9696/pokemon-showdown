@@ -518,48 +518,47 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
-		/**
-		 * onModifyMove 事件：根据使用者的攻击和特攻数值，动态改变招式类型。
-		 * @param {Move} move - 当前招式。
-		 * @param {Pokemon} pokemon - 使用者。
-		 */
 		onModifyMove(move, pokemon) {
-			// 比较攻击（atk）和特攻（spa）
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
-				// 如果攻击更高，则将招式类别变为“物理（Physical）”
 				move.category = 'Physical';
 			}
 		},
-		/**
-		 * onBasePower 事件：在计算伤害前动态修改威力。
-		 * @param {number} basePower - 基础威力。
-		 * @param {Pokemon} pokemon - 使用者。
-		 * @param {Pokemon} target - 目标。
-		 * @param {Move} move - 当前招式。
-		 * @returns {number | void} - 返回修改后的威力。
-		 */
 		onBasePower(basePower, pokemon, target, move) {
-			// 检查使用者上一个使用的招式ID是否与当前招式ID相同
+			// 连续使用的1.5倍威力加成，这个效果保持不变
 			if (pokemon.lastMove && pokemon.lastMove.id === move.id) {
-				this.debug('Yuan Neng Shi Fang consecutive use boost');
-				// 如果是连续使用，威力提升1.5倍
 				return this.chainModify(1.5);
 			}
 		},
 		/**
-		 * secondary 效果：定义对目标的追加效果。
+		 * onPrepareHit 事件：在招式准备命中时触发
+		 * 这是实现条件性触发“强行”的关键
 		 */
-		secondary: {
-			chance: 100, // 100% 的几率
-			status: 'par', // 使目标陷入麻痹（par）状态
+		onPrepareHit(source, target, move) {
+			// 检查是否为连续使用
+			if (source.lastMove && source.lastMove.id === move.id) {
+				this.debug('源能释放: 连续使用，麻痹目标！');
+				// 如果是连续使用，就动态地为这次招式加上追加效果
+				// 注意：这里要用 secondaries (复数)
+				if (!move.secondaries) move.secondaries = [];
+				move.secondaries.push({
+					chance: 100,
+					status: 'par',
+					// dustproof: true 确保该效果不会被“洁净之躯”等特性阻挡
+					// 同时，这也是一个标记，告诉我们这是可以被“强行”移除的
+					dustproof: true, 
+				});
+			}
 		},
 		/**
-		 * onAfterMove 事件：在招式执行后触发，用于处理对使用者自身的效果。
-		 * @param {Pokemon} pokemon - 使用者。
+		 * onHit 事件：只处理使用者自身的麻痹效果
+		 * 因为这个效果不是secondary，所以“强行”永远无法影响它
 		 */
-		onAfterMove(pokemon) {
-			// 尝试给使用者自身附加麻痹状态
-			pokemon.trySetStatus('par', pokemon);
+		onHit(target, source, move) {
+			if (source.lastMove && source.lastMove.id === move.id) {
+				this.debug('源能释放: 连续使用，自身麻痹！');
+				// 使用者自身的麻痹效果，逻辑不变
+				source.trySetStatus('par', source);
+			}
 		},
 		target: "normal",
 		type: "Ghost",
