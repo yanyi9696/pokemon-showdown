@@ -54,7 +54,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 170 },
 		contestType: "Tough",
 		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于缩小状态,本招式必定命中且伤害翻倍",
-		shortDesc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱",
+		shortDesc: "此招式拥有飞行属性在属性相克中的克制面,舍去微弱",
 	},
 	overdrive: {
 		num: 786,
@@ -290,14 +290,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 1,
 		flags: { protect: 1, mirror: 1, distance: 1, metronome: 1, shooting: 1 },
 		multihit: [2, 5],
+		onEffectiveness(typeMod, target, type, move) {
+            // 毒属性克制的属性有：草、妖精
+			if (['Grass', 'Fairy'].includes(type)) {
+                // 如果目标属性是草或妖精，则增加克制效果
+				return typeMod + 1;
+			}
+            // 否则，返回默认的克制效果
+			return typeMod;
+		},
 		secondary: null,
 		target: "any",
 		type: "Steel",
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 90 },
 		contestType: "Cool",
-		desc: "暴雨梨花。连续攻击２～５次。必定能够先制攻击",
-		shortDesc: "暴雨梨花。连续攻击２～５次。必定能够先制攻击"
+		desc: "暴雨梨花。连续攻击２～５次。必定能够先制攻击。此招式拥有毒属性在属性相克中的克制,舍去微弱",
+		shortDesc: "暴雨梨花。先制攻击,攻击２～５次。拥有毒属性克制面"
 	},
 	yanjian: {
 		num: 10009,
