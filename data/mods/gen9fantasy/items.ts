@@ -8,8 +8,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		itemUser: ["Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy"], // 再次确认形态名称
 		num: 10000,
 		gen: 9,
-		desc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波。",
-		shortDesc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波。",
+		desc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
+		shortDesc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
 	},
 	fantasypowerlens: {
 		name: "Fantasy Power Lens",
@@ -53,8 +53,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
     },
 		num: 10001,
 		gen: 9,
-		desc: "幻之力量镜。携带后,虽然攻击将无法击中要害,但命中不满100%的非变化类技能命中率与威力会提升1.2倍。",
-		shortDesc: "幻之力量镜。攻击无法击中要害,命中不满100%的非变化技能威力与命中率提升1.2倍。",
+		desc: "幻之力量镜。携带后,虽然攻击将无法击中要害,但命中不满100%的非变化类技能命中率与威力会提升1.2倍",
+		shortDesc: "幻之力量镜。攻击无法击中要害,命中不满100%的非变化技能威力与命中率提升1.2倍",
 	},
 	fantasyringtarget: {
 		name: "Fantasy Ring Target",
@@ -81,8 +81,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 10002,
 		gen: 9,
-		desc: "幻之标靶。携带后,登场会暴露道具,虽然无法使用变化招式,但使用的原本属性相性没有效果的招式会变为有效果。",
-		shortDesc: "幻之标靶。登场时暴露道具,使用的招式无视属性免疫,但无法使用变化招式。",
+		desc: "幻之标靶。携带后,登场会暴露道具,虽然无法使用变化招式,但使用的原本属性相性没有效果的招式会变为有效果",
+		shortDesc: "幻之标靶。登场时暴露道具,使用的招式无视属性免疫,但无法使用变化招式",
 	},
 	fantasylifeorb: {
 		name: "Fantasy Life Orb",
@@ -93,9 +93,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onSourceModifyDamage(damage, source, target, move) {
 			// 检查道具持有者(target)是否存在主要异常状态
 			if (target.status) {
-            this.debug('幻之生命宝珠:因异常状态,获得伤害减免1/4。');
-            // 使用 chainModify 来应用乘算修饰。4096 * 0.75 = 3072
-            return this.chainModify(3072 / 4096);
+            this.debug('幻之生命宝珠:因异常状态,获得伤害减免30%。');
+            // 使用 chainModify 来应用乘算修饰。4096 * 0.7 = 2867
+            return this.chainModify(2867 / 4096);
 			}
 		},
 		onResidual(pokemon) {
@@ -106,8 +106,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		//不受异常状态效果影响的效果分别写在各个异常状态里了
 		num: 10003,
 		gen: 9,
-		desc: "幻之生命宝珠。携带后, 不受异常状态效果影响,处于异常状态下的宝可梦,受到的伤害降低1/4,但回合结束时将损失最大HP的1/10。",
-		shortDesc: "幻之生命宝珠。异常状态效果无效,异常状态下伤害减免1/4,每回合损血1/10。",
+		desc: "幻之生命宝珠。携带后, 不受异常状态效果影响,处于异常状态下的宝可梦,受到的伤害降低30%,但回合结束时将损失最大HP的1/10",
+		shortDesc: "幻之生命宝珠。异常状态效果无效,异常状态下伤害减免30%,每回合损血1/10",
 	},
 	fantasysachet: {
 		name: "Fantasy Sachet",
@@ -202,7 +202,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 10004,
 		gen: 9,
-		desc: "幻之香袋。携带道具后将无法提升能力,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失。",
-		shortDesc: "幻之香袋。无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味。",
+		desc: "幻之香袋。携带道具后将无法提升能力,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失",
+		shortDesc: "幻之香袋。无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味",
 	},
 };
