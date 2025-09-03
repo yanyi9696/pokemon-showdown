@@ -26,7 +26,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check'],
 		banlist: ['ND AG', 'Shedinja', 'Assist', 'Baton Pass',
-			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Arena Trap', 'Moody', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 		],
 		onSwitchIn(pokemon) {
