@@ -461,6 +461,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	zamazentacrowned: {
 		tier: "(Uber)",
 	},
+	Zygarde: {
+		tier: "(Uber)",
+	},
 	archaludon: {
 		tier: "OU",
 	},
