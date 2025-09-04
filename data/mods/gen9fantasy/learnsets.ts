@@ -1017,6 +1017,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	glaliefantasy: {
 		learnset: {
 			tripleaxel: ["9M"],
+			juenianpo: ["9M"],
 			nastyplot: ["9M"],
 			suckerpunch: ["9M"],
 			pursuit: ["9M"],
@@ -1106,6 +1107,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	glaliemegafantasy: {
 		learnset: {
 			tripleaxel: ["9M"],
+			juenianpo: ["9M"],
 			nastyplot: ["9M"],
 			suckerpunch: ["9M"],
 			pursuit: ["9M"],
@@ -5625,6 +5627,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	metagrossfantasy: {
 		learnset: {
 			shiftgear: ["9M"],
+			zhukaibo: ["9M"],
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
 			rapidspin: ["9M"],
@@ -5747,6 +5750,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	metagrossmegafantasy: {
 		learnset: {
 			shiftgear: ["9M"],
+			zhukaibo: ["9M"],
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
 			rapidspin: ["9M"],
