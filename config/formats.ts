@@ -111,7 +111,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC UUBL",
 		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] FC OU'],
-		banlist: ['ND OU', 'Drizzle', 'Drought', 'Light Clay'],
+		banlist: ['ND OU'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
