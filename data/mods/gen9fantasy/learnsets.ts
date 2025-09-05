@@ -7411,6 +7411,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	victreebel: {
 		learnset: {
+			solarblade: ["9M"],
 			biansuzhefan: ["9M"],
 			gunkshot: ["9M"],
 			taunt: ["9M"],
