@@ -52,7 +52,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check'],
 		banlist: ['ND AG',
-			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock', 
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
 			'Arceus-Normal', 'Arceus-Dark', 'Arceus-Ground', 'Calyrex-Ice', 'Chien-Pao', 'Deoxys-Attack', 'Eternatus', 'Giratina-Origin',
 			'Groudon-Primal', 'Ho-Oh', 'Kyogre-Primal', 'Lunala', 'Marshadow', 'Melmetal', 'Mewtwo-Mega-Y', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra',
@@ -61,7 +61,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Chi-Yu', 'Flutter Mane', 
 			'Groudon', 'Kyogre', 'Kyurem-Black', 'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z',
 			// FC
-			'Altaria-Mega-Fantasy', 'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy'
+			'Altaria-Mega-Fantasy', 'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z'
 		],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
@@ -87,7 +87,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['Standard NatDex', 'FC Mega Ban Check'],
 		banlist: [
 			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
-			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
+			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail', 'Greninja-Ash Z'
 		],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
@@ -111,7 +111,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC UUBL",
 		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] FC OU'],
-		banlist: ['ND OU'],
+		banlist: ['ND OU', 'Greninja-Ash Z'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
@@ -134,7 +134,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC UU",
 		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] FC OU'],
-		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
+		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay', 'Greninja-Ash Z'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
@@ -157,7 +157,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC RUBL",
 		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] FC UU'],
-		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
+		banlist: ['ND UU', 'Slowbro-Base + Slowbronite', 'Greninja-Ash Z'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
@@ -180,7 +180,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC RU",
 		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] FC UU'],
-		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
+		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite', 'Greninja-Ash Z'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');

@@ -7873,6 +7873,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			aquajet: ["9M"],
 			knockoff: ["9M"],
 			nastyplot: ["9M"],
+			baoyulihua: ["9M"],
+			biansuzhefan: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "7M"],
 			aerialace: ["9M", "9L33", "7M", "7S0"],
@@ -7971,6 +7973,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			aquajet: ["9M"],
 			knockoff: ["9M"],
 			nastyplot: ["9M"],
+			baoyulihua: ["9M"],
+			biansuzhefan: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "7M"],
 			aerialace: ["9M", "9L33", "7M", "7S0"],
