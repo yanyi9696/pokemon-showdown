@@ -856,4 +856,34 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 2,
 		shortDesc: "收魂。每当场上有宝可梦被打倒时,恢复1/4的最大HP",
 	},
+	chaoyueqianbanbianshen: {
+		// 登场时触发
+		onStart(pokemon) {
+			if (pokemon.hasItem('greninjaashz')) {
+				this.add('-ability', pokemon, 'Chao Yue Qian Ban Bian Shen');
+				pokemon.formeChange('Greninja-Ash-Fantasy', this.effect, true);
+			}
+		},
+		onSourceAfterFaint(length, target, source, effect) {
+			if (effect?.effectType !== 'Move') {
+				return;
+			}
+			if (source.species.id === 'greninjabondfantasy' && source.hp && !source.transformed && source.side.foePokemonLeft()) {
+				this.add('-activate', source, 'ability: Chao Yue Qian Ban Bian Shen');
+				source.formeChange('Greninja-Ash-Fantasy', this.effect, true);
+			}
+		},
+		onModifyMovePriority: -1,
+		onModifyMove(move, attacker) {
+			if (move.id === 'watershuriken' && attacker.species.name === 'Greninja-Ash-Fantasy' &&
+				!attacker.transformed) {
+				move.multihit = 3;
+			}
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
+		name: "Chao Yue Qian Ban Bian Shen",
+		num: 10022,
+		rating: 4,
+		shortDesc: "超越牵绊变身。携带智忍蛙Z或击倒对方一只宝可梦,变身为幻想小智版甲贺忍蛙",
+	},
 };

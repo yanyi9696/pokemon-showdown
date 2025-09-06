@@ -32,6 +32,36 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "威力基数为80,附带穿透效果。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
 		shortDesc: "80威力 +目标每有1项能力上升, 威力+20,有穿透效果",
 	},
+	watershuriken: {
+		num: 594,
+		accuracy: 100,
+		basePower: 15, // 变身前基础威力
+		basePowerCallback(pokemon, target, move) {
+			// 只有当宝可梦是“小智版幻想甲贺忍蛙”时，威力才变为 20
+			if (pokemon.species.name === 'Greninja-Ash-Fantasy') {
+				return 20; // 威力固定为 20
+			}
+			return move.basePower; // 其他形态保持原样
+		},
+		category: "Special",
+		name: "Water Shuriken",
+		pp: 20,
+		priority: 1,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		multihit: [2, 5],
+		onModifyMove(move, pokemon) {
+			// 只有当宝可梦是“小智版幻想甲贺忍蛙”时，攻击次数才变为 3
+			if (pokemon.species.name === 'Greninja-Ash-Fantasy') {
+				move.multihit = 3;
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Water",
+		contestType: "Cool",
+		desc: "先制攻击,攻击2~5次。小智版甲贺忍蛙使用时威力变为20,且攻击固定为3次",
+		shortDesc: "先制攻击,攻击2~5次。小智版甲贺忍蛙使用时威力变为20,攻击固定为3次"
+	},
 	flyingpress: {
 		num: 560,
 		accuracy: 95,
@@ -305,8 +335,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 90 },
 		contestType: "Cool",
-		desc: "暴雨梨花。连续攻击２～５次。必定能够先制攻击。此招式拥有毒属性在属性相克中的克制,舍去微弱",
-		shortDesc: "暴雨梨花。先制攻击,攻击２～５次。拥有毒属性克制面"
+		desc: "暴雨梨花。连续攻击2~5次。必定能够先制攻击。此招式拥有毒属性在属性相克中的克制,舍去微弱",
+		shortDesc: "暴雨梨花。先制攻击,攻击2~5次。拥有毒属性克制面"
 	},
 	yanjian: {
 		num: 10009,
@@ -805,5 +835,38 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Tough",
 		desc: "绝念破。令使用者的防御和特防下降1级",
 		shortDesc: "绝念破。令使用者的防御和特防下降1级",
+	},
+	huangjinjibanshoulijian: {
+		num: 10024,
+		accuracy: true,
+		basePower: 0,
+		category: "Special",
+		name: "HuangJinJiBanShouLiJian",
+		pp: 1,
+		priority: 0,
+		flags: {},
+		isZ: "greninjaashz",
+		secondary: null,
+		target: "normal",
+		type: "Water",
+		damageCallback(pokemon, target) {
+			const fullHp = target.getUndynamaxedHP(); // 获取目标未极巨化时的满血HP
+			const halfHpDamage = Math.floor(fullHp / 2); // 计算最大HP的1/2伤害
+			const eighthHpDamage = Math.floor(fullHp / 8); // 计算最大HP的1/8伤害
+
+			// 检查目标是否处于守住状态
+			if (
+				target.volatiles['protect'] || target.volatiles['banefulbunker'] || target.volatiles['kingsshield'] ||
+				target.volatiles['spikyshield'] || target.side.getSideCondition('matblock')
+			) {
+				this.add('-zbroken', target);
+				// 对守住状态的宝可梦造成1/8伤害
+				return eighthHpDamage;
+			}
+			// 对非守住状态的宝可梦造成1/2伤害
+			return halfHpDamage;
+		},
+		desc: "黄金羁绊手里剑。对目标造成目标最大HP1/2(向下取整)的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的1/8",
+		shortDesc: "黄金羁绊手里剑。造成目标最大HP1/2的伤害,对守住目标造成1/8伤害"
 	},
 };

@@ -5,6 +5,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Tian Lai Zhi Yin"},		
 	},
+	greninjaashfantasy: {
+		tier: "Uber",
+	},
 	metagrossmegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Tough Claws"},	
@@ -42,6 +45,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	garchompmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
+	},
+	greninjabondfantasy: {
+		tier: "(Uber)",
 	},
 	kricketunefantasy: {
 		tier: "(Uber)",

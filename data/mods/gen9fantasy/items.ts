@@ -11,6 +11,19 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
 		shortDesc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
 	},
+	greninjaashz: {
+		name: "Greninja-Ash Z",
+		spritenum: 633,
+		onTakeItem: false, // Z纯晶不能被移除
+		zMove: "Huangjinjibanshoulijian",
+		zMoveFrom: "Water Shuriken",
+		itemUser: ["Greninja-Bond-Fantasy", "Greninja-Ash-Fantasy"], // 再次确认形态名称
+		num: 10005,
+		gen: 9,
+		desc: "智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
+		shortDesc: "智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
+	},
+	//以下为Z以外的自制道具
 	fantasypowerlens: {
 		name: "Fantasy Power Lens",
 		spritenum: 359,
