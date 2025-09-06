@@ -488,9 +488,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerponwellspringtera: {
 		tier: "OU",
 	},
-	pelipper: {
-		tier: "OU",
-	},
 	rillaboom: {
 		tier: "OU",
 	},
@@ -510,6 +507,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	garchompmega: {
+		tier: "UUBL",
+	},
+	pelipper: {
 		tier: "UUBL",
 	},
 	ogerponcornerstonetera: {
