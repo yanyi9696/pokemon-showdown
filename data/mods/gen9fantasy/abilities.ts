@@ -569,31 +569,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	tiekai: {
 		onSourceModifyDamage(damage, source, target, move) {
-			let typeMod = this.clampIntRange(target.runEffectiveness(move), -6, 6);
-
-			// 修复点：更严格的类型检查
-			// 1. 检查 move.ignoreImmunity 是否存在
-			if (move.ignoreImmunity) {
-				// 2. 检查 move.ignoreImmunity 是否是一个对象，并且不是数组或 null
-				// 这一步确保了我们能安全地像对象一样去索引它
-				if (typeof move.ignoreImmunity === 'object') {
-					// 3. 使用 for...of 循环来安全地遍历目标的属性
-					for (const type of target.types) {
-						// 4. 使用类型断言来告诉编译器 'type' 是一个有效的键
-						// 这行代码现在是安全的，因为它前面有严格的类型检查
-						if ((move.ignoreImmunity as any)[type]) {
-							typeMod = 1;
-							break; // 找到一个匹配项后即可退出循环
-						}
-					}
-				} else {
-					// 如果 ignoreImmunity 是布尔值 true，则直接将 typeMod 设为 1
-					typeMod = 1;
-				}
-			}
-
-			if (typeMod > 0 && typeMod <= this.dex.getEffectiveness('Normal', target.getTypes())) {
-				this.debug('Tie Kai: Damage from Normal/Resisted move neutralized.');
+			if (target.runEffectiveness(move) <= 1) {
+				this.debug('Tie Kai neutralize');
 				return this.chainModify(0.75);
 			}
 		},
