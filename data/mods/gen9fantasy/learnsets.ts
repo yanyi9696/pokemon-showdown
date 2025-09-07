@@ -7599,6 +7599,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			powertrip: ["9M"],
 			crunch: ["9M"],
 			jawlock: ["9M"],
+			taunt: ["9M"],
 			rapidspin: ["9M"],
 			whirlwind: ["9M"],
 			//幻想增添技能

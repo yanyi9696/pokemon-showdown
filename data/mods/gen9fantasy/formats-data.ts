@@ -46,9 +46,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
 	},
-	greninjabondfantasy: {
-		tier: "(Uber)",
-	},
 	kricketunefantasy: {
 		tier: "(Uber)",
 	},
@@ -81,6 +78,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	delphoxfantasy: {
 		tier: "OU",
 	},
+	dragalgefantasy: {	
+		tier: "OU",
+	},
 	empoleonfantasy: {	
 		tier: "OU",
 	},
@@ -90,7 +90,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	garchompfantasy: {
 		tier: "OU",
 	},
+	greninjabondfantasy: {
+		tier: "OU",
+	},
 	golurkfantasy: {
+		tier: "OU",
+	},
+	goodrafantasy: {
 		tier: "OU",
 	},
 	goodrahisuifantasy: {
@@ -108,13 +114,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	raikoufantasy: {
 		tier: "OU",
 	},
+	salazzlefantasy: {
+		tier: "OU",
+	},
 	sandacondafantasy: {
 		tier: "OU",
 	},
 	urshifufantasy: {
-		tier: "OU",
-	},
-	victreebelfantasy: {
 		tier: "OU",
 	},
 	weezinggalarfantasy: {
@@ -129,16 +135,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	decidueyehisuifantasy: {
 		tier: "UUBL",
 	},
-	dragalgefantasy: {	
-		tier: "UUBL",
-	},
 	electivirefantasy: {
-		tier: "UUBL",
-	},
-	goodrafantasy: {
-		tier: "UUBL",
-	},
-	honchkrowfantasy: {
 		tier: "UUBL",
 	},
 	ironthornsfantasy: {
@@ -149,9 +146,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Pixilate"},	
 	},
 	magmortarfantasy: {
-		tier: "UUBL",
-	},
-	miloticfantasy: {
 		tier: "UUBL",
 	},
 	slitherwingfantasy: {
@@ -166,16 +160,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	volcanionfantasy: {
 		tier: "UUBL",
 	},
-	weezingfantasy: {
-		tier: "UUBL",
-	},
 	wochienfantasy: {
 		tier: "UUBL",
 	},
 	absolfantasy: {
-		tier: "UU",
-	},
-	altariafantasy: {
 		tier: "UU",
 	},
 	armarougefantasy: {
@@ -206,37 +194,37 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mienshaofantasy: {
 		tier: "UU",
 	},
-	salazzlefantasy: {
-		tier: "UU",
-	},
-	sawsbuckfantasy: {
-		tier: "UU",
-	},
-	sawsbucksummerfantasy: {
-		tier: "UU",
-	},
-	sawsbuckautumnfantasy: {
-		tier: "UU",
-	},
-	sawsbuckwinterfantasy: {
+	miloticfantasy: {
 		tier: "UU",
 	},
 	urshifurapidstrikefantasy: {
 		tier: "UU",
 	},
+	victreebelfantasy: {
+		tier: "UU",
+	},
 	volbeatfantasy: {
+		tier: "UU",
+	},
+	weezingfantasy: {
 		tier: "UU",
 	},
 	aggronfantasy: {
 		tier: "RUBL",
 	},
-	carnivinefantasy: {
+	altariafantasy: {
 		tier: "RUBL",
 	},
 	cursolafantasy: {
 		tier: "RUBL",
 	},
 	dusknoirfantasy: {
+		tier: "RUBL",
+	},
+	honchkrowfantasy: {
+		tier: "RUBL",
+	},
+	lopunnyfantasy: {
 		tier: "RUBL",
 	},
 	meganiumfantasy: {
@@ -248,16 +236,28 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	abomasnowfantasy: {
 		tier: "RU",
 	},
+	carnivinefantasy: {
+		tier: "RU",
+	},
 	glaliefantasy: {
 		tier: "RU",
 	},
 	hawluchafantasy: {
 		tier: "RU",
 	},
-	lopunnyfantasy: {
+	samurottfantasy: {
 		tier: "RU",
 	},
-	samurottfantasy: {
+	sawsbuckfantasy: {
+		tier: "RU",
+	},
+	sawsbucksummerfantasy: {
+		tier: "RU",
+	},
+	sawsbuckautumnfantasy: {
+		tier: "RU",
+	},
+	sawsbuckwinterfantasy: {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
@@ -494,9 +494,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	serperior: {
 		tier: "OU",
 	},
-	skeledirge: {
-		tier: "OU",
-	},
 	ursaluna: {
 		tier: "OU",
 	},
@@ -525,6 +522,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	pecharunt: {
+		tier: "UU",
+	},
+	skeledirge: {
 		tier: "UU",
 	},
 	tapufini: {
