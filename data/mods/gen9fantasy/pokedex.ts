@@ -905,7 +905,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Slither Wing-Fantasy",
 		baseSpecies: "Slither Wing",
 		forme: "Fantasy",
-		types: ["Bug", "Fighting"],
+		types: ["Bug", "Ground"],
 		gender: "N",
 		baseStats: { hp: 85, atk: 135, def: 89, spa: 55, spd: 115, spe: 91 },
 		abilities: { 0: "Protosynthesis", 1: "Fluffy", H: "Wind Rider" },
