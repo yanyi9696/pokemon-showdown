@@ -849,22 +849,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Water",
+		// 使用 damageCallback 来处理复杂的伤害计算
 		damageCallback(pokemon, target) {
-			const fullHp = target.getUndynamaxedHP(); // 获取目标未极巨化时的满血HP
-			const halfHpDamage = Math.floor(fullHp / 2); // 计算最大HP的1/2伤害
-			const eighthHpDamage = Math.floor(fullHp / 8); // 计算最大HP的1/8伤害
-
 			// 检查目标是否处于守住状态
-			if (
-				target.volatiles['protect'] || target.volatiles['banefulbunker'] || target.volatiles['kingsshield'] ||
-				target.volatiles['spikyshield'] || target.side.getSideCondition('matblock')
-			) {
+			if (target.volatiles['protect'] || target.volatiles['banefulbunker'] || target.volatiles['kingsshield'] || target.volatiles['spikyshield'] || target.side.getSideCondition('matblock')) {
 				this.add('-zbroken', target);
-				// 对守住状态的宝可梦造成1/8伤害
-				return eighthHpDamage;
+				// 对守住状态的宝可梦造成其最大HP的1/8伤害
+				return Math.floor(target.maxhp / 8);
 			}
-			// 对非守住状态的宝可梦造成1/2伤害
-			return halfHpDamage;
+			// 对非守住状态的宝可梦造成其最大HP的1/2伤害
+			return Math.floor(target.maxhp / 2);
 		},
 		desc: "黄金羁绊手里剑。对目标造成目标最大HP1/2(向下取整)的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的1/8",
 		shortDesc: "黄金羁绊手里剑。造成目标最大HP1/2的伤害,对守住目标造成1/8伤害"
