@@ -841,15 +841,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (source.hp >= source.maxhp || !source.isActive) {
 				return;
 			}
-			// 在战斗日志中显示特性发动的信息
-			this.add('-ability', source, '收魂'); 
-			// 为宝可梦恢复其最大HP的1/4
-			this.heal(source.maxhp / 4, source); 
+			// 关键改动在这里！
+			// 我们不再手动调用 this.add() 来显示信息。
+			// 而是让 this.heal() 自己来处理日志。
+			// 我们通过传递第四个参数 this.effect 来告诉游戏，这次治疗是由这个特性发动的。
+			this.heal(source.maxhp / 4, source, source, this.effect);
 		},
 		flags: {},
 		name: "Shou Hun",
 		num: 10021,
-		rating: 2,
+		rating: 3.5,
 		shortDesc: "收魂。每当场上有宝可梦被打倒时,恢复1/4的最大HP",
 	},
 	chaoyueqianbanbianshen: {
