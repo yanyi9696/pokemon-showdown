@@ -279,6 +279,32 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			}
 		},
 	},
+	{
+		name: "[Gen 9] FC Custom Game",
+		mod: 'gen9fantasy',
+		searchShow: false,
+		debug: true,
+		battle: { trunc: Math.trunc },
+		// no restrictions, for serious (other than team preview)
+		ruleset: ['Team Preview', 'Cancel Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
+		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
+		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
+	},
 	
 	
 	// S/V Singles
