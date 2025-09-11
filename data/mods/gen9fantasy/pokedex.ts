@@ -166,7 +166,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Dragon", "Ghost"],
 		baseStats: { hp: 88, atk: 120, def: 75, spa: 100, spd: 75, spe: 142 },
-		abilities: { 0: "Po Zhu", 1: "Infiltrator", H: "Parental Bond" },
+		abilities: { 0: "Clear Body", 1: "Po Zhu", H: "Parental Bond" },
 		heightm: 3,
 		weightkg: 50,
 		color: "Green",
