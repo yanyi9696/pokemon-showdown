@@ -204,7 +204,11 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		gameType: 'doubles',
 		ruleset: [
-			'Standard Doubles', 
+			'Standard AG',
+			'Species Clause', 
+			'Nickname Clause', 
+			'OHKO Clause',
+			//以上是从'Standard Doubles'节选的适用的规则
 			'NatDex Mod',       
 			'Item Clause = 1',  
 			'Adjust Level = 50',
