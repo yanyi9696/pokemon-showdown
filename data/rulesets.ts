@@ -2989,4 +2989,9 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			}
 		},
 	},
+	ignoreeventshinyclause: {
+		effectType: 'Rule',
+		name: 'Ignore Event Shiny Clause',
+		desc: "Bypasses the validation that prevents event-only Pokémon from being shiny.",
+	},
 };

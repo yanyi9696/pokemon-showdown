@@ -2092,10 +2092,14 @@ export class TeamValidator {
 			if (fastReturn) return true;
 			problems.push(`${name} must be at least level ${eventData.level}${etc}.`);
 		}
-		if ((eventData.shiny === true && !set.shiny) || (!eventData.shiny && set.shiny)) {
-			if (fastReturn) return true;
-			const shinyReq = eventData.shiny ? ` be shiny` : ` not be shiny`;
-			problems.push(`${name} must${shinyReq}${etc}.`);
+				// 在这里添加我们的新逻辑，检查规则是否存在
+		if (!this.ruleTable.has('ignoreeventshinyclause')) {
+			// 这是原始的闪光检查逻辑，只有在规则不存在时才执行
+				if ((eventData.shiny === true && !set.shiny) || (!eventData.shiny && set.shiny)) {
+				if (fastReturn) return true;
+				const shinyReq = eventData.shiny ? ` be shiny` : ` not be shiny`;
+				problems.push(`${name} must${shinyReq}${etc}.`);
+			}
 		}
 		if (eventData.gender) {
 			if (set.gender && eventData.gender !== set.gender) {
