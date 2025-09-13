@@ -607,13 +607,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				return this.random(5, 7);
 			},
 			onStart(pokemon, source) {
-				this.add('-activate', pokemon, 'move: Long Zhi Ge', `[of] ${source}`);
+				// --- 关键改动 ---
+				// 将 '-activate' 更改为 '-start'。
+				// '-start' 指令会通知客户端（游戏界面）开始显示一个持续的状态。
+				// 这就是让“龙之歌”显示在血条下的原因。
+				this.add('-start', pokemon, 'move: Long Zhi Ge', `[of] ${source}`);
 				this.add('-message', `${pokemon.name}听到了回响的龙之歌！`);
 				this.effectState.boundDivisor = source.hasItem('bindingband') ? 6 : 8;
 			},
 			onResidualOrder: 13,
 			onResidual(pokemon) {
 				const source = this.effectState.source;
+				// 如果施加状态的宝可梦离场或濒死，则状态解除
 				if (source && (!source.isActive || source.hp <= 0 || !source.activeTurns)) {
 					pokemon.removeVolatile('longzhige');
 					this.add('-end', pokemon, this.effectState.sourceEffect, '[partiallytrapped]', '[silent]');
@@ -622,10 +627,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				this.damage(pokemon.baseMaxhp / this.effectState.boundDivisor);
 			},
 			onEnd(pokemon) {
-				this.add('-end', pokemon, this.effectState.sourceEffect, '[partiallytrapped]');
+				// 状态结束时，发送 '-end' 指令，客户端将移除状态显示
+				this.add('-end', pokemon, 'move: Long Zhi Ge', '[partiallytrapped]');
 				this.add('-message', `龙之歌的旋律消散了。`);
 			},
 			onTrapPokemon(pokemon) {
+				// 确保处于该状态的宝可梦无法交换
 				if (this.effectState.source?.isActive) pokemon.tryTrap();
 			},
 		},
