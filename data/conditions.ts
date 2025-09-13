@@ -1,4 +1,42 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+		longzhige: {
+		name: 'Long Zhi Ge',
+		duration: 5,
+		durationCallback(target, source) {
+			// 这个函数决定了束缚的持续回合数，5-7回合，如果持有Grip Claw则8回合
+			if (source?.hasItem('gripclaw')) return 8;
+			return this.random(5, 7);
+		},
+		onStart(pokemon, source) {
+			// 关键在这里！这行代码会在战斗日志中显示 “[宝可梦名字]被龙之歌困住了！”
+			this.add('-activate', pokemon, 'move: Long Zhi Ge', `[of] ${source}`);
+			// 也可以在这里添加一些自定义的提示信息
+			this.add('-message', `${pokemon.name}听到了回响的龙之歌！`);
+			// 下面这行是计算每回合束缚伤害的除数（bindingband让伤害从1/8变为1/6）
+			this.effectState.boundDivisor = source.hasItem('bindingband') ? 6 : 8;
+		},
+		onResidualOrder: 13,
+		onResidual(pokemon) {
+			// 这是处理回合末持续伤害的逻辑
+			const source = this.effectState.source;
+			// 如果施加状态的宝可梦离场了，状态就结束
+			if (source && (!source.isActive || source.hp <= 0 || !source.activeTurns)) {
+				delete pokemon.volatiles['longzhige'];
+				this.add('-end', pokemon, this.effectState.sourceEffect, '[partiallytrapped]', '[silent]');
+				return;
+			}
+			this.damage(pokemon.baseMaxhp / this.effectState.boundDivisor);
+		},
+		onEnd(pokemon) {
+			// 状态结束时显示的提示
+			this.add('-end', pokemon, this.effectState.sourceEffect, '[partiallytrapped]');
+			this.add('-message', `龙之歌的旋律消散了。`);
+		},
+		onTrapPokemon(pokemon) {
+			// 这是防止宝可梦交换的核心逻辑
+			if (this.effectState.source?.isActive) pokemon.tryTrap();
+		},
+	},
 	yuannengshifang: {
 		name: 'yuannengshifang',
 		duration: 2,

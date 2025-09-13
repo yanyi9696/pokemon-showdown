@@ -596,7 +596,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 15,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, sound: 1 }, 
-		volatileStatus: 'partiallytrapped', 
+		volatileStatus: 'longzhige', 
 		secondary: null,
 		target: "normal",
 		type: "Dragon", 
