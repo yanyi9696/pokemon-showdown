@@ -596,11 +596,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 15,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, sound: 1 }, 
-	    onHit(target, source, move) {
-        // 手动为目标添加 'longzhige' 状态
-        // 第三个参数 move 会让游戏引擎正确地将招式信息传递给状态
-        target.addVolatile('longzhige', source, move);
-    },
+		volatileStatus: 'partiallytrapped', 
 		secondary: null,
 		target: "normal",
 		type: "Dragon", 

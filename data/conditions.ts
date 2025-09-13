@@ -1,40 +1,4 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-	longzhige: {
-		name: 'Long Zhi Ge',
-		duration: 5,
-		durationCallback(target, source) {
-			if (source?.hasItem('gripclaw')) return 8;
-			return this.random(5, 7);
-		},
-		// 将 onStart 修改为以下内容
-		onStart(pokemon, source) {
-			// [!fix] 核心修改：使用 sourceEffect 变量，而不是写死的名字
-			// 这样就能和 Infestation 等官方技能的日志格式完全一致了
-			this.add('-activate', pokemon, 'move: ' + this.effectState.sourceEffect, `[of] ${source}`);
-			
-			// 你的自定义消息可以保留，也可以删除，看你喜欢
-			this.add('-message', `${pokemon.name}听到了回响的龙之歌！`);
-
-			this.effectState.boundDivisor = source.hasItem('bindingband') ? 6 : 8;
-		},
-		onResidualOrder: 13,
-		onResidual(pokemon) {
-			const source = this.effectState.source;
-			if (source && (!source.isActive || source.hp <= 0 || !source.activeTurns)) {
-				delete pokemon.volatiles['longzhige'];
-				this.add('-end', pokemon, this.effectState.sourceEffect, '[partiallytrapped]', '[silent]');
-				return;
-			}
-			this.damage(pokemon.baseMaxhp / this.effectState.boundDivisor);
-		},
-		onEnd(pokemon) {
-			this.add('-end', pokemon, this.effectState.sourceEffect, '[partiallytrapped]');
-			this.add('-message', `龙之歌的旋律消散了。`);
-		},
-		onTrapPokemon(pokemon) {
-			if (this.effectState.source?.isActive) pokemon.tryTrap();
-		},
-	},
 	yuannengshifang: {
 		name: 'yuannengshifang',
 		duration: 2,
