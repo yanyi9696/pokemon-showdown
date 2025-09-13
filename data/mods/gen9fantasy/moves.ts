@@ -596,8 +596,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 15,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, sound: 1 }, 
-		volatileStatus: 'longzhige', 
-		secondary: null,
+		// 这确保了它不会被 Sheer Force 无视
+		onAfterHit(target, source, move) {
+			// 如果目标没有被替换下场（比如打了替身），则施加束缚状态
+			if (!move.flags['futuremove'] && !target.forceSwitchFlag) {
+				target.addVolatile('longzhige', source, move);
+			}
+		},
 		target: "normal",
 		type: "Dragon", 
 		zMove: { basePower: 100 },
