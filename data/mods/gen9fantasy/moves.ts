@@ -910,33 +910,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "Jiao Zhun Xian Gong",
 		pp: 10,
 		priority: 2,
-		// 关键标志 (Key Flags)
-		// contact: 会与目标发生物理接触 (Makes contact with the target)
-		// protect: 可以被“守住”等招式抵挡 (Can be blocked by Protect)
-		// mirror: 可以被“鹦鹉学舌”复制 (Can be copied by Mirror Move)
 		flags: { contact: 1, protect: 1, mirror: 1 },
-
-		/**
-		 * @description 在准备攻击时触发，用于在伤害计算前执行某些效果。
-		 * 这是实现“先提升命中，再攻击”的关键。
-		 * (Triggers when preparing the attack, used for effects before damage calculation.
-		 * This is the key to 'boost accuracy, then attack'.)
-		 */
 		onPrepareHit(target, source) {
 			this.add('-boost', source, 'accuracy', 2, '[from] move: 校准先攻');
 		},
 
 		/**
-		 * @description 在尝试使用招式时触发，用于判断招式是否可以使用。
-		 * 我们在这里检查宝可梦是否为刚出场的第一回合。
-		 * (Triggers when trying to use the move, to check if it can be used.
-		 * Here, we check if it's the Pokémon's first turn on the field.)
+		 * @description [已修正] 在尝试使用招式时触发。
+		 * 判断条件从 > 0 修改为 > 1，以正确识别第一回合。
+		 * ([CORRECTED] Triggers when trying to use the move.
+		 * The condition is changed from > 0 to > 1 to correctly identify the first turn.)
 		 */
 		onTry(pokemon, target) {
-			if (pokemon.activeTurns > 0) {
-				this.add('-fail', pokemon); // 在对战日志中显示招式失败 (Show move failure in the battle log)
-				this.hint("校准先攻仅在出场后的第一回合才能使用。"); // 给玩家的提示 (Hint for the player)
-				return false; // 阻止招式使用 (Prevent the move from being used)
+			// 在宝可梦的第一个行动回合，activeTurns 的值为 1
+			// (On a Pokémon's first turn of action, activeTurns is 1)
+			if (pokemon.activeTurns > 1) {
+				this.add('-fail', pokemon);
+				this.hint("校准先攻仅在出场后的第一回合才能使用。");
+				return false;
 			}
 		},
 		secondary: null,
