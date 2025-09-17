@@ -218,4 +218,49 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "幻之香袋。携带道具后将无法提升能力,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失",
 		shortDesc: "幻之香袋。无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味",
 	},
+	fantasyscopelens: {
+		name: "Fantasy Scope Lens",
+		spritenum: 429,
+		fling: {
+			basePower: 10,
+		},
+		onAnyModifyDef(def, target, source, move) {
+			// 道具自身的基础生效条件
+			if (!source || source.item !== 'fantasyscopelens') return;
+			if (move.flags['shooting'] || move.flags['bullet']) {
+				
+				// 【核心改动】检查是否存在来自“穿透”的信号
+				if ((move as any).infiltratorLensCombined) {
+					// 如果有信号，执行加算逻辑 (10% + 20% = 30%削减)
+					this.debug('Fantasy Scope Lens + Infiltrator combined additive drop');
+					return this.chainModify(0.7); // 1 - 0.3 = 0.7
+				} else {
+					// 如果没有信号，执行道具原本的逻辑
+					this.debug('Fantasy Scope Lens Def drop');
+					return this.chainModify(0.8);
+				}
+			}
+		},
+		onAnyModifySpD(spd, target, source, move) {
+			// 道具自身的基础生效条件
+			if (!source || source.item !== 'fantasyscopelens') return;
+			if (move.flags['shooting'] || move.flags['bullet']) {
+
+				// 【核心改动】检查是否存在来自“穿透”的信号
+				if ((move as any).infiltratorLensCombined) {
+					// 如果有信号，执行加算逻辑
+					this.debug('Fantasy Scope Lens + Infiltrator combined additive drop');
+					return this.chainModify(0.7);
+				} else {
+					// 如果没有信号，执行道具原本的逻辑
+					this.debug('Fantasy Scope Lens SpD drop');
+					return this.chainModify(0.8);
+				}
+			}
+		},
+		num: 10005,
+		gen: 9,
+		desc: "幻之焦点镜。携带后,使用射击类、球和弹类招式能无视目标20%的防御与特防",
+		shortDesc: "幻之焦点镜。携带后,使用射击类、球和弹类招式能无视目标20%的防御与特防",
+	},
 };
