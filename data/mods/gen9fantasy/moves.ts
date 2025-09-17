@@ -176,7 +176,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Clever",
 		// 更新招式描述以匹配新的效果
 		desc: "先行指令。比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手,但再次使用会失败",
-		shortDesc: "物攻或特攻较高的一项+2,获得先制+0.5。再次使用会失败"
+		shortDesc: "先行指令。物/特攻较高项+2,先制+0.5。再次使用会失败"
 	},
 	fuzhuzhiling: {
 		num: 10002,
@@ -229,8 +229,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 120 },
-		desc: "秘剑·百仞川。令目标场地进入钢刺状态,使交换上场的宝可梦受到伤害",
-		shortDesc: "秘剑·百仞川。令目标场地进入钢刺状态"
+		desc: "秘剑·百仞川。令目标场地进入碎菱钢状态,使交换上场的宝可梦受到伤害",
+		shortDesc: "秘剑·百仞川。令目标场地进入碎菱钢状态"
 	},
 	dianshanshunji: {
 		num: 10004,
@@ -901,5 +901,77 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		desc: "黄金羁绊手里剑。对目标造成目标最大HP1/2(向下取整)的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的1/8",
 		shortDesc: "黄金羁绊手里剑。造成目标最大HP1/2的伤害,对守住目标造成1/8伤害"
+	},
+	jiaozhunxiangong: {
+		num: 10025,
+		accuracy: 100,
+		basePower: 80,
+		category: "Physical",
+		name: "Jiao Zhun Xian Gong",
+		pp: 10,
+		priority: 2,
+		// 关键标志 (Key Flags)
+		// contact: 会与目标发生物理接触 (Makes contact with the target)
+		// protect: 可以被“守住”等招式抵挡 (Can be blocked by Protect)
+		// mirror: 可以被“鹦鹉学舌”复制 (Can be copied by Mirror Move)
+		flags: { contact: 1, protect: 1, mirror: 1 },
+
+		/**
+		 * @description 在准备攻击时触发，用于在伤害计算前执行某些效果。
+		 * 这是实现“先提升命中，再攻击”的关键。
+		 * (Triggers when preparing the attack, used for effects before damage calculation.
+		 * This is the key to 'boost accuracy, then attack'.)
+		 */
+		onPrepareHit(target, source) {
+			this.add('-boost', source, 'accuracy', 2, '[from] move: 校准先攻');
+		},
+
+		/**
+		 * @description 在尝试使用招式时触发，用于判断招式是否可以使用。
+		 * 我们在这里检查宝可梦是否为刚出场的第一回合。
+		 * (Triggers when trying to use the move, to check if it can be used.
+		 * Here, we check if it's the Pokémon's first turn on the field.)
+		 */
+		onTry(pokemon, target) {
+			if (pokemon.activeTurns > 0) {
+				this.add('-fail', pokemon); // 在对战日志中显示招式失败 (Show move failure in the battle log)
+				this.hint("校准先攻仅在出场后的第一回合才能使用。"); // 给玩家的提示 (Hint for the player)
+				return false; // 阻止招式使用 (Prevent the move from being used)
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Steel",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 130 },
+		contestType: "Cute",
+		desc: "校准先攻。提升命中率2级后攻击目标造成伤害。出场后立刻使出才能成功,否则招式会失败",
+		shortDesc: "校准先攻。命中+2后攻击。出场后立刻使出才能成功",
+	},
+	suilinggang: {
+		num: 10026,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Sui Ling Gang",
+		pp: 20,
+		priority: 0,
+		flags: { reflectable: 1, metronome: 1, mustpressure: 1 },
+	/**
+		 * @description 核心效果：直接在对手场地上设置'gmaxsteelsurge'状态。
+		 * 程序会自动查找并应用游戏中已有的'gmaxsteelsurge'效果，
+		 * 包括它的伤害计算逻辑。
+		 * (Core Effect: Directly applies the 'gmaxsteelsurge' side condition.
+		 * The game will automatically find and use the existing 'gmaxsteelsurge'
+		 * effect, including its damage calculation logic.)
+		 */
+		sideCondition: 'gmaxsteelsurge',
+		secondary: null,
+		target: "foeSide",
+		type: "Steel",
+		zMove: { boost: { def: 1 } },
+		contestType: "Cool",
+		desc: "碎菱钢。向对手场地撒下尖锐的钢刺,使交换上场的宝可梦受到满HP的1/8伤害。伤害值受到钢属性相性的影响",
+		shortDesc: "碎菱钢。伤害交换出的站在地面上的对手,计算钢属性相克",
 	},
 };

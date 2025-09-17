@@ -1,6 +1,11 @@
 import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
+	//还未定分级的宝可梦
+	durantfantasy: {
+		tier: "Uber",
+	},
+	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Tian Lai Zhi Yin"},		

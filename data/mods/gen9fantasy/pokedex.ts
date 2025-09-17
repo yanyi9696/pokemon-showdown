@@ -1,4 +1,24 @@
 export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
+	//还未定分级的宝可梦
+	durant: {
+		inherit: true,
+		otherFormes: ["Durant-Fantasy"],
+		formeOrder: ["Durant",  "Durant-Fantasy"],
+	},
+	durantfantasy: {
+		num: 632,
+		name: "Durant-Fantasy",
+		baseSpecies: "Durant",
+		forme: "Fantasy",
+		types: ["Bug", "Steel"],
+		baseStats: { hp: 58, atk: 124, def: 122, spa: 48, spd: 48, spe: 124 },
+		abilities: { 0: "Swarm", 1: "Hustle", H: "Truant" },
+		heightm: 0.3,
+		weightkg: 33,
+		color: "Gray",
+		eggGroups: ["Bug"],
+	},
+	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,
 		name: "Altaria-Mega-Fantasy",
