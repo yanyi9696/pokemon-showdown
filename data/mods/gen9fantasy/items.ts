@@ -225,34 +225,30 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			basePower: 10,
 		},
 		onAnyModifyDef(def, target, source, move) {
-			// 道具自身的基础生效条件
 			if (!source || source.item !== 'fantasyscopelens') return;
 			if (move.flags['shooting'] || move.flags['bullet']) {
 				
-				// 【核心改动】检查是否存在来自“穿透”的信号
-				if ((move as any).infiltratorLensCombined) {
-					// 如果有信号，执行加算逻辑 (10% + 20% = 30%削减)
+				// 【核心修正】道具会主动检查使用者是否拥有“穿透”特性
+				if (source.hasAbility('infiltrator')) {
+					// 如果有，则执行我们期望的“加算”逻辑 (10% + 20% = 30%削减)
 					this.debug('Fantasy Scope Lens + Infiltrator combined additive drop');
 					return this.chainModify(0.7); // 1 - 0.3 = 0.7
 				} else {
-					// 如果没有信号，执行道具原本的逻辑
+					// 如果没有，就只执行道具自己的20%削减效果
 					this.debug('Fantasy Scope Lens Def drop');
 					return this.chainModify(0.8);
 				}
 			}
 		},
 		onAnyModifySpD(spd, target, source, move) {
-			// 道具自身的基础生效条件
 			if (!source || source.item !== 'fantasyscopelens') return;
 			if (move.flags['shooting'] || move.flags['bullet']) {
 
-				// 【核心改动】检查是否存在来自“穿透”的信号
-				if ((move as any).infiltratorLensCombined) {
-					// 如果有信号，执行加算逻辑
+				// 【核心修正】(同上)
+				if (source.hasAbility('infiltrator')) {
 					this.debug('Fantasy Scope Lens + Infiltrator combined additive drop');
 					return this.chainModify(0.7);
 				} else {
-					// 如果没有信号，执行道具原本的逻辑
 					this.debug('Fantasy Scope Lens SpD drop');
 					return this.chainModify(0.8);
 				}

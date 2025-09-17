@@ -76,41 +76,32 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "登场之后的5回合内攻击和速度减半,期间每回合结束攻击和速度会上升1级",
 	},
 	infiltrator: {
-		// 原有效果: 无视替身、光墙等
 		onModifyMove(move) {
 			move.infiltrates = true;
 		},
-
-		// 调整后的效果: 无视防御
 		onAnyModifyDef(def, target, source, move) {
 			const abilityHolder = this.effectState.target;
 			if (source !== abilityHolder) return;
 
-			// 【核心改动】检查是否满足与“幻之焦点镜”联动的条件
+			// 【核心修正】如果宝可夢携带了焦点镜且使用的是射击类招式，
+			// 则此特性“罢工”，完全交由焦点镜去处理联动计算，避免重复或叠加。
 			if (source.item === 'fantasyscopelens' && (move.flags['shooting'] || move.flags['bullet'])) {
-				// 如果满足，就给招式打上“信号”，然后自己“罢工”，把计算交给道具
-				(move as any).infiltratorLensCombined = true;
-				return; 
+				return;
 			}
 
-			// 如果不满足联动条件，就执行自己原本的效果
+			// 只有在不满足联动条件时，才执行自己原本的10%削减效果。
 			this.debug('Infiltrator defense drop');
 			return this.chainModify(0.9);
 		},
-
-		// 调整后的效果: 无视特防 (逻辑同上)
 		onAnyModifySpD(spd, target, source, move) {
 			const abilityHolder = this.effectState.target;
 			if (source !== abilityHolder) return;
 
-			// 【核心改动】检查是否满足与“幻之焦点镜”联动的条件
+			// 【核心修正】(同上)
 			if (source.item === 'fantasyscopelens' && (move.flags['shooting'] || move.flags['bullet'])) {
-				// 如果满足，打上“信号”并“罢工”
-				(move as any).infiltratorLensCombined = true;
 				return;
 			}
-			
-			// 如果不满足联动条件，就执行自己原本的效果
+
 			this.debug('Infiltrator special defense drop');
 			return this.chainModify(0.9);
 		},
