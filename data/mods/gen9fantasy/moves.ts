@@ -911,12 +911,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 2,
 		flags: { contact: 1, protect: 1, mirror: 1 },
-		// The boost is now handled in onModifyMove for higher priority
-		onModifyMove(move, pokemon) {
-			this.add('-boost', pokemon, 'accuracy', 2, '[from] move: 校准先攻');
+		/**
+		 * @description 将命中提升逻辑放回 onPrepareHit。
+		 * 此事件在 onTry 成功后、造成伤害前触发，确保了逻辑的正确顺序。
+		 * (Placing the boost logic back in onPrepareHit. This event triggers
+		 * after onTry succeeds and before damage is dealt, ensuring the correct
+		 * logical order.)
+		 */
+		onPrepareHit(target, source) {
+			this.add('-boost', source, 'accuracy', 2, '[from] move: 校准先攻');
 		},
 
-		onTry(pokemon) {
+		/**
+		 * @description 检查是否为第一回合。这是招式能否使用的第一道门槛。
+		 * (Checks if it is the first turn. This is the first gate for move usability.)
+		 */
+		onTry(pokemon, target) {
 			if (pokemon.activeTurns > 1) {
 				this.add('-fail', pokemon);
 				this.hint("校准先攻仅在出场后的第一回合才能使用。");
