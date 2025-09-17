@@ -911,19 +911,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 2,
 		flags: { contact: 1, protect: 1, mirror: 1 },
-		onPrepareHit(target, source) {
-			this.add('-boost', source, 'accuracy', 2, '[from] move: 校准先攻');
+		// The boost is now handled in onModifyMove for higher priority
+		onModifyMove(move, pokemon) {
+			this.add('-boost', pokemon, 'accuracy', 2, '[from] move: 校准先攻');
 		},
 
-		/**
-		 * @description [已修正] 在尝试使用招式时触发。
-		 * 判断条件从 > 0 修改为 > 1，以正确识别第一回合。
-		 * ([CORRECTED] Triggers when trying to use the move.
-		 * The condition is changed from > 0 to > 1 to correctly identify the first turn.)
-		 */
-		onTry(pokemon, target) {
-			// 在宝可梦的第一个行动回合，activeTurns 的值为 1
-			// (On a Pokémon's first turn of action, activeTurns is 1)
+		onTry(pokemon) {
 			if (pokemon.activeTurns > 1) {
 				this.add('-fail', pokemon);
 				this.hint("校准先攻仅在出场后的第一回合才能使用。");
