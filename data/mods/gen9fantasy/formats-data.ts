@@ -14,6 +14,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	raticatefantasy: {
 		tier: "Uber",
 	},
+	politoedfantasy: {
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",

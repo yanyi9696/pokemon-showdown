@@ -79,6 +79,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 20,
 		eggGroups: ["Field"],
 	},
+	politoed: {
+		inherit: true,
+		otherFormes: ["Politoed-Fantasy"],
+		formeOrder: ["Politoed",  "Politoed-Fantasy"],
+	},
+	politoedfantasy: {
+		num: 186,
+		name: "Politoed-Fantasy",
+		baseSpecies: "Politoed",
+		forme: "Fantasy",
+		types: ["Water", "Ground"],
+		baseStats: { hp: 90, atk: 75, def: 75, spa: 90, spd: 100, spe: 70 },
+		abilities: { 0: "Water Absorb", 1: "Shi Chong", H: "Drizzle" },
+		heightm: 1.1,
+		weightkg: 33.9,
+		color: "Green",
+		prevo: "Poliwhirl",
+		evoType: "trade",
+		evoItem: "King's Rock",
+		eggGroups: ["Water 1"],
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,
