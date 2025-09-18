@@ -8,6 +8,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	excadrillfantasy: {
 		tier: "Uber",
 	},
+	garbodorfantasy: {
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",

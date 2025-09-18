@@ -38,6 +38,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 31,
 		eggGroups: ["Field"],
 	},
+	garbodor: {
+		inherit: true,
+		otherFormes: ["Garbodor-Fantasy"],
+		formeOrder: ["Garbodor",  "Garbodor-Fantasy"],
+	},
+	garbodorfantasy: {
+		num: 569,
+		name: "Garbodor-Fantasy",
+		baseSpecies: "Garbodor",
+		forme: "Fantasy",
+		types: ["Poison", "Steel"],
+		baseStats: { hp: 80, atk: 111, def: 82, spa: 60, spd: 82, spe: 75 },
+		abilities: { 0: "Stench", 1: "Du Wu Pi Fu", H: "Earth Eater" },
+		heightm: 1.9,
+		weightkg: 107.3,
+		color: "Green",
+		prevo: "Trubbish",
+		evoLevel: 36,
+		eggGroups: ["Mineral"],
+		canGigantamax: "G-Max Malodor",
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,

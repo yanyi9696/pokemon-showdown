@@ -916,7 +916,31 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
 		name: "Chao Yue Qian Ban Bian Shen",
 		num: 10022,
-		rating: 4,
+		rating: 4.5,
 		shortDesc: "超越牵绊变身。携带智忍蛙Z或击倒对方一只宝可梦,变身为幻想小智版甲贺忍蛙",
+	},
+	duwupifu: {
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+			const noModifyType = [
+				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
+			];
+			if (move.type === 'Normal' && !noModifyType.includes(move.id) &&
+				!(move.isZ && move.category !== 'Status') && !(move.name === 'Tera Blast' && pokemon.terastallized)) {
+				move.type = 'Poison';
+				move.typeChangerBoosted = this.effect;
+			}
+		},
+		onBasePowerPriority: 23,
+		onBasePower(basePower, pokemon, target, move) {
+			if (move.typeChangerBoosted === this.effect) {
+				return this.chainModify([4915, 4096]);
+			}
+		},
+		flags: {},
+		name: "Du Wu Pi Fu",
+		num: 10023,
+		rating: 4,
+		shortDesc: "毒污皮肤。一般属性招式变为毒属性招式,威力提升20%",
 	},
 };
