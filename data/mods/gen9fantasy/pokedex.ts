@@ -59,6 +59,26 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Mineral"],
 		canGigantamax: "G-Max Malodor",
 	},
+	raticate: {
+		inherit: true,
+		otherFormes: ["Raticate-Fantasy", "Raticate-Alola", "Raticate-Alola-Totem"],
+		formeOrder: ["Raticate",  "Raticate-Fantasy", "Raticate", "Raticate-Alola", "Raticate-Alola-Totem"],
+	},
+	raticatefantasy: {
+		num: 20,
+		name: "Raticate-Fantasy",
+		baseSpecies: "Raticate",
+		forme: "Fantasy",
+		types: ["Poison", "Water"],
+		baseStats: { hp: 85, atk: 121, def: 60, spa: 20, spd: 70, spe: 97 },
+		abilities: { 0: "Swift Swim", 1: "Strong Jaw", H: "Du Wu Pi Fu" },
+		heightm: 0.7,
+		weightkg: 18.5,
+		color: "Brown",
+		prevo: "Rattata",
+		evoLevel: 20,
+		eggGroups: ["Field"],
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,

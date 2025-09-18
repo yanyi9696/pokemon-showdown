@@ -283,14 +283,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
 		selfSwitch: true,
-		secondary: null,
+		secondary: {
+			chance: 30,
+			status: 'psn',
+		},
 		target: "normal",
 		type: "Poison",
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 85 },
 		contestType: "Cute",
-		desc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场",
-		shortDesc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场"
+		desc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场,有30%几率使目标陷入中毒状态",
+		shortDesc: "变速折返。攻击后替换后备宝可梦上场,30%使目标中毒"
 	},
 	chuanyun: {
 		num: 10007,
@@ -967,5 +970,38 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Cool",
 		desc: "碎菱钢。向对手场地撒下尖锐的钢刺,使交换上场的宝可梦受到满HP的1/8伤害。伤害值受到钢属性相性的影响",
 		shortDesc: "碎菱钢。伤害交换出的站在地面上的对手,计算钢属性相克",
+	},
+	yaolan: {
+		num: 10027,
+		accuracy: 100,
+		basePower: 85,
+		category: "Physical",
+		name: "Yao Lan",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, bite: 1 },
+		onHit(target, source) {
+			// 检查目标当前是否持有道具。
+			const item = target.getItem();
+			if (item) {
+				// target.takeItem(source) 会尝试移除目标的道具。
+				// 如果目标的特性是“黏着”(Sticky Hold)，这个操作会失败。
+				// takeItem 函数会自动处理这些判断。
+				const success = target.takeItem(source);
+				if (success) {
+					// 如果道具移除成功，就在对战日志中显示消息。
+					// 这条消息会是：“[目标宝可梦]的[道具名称]被咬烂了！”
+					this.add('-enditem', target, success.name, '[from] move: 咬烂', `[of] ${source}`);
+				}
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Poison",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 90 },
+		contestType: "Cute",
+		desc: "咬烂。咬烂对手的持有物,直到战斗结束都不能使用",
+		shortDesc: "咬烂。咬烂对手的持有物,直到战斗结束都不能使用",
 	},
 };
