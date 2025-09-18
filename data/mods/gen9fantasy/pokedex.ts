@@ -18,6 +18,26 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Bug"],
 	},
+	excadrill: {
+		inherit: true,
+		otherFormes: ["Excadrill-Fantasy"],
+		formeOrder: ["Excadrill",  "Excadrill-Fantasy"],
+	},
+	excadrillfantasy: {
+		num: 530,
+		name: "Excadrill-Fantasy",
+		baseSpecies: "Excadrill",
+		forme: "Fantasy",
+		types: ["Ground", "Steel"],
+		baseStats: { hp: 115, atk: 135, def: 75, spa: 50, spd: 70, spe: 93 },
+		abilities: { 0: "Sand Rush", 1: "Tough Claws", H: "Mold Breaker" },
+		heightm: 0.7,
+		weightkg: 40.4,
+		color: "Gray",
+		prevo: "Drilbur",
+		evoLevel: 31,
+		eggGroups: ["Field"],
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,

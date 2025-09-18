@@ -5,6 +5,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	durantfantasy: {
 		tier: "Uber",
 	},
+	excadrillfantasy: {
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",
