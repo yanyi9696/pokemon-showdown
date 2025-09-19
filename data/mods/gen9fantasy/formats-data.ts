@@ -66,6 +66,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	vespiquenfantasy: {
 		tier: "(Uber)",
 	},
+	volcaronafantasy: {
+		tier: "(Uber)",
+	},
 	abomasnowmegafantasy: {
 		tier: "OU",
 		abilities: {0: "Bao Xue Zhi Li"},	

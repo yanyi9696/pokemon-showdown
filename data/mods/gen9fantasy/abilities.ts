@@ -944,13 +944,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "毒污皮肤。一般属性招式变为毒属性招式,威力提升20%",
 	},
 	qingguanghuayu: {
-		onStart(pokemon) {
+		onModifySpD(spd, pokemon) {
 			const isSunny = this.field.isWeather(['sunnyday', 'desolateland']);
 			const isGrassy = this.field.isTerrain('grassyterrain');
 
 			if (isSunny || isGrassy) {
-				this.add('-activate', pokemon, 'ability: 晴光花语');
-				this.boost({spd: 2});
+				this.debug('晴光花语使特防提升');
+				return this.chainModify(2);
 			}
 		},
 		flags: {},
@@ -958,5 +958,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10024, 
 		rating: 4,
 		shortDesc: "晴光花语。在大晴天或青草场地上登场时,特防会提升两级",
+	},
+	huolinfen: {
+		onStart(pokemon) {
+			if (pokemon.side.getSideCondition('spikes') || pokemon.side.getSideCondition('toxicspikes') || pokemon.side.getSideCondition('stealthrock') || pokemon.side.getSideCondition('stickyweb')) {
+				if (pokemon.volatiles['huolinfen']) return;
+				pokemon.addVolatile('huolinfen');
+				this.add('-activate', pokemon, 'ability: Huo Lin Fen');
+				
+				pokemon.side.removeSideCondition('spikes');
+				pokemon.side.removeSideCondition('toxicspikes');
+				pokemon.side.removeSideCondition('stealthrock');
+				pokemon.side.removeSideCondition('stickyweb');
+				
+				this.add('-sideend', pokemon.side, 'Spikes', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
+				this.add('-sideend', pokemon.side, 'Toxic Spikes', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
+				this.add('-sideend', pokemon.side, 'Stealth Rock', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
+				this.add('-sideend', pokemon.side, 'Sticky Web', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
+			}
+		},
+		flags: {},
+		name: "Huo Lin Fen",
+		rating: 4,
+		num: 10025,
+		shortDesc: "火鳞粉。出场时,烧除我方场地上的所有效果。一场战斗中仅能发动1次",
 	},
 };
