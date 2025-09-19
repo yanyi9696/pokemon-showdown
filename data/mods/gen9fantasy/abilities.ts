@@ -943,4 +943,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4,
 		shortDesc: "毒污皮肤。一般属性招式变为毒属性招式,威力提升20%",
 	},
+	qingguanghuayu: {
+		onStart(pokemon) {
+			const isSunny = this.field.isWeather(['sunnyday', 'desolateland']);
+			const isGrassy = this.field.isTerrain('grassyterrain');
+
+			if (isSunny || isGrassy) {
+				this.add('-activate', pokemon, 'ability: 晴光花语');
+				this.boost({spd: 2});
+			}
+		},
+		flags: {},
+		name: "Qing Guang Hua Yu",
+		num: 10024, 
+		rating: 4,
+		shortDesc: "晴光花语。在大晴天或青草场地上登场时,特防会提升两级",
+	},
 };
