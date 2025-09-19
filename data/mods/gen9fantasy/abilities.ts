@@ -944,48 +944,35 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "毒污皮肤。一般属性招式变为毒属性招式,威力提升20%",
 	},
 	qingguanghuayu: {
+		// onStart checks for conditions the moment the Pokémon enters battle.
 		onStart(pokemon) {
-			this.singleEvent('TerrainChange', this.effect, this.effectState, pokemon);
-			this.singleEvent('WeatherChange', this.effect, this.effectState, pokemon);
-		},
-
-		// This event fires whenever the weather changes.
-		onWeatherChange(pokemon) {
 			const isActivated = pokemon.volatiles['qingguanghuayu'];
 			const isConditionMet = this.field.isWeather(['sunnyday', 'desolateland']) || this.field.isTerrain('grassyterrain');
 
 			if (isConditionMet && !isActivated) {
-				// FIX: Removed the incorrect second argument
 				pokemon.addVolatile('qingguanghuayu');
 			} else if (!isConditionMet && isActivated) {
-				// FIX: Removed the incorrect second argument
 				pokemon.removeVolatile('qingguanghuayu');
 			}
 		},
 
-		// This event fires whenever the terrain changes.
-		onTerrainChange(pokemon) {
+		onUpdate(pokemon) {
 			const isActivated = pokemon.volatiles['qingguanghuayu'];
 			const isConditionMet = this.field.isWeather(['sunnyday', 'desolateland']) || this.field.isTerrain('grassyterrain');
 
 			if (isConditionMet && !isActivated) {
-				// FIX: Removed the incorrect second argument
 				pokemon.addVolatile('qingguanghuayu');
 			} else if (!isConditionMet && isActivated) {
-				// FIX: Removed the incorrect second argument
 				pokemon.removeVolatile('qingguanghuayu');
 			}
 		},
-		
-		// onEnd is for cleanup when the ability is lost.
 		onEnd(pokemon) {
-		delete pokemon.volatiles['qingguanghuayu'];
-		this.add('-end', pokemon, 'Qing Guang Hua Yu', '[silent]');
+			pokemon.removeVolatile('qingguanghuayu');
 		},
 
-		// This 'condition' block defines the effects of our volatile status.
 		condition: {
-			onStart(pokemon, source, effect) {
+			noCopy: true, // Prevents this temporary state from being copied by moves like Role Play.
+			onStart(pokemon) {
 				this.add('-activate', pokemon, 'ability: Qing Guang Hua Yu');
 				this.boost({spd: 2}, pokemon);
 			},
