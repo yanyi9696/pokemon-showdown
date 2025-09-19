@@ -944,36 +944,54 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "毒污皮肤。一般属性招式变为毒属性招式,威力提升20%",
 	},
 	qingguanghuayu: {
-		// onWeatherChange 的正确参数列表是 (target, source, weather)
-		onWeatherChange(target, source, weather) {
-			// 'this.effectState.target' 是指拥有这个特性的宝可梦
-			const pokemon = this.effectState.target;
+		onStart(pokemon) {
+			this.singleEvent('TerrainChange', this.effect, this.effectState, pokemon);
+			this.singleEvent('WeatherChange', this.effect, this.effectState, pokemon);
+		},
 
-			// 我们需要确保事件影响的目标就是我们这只宝可梦
-			if (target !== pokemon) return;
-			
-			// 'weather' 参数才是真正的天气对象，它有 .id 属性
-			// 我们要先判断 weather 是否存在（天气结束时它可能为null）
-			if (weather && ['sunnyday', 'desolateland'].includes(weather.id)) {
-				if (!pokemon.isActive) return;
-				
-				this.add('-activate', pokemon, 'ability: 晴光花语', '[from] weather');
-				this.boost({spd: 2}, pokemon);
+		// This event fires whenever the weather changes.
+		onWeatherChange(pokemon) {
+			const isActivated = pokemon.volatiles['qingguanghuayu'];
+			const isConditionMet = this.field.isWeather(['sunnyday', 'desolateland']) || this.field.isTerrain('grassyterrain');
+
+			if (isConditionMet && !isActivated) {
+				// FIX: Removed the incorrect second argument
+				pokemon.addVolatile('qingguanghuayu');
+			} else if (!isConditionMet && isActivated) {
+				// FIX: Removed the incorrect second argument
+				pokemon.removeVolatile('qingguanghuayu');
 			}
 		},
 
-		// onTerrainChange 同样需要修正参数
-		onTerrainChange(target, source, terrain) {
-			const pokemon = this.effectState.target;
-			if (target !== pokemon) return;
+		// This event fires whenever the terrain changes.
+		onTerrainChange(pokemon) {
+			const isActivated = pokemon.volatiles['qingguanghuayu'];
+			const isConditionMet = this.field.isWeather(['sunnyday', 'desolateland']) || this.field.isTerrain('grassyterrain');
 
-			// 'terrain' 参数是真正的场地对象
-			if (terrain && terrain.id === 'grassyterrain') {
-				if (!pokemon.isActive) return;
-
-				this.add('-activate', pokemon, 'ability: 晴光花语', '[from] terrain');
-				this.boost({spd: 2}, pokemon);
+			if (isConditionMet && !isActivated) {
+				// FIX: Removed the incorrect second argument
+				pokemon.addVolatile('qingguanghuayu');
+			} else if (!isConditionMet && isActivated) {
+				// FIX: Removed the incorrect second argument
+				pokemon.removeVolatile('qingguanghuayu');
 			}
+		},
+		
+		// onEnd is for cleanup when the ability is lost.
+		onEnd(pokemon) {
+		delete pokemon.volatiles['qingguanghuayu'];
+		this.add('-end', pokemon, 'Qing Guang Hua Yu', '[silent]');
+		},
+
+		// This 'condition' block defines the effects of our volatile status.
+		condition: {
+			onStart(pokemon, source, effect) {
+				this.add('-activate', pokemon, 'ability: Qing Guang Hua Yu');
+				this.boost({spd: 2}, pokemon);
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'Qing Guang Hua Yu', '[silent]');
+			},
 		},
 		flags: {},
 		name: "Qing Guang Hua Yu",
@@ -983,22 +1001,34 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	huolinfen: {
 		onStart(pokemon) {
-			if (pokemon.side.getSideCondition('spikes') || pokemon.side.getSideCondition('toxicspikes') || pokemon.side.getSideCondition('stealthrock') || pokemon.side.getSideCondition('stickyweb')) {
+			// 定义一个包含所有需要检查和清除的场地效果的列表
+			const conditionsToRemove = [
+				'spikes', 
+				'toxicspikes', 
+				'stealthrock', 
+				'stickyweb', 
+				'gmaxsteelsurge'
+			];
+			
+			// 使用 some 方法检查列表中是否有任何一个效果存在于场上
+			const hazardsPresent = conditionsToRemove.some(condition => pokemon.side.getSideCondition(condition));
+
+			// 只有当场上存在至少一种指定的效果时，才执行后续逻辑
+			if (hazardsPresent) {
+				// 如果这个宝可梦已经触发过一次了，就直接返回
 				if (pokemon.volatiles['huolinfen']) return;
+				// 添加一个一次性的标记，防止重复触发
 				pokemon.addVolatile('huolinfen');
 				this.add('-activate', pokemon, 'ability: Huo Lin Fen');
 				
-				pokemon.side.removeSideCondition('spikes');
-				pokemon.side.removeSideCondition('toxicspikes');
-				pokemon.side.removeSideCondition('stealthrock');
-				pokemon.side.removeSideCondition('stickyweb');
-				pokemon.side.removeSideCondition('gmaxsteelsurge');
-				
-				this.add('-sideend', pokemon.side, 'Spikes', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
-				this.add('-sideend', pokemon.side, 'Toxic Spikes', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
-				this.add('-sideend', pokemon.side, 'Stealth Rock', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
-				this.add('-sideend', pokemon.side, 'Sticky Web', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
-				this.add('-sideend', pokemon.side, 'G-Max Steelsurge', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
+				// 遍历列表，逐个清除存在的场地效果
+				for (const condition of conditionsToRemove) {
+					// removeSideCondition 会在成功移除时返回 true
+					if (pokemon.side.removeSideCondition(condition)) {
+						// 只有成功移除了，才在对战日志中显示信息
+						this.add('-sideend', pokemon.side, this.dex.conditions.get(condition).name, '[from] ability: Huo Lin Fen', `[of] ${pokemon}`);
+					}
+				}
 			}
 		},
 		flags: {},
