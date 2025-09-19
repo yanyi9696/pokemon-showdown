@@ -1064,6 +1064,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "La Ji Hui Shou Zhe",
 		rating: 3.5,
 		num: 10026, 
-		shortDesc: "垃圾回收者。免疫毒属性招式伤害,受到火属性招式攻击时火属性招式威力提升50%",
+		shortDesc: "垃圾回收者。免疫毒属性招式伤害,受到毒属性招式攻击时毒属性招式威力提升50%",
 	},
 };
