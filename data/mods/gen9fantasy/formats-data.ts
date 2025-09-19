@@ -5,6 +5,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	politoedfantasy: {
 		tier: "Uber",
 	},
+	gyaradosfantasy: {
+		tier: "Uber",
+	},
+	gyaradosmegafantasy: {
+		tier: "Uber",
+		abilities: {0: "Berserk"},		
+	},
+	
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",

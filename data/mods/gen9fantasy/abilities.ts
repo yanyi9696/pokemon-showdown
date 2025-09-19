@@ -944,20 +944,42 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "毒污皮肤。一般属性招式变为毒属性招式,威力提升20%",
 	},
 	qingguanghuayu: {
-		onModifySpD(spd, pokemon) {
-			const isSunny = this.field.isWeather(['sunnyday', 'desolateland']);
-			const isGrassy = this.field.isTerrain('grassyterrain');
+		// onWeatherChange 的正确参数列表是 (target, source, weather)
+		onWeatherChange(target, source, weather) {
+			// 'this.effectState.target' 是指拥有这个特性的宝可梦
+			const pokemon = this.effectState.target;
 
-			if (isSunny || isGrassy) {
-				this.debug('晴光花语使特防提升');
-				return this.chainModify(2);
+			// 我们需要确保事件影响的目标就是我们这只宝可梦
+			if (target !== pokemon) return;
+			
+			// 'weather' 参数才是真正的天气对象，它有 .id 属性
+			// 我们要先判断 weather 是否存在（天气结束时它可能为null）
+			if (weather && ['sunnyday', 'desolateland'].includes(weather.id)) {
+				if (!pokemon.isActive) return;
+				
+				this.add('-activate', pokemon, 'ability: 晴光花语', '[from] weather');
+				this.boost({spd: 2}, pokemon);
+			}
+		},
+
+		// onTerrainChange 同样需要修正参数
+		onTerrainChange(target, source, terrain) {
+			const pokemon = this.effectState.target;
+			if (target !== pokemon) return;
+
+			// 'terrain' 参数是真正的场地对象
+			if (terrain && terrain.id === 'grassyterrain') {
+				if (!pokemon.isActive) return;
+
+				this.add('-activate', pokemon, 'ability: 晴光花语', '[from] terrain');
+				this.boost({spd: 2}, pokemon);
 			}
 		},
 		flags: {},
 		name: "Qing Guang Hua Yu",
 		num: 10024, 
 		rating: 4,
-		shortDesc: "晴光花语。在大晴天或青草场地上登场时,特防会提升两级",
+		shortDesc: "晴光花语。每当处于大晴天或青草场地上时,特防提升2级",
 	},
 	huolinfen: {
 		onStart(pokemon) {
@@ -970,11 +992,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				pokemon.side.removeSideCondition('toxicspikes');
 				pokemon.side.removeSideCondition('stealthrock');
 				pokemon.side.removeSideCondition('stickyweb');
+				pokemon.side.removeSideCondition('gmaxsteelsurge');
 				
 				this.add('-sideend', pokemon.side, 'Spikes', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
 				this.add('-sideend', pokemon.side, 'Toxic Spikes', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
 				this.add('-sideend', pokemon.side, 'Stealth Rock', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
 				this.add('-sideend', pokemon.side, 'Sticky Web', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
+				this.add('-sideend', pokemon.side, 'G-Max Steelsurge', '[from] ability: Huo Lin Fen', '[of] ' + pokemon);
 			}
 		},
 		flags: {},
