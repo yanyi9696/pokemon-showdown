@@ -2,18 +2,6 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	durantfantasy: {
-		tier: "Uber",
-	},
-	excadrillfantasy: {
-		tier: "Uber",
-	},
-	garbodorfantasy: {
-		tier: "Uber",
-	},
-	raticatefantasy: {
-		tier: "Uber",
-	},
 	politoedfantasy: {
 		tier: "Uber",
 	},
@@ -98,7 +86,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	dragalgefantasy: {	
 		tier: "OU",
 	},
+	durantfantasy: {
+		tier: "OU",
+	},
 	empoleonfantasy: {	
+		tier: "OU",
+	},
+	excadrillfantasy: {
 		tier: "OU",
 	},
 	flygonfantasy: {
@@ -126,6 +120,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	mimikyubustedfantasy: {
+		tier: "OU",
+	},
+	primarinafantasy: {
 		tier: "OU",
 	},
 	raikoufantasy: {
@@ -165,6 +162,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magmortarfantasy: {
 		tier: "UUBL",
 	},
+	raticatefantasy: {
+		tier: "UUBL",
+	},
 	slitherwingfantasy: {
 		tier: "UUBL",
 	},
@@ -193,6 +193,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	froslassfantasy: {
+		tier: "UU",
+	},
+	garbodorfantasy: {
 		tier: "UU",
 	},
 	glaliemegafantasy: {

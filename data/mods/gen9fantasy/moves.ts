@@ -903,7 +903,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			return Math.floor(target.maxhp / 2);
 		},
 		desc: "黄金羁绊手里剑。对目标造成目标最大HP1/2(向下取整)的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的1/8",
-		shortDesc: "黄金羁绊手里剑。造成目标最大HP1/2的伤害,对守住目标造成1/8伤害"
+		shortDesc: "黄金羁绊手里剑。造成目标最大HP1/2的伤害"
 	},
 	jiaozhunxiangong: {
 		num: 10025,
@@ -1003,5 +1003,28 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Cute",
 		desc: "咬烂。咬烂对手的持有物,直到战斗结束都不能使用",
 		shortDesc: "咬烂。咬烂对手的持有物,直到战斗结束都不能使用",
+	},
+	raoliangzhiyin: {
+		num: 10028,
+		accuracy: 90,
+		basePower: 20,
+		basePowerCallback(pokemon, target, move) {
+			return 20 * move.hit;
+		},
+		category: "Special",
+		name: "Rao Liang Zhi Yin",
+		pp: 10,
+		priority: 0,
+		flags: { sound: 1, protect: 1, mirror: 1 },
+		overrideDefensiveStat: 'def',
+		multihit: 3,
+		multiaccuracy: true,
+		secondary: null,
+		target: "normal",
+		type: "Fairy",
+		zMove: { basePower: 120 },
+		maxMove: { basePower: 140 },
+		desc: "绕梁之音。连续3次回音对手进行攻击。每歌唱一次,威力就会提高。使用目标的防御代替目标的特防进行伤害计算。",
+		shortDesc: "绕梁之音。攻击3次,每次威力提升,伤害计算时参考目标防御",
 	},
 };
