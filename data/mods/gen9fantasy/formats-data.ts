@@ -12,7 +12,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Berserk"},		
 	},
-	
+	skeledirgefantasy: {
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",

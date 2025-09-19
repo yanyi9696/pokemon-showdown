@@ -58,6 +58,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Gyaradosite",
 		spriteid: 'gyarados-mega',
 	},
+	skeledirge: {
+		inherit: true,
+		otherFormes: ["Skeledirge-Fantasy"],
+		formeOrder: ["Skeledirge",  "Skeledirge-Fantasy"],
+	},
+	skeledirgefantasy: {
+		num: 911,
+		name: "Skeledirge-Fantasy",
+		baseSpecies: "Skeledirge",
+		forme: "Fantasy",
+		types: ["Fire", "Ghost"],
+		genderRatio: { M: 0.875, F: 0.125 },
+		baseStats: { hp: 109, atk: 55, def: 100, spa: 110, spd: 90, spe: 66 },
+		abilities: { 0: "Punk Rock", H: "Unaware" },
+		heightm: 1.6,
+		weightkg: 326.5,
+		color: "Red",
+		prevo: "Crocalor",
+		evoLevel: 36,
+		eggGroups: ["Field"],
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,
