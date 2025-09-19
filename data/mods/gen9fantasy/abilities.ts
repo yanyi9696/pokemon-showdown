@@ -1023,4 +1023,47 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10025,
 		shortDesc: "火鳞粉。出场时,烧除我方场地上的所有效果。一场战斗中仅能发动1次",
 	},
+	lajihuishouzhe: {
+		onTryHit(target, source, move) {
+			if (target !== source && move.type === 'Poison') {
+				move.accuracy = true;
+				if (!target.addVolatile('lajihuishouzhe')) {
+					this.add('-immune', target, '[from] ability: La Ji Hui Shou Zhe');
+				}
+				return null;
+			}
+		},
+
+		onEnd(pokemon) {
+			pokemon.removeVolatile('lajihuishouzhe');
+		},
+		condition: {
+			noCopy: true, 
+			onStart(target) {
+				this.add('-start', target, 'ability: La Ji Hui Shou Zhe');
+			},
+			onModifyAtkPriority: 5,
+			onModifyAtk(atk, attacker, defender, move) {
+				if (move.type === 'Poison' && attacker.hasAbility('lajihuishouzhe')) {
+					this.debug('La Ji Hui Shou Zhe boost');
+					return this.chainModify(1.5);
+				}
+			},
+			onModifySpAPriority: 5,
+			onModifySpA(spa, attacker, defender, move) {
+				if (move.type === 'Poison' && attacker.hasAbility('lajihuishouzhe')) {
+					this.debug('La Ji Hui Shou Zhe boost');
+					return this.chainModify(1.5);
+				}
+			},
+			onEnd(target) {
+				this.add('-end', target, 'ability: La Ji Hui Shou Zhe', '[silent]');
+			},
+		},
+		flags: { breakable: 1 }, 
+		name: "La Ji Hui Shou Zhe",
+		rating: 3.5,
+		num: 10026, 
+		shortDesc: "垃圾回收者。免疫毒属性招式伤害,受到火属性招式攻击时火属性招式威力提升50%",
+	},
 };

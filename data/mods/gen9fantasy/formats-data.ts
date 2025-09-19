@@ -15,6 +15,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	skeledirgefantasy: {
 		tier: "Uber",
 	},
+	mukalolafantasy: {
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",

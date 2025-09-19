@@ -79,6 +79,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 36,
 		eggGroups: ["Field"],
 	},
+	muk: {
+		inherit: true,
+		otherFormes: ["Muk-Alola", "Muk-Fantasy"],
+		formeOrder: ["Muk", "Muk-Alola", "Muk-Fantasy"],
+	},
+	mukalolafantasy: {
+		num: 89,
+		name: "Muk-Alola-Fantasy",
+		baseSpecies: "Muk",
+		forme: "Alola",
+		types: ["Poison", "Dark"],
+		baseStats: { hp: 125, atk: 105, def: 75, spa: 95, spd: 100, spe: 55 },
+		abilities: { 0: "Dazzling", 1: "La Ji Hui Shou Zhe", H: "Power of Alchemy" },
+		heightm: 1,
+		weightkg: 52,
+		color: "Green",
+		prevo: "Grimer-Alola",
+		evoLevel: 38,
+		eggGroups: ["Amorphous"],
+		spriteid: 'muk-hisui',
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,
