@@ -988,7 +988,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	huolinfen: {
 		onStart(pokemon) {
-			// 定义一个包含所有需要检查和清除的场地效果的列表
+			// 步骤 1: 检查永久标记
+			// 我们在宝可梦对象上直接附加一个自定义属性来“记住”是否已触发。
+			// 这个属性不会在交换下场时被清除。
+			// 使用 `(pokemon as any)` 是为了告诉 TypeScript 我们知道自己在做什么。
+			if ((pokemon as any).huolinfenTriggered) {
+				return;
+			}
+			// 步骤 2: 检查场上是否存在需要清除的效果 (这部分逻辑是正确的)
 			const conditionsToRemove = [
 				'spikes', 
 				'toxicspikes', 
@@ -996,26 +1003,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				'stickyweb', 
 				'gmaxsteelsurge'
 			];
-			
-			// 使用 some 方法检查列表中是否有任何一个效果存在于场上
 			const hazardsPresent = conditionsToRemove.some(condition => pokemon.side.getSideCondition(condition));
-
-			// 只有当场上存在至少一种指定的效果时，才执行后续逻辑
+			// 步骤 3: 执行效果并设置永久标记
 			if (hazardsPresent) {
-				// 如果这个宝可梦已经触发过一次了，就直接返回
-				if (pokemon.volatiles['huolinfen']) return;
-				// 添加一个一次性的标记，防止重复触发
-				pokemon.addVolatile('huolinfen');
 				this.add('-activate', pokemon, 'ability: Huo Lin Fen');
-				
-				// 遍历列表，逐个清除存在的场地效果
+				// 清除效果的循环 (这部分也是正确的)
 				for (const condition of conditionsToRemove) {
-					// removeSideCondition 会在成功移除时返回 true
 					if (pokemon.side.removeSideCondition(condition)) {
-						// 只有成功移除了，才在对战日志中显示信息
 						this.add('-sideend', pokemon.side, this.dex.conditions.get(condition).name, '[from] ability: Huo Lin Fen', `[of] ${pokemon}`);
 					}
 				}
+				// 关键修正：设置一个永久标记，表示这个宝可梦的“火鳞粉”已经发动过了。
+				(pokemon as any).huolinfenTriggered = true;
 			}
 		},
 		flags: {},
