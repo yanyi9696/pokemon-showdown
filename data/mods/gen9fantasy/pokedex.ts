@@ -10,7 +10,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Politoed-Fantasy",
 		baseSpecies: "Politoed",
 		forme: "Fantasy",
-		types: ["Water", "Ground"],
+		types: ["Water", "Grass"],
 		baseStats: { hp: 90, atk: 75, def: 75, spa: 90, spd: 100, spe: 70 },
 		abilities: { 0: "Water Absorb", 1: "Shi Chong", H: "Drizzle" },
 		heightm: 1.1,

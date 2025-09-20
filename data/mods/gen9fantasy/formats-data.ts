@@ -554,6 +554,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	goodrahisui: {
 		tier: "UU",
 	},
+	gyarados: {
+		tier: "UU",
+	},
 	ogerpon: {
 		tier: "UU",
 	},
