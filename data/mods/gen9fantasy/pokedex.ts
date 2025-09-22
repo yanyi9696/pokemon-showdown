@@ -1,6 +1,42 @@
 export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
 	//还未定分级的宝可梦
-
+	pidgeot: {
+		inherit: true,
+		otherFormes: ["Pidgeot-Fantasy", "Pidgeot-Mega", "Pidgeot-Mega-Fantasy"],
+		formeOrder: ["Pidgeot", "Pidgeot-Fantasy", "Pidgeot-Mega", "Pidgeot-Mega-Fantasy"],
+	},
+	pidgeotfantasy: {
+		num: 18,
+		name: "Pidgeot-Fantasy",
+		baseSpecies: "Pidgeot",
+		forme: "Fantasy",
+		types: ["Normal", "Flying"],
+		baseStats: { hp: 93, atk: 100, def: 75, spa: 70, spd: 70, spe: 101 },
+		abilities: { 0: "Screen Cleaner", 1: "Tough Claws", H: "Feng Ya" },
+		heightm: 1.5,
+		weightkg: 39.5,
+		color: "Brown",
+		prevo: "Pidgeotto",
+		evoLevel: 36,
+		eggGroups: ["Flying"],
+		otherFormes: ["Pidgeot-Mega-Fantasy"],
+		spriteid: 'pidgeot',
+	},
+	pidgeotmegafantasy: {
+		num: 18,
+		name: "Pidgeot-Mega-Fantasy",
+		baseSpecies: "Pidgeot",
+		forme: "Mega",
+		types: ["Fighting", "Flying"],
+		baseStats: { hp: 93, atk: 80, def: 80, spa: 135, spd: 80, spe: 141 },
+		abilities: { 0: "No Guard" },
+		heightm: 2.2,
+		weightkg: 50.5,
+		color: "Brown",
+		eggGroups: ["Flying"],
+		requiredItem: "Pidgeotite",
+		spriteid: 'pidgeot-mega',
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,
@@ -53,7 +89,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	regigigas: {
 		inherit: true,
 		otherFormes: ["Regigigas-Fantasy"],
-		formeOrder: ["Regigigas",  "Regigigas-Fantasy"],
+		formeOrder: ["Regigigas", "Regigigas-Fantasy"],
 	},
 	regigigasfantasy: {
 		num: 486,

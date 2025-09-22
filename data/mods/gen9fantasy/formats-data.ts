@@ -2,7 +2,13 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-
+	pidgeotfantasy: {
+		tier: "Uber",
+	},
+	pidgeotmegafantasy: {
+		tier: "Uber",
+		abilities: {0: "No Guard"},		
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",

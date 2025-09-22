@@ -1066,4 +1066,39 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10026, 
 		shortDesc: "垃圾回收者。免疫毒属性招式伤害,受到毒属性招式攻击时毒属性招式威力提升50%",
 	},
+	fengya: {
+		// 效果1：自身的速度不会被降低。
+		onTryBoost(boost, target, source, effect) {
+			if (source && target === source) return;
+
+			if (boost.spe && boost.spe < 0) {
+				delete boost.spe;
+				if (!(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
+					this.add("-fail", target, "unboost", "Speed", "[from] ability: Feng Ya", `[of] ${target}`);
+				}
+			}
+		},
+		// 效果2：首次出场时用强风压制对手，降低对手的速度1级。
+		onStart(pokemon) {
+			// 【关键修正】使用 (pokemon as any) 来绕过 TypeScript 的类型检查。
+			if ((pokemon as any).windPressureTriggered) return;
+			// 【关键修正】在设置属性时也同样使用。
+			(pokemon as any).windPressureTriggered = true;
+
+			this.add('-ability', pokemon, 'Feng Ya');
+
+			for (const target of pokemon.adjacentFoes()) {
+				if (target.volatiles['substitute']) {
+					this.add('-immune', target);
+				} else {
+					this.boost({ spe: -1 }, target, pokemon, null, true);
+				}
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Feng Ya",
+		rating: 2.5, 
+		num: 10027, 
+		shortDesc: "风压。自身的速度不会被降低。首次出场时用强风压制对手,降低对手的速度1级",
+	},
 };
