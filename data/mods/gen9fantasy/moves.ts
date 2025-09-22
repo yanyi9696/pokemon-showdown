@@ -1058,4 +1058,33 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "晴生绿野。接下来5回合的场地变更为青草场地。然后自身与后备宝可梦替换",
 		shortDesc: "晴生绿野。交替并使场地变为持续5回合的青草场地",
 	},
+	fanchen: {
+		num: 10030,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Fan Chen",
+		pp: 10,
+		priority: 0,
+		flags: {},
+		priorityChargeCallback(source) {
+			source.addVolatile('fanchen');
+		},
+		weather: 'sandstorm',
+		selfSwitch: true,
+		secondary: null,
+		condition: {
+			duration: 1,
+			onBeforeMovePriority: 100, 
+			onBeforeMove(source, target, move) {
+				if (move.id !== 'fanchen') return;
+				this.add('-prepare', source, '翻尘', '[premajor]');
+			},
+		},
+		target: "all",
+		type: "Rock",
+		zMove: { effect: 'healreplacement' },
+		desc: "接下来5回合的天气变更为沙暴。然后自身与后备宝可梦替换",
+		shortDesc: "交替并使天气变为持续5回合的沙暴",
+	},
 };
