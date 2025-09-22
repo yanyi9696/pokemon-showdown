@@ -8086,6 +8086,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			megahorn: ["9M"],
 			jiaozhunxiangong: ["9M"],
 			suilinggang: ["9M"],
+			supercellslam: ["9M"],
 			earthquake: ["9M"],
 			yaolan: ["9M"],
 			//幻想增添技能

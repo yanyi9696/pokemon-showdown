@@ -2,22 +2,7 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	politoedfantasy: {
-		tier: "Uber",
-	},
-	gyaradosfantasy: {
-		tier: "Uber",
-	},
-	gyaradosmegafantasy: {
-		tier: "Uber",
-		abilities: {0: "Berserk"},		
-	},
-	skeledirgefantasy: {
-		tier: "Uber",
-	},
-	mukalolafantasy: {
-		tier: "Uber",
-	},
+
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",
@@ -129,6 +114,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	goodrahisuifantasy: {
 		tier: "OU",
 	},
+	gyaradosfantasy: {
+		tier: "OU",
+	},
+	gyaradosmegafantasy: {
+		tier: "OU",
+		abilities: {0: "Berserk"},		
+	},
 	magnezonefantasy: {
 		tier: "OU",
 	},
@@ -148,6 +140,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	sandacondafantasy: {
+		tier: "OU",
+	},
+	skeledirgefantasy: {
 		tier: "OU",
 	},
 	urshifufantasy: {
@@ -176,6 +171,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Pixilate"},	
 	},
 	magmortarfantasy: {
+		tier: "UUBL",
+	},
+	politoedfantasy: {
 		tier: "UUBL",
 	},
 	raticatefantasy: {
@@ -282,6 +280,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	hawluchafantasy: {
+		tier: "RU",
+	},
+	mukalolafantasy: {
 		tier: "RU",
 	},
 	samurottfantasy: {
