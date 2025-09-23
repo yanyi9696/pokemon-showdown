@@ -1101,4 +1101,69 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10027, 
 		shortDesc: "风压。自身的速度不会被降低。首次出场时用强风压制对手,降低对手的速度1级",
 	},
+	longzhihuxi: {
+		// 效果1 & 2: 使用技能不会降低自身能力（每次出场仅一次）
+		onStart(pokemon) {
+			// 这个状态会在宝可梦每次上场时重置
+			// 确保“仅一次”的效果在每次交换后都能重新触发
+			this.effectState.used = false;
+		},
+		onTryBoost(boost, target, source, effect) {
+			// 确保这个效果只作用于“自己对自己”使用“招式”时产生的能力下降
+			if (!source || target !== source || !effect || effect.effectType !== 'Move') {
+				return;
+			}
+			// 如果本次登场后，该效果已经触发过，则直接返回，不再生效
+			if (this.effectState.used) {
+				return;
+			}
+			// 检查是否有任何一项能力变化是“降低”的
+			let hasNegativeBoost = false;
+			for (const stat in boost) {
+				// ▼▼▼【修正点 1】▼▼▼
+				// 我们使用 "as keyof typeof boost" 来告诉 TypeScript，
+				// "stat" 变量一定是 "boost" 对象的一个合法键。
+				if (boost[stat as keyof typeof boost]! < 0) {
+					hasNegativeBoost = true;
+					break;
+				}
+			}
+			// 如果确实存在能力降低...
+			if (hasNegativeBoost) {
+				// 在对战日志中显示特性发动信息
+				this.add('-activate', target, 'ability: Long Zhi Hu Xi');
+				// 将“已使用”标记设为 true，这样在下一次能力降低时就不会再触发
+				this.effectState.used = true;
+
+				// 遍历所有能力变化，只删除“降低”的部分，保留“提升”的部分
+				// 这对于像“破壳”这样同时有增有减的招式至关重要
+				for (const stat in boost) {
+					// ▼▼▼【修正点 2】▼▼▼
+					// 这里也进行同样的类型断言
+					if (boost[stat as keyof typeof boost]! < 0) {
+						delete boost[stat as keyof typeof boost];
+					}
+				}
+			}
+		},
+		// 效果3: 一般属性的招式会变为龙属性
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+			// 这是标准的属性转换类特性的逻辑
+			const noModifyType = [
+				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
+			];
+			if (move.type === 'Normal' && !noModifyType.includes(move.id) &&
+				!(move.isZ && move.category !== 'Status') && !(move.name === 'Tera Blast' && pokemon.terastallized)) {
+				move.type = 'Dragon';
+				// 注意：因为你的要求中没有提到威力提升，所以这里我们没有添加
+				// 类似 `move.typeChangerBoosted = this.effect;` 的代码
+			}
+		},
+		flags: {},
+		name: "Long Zhi Hu Xi",
+		rating: 3.5,
+		num: 10028,
+		shortDesc: "龙之呼吸。使用技能不会降低自身能力，每次出场战斗仅生效一次。一般属性的招式会变为龙属性。",
+	},
 };

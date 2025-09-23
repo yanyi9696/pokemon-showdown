@@ -1,6 +1,42 @@
 export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
 	//还未定分级的宝可梦
-	
+	salamence: {
+		inherit: true,
+		otherFormes: ["Salamence-Fantasy"],
+		formeOrder: ["Salamence", "Salamence-Fantasy"],
+	},
+	salamencefantasy: {
+		num: 373,
+		name: "Salamence-Fantasy",
+		baseSpecies: "Salamence",
+		forme: "Fantasy",
+		types: ["Dragon", "Flying"],
+		baseStats: { hp: 95, atk: 135, def: 80, spa: 110, spd: 80, spe: 100 },
+		abilities: { 0: "Intimidate", 1: "Feng Ya", H: "Long Zhi Hu Xi" },
+		heightm: 1.5,
+		weightkg: 102.6,
+		color: "Blue",
+		prevo: "Shelgon",
+		evoLevel: 50,
+		eggGroups: ["Dragon"],
+		otherFormes: ["Salamence-Mega-Fantasy"],
+		spriteid: 'salamencea',
+	},
+	salamencemegafantasy: {
+		num: 373,
+		name: "Salamence-Mega-Fantasy",
+		baseSpecies: "Salamence",
+		forme: "Mega",
+		types: ["Dragon", "Flying"],
+		baseStats: { hp: 95, atk: 120, def: 130, spa: 145, spd: 90, spe: 120 },
+		abilities: { 0: "Long Zhi Hu Xi" },
+		heightm: 1.8,
+		weightkg: 112.6,
+		color: "Blue",
+		eggGroups: ["Dragon"],
+		requiredItem: "Salamencite",
+		spriteid: 'salamencea-mega',
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		num: 334,
@@ -879,7 +915,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Steel", "Ground"],
 		baseStats: { hp: 90, atk: 85, def: 200, spa: 55, spd: 80, spe: 30 },
-		abilities: { 0: "Rock Head", 1: "Sturdy", H: "Sheer Force" },
+		abilities: { 0: "Tie Kai", 1: "Heatproof", H: "Earth Eater" },
 		heightm: 9.2,
 		weightkg: 400,
 		color: "Gray",

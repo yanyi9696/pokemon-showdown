@@ -2,7 +2,13 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	
+	salamencefantasy: {
+		tier: "OU",
+	},
+	salamencemegafantasy: {
+		tier: "OU",
+		abilities: {0: "Long Zhi Hu Xi"},		
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",
