@@ -9,6 +9,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Long Zhi Hu Xi"},		
 	},
+	mewfantasy: {
+		tier: "OU",
+	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",

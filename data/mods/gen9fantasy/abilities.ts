@@ -1164,6 +1164,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Long Zhi Hu Xi",
 		rating: 3.5,
 		num: 10028,
-		shortDesc: "龙之呼吸。使用技能不会降低自身能力，每次出场战斗仅生效一次。一般属性的招式会变为龙属性。",
+		shortDesc: "龙之呼吸。使用技能不会降低自身能力,每次出场战斗仅生效一次。一般属性的招式会变为龙属性",
+	},
+	bianhuanziyou: {
+		onPrepareHit(source, target, move) {
+			if (move.hasBounced || move.flags['futuremove'] || move.sourceEffect === 'snatch' || move.callsMove) return;
+			const type = move.type;
+			if (type && type !== '???' && source.getTypes().join() !== type) {
+				if (!source.setType(type)) return;
+				this.add('-start', source, 'typechange', type, '[from] ability: Bian Huan Zi You');
+			}
+		},
+		flags: {},
+		name: "Bian Huan Zi You",
+		rating: 4.5,
+		num: 10029,
+		shortDesc: "变换自由。自身属性变为即将使用的招式的属性",
 	},
 };

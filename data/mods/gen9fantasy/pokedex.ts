@@ -2,8 +2,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	//还未定分级的宝可梦
 	salamence: {
 		inherit: true,
-		otherFormes: ["Salamence-Fantasy"],
-		formeOrder: ["Salamence", "Salamence-Fantasy"],
+		otherFormes: ["Salamence-Fantasy", "Salamence-Mega", "Salamence-Mega-Fantasy"],
+		formeOrder: ["Salamence", "Salamence-Fantasy", "Salamence-Mega", "Salamence-Mega-Fantasy"],
 	},
 	salamencefantasy: {
 		num: 373,
@@ -36,6 +36,26 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Dragon"],
 		requiredItem: "Salamencite",
 		spriteid: 'salamencea-mega',
+	},
+	mew: {
+		inherit: true,
+		otherFormes: ["Mew-Fantasy"],
+		formeOrder: ["Mew", "Mew-Fantasy"],
+	},
+	mewfantasy: {
+		num: 151,
+		name: "Mew-Fantasy",
+		baseSpecies: "Mew",
+		forme: "Fantasy",
+		types: ["???"],
+		gender: "N",
+		baseStats: { hp: 67, atk: 100, def: 111, spa: 100, spd: 111, spe: 111 },
+		abilities: { 0: "Imposter", H: "Bian Huan Zi You" },
+		heightm: 0.4,
+		weightkg: 4,
+		color: "Pink",
+		tags: ["Mythical"],
+		eggGroups: ["Undiscovered"],
 	},
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
