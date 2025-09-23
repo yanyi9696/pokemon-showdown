@@ -1084,7 +1084,33 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "all",
 		type: "Rock",
 		zMove: { effect: 'healreplacement' },
-		desc: "接下来5回合的天气变更为沙暴。然后自身与后备宝可梦替换",
-		shortDesc: "交替并使天气变为持续5回合的沙暴",
+		desc: "翻尘。接下来5回合的天气变更为沙暴。然后自身与后备宝可梦替换",
+		shortDesc: "翻尘。交替并使天气变为持续5回合的沙暴",
+	},
+	zhishareshe: {
+		num: 10031,
+		accuracy: 100,
+		basePower: 80,
+		category: "Special",
+		name: "Zhi Sha Re She",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 }, 
+		onBasePower(basePower, pokemon, target) {
+			// 检查当前天气是否为“沙暴”
+			if (this.field.isWeather('sandstorm')) {
+				// 如果是，则将基础威力乘以 2
+				this.debug('Zhi Sha Re She boost'); // 在对战日志中输出调试信息
+				return this.chainModify(2);
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Fire",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 130 },
+		contestType: "Tough",
+		desc: "炙沙热射。天气为沙暴时,威力提升2倍。",
+		shortDesc: "炙沙热射。沙暴下威力翻倍。",
 	},
 };
