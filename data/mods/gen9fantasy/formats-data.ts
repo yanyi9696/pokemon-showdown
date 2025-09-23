@@ -2,16 +2,7 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	salamencefantasy: {
-		tier: "OU",
-	},
-	salamencemegafantasy: {
-		tier: "OU",
-		abilities: {0: "Long Zhi Hu Xi"},		
-	},
-	mewfantasy: {
-		tier: "OU",
-	},
+	
 	//定好分级的fantasy宝可梦
 	altariamegafantasy: {
 		tier: "Uber",
@@ -66,6 +57,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	pecharuntfantasy: {
 		tier: "(Uber)",
+	},
+	salamencemegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Long Zhi Hu Xi"},		
 	},
 	suicunefantasy: {
 		tier: "(Uber)",
@@ -133,6 +128,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magnezonefantasy: {
 		tier: "OU",
 	},
+	mewfantasy: {
+		tier: "OU",
+	},
 	mimikyufantasy: {
 		tier: "OU",
 	},
@@ -147,6 +145,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	raikoufantasy: {
+		tier: "OU",
+	},
+	salamencefantasy: {
 		tier: "OU",
 	},
 	salazzlefantasy: {
