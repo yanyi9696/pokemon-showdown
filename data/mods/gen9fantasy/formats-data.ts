@@ -194,6 +194,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magmortarfantasy: {
 		tier: "UUBL",
 	},
+	politoedfantasy: {
+		tier: "UUBL",
+	},
 	raticatefantasy: {
 		tier: "UUBL",
 	},
@@ -250,9 +253,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	miloticfantasy: {
-		tier: "UU",
-	},
-	politoedfantasy: {
 		tier: "UU",
 	},
 	urshifurapidstrikefantasy: {
