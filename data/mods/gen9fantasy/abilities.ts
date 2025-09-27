@@ -176,36 +176,41 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				pokemon.formeChange(speciesid, this.effect, true);
 				this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(speciesid));
 
-				// --- 新增逻辑：仅对幻想形态执行“重画皮”效果 ---
+				// --- “重画皮”效果 - 采用新逻辑 ---
 				if (isFantasy) {
 					this.add('-ability', pokemon, 'Chong Hua Pi', '[from] ability: Disguise');
 
-					// 修正点 1：将 target 改为 pokemon
 					const possibleTargets = pokemon.adjacentFoes().filter(
 						(target: Pokemon) => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
 					);
 
 					if (possibleTargets.length) {
-						// 修正点 1：将 target 改为 pokemon
 						const target = this.sample(possibleTargets);
-						const ability = target.getAbility();
-						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
-						
-						pokemon.setAbility(ability);
-						pokemon.baseAbility = ability.id;
+						const newAbility = target.getAbility();
+						const oldAbility = pokemon.getAbility();
 
-						// 修正点 2：使用 (ability as any) 来访问 onStart
-						if ((ability as any).onStart) {
-							// 修正点 1：将 target 改为 pokemon
-							(ability as any).onStart.call(this, pokemon);
-						}
+						this.add('-ability', pokemon, newAbility, '[from] ability: Chong Hua Pi', `[of] ${target}`);
+						
+						// --- 核心修改点：完整的特性替换流程 ---
+
+						// 1. 触发旧特性的 'End' 事件，进行清理
+						// ✅ 修正：将 source 改为 pokemon
+						this.singleEvent('End', oldAbility, pokemon.abilityState, pokemon, pokemon);
+
+						// 2. 设置新特性ID和状态
+						pokemon.setAbility(newAbility);
+						pokemon.baseAbility = newAbility.id;
+
+						// 3. 触发新特性的 'Start' 事件，全面激活所有效果
+						this.singleEvent('Start', newAbility, pokemon.abilityState, pokemon);
+						
 					} else {
 						pokemon.setAbility('chonghuapi');
 						pokemon.baseAbility = 'chonghuapi' as ID;
 					}
 				}
 				
-				// 重置状态，防止重复触发
+				// 重置状态
 				this.effectState.busted = false;
 			}
 		},
