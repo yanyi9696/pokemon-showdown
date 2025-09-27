@@ -187,23 +187,30 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					if (possibleTargets.length) {
 						const target = this.sample(possibleTargets);
 						const ability = target.getAbility();
-						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
 						
-						pokemon.setAbility(ability);
-						pokemon.baseAbility = ability.id;
-
-						// 如果新特性有 onStart (登场) 效果，则触发它
-						if ((ability as any).onStart) {
-							(ability as any).onStart.call(this, pokemon);
+						// ▼▼▼【核心修复代码】▼▼▼
+						// 1. 先记录旧特性，然后“真正地”设置新特性
+						const oldAbility = pokemon.setAbility(ability);
+						if (oldAbility) {
+							// 2. 更新基础特性，确保交换下场后依然保留
+							pokemon.baseAbility = ability.id;
+							// 3. 在日志中清晰地显示特性变化
+							this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
+							
+							// 4. 立即触发一次新特性的登场效果 (onStart)
+							//    【修正】在这里加上 (ability as any)
+							if ((ability as any).onStart) {
+								(ability as any).onStart.call(this, pokemon);
+							}
+							
+							// 5. 立即触发一次新特性的回合结束效果 (onResidual)
+							//    【修正】在这里也加上 (ability as any)
+							if ((ability as any).onResidual) {
+								// 使用 singleEvent 可以确保以正确的上下文来执行，避免日志错误
+								this.singleEvent('Residual', ability, pokemon.abilityState, pokemon);
+							}
 						}
-
-						// ▼▼▼【关键修复代码】▼▼▼
-						// 手动触发新特性的 onResidual (回合结束) 效果
-						// 这能确保像“加速”这样的特性在被复制的当回合就能生效
-						if ((ability as any).onResidual) {
-							(ability as any).onResidual.call(this, pokemon);
-						}
-						// ▲▲▲【关键修复代码结束】▲▲▲
+						// ▲▲▲【核心修复代码结束】▲▲▲
 
 					} else {
 						pokemon.setAbility('chonghuapi');
@@ -211,7 +218,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					}
 				}
 				
-				// 重置状态，防止重复触发
 				this.effectState.busted = false;
 			}
 		},
