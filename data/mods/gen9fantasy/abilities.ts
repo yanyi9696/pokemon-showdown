@@ -180,13 +180,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (isFantasy) {
 					this.add('-ability', pokemon, 'Chong Hua Pi', '[from] ability: Disguise');
 
-					// 修正点 1：将 target 改为 pokemon
 					const possibleTargets = pokemon.adjacentFoes().filter(
 						(target: Pokemon) => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
 					);
 
 					if (possibleTargets.length) {
-						// 修正点 1：将 target 改为 pokemon
 						const target = this.sample(possibleTargets);
 						const ability = target.getAbility();
 						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
@@ -194,11 +192,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 						pokemon.setAbility(ability);
 						pokemon.baseAbility = ability.id;
 
-						// 修正点 2：使用 (ability as any) 来访问 onStart
+						// 如果新特性有 onStart (登场) 效果，则触发它
 						if ((ability as any).onStart) {
-							// 修正点 1：将 target 改为 pokemon
 							(ability as any).onStart.call(this, pokemon);
 						}
+
+						// ▼▼▼【关键修复代码】▼▼▼
+						// 手动触发新特性的 onResidual (回合结束) 效果
+						// 这能确保像“加速”这样的特性在被复制的当回合就能生效
+						if ((ability as any).onResidual) {
+							(ability as any).onResidual.call(this, pokemon);
+						}
+						// ▲▲▲【关键修复代码结束】▲▲▲
+
 					} else {
 						pokemon.setAbility('chonghuapi');
 						pokemon.baseAbility = 'chonghuapi' as ID;
@@ -1023,48 +1029,48 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10025,
 		shortDesc: "火鳞粉。出场时,烧除我方场地上的所有效果。一场战斗中仅能发动1次",
 	},
-	lajihuishouzhe: {
+	tundu: {
 		onTryHit(target, source, move) {
 			if (target !== source && move.type === 'Poison') {
 				move.accuracy = true;
-				if (!target.addVolatile('lajihuishouzhe')) {
-					this.add('-immune', target, '[from] ability: La Ji Hui Shou Zhe');
+				if (!target.addVolatile('tundu')) {
+					this.add('-immune', target, '[from] ability: Tun Du');
 				}
 				return null;
 			}
 		},
 
 		onEnd(pokemon) {
-			pokemon.removeVolatile('lajihuishouzhe');
+			pokemon.removeVolatile('tundu');
 		},
 		condition: {
 			noCopy: true, 
 			onStart(target) {
-				this.add('-start', target, 'ability: La Ji Hui Shou Zhe');
+				this.add('-start', target, 'ability: Tun Du');
 			},
 			onModifyAtkPriority: 5,
 			onModifyAtk(atk, attacker, defender, move) {
-				if (move.type === 'Poison' && attacker.hasAbility('lajihuishouzhe')) {
-					this.debug('La Ji Hui Shou Zhe boost');
+				if (move.type === 'Poison' && attacker.hasAbility('tundu')) {
+					this.debug('Tun Du boost');
 					return this.chainModify(1.5);
 				}
 			},
 			onModifySpAPriority: 5,
 			onModifySpA(spa, attacker, defender, move) {
-				if (move.type === 'Poison' && attacker.hasAbility('lajihuishouzhe')) {
-					this.debug('La Ji Hui Shou Zhe boost');
+				if (move.type === 'Poison' && attacker.hasAbility('tundu')) {
+					this.debug('Tun Du boost');
 					return this.chainModify(1.5);
 				}
 			},
 			onEnd(target) {
-				this.add('-end', target, 'ability: La Ji Hui Shou Zhe', '[silent]');
+				this.add('-end', target, 'ability: Tun Du', '[silent]');
 			},
 		},
 		flags: { breakable: 1 }, 
-		name: "La Ji Hui Shou Zhe",
+		name: "Tun Du",
 		rating: 3.5,
 		num: 10026, 
-		shortDesc: "垃圾回收者。免疫毒属性招式伤害,受到毒属性招式攻击时毒属性招式威力提升50%",
+		shortDesc: "吞毒。免疫毒属性招式伤害,受到毒属性招式攻击时毒属性招式威力提升50%",
 	},
 	fengya: {
 		// 效果1：自身的速度不会被降低。

@@ -1793,7 +1793,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Alola",
 		types: ["Poison", "Dark"],
 		baseStats: { hp: 125, atk: 105, def: 75, spa: 95, spd: 100, spe: 55 },
-		abilities: { 0: "Dazzling", 1: "La Ji Hui Shou Zhe", H: "Power of Alchemy" },
+		abilities: { 0: "Dazzling", 1: "Tun Du", H: "Power of Alchemy" },
 		heightm: 1,
 		weightkg: 52,
 		color: "Green",
