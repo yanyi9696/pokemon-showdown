@@ -39,7 +39,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	dragapultfantasy: {
 		tier: "(Uber)",
 	},
+	durantfantasy: {
+		tier: "(Uber)",
+	},
 	enteifantasy: {
+		tier: "(Uber)",
+	},
+	flygonfantasy: {
 		tier: "(Uber)",
 	},
 	frosmothfantasy: {
@@ -71,10 +77,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	volcaronafantasy: {
 		tier: "(Uber)",
 	},
-	abomasnowmegafantasy: {
-		tier: "OU",
-		abilities: {0: "Bao Xue Zhi Li"},	
-	},
 	aerodactylfantasy: {
 		tier: "OU",
 	},
@@ -91,16 +93,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	dragalgefantasy: {	
 		tier: "OU",
 	},
-	durantfantasy: {
-		tier: "OU",
-	},
 	empoleonfantasy: {	
 		tier: "OU",
 	},
 	excadrillfantasy: {
-		tier: "OU",
-	},
-	flygonfantasy: {
 		tier: "OU",
 	},
 	garchompfantasy: {
@@ -113,9 +109,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	goodrafantasy: {
-		tier: "OU",
-	},
-	goodrahisuifantasy: {
 		tier: "OU",
 	},
 	gyaradosfantasy: {
@@ -156,6 +149,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sandacondafantasy: {
 		tier: "OU",
 	},
+	sandyshocksfantasy: {
+		tier: "OU",
+	},
 	skeledirgefantasy: {
 		tier: "OU",
 	},
@@ -172,16 +168,20 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezinggalarfantasy: {
 		tier: "OU",
 	},
+	abomasnowmegafantasy: {
+		tier: "UUBL",
+		abilities: {0: "Bao Xue Zhi Li"},	
+	},
 	audinofantasy: {
 		tier: "UUBL",
 	},
 	chandelurefantasy: {
 		tier: "UUBL",
 	},
-	decidueyehisuifantasy: {
+	electivirefantasy: {
 		tier: "UUBL",
 	},
-	electivirefantasy: {
+	goodrahisuifantasy: {
 		tier: "UUBL",
 	},
 	ironthornsfantasy: {
@@ -200,9 +200,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	raticatefantasy: {
 		tier: "UUBL",
 	},
-	sandyshocksfantasy: {
-		tier: "UUBL",
-	},
 	slitherwingfantasy: {
 		tier: "UUBL",
 	},
@@ -215,9 +212,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	volcanionfantasy: {
 		tier: "UUBL",
 	},
-	wochienfantasy: {
-		tier: "UUBL",
-	},
 	absolfantasy: {
 		tier: "UU",
 	},
@@ -228,6 +222,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	crobatfantasy: {
+		tier: "UU",
+	},
+	decidueyehisuifantasy: {
 		tier: "UU",
 	},
 	froslassfantasy: {
@@ -267,10 +264,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezingfantasy: {
 		tier: "UU",
 	},
-	aggronfantasy: {
-		tier: "RUBL",
+	wochienfantasy: {
+		tier: "UU",
 	},
-	altariafantasy: {
+	aggronfantasy: {
 		tier: "RUBL",
 	},
 	cursolafantasy: {
@@ -288,12 +285,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	meganiumfantasy: {
 		tier: "RUBL",
 	},
-	mukalolafantasy: {
-		tier: "RUBL",
-	},
-	pidgeotfantasy: {
-		tier: "RUBL",
-	},
 	ribombeefantasy: {
 		tier: "RUBL",
 	},
@@ -303,6 +294,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	abomasnowfantasy: {
 		tier: "RU",
 	},
+	altariafantasy: {
+		tier: "RU",
+	},
 	carnivinefantasy: {
 		tier: "RU",
 	},
@@ -310,6 +304,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	hawluchafantasy: {
+		tier: "RU",
+	},
+	mukalolafantasy: {
+		tier: "RU",
+	},
+	pidgeotfantasy: {
 		tier: "RU",
 	},
 	samurottfantasy: {
@@ -555,12 +555,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerponwellspringtera: {
 		tier: "OU",
 	},
-	rillaboom: {
-		tier: "OU",
-	},
-	serperior: {
-		tier: "OU",
-	},
 	ursaluna: {
 		tier: "OU",
 	},
@@ -579,6 +573,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerponcornerstonetera: {
 		tier: "UUBL",
 	},
+	serperior: {
+		tier: "UUBL",
+	},
 	goodrahisui: {
 		tier: "UU",
 	},
@@ -592,6 +589,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	pecharunt: {
+		tier: "UU",
+	},
+	rillaboom: {
 		tier: "UU",
 	},
 	skeledirge: {

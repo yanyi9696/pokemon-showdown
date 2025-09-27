@@ -8164,7 +8164,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			metalburst: ["9M"],
 			suilinggang: ["9M"],
 			knockoff: ["9M"],
-			icespinner: ["9M"],
 			drillpeck: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M"],
@@ -8554,7 +8553,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	primarinafantasy: {
 		learnset: {
-			waterspout: ["9M"],
 			raoliangzhiyin: ["9M"],
 			moonlight: ["9M"],
 			huanzhiwu: ["9M"],
@@ -9729,7 +9727,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			scaleshot: ["9M"],
 			chuanyun: ["9M"],
-			dragonascent: ["9M"],
 			qibaoliuxing: ["9M"],
 			bloodmoon: ["9M"],
 			closecombat: ["9M"],
@@ -9843,7 +9840,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			scaleshot: ["9M"],
 			chuanyun: ["9M"],
-			dragonascent: ["9M"],
 			qibaoliuxing: ["9M"],
 			bloodmoon: ["9M"],
 			closecombat: ["9M"],
