@@ -1132,4 +1132,58 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "气爆流星。令使用者的特攻下降2级",
 		shortDesc: "气爆流星。令使用者的特攻下降2级",
 	},
+	huanxiangbaofa: {
+		num: 10032,
+		accuracy: 100,
+		basePower: 80,
+		category: "Physical",
+		name: "Huan Xiang Bao Fa",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1, mustpressure: 1 },
+		/**
+		 * @description 在技能准备命中时触发，用于显示额外信息和处理太晶动画
+		 * (Triggered when the move is preparing to hit, used to display extra messages and handle Tera animations)
+		 */
+		onPrepareHit(target, source, move) {
+			// 3. 每次使用时，都会在对战日志中显示这条消息
+			// (3. Every time the move is used, this message will be displayed in the battle log)
+			this.add('-message', '请多多支持幻想杯！');
+			
+			// 保留原版太晶爆发的动画逻辑
+			// (Retain the animation logic from the original Tera Blast)
+			if (source.terastallized) {
+				this.attrLastMove('[anim] Tera Blast ' + source.teraType);
+			}
+		},
+		/**
+		 * @description 修改技能的属性，仅在太晶化时生效
+		 * (Modifies the move's type, only takes effect when terastallized)
+		 */
+		onModifyType(move, pokemon, target) {
+			// 4. 如果使用者已太晶化，技能属性变为其太晶属性
+			// (4. If the user is terastallized, the move's type becomes its Tera Type)
+			if (pokemon.terastallized) {
+				move.type = pokemon.teraType;
+			}
+		},
+		/**
+		 * @description 修改技能的伤害类别（物理/特殊）
+		 * (Modifies the move's damage category (Physical/Special))
+		 */
+		onModifyMove(move, pokemon) {
+			// 2. 比较最终的特攻和物攻数值
+			// (2. Compare the final Special Attack and Attack stats)
+			if (pokemon.getStat('spa', false, true) > pokemon.getStat('atk', false, true)) {
+				// 如果特攻更高，则将技能类别变为“特殊”
+				// (If Special Attack is higher, change the move category to "Special")
+				move.category = 'Special';
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		desc: "幻想爆发。比较自己的攻击和特攻，用数值相对较高的一项给予对方伤害。当使用者太晶化后，这个招式的属性会变为使用者的太晶属性。攻击时会显示“请多多支持幻想杯！”",
+		shortDesc: "幻想爆发。没太晶时也智能判断物特攻的太晶爆发",
+	},
 };

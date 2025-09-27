@@ -1188,6 +1188,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Bian Huan Zi You",
 		rating: 4.5,
 		num: 10029,
-		shortDesc: "变换自由。自身属性变为即将使用的招式的属性",
+		shortDesc: "变幻自由。自身属性变为即将使用的招式的属性",
 	},
 };

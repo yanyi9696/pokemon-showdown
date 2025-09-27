@@ -5641,6 +5641,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
 			rapidspin: ["9M"],
+			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "9L72", "8M", "8L72", "7L41", "6L38", "5L38", "5S4", "4L44", "3L66"],
@@ -5765,6 +5766,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
 			rapidspin: ["9M"],
+			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "9L72", "8M", "8L72", "7L41", "6L38", "5L38", "5S4", "4L44", "3L66"],
@@ -7059,6 +7061,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			popipa: ["9M"],
 			direclaw: ["9M"],
 			volttackle: ["9M"],
+			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			afteryou: ["7T"],
 			astonish: ["9L1", "8L1", "7L1", "7S0", "7S1"],
