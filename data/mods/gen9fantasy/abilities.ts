@@ -176,7 +176,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				pokemon.formeChange(speciesid, this.effect, true);
 				this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(speciesid));
 
-				// --- “重画皮”效果 - 采用新逻辑 ---
+				// --- “重画皮”效果 - 最终解决方案 ---
 				if (isFantasy) {
 					this.add('-ability', pokemon, 'Chong Hua Pi', '[from] ability: Disguise');
 
@@ -191,22 +191,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 						this.add('-ability', pokemon, newAbility, '[from] ability: Chong Hua Pi', `[of] ${target}`);
 						
-						// --- 核心修改点：完整的特性替换流程 ---
+						// --- 核心修改：模仿 Skill Swap 的完整流程 ---
 
-						// 1. 触发旧特性的 'End' 事件，进行清理
-						// ✅ 修正：将 source 改为 pokemon
+						// 1. 触发旧特性(画皮)的 'End' 事件，确保其效果被完全清除。
 						this.singleEvent('End', oldAbility, pokemon.abilityState, pokemon, pokemon);
 
-						// 2. 设置新特性ID和状态
-						pokemon.setAbility(newAbility);
+						// 2. 直接修改宝可梦的当前特性和基础特性。这是最关键的修正！
+						pokemon.ability = newAbility.id;
 						pokemon.baseAbility = newAbility.id;
 
-						// 3. 触发新特性的 'Start' 事件，全面激活所有效果
+						// 3. 为新特性初始化状态(abilityState)。
+						pokemon.abilityState = this.initEffectState({id: this.toID(pokemon.ability), target: pokemon});
+
+						// 4. 触发新特性的 'Start' 事件，使其所有效果(包括被动效果)立即注册并激活。
 						this.singleEvent('Start', newAbility, pokemon.abilityState, pokemon);
 						
 					} else {
-						pokemon.setAbility('chonghuapi');
+						// 如果没有可复制的对手，逻辑保持不变
+						pokemon.ability = 'chonghuapi' as ID;
 						pokemon.baseAbility = 'chonghuapi' as ID;
+						pokemon.abilityState = this.initEffectState({id: 'chonghuapi' as ID, target: pokemon});
 					}
 				}
 				
