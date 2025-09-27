@@ -8251,6 +8251,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			baoyulihua: ["9M"],
 			metalburst: ["9M"],
 			suilinggang: ["9M"],
+			hardpress: ["9M"],
 			spikecannon: ["9M"],
 			tidyup: ["9M"],
 			popipa: ["9M"],
