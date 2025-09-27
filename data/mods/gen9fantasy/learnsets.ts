@@ -5637,7 +5637,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			shiftgear: ["9M"],
 			zhukaibo: ["9M"],
-			jiaozhunxiangong: ["9M"],
+			xiangongjiaozhun: ["9M"],
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
 			rapidspin: ["9M"],
@@ -5761,7 +5761,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			shiftgear: ["9M"],
 			zhukaibo: ["9M"],
-			jiaozhunxiangong: ["9M"],
+			xiangongjiaozhun: ["9M"],
 			dongchadaji: ["9M"],
 			voltswitch: ["9M"],
 			rapidspin: ["9M"],
@@ -8084,7 +8084,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			uturn: ["9M"],
 			megahorn: ["9M"],
-			jiaozhunxiangong: ["9M"],
+			xiangongjiaozhun: ["9M"],
 			suilinggang: ["9M"],
 			supercellslam: ["9M"],
 			earthquake: ["9M"],

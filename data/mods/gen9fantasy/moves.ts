@@ -905,26 +905,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "黄金羁绊手里剑。对目标造成目标最大HP1/2(向下取整)的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的1/8",
 		shortDesc: "黄金羁绊手里剑。造成目标最大HP1/2的伤害"
 	},
-	jiaozhunxiangong: {
+	xiangongjiaozhun: {
 		num: 10025,
-		accuracy: 100,
+		accuracy: true,
 		basePower: 80,
 		category: "Physical",
-		name: "Jiao Zhun Xian Gong",
+		name: "Xian Gong Jiao Zhun",
 		pp: 10,
 		priority: 2,
 		flags: { contact: 1, protect: 1, mirror: 1 },
-		/**
-		 * @description 将命中提升逻辑放回 onPrepareHit。
-		 * 此事件在 onTry 成功后、造成伤害前触发，确保了逻辑的正确顺序。
-		 * (Placing the boost logic back in onPrepareHit. This event triggers
-		 * after onTry succeeds and before damage is dealt, ensuring the correct
-		 * logical order.)
-		 */
-		onPrepareHit(target, source) {
-			this.add('-boost', source, 'accuracy', 2, '[from] move: 校准先攻');
-		},
-
 		/**
 		 * @description 检查是否为第一回合。这是招式能否使用的第一道门槛。
 		 * (Checks if it is the first turn. This is the first gate for move usability.)
@@ -936,14 +925,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				return false;
 			}
 		},
-		secondary: null,
+		secondary: {
+			chance: 100,
+			self: {
+				boosts: {
+					accuracy: 2,
+				},
+			},
+		},
 		target: "normal",
 		type: "Steel",
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Cute",
-		desc: "校准先攻。提升命中率2级后攻击目标造成伤害。出场后立刻使出才能成功,否则招式会失败",
-		shortDesc: "校准先攻。命中+2后攻击。出场后立刻使出才能成功",
+		desc: "先攻校准。攻击目标造成伤害后提升命中率2级。出场后立刻使出才能成功,否则招式会失败",
+		shortDesc: "先攻校准。攻击后命中+2。出场后立刻使出才能成功",
 	},
 	suilinggang: {
 		num: 10026,
