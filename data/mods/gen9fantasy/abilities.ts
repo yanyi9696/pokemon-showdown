@@ -180,13 +180,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (isFantasy) {
 					this.add('-ability', pokemon, 'Chong Hua Pi', '[from] ability: Disguise');
 
-					// 修正点 1：将 target 改为 pokemon
 					const possibleTargets = pokemon.adjacentFoes().filter(
 						(target: Pokemon) => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
 					);
 
 					if (possibleTargets.length) {
-						// 修正点 1：将 target 改为 pokemon
 						const target = this.sample(possibleTargets);
 						const ability = target.getAbility();
 						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
@@ -194,11 +192,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 						pokemon.setAbility(ability);
 						pokemon.baseAbility = ability.id;
 
-						// 修正点 2：使用 (ability as any) 来访问 onStart
-						if ((ability as any).onStart) {
-							// 修正点 1：将 target 改为 pokemon
-							(ability as any).onStart.call(this, pokemon);
-						}
+						// ▼▼▼【核心修正】▼▼▼
+						// 我们不再手动调用 onStart，而是为该宝可梦触发游戏引擎的 'Start' 事件。
+						// 这是一个更可靠的方法，能确保引擎完全识别新的特性及其所有效果
+						// (包括像“加速”这样的 onResidual 效果)，使其能在当前回合的剩余时间内正常生效。
+						this.runEvent('Start', pokemon);
+
 					} else {
 						pokemon.setAbility('chonghuapi');
 						pokemon.baseAbility = 'chonghuapi' as ID;
