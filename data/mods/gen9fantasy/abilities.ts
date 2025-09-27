@@ -176,7 +176,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				pokemon.formeChange(speciesid, this.effect, true);
 				this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(speciesid));
 
-				// --- 新增逻辑：仅对幻想形态执行“重画皮”效果 ---
+				// ▼▼▼【核心修正】▼▼▼
+				// 我们将能力变更的逻辑移到形态变化之前。
+				// 理由是：`formeChange` 是一个复杂的操作，它可能会在执行时“锁定”宝可梦当前的状态（包括特性）
+				// 来注册回合结束时的事件。通过先设置新特性，再进行形态变化，
+				// 我们能确保 `formeChange` 注册的是新特性（如“加速”）而不是旧的（“画皮”）。
 				if (isFantasy) {
 					this.add('-ability', pokemon, 'Chong Hua Pi', '[from] ability: Disguise');
 
@@ -191,19 +195,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 						
 						pokemon.setAbility(ability);
 						pokemon.baseAbility = ability.id;
-
-						// ▼▼▼【核心修正】▼▼▼
-						// 我们不再手动调用 onStart，而是为该宝可梦触发游戏引擎的 'Start' 事件。
-						// 这是一个更可靠的方法，能确保引擎完全识别新的特性及其所有效果
-						// (包括像“加速”这样的 onResidual 效果)，使其能在当前回合的剩余时间内正常生效。
-						this.runEvent('Start', pokemon);
-
 					} else {
+						// 如果没有可复制的目标，确保特性被正确设置
 						pokemon.setAbility('chonghuapi');
 						pokemon.baseAbility = 'chonghuapi' as ID;
 					}
 				}
 				
+				// --- 在能力变更后执行形态变化和伤害计算 ---
+				pokemon.formeChange(speciesid, this.effect, true);
+				this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(speciesid));
+
 				// 重置状态，防止重复触发
 				this.effectState.busted = false;
 			}
