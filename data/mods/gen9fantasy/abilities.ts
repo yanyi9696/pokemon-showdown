@@ -180,44 +180,32 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (isFantasy) {
 					this.add('-ability', pokemon, 'Chong Hua Pi', '[from] ability: Disguise');
 
+					// 修正点 1：将 target 改为 pokemon
 					const possibleTargets = pokemon.adjacentFoes().filter(
 						(target: Pokemon) => !target.getAbility().flags['notrace'] && target.ability !== 'noability'
 					);
 
 					if (possibleTargets.length) {
+						// 修正点 1：将 target 改为 pokemon
 						const target = this.sample(possibleTargets);
 						const ability = target.getAbility();
+						this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
 						
-						// ▼▼▼【核心修复代码】▼▼▼
-						// 1. 先记录旧特性，然后“真正地”设置新特性
-						const oldAbility = pokemon.setAbility(ability);
-						if (oldAbility) {
-							// 2. 更新基础特性，确保交换下场后依然保留
-							pokemon.baseAbility = ability.id;
-							// 3. 在日志中清晰地显示特性变化
-							this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
-							
-							// 4. 立即触发一次新特性的登场效果 (onStart)
-							//    【修正】在这里加上 (ability as any)
-							if ((ability as any).onStart) {
-								(ability as any).onStart.call(this, pokemon);
-							}
-							
-							// 5. 立即触发一次新特性的回合结束效果 (onResidual)
-							//    【修正】在这里也加上 (ability as any)
-							if ((ability as any).onResidual) {
-								// 使用 singleEvent 可以确保以正确的上下文来执行，避免日志错误
-								this.singleEvent('Residual', ability, pokemon.abilityState, pokemon);
-							}
-						}
-						// ▲▲▲【核心修复代码结束】▲▲▲
+						pokemon.setAbility(ability);
+						pokemon.baseAbility = ability.id;
 
+						// 修正点 2：使用 (ability as any) 来访问 onStart
+						if ((ability as any).onStart) {
+							// 修正点 1：将 target 改为 pokemon
+							(ability as any).onStart.call(this, pokemon);
+						}
 					} else {
 						pokemon.setAbility('chonghuapi');
 						pokemon.baseAbility = 'chonghuapi' as ID;
 					}
 				}
 				
+				// 重置状态，防止重复触发
 				this.effectState.busted = false;
 			}
 		},
