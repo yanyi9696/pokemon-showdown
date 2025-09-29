@@ -412,29 +412,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10003,
 		shortDesc: "破竹。拥有此特性的宝可梦在使用射击类招式时,无视防御方的能力变化与特性,直接给予伤害",
 	},
-	mishizhen: {
+	mishi: {
 		onEffectiveness(typeMod, target, type, move) {
-			// 确保 target 存在并且有特性 'mishizhen'
-			if (target && target.hasAbility('mishizhen') && typeMod) {
+			// 确保 target 存在并且有特性 'mishi'
+			if (target && target.hasAbility('mishi') && typeMod) {
 				// 如果原本是弱点（typeMod > 0），就变成抗性（resisted）
 				if (typeMod > 0) {
-					this.debug('Mishizhen: Reversing effectiveness (Weakness becomes Resistance)');
+					this.debug('mishi: Reversing effectiveness (Weakness becomes Resistance)');
 					return -typeMod; // 反转为抗性
 				}
 				// 如果原本是抗性（typeMod < 0），就变成弱点（super effective）
 				else if (typeMod < 0) {
-					this.debug('Mishizhen: Reversing effectiveness (Resistance becomes Weakness)');
+					this.debug('mishi: Reversing effectiveness (Resistance becomes Weakness)');
 					return -typeMod; // 反转为弱点
 				}
 			}
-			// 如果没有触发 "Mishizhen" 特性，返回原始类型相性
+			// 如果没有触发 "mishi" 特性，返回原始类型相性
 			return typeMod;
 		},
 		flags: { breakable: 1 },
 		name: "Mi Shi Zhen",
 		rating: 1.5,
 		num: 10004,
-		shortDesc: "迷石阵。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果",
+		shortDesc: "迷石。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果",
 	},
 	tianlaizhiyin: {
 		onModifyTypePriority: -1,

@@ -8653,7 +8653,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{generation: 7, level: 50, isHidden: true, moves: ["hypervoice", "moonblast", "icywind", "perishsong"], pokeball: "pokeball"},
 		],
 	},
-	ribombee: {
+	ribombeefantasy: {
 		learnset: {
 			decorate: ["9M"],
 			floralhealing: ["9M"],
