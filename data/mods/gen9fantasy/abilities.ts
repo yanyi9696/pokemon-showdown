@@ -434,7 +434,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mi Shi",
 		rating: 1.5,
 		num: 10004,
-		shortDesc: "迷石。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果",
+		shortDesc: "谜石。属性相性反转。效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果",
 	},
 	tianlaizhiyin: {
 		onModifyTypePriority: -1,
