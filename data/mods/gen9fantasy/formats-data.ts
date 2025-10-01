@@ -61,9 +61,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	metagrossfantasy: {
 		tier: "(Uber)",
 	},
-	mewfantasy: {
-		tier: "(Uber)",
-	},
 	pecharuntfantasy: {
 		tier: "(Uber)",
 	},
@@ -122,6 +119,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Berserk"},		
 	},
 	magnezonefantasy: {
+		tier: "OU",
+	},
+	mewfantasy: {
 		tier: "OU",
 	},
 	mimikyufantasy: {

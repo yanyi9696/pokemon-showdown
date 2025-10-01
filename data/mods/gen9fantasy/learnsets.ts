@@ -7617,6 +7617,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			crunch: ["9M"],
 			jawlock: ["9M"],
 			taunt: ["9M"],
+			knockoff: ["9M"],
 			rapidspin: ["9M"],
 			whirlwind: ["9M"],
 			//幻想增添技能
@@ -9444,11 +9445,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			suilinggang: ["9M"],
 			headlongrush: ["9M"],
-			shoreup: ["9M"],
 			spikes: ["9M"],
-			glare: ["9M"],
 			diamondstorm: ["9M"],
 			fanchen: ["9M"],
+			accelerock: ["9M"],
+			glare: ["9M"],
+			coil: ["9M"],
 			//幻想增添技能
 			ancientpower: ["4T"],
 			aquatail: ["7T", "6T", "5T", "4T"],
@@ -9552,11 +9554,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			suilinggang: ["9M"],
 			headlongrush: ["9M"],
-			shoreup: ["9M"],
 			spikes: ["9M"],
-			glare: ["9M"],
 			diamondstorm: ["9M"],
 			fanchen: ["9M"],
+			accelerock: ["9M"],
+			glare: ["9M"],
+			coil: ["9M"],
 			//幻想增添技能
 			ancientpower: ["4T"],
 			aquatail: ["7T", "6T", "5T", "4T"],
