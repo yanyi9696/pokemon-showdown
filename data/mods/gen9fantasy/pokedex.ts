@@ -940,7 +940,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Steelix-Mega-Fantasy",
 		baseSpecies: "Steelix",
 		forme: "Mega",
-		types: ["Steel", "Ground"],
+		types: ["Rock", "Ground"],
 		baseStats: { hp: 105, atk: 155, def: 230, spa: 25, spd: 105, spe: 30 },
 		abilities: { 0: "Sand Force" },
 		heightm: 10.5,
