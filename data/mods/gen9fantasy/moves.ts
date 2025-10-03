@@ -59,8 +59,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Water",
 		contestType: "Cool",
-		desc: "先制攻击,攻击2~5次。小智版甲贺忍蛙使用时威力变为20,且攻击固定为3次",
-		shortDesc: "先制攻击,攻击2~5次。智蛙使用时威力变为20,固定打3次"
 	},
 	flyingpress: {
 		num: 560,

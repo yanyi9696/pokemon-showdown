@@ -9,7 +9,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Tian Lai Zhi Yin"},		
 	},
 	greninjaashfantasy: {
-		tier: "Uber",
+		tier: "Illegal",
 	},
 	metagrossmegafantasy: {
 		tier: "Uber",
