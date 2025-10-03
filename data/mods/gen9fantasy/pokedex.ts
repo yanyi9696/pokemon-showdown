@@ -2,21 +2,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	//还未定分级的宝可梦
 	
 	//定好分级的fantasy宝可梦
-	altariamegafantasy: {
-		num: 334,
-		name: "Altaria-Mega-Fantasy",
-		baseSpecies: "Altaria",
-		forme: "Mega",
-		types: ["Dragon", "Fairy"],
-		baseStats: { hp: 85, atk: 70, def: 110, spa: 150, spd: 105, spe: 90 },
-		abilities: { 0: "Tian Lai Zhi Yin" },
-		heightm: 1.5,
-		weightkg: 20.6,
-		color: "Blue",
-		eggGroups: ["Flying", "Dragon"],
-		requiredItem: "Altarianite",
-		spriteid: 'altaria-mega',
-	},
 	greninjaashfantasy: {
 		num: 658,
 		name: "Greninja-Ash-Fantasy",
@@ -33,6 +18,21 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		spriteid: 'greninja-ash',
 		battleOnly: "Greninja-Bond-Fantasy",
 		gen: 7,
+	},
+	altariamegafantasy: {
+		num: 334,
+		name: "Altaria-Mega-Fantasy",
+		baseSpecies: "Altaria",
+		forme: "Mega",
+		types: ["Dragon", "Fairy"],
+		baseStats: { hp: 85, atk: 70, def: 110, spa: 150, spd: 105, spe: 90 },
+		abilities: { 0: "Tian Lai Zhi Yin" },
+		heightm: 1.5,
+		weightkg: 20.6,
+		color: "Blue",
+		eggGroups: ["Flying", "Dragon"],
+		requiredItem: "Altarianite",
+		spriteid: 'altaria-mega',
 	},
 	metagrossmegafantasy: {
 		num: 376,
