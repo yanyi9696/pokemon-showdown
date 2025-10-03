@@ -4,12 +4,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
 	
 	//定好分级的fantasy宝可梦
+	greninjaashfantasy: {
+		tier: "Illegal",
+	},
 	altariamegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Tian Lai Zhi Yin"},		
-	},
-	greninjaashfantasy: {
-		tier: "Illegal",
 	},
 	metagrossmegafantasy: {
 		tier: "Uber",
