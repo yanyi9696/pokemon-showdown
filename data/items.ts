@@ -3685,7 +3685,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onTakeItem: false,
 		zMove: "Genesis Supernova",
 		zMoveFrom: "Psychic",
-		itemUser: ["Mew"],
+		itemUser: ["Mew", "Mew-Fantasy"],
 		num: 806,
 		gen: 7,
 		isNonstandard: "Past",
