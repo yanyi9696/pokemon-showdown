@@ -259,4 +259,59 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "幻之焦点镜。携带后,使用射击类、球和弹类招式能无视目标20%的防御与特防",
 		shortDesc: "幻之焦点镜。携带后,使用射击类、球和弹类招式能无视目标20%的防御与特防",
 	},
+	fantasysyrupyapple: {
+		name: "Fantasy Syrupy Apple",
+		spritenum: 755,
+		fling: {
+			basePower: 30,
+		},
+		// 效果1：降低物攻
+		onModifyAtk(atk) {
+			// 将物攻值乘以0.7，即降低30%
+			return this.chainModify(0.7);
+		},
+		// 效果1：降低特攻
+		onModifySpA(spa) {
+			// 将特攻值乘以0.7，即降低30%
+			return this.chainModify(0.7);
+		},
+		// 效果2：回合结束时恢复HP
+		onResidual(pokemon) {
+			// 为宝可梦恢复其最大HP的1/10
+			this.heal(pokemon.baseMaxhp / 10);
+		},
+		num: 10006,
+		gen: 9,
+		desc: "幻之蜜汁苹果。携带后,虽然物攻和特攻将降低30%,但在每个回合结束时恢复最大HP的1/10",
+		shortDesc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低30%",
+	},
+	fantasyprotector: {
+		name: "Fantasy Protector",
+		spritenum: 367,
+		fling: {
+			basePower: 80,
+		},
+		// 效果1：提升物防
+		onModifyDef(def) {
+			// 将物防值乘以1.3，即提升30%
+			return this.chainModify(1.3);
+		},
+		// 效果1：提升特防
+		onModifySpD(spd) {
+			// 将特防值乘以1.3，即提升30%
+			return this.chainModify(1.3);
+		},
+		// 效果2：降低非变化技能的优先度
+		onModifyPriority(priority, pokemon, target, move) {
+			// 检查招式类别是否不为“变化”
+			if (move.category !== 'Status') {
+				// 如果是攻击招式，就稍微降低其优先度，使其在同级优先度中后出
+				return priority - 0.1;
+			}
+		},
+		num: 10007,
+		gen: 9,
+		desc: "幻之护具。携带后,虽然物防和特防将提高30%,但非变化技能在相同优先度下将必定后出",
+		shortDesc: "幻之护具。携带后,物防和特防提高30%,但非变化技能在相同优先度下将必定后出",
+	},
 };
