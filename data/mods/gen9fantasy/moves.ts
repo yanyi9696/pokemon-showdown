@@ -1192,48 +1192,57 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "You Zhi Pei Yu",
 		pp: 10,
 		priority: 0,
-		flags: { snatch: 1, heal: 1, metronome: 1 }, // 保持和wish一致
-		
+		flags: { snatch: 1, heal: 1, metronome: 1 },
+		/**
+		 * onTry - 检查是否能使用，防止与祈愿类效果叠加。
+		 * source 是使用者。
+		 */
 		onTry(source) {
 			if (source.side.slotConditions[source.position]['youzhipeiyu'] || source.side.slotConditions[source.position]['wish']) {
 				this.add('-fail', source);
 				return null;
 			}
 		},
-		
-		onHitField(target, source) {
+		/**
+		 * onHit - 技能命中时触发。因为 target 是 "self"，所以这里的 pokemon 就是使用者。
+		 * 我们将所有场地效果放在这里。
+		 */
+		onHit(pokemon) {
+			// 效果一：手动设置天气
 			this.field.setWeather('sunnyday');
-			this.add('-message', `${source.name}开始了精心的优质培育！`);
-			for (const pokemon of this.getAllActive()) {
-				if (pokemon.hasType('Grass')) {
-					pokemon.addVolatile('aquaring');
+
+			// 效果二：为全场草属性宝可梦附加水流环
+			this.add('-message', `${pokemon.name}开始了精心的优质培育！`);
+			for (const p of this.getAllActive()) {
+				if (p.hasType('Grass')) {
+					p.addVolatile('aquaring');
 				}
 			}
 		},
-		
+		/**
+		 * slotCondition - 技能的核心部分之一，用于创建祈愿效果。
+		 * 因为 target 是 "self"，这个效果会正确地施加在使用者的位置上。
+		 */
 		slotCondition: 'youzhipeiyu',
 		condition: {
 			duration: 2,
 			onStart(pokemon, source) {
-				this.effectState.hp = source.maxhp / 4; // 25% HP
+				this.effectState.hp = source.maxhp / 4;
 			},
 			onResidualOrder: 4,
 			onEnd(target) {
-				// --- 以下逻辑完全仿照 Wish ---
 				if (target && !target.fainted) {
 					const hp = this.effectState.hp;
-					// 1. 执行治疗，并将实际治疗量储存在 damage 变量中
+					// 完全遵循 wish 的治疗和播报逻辑
 					const damage = this.heal(hp, target, target);
-					// 2. 只有在实际发生了治疗 (damage > 0) 的情况下，才显示带有 [wisher] 的自定义信息
 					if (damage) {
-						// 3. 这条带有 '[from] move: ...' 的信息是触发动画的关键
 						this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + this.effectState.source.name);
 					}
 				}
 			},
 		},
 		secondary: null,
-		target: "all",
+		target: "self",
 		type: "Grass",
 		zMove: { boost: { spd: 1 } },
 		contestType: "Beautiful",
