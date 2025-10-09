@@ -1192,13 +1192,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "You Zhi Pei Yu",
 		pp: 10,
 		priority: 0,
-		flags: { snatch: 1, heal: 1 }, 
+		flags: { snatch: 1, heal: 1, metronome: 1 }, // 保持和wish一致
+		
 		onTry(source) {
 			if (source.side.slotConditions[source.position]['youzhipeiyu'] || source.side.slotConditions[source.position]['wish']) {
 				this.add('-fail', source);
 				return null;
 			}
 		},
+		
 		onHitField(target, source) {
 			this.field.setWeather('sunnyday');
 			this.add('-message', `${source.name}开始了精心的优质培育！`);
@@ -1208,23 +1210,25 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				}
 			}
 		},
+		
 		slotCondition: 'youzhipeiyu',
 		condition: {
 			duration: 2,
 			onStart(pokemon, source) {
-				this.effectState.hp = source.maxhp / 4;
+				this.effectState.hp = source.maxhp / 4; // 25% HP
 			},
 			onResidualOrder: 4,
 			onEnd(target) {
+				// --- 以下逻辑完全仿照 Wish ---
 				if (target && !target.fainted) {
 					const hp = this.effectState.hp;
-					
-					// --- 核心修正 ---
-					// 1. 调用 this.heal() 但传入 null 作为效果，使其“静默”执行，只改变HP数值，不产生日志。
-					this.heal(hp, target, this.effectState.source, null);
-					
-					// 2. 手动添加一条带有 `move:` 前缀的正确格式日志，这条日志会触发 residualAnim 动画。
-					this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + this.effectState.source.name);
+					// 1. 执行治疗，并将实际治疗量储存在 damage 变量中
+					const damage = this.heal(hp, target, target);
+					// 2. 只有在实际发生了治疗 (damage > 0) 的情况下，才显示带有 [wisher] 的自定义信息
+					if (damage) {
+						// 3. 这条带有 '[from] move: ...' 的信息是触发动画的关键
+						this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + this.effectState.source.name);
+					}
 				}
 			},
 		},
