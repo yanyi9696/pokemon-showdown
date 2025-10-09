@@ -1193,28 +1193,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { snatch: 1, heal: 1 }, // snatch: 可以被“抢夺”；heal: 属于回复类技能
-		// 将所有效果整合到 onHit 事件中
-		onHit(pokemon) {
-			// 效果一：手动设置天气
-			// this.field.setWeather('sunnyday') 会尝试设置天气。
-			// 如果天气已经是晴天，它会失败并返回 false，但不会中断整个招式的执行。
+		/**
+		 * 修正：不再使用顶层 weather 属性，避免因天气已存在而失败。
+		 * 将天气设置和水流环效果放入 onHitField 事件中。
+		 */
+		onHitField(target, source) {
+			// 效果一：手动设置天气。即使失败也不会中断招式。
 			this.field.setWeather('sunnyday');
 
-			// 效果二：为场上所有草属性宝可梦附加“水流环”状态
-			this.add('-message', `${pokemon.name}开始了精心的优质培育！`);
-			for (const p of this.getAllActive()) {
-				if (p.hasType('Grass')) {
-					p.addVolatile('aquaring');
+			// 效果二：为场上所有草属性宝可梦附加“水流环”状态。
+			this.add('-message', `${source.name}开始了精心的优质培育！`);
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon.hasType('Grass')) {
+					pokemon.addVolatile('aquaring');
 				}
 			}
-			// 效果三：手动为使用者所在的场地位置添加“祈愿”效果
-			pokemon.side.addSlotCondition(pokemon, 'youzhipeiyu');
 		},
-		// “祈愿”效果的定义，供 addSlotCondition 调用
+		/**
+		 * 效果三：使用 slotCondition 属性来自动处理“祈愿”效果。
+		 * 这是最稳定可靠的实现方式。
+		 */
+		slotCondition: 'youzhipeiyu',
 		condition: {
 			duration: 2,
 			onStart(pokemon, source) {
-				this.effectState.hp = source.maxhp / 4; // 记录回复量
+				this.effectState.hp = source.maxhp / 4;
 			},
 			onResidualOrder: 4,
 			onEnd(target) {
