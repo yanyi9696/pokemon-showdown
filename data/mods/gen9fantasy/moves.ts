@@ -1193,22 +1193,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { snatch: 1, heal: 1, metronome: 1 },
-		/**
-		 * onTry - 检查是否能使用，防止与祈愿类效果叠加。
-		 * source 是使用者。
-		 */
 		onTry(source) {
+			// 检查使用者当前位置是否已经存在 'youzhipeiyu' 或 'wish' 效果
 			if (source.side.slotConditions[source.position]['youzhipeiyu'] || source.side.slotConditions[source.position]['wish']) {
 				this.add('-fail', source);
 				return null;
 			}
 		},
 		/**
-		 * onHit - 技能命中时触发。因为 target 是 "self"，所以这里的 pokemon 就是使用者。
-		 * 我们将所有场地效果放在这里。
+		 * onHit - 技能首次使用时触发的效果。
 		 */
 		onHit(pokemon) {
-			// 效果一：手动设置天气
+			// 效果一：设置天气为大晴天
 			this.field.setWeather('sunnyday');
 
 			// 效果二：为全场草属性宝可梦附加水流环
@@ -1220,21 +1216,28 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 		},
 		/**
-		 * slotCondition - 技能的核心部分之一，用于创建祈愿效果。
-		 * 因为 target 是 "self"，这个效果会正确地施加在使用者的位置上。
+		 * slotCondition - 为使用者所在的位置添加一个持续2回合的状态。
 		 */
 		slotCondition: 'youzhipeiyu',
 		condition: {
 			duration: 2,
 			onStart(pokemon, source) {
+				// 记录需要回复的HP量
 				this.effectState.hp = source.maxhp / 4;
 			},
 			onResidualOrder: 4,
+			/**
+			 * onEnd - 在状态结束时（即下一回合末）触发治疗。
+			 * 这是触发后续动画的关键部分。
+			 */
 			onEnd(target) {
+				// 确保目标依然在场且未濒死
 				if (target && !target.fainted) {
 					const hp = this.effectState.hp;
-					// 完全遵循 wish 的治疗和播报逻辑
-					const damage = this.heal(hp, target, target);
+					// 使用 this.heal() 触发治疗效果和基础的治疗日志
+					const damage = this.heal(hp, target, this.effectState.source);
+					// 如果成功回复了HP，则额外添加一条带有 '[wisher]' 标签的日志，
+					// 这是客户端播放祈愿类后续动画的关键识别信息。
 					if (damage) {
 						this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + this.effectState.source.name);
 					}
