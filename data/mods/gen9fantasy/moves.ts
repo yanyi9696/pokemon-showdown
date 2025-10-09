@@ -1194,14 +1194,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { snatch: 1, heal: 1 }, // snatch: 可以被“抢夺”；heal: 属于回复类技能
 		/**
-		 * 修正：不再使用顶层 weather 属性，避免因天气已存在而失败。
-		 * 将天气设置和水流环效果放入 onHitField 事件中。
+		 * 新增：onTry 钩子，用于在使用前进行检查。
+		 * 这可以防止在“优质培育”或“祈愿”效果待机时重复使用。
 		 */
+		onTry(source) {
+			if (source.side.slotConditions[source.position]['youzhipeiyu'] || source.side.slotConditions[source.position]['wish']) {
+				this.add('-fail', source);
+				return null;
+			}
+		},
 		onHitField(target, source) {
-			// 效果一：手动设置天气。即使失败也不会中断招式。
 			this.field.setWeather('sunnyday');
-
-			// 效果二：为场上所有草属性宝可梦附加“水流环”状态。
 			this.add('-message', `${source.name}开始了精心的优质培育！`);
 			for (const pokemon of this.getAllActive()) {
 				if (pokemon.hasType('Grass')) {
@@ -1209,10 +1212,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				}
 			}
 		},
-		/**
-		 * 效果三：使用 slotCondition 属性来自动处理“祈愿”效果。
-		 * 这是最稳定可靠的实现方式。
-		 */
 		slotCondition: 'youzhipeiyu',
 		condition: {
 			duration: 2,
@@ -1223,10 +1222,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onEnd(target) {
 				if (target && !target.fainted) {
 					const hp = this.effectState.hp;
-					const success = this.heal(hp, target, this.effectState.source);
-					if (success) {
-						this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + this.effectState.source.name);
-					}
+					// 修正：只调用 this.heal()，不再手动添加第二条信息。
+					this.heal(hp, target, this.effectState.source);
 				}
 			},
 		},
