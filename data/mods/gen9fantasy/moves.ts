@@ -1194,20 +1194,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { snatch: 1, heal: 1, metronome: 1 },
 		onTry(source) {
-			// 检查使用者当前位置是否已经存在 'youzhipeiyu' 或 'wish' 效果
 			if (source.side.slotConditions[source.position]['youzhipeiyu'] || source.side.slotConditions[source.position]['wish']) {
 				this.add('-fail', source);
 				return null;
 			}
 		},
-		/**
-		 * onHit - 技能首次使用时触发的效果。
-		 */
 		onHit(pokemon) {
-			// 效果一：设置天气为大晴天
 			this.field.setWeather('sunnyday');
-
-			// 效果二：为全场草属性宝可梦附加水流环
 			this.add('-message', `${pokemon.name}开始了精心的优质培育！`);
 			for (const p of this.getAllActive()) {
 				if (p.hasType('Grass')) {
@@ -1215,31 +1208,32 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				}
 			}
 		},
-		/**
-		 * slotCondition - 为使用者所在的位置添加一个持续2回合的状态。
-		 */
 		slotCondition: 'youzhipeiyu',
 		condition: {
 			duration: 2,
 			onStart(pokemon, source) {
-				// 记录需要回复的HP量
 				this.effectState.hp = source.maxhp / 4;
 			},
 			onResidualOrder: 4,
 			/**
 			 * onEnd - 在状态结束时（即下一回合末）触发治疗。
-			 * 这是触发后续动画的关键部分。
 			 */
 			onEnd(target) {
 				// 确保目标依然在场且未濒死
 				if (target && !target.fainted) {
 					const hp = this.effectState.hp;
-					// 使用 this.heal() 触发治疗效果和基础的治疗日志
-					const damage = this.heal(hp, target, this.effectState.source);
-					// 如果成功回复了HP，则额外添加一条带有 '[wisher]' 标签的日志，
-					// 这是客户端播放祈愿类后续动画的关键识别信息。
-					if (damage) {
-						this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + this.effectState.source.name);
+					const source = this.effectState.source;
+					
+					// --- 核心修改 ---
+					// 1. 我们不再使用 this.heal()，因为它会自动发送消息。
+					//    改为使用 target.heal()，这个函数只负责回复HP并返回实际回复量，不会发送消息。
+					const amount = target.heal(hp, source, this.effect);
+
+					// 2. 只有在确实回复了HP的情况下（满血时 amount 会是 0）...
+					if (amount) {
+						// 3. ...才发送我们自定义的唯一一条 '-heal' 日志。
+						//    这条消息会同时负责：更新血条、显示文字、并因为带有 '[wisher]' 标签而触发动画。
+						this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + source.name);
 					}
 				}
 			},
