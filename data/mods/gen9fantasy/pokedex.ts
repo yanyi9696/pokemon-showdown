@@ -51,6 +51,24 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Galarica Cuff",
 		eggGroups: ["Monster", "Water 1"],
 	},
+	tropius: {
+		inherit: true,
+		otherFormes: ["Tropius-Fantasy"],
+		formeOrder: ["Tropius", "Tropius-Fantasy"],
+	},
+	tropiusfantasy: {
+		num: 357,
+		name: "Tropius-Fantasy",
+		baseSpecies: "Tropius",
+		forme: "Fantasy",
+		types: ["Grass", "Dragon"],
+		baseStats: { hp: 129, atk: 68, def: 83, spa: 72, spd: 87, spe: 51 },
+		abilities: { 0: "Chlorophyll", 1: "Regenerator", H: "Harvest" },
+		heightm: 2,
+		weightkg: 100,
+		color: "Green",
+		eggGroups: ["Monster", "Grass"],
+	},
 	//定好分级的fantasy宝可梦
 	greninjaashfantasy: {
 		num: 658,

@@ -11,7 +11,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	slowbrogalarfantasy: {
 		tier: "Illegal",
 	},
-	
+	tropiusfantasy: {
+		tier: "Illegal",
+	},
 	//定好分级的fantasy宝可梦
 	greninjaashfantasy: {
 		tier: "Illegal",

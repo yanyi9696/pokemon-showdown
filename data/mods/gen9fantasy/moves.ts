@@ -1108,7 +1108,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "炙沙热射。沙暴下威力翻倍",
 	},
 	qibaoliuxing: {
-		num: 434,
+		num: 10032,
 		accuracy: 90,
 		basePower: 130,
 		category: "Special",
@@ -1131,7 +1131,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "气爆流星。令使用者的特攻下降2级",
 	},
 	huanxiangbaofa: {
-		num: 10032,
+		num: 10033,
 		accuracy: 100,
 		basePower: 80,
 		category: "Physical",
@@ -1183,5 +1183,56 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		desc: "幻想爆发。比较自己的攻击和特攻，用数值相对较高的一项给予对方伤害。当使用者太晶化后，这个招式的属性会变为使用者的太晶属性。攻击时会显示“请多多支持幻想杯！”",
 		shortDesc: "幻想爆发。没太晶时也智能判断物特攻的太晶爆发",
+	},
+	youzhipeiyu: {
+		num: 10034,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "You Zhi Pei Yu",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, heal: 1 }, // snatch: 可以被“抢夺”；heal: 属于回复类技能
+		// 将所有效果整合到 onHit 事件中
+		onHit(pokemon) {
+			// 效果一：手动设置天气
+			// this.field.setWeather('sunnyday') 会尝试设置天气。
+			// 如果天气已经是晴天，它会失败并返回 false，但不会中断整个招式的执行。
+			this.field.setWeather('sunnyday');
+
+			// 效果二：为场上所有草属性宝可梦附加“水流环”状态
+			this.add('-message', `${pokemon.name}开始了精心的优质培育！`);
+			for (const p of this.getAllActive()) {
+				if (p.hasType('Grass')) {
+					p.addVolatile('aquaring');
+				}
+			}
+			// 效果三：手动为使用者所在的场地位置添加“祈愿”效果
+			pokemon.side.addSlotCondition(pokemon, 'youzhipeiyu');
+		},
+		// “祈愿”效果的定义，供 addSlotCondition 调用
+		condition: {
+			duration: 2,
+			onStart(pokemon, source) {
+				this.effectState.hp = source.maxhp / 4; // 记录回复量
+			},
+			onResidualOrder: 4,
+			onEnd(target) {
+				if (target && !target.fainted) {
+					const hp = this.effectState.hp;
+					const success = this.heal(hp, target, this.effectState.source);
+					if (success) {
+						this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + this.effectState.source.name);
+					}
+				}
+			},
+		},
+		secondary: null,
+		target: "all",
+		type: "Grass",
+		zMove: { boost: { spd: 1 } },
+		contestType: "Beautiful",
+		desc: "优质培育。将接下来5回合的天气变更为大晴天,并使所有的草属性宝可梦覆盖水流环。下一回合使用者回复25%最大HP",
+		shortDesc: "优质培育。大晴天+场上全体草宝可梦水流环+半个祈愿",
 	},
 };
