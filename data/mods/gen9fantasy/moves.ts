@@ -1193,10 +1193,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { snatch: 1, heal: 1 }, // snatch: 可以被“抢夺”；heal: 属于回复类技能
-		/**
-		 * 新增：onTry 钩子，用于在使用前进行检查。
-		 * 这可以防止在“优质培育”或“祈愿”效果待机时重复使用。
-		 */
 		onTry(source) {
 			if (source.side.slotConditions[source.position]['youzhipeiyu'] || source.side.slotConditions[source.position]['wish']) {
 				this.add('-fail', source);
@@ -1222,8 +1218,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onEnd(target) {
 				if (target && !target.fainted) {
 					const hp = this.effectState.hp;
-					// 修正：只调用 this.heal()，不再手动添加第二条信息。
-					this.heal(hp, target, this.effectState.source);
+					this.heal(hp, target, this.effectState.source, this.dex.moves.get('youzhipeiyu') as Effect);
 				}
 			},
 		},
