@@ -2,6 +2,15 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
+	slowbrofantasy: {
+		tier: "Illegal",
+	},
+	slowbromegafantasy: {
+		tier: "Illegal",
+	},
+	slowbrogalarfantasy: {
+		tier: "Illegal",
+	},
 	
 	//定好分级的fantasy宝可梦
 	greninjaashfantasy: {

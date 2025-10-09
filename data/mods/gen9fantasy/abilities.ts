@@ -28,6 +28,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 56,
 		shortDesc: "接触时有30%机率使对手着迷。受到的伤害降低20%,若对手为异性则伤害再降低10%",
 	},
+	shellarmor: {
+		onCriticalHit: false,
+		// 新增效果：免疫入场时生效的伤害类场地状态
+		onDamage(damage, target, source, effect) {
+			// 定义造成伤害的入场类状态ID
+			const entryHazardDamageIds = ['spikes', 'stealthrock', 'gmaxsteelsurge'];
+			if (effect && entryHazardDamageIds.includes(effect.id)) {
+				return false; // 如果伤害来源是这些状态之一，则伤害无效
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Shell Armor",
+		rating: 1,
+		num: 75,
+		shortDesc: "不会被击中要害，也不会被己方场地上的入场可生效的状态伤害。",
+	},
 	slowstart: {
 		onStart(pokemon) {
 			pokemon.addVolatile('slowstart');
