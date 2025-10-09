@@ -1,4 +1,20 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	battlearmor: {
+		onCriticalHit: false,
+		// 新增效果：免疫入场时生效的伤害类场地状态
+		onDamage(damage, target, source, effect) {
+			// 定义造成伤害的入场类状态ID
+			const entryHazardDamageIds = ['spikes', 'stealthrock', 'gmaxsteelsurge'];
+			if (effect && entryHazardDamageIds.includes(effect.id)) {
+				return false; // 如果伤害来源是这些状态之一，则伤害无效
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Battle Armor",
+		rating: 3,
+		num: 75,
+		shortDesc: "不会被击中要害，也不会被己方场地上的入场可生效的状态伤害。",
+	},
 	cutecharm: {
 		onDamagingHit(damage, target, source, move) {
 			if (this.checkMoveMakesContact(move, source, target)) {
@@ -30,19 +46,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	shellarmor: {
 		onCriticalHit: false,
-		// 新增效果：免疫入场时生效的伤害类场地状态
-		onDamage(damage, target, source, effect) {
-			// 定义造成伤害的入场类状态ID
-			const entryHazardDamageIds = ['spikes', 'stealthrock', 'gmaxsteelsurge'];
-			if (effect && entryHazardDamageIds.includes(effect.id)) {
-				return false; // 如果伤害来源是这些状态之一，则伤害无效
+		onDamagingHit(damage, target, source, move) {
+			if (move.flags['contact']) {
+				this.boost({atk: -1}, source, target, null, true);
 			}
 		},
 		flags: { breakable: 1 },
 		name: "Shell Armor",
-		rating: 1,
-		num: 75,
-		shortDesc: "不会被击中要害，也不会被己方场地上的入场可生效的状态伤害。",
+		rating: 3,
+		num: 4,
+		shortDesc: "不会被击中要害。被接触类招式击中时,攻击方的攻击降低1级。",
 	},
 	slowstart: {
 		onStart(pokemon) {
