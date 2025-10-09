@@ -1192,7 +1192,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "You Zhi Pei Yu",
 		pp: 10,
 		priority: 0,
-		flags: { snatch: 1, heal: 1 }, // snatch: 可以被“抢夺”；heal: 属于回复类技能
+		flags: { snatch: 1, heal: 1 }, 
 		onTry(source) {
 			if (source.side.slotConditions[source.position]['youzhipeiyu'] || source.side.slotConditions[source.position]['wish']) {
 				this.add('-fail', source);
@@ -1218,7 +1218,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onEnd(target) {
 				if (target && !target.fainted) {
 					const hp = this.effectState.hp;
-					this.heal(hp, target, this.effectState.source, this.dex.moves.get('youzhipeiyu') as Effect);
+					
+					// --- 核心修正 ---
+					// 1. 调用 this.heal() 但传入 null 作为效果，使其“静默”执行，只改变HP数值，不产生日志。
+					this.heal(hp, target, this.effectState.source, null);
+					
+					// 2. 手动添加一条带有 `move:` 前缀的正确格式日志，这条日志会触发 residualAnim 动画。
+					this.add('-heal', target, target.getHealth, '[from] move: You Zhi Pei Yu', '[wisher] ' + this.effectState.source.name);
 				}
 			},
 		},
