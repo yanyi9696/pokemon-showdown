@@ -1253,4 +1253,35 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10030,
 		shortDesc: "全力达摩。使用招式前会变为达摩模式,且该形态会一直持续",
 	},
+	zuijianitai: {
+		onEffectiveness(typeMod, target, type, move) {
+			// 如果伤害倍率不是“效果绝佳”(typeMod > 0)，则特性不发动，直接返回原始倍率
+			if (typeMod <= 0) return typeMod;
+
+			const bugWeaknesses = ['Flying', 'Rock', 'Fire'];
+			if (!bugWeaknesses.includes(move.type)) {
+				this.add('-activate', target, 'ability: Zui Jia Ni Tai');
+				return 0;
+			}
+			return typeMod;
+		},
+		onBasePowerPriority: 23,
+		onBasePower(basePower, attacker, defender, move) {
+			// 检查：确保是拥有此特性的宝可梦 (attacker) 在使用招式
+			if (attacker.getAbility().id !== 'zuijianitai') return;
+			// 检查：确保使用的招式是“虫属性”
+			if (move.type === 'Bug') {
+				// 在后台日志中打印一条信息，方便调试
+				this.debug('Zui Jia Ni Tai Bug move power boost');
+				// 将招式威力进行连锁修正，提升1.5倍
+				return this.chainModify(1.5);
+			}
+		},
+
+		flags: { breakable: 1 },
+		name: "Zui Jia Ni Tai",
+		rating: 4,
+		num: 10031,
+		shortDesc: "最佳拟态。只弱飞、火、岩。虫属性招式威力提升1.5倍",
+	},
 };

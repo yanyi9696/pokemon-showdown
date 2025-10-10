@@ -136,6 +136,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredAbility: "Quan Li Da Mo",
 		battleOnly: "Darmanitan-Galar",
 	},
+	lurantis: {
+		inherit: true,
+		otherFormes: ["Lurantis-Fantasy", "Lurantis-Totem"],
+		formeOrder: ["Lurantis", "Lurantis-Fantasy", "Lurantis-Totem"],
+	},
+	lurantisfantasy: {
+		num: 754,
+		name: "Lurantis-Fantasy",
+		baseSpecies: "Lurantis",
+		forme: "Fantasy",
+		types: ["Grass", "Fairy"],
+		baseStats: { hp: 90, atk: 125, def: 90, spa: 90, spd: 90, spe: 45 },
+		abilities: { 0: "Zui Jia Ni Tai", 1: "Qing Guang Hua Yu", H: "Contrary" },
+		heightm: 0.9,
+		weightkg: 18.5,
+		color: "Pink",
+		prevo: "Fomantis",
+		evoLevel: 34,
+		evoCondition: "during the day",
+		eggGroups: ["Grass"],
+	},
 	//定好分级的fantasy宝可梦
 	greninjaashfantasy: {
 		num: 658,
