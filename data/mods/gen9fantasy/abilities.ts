@@ -1258,22 +1258,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.effectState.activated = false;
 		},
 		onEffectiveness(typeMod, target, type, move) {
-			if (typeMod <= 0) return typeMod;
 			const allowedWeaknesses = ['Flying', 'Rock', 'Fire'];
+			// 规则1：检查招式是否为火、岩、飞之一。
 			if (allowedWeaknesses.includes(move.type)) {
-				// 如果是（火/岩/飞），则放行，保持原有的“效果绝佳”倍率。
-				return typeMod;
-			} else {
-				// 如果不是（例如毒、冰、钢等），则触发特性，将其“过滤”为“效果一般”。
-				
-				// 【BUG修复】检查并设置状态，确保信息只显示一次
+				// 如果是，则强制变为“效果绝佳”，实现“创造弱点”的效果。
 				if (!this.effectState.activated) {
 					this.add('-activate', target, 'ability: Zui Jia Ni Tai');
 					this.effectState.activated = true;
 				}
-				// 返回 0，代表伤害倍率变为 1x (效果一般)
-				return 0;
+				return 1; // 返回 1，代表 2x 伤害
 			}
+			// 执行到这里，说明招式不是火、岩、飞。
+			// 规则2：检查这次攻击原本是不是弱点。
+			if (typeMod > 0) {
+				// 如果是（比如毒克草/妖），则强制变为“效果一般”，实现“消除弱点”的效果。
+				if (!this.effectState.activated) {
+					this.add('-activate', target, 'ability: Zui Jia Ni Tai');
+					this.effectState.activated = true;
+				}
+				return 0; // 返回 0，代表 1x 伤害
+			}
+			// 规则3：如果既不是火岩飞，也不是原有弱点，那它就是效果一般/抵抗/免疫。
+			// 这种情况下，我们不作任何改动，实现“保留其他”的效果。
+			return typeMod;
 		},
 		// (这部分保持不变)
 		onBasePowerPriority: 23,
@@ -1285,8 +1292,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: { breakable: 1 },
 		name: "Zui Jia Ni Tai",
-		rating: 4.5,
+		rating: 4,
 		num: 10031,
-		shortDesc: "最佳拟态。原有的弱点被替换为只弱火、岩石、飞行,虫系威力提升1.5倍",
+		shortDesc: "最佳拟态。变为只弱火、岩石、飞行。不影响原有的效果一般、抵抗和免疫。",
 	},
 };
