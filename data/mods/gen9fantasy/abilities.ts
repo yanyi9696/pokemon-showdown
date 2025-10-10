@@ -1254,43 +1254,39 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "全力达摩。使用招式前会变为达摩模式,且该形态会一直持续",
 	},
 	zuijianitai: {
-		// 【BUG修复】onTryHit 事件处理器
-		// 在招式即将命中目标时触发，用于重置我们的“激活记忆”
 		onTryHit(target, source, move) {
 			this.effectState.activated = false;
 		},
-		// 【逻辑调整 & BUG修复】onEffectiveness 事件处理器
 		onEffectiveness(typeMod, target, type, move) {
-			const bugWeaknesses = ['Flying', 'Rock', 'Fire'];
-
-			// 步骤1：检查攻击招式是否为火、岩石、飞行之一
-			if (bugWeaknesses.includes(move.type)) {
-				// 【BUG修复】在显示信息前，检查“激活记忆”标志
+			if (typeMod <= 0) return typeMod;
+			const allowedWeaknesses = ['Flying', 'Rock', 'Fire'];
+			if (allowedWeaknesses.includes(move.type)) {
+				// 如果是（火/岩/飞），则放行，保持原有的“效果绝佳”倍率。
+				return typeMod;
+			} else {
+				// 如果不是（例如毒、冰、钢等），则触发特性，将其“过滤”为“效果一般”。
+				
+				// 【BUG修复】检查并设置状态，确保信息只显示一次
 				if (!this.effectState.activated) {
 					this.add('-activate', target, 'ability: Zui Jia Ni Tai');
-					// 显示信息后，立刻将标志设为 true，防止重复显示
 					this.effectState.activated = true;
 				}
-				// 【逻辑调整】无论原始倍率是多少，都强制返回“效果绝佳”(2x)
-				return 1;
+				// 返回 0，代表伤害倍率变为 1x (效果一般)
+				return 0;
 			}
-			// 步骤2：【逻辑调整】如果招式不属于以上三种，
-			// 则完全不作干涉，直接返回游戏计算出的原始伤害倍率。
-			return typeMod;
 		},
 		// (这部分保持不变)
 		onBasePowerPriority: 23,
 		onBasePower(basePower, attacker, defender, move) {
 			if (attacker.getAbility().id !== 'zuijianitai') return;
 			if (move.type === 'Bug') {
-				this.debug('Zui Jia Ni Tai Bug move power boost');
 				return this.chainModify(1.5);
 			}
 		},
 		flags: { breakable: 1 },
 		name: "Zui Jia Ni Tai",
-		rating: 4,
+		rating: 4.5,
 		num: 10031,
-		shortDesc: "最佳拟态。受到火、岩石、飞行招式攻击时效果绝佳。虫属性招式威力提升1.5倍",
+		shortDesc: "最佳拟态。原有的弱点被替换为只弱火、岩石、飞行,虫系威力提升1.5倍",
 	},
 };
