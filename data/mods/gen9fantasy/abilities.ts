@@ -1220,25 +1220,33 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "变幻自由。自身属性变为即将使用的招式的属性",
 	},
 	quanlidamo: {
-		// onBeforeMove 会在使用招式前触发
-		onBeforeMove(pokemon, target, move) {
+		onBeforeMove(pokemon) {
+			// 基础检查：必须是达摩狒狒，且未被变身，且当前不是达摩模式
 			if (pokemon.baseSpecies.baseSpecies !== 'Darmanitan' || pokemon.transformed) {
 				return;
 			}
 			if (pokemon.species.forme.includes('Zen')) {
 				return;
 			}
+
+			let targetForme = '';
+			// 【核心修正】进行精确的ID匹配
+			// 检查当前宝可梦的ID是否为 'darmanitanfantasy'
+			if (pokemon.species.id === 'darmanitanfantasy') {
+				targetForme = 'Darmanitan-Zen-Fantasy';
+			} 
+			// 检查当前宝可梦的ID是否为 'darmanitangalarfantasy'
+			else if (pokemon.species.id === 'darmanitangalarfantasy') {
+				targetForme = 'Darmanitan-Galar-Zen-Fantasy';
+			} else {
+				// 如果不是以上两种指定的形态，则不执行任何操作
+				return;
+			}
 			
-			const isGalar = pokemon.species.name.includes('Galar');
-			// 这里的逻辑保持不变，因为你的游戏似乎能正确处理-Fantasy后缀
-			const targetForme = isGalar ? 'Darmanitan-Galar-Zen' : 'Darmanitan-Zen';
-			
+			// 显示特性发动信息，并执行永久的形态变化
 			this.add('-activate', pokemon, 'ability: Quan Li Da Mo');
-			// 【核心修正】在这里添加第三个参数 `true`
-			// pokemon.formeChange(species, source, isPermanent)
 			pokemon.formeChange(targetForme, this.effect, true);
 		},
-		// 这些是防止特性被复制、交换或无效化的标准旗帜，对于形态变化特性很重要
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
 		name: "Quan Li Da Mo",
 		rating: 2,
