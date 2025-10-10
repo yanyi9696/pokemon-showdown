@@ -157,6 +157,26 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoCondition: "during the day",
 		eggGroups: ["Grass"],
 	},
+	thievul: {
+		inherit: true,
+		otherFormes: ["Thievul-Fantasy"],
+		formeOrder: ["Thievul", "Thievul-Fantasy"],
+	},
+	thievulfantasy: {
+		num: 828,
+		name: "Thievul-Fantasy",
+		baseSpecies: "Thievul",
+		forme: "Fantasy",
+		types: ["Dark", "Normal"],
+		baseStats: { hp: 70, atk: 108, def: 58, spa: 108, spd: 92, spe: 100 },
+		abilities: { 0: "Run Away", 1: "Unburden", H: "Stakeout" },
+		heightm: 1.2,
+		weightkg: 19.9,
+		color: "Brown",
+		prevo: "Nickit",
+		evoLevel: 18,
+		eggGroups: ["Field"],
+	},
 	//定好分级的fantasy宝可梦
 	greninjaashfantasy: {
 		num: 658,
