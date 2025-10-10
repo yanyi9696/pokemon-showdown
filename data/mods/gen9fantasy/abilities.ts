@@ -1254,30 +1254,39 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "全力达摩。使用招式前会变为达摩模式,且该形态会一直持续",
 	},
 	zuijianitai: {
+		// 【新增】onTryHit 事件处理器
+		// 在招式即将命中目标时触发，用于重置我们的“激活记忆”
+		onTryHit(target, source, move) {
+			// this.effectState 是一个用来存储特性临时状态的对象
+			// 我们在这里将 activated 标志重置为 false，为新的一次攻击做准备
+			this.effectState.activated = false;
+		},
+		// 【修改】onEffectiveness 事件处理器
 		onEffectiveness(typeMod, target, type, move) {
-			// 如果伤害倍率不是“效果绝佳”(typeMod > 0)，则特性不发动，直接返回原始倍率
 			if (typeMod <= 0) return typeMod;
-
 			const bugWeaknesses = ['Flying', 'Rock', 'Fire'];
 			if (!bugWeaknesses.includes(move.type)) {
-				this.add('-activate', target, 'ability: Zui Jia Ni Tai');
+				// 在显示信息前，先检查“激活记忆”标志
+				// 只有当这个标志为 false (即本次攻击还未激活过) 时，才执行下面的代码
+				if (!this.effectState.activated) {
+					this.add('-activate', target, 'ability: Zui Jia Ni Tai');
+					// 显示信息后，立刻将标志设为 true
+					// 这样即使该事件再次被触发，也不会重复显示信息了
+					this.effectState.activated = true;
+				}
+				// 伤害倍率的修正是独立于提示信息的，所以它总会正确执行
 				return 0;
 			}
 			return typeMod;
 		},
 		onBasePowerPriority: 23,
 		onBasePower(basePower, attacker, defender, move) {
-			// 检查：确保是拥有此特性的宝可梦 (attacker) 在使用招式
 			if (attacker.getAbility().id !== 'zuijianitai') return;
-			// 检查：确保使用的招式是“虫属性”
 			if (move.type === 'Bug') {
-				// 在后台日志中打印一条信息，方便调试
 				this.debug('Zui Jia Ni Tai Bug move power boost');
-				// 将招式威力进行连锁修正，提升1.5倍
 				return this.chainModify(1.5);
 			}
 		},
-
 		flags: { breakable: 1 },
 		name: "Zui Jia Ni Tai",
 		rating: 4,
