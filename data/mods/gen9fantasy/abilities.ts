@@ -1254,29 +1254,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "全力达摩。使用招式前会变为达摩模式,且该形态会一直持续",
 	},
 	zuijianitai: {
-		// 【新增】onTryHit 事件处理器
-		// 在招式即将命中目标时触发，用于重置我们的“激活记忆”
-		onTryHit(target, source, move) {
-			// this.effectState 是一个用来存储特性临时状态的对象
-			// 我们在这里将 activated 标志重置为 false，为新的一次攻击做准备
-			this.effectState.activated = false;
-		},
-		// 【修改】onEffectiveness 事件处理器
 		onEffectiveness(typeMod, target, type, move) {
-			if (typeMod <= 0) return typeMod;
 			const bugWeaknesses = ['Flying', 'Rock', 'Fire'];
-			if (!bugWeaknesses.includes(move.type)) {
-				// 在显示信息前，先检查“激活记忆”标志
-				// 只有当这个标志为 false (即本次攻击还未激活过) 时，才执行下面的代码
-				if (!this.effectState.activated) {
-					this.add('-activate', target, 'ability: Zui Jia Ni Tai');
-					// 显示信息后，立刻将标志设为 true
-					// 这样即使该事件再次被触发，也不会重复显示信息了
-					this.effectState.activated = true;
-				}
-				// 伤害倍率的修正是独立于提示信息的，所以它总会正确执行
-				return 0;
+			// 检查1：攻击招式的属性是否在我们定义的“新弱点”列表里
+			if (bugWeaknesses.includes(move.type)) {
+				// 如果是，无论原始倍率是多少，都强制返回“效果绝佳”
+				this.add('-activate', target, 'ability: Zui Jia Ni Tai');
+				return 1; // 1 代表效果绝佳 (2x)
 			}
+			// 检查2：如果招式不属于新弱点，我们再检查它原本是不是弱点
+			if (typeMod > 0) {
+				// 如果是，就说明这是一个需要被“过滤”掉的旧弱点
+				this.add('-activate', target, 'ability: Zui Jia Ni Tai');
+				return 0; // 返回“效果一般”来移除这个弱点
+			}
+			// 如果以上都不是，说明是效果一般或效果不好的攻击，保持原样
 			return typeMod;
 		},
 		onBasePowerPriority: 23,
