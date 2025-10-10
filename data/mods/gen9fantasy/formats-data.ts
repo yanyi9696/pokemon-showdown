@@ -14,6 +14,18 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	tropiusfantasy: {
 		tier: "Illegal",
 	},
+	darmanitanfantasy: {
+		tier: "Illegal",
+	},
+	darmanitanzenfantasy: {
+		tier: "Illegal",
+	},
+	darmanitangalarfantasy: {
+		tier: "Illegal",
+	},
+	darmanitangalarzenfantasy: {
+		tier: "Illegal",
+	},
 	//定好分级的fantasy宝可梦
 	greninjaashfantasy: {
 		tier: "Illegal",

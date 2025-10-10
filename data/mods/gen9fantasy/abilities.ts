@@ -1219,4 +1219,31 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10029,
 		shortDesc: "变幻自由。自身属性变为即将使用的招式的属性",
 	},
+	quanlidamo: {
+		// onBeforeMove 会在使用招式前触发
+		onBeforeMove(pokemon, target, move) {
+			// 检查1: 确认宝可梦是达摩狒狒且未被变身
+			if (pokemon.baseSpecies.baseSpecies !== 'Darmanitan' || pokemon.transformed) {
+				return;
+			}
+			// 检查2: 如果已经是达摩形态，则不再触发，实现“一直维持”的效果
+			if (pokemon.species.forme.includes('Zen')) {
+				return;
+			}
+			
+			// 根据是否为伽勒尔形态来决定要变成哪种达摩模式
+			const isGalar = pokemon.species.name.includes('Galar');
+			const targetForme = isGalar ? 'Darmanitan-Galar-Zen' : 'Darmanitan-Zen';
+			
+			// 在对战日志中显示特性发动信息，并改变形态
+			this.add('-activate', pokemon, 'ability: Quan Li Da Mo');
+			pokemon.formeChange(targetForme, this.effect);
+		},
+		// 这些是防止特性被复制、交换或无效化的标准旗帜，对于形态变化特性很重要
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
+		name: "Quan Li Da Mo",
+		rating: 2,
+		num: 10030,
+		shortDesc: "使用招式前会变为达摩模式，且该形态会一直持续。",
+	},
 };
