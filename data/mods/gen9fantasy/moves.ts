@@ -426,9 +426,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					// 随机一个状态
 					const statuses = ['brn', 'par', 'frz'];
 					const status = this.sample(statuses);
-					if (target.setStatus(status, source, move)) {
-						this.add('-status', target, status);
-					}
+					target.trySetStatus(status, source, move);
 				},
 			},
 			{
