@@ -5533,11 +5533,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	meganiumfantasy: {
 		learnset: {
-			strengthsap: ["9M"],
 			drainingkiss: ["9M"],
 			fleurcannon: ["9M"],
+			dazzlinggleam: ["9M"],
 			floralhealing: ["9M"],
-			growth: ["9M"],
+			earthpower: ["9M"],
 			pollenpuff: ["9M"],
 			//幻想增添技能
 			ancientpower: ["4T"],
