@@ -538,6 +538,10 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
 	},
+	victreebelmega: {
+		isNonstandard: "Past",
+		tier: "Illegal",
+	},
 	tentacool: {
 		tier: "LC",
 	},
