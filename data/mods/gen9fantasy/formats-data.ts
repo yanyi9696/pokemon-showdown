@@ -2,6 +2,9 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
+	victreebelmegafantasy: {
+		tier: "Illegal",
+	},
 	slowbrofantasy: {
 		tier: "Illegal",
 	},
@@ -290,9 +293,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	urshifurapidstrikefantasy: {
 		tier: "UU",
 	},
-	victreebelfantasy: {
-		tier: "UU",
-	},
 	volbeatfantasy: {
 		tier: "UU",
 	},
@@ -321,6 +321,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	stakatakafantasy: {
+		tier: "RUBL",
+	},
+	victreebelfantasy: {
 		tier: "RUBL",
 	},
 	abomasnowfantasy: {

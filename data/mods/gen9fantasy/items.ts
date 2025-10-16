@@ -1,4 +1,21 @@
 export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
+	//以下为mega石 num从10000开始
+	victreebelite: {
+		name: "Victreebelite",
+		spritenum: 613, 
+		megaStone: "Victreebel-Mega",
+		megaEvolves: "Victreebel",
+		itemUser: ["Victreebel"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10000, 
+		gen: 9, 
+		desc: "幻想大食花超级石。让幻想大食花携带后，在战斗时就能进行超级进化",
+		shortDesc: "幻想大食花超级石。让幻想大食花携带后，在战斗时就能进行超级进化",
+	},
+	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",
 		spritenum: 686,
@@ -6,7 +23,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		zMove: "Chaopinyaogunpoyinbo",
 		zMoveFrom: "Overdrive",
 		itemUser: ["Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy"], // 再次确认形态名称
-		num: 10000,
+		num: 20000,
 		gen: 9,
 		desc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
 		shortDesc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
@@ -18,12 +35,12 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		zMove: "Huangjinjibanshoulijian",
 		zMoveFrom: "Water Shuriken",
 		itemUser: ["Greninja-Bond-Fantasy", "Greninja-Ash-Fantasy"], // 再次确认形态名称
-		num: 10005,
+		num: 20002,
 		gen: 9,
 		desc: "智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
 		shortDesc: "智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
 	},
-	//以下为Z以外的自制道具
+	//以下为Z和mega石以外的自制道具 num从30000开始
 	fantasypowerlens: {
 		name: "Fantasy Power Lens",
 		spritenum: 359,
@@ -64,7 +81,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
             return this.chainModify([4915, 4096]); // 1.2倍
         }
     },
-		num: 10001,
+		num: 30000,
 		gen: 9,
 		desc: "幻之力量镜。携带后,虽然攻击将无法击中要害,但命中不满100%的非变化类技能命中率与威力会提升1.2倍",
 		shortDesc: "幻之力量镜。攻击无法击中要害,命中不满100%的非变化技能威力与命中率提升1.2倍",
@@ -92,7 +109,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				move.ignoreImmunity = true;
 			}
 		},
-		num: 10002,
+		num: 30001,
 		gen: 9,
 		desc: "幻之标靶。携带后,登场会暴露道具,虽然无法使用变化招式,但使用的原本属性相性没有效果的招式会变为有效果",
 		shortDesc: "幻之标靶。登场时暴露道具,使用的招式无视属性免疫,但无法使用变化招式",
@@ -117,7 +134,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			}
 		},
 		//不受异常状态效果影响的效果分别写在各个异常状态里了
-		num: 10003,
+		num: 30002,
 		gen: 9,
 		desc: "幻之生命宝珠。携带后, 不受异常状态效果影响,处于异常状态下的宝可梦,受到的伤害降低30%,但回合结束时将损失最大HP的1/10",
 		shortDesc: "幻之生命宝珠。异常状态效果无效,异常状态下伤害减免30%,每回合损血1/10",
@@ -213,7 +230,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				}
 			}
 		},
-		num: 10004,
+		num: 30003,
 		gen: 9,
 		desc: "幻之香袋。携带道具后将无法提升能力,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失",
 		shortDesc: "幻之香袋。无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味",
@@ -254,7 +271,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				}
 			}
 		},
-		num: 10005,
+		num: 30004,
 		gen: 9,
 		desc: "幻之焦点镜。携带后,使用射击类、球和弹类招式能无视目标20%的防御与特防",
 		shortDesc: "幻之焦点镜。携带后,使用射击类、球和弹类招式能无视目标20%的防御与特防",
@@ -280,7 +297,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			// 为宝可梦恢复其最大HP的1/10
 			this.heal(pokemon.baseMaxhp / 10);
 		},
-		num: 10006,
+		num: 30005,
 		gen: 9,
 		desc: "幻之蜜汁苹果。携带后,虽然物攻和特攻将降低30%,但在每个回合结束时恢复最大HP的1/10",
 		shortDesc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低30%",
@@ -309,7 +326,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				return priority - 0.1;
 			}
 		},
-		num: 10007,
+		num: 30006,
 		gen: 9,
 		desc: "幻之护具。携带后,虽然物防和特防将提高30%,但非变化技能在相同优先度下将必定后出",
 		shortDesc: "幻之护具。携带后,物防和特防提高30%,但非变化技能在相同优先度下将必定后出",
