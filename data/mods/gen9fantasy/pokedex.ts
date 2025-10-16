@@ -1985,7 +1985,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	victreebel: {
 		inherit: true,
 		otherFormes: ["Victreebel-Fantasy", "Victreebel-Mega-Fantasy"],
-		formeOrder: ["Victreebel", "Victreebel-Fantasy"],
+		formeOrder: ["Victreebel", "Victreebel-Fantasy", "Victreebel-Mega-Fantasy"],
 	},
 	victreebelfantasy: {
 		num: 71,
