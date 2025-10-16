@@ -12,7 +12,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 125.5,
 		color: "Green",
 		eggGroups: ["Grass"],
-		requiredItem: "Victreebelite",
+		requiredItem: "Fantasy Victreebelite",
 		spriteid: 'victreebel',
 	},
 	slowbro: {

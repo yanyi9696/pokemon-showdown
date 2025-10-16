@@ -1,11 +1,11 @@
 export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	//以下为mega石 num从10000开始
-	victreebelite: {
-		name: "Victreebelite",
+	fantasyvictreebelite: {
+		name: "Fantasy Victreebelite",
 		spritenum: 613, 
-		megaStone: "Victreebel-Mega",
-		megaEvolves: "Victreebel",
-		itemUser: ["Victreebel"],
+		megaStone: "Victreebel-Mega-Fantasy",
+		megaEvolves: "Victreebel-Fantasy",
+		itemUser: ["Victreebel-Fantasy"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
