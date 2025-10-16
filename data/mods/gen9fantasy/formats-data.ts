@@ -137,6 +137,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	garchompfantasy: {
 		tier: "OU",
 	},
+	greninjafantasy: {
+		tier: "OU",
+	},
 	greninjabondfantasy: {
 		tier: "OU",
 	},
