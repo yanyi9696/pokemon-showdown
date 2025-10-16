@@ -13,7 +13,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Green",
 		eggGroups: ["Grass"],
 		requiredItem: "Victreebelite",
-		spriteid: 'victreebel-mega',
+		spriteid: 'victreebel',
 	},
 	slowbro: {
 		inherit: true,
