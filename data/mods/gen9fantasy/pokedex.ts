@@ -5,6 +5,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Victreebel-Mega-Fantasy",
 		baseSpecies: "Victreebel",
 		forme: "Mega",
+		changesFrom: "Victreebel-Fantasy",
 		types: ["Grass", "Poison"],
 		baseStats: { hp: 110, atk: 105, def: 95, spa: 145, spd: 95, spe: 70 },
 		abilities: { 0: "Corrosion" },
