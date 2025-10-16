@@ -90,12 +90,18 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	metagrossfantasy: {
 		tier: "(Uber)",
 	},
+	mewfantasy: {
+		tier: "(Uber)",
+	},
 	pecharuntfantasy: {
 		tier: "(Uber)",
 	},
 	salamencemegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Long Zhi Hu Xi"},		
+	},
+	sandyshocksfantasy: {
+		tier: "(Uber)",
 	},
 	suicunefantasy: {
 		tier: "(Uber)",
@@ -150,9 +156,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magnezonefantasy: {
 		tier: "OU",
 	},
-	mewfantasy: {
-		tier: "OU",
-	},
 	mimikyufantasy: {
 		tier: "OU",
 	},
@@ -176,9 +179,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	sandacondafantasy: {
-		tier: "OU",
-	},
-	sandyshocksfantasy: {
 		tier: "OU",
 	},
 	skeledirgefantasy: {
@@ -596,6 +596,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	garchompmega: {
 		tier: "UUBL",
 	},
+	goodrahisui: {
+		tier: "UUBL",
+	},
 	pelipper: {
 		tier: "UUBL",
 	},
@@ -605,10 +608,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	serperior: {
 		tier: "UUBL",
 	},
-	goodrahisui: {
-		tier: "UU",
+	xurkitree: {
+		tier: "UUBL",
 	},
 	gyarados: {
+		tier: "UU",
+	},
+	latiasmega: {
 		tier: "UU",
 	},
 	ogerpon: {
@@ -635,10 +641,25 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	volcanion: {
 		tier: "UU",
 	},
+	bisharp: {
+		tier: "RUBL",
+	},
+	buzzwole: {
+		tier: "RUBL",
+	},
 	cloyster: {
+		tier: "RUBL",
+	},
+	mienshao: {
 		tier: "RUBL",
 	},
 	polteageist: {
 		tier: "RUBL",
+	},
+	amoonguss: {
+		tier: "RU",
+	},
+	hippowdon: {
+		tier: "RU",
 	},
 };

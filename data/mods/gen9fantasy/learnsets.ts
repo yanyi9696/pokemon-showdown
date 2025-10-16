@@ -1935,11 +1935,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	delphoxfantasy: {
 		learnset: {
 			burnup: ["9M"],
+			huanzhiwu: ["9M"],
 			moonblast: ["9M"],
 			drainingkiss: ["9M"],
 			mistyexplosion: ["9M"],
 			craftyshield: ["9M"],
-			mysticalpower: ["9M"],
 			//幻想增添技能
 			agility: ["9M"],
 			allyswitch: ["7T"],
@@ -8167,7 +8167,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			spikes: ["9M"],
 			metalburst: ["9M"],
 			suilinggang: ["9M"],
-			knockoff: ["9M"],
+			icespinner: ["9M"],
 			drillpeck: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M"],
