@@ -1,5 +1,20 @@
 export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
 	//还未定分级的宝可梦
+	victreebelmegafantasy: {
+		num: 71,
+		name: "Victreebel-Mega-Fantasy",
+		baseSpecies: "Victreebel",
+		forme: "Mega",
+		types: ["Grass", "Poison"],
+		baseStats: { hp: 110, atk: 105, def: 95, spa: 145, spd: 95, spe: 70 },
+		abilities: { 0: "Corrosion" },
+		heightm: 4.5,
+		weightkg: 125.5,
+		color: "Green",
+		eggGroups: ["Grass"],
+		requiredItem: "Victreebelite",
+		spriteid: 'victreebel-mega',
+	},
 	slowbro: {
 		inherit: true,
 		otherFormes: ["Slowbro-Fantasy", "Slowbro-Mega","Slowbro-Mega-Fantasy", "Slowbro-Galar", "Slowbro-Galar-Fantasy"],
@@ -1987,21 +2002,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoType: "useItem",
 		evoItem: "Leaf Stone",
 		eggGroups: ["Grass"],
-	},
-	victreebelmegafantasy: {
-		num: 71,
-		name: "Victreebel-Mega-Fantasy",
-		baseSpecies: "Victreebel",
-		forme: "Mega",
-		types: ["Grass", "Poison"],
-		baseStats: { hp: 110, atk: 105, def: 95, spa: 145, spd: 95, spe: 70 },
-		abilities: { 0: "Corrosion" },
-		heightm: 4.5,
-		weightkg: 125.5,
-		color: "Green",
-		eggGroups: ["Grass"],
-		requiredItem: "Victreebelite",
-		spriteid: 'victreebel-mega',
 	},
 	abomasnow: {
 		inherit: true,
