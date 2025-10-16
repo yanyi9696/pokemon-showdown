@@ -4,7 +4,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		name: "Fantasy Victreebelite",
 		spritenum: 613, 
 		megaStone: "Victreebel-Mega-Fantasy",
-		megaEvolves: "Victreebel-Fantasy",
+		megaEvolves: "Victreebel",
 		itemUser: ["Victreebel-Fantasy"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
