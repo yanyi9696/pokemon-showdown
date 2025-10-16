@@ -119,13 +119,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Unaware"},	
 	},
+	chandelurefantasy: {
+		tier: "OU",
+	},
 	corviknightfantasy: {
 		tier: "OU",
 	},
 	delphoxfantasy: {
-		tier: "OU",
-	},
-	dragalgefantasy: {	
 		tier: "OU",
 	},
 	empoleonfantasy: {	
@@ -184,13 +184,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	skeledirgefantasy: {
 		tier: "OU",
 	},
-	steelixfantasy: {
-		tier: "OU",
-	},
-	steelixmegafantasy: {
-		tier: "OU",
-		abilities: {0: "Sand Force"},		
-	},
 	urshifufantasy: {
 		tier: "OU",
 	},
@@ -204,13 +197,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	audinofantasy: {
 		tier: "UUBL",
 	},
-	chandelurefantasy: {
+	dragalgefantasy: {	
 		tier: "UUBL",
 	},
 	electivirefantasy: {
-		tier: "UUBL",
-	},
-	goodrahisuifantasy: {
 		tier: "UUBL",
 	},
 	ironthornsfantasy: {
@@ -223,6 +213,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magmortarfantasy: {
 		tier: "UUBL",
 	},
+	miloticfantasy: {
+		tier: "UUBL",
+	},
 	politoedfantasy: {
 		tier: "UUBL",
 	},
@@ -231,6 +224,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	slitherwingfantasy: {
 		tier: "UUBL",
+	},
+	steelixfantasy: {
+		tier: "UUBL",
+	},
+	steelixmegafantasy: {
+		tier: "UUBL",
+		abilities: {0: "Sand Force"},		
 	},
 	toxtricityfantasy: {
 		tier: "UUBL",
@@ -253,6 +253,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	crobatfantasy: {
 		tier: "UU",
 	},
+	cursolafantasy: {
+		tier: "UU",
+	},
 	decidueyehisuifantasy: {
 		tier: "UU",
 	},
@@ -272,13 +275,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	golisopodfantasy: {
 		tier: "UU",
 	},
+	goodrahisuifantasy: {
+		tier: "UU",
+	},
 	illumisefantasy: {
 		tier: "UU",
 	},
 	mienshaofantasy: {
-		tier: "UU",
-	},
-	miloticfantasy: {
 		tier: "UU",
 	},
 	urshifurapidstrikefantasy: {
@@ -299,7 +302,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	aggronfantasy: {
 		tier: "RUBL",
 	},
-	cursolafantasy: {
+	carnivinefantasy: {
 		tier: "RUBL",
 	},
 	dusknoirfantasy: {
@@ -324,9 +327,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	altariafantasy: {
-		tier: "RU",
-	},
-	carnivinefantasy: {
 		tier: "RU",
 	},
 	glaliefantasy: {
