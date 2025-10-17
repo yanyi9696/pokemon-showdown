@@ -25,7 +25,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			// 因此不再去寻找一个 hypothetical 的 "Mega-Fantasy-Fantasy" 形态。
 			const directToMegaFantasy = [
 				'Victreebel-Fantasy', 'Hawlucha-Fantasy', 'Chandelure-Fantasy', 'Froslass-Fantasy', 'Delphox-Fantasy', 
-				'Dragalge-Fantasy', 'Excadrill-Fantasy', 
+				'Dragalge-Fantasy', 'Excadrill-Fantasy', 'Meganium-Fantasy' ,
 			];
 
 			// 只有当发起进化的宝可梦是-Fantasy形态，【且不在】特判清单中时，

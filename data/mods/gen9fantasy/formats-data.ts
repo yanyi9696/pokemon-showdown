@@ -23,6 +23,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	excadrillmegafantasy: {
 		tier: "Uber",
 	},
+	meganiummegafantasy: {
+		tier: "Uber",
+	},
 	slowbrofantasy: {
 		tier: "Uber",
 	},
