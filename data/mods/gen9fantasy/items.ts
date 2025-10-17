@@ -12,8 +12,23 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 10000, 
 		gen: 9, 
-		desc: "幻想大食花超级石。让幻想大食花携带后，在战斗时就能进行超级进化",
-		shortDesc: "幻想大食花超级石。让幻想大食花携带后，在战斗时就能进行超级进化",
+		desc: "幻想大食花超级石。让幻想大食花携带后,在战斗时就能进行超级进化",
+		shortDesc: "幻想大食花超级石。让幻想大食花携带后,在战斗时就能进行超级进化",
+	},
+	fantasyhawluchaite: {
+		name: "Fantasy Hawluchaite",
+		spritenum: 584, 
+		megaStone: "Hawlucha-Mega-Fantasy",
+		megaEvolves: "Hawlucha",
+		itemUser: ["Hawlucha-Fantasy"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10001, 
+		gen: 9, 
+		desc: "幻想摔角鹰人超级石。让幻想摔角鹰人携带后,在战斗时就能进行超级进化",
+		shortDesc: "幻想摔角鹰人超级石。让幻想摔角鹰人携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {

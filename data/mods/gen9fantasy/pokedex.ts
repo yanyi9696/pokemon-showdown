@@ -15,6 +15,21 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Fantasy Victreebelite",
 		spriteid: 'victreebel',
 	},
+	hawluchamegafantasy: {
+		num: 701,
+		name: "Hawlucha-Mega-Fantasy",
+		baseSpecies: "Hawlucha",
+		forme: "Mega",
+		types: ["Fighting", "Flying"],
+		baseStats: { hp: 78, atk: 137, def: 100, spa: 74, spd: 93, spe: 118 },
+		abilities: { 0: "Stamina" },
+		heightm: 1.0,
+		weightkg: 25.0,
+		color: "Green",
+		eggGroups: ["Flying", "Human-Like"],
+		requiredItem: "Fantasy Hawluchaite",
+		spriteid: 'hawlucha',
+	},
 	slowbro: {
 		inherit: true,
 		otherFormes: ["Slowbro-Fantasy", "Slowbro-Mega","Slowbro-Mega-Fantasy", "Slowbro-Galar", "Slowbro-Galar-Fantasy"],
@@ -2071,8 +2086,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	hawlucha: {
 		inherit: true,
-		otherFormes: ["Hawlucha-Fantasy"],
-		formeOrder: ["Hawlucha",  "Hawlucha-Fantasy"],
+		otherFormes: ["Hawlucha-Fantasy", "Hawlucha-Mega-Fantasy"],
+		formeOrder: ["Hawlucha", "Hawlucha-Fantasy", "Hawlucha-Mega-Fantasy"],
 	},
 	hawluchafantasy: {
 		num: 701,

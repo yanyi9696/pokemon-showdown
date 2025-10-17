@@ -5,6 +5,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	victreebelmegafantasy: {
 		tier: "Uber",
 	},
+	hawluchamegafantasy: {
+		tier: "Uber",
+	},
 	slowbrofantasy: {
 		tier: "Uber",
 	},

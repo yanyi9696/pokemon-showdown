@@ -23,7 +23,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			// 【特判清单】
 			// 对于清单内的宝可梦，我们相信mega石已经给出了最终进化目标，
 			// 因此不再去寻找一个 hypothetical 的 "Mega-Fantasy-Fantasy" 形态。
-			const directToMegaFantasy = ['Victreebel-Fantasy', ];
+			const directToMegaFantasy = ['Victreebel-Fantasy', 'Hawlucha-Fantasy' ];
 
 			// 只有当发起进化的宝可梦是-Fantasy形态，【且不在】特判清单中时，
 			// 才去执行原有的逻辑，寻找一个更特殊的-Fantasy Mega形态。
