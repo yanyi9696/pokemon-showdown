@@ -62,7 +62,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	fantasydelphoxite: {
 		name: "Fantasy Delphoxite",
-		spritenum: 589, 
+		spritenum: 591, 
 		megaStone: "Delphox-Mega-Fantasy",
 		megaEvolves: "Delphox",
 		itemUser: ["Delphox-Fantasy"],
@@ -74,6 +74,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		gen: 9, 
 		desc: "幻想妖火红狐超级石。让幻想妖火红狐携带后,在战斗时就能进行超级进化",
 		shortDesc: "幻想妖火红狐超级石。让幻想妖火红狐携带后,在战斗时就能进行超级进化",
+	},
+	fantasydragalgite: {
+		name: "Fantasy Dragalgite",
+		spritenum: 588, 
+		megaStone: "Dragalge-Mega-Fantasy",
+		megaEvolves: "Dragalge",
+		itemUser: ["Dragalge-Fantasy"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10004, 
+		gen: 9, 
+		desc: "幻想毒藻龙超级石。让幻想毒藻龙携带后,在战斗时就能进行超级进化",
+		shortDesc: "幻想毒藻龙超级石。让幻想毒藻龙携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {
