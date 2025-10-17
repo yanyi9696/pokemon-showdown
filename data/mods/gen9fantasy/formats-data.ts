@@ -3,37 +3,37 @@ import {FantasySpeciesFormatsData} from './types';
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
 	victreebelmegafantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	slowbrofantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	slowbromegafantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	slowbrogalarfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	tropiusfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	darmanitanfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	darmanitanzenfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	darmanitangalarfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	darmanitangalarzenfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	lurantisfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	thievulfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	//定好分级的fantasy宝可梦
 	greninjaashfantasy: {
