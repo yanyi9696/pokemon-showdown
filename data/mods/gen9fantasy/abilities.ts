@@ -104,6 +104,46 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 112,
 		shortDesc: "登场之后的5回合内攻击和速度减半,期间每回合结束攻击和速度会上升1级",
 	},
+	flowergift: {
+		onSwitchInPriority: -2,
+		onStart(pokemon) {
+			this.singleEvent('WeatherChange', this.effect, this.effectState, pokemon);
+		},
+		onWeatherChange(pokemon) {
+			// This section is intentionally left unchanged.
+			// It ensures that only Cherrim changes its form.
+			if (!pokemon.isActive || pokemon.baseSpecies.baseSpecies !== 'Cherrim' || pokemon.transformed) return;
+			if (!pokemon.hp) return;
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				if (pokemon.species.id !== 'cherrimsunshine') {
+					pokemon.formeChange('Cherrim-Sunshine', this.effect, false, '0', '[msg]');
+				}
+			} else {
+				if (pokemon.species.id === 'cherrimsunshine') {
+					pokemon.formeChange('Cherrim', this.effect, false, '0', '[msg]');
+				}
+			}
+		},
+		onAllyModifyAtkPriority: 3,
+		onAllyModifyAtk(atk, pokemon) {
+			// The check for 'Cherrim' has been removed from here.
+			// Now, any Pokémon with Flower Gift will grant this boost in the sun.
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				return this.chainModify(1.5);
+			}
+		},
+		onAllyModifySpDPriority: 4,
+		onAllyModifySpD(spd, pokemon) {
+			// The check for 'Cherrim' has also been removed from here.
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				return this.chainModify(1.5);
+			}
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, breakable: 1 },
+		name: "Flower Gift",
+		rating: 1,
+		num: 122,
+	},
 	infiltrator: {
 		onModifyMove(move) {
 			move.infiltrates = true;

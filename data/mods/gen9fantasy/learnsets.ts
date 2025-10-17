@@ -5868,12 +5868,15 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	meganiumfantasy: {
 		learnset: {
+			leafblade: ["9M"],
+			strengthsap: ["9M"],
 			drainingkiss: ["9M"],
 			fleurcannon: ["9M"],
 			dazzlinggleam: ["9M"],
 			floralhealing: ["9M"],
 			earthpower: ["9M"],
 			pollenpuff: ["9M"],
+			growth: ["9M"],
 			//幻想增添技能
 			ancientpower: ["4T"],
 			aromatherapy: ["7L60", "6L60", "5L60", "4L60"],
@@ -5970,12 +5973,15 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	meganiummegafantasy: {
 		learnset: {
+			leafblade: ["9M"],
+			strengthsap: ["9M"],
 			drainingkiss: ["9M"],
 			fleurcannon: ["9M"],
 			dazzlinggleam: ["9M"],
 			floralhealing: ["9M"],
 			earthpower: ["9M"],
 			pollenpuff: ["9M"],
+			growth: ["9M"],
 			//幻想增添技能
 			ancientpower: ["4T"],
 			aromatherapy: ["7L60", "6L60", "5L60", "4L60"],

@@ -341,6 +341,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	lopunnyfantasy: {
 		tier: "RUBL",
 	},
+	meganiumfantasy: {
+		tier: "RUBL",
+	},
 	ribombeefantasy: {
 		tier: "RUBL",
 	},
@@ -360,9 +363,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	hawluchafantasy: {
-		tier: "RU",
-	},
-	meganiumfantasy: {
 		tier: "RU",
 	},
 	mukalolafantasy: {
