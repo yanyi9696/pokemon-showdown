@@ -144,7 +144,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Mega",
 		types: ["Water", "Dark"],
 		genderRatio: { M: 0.875, F: 0.125 },
-		baseStats: { hp: 72, atk: 95, def: 67, spa: 103, spd: 71, spe: 122 },
+		baseStats: { hp: 72, atk: 125, def: 77, spa: 133, spd: 81, spe: 142 },
 		abilities: { 0: "Stakeout" },
 		heightm: 1.5,
 		weightkg: 40,
