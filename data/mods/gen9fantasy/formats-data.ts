@@ -2,70 +2,27 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	victreebelmegafantasy: {
-		tier: "Uber",
-	},
-	hawluchamegafantasy: {
-		tier: "Uber",
-	},
-	chandeluremegafantasy: {
-		tier: "Uber",
-	},
-	froslassmegafantasy: {
-		tier: "Uber",
-	},
-	delphoxmegafantasy: {
-		tier: "Uber",
-	},
-	dragalgemegafantasy: {	
-		tier: "Uber",
-	},
-	excadrillmegafantasy: {
-		tier: "Uber",
-	},
-	meganiummegafantasy: {
-		tier: "Uber",
-	},
-	greninjamegafantasy: {
-		tier: "Uber",
-	},
-	slowbrofantasy: {
-		tier: "Uber",
-	},
-	slowbromegafantasy: {
-		tier: "Uber",
-	},
-	slowbrogalarfantasy: {
-		tier: "Uber",
-	},
-	tropiusfantasy: {
-		tier: "Uber",
-	},
-	darmanitanfantasy: {
-		tier: "Uber",
-	},
+
+	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
-		tier: "Uber",
-	},
-	darmanitangalarfantasy: {
-		tier: "Uber",
+		tier: "Illegal",
 	},
 	darmanitangalarzenfantasy: {
-		tier: "Uber",
+		tier: "Illegal",
 	},
-	lurantisfantasy: {
-		tier: "Uber",
-	},
-	thievulfantasy: {
-		tier: "Uber",
-	},
-	//定好分级的fantasy宝可梦
 	greninjaashfantasy: {
 		tier: "Illegal",
 	},
 	altariamegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Tian Lai Zhi Yin"},		
+	},
+	darmanitanfantasy: {
+		tier: "Uber",
+	},
+	delphoxmegafantasy: {
+		tier: "Uber",
+		abilities: {0: "Levitate"},		
 	},
 	metagrossmegafantasy: {
 		tier: "Uber",
@@ -92,6 +49,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Tough Claws"},	
 	},
+	dragalgemegafantasy: {	
+		tier: "Uber",
+		abilities: {0: "Adaptability"},		
+	},
+	darmanitangalarfantasy: {
+		tier: "(Uber)",
+	},
 	dragapultfantasy: {
 		tier: "(Uber)",
 	},
@@ -110,6 +74,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	garchompmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
+	},
+	greninjamegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Stakeout"},		
 	},
 	kricketunefantasy: {
 		tier: "(Uber)",
@@ -149,6 +117,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	chandelurefantasy: {
 		tier: "OU",
 	},
+	chandeluremegafantasy: {
+		tier: "OU",
+		abilities: {0: "Shou Hun"},		
+	},
 	corviknightfantasy: {
 		tier: "OU",
 	},
@@ -160,6 +132,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	excadrillfantasy: {
 		tier: "OU",
+	},
+	excadrillmegafantasy: {
+		tier: "OU",
+		abilities: {0: "Tough Claws"},		
+	},
+	froslassmegafantasy: {
+		tier: "OU",
+		abilities: {0: "Mold Breaker"},		
 	},
 	garchompfantasy: {
 		tier: "OU",
@@ -214,6 +194,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	skeledirgefantasy: {
 		tier: "OU",
 	},
+	slowbrofantasy: {
+		tier: "OU",
+	},
+	slowbrogalarfantasy: {
+		tier: "OU",
+	},
 	urshifufantasy: {
 		tier: "OU",
 	},
@@ -254,6 +240,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	slitherwingfantasy: {
 		tier: "UUBL",
+	},
+	slowbromegafantasy: {
+		tier: "UUBL",
+		abilities: {0: "Shell Armor"},		
 	},
 	steelixfantasy: {
 		tier: "UUBL",
@@ -311,11 +301,18 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	illumisefantasy: {
 		tier: "UU",
 	},
+	lurantisfantasy: {
+		tier: "UU",
+	},
 	mienshaofantasy: {
 		tier: "UU",
 	},
 	urshifurapidstrikefantasy: {
 		tier: "UU",
+	},
+	victreebelmegafantasy: {
+		tier: "UU",
+		abilities: {0: "Corrosion"},	
 	},
 	volbeatfantasy: {
 		tier: "UU",
@@ -344,7 +341,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	meganiumfantasy: {
 		tier: "RUBL",
 	},
+	meganiummegafantasy: {
+		tier: "RUBL",
+		abilities: {0: "Flower Gift"},		
+	},
 	ribombeefantasy: {
+		tier: "RUBL",
+	},
+	tropiusfantasy: {
 		tier: "RUBL",
 	},
 	stakatakafantasy: {
@@ -364,6 +368,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	hawluchafantasy: {
 		tier: "RU",
+	},
+	hawluchamegafantasy: {
+		tier: "RU",
+		abilities: {0: "Stamina"},
 	},
 	mukalolafantasy: {
 		tier: "RU",
@@ -387,6 +395,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
+		tier: "RU",
+	},
+	thievulfantasy: {
 		tier: "RU",
 	},
 	//还未定分级的宝可梦

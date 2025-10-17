@@ -11377,7 +11377,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	slowbrofantasy: {
 		learnset: {
 			earthpower: ["9M"],
-			wish: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M"],
 			afteryou: ["7T", "6T", "5T"],
@@ -11534,7 +11533,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			banefulbunker: ["9M"],
 			dongchadaji: ["9M"],
 			earthpower: ["9M"],
-			wish: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M"],
 			afteryou: ["7T", "6T", "5T"],
@@ -11691,7 +11689,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			banefulbunker: ["9M"],
 			dongchadaji: ["9M"],
 			earthpower: ["9M"],
-			wish: ["9M"],
 			//幻想增添技能
 			acid: ["9L1", "8L1"],
 			acidspray: ["9M"],
