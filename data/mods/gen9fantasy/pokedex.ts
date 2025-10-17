@@ -2208,7 +2208,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Fighting", "Flying"],
 		baseStats: { hp: 78, atk: 92, def: 75, spa: 74, spd: 63, spe: 118 },
-		abilities: { 0: "Limber", 1: "Gale Wings", H: "Scrappy" },
+		abilities: { 0: "Feng Ya", 1: "Gale Wings", H: "Scrappy" },
 		heightm: 0.8,
 		weightkg: 21.5,
 		color: "Green",
