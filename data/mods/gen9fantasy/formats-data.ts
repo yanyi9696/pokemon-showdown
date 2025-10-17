@@ -197,9 +197,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	slowbrofantasy: {
 		tier: "OU",
 	},
-	slowbrogalarfantasy: {
-		tier: "OU",
-	},
 	urshifufantasy: {
 		tier: "OU",
 	},
@@ -239,6 +236,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	slitherwingfantasy: {
+		tier: "UUBL",
+	},
+	slowbrogalarfantasy: {
 		tier: "UUBL",
 	},
 	slowbromegafantasy: {
