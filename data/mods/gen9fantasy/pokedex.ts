@@ -955,7 +955,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["Water", "Dark"],
 		genderRatio: { M: 0.875, F: 0.125 },
 		baseStats: { hp: 72, atk: 95, def: 67, spa: 103, spd: 71, spe: 122 },
-		abilities: { 0: "Anticipation", H: "Bian Huan Zi You", S: "Chao Yue Qian Ban Bian Shen" },
+		abilities: { 0: "Anticipation", H: "Bian Huan Zi You" },
 		heightm: 1.5,
 		weightkg: 40,
 		color: "Blue",
