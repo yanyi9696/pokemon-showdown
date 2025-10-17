@@ -26,6 +26,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	meganiummegafantasy: {
 		tier: "Uber",
 	},
+	greninjamegafantasy: {
+		tier: "Uber",
+	},
 	slowbrofantasy: {
 		tier: "Uber",
 	},
