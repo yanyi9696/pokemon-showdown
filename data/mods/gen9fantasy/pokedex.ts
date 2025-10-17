@@ -65,7 +65,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Dawn Stone",
 		eggGroups: ["Fairy", "Mineral"],
 		requiredItem: "Fantasy Froslassite",
-		spriteid: 'froslassite',
+		spriteid: 'froslass',
 	},
 	slowbro: {
 		inherit: true,
@@ -1654,8 +1654,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	froslass: {
 		inherit: true,
-		otherFormes: ["Froslass-Fantasy"],
-		formeOrder: ["Froslass",  "Froslass-Fantasy"],
+		otherFormes: ["Froslass-Fantasy", "Froslass-Mega-Fantasy"],
+		formeOrder: ["Froslass", "Froslass-Fantasy", "Froslass-Mega-Fantasy"],
 	},
 	froslassfantasy: {
 		num: 478,
