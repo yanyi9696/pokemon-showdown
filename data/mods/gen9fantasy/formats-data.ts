@@ -2,7 +2,10 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-
+	victreebelmega: {
+		tier: "Uber",
+		abilities: {0: "Corrosion"},		
+	},
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
 		tier: "Illegal",

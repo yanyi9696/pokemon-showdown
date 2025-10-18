@@ -7953,7 +7953,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wringout: ["7L47", "6L47", "5L47", "4L41"],
 		},
 	},
-	victreebel: {
+	victreebelfantasy: {
 		learnset: {
 			biansuzhefan: ["9M"],
 			gunkshot: ["9M"],
