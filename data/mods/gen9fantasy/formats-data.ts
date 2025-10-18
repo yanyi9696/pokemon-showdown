@@ -53,7 +53,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Tough Claws"},	
 	},
 	dragalgemegafantasy: {	
-		tier: "Uber",
+		tier: "(Uber)",
 		abilities: {0: "Adaptability"},		
 	},
 	darmanitangalarfantasy: {
