@@ -315,7 +315,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	victreebelmegafantasy: {
 		tier: "UU",
-		abilities: {0: "Corrosion"},	
+		abilities: {0: "Shi Chong"},	
 	},
 	volbeatfantasy: {
 		tier: "UU",

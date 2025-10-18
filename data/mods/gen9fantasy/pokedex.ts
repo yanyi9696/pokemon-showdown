@@ -1,6 +1,20 @@
 export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
 	//还未定分级的宝可梦
-
+	victreebelmega: {
+		num: 71,
+		name: "Victreebel-Mega",
+		baseSpecies: "Victreebel",
+		forme: "Mega",
+		types: ["Grass", "Poison"],
+		baseStats: { hp: 110, atk: 125, def: 85, spa: 135, spd: 95, spe: 70 },
+		abilities: { 0: "Corrosion" },
+		heightm: 4.5,
+		weightkg: 125.5,
+		color: "Green",
+		eggGroups: ["Grass"],
+		requiredItem: "Victreebelite",
+		spriteid: 'victreebel',
+	},
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
 		num: 555,
