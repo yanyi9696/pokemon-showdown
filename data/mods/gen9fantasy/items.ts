@@ -135,6 +135,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "甲贺忍蛙超级石。让甲贺忍蛙携带后,在战斗时就能进行超级进化",
 		shortDesc: "甲贺忍蛙超级石。让甲贺忍蛙携带后,在战斗时就能进行超级进化",
 	},
+	starminite: {
+		name: "Starminite",
+		spritenum: 629, 
+		megaStone: "Starmie-Mega",
+		megaEvolves: "Starmie",
+		itemUser: ["Starmie"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10009, 
+		gen: 9, 
+		desc: "宝石海星超级石。让宝石海星携带后,在战斗时就能进行超级进化",
+		shortDesc: "宝石海星超级石。让宝石海星携带后,在战斗时就能进行超级进化",
+	},
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",

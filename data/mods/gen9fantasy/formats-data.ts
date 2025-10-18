@@ -66,6 +66,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	regigigasfantasy: {
 		tier: "Uber",
 	},
+	starmiemega: {
+		tier: "Uber",
+		abilities: {0: "Pure Power"},		
+	},
 	absolmegafantasy: {
 		tier: "(Uber)",
 		abilities: { 0: "Adaptability" },
