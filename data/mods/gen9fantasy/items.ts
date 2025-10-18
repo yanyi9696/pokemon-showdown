@@ -1,19 +1,19 @@
 export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	//以下为mega石 num从10000开始
-	fantasyvictreebelite: {
-		name: "Fantasy Victreebelite",
+	victreebelite: {
+		name: "Victreebelite",
 		spritenum: 613, 
-		megaStone: "Victreebel-Mega-Fantasy",
+		megaStone: "Victreebel-Mega",
 		megaEvolves: "Victreebel",
-		itemUser: ["Victreebel-Fantasy"],
+		itemUser: ["Victreebel"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10000, 
 		gen: 9, 
-		desc: "幻想大食花超级石。让幻想大食花携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想大食花超级石。让幻想大食花携带后,在战斗时就能进行超级进化",
+		desc: "大食花超级石。让大食花携带后,在战斗时就能进行超级进化",
+		shortDesc: "大食花超级石。让大食花携带后,在战斗时就能进行超级进化",
 	},
 	fantasyhawluchaite: {
 		name: "Fantasy Hawluchaite",

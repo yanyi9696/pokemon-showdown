@@ -20,17 +20,8 @@ export const Scripts: ModdedBattleScriptsData = {
 			const standardMega = this.dex.species.get(speciesid);
 			let targetSpecies = standardMega; // 默认进化目标是标准Mega
 
-			// 【特判清单】
-			// 对于清单内的宝可梦，我们相信mega石已经给出了最终进化目标，
-			// 因此不再去寻找一个 hypothetical 的 "Mega-Fantasy-Fantasy" 形态。
-			const directToMegaFantasy = [
-				'Victreebel-Fantasy', 'Hawlucha-Fantasy', 'Chandelure-Fantasy', 'Froslass-Fantasy', 'Delphox-Fantasy', 
-				'Dragalge-Fantasy', 'Excadrill-Fantasy', 'Meganium-Fantasy' ,'Greninja-Fantasy', 
-			];
-
-			// 只有当发起进化的宝可梦是-Fantasy形态，【且不在】特判清单中时，
-			// 才去执行原有的逻辑，寻找一个更特殊的-Fantasy Mega形态。
-			if (pokemon.species.name.endsWith('-Fantasy') && !directToMegaFantasy.includes(pokemon.species.name)) {
+			// 只有当发起进化的宝可梦是-Fantasy形态时，才去寻找-Fantasy Mega形态
+			if (pokemon.species.name.endsWith('-Fantasy')) {
 				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
 				if (fantasyMega.exists) {
 					targetSpecies = fantasyMega; // 如果存在，则更新进化目标
@@ -62,3 +53,4 @@ export const Scripts: ModdedBattleScriptsData = {
 		},
 	},
 };
+

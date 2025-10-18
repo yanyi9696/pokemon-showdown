@@ -1837,13 +1837,13 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Victreebel",
 		forme: "Mega",
 		types: ["Grass", "Poison"],
-		baseStats: { hp: 110, atk: 105, def: 95, spa: 145, spd: 95, spe: 70 },
-		abilities: { 0: "Corrosion" },
+		baseStats: { hp: 110, atk: 85, def: 105, spa: 145, spd: 105, spe: 70 },
+		abilities: { 0: "Shi Chong" },
 		heightm: 4.5,
 		weightkg: 125.5,
 		color: "Green",
 		eggGroups: ["Grass"],
-		requiredItem: "Fantasy Victreebelite",
+		requiredItem: "Victreebelite",
 		spriteid: 'victreebel',
 	},
 	volbeat: {
@@ -2111,8 +2111,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	victreebel: {
 		inherit: true,
-		otherFormes: ["Victreebel-Fantasy", "Victreebel-Mega-Fantasy"],
-		formeOrder: ["Victreebel", "Victreebel-Fantasy", "Victreebel-Mega-Fantasy"],
+		otherFormes: ["Victreebel-Fantasy", "Victreebel-Mega", "Victreebel-Mega-Fantasy"],
+		formeOrder: ["Victreebel", "Victreebel-Fantasy", "Victreebel-Mega", "Victreebel-Mega-Fantasy"],
 	},
 	victreebelfantasy: {
 		num: 71,
