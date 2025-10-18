@@ -2,42 +2,7 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	victreebelmega: {
-		tier: "Uber",
-		abilities: {0: "Corrosion"},		
-	},
-	hawluchamega: {
-		tier: "Uber",
-		abilities: {0: "Stamina"},
-	},
-	chandeluremega: {
-		tier: "Uber",
-		abilities: {0: "Flash Fire"},		
-	},
-	froslassmega: {
-		tier: "Uber",
-		abilities: {0: "Mold Breaker"},		
-	},
-	delphoxmega: {
-		tier: "Uber",
-		abilities: {0: "Levitate"},		
-	},
-	dragalgemega: {	
-		tier: "Uber",
-		abilities: {0: "Adaptability"},		
-	},
-	excadrillmega: {
-		tier: "Uber",
-		abilities: {0: "Tough Claws"},		
-	},
-	meganiummega: {
-		tier: "Uber",
-		abilities: {0: "Chlorophyll"},		
-	},
-	greninjamega: {
-		tier: "Uber",
-		abilities: {0: "Stakeout"},		
-	},
+
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
 		tier: "Illegal",
@@ -65,10 +30,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	regigigasfantasy: {
 		tier: "Uber",
-	},
-	starmiemega: {
-		tier: "Uber",
-		abilities: {0: "Pure Power"},		
 	},
 	absolmegafantasy: {
 		tier: "(Uber)",
@@ -439,7 +400,50 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	thievulfantasy: {
 		tier: "RU",
 	},
-	//还未定分级的宝可梦
+
+
+	//ZA新mega
+	starmiemega: {
+		tier: "Uber",
+		abilities: {0: "Pure Power"},		
+	},
+	delphoxmega: {
+		tier: "(Uber)",
+		abilities: {0: "Levitate"},		
+	},
+	excadrillmega: {
+		tier: "OU",
+		abilities: {0: "Mold Breaker"},		
+	},
+	greninjamega: {
+		tier: "UUBL",
+		abilities: {0: "Stakeout"},		
+	},
+	hawluchamega: {
+		tier: "UUBL",
+		abilities: {0: "Stamina"},
+	},
+	froslassmega: {
+		tier: "UU",
+		abilities: {0: "Mold Breaker"},		
+	},
+	chandeluremega: {
+		tier: "RUBL",
+		abilities: {0: "Flash Fire"},		
+	},
+	dragalgemega: {	
+		tier: "RU",
+		abilities: {0: "Adaptability"},		
+	},
+	meganiummega: {
+		tier: "RU",
+		abilities: {0: "Chlorophyll"},		
+	},
+	victreebelmega: {
+		tier: "RU",
+		abilities: {0: "Corrosion"},		
+	},
+
 
 	//上为幻想，下为分级变动
 	shedinja: {
