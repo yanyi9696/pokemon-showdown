@@ -275,7 +275,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Delphox-Mega",
 		baseSpecies: "Delphox",
 		forme: "Mega",
-		types: ["Fire", "Fairy"],
+		types: ["Fire", "Psychic"],
 		genderRatio: { M: 0.875, F: 0.125 },
 		baseStats: { hp: 75, atk: 69, def: 72, spa: 159, spd: 125, spe: 134 },
 		abilities: { 0: "Levitate" },
