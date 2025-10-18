@@ -1007,7 +1007,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "Rao Liang Zhi Yin",
 		pp: 10,
 		priority: 0,
-		flags: { sound: 1, protect: 1, mirror: 1 },
+		flags: { sound: 1, protect: 1, mirror: 1, bypasssub: 1  },
 		overrideDefensiveStat: 'def',
 		multihit: 3,
 		multiaccuracy: true,
