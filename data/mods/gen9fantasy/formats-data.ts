@@ -6,6 +6,38 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Corrosion"},		
 	},
+	hawluchamega: {
+		tier: "Uber",
+		abilities: {0: "Stamina"},
+	},
+	chandeluremega: {
+		tier: "Uber",
+		abilities: {0: "Flash Fire"},		
+	},
+	froslassmega: {
+		tier: "Uber",
+		abilities: {0: "Mold Breaker"},		
+	},
+	delphoxmega: {
+		tier: "Uber",
+		abilities: {0: "Levitate"},		
+	},
+	dragalgemega: {	
+		tier: "Uber",
+		abilities: {0: "Adaptability"},		
+	},
+	excadrillmega: {
+		tier: "Uber",
+		abilities: {0: "Tough Claws"},		
+	},
+	meganiummega: {
+		tier: "Uber",
+		abilities: {0: "Chlorophyll"},		
+	},
+	greninjamega: {
+		tier: "Uber",
+		abilities: {0: "Stakeout"},		
+	},
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
 		tier: "Illegal",
@@ -80,7 +112,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	greninjamegafantasy: {
 		tier: "(Uber)",
-		abilities: {0: "Stakeout"},		
+		abilities: {0: "Technician"},		
 	},
 	kricketunefantasy: {
 		tier: "(Uber)",

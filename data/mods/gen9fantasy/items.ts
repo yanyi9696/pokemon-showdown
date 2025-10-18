@@ -15,125 +15,125 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "大食花超级石。让大食花携带后,在战斗时就能进行超级进化",
 		shortDesc: "大食花超级石。让大食花携带后,在战斗时就能进行超级进化",
 	},
-	fantasyhawluchaite: {
-		name: "Fantasy Hawluchaite",
+	hawluchaite: {
+		name: "Hawluchaite",
 		spritenum: 584, 
-		megaStone: "Hawlucha-Mega-Fantasy",
+		megaStone: "Hawlucha-Mega",
 		megaEvolves: "Hawlucha",
-		itemUser: ["Hawlucha-Fantasy"],
+		itemUser: ["Hawlucha"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10001, 
 		gen: 9, 
-		desc: "幻想摔角鹰人超级石。让幻想摔角鹰人携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想摔角鹰人超级石。让幻想摔角鹰人携带后,在战斗时就能进行超级进化",
+		desc: "摔角鹰人超级石。让摔角鹰人携带后,在战斗时就能进行超级进化",
+		shortDesc: "摔角鹰人超级石。让摔角鹰人携带后,在战斗时就能进行超级进化",
 	},
-	fantasychandelureite: {
-		name: "Fantasy Chandelureite",
+	chandelureite: {
+		name: "Chandelureite",
 		spritenum: 577, 
-		megaStone: "Chandelure-Mega-Fantasy",
+		megaStone: "Chandelure-Mega",
 		megaEvolves: "Chandelure",
-		itemUser: ["Chandelure-Fantasy"],
+		itemUser: ["Chandelure"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10002, 
 		gen: 9, 
-		desc: "幻想水晶灯火灵超级石。让幻想水晶灯火灵携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想水晶灯火灵超级石。让幻想水晶灯火灵携带后,在战斗时就能进行超级进化",
+		desc: "水晶灯火灵超级石。让水晶灯火灵携带后,在战斗时就能进行超级进化",
+		shortDesc: "水晶灯火灵超级石。让水晶灯火灵携带后,在战斗时就能进行超级进化",
 	},
-	fantasyfroslassite: {
-		name: "Fantasy Froslassite",
+	froslassite: {
+		name: "Froslassite",
 		spritenum: 630, 
-		megaStone: "Froslass-Mega-Fantasy",
+		megaStone: "Froslass-Mega",
 		megaEvolves: "Froslass",
-		itemUser: ["Froslass-Fantasy"],
+		itemUser: ["Froslass"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10003, 
 		gen: 9, 
-		desc: "幻想雪妖女超级石。让幻想雪妖女携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想雪妖女超级石。让幻想雪妖女携带后,在战斗时就能进行超级进化",
+		desc: "雪妖女超级石。让雪妖女携带后,在战斗时就能进行超级进化",
+		shortDesc: "雪妖女超级石。让雪妖女携带后,在战斗时就能进行超级进化",
 	},
-	fantasydelphoxite: {
-		name: "Fantasy Delphoxite",
+	delphoxite: {
+		name: "Delphoxite",
 		spritenum: 591, 
-		megaStone: "Delphox-Mega-Fantasy",
+		megaStone: "Delphox-Mega",
 		megaEvolves: "Delphox",
-		itemUser: ["Delphox-Fantasy"],
+		itemUser: ["Delphox"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10004, 
 		gen: 9, 
-		desc: "幻想妖火红狐超级石。让幻想妖火红狐携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想妖火红狐超级石。让幻想妖火红狐携带后,在战斗时就能进行超级进化",
+		desc: "妖火红狐超级石。让妖火红狐携带后,在战斗时就能进行超级进化",
+		shortDesc: "妖火红狐超级石。让妖火红狐携带后,在战斗时就能进行超级进化",
 	},
-	fantasydragalgite: {
-		name: "Fantasy Dragalgite",
+	dragalgite: {
+		name: "Dragalgite",
 		spritenum: 588, 
-		megaStone: "Dragalge-Mega-Fantasy",
+		megaStone: "Dragalge-Mega",
 		megaEvolves: "Dragalge",
-		itemUser: ["Dragalge-Fantasy"],
+		itemUser: ["Dragalge"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10005, 
 		gen: 9, 
-		desc: "幻想毒藻龙超级石。让幻想毒藻龙携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想毒藻龙超级石。让幻想毒藻龙携带后,在战斗时就能进行超级进化",
+		desc: "毒藻龙超级石。让毒藻龙携带后,在战斗时就能进行超级进化",
+		shortDesc: "毒藻龙超级石。让毒藻龙携带后,在战斗时就能进行超级进化",
 	},
-	fantasyexcadrite: {
-		name: "Fantasy Excadrite",
+	excadrite: {
+		name: "Excadrite",
 		spritenum: 605, 
-		megaStone: "Excadrill-Mega-Fantasy",
+		megaStone: "Excadrill-Mega",
 		megaEvolves: "Excadrill",
-		itemUser: ["Excadrill-Fantasy"],
+		itemUser: ["Excadrill"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10006, 
 		gen: 9, 
-		desc: "幻想龙头地鼠超级石。让幻想龙头地鼠携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想龙头地鼠超级石。让幻想龙头地鼠携带后,在战斗时就能进行超级进化",
+		desc: "龙头地鼠超级石。让龙头地鼠携带后,在战斗时就能进行超级进化",
+		shortDesc: "龙头地鼠超级石。让龙头地鼠携带后,在战斗时就能进行超级进化",
 	},
-	fantasymeganiumite: {
-		name: "Fantasy Meganiumite",
+	meganiumite: {
+		name: "Meganiumite",
 		spritenum: 587, 
-		megaStone: "Meganium-Mega-Fantasy",
+		megaStone: "Meganium-Mega",
 		megaEvolves: "Meganium",
-		itemUser: ["Meganium-Fantasy"],
+		itemUser: ["Meganium"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10007, 
 		gen: 9, 
-		desc: "幻想大竺葵超级石。让幻想大竺葵携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想大竺葵超级石。让幻想大竺葵携带后,在战斗时就能进行超级进化",
+		desc: "大竺葵超级石。让大竺葵携带后,在战斗时就能进行超级进化",
+		shortDesc: "大竺葵超级石。让大竺葵携带后,在战斗时就能进行超级进化",
 	},
-	fantasygreninjite: {
-		name: "Fantasy Greninjite",
+	greninjite: {
+		name: "Greninjite",
 		spritenum: 585, 
-		megaStone: "Greninja-Mega-Fantasy",
+		megaStone: "Greninja-Mega",
 		megaEvolves: "Greninja",
-		itemUser: ["Greninja-Fantasy"],
+		itemUser: ["Greninja"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
 		num: 10008, 
 		gen: 9, 
-		desc: "幻想甲贺忍蛙超级石。让幻想甲贺忍蛙携带后,在战斗时就能进行超级进化",
-		shortDesc: "幻想甲贺忍蛙超级石。让幻想甲贺忍蛙携带后,在战斗时就能进行超级进化",
+		desc: "甲贺忍蛙超级石。让甲贺忍蛙携带后,在战斗时就能进行超级进化",
+		shortDesc: "甲贺忍蛙超级石。让甲贺忍蛙携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {
