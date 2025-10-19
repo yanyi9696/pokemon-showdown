@@ -416,7 +416,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Mold Breaker"},		
 	},
 	greninjamega: {
-		tier: "UUBL",
+		tier: "OU",
 		abilities: {0: "Stakeout"},		
 	},
 	hawluchamega: {
@@ -692,9 +692,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	serperior: {
 		tier: "UUBL",
 	},
-	xurkitree: {
-		tier: "UUBL",
-	},
 	gyarados: {
 		tier: "UU",
 	},
@@ -723,6 +720,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	volcanion: {
+		tier: "UU",
+	},
+	xurkitree: {
 		tier: "UU",
 	},
 	bisharp: {

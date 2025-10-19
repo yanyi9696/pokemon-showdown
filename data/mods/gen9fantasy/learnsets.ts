@@ -1935,11 +1935,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	delphoxfantasy: {
 		learnset: {
 			burnup: ["9M"],
-			huanzhiwu: ["9M"],
 			moonblast: ["9M"],
 			drainingkiss: ["9M"],
 			mistyexplosion: ["9M"],
 			craftyshield: ["9M"],
+			mysticalpower: ["9M"],
 			//幻想增添技能
 			agility: ["9M"],
 			allyswitch: ["7T"],
@@ -2049,11 +2049,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	delphoxmegafantasy: {
 		learnset: {
 			burnup: ["9M"],
-			huanzhiwu: ["9M"],
 			moonblast: ["9M"],
 			drainingkiss: ["9M"],
 			mistyexplosion: ["9M"],
 			craftyshield: ["9M"],
+			mysticalpower: ["9M"],
 			//幻想增添技能
 			agility: ["9M"],
 			allyswitch: ["7T"],
@@ -8251,7 +8251,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			hypnosis: ["9M"],
 			nastyplot: ["9M"],
 			strengthsap: ["9M"],
-			focusblast: ["9M"],
 			//幻想增添技能
 			allyswitch: ["8M", "7T"],
 			astonish: ["9L1", "8L1"],
@@ -8339,7 +8338,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			hypnosis: ["9M"],
 			nastyplot: ["9M"],
 			strengthsap: ["9M"],
-			focusblast: ["9M"],
 			//幻想增添技能
 			allyswitch: ["8M", "7T"],
 			astonish: ["9L1", "8L1"],
@@ -12454,7 +12452,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	thievulfantasy: {
 		learnset: {
 			pursuit: ["9M"],
-			terablast: ["9M"],
+			huanxiangbaofa: ["9M"],
 			return: ["9M"],
 			frustration: ["9M"],
 			doubleedge: ["9M"],
