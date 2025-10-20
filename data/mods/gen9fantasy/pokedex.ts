@@ -106,7 +106,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 36,
 		eggGroups: ["Field"],
 		requiredItem: "Delphoxite",
-		spriteid: 'froslass',
+		requiredForme: "Delphox-Fantasy",
+		battleOnly: "Delphox-Fantasy",
+		spriteid: 'delphox',
 	},
 	metagrossmegafantasy: {
 		num: 376,
@@ -122,6 +124,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Blue",
 		eggGroups: ["Mineral"],
 		requiredItem: "Metagrossite",
+		requiredForme: "Metagross-Fantasy",
+		battleOnly: "Metagross-Fantasy",
 		spriteid: 'metagross-mega',
 	},
 	regigigas: {
@@ -182,6 +186,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "White",
 		eggGroups: ["Field"],
 		requiredItem: "Absolite",
+		requiredForme: "Absolite-Fantasy",
+		battleOnly: "Absolite-Fantasy",
 		spriteid: 'absol-mega',
 	},
 	aegislash: {
@@ -239,6 +245,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Purple",
 		eggGroups: ["Flying"],
 		requiredItem: "Aerodactylite",
+		requiredForme: "Aerodactyl-Fantasy",
+		battleOnly: "Aerodactyl-Fantasy",
 		spriteid: 'aerodactyl-mega',
 	},
 	aggronmegafantasy: {
@@ -254,6 +262,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Monster"],
 		requiredItem: "Aggronite",
+		requiredForme: "Aggronite-Fantasy",
+		battleOnly: "Aggronite-Fantasy",
 		spriteid: 'aggron-mega',
 	},
 	darmanitangalarfantasy: {
@@ -288,7 +298,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 36,
 		eggGroups: ["Field"],
 		requiredItem: "Delphoxite",
-		spriteid: 'froslass',
+		spriteid: 'delphox',
 	},
 	dragalgemegafantasy: {	
 		num: 691,
@@ -305,6 +315,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 48,
 		eggGroups: ["Water 1", "Dragon"],
 		requiredItem: "Dragalgite",
+		requiredForme: "Dragalge-Fantasy",
+		battleOnly: "Dragalge-Fantasy",
 		spriteid: 'dragalge',
 	},
 	dragapult: {
@@ -400,6 +412,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 31,
 		eggGroups: ["Field"],
 		requiredItem: "Excadrite",
+		requiredForme: "Excadrite-Fantasy",
+		battleOnly: "Excadrite-Fantasy",
 		spriteid: 'excadrill',
 	},
 	flygon: {
@@ -456,6 +470,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Blue",
 		eggGroups: ["Monster", "Dragon"],
 		requiredItem: "Garchompite",
+		requiredForme: "Garchomp-Fantasy",
+		battleOnly: "Garchomp-Fantasy",
 		spriteid: 'garchomp-mega',
 	},
 	greninjamega: {
@@ -516,7 +532,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Metang",
 		evoLevel: 45,
 		eggGroups: ["Mineral"],
-		otherFormes: ["Metagross-Mega-Fantasy"],
 		spriteid: 'metagross',
 	},
 	mew: {
@@ -572,6 +587,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Blue",
 		eggGroups: ["Dragon"],
 		requiredItem: "Salamencite",
+		requiredForme: "Salamence-Fantasy",
+		battleOnly: "Salamence-Fantasy",
 		spriteid: 'salamencea-mega',
 	},
 	sandyshocks: {
@@ -675,7 +692,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 59,
 		color: "Purple",
 		eggGroups: ["Flying"],
-		otherFormes: ["Aerodactyl-Mega-Fantasy"],
 		spriteid: 'aerodactyl',
 	},
 	audinomegafantasy: {
@@ -691,6 +707,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "White",
 		eggGroups: ["Fairy"],
 		requiredItem: "Audinite",
+		requiredForme: "Audino-Fantasy",
+		battleOnly: "Audino-Fantasy",
 		spriteid: 'audino-mega',
 	},
 	chandelure: {
@@ -730,6 +748,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Dusk Stone",
 		eggGroups: ["Amorphous"],
 		requiredItem: "Chandelurite",
+		requiredForme: "Chandelure-Fantasy",
+		battleOnly: "Chandelure-Fantasy",
 		spriteid: 'chandelure',
 	},
 	corviknight: {
@@ -829,6 +849,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Dawn Stone",
 		eggGroups: ["Fairy", "Mineral"],
 		requiredItem: "Froslassite",
+		requiredForme: "Froslass-Fantasy",
+		battleOnly: "Froslass-Fantasy",
 		spriteid: 'froslass',
 	},
 	garchomp: {
@@ -848,7 +870,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 95,
 		color: "Blue",
 		eggGroups: ["Monster", "Dragon"],
-		otherFormes: ["Garchomp-Mega-Fantasy"],
 		spriteid: 'garchomp',
 	},
 	greninja: {
@@ -888,6 +909,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 36,
 		eggGroups: ["Water 1"],
 		requiredItem: "Greninjite",
+		requiredForme: "Greninja-Fantasy",
+		battleOnly: "Greninja-Fantasy",
 		spriteid: 'greninja',
 	},
 	greninjabondfantasy: {
@@ -984,6 +1007,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Blue",
 		eggGroups: ["Water 2", "Dragon"],
 		requiredItem: "Gyaradosite",
+		requiredForme: "Gyarados-Fantasy",
+		battleOnly: "Gyarados-Fantasy",
 		spriteid: 'gyarados-mega',
 	},
 	magnezone: {
@@ -1059,6 +1084,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Brown",
 		eggGroups: ["Flying"],
 		requiredItem: "Pidgeotite",
+		requiredForme: "Pidgeot-Fantasy",
+		battleOnly: "Pidgeot-Fantasy",
 		spriteid: 'pidgeot-mega',
 	},
 	politoed: {
@@ -1142,7 +1169,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Shelgon",
 		evoLevel: 50,
 		eggGroups: ["Dragon"],
-		otherFormes: ["Salamence-Mega-Fantasy"],
 		spriteid: 'salamencea',
 	},
 	salazzle: {
@@ -1303,6 +1329,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "White",
 		eggGroups: ["Monster", "Grass"],
 		requiredItem: "Abomasite",
+		requiredForme: "Abomasnow-Fantasy",
+		battleOnly: "Abomasnow-Fantasy",
 		spriteid: 'abomasnow-mega',
 	},
 	audino: {
@@ -1322,8 +1350,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 31,
 		color: "Pink",
 		eggGroups: ["Fairy"],
-		otherFormes: ["Audino-Mega"],
-		formeOrder: ["Audino", "Audino-Mega"],
 	},
 	dragalge: {
 		inherit: true,
@@ -1415,6 +1441,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Brown",
 		eggGroups: ["Field", "Human-Like"],
 		requiredItem: "Lopunnite",
+		requiredForme: "Lopunny-Fantasy",
+		battleOnly: "Lopunny-Fantasy",
 		spriteid: 'lopunny-mega',
 	},
 	magmortar: {
@@ -1509,6 +1537,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Pink",
 		eggGroups: ["Monster", "Water 1"],
 		requiredItem: "Slowbronite",
+		requiredForme: "Slowbro-Fantasy",
+		battleOnly: "Slowbro-Fantasy",
 		spriteid: 'slowbro-mega',
 	},
 	steelix: {
@@ -1531,7 +1561,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoType: "trade",
 		evoItem: "Metal Coat",
 		eggGroups: ["Mineral"],
-		otherFormes: ["Steelix-Mega-Fantasy"],
 		spriteid: 'steelix',
 	},
 	steelixmegafantasy: {
@@ -1547,6 +1576,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Mineral"],
 		requiredItem: "Steelixite",
+		requiredForme: "Steelix-Fantasy",
+		battleOnly: "Steelix-Fantasy",
 		spriteid: 'steelix-mega',
 	},
 	toxtricity: {
@@ -1627,7 +1658,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 47,
 		color: "White",
 		eggGroups: ["Field"],
-		otherFormes: ["Absol-Mega-Fantasy"],
 		spriteid: 'absol',
 	},
 	armarouge: {
@@ -1810,6 +1840,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Fairy", "Mineral"],
 		requiredItem: "Glalitite",
+		requiredForme: "Glalie-Fantasy",
+		battleOnly: "Glalie-Fantasy",
 		spriteid: 'glalie-mega',
 	},
 	granbull: {
@@ -1964,6 +1996,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Green",
 		eggGroups: ["Grass"],
 		requiredItem: "Victreebelite",
+		requiredForme: "Victreebel-Fantasy",
+		battleOnly: "Victreebel-Fantasy",
 		spriteid: 'victreebel',
 	},
 	volbeat: {
@@ -2048,7 +2082,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Lairon",
 		evoLevel: 42,
 		eggGroups: ["Monster"],
-		otherFormes: ["Aggron-Mega-Fantasy"],
 		spriteid: 'aggron',
 	},
 	carnivine: {
@@ -2148,7 +2181,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Buneary",
 		evoType: "levelFriendship",
 		eggGroups: ["Field", "Human-Like"],
-		otherFormes: ["Lopunny-Mega-Fantasy"],
 		spriteid: 'lopunny',
 	},
 	meganium: {
@@ -2188,6 +2220,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 32,
 		eggGroups: ["Monster", "Grass"],
 		requiredItem: "Meganiumite",
+		requiredForme: "Meganium-Fantasy",
+		battleOnly: "Meganium-Fantasy",
 		spriteid: 'meganium',
 	},
 	ribombee: {
@@ -2309,7 +2343,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Snover",
 		evoLevel: 40,
 		eggGroups: ["Monster", "Grass"],
-		otherFormes: ["Abomasnow-Mega-Fantasy"],
 		spriteid: 'abomasnow',
 	},
 	altaria: {
@@ -2331,7 +2364,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Swablu",
 		evoLevel: 35,
 		eggGroups: ["Flying", "Dragon"],
-		otherFormes: ["Altaria-Mega-Fantasy"],
 		spriteid: 'altaria',
 	},
 	dragalgemega: {	
@@ -2370,7 +2402,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Snorunt",
 		evoLevel: 42,
 		eggGroups: ["Fairy", "Mineral"],
-		otherFormes: ["Glalie-Mega-Fantasy"],
 		spriteid: 'glalie',
 	},
 	hawlucha: {
@@ -2404,6 +2435,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Green",
 		eggGroups: ["Flying", "Human-Like"],
 		requiredItem: "Hawluchaite",
+		requiredForme: "Hawlucha-Fantasy",
+		battleOnly: "Hawlucha-Fantasy",
 		spriteid: 'hawlucha',
 	},
 	meganiummega: {
@@ -2464,7 +2497,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Pidgeotto",
 		evoLevel: 36,
 		eggGroups: ["Flying"],
-		otherFormes: ["Pidgeot-Mega-Fantasy"],
 		spriteid: 'pidgeot',
 	},
 	samurott: {
