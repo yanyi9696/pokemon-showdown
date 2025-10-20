@@ -662,6 +662,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	glimmora: {
 		tier: "OU",
 	},
+	greninja: {
+		tier: "OU",
+	},
+	greninjabond: {
+		tier: "OU",
+	},
 	ironcrown: {
 		tier: "OU",
 	},
