@@ -419,13 +419,13 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		// 效果1：降低物攻
 		onModifyAtk(atk) {
-			// 将物攻值乘以0.85，即降低1/4
-			return this.chainModify(0.85);
+			// 将物攻值乘以0.8，即降低20%
+			return this.chainModify(0.8);
 		},
 		// 效果1：降低特攻
 		onModifySpA(spa) {
-			// 将特攻值乘以0.85，即降低1/4
-			return this.chainModify(0.85);
+			// 将特攻值乘以0.8，即降低20%
+			return this.chainModify(0.8);
 		},
 		// 效果2：回合结束时恢复HP
 		onResidual(pokemon) {
@@ -434,8 +434,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 30005,
 		gen: 9,
-		desc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低1/4",
-		shortDesc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低1/4",
+		desc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
+		shortDesc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
 	},
 	fantasyprotector: {
 		name: "Fantasy Protector",
@@ -445,13 +445,13 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		// 效果1：提升物防
 		onModifyDef(def) {
-			// 将物防值乘以1.25，即提升1/4
-			return this.chainModify(1.25);
+			// 将物防值乘以1.2，即提升20%
+			return this.chainModify(1.2);
 		},
 		// 效果1：提升特防
 		onModifySpD(spd) {
-			// 将特防值乘以1.25，即提升1/4
-			return this.chainModify(1.25);
+			// 将特防值乘以1.2，即提升20%
+			return this.chainModify(1.2);
 		},
 		// 效果2：降低非变化技能的优先度
 		onModifyPriority(priority, pokemon, target, move) {
@@ -463,7 +463,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 30006,
 		gen: 9,
-		desc: "幻之护具。携带后,虽然物防和特防将提高1/4,但非变化技能在相同优先度下将必定后出",
-		shortDesc: "幻之护具。携带后,物防和特防提高1/4,但非变化技能在相同优先度下将必定后出",
+		desc: "幻之护具。携带后,虽然物防和特防将提高20%,但非变化技能在相同优先度下将必定后出",
+		shortDesc: "幻之护具。携带后,物防和特防提高20%,但非变化技能在相同优先度下将必定后出",
 	},
 };

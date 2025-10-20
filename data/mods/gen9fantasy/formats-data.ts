@@ -65,6 +65,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	enteifantasy: {
 		tier: "(Uber)",
 	},
+	excadrillfantasy: {
+		tier: "(Uber)",
+	},
+	excadrillmegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Tough Claws"},		
+	},
 	flygonfantasy: {
 		tier: "(Uber)",
 	},
@@ -74,10 +81,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	garchompmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
-	},
-	greninjamegafantasy: {
-		tier: "(Uber)",
-		abilities: {0: "Technician"},		
 	},
 	kricketunefantasy: {
 		tier: "(Uber)",
@@ -130,13 +133,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	empoleonfantasy: {	
 		tier: "OU",
 	},
-	excadrillfantasy: {
-		tier: "OU",
-	},
-	excadrillmegafantasy: {
-		tier: "OU",
-		abilities: {0: "Tough Claws"},		
-	},
 	froslassmegafantasy: {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
@@ -146,6 +142,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	greninjafantasy: {
 		tier: "OU",
+	},
+	greninjamegafantasy: {
+		tier: "OU",
+		abilities: {0: "Technician"},		
 	},
 	greninjabondfantasy: {
 		tier: "OU",
@@ -176,6 +176,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "No Guard"},		
 	},
+	politoedfantasy: {
+		tier: "OU",
+	},
 	primarinafantasy: {
 		tier: "OU",
 	},
@@ -192,6 +195,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	skeledirgefantasy: {
+		tier: "OU",
+	},
+	slitherwingfantasy: {
 		tier: "OU",
 	},
 	slowbrofantasy: {
@@ -229,13 +235,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	miloticfantasy: {
 		tier: "UUBL",
 	},
-	politoedfantasy: {
-		tier: "UUBL",
-	},
 	raticatefantasy: {
-		tier: "UUBL",
-	},
-	slitherwingfantasy: {
 		tier: "UUBL",
 	},
 	slowbrogalarfantasy: {
@@ -348,6 +348,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ribombeefantasy: {
 		tier: "RUBL",
 	},
+	thievulfantasy: {
+		tier: "RUBL",
+	},
 	tropiusfantasy: {
 		tier: "RUBL",
 	},
@@ -397,9 +400,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	stonjournerfantasy: {
 		tier: "RU",
 	},
-	thievulfantasy: {
-		tier: "RU",
-	},
 
 
 	//ZA新mega
@@ -411,13 +411,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		
 	},
+	greninjamega: {
+		tier: "(Uber)",
+		abilities: {0: "Stakeout"},		
+	},
 	excadrillmega: {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
-	},
-	greninjamega: {
-		tier: "OU",
-		abilities: {0: "Stakeout"},		
 	},
 	hawluchamega: {
 		tier: "UUBL",
