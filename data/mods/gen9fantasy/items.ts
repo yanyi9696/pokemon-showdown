@@ -455,12 +455,12 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		// 效果2：降低速度
 		onModifySpe(spe) {
-			// 将速度值乘以0.5，即降低一半
+			// 将速度值乘以0.5，即降低1/2
 			return this.chainModify(0.5);
 		},
 		num: 30006,
 		gen: 9,
-		desc: "幻之护具。携带后,虽然物防和特防将提高20%,但速度会降低至原来的一半",
-		shortDesc: "幻之护具。携带后,物防和特防提高20%,但速度会降低至原来的一半",
+		desc: "幻之护具。携带后,虽然物防和特防将提高20%,但速度会降低至原来的1/2",
+		shortDesc: "幻之护具。携带后,物防和特防提高20%,但速度会降低至原来的1/2",
 	},
 };
