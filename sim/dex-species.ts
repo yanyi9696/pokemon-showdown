@@ -235,8 +235,6 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 	declare readonly requiredMove?: string;
 	/** Required ability. Ability required to use this forme in-battle. */
 	declare readonly requiredAbility?: string;
-	/** Forme required to use this forme in-battle. */
-	declare readonly requiredForme?: string; // <--- 在这里添加这一行
 	/**
 	 * Required items. Items required to be in this forme, e.g. a mega
 	 * stone, or Griseous Orb. Array because Arceus formes can hold

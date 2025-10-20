@@ -65,7 +65,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Blue",
 		eggGroups: ["Flying", "Dragon"],
 		requiredItem: "Altarianite",
-		requiredForme: "Altaria-Fantasy",
 		spriteid: 'altaria-mega',
 	},
 	darmanitan: {

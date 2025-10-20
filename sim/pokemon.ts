@@ -1439,10 +1439,16 @@ export class Pokemon {
 			this.knownType = true;
 			this.apparentType = this.terastallized;
 		}
-		const newSpecies = this.species; // 此时 this.species 已经是新形态
-        this.battle.add('-start', this, 'typechange', newSpecies.types.join('/'), '[silent]');
-        this.battle.add('-start', this, 'fantasystats', Object.values(newSpecies.baseStats).join('/'), '[silent]');
-        
+		const newSpecies = this.species; // 此时 this.species 已经是 newSpecies
+		this.battle.add('-start', this, 'typechange', newSpecies.types.join('/'), '[silent]');
+
+		// [!!] 修改点：使用 (newSpecies as any) 来访问 .mod 属性
+		// 检查这个新形态是否属于你的 'gen9fc' mod
+		// (如果你的 mod ID 不是 'gen9fc'，请替换成你正确的 mod ID)
+		if ((newSpecies as any).mod === 'gen9fantasy') {
+			this.battle.add('-start', this, 'fantasystats', Object.values(newSpecies.baseStats).join('/'), '[silent]');
+		}
+
 		return true;
 	}
 
