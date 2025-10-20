@@ -453,17 +453,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			// 将特防值乘以1.2，即提升20%
 			return this.chainModify(1.2);
 		},
-		// 效果2：降低非变化技能的优先度
-		onModifyPriority(priority, pokemon, target, move) {
-			// 检查招式类别是否不为“变化”
-			if (move.category !== 'Status') {
-				// 如果是攻击招式，就稍微降低其优先度，使其在同级优先度中后出
-				return priority - 0.1;
-			}
+		// 效果2：降低速度
+		onModifySpe(spe) {
+			// 将速度值乘以0.5，即降低一半
+			return this.chainModify(0.5);
 		},
 		num: 30006,
 		gen: 9,
-		desc: "幻之护具。携带后,虽然物防和特防将提高20%,但非变化技能在相同优先度下将必定后出",
-		shortDesc: "幻之护具。携带后,物防和特防提高20%,但非变化技能在相同优先度下将必定后出",
+		desc: "幻之护具。携带后,虽然物防和特防将提高20%,但速度会降低至原来的一半",
+		shortDesc: "幻之护具。携带后,物防和特防提高20%,但速度会降低至原来的一半",
 	},
 };
