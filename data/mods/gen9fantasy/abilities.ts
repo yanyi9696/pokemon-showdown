@@ -180,6 +180,82 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 151,
 		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%物防与特防",
 	},
+	flowerveil: {
+		// 当己方宝可梦（包括自己）的能力阶级尝试被变动时触发
+		onAllyTryBoost(boost, target, source, effect) {
+			// 1. 获取“花幕”特性的持有者
+			const effectHolder = this.effectState.target;
+			
+			// 2. 检查目标是否受到保护：
+			//    - 目标就是特性持有者
+			//    - 或者 目标是草属性
+			const isProtected = (target === effectHolder) || target.hasType('Grass');
+			
+			// 3. 如果目标不受保护，则直接返回，不执行后续逻辑
+			if (!isProtected) return;
+			
+			// 4. [原逻辑] 检查是否有能力阶级降低
+			// 注意：这个修改会阻止所有降低，包括自我降低（如“近身战”的降防）
+			// 如果你想保留原版特性中“允许自我降低”的设定，可以取消下面这行代码的注释：
+			// if (source && target === source) return;
+			
+			let showMsg = false;
+			let i: BoostID;
+			for (i in boost) {
+				if (boost[i]! < 0) { // 如果是降低能力
+					delete boost[i]; // 则删除该效果
+					showMsg = true;
+				}
+			}
+			
+			// 5. [原逻辑] 显示阻挡信息
+			if (showMsg && !(effect as ActiveMove).secondaries) {
+				this.add('-block', target, 'ability: Flower Veil', `[of] ${effectHolder}`);
+			}
+		},
+		
+		// 当己方宝可梦（包括自己）尝试陷入异常状态时触发
+		onAllySetStatus(status, target, source, effect) {
+			// 1. 获取“花幕”特性的持有者
+			const effectHolder = this.effectState.target;
+			
+			// 2. 检查目标是否受到保护
+			const isProtected = (target === effectHolder) || target.hasType('Grass');
+
+			// 3. 如果受保护，并且满足原逻辑的判断条件
+			//    (非自我附加的状态，且不是“哈欠”状态)
+			if (isProtected && source && target !== source && effect && effect.id !== 'yawn') {
+				this.debug('interrupting setStatus with Flower Veil');
+				if (effect.name === 'Synchronize' || (effect.effectType === 'Move' && !effect.secondaries)) {
+					this.add('-block', target, 'ability: Flower Veil', `[of] ${effectHolder}`);
+				}
+				return null; // 阻止陷入异常状态
+			}
+		},
+		
+		// 当己方宝可梦（包括自己）尝试陷入“哈欠”状态时触发
+		onAllyTryAddVolatile(status, target) {
+			// 1. 获取“花幕”特性的持有者
+			const effectHolder = this.effectState.target;
+			
+			// 2. 检查目标是否受到保护
+			const isProtected = (target === effectHolder) || target.hasType('Grass');
+
+			// 3. 如果受保护，并且目标状态是“哈欠”
+			if (isProtected && status.id === 'yawn') {
+				this.debug('Flower Veil blocking yawn');
+				this.add('-block', target, 'ability: Flower Veil', `[of] ${effectHolder}`);
+				return null; // 阻止陷入“哈欠”状态
+			}
+		},
+		
+		// [原逻辑] 其他属性
+		flags: { breakable: 1 },
+		name: "Flower Veil",
+		rating: 0,
+		num: 166,
+		shortDesc: "特性持有者以及己方所有草属性宝可梦能力阶级不会被降低且不会进入异常状态",
+	},
 	stancechange: {
 		onModifyMovePriority: 1,
 		onModifyMove(move, attacker, defender) {
