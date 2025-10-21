@@ -2500,7 +2500,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		num: 670,
 		name: "Floette-Eternal-Fantasy",
 		baseSpecies: "Floette",
-		forme: "Eternal-Fantasy",
+		forme: "Eternal",
 		types: ["Fairy", "Dark"],
 		gender: "F",
 		baseStats: { hp: 74, atk: 65, def: 67, spa: 125, spd: 128, spe: 92 },
@@ -2509,6 +2509,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 0.9,
 		color: "White",
 		eggGroups: ["Undiscovered"],
+		spriteid: 'floetteeternal',
 	},
 	floetteeternalmega: {
 		num: 670,
@@ -2617,8 +2618,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	muk: {
 		inherit: true,
-		otherFormes: ["Muk-Alola", "Muk-Fantasy"],
-		formeOrder: ["Muk", "Muk-Alola", "Muk-Fantasy"],
+		otherFormes: ["Muk-Alola", "Muk-Alola-Fantasy"],
+		formeOrder: ["Muk", "Muk-Alola", "Muk-Alola-Fantasy"],
 	},
 	mukalolafantasy: {
 		num: 89,
@@ -2634,6 +2635,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Grimer-Alola",
 		evoLevel: 38,
 		eggGroups: ["Amorphous"],
+		spriteid: 'mukalola',
 	},
 	pidgeot: {
 		inherit: true,
