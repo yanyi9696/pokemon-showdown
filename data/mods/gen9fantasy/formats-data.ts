@@ -332,6 +332,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	dusknoirfantasy: {
 		tier: "RUBL",
 	},
+	floetteeternalfantasy: {
+		tier: "RUBL",
+	},
 	honchkrowfantasy: {
 		tier: "RUBL",
 	},
@@ -807,6 +810,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	amoonguss: {
+		tier: "RU",
+	},
+	floetteeternal: {
 		tier: "RU",
 	},
 	hippowdon: {
