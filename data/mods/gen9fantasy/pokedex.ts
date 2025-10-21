@@ -2511,7 +2511,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Undiscovered"],
 		spriteid: 'floetteeternal',
 	},
-	floettmega: {
+	floettemega: {
 		num: 670,
 		name: "Floette-Mega",
 		baseSpecies: "Floette",
@@ -2529,7 +2529,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		battleOnly: "Floette-Eternal",
 		spriteid: 'floetteeternal',
 	},
-	floettmegafantasy: {
+	floettemegafantasy: {
 		num: 670,
 		name: "Floette-Mega-Fantasy",
 		baseSpecies: "Floette",
