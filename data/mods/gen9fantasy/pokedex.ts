@@ -2493,7 +2493,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	floette: {
 		inherit: true,
-		otherFormes: ["Floette-Blue", "Floette-Orange", "Floette-White", "Floette-Yellow", "Floette-Eternal", "Floette-Eternal-Fantasy"],
+		otherFormes: ["Floette-Eternal", "Floette-Eternal-Fantasy"],
 		formeOrder: ["Floette", "Floette-Blue", "Floette-Orange", "Floette-White", "Floette-Yellow", "Floette-Eternal", "Floette-Eternal-Fantasy"],
 	},
 	floetteeternalfantasy: {
@@ -2509,7 +2509,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 0.9,
 		color: "White",
 		eggGroups: ["Undiscovered"],
-		spriteid: 'floetteeternal',
+		spriteid: 'floette-eternal',
 	},
 	glalie: {
 		inherit: true,
