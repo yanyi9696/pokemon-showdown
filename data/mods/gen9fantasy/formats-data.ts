@@ -403,37 +403,97 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 
 
 	//ZA新mega
+	barbaraclemega: {
+		tier: "Uber",
+		abilities: {0: "Skill Link"},		
+	},
+	greninjamega: {
+		tier: "Uber",
+		abilities: {0: "Stakeout"},		
+	},
 	starmiemega: {
 		tier: "Uber",
 		abilities: {0: "Pure Power"},		
+	},
+	chesnaughtmega: {
+		tier: "(Uber)",
+		abilities: {0: "Stamina"},		
 	},
 	delphoxmega: {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		
 	},
-	greninjamega: {
-		tier: "(Uber)",
-		abilities: {0: "Stakeout"},		
+	dragonitemega: {
+		tier: "OU",
+		abilities: {0: "Unaware"},		
+	},
+	drampamega: {
+		tier: "OU",
+		abilities: {0: "Drizzle"},		
 	},
 	excadrillmega: {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
 	},
+	falinksmega: {
+		tier: "OU",
+		abilities: {0: "Defiant"},		
+	},
 	hawluchamega: {
-		tier: "UUBL",
+		tier: "OU",
 		abilities: {0: "Stamina"},
+	},
+	skarmoryamega: {
+		tier: "UUBL",
+		abilities: {0: "Tough Claws"},
+	},
+	clefablemega: {
+		tier: "UU",
+		abilities: {0: "Magic Guard"},		
+	},
+	emboarmega: {
+		tier: "UU",
+		abilities: {0: "Supreme Overlord"},		
 	},
 	froslassmega: {
 		tier: "UU",
-		abilities: {0: "Mold Breaker"},		
+		abilities: {0: "Snow Warning"},		
+	},
+	scraftymega: {
+		tier: "UU",
+		abilities: {0: "Intimidate"},		
 	},
 	chandeluremega: {
 		tier: "RUBL",
 		abilities: {0: "Flash Fire"},		
 	},
+	eelektrossmega: {
+		tier: "RUBL",
+		abilities: {0: "Electric Surge"},		
+	},
+	floettemega: {
+		tier: "RUBL",
+		abilities: {0: "Flower Veil"},		
+	},
+	scolipedemega: {
+		tier: "RUBL",
+		abilities: {0: "Battle Armor"},		
+	},
 	dragalgemega: {	
 		tier: "RU",
 		abilities: {0: "Adaptability"},		
+	},
+	feraligatrmega: {
+		tier: "RU",
+		abilities: {0: "Solar Power"},		
+	},
+	pyroarmega: {
+		tier: "RU",
+		abilities: {0: "Strong Jaw"},		
+	},
+	malamarmega: {
+		tier: "RU",
+		abilities: {0: "Contrary"},		
 	},
 	meganiummega: {
 		tier: "RU",

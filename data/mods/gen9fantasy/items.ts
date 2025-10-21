@@ -150,6 +150,36 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "宝石海星超级石。让宝石海星携带后,在战斗时就能进行超级进化",
 		shortDesc: "宝石海星超级石。让宝石海星携带后,在战斗时就能进行超级进化",
 	},
+	barbaracite: {
+		name: "Barbaracite",
+		spritenum: 612, 
+		megaStone: "Barbaracle-Mega",
+		megaEvolves: "Barbaracle",
+		itemUser: ["Barbaracle"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10010, 
+		gen: 9, 
+		desc: "龟足巨铠超级石。让龟足巨铠携带后,在战斗时就能进行超级进化",
+		shortDesc: "龟足巨铠超级石。让龟足巨铠携带后,在战斗时就能进行超级进化",
+	},
+	dragonitite: {
+		name: "Dragonitite",
+		spritenum: 622, 
+		megaStone: "Dragonite-Mega",
+		megaEvolves: "Dragonite",
+		itemUser: ["Dragonite"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10011, 
+		gen: 9, 
+		desc: "快龙超级石。让快龙携带后,在战斗时就能进行超级进化",
+		shortDesc: "快龙超级石。让快龙携带后,在战斗时就能进行超级进化",
+	},
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",
