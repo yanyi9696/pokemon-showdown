@@ -12974,7 +12974,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			worryseed: ["7T"],
 		},
 	},
-	floetteeternalmegafantasy: {
+	floettmegafantasy: {
 		learnset: {
 			mistyexplosion: ["9M"],
 			darkpulse: ["9M"],
