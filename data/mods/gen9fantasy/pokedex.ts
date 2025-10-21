@@ -2499,8 +2499,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	floetteeternalfantasy: {
 		num: 670,
 		name: "Floette-Eternal-Fantasy",
-		baseSpecies: "Floette",
-		forme: "Eternal-Fantasy",
+		baseSpecies: "Floette-Eternal",
+		forme: "Fantasy",
 		types: ["Fairy", "Dark"],
 		gender: "F",
 		baseStats: { hp: 74, atk: 65, def: 67, spa: 125, spd: 128, spe: 92 },
