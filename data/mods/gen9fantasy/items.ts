@@ -180,6 +180,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "快龙超级石。让快龙携带后,在战斗时就能进行超级进化",
 		shortDesc: "快龙超级石。让快龙携带后,在战斗时就能进行超级进化",
 	},
+	chesnaughtite: {
+		name: "Chesnaughtite",
+		spritenum: 607, 
+		megaStone: "Chesnaught-Mega",
+		megaEvolves: "Chesnaught",
+		itemUser: ["Chesnaught"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10012, 
+		gen: 9, 
+		desc: "布里卡隆超级石。让布里卡隆携带后,在战斗时就能进行超级进化",
+		shortDesc: "布里卡隆超级石。让布里卡隆携带后,在战斗时就能进行超级进化",
+	},
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",

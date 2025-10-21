@@ -471,7 +471,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Electric Surge"},		
 	},
-	floettemega: {
+	floetteeternalmega: {
 		tier: "RUBL",
 		abilities: {0: "Flower Veil"},		
 	},
