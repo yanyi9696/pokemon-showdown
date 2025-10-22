@@ -270,6 +270,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "皮可西超级石。让皮可西携带后,在战斗时就能进行超级进化",
 		shortDesc: "皮可西超级石。让皮可西携带后,在战斗时就能进行超级进化",
 	},
+	scraftinite: {
+		name: "Scraftinite",
+		spritenum: 620, 
+		megaStone: "Scrafty-Mega",
+		megaEvolves: "Scrafty",
+		itemUser: ["Scrafty"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10018, 
+		gen: 9, 
+		desc: "头巾混混超级石。让头巾混混携带后,在战斗时就能进行超级进化",
+		shortDesc: "头巾混混超级石。让头巾混混携带后,在战斗时就能进行超级进化",
+	},
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",
