@@ -198,6 +198,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sandacondafantasy: {
 		tier: "OU",
 	},
+	skarmorymegafantasy: {
+		tier: "OU",
+	},
 	skeledirgefantasy: {
 		tier: "OU",
 	},
@@ -205,9 +208,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	slowbrofantasy: {
-		tier: "OU",
-	},
-	skarmorymegafantasy: {
 		tier: "OU",
 	},
 	urshifufantasy: {
