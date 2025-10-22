@@ -450,7 +450,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Stamina"},
 	},
-	skarmoryamega: {
+	skarmorymega: {
 		tier: "UUBL",
 		abilities: {0: "Tough Claws"},
 	},
@@ -484,7 +484,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	scolipedemega: {
 		tier: "RUBL",
-		abilities: {0: "Battle Armor"},		
+		abilities: {0: "No Guard"},		
 	},
 	dragalgemega: {	
 		tier: "RU",
@@ -811,6 +811,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	polteageist: {
+		tier: "RUBL",
+	},
+	skarmory: {
 		tier: "RUBL",
 	},
 	amoonguss: {
