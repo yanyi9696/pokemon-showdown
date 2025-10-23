@@ -315,6 +315,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "炎武王超级石。让炎武王携带后,在战斗时就能进行超级进化",
 		shortDesc: "炎武王超级石。让炎武王携带后,在战斗时就能进行超级进化",
 	},
+	feraligite: {
+		name: "Feraligite",
+		spritenum: 599, 
+		megaStone: "Feraligatr-Mega",
+		megaEvolves: "Feraligatr",
+		itemUser: ["Feraligatr"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10021, 
+		gen: 9, 
+		desc: "大力鳄超级石。让大力鳄携带后,在战斗时就能进行超级进化",
+		shortDesc: "大力鳄超级石。让大力鳄携带后,在战斗时就能进行超级进化",
+	},
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",
