@@ -257,7 +257,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	clefablite: {
 		name: "Clefablite",
-		spritenum: 590, 
+		spritenum: 624, 
 		megaStone: "Clefable-Mega",
 		megaEvolves: "Clefable",
 		itemUser: ["Clefable"],
@@ -299,6 +299,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		gen: 9, 
 		desc: "麻麻鳗鱼王超级石。让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
 		shortDesc: "麻麻鳗鱼王超级石。让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
+	},
+	emboarite: {
+		name: "Emboarite",
+		spritenum: 586, 
+		megaStone: "Emboar-Mega",
+		megaEvolves: "Emboar",
+		itemUser: ["Emboar"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10020, 
+		gen: 9, 
+		desc: "炎武王超级石。让炎武王携带后,在战斗时就能进行超级进化",
+		shortDesc: "炎武王超级石。让炎武王携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {
