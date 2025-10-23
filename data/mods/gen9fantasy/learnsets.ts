@@ -13577,6 +13577,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	skarmoryfantasy: {
 		learnset: {
 			suilinggang: ["9M"],
+			baoyulihua: ["9M"],
 			wideguard: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
@@ -13674,6 +13675,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	skarmorymegafantasy: {
 		learnset: {
 			suilinggang: ["9M"],
+			baoyulihua: ["9M"],
 			wideguard: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
