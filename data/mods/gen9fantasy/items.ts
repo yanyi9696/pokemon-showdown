@@ -345,6 +345,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "乌贼王超级石。让乌贼王携带后,在战斗时就能进行超级进化",
 		shortDesc: "乌贼王超级石。让乌贼王携带后,在战斗时就能进行超级进化",
 	},
+	pyroarite: {
+		name: "Pyroarite",
+		spritenum: 625, 
+		megaStone: "Pyroar-Mega",
+		megaEvolves: "Pyroar",
+		itemUser: ["Pyroar"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10023, 
+		gen: 9, 
+		desc: "火炎狮超级石。让火炎狮携带后,在战斗时就能进行超级进化",
+		shortDesc: "火炎狮超级石。让火炎狮携带后,在战斗时就能进行超级进化",
+	},
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",
