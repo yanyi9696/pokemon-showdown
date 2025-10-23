@@ -330,6 +330,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "大力鳄超级石。让大力鳄携带后,在战斗时就能进行超级进化",
 		shortDesc: "大力鳄超级石。让大力鳄携带后,在战斗时就能进行超级进化",
 	},
+	malamarite: {
+		name: "Malamarite",
+		spritenum: 601, 
+		megaStone: "Malamar-Mega",
+		megaEvolves: "Malamar",
+		itemUser: ["Malamar"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10022, 
+		gen: 9, 
+		desc: "乌贼王超级石。让乌贼王携带后,在战斗时就能进行超级进化",
+		shortDesc: "乌贼王超级石。让乌贼王携带后,在战斗时就能进行超级进化",
+	},
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",
