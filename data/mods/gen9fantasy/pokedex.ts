@@ -89,6 +89,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 39,
 		eggGroups: ["Water 3"],
 		requiredItem: "Barbaracite",
+		battleOnly: "Barbaracle",
 		spriteid: 'barbaracle',
 	},
 	darmanitan: {
@@ -148,6 +149,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 36,
 		eggGroups: ["Water 1"],
 		requiredItem: "Greninjite",
+		battleOnly: "Greninja",
 		spriteid: 'greninja',
 	},
 	metagrossmegafantasy: {
@@ -210,6 +212,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Water Stone",
 		eggGroups: ["Water 3"],
 		requiredItem: "Starminite",
+		battleOnly: "Starmie",
 		spriteid: 'starmie',
 	},
 	//Ubers UU
@@ -327,6 +330,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 36,
 		eggGroups: ["Field"],
 		requiredItem: "Starminite",
+		battleOnly: "Chesnaught",
 		spriteid: 'chesnaught',
 	},
 	darmanitangalarfantasy: {
@@ -361,6 +365,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 36,
 		eggGroups: ["Field"],
 		requiredItem: "Delphoxite",
+		battleOnly: "Delphoxite",
 		spriteid: 'delphox',
 	},
 	dragalgemegafantasy: {	
@@ -859,6 +864,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 55,
 		eggGroups: ["Water 1", "Dragon"],
 		requiredItem: "dragonitite",
+		battleOnly: "Dragonite",
 		spriteid: 'dragonite',
 	},
 	drampa: {
@@ -879,6 +885,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "White",
 		eggGroups: ["Monster", "Dragon"],
 		requiredItem: "drampanite",
+		battleOnly: "Drampa",
 		spriteid: 'drampa',
 	},
 	empoleon: {
@@ -917,6 +924,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 31,
 		eggGroups: ["Field"],
 		requiredItem: "Excadrite",
+		battleOnly: "Excadrill",
 		spriteid: 'excadrill',
 	},
 	falinks: {
@@ -938,6 +946,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Yellow",
 		eggGroups: ["Fairy", "Mineral"],
 		requiredItem: "Falinksite",
+		battleOnly: "Falinks",
 		spriteid: 'falinks',
 	},
 	floetteeternalmegafantasy: {
@@ -1150,6 +1159,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Green",
 		eggGroups: ["Flying", "Human-Like"],
 		requiredItem: "Hawluchaite",
+		battleOnly: "Hawlucha",
 		spriteid: 'hawlucha',
 	},
 	magnezone: {
@@ -1697,6 +1707,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Flying"],
 		requiredItem: "Skarmorite",
+		battleOnly: "Skarmory",
 		spriteid: 'skarmory',
 	},
 	steelix: {
@@ -1882,6 +1893,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Moon Stone",
 		eggGroups: ["Fairy"],
 		requiredItem: "Clefablite",
+		battleOnly: "Clefable",
 		spriteid: 'clefable',
 	},
 	crobat: {
@@ -1968,6 +1980,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 36,
 		eggGroups: ["Field"],
 		requiredItem: "Emboarite",
+		battleOnly: "Emboar",
 		spriteid: 'emboar',
 		},
 	froslass: {
@@ -2009,6 +2022,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Dawn Stone",
 		eggGroups: ["Fairy", "Mineral"],
 		requiredItem: "Froslassite",
+		battleOnly: "Froslass",
 		spriteid: 'froslass',
 	},
 	garbodor: {
@@ -2190,6 +2204,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 39,
 		eggGroups: ["Field", "Dragon"],
 		requiredItem: "Scraftinite",
+		battleOnly: "Scrafty",
 		spriteid: 'scrafty',
 	},
 	skarmory: {
@@ -2363,6 +2378,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Dusk Stone",
 		eggGroups: ["Amorphous"],
 		requiredItem: "Chandelurite",
+		battleOnly: "Chandelure",
 		spriteid: 'chandelure',
 	},
 	dusknoir: {
@@ -2407,6 +2423,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoItem: "Thunder Stone",
 		eggGroups: ["Amorphous"],
 		requiredItem: "Dragalgite",
+		battleOnly: "Eelektross",
 		spriteid: 'dragalge',
 	},
 	honchkrow: {
@@ -2532,6 +2549,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 30,
 		eggGroups: ["Bug"],
 		requiredItem: "Scolipite",
+		battleOnly: "Scolipede",
 		spriteid: 'scolipede',
 	},
 	stakataka: {
@@ -2671,6 +2689,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 48,
 		eggGroups: ["Water 1", "Dragon"],
 		requiredItem: "Dragalgite",
+		battleOnly: "Dragalge",
 		spriteid: 'dragalge',
 	},
 	feraligatr: {
@@ -2694,6 +2713,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 30,
 		eggGroups: ["Monster", "Water 1"],
 		requiredItem: "Feraligite",
+		battleOnly: "Feraligatr",
 		spriteid: 'feraligatr',
 	},
 	floette: {
@@ -2805,6 +2825,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 32,
 		eggGroups: ["Monster", "Grass"],
 		requiredItem: "Meganiumite",
+		battleOnly: "Meganium",
 		spriteid: 'meganium',
 	},
 	malamar: {
@@ -2828,6 +2849,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoCondition: "with the console turned upside-down",
 		eggGroups: ["Water 1", "Water 2"],
 		requiredItem: "Malamarite",
+		battleOnly: "Malamar",
 		spriteid: 'malamar',
 	},
 	muk: {
@@ -2893,6 +2915,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 35,
 		eggGroups: ["Field"],
 		requiredItem: "Pyroarite",
+		battleOnly: "Pyroar",
 		spriteid: 'pyroar',
 	},
 	samurott: {
@@ -3014,6 +3037,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Green",
 		eggGroups: ["Grass"],
 		requiredItem: "Victreebelite",
+		battleOnly: "Victreebel",
 		spriteid: 'victreebel',
 	},
 }
