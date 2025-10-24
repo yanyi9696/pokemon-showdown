@@ -768,7 +768,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerponcornerstonetera: {
 		tier: "UUBL",
 	},
-	serperior: {
+	xurkitree: {
 		tier: "UUBL",
 	},
 	gyarados: {
@@ -789,6 +789,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	rillaboom: {
 		tier: "UU",
 	},
+	serperior: {
+		tier: "UU",
+	},
 	skeledirge: {
 		tier: "UU",
 	},
@@ -799,9 +802,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	volcanion: {
-		tier: "UU",
-	},
-	xurkitree: {
 		tier: "UU",
 	},
 	bisharp: {
