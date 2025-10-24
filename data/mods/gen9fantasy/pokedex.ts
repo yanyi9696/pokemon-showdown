@@ -858,7 +858,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Dragonair",
 		evoLevel: 55,
 		eggGroups: ["Water 1", "Dragon"],
-		requiredItem: "dragonitite",
+		requiredItem: "Dragonitite",
 		spriteid: 'dragonite',
 	},
 	drampa: {
@@ -1681,7 +1681,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Monster", "Water 1"],
 		requiredItem: "Slowbronite",
 		requiredForme: "Slowbro-Fantasy",
-		battleOnly: ["Slowbro-Fantasy","Slowbro-Galar-Fantasy"],
+		battleOnly: "Slowbro-Galar-Fantasy",
 		spriteid: 'slowbro-mega',
 	},
 	skarmorymega: {
