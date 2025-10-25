@@ -2521,7 +2521,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		num: 545,
 		name: "Scolipede-Mega",
 		baseSpecies: "Scolipede",
-		forme: "Fantasy",
+		forme: "Mega",
 		types: ["Bug", "Poison"],
 		baseStats: { hp: 60, atk: 140, def: 149, spa: 75, spd: 99, spe: 62 },
 		abilities: { 0: "No Guard" },
