@@ -1681,7 +1681,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Monster", "Water 1"],
 		requiredItem: "Slowbronite",
 		requiredForme: "Slowbro-Fantasy",
-		battleOnly: "Slowbro-Galar-Fantasy",
+		battleOnly: "Slowbro-Fantasy",
 		spriteid: 'slowbro-mega',
 	},
 	skarmorymega: {
@@ -2994,7 +2994,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Normal", "Rock"],
 		baseStats: { hp: 100, atk: 125, def: 135, spa: 20, spd: 75, spe: 85 },
-		abilities: { 0: "Power Spot", 1: "Mi Shi" },
+		abilities: { 0: "Power Spot", H: "Mi Shi" },
 		heightm: 2.5,
 		weightkg: 520,
 		color: "Gray",

@@ -12567,9 +12567,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	slowbromegafantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
-			banefulbunker: ["9M"],
-			dongchadaji: ["9M"],
 			earthpower: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M"],
