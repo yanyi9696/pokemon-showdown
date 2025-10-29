@@ -30,8 +30,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "摔角鹰人超级石。让摔角鹰人携带后,在战斗时就能进行超级进化",
 		shortDesc: "摔角鹰人超级石。让摔角鹰人携带后,在战斗时就能进行超级进化",
 	},
-	chandelureite: {
-		name: "Chandelureite",
+	chandelurite: {
+		name: "Chandelurite",
 		spritenum: 577, 
 		megaStone: "Chandelure-Mega",
 		megaEvolves: "Chandelure",
