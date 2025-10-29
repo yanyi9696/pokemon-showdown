@@ -858,7 +858,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Dragonair",
 		evoLevel: 55,
 		eggGroups: ["Water 1", "Dragon"],
-		requiredItem: "Dragonitite",
+		requiredItem: "Dragoninite",
 		spriteid: 'dragonite',
 	},
 	drampa: {
@@ -1149,7 +1149,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 25,
 		color: "Green",
 		eggGroups: ["Flying", "Human-Like"],
-		requiredItem: "Hawluchaite",
+		requiredItem: "Hawluchanite",
 		spriteid: 'hawlucha',
 	},
 	magnezone: {
@@ -2784,7 +2784,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 25,
 		color: "Green",
 		eggGroups: ["Flying", "Human-Like"],
-		requiredItem: "Hawluchaite",
+		requiredItem: "Hawluchanite",
 		requiredForme: "Hawlucha-Fantasy",
 		battleOnly: "Hawlucha-Fantasy",
 		spriteid: 'hawlucha',

@@ -2,7 +2,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	//以下为mega石 num从10000开始
 	victreebelite: {
 		name: "Victreebelite",
-		spritenum: 613, 
+		spritenum: 545,
 		megaStone: "Victreebel-Mega",
 		megaEvolves: "Victreebel",
 		itemUser: ["Victreebel"],
@@ -15,9 +15,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "大食花超级石。让大食花携带后,在战斗时就能进行超级进化",
 		shortDesc: "大食花超级石。让大食花携带后,在战斗时就能进行超级进化",
 	},
-	hawluchaite: {
-		name: "Hawluchaite",
-		spritenum: 584, 
+	hawluchanite: {
+		name: "Hawluchanite",
+		spritenum: 566,
 		megaStone: "Hawlucha-Mega",
 		megaEvolves: "Hawlucha",
 		itemUser: ["Hawlucha"],
@@ -32,7 +32,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	chandelurite: {
 		name: "Chandelurite",
-		spritenum: 577, 
+		spritenum: 557,
 		megaStone: "Chandelure-Mega",
 		megaEvolves: "Chandelure",
 		itemUser: ["Chandelure"],
@@ -47,7 +47,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	froslassite: {
 		name: "Froslassite",
-		spritenum: 630, 
+		spritenum: 551,
 		megaStone: "Froslass-Mega",
 		megaEvolves: "Froslass",
 		itemUser: ["Froslass"],
@@ -62,7 +62,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	delphoxite: {
 		name: "Delphoxite",
-		spritenum: 614, 
+		spritenum: 559,
 		megaStone: "Delphox-Mega",
 		megaEvolves: "Delphox",
 		itemUser: ["Delphox"],
@@ -77,7 +77,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	dragalgite: {
 		name: "Dragalgite",
-		spritenum: 588, 
+		spritenum: 565,
 		megaStone: "Dragalge-Mega",
 		megaEvolves: "Dragalge",
 		itemUser: ["Dragalge"],
@@ -92,7 +92,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	excadrite: {
 		name: "Excadrite",
-		spritenum: 605, 
+		spritenum: 553,
 		megaStone: "Excadrill-Mega",
 		megaEvolves: "Excadrill",
 		itemUser: ["Excadrill"],
@@ -107,7 +107,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	meganiumite: {
 		name: "Meganiumite",
-		spritenum: 587, 
+		spritenum: 548,
 		megaStone: "Meganium-Mega",
 		megaEvolves: "Meganium",
 		itemUser: ["Meganium"],
@@ -122,7 +122,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	greninjite: {
 		name: "Greninjite",
-		spritenum: 585, 
+		spritenum: 560,
 		megaStone: "Greninja-Mega",
 		megaEvolves: "Greninja",
 		itemUser: ["Greninja"],
@@ -137,7 +137,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	starminite: {
 		name: "Starminite",
-		spritenum: 629, 
+		spritenum: 546,
 		megaStone: "Starmie-Mega",
 		megaEvolves: "Starmie",
 		itemUser: ["Starmie"],
@@ -152,7 +152,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	barbaracite: {
 		name: "Barbaracite",
-		spritenum: 612, 
+		spritenum: 564,
 		megaStone: "Barbaracle-Mega",
 		megaEvolves: "Barbaracle",
 		itemUser: ["Barbaracle"],
@@ -165,9 +165,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		desc: "龟足巨铠超级石。让龟足巨铠携带后,在战斗时就能进行超级进化",
 		shortDesc: "龟足巨铠超级石。让龟足巨铠携带后,在战斗时就能进行超级进化",
 	},
-	dragonitite: {
-		name: "Dragonitite",
-		spritenum: 622, 
+	dragoninite: {
+		name: "Dragoninite",
+    	spritenum: 547,
 		megaStone: "Dragonite-Mega",
 		megaEvolves: "Dragonite",
 		itemUser: ["Dragonite"],
@@ -182,7 +182,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	chesnaughtite: {
 		name: "Chesnaughtite",
-		spritenum: 607, 
+		spritenum: 558,
 		megaStone: "Chesnaught-Mega",
 		megaEvolves: "Chesnaught",
 		itemUser: ["Chesnaught"],
@@ -197,7 +197,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	drampanite: {
 		name: "Drampanite",
-		spritenum: 623, 
+		spritenum: 569,
 		megaStone: "Drampa-Mega",
 		megaEvolves: "Drampa",
 		itemUser: ["Drampa"],
@@ -212,7 +212,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	falinksite: {
 		name: "Falinksite",
-		spritenum: 602, 
+		spritenum: 570,
 		megaStone: "Falinks-Mega",
 		megaEvolves: "Falinks",
 		itemUser: ["Falinks"],
@@ -227,7 +227,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	floettite: {
 		name: "Floettite",
-		spritenum: 591, 
+		spritenum: 562,
 		megaStone: "Floette-Eternal-Mega",
 		megaEvolves: "Floette-Eternal",
 		itemUser: ["Floette-Eternal"],
@@ -242,7 +242,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	skarmorite: {
 		name: "Skarmorite",
-		spritenum: 590, 
+		spritenum: 550,
 		megaStone: "Skarmory-Mega",
 		megaEvolves: "Skarmory",
 		itemUser: ["Skarmory"],
@@ -257,7 +257,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	clefablite: {
 		name: "Clefablite",
-		spritenum: 624, 
+		spritenum: 544,
 		megaStone: "Clefable-Mega",
 		megaEvolves: "Clefable",
 		itemUser: ["Clefable"],
@@ -272,7 +272,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	scraftinite: {
 		name: "Scraftinite",
-		spritenum: 620, 
+		spritenum: 555,
 		megaStone: "Scrafty-Mega",
 		megaEvolves: "Scrafty",
 		itemUser: ["Scrafty"],
@@ -287,7 +287,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	eelektrossite: {
 		name: "Eelektrossite",
-		spritenum: 576, 
+		spritenum: 556,
 		megaStone: "Eelektross-Mega",
 		megaEvolves: "Eelektross",
 		itemUser: ["Eelektross"],
@@ -302,7 +302,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	emboarite: {
 		name: "Emboarite",
-		spritenum: 586, 
+		spritenum: 552,
 		megaStone: "Emboar-Mega",
 		megaEvolves: "Emboar",
 		itemUser: ["Emboar"],
@@ -317,7 +317,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	feraligite: {
 		name: "Feraligite",
-		spritenum: 599, 
+		spritenum: 549,
 		megaStone: "Feraligatr-Mega",
 		megaEvolves: "Feraligatr",
 		itemUser: ["Feraligatr"],
@@ -332,7 +332,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	malamarite: {
 		name: "Malamarite",
-		spritenum: 601, 
+		spritenum: 563,
 		megaStone: "Malamar-Mega",
 		megaEvolves: "Malamar",
 		itemUser: ["Malamar"],
@@ -347,7 +347,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	pyroarite: {
 		name: "Pyroarite",
-		spritenum: 625, 
+		spritenum: 561,
 		megaStone: "Pyroar-Mega",
 		megaEvolves: "Pyroar",
 		itemUser: ["Pyroar"],
@@ -362,7 +362,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	scolipite: {
 		name: "Scolipite",
-		spritenum: 600, 
+		spritenum: 554,
 		megaStone: "Scolipede-Mega",
 		megaEvolves: "Scolipede",
 		itemUser: ["Scolipede"],
