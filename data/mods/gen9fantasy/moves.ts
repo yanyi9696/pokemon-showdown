@@ -594,7 +594,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "Long Zhi Ge",
 		pp: 15,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, sound: 1 }, 
+		flags: { protect: 1, mirror: 1, sound: 1, bypasssub: 1 }, 
 		// 像挑衅一样，直接指定状态ID
 		volatileStatus: 'longzhige',
 		// 像挑衅一样，把所有状态逻辑直接写在这里
