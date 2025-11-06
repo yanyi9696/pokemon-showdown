@@ -2699,7 +2699,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	floette: {
 		inherit: true,
 		otherFormes: ["Floette-Eternal", "Floette-Eternal-Fantasy", "Floette-Mega", "Floette-Mega-Fantasy"],
-		formeOrder: ["Floette", "Floette-Eternal", "Floette-Eternal-Fantasy", "Floette-Mega", "Floette-Mega-Fantasy"],
+		formeOrder: ["Floette", "Floette-Yellow", "Floette-Orange", "Floette-Blue", "Floette-White", 
+					"Floette-Eternal", "Floette-Eternal-Fantasy", "Floette-Mega", "Floette-Mega-Fantasy"],
 	},
 	floetteeternalfantasy: {
 		num: 670,

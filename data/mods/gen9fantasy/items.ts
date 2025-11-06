@@ -229,8 +229,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		name: "Floettite",
 		spritenum: 562,
 		megaStone: "Floette-Mega",
-		megaEvolves: "Floette-Eternal",
-		itemUser: ["Floette-Eternal"],
+		megaEvolves: "Floette",
+		itemUser: ["Floette"],
 		onTakeItem(item, source) {
 			if ([item.megaEvolves, item.megaStone].includes(source.baseSpecies.name)) return false;
 			return true;
