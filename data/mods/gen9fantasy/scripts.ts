@@ -1,11 +1,7 @@
-// (!!!) 关键修复：导入基础的对战行动 (BattleActions) 和 宝可梦类型 (Pokemon)
-import { BattleActions } from '../../../sim/battle-actions';
-import { Pokemon } from '../../../sim/pokemon';
-
 export const Scripts: ModdedBattleScriptsData = {
 	gen: 9,
 
-	// 关键：保留你原来正确的 init 函数
+	// 关键：保留你原来正确的 init 函数，这会解决所有宝可梦“Illegal”的问题
 	init() {
 		for (const id in this.data.FormatsData) {
 			if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
@@ -15,18 +11,9 @@ export const Scripts: ModdedBattleScriptsData = {
 		}
 	},
 
-	// (!!!) 关键修复：
-	// 在顶层定义 'actions' 对象
-	// 这是PS用来合并模组战斗逻辑的正确方式
+	// 这是我们最终确定的对战逻辑，确保对战中进化正确
 	actions: {
-		// (!!!) 关键修复：
-		// 导入并继承所有原始的对战逻辑 (BattleActions)
-		// 这样你就不会丢失 runUltraBurst, terastallize, runMove 等关键功能
-		...BattleActions,
-
-		// 你自定义的 runMegaEvo 逻辑将覆盖上面的默认版本
-		// (!!!) 关键修复：为 'pokemon' 参数添加 'Pokemon' 类型
-		runMegaEvo(pokemon: Pokemon) {
+		runMegaEvo(pokemon) {
 			const speciesid = pokemon.canMegaEvo;
 			if (!speciesid) return false;
 
@@ -50,6 +37,8 @@ export const Scripts: ModdedBattleScriptsData = {
 			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
 			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem);
 
+			// (!!!) 修改点：
+			// 移除了原来的 if (targetSpecies.name.endsWith('-Mega-Fantasy')) 条件
 			// 现在所有 Mega 进化都会显示特性动画
 			this.battle.add('-start', pokemon, 'ability: ' + pokemon.getAbility().name);
 			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] ability: ' + pokemon.getAbility().name, '[silent]');

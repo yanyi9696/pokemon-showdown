@@ -133,7 +133,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	empoleonfantasy: {	
 		tier: "OU",
 	},
-	floetteeternalmegafantasy: {
+	floettemegafantasy: {
 		tier: "OU",
 		abilities: {0: "Ji Qu Su Sheng"},		
 	},
@@ -484,7 +484,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Electric Surge"},		
 	},
-	floetteeternalmega: {
+	floettemega: {
 		tier: "RUBL",
 		abilities: {0: "Flower Veil"},		
 	},

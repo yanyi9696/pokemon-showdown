@@ -940,9 +940,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Falinksite",
 		spriteid: 'falinks',
 	},
-	floetteeternalmegafantasy: {
+	floettemegafantasy: {
 		num: 670,
-		name: "Floette-Eternal-Mega-Fantasy",
+		name: "Floette-Mega-Fantasy",
 		baseSpecies: "Floette",
 		forme: "Mega",
 		types: ["Fairy", "Dark"],
@@ -2698,8 +2698,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	floette: {
 		inherit: true,
-		otherFormes: ["Floette-Eternal", "Floette-Eternal-Fantasy", "Floette-Eternal-Mega", "Floette-Eternal-Mega-Fantasy"],
-		formeOrder: ["Floette", "Floette-Eternal", "Floette-Eternal-Fantasy", "Floette-Eternal-Mega", "Floette-Eternal-Mega-Fantasy"],
+		otherFormes: ["Floette-Eternal", "Floette-Eternal-Fantasy", "Floette-Mega", "Floette-Mega-Fantasy"],
+		formeOrder: ["Floette", "Floette-Eternal", "Floette-Eternal-Fantasy", "Floette-Mega", "Floette-Mega-Fantasy"],
 	},
 	floetteeternalfantasy: {
 		num: 670,
@@ -2716,9 +2716,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Undiscovered"],
 		spriteid: 'floetteeternal',
 	},
-	floetteeternalmega: {
+	floettemega: {
 		num: 670,
-		name: "Floette-Eternal-Mega",
+		name: "Floette-Mega",
 		baseSpecies: "Floette",
 		forme: "Mega",
 		types: ["Fairy"],
@@ -2730,8 +2730,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "White",
 		eggGroups: ["Undiscovered"],
 		requiredItem: "Floettite",
-		requiredForme: "Floette-Eternal",
-		battleOnly: "Floette-Eternal",
+		requiredForme: "Floette",
+		battleOnly: "Floette",
 		spriteid: 'floetteeternal',
 	},
 	glalie: {
