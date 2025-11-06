@@ -3,6 +3,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
 	},
+	lightofruin: {
+	    inherit: true,
+        isNonstandard: null,
+	},
 	punishment: {
 		num: 386,
 		accuracy: 100,

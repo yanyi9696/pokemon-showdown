@@ -956,7 +956,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Floettite",
 		requiredForme: "Floette-Eternal-Fantasy",
 		battleOnly: "Floette-Eternal-Fantasy",
-		spriteid: 'floetteeternal',
+		spriteid: 'floette-eternal',
 	},
 	froslassmegafantasy: {
 		num: 478,
@@ -2714,7 +2714,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 0.9,
 		color: "White",
 		eggGroups: ["Undiscovered"],
-		spriteid: 'floetteeternal',
+		spriteid: 'floette-eternal',
 	},
 	floettemega: {
 		num: 670,
@@ -2732,7 +2732,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Floettite",
 		requiredForme: "Floette-Eternal",
 		battleOnly: "Floette-Eternal",
-		spriteid: 'floetteeternal',
+		spriteid: 'floette-eternal',
 	},
 	glalie: {
 		inherit: true,

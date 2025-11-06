@@ -232,7 +232,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		megaEvolves: "Floette-Eternal",
 		itemUser: ["Floette-Eternal"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if ([item.megaEvolves, item.megaStone].includes(source.baseSpecies.name)) return false;
 			return true;
 		},
 		num: 10015, 
