@@ -2730,8 +2730,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "White",
 		eggGroups: ["Undiscovered"],
 		requiredItem: "Floettite",
-		requiredForme: "Floette",
-		battleOnly: "Floette",
+		requiredForme: "Floette-Eternal",
+		battleOnly: "Floette-Eternal",
 		spriteid: 'floetteeternal',
 	},
 	glalie: {
