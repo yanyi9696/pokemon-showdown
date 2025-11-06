@@ -948,7 +948,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["Fairy", "Dark"],
 		gender: "F",
 		baseStats: { hp: 74, atk: 85, def: 87, spa: 155, spd: 148, spe: 102 },
-		abilities: { 0: "Reckless" },
+		abilities: { 0: "Ji Qu Su Sheng" },
 		heightm: 0.2,
 		weightkg: 100.8,
 		color: "White",

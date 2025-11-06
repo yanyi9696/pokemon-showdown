@@ -135,7 +135,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	floetteeternalmegafantasy: {
 		tier: "OU",
-		abilities: {0: "Reckless"},		
+		abilities: {0: "Ji Qu Su Sheng"},		
 	},
 	froslassmegafantasy: {
 		tier: "OU",
