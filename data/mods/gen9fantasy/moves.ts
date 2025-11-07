@@ -3,6 +3,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
 	},
+	lightofruin: {
+	    inherit: true,
+        isNonstandard: null,
+	},
 	punishment: {
 		num: 386,
 		accuracy: 100,
@@ -83,21 +87,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Tough",
 		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于缩小状态,本招式必定命中且伤害翻倍",
 		shortDesc: "此招式拥有飞行属性在属性相克中的克制面,舍去微弱",
-	},
-	lightofruin: {
-		num: 617,
-		accuracy: 90,
-		basePower: 140,
-		category: "Special",
-		name: "Light of Ruin",
-		pp: 5,
-		priority: 0,
-		flags: { protect: 1, mirror: 1 },
-		recoil: [1, 2],
-		secondary: null,
-		target: "normal",
-		type: "Fairy",
-		contestType: "Beautiful",
 	},
 	overdrive: {
 		num: 786,
