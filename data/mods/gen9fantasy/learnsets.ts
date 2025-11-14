@@ -8902,6 +8902,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	victreebelfantasy: {
 		learnset: {
+			leechseed: ["9M"],
 			biansuzhefan: ["9M"],
 			gunkshot: ["9M"],
 			taunt: ["9M"],
@@ -8997,6 +8998,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	victreebelmegafantasy: {
 		learnset: {
+			leechseed: ["9M"],
 			biansuzhefan: ["9M"],
 			gunkshot: ["9M"],
 			taunt: ["9M"],
