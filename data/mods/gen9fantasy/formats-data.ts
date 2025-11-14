@@ -498,7 +498,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	feraligatrmega: {
 		tier: "RU",
-		abilities: {0: "Solar Power"},		
+		abilities: {0: "Strong Jaw"},		
 	},
 	pyroarmega: {
 		tier: "RU",
