@@ -23,18 +23,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
-		// 在这里添加穿透效果
-		// This flag makes the move ignore the effects of screens (Reflect, Light Screen, Aurora Veil),
-		// Safeguard, and Substitute.
-		infiltrates: true, // 新增：赋予技能穿透效果
+		volatileStatus: 'qianghuawuxiao', 
 		secondary: null,
 		target: "normal",
 		type: "Dark",
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Cool",
-		desc: "威力基数为80,附带穿透效果。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
-		shortDesc: "80威力 +目标每有1项能力上升, 威力+20,有穿透效果",
+		desc: "威力基数为80。使目标强化无效化2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
+		shortDesc: "80威力 +目标每有1项能力上升威力+20。使目标强化无效化2回合",
 	},
 	watershuriken: {
 		num: 594,

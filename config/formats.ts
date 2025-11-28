@@ -21,6 +21,28 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		section: "FC",
 	},
+		{
+		name: "[Gen 9] FC AG",
+		mod: 'gen9fantasy',
+		ruleset: ['Standard NatDex', 'Standard AG', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
+		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
+		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
+	},
 	{
 		name: "[Gen 9] FC Uber",
 		mod: 'gen9fantasy',
@@ -181,6 +203,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
+		onSwitchIn(pokemon) {
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
+		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
+	},
+	{
+		name: "[Gen 9] FC LC",
+		mod: 'gen9fantasy',
+		ruleset: ['Standard NatDex', 'Little Cup', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
+		banlist: [
+			'Aipom', 'Basculin-White-Striped', 'Clamperl', 'Corsola-Galar', 'Cutiefly', 'Drifloon', 'Dunsparce', 'Duraludon', 'Flittle', 'Girafarig',
+			'Gligar', 'Meditite', 'Misdreavus', 'Murkrow', 'Porygon', 'Qwilfish-Hisui', 'Rufflet', 'Scraggy', 'Scyther', 'Sneasel', 'Sneasel-Hisui',
+			'Stantler', 'Swirlix', 'Tangela', 'Vulpix-Alola', 'Woobat', 'Yanma', 'Zigzagoon-Base', 'Chlorophyll', 'Moody', 'Eevium Z', 'King\'s Rock',
+			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
+		],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');

@@ -10294,14 +10294,17 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	garbodorfantasy: {
 		learnset: {
 			acidarmor: ["9M"],
+			shoreup: ["9M"],
+			sandtomb: ["9M"],
+			earthquake: ["9M"],
+			earthpower: ["9M"],
+			flashcannon: ["9M"],
 			baoyulihua: ["9M"],
 			metalburst: ["9M"],
 			suilinggang: ["9M"],
-			hardpress: ["9M"],
 			spikecannon: ["9M"],
 			tidyup: ["9M"],
 			popipa: ["9M"],
-			shoreup: ["9M"],
 			//幻想增添技能
 			acidspray: ["8L1", "7L12", "6L12", "5L12"],
 			amnesia: ["8M", "8L9", "7L46", "6L46", "5L46"],

@@ -1,4 +1,60 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	qianghuawuxiao: {
+		name: 'Qiang Hua Wu Xiao',
+		duration: 2,
+		// 当状态开始时显示提示
+		onStart(pokemon) {
+			this.add('-start', pokemon, 'Qiang Hua Wu Xiao', '[silent]');
+			this.add('-message', `${pokemon.name}的强化被暂时无视了！`);
+		},
+		// 当状态再次被施加时（刷新），重置回合数
+		onRestart(pokemon) {
+			this.effectState.duration = 2;
+			this.add('-message', `${pokemon.name}的强化无效状态持续时间刷新了！`);
+		},
+		onEnd(pokemon) {
+			this.add('-end', pokemon, 'Qiang Hua Wu Xiao', '[silent]');
+			this.add('-message', `${pokemon.name}的强化重新生效了！`);
+		},
+		// --- 核心效果：无视正面能力变化 ---
+		// 原理：如果能力等级大于0，则乘以修正系数将其抵消。
+		// 公式：当前数值 * 2 / (2 + 等级) = 原始数值
+		
+		// 1. 无视攻击提升
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, pokemon) {
+			if (pokemon.boosts.atk > 0) {
+				return atk * 2 / (2 + pokemon.boosts.atk);
+			}
+		},
+		// 2. 无视防御提升
+		onModifyDefPriority: 5,
+		onModifyDef(def, pokemon) {
+			if (pokemon.boosts.def > 0) {
+				return def * 2 / (2 + pokemon.boosts.def);
+			}
+		},
+		// 3. 无视特攻提升
+		onModifySpAPriority: 5,
+		onModifySpA(spa, pokemon) {
+			if (pokemon.boosts.spa > 0) {
+				return spa * 2 / (2 + pokemon.boosts.spa);
+			}
+		},
+		// 4. 无视特防提升
+		onModifySpDPriority: 5,
+		onModifySpD(spd, pokemon) {
+			if (pokemon.boosts.spd > 0) {
+				return spd * 2 / (2 + pokemon.boosts.spd);
+			}
+		},
+		// 5. 无视速度提升
+		onModifySpe(spe, pokemon) {
+			if (pokemon.boosts.spe > 0) {
+				return spe * 2 / (2 + pokemon.boosts.spe);
+			}
+		},
+	},
 	yuannengshifang: {
 		name: 'yuannengshifang',
 		duration: 2,

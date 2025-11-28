@@ -220,7 +220,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Bao Xue Zhi Li"},	
 	},
+	absolfantasy: {
+		tier: "UUBL",
+	},
 	audinofantasy: {
+		tier: "UUBL",
+	},
+	crobatfantasy: {
 		tier: "UUBL",
 	},
 	dragalgefantasy: {	
@@ -268,22 +274,19 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	volcanionfantasy: {
 		tier: "UUBL",
 	},
-	absolfantasy: {
-		tier: "UU",
-	},
-	armarougefantasy: {
-		tier: "UU",
+	weezingfantasy: {
+		tier: "UUBL",
 	},
 	ceruledgefantasy: {
-		tier: "UU",
-	},
-	crobatfantasy: {
 		tier: "UU",
 	},
 	cursolafantasy: {
 		tier: "UU",
 	},
 	decidueyehisuifantasy: {
+		tier: "UU",
+	},
+	dusknoirfantasy: {
 		tier: "UU",
 	},
 	froslassfantasy: {
@@ -308,6 +311,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	illumisefantasy: {
 		tier: "UU",
 	},
+	lopunnyfantasy: {
+		tier: "UU",
+	},
 	lurantisfantasy: {
 		tier: "UU",
 	},
@@ -327,9 +333,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	volbeatfantasy: {
 		tier: "UU",
 	},
-	weezingfantasy: {
-		tier: "UU",
-	},
 	wochienfantasy: {
 		tier: "UU",
 	},
@@ -339,16 +342,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	carnivinefantasy: {
 		tier: "RUBL",
 	},
-	dusknoirfantasy: {
-		tier: "RUBL",
-	},
 	floetteeternalfantasy: {
 		tier: "RUBL",
 	},
 	honchkrowfantasy: {
-		tier: "RUBL",
-	},
-	lopunnyfantasy: {
 		tier: "RUBL",
 	},
 	meganiumfantasy: {
@@ -377,6 +374,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	altariafantasy: {
+		tier: "RU",
+	},
+	armarougefantasy: {
 		tier: "RU",
 	},
 	glaliefantasy: {
@@ -472,10 +472,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 		abilities: {0: "Snow Warning"},		
 	},
-	scraftymega: {
-		tier: "UU",
-		abilities: {0: "Intimidate"},		
-	},
 	chandeluremega: {
 		tier: "RUBL",
 		abilities: {0: "Flash Fire"},		
@@ -487,6 +483,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	floettemega: {
 		tier: "RUBL",
 		abilities: {0: "Flower Veil"},		
+	},
+	scraftymega: {
+		tier: "RUBL",
+		abilities: {0: "Intimidate"},		
 	},
 	scolipedemega: {
 		tier: "RUBL",
@@ -762,10 +762,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	goodrahisui: {
 		tier: "UUBL",
 	},
+	ogerponcornerstonetera: {
+		tier: "UUBL",
+	},
 	pelipper: {
 		tier: "UUBL",
 	},
-	ogerponcornerstonetera: {
+	rillaboom: {
 		tier: "UUBL",
 	},
 	xurkitree: {
@@ -784,9 +787,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	pecharunt: {
-		tier: "UU",
-	},
-	rillaboom: {
 		tier: "UU",
 	},
 	serperior: {
@@ -823,6 +823,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	amoonguss: {
+		tier: "RU",
+	},
+	chansey: {
 		tier: "RU",
 	},
 	floetteeternal: {
