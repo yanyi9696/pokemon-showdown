@@ -292,9 +292,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	froslassfantasy: {
 		tier: "UU",
 	},
-	garbodorfantasy: {
-		tier: "UU",
-	},
 	glaliemegafantasy: {
 		tier: "UU",
 		abilities: {0: "Refrigerate"},		
@@ -377,6 +374,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	armarougefantasy: {
+		tier: "RU",
+	},
+	garbodorfantasy: {
 		tier: "RU",
 	},
 	glaliefantasy: {
