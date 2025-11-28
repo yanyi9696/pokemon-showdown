@@ -24,7 +24,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		{
 		name: "[Gen 9] FC AG",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard NatDex', 'Standard AG', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
+		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
 			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
