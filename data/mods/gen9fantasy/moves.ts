@@ -12,7 +12,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 0,
 		basePowerCallback(pokemon, target) {
-			let power = 80 + 20 * target.positiveBoosts();
+			let power = 80 + 10 * target.positiveBoosts();
 			if (power > 200) power = 200;
 			this.debug(`BP: ${power}`);
 			return power;
@@ -20,7 +20,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		category: "Physical",
 		isNonstandard: "Past",
 		name: "Punishment",
-		pp: 5,
+		pp: 10,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
 		volatileStatus: 'qianghuawuxiao', 
@@ -30,8 +30,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Cool",
-		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
-		shortDesc: "80威力,目标每有1项能力上升+20,使目标强化无效2回合",
+		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升10,最高为200",
+		shortDesc: "80威力,目标每有1项能力上升+10,使目标强化无效2回合",
 	},
 	watershuriken: {
 		num: 594,
