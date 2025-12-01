@@ -231,12 +231,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "秘剑·百仞川。令目标场地进入碎菱钢状态,使交换上场的宝可梦受到伤害",
 		shortDesc: "秘剑·百仞川。令目标场地进入碎菱钢状态"
 	},
-	dianshanshunji: {
+	dianshanxunji: {
 		num: 10004,
 		accuracy: 100,
 		basePower: 45,
 		category: "Physical",
-		name: "Dian Shan Shun Ji",
+		name: "Dian Shan Xun Ji",
 		pp: 5,
 		priority: 1,
 		flags: { contact: 1, protect: 1, mirror: 1, punch: 1 },
@@ -246,8 +246,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Electric",
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 100 },
-		desc: "电闪瞬击。必定能够先制攻击。攻击必定击中要害",
-		shortDesc: "电闪瞬击。必定能够先制攻击。攻击必定击中要害"
+		desc: "电闪迅击。必定能够先制攻击。攻击必定击中要害",
+		shortDesc: "电闪迅击。必定能够先制攻击。攻击必定击中要害"
 	},
 	zuishenluanda: {
 		num: 10005,
