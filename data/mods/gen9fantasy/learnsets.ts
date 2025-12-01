@@ -1619,7 +1619,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	urshifufantasy: {
 		learnset: {
-			dianshanshunji: ["9M"],
+			dianshanxunji: ["9M"],
 			plasmafists: ["9M"],
 			supercellslam: ["9M"],
 			//幻想增添技能
