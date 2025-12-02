@@ -5830,6 +5830,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			biansuzhefan: ["9M"],
 			bittermalice: ["9M"],
 			thief: ["9M"],
+			punishment: ["9M"],
 			bodypress: ["9M"],
 			irondefense: ["9M"],
 			//幻想增添技能
