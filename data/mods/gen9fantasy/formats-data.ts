@@ -146,10 +146,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	greninjafantasy: {
 		tier: "OU",
+		isNonstandard: null,
 	},
 	greninjamegafantasy: {
 		tier: "OU",
 		abilities: {0: "Technician"},		
+		isNonstandard: null,
 	},
 	greninjabondfantasy: {
 		tier: "OU",
