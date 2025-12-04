@@ -9547,7 +9547,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	greninja: {
 		learnset: {
 			flipturn: ["9M"],
-			nastyplot: ["9M"],
 			psyshock: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "7M", "6M"],
@@ -9650,7 +9649,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	greninjabond: {
 		learnset: {
 			flipturn: ["9M"],
-			nastyplot: ["9M"],
 			psyshock: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "7M"],
@@ -9749,6 +9747,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			flipturn: ["9M"],
 			aquajet: ["9M"],
 			knockoff: ["9M"],
+			nastyplot: ["9M"],
 			biansuzhefan: ["9M"],
 			psyshock: ["9M"],
 			//幻想增添技能
@@ -9854,6 +9853,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			flipturn: ["9M"],
 			aquajet: ["9M"],
 			knockoff: ["9M"],
+			nastyplot: ["9M"],
 			biansuzhefan: ["9M"],
 			psyshock: ["9M"],
 			//幻想增添技能
@@ -9959,6 +9959,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			flipturn: ["9M"],
 			aquajet: ["9M"],
 			knockoff: ["9M"],
+			nastyplot: ["9M"],
 			biansuzhefan: ["9M"],
 			psyshock: ["9M"],
 			//幻想增添技能
@@ -10058,6 +10059,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			flipturn: ["9M"],
 			aquajet: ["9M"],
 			knockoff: ["9M"],
+			nastyplot: ["9M"],
 			biansuzhefan: ["9M"],
 			psyshock: ["9M"],
 			//幻想增添技能

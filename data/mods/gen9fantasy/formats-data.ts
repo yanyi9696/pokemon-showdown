@@ -24,6 +24,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Levitate"},		
 	},
+	greninjamegafantasy: {
+		tier: "Uber",
+		abilities: {0: "Stakeout"},		
+	},
 	metagrossmegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Tough Claws"},	
@@ -146,10 +150,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	greninjafantasy: {
 		tier: "OU",
-	},
-	greninjamegafantasy: {
-		tier: "OU",
-		abilities: {0: "Technician"},		
 	},
 	greninjabondfantasy: {
 		tier: "OU",
@@ -420,10 +420,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Skill Link"},		
 	},
-	greninjamega: {
-		tier: "Uber",
-		abilities: {0: "Stakeout"},		
-	},
 	starmiemega: {
 		tier: "Uber",
 		abilities: {0: "Pure Power"},		
@@ -451,6 +447,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	falinksmega: {
 		tier: "OU",
 		abilities: {0: "Defiant"},		
+	},
+	greninjamega: {
+		tier: "OU",
+		abilities: {0: "Technician"},		
 	},
 	hawluchamega: {
 		tier: "OU",
@@ -733,12 +733,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	glimmora: {
-		tier: "OU",
-	},
-	greninja: {
-		tier: "OU",
-	},
-	greninjabond: {
 		tier: "OU",
 	},
 	ironcrown: {
