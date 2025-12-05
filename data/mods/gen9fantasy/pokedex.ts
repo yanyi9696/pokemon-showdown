@@ -769,7 +769,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Chandelure",
 		forme: "Fantasy",
 		types: ["Ghost", "Fire"],
-		baseStats: { hp: 80, atk: 55, def: 90, spa: 125, spd: 100, spe: 80 },
+		baseStats: { hp: 80, atk: 55, def: 100, spa: 125, spd: 100, spe: 80 },
 		abilities: { 0: "Levitate", 1: "Magic Guard", H: "Shadow Tag" },
 		heightm: 1,
 		weightkg: 34.3,
