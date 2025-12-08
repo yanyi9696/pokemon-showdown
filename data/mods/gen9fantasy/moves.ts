@@ -283,7 +283,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
 		selfSwitch: true,
 		secondary: {
-			chance: 30,
+			chance: 10,
 			status: 'psn',
 		},
 		target: "normal",
@@ -291,8 +291,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 85 },
 		contestType: "Cute",
-		desc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场,有30%几率使目标陷入中毒状态",
-		shortDesc: "变速折返。攻击后替换后备宝可梦上场,30%使目标中毒"
+		desc: "变速折返。使用者在攻击目标后会替换后备宝可梦上场,有10%几率使目标陷入中毒状态",
+		shortDesc: "变速折返。攻击后替换后备宝可梦上场,10%使目标中毒"
 	},
 	chuanyun: {
 		num: 10007,

@@ -601,31 +601,69 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		fling: {
 			basePower: 10,
 		},
+		// 新增效果：无视反射壁/光墙/极光幕
+		onSourceModifyDamage(damage, source, target, move) {
+			// 1. 检查是否为射击或球弹类招式
+			if (move.flags['shooting'] || move.flags['bullet']) {
+				// 2. 检查是否已经通过其他方式无视了墙（击中要害 或 穿透特性）
+				// 如果是击中要害，系统已经忽略了墙，不需要道具补偿
+				if (target.getMoveHitData(move).crit) return;
+				// 如果有穿透特性，系统已经忽略了墙，不需要道具补偿
+				if (source.hasAbility('infiltrator')) return;
+
+				// 3. 检查是否存在对应的墙
+				const side = target.side;
+				const reflect = side.getSideCondition('reflect');
+				const lightScreen = side.getSideCondition('lightscreen');
+				const auroraVeil = side.getSideCondition('auroraveil');
+
+				// 物理招式对应反射壁/极光幕，特殊招式对应光墙/极光幕
+				if ((move.category === 'Physical' && (reflect || auroraVeil)) ||
+					(move.category === 'Special' && (lightScreen || auroraVeil))) {
+					
+					// 4. 应用伤害补偿（抵消墙的减伤效果）
+					this.debug('Fantasy Scope Lens: Ignoring Screens');
+					
+					// 判断是单打还是双打/多打
+					if (this.gameType !== 'singles') {
+						// 双打中墙的效果是伤害 * (2732/4096)，约为0.66
+						// 为了抵消，我们需要乘以 (4096/2732)，约为1.5
+						return this.chainModify([4096, 2732]);
+					} else {
+						// 单打中墙的效果是伤害 * 0.5
+						// 为了抵消，我们需要乘以 2
+						return this.chainModify(2);
+					}
+				}
+			}
+		},
+		// 原有效果：无视防御
 		onAnyModifyDef(def, target, source, move) {
 			if (!source || source.item !== 'fantasyscopelens') return;
 			if (move.flags['shooting'] || move.flags['bullet']) {
-				
-				// 【核心修正】道具会主动检查使用者是否拥有“穿透”特性
+				// 检查使用者是否拥有“穿透”特性
 				if (source.hasAbility('infiltrator')) {
-					// 如果有，则执行我们期望的“加算”逻辑 (10% + 20% = 30%削减)
+					// 穿透(10%) + 道具(20%) = 无视30%防御
 					this.debug('Fantasy Scope Lens + Infiltrator combined additive drop');
-					return this.chainModify(0.7); // 1 - 0.3 = 0.7
+					return this.chainModify(0.7); 
 				} else {
-					// 如果没有，就只执行道具自己的20%削减效果
+					// 仅道具：无视20%防御
 					this.debug('Fantasy Scope Lens Def drop');
 					return this.chainModify(0.8);
 				}
 			}
 		},
+		// 原有效果：无视特防
 		onAnyModifySpD(spd, target, source, move) {
 			if (!source || source.item !== 'fantasyscopelens') return;
 			if (move.flags['shooting'] || move.flags['bullet']) {
-
-				// 【核心修正】(同上)
+				// 检查使用者是否拥有“穿透”特性
 				if (source.hasAbility('infiltrator')) {
+					// 穿透(10%) + 道具(20%) = 无视30%特防
 					this.debug('Fantasy Scope Lens + Infiltrator combined additive drop');
 					return this.chainModify(0.7);
 				} else {
+					// 仅道具：无视20%特防
 					this.debug('Fantasy Scope Lens SpD drop');
 					return this.chainModify(0.8);
 				}
@@ -633,8 +671,8 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 30004,
 		gen: 9,
-		desc: "幻之焦点镜。携带后,使用射击类、球和弹类招式能无视目标20%的防御与特防",
-		shortDesc: "幻之焦点镜。携带后,使用射击类、球和弹类招式能无视目标20%的防御与特防",
+		desc: "幻之焦点镜。使用射击、球和弹类招式时,无视对手的反射壁/光墙/极光幕,且无视目标20%的防御与特防。",
+		shortDesc: "幻之焦点镜。射击球弹类招式无视墙,且无视目标20%双防。",
 	},
 	fantasysyrupyapple: {
 		name: "Fantasy Syrupy Apple",
