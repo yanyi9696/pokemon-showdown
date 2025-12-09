@@ -198,9 +198,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sandacondafantasy: {
 		tier: "OU",
 	},
-	skarmorymegafantasy: {
-		tier: "OU",
-	},
 	skeledirgefantasy: {
 		tier: "OU",
 	},
@@ -250,6 +247,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	raticatefantasy: {
 		tier: "UUBL",
+	},
+	skarmorymegafantasy: {
+		tier: "UUBL",
+		abilities: {0: "Good as Gold"},	
 	},
 	slowbrogalarfantasy: {
 		tier: "UUBL",
@@ -436,17 +437,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Unaware"},		
 	},
-	drampamega: {
-		tier: "OU",
-		abilities: {0: "Drizzle"},		
-	},
 	excadrillmega: {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
-	},
-	falinksmega: {
-		tier: "OU",
-		abilities: {0: "Defiant"},		
 	},
 	greninjamega: {
 		tier: "OU",
@@ -457,8 +450,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Stamina"},
 	},
 	skarmorymega: {
-		tier: "UUBL",
+		tier: "OU",
 		abilities: {0: "Tough Claws"},
+	},
+	drampamega: {
+		tier: "UUBL",
+		abilities: {0: "Drizzle"},		
 	},
 	clefablemega: {
 		tier: "UU",
@@ -467,6 +464,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	emboarmega: {
 		tier: "UU",
 		abilities: {0: "Supreme Overlord"},		
+	},
+	falinksmega: {
+		tier: "UU",
+		abilities: {0: "Defiant"},		
 	},
 	froslassmega: {
 		tier: "UU",
