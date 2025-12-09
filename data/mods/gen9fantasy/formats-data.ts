@@ -421,10 +421,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Skill Link"},		
 	},
-	starmiemega: {
-		tier: "Uber",
-		abilities: {0: "Pure Power"},		
-	},
 	chesnaughtmega: {
 		tier: "(Uber)",
 		abilities: {0: "Stamina"},		
@@ -432,6 +428,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	delphoxmega: {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		
+	},
+	starmiemega: {
+		tier: "(Uber)",
+		abilities: {0: "Pure Power"},		
 	},
 	dragonitemega: {
 		tier: "OU",
