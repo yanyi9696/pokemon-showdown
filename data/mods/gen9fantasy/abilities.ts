@@ -78,13 +78,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (!pokemon.activeTurns) {
 					this.effectState.duration! += 1;
 				}
-				// 只有当宝可梦存活（hp > 0）并且从上场后的第二个回合结束时 (activeTurns >= 2)，
+				// 只有当宝可梦存活（hp > 0）并且从上场后的第一个回合结束时 (activeTurns >= 1)，
 				// 才开始执行攻击和速度的提升。
 				// activeTurns 在上场回合结束时为 0
 				// activeTurns 在上场后第一个回合结束时为 1 (此时不提升)
-				// activeTurns 在上场后第一个回合结束时为 2 (此时不提升)
-				// activeTurns 在上场后第二个回合结束时为 3 (此时开始提升)
-				if (pokemon.hp && pokemon.activeTurns >= 3) {
+				// activeTurns 在上场后第一个回合结束时为 2 (此时开始提升)
+				if (pokemon.hp && pokemon.activeTurns >= 2) {
 					this.boost({atk: 1, spe: 1}, pokemon);
 				}
 			},
@@ -106,7 +105,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Slow Start",
 		rating: 4,
 		num: 112,
-		shortDesc: "登场之后的5回合内攻击和速度减半,从第3个回合开始,每回合结束时攻击和速度会上升1级",
+		shortDesc: "登场之后的5回合内攻击和速度减半,从第2个回合开始,每回合结束时攻击和速度会上升1级",
 	},
 	flowergift: {
 		onSwitchInPriority: -2,
