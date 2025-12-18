@@ -385,7 +385,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2588,
+		num: 10024,
 		gen: 9,
 		desc: "阿勃梭鲁进化石Z。让阿勃梭鲁携带后,在战斗时就能进行超级进化",
 		shortDesc: "阿勃梭鲁进化石Z。让阿勃梭鲁携带后,在战斗时就能进行超级进化",
@@ -400,7 +400,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2601,
+		num: 10025,
 		gen: 9,
 		desc: "戟脊龙进化石。让戟脊龙携带后,在战斗时就能进行超级进化",
 		shortDesc: "戟脊龙进化石。让戟脊龙携带后,在战斗时就能进行超级进化",
@@ -415,7 +415,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2587,
+		num: 10026,
 		gen: 9,
 		desc: "风铃铃进化石。让风铃铃携带后,在战斗时就能进行超级进化",
 		shortDesc: "风铃铃进化石。让风铃铃携带后,在战斗时就能进行超级进化",
@@ -430,7 +430,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2595,
+		num: 10027,
 		gen: 9,
 		desc: "好胜毛蟹进化石。让好胜毛蟹携带后,在战斗时就能进行超级进化",
 		shortDesc: "好胜毛蟹进化石。让好胜毛蟹携带后,在战斗时就能进行超级进化",
@@ -445,7 +445,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2593,
+		num: 10028,
 		gen: 9,
 		desc: "达克莱伊进化石。让达克莱伊携带后,在战斗时就能进行超级进化",
 		shortDesc: "达克莱伊进化石。让达克莱伊携带后,在战斗时就能进行超级进化",
@@ -460,7 +460,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2590,
+		num: 10029,
 		gen: 9,
 		desc: "烈咬陆鲨进化石Z。让风铃铃携带后,在战斗时就能进行超级进化",
 		shortDesc: "烈咬陆鲨进化石Z。让风铃铃携带后,在战斗时就能进行超级进化",
@@ -475,7 +475,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2600,
+		num: 10030,
 		gen: 9,
 		desc: "晶光花进化石。让晶光花携带后,在战斗时就能进行超级进化",
 		shortDesc: "晶光花进化石。让晶光花携带后,在战斗时就能进行超级进化",
@@ -490,7 +490,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2596,
+		num: 10031,
 		gen: 9,
 		desc: "具甲武者进化石。让具甲武者携带后,在战斗时就能进行超级进化",
 		shortDesc: "具甲武者进化石。让具甲武者携带后,在战斗时就能进行超级进化",
@@ -505,7 +505,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2594,
+		num: 10032,
 		gen: 9,
 		desc: "泥偶巨人进化石。让泥偶巨人携带后,在战斗时就能进行超级进化",
 		shortDesc: "泥偶巨人进化石。让泥偶巨人携带后,在战斗时就能进行超级进化",
@@ -520,7 +520,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2592,
+		num: 10033,
 		gen: 9,
 		desc: "席多蓝恩进化石。让席多蓝恩携带后,在战斗时就能进行超级进化",
 		shortDesc: "席多蓝恩进化石。让席多蓝恩携带后,在战斗时就能进行超级进化",
@@ -535,7 +535,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2591,
+		num: 10034,
 		gen: 9,
 		desc: "路卡利欧进化石Z。让路卡利欧携带后,在战斗时就能进行超级进化",
 		shortDesc: "路卡利欧进化石Z。让路卡利欧携带后,在战斗时就能进行超级进化",
@@ -550,7 +550,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
 			return true;
 		},
-		num: 2597,
+		num: 10035,
 		gen: 9,
 		desc: "玛机雅娜进化石。让玛机雅娜携带后,在战斗时就能进行超级进化",
 		shortDesc: "玛机雅娜进化石。让玛机雅娜携带后,在战斗时就能进行超级进化",
@@ -565,7 +565,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (source.baseSpecies.num === 678) return false;
 			return true;
 		},
-		num: 2594,
+		num: 10036,
 		gen: 9,
 		desc: "超能妙喵进化石。让超能妙喵携带后,在战斗时就能进行超级进化",
 		shortDesc: "超能妙喵进化石。让超能妙喵携带后,在战斗时就能进行超级进化",
@@ -581,7 +581,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				item.megaStone === source.baseSpecies.name) return false;
 			return true;
 		},
-		num: 2585,
+		num: 10037,
 		gen: 9,
 		desc: "雷丘X进化石。让雷丘携带后,在战斗时就能进行超级进化",
 		shortDesc: "雷丘X进化石。让雷丘携带后,在战斗时就能进行超级进化",
@@ -597,7 +597,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				item.megaStone === source.baseSpecies.name) return false;
 			return true;
 		},
-		num: 2586,
+		num: 10038,
 		gen: 9,
 		desc: "雷丘Y进化石。让雷丘携带后,在战斗时就能进行超级进化",
 		shortDesc: "雷丘Y进化石。让雷丘携带后,在战斗时就能进行超级进化",
@@ -612,7 +612,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2599,
+		num: 10039,
 		gen: 9,
 		desc: "狠辣椒进化石。让狠辣椒携带后,在战斗时就能进行超级进化",
 		shortDesc: "狠辣椒进化石。让狠辣椒携带后,在战斗时就能进行超级进化",
@@ -627,7 +627,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2589,
+		num: 10040,
 		gen: 9,
 		desc: "姆克鹰进化石。让姆克鹰携带后,在战斗时就能进行超级进化",
 		shortDesc: "姆克鹰进化石。让姆克鹰携带后,在战斗时就能进行超级进化",
@@ -642,7 +642,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
 			return true;
 		},
-		num: 2601,
+		num: 10041,
 		gen: 9,
 		desc: "米立龙进化石。让米立龙携带后,在战斗时就能进行超级进化",
 		shortDesc: "米立龙进化石。让米立龙携带后,在战斗时就能进行超级进化",
@@ -657,7 +657,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
 			return true;
 		},
-		num: 2598,
+		num: 10042,
 		gen: 9,
 		desc: "捷拉奥拉进化石。让捷拉奥拉携带后,在战斗时就能进行超级进化",
 		shortDesc: "捷拉奥拉进化石。让捷拉奥拉携带后,在战斗时就能进行超级进化",

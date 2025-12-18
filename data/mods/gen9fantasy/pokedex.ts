@@ -1,6 +1,41 @@
 export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
 	//还未定分级的宝可梦
-	
+	raichu: {
+		inherit: true,
+		otherFormes: ["Raichu-Mega-X", "Raichu-Mega-Y"],
+		formeOrder: ["Raichu", "Raichu-Mega-X", "Raichu-Mega-Y"],
+	},
+	raichumegax: {
+		num: 26,
+		name: "Raichu-Mega-X",
+		baseSpecies: "Raichu",
+		forme: "Mega-X",
+		types: ["Electric"],
+		baseStats: { hp: 60, atk: 135, def: 95, spa: 90, spd: 95, spe: 110 },
+		abilities: { 0: "Surge Surfer" },
+		heightm: 1.2,
+		weightkg: 38,
+		color: "Yellow",
+		eggGroups: ["Field", "Fairy"],
+		requiredItem: "Raichunite X",
+		spriteid: 'raichu-mega',
+	},
+	raichumegay: {
+		num: 26,
+		name: "Raichu-Mega-Y",
+		baseSpecies: "Raichu",
+		forme: "Mega-Y",
+		types: ["Electric"],
+		baseStats: { hp: 60, atk: 100, def: 55, spa: 160, spd: 80, spe: 130 },
+		abilities: { 0: "Lightning Rod" },
+		heightm: 1,
+		weightkg: 26,
+		color: "Yellow",
+		eggGroups: ["Field", "Fairy"],
+		requiredItem: "Raichunite Y",
+		spriteid: 'raichu-mega',
+	},
+
 	//定好分级的fantasy宝可梦
 
 	//不合法
