@@ -4,18 +4,9 @@ export const Scripts: ModdedBattleScriptsData = {
 	// 关键：保留你原来正确的 init 函数，这会解决所有宝可梦“Illegal”的问题
 	init() {
 		for (const id in this.data.FormatsData) {
-			// 修复报错 1：直接使用 this.species.get 而不是 this.dex.species.get
-			const species = this.species.get(id);
-			
-			// 1. 保留原有逻辑
 			if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
 			if (this.data.FormatsData[id].natDexTier) {
 				this.data.FormatsData[id].tier = this.data.FormatsData[id].natDexTier;
-			}
-
-			// 2. 修复报错 2：使用 (any) 绕过类型检查，将 Mega 石绑定到 FormatsData
-			if (species.requiredItem) {
-				(this.data.FormatsData[id] as any).requiredItems = [species.requiredItem];
 			}
 		}
 	},
