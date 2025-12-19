@@ -1415,4 +1415,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10031,
 		shortDesc: "最佳拟态。变为只弱火、岩石、飞行。虫属性招式威力提升1.5倍",
 	},
+	shamozhisheng: {
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+			if (move.flags['sound'] && !pokemon.volatiles['dynamax']) { // hardcode
+				move.type = 'Ground';
+			}
+		},
+		flags: {},
+		name: "Sha Mo Zhi Sheng",
+		rating: 1.5,
+		num: 10032,
+		shortDesc: "沙漠之声。所有的声音招式都变为地面属性",
+	},
 };
