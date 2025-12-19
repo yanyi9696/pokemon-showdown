@@ -472,6 +472,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 		abilities: {0: "Magic Guard"},		
 	},
+	dragalgemega: {	
+		tier: "UU",
+		abilities: {0: "Regenerator"},		
+	},
 	emboarmega: {
 		tier: "UU",
 		abilities: {0: "Supreme Overlord"},		
@@ -503,10 +507,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	scolipedemega: {
 		tier: "RUBL",
 		abilities: {0: "No Guard"},		
-	},
-	dragalgemega: {	
-		tier: "RU",
-		abilities: {0: "Adaptability"},		
 	},
 	feraligatrmega: {
 		tier: "RU",
