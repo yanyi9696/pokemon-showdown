@@ -339,7 +339,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Quilladin",
 		evoLevel: 36,
 		eggGroups: ["Field"],
-		requiredItem: "Starminite",
+		requiredItem: "Chesnaughtite",
 		spriteid: 'chesnaught',
 	},
 	darmanitangalarfantasy: {
@@ -1597,7 +1597,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 240.5,
 		color: "White",
 		eggGroups: ["Monster", "Dragon"],
-		requiredItem: "drampanite",
+		requiredItem: "Drampanite",
 		spriteid: 'drampa',
 	},
 	electivire: {
@@ -2418,8 +2418,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoType: "useItem",
 		evoItem: "Thunder Stone",
 		eggGroups: ["Amorphous"],
-		requiredItem: "Dragalgite",
-		spriteid: 'dragalge',
+		requiredItem: "Eelektrossite",
+		spriteid: 'eelektross',
 	},
 	honchkrow: {
 		inherit: true,
