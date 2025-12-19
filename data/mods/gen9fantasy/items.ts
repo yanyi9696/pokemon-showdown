@@ -1,5 +1,26 @@
 export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	//以下为mega石 num从10000开始
+	gmegawishingstar: {
+		name: "G-Mega Wishing Star",
+		spritenum: 709,
+		megaStone: ["Garbodor-Fantasy-Mega", "Corviknight-Fantasy-Mega", "Sandaconda-Fantasy-Mega",
+					"Toxtricity-Fantasy-Mega", "Toxtricity-Low-Key-Fantasy-Mega",
+					"Urshifu-Fantasy-Mega", "Urshifu-Rapid-Strike-Fantasy-Mega"],
+		megaEvolves: ["Garbodor-Fantasy", "Corviknight-Fantasy", "Sandaconda-Fantasy",
+					"Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy",
+					"Urshifu-Fantasy", "Urshifu-Rapid-Strike-Fantasy"],
+		itemUser: ["Garbodor-Fantasy", "Corviknight-Fantasy", "Sandaconda-Fantasy",
+					"Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy",
+					"Urshifu-Fantasy", "Urshifu-Rapid-Strike-Fantasy"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
+			return true;
+		},
+		num: 9999,
+		gen: 9,
+		desc: "超巨进化许愿星。让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
+		shortDesc: "超巨进化许愿星。让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
+	},
 	victreebelite: {
 		name: "Victreebelite",
 		spritenum: 545,
@@ -661,6 +682,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		gen: 9,
 		desc: "捷拉奥拉进化石。让捷拉奥拉携带后,在战斗时就能进行超级进化",
 		shortDesc: "捷拉奥拉进化石。让捷拉奥拉携带后,在战斗时就能进行超级进化",
+	},
+	flygonite: {
+		name: "Flygonite",
+		spritenum: 568,
+		megaStone: "Flygon-Mega-Fantasy",
+		megaEvolves: "Flygon-Fantasy",
+		itemUser: ["Flygon-Fantasy"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 10043,
+		gen: 9,
+		desc: "沙漠蜻蜓-幻想进化石。让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "沙漠蜻蜓-幻想进化石。让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {

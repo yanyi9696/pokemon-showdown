@@ -83,9 +83,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Tough Claws"},		
 	},
-	flygonfantasy: {
-		tier: "(Uber)",
-	},
 	frosmothfantasy: {
 		tier: "(Uber)",
 	},
@@ -147,6 +144,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	floettemegafantasy: {
 		tier: "OU",
 		abilities: {0: "Ji Qu Su Sheng"},		
+	},
+	flygonfantasy: {
+		tier: "OU",
+	},
+	flygonmegafantasy: {
+		tier: "OU",
+		abilities: {0: "Sha Mo Zhi Sheng"},	
 	},
 	froslassmegafantasy: {
 		tier: "OU",

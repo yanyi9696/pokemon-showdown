@@ -6205,7 +6205,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	flygonfantasy: {
 		learnset: {
 			leechlife: ["9M"],
-			megahorn: ["9M"],
 			pinmissile: ["9M"],
 			fellstinger: ["9M"],
 			longzhige: ["9M"],
