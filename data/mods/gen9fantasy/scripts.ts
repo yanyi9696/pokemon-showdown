@@ -9,7 +9,61 @@ export const Scripts: ModdedBattleScriptsData = {
 				this.data.FormatsData[id].tier = this.data.FormatsData[id].natDexTier;
 			}
 		}
+
+		// 动态为自定义的 Mega 宝可梦添加 requiredItem
+		for (const id in this.data.Pokedex) {
+			const species = this.data.Pokedex[id];
+			if (species.forme === 'Mega' && species.name.endsWith('-Fantasy') && !species.requiredItem) {
+				// 尝试推断 Mega 石名称：例如 "Altaria-Mega-Fantasy" -> "Altarianite"
+
+				// 1. 尝试查找标准 Mega 形态，复用其 requiredItem
+				const standardMegaId = species.id.replace('fantasy', '');
+				const standardMega = this.dex.species.get(standardMegaId);
+
+				if (standardMega.exists && standardMega.requiredItem) {
+					species.requiredItem = standardMega.requiredItem;
+				} else {
+					// 2. 如果标准 Mega 不存在（例如可能是完全自制的 Mega），尝试智能推断
+					// 常见的命名规则是：BaseSpecies + "ite"
+					// 或者如果是 X/Y 形态：BaseSpecies + "ite X"
+					// 示例: Delphox-Mega-Fantasy -> Delphoxite
+
+					const baseSpeciesName = species.baseSpecies;
+					const potentialItemName = baseSpeciesName + "ite";
+					const potentialItem = this.dex.items.get(potentialItemName);
+
+					if (potentialItem.exists && potentialItem.megaEvolves === baseSpeciesName) {
+						species.requiredItem = potentialItem.name;
+					}
+
+					// 3. 处理不规则命名或手动定义的 Mega 石
+					// 有些 Mega 石名字不是简单的 "ite" 结尾，例如 "Hawluchanite", "Dragalgite" 等
+					// 我们可以遍历所有 item，找到 megaEvolves 为当前 baseSpecies 的道具
+					if (!species.requiredItem) {
+						const allItems = this.dex.items.all();
+						for (const item of allItems) {
+							if (item.megaEvolves === baseSpeciesName) {
+								species.requiredItem = item.name;
+								break; // 找到即止
+							}
+						}
+					}
+
+					// 处理 X/Y 形态，例如 Charizard-Mega-X-Fantasy
+					// id 通常是 charizardmegaxfantasy
+					if (!species.requiredItem && (species.name.includes('-Mega-X') || species.name.includes('-Mega-Y'))) {
+						const suffix = species.name.includes('-Mega-X') ? ' X' : ' Y';
+						const potentialItemNameXY = baseSpeciesName + "ite" + suffix;
+						const potentialItemXY = this.dex.items.get(potentialItemNameXY);
+						if (potentialItemXY.exists) {
+							species.requiredItem = potentialItemXY.name;
+						}
+					}
+				}
+			}
+		}
 	},
+	
 
 	// 这是我们最终确定的对战逻辑，确保对战中进化正确
 	actions: {
