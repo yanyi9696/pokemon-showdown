@@ -1460,6 +1460,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			uturn: ["9M"],
 			gunkshot: ["9M"],
+			mortalspin: ["9M"],
 			//ZA增添技能
 			agility: ["8M", "8L42", "7L33", "6L33", "5L33"],
 			aquatail: ["7T", "6T", "5T"],
@@ -10097,6 +10098,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	armarougefantasy: {
 		learnset: {
 			yanzhibodong: ["9M"],
+			burningbulwark: ["9M"],
 			zhukaibo: ["9M"],
 			steelbeam: ["9M"],
 			autotomize: ["9M"],

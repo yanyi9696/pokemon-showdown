@@ -464,6 +464,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Tough Claws"},
 	},
+	dragalgemega: {	
+		tier: "UUBL",
+		abilities: {0: "Regenerator"},		
+	},
 	drampamega: {
 		tier: "UUBL",
 		abilities: {0: "Drizzle"},		
@@ -471,10 +475,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	clefablemega: {
 		tier: "UU",
 		abilities: {0: "Magic Guard"},		
-	},
-	dragalgemega: {	
-		tier: "UU",
-		abilities: {0: "Regenerator"},		
 	},
 	emboarmega: {
 		tier: "UU",
@@ -506,7 +506,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	scolipedemega: {
 		tier: "RUBL",
-		abilities: {0: "No Guard"},		
+		abilities: {0: "Merciless"},		
 	},
 	feraligatrmega: {
 		tier: "RU",
