@@ -438,6 +438,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 242,
 		shortDesc: "攻击原本选定的目标。不会进入着迷、再来一次、挑衅、无理取闹、定身法和回复封锁状态",
 	},
+	unseenfist: {
+		onModifyMove(move) {
+			if (move.flags['contact']) delete move.flags['protect'];
+		},
+		// 自动进化逻辑：登场时检查是否有资格 Mega，有则自动执行
+		onStart(pokemon) {
+			if (pokemon.transformed) return; // 避开百变怪
+
+			// 调用 Scripts 中定义的判定逻辑
+			const megaSpecies = this.actions.canMegaEvo(pokemon);
+			if (megaSpecies && megaSpecies.includes('Urshifu')) {
+				this.add('-activate', pokemon, 'ability: Unseen Fist');
+				this.actions.runMegaEvo(pokemon);
+				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
+			}
+		},
+		flags: {},
+		name: "Unseen Fist",
+		rating: 2,
+		num: 260,
+	},
 	//以下为CAP特性
 		mountaineer: {
 		onDamage(damage, target, source, effect) {
