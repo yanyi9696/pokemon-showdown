@@ -1,7 +1,6 @@
 export const Scripts: ModdedBattleScriptsData = {
 	gen: 9,
 
-	// 保留你原来正确的 init 函数
 	init() {
 		for (const id in this.data.FormatsData) {
 			if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
@@ -12,17 +11,18 @@ export const Scripts: ModdedBattleScriptsData = {
 	},
 
 	actions: {
-		// 新增：处理多形态进化的判定逻辑
+		/**
+		 * @description 处理 Mega 进化的判定逻辑
+		 * 修复了 this.toID 的报错问题，改为直接使用全局的 toID 函数。
+		 */
 		canMegaEvo(pokemon) {
 			const species = pokemon.baseSpecies;
 			const item = pokemon.getItem();
 			
-			// 核心逻辑：处理类似 Tatsugiri 的数组映射
+			// 1. 处理类似 Tatsugiri 的数组映射进化石逻辑
 			if (Array.isArray(item.megaEvolves)) {
-				// 检查当前宝可梦的名字是否在进化石的可进化列表中
 				const index = item.megaEvolves.indexOf(species.name);
 				if (index >= 0) {
-					// 如果在，则返回 megaStone 数组中对应下标的形态
 					if (Array.isArray(item.megaStone)) {
 						return item.megaStone[index];
 					}
@@ -30,21 +30,32 @@ export const Scripts: ModdedBattleScriptsData = {
 				return null;
 			}
 
-			// 默认逻辑：处理普通的单对单进化
+			// 2. 处理普通的单对单进化石
 			if (item.megaEvolves === species.name) {
 				return item.megaStone as string;
 			}
 
+			// 3. 处理通过招式触发的 Mega 进化 (例如武道熊师)
+			for (const megaName in this.dex.data.Pokedex) {
+				const megaSpecies = this.dex.species.get(megaName);
+				if (megaSpecies.baseSpecies === species.name && megaSpecies.requiredMove) {
+					// --- 关键修复：移除 this. 关键字 ---
+					if (pokemon.moves.includes(toID(megaSpecies.requiredMove))) {
+						return megaSpecies.name;
+					}
+				}
+			}
 			return null;
 		},
 
-		// 保留并兼容你原来的对战执行逻辑
+		/**
+		 * @description 执行 Mega 进化的对战逻辑
+		 */
 		runMegaEvo(pokemon) {
-			// 这里会自动调用上面定义的 canMegaEvo 获取 speciesid
 			const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
 			if (!speciesid) return false;
 
-			// 究极变身处理
+			// 究极变身处理 (Ultra Burst)
 			if (pokemon.canUltraBurst) {
 				pokemon.formeChange(speciesid, pokemon.getItem(), true);
 				for (const ally of pokemon.side.pokemon) {
@@ -54,7 +65,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				return true;
 			}
 
-			// Mega 进化路径：保留 Fantasy Mega 的兼容处理
+			// 确定最终形态，处理 Fantasy 版本的优先级
 			const standardMega = this.dex.species.get(speciesid);
 			let targetSpecies = standardMega;
 			if (pokemon.species.name.endsWith('-Fantasy')) {
@@ -62,14 +73,22 @@ export const Scripts: ModdedBattleScriptsData = {
 				if (fantasyMega.exists) targetSpecies = fantasyMega;
 			}
 
+			// 检查 Mega 裂空坐限制
 			if (this.battle.ruleTable.isBanned('megarayquazaclause') && targetSpecies.id === 'rayquazamega') {
 				this.battle.runEvent('Cant', pokemon, null, null, 'mega');
 				return false;
 			}
 
+			// --- 武道熊师专属文案逻辑 ---
+			if (targetSpecies.name.includes('Urshifu-Mega')) {
+				this.battle.add('-flavor', pokemon, '展现了纯粹的武道极致！');
+			}
+
 			// 执行变身
 			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
-			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem);
+			
+			// 修正日志：如果是因为招式进化没有道具，则显示 [move]
+			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem || "[move]");
 			this.battle.add('-start', pokemon, 'ability: ' + pokemon.getAbility().name);
 			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] ability: ' + pokemon.getAbility().name, '[silent]');
 
