@@ -9,10 +9,6 @@ export const Scripts: ModdedBattleScriptsData = {
 				this.data.FormatsData[id].tier = this.data.FormatsData[id].natDexTier;
 			}
 		}
-
-		// 显式建立 Mega 进化关系，确保校验器（Validator）能识别招式与形态的绑定关系
-		this.modData('Pokedex', 'urshifufantasy').canMegaEvo = 'Urshifu-Mega-Fantasy';
-		this.modData('Pokedex', 'urshifurapidstrikefantasy').canMegaEvo = 'Urshifu-Rapid-Strike-Mega-Fantasy';
 	},
 
 	actions: {
@@ -21,15 +17,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			const species = pokemon.baseSpecies;
 			const item = pokemon.getItem();
 			
-			// 新增：武道熊师通过招式进行 Mega 进化的判定
-			if (species.id === 'urshifufantasy' && pokemon.hasMove('renzhenouda')) {
-				return 'Urshifu-Mega-Fantasy';
-			}
-			if (species.id === 'urshifurapidstrikefantasy' && pokemon.hasMove('yishunqianji')) {
-				return 'Urshifu-Rapid-Strike-Mega-Fantasy';
-			}
-
-			// 处理数组映射（如你之前代码中保留的 Tatsugiri 逻辑）
+			// 核心逻辑：处理类似 Tatsugiri 的数组映射
 			if (Array.isArray(item.megaEvolves)) {
 				// 检查当前宝可梦的名字是否在进化石的可进化列表中
 				const index = item.megaEvolves.indexOf(species.name);

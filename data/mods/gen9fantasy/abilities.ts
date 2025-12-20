@@ -442,15 +442,24 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifyMove(move) {
 			if (move.flags['contact']) delete move.flags['protect'];
 		},
-		// 自动进化逻辑：登场时检查是否有资格 Mega，有则自动执行
+		// 新增自动变身逻辑
 		onStart(pokemon) {
-			if (pokemon.transformed) return; // 避开百变怪
+			if (pokemon.transformed) return; // 避免百变怪变身后无限循环判断
 
-			// 调用 Scripts 中定义的判定逻辑
-			const megaSpecies = this.actions.canMegaEvo(pokemon);
-			if (megaSpecies && megaSpecies.includes('Urshifu')) {
+			// 处理一击流武道熊师
+			if (pokemon.species.id === 'urshifufantasy' && pokemon.hasMove('renzhenouda')) {
+				this.add('-activate', pokemon, 'ability: Unseen Fist'); // 提示特性激活
+				pokemon.formeChange('urshifumegafantasy', this.effect, true);
+				// 模拟 Mega 进化的展示效果
+				this.add('-mega', pokemon, 'Urshifu-Mega-Fantasy', ''); 
+				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
+			}
+
+			// 处理连击流武道熊师
+			if (pokemon.species.id === 'urshifurapidstrikefantasy' && pokemon.hasMove('yishunqianji')) {
 				this.add('-activate', pokemon, 'ability: Unseen Fist');
-				this.actions.runMegaEvo(pokemon);
+				pokemon.formeChange('urshifurapidstrikemegafantasy', this.effect, true);
+				this.add('-mega', pokemon, 'Urshifu-Rapid-Strike-Mega-Fantasy', '');
 				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
 			}
 		},
