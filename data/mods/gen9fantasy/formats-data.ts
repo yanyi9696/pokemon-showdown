@@ -479,6 +479,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Drizzle"},		
 	},
+	chandeluremega: {
+		tier: "UU",
+		abilities: {0: "Flash Fire"},		
+	},
 	clefablemega: {
 		tier: "UU",
 		abilities: {0: "Magic Guard"},		
@@ -494,10 +498,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	froslassmega: {
 		tier: "UU",
 		abilities: {0: "Snow Warning"},		
-	},
-	chandeluremega: {
-		tier: "RUBL",
-		abilities: {0: "Flash Fire"},		
 	},
 	eelektrossmega: {
 		tier: "RUBL",
@@ -534,6 +534,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	victreebelmega: {
 		tier: "RU",
 		abilities: {0: "Corrosion"},		
+	},
+	onixfantasy: {
+		tier: "LC",
 	},
 
 
