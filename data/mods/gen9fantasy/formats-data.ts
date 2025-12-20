@@ -116,6 +116,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	suicunefantasy: {
 		tier: "(Uber)",
 	},
+	toxtricitymegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Punk Rock"},		
+	},
+	toxtricitylowkeymegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Toxtricity"},		
+	},
 	vespiquenfantasy: {
 		tier: "(Uber)",
 	},
