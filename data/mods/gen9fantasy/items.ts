@@ -3,9 +3,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	gmegawishingstar: {
 		name: "G-Mega Wishing Star",
 		spritenum: 709,
-		megaStone: ["Garbodor-Mega", "Corviknight-Mega", "Sandaconda-Mega",
-					"Toxtricity-Mega", "Toxtricity-Low-Key-Mega",
-					"Urshifu-Mega", "Urshifu-Rapid-Strike-Mega"],
+		megaStone: ["Garbodor-Mega-Fantasy", "Corviknight-Mega-Fantasy", "Sandaconda-Mega-Fantasy",
+					"Toxtricity-Mega-Fantasy", "Toxtricity-Low-Key-Mega-Fantasy",
+					"Urshifu-Mega-Fantasy", "Urshifu-Rapid-Strike-Mega-Fantasy"],
 		megaEvolves: ["Garbodor-Fantasy", "Corviknight-Fantasy", "Sandaconda-Fantasy",
 					"Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy",
 					"Urshifu-Fantasy", "Urshifu-Rapid-Strike-Fantasy"],
@@ -686,7 +686,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	flygonite: {
 		name: "Flygonite",
 		spritenum: 568,
-		megaStone: "Flygon-Mega",
+		megaStone: "Flygon-Mega-Fantasy",
 		megaEvolves: "Flygon-Fantasy",
 		itemUser: ["Flygon-Fantasy"],
 		onTakeItem(item, source) {

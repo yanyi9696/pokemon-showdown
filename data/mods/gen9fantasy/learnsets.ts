@@ -6491,7 +6491,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{generation: 4, level: 50, gender: "M", nature: "Naive", moves: ["dracometeor", "uturn", "earthquake", "dragonclaw"], pokeball: "cherishball"},
 		],
 	},
-	flygonmega: {
+	flygonmegafantasy: {
 		learnset: {
 			leechlife: ["9M"],
 			pinmissile: ["9M"],
@@ -11475,7 +11475,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{generation: 7, level: 24},
 		],
 	},
-	garbodormega: {
+	garbodormegafantasy: {
 		learnset: {
 			acidarmor: ["9M"],
 			shoreup: ["9M"],
