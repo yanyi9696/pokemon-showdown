@@ -1180,6 +1180,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Normal",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 130 },
 		desc: "幻想爆发。比较自己的攻击和特攻，用数值相对较高的一项给予对方伤害。当使用者太晶化后，这个招式的属性会变为使用者的太晶属性。攻击时会显示“请多多支持幻想杯！”",
 		shortDesc: "幻想爆发。没太晶时也智能判断物特攻的太晶爆发",
 	},
@@ -1244,5 +1246,65 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Beautiful",
 		desc: "优质培育。将接下来5回合的天气变更为大晴天,并使所有的草属性宝可梦覆盖水流环。下一回合使用者回复25%最大HP",
 		shortDesc: "优质培育。大晴天+场上全体草宝可梦水流环+半个祈愿",
+	},
+	renzhenouda: {
+		num: 10035,
+		accuracy: 100,
+		basePower: 85,
+		category: "Physical",
+		name: "Ren Zhen Ou Da",
+		pp: 5,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, punch: 1, metronome: 1 },
+		// 效果1：必定击中要害
+		willCrit: true,
+		// 效果2：无视对手的特性进行攻击（破格效果）
+		ignoreAbility: true,
+		// 效果3：穿透替身
+		infiltrates: true,
+		/**
+		 * @description 效果4：在招式命中前破坏对手场地的壁障（反射壁、光墙、极光幕）
+		 * @param {import('../sim/pokemon').Pokemon} target - 目标宝可梦
+		 */
+		onTryHit(target) {
+			// 移除反射壁
+			target.side.removeSideCondition('reflect');
+			// 移除光墙
+			target.side.removeSideCondition('lightscreen');
+			// 移除极光幕
+			target.side.removeSideCondition('auroraveil');
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 130 },
+		contestType: "Tough",
+		desc: "认真殴打。无视目标的特性进行攻击。该招式会穿透并破坏目标的替身、反射壁、光墙和极光幕。攻击必定击中要害。",
+		shortDesc: "认真殴打。无视特性,穿透并破坏替身与壁障,必定击中要害",
+	},
+	yishunqianji: {
+		num: 10036,
+		accuracy: 100,
+		basePower: 5,
+		category: "Physical",
+		name: "Yi Shun Qian Ji",
+		pp: 5,
+		priority: 1,
+		flags: { contact: 1, protect: 1, mirror: 1, punch: 1, metronome: 1 },
+		// 效果1：连续攻击10次
+		multihit: 10,
+		// 效果2：必定击中要害
+		willCrit: true,
+		// 效果3：无视对手的特性进行攻击
+		ignoreAbility: true,
+		secondary: null,
+		target: "normal",
+		type: "Ghost",
+		zMove: { basePower: 100 },
+		maxMove: { basePower: 70 },
+		contestType: "Cool",
+		desc: "一瞬千击。必定能够先制攻击。无视目标的特性,在一回合内连续攻击10次。攻击必定击中要害。",
+		shortDesc: "一瞬千击。先制+1,无视特性连续攻击10次,必定击中要害。",
 	},
 };

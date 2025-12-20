@@ -4,14 +4,11 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		name: "G-Mega Wishing Star",
 		spritenum: 709,
 		megaStone: ["Garbodor-Mega-Fantasy", "Corviknight-Mega-Fantasy", "Sandaconda-Mega-Fantasy",
-					"Toxtricity-Mega-Fantasy", "Toxtricity-Low-Key-Mega-Fantasy",
-					"Urshifu-Mega-Fantasy", "Urshifu-Rapid-Strike-Mega-Fantasy"],
+					"Toxtricity-Mega-Fantasy", "Toxtricity-Low-Key-Mega-Fantasy"],
 		megaEvolves: ["Garbodor-Fantasy", "Corviknight-Fantasy", "Sandaconda-Fantasy",
-					"Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy",
-					"Urshifu-Fantasy", "Urshifu-Rapid-Strike-Fantasy"],
+					"Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy"],
 		itemUser: ["Garbodor-Fantasy", "Corviknight-Fantasy", "Sandaconda-Fantasy",
-					"Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy",
-					"Urshifu-Fantasy", "Urshifu-Rapid-Strike-Fantasy"],
+					"Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy"],
 		onTakeItem(item, source) {
 			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
 			return true;

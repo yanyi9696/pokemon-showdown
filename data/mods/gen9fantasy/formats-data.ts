@@ -124,6 +124,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Toxtricity"},		
 	},
+	urshifumegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Unseen Fist"},	
+	},
+	urshifurapidstrikemegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Unseen Fist"},	
+	},
 	vespiquenfantasy: {
 		tier: "(Uber)",
 	},
