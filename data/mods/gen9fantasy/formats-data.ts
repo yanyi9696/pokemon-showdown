@@ -106,6 +106,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Long Zhi Hu Xi"},		
 	},
+	sandacondamegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Sand Stream"},	
+	},
 	sandyshocksfantasy: {
 		tier: "(Uber)",
 	},
