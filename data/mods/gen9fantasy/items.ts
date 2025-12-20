@@ -249,11 +249,11 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	floettite: {
 		name: "Floettite",
 		spritenum: 562,
-		megaStone: "Floette-Mega",
-		megaEvolves: "Floette-Eternal",
-		itemUser: ["Floette-Eternal"],
+		megaStone: ["Floette-Mega", "Floette-Mega-Fantasy"],
+		megaEvolves: ["Floette-Eternal", "Floette-Eternal-Fantasy"],
+		itemUser: ["Floette-Eternal", "Floette-Eternal-Fantasy"],
 		onTakeItem(item, source) {
-			if ([item.megaEvolves, item.megaStone].includes(source.baseSpecies.name)) return false;
+			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
 			return true;
 		},
 		num: 10015, 
@@ -690,7 +690,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		megaEvolves: "Flygon-Fantasy",
 		itemUser: ["Flygon-Fantasy"],
 		onTakeItem(item, source) {
-			if ([item.megaEvolves, item.megaStone].includes(source.baseSpecies.name)) return false;
+			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
 			return true;
 		},
 		num: 10044, 
