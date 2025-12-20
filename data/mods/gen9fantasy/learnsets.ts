@@ -2472,6 +2472,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	urshifufantasy: {
 		learnset: {
+			renzhenouda: ["9M"],
 			dianshanxunji: ["9M"],
 			plasmafists: ["9M"],
 			supercellslam: ["9M"],
@@ -2615,6 +2616,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	urshifurapidstrikefantasy: {
 		learnset: {
+			yishunqianji: ["9M"],
 			zuishenluanda: ["9M"],
 			gunkshot: ["9M"],
 			biansuzhefan: ["9M"],

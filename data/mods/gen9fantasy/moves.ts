@@ -1280,7 +1280,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Tough",
-		desc: "认真殴打。无视目标的特性进行攻击。该招式会穿透并破坏目标的替身、反射壁、光墙和极光幕。攻击必定击中要害。",
+		desc: "认真殴打。携带后进入对战时自动进行超巨进化。无视目标的特性进行攻击。该招式会穿透并破坏目标的替身、反射壁、光墙和极光幕。攻击必定击中要害。",
 		shortDesc: "认真殴打。无视特性,穿透并破坏替身与壁障,必定击中要害",
 	},
 	yishunqianji: {
@@ -1304,7 +1304,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 70 },
 		contestType: "Cool",
-		desc: "一瞬千击。必定能够先制攻击。无视目标的特性,在一回合内连续攻击10次。攻击必定击中要害。",
+		desc: "一瞬千击。携带后进入对战时自动进行超巨进化。必定能够先制攻击。无视目标的特性,在一回合内连续攻击10次。攻击必定击中要害。",
 		shortDesc: "一瞬千击。先制+1,无视特性连续攻击10次,必定击中要害。",
 	},
 };
