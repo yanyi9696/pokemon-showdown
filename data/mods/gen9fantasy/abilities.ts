@@ -442,16 +442,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifyMove(move) {
 			if (move.flags['contact']) delete move.flags['protect'];
 		},
+		// 新增自动变身逻辑
 		onStart(pokemon) {
-            if (pokemon.transformed) return;
+			if (pokemon.transformed) return; // 避免百变怪变身后无限循环判断
 
-            // 只要 pokemon 满足 canMegaEvo 条件（即检查过携带招式）且尚未 Mega
-            if (pokemon.canMegaEvo && !pokemon.volatiles['mega']) {
-                this.add('-activate', pokemon, 'ability: Unseen Fist');
-                this.actions.runMegaEvo(pokemon); 
-                this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
-            }
-        },
+			// 处理一击流武道熊师
+			if (pokemon.species.id === 'urshifufantasy' && pokemon.hasMove('renzhenouda')) {
+				this.add('-activate', pokemon, 'ability: Unseen Fist'); // 提示特性激活
+				pokemon.formeChange('urshifumegafantasy', this.effect, true);
+				// 模拟 Mega 进化的展示效果
+				this.add('-mega', pokemon, 'Urshifu-Mega-Fantasy', ''); 
+				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
+			}
+
+			// 处理连击流武道熊师
+			if (pokemon.species.id === 'urshifurapidstrikefantasy' && pokemon.hasMove('yishunqianji')) {
+				this.add('-activate', pokemon, 'ability: Unseen Fist');
+				pokemon.formeChange('urshifurapidstrikemegafantasy', this.effect, true);
+				this.add('-mega', pokemon, 'Urshifu-Rapid-Strike-Mega-Fantasy', '');
+				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
+			}
+		},
 		flags: {},
 		name: "Unseen Fist",
 		rating: 2,
