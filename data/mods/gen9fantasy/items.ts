@@ -3,9 +3,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	gmegawishingstar: {
 		name: "G-Mega Wishing Star",
 		spritenum: 709,
-		megaStone: ["Garbodor-Fantasy-Mega", "Corviknight-Fantasy-Mega", "Sandaconda-Fantasy-Mega",
-					"Toxtricity-Fantasy-Mega", "Toxtricity-Low-Key-Fantasy-Mega",
-					"Urshifu-Fantasy-Mega", "Urshifu-Rapid-Strike-Fantasy-Mega"],
+		megaStone: ["Garbodor-Mega-Fantasy", "Corviknight-Mega-Fantasy", "Sandaconda-Mega-Fantasy",
+					"Toxtricity-Mega-Fantasy", "Toxtricity-Low-Key-Mega-Fantasy",
+					"Urshifu-Mega-Fantasy", "Urshifu-Rapid-Strike-Mega-Fantasy"],
 		megaEvolves: ["Garbodor-Fantasy", "Corviknight-Fantasy", "Sandaconda-Fantasy",
 					"Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy",
 					"Urshifu-Fantasy", "Urshifu-Rapid-Strike-Fantasy"],
