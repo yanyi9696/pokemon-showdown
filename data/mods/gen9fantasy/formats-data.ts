@@ -148,7 +148,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	flygonfantasy: {
 		tier: "OU",
 	},
-	flygonmegafantasy: {
+	flygonmega: {
 		tier: "OU",
 		abilities: {0: "Sha Mo Zhi Sheng"},	
 	},
@@ -156,7 +156,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
 	},
-	garbodormegafantasy: {
+	garbodormega: {
 		tier: "OU",
 		abilities: {0: "Earth Eater"},	
 	},

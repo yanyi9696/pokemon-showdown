@@ -686,7 +686,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	flygonite: {
 		name: "Flygonite",
 		spritenum: 568,
-		megaStone: "Flygon-Mega-Fantasy",
+		megaStone: "Flygon-Mega",
 		megaEvolves: "Flygon-Fantasy",
 		itemUser: ["Flygon-Fantasy"],
 		onTakeItem(item, source) {

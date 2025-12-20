@@ -936,8 +936,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	flygon: {
 		inherit: true,
-		otherFormes: ["Flygon-Fantasy", "Flygon-Mega-Fantasy"],
-		formeOrder: ["Flygon", "Flygon-Fantasy", "Flygon-Mega-Fantasy"],
+		otherFormes: ["Flygon-Fantasy", "Flygon-Mega"],
+		formeOrder: ["Flygon", "Flygon-Fantasy", "Flygon-Mega"],
 	},
 	flygonfantasy: {
 		num: 330,
@@ -954,9 +954,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 45,
 		eggGroups: ["Bug", "Dragon"],
 	},
-	flygonmegafantasy: {
+	flygonmega: {
 		num: 330,
-		name: "Flygon-Mega-Fantasy",
+		name: "Flygon-Mega",
 		baseSpecies: "Flygon",
 		forme: "Mega",
 		types: ["Bug", "Ground"],
@@ -995,7 +995,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		battleOnly: "Froslass-Fantasy",
 		spriteid: 'froslass',
 	},
-	garbodormegafantasy: {
+	garbodormega: {
 		num: 569,
 		name: "Garbodor-Mega-Fantasy",
 		baseSpecies: "Garbodor",
