@@ -687,11 +687,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		name: "Flygonite",
 		spritenum: 568,
 		megaStone: "Flygon-Mega",
-		megaEvolves: "Flygon",
+		megaEvolves: "Flygon-Fantasy",
 		itemUser: ["Flygon-Fantasy"],
 		onTakeItem(item, source) {
-			// 如果携带者是 Flygon 家族，则不能被夺走道具
-			if (source.baseSpecies.baseSpecies === 'Flygon') return false;
+			if ([item.megaEvolves, item.megaStone].includes(source.baseSpecies.name)) return false;
 			return true;
 		},
 		num: 10044, 
