@@ -259,6 +259,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	raticatefantasy: {
 		tier: "UUBL",
 	},
+	scolipedemegafantasy: {
+		tier: "UUBL",
+		abilities: {0: "No Guard"},		
+	},
 	skarmorymegafantasy: {
 		tier: "UUBL",
 		abilities: {0: "Good as Gold"},	
@@ -327,6 +331,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	mienshaofantasy: {
+		tier: "UU",
+	},
+	scolipedefantasy: {
 		tier: "UU",
 	},
 	skarmoryfantasy: {
