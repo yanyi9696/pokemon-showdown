@@ -965,9 +965,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		heightm: 2,
 		weightkg: 82,
 		color: "Green",
-		prevo: "Snorunt",
-		evoType: "useItem",
-		evoItem: "Dawn Stone",
 		eggGroups: ["Bug", "Dragon"],
 		requiredItem: "Flygonite",
 		requiredForme: "Flygon-Fantasy",
@@ -997,7 +994,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	garbodormega: {
 		num: 569,
-		name: "Garbodor-Mega-Fantasy",
+		name: "Garbodor-Mega",
 		baseSpecies: "Garbodor",
 		forme: "Mega",
 		types: ["Poison", "Steel"],
