@@ -1,7 +1,7 @@
 export const Scripts: ModdedBattleScriptsData = {
 	gen: 9,
 
-	// 关键：保留你原来正确的 init 函数，这会解决所有宝可梦“Illegal”的问题
+	// 保留你原来正确的 init 函数
 	init() {
 		for (const id in this.data.FormatsData) {
 			if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
@@ -11,17 +11,42 @@ export const Scripts: ModdedBattleScriptsData = {
 		}
 	},
 
-	// 这是我们最终确定的对战逻辑，确保对战中进化正确
 	actions: {
+		// 新增：处理多形态进化的判定逻辑
+		canMegaEvo(pokemon) {
+			const species = pokemon.baseSpecies;
+			const item = pokemon.getItem();
+			
+			// 核心逻辑：处理类似 Tatsugiri 的数组映射
+			if (Array.isArray(item.megaEvolves)) {
+				// 检查当前宝可梦的名字是否在进化石的可进化列表中
+				const index = item.megaEvolves.indexOf(species.name);
+				if (index >= 0) {
+					// 如果在，则返回 megaStone 数组中对应下标的形态
+					if (Array.isArray(item.megaStone)) {
+						return item.megaStone[index];
+					}
+				}
+				return null;
+			}
+
+			// 默认逻辑：处理普通的单对单进化
+			if (item.megaEvolves === species.name) {
+				return item.megaStone as string;
+			}
+
+			return null;
+		},
+
+		// 保留并兼容你原来的对战执行逻辑
 		runMegaEvo(pokemon) {
-			// 同时支持 Mega 进化与究极变身（Ultra Burst）
+			// 这里会自动调用上面定义的 canMegaEvo 获取 speciesid
 			const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
 			if (!speciesid) return false;
 
-			// 如果是究极变身，直接使用标准逻辑，避免误用 Mega 动画
+			// 究极变身处理
 			if (pokemon.canUltraBurst) {
 				pokemon.formeChange(speciesid, pokemon.getItem(), true);
-				// 限制本场仅一次究极变身
 				for (const ally of pokemon.side.pokemon) {
 					ally.canUltraBurst = null;
 				}
@@ -42,13 +67,12 @@ export const Scripts: ModdedBattleScriptsData = {
 				return false;
 			}
 
-			// 执行 Mega 变身并展示动画
+			// 执行变身
 			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
 			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem);
 			this.battle.add('-start', pokemon, 'ability: ' + pokemon.getAbility().name);
 			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] ability: ' + pokemon.getAbility().name, '[silent]');
 
-			// 限制本场仅一次 Mega 进化
 			for (const ally of pokemon.side.pokemon) {
 				ally.canMegaEvo = null;
 			}
