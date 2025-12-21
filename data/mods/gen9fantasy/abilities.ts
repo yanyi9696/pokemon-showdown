@@ -438,36 +438,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 242,
 		shortDesc: "攻击原本选定的目标。不会进入着迷、再来一次、挑衅、无理取闹、定身法和回复封锁状态",
 	},
-	unseenfist: {
-		onModifyMove(move) {
-			if (move.flags['contact']) delete move.flags['protect'];
-		},
-		// 新增自动变身逻辑
-		onStart(pokemon) {
-			if (pokemon.transformed) return; // 避免百变怪变身后无限循环判断
-
-			// 处理一击流武道熊师
-			if (pokemon.species.id === 'urshifufantasy' && pokemon.hasMove('renzhenouda')) {
-				this.add('-activate', pokemon, 'ability: Unseen Fist'); // 提示特性激活
-				pokemon.formeChange('urshifumegafantasy', this.effect, true);
-				// 模拟 Mega 进化的展示效果
-				this.add('-mega', pokemon, 'Urshifu-Mega-Fantasy', ''); 
-				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
-			}
-
-			// 处理连击流武道熊师
-			if (pokemon.species.id === 'urshifurapidstrikefantasy' && pokemon.hasMove('yishunqianji')) {
-				this.add('-activate', pokemon, 'ability: Unseen Fist');
-				pokemon.formeChange('urshifurapidstrikemegafantasy', this.effect, true);
-				this.add('-mega', pokemon, 'Urshifu-Rapid-Strike-Mega-Fantasy', '');
-				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
-			}
-		},
-		flags: {},
-		name: "Unseen Fist",
-		rating: 2,
-		num: 260,
-	},
 	//以下为CAP特性
 		mountaineer: {
 		onDamage(damage, target, source, effect) {
