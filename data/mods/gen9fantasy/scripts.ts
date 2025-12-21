@@ -14,13 +14,15 @@ export const Scripts: ModdedBattleScriptsData = {
 	// 核心修复：将 pokemon 块强制断言为 any，从而允许重写底层的 start 方法
 	// 这样既解决了 ts(2353) 报错，也能确保逻辑不被化学变化气体拦截
 	pokemon: {
-		start() {
-			const p = this as any; // 修复属性访问报错
+		onSwitchIn() {
+			const p = this as any;
 
 			// 逻辑 A：一击流武道熊师 (Ren Zhen Ou Da)
 			if (p.species.id === 'urshifufantasy' && p.hasMove('renzhenouda') && !p.transformed) {
 				p.battle.add('-activate', p, 'move: Ren Zhen Ou Da');
+				// 进行形态变化
 				p.formeChange('urshifumegafantasy', p.battle.dex.moves.get('renzhenouda'), true);
+				// 显示 Mega 进化特效
 				p.battle.add('-mega', p, 'Urshifu-Mega-Fantasy', '');
 				p.battle.add('-message', `${p.name} 领悟了拳法的极意，自发进行了超巨进化！`);
 			}
@@ -32,13 +34,9 @@ export const Scripts: ModdedBattleScriptsData = {
 				p.battle.add('-mega', p, 'Urshifu-Rapid-Strike-Mega-Fantasy', '');
 				p.battle.add('-message', `${p.name} 领悟了拳法的极意，自发进行了超巨进化！`);
 			}
-
-			// 关键：由于我们是重写(Override)了 start 方法，最后必须调用基类的逻辑
-			// 在 Mod 脚本中，直接调用 runEvent('Start') 来触发后续的特性逻辑
-			p.battle.runEvent('Start', p);
 		}
-	} as any, // <--- 这里的 as any 彻底解决了 "start 不在类型中" 的报错
-	
+	} as any, // 这里的 as any 解决了对非标准钩子的报错问题
+
 	actions: {
 		// 新增：处理多形态进化的判定逻辑
 		canMegaEvo(pokemon) {
