@@ -14,6 +14,15 @@ export const Scripts: ModdedBattleScriptsData = {
 	actions: {
 		// 新增：处理多形态进化的判定逻辑
 		canMegaEvo(pokemon) {
+			// Urshifu-Fantasy Mega Evolution
+			if (pokemon.species.name === 'Urshifu-Fantasy' && pokemon.moves.includes('renzhenouda')) {
+				return 'Urshifu-Mega-Fantasy';
+			}
+			// Urshifu-Rapid-Strike-Fantasy Mega Evolution
+			if (pokemon.species.name === 'Urshifu-Rapid-Strike-Fantasy' && pokemon.moves.includes('yishunqianji')) {
+				return 'Urshifu-Rapid-Strike-Mega-Fantasy';
+			}
+
 			const species = pokemon.baseSpecies;
 			const item = pokemon.getItem();
 			

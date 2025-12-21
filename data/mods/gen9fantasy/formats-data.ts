@@ -493,7 +493,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	hawluchamega: {
 		tier: "OU",
-		abilities: {0: "Stamina"},
+		abilities: {0: "Reckless"},
 	},
 	skarmorymega: {
 		tier: "OU",
