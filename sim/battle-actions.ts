@@ -1866,18 +1866,12 @@ export class BattleActions {
 		const species = pokemon.baseSpecies;
 		const altForme = species.otherFormes && this.dex.species.get(species.otherFormes[0]);
 		const item = pokemon.getItem();
-		// 处理像烈空坐/武道熊师这样通过招式进化的逻辑
-		if (species.otherFormes) {
-			for (const formeName of species.otherFormes) {
-				const altForme = this.dex.species.get(formeName);
-
-				if (altForme.requiredMove && 
-					(!altForme.requiredForme || pokemon.species.name === altForme.requiredForme) &&
-					(this.battle.gen <= 7 || this.battle.ruleTable.has('+pokemontag:past') || this.battle.ruleTable.has('+pokemontag:future')) &&
-					pokemon.baseMoves.includes(toID(altForme.requiredMove)) && !item.zMove) {
-					return altForme.name;
-				}
-			}
+		// Mega Rayquaza
+		if ((this.battle.gen <= 7 || this.battle.ruleTable.has('+pokemontag:past') ||
+			this.battle.ruleTable.has('+pokemontag:future')) &&
+			altForme?.isMega && altForme?.requiredMove &&
+			pokemon.baseMoves.includes(toID(altForme.requiredMove)) && !item.zMove) {
+			return altForme.name;
 		}
 		// Temporary hardcode until generation shift
 		if ((species.baseSpecies === "Floette" || species.baseSpecies === "Zygarde") && item.megaEvolves === species.name) {
