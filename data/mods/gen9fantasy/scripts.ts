@@ -14,28 +14,31 @@ export const Scripts: ModdedBattleScriptsData = {
 	// 核心修复：将 pokemon 块强制断言为 any，从而允许重写底层的 start 方法
 	// 这样既解决了 ts(2353) 报错，也能确保逻辑不被化学变化气体拦截
 	pokemon: {
-		onSwitchIn() {
+		// 使用 onUpdate 代替 onStart 或 onSwitchIn
+		// 它可以确保即便特性被覆盖或抑制，逻辑依然运行
+		onUpdate() {
 			const p = this as any;
 
-			// 逻辑 A：一击流武道熊师 (Ren Zhen Ou Da)
-			if (p.species.id === 'urshifufantasy' && p.hasMove('renzhenouda') && !p.transformed) {
+			// 检查是否已经变身过，避免死循环
+			if (p.transformed) return;
+
+			// 逻辑 A：一击流武道熊师 (检测基础形态 + 专属招式)
+			if (p.species.id === 'urshifufantasy' && p.hasMove('renzhenouda')) {
 				p.battle.add('-activate', p, 'move: Ren Zhen Ou Da');
-				// 进行形态变化
 				p.formeChange('urshifumegafantasy', p.battle.dex.moves.get('renzhenouda'), true);
-				// 显示 Mega 进化特效
 				p.battle.add('-mega', p, 'Urshifu-Mega-Fantasy', '');
 				p.battle.add('-message', `${p.name} 领悟了拳法的极意，自发进行了超巨进化！`);
 			}
 
-			// 逻辑 B：连击流武道熊师 (Yi Shun Qian Ji)
-			if (p.species.id === 'urshifurapidstrikefantasy' && p.hasMove('yishunqianji') && !p.transformed) {
+			// 逻辑 B：连击流武道熊师 (检测基础形态 + 专属招式)
+			if (p.species.id === 'urshifurapidstrikefantasy' && p.hasMove('yishunqianji')) {
 				p.battle.add('-activate', p, 'move: Yi Shun Qian Ji');
 				p.formeChange('urshifurapidstrikemegafantasy', p.battle.dex.moves.get('yishunqianji'), true);
 				p.battle.add('-mega', p, 'Urshifu-Rapid-Strike-Mega-Fantasy', '');
 				p.battle.add('-message', `${p.name} 领悟了拳法的极意，自发进行了超巨进化！`);
 			}
 		}
-	} as any, // 这里的 as any 解决了对非标准钩子的报错问题
+	} as any,
 
 	actions: {
 		// 新增：处理多形态进化的判定逻辑
