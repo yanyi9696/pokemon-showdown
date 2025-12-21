@@ -10,25 +10,23 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 		}
 		
-	this.modData('Abilities', 'noability').onStart = function (pokemon: any) { 
-			// ^^^ 关键修改：在这里显式指定类型为 any
+	this.modData('Abilities', 'unseenfist').onStart = function (pokemon: any) {
+			// 此时 this 指向 Battle 对象，pokemon 指向当前宝可梦
 			
-			const p = pokemon as any; 
-
-			// 逻辑 A：一击流武道熊师 (Ren Zhen Ou Da)
-			if (p.species.id === 'urshifufantasy' && p.hasMove('renzhenouda') && !p.transformed) {
-				p.battle.add('-activate', p, 'move: Ren Zhen Ou Da');
-				p.formeChange('urshifumegafantasy', p.battle.dex.moves.get('renzhenouda'), true);
-				p.battle.add('-mega', p, 'Urshifu-Mega-Fantasy', '');
-				p.battle.add('-message', `${p.name} 领悟了拳法的极意，自发进行了超巨进化！`);
+			// 逻辑 A：一击流武道熊师
+			if (pokemon.species.id === 'urshifufantasy' && pokemon.hasMove('renzhenouda') && !pokemon.transformed) {
+				this.add('-activate', pokemon, 'move: Ren Zhen Ou Da');
+				pokemon.formeChange('urshifumegafantasy', this.dex.moves.get('renzhenouda'), true);
+				this.add('-mega', pokemon, 'Urshifu-Mega-Fantasy', '');
+				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
 			}
 
-			// 逻辑 B：连击流武道熊师 (Yi Shun Qian Ji)
-			if (p.species.id === 'urshifurapidstrikefantasy' && p.hasMove('yishunqianji') && !p.transformed) {
-				p.battle.add('-activate', p, 'move: Yi Shun Qian Ji');
-				p.formeChange('urshifurapidstrikemegafantasy', p.battle.dex.moves.get('yishunqianji'), true);
-				p.battle.add('-mega', p, 'Urshifu-Rapid-Strike-Mega-Fantasy', '');
-				p.battle.add('-message', `${p.name} 领悟了拳法的极意，自发进行了超巨进化！`);
+			// 逻辑 B：连击流武道熊师
+			if (pokemon.species.id === 'urshifurapidstrikefantasy' && pokemon.hasMove('yishunqianji') && !pokemon.transformed) {
+				this.add('-activate', pokemon, 'move: Yi Shun Qian Ji');
+				pokemon.formeChange('urshifurapidstrikemegafantasy', this.dex.moves.get('yishunqianji'), true);
+				this.add('-mega', pokemon, 'Urshifu-Rapid-Strike-Mega-Fantasy', '');
+				this.add('-message', `${pokemon.name} 领悟了拳法的极意，自发进行了超巨进化！`);
 			}
 		};
 	},
