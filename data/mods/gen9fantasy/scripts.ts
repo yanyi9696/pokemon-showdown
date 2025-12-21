@@ -1,65 +1,48 @@
 export const Scripts: ModdedBattleScriptsData = {
 	gen: 9,
 
-	// 保留你原来正确的 init 函数
 	init() {
+		// 保留你原来的 FormatsData 处理逻辑
 		for (const id in this.data.FormatsData) {
 			if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
 			if (this.data.FormatsData[id].natDexTier) {
 				this.data.FormatsData[id].tier = this.data.FormatsData[id].natDexTier;
 			}
 		}
+
+		// 【重要修改】移除了原本在 init 里的 this.modData('Abilities', 'unseenfist').onStart 逻辑。
+		// 因为 Mega 裂空坐模式是手动触发的，不需要在特性发动时自动变身。
 	},
 
-	// 核心修复：将 pokemon 块强制断言为 any，从而允许重写底层的 start 方法
-	// 这样既解决了 ts(2353) 报错，也能确保逻辑不被化学变化气体拦截
-	pokemon: {
-		// 使用 onUpdate 代替 onStart 或 onSwitchIn
-		// 它可以确保即便特性被覆盖或抑制，逻辑依然运行
-		onUpdate() {
-			const p = this as any;
-
-			// 检查是否已经变身过，避免死循环
-			if (p.transformed) return;
-
-			// 逻辑 A：一击流武道熊师 (检测基础形态 + 专属招式)
-			if (p.species.id === 'urshifufantasy' && p.hasMove('renzhenouda')) {
-				p.battle.add('-activate', p, 'move: Ren Zhen Ou Da');
-				p.formeChange('urshifumegafantasy', p.battle.dex.moves.get('renzhenouda'), true);
-				p.battle.add('-mega', p, 'Urshifu-Mega-Fantasy', '');
-				p.battle.add('-message', `${p.name} 领悟了拳法的极意，自发进行了超巨进化！`);
-			}
-
-			// 逻辑 B：连击流武道熊师 (检测基础形态 + 专属招式)
-			if (p.species.id === 'urshifurapidstrikefantasy' && p.hasMove('yishunqianji')) {
-				p.battle.add('-activate', p, 'move: Yi Shun Qian Ji');
-				p.formeChange('urshifurapidstrikemegafantasy', p.battle.dex.moves.get('yishunqianji'), true);
-				p.battle.add('-mega', p, 'Urshifu-Rapid-Strike-Mega-Fantasy', '');
-				p.battle.add('-message', `${p.name} 领悟了拳法的极意，自发进行了超巨进化！`);
-			}
-		}
-	} as any,
-
 	actions: {
-		// 新增：处理多形态进化的判定逻辑
 		canMegaEvo(pokemon) {
 			const species = pokemon.baseSpecies;
-			const item = pokemon.getItem();
 			
-			// 核心逻辑：处理类似 Tatsugiri 的数组映射
-			if (Array.isArray(item.megaEvolves)) {
-				// 检查当前宝可梦的名字是否在进化石的可进化列表中
-				const index = item.megaEvolves.indexOf(species.name);
-				if (index >= 0) {
-					// 如果在，则返回 megaStone 数组中对应下标的形态
-					if (Array.isArray(item.megaStone)) {
-						return item.megaStone[index];
+			// --- 逻辑 A：处理类似 Mega 裂空坐的招式进化 (Required Move) ---
+			// 检查当前形态是否定义了进化后的形态，并且检查是否有招式要求
+			const altForme = this.dex.species.get(species.otherFormes?.[0]); // 寻找 Mega 形态
+			
+			// 遍历所有可能的进化形态（针对具有 requiredMove 的物种）
+			if (species.otherFormes) {
+				for (const formeName of species.otherFormes) {
+					const forme = this.dex.species.get(formeName);
+					if (forme.requiredMove && pokemon.hasMove(this.dex.toID(forme.requiredMove))) {
+						return forme.name; // 返回需要进化的形态名称
 					}
+				}
+			}
+
+			// --- 逻辑 B：处理你原来的道具/数组映射逻辑 (Required Item) ---
+			const item = pokemon.getItem();
+			if (Array.isArray(item.megaEvolves)) {
+				const index = item.megaEvolves.indexOf(species.name);
+				if (index >= 0 && Array.isArray(item.megaStone)) {
+					return item.megaStone[index];
 				}
 				return null;
 			}
 
-			// 默认逻辑：处理普通的单对单进化
+			// 默认单对单道具进化逻辑
 			if (item.megaEvolves === species.name) {
 				return item.megaStone as string;
 			}
@@ -67,9 +50,8 @@ export const Scripts: ModdedBattleScriptsData = {
 			return null;
 		},
 
-		// 保留并兼容你原来的对战执行逻辑
 		runMegaEvo(pokemon) {
-			// 这里会自动调用上面定义的 canMegaEvo 获取 speciesid
+			// 获取由 canMegaEvo 返回的形态 ID
 			const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
 			if (!speciesid) return false;
 
@@ -83,25 +65,24 @@ export const Scripts: ModdedBattleScriptsData = {
 				return true;
 			}
 
-			// Mega 进化路径：保留 Fantasy Mega 的兼容处理
-			const standardMega = this.dex.species.get(speciesid);
-			let targetSpecies = standardMega;
-			if (pokemon.species.name.endsWith('-Fantasy')) {
-				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
-				if (fantasyMega.exists) targetSpecies = fantasyMega;
-			}
+			const targetSpecies = this.dex.species.get(speciesid);
 
+			// 检查烈空坐限制（防止在禁用了 Mega 裂空坐的分级中使用）
 			if (this.battle.ruleTable.isBanned('megarayquazaclause') && targetSpecies.id === 'rayquazamega') {
 				this.battle.runEvent('Cant', pokemon, null, null, 'mega');
 				return false;
 			}
 
 			// 执行变身
+			// 注意：如果是招式进化，通常不需要消耗道具
 			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
-			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem);
+			
+			// 消息广播：如果是招式进化，requiredItem 为空，显示效果会更自然
+			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem || '');
 			this.battle.add('-start', pokemon, 'ability: ' + pokemon.getAbility().name);
 			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] ability: ' + pokemon.getAbility().name, '[silent]');
 
+			// 标记该玩家本场战斗已使用过 Mega 进化
 			for (const ally of pokemon.side.pokemon) {
 				ally.canMegaEvo = null;
 			}
