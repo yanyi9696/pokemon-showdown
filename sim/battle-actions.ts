@@ -1866,12 +1866,19 @@ export class BattleActions {
 		const species = pokemon.baseSpecies;
 		const altForme = species.otherFormes && this.dex.species.get(species.otherFormes[0]);
 		const item = pokemon.getItem();
-		// Mega Rayquaza
-		if ((this.battle.gen <= 7 || this.battle.ruleTable.has('+pokemontag:past') ||
-			this.battle.ruleTable.has('+pokemontag:future')) &&
-			altForme?.isMega && altForme?.requiredMove &&
-			pokemon.baseMoves.includes(toID(altForme.requiredMove)) && !item.zMove) {
-			return altForme.name;
+		// 优化逻辑：遍历所有备选形态，而不仅仅是第一个
+		if (species.otherFormes) {
+			for (const formeName of species.otherFormes) {
+				const altForme = this.dex.species.get(formeName);
+				
+				// 检查该形态是否为 Mega 形态，且是否有招式要求
+				if (altForme.isMega && altForme.requiredMove) {
+					// 检查宝可梦是否学会了该招式，且没有携带 Z 纯晶
+					if (pokemon.baseMoves.includes(toID(altForme.requiredMove)) && !item.zMove) {
+						return altForme.name;
+					}
+				}
+			}
 		}
 		// Temporary hardcode until generation shift
 		if ((species.baseSpecies === "Floette" || species.baseSpecies === "Zygarde") && item.megaEvolves === species.name) {
