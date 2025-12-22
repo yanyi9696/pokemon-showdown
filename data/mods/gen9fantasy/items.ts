@@ -839,11 +839,15 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			}
 		},
 
+		// 效果 1：使用者主动攻击对方时
 		onModifyMove(move, pokemon) {
 			if (!move.flags['contact'] || !pokemon.hasItem('fantasysachet')) return;
 			
 			move.onAfterMoveSecondary = (target, source) => {
 				if (!source || !target || target.isAlly(source) || target === source) return;
+
+				// 检查：如果在此之前道具已经因为某些特殊反馈效果（如对方的特性“顺手牵羊”）丢失，则不触发
+				if (!source.hasItem('fantasysachet')) return;
 
 				if (source.useItem()) {
 					this.add('-activate', source, 'item: Fantasy Sachet');
@@ -877,8 +881,20 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			};
 		},
 
+		// 效果 2：持有者被对方攻击时（处理 拍落、小偷 等）
 		onDamagingHit(damage, target, source, move) {
-			if (!move.flags['contact'] || !target.hasItem('fantasysachet')) return;
+			// 1. 必须是接触类招式
+			if (!move.flags['contact']) return;
+
+			// 2. 核心修复：使用 (move as any) 来绕过 TypeScript 对 itemRemoved 的检查
+			// 这样即使 ActiveMove 定义里没有这个属性，代码也能编译通过并正常运行
+			if (!target.hasItem('fantasysachet') || (move.id === 'knockoff' && (move as any).itemRemoved)) {
+				this.debug('Fantasy Sachet: Item was removed/stolen by move effect, bypassing trigger.');
+				return;
+			}
+			
+			// 3. 针对自制技能“咬烂(Yao Lan)”和偷取类技能的逻辑：
+			// 如果招式是 小偷、渴望、咬烂，且此时道具还没消失（说明偷取/咬烂失败了），则继续执行消耗香袋改特性的逻辑
 			if (!source || source.isAlly(target) || source === target) return;
 
 			const sachetHolder = target;
