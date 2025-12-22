@@ -1432,9 +1432,17 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 					typeTable = typeTable.filter(type => species.types.includes(type));
 				}
 				const item = this.dex.items.get(set.item);
-				if (item.megaStone && species.baseSpecies === item.megaEvolves) {
-					species = this.dex.species.get(item.megaStone);
-					typeTable = typeTable.filter(type => species.types.includes(type));
+				if (item.megaStone) {
+					if (Array.isArray(item.megaStone)) {
+						const index = (item.megaEvolves as string[]).indexOf(species.name);
+						if (index >= 0) {
+							species = this.dex.species.get(item.megaStone[index]);
+							typeTable = typeTable.filter(type => species.types.includes(type));
+						}
+					} else {
+						species = this.dex.species.get(item.megaStone);
+						typeTable = typeTable.filter(type => species.types.includes(type));
+					}
 				}
 				if (item.id === "ultranecroziumz" && species.baseSpecies === "Necrozma") {
 					species = this.dex.species.get("Necrozma-Ultra");
@@ -2546,11 +2554,14 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				}
 				if (set.item && this.dex.items.get(set.item).megaStone) {
 					const item = this.dex.items.get(set.item);
-					if (item.megaEvolves === species.baseSpecies) {
-						species = this.dex.species.get(item.megaStone);
+					if (item.megaEvolves?.includes(species.name)) {
+						species = this.dex.species.get(Array.isArray(item.megaEvolves) ?
+							(item.megaStone as string[])[item.megaEvolves.indexOf(species.name)] :
+							item.megaStone as string);
 					}
 				}
-				if (this.ruleTable.isRestrictedSpecies(species)) {
+				if (this.ruleTable.isRestrictedSpecies(species) ||
+					(this.ruleTable.isRestricted('ability:powerconstruct') && this.toID(set.ability) === 'powerconstruct')) {
 					gods.add(species.name);
 				}
 			}
@@ -2563,12 +2574,16 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			if (source || !target?.side) return;
 			const god = target.side.team.find(set => {
 				let godSpecies = this.dex.species.get(set.species);
-				if (this.toID(set.ability) === 'powerconstruct') {
+				if (this.toID(set.ability) === 'powerconstruct' && this.ruleTable.isRestricted('ability:powerconstruct')) {
 					return true;
 				}
 				if (set.item) {
 					const item = this.dex.items.get(set.item);
-					if (item.megaEvolves === set.species) godSpecies = this.dex.species.get(item.megaStone);
+					if (item.megaEvolves?.includes(set.species)) {
+						godSpecies = this.dex.species.get(Array.isArray(item.megaEvolves) ?
+							(item.megaStone as string[])[item.megaEvolves.indexOf(set.species)] :
+							item.megaStone as string);
+					}
 					if (["Zacian", "Zamazenta"].includes(godSpecies.baseSpecies) && item.id.startsWith('rusted')) {
 						godSpecies = this.dex.species.get(set.species + "-Crowned");
 					}
@@ -2954,27 +2969,31 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			// 1. 如果没带Mega石，直接跳过
 			if (!item.megaStone) return;
 
-			// 检查携带Mega石的宝可梦是否与其Mega石对应
-			// 例如: Aggron 拿着 Aggronite. item.megaEvolves ('Aggron') === species.baseSpecies ('Aggron')
-			// 对于-Fantasy形态, 例如 Aggron-Fantasy, species.baseSpecies 也是 'Aggron'
-			if (item.megaEvolves !== species.baseSpecies) return;
+			// 安全处理 megaEvolves：将其统一为数组进行检查
+			const canMegaEvolve = Array.isArray(item.megaEvolves) 
+				? item.megaEvolves.includes(species.baseSpecies) 
+				: item.megaEvolves === species.baseSpecies;
+
+			if (!canMegaEvolve) return;
+
+			// 安全处理 megaStone：如果是数组，取第一个（或根据需求匹配）
+			const megaStoneId = Array.isArray(item.megaStone) ? item.megaStone[0] : item.megaStone;
+			if (!megaStoneId) return;
 
 			let megaToCheck = null;
 
 			// 2. 判断当前宝可梦是否为-Fantasy形态
 			if (species.name.endsWith('-Fantasy')) {
 				// 3. 如果是-Fantasy形态，则寻找并检查对应的-Mega-Fantasy形态
-				const standardMega = this.dex.species.get(item.megaStone); // 例如 Aggron-Mega
-				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy'); // 例如 Aggron-Mega-Fantasy
+				const standardMega = this.dex.species.get(megaStoneId); 
+				const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
 
 				if (fantasyMega?.exists) {
 					megaToCheck = fantasyMega;
 				}
-				// 如果对应的-Mega-Fantasy不存在，megaToCheck将保持null，不进行检查
-				
 			} else {
 				// 4. 如果是普通形态，则检查标准的Mega形态
-				megaToCheck = this.dex.species.get(item.megaStone); // 例如 Aggron-Mega
+				megaToCheck = this.dex.species.get(megaStoneId);
 			}
 
 			// 5. 如果成功找到了要检查的Mega形态

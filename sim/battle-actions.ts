@@ -1866,19 +1866,22 @@ export class BattleActions {
 		const species = pokemon.baseSpecies;
 		const item = pokemon.getItem();
 
-		// --- 1. 处理基于招式的超进化（类似烈空坐和你的武道熊师） ---
+		// --- 1. 幻想武道熊师：最直接的硬编码逻辑 ---
+		// 检查一击形态：物种 ID 为 'urshifufantasy' 且学会了 'renzhenouda'
+		if (species.id === 'urshifufantasy' && pokemon.baseMoves.includes('renzhenouda')) {
+			return 'Urshifu-Mega-Fantasy'; //
+		}
+		// 检查连击形态：物种 ID 为 'urshifurapidstrikefantasy' 且学会了 'yishunqianji'
+		if (species.id === 'urshifurapidstrikefantasy' && pokemon.baseMoves.includes('yishunqianji')) {
+			return 'Urshifu-Rapid-Strike-Mega-Fantasy'; //
+		}
+
+		// --- 2. 处理其他常规逻辑 (如烈空坐或其他 Fantasy 成员) ---
 		if (species.otherFormes) {
 			for (const formeName of species.otherFormes) {
 				const altForme = this.dex.species.get(formeName);
-				// 检查该形态是否是 Mega 形态，并且是否有招式要求
 				if (altForme?.isMega && altForme?.requiredMove) {
-					// 只有在符合特定规则（Gen 7、旧标签）或者是你的“Fantasy”系列时才允许
-					if (species.name.includes('Fantasy') || 
-						this.battle.gen <= 7 || 
-						this.battle.ruleTable.has('+pokemontag:past') || 
-						this.battle.ruleTable.has('+pokemontag:future')) {
-						
-						// 检查宝可梦是否学会了该招式，并且没有携带 Z 纯晶
+					if (species.name.includes('Fantasy') || this.battle.gen <= 7) {
 						if (pokemon.baseMoves.includes(toID(altForme.requiredMove)) && !item.zMove) {
 							return altForme.name;
 						}
@@ -1887,20 +1890,18 @@ export class BattleActions {
 			}
 		}
 
-		// Temporary hardcode until generation shift
+		// --- 3. 处理常规超进化石 ---
 		if ((species.baseSpecies === "Floette" || species.baseSpecies === "Zygarde") && item.megaEvolves === species.name) {
 			return item.megaStone as string;
 		}
-		// a hacked-in Megazard X can mega evolve into Megazard Y, but not into Megazard X
 		if (Array.isArray(item.megaStone)) {
-			// FIXME: Change to species.name when champions comes
 			const index = (item.megaEvolves as string[]).indexOf(species.baseSpecies);
 			if (index < 0) return null;
 			return item.megaStone[index];
-			// FIXME: Change to species.name when champions comes
 		} else if (item.megaEvolves === species.baseSpecies && item.megaStone !== species.name) {
 			return item.megaStone;
 		}
+
 		return null;
 	}
 
