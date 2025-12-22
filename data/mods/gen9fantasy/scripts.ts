@@ -16,6 +16,20 @@ export const Scripts: ModdedBattleScriptsData = {
 		canMegaEvo(pokemon) {
 			const species = pokemon.baseSpecies;
 			const item = pokemon.getItem();
+
+			// 招式进化逻辑 (类似 Mega 裂空座)
+			if (species.otherFormes) {
+				for (const formeName of species.otherFormes) {
+					const forme = this.dex.species.get(formeName);
+					if (forme.isMega && forme.requiredMove &&
+						pokemon.baseMoves.includes(this.battle.toID(forme.requiredMove)) && !item.zMove) {
+						if (forme.requiredForme && pokemon.species.name !== forme.requiredForme) {
+							continue;
+						}
+						return forme.name;
+					}
+				}
+			}
 			
 			// 核心逻辑：处理类似 Tatsugiri 的数组映射
 			if (Array.isArray(item.megaEvolves)) {
