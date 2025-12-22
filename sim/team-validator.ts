@@ -541,6 +541,16 @@ export class TeamValidator {
 				canMegaEvo && species.id === 'rayquaza' && set.moves.map(toID).includes('dragonascent' as ID) &&
 				!ruleTable.has('megarayquazaclause')
 			) {
+			} else if (
+				canMegaEvo && species.id === 'urshifufantasy' && set.moves.map(toID).includes('renzhenouda' as ID) &&
+				!ruleTable.has('megarayquazaclause')
+			) {
+				tierSpecies = dex.species.get('Urshifu-Mega-Fantasy');
+			} else if (
+				canMegaEvo && species.id === 'urshifurapidstrikefantasy' && set.moves.map(toID).includes('yishunqianji' as ID) &&
+				!ruleTable.has('megarayquazaclause')
+			) {
+				tierSpecies = dex.species.get('Urshifu-Rapid-Strike-Mega-Fantasy');
 				tierSpecies = dex.species.get('Rayquaza-Mega');
 			} else if (item.id === 'rustedsword' && species.id === 'zacian') {
 				tierSpecies = dex.species.get('Zacian-Crowned');
