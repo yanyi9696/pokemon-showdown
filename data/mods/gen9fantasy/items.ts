@@ -881,27 +881,20 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			};
 		},
 
-		// 效果 2：持有者被对方攻击时（处理 拍落、小偷 等）
-		onDamagingHit(damage, target, source, move) {
-			// 1. 必须是接触类招式
+		// 效果 2：修复版 - 持有者被攻击时
+		// 使用 onAfterHit 确保它在“拍落/小偷/咬烂”的效果结算之后才尝试触发
+		onAfterHit(target, source, move) {
+			// 1. 检查是否为接触类招式
 			if (!move.flags['contact']) return;
-
-			// 2. 核心修复：使用 (move as any) 来绕过 TypeScript 对 itemRemoved 的检查
-			// 这样即使 ActiveMove 定义里没有这个属性，代码也能编译通过并正常运行
-			if (!target.hasItem('fantasysachet') || (move.id === 'knockoff' && (move as any).itemRemoved)) {
-				this.debug('Fantasy Sachet: Item was removed/stolen by move effect, bypassing trigger.');
-				return;
-			}
-			
-			// 3. 针对自制技能“咬烂(Yao Lan)”和偷取类技能的逻辑：
-			// 如果招式是 小偷、渴望、咬烂，且此时道具还没消失（说明偷取/咬烂失败了），则继续执行消耗香袋改特性的逻辑
+			// 2. 关键：如果此时道具已经被拍落或偷走，target.hasItem 会返回 false，逻辑直接终止
+			if (!target || !target.hasItem('fantasysachet')) return;
 			if (!source || source.isAlly(target) || source === target) return;
 
-			const sachetHolder = target;
+			// 3. 针对“拍落”的额外保险：检查 move 上的 itemRemoved 标记
+			if ((move as any).itemRemoved) return;
 
-			if (sachetHolder.useItem()) {
-				this.add('-activate', sachetHolder, 'item: Fantasy Sachet');
-
+			if (target.useItem()) {
+				this.add('-activate', target, 'item: Fantasy Sachet');
 				const affected = source;
 				// 同样在这里使用权威的“黑名单”
 				const unchangeableAbilities = [
@@ -916,13 +909,13 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				];
 
 				if (unchangeableAbilities.includes(affected.ability)) {
-					this.add('-fail', sachetHolder);
+					this.add('-fail', target);
 				} else if (affected.hasItem('abilityshield')) {
 					this.add('-block', affected, 'item: Ability Shield');
 				} else {
 					affected.baseAbility = 'lingeringaroma' as ID;
 					affected.setAbility('lingeringaroma');
-					this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + sachetHolder);
+					this.add('-ability', affected, 'Lingering Aroma', '[from] item: Fantasy Sachet', '[of] ' + target);
 				}
 			}
 		},

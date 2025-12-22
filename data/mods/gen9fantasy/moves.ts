@@ -973,17 +973,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, bite: 1 },
-		onHit(target, source) {
-			// 检查目标当前是否持有道具。
+		onHit(target, source, move) {
 			const item = target.getItem();
 			if (item) {
-				// target.takeItem(source) 会尝试移除目标的道具。
-				// 如果目标的特性是“黏着”(Sticky Hold)，这个操作会失败。
-				// takeItem 函数会自动处理这些判断。
 				const success = target.takeItem(source);
 				if (success) {
-					// 如果道具移除成功，就在对战日志中显示消息。
-					// 这条消息会是：“[目标宝可梦]的[道具名称]被咬烂了！”
+					// 标记道具已被移除，防止香袋在 onAfterHit 中触发
+					(move as any).itemRemoved = true; 
 					this.add('-enditem', target, success.name, '[from] move: 咬烂', `[of] ${source}`);
 				}
 			}
