@@ -881,22 +881,27 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			};
 		},
 
-		// 效果 2：修复版 - 持有者被攻击时
-		// 修复版：使用 onDamagingHit 确保正常受击触发
+		// 效果 2：受击触发 (包含针对夺取类招式的避让逻辑)
 		onDamagingHit(damage, target, source, move) {
 			// 1. 必须是接触类招式
 			if (!move.flags['contact']) return;
-			
-			// 2. 核心逻辑：
-			// 如果此时道具已经不在身上了（说明被偷走了），或者招式标记了 itemRemoved（说明被拍落或咬烂了）
-			// 我们使用 (move as any) 来绕过 TS 的类型检查报错
-			if (!target.hasItem('fantasysachet') || (move as any).itemRemoved) {
-				return;
-			}
-			
 			if (!source || source.isAlly(target) || source === target) return;
 
-			// 3. 正常受击触发
+			// 2. 核心避让逻辑：预判断招式是否会成功移除道具
+			// 针对 拍落 (Knock Off) 或 你的自制技能 咬烂 (Yao Lan)
+			if (move.id === 'knockoff' || move.id === 'yaolan') {
+				// 如果持有者没有“黏着”特性，则该招式会成功移除道具，香袋此时不应触发
+				if (!target.hasAbility('stickyhold')) return;
+			}
+
+			// 针对 小偷 (Thief) 或 渴望 (Covet)
+			if (move.id === 'thief' || move.id === 'covet') {
+				// 小偷只有在使用者没有道具时才会偷取成功。
+				// 如果偷取会成功，香袋不触发。
+				if (source && !source.item) return;
+			}
+
+			// 3. 正常触发流程
 			if (target.useItem()) {
 				this.add('-activate', target, 'item: Fantasy Sachet');
 				const affected = source;
