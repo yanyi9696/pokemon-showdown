@@ -18,12 +18,13 @@ export const Scripts: ModdedBattleScriptsData = {
 			const item = pokemon.getItem();
 
 			// 招式进化逻辑 (类似 Mega 裂空座)
-			if (species.otherFormes) {
-				for (const formeName of species.otherFormes) {
+			const altFormes = species.otherFormes || (species.baseSpecies && this.dex.species.get(species.baseSpecies).otherFormes);
+			if (altFormes) {
+				for (const formeName of altFormes) {
 					const forme = this.dex.species.get(formeName);
 					if (forme.isMega && forme.requiredMove &&
 						pokemon.baseMoves.includes(this.battle.toID(forme.requiredMove)) && !item.zMove) {
-						if (forme.requiredForme && pokemon.species.name !== forme.requiredForme) {
+						if (forme.requiredForme && species.name !== forme.requiredForme) {
 							continue;
 						}
 						return forme.name;
