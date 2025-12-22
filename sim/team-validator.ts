@@ -541,6 +541,7 @@ export class TeamValidator {
 				canMegaEvo && species.id === 'rayquaza' && set.moves.map(toID).includes('dragonascent' as ID) &&
 				!ruleTable.has('megarayquazaclause')
 			) {
+				tierSpecies = dex.species.get('Rayquaza-Mega');
 			} else if (
 				canMegaEvo && species.id === 'urshifufantasy' && set.moves.map(toID).includes('renzhenouda' as ID) &&
 				!ruleTable.has('megarayquazaclause')
@@ -551,7 +552,6 @@ export class TeamValidator {
 				!ruleTable.has('megarayquazaclause')
 			) {
 				tierSpecies = dex.species.get('Urshifu-Rapid-Strike-Mega-Fantasy');
-				tierSpecies = dex.species.get('Rayquaza-Mega');
 			} else if (item.id === 'rustedsword' && species.id === 'zacian') {
 				tierSpecies = dex.species.get('Zacian-Crowned');
 			} else if (item.id === 'rustedshield' && species.id === 'zamazenta') {
