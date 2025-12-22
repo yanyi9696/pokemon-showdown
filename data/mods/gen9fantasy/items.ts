@@ -882,17 +882,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 
 		// 效果 2：修复版 - 持有者被攻击时
-		// 使用 onAfterHit 确保它在“拍落/小偷/咬烂”的效果结算之后才尝试触发
-		onAfterHit(target, source, move) {
-			// 1. 检查是否为接触类招式
+		// 修复版：使用 onDamagingHit 确保正常受击触发
+		onDamagingHit(damage, target, source, move) {
+			// 1. 必须是接触类招式
 			if (!move.flags['contact']) return;
-			// 2. 关键：如果此时道具已经被拍落或偷走，target.hasItem 会返回 false，逻辑直接终止
-			if (!target || !target.hasItem('fantasysachet')) return;
+			
+			// 2. 核心逻辑：
+			// 如果此时道具已经不在身上了（说明被偷走了），或者招式标记了 itemRemoved（说明被拍落或咬烂了）
+			// 我们使用 (move as any) 来绕过 TS 的类型检查报错
+			if (!target.hasItem('fantasysachet') || (move as any).itemRemoved) {
+				return;
+			}
+			
 			if (!source || source.isAlly(target) || source === target) return;
 
-			// 3. 针对“拍落”的额外保险：检查 move 上的 itemRemoved 标记
-			if ((move as any).itemRemoved) return;
-
+			// 3. 正常受击触发
 			if (target.useItem()) {
 				this.add('-activate', target, 'item: Fantasy Sachet');
 				const affected = source;
