@@ -1864,15 +1864,29 @@ export class BattleActions {
 
 	canMegaEvo(pokemon: Pokemon) {
 		const species = pokemon.baseSpecies;
-		const altForme = species.otherFormes && this.dex.species.get(species.otherFormes[0]);
 		const item = pokemon.getItem();
-		// Mega Rayquaza
-		if ((this.battle.gen <= 7 || this.battle.ruleTable.has('+pokemontag:past') ||
-			this.battle.ruleTable.has('+pokemontag:future')) &&
-			altForme?.isMega && altForme?.requiredMove &&
-			pokemon.baseMoves.includes(toID(altForme.requiredMove)) && !item.zMove) {
-			return altForme.name;
+
+		// --- 1. 处理基于招式的超进化（类似烈空坐和你的武道熊师） ---
+		if (species.otherFormes) {
+			for (const formeName of species.otherFormes) {
+				const altForme = this.dex.species.get(formeName);
+				// 检查该形态是否是 Mega 形态，并且是否有招式要求
+				if (altForme?.isMega && altForme?.requiredMove) {
+					// 只有在符合特定规则（Gen 7、旧标签）或者是你的“Fantasy”系列时才允许
+					if (species.name.includes('Fantasy') || 
+						this.battle.gen <= 7 || 
+						this.battle.ruleTable.has('+pokemontag:past') || 
+						this.battle.ruleTable.has('+pokemontag:future')) {
+						
+						// 检查宝可梦是否学会了该招式，并且没有携带 Z 纯晶
+						if (pokemon.baseMoves.includes(toID(altForme.requiredMove)) && !item.zMove) {
+							return altForme.name;
+						}
+					}
+				}
+			}
 		}
+
 		// Temporary hardcode until generation shift
 		if ((species.baseSpecies === "Floette" || species.baseSpecies === "Zygarde") && item.megaEvolves === species.name) {
 			return item.megaStone as string;
