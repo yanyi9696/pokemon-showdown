@@ -1670,7 +1670,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Garbodor",
 		forme: "Mega",
 		types: ["Poison", "Steel"],
-		baseStats: { hp: 80, atk: 91, def: 122, spa: 110, spd: 122, spe: 75 },
+		baseStats: { hp: 80, atk: 91, def: 112, spa: 130, spd: 112, spe: 75 },
 		abilities: { 0: "Earth Eater" },
 		heightm: 1.9,
 		weightkg: 107.3,
