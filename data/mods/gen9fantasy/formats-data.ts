@@ -17,9 +17,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	darmanitangalarzenfantasy: {
 		tier: "Illegal",
 	},
-	greninjaashfantasy: {
-		tier: "Illegal",
-	},
 	altariamegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Tian Lai Zhi Yin"},		
@@ -34,6 +31,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	greninjamegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Stakeout"},		
+	},
+	greninjaashfantasy: {
+		tier: "Uber",
 	},
 	metagrossmegafantasy: {
 		tier: "Uber",
