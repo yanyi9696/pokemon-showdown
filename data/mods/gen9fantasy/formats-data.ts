@@ -632,6 +632,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	darmanitangalar: {
 		tier: "(Uber)",
 	},
+	darmanitangalarzen: {
+		tier: "(Uber)",
+	},
 	deoxys: {
 		tier: "(Uber)",
 	},
