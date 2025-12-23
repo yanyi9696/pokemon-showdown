@@ -199,14 +199,15 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	fst: {
 		name: 'fst',
 		effectType: 'Status',
-		// 状态开始时的提示
 		onStart(target, source, sourceEffect) {
-        if (sourceEffect && sourceEffect.effectType === 'Ability') {
-            this.add('-status', target, 'fst', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
-        } else {
-            this.add('-status', target, 'fst');
-        }
-        // [建议添加] 模拟官方的消息提示
+			// 确保冰系免疫冻伤
+			if (target.hasType('Ice')) return false; 
+			
+			if (sourceEffect && sourceEffect.effectType === 'Ability') {
+				this.add('-status', target, 'fst', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
+			} else {
+				this.add('-status', target, 'fst');
+			}
 			this.add('-message', `${target.name}被冻伤了！`); 
 		},
 		// 免疫逻辑：冰属性宝可梦免疫冻伤

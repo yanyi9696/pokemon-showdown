@@ -1066,36 +1066,45 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	fantasyicestone: {
 		name: "Fantasy Ice Stone",
-		spritenum: 630, // 冰之石图标
+		spritenum: 693, 
 		fling: {
 			basePower: 30,
 		},
 		// 效果 1：将持有者使用的招式中的灼伤效果替换为冻伤（fst）
 		onModifyMove(move) {
-			// 处理直接造成状态的招式（如：鬼火）
+			let changed = false;
+
+			// 1. 处理直接造成状态的招式（如：鬼火）
 			if (move.status === 'brn') {
 				move.status = 'fst' as ID;
+				changed = true;
 			}
-			// 处理带有追加效果的招式（如：喷射火焰）
+
+			// 2. 处理单数形式的追加效果（兼容性处理）
+			if (move.secondary && move.secondary.status === 'brn') {
+				move.secondary.status = 'fst' as ID;
+				changed = true;
+			}
+
+			// 3. 处理复数形式的追加效果（如：喷射火焰、大字爆炎）
 			if (move.secondaries) {
 				for (const secondary of move.secondaries) {
 					if (secondary.status === 'brn') {
 						secondary.status = 'fst' as ID;
+						changed = true;
 					}
 				}
 			}
+
+			if (changed) {
+				this.debug('Fantasy Ice Stone: 成功将招式的灼伤效果替换为冻伤(fst)');
+			}
 		},
-		// 效果 2：反伤逻辑（类似凸凸头盔，但前提是攻击者已冻伤）
+		// 效果 2：反伤逻辑保持不变
 		onDamagingHit(damage, target, source, move) {
-			// target 是道具持有者，source 是攻击方
-			// 检查攻击方是否处于你自定义的 'fst' (冻伤) 状态
 			if (source.status === 'fst') {
-				this.debug('Fantasy Ice Stone: counter damage to frostbitten attacker');
-				
-				// 在对战日志中显示道具激活
+				this.debug('Fantasy Ice Stone: 触发冻伤反伤');
 				this.add('-activate', target, 'item: Fantasy Ice Stone', '[of] ' + source);
-				
-				// 令攻击方损失其最大 HP 的 1/12
 				this.damage(source.baseMaxhp / 12, source, target);
 			}
 		},
