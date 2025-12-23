@@ -196,6 +196,48 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			}
 		},
 	},
+	fst: {
+		name: 'fst',
+		effectType: 'Status',
+		// 状态开始时的提示
+		onStart(target, source, sourceEffect) {
+        if (sourceEffect && sourceEffect.effectType === 'Ability') {
+            this.add('-status', target, 'fst', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
+        } else {
+            this.add('-status', target, 'fst');
+        }
+        // [建议添加] 模拟官方的消息提示
+			this.add('-message', `${target.name}被冻伤了！`); 
+		},
+		// 免疫逻辑：冰属性宝可梦免疫冻伤
+		onSetStatus(status, target, source, effect) {
+			if (status.id !== 'fst') return;
+			if (target.hasType('Ice')) {
+				this.debug('ice type immunity');
+				return false;
+			}
+		},
+		// 使用带有 defrost 标记的招式解除冻伤 ---
+		onModifyMove(move, pokemon) {
+			if (move.flags['defrost']) {
+				this.add('-curestatus', pokemon, 'fst', `[from] move: ${move}`);
+				pokemon.cureStatus();
+			}
+		},
+		// 特攻减半逻辑：携带幻之生命宝珠时跳过
+		onModifySpAPriority: 5,
+		onModifySpA(spa, pokemon) {
+			if (pokemon.hasItem('fantasylifeorb')) return; 
+			return this.chainModify(0.5);
+		},
+		onResidualOrder: 10,
+		onResidual(pokemon) {
+			// [!关键补充]: 如果携带幻之生命宝珠，跳过冻伤本身的 1/16 扣血
+			// 因为宝珠会在 items.ts 的 onResidual 中统一处理 1/10 的伤害
+			if (pokemon.hasItem('fantasylifeorb')) return;
+			this.damage(pokemon.baseMaxhp / 16);
+		},
+	},
 	brn: {
 		name: 'brn',
 		effectType: 'Status',

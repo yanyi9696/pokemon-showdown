@@ -809,7 +809,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			}
 		},
 		onResidual(pokemon) {
-			if (pokemon.status && ['brn', 'par', 'slp', 'frz', 'psn', 'tox'].includes(pokemon.status)) {
+			if (pokemon.status && ['brn', 'par', 'slp', 'frz', 'fst', 'psn', 'tox'].includes(pokemon.status)) {
 				this.damage(pokemon.baseMaxhp / 10, pokemon, pokemon, this.dex.items.get('fantasylifeorb'));
 			}
 		},
@@ -1063,5 +1063,45 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		gen: 9,
 		desc: "幻之护具。携带后,虽然物防和特防将提高20%,但速度会降低至原来的1/2",
 		shortDesc: "幻之护具。携带后,物防和特防提高20%,但速度会降低至原来的1/2",
+	},
+	fantasyicestone: {
+		name: "Fantasy Ice Stone",
+		spritenum: 630, // 冰之石图标
+		fling: {
+			basePower: 30,
+		},
+		// 效果 1：将持有者使用的招式中的灼伤效果替换为冻伤（fst）
+		onModifyMove(move) {
+			// 处理直接造成状态的招式（如：鬼火）
+			if (move.status === 'brn') {
+				move.status = 'fst' as ID;
+			}
+			// 处理带有追加效果的招式（如：喷射火焰）
+			if (move.secondaries) {
+				for (const secondary of move.secondaries) {
+					if (secondary.status === 'brn') {
+						secondary.status = 'fst' as ID;
+					}
+				}
+			}
+		},
+		// 效果 2：反伤逻辑（类似凸凸头盔，但前提是攻击者已冻伤）
+		onDamagingHit(damage, target, source, move) {
+			// target 是道具持有者，source 是攻击方
+			// 检查攻击方是否处于你自定义的 'fst' (冻伤) 状态
+			if (source.status === 'fst') {
+				this.debug('Fantasy Ice Stone: counter damage to frostbitten attacker');
+				
+				// 在对战日志中显示道具激活
+				this.add('-activate', target, 'item: Fantasy Ice Stone', '[of] ' + source);
+				
+				// 令攻击方损失其最大 HP 的 1/12
+				this.damage(source.baseMaxhp / 12, source, target);
+			}
+		},
+		num: 30007,
+		gen: 9,
+		desc: "幻之冰之石。携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/12。",
+		shortDesc: "灼伤变冻伤。若对手在冻伤状态下攻击持有者,对手损失1/12最大HP",
 	},
 };
