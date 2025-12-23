@@ -970,7 +970,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["Steel", "Psychic"],
 		gender: "N",
 		baseStats: { hp: 80, atk: 145, def: 150, spa: 105, spd: 110, spe: 110 },
-		abilities: { 0: "Tough Claws" },
+		abilities: { 0: "Ji Zhi Neng" },
 		heightm: 2.5,
 		weightkg: 942.9,
 		color: "Blue",

@@ -37,7 +37,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	metagrossmegafantasy: {
 		tier: "Uber",
-		abilities: {0: "Tough Claws"},	
+		abilities: {0: "Ji Zhi Neng"},	
 	},
 	regigigasfantasy: {
 		tier: "Uber",
