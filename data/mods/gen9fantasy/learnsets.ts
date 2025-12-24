@@ -4068,7 +4068,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			drainingkiss: ["9M"],
 			mistyexplosion: ["9M"],
 			craftyshield: ["9M"],
-			mysticalpower: ["9M"],
 			//幻想增添技能
 			agility: ["9M"],
 			allyswitch: ["7T"],
@@ -4182,7 +4181,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			drainingkiss: ["9M"],
 			mistyexplosion: ["9M"],
 			craftyshield: ["9M"],
-			mysticalpower: ["9M"],
 			//幻想增添技能
 			agility: ["9M"],
 			allyswitch: ["7T"],
