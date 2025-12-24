@@ -606,20 +606,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	moshushizhihong: {
 		onAfterMoveSecondarySelf(source, target, move) {
-			// 基础检查：确保招式有效、目标存在、且不是使用者自己
+			// 基础检查
 			if (!move || !target || source.switchFlag === true) return;
 			if (target === source || move.category === 'Status') return;
 
 			// 如果目标没有道具，则不触发任何效果
 			if (!target.item) return;
 
-			// 【逻辑 A】使用者没有道具 -> 夺走目标道具 (不限属性，命中即触发)
+			// 【逻辑 A】使用者没有道具 -> 夺走目标道具 (命中即触发)
 			if (!source.item && !source.volatiles['gem'] && move.id !== 'fling') {
 				const stolenItem = target.takeItem(source);
 				if (!stolenItem) return;
 				
 				if (!source.setItem(stolenItem)) {
-					// 如果设置道具失败（例如某些无法被夺取的道具），归还给目标
 					target.item = stolenItem.id;
 					return;
 				}
@@ -627,13 +626,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			} 
 			// 【逻辑 B】使用者已有道具 -> 检查“先手 + 火系招式”来烧毁对方道具
 			else {
-				// 修正 TypeScript 报错：使用 (target as any).movedThisTurn
-				// !target.movedThisTurn 表示：目标在本回合尚未行动过 = 使用者是先手
-				if (move.type === 'Fire' && !(target as any).movedThisTurn) {
+				// 使用 this.queue.willMove(target) 来判定目标是否还未行动
+				// 这在 onAfterMove 阶段是判定“先手”最准确的方式
+				if (move.type === 'Fire' && this.queue.willMove(target)) {
 					const removedItem = target.takeItem(source);
 					if (removedItem) {
 						this.add('-enditem', target, removedItem.name, '[from] ability: Magician\'s Red', `[of] ${source}`);
-						this.add('-message', `${source.name} 的火焰先一步烧毁了 ${target.name} 的 ${removedItem.name}！`);
+						this.add('-message', `${source.name} 的火焰在 ${target.name} 出手前将其 ${removedItem.name} 烧毁了！`);
 					}
 				}
 			}
@@ -642,7 +641,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mo Shu Shi Zhi Hong",
 		rating: 3.5,
 		num: 10006,
-		shortDesc: "魔术师之红。无道具时夺取目标道具；有道具时先手火系招式会烧毁目标道具",
+		shortDesc: "魔术师之红：无道具时夺取目标道具；有道具时，先手火系招式会烧毁目标道具。",
 	},
 	jiqususheng: {
 		onAfterMoveSecondarySelfPriority: -1,
