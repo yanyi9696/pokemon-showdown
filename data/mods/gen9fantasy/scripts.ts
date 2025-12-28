@@ -31,7 +31,7 @@ export const Scripts: ModdedBattleScriptsData = {
 					}
 				}
 			}
-			
+
 			// 核心逻辑：处理类似 Tatsugiri 的数组映射
 			if (Array.isArray(item.megaEvolves)) {
 				// 检查当前宝可梦的名字是否在进化石的可进化列表中
@@ -85,8 +85,8 @@ export const Scripts: ModdedBattleScriptsData = {
 			// 执行变身
 			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
 			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem);
-			this.battle.add('-start', pokemon, 'ability: ' + pokemon.getAbility().name);
-			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] ability: ' + pokemon.getAbility().name, '[silent]');
+			this.battle.add('-activate', pokemon, 'ability: ' + pokemon.getAbility().name, '[from] Mega Evolution');
+			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] Mega Evolution');
 
 			for (const ally of pokemon.side.pokemon) {
 				ally.canMegaEvo = null;
