@@ -1000,7 +1000,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Absol",
 		forme: "Mega-Z",
 		types: ["Dark", "Ghost"],
-		baseStats: { hp: 90, atk: 140, def: 95, spa: 10, spd: 95, spe: 125 },
+		baseStats: { hp: 90, atk: 145, def: 95, spa: 95, spd: 95, spe: 125 },
 		abilities: { 0: "Shi Ying Li" },
 		heightm: 1.2,
 		weightkg: 49,

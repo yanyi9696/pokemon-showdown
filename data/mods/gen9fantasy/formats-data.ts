@@ -2,14 +2,7 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	raichumegax: {
-		tier: "Uber",
-		abilities: {0: "Surge Surfer"},		
-	},
-	raichumegay: {
-		tier: "Uber",
-		abilities: {0: "Lightning Rod"},		
-	},
+	
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
 		tier: "Illegal",
@@ -519,6 +512,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Snow Warning"},		
 	},
+	raichumegay: {
+		tier: "UUBL",
+		abilities: {0: "Lightning Rod"},		
+	},
 	chandeluremega: {
 		tier: "UU",
 		abilities: {0: "Flash Fire"},		
@@ -558,6 +555,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	feraligatrmega: {
 		tier: "RU",
 		abilities: {0: "Strong Jaw"},		
+	},
+	raichumegax: {
+		tier: "RU",
+		abilities: {0: "Surge Surfer"},		
 	},
 	pyroarmega: {
 		tier: "RU",
