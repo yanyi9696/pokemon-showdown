@@ -769,7 +769,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	tiekai: {
 		onSourceModifyDamage(damage, source, target, move) {
-			if (target.runEffectiveness(move) <= 1) {
+			// typeMod <= 0 涵盖了：0 (效果一般) 和 < 0 (效果不好/抵抗)
+			if (target.getMoveHitData(move).typeMod <= 0) {
 				this.debug('Tie Kai neutralize');
 				return this.chainModify(0.75);
 			}
