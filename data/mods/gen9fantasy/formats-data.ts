@@ -138,6 +138,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	volcaronafantasy: {
 		tier: "(Uber)",
 	},
+	absolmegazfantasy: {
+		tier: "OU",
+		abilities: { 0: "Shi Ying Li" },
+	},
 	aerodactylfantasy: {
 		tier: "OU",
 	},
@@ -467,6 +471,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Skill Link"},		
 	},
+	absolmegaz: {
+		tier: "(Uber)",
+		abilities: { 0: "Super Luck" },
+	},
 	chesnaughtmega: {
 		tier: "(Uber)",
 		abilities: {0: "Stamina"},		
@@ -514,6 +522,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	chandeluremega: {
 		tier: "UU",
 		abilities: {0: "Flash Fire"},		
+	},
+	chimechomega: {
+		tier: "UU",
+		abilities: {0: "Levitate"},		
 	},
 	clefablemega: {
 		tier: "UU",

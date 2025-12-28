@@ -1436,4 +1436,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10032,
 		shortDesc: "沙漠之声。所有的声音招式都变为地面属性",
 	},
+	shiyingli: {
+		onTryHit(target, source, move) {
+			// 确保不是自己打自己，且目标确实对该招式的属性免疫
+			if (target !== source && !target.runImmunity(move.type)) {
+				// 尝试添加“噬影力”状态
+				if (!target.addVolatile('shiyingli')) {
+					// 如果添加失败（通常是因为已经有了），也要显示免疫信息
+					this.add('-immune', target, '[from] ability: Shi Ying Li');
+				}
+				// 返回 null 意味着招式被完全吸收/抵消，不会产生原有效果
+				return null;
+			}
+		},
+		// 离场时清除状态（可选，根据引火的习惯通常会保留，但也可以像你之前的状态一样手动清除）
+		onEnd(pokemon) {
+			pokemon.removeVolatile('shiyingli');
+		},
+		flags: { breakable: 1 },
+		name: "Shi Ying Li",
+		rating: 3.5,
+		num: 10033,
+		shortDesc: "噬影力。因为属性相性免疫对手的招式后,使出的幽灵属性招式威力提升50%",
+	},
 };

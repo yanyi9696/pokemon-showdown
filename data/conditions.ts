@@ -1,4 +1,31 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	shiyingli: {
+		name: 'Shi Ying Li',
+		noCopy: true, // 不会被接棒或复制类招式带走
+		onStart(target) {
+			this.add('-start', target, 'ability: Shi Ying Li');
+			this.add('-message', `${target.name}吸收了阴影的力量！`);
+		},
+		// 修正攻击力 (物理)
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Ghost' && attacker.hasAbility('shiyingli')) {
+				this.debug('Shi Ying Li boost');
+				return this.chainModify(1.5);
+			}
+		},
+		// 修正特攻 (特殊)
+		onModifySpAPriority: 5,
+		onModifySpA(spa, attacker, defender, move) {
+			if (move.type === 'Ghost' && attacker.hasAbility('shiyingli')) {
+				this.debug('Shi Ying Li boost');
+				return this.chainModify(1.5);
+			}
+		},
+		onEnd(target) {
+			this.add('-end', target, 'ability: Shi Ying Li', '[silent]');
+		},
+	},
 	qianghuawuxiao: {
 		name: 'Qiang Hua Wu Xiao',
 		duration: 2,
