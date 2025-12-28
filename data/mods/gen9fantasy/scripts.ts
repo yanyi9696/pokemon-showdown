@@ -85,7 +85,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			// 执行变身
 			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
 			this.battle.add('-mega', pokemon, targetSpecies.baseSpecies, targetSpecies.requiredItem);
-			this.battle.add('-start', pokemon, 'megaability', pokemon.getAbility().name, '[silent]');
+			this.battle.add('-activate', pokemon, 'ability: ' + pokemon.getAbility().name, '[from] Mega Evolution');
 			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] Mega Evolution');
 
 			for (const ally of pokemon.side.pokemon) {
