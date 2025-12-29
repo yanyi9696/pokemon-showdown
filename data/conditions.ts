@@ -179,7 +179,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	seaoffire: {
 		name: 'Sea of Fire',
 		onFieldStart(field, source, effect) {
-			// 只有状态真正开始时才发送信息
 			this.add('-fieldstart', 'move: Sea of Fire');
 		},
 		onResidualOrder: 5,
@@ -194,8 +193,8 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				this.damage(pokemon.baseMaxhp / 8, pokemon);
 			}
 		},
+		// 关键点：当全局伪天气真正消失时执行
 		onFieldEnd() {
-			// 只有当全局 PseudoWeather 被 remove 时（即最后一个人走时），才会触发这句
 			this.add('-message', '随着火山行者的离去，火海平息了。');
 			this.add('-fieldend', 'move: Sea of Fire');
 		},
