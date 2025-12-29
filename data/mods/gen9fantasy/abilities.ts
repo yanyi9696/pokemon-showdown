@@ -853,17 +853,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.field.addPseudoWeather('seaoffire');
 		},
 		onEnd(source) {
-			// 核心判断：统计全场除自己外，是否还有“存活且未被抑制特性”的火山行者
-			const remainingHolders = this.getAllActive().filter(p => 
-				p !== source && // 排除当前正在执行离场逻辑的自己
-				p.hasAbility('huoshanxingzhe') && // 拥有该特性
-				!p.fainted // 且未濒死
-			);
-
-			// 只有当剩余持有者数量确定为 0 时，才允许移除全局火海
-			if (remainingHolders.length === 0) {
-				this.field.removePseudoWeather('seaoffire');
+			// 稳健判定：直接检查双方场上的所有活跃槽位
+			for (const side of this.sides) {
+				for (const active of side.active) {
+					// 如果场上还存在除 source 以外的“火山行者”且未濒死
+					if (active && active !== source && active.hasAbility('huoshanxingzhe') && !active.fainted) {
+						// 只要有一个还在场，就不移除火海，直接结束函数
+						return; 
+					}
+				}
 			}
+
+			// 只有确定全场没有其他火山行者了，才真正下达移除命令
+			this.field.removePseudoWeather('seaoffire');
 		},
 		flags: {},
 		name: "Huo Shan Xing Zhe",
