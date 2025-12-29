@@ -1317,7 +1317,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	absolitez: {
 		name: "Absolite Z",
 		spritenum: 576,
-		megaStone: ["Absol-Z-Mega", "Absol-Mega-Z-Fantasy"],
+		megaStone: ["Absol-Mega-Z", "Absol-Mega-Z-Fantasy"],
 		megaEvolves: ["Absol", "Absol-Fantasy"],
 		itemUser: ["Absol", "Absol-Fantasy"],
 		onTakeItem(item, source) {
@@ -1392,7 +1392,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	garchompitez: {
 		name: "Garchompite Z",
 		spritenum: 573,
-		megaStone: ["Garchomp-Z-Mega", "Garchomp-Mega-Z-Fantasy"],
+		megaStone: ["Garchomp-Mega-Z", "Garchomp-Mega-Z-Fantasy"],
 		megaEvolves: ["Garchomp", "Garchomp-Fantasy"],
 		itemUser: ["Garchomp", "Garchomp-Fantasy"],
 		onTakeItem(item, source) {
