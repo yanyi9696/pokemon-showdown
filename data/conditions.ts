@@ -178,22 +178,28 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	},
 	seaoffire: {
 		name: 'Sea of Fire',
-		// 删除了 duration: 4 这一行
-		// 当状态开始时，在战斗日志中显示消息
-		onSideStart(side) {
-			this.add('-sidestart', side, 'move: Sea of Fire');
+		// 当作为场效果启动时
+		onFieldStart(field, source, effect) {
+			this.add('-fieldstart', 'move: Sea of Fire');
 		},
-		// 在回合结束时触发伤害效果
 		onResidualOrder: 5,
 		onResidualSubOrder: 1,
 		onResidual(pokemon) {
-			if (!pokemon.hasType('Fire')) {
+			// 1. 火系免疫
+			if (pokemon.hasType('Fire')) return;
+
+			// 2. 核心逻辑：只有当该宝可梦的“对手侧”有人持有火山行者特性时，才造成伤害
+			const foeSide = pokemon.side.foe;
+			const hasActiveAbility = foeSide.active.some(p => 
+				p && !p.fainted && p.hasAbility('huoshanxingzhe') && !p.volatiles['gastroacid']
+			);
+
+			if (hasActiveAbility) {
 				this.damage(pokemon.baseMaxhp / 8, pokemon);
 			}
 		},
-		// 当状态结束时，在战斗日志中显示消息
-		onSideEnd(side) {
-			this.add('-sideend', side, 'move: Sea of Fire');
+		onFieldEnd() {
+			this.add('-fieldend', 'move: Sea of Fire');
 		},
 	},
 	fantasysachetfling: {

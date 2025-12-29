@@ -847,34 +847,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "极光行者。首次出场时,可以使己方场地进入5回合极光幕状态,如果使用者携带光之黏土则持续8回合",
 	},
 	huoshanxingzhe: {
-		// 当拥有此特性的宝可梦登场或获得此特性时触发
 		onStart(source) {
-			// 如果对手场上已经有火海了，就什么都不做
-			if (source.side.foe.getSideCondition('seaoffire')) return;
+			// 检查场上是否已经有了火海（全局效果）
+			if (this.field.getPseudoWeather('seaoffire')) return;
 			
-			// 记录日志并施加火海效果
 			this.add('-ability', source, '火山行者');
-			source.side.foe.addSideCondition('seaoffire');
+			// 改为添加 PseudoWeather (全局场效果)
+			this.field.addPseudoWeather('seaoffire');
 		},
-		// 当此特性因为任何原因结束时触发
-		// (例如：宝可梦交换离场、濒死、被胃酸、或特性被交换)
 		onEnd(source) {
-			// 步骤1：这个检查逻辑是正确的，我们保留它。
-			// 它确保只有在最后一个“火山行者”离场时，才执行后面的清除代码。
+			// 逻辑保持不变：检查是否还有其他火山行者在场
 			for (const pokemon of this.getAllActive()) {
 				if (pokemon !== source && pokemon.hasAbility('huoshanxingzhe')) {
 					return;
 				}
 			}
-
-			// 步骤2：这是新的清除逻辑。
-			// 它会遍历场上所有的边（我方和敌方），并清除所有火海。
-			this.add('-message', '随着火山行者的离去，火海平息了。');
-			for (const side of this.sides) {
-				if (side.getSideCondition('seaoffire')) {
-					side.removeSideCondition('seaoffire');
-				}
-			}
+			// 移除全局场效果
+			this.field.removePseudoWeather('seaoffire');
 		},
 	    flags: {},
 		name: "Huo Shan Xing Zhe",
