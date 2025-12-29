@@ -178,27 +178,25 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	},
 	seaoffire: {
 		name: 'Sea of Fire',
-		// 当作为场效果启动时
 		onFieldStart(field, source, effect) {
+			// 只有状态真正开始时才发送信息
 			this.add('-fieldstart', 'move: Sea of Fire');
 		},
 		onResidualOrder: 5,
 		onResidualSubOrder: 1,
 		onResidual(pokemon) {
-			// 1. 火系免疫
 			if (pokemon.hasType('Fire')) return;
-
-			// 2. 核心逻辑：只有当该宝可梦的“对手侧”有人持有火山行者特性时，才造成伤害
 			const foeSide = pokemon.side.foe;
 			const hasActiveAbility = foeSide.active.some(p => 
-				p && !p.fainted && p.hasAbility('huoshanxingzhe') && !p.volatiles['gastroacid']
+				p && !p.fainted && p.hasAbility('huoshanxingzhe')
 			);
-
 			if (hasActiveAbility) {
 				this.damage(pokemon.baseMaxhp / 8, pokemon);
 			}
 		},
 		onFieldEnd() {
+			// 只有当全局 PseudoWeather 被 remove 时（即最后一个人走时），才会触发这句
+			this.add('-message', '随着火山行者的离去，火海平息了。');
 			this.add('-fieldend', 'move: Sea of Fire');
 		},
 	},

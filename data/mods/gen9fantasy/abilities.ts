@@ -848,24 +848,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	huoshanxingzhe: {
 		onStart(source) {
-			// 检查场上是否已经有了火海（全局效果）
 			if (this.field.getPseudoWeather('seaoffire')) return;
-			
 			this.add('-ability', source, '火山行者');
-			// 改为添加 PseudoWeather (全局场效果)
 			this.field.addPseudoWeather('seaoffire');
 		},
 		onEnd(source) {
-			// 逻辑保持不变：检查是否还有其他火山行者在场
-			for (const pokemon of this.getAllActive()) {
-				if (pokemon !== source && pokemon.hasAbility('huoshanxingzhe')) {
-					return;
-				}
-			}
-			// 移除全局场效果
+			// 这里的逻辑优化：
+			// 遍历场上所有活跃的宝可梦，检查除了当前正在离场的这一只外，
+			// 是否还有其它存活且特性未被抑制（如胃酸）的火山行者。
+			const otherHolders = this.getAllActive().filter(pokemon => 
+				pokemon !== source && 
+				pokemon.hasAbility('huoshanxingzhe') && 
+				!pokemon.fainted
+			);
+
+			// 如果场上还有其它人撑着火海，直接返回，不移除状态，也不发信息
+			if (otherHolders.length > 0) return;
+
+			// 只有最后一人离场，才真正移除全局状态
 			this.field.removePseudoWeather('seaoffire');
 		},
-	    flags: {},
+		flags: {},
 		name: "Huo Shan Xing Zhe",
 		rating: 4,
 		num: 10015,
