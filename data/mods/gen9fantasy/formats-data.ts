@@ -516,6 +516,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Lightning Rod"},		
 	},
+	staraptormega: {
+		tier: "UUBL",
+		abilities: {0: "Tough Claws"},		
+	},
 	chandeluremega: {
 		tier: "UU",
 		abilities: {0: "Flash Fire"},		
