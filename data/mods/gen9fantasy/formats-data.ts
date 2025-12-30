@@ -480,6 +480,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Mega Launcher"},		
 	},
+	magearnamega: {
+		tier: "Uber",
+		abilities: {0: "Soul-Heart"},		
+	},
+	magearnaoriginalmega: {
+		tier: "Uber",
+		abilities: {0: "Steely Spirit"},		
+	},
 	absolmegaz: {
 		tier: "(Uber)",
 		abilities: { 0: "Super Luck" },
