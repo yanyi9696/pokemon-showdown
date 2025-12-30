@@ -575,6 +575,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Tough Claws"},		
 	},
+	tatsugiridroopymega: {
+		tier: "UUBL",
+		abilities: {0: "Drizzle"},		
+	},
 	chandeluremega: {
 		tier: "UU",
 		abilities: {0: "Flash Fire"},		
@@ -598,6 +602,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	golurkmega: {
 		tier: "UU",
 		abilities: {0: "Aftermath"},		
+	},
+	tatsugiricurlymega: {
+		tier: "UU",
+		abilities: {0: "Contrary"},		
 	},
 	eelektrossmega: {
 		tier: "RUBL",
@@ -646,6 +654,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	scovillainmega: {
 		tier: "RU",
 		abilities: {0: "Chlorophyll"},		
+	},
+	tatsugiristretchymega: {
+		tier: "RU",
+		abilities: {0: "Swift Swim"},		
 	},
 	victreebelmega: {
 		tier: "RU",
