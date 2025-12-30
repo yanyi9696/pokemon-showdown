@@ -1497,7 +1497,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	meowsticite: {
 		name: "Meowsticite",
 		spritenum: 0,
-		megaStone: ["Meowstic-Mega", "Meowstic-Mega-Fantasy", "Meowstic-F-Mega", "Meowstic-F-Mega-Fantasy"],
+		megaStone: ["Meowstic-M-Mega", "Meowstic-M-Mega-Fantasy", "Meowstic-F-Mega", "Meowstic-F-Mega-Fantasy"],
 		megaEvolves: ["Meowstic", "Meowstic-Fantasy", "Meowstic-F", "Meowstic-F-Fantasy"],
 		itemUser: ["Meowstic", "Meowstic-Fantasy", "Meowstic-F", "Meowstic-F-Fantasy"],
 		onTakeItem(item, source) {
