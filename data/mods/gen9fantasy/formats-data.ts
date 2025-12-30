@@ -197,6 +197,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	golurkfantasy: {
 		tier: "OU",
 	},
+	golurkmegafantasy: {
+		tier: "OU",
+		abilities: {0: "Perish Body"},	
+	},
 	goodrafantasy: {
 		tier: "OU",
 	},
@@ -559,6 +563,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	falinksmega: {
 		tier: "UU",
 		abilities: {0: "Defiant"},		
+	},
+	golurkmega: {
+		tier: "UU",
+		abilities: {0: "Aftermath"},		
 	},
 	eelektrossmega: {
 		tier: "RUBL",
