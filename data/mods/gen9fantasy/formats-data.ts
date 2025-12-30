@@ -524,6 +524,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Pure Power"},		
 	},
+	zeraoramega: {
+		tier: "(Uber)",
+		abilities: {0: "Iron Fist"},		
+	},
 	dragonitemega: {
 		tier: "OU",
 		abilities: {0: "Unaware"},		

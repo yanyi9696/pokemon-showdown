@@ -2994,6 +2994,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		tags: ["Ultra Beast"],
 		eggGroups: ["Undiscovered"],
 	},
+	zeraora: {
+		inherit: true,
+		otherFormes: ["Zeraora-Mega"],
+		formeOrder: ["Zeraora", "Zeraora-Mega"],
+	},
+	zeraoramega: {
+		num: 807,
+		name: "Zeraora-Mega",
+		baseSpecies: "Zeraora",
+		forme: "Mega",
+		types: ["Electric"],
+		gender: "N",
+		baseStats: { hp: 88, atk: 157, def: 75, spa: 147, spd: 80, spe: 153 },
+		abilities: { 0: "Iron Fist" },
+		heightm: 1.5,
+		weightkg: 44.5,
+		color: "Yellow",
+		tags: ["Mythical"],
+		eggGroups: ["Undiscovered"],
+		requiredItem: "Zeraorite",
+	},
 
 	// 第8世代 (810-905)
 	corviknight: {
