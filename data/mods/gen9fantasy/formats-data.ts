@@ -83,6 +83,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
 	},
+	garchompmegazfantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Sharpness"},		
+	},
 	kricketunefantasy: {
 		tier: "(Uber)",
 	},
@@ -473,6 +477,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Stamina"},		
 	},
 	delphoxmega: {
+		tier: "(Uber)",
+		abilities: {0: "Levitate"},		
+	},
+	garchompmegaz: {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		
 	},
