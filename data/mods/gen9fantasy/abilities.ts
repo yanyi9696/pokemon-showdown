@@ -24,20 +24,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		onSourceModifyDamage(damage, source, target, move) {
-        this.debug('Cute Charm reduces damage');
-        // 第一步：无条件降低20%的伤害
-        // this.chainModify(0.8) 会将伤害乘以 0.8
-        let damageMultiplier = 0.8;
-        // 第二步：检查性别并额外降低伤害
-        // 确保攻击方和防御方都有性别，且性别不同
-        if (source.gender && target.gender && source.gender !== target.gender) {
-            this.debug('Cute Charm reduces damage further against opposite gender');
-            // 在原有基础上再降低10% (0.8 * 0.9 = 0.72)
-            damageMultiplier *= 0.9;
-        }
-        // 应用最终的伤害修正
-        return this.chainModify(damageMultiplier);
-    },
+			this.debug('Cute Charm reduces damage');
+			// 第一步：无条件降低20%的伤害
+			// this.chainModify(0.8) 会将伤害乘以 0.8
+			let damageMultiplier = 0.8;
+			// 第二步：检查性别并额外降低伤害
+			// 确保攻击方和防御方都有性别，且性别不同
+			if (source.gender && target.gender && source.gender !== target.gender) {
+				this.debug('Cute Charm reduces damage further against opposite gender');
+				// 在原有基础上再降低10% (0.8 * 0.9 = 0.72)
+				damageMultiplier *= 0.9;
+			}
+			// 应用最终的伤害修正
+			return this.chainModify(damageMultiplier);
+		},
 		flags: {},
 		name: "Cute Charm",
 		rating: 3,
@@ -48,7 +48,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onCriticalHit: false,
 		onDamagingHit(damage, target, source, move) {
 			if (move.flags['contact']) {
-				this.boost({atk: -1}, source, target, null, true);
+				this.boost({ atk: -1 }, source, target, null, true);
 			}
 		},
 		flags: { breakable: 1 },
@@ -84,7 +84,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				// activeTurns 在上场后第一个回合结束时为 1 (此时不提升)
 				// activeTurns 在上场后第一个回合结束时为 2 (此时开始提升)
 				if (pokemon.hp && pokemon.activeTurns >= 2) {
-					this.boost({atk: 1, spe: 1}, pokemon);
+					this.boost({ atk: 1, spe: 1 }, pokemon);
 				}
 			},
 			// 在计算攻击力时，将最终数值减半
@@ -188,20 +188,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onAllyTryBoost(boost, target, source, effect) {
 			// 1. 获取“花幕”特性的持有者
 			const effectHolder = this.effectState.target;
-			
+
 			// 2. 检查目标是否受到保护：
 			//    - 目标就是特性持有者
 			//    - 或者 目标是草属性
 			const isProtected = (target === effectHolder) || target.hasType('Grass');
-			
+
 			// 3. 如果目标不受保护，则直接返回，不执行后续逻辑
 			if (!isProtected) return;
-			
+
 			// 4. [原逻辑] 检查是否有能力阶级降低
 			// 注意：这个修改会阻止所有降低，包括自我降低（如“近身战”的降防）
 			// 如果你想保留原版特性中“允许自我降低”的设定，可以取消下面这行代码的注释：
 			// if (source && target === source) return;
-			
+
 			let showMsg = false;
 			let i: BoostID;
 			for (i in boost) {
@@ -210,18 +210,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					showMsg = true;
 				}
 			}
-			
+
 			// 5. [原逻辑] 显示阻挡信息
 			if (showMsg && !(effect as ActiveMove).secondaries) {
 				this.add('-block', target, 'ability: Flower Veil', `[of] ${effectHolder}`);
 			}
 		},
-		
+
 		// 当己方宝可梦（包括自己）尝试陷入异常状态时触发
 		onAllySetStatus(status, target, source, effect) {
 			// 1. 获取“花幕”特性的持有者
 			const effectHolder = this.effectState.target;
-			
+
 			// 2. 检查目标是否受到保护
 			const isProtected = (target === effectHolder) || target.hasType('Grass');
 
@@ -235,12 +235,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return null; // 阻止陷入异常状态
 			}
 		},
-		
+
 		// 当己方宝可梦（包括自己）尝试陷入“哈欠”状态时触发
 		onAllyTryAddVolatile(status, target) {
 			// 1. 获取“花幕”特性的持有者
 			const effectHolder = this.effectState.target;
-			
+
 			// 2. 检查目标是否受到保护
 			const isProtected = (target === effectHolder) || target.hasType('Grass');
 
@@ -251,7 +251,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return null; // 阻止陷入“哈欠”状态
 			}
 		},
-		
+
 		// [原逻辑] 其他属性
 		flags: { breakable: 1 },
 		name: "Flower Veil",
@@ -266,8 +266,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (move.category === 'Status' && move.id !== 'kingsshield') return;
 			const isFantasy = attacker.species.name.includes('Fantasy');
 			const targetForme = (move.id === 'kingsshield'
-			? (isFantasy ? 'Aegislash-Fantasy' : 'Aegislash')
-			: (isFantasy ? 'Aegislash-Blade-Fantasy' : 'Aegislash-Blade'));
+				? (isFantasy ? 'Aegislash-Fantasy' : 'Aegislash')
+				: (isFantasy ? 'Aegislash-Blade-Fantasy' : 'Aegislash-Blade'));
 			if (attacker.species.name !== targetForme) attacker.formeChange(targetForme);
 		},
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
@@ -320,7 +320,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					speciesid = 'Mimikyu-Busted-Fantasy';
 					isFantasy = true; // 标记这是幻想形态
 				}
-				
+
 				pokemon.formeChange(speciesid, this.effect, true);
 				this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.species.get(speciesid));
 
@@ -338,7 +338,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 						const oldAbility = pokemon.getAbility();
 
 						this.add('-ability', pokemon, newAbility, '[from] ability: Chong Hua Pi', `[of] ${target}`);
-						
+
 						// --- 核心修改：模仿 Skill Swap 的完整流程 ---
 
 						// 1. 触发旧特性(画皮)的 'End' 事件，确保其效果被完全清除。
@@ -349,19 +349,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 						pokemon.baseAbility = newAbility.id;
 
 						// 3. 为新特性初始化状态(abilityState)。
-						pokemon.abilityState = this.initEffectState({id: this.toID(pokemon.ability), target: pokemon});
+						pokemon.abilityState = this.initEffectState({ id: this.toID(pokemon.ability), target: pokemon });
 
 						// 4. 触发新特性的 'Start' 事件，使其所有效果(包括被动效果)立即注册并激活。
 						this.singleEvent('Start', newAbility, pokemon.abilityState, pokemon);
-						
+
 					} else {
 						// 如果没有可复制的对手，逻辑保持不变
 						pokemon.ability = 'chonghuapi' as ID;
 						pokemon.baseAbility = 'chonghuapi' as ID;
-						pokemon.abilityState = this.initEffectState({id: 'chonghuapi' as ID, target: pokemon});
+						pokemon.abilityState = this.initEffectState({ id: 'chonghuapi' as ID, target: pokemon });
 					}
 				}
-				
+
 				// 重置状态
 				this.effectState.busted = false;
 			}
@@ -396,7 +396,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				};
 			}
 		},
-    	// 原特性效果说明：这个特性的中毒效果是在游戏核心逻辑中实现的，
+		// 原特性效果说明：这个特性的中毒效果是在游戏核心逻辑中实现的，
 		// Implemented in sim/pokemon.js:Pokemon#setStatus
 		flags: {},
 		name: "Corrosion",
@@ -434,12 +434,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Stalwart",
-		rating: 2.5, 
+		rating: 2.5,
 		num: 242,
 		shortDesc: "攻击原本选定的目标。不会进入着迷、再来一次、挑衅、无理取闹、定身法和回复封锁状态",
 	},
 	//以下为CAP特性
-		mountaineer: {
+	mountaineer: {
 		onDamage(damage, target, source, effect) {
 			if (effect && effect.id === 'stealthrock') {
 				return false;
@@ -457,7 +457,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: -2,
 		shortDesc: "攀登者。交换时,拥有此特性的宝可梦可以不受所有岩石系攻击和隐形岩伤害",
 	},
-		persistent: {
+	persistent: {
 		// implemented in the corresponding move
 		flags: {},
 		name: "Persistent",
@@ -506,7 +506,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Feng Chao",
 		rating: 4.5,
 		num: 10000,
-		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8",	
+		shortDesc: "蜂巢。虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8",
 	},
 	sujun: {
 		onModifyMove(move, pokemon) {
@@ -520,10 +520,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		flags: {},
-		name: "Su Jun", 
+		name: "Su Jun",
 		rating: 3,
 		num: 10001,
-		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后,自己也不会陷入无法动弹状态",	
+		shortDesc: "速军。即使使出了使用后下一回合自己将无法动弹的招式后,自己也不会陷入无法动弹状态",
 	},
 	huibizaisheng: {
 		onEmergencyExit(target) {
@@ -617,13 +617,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (!source.item && !source.volatiles['gem'] && move.id !== 'fling') {
 				const stolenItem = target.takeItem(source);
 				if (!stolenItem) return;
-				
+
 				if (!source.setItem(stolenItem)) {
 					target.item = stolenItem.id;
 					return;
 				}
 				this.add('-item', source, stolenItem, '[from] ability: Magician\'s Red', `[of] ${target}`);
-			} 
+			}
 			// 【逻辑 B】使用者已有道具 -> 检查“先手 + 火系招式”来烧毁对方道具
 			else {
 				// 使用 this.queue.willMove(target) 来判定目标是否还未行动
@@ -681,10 +681,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "雪之力。在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%",
 	},
 	baoxuezhili: {
-	// 效果1: 来自“降雪”的登场发动天气效果
-	onStart(source) {
-		this.field.setWeather('snowscape');
-	},
+		// 效果1: 来自“降雪”的登场发动天气效果
+		onStart(source) {
+			this.field.setWeather('snowscape');
+		},
 		// 效果2: 来自“雪之力”的威力提升
 		onBasePowerPriority: 21,
 		onBasePower(basePower, attacker, defender, move) {
@@ -697,10 +697,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onImmunity(type, pokemon) {
 			if (type === 'hail') return false;
 		},
-	    flags: {},
-		name: "Bao Xue Zhi Li", 
-		rating: 4.5, 
-		num: 10009, 
+		flags: {},
+		name: "Bao Xue Zhi Li",
+		rating: 4.5,
+		num: 10009,
 		shortDesc: "暴雪之力。兼备降雪和雪之力这两种特性",
 	},
 	xuenv: {
@@ -725,7 +725,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onFaint(pokemon, source, effect) {
 			// 现在，无论宝可梦如何陷入濒死，下面的代码都会执行。
 			// 在对战日志中显示特性发动信息
-	        this.add('-ability', pokemon, this.effect.name, '[from] onFaint');
+			this.add('-ability', pokemon, this.effect.name, '[from] onFaint');
 			// --- “黑雾”效果开始 ---
 			this.add('-clearallboost');
 			for (const target of this.getAllActive()) {
@@ -740,28 +740,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "雪女。在首次出场以及被打倒时，会创造一次黑雾",
 	},
 	zhengfa: {
-	    onModifyMove(move, pokemon, target) {
-        // 检查1：确保我们只修改“火”属性的招式
-        if (move.type !== 'Fire') return;
+		onModifyMove(move, pokemon, target) {
+			// 检查1：确保我们只修改“火”属性的招式
+			if (move.type !== 'Fire') return;
 
-        // 检查2：确保目标存在且拥有“水”属性
-        if (target?.hasType('Water')) {
-            /* 关键逻辑：修改克制倍率
-             * 我们不再依赖于特性本身的 onSourceEffectiveness 事件，
-             * 而是直接给这个招式本身（仅限本次使用）附加一个临时的
-             * onEffectiveness 函数。这让我们的意图更加明确。
-             */
-            move.onEffectiveness = function (typeMod, t, type, m) {
-                // 当系统正在计算对'Water'属性的克制效果时...
-                if (type === 'Water') {
-                    this.debug('Zheng Fa ability is making Fire super effective against Water!');
-                    // ...我们强制返回 1，代表“效果绝佳”(2x)。
-                    return 1;
-                }
-            };
-        }
-    },
-	    flags: {},
+			// 检查2：确保目标存在且拥有“水”属性
+			if (target?.hasType('Water')) {
+				/* 关键逻辑：修改克制倍率
+				 * 我们不再依赖于特性本身的 onSourceEffectiveness 事件，
+				 * 而是直接给这个招式本身（仅限本次使用）附加一个临时的
+				 * onEffectiveness 函数。这让我们的意图更加明确。
+				 */
+				move.onEffectiveness = function (typeMod, t, type, m) {
+					// 当系统正在计算对'Water'属性的克制效果时...
+					if (type === 'Water') {
+						this.debug('Zheng Fa ability is making Fire super effective against Water!');
+						// ...我们强制返回 1，代表“效果绝佳”(2x)。
+						return 1;
+					}
+				};
+			}
+		},
+		flags: {},
 		name: "Zheng Fa",
 		rating: 3.5,
 		num: 10011,
@@ -792,7 +792,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (move.category === 'Physical' && spa > atk) {
 				this.add('-ability', attacker, '极智能');
 				move.overrideOffensiveStat = 'spa'; // 打上标记
-			} 
+			}
 			// 如果是特殊招式，但物攻更高，也打上标记
 			// 表示“在计算特攻力时，请使用物攻的数值”
 			else if (move.category === 'Special' && atk > spa) {
@@ -817,7 +817,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return attacker.getStat('atk', false, true); // 返回物攻数值
 			}
 		},
-	    flags: {},
+		flags: {},
 		name: "Ji Zhi Neng",
 		rating: 3.5,
 		num: 10013,
@@ -840,7 +840,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 4. 设置永久标记：在宝可梦身上“记忆”已经发动过一次
 			(source as any).jiguangxingzheTriggered = true;
 		},
-	    flags: {},
+		flags: {},
 		name: "Ji Guang Xing Zhe",
 		rating: 4,
 		num: 10014,
@@ -853,21 +853,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.field.addPseudoWeather('seaoffire', source);
 		},
 		onEnd(source) {
-			const seaOfFire = this.field.getPseudoWeather('seaoffire');
-			if (!seaOfFire) return;
-			const seaOfFireState = this.field.pseudoWeather[seaOfFire.id];
-			if (seaOfFireState?.source !== source) return;
-
-			for (const active of this.getAllActive()) {
-				if (!active || active === source) continue;
-				if (active.ability === 'huoshanxingzhe') {
-					seaOfFireState.source = active;
-					seaOfFireState.sourceSlot = active.getSlot();
-					return;
-				}
-			}
-
-			// 只有确定全场没有其他火山行者了，才真正下达移除命令
+			if (!this.field.getPseudoWeather('seaoffire')) return;
+			const hasOtherVolcanicWalker = this.getAllActive().some(pokemon =>
+				pokemon && pokemon !== source && !pokemon.fainted && pokemon.hasAbility('huoshanxingzhe')
+			);
+			if (hasOtherVolcanicWalker) return;
 			this.field.removePseudoWeather('seaoffire');
 		},
 		flags: {},
@@ -913,7 +903,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-	    flags: {},
+		flags: {},
 		name: "Lei Ting Xing Zhe",
 		rating: 4,
 		num: 10016,
@@ -961,10 +951,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			const target = this.sample(possibleTargets);
 			const ability = target.getAbility();
 
-	        this.add('-ability', pokemon, 'Chong Hua Pi');
+			this.add('-ability', pokemon, 'Chong Hua Pi');
 
 			this.add('-ability', pokemon, ability, '[from] ability: Chong Hua Pi', `[of] ${target}`);
-			
+
 			// 关键修正：同时设置当前和基础特性，确保复制永久生效
 			pokemon.setAbility(ability);
 			pokemon.baseAbility = ability.id;
@@ -996,7 +986,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return this.chainModify(1.5);
 			}
 		},
-	    flags: {},
+		flags: {},
 		name: "Mu Hou Hei Shou",
 		num: 10019,
 		rating: 2.5,
@@ -1028,7 +1018,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	shouhun: {
 		// 当任何宝可梦倒下时触发，设置一个优先级
-		onAnyFaintPriority: 1, 
+		onAnyFaintPriority: 1,
 		onAnyFaint() {
 			// this.effectState.target 指的是拥有这个“收魂”特性的宝可梦
 			const source = this.effectState.target;
@@ -1133,7 +1123,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			noCopy: true, // Prevents this temporary state from being copied by moves like Role Play.
 			onStart(pokemon) {
 				this.add('-activate', pokemon, 'ability: Qing Guang Hua Yu');
-				this.boost({spd: 2}, pokemon);
+				this.boost({ spd: 2 }, pokemon);
 			},
 			onEnd(pokemon) {
 				this.add('-end', pokemon, 'Qing Guang Hua Yu', '[silent]');
@@ -1141,7 +1131,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Qing Guang Hua Yu",
-		num: 10024, 
+		num: 10024,
 		rating: 3.5,
 		shortDesc: "晴光花语。每当处于大晴天或青草场地上时,特防提升2级",
 	},
@@ -1156,10 +1146,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 			// 步骤 2: 检查场上是否存在需要清除的效果 (这部分逻辑是正确的)
 			const conditionsToRemove = [
-				'spikes', 
-				'toxicspikes', 
-				'stealthrock', 
-				'stickyweb', 
+				'spikes',
+				'toxicspikes',
+				'stealthrock',
+				'stickyweb',
 				'gmaxsteelsurge'
 			];
 			const hazardsPresent = conditionsToRemove.some(condition => pokemon.side.getSideCondition(condition));
@@ -1197,7 +1187,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			pokemon.removeVolatile('tundu');
 		},
 		condition: {
-			noCopy: true, 
+			noCopy: true,
 			onStart(target) {
 				this.add('-start', target, 'ability: Tun Du');
 			},
@@ -1219,10 +1209,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.add('-end', target, 'ability: Tun Du', '[silent]');
 			},
 		},
-		flags: { breakable: 1 }, 
+		flags: { breakable: 1 },
 		name: "Tun Du",
 		rating: 3.5,
-		num: 10026, 
+		num: 10026,
 		shortDesc: "吞毒。免疫毒属性招式伤害,受到毒属性招式攻击时毒属性招式威力提升50%",
 	},
 	fengya: {
@@ -1256,8 +1246,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: { breakable: 1 },
 		name: "Feng Ya",
-		rating: 3.5, 
-		num: 10027, 
+		rating: 3.5,
+		num: 10027,
 		shortDesc: "风压。自身的速度不会被降低。首次出场时用强风压制对手,降低对手的速度1级",
 	},
 	longzhihuxi: {
@@ -1355,7 +1345,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 检查当前宝可梦的ID是否为 'darmanitanfantasy'
 			if (pokemon.species.id === 'darmanitanfantasy') {
 				targetForme = 'Darmanitan-Zen-Fantasy';
-			} 
+			}
 			// 检查当前宝可梦的ID是否为 'darmanitangalarfantasy'
 			else if (pokemon.species.id === 'darmanitangalarfantasy') {
 				targetForme = 'Darmanitan-Galar-Zen-Fantasy';
@@ -1363,7 +1353,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				// 如果不是以上两种指定的形态，则不执行任何操作
 				return;
 			}
-			
+
 			// 显示特性发动信息，并执行永久的形态变化
 			this.add('-activate', pokemon, 'ability: Quan Li Da Mo');
 			pokemon.formeChange(targetForme, this.effect, true);
@@ -1386,9 +1376,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (this.effectState.activated) {
 					// ...我们就返回 0 (1x 伤害)，而不是 1 (2x 伤害)。
 					// 这可以防止 2x * 2x = 4x 的情况发生。
-					return 0; 
+					return 0;
 				}
-				
+
 				// 如果是第一次检查，我们正常执行逻辑。
 				this.add('-activate', target, 'ability: Zui Jia Ni Tai');
 				this.effectState.activated = true;
