@@ -194,6 +194,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	greninjabondfantasy: {
 		tier: "OU",
 	},
+	golisopodmegafantasy: {
+		tier: "OU",
+		abilities: {0: "Hui Bi Zai Sheng"},		
+	},
 	golurkfantasy: {
 		tier: "OU",
 	},
@@ -584,6 +588,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Flower Veil"},		
 	},
+	golisopodmega: {
+		tier: "RUBL",
+		abilities: {0: "Battle Armor"},		
+	},
 	scraftymega: {
 		tier: "RUBL",
 		abilities: {0: "Intimidate"},		
@@ -591,6 +599,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	scolipedemega: {
 		tier: "RUBL",
 		abilities: {0: "Merciless"},		
+	},
+	crabominablemega: {
+		tier: "RU",
+		abilities: {0: "Iron Fist"},		
 	},
 	feraligatrmega: {
 		tier: "RU",
