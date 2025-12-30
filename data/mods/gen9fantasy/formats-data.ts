@@ -469,6 +469,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	stonjournerfantasy: {
 		tier: "RU",
 	},
+	onixfantasy: {
+		tier: "LC",
+	},
 
 
 	//ZA新mega
@@ -535,6 +538,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	excadrillmega: {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
+	},
+	glimmoramega: {
+		tier: "OU",
+		abilities: {0: "Corrosion"},		
 	},
 	greninjamega: {
 		tier: "OU",
@@ -636,12 +643,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 		abilities: {0: "Chlorophyll"},		
 	},
+	scovillainmega: {
+		tier: "RU",
+		abilities: {0: "Chlorophyll"},		
+	},
 	victreebelmega: {
 		tier: "RU",
 		abilities: {0: "Corrosion"},		
-	},
-	onixfantasy: {
-		tier: "LC",
 	},
 
 
