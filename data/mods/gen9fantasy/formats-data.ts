@@ -468,6 +468,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Skill Link"},		
 	},
+	lucariomegaz: {
+		tier: "Uber",
+		abilities: {0: "Mega Launcher"},		
+	},
 	absolmegaz: {
 		tier: "(Uber)",
 		abilities: { 0: "Super Luck" },

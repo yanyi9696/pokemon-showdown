@@ -1624,8 +1624,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 10044,
 		gen: 9,
 		desc: "沙漠蜻蜓-幻想进化石。让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
-		shortDesc:
-			"沙漠蜻蜓-幻想进化石。让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "沙漠蜻蜓-幻想进化石。让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {
