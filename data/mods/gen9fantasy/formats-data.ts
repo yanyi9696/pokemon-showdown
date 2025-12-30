@@ -480,6 +480,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Stamina"},		
 	},
+	darkraimega: {
+		tier: "(Uber)",
+		abilities: {0: "Dark Aura"},		
+	},
 	delphoxmega: {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		

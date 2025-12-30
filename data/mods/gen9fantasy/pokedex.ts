@@ -1595,6 +1595,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		tags: ["Sub-Legendary"],
 		eggGroups: ["Undiscovered"],
 	},
+	darkrai: {
+		inherit: true,
+		otherFormes: ["Darkrai-Mega"],
+		formeOrder: ["Darkrai", "Darkrai-Mega"],
+	},
+	darkraimega: {
+		num: 491,
+		name: "Darkrai-Mega",
+		baseSpecies: "Darkrai",
+		forme: "Mega",
+		types: ["Dark"],
+		gender: "N",
+		baseStats: { hp: 70, atk: 120, def: 130, spa: 165, spd: 130, spe: 85 },
+		abilities: { 0: "Dark Aura" },
+		heightm: 3,
+		weightkg: 240,
+		color: "Black",
+		tags: ["Mythical"],
+		eggGroups: ["Undiscovered"],
+		requiredItem: "Darkranite",
+	},
 
 	// 第5世代 (494-649)
 	emboar: {
