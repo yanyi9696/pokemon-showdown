@@ -488,6 +488,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		
 	},
+	heatranmega: {
+		tier: "(Uber)",
+		abilities: {0: "Magma Armor"},		
+	},
 	starmiemega: {
 		tier: "(Uber)",
 		abilities: {0: "Pure Power"},		
