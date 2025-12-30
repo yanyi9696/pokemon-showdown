@@ -850,17 +850,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onStart(source) {
 			if (this.field.getPseudoWeather('seaoffire')) return;
 			this.add('-ability', source, '火山行者');
-			this.field.addPseudoWeather('seaoffire');
+			this.field.addPseudoWeather('seaoffire', source);
 		},
 		onEnd(source) {
-			// 稳健判定：直接检查双方场上的所有活跃槽位
-			for (const side of this.sides) {
-				for (const active of side.active) {
-					// 如果场上还存在除 source 以外的“火山行者”且未濒死
-					if (active && active !== source && active.hasAbility('huoshanxingzhe') && !active.fainted) {
-						// 只要有一个还在场，就不移除火海，直接结束函数
-						return; 
-					}
+			const seaOfFire = this.field.getPseudoWeather('seaoffire');
+			if (!seaOfFire) return;
+			const seaOfFireState = this.field.pseudoWeather[seaOfFire.id];
+			if (seaOfFireState?.source !== source) return;
+
+			for (const active of this.getAllActive()) {
+				if (!active || active === source) continue;
+				if (active.ability === 'huoshanxingzhe') {
+					seaOfFireState.source = active;
+					seaOfFireState.sourceSlot = active.getSlot();
+					return;
 				}
 			}
 
