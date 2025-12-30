@@ -495,6 +495,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: { 0: "Super Luck" },
 	},
+	baxcaliburmega: {
+		tier: "(Uber)",
+		abilities: {0: "Thermal Exchange"},		
+	},
 	chesnaughtmega: {
 		tier: "(Uber)",
 		abilities: {0: "Stamina"},		
