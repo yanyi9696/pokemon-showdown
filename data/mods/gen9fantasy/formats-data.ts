@@ -500,6 +500,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Magma Armor"},		
 	},
+	meowsticmmega: {
+		tier: "(Uber)",
+		abilities: {0: "Psychic Surge"},		
+	},
+	meowsticfmega: {
+		tier: "(Uber)",
+		abilities: {0: "Psychic Surge"},		
+	},
 	starmiemega: {
 		tier: "(Uber)",
 		abilities: {0: "Pure Power"},		
