@@ -1641,7 +1641,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	cresseliafantasy: {
 		num: 488,
-		name: "Cresselia",
+		name: "Cresselia-Fantasy",
 		baseSpecies: "Cresselia",
 		forme: "Fantasy",
 		types: ["Psychic", "Fairy"],

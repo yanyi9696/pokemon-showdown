@@ -19915,7 +19915,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			worryseed: ["8L1", "7T", "6T", "5T", "4T"],
 		},
 	},
-	cresselia: {
+	cresseliafantasy: {
 		learnset: {
 			huanzhiwu: ["9M"],
 			hypnosis: ["9M"],
