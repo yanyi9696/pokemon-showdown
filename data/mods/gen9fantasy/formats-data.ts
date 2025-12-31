@@ -9,6 +9,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	rotomfantasy: {
 		tier: "Illegal",
 	},
+	roseradefantasy: {
+		tier: "Illegal",
+	},
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
 		tier: "Illegal",

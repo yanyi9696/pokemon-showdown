@@ -1016,17 +1016,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "绕梁之音。连续3次回音对手进行攻击。每歌唱一次,威力就会提高。使用目标的防御代替目标的特防进行伤害计算。",
 		shortDesc: "绕梁之音。攻击3次,每次威力提升,伤害计算时参考目标防御",
 	},
-	qingshengluye: {
+	qingshenglvye: {
 		num: 10029,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		name: "Qing Sheng Lu Ye",
+		name: "Qing Sheng Lv Ye",
 		pp: 10,
 		priority: 0,
 		flags: {}, 
 		priorityChargeCallback(source) {
-			source.addVolatile('qingshengluye');
+			source.addVolatile('qingshenglvye');
 		},
 		terrain: 'grassyterrain',
 		selfSwitch: true,
@@ -1036,7 +1036,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onBeforeMovePriority: 100, // High priority to ensure the message appears first
 			onBeforeMove(source, target, move) {
 				// Check if the move is "晴生绿野"
-				if (move.id !== 'qingshengluye') return;
+				if (move.id !== 'qingshenglvye') return;
 				// If it is, display the preparation message
 				this.add('-prepare', source, '晴生绿野', '[premajor]');
 			},
