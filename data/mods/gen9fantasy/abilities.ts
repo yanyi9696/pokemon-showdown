@@ -1481,7 +1481,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "噬影力。因为属性相性免疫对手的招式后,使出的幽灵属性招式威力提升50%",
 	},
 	meimenggongyou: {
-		// 1. 登场时：使我方全员进入睡眠
+		// 1. 登场：全队入眠
 		onStart(pokemon) {
 			this.add('-ability', pokemon, 'Mei Meng Gong You');
 			for (const ally of pokemon.side.active) {
@@ -1491,24 +1491,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 
-		// 2. 核心逻辑：允许睡眠中行动
-		// 【修正点】去掉 Any，统一使用 onBeforeMovePriority
+		// 2. 核心逻辑：维护睡眠计时器（防止自然醒导致特性增益消失）
+		// 【修正】属性名去掉 Any
 		onBeforeMovePriority: 1, 
-		onBeforeMove(pokemon) {
-			if (pokemon.status === 'slp') {
-				if (pokemon.statusState.time <= 1) pokemon.statusState.time = 2;
-				return true; 
-			}
-		},
 		onAnyBeforeMove(pokemon) {
 			const abilityHolder = this.effectState.target;
 			if (pokemon.side === abilityHolder.side && pokemon.status === 'slp') {
+				// 只要特性持有者在场，睡眠时间锁定在 2，确保持续处于“美梦”状态
 				if (pokemon.statusState.time <= 1) pokemon.statusState.time = 2;
-				return true;
 			}
 		},
 
-		// 3. 动态维护：新上场队友自动入眠
+		// 3. 动态维护：新上场队友入眠
 		onUpdate(pokemon) {
 			for (const ally of pokemon.side.active) {
 				if (ally && !ally.fainted && !ally.status) {
@@ -1517,15 +1511,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 
-		// 4. 回合结束回复
-		// 【修正点】去掉 Any，改为 onResidualOrder 和 onResidualSubOrder
+		// 4. 回合结束回复：1/16 HP
+		// 【修正】属性名去掉 Any
 		onResidualOrder: 26, 
 		onResidualSubOrder: 1,
-		onAnyResidual(pokemon) {
-			const abilityHolder = this.effectState.target;
-			if (pokemon.side === abilityHolder.side && pokemon.status === 'slp') {
-				this.debug('Mei Meng Gong You heal');
-				this.heal(pokemon.baseMaxhp / 16, pokemon, abilityHolder);
+		onResidual(pokemon) {
+			// 由特性持有者执行遍历，治疗我方全队处于睡眠状态的成员
+			for (const ally of pokemon.side.active) {
+				if (ally && !ally.fainted && ally.status === 'slp') {
+					this.debug('Mei Meng Gong You healing ' + ally.name);
+					this.heal(ally.baseMaxhp / 16, ally, pokemon);
+				}
 			}
 		},
 

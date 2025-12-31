@@ -339,6 +339,13 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onBeforeMovePriority: 10,
 		onBeforeMove(pokemon, target, move) {
 			if (pokemon.hasItem('fantasylifeorb')) return true;
+
+			// --- [新增逻辑] 检查我方场上是否有“美梦共游”特性 ---
+			if (pokemon.side.active.some(ally => ally && !ally.fainted && ally.hasAbility('meimenggongyou'))) {
+				return true; // 如果有，则允许在睡眠中行动，跳过下面的限制
+			}
+			// ---------------------------------------------
+
 			if (pokemon.hasAbility('earlybird')) {
 				pokemon.statusState.time--;
 			}
