@@ -3,17 +3,17 @@ import {FantasySpeciesFormatsData} from './types';
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
 	feraligatrmega: {
-		tier: "Illegal",
+		tier: "Uber",
 		abilities: {0: "Dragon's Maw"},		
 	},
 	rotomfantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	roseradefantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	cresseliafantasy: {
-		tier: "Illegal",
+		tier: "Uber",
 	},
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
