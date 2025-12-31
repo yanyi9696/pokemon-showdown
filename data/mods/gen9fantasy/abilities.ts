@@ -1481,7 +1481,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "噬影力。因为属性相性免疫对手的招式后,使出的幽灵属性招式威力提升50%",
 	},
 	meimenggongyou: {
-		// 1. 登场时：让我方场上宝可梦进入睡眠
+		// 1. 登场时：使我方全员进入睡眠
 		onStart(pokemon) {
 			this.add('-ability', pokemon, 'Mei Meng Gong You');
 			for (const ally of pokemon.side.active) {
@@ -1491,39 +1491,45 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 
-		// 2. 核心逻辑：使用 onAnyBeforeMove (移除 Priority 属性以消除报错)
+		// 2. 核心逻辑：允许睡眠中行动
+		// 【修正点】去掉 Any，统一使用 onBeforeMovePriority
+		onBeforeMovePriority: 1, 
+		onBeforeMove(pokemon) {
+			if (pokemon.status === 'slp') {
+				if (pokemon.statusState.time <= 1) pokemon.statusState.time = 2;
+				return true; 
+			}
+		},
 		onAnyBeforeMove(pokemon) {
 			const abilityHolder = this.effectState.target;
-			// 仅对我方阵营且处于睡眠状态的宝可梦生效
 			if (pokemon.side === abilityHolder.side && pokemon.status === 'slp') {
-				// 核心：设置 skip 为 true 允许在睡眠中行动
-				pokemon.statusState.skip = true;
-				// 锁定睡眠时间，防止自然苏醒
-				pokemon.statusState.time = 2;
+				if (pokemon.statusState.time <= 1) pokemon.statusState.time = 2;
+				return true;
 			}
 		},
 
-		// 3. 动态维护：确保新上场的队友也能进入睡眠循环
+		// 3. 动态维护：新上场队友自动入眠
 		onUpdate(pokemon) {
 			for (const ally of pokemon.side.active) {
 				if (ally && !ally.fainted && !ally.status) {
-					// 使用 silent: true 避免重复提示
 					ally.setStatus('slp', pokemon, null, true);
 				}
 			}
 		},
 
-		// 4. 回合结束回复：使用 onAnyResidual (确保类型兼容)
+		// 4. 回合结束回复
+		// 【修正点】去掉 Any，改为 onResidualOrder 和 onResidualSubOrder
+		onResidualOrder: 26, 
+		onResidualSubOrder: 1,
 		onAnyResidual(pokemon) {
 			const abilityHolder = this.effectState.target;
-			// 检查是否为我方睡眠中的队友
 			if (pokemon.side === abilityHolder.side && pokemon.status === 'slp') {
-				this.debug('Mei Meng Gong You');
-				this.heal(pokemon.baseMaxhp / 16, pokemon);
+				this.debug('Mei Meng Gong You heal');
+				this.heal(pokemon.baseMaxhp / 16, pokemon, abilityHolder);
 			}
 		},
 
-		// 5. 离场处理：解除我方睡眠
+		// 5. 离场处理：解除全队睡眠
 		onEnd(pokemon) {
 			for (const ally of pokemon.side.active) {
 				if (ally && !ally.fainted && ally.status === 'slp') {
@@ -1535,8 +1541,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
 		name: "Mei Meng Gong You",
-		rating: 4.5,
+		rating: 4,
 		num: 10034,
-		shortDesc: "使我方进入睡眠状态但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠状态",
+		shortDesc: "美梦共游。使我方进入睡眠状态但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠状态",
 	},
 };
