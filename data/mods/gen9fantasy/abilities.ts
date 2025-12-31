@@ -437,7 +437,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		// Implemented in sim/pokemon.js:Pokemon#setStatus
 		flags: {},
 		name: "Corrosion",
-		rating: 3.5,
+		rating: 4,
 		num: 212,
 		shortDesc: "可以使钢属性和毒属性的宝可梦也陷入中毒状态,毒系招式对钢系效果绝佳",
 	},

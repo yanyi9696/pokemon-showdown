@@ -2,7 +2,13 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	
+	feraligatrmega: {
+		tier: "Illegal",
+		abilities: {0: "Dragon's Maw"},		
+	},
+	rotomfantasy: {
+		tier: "Illegal",
+	},
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
 		tier: "Illegal",
@@ -634,10 +640,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	crabominablemega: {
 		tier: "RU",
 		abilities: {0: "Iron Fist"},		
-	},
-	feraligatrmega: {
-		tier: "RU",
-		abilities: {0: "Strong Jaw"},		
 	},
 	raichumegax: {
 		tier: "RU",
