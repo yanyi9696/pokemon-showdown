@@ -270,7 +270,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: [
 			// 你要求禁用的宝可梦分类
 			'Restricted Legendary', // 禁用所有一级神
-			//'Sub-Legendary',      // 禁用所有二级神 (三鸟、三犬、三云等)
+			'Sub-Legendary',      // 禁用所有二级神 (三鸟、三犬、三云等)
 			'Mythical',           // 禁用所有幻兽 (梦幻、玛夏多等)
 			'Paradox',            // 禁用所有悖谬宝可梦
 			'Ultra Beast',        // 禁用所有究极异兽

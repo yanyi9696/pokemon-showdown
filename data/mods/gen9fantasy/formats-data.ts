@@ -15,6 +15,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	cresseliafantasy: {
 		tier: "Uber",
 	},
+	tentacruelfantasy: {
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	darmanitanzenfantasy: {
 		tier: "Illegal",
