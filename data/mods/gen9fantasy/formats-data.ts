@@ -35,6 +35,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Strong Jaw"},	
 		tier: "Uber",
 	},
+	beheeyemfantasy: {
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
 		tier: "Illegal",
