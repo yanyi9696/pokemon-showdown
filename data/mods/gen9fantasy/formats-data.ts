@@ -21,6 +21,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	cherrimfantasy: {
 		tier: "Uber",
 	},
+	orbeetlefantasy: {
+		tier: "Uber",
+	},
+	orbeetlemegafantasy: {	
+		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
 		tier: "Illegal",
