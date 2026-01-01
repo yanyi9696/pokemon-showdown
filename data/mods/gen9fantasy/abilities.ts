@@ -1581,32 +1581,62 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	qiyizhizaozhe: {
 		onStart(pokemon) {
-			// 定义三个空间招式的 ID
+			// 定义所有空间类招式和重力的 ID
 			const roomMoves = ['trickroom', 'wonderroom', 'magicroom'];
 			let hasRoomMove = false;
 
-			// 1. 遍历并检查是否携带了空间招式
+			// 1. 遍历检查是否携带了空间招式
 			for (const moveId of roomMoves) {
 				if (pokemon.hasMove(moveId)) {
-					// 如果场上已经存在该效果，addPseudoWeather 会处理（通常是重置或失败）
+					// 尝试开启空间 (addPseudoWeather 会处理持续回合，默认为5回合)
 					if (this.field.addPseudoWeather(moveId, pokemon)) {
 						hasRoomMove = true;
+						this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
 					}
 				}
 			}
 
 			// 2. 如果没有任何空间招式被触发，则引发重力
 			if (!hasRoomMove) {
-				this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
-				this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
-				this.field.addPseudoWeather('gravity', pokemon);
+				if (this.field.addPseudoWeather('gravity', pokemon)) {
+					this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+					this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
+				}
+			}
+		},
+
+		// 当宝可梦濒死时触发
+		onFaint(pokemon) {
+			this.debug('Qi Yi Zhi Zao Zhe: clearing effects due to fainting');
+			const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
+			for (const effect of roomEffects) {
+				if (this.field.getPseudoWeather(effect)) {
+					this.field.removePseudoWeather(effect);
+					this.add('-message', `${pokemon.name} 倒下了，场上的空间异常消失了！`);
+				}
+			}
+		},
+
+		// 当特性被消除或改变时触发 (如胃液、烦恼种子)
+		onEnd(pokemon) {
+			// 关键判断：如果宝可梦还在场上 (hp > 0)，说明特性是被“消除”或“覆盖”了，而非正常离场
+			// 此时需要立即结束空间效果
+			if (pokemon.hp > 0 && pokemon.isActive) {
+				this.debug('Qi Yi Zhi Zao Zhe: clearing effects due to ability suppression/change');
+				const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
+				for (const effect of roomEffects) {
+					if (this.field.getPseudoWeather(effect)) {
+						this.field.removePseudoWeather(effect);
+						this.add('-message', `${pokemon.name} 失去了特性，场上的空间异常消失了！`);
+					}
+				}
 			}
 		},
 		flags: {},
 		name: "Qi Yi Zhi Zao Zhe",
 		rating: 4,
 		num: 10035,
-		shortDesc: "奇异制造者。登场时根据携带的招式开启空间；若无空间招式则开启重力",
+		shortDesc: "奇异制造者。登场时根据携带招式开启空间,若无空间招式则开启重力。被击倒或消除特性会恢复",
 	},
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
