@@ -1627,29 +1627,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-
-		// 处理特性被消除：只有当宝可梦还在场上（HP>0）且没有正在进行“交换”动作时才触发
-		onEnd(pokemon) {
-			// 【核心修正】：必须使用 (pokemon as any) 才能正确访问到运行时的交换标记
-			const p = pokemon as any;
-			const isSwitching = p.switching || p.forceSwitchFlag || p.switchFlag;
-
-			// 只有 HP > 0 且不是因为交换（isSwitching 为 false）导致离场时，才执行清除
-			if (pokemon.hp > 0 && !isSwitching) {
-				const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
-				for (const effect of roomEffects) {
-					if (this.field.getPseudoWeather(effect)) {
-						this.field.removePseudoWeather(effect);
-						this.add('-message', `${pokemon.name} 的特性被消除了，场上的奇异状态随之平静！`);
-					}
-				}
-			}
-		},
 		flags: {},
 		name: "Qi Yi Zhi Zao Zhe",
 		rating: 4,
 		num: 10035,
-		shortDesc: "奇异制造者。登场时根据携带招式开启空间,若无空间招式则开启重力。被击倒或消除特性会恢复",
+		shortDesc: "奇异制造者。登场时根据携带招式开启空间,若无空间招式则开启重力;被击倒时空间/重力会被清除",
 	},
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
