@@ -38,6 +38,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	beheeyemfantasy: {
 		tier: "Uber",
 	},
+	noivernfantasy: {
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
 		tier: "Illegal",
