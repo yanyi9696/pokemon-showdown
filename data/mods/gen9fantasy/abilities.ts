@@ -1628,15 +1628,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 
+		// 处理特性被消除：只有当宝可梦还在场上（HP>0）且没有正在进行“交换”动作时才触发
 		onEnd(pokemon) {
-			// 【核心修复】：使用 (pokemon as any) 绕过类型检查
-			// 只有在 HP > 0 且并非由于交换或强制换人导致离场时才触发
-			if (pokemon.hp > 0 && !(pokemon as any).switching && !(pokemon as any).forceSwitchFlag) {
+			// 【核心修正】：必须使用 (pokemon as any) 才能正确访问到运行时的交换标记
+			const p = pokemon as any;
+			const isSwitching = p.switching || p.forceSwitchFlag || p.switchFlag;
+
+			// 只有 HP > 0 且不是因为交换（isSwitching 为 false）导致离场时，才执行清除
+			if (pokemon.hp > 0 && !isSwitching) {
 				const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
 				for (const effect of roomEffects) {
 					if (this.field.getPseudoWeather(effect)) {
 						this.field.removePseudoWeather(effect);
-						this.add('-message', `${pokemon.name} 的特性被消除了，场上的奇异状态随之消失！`);
+						this.add('-message', `${pokemon.name} 的特性被消除了，场上的奇异状态随之平静！`);
 					}
 				}
 			}
