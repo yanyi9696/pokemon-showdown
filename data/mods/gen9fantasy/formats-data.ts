@@ -28,6 +28,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
 		tier: "Uber",
 	},
+	drednawfantasy: {
+		tier: "Uber",
+	},
+	drednawmegafantasy: {	
+		abilities: {0: "Strong Jaw"},	
+		tier: "Uber",
+	},
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
 		tier: "Illegal",

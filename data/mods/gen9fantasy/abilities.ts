@@ -1579,4 +1579,53 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10034,
 		shortDesc: "美梦共游。使我方进入睡眠状态但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠状态",
 	},
+	qiyizhizaozhe: {
+		onStart(pokemon) {
+			// 定义三个空间招式的 ID
+			const roomMoves = ['trickroom', 'wonderroom', 'magicroom'];
+			let hasRoomMove = false;
+
+			// 1. 遍历并检查是否携带了空间招式
+			for (const moveId of roomMoves) {
+				if (pokemon.hasMove(moveId)) {
+					// 如果场上已经存在该效果，addPseudoWeather 会处理（通常是重置或失败）
+					if (this.field.addPseudoWeather(moveId, pokemon)) {
+						hasRoomMove = true;
+					}
+				}
+			}
+
+			// 2. 如果没有任何空间招式被触发，则引发重力
+			if (!hasRoomMove) {
+				this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+				this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
+				this.field.addPseudoWeather('gravity', pokemon);
+			}
+		},
+		flags: {},
+		name: "Qi Yi Zhi Zao Zhe",
+		rating: 4,
+		num: 10035,
+		shortDesc: "奇异制造者。登场时根据携带的招式开启空间；若无空间招式则开启重力",
+	},
+	yanbuzhen: {
+		onDamagingHit(damage, target, source, move) {
+			// 确定对手的场地侧
+			const side = source.isAlly(target) ? source.side.foe : source.side;
+			
+			// 1. 检查是否为物理招式
+			// 2. 检查对手场地是否已经有隐形岩 (stealthrock)
+			if (move.category === 'Physical' && !side.sideConditions['stealthrock']) {
+				// 提示特性发动
+				this.add('-activate', target, 'ability: Yan Bu Zhen');
+				// 在对手场地布下隐形岩
+				side.addSideCondition('stealthrock', target);
+			}
+		},
+		flags: {},
+		name: "Yan Bu Zhen",
+		rating: 3,
+		num: 10036,
+		shortDesc: "岩布阵。受到物理招式的伤害时,会在对手脚下散布隐形岩",
+	},
 };
