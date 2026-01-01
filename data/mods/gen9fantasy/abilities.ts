@@ -150,8 +150,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.singleEvent('WeatherChange', this.effect, this.effectState, pokemon);
 		},
 		onWeatherChange(pokemon) {
-			// This section is intentionally left unchanged.
-			// It ensures that only Cherrim changes its form.
+			// 仅保留樱花儿形态变化的逻辑
 			if (!pokemon.isActive || pokemon.baseSpecies.baseSpecies !== 'Cherrim' || pokemon.transformed) return;
 			if (!pokemon.hp) return;
 			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
@@ -164,17 +163,40 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
+		// --- 对自身（持有者）的加成 ---
+		onModifyAtkPriority: 3,
+		onModifyAtk(atk, pokemon) {
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 3,
+		onModifySpA(spa, pokemon) {
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpDPriority: 4,
+		onModifySpD(spd, pokemon) {
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				return this.chainModify(1.5);
+			}
+		},
+		// --- 对同伴的加成 ---
 		onAllyModifyAtkPriority: 3,
 		onAllyModifyAtk(atk, pokemon) {
-			// The check for 'Cherrim' has been removed from here.
-			// Now, any Pokémon with Flower Gift will grant this boost in the sun.
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				return this.chainModify(1.5);
+			}
+		},
+		onAllyModifySpAPriority: 3,
+		onAllyModifySpA(spa, pokemon) {
 			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
 				return this.chainModify(1.5);
 			}
 		},
 		onAllyModifySpDPriority: 4,
 		onAllyModifySpD(spd, pokemon) {
-			// The check for 'Cherrim' has also been removed from here.
 			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
 				return this.chainModify(1.5);
 			}
@@ -183,6 +205,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Flower Gift",
 		rating: 3,
 		num: 122,
+		shortDesc: "晴朗天气时，自己与同伴的攻击、特攻和特防能力会提高 1.5 倍。",
 	},
 	infiltrator: {
 		onModifyMove(move) {
