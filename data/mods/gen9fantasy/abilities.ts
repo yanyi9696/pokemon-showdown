@@ -1581,53 +1581,62 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	qiyizhizaozhe: {
 		onStart(pokemon) {
-			// 定义所有空间类招式和重力的 ID
-			const roomMoves = ['trickroom', 'wonderroom', 'magicroom'];
-			let hasRoomMove = false;
+			const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
 
-			// 1. 遍历检查是否携带了空间招式
+			// 1. 检查场上是否已经存在任何空间或重力，若有则直接返回
+			for (const effectId of roomEffects) {
+				if (this.field.getPseudoWeather(effectId)) {
+					return; 
+				}
+			}
+
+			const roomMoves = ['trickroom', 'wonderroom', 'magicroom'];
+			let activated = false;
+
+			// 2. 尝试开启携带的空间招式
 			for (const moveId of roomMoves) {
 				if (pokemon.hasMove(moveId)) {
-					// 尝试开启空间 (addPseudoWeather 会处理持续回合，默认为5回合)
 					if (this.field.addPseudoWeather(moveId, pokemon)) {
-						hasRoomMove = true;
-						this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+						activated = true;
+						break;
 					}
 				}
 			}
 
-			// 2. 如果没有任何空间招式被触发，则引发重力
-			if (!hasRoomMove) {
+			// 3. 若无空间招式，则开启重力
+			if (!activated) {
 				if (this.field.addPseudoWeather('gravity', pokemon)) {
 					this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
 					this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
+					activated = true;
 				}
+			}
+
+			// 如果是空间类招式成功触发，显示特性提示
+			if (activated && !this.field.getPseudoWeather('gravity')) {
+				this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
 			}
 		},
 
-		// 当宝可梦濒死时触发
 		onFaint(pokemon) {
-			this.debug('Qi Yi Zhi Zao Zhe: clearing effects due to fainting');
 			const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
 			for (const effect of roomEffects) {
 				if (this.field.getPseudoWeather(effect)) {
 					this.field.removePseudoWeather(effect);
-					this.add('-message', `${pokemon.name} 倒下了，场上的空间异常消失了！`);
+					this.add('-message', `${pokemon.name} 倒下了，场上的奇异状态随之消失！`); 
 				}
 			}
 		},
 
-		// 当特性被消除或改变时触发 (如胃液、烦恼种子)
 		onEnd(pokemon) {
-			// 关键判断：如果宝可梦还在场上 (hp > 0)，说明特性是被“消除”或“覆盖”了，而非正常离场
-			// 此时需要立即结束空间效果
-			if (pokemon.hp > 0 && pokemon.isActive) {
-				this.debug('Qi Yi Zhi Zao Zhe: clearing effects due to ability suppression/change');
+			// 【核心修复】：使用 (pokemon as any) 绕过类型检查
+			// 只有在 HP > 0 且并非由于交换或强制换人导致离场时才触发
+			if (pokemon.hp > 0 && !(pokemon as any).switching && !(pokemon as any).forceSwitchFlag) {
 				const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
 				for (const effect of roomEffects) {
 					if (this.field.getPseudoWeather(effect)) {
 						this.field.removePseudoWeather(effect);
-						this.add('-message', `${pokemon.name} 失去了特性，场上的空间异常消失了！`);
+						this.add('-message', `${pokemon.name} 的特性被消除了，场上的奇异状态随之消失！`);
 					}
 				}
 			}
