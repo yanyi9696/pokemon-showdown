@@ -4074,6 +4074,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		meganiumfantasy: {
 		learnset: {
 			strengthsap: ["9M"],
+			huazhiwu: ["9M"],
 			drainingkiss: ["9M"],
 			fleurcannon: ["9M"],
 			floralhealing: ["9M"],
@@ -4183,6 +4184,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	meganiummegafantasy: {
 		learnset: {
 			strengthsap: ["9M"],
+			huazhiwu: ["9M"],
 			drainingkiss: ["9M"],
 			fleurcannon: ["9M"],
 			floralhealing: ["9M"],
@@ -18980,6 +18982,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	lurantisfantasy: {
 		learnset: {
 			flowertrick: ["9M"],
+			huazhiwu: ["9M"],
 			playrough: ["9M"],
 			yaojingzhiya: ["9M"],
 			fleurcannon: ["9M"],

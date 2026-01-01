@@ -1259,7 +1259,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		baseForme: "Overcast",
 		types: ["Grass"],
-		baseStats: { hp: 74, atk: 770, def: 98, spa: 105, spd: 98, spe: 55 },
+		baseStats: { hp: 74, atk: 70, def: 98, spa: 105, spd: 98, spe: 55 },
 		abilities: { 0: "Flower Gift" },
 		heightm: 0.5,
 		weightkg: 9.3,

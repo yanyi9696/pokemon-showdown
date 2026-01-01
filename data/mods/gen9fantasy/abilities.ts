@@ -150,15 +150,30 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.singleEvent('WeatherChange', this.effect, this.effectState, pokemon);
 		},
 		onWeatherChange(pokemon) {
-			// 仅保留樱花儿形态变化的逻辑
+			// 基础检查：必须是在场、且基础物种是樱花儿、且没有处于变身状态
 			if (!pokemon.isActive || pokemon.baseSpecies.baseSpecies !== 'Cherrim' || pokemon.transformed) return;
 			if (!pokemon.hp) return;
-			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				if (pokemon.species.id !== 'cherrimsunshine') {
-					pokemon.formeChange('Cherrim-Sunshine', this.effect, false, '0', '[msg]');
+
+			const isSun = ['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather());
+
+			if (isSun) {
+				// 晴天下的逻辑
+				if (pokemon.baseSpecies.id === 'cherrimfantasy') {
+					// Fantasy 版转为 Fantasy 晴天形态
+					if (pokemon.species.id !== 'cherrimsunshinefantasy') {
+						pokemon.formeChange('Cherrim-Sunshine-Fantasy', this.effect, false, '0', '[msg]');
+					}
+				} else if (pokemon.baseSpecies.id === 'cherrim') {
+					// 普通版转为普通晴天形态
+					if (pokemon.species.id !== 'cherrimsunshine') {
+						pokemon.formeChange('Cherrim-Sunshine', this.effect, false, '0', '[msg]');
+					}
 				}
 			} else {
-				if (pokemon.species.id === 'cherrimsunshine') {
+				// 非晴天下的逻辑：变回各自的原始形态
+				if (pokemon.species.id === 'cherrimsunshinefantasy') {
+					pokemon.formeChange('Cherrim-Fantasy', this.effect, false, '0', '[msg]');
+				} else if (pokemon.species.id === 'cherrimsunshine') {
 					pokemon.formeChange('Cherrim', this.effect, false, '0', '[msg]');
 				}
 			}
