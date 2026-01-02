@@ -19835,6 +19835,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	roseradefantasy: {
 		learnset: {
 			qingshenglvye: ["9M"],
+			huazhiwu: ["9M"],
 			flowertrick: ["9M"],
 			leafblade: ["9M"],
 			spikyshield: ["9M"],
