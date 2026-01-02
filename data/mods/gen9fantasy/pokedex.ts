@@ -183,7 +183,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Water", "Poison"],
 		baseStats: { hp: 90, atk: 70, def: 75, spa: 100, spd: 120, spe: 100 },
-		abilities: { 0: "Merciless", 1: "Poison Point", H: "Rain Dish" },
+		abilities: { 0: "Merciless", 1: "Liquid Ooze", H: "Poison Point" },
 		heightm: 1.6,
 		weightkg: 55,
 		color: "Blue",
