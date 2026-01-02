@@ -106,9 +106,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mewfantasy: {
 		tier: "(Uber)",
 	},
-	pecharuntfantasy: {
-		tier: "(Uber)",
-	},
 	salamencemegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Long Zhi Hu Xi"},		
@@ -241,6 +238,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
 		tier: "OU",
 	},
+	pecharuntfantasy: {
+		tier: "OU",
+	},
 	pidgeotmegafantasy: {
 		tier: "OU",
 		abilities: {0: "No Guard"},		
@@ -270,6 +270,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	slowbrofantasy: {
+		tier: "OU",
+	},
+	toxtricitylowkeyfantasy: {
 		tier: "OU",
 	},
 	urshifufantasy: {
@@ -339,9 +342,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Sand Force"},		
 	},
 	toxtricityfantasy: {
-		tier: "UUBL",
-	},
-	toxtricitylowkeyfantasy: {
 		tier: "UUBL",
 	},
 	volcanionfantasy: {
