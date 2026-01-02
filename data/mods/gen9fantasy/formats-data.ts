@@ -2,45 +2,7 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	feraligatrmega: {
-		tier: "Uber",
-		abilities: {0: "Dragon's Maw"},		
-	},
-	rotomfantasy: {
-		tier: "Uber",
-	},
-	roseradefantasy: {
-		tier: "Uber",
-	},
-	cresseliafantasy: {
-		tier: "Uber",
-	},
-	tentacruelfantasy: {
-		tier: "Uber",
-	},
-	cherrimfantasy: {
-		tier: "Uber",
-	},
-	orbeetlefantasy: {
-		tier: "Uber",
-	},
-	orbeetlemegafantasy: {	
-		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
-		tier: "Uber",
-	},
-	drednawfantasy: {
-		tier: "Uber",
-	},
-	drednawmegafantasy: {	
-		abilities: {0: "Strong Jaw"},	
-		tier: "Uber",
-	},
-	beheeyemfantasy: {
-		tier: "Uber",
-	},
-	noivernfantasy: {
-		tier: "Uber",
-	},
+
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
 		tier: "Illegal",
@@ -94,9 +56,16 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Tough Claws"},	
 	},
+	cresseliafantasy: {
+		tier: "(Uber)",
+	},
 	dragalgemegafantasy: {	
 		tier: "(Uber)",
 		abilities: {0: "Adaptability"},		
+	},
+	drednawmegafantasy: {	
+		abilities: {0: "Strong Jaw"},	
+		tier: "(Uber)",
 	},
 	darmanitangalarfantasy: {
 		tier: "(Uber)",
@@ -265,6 +234,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mimikyubustedfantasy: {
 		tier: "OU",
 	},
+	noivernfantasy: {
+		tier: "OU",
+	},
+	orbeetlemegafantasy: {	
+		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
+		tier: "OU",
+	},
 	pidgeotmegafantasy: {
 		tier: "OU",
 		abilities: {0: "No Guard"},		
@@ -310,6 +286,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	audinofantasy: {
+		tier: "UUBL",
+	},
+	beheeyemfantasy: {
 		tier: "UUBL",
 	},
 	crobatfantasy: {
@@ -411,10 +390,22 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mienshaofantasy: {
 		tier: "UU",
 	},
+	orbeetlefantasy: {
+		tier: "UU",
+	},
+	roseradefantasy: {
+		tier: "UU",
+	},
+	rotomfantasy: {
+		tier: "UU",
+	},
 	scolipedefantasy: {
 		tier: "UU",
 	},
 	skarmoryfantasy: {
+		tier: "UU",
+	},
+	tentacruelfantasy: {
 		tier: "UU",
 	},
 	urshifurapidstrikefantasy: {
@@ -584,6 +575,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
 	},
+	feraligatrmega: {
+		tier: "OU",
+		abilities: {0: "Dragon's Maw"},		
+	},
 	glimmoramega: {
 		tier: "OU",
 		abilities: {0: "Corrosion"},		
@@ -672,9 +667,15 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Merciless"},		
 	},
+	cherrimfantasy: {
+		tier: "RU",
+	},
 	crabominablemega: {
 		tier: "RU",
 		abilities: {0: "Iron Fist"},		
+	},
+	drednawfantasy: {
+		tier: "RU",
 	},
 	raichumegax: {
 		tier: "RU",
