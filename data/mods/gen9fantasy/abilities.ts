@@ -1573,7 +1573,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mei Meng Gong You",
 		rating: 4,
 		num: 10034,
-		shortDesc: "美梦共游。登场使我方进入睡眠但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠。",
+		shortDesc: "美梦共游。登场使我方进入睡眠但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠",
 	},
 	qiyizhizaozhe: {
 		onStart(pokemon) {
