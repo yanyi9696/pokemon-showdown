@@ -106,6 +106,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mewfantasy: {
 		tier: "(Uber)",
 	},
+	pecharuntfantasy: {
+		tier: "(Uber)",
+	},
 	salamencemegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Long Zhi Hu Xi"},		
@@ -236,9 +239,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	orbeetlemegafantasy: {	
 		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
-		tier: "OU",
-	},
-	pecharuntfantasy: {
 		tier: "OU",
 	},
 	pidgeotmegafantasy: {
