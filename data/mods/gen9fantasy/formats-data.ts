@@ -603,10 +603,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Drizzle"},		
 	},
-	froslassmega: {
-		tier: "UUBL",
-		abilities: {0: "Snow Warning"},		
-	},
 	raichumegay: {
 		tier: "UUBL",
 		abilities: {0: "Lightning Rod"},		
@@ -638,6 +634,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	falinksmega: {
 		tier: "UU",
 		abilities: {0: "Defiant"},		
+	},
+	froslassmega: {
+		tier: "UU",
+		abilities: {0: "Snow Warning"},		
 	},
 	golurkmega: {
 		tier: "UU",

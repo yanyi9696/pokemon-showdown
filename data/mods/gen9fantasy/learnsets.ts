@@ -10507,6 +10507,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	flygonfantasy: {
 		learnset: {
+			megahorn: ["9M"],
 			leechlife: ["9M"],
 			pinmissile: ["9M"],
 			fellstinger: ["9M"],
@@ -10631,6 +10632,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	flygonmegafantasy: {
 		learnset: {
+			megahorn: ["9M"],
 			leechlife: ["9M"],
 			pinmissile: ["9M"],
 			fellstinger: ["9M"],
