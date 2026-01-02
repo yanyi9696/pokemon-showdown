@@ -2145,6 +2145,6 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 30007,
 		gen: 9,
 		desc: "幻之冰之石。携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/12。",
-		shortDesc: "灼伤变冻伤。若对手在冻伤状态下攻击持有者,对手损失1/12最大HP",
+		shortDesc: "幻之冰之石。灼伤变冻伤。对手在冻伤状态下攻击持有者,损失1/12最大HP",
 	},
 };
