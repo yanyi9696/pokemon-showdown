@@ -894,7 +894,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Ji Zhi Neng",
-		rating: 3.5,
+		rating: 2.5,
 		num: 10013,
 		shortDesc: "极智能。以攻击和特攻中较高的一项的数值,使出物理技能和特殊技能",
 	},
