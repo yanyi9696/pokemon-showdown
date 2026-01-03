@@ -291,9 +291,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	audinofantasy: {
 		tier: "UUBL",
 	},
-	beheeyemfantasy: {
-		tier: "UUBL",
-	},
 	crobatfantasy: {
 		tier: "UUBL",
 	},
@@ -349,6 +346,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	weezingfantasy: {
 		tier: "UUBL",
+	},
+	beheeyemfantasy: {
+		tier: "UU",
 	},
 	ceruledgefantasy: {
 		tier: "UU",
