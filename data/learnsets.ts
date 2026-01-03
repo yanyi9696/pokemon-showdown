@@ -51247,6 +51247,7 @@ export const Learnsets: import('../sim/dex-species').LearnsetDataTable = {
 			focusblast: ["9M", "8M", "7M", "6M", "5M", "4M"],
 			focusenergy: ["8M"],
 			focuspunch: ["9M", "7T", "6T", "4M"],
+			followme: ["7E", "6E", "5E", "4E"],
 			forcepalm: ["9L20", "8L1", "5L11", "4L11", "4S1"],
 			foresight: ["7L1", "6L1", "5L1", "4L1"],
 			frustration: ["7M", "6M", "5M", "4M"],

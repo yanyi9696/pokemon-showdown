@@ -1577,57 +1577,56 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	qiyizhizaozhe: {
 		onStart(pokemon) {
-			const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
+			this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
 
-			// 1. 检查场上是否已经存在任何空间或重力，若有则直接返回
-			for (const effectId of roomEffects) {
-				if (this.field.getPseudoWeather(effectId)) {
-					return; 
-				}
+			// 1. 登场立即引发重力
+			if (this.field.addPseudoWeather('gravity', pokemon)) {
+				this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
 			}
 
-			const roomMoves = ['trickroom', 'wonderroom', 'magicroom'];
-			let activated = false;
-
-			// 2. 尝试开启携带的空间招式
-			for (const moveId of roomMoves) {
-				if (pokemon.hasMove(moveId)) {
-					if (this.field.addPseudoWeather(moveId, pokemon)) {
-						activated = true;
-						break;
-					}
-				}
+			// 2. 检查并一并引发魔法空间或奇妙空间
+			if (pokemon.hasMove('magicroom')) {
+				this.field.addPseudoWeather('magicroom', pokemon);
+			}
+			if (pokemon.hasMove('wonderroom')) {
+				this.field.addPseudoWeather('wonderroom', pokemon);
 			}
 
-			// 3. 若无空间招式，则开启重力
-			if (!activated) {
-				if (this.field.addPseudoWeather('gravity', pokemon)) {
-					this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
-					this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
-					activated = true;
-				}
-			}
-
-			// 如果是空间类招式成功触发，显示特性提示
-			if (activated && !this.field.getPseudoWeather('gravity')) {
-				this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+			// 3. 检查戏法空间，标记为待触发
+			if (pokemon.hasMove('trickroom')) {
+				this.effectState.pendingTrickRoom = true;
+				this.add('-message', `${pokemon.name} 正在扭曲周围的时间...`);
 			}
 		},
-
+		// 回合结束时触发
+		onResidualOrder: 27,
+		onResidual(pokemon) {
+			// 如果有戏法空间待触发标记
+			if (this.effectState.pendingTrickRoom) {
+				// 引发戏法空间
+				if (this.field.addPseudoWeather('trickroom', pokemon)) {
+					this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+					this.add('-message', `${pokemon.name} 扭曲了周围的一切！`);
+				}
+				// 无论成功与否，重置标记防止重复触发
+				this.effectState.pendingTrickRoom = false;
+			}
+		},
+		// 宝可梦濒死时清除效果
 		onFaint(pokemon) {
 			const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
 			for (const effect of roomEffects) {
 				if (this.field.getPseudoWeather(effect)) {
 					this.field.removePseudoWeather(effect);
-					this.add('-message', `${pokemon.name} 倒下了，场上的奇异状态随之消失！`); 
+					this.add('-message', `${pokemon.name} 倒下了，场上的奇异状态随之平静！`);
 				}
 			}
 		},
 		flags: {},
 		name: "Qi Yi Zhi Zao Zhe",
-		rating: 4,
+		rating: 4.5,
 		num: 10035,
-		shortDesc: "奇异制造者。登场时根据携带招式开启空间,若无空间招式则开启重力;被击倒时空间/重力会被清除",
+		shortDesc: "奇异制造者。登场引发重力,携带空间招式,会在不同时机制造。被击倒时会清除场上所有空间/重力",
 	},
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
