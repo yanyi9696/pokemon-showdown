@@ -918,7 +918,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onTry(pokemon, target) {
 			if (pokemon.activeTurns > 1) {
 				this.add('-fail', pokemon);
-				this.hint("校准先攻仅在出场后的第一回合才能使用。");
+				this.hint("先攻校准仅在出场后的第一回合才能使用。");
 				return false;
 			}
 		},
@@ -936,7 +936,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		maxMove: { basePower: 130 },
 		contestType: "Cute",
 		desc: "先攻校准。攻击目标造成伤害后提升命中率2级。出场后立刻使出才能成功,否则招式会失败",
-		shortDesc: "先攻校准。攻击后命中+2。出场后立刻使出才能成功",
+		shortDesc: "先攻校准。攻击目标后命中率+2。出场后立刻使出才能成功",
 	},
 	suilinggang: {
 		num: 10026,
