@@ -400,14 +400,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				}
 			}
 		},
-		self: {
-			// Toxtricity-Low-Key-Fantasy (低调) 的效果：提升自身能力
-			onHit(source, target, move) { // self.onHit 在命中所有目标后执行一次
-				if (source.species.name === 'Toxtricity-Low-Key-Fantasy') {
-					 this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, source, source, move);
-				}
-			},
-		},
+		onAfterMoveSecondarySelf(source, target, move) {
+        if (source.species.name === 'Toxtricity-Low-Key-Fantasy') {
+            this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, source, source, move);
+        }
+    },
 		desc: "超频摇滚破音波。攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时,会使对手全体宝可梦陷入中剧毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时,令使用者的攻击、防御、特攻、特防和速度提升1级",
 		shortDesc: "超频摇滚破音波。高调形态与低调形态使用效果不同"
 	},
