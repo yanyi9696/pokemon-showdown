@@ -937,7 +937,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 (Array.isArray(item.megaEvolves)
                     ? item.megaEvolves
                     : [item.megaEvolves]
-                ).includes(source.baseSpecies.baseSpecies)
+                ).includes(source.baseSpecies.name)
             )
                 return false;
             return true;
@@ -945,8 +945,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 9999,
 		gen: 9,
 		desc: "超巨进化许愿星。让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
-		shortDesc:
-			"超巨进化许愿星。让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
+		shortDesc: "超巨进化许愿星。让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
 	},
 	victreebelite: {
 		name: "Victreebelite",
@@ -1009,8 +1008,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 10002,
 		gen: 9,
 		desc: "水晶灯火灵进化石。让水晶灯火灵携带后,在战斗时就能进行超级进化",
-		shortDesc:
-			"水晶灯火灵进化石。让水晶灯火灵携带后,在战斗时就能进行超级进化",
+		shortDesc: "水晶灯火灵进化石。让水晶灯火灵携带后,在战斗时就能进行超级进化",
 	},
 	froslassite: {
 		name: "Froslassite",
@@ -1275,7 +1273,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 (Array.isArray(item.megaEvolves)
                     ? item.megaEvolves
                     : [item.megaEvolves]
-                ).includes(source.baseSpecies.baseSpecies)
+                ).includes(source.baseSpecies.name)
             )
                 return false;
             return true;
@@ -1283,8 +1281,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 10015,
 		gen: 9,
 		desc: "花叶蒂-永恒之花进化石。让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
-		shortDesc:
-			"花叶蒂-永恒之花进化石。让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
+		shortDesc: "花叶蒂-永恒之花进化石。让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
 	},
 	skarmorite: {
 		name: "Skarmorite",
@@ -1368,8 +1365,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 10019,
 		gen: 9,
 		desc: "麻麻鳗鱼王进化石。让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
-		shortDesc:
-			"麻麻鳗鱼王进化石。让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
+		shortDesc: "麻麻鳗鱼王进化石。让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
 	},
 	emboarite: {
 		name: "Emboarite",
@@ -1911,8 +1907,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 20000,
 		gen: 9,
 		desc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
-		shortDesc:
-			"颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
+		shortDesc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
 	},
 	greninjaashz: {
 		name: "Greninja-Ash Z",
@@ -1924,8 +1919,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 20002,
 		gen: 9,
 		desc: "智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
-		shortDesc:
-			"智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
+		shortDesc: "智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
 	},
 	//以下为Z和mega石以外的自制道具 num从30000开始
 	fantasypowerlens: {
@@ -1979,8 +1973,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 30000,
 		gen: 9,
 		desc: "幻之力量镜。携带后,虽然攻击将无法击中要害,但命中不满100%的非变化类技能命中率与威力会提升1.2倍",
-		shortDesc:
-			"幻之力量镜。攻击无法击中要害,命中不满100%的非变化技能威力与命中率提升1.2倍",
+		shortDesc: "幻之力量镜。攻击无法击中要害,命中不满100%的非变化技能威力与命中率提升1.2倍",
 	},
 	fantasyringtarget: {
 		name: "Fantasy Ring Target",
@@ -2008,8 +2001,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 30001,
 		gen: 9,
 		desc: "幻之标靶。携带后,登场会暴露道具,虽然无法使用变化招式,但使用的原本属性相性没有效果的招式会变为有效果",
-		shortDesc:
-			"幻之标靶。登场时暴露道具,使用的招式无视属性免疫,但无法使用变化招式",
+		shortDesc: "幻之标靶。登场时暴露道具,使用的招式无视属性免疫,但无法使用变化招式",
 	},
 	fantasylifeorb: {
 		name: "Fantasy Life Orb",
@@ -2044,8 +2036,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 30002,
 		gen: 9,
 		desc: "幻之生命宝珠。携带后, 不受异常状态效果影响,处于异常状态下的宝可梦,受到的伤害降低30%,但回合结束时将损失最大HP的1/10",
-		shortDesc:
-			"幻之生命宝珠。异常状态效果无效,异常状态下伤害减免30%,每回合损血1/10",
+		shortDesc: "幻之生命宝珠。异常状态效果无效,异常状态下伤害减免30%,每回合损血1/10",
 	},
 	fantasysachet: {
 		name: "Fantasy Sachet",
@@ -2219,8 +2210,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 30003,
 		gen: 9,
 		desc: "幻之香袋。携带道具后将无法提升能力,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失",
-		shortDesc:
-			"幻之香袋。无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味",
+		shortDesc: "幻之香袋。无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味",
 	},
 	fantasyscopelens: {
 		name: "Fantasy Scope Lens",
@@ -2330,8 +2320,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 30005,
 		gen: 9,
 		desc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
-		shortDesc:
-			"幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
+		shortDesc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
 	},
 	fantasyprotector: {
 		name: "Fantasy Protector",
