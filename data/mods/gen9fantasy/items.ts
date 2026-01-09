@@ -933,15 +933,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			"Drednaw-Fantasy",
 		],
 		onTakeItem(item, source) {
-            if (
-                (Array.isArray(item.megaEvolves)
-                    ? item.megaEvolves
-                    : [item.megaEvolves]
-                ).includes(source.baseSpecies.name)
-            )
-                return false;
-            return true;
-        },
+			const name = source.baseSpecies.name;
+			const allValidForms = [
+				...(Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves!]),
+				...(Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone!]),
+			];
+
+			if (allValidForms.includes(name)) return false;
+			return true;
+		},
 		num: 9999,
 		gen: 9,
 		desc: "超巨进化许愿星。让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
@@ -1269,15 +1269,11 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Floette-Eternal", "Floette-Eternal-Fantasy"],
 		itemUser: ["Floette-Eternal", "Floette-Eternal-Fantasy"],
 		onTakeItem(item, source) {
-            if (
-                (Array.isArray(item.megaEvolves)
-                    ? item.megaEvolves
-                    : [item.megaEvolves]
-                ).includes(source.baseSpecies.name)
-            )
-                return false;
-            return true;
-        },
+			const name = source.baseSpecies.name;
+			const isBaseForm = (Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves]).includes(name);
+			const isMegaForm = (Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone]).includes(name);
+			return !(isBaseForm || isMegaForm);
+		},
 		num: 10015,
 		gen: 9,
 		desc: "花叶蒂-永恒之花进化石。让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
