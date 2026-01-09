@@ -933,9 +933,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			"Drednaw-Fantasy",
 		],
 		onTakeItem(item, source) {
-			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
-			return true;
-		},
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
 		num: 9999,
 		gen: 9,
 		desc: "超巨进化许愿星。让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
@@ -949,7 +955,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Victreebel", "Victreebel-Fantasy"],
 		itemUser: ["Victreebel", "Victreebel-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10000,
@@ -964,7 +976,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Hawlucha", "Hawlucha-Fantasy"],
 		itemUser: ["Hawlucha", "Hawlucha-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10001,
@@ -979,7 +997,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Chandelure", "Chandelure-Fantasy"],
 		itemUser: ["Chandelure", "Chandelure-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10002,
@@ -995,7 +1019,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Froslass", "Froslass-Fantasy"],
 		itemUser: ["Froslass", "Froslass-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10003,
@@ -1010,7 +1040,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Delphox", "Delphox-Fantasy"],
 		itemUser: ["Delphox", "Delphox-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10004,
@@ -1025,7 +1061,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Dragalge", "Dragalge-Fantasy"],
 		itemUser: ["Dragalge", "Dragalge-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10005,
@@ -1040,7 +1082,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Excadrill", "Excadrill-Fantasy"],
 		itemUser: ["Excadrill", "Excadrill-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10006,
@@ -1055,7 +1103,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Meganium", "Meganium-Fantasy"],
 		itemUser: ["Meganium", "Meganium-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10007,
@@ -1070,7 +1124,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Greninja", "Greninja-Fantasy", "Greninja-Bond", "Greninja-Bond-Fantasy"],
 		itemUser: ["Greninja", "Greninja-Fantasy", "Greninja-Bond", "Greninja-Bond-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10008,
@@ -1085,7 +1145,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Starmie", "Starmie-Fantasy"],
 		itemUser: ["Starmie", "Starmie-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10009,
@@ -1100,7 +1166,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Barbaracle", "Barbaracle-Fantasy"],
 		itemUser: ["Barbaracle", "Barbaracle-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10010,
@@ -1115,7 +1187,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: "Dragonite",
 		itemUser: ["Dragonite"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10011,
@@ -1130,7 +1208,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Chesnaught", "Chesnaught-Fantasy"],
 		itemUser: ["Chesnaught", "Chesnaught-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10012,
@@ -1145,7 +1229,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Drampa", "Drampa-Fantasy"],
 		itemUser: ["Drampa", "Drampa-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10013,
@@ -1160,7 +1250,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Falinks", "Falinks-Fantasy"],
 		itemUser: ["Falinks", "Falinks-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10014,
@@ -1175,9 +1271,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Floette-Eternal", "Floette-Eternal-Fantasy"],
 		itemUser: ["Floette-Eternal", "Floette-Eternal-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
-			return true;
-		},
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
 		num: 10015,
 		gen: 9,
 		desc: "花叶蒂-永恒之花进化石。让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
@@ -1191,7 +1293,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Skarmory", "Skarmory-Fantasy"],
 		itemUser: ["Skarmory", "Skarmory-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10016,
@@ -1206,7 +1314,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Clefable", "Clefable-Fantasy"],
 		itemUser: ["Clefable", "Clefable-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10017,
@@ -1221,7 +1335,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Scrafty", "Scrafty-Fantasy"],
 		itemUser: ["Scrafty", "Scrafty-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10018,
@@ -1236,7 +1356,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Eelektross", "Eelektross-Fantasy"],
 		itemUser: ["Eelektross", "Eelektross-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10019,
@@ -1252,7 +1378,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Emboar", "Emboar-Fantasy"],
 		itemUser: ["Emboar", "Emboar-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10020,
@@ -1267,7 +1399,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Feraligatr", "Feraligatr-Fantasy"],
 		itemUser: ["Feraligatr", "Feraligatr-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10021,
@@ -1282,7 +1420,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Malamar", "Malamar-Fantasy"],
 		itemUser: ["Malamar", "Malamar-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10022,
@@ -1297,7 +1441,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Pyroar", "Pyroar-Fantasy"],
 		itemUser: ["Pyroar", "Pyroar-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10023,
@@ -1312,7 +1462,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Scolipede", "Scolipede-Fantasy"],
 		itemUser: ["Scolipede", "Scolipede-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10024,
@@ -1327,7 +1483,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Absol", "Absol-Fantasy"],
 		itemUser: ["Absol", "Absol-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10025,
@@ -1342,7 +1504,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Baxcalibur", "Baxcalibur-Fantasy"],
 		itemUser: ["Baxcalibur", "Baxcalibur-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10026,
@@ -1357,7 +1525,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Chimecho", "Chimecho-Fantasy"],
 		itemUser: ["Chimecho", "Chimecho-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10027,
@@ -1372,7 +1546,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Crabominable", "Crabominable-Fantasy"],
 		itemUser: ["Crabominable", "Crabominable-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10028,
@@ -1387,7 +1567,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Darkrai", "Darkrai-Fantasy"],
 		itemUser: ["Darkrai", "Darkrai-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10029,
@@ -1402,7 +1588,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Garchomp", "Garchomp-Fantasy"],
 		itemUser: ["Garchomp", "Garchomp-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10030,
@@ -1417,7 +1609,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Glimmora", "Glimmora-Fantasy"],
 		itemUser: ["Glimmora", "Glimmora-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10031,
@@ -1432,7 +1630,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Golisopod", "Golisopod-Fantasy"],
 		itemUser: ["Golisopod", "Golisopod-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10032,
@@ -1447,7 +1651,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Golurk", "Golurk-Fantasy"],
 		itemUser: ["Golurk", "Golurk-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10033,
@@ -1462,7 +1672,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Heatran", "Heatran-Fantasy"],
 		itemUser: ["Heatran", "Heatran-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10034,
@@ -1477,7 +1693,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Lucario", "Lucario-Fantasy"],
 		itemUser: ["Lucario", "Lucario-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10035,
@@ -1492,9 +1714,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Magearna", "Magearna-Fantasy", "Magearna-Original", "Magearna-Original-Fantasy"],
 		itemUser: ["Magearna", "Magearna-Fantasy", "Magearna-Original", "Magearna-Original-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
-			return true;
-		},
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
 		num: 10036,
 		gen: 9,
 		desc: "玛机雅娜进化石。让玛机雅娜携带后,在战斗时就能进行超级进化",
@@ -1507,9 +1735,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Meowstic", "Meowstic-Fantasy", "Meowstic-F", "Meowstic-F-Fantasy"],
 		itemUser: ["Meowstic", "Meowstic-Fantasy", "Meowstic-F", "Meowstic-F-Fantasy"],
 		onTakeItem(item, source) {
-			if (source.baseSpecies.num === 678) return false;
-			return true;
-		},
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
 		num: 10037,
 		gen: 9,
 		desc: "超能妙喵进化石。让超能妙喵携带后,在战斗时就能进行超级进化",
@@ -1522,13 +1756,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Raichu", "Raichu-Fantasy"],
 		itemUser: ["Raichu", "Raichu-Fantasy"],
 		onTakeItem(item, source) {
-			if (
-				item.megaEvolves === source.baseSpecies.name ||
-				item.megaStone === source.baseSpecies.name
-			)
-				return false;
-			return true;
-		},
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
 		num: 10038,
 		gen: 9,
 		desc: "雷丘X进化石。让雷丘携带后,在战斗时就能进行超级进化",
@@ -1541,13 +1777,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Raichu", "Raichu-Fantasy"],
 		itemUser: ["Raichu", "Raichu-Fantasy"],
 		onTakeItem(item, source) {
-			if (
-				item.megaEvolves === source.baseSpecies.name ||
-				item.megaStone === source.baseSpecies.name
-			)
-				return false;
-			return true;
-		},
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
 		num: 10039,
 		gen: 9,
 		desc: "雷丘Y进化石。让雷丘携带后,在战斗时就能进行超级进化",
@@ -1560,7 +1798,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Scovillain", "Scovillain-Fantasy"],
 		itemUser: ["Scovillain", "Scovillain-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10040,
@@ -1575,7 +1819,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Staraptor", "Staraptor-Fantasy"],
 		itemUser: ["Staraptor", "Staraptor-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10041,
@@ -1594,9 +1844,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Tatsugiri", "Tatsugiri-Droopy", "Tatsugiri-Stretchy"],
 		itemUser: ["Tatsugiri", "Tatsugiri-Droopy", "Tatsugiri-Stretchy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
-			return true;
-		},
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
 		num: 10042,
 		gen: 9,
 		desc: "米立龙进化石。让米立龙携带后,在战斗时就能进行超级进化",
@@ -1609,7 +1865,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Zeraora", "Zeraora-Fantasy"],
 		itemUser: ["Zeraora", "Zeraora-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10043,
@@ -1624,7 +1886,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: "Flygon-Fantasy",
 		itemUser: ["Flygon-Fantasy"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves!.includes(source.baseSpecies.name)) return false;
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
 			return true;
 		},
 		num: 10044,
