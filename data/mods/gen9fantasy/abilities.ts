@@ -1626,7 +1626,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Qi Yi Zhi Zao Zhe",
 		rating: 4.5,
 		num: 10035,
-		shortDesc: "奇异制造者。登场引发重力,携带空间招式,会在不同时机制造。被击倒时会清除场上所有空间/重力",
+		shortDesc: "奇异制造者。登场引发重力,携带不同空间招式会在不同时机使出。被击倒时会清除场上所有空间/重力",
 	},
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
