@@ -2289,8 +2289,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30004,
 		gen: 9,
-		desc: "幻之焦点镜。使用射击、球和弹类招式时,无视对手的反射壁/光墙/极光幕,且无视目标20%的防御与特防。",
-		shortDesc: "幻之焦点镜。射击球弹类招式无视墙,且无视目标20%双防。",
+		desc: "幻之焦点镜。使用射击、球和弹类招式时,无视对手的反射壁/光墙/极光幕,且无视目标20%的防御与特防",
+		shortDesc: "幻之焦点镜。射击球弹类招式无视墙,且无视目标20%双防",
 	},
 	fantasysyrupyapple: {
 		name: "Fantasy Syrupy Apple",
@@ -2397,7 +2397,35 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30007,
 		gen: 9,
-		desc: "幻之冰之石。携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/8。",
+		desc: "幻之冰之石。携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/8",
 		shortDesc: "幻之冰之石。技能造成的灼伤变冻伤,对手在冻伤状态下攻击持有者,损失1/8最大HP",
+	},
+	fantasylaxincense: {
+		name: "Fantasy Lax Incense",
+		spritenum: 240, // 使用原版悠闲薰香的图标编号
+		fling: {
+			basePower: 10,
+		},
+		onStart(pokemon) {
+			// 登场时显示标识消息
+			this.add('-item', pokemon, 'Fantasy Lax Incense');
+			this.add('-message', `${pokemon.name}的幻之悠闲薰香隔绝了外界的声音！`);
+		},
+		onTryHit(target, source, move) {
+			// 检查招式是否具有声音类标签 (sound: 1)
+			if (move.flags['sound']) {
+				this.add('-immune', target, '[from] item: Fantasy Lax Incense');
+				return null;
+			}
+		},
+		onDamagingHit(damage, target, source, move) {
+			// 受到攻击后，道具消失（参考气球的逻辑）
+			this.add('-enditem', target, 'Fantasy Lax Incense', '[weaken]');
+			target.useItem();
+		},
+		num: 30008,
+		gen: 9,
+		desc: "幻之悠闲薰香。携带后，宝可梦会免疫声音类招式。受到攻击就会消失",
+		shortDesc: "幻之悠闲薰香。免疫声音类招式，受到攻击后消失",
 	},
 };
