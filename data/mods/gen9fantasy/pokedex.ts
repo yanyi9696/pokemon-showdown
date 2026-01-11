@@ -280,7 +280,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		heightm: 8.8,
 		weightkg: 210,
 		color: "Blue",
-		evos: ["Steelix"],
+		evos: ["Steelix-Fantasy"],
 		eggGroups: ["Mineral"],
 	},
 	weezing: {
