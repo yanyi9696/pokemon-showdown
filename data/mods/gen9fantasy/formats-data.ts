@@ -411,6 +411,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	tentacruelfantasy: {
 		tier: "UU",
 	},
+	tyrantrumfantasy: {
+		tier: "UU",
+	},
 	urshifurapidstrikefantasy: {
 		tier: "UU",
 	},
@@ -508,6 +511,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "LC",
 	},
 	skittyfantasy: {
+		tier: "LC",
+	},
+	tyruntfantasy: {
 		tier: "LC",
 	},
 
