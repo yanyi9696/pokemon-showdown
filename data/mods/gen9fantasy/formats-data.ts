@@ -359,6 +359,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	decidueyehisuifantasy: {
 		tier: "UU",
 	},
+	delcattyfantasy: {
+		tier: "UU",
+	},
 	dusknoirfantasy: {
 		tier: "UU",
 	},
@@ -502,6 +505,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	onixfantasy: {
+		tier: "LC",
+	},
+	skittyfantasy: {
 		tier: "LC",
 	},
 
