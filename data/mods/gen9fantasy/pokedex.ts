@@ -910,8 +910,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Gray",
 		eggGroups: ["Monster"],
 		requiredItem: "Aggronite",
-		requiredForme: "Aggronite-Fantasy",
-		battleOnly: "Aggronite-Fantasy",
+		requiredForme: "Aggron-Fantasy",
+		battleOnly: "Aggron-Fantasy",
 		spriteid: 'aggron-mega',
 	},
 	volbeat: {
