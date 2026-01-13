@@ -1683,7 +1683,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (!this.heal(target.baseMaxhp / 8, target, target, this.effect)) {
 					// 如果 HP 已满回血失败，则仅显示免疫，并带上特性来源标签
 					// 这里的 '[from] ability: ...' 会自动触发一次特性横幅弹出
-					this.add('-immune', target, '[from] ability: 钢铁聚合物');
+					this.add('-immune', target, '[from] ability: Gang Tie Ju He Wu');
 				}
 				return null;
 			}
