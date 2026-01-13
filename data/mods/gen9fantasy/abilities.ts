@@ -1653,18 +1653,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 1. 检查是否为水属性招式
 			if (move.type === 'Water') {
 				// 2. 确定施加状态的场地侧
-				// target.side 即为被命中方所在的场地
+				// target.side 指向招式命中的那一侧
+				// 如果你打对手，target.side 就是对手半场；如果你打队友，target.side 就是我方半场
 				const side = target.side;
-
-				// 3. 如果该场地已经存在湿地，则不再重复触发（或刷新回合数）
-				if (side.sideConditions['pledgeswamp']) return;
-
+				// 3. 检查是否已经存在该效果（防止重复刷新或冲突）
+				// 注意：这里必须使用你代码中定义的 ID 'grasspledge'
+				if (side.sideConditions['grasspledge']) return;
 				this.add('-ability', source, 'Zhao Yong Ze Xian');
-				
-				// 4. 添加湿地状态（pledgeswamp 是系统预设的 ID）
-				side.addSideCondition('pledgeswamp');
-				
-				// 提示文字（可选，系统 pledgeswamp 通常自带提示）
+				// 4. 添加场地状态
+				// 在你的引擎中，'grasspledge' 即代表 4 回合速度减至 1/4 的湿地效果
+				side.addSideCondition('grasspledge');
+				// 5. 明确提示文字
 				this.add('-message', `水流在大地上蔓延，形成了湿地！`);
 			}
 		},
