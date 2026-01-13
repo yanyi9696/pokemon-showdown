@@ -3394,9 +3394,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		tags: ["Mythical"],
 		eggGroups: ["Undiscovered"],
 		requiredItem: "G-Mega Wishing Star",
-		requiredForme: "Garbodor-Fantasy",
-		battleOnly: "Garbodor-Fantasy",
-		spriteid: 'garbodor-gmax',
+		requiredForme: "Melmetal-Fantasy",
+		battleOnly: "Melmetal-Fantasy",
+		spriteid: 'melmetal-gmax',
 	},
 
 	// 第8世代 (810-905)
