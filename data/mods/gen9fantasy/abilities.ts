@@ -1673,4 +1673,37 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10037,
 		shortDesc: "沼涌泽现。水属性招式命中后,使目标场地进入4回合湿地状态(速度变为1/4)",
 	},
+	gangtiejuhewu: {
+		// 1. 处理主动攻击的钢属性招式 (类似储水/蓄电)
+		onTryHit(target, source, move) {
+			// 确保不是自己打自己，且招式属性为钢
+			if (target !== source && move.type === 'Steel') {
+				// 提示特性发动
+				this.add('-activate', target, 'ability: 钢铁聚合物');
+				// 尝试回复 1/8 HP
+				if (!this.heal(target.baseMaxhp / 8)) {
+					// 如果 HP 已满，heal 会返回 false，此时仅显示免疫提示
+					this.add('-immune', target, '[from] ability: 钢铁聚合物');
+				}
+				// 返回 null 彻底拦截招式，使其不产生后续效果（如伤害、特效）
+				return null;
+			}
+		},
+		// 2. 处理进场时的场地状态伤害 (碎菱钢/gmaxsteelsurge)
+		onDamage(damage, target, source, effect) {
+			// 检查伤害来源是否为 'gmaxsteelsurge' (即你设置的碎菱钢状态 ID)
+			if (effect && effect.id === 'gmaxsteelsurge') {
+				this.add('-activate', target, 'ability: 钢铁聚合物');
+				// 将伤害拦截，并转为回复 1/8 HP
+				this.heal(target.baseMaxhp / 8);
+				// 返回 false 代表本次伤害无效
+				return false;
+			}
+		},
+		flags: { breakable: 1 }, // 该特性可以被“破格”等特性无视
+		name: "Gang Tie Ju He Wu",
+		rating: 3.5,
+		num: 10038, // 顺延你之前的编号
+		shortDesc: "钢铁聚合物。受到钢属性招式或碎菱钢攻击时,不受到伤害而是回复1/8最大HP",
+	},
 };
