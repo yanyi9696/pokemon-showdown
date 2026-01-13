@@ -1678,32 +1678,34 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onTryHit(target, source, move) {
 			// 确保不是自己打自己，且招式属性为钢
 			if (target !== source && move.type === 'Steel') {
-				// 提示特性发动
-				this.add('-activate', target, 'ability: 钢铁聚合物');
+				// 弹出标准的特性显示条
+				this.add('-ability', target, '钢铁聚合物');
+				
 				// 尝试回复 1/8 HP
+				// 如果 HP 没满，heal 内部会自动处理日志，不需要额外 add
 				if (!this.heal(target.baseMaxhp / 8)) {
-					// 如果 HP 已满，heal 会返回 false，此时仅显示免疫提示
+					// 仅在 HP 已满且回复失败时，提示免疫
 					this.add('-immune', target, '[from] ability: 钢铁聚合物');
 				}
-				// 返回 null 彻底拦截招式，使其不产生后续效果（如伤害、特效）
+				// 返回 null 彻底拦截招式
 				return null;
 			}
 		},
 		// 2. 处理进场时的场地状态伤害 (碎菱钢/gmaxsteelsurge)
 		onDamage(damage, target, source, effect) {
-			// 检查伤害来源是否为 'gmaxsteelsurge' (即你设置的碎菱钢状态 ID)
+			// 检查伤害来源是否为 'gmaxsteelsurge' (碎菱钢)
 			if (effect && effect.id === 'gmaxsteelsurge') {
-				this.add('-activate', target, 'ability: 钢铁聚合物');
+				this.add('-ability', target, '钢铁聚合物');
 				// 将伤害拦截，并转为回复 1/8 HP
 				this.heal(target.baseMaxhp / 8);
 				// 返回 false 代表本次伤害无效
 				return false;
 			}
 		},
-		flags: { breakable: 1 }, // 该特性可以被“破格”等特性无视
+		flags: { breakable: 1 },
 		name: "Gang Tie Ju He Wu",
 		rating: 3.5,
-		num: 10038, // 顺延你之前的编号
+		num: 10038,
 		shortDesc: "钢铁聚合物。受到钢属性招式或碎菱钢攻击时,不受到伤害而是回复1/8最大HP",
 	},
 };
