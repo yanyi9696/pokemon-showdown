@@ -1052,4 +1052,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	hippowdon: {
 		tier: "RU",
 	},
+	meltan: {
+		tier: "LC",
+	},
 };
