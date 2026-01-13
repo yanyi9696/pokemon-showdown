@@ -338,6 +338,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Sand Force"},		
 	},
+	swampertfantasy: {
+		tier: "UUBL",
+	},
+	swampertmegafantasy: {
+		tier: "UUBL",
+		abilities: {0: "Iron Fist"},		
+	},
 	toxtricityfantasy: {
 		tier: "UUBL",
 	},
@@ -483,6 +490,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 		abilities: {0: "Stamina"},
 	},
+	marshtompfantasy: {
+		tier: "RU",
+	},
 	mukalolafantasy: {
 		tier: "RU",
 	},
@@ -506,6 +516,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	stonjournerfantasy: {
 		tier: "RU",
+	},
+	mudkipfantasy: {
+		tier: "LC",
 	},
 	onixfantasy: {
 		tier: "LC",

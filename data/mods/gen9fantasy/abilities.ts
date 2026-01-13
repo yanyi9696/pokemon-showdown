@@ -1648,4 +1648,30 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10036,
 		shortDesc: "岩布阵。受到物理招式的伤害时,会在对手脚下散布隐形岩",
 	},
+	zhaoyongzexian: {
+		onSourceAfterMoveSecondary(target, source, move) {
+			// 1. 检查是否为水属性招式
+			if (move.type === 'Water') {
+				// 2. 确定施加状态的场地侧
+				// target.side 即为被命中方所在的场地
+				const side = target.side;
+
+				// 3. 如果该场地已经存在湿地，则不再重复触发（或刷新回合数）
+				if (side.sideConditions['pledgeswamp']) return;
+
+				this.add('-ability', source, 'Zhao Yong Ze Xian');
+				
+				// 4. 添加湿地状态（pledgeswamp 是系统预设的 ID）
+				side.addSideCondition('pledgeswamp');
+				
+				// 提示文字（可选，系统 pledgeswamp 通常自带提示）
+				this.add('-message', `水流在大地上蔓延，形成了湿地！`);
+			}
+		},
+		flags: {},
+		name: "Zhao Yong Ze Xian",
+		rating: 4,
+		num: 10037,
+		shortDesc: "沼涌泽现。水属性招式命中后,使目标场地进入4回合湿地状态(速度变为1/4)",
+	},
 };
