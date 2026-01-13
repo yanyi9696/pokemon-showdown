@@ -1674,32 +1674,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "沼涌泽现。水属性招式命中后,使目标场地进入4回合湿地状态(速度变为1/4)",
 	},
 	gangtiejuhewu: {
-		// 1. 处理主动攻击的钢属性招式 (类似储水/蓄电)
+		// 1. 处理主动攻击的钢属性招式 (如铁头、铸铠波)
 		onTryHit(target, source, move) {
-			// 确保不是自己打自己，且招式属性为钢
 			if (target !== source && move.type === 'Steel') {
-				// 弹出标准的特性显示条
-				this.add('-ability', target, '钢铁聚合物');
-				
-				// 尝试回复 1/8 HP
-				// 如果 HP 没满，heal 内部会自动处理日志，不需要额外 add
-				if (!this.heal(target.baseMaxhp / 8)) {
-					// 仅在 HP 已满且回复失败时，提示免疫
+				// 核心修正：不再手动 add('-ability')
+				// 将 this.effect (即当前特性) 作为第四个参数传给 heal
+				// 如果回血成功，系统会自动弹出特性条并显示回血
+				if (!this.heal(target.baseMaxhp / 8, target, target, this.effect)) {
+					// 如果 HP 已满回血失败，则仅显示免疫，并带上特性来源标签
+					// 这里的 '[from] ability: ...' 会自动触发一次特性横幅弹出
 					this.add('-immune', target, '[from] ability: 钢铁聚合物');
 				}
-				// 返回 null 彻底拦截招式
 				return null;
 			}
 		},
-		// 2. 处理进场时的场地状态伤害 (碎菱钢/gmaxsteelsurge)
+		// 2. 处理进场时的碎菱钢伤害 (gmaxsteelsurge)
 		onDamage(damage, target, source, effect) {
-			// 检查伤害来源是否为 'gmaxsteelsurge' (碎菱钢)
 			if (effect && effect.id === 'gmaxsteelsurge') {
-				this.add('-ability', target, '钢铁聚合物');
-				// 将伤害拦截，并转为回复 1/8 HP
-				this.heal(target.baseMaxhp / 8);
-				// 返回 false 代表本次伤害无效
-				return false;
+				// 同样，将特性作为 effect 传入 heal，让系统自动处理提示
+				this.heal(target.baseMaxhp / 8, target, target, this.effect);
+				return false; // 拦截伤害
 			}
 		},
 		flags: { breakable: 1 },
