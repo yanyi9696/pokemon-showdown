@@ -21496,6 +21496,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			rapidspin: ["9M"],
 			paraboliccharge: ["9M"],
 			electroshot: ["9M"],
+			drainpunch: ["9M"],
 			//幻想增添技能
 			acidarmor: ["8L32", "8V", "7L36"],
 			bodypress: ["8M"],
@@ -21555,6 +21556,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			rapidspin: ["9M"],
 			paraboliccharge: ["9M"],
 			electroshot: ["9M"],
+			drainpunch: ["9M"],
 			//幻想增添技能
 			acidarmor: ["8L32", "8V", "7L36"],
 			bodypress: ["8M"],
