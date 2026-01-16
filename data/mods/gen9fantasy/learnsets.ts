@@ -21494,6 +21494,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zhukaibo: ["9M"],
 			rapidspin: ["9M"],
+			recover: ["9M"],
 			paraboliccharge: ["9M"],
 			electroshot: ["9M"],
 			drainpunch: ["9M"],
@@ -21554,6 +21555,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zhukaibo: ["9M"],
 			rapidspin: ["9M"],
+			recover: ["9M"],
 			paraboliccharge: ["9M"],
 			electroshot: ["9M"],
 			drainpunch: ["9M"],

@@ -1439,7 +1439,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10030,
 		shortDesc: "全力达摩。使用招式前会变为达摩模式,且该形态会一直持续",
 	},
-	zuijianitai: {
+	weichongnitai: {
 		onTryHit(target, source, move) {
 			this.effectState.activated = false;
 		},
@@ -1455,14 +1455,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 
 				// 如果是第一次检查，我们正常执行逻辑。
-				this.add('-activate', target, 'ability: Zui Jia Ni Tai');
+				this.add('-activate', target, 'ability: Wei Chong Ni Tai');
 				this.effectState.activated = true;
 				return 1; // 第一次检查时，返回 2x 伤害。
 			}
 			// (消除弱点的逻辑保持不变)
 			if (typeMod > 0) {
 				if (!this.effectState.activated) {
-					this.add('-activate', target, 'ability: Zui Jia Ni Tai');
+					this.add('-activate', target, 'ability: Wei Chong Ni Tai');
 					this.effectState.activated = true;
 				}
 				return 0;
@@ -1471,16 +1471,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		onBasePowerPriority: 23,
 		onBasePower(basePower, attacker, defender, move) {
-			if (attacker.getAbility().id !== 'zuijianitai') return;
+			if (attacker.getAbility().id !== 'weichongnitai') return;
 			if (move.type === 'Bug') {
 				return this.chainModify(1.5);
 			}
 		},
 		flags: { breakable: 1 },
-		name: "Zui Jia Ni Tai",
+		name: "Wei Chong Ni Tai",
 		rating: 3,
 		num: 10031,
-		shortDesc: "最佳拟态。变为只弱火、岩石、飞行。虫属性招式威力提升1.5倍",
+		shortDesc: "伪虫拟态。变为只弱火、岩石、飞行。虫属性招式威力提升1.5倍",
 	},
 	shamozhisheng: {
 		onModifyTypePriority: -1,

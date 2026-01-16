@@ -3143,7 +3143,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Grass", "Fairy"],
 		baseStats: { hp: 90, atk: 125, def: 90, spa: 90, spd: 90, spe: 45 },
-		abilities: { 0: "Zui Jia Ni Tai", 1: "Qing Guang Hua Yu", H: "Contrary" },
+		abilities: { 0: "Wei Chong Ni Tai", 1: "Qing Guang Hua Yu", H: "Contrary" },
 		heightm: 0.9,
 		weightkg: 18.5,
 		color: "Pink",
