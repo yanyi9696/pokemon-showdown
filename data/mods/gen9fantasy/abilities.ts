@@ -1255,7 +1255,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Huo Lin Fen",
 		rating: 3.5,
 		num: 10025,
-		shortDesc: "火鳞粉。出场时烧除我方场地效果(限1次);受到的火属性招式伤害减半。",
+		shortDesc: "火鳞粉。出场时烧除我方场地效果(限1次);受到的火属性招式伤害减半",
 	},
 	tundu: {
 		onTryHit(target, source, move) {
