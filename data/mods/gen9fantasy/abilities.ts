@@ -1211,15 +1211,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "晴光花语。每当处于大晴天或青草场地上时,特防提升2级",
 	},
 	huolinfen: {
+		// 1. 核心逻辑：入场清除我方场地副作用（一场战斗仅触发一次）
 		onStart(pokemon) {
-			// 步骤 1: 检查永久标记
-			// 我们在宝可梦对象上直接附加一个自定义属性来“记住”是否已触发。
-			// 这个属性不会在交换下场时被清除。
-			// 使用 `(pokemon as any)` 是为了告诉 TypeScript 我们知道自己在做什么。
+			// 检查永久标记，防止重复触发
 			if ((pokemon as any).huolinfenTriggered) {
 				return;
 			}
-			// 步骤 2: 检查场上是否存在需要清除的效果 (这部分逻辑是正确的)
+			// 检查场上是否存在需要清除的效果（如隐形岩、撒菱等）
 			const conditionsToRemove = [
 				'spikes',
 				'toxicspikes',
@@ -1228,24 +1226,36 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				'gmaxsteelsurge'
 			];
 			const hazardsPresent = conditionsToRemove.some(condition => pokemon.side.getSideCondition(condition));
-			// 步骤 3: 执行效果并设置永久标记
+			
+			// 执行效果并设置永久标记
 			if (hazardsPresent) {
 				this.add('-activate', pokemon, 'ability: Huo Lin Fen');
-				// 清除效果的循环 (这部分也是正确的)
 				for (const condition of conditionsToRemove) {
 					if (pokemon.side.removeSideCondition(condition)) {
 						this.add('-sideend', pokemon.side, this.dex.conditions.get(condition).name, '[from] ability: Huo Lin Fen', `[of] ${pokemon}`);
 					}
 				}
-				// 关键修正：设置一个永久标记，表示这个宝可梦的“火鳞粉”已经发动过了。
+				// 标记已发动，下场后再上场不会再次触发
 				(pokemon as any).huolinfenTriggered = true;
 			}
 		},
-		flags: {},
+
+		// 2. 新增逻辑：火属性招式伤害减半
+		onSourceModifyDamage(damage, source, target, move) {
+			// 检查招式属性是否为火
+			if (move.type === 'Fire') {
+				this.debug('Huo Lin Fen fire damage reduction');
+				// 将伤害乘以 0.5
+				return this.chainModify(0.5);
+			}
+		},
+
+		// 增加 breakable 标记，意味着该减伤效果会被“破格”特性无视
+		flags: { breakable: 1 },
 		name: "Huo Lin Fen",
 		rating: 3.5,
 		num: 10025,
-		shortDesc: "火鳞粉。出场时,烧除我方场地上的所有效果。一场战斗中仅能发动1次",
+		shortDesc: "火鳞粉。出场时烧除我方场地效果(限1次);受到的火属性招式伤害减半。",
 	},
 	tundu: {
 		onTryHit(target, source, move) {
