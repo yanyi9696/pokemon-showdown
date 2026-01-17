@@ -781,7 +781,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},	
 	marshtompfantasy: {
 		num: 259,
-		name: "Marshtomp",
+		name: "Marshtomp-Fantasy",
 		baseSpecies: "Marshtomp",
 		forme: "Fantasy",
 		types: ["Water", "Ground"],
