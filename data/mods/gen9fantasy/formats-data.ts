@@ -345,9 +345,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Sand Force"},		
 	},
-	swampertfantasy: {
-		tier: "UUBL",
-	},
 	swampertmegafantasy: {
 		tier: "UUBL",
 		abilities: {0: "Iron Fist"},		
@@ -420,6 +417,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	skarmoryfantasy: {
+		tier: "UU",
+	},
+	swampertfantasy: {
 		tier: "UU",
 	},
 	tentacruelfantasy: {

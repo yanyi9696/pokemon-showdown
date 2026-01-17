@@ -1660,28 +1660,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	zhaoyongzexian: {
 		onSourceAfterMoveSecondary(target, source, move) {
-			// 1. 检查是否为水属性招式
+			// 1. 核心条件：HP 必须大于一半 (50%)
+			// 使用 source.hp * 2 > source.maxhp 来进行精确的半血判断
+			if (source.hp * 2 <= source.maxhp) return;
+			// 2. 检查是否为水属性招式
 			if (move.type === 'Water') {
-				// 2. 确定施加状态的场地侧
-				// target.side 指向招式命中的那一侧
-				// 如果你打对手，target.side 就是对手半场；如果你打队友，target.side 就是我方半场
+				// 3. 确定施加状态的场地侧
 				const side = target.side;
-				// 3. 检查是否已经存在该效果（防止重复刷新或冲突）
-				// 注意：这里必须使用你代码中定义的 ID 'grasspledge'
+				// 4. 检查是否已经存在该效果（防止重复刷新）
 				if (side.sideConditions['grasspledge']) return;
+				// 5. 提示特性发动
 				this.add('-ability', source, 'Zhao Yong Ze Xian');
-				// 4. 添加场地状态
-				// 在你的引擎中，'grasspledge' 即代表 4 回合速度减至 1/4 的湿地效果
+				// 6. 添加场地状态：'grasspledge' 代表 4 回合速度减至 1/4 的湿地效果
 				side.addSideCondition('grasspledge');
-				// 5. 明确提示文字
-				this.add('-message', `水流在大地上蔓延，形成了湿地！`);
+				// 7. 明确提示文字
+				this.add('-message', `${source.name} 的充足体力引发了剧烈的水流，在大地上形成了湿地！`);
 			}
 		},
 		flags: {},
 		name: "Zhao Yong Ze Xian",
 		rating: 4,
 		num: 10037,
-		shortDesc: "沼涌泽现。水属性招式命中后,使目标场地进入4回合湿地状态(速度变为1/4)",
+		shortDesc: "沼涌泽现。HP大于一半时,水属性招式命中后使目标场地进入4回合湿地状态",
 	},
 	gangtiejuhewu: {
 		// 1. 处理主动攻击的钢属性招式 (如铁头、铸铠波)

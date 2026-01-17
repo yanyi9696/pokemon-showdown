@@ -1664,6 +1664,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			teleport: ["9M"],
 			triattack: ["9M"],
 			waterpulse: ["9M"],
+			earthpower: ["9M"],
 			//ZA增添技能
 			alluringvoice: ["9M"],
 			allyswitch: ["8M", "7T"],
@@ -9902,7 +9903,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			freezedry: ["9M"],
 			freezingglare: ["9M"],
 			moonblast: ["9M"],
-			earthpower: ["9M"],
 			roost: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "8M"],
