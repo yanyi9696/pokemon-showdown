@@ -2142,8 +2142,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	garbodor: {
 		inherit: true,
-		otherFormes: ["Garbodor-Fantasy", "Garbodor-Mega-Fantasy"],
-		formeOrder: ["Garbodor",  "Garbodor-Fantasy", "Garbodor-Mega-Fantasy"],
+		otherFormes: ["Garbodor-Fantasy", "Garbodor-G-Mega-Fantasy"],
+		formeOrder: ["Garbodor",  "Garbodor-Fantasy", "Garbodor-G-Mega-Fantasy"],
 	},
 	garbodorfantasy: {
 		num: 569,
@@ -2161,9 +2161,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Mineral"],
 		canGigantamax: "G-Max Malodor",
 	},
-	garbodormegafantasy: {
+	garbodorgmegafantasy: {
 		num: 569,
-		name: "Garbodor-Mega-Fantasy",
+		name: "Garbodor-G-Mega-Fantasy",
 		baseSpecies: "Garbodor",
 		forme: "Mega",
 		types: ["Poison", "Steel"],
@@ -3361,8 +3361,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	melmetal: {
 		inherit: true,
-		otherFormes: ["Melmetal-Fantasy", "Melmetal-Mega-Fantasy"],
-		formeOrder: ["Zeraora", "Melmetal-Fantasy", "Melmetal-Mega-Fantasy"],
+		otherFormes: ["Melmetal-Fantasy", "Melmetal-G-Mega-Fantasy"],
+		formeOrder: ["Zeraora", "Melmetal-Fantasy", "Melmetal-G-Mega-Fantasy"],
 	},
 	melmetalfantasy: {
 		num: 809,
@@ -3380,9 +3380,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Undiscovered"],
 		canGigantamax: "G-Max Meltdown",
 	},
-	melmetalmegafantasy: {
+	melmetalgmegafantasy: {
 		num: 569,
-		name: "Melmetal-Mega-Fantasy",
+		name: "Melmetal-G-Mega-Fantasy",
 		baseSpecies: "Melmetal",
 		forme: "Mega",
 		types: ["Steel", "Electric"],
@@ -3402,8 +3402,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	// 第8世代 (810-905)
 	corviknight: {
 		inherit: true,
-		otherFormes: ["Corviknight-Fantasy", "Corviknight-Mega-Fantasy"],
-		formeOrder: ["Corviknight", "Corviknight-Fantasy", "Corviknight-Mega-Fantasy"],
+		otherFormes: ["Corviknight-Fantasy", "Corviknight-G-Mega-Fantasy"],
+		formeOrder: ["Corviknight", "Corviknight-Fantasy", "Corviknight-G-Mega-Fantasy"],
 	},
 	corviknightfantasy: {	
 		num: 823,
@@ -3421,9 +3421,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Flying"],
 		canGigantamax: "G-Max Wind Rage",
 	},
-	corviknightmegafantasy: {	
+	corviknightgmegafantasy: {	
 		num: 823,
-		name: "Corviknight-Mega-Fantasy",
+		name: "Corviknight-G-Mega-Fantasy",
 		baseSpecies: "Corviknight",
 		forme: "Mega",
 		types: ["Flying", "Steel"],
@@ -3443,8 +3443,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	orbeetle: {
 		inherit: true,
-		otherFormes: ["Orbeetle-Fantasy", "Orbeetle-Mega-Fantasy"],
-		formeOrder: ["Orbeetle", "Orbeetle-Fantasy", "Orbeetle-Mega-Fantasy"],
+		otherFormes: ["Orbeetle-Fantasy", "Orbeetle-G-Mega-Fantasy"],
+		formeOrder: ["Orbeetle", "Orbeetle-Fantasy", "Orbeetle-G-Mega-Fantasy"],
 	},
 	orbeetlefantasy: {
 		num: 826,
@@ -3462,9 +3462,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Bug"],
 		canGigantamax: "G-Max Gravitas",
 	},
-	orbeetlemegafantasy: {	
+	orbeetlegmegafantasy: {	
 		num: 826,
-		name: "Orbeetle-Mega-Fantasy",
+		name: "Orbeetle-G-Mega-Fantasy",
 		baseSpecies: "Orbeetle",
 		forme: "Mega",
 		types: ["Bug", "Psychic"],
@@ -3504,8 +3504,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	drednaw: {
 		inherit: true,
-		otherFormes: ["Drednaw-Fantasy", "Drednaw-Mega-Fantasy"],
-		formeOrder: ["Drednaw", "Drednaw-Fantasy", "Drednaw-Mega-Fantasy"],
+		otherFormes: ["Drednaw-Fantasy", "Drednaw-G-Mega-Fantasy"],
+		formeOrder: ["Drednaw", "Drednaw-Fantasy", "Drednaw-G-Mega-Fantasy"],
 	},
 	drednawfantasy: {	
 		num: 834,
@@ -3523,9 +3523,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Monster", "Water 1"],
 		canGigantamax: "G-Max Stonesurge",
 	},
-	drednawmegafantasy: {	
+	drednawgmegafantasy: {	
 		num: 834,
-		name: "Drednaw-Mega-Fantasy",
+		name: "Drednaw-G-Mega-Fantasy",
 		baseSpecies: "Drednaw",
 		forme: "Mega",
 		types: ["Water", "Rock"],
@@ -3545,8 +3545,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	sandaconda: {
 		inherit: true,
-		otherFormes: ["Sandaconda-Fantasy", "Sandaconda-Mega-Fantasy"],
-		formeOrder: ["Sandaconda", "Sandaconda-Fantasy", "Sandaconda-Mega-Fantasy"],
+		otherFormes: ["Sandaconda-Fantasy", "Sandaconda-G-Mega-Fantasy"],
+		formeOrder: ["Sandaconda", "Sandaconda-Fantasy", "Sandaconda-G-Mega-Fantasy"],
 	},
 	sandacondafantasy: {
 		num: 844,
@@ -3564,9 +3564,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Field", "Dragon"],
 		canGigantamax: "G-Max Sandblast",
 	},
-	sandacondamegafantasy: {
+	sandacondagmegafantasy: {
 		num: 844,
-		name: "Sandaconda-Mega-Fantasy",
+		name: "Sandaconda-G-Mega-Fantasy",
 		baseSpecies: "Sandaconda",
 		forme: "Mega",
 		types: ["Ground", "Dark"],
@@ -3585,10 +3585,10 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	toxtricity: {
 		inherit: true,
-		otherFormes: ["Toxtricity-Fantasy", "Toxtricity-Mega-Fantasy", 
-					  "Toxtricity-Low-Key", "Toxtricity-Low-Key-Fantasy", "Toxtricity-Low-Key-Mega-Fantasy"],
-		formeOrder: ["Toxtricity", "Toxtricity-Fantasy", "Toxtricity-Mega-Fantasy",
-					 "Toxtricity-Low-Key", "Toxtricity-Low-Key-Fantasy", "Toxtricity-Low-Key-Mega-Fantasy"],
+		otherFormes: ["Toxtricity-Fantasy", "Toxtricity-G-Mega-Fantasy", 
+					  "Toxtricity-Low-Key", "Toxtricity-Low-Key-Fantasy", "Toxtricity-Low-Key-G-Mega-Fantasy"],
+		formeOrder: ["Toxtricity", "Toxtricity-Fantasy", "Toxtricity-G-Mega-Fantasy",
+					 "Toxtricity-Low-Key", "Toxtricity-Low-Key-Fantasy", "Toxtricity-Low-Key-G-Mega-Fantasy"],
 	},
 	toxtricityfantasy: {
 		num: 849,
@@ -3608,9 +3608,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		canGigantamax: "G-Max Stun Shock",
 		spriteid: 'toxtricity',
 	},
-	toxtricitymegafantasy: {
+	toxtricitygmegafantasy: {
 		num: 849,
-		name: "Toxtricity-Mega-Fantasy",
+		name: "Toxtricity-G-Mega-Fantasy",
 		baseSpecies: "Toxtricity",
 		forme: "Mega",
 		types: ["Electric", "Poison"],
@@ -3644,9 +3644,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		canGigantamax: "G-Max Stun Shock",
 		spriteid: 'toxtricity-low-key',
 	},
-	toxtricitylowkeymegafantasy: {
+	toxtricitylowkeygmegafantasy: {
 		num: 849,
-		name: "Toxtricity-Low-Key-Mega-Fantasy",
+		name: "Toxtricity-Low-Key-G-Mega-Fantasy",
 		baseSpecies: "Toxtricity",
 		forme: "Mega",
 		types: ["Ice", "Poison"],
@@ -3766,10 +3766,10 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	urshifu: {
 		inherit: true,
-		otherFormes: ["Urshifu-Fantasy", "Urshifu-Mega-Fantasy", 
-					  "Urshifu-Rapid-Strike", "Urshifu-Rapid-Strike-Fantasy", "Urshifu-Rapid-Strike-Mega-Fantasy"],
-		formeOrder: ["Urshifu", "Urshifu-Fantasy", "Urshifu-Mega-Fantasy", 
-					 "Urshifu-Rapid-Strike", "Urshifu-Rapid-Strike-Fantasy", "Urshifu-Rapid-Strike-Mega-Fantasy"],
+		otherFormes: ["Urshifu-Fantasy", "Urshifu-G-Mega-Fantasy", 
+					  "Urshifu-Rapid-Strike", "Urshifu-Rapid-Strike-Fantasy", "Urshifu-Rapid-Strike-G-Mega-Fantasy"],
+		formeOrder: ["Urshifu", "Urshifu-Fantasy", "Urshifu-G-Mega-Fantasy", 
+					 "Urshifu-Rapid-Strike", "Urshifu-Rapid-Strike-Fantasy", "Urshifu-Rapid-Strike-G-Mega-Fantasy"],
 	},
 	urshifufantasy: {
 		num: 892,
@@ -3809,9 +3809,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Undiscovered"],
 		spriteid: 'urshifu-rapidstrike',
 	},
-	urshifumegafantasy: {
+	urshifugmegafantasy: {
 		num: 892,
-		name: "Urshifu-Mega-Fantasy",
+		name: "Urshifu-G-Mega-Fantasy",
 		baseSpecies: "Urshifu",
 		forme: "Mega",
 		types: ["Fighting", "Normal"],
@@ -3831,9 +3831,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		battleOnly: "Urshifu-Fantasy",
 		spriteid: 'urshifu-gmax',
 	},
-	urshifurapidstrikemegafantasy: {
+	urshifurapidstrikegmegafantasy: {
 		num: 892,
-		name: "Urshifu-Rapid-Strike-Mega-Fantasy",
+		name: "Urshifu-Rapid-Strike-G-Mega-Fantasy",
 		baseSpecies: "Urshifu",
 		forme: "Mega",
 		types: ["Fighting", "Ghost"],

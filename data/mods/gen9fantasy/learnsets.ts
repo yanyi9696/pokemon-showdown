@@ -5261,7 +5261,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zenheadbutt: ["9M", "8M"],
 		},
 	},
-	urshifumegafantasy: {
+	urshifugmegafantasy: {
 		learnset: {
 			renzhenouda: ["9M"],
 			dianshanxunji: ["9M"],
@@ -5404,7 +5404,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zenheadbutt: ["9M", "8M"],
 		},
 	},
-	urshifurapidstrikemegafantasy: {
+	urshifurapidstrikegmegafantasy: {
 		learnset: {
 			yishunqianji: ["9M"],
 			zuishenluanda: ["9M"],
@@ -6312,7 +6312,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{generation: 8, level: 50, shiny: true, nature: "Rash", abilities: ["punkrock"], moves: ["overdrive", "sludgewave", "boomburst", "risingvoltage"], pokeball: "cherishball"},
 		],
 	},
-	toxtricitymegafantasy: {
+	toxtricitygmegafantasy: {
 		learnset: {
 			biansuzhefan: ["9M"],
 			torchsong: ["9M"],
@@ -6496,7 +6496,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wildcharge: ["9M", "8M"],
 		},
 	},
-	toxtricitylowkeymegafantasy: {
+	toxtricitylowkeygmegafantasy: {
 		learnset: {
 			biansuzhefan: ["9M"],
 			tripleaxel: ["9M"],
@@ -13017,7 +13017,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			workup: ["8M"],
 		},
 	},
-	corviknightmegafantasy: {
+	corviknightgmegafantasy: {
 		learnset: {
 			chuanyun: ["9M"],
 			suilinggang: ["9M"],
@@ -14598,7 +14598,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zenheadbutt: ["9M", "8M"],
 		},
 	},
-	sandacondamegafantasy: {
+	sandacondagmegafantasy: {
 		learnset: {
 			shoreup: ["9M"],
 			spikes: ["9M"],
@@ -15962,7 +15962,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{generation: 7, level: 24},
 		],
 	},
-	garbodormegafantasy: {
+	garbodorgmegafantasy: {
 		learnset: {
 			acidarmor: ["9M"],
 			shoreup: ["9M"],
@@ -20273,7 +20273,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zenheadbutt: ["8M"],
 		},
 	},
-	orbeetlemegafantasy: {	
+	orbeetlegmegafantasy: {	
 		learnset: {
 			mysticalpower: ["9M"],
 			cosmicpower: ["9M"],
@@ -20419,7 +20419,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			whirlpool: ["9M", "8M"],
 		},
 	},
-	drednawmegafantasy: {
+	drednawgmegafantasy: {
 		learnset: {
 			wavecrash: ["9M"],
 			yaolan: ["9M"],
@@ -21551,7 +21551,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{generation: 8, level: 100, nature: "Brave", ivs: {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 0}, moves: ["doubleironbash", "hyperbeam", "dynamicpunch", "thunderpunch"], pokeball: "cherishball"},
 		],
 	},
-	melmetalmegafantasy: {
+	melmetalgmegafantasy: {
 		learnset: {
 			zhukaibo: ["9M"],
 			rapidspin: ["9M"],

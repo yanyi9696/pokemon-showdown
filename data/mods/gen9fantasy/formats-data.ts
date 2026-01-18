@@ -31,7 +31,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	greninjaashfantasy: {
 		tier: "Uber",
 	},
-	melmetalmegafantasy: {
+	melmetalgmegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Electromorphosis"},	
 	},
@@ -67,7 +67,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Adaptability"},		
 	},
-	drednawmegafantasy: {	
+	drednawgmegafantasy: {	
 		abilities: {0: "Strong Jaw"},	
 		tier: "(Uber)",
 	},
@@ -117,7 +117,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Long Zhi Hu Xi"},		
 	},
-	sandacondamegafantasy: {
+	sandacondagmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Sand Stream"},	
 	},
@@ -127,19 +127,19 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	suicunefantasy: {
 		tier: "(Uber)",
 	},
-	toxtricitymegafantasy: {
+	toxtricitygmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Punk Rock"},		
 	},
-	toxtricitylowkeymegafantasy: {
+	toxtricitylowkeygmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Toxtricity"},		
 	},
-	urshifumegafantasy: {
+	urshifugmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Unseen Fist"},	
 	},
-	urshifurapidstrikemegafantasy: {
+	urshifurapidstrikegmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Unseen Fist"},	
 	},
@@ -170,7 +170,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	corviknightfantasy: {
 		tier: "OU",
 	},
-	corviknightmegafantasy: {
+	corviknightgmegafantasy: {
 		abilities: {0: "Battle Armor"},	
 		tier: "OU",
 	},
@@ -195,7 +195,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
 	},
-	garbodormegafantasy: {
+	garbodorgmegafantasy: {
 		tier: "OU",
 		abilities: {0: "Earth Eater"},	
 	},
@@ -244,7 +244,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	noivernfantasy: {
 		tier: "OU",
 	},
-	orbeetlemegafantasy: {	
+	orbeetlegmegafantasy: {	
 		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
 		tier: "OU",
 	},

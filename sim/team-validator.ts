@@ -546,12 +546,12 @@ export class TeamValidator {
 				canMegaEvo && species.id === 'urshifufantasy' && set.moves.map(toID).includes('renzhenouda' as ID) &&
 				!ruleTable.has('megarayquazaclause')
 			) {
-				tierSpecies = dex.species.get('Urshifu-Mega-Fantasy');
+				tierSpecies = dex.species.get('Urshifu-G-Mega-Fantasy');
 			} else if (
 				canMegaEvo && species.id === 'urshifurapidstrikefantasy' && set.moves.map(toID).includes('yishunqianji' as ID) &&
 				!ruleTable.has('megarayquazaclause')
 			) {
-				tierSpecies = dex.species.get('Urshifu-Rapid-Strike-Mega-Fantasy');
+				tierSpecies = dex.species.get('Urshifu-Rapid-Strike-G-Mega-Fantasy');
 			} else if (item.id === 'rustedsword' && species.id === 'zacian') {
 				tierSpecies = dex.species.get('Zacian-Crowned');
 			} else if (item.id === 'rustedshield' && species.id === 'zamazenta') {
