@@ -21251,6 +21251,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			headlongrush: ["9M"],
 			thousandwaves: ["9M"],
 			recover: ["9M"],
+			drainpunch: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L35", "8M", "8L35"],
 			ancientpower: ["4T"],
@@ -21374,6 +21375,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			headlongrush: ["9M"],
 			thousandwaves: ["9M"],
 			recover: ["9M"],
+			drainpunch: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L35", "8M", "8L35"],
 			ancientpower: ["4T"],
