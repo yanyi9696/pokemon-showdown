@@ -21248,6 +21248,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			jetpunch: ["9M"],
+			wavecrash: ["9M"],
 			headlongrush: ["9M"],
 			thousandwaves: ["9M"],
 			recover: ["9M"],
@@ -21372,6 +21373,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			jetpunch: ["9M"],
+			wavecrash: ["9M"],
 			headlongrush: ["9M"],
 			thousandwaves: ["9M"],
 			recover: ["9M"],
