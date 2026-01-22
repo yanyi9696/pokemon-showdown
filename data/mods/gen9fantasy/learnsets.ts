@@ -18625,6 +18625,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			pyroball: ["9M"],
 			drainpunch: ["9M"],
+			closecombat: ["9M"],
 			mysticalpower: ["9M"],
 			psyshock: ["9M"],
 			//幻想增添技能
@@ -18730,6 +18731,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			pyroball: ["9M"],
 			drainpunch: ["9M"],
+			closecombat: ["9M"],
 			mysticalpower: ["9M"],
 			psyshock: ["9M"],
 			//幻想增添技能
@@ -18835,6 +18837,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			iceball: ["9M"],
 			iceshard: ["9M"],
+			tripleaxel: ["9M"],
 			pyroball: ["9M"],
 			dongchadaji: ["9M"],
 			//幻想增添技能
@@ -18910,6 +18913,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			iceball: ["9M"],
 			iceshard: ["9M"],
+			tripleaxel: ["9M"],
 			pyroball: ["9M"],
 			dongchadaji: ["9M"],
 			//幻想增添技能
