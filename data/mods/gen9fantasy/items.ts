@@ -1684,7 +1684,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	lucarionitez: {
 		name: "Lucarionite Z",
 		spritenum: 594,
-		megaStone: ["Lucario-Mega", "Lucario-Mega-Fantasy"],
+		megaStone: ["Lucario-Mega-Z", "Lucario-Mega-Z-Fantasy"],
 		megaEvolves: ["Lucario", "Lucario-Fantasy"],
 		itemUser: ["Lucario", "Lucario-Fantasy"],
 		onTakeItem(item, source) {
