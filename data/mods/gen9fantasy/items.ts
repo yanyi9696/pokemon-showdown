@@ -2395,13 +2395,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					"item: Fantasy Ice Stone",
 					"[of] " + source
 				);
-				this.damage(source.baseMaxhp / 8, source, target);
+				this.damage(source.baseMaxhp / 6, source, target);
 			}
 		},
 		num: 30007,
 		gen: 9,
-		desc: "幻之冰之石。携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/8",
-		shortDesc: "幻之冰之石。技能造成的灼伤变冻伤,对手在冻伤状态下攻击持有者,损失1/8最大HP",
+		desc: "幻之冰之石。携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/6",
+		shortDesc: "幻之冰之石。技能造成的灼伤变冻伤,对手在冻伤状态下攻击持有者,损失1/6最大HP",
 	},
 	fantasylaxincense: {
 		name: "Fantasy Lax Incense",

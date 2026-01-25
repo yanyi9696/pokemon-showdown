@@ -278,7 +278,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Mega',               // 禁用所有Mega进化
 		],
 		unbanlist: [
-			'Mega',               // 但我们在这里特例解禁某一类
+			'Mega', 'Ultra Beast', 'Paradox', 'Sub-Legendary', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
 			// 这两行用于显示你自制宝可梦的正确信息，应该保留
