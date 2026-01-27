@@ -479,6 +479,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 212,
 		shortDesc: "可以使钢属性和毒属性的宝可梦也陷入中毒状态,毒系招式对钢系效果绝佳",
 	},
+	dancer: {
+		onStart(pokemon) {
+			// 登场时为自己施加“舞者”状态（对应的逻辑在 conditions.ts 中）
+			pokemon.addVolatile('dancer');
+		},
+		onEnd(pokemon) {
+			// 离场时清除该状态
+			pokemon.removeVolatile('dancer');
+		},
+		flags: {},
+		name: "Dancer",
+		rating: 3,
+		num: 216,
+		shortDesc: "有谁使出跳舞招式时,自己也能接着使出;若整回合无人跳舞,下次跳舞招式将优先出手",
+	},
 	stalwart: {
 		// --------------------------------------------------
 		// 1. 原有的“坚毅”效果 - 无视吸引招式
