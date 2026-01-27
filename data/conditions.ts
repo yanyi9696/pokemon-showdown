@@ -5,6 +5,8 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onStart(pokemon) {
 			this.effectState.anyDanceThisTurn = false;
 			this.effectState.canBoost = false;
+			// 新增：首回合标记，确保换上来的那个回合不做判定
+			this.effectState.isFirstTurn = true;
 		},
 		onAnyAfterMove(source: Pokemon, target: Pokemon, move: ActiveMove) {
 			if (move.flags['dance']) {
@@ -13,33 +15,40 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onResidualOrder: 26,
 		onResidual(pokemon: Pokemon) {
-			// 如果这一回合没有任何人（包含自己）使用跳舞招式
+			// 1. 如果是刚换上来的那个回合，直接跳过逻辑，并将标记设为 false
+			if (this.effectState.isFirstTurn) {
+				this.effectState.isFirstTurn = false;
+				this.effectState.anyDanceThisTurn = false; // 重置监控
+				return;
+			}
+
+			// 2. 正常回合判定：如果这一回合没有任何人（包含自己）使用跳舞招式
 			if (!this.effectState.anyDanceThisTurn) {
 				if (!this.effectState.canBoost) {
 					this.effectState.canBoost = true;
-					// --- 关键修改：发送 -start 指令让状态栏显示“舞者”标签 ---
-					// 使用 [silent] 是因为我们下面会发自定义的“渴望跳舞”消息
+					// 发送 -start 指令让状态栏显示绿色的“舞者”标签
 					this.add('-start', pokemon, 'dancer', '[silent]'); 
 					this.add('-message', `${pokemon.name}渴望跳舞！`); 
 				}
 			} else {
-				// 如果有人跳舞了，加速效果失效
+				// 如果有人跳舞了，加速效果失效/无法激活
 				if (this.effectState.canBoost) {
 					this.effectState.canBoost = false;
-					// --- 关键修改：效果失效时移除状态栏标签 ---
 					this.add('-end', pokemon, 'dancer', '[silent]');
 				}
 			}
+			// 每回合结束重置监控标记
 			this.effectState.anyDanceThisTurn = false;
 		},
 		onModifyPriority(priority: number, pokemon: Pokemon, target: Pokemon, move: ActiveMove) {
+			// 只有在 canBoost 激活且使用的是跳舞招式时，提升 0.5 优先度
 			if (move?.flags['dance'] && this.effectState.canBoost) {
 				this.debug('Dancer priority boost (+0.5)');
 				return priority + 0.5;
 			}
 		},
 		onAfterMove(pokemon: Pokemon, target: Pokemon, move: ActiveMove) {
-			// 成功使出跳舞招式后，消耗蓄力并隐藏标签
+			// 成功使出跳舞招式后，消耗掉这个加速状态并移除 UI 标签
 			if (move.flags['dance'] && this.effectState.canBoost) {
 				this.effectState.canBoost = false;
 				this.add('-end', pokemon, 'dancer', '[silent]');

@@ -492,7 +492,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Dancer",
 		rating: 3,
 		num: 216,
-		shortDesc: "有谁使出跳舞招式时,自己也能接着使出;若整回合无人跳舞,下次跳舞招式将优先出手",
+		shortDesc: "有谁使出跳舞招式时,自己也能接着使出;若完整经历一回合无人跳舞,下次跳舞招式将优先出手",
 	},
 	stalwart: {
 		// --------------------------------------------------
