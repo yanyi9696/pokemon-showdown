@@ -6,8 +6,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			this.effectState.anyDanceThisTurn = false;
 			this.effectState.canBoost = false;
 		},
-		// 修正 1：移除多余的第一个参数 pokemon，函数签名改为 (source, target, move)
-		// 修正 2：添加显式类型 (source: Pokemon, target: Pokemon, move: ActiveMove) 解决 implicit any
 		onAnyAfterMove(source: Pokemon, target: Pokemon, move: ActiveMove) {
 			if (move.flags['dance']) {
 				this.effectState.anyDanceThisTurn = true;
@@ -19,28 +17,32 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			if (!this.effectState.anyDanceThisTurn) {
 				if (!this.effectState.canBoost) {
 					this.effectState.canBoost = true;
-					this.add('-activate', pokemon, 'ability: Dancer', '[silent]');
-					// 按要求修改提示语
+					// --- 关键修改：发送 -start 指令让状态栏显示“舞者”标签 ---
+					// 使用 [silent] 是因为我们下面会发自定义的“渴望跳舞”消息
+					this.add('-start', pokemon, 'dancer', '[silent]'); 
 					this.add('-message', `${pokemon.name}渴望跳舞！`); 
 				}
 			} else {
-				// 如果有人跳舞了，则下一回合不具备加速效果
-				this.effectState.canBoost = false;
+				// 如果有人跳舞了，加速效果失效
+				if (this.effectState.canBoost) {
+					this.effectState.canBoost = false;
+					// --- 关键修改：效果失效时移除状态栏标签 ---
+					this.add('-end', pokemon, 'dancer', '[silent]');
+				}
 			}
-			// 每回合重置监控标记
 			this.effectState.anyDanceThisTurn = false;
 		},
-		// 修正 3：增加优先度逻辑
 		onModifyPriority(priority: number, pokemon: Pokemon, target: Pokemon, move: ActiveMove) {
 			if (move?.flags['dance'] && this.effectState.canBoost) {
 				this.debug('Dancer priority boost (+0.5)');
 				return priority + 0.5;
 			}
 		},
-		// 修正 4：在成功使出跳舞招式后，消耗掉这个“蓄力”状态
 		onAfterMove(pokemon: Pokemon, target: Pokemon, move: ActiveMove) {
+			// 成功使出跳舞招式后，消耗蓄力并隐藏标签
 			if (move.flags['dance'] && this.effectState.canBoost) {
 				this.effectState.canBoost = false;
+				this.add('-end', pokemon, 'dancer', '[silent]');
 			}
 		},
 	},
