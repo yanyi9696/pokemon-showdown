@@ -517,68 +517,81 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	lujiao: {
 		num: 10013,
 		accuracy: 100,
-	    basePower: 90,
-	    category: "Physical",
-	    name: "Lu Jiao",
-	    pp: 10,
-	    priority: 0,
-	    flags: { contact: 1, protect: 1, mirror: 1 },
-	    onModifyType(move, pokemon) {
-		    switch (pokemon.species.name) {
-			    case 'Sawsbuck-Fantasy':
-				    move.type = 'Fairy';
-				    break;
-			    case 'Sawsbuck-Summer-Fantasy':
-				    move.type = 'Grass';
-				    break;
-			    case 'Sawsbuck-Autumn-Fantasy':
-				    move.type = 'Ground';
-				    break;
-			    case 'Sawsbuck-Winter-Fantasy':
-				    move.type = 'Ice';
-				    break;
-		    }
-	    },
-	    secondary: {
-		    chance: 50,
-		    boosts: {
-			    def: -1,
-		    },
-	    },
-	    target: "normal",
-	    type: "Normal",
+		basePower: 90,
+		category: "Physical",
+		name: "Lu Jiao",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, heal: 1 }, // 增加了 heal 标签
+		onModifyType(move, pokemon) {
+			switch (pokemon.species.name) {
+				case 'Sawsbuck-Fantasy':
+					move.type = 'Fairy';
+					break;
+				case 'Sawsbuck-Summer-Fantasy':
+					move.type = 'Grass';
+					break;
+				case 'Sawsbuck-Autumn-Fantasy':
+					move.type = 'Ground';
+					break;
+				case 'Sawsbuck-Winter-Fantasy':
+					move.type = 'Ice';
+					break;
+			}
+		},
+		/**
+		 * 核心加强逻辑：检查天气
+		 * 如果是晴天或大日照，动态赋予招式 50% 的吸血效果
+		 */
+		onModifyMove(move, pokemon) {
+			if (this.field.isWeather(['sunnyday', 'desolateland'])) {
+				move.drain = [1, 2]; // 回复伤害量的 1/2
+			}
+		},
+		secondary: {
+			chance: 50,
+			boosts: {
+				def: -1,
+			},
+		},
+		target: "normal",
+		type: "Normal",
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
-		desc: "鹿角。招式的属性会根据使用者的形态改变,春:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低1级",
-		shortDesc: "鹿角。招式的属性随形态改变。50%令目标的防御降低1级"
+		desc: "鹿角。招式的属性会根据使用者的形态改变,春:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低1级。在大晴天或大日照下,使用者将造成伤害的50%转化为自身的HP",
+		shortDesc: "鹿角。属性随形态改变,50%令目标防御降低1级。晴天下吸血",
 	},
 	huanji: {
 		num: 10014,
 		accuracy: true,
-	    basePower: 0,
-	    category: "Status",
-	    name: "Huan Ji",
-	    pp: 10,
-	    priority: 0,
-	    flags: { snatch: 1 },
-	    boosts: {
-		    atk: 1,
-		    spe: 1,
-	    },
-	    onHit(pokemon) {
-		    if (pokemon.baseSpecies.baseSpecies === 'Sawsbuck' && !pokemon.transformed) {
-			    const formeOrder = ['Sawsbuck-Fantasy', 'Sawsbuck-Summer-Fantasy', 'Sawsbuck-Autumn-Fantasy', 'Sawsbuck-Winter-Fantasy'];
-			    const currentForme = pokemon.species.name;
-			    const currentIndex = formeOrder.indexOf(currentForme);
-			    const nextForme = formeOrder[(currentIndex + 1) % formeOrder.length];
-			    pokemon.formeChange(nextForme, this.effect, false, '0', '[msg]');
-		    }
-	    },
-	    target: "self",
-	    type: "Normal",
+		basePower: 0,
+		category: "Status",
+		name: "Huan Ji",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1 },
+		boosts: {
+			atk: 1,
+			spe: 1,
+		},
+		onHit(pokemon) {
+			// 核心加强逻辑：治愈使用者的异常状态（如中毒、麻痹、烧伤等）
+			pokemon.cureStatus();
+
+			// 原有的形态变化逻辑
+			if (pokemon.baseSpecies.baseSpecies === 'Sawsbuck' && !pokemon.transformed) {
+				const formeOrder = ['Sawsbuck-Fantasy', 'Sawsbuck-Summer-Fantasy', 'Sawsbuck-Autumn-Fantasy', 'Sawsbuck-Winter-Fantasy'];
+				const currentForme = pokemon.species.name;
+				const currentIndex = formeOrder.indexOf(currentForme);
+				const nextForme = formeOrder[(currentIndex + 1) % formeOrder.length];
+				pokemon.formeChange(nextForme, this.effect, false, '0', '[msg]');
+			}
+		},
+		target: "self",
+		type: "Normal",
 		zMove: { effect: 'clearnegativeboost' },
-		desc: "换季。提高自身物攻与速度各1级。萌芽鹿使用该招式后,按季节顺序进行形态变化",
-		shortDesc: "换季。自身物攻与速度+1。萌芽鹿使用后按季节顺序变形"
+		desc: "换季。提高自身物攻与速度各1级。治愈使用者的异常状态。萌芽鹿使用该招式后,按季节顺序进行形态变化",
+		shortDesc: "换季。自身物攻与速度+1并治愈异常。萌芽鹿用后按季节变形",
 	},
 	yuannengshifang: {
 		num: 10015,

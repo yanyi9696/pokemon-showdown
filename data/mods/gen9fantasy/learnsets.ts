@@ -20704,6 +20704,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			earthpower: ["9M"],
 			mudshot: ["9M"],
 			terablast: ["9M"],
+			quickattack: ["9M"],
 			//幻想增添技能
 			assist: ["7L31", "6L22", "5L22", "4L18", "3L19"],
 			attract: ["7M", "7L10", "6M", "6L8", "5M", "5L8", "4M", "4L4", "3M", "3L7", "3S2"],
@@ -20806,6 +20807,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			earthpower: ["9M"],
 			mudshot: ["9M"],
 			terablast: ["9M"],
+			quickattack: ["9M"],
 			//幻想增添技能
 			attract: ["7M", "7L1", "6M", "6L1", "5M", "5L1", "4M", "4L1", "3M", "3L1", "3S0"],
 			blizzard: ["7M", "6M", "5M", "4M", "3M"],
@@ -21059,6 +21061,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	mudkipfantasy: {
 		learnset: {
 			aquajet: ["9M"],
+			recover: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L27", "8M", "8L27"],
 			ancientpower: ["9E", "8E", "7E", "6E", "5E", "4T", "4E"],
