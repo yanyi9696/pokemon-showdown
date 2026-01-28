@@ -21625,6 +21625,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	zoruahisuifantasy: {
 		learnset: {
+			infernalparade: ["9M"],
+			return: ["9M"],
+			frustration: ["9M"],
+			doubleedge: ["9M"],
+			fakeout: ["9M"],
+			//幻想增添技能
 			agility: ["9M", "9L32"],
 			bittermalice: ["9L40"],
 			burningjealousy: ["9M"],
@@ -21685,6 +21691,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	zoroarkhisuifantasy: {
 		learnset: {
+			infernalparade: ["9M"],
+			return: ["9M"],
+			frustration: ["9M"],
+			doubleedge: ["9M"],
+			fakeout: ["9M"],
+			//幻想增添技能
 			aerialace: ["9M"],
 			agility: ["9M", "9L34"],
 			bittermalice: ["9L46", "9S0"],
