@@ -3795,6 +3795,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	scolipedefantasy: {
 		learnset: {
 			biansuzhefan: ["9M"],
+			barbbarrage: ["9M"],
 			baoyulihua: ["9M"],
 			shelter: ["9M"],
 			//幻想增添技能
@@ -3884,6 +3885,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	scolipedemegafantasy: {
 		learnset: {
 			biansuzhefan: ["9M"],
+			barbbarrage: ["9M"],
 			baoyulihua: ["9M"],
 			shelter: ["9M"],
 			//幻想增添技能
@@ -21696,6 +21698,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			frustration: ["9M"],
 			doubleedge: ["9M"],
 			fakeout: ["9M"],
+			huanzhiwu: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M"],
 			agility: ["9M", "9L34"],

@@ -358,6 +358,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezingfantasy: {
 		tier: "UUBL",
 	},
+	zoroarkhisuifantasy: {
+		tier: "UUBL",
+	},
 	beheeyemfantasy: {
 		tier: "UU",
 	},
@@ -410,9 +413,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	roseradefantasy: {
 		tier: "UU",
 	},
-	rotomfantasy: {
-		tier: "UU",
-	},
 	scolipedefantasy: {
 		tier: "UU",
 	},
@@ -461,6 +461,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Flower Gift"},		
 	},
 	ribombeefantasy: {
+		tier: "RUBL",
+	},
+	rotomfantasy: {
 		tier: "RUBL",
 	},
 	thievulfantasy: {
@@ -534,6 +537,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "LC",
 	},
 	tyruntfantasy: {
+		tier: "LC",
+	},
+	zoruahisuifantasy: {
 		tier: "LC",
 	},
 
@@ -659,10 +665,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 		abilities: {0: "Magic Guard"},		
 	},
-	emboarmega: {
-		tier: "UU",
-		abilities: {0: "Supreme Overlord"},		
-	},
 	falinksmega: {
 		tier: "UU",
 		abilities: {0: "Defiant"},		
@@ -682,6 +684,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	eelektrossmega: {
 		tier: "RUBL",
 		abilities: {0: "Electric Surge"},		
+	},
+	emboarmega: {
+		tier: "RUBL",
+		abilities: {0: "Supreme Overlord"},		
 	},
 	floettemega: {
 		tier: "RUBL",
