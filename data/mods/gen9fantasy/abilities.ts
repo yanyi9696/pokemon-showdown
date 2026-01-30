@@ -150,27 +150,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.singleEvent('WeatherChange', this.effect, this.effectState, pokemon);
 		},
 		onWeatherChange(pokemon) {
-			// 基础检查：必须是在场、且基础物种是樱花儿、且没有处于变身状态
 			if (!pokemon.isActive || pokemon.baseSpecies.baseSpecies !== 'Cherrim' || pokemon.transformed) return;
 			if (!pokemon.hp) return;
 
 			const isSun = ['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather());
 
 			if (isSun) {
-				// 晴天下的逻辑
 				if (pokemon.baseSpecies.id === 'cherrimfantasy') {
-					// Fantasy 版转为 Fantasy 晴天形态
 					if (pokemon.species.id !== 'cherrimsunshinefantasy') {
 						pokemon.formeChange('Cherrim-Sunshine-Fantasy', this.effect, false, '0', '[msg]');
 					}
 				} else if (pokemon.baseSpecies.id === 'cherrim') {
-					// 普通版转为普通晴天形态
 					if (pokemon.species.id !== 'cherrimsunshine') {
 						pokemon.formeChange('Cherrim-Sunshine', this.effect, false, '0', '[msg]');
 					}
 				}
 			} else {
-				// 非晴天下的逻辑：变回各自的原始形态
 				if (pokemon.species.id === 'cherrimsunshinefantasy') {
 					pokemon.formeChange('Cherrim-Fantasy', this.effect, false, '0', '[msg]');
 				} else if (pokemon.species.id === 'cherrimsunshine') {
@@ -178,49 +173,55 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
+
 		// --- 对自身（持有者）的加成 ---
-		onModifyAtkPriority: 3,
-		onModifyAtk(atk, pokemon) {
-			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				return this.chainModify(1.5);
-			}
-		},
-		onModifySpAPriority: 3,
-		onModifySpA(spa, pokemon) {
-			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				return this.chainModify(1.5);
-			}
-		},
-		onModifySpDPriority: 4,
-		onModifySpD(spd, pokemon) {
-			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				return this.chainModify(1.5);
-			}
-		},
-		// --- 对同伴的加成 ---
+
+		// 攻击与特攻：使用标准的同伴钩子，TS 完美支持
 		onAllyModifyAtkPriority: 3,
 		onAllyModifyAtk(atk, pokemon) {
 			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				return this.chainModify(1.5);
+				if (pokemon.getStat('atk', false, true) >= pokemon.getStat('spa', false, true)) {
+					return this.chainModify(1.5);
+				}
 			}
 		},
 		onAllyModifySpAPriority: 3,
 		onAllyModifySpA(spa, pokemon) {
 			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				return this.chainModify(1.5);
+				if (pokemon.getStat('spa', false, true) > pokemon.getStat('atk', false, true)) {
+					return this.chainModify(1.5);
+				}
 			}
 		},
-		onAllyModifySpDPriority: 4,
-		onAllyModifySpD(spd, pokemon) {
-			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				return this.chainModify(1.5);
+
+		// 防御与特防：为了消除 TS 报错，我们移除 Priority 属性（使用默认优先级）
+		// 或者将所有加成统一写在 onAny 系列中，去掉 Priority 字段
+		onAnyModifyDef(def, target, source, move) {
+			const abilityHolder = this.effectState.target;
+			if (['sunnyday', 'desolateland'].includes(target.effectiveWeather())) {
+				if (target.side === abilityHolder.side) {
+					if (target.getStat('def', false, true) <= target.getStat('spd', false, true)) {
+						return this.chainModify(1.5);
+					}
+				}
 			}
 		},
+		onAnyModifySpD(spd, target, source, move) {
+			const abilityHolder = this.effectState.target;
+			if (['sunnyday', 'desolateland'].includes(target.effectiveWeather())) {
+				if (target.side === abilityHolder.side) {
+					if (target.getStat('spd', false, true) < target.getStat('def', false, true)) {
+						return this.chainModify(1.5);
+					}
+				}
+			}
+		},
+
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, breakable: 1 },
 		name: "Flower Gift",
-		rating: 3,
+		rating: 3.5,
 		num: 122,
-		shortDesc: "晴朗天气时，自己与同伴的攻击、特攻和特防能力会提高 1.5 倍。",
+		shortDesc: "大晴天时,自己与同伴双攻中较高的一项与双防中较低的一项将提高1.5倍",
 	},
 	infiltrator: {
 		onModifyMove(move) {
