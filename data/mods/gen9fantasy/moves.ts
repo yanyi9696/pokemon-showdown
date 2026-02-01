@@ -1406,6 +1406,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		maxMove: { basePower: 120 },
 		contestType: "Beautiful",
 		desc: "玫瑰之舞。连续2次给予伤害。每次攻击有20%的几率使目标陷入中毒状态",
-		shortDesc: "玫瑰之舞。连续攻击2次。每次攻击有20%的几率使目标中毒",
+		shortDesc: "玫瑰之舞。连续攻击2次,每一次都有20%几率使对手中毒",
 	},
 };
