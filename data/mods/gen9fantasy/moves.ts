@@ -1336,15 +1336,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		multihit: 10,
 		willCrit: true,
 		ignoreAbility: true,
-		// 使用 onPrepareHit 代替 onBeforeHit，这是更通用的钩子
-		onPrepareHit(target: any, source: any, move: any) {
-			// 将逻辑绑定到 move 的 hit 流程中
-			// 只有当不是最后一击时，动态移除接触标签
-			if (move.multihit && move.hit < (Array.isArray(move.multihit) ? move.multihit[1] : move.multihit)) {
-				delete move.flags['contact'];
-			} else {
-				move.flags['contact'] = 1;
+		/**
+		 * 核心逻辑：修复 TS 类型检查报错
+		 */
+		onTryHit(target, source, move) {
+			if (move.multihit && typeof move.hit === 'number') {
+				if (move.hit < 10) {
+					// 解决方法：使用 delete 关键字彻底移除 contact 标记
+					// 这样在计算反伤（如凸凸头盔）时，系统会找不到该标记，从而判定为非接触
+					delete move.flags.contact;
+				} else {
+					// 最后一次攻击时，重新补回标记
+					move.flags.contact = 1;
+				}
 			}
+		},
+		// 容错处理：确保招式彻底结束或中断后，flag 恢复正常
+		onAfterMove(source, target, move) {
+			move.flags.contact = 1;
 		},
 		secondary: null,
 		target: "normal",
@@ -1353,7 +1362,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		maxMove: { basePower: 70 },
 		contestType: "Cool",
 		desc: "一瞬千击。必定能够先制攻击。无视目标的特性,在一回合内连续攻击10次。攻击必定击中要害。虽然是连续攻击,但仅在最后一击结算接触类伤害反馈。",
-		shortDesc: "一瞬千击。先制+1,无视特性连续攻击10次只视作1次攻击,必定击中要害",
+		shortDesc: "一瞬千击。先制+1,无视特性连打10次视作1次攻击,必定ct",
 	},
 	huazhiwu: {
 		num: 10037,
@@ -1397,6 +1406,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		maxMove: { basePower: 120 },
 		contestType: "Beautiful",
 		desc: "玫瑰之舞。连续2次给予伤害。每次攻击有20%的几率使目标陷入中毒状态",
-		shortDesc: "玫瑰之舞。连续2次给予伤害。每次攻击有20%的几率使目标陷入中毒状态",
+		shortDesc: "玫瑰之舞。连续攻击2次。每次攻击有20%的几率使目标中毒",
 	},
 };
