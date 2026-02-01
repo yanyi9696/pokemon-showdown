@@ -1333,20 +1333,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 1,
 		flags: { contact: 1, protect: 1, mirror: 1, punch: 1, metronome: 1 },
-		// 效果1：连续攻击10次
 		multihit: 10,
-		// 效果2：必定击中要害
 		willCrit: true,
-		// 效果3：无视对手的特性进行攻击
 		ignoreAbility: true,
+		// 使用 onPrepareHit 代替 onBeforeHit，这是更通用的钩子
+		onPrepareHit(target: any, source: any, move: any) {
+			// 将逻辑绑定到 move 的 hit 流程中
+			// 只有当不是最后一击时，动态移除接触标签
+			if (move.multihit && move.hit < (Array.isArray(move.multihit) ? move.multihit[1] : move.multihit)) {
+				delete move.flags['contact'];
+			} else {
+				move.flags['contact'] = 1;
+			}
+		},
 		secondary: null,
 		target: "normal",
 		type: "Ghost",
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 70 },
 		contestType: "Cool",
-		desc: "一瞬千击。携带后进入对战时自动进行超巨进化。必定能够先制攻击。无视目标的特性,在一回合内连续攻击10次。攻击必定击中要害。",
-		shortDesc: "一瞬千击。先制+1,无视特性连续攻击10次,必定击中要害。",
+		desc: "一瞬千击。必定能够先制攻击。无视目标的特性,在一回合内连续攻击10次。攻击必定击中要害。虽然是连续攻击,但仅在最后一击结算接触类伤害反馈。",
+		shortDesc: "一瞬千击。先制+1,无视特性连续攻击10次只视作1次攻击,必定击中要害",
 	},
 	huazhiwu: {
 		num: 10037,

@@ -1058,6 +1058,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	hippowdon: {
 		tier: "RU",
 	},
+	drifloon: {
+		tier: "LC",
+	},
 	meltan: {
 		tier: "LC",
 	},
