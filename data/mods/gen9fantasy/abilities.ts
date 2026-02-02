@@ -1684,6 +1684,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (this.field.addPseudoWeather('trickroom', pokemon)) {
 					this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
 					this.add('-message', `${pokemon.name} 扭曲了周围的一切！`);
+
+					// 【核心修正逻辑】
+					// 获取当前场上的戏法空间状态数据
+					const trickRoomData = this.field.pseudoWeather['trickroom'];
+					if (trickRoomData && trickRoomData.duration) {
+						// 手动将持续时间减 1，确保总长度为 5 回合（包含开启的这一回合）
+						trickRoomData.duration--;
+						this.debug(`Trick Room duration adjusted to ${trickRoomData.duration} to account for end-of-turn activation.`);
+					}
 				}
 				// 无论成功与否，重置标记防止重复触发
 				this.effectState.pendingTrickRoom = false;
