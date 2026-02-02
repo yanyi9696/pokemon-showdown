@@ -280,21 +280,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onEnd(pokemon) {
 			if (pokemon.illusion) {
 				this.debug('illusion cleared');
-				pokemon.illusion = null;
+				pokemon.illusion = null; // 清除伪装对象
 				const details = pokemon.getUpdatedDetails();
-				this.add('replace', pokemon, details);
+				this.add('replace', pokemon, details); // 恢复模型和名字
 				this.add('-end', pokemon, 'Illusion');
 
-				// --- 关键修复：幻觉解除后，强制刷新为真实的属性和种族值 ---
-				// 1. 刷新真实属性
+				// --- 关键修复：幻觉解除瞬间，显现真实的幻想数据 ---
+				// 恢复真实属性
 				if (!this.dex.species.get(pokemon.species.id).exists) {
 					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+					// 恢复真实种族值
+					this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果变回原版宝可梦，也要清除之前的伪装属性显示
+					// 如果真实身份也是原版，则确保清除所有额外 UI
 					this.add('-start', pokemon, 'typechange', pokemon.getTypes().join('/'), '[silent]');
+					this.add('-start', pokemon, 'fantasystats', '', '[silent]');
 				}
-				// 2. 刷新真实种族值 (对应你自定义的 fantasystats)
-				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+
+				if (this.ruleTable.has('illusionlevelmod')) {
+					this.hint("Illusion Level Mod is active, so this Pok\u00e9mon's true level was hidden.", true);
+				}
 			}
 		},
 		onFaint(pokemon) {
