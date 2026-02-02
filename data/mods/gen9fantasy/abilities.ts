@@ -1079,7 +1079,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Wo Ju",
 		rating: 3.5,
 		num: 10017,
-		shortDesc: "蜗居。登场时蜗居壳中,使用技能前钻出,回合结束时再次缩回壳中蜗居",
+		shortDesc: "蜗居。使用技能时钻出壳，在壳中时无视场地天气威力变化和对方强化影响但闪避-1",
 	},
 	chonghuapi: {
 		// onStart 会在每次宝可梦登场时触发
