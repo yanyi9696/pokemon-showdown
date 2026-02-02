@@ -259,6 +259,75 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 151,
 		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%物防与特防",
 	},
+	illusion: {
+		onBeforeSwitchIn(pokemon) {
+			pokemon.illusion = null;
+			for (let i = pokemon.side.pokemon.length - 1; i > pokemon.position; i--) {
+				const possibleTarget = pokemon.side.pokemon[i];
+				if (!possibleTarget.fainted) {
+					if (!pokemon.terastallized || possibleTarget.species.baseSpecies !== 'Ogerpon') {
+						pokemon.illusion = possibleTarget;
+					}
+					break;
+				}
+			}
+
+			// --- 核心修复：同步幻想宝可梦 UI ---
+			if (pokemon.illusion) {
+				const target = pokemon.illusion;
+				// 判断伪装目标是否为幻想宝可梦 (根据你的 formats.ts 逻辑)
+				const isTargetFantasy = !this.dex.species.get(target.species.id).exists;
+				
+				if (isTargetFantasy) {
+					// 如果目标是幻想宝可梦，强制显示目标的属性和种族值标签
+					this.add('-start', pokemon, 'typechange', target.species.types.join('/'), '[silent]');
+					this.add('-start', pokemon, 'typeadd', Object.values(target.species.baseStats).join('/'), '[silent]');
+				} else {
+					// 如果目标是普通宝可梦，清除可能存在的特殊 UI 标签 (发送普通属性即可)
+					this.add('-start', pokemon, 'typechange', target.species.types.join('/'), '[silent]');
+					// 发送一个特定指令告诉前端这不是幻想宝可梦（通常发送空值或普通属性刷新）
+					this.add('-end', pokemon, 'typeadd', '[silent]'); 
+				}
+			}
+		},
+		onDamagingHit(damage, target, source, move) {
+			if (target.illusion) {
+				this.singleEvent('End', this.dex.abilities.get('Illusion'), target.abilityState, target, source, move);
+			}
+		},
+		onEnd(pokemon) {
+			if (pokemon.illusion) {
+				this.debug('illusion cleared');
+				pokemon.illusion = null;
+				const details = pokemon.getUpdatedDetails();
+				this.add('replace', pokemon, details);
+				this.add('-end', pokemon, 'Illusion');
+
+				// --- 核心修复：还原自身真实的 UI ---
+				const isSelfFantasy = !this.dex.species.get(pokemon.species.id).exists;
+				if (isSelfFantasy) {
+					// 变回自己后，如果是幻想宝可梦，重新激活 UI 标签
+					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+					this.add('-start', pokemon, 'typeadd', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+				} else {
+					// 如果自己只是普通宝可梦，确保清理掉幻觉期间可能留下的标签
+					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+					this.add('-end', pokemon, 'typeadd', '[silent]');
+				}
+
+				if (this.ruleTable.has('illusionlevelmod')) {
+					this.hint("Illusion Level Mod is active, so this Pok\u00e9mon's true level was hidden.", true);
+				}
+			}
+		},
+		onFaint(pokemon) {
+			pokemon.illusion = null;
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1 },
+		name: "Illusion",
+		rating: 4.5,
+		num: 149,
+	},
 	flowerveil: {
 		// 当己方宝可梦（包括自己）的能力阶级尝试被变动时触发
 		onAllyTryBoost(boost, target, source, effect) {
