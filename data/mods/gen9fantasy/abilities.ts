@@ -259,57 +259,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 151,
 		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%物防与特防",
 	},
-	illusion: {
-		onBeforeSwitchIn(pokemon) {
-			pokemon.illusion = null;
-			for (let i = pokemon.side.pokemon.length - 1; i > pokemon.position; i--) {
-				const possibleTarget = pokemon.side.pokemon[i];
-				if (!possibleTarget.fainted) {
-					if (!pokemon.terastallized || possibleTarget.species.baseSpecies !== 'Ogerpon') {
-						pokemon.illusion = possibleTarget;
-					}
-					break;
-				}
-			}
-		},
-		onDamagingHit(damage, target, source, move) {
-			if (target.illusion) {
-				this.singleEvent('End', this.dex.abilities.get('Illusion'), target.abilityState, target, source, move);
-			}
-		},
-		onEnd(pokemon) {
-			if (pokemon.illusion) {
-				this.debug('illusion cleared');
-				pokemon.illusion = null; // 清除伪装对象
-				const details = pokemon.getUpdatedDetails();
-				this.add('replace', pokemon, details); // 恢复模型和名字
-				this.add('-end', pokemon, 'Illusion');
-
-				// --- 关键修复：幻觉解除瞬间，显现真实的幻想数据 ---
-				// 恢复真实属性
-				if (!this.dex.species.get(pokemon.species.id).exists) {
-					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
-					// 恢复真实种族值
-					this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
-				} else {
-					// 如果真实身份也是原版，则确保清除所有额外 UI
-					this.add('-start', pokemon, 'typechange', pokemon.getTypes().join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', '', '[silent]');
-				}
-
-				if (this.ruleTable.has('illusionlevelmod')) {
-					this.hint("Illusion Level Mod is active, so this Pok\u00e9mon's true level was hidden.", true);
-				}
-			}
-		},
-		onFaint(pokemon) {
-			pokemon.illusion = null;
-		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1 },
-		name: "Illusion",
-		rating: 4.5,
-		num: 149,
-	},
 	flowerveil: {
 		// 当己方宝可梦（包括自己）的能力阶级尝试被变动时触发
 		onAllyTryBoost(boost, target, source, effect) {

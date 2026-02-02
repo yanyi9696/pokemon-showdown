@@ -232,30 +232,22 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
 		],
 		onSwitchIn(pokemon) {
-			// 1. 获取当前展示的对象：如果有幻觉，就用幻觉对象；否则用自己
-			const appearance = pokemon.illusion || pokemon;
+			// 这两行用于显示你自制宝可梦的正确信息，应该保留
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
 
-			// 2. 检查外观身份是否在官方 Dex 中存在
-			// exists 为 false 表示它是你自制的幻想宝可梦
-			if (!Dex.species.get(appearance.species.id).exists) {
-				// 只有幻想宝可梦外观才显示“Fantasy”标签和自定义属性
-				this.add('-start', pokemon, 'typechange', appearance.species.types.join('/'), '[silent]');
-				// 显示种族值
-				this.add('-start', pokemon, 'fantasystats', Object.values(appearance.species.baseStats).join('/'), '[silent]');
-			} else {
-				// 3. 如果外观是原版宝可梦（如凯西），执行清理逻辑：
-				// 发送原版属性，但不带 [silent] 或任何触发 Fantasy 渲染的标记
-				// 在大多数 Showdown 客户端中，发送标准的属性信息会覆盖掉之前的自定义 UI
-				this.add('-start', pokemon, 'typechange', appearance.getTypes().join('/'), '[silent]');
-				
-				// 强制发送空的种族值，告知客户端隐藏该 UI 框
-				this.add('-start', pokemon, 'fantasystats', '', '[silent]');
-			}
-
-			// 保持你原有的特性显示逻辑
+			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
-		}
+		},
+		onAfterMega(pokemon) {
+			// 检查Mega后的新形态是否是您的自定义宝可梦
+			if (!Dex.species.get(pokemon.species.id).exists) {
+				// 如果是，就发送包含新形态属性和种族值的数据
+				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+			}
+		},
 	},
 	{
 		name: "[Gen 9] FC Champions Doubles",
