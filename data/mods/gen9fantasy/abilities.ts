@@ -824,7 +824,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 			// --- “黑雾”效果结束 ---
 		},
-		flags: { cantsuppress: 1 },
+		flags: {},
 		name: "Xue Nv",
 		rating: 3,
 		num: 10010,
