@@ -232,21 +232,31 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
 		],
 		onSwitchIn(pokemon) {
-			// 这两行用于显示你自制宝可梦的正确信息，应该保留
-			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
-			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			// 定义当前应该展示的对象：如果有幻觉，就用幻觉对象；否则用自己
+			const appearance = pokemon.illusion || pokemon;
 
-			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
+			// 1. 显示属性逻辑
+			// 如果伪装对象（或自己）是幻想宝可梦，显示其属性
+			if (!Dex.species.get(appearance.species.id).exists) {
+				this.add('-start', pokemon, 'typechange', appearance.species.types.join('/'), '[silent]');
+			} else {
+				// 如果伪装的是原版宝可梦，也要发送属性信息（防止显示旧的真实属性）
+				this.add('-start', pokemon, 'typechange', appearance.getTypes().join('/'), '[silent]');
+			}
+
+			// 2. 显示种族值逻辑
+			// 始终使用 appearance 的种族值进行显示
+			if (!Dex.species.get(appearance.species.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(appearance.species.baseStats).join('/'), '[silent]');
+			} else {
+				// 如果伪装的是原版，由于原版不需要显示种族值，我们可以发送一个清空信号或者默认不发送
+				// 但为了保险，如果你希望伪装得彻底，可以发送原版的种族值
+				this.add('-start', pokemon, 'fantasystats', Object.values(appearance.species.baseStats).join('/'), '[silent]');
+			}
+
+			// 3. 特性同步（你原本的修复）
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
-		},
-		onAfterMega(pokemon) {
-			// 检查Mega后的新形态是否是您的自定义宝可梦
-			if (!Dex.species.get(pokemon.species.id).exists) {
-				// 如果是，就发送包含新形态属性和种族值的数据
-				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
-				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
-			}
 		},
 	},
 	{

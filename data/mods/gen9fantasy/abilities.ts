@@ -271,16 +271,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					break;
 				}
 			}
-			// --- 新增逻辑：如果幻觉生效，立即同步伪装目标的幻想信息 ---
-			if (pokemon.illusion) {
-				const target = pokemon.illusion;
-				// 只有当目标是自定义宝可梦，或者你需要强制显示目标信息时触发
-				if (!this.dex.species.get(target.species.id).exists) {
-					this.add('-start', pokemon, 'typechange', target.species.types.join('/'), '[silent]');
-					// 如果你有显示种族值的自定义封包（如 -message 或自定义指令），请在这里调用
-					// 例如：this.add('-message', `Base Stats: ${Object.values(target.species.baseStats).join('/')}`);
-				}
-			}
 		},
 		onDamagingHit(damage, target, source, move) {
 			if (target.illusion) {
@@ -295,17 +285,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.add('replace', pokemon, details);
 				this.add('-end', pokemon, 'Illusion');
 
-				// --- 新增逻辑：幻觉破裂，恢复真实的幻想信息 ---
-				// 调用你在 formats.ts 中 SwitchIn 时的逻辑
+				// --- 关键修复：幻觉解除后，强制刷新为真实的属性和种族值 ---
+				// 1. 刷新真实属性
 				if (!this.dex.species.get(pokemon.species.id).exists) {
 					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
-					// 再次同步真实的种族值给客户端
-					this.hint(`True Form Revealed: ${pokemon.species.name}`);
+				} else {
+					// 如果变回原版宝可梦，也要清除之前的伪装属性显示
+					this.add('-start', pokemon, 'typechange', pokemon.getTypes().join('/'), '[silent]');
 				}
-
-				if (this.ruleTable.has('illusionlevelmod')) {
-					this.hint("Illusion Level Mod is active, so this Pok\u00e9mon's true level was hidden.", true);
-				}
+				// 2. 刷新真实种族值 (对应你自定义的 fantasystats)
+				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
 			}
 		},
 		onFaint(pokemon) {
