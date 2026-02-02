@@ -232,21 +232,30 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
 		],
 		onSwitchIn(pokemon) {
-			// 这两行用于显示你自制宝可梦的正确信息，应该保留
-			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
-			if (!Dex.species.get(pokemon.species.id).exists) this.add('-start', pokemon, 'fantasystats', Object.values((pokemon.illusion || pokemon).species.baseStats).join('/'), '[silent]');
+			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			const illusionTarget = pokemon.illusion || pokemon;
+			const targetSpecies = illusionTarget.species;
 
-			// 这是关键的修复：我们使用 addSplit 来确保只有宝可梦的主人能收到这条特性信息
+			// 1. 处理属性显示逻辑
+			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
+			if (!Dex.species.get(targetSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			} else {
+				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				this.add('-end', pokemon, 'typechange', '[silent]');
+			}
+
+			// 2. 处理幻想种族值显示逻辑
+			if (!Dex.species.get(targetSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			} else {
+				// 如果伪装的是原版宝可梦，清除种族值标识
+				this.add('-end', pokemon, 'fantasystats', '[silent]');
+			}
+
+			// 3. 保持你原有的特性保护代码（可选）
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
-		},
-		onAfterMega(pokemon) {
-			// 检查Mega后的新形态是否是您的自定义宝可梦
-			if (!Dex.species.get(pokemon.species.id).exists) {
-				// 如果是，就发送包含新形态属性和种族值的数据
-				this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
-				this.add('-start', pokemon, 'fantasystats', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
-			}
 		},
 	},
 	{

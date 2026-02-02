@@ -262,31 +262,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	illusion: {
 		onBeforeSwitchIn(pokemon) {
 			pokemon.illusion = null;
+			// yes, you can Illusion an active pokemon but only if it's to your right
 			for (let i = pokemon.side.pokemon.length - 1; i > pokemon.position; i--) {
 				const possibleTarget = pokemon.side.pokemon[i];
 				if (!possibleTarget.fainted) {
+					// If Ogerpon is in the last slot while the Illusion Pokemon is Terastallized
+					// Illusion will not disguise as anything
 					if (!pokemon.terastallized || possibleTarget.species.baseSpecies !== 'Ogerpon') {
 						pokemon.illusion = possibleTarget;
 					}
 					break;
-				}
-			}
-
-			// --- 核心修复：入场伪装 ---
-			if (pokemon.illusion) {
-				const target = pokemon.illusion;
-				// 判断伪装的对象是否是“幻想宝可梦”
-				const isTargetFantasy = !this.dex.species.get(target.species.id).exists;
-
-				if (isTargetFantasy) {
-					// 1. 如果伪装成幻想宝可梦：强制显示目标的数据
-					this.add('-start', pokemon, 'typechange', target.species.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'typeadd', Object.values(target.species.baseStats).join('/'), '[silent]');
-				} else {
-					// 2. 如果伪装成普通宝可梦：强制清理掉幻想 UI 指令
-					// 发送 '-end' 来取消 typeadd 状态，从而隐藏黑色背景和种族值
-					this.add('-end', pokemon, 'typeadd', '[silent]');
-					this.add('-start', pokemon, 'typechange', target.species.types.join('/'), '[silent]');
 				}
 			}
 		},
@@ -303,21 +288,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.add('replace', pokemon, details);
 				this.add('-end', pokemon, 'Illusion');
 
-				// --- 核心修复：现回原形 ---
-				// 判断索罗亚自己是否是“幻想宝可梦”
-				const isSelfFantasy = !this.dex.species.get(pokemon.species.id).exists;
-				
-				if (isSelfFantasy) {
-					// 恢复自己真实的幻想 UI
-					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'typeadd', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
+				// --- 新增：幻觉打破后重置幻想数据 ---
+				const realSpecies = pokemon.species;
+				// 如果真实身份是幻想宝可梦，则显示真实数据
+				if (!Dex.species.get(realSpecies.id).exists) {
+					this.add('-start', pokemon, 'typechange', realSpecies.types.join('/'), '[silent]');
+					this.add('-start', pokemon, 'fantasystats', Object.values(realSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 确保彻底清理 UI
-					this.add('-end', pokemon, 'typeadd', '[silent]');
-				}
-
-				if (this.ruleTable.has('illusionlevelmod')) {
-					this.hint("Illusion Level Mod is active, so this Pok\u00e9mon's true level was hidden.", true);
+					// 如果真实身份是原版，确保清除之前伪装时留下的幻想 UI
+					this.add('-end', pokemon, 'typechange', '[silent]');
+					this.add('-end', pokemon, 'fantasystats', '[silent]');
 				}
 			}
 		},
