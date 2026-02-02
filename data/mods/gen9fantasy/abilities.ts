@@ -259,6 +259,63 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 151,
 		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%物防与特防",
 	},
+	illusion: {
+		onBeforeSwitchIn(pokemon) {
+			pokemon.illusion = null;
+			for (let i = pokemon.side.pokemon.length - 1; i > pokemon.position; i--) {
+				const possibleTarget = pokemon.side.pokemon[i];
+				if (!possibleTarget.fainted) {
+					if (!pokemon.terastallized || possibleTarget.species.baseSpecies !== 'Ogerpon') {
+						pokemon.illusion = possibleTarget;
+					}
+					break;
+				}
+			}
+			// --- 新增逻辑：如果幻觉生效，立即同步伪装目标的幻想信息 ---
+			if (pokemon.illusion) {
+				const target = pokemon.illusion;
+				// 只有当目标是自定义宝可梦，或者你需要强制显示目标信息时触发
+				if (!this.dex.species.get(target.species.id).exists) {
+					this.add('-start', pokemon, 'typechange', target.species.types.join('/'), '[silent]');
+					// 如果你有显示种族值的自定义封包（如 -message 或自定义指令），请在这里调用
+					// 例如：this.add('-message', `Base Stats: ${Object.values(target.species.baseStats).join('/')}`);
+				}
+			}
+		},
+		onDamagingHit(damage, target, source, move) {
+			if (target.illusion) {
+				this.singleEvent('End', this.dex.abilities.get('Illusion'), target.abilityState, target, source, move);
+			}
+		},
+		onEnd(pokemon) {
+			if (pokemon.illusion) {
+				this.debug('illusion cleared');
+				pokemon.illusion = null;
+				const details = pokemon.getUpdatedDetails();
+				this.add('replace', pokemon, details);
+				this.add('-end', pokemon, 'Illusion');
+
+				// --- 新增逻辑：幻觉破裂，恢复真实的幻想信息 ---
+				// 调用你在 formats.ts 中 SwitchIn 时的逻辑
+				if (!this.dex.species.get(pokemon.species.id).exists) {
+					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+					// 再次同步真实的种族值给客户端
+					this.hint(`True Form Revealed: ${pokemon.species.name}`);
+				}
+
+				if (this.ruleTable.has('illusionlevelmod')) {
+					this.hint("Illusion Level Mod is active, so this Pok\u00e9mon's true level was hidden.", true);
+				}
+			}
+		},
+		onFaint(pokemon) {
+			pokemon.illusion = null;
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1 },
+		name: "Illusion",
+		rating: 4.5,
+		num: 149,
+	},
 	flowerveil: {
 		// 当己方宝可梦（包括自己）的能力阶级尝试被变动时触发
 		onAllyTryBoost(boost, target, source, effect) {
