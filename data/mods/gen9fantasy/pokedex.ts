@@ -2922,7 +2922,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Dragalge",
 		forme: "Mega",
 		types: ["Poison", "Dragon"],
-		baseStats: { hp: 70, atk: 105, def: 90, spa: 132, spd: 183, spe: 44 },
+		baseStats: { hp: 70, atk: 105, def: 105, spa: 132, spd: 183, spe: 44 },
 		abilities: { 0: "Adaptability" },
 		heightm: 2.1,
 		weightkg: 100.3,
