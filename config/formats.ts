@@ -232,25 +232,26 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
 		],
 		onSwitchIn(pokemon) {
-			// 1. 获取当前展示的外观对象：如果有幻觉，使用幻觉目标；否则使用自己
+			// 1. 获取当前展示的外观
 			const appearance = pokemon.illusion || pokemon;
+			const isAppearanceFantasy = !Dex.species.get(appearance.species.id).exists;
 
-			// 2. 判断“外观身份”是否为幻想宝可梦
-			// 注意：这里必须检查 appearance.species.id
-			if (!Dex.species.get(appearance.species.id).exists) {
-				// 如果外观是幻想宝可梦，显示属性和幻想标识
+			// 2. 只有当“看起来”是幻想宝可梦时，才发送特殊 UI 封包
+			if (isAppearanceFantasy) {
+				// 发送幻想属性，这会触发 CSS 中的 [data-type="Fantasy"] 渲染
 				this.add('-start', pokemon, 'typechange', appearance.species.types.join('/'), '[silent]');
-				// 显示种族值
+				// 发送种族值数据
 				this.add('-start', pokemon, 'fantasystats', Object.values(appearance.species.baseStats).join('/'), '[silent]');
 			} else {
-				// 3. 关键修复：如果外观是原版宝可梦，必须发送“清除”指令或原版属性，以覆盖掉之前的 UI 缓存
-				// 发送原版属性（通常不带 Fantasy 标识）
+				/* 关键点：如果外观是原版凯西，我们什么特殊封包都不发。
+				不发 typechange，客户端就不会渲染那个彩色属性条。
+				不发 fantasystats，客户端就不会渲染那个白色种族值框。
+				*/
+				// 为了保险，可以发送一个纯粹的重置指令，不含任何特殊属性名
 				this.add('-start', pokemon, 'typechange', appearance.getTypes().join('/'), '[silent]');
-				// 发送空的种族值，告知客户端隐藏种族值框
-				this.add('-start', pokemon, 'fantasystats', '', '[silent]');
 			}
 
-			// 保持你原有的特性同步逻辑
+			// 保持特性同步
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
