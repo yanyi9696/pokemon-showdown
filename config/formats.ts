@@ -232,29 +232,25 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
 		],
 		onSwitchIn(pokemon) {
-			// 定义当前应该展示的对象：如果有幻觉，就用幻觉对象；否则用自己
+			// 1. 确定当前展示的对象：如果有幻觉，就用幻觉对象；否则用自己
 			const appearance = pokemon.illusion || pokemon;
 
-			// 1. 显示属性逻辑
-			// 如果伪装对象（或自己）是幻想宝可梦，显示其属性
+			// 2. 只有当“当前展示的外观”是幻想宝可梦时，才显示额外 UI
+			// 使用 Dex.species.get().exists 来判断是否为原版宝可梦
 			if (!Dex.species.get(appearance.species.id).exists) {
+				// 显示“Fantasy”标识和属性
 				this.add('-start', pokemon, 'typechange', appearance.species.types.join('/'), '[silent]');
+				// 显示种族值
+				this.add('-start', pokemon, 'fantasystats', Object.values(appearance.species.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，也要发送属性信息（防止显示旧的真实属性）
+				// --- 关键修复：如果伪装成原版宝可梦，发送清除指令 ---
+				// 发送一个不带 Fantasy 属性的 typechange，通常能强制客户端移除之前的 Fantasy 悬浮窗
 				this.add('-start', pokemon, 'typechange', appearance.getTypes().join('/'), '[silent]');
+				// 发送空字符串或特定标记来隐藏种族值框
+				this.add('-start', pokemon, 'fantasystats', '', '[silent]');
 			}
 
-			// 2. 显示种族值逻辑
-			// 始终使用 appearance 的种族值进行显示
-			if (!Dex.species.get(appearance.species.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(appearance.species.baseStats).join('/'), '[silent]');
-			} else {
-				// 如果伪装的是原版，由于原版不需要显示种族值，我们可以发送一个清空信号或者默认不发送
-				// 但为了保险，如果你希望伪装得彻底，可以发送原版的种族值
-				this.add('-start', pokemon, 'fantasystats', Object.values(appearance.species.baseStats).join('/'), '[silent]');
-			}
-
-			// 3. 特性同步（你原本的修复）
+			// 3. 特性同步逻辑（保持你原有的 addSplit）
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
