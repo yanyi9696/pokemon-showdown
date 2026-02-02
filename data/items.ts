@@ -6939,7 +6939,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onTakeItem: false,
 		zMove: "Light That Burns the Sky",
 		zMoveFrom: "Photon Geyser",
-		itemUser: ["Necrozma-Ultra", "Necrozma-Dusk-Mane", "Necrozma-Dawn-Wings"],
+		itemUser: ["Necrozma-Ultra"],
 		num: 923,
 		gen: 7,
 		isNonstandard: "Past",
