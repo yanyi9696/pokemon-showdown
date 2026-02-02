@@ -272,21 +272,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 
-			// --- 核心修复：同步幻想宝可梦 UI ---
+			// --- 核心修复：入场伪装 ---
 			if (pokemon.illusion) {
 				const target = pokemon.illusion;
-				// 判断伪装目标是否为幻想宝可梦 (根据你的 formats.ts 逻辑)
+				// 判断伪装的对象是否是“幻想宝可梦”
 				const isTargetFantasy = !this.dex.species.get(target.species.id).exists;
-				
+
 				if (isTargetFantasy) {
-					// 如果目标是幻想宝可梦，强制显示目标的属性和种族值标签
+					// 1. 如果伪装成幻想宝可梦：强制显示目标的数据
 					this.add('-start', pokemon, 'typechange', target.species.types.join('/'), '[silent]');
 					this.add('-start', pokemon, 'typeadd', Object.values(target.species.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果目标是普通宝可梦，清除可能存在的特殊 UI 标签 (发送普通属性即可)
+					// 2. 如果伪装成普通宝可梦：强制清理掉幻想 UI 指令
+					// 发送 '-end' 来取消 typeadd 状态，从而隐藏黑色背景和种族值
+					this.add('-end', pokemon, 'typeadd', '[silent]');
 					this.add('-start', pokemon, 'typechange', target.species.types.join('/'), '[silent]');
-					// 发送一个特定指令告诉前端这不是幻想宝可梦（通常发送空值或普通属性刷新）
-					this.add('-end', pokemon, 'typeadd', '[silent]'); 
 				}
 			}
 		},
@@ -303,15 +303,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.add('replace', pokemon, details);
 				this.add('-end', pokemon, 'Illusion');
 
-				// --- 核心修复：还原自身真实的 UI ---
+				// --- 核心修复：现回原形 ---
+				// 判断索罗亚自己是否是“幻想宝可梦”
 				const isSelfFantasy = !this.dex.species.get(pokemon.species.id).exists;
+				
 				if (isSelfFantasy) {
-					// 变回自己后，如果是幻想宝可梦，重新激活 UI 标签
+					// 恢复自己真实的幻想 UI
 					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
 					this.add('-start', pokemon, 'typeadd', Object.values(pokemon.species.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果自己只是普通宝可梦，确保清理掉幻觉期间可能留下的标签
-					this.add('-start', pokemon, 'typechange', pokemon.species.types.join('/'), '[silent]');
+					// 确保彻底清理 UI
 					this.add('-end', pokemon, 'typeadd', '[silent]');
 				}
 
