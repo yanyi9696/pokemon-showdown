@@ -2187,7 +2187,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					"mummy",
 					// 你的自定义永久特性
 					"woju",
+					"chonghuapi",
 					"chaoyueqianbanbianshen",
+					"quanlidamo",
 				];
 
 				if (unchangeableAbilities.includes(affected.ability)) {

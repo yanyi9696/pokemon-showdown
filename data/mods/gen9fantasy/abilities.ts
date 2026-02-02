@@ -75,7 +75,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 应用最终的伤害修正
 			return this.chainModify(damageMultiplier);
 		},
-		flags: {},
+		flags: { breakable: 1 },
 		name: "Cute Charm",
 		rating: 3,
 		num: 56,
@@ -523,7 +523,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return null;
 			}
 		},
-		flags: {},
+		flags: { breakable: 1 },
 		name: "Stalwart",
 		rating: 2.5,
 		num: 242,
@@ -594,6 +594,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 我们将 undefined 改为 pokemon
 			this.heal(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.abilities.get('fengchao'));
 		},
+		flags: { breakable: 1 },
 		name: "Feng Chao",
 		rating: 4.5,
 		num: 10000,
@@ -1050,7 +1051,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			pokemon.setAbility(ability);
 			pokemon.baseAbility = ability.id;
 		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
 		name: "Chong Hua Pi",
 		rating: 4.5,
 		num: 10018,
