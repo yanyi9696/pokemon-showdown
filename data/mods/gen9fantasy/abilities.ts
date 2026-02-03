@@ -1,4 +1,17 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	shellarmor: {
+		onCriticalHit: false,
+		onDamagingHit(damage, target, source, move) {
+			if (move.flags['contact']) {
+				this.boost({ atk: -1 }, source, target, null, true);
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Shell Armor",
+		rating: 3,
+		num: 4,
+		shortDesc: "不会被击中要害。被接触类招式击中时,攻击方的攻击降低1级。",
+	},
 	magmaarmor: {
 		// 1. 免疫逻辑：处理冰冻 (frz) 和 冻伤 (fst)
 		onUpdate(pokemon) {
@@ -36,22 +49,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 40,
 		shortDesc: "不会变为冰冻或冻伤状态。每场战斗中第一次受到效果绝佳招式时伤害减半",
 	},
-	battlearmor: {
-		onCriticalHit: false,
-		// 新增效果：免疫入场时生效的伤害类场地状态
-		onDamage(damage, target, source, effect) {
-			// 定义造成伤害的入场类状态ID
-			const entryHazardDamageIds = ['spikes', 'stealthrock', 'gmaxsteelsurge'];
-			if (effect && entryHazardDamageIds.includes(effect.id)) {
-				return false; // 如果伤害来源是这些状态之一，则伤害无效
-			}
-		},
-		flags: { breakable: 1 },
-		name: "Battle Armor",
-		rating: 3,
-		num: 75,
-		shortDesc: "不会被击中要害，也不会被己方场地上的入场可生效的状态伤害。",
-	},
 	cutecharm: {
 		onDamagingHit(damage, target, source, move) {
 			if (this.checkMoveMakesContact(move, source, target)) {
@@ -81,18 +78,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 56,
 		shortDesc: "接触时有30%机率使对手着迷。受到的伤害降低20%,若对手为异性则伤害再降低10%",
 	},
-	shellarmor: {
+	battlearmor: {
 		onCriticalHit: false,
-		onDamagingHit(damage, target, source, move) {
-			if (move.flags['contact']) {
-				this.boost({ atk: -1 }, source, target, null, true);
+		// 新增效果：免疫入场时生效的伤害类场地状态
+		onDamage(damage, target, source, effect) {
+			// 定义造成伤害的入场类状态ID
+			const entryHazardDamageIds = ['spikes', 'stealthrock', 'gmaxsteelsurge'];
+			if (effect && entryHazardDamageIds.includes(effect.id)) {
+				return false; // 如果伤害来源是这些状态之一，则伤害无效
 			}
 		},
 		flags: { breakable: 1 },
-		name: "Shell Armor",
+		name: "Battle Armor",
 		rating: 3,
-		num: 4,
-		shortDesc: "不会被击中要害。被接触类招式击中时,攻击方的攻击降低1级。",
+		num: 75,
+		shortDesc: "不会被击中要害，也不会被己方场地上的入场可生效的状态伤害。",
 	},
 	slowstart: {
 		onStart(pokemon) {
@@ -143,6 +143,34 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4,
 		num: 112,
 		shortDesc: "登场之后的5回合内攻击和速度减半,从第2个回合开始,每回合结束时攻击和速度会上升1级",
+	},
+	imposter: {
+		onSwitchIn(pokemon) {
+			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
+			if (target) {
+				// 1. 执行原有的变身逻辑
+				pokemon.transformInto(target, this.dex.abilities.get('imposter'));
+
+				// 2. 修复 UI 显示：获取变身目标的种族值并发送给客户端
+				// 此时 pokemon.species 已经变成了 target 的 species
+				const targetSpecies = pokemon.species;
+
+				// 如果目标是自定义（不存在于原版 Dex）的幻想宝可梦，显示其种族值
+				if (!this.dex.species.get(targetSpecies.id).exists) {
+					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+					// 同时刷新属性显示，防止属性栏也显示错误
+					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+				} else {
+					// 如果变身对象是原版宝可梦，则清除幻想 UI 标识，恢复原版显示
+					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					this.add('-end', pokemon, 'typechange', '[silent]');
+				}
+			}
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
+		name: "Imposter",
+		rating: 5,
+		num: 150,
 	},
 	flowergift: {
 		onSwitchInPriority: -2,
