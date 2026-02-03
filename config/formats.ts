@@ -26,28 +26,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
-			// 使用 (pokemon as any) 绕过 TypeScript 对 transformedSpecies 的类型检查
-			// 优先级逻辑：变身(Transform) > 幻觉(Illusion) > 自身
-			const visualTargetSpecies = (pokemon as any).transformedSpecies || (pokemon.illusion ? pokemon.illusion.species : pokemon.species);
-			const targetId = visualTargetSpecies.id;
+			this.add('-end', pokemon, 'typechange', '[silent]');
+			this.add('-end', pokemon, 'fantasystats', '[silent]');
+		},
+		onUpdate(pokemon) {
+			// 1. 确定视觉目标：幻觉 > 变身 > 自身
+			// 变身目标的正确获取方式：检查 transform 状态
+			const transformVolatile = pokemon.volatiles['transform'];
+			const visualTarget = pokemon.illusion || (transformVolatile ? transformVolatile.pokemon : pokemon);
+			const targetSpecies = visualTarget.species;
 
-			// 1. 处理属性显示逻辑
-			if (!this.dex.species.get(targetId).exists) {
-				this.add('-start', pokemon, 'typechange', visualTargetSpecies.types.join('/'), '[silent]');
+			// 2. 检查是否为自定义宝可梦 (是否存在于官方 Dex)
+			// 注意：在 formats.ts 的钩子中，使用 pokemon.battle.dex 而非 this.dex
+			const exists = pokemon.battle.dex.species.get(targetSpecies.id).exists;
+
+			// 3. 处理种族值同步
+			if (!exists) {
+				const stats = Object.values(targetSpecies.baseStats).join('/');
+				// 避免重复发送协议，仅在必要时更新
+				this.add('-start', pokemon, 'fantasystats', stats, '[silent]');
+				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
 			} else {
+				// 如果视觉上是原版宝可梦，确保清除自定义标识
+				this.add('-end', pokemon, 'fantasystats', '[silent]');
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!this.dex.species.get(targetId).exists) {
-				const stats = Object.values(visualTargetSpecies.baseStats).join('/');
-				this.add('-start', pokemon, 'fantasystats', stats, '[silent]');
-			} else {
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
-			}
-
-			// 3. 特性保护代码
-			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			// 4. 特性保护（保持你原有的逻辑）
+			const currentAbility = pokemon.battle.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 	},
