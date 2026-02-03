@@ -26,28 +26,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -61,28 +67,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 		],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -104,28 +116,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Altaria-Mega-Fantasy', 'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z'
 		],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -139,28 +157,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail', 'Greninja-Ash Z'
 		],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -171,28 +195,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU'],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -203,28 +233,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -235,28 +271,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -267,28 +309,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -304,28 +352,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
 		],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -362,28 +416,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Mega', 'Ultra Beast', 'Paradox', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -407,28 +467,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
         'Malignant Chain', 'Poison Fang', 'Rage Powder', 'Skill Swap', 'Spicy Extract', 'Swagger', 'Toxic', 'Toxic Spikes',
     	],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
@@ -442,28 +508,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		// no restrictions, for serious (other than team preview)
 		ruleset: ['Team Preview', 'Cancel Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			// 1. 获取当前视觉上应该显示的宝可梦对象
+			// 优先判断幻觉，如果没幻觉再看是否变身
 			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			
+			// 如果该宝可梦已经处于变身状态，我们需要获取变身后的种族值数据
+			// 在 Showdown 中，变身后的种族值存储在 pokemon.transformedSpecies 中
+			const visualSpecies = pokemon.transformed ? pokemon.species : illusionTarget.species;
 
-			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			// 2. 处理属性显示逻辑
+			// 如果视觉对象是自定义宝可梦，显示属性
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				// 如果是原版宝可梦或变身为原版，清除属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 3. 处理幻想种族值显示逻辑
+			// 使用 visualSpecies 获取当前应显示的种族值
+			if (!Dex.species.get(visualSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果变身为原版宝可梦（如梦幻变身成水跃鱼），显示原版的种族值或清除标识
+				// 注意：如果你希望变身后显示目标的种族值，即便目标是原版，这里也可以强制发送
+				this.add('-start', pokemon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 4. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
