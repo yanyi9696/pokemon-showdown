@@ -144,35 +144,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 112,
 		shortDesc: "登场之后的5回合内攻击和速度减半,从第2个回合开始,每回合结束时攻击和速度会上升1级",
 	},
-	imposter: {
-		onSwitchIn(pokemon) {
-			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
-			if (target) {
-				// 1. 执行变身逻辑
-				const success = pokemon.transformInto(target, this.dex.abilities.get('imposter'));
-				
-				// 2. 特判：变身成功后立即同步数据
-				if (success) {
-					// 这里的 pokemon.species 已经是变身后目标宝可梦的种族数据了
-					const targetSpecies = pokemon.species; 
-
-					if (!this.dex.species.get(targetSpecies.id).exists) {
-						// 如果变身目标是幻想宝可梦，显示目标的属性和种族值
-						this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-						this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-					} else {
-						// 如果变身目标是官方宝可梦，确保清除任何可能存在的幻想 UI 标识
-						this.add('-end', pokemon, 'typechange', '[silent]');
-						this.add('-end', pokemon, 'fantasystats', '[silent]');
-					}
-				}
-			}
-		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
-		name: "Imposter",
-		rating: 5,
-		num: 150,
-	},
 	flowergift: {
 		onSwitchInPriority: -2,
 		onStart(pokemon) {
