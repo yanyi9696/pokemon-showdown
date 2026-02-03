@@ -148,25 +148,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onSwitchIn(pokemon) {
 			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
 			if (target) {
-				// 执行变身
-				const success = pokemon.transformInto(target, this.dex.abilities.get('imposter'));
+				// 执行变身逻辑
+				pokemon.transformInto(target, this.dex.abilities.get('imposter'));
 				
-				// --- 新增：刷新 UI 显示逻辑 ---
-				if (success) {
-					const targetSpecies = target.species;
-					// 如果变身对象是幻想宝可梦（不存在于官方库中）
-					if (!this.dex.species.get(targetSpecies.id).exists) {
-						// 更新属性显示
-						this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-						// 更新种族值显示 (使用变身目标的种族值)
-						this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-					} else {
-						// 如果变身对象是普通宝可梦，清除之前的幻想显示效果
-						this.add('-end', pokemon, 'typechange', '[silent]');
-						this.add('-end', pokemon, 'fantasystats', '[silent]');
-					}
+				// --- 核心修复：手动刷新变身后目标的种族值和属性显示 ---
+				// 此时 pokemon.species 已经变成了 target.species
+				const targetSpecies = pokemon.species; 
+
+				if (!this.dex.species.get(targetSpecies.id).exists) {
+					// 如果变身目标是幻想宝可梦，显示它的属性和种族值
+					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				} else {
+					// 如果变身目标是原版宝可梦，确保清除任何种族值显示
+					this.add('-end', pokemon, 'typechange', '[silent]');
+					this.add('-end', pokemon, 'fantasystats', '[silent]');
 				}
-				// ----------------------------
 			}
 		},
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
