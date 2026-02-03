@@ -148,28 +148,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onSwitchIn(pokemon) {
 			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
 			if (target) {
-				// 1. 执行物理变身逻辑
+				// 1. 执行变身
 				pokemon.transformInto(target, this.dex.abilities.get('imposter'));
-
-				// 2. 关键修复：延迟 UI 更新
-				// 使用 setTimeout 确保在当前所有变身相关的对战数据包（如灾祸特性、数值变动）
-				// 发送完毕后，最后发送这一条 UI 指令。
-				const targetSpecies = pokemon.species;
 				
-				// 判定目标是否为幻想宝可梦
-				const isFantasy = !this.dex.species.get(targetSpecies.id).exists;
-
-				// 我们可以利用 Showdown 引擎的 queue 来确保在回合动作间隙执行
-				// 或者在变身逻辑后立即追加一组明确的指令，且不带 [silent] 以提高优先级（视情况而定）
-				
-				if (isFantasy) {
-					// 发送属性和种族值更新
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'));
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'));
-				} else {
-					// 变身原版宝可梦则清除
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 2. 变身后立即刷新一次 UI（取变身后 pokemon.species 的数据）
+				const newSpecies = pokemon.species;
+				if (!this.dex.species.get(newSpecies.id).exists) {
+					// 不带 [silent] 以提高优先级，确保在变身包之后发送
+					this.add('-start', pokemon, 'typechange', newSpecies.types.join('/'));
+					this.add('-start', pokemon, 'fantasystats', Object.values(newSpecies.baseStats).join('/'));
 				}
 			}
 		},
