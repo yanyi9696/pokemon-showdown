@@ -26,28 +26,27 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
-			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
-			const illusionTarget = pokemon.illusion || pokemon;
-			const targetSpecies = illusionTarget.species;
+			// 使用 (pokemon as any) 绕过 TypeScript 对 transformedSpecies 的类型检查
+			// 优先级逻辑：变身(Transform) > 幻觉(Illusion) > 自身
+			const visualTargetSpecies = (pokemon as any).transformedSpecies || (pokemon.illusion ? pokemon.illusion.species : pokemon.species);
+			const targetId = visualTargetSpecies.id;
 
 			// 1. 处理属性显示逻辑
-			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			if (!this.dex.species.get(targetId).exists) {
+				this.add('-start', pokemon, 'typechange', visualTargetSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
 			// 2. 处理幻想种族值显示逻辑
-			if (!Dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			if (!this.dex.species.get(targetId).exists) {
+				const stats = Object.values(visualTargetSpecies.baseStats).join('/');
+				this.add('-start', pokemon, 'fantasystats', stats, '[silent]');
 			} else {
-				// 如果伪装的是原版宝可梦，清除种族值标识
 				this.add('-end', pokemon, 'fantasystats', '[silent]');
 			}
 
-			// 3. 保持你原有的特性保护代码（可选）
+			// 3. 特性保护代码
 			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
