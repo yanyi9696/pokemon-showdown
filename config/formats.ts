@@ -26,7 +26,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
-			// --- 新增判断：如果是变身者，直接跳过此处的显示逻辑，交给特性处理 ---
+			// 特判：如果是变身者特性，直接跳过此处的全局显示逻辑
+			// 因为数据读取将由 abilities.ts 中的 imposter 特性在变身后接管
 			if (pokemon.hasAbility('imposter')) return;
 			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
 			const illusionTarget = pokemon.illusion || pokemon;
