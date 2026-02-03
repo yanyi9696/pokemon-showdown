@@ -26,34 +26,29 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
-			this.add('-end', pokemon, 'typechange', '[silent]');
-			this.add('-end', pokemon, 'fantasystats', '[silent]');
-		},
-		onUpdate(pokemon) {
-			// 1. 确定视觉目标：幻觉 > 变身 > 自身
-			// 变身目标的正确获取方式：检查 transform 状态
-			const transformVolatile = pokemon.volatiles['transform'];
-			const visualTarget = pokemon.illusion || (transformVolatile ? transformVolatile.pokemon : pokemon);
-			const targetSpecies = visualTarget.species;
+			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			const illusionTarget = pokemon.illusion || pokemon;
+			const targetSpecies = illusionTarget.species;
 
-			// 2. 检查是否为自定义宝可梦 (是否存在于官方 Dex)
-			// 注意：在 formats.ts 的钩子中，使用 pokemon.battle.dex 而非 this.dex
-			const exists = pokemon.battle.dex.species.get(targetSpecies.id).exists;
-
-			// 3. 处理种族值同步
-			if (!exists) {
-				const stats = Object.values(targetSpecies.baseStats).join('/');
-				// 避免重复发送协议，仅在必要时更新
-				this.add('-start', pokemon, 'fantasystats', stats, '[silent]');
+			// 1. 处理属性显示逻辑
+			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
+			if (!Dex.species.get(targetSpecies.id).exists) {
 				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
 			} else {
-				// 如果视觉上是原版宝可梦，确保清除自定义标识
-				this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 
-			// 4. 特性保护（保持你原有的逻辑）
-			const currentAbility = pokemon.battle.dex.abilities.get(pokemon.ability);
+			// 2. 处理幻想种族值显示逻辑
+			if (!Dex.species.get(targetSpecies.id).exists) {
+				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			} else {
+				// 如果伪装的是原版宝可梦，清除种族值标识
+				this.add('-end', pokemon, 'fantasystats', '[silent]');
+			}
+
+			// 3. 保持你原有的特性保护代码（可选）
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
 			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 	},
