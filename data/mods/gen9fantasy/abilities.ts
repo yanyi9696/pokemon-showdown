@@ -144,6 +144,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 112,
 		shortDesc: "登场之后的5回合内攻击和速度减半,从第2个回合开始,每回合结束时攻击和速度会上升1级",
 	},
+	imposter: {
+		onSwitchIn(pokemon) {
+			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
+			if (target) {
+				// 执行变身
+				pokemon.transformInto(target, this.dex.abilities.get('imposter'));
+				
+				// 修复逻辑：手动触发 formats.ts 中的 onSwitchIn 逻辑
+				// 这会强迫系统重新计算当前变为的 targetSpecies 并更新 UI
+				this.runEvent('SwitchIn', pokemon);
+			}
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
+		name: "Imposter",
+		rating: 5,
+		num: 150,
+	},
 	flowergift: {
 		onSwitchInPriority: -2,
 		onStart(pokemon) {
