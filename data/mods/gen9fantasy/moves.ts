@@ -7,6 +7,36 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	    inherit: true,
         isNonstandard: null,
 	},
+	transform: {
+		num: 144,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Transform",
+		pp: 10,
+		priority: 0,
+		flags: { allyanim: 1, failencore: 1, noassist: 1, failcopycat: 1, failmimic: 1, failinstruct: 1 },
+		onHit(target, pokemon) {
+			if (!pokemon.transformInto(target)) {
+				return false;
+			}
+			// --- 修复逻辑开始 ---
+			// 手动调用同步逻辑。由于是在技能命中时触发，
+			// 我们直接调用 effectState 上的同步函数（如果存在）
+			if (this.effectState.fantasySync) {
+				this.effectState.fantasySync(pokemon);
+			} else {
+				// 如果直接调用失败，则触发 SwitchIn 事件来联动 formats.ts 中的逻辑
+				this.runEvent('SwitchIn', pokemon);
+			}
+			// --- 修复逻辑结束 ---
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		zMove: { effect: 'heal' },
+		contestType: "Clever",
+	},
 	punishment: {
 		num: 386,
 		accuracy: 100,
