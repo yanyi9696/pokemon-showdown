@@ -142,6 +142,30 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "使用者陷入濒死。若使用者在薄雾场地上,不会损失血量,威力提升1.5倍,但是会破坏场地型状态",
 		shortDesc: "薄雾场地下威力1.5倍且不濒死,但会破坏场地",
 	},
+	bittermalice: {
+		num: 841,
+		accuracy: 100,
+		basePower: 60,
+		category: "Special",
+		name: "Bitter Malice",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		basePowerCallback(pokemon, target, move) {
+			if (target.status || target.hasAbility('comatose')) return move.basePower * 2;
+			return move.basePower;
+		},
+		// 追加效果：30% 几率造成冻伤 (fst)
+		secondary: {
+			chance: 30,
+			status: 'fst',
+		},
+		target: "normal",
+		type: "Ghost",
+		zMove: { basePower: 120 },
+		desc: "如果目标有异常状态,威力翻倍;30%使目标冻伤",
+		shortDesc: "如果目标有异常状态,威力翻倍;30%使目标冻伤",
+	},
 	shelter: {
 		num: 842,
 		accuracy: true,

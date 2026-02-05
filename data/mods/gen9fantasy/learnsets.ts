@@ -5404,6 +5404,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			biansuzhefan: ["9M"],
 			poisonjab: ["9M"],
 			clearsmog: ["9M"],
+			toxicspikes: ["9M"],
 			//幻想增添技能
 			absorb: ["9L1"],
 			acidspray: ["9M", "9L1"],
@@ -21345,7 +21346,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	mudkipfantasy: {
 		learnset: {
 			aquajet: ["9M"],
-			recover: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L27", "8M", "8L27"],
 			ancientpower: ["9E", "8E", "7E", "6E", "5E", "4T", "4E"],
@@ -21441,7 +21441,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	marshtompfantasy: {
 		learnset: {
 			aquajet: ["9M"],
-			recover: ["9M"],
+			wavecrash: ["9M"],
+			flipturn: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L35", "8M", "8L35"],
 			ancientpower: ["4T"],
@@ -21542,7 +21543,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wavecrash: ["9M"],
 			headlongrush: ["9M"],
 			thousandwaves: ["9M"],
-			recover: ["9M"],
 			drainpunch: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L35", "8M", "8L35"],
@@ -21909,7 +21909,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	zoruahisuifantasy: {
 		learnset: {
-			infernalparade: ["9M"],
 			return: ["9M"],
 			frustration: ["9M"],
 			doubleedge: ["9M"],
