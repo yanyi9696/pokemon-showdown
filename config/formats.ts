@@ -25,21 +25,34 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC AG",
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
+		onSwitchIn(pokemon) {
+			// 初始化：记录当前的种族 ID
+			pokemon.m.lastFantasySpecies = pokemon.illusion ? pokemon.illusion.species.id : pokemon.species.id;
+			
+			// 执行一次初始同步
+			const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			if (!this.dex.species.get(targetSpecies.id).exists) {
+				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			}
+		},
+
 		onUpdate(pokemon) {
-			// 检查种族是否发生了变化（变身或形态转换）
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
-				
-				const targetSpecies = pokemon.species;
-				
-				// 核心判断：变身后是否还是幻想宝可梦
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 情况 A：变身后是幻想宝可梦 -> 显示/更新数据
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			// 1. 确定当前视觉上应该是哪只宝可梦
+			// 变身状态下的 species 优先级最高，其次是幻觉对象，最后是自身
+			const currentSpecies = pokemon.species; 
+			
+			// 2. 如果当前显示的种族 ID 与上次记录的不符
+			if (pokemon.m.lastFantasySpecies !== currentSpecies.id) {
+				pokemon.m.lastFantasySpecies = currentSpecies.id;
+
+				// 3. 判断当前种族是否为幻想宝可梦
+				if (!this.dex.species.get(currentSpecies.id).exists) {
+					// 如果是幻想：发送/更新数据
+					this.add('-start', pokemon, 'typechange', currentSpecies.types.join('/'), '[silent]');
+					this.add('-start', pokemon, 'fantasystats', Object.values(currentSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 情况 B：变身后是原版宝可梦（如图图犬） -> 必须彻底清除幻想标识
-					// 发送 -end 指令会告诉客户端 UI 插件：移除这个宝可梦身上的自定义状态条
+					// 如果是原版：必须彻底清除，否则会残留上一只宝可梦的数据
 					this.add('-end', pokemon, 'typechange', '[silent]');
 					this.add('-end', pokemon, 'fantasystats', '[silent]');
 				}
