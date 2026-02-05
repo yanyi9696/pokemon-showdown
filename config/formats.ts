@@ -26,37 +26,30 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
-			// 初始化：记录当前的种族 ID
-			pokemon.m.lastFantasySpecies = pokemon.illusion ? pokemon.illusion.species.id : pokemon.species.id;
-			
-			// 执行一次初始同步
-			const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
-			if (!this.dex.species.get(targetSpecies.id).exists) {
+			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
+			const illusionTarget = pokemon.illusion || pokemon;
+			const targetSpecies = illusionTarget.species;
+
+			// 1. 处理属性显示逻辑
+			// 如果“视觉对象”是不存在的自定义宝可梦，则显示属性
+			if (!Dex.species.get(targetSpecies.id).exists) {
 				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+			} else {
+				// 如果伪装的是原版宝可梦，清除可能存在的幻想属性标识
+				this.add('-end', pokemon, 'typechange', '[silent]');
+			}
+
+			// 2. 处理幻想种族值显示逻辑
+			if (!Dex.species.get(targetSpecies.id).exists) {
 				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+			} else {
+				// 如果伪装的是原版宝可梦，清除种族值标识
+				this.add('-end', pokemon, 'fantasystats', '[silent]');
 			}
-		},
 
-		onUpdate(pokemon) {
-			// 1. 确定当前视觉上应该是哪只宝可梦
-			// 变身状态下的 species 优先级最高，其次是幻觉对象，最后是自身
-			const currentSpecies = pokemon.species; 
-			
-			// 2. 如果当前显示的种族 ID 与上次记录的不符
-			if (pokemon.m.lastFantasySpecies !== currentSpecies.id) {
-				pokemon.m.lastFantasySpecies = currentSpecies.id;
-
-				// 3. 判断当前种族是否为幻想宝可梦
-				if (!this.dex.species.get(currentSpecies.id).exists) {
-					// 如果是幻想：发送/更新数据
-					this.add('-start', pokemon, 'typechange', currentSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(currentSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					// 如果是原版：必须彻底清除，否则会残留上一只宝可梦的数据
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
-				}
-			}
+			// 3. 保持你原有的特性保护代码（可选）
+			const currentAbility = this.dex.abilities.get(pokemon.ability);
+			this.addSplit(pokemon.side.id, ['-ability', pokemon, currentAbility.name, '[silent]']);
 		},
 	},
 	{
@@ -108,7 +101,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Chi-Yu', 'Flutter Mane', 
 			'Groudon', 'Kyogre', 'Kyurem-Black', 'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z',
 			// FC
-			'Altaria-Mega-Fantasy', 'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z'
+			'Altaria-Mega-Fantasy', 'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z', 'Barbaracle-Mega','Darmanitan-Fantasy',
+			'Greninja-Mega-Fantasy', 'Delphox-Mega-Fantasy', 'Lucario-Mega-Z', 'Magearna-Mega', 'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy',
 		],
 		onSwitchIn(pokemon) {
 			// 获取当前视觉上应该显示的宝可梦对象：如果有幻觉则取幻觉对象，否则取自身
