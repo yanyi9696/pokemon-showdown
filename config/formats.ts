@@ -25,43 +25,21 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC AG",
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
-		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
-
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
-				}
-			};
-
-			// 执行同步
-			this.effectState.fantasySync(pokemon);
-		},
-
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
+			// 检查种族是否发生了变化（变身或形态转换）
 			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
 				this.effectState.lastSpeciesShown = pokemon.species.id;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
+				const targetSpecies = pokemon.species;
+				
+				// 核心判断：变身后是否还是幻想宝可梦
 				if (!Dex.species.get(targetSpecies.id).exists) {
+					// 情况 A：变身后是幻想宝可梦 -> 显示/更新数据
 					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
 					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
 				} else {
+					// 情况 B：变身后是原版宝可梦（如图图犬） -> 必须彻底清除幻想标识
+					// 发送 -end 指令会告诉客户端 UI 插件：移除这个宝可梦身上的自定义状态条
 					this.add('-end', pokemon, 'typechange', '[silent]');
 					this.add('-end', pokemon, 'fantasystats', '[silent]');
 				}
