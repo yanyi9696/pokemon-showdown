@@ -3708,7 +3708,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Toxtricity",
 		forme: "Mega",
 		types: ["Ice", "Poison"],
-		baseStats: { hp: 95, atk: 148, def: 105, spa: 124, spd: 105, spe: 95 },
+		baseStats: { hp: 75, atk: 148, def: 105, spa: 124, spd: 105, spe: 95 },
 		abilities: { 0: "Technician" },
 		heightm: 1.6,
 		weightkg: 40,
