@@ -12,7 +12,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Pidgeot",
 		forme: "Fantasy",
 		types: ["Normal", "Flying"],
-		baseStats: { hp: 93, atk: 115, def: 75, spa: 55, spd: 70, spe: 101 },
+		baseStats: { hp: 93, atk: 115, def: 75, spa: 50, spd: 70, spe: 106 },
 		abilities: { 0: "Screen Cleaner", 1: "Tough Claws", H: "Feng Ya" },
 		heightm: 1.5,
 		weightkg: 39.5,

@@ -404,9 +404,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	lopunnyfantasy: {
 		tier: "UU",
 	},
-	lurantisfantasy: {
-		tier: "UU",
-	},
 	mienshaofantasy: {
 		tier: "UU",
 	},
@@ -447,10 +444,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	aggronfantasy: {
 		tier: "RUBL",
 	},
-	carnivinefantasy: {
+	floetteeternalfantasy: {
 		tier: "RUBL",
 	},
-	floetteeternalfantasy: {
+	lurantisfantasy: {
 		tier: "RUBL",
 	},
 	meganiumfantasy: {
@@ -476,6 +473,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	armarougefantasy: {
+		tier: "RU",
+	},
+	carnivinefantasy: {
 		tier: "RU",
 	},
 	garbodorfantasy: {
@@ -1041,6 +1041,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	polteageist: {
+		tier: "RUBL",
+	},
+	polteageistantique: {
 		tier: "RUBL",
 	},
 	skarmory: {

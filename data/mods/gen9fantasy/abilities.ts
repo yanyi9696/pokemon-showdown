@@ -144,6 +144,36 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 112,
 		shortDesc: "登场之后的5回合内攻击和速度减半,从第2个回合开始,每回合结束时攻击和速度会上升1级",
 	},
+	icebody: {
+		// 1. 原有逻辑：在冰雹或下雪天气下每回合回复 1/16 HP
+		onWeather(target, source, effect) {
+			if (effect.id === 'hail' || effect.id === 'snowscape') {
+				this.heal(target.baseMaxhp / 16);
+			}
+		},
+		// 免疫冰雹伤害
+		onImmunity(type, pokemon) {
+			if (type === 'hail') return false;
+		},
+
+		// 2. 新增逻辑：类似火焰之躯的效果
+		onDamagingHit(damage, target, source, move) {
+			// 检查是否为接触类招式 (Contact)
+			if (this.checkMoveMakesContact(move, source, target)) {
+				// 30% 的触发几率
+				if (this.randomChance(3, 10)) {
+					// 如果你的环境支持 'fst' (冻伤)，建议优先使用 'fst'
+					source.trySetStatus('fst', target);
+				}
+			}
+		},
+
+		flags: {},
+		name: "Ice Body",
+		rating: 3,
+		num: 115,
+		shortDesc: "天气处于冰雹或下雪状态时,每回合回复最大HP的1/16;受到接触类招式时有30%机率使对手冻伤",
+	},
 	imposter: {
 		onSwitchIn(pokemon) {
 			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
