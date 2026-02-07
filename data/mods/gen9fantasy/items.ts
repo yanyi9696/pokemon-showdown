@@ -2437,33 +2437,37 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	ultraenergy: {
 		name: "Ultra Energy",
 		spritenum: 745,
+		itemUser: ["Stakataka-Fantasy"],
 		fling: {
 			basePower: 30,
 		},
 		onStart(pokemon) {
-			// 1. 使用者限制检查：必须包含 "-Fantasy" 后缀（根据你文件中的命名习惯）
+			// 1. 使用者限制检查
 			if (!pokemon.baseSpecies.name.endsWith('-Fantasy')) return;
 
+			// 检查道具是否可用（防止被拍落或查封）
 			if (pokemon.useItem()) {
 				this.add('-activate', pokemon, 'item: Ultra Energy');
 				
-				// 2. 判断特性是否为异兽提升 (Beast Boost)
 				if (pokemon.ability === 'beastboost') {
-					// 效果 A：特性为异兽提升时
+					// --- 修复后的核心逻辑 ---
 					this.add('-message', `${pokemon.name}的究极能量暴走了！`);
 					
 					// 立即触发一次提升
 					const bestStat = pokemon.getBestStat(true, true);
 					this.boost({ [bestStat]: 1 }, pokemon);
 					
-					// 永久清除特性（变为无特性），本局内下场不会恢复
+					// 关键修改：将基础特性直接改为 'noability'
+					// 并使用 setAbility 且将永久标志设为 true
+					pokemon.baseAbility = 'noability' as ID; 
 					pokemon.setAbility('noability', pokemon, true);
-					this.add('-ability', pokemon, 'No Ability', '[from] item: Ultra Energy');
-				} else {
-					// 效果 B：特性不是异兽提升时
-					this.add('-message', `${pokemon.name}通过究极能量获得了异兽提升的力量！`);
 					
-					// 获得一个模拟异兽提升的临时状态
+					// 显示特性消失的动画
+					this.add('-ability', pokemon, 'No Ability', '[from] item: Ultra Energy');
+					this.add('-message', `${pokemon.name}的异兽提升特性永久消失了！`);
+				} else {
+					// 非异兽提升特性的逻辑保持不变
+					this.add('-message', `${pokemon.name}通过究极能量获得了异兽提升的效果！`);
 					pokemon.addVolatile('ultraenergyboost');
 				}
 			}
