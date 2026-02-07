@@ -592,7 +592,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: { breakable: 1 },
 		name: "Stalwart",
-		rating: 2,
+		rating: 1,
 		num: 242,
 		shortDesc: "攻击原本选定的目标。不会进入着迷、再来一次、挑衅、无理取闹、定身法和回复封锁状态",
 	},

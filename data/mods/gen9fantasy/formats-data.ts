@@ -338,6 +338,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Shell Armor"},		
 	},
+	stakatakafantasy: {
+		tier: "UUBL",
+	},
 	steelixfantasy: {
 		tier: "UUBL",
 	},
@@ -450,9 +453,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	floetteeternalfantasy: {
 		tier: "RUBL",
 	},
-	honchkrowfantasy: {
-		tier: "RUBL",
-	},
 	meganiumfantasy: {
 		tier: "RUBL",
 	},
@@ -463,16 +463,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ribombeefantasy: {
 		tier: "RUBL",
 	},
-	rotomfantasy: {
-		tier: "RUBL",
-	},
 	thievulfantasy: {
-		tier: "RUBL",
-	},
-	tropiusfantasy: {
-		tier: "RUBL",
-	},
-	stakatakafantasy: {
 		tier: "RUBL",
 	},
 	victreebelfantasy: {
@@ -500,6 +491,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 		abilities: {0: "Stamina"},
 	},
+	honchkrowfantasy: {
+		tier: "RU",
+	},
 	marshtompfantasy: {
 		tier: "RU",
 	},
@@ -507,6 +501,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	pidgeotfantasy: {
+		tier: "RU",
+	},
+	rotomfantasy: {
 		tier: "RU",
 	},
 	samurottfantasy: {
@@ -525,6 +522,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
+		tier: "RU",
+	},
+	tropiusfantasy: {
 		tier: "RU",
 	},
 	mudkipfantasy: {
@@ -665,10 +665,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 		abilities: {0: "Magic Guard"},		
 	},
-	falinksmega: {
-		tier: "UU",
-		abilities: {0: "Defiant"},		
-	},
 	froslassmega: {
 		tier: "UU",
 		abilities: {0: "Snow Warning"},		
@@ -676,6 +672,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	golurkmega: {
 		tier: "UU",
 		abilities: {0: "Aftermath"},		
+	},
+	scolipedemega: {
+		tier: "UU",
+		abilities: {0: "Merciless"},		
 	},
 	tatsugiricurlymega: {
 		tier: "UU",
@@ -689,6 +689,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Supreme Overlord"},		
 	},
+	falinksmega: {
+		tier: "RUBL",
+		abilities: {0: "Defiant"},		
+	},
 	floettemega: {
 		tier: "RUBL",
 		abilities: {0: "Flower Veil"},		
@@ -696,14 +700,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	golisopodmega: {
 		tier: "RUBL",
 		abilities: {0: "Battle Armor"},		
-	},
-	scraftymega: {
-		tier: "RUBL",
-		abilities: {0: "Intimidate"},		
-	},
-	scolipedemega: {
-		tier: "RUBL",
-		abilities: {0: "Merciless"},		
 	},
 	cherrimfantasy: {
 		tier: "RU",
@@ -730,6 +726,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	meganiummega: {
 		tier: "RU",
 		abilities: {0: "Chlorophyll"},		
+	},
+	scraftymega: {
+		tier: "RU",
+		abilities: {0: "Intimidate"},		
 	},
 	scovillainmega: {
 		tier: "RU",

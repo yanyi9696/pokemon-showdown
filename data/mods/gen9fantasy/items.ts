@@ -2434,4 +2434,43 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		desc: "幻之悠闲薰香。携带后，宝可梦会免疫声音类招式。受到攻击就会消失",
 		shortDesc: "幻之悠闲薰香。免疫声音类招式，受到攻击后消失",
 	},
+	ultraenergy: {
+		name: "Ultra Energy",
+		spritenum: 745,
+		fling: {
+			basePower: 30,
+		},
+		onStart(pokemon) {
+			// 1. 使用者限制检查：必须包含 "-Fantasy" 后缀（根据你文件中的命名习惯）
+			if (!pokemon.baseSpecies.name.endsWith('-Fantasy')) return;
+
+			if (pokemon.useItem()) {
+				this.add('-activate', pokemon, 'item: Ultra Energy');
+				
+				// 2. 判断特性是否为异兽提升 (Beast Boost)
+				if (pokemon.ability === 'beastboost') {
+					// 效果 A：特性为异兽提升时
+					this.add('-message', `${pokemon.name}的究极能量暴走了！`);
+					
+					// 立即触发一次提升
+					const bestStat = pokemon.getBestStat(true, true);
+					this.boost({ [bestStat]: 1 }, pokemon);
+					
+					// 永久清除特性（变为无特性），本局内下场不会恢复
+					pokemon.setAbility('noability', pokemon, true);
+					this.add('-ability', pokemon, 'No Ability', '[from] item: Ultra Energy');
+				} else {
+					// 效果 B：特性不是异兽提升时
+					this.add('-message', `${pokemon.name}通过究极能量获得了异兽提升的力量！`);
+					
+					// 获得一个模拟异兽提升的临时状态
+					pokemon.addVolatile('ultraenergyboost');
+				}
+			}
+		},
+		num: 30009,
+		gen: 9,
+		desc: "究极能量。幻想究极异兽专属。出场触发等同于异兽提升的效果;若特性本就是异兽提升,则立即提升1级最高能力并清除特性。生效一次后消失",
+		shortDesc: "究极能量。获得异兽提升效果;若特性是异兽提升,触发一次后清除特性。使用后消失",
+	},
 };

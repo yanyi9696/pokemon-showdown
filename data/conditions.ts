@@ -1,4 +1,21 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	ultraenergyboost: {
+		name: 'Ultra Energy Boost',
+		noCopy: true, // 该效果通常不随接棒等传递
+		// 核心逻辑：模拟异兽提升 (Beast Boost)
+		onSourceAfterFaint(length, target, source, effect) {
+			// 只有通过攻击招式击倒对手时才会触发
+			if (effect && effect.effectType === 'Move') {
+				// 获取除 HP 外数值最高的一项常规能力（考虑当前能力等级提升后的结果）
+				const bestStat = source.getBestStat(true, true);
+				this.boost({ [bestStat]: length }, source);
+			}
+		},
+		// 状态开始时的提示（可选，用于增强战斗反馈）
+		onStart(pokemon) {
+			this.add('-start', pokemon, 'Ultra Energy Boost', '[silent]');
+		},
+	},
 	dancer: {
 		name: 'Dancer',
 		noCopy: true,

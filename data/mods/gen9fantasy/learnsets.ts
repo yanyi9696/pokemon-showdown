@@ -8584,6 +8584,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	stakatakafantasy: {
 		learnset: {
 			dongchadaji: ["9M"],
+			psyshieldbash: ["9M"],
 			//幻想增添技能
 			allyswitch: ["8M", "7T"],
 			autotomize: ["8L35", "8S1", "7L31"],
@@ -20633,6 +20634,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wavecrash: ["9M"],
 			yaolan: ["9M"],
 			firstimpression: ["9M"],
+			spikes: ["9M"],
 			//幻想增添技能
 			assurance: ["8M"],
 			attract: ["8M"],
@@ -20714,6 +20716,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wavecrash: ["9M"],
 			yaolan: ["9M"],
 			firstimpression: ["9M"],
+			spikes: ["9M"],
 			//幻想增添技能
 			assurance: ["8M"],
 			attract: ["8M"],
