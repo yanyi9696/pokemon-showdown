@@ -1,6 +1,6 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-	ultraenergyboost: {
-		name: 'Ultra Energy Boost',
+	fantasyultraenergyboost: {
+		name: 'Fantasy Ultra Energy Boost',
 		noCopy: true, // 该效果通常不随接棒等传递
 		// 核心逻辑：模拟异兽提升 (Beast Boost)
 		onSourceAfterFaint(length, target, source, effect) {
@@ -13,7 +13,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		// 状态开始时的提示（可选，用于增强战斗反馈）
 		onStart(pokemon) {
-			this.add('-start', pokemon, 'Ultra Energy Boost', '[silent]');
+			this.add('-start', pokemon, 'Fantasy Ultra Energy Boost', '[silent]');
 		},
 	},
 	dancer: {
