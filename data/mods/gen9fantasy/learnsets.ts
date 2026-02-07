@@ -21355,6 +21355,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	mudkipfantasy: {
 		learnset: {
 			aquajet: ["9M"],
+			wavecrash: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L27", "8M", "8L27"],
 			ancientpower: ["9E", "8E", "7E", "6E", "5E", "4T", "4E"],

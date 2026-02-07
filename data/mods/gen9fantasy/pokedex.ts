@@ -1703,7 +1703,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Dusknoir-Fantasy",
 		baseSpecies: "Dusknoir",
 		forme: "Fantasy",
-		types: ["Normal", "Ghost"],
+		types: ["Ghost", "Normal"],
 		baseStats: { hp: 65, atk: 120, def: 135, spa: 35, spd: 135, spe: 35 },
 		abilities: { 0: "Pressure", 1: "Shou Hun", H: "Mind's Eye" },
 		heightm: 2.2,
