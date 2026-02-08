@@ -2466,12 +2466,6 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					// --- 逻辑 B：特性不是异兽提升时 ---
 					this.add('-message', `${pokemon.name}通过究极能量获得了"异兽提升"的效果！`);
 					
-					// 【核心修正】：发送一个会导致“排除”逻辑的虚假声明
-					// 我们利用 [from] item 指令，但不直接赋予特性。
-					// 关键在于：我们让 pokemon “表现出”它正在使用原本的特性（不管是什么），
-					// 只要这个特性不是 beastboost，前端的排除法就会生效。
-					this.add('-ability', pokemon, pokemon.getAbility().name, '[from] item: Fantasy Ultra Energy');
-					
 					// 添加挥发性状态（下场会自动消失）
 					pokemon.addVolatile('fantasyultraenergyboost');
 				}
