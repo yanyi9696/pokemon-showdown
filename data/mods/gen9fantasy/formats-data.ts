@@ -90,9 +90,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Tough Claws"},		
 	},
-	frosmothfantasy: {
-		tier: "(Uber)",
-	},
 	garchompmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Sand Rush"},
@@ -194,6 +191,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	froslassmegafantasy: {
 		tier: "OU",
 		abilities: {0: "Mold Breaker"},		
+	},
+	frosmothfantasy: {
+		tier: "OU",
 	},
 	garbodorgmegafantasy: {
 		tier: "OU",
