@@ -2451,16 +2451,18 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 				
 				if (pokemon.ability === 'beastboost') {
 					// --- 逻辑 A：特性为异兽提升时 ---
-					this.add('-message', `${pokemon.name}的究极能量发生了剧烈反应！`);
+					this.add('-message', `${pokemon.name}的究极能量暴走了`);
 					
-					// 立即触发一次提升
-					const bestStat = pokemon.getBestStat(true, true);
-					this.boost({ [bestStat]: 1 }, pokemon);
-					
-					// --- 关键修改：不再 setAbility，而是添加抑制状态 ---
-					pokemon.addVolatile('fantasyultraenergybeastboost');
-					this.add('-message', `${pokemon.name}的"异兽提升"特性被过载抑制了！`);
-				} else {
+                // 1. 立即触发一次提升
+                const bestStat = pokemon.getBestStat(true, true);
+                this.boost({ [bestStat]: 1 }, pokemon);
+                
+                // 2. 【核心修改】添加一个名为 'suppressability' 的状态，这会让 UI 显示 (suppressed)
+                // 并在日志中明确提示特性被压制
+                pokemon.addVolatile('suppressability'); 
+                this.add('-ability', pokemon, 'Beast Boost', '[from] item: Fantasy Ultra Energy');
+                this.add('-message', `${pokemon.name}的"异兽提升"暂时失效了！`);
+            } else {
 					// --- 逻辑 B：特性不是异兽提升时 ---
 					this.add('-message', `${pokemon.name}通过究极能量获得了"异兽提升"的效果！`);
 					

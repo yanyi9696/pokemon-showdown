@@ -1,4 +1,11 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	suppressability: {
+		name: 'suppressability',
+		noCopy: true, // 不会被接棒带走
+		onStart(pokemon) {
+			this.add('-endability', pokemon); // 在日志中显示特性失效的动画
+		},
+	},
 	fantasyultraenergyboost: {
 		name: 'Fantasy Ultra Energy Boost',
 		noCopy: true, // 该效果通常不随接棒等传递
