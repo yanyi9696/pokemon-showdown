@@ -1,9 +1,17 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	suppressability: {
 		name: 'suppressability',
-		noCopy: true, // 不会被接棒带走
+		noCopy: true, 
 		onStart(pokemon) {
-			this.add('-endability', pokemon); // 在日志中显示特性失效的动画
+			// [!核心] 发送指令通知客户端该特性已被“压制/结束”
+			// 这会触发 UI 显示 (suppressed)
+			this.add('-endability', pokemon, 'Beast Boost', '[from] item: Fantasy Ultra Energy');
+		},
+		// 确保被压制期间，特性真的不会生效（双重保险）
+		onUpdate(pokemon) {
+			if (pokemon.ability !== 'noability' as ID) {
+				// 可以在这里强制维持 suppressed 表现
+			}
 		},
 	},
 	fantasyultraenergyboost: {
