@@ -2466,11 +2466,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					// --- 逻辑 B：特性不是异兽提升时 ---
 					this.add('-message', `${pokemon.name}通过究极能量获得了"异兽提升"的效果！`);
 					
-					// 【核心修改】：通过排除法剔除 Beast Boost
-					// 这会告诉模拟器：这只宝可梦“确定不是”异兽提升。
-					// 客户端收到该信息后，会自动从 Possible abilities 列表中移除 Beast Boost，
-					// 但因为它没有声明“是什么”，所以会保留 Mi Shi 和 Persistent 的神秘感。
-					(pokemon as any).knowsAbility('beastboost', false);
+					// 【核心修正】：手动从前端的可能特性列表中剔除 beastboost
+					// 我们向前端发送一条特定的指令，让它知道 beastboost 已经不是可能选项了
+					this.add('-ability', pokemon, 'beastboost', '[from] item: Fantasy Ultra Energy', '[fail]');
 
 					// 添加挥发性状态（下场会自动消失）
 					pokemon.addVolatile('fantasyultraenergyboost');
