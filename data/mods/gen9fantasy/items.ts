@@ -2453,14 +2453,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					// --- 逻辑 A：特性为异兽提升时 ---
 					this.add('-message', `${pokemon.name}的究极能量暴走了`);
 					
-                // 1. 立即触发一次提升
-                const bestStat = pokemon.getBestStat(true, true);
-                this.boost({ [bestStat]: 1 }, pokemon);
-                
-                // 2. 【核心修改】添加一个名为 'suppressability' 的状态，这会让 UI 显示 (suppressed)
-                // 并在日志中明确提示特性被压制
-                pokemon.addVolatile('suppressability'); 
-                this.add('-ability', pokemon, 'Beast Boost', '[from] item: Fantasy Ultra Energy');
+                // 1. 提升能力
+					const bestStat = pokemon.getBestStat(true, true);
+					this.boost({ [bestStat]: 1 }, pokemon);
+					
+					// 2. [关键] 使用 pokemon.addVolatile 之前，先手动触发一次 endability 指令
+					// 这样能确保在道具消耗的同一个时间点，前端 UI 立即更新
+					this.add('-endability', pokemon, 'Beast Boost', '[from] item: Fantasy Ultra Energy');
+					pokemon.addVolatile('suppressability');
                 this.add('-message', `${pokemon.name}的"异兽提升"暂时失效了！`);
             } else {
 					// --- 逻辑 B：特性不是异兽提升时 ---
