@@ -2437,7 +2437,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	fantasyultraenergy: {
 		name: "Fantasy Ultra Energy",
 		spritenum: 745,
-		itemUser: ["Stakataka-Fantasy"],
+		itemUser: ["Stakataka-Fantasy"], // 按照你的要求指定了使用者
 		fling: {
 			basePower: 30,
 		},
@@ -2445,36 +2445,40 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			// 1. 使用者限制检查
 			if (!pokemon.baseSpecies.name.endsWith('-Fantasy')) return;
 
-			// 检查道具是否可用（防止被拍落或查封）
+			// 检查道具是否可用并消耗
 			if (pokemon.useItem()) {
 				this.add('-activate', pokemon, 'item: Fantasy Ultra Energy');
 				
 				if (pokemon.ability === 'beastboost') {
-					// --- 修复后的核心逻辑 ---
-					this.add('-message', `${pokemon.name}的究极能量暴走了！`);
+					// --- 逻辑 A：特性为异兽提升时 ---
+					this.add('-message', `${pokemon.name}的究极能量发生了剧烈反应！`);
 					
 					// 立即触发一次提升
 					const bestStat = pokemon.getBestStat(true, true);
 					this.boost({ [bestStat]: 1 }, pokemon);
 					
-					// 关键修改：将基础特性直接改为 'noability'
-					// 并使用 setAbility 且将永久标志设为 true
-					pokemon.baseAbility = 'noability' as ID; 
-					pokemon.setAbility('noability', pokemon, true);
+					/**
+					 * 核心修正：
+					 * 我们不再修改 pokemon.baseAbility。
+					 * 仅仅调用 setAbility 将当前特性改为 'noability'。
+					 * 这样在交换下场后再换上来时，系统会从 baseAbility 自动还原为 'beastboost'。
+					 */
+					pokemon.setAbility('noability', pokemon);
 					
-					// 显示特性消失的动画
 					this.add('-ability', pokemon, 'No Ability', '[from] item: Fantasy Ultra Energy');
-					this.add('-message', `${pokemon.name}的异兽提升特性永久消失了！`);
+					this.add('-message', `${pokemon.name}的"异兽提升"暂时失效了！`);
 				} else {
-					// 非异兽提升特性的逻辑保持不变
-					this.add('-message', `${pokemon.name}通过究极能量获得了异兽提升的效果！`);
+					// --- 逻辑 B：特性不是异兽提升时 ---
+					this.add('-message', `${pokemon.name}通过究极能量获得了"异兽提升"的效果！`);
+					
+					// 添加挥发性状态（下场会自动消失）
 					pokemon.addVolatile('fantasyultraenergyboost');
 				}
 			}
 		},
 		num: 30009,
 		gen: 9,
-		desc: "幻之究极能量。幻想究极异兽专属。出场触发等同于异兽提升的效果;若特性本就是异兽提升,则立即提升1级最高能力并清除特性。生效一次后消失",
+		desc: "幻之究极能量。幻想究极异兽专属。出场触发等同于异兽提升的效果;若特性为异兽提升,则立即提升1级最高能力并在本次上场内失去特性。生效一次后消失。",
 		shortDesc: "幻之究极能量。获得异兽提升效果;若特性是异兽提升,触发一次后清除特性。使用后消失",
 	},
 };
