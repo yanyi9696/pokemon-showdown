@@ -2437,7 +2437,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	fantasyultraenergy: {
 		name: "Fantasy Ultra Energy",
 		spritenum: 745,
-		itemUser: ["Stakataka-Fantasy"], // 按照你的要求指定了使用者
+		itemUser: ["Stakataka-Fantasy"],
 		fling: {
 			basePower: 30,
 		},
@@ -2457,16 +2457,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					const bestStat = pokemon.getBestStat(true, true);
 					this.boost({ [bestStat]: 1 }, pokemon);
 					
-					/**
-					 * 核心修正：
-					 * 我们不再修改 pokemon.baseAbility。
-					 * 仅仅调用 setAbility 将当前特性改为 'noability'。
-					 * 这样在交换下场后再换上来时，系统会从 baseAbility 自动还原为 'beastboost'。
-					 */
-					pokemon.setAbility('noability', pokemon);
-					
-					this.add('-ability', pokemon, 'No Ability', '[from] item: Fantasy Ultra Energy');
-					this.add('-message', `${pokemon.name}的"异兽提升"暂时失效了！`);
+					// --- 关键修改：不再 setAbility，而是添加抑制状态 ---
+					pokemon.addVolatile('fantasyultraenergybeastboost');
+					this.add('-message', `${pokemon.name}的"异兽提升"特性被过载抑制了！`);
 				} else {
 					// --- 逻辑 B：特性不是异兽提升时 ---
 					this.add('-message', `${pokemon.name}通过究极能量获得了"异兽提升"的效果！`);
