@@ -2453,7 +2453,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	fantasyultraenergy: {
 		name: "Fantasy Ultra Energy",
 		spritenum: 745,
-		itemUser: ["Stakataka-Fantasy"],
+		itemUser: ["Stakataka-Fantasy", "Kartana-Fantasy"],
 		fling: {
 			basePower: 30,
 		},
