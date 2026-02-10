@@ -2476,4 +2476,22 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		desc: "幻之究极能量。幻想究极异兽专属。出场触发等同于异兽提升的效果;若特性为异兽提升,则立即提升1级最高能力并在本次上场内失去特性。生效一次后消失。",
 		shortDesc: "幻之究极能量。获得异兽提升效果;若特性是异兽提升,触发一次后清除特性。使用后消失",
 	},
+	berserkgene: {
+		name: "Berserk Gene",
+		spritenum: 388,
+		// 我们将具体的提升数值和副作用写在特性逻辑里，
+		// 这里保留基础定义。为了防止其他宝可梦误用，我们不写 onUpdate 或 onStart。
+		// 只有在特性的 onStart 中通过 pokemon.useItem() 被显式调用时才会消耗。
+		onTakeItem(item, pokemon) {
+			// 限制：只有拥有“破坏殆尽”特性的超梦能保有此道具
+			if (pokemon.baseSpecies.baseSpecies === 'Mewtwo' && pokemon.hasAbility('puhuadaijin')) {
+				return false; // 不可被夺走
+			}
+			return true;
+		},
+		num: 30010,
+		gen: 9,
+		desc: "破坏基因。超梦专属。配合特性“破坏殆尽”使用。登场时消耗，攻击大幅提升但会混乱。",
+		shortDesc: "只有拥有“破坏殆尽”特性才能使用。登场攻击+2并进入混乱。使用后消失",
+	},
 };

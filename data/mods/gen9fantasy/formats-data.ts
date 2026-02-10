@@ -39,6 +39,17 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Tough Claws"},	
 	},
+	mewtwofantasy: {
+		tier: "Uber",
+	},
+	mewtwomegaxfantasy: {
+		tier: "Uber",
+		abilities: {0: "Scrappy"},	
+	},
+	mewtwomegayfantasy: {
+		tier: "Uber",
+		abilities: {0: "Ji Zhi Neng"},	
+	},
 	regigigasfantasy: {
 		tier: "Uber",
 	},
@@ -478,6 +489,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	carnivinefantasy: {
 		tier: "RU",
 	},
+	cherrimfantasy: {
+		tier: "RU",
+	},
+	drednawfantasy: {
+		tier: "RU",
+	},
 	garbodorfantasy: {
 		tier: "RU",
 	},
@@ -685,10 +702,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Electric Surge"},		
 	},
-	emboarmega: {
-		tier: "RUBL",
-		abilities: {0: "Supreme Overlord"},		
-	},
 	falinksmega: {
 		tier: "RUBL",
 		abilities: {0: "Defiant"},		
@@ -697,27 +710,17 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Flower Veil"},		
 	},
-	golisopodmega: {
-		tier: "RUBL",
-		abilities: {0: "Battle Armor"},		
-	},
-	cherrimfantasy: {
-		tier: "RU",
-	},
 	crabominablemega: {
 		tier: "RU",
 		abilities: {0: "Iron Fist"},		
 	},
-	drednawfantasy: {
+	emboarmega: {
 		tier: "RU",
+		abilities: {0: "Supreme Overlord"},		
 	},
-	raichumegax: {
+	golisopodmega: {
 		tier: "RU",
-		abilities: {0: "Surge Surfer"},		
-	},
-	pyroarmega: {
-		tier: "RU",
-		abilities: {0: "Strong Jaw"},		
+		abilities: {0: "Battle Armor"},		
 	},
 	malamarmega: {
 		tier: "RU",
@@ -726,6 +729,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	meganiummega: {
 		tier: "RU",
 		abilities: {0: "Chlorophyll"},		
+	},
+	pyroarmega: {
+		tier: "RU",
+		abilities: {0: "Strong Jaw"},		
+	},
+	raichumegax: {
+		tier: "RU",
+		abilities: {0: "Surge Surfer"},		
 	},
 	scraftymega: {
 		tier: "RU",
