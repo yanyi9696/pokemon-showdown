@@ -3540,7 +3540,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Melmetal",
 		forme: "Mega",
 		types: ["Steel", "Electric"],
-		baseStats: { hp: 115, atk: 123, def: 123, spa: 170, spd: 115, spe: 54 },
+		baseStats: { hp: 115, atk: 123, def: 123, spa: 185, spd: 120, spe: 34 },
 		abilities: { 0: "Electromorphosis" },
 		heightm: 2.5,
 		weightkg: 800,
