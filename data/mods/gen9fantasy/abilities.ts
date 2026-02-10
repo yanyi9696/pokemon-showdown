@@ -1871,7 +1871,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if ((pokemon as any).pohuaidaijinTriggered) return;
 
 			if (this.field.weather || this.field.terrain) {
-				this.add('-ability', pokemon, 'Po Hua Dai Jin');
+				this.add('-ability', pokemon, 'Po Huai Dai Jin');
 				this.field.clearWeather();
 				this.field.clearTerrain();
 				
@@ -1883,7 +1883,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
 			breakable: 1, notransform: 1,
 		},
-		name: "Po Hua Dai Jin",
+		name: "Po Huai Dai Jin",
 		rating: 4,
 		num: 10039, // 顺延你之前的编号
 		shortDesc: "破坏殆尽。出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
