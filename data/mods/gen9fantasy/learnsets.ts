@@ -5974,7 +5974,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			rapidspin: ["9M"],
 			triattack: ["9M"],
 			recover: ["9M"],
-			swordsdance: ["9M"],
 			//幻想增添技能
 			astonish: ["9L1", "8L1"],
 			attract: ["8M", "7M", "6M", "5M", "4M", "3M"],
@@ -6067,7 +6066,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			rapidspin: ["9M"],
 			triattack: ["9M"],
 			recover: ["9M"],
-			swordsdance: ["9M"],
 			//幻想增添技能
 			astonish: ["9L1", "8L1"],
 			attract: ["8M", "7M", "6M", "5M", "4M", "3M"],
