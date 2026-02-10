@@ -2,9 +2,10 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	berserkgene: {
 		name: "Berserk Gene",
 		spritenum: 388,
+		itemUser: ["Mewtwo-Fantasy"],
 		onUpdate(pokemon) {
 			// 限制：只有拥有“破坏殆尽”特性的超梦可以使用
-			if (pokemon.baseSpecies.baseSpecies !== 'Mewtwo' || pokemon.ability !== 'pohuaidaijin' as ID) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Mewtwo-Fantasy' || pokemon.ability !== 'pohuaidaijin' as ID) {
 				return;
 			}
 
@@ -26,11 +27,11 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		// 加上这个检查，防止其他宝可梦在非对战逻辑中产生误用
 		onTakeItem(item, source) {
-			if (source.baseSpecies.baseSpecies === 'Mewtwo' && source.ability === 'pohuaidaijin' as ID) return false;
+			if (source.baseSpecies.baseSpecies === 'Mewtwo-Fantasy' && source.ability === 'pohuaidaijin' as ID) return false;
 			return true;
 		},
 	 	num: 0,
-		gen: 9, // 修改为当前版本，移除原版的过时限制
+		gen: 9,
 		desc: "破坏基因。超梦专属。配合特性“破坏殆尽”使用。登场时消耗，攻击大幅提升但会混乱。",
 		shortDesc: "只有拥有“破坏殆尽”特性才能使用。登场攻击+2并进入混乱。使用后消失",
 	},
