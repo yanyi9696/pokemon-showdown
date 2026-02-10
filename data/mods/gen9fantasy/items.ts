@@ -2,19 +2,35 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	berserkgene: {
 		name: "Berserk Gene",
 		spritenum: 388,
-		itemUser: ["Mewtwo-Fantasy"],
-		// 我们将具体的提升数值和副作用写在特性逻辑里，
-		// 这里保留基础定义。为了防止其他宝可梦误用，我们不写 onUpdate 或 onStart。
-		// 只有在特性的 onStart 中通过 pokemon.useItem() 被显式调用时才会消耗。
-		onTakeItem(item, pokemon) {
-			// 限制：只有拥有“破坏殆尽”特性的超梦能保有此道具
-			if (pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy' && pokemon.hasAbility('pohuaidaijin')) {
-				return false; // 不可被夺走
+		onUpdate(pokemon) {
+			// 限制：只有拥有“破坏殆尽”特性的超梦可以使用
+			if (pokemon.baseSpecies.baseSpecies !== 'Mewtwo' || pokemon.ability !== 'pohuaidaijin' as ID) {
+				return;
 			}
+
+			if (pokemon.useItem()) {
+				this.add('-activate', pokemon, 'item: Berserk Gene');
+				
+				// 提升攻击 2 级
+				this.boost({ atk: 2 }, pokemon);
+
+				// 陷入混乱状态
+				pokemon.addVolatile('confusion');
+				// 将混乱的计时器手动修改为 256 回合
+				if (pokemon.volatiles['confusion']) {
+					(pokemon.volatiles['confusion'] as any).time = 256;
+				}
+				
+				this.add('-message', `${pokemon.name} 的基因在狂暴中觉醒，陷入了深沉的混乱！`);
+			}
+		},
+		// 加上这个检查，防止其他宝可梦在非对战逻辑中产生误用
+		onTakeItem(item, source) {
+			if (source.baseSpecies.baseSpecies === 'Mewtwo' && source.ability === 'pohuaidaijin' as ID) return false;
 			return true;
 		},
-		num: 0,
-		gen: 9,
+	 	num: 0,
+		gen: 9, // 修改为当前版本，移除原版的过时限制
 		desc: "破坏基因。超梦专属。配合特性“破坏殆尽”使用。登场时消耗，攻击大幅提升但会混乱。",
 		shortDesc: "只有拥有“破坏殆尽”特性才能使用。登场攻击+2并进入混乱。使用后消失",
 	},

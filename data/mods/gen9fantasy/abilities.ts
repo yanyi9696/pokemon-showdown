@@ -1860,44 +1860,32 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	pohuaidaijin: {
 		onStart(pokemon) {
-			// 1. 核心限制：检查己方半场是否已经触发过此特性（每场战斗仅1次）
-			if ((pokemon.side as any).pohuaidaijinTriggered) return;
-
-			// 2. 联动逻辑：道具先生效
-			// 建议：使用 toID('Mewtwo') 检查 baseSpecies，增加对“幻想超梦”或各种形态的兼容
-			if (pokemon.item === 'berserkgene' && pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy') {
-				// 提示特性发动 (添加 [from] 标签让横幅更美观)
-				this.add('-ability', pokemon, 'Po Huai Dai Jin');
-				
-				// 消耗道具：消耗成功才会给加成
-				if (pokemon.useItem()) {
-					// 这里的加成和混乱会出现在环境清除之前
-					this.boost({atk: 2}, pokemon);
-					pokemon.addVolatile('confusion');
-				}
+			// 1. 检查道具：破坏基因 (berserkgene)
+			// 如果携带着破坏基因，在此处尝试触发它
+			if (pokemon.hasItem('berserkgene')) {
+				// 显式触发更新逻辑，确保道具在清除天气前消耗
+				this.runEvent('Update', pokemon);
 			}
 
-			// 3. 环境清除逻辑
+			// 2. 核心逻辑：清除天气和场地（一场战斗仅一次）
+			if ((pokemon as any).pohuaidaijinTriggered) return;
+
 			if (this.field.weather || this.field.terrain) {
-				// 如果刚才没因为道具显示过特性横幅，现在补上
-				if (!pokemon.item || pokemon.item !== 'berserkgene') {
-					this.add('-ability', pokemon, 'Po Huai Dai Jin');
-				}
+				this.add('-ability', pokemon, 'Po Hua Dai Jin');
 				this.field.clearWeather();
 				this.field.clearTerrain();
-				this.add('-message', `${pokemon.name} 散发出毁灭性的波动，清空了周围的一切！`);
+				
+				// 设置永久标记，确保一场战斗只触发一次清除效果
+				(pokemon as any).pohuaidaijinTriggered = true;
 			}
-
-			// 4. 设置永久标记
-			(pokemon.side as any).pohuaidaijinTriggered = true;
 		},
 		flags: {
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
 			breakable: 1, notransform: 1,
 		},
-		name: "Po Huai Dai Jin",
+		name: "Po Hua Dai Jin",
 		rating: 4,
-		num: 10039,
-		shortDesc: "破坏殆尽。令场上所有的天气型状态和场地型状态消失,每场战斗仅1次。携带破坏基因将先触发其效果",
+		num: 10039, // 顺延你之前的编号
+		shortDesc: "破坏殆尽。出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
 	},
 };
