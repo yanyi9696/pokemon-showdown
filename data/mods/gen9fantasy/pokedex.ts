@@ -452,7 +452,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["Psychic"],
 		gender: "N",
 		baseStats: { hp: 106, atk: 110, def: 90, spa: 154, spd: 90, spe: 130 },
-		abilities: { 0: "Po Huai Dai Jin", H: "Neutralizing Gas" },
+		abilities: { 0: "Po Huai Yu", H: "Neutralizing Gas" },
 		heightm: 2,
 		weightkg: 122,
 		color: "Purple",

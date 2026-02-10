@@ -1858,16 +1858,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10038,
 		shortDesc: "钢铁聚合物。受到钢属性招式或碎菱钢攻击时,不受到伤害而是回复1/8最大HP",
 	},
-	pohuaidaijin: {
+	pohuaiyu: {
 		onStart(pokemon) {
 			// 检查是否已经触发过（一场战斗仅一次）
-			if (pokemon.abilityState.pohuaidaijinTriggered) return;
+			if (pokemon.abilityState.pohuaiyuTriggered) return;
 
 			let triggered = false;
 
 			// 1. 检查并触发破坏基因逻辑
 			if (pokemon.item === 'berserkgene') {
-				this.add('-ability', pokemon, 'Po Huai Dai Jin'); // 提示特性发动
+				this.add('-ability', pokemon, 'Po Huai Yu'); // 提示特性发动
 				this.add('-item', pokemon, 'Berserk Gene');    // 提示道具触发
 				
 				// 提升2级攻击
@@ -1886,7 +1886,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 			// 2. 清除天气和场地
 			if (this.field.weather || this.field.terrain) {
-				if (!triggered) this.add('-ability', pokemon, 'Po Huai Dai Jin');
+				if (!triggered) this.add('-ability', pokemon, 'Po Huai Yu');
 				this.field.clearWeather();
 				this.field.clearTerrain();
 				triggered = true;
@@ -1894,16 +1894,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 			// 3. 如果触发了任何效果，标记该特性已使用
 			if (triggered) {
-				pokemon.abilityState.pohuaidaijinTriggered = true;
+				pokemon.abilityState.pohuaiyuTriggered = true;
 			}
 		},
 		flags: {
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
 			breakable: 1, notransform: 1,
 		},
-		name: "Po Huai Dai Jin",
+		name: "Po Huai Yu",
 		rating: 3,
 		num: 10039,
-		shortDesc: "破坏殆尽。出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
+		shortDesc: "破坏欲。出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
 	},
 };

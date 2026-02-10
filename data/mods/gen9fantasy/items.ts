@@ -4,14 +4,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		spritenum: 388,
 		itemUser: ["Mewtwo-Fantasy"],
 		// 将原本的自动触发逻辑删除，改为被动检测
-		// 只有拥有 Annihilation 特性的宝可梦才能通过特性逻辑消耗它
+		// 只有拥有 破坏欲 特性的宝可梦才能通过特性逻辑消耗它
 		onTakeItem(item, pokemon) {
-			if (pokemon.ability === 'annihilation') return true;
+			if (pokemon.ability === 'pohuaiyu') return true;
 			return false;
 		},
 		num: 0,
 		gen: 9,
-		desc: "破坏基因。超梦专属。配合特性“破坏殆尽”使用。登场时消耗，攻击大幅提升但会混乱。",
+		desc: "现在只有配合特性“破坏殆尽”才能使用。登场时消耗,攻击大幅提升但会混乱。",
 		shortDesc: "只有拥有“破坏殆尽”特性才能使用。登场攻击+2并进入混乱。使用后消失",
 	},
 	//原版mega石
@@ -2205,7 +2205,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					"chonghuapi",
 					"chaoyueqianbanbianshen",
 					"quanlidamo",
-					"pohuaidaijin",
+					"pohuaiyu",
 				];
 
 				if (unchangeableAbilities.includes(affected.ability)) {
