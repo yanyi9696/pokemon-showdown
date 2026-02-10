@@ -3150,6 +3150,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		num: 716,
 		name: "Xerneas-Fantasy",
 		baseForme: "Active", // Neutral is technically the base, but it can't be used in battle
+		forme: "Fantasy",
 		types: ["Fairy","Ground"],
 		gender: "N",
 		baseStats: { hp: 126, atk: 131, def: 95, spa: 131, spd: 98, spe: 99 },
