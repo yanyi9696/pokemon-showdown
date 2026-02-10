@@ -3,29 +3,6 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		name: "Berserk Gene",
 		spritenum: 388,
 		itemUser: ["Mewtwo-Fantasy"],
-		onUpdate(pokemon) {
-			// 限制：只有拥有“破坏殆尽”特性的超梦可以使用
-			if (pokemon.baseSpecies.baseSpecies !== 'Mewtwo-Fantasy' || pokemon.ability !== 'pohuaidaijin' as ID) {
-				return;
-			}
-
-			if (pokemon.useItem()) {
-				this.add('-activate', pokemon, 'item: Berserk Gene');
-				
-				// 提升攻击 2 级
-				this.boost({ atk: 2 }, pokemon);
-
-				// 陷入混乱状态
-				pokemon.addVolatile('confusion');
-				// 将混乱的计时器手动修改为 256 回合
-				if (pokemon.volatiles['confusion']) {
-					(pokemon.volatiles['confusion'] as any).time = 256;
-				}
-				
-				this.add('-message', `${pokemon.name} 的基因在狂暴中觉醒，陷入了深沉的混乱！`);
-			}
-		},
-		// 加上这个检查，防止其他宝可梦在非对战逻辑中产生误用
 		onTakeItem(item, source) {
 			if (source.baseSpecies.baseSpecies === 'Mewtwo-Fantasy' && source.ability === 'pohuaidaijin' as ID) return false;
 			return true;

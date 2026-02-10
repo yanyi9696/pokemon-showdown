@@ -1860,11 +1860,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	pohuaidaijin: {
 		onStart(pokemon) {
-			// 1. 检查道具：破坏基因 (berserkgene)
-			// 如果携带着破坏基因，在此处尝试触发它
-			if (pokemon.hasItem('berserkgene')) {
-				// 显式触发更新逻辑，确保道具在清除天气前消耗
-				this.runEvent('Update', pokemon);
+			// 1. 检查并强制触发“破坏基因”
+			const item = pokemon.getItem();
+			if (item.id === 'berserkgene') {
+				// 检查使用者限制：必须是超梦且拥有此特性
+				if (pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy') {
+					// 只有在能成功消耗道具的情况下才执行效果
+					if (pokemon.useItem()) {
+						this.add('-activate', pokemon, 'item: Berserk Gene');
+						this.boost({ atk: 2 }, pokemon);
+						pokemon.addVolatile('confusion');
+						if (pokemon.volatiles['confusion']) {
+							(pokemon.volatiles['confusion'] as any).time = 256;
+						}
+						this.add('-message', `${pokemon.name} 的基因在狂暴中觉醒，陷入了深沉的混乱！`);
+					}
+				}
 			}
 
 			// 2. 核心逻辑：清除天气和场地（一场战斗仅一次）
@@ -1875,7 +1886,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.field.clearWeather();
 				this.field.clearTerrain();
 				
-				// 设置永久标记，确保一场战斗只触发一次清除效果
+				// 设置永久标记
 				(pokemon as any).pohuaidaijinTriggered = true;
 			}
 		},
@@ -1884,7 +1895,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			breakable: 1, notransform: 1,
 		},
 		name: "Po Huai Dai Jin",
-		rating: 4,
+		rating: 3,
 		num: 10039, // 顺延你之前的编号
 		shortDesc: "破坏殆尽。出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
 	},
