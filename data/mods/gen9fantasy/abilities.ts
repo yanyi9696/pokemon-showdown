@@ -1860,25 +1860,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	pohuaidaijin: {
 		onStart(pokemon) {
-			// 1. 检查并强制触发“破坏基因”
+			// 1. 核心联动：如果携带破坏基因，直接在特性启动时强制执行道具逻辑
 			const item = pokemon.getItem();
-			if (item.id === 'berserkgene') {
-				// 检查使用者限制：必须是超梦且拥有此特性
-				if (pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy') {
-					// 只有在能成功消耗道具的情况下才执行效果
-					if (pokemon.useItem()) {
-						this.add('-activate', pokemon, 'item: Berserk Gene');
-						this.boost({ atk: 2 }, pokemon);
-						pokemon.addVolatile('confusion');
-						if (pokemon.volatiles['confusion']) {
-							(pokemon.volatiles['confusion'] as any).time = 256;
-						}
-						this.add('-message', `${pokemon.name} 的基因在狂暴中觉醒，陷入了深沉的混乱！`);
+			if (item.id === 'berserkgene' && pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy') {
+				// 强制执行消耗逻辑，不走系统的 onUpdate 轮询
+				if (pokemon.useItem()) {
+					this.add('-activate', pokemon, 'item: Berserk Gene');
+					this.boost({ atk: 2 }, pokemon);
+					pokemon.addVolatile('confusion');
+					// 设置混乱持续时间
+					if (pokemon.volatiles['confusion']) {
+						(pokemon.volatiles['confusion'] as any).time = 256;
 					}
+					this.add('-message', `${pokemon.name} 的基因在狂暴中觉醒，陷入了深沉的混乱！`);
 				}
 			}
 
-			// 2. 核心逻辑：清除天气和场地（一场战斗仅一次）
+			// 2. 清除天气和场地逻辑（一场战斗仅一次）
 			if ((pokemon as any).pohuaidaijinTriggered) return;
 
 			if (this.field.weather || this.field.terrain) {
@@ -1886,8 +1884,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.field.clearWeather();
 				this.field.clearTerrain();
 				
-				// 设置永久标记
+				// 标记已触发
 				(pokemon as any).pohuaidaijinTriggered = true;
+			}
+		},
+		// 增加一个兜底：万一 onStart 因为首发登场顺序没检测到道具，在第一次 update 时补发
+		onUpdate(pokemon) {
+			const item = pokemon.getItem();
+			if (item.id === 'berserkgene' && pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy') {
+				this.singleEvent('Start', this.dex.abilities.get('pohuaidaijin'), pokemon.abilityState, pokemon);
 			}
 		},
 		flags: {

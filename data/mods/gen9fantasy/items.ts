@@ -1,17 +1,4 @@
 export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
-	berserkgene: {
-		name: "Berserk Gene",
-		spritenum: 388,
-		itemUser: ["Mewtwo-Fantasy"],
-		onTakeItem(item, source) {
-			if (source.baseSpecies.baseSpecies === 'Mewtwo-Fantasy' && source.ability === 'pohuaidaijin' as ID) return false;
-			return true;
-		},
-	 	num: 0,
-		gen: 9,
-		desc: "破坏基因。超梦专属。配合特性“破坏殆尽”使用。登场时消耗，攻击大幅提升但会混乱。",
-		shortDesc: "只有拥有“破坏殆尽”特性才能使用。登场攻击+2并进入混乱。使用后消失",
-	},
 	//原版mega石
 	abomasite: {
 		name: "Abomasite",
@@ -2489,5 +2476,21 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		gen: 9,
 		desc: "幻之究极能量。幻想究极异兽专属。出场触发等同于异兽提升的效果;若特性为异兽提升,则立即提升1级最高能力并在本次上场内失去特性。生效一次后消失。",
 		shortDesc: "幻之究极能量。获得异兽提升效果;若特性是异兽提升,触发一次后清除特性。使用后消失",
+	},
+	berserkgene: {
+		name: "Berserk Gene",
+		spritenum: 388,
+		// 必须要指定 itemUser，确保 Mewtwo-Fantasy 能正确识别它
+		itemUser: ["Mewtwo-Fantasy"],
+		// 这里不需要写逻辑，因为特性里已经手动调用了 useItem() 并处理了所有效果
+		// 这样可以避免道具在非超梦手里产生奇怪的副作用
+		onTakeItem(item, source) {
+			if (source.baseSpecies.baseSpecies === 'Mewtwo-Fantasy' && source.ability === 'pohuaidaijin' as ID) return false;
+			return true;
+		},
+	 	num: 30010,
+		gen: 9,
+		desc: "破坏基因。超梦专属。配合特性“破坏殆尽”使用。登场时消耗，攻击大幅提升但会混乱。",
+		shortDesc: "只有拥有“破坏殆尽”特性才能使用。登场攻击+2并进入混乱。使用后消失",
 	},
 };
