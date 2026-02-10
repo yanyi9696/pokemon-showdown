@@ -31,6 +31,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	greninjaashfantasy: {
 		tier: "Uber",
 	},
+	kartanafantasy: {
+		tier: "Uber",
+	},
 	melmetalgmegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Electromorphosis"},	
@@ -51,6 +54,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Ji Zhi Neng"},	
 	},
 	regigigasfantasy: {
+		tier: "Uber",
+	},
+	xerneasfantasy: {
 		tier: "Uber",
 	},
 	absolmegafantasy: {

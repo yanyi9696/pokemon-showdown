@@ -3141,6 +3141,25 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 48,
 		eggGroups: ["Flying", "Dragon"],
 	},
+	xerneas: {
+		inherit: true,
+		otherFormes: ["Xerneas-Neutral", "Xerneas-Fantasy"],
+		formeOrder: ["Xerneas-Neutral", "Xerneas", "Xerneas-Fantasy"]
+	},
+	xerneasfantasy: {
+		num: 716,
+		name: "Xerneas-Fantasy",
+		baseForme: "Active", // Neutral is technically the base, but it can't be used in battle
+		types: ["Fairy","Ground"],
+		gender: "N",
+		baseStats: { hp: 126, atk: 131, def: 95, spa: 131, spd: 98, spe: 99 },
+		abilities: { 0: "Fairy Aura" },
+		heightm: 3,
+		weightkg: 215,
+		color: "Blue",
+		eggGroups: ["Undiscovered"],
+		tags: ["Restricted Legendary"],
+	},
 	volcanion: {
 		inherit: true,
 		otherFormes: ["Volcanion-Fantasy"],

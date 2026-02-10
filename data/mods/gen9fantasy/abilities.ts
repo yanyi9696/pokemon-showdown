@@ -1903,7 +1903,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		name: "Po Huai Dai Jin",
 		rating: 3,
-		num: 10039, // 顺延你之前的编号
+		num: 10039,
 		shortDesc: "破坏殆尽。出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
 	},
 };

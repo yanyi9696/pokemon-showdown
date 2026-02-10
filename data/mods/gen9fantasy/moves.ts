@@ -48,7 +48,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			return power;
 		},
 		category: "Physical",
-		isNonstandard: "Past",
 		name: "Punishment",
 		pp: 10,
 		priority: 0,
@@ -114,6 +113,39 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Tough",
 		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于缩小状态,本招式必定命中且伤害翻倍",
 		shortDesc: "此招式拥有飞行属性在属性相克中的克制面,舍去微弱",
+	},
+	landswrath: {
+		num: 616,
+		accuracy: 100,
+		basePower: 90,
+		category: "Physical",
+		name: "Land's Wrath",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, nonsky: 1, metronome: 1 },
+		/**
+		 * 核心增强逻辑：命中目标后清除场地
+		 */
+		onAfterHit(target, source) {
+			if (source.hp && this.field.terrain) {
+				this.field.clearTerrain();
+			}
+		},
+		/**
+		 * 核心增强逻辑：打在替身上时也能清除场地
+		 */
+		onAfterSubDamage(damage, target, source) {
+			if (source.hp && this.field.terrain) {
+				this.field.clearTerrain();
+			}
+		},
+		secondary: null,
+		target: "allAdjacentFoes",
+		type: "Ground",
+		zMove: { basePower: 185 },
+		contestType: "Beautiful",
+		desc: "攻击目标造成伤害。如果场地上存在场地型状态,则将其破坏",
+		shortDesc: "攻击目标造成伤害。使场地状态消失",
 	},
 	overdrive: {
 		num: 786,
@@ -214,7 +246,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "回复自身1/2最大HP",
 		shortDesc: "回复自身1/2最大HP"
 	},
-		//以下为自制技能
+ 	//以下为自制技能
 	xianxingzhiling: {
 		num: 10001,
 		accuracy: true,
@@ -989,17 +1021,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Water",
 		// 使用 damageCallback 来处理复杂的伤害计算
 		damageCallback(pokemon, target) {
-			// 检查目标是否处于守住状态
+			// 检查目标是否处于守住状态 (包括各种守住变种)
 			if (target.volatiles['protect'] || target.volatiles['banefulbunker'] || target.volatiles['kingsshield'] || target.volatiles['spikyshield'] || target.side.getSideCondition('matblock')) {
 				this.add('-zbroken', target);
-				// 对守住状态的宝可梦造成其最大HP的1/8伤害
-				return Math.floor(target.maxhp / 8);
+				// 对守住状态的宝可梦造成其最大HP的 3/16 伤害
+				return Math.floor(target.maxhp * 3 / 16);
 			}
-			// 对非守住状态的宝可梦造成其最大HP的1/2伤害
-			return Math.floor(target.maxhp / 2);
+			// 对非守住状态的宝可梦造成其最大HP的 3/4 伤害
+			return Math.floor(target.maxhp * 3 / 4);
 		},
-		desc: "黄金羁绊手里剑。对目标造成目标最大HP1/2(向下取整)的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的1/8",
-		shortDesc: "黄金羁绊手里剑。造成目标最大HP1/2的伤害"
+		desc: "黄金羁绊手里剑。对目标造成目标最大HP 3/4 (向下取整) 的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的 3/16",
+		shortDesc: "黄金羁绊手里剑。造成目标最大HP 3/4 的伤害"
 	},
 	xiangongjiaozhun: {
 		num: 10025,
