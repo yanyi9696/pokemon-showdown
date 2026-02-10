@@ -1860,39 +1860,41 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	pohuaidaijin: {
 		onStart(pokemon) {
-			// 1. 核心联动：如果携带破坏基因，直接在特性启动时强制执行道具逻辑
-			const item = pokemon.getItem();
-			if (item.id === 'berserkgene' && pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy') {
-				// 强制执行消耗逻辑，不走系统的 onUpdate 轮询
-				if (pokemon.useItem()) {
-					this.add('-activate', pokemon, 'item: Berserk Gene');
-					this.boost({ atk: 2 }, pokemon);
-					pokemon.addVolatile('confusion');
-					// 设置混乱持续时间
-					if (pokemon.volatiles['confusion']) {
-						(pokemon.volatiles['confusion'] as any).time = 256;
-					}
-					this.add('-message', `${pokemon.name} 的基因在狂暴中觉醒，陷入了深沉的混乱！`);
+			// 检查是否已经触发过（一场战斗仅一次）
+			if (pokemon.abilityState.pohuaidaijinTriggered) return;
+
+			let triggered = false;
+
+			// 1. 检查并触发破坏基因逻辑
+			if (pokemon.item === 'berserkgene') {
+				this.add('-ability', pokemon, 'Po Huai Dai Jin'); // 提示特性发动
+				this.add('-item', pokemon, 'Berserk Gene');    // 提示道具触发
+				
+				// 提升2级攻击
+				this.boost({atk: 2}, pokemon);
+				// 陷入混乱 (在代码中添加 volatile 状态)
+				pokemon.addVolatile('confusion');
+				// 设定混乱持续时间 (256回合在模拟器中通常视为永久)
+				if (pokemon.volatiles['confusion']) {
+					pokemon.volatiles['confusion'].time = 256;
 				}
+				
+				// 消耗道具
+				pokemon.useItem();
+				triggered = true;
 			}
 
-			// 2. 清除天气和场地逻辑（一场战斗仅一次）
-			if ((pokemon as any).pohuaidaijinTriggered) return;
-
+			// 2. 清除天气和场地
 			if (this.field.weather || this.field.terrain) {
-				this.add('-ability', pokemon, 'Po Huai Dai Jin');
+				if (!triggered) this.add('-ability', pokemon, 'Po Huai Dai Jin');
 				this.field.clearWeather();
 				this.field.clearTerrain();
-				
-				// 标记已触发
-				(pokemon as any).pohuaidaijinTriggered = true;
+				triggered = true;
 			}
-		},
-		// 增加一个兜底：万一 onStart 因为首发登场顺序没检测到道具，在第一次 update 时补发
-		onUpdate(pokemon) {
-			const item = pokemon.getItem();
-			if (item.id === 'berserkgene' && pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy') {
-				this.singleEvent('Start', this.dex.abilities.get('pohuaidaijin'), pokemon.abilityState, pokemon);
+
+			// 3. 如果触发了任何效果，标记该特性已使用
+			if (triggered) {
+				pokemon.abilityState.pohuaidaijinTriggered = true;
 			}
 		},
 		flags: {
