@@ -1136,7 +1136,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		flags: {
-			cantsuppress: 1, failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, notransform: 1,
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
+			breakable: 1, notransform: 1,
 		},
 		name: "Wo Ju",
 		rating: 4,
@@ -1266,7 +1267,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				move.multihit = 3;
 			}
 		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
+		flags: {
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
+			breakable: 1, notransform: 1,
+		},
 		name: "Chao Yue Qian Ban Bian Shen",
 		num: 10022,
 		rating: 5,
@@ -1572,7 +1576,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			this.add('-activate', pokemon, 'ability: Quan Li Da Mo');
 			pokemon.formeChange(targetForme, this.effect, true);
 		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
+		flags: {
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
+			breakable: 1, notransform: 1,
+		},
 		name: "Quan Li Da Mo",
 		rating: 3,
 		num: 10030,
@@ -1851,38 +1858,44 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10038,
 		shortDesc: "钢铁聚合物。受到钢属性招式或碎菱钢攻击时,不受到伤害而是回复1/8最大HP",
 	},
-	puhuadaijin: {
+	puhuaidaijin: {
 		onStart(pokemon) {
 			// 1. 核心限制：检查己方半场是否已经触发过此特性（每场战斗仅1次）
-			if ((pokemon.side as any).puhuadaijinTriggered) return;
+			if ((pokemon.side as any).puhuaidaijinTriggered) return;
 
-			// 2. 联动逻辑：检查是否为持有“破坏基因”的超梦
-			if (pokemon.item === 'berserkgene' && pokemon.baseSpecies.baseSpecies === 'Mewtwo') {
-				// 提示特性发动
-				this.add('-ability', pokemon, 'Po Hua Dai Jin');
-				// 手动触发道具效果：攻击提升2级 + 混乱
+			// 2. 联动逻辑：道具先生效
+			// 建议：使用 toID('Mewtwo') 检查 baseSpecies，增加对“幻想超梦”或各种形态的兼容
+			if (pokemon.item === 'berserkgene' && pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy') {
+				// 提示特性发动 (添加 [from] 标签让横幅更美观)
+				this.add('-ability', pokemon, 'Po Huai Dai Jin');
+				
+				// 消耗道具：消耗成功才会给加成
 				if (pokemon.useItem()) {
+					// 这里的加成和混乱会出现在环境清除之前
 					this.boost({atk: 2}, pokemon);
 					pokemon.addVolatile('confusion');
 				}
 			}
 
-			// 3. 环境清除逻辑：参考“归零化境 (Teraform Zero)”
+			// 3. 环境清除逻辑
 			if (this.field.weather || this.field.terrain) {
-				// 如果刚才没显示过特性（即没触发道具），现在显示
-				if (!((pokemon.side as any).puhuadaijinTriggered)) {
-					this.add('-ability', pokemon, 'Po Hua Dai Jin');
+				// 如果刚才没因为道具显示过特性横幅，现在补上
+				if (!pokemon.item || pokemon.item !== 'berserkgene') {
+					this.add('-ability', pokemon, 'Po Huai Dai Jin');
 				}
 				this.field.clearWeather();
 				this.field.clearTerrain();
-				this.add('-message', `${pokemon.name} 散发出毁灭性的波动，清空了周围的环境！`);
+				this.add('-message', `${pokemon.name} 散发出毁灭性的波动，清空了周围的一切！`);
 			}
 
-			// 4. 设置永久标记：标记该侧场地本场战斗已触发过此特性
-			(pokemon.side as any).puhuadaijinTriggered = true;
+			// 4. 设置永久标记
+			(pokemon.side as any).puhuaidaijinTriggered = true;
 		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1 },
-		name: "Po Hua Dai Jin",
+		flags: {
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
+			breakable: 1, notransform: 1,
+		},
+		name: "Po Huai Dai Jin",
 		rating: 4,
 		num: 10039,
 		shortDesc: "破坏殆尽。令场上所有的天气型状态和场地型状态消失,每场战斗仅1次。携带破坏基因将先触发其效果",

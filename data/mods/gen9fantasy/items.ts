@@ -8,7 +8,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		// 只有在特性的 onStart 中通过 pokemon.useItem() 被显式调用时才会消耗。
 		onTakeItem(item, pokemon) {
 			// 限制：只有拥有“破坏殆尽”特性的超梦能保有此道具
-			if (pokemon.baseSpecies.baseSpecies === 'Mewtwo' && pokemon.hasAbility('puhuadaijin')) {
+			if (pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy' && pokemon.hasAbility('puhuaidaijin')) {
 				return false; // 不可被夺走
 			}
 			return true;
@@ -2209,6 +2209,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					"chonghuapi",
 					"chaoyueqianbanbianshen",
 					"quanlidamo",
+					"puhuaidaijin",
 				];
 
 				if (unchangeableAbilities.includes(affected.ability)) {
