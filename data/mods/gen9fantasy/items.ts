@@ -11,8 +11,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 0,
 		gen: 9,
-		desc: "现在只有配合特性“破坏殆尽”才能使用。登场时消耗,攻击大幅提升但会混乱。",
-		shortDesc: "只有拥有“破坏殆尽”特性才能使用。登场攻击+2并进入混乱。使用后消失",
+		desc: "现在只有配合特性“破坏欲”才能使用。登场时消耗,攻击大幅提升但会混乱。",
+		shortDesc: "只有拥有“破坏欲”特性才能使用。登场攻击+2并进入混乱。使用后消失",
 	},
 	//原版mega石
 	abomasite: {
