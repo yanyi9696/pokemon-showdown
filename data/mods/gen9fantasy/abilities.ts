@@ -1858,10 +1858,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10038,
 		shortDesc: "钢铁聚合物。受到钢属性招式或碎菱钢攻击时,不受到伤害而是回复1/8最大HP",
 	},
-	puhuaidaijin: {
+	pohuaidaijin: {
 		onStart(pokemon) {
 			// 1. 核心限制：检查己方半场是否已经触发过此特性（每场战斗仅1次）
-			if ((pokemon.side as any).puhuaidaijinTriggered) return;
+			if ((pokemon.side as any).pohuaidaijinTriggered) return;
 
 			// 2. 联动逻辑：道具先生效
 			// 建议：使用 toID('Mewtwo') 检查 baseSpecies，增加对“幻想超梦”或各种形态的兼容
@@ -1889,7 +1889,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 
 			// 4. 设置永久标记
-			(pokemon.side as any).puhuaidaijinTriggered = true;
+			(pokemon.side as any).pohuaidaijinTriggered = true;
 		},
 		flags: {
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
