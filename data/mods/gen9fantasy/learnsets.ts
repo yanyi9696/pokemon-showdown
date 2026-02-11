@@ -4078,8 +4078,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			biansuzhefan: ["9M"],
 			barbbarrage: ["9M"],
+			coil: ["9M"],
 			baoyulihua: ["9M"],
 			shelter: ["9M"],
+			stealthrock: ["9M"],
 			//幻想增添技能
 			firstimpression: ["9M"],
 			uturn: ["9M"],
@@ -4168,8 +4170,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			biansuzhefan: ["9M"],
 			barbbarrage: ["9M"],
+			coil: ["9M"],
 			baoyulihua: ["9M"],
 			shelter: ["9M"],
+			stealthrock: ["9M"],
 			//幻想增添技能
 			firstimpression: ["9M"],
 			uturn: ["9M"],
@@ -22066,7 +22070,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	mewtwofantasy: {
 		learnset: {
 			dongchadaji: ["9M"],
-			closecombat: ["9M"],
+			skyuppercut: ["9M"],
+			machpunch: ["9M"],
 			punishment: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
@@ -22257,7 +22262,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	mewtwomegaxfantasy: {
 		learnset: {
 			dongchadaji: ["9M"],
-			closecombat: ["9M"],
+			skyuppercut: ["9M"],
+			machpunch: ["9M"],
 			punishment: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
@@ -22448,7 +22454,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	mewtwomegayfantasy: {
 		learnset: {
 			dongchadaji: ["9M"],
-			closecombat: ["9M"],
+			skyuppercut: ["9M"],
+			machpunch: ["9M"],
 			punishment: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
@@ -22779,7 +22786,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	tapufinifantasy: {
 		learnset: {
 			fanjishuanglin: ["9M"],
+			freezedry: ["9M"],
+			auroraveil: ["9M"],
+			snowscape: ["9M"],
 			mistyexplosion: ["9M"],
+			raoliangzhiyin: ["9M"],
 			healingwish: ["9M"],
 			wish: ["9M"],
 			huanxiangbaofa: ["9M"],

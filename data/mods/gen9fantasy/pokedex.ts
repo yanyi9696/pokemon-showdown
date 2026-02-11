@@ -467,7 +467,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["Psychic", "Fighting"],
 		gender: "N",
 		baseStats: { hp: 106, atk: 190, def: 100, spa: 154, spd: 100, spe: 130 },
-		abilities: { 0: "Scrappy" },
+		abilities: { 0: "Iron Fist" },
 		heightm: 2.3,
 		weightkg: 127,
 		color: "Purple",

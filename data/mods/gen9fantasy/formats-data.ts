@@ -47,7 +47,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	mewtwomegaxfantasy: {
 		tier: "Uber",
-		abilities: {0: "Scrappy"},	
+		abilities: {0: "Iron Fist"},	
 	},
 	mewtwomegayfantasy: {
 		tier: "Uber",
@@ -464,6 +464,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	aggronfantasy: {
 		tier: "RUBL",
 	},
+	carnivinefantasy: {
+		tier: "RUBL",
+	},
 	floetteeternalfantasy: {
 		tier: "RUBL",
 	},
@@ -486,6 +489,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	victreebelfantasy: {
 		tier: "RUBL",
 	},
+	tropiusfantasy: {
+		tier: "RUBL",
+	},
 	abomasnowfantasy: {
 		tier: "RU",
 	},
@@ -496,9 +502,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	armarougefantasy: {
-		tier: "RU",
-	},
-	carnivinefantasy: {
 		tier: "RU",
 	},
 	cherrimfantasy: {
@@ -551,9 +554,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
-		tier: "RU",
-	},
-	tropiusfantasy: {
 		tier: "RU",
 	},
 	mudkipfantasy: {
