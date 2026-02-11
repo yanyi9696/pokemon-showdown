@@ -22065,12 +22065,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	mewtwofantasy: {
 		learnset: {
-			photongeyser: ["9M"],
 			dongchadaji: ["9M"],
 			closecombat: ["9M"],
-			suckerpunch: ["9M"],
 			punishment: ["9M"],
-			swordsdance: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
@@ -22259,12 +22256,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	mewtwomegaxfantasy: {
 		learnset: {
-			photongeyser: ["9M"],
 			dongchadaji: ["9M"],
 			closecombat: ["9M"],
-			suckerpunch: ["9M"],
 			punishment: ["9M"],
-			swordsdance: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
@@ -22453,12 +22447,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	mewtwomegayfantasy: {
 		learnset: {
-			photongeyser: ["9M"],
 			dongchadaji: ["9M"],
 			closecombat: ["9M"],
-			suckerpunch: ["9M"],
 			punishment: ["9M"],
-			swordsdance: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
