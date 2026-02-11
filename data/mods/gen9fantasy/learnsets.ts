@@ -22879,6 +22879,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			headsmash: ["9M"],
 			yanjian: ["9M"],
+			accelerock: ["9M"],
 			leechlife: ["9M"],
 			firstimpression: ["9M"],
 			uturn: ["9M"],
