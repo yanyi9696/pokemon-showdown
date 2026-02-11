@@ -439,6 +439,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	swampertfantasy: {
 		tier: "UU",
 	},
+	tapufinifantasy: {
+		tier: "UU",
+	},
 	tentacruelfantasy: {
 		tier: "UU",
 	},
@@ -487,6 +490,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	altariafantasy: {
+		tier: "RU",
+	},
+	armaldofantasy: {
 		tier: "RU",
 	},
 	armarougefantasy: {
