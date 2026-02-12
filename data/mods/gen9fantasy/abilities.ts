@@ -330,11 +330,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onEnd(pokemon) {
 			if (pokemon.illusion) {
 				this.debug('illusion cleared');
-				pokemon.illusion = null; // 这一步至关重要，会让上面的 onUpdate 识别到视觉种族变回了自己
+				pokemon.illusion = null;
 				const details = pokemon.getUpdatedDetails();
 				this.add('replace', pokemon, details);
 				this.add('-end', pokemon, 'Illusion');
-				// 这里不需要再写 this.add('-start'...) 了，因为 formats.ts 的 onUpdate 会自动处理
+
+				// --- 新增：幻觉打破后重置幻想数据 ---
+				const realSpecies = pokemon.species;
+				// 如果真实身份是幻想宝可梦，则显示真实数据
+				if (!Dex.species.get(realSpecies.id).exists) {
+					this.add('-start', pokemon, 'typechange', realSpecies.types.join('/'), '[silent]');
+					this.add('-start', pokemon, 'fantasystats', Object.values(realSpecies.baseStats).join('/'), '[silent]');
+				} else {
+					// 如果真实身份是原版，确保清除之前伪装时留下的幻想 UI
+					this.add('-end', pokemon, 'typechange', '[silent]');
+					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				}
 			}
 		},
 		onFaint(pokemon) {

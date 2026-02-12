@@ -77,34 +77,42 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 		],
 		onSwitchIn(pokemon) {
-			// 初始化独立内存，记录当前显示的种族 ID
-			// 优先级：幻觉对象 > 自身种族
-			const appearance = pokemon.illusion || pokemon;
-			pokemon.m.lastFantasySpecies = appearance.species.id;
-			
-			const targetSpecies = appearance.species;
-			if (!this.dex.species.get(targetSpecies.id).exists) {
-				this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-				this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-			}
+			// 初始上场时调用一次同步
+			this.effectState.fantasySync = (pokemon: Pokemon) => {
+				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
+				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+
+				if (!Dex.species.get(targetSpecies.id).exists) {
+					// 如果是幻想宝可梦：显示属性和种族值
+					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				} else {
+					// 如果是原版宝可梦：清除幻想 UI
+					this.add('-end', pokemon, 'typechange', '[silent]');
+					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				}
+			};
+
+			// 执行同步
+			this.effectState.fantasySync(pokemon);
 		},
 
+		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 核心：获取“视觉种族”
-			// 如果有幻觉，读取幻觉对象；如果没有，读取当前 species（可能是变身后或原始的）
-			const appearance = pokemon.illusion || pokemon;
-			const currentSpecies = appearance.species;
-
-			// 只有当视觉种族发生变化时（幻觉破除、变身、形态转换）才更新 UI
-			if (pokemon.m.lastFantasySpecies !== currentSpecies.id) {
-				pokemon.m.lastFantasySpecies = currentSpecies.id;
-
-				if (!this.dex.species.get(currentSpecies.id).exists) {
-					// 变身为幻想宝可梦，或幻觉伪装成幻想宝可梦
-					this.add('-start', pokemon, 'typechange', currentSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(currentSpecies.baseStats).join('/'), '[silent]');
+			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
+			// 或者检查 pokemon.volatiles['transform']
+			const isTransformed = !!pokemon.transformed;
+			
+			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
+			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
+				this.effectState.lastSpeciesShown = pokemon.species.id;
+				
+				// 重新执行同步逻辑
+				const targetSpecies = pokemon.species; 
+				if (!Dex.species.get(targetSpecies.id).exists) {
+					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
+					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 变身为原版宝可梦，或幻觉伪装成原版宝可梦，或幻觉破除后变回原版
 					this.add('-end', pokemon, 'typechange', '[silent]');
 					this.add('-end', pokemon, 'fantasystats', '[silent]');
 				}
