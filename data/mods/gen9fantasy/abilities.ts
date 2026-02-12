@@ -335,16 +335,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.add('replace', pokemon, details);
 				this.add('-end', pokemon, 'Illusion');
 
-				// --- 新增：幻觉打破后重置幻想数据 ---
-				const realSpecies = pokemon.species;
-				// 如果真实身份是幻想宝可梦，则显示真实数据
-				if (!Dex.species.get(realSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', realSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(realSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					// 如果真实身份是原版，确保清除之前伪装时留下的幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				// --- 修改部分：使用类型断言 (this.format as any) 修复 TS 报错 ---
+				// 此时 pokemon.illusion 已经为 null，sync 会自动根据真实身份更新 UI
+				if ((this.format as any).onUpdate) {
+					this.runEvent('Update', pokemon);
 				}
 			}
 		},
