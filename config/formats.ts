@@ -427,7 +427,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', 'Little Cup', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		banlist: [
-			'Aipom', 'Basculin-White-Striped', 'Clamperl', 'Corsola-Galar', 'Cutiefly', 'Diglett', 'Dunsparce', 'Duraludon', 'Flittle', 'Gastly', 'Girafarig',
+			'Aipom', 'Basculin-White-Striped', 'Clamperl', 'Corsola-Galar', 'Cutiefly', 'Diglett-Base', 'Dunsparce', 'Duraludon', 'Flittle', 'Gastly', 'Girafarig',
 			'Gligar', 'Magby', 'Meditite', 'Misdreavus', 'Murkrow', 'Porygon', 'Qwilfish-Hisui', 'Rufflet', 'Scraggy', 'Scyther', 'Sneasel', 'Sneasel-Hisui',
 			'Snivy', 'Stantler', 'Swirlix', 'Tangela', 'Vulpix-Alola', 'Woobat', 'Yanma', 'Zigzagoon-Base', 'Drought', 'Moody', 'Eevium Z', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
