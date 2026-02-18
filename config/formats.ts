@@ -68,44 +68,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 		],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -128,44 +119,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Greninja-Mega-Fantasy', 'Delphox-Mega-Fantasy', 'Lucario-Mega-Z', 'Magearna-Mega', 'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy',
 		],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -179,44 +161,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail', 'Greninja-Ash Z'
 		],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -227,44 +200,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU'],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -275,44 +239,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -323,44 +278,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -371,44 +317,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -424,44 +361,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
 		],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -498,44 +426,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Mega', 'Ultra Beast', 'Paradox', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -559,44 +478,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
         'Malignant Chain', 'Poison Fang', 'Rage Powder', 'Skill Swap', 'Spicy Extract', 'Swagger', 'Toxic', 'Toxic Spikes',
     	],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},
@@ -610,44 +520,35 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		// no restrictions, for serious (other than team preview)
 		ruleset: ['Team Preview', 'Cancel Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
 		onSwitchIn(pokemon) {
-			// 初始上场时调用一次同步
-			this.effectState.fantasySync = (pokemon: Pokemon) => {
-				// 优先级：幻觉伪装 > 变身状态 > 自身原始种族
-				const targetSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
+			// 定义统一的视觉同步逻辑
+			this.effectState.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					// 如果是幻想宝可梦：显示属性和种族值
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
+				if (!Dex.species.get(visualSpecies.id).exists) {
+					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果是原版宝可梦：清除幻想 UI
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+					// 如果视觉上是原版宝可梦：清除幻想 UI
+					this.add('-end', mon, 'typechange', '[silent]');
+					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
 
-			// 执行同步
 			this.effectState.fantasySync(pokemon);
 		},
 
-		// 使用 onUpdate 实时监控变身后的状态切换
 		onUpdate(pokemon) {
-			// 检查变身标记：pokemon.transformed 是 PS 内核记录变身状态的布尔值
-			// 或者检查 pokemon.volatiles['transform']
-			const isTransformed = !!pokemon.transformed;
-			
-			// 记录上一次显示的种族 ID，防止每回合重复发送数据包导致闪烁
-			if (this.effectState.lastSpeciesShown !== pokemon.species.id) {
-				this.effectState.lastSpeciesShown = pokemon.species.id;
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 增加对 illusion 状态的监控
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (this.effectState.lastVisualShown !== currentVisualId) {
+				this.effectState.lastVisualShown = currentVisualId;
 				
-				// 重新执行同步逻辑
-				const targetSpecies = pokemon.species; 
-				if (!Dex.species.get(targetSpecies.id).exists) {
-					this.add('-start', pokemon, 'typechange', targetSpecies.types.join('/'), '[silent]');
-					this.add('-start', pokemon, 'fantasystats', Object.values(targetSpecies.baseStats).join('/'), '[silent]');
-				} else {
-					this.add('-end', pokemon, 'typechange', '[silent]');
-					this.add('-end', pokemon, 'fantasystats', '[silent]');
+				if (this.effectState.fantasySync) {
+					this.effectState.fantasySync(pokemon);
 				}
 			}
 		},

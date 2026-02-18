@@ -22779,6 +22779,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zenheadbutt: ["8M", "7T", "6T"],
 		},
 		eventData: [
+			{generation: 6, level: 50, moves: ["gravity", "moonblast", "megahorn"]},
+			{generation: 6, level: 100, shiny: true, moves: ["moonblast", "aromatherapy", "focusblast"], pokeball: "cherishball"},
+			{generation: 7, level: 60, shiny: 1, moves: ["hornleech", "nightslash", "moonblast"]},
+			{generation: 7, level: 60, moves: ["hornleech", "nightslash", "moonblast"], pokeball: "cherishball"},
+			{generation: 7, level: 100, moves: ["focusblast", "grassknot", "moonblast"], pokeball: "cherishball"},
 			{generation: 8, level: 70, shiny: 1, moves: ["ingrain", "dazzlinggleam", "moonblast", "hornleech"]},
 		],
 		eventOnly: true,
