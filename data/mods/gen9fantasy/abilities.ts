@@ -179,15 +179,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
 			if (target) {
 				// 1. 执行变身逻辑
-				// transformInto 会处理属性、能力值、招式的复制
-				if (pokemon.transformInto(target, this.dex.abilities.get('imposter'))) {
-					// 2. 核心修复：不使用 runEvent('SwitchIn')，而是使用特定的更新逻辑
-					// 这行代码会向前端发送更新指令，确保 UI 显示变身后目标的信息
-					this.add('-transform', pokemon, target, '[from] ability: Imposter');
-					
-					// 3. 触发通用更新事件，这会同步宝可梦的状态而不会重新触发伤害判定
-					this.runEvent('Update', pokemon);
-				}
+				// transformInto 内部会自动处理数据的拷贝，并向前端发送变身动画指令
+				pokemon.transformInto(target, this.dex.abilities.get('imposter'));
+				
+				// 2. 修复 UI 更新问题
+				// 我们保留 runEvent('Update')，它用于确保前端的数据（如HP、属性、能力值）与服务器同步
+				this.runEvent('Update', pokemon);
 			}
 		},
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
