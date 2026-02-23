@@ -246,6 +246,69 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "回复自身1/2最大HP",
 		shortDesc: "回复自身1/2最大HP"
 	},
+	burningbulwark: {
+		num: 908,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Burning Bulwark",
+		pp: 10,
+		priority: 4,
+		flags: { metronome: 1, noassist: 1, failcopycat: 1 },
+		stallingMove: true,
+		volatileStatus: 'burningbulwark',
+		onPrepareHit(pokemon) {
+			return !!this.queue.willAct() && this.runEvent('StallMove', pokemon);
+		},
+		onHit(pokemon) {
+			pokemon.addVolatile('stall');
+		},
+		condition: {
+			duration: 1,
+			onStart(target) {
+				this.add('-singleturn', target, 'move: Protect');
+			},
+			onTryHitPriority: 3,
+			onTryHit(target, source, move) {
+				if (!move.flags['protect'] || move.category === 'Status') {
+					if (['gmaxoneblow', 'gmaxrapidflow'].includes(move.id)) return;
+					if (move.isZ || move.isMax) target.getMoveHitData(move).zBrokeProtect = true;
+					return;
+				}
+				if (move.smartTarget) {
+					move.smartTarget = false;
+				} else {
+					this.add('-activate', target, 'move: Protect');
+				}
+				const lockedmove = source.getVolatile('lockedmove');
+				if (lockedmove) {
+					if (source.volatiles['lockedmove'].duration === 2) {
+						delete source.volatiles['lockedmove'];
+					}
+				}
+				
+				// --- 核心修改部分：检测幻之冰之石 ---
+				if (this.checkMoveMakesContact(move, source, target)) {
+					// 如果防御方持有幻之冰之石，则给攻击方上冻伤，否则上烧伤
+					const statusToSet = target.hasItem('fantasyicestone') ? 'fst' : 'brn';
+					source.trySetStatus(statusToSet, target);
+				}
+				// ----------------------------------
+				
+				return this.NOT_FAIL;
+			},
+			onHit(target, source, move) {
+				// 针对极巨/Z招式穿透后的接触检测
+				if (move.isZOrMaxPowered && this.checkMoveMakesContact(move, source, target)) {
+					const statusToSet = target.hasItem('fantasyicestone') ? 'fst' : 'brn';
+					source.trySetStatus(statusToSet, target);
+				}
+			},
+		},
+		secondary: null,
+		target: "self",
+		type: "Fire",
+	},
  	//以下为自制技能
 	xianxingzhiling: {
 		num: 10001,
