@@ -26,18 +26,21 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
 			this.effectState.fantasySync = (mon: Pokemon) => {
-				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
+				if (isFantasy) {
+					// 如果是幻想宝可梦：强制同步属性和种族值显示
 					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 如果是原版宝可梦：
+					// 只有当该宝可梦【没有】处于属性变更状态（如浸水、变幻自如）时，才清除 UI
+					// 这样就不会干扰原版招式/特性的属性显示
+					if (!mon.addedType && !mon.knownType) {
+						this.add('-end', mon, 'typechange', '[silent]');
+					}
 					this.add('-end', mon, 'fantasystats', '[silent]');
 				}
 			};
@@ -46,8 +49,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 
 		onUpdate(pokemon) {
-			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 监控视觉种族 ID 变化
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
 			if (this.effectState.lastVisualShown !== currentVisualId) {
