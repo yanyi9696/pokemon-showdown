@@ -26,37 +26,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
 				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
 				if (isFantasy) {
-					// 如果是幻想宝可梦：强制同步属性和种族值显示
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果是原版宝可梦：
-					// 只有当该宝可梦【没有】处于属性变更状态（如浸水、变幻自如）时，才清除 UI
-					// 这样就不会干扰原版招式/特性的属性显示
-					if (!mon.addedType && !mon.knownType) {
-						this.add('-end', mon, 'typechange', '[silent]');
-					}
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
-			// 监控视觉种族 ID 变化
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -70,35 +81,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 		],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -121,35 +145,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Greninja-Mega-Fantasy', 'Delphox-Mega-Fantasy', 'Lucario-Mega-Z', 'Magearna-Mega', 'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy',
 		],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -163,35 +200,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail', 'Greninja-Ash Z'
 		],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -202,35 +252,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU'],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -241,35 +304,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC OU'],
 		banlist: ['ND OU', 'ND UUBL', 'Drizzle', 'Drought', 'Light Clay'],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -280,35 +356,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -319,35 +408,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['[Gen 9] FC UU'],
 		banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -363,35 +465,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Dragon Rage', 'Sonic Boom', 'Sticky Web',
 		],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -428,35 +543,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Mega', 'Ultra Beast', 'Paradox', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -480,35 +608,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
         'Malignant Chain', 'Poison Fang', 'Rage Powder', 'Skill Swap', 'Spicy Extract', 'Swagger', 'Toxic', 'Toxic Spikes',
     	],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
@@ -522,35 +663,48 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		// no restrictions, for serious (other than team preview)
 		ruleset: ['Team Preview', 'Cancel Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
 		onSwitchIn(pokemon) {
-			// 定义统一的视觉同步逻辑
-			this.effectState.fantasySync = (mon: Pokemon) => {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
 				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
 
-				if (!Dex.species.get(visualSpecies.id).exists) {
-					// 如果视觉上是幻想宝可梦：显示对应的属性和种族值
-					this.add('-start', mon, 'typechange', visualSpecies.types.join('/'), '[silent]');
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true; 
 				} else {
-					// 如果视觉上是原版宝可梦：清除幻想 UI
-					this.add('-end', mon, 'typechange', '[silent]');
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
+					
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
 				}
 			};
 
-			this.effectState.fantasySync(pokemon);
+			pokemon.m.fantasySync(pokemon);
 		},
 
 		onUpdate(pokemon) {
 			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 增加对 illusion 状态的监控
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
 			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
 
-			if (this.effectState.lastVisualShown !== currentVisualId) {
-				this.effectState.lastVisualShown = currentVisualId;
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
 				
-				if (this.effectState.fantasySync) {
-					this.effectState.fantasySync(pokemon);
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
