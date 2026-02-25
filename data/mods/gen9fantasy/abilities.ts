@@ -1069,8 +1069,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		// onStart 和 onEnd 确保登场和离场时能正确处理
 		onStart(pokemon) {
 			this.add('-ability', pokemon, '雷霆行者');
-			// 登场时立即创造场地
-			this.field.addPseudoWeather('iondeluge');
+			// 登场时尝试创造等离子浴
+			if (this.field.addPseudoWeather('iondeluge')) {
+				// 【新增】登场时显示提示信息
+				this.add('-message', `${pokemon.name} 的特性“雷霆行者”引发了等离子浴！`);
+			}
 		},
 		onEnd(pokemon) {
 			// 离场时，直接移除场地效果
@@ -1079,34 +1082,39 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onBeforeMove(pokemon) {
 			// 检查场上是否还存在“等离子浴”效果
 			if (!this.field.getPseudoWeather('iondeluge')) {
-				// 如果不存在，则重新创造一次
-				this.add('-message', `${pokemon.name} 的“雷霆行者”特性再次引发了等离子浴！`); // 添加一条提示信息
+				// 如果不存在，则重新创造一次并提示
+				this.add('-message', `${pokemon.name} 的特性“雷霆行者”再次引发了等离子浴！`); 
 				this.field.addPseudoWeather('iondeluge');
 			}
 		},
 		onModifyMove(move, pokemon, target) {
+			// 【关键修复】防御式编程：检查目标是否存在
+			// 解决了截图中的 TypeError: Cannot read properties of null (reading 'side')
+			if (!target || !target.types) return;
+
 			// 1. 只对电属性招式生效
 			if (move.type !== 'Electric') return;
+			
 			// 2. 检查目标是否为地面系
-			if (target?.hasType('Ground')) {
+			if (target.hasType('Ground')) {
 				// 3. 允许招式无视免疫
 				move.ignoreImmunity = true;
+				
 				// 4. 动态修改本次招式的克制计算规则
-				if (!move.onEffectiveness) { // 这是一个好的编程习惯，确保不覆盖已有的同名函数
-					move.onEffectiveness = function (typeMod, t, type) {
-						// 当计算对"Ground"属性的克制倍率时，强制返回"效果不好"
-						if (type === 'Ground') {
-							return -1; // -1 代表 0.5倍伤害 (效果不好)
-						}
-					};
-				}
+				// 增加了对 typeMod 的回传，确保逻辑稳健
+				move.onEffectiveness = function (typeMod, t, type) {
+					if (type === 'Ground') {
+						return -1; // 返回 -1 代表 0.5倍伤害 (效果不好)
+					}
+					return typeMod;
+				};
 			}
 		},
 		flags: {},
 		name: "Lei Ting Xing Zhe",
 		rating: 4,
 		num: 10016,
-		shortDesc: "雷霆行者。登场时创造等离子浴,直到离场或失去该特性。电属性招式能击中地面属性但效果不好",
+		shortDesc: "雷霆行者。登场时以及下次使用招式前创造等离子浴。电属性招式能击中地面属性但效果不好",
 	},
 	woju: {
 		// onStart 在宝可梦登场时触发
