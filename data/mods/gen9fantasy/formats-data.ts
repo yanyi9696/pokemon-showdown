@@ -296,6 +296,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	slowbrofantasy: {
 		tier: "OU",
 	},
+	tapufinifantasy: {
+		tier: "OU",
+	},
 	toxtricitylowkeyfantasy: {
 		tier: "OU",
 	},
@@ -437,9 +440,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	swampertfantasy: {
-		tier: "UU",
-	},
-	tapufinifantasy: {
 		tier: "UU",
 	},
 	tentacruelfantasy: {

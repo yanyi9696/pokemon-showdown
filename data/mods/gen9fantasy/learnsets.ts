@@ -5969,6 +5969,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	glaliefantasy: {
 		learnset: {
+			fanjibingjia: ["9M"],
 			tripleaxel: ["9M"],
 			juenianpo: ["9M"],
 			nastyplot: ["9M"],
@@ -5976,7 +5977,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			pursuit: ["9M"],
 			punishment: ["9M"],
 			rapidspin: ["9M"],
+			headcharge: ["9M"],
 			triattack: ["9M"],
+			hypervoice: ["9M"],
 			recover: ["9M"],
 			//幻想增添技能
 			astonish: ["9L1", "8L1"],
@@ -6061,6 +6064,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	glaliemegafantasy: {
 		learnset: {
+			fanjibingjia: ["9M"],
 			tripleaxel: ["9M"],
 			juenianpo: ["9M"],
 			nastyplot: ["9M"],
@@ -6068,7 +6072,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			pursuit: ["9M"],
 			punishment: ["9M"],
 			rapidspin: ["9M"],
+			headcharge: ["9M"],
 			triattack: ["9M"],
+			hypervoice: ["9M"],
 			recover: ["9M"],
 			//幻想增添技能
 			astonish: ["9L1", "8L1"],
@@ -22790,15 +22796,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	tapufinifantasy: {
 		learnset: {
-			fanjishuanglin: ["9M"],
-			freezedry: ["9M"],
-			auroraveil: ["9M"],
-			snowscape: ["9M"],
+			flipturn: ["9M"],
 			mistyexplosion: ["9M"],
-			raoliangzhiyin: ["9M"],
 			healingwish: ["9M"],
 			wish: ["9M"],
-			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			aquaring: ["8L15", "7L53", "7S0", "7S1"],
 			blizzard: ["8M", "7M"],

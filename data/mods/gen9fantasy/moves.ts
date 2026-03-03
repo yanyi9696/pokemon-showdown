@@ -1557,12 +1557,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "玫瑰之舞:连续2次给予伤害。每次攻击有20%的几率使目标陷入中毒状态",
 		shortDesc: "玫瑰之舞:连续攻击2次,每一次都有20%几率使对手中毒",
 	},
-	fanjishuanglin: {
+	fanjibingjia: {
 		num: 10039,
 		accuracy: 100,
 		basePower: 150,
-		category: "Special",
-		name: "Fan Ji Shuang Lin",
+		category: "Physical",
+		name: "Fan Ji Bing Jia",
 		pp: 5,
 		priority: -3,
 		flags: { protect: 1, failmefirst: 1, nosleeptalk: 1, noassist: 1, failcopycat: 1, failinstruct: 1 },
@@ -1570,23 +1570,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		 * 在回合开始时（优先级阶段）为使用者添加状态，开始监听攻击
 		 */
 		priorityChargeCallback(pokemon) {
-			pokemon.addVolatile('fanjishuanglin');
+			pokemon.addVolatile('fanjibingjia');
 		},
 		/**
 		 * 在正式出招前检查是否被攻击过
 		 */
 		onTryMove(pokemon) {
-			if (!pokemon.volatiles['fanjishuanglin']?.gotHit) {
+			if (!pokemon.volatiles['fanjibingjia']?.gotHit) {
 				this.attrLastMove('[still]');
-				this.add('-fail', pokemon, 'move: Fan Ji Shuang Lin');
-				this.hint("只有在本回合受到攻击招式伤害后，反击霜鳞才会发动。");
+				this.add('-fail', pokemon, 'move: Fan Ji Bing Jia');
+				this.hint("只有在本回合受到攻击招式伤害后，反击冰甲才会发动。");
 				return null;
 			}
 		},
 		condition: {
 			duration: 1,
 			onStart(pokemon) {
-				this.add('-singleturn', pokemon, 'move: Fan Ji Shuang Lin');
+				this.add('-singleturn', pokemon, 'move: Fan Ji Bing Jia');
 			},
 			/**
 			 * 核心触发逻辑：只要受到非队友的攻击招式（物理或特殊）伤害
@@ -1614,7 +1614,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 200 },
 		maxMove: { basePower: 160 },
 		contestType: "Beautiful",
-		desc: "反击霜鳞:设下陷阱。如果本回合内被对手攻击并受到伤害，就会触发并反击，造成伤害并使对手陷入冻伤状态。",
-		shortDesc: "反击霜鳞:若受到对手攻击,对目标造成伤害并陷入冻伤状态",
+		desc: "反击冰甲:设下陷阱。如果本回合内被对手攻击并受到伤害，就会触发并反击，造成伤害并使对手陷入冻伤状态。",
+		shortDesc: "反击冰甲:若受到对手攻击,对目标造成伤害并陷入冻伤状态",
 	},
 };
