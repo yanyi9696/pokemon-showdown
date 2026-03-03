@@ -15180,6 +15180,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
+			nastyplot: ["9M"],
 			psyshock: ["9M"],
 			vacuumwave: ["9M"],
 			tackle: ["9M"],
@@ -15287,6 +15288,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
+			nastyplot: ["9M"],
 			psyshock: ["9M"],
 			vacuumwave: ["9M"],
 			tackle: ["9M"],
@@ -15388,11 +15390,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			knockoff: ["9M"],
-			nastyplot: ["9M"],
 			biansuzhefan: ["9M"],
 			//幻想增添技能
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
+			nastyplot: ["9M"],
 			psyshock: ["9M"],
 			vacuumwave: ["9M"],
 			tackle: ["9M"],
@@ -15500,11 +15502,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			knockoff: ["9M"],
-			nastyplot: ["9M"],
 			biansuzhefan: ["9M"],
 			//幻想增添技能
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
+			nastyplot: ["9M"],
 			psyshock: ["9M"],
 			vacuumwave: ["9M"],
 			tackle: ["9M"],
@@ -15612,11 +15614,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			knockoff: ["9M"],
-			nastyplot: ["9M"],
 			biansuzhefan: ["9M"],
 			//幻想增添技能
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
+			nastyplot: ["9M"],
 			psyshock: ["9M"],
 			vacuumwave: ["9M"],
 			tackle: ["9M"],
@@ -15718,11 +15720,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			knockoff: ["9M"],
-			nastyplot: ["9M"],
 			biansuzhefan: ["9M"],
 			//幻想增添技能
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
+			nastyplot: ["9M"],
 			psyshock: ["9M"],
 			vacuumwave: ["9M"],
 			tackle: ["9M"],

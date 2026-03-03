@@ -470,6 +470,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	floetteeternalfantasy: {
 		tier: "RUBL",
 	},
+	garbodorfantasy: {
+		tier: "RUBL",
+	},
 	lurantisfantasy: {
 		tier: "RUBL",
 	},
@@ -483,13 +486,16 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ribombeefantasy: {
 		tier: "RUBL",
 	},
+	samurottfantasy: {
+		tier: "RUBL",
+	},
 	thievulfantasy: {
 		tier: "RUBL",
 	},
-	victreebelfantasy: {
+	tropiusfantasy: {
 		tier: "RUBL",
 	},
-	tropiusfantasy: {
+	victreebelfantasy: {
 		tier: "RUBL",
 	},
 	abomasnowfantasy: {
@@ -508,9 +514,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	drednawfantasy: {
-		tier: "RU",
-	},
-	garbodorfantasy: {
 		tier: "RU",
 	},
 	glaliefantasy: {
@@ -536,9 +539,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	rotomfantasy: {
-		tier: "RU",
-	},
-	samurottfantasy: {
 		tier: "RU",
 	},
 	sawsbuckfantasy: {
@@ -598,14 +598,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Thermal Exchange"},		
 	},
-	chesnaughtmega: {
-		tier: "(Uber)",
-		abilities: {0: "Stamina"},		
-	},
-	darkraimega: {
-		tier: "(Uber)",
-		abilities: {0: "Dark Aura"},		
-	},
 	delphoxmega: {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		
@@ -634,6 +626,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Iron Fist"},		
 	},
+	darkraimega: {
+		tier: "OU",
+		abilities: {0: "Bad Dreams"},		
+	},
 	dragonitemega: {
 		tier: "OU",
 		abilities: {0: "Unaware"},		
@@ -652,7 +648,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	greninjamega: {
 		tier: "OU",
-		abilities: {0: "Technician"},		
+		abilities: {0: "Protean"},		
 	},
 	hawluchamega: {
 		tier: "OU",
@@ -685,6 +681,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	chandeluremega: {
 		tier: "UU",
 		abilities: {0: "Flash Fire"},		
+	},
+	chesnaughtmega: {
+		tier: "UU",
+		abilities: {0: "Bulletproof"},		
 	},
 	chimechomega: {
 		tier: "UU",
