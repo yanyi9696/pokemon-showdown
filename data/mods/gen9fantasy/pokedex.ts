@@ -1555,7 +1555,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Garchomp",
 		forme: "Fantasy",
 		types: ["Dragon", "Ground"],
-		baseStats: { hp: 85, atk: 95, def: 130, spa: 102, spd: 108, spe:80  },
+		baseStats: { hp: 108, atk: 130, def: 95, spa: 80, spd: 85, spe: 102 },
 		abilities: { 0: "Sand Veil", H: "Rough Skin" },
 		heightm: 1.9,
 		weightkg: 95,

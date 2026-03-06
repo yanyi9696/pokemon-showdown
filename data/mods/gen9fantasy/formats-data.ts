@@ -826,6 +826,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	blastoisemega: {
 		tier: "(Uber)",
 	},
+	chienpao: {
+		tier: "(Uber)",
+	},
+	chiyu: {
+		tier: "(Uber)",
+	},
 	darkrai: {
 		tier: "(Uber)",
 	},
@@ -949,6 +955,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	roaringmoon: {
 		tier: "(Uber)",
 	},
+	shayminsky: {
+		tier: "(Uber)",
+	},
 	sneasler: {
 		tier: "(Uber)",
 	},
@@ -1016,6 +1025,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	rillaboom: {
+		tier: "UUBL",
+	},
+	samurotthisui: {
 		tier: "UUBL",
 	},
 	xurkitree: {
