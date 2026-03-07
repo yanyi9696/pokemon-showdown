@@ -62,7 +62,59 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升10,最高为200",
 		shortDesc: "80威力,目标每有1项能力上升+10,使目标强化无效2回合",
 	},
-	watershuriken: {
+	psystrike: {
+		num: 540,
+		accuracy: 100,
+		basePower: 100,
+		category: "Special",
+		name: "Psystrike",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		// 默认情况下（特攻 >= 攻击），打击对方的防御 (原本的精神击破效果)
+		overrideDefensiveStat: 'def',
+		onModifyMove(move, pokemon) {
+			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
+				move.category = 'Physical';
+				// 当变为物理招式时，改为打击对方的特防
+				move.overrideDefensiveStat = 'spd';
+			} else {
+				move.category = 'Special';
+				move.overrideDefensiveStat = 'def';
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Psychic",
+		contestType: "Cool",
+		desc: "给予物理伤害。如果使用者的攻击大于特攻，则此招式变成物理招式，给予特殊伤害",
+		shortDesc: "给予物理伤害。攻击大于特攻变成物理招式，给予特殊伤害",
+	},
+	flyingpress: {
+		num: 560,
+		accuracy: 95,
+		basePower: 100,
+		category: "Physical",
+		name: "Flying Press",
+		pp: 10,
+		flags: { contact: 1, protect: 1, mirror: 1, gravity: 1, distance: 1, nonsky: 1, metronome: 1 },
+		onEffectiveness(typeMod, target, type, move) {
+		// 飞行属性克制的属性有：草、格斗、虫
+		if (['Grass', 'Fighting', 'Bug'].includes(type)) {
+			return typeMod + 1;
+		}
+		return typeMod;
+		},
+		priority: 0,
+		secondary: null,
+		target: "any",
+		type: "Fighting",
+		zMove: { basePower: 170 },
+		contestType: "Tough",
+		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于缩小状态,本招式必定命中且伤害翻倍",
+		shortDesc: "此招式拥有飞行属性在属性相克中的克制面,舍去微弱",
+	},
+		watershuriken: {
 		num: 594,
 		accuracy: 100,
 		basePower: 15, // 变身前基础威力
@@ -89,30 +141,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Water",
 		contestType: "Cool",
-	},
-	flyingpress: {
-		num: 560,
-		accuracy: 95,
-		basePower: 100,
-		category: "Physical",
-		name: "Flying Press",
-		pp: 10,
-		flags: { contact: 1, protect: 1, mirror: 1, gravity: 1, distance: 1, nonsky: 1, metronome: 1 },
-		onEffectiveness(typeMod, target, type, move) {
-		// 飞行属性克制的属性有：草、格斗、虫
-		if (['Grass', 'Fighting', 'Bug'].includes(type)) {
-			return typeMod + 1;
-		}
-		return typeMod;
-		},
-		priority: 0,
-		secondary: null,
-		target: "any",
-		type: "Fighting",
-		zMove: { basePower: 170 },
-		contestType: "Tough",
-		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于缩小状态,本招式必定命中且伤害翻倍",
-		shortDesc: "此招式拥有飞行属性在属性相克中的克制面,舍去微弱",
 	},
 	landswrath: {
 		num: 616,
@@ -178,35 +206,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
-		// 动态提升威力：在薄雾场地上且使用者着地时，威力 x 1.5
+		// 移除 selfdestruct: "always"，改用自定义处理
 		onBasePower(basePower, source) {
 			if (this.field.isTerrain('mistyterrain') && source.isGrounded()) {
 				this.debug('misty terrain boost');
 				return this.chainModify(1.5);
 			}
 		},
-		// 招式使用后的副作用处理
-		onAfterMove(source, target, move) {
-			if (this.field.isTerrain('mistyterrain') && source.isGrounded()) {
-				// 情况 A：在薄雾场地上
-				// 1. 使用者损失最大HP的 1/4 (向上取整)
-				this.damage(source.baseMaxhp / 4, source, source, move);
-				
-				// 2. 移除并破坏场地
-				this.add('-fieldend', 'move: Misty Terrain', '[from] move: Misty Explosion', '[of] ' + source);
-				this.field.clearTerrain();
+		onAfterMove(pokemon, target, move) {
+			if (move.name !== 'Misty Explosion') return; // 确保是本技能
+
+			// 检查是否在薄雾场地上且使用者触地
+			if (this.field.isTerrain('mistyterrain') && pokemon.isGrounded()) {
+				// 类似惊爆大头：损失最大HP的1/4
+				this.damage(Math.round(pokemon.maxhp / 4), pokemon, pokemon, move, true);
 			} else {
-				// 情况 B：不在薄雾场地上
-				// 使用者直接陷入濒死
-				this.add('-message', `${source.name}因爆炸而倒下了！`);
-				source.faint();
+				// 不在场地上：使用者直接陷入濒死
+				pokemon.faint();
 			}
 		},
 		secondary: null,
 		target: "allAdjacent",
 		type: "Fairy",
+		contestType: "Beautiful",
 		desc: "使用者陷入濒死。若使用者在薄雾场地上,威力提升1.5倍,不会陷入濒死而是损失最大HP的1/4,并破坏场地型状态。",
-		shortDesc: "薄雾场地下威力1.5倍,损失最大HP的1/4,否则使用者陷入濒死",
+		shortDesc: "薄雾场地下威力提升50%,只损失1/4最大HP,而不是陷入濒死",
 	},
 	bittermalice: {
 		num: 841,
