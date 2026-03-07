@@ -347,47 +347,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { snatch: 1, metronome: 1 },
-		// 保留 volatileStatus 属性，这是让招式附加状态并为后续失败提供判断依据的关键
-		volatileStatus: 'xianxingzhiling',
-		onTryHit(target, source, move) {
-			// 核心改动：在招式尝试命中时，首先检查状态
-			// 如果使用者身上已经存在 'xianxingzhiling' 状态，则直接返回 false，使招式失败
-			if (source.volatiles['xianxingzhiling']) {
-				return false;
-			}
-			
-			// 只有在检查通过后（即第一次使用时），才执行能力提升
-			const atk = source.getStat('atk', false, true);
-			const spa = source.getStat('spa', false, true);
-	
-			if (atk > spa) {
-				this.boost({ atk: 2 }, source); // 物攻较高，提升物攻2级
+		// 注意：我们移除了 volatileStatus: 'xianxingzhiling' 和内置的 condition
+		// 改为在 onHit 中手动判断和触发
+		onHit(target, source, move) {
+			// 核心逻辑：检查使用者身上是否已经存在 'xianxingzhiling' 状态
+			if (!source.volatiles['xianxingzhiling']) {
+				// 第一次使用：身上没有该状态，则赋予状态，不提升能力
+				source.addVolatile('xianxingzhiling');
 			} else {
-				this.boost({ spa: 2 }, source); // 特攻较高，提升特攻2级
-			}
-		},
-		condition: {
-			onStart(pokemon) {
-				this.add('-start', pokemon, 'move: xianxingzhiling');
-			},
-			onFractionalPriorityPriority: -2,
-			onFractionalPriority(priority, pokemon) {
-				if (priority <= 0) return 0.1;
-			},
-			onSwitchOut(pokemon) {
-				pokemon.removeVolatile('xianxingzhiling');
-			},
-			onEnd(pokemon) {
-				this.add('-end', pokemon, 'move: xianxingzhiling');
+				// 再次使用：身上已经有该状态，则比较双攻并提升能力
+				const atk = source.getStat('atk', false, true);
+				const spa = source.getStat('spa', false, true);
+		
+				if (atk > spa) {
+					this.boost({ atk: 2 }, source); // 物攻较高，提升物攻2级
+				} else {
+					this.boost({ spa: 2 }, source); // 特攻较高，提升特攻2级
+				}
 			}
 		},
 		target: "self",
 		type: "Bug",
 		zMove: { boost: { atk: 1 } },
 		contestType: "Clever",
-		// 更新招式描述以匹配新的效果
-		desc: "先行指令:比较自己的攻击和特攻,令数值相对较高一项提高2级。使用后在相同优先度下将优先出手,但再次使用会失败",
-		shortDesc: "先行指令:物/特攻较高项+2,先制+0.5。再次使用会失败"
+		desc: "先行指令:首次使用使自身进入先行指令状态,在相同优先度下将优先出手。处于该状态时再次使用此招式,比较自己的攻击和特攻,令数值相对较高一项提高2级。",
+		shortDesc: "先行指令:首次使用获得先制+0.5;再次使用双攻较高项+2"
 	},
 	fuzhuzhiling: {
 		num: 10002,

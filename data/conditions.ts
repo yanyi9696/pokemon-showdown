@@ -1,4 +1,22 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	xianxingzhiling: {
+		name: 'xianxingzhiling',
+		// noCopy: true, // 如果你希望这个状态不能被接棒传递，可以取消这行的注释
+		onStart(pokemon) {
+			// 状态开始时，在战斗日志中显示提示信息
+			this.add('-start', pokemon, 'move: Xian Xing Zhi Ling');
+			this.add('-message', `${pokemon.name}进入了先行指令状态，行动变得更加迅速！`);
+		},
+		onFractionalPriorityPriority: -2,
+		onFractionalPriority(priority, pokemon) {
+			// 如果当前招式的优先度 <= 0，则赋予 0.1 的小数优先度加成（相当于先制+0.5的效果）
+			if (priority <= 0) return 0.1;
+		},
+		onEnd(pokemon) {
+			// 状态结束时（例如离场），在战斗日志中显示结束信息
+			this.add('-end', pokemon, 'move: Xian Xing Zhi Ling');
+		}
+	},
 	suppressability: {
 		name: 'suppressability',
 		noCopy: true, 
