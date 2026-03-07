@@ -178,22 +178,26 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
-		// 移除 selfdestruct: "always"，改为在 onAfterMove 中手动处理
+		// 动态提升威力：在薄雾场地上且使用者着地时，威力 x 1.5
 		onBasePower(basePower, source) {
-			// 检查薄雾场地且使用者必须在地面试图获得加成
 			if (this.field.isTerrain('mistyterrain') && source.isGrounded()) {
 				this.debug('misty terrain boost');
 				return this.chainModify(1.5);
 			}
 		},
+		// 招式使用后的副作用处理
 		onAfterMove(source, target, move) {
-			// 核心逻辑判断
 			if (this.field.isTerrain('mistyterrain') && source.isGrounded()) {
-				// 如果在薄雾场地上：破坏场地，使用者不濒死
+				// 情况 A：在薄雾场地上
+				// 1. 使用者损失最大HP的 1/4 (向上取整)
+				this.damage(source.baseMaxhp / 4, source, source, move);
+				
+				// 2. 移除并破坏场地
 				this.add('-fieldend', 'move: Misty Terrain', '[from] move: Misty Explosion', '[of] ' + source);
 				this.field.clearTerrain();
 			} else {
-				// 如果不在薄雾场地上：使用者陷入濒死
+				// 情况 B：不在薄雾场地上
+				// 使用者直接陷入濒死
 				this.add('-message', `${source.name}因爆炸而倒下了！`);
 				source.faint();
 			}
@@ -201,8 +205,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "allAdjacent",
 		type: "Fairy",
-		desc: "使用者陷入濒死。若使用者在薄雾场地上,不会损失血量,威力提升1.5倍,但是会破坏场地型状态",
-		shortDesc: "薄雾场地下威力1.5倍且不濒死,但会破坏场地",
+		desc: "使用者陷入濒死。若使用者在薄雾场地上,威力提升1.5倍,不会陷入濒死而是损失最大HP的1/4,并破坏场地型状态。",
+		shortDesc: "薄雾场地下威力1.5倍,损失最大HP的1/4,否则使用者陷入濒死",
 	},
 	bittermalice: {
 		num: 841,
