@@ -17460,6 +17460,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	steelixfantasy: {
 		learnset: {
 			suilinggang: ["9M"],
+			metalburst: ["9M"],
 			headlongrush: ["9M"],
 			spikes: ["9M"],
 			diamondstorm: ["9M"],
@@ -17569,6 +17570,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	steelixmegafantasy: {
 		learnset: {
 			suilinggang: ["9M"],
+			metalburst: ["9M"],
 			headlongrush: ["9M"],
 			spikes: ["9M"],
 			diamondstorm: ["9M"],
