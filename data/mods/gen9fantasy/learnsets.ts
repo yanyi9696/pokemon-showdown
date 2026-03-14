@@ -20233,13 +20233,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	cresseliafantasy: {
 		learnset: {
-			huanzhiwu: ["9M"],
 			hypnosis: ["9M"],
 			teleport: ["9M"],
 			heartswap: ["9M"],
 			drainingkiss: ["9M"],
 			mysticalfire: ["9M"],
-			aurasphere: ["9M"],
 			//幻想增添技能
 			allyswitch: ["9L24", "8M", "7T"],
 			attract: ["8M", "7M", "6M", "5M", "4M"],
