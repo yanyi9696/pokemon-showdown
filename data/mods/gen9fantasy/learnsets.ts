@@ -8599,6 +8599,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			psyshieldbash: ["9M"],
+			selfdestruct: ["9M"],
 			//幻想增添技能
 			allyswitch: ["8M", "7T"],
 			autotomize: ["8L35", "8S1", "7L31"],

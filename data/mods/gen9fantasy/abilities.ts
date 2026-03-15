@@ -1728,9 +1728,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onStart(pokemon) {
 			this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
 
-			// 1. 登场立即引发重力
-			if (this.field.addPseudoWeather('gravity', pokemon)) {
-				this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
+			// 1. 优先检查戏法空间
+			if (pokemon.hasMove('trickroom')) {
+				// 【修改点】如果携带了戏法空间，则不再引发重力，仅标记待触发戏法空间
+				this.effectState.pendingTrickRoom = true;
+				this.add('-message', `${pokemon.name} 正在扭曲周围的时间...`);
+			} else {
+				// 【修改点】如果没有携带戏法空间，登场立即引发重力
+				if (this.field.addPseudoWeather('gravity', pokemon)) {
+					this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
+				}
 			}
 
 			// 2. 检查并一并引发魔法空间或奇妙空间
@@ -1739,12 +1746,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 			if (pokemon.hasMove('wonderroom')) {
 				this.field.addPseudoWeather('wonderroom', pokemon);
-			}
-
-			// 3. 检查戏法空间，标记为待触发
-			if (pokemon.hasMove('trickroom')) {
-				this.effectState.pendingTrickRoom = true;
-				this.add('-message', `${pokemon.name} 正在扭曲周围的时间...`);
 			}
 		},
 		// 回合结束时触发
@@ -1784,7 +1785,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Qi Yi Zhi Zao Zhe",
 		rating: 4,
 		num: 10035,
-		shortDesc: "奇异制造者:登场引发重力,携带不同空间招式会在不同时机使出。被击倒时会清除场上所有空间/重力",
+		shortDesc: "奇异制造者:登场引发重力,携带不同空间招式将有不同特殊效果。被击倒时会清除场上所有空间/重力",
 	},
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {

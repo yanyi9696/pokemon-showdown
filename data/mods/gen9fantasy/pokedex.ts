@@ -3589,7 +3589,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Bug", "Psychic"],
 		baseStats: { hp: 60, atk: 45, def: 110, spa: 80, spd: 120, spe: 90 },
-		abilities: { 0: "Swarm", 1: "Magic Guard", H: "Qi Yi Zhi Zao Zhe" },
+		abilities: { 0: "Swarm", 1: "Magic Guard", H: "Telepathy" },
 		heightm: 0.4,
 		weightkg: 40.8,
 		color: "Red",
