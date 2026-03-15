@@ -486,6 +486,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	samurottfantasy: {
 		tier: "RUBL",
 	},
+	thievulfantasy: {
+		tier: "RUBL",
+	},
 	tropiusfantasy: {
 		tier: "RUBL",
 	},
@@ -551,9 +554,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
-		tier: "RU",
-	},
-	thievulfantasy: {
 		tier: "RU",
 	},
 	mudkipfantasy: {
