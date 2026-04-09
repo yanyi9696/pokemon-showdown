@@ -9,6 +9,7 @@
         "skipLibCheck": true,
         "module": "CommonJS",
         "moduleResolution": "node",
+        "ignoreDeprecations": "6.0",
         "strict": true,
         "allowJs": true,
         "checkJs": true,
@@ -38,6 +39,6 @@
         "./sim/**/*",
         "./tools/set-import/*.ts",
         "./tools/modlog/*.ts",
-        "./translations/**/*.ts",
+        "./translations/**/*.ts"
     ]
 }
