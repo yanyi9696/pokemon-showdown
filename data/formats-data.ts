@@ -3807,6 +3807,11 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
 	},
+	meowsticf: {
+		tier: "ZU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
 	honedge: {
 		isNonstandard: "Past",
 		tier: "Illegal",
