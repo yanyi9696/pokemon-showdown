@@ -174,6 +174,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	aerodactylfantasy: {
 		tier: "OU",
 	},
+	audinofantasy: {
+		tier: "OU",
+	},
 	audinomegafantasy: {
 		tier: "OU",
 		abilities: {0: "Unaware"},	
@@ -258,9 +261,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mimikyubustedfantasy: {
 		tier: "OU",
 	},
-	noivernfantasy: {
-		tier: "OU",
-	},
 	orbeetlegmegafantasy: {	
 		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
 		tier: "OU",
@@ -315,9 +315,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	absolfantasy: {
 		tier: "UUBL",
 	},
-	audinofantasy: {
-		tier: "UUBL",
-	},
 	crobatfantasy: {
 		tier: "UUBL",
 	},
@@ -343,10 +340,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	raticatefantasy: {
 		tier: "UUBL",
 	},
-	scolipedemegafantasy: {
-		tier: "UUBL",
-		abilities: {0: "No Guard"},		
-	},
 	skarmorymegafantasy: {
 		tier: "UUBL",
 		abilities: {0: "Good as Gold"},	
@@ -367,10 +360,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	steelixmegafantasy: {
 		tier: "UUBL",
 		abilities: {0: "Sand Force"},		
-	},
-	swampertmegafantasy: {
-		tier: "UUBL",
-		abilities: {0: "Iron Fist"},		
 	},
 	toxtricityfantasy: {
 		tier: "UUBL",
@@ -427,20 +416,28 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mienshaofantasy: {
 		tier: "UU",
 	},
-	orbeetlefantasy: {
+	noivernfantasy: {
 		tier: "UU",
 	},
-	roseradefantasy: {
+	orbeetlefantasy: {
 		tier: "UU",
 	},
 	scolipedefantasy: {
 		tier: "UU",
+	},
+	scolipedemegafantasy: {
+		tier: "UU",
+		abilities: {0: "No Guard"},		
 	},
 	skarmoryfantasy: {
 		tier: "UU",
 	},
 	swampertfantasy: {
 		tier: "UU",
+	},
+	swampertmegafantasy: {
+		tier: "UU",
+		abilities: {0: "Iron Fist"},		
 	},
 	tentacruelfantasy: {
 		tier: "UU",
@@ -453,7 +450,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	victreebelmegafantasy: {
 		tier: "UU",
-		abilities: {0: "Shi Chong"},	
+		abilities: {0: "Corrosion"},	
 	},
 	volbeatfantasy: {
 		tier: "UU",
@@ -480,13 +477,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Flower Gift"},		
 	},
-	ribombeefantasy: {
+	roseradefantasy: {
 		tier: "RUBL",
 	},
 	samurottfantasy: {
-		tier: "RUBL",
-	},
-	thievulfantasy: {
 		tier: "RUBL",
 	},
 	tropiusfantasy: {
@@ -538,6 +532,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	pidgeotfantasy: {
 		tier: "RU",
 	},
+	ribombeefantasy: {
+		tier: "RU",
+	},
 	rotomfantasy: {
 		tier: "RU",
 	},
@@ -554,6 +551,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
+		tier: "RU",
+	},
+	thievulfantasy: {
 		tier: "RU",
 	},
 	mudkipfantasy: {
@@ -598,10 +598,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Thermal Exchange"},		
 	},
-	delphoxmega: {
-		tier: "(Uber)",
-		abilities: {0: "Levitate"},		
-	},
 	garchompmegaz: {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		
@@ -609,14 +605,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	heatranmega: {
 		tier: "(Uber)",
 		abilities: {0: "Magma Armor"},		
-	},
-	meowsticmmega: {
-		tier: "(Uber)",
-		abilities: {0: "Psychic Surge"},		
-	},
-	meowsticfmega: {
-		tier: "(Uber)",
-		abilities: {0: "Psychic Surge"},		
 	},
 	starmiemega: {
 		tier: "(Uber)",
@@ -630,41 +618,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Bad Dreams"},		
 	},
-	dragonitemega: {
-		tier: "OU",
-		abilities: {0: "Unaware"},		
-	},
-	excadrillmega: {
-		tier: "OU",
-		abilities: {0: "Mold Breaker"},		
-	},
-	feraligatrmega: {
-		tier: "OU",
-		abilities: {0: "Dragon's Maw"},		
-	},
-	glimmoramega: {
-		tier: "OU",
-		abilities: {0: "Corrosion"},		
-	},
-	greninjamega: {
-		tier: "OU",
-		abilities: {0: "Protean"},		
-	},
-	hawluchamega: {
-		tier: "OU",
-		abilities: {0: "Reckless"},
-	},
-	skarmorymega: {
-		tier: "OU",
-		abilities: {0: "Tough Claws"},
-	},
 	dragalgemega: {	
 		tier: "UUBL",
 		abilities: {0: "Regenerator"},		
-	},
-	drampamega: {
-		tier: "UUBL",
-		abilities: {0: "Drizzle"},		
 	},
 	raichumegay: {
 		tier: "UUBL",
@@ -677,30 +633,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	tatsugiridroopymega: {
 		tier: "UUBL",
 		abilities: {0: "Drizzle"},		
-	},
-	chandeluremega: {
-		tier: "UU",
-		abilities: {0: "Flash Fire"},		
-	},
-	chesnaughtmega: {
-		tier: "UU",
-		abilities: {0: "Bulletproof"},		
-	},
-	chimechomega: {
-		tier: "UU",
-		abilities: {0: "Levitate"},		
-	},
-	clefablemega: {
-		tier: "UU",
-		abilities: {0: "Magic Guard"},		
-	},
-	froslassmega: {
-		tier: "UU",
-		abilities: {0: "Snow Warning"},		
-	},
-	golurkmega: {
-		tier: "UU",
-		abilities: {0: "Aftermath"},		
 	},
 	scolipedemega: {
 		tier: "UU",
@@ -718,18 +650,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Defiant"},		
 	},
-	floettemega: {
-		tier: "RUBL",
-		abilities: {0: "Flower Veil"},		
-	},
-	crabominablemega: {
-		tier: "RU",
-		abilities: {0: "Iron Fist"},		
-	},
-	emboarmega: {
-		tier: "RU",
-		abilities: {0: "Supreme Overlord"},		
-	},
 	golisopodmega: {
 		tier: "RU",
 		abilities: {0: "Battle Armor"},		
@@ -737,10 +657,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	malamarmega: {
 		tier: "RU",
 		abilities: {0: "Contrary"},		
-	},
-	meganiummega: {
-		tier: "RU",
-		abilities: {0: "Chlorophyll"},		
 	},
 	pyroarmega: {
 		tier: "RU",
@@ -754,17 +670,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 		abilities: {0: "Intimidate"},		
 	},
-	scovillainmega: {
-		tier: "RU",
-		abilities: {0: "Chlorophyll"},		
-	},
 	tatsugiristretchymega: {
 		tier: "RU",
 		abilities: {0: "Swift Swim"},		
-	},
-	victreebelmega: {
-		tier: "RU",
-		abilities: {0: "Corrosion"},		
 	},
 
 
@@ -839,6 +747,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 	},
 	darmanitangalarzen: {
+		tier: "(Uber)",
+	},
+	delphoxmega: {
 		tier: "(Uber)",
 	},
 	deoxys: {
@@ -991,13 +902,28 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	banettemega: {
 		tier: "OU",
 	},
+	excadrillmega: {
+		tier: "OU",	
+	},
 	garganacl: {
 		tier: "OU",
 	},
 	glimmora: {
 		tier: "OU",
 	},
+	glimmoramega: {
+		tier: "OU",
+	},
+	greninjamega: {
+		tier: "OU",	
+	},
 	ironcrown: {
+		tier: "OU",
+	},
+	meowsticmmega: {
+		tier: "OU",
+	},
+	meowsticfmega: {
 		tier: "OU",
 	},
 	ogerponwellspringtera: {
@@ -1033,10 +959,43 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	xurkitree: {
 		tier: "UUBL",
 	},
+	chandeluremega: {
+		tier: "UU",
+	},
+	chimechomega: {
+		tier: "UU",
+	},
+	clefablemega: {
+		tier: "UU",
+	},
+	clodsire: {
+		tier: "UU",
+	},
+	dragonitemega: {
+		tier: "UU",
+	},
+	drampamega: {
+		tier: "UU",
+	},
+	feraligatrmega: {
+		tier: "UU",
+	},
+	floettemega: {
+		tier: "UU",
+	},
+	froslassmega: {
+		tier: "UU",
+	},
 	gyarados: {
 		tier: "UU",
 	},
+	hawluchamega: {
+		tier: "UU",
+	},
 	latiasmega: {
+		tier: "UU",
+	},
+	meganiummega: {
 		tier: "UU",
 	},
 	ogerpon: {
@@ -1084,17 +1043,38 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	skarmory: {
 		tier: "RUBL",
 	},
+	skarmorymega: {
+		tier: "RUBL",
+	},
 	amoonguss: {
 		tier: "RU",
 	},
 	chansey: {
 		tier: "RU",
 	},
+	chesnaughtmega: {
+		tier: "RU",
+	},
+	crabominablemega: {
+		tier: "RU",
+	},
+	emboarmega: {
+		tier: "RU",
+	},
 	floetteeternal: {
+		tier: "RU",
+	},
+	golurkmega: {
 		tier: "RU",
 	},
 	hippowdon: {
 		tier: "RU",
+	},
+	scovillainmega: {
+		tier: "RU",
+	},
+	victreebelmega: {
+		tier: "RU",	
 	},
 	drifloon: {
 		tier: "LC",

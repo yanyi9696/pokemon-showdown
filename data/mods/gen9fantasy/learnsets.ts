@@ -4082,6 +4082,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			baoyulihua: ["9M"],
 			shelter: ["9M"],
 			stealthrock: ["9M"],
+			terablast: ["9M"],
 			//幻想增添技能
 			firstimpression: ["9M"],
 			uturn: ["9M"],
@@ -4174,6 +4175,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			baoyulihua: ["9M"],
 			shelter: ["9M"],
 			stealthrock: ["9M"],
+			terablast: ["9M"],
 			//幻想增添技能
 			firstimpression: ["9M"],
 			uturn: ["9M"],
@@ -5977,7 +5979,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			pursuit: ["9M"],
 			punishment: ["9M"],
 			rapidspin: ["9M"],
-			headcharge: ["9M"],
 			triattack: ["9M"],
 			hypervoice: ["9M"],
 			recover: ["9M"],
@@ -6072,7 +6073,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			pursuit: ["9M"],
 			punishment: ["9M"],
 			rapidspin: ["9M"],
-			headcharge: ["9M"],
 			triattack: ["9M"],
 			hypervoice: ["9M"],
 			recover: ["9M"],
@@ -14651,7 +14651,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			encore: ["9M"],
 			disable: ["9M"],
 			hypnosis: ["9M"],
-			nastyplot: ["9M"],
 			strengthsap: ["9M"],
 			//幻想增添技能
 			ominouswind: ["9M"],
@@ -14745,7 +14744,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			encore: ["9M"],
 			disable: ["9M"],
 			hypnosis: ["9M"],
-			nastyplot: ["9M"],
 			strengthsap: ["9M"],
 			//幻想增添技能
 			ominouswind: ["9M"],
@@ -16189,7 +16187,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			metalburst: ["9M"],
 			suilinggang: ["9M"],
 			spikecannon: ["9M"],
-			tidyup: ["9M"],
 			popipa: ["9M"],
 			//幻想增添技能
 			acidspray: ["8L1", "7L12", "6L12", "5L12"],
@@ -16277,7 +16274,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			metalburst: ["9M"],
 			suilinggang: ["9M"],
 			spikecannon: ["9M"],
-			tidyup: ["9M"],
 			popipa: ["9M"],
 			//幻想增添技能
 			acidspray: ["8L1", "7L12", "6L12", "5L12"],
