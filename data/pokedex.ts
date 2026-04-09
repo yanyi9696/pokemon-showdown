@@ -4595,7 +4595,7 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		forme: "Mega",
 		types: ["Steel", "Flying"],
 		baseStats: { hp: 65, atk: 140, def: 110, spa: 40, spd: 100, spe: 110 },
-		abilities: { 0: "Tough Claws" },
+		abilities: { 0: "Stalwart" },
 		heightm: 1.7,
 		weightkg: 40.4,
 		color: "Gray",
