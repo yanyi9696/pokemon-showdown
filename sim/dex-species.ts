@@ -549,7 +549,7 @@ export class DexSpecies {
 				if (species.gen > 4 || (species.num < 1 && species.isNonstandard !== 'CAP') ||
 					species.id === 'pichuspikyeared') {
 					species.isNonstandard = 'Future';
-					species.tier = species.doublesTier = species.natDexTier = 'Illegal';
+					species.tier = species.tier || (species.baseSpecies ? (this.get(species.baseSpecies).tier || 'Illegal') : 'Illegal');
 				}
 			}
 			species.nfe = species.evos.some(evo => {
