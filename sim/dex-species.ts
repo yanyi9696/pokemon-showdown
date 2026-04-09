@@ -514,7 +514,16 @@ export class DexSpecies {
 					species.doublesTier = this.dex.data.FormatsData[species.id.slice(0, -5)].doublesTier || 'Illegal';
 					species.natDexTier = this.dex.data.FormatsData[species.id.slice(0, -5)].natDexTier || 'Illegal';
 				} else if (species.battleOnly) {
-					species.tier = this.dex.data.FormatsData[toID(species.battleOnly)].tier || 'Illegal';
+					const baseFormID = toID(species.battleOnly);
+					const baseFormData = this.dex.data.FormatsData[baseFormID];
+
+					if (!baseFormData) {
+						// 打印出具体是哪一只宝可梦导致了找不到数据，方便你定位
+						console.error(`\n🚨 [数据错误]: 宝可梦 "${species.name}" 的 battleOnly 指向了 "${baseFormID}"，但在 formats-data 中找不到该基础形态！\n`);
+						species.tier = 'Illegal';
+					} else {
+						species.tier = baseFormData.tier || 'Illegal';
+					}
 					species.doublesTier = this.dex.data.FormatsData[toID(species.battleOnly)].doublesTier || 'Illegal';
 					species.natDexTier = this.dex.data.FormatsData[toID(species.battleOnly)].natDexTier || 'Illegal';
 				} else {
@@ -549,7 +558,7 @@ export class DexSpecies {
 				if (species.gen > 4 || (species.num < 1 && species.isNonstandard !== 'CAP') ||
 					species.id === 'pichuspikyeared') {
 					species.isNonstandard = 'Future';
-					species.tier = species.tier || (species.baseSpecies ? (this.get(species.baseSpecies).tier || 'Illegal') : 'Illegal');
+					species.tier = species.doublesTier = species.natDexTier = 'Illegal';
 				}
 			}
 			species.nfe = species.evos.some(evo => {
