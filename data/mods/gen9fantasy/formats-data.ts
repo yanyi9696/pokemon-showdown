@@ -1031,6 +1031,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	cloyster: {
 		tier: "RUBL",
 	},
+	lokix: {
+		tier: "RUBL",
+	},
 	mienshao: {
 		tier: "RUBL",
 	},
