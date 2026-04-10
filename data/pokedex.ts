@@ -13131,7 +13131,7 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		color: "Green",
 		eggGroups: ["Undiscovered"],
 		requiredItem: "Zygardite",
-		battleOnly: ["Zygarde", "Zygarde-10%"],
+		battleOnly: ["Zygarde-Complete"],
 		gen: 9,
 	},
 	diancie: {
