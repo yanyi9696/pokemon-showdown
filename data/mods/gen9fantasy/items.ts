@@ -1889,6 +1889,27 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		desc: "捷拉奥拉进化石。让捷拉奥拉携带后,在战斗时就能进行超级进化",
 		shortDesc: "捷拉奥拉进化石。让捷拉奥拉携带后,在战斗时就能进行超级进化",
 	},
+	zygardite: {
+		name: "Zygardite",
+		spritenum: 568,
+		megaStone: ["Zygarde-Mega"],
+		megaEvolves: ["Zygarde-Complete"],
+		itemUser:  ["Zygarde","Zygarde-10%","Zygarde-Complete"],
+		onTakeItem(item, source) {
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
+		num: 10043,
+		gen: 9,
+		desc: "基格尔德进化石。让基格尔德携带后,在战斗时就能进行超级进化",
+		shortDesc: "基格尔德进化石。让基格尔德携带后,在战斗时就能进行超级进化",
+	},
 	flygonite: {
 		name: "Flygonite",
 		spritenum: 568,
