@@ -6,9 +6,15 @@ export const Scripts: ModdedBattleScriptsData = {
 			if (!item.megaStone && !item.onDrive && !(item.onPlate && !item.zMove) && !item.onMemory) continue;
 			this.modData('Items', i).onTakeItem = false;
 			if (item.isNonstandard === "Past") this.modData('Items', i).isNonstandard = null;
+			
+			// --- 修改处：增加存在性检查 ---
 			if (item.megaStone) {
-				this.modData('FormatsData', this.toID(item.megaStone)).isNonstandard = null;
+				const targetId = this.toID(item.megaStone);
+				if (this.data.FormatsData[targetId]) {
+					this.modData('FormatsData', targetId).isNonstandard = null;
+				}
 			}
+			// --------------------------
 		}
 	},
 	start() {
@@ -389,8 +395,9 @@ export const Scripts: ModdedBattleScriptsData = {
 
 			const item = pokemon.getItem();
 			if (item.megaStone) {
+				// 确保 item.megaStone 是字符串
 				if (item.megaStone === pokemon.baseSpecies.name) return null;
-				return item.megaStone;
+				return item.megaStone as string; // 强制断言为 string，避免 TS 误判
 			} else {
 				return null;
 			}
