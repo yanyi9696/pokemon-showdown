@@ -250,7 +250,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	bittermalice: {
 		num: 841,
 		accuracy: 100,
-		basePower: 60,
+		basePower: 65,
 		category: "Special",
 		name: "Bitter Malice",
 		pp: 10,

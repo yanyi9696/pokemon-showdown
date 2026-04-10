@@ -249,6 +249,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Berserk"},		
 	},
+	lopunnymegafantasy: {
+		tier: "OU",
+		abilities: {0: "Pixilate"},	
+	},
 	magnezonefantasy: {
 		tier: "OU",
 	},
@@ -327,9 +331,8 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ironthornsfantasy: {
 		tier: "UUBL",
 	},
-	lopunnymegafantasy: {
+	lopunnyfantasy: {
 		tier: "UUBL",
-		abilities: {0: "Pixilate"},	
 	},
 	magmortarfantasy: {
 		tier: "UUBL",
@@ -408,9 +411,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	illumisefantasy: {
-		tier: "UU",
-	},
-	lopunnyfantasy: {
 		tier: "UU",
 	},
 	mienshaofantasy: {
@@ -902,6 +902,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	banettemega: {
 		tier: "OU",
 	},
+	dragonitemega: {
+		tier: "OU",	
+	},
 	excadrillmega: {
 		tier: "OU",	
 	},
@@ -969,9 +972,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	clodsire: {
-		tier: "UU",
-	},
-	dragonitemega: {
 		tier: "UU",
 	},
 	drampamega: {

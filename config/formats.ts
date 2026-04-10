@@ -530,17 +530,17 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Ignore Event Shiny Clause'
 		],
 		banlist: [
-			// 你要求禁用的宝可梦分类
+			// 要求禁用的宝可梦分类
+			'Mythical',             // 禁用所有幻兽 (梦幻、玛夏多等)
 			'Restricted Legendary', // 禁用所有一级神
-			'Sub-Legendary',      // 禁用所有二级神 (三鸟、三犬、三云等)
-			'Mythical',           // 禁用所有幻兽 (梦幻、玛夏多等)
-			'Paradox',            // 禁用所有悖谬宝可梦
-			'Ultra Beast',        // 禁用所有究极异兽
-			'Shedinja',           // 禁用脱壳忍者
-			'Mega',               // 禁用所有Mega进化
+			'Sub-Legendary',        // 禁用所有二级神 (三鸟、三犬、三云等)
+			'Paradox',              // 禁用所有悖谬宝可梦
+			'Ultra Beast',          // 禁用所有究极异兽
+			'Mega',                 // 禁用所有Mega进化
+			'Shedinja',             // 禁用脱壳忍者
 		],
 		unbanlist: [
-			'Mega', 'Ultra Beast', 'Paradox', // 但我们在这里特例解禁某一类
+			'Mega', 'Ultra Beast', 'Paradox', 'Sub-Legendary', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突

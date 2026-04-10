@@ -1125,7 +1125,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Glalie",
 		forme: "Fantasy",
 		types: ["Ice", "Dark"],
-		baseStats: { hp: 100, atk: 130, def: 100, spa: 30, spd: 100, spe: 80 },
+		baseStats: { hp: 100, atk: 100, def: 130, spa: 30, spd: 100, spe: 80 },
 		abilities: { 0: "Inner Focus", 1: "Ice Body", H: "Mountaineer" },
 		heightm: 1.5,
 		weightkg: 256.5,
