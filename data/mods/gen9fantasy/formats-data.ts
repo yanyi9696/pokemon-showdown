@@ -908,6 +908,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	excadrillmega: {
 		tier: "OU",	
 	},
+	floettemega: {
+		tier: "OU",	
+	},
 	garganacl: {
 		tier: "OU",
 	},
@@ -978,9 +981,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	feraligatrmega: {
-		tier: "UU",
-	},
-	floettemega: {
 		tier: "UU",
 	},
 	froslassmega: {

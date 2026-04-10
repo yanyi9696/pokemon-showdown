@@ -1742,6 +1742,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		inherit: true,
 		otherFormes: ["Regigigas-Fantasy"],
 		formeOrder: ["Regigigas", "Regigigas-Fantasy"],
+		tags: ["Restricted Legendary"],
 	},
 	regigigasfantasy: {
 		num: 486,
@@ -1755,7 +1756,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		heightm: 3.7,
 		weightkg: 420,
 		color: "White",
-		tags: ["Sub-Legendary"],
+		tags: ["Restricted Legendary"],
 		eggGroups: ["Undiscovered"],
 	},
 	cresselia: {
