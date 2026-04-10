@@ -7332,6 +7332,18 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 276,
 		gen: 4,
 	},
+	zygardite: {
+		name: "Zygardite",
+		spritenum: 568,
+		megaStone: "Zygarde-Mega",
+		itemUser: ["Zygarde-Complete"],
+		onTakeItem(item, source) {
+			return source.baseSpecies.baseSpecies !== 'Zygarde';
+		},
+		num: 2584,
+		gen: 9,
+		isNonstandard: "Future",
+	},
 
 	// Gen 2 items
 
