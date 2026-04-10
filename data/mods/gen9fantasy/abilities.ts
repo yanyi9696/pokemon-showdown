@@ -1,4 +1,29 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	piercingdrill: {
+		onModifyMove(move) {
+			if (move.flags['contact']) delete move.flags['protect'];
+		},
+		flags: {},
+		name: "Piercing Drill",
+		rating: 2,
+		num: 313,
+		shortDesc: "使用接触类招式时,能无视对方除极巨防壁外守住类状态的效果",
+	},
+	spicyspray: {
+		onDamagingHit(damage, target, source, move) {
+			// 检查攻击者是否已经有异常状态，且该招式确实造成了伤害
+			if (damage > 0) {
+				// 尝试让攻击方（source）陷入灼伤（brn）状态
+				// target 是特性持有者，source 是攻击者
+				source.trySetStatus('brn', target);
+			}
+		},
+		flags: {},
+		name: "Spicy Spray",
+		rating: 3,
+		num: 314,
+		shortDesc: "受到招式伤害时,会使对手陷入灼伤状态",
+	},
 	shellarmor: {
 		onCriticalHit: false,
 		onDamagingHit(damage, target, source, move) {
@@ -10,7 +35,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Shell Armor",
 		rating: 3,
 		num: 4,
-		shortDesc: "不会被击中要害。被接触类招式击中时,攻击方的攻击降低1级。",
+		shortDesc: "不会被击中要害。被接触类招式击中时,攻击方的攻击降低1级",
 	},
 	magmaarmor: {
 		// 1. 免疫逻辑：处理冰冻 (frz) 和 冻伤 (fst)
@@ -92,7 +117,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Battle Armor",
 		rating: 3,
 		num: 75,
-		shortDesc: "不会被击中要害，也不会被己方场地上的入场可生效的状态伤害。",
+		shortDesc: "不会被击中要害，也不会被己方场地上的入场可生效的状态伤害",
 	},
 	slowstart: {
 		onStart(pokemon) {
