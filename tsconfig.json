@@ -8,7 +8,11 @@
         "target": "es2020",
         "skipLibCheck": true,
         "module": "CommonJS",
-        "moduleResolution": "node10",
+        "moduleResolution": "node",
+        
+        // 新增这一行：告诉 TypeScript 忽略关于 6.0 版本的弃用警告
+        "ignoreDeprecations": "6.0",
+        
         "strict": true,
         "allowJs": true,
         "checkJs": true,
