@@ -2986,14 +2986,55 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
-		onHit(target) {
+		
+		// 1. 换成官方支持的 onModifyMove 钩子
+		// 2. 加上显式的 : any 类型定义，解决 ts(7006) 报错
+		onModifyMove(move: any, pokemon: any) {
+			// 3. 将 this 断言为 any，强制解决 this.dex 找不到的 ts(2339) 报错
+			const battle = this as any;
+
+			if (pokemon.species.id === 'zygardemega') {
+				const coreEnforcerIndex = pokemon.moveSlots.findIndex((slot: any) => slot.id === 'coreenforcer');
+				if (coreEnforcerIndex >= 0) {
+					const nihilLight = battle.dex.moves.get('nihillight');
+					
+					if (!nihilLight || !nihilLight.exists) return;
+
+					// 永久修改该位置的招式槽
+					const newMove = {
+						id: nihilLight.id,
+						move: nihilLight.name,
+						pp: pokemon.moveSlots[coreEnforcerIndex].pp,
+						maxpp: pokemon.moveSlots[coreEnforcerIndex].maxpp,
+						target: nihilLight.target,
+						disabled: false,
+						used: false,
+					};
+					pokemon.moveSlots[coreEnforcerIndex] = newMove;
+					pokemon.baseMoveSlots[coreEnforcerIndex] = newMove;
+					battle.add('-ms', pokemon, nihilLight.name);
+
+					// 重点：因为这是在招式准备执行时修改，还需要把当前准备打出的招式也变成归无之光
+					move.id = nihilLight.id;
+					move.name = nihilLight.name;
+					move.type = nihilLight.type;
+					move.basePower = nihilLight.basePower;
+					move.category = nihilLight.category;
+					move.target = nihilLight.target;
+				}
+			}
+		},
+		
+		onHit(target: any) {
+			const battle = this as any;
 			if (target.getAbility().flags['cantsuppress']) return;
-			if (target.newlySwitched || this.queue.willMove(target)) return;
+			if (target.newlySwitched || battle.queue.willMove(target)) return;
 			target.addVolatile('gastroacid');
 		},
-		onAfterSubDamage(damage, target) {
+		onAfterSubDamage(damage: any, target: any) {
+			const battle = this as any;
 			if (target.getAbility().flags['cantsuppress']) return;
-			if (target.newlySwitched || this.queue.willMove(target)) return;
+			if (target.newlySwitched || battle.queue.willMove(target)) return;
 			target.addVolatile('gastroacid');
 		},
 		secondary: null,
@@ -13223,6 +13264,22 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		target: "normal",
 		type: "Dark",
 		contestType: "Cool",
+	},
+	nihillight: {
+		num: 920,
+		accuracy: 100,
+		basePower: 100,
+		category: "Special",
+		isNonstandard: "Future",
+		name: "Nihil Light",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		ignoreEvasion: true,
+		ignoreDefensive: true,
+		ignoreImmunity: { 'Fairy': true },
+		target: "allAdjacentFoes",
+		type: "Dragon",
 	},
 	nobleroar: {
 		num: 568,
