@@ -2588,7 +2588,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	},
 	clangoroussoul: {
 		num: 775,
-		accuracy: 100,
+		accuracy: true,
 		basePower: 0,
 		category: "Status",
 		name: "Clangorous Soul",
@@ -4353,7 +4353,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	dragonhammer: {
 		num: 692,
 		accuracy: 100,
-		basePower: 90,
+		basePower: 100,
 		category: "Physical",
 		name: "Dragon Hammer",
 		pp: 15,
@@ -5610,7 +5610,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	firelash: {
 		num: 680,
 		accuracy: 100,
-		basePower: 80,
+		basePower: 90,
 		category: "Physical",
 		name: "Fire Lash",
 		pp: 15,
@@ -6741,8 +6741,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	},
 	geargrind: {
 		num: 544,
-		accuracy: 85,
-		basePower: 50,
+		accuracy: 90,
+		basePower: 60,
 		category: "Physical",
 		isNonstandard: "Past",
 		name: "Gear Grind",
@@ -8210,7 +8210,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		},
 		secondary: null,
 		target: "self",
-		type: "Normal",
+		type: "Grass",
 		zMove: { boost: { spa: 1 } },
 		contestType: "Beautiful",
 	},
@@ -9519,7 +9519,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	hyperdrill: {
 		num: 887,
 		accuracy: 100,
-		basePower: 100,
+		basePower: 120,
 		category: "Physical",
 		name: "Hyper Drill",
 		pp: 5,
@@ -15662,7 +15662,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	revelationdance: {
 		num: 686,
 		accuracy: 100,
-		basePower: 90,
+		basePower: 100,
 		category: "Special",
 		name: "Revelation Dance",
 		pp: 15,
@@ -17871,7 +17871,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	snipeshot: {
 		num: 745,
 		accuracy: 100,
-		basePower: 80,
+		basePower: 85,
 		category: "Special",
 		name: "Snipe Shot",
 		pp: 15,
@@ -18335,7 +18335,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		basePower: 100,
 		category: "Physical",
 		name: "Spin Out",
-		pp: 5,
+		pp: 10,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
 		self: {
@@ -20877,7 +20877,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	tripledive: {
 		num: 865,
 		accuracy: 95,
-		basePower: 30,
+		basePower: 35,
 		category: "Physical",
 		name: "Triple Dive",
 		pp: 10,

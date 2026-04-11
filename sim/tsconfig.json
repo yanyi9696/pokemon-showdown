@@ -1,21 +1,29 @@
 {
-	"compilerOptions": {
-			"lib": ["es2020"],
-			"emitDeclarationOnly": true,
-			"outDir": "../dist",
-			"declaration": true,
-			"target": "esnext",
-			"module": "commonjs",
-			"moduleResolution": "node",
-			"strict": true,
-			"allowJs": true,
-			"checkJs": true,
-			"incremental": true,
-			"allowUnreachableCode": false
-	},
-	"types": ["node"],
-	"include": [
-			"./global-types.ts",
-			"./index.ts",
-	]
+    "compilerOptions": {
+        "lib": ["es2020"],
+        "emitDeclarationOnly": true,
+        "outDir": "../dist",
+        
+        // 新增：明确指定源码的根目录，解决输出文件结构的计算问题
+        "rootDir": "./",
+        
+        "declaration": true,
+        "target": "esnext",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        
+        // 新增：忽略 TS 5.0+ 中 moduleResolution 相关的弃用警告
+        "ignoreDeprecations": "6.0",
+        
+        "strict": true,
+        "allowJs": true,
+        "checkJs": true,
+        "incremental": true,
+        "allowUnreachableCode": false
+    },
+    "types": ["node"],
+    "include": [
+        "./global-types.ts",
+        "./index.ts" 
+    ]
 }

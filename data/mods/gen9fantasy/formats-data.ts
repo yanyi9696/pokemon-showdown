@@ -606,10 +606,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Magma Armor"},		
 	},
-	starmiemega: {
-		tier: "(Uber)",
-		abilities: {0: "Pure Power"},		
-	},
 	zeraoramega: {
 		tier: "(Uber)",
 		abilities: {0: "Iron Fist"},		
@@ -877,6 +873,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	spectrier: {
 		tier: "(Uber)",
+	},
+	starmiemega: {
+		tier: "(Uber)",	
 	},
 	ursalunabloodmoon: {
 		tier: "(Uber)",
