@@ -82,7 +82,7 @@
     "globals": "^16.0.0",
     "mocha": "^11.1.0",
     "smogon": "^3.0.0",
-    "typescript": "^5.7.3",
+    "typescript": "^6.0.2",
     "typescript-eslint": "^8.24.1"
   }
 }

@@ -1,11 +1,11 @@
 {
     "compilerOptions": {
+        "skipLibCheck": true,
+        "rootDir": "..",
         "lib": ["es2020"],
         "emitDeclarationOnly": true,
         "outDir": "../dist",
         
-        // 新增：明确指定源码的根目录，解决输出文件结构的计算问题
-        "rootDir": "./",
         
         "declaration": true,
         "target": "esnext",
