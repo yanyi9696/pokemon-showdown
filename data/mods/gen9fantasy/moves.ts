@@ -1511,7 +1511,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { contact: 1, protect: 1, mirror: 1, punch: 1, metronome: 1 },
 		multihit: 10,
 		willCrit: true,
-		ignoreAbility: true,
 		/**
 		 * 核心逻辑：修复 TS 类型检查报错
 		 */
@@ -1537,8 +1536,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 70 },
 		contestType: "Cool",
-		desc: "一瞬千击:必定能够先制攻击。无视目标的特性,在一回合内连续攻击10次。攻击必定击中要害。虽然是连续攻击,但仅在最后一击结算接触类伤害反馈。",
-		shortDesc: "一瞬千击:先制+1,无视特性连打10次视作1次攻击,必定ct",
+		desc: "一瞬千击:携带后进入对战时自动进行超巨进化。必定能够先制攻击。在一回合内连续攻击10次,但仅在最后一击结算接触类伤害反馈。攻击必定击中要害。",
+		shortDesc: "一瞬千击:先制攻击,连打10次视作1次攻击,必定击中要害",
 	},
 	huazhiwu: {
 		num: 10037,
