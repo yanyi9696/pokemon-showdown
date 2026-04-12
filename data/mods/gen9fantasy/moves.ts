@@ -244,8 +244,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "allAdjacent",
 		type: "Fairy",
 		contestType: "Beautiful",
-		desc: "使用者陷入濒死。若使用者在薄雾场地上,威力提升1.5倍,不会陷入濒死而是损失最大HP的1/4,并破坏场地型状态。",
-		shortDesc: "薄雾场地下威力提升50%,只损失1/4最大HP,而不是陷入濒死",
+		desc: "使用者陷入濒死。若使用者在薄雾场地上,威力提升1.5倍,不会陷入濒死而是损失最大HP的1/4。",
+		shortDesc: "在薄雾场地:威力提升1.5倍,不陷入濒死,损失最大HP的1/4",
 	},
 	bittermalice: {
 		num: 841,
