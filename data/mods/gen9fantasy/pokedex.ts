@@ -203,7 +203,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Slowbronite",
 		requiredForme: "Slowbro-Galar-Fantasy",
 		battleOnly: "Slowbro-Galar-Fantasy",
-		spriteid: 'slowbro-Galar-mega',
+		spriteid: 'slowbro-mega',
 	},
 	muk: {
 		inherit: true,

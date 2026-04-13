@@ -817,18 +817,18 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		name: "Slowbronite",
 		spritenum: 620,
 		megaStone: ["Slowbro-Mega", "Slowbro-Mega-Fantasy"],
-		megaEvolves: ["Slowbro", "Slowbro-Fantasy"],
-		itemUser: ["Slowbro", "Slowbro-Fantasy"],
+		megaEvolves: ["Slowbro","Slowbro-Galar" , "Slowbro-Fantasy", "Slowbro-Galar-Fantasy"],
+		itemUser: ["Slowbro","Slowbro-Galar" , "Slowbro-Fantasy", "Slowbro-Galar-Fantasy"],
 		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
 		num: 760,
 		gen: 6,
 	},
