@@ -630,10 +630,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Drizzle"},		
 	},
-	scolipedemega: {
-		tier: "UU",
-		abilities: {0: "Merciless"},		
-	},
 	tatsugiricurlymega: {
 		tier: "UU",
 		abilities: {0: "Contrary"},		
@@ -645,6 +641,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	falinksmega: {
 		tier: "RUBL",
 		abilities: {0: "Defiant"},		
+	},
+	scolipedemega: {
+		tier: "RUBL",
+		abilities: {0: "Merciless"},		
 	},
 	golisopodmega: {
 		tier: "RU",
