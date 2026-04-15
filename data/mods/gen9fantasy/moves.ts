@@ -186,6 +186,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "allAdjacentFoes",
 		type: "Ground",
 		zMove: { basePower: 185 },
+		maxMove: { basePower: 140 },
 		contestType: "Beautiful",
 		desc: "攻击目标造成伤害。如果场地上存在场地型状态,则将其破坏",
 		shortDesc: "攻击目标造成伤害。使场地状态消失",
@@ -652,7 +653,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "妖精之牙:30%灼伤/麻痹/冰冻,10%畏缩"
 	},
 	yuzhaozhijian: {
-		num: 1012,
+		num: 10012,
 		accuracy: 100,
 		basePower: 85,
 		category: "Physical",
@@ -1467,7 +1468,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	renzhenouda: {
 		num: 10035,
 		accuracy: 100,
-		basePower: 85,
+		basePower: 95,
 		category: "Physical",
 		name: "Ren Zhen Ou Da",
 		pp: 5,
@@ -1494,8 +1495,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Normal",
-		zMove: { basePower: 160 },
-		maxMove: { basePower: 130 },
+		zMove: { basePower: 185 },
+		maxMove: { basePower: 140 },
 		contestType: "Tough",
 		desc: "认真殴打:携带后进入对战时可以进行超巨进化。无视目标的特性进行攻击。该招式会穿透并破坏目标的替身、反射壁、光墙和极光幕。攻击必定击中要害。",
 		shortDesc: "认真殴打:无视特性,穿透并破坏替身与壁障,必定击中要害",
