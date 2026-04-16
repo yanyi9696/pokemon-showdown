@@ -55,16 +55,54 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					return [`${set.species} is not a Fantasy Pok\u00e9mon.`, `Only Fantasy Pok\u00e9mon are allowed in [Gen 9] FC Only.`];
 				}
 
-				const points = tierPoints[species.tier || ''];
-				if (points === undefined) {
+				const basePoints = tierPoints[species.tier || ''];
+				if (basePoints === undefined) {
 					return [
 						`${set.species} has unsupported tier "${species.tier || 'N/A'}" for FC Only scoring.`,
 						`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
 					];
 				}
 
+				let points = basePoints;
+				let detailsEntry = `${species.name}(${species.tier})=${basePoints}`;
+
+				// If a valid Mega Evolution exists for this set, score by the higher of base/mega.
+				const item = this.dex.items.get(set.item);
+				if (item.megaStone) {
+					const canMegaEvolve = Array.isArray(item.megaEvolves)
+						? item.megaEvolves.includes(species.baseSpecies)
+						: item.megaEvolves === species.baseSpecies;
+
+					if (canMegaEvolve) {
+						const megaStoneId = Array.isArray(item.megaStone) ? item.megaStone[0] : item.megaStone;
+						if (megaStoneId) {
+							let megaSpecies = null;
+							if (species.name.endsWith('-Fantasy')) {
+								const standardMega = this.dex.species.get(megaStoneId);
+								const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
+								if (fantasyMega.exists) megaSpecies = fantasyMega;
+							} else {
+								const standardMega = this.dex.species.get(megaStoneId);
+								if (standardMega.exists) megaSpecies = standardMega;
+							}
+
+							if (megaSpecies?.exists) {
+								const megaPoints = tierPoints[megaSpecies.tier || ''];
+								if (megaPoints === undefined) {
+									return [
+										`${megaSpecies.name} has unsupported tier "${megaSpecies.tier || 'N/A'}" for FC Only scoring.`,
+										`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
+									];
+								}
+								points = megaPoints;
+								detailsEntry = `${species.name}(${species.tier}) -> ${megaSpecies.name}(${megaSpecies.tier}) = ${points}`;
+							}
+						}
+					}
+				}
+
 				total += points;
-				details.push(`${set.species}(${species.tier})=${points}`);
+				details.push(detailsEntry);
 			}
 
 			if (total > 100) {
