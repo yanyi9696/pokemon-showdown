@@ -285,7 +285,8 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	seaoffire: {
 		name: 'Sea of Fire',
 		onFieldStart(field, source, effect) {
-			this.add('-fieldstart', 'move: Sea of Fire');
+			// Use activation text instead of persistent fieldstart visual to avoid terrain background being hidden.
+			this.add('-fieldactivate', 'move: Sea of Fire');
 		},
 		onResidualOrder: 5,
 		onResidualSubOrder: 1,
@@ -302,7 +303,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		// 关键点：当全局伪天气真正消失时执行
 		onFieldEnd() {
 			this.add('-message', '随着火山行者的离去，火海平息了。');
-			this.add('-fieldend', 'move: Sea of Fire');
 		},
 	},
 	fantasysachetfling: {
