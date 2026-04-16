@@ -302,6 +302,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		// 关键点：当全局伪天气真正消失时执行
 		onFieldEnd() {
 			this.add('-message', '随着火山行者的离去，火海平息了。');
+			this.add('-fieldend', 'move: Sea of Fire');
 		},
 	},
 	fantasysachetfling: {
