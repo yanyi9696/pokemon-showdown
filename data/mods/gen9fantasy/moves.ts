@@ -21,6 +21,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Steel",
 		contestType: "Cool",
+		desc: "有50%几率使目标的防御下降1级",
+		shortDesc: "有50%几率使目标的防御下降1级",
 	},
 	transform: {
 		num: 144,
