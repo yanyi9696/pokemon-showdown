@@ -1072,17 +1072,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	huoshanxingzhe: {
 		onStart(source) {
-			if (source.side.foe.getSideCondition('seaoffire')) return;
+			if (this.field.getPseudoWeather('seaoffire')) return;
 			this.add('-ability', source, '火山行者');
-			source.side.foe.addSideCondition('seaoffire', source);
+			this.field.addPseudoWeather('seaoffire', source);
 		},
 		onEnd(source) {
-			if (!source.side.foe.getSideCondition('seaoffire')) return;
-			const hasOtherVolcanicWalker = source.side.active.some(pokemon =>
+			if (!this.field.getPseudoWeather('seaoffire')) return;
+			const hasOtherVolcanicWalker = this.getAllActive().some(pokemon =>
 				pokemon && pokemon !== source && !pokemon.fainted && pokemon.hasAbility('huoshanxingzhe')
 			);
 			if (hasOtherVolcanicWalker) return;
-			source.side.foe.removeSideCondition('seaoffire');
+			this.field.removePseudoWeather('seaoffire');
 		},
 		flags: {},
 		name: "Huo Shan Xing Zhe",

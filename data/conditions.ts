@@ -284,19 +284,25 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	},
 	seaoffire: {
 		name: 'Sea of Fire',
-		onSideStart(side) {
-			this.add('-sidestart', side, 'move: Sea of Fire');
+		onFieldStart(field, source, effect) {
+			this.add('-fieldstart', 'move: Sea of Fire');
 		},
-		onSideResidualOrder: 5,
-		onSideResidualSubOrder: 1,
-		onSideResidual(side) {
-			for (const pokemon of side.active) {
-				if (!pokemon || pokemon.fainted || pokemon.hasType('Fire')) continue;
+		onResidualOrder: 5,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (pokemon.hasType('Fire')) return;
+			const foeSide = pokemon.side.foe;
+			const hasActiveAbility = foeSide.active.some(p => 
+				p && !p.fainted && p.hasAbility('huoshanxingzhe')
+			);
+			if (hasActiveAbility) {
 				this.damage(pokemon.baseMaxhp / 8, pokemon);
 			}
 		},
-		onSideEnd(side) {
-			this.add('-sideend', side, 'move: Sea of Fire');
+		// 关键点：当全局伪天气真正消失时执行
+		onFieldEnd() {
+			this.add('-message', '随着火山行者的离去，火海平息了。');
+			this.add('-fieldend', 'move: Sea of Fire');
 		},
 	},
 	fantasysachetfling: {
