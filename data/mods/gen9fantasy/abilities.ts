@@ -1057,6 +1057,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 			// --- 执行特性效果 ---
 			this.add('-ability', source, '极光行者');
+			this.add('-message', '“极光行者”踏着极光幕而来。');
 			// 3. “贴标签”：为auroraveil技能传递信息，让它知道要开5回合
 			(source as any).jiguangxingzheIsActivating = true;
 			source.side.addSideCondition('auroraveil', source);
@@ -1083,6 +1084,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			);
 			if (hasOtherVolcanicWalker) return;
 			source.side.foe.removeSideCondition('seaoffire');
+			this.add('-message', '随着“火山行者”的离去，火海平息了。');
 		},
 		flags: {},
 		name: "Huo Shan Xing Zhe",
