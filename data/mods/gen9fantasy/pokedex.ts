@@ -998,7 +998,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Tropius",
 		forme: "Fantasy",
 		types: ["Grass", "Dragon"],
-		baseStats: { hp: 129, atk: 68, def: 83, spa: 72, spd: 87, spe: 51 },
+		baseStats: { hp: 139, atk: 68, def: 83, spa: 72, spd: 87, spe: 51 },
 		abilities: { 0: "Chlorophyll", 1: "Regenerator", H: "Harvest" },
 		heightm: 2,
 		weightkg: 100,
