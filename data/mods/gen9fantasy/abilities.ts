@@ -1073,8 +1073,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	huoshanxingzhe: {
 		onStart(source) {
 			if (this.field.getPseudoWeather('seaoffire')) return;
+			const previousTerrain = this.field.terrain;
+			const previousTerrainState = previousTerrain ? {...this.field.terrainState} : null;
 			this.add('-ability', source, '火山行者');
 			this.field.addPseudoWeather('seaoffire', source);
+			// Sea of Fire should not clear or replace existing terrain.
+			if (previousTerrain && this.field.terrain !== previousTerrain) {
+				this.field.terrain = previousTerrain;
+				this.field.terrainState = previousTerrainState!;
+			}
 		},
 		onEnd(source) {
 			if (!this.field.getPseudoWeather('seaoffire')) return;
