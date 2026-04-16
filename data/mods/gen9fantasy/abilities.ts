@@ -1081,10 +1081,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			const hasOtherVolcanicWalker = this.getAllActive().some(pokemon =>
 				pokemon && pokemon !== source && !pokemon.fainted && pokemon.hasAbility('huoshanxingzhe')
 			);
-			const hasQueuedVolcanicWalker = this.faintQueue.some(entry =>
-				entry.target && entry.target !== source && entry.target.isActive && entry.target.hasAbility('huoshanxingzhe')
-			);
-			if (hasOtherVolcanicWalker || hasQueuedVolcanicWalker) return;
+			if (hasOtherVolcanicWalker) return;
 			this.field.removePseudoWeather('seaoffire');
 		},
 		flags: {},
