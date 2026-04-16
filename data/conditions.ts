@@ -285,8 +285,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	seaoffire: {
 		name: 'Sea of Fire',
 		onFieldStart(field, source, effect) {
-			// Use activation text instead of persistent fieldstart visual to avoid terrain background being hidden.
-			this.add('-fieldactivate', 'move: Sea of Fire');
+			this.add('-fieldstart', 'move: Sea of Fire');
 		},
 		onResidualOrder: 5,
 		onResidualSubOrder: 1,
