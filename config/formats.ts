@@ -66,39 +66,40 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				let points = basePoints;
 				let detailsEntry = `${species.name}(${species.tier})=${basePoints}`;
 
-				// If a valid Mega Evolution exists for this set, score by the higher of base/mega.
+				// Mega scoring: if this set can Mega Evolve (required item and/or required move),
+				// force score by the applicable Mega form's tier.
 				const item = this.dex.items.get(set.item);
-				if (item.megaStone) {
-					const canMegaEvolve = Array.isArray(item.megaEvolves)
-						? item.megaEvolves.includes(species.baseSpecies)
-						: item.megaEvolves === species.baseSpecies;
+				const setMoveNames = new Set((set.moves || []).map(move => this.dex.moves.get(move).name));
+				let bestMega: Species | null = null;
+				let bestMegaPoints = -1;
 
-					if (canMegaEvolve) {
-						const megaStoneId = Array.isArray(item.megaStone) ? item.megaStone[0] : item.megaStone;
-						if (megaStoneId) {
-							let megaSpecies = null;
-							if (species.name.endsWith('-Fantasy')) {
-								const standardMega = this.dex.species.get(megaStoneId);
-								const fantasyMega = this.dex.species.get(standardMega.id + '-fantasy');
-								if (fantasyMega.exists) megaSpecies = fantasyMega;
-							} else {
-								const standardMega = this.dex.species.get(megaStoneId);
-								if (standardMega.exists) megaSpecies = standardMega;
-							}
+				for (const candidate of this.dex.species.all()) {
+					if (!candidate.exists) continue;
+					if (candidate.battleOnly !== species.name) continue;
+					if (!(candidate.forme === 'Mega' || candidate.name.includes('-Mega'))) continue;
 
-							if (megaSpecies?.exists) {
-								const megaPoints = tierPoints[megaSpecies.tier || ''];
-								if (megaPoints === undefined) {
-									return [
-										`${megaSpecies.name} has unsupported tier "${megaSpecies.tier || 'N/A'}" for FC Only scoring.`,
-										`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
-									];
-								}
-								points = megaPoints;
-								detailsEntry = `${species.name}(${species.tier}) -> ${megaSpecies.name}(${megaSpecies.tier}) = ${points}`;
-							}
-						}
+					if (candidate.requiredForme && candidate.requiredForme !== species.name) continue;
+					if (candidate.requiredItem && item.name !== candidate.requiredItem) continue;
+					if (candidate.requiredItems?.length && !candidate.requiredItems.includes(item.name)) continue;
+					if (candidate.requiredMove && !setMoveNames.has(candidate.requiredMove)) continue;
+
+					const candidatePoints = tierPoints[candidate.tier || ''];
+					if (candidatePoints === undefined) {
+						return [
+							`${candidate.name} has unsupported tier "${candidate.tier || 'N/A'}" for FC Only scoring.`,
+							`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
+						];
 					}
+
+					if (candidatePoints > bestMegaPoints) {
+						bestMegaPoints = candidatePoints;
+						bestMega = candidate;
+					}
+				}
+
+				if (bestMega) {
+					points = bestMegaPoints;
+					detailsEntry = `${species.name}(${species.tier}) -> ${bestMega.name}(${bestMega.tier}) = ${points}`;
 				}
 
 				total += points;
