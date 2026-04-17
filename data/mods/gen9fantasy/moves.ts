@@ -1156,7 +1156,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "normal",
 		type: "Steel",
-		zMove: { basePower: 160 },
+		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
 		contestType: "Cute",
 		desc: "先攻校准:攻击目标造成伤害后提升命中率2级。出场后立刻使出才能成功,否则招式会失败",
