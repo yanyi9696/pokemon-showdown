@@ -1503,7 +1503,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	absolitez: {
 		name: "Absolite Z",
-		spritenum: 576,
+		spritenum: 499,
 		megaStone: ["Absol-Mega-Z", "Absol-Mega-Z-Fantasy"],
 		megaEvolves: ["Absol", "Absol-Fantasy"],
 		itemUser: ["Absol", "Absol-Fantasy"],
@@ -1524,7 +1524,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	baxcalibrite: {
 		name: "Baxcalibrite",
-		spritenum: 0,
+		spritenum: 514,
 		megaStone: ["Baxcalibur-Mega", "Baxcalibur-Mega-Fantasy"],
 		megaEvolves: ["Baxcalibur", "Baxcalibur-Fantasy"],
 		itemUser: ["Baxcalibur", "Baxcalibur-Fantasy"],
@@ -1545,7 +1545,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	chimechite: {
 		name: "Chimechite",
-		spritenum: 0,
+		spritenum: 498,
 		megaStone: ["Chimecho-Mega", "Chimecho-Mega-Fantasy"],
 		megaEvolves: ["Chimecho", "Chimecho-Fantasy"],
 		itemUser: ["Chimecho", "Chimecho-Fantasy"],
@@ -1566,7 +1566,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	crabominite: {
 		name: "Crabominite",
-		spritenum: 0,
+		spritenum: 507,
 		megaStone: ["Crabominable-Mega", "Crabominable-Mega-Fantasy"],
 		megaEvolves: ["Crabominable", "Crabominable-Fantasy"],
 		itemUser: ["Crabominable", "Crabominable-Fantasy"],
@@ -1587,7 +1587,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	darkranite: {
 		name: "Darkranite",
-		spritenum: 0,
+		spritenum: 504,
 		megaStone: ["Darkrai-Mega", "Darkrai-Mega-Fantasy"],
 		megaEvolves: ["Darkrai", "Darkrai-Fantasy"],
 		itemUser: ["Darkrai", "Darkrai-Fantasy"],
@@ -1608,7 +1608,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	garchompitez: {
 		name: "Garchompite Z",
-		spritenum: 573,
+		spritenum: 501,
 		megaStone: ["Garchomp-Mega-Z", "Garchomp-Mega-Z-Fantasy"],
 		megaEvolves: ["Garchomp", "Garchomp-Fantasy"],
 		itemUser: ["Garchomp", "Garchomp-Fantasy"],
@@ -1629,7 +1629,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	glimmoranite: {
 		name: "Glimmoranite",
-		spritenum: 0,
+		spritenum: 512,
 		megaStone: ["Glimmora-Mega", "Glimmora-Mega-Fantasy"],
 		megaEvolves: ["Glimmora", "Glimmora-Fantasy"],
 		itemUser: ["Glimmora", "Glimmora-Fantasy"],
@@ -1650,7 +1650,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	golisopite: {
 		name: "Golisopite",
-		spritenum: 0,
+		spritenum: 505,
 		megaStone: ["Golisopod-Mega", "Golisopod-Mega-Fantasy"],
 		megaEvolves: ["Golisopod", "Golisopod-Fantasy"],
 		itemUser: ["Golisopod", "Golisopod-Fantasy"],
@@ -1692,7 +1692,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	heatranite: {
 		name: "Heatranite",
-		spritenum: 0,
+		spritenum: 503,
 		megaStone: ["Heatran-Mega", "Heatran-Mega-Fantasy"],
 		megaEvolves: ["Heatran", "Heatran-Fantasy"],
 		itemUser: ["Heatran", "Heatran-Fantasy"],
@@ -1713,7 +1713,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	lucarionitez: {
 		name: "Lucarionite Z",
-		spritenum: 594,
+		spritenum: 502,
 		megaStone: ["Lucario-Mega-Z", "Lucario-Mega-Z-Fantasy"],
 		megaEvolves: ["Lucario", "Lucario-Fantasy"],
 		itemUser: ["Lucario", "Lucario-Fantasy"],
@@ -1734,7 +1734,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	magearnite: {
 		name: "Magearnite",
-		spritenum: 0,
+		spritenum: 509,
 		megaStone: ["Magearna-Mega", "Magearna-Mega-Fantasy", "Magearna-Original-Mega", "Magearna-Original-Mega-Fantasy"],
 		megaEvolves: ["Magearna", "Magearna-Fantasy", "Magearna-Original", "Magearna-Original-Fantasy"],
 		itemUser: ["Magearna", "Magearna-Fantasy", "Magearna-Original", "Magearna-Original-Fantasy"],
@@ -1755,7 +1755,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	meowsticite: {
 		name: "Meowsticite",
-		spritenum: 0,
+		spritenum: 506,
 		megaStone: ["Meowstic-M-Mega", "Meowstic-M-Mega-Fantasy", "Meowstic-F-Mega", "Meowstic-F-Mega-Fantasy"],
 		megaEvolves: ["Meowstic", "Meowstic-Fantasy", "Meowstic-F", "Meowstic-F-Fantasy"],
 		itemUser: ["Meowstic", "Meowstic-Fantasy", "Meowstic-F", "Meowstic-F-Fantasy"],
@@ -1776,7 +1776,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	raichunitex: {
 		name: "Raichunite X",
-		spritenum: 0,
+		spritenum: 496,
 		megaStone: ["Raichu-Mega-X", "Raichu-Mega-X-Fantasy"],
 		megaEvolves: ["Raichu", "Raichu-Fantasy"],
 		itemUser: ["Raichu", "Raichu-Fantasy"],
@@ -1797,7 +1797,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	raichunitey: {
 		name: "Raichunite Y",
-		spritenum: 0,
+		spritenum: 497,
 		megaStone: ["Raichu-Mega-Y", "Raichu-Mega-Y-Fantasy"],
 		megaEvolves: ["Raichu", "Raichu-Fantasy"],
 		itemUser: ["Raichu", "Raichu-Fantasy"],
@@ -1818,7 +1818,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	scovillainite: {
 		name: "Scovillainite",
-		spritenum: 0,
+		spritenum: 511,
 		megaStone: ["Scovillain-Mega", "Scovillain-Mega-Fantasy"],
 		megaEvolves: ["Scovillain", "Scovillain-Fantasy"],
 		itemUser: ["Scovillain", "Scovillain-Fantasy"],
@@ -1839,7 +1839,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	staraptite: {
 		name: "Staraptite",
-		spritenum: 0,
+		spritenum: 500,
 		megaStone: ["Staraptor-Mega", "Staraptor-Mega-Fantasy"],
 		megaEvolves: ["Staraptor", "Staraptor-Fantasy"],
 		itemUser: ["Staraptor", "Staraptor-Fantasy"],
@@ -1860,7 +1860,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	tatsugirinite: {
 		name: "Tatsugirinite",
-		spritenum: 0,
+		spritenum: 513,
 		megaStone: [
 			"Tatsugiri-Curly-Mega",
 			"Tatsugiri-Droopy-Mega",
@@ -1885,7 +1885,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	zeraorite: {
 		name: "Zeraorite",
-		spritenum: 0,
+		spritenum: 510,
 		megaStone: ["Zeraora-Mega", "Zeraora-Mega-Fantasy"],
 		megaEvolves: ["Zeraora", "Zeraora-Fantasy"],
 		itemUser: ["Zeraora", "Zeraora-Fantasy"],
@@ -2029,6 +2029,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		name: "Fantasy Ring Target",
 		spritenum: 410,
 		fling: { basePower: 30 },
+		onNegateImmunity: false,
 		onStart(pokemon) {
 			// 新增：在宝可梦登场时显示提示信息，暴露道具
 			this.add("-message", `${pokemon.name}的幻之标靶正在锁定目标!`);
@@ -2041,11 +2042,6 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					// 禁用这个招式
 					pokemon.disableMove(moveSlot.id);
 				}
-			}
-		},
-		onModifyMove(move, pokemon) {
-			if (move.category !== "Status") {
-				move.ignoreImmunity = true;
 			}
 		},
 		num: 30001,
