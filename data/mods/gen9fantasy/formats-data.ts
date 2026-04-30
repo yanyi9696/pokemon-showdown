@@ -411,6 +411,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	orbeetlefantasy: {
 		tier: "UU",
 	},
+	pidgeotfantasy: {
+		tier: "UU",
+	},
 	scolipedefantasy: {
 		tier: "UU",
 	},
@@ -527,9 +530,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	mukalolafantasy: {
-		tier: "RU",
-	},
-	pidgeotfantasy: {
 		tier: "RU",
 	},
 	ribombeefantasy: {
@@ -895,12 +895,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	zygarde: {
 		tier: "(Uber)",
 	},
-	aegislash: {
-		tier: "OU",
-	},
-	aegislashblade: {
-		tier: "OU",
-	},
+	//aegislash: {
+		//tier: "OU",
+	//},
+	//aegislashblade: {
+		//tier: "OU",
+	//},
 	archaludon: {
 		tier: "OU",
 	},

@@ -466,10 +466,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	zuishenluanda: {
 		num: 10005,
 		accuracy: 100,
-		basePower: 15,
-		basePowerCallback(pokemon, target, move) {
-			return 15 * move.hit;
-		},
+		basePower: 35,
 		category: "Physical",
 		name: "Zui Shen Luan Da",
 		pp: 5,
@@ -478,13 +475,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		willCrit: true,
 		multihit: 3,
 		multiaccuracy: true,
+		// 使用 onHit 替代 onModifyAccuracy，这是 TS 原生支持的属性
+		onHit(target, source, move) {
+			// move.hit 记录了当前是第几次命中
+			if (move.hit === 1) {
+				// 第一击命中后，将下一击的命中率设为 90
+				move.accuracy = 90; 
+			} else if (move.hit === 2) {
+				// 第二击命中后，将下一击的命中率设为 70
+				move.accuracy = 70; 
+			}
+		},
 		secondary: null,
 		target: "normal",
 		type: "Poison",
-		zMove: { basePower: 175 },
+		zMove: { basePower: 185 },
 		maxMove: { basePower: 90 },
-		desc: "醉神乱打:连续攻击1~3次,每一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45",
-		shortDesc: "醉神乱打:连续攻击1~3次,必定击中要害。每次击中威力↑"
+		desc: "醉神乱打:一回合内连续攻击3次,每一击都必定击中要害。每击中一次,下一击的命中率就会叠加下降累计命中数×10%(即三击的命中率分别为100%、90%、70%)。",
+		shortDesc: "醉神乱打:必定击中要害的3次攻击,每次击中后下一击命中率叠加下降。"
 	},
 	biansuzhefan: {
 		num: 10006,
