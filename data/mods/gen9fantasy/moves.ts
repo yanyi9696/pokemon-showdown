@@ -460,8 +460,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Electric",
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 100 },
-		desc: "电闪迅击:必定能够先制攻击。攻击必定击中要害",
-		shortDesc: "电闪迅击:必定能够先制攻击。攻击必定击中要害"
+		desc: "电闪迅击:必定能够先制攻击,必定击中要害",
+		shortDesc: "电闪迅击:必定能够先制攻击,必定击中要害"
 	},
 	zuishenluanda: {
 		num: 10005,
@@ -491,8 +491,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Poison",
 		zMove: { basePower: 185 },
 		maxMove: { basePower: 90 },
-		desc: "醉神乱打:一回合内连续攻击3次,每一击都必定击中要害。每击中一次,下一击的命中率就会叠加下降累计命中数×10%(即三击的命中率分别为100%、90%、70%)。",
-		shortDesc: "醉神乱打:必定击中要害的3次攻击,每次击中后下一击命中率叠加下降。"
+		desc: "醉神乱打:一回合内连续攻击3次,每一击都必定击中要害。每击中一次,下一击的命中率就会叠加下降累计命中数×10%(即三击的命中率分别为100%、90%、70%)",
+		shortDesc: "醉神乱打:每一击命中率为100%,90%,70%,必定击中要害"
 	},
 	biansuzhefan: {
 		num: 10006,
@@ -746,7 +746,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
 		desc: "鹿角:招式的属性会根据使用者的形态改变,春:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低1级。在大晴天或大日照下,使用者将造成伤害的50%转化为自身的HP",
-		shortDesc: "鹿角:属性随形态改变,50%令目标防御降低1级,晴天下回血",
+		shortDesc: "鹿角:属性随形态改变,50%令目标防御降低1级,晴天下吸血",
 	},
 	huanji: {
 		num: 10014,
