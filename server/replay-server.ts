@@ -61,6 +61,45 @@ function clientOrigin() {
 	);
 }
 
+function firstHeader(value: string | string[] | undefined) {
+	return Array.isArray(value) ? value[0] : value;
+}
+
+function normalizePublicPath(path: string | null | undefined) {
+	path = (path || '').trim();
+	if (!path || path === '/') return '';
+	if (!path.startsWith('/')) path = `/${path}`;
+	return path.replace(/\/+$/, '');
+}
+
+function routeReplayPath() {
+	const route = Config.routes?.replays || '';
+	if (!route.includes('/')) return '';
+	const parsed = new URL(/^https?:\/\//.test(route) ? route : `https://${route}`);
+	return parsed.pathname;
+}
+
+function routeReplayHost() {
+	const route = Config.routes?.replays || '';
+	if (!route) return 'localhost';
+	const parsed = new URL(/^https?:\/\//.test(route) ? route : `https://${route}`);
+	return parsed.host;
+}
+
+function replayPublicPath(req?: http.IncomingMessage) {
+	return normalizePublicPath(
+		process.env.REPLAY_PUBLIC_PATH ||
+		firstHeader(req?.headers['x-forwarded-prefix']) ||
+		Config.replaypublicpath ||
+		routeReplayPath()
+	);
+}
+
+function replayPath(id = '', req?: http.IncomingMessage) {
+	const path = replayPublicPath(req);
+	return id ? `${path}/${id}` : `${path}/`;
+}
+
 function parseReplayID(fullid: string) {
 	let id = fullid;
 	let password = '';
@@ -250,8 +289,8 @@ async function searchReplays(url: URL) {
 
 function canonicalReplayURL(req: http.IncomingMessage, replay: ReplayRow) {
 	const proto = `${req.headers['x-forwarded-proto'] || 'https'}`.split(',')[0];
-	const host = req.headers['x-forwarded-host'] || req.headers.host || Config.routes?.replays || 'localhost';
-	return `${proto}://${host}/${fullReplayID(replay)}`;
+	const host = firstHeader(req.headers['x-forwarded-host']) || req.headers.host || routeReplayHost();
+	return `${proto}://${host}${replayPath(fullReplayID(replay), req)}`;
 }
 
 function renderReplayPage(req: http.IncomingMessage, replay: ReplayRow) {
@@ -404,11 +443,11 @@ function renderReplayPage(req: http.IncomingMessage, replay: ReplayRow) {
 </html>`;
 }
 
-function renderIndex(replays: ReplaySummaryRow[]) {
+function renderIndex(req: http.IncomingMessage, replays: ReplaySummaryRow[]) {
 	const rows = replays.map(replay => {
 		const summary = replaySummary(replay);
 		const uploaded = new Date(summary.uploadtime * 1000).toISOString().slice(0, 10);
-		return `<li><a href="/${escapeHTML(summary.id)}"><small>[${escapeHTML(summary.format)}]</small> ` +
+		return `<li><a href="${escapeHTML(replayPath(summary.id, req))}"><small>[${escapeHTML(summary.format)}]</small> ` +
 			`<strong>${escapeHTML(summary.p1)}</strong> vs. <strong>${escapeHTML(summary.p2)}</strong>` +
 			` <small>${uploaded}${summary.rating ? ` | ${escapeHTML(summary.rating)}` : ''}</small></a></li>`;
 	}).join('\n');
@@ -451,7 +490,7 @@ async function handle(req: http.IncomingMessage, res: http.ServerResponse) {
 
 	if (pathname === '/') {
 		const replays = await recentReplays();
-		write(res, 200, renderIndex(replays), { 'Content-Type': 'text/html; charset=utf-8' });
+		write(res, 200, renderIndex(req, replays), { 'Content-Type': 'text/html; charset=utf-8' });
 		return;
 	}
 	if (pathname === '/search.json') {

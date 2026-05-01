@@ -199,6 +199,7 @@ exports.replaysdir = process.env.REPLAYS_DIR || 'logs/replays';
 exports.replayserverport = Number(process.env.REPLAY_SERVER_PORT) || 8001;
 exports.replayserverbindaddress = process.env.REPLAY_SERVER_BIND_ADDRESS || '127.0.0.1';
 exports.replayclientorigin = process.env.REPLAY_CLIENT_ORIGIN || 'https://play.psfantasy.xyz';
+exports.replaypublicpath = process.env.REPLAY_PUBLIC_PATH || '/replay';
 
 /**
  * autosavereplays - if enabled, every completed battle is saved silently.

@@ -12,6 +12,7 @@ Configure the battle server and replay server to use the same replay directory:
 exports.routes.replays = 'replay.example.com';
 exports.replaysdir = 'logs/replays';
 exports.replayclientorigin = 'https://play.example.com';
+exports.replaypublicpath = ''; // set to '/replay' when reverse-proxying under /replay/
 ```
 
 Start the battle server normally:
@@ -36,6 +37,8 @@ HTTPS reverse proxy for the public replay domain.
 - `REPLAY_SERVER_PORT`: replay server port, default `8001`.
 - `REPLAY_SERVER_BIND_ADDRESS`: bind address, default `127.0.0.1`.
 - `REPLAY_CLIENT_ORIGIN`: PS client origin used for replay player assets.
+- `REPLAY_PUBLIC_PATH`: public URL path prefix, for example `/replay` when
+  Nginx proxies `https://play.example.com/replay/` to the replay server.
 
 ## Public endpoints
 
@@ -44,3 +47,7 @@ HTTPS reverse proxy for the public replay domain.
 - `GET /:id.json`: replay metadata and battle log.
 - `GET /:id.log`: plain battle log.
 - `GET /search.json?user=&user2=&format=&page=&rating=&contains=`: JSON search.
+
+If the server is mounted below a path such as `/replay/`, keep these internal
+paths unchanged in Node and set `REPLAY_PUBLIC_PATH=/replay`; the reverse proxy
+should strip the prefix before forwarding to the replay server.
