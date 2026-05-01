@@ -934,7 +934,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	//以下为zamega石 num从9999开始
 	gmegawishingstar: {
 		name: "G-Mega Wishing Star",
-		spritenum: 709,
+		spritenum: 3,
 		megaStone: [
 			"Garbodor-G-Mega-Fantasy",
 			"Corviknight-G-Mega-Fantasy",
@@ -1949,7 +1949,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",
-		spritenum: 686,
+		spritenum: 766,
 		onTakeItem: false, // Z纯晶不能被移除
 		zMove: "Chaopinyaogunpoyinbo",
 		zMoveFrom: "Overdrive",
@@ -1961,7 +1961,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	greninjaashz: {
 		name: "Greninja-Ash Z",
-		spritenum: 633,
+		spritenum: 764,
 		onTakeItem: false, // Z纯晶不能被移除
 		zMove: "Huangjinjibanshoulijian",
 		zMoveFrom: "Water Shuriken",
