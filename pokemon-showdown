@@ -63,6 +63,11 @@ if (!process.argv[2] || /^[0-9]+$/.test(process.argv[2])) {
 		console.log('  (Defaults to the port setting in config/config.js)');
 		console.log('  (The port setting in config/config.js defaults to 8000)');
 		console.log('');
+		console.log('pokemon-showdown replay-server [--skip-build]');
+		console.log('');
+		console.log('  Starts the standalone replay HTTP server');
+		console.log('  (Defaults to REPLAY_SERVER_PORT or 8001)');
+		console.log('');
 		console.log('pokemon-showdown generate-team [FORMAT-ID [RANDOM-SEED]]');
 		console.log('');
 		console.log('  Generates a random team, and writes it to stdout in packed team format');
@@ -103,6 +108,13 @@ if (!process.argv[2] || /^[0-9]+$/.test(process.argv[2])) {
 		require('module')._load('./dist/server/index.js', module, true);
 		break;
 	}
+	case 'replay-server':
+		{
+			process.argv.splice(2, 1);
+			build();
+			require('module')._load('./dist/server/replay-server.js', module, true);
+		}
+		break;
 	case 'generate-team':
 		{
 			ensureBuilt();
