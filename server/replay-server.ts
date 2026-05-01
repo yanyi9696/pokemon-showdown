@@ -320,6 +320,9 @@ function renderReplayPage(req: http.IncomingMessage, replay: ReplayRow) {
 	<script src="${origin}/js/lib/html-sanitizer-minified.js"></script>
 	<script src="${origin}/js/battle-sound.js"></script>
 	<script src="${origin}/config/config.js"></script>
+	<script>
+	window.PSIconSheetPrefix = ${JSON.stringify(`${origin}/`)};
+	</script>
 	<script src="${origin}/js/battledata.js"></script>
 	<script src="${miniSpritesURL}"></script>
 	<script src="${miniSpritesBWURL}"></script>
