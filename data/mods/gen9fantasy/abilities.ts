@@ -1937,4 +1937,106 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10039,
 		shortDesc: "破坏欲:出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
 	},
+	yuanhaiyangliu: {
+		onBasePowerPriority: 21,
+		onBasePower(basePower, attacker, defender, move) {
+			// 检查当前天气是否为下雨或始源之海
+			if (this.field.isWeather(['raindance', 'primordialsea'])) {
+				// 检查招式是否为飞行属性
+				if (move.type === 'Flying') {
+					this.debug('Yuan Hai Yang Liu Flying boost');
+					// 将招式威力进行连锁修正，提升 25% (即 1/4)
+					return this.chainModify(1.25);
+				}
+			}
+		},
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			// 如果当前天气不是下雨或始源之海，则不触发回合末伤害
+			if (!this.field.isWeather(['raindance', 'primordialsea'])) return;
+			
+			// 遍历场上所有活跃的宝可梦
+			for (const target of this.getAllActive()) {
+				// 排除特性持有者自身
+				if (target === pokemon) continue;
+				
+				// 排除水属性宝可梦
+				if (target.hasType('Water')) continue;
+				
+				// 如果目标已经濒死或没有HP，则跳过
+				if (target.fainted || !target.hp) continue;
+				
+				// 获取目标对水属性和飞行属性的克制指数
+				// getEffectiveness 会返回指数：1代表2倍弱点，2代表4倍弱点，-1代表0.5倍抵抗，以此类推
+				const waterMod = this.dex.getEffectiveness('Water', target);
+				const flyingMod = this.dex.getEffectiveness('Flying', target);
+				
+				// 计算总的属性修正指数
+				const totalMod = waterMod + flyingMod;
+				
+				// 计算最终的伤害倍率 (2 的 totalMod 次方)
+				// 例如：弱水(+1)且弱飞行(+1)，总和为2，倍率为 2^2 = 4倍
+				const multiplier = Math.pow(2, totalMod);
+				
+				// 如果最终倍率大于 0（即目标不是对这两种属性完全天然免疫），则计算并执行伤害
+				if (multiplier > 0) {
+					// 基础伤害为最大 HP 的 1/16，然后乘以克制倍率
+					const damage = (target.baseMaxhp / 16) * multiplier;
+					
+					// 执行扣血，并传入当前特性作为来源，这样会在对战日志中弹出“渊海洋流”的提示
+					this.damage(damage, target, pokemon, this.dex.abilities.get('yuanhaiyangliu'));
+				}
+			}
+		},
+		flags: {},
+		name: "Yuan Hai Yang Liu",
+		rating: 4,
+		num: 10040,
+		shortDesc: "渊海洋流:雨天飞行系招式威力提升1/4,非自身与水系每回合损失1/16最大HP,随水/飞克制倍数提升",
+	},
+	heianqinshi: {
+		// 1. 攻击时概率效果绝佳
+		onModifyMove(move, pokemon) {
+			// 检查：必须是造成伤害的攻击类招式（排除变化类招式）
+			if (move.category !== 'Status') {
+				// 判定：25% (1/4) 的触发概率
+				if (this.randomChance(1, 4)) {
+					// 1.1 在对战日志中弹出特性发动的横幅提示
+					this.add('-activate', pokemon, 'ability: Hei An Qin Shi');
+					
+					// 1.2 【新增逻辑】输出自定义的台词文字
+					this.add('-message', '暗之旋风将席卷一切！');
+					
+					// 1.3 开启无视免疫。确保即使是通常无效的属性打击也能造成伤害。
+					move.ignoreImmunity = true;
+					
+					// 1.4 动态重写该次招式的属性克制计算规则
+					move.onEffectiveness = function (typeMod, target, type, m) {
+						// 避免双属性导致返回两个 1（从而变成 4 倍伤害），做一个只触发一次的标记：
+						if (!(m as any)._heiAnQinShiApplied) {
+							(m as any)._heiAnQinShiApplied = true;
+							return 1; // 强制返回效果绝佳 (2倍伤害)
+						}
+						return 0; // 其他属性返回正常倍率
+					};
+				}
+			}
+		},
+		// 2. 回合末扣除 HP
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			// 检查宝可梦当前是否存活
+			if (pokemon.hp && !pokemon.fainted) {
+				// 扣除最大 HP 的 1/16。
+				this.damage(pokemon.baseMaxhp / 16, pokemon, pokemon, this.dex.abilities.get('heianqinshi'));
+			}
+		},
+		flags: {},
+		name: "Hei An Qin Shi",
+		rating: 3.5,
+		num: 10041,
+		shortDesc: "黑暗侵蚀:每次使用攻击招式有1/4几率对目标效果绝佳;每回合结束时损失1/16最大HP",
+	},
 };

@@ -977,8 +977,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 9999,
 		gen: 9,
-		desc: "超巨进化许愿星。让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
-		shortDesc: "超巨进化许愿星。让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
+		desc: "超巨进化许愿星:让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
+		shortDesc: "超巨进化许愿星:让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
 	},
 	victreebelite: {
 		name: "Victreebelite",
@@ -998,8 +998,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10000,
 		gen: 9,
-		desc: "大食花进化石。让大食花携带后,在战斗时就能进行超级进化",
-		shortDesc: "大食花进化石。让大食花携带后,在战斗时就能进行超级进化",
+		desc: "大食花进化石:让大食花携带后,在战斗时就能进行超级进化",
+		shortDesc: "大食花进化石:让大食花携带后,在战斗时就能进行超级进化",
 	},
 	hawluchanite: {
 		name: "Hawluchanite",
@@ -1019,8 +1019,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10001,
 		gen: 9,
-		desc: "摔角鹰人进化石。让摔角鹰人携带后,在战斗时就能进行超级进化",
-		shortDesc: "摔角鹰人进化石。让摔角鹰人携带后,在战斗时就能进行超级进化",
+		desc: "摔角鹰人进化石:让摔角鹰人携带后,在战斗时就能进行超级进化",
+		shortDesc: "摔角鹰人进化石:让摔角鹰人携带后,在战斗时就能进行超级进化",
 	},
 	chandelurite: {
 		name: "Chandelurite",
@@ -1040,8 +1040,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10002,
 		gen: 9,
-		desc: "水晶灯火灵进化石。让水晶灯火灵携带后,在战斗时就能进行超级进化",
-		shortDesc: "水晶灯火灵进化石。让水晶灯火灵携带后,在战斗时就能进行超级进化",
+		desc: "水晶灯火灵进化石:让水晶灯火灵携带后,在战斗时就能进行超级进化",
+		shortDesc: "水晶灯火灵进化石:让水晶灯火灵携带后,在战斗时就能进行超级进化",
 	},
 	froslassite: {
 		name: "Froslassite",
@@ -1061,8 +1061,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10003,
 		gen: 9,
-		desc: "雪妖女进化石。让雪妖女携带后,在战斗时就能进行超级进化",
-		shortDesc: "雪妖女进化石。让雪妖女携带后,在战斗时就能进行超级进化",
+		desc: "雪妖女进化石:让雪妖女携带后,在战斗时就能进行超级进化",
+		shortDesc: "雪妖女进化石:让雪妖女携带后,在战斗时就能进行超级进化",
 	},
 	delphoxite: {
 		name: "Delphoxite",
@@ -1082,8 +1082,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10004,
 		gen: 9,
-		desc: "妖火红狐进化石。让妖火红狐携带后,在战斗时就能进行超级进化",
-		shortDesc: "妖火红狐进化石。让妖火红狐携带后,在战斗时就能进行超级进化",
+		desc: "妖火红狐进化石:让妖火红狐携带后,在战斗时就能进行超级进化",
+		shortDesc: "妖火红狐进化石:让妖火红狐携带后,在战斗时就能进行超级进化",
 	},
 	dragalgite: {
 		name: "Dragalgite",
@@ -1103,8 +1103,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10005,
 		gen: 9,
-		desc: "毒藻龙进化石。让毒藻龙携带后,在战斗时就能进行超级进化",
-		shortDesc: "毒藻龙进化石。让毒藻龙携带后,在战斗时就能进行超级进化",
+		desc: "毒藻龙进化石:让毒藻龙携带后,在战斗时就能进行超级进化",
+		shortDesc: "毒藻龙进化石:让毒藻龙携带后,在战斗时就能进行超级进化",
 	},
 	excadrite: {
 		name: "Excadrite",
@@ -1124,8 +1124,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10006,
 		gen: 9,
-		desc: "龙头地鼠进化石。让龙头地鼠携带后,在战斗时就能进行超级进化",
-		shortDesc: "龙头地鼠进化石。让龙头地鼠携带后,在战斗时就能进行超级进化",
+		desc: "龙头地鼠进化石:让龙头地鼠携带后,在战斗时就能进行超级进化",
+		shortDesc: "龙头地鼠进化石:让龙头地鼠携带后,在战斗时就能进行超级进化",
 	},
 	meganiumite: {
 		name: "Meganiumite",
@@ -1145,8 +1145,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10007,
 		gen: 9,
-		desc: "大竺葵进化石。让大竺葵携带后,在战斗时就能进行超级进化",
-		shortDesc: "大竺葵进化石。让大竺葵携带后,在战斗时就能进行超级进化",
+		desc: "大竺葵进化石:让大竺葵携带后,在战斗时就能进行超级进化",
+		shortDesc: "大竺葵进化石:让大竺葵携带后,在战斗时就能进行超级进化",
 	},
 	greninjite: {
 		name: "Greninjite",
@@ -1166,8 +1166,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10008,
 		gen: 9,
-		desc: "甲贺忍蛙进化石。让甲贺忍蛙携带后,在战斗时就能进行超级进化",
-		shortDesc: "甲贺忍蛙进化石。让甲贺忍蛙携带后,在战斗时就能进行超级进化",
+		desc: "甲贺忍蛙进化石:让甲贺忍蛙携带后,在战斗时就能进行超级进化",
+		shortDesc: "甲贺忍蛙进化石:让甲贺忍蛙携带后,在战斗时就能进行超级进化",
 	},
 	starminite: {
 		name: "Starminite",
@@ -1187,8 +1187,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10009,
 		gen: 9,
-		desc: "宝石海星进化石。让宝石海星携带后,在战斗时就能进行超级进化",
-		shortDesc: "宝石海星进化石。让宝石海星携带后,在战斗时就能进行超级进化",
+		desc: "宝石海星进化石:让宝石海星携带后,在战斗时就能进行超级进化",
+		shortDesc: "宝石海星进化石:让宝石海星携带后,在战斗时就能进行超级进化",
 	},
 	barbaracite: {
 		name: "Barbaracite",
@@ -1208,8 +1208,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10010,
 		gen: 9,
-		desc: "龟足巨铠进化石。让龟足巨铠携带后,在战斗时就能进行超级进化",
-		shortDesc: "龟足巨铠进化石。让龟足巨铠携带后,在战斗时就能进行超级进化",
+		desc: "龟足巨铠进化石:让龟足巨铠携带后,在战斗时就能进行超级进化",
+		shortDesc: "龟足巨铠进化石:让龟足巨铠携带后,在战斗时就能进行超级进化",
 	},
 	dragoninite: {
 		name: "Dragoninite",
@@ -1229,8 +1229,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10011,
 		gen: 9,
-		desc: "快龙进化石。让快龙携带后,在战斗时就能进行超级进化",
-		shortDesc: "快龙进化石。让快龙携带后,在战斗时就能进行超级进化",
+		desc: "快龙进化石:让快龙携带后,在战斗时就能进行超级进化",
+		shortDesc: "快龙进化石:让快龙携带后,在战斗时就能进行超级进化",
 	},
 	chesnaughtite: {
 		name: "Chesnaughtite",
@@ -1250,8 +1250,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10012,
 		gen: 9,
-		desc: "布里卡隆进化石。让布里卡隆携带后,在战斗时就能进行超级进化",
-		shortDesc: "布里卡隆进化石。让布里卡隆携带后,在战斗时就能进行超级进化",
+		desc: "布里卡隆进化石:让布里卡隆携带后,在战斗时就能进行超级进化",
+		shortDesc: "布里卡隆进化石:让布里卡隆携带后,在战斗时就能进行超级进化",
 	},
 	drampanite: {
 		name: "Drampanite",
@@ -1271,8 +1271,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10013,
 		gen: 9,
-		desc: "老翁龙进化石。让老翁龙携带后,在战斗时就能进行超级进化",
-		shortDesc: "老翁龙进化石。让老翁龙携带后,在战斗时就能进行超级进化",
+		desc: "老翁龙进化石:让老翁龙携带后,在战斗时就能进行超级进化",
+		shortDesc: "老翁龙进化石:让老翁龙携带后,在战斗时就能进行超级进化",
 	},
 	falinksite: {
 		name: "Falinksite",
@@ -1292,8 +1292,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10014,
 		gen: 9,
-		desc: "列阵兵进化石。让列阵兵携带后,在战斗时就能进行超级进化",
-		shortDesc: "列阵兵进化石。让列阵兵携带后,在战斗时就能进行超级进化",
+		desc: "列阵兵进化石:让列阵兵携带后,在战斗时就能进行超级进化",
+		shortDesc: "列阵兵进化石:让列阵兵携带后,在战斗时就能进行超级进化",
 	},
 	floettite: {
 		name: "Floettite",
@@ -1309,8 +1309,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10015,
 		gen: 9,
-		desc: "花叶蒂-永恒之花进化石。让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
-		shortDesc: "花叶蒂-永恒之花进化石。让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
+		desc: "花叶蒂-永恒之花进化石:让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
+		shortDesc: "花叶蒂-永恒之花进化石:让花叶蒂-永恒之花携带后,在战斗时就能进行超级进化",
 	},
 	skarmorite: {
 		name: "Skarmorite",
@@ -1330,8 +1330,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10016,
 		gen: 9,
-		desc: "盔甲鸟进化石。让盔甲鸟携带后,在战斗时就能进行超级进化",
-		shortDesc: "盔甲鸟进化石。让盔甲鸟携带后,在战斗时就能进行超级进化",
+		desc: "盔甲鸟进化石:让盔甲鸟携带后,在战斗时就能进行超级进化",
+		shortDesc: "盔甲鸟进化石:让盔甲鸟携带后,在战斗时就能进行超级进化",
 	},
 	clefablite: {
 		name: "Clefablite",
@@ -1351,8 +1351,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10017,
 		gen: 9,
-		desc: "皮可西进化石。让皮可西携带后,在战斗时就能进行超级进化",
-		shortDesc: "皮可西进化石。让皮可西携带后,在战斗时就能进行超级进化",
+		desc: "皮可西进化石:让皮可西携带后,在战斗时就能进行超级进化",
+		shortDesc: "皮可西进化石:让皮可西携带后,在战斗时就能进行超级进化",
 	},
 	scraftinite: {
 		name: "Scraftinite",
@@ -1372,8 +1372,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10018,
 		gen: 9,
-		desc: "头巾混混进化石。让头巾混混携带后,在战斗时就能进行超级进化",
-		shortDesc: "头巾混混进化石。让头巾混混携带后,在战斗时就能进行超级进化",
+		desc: "头巾混混进化石:让头巾混混携带后,在战斗时就能进行超级进化",
+		shortDesc: "头巾混混进化石:让头巾混混携带后,在战斗时就能进行超级进化",
 	},
 	eelektrossite: {
 		name: "Eelektrossite",
@@ -1393,8 +1393,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10019,
 		gen: 9,
-		desc: "麻麻鳗鱼王进化石。让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
-		shortDesc: "麻麻鳗鱼王进化石。让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
+		desc: "麻麻鳗鱼王进化石:让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
+		shortDesc: "麻麻鳗鱼王进化石:让麻麻鳗鱼王携带后,在战斗时就能进行超级进化",
 	},
 	emboarite: {
 		name: "Emboarite",
@@ -1414,8 +1414,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10020,
 		gen: 9,
-		desc: "炎武王进化石。让炎武王携带后,在战斗时就能进行超级进化",
-		shortDesc: "炎武王进化石。让炎武王携带后,在战斗时就能进行超级进化",
+		desc: "炎武王进化石:让炎武王携带后,在战斗时就能进行超级进化",
+		shortDesc: "炎武王进化石:让炎武王携带后,在战斗时就能进行超级进化",
 	},
 	feraligite: {
 		name: "Feraligite",
@@ -1435,8 +1435,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10021,
 		gen: 9,
-		desc: "大力鳄进化石。让大力鳄携带后,在战斗时就能进行超级进化",
-		shortDesc: "大力鳄进化石。让大力鳄携带后,在战斗时就能进行超级进化",
+		desc: "大力鳄进化石:让大力鳄携带后,在战斗时就能进行超级进化",
+		shortDesc: "大力鳄进化石:让大力鳄携带后,在战斗时就能进行超级进化",
 	},
 	malamarite: {
 		name: "Malamarite",
@@ -1456,8 +1456,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10022,
 		gen: 9,
-		desc: "乌贼王进化石。让乌贼王携带后,在战斗时就能进行超级进化",
-		shortDesc: "乌贼王进化石。让乌贼王携带后,在战斗时就能进行超级进化",
+		desc: "乌贼王进化石:让乌贼王携带后,在战斗时就能进行超级进化",
+		shortDesc: "乌贼王进化石:让乌贼王携带后,在战斗时就能进行超级进化",
 	},
 	pyroarite: {
 		name: "Pyroarite",
@@ -1477,8 +1477,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10023,
 		gen: 9,
-		desc: "火炎狮进化石。让火炎狮携带后,在战斗时就能进行超级进化",
-		shortDesc: "火炎狮进化石。让火炎狮携带后,在战斗时就能进行超级进化",
+		desc: "火炎狮进化石:让火炎狮携带后,在战斗时就能进行超级进化",
+		shortDesc: "火炎狮进化石:让火炎狮携带后,在战斗时就能进行超级进化",
 	},
 	scolipite: {
 		name: "Scolipite",
@@ -1498,8 +1498,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10024,
 		gen: 9,
-		desc: "蜈蚣王进化石。让蜈蚣王携带后,在战斗时就能进行超级进化",
-		shortDesc: "蜈蚣王进化石。让蜈蚣王携带后,在战斗时就能进行超级进化",
+		desc: "蜈蚣王进化石:让蜈蚣王携带后,在战斗时就能进行超级进化",
+		shortDesc: "蜈蚣王进化石:让蜈蚣王携带后,在战斗时就能进行超级进化",
 	},
 	absolitez: {
 		name: "Absolite Z",
@@ -1519,8 +1519,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10025,
 		gen: 9,
-		desc: "阿勃梭鲁进化石Z。让阿勃梭鲁携带后,在战斗时就能进行超级进化",
-		shortDesc: "阿勃梭鲁进化石Z。让阿勃梭鲁携带后,在战斗时就能进行超级进化",
+		desc: "阿勃梭鲁进化石Z:让阿勃梭鲁携带后,在战斗时就能进行超级进化",
+		shortDesc: "阿勃梭鲁进化石Z:让阿勃梭鲁携带后,在战斗时就能进行超级进化",
 	},
 	baxcalibrite: {
 		name: "Baxcalibrite",
@@ -1540,8 +1540,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10026,
 		gen: 9,
-		desc: "戟脊龙进化石。让戟脊龙携带后,在战斗时就能进行超级进化",
-		shortDesc: "戟脊龙进化石。让戟脊龙携带后,在战斗时就能进行超级进化",
+		desc: "戟脊龙进化石:让戟脊龙携带后,在战斗时就能进行超级进化",
+		shortDesc: "戟脊龙进化石:让戟脊龙携带后,在战斗时就能进行超级进化",
 	},
 	chimechite: {
 		name: "Chimechite",
@@ -1561,8 +1561,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10027,
 		gen: 9,
-		desc: "风铃铃进化石。让风铃铃携带后,在战斗时就能进行超级进化",
-		shortDesc: "风铃铃进化石。让风铃铃携带后,在战斗时就能进行超级进化",
+		desc: "风铃铃进化石:让风铃铃携带后,在战斗时就能进行超级进化",
+		shortDesc: "风铃铃进化石:让风铃铃携带后,在战斗时就能进行超级进化",
 	},
 	crabominite: {
 		name: "Crabominite",
@@ -1582,8 +1582,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10028,
 		gen: 9,
-		desc: "好胜毛蟹进化石。让好胜毛蟹携带后,在战斗时就能进行超级进化",
-		shortDesc: "好胜毛蟹进化石。让好胜毛蟹携带后,在战斗时就能进行超级进化",
+		desc: "好胜毛蟹进化石:让好胜毛蟹携带后,在战斗时就能进行超级进化",
+		shortDesc: "好胜毛蟹进化石:让好胜毛蟹携带后,在战斗时就能进行超级进化",
 	},
 	darkranite: {
 		name: "Darkranite",
@@ -1603,8 +1603,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10029,
 		gen: 9,
-		desc: "达克莱伊进化石。让达克莱伊携带后,在战斗时就能进行超级进化",
-		shortDesc: "达克莱伊进化石。让达克莱伊携带后,在战斗时就能进行超级进化",
+		desc: "达克莱伊进化石:让达克莱伊携带后,在战斗时就能进行超级进化",
+		shortDesc: "达克莱伊进化石:让达克莱伊携带后,在战斗时就能进行超级进化",
 	},
 	garchompitez: {
 		name: "Garchompite Z",
@@ -1624,8 +1624,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10030,
 		gen: 9,
-		desc: "烈咬陆鲨进化石Z。让烈咬陆鲨携带后,在战斗时就能进行超级进化",
-		shortDesc: "烈咬陆鲨进化石Z。让烈咬陆鲨携带后,在战斗时就能进行超级进化",
+		desc: "烈咬陆鲨进化石Z:让烈咬陆鲨携带后,在战斗时就能进行超级进化",
+		shortDesc: "烈咬陆鲨进化石Z:让烈咬陆鲨携带后,在战斗时就能进行超级进化",
 	},
 	glimmoranite: {
 		name: "Glimmoranite",
@@ -1645,8 +1645,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10031,
 		gen: 9,
-		desc: "晶光花进化石。让晶光花携带后,在战斗时就能进行超级进化",
-		shortDesc: "晶光花进化石。让晶光花携带后,在战斗时就能进行超级进化",
+		desc: "晶光花进化石:让晶光花携带后,在战斗时就能进行超级进化",
+		shortDesc: "晶光花进化石:让晶光花携带后,在战斗时就能进行超级进化",
 	},
 	golisopite: {
 		name: "Golisopite",
@@ -1666,8 +1666,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10032,
 		gen: 9,
-		desc: "具甲武者进化石。让具甲武者携带后,在战斗时就能进行超级进化",
-		shortDesc: "具甲武者进化石。让具甲武者携带后,在战斗时就能进行超级进化",
+		desc: "具甲武者进化石:让具甲武者携带后,在战斗时就能进行超级进化",
+		shortDesc: "具甲武者进化石:让具甲武者携带后,在战斗时就能进行超级进化",
 	},
 	golurkite: {
 		name: "Golurkite",
@@ -1687,8 +1687,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10033,
 		gen: 9,
-		desc: "泥偶巨人进化石。让泥偶巨人携带后,在战斗时就能进行超级进化",
-		shortDesc: "泥偶巨人进化石。让泥偶巨人携带后,在战斗时就能进行超级进化",
+		desc: "泥偶巨人进化石:让泥偶巨人携带后,在战斗时就能进行超级进化",
+		shortDesc: "泥偶巨人进化石:让泥偶巨人携带后,在战斗时就能进行超级进化",
 	},
 	heatranite: {
 		name: "Heatranite",
@@ -1708,8 +1708,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10034,
 		gen: 9,
-		desc: "席多蓝恩进化石。让席多蓝恩携带后,在战斗时就能进行超级进化",
-		shortDesc: "席多蓝恩进化石。让席多蓝恩携带后,在战斗时就能进行超级进化",
+		desc: "席多蓝恩进化石:让席多蓝恩携带后,在战斗时就能进行超级进化",
+		shortDesc: "席多蓝恩进化石:让席多蓝恩携带后,在战斗时就能进行超级进化",
 	},
 	lucarionitez: {
 		name: "Lucarionite Z",
@@ -1729,8 +1729,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10035,
 		gen: 9,
-		desc: "路卡利欧进化石Z。让路卡利欧携带后,在战斗时就能进行超级进化",
-		shortDesc: "路卡利欧进化石Z。让路卡利欧携带后,在战斗时就能进行超级进化",
+		desc: "路卡利欧进化石Z:让路卡利欧携带后,在战斗时就能进行超级进化",
+		shortDesc: "路卡利欧进化石Z:让路卡利欧携带后,在战斗时就能进行超级进化",
 	},
 	magearnite: {
 		name: "Magearnite",
@@ -1750,8 +1750,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
 		num: 10036,
 		gen: 9,
-		desc: "玛机雅娜进化石。让玛机雅娜携带后,在战斗时就能进行超级进化",
-		shortDesc: "玛机雅娜进化石。让玛机雅娜携带后,在战斗时就能进行超级进化",
+		desc: "玛机雅娜进化石:让玛机雅娜携带后,在战斗时就能进行超级进化",
+		shortDesc: "玛机雅娜进化石:让玛机雅娜携带后,在战斗时就能进行超级进化",
 	},
 	meowsticite: {
 		name: "Meowsticite",
@@ -1771,8 +1771,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
 		num: 10037,
 		gen: 9,
-		desc: "超能妙喵进化石。让超能妙喵携带后,在战斗时就能进行超级进化",
-		shortDesc: "超能妙喵进化石。让超能妙喵携带后,在战斗时就能进行超级进化",
+		desc: "超能妙喵进化石:让超能妙喵携带后,在战斗时就能进行超级进化",
+		shortDesc: "超能妙喵进化石:让超能妙喵携带后,在战斗时就能进行超级进化",
 	},
 	raichunitex: {
 		name: "Raichunite X",
@@ -1792,8 +1792,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
 		num: 10038,
 		gen: 9,
-		desc: "雷丘X进化石。让雷丘携带后,在战斗时就能进行超级进化",
-		shortDesc: "雷丘X进化石。让雷丘携带后,在战斗时就能进行超级进化",
+		desc: "雷丘X进化石:让雷丘携带后,在战斗时就能进行超级进化",
+		shortDesc: "雷丘X进化石:让雷丘携带后,在战斗时就能进行超级进化",
 	},
 	raichunitey: {
 		name: "Raichunite Y",
@@ -1813,8 +1813,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
 		num: 10039,
 		gen: 9,
-		desc: "雷丘Y进化石。让雷丘携带后,在战斗时就能进行超级进化",
-		shortDesc: "雷丘Y进化石。让雷丘携带后,在战斗时就能进行超级进化",
+		desc: "雷丘Y进化石:让雷丘携带后,在战斗时就能进行超级进化",
+		shortDesc: "雷丘Y进化石:让雷丘携带后,在战斗时就能进行超级进化",
 	},
 	scovillainite: {
 		name: "Scovillainite",
@@ -1834,8 +1834,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10040,
 		gen: 9,
-		desc: "狠辣椒进化石。让狠辣椒携带后,在战斗时就能进行超级进化",
-		shortDesc: "狠辣椒进化石。让狠辣椒携带后,在战斗时就能进行超级进化",
+		desc: "狠辣椒进化石:让狠辣椒携带后,在战斗时就能进行超级进化",
+		shortDesc: "狠辣椒进化石:让狠辣椒携带后,在战斗时就能进行超级进化",
 	},
 	staraptite: {
 		name: "Staraptite",
@@ -1855,8 +1855,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10041,
 		gen: 9,
-		desc: "姆克鹰进化石。让姆克鹰携带后,在战斗时就能进行超级进化",
-		shortDesc: "姆克鹰进化石。让姆克鹰携带后,在战斗时就能进行超级进化",
+		desc: "姆克鹰进化石:让姆克鹰携带后,在战斗时就能进行超级进化",
+		shortDesc: "姆克鹰进化石:让姆克鹰携带后,在战斗时就能进行超级进化",
 	},
 	tatsugirinite: {
 		name: "Tatsugirinite",
@@ -1880,8 +1880,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
 		num: 10042,
 		gen: 9,
-		desc: "米立龙进化石。让米立龙携带后,在战斗时就能进行超级进化",
-		shortDesc: "米立龙进化石。让米立龙携带后,在战斗时就能进行超级进化",
+		desc: "米立龙进化石:让米立龙携带后,在战斗时就能进行超级进化",
+		shortDesc: "米立龙进化石:让米立龙携带后,在战斗时就能进行超级进化",
 	},
 	zeraorite: {
 		name: "Zeraorite",
@@ -1901,8 +1901,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10043,
 		gen: 9,
-		desc: "捷拉奥拉进化石。让捷拉奥拉携带后,在战斗时就能进行超级进化",
-		shortDesc: "捷拉奥拉进化石。让捷拉奥拉携带后,在战斗时就能进行超级进化",
+		desc: "捷拉奥拉进化石:让捷拉奥拉携带后,在战斗时就能进行超级进化",
+		shortDesc: "捷拉奥拉进化石:让捷拉奥拉携带后,在战斗时就能进行超级进化",
 	},
 	zygardite: {
 		name: "Zygardite",
@@ -1922,8 +1922,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
 		num: 10043,
 		gen: 9,
-		desc: "基格尔德进化石。让基格尔德携带后,在战斗时就能进行超级进化",
-		shortDesc: "基格尔德进化石。让基格尔德携带后,在战斗时就能进行超级进化",
+		desc: "基格尔德进化石:让基格尔德携带后,在战斗时就能进行超级进化",
+		shortDesc: "基格尔德进化石:让基格尔德携带后,在战斗时就能进行超级进化",
 	},
 	flygonite: {
 		name: "Flygonite",
@@ -1943,8 +1943,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 10044,
 		gen: 9,
-		desc: "沙漠蜻蜓-幻想进化石。让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
-		shortDesc: "沙漠蜻蜓-幻想进化石。让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
+		desc: "沙漠蜻蜓-幻想进化石:让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "沙漠蜻蜓-幻想进化石:让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {
@@ -1956,8 +1956,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		itemUser: ["Toxtricity-Fantasy", "Toxtricity-Low-Key-Fantasy"], // 再次确认形态名称
 		num: 20000,
 		gen: 9,
-		desc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
-		shortDesc: "颤弦蝾螈Z。颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
+		desc: "颤弦蝾螈Z:颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
+		shortDesc: "颤弦蝾螈Z:颤弦蝾螈携带后,可以把破音转化成特殊的Ｚ招式: 超频摇滚破音波",
 	},
 	greninjaashz: {
 		name: "Greninja-Ash Z",
@@ -1968,8 +1968,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		itemUser: ["Greninja-Bond-Fantasy", "Greninja-Ash-Fantasy"], // 再次确认形态名称
 		num: 20002,
 		gen: 9,
-		desc: "智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
-		shortDesc: "智忍蛙Z。甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
+		desc: "智忍蛙Z:甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
+		shortDesc: "智忍蛙Z:甲贺忍蛙-牵绊携带后,可以把飞水手里剑转化成特殊的Ｚ招式：黄金羁绊手里剑",
 	},
 	//以下为Z和mega石以外的自制道具 num从30000开始
 	fantasypowerlens: {
@@ -2022,8 +2022,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30000,
 		gen: 9,
-		desc: "幻之力量镜。携带后,虽然攻击将无法击中要害,但命中不满100%的非变化类技能命中率与威力会提升1.2倍",
-		shortDesc: "幻之力量镜。攻击无法击中要害,命中不满100%的非变化技能威力与命中率提升1.2倍",
+		desc: "幻之力量镜:携带后,虽然攻击将无法击中要害,但命中不满100%的非变化类技能命中率与威力会提升1.2倍",
+		shortDesc: "幻之力量镜:攻击无法击中要害,命中不满100%的非变化技能威力与命中率提升1.2倍",
 	},
 	fantasyringtarget: {
 		name: "Fantasy Ring Target",
@@ -2046,8 +2046,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30001,
 		gen: 9,
-		desc: "幻之标靶。携带后,登场会暴露道具,虽然无法使用变化招式,但使用的原本属性相性没有效果的招式会变为有效果",
-		shortDesc: "幻之标靶。登场时暴露道具,使用的招式无视属性免疫,但无法使用变化招式",
+		desc: "幻之标靶:携带后,登场会暴露道具,虽然无法使用变化招式,但使用的原本属性相性没有效果的招式会变为有效果",
+		shortDesc: "幻之标靶:登场时暴露道具,使用的招式无视属性免疫,但无法使用变化招式",
 	},
 	fantasylifeorb: {
 		name: "Fantasy Life Orb",
@@ -2081,8 +2081,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		//不受异常状态效果影响的效果分别写在各个异常状态里了
 		num: 30002,
 		gen: 9,
-		desc: "幻之生命宝珠。携带后, 不受异常状态效果影响,处于异常状态下的宝可梦,受到的伤害降低30%,但回合结束时将损失最大HP的1/10",
-		shortDesc: "幻之生命宝珠。异常状态效果无效,异常状态下伤害减免30%,每回合损血1/10",
+		desc: "幻之生命宝珠:携带后, 不受异常状态效果影响,处于异常状态下的宝可梦,受到的伤害降低30%,但回合结束时将损失最大HP的1/10",
+		shortDesc: "幻之生命宝珠:异常状态效果无效,异常状态下伤害减免30%,每回合损血1/10",
 	},
 	fantasysachet: {
 		name: "Fantasy Sachet",
@@ -2259,8 +2259,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30003,
 		gen: 9,
-		desc: "幻之香袋。携带道具后将无法提升能力,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失",
-		shortDesc: "幻之香袋。无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味",
+		desc: "幻之香袋:携带道具后将无法提升能力,当接触对方或被对方接触时,将对方的特性更改为甩不掉的气味,生效一次后消失",
+		shortDesc: "幻之香袋:无法提升能力,当双方接触时,将对手的特性变为甩不掉的气味",
 	},
 	fantasyscopelens: {
 		name: "Fantasy Scope Lens",
@@ -2343,8 +2343,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30004,
 		gen: 9,
-		desc: "幻之焦点镜。使用射击、球和弹类招式时,无视对手的反射壁/光墙/极光幕,且无视目标20%的防御与特防",
-		shortDesc: "幻之焦点镜。射击球弹类招式无视墙,且无视目标20%双防",
+		desc: "幻之焦点镜:使用射击、球和弹类招式时,无视对手的反射壁/光墙/极光幕,且无视目标20%的防御与特防",
+		shortDesc: "幻之焦点镜:射击球弹类招式无视墙,且无视目标20%双防",
 	},
 	fantasysyrupyapple: {
 		name: "Fantasy Syrupy Apple",
@@ -2369,8 +2369,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30005,
 		gen: 9,
-		desc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
-		shortDesc: "幻之蜜汁苹果。携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
+		desc: "幻之蜜汁苹果:携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
+		shortDesc: "幻之蜜汁苹果:携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
 	},
 	fantasyprotector: {
 		name: "Fantasy Protector",
@@ -2395,8 +2395,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30006,
 		gen: 9,
-		desc: "幻之护具。携带后,虽然物防和特防将提高20%,但速度会降低至原来的1/2",
-		shortDesc: "幻之护具。携带后,物防和特防提高20%,但速度会降低至原来的1/2",
+		desc: "幻之护具:携带后,虽然物防和特防将提高20%,但速度会降低至原来的1/2",
+		shortDesc: "幻之护具:携带后,物防和特防提高20%,但速度会降低至原来的1/2",
 	},
 	fantasyicestone: {
 		name: "Fantasy Ice Stone",
@@ -2451,8 +2451,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30007,
 		gen: 9,
-		desc: "幻之冰之石。携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/6",
-		shortDesc: "幻之冰之石。技能造成的灼伤变冻伤,对手在冻伤状态下攻击持有者,损失1/6最大HP",
+		desc: "幻之冰之石:携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/6",
+		shortDesc: "幻之冰之石:技能造成的灼伤变冻伤,对手在冻伤状态下攻击持有者,损失1/6最大HP",
 	},
 	fantasylaxincense: {
 		name: "Fantasy Lax Incense",
@@ -2479,8 +2479,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30008,
 		gen: 9,
-		desc: "幻之悠闲薰香。携带后，宝可梦会免疫声音类招式。受到攻击就会消失",
-		shortDesc: "幻之悠闲薰香。免疫声音类招式，受到攻击后消失",
+		desc: "幻之悠闲薰香:携带后，宝可梦会免疫声音类招式。受到攻击就会消失",
+		shortDesc: "幻之悠闲薰香:免疫声音类招式，受到攻击后消失",
 	},
 	fantasyultraenergy: {
 		name: "Fantasy Ultra Energy",
@@ -2521,7 +2521,32 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		num: 30009,
 		gen: 9,
-		desc: "幻之究极能量。幻想究极异兽专属。出场触发等同于异兽提升的效果;若特性为异兽提升,则立即提升1级最高能力并在本次上场内失去特性。生效一次后消失",
-		shortDesc: "幻之究极能量。获得异兽提升效果;若特性是异兽提升,触发一次后清除特性。使用后消失",
+		desc: "幻之究极能量:幻想究极异兽专属。出场触发等同于异兽提升的效果;若特性为异兽提升,则立即提升1级最高能力并在本次上场内失去特性。生效一次后消失",
+		shortDesc: "幻之究极能量:获得异兽提升效果;若特性是异兽提升,触发一次后清除特性。使用后消失",
+	},
+	shadowbottle: {
+		name: "Shadow Bottle",
+		spritenum: 752, // reuse Vile Vial sprite
+		fling: {
+			basePower: 60,
+		},
+		onBasePowerPriority: 15,
+		onBasePower(basePower, user, target, move) {
+			if (user.species.id === 'lugiashadowfantasy' && ['Ghost', 'Flying'].includes(move.type)) {
+				return this.chainModify([4915, 4096]);
+			}
+		},
+		onTakeItem(item, pokemon, source) {
+			if (source?.baseSpecies.baseSpecies === 'Lugia' || pokemon.baseSpecies.baseSpecies === 'Lugia') {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Lugia-Shadow-Fantasy",
+		itemUser: ["Lugia-Fantasy", "Lugia-Shadow-Fantasy"],
+		num: 30010,
+		gen: 9,
+		desc: "幻想洛奇携带后形态转换为黑暗形态。幻想洛奇亚携带后幽灵属性和飞行属性的招式威力提升20%",
+		shortDesc: "幻想黑暗洛奇亚携带后幽灵属性和飞行属性的招式威力提升20%",
 	},
 };
