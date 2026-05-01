@@ -30,6 +30,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	kartanafantasy: {
 		tier: "Uber",
 	},
+	lugiafantasy: {
+		tier: "Uber",
+	},
+	lugiashadowfantasy: {
+		tier: "Uber",
+	},
 	melmetalgmegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Electromorphosis"},	
