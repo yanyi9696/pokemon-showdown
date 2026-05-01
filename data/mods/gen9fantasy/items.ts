@@ -2543,10 +2543,10 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			return true;
 		},
 		forcedForme: "Lugia-Shadow-Fantasy",
-		itemUser: ["Lugia-Fantasy", "Lugia-Shadow-Fantasy"],
+		itemUser: ["Lugia-Shadow-Fantasy"],
 		num: 30010,
 		gen: 9,
-		desc: "幻想洛奇携带后形态转换为黑暗形态。幻想洛奇亚携带后幽灵属性和飞行属性的招式威力提升20%",
-		shortDesc: "幻想黑暗洛奇亚携带后幽灵属性和飞行属性的招式威力提升20%",
+		desc: "瓶中黑暗:幻想洛奇携带后形态转换为黑暗形态。幻想洛奇亚携带后幽灵属性和飞行属性的招式威力提升20%",
+		shortDesc: "瓶中黑暗:幻想洛奇亚携带后幽灵属性和飞行属性的招式威力提升20%",
 	},
 };

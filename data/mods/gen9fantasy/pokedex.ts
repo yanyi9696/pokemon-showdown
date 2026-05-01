@@ -701,6 +701,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 216,
 		color: "Black",
 		tags: ["Restricted Legendary"],
+		requiredItem: "Shadow Bottle",
 		eggGroups: ["Undiscovered"],
 	},
 
