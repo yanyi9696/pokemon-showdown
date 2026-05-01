@@ -24,7 +24,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC Only",
 		mod: 'gen9fantasy',
-		desc: `Only Fantasy Pok&eacute;mon are legal. Team budget is capped at 100 points.`,
+		desc: `Only Fantasy Pok&eacute;mon are legal. Team budget is 100 points, plus 20 extra points for each LC Pok&eacute;mon.`,
 		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		banlist: [
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
@@ -39,9 +39,11 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				'UU': 10,
 				'RUBL': 5,
 				'RU': 0,
+				'LC': 0,
 			};
 
 			let total = 0;
+			let lcBonus = 0;
 			const details: string[] = [];
 
 			for (const set of team) {
@@ -61,6 +63,12 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 						`${set.species} has unsupported tier "${species.tier || 'N/A'}" for FC Only scoring.`,
 						`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
 					];
+				}
+
+				if (species.tier === 'LC') {
+					lcBonus += 20;
+					details.push(`${species.name}(LC)=0 [+20 budget]`);
+					continue;
 				}
 
 				let points = basePoints;
@@ -106,9 +114,10 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				details.push(detailsEntry);
 			}
 
-			if (total > 100) {
+			const totalBudget = 100 + lcBonus;
+			if (total > totalBudget) {
 				return [
-					`Your team has ${total} points, exceeding the 100-point limit.`,
+					`Your team has ${total} points, exceeding the ${totalBudget}-point limit.`,
 					`Breakdown: ${details.join(', ')}`,
 				];
 			}
