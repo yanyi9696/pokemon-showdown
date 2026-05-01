@@ -179,7 +179,8 @@ exports.routes = {
 	root: 'pokemonshowdown.com',
 	client: 'play.pokemonshowdown.com',
 	dex: 'dex.pokemonshowdown.com',
-	replays: process.env.REPLAY_HOST || 'replay.pokemonshowdown.com',
+	replays: process.env.REPLAY_HOST || 'play.psfantasy.xyz/replay',
+
 };
 
 /**
@@ -197,7 +198,7 @@ exports.replaysdir = process.env.REPLAYS_DIR || 'logs/replays';
  */
 exports.replayserverport = Number(process.env.REPLAY_SERVER_PORT) || 8001;
 exports.replayserverbindaddress = process.env.REPLAY_SERVER_BIND_ADDRESS || '127.0.0.1';
-exports.replayclientorigin = process.env.REPLAY_CLIENT_ORIGIN || `https://${exports.routes.client}`;
+exports.replayclientorigin = process.env.REPLAY_CLIENT_ORIGIN || 'https://play.psfantasy.xyz';
 
 /**
  * autosavereplays - if enabled, every completed battle is saved silently.
