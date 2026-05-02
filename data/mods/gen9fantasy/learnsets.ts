@@ -23126,8 +23126,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			qibaoliuxing: ["9M"],
 			hex: ["9M"],
 			yuannengshifang: ["9M"],
-			breakingswipe: ["9M"],
 			dragondance: ["9M"],
+			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
@@ -23278,8 +23278,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			qibaoliuxing: ["9M"],
 			hex: ["9M"],
 			yuannengshifang: ["9M"],
-			breakingswipe: ["9M"],
 			dragondance: ["9M"],
+			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
