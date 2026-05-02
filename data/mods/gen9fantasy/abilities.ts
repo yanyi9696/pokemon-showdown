@@ -1972,14 +1972,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				const waterMod = this.dex.getEffectiveness('Water', target);
 				const flyingMod = this.dex.getEffectiveness('Flying', target);
 				
-				// 计算总的属性修正指数
-				const totalMod = waterMod + flyingMod;
+				// 【关键修复】只提取克制指数（大于0的部分），将抵抗（小于0的部分）强制视为0
+				const validWaterMod = Math.max(0, waterMod);
+				const validFlyingMod = Math.max(0, flyingMod);
+				
+				// 计算总的属性修正指数（仅包含克制）
+				const totalMod = validWaterMod + validFlyingMod;
 				
 				// 计算最终的伤害倍率 (2 的 totalMod 次方)
-				// 例如：弱水(+1)且弱飞行(+1)，总和为2，倍率为 2^2 = 4倍
+				// 例如：草属性弱飞行(+1)，抵抗水(被修正为0)，总和为1，倍率为 2^1 = 2倍，即 1/8 伤害
 				const multiplier = Math.pow(2, totalMod);
 				
-				// 如果最终倍率大于 0（即目标不是对这两种属性完全天然免疫），则计算并执行伤害
 				if (multiplier > 0) {
 					// 基础伤害为最大 HP 的 1/16，然后乘以克制倍率
 					const damage = (target.baseMaxhp / 16) * multiplier;
