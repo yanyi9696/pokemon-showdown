@@ -51,3 +51,48 @@ HTTPS reverse proxy for the public replay domain.
 If the server is mounted below a path such as `/replay/`, keep these internal
 paths unchanged in Node and set `REPLAY_PUBLIC_PATH=/replay`; the reverse proxy
 should strip the prefix before forwarding to the replay server.
+
+## Cleaning old replays
+
+Local replay JSON files can be cleaned without stopping the replay server:
+
+```sh
+REPLAYS_DIR=/var/www/pokemon-showdown/logs/replays npm run cleanup-replays -- --days=30 --dry-run
+REPLAYS_DIR=/var/www/pokemon-showdown/logs/replays npm run cleanup-replays -- --days=30
+```
+
+For a low-resource server, a daily systemd timer is enough. Create
+`/etc/systemd/system/ps-replay-cleanup.service`:
+
+```ini
+[Unit]
+Description=Clean old Pokemon Showdown replay files
+
+[Service]
+Type=oneshot
+WorkingDirectory=/var/www/pokemon-showdown
+Environment=REPLAYS_DIR=/var/www/pokemon-showdown/logs/replays
+ExecStart=/usr/bin/npm run cleanup-replays -- --days=30
+```
+
+Create `/etc/systemd/system/ps-replay-cleanup.timer`:
+
+```ini
+[Unit]
+Description=Run Pokemon Showdown replay cleanup daily
+
+[Timer]
+OnCalendar=*-*-* 04:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+Enable it:
+
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now ps-replay-cleanup.timer
+sudo systemctl list-timers ps-replay-cleanup.timer
+```
