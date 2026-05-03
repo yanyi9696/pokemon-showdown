@@ -2029,17 +2029,42 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		name: "Fantasy Ring Target",
 		spritenum: 410,
 		fling: { basePower: 30 },
-		onNegateImmunity: false,
 		onStart(pokemon) {
-			// 新增：在宝可梦登场时显示提示信息，暴露道具
+			// 在宝可梦登场时显示提示信息，暴露道具
 			this.add("-message", `${pokemon.name}的幻之标靶正在锁定目标!`);
 			this.add("-item", pokemon, "Fantasy Ring Target");
+		},
+		onModifyMove(move, pokemon) {
+			// 让该招式无视所有常规的属性免疫
+			move.ignoreImmunity = true;
+
+			// 单独处理地面系招式，以保留气球、漂浮特性等“非属性”带来的免疫效果
+			if (move.type === 'Ground') {
+				const baseOnTryHit = move.onTryHit;
+				move.onTryHit = function (target, source, effect) {
+					// isGrounded(true) 表示“强制跳过飞行属性判定，仅检查气球、漂浮、重力等状态”
+					if (!target.isGrounded(true)) {
+						this.add('-immune', target);
+						return null; // 返回 null，向引擎声明本次攻击无效
+					}
+					
+					// 如果原本有 onTryHit 逻辑，则执行
+					if (baseOnTryHit) {
+						// 修复报错：先判断 baseOnTryHit 是否为函数
+						if (typeof baseOnTryHit === 'function') {
+							return baseOnTryHit.call(this, target, source, effect);
+						}
+						// 如果它不是函数（比如它是布尔值 true），直接返回该值
+						return baseOnTryHit;
+					}
+				};
+			}
 		},
 		onDisableMove(pokemon) {
 			for (const moveSlot of pokemon.moveSlots) {
 				const move = this.dex.moves.get(moveSlot.id);
 				if (move.category === "Status") {
-					// 禁用这个招式
+					// 禁用变化类招式
 					pokemon.disableMove(moveSlot.id);
 				}
 			}
