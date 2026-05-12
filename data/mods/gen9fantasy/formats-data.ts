@@ -16,10 +16,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	darmanitanfantasy: {
 		tier: "Uber",
 	},
-	delphoxmegafantasy: {
-		tier: "Uber",
-		abilities: {0: "Levitate"},		
-	},
 	greninjamegafantasy: {
 		tier: "Uber",
 		abilities: {0: "Stakeout"},		
@@ -86,6 +82,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	cresseliafantasy: {
 		tier: "(Uber)",
 	},
+	delphoxmegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Levitate"},		
+	},
 	dragalgemegafantasy: {	
 		tier: "(Uber)",
 		abilities: {0: "Adaptability"},		
@@ -98,9 +98,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 	},
 	dragapultfantasy: {
-		tier: "(Uber)",
-	},
-	durantfantasy: {
 		tier: "(Uber)",
 	},
 	enteifantasy: {
@@ -144,9 +141,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sandacondagmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Sand Stream"},	
-	},
-	sandyshocksfantasy: {
-		tier: "(Uber)",
 	},
 	suicunefantasy: {
 		tier: "(Uber)",
@@ -202,6 +196,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	delphoxfantasy: {
+		tier: "OU",
+	},
+	durantfantasy: {
 		tier: "OU",
 	},
 	empoleonfantasy: {	
@@ -295,6 +292,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	sandacondafantasy: {
+		tier: "OU",
+	},
+	sandyshocksfantasy: {
 		tier: "OU",
 	},
 	skeledirgefantasy: {

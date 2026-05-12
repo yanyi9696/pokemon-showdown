@@ -21953,9 +21953,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zhukaibo: ["9M"],
 			rapidspin: ["9M"],
+			trattack: ["9M"],
 			recover: ["9M"],
 			paraboliccharge: ["9M"],
 			electroshot: ["9M"],
+			voltswitch: ["9M"],
 			drainpunch: ["9M"],
 			//幻想增添技能
 			acidarmor: ["8L32", "8V", "7L36"],
@@ -22014,9 +22016,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zhukaibo: ["9M"],
 			rapidspin: ["9M"],
+			trattack: ["9M"],
 			recover: ["9M"],
 			paraboliccharge: ["9M"],
 			electroshot: ["9M"],
+			voltswitch: ["9M"],
 			drainpunch: ["9M"],
 			//幻想增添技能
 			acidarmor: ["8L32", "8V", "7L36"],
@@ -22223,8 +22227,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			skyuppercut: ["9M"],
+			hammerarm: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
+			suckerpunch: ["9M"],
+			pursuit: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
@@ -22415,8 +22422,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			skyuppercut: ["9M"],
+			hammerarm: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
+			suckerpunch: ["9M"],
+			pursuit: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
@@ -22607,8 +22617,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			skyuppercut: ["9M"],
+			hammerarm: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
+			suckerpunch: ["9M"],
+			pursuit: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
@@ -22859,6 +22872,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			landswrath: ["9M"],
 			earthpower: ["9M"],
 			highhorsepower: ["9M"],
+			earthquake: ["9M"],
+			huanji: ["9M"],
+			lujiao: ["9M"],
+			gigadrain: ["9M"],
+			synthesis: ["9M"],
 			punishment: ["9M"],
 			//幻想增添技能
 			aromatherapy: ["8L25", "7L1", "6L1", "6S1"],
@@ -23126,6 +23144,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			qibaoliuxing: ["9M"],
 			hex: ["9M"],
 			yuannengshifang: ["9M"],
+			poltergeist: ["9M"],
+			shadowsneak: ["9M"],
+			destinybond: ["9M"],
+			breakingswipe: ["9M"],
 			dragondance: ["9M"],
 			huanxiangbaofa: ["9M"],
 			//幻想增添技能
@@ -23278,6 +23300,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			qibaoliuxing: ["9M"],
 			hex: ["9M"],
 			yuannengshifang: ["9M"],
+			poltergeist: ["9M"],
+			shadowsneak: ["9M"],
+			destinybond: ["9M"],
+			breakingswipe: ["9M"],
 			dragondance: ["9M"],
 			huanxiangbaofa: ["9M"],
 			//幻想增添技能
