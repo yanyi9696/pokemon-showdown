@@ -22,6 +22,42 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		section: "FC",
 	},
 	{
+		name: "[Gen 9] FC Random Battle",
+		desc: `Randomized teams of Fantasy Pok&eacute;mon with sets that prioritize Fantasy moves and items when they fit the Pok&eacute;mon's role.`,
+		mod: 'gen9fantasy',
+		team: 'random',
+		ruleset: ['Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Illusion Level Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
+		onSwitchIn(pokemon) {
+			pokemon.m.fantasySync = (mon: Pokemon) => {
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = visualSpecies.id.endsWith('fantasy');
+
+				if (isFantasy) {
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+					mon.m.fantasyUIAttached = true;
+				} else {
+					this.add('-end', mon, 'fantasystats', '[silent]');
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
+				}
+			};
+
+			pokemon.m.fantasySync(pokemon);
+		},
+		onUpdate(pokemon) {
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
+				if (pokemon.m.fantasySync) pokemon.m.fantasySync(pokemon);
+			}
+		},
+	},
+	{
 		name: "[Gen 9] FC Only",
 		mod: 'gen9fantasy',
 		desc: `Only Fantasy Pok&eacute;mon are legal. Team budget is 100 points, plus 20 extra points for each LC Pok&eacute;mon.`,
@@ -134,13 +170,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -162,7 +198,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -185,13 +221,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -213,7 +249,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -240,13 +276,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -268,7 +304,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -280,13 +316,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
 		banlist: ['ND AG',
-			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock', 
+			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
 			'Arceus-Normal', 'Arceus-Dark', 'Arceus-Ground', 'Calyrex-Ice', 'Chien-Pao', 'Deoxys-Attack', 'Eternatus', 'Giratina-Origin',
 			'Groudon-Primal', 'Ho-Oh', 'Kyogre-Primal', 'Lunala', 'Marshadow', 'Melmetal', 'Mewtwo-Mega-Y', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra',
-			'Salamence-Mega', 'Smeargle', 'Yveltal', 'Zacian-Crowned', 
+			'Salamence-Mega', 'Smeargle', 'Yveltal', 'Zacian-Crowned',
 			// UUBL
-			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Chi-Yu', 'Flutter Mane', 
+			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Chi-Yu', 'Flutter Mane',
 			'Groudon', 'Kyogre', 'Kyurem-Black', 'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z',
 			// FC
 			'Altaria-Mega-Fantasy', 'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z', 'Barbaracle-Mega','Darmanitan-Fantasy',
@@ -304,13 +340,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -332,7 +368,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -359,13 +395,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -387,7 +423,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -411,13 +447,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -439,7 +475,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -463,13 +499,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -491,7 +527,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -515,13 +551,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -543,7 +579,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -567,13 +603,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -595,7 +631,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -624,13 +660,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -652,7 +688,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -665,16 +701,16 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		gameType: 'doubles',
 		ruleset: [
 			'Standard AG',
-			'Species Clause', 
-			'Nickname Clause', 
+			'Species Clause',
+			'Nickname Clause',
 			'OHKO Clause',
 			//以上是从'Standard Doubles'节选的适用的规则
-			'NatDex Mod',       
-			'Item Clause = 1',  
+			'NatDex Mod',
+			'Item Clause = 1',
 			'Adjust Level = 50',
-			'Max Team Size = 6',    
-			'Picked Team Size = 4', 
-			'FC Mega Ban Check', 
+			'Max Team Size = 6',
+			'Picked Team Size = 4',
+			'FC Mega Ban Check',
 			'Ignore Event Shiny Clause'
 		],
 		banlist: [
@@ -702,13 +738,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -730,7 +766,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -749,7 +785,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
         'ND AG', 'Shedinja', 'Assist', 'Baton Pass',
         'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
         'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
-        
+
         // 来自官方 Free-For-All，用于平衡4人对战的禁用项
         'Dondozo', 'Acupressure', 'Aromatic Mist', 'Coaching',
         'Court Change', 'Decorate', 'Dragon Cheer', 'Final Gambit', 'Flatter', 'Fling', 'Floral Healing', 'Follow Me', 'Heal Pulse', 'Heart Swap',
@@ -767,13 +803,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -795,7 +831,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
@@ -822,13 +858,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
 					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
 					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-					
+
 					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true; 
+					mon.m.fantasyUIAttached = true;
 				} else {
 					// 2. 如果视觉上是原版宝可梦：清除数值UI
 					this.add('-end', mon, 'fantasystats', '[silent]');
-					
+
 					// 【核心修复】：
 					// 增加 !mon.transformed 判断。
 					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
@@ -850,15 +886,15 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 			if (pokemon.m.lastVisualShown !== currentVisualId) {
 				pokemon.m.lastVisualShown = currentVisualId;
-				
+
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
 			}
 		},
 	},
-	
-	
+
+
 	// S/V Singles
 	///////////////////////////////////////////////////////////////////
 
