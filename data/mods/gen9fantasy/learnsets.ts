@@ -22872,7 +22872,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			landswrath: ["9M"],
 			earthpower: ["9M"],
 			highhorsepower: ["9M"],
-			earthquake: ["9M"],
 			huanji: ["9M"],
 			lujiao: ["9M"],
 			gigadrain: ["9M"],
