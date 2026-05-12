@@ -1,4 +1,27 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	heianqinshi: {
+		name: 'Hei An Qin Shi',
+		noCopy: true, // 该状态不可被接棒或复制带走
+		onStart(pokemon) {
+			// 状态开始时，弹出状态横幅并输出台词
+			this.add('-start', pokemon, 'Hei An Qin Shi', '[silent]');
+			this.add('-message', `${pokemon.name}已经被黑暗侵蚀！暗之旋风将席卷一切！`);
+		},
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			// 回合结束时，如果宝可梦存活，则扣除最大 HP 的 1/16
+			if (pokemon.hp && !pokemon.fainted) {
+				// 第四个参数 this.effect 会让战斗日志中显示是因为这个状态扣的血
+				this.damage(pokemon.baseMaxhp / 16, pokemon, pokemon, this.effect);
+			}
+		},
+		onEnd(pokemon) {
+			// 离场或状态被清除时触发
+			this.add('-end', pokemon, 'Hei An Qin Shi', '[silent]');
+			this.add('-message', `${pokemon.name}从黑暗侵蚀中解脱出来。`);
+		},
+	},
 	xianxingzhiling: {
 		name: 'xianxingzhiling',
 		// noCopy: true, // 如果你希望这个状态不能被接棒传递，可以取消这行的注释
@@ -428,8 +451,15 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			} else {
 				this.add('-status', target, 'slp');
 			}
-			// 1-3 turns
-			this.effectState.startTime = this.random(2, 5);
+			
+			// --- 幻之生命宝珠的修正 ---
+			if (target.hasItem('fantasylifeorb')) {
+				// 固定设为 4，意味着倒计时 3 次后（刚好完整度过 3 回合），醒来解除状态
+				this.effectState.startTime = 4;
+			} else {
+				// 原版随机 1-3 回合 (内部计数 2-5)
+				this.effectState.startTime = this.random(2, 5);
+			}
 			this.effectState.time = this.effectState.startTime;
 
 			if (target.removeVolatile('nightmare')) {
@@ -438,9 +468,17 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onBeforeMovePriority: 10,
 		onBeforeMove(pokemon, target, move) {
-			if (pokemon.hasItem('fantasylifeorb')) return true;
+			// --- 幻之生命宝珠的修正 ---
+			if (pokemon.hasItem('fantasylifeorb')) {
+				// 虽然不受睡眠效果影响（可以动），但睡眠回合必须正常倒计时
+				pokemon.statusState.time--;
+				if (pokemon.statusState.time <= 0) {
+					pokemon.cureStatus(); // 回合归零，解除睡眠
+				}
+				return true; // 返回 true，允许宝可梦自由行动
+			}
 
-			// --- [新增逻辑] 检查我方场上是否有“美梦共游”特性 ---
+			// --- 检查我方场上是否有“美梦共游”特性 ---
 			if (pokemon.side.active.some(ally => ally && !ally.fainted && ally.hasAbility('meimenggongyou'))) {
 				return true; // 如果有，则允许在睡眠中行动，跳过下面的限制
 			}

@@ -217,6 +217,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 5,
 		num: 150,
 	},
+	sandforce: {
+		onBasePowerPriority: 21,
+		onBasePower(basePower, attacker, defender, move) {
+			// 只要当前天气是沙暴，就不再判断招式属性，直接提升威力
+			if (this.field.isWeather('sandstorm')) {
+				this.debug('Sand Force boost');
+				// 将招式威力进行连锁修正，提升 30% (5325 / 4096 约等于 1.3)
+				return this.chainModify([5325, 4096]);
+			}
+		},
+		// 免疫沙暴天气的回合末伤害
+		onImmunity(type, pokemon) {
+			if (type === 'sandstorm') return false;
+		},
+		flags: {},
+		name: "Sand Force",
+		rating: 3, // 因为泛用性增强了，我将评级从 2 稍微提高到了 3
+		num: 159,
+		shortDesc: "在沙暴天气下,该特性的宝可梦使用的招式威力提升30%;免疫沙暴天气的回合末伤害",
+	},
 	flowergift: {
 		onSwitchInPriority: -2,
 		onStart(pokemon) {
@@ -304,33 +324,34 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			const abilityHolder = this.effectState.target;
 			if (source !== abilityHolder) return;
 
-			// 【核心修正】如果宝可夢携带了焦点镜且使用的是射击类招式，
-			// 则此特性“罢工”，完全交由焦点镜去处理联动计算，避免重复或叠加。
-			if (source.item === 'fantasyscopelens' && (move.flags['shooting'] || move.flags['bullet'])) {
-				return;
+			// 检查是否击中要害。系统会在伤害计算前确定 crit 标志，
+			// 如果招式自带 willCrit 也会在这里生效。
+			if (target.getMoveHitData(move).crit) {
+				this.debug('Infiltrator defense drop (Crit: 20%)');
+				return this.chainModify(0.8); // 无视20%物防
 			}
-
-			// 只有在不满足联动条件时，才执行自己原本的10%削减效果。
-			this.debug('Infiltrator defense drop');
-			return this.chainModify(0.9);
+			
+			this.debug('Infiltrator defense drop (Normal: 10%)');
+			return this.chainModify(0.9); // 无视10%物防
 		},
 		onAnyModifySpD(spd, target, source, move) {
 			const abilityHolder = this.effectState.target;
 			if (source !== abilityHolder) return;
 
-			// 【核心修正】(同上)
-			if (source.item === 'fantasyscopelens' && (move.flags['shooting'] || move.flags['bullet'])) {
-				return;
+			// 同理，检查是否击中要害
+			if (target.getMoveHitData(move).crit) {
+				this.debug('Infiltrator special defense drop (Crit: 20%)');
+				return this.chainModify(0.8); // 无视20%特防
 			}
 
-			this.debug('Infiltrator special defense drop');
-			return this.chainModify(0.9);
+			this.debug('Infiltrator special defense drop (Normal: 10%)');
+			return this.chainModify(0.9); // 无视10%特防
 		},
 		flags: {},
 		name: "Infiltrator",
 		rating: 3,
 		num: 151,
-		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%物防与特防",
+		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%双防,ct时无视提升至20%",
 	},
 	illusion: {
 		onBeforeSwitchIn(pokemon) {
@@ -902,7 +923,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Xue Zhi Li",
 		rating: 3,
 		num: 10008,
-		shortDesc: "雪之力:在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%",
+		shortDesc: "雪之力:在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%,免疫冰雹天气的回合末伤害",
 	},
 	baoxuezhili: {
 		// 效果1: 来自“降雪”的登场发动天气效果
@@ -1938,18 +1959,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "破坏欲:出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
 	},
 	yuanhaiyangliu: {
-		onBasePowerPriority: 21,
-		onBasePower(basePower, attacker, defender, move) {
-			// 检查当前天气是否为下雨或始源之海
+		// 1. 受到攻击时，将天气变为下雨
+		onDamagingHit(damage, target, source, move) {
+			// 如果当前天气已经是下雨或始源之海，则不再重复触发
+			if (!this.field.isWeather(['raindance', 'primordialsea'])) {
+				// 改变天气为下雨，并传入 this.effect 让对战日志显示是由该特性引发的
+				this.field.setWeather('raindance', target, this.effect);
+			}
+		},
+		// 2. 下雨时，自身属性弱点消失
+		onEffectiveness(typeMod, target, type, move) {
 			if (this.field.isWeather(['raindance', 'primordialsea'])) {
-				// 检查招式是否为飞行属性
-				if (move.type === 'Flying') {
-					this.debug('Yuan Hai Yang Liu Flying boost');
-					// 将招式威力进行连锁修正，提升 25% (即 1/4)
-					return this.chainModify(1.25);
+				// 增加判定：确保这是一个真实的攻击招式，而不是入场状态（Status）的虚拟判定
+				if (move && move.category !== 'Status') {
+					if (typeMod > 0) {
+						this.debug('Yuan Hai Yang Liu neutralizes weakness in rain against direct attacks');
+						return 0; 
+					}
 				}
 			}
 		},
+		// 3. 原有的雨天回合末扣血逻辑保持不变
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
@@ -1968,11 +1998,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (target.fainted || !target.hp) continue;
 				
 				// 获取目标对水属性和飞行属性的克制指数
-				// getEffectiveness 会返回指数：1代表2倍弱点，2代表4倍弱点，-1代表0.5倍抵抗，以此类推
 				const waterMod = this.dex.getEffectiveness('Water', target);
 				const flyingMod = this.dex.getEffectiveness('Flying', target);
 				
-				// 【关键修复】只提取克制指数（大于0的部分），将抵抗（小于0的部分）强制视为0
+				// 只提取克制指数（大于0的部分），将抵抗（小于0的部分）强制视为0
 				const validWaterMod = Math.max(0, waterMod);
 				const validFlyingMod = Math.max(0, flyingMod);
 				
@@ -1980,41 +2009,44 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				const totalMod = validWaterMod + validFlyingMod;
 				
 				// 计算最终的伤害倍率 (2 的 totalMod 次方)
-				// 例如：草属性弱飞行(+1)，抵抗水(被修正为0)，总和为1，倍率为 2^1 = 2倍，即 1/8 伤害
 				const multiplier = Math.pow(2, totalMod);
 				
 				if (multiplier > 0) {
 					// 基础伤害为最大 HP 的 1/16，然后乘以克制倍率
 					const damage = (target.baseMaxhp / 16) * multiplier;
 					
-					// 执行扣血，并传入当前特性作为来源，这样会在对战日志中弹出“渊海洋流”的提示
+					// 执行扣血，并传入当前特性作为来源
 					this.damage(damage, target, pokemon, this.dex.abilities.get('yuanhaiyangliu'));
 				}
 			}
 		},
-		flags: {},
+		// 关键修改：允许被“破格”等特性无视
+		flags: { breakable: 1 },
 		name: "Yuan Hai Yang Liu",
 		rating: 4,
 		num: 10040,
-		shortDesc: "渊海洋流:雨天飞行系招式威力提升1/4,非自身与水系每回合损失1/16最大HP,随水/飞克制倍数提升",
+		shortDesc: "渊海洋流:受击时变为雨天;雨天时自身弱点消失,除自身与水属性外每回合损失1/16最大HP(随水/飞克制倍数翻倍)",
 	},
 	heianqinshi: {
-		// 1. 攻击时概率效果绝佳
 		onModifyMove(move, pokemon) {
 			// 检查：必须是造成伤害的攻击类招式（排除变化类招式）
 			if (move.category !== 'Status') {
-				// 判定：25% (1/4) 的触发概率
-				if (this.randomChance(1, 4)) {
-					// 1.1 在对战日志中弹出特性发动的横幅提示
-					this.add('-activate', pokemon, 'ability: Hei An Qin Shi');
-					
-					// 1.2 【新增逻辑】输出自定义的台词文字
-					this.add('-message', '暗之旋风将席卷一切！');
-					
-					// 1.3 开启无视免疫。确保即使是通常无效的属性打击也能造成伤害。
+				// 1. 如果当前没有处于黑暗侵蚀状态，则尝试触发
+				if (!pokemon.volatiles['heianqinshi']) {
+					// 判定：50% (1/2) 的触发概率
+					if (this.randomChance(1, 2)) {
+						this.add('-activate', pokemon, 'ability: Hei An Qin Shi');
+						// 为自身添加“黑暗侵蚀”状态
+						pokemon.addVolatile('heianqinshi');
+					}
+				}
+
+				// 2. 如果当前处于黑暗侵蚀状态（包含刚刚成功触发的情况），则赋予招式必克制效果
+				if (pokemon.volatiles['heianqinshi']) {
+					// 开启无视免疫。确保即使是通常无效的属性打击也能造成伤害。
 					move.ignoreImmunity = true;
 					
-					// 1.4 动态重写该次招式的属性克制计算规则
+					// 动态重写该次招式的属性克制计算规则
 					move.onEffectiveness = function (typeMod, target, type, m) {
 						// 避免双属性导致返回两个 1（从而变成 4 倍伤害），做一个只触发一次的标记：
 						if (!(m as any)._heiAnQinShiApplied) {
@@ -2026,20 +2058,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-		// 2. 回合末扣除 HP
-		onResidualOrder: 28,
-		onResidualSubOrder: 2,
-		onResidual(pokemon) {
-			// 检查宝可梦当前是否存活
-			if (pokemon.hp && !pokemon.fainted) {
-				// 扣除最大 HP 的 1/16。
-				this.damage(pokemon.baseMaxhp / 16, pokemon, pokemon, this.dex.abilities.get('heianqinshi'));
-			}
-		},
 		flags: {},
 		name: "Hei An Qin Shi",
 		rating: 3.5,
 		num: 10041,
-		shortDesc: "黑暗侵蚀:每次使用攻击招式有1/4几率对目标效果绝佳;每回合结束时损失1/16最大HP",
+		shortDesc: "黑暗侵蚀:每次使用攻击招式有1/2几率进入黑暗侵蚀状态;该状态下招式效果绝佳,每回合结束损失1/16最大HP",
 	},
 };

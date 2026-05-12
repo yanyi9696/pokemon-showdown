@@ -2293,83 +2293,38 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		fling: {
 			basePower: 10,
 		},
-		// 新增效果：无视反射壁/光墙/极光幕
-		onSourceModifyDamage(damage, source, target, move) {
-			// 1. 检查是否为射击或球弹类招式
-			if (move.flags["shooting"] || move.flags["bullet"]) {
-				// 2. 检查是否已经通过其他方式无视了墙（击中要害 或 穿透特性）
-				// 如果是击中要害，系统已经忽略了墙，不需要道具补偿
-				if (target.getMoveHitData(move).crit) return;
-				// 如果有穿透特性，系统已经忽略了墙，不需要道具补偿
-				if (source.hasAbility("infiltrator")) return;
-
-				// 3. 检查是否存在对应的墙
-				const side = target.side;
-				const reflect = side.getSideCondition("reflect");
-				const lightScreen = side.getSideCondition("lightscreen");
-				const auroraVeil = side.getSideCondition("auroraveil");
-
-				// 物理招式对应反射壁/极光幕，特殊招式对应光墙/极光幕
-				if (
-					(move.category === "Physical" && (reflect || auroraVeil)) ||
-					(move.category === "Special" && (lightScreen || auroraVeil))
-				) {
-					// 4. 应用伤害补偿（抵消墙的减伤效果）
-					this.debug("Fantasy Scope Lens: Ignoring Screens");
-
-					// 判断是单打还是双打/多打
-					if (this.gameType !== "singles") {
-						// 双打中墙的效果是伤害 * (2732/4096)，约为0.66
-						// 为了抵消，我们需要乘以 (4096/2732)，约为1.5
-						return this.chainModify([4096, 2732]);
-					} else {
-						// 单打中墙的效果是伤害 * 0.5
-						// 为了抵消，我们需要乘以 2
-						return this.chainModify(2);
-					}
-				}
+		// 效果 1：基础威力小于等于100的招式必定击中要害
+		onModifyMove(move, pokemon, target) {
+			// 确保招式具备基础威力，且威力 <= 100
+			if (move.basePower && move.basePower <= 100) {
+				move.willCrit = true; // 贴上必定暴击的标签
 			}
 		},
-		// 原有效果：无视防御
-		onAnyModifyDef(def, target, source, move) {
-			if (!source || source.item !== "fantasyscopelens") return;
-			if (move.flags["shooting"] || move.flags["bullet"]) {
-				// 检查使用者是否拥有“穿透”特性
-				if (source.hasAbility("infiltrator")) {
-					// 穿透(10%) + 道具(20%) = 无视30%防御
-					this.debug(
-						"Fantasy Scope Lens + Infiltrator combined additive drop"
-					);
-					return this.chainModify(0.7);
-				} else {
-					// 仅道具：无视20%防御
-					this.debug("Fantasy Scope Lens Def drop");
-					return this.chainModify(0.8);
-				}
+		// 效果 2：取消击中要害时默认的 1.5 倍伤害加成
+		onModifyDamage(damage, source, target, move) {
+			// 如果当前攻击击中要害
+			if (target.getMoveHitData(move).crit) {
+				this.debug('Fantasy Scope Lens neutralizes the 1.5x crit multiplier');
+				// 系统默认暴击倍率是 1.5，我们乘以 2/3 (即 chainModify([2, 3])) 将其抵消回 1 倍
+				return this.chainModify([2, 3]);
 			}
 		},
-		// 原有效果：无视特防
-		onAnyModifySpD(spd, target, source, move) {
-			if (!source || source.item !== "fantasyscopelens") return;
-			if (move.flags["shooting"] || move.flags["bullet"]) {
-				// 检查使用者是否拥有“穿透”特性
-				if (source.hasAbility("infiltrator")) {
-					// 穿透(10%) + 道具(20%) = 无视30%特防
-					this.debug(
-						"Fantasy Scope Lens + Infiltrator combined additive drop"
-					);
-					return this.chainModify(0.7);
-				} else {
-					// 仅道具：无视20%特防
-					this.debug("Fantasy Scope Lens SpD drop");
-					return this.chainModify(0.8);
-				}
+		// 效果 3：当击中要害率大于 0（等级大于默认值 1）时，威力提升 20%
+		onBasePower(basePower, pokemon, target, move) {
+			// 使用引擎原生的 ModifyCritRatio 事件，完美汇总招式自带要害率、超幸运、聚气等所有加成
+			// 默认的要害等级是 1
+			const critRatio = this.runEvent('ModifyCritRatio', pokemon, target, move, move.critRatio || 1);
+			
+			// 如果计算后的等级大于 1，说明存在要害率提升
+			if (critRatio > 1) {
+				this.debug('Fantasy Scope Lens boosting power due to >0 crit ratio');
+				return this.chainModify(1.2); // 威力上升 20%
 			}
 		},
 		num: 30004,
 		gen: 9,
-		desc: "幻之焦点镜:使用射击、球和弹类招式时,无视对手的反射壁/光墙/极光幕,且无视目标20%的防御与特防",
-		shortDesc: "幻之焦点镜:射击球弹类招式无视墙,且无视目标20%双防",
+		desc: "幻之焦点镜:威力≤100的招式必定击中要害,击中要害时没有1.5倍伤害提升。当自身击中要害率提升或招式容易击中要害时,招式威力提升20%",
+		shortDesc: "幻之焦点镜:威力≤100的招式必定暴击但无倍率加成;招式击中要害率>0威力提升20%",
 	},
 	fantasysyrupyapple: {
 		name: "Fantasy Syrupy Apple",

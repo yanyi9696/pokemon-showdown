@@ -59,7 +59,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 0,
 		basePowerCallback(pokemon, target) {
-			let power = 80 + 10 * target.positiveBoosts();
+			let power = 80 + 20 * target.positiveBoosts();
 			if (power > 200) power = 200;
 			this.debug(`BP: ${power}`);
 			return power;
@@ -76,8 +76,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Cool",
-		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升10,最高为200",
-		shortDesc: "80威力,目标每有1项能力上升+10,使目标强化无效2回合",
+		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
+		shortDesc: "80威力,目标每有1项能力上升+20,使目标强化无效2回合",
 	},
 	psystrike: {
 		num: 540,
@@ -631,37 +631,43 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "超频摇滚破音波:高调形态与低调形态使用效果不同"
 	},
 	yaojingzhiya: {
-		num: 10011, 
-		accuracy: 95,
-		basePower: 65,
-		category: "Physical",
-		name: "Yao Jing Zhi Ya",
-		pp: 15,
-		priority: 0,
-		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1, bite: 1 },
-		secondaries: [
-			{
-				chance: 30,
-				onHit(target, source, move) {
-					// 随机一个状态
-					const statuses = ['brn', 'par', 'frz'];
-					const status = this.sample(statuses);
-					target.trySetStatus(status, source, move);
-				},
-			},
-			{
-				chance: 10,
-				volatileStatus: 'flinch',
-			},
-		],
-		target: "normal",
-		type: "Fairy",
-		zMove: { basePower: 120 },
-		maxMove: { basePower: 120 },
-		contestType: "Cool",
-		desc: "妖精之牙:有30%几率使目标陷入灼伤、麻痹或冰冻状态。有10%几率使目标畏缩",
-		shortDesc: "妖精之牙:30%灼伤/麻痹/冰冻,10%畏缩"
-	},
+        num: 10011, 
+        accuracy: 95,
+        basePower: 80,
+        category: "Physical",
+        name: "Yao Jing Zhi Ya",
+        pp: 15,
+        priority: 0,
+        flags: { contact: 1, protect: 1, mirror: 1, metronome: 1, bite: 1 },
+        secondaries: [
+            {
+                chance: 10,
+                volatileStatus: 'flinch',
+            },
+            {
+                chance: 20,
+                boosts: {
+                    def: -1,
+                },
+            },
+			            {
+                chance: 30,
+                onHit(target, source, move) {
+                    // 随机一个状态
+                    const statuses = ['brn', 'par', 'frz'];
+                    const status = this.sample(statuses);
+                    target.trySetStatus(status, source, move);
+                },
+            },
+        ],
+        target: "normal",
+        type: "Fairy",
+        zMove: { basePower: 160 }, 
+        maxMove: { basePower: 160 }, 
+        contestType: "Cool",
+        desc: "妖精之牙: 有30%几率使目标陷入灼伤、麻痹或冰冻状态。有20%几率令目标的防御降低1级。有10%几率使目标畏缩。",
+        shortDesc: "妖精之牙: 30%灼伤/麻痹/冰冻, 20%降防, 10%畏缩"
+    },
 	yuzhaozhijian: {
 		num: 10012,
 		accuracy: 100,
@@ -704,37 +710,38 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	lujiao: {
 		num: 10013,
 		accuracy: 100,
-		basePower: 90,
+		basePower: 95,
 		category: "Physical",
 		name: "Lu Jiao",
 		pp: 10,
 		priority: 0,
-		flags: { contact: 1, protect: 1, mirror: 1, heal: 1 }, // 增加了 heal 标签
+		flags: { contact: 1, protect: 1, mirror: 1 }, 
+		onModifyPriority(priority, source, target, move) {
+			if (source.baseSpecies.name === 'Xerneas' && source.hasAbility('triage')) {
+				return priority + 3;
+			}
+		},
 		onModifyType(move, pokemon) {
-			switch (pokemon.species.name) {
-				case 'Sawsbuck-Fantasy':
-					move.type = 'Fairy';
-					break;
-				case 'Sawsbuck-Summer-Fantasy':
-					move.type = 'Grass';
-					break;
-				case 'Sawsbuck-Autumn-Fantasy':
-					move.type = 'Ground';
-					break;
-				case 'Sawsbuck-Winter-Fantasy':
-					move.type = 'Ice';
-					break;
+			if (pokemon.species.name === 'Xerneas-Fantasy' || pokemon.species.name === 'Sawsbuck-Fantasy') {
+				move.type = 'Fairy';
+			} else if (pokemon.species.name === 'Sawsbuck-Summer-Fantasy') {
+				move.type = 'Grass';
+			} else if (pokemon.species.name === 'Sawsbuck-Autumn-Fantasy') {
+				move.type = 'Ground';
+			} else if (pokemon.species.name === 'Sawsbuck-Winter-Fantasy') {
+				move.type = 'Ice';
 			}
 		},
-		/**
-		 * 核心加强逻辑：检查天气
-		 * 如果是晴天或大日照，动态赋予招式 50% 的吸血效果
-		 */
 		onModifyMove(move, pokemon) {
-			if (this.field.isWeather(['sunnyday', 'desolateland'])) {
-				move.drain = [1, 2]; // 回复伤害量的 1/2
+			if (pokemon.baseSpecies.name === 'Xerneas') {
+				// 赋予吸血和回复标签
+				move.drain = [1, 2];
+				move.flags.heal = 1; 
+				// 【核心修改】移除降低防御的追加效果
+				delete move.secondary; 
 			}
 		},
+		// 这是默认的追加效果，如果不被上面的 delete 移除，就会生效
 		secondary: {
 			chance: 50,
 			boosts: {
@@ -745,8 +752,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
-		desc: "鹿角:招式的属性会根据使用者的形态改变,春:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低1级。在大晴天或大日照下,使用者将造成伤害的50%转化为自身的HP",
-		shortDesc: "鹿角:属性随形态改变,50%令目标防御降低1级,晴天下吸血",
+		desc: "鹿角:春&哲尔尼亚斯:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低1级,使用者是哲尔尼亚斯时,变为回复给予伤害50%HP",
+		shortDesc: "鹿角:属性及效果会根据使用者改变,概率降低防御或回复HP",
 	},
 	huanji: {
 		num: 10014,
@@ -1318,11 +1325,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 }, 
 		onBasePower(basePower, pokemon, target) {
-			// 检查当前天气是否为“沙暴”
 			if (this.field.isWeather('sandstorm')) {
-				// 如果是，则将基础威力乘以 2
-				this.debug('Zhi Sha Re She boost'); // 在对战日志中输出调试信息
-				return this.chainModify(2);
+				this.debug('Zhi Sha Re She boost'); 
+				return this.chainModify(1.5);
 			}
 		},
 		secondary: null,
@@ -1331,8 +1336,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Tough",
-		desc: "炙沙热射:天气为沙暴时,威力提升2倍",
-		shortDesc: "炙沙热射:沙暴下威力翻倍",
+		desc: "炙沙热射:天气为沙暴时,威力提升1.5倍",
+		shortDesc: "炙沙热射:沙暴下威力提升1.5倍",
 	},
 	qibaoliuxing: {
 		num: 10032,
