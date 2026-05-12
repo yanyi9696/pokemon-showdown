@@ -2025,7 +2025,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Yuan Hai Yang Liu",
 		rating: 4,
 		num: 10040,
-		shortDesc: "渊海洋流:受击时变为雨天;雨天时自身弱点消失,除自身与水属性外每回合损失1/16最大HP(随水/飞克制倍数翻倍)",
+		shortDesc: "渊海洋流:受击降雨,雨天下登场后弱点消失,非自身与水系每回合损失1/16最大HP,随水/飞克制倍数提升",
 	},
 	heianqinshi: {
 		onModifyMove(move, pokemon) {
@@ -2062,6 +2062,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Hei An Qin Shi",
 		rating: 3.5,
 		num: 10041,
-		shortDesc: "黑暗侵蚀:每次使用攻击招式有1/2几率进入黑暗侵蚀状态;该状态下招式效果绝佳,每回合结束损失1/16最大HP",
+		shortDesc: "黑暗侵蚀:每次攻击有1/2几率使自身陷入黑暗侵蚀;侵蚀状态下招式效果绝佳,每回合结束损失1/16最大HP",
 	},
 };
