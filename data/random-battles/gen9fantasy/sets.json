@@ -1,0 +1,3588 @@
+{
+    "abomasnowfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Leaf Storm",
+                    "Ice Hammer",
+                    "Trailblaze",
+                    "Rest",
+                    "Solar Beam",
+                    "Wood Hammer",
+                    "Blizzard",
+                    "Energy Ball"
+                ],
+                "abilities": [
+                    "Snow Warning",
+                    "Xue Zhi Li",
+                    "Soundproof"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Ice",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "absolfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Yu Zhao Zhi Jian",
+                    "Yao Jing Zhi Ya",
+                    "Punishment",
+                    "Calm Mind",
+                    "Dong Cha Da Ji",
+                    "Cut",
+                    "Foul Play",
+                    "Sucker Punch"
+                ],
+                "abilities": [
+                    "Anticipation",
+                    "Sharpness",
+                    "Justified"
+                ],
+                "teraTypes": [
+                    "Dark",
+                    "Fairy",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "aegislashfantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "Cut",
+                    "Poltergeist",
+                    "Yu Zhao Zhi Jian",
+                    "Rest",
+                    "Steel Beam",
+                    "Behemoth Blade",
+                    "Mi Jian Bai Ren Chuan",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Stance Change"
+                ],
+                "teraTypes": [
+                    "Steel",
+                    "Ghost",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "aerodactylfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Head Smash",
+                    "Sky Attack",
+                    "Agility",
+                    "Stealth Rock",
+                    "Brave Bird",
+                    "Stone Edge",
+                    "Fly",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Rock Head",
+                    "Pressure",
+                    "Unnerve"
+                ],
+                "teraTypes": [
+                    "Rock",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "aggronfantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Cut",
+                    "Yan Jian",
+                    "Sui Ling Gang",
+                    "Hone Claws",
+                    "Head Smash",
+                    "Steel Roller",
+                    "Stone Edge",
+                    "Focus Punch"
+                ],
+                "abilities": [
+                    "Sturdy",
+                    "Rock Head",
+                    "Solid Rock"
+                ],
+                "teraTypes": [
+                    "Steel",
+                    "Rock",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "altariafantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "Draco Meteor",
+                    "Moonblast",
+                    "Long Zhi Ge",
+                    "Rest",
+                    "Outrage",
+                    "Rao Liang Zhi Yin",
+                    "Play Rough",
+                    "Dragon Pulse"
+                ],
+                "abilities": [
+                    "Natural Cure",
+                    "Fluffy",
+                    "Cloud Nine"
+                ],
+                "teraTypes": [
+                    "Dragon",
+                    "Fairy",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "armaldofantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Yan Jian",
+                    "First Impression",
+                    "Cut",
+                    "Hone Claws",
+                    "Head Smash",
+                    "Megahorn",
+                    "Stone Edge",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Battle Armor",
+                    "Tough Claws",
+                    "Swift Swim"
+                ],
+                "teraTypes": [
+                    "Rock",
+                    "Bug",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "armarougefantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Yan Zhi Bo Dong",
+                    "Zhu Kai Bo",
+                    "Yuan Neng Shi Fang",
+                    "Calm Mind",
+                    "Overheat",
+                    "Steel Beam",
+                    "Armor Cannon",
+                    "Fire Blast"
+                ],
+                "abilities": [
+                    "Flash Fire",
+                    "Stalwart",
+                    "Tie Kai"
+                ],
+                "teraTypes": [
+                    "Fire",
+                    "Steel",
+                    "Fairy",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "audinofantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Moonblast",
+                    "Huan Zhi Wu",
+                    "Cha Bu Duo Wan An",
+                    "Moonlight",
+                    "Focus Punch",
+                    "Giga Impact",
+                    "Hyper Beam",
+                    "Last Resort"
+                ],
+                "abilities": [
+                    "Healer",
+                    "Regenerator",
+                    "Klutz"
+                ],
+                "teraTypes": [
+                    "Fairy",
+                    "Fighting",
+                    "Ground",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "beheeyemfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Future Sight",
+                    "Meteor Beam",
+                    "Dong Cha Da Ji",
+                    "Agility",
+                    "Dream Eater",
+                    "Psychic",
+                    "Hyper Beam",
+                    "Expanding Force"
+                ],
+                "abilities": [
+                    "Qi Yi Zhi Zao Zhe",
+                    "Synchronize",
+                    "Ji Zhi Neng"
+                ],
+                "teraTypes": [
+                    "Psychic",
+                    "Rock",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "carnivinefantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Power Whip",
+                    "Sucker Punch",
+                    "Yao Lan",
+                    "Growth",
+                    "Cut",
+                    "Giga Impact",
+                    "Crunch",
+                    "Jaw Lock"
+                ],
+                "abilities": [
+                    "Levitate",
+                    "Strong Jaw",
+                    "Shi Chong"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Dark",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "ceruledgefantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Flare Blitz",
+                    "Jue Nian Po",
+                    "Yuan Neng Shi Fang",
+                    "Flame Charge",
+                    "Bitter Blade",
+                    "Overheat",
+                    "Solar Blade",
+                    "Close Combat"
+                ],
+                "abilities": [
+                    "Flash Fire",
+                    "Battle Armor",
+                    "Sharpness"
+                ],
+                "teraTypes": [
+                    "Fire",
+                    "Ice",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "chandelurefantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Shadow Ball",
+                    "Blue Flare",
+                    "Calm Mind",
+                    "Overheat",
+                    "Fire Blast",
+                    "Heat Wave",
+                    "Flamethrower",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Shou Hun",
+                    "Levitate",
+                    "Shadow Tag"
+                ],
+                "teraTypes": [
+                    "Ghost",
+                    "Fire",
+                    "Fairy",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "cherrimfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Petal Dance",
+                    "Huan Xiang Bao Fa",
+                    "Hua Zhi Wu",
+                    "Calm Mind",
+                    "Solar Beam",
+                    "Energy Ball",
+                    "Hyper Beam",
+                    "Grass Knot"
+                ],
+                "abilities": [
+                    "Flower Gift"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Fairy",
+                    "Fire",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "corviknightfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Chuan Yun",
+                    "Heavy Slam",
+                    "Sui Ling Gang",
+                    "Agility",
+                    "Brave Bird",
+                    "Fly",
+                    "Giga Impact",
+                    "Drill Peck"
+                ],
+                "abilities": [
+                    "Pressure",
+                    "Unnerve",
+                    "Tie Kai"
+                ],
+                "teraTypes": [
+                    "Flying",
+                    "Steel",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "cresseliafantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "Future Sight",
+                    "Moonblast",
+                    "Moonlight",
+                    "Dream Eater",
+                    "Psychic",
+                    "Hyper Beam",
+                    "Dazzling Gleam",
+                    "Expanding Force"
+                ],
+                "abilities": [
+                    "Levitate",
+                    "Telepathy",
+                    "Mei Meng Gong You"
+                ],
+                "teraTypes": [
+                    "Psychic",
+                    "Fairy",
+                    "Fire",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "crobatfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Bian Su Zhe Fan",
+                    "Chuan Yun",
+                    "Agility",
+                    "Rest",
+                    "Sky Attack",
+                    "Brave Bird",
+                    "Fly",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Inner Focus",
+                    "Ji Qu Su Sheng",
+                    "Infiltrator"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "cursolafantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Shadow Ball",
+                    "Meteor Beam",
+                    "Calm Mind",
+                    "Rest",
+                    "Hyper Beam",
+                    "Power Gem",
+                    "Hex",
+                    "Hydro Pump"
+                ],
+                "abilities": [
+                    "Persistent",
+                    "Purifying Salt",
+                    "Perish Body"
+                ],
+                "teraTypes": [
+                    "Ghost",
+                    "Rock",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "darmanitanfantasy": {
+        "level": 76,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Flare Blitz",
+                    "Focus Punch",
+                    "Flame Charge",
+                    "Close Combat",
+                    "Pyro Ball",
+                    "Superpower",
+                    "Hammer Arm",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Gorilla Tactics",
+                    "Quan Li Da Mo"
+                ],
+                "teraTypes": [
+                    "Fire",
+                    "Fighting",
+                    "Ground",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "darmanitangalarfantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Icicle Crash",
+                    "Dong Cha Da Ji",
+                    "Bulk Up",
+                    "Giga Impact",
+                    "Zen Headbutt",
+                    "Flare Blitz",
+                    "Ice Punch",
+                    "Pyro Ball"
+                ],
+                "abilities": [
+                    "Sheer Force",
+                    "Quan Li Da Mo"
+                ],
+                "teraTypes": [
+                    "Ice",
+                    "Psychic",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "decidueyehisuifantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Earth Power",
+                    "Focus Punch",
+                    "Chuan Yun",
+                    "Bulk Up",
+                    "Axe Kick",
+                    "Close Combat",
+                    "Yan Jian",
+                    "Triple Arrows"
+                ],
+                "abilities": [
+                    "Po Zhu",
+                    "Scrappy"
+                ],
+                "teraTypes": [
+                    "Ground",
+                    "Fighting",
+                    "Steel",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "delcattyfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Moonblast",
+                    "Earth Power",
+                    "Calm Mind",
+                    "Hyper Beam",
+                    "Alluring Voice",
+                    "Solar Beam",
+                    "Dream Eater",
+                    "Mud Shot"
+                ],
+                "abilities": [
+                    "Cute Charm",
+                    "Pixilate",
+                    "Wonder Skin"
+                ],
+                "teraTypes": [
+                    "Fairy",
+                    "Ground",
+                    "Fire",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "delphoxfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Blast Burn",
+                    "Misty Explosion",
+                    "Cut",
+                    "Agility",
+                    "Burn Up",
+                    "Overheat",
+                    "Fire Blast",
+                    "Heat Wave"
+                ],
+                "abilities": [
+                    "Magic Bounce",
+                    "Mo Shu Shi Zhi Hong"
+                ],
+                "teraTypes": [
+                    "Fire",
+                    "Fairy",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "dragalgefantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "Bian Su Zhe Fan",
+                    "Draco Meteor",
+                    "Rest",
+                    "Toxic Spikes",
+                    "Sludge Wave",
+                    "Sludge Bomb",
+                    "Dragon Pulse",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Poison Point",
+                    "Corrosion",
+                    "Adaptability"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Dragon",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "dragapultfantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Outrage",
+                    "Poltergeist",
+                    "Chuan Yun",
+                    "Agility",
+                    "Phantom Force",
+                    "Spirit Shackle",
+                    "Giga Impact",
+                    "Last Resort"
+                ],
+                "abilities": [
+                    "Clear Body",
+                    "Po Zhu",
+                    "Parental Bond"
+                ],
+                "teraTypes": [
+                    "Dragon",
+                    "Ghost",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "drednawfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Wave Crash",
+                    "Head Smash",
+                    "Yao Lan",
+                    "Iron Defense",
+                    "Stone Edge",
+                    "Giga Impact",
+                    "Liquidation",
+                    "Dive"
+                ],
+                "abilities": [
+                    "Strong Jaw",
+                    "Shell Armor",
+                    "Yan Bu Zhen"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Rock",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "durantfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "First Impression",
+                    "Xian Gong Jiao Zhun",
+                    "Cut",
+                    "Agility",
+                    "Megahorn",
+                    "Yao Lan",
+                    "Giga Impact",
+                    "U-turn"
+                ],
+                "abilities": [
+                    "Swarm",
+                    "Hustle",
+                    "Truant"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Steel",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "dusknoirfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Poltergeist",
+                    "Explosion",
+                    "Dong Cha Da Ji",
+                    "Calm Mind",
+                    "Giga Impact",
+                    "Mega Kick",
+                    "Phantom Force",
+                    "Body Slam"
+                ],
+                "abilities": [
+                    "Pressure",
+                    "Shou Hun",
+                    "Mind's Eye"
+                ],
+                "teraTypes": [
+                    "Ghost",
+                    "Normal",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "electivirefantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Volt Tackle",
+                    "Punishment",
+                    "Bulk Up",
+                    "Supercell Slam",
+                    "Sucker Punch",
+                    "Wild Charge",
+                    "Darkest Lariat",
+                    "Focus Punch"
+                ],
+                "abilities": [
+                    "Motor Drive",
+                    "Fluffy",
+                    "Mold Breaker"
+                ],
+                "teraTypes": [
+                    "Electric",
+                    "Dark",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "empoleonfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Hydro Cannon",
+                    "Steel Beam",
+                    "Cut",
+                    "Agility",
+                    "Make It Rain",
+                    "Hydro Pump",
+                    "Surf",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Lightning Rod",
+                    "Competitive"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Steel",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "enteifantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Flare Blitz",
+                    "Giga Impact",
+                    "Cut",
+                    "Flame Charge",
+                    "Double-Edge",
+                    "Raging Fury",
+                    "Extreme Speed",
+                    "Feng Xing"
+                ],
+                "abilities": [
+                    "Huo Shan Xing Zhe",
+                    "Flash Fire",
+                    "Inner Focus"
+                ],
+                "teraTypes": [
+                    "Fire",
+                    "Normal",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "excadrillfantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Headlong Rush",
+                    "Cut",
+                    "Sui Ling Gang",
+                    "Agility",
+                    "Earthquake",
+                    "High Horsepower",
+                    "Giga Impact",
+                    "Dig"
+                ],
+                "abilities": [
+                    "Sand Rush",
+                    "Tough Claws",
+                    "Mold Breaker"
+                ],
+                "teraTypes": [
+                    "Ground",
+                    "Steel",
+                    "Fighting",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "floetteeternalfantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Misty Explosion",
+                    "Dark Pulse",
+                    "Calm Mind",
+                    "Rest",
+                    "Light of Ruin",
+                    "Moonblast",
+                    "Hyper Beam",
+                    "Dazzling Gleam"
+                ],
+                "abilities": [
+                    "Flower Veil",
+                    "Symbiosis",
+                    "Reckless"
+                ],
+                "teraTypes": [
+                    "Fairy",
+                    "Dark",
+                    "Fire",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "flygonfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Megahorn",
+                    "Outrage",
+                    "Chuan Yun",
+                    "Agility",
+                    "Giga Impact",
+                    "U-turn",
+                    "Draco Meteor",
+                    "Dragon Claw"
+                ],
+                "abilities": [
+                    "Levitate",
+                    "Tinted Lens"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Dragon",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "froslassfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Blizzard",
+                    "Shadow Ball",
+                    "Huan Zhi Wu",
+                    "Moonlight",
+                    "Ice Beam",
+                    "Hyper Beam",
+                    "Petal Dance",
+                    "Hex"
+                ],
+                "abilities": [
+                    "Snow Cloak",
+                    "Xue Zhi Li",
+                    "Xue Nv"
+                ],
+                "teraTypes": [
+                    "Ice",
+                    "Ghost",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "frosmothfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Blizzard",
+                    "Bug Buzz",
+                    "Calm Mind",
+                    "Rest",
+                    "Ice Beam",
+                    "Hyper Beam",
+                    "Freeze-Dry",
+                    "Aurora Beam"
+                ],
+                "abilities": [
+                    "Tinted Lens",
+                    "Xue Zhi Li",
+                    "Ice Scales"
+                ],
+                "teraTypes": [
+                    "Ice",
+                    "Bug",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "garbodorfantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Gunk Shot",
+                    "Earthquake",
+                    "Bao Yu Li Hua",
+                    "Rock Polish",
+                    "Explosion",
+                    "Giga Impact",
+                    "Self-Destruct",
+                    "Stomping Tantrum"
+                ],
+                "abilities": [
+                    "Du Wu Pi Fu",
+                    "Weak Armor",
+                    "Tun Du"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Ground",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "garchompfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Outrage",
+                    "Earthquake",
+                    "Cut",
+                    "Dragon Dance",
+                    "Giga Impact",
+                    "Dig",
+                    "Draco Meteor",
+                    "Dragon Claw"
+                ],
+                "abilities": [
+                    "Sand Veil",
+                    "Rough Skin"
+                ],
+                "teraTypes": [
+                    "Dragon",
+                    "Ground",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "glaliefantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Fan Ji Bing Jia",
+                    "Punishment",
+                    "Jue Nian Po",
+                    "Nasty Plot",
+                    "Foul Play",
+                    "Sucker Punch",
+                    "Explosion",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Inner Focus",
+                    "Ice Body",
+                    "Mountaineer"
+                ],
+                "teraTypes": [
+                    "Ice",
+                    "Dark",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "golisopodfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "First Impression",
+                    "Wave Crash",
+                    "Agility",
+                    "Rest",
+                    "Giga Impact",
+                    "Liquidation",
+                    "U-turn",
+                    "Dive"
+                ],
+                "abilities": [
+                    "Hui Bi Zai Sheng"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Water",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "golurkfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Headlong Rush",
+                    "Yuan Neng Shi Fang",
+                    "Curse",
+                    "Stealth Rock",
+                    "Poltergeist",
+                    "Earthquake",
+                    "High Horsepower",
+                    "Phantom Force"
+                ],
+                "abilities": [
+                    "Iron Fist",
+                    "Klutz",
+                    "No Guard"
+                ],
+                "teraTypes": [
+                    "Ground",
+                    "Ghost",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "goodrafantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Bug Buzz",
+                    "Draco Meteor",
+                    "Curse",
+                    "Rest",
+                    "Dragon Pulse",
+                    "Hyper Beam",
+                    "Outrage",
+                    "Fire Blast"
+                ],
+                "abilities": [
+                    "Sap Sipper",
+                    "Regenerator",
+                    "Gooey"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Dragon",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "goodrahisuifantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Steel Beam",
+                    "Bian Su Zhe Fan",
+                    "Shelter",
+                    "Curse",
+                    "Sludge Wave",
+                    "Sludge Bomb",
+                    "Draco Meteor",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Sap Sipper",
+                    "Shell Armor",
+                    "Wo Ju"
+                ],
+                "teraTypes": [
+                    "Steel",
+                    "Poison",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "granbullfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Headlong Rush",
+                    "Yao Jing Zhi Ya",
+                    "Yao Lan",
+                    "Bulk Up",
+                    "Earthquake",
+                    "High Horsepower",
+                    "Play Rough",
+                    "Focus Punch"
+                ],
+                "abilities": [
+                    "Intimidate",
+                    "Strong Jaw",
+                    "Rattled"
+                ],
+                "teraTypes": [
+                    "Ground",
+                    "Fairy",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "greninjabondfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Hydro Cannon",
+                    "Dark Pulse",
+                    "Water Shuriken",
+                    "Nasty Plot",
+                    "Hydro Pump",
+                    "Surf",
+                    "Hyper Beam",
+                    "Scald"
+                ],
+                "abilities": [
+                    "Chao Yue Qian Ban Bian Shen"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Dark",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "greninjafantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Hydro Cannon",
+                    "Dark Pulse",
+                    "Water Shuriken",
+                    "Nasty Plot",
+                    "Hydro Pump",
+                    "Surf",
+                    "Hyper Beam",
+                    "Scald"
+                ],
+                "abilities": [
+                    "Anticipation",
+                    "Bian Huan Zi You"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Dark",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "gyaradosfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Aqua Tail",
+                    "Chuan Yun",
+                    "Curse",
+                    "Rest",
+                    "Bounce",
+                    "Giga Impact",
+                    "Dive",
+                    "Waterfall"
+                ],
+                "abilities": [
+                    "Intimidate",
+                    "Mountaineer",
+                    "Moxie"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "hawluchafantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Flying Press",
+                    "Chuan Yun",
+                    "Cut",
+                    "Agility",
+                    "Focus Punch",
+                    "High Jump Kick",
+                    "Sky Attack",
+                    "Brave Bird"
+                ],
+                "abilities": [
+                    "Feng Ya",
+                    "Gale Wings",
+                    "Scrappy"
+                ],
+                "teraTypes": [
+                    "Fighting",
+                    "Flying",
+                    "Ground",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "honchkrowfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Punishment",
+                    "Chuan Yun",
+                    "Bian Su Zhe Fan",
+                    "Calm Mind",
+                    "Sky Attack",
+                    "Brave Bird",
+                    "Foul Play",
+                    "Sucker Punch"
+                ],
+                "abilities": [
+                    "Mu Hou Hei Shou",
+                    "Sheer Force",
+                    "Moxie"
+                ],
+                "teraTypes": [
+                    "Dark",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "illumisefantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "U-turn",
+                    "Play Rough",
+                    "Moonlight",
+                    "Focus Punch",
+                    "Double-Edge",
+                    "Spirit Break",
+                    "Skitter Smack",
+                    "Bug Bite"
+                ],
+                "abilities": [
+                    "Sweet Veil",
+                    "Tinted Lens",
+                    "Prankster"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Fairy",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "ironthornsfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Stone Edge",
+                    "Volt Tackle",
+                    "Curse",
+                    "Rest",
+                    "Supercell Slam",
+                    "Wild Charge",
+                    "Giga Impact",
+                    "Zing Zap"
+                ],
+                "abilities": [
+                    "Quark Drive",
+                    "Ji Zhi Neng",
+                    "Tie Kai"
+                ],
+                "teraTypes": [
+                    "Rock",
+                    "Electric",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "kartanafantasy": {
+        "level": 76,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Solar Blade",
+                    "Cut",
+                    "Calm Mind",
+                    "Leaf Blade",
+                    "Giga Impact",
+                    "Last Resort",
+                    "Steel Beam",
+                    "Smart Strike"
+                ],
+                "abilities": [
+                    "Beast Boost",
+                    "Sharpness",
+                    "Unburden"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Steel",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "kricketunefantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Boomburst",
+                    "Bug Buzz",
+                    "Cut",
+                    "Hone Claws",
+                    "Hyper Beam",
+                    "Hyper Voice",
+                    "Uproar",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Swarm",
+                    "Tian Lai Zhi Yin",
+                    "Technician"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Bug",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "lopunnyfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Play Rough",
+                    "Giga Impact",
+                    "Flying Press",
+                    "Agility",
+                    "Last Resort",
+                    "Cut",
+                    "Mega Kick",
+                    "Body Slam"
+                ],
+                "abilities": [
+                    "Cute Charm",
+                    "Hustle",
+                    "Limber"
+                ],
+                "teraTypes": [
+                    "Fairy",
+                    "Normal",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "lugiafantasy": {
+        "level": 76,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Hydro Pump",
+                    "Qi Bao Liu Xing",
+                    "Chuan Yun",
+                    "Calm Mind",
+                    "Sky Attack",
+                    "Brave Bird",
+                    "Yuan Neng Shi Fang",
+                    "Huan Xiang Bao Fa"
+                ],
+                "abilities": [
+                    "Yuan Hai Yang Liu",
+                    "Pressure",
+                    "Multiscale"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "lugiashadowfantasy": {
+        "level": 76,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Yuan Neng Shi Fang",
+                    "Qi Bao Liu Xing",
+                    "Chuan Yun",
+                    "Calm Mind",
+                    "Aeroblast",
+                    "Hurricane",
+                    "Hyper Beam",
+                    "Psycho Boost"
+                ],
+                "abilities": [
+                    "Hei An Qin Shi",
+                    "Pressure",
+                    "Multiscale"
+                ],
+                "teraTypes": [
+                    "Ghost",
+                    "Flying",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "lurantisfantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Solar Blade",
+                    "Yao Jing Zhi Ya",
+                    "Hua Zhi Wu",
+                    "Trailblaze",
+                    "Leaf Blade",
+                    "Petal Blizzard",
+                    "Play Rough",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Wei Chong Ni Tai",
+                    "Qing Guang Hua Yu",
+                    "Contrary"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Fairy",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "magmortarfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Yan Zhi Bo Dong",
+                    "Draco Meteor",
+                    "Curse",
+                    "Rest",
+                    "Overheat",
+                    "Fire Blast",
+                    "Heat Wave",
+                    "Flamethrower"
+                ],
+                "abilities": [
+                    "Flame Body",
+                    "Mega Launcher",
+                    "Mold Breaker"
+                ],
+                "teraTypes": [
+                    "Fire",
+                    "Dragon",
+                    "Fairy",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "magnezonefantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Zap Cannon",
+                    "Steel Beam",
+                    "Iron Defense",
+                    "Recover",
+                    "Thunder",
+                    "Thunderbolt",
+                    "Hyper Beam",
+                    "Volt Switch"
+                ],
+                "abilities": [
+                    "Magnet Pull",
+                    "Levitate",
+                    "Analytic"
+                ],
+                "teraTypes": [
+                    "Electric",
+                    "Steel",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "marshtompfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Wave Crash",
+                    "Earthquake",
+                    "Curse",
+                    "Aqua Tail",
+                    "Focus Punch",
+                    "Liquidation",
+                    "Dig",
+                    "Dive"
+                ],
+                "abilities": [
+                    "Simple",
+                    "Zhao Yong Ze Xian"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Ground",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "meganiumfantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "Frenzy Plant",
+                    "Fleur Cannon",
+                    "Cut",
+                    "Rest",
+                    "Leaf Storm",
+                    "Petal Dance",
+                    "Solar Beam",
+                    "Moonblast"
+                ],
+                "abilities": [
+                    "Triage",
+                    "Flower Veil"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Fairy",
+                    "Fire",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "melmetalfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Steel Roller",
+                    "Giga Impact",
+                    "Zhu Kai Bo",
+                    "Iron Defense",
+                    "Self-Destruct",
+                    "Mega Kick",
+                    "Body Slam",
+                    "Gyro Ball"
+                ],
+                "abilities": [
+                    "Iron Fist",
+                    "Gang Tie Ju He Wu"
+                ],
+                "teraTypes": [
+                    "Steel",
+                    "Normal",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "metagrossfantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Xian Gong Jiao Zhun",
+                    "Dong Cha Da Ji",
+                    "Cut",
+                    "Agility",
+                    "Steel Roller",
+                    "Zhu Kai Bo",
+                    "Huan Xiang Bao Fa",
+                    "Meteor Mash"
+                ],
+                "abilities": [
+                    "Clear Body",
+                    "Ji Zhi Neng",
+                    "Tie Kai"
+                ],
+                "teraTypes": [
+                    "Steel",
+                    "Psychic",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "mewfantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Misty Explosion",
+                    "Psystrike",
+                    "Yuan Neng Shi Fang",
+                    "Huan Zhi Wu",
+                    "Yao Jing Zhi Ya",
+                    "Cut",
+                    "Bian Su Zhe Fan",
+                    "Blast Burn"
+                ],
+                "abilities": [
+                    "Imposter",
+                    "Bian Huan Zi You"
+                ],
+                "teraTypes": [
+                    "???",
+                    "Fighting",
+                    "Ground",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "mewtwofantasy": {
+        "level": 76,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Psystrike",
+                    "Dong Cha Da Ji",
+                    "Punishment",
+                    "Agility",
+                    "Future Sight",
+                    "Dream Eater",
+                    "Psychic",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Po Huai Yu",
+                    "Neutralizing Gas"
+                ],
+                "teraTypes": [
+                    "Psychic",
+                    "Fairy",
+                    "Fire",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "mienshaofantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Focus Punch",
+                    "Play Rough",
+                    "Agility",
+                    "High Jump Kick",
+                    "Close Combat",
+                    "Upper Hand",
+                    "Giga Impact",
+                    "Low Kick"
+                ],
+                "abilities": [
+                    "Inner Focus",
+                    "Regenerator",
+                    "Cute Charm"
+                ],
+                "teraTypes": [
+                    "Fighting",
+                    "Fairy",
+                    "Ground",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "miloticfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Hydro Pump",
+                    "Moonblast",
+                    "Rao Liang Zhi Yin",
+                    "Calm Mind",
+                    "Muddy Water",
+                    "Surf",
+                    "Hyper Beam",
+                    "Alluring Voice"
+                ],
+                "abilities": [
+                    "Marvel Scale",
+                    "Competitive",
+                    "Cute Charm"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Fairy",
+                    "Fire",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "mimikyufantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Poltergeist",
+                    "Play Rough",
+                    "Huan Xiang Bao Fa",
+                    "Bulk Up",
+                    "Phantom Force",
+                    "Spirit Shackle",
+                    "Giga Impact",
+                    "Last Resort"
+                ],
+                "abilities": [
+                    "Disguise"
+                ],
+                "teraTypes": [
+                    "Ghost",
+                    "Fairy",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "mudkipfantasy": {
+        "level": 90,
+        "sets": [
+            {
+                "role": "Bulky Attacker",
+                "movepool": [
+                    "Wave Crash",
+                    "Aqua Tail",
+                    "Liquidation",
+                    "Dive",
+                    "Waterfall",
+                    "Double-Edge",
+                    "Superpower",
+                    "Aqua Jet"
+                ],
+                "abilities": [
+                    "Simple",
+                    "Damp"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Fighting",
+                    "Ground",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "mukalolafantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Yao Lan",
+                    "Punishment",
+                    "Curse",
+                    "Rest",
+                    "Gunk Shot",
+                    "Foul Play",
+                    "Explosion",
+                    "Focus Punch"
+                ],
+                "abilities": [
+                    "Dazzling",
+                    "Tun Du",
+                    "Power of Alchemy"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Dark",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "noivernfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Qi Bao Liu Xing",
+                    "Draco Meteor",
+                    "Cut",
+                    "Agility",
+                    "Hurricane",
+                    "Boomburst",
+                    "Dragon Pulse",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Frisk",
+                    "Infiltrator",
+                    "Mountaineer"
+                ],
+                "teraTypes": [
+                    "Flying",
+                    "Dragon",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "onixfantasy": {
+        "level": 90,
+        "sets": [
+            {
+                "role": "Bulky Attacker",
+                "movepool": [
+                    "Head Smash",
+                    "Icicle Crash",
+                    "Fan Chen",
+                    "Stone Edge",
+                    "Explosion",
+                    "Self-Destruct",
+                    "Double-Edge",
+                    "Rock Slide"
+                ],
+                "abilities": [
+                    "Rock Head",
+                    "Mi Shi",
+                    "Refrigerate"
+                ],
+                "teraTypes": [
+                    "Rock",
+                    "Ice",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "orbeetlefantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Fast Support",
+                "movepool": [
+                    "Bug Buzz",
+                    "Future Sight",
+                    "Yuan Neng Shi Fang",
+                    "Rest",
+                    "Psychic",
+                    "Hyper Beam",
+                    "Steel Beam",
+                    "Expanding Force"
+                ],
+                "abilities": [
+                    "Swarm",
+                    "Magic Guard",
+                    "Telepathy"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Psychic",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "pecharuntfantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Bian Su Zhe Fan",
+                    "Bitter Malice",
+                    "Punishment",
+                    "Curse",
+                    "Gunk Shot",
+                    "Poltergeist",
+                    "Malignant Chain",
+                    "Sludge Wave"
+                ],
+                "abilities": [
+                    "Poison Puppeteer",
+                    "Levitate",
+                    "Mu Hou Hei Shou"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Ghost",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "pidgeotfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Giga Impact",
+                    "Chuan Yun",
+                    "Flying Press",
+                    "Agility",
+                    "Sky Attack",
+                    "Double-Edge",
+                    "Extreme Speed",
+                    "Fly"
+                ],
+                "abilities": [
+                    "Screen Cleaner",
+                    "Tough Claws",
+                    "Feng Ya"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "politoedfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Hydro Pump",
+                    "Energy Ball",
+                    "Curse",
+                    "Rest",
+                    "Muddy Water",
+                    "Surf",
+                    "Hyper Beam",
+                    "Grass Knot"
+                ],
+                "abilities": [
+                    "Water Absorb",
+                    "Shi Chong",
+                    "Drizzle"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Grass",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "primarinafantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Hydro Cannon",
+                    "Misty Explosion",
+                    "Rao Liang Zhi Yin",
+                    "Huan Zhi Wu",
+                    "Hydro Pump",
+                    "Moonblast",
+                    "Sparkling Aria",
+                    "Surf"
+                ],
+                "abilities": [
+                    "Hydration",
+                    "Liquid Voice"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Fairy",
+                    "Fire",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "raikoufantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Zap Cannon",
+                    "Feng Xing",
+                    "Cut",
+                    "Agility",
+                    "Hyper Beam",
+                    "Thunderclap",
+                    "Thunder",
+                    "Thunderbolt"
+                ],
+                "abilities": [
+                    "Lei Ting Xing Zhe",
+                    "Volt Absorb",
+                    "Inner Focus"
+                ],
+                "teraTypes": [
+                    "Electric",
+                    "Normal",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "raticatefantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Yao Lan",
+                    "Aqua Tail",
+                    "Bian Su Zhe Fan",
+                    "Curse",
+                    "Gunk Shot",
+                    "Yao Jing Zhi Ya",
+                    "Cut",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Swift Swim",
+                    "Strong Jaw",
+                    "Du Wu Pi Fu"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Water",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "regigigasfantasy": {
+        "level": 76,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Giga Impact",
+                    "Meteor Mash",
+                    "Iron Defense",
+                    "Rest",
+                    "Double-Edge",
+                    "Mega Kick",
+                    "Body Slam",
+                    "Focus Punch"
+                ],
+                "abilities": [
+                    "Slow Start"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Steel",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "ribombeefantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Bug Buzz",
+                    "Moonblast",
+                    "Qing Sheng Lv Ye",
+                    "Agility",
+                    "Pollen Puff",
+                    "Hyper Beam",
+                    "Alluring Voice",
+                    "Dazzling Gleam"
+                ],
+                "abilities": [
+                    "Supersweet Syrup",
+                    "Shield Dust",
+                    "Qing Guang Hua Yu"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Fairy",
+                    "Fire",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "roseradefantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Power Whip",
+                    "Bian Su Zhe Fan",
+                    "Mei Gui Zhi Wu",
+                    "Trailblaze",
+                    "Huan Xiang Bao Fa",
+                    "Cut",
+                    "Leaf Blade",
+                    "Petal Blizzard"
+                ],
+                "abilities": [
+                    "Qing Guang Hua Yu",
+                    "Dancer",
+                    "Technician"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Poison",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "rotomfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Thunderclap",
+                    "Yuan Neng Shi Fang",
+                    "Curse",
+                    "Thunder",
+                    "Thunderbolt",
+                    "Volt Switch",
+                    "Discharge",
+                    "Electro Ball"
+                ],
+                "abilities": [
+                    "Levitate",
+                    "Prankster",
+                    "Transistor"
+                ],
+                "teraTypes": [
+                    "Electric",
+                    "Ghost",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "salamencefantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Outrage",
+                    "Chuan Yun",
+                    "Qi Bao Liu Xing",
+                    "Dragon Dance",
+                    "Cut",
+                    "Fly",
+                    "Giga Impact",
+                    "Draco Meteor"
+                ],
+                "abilities": [
+                    "Intimidate",
+                    "Feng Ya",
+                    "Long Zhi Hu Xi"
+                ],
+                "teraTypes": [
+                    "Dragon",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "salazzlefantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Sludge Wave",
+                    "Overheat",
+                    "Agility",
+                    "Toxic Spikes",
+                    "Fire Blast",
+                    "Heat Wave",
+                    "Flamethrower",
+                    "Sludge Bomb"
+                ],
+                "abilities": [
+                    "Corrosion",
+                    "Neutralizing Gas",
+                    "Oblivious"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Fire",
+                    "Fairy",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "samurottfantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Hyper Beam",
+                    "Hydro Cannon",
+                    "Mi Jian Bai Ren Chuan",
+                    "Swords Dance",
+                    "Hydro Pump",
+                    "Surf",
+                    "Giga Impact",
+                    "Scald"
+                ],
+                "abilities": [
+                    "Su Jun",
+                    "Sharpness"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Water",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "sandacondafantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Earthquake",
+                    "Crunch",
+                    "Coil",
+                    "Rest",
+                    "High Horsepower",
+                    "Giga Impact",
+                    "Dig",
+                    "Drill Run"
+                ],
+                "abilities": [
+                    "Sand Spit",
+                    "Shed Skin",
+                    "Rough Skin"
+                ],
+                "teraTypes": [
+                    "Ground",
+                    "Dark",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "sandyshocksfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Zap Cannon",
+                    "Earth Power",
+                    "Zhi Sha Re She",
+                    "Iron Defense",
+                    "Thunder",
+                    "Thunderbolt",
+                    "Hyper Beam",
+                    "Volt Switch"
+                ],
+                "abilities": [
+                    "Protosynthesis",
+                    "Magnet Pull",
+                    "Sand Force"
+                ],
+                "teraTypes": [
+                    "Electric",
+                    "Ground",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "sawsbuckautumnfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Lu Jiao",
+                    "High Horsepower",
+                    "Cut",
+                    "Agility",
+                    "Giga Impact",
+                    "Last Resort",
+                    "Double-Edge",
+                    "Take Down"
+                ],
+                "abilities": [
+                    "Chlorophyll",
+                    "Sap Sipper",
+                    "Serene Grace"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Ground",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "sawsbuckfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Lu Jiao",
+                    "Play Rough",
+                    "Cut",
+                    "Agility",
+                    "Giga Impact",
+                    "Last Resort",
+                    "Double-Edge",
+                    "Take Down"
+                ],
+                "abilities": [
+                    "Chlorophyll",
+                    "Sap Sipper",
+                    "Serene Grace"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Fairy",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "sawsbucksummerfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Lu Jiao",
+                    "Petal Blizzard",
+                    "Cut",
+                    "Trailblaze",
+                    "Giga Impact",
+                    "Last Resort",
+                    "Double-Edge",
+                    "Take Down"
+                ],
+                "abilities": [
+                    "Chlorophyll",
+                    "Sap Sipper",
+                    "Serene Grace"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Grass",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "sawsbuckwinterfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Lu Jiao",
+                    "Icicle Crash",
+                    "Cut",
+                    "Agility",
+                    "Giga Impact",
+                    "Last Resort",
+                    "Double-Edge",
+                    "Take Down"
+                ],
+                "abilities": [
+                    "Chlorophyll",
+                    "Sap Sipper",
+                    "Serene Grace"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Ice",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "scolipedefantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "First Impression",
+                    "Bian Su Zhe Fan",
+                    "Cut",
+                    "Agility",
+                    "Gunk Shot",
+                    "Megahorn",
+                    "Giga Impact",
+                    "Steel Roller"
+                ],
+                "abilities": [
+                    "Armor Tail",
+                    "Battle Armor",
+                    "Speed Boost"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Poison",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "skarmoryfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "Cut",
+                    "Sky Attack",
+                    "Bao Yu Li Hua",
+                    "Rest",
+                    "Brave Bird",
+                    "Fly",
+                    "Giga Impact",
+                    "Drill Peck"
+                ],
+                "abilities": [
+                    "Keen Eye",
+                    "Tie Kai",
+                    "Battle Armor"
+                ],
+                "teraTypes": [
+                    "Steel",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "skeledirgefantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Blast Burn",
+                    "Shadow Ball",
+                    "Rao Liang Zhi Yin",
+                    "Curse",
+                    "Overheat",
+                    "Fire Blast",
+                    "Heat Wave",
+                    "Flamethrower"
+                ],
+                "abilities": [
+                    "Punk Rock",
+                    "Unaware"
+                ],
+                "teraTypes": [
+                    "Fire",
+                    "Ghost",
+                    "Fairy",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "skittyfantasy": {
+        "level": 90,
+        "sets": [
+            {
+                "role": "Bulky Attacker",
+                "movepool": [
+                    "Moonblast",
+                    "Earth Power",
+                    "Play Rough",
+                    "Last Resort",
+                    "Alluring Voice",
+                    "Dig",
+                    "Double-Edge",
+                    "Solar Beam"
+                ],
+                "abilities": [
+                    "Cute Charm",
+                    "Pixilate",
+                    "Wonder Skin"
+                ],
+                "teraTypes": [
+                    "Fairy",
+                    "Ground",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "slitherwingfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "First Impression",
+                    "Headlong Rush",
+                    "Bulk Up",
+                    "Morning Sun",
+                    "Megahorn",
+                    "Earthquake",
+                    "High Horsepower",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Protosynthesis",
+                    "Fluffy",
+                    "Wind Rider"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Ground",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "slowbrofantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Hydro Pump",
+                    "Future Sight",
+                    "Calm Mind",
+                    "Rest",
+                    "Dream Eater",
+                    "Muddy Water",
+                    "Psychic",
+                    "Surf"
+                ],
+                "abilities": [
+                    "Oblivious",
+                    "Unaware",
+                    "Regenerator"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Psychic",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "slowbrogalarfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Bian Su Zhe Fan",
+                    "Dong Cha Da Ji",
+                    "Bulk Up",
+                    "Rest",
+                    "Gunk Shot",
+                    "Giga Impact",
+                    "Poison Jab",
+                    "Zen Headbutt"
+                ],
+                "abilities": [
+                    "Quick Draw",
+                    "Adaptability",
+                    "Regenerator"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Psychic",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "stakatakafantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Stone Edge",
+                    "Dong Cha Da Ji",
+                    "Iron Defense",
+                    "Rest",
+                    "Psyshield Bash",
+                    "Giga Impact",
+                    "Self-Destruct",
+                    "Steel Roller"
+                ],
+                "abilities": [
+                    "Beast Boost",
+                    "Mi Shi",
+                    "Persistent"
+                ],
+                "teraTypes": [
+                    "Rock",
+                    "Psychic",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "steelixfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Cut",
+                    "Headlong Rush",
+                    "Sui Ling Gang",
+                    "Coil",
+                    "Steel Roller",
+                    "Earthquake",
+                    "High Horsepower",
+                    "Explosion"
+                ],
+                "abilities": [
+                    "Tie Kai",
+                    "Heatproof",
+                    "Earth Eater"
+                ],
+                "teraTypes": [
+                    "Steel",
+                    "Ground",
+                    "Fighting",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "stonjournerfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Giga Impact",
+                    "Stone Edge",
+                    "Curse",
+                    "Morning Sun",
+                    "Self-Destruct",
+                    "Mega Kick",
+                    "Take Down",
+                    "Body Slam"
+                ],
+                "abilities": [
+                    "Power Spot",
+                    "Mi Shi"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Rock",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "suicunefantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Hydro Pump",
+                    "Feng Xing",
+                    "Cut",
+                    "Agility",
+                    "Hyper Beam",
+                    "Surf",
+                    "Giga Impact",
+                    "Hydro Steam"
+                ],
+                "abilities": [
+                    "Ji Guang Xing Zhe",
+                    "Storm Drain",
+                    "Inner Focus"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Normal",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "swampertfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Wave Crash",
+                    "Headlong Rush",
+                    "Bulk Up",
+                    "Rest",
+                    "Earthquake",
+                    "High Horsepower",
+                    "Aqua Tail",
+                    "Focus Punch"
+                ],
+                "abilities": [
+                    "Regenerator",
+                    "Zhao Yong Ze Xian"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Ground",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "tapufinifantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Hydro Pump",
+                    "Misty Explosion",
+                    "Calm Mind",
+                    "Rest",
+                    "Moonblast",
+                    "Muddy Water",
+                    "Surf",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Misty Surge",
+                    "Storm Drain",
+                    "Telepathy"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Fairy",
+                    "Fire",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "tentacruelfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Hydro Pump",
+                    "Sludge Wave",
+                    "Cut",
+                    "Curse",
+                    "Muddy Water",
+                    "Sludge Bomb",
+                    "Surf",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Merciless",
+                    "Liquid Ooze",
+                    "Poison Point"
+                ],
+                "teraTypes": [
+                    "Water",
+                    "Poison",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "thievulfantasy": {
+        "level": 84,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Foul Play",
+                    "Huan Xiang Bao Fa",
+                    "Agility",
+                    "Giga Impact",
+                    "Hyper Beam",
+                    "Double-Edge",
+                    "Sucker Punch",
+                    "Body Slam"
+                ],
+                "abilities": [
+                    "Run Away",
+                    "Unburden",
+                    "Stakeout"
+                ],
+                "teraTypes": [
+                    "Dark",
+                    "Normal",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "toxtricityfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Overdrive",
+                    "Belch",
+                    "Bian Su Zhe Fan",
+                    "Clangorous Soul",
+                    "Sludge Wave",
+                    "Sludge Bomb",
+                    "Thunder",
+                    "Thunderbolt"
+                ],
+                "abilities": [
+                    "Punk Rock",
+                    "Plus",
+                    "Technician"
+                ],
+                "teraTypes": [
+                    "Electric",
+                    "Poison",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "toxtricitylowkeyfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Ice Beam",
+                    "Belch",
+                    "Overdrive",
+                    "Shift Gear",
+                    "Bian Su Zhe Fan",
+                    "Sludge Wave",
+                    "Sludge Bomb",
+                    "Boomburst"
+                ],
+                "abilities": [
+                    "Punk Rock",
+                    "Minus",
+                    "Technician"
+                ],
+                "teraTypes": [
+                    "Ice",
+                    "Poison",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "tropiusfantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "Leaf Storm",
+                    "Draco Meteor",
+                    "Cut",
+                    "Rest",
+                    "Solar Beam",
+                    "Energy Ball",
+                    "Dragon Pulse",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Chlorophyll",
+                    "Regenerator",
+                    "Harvest"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Dragon",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "tyrantrumfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Head Smash",
+                    "Outrage",
+                    "Yao Lan",
+                    "Dragon Dance",
+                    "Stone Edge",
+                    "Giga Impact",
+                    "Draco Meteor",
+                    "Dragon Claw"
+                ],
+                "abilities": [
+                    "Dragon's Maw",
+                    "Sand Rush",
+                    "Rock Head"
+                ],
+                "teraTypes": [
+                    "Rock",
+                    "Dragon",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "tyruntfantasy": {
+        "level": 90,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Head Smash",
+                    "Outrage",
+                    "Yao Lan",
+                    "Curse",
+                    "Stone Edge",
+                    "Draco Meteor",
+                    "Dragon Claw",
+                    "Close Combat"
+                ],
+                "abilities": [
+                    "Strong Jaw",
+                    "Sand Rush",
+                    "Rock Head"
+                ],
+                "teraTypes": [
+                    "Rock",
+                    "Dragon",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "urshifufantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Focus Punch",
+                    "Dian Shan Xun Ji",
+                    "Ren Zhen Ou Da",
+                    "Bulk Up",
+                    "Close Combat",
+                    "Superpower",
+                    "Supercell Slam",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Unseen Fist"
+                ],
+                "teraTypes": [
+                    "Fighting",
+                    "Electric",
+                    "Ground",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "urshifurapidstrikefantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Focus Punch",
+                    "Bian Su Zhe Fan",
+                    "Zui Shen Luan Da",
+                    "Bulk Up",
+                    "Close Combat",
+                    "Gunk Shot",
+                    "Superpower",
+                    "Giga Impact"
+                ],
+                "abilities": [
+                    "Unseen Fist"
+                ],
+                "teraTypes": [
+                    "Fighting",
+                    "Poison",
+                    "Ground",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "vespiquenfantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Bulky Support",
+                "movepool": [
+                    "First Impression",
+                    "Hurricane",
+                    "Cut",
+                    "Rest",
+                    "Fu Zhu Zhi Ling",
+                    "Attack Order",
+                    "Bug Buzz",
+                    "Pollen Puff"
+                ],
+                "abilities": [
+                    "Supersweet Syrup",
+                    "Queenly Majesty",
+                    "Feng Chao"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Flying",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "victreebelfantasy": {
+        "level": 83,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Power Whip",
+                    "Bian Su Zhe Fan",
+                    "Cut",
+                    "Trailblaze",
+                    "Gunk Shot",
+                    "Leaf Blade",
+                    "Giga Impact",
+                    "Leaf Storm"
+                ],
+                "abilities": [
+                    "Chlorophyll",
+                    "Shi Chong",
+                    "Tun Du"
+                ],
+                "teraTypes": [
+                    "Grass",
+                    "Poison",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "volbeatfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Bug Buzz",
+                    "Thunder",
+                    "Tail Glow",
+                    "Moonlight",
+                    "Thunderbolt",
+                    "Volt Switch",
+                    "Solar Beam",
+                    "Shock Wave"
+                ],
+                "abilities": [
+                    "Illuminate",
+                    "Electromorphosis",
+                    "Prankster"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Electric",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "volcanionfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Overheat",
+                    "Hydro Pump",
+                    "Cut",
+                    "Flame Charge",
+                    "Fire Blast",
+                    "Steam Eruption",
+                    "Heat Wave",
+                    "Flamethrower"
+                ],
+                "abilities": [
+                    "Water Absorb",
+                    "Steam Engine",
+                    "Zheng Fa"
+                ],
+                "teraTypes": [
+                    "Fire",
+                    "Water",
+                    "Fairy",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "volcaronafantasy": {
+        "level": 78,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Bug Buzz",
+                    "Overheat",
+                    "Calm Mind",
+                    "Rest",
+                    "Fire Blast",
+                    "Heat Wave",
+                    "Flamethrower",
+                    "Hyper Beam"
+                ],
+                "abilities": [
+                    "Drought",
+                    "Solar Power",
+                    "Huo Lin Fen"
+                ],
+                "teraTypes": [
+                    "Bug",
+                    "Fire",
+                    "Fairy",
+                    "Water"
+                ]
+            }
+        ]
+    },
+    "weezingfantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Bian Su Zhe Fan",
+                    "Knock Off",
+                    "Curse",
+                    "Recover",
+                    "Gunk Shot",
+                    "Explosion",
+                    "Giga Impact",
+                    "Self-Destruct"
+                ],
+                "abilities": [
+                    "Levitate",
+                    "Neutralizing Gas",
+                    "Aftermath"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Dark",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "weezinggalarfantasy": {
+        "level": 80,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Gunk Shot",
+                    "Misty Explosion",
+                    "Curse",
+                    "Recover",
+                    "Play Rough",
+                    "Explosion",
+                    "Giga Impact",
+                    "Self-Destruct"
+                ],
+                "abilities": [
+                    "Levitate",
+                    "Neutralizing Gas",
+                    "Misty Surge"
+                ],
+                "teraTypes": [
+                    "Poison",
+                    "Fairy",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "wochienfantasy": {
+        "level": 82,
+        "sets": [
+            {
+                "role": "Bulky Setup",
+                "movepool": [
+                    "Punishment",
+                    "Leaf Storm",
+                    "Growth",
+                    "Rest",
+                    "Solar Beam",
+                    "Energy Ball",
+                    "Hyper Beam",
+                    "Dark Pulse"
+                ],
+                "abilities": [
+                    "Tablets of Ruin",
+                    "Wo Ju"
+                ],
+                "teraTypes": [
+                    "Dark",
+                    "Grass",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    },
+    "xerneasfantasy": {
+        "level": 76,
+        "sets": [
+            {
+                "role": "Fast Bulky Setup",
+                "movepool": [
+                    "Misty Explosion",
+                    "Land's Wrath",
+                    "Lu Jiao",
+                    "Calm Mind",
+                    "Punishment",
+                    "Cut",
+                    "High Horsepower",
+                    "Moonblast"
+                ],
+                "abilities": [
+                    "Fairy Aura"
+                ],
+                "teraTypes": [
+                    "Fairy",
+                    "Ground",
+                    "Fighting",
+                    "Steel"
+                ]
+            }
+        ]
+    },
+    "zoroarkhisuifantasy": {
+        "level": 81,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Giga Impact",
+                    "Bitter Malice",
+                    "Huan Zhi Wu",
+                    "Hyper Beam",
+                    "Double-Edge",
+                    "Poltergeist",
+                    "Hyper Voice",
+                    "Phantom Force"
+                ],
+                "abilities": [
+                    "Illusion",
+                    "Shou Hun",
+                    "Shi Ying Li"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Ghost",
+                    "Fighting",
+                    "Ground"
+                ]
+            }
+        ]
+    },
+    "zoruahisuifantasy": {
+        "level": 90,
+        "sets": [
+            {
+                "role": "Setup Sweeper",
+                "movepool": [
+                    "Hyper Beam",
+                    "Bitter Malice",
+                    "Agility",
+                    "Giga Impact",
+                    "Shadow Ball",
+                    "Tera Blast",
+                    "Double-Edge",
+                    "Hex"
+                ],
+                "abilities": [
+                    "Illusion",
+                    "Shou Hun",
+                    "Shi Ying Li"
+                ],
+                "teraTypes": [
+                    "Normal",
+                    "Ghost",
+                    "Fairy",
+                    "Fire"
+                ]
+            }
+        ]
+    }
+}
