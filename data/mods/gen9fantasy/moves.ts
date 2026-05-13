@@ -717,7 +717,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         priority: 0,
         flags: { contact: 1, protect: 1, mirror: 1 }, 
         onModifyPriority(priority, source, target, move) {
-            // 修复点 1：确保涵盖普通的哲尔尼亚斯和 Fantasy 形态
             if ((source.baseSpecies.name === 'Xerneas' || source.species.name === 'Xerneas-Fantasy') && source.hasAbility('triage')) {
                 return priority + 3;
             }
@@ -734,20 +733,19 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
         onModifyMove(move, pokemon) {
-            // 修复点 2：添加了对 Xerneas-Fantasy 的兼容，确保判定能顺利通过
             if (pokemon.baseSpecies.name === 'Xerneas' || pokemon.species.name === 'Xerneas-Fantasy') {
                 // 赋予吸血（造成伤害的 50%）
                 move.drain = [1, 2];
                 
-                // 修复点 3：安全检查，防止 flags 对象缺失导致报错
+                // 安全检查，赋予回复标签
                 if (!move.flags) move.flags = {}; 
-                move.flags.heal = 1; // 赋予回复标签
+                move.flags.heal = 1; 
                 
-                // 移除降低防御的追加效果
-                delete move.secondary; 
+                // 【核心修改】显式将追加效果设为 null，彻底阻断降防效果的触发
+                move.secondary = null; 
             }
         },
-        // 这是默认的追加效果，如果不被上面的 delete 移除，就会生效
+        // 这是默认的追加效果，当 move.secondary 没有被设为 null 时才会生效（即萌芽鹿使用时）
         secondary: {
             chance: 50,
             boosts: {
@@ -759,7 +757,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         zMove: { basePower: 175 },
         maxMove: { basePower: 130 },
         desc: "鹿角:春&哲尔尼亚斯:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低2级,使用者是哲尔尼亚斯时,变为回复给予伤害50%HP",
-        shortDesc: "鹿角:萌芽鹿时按季节变属性,降低防御2级;哲尔尼亚斯时回复",
+        shortDesc: "鹿角:形态使属性效果不同;萌芽鹿降防2级;哲尔尼亚斯回复",
     },
 	huanji: {
 		num: 10014,
