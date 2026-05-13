@@ -755,7 +755,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         zMove: { basePower: 175 },
         maxMove: { basePower: 130 },
         desc: "鹿角:春&哲尔尼亚斯:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低2级,使用者是哲尔尼亚斯时,变为回复给予伤害50%HP",
-        shortDesc: "鹿角:形态使属性效果不同;萌芽鹿降防2级;哲尔尼亚斯回复",
+        shortDesc: "鹿角:属性效果随形态不同;萌芽鹿降防2级;哲尔尼亚斯回复",
     },
 	huanji: {
 		num: 10014,
