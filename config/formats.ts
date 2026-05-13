@@ -75,6 +75,154 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	{
+		name: "[Gen 9] FC Only",
+		mod: 'gen9fantasy',
+		desc: `Only Fantasy Pok&eacute;mon are legal. Team budget is 100 points, plus 20 extra points for each LC Pok&eacute;mon.`,
+		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
+		banlist: [
+			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
+		],
+		onValidateTeam(team) {
+			const tierPoints: {[k: string]: number} = {
+				'Uber': 80,
+				'(Uber)': 40,
+				'OU': 20,
+				'UUBL': 15,
+				'UU': 10,
+				'RUBL': 5,
+				'RU': 0,
+				'LC': 0,
+			};
+
+			let total = 0;
+			let lcBonus = 0;
+			const details: string[] = [];
+
+			for (const set of team) {
+				const species = this.dex.species.get(set.species);
+				if (!species.exists) {
+					return [`${set.species} is not a valid species in this format.`];
+				}
+
+				// Fantasy species do not exist in the base dex.
+				if (Dex.species.get(species.id).exists) {
+					return [`${set.species} is not a Fantasy Pok\u00e9mon.`, `Only Fantasy Pok\u00e9mon are allowed in [Gen 9] FC Only.`];
+				}
+
+				const basePoints = tierPoints[species.tier || ''];
+				if (basePoints === undefined) {
+					return [
+						`${set.species} has unsupported tier "${species.tier || 'N/A'}" for FC Only scoring.`,
+						`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
+					];
+				}
+
+				if (species.tier === 'LC') {
+					lcBonus += 20;
+					details.push(`${species.name}(LC)=0 [+20 budget]`);
+					continue;
+				}
+
+				let points = basePoints;
+				let detailsEntry = `${species.name}(${species.tier})=${basePoints}`;
+
+				// Mega scoring: if this set can Mega Evolve (required item and/or required move),
+				// force score by the applicable Mega form's tier.
+				const item = this.dex.items.get(set.item);
+				const setMoveNames = new Set((set.moves || []).map(move => this.dex.moves.get(move).name));
+				let bestMega: Species | null = null;
+				let bestMegaPoints = -1;
+
+				for (const candidate of this.dex.species.all()) {
+					if (!candidate.exists) continue;
+					if (candidate.battleOnly !== species.name) continue;
+					if (!(candidate.forme === 'Mega' || candidate.name.includes('-Mega'))) continue;
+
+					if (candidate.requiredForme && candidate.requiredForme !== species.name) continue;
+					if (candidate.requiredItem && item.name !== candidate.requiredItem) continue;
+					if (candidate.requiredItems?.length && !candidate.requiredItems.includes(item.name)) continue;
+					if (candidate.requiredMove && !setMoveNames.has(candidate.requiredMove)) continue;
+
+					const candidatePoints = tierPoints[candidate.tier || ''];
+					if (candidatePoints === undefined) {
+						return [
+							`${candidate.name} has unsupported tier "${candidate.tier || 'N/A'}" for FC Only scoring.`,
+							`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
+						];
+					}
+
+					if (candidatePoints > bestMegaPoints) {
+						bestMegaPoints = candidatePoints;
+						bestMega = candidate;
+					}
+				}
+
+				if (bestMega) {
+					points = bestMegaPoints;
+					detailsEntry = `${species.name}(${species.tier}) -> ${bestMega.name}(${bestMega.tier}) = ${points}`;
+				}
+
+				total += points;
+				details.push(detailsEntry);
+			}
+
+			const totalBudget = 100 + lcBonus;
+			if (total > totalBudget) {
+				return [
+					`Your team has ${total} points, exceeding the ${totalBudget}-point limit.`,
+					`Breakdown: ${details.join(', ')}`,
+				];
+			}
+		},
+	onSwitchIn(pokemon) {
+			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+			pokemon.m.fantasySync = (mon: Pokemon) => {
+				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
+
+				if (isFantasy) {
+					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
+					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+
+					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+					mon.m.fantasyUIAttached = true;
+				} else {
+					// 2. 如果视觉上是原版宝可梦：清除数值UI
+					this.add('-end', mon, 'fantasystats', '[silent]');
+
+					// 【核心修复】：
+					// 增加 !mon.transformed 判断。
+					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+					if (mon.m.fantasyUIAttached && !mon.transformed) {
+						this.add('-end', mon, 'typechange', '[silent]');
+						mon.m.fantasyUIAttached = false;
+					}
+				}
+			};
+
+			pokemon.m.fantasySync(pokemon);
+		},
+
+		onUpdate(pokemon) {
+			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+			// 使用 pokemon.m.lastVisualShown 进行独立比对
+			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+			if (pokemon.m.lastVisualShown !== currentVisualId) {
+				pokemon.m.lastVisualShown = currentVisualId;
+
+				if (pokemon.m.fantasySync) {
+					pokemon.m.fantasySync(pokemon);
+				}
+			}
+		},
+	},
+	{
 		name: "[Gen 9] FC AG",
 		mod: 'gen9fantasy',
 		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
@@ -596,154 +744,6 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Mega', 'Ultra Beast', 'Paradox', 'Sub-Legendary', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
-			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
-			pokemon.m.fantasySync = (mon: Pokemon) => {
-				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
-				const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
-				const isFantasy = !Dex.species.get(visualSpecies.id).exists;
-
-				if (isFantasy) {
-					// 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
-					const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
-					this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
-					this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
-
-					// 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
-					mon.m.fantasyUIAttached = true;
-				} else {
-					// 2. 如果视觉上是原版宝可梦：清除数值UI
-					this.add('-end', mon, 'fantasystats', '[silent]');
-
-					// 【核心修复】：
-					// 增加 !mon.transformed 判断。
-					// 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
-					// 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
-					if (mon.m.fantasyUIAttached && !mon.transformed) {
-						this.add('-end', mon, 'typechange', '[silent]');
-						mon.m.fantasyUIAttached = false;
-					}
-				}
-			};
-
-			pokemon.m.fantasySync(pokemon);
-		},
-
-		onUpdate(pokemon) {
-			// 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
-			// 使用 pokemon.m.lastVisualShown 进行独立比对
-			const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
-
-			if (pokemon.m.lastVisualShown !== currentVisualId) {
-				pokemon.m.lastVisualShown = currentVisualId;
-
-				if (pokemon.m.fantasySync) {
-					pokemon.m.fantasySync(pokemon);
-				}
-			}
-		},
-	},
-	{
-		name: "[Gen 9] FC Only",
-		mod: 'gen9fantasy',
-		desc: `Only Fantasy Pok&eacute;mon are legal. Team budget is 100 points, plus 20 extra points for each LC Pok&eacute;mon.`,
-		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'Ignore Event Shiny Clause'],
-		banlist: [
-			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
-			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
-		],
-		onValidateTeam(team) {
-			const tierPoints: {[k: string]: number} = {
-				'Uber': 80,
-				'(Uber)': 40,
-				'OU': 20,
-				'UUBL': 15,
-				'UU': 10,
-				'RUBL': 5,
-				'RU': 0,
-				'LC': 0,
-			};
-
-			let total = 0;
-			let lcBonus = 0;
-			const details: string[] = [];
-
-			for (const set of team) {
-				const species = this.dex.species.get(set.species);
-				if (!species.exists) {
-					return [`${set.species} is not a valid species in this format.`];
-				}
-
-				// Fantasy species do not exist in the base dex.
-				if (Dex.species.get(species.id).exists) {
-					return [`${set.species} is not a Fantasy Pok\u00e9mon.`, `Only Fantasy Pok\u00e9mon are allowed in [Gen 9] FC Only.`];
-				}
-
-				const basePoints = tierPoints[species.tier || ''];
-				if (basePoints === undefined) {
-					return [
-						`${set.species} has unsupported tier "${species.tier || 'N/A'}" for FC Only scoring.`,
-						`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
-					];
-				}
-
-				if (species.tier === 'LC') {
-					lcBonus += 20;
-					details.push(`${species.name}(LC)=0 [+20 budget]`);
-					continue;
-				}
-
-				let points = basePoints;
-				let detailsEntry = `${species.name}(${species.tier})=${basePoints}`;
-
-				// Mega scoring: if this set can Mega Evolve (required item and/or required move),
-				// force score by the applicable Mega form's tier.
-				const item = this.dex.items.get(set.item);
-				const setMoveNames = new Set((set.moves || []).map(move => this.dex.moves.get(move).name));
-				let bestMega: Species | null = null;
-				let bestMegaPoints = -1;
-
-				for (const candidate of this.dex.species.all()) {
-					if (!candidate.exists) continue;
-					if (candidate.battleOnly !== species.name) continue;
-					if (!(candidate.forme === 'Mega' || candidate.name.includes('-Mega'))) continue;
-
-					if (candidate.requiredForme && candidate.requiredForme !== species.name) continue;
-					if (candidate.requiredItem && item.name !== candidate.requiredItem) continue;
-					if (candidate.requiredItems?.length && !candidate.requiredItems.includes(item.name)) continue;
-					if (candidate.requiredMove && !setMoveNames.has(candidate.requiredMove)) continue;
-
-					const candidatePoints = tierPoints[candidate.tier || ''];
-					if (candidatePoints === undefined) {
-						return [
-							`${candidate.name} has unsupported tier "${candidate.tier || 'N/A'}" for FC Only scoring.`,
-							`Allowed tiers: Uber, (Uber), OU, UUBL, UU, RUBL, RU.`,
-						];
-					}
-
-					if (candidatePoints > bestMegaPoints) {
-						bestMegaPoints = candidatePoints;
-						bestMega = candidate;
-					}
-				}
-
-				if (bestMega) {
-					points = bestMegaPoints;
-					detailsEntry = `${species.name}(${species.tier}) -> ${bestMega.name}(${bestMega.tier}) = ${points}`;
-				}
-
-				total += points;
-				details.push(detailsEntry);
-			}
-
-			const totalBudget = 100 + lcBonus;
-			if (total > totalBudget) {
-				return [
-					`Your team has ${total} points, exceeding the ${totalBudget}-point limit.`,
-					`Breakdown: ${details.join(', ')}`,
-				];
-			}
-		},
-	onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
 			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
