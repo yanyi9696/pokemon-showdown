@@ -8438,6 +8438,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			airslash: ["9M"],
 			cometpunch: ["9M"],
 			skullbash: ["9M"],
+			irondefense: ["9M"],
 			//ZA增添技能
 			acrobatics: ["9M", "8M", "7M", "6M"],
 			aerialace: ["9M", "9L12", "8L12", "7M", "7L16", "6M", "6L16"],
@@ -8556,6 +8557,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			airslash: ["9M"],
 			cometpunch: ["9M"],
 			skullbash: ["9M"],
+			irondefense: ["9M"],
 			//ZA增添技能
 			acrobatics: ["9M", "8M", "7M", "6M"],
 			aerialace: ["9M", "9L12", "8L12", "7M", "7L16", "6M", "6L16"],

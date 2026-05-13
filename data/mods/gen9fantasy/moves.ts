@@ -769,25 +769,29 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		boosts: {
 			atk: 1,
 			spe: 1,
-		},
-		onHit(pokemon) {
-			// 核心加强逻辑：治愈使用者的异常状态（如中毒、麻痹、烧伤等）
+	},
+	onHit(pokemon) {
+		// 检查使用者是否为萌芽鹿家族 (Sawsbuck)
+		if (pokemon.baseSpecies.baseSpecies === 'Sawsbuck') {
+			
+			// 核心加强逻辑：现在治愈异常状态仅在使用者是萌芽鹿时触发
 			pokemon.cureStatus();
 
-			// 原有的形态变化逻辑
-			if (pokemon.baseSpecies.baseSpecies === 'Sawsbuck' && !pokemon.transformed) {
+			// 原有的形态变化逻辑，额外加上排除变身状态的判断
+			if (!pokemon.transformed) {
 				const formeOrder = ['Sawsbuck-Fantasy', 'Sawsbuck-Summer-Fantasy', 'Sawsbuck-Autumn-Fantasy', 'Sawsbuck-Winter-Fantasy'];
 				const currentForme = pokemon.species.name;
 				const currentIndex = formeOrder.indexOf(currentForme);
 				const nextForme = formeOrder[(currentIndex + 1) % formeOrder.length];
 				pokemon.formeChange(nextForme, this.effect, false, '0', '[msg]');
 			}
-		},
+		}
+	},
 		target: "self",
 		type: "Normal",
 		zMove: { effect: 'clearnegativeboost' },
-		desc: "换季:提高自身物攻与速度各1级。治愈使用者的异常状态。萌芽鹿使用该招式后,按季节顺序进行形态变化",
-		shortDesc: "换季:自身物攻与速度+1并治愈异常,萌芽鹿用后按季节变形",
+		desc: "换季:提高自身物攻与速度各1级。如果使用者是萌芽鹿','使用该招式后会治愈自身的异常状态,并按季节顺序进行形态变化。",
+		shortDesc: "换季:自身物攻与速度+1;萌芽鹿使用按季节变形并治愈异常",
 	},
 	yuannengshifang: {
 		num: 10015,
