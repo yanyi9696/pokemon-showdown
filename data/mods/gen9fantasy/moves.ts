@@ -717,45 +717,48 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         priority: 0,
         flags: { contact: 1, protect: 1, mirror: 1 }, 
 		onModifyPriority(priority, source, target, move) {
-			if ((source.baseSpecies.name === 'Xerneas' || source.species.name === 'Xerneas-Fantasy') && source.hasAbility('triage')) {
-				return priority + 3;
-			}
-		},
-		onModifyType(move, pokemon) {
-			if (pokemon.species.name === 'Xerneas-Fantasy' || pokemon.species.name === 'Sawsbuck-Fantasy') {
-				move.type = 'Fairy';
-			} else if (pokemon.species.name === 'Sawsbuck-Summer-Fantasy') {
-				move.type = 'Grass';
-			} else if (pokemon.species.name === 'Sawsbuck-Autumn-Fantasy') {
-				move.type = 'Ground';
-			} else if (pokemon.species.name === 'Sawsbuck-Winter-Fantasy') {
-				move.type = 'Ice';
-			}
-		},
-		onModifyMove(move, pokemon) {
-			if (pokemon.baseSpecies.name === 'Xerneas' || pokemon.species.name === 'Xerneas-Fantasy') {
-				// 哲尔尼亚斯：赋予吸血（造成伤害的 50%）
-				move.drain = [1, 2];
-				
-				// 安全检查，赋予回复标签
-				if (!move.flags) move.flags = {}; 
-				move.flags.heal = 1; 
-			} else {
-				// 【核心修改】萌芽鹿：在这里动态赋予降防的追加效果
-				move.secondary = {
-					chance: 50,
-					boosts: {
-						def: -2,
-					},
-				};
-			}
-		},
+            if ((source.baseSpecies.name === 'Xerneas' || source.species.name === 'Xerneas-Fantasy') && source.hasAbility('triage')) {
+                return priority + 3;
+            }
+        },
+        onModifyType(move, pokemon) {
+            if (pokemon.species.name === 'Xerneas-Fantasy' || pokemon.species.name === 'Sawsbuck-Fantasy') {
+                move.type = 'Fairy';
+            } else if (pokemon.species.name === 'Sawsbuck-Summer-Fantasy') {
+                move.type = 'Grass';
+            } else if (pokemon.species.name === 'Sawsbuck-Autumn-Fantasy') {
+                move.type = 'Ground';
+            } else if (pokemon.species.name === 'Sawsbuck-Winter-Fantasy') {
+                move.type = 'Ice';
+            }
+        },
+        onModifyMove(move, pokemon) {
+            if (pokemon.baseSpecies.name === 'Xerneas' || pokemon.species.name === 'Xerneas-Fantasy') {
+                // 哲尔尼亚斯：赋予吸血（造成伤害的 50%）
+                move.drain = [1, 2];
+                
+                // 安全检查，赋予回复标签
+                if (!move.flags) move.flags = {}; 
+                move.flags.heal = 1; 
+            } else if (['Sawsbuck-Fantasy', 'Sawsbuck-Summer-Fantasy', 'Sawsbuck-Autumn-Fantasy', 'Sawsbuck-Winter-Fantasy'].includes(pokemon.species.name)) {
+                // 【核心修改】萌芽鹿：使用 secondaries (数组形式) 动态赋予降防的追加效果
+                // 这样写可以被战斗引擎正确读取，并且完美兼容天恩特性 (Serene Grace)
+                move.secondaries = [
+                    {
+                        chance: 50,
+                        boosts: {
+                            def: -2,
+                        },
+                    },
+                ];
+            }
+        },
         target: "normal",
         type: "Normal",
         zMove: { basePower: 175 },
         maxMove: { basePower: 130 },
         desc: "鹿角:春&哲尔尼亚斯:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低2级,使用者是哲尔尼亚斯时,变为回复给予伤害50%HP",
-        shortDesc: "鹿角:属性效果随形态不同;萌芽鹿降防2级;哲尔尼亚斯回复",
+        shortDesc: "鹿角:属性效果随形态不同;萌芽鹿50%防御-2;哲尔尼亚斯回复",
     },
 	huanji: {
 		num: 10014,
@@ -790,7 +793,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "self",
 		type: "Normal",
 		zMove: { effect: 'clearnegativeboost' },
-		desc: "换季:提高自身物攻与速度各1级。如果使用者是萌芽鹿','使用该招式后会治愈自身的异常状态,并按季节顺序进行形态变化。",
+		desc: "换季:提高自身物攻与速度各1级。如果使用者是萌芽鹿,使用该招式后会治愈自身的异常状态,并按季节顺序进行形态变化。",
 		shortDesc: "换季:自身物攻与速度+1;萌芽鹿使用按季节变形并治愈异常",
 	},
 	yuannengshifang: {
