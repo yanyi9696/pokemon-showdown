@@ -716,42 +716,40 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         pp: 10,
         priority: 0,
         flags: { contact: 1, protect: 1, mirror: 1 }, 
-        onModifyPriority(priority, source, target, move) {
-            if ((source.baseSpecies.name === 'Xerneas' || source.species.name === 'Xerneas-Fantasy') && source.hasAbility('triage')) {
-                return priority + 3;
-            }
-        },
-        onModifyType(move, pokemon) {
-            if (pokemon.species.name === 'Xerneas-Fantasy' || pokemon.species.name === 'Sawsbuck-Fantasy') {
-                move.type = 'Fairy';
-            } else if (pokemon.species.name === 'Sawsbuck-Summer-Fantasy') {
-                move.type = 'Grass';
-            } else if (pokemon.species.name === 'Sawsbuck-Autumn-Fantasy') {
-                move.type = 'Ground';
-            } else if (pokemon.species.name === 'Sawsbuck-Winter-Fantasy') {
-                move.type = 'Ice';
-            }
-        },
-        onModifyMove(move, pokemon) {
-            if (pokemon.baseSpecies.name === 'Xerneas' || pokemon.species.name === 'Xerneas-Fantasy') {
-                // 赋予吸血（造成伤害的 50%）
-                move.drain = [1, 2];
-                
-                // 安全检查，赋予回复标签
-                if (!move.flags) move.flags = {}; 
-                move.flags.heal = 1; 
-                
-                // 【核心修改】显式将追加效果设为 null，彻底阻断降防效果的触发
-                move.secondary = null; 
-            }
-        },
-        // 这是默认的追加效果，当 move.secondary 没有被设为 null 时才会生效（即萌芽鹿使用时）
-        secondary: {
-            chance: 50,
-            boosts: {
-                def: -2,
-            },
-        },
+		onModifyPriority(priority, source, target, move) {
+			if ((source.baseSpecies.name === 'Xerneas' || source.species.name === 'Xerneas-Fantasy') && source.hasAbility('triage')) {
+				return priority + 3;
+			}
+		},
+		onModifyType(move, pokemon) {
+			if (pokemon.species.name === 'Xerneas-Fantasy' || pokemon.species.name === 'Sawsbuck-Fantasy') {
+				move.type = 'Fairy';
+			} else if (pokemon.species.name === 'Sawsbuck-Summer-Fantasy') {
+				move.type = 'Grass';
+			} else if (pokemon.species.name === 'Sawsbuck-Autumn-Fantasy') {
+				move.type = 'Ground';
+			} else if (pokemon.species.name === 'Sawsbuck-Winter-Fantasy') {
+				move.type = 'Ice';
+			}
+		},
+		onModifyMove(move, pokemon) {
+			if (pokemon.baseSpecies.name === 'Xerneas' || pokemon.species.name === 'Xerneas-Fantasy') {
+				// 哲尔尼亚斯：赋予吸血（造成伤害的 50%）
+				move.drain = [1, 2];
+				
+				// 安全检查，赋予回复标签
+				if (!move.flags) move.flags = {}; 
+				move.flags.heal = 1; 
+			} else {
+				// 【核心修改】萌芽鹿：在这里动态赋予降防的追加效果
+				move.secondary = {
+					chance: 50,
+					boosts: {
+						def: -2,
+					},
+				};
+			}
+		},
         target: "normal",
         type: "Normal",
         zMove: { basePower: 175 },
