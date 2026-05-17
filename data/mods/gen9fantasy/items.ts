@@ -2540,7 +2540,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
-		itemUser: ["Lugia-Fantasy", "Lugia-Shadow-Fantasy"], // 允许基础形态携带
+		itemUser: ["Lugia-Fantasy"],
 		num: 30010,
 		gen: 9,
 		desc: "瓶中黑暗:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP",

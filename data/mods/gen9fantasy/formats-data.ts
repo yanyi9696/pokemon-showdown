@@ -13,6 +13,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	darmanitangalarzenfantasy: {
 		tier: "Illegal",
 	},
+		lugiashadowfantasy: {
+		tier: "Illegal",
+	},
 	darmanitanfantasy: {
 		tier: "Uber",
 	},
@@ -27,9 +30,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 	},
 	lugiafantasy: {
-		tier: "Uber",
-	},
-	lugiashadowfantasy: {
 		tier: "Uber",
 	},
 	melmetalgmegafantasy: {

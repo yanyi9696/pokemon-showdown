@@ -696,7 +696,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["Ghost", "Flying"],
 		gender: "N",
 		baseStats: { hp: 106, atk: 130, def: 90, spa: 154, spd: 90, spe: 110 },
-		abilities: { 0:"Hei An Qin Shi", 1: "Pressure", H: "Multiscale" },
+		abilities: { 0:"Hei An Qin Shi" },
 		heightm: 5.2,
 		weightkg: 216,
 		color: "Black",
