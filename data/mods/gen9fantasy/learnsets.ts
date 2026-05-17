@@ -19074,10 +19074,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	darmanitanfantasy: {
 		learnset: {
 			pyroball: ["9M"],
+			ragingfury: ["9M"],
 			drainpunch: ["9M"],
+			machpunch: ["9M"],
 			closecombat: ["9M"],
 			mysticalpower: ["9M"],
 			psyshock: ["9M"],
+			knockoff: ["9M"],
 			//幻想增添技能
 			attract: ["8M", "7M", "6M", "5M"],
 			bellydrum: ["8L38", "7L30", "6L30", "6S1", "5L30", "5S0"],
@@ -19180,10 +19183,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	darmanitanzenfantasy: {
 		learnset: {
 			pyroball: ["9M"],
+			ragingfury: ["9M"],
 			drainpunch: ["9M"],
+			machpunch: ["9M"],
 			closecombat: ["9M"],
 			mysticalpower: ["9M"],
 			psyshock: ["9M"],
+			knockoff: ["9M"],
 			//幻想增添技能
 			attract: ["8M", "7M", "6M", "5M"],
 			bellydrum: ["8L38", "7L30", "6L30", "6S1", "5L30", "5S0"],
@@ -19289,7 +19295,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			iceshard: ["9M"],
 			tripleaxel: ["9M"],
 			pyroball: ["9M"],
+			ragingfury: ["9M"],
 			dongchadaji: ["9M"],
+			agility: ["9M"],
+			knockoff: ["9M"],
 			//幻想增添技能
 			attract: ["8M"],
 			avalanche: ["8M", "8L12"],
@@ -19365,7 +19374,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			iceshard: ["9M"],
 			tripleaxel: ["9M"],
 			pyroball: ["9M"],
+			ragingfury: ["9M"],
 			dongchadaji: ["9M"],
+			agility: ["9M"],
+			knockoff: ["9M"],
 			//幻想增添技能
 			attract: ["8M"],
 			avalanche: ["8M", "8L12"],
