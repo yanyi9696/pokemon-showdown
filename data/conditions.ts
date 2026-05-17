@@ -1,27 +1,4 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-	heianqinshi: {
-		name: 'Hei An Qin Shi',
-		noCopy: true, // 该状态不可被接棒或复制带走
-		onStart(pokemon) {
-			// 状态开始时，弹出状态横幅并输出台词
-			this.add('-start', pokemon, 'Hei An Qin Shi', '[silent]');
-			this.add('-message', `${pokemon.name}已经被黑暗侵蚀！暗之旋风将席卷一切！`);
-		},
-		onResidualOrder: 28,
-		onResidualSubOrder: 2,
-		onResidual(pokemon) {
-			// 回合结束时，如果宝可梦存活，则扣除最大 HP 的 1/16
-			if (pokemon.hp && !pokemon.fainted) {
-				// 第四个参数 this.effect 会让战斗日志中显示是因为这个状态扣的血
-				this.damage(pokemon.baseMaxhp / 16, pokemon, pokemon, this.effect);
-			}
-		},
-		onEnd(pokemon) {
-			// 离场或状态被清除时触发
-			this.add('-end', pokemon, 'Hei An Qin Shi', '[silent]');
-			this.add('-message', `${pokemon.name}从黑暗侵蚀中解脱出来。`);
-		},
-	},
 	xianxingzhiling: {
 		name: 'xianxingzhiling',
 		// noCopy: true, // 如果你希望这个状态不能被接棒传递，可以取消这行的注释

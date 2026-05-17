@@ -2506,14 +2506,32 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	shadowbottle: {
 		name: "Shadow Bottle",
-		spritenum: 752, // reuse Vile Vial sprite
+		spritenum: 752,
 		fling: {
 			basePower: 60,
 		},
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			if (user.species.id === 'lugiashadowfantasy' && ['Ghost', 'Flying'].includes(move.type)) {
-				return this.chainModify([4915, 4096]);
+		onResidualOrder: 5,
+		onResidualSubOrder: 4,
+		onResidual(pokemon) {
+			// 只有处于基础的“幻想洛奇亚”形态才受到扣血和变身效果影响
+			if (pokemon.species.id === 'lugiafantasy') {
+				// 每回合扣除 1/16 的最大 HP，将道具自身作为伤害来源传递进去
+				const damage = this.damage(pokemon.baseMaxhp / 16, pokemon, pokemon, this.effect);
+				
+				if (damage) {
+					// 新增：每个回合损失血量时的文字提示
+					this.add('-message', `瓶中黑暗正在侵蚀${pokemon.name}……`);
+
+					// 记录因该道具损失的累计血量
+					pokemon.itemState.damageTaken = (pokemon.itemState.damageTaken || 0) + damage;
+					
+					// 检查累计损失的血量是否达到了最大HP的 1/4 (即 25%)
+					if (pokemon.itemState.damageTaken >= pokemon.maxhp / 4) {
+						this.add('-message', `瓶中黑暗满溢而出,将彻底封闭${pokemon.name}的感情！`);
+						// 变身为黑暗形态，之后 ID 变为 'lugiashadowfantasy'，不再触发扣血
+						pokemon.formeChange('Lugia-Shadow-Fantasy', this.effect, true);
+					}
+				}
 			}
 		},
 		onTakeItem(item, pokemon, source) {
@@ -2522,11 +2540,10 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
-		forcedForme: "Lugia-Shadow-Fantasy",
-		itemUser: ["Lugia-Shadow-Fantasy"],
+		itemUser: ["Lugia-Fantasy", "Lugia-Shadow-Fantasy"], // 允许基础形态携带
 		num: 30010,
 		gen: 9,
-		desc: "瓶中黑暗:幻想洛奇携带后形态转换为黑暗形态。幻想洛奇亚携带后幽灵属性和飞行属性的招式威力提升20%",
-		shortDesc: "瓶中黑暗:幻想洛奇亚携带后幽灵属性和飞行属性的招式威力提升20%",
+		desc: "瓶中黑暗:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP",
+		shortDesc: "瓶中黑暗:幻想洛奇亚携带每回合损血1/16,以该方式损血累计达1/4后变身为黑暗形态",
 	},
 };

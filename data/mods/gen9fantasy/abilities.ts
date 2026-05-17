@@ -2031,40 +2031,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifyMove(move, pokemon) {
 			// 检查：必须是造成伤害的攻击类招式（排除变化类招式）
 			if (move.category !== 'Status') {
-				// 1. 触发判定：如果当前没有处于黑暗侵蚀状态
-				if (!pokemon.volatiles['heianqinshi']) {
-					// 50% (1/2) 的触发概率
-					if (this.randomChance(1, 2)) {
-						this.add('-activate', pokemon, 'ability: Hei An Qin Shi');
-						// 为自身添加“黑暗侵蚀”的挥发性状态 (定义在 conditions.ts 中)
-						pokemon.addVolatile('heianqinshi');
-					}
-				}
-				// 2. 效果应用：如果当前处于黑暗侵蚀状态（包含刚刚成功触发的情况）
-				if (pokemon.volatiles['heianqinshi']) {
-					// 开启无视免疫。确保原本无效的打击（如普通打幽灵）也能造成伤害。
-					move.ignoreImmunity = true;
-					// 动态重写该次招式的属性克制计算规则
-					move.onEffectiveness = function (typeMod, target, type, m) {
-						// 只有在还没应用过侵蚀修正，且当前的自然克制还没达到“效果绝佳”时才介入
-						if (!(m as any)._heiAnQinShiApplied) {
-							// typeMod <= 0 代表当前属性计算为 1倍(0) 或 抵抗/免疫(<0)
-							if (typeMod <= 0) {
-								(m as any)._heiAnQinShiApplied = true; // 贴上标记，保证只补偿一次
-								return 1; // 强制将这个属性的计算结果变为绝佳 (2倍)
-							}
+				// 开启无视免疫。确保原本无效的打击（如普通打幽灵）也能造成伤害。
+				move.ignoreImmunity = true;
+				// 动态重写该次招式的属性克制计算规则
+				move.onEffectiveness = function (typeMod, target, type, m) {
+					// 只有在还没应用过侵蚀修正，且当前的自然克制还没达到“效果绝佳”时才介入
+					if (!(m as any)._heiAnQinShiApplied) {
+						// typeMod <= 0 代表当前属性计算为 1倍(0) 或 抵抗/免疫(<0)
+						if (typeMod <= 0) {
+							(m as any)._heiAnQinShiApplied = true; // 贴上标记，保证只补偿一次
+							return 1; // 强制将这个属性的计算结果变为绝佳 (2倍)
 						}
-						// 如果原本已经克制了（typeMod > 0，比如原本就是2倍），或者已经补偿过了
-						// 就返回原本的 typeMod，让引擎自然累加，从而完美保留 4倍 伤害！
-						return typeMod; 
-					};
-				}
+					}
+					// 如果原本已经克制了（typeMod > 0，比如原本就是2倍），或者已经补偿过了
+					// 就返回原本的 typeMod，让引擎自然累加，完美保留 4倍 伤害
+					return typeMod; 
+				};
 			}
 		},
 		flags: {},
 		name: "Hei An Qin Shi",
-		rating: 4,
+		rating: 5, 
 		num: 10041,
-		shortDesc: "黑暗侵蚀:每次攻击有1/2几率使自身被黑暗侵蚀;侵蚀下招式必定效果绝佳,每回合结束损失1/16最大HP",
+		shortDesc: "黑暗侵蚀:自身使用的所有攻击招式都将对目标效果绝佳",
 	},
 };
