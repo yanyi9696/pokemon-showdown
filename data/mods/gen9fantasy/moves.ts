@@ -91,7 +91,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		status: 'slp', // 默认效果：睡眠
 		onTry(source, target, move) {
 			// 允许普通达克莱伊和幻想超级达克莱伊使用该招式
-			if (source.species.name === 'Darkrai' || source.species.name === 'Darkrai-Mega-Fantasy' || move.hasBounced) {
+			if (source.species.name === 'Darkrai' || source.species.name === 'Darkrai-Fantasy' || source.species.name === 'Darkrai-Mega' || source.species.name === 'Darkrai-Mega-Fantasy' || move.hasBounced) {
 				return;
 			}
 			this.add('-fail', source, 'move: Dark Void');

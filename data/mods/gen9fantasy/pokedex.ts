@@ -1822,7 +1822,10 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Black",
 		tags: ["Mythical"],
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Darkranite",
+		requiredItem: "Excadrite",
+		requiredForme: "Darkrai-Fantasy",
+		battleOnly: "Darkrai-Fantasy",
+		spriteid: 'darkrai-mega',
 	},
 
 	// 第5世代 (494-649)
