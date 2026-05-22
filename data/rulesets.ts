@@ -651,8 +651,9 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				let details = pokemon.details.replace(', shiny', '')
 					.replace(/(Zacian|Zamazenta)(?!-Crowned)/g, '$1-*'); // Hacked-in Crowned formes will be revealed
 				if (!this.ruleTable.has('speciesrevealclause')) {
-					details = details
-						.replace(/(Greninja|Gourgeist|Pumpkaboo|Xerneas|Silvally|Urshifu|Dudunsparce)(-[a-zA-Z?-]+)?/g, '$1-*');
+					const hiddenFormes = ['Greninja', 'Gourgeist', 'Pumpkaboo', 'Xerneas', 'Silvally', 'Urshifu', 'Dudunsparce'];
+					if (this.ruleTable.has('fcurshifupreview')) hiddenFormes.splice(hiddenFormes.indexOf('Urshifu'), 1);
+					details = details.replace(new RegExp(`(${hiddenFormes.join('|')})(-[a-zA-Z?-]+)?`, 'g'), '$1-*');
 				}
 				this.add('poke', pokemon.side.id, details, '');
 			}
@@ -2706,6 +2707,14 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		// Hardcoded into effect, cannot be disabled, ties into team preview
 		onBegin() {
 			this.add('rule', 'Species Reveal Clause: Reveals a Pok\u00e9mon\'s true species in hackmons-based metagames.');
+		},
+	},
+	fcurshifupreview: {
+		effectType: 'Rule',
+		name: 'FC Urshifu Preview',
+		desc: "Reveals Urshifu's true forme at Team Preview in FC formats.",
+		onBegin() {
+			this.add('rule', 'FC Urshifu Preview: Urshifu formes are shown at Team Preview in FC formats.');
 		},
 	},
 	franticfusionsmod: {
