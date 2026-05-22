@@ -1822,7 +1822,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Black",
 		tags: ["Mythical"],
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Excadrite",
+		requiredItem: "Darkranite",
 		requiredForme: "Darkrai-Fantasy",
 		battleOnly: "Darkrai-Fantasy",
 		spriteid: 'darkrai-mega',
