@@ -10,10 +10,14 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onRestart(target) {
 			// 如果连续对目标使用变化招式，则刷新 3 回合的持续时间
 			this.effectState.duration = 3;
-			this.add('-message', `${target.name}的噩梦陷入轮回！`);
+			this.add('-message', `${target.name}的噩梦重新陷入轮回！`);
 		},
 		onResidualOrder: 11, // 与原版噩梦 (nightmare) 的结算顺位保持一致
 		onResidual(pokemon) {
+			// 【新增】在扣血前，强制在该宝可梦身上播放“噩梦”的招式动画
+			// 这会产生画面变暗、怨影缠绕以及模型抖动的视觉特效
+			this.add('-anim', pokemon, 'Nightmare', pokemon);
+			
 			// 每回合结束时，造成最大 HP 1/4 的伤害
 			this.damage(pokemon.baseMaxhp / 4);
 		},
