@@ -13,7 +13,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	darmanitangalarzenfantasy: {
 		tier: "Illegal",
 	},
-		lugiashadowfantasy: {
+	lugiashadowfantasy: {
 		tier: "Illegal",
 	},
 	darmanitanfantasy: {
