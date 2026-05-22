@@ -90,8 +90,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { protect: 1, reflectable: 1, mirror: 1, metronome: 1, nosketch: 1 },
 		status: 'slp',
 		onTry(source, target, move) {
-			// 修改1：在允许列表中加入幻想超级达克莱伊的内部名称
-			// (注意：请确认你设定的名字是 'Darkrai-Mega-Fantasy' 还是 'Darkrai-Fantasy'，并保持一致)
+			// 在允许列表中加入幻想超级达克莱伊的内部名称
 			if (['Darkrai', 'Darkrai-Mega-Fantasy'].includes(source.species.name) || move.hasBounced) {
 				return;
 			}
@@ -100,13 +99,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			return null;
 		},
 		onModifyMove(move, pokemon) {
-			// 修改2：如果使用者是幻想超级达克莱伊，招式必定命中
+			// 如果使用者是幻想超级达克莱伊，招式必定命中且不会附加睡眠状态
 			if (pokemon.species.name === 'Darkrai-Mega-Fantasy') {
 				move.accuracy = true;
+				// 删除原有的睡眠状态效果
+				delete move.status;
 			}
 		},
 		onHit(target, source, move) {
-			// 修改3：如果使用者是幻想超级达克莱伊，结算额外效果
+			// 如果使用者是幻想超级达克莱伊，结算额外效果
 			if (source.species.name === 'Darkrai-Mega-Fantasy') {
 				// 获取对手当前的速度数值 (包括了能力升降级后的真实速度)
 				const targetSpeed = target.getStat('spe');
@@ -126,8 +127,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Dark",
 		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Clever",
-		desc: "使目标陷入睡眠。使用者是幻想超级达克莱伊时,给自己回复和对手速度相同数值的血,并降低对手的速度,必定命中",
-		shortDesc: "使目标陷入睡眠。使用者是幻想超级达克莱伊时,效果不同",
+		desc: "使目标陷入睡眠,仅在使用者为达克莱伊时奏效。使用者是幻想超级达克莱伊时,效果发生改变,变为给自己回复和对手速度相同数值的血,并降低对手的速度,必定命中",
+		shortDesc: "使目标陷入睡眠。使用者是幻想超级达克莱伊时,效果改变",
 	},
 	psystrike: {
 		num: 540,
