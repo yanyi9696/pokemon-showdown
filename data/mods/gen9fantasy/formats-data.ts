@@ -16,6 +16,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	lugiashadowfantasy: {
 		tier: "Illegal",
 	},
+	darkraimegafantasy: {
+		tier: "Uber",
+		abilities: {0: "E Meng Chan Rao"},		
+	},
 	darmanitanfantasy: {
 		tier: "Uber",
 	},
@@ -80,6 +84,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Tough Claws"},	
 	},
 	cresseliafantasy: {
+		tier: "(Uber)",
+	},
+	darkraifantasy: {
 		tier: "(Uber)",
 	},
 	delphoxmegafantasy: {

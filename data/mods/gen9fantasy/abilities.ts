@@ -2055,4 +2055,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10041,
 		shortDesc: "黑暗侵蚀:自身使用的所有攻击招式都将对目标效果绝佳",
 	},
+	emengchanrao: {
+		onSourceAfterMoveSecondary(target, source, move) {
+			// 确保使用的是变化招式
+			if (move.category !== 'Status') return;
+			// 排除对自己或己方队友使用的招式（比如自我再生、光墙、帮助等）
+			if (target === source || target.side === source.side) return;
+
+			// 给目标施加专属的噩梦缠绕状态
+			target.addVolatile('emengchanrao');
+		},
+		flags: {},
+		name: "E Meng Chan Rao",
+		rating: 3.5,
+		num: 10042,
+		shortDesc: "噩梦缠绕:对敌方目标成功使用变化招式后,使目标在3回合内陷入恶梦状态",
+	},
 };

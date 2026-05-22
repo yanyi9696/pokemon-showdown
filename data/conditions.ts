@@ -1,4 +1,28 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	emengchanrao: {
+		name: 'E Meng Chan Rao',
+		duration: 3, // 持续 3 回合
+		onStart(target, source, sourceEffect) {
+			// 状态开始时的提示，沿用噩梦的视觉效果
+			this.add('-start', target, 'Nightmare', '[custom] ability: E Meng Chan Rao');
+			this.add('-message', `${target.name}被恐怖的噩梦缠绕了！`);
+		},
+		onRestart(target) {
+			// 如果连续对目标使用变化招式，则刷新 3 回合的持续时间
+			this.effectState.duration = 3;
+			this.add('-message', `${target.name}的噩梦陷入轮回！`);
+		},
+		onResidualOrder: 11, // 与原版噩梦 (nightmare) 的结算顺位保持一致
+		onResidual(pokemon) {
+			// 每回合结束时，造成最大 HP 1/4 的伤害
+			this.damage(pokemon.baseMaxhp / 4);
+		},
+		onEnd(target) {
+			// 3 回合后状态结束时的提示
+			this.add('-end', target, 'Nightmare', '[silent]');
+			this.add('-message', `${target.name}从噩梦缠绕中解脱了！`);
+		},
+	},
 	xianxingzhiling: {
 		name: 'xianxingzhiling',
 		// noCopy: true, // 如果你希望这个状态不能被接棒传递，可以取消这行的注释
