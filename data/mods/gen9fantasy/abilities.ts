@@ -2067,7 +2067,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "E Meng Chan Rao",
-		rating: 3.5,
+		rating: 4,
 		num: 10042,
 		shortDesc: "噩梦缠绕:对敌方目标成功使用变化招式后,使目标在3回合内陷入恶梦状态",
 	},

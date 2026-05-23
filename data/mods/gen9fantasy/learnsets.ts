@@ -23759,11 +23759,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			qibaoliuxing: ["9M"],
 			hex: ["9M"],
 			yuannengshifang: ["9M"],
-			poltergeist: ["9M"],
-			shadowsneak: ["9M"],
 			destinybond: ["9M"],
-			breakingswipe: ["9M"],
-			dragondance: ["9M"],
 			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
@@ -23915,11 +23911,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			qibaoliuxing: ["9M"],
 			hex: ["9M"],
 			yuannengshifang: ["9M"],
-			poltergeist: ["9M"],
-			shadowsneak: ["9M"],
 			destinybond: ["9M"],
-			breakingswipe: ["9M"],
-			dragondance: ["9M"],
 			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
