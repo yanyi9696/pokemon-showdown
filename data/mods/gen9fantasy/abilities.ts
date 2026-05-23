@@ -2025,7 +2025,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Yuan Hai Yang Liu",
 		rating: 4,
 		num: 10040,
-		shortDesc: "渊海洋流:受击降雨,雨天下登场后弱点消失,非自身与水系每回合损失1/16最大HP,随水/飞克制倍数提升",
+		shortDesc: "渊海洋流:受击降雨,雨天下不会被效果绝佳,非自身与水系每回合损失1/16最大HP,随水/飞克制倍数提升",
 	},
 	heianqinshi: {
 		onModifyMove(move, pokemon) {
