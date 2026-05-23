@@ -399,6 +399,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	delcattyfantasy: {
 		tier: "UU",
 	},
+	dusclopsfantasy: {
+		tier: "UU",
+	},
 	dusknoirfantasy: {
 		tier: "UU",
 	},
@@ -574,6 +577,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	thievulfantasy: {
 		tier: "RU",
+	},
+	duskullfantasy: {
+		tier: "LC",
 	},
 	mudkipfantasy: {
 		tier: "LC",
