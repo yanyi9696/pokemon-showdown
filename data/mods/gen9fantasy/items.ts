@@ -243,6 +243,261 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		num: 664,
 		gen: 6,
 	},
+	bugmemory: {
+		name: "Bug Memory",
+		spritenum: 673,
+		onMemory: 'Bug',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Bug-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 909,
+		gen: 7,
+	},
+	darkmemory: {
+		name: "Dark Memory",
+		spritenum: 683,
+		onMemory: 'Dark',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Dark-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 919,
+		gen: 7,
+	},
+	dragonmemory: {
+		name: "Dragon Memory",
+		spritenum: 682,
+		onMemory: 'Dragon',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Dragon-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 918,
+		gen: 7,
+	},
+	electricmemory: {
+		name: "Electric Memory",
+		spritenum: 679,
+		onMemory: 'Electric',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Electric-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 915,
+		gen: 7,
+	},
+	fairymemory: {
+		name: "Fairy Memory",
+		spritenum: 684,
+		onMemory: 'Fairy',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Fairy-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 920,
+		gen: 7,
+	},
+	fightingmemory: {
+		name: "Fighting Memory",
+		spritenum: 668,
+		onMemory: 'Fighting',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Fighting-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 904,
+		gen: 7,
+	},
+	firememory: {
+		name: "Fire Memory",
+		spritenum: 676,
+		onMemory: 'Fire',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Fire-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 912,
+		gen: 7,
+	},
+	flyingmemory: {
+		name: "Flying Memory",
+		spritenum: 669,
+		onMemory: 'Flying',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Flying-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 905,
+		gen: 7,
+	},
+	ghostmemory: {
+		name: "Ghost Memory",
+		spritenum: 674,
+		onMemory: 'Ghost',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Ghost-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 910,
+		gen: 7,
+	},
+	grassmemory: {
+		name: "Grass Memory",
+		spritenum: 678,
+		onMemory: 'Grass',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Grass-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 914,
+		gen: 7,
+	},
+	groundmemory: {
+		name: "Ground Memory",
+		spritenum: 671,
+		onMemory: 'Ground',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Ground-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 907,
+		gen: 7,
+	},
+	icememory: {
+		name: "Ice Memory",
+		spritenum: 681,
+		onMemory: 'Ice',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Ice-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 917,
+		gen: 7,
+	},
+	poisonmemory: {
+		name: "Poison Memory",
+		spritenum: 670,
+		onMemory: 'Poison',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Poison-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 906,
+		gen: 7,
+	},
+	psychicmemory: {
+		name: "Psychic Memory",
+		spritenum: 680,
+		onMemory: 'Psychic',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Psychic-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 916,
+		gen: 7,
+	},
+	rockmemory: {
+		name: "Rock Memory",
+		spritenum: 672,
+		onMemory: 'Rock',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Rock-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 908,
+		gen: 7,
+	},
+	steelmemory: {
+		name: "Steel Memory",
+		spritenum: 675,
+		onMemory: 'Steel',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Steel-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 911,
+		gen: 7,
+	},
+	watermemory: {
+		name: "Water Memory",
+		spritenum: 677,
+		onMemory: 'Water',
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 773) || pokemon.baseSpecies.num === 773) {
+				return false;
+			}
+			return true;
+		},
+		forcedForme: "Silvally-Water-Fantasy",
+		itemUser: ["Silvally", "Silvally-Fantasy"],
+		num: 913,
+		gen: 7,
+	},
 	cameruptite: {
 		name: "Cameruptite",
 		spritenum: 625,
