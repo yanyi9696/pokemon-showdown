@@ -2161,25 +2161,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	arxitonggai: {
 		onStart(pokemon) {
-			// 如果处于太晶化状态，则属性无法被改变
-			if (pokemon.terastallized) return;
-			
+			// 仅对带有 Fantasy 标签的 Silvally 生效
+			if (pokemon.baseSpecies.baseSpecies !== 'Silvally' || !pokemon.baseSpecies.name.includes('Fantasy')) return;
+
 			const item = pokemon.getItem();
-			// 必须深拷贝一份当前形态的基础属性
-			let newTypes = [...pokemon.species.types]; 
-
-			// 检查是否持有存储碟
+			let firstType = "Normal"; // 如果没有携带存储碟，默认第一属性为一般属性
+			
+			// 如果携带了存储碟，读取存储碟内置的 onMemory 属性对应的值（例如 'Bug'）
 			if (item.onMemory) {
-				newTypes[0] = item.onMemory;
-				newTypes = Array.from(new Set(newTypes)); 
+				firstType = item.onMemory;
 			}
-
-			// 如果计算出的新属性和当前实际的属性不同，则进行属性替换
+			
+			// 读取宝可梦的原始图鉴属性（例如 Silvally-Bug-Fantasy 为 ["???", "Bug"]）
+			const dexTypes = pokemon.baseSpecies.types;
+			// 第二属性保持原本形态的第二个属性不变（单属性的容错取第一属性）
+			const secondType = dexTypes.length > 1 ? dexTypes[1] : dexTypes[0];
+			
+			// 组合新属性：如果第一属性和第二属性恰好相同（比如带了虫碟变成了虫，并且自身形态也是虫），则自动转为单属性
+			const newTypes = (firstType === secondType) ? [firstType] : [firstType, secondType];
+			
+			// 比较当前实际属性和应变成的属性，如果不一致则执行变更
 			if (pokemon.getTypes().join() !== newTypes.join()) {
 				pokemon.setType(newTypes);
-				
-				// 去除 [silent] 标签，恢复正常的提示
-				// 因为如果加上 [silent]，会导致前端 UI 接收不到属性变化的指令从而显示异常
+				// this.add 指令会在对战界面弹出 “Silvally-Fantasy 的属性变成了 火/虫” 这种直观的 UI 提示
 				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
 			}
 		},
