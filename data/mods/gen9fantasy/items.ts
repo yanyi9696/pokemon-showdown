@@ -253,6 +253,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined, // 解决强制退化为原版形态导致的报错
 		itemUser: ["Silvally-Bug",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -286,6 +287,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Dark",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -319,6 +321,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Dragon",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -352,6 +355,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Electric",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -385,6 +389,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Fairy",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -418,6 +423,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Fighting",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -451,6 +457,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Fire",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -484,6 +491,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Flying",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -517,6 +525,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Ghost",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -550,6 +559,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Grass",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -583,6 +593,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Ground",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -616,6 +627,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Ice",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -649,6 +661,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Poison",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -682,6 +695,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Psychic",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -715,6 +729,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Rock",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -748,6 +763,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Steel",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
@@ -781,6 +797,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
+		forcedForme: undefined,
 		itemUser: ["Silvally-Water",
 			       "Silvally-Fantasy",
 			       "Silvally-Bug-Fantasy",
