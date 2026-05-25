@@ -467,6 +467,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	tentacruelfantasy: {
 		tier: "UU",
 	},
+	typenullfantasy: {
+		tier: "UU",
+	},
 	tyrantrumfantasy: {
 		tier: "UU",
 	},

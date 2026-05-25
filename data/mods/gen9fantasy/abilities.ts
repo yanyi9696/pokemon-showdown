@@ -2075,4 +2075,76 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10042,
 		shortDesc: "噩梦缠绕:对敌方目标成功使用变化招式后,使目标在3回合内陷入恶梦状态",
 	},
+	zengfuxitong: {
+		// 1. 恢复HP效果受到增幅变为2倍
+		onTryHeal(damage, target, source, effect) {
+			// 指定你要求增幅恢复效果的五个道具 ID
+			const healItems = ['leftovers', 'berryjuice', 'shellbell', 'blacksludge', 'fantasysyrupyapple'];
+			if (effect && effect.effectType === 'Item' && healItems.includes(effect.id)) {
+				this.debug('Dao Ju Zeng Fu heal boost');
+				// 将以上道具的恢复量直接乘以2
+				return this.chainModify(2);
+			}
+		},
+		// 2. 物攻提高效果增幅
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, pokemon) {
+			// 讲究头带：原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍（+100%）
+			if (pokemon.hasItem('choiceband')) {
+				return this.chainModify([4, 3]);
+			}
+		},
+		// 3. 物防提高效果增幅
+		onModifyDefPriority: 5,
+		onModifyDef(def, pokemon) {
+			// 进化奇石：必须满足可进化的条件，原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍（+100%）
+			if (pokemon.hasItem('eviolite') && pokemon.baseSpecies.nfe) {
+				return this.chainModify([4, 3]); 
+			}
+			// 幻之护具：原效果 1.2 倍（+20%），乘上 7/6 后变为 1.4 倍（+40%）
+			if (pokemon.hasItem('fantasyprotector')) {
+				return this.chainModify([7, 6]); 
+			}
+		},
+		// 4. 特攻提高效果增幅
+		onModifySpAPriority: 5,
+		onModifySpA(spa, pokemon) {
+			// 讲究眼镜：原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍
+			if (pokemon.hasItem('choicespecs')) {
+				return this.chainModify([4, 3]);
+			}
+		},
+		// 5. 特防提高效果增幅
+		onModifySpDPriority: 5,
+		onModifySpD(spd, pokemon) {
+			// 进化奇石
+			if (pokemon.hasItem('eviolite') && pokemon.baseSpecies.nfe) {
+				return this.chainModify([4, 3]); 
+			}
+			// 突击背心：原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍
+			if (pokemon.hasItem('assaultvest')) {
+				return this.chainModify([4, 3]); 
+			}
+			// 幻之护具
+			if (pokemon.hasItem('fantasyprotector')) {
+				return this.chainModify([7, 6]); 
+			}
+		},
+		// 6. 速度提高效果增幅
+		onModifySpePriority: 5,
+		onModifySpe(spe, pokemon) {
+			// 讲究围巾：原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍
+			if (pokemon.hasItem('choicescarf')) {
+				return this.chainModify([4, 3]); 
+			}
+		},
+		flags: {
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
+			breakable: 1, notransform: 1,
+		},
+		name: "Zeng Fu Xi Tong",
+		rating: 4,
+		num: 10043,
+		shortDesc: "增幅系统:携带特定道具获得的能力提高效果和恢复HP效果会受到增幅变为2倍",
+	},
 };

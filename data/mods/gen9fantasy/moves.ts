@@ -1783,4 +1783,40 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "形意环打:连续攻击1~3次,每一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45",
 		shortDesc: "形意环打:连续攻击3次,必定击中要害,击中威力会上升",
 	},
+	zengfugongji: {
+		num: 10042,
+		accuracy: 100,
+		basePower: 100,
+		category: "Physical",
+		name: "Zeng Fu Gong Ji",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1 },
+		onModifyMove(move, pokemon) {
+			// 根据携带的道具，动态切换用于计算伤害的面板属性
+			// 在 Showdown 引擎中，切换 overrideOffensiveStat 会自动让伤害计算去抓取对应的 onModify[Stat] 钩子
+			// 这使得该招式能够完美且自动地享受到“进化奇石/突击背心”以及“道具增幅”特性的加成！
+			
+			if (pokemon.hasItem('choicespecs')) {
+				move.overrideOffensiveStat = 'spa'; // 讲究眼镜：使用特攻计算
+			} else if (pokemon.hasItem('choicescarf')) {
+				move.overrideOffensiveStat = 'spe'; // 讲究围巾：使用速度计算
+			} else if (pokemon.hasItem('assaultvest')) {
+				move.overrideOffensiveStat = 'spd'; // 突击背心：使用特防计算
+			} else if ((pokemon.hasItem('eviolite') && pokemon.baseSpecies.nfe) || pokemon.hasItem('fantasyprotector')) {
+				// 进化奇石、幻之护具：同时提升双防，自动比较并取较高的一项作为攻击力
+				const def = pokemon.getStat('def', false, true);
+				const spd = pokemon.getStat('spd', false, true);
+				move.overrideOffensiveStat = def >= spd ? 'def' : 'spd';
+			}
+			// 讲究头带 (choiceband) 本身就是提升物攻，另外像吃剩的东西、幻之蜜汁苹果等道具不提升面板，则默认保持使用物攻 (atk)
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		zMove: { basePower: 180 },
+		contestType: "Cool",
+		desc: "增幅攻击:根据携带道具提升的能力类型，使用该能力值（享受道具的增幅加成）代替自身的攻击进行伤害计算。若道具同时提升多项能力（如进化奇石/幻之护具），则取面板较高的一项进行计算。",
+		shortDesc: "增幅攻击:使用携带道具所提升的能力代替攻击进行伤害计算",
+	},
 };
