@@ -2028,23 +2028,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "渊海洋流:受击降雨,雨天下不会被效果绝佳,非自身与水系每回合损失1/16最大HP,随水/飞克制倍数提升",
 	},
 	heianqinshi: {
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+			// 检查：必须是造成伤害的攻击类招式，将其变更为无属性
+			if (move.category !== 'Status') {
+				move.type = '???'; // Typeless
+			}
+		},
 		onModifyMove(move, pokemon) {
 			// 检查：必须是造成伤害的攻击类招式（排除变化类招式）
 			if (move.category !== 'Status') {
-				// 开启无视免疫。确保原本无效的打击（如普通打幽灵）也能造成伤害。
+				// 开启无视免疫。
 				move.ignoreImmunity = true;
 				// 动态重写该次招式的属性克制计算规则
 				move.onEffectiveness = function (typeMod, target, type, m) {
-					// 只有在还没应用过侵蚀修正，且当前的自然克制还没达到“效果绝佳”时才介入
+					// 只有在还没应用过侵蚀修正时才介入，以此保证打双属性宝可梦时也是2倍而不是4倍
 					if (!(m as any)._heiAnQinShiApplied) {
-						// typeMod <= 0 代表当前属性计算为 1倍(0) 或 抵抗/免疫(<0)
-						if (typeMod <= 0) {
-							(m as any)._heiAnQinShiApplied = true; // 贴上标记，保证只补偿一次
-							return 1; // 强制将这个属性的计算结果变为绝佳 (2倍)
-						}
+						(m as any)._heiAnQinShiApplied = true; // 贴上标记，保证只补偿一次
+						return 1; // 强制将这个属性的计算结果变为绝佳 (2倍)
 					}
-					// 如果原本已经克制了（typeMod > 0，比如原本就是2倍），或者已经补偿过了
-					// 就返回原本的 typeMod，让引擎自然累加，完美保留 4倍 伤害
+					// 由于招式已经变成了无属性，这里传进来的后续 typeMod 必然是 0
+					// 所以直接返回 0，这样最终相性就是 1 + 0 = 1 (即总伤害2倍)
 					return typeMod; 
 				};
 			}
@@ -2053,7 +2057,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Hei An Qin Shi",
 		rating: 5, 
 		num: 10041,
-		shortDesc: "黑暗侵蚀:自身使用的所有攻击招式都将对目标效果绝佳",
+		shortDesc: "黑暗侵蚀:自身所有攻击招式都将变为无属性,但对其他宝可梦效果绝佳",
 	},
 	emengchanrao: {
 		onSourceAfterMoveSecondary(target, source, move) {

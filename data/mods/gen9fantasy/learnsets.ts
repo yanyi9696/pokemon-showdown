@@ -23753,6 +23753,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	lugiafantasy: {
 		learnset: {
 			flipturn: ["9M"],
+			aquajet: ["9M"],
+			wavecrash: ["9M"],
 			muddywater: ["9M"],
 			scald: ["9M"],
 			chuanyun: ["9M"],
@@ -23760,6 +23762,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			hex: ["9M"],
 			yuannengshifang: ["9M"],
 			destinybond: ["9M"],
+			breakingswipe: ["9M"],
+			dragondance: ["9M"],
+			outrage: ["9M"],
 			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
@@ -23905,6 +23910,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	lugiashadowfantasy: {
 		learnset: {
 			flipturn: ["9M"],
+			aquajet: ["9M"],
+			wavecrash: ["9M"],
 			muddywater: ["9M"],
 			scald: ["9M"],
 			chuanyun: ["9M"],
@@ -23912,6 +23919,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			hex: ["9M"],
 			yuannengshifang: ["9M"],
 			destinybond: ["9M"],
+			breakingswipe: ["9M"],
+			dragondance: ["9M"],
+			outrage: ["9M"],
 			huanxiangbaofa: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
