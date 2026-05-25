@@ -2161,47 +2161,42 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	arxitonggai: {
 		onStart(pokemon) {
+			// 如果处于太晶化状态，则属性无法被改变
+			if (pokemon.terastallized) return;
+			
 			const item = pokemon.getItem();
-			let newTypes = pokemon.baseSpecies.types; // 默认为原本的基础属性
+			// 1. 必须深拷贝一份当前形态的基础属性
+			let newTypes = [...pokemon.species.types]; 
 
-			// 检查是否持有存储碟（利用道具里原有的 onMemory 字段判断）
+			// 2. 检查是否持有存储碟（利用道具里原有的 onMemory 字段判断）
 			if (item.onMemory) {
-				const memoryType = item.onMemory;
-				newTypes = [memoryType]; // 将存储碟属性设为第一属性
+				// 将第一属性替换为存储碟的属性
+				newTypes[0] = item.onMemory;
 				
-				// 如果宝可梦原本拥有第二属性，并且与新变成的第一属性不同，则保留拼接为双属性
-				if (pokemon.baseSpecies.types.length > 1) {
-					const secondaryType = pokemon.baseSpecies.types[1];
-					if (secondaryType !== memoryType) {
-						newTypes.push(secondaryType);
-					}
-				}
+				// 3. 利用 Set 去重。如果原来的第二属性和现在的第一属性同名
+				// （例如原本是 水/飞行，带飞行碟后变成了 飞行/飞行），去重后会自动变成单属性 [飞行]
+				newTypes = Array.from(new Set(newTypes)); 
 			}
 
-			// 如果当前的实际属性和计算出的新属性不同，则进行属性替换并提示
+			// 如果计算出的新属性和当前实际的属性不同，则进行属性替换并提示
 			if (pokemon.getTypes().join() !== newTypes.join()) {
-				if (!pokemon.setType(newTypes)) return;
+				pokemon.setType(newTypes);
 				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
 			}
 		},
 		onUpdate(pokemon) {
-			// 如果在战斗中发生道具的获得/失去（虽说一般无法被拍落，但为了严谨性），确保属性正确更新或还原
+			// 如果在战斗中发生道具的获得/失去（比如被戏法、拍落），确保属性实时正确更新或还原
+			if (pokemon.terastallized) return;
 			const item = pokemon.getItem();
-			let newTypes = pokemon.baseSpecies.types;
+			let newTypes = [...pokemon.species.types];
 
 			if (item.onMemory) {
-				const memoryType = item.onMemory;
-				newTypes = [memoryType];
-				if (pokemon.baseSpecies.types.length > 1) {
-					const secondaryType = pokemon.baseSpecies.types[1];
-					if (secondaryType !== memoryType) {
-						newTypes.push(secondaryType);
-					}
-				}
+				newTypes[0] = item.onMemory;
+				newTypes = Array.from(new Set(newTypes));
 			}
 
 			if (pokemon.getTypes().join() !== newTypes.join()) {
-				if (!pokemon.setType(newTypes)) return;
+				pokemon.setType(newTypes);
 				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
 			}
 		},

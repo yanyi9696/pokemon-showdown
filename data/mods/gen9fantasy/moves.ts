@@ -1830,8 +1830,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { protect: 1, mirror: 1, metronome: 1 },
 		onModifyType(move, pokemon) {
 			const types = pokemon.getTypes();
-			// 如果宝可梦拥有第二属性，则招式变为第二属性；如果为单属性，则变为其唯一的属性
-			move.type = types[1] || types[0];
+			// 判断宝可梦是否有第二属性
+			// types[1] 就是第二属性，如果只有单属性则回退使用第一属性 types[0]
+			let type = types.length > 1 ? types[1] : types[0];
+			
+			// 过滤掉不可用的 Bird 属性
+			if (type === 'Bird') type = '???';
+			
+			// 将招式属性修改为对应属性
+			move.type = type;
 		},
 		secondary: null,
 		target: "normal",
