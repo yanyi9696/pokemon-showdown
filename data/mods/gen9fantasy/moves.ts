@@ -496,8 +496,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 120 },
-		desc: "秘剑•百仞川:令目标场地进入碎菱钢状态,使交换上场的宝可梦受到伤害",
-		shortDesc: "秘剑•百仞川:令目标场地进入碎菱钢状态"
+		desc: "秘剑·百仞川:令目标场地进入碎菱钢状态,使交换上场的宝可梦受到伤害",
+		shortDesc: "秘剑·百仞川:令目标场地进入碎菱钢状态"
 	},
 	dianshanxunji: {
 		num: 10004,
@@ -1837,7 +1837,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Normal",
 		zMove: { basePower: 190 },
-		desc: "多属性攻击•改:招式属性会变为使用者的第二属性(若只有单一属性则变为该属性)。",
-		shortDesc: "多属性攻击•改:招式属性变为使用者的第二属性",
+		desc: "多属性攻击·改:招式属性会变为使用者的第二属性(若只有单一属性则变为该属性)。",
+		shortDesc: "多属性攻击·改:招式属性变为使用者的第二属性",
 	},
 };

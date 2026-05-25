@@ -2159,7 +2159,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		desc: "增幅系统:携带特定道具获得的能力提高效果和恢复HP效果会受到增幅变为2倍。当使用与自身属性不同的招式时,该招式的威力会提高1/3。",
 		shortDesc: "增幅系统:道具能力提升与HP恢复增幅为2倍,非本系招式威力提升1/3",
 	},
-	chaoarxitong: {
+	arxitonggai: {
 		onStart(pokemon) {
 			const item = pokemon.getItem();
 			let newTypes = pokemon.baseSpecies.types; // 默认为原本的基础属性
@@ -2181,7 +2181,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 如果当前的实际属性和计算出的新属性不同，则进行属性替换并提示
 			if (pokemon.getTypes().join() !== newTypes.join()) {
 				if (!pokemon.setType(newTypes)) return;
-				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: Chao AR Xi Tong');
+				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
 			}
 		},
 		onUpdate(pokemon) {
@@ -2202,13 +2202,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 			if (pokemon.getTypes().join() !== newTypes.join()) {
 				if (!pokemon.setType(newTypes)) return;
-				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: Chao AR Xi Tong');
+				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
 			}
 		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
-		name: "Chao AR Xi Tong",
+		flags: {
+			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
+			breakable: 1, notransform: 1,
+		},
+		name: "AR Xi Tong Gai",
 		rating: 4,
 		num: 10044,
-		shortDesc: "超•AR系统:根据持有的存储碟改变第一属性,原本的第二属性保持不变",
+		shortDesc: "AR系统·改:根据持有的存储碟改变第一属性,原本的第二属性保持不变",
 	},
 };
