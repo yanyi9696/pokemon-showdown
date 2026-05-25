@@ -496,8 +496,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 120 },
-		desc: "秘剑·百仞川:令目标场地进入碎菱钢状态,使交换上场的宝可梦受到伤害",
-		shortDesc: "秘剑·百仞川:令目标场地进入碎菱钢状态"
+		desc: "秘剑•百仞川:令目标场地进入碎菱钢状态,使交换上场的宝可梦受到伤害",
+		shortDesc: "秘剑•百仞川:令目标场地进入碎菱钢状态"
 	},
 	dianshanxunji: {
 		num: 10004,
@@ -1818,5 +1818,26 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Cool",
 		desc: "增幅攻击:根据携带道具提升的能力类型，使用该能力值（享受道具的增幅加成）代替自身的攻击进行伤害计算。若道具同时提升多项能力（如进化奇石/幻之护具），则取面板较高的一项进行计算。",
 		shortDesc: "增幅攻击:使用携带道具所提升的能力代替攻击进行伤害计算",
+	},
+	duoshuxinggongjigai: {
+		num: 10043,
+		accuracy: 100,
+		basePower: 120,
+		category: "Special",
+		name: "Duo Shu Xing Gong Ji Gai",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		onModifyType(move, pokemon) {
+			const types = pokemon.getTypes();
+			// 如果宝可梦拥有第二属性，则招式变为第二属性；如果为单属性，则变为其唯一的属性
+			move.type = types[1] || types[0];
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		zMove: { basePower: 190 },
+		desc: "多属性攻击•改:招式属性会变为使用者的第二属性(若只有单一属性则变为该属性)。",
+		shortDesc: "多属性攻击•改:招式属性变为使用者的第二属性",
 	},
 };

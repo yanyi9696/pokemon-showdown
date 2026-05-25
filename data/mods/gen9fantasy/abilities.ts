@@ -2138,6 +2138,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return this.chainModify([4, 3]); 
 			}
 		},
+		// 7. 与自身不同属性的招式威力提高 1/3 (非本系加成)
+		onBasePowerPriority: 19,
+		onBasePower(basePower, attacker, defender, move) {
+			// hasType 用来判断攻击者是否具有招式的属性
+			// 如果没有（返回 false，加上!变为 true），则触发增幅
+			if (!attacker.hasType(move.type)) {
+				this.debug('Zeng Fu Xi Tong non-STAB boost');
+				// 乘以 4/3，即提升 1/3 的威力
+				return this.chainModify([4, 3]);
+			}
+		},
 		flags: {
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
 			breakable: 1, notransform: 1,
@@ -2145,6 +2156,59 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Zeng Fu Xi Tong",
 		rating: 4,
 		num: 10043,
-		shortDesc: "增幅系统:携带特定道具获得的能力提高效果和恢复HP效果会受到增幅变为2倍",
+		desc: "增幅系统:携带特定道具获得的能力提高效果和恢复HP效果会受到增幅变为2倍。当使用与自身属性不同的招式时,该招式的威力会提高1/3。",
+		shortDesc: "增幅系统:道具能力提升与HP恢复增幅为2倍,非本系招式威力提升1/3",
+	},
+	chaoarxitong: {
+		onStart(pokemon) {
+			const item = pokemon.getItem();
+			let newTypes = pokemon.baseSpecies.types; // 默认为原本的基础属性
+
+			// 检查是否持有存储碟（利用道具里原有的 onMemory 字段判断）
+			if (item.onMemory) {
+				const memoryType = item.onMemory;
+				newTypes = [memoryType]; // 将存储碟属性设为第一属性
+				
+				// 如果宝可梦原本拥有第二属性，并且与新变成的第一属性不同，则保留拼接为双属性
+				if (pokemon.baseSpecies.types.length > 1) {
+					const secondaryType = pokemon.baseSpecies.types[1];
+					if (secondaryType !== memoryType) {
+						newTypes.push(secondaryType);
+					}
+				}
+			}
+
+			// 如果当前的实际属性和计算出的新属性不同，则进行属性替换并提示
+			if (pokemon.getTypes().join() !== newTypes.join()) {
+				if (!pokemon.setType(newTypes)) return;
+				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: Chao AR Xi Tong');
+			}
+		},
+		onUpdate(pokemon) {
+			// 如果在战斗中发生道具的获得/失去（虽说一般无法被拍落，但为了严谨性），确保属性正确更新或还原
+			const item = pokemon.getItem();
+			let newTypes = pokemon.baseSpecies.types;
+
+			if (item.onMemory) {
+				const memoryType = item.onMemory;
+				newTypes = [memoryType];
+				if (pokemon.baseSpecies.types.length > 1) {
+					const secondaryType = pokemon.baseSpecies.types[1];
+					if (secondaryType !== memoryType) {
+						newTypes.push(secondaryType);
+					}
+				}
+			}
+
+			if (pokemon.getTypes().join() !== newTypes.join()) {
+				if (!pokemon.setType(newTypes)) return;
+				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: Chao AR Xi Tong');
+			}
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
+		name: "Chao AR Xi Tong",
+		rating: 4,
+		num: 10044,
+		shortDesc: "超•AR系统:根据持有的存储碟改变第一属性,原本的第二属性保持不变",
 	},
 };

@@ -443,6 +443,60 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 		abilities: {0: "No Guard"},		
 	},
+	silvallyfantasy: {
+		tier: "UU",
+	},
+	silvallybugfantasy: {
+		tier: "UU",
+	},
+	silvallydarkfantasy: {
+		tier: "UU",
+	},
+	silvallydragonfantasy: {
+		tier: "UU",
+	},
+	silvallyelectricfantasy: {
+		tier: "UU",
+	},
+	silvallyfairyfantasy: {
+		tier: "UU",
+	},
+	silvallyfightingfantasy: {
+		tier: "UU",
+	},
+	silvallyfirefantasy: {
+		tier: "UU",
+	},
+	silvallyflyingfantasy: {
+		tier: "UU",
+	},
+	silvallyghostfantasy: {
+		tier: "UU",
+	},
+	silvallygrassfantasy: {
+		tier: "UU",
+	},
+	silvallygroundfantasy: {
+		tier: "UU",
+	},
+	silvallyicefantasy: {
+		tier: "UU",
+	},
+	silvallypoisonfantasy: {
+		tier: "UU",
+	},
+	silvallypsychicfantasy: {
+		tier: "UU",
+	},
+	silvallyrockfantasy: {
+		tier: "UU",
+	},
+	silvallysteelfantasy: {
+		tier: "UU",
+	},
+	silvallywaterfantasy: {
+		tier: "UU",
+	},
 	skarmoryfantasy: {
 		tier: "UU",
 	},
