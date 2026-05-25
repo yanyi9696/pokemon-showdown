@@ -3157,7 +3157,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Bug Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallydarkfantasy: {
@@ -3173,7 +3172,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Dark Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallydragonfantasy: {
@@ -3189,7 +3187,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Dragon Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallyelectricfantasy: {
@@ -3205,7 +3202,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Electric Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallyfairyfantasy: {
@@ -3221,7 +3217,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Fairy Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallyfightingfantasy: {
@@ -3237,7 +3232,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Fighting Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallyfirefantasy: {
@@ -3253,7 +3247,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Fire Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallyflyingfantasy: {
@@ -3269,7 +3262,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Flying Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallyghostfantasy: {
@@ -3285,7 +3277,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Ghost Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallygrassfantasy: {
@@ -3301,7 +3292,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Grass Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallygroundfantasy: {
@@ -3317,7 +3307,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Ground Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallyicefantasy: {
@@ -3333,7 +3322,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Ice Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallypoisonfantasy: {
@@ -3349,7 +3337,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Poison Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallypsychicfantasy: {
@@ -3365,7 +3352,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Psychic Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallyrockfantasy: {
@@ -3381,7 +3367,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Rock Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallysteelfantasy: {
@@ -3397,7 +3382,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Steel Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	silvallywaterfantasy: {
@@ -3413,7 +3397,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 100.5,
 		color: "Gray",
 		eggGroups: ["Undiscovered"],
-		requiredItem: "Water Memory",
 		changesFrom: "Silvally-Fantasy",
 	},
 	mimikyu: {
