@@ -2165,39 +2165,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (pokemon.terastallized) return;
 			
 			const item = pokemon.getItem();
-			// 1. 必须深拷贝一份当前形态的基础属性
+			// 必须深拷贝一份当前形态的基础属性
 			let newTypes = [...pokemon.species.types]; 
 
-			// 2. 检查是否持有存储碟（利用道具里原有的 onMemory 字段判断）
+			// 检查是否持有存储碟
 			if (item.onMemory) {
-				// 将第一属性替换为存储碟的属性
 				newTypes[0] = item.onMemory;
-				
-				// 3. 利用 Set 去重。如果原来的第二属性和现在的第一属性同名
-				// （例如原本是 水/飞行，带飞行碟后变成了 飞行/飞行），去重后会自动变成单属性 [飞行]
 				newTypes = Array.from(new Set(newTypes)); 
 			}
 
-			// 如果计算出的新属性和当前实际的属性不同，则进行属性替换并提示
+			// 如果计算出的新属性和当前实际的属性不同，则进行属性替换
 			if (pokemon.getTypes().join() !== newTypes.join()) {
 				pokemon.setType(newTypes);
-				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
-			}
-		},
-		onUpdate(pokemon) {
-			// 如果在战斗中发生道具的获得/失去（比如被戏法、拍落），确保属性实时正确更新或还原
-			if (pokemon.terastallized) return;
-			const item = pokemon.getItem();
-			let newTypes = [...pokemon.species.types];
-
-			if (item.onMemory) {
-				newTypes[0] = item.onMemory;
-				newTypes = Array.from(new Set(newTypes));
-			}
-
-			if (pokemon.getTypes().join() !== newTypes.join()) {
-				pokemon.setType(newTypes);
-				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
+				
+				// 【关键修复】使用 [silent] 标签，系统会在后台静默修改属性图标
+				// 绝对不会在战斗公屏上刷出任何 "changed to ..." 的文字提示
+				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[silent]');
 			}
 		},
 		flags: {
