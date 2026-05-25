@@ -2178,9 +2178,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (pokemon.getTypes().join() !== newTypes.join()) {
 				pokemon.setType(newTypes);
 				
-				// 【关键修复】使用 [silent] 标签，系统会在后台静默修改属性图标
-				// 绝对不会在战斗公屏上刷出任何 "changed to ..." 的文字提示
-				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[silent]');
+				// 去除 [silent] 标签，恢复正常的提示
+				// 因为如果加上 [silent]，会导致前端 UI 接收不到属性变化的指令从而显示异常
+				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
 			}
 		},
 		flags: {
