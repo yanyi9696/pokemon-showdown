@@ -2171,22 +2171,25 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (pokemon.baseSpecies.baseSpecies !== 'Silvally' || !pokemon.species.name.includes('Fantasy')) return;
 
 			const item = pokemon.getItem();
-			let firstType = "Normal"; // 如果没有带碟子，默认第一属性为一般系
 			
-			// 读取存储碟对应的属性 (例如 'Bug', 'Fire' 等)
-			if (item.onMemory) {
-				firstType = item.onMemory;
+			// 直接写死：读取存储碟的 onMemory 属性。如果没有携带对应碟子，默认替换为一般属性（Normal）
+			const firstType = item.onMemory ? item.onMemory : "Normal"; 
+			
+			// 获取宝可梦图鉴上原本设定的属性（例如 ["???", "Bug"]）
+			const dexTypes = pokemon.species.types; 
+			
+			let newTypes;
+			// 检查宝可梦是否有第二属性
+			if (dexTypes.length > 1) {
+				const secondType = dexTypes[1];
+				// 组合新属性：如果碟子属性和自身第二属性一样，则转为单属性（防止出现 "Bug/Bug" 的情况）
+				newTypes = (firstType === secondType) ? [firstType] : [firstType, secondType];
+			} else {
+				// 如果原本只有单属性，则直接变成存储碟的属性
+				newTypes = [firstType];
 			}
 
-			// 【修正点 1】必须使用 pokemon.species.types 获取当前形态（如 Silvally-Bug-Fantasy）的属性
-			// 绝对不能用 baseSpecies，否则会读取到纯一般系的普通银伴战兽
-			const dexTypes = pokemon.species.types; 
-			const secondType = dexTypes.length > 1 ? dexTypes[1] : dexTypes[0];
-			
-			// 组合新属性：如果碟子属性和自身第二属性一样，转为单属性；否则组合为双属性
-			const newTypes = (firstType === secondType) ? [firstType] : [firstType, secondType];
-			
-			// 【修正点 2】后台持续监控并覆盖。加入比对逻辑防止无限循环
+			// 比对当前实际生效的属性，如果不一致则执行替换
 			if (pokemon.getTypes().join() !== newTypes.join()) {
 				pokemon.setType(newTypes);
 				// 发送指令给前端 UI，呈现出属性被替换的效果
