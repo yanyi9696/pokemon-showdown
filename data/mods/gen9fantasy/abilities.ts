@@ -2161,40 +2161,43 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	arxitonggai: {
 		onStart(pokemon) {
-			// 仅对带有 Fantasy 标签的 Silvally 生效
-			if (pokemon.baseSpecies.baseSpecies !== 'Silvally' || !pokemon.species.name.includes('Fantasy')) return;
-			// 登场时主动触发一次 Update，以便在 UI 渲染的第一时间改变属性
-			this.singleEvent('Update', this.effect, this.effectState, pokemon);
-		},
-		onUpdate(pokemon) {
-			// 确保目标正确
-			if (pokemon.baseSpecies.baseSpecies !== 'Silvally' || !pokemon.species.name.includes('Fantasy')) return;
+			if (pokemon.baseSpecies.baseSpecies !== 'Silvally' || !pokemon.species.name.includes('Fantasy') || pokemon.transformed) return;
 
 			const item = pokemon.getItem();
-			
-			// 直接写死：读取存储碟的 onMemory 属性。如果没有携带对应碟子，默认替换为一般属性（Normal）
-			const firstType = item.onMemory ? item.onMemory : "Normal"; 
-			
-			// 获取宝可梦图鉴上原本设定的属性（例如 ["???", "Bug"]）
-			const dexTypes = pokemon.species.types; 
-			
+			// 读取存储碟对应的属性，如果没有则默认为一般系
+			const firstType = item.onMemory ? (item.onMemory as string) : "Normal";
+			const dexTypes = pokemon.species.types;
+
 			let newTypes;
-			// 检查宝可梦是否有第二属性
 			if (dexTypes.length > 1) {
 				const secondType = dexTypes[1];
-				// 组合新属性：如果碟子属性和自身第二属性一样，则转为单属性（防止出现 "Bug/Bug" 的情况）
 				newTypes = (firstType === secondType) ? [firstType] : [firstType, secondType];
 			} else {
-				// 如果原本只有单属性，则直接变成存储碟的属性
 				newTypes = [firstType];
 			}
 
-			// 比对当前实际生效的属性，如果不一致则执行替换
-			if (pokemon.getTypes().join() !== newTypes.join()) {
-				pokemon.setType(newTypes);
-				// 发送指令给前端 UI，呈现出属性被替换的效果
-				this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
+			// 仅发送 UI 视觉改变的指令，不实际改写状态标签，避免死循环
+			this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[from] ability: AR Xi Tong Gai');
+		},
+		onTypePriority: 1, // 提高优先级，确保能覆盖掉基础的属性获取
+		onType(types, pokemon) {
+			// 底层伤害计算拦截：当游戏引擎需要获取宝可梦属性时，直接动态计算并返回正确属性
+			if (pokemon.baseSpecies.baseSpecies !== 'Silvally' || !pokemon.species.name.includes('Fantasy') || pokemon.transformed) return types;
+
+			const item = pokemon.getItem();
+			const firstType = item.onMemory ? (item.onMemory as string) : "Normal";
+			const dexTypes = pokemon.species.types;
+
+			let newTypes;
+			if (dexTypes.length > 1) {
+				const secondType = dexTypes[1];
+				newTypes = (firstType === secondType) ? [firstType] : [firstType, secondType];
+			} else {
+				newTypes = [firstType];
 			}
+
+			// 直接将算好的新属性返回给伤害计算公式，免伤和克制判定将完美生效
+			return newTypes;
 		},
 		flags: {
 			failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
