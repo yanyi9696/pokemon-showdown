@@ -26,7 +26,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		desc: `Randomized teams of Fantasy Pok&eacute;mon with sets that prioritize Fantasy moves and items when they fit the Pok&eacute;mon's role.`,
 		mod: 'gen9fantasy',
 		team: 'random',
-		ruleset: ['Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Illusion Level Mod', 'FC Mega Ban Check', 'FC Urshifu Preview', 'Ignore Event Shiny Clause'],
+		ruleset: ['Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Illusion Level Mod', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
 			pokemon.m.fantasySync = (mon: Pokemon) => {
@@ -78,7 +78,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] FC Only",
 		mod: 'gen9fantasy',
 		desc: `Only Fantasy Pok&eacute;mon are legal. Team budget is 100 points, plus 20 extra points for each LC Pok&eacute;mon.`,
-		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'FC Urshifu Preview', 'Ignore Event Shiny Clause'],
+		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: [
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
@@ -225,7 +225,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC AG",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'FC Urshifu Preview', 'Ignore Event Shiny Clause'],
+		ruleset: ['Standard AG', 'NatDex Mod', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
 			pokemon.m.fantasySync = (mon: Pokemon) => {
@@ -276,7 +276,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC Uber",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check', 'FC Urshifu Preview', 'Ignore Event Shiny Clause'],
+		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: ['ND AG', 'Shedinja', 'Assist', 'Baton Pass',
 			'Arena Trap', 'Moody', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
@@ -331,7 +331,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC Ubers UU",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check', 'FC Urshifu Preview', 'Ignore Event Shiny Clause'],
+		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: ['ND AG',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
@@ -395,7 +395,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC OU",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'FC Urshifu Preview', 'Ignore Event Shiny Clause'],
+		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: [
 			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail', 'Greninja-Ash Z'
@@ -658,7 +658,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] FC LC",
 		mod: 'gen9fantasy',
-		ruleset: ['Standard NatDex', 'Little Cup', 'FC Mega Ban Check', 'FC Urshifu Preview', 'Ignore Event Shiny Clause'],
+		ruleset: ['Standard NatDex', 'Little Cup', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: [
 			'Aipom', 'Basculin-White-Striped', 'Clamperl', 'Corsola-Galar', 'Cutiefly', 'Diglett-Base', 'Dunsparce', 'Duraludon', 'Flittle', 'Gastly', 'Girafarig',
 			'Gligar', 'Magby', 'Meditite', 'Misdreavus', 'Murkrow', 'Porygon', 'Qwilfish-Hisui', 'Rufflet', 'Scraggy', 'Scyther', 'Sneasel', 'Sneasel-Hisui',
@@ -728,7 +728,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Max Team Size = 6',
 			'Picked Team Size = 4',
 			'FC Mega Ban Check',
-				'FC Urshifu Preview',
+				'FC Forme Preview',
 			'Ignore Event Shiny Clause'
 		],
 		banlist: [
@@ -797,7 +797,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		gameType: 'freeforall',
 		rated: false,
 		tournamentShow: false,
-		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', '!Sleep Clause Mod', '!Evasion Items Clause', 'FC Mega Ban Check', 'FC Urshifu Preview', 'Ignore Event Shiny Clause'],
+		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', '!Sleep Clause Mod', '!Evasion Items Clause', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		    banlist: [
         // 来自 FC Ubers 的核心禁用项
         'ND AG', 'Shedinja', 'Assist', 'Baton Pass',
@@ -863,7 +863,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		debug: true,
 		battle: { trunc: Math.trunc },
 		// no restrictions, for serious (other than team preview)
-		ruleset: ['Team Preview', 'FC Urshifu Preview', 'Cancel Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
+		ruleset: ['Team Preview', 'FC Forme Preview', 'Cancel Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
 			pokemon.m.fantasySync = (mon: Pokemon) => {
