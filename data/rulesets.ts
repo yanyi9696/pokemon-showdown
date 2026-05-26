@@ -651,12 +651,24 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				let details = pokemon.details.replace(', shiny', '')
 					.replace(/(Zacian|Zamazenta)(?!-Crowned)/g, '$1-*'); // Hacked-in Crowned formes will be revealed
 				if (!this.ruleTable.has('speciesrevealclause')) {
-					const hiddenFormes = ['Greninja', 'Gourgeist', 'Pumpkaboo', 'Xerneas', 'Silvally', 'Urshifu', 'Dudunsparce'];
+					// Mask by base species so we can selectively reveal Silvally fantasy formes
+					const hiddenBases = ['Greninja', 'Gourgeist', 'Pumpkaboo', 'Xerneas', 'Silvally', 'Urshifu', 'Dudunsparce'];
+					// FC Forme Preview reveals Urshifu fully; Silvally will be handled per-pokemon
 					if (this.ruleTable.has('fcformepreview')) {
-						hiddenFormes.splice(hiddenFormes.indexOf('Urshifu'), 1);
-						hiddenFormes.splice(hiddenFormes.indexOf('Silvally'), 1);
+						const idx = hiddenBases.indexOf('Urshifu');
+						if (idx !== -1) hiddenBases.splice(idx, 1);
 					}
-					details = details.replace(new RegExp(`(${hiddenFormes.join('|')})(-[a-zA-Z?-]+)?`, 'g'), '$1-*');
+					const base = pokemon.species?.baseSpecies || '';
+					if (hiddenBases.includes(base)) {
+						if (base === 'Silvally' && this.ruleTable.has('fcformepreview')) {
+							// Reveal only Fantasy Silvally formes (species name containing 'Fantasy')
+							if (!pokemon.species.name?.includes('Fantasy')) {
+								details = details.replace(/(Silvally)(-[a-zA-Z?-]+)?/g, '$1-*');
+							}
+						} else {
+							details = details.replace(new RegExp(`(${base})(-[a-zA-Z?-]+)?`, 'g'), '$1-*');
+						}
+					}
 				}
 				this.add('poke', pokemon.side.id, details, '');
 			}
