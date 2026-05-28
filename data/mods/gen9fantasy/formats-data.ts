@@ -304,6 +304,60 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sandyshocksfantasy: {
 		tier: "OU",
 	},
+	silvallyfantasy: {
+		tier: "OU",
+	},
+	silvallybugfantasy: {
+		tier: "OU",
+	},
+	silvallydarkfantasy: {
+		tier: "OU",
+	},
+	silvallydragonfantasy: {
+		tier: "OU",
+	},
+	silvallyelectricfantasy: {
+		tier: "OU",
+	},
+	silvallyfairyfantasy: {
+		tier: "OU",
+	},
+	silvallyfightingfantasy: {
+		tier: "OU",
+	},
+	silvallyfirefantasy: {
+		tier: "OU",
+	},
+	silvallyflyingfantasy: {
+		tier: "OU",
+	},
+	silvallyghostfantasy: {
+		tier: "OU",
+	},
+	silvallygrassfantasy: {
+		tier: "OU",
+	},
+	silvallygroundfantasy: {
+		tier: "OU",
+	},
+	silvallyicefantasy: {
+		tier: "OU",
+	},
+	silvallypoisonfantasy: {
+		tier: "OU",
+	},
+	silvallypsychicfantasy: {
+		tier: "OU",
+	},
+	silvallyrockfantasy: {
+		tier: "OU",
+	},
+	silvallysteelfantasy: {
+		tier: "OU",
+	},
+	silvallywaterfantasy: {
+		tier: "OU",
+	},
 	skeledirgefantasy: {
 		tier: "OU",
 	},
@@ -445,60 +499,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	scolipedemegafantasy: {
 		tier: "UU",
 		abilities: {0: "No Guard"},		
-	},
-	silvallyfantasy: {
-		tier: "UU",
-	},
-	silvallybugfantasy: {
-		tier: "UU",
-	},
-	silvallydarkfantasy: {
-		tier: "UU",
-	},
-	silvallydragonfantasy: {
-		tier: "UU",
-	},
-	silvallyelectricfantasy: {
-		tier: "UU",
-	},
-	silvallyfairyfantasy: {
-		tier: "UU",
-	},
-	silvallyfightingfantasy: {
-		tier: "UU",
-	},
-	silvallyfirefantasy: {
-		tier: "UU",
-	},
-	silvallyflyingfantasy: {
-		tier: "UU",
-	},
-	silvallyghostfantasy: {
-		tier: "UU",
-	},
-	silvallygrassfantasy: {
-		tier: "UU",
-	},
-	silvallygroundfantasy: {
-		tier: "UU",
-	},
-	silvallyicefantasy: {
-		tier: "UU",
-	},
-	silvallypoisonfantasy: {
-		tier: "UU",
-	},
-	silvallypsychicfantasy: {
-		tier: "UU",
-	},
-	silvallyrockfantasy: {
-		tier: "UU",
-	},
-	silvallysteelfantasy: {
-		tier: "UU",
-	},
-	silvallywaterfantasy: {
-		tier: "UU",
 	},
 	skarmoryfantasy: {
 		tier: "UU",

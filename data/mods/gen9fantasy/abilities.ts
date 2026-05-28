@@ -327,8 +327,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 检查是否击中要害。系统会在伤害计算前确定 crit 标志，
 			// 如果招式自带 willCrit 也会在这里生效。
 			if (target.getMoveHitData(move).crit) {
-				this.debug('Infiltrator defense drop (Crit: 20%)');
-				return this.chainModify(0.8); // 无视20%物防
+				this.debug('Infiltrator defense drop (Crit: 25%)');
+				return this.chainModify(0.75); // 无视25%物防
 			}
 			
 			this.debug('Infiltrator defense drop (Normal: 10%)');
@@ -340,8 +340,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 			// 同理，检查是否击中要害
 			if (target.getMoveHitData(move).crit) {
-				this.debug('Infiltrator special defense drop (Crit: 20%)');
-				return this.chainModify(0.8); // 无视20%特防
+				this.debug('Infiltrator special defense drop (Crit: 25%)');
+				return this.chainModify(0.75); // 无视25%特防
 			}
 
 			this.debug('Infiltrator special defense drop (Normal: 10%)');
@@ -351,7 +351,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Infiltrator",
 		rating: 3,
 		num: 151,
-		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%双防,ct时无视提升至20%",
+		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%双防,ct时无视提升至25%",
 	},
 	illusion: {
 		onBeforeSwitchIn(pokemon) {
@@ -2071,7 +2071,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "E Meng Chan Rao",
-		rating: 4,
+		rating: 4.5,
 		num: 10042,
 		shortDesc: "噩梦缠绕:对敌方目标成功使用变化招式后,使目标在3回合内陷入恶梦状态",
 	},
@@ -2154,7 +2154,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			breakable: 1, notransform: 1,
 		},
 		name: "Zeng Fu Xi Tong",
-		rating: 4,
+		rating: 5,
 		num: 10043,
 		desc: "增幅系统:携带特定道具获得的能力提高效果和恢复HP效果会受到增幅变为2倍。当使用与自身属性不同的招式时,该招式的威力会提高1/3。",
 		shortDesc: "增幅系统:道具能力提升与HP恢复增幅为2倍,非本系招式威力提升1/3",
@@ -2280,7 +2280,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Lei Zhu",
-		rating: 4.5,
+		rating: 4,
 		num: 10045,
 		shortDesc: "擂主:登场后使场上所有非幽灵属性宝可梦无法替换3回合;期间每倒下1只宝可梦,自身双攻永久提升10%",
 	},
