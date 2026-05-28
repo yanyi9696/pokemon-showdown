@@ -2935,6 +2935,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 
 	// 第7世代 (722-809)
+	incineroar: {
+		inherit: true,
+		otherFormes: ["Incineroar-Fantasy"],
+		formeOrder: ["Incineroar", "Incineroar-Fantasy"],
+	},
+	incineroarfantasy: {
+		num: 727,
+		name: "Incineroar-Fantasy",
+		baseSpecies: "Incineroar",
+		forme: "Fantasy",
+		types: ["Fire", "Dark"],
+		genderRatio: { M: 0.875, F: 0.125 },
+		baseStats: { hp: 105, atk: 115, def: 100, spa: 50, spd: 100, spe: 60 },
+		abilities: { 0: "Lei Zhu", H: "Intimidate" },
+		heightm: 1.8,
+		weightkg: 83,
+		color: "Red",
+		prevo: "Torracat",
+		evoLevel: 34,
+		eggGroups: ["Field"],
+	},
 	decidueye: {
 		inherit: true,
 		otherFormes: ["Decidueye-Hisui", "Decidueye-Hisui-Fantasy"],

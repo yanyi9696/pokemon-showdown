@@ -2208,4 +2208,80 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10044,
 		shortDesc: "AR系统·改:根据持有的存储碟改变第一属性,原本的第二属性保持不变",
 	},
+	leizhu: {
+		onStart(pokemon) {
+			// 登场时为自身附加“擂主”挥发性状态（用于计时和全场封锁）
+			pokemon.addVolatile('leizhu');
+		},
+		// --- 以下3个钩子利用原生机制实现“全场无法逃走” ---
+		// 1. 阻止对手逃走
+		onFoeTrapPokemon(pokemon) {
+			if (this.effectState.target.volatiles['leizhu']) {
+				pokemon.tryTrap(true);
+			}
+		},
+		// 2. 阻止自身逃走
+		onTrapPokemon(pokemon) {
+			if (this.effectState.target.volatiles['leizhu']) {
+				pokemon.tryTrap(true);
+			}
+		},
+		// 3. 尝试阻止队友逃走（针对双打环境，保证“全场”无法逃走）
+		onAllyTrapPokemon(pokemon) {
+			if (this.effectState.target.volatiles['leizhu']) {
+				pokemon.tryTrap(true);
+			}
+		},
+		// --- 永久提升物攻 ---
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			const stacks = (attacker as any).leizhuStacks;
+			if (stacks) {
+				// 每有1层提升 10%。例如 1层 [11, 10]，2层 [12, 10]，避免浮点数计算误差
+				return this.chainModify([10 + stacks, 10]);
+			}
+		},
+		// --- 永久提升特攻 ---
+		onModifySpAPriority: 5,
+		onModifySpA(spa, attacker, defender, move) {
+			const stacks = (attacker as any).leizhuStacks;
+			if (stacks) {
+				return this.chainModify([10 + stacks, 10]);
+			}
+		},
+		// 内部定义的局部挥发性状态，用于充当定时器和监听阵亡事件
+		condition: {
+			duration: 3, // 持续 3 回合
+			onStart(pokemon) {
+				this.add('-activate', pokemon, 'ability: Lei Zhu');
+				this.add('-message', `${pokemon.name} 设立了擂台！在接下来的 3 回合内，全场宝可梦都无法逃走！`);
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'ability: Lei Zhu');
+				this.add('-message', `擂台的时间到了，所有宝可梦可以自由退场了。`);
+			},
+			// 监听场上任何宝可梦的阵亡事件（优先级略高确保一定能结算）
+			onAnyFaintPriority: 1,
+			onAnyFaint(target, source, effect) {
+				const abilityHolder = this.effectState.target;
+				// 必须处于擂台期间
+				if (!abilityHolder.volatiles['leizhu']) return;
+				// （可选）自身被打倒时不需要跳出加成提示，不过不影响其实际效果
+				if (target === abilityHolder) return;
+				
+				// 在宝可梦身上永久记录层数（由于使用了 as any，不会在交换后被消除重置）
+				if (!(abilityHolder as any).leizhuStacks) {
+					(abilityHolder as any).leizhuStacks = 0;
+				}
+				(abilityHolder as any).leizhuStacks++;
+				
+				this.add('-message', `由于 ${target.name} 倒下，擂主 ${abilityHolder.name} 的物攻与特攻永久提升了 10%！`);
+			},
+		},
+		flags: {},
+		name: "Lei Zhu",
+		rating: 4.5,
+		num: 10045,
+		shortDesc: "登场时使场上所有宝可梦无法逃走3回合;期间每有宝可梦倒下,双攻永久提升10%",
+	},
 };

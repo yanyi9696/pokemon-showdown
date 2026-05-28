@@ -424,6 +424,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	illumisefantasy: {
 		tier: "UU",
 	},
+	incineroarfantasy: {
+		tier: "UU",
+	},
 	mienshaofantasy: {
 		tier: "UU",
 	},
