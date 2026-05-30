@@ -385,6 +385,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezinggalarfantasy: {
 		tier: "OU",
 	},
+	zarudefantasy: {
+		tier: "OU",
+	},
+	zarudedadafantasy: {
+		tier: "OU",
+	},
 	abomasnowmegafantasy: {
 		tier: "UUBL",
 		abilities: {0: "Bao Xue Zhi Li"},	

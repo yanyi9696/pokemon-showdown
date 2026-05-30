@@ -1864,4 +1864,44 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "灵魂沙渊:攻击目标造成伤害。使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下",
 		shortDesc: "灵魂沙渊:困住并伤害目标4~5回合",
 	},
+	conglinzhanshu: {
+		num: 10044, // 如果你的自制技能编号有冲突，可以顺延修改
+		accuracy: 100,
+		basePower: 0,
+		basePowerCallback(pokemon, target, move) {
+			// 如果是“幻想萨戮德-阿爸”，直接返回 120 的固定威力
+			if (pokemon.species.id === 'zarudedadafantasy') {
+				return 120;
+			}
+			// 正常情况：计算健康同伴的围攻威力
+			if (!move.allies || !move.allies.length) return 0; // 防错处理
+			const currentSpecies = move.allies.shift()!.species;
+			const bp = 5 + Math.floor(currentSpecies.baseStats.atk / 10);
+			this.debug(`BP for ${currentSpecies.name} hit: ${bp}`);
+			return bp;
+		},
+		category: "Physical",
+		name: "Cong Lin Zhan Shu",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, allyanim: 1, metronome: 1 },
+		onModifyMove(move, pokemon) {
+			// 判定使用者是否为“幻想萨戮德-阿爸”
+			if (pokemon.species.id === 'zarudedadafantasy') {
+				// 变为单次攻击
+				delete move.multihit;
+			} else {
+				// 正常草系围攻：过滤掉濒死和陷入异常状态的同伴
+				move.allies = pokemon.side.pokemon.filter(ally => ally === pokemon || (!ally.fainted && !ally.status));
+				move.multihit = move.allies.length;
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Grass",
+		zMove: { basePower: 100 },
+		contestType: "Clever",
+		desc: "丛林战术:所有健康的己方宝可梦会一起攻击目标。使用者是幻想萨戮德-阿爸时,变为单次攻击,招式威力提升至120",
+		shortDesc: "丛林战术:全队健康同伴一起攻击;阿爸形态变为120威力单发",
+	}
 };

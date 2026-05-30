@@ -502,6 +502,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Water Compaction",
 		rating: 3.5,
 		num: 195,
+		shortDesc: "不受水属性招式的影响,当被水属性的招式击中时,提升2级防御",
 	},
 	disguise: {
 		onDamagePriority: 1,
@@ -2318,5 +2319,65 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4,
 		num: 10045,
 		shortDesc: "擂主:登场后使场上所有非幽灵属性宝可梦无法替换3回合;期间每倒下1只宝可梦,自身双攻永久提升10%",
+	},
+	paiwaizuqun: {
+		// 1. 出场时的挑衅效果
+		onStart(pokemon) {
+			// 如果持有者为“幻想萨戮德-阿爸”，则基础的挑衅效果不生效
+			if (pokemon.species.id === 'zarudedadafantasy') return;
+
+			// 检查同行宝可梦中是否有处于濒死 (昏厥) 状态的同伴
+			const hasFaintedAlly = pokemon.side.pokemon.some(p => p.fainted);
+
+			// 如果没有同伴濒死，对所有相邻对手使用挑衅
+			if (!hasFaintedAlly) {
+				let activated = false;
+				for (const target of pokemon.adjacentFoes()) {
+					if (!target.volatiles['taunt']) {
+						if (!activated) {
+							// 触发特性提示，保证一回合只提示一次
+							this.add('-ability', pokemon, 'Pai Wai Zu Qun');
+							activated = true;
+						}
+						target.addVolatile('taunt', pokemon);
+					}
+				}
+			}
+		},
+		
+		// 2. 连续招式的威力提升50%
+		onBasePowerPriority: 23,
+		onBasePower(basePower, attacker, defender, move) {
+			// 如果持有者为“幻想萨戮德-阿爸”，则基础的威力提升效果不生效
+			if (attacker.species.id === 'zarudedadafantasy') return;
+
+			// 借鉴 Skill Link 的判定逻辑：通过 move.multihit 判定是否为连续招式
+			if (move.multihit) {
+				this.debug('Pai Wai Zu Qun multihit boost');
+				return this.chainModify(1.5); // 威力提升50%
+			}
+		},
+
+		// 3. 专属形态变动：防住向自己和同伴发出的心灵攻击
+		onAllyTryAddVolatile(status, target, source, effect) {
+			const effectHolder = this.effectState.target;
+			
+			// 仅当持有者为“幻想萨戮德-阿爸”时，心灵防护效果才生效
+			if (effectHolder.species.id !== 'zarudedadafantasy') return;
+
+			// 借鉴 Aroma Veil (芳香幕) 屏蔽心灵攻击状态
+			if (['attract', 'disable', 'encore', 'healblock', 'taunt', 'torment'].includes(status.id)) {
+				if (effect.effectType === 'Move') {
+					this.add('-block', target, 'ability: Pai Wai Zu Qun', `[of] ${effectHolder}`);
+				}
+				return null; // 拦截状态添加
+			}
+		},
+
+		flags: { breakable: 1 }, // 允许被破格等特性无视
+		name: "Pai Wai Zu Qun",
+		rating: 3.5,
+		num: 10046,
+		shortDesc: "排外族群:无同伴濒死时出场挑衅对手,连续招式威力+50%;使用者为幻想萨戮德-阿爸,防心灵攻击",
 	},
 };

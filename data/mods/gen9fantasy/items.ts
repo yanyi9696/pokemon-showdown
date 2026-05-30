@@ -3107,4 +3107,73 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		desc: "暗影之瓶:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP",
 		shortDesc: "暗影之瓶:幻想洛奇亚携带每回合损血1/16,以该方式损血累计达1/4后变身为黑暗形态",
 	},
+	dadascloak: {
+		name: "Dada's Cloak",
+		spritenum: 7,
+		fling: {
+			basePower: 10,
+		},
+		// 防止被拍落、戏法等移除
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.name.includes('Zarude')) || pokemon.baseSpecies.name.includes('Zarude')) {
+				return false;
+			}
+			return true;
+		},
+		// 登场时进行形态转换
+		onStart(pokemon) {
+			if (pokemon.species.id === 'zarudefantasy') {
+				this.add('-item', pokemon, "Dada's Cloak");
+				pokemon.formeChange('Zarude-Dada-Fantasy', this.effect, true);
+				this.add('-message', `${pokemon.name}披上了阿爸的披风，这份感情带给它一种特别的力量！`);
+			}
+		},
+
+		// ==========================================
+		// --- 【我行我素】效果 ---
+		// ==========================================
+		onUpdate(pokemon) {
+			if (pokemon.volatiles['confusion']) {
+				this.add('-activate', pokemon, "item: Dada's Cloak");
+				pokemon.removeVolatile('confusion');
+			}
+		},
+		onTryAddVolatile(status, pokemon) {
+			if (status.id === 'confusion') return null;
+		},
+		onHit(target, source, move) {
+			if (move?.volatileStatus === 'confusion') {
+				this.add('-immune', target, 'confusion', "[from] item: Dada's Cloak");
+			}
+		},
+		onTryBoost(boost, target, source, effect) {
+			if (effect.name === 'Intimidate' && boost.atk) {
+				delete boost.atk;
+				this.add('-fail', target, 'unboost', 'Attack', "[from] item: Dada's Cloak", `[of] ${target}`);
+			}
+		},
+
+		// ==========================================
+		// --- 【亲子爱】效果 ---
+		// ==========================================
+		onPrepareHit(source, target, move) {
+			if (move.category === 'Status' || move.multihit || move.flags['noparentalbond'] || move.flags['charge'] ||
+				move.flags['futuremove'] || move.spreadHit || move.isZ || move.isMax) return;
+			move.multihit = 2;
+			move.multihitType = 'parentalbond';
+		},
+		// 伤害修正由于在 BattleActions#modifyDamage() 中根据 'parentalbond' 标签自动执行，这里只需复制处理异常即可
+		onSourceModifySecondaries(secondaries, target, source, move) {
+			if (move.multihitType === 'parentalbond' && move.id === 'secretpower' && move.hit < 2) {
+				// hack to prevent accidentally suppressing King's Rock/Razor Fang
+				return secondaries.filter(effect => effect.volatileStatus === 'flinch');
+			}
+		},
+
+		itemUser: ["Zarude-Fantasy", "Zarude-Dada-Fantasy"],
+		num: 30011,
+		gen: 9,
+		desc: "阿爸的披风:幻想萨戮德携带后形态转换为幻想萨戮德-阿爸形态,并且发挥出【我行我素】与【亲子爱】的力量。",
+		shortDesc: "阿爸的披风:变为阿爸形态,发挥出【我行我素】与【亲子爱】的力量",
+	}
 };
