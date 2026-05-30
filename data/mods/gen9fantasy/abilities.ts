@@ -489,6 +489,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4,
 		num: 176,
 	},
+	watercompaction: {
+		onTryHit(target, source, move) {
+			if (target !== source && move.type === 'Water') {
+				if (!this.boost({ def: 2 })) {
+					this.add('-immune', target, '[from] ability: Water Compaction');
+				}
+				return null;
+			}
+		},
+		flags: {},
+		name: "Water Compaction",
+		rating: 3.5,
+		num: 195,
+	},
 	disguise: {
 		onDamagePriority: 1,
 		onDamage(damage, target, source, effect) {
@@ -649,38 +663,59 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 224,
 	},
 	stalwart: {
-		// --------------------------------------------------
-		// 1. 原有的“坚毅”效果 - 无视吸引招式
-		// --------------------------------------------------
 		onModifyMovePriority: 1,
-		onModifyMove(move) {
-			// 这部分代码通过设置一个 'tracksTarget' 标志，
-			// 来告诉系统该宝可梦的招式会无视对手的重定向效果（如“看我嘛”）。
-			// 核心逻辑在对战引擎的其他部分处理，但这个标志是必须的。
+		onModifyMove(move, source, target) {
+			// most of the implementation is in Battle#getTarget
 			move.tracksTarget = move.target !== 'scripted';
-		},
-
-		// --------------------------------------------------
-		// 2. 新增的免疫效果 - 不会无法自由使出招式
-		// --------------------------------------------------
-		onTryAddVolatile(status, target, source, effect) {
-			// 定义一个列表，包含所有我们想要免疫的状态的ID。
-			const blockedStatuses = ['attract', 'taunt', 'encore', 'torment', 'disable', 'healblock'];
-
-			// 检查当前正要施加的状态（status.id）是否在我们的黑名单里。
-			if (blockedStatuses.includes(status.id)) {
-				// 如果是，就在对战日志中显示免疫信息。
-				// 这样玩家就能知道是特性“坚毅”阻止了状态变化。
-				this.add('-immune', target, '[from] ability: Stalwart');
-				// 返回 null 会中断状态施加的流程，从而实现免疫。
-				return null;
+            
+			// 如果目标准备替换离场，使出的钢系攻击招式会像追打一样必中
+			if (move.type === 'Steel' && move.category !== 'Status' && (target?.beingCalledBack || target?.switchFlag)) {
+				move.accuracy = true;
 			}
 		},
-		flags: { breakable: 1 },
+		onFoeBeforeSwitchOut(target) {
+			const source = this.effectState.target;
+			// 确保自身存活且与准备离场的宝可梦相邻
+			if (!source.isAdjacent(target) || !source.hp) return;
+            
+			// 获取自身本回合预定的行动
+			const action = this.queue.willMove(source);
+			if (!action || action.choice !== 'move') return;
+            
+			// 检查预定的招式是否为钢系且为攻击招式（排除铁壁等变化类招式）
+			const move = this.dex.getActiveMove(action.moveid);
+			if (move.type !== 'Steel' || move.category === 'Status') return;
+            
+			// 尝试取消原定行动（如果成功取消，说明还没行动过）
+			if (!this.queue.cancelMove(source)) return;
+            
+			// 触发特性提示
+			this.add('-activate', source, 'ability: Stalwart');
+            
+			// 处理 Mega 进化、太晶化等需要在攻击前进行的系统变化
+			if (source.canMegaEvo || source.canUltraBurst || source.canTerastallize) {
+				for (const [actionIndex, qAction] of this.queue.entries()) {
+					if (qAction.pokemon === source) {
+						if (qAction.choice === 'megaEvo') {
+							this.actions.runMegaEvo(source);
+						} else if (qAction.choice === 'terastallize') {
+							this.actions.terastallize(source);
+						} else {
+							continue;
+						}
+						this.queue.list.splice(actionIndex, 1);
+						break;
+					}
+				}
+			}
+            
+			// 立刻强制对准备离场的宝可梦使出刚才预定的钢系招式
+			this.actions.runMove(move.id, source, source.getLocOf(target));
+		},
+		flags: {},
 		name: "Stalwart",
-		rating: 1,
+		rating: 3,
 		num: 242,
-		shortDesc: "攻击原本选定的目标。不会进入着迷、再来一次、挑衅、无理取闹、定身法和回复封锁状态",
 	},
 	//以下为CAP特性
 	mountaineer: {

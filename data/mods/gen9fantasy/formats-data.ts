@@ -490,6 +490,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	orbeetlefantasy: {
 		tier: "UU",
 	},
+	palossandfantasy: {
+		tier: "UU",
+	},
 	pidgeotfantasy: {
 		tier: "UU",
 	},
