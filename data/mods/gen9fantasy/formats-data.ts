@@ -178,6 +178,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: { 0: "Shi Ying Li" },
 	},
+	ampharosmegafantasy: {
+		tier: "OU",
+	},
 	aerodactylfantasy: {
 		tier: "OU",
 	},
@@ -443,6 +446,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	zoroarkhisuifantasy: {
 		tier: "UUBL",
+	},
+	ampharosfantasy: {
+		tier: "UU",
 	},
 	beheeyemfantasy: {
 		tier: "UU",

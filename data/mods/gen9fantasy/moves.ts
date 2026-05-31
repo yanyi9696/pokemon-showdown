@@ -1815,6 +1815,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Normal",
 		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
 		contestType: "Cool",
 		desc: "增幅攻击:根据携带道具提升的能力类型，使用该能力值（享受道具的增幅加成）代替自身的攻击进行伤害计算。若道具同时提升多项能力（如进化奇石/幻之护具），则取面板较高的一项进行计算",
 		shortDesc: "增幅攻击:使用携带道具所提升的能力代替攻击进行伤害计算",
@@ -1844,6 +1845,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Normal",
 		zMove: { basePower: 190 },
+		maxMove: { basePower: 140 },
 		desc: "多属性攻击·改:招式属性会变为使用者的第二属性(若只有单一属性则变为该属性)",
 		shortDesc: "多属性攻击·改:招式属性变为使用者的第二属性",
 	},
@@ -1861,11 +1863,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Ground",
 		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
 		desc: "灵魂沙渊:攻击目标造成伤害。使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下",
 		shortDesc: "灵魂沙渊:困住并伤害目标4~5回合",
 	},
 	conglinzhanshu: {
-		num: 10044, // 如果你的自制技能编号有冲突，可以顺延修改
+		num: 10045,
 		accuracy: 100,
 		basePower: 0,
 		basePowerCallback(pokemon, target, move) {
@@ -1900,8 +1903,34 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Grass",
 		zMove: { basePower: 100 },
+		maxMove: { basePower: 100 },
 		contestType: "Clever",
 		desc: "丛林战术:所有健康的己方宝可梦会一起攻击目标。使用者是幻想萨戮德-阿爸时,变为单次攻击,招式威力提升至120",
 		shortDesc: "丛林战术:全队健康同伴一起攻击;阿爸形态变为120威力单发",
-	}
+	},
+	leiguanghongming: {
+		num: 10046,
+		accuracy: 100,
+		basePower: 80,
+		category: "Special",
+		name: "Lei Guang Hong Ming",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, light: 1, metronome: 1 },
+		secondary: {
+			chance: 100,
+			self: {
+				boosts: {
+					spa: 1,
+				},
+			},
+		},
+		target: "normal",
+		type: "Electric",
+		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
+		contestType: "Beautiful",
+		desc: "雷光轰鸣:令使用者的特攻提升1级",
+		shortDesc: "雷光轰鸣:令使用者的特攻提升1级",
+	},
 };

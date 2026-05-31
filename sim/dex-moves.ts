@@ -64,6 +64,7 @@ interface MoveFlags {
 	sound?: 1; // Has no effect on Pokemon with the Ability Soundproof.
 	wind?: 1; // Activates the Wind Power and Wind Rider Abilities.
 	shooting?: 1; // 拥有破竹特性的宝可梦在使用射击类招式时，无视防御方的能力变化与特性，直接给予伤害。
+	light?: 1; // 具有发光特性的宝可梦使用时，威力会乘以1.3。
 	
 }
 
