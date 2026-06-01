@@ -269,6 +269,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magnezonefantasy: {
 		tier: "OU",
 	},
+	mamoswinefantasy: {
+		tier: "OU",
+	},
 	melmetalfantasy: {
 		tier: "OU",
 	},
