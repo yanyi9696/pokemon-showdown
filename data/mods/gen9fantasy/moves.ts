@@ -1748,17 +1748,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		name: "Cun Jin Beng Ji",
 		pp: 5,
 		priority: 0,
-		// contact: 触发接触类特性/道具; punch: 触发铁拳特性; cantusetwice: 无法连续使用
-		flags: { contact: 1, protect: 1, mirror: 1, punch: 1, metronome: 1, cantusetwice: 1 },
-		willCrit: true, // 必定击中要害
+		flags: { contact: 1, protect: 1, mirror: 1, punch: 1, metronome: 1 },
+		self: {
+			boosts: {
+				atk: -1,
+			},
+		},
+		willCrit: true,
 		secondary: null,
 		target: "normal",
 		type: "Rock",
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Tough",
-		desc: "寸劲崩击:这个招式无法连续使出2次。攻击必定击中要害",
-		shortDesc: "寸劲崩击:无法连续使用。必定击中要害",
+		desc: "寸劲崩击:令使用者的攻击下降1级。攻击必定击中要害",
+		shortDesc: "寸劲崩击:令使用者的攻击下降1级。必定击中要害",
 	},
 	xingyihuanda: {
 		num: 10041,
