@@ -2380,4 +2380,48 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10046,
 		shortDesc: "排外族群:无同伴濒死时出场挑衅对手,连续招式威力+50%;使用者为幻想萨戮德-阿爸,防心灵攻击",
 	},
+	bingliaoya: {
+		// 1. 免疫灼伤逻辑（如果因特性交换等原因获得该特性时已灼伤，则自动治愈）
+		onUpdate(pokemon) {
+			if (pokemon.status === 'brn') {
+				this.add('-activate', pokemon, 'ability: Bing Liao Ya');
+				pokemon.cureStatus();
+			}
+		},
+		// 2. 免疫尝试施加的灼伤状态
+		onSetStatus(status, target, source, effect) {
+			if (status.id !== 'brn') return;
+			if ((effect as Move)?.status) {
+				this.add('-immune', target, '[from] ability: Bing Liao Ya');
+			}
+			return false;
+		},
+		// 3. 使用冰属性招式前恢复下降的能力
+		onBeforeMove(pokemon, target, move) {
+			if (move.type === 'Ice') {
+				let activate = false;
+				const restores: any = {}; // 使用 any 避免 TypeScript 找不到 SparseBoostsTable 类型报错
+				
+				// 遍历各项能力阶级，查找是否有小于0的（被降低的能力）
+				for (const stat in pokemon.boosts) {
+					if (pokemon.boosts[stat as keyof typeof pokemon.boosts] < 0) {
+						activate = true;
+						restores[stat] = 0; // 将下降的能力重置为 0
+					}
+				}
+				
+				// 如果有被下降的能力，则执行恢复并显示战斗信息
+				if (activate) {
+					this.add('-activate', pokemon, 'ability: Bing Liao Ya');
+					pokemon.setBoost(restores);
+					this.add('-restoreboost', pokemon);
+				}
+			}
+		},
+		flags: { breakable: 1 }, // 允许被破格等特性无视
+		name: "Bing Liao Ya",
+		rating: 3,
+		num: 10047,
+		shortDesc: "冰獠牙:不会陷入灼伤状态。使用冰属性招式前会恢复自己下降的能力",
+	},
 };
