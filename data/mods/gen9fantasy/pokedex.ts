@@ -4218,7 +4218,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		heightm: 1.8,
 		weightkg: 70,
 		color: "Black",
-		requiredItem: "Dada's cloak",
+		requiredItem: "Dada's Cloak",
 		eggGroups: ["Undiscovered"],
 	},
 
