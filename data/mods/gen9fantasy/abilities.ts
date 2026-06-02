@@ -37,6 +37,33 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 4,
 		shortDesc: "不会被击中要害。被接触类招式击中时,攻击方的攻击降低1级",
 	},
+	illuminate: {
+		onTryBoost(boost, target, source, effect) {
+			if (source && target === source) return;
+			if (boost.accuracy && boost.accuracy < 0) {
+				delete boost.accuracy;
+				if (!(effect as ActiveMove).secondaries) {
+					this.add("-fail", target, "unboost", "accuracy", "[from] ability: Illuminate", `[of] ${target}`);
+				}
+			}
+		},
+		onModifyMove(move) {
+			move.ignoreEvasion = true;
+		},
+		// 增加对于光类招式的伤害增幅（30%）
+		onBasePowerPriority: 21,
+		onBasePower(basePower, attacker, defender, move) {
+			if (move.flags['light']) {
+				this.debug('Illuminate light move power boost');
+				return this.chainModify([5325, 4096]); // 代表1.3倍增幅
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Illuminate",
+		rating: 3,
+		num: 35,
+		shortDesc: "命中率能力不会被降低,无视目标闪避率提升;使用光类招式威力提高30%",
+	},
 	magmaarmor: {
 		// 1. 免疫逻辑：处理冰冻 (frz) 和 冻伤 (fst)
 		onUpdate(pokemon) {
