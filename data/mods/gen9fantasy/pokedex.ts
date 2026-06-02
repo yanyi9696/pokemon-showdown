@@ -521,7 +521,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Ampharos",
 		forme: "Mega",
 		types: ["Electric", "Dragon"],
-		baseStats: { hp: 90, atk: 75, def: 115, spa: 10, spd: 115, spe: 45 },
+		baseStats: { hp: 90, atk: 75, def: 115, spa: 170, spd: 115, spe: 45 },
 		abilities: { 0: "Electric Surge" },
 		heightm: 1.4,
 		weightkg: 61.5,

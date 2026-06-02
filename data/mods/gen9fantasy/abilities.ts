@@ -717,6 +717,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Stalwart",
 		rating: 3,
 		num: 242,
+		shortDesc: "攻击原本选定的目标;当对手替换宝可梦时,钢属性招式会立刻攻击准备离场的宝可梦",
 	},
 	//以下为CAP特性
 	mountaineer: {

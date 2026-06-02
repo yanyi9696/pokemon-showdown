@@ -2854,38 +2854,42 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		fling: {
 			basePower: 10,
 		},
-		// 效果 1：基础威力小于等于100的招式必定击中要害
+		// 效果 1：基础威力小于等于 100 的招式，贴上必定击中要害的标签
 		onModifyMove(move, pokemon, target) {
-			// 确保招式具备基础威力，且威力 <= 100
 			if (move.basePower && move.basePower <= 100) {
-				move.willCrit = true; // 贴上必定暴击的标签
+				move.willCrit = true; 
 			}
 		},
-		// 效果 2：取消击中要害时默认的 1.5 倍伤害加成
-		onModifyDamage(damage, source, target, move) {
-			// 如果当前攻击击中要害
-			if (target.getMoveHitData(move).crit) {
-				this.debug('Fantasy Scope Lens neutralizes the 1.5x crit multiplier');
-				// 系统默认暴击倍率是 1.5，我们乘以 2/3 (即 chainModify([2, 3])) 将其抵消回 1 倍
-				return this.chainModify([2, 3]);
-			}
-		},
-		// 效果 3：当击中要害率大于 0（等级大于默认值 1）时，威力提升 20%
+		// 效果 2 & 3：处理“威力（Base Power）”的提升逻辑
 		onBasePower(basePower, pokemon, target, move) {
-			// 使用引擎原生的 ModifyCritRatio 事件，完美汇总招式自带要害率、超幸运、聚气等所有加成
-			// 默认的要害等级是 1
-			const critRatio = this.runEvent('ModifyCritRatio', pokemon, target, move, move.critRatio || 1);
+			// 读取图鉴中的原始招式数据
+			const moveData = this.dex.moves.get(move.id);
 			
-			// 如果计算后的等级大于 1，说明存在要害率提升
+			// 判定 1：若招式原本就必定击中要害（如：冰息、山岚摔），威力提升 50%
+			if (moveData.willCrit) {
+				this.debug('Fantasy Scope Lens: +100% Base Power for natural guaranteed crit');
+				return this.chainModify(2);
+			}
+			
+			// 判定 2：排除上面的情况后，计算当前的击中要害率（包含招式自带、聚气、超幸运等加成）
+			// 在引擎中，默认暴击等级是 1（即 0% 概率），所以 >1 即代表“击中要害率大于0”
+			const critRatio = this.runEvent('ModifyCritRatio', pokemon, target, move, move.critRatio || 1);
 			if (critRatio > 1) {
-				this.debug('Fantasy Scope Lens boosting power due to >0 crit ratio');
-				return this.chainModify(1.2); // 威力上升 20%
+				this.debug('Fantasy Scope Lens: +20% Base Power for >0 crit ratio');
+				return this.chainModify(1.2);
+			}
+		},
+		// 效果 4：只要招式击中要害（无论是自带的还是道具强加的），一律取消 1.5 倍的暴击伤害加成
+		onModifyDamage(damage, source, target, move) {
+			if (target.getMoveHitData(move).crit) {
+				this.debug('Fantasy Scope Lens: neutralizing the 1.5x crit multiplier for ALL moves');
+				return this.chainModify([2, 3]); // 乘以 2/3，完美抵消系统的 1.5 倍暴击乘区
 			}
 		},
 		num: 30004,
 		gen: 9,
-		desc: "幻之焦点镜:威力≤100的招式必定击中要害,击中要害时没有1.5倍伤害提升。当自身击中要害率提升或招式容易击中要害时,招式威力提升20%",
-		shortDesc: "幻之焦点镜:威力≤100的招式必定暴击但无倍率加成;招式击中要害率>0威力提升20%",
+		desc: "幻之焦点镜:虽然击中要害失去1.5倍伤害提升,但基础威力小于等于100的招式都将必定击中要害。若招式击中要害率大于0,威力上升20%;若招式原本就必定击中要害,威力上升100%",
+		shortDesc: "幻之焦点镜:ct不提升威力,威力≤100招式必ct;要害率>0威力+20%,原本必ct威力翻倍",
 	},
 	fantasysyrupyapple: {
 		name: "Fantasy Syrupy Apple",

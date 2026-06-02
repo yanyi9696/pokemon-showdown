@@ -11079,7 +11079,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Luster Purge",
 		pp: 5,
 		priority: 0,
-		flags: { protect: 1, mirror: 1, metronome: 1 },
+		flags: { protect: 1, mirror: 1, metronome: 1, light: 1 },
 		secondary: {
 			chance: 50,
 			boosts: {

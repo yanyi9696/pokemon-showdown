@@ -1743,30 +1743,30 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	cunjinbengji: {
 		num: 10040,
 		accuracy: 100,
-		basePower: 85,
+		basePower: 65,
 		category: "Physical",
 		name: "Cun Jin Beng Ji",
 		pp: 5,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, punch: 1, metronome: 1 },
-		self: {
+		willCrit: true,
+		secondary: {
+			chance: 100,
 			boosts: {
-				atk: -1,
+				def: -1,
 			},
 		},
-		willCrit: true,
-		secondary: null,
 		target: "normal",
 		type: "Rock",
-		zMove: { basePower: 160 },
-		maxMove: { basePower: 130 },
+		zMove: { basePower: 120 },
+		maxMove: { basePower: 120 },
 		contestType: "Tough",
-		desc: "寸劲崩击:令使用者的攻击下降1级。攻击必定击中要害",
-		shortDesc: "寸劲崩击:令使用者的攻击下降1级。必定击中要害",
+		desc: "寸劲崩击:令目标的防御降低1级。攻击必定击中要害",
+		shortDesc: "寸劲崩击:令目标的防御降低1级。必定击中要害",
 	},
 	xingyihuanda: {
 		num: 10041,
-		accuracy: 90,
+		accuracy: 95,
 		basePower: 15,
 		basePowerCallback(pokemon, target, move) {
 			return 15 * move.hit;
