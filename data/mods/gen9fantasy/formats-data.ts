@@ -196,7 +196,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	chandeluremegafantasy: {
 		tier: "OU",
-		abilities: {0: "Shou Hun"},		
+		abilities: {0: "Magic Guard"},		
 	},
 	corviknightfantasy: {
 		tier: "OU",
