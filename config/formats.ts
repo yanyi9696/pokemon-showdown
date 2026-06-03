@@ -80,7 +80,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		desc: `Only Fantasy Pok&eacute;mon are legal. Team budget is 100 points, plus 20 extra points for each LC Pok&eacute;mon.`,
 		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: [
-			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
 		],
 		onValidateTeam(team) {
@@ -278,7 +278,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: ['ND AG', 'Shedinja', 'Assist', 'Baton Pass',
-			'Arena Trap', 'Moody', 'Shadow Tag', 'King\'s Rock',
+			'Arena Trap', 'Moody', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 		],
 		onSwitchIn(pokemon) {
@@ -333,7 +333,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', '!Evasion Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Mega Rayquaza Clause', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: ['ND AG',
-			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
 			'Arceus-Normal', 'Arceus-Dark', 'Arceus-Ground', 'Calyrex-Ice', 'Chien-Pao', 'Deoxys-Attack', 'Eternatus', 'Giratina-Origin',
 			'Groudon-Primal', 'Ho-Oh', 'Kyogre-Primal', 'Lunala', 'Marshadow', 'Melmetal', 'Mewtwo-Mega-Y', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra',
@@ -397,7 +397,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
 		banlist: [
-			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail', 'Greninja-Ash Z'
 		],
 		onSwitchIn(pokemon) {
@@ -801,7 +801,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		    banlist: [
         // 来自 FC Ubers 的核心禁用项
         'ND AG', 'Shedinja', 'Assist', 'Baton Pass',
-        'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+        'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
         'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 
         // 来自官方 Free-For-All，用于平衡4人对战的禁用项

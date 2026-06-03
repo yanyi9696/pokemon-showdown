@@ -691,60 +691,59 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 224,
 	},
 	stalwart: {
+		onStart(pokemon) {
+			pokemon.addVolatile('stalwart');
+		},
 		onModifyMovePriority: 1,
 		onModifyMove(move, source, target) {
 			// most of the implementation is in Battle#getTarget
+			// 无视具有吸引对手招式效果的影响 (坚毅的基础效果)
 			move.tracksTarget = move.target !== 'scripted';
-            
-			// 如果目标准备替换离场，使出的钢系攻击招式会像追打一样必中
-			if (move.type === 'Steel' && move.category !== 'Status' && (target?.beingCalledBack || target?.switchFlag)) {
-				move.accuracy = true;
-			}
 		},
-		onFoeBeforeSwitchOut(target) {
-			const source = this.effectState.target;
-			// 确保自身存活且与准备离场的宝可梦相邻
-			if (!source.isAdjacent(target) || !source.hp) return;
-            
-			// 获取自身本回合预定的行动
-			const action = this.queue.willMove(source);
-			if (!action || action.choice !== 'move') return;
-            
-			// 检查预定的招式是否为钢系且为攻击招式（排除铁壁等变化类招式）
-			const move = this.dex.getActiveMove(action.moveid);
-			if (move.type !== 'Steel' || move.category === 'Status') return;
-            
-			// 尝试取消原定行动（如果成功取消，说明还没行动过）
-			if (!this.queue.cancelMove(source)) return;
-            
-			// 触发特性提示
-			this.add('-activate', source, 'ability: Stalwart');
-            
-			// 处理 Mega 进化、太晶化等需要在攻击前进行的系统变化
-			if (source.canMegaEvo || source.canUltraBurst || source.canTerastallize) {
-				for (const [actionIndex, qAction] of this.queue.entries()) {
-					if (qAction.pokemon === source) {
-						if (qAction.choice === 'megaEvo') {
-							this.actions.runMegaEvo(source);
-						} else if (qAction.choice === 'terastallize') {
-							this.actions.terastallize(source);
-						} else {
-							continue;
-						}
-						this.queue.list.splice(actionIndex, 1);
-						break;
-					}
+		condition: {
+			onStart(pokemon) {
+				this.effectState.lastMove = '';
+				this.effectState.numConsecutive = 0;
+			},
+			onTryMovePriority: -2,
+			onTryMove(pokemon, target, move) {
+				// 检查特性是否还在，如果不在则移除记录状态
+				if (!pokemon.hasAbility('stalwart')) {
+					pokemon.removeVolatile('stalwart');
+					return;
 				}
-			}
-            
-			// 立刻强制对准备离场的宝可梦使出刚才预定的钢系招式
-			this.actions.runMove(move.id, source, source.getLocOf(target));
+				if (move.callsMove) return;
+				// 每次尝试使用招式时核对是否为同一招式
+				if (this.effectState.lastMove === move.id && pokemon.moveLastTurnResult) {
+					this.effectState.numConsecutive++;
+				} else if (pokemon.volatiles['twoturnmove']) {
+					if (this.effectState.lastMove !== move.id) {
+						this.effectState.numConsecutive = 1;
+					} else {
+						this.effectState.numConsecutive++;
+					}
+				} else {
+					this.effectState.numConsecutive = 0;
+				}
+				this.effectState.lastMove = move.id;
+			},
+			// 根据连续使用的次数提升威力
+			onBasePowerPriority: 21,
+			onBasePower(basePower, attacker, defender, move) {
+				// 对应提升倍率：原始、+20%、+40%、+60%、+80%、+100%
+				const dmgMod = [4096, 4915, 5734, 6553, 7372, 8192];
+				const numConsecutive = this.effectState.numConsecutive > 5 ? 5 : this.effectState.numConsecutive;
+				if (numConsecutive > 0) {
+					this.debug(`Current Stalwart boost: ${dmgMod[numConsecutive]}/4096`);
+					return this.chainModify([dmgMod[numConsecutive], 4096]);
+				}
+			},
 		},
 		flags: {},
 		name: "Stalwart",
 		rating: 3,
 		num: 242,
-		shortDesc: "攻击原本选定的目标;当对手替换宝可梦时,钢属性招式会立刻攻击准备离场的宝可梦",
+		shortDesc: "无视具有吸引对手招式效果的影响。若重复使用同一个招式,每次威力提升20%,至多提升100%",
 	},
 	//以下为CAP特性
 	mountaineer: {
@@ -2408,11 +2407,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10046,
 		shortDesc: "排外族群:无同伴濒死时出场挑衅对手,连续招式威力+50%;使用者为幻想萨戮德-阿爸,防心灵攻击",
 	},
-	bingliaoya: {
+	bingheshenqu: {
 		// 1. 免疫灼伤逻辑（如果因特性交换等原因获得该特性时已灼伤，则自动治愈）
 		onUpdate(pokemon) {
 			if (pokemon.status === 'brn') {
-				this.add('-activate', pokemon, 'ability: Bing Liao Ya');
+				this.add('-activate', pokemon, 'ability: Bing He Shen Qu');
 				pokemon.cureStatus();
 			}
 		},
@@ -2420,7 +2419,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onSetStatus(status, target, source, effect) {
 			if (status.id !== 'brn') return;
 			if ((effect as Move)?.status) {
-				this.add('-immune', target, '[from] ability: Bing Liao Ya');
+				this.add('-immune', target, '[from] ability: Bing He Shen Qu');
 			}
 			return false;
 		},
@@ -2440,16 +2439,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				
 				// 如果有被下降的能力，则执行恢复并显示战斗信息
 				if (activate) {
-					this.add('-activate', pokemon, 'ability: Bing Liao Ya');
+					this.add('-activate', pokemon, 'ability: Bing He Shen Qu');
 					pokemon.setBoost(restores);
 					this.add('-restoreboost', pokemon);
 				}
 			}
 		},
 		flags: { breakable: 1 }, // 允许被破格等特性无视
-		name: "Bing Liao Ya",
+		name: "Bing He Shen Qu",
 		rating: 3,
 		num: 10047,
-		shortDesc: "冰獠牙:不会陷入灼伤状态。使用冰属性招式前会恢复自己下降的能力",
+		shortDesc: "冰河身躯:不会陷入灼伤状态。使用冰属性招式前会恢复自己下降的能力",
 	},
 };

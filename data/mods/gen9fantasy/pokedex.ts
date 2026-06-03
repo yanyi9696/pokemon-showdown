@@ -1719,7 +1719,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Ice", "Ground"],
 		baseStats: { hp: 123, atk: 140, def: 90, spa: 50, spd: 60, spe: 87 },
-		abilities: { 0: "Bing Liao Ya", 1: "Slush Rush", H: "Thick Fat" },
+		abilities: { 0: "Bing He Shen Qu", 1: "Slush Rush", H: "Thick Fat" },
 		heightm: 2.5,
 		weightkg: 291,
 		color: "Brown",

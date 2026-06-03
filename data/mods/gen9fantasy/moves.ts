@@ -1937,24 +1937,4 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "雷光轰鸣:令使用者的特攻提升1级",
 		shortDesc: "雷光轰鸣:令使用者的特攻提升1级",
 	},
-	julengyazuan: {
-		num: 573,
-		accuracy: 100,
-		basePower: 80,
-		category: "Physical",
-		name: "Ju Leng Ya Zuan",
-		pp: 20,
-		priority: 0,
-		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1, bite: 1 },
-		onEffectiveness(typeMod, target, type) {
-			if (type === 'Water') return 1;
-		},
-		target: "normal",
-		type: "Ice",
-		zMove: { basePower: 160 },
-		maxMove: { basePower: 130 },
-		contestType: "Beautiful",
-		desc: "剧冷牙钻:对于水属性宝可梦也是效果绝佳",
-		shortDesc: "剧冷牙钻:对于水属性宝可梦也是效果绝佳",
-	},
 };
