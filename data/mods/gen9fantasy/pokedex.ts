@@ -3007,7 +3007,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Fire", "Dark"],
 		genderRatio: { M: 0.875, F: 0.125 },
-		baseStats: { hp: 105, atk: 115, def: 100, spa: 50, spd: 100, spe: 60 },
+		baseStats: { hp: 95, atk: 115, def: 90, spa: 80, spd: 90, spe: 60 },
 		abilities: { 0: "Lei Zhu", H: "Intimidate" },
 		heightm: 1.8,
 		weightkg: 83,
