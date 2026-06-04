@@ -24136,7 +24136,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -24286,7 +24286,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -24436,7 +24436,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -24586,7 +24586,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -24736,7 +24736,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -24886,7 +24886,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -25036,7 +25036,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -25186,7 +25186,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -25336,7 +25336,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -25486,7 +25486,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -25636,7 +25636,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -25786,7 +25786,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -25936,7 +25936,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -26086,7 +26086,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -26236,7 +26236,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -26386,7 +26386,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -26536,7 +26536,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
@@ -26686,7 +26686,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			zengfugongji: ["9M"],
 			duoshuxinggongjigai: ["9M"],
-			rapidspin: ["9M"],
+			fakeout: ["9M"],
 			boomburst: ["9M"],
 			howl: ["9M"],
 			firstimpression: ["9M"],
