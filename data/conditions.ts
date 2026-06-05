@@ -409,7 +409,11 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				this.add('-status', target, 'brn');
 			}
 		},
-		// Damage reduction is handled directly in the sim/battle.js damage function
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, pokemon) {
+			if (pokemon.hasItem('fantasylifeorb')) return; 
+			return this.chainModify(0.5);
+		},
 		onResidualOrder: 10,
 		onResidual(pokemon) {
 			if (pokemon.hasItem('fantasylifeorb')) return;
