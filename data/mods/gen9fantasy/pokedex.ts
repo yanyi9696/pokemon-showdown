@@ -2470,7 +2470,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Durant",
 		forme: "Fantasy",
 		types: ["Bug", "Steel"],
-		baseStats: { hp: 58, atk: 119, def: 122, spa: 48, spd: 48, spe: 119 },
+		baseStats: { hp: 58, atk: 124, def: 127, spa: 48, spd: 48, spe: 124 },
 		abilities: { 0: "Swarm", 1: "Hustle", H: "Truant" },
 		heightm: 0.3,
 		weightkg: 33,
