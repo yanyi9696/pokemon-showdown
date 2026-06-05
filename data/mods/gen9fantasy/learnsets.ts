@@ -27466,6 +27466,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	mamoswinefantasy: {
 		learnset: {	
+			juenianpo: ["9M"],
 			mountaingale: ["9M"],
 			icespinner: ["9M"],
 			headlongrush: ["9M"],
