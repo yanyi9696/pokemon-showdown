@@ -2042,7 +2042,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-		// 3. 原有的雨天回合末扣血逻辑保持不变
+		// 3. 雨天下治愈并免疫异常状态
+		onUpdate(pokemon) {
+			if (pokemon.status && ['raindance', 'primordialsea'].includes(pokemon.effectiveWeather())) {
+				this.add('-activate', pokemon, 'ability: Yuan Hai Yang Liu');
+				pokemon.cureStatus();
+			}
+		},
+		onSetStatus(status, target, source, effect) {
+			if (['raindance', 'primordialsea'].includes(target.effectiveWeather())) {
+				if ((effect as Move)?.status) {
+					this.add('-immune', target, '[from] ability: Yuan Hai Yang Liu');
+				}
+				return false;
+			}
+		},
+		onTryAddVolatile(status, target) {
+			if (status.id === 'yawn' && ['raindance', 'primordialsea'].includes(target.effectiveWeather())) {
+				this.add('-immune', target, '[from] ability: Yuan Hai Yang Liu');
+				return null;
+			}
+		},
+		// 4. 原有的雨天回合末扣血逻辑保持不变
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
@@ -2083,12 +2104,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-		// 关键修改：允许被“破格”等特性无视
-		flags: { breakable: 1 },
+		flags: {},
 		name: "Yuan Hai Yang Liu",
 		rating: 4,
 		num: 10040,
-		shortDesc: "渊海洋流:受击降雨,雨天下不会被效果绝佳,非自身与水系每回合损失1/16最大HP,随水/飞克制倍数提升",
+		shortDesc: "渊海洋流:受击降雨,雨天下治愈异常且不会被效果绝佳,非水系每回合损血1/16,随水/飞克制倍数提升",
 	},
 	heianqinshi: {
 		onModifyTypePriority: -1,
