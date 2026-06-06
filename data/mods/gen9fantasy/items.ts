@@ -2232,7 +2232,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	golurkite: {
 		name: "Golurkite",
-		spritenum: 0,
+		spritenum: 505,
 		megaStone: ["Golurk-Mega", "Golurk-Mega-Fantasy"],
 		megaEvolves: ["Golurk", "Golurk-Fantasy"],
 		itemUser: ["Golurk", "Golurk-Fantasy"],
