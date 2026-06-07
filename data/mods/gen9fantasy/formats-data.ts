@@ -385,9 +385,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	urshifu2fantasy: {
 		tier: "OU",
 	},
-	urshifurapidstrike2fantasy: {
-		tier: "OU",
-	},
 	weezinggalarfantasy: {
 		tier: "OU",
 	},
@@ -551,6 +548,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	urshifurapidstrikefantasy: {
 		tier: "UU",
 	},
+	urshifurapidstrike2fantasy: {
+		tier: "UU",
+	},
 	victreebelmegafantasy: {
 		tier: "UU",
 		abilities: {0: "Corrosion"},	
@@ -709,6 +709,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Magma Armor"},		
 	},
+	raichumegay: {
+		tier: "(Uber)",
+		abilities: {0: "No Guard"},		
+	},
 	zeraoramega: {
 		tier: "(Uber)",
 		abilities: {0: "Iron Fist"},		
@@ -717,13 +721,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Bad Dreams"},		
 	},
+	raichumegax: {
+		tier: "OU",
+		abilities: {0: "Electric Surge"},		
+	},
 	dragalgemega: {	
 		tier: "UUBL",
 		abilities: {0: "Regenerator"},		
-	},
-	raichumegay: {
-		tier: "UUBL",
-		abilities: {0: "Lightning Rod"},		
 	},
 	staraptormega: {
 		tier: "UUBL",
@@ -760,10 +764,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	pyroarmega: {
 		tier: "RU",
 		abilities: {0: "Strong Jaw"},		
-	},
-	raichumegax: {
-		tier: "RU",
-		abilities: {0: "Surge Surfer"},		
 	},
 	scraftymega: {
 		tier: "RU",
@@ -1019,9 +1019,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	floettemega: {
 		tier: "OU",	
 	},
-	garganacl: {
-		tier: "OU",
-	},
 	glimmora: {
 		tier: "OU",
 	},
@@ -1053,6 +1050,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	garchompmega: {
+		tier: "UUBL",
+	},
+	garganacl: {
 		tier: "UUBL",
 	},
 	goodrahisui: {
