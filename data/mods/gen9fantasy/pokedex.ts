@@ -1705,7 +1705,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Normal"],
 		gender: "N",
-		baseStats: { hp: 85, atk: 80, def: 70, spa: 135, spd: 75, spe: 90 },
+		baseStats: { hp: 85, atk: 60, def: 75, spa: 135, spd: 80, spe: 100 },
 		abilities: { 0: "Adaptability", 1: "Download", H: "Wen Li Hua" },
 		heightm: 0.9,
 		weightkg: 34,
