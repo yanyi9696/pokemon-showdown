@@ -4355,7 +4355,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Electric", "Ground"],
 		gender: "N",
-		baseStats: { hp: 85, atk: 81, def: 97, spa: 121, spd: 85, spe: 101 },
+		baseStats: { hp: 85, atk: 61, def: 107, spa: 121, spd: 85, spe: 111 },
 		abilities: { 0: "Protosynthesis", 1:"Magnet Pull", H: "Sand Force" },
 		heightm: 2.3,
 		weightkg: 60,
