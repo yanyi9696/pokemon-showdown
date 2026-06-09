@@ -2471,4 +2471,39 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10047,
 		shortDesc: "冰河身躯:不会陷入灼伤状态。使用冰属性招式前会恢复自己下降的能力",
 	},
+	wenlihua: {
+		onStart(pokemon) {
+			// 1. 查找宝可梦是否携带了纹理、纹理2或纹理Z
+			const moveList = ['conversion', 'conversion2', 'wenliz'];
+			const targetMoveSlot = pokemon.moveSlots.find(m => moveList.includes(m.id));
+			
+			if (targetMoveSlot) {
+				// 在对战日志中弹出特性发动的提示框
+				this.add('-ability', pokemon, 'Wen Li Hua');
+				
+				let target: Pokemon | null = null;
+				const moveData = this.dex.moves.get(targetMoveSlot.id);
+				
+				// 2. 智能索敌：如果该招式（如纹理2/纹理Z）需要指定目标，则在存活的对手中随机选一个
+				if (['normal', 'any', 'allAdjacentFoes'].includes(moveData.target)) {
+					const foes = pokemon.adjacentFoes();
+					if (foes.length > 0) {
+						target = this.sample(foes);
+					}
+				}
+				
+				// 3. 执行招式。使用 (this as any) 来向下兼容不同版本的 Showdown 引擎的类型定义
+				if ((this as any).actions && typeof (this as any).actions.useMove === 'function') {
+					(this as any).actions.useMove(targetMoveSlot.id, pokemon, target);
+				} else if (typeof (this as any).useMove === 'function') {
+					(this as any).useMove(targetMoveSlot.id, pokemon, target);
+				}
+			}
+		},
+		flags: {},
+		name: "Wen Li Hua",
+		rating: 2,
+		num: 10048,
+		shortDesc: "纹理化:上场后,如果自身携带有纹理、纹理2或纹理Z,会立即使用一次该招式",
+	},
 };

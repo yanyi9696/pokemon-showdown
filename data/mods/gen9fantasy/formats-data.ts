@@ -1040,9 +1040,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerponwellspringtera: {
 		tier: "OU",
 	},
-	ursaluna: {
-		tier: "OU",
-	},
 	corviknight: {
 		tier: "UUBL",
 	},
@@ -1068,6 +1065,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	samurotthisui: {
+		tier: "UUBL",
+	},
+	ursaluna: {
 		tier: "UUBL",
 	},
 	xurkitree: {

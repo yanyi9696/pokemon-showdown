@@ -54,6 +54,35 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { effect: 'heal' },
 		contestType: "Clever",
 	},
+	triattack: {
+		num: 161,
+		accuracy: 100,
+		basePower: 30,
+		category: "Special",
+		name: "Tri Attack",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		multihit: 3,
+		secondary: {
+			chance: 10,
+			onHit(target, source) {
+				const result = this.random(3);
+				if (result === 0) {
+					target.trySetStatus('brn', source);
+				} else if (result === 1) {
+					target.trySetStatus('par', source);
+				} else {
+					target.trySetStatus('frz', source);
+				}
+			},
+		},
+		target: "normal",
+		type: "Normal",
+		contestType: "Beautiful",
+		desc: "一回合内连续攻击3次。每次攻击有10%的几率随机使目标陷入灼伤、麻痹或冰冻状态。",
+		shortDesc: "连续攻击3次,每次命中各有10%几率随机灼伤/麻痹/冰冻",
+	},
 	punishment: {
 		num: 386,
 		accuracy: 100,
@@ -1910,7 +1939,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		maxMove: { basePower: 100 },
 		contestType: "Clever",
 		desc: "丛林战术:所有健康的己方宝可梦会一起攻击目标。使用者是幻想萨戮德-阿爸时,变为单次攻击,招式威力提升至120",
-		shortDesc: "丛林战术:全队健康同伴一起攻击;阿爸形态变为120威力单发",
+		shortDesc: "丛林战术:全队健康同伴一起攻击;阿爸形态为120威力单发",
 	},
 	leiguanghongming: {
 		num: 10046,
@@ -1936,5 +1965,72 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Beautiful",
 		desc: "雷光轰鸣:令使用者的特攻提升1级",
 		shortDesc: "雷光轰鸣:令使用者的特攻提升1级",
+	},
+	wenliz: {
+		num: 10047, 
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Wen Li Z",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		onHit(target, source) {
+			const possibleTypes = [];
+			// 1. 遍历所有的属性，计算哪些属性对目标是克制的
+			for (const typeName of this.dex.types.names()) {
+				// 排除特殊的星晶属性和未知属性
+				if (typeName === 'Stellar' || typeName === '???') continue; 
+				
+				let multiplier = 1;
+				// 针对对手可能存在的多个属性进行伤害倍率的乘法计算
+				for (const targetType of target.getTypes()) {
+					const damageTaken = this.dex.types.get(targetType).damageTaken[typeName];
+					if (damageTaken === 1) multiplier *= 2;      // 效果绝佳 (x2)
+					else if (damageTaken === 2) multiplier *= 0.5; // 效果不好 (x0.5)
+					else if (damageTaken === 3) multiplier *= 0;   // 没有效果 (x0)
+				}
+				
+				// 最终倍率大于1，说明这个属性打过去的综合效果是“克制”的
+				if (multiplier > 1) {
+					possibleTypes.push(typeName);
+				}
+			}
+			// 2. 如果没有找到克制的属性（例如目标是没有弱点的怪），招式失败
+			if (!possibleTypes.length) return false;
+			
+			// 从可以克制的属性列表中随机抽取一个
+			const randomType = this.sample(possibleTypes);
+			
+			// 3. 获取使用者第一个招式槽位的ID和名称
+			const targetMoveId = source.moveSlots[0].id;
+			const moveName = this.dex.moves.get(targetMoveId).name;
+
+			// 4. 给使用者添加一个临时状态，用来动态拦截并改变该招式的属性
+			source.addVolatile('wenliz');
+			if (source.volatiles['wenliz']) {
+				source.volatiles['wenliz'].targetMove = targetMoveId;
+				source.volatiles['wenliz'].targetType = randomType;
+				this.add('-message', `${source.name}将「${moveName}」的属性转换为了${randomType}属性！`);
+			}
+		},
+		// 这个 condition 定义了上面的临时状态
+		condition: {
+			noCopy: true, // 不能被接力棒传递
+			onModifyTypePriority: -1, // 确保此属性修改处于较高的优先级执行
+			onModifyType(move, pokemon) {
+				// 如果即将使用的技能正是被锁定的第一个技能，就把它的属性强行改成刚才选出的克制属性
+				if (move.id === this.effectState.targetMove) {
+					move.type = this.effectState.targetType;
+				}
+			},
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		zMove: { boost: { spa: 2 } },
+		contestType: "Beautiful",
+		desc: "纹理Z:将自己第一个招式的属性转换成可以克制对手目前的属性",
+		shortDesc: "纹理Z:将自己第一个招式的属性转换成克制对手的属性",
 	},
 };
