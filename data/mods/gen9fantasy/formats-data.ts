@@ -1109,6 +1109,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	pecharunt: {
 		tier: "UU",
 	},
+	porygonzfantasy: {
+		tier: "UU",
+	},
 	scovillainmega: {
 		tier: "UU",
 	},
