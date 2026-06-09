@@ -89,6 +89,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	darkraifantasy: {
 		tier: "(Uber)",
 	},
+	darkraimega: {
+		tier: "(Uber)",
+		abilities: {0: "Bad Dreams"},		
+	},
 	delphoxmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Levitate"},		
@@ -716,10 +720,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	zeraoramega: {
 		tier: "(Uber)",
 		abilities: {0: "Iron Fist"},		
-	},
-	darkraimega: {
-		tier: "OU",
-		abilities: {0: "Bad Dreams"},		
 	},
 	raichumegax: {
 		tier: "OU",
