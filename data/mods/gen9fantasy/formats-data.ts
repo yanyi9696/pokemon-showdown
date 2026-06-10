@@ -279,6 +279,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	melmetalfantasy: {
 		tier: "OU",
 	},
+	miloticfantasy: {
+		tier: "OU",
+	},
 	mimikyufantasy: {
 		tier: "OU",
 	},
@@ -294,9 +297,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "No Guard"},		
 	},
 	politoedfantasy: {
-		tier: "OU",
-	},
-	primarinafantasy: {
 		tier: "OU",
 	},
 	raikoufantasy: {
@@ -423,9 +423,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magmortarfantasy: {
 		tier: "UUBL",
 	},
-	miloticfantasy: {
-		tier: "UUBL",
-	},
 	raticatefantasy: {
 		tier: "UUBL",
 	},
@@ -510,6 +507,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	pidgeotfantasy: {
+		tier: "UU",
+	},
+	primarinafantasy: {
 		tier: "UU",
 	},
 	scolipedefantasy: {
