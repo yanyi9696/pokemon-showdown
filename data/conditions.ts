@@ -1,23 +1,4 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-	wenliz: {
-		name: 'Wen Li Z',
-		noCopy: true, // 不能被接力棒传递
-		onStart(pokemon) {
-			// 从 moves.ts 存入的 m 对象中取出属性和招式ID
-			this.effectState.targetType = pokemon.m.wenlizType;
-			this.effectState.targetMove = pokemon.m.wenlizMove;
-			
-			// 在 onStart 中手动发送带有参数的 -start 事件！
-			// 引擎检测到有自定义的 -start 就会覆盖掉默认的，确保客户端只收到一次精准的同步！
-			this.add('-start', pokemon, 'Wen Li Z', this.effectState.targetType, this.effectState.targetMove, '[silent]');
-		},
-		onModifyTypePriority: -1, 
-		onModifyType(move, pokemon) {
-			if (move.id === this.effectState.targetMove) {
-				move.type = this.effectState.targetType;
-			}
-		},
-	},
 	emengchanrao: {
 		name: 'E Meng Chan Rao',
 		duration: 3, // 持续 3 回合
