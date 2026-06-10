@@ -1999,15 +1999,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             const targetMoveId = source.moveSlots[0].id;
             const moveName = this.dex.moves.get(targetMoveId).name;
 
-            // 4. 给使用者添加临时状态
+            // 4. 给使用者添加一个临时状态，用来动态拦截并改变该招式的属性（服务端计算用）
             source.addVolatile('wenliz');
             if (source.volatiles['wenliz']) {
                 source.volatiles['wenliz'].targetMove = targetMoveId;
                 source.volatiles['wenliz'].targetType = randomType;
                 
-                // 【核心修改】：通过 -start 将 randomType 和 targetMoveId 传给客户端 UI！
-                // [silent] 防止游戏内重复弹出两次提示信息
-                this.add('-start', source, 'Wen Li Z', randomType, targetMoveId, '[silent]');
+                // 【核心修改】：发送一个名字叫 'Wen Li Z UI' 的“影子状态”。
+                // 因为名字不同，它绝对不会被客户端丢弃！
+                // 协议格式: |-start|p1a: Porygon-Z|Wen Li Z UI|triattack|Water|[silent]
+                this.add('-start', source, 'Wen Li Z UI', targetMoveId, randomType, '[silent]');
+                
                 this.add('-message', `${source.name}将「${moveName}」的属性转换为了${randomType}属性！`);
             }
         },
