@@ -2011,6 +2011,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (source.volatiles['wenliz']) {
 				source.volatiles['wenliz'].targetMove = targetMoveId;
 				source.volatiles['wenliz'].targetType = randomType;
+				this.add('-start', source, 'wenliz', targetMoveId, randomType);
 				this.add('-message', `${source.name}将「${moveName}」的属性转换为了${randomType}属性！`);
 			}
 		},
