@@ -1,4 +1,14 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	wenliz: {
+		name: 'Wen Li Z',
+		noCopy: true, // 不能被接力棒传递
+		onModifyTypePriority: -1, 
+		onModifyType(move, pokemon) {
+			if (move.id === this.effectState.targetMove) {
+				move.type = this.effectState.targetType;
+			}
+		},
+	},
 	emengchanrao: {
 		name: 'E Meng Chan Rao',
 		duration: 3, // 持续 3 回合
