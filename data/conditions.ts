@@ -8,10 +8,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				move.type = this.effectState.targetType;
 			}
 		},
-		onStart(pokemon) {
-			// 阻止它在血条下方生成 [[wenliz]] 标签
-			this.add('-silent', pokemon);
-		},
 	},
 	emengchanrao: {
 		name: 'E Meng Chan Rao',
