@@ -377,6 +377,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	silvallywaterfantasy: {
 		tier: "OU",
 	},
+	swampertmegayfantasy: {
+		tier: "OU",
+		abilities: {0: "Swift Swim"},		
+	},
 	tapufinifantasy: {
 		tier: "OU",
 	},
@@ -533,7 +537,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	swampertfantasy: {
 		tier: "UU",
 	},
-	swampertmegafantasy: {
+	swampertmegaxfantasy: {
 		tier: "UU",
 		abilities: {0: "Iron Fist"},		
 	},
