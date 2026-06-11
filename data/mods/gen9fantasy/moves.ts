@@ -2003,9 +2003,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				source.volatiles['wenliz'].targetMove = targetMoveId;
 				source.volatiles['wenliz'].targetType = randomType;
 				
-				// 【核心修改】在此处手动下发一个包含属性参数的 -start 消息给前端
-				// 前端接收后，clientPokemon.volatiles['wenliz'] 就会变成 ['Wen Li Z', 'Water', '[silent]']
-				this.add('-start', source, 'Wen Li Z', randomType, '[silent]');
+				// 【核心修改】
+				// 1. 先发送一条 -end 指令，确保如果连续多次使用纹理Z，状态可以刷新
+				this.add('-end', source, 'wenlizui', '[silent]');
+				// 2. 使用一个完全不冲突的假状态名 'wenlizui' 来下发属性参数
+				this.add('-start', source, 'wenlizui', randomType, '[silent]');
 				
 				this.add('-message', `${source.name}将「${moveName}」的属性转换为了${randomType}属性！`);
 			}
