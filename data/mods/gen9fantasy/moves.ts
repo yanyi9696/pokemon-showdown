@@ -1977,49 +1977,43 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { snatch: 1, metronome: 1 },
 		onHit(target, source) {
 			const possibleTypes = [];
-			// 1. 遍历所有的属性，计算哪些属性对目标是克制的
 			for (const typeName of this.dex.types.names()) {
-				// 排除特殊的星晶属性和未知属性
 				if (typeName === 'Stellar' || typeName === '???') continue; 
 				
 				let multiplier = 1;
-				// 针对对手可能存在的多个属性进行伤害倍率的乘法计算
 				for (const targetType of target.getTypes()) {
 					const damageTaken = this.dex.types.get(targetType).damageTaken[typeName];
-					if (damageTaken === 1) multiplier *= 2;      // 效果绝佳 (x2)
-					else if (damageTaken === 2) multiplier *= 0.5; // 效果不好 (x0.5)
-					else if (damageTaken === 3) multiplier *= 0;   // 没有效果 (x0)
+					if (damageTaken === 1) multiplier *= 2;      
+					else if (damageTaken === 2) multiplier *= 0.5; 
+					else if (damageTaken === 3) multiplier *= 0;   
 				}
 				
-				// 最终倍率大于1，说明这个属性打过去的综合效果是“克制”的
 				if (multiplier > 1) {
 					possibleTypes.push(typeName);
 				}
 			}
-			// 2. 如果没有找到克制的属性（例如目标是没有弱点的怪），招式失败
 			if (!possibleTypes.length) return false;
 			
-			// 从可以克制的属性列表中随机抽取一个
 			const randomType = this.sample(possibleTypes);
-			
-			// 3. 获取使用者第一个招式槽位的ID和名称
 			const targetMoveId = source.moveSlots[0].id;
 			const moveName = this.dex.moves.get(targetMoveId).name;
 
-			// 4. 给使用者添加一个临时状态，用来动态拦截并改变该招式的属性
 			source.addVolatile('wenliz');
 			if (source.volatiles['wenliz']) {
 				source.volatiles['wenliz'].targetMove = targetMoveId;
 				source.volatiles['wenliz'].targetType = randomType;
+				
+				// 【核心修改】在此处手动下发一个包含属性参数的 -start 消息给前端
+				// 前端接收后，clientPokemon.volatiles['wenliz'] 就会变成 ['Wen Li Z', 'Water', '[silent]']
+				this.add('-start', source, 'Wen Li Z', randomType, '[silent]');
+				
 				this.add('-message', `${source.name}将「${moveName}」的属性转换为了${randomType}属性！`);
 			}
 		},
-		// 这个 condition 定义了上面的临时状态
 		condition: {
-			noCopy: true, // 不能被接力棒传递
-			onModifyTypePriority: -1, // 确保此属性修改处于较高的优先级执行
+			noCopy: true, 
+			onModifyTypePriority: -1, 
 			onModifyType(move, pokemon) {
-				// 如果即将使用的技能正是被锁定的第一个技能，就把它的属性强行改成刚才选出的克制属性
 				if (move.id === this.effectState.targetMove) {
 					move.type = this.effectState.targetType;
 				}
