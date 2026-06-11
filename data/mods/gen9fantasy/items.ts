@@ -2524,7 +2524,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			return true;
 		},
 		num: 10045,
-		gen: 6,
+		gen: 9,
+		desc: "巨沼怪-幻想进化石X:让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "巨沼怪-幻想进化石X:让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
 	},
 	swampertitey: {
 		name: "Swampertite Y",
@@ -2543,7 +2545,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			return true;
 		},
 		num: 10046,
-		gen: 6,
+		gen: 9,
+		desc: "巨沼怪-幻想进化石Y:让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "巨沼怪-幻想进化石Y:让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {
