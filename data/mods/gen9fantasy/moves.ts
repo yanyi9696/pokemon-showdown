@@ -1983,44 +1983,32 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				let multiplier = 1;
 				for (const targetType of target.getTypes()) {
 					const damageTaken = this.dex.types.get(targetType).damageTaken[typeName];
-					if (damageTaken === 1) multiplier *= 2;      
-					else if (damageTaken === 2) multiplier *= 0.5; 
-					else if (damageTaken === 3) multiplier *= 0;   
+					if (damageTaken === 1) multiplier *= 2;
+					else if (damageTaken === 2) multiplier *= 0.5;
+					else if (damageTaken === 3) multiplier *= 0;
 				}
 				
 				if (multiplier > 1) {
 					possibleTypes.push(typeName);
 				}
 			}
-			if (!possibleTypes.length) return false;
 			
+			if (!possibleTypes.length) return false;
 			const randomType = this.sample(possibleTypes);
 			const targetMoveId = source.moveSlots[0].id;
 			const moveName = this.dex.moves.get(targetMoveId).name;
 
-			source.addVolatile('wenliz');
-			if (source.volatiles['wenliz']) {
-				source.volatiles['wenliz'].targetMove = targetMoveId;
-				source.volatiles['wenliz'].targetType = randomType;
-				
-				// 【核心修改】
-				// 1. 先发送一条 -end 指令，确保如果连续多次使用纹理Z，状态可以刷新
-				this.add('-end', source, 'wenlizui', '[silent]');
-				// 2. 使用一个完全不冲突的假状态名 'wenlizui' 来下发属性参数
-				this.add('-start', source, 'wenlizui', randomType, '[silent]');
-				
-				this.add('-message', `${source.name}将「${moveName}」的属性转换为了${randomType}属性！`);
+			// 1. 先清除之前可能存在的纹理Z状态（防止连续使用导致状态叠加）
+			for (const typeName of this.dex.types.names()) {
+				source.removeVolatile('wenliz' + typeName.toLowerCase());
 			}
+
+			// 2. 给使用者添加一个对应属性的临时状态 (比如: wenlizwater)
+			source.addVolatile('wenliz' + randomType.toLowerCase());
+			
+			this.add('-message', `${source.name}将「${moveName}」的属性转换为了${randomType}属性！`);
 		},
-		condition: {
-			noCopy: true, 
-			onModifyTypePriority: -1, 
-			onModifyType(move, pokemon) {
-				if (move.id === this.effectState.targetMove) {
-					move.type = this.effectState.targetType;
-				}
-			},
-		},
+		// 【注意】：删除了原本在这里的 condition: { ... } 对象，因为我们移到了 conditions.ts 中
 		secondary: null,
 		target: "normal",
 		type: "Normal",
