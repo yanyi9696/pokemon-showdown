@@ -392,12 +392,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezinggalarfantasy: {
 		tier: "OU",
 	},
-	zarudefantasy: {
-		tier: "OU",
-	},
-	zarudedadafantasy: {
-		tier: "OU",
-	},
 	abomasnowmegafantasy: {
 		tier: "UUBL",
 		abilities: {0: "Bao Xue Zhi Li"},	
@@ -445,11 +439,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	weezingfantasy: {
 		tier: "UUBL",
 	},
-	zoroarkhisuifantasy: {
+	zarudefantasy: {
 		tier: "UUBL",
 	},
-	ampharosfantasy: {
-		tier: "UU",
+	zarudedadafantasy: {
+		tier: "UUBL",
+	},
+	zoroarkhisuifantasy: {
+		tier: "UUBL",
 	},
 	beheeyemfantasy: {
 		tier: "UU",
@@ -602,6 +599,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	altariafantasy: {
 		tier: "RU",
 	},
+	ampharosfantasy: {
+		tier: "RU",
+	},
 	armaldofantasy: {
 		tier: "RU",
 	},
@@ -612,6 +612,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	cherrimfantasy: {
+		tier: "RU",
+	},
+	corvisquirefantasy: {
 		tier: "RU",
 	},
 	drednawfantasy: {

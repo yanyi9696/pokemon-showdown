@@ -144,7 +144,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Battle Armor",
 		rating: 3,
 		num: 75,
-		shortDesc: "不会被击中要害，也不会被己方场地上的入场可生效的状态伤害",
+		shortDesc: "不会被击中要害,也不会被己方场地上的入场可生效的状态伤害",
 	},
 	slowstart: {
 		onStart(pokemon) {
@@ -225,6 +225,30 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3,
 		num: 115,
 		shortDesc: "天气处于冰雹或下雪状态时,每回合回复最大HP的1/16;受到接触类招式时有30%机率使对手冻伤",
+	},
+	bigpecks: {
+		onTryBoost(boost, target, source, effect) {
+			if (source && target === source) return;
+			if (boost.def && boost.def < 0) {
+				delete boost.def;
+				if (!(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
+					this.add("-fail", target, "unboost", "Defense", "[from] ability: Big Pecks", `[of] ${target}`);
+				}
+			}
+		},
+		// 新增效果：免疫入场时生效的伤害类场地状态
+		onDamage(damage, target, source, effect) {
+			// 定义造成伤害的入场类状态ID
+			const entryHazardDamageIds = ['spikes', 'stealthrock', 'gmaxsteelsurge'];
+			if (effect && entryHazardDamageIds.includes(effect.id)) {
+				return false; // 如果伤害来源是这些状态之一，则伤害无效
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Big Pecks",
+		rating: 3,
+		num: 145,
+		shortDesc: "不会被降低防御,也不会被己方场地上的入场可生效的状态伤害",
 	},
 	imposter: {
 		onSwitchIn(pokemon) {
@@ -2505,5 +2529,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 2,
 		num: 10048,
 		shortDesc: "纹理化:上场后,如果自身携带有纹理、纹理2或纹理Z,会立即使用一次该招式",
+	},
+	zhengqiang: {
+		onAfterEachBoost(boost, target, source, effect) {
+			if (!source || target.isAlly(source)) {
+				return;
+			}
+			let statsLowered = false;
+			let i: BoostID;
+			for (i in boost) {
+				if (boost[i]! < 0) {
+					statsLowered = true;
+				}
+			}
+			if (statsLowered) {
+				this.boost({ def: 2, spd: 2 }, target, target, null, false, true);
+			}
+		},
+		flags: {},
+		name: "Zheng Qiang",
+		rating: 3.5,
+		num: 10047,
+		shortDesc: "争强:能力阶级被降低时防御和特防提升2级",
 	},
 };
