@@ -713,7 +713,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	{
-		name: "[Gen 9] FC Champions Doubles D",
+		name: "[Gen 9] FC Champions Doubles B",
 		mod: 'gen9fantasy',
 		gameType: 'doubles',
 		ruleset: [
@@ -742,7 +742,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Shedinja',             // 禁用脱壳忍者
 		],
 		unbanlist: [
-			'Mega', 'Ultra Beast', 'Paradox', // 但我们在这里特例解禁某一类
+			'Mega', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
