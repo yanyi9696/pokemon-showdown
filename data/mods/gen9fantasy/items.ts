@@ -2509,7 +2509,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	swampertitex: {
 		name: "Swampertite X",
-		spritenum: 612,
+		spritenum: 517,
 		megaStone: ["Swampert-Mega-X-Fantasy"],
 		megaEvolves: ["Swampert-Fantasy"],
 		itemUser: ["Swampert-Fantasy"],
