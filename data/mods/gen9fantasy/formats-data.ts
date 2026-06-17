@@ -690,7 +690,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//ZA新mega
 	barbaraclemega: {
 		tier: "Uber",
-		abilities: {0: "Skill Link"},		
+		abilities: {0: "Tough Claws"},		
 	},
 	lucariomegaz: {
 		tier: "Uber",
@@ -732,29 +732,33 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Electric Surge"},		
 	},
+	staraptormega: {
+		tier: "OU",
+		abilities: {0: "Contrary"},		
+	},
 	dragalgemega: {	
 		tier: "UUBL",
 		abilities: {0: "Regenerator"},		
-	},
-	staraptormega: {
-		tier: "UUBL",
-		abilities: {0: "Tough Claws"},		
 	},
 	tatsugiridroopymega: {
 		tier: "UUBL",
 		abilities: {0: "Drizzle"},		
 	},
+	pyroarmega: {
+		tier: "UU",
+		abilities: {0: "Fire Mane"},		
+	},
 	tatsugiricurlymega: {
 		tier: "UU",
 		abilities: {0: "Contrary"},		
 	},
-	eelektrossmega: {
-		tier: "RUBL",
-		abilities: {0: "Electric Surge"},		
-	},
 	scolipedemega: {
 		tier: "RUBL",
-		abilities: {0: "Merciless"},		
+		abilities: {0: "Shell Armor"},		
+	},
+	eelektrossmega: {
+		tier: "RU",
+		abilities: {0: "Eelevate"},		
 	},
 	falinksmega: {
 		tier: "RU",
@@ -767,10 +771,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	malamarmega: {
 		tier: "RU",
 		abilities: {0: "Contrary"},		
-	},
-	pyroarmega: {
-		tier: "RU",
-		abilities: {0: "Strong Jaw"},		
 	},
 	scraftymega: {
 		tier: "RU",

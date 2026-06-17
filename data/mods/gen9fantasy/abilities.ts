@@ -24,6 +24,42 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 314,
 		shortDesc: "受到招式伤害时,会使对手陷入灼伤状态",
 	},
+	eelevate: {
+		// 飘浮效果已在 sim/pokemon.ts 的 isGrounded 函数中通过底层实现
+		// 异兽提升效果：用攻击招式打倒对手时提升最高项能力
+		onSourceAfterFaint(length, target, source, effect) {
+			if (effect && effect.effectType === 'Move') {
+				const bestStat = source.getBestStat(true, true);
+				this.boost({ [bestStat]: length }, source);
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Eelevate",
+		rating: 4.5,
+		num: 315,
+		shortDesc: "漂浮,免疫地面属性伤害,并且用攻击打倒对手时,自己最高的那项能力会提高1阶",
+	},
+	firemane: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Fire') {
+				this.debug('Fire Mane boost');
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Fire') {
+				this.debug('Fire Mane boost');
+				return this.chainModify(1.5);
+			}
+		},
+		flags: {},
+		name: "Fire Mane",
+		rating: 3.5,
+		num: 316,
+		shortDesc: "火属性招式的威力会变为1.5倍",
+	},
 	shellarmor: {
 		onCriticalHit: false,
 		onDamagingHit(damage, target, source, move) {
