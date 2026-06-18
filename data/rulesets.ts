@@ -3037,4 +3037,41 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		name: 'Ignore Event Shiny Clause',
 		desc: "Bypasses the validation that prevents event-only Pokémon from being shiny.",
 	},
-};
+	doublemegaclause: {
+		effectType: 'Rule',
+		name: 'Double Mega Clause',
+		desc: "Allows two Pokémon to Mega Evolve per battle.",
+		onBegin() {
+			// 使用 as any 断言绕过 TypeScript 检查
+			const battleAny = this as any;
+			for (const side of battleAny.sides) {
+				const sideAny = side as any;
+				if (!sideAny.m) sideAny.m = {};
+				sideAny.m.megaEvolvedMons = new Set(); // 使用 Set 记录已经 Mega 过的宝可梦 ID
+			}
+		},
+		onUpdate() {
+			const battleAny = this as any;
+			for (const side of battleAny.sides) {
+				const sideAny = side as any;
+				if (!sideAny.m || !sideAny.m.megaEvolvedMons) continue;
+
+				// 遍历该玩家当前在场和队伍中的所有宝可梦
+				for (const pokemon of side.pokemon) {
+					// 检查是否已经是 Mega 形态，且不是变身来的
+					const isMega = (pokemon.species.isMega || pokemon.species.name.includes('-Mega')) && !pokemon.transformed;
+					
+					if (isMega && !sideAny.m.megaEvolvedMons.has(pokemon.id)) {
+						// 发现新的已 Mega 宝可梦，加入记录
+						sideAny.m.megaEvolvedMons.add(pokemon.id);
+					}
+				}
+
+				// 如果队伍中已 Mega 的宝可梦数量小于 2，持续解除系统的 Mega 限制锁
+				if (sideAny.m.megaEvolvedMons.size < 2) {
+					sideAny.megaEvoAlready = false;
+				}
+			}
+		},
+	},
+};	

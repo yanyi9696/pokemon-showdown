@@ -723,12 +723,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'OHKO Clause',
 			//以上是从'Standard Doubles'节选的适用的规则
 			'NatDex Mod',
+			'Double Mega Clause', // <--- 在这里加入我们新写的规则
 			'Item Clause = 1',
 			'Adjust Level = 50',
 			'Max Team Size = 6',
 			'Picked Team Size = 4',
 			'FC Mega Ban Check',
-				'FC Forme Preview',
+			'FC Forme Preview',
 			'Ignore Event Shiny Clause'
 		],
 		banlist: [
@@ -788,26 +789,6 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				if (pokemon.m.fantasySync) {
 					pokemon.m.fantasySync(pokemon);
 				}
-			}
-
-			// --- 新增：允许两次 Mega 进化的核心逻辑 ---
-			// 使用 as any 绕过 TypeScript 对 Side 类型的严格检查
-			const sideAny = pokemon.side as any;
-			if (sideAny.m.megaCount === undefined) sideAny.m.megaCount = 0;
-			
-			// 确保宝可梦是真实的 Mega 形态，且不是通过变身(Transform)获得的
-			const isMega = (pokemon.species.isMega || pokemon.species.name.includes('-Mega')) && !pokemon.transformed;
-			if (isMega && !pokemon.m.hasCountedAsMega) {
-				// 记录这只宝可梦已经被计入队伍 Mega 进化计数
-				pokemon.m.hasCountedAsMega = true;
-				sideAny.m.megaCount++;
-			}
-
-			// 如果当前队伍中 Mega 进化的数量小于 2，持续解除系统默认的 1 次 Mega 限制
-			// Showdown 源码中限制 Mega 的属性主要为 canMegaEvo，旧版可能为 megaEvoAlready
-			if (sideAny.m.megaCount < 2) {
-				sideAny.canMegaEvo = true; 
-				sideAny.megaEvoAlready = false;
 			}
 		},
 	},
