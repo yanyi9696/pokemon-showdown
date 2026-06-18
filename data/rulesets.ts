@@ -3050,7 +3050,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				sideAny.m.megaEvolvedMons = new Set(); // 使用 Set 记录已经 Mega 过的宝可梦 fullname
 			}
 		},
-		onUpdate() { // <--- 关键修改：改回 onUpdate，解决 ts(2561) 报错
+		onUpdate() {
 			const battleAny = this as any;
 			for (const side of battleAny.sides) {
 				const sideAny = side as any;
@@ -3071,10 +3071,8 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				if (sideAny.m.megaEvolvedMons.size < 2) {
 					sideAny.megaEvoAlready = false;
 
-					// 【核心修复】：Showdown 引擎在第一次 Mega 时，会强制抹除全队未 Mega 宝可梦的 canMegaEvo 属性。
-					// 我们直接安全地手动恢复这个属性，彻底抛弃对引擎底层 actions 对象的依赖，杜绝报错！
+					// 手动恢复被系统清空的 canMegaEvo 属性
 					for (const pokemon of side.pokemon) {
-						// 将 pokemon 断言为 any，解决 ts(2339) hasMegaEvolved 报错
 						const pokeAny = pokemon as any;
 						
 						// 如果它已经记录为 Mega 过，直接跳过
@@ -3085,20 +3083,37 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 							const item = pokemon.getItem();
 							// 检查是否携带了 Mega 石
 							if (item.megaStone) {
-								let megaTarget = item.megaStone; // 原版 Mega 形态 (例如 "Metagross-Mega")
+								let megaTarget: string | null = null;
 								
-								// 【追加修复】：如果是 Fantasy 形态，要让它进化成对应的 Fantasy Mega 形态
-								if (pokemon.baseSpecies.name.endsWith('-Fantasy')) {
-									const standardMega = battleAny.dex.species.get(item.megaStone);
+								// 【新增修复】：处理道具 megaStone 是数组的情况（如超巨进化许愿星）
+								if (Array.isArray(item.megaStone)) {
+									// 确保 megaEvolves 也是数组格式用于查询
+									const evolvesArray = Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves];
+									// 查找当前形态在列表中的索引
+									const index = evolvesArray.indexOf(pokemon.baseSpecies.name);
+									
+									if (index !== -1) {
+										megaTarget = item.megaStone[index]; // 提取对应位置的 Mega 形态
+									} else {
+										megaTarget = item.megaStone[0]; // 兜底
+									}
+								} else {
+									// 普通的单形态 Mega 石
+									megaTarget = item.megaStone;
+								}
+								
+								// 依然保留：如果是 Fantasy 形态，且获取到的目标还没有 Fantasy 后缀，则进行拼接
+								if (megaTarget && pokemon.baseSpecies.name.endsWith('-Fantasy') && !megaTarget.endsWith('-Fantasy')) {
+									const standardMega = battleAny.dex.species.get(megaTarget);
 									const fantasyMega = battleAny.dex.species.get(standardMega.id + 'fantasy');
 									if (fantasyMega && fantasyMega.exists) {
-										megaTarget = fantasyMega.name; // 例如 "Metagross-Mega-Fantasy"
+										megaTarget = fantasyMega.name;
 									} else {
-										megaTarget = item.megaStone + '-Fantasy'; // 兜底拼接
+										megaTarget = megaTarget + '-Fantasy';
 									}
 								}
 								
-								pokeAny.canMegaEvo = megaTarget;
+								if (megaTarget) pokeAny.canMegaEvo = megaTarget;
 							} 
 							// 兼容烈空坐的画龙点睛 Mega
 							else if (pokemon.baseSpecies.name.startsWith('Rayquaza') && pokemon.hasMove('dragonascent')) {
