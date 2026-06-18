@@ -780,7 +780,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Mega",
 		types: ["Water", "Ground"],
 		genderRatio: { M: 0.875, F: 0.125 },
-		baseStats: { hp: 100, atk: 155, def: 135, spa: 85, spd: 100, spe: 60 },
+		baseStats: { hp: 100, atk: 160, def: 130, spa: 85, spd: 100, spe: 60 },
 		abilities: { 0: "Iron Fist" },
 		heightm: 1.9,
 		weightkg: 102,
