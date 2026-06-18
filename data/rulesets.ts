@@ -3107,6 +3107,8 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 						const oldMegaEvoAlready = this.megaEvoAlready;
 						if (currentMegaCount < 2) {
 							this.megaEvoAlready = false;
+						} else {
+							this.megaEvoAlready = true; // 如果真超过2次了，必须拦住
 						}
 
 						// 3. 让系统去执行真正的指令校验（此时系统看到队列是干净的，就会允许第二只 Mega 录入）
