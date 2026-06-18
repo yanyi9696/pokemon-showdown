@@ -3085,11 +3085,28 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 							const item = pokemon.getItem();
 							// 检查是否携带了 Mega 石
 							if (item.megaStone) {
-								pokeAny.canMegaEvo = item.name;
+								let megaTarget = item.megaStone; // 原版 Mega 形态 (例如 "Metagross-Mega")
+								
+								// 【追加修复】：如果是 Fantasy 形态，要让它进化成对应的 Fantasy Mega 形态
+								if (pokemon.baseSpecies.name.endsWith('-Fantasy')) {
+									const standardMega = battleAny.dex.species.get(item.megaStone);
+									const fantasyMega = battleAny.dex.species.get(standardMega.id + 'fantasy');
+									if (fantasyMega && fantasyMega.exists) {
+										megaTarget = fantasyMega.name; // 例如 "Metagross-Mega-Fantasy"
+									} else {
+										megaTarget = item.megaStone + '-Fantasy'; // 兜底拼接
+									}
+								}
+								
+								pokeAny.canMegaEvo = megaTarget;
 							} 
 							// 兼容烈空坐的画龙点睛 Mega
-							else if (pokemon.baseSpecies.name === 'Rayquaza' && pokemon.hasMove('dragonascent')) {
-								pokeAny.canMegaEvo = 'Rayquaza-Mega';
+							else if (pokemon.baseSpecies.name.startsWith('Rayquaza') && pokemon.hasMove('dragonascent')) {
+								let megaTarget = 'Rayquaza-Mega';
+								if (pokemon.baseSpecies.name.endsWith('-Fantasy')) {
+									megaTarget = 'Rayquaza-Mega-Fantasy';
+								}
+								pokeAny.canMegaEvo = megaTarget;
 							}
 						}
 					}
