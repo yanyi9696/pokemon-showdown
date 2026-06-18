@@ -3040,14 +3040,77 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 	doublemegaclause: {
 		effectType: 'Rule',
 		name: 'Double Mega Clause',
-		desc: "Allows two Pokémon to Mega Evolve per battle.",
+		desc: "Allows two Pokémon to Mega Evolve per battle, including in the same turn.",
 		onBegin() {
-			// 使用 as any 断言绕过 TypeScript 检查
 			const battleAny = this as any;
 			for (const side of battleAny.sides) {
 				const sideAny = side as any;
 				if (!sideAny.m) sideAny.m = {};
-				sideAny.m.megaEvolvedMons = new Set(); // 使用 Set 记录已经 Mega 过的宝可梦 fullname
+				sideAny.m.megaEvolvedMons = new Set(); // 使用 fullname 记录
+				
+				// --- 核心魔法：重写底层的 canMegaEvo ---
+				// 正常情况下，Showdown 引擎会在选择指令时调用此方法
+				// 它原来会检查 side.megaEvoAlready
+				sideAny._originalCanMegaEvo = sideAny.canMegaEvo; 
+				sideAny.canMegaEvo = function (pokemon: any) {
+					// 1. 如果该宝可梦已经被记录为 Mega 过，显然不能再 Mega
+					if (this.m.megaEvolvedMons && this.m.megaEvolvedMons.has(pokemon.fullname)) return null;
+
+					// 2. 检查道具和 Mega 资格（核心原版逻辑的精简版）
+					const item = pokemon.getItem();
+					let megaTarget: string | null = null;
+					
+					if (item.megaStone) {
+						if (Array.isArray(item.megaStone)) {
+							const evolvesArray = Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves];
+							const index = evolvesArray.indexOf(pokemon.baseSpecies.name);
+							megaTarget = index !== -1 ? item.megaStone[index] : item.megaStone[0];
+						} else {
+							megaTarget = item.megaStone;
+						}
+					} else if (pokemon.baseSpecies.name.startsWith('Rayquaza') && pokemon.hasMove('dragonascent')) {
+						megaTarget = 'Rayquaza-Mega';
+					}
+					
+					if (!megaTarget) return null; // 根本不具备 Mega 条件
+
+					// 处理 Fantasy 后缀
+					if (pokemon.baseSpecies.name.endsWith('-Fantasy') && !megaTarget.endsWith('-Fantasy')) {
+						const standardMega = battleAny.dex.species.get(megaTarget);
+						const fantasyMega = battleAny.dex.species.get(standardMega.id + 'fantasy');
+						megaTarget = (fantasyMega && fantasyMega.exists) ? fantasyMega.name : megaTarget + '-Fantasy';
+					}
+
+					// 3. 关键的限制判断：
+					// 统计当前【已记录的Mega数量】+【本回合指令中排队的Mega数量】
+					let currentMegaCount = this.m.megaEvolvedMons ? this.m.megaEvolvedMons.size : 0;
+					
+					// 扫描本回合玩家已经选择的指令 (action queue)
+					if (battleAny.actions && battleAny.actions.choices) {
+						for (const choice of battleAny.actions.choices) {
+							// 如果这个指令是同一个玩家发出的，且包含 mega 动作
+							if (choice.side === this && choice.action === 'megaEvo') {
+								// 排除掉自己，避免重复计算
+								if (choice.pokemon !== pokemon) {
+									currentMegaCount++;
+								}
+							}
+						}
+					} else if (this.activeRequest && this.activeRequest.actions) {
+						// 兼容性处理：有时指令还没完全提交到 battle.actions.choices
+						for (const action of this.activeRequest.actions) {
+							if (action.mega && action.pokemon !== pokemon.id) {
+								currentMegaCount++;
+							}
+						}
+					}
+
+					// 如果总数小于 2，就可以 Mega
+					if (currentMegaCount < 2) {
+						return megaTarget;
+					}
+					return null;
+				};
 			}
 		},
 		onUpdate() {
@@ -3056,73 +3119,28 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				const sideAny = side as any;
 				if (!sideAny.m || !sideAny.m.megaEvolvedMons) continue;
 
-				// 遍历该玩家当前在场和队伍中的所有宝可梦
+				// 遍历找出已经在场上或者队伍里变成 Mega 形态的宝可梦
 				for (const pokemon of side.pokemon) {
-					// 检查是否已经是 Mega 形态，且不是变身来的
 					const isMega = (pokemon.species.isMega || pokemon.species.name.includes('-Mega')) && !pokemon.transformed;
-					
 					if (isMega && !sideAny.m.megaEvolvedMons.has(pokemon.fullname)) {
-						// 发现新的已 Mega 宝可梦，加入记录 (使用 fullname 确保唯一性)
 						sideAny.m.megaEvolvedMons.add(pokemon.fullname);
 					}
 				}
 
-				// 如果队伍中已 Mega 的宝可梦数量小于 2，持续解除系统的 Mega 限制锁
+				// 只要已完成的 Mega 数量小于 2，就强制解除基础锁
+				// 真正的逻辑现在由我们重写的 side.canMegaEvo 接管了
 				if (sideAny.m.megaEvolvedMons.size < 2) {
 					sideAny.megaEvoAlready = false;
 
-					// 手动恢复被系统清空的 canMegaEvo 属性
+					// 恢复所有符合条件宝可梦的 canMegaEvo 属性（用于 UI 显示）
 					for (const pokemon of side.pokemon) {
 						const pokeAny = pokemon as any;
-						
-						// 如果它已经记录为 Mega 过，直接跳过
 						if (sideAny.m.megaEvolvedMons.has(pokemon.fullname) || pokeAny.hasMegaEvolved) continue;
-
-						// 如果属性被系统强制清空了，则强行帮它恢复
-						if (!pokeAny.canMegaEvo) {
-							const item = pokemon.getItem();
-							// 检查是否携带了 Mega 石
-							if (item.megaStone) {
-								let megaTarget: string | null = null;
-								
-								// 【新增修复】：处理道具 megaStone 是数组的情况（如超巨进化许愿星）
-								if (Array.isArray(item.megaStone)) {
-									// 确保 megaEvolves 也是数组格式用于查询
-									const evolvesArray = Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves];
-									// 查找当前形态在列表中的索引
-									const index = evolvesArray.indexOf(pokemon.baseSpecies.name);
-									
-									if (index !== -1) {
-										megaTarget = item.megaStone[index]; // 提取对应位置的 Mega 形态
-									} else {
-										megaTarget = item.megaStone[0]; // 兜底
-									}
-								} else {
-									// 普通的单形态 Mega 石
-									megaTarget = item.megaStone;
-								}
-								
-								// 依然保留：如果是 Fantasy 形态，且获取到的目标还没有 Fantasy 后缀，则进行拼接
-								if (megaTarget && pokemon.baseSpecies.name.endsWith('-Fantasy') && !megaTarget.endsWith('-Fantasy')) {
-									const standardMega = battleAny.dex.species.get(megaTarget);
-									const fantasyMega = battleAny.dex.species.get(standardMega.id + 'fantasy');
-									if (fantasyMega && fantasyMega.exists) {
-										megaTarget = fantasyMega.name;
-									} else {
-										megaTarget = megaTarget + '-Fantasy';
-									}
-								}
-								
-								if (megaTarget) pokeAny.canMegaEvo = megaTarget;
-							} 
-							// 兼容烈空坐的画龙点睛 Mega
-							else if (pokemon.baseSpecies.name.startsWith('Rayquaza') && pokemon.hasMove('dragonascent')) {
-								let megaTarget = 'Rayquaza-Mega';
-								if (pokemon.baseSpecies.name.endsWith('-Fantasy')) {
-									megaTarget = 'Rayquaza-Mega-Fantasy';
-								}
-								pokeAny.canMegaEvo = megaTarget;
-							}
+						
+						// 调用我们重写后的方法来检查
+						const megaRes = sideAny.canMegaEvo(pokemon);
+						if (megaRes) {
+							pokeAny.canMegaEvo = megaRes;
 						}
 					}
 				}
