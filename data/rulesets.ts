@@ -3046,17 +3046,13 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			for (const side of battleAny.sides) {
 				const sideAny = side as any;
 				if (!sideAny.m) sideAny.m = {};
-				sideAny.m.megaEvolvedMons = new Set(); // 使用 fullname 记录
+				sideAny.m.megaEvolvedMons = new Set(); // 使用 fullname 记录已 Mega 宝可梦
 				
-				// --- 核心魔法：重写底层的 canMegaEvo ---
-				// 正常情况下，Showdown 引擎会在选择指令时调用此方法
-				// 它原来会检查 side.megaEvoAlready
+				// --- 核心魔法 1：重写 canMegaEvo (用于生成正确的 Mega 目标并同步 UI) ---
 				sideAny._originalCanMegaEvo = sideAny.canMegaEvo; 
 				sideAny.canMegaEvo = function (pokemon: any) {
-					// 1. 如果该宝可梦已经被记录为 Mega 过，显然不能再 Mega
 					if (this.m.megaEvolvedMons && this.m.megaEvolvedMons.has(pokemon.fullname)) return null;
 
-					// 2. 检查道具和 Mega 资格（核心原版逻辑的精简版）
 					const item = pokemon.getItem();
 					let megaTarget: string | null = null;
 					
@@ -3072,45 +3068,62 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 						megaTarget = 'Rayquaza-Mega';
 					}
 					
-					if (!megaTarget) return null; // 根本不具备 Mega 条件
+					if (!megaTarget) return null;
 
-					// 处理 Fantasy 后缀
+					// 兼容 Fantasy 后缀
 					if (pokemon.baseSpecies.name.endsWith('-Fantasy') && !megaTarget.endsWith('-Fantasy')) {
 						const standardMega = battleAny.dex.species.get(megaTarget);
 						const fantasyMega = battleAny.dex.species.get(standardMega.id + 'fantasy');
 						megaTarget = (fantasyMega && fantasyMega.exists) ? fantasyMega.name : megaTarget + '-Fantasy';
 					}
 
-					// 3. 关键的限制判断：
-					// 统计当前【已记录的Mega数量】+【本回合指令中排队的Mega数量】
 					let currentMegaCount = this.m.megaEvolvedMons ? this.m.megaEvolvedMons.size : 0;
-					
-					// 扫描本回合玩家已经选择的指令 (action queue)
-					if (battleAny.actions && battleAny.actions.choices) {
-						for (const choice of battleAny.actions.choices) {
-							// 如果这个指令是同一个玩家发出的，且包含 mega 动作
-							if (choice.side === this && choice.action === 'megaEvo') {
-								// 排除掉自己，避免重复计算
-								if (choice.pokemon !== pokemon) {
-									currentMegaCount++;
+					// UI 校验时，如果总数没满 2 次就可以显示按钮
+					if (currentMegaCount < 2) return megaTarget;
+					return null;
+				};
+
+				// --- 核心魔法 2：劫持底层的指令解析器 (突破同回合双 Mega 的关键) ---
+				if (!sideAny._originalChooseMove) {
+					sideAny._originalChooseMove = sideAny.chooseMove;
+					sideAny.chooseMove = function (...args: any[]) {
+						// 1. 拦截本回合排队中的指令，暂时“隐藏”前面已经点下的 Mega 动作
+						const hiddenMegas = [];
+						if (this.choice && Array.isArray(this.choice.actions)) {
+							for (const action of this.choice.actions) {
+								if (action.mega) {
+									action.mega = false; // 临时抹除 mega 标记，骗过系统的强制查重
+									action._hiddenMega = true;
+									hiddenMegas.push(action);
 								}
 							}
 						}
-					} else if (this.activeRequest && this.activeRequest.actions) {
-						// 兼容性处理：有时指令还没完全提交到 battle.actions.choices
-						for (const action of this.activeRequest.actions) {
-							if (action.mega && action.pokemon !== pokemon.id) {
-								currentMegaCount++;
-							}
-						}
-					}
 
-					// 如果总数小于 2，就可以 Mega
-					if (currentMegaCount < 2) {
-						return megaTarget;
-					}
-					return null;
-				};
+						// 2. 统计目前总共的 Mega 数量（场上已有的 + 队列里藏起来的）
+						let currentMegaCount = this.m.megaEvolvedMons ? this.m.megaEvolvedMons.size : 0;
+						currentMegaCount += hiddenMegas.length;
+
+						// 如果总数小于 2，临时解开前几个回合遗留的限制锁
+						const oldMegaEvoAlready = this.megaEvoAlready;
+						if (currentMegaCount < 2) {
+							this.megaEvoAlready = false;
+						}
+
+						// 3. 让系统去执行真正的指令校验（此时系统看到队列是干净的，就会允许第二只 Mega 录入）
+						const result = this._originalChooseMove.apply(this, args);
+
+						// 4. 录入成功后，把刚才藏起来的第一个 Mega 标记恢复原状
+						for (const action of hiddenMegas) {
+							action.mega = true;
+							delete action._hiddenMega;
+						}
+						
+						// 还原状态
+						this.megaEvoAlready = oldMegaEvoAlready;
+
+						return result;
+					};
+				}
 			}
 		},
 		onUpdate() {
@@ -3127,17 +3140,14 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 					}
 				}
 
-				// 只要已完成的 Mega 数量小于 2，就强制解除基础锁
-				// 真正的逻辑现在由我们重写的 side.canMegaEvo 接管了
 				if (sideAny.m.megaEvolvedMons.size < 2) {
 					sideAny.megaEvoAlready = false;
 
-					// 恢复所有符合条件宝可梦的 canMegaEvo 属性（用于 UI 显示）
+					// 同步 UI 显示
 					for (const pokemon of side.pokemon) {
 						const pokeAny = pokemon as any;
 						if (sideAny.m.megaEvolvedMons.has(pokemon.fullname) || pokeAny.hasMegaEvolved) continue;
 						
-						// 调用我们重写后的方法来检查
 						const megaRes = sideAny.canMegaEvo(pokemon);
 						if (megaRes) {
 							pokeAny.canMegaEvo = megaRes;
