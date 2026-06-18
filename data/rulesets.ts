@@ -3078,50 +3078,80 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 					}
 
 					let currentMegaCount = this.m.megaEvolvedMons ? this.m.megaEvolvedMons.size : 0;
-					// UI 校验时，如果总数没满 2 次就可以显示按钮
 					if (currentMegaCount < 2) return megaTarget;
 					return null;
 				};
 
-				// --- 核心魔法 2：劫持底层的指令解析器 (突破同回合双 Mega 的关键) ---
-				if (!sideAny._originalChooseMove) {
-					sideAny._originalChooseMove = sideAny.chooseMove;
-					sideAny.chooseMove = function (...args: any[]) {
-						// 1. 拦截本回合排队中的指令，暂时“隐藏”前面已经点下的 Mega 动作
-						const hiddenMegas = [];
-						if (this.choice && Array.isArray(this.choice.actions)) {
-							for (const action of this.choice.actions) {
-								if (action.mega) {
-									action.mega = false; // 临时抹除 mega 标记，骗过系统的强制查重
-									action._hiddenMega = true;
-									hiddenMegas.push(action);
-								}
+				// --- 核心魔法 2：劫持最高层的字符串指令解析器 choose ---
+				// 彻底突破底层同回合检查！
+				if (!sideAny._originalChoose) {
+					sideAny._originalChoose = sideAny.choose;
+					sideAny.choose = function (input: string) {
+						// 确保处理的是正常的指令字符串
+						if (typeof input !== 'string') return this._originalChoose.call(this, input);
+
+						let currentMegaCount = this.m.megaEvolvedMons ? this.m.megaEvolvedMons.size : 0;
+						
+						// 1. 解析客户端传来的原始字符串，例如 "move 1 mega, move 2 mega"
+						const choices = input.split(',');
+						let megaIndices: number[] = [];
+						for (let i = 0; i < choices.length; i++) {
+							if (/\bmega\b/i.test(choices[i])) {
+								megaIndices.push(i);
 							}
 						}
 
-						// 2. 统计目前总共的 Mega 数量（场上已有的 + 队列里藏起来的）
-						let currentMegaCount = this.m.megaEvolvedMons ? this.m.megaEvolvedMons.size : 0;
-						currentMegaCount += hiddenMegas.length;
+						// 如果总要求量大于2，直接抛出我们自定义的错误
+						if (currentMegaCount + megaIndices.length > 2) {
+							return this.emitChoiceError("You can only mega-evolve two Pokémon per battle.");
+						}
 
-						// 如果总数小于 2，临时解开前几个回合遗留的限制锁
+						let modifiedInput = input;
+						let restoredActiveIndices: number[] = [];
+
+						// 2. 如果同一回合发现多于一个 Mega 请求，进行隐藏处理
+						if (megaIndices.length > 1) {
+							let modifiedChoices = [...choices];
+							// 保留第一个请求，抹除后面所有请求里的 'mega' 字眼
+							for (let j = 1; j < megaIndices.length; j++) {
+								modifiedChoices[megaIndices[j]] = modifiedChoices[megaIndices[j]].replace(/\bmega\b/gi, '').replace(/\s+/g, ' ').trim();
+								restoredActiveIndices.push(megaIndices[j]);
+							}
+							modifiedInput = modifiedChoices.join(','); 
+							// 此时 modifiedInput 变成了 "move 1 mega, move 2"
+						}
+
+						// 暂时解开系统的历史 Mega 锁
 						const oldMegaEvoAlready = this.megaEvoAlready;
 						if (currentMegaCount < 2) {
 							this.megaEvoAlready = false;
-						} else {
-							this.megaEvoAlready = true; // 如果真超过2次了，必须拦住
 						}
 
-						// 3. 让系统去执行真正的指令校验（此时系统看到队列是干净的，就会允许第二只 Mega 录入）
-						const result = this._originalChooseMove.apply(this, args);
+						// 3. 将“阉割”后的安全字符串喂给原生解析器，此时必定能绕过检查成功解析！
+						let result = this._originalChoose.call(this, modifiedInput);
 
-						// 4. 录入成功后，把刚才藏起来的第一个 Mega 标记恢复原状
-						for (const action of hiddenMegas) {
-							action.mega = true;
-							delete action._hiddenMega;
-						}
-						
-						// 还原状态
+						// 还原锁状态
 						this.megaEvoAlready = oldMegaEvoAlready;
+
+						// 4. 解析成功后，偷偷把原本被我们藏起来的 Mega 请求加回到动作列表中
+						if (result && restoredActiveIndices.length > 0 && this.choice && Array.isArray(this.choice.actions)) {
+							for (let activeIdx of restoredActiveIndices) {
+								const targetPokemon = this.active[activeIdx];
+								if (!targetPokemon) continue;
+
+								// 在已生成的动作队列中找到这只宝可梦
+								for (let action of this.choice.actions) {
+									if (action.pokemon === targetPokemon) {
+										// 双重保险：确认它真的具有 Mega 资格才放行
+										if (this.canMegaEvo(targetPokemon)) {
+											action.mega = true;
+											this.choice.mega = true;
+										}
+										break;
+									}
+								}
+							}
+						}
 
 						return result;
 					};
