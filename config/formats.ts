@@ -713,7 +713,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	{
-		name: "[Gen 9] FC Champions Doubles B D-M",
+		name: "[Gen 9] FC Champions Doubles B Double-Mega",
 		mod: 'gen9fantasy',
 		gameType: 'doubles',
 		ruleset: [
@@ -793,9 +793,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			// --- 新增：允许两次 Mega 进化的核心逻辑 ---
 			// 使用 as any 绕过 TypeScript 对 Side 类型的严格检查
 			const sideAny = pokemon.side as any;
-			if (!sideAny.m) sideAny.m = {};
-			if (!sideAny.m.megaCount) sideAny.m.megaCount = 0;
-			if (!sideAny.m.megaEvolvedMons) sideAny.m.megaEvolvedMons = new Set();
+			if (sideAny.m.megaCount === undefined) sideAny.m.megaCount = 0;
 			
 			// 确保宝可梦是真实的 Mega 形态，且不是通过变身(Transform)获得的
 			const isMega = (pokemon.species.isMega || pokemon.species.name.includes('-Mega')) && !pokemon.transformed;
@@ -806,8 +804,10 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			}
 
 			// 如果当前队伍中 Mega 进化的数量小于 2，持续解除系统默认的 1 次 Mega 限制
-			if (sideAny.m.megaCount < 2 && sideAny.megaEvolves) {
-				sideAny.megaEvolves = 0; 
+			// Showdown 源码中限制 Mega 的属性主要为 canMegaEvo，旧版可能为 megaEvoAlready
+			if (sideAny.m.megaCount < 2) {
+				sideAny.canMegaEvo = true; 
+				sideAny.megaEvoAlready = false;
 			}
 		},
 	},

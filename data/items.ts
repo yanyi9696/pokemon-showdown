@@ -2717,7 +2717,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onTakeItem: false,
 		zMove: "Malicious Moonsault",
 		zMoveFrom: "Darkest Lariat",
-		itemUser: ["Incineroar"],
+		itemUser: ["Incineroar", "Incineroar-Fantasy"],
 		num: 799,
 		gen: 7,
 		isNonstandard: "Past",
