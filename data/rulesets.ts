@@ -3047,10 +3047,10 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			for (const side of battleAny.sides) {
 				const sideAny = side as any;
 				if (!sideAny.m) sideAny.m = {};
-				sideAny.m.megaEvolvedMons = new Set(); // 使用 Set 记录已经 Mega 过的宝可梦 ID
+				sideAny.m.megaEvolvedMons = new Set(); // 使用 Set 记录已经 Mega 过的宝可梦 fullname
 			}
 		},
-		onUpdate() {
+		onUpdate() { // <--- 关键修改：改回 onUpdate，解决 ts(2561) 报错
 			const battleAny = this as any;
 			for (const side of battleAny.sides) {
 				const sideAny = side as any;
@@ -3061,15 +3061,38 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 					// 检查是否已经是 Mega 形态，且不是变身来的
 					const isMega = (pokemon.species.isMega || pokemon.species.name.includes('-Mega')) && !pokemon.transformed;
 					
-					if (isMega && !sideAny.m.megaEvolvedMons.has(pokemon.id)) {
-						// 发现新的已 Mega 宝可梦，加入记录
-						sideAny.m.megaEvolvedMons.add(pokemon.id);
+					if (isMega && !sideAny.m.megaEvolvedMons.has(pokemon.fullname)) {
+						// 发现新的已 Mega 宝可梦，加入记录 (使用 fullname 确保唯一性)
+						sideAny.m.megaEvolvedMons.add(pokemon.fullname);
 					}
 				}
 
 				// 如果队伍中已 Mega 的宝可梦数量小于 2，持续解除系统的 Mega 限制锁
 				if (sideAny.m.megaEvolvedMons.size < 2) {
 					sideAny.megaEvoAlready = false;
+
+					// 【核心修复】：Showdown 引擎在第一次 Mega 时，会强制抹除全队未 Mega 宝可梦的 canMegaEvo 属性。
+					// 我们直接安全地手动恢复这个属性，彻底抛弃对引擎底层 actions 对象的依赖，杜绝报错！
+					for (const pokemon of side.pokemon) {
+						// 将 pokemon 断言为 any，解决 ts(2339) hasMegaEvolved 报错
+						const pokeAny = pokemon as any;
+						
+						// 如果它已经记录为 Mega 过，直接跳过
+						if (sideAny.m.megaEvolvedMons.has(pokemon.fullname) || pokeAny.hasMegaEvolved) continue;
+
+						// 如果属性被系统强制清空了，则强行帮它恢复
+						if (!pokeAny.canMegaEvo) {
+							const item = pokemon.getItem();
+							// 检查是否携带了 Mega 石
+							if (item.megaStone) {
+								pokeAny.canMegaEvo = item.name;
+							} 
+							// 兼容烈空坐的画龙点睛 Mega
+							else if (pokemon.baseSpecies.name === 'Rayquaza' && pokemon.hasMove('dragonascent')) {
+								pokeAny.canMegaEvo = 'Rayquaza-Mega';
+							}
+						}
+					}
 				}
 			}
 		},
