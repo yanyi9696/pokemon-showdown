@@ -1305,16 +1305,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, bite: 1 },
 		onHit(target, source, move) {
-			const item = target.getItem();
-			if (item) {
-				const success = target.takeItem(source);
-				if (success) {
-					// 标记道具已被移除，防止香袋在 onAfterHit 中触发
-					(move as any).itemRemoved = true; 
-					this.add('-enditem', target, success.name, '[from] move: 咬烂', `[of] ${source}`);
-				}
-			}
-		},
+            const item = target.getItem();
+            if (item) {
+                const success = target.takeItem(source);
+                if (success) {
+                    // 标记道具已被移除，防止香袋在 onAfterHit 中触发
+                    (move as any).itemRemoved = true; 
+                    
+                    // 核心修改：伪装成 Knock Off 触发客户端的飘字和掉落动画，用 [silent] 屏蔽默认的英文错误文本
+                    this.add('-enditem', target, success.name, '[from] move: Knock Off', `[of] ${source}`, '[silent]');
+                    
+                    // 手动补充正确的中文战斗日志
+                    this.add('-message', `${target.name}的${success.name}被${source.name}咬烂了！`);
+                }
+            }
+        },
 		secondary: null,
 		target: "normal",
 		type: "Poison",

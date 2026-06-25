@@ -1005,16 +1005,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	zygarde: {
 		tier: "(Uber)",
 	},
-	//aegislash: {
-		//tier: "OU",
-	//},
-	//aegislashblade: {
-		//tier: "OU",
-	//},
 	archaludon: {
-		tier: "OU",
-	},
-	banettemega: {
 		tier: "OU",
 	},
 	dragonitemega: {
@@ -1079,6 +1070,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	xurkitree: {
 		tier: "UUBL",
+	},
+	banettemega: {
+		tier: "UU",
 	},
 	chimechomega: {
 		tier: "UU",
