@@ -992,7 +992,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Altaria",
 		forme: "Mega",
 		types: ["Dragon", "Fairy"],
-		baseStats: { hp: 85, atk: 100, def: 115, spa: 115, spd: 115, spe: 80 },
+		baseStats: { hp: 85, atk: 85, def: 120, spa: 120, spd: 120, spe: 80 },
 		abilities: { 0: "Tian Lai Zhi Yin" },
 		heightm: 1.5,
 		weightkg: 20.6,
