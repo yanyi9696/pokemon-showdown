@@ -997,38 +997,35 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "幻之舞:提高自身特攻与速度各1级"
 	},
 	chabuduowanan: {
-		num: 10018,
-		accuracy: true,
-		basePower: 0,
-		category: "Status",
-		name: "Cha Bu Duo Wan An",
-		pp: 10,
-		priority: 0,
-		flags: {},
-		// 1. 回合开始时，为使用者添加一个临时的 'chabuduowanan' 状态
-		priorityChargeCallback(source) {
-			source.addVolatile('chabuduowanan');
-		},
-		// 核心效果
-		terrain: 'mistyterrain',
-		selfSwitch: true,
-		secondary: null,
-		condition: {
-			duration: 1, // 持续1回合
-			onBeforeMovePriority: 100, // 确保在出招前高优先级执行
-			onBeforeMove(source, target, move) {
-				// 检查使用者将要出的招式是否是“差不多晚安”
-				if (move.id !== 'chabuduowanan') return;
-				// 如果是，就显示准备信息
-				this.add('-prepare', source, '差不多晚安', '[premajor]');
-			},
-		},
-		target: "all",
-		type: "Fairy", 
-		zMove: { effect: 'healreplacement' },
-		desc: "差不多晚安:接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换",
-		shortDesc: "差不多晚安:交替并使场地变为持续5回合的薄雾场地"
-	},
+        num: 10018,
+        accuracy: true,
+        basePower: 0,
+        category: "Status",
+        name: "Cha Bu Duo Wan An",
+        pp: 10,
+        priority: 0,
+        flags: {},
+        priorityChargeCallback(source) {
+            source.addVolatile('chabuduowanan');
+        },
+        terrain: 'mistyterrain',
+        selfSwitch: true,
+        secondary: null,
+        condition: {
+            duration: 1,
+            onBeforeMovePriority: 100,
+            onBeforeMove(source, target, move) {
+                if (move.id !== 'chabuduowanan') return;
+                // 效仿 Chilly Reception，使用标准的英文名传参
+                this.add('-prepare', source, 'Cha Bu Duo Wan An', '[premajor]');
+            },
+        },
+        target: "all",
+        type: "Fairy", 
+        zMove: { effect: 'healreplacement' },
+        desc: "差不多晚安:接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换",
+        shortDesc: "差不多晚安:交替并使场地变为持续5回合的薄雾场地"
+    },
 	yanzhibodong: {
 		num: 10019,
 		accuracy: 100,
@@ -1384,34 +1381,35 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "晴生绿野:交替并使场地变为持续5回合的青草场地",
 	},
 	fanchen: {
-		num: 10030,
-		accuracy: true,
-		basePower: 0,
-		category: "Status",
-		name: "Fan Chen",
-		pp: 10,
-		priority: 0,
-		flags: {},
-		priorityChargeCallback(source) {
-			source.addVolatile('fanchen');
-		},
-		weather: 'sandstorm',
-		selfSwitch: true,
-		secondary: null,
-		condition: {
-			duration: 1,
-			onBeforeMovePriority: 100, 
-			onBeforeMove(source, target, move) {
-				if (move.id !== 'fanchen') return;
-				this.add('-prepare', source, '翻尘', '[premajor]');
-			},
-		},
-		target: "all",
-		type: "Rock",
-		zMove: { effect: 'healreplacement' },
-		desc: "翻尘:接下来5回合的天气变更为沙暴。然后自身与后备宝可梦替换",
-		shortDesc: "翻尘:交替并使天气变为持续5回合的沙暴",
-	},
+        num: 10030,
+        accuracy: true,
+        basePower: 0,
+        category: "Status",
+        name: "Fan Chen",
+        pp: 10,
+        priority: 0,
+        flags: {},
+        priorityChargeCallback(source) {
+            source.addVolatile('fanchen');
+        },
+        weather: 'sandstorm',
+        selfSwitch: true,
+        secondary: null,
+        condition: {
+            duration: 1,
+            onBeforeMovePriority: 100, 
+            onBeforeMove(source, target, move) {
+                if (move.id !== 'fanchen') return;
+                // 效仿 Chilly Reception，使用标准的英文名传参
+                this.add('-prepare', source, 'Fan Chen', '[premajor]');
+            },
+        },
+        target: "all",
+        type: "Rock",
+        zMove: { effect: 'healreplacement' },
+        desc: "翻尘:接下来5回合的天气变更为沙暴。然后自身与后备宝可梦替换",
+        shortDesc: "翻尘:交替并使天气变为持续5回合的沙暴",
+    },
 	zhishareshe: {
 		num: 10031,
 		accuracy: 100,
