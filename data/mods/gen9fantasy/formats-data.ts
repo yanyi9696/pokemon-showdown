@@ -73,7 +73,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	aggronmegafantasy: {
 		tier: "(Uber)",
-		abilities: { 0: "Filter" },
+		abilities: { 0: "Tie Kai" },
 	},
 	altariamegafantasy: {
 		tier: "(Uber)",

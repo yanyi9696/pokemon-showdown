@@ -18305,6 +18305,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			accelerock: ["9M"],
 			glare: ["9M"],
 			coil: ["9M"],
+			yaolan: ["9M"],
+			heatcrash: ["9M"],
 			//幻想增添技能
 			ancientpower: ["4T"],
 			aquatail: ["7T", "6T", "5T", "4T"],
@@ -18415,6 +18417,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			accelerock: ["9M"],
 			glare: ["9M"],
 			coil: ["9M"],
+			yaolan: ["9M"],
+			heatcrash: ["9M"],
 			//幻想增添技能
 			ancientpower: ["4T"],
 			aquatail: ["7T", "6T", "5T", "4T"],
