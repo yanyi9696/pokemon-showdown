@@ -407,8 +407,24 @@ export const Teams = new class Teams {
 			out += `Gigantamax: Yes  \n`;
 		}
 		if (set.teraType) {
-			out += `Tera Type: ${set.teraType}  \n`;
+		let currentTera = set.teraType;
+		
+		// 如果太晶属性是 ???，则尝试获取它的第一属性
+		if (currentTera === '???') {
+			const speciesData = Dex.species.get(set.species);
+			
+			if (speciesData && speciesData.types && speciesData.types.length > 0) {
+				const firstType = speciesData.types[0];
+				// 如果第一属性也是 ???，默认赋值为 Normal，否则使用第一属性
+				currentTera = (firstType === '???') ? 'Normal' : firstType;
+			} else {
+				// 容错处理：如果没有读取到属性，默认一般系
+				currentTera = 'Normal';
+			}
 		}
+		
+		out += `Tera Type: ${currentTera}  \n`;
+	}
 
 		// stats
 		if (!hideStats) {
