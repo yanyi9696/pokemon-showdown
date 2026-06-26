@@ -2416,7 +2416,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Lei Zhu",
         rating: 4,
         num: 10045,
-        shortDesc: "擂主:使场上所有非幽灵属性宝可梦无法替换3回合;期间每倒下1只宝可梦,自身双攻及双防永久提升10%",
+        shortDesc: "擂主:使场上所有非幽灵属性宝可梦无法替换3回合;期间每倒下1只,自身双攻防提升10%,最多触发5次",
     },
 	paiwaizuqun: {
 		// 1. 出场时的挑衅效果
