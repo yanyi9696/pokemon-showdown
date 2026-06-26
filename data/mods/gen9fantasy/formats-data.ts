@@ -492,9 +492,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	illumisefantasy: {
 		tier: "UU",
 	},
-	incineroarfantasy: {
-		tier: "UU",
-	},
 	mienshaofantasy: {
 		tier: "UU",
 	},
@@ -635,6 +632,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Stamina"},
 	},
 	honchkrowfantasy: {
+		tier: "RU",
+	},
+	incineroarfantasy: {
 		tier: "RU",
 	},
 	marshtompfantasy: {

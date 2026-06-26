@@ -1,4 +1,41 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	leizhustats: {
+		name: 'leizhustats',
+		noCopy: true, // 不会被接棒或复制类招式带走
+		
+		// --- 永久提升物攻 ---
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			const stacks = (attacker as any).leizhuStacks;
+			if (stacks) {
+				return this.chainModify([10 + stacks, 10]);
+			}
+		},
+		// --- 永久提升特攻 ---
+		onModifySpAPriority: 5,
+		onModifySpA(spa, attacker, defender, move) {
+			const stacks = (attacker as any).leizhuStacks;
+			if (stacks) {
+				return this.chainModify([10 + stacks, 10]);
+			}
+		},
+		// --- 永久提升防御 ---
+		onModifyDefPriority: 5,
+		onModifyDef(def, attacker, defender, move) {
+			const stacks = (attacker as any).leizhuStacks;
+			if (stacks) {
+				return this.chainModify([10 + stacks, 10]);
+			}
+		},
+		// --- 永久提升特防 ---
+		onModifySpDPriority: 5,
+		onModifySpD(spd, attacker, defender, move) {
+			const stacks = (attacker as any).leizhuStacks;
+			if (stacks) {
+				return this.chainModify([10 + stacks, 10]);
+			}
+		},
+	},
 	// =================================================================
 	// == 纹理Z (Wen Li Z) 18种属性的状态定义
 	// =================================================================

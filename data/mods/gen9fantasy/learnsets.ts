@@ -27017,6 +27017,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			suckerpunch: ["9M"],
 			pursuit: ["9M"],
 			obstruct: ["9M"],
+			punishment: ["9M"],
 			flyingpress: ["9M"],
 			coaching: ["9M"],
 			bodypress: ["9M"],
