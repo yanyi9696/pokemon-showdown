@@ -2377,10 +2377,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         
         // 内部定义的局部挥发性状态，用于充当定时器和监听阵亡事件
         condition: {
-            duration: 3, 
+            duration: 2, 
             onStart(pokemon) {
                 this.add('-activate', pokemon, 'ability: Lei Zhu');
-                this.add('-message', `${pokemon.name} 设立了擂台！在接下来的 3 回合内，全场宝可梦都无法逃走！`);
+                this.add('-message', `${pokemon.name} 设立了擂台！在接下来的 2 回合内，全场宝可梦都无法逃走！`);
             },
             onEnd(pokemon) {
                 this.add('-end', pokemon, 'ability: Lei Zhu');
@@ -2416,7 +2416,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Lei Zhu",
         rating: 4,
         num: 10045,
-        shortDesc: "擂主:使场上所有非幽灵属性宝可梦无法替换3回合;期间每倒下1只,自身双攻防提升10%,最多触发5次",
+        shortDesc: "擂主:使场上所有非幽灵属性宝可梦无法替换2回合;期间每倒下1只,自身双攻防提升10%,最多触发5次",
     },
 	paiwaizuqun: {
 		// 1. 出场时的挑衅效果

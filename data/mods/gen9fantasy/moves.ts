@@ -108,6 +108,123 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
 		shortDesc: "80威力,目标每有1项能力上升+20,使目标强化无效2回合",
 	},
+	crushgrip: {
+		num: 462,
+		accuracy: 100,
+		basePower: 120,
+		category: "Physical",
+		name: "Crush Grip",
+		pp: 5,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		onModifyMove(move, pokemon) {
+			// 初始化 secondaries 数组，用于动态挂载异常状态的附加效果
+			if (!move.secondaries) move.secondaries = [];
+			
+			let hasRegidrago = false;
+
+			// 遍历队伍，检查是否存在各种神柱
+			for (const ally of pokemon.side.pokemon) {
+				const speciesId = ally.species.id;
+				
+				// 冰柱：50%概率冻伤 (fst)
+				// 使用 startsWith 可以完美兼容 regicefantasy 等变种
+				if (speciesId.startsWith('regice')) {
+					// 避免多只相同神柱导致效果重复添加
+					if (!move.secondaries.some(s => s.status === 'fst')) {
+						move.secondaries.push({
+							chance: 50,
+							status: 'fst',
+						});
+					}
+				}
+				
+				// 电柱：50%概率麻痹 (par)
+				if (speciesId.startsWith('regieleki')) {
+					if (!move.secondaries.some(s => s.status === 'par')) {
+						move.secondaries.push({
+							chance: 50,
+							status: 'par',
+						});
+					}
+				}
+				
+				// 龙柱：标记需要附加吸血效果
+				if (speciesId.startsWith('regidrago')) {
+					hasRegidrago = true;
+				}
+			}
+
+			// 龙柱效果结算：吸收50%伤害转化为HP
+			if (hasRegidrago) {
+				move.drain = [1, 2];
+				// 安全检查并赋予 heal 标签，确保能被“回复封印”等招式正常限制
+				if (!move.flags) move.flags = {};
+				move.flags.heal = 1;
+			}
+		},
+		// 场地效果（岩/钢）需要在命中后触发，使用 onAfterHit 
+		onAfterHit(target, source, move) {
+			// 如果受到强行(Sheer Force)特性影响或使用者濒死，则不触发附加撒钉效果
+			if (move.hasSheerForce || !source.hp) return;
+			
+			let hasRegirock = false;
+			let hasRegisteel = false;
+
+			for (const ally of source.side.pokemon) {
+				const speciesId = ally.species.id;
+				if (speciesId.startsWith('regirock')) hasRegirock = true;
+				if (speciesId.startsWith('registeel')) hasRegisteel = true;
+			}
+
+			// 岩柱：撒隐形岩
+			if (hasRegirock) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('stealthrock');
+				}
+			}
+
+			// 钢柱：撒碎菱钢 (复用你文件中已经做好的 gmaxsteelsurge)
+			if (hasRegisteel) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('gmaxsteelsurge');
+				}
+			}
+		},
+		// 增强逻辑：打在替身上时也能正常撒钉 (Showdown 场地招式的标准逻辑)
+		onAfterSubDamage(damage, target, source, move) {
+			if (move.hasSheerForce || !source.hp) return;
+			
+			let hasRegirock = false;
+			let hasRegisteel = false;
+
+			for (const ally of source.side.pokemon) {
+				const speciesId = ally.species.id;
+				if (speciesId.startsWith('regirock')) hasRegirock = true;
+				if (speciesId.startsWith('registeel')) hasRegisteel = true;
+			}
+
+			if (hasRegirock) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('stealthrock');
+				}
+			}
+
+			if (hasRegisteel) {
+				for (const side of source.side.foeSidesWithConditions()) {
+					side.addSideCondition('gmaxsteelsurge');
+				}
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		zMove: { basePower: 190 },
+		maxMove: { basePower: 140 },
+		contestType: "Tough",
+		desc: "队伍中有不同巨人时附加不同效果:雷吉洛克(撒隐形岩),雷吉艾斯(50%几率冻伤),雷吉斯奇鲁(撒碎菱钢),雷吉艾勒奇(50%几率麻痹),雷吉铎拉戈(回复给予对手伤害的一半HP)",
+		shortDesc: "根据队伍中神柱附加隐形岩/50%冻伤/碎菱钢/50%麻痹/吸血",
+	},
 	darkvoid: {
 		num: 464,
 		accuracy: 50,
@@ -279,24 +396,28 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	overdrive: {
 		num: 786,
 		accuracy: 100,
-		basePower: 80,
+		basePower: 90,
 		category: "Special",
 		name: "Overdrive",
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, sound: 1, bypasssub: 1 },
 		onModifyType(move, pokemon) {
-			// 检查宝可梦的物种名称是否为 'Toxtricity-Low-Key-Fantasy'
+			// 检查宝可梦是否为“低调形态”
 			if (pokemon.species.name === 'Toxtricity-Low-Key-Fantasy') {
-				// 如果是，则将技能类型更改为 'Ice'
-				move.type = 'Ice';
+				move.type = 'Ice'; // 变为冰属性
+			} 
+			// 检查宝可梦是否为“Mega进化形态”
+			else if (pokemon.species.name === 'Toxtricity-G-Mega-Fantasy') {
+				move.type = 'Psychic'; // 变为超能力属性
 			}
 		},
 		secondary: null,
 		target: "allAdjacentFoes",
 		type: "Electric",
-		desc: "幻想颤弦蝾螈-低调形态携带时,破音变为冰系",
-		shortDesc: "幻想颤弦蝾螈-低调形态携带时,破音变为冰系"
+		zMove: { basePower: 180 },
+		desc: "攻击对方全体造成伤害。幻想颤弦蝾螈-低调形态携带时,破音变为冰属性;超级进化后,变为超能力属性",
+		shortDesc: "幻想低调形态携带时变为冰系;Mega进化后变为超能力系",
 	},
 	mistyexplosion: {
 		num: 802,
@@ -577,27 +698,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "醉神乱打:一回合内连续攻击3次,每一击都必定击中要害。每击中一次,下一击的命中率就会叠加下降累计命中数×10%(即三击的命中率分别为100%、90%、70%)",
 		shortDesc: "醉神乱打:每一击命中率为100%,90%,70%,必定击中要害"
 	},
-	biansuzhefan: {
+	wuzhuotihuan: { 
 		num: 10006,
 		accuracy: 100,
 		basePower: 70,
-		category: "Physical",
-		name: "Bian Su Zhe Fan",
+		category: "Special",
+		name: "Wu Zhuo Ti Huan",
 		pp: 20,
 		priority: 0,
-		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		flags: { protect: 1, mirror: 1, metronome: 1 },
 		selfSwitch: true,
-		secondary: {
-			chance: 10,
-			status: 'psn',
-		},
+		secondary: null,
 		target: "normal",
 		type: "Poison",
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 85 },
 		contestType: "Cute",
-		desc: "变速折返:使用者在攻击目标后会替换后备宝可梦上场,有10%几率使目标陷入中毒状态",
-		shortDesc: "变速折返:攻击后替换后备宝可梦上场,10%使目标中毒"
+		desc: "污浊替换:使用者在攻击目标后会替换后备宝可梦上场。",
+		shortDesc: "污浊替换:攻击后替换后备宝可梦上场。",
 	},
 	chuanyun: {
 		num: 10007,
@@ -684,7 +802,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			this.attrLastMove('[anim] Overdrive'); 
 			if (source.species.name === 'Toxtricity-Fantasy') { // 确认形态名称
 				move.type = 'Electric';
-				move.basePower = 195;
+				move.basePower = 200;
 			} else if (source.species.name === 'Toxtricity-Low-Key-Fantasy') { // 确认形态名称
 				move.type = 'Ice';
 				move.basePower = 185;
@@ -694,11 +812,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 		},
 		onHit(target, source, move) {
-			// Toxtricity-Fantasy (高调) 的效果：对每个命中的目标施加剧毒或麻痹
+			// Toxtricity-Fantasy (高调) 的效果：对每个命中的目标施加中毒或麻痹
 			if (source.species.name === 'Toxtricity-Fantasy') {
 				if (!target.status) { // 如果目标没有异常状态
 					if (this.random(2) === 0) {
-						target.trySetStatus('tox', source, move);
+						target.trySetStatus('psn', source, move);
 					} else {
 						target.trySetStatus('par', source, move);
 					}
@@ -710,7 +828,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, source, source, move);
         }
     },
-		desc: "超频摇滚破音波:攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时,会使对手全体宝可梦陷入中剧毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时,令使用者的攻击、防御、特攻、特防和速度提升1级",
+		desc: "超频摇滚破音波:攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时,会使对手全体宝可梦陷入中毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时,令使用者的攻击、防御、特攻、特防和速度提升1级",
 		shortDesc: "超频摇滚破音波:高调形态与低调形态使用效果不同"
 	},
 	yaojingzhiya: {
@@ -841,7 +959,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         zMove: { basePower: 175 },
         maxMove: { basePower: 130 },
         desc: "鹿角:春&哲尔尼亚斯:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低2级,使用者是哲尔尼亚斯时,变为回复给予伤害50%HP",
-		shortDesc: "鹿角:属性效果随形态不同;萌芽鹿50%防-2;哲尔尼亚斯回复",
+		shortDesc: "鹿角:属性效果随形态不同;萌芽鹿50%防-2;哲尔尼亚斯吸血",
     },
 	huanji: {
 		num: 10014,
@@ -1944,12 +2062,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "丛林战术:所有健康的己方宝可梦会一起攻击目标。使用者是幻想萨戮德-阿爸时,变为单次攻击,招式威力提升至120",
 		shortDesc: "丛林战术:全队健康同伴一起攻击;阿爸形态为120威力单发",
 	},
-	leiguanghongming: {
+	xuguanghonglei: {
 		num: 10046,
 		accuracy: 100,
 		basePower: 80,
 		category: "Special",
-		name: "Lei Guang Hong Ming",
+		name: "Xu Guang Hong Lei",
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, light: 1, metronome: 1 },
@@ -1966,8 +2084,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 180 },
 		maxMove: { basePower: 130 },
 		contestType: "Beautiful",
-		desc: "雷光轰鸣:令使用者的特攻提升1级",
-		shortDesc: "雷光轰鸣:令使用者的特攻提升1级",
+		desc: "蓄光轰雷:令使用者的特攻提升1级",
+		shortDesc: "蓄光轰雷:令使用者的特攻提升1级",
 	},
 	wenliz: {
 		num: 10047, 
@@ -2019,5 +2137,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Beautiful",
 		desc: "纹理Z:将自己第一个招式的属性转换成可以克制对手目前的属性",
 		shortDesc: "纹理Z:将自己第一个招式的属性转换成克制对手的属性",
+	},
+	zhenxi: {
+		num: 10048, 
+		accuracy: 100,
+		basePower: 70,
+		category: "Physical",
+		name: "Zhen Xi",
+		pp: 5,
+		priority: 1,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		onTry(source, target) {
+			const action = this.queue.willMove(target);
+			const move = action?.choice === 'move' ? action.move : null;
+			// 核心判定逻辑：如果对手不使用招式、使用变化类招式（抢先一步除外），或者处于硬直状态，则招式失败
+			if (!move || (move.category === 'Status' && move.id !== 'mefirst') || target.volatiles['mustrecharge']) {
+				return false;
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Poison",
+		zMove: { basePower: 140 },
+		maxMove: { basePower: 85 },
+		contestType: "Clever",
+		desc: "鸩袭:如果目标本回合未准备使用造成伤害的招式，或目标已经行动，此招式将失败",
+		shortDesc: "鸩袭:先制攻击，如果目标不使用攻击招式的话则使用失败",
 	},
 };

@@ -4326,7 +4326,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	scolipedefantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			barbbarrage: ["9M"],
 			coil: ["9M"],
 			yaolan: ["9M"],
@@ -4420,7 +4420,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	scolipedemegafantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			barbbarrage: ["9M"],
 			coil: ["9M"],
 			yaolan: ["9M"],
@@ -5731,7 +5731,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	goodrahisuifantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			poisonjab: ["9M"],
 			clearsmog: ["9M"],
 			toxicspikes: ["9M"],
@@ -5953,7 +5953,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yishunqianji: ["9M"],
 			zuishenluanda: ["9M"],
 			gunkshot: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "8M"],
 			aerialace: ["9M", "9L12", "8L12"],
@@ -6024,7 +6024,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yishunqianji: ["9M"],
 			zuishenluanda: ["9M"],
 			gunkshot: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "8M"],
 			aerialace: ["9M", "9L12", "8L12"],
@@ -6986,7 +6986,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	toxtricityfantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			torchsong: ["9M"],
 			nastyplot: ["9M"],
 			clangoroussoul: ["9M"],
@@ -7078,7 +7078,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	toxtricitygmegafantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			torchsong: ["9M"],
 			nastyplot: ["9M"],
 			clangoroussoul: ["9M"],
@@ -7170,7 +7170,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	toxtricitylowkeyfantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			tripleaxel: ["9M"],
 			iciclespear: ["9M"],
 			stormthrow: ["9M"],
@@ -7262,7 +7262,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	toxtricitylowkeygmegafantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			tripleaxel: ["9M"],
 			iciclespear: ["9M"],
 			stormthrow: ["9M"],
@@ -10556,7 +10556,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			toxicspikes: ["9M"],
 			poisonjab: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			yaolan: ["9M"],
 			chuanyun: ["9M"],
 			suckerpunch: ["9M"],
@@ -11923,7 +11923,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	pecharuntfantasy: {
 		learnset: {
 			toxicspikes: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			bittermalice: ["9M"],
 			thief: ["9M"],
 			punishment: ["9M"],
@@ -13497,7 +13497,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	weezingfantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			knockoff: ["9M"],
 			obstruct: ["9M"],
 			recover: ["9M"],
@@ -13753,7 +13753,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	dragalgefantasy: {	
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			clearsmog: ["9M"],
 			synthesis: ["9M"],
 			//幻想增添技能
@@ -13840,7 +13840,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	dragalgemegafantasy: {	
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			clearsmog: ["9M"],
 			synthesis: ["9M"],
 			//幻想增添技能
@@ -14853,7 +14853,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			chuanyun: ["9M"],
 			swordsdance: ["9M"],
 			brine: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
 			aerialace: ["9M", "7M", "6M", "5M", "4M"],
@@ -15205,7 +15205,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	victreebelfantasy: {
 		learnset: {
 			leechseed: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			gunkshot: ["9M"],
 			taunt: ["9M"],
 			firelash: ["9M"],
@@ -15303,7 +15303,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	victreebelmegafantasy: {
 		learnset: {
 			leechseed: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			gunkshot: ["9M"],
 			taunt: ["9M"],
 			firelash: ["9M"],
@@ -16229,7 +16229,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			knockoff: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			//幻想增添技能
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
@@ -16341,7 +16341,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			knockoff: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			//幻想增添技能
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
@@ -16453,7 +16453,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			knockoff: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			//幻想增添技能
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
@@ -16559,7 +16559,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			aquajet: ["9M"],
 			knockoff: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			//幻想增添技能
 			flipturn: ["9M"],
 			bubblebeam: ["9M"],
@@ -17194,7 +17194,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yaolan: ["9M"],
 			poisonfang: ["9M"],
 			gunkshot: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			flipturn: ["9M"],
 			aquatail: ["9M"],
 			tidyup: ["9M"],
@@ -18823,7 +18823,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			moonblast: ["9M"],
 			yaojingzhiya: ["9M"],
 			yuannengshifang: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			suilinggang: ["9M"],
 			//幻想增添技能
 			acidspray: ["9M"],
@@ -19388,7 +19388,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	slowbrogalarfantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			banefulbunker: ["9M"],
 			dongchadaji: ["9M"],
 			earthpower: ["9M"],
@@ -19506,7 +19506,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	slowbromegafantasy: {
 		learnset: {
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			banefulbunker: ["9M"],
 			dongchadaji: ["9M"],
 			earthpower: ["9M"],
@@ -20971,7 +20971,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			spikyshield: ["9M"],
 			trailblaze: ["9M"],
 			sludgewave: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			barbbarrage: ["9M"],
 			fellstinger: ["9M"],
 			pollenpuff: ["9M"],
@@ -23032,6 +23032,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
 			pursuit: ["9M"],
+			swordsdance: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
@@ -23227,6 +23228,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
 			pursuit: ["9M"],
+			swordsdance: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
@@ -23422,6 +23424,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
 			pursuit: ["9M"],
+			swordsdance: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M", "3M"],
 			agility: ["9M", "8M", "8V"],
@@ -24359,7 +24362,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -24509,7 +24512,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -24659,7 +24662,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -24809,7 +24812,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -24959,7 +24962,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -25109,7 +25112,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -25259,7 +25262,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -25409,7 +25412,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -25559,7 +25562,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -25709,7 +25712,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -25859,7 +25862,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -26009,7 +26012,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -26159,7 +26162,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -26309,7 +26312,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -26459,7 +26462,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -26609,7 +26612,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -26759,7 +26762,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -26909,7 +26912,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			juenianpo: ["9M"],
 			freezedry: ["9M"],
 			haze: ["9M"],
-			biansuzhefan: ["9M"],
+			wuzhuotihuan: ["9M"],
 			sludgebomb: ["9M"],
 			toxicspikes: ["9M"],
 			dongchadaji: ["9M"],
@@ -27424,7 +27427,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	ampharosfantasy: {
 		learnset: {
-			leiguanghongming: ["9M"],	
+			xuguanghonglei: ["9M"],	
 			risingvoltage: ["9M"],
 			scaleshot: ["9M"],
 			dracometeor: ["9M"],
@@ -27537,7 +27540,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	ampharosmegafantasy: {
 		learnset: {
-			leiguanghongming: ["9M"],	
+			xuguanghonglei: ["9M"],	
 			risingvoltage: ["9M"],
 			scaleshot: ["9M"],
 			dracometeor: ["9M"],
