@@ -3133,10 +3133,17 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     if (pokemon.itemState.damageTaken >= pokemon.maxhp / 4) {
                         this.add('-message', `暗影之瓶中的黑暗力量足以彻底封闭${pokemon.name}的感情！`);
                         
-                        // 【核心修改】第三个参数改为 false。
-                        // false 表示这是“对战内形态变化”而不彻底重写图鉴的 baseSpecies。
-                        // 这能确保客户端在下回合重新请求时，仍然认可它的太晶化权利。
+                        // 变身为黑暗形态，保留太晶化判定
                         pokemon.formeChange('Lugia-Shadow-Fantasy', this.effect, false);
+                        
+                        // 【新增核心修复】手动将特性设置为变身后的特性 "Hei An Qin Shi"
+                        pokemon.setAbility('heianqinshi');
+                        // 顺便把基础特性也替换掉，防止被胃液/烦恼种子等技能影响后恢复错特性
+                        pokemon.baseAbility = 'heianqinshi' as ID;
+                        
+                        // 【可选】强制在客户端播报新特性，让玩家知道特性变了
+                        // 这里的名字要和你在 abilities.ts 里写的英文名称完全一致
+                        this.add('-ability', pokemon, 'Hei An Qin Shi');
                     }
                 }
             }

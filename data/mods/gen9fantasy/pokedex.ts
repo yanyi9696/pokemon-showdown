@@ -696,7 +696,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		num: 249,
 		name: "Lugia-Shadow-Fantasy",
 		baseSpecies: "Lugia",
-		forme: "Fantasy",
+		forme: "Shadow-Fantasy",
 		types: ["Ghost", "Flying"],
 		gender: "N",
 		baseStats: { hp: 106, atk: 130, def: 90, spa: 154, spd: 90, spe: 110 },
