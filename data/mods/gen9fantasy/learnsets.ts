@@ -6988,6 +6988,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	toxtricityfantasy: {
 		learnset: {
+			thunderclap: ["9M"],
 			wuzhuotihuan: ["9M"],
 			torchsong: ["9M"],
 			nastyplot: ["9M"],
@@ -7080,6 +7081,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	toxtricitygmegafantasy: {
 		learnset: {
+			thunderclap: ["9M"],
 			wuzhuotihuan: ["9M"],
 			torchsong: ["9M"],
 			nastyplot: ["9M"],

@@ -102,7 +102,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Adaptability"},		
 	},
 	drednawgmegafantasy: {	
-		abilities: {0: "Strong Jaw"},	
+		abilities: {0: "Rock Head"},	
 		tier: "(Uber)",
 	},
 	darmanitangalarfantasy: {
@@ -380,6 +380,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	tapufinifantasy: {
 		tier: "OU",
 	},
+	toxtricityfantasy: {
+		tier: "OU",
+	},
 	toxtricitylowkeyfantasy: {
 		tier: "OU",
 	},
@@ -433,9 +436,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	steelixmegafantasy: {
 		tier: "UUBL",
 		abilities: {0: "Sand Force"},		
-	},
-	toxtricityfantasy: {
-		tier: "UUBL",
 	},
 	volcanionfantasy: {
 		tier: "UUBL",
@@ -508,6 +508,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	primarinafantasy: {
+		tier: "UU",
+	},
+	rotomfantasy: {
 		tier: "UU",
 	},
 	scolipedefantasy: {
@@ -644,9 +647,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	ribombeefantasy: {
-		tier: "RU",
-	},
-	rotomfantasy: {
 		tier: "RU",
 	},
 	sawsbuckfantasy: {

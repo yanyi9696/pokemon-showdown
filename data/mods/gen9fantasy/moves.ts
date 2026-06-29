@@ -408,7 +408,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				move.type = 'Ice'; // 变为冰属性
 			} 
 			// 检查宝可梦是否为“Mega进化形态”
-			else if (pokemon.species.name === 'Toxtricity-G-Mega-Fantasy') {
+			else if (
+				pokemon.species.name === 'Toxtricity-G-Mega-Fantasy' || 
+				pokemon.species.name === 'Toxtricity-Low-Key-G-Mega-Fantasy'
+			) {
 				move.type = 'Psychic'; // 变为超能力属性
 			}
 		},
