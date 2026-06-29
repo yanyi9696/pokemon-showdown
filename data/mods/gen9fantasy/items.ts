@@ -1494,39 +1494,39 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
 	//以下为zamega石 num从9999开始
 	gmegawishingstar: {
-		name: "G-Mega Wishing Star",
-		spritenum: 3,
-		megaStone: [
-			"Garbodor-G-Mega-Fantasy",
-			"Corviknight-G-Mega-Fantasy",
-			"Sandaconda-G-Mega-Fantasy",
-			"Toxtricity-G-Mega-Fantasy",
-			"Toxtricity-Low-Key-G-Mega-Fantasy",
-			"Orbeetle-G-Mega-Fantasy",
-			"Drednaw-G-Mega-Fantasy",
-			"Melmetal-G-Mega-Fantasy",
-		],
-		megaEvolves: [
-			"Garbodor-Fantasy",
-			"Corviknight-Fantasy",
-			"Sandaconda-Fantasy",
-			"Toxtricity-Fantasy",
-			"Toxtricity-Low-Key-Fantasy",
-			"Orbeetle-Fantasy",
-			"Drednaw-Fantasy",
-			"Melmetal-Fantasy",
-		],
-		itemUser: [
-			"Garbodor-Fantasy",
-			"Corviknight-Fantasy",
-			"Sandaconda-Fantasy",
-			"Toxtricity-Fantasy",
-			"Toxtricity-Low-Key-Fantasy",
-			"Orbeetle-Fantasy",
-			"Drednaw-Fantasy",
-			"Melmetal-Fantasy",
-		],
-		onTakeItem(item, source) {
+        name: "G-Mega Wishing Star",
+        spritenum: 3,
+        megaStone: [
+            "Garbodor-G-Mega-Fantasy",
+            "Corviknight-G-Mega-Fantasy",
+            "Sandaconda-G-Mega-Fantasy",
+            "Toxtricity-G-Mega-Fantasy",
+            "Toxtricity-Low-Key-G-Mega-Fantasy",
+            "Orbeetle-G-Mega-Fantasy",
+            "Drednaw-G-Mega-Fantasy",
+            "Melmetal-G-Mega-Fantasy",
+        ],
+        megaEvolves: [
+            "Garbodor-Fantasy",
+            "Corviknight-Fantasy",
+            "Sandaconda-Fantasy",
+            "Toxtricity-Fantasy",
+            "Toxtricity-Low-Key-Fantasy",
+            "Orbeetle-Fantasy",
+            "Drednaw-Fantasy",
+            "Melmetal-Fantasy",
+        ],
+        itemUser: [
+            "Garbodor-Fantasy",
+            "Corviknight-Fantasy",
+            "Sandaconda-Fantasy",
+            "Toxtricity-Fantasy",
+            "Toxtricity-Low-Key-Fantasy",
+            "Orbeetle-Fantasy",
+            "Drednaw-Fantasy",
+            "Melmetal-Fantasy",
+        ],
+        onTakeItem(item, source) {
             const name = source.baseSpecies.name;
             const allValidForms = [
                 ...(Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves!]),
@@ -1536,75 +1536,42 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             if (allValidForms.includes(name)) return false;
             return true;
         },
-        onBeforeMove(pokemon) {
-            // 这个钩子在选择技能并触发 Mega 进化后，释放技能前的瞬间执行，实现无缝瞬间拔高血条
-            if (pokemon.species.forme === 'Mega' || pokemon.species.name.includes('-G-Mega-')) {
-                if (!pokemon.m.gMegaHPCalculated) {
-                    const megaStatHP = pokemon.species.baseStats.hp;
-                    const baseStatHP = pokemon.baseSpecies.baseStats.hp;
-
-                    if (baseStatHP !== megaStatHP) {
-                        const lostHP = pokemon.maxhp - pokemon.hp;
-                        
-                        // 增加可选链(?.)校验，防止部分特殊环境没有配置队伍导致崩溃
-                        const ivs = pokemon.set?.ivs?.['hp'] ?? 31;
-                        const evs = pokemon.set?.evs?.['hp'] ?? 0;
-
-                        const newMaxHP = megaStatHP === 1 ? 1 : Math.floor(Math.floor(
-                            2 * megaStatHP + ivs + Math.floor(evs / 4) + 100
-                        ) * pokemon.level / 100) + 10;
-
-                        pokemon.baseMaxhp = newMaxHP;
-                        pokemon.maxhp = newMaxHP; 
-                        pokemon.hp = pokemon.maxhp - lostHP;
-                        if (pokemon.hp <= 0) pokemon.hp = 1;
-
-                        this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-                    }
-                    pokemon.m.gMegaHPCalculated = true;
-                }
-            }
-        },
         onUpdate(pokemon) {
             // 当宝可梦处于 G-Mega 形态时触发
             if (pokemon.species.forme === 'Mega' || pokemon.species.name.includes('-G-Mega-')) {
-                // pokemon.m 变量用于存储战斗中的临时状态，防止重复计算 HP
+                // 防止重复计算
                 if (!pokemon.m.gMegaHPCalculated) {
                     const baseStatHP = pokemon.baseSpecies.baseStats.hp;
                     const megaStatHP = pokemon.species.baseStats.hp;
 
+                    // 只有种族值改变了才重新计算
                     if (baseStatHP !== megaStatHP) {
-                        const lostHP = pokemon.maxhp - pokemon.hp;
+                        // 1. 完全对齐基格尔德公式，使用道具脚本上下文环境里的 this
+                        pokemon.baseMaxhp = Math.floor(Math.floor(
+                            2 * megaStatHP + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
+                        ) * pokemon.level / 100 + 10);
                         
-                        // 重新计算新的最大 HP
-                        const ivs = pokemon.set?.ivs?.['hp'] ?? 31;
-                        const evs = pokemon.set?.evs?.['hp'] ?? 0;
-
-                        const newMaxHP = megaStatHP === 1 ? 1 : Math.floor(Math.floor(
-                            2 * megaStatHP + ivs + Math.floor(evs / 4) + 100
-                        ) * pokemon.level / 100) + 10;
-
-                        pokemon.baseMaxhp = newMaxHP;
-                        pokemon.maxhp = newMaxHP; 
-
-                        // 扣除变身前已损失的 HP
-                        pokemon.hp = pokemon.maxhp - lostHP;
-                        if (pokemon.hp <= 0) pokemon.hp = 1;
-
-                        // 发送隐藏回血指令，刷新血槽 UI 显示
+                        // 2. 考虑极巨化倍率
+                        const newMaxHP = pokemon.volatiles['dynamax'] ? (2 * pokemon.baseMaxhp) : pokemon.baseMaxhp;
+                        
+                        // 3. 保持损失的HP一致 (新上限 - 损血量)
+                        pokemon.hp = newMaxHP - (pokemon.maxhp - pokemon.hp);
+                        pokemon.maxhp = newMaxHP;
+                        
+                        // 4. 发送隐藏回血指令强制刷新客户端 UI，this.add 为系统级指令
                         this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
                     }
                     // 标记为已重算
                     pokemon.m.gMegaHPCalculated = true;
                 }
             } else {
-                // 如果退出了 G-Mega 形态（例如战斗结束恢复原状），重置标记
+                // 如果退出了 G-Mega 形态，重置标记
                 delete pokemon.m.gMegaHPCalculated;
             }
         },
         num: 9999,
         gen: 9,
-        desc: "超巨进化许愿星:让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
+        desc: "超巨进化许愿星:让超巨进化宝可梦携带后,在战斗时就能进行超级进化的一种神奇许愿星",
 		shortDesc: "超巨进化许愿星:让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
 	},
 	victreebelite: {
