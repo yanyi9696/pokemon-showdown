@@ -3134,9 +3134,12 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					
 					// 检查累计损失的血量是否达到了最大HP的 1/4 (即 25%)
 					if (pokemon.itemState.damageTaken >= pokemon.maxhp / 4) {
-						this.add('-message', `暗影之瓶中的黑暗力量足以彻底封闭${pokemon.name}的感情！`);
-						// 变身为黑暗形态，之后 ID 变为 'lugiashadowfantasy'，不再触发扣血
+						this.add('-message', `暗影之瓶中的黑暗力量足以彻底封闭${pokemon.name}的感情！`);						
+						// 1. 进行普通的形态切换，不加 true（保留太晶化功能）
 						pokemon.formeChange('Lugia-Shadow-Fantasy', this.effect);
+						// 2. 【核心新增】手动将特性变更为黑暗形态的专属特性
+						// 注意：括号内的特性 ID 必须全小写且无空格
+						pokemon.setAbility('heianqinshi'); 
 					}
 				}
 			}
