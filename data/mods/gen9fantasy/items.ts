@@ -3136,7 +3136,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					if (pokemon.itemState.damageTaken >= pokemon.maxhp / 4) {
 						this.add('-message', `暗影之瓶中的黑暗力量足以彻底封闭${pokemon.name}的感情！`);
 						// 变身为黑暗形态，之后 ID 变为 'lugiashadowfantasy'，不再触发扣血
-						pokemon.formeChange('Lugia-Shadow-Fantasy', this.effect, true);
+						pokemon.formeChange('Lugia-Shadow-Fantasy', this.effect);
 					}
 				}
 			}
@@ -3158,7 +3158,6 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		itemUser: ["Lugia-Fantasy"],
 		num: 30010,
 		gen: 9,
-		// 更新了道具描述
 		desc: "暗影之瓶:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP,转而提供招式威力提升20%",
 		shortDesc: "暗影之瓶:每回合损血1/16,以该方式损血累计达1/4后变为黑暗形态,招式威力提升20%",
 	},
