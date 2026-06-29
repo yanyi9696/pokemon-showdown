@@ -3141,6 +3141,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 				}
 			}
 		},
+		// -------- 招式增伤逻辑 --------
+		onBasePowerPriority: 15,
+		onBasePower(basePower, user, target, move) {
+			// 如果变身为了黑暗形态，所有招式威力提升20%
+			if (user.species.id === 'lugiashadowfantasy') {
+				return this.chainModify(1.2);
+			}
+		},
 		onTakeItem(item, pokemon, source) {
 			if (source?.baseSpecies.baseSpecies === 'Lugia' || pokemon.baseSpecies.baseSpecies === 'Lugia') {
 				return false;
@@ -3150,8 +3158,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		itemUser: ["Lugia-Fantasy"],
 		num: 30010,
 		gen: 9,
-		desc: "暗影之瓶:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP",
-		shortDesc: "暗影之瓶:幻想洛奇亚携带每回合损血1/16,以该方式损血累计达1/4后变身为黑暗形态",
+		// 更新了道具描述
+		desc: "暗影之瓶:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP,转而提供招式威力提升20%",
+		shortDesc: "暗影之瓶:每回合损血1/16,以该方式损血累计达1/4后变为黑暗形态,招式威力提升20%",
 	},
 	dadascloak: {
 		name: "Dada's Cloak",
