@@ -2164,4 +2164,38 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "鸩袭:如果目标本回合未准备使用造成伤害的招式，或目标已经行动，此招式将失败",
 		shortDesc: "鸩袭:先制攻击，如果目标不使用攻击招式的话则使用失败",
 	},
+	huanshenbu: {
+		num: 10049, 
+		accuracy: 100,
+		basePower: 40,
+		category: "Physical",
+		name: "Huan Shen Bu",
+		pp: 20,
+		priority: 1,
+		flags: { contact: 1, protect: 1, mirror: 1 },
+		onModifyPriority(priority, source, target, move) {
+			// 如果在精神场地且使用者接地（未浮空），先制度变为 0
+			if (this.field.isTerrain('psychicterrain') && source.isGrounded()) {
+				return 0;
+			}
+		},
+		onModifyMove(move, pokemon) {
+			// 同理，在精神场地且使用者接地时，为招式赋予“提升1级速度”的自我增益效果
+			if (this.field.isTerrain('psychicterrain') && pokemon.isGrounded()) {
+				move.self = {
+					boosts: {
+						spe: 1,
+					},
+				};
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Psychic",
+		zMove: { basePower: 100 },
+		maxMove: { basePower: 90 },
+		contestType: "Cool",
+		desc: "幻身步:通常情况下,此招式能够先制攻击。如果处于精神场地中且使用者在地面上,此招式将失去先制效果(优先级降为0),并在成功命中后使自身的速度提升1级",
+		shortDesc: "幻身步:先制攻击;在精神场地上:无先制度,使速度上升1级",
+	},
 };
