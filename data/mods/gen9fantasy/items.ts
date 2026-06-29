@@ -1526,7 +1526,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             "Drednaw-Fantasy",
             "Melmetal-Fantasy",
         ],
-        onTakeItem(item, source) {
+         onTakeItem(item, source) {
             const name = source.baseSpecies.name;
             const allValidForms = [
                 ...(Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves!]),
@@ -1536,37 +1536,27 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             if (allValidForms.includes(name)) return false;
             return true;
         },
-        onUpdate(pokemon) {
-            // 当宝可梦处于 G-Mega 形态时触发
-            if (pokemon.species.forme === 'Mega' || pokemon.species.name.includes('-G-Mega-')) {
-                // 防止重复计算
-                if (!pokemon.m.gMegaHPCalculated) {
-                    const baseStatHP = pokemon.baseSpecies.baseStats.hp;
-                    const megaStatHP = pokemon.species.baseStats.hp;
+        onAfterMega(pokemon) {
+            // onAfterMega 会在引擎执行完 Mega 动作的瞬间精准触发
+            const baseStatHP = pokemon.baseSpecies.baseStats.hp;
+            const megaStatHP = pokemon.species.baseStats.hp;
 
-                    // 只有种族值改变了才重新计算
-                    if (baseStatHP !== megaStatHP) {
-                        // 1. 完全对齐基格尔德公式，使用道具脚本上下文环境里的 this
-                        pokemon.baseMaxhp = Math.floor(Math.floor(
-                            2 * megaStatHP + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
-                        ) * pokemon.level / 100 + 10);
-                        
-                        // 2. 考虑极巨化倍率
-                        const newMaxHP = pokemon.volatiles['dynamax'] ? (2 * pokemon.baseMaxhp) : pokemon.baseMaxhp;
-                        
-                        // 3. 保持损失的HP一致 (新上限 - 损血量)
-                        pokemon.hp = newMaxHP - (pokemon.maxhp - pokemon.hp);
-                        pokemon.maxhp = newMaxHP;
-                        
-                        // 4. 发送隐藏回血指令强制刷新客户端 UI，this.add 为系统级指令
-                        this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-                    }
-                    // 标记为已重算
-                    pokemon.m.gMegaHPCalculated = true;
-                }
-            } else {
-                // 如果退出了 G-Mega 形态，重置标记
-                delete pokemon.m.gMegaHPCalculated;
+            if (baseStatHP !== megaStatHP) {
+                // 1. 完全对齐官方公式重新计算新的最大 HP (脱壳忍者 HP 锁定为 1)
+                pokemon.baseMaxhp = megaStatHP === 1 ? 1 : Math.floor(Math.floor(
+                    2 * megaStatHP + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
+                ) * pokemon.level / 100 + 10);
+                
+                // 2. 考虑极巨化倍率 (预防万一)
+                const newMaxHP = pokemon.volatiles['dynamax'] ? (2 * pokemon.baseMaxhp) : pokemon.baseMaxhp;
+                
+                // 3. 保持损失的HP一致 (新上限 - 损血量)
+                pokemon.hp = newMaxHP - (pokemon.maxhp - pokemon.hp);
+                pokemon.maxhp = newMaxHP;
+                if (pokemon.hp <= 0) pokemon.hp = 1;
+                
+                // 4. 发送隐藏回血指令，完美衔接 Mega 的 UI 刷新
+                this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
             }
         },
         num: 9999,
