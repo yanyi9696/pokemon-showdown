@@ -7634,9 +7634,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	regigigasfantasy: {
 		learnset: {
+			woodhammer: ["9M"],
+			trailblaze: ["9M"],
+			grassyglide: ["9M"],
+			powerwhip: ["9M"],
 			kingsshield: ["9M"],
-			meteormash: ["9M"],
 			irondefense: ["9M"],
+			breakingswipe: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M"],
 			ancientpower: ["4T"],
@@ -22293,6 +22297,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			aquajet: ["9M"],
 			wavecrash: ["9M"],
 			flipturn: ["9M"],
+			lifedew: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L35", "8M", "8L35"],
 			ancientpower: ["4T"],
@@ -22391,6 +22396,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			aquajet: ["9M"],
 			jetpunch: ["9M"],
 			wavecrash: ["9M"],
+			lifedew: ["9M"],
 			headlongrush: ["9M"],
 			thousandwaves: ["9M"],
 			drainpunch: ["9M"],
@@ -22515,9 +22521,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			aquajet: ["9M"],
 			jetpunch: ["9M"],
 			wavecrash: ["9M"],
+			lifedew: ["9M"],
 			headlongrush: ["9M"],
 			thousandwaves: ["9M"],
-			recover: ["9M"],
 			drainpunch: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L35", "8M", "8L35"],
@@ -22640,9 +22646,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			aquajet: ["9M"],
 			jetpunch: ["9M"],
 			wavecrash: ["9M"],
+			lifedew: ["9M"],
 			headlongrush: ["9M"],
 			thousandwaves: ["9M"],
-			recover: ["9M"],
 			drainpunch: ["9M"],
 			//幻想增添技能
 			amnesia: ["9M", "9L35", "8M", "8L35"],

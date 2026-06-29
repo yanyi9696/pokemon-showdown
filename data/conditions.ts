@@ -1,4 +1,25 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	weixingshidi: {
+		name: 'weixingshidi',
+		duration: 4, // 持续 4 回合（包含施加状态的当回合）
+		onSideStart(side) {
+			// 状态开始时的提示
+			this.add('-sidestart', side, 'move: weixingshidi');
+			this.add('-message', `周围的水流化作了一片微型湿地！`);
+		},
+		// 核心效果：在该场地侧的宝可梦，速度减半
+		onModifySpe(spe, pokemon) {
+			this.debug('Wei Xing Shi Di speed drop');
+			return this.chainModify(0.5);
+		},
+		onSideResidualOrder: 26, // 结算顺位参考原版湿地 (grasspledge)
+		onSideResidualSubOrder: 8,
+		onSideEnd(side) {
+			// 状态结束时的提示
+			this.add('-sideend', side, 'move: weixingshidi');
+			this.add('-message', `微型湿地消失了。`);
+		},
+	},
 	leizhustats: {
 		name: 'leizhustats',
 		noCopy: true, // 不会被接棒或复制类招式带走

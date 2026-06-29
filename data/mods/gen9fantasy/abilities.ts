@@ -262,68 +262,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 115,
 		shortDesc: "天气处于冰雹或下雪状态时,每回合回复最大HP的1/16;受到接触类招式时有30%机率使对手冻伤",
 	},
-	bigpecks: {
-		onTryBoost(boost, target, source, effect) {
-			if (source && target === source) return;
-			if (boost.def && boost.def < 0) {
-				delete boost.def;
-				if (!(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
-					this.add("-fail", target, "unboost", "Defense", "[from] ability: Big Pecks", `[of] ${target}`);
-				}
-			}
-		},
-		// 新增效果：免疫入场时生效的伤害类场地状态
-		onDamage(damage, target, source, effect) {
-			// 定义造成伤害的入场类状态ID
-			const entryHazardDamageIds = ['spikes', 'stealthrock', 'gmaxsteelsurge'];
-			if (effect && entryHazardDamageIds.includes(effect.id)) {
-				return false; // 如果伤害来源是这些状态之一，则伤害无效
-			}
-		},
-		flags: { breakable: 1 },
-		name: "Big Pecks",
-		rating: 3,
-		num: 145,
-		shortDesc: "不会被降低防御,也不会被己方场地上的入场可生效的状态伤害",
-	},
-	imposter: {
-		onSwitchIn(pokemon) {
-			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
-			if (target) {
-				// 1. 执行变身逻辑
-				// transformInto 内部会自动处理数据的拷贝，并向前端发送变身动画指令
-				pokemon.transformInto(target, this.dex.abilities.get('imposter'));
-				
-				// 2. 修复 UI 更新问题
-				// 我们保留 runEvent('Update')，它用于确保前端的数据（如HP、属性、能力值）与服务器同步
-				this.runEvent('Update', pokemon);
-			}
-		},
-		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
-		name: "Imposter",
-		rating: 5,
-		num: 150,
-	},
-	sandforce: {
-		onBasePowerPriority: 21,
-		onBasePower(basePower, attacker, defender, move) {
-			// 只要当前天气是沙暴，就不再判断招式属性，直接提升威力
-			if (this.field.isWeather('sandstorm')) {
-				this.debug('Sand Force boost');
-				// 将招式威力进行连锁修正，提升 30% (5325 / 4096 约等于 1.3)
-				return this.chainModify([5325, 4096]);
-			}
-		},
-		// 免疫沙暴天气的回合末伤害
-		onImmunity(type, pokemon) {
-			if (type === 'sandstorm') return false;
-		},
-		flags: {},
-		name: "Sand Force",
-		rating: 3, // 因为泛用性增强了，我将评级从 2 稍微提高到了 3
-		num: 159,
-		shortDesc: "在沙暴天气下,该特性的宝可梦使用的招式威力提升30%;免疫沙暴天气的回合末伤害",
-	},
 	flowergift: {
 		onSwitchInPriority: -2,
 		onStart(pokemon) {
@@ -353,9 +291,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-
 		// --- 对自身（持有者）的加成 ---
-
 		// 攻击与特攻：使用标准的同伴钩子，TS 完美支持
 		onAllyModifyAtkPriority: 3,
 		onAllyModifyAtk(atk, pokemon) {
@@ -403,42 +339,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 122,
 		shortDesc: "大晴天时,自己与同伴双攻中较高的一项与双防中较低的一项将提高1.5倍",
 	},
-	infiltrator: {
-		onModifyMove(move) {
-			move.infiltrates = true;
-		},
-		onAnyModifyDef(def, target, source, move) {
-			const abilityHolder = this.effectState.target;
-			if (source !== abilityHolder) return;
-
-			// 检查是否击中要害。系统会在伤害计算前确定 crit 标志，
-			// 如果招式自带 willCrit 也会在这里生效。
-			if (target.getMoveHitData(move).crit) {
-				this.debug('Infiltrator defense drop (Crit: 25%)');
-				return this.chainModify(0.75); // 无视25%物防
+	bigpecks: {
+		onTryBoost(boost, target, source, effect) {
+			if (source && target === source) return;
+			if (boost.def && boost.def < 0) {
+				delete boost.def;
+				if (!(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
+					this.add("-fail", target, "unboost", "Defense", "[from] ability: Big Pecks", `[of] ${target}`);
+				}
 			}
-			
-			this.debug('Infiltrator defense drop (Normal: 10%)');
-			return this.chainModify(0.9); // 无视10%物防
 		},
-		onAnyModifySpD(spd, target, source, move) {
-			const abilityHolder = this.effectState.target;
-			if (source !== abilityHolder) return;
-
-			// 同理，检查是否击中要害
-			if (target.getMoveHitData(move).crit) {
-				this.debug('Infiltrator special defense drop (Crit: 25%)');
-				return this.chainModify(0.75); // 无视25%特防
+		// 新增效果：免疫入场时生效的伤害类场地状态
+		onDamage(damage, target, source, effect) {
+			// 定义造成伤害的入场类状态ID
+			const entryHazardDamageIds = ['spikes', 'stealthrock', 'gmaxsteelsurge'];
+			if (effect && entryHazardDamageIds.includes(effect.id)) {
+				return false; // 如果伤害来源是这些状态之一，则伤害无效
 			}
-
-			this.debug('Infiltrator special defense drop (Normal: 10%)');
-			return this.chainModify(0.9); // 无视10%特防
 		},
-		flags: {},
-		name: "Infiltrator",
+		flags: { breakable: 1 },
+		name: "Big Pecks",
 		rating: 3,
-		num: 151,
-		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%双防,ct时无视提升至25%",
+		num: 145,
+		shortDesc: "不会被降低防御,也不会被己方场地上的入场可生效的状态伤害",
 	},
 	illusion: {
 		onBeforeSwitchIn(pokemon) {
@@ -484,25 +407,96 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 4.5,
 		num: 149,
 	},
+	imposter: {
+		onSwitchIn(pokemon) {
+			const target = pokemon.side.foe.active[pokemon.side.foe.active.length - 1 - pokemon.position];
+			if (target) {
+				// 1. 执行变身逻辑
+				// transformInto 内部会自动处理数据的拷贝，并向前端发送变身动画指令
+				pokemon.transformInto(target, this.dex.abilities.get('imposter'));
+				
+				// 2. 修复 UI 更新问题
+				// 我们保留 runEvent('Update')，它用于确保前端的数据（如HP、属性、能力值）与服务器同步
+				this.runEvent('Update', pokemon);
+			}
+		},
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
+		name: "Imposter",
+		rating: 5,
+		num: 150,
+	},
+	infiltrator: {
+		onModifyMove(move) {
+			move.infiltrates = true;
+		},
+		onAnyModifyDef(def, target, source, move) {
+			const abilityHolder = this.effectState.target;
+			if (source !== abilityHolder) return;
+
+			// 检查是否击中要害。系统会在伤害计算前确定 crit 标志，
+			// 如果招式自带 willCrit 也会在这里生效。
+			if (target.getMoveHitData(move).crit) {
+				this.debug('Infiltrator defense drop (Crit: 25%)');
+				return this.chainModify(0.75); // 无视25%物防
+			}
+			
+			this.debug('Infiltrator defense drop (Normal: 10%)');
+			return this.chainModify(0.9); // 无视10%物防
+		},
+		onAnyModifySpD(spd, target, source, move) {
+			const abilityHolder = this.effectState.target;
+			if (source !== abilityHolder) return;
+
+			// 同理，检查是否击中要害
+			if (target.getMoveHitData(move).crit) {
+				this.debug('Infiltrator special defense drop (Crit: 25%)');
+				return this.chainModify(0.75); // 无视25%特防
+			}
+
+			this.debug('Infiltrator special defense drop (Normal: 10%)');
+			return this.chainModify(0.9); // 无视10%特防
+		},
+		flags: {},
+		name: "Infiltrator",
+		rating: 3,
+		num: 151,
+		shortDesc: "自身使用招式时无视对方的替身/反射壁/光墙/神秘守护/白雾/极光幕/10%双防,ct时无视提升至25%",
+	},
+	sandforce: {
+		onBasePowerPriority: 21,
+		onBasePower(basePower, attacker, defender, move) {
+			// 只要当前天气是沙暴，就不再判断招式属性，直接提升威力
+			if (this.field.isWeather('sandstorm')) {
+				this.debug('Sand Force boost');
+				// 将招式威力进行连锁修正，提升 30% (5325 / 4096 约等于 1.3)
+				return this.chainModify([5325, 4096]);
+			}
+		},
+		// 免疫沙暴天气的回合末伤害
+		onImmunity(type, pokemon) {
+			if (type === 'sandstorm') return false;
+		},
+		flags: {},
+		name: "Sand Force",
+		rating: 3,
+		num: 159,
+		shortDesc: "在沙暴天气下,该特性的宝可梦使用的招式威力提升30%;免疫沙暴天气的回合末伤害",
+	},
 	flowerveil: {
 		// 当己方宝可梦（包括自己）的能力阶级尝试被变动时触发
 		onAllyTryBoost(boost, target, source, effect) {
 			// 1. 获取“花幕”特性的持有者
 			const effectHolder = this.effectState.target;
-
 			// 2. 检查目标是否受到保护：
 			//    - 目标就是特性持有者
 			//    - 或者 目标是草属性
 			const isProtected = (target === effectHolder) || target.hasType('Grass');
-
 			// 3. 如果目标不受保护，则直接返回，不执行后续逻辑
 			if (!isProtected) return;
-
 			// 4. [原逻辑] 检查是否有能力阶级降低
 			// 注意：这个修改会阻止所有降低，包括自我降低（如“近身战”的降防）
 			// 如果你想保留原版特性中“允许自我降低”的设定，可以取消下面这行代码的注释：
 			// if (source && target === source) return;
-
 			let showMsg = false;
 			let i: BoostID;
 			for (i in boost) {
@@ -511,13 +505,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					showMsg = true;
 				}
 			}
-
 			// 5. [原逻辑] 显示阻挡信息
 			if (showMsg && !(effect as ActiveMove).secondaries) {
 				this.add('-block', target, 'ability: Flower Veil', `[of] ${effectHolder}`);
 			}
 		},
-
 		// 当己方宝可梦（包括自己）尝试陷入异常状态时触发
 		onAllySetStatus(status, target, source, effect) {
 			// 1. 获取“花幕”特性的持有者
@@ -536,15 +528,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return null; // 阻止陷入异常状态
 			}
 		},
-
 		// 当己方宝可梦（包括自己）尝试陷入“哈欠”状态时触发
 		onAllyTryAddVolatile(status, target) {
 			// 1. 获取“花幕”特性的持有者
 			const effectHolder = this.effectState.target;
-
 			// 2. 检查目标是否受到保护
 			const isProtected = (target === effectHolder) || target.hasType('Grass');
-
 			// 3. 如果受保护，并且目标状态是“哈欠”
 			if (isProtected && status.id === 'yawn') {
 				this.debug('Flower Veil blocking yawn');
@@ -552,7 +541,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return null; // 阻止陷入“哈欠”状态
 			}
 		},
-
 		// [原逻辑] 其他属性
 		flags: { breakable: 1 },
 		name: "Flower Veil",
@@ -804,6 +792,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3,
 		num: 242,
 		shortDesc: "无视具有吸引对手招式效果的影响。若重复使用同一个招式,每次威力提升20%,至多提升100%",
+	},
+	transistor: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Electric') {
+				this.debug('Transistor boost');
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Electric') {
+				this.debug('Transistor boost');
+				return this.chainModify(1.5);
+			}
+		},
+		flags: {},
+		name: "Transistor",
+		rating: 3.5,
+		num: 262,
+		shortDesc: "电属性招式威力提升50%",
 	},
 	//以下为CAP特性
 	mountaineer: {
@@ -1819,24 +1828,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onTryHit(target, source, move) {
 			// 确保不是自己打自己，且目标确实对该招式的属性免疫
 			if (target !== source && !target.runImmunity(move.type)) {
-				// 尝试添加“噬影力”状态
-				if (!target.addVolatile('shiyingli')) {
-					// 如果添加失败（通常是因为已经有了），也要显示免疫信息
+				// 1. 尝试添加“噬影力”状态（用于后续威力提升50%）
+				const addedState = target.addVolatile('shiyingli');
+				
+				// 2. 尝试回复 1/8 最大HP，并传入 this.effect 触发特性横幅提示
+				const healed = this.heal(target.baseMaxhp / 8, target, target, this.effect);
+
+				// 3. 如果既没能加状态（说明已经有了），也没能回血（说明已经满血），则单纯显示免疫信息
+				if (!addedState && !healed) {
 					this.add('-immune', target, '[from] ability: Shi Ying Li');
 				}
 				// 返回 null 意味着招式被完全吸收/抵消，不会产生原有效果
 				return null;
 			}
 		},
-		// 离场时清除状态（可选，根据引火的习惯通常会保留，但也可以像你之前的状态一样手动清除）
+		// 离场时清除状态
 		onEnd(pokemon) {
 			pokemon.removeVolatile('shiyingli');
 		},
 		flags: { breakable: 1 },
 		name: "Shi Ying Li",
-		rating: 2.5,
+		rating: 3.5,
 		num: 10033,
-		shortDesc: "噬影力:因为属性相性免疫对手的招式后,使出的幽灵属性招式威力提升50%",
+		shortDesc: "噬影力:因为属性相性免疫对手的招式时,回复1/8最大HP;此后使出的幽灵属性招式威力提升50%",
 	},
 	meimenggongyou: {
 		// 1. 登场时：仅在此时尝试让我方进入睡眠
@@ -1891,7 +1905,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1 },
 		name: "Mei Meng Gong You",
-		rating: 4.5,
+		rating: 5,
 		num: 10034,
 		shortDesc: "美梦共游:登场使我方进入睡眠但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠",
 	},
@@ -1980,30 +1994,25 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	zhaoyongzexian: {
 		onSourceAfterMoveSecondary(target, source, move) {
-			// 1. 核心条件：持有者 HP 必须大于一半 (50%)
-			if (source.hp * 2 <= source.maxhp) return;
-			// 2. 招式检查：必须是水属性招式
+			// 1. 招式检查：必须是水属性招式
 			if (move.type !== 'Water') return;
-			// 3. 目标检查：如果目标拥有“水”属性，则不触发
-			// 使用 hasType('Water') 来检测目标的主属性或副属性
+			// 2. 目标检查：如果目标拥有“水”属性，则不触发
 			if (target.hasType('Water')) return;
-			// 4. 确定施加状态的场地侧
+			// 3. 确定施加状态的场地侧
 			const side = target.side;
-			// 5. 检查是否已经存在该效果（防止重复刷新）
-			if (side.sideConditions['grasspledge']) return;
-			// 6. 提示特性发动
+			// 4. 检查是否已经存在该效果（防止重复刷新）
+			if (side.sideConditions['weixingshidi']) return;
+			// 5. 提示特性发动
 			this.add('-ability', source, 'Zhao Yong Ze Xian');
-			// 7. 添加场地状态：'grasspledge' (即 4 回合速度减至 1/4 的湿地效果)
-			side.addSideCondition('grasspledge');
-			// 8. 明确提示文字
-			this.add('-message', `${source.name} 的充足体力引发了剧烈的水流，在大地上形成了湿地！`);
+			// 6. 添加场地状态：'weixingshidi' (即微型湿地效果)
+			side.addSideCondition('weixingshidi');
 		},
 		flags: {},
 		name: "Zhao Yong Ze Xian",
-		rating: 4,
+		rating: 4.5,
 		num: 10037,
-		shortDesc: "沼涌泽现:HP大于一半时,水属性招式命中非水属性目标后,使目标场地进入4回合湿地状态",
-	},
+		shortDesc: "沼涌泽现:水属性招式命中非水属性目标后,使目标场地进入4回合微型湿地状态(速度减半)",
+    }, 
 	gangtiejuhewu: {
 		// 1. 处理主动攻击的钢属性招式 (如铁头、铸铠波)
 		onTryHit(target, source, move) {
@@ -2166,7 +2175,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Yuan Hai Yang Liu",
-		rating: 4,
+		rating: 4.5,
 		num: 10040,
 		shortDesc: "渊海洋流:受击降雨,雨天下治愈异常且不会被效果绝佳,非水系每回合损血1/16,随水/飞克制倍数提升",
 	},
@@ -2474,7 +2483,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 		flags: { breakable: 1 }, // 允许被破格等特性无视
 		name: "Pai Wai Zu Qun",
-		rating: 3.5,
+		rating: 3,
 		num: 10046,
 		shortDesc: "排外族群:无同伴濒死时出场挑衅对手,连续招式威力+50%;使用者为幻想萨戮德-阿爸,防心灵攻击",
 	},
@@ -2518,7 +2527,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: { breakable: 1 }, // 允许被破格等特性无视
 		name: "Bing He Shen Qu",
-		rating: 3,
+		rating: 3.5,
 		num: 10047,
 		shortDesc: "冰河身躯:不会陷入灼伤状态。使用冰属性招式前会恢复自己下降的能力",
 	},
@@ -2578,5 +2587,35 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3.5,
 		num: 10047,
 		shortDesc: "争强:能力阶级被降低时防御和特防提升2级",
+	},
+	chuanshuodejuren: {
+		onDamage(damage, target, source, effect) {
+			// 如果受到的是0点伤害，则无需处理
+			if (damage <= 0) return damage;
+
+			// 计算需要减免的伤害数值（等级的一半，向下取整）
+			// 例如 100 级时，减免 50 点
+			const reduction = Math.floor(target.level / 2);
+			
+			// 如果等级太低导致减免量为0，则原样返回伤害
+			if (reduction <= 0) return damage;
+
+			// 计算最终伤害，确保伤害不会变成负数（不会导致加血）
+			let newDamage = damage - reduction;
+			if (newDamage < 0) newDamage = 0;
+
+			// 调试信息：可以在后台看到实际减轻了多少伤害
+			this.debug(`[传说的巨人] 将 ${damage} 点伤害降低到了 ${newDamage} 点。`);
+			
+			// 返回修改后的伤害值，引擎将用这个新数值进行最终的扣血结算
+			return newDamage;
+		},
+		flags: {
+			breakable: 1, failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1,
+		},
+		name: "Chuan Shuo De Ju Ren",
+		rating: 5,
+		num: 10049,
+		shortDesc: "传说的巨人:受到任何伤害时,损失的HP固定降低等于自己等级一半的数值",
 	},
 };

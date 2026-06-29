@@ -245,10 +245,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	greninjabondfantasy: {
 		tier: "OU",
 	},
-	golisopodmegafantasy: {
-		tier: "OU",
-		abilities: {0: "Hui Bi Zai Sheng"},		
-	},
 	golurkfantasy: {
 		tier: "OU",
 	},
@@ -411,6 +407,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	electivirefantasy: {
 		tier: "UUBL",
+	},
+	golisopodmegafantasy: {
+		tier: "UUBL",
+		abilities: {0: "Hui Bi Zai Sheng"},		
 	},
 	ironthornsfantasy: {
 		tier: "UUBL",
@@ -1029,12 +1029,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ironcrown: {
 		tier: "OU",
 	},
-	meowsticmmega: {
-		tier: "OU",
-	},
-	meowsticfmega: {
-		tier: "OU",
-	},
 	ogerponwellspringtera: {
 		tier: "OU",
 	},
@@ -1051,6 +1045,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	goodrahisui: {
+		tier: "UUBL",
+	},
+	meowsticmmega: {
+		tier: "UUBL",
+	},
+	meowsticfmega: {
 		tier: "UUBL",
 	},
 	ogerponcornerstonetera: {
