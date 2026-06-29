@@ -223,7 +223,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		maxMove: { basePower: 140 },
 		contestType: "Tough",
 		desc: "队伍中有不同巨人时附加不同效果:雷吉洛克(撒隐形岩),雷吉艾斯(50%几率冻伤),雷吉斯奇鲁(撒碎菱钢),雷吉艾勒奇(50%几率麻痹),雷吉铎拉戈(回复给予对手伤害的一半HP)",
-		shortDesc: "根据队伍中神柱附加隐形岩/50%冻伤/碎菱钢/50%麻痹/吸血",
+		shortDesc: "根据队中神柱附加隐形岩/50%冻伤/碎菱钢/50%麻痹/吸血",
 	},
 	darkvoid: {
 		num: 464,
