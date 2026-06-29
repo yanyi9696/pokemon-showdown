@@ -3112,58 +3112,53 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		shortDesc: "幻之究极能量:获得异兽提升效果;若特性是异兽提升,触发一次后清除特性。使用后消失",
 	},
 	shadowbottle: {
-		name: "Shadow Bottle",
-		spritenum: 752,
-		fling: {
-			basePower: 60,
-		},
-		onResidualOrder: 5,
-		onResidualSubOrder: 4,
-		onResidual(pokemon) {
-			// 只有处于基础的“幻想洛奇亚”形态才受到扣血和变身效果影响
-			if (pokemon.species.id === 'lugiafantasy') {
-				// 每回合扣除 1/16 的最大 HP，将道具自身作为伤害来源传递进去
-				const damage = this.damage(pokemon.baseMaxhp / 16, pokemon, pokemon, this.effect);
-				
-				if (damage) {
-					// 新增：每个回合损失血量时的文字提示
-					this.add('-message', `暗影之瓶中的黑暗力量正在侵蚀${pokemon.name}……`);
+        name: "Shadow Bottle",
+        spritenum: 752,
+        fling: {
+            basePower: 60,
+        },
+        onResidualOrder: 5,
+        onResidualSubOrder: 4,
+        onResidual(pokemon) {
+            // 只有处于基础的“幻想洛奇亚”形态才受到扣血和变身效果影响
+            if (pokemon.species.id === 'lugiafantasy') {
+                // 每回合扣除 1/16 的最大 HP，将道具自身作为伤害来源传递进去
+                const damage = this.damage(pokemon.baseMaxhp / 16, pokemon, pokemon, this.effect);
+                
+                if (damage) {
+                    this.add('-message', `暗影之瓶中的黑暗力量正在侵蚀${pokemon.name}……`);
 
-					// 记录因该道具损失的累计血量
-					pokemon.itemState.damageTaken = (pokemon.itemState.damageTaken || 0) + damage;
-					
-					// 检查累计损失的血量是否达到了最大HP的 1/4 (即 25%)
-					if (pokemon.itemState.damageTaken >= pokemon.maxhp / 4) {
-						this.add('-message', `暗影之瓶中的黑暗力量足以彻底封闭${pokemon.name}的感情！`);						
-						// 1. 进行普通的形态切换，不加 true（保留太晶化功能）
-						pokemon.formeChange('Lugia-Shadow-Fantasy', this.effect);
-						// 2. 【核心新增】手动将特性变更为黑暗形态的专属特性
-						// 注意：括号内的特性 ID 必须全小写且无空格
-						pokemon.setAbility('heianqinshi'); 
-					}
-				}
-			}
-		},
-		// -------- 招式增伤逻辑 --------
-		onBasePowerPriority: 15,
-		onBasePower(basePower, user, target, move) {
-			// 如果变身为了黑暗形态，所有招式威力提升20%
-			if (user.species.id === 'lugiashadowfantasy') {
-				return this.chainModify(1.2);
-			}
-		},
-		onTakeItem(item, pokemon, source) {
-			if (source?.baseSpecies.baseSpecies === 'Lugia' || pokemon.baseSpecies.baseSpecies === 'Lugia') {
-				return false;
-			}
-			return true;
-		},
-		itemUser: ["Lugia-Fantasy"],
-		num: 30010,
-		gen: 9,
-		desc: "暗影之瓶:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP,转而提供招式威力提升20%",
-		shortDesc: "暗影之瓶:每回合损血1/16,以该方式损血累计达1/4后变为黑暗形态,招式威力提升20%",
-	},
+                    pokemon.itemState.damageTaken = (pokemon.itemState.damageTaken || 0) + damage;
+                    
+                    if (pokemon.itemState.damageTaken >= pokemon.maxhp / 4) {
+                        this.add('-message', `暗影之瓶中的黑暗力量足以彻底封闭${pokemon.name}的感情！`);
+                        
+                        // 【核心修改】第三个参数改为 false。
+                        // false 表示这是“对战内形态变化”而不彻底重写图鉴的 baseSpecies。
+                        // 这能确保客户端在下回合重新请求时，仍然认可它的太晶化权利。
+                        pokemon.formeChange('Lugia-Shadow-Fantasy', this.effect, false);
+                    }
+                }
+            }
+        },
+        onBasePowerPriority: 15,
+        onBasePower(basePower, user, target, move) {
+            if (user.species.id === 'lugiashadowfantasy') {
+                return this.chainModify(1.2);
+            }
+        },
+        onTakeItem(item, pokemon, source) {
+            if (source?.baseSpecies.baseSpecies === 'Lugia' || pokemon.baseSpecies.baseSpecies === 'Lugia') {
+                return false;
+            }
+            return true;
+        },
+        itemUser: ["Lugia-Fantasy", "Lugia-Shadow-Fantasy"],
+        num: 30010,
+        gen: 9,
+        desc: "暗影之瓶:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP,转而提供招式威力提升20%",
+        shortDesc: "暗影之瓶:每回合损血1/16,以该方式损血累计达1/4后变为黑暗形态,招式威力提升20%",
+    },
 	dadascloak: {
 		name: "Dada's Cloak",
 		spritenum: 7,

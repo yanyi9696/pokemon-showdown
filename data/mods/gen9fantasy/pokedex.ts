@@ -707,6 +707,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		tags: ["Restricted Legendary"],
 		requiredItem: "Shadow Bottle",
 		eggGroups: ["Undiscovered"],
+		battleOnly: "Lugia-Fantasy",
 	},
 
 	// 第3世代 (252-386)

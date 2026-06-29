@@ -1764,7 +1764,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			breakable: 1, notransform: 1,
 		},
 		name: "Quan Li Da Mo",
-		rating: 3,
+		rating: 2,
 		num: 10030,
 		shortDesc: "全力达摩:使用招式前会变为达摩模式,且该形态会一直持续",
 	},
