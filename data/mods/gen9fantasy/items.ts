@@ -1494,53 +1494,87 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
 	//以下为zamega石 num从9999开始
 	gmegawishingstar: {
-		name: "G-Mega Wishing Star",
-		spritenum: 3,
-		megaStone: [
-			"Garbodor-G-Mega-Fantasy",
-			"Corviknight-G-Mega-Fantasy",
-			"Sandaconda-G-Mega-Fantasy",
-			"Toxtricity-G-Mega-Fantasy",
-			"Toxtricity-Low-Key-G-Mega-Fantasy",
-			"Orbeetle-G-Mega-Fantasy",
-			"Drednaw-G-Mega-Fantasy",
-			"Melmetal-G-Mega-Fantasy",
-		],
-		megaEvolves: [
-			"Garbodor-Fantasy",
-			"Corviknight-Fantasy",
-			"Sandaconda-Fantasy",
-			"Toxtricity-Fantasy",
-			"Toxtricity-Low-Key-Fantasy",
-			"Orbeetle-Fantasy",
-			"Drednaw-Fantasy",
-			"Melmetal-Fantasy",
-		],
-		itemUser: [
-			"Garbodor-Fantasy",
-			"Corviknight-Fantasy",
-			"Sandaconda-Fantasy",
-			"Toxtricity-Fantasy",
-			"Toxtricity-Low-Key-Fantasy",
-			"Orbeetle-Fantasy",
-			"Drednaw-Fantasy",
-			"Melmetal-Fantasy",
-		],
-		onTakeItem(item, source) {
-			const name = source.baseSpecies.name;
-			const allValidForms = [
-				...(Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves!]),
-				...(Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone!]),
-			];
+        name: "G-Mega Wishing Star",
+        spritenum: 3,
+        megaStone: [
+            "Garbodor-G-Mega-Fantasy",
+            "Corviknight-G-Mega-Fantasy",
+            "Sandaconda-G-Mega-Fantasy",
+            "Toxtricity-G-Mega-Fantasy",
+            "Toxtricity-Low-Key-G-Mega-Fantasy",
+            "Orbeetle-G-Mega-Fantasy",
+            "Drednaw-G-Mega-Fantasy",
+            "Melmetal-G-Mega-Fantasy",
+        ],
+        megaEvolves: [
+            "Garbodor-Fantasy",
+            "Corviknight-Fantasy",
+            "Sandaconda-Fantasy",
+            "Toxtricity-Fantasy",
+            "Toxtricity-Low-Key-Fantasy",
+            "Orbeetle-Fantasy",
+            "Drednaw-Fantasy",
+            "Melmetal-Fantasy",
+        ],
+        itemUser: [
+            "Garbodor-Fantasy",
+            "Corviknight-Fantasy",
+            "Sandaconda-Fantasy",
+            "Toxtricity-Fantasy",
+            "Toxtricity-Low-Key-Fantasy",
+            "Orbeetle-Fantasy",
+            "Drednaw-Fantasy",
+            "Melmetal-Fantasy",
+        ],
+        onTakeItem(item, source) {
+            const name = source.baseSpecies.name;
+            const allValidForms = [
+                ...(Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves!]),
+                ...(Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone!]),
+            ];
 
-			if (allValidForms.includes(name)) return false;
-			return true;
-		},
-		num: 9999,
-		gen: 9,
-		desc: "超巨进化许愿星:让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
-		shortDesc: "超巨进化许愿星:让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
-	},
+            if (allValidForms.includes(name)) return false;
+            return true;
+        },
+        onUpdate(pokemon) {
+            // 当宝可梦处于 G-Mega 形态时触发
+            if (pokemon.species.forme === 'Mega' || pokemon.species.name.includes('-G-Mega-')) {
+                // pokemon.m 变量用于存储战斗中的临时状态，防止重复计算 HP
+                if (!pokemon.m.gMegaHPCalculated) {
+                    const baseStatHP = pokemon.baseSpecies.baseStats.hp;
+                    const megaStatHP = pokemon.species.baseStats.hp;
+
+                    if (baseStatHP !== megaStatHP) {
+                        const lostHP = pokemon.maxhp - pokemon.hp;
+                        
+                        // 重新计算新的最大 HP
+                        const newMaxHP = megaStatHP === 1 ? 1 : Math.floor(Math.floor(
+                            2 * megaStatHP + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
+                        ) * pokemon.level / 100) + 10;
+
+                        pokemon.baseMaxhp = newMaxHP;
+                        pokemon.maxhp = newMaxHP; 
+
+                        // 扣除变身前已损失的 HP
+                        pokemon.hp = pokemon.maxhp - lostHP;
+                        if (pokemon.hp <= 0) pokemon.hp = 1;
+
+                        // 发送隐藏回血指令，刷新血槽 UI 显示
+                        pokemon.battle.add('-heal', pokemon, pokemon.getHealth, '[silent]');
+                    }
+                    // 标记为已重算
+                    pokemon.m.gMegaHPCalculated = true;
+                }
+            } else {
+                // 如果退出了 G-Mega 形态（例如战斗结束恢复原状），重置标记
+                delete pokemon.m.gMegaHPCalculated;
+            }
+        },
+        num: 9999,
+        gen: 9,
+        desc: "超巨进化许愿星:让超巨进化宝可梦携带后，在战斗时就能进行超级进化的一种神奇许愿星",
+        shortDesc: "超巨进化许愿星:让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
+    },
 	victreebelite: {
 		name: "Victreebelite",
 		spritenum: 545,
