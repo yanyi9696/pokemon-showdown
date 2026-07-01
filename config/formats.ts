@@ -803,7 +803,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'OHKO Clause',
 			//以上是从'Standard Doubles'节选的适用的规则
 			'NatDex Mod',
-			'Limit One Restricted',
+			'Limit One Restricted', //单神战，解禁一只一级神
 			'Item Clause = 1',
 			'Adjust Level = 50',
 			'Max Team Size = 6',
@@ -815,7 +815,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: [
 			// 要求禁用的宝可梦分类
 			'Mythical',             // 禁用所有幻兽 (梦幻、玛夏多等)
-			'Restricted Legendary', // 禁用所有一级神
+			//'Restricted Legendary', // 禁用所有一级神（由于单神战，不在此禁用）
 			'Sub-Legendary',        // 禁用所有二级神 (三鸟、三犬、三云等)
 			'Paradox',              // 禁用所有悖谬宝可梦
 			'Ultra Beast',          // 禁用所有究极异兽
@@ -824,7 +824,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		],
 		restricted: ['Restricted Legendary'],
 		unbanlist: [
-			'Mega', 'Ultra Beast', 'Paradox', 'Sub-Legendary', 'Restricted Legendary',  // 但我们在这里特例解禁某一类
+			'Mega', 'Ultra Beast', 'Paradox', 'Sub-Legendary',  // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
