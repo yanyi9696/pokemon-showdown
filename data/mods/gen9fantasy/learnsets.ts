@@ -24120,7 +24120,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		],
 		eventOnly: true,
 	},
-	lugiashadowfantasy: {
+	shadowlugiafantasy: {
 		learnset: {
 			flipturn: ["9M"],
 			aquajet: ["9M"],

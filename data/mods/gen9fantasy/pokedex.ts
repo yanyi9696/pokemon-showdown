@@ -674,8 +674,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	lugia: {
 		inherit: true,
-		otherFormes: ["Lugia-Fantasy", "Lugia-Shadow-Fantasy"],
-		formeOrder: ["Lugia", "Lugia-Fantasy", "Lugia-Shadow-Fantasy"],
+		otherFormes: ["Lugia-Fantasy", "Shadow Lugia-Fantasy"],
+		formeOrder: ["Lugia", "Lugia-Fantasy", "Shadow Lugia-Fantasy"],
 	},
 	lugiafantasy: {
 		num: 249,
@@ -692,11 +692,11 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		tags: ["Restricted Legendary"],
 		eggGroups: ["Undiscovered"],
 	},
-	lugiashadowfantasy: {
+	shadowlugiafantasy: {
 		num: 249,
-		name: "Lugia-Shadow-Fantasy",
+		name: "Shadow Lugia-Fantasy",
 		baseSpecies: "Lugia",
-		forme: "Shadow-Fantasy",
+		forme: "Fantasy",
 		types: ["Ghost", "Flying"],
 		gender: "N",
 		baseStats: { hp: 106, atk: 130, def: 90, spa: 154, spd: 90, spe: 110 },

@@ -3134,7 +3134,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                         this.add('-message', `暗影之瓶中的黑暗力量足以彻底封闭${pokemon.name}的感情！`);
                         
                         // 变身为黑暗形态，保留太晶化判定
-                        pokemon.formeChange('Lugia-Shadow-Fantasy', this.effect, false);
+                        pokemon.formeChange('Shadow Lugia-Fantasy', this.effect, false);
                         
                         // 【新增核心修复】手动将特性设置为变身后的特性 "Hei An Qin Shi"
                         pokemon.setAbility('heianqinshi');
@@ -3150,7 +3150,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
         onBasePowerPriority: 15,
         onBasePower(basePower, user, target, move) {
-            if (user.species.id === 'lugiashadowfantasy') {
+            if (user.species.id === 'shadowlugiafantasy') {
                 return this.chainModify(1.2);
             }
         },
@@ -3160,7 +3160,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             }
             return true;
         },
-        itemUser: ["Lugia-Fantasy", "Lugia-Shadow-Fantasy"],
+        itemUser: ["Lugia-Fantasy", "Shadow Lugia-Fantasy"],
         num: 30010,
         gen: 9,
         desc: "暗影之瓶:幻想洛奇亚携带后每回合损失1/16最大HP。通过该方式累计损失达1/4最大HP后,变为黑暗形态,不再损失HP,转而提供招式威力提升20%",
