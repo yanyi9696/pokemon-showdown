@@ -158,11 +158,11 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	toxtricitygmegafantasy: {
 		tier: "(Uber)",
-		abilities: {0: "Punk Rock"},		
+		abilities: {0: "Du Wu Pi Fu"},		
 	},
 	toxtricitylowkeygmegafantasy: {
 		tier: "(Uber)",
-		abilities: {0: "Toxtricity"},		
+		abilities: {0: "Du Wu Pi Fu"},		
 	},
 	urshifugmegafantasy: {
 		tier: "(Uber)",
