@@ -37,7 +37,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Eelevate",
 		rating: 4.5,
 		num: 315,
-		shortDesc: "漂浮,免疫地面属性伤害,并且用攻击打倒对手时,自己最高的那项能力会提高1阶",
+		shortDesc: "漂浮,免疫地面属性伤害,并且用攻击打倒对手时,自己最高的那项能力会提高1级",
 	},
 	firemane: {
 		onModifyAtkPriority: 5,
@@ -831,7 +831,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mountaineer",
 		rating: 3,
 		num: -2,
-		shortDesc: "攀登者:交换时,拥有此特性的宝可梦可以不受所有岩石系攻击和隐形岩伤害",
+		shortDesc: "交换时,拥有此特性的宝可梦可以不受所有岩石系攻击和隐形岩伤害",
 	},
 	persistent: {
 		// implemented in the corresponding move
@@ -839,7 +839,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Persistent",
 		rating: 3,
 		num: -4,
-		shortDesc: "坚守:使用招式时，重力/回复封锁/神秘守护/顺风/空间效果可多持续2个回合",
+		shortDesc: "使用招式时，重力/回复封锁/神秘守护/顺风/空间效果可多持续2个回合",
 	},
 	//以下为自制特性
 	fengchao: {
@@ -883,7 +883,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Feng Chao",
 		rating: 4.5,
 		num: 10000,
-		shortDesc: "蜂巢:虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8",
+		shortDesc: "虫属性的弱点消失。虫属性招式威力提升1.5倍,使用虫属性招式时会回复最大HP的1/8",
 	},
 	sujun: {
 		onModifyMove(move, pokemon) {
@@ -900,7 +900,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Su Jun",
 		rating: 3,
 		num: 10001,
-		shortDesc: "速军:即使使出了使用后下一回合自己将无法动弹的招式后,自己也不会陷入无法动弹状态",
+		shortDesc: "即使使出了使用后下一回合自己将无法动弹的招式后,自己也不会陷入无法动弹状态",
 	},
 	huibizaisheng: {
 		onEmergencyExit(target) {
@@ -920,7 +920,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Hui Bi Zai Sheng",
 		rating: 3.5,
 		num: 10002,
-		shortDesc: "回避再生:HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4",
+		shortDesc: "HP变为一半时,为了回避危险,会退回到同行队伍中。交换下场时,回复自身最大HP的1/4",
 	},
 	pozhu: {
 		onModifyMove(move, pokemon) {
@@ -935,7 +935,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Po Zhu",
 		rating: 3,
 		num: 10003,
-		shortDesc: "破竹:拥有此特性的宝可梦在使用射击类招式时,无视防御方的能力变化与特性,直接给予伤害",
+		shortDesc: "拥有此特性的宝可梦在使用射击类招式时,无视防御方的能力变化与特性,直接给予伤害",
 	},
 	mishi: {
 		onEffectiveness(typeMod, target, type, move) {
@@ -959,7 +959,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mi Shi",
 		rating: 1,
 		num: 10004,
-		shortDesc: "谜石:属性相性反转,效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果",
+		shortDesc: "属性相性反转,效果绝佳变为效果不好,效果不好变为效果绝佳,没有效果则保持没有效果",
 	},
 	tianlaizhiyin: {
 		onModifyTypePriority: -1,
@@ -977,9 +977,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Tian Lai Zhi Yin",
-		rating: 4.5,
+		rating: 5,
 		num: 10005,
-		shortDesc: "天籁之音:拥有此特性的宝可梦使出的声音招式会变为无属性,并拥有1.5倍本系威力提升",
+		shortDesc: "拥有此特性的宝可梦使出的声音招式会变为无属性,并拥有1.5倍本系威力提升",
 	},
 	moshushizhihong: {
 		onAfterMoveSecondarySelf(source, target, move) {
@@ -1018,7 +1018,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mo Shu Shi Zhi Hong",
 		rating: 3.5,
 		num: 10006,
-		shortDesc: "魔术师之红:无道具时夺取目标道具;有道具时，先手火系招式会烧毁目标道具",
+		shortDesc: "无道具时夺取目标道具;有道具时，先手火系招式会烧毁目标道具",
 	},
 	jiqususheng: {
 		onAfterMoveSecondarySelfPriority: -1,
@@ -1032,7 +1032,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Ji Qu Su Sheng",
 		rating: 3.5,
 		num: 10007,
-		shortDesc: "汲取苏生:在攻击对方成功造成伤害时,携带者的HP会恢复其所造成伤害的1/3",
+		shortDesc: "在攻击对方成功造成伤害时,携带者的HP会恢复其所造成伤害的1/3",
 	},
 	xuezhili: {
 		onBasePowerPriority: 21,
@@ -1055,7 +1055,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Xue Zhi Li",
 		rating: 3,
 		num: 10008,
-		shortDesc: "雪之力:在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%,免疫冰雹天气的回合末伤害",
+		shortDesc: "在下雪或冰雹天气下,该特性的宝可梦使用的招式威力提升30%,免疫冰雹天气的回合末伤害",
 	},
 	baoxuezhili: {
 		// 效果1: 来自“降雪”的登场发动天气效果
@@ -1078,7 +1078,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Bao Xue Zhi Li",
 		rating: 4.5,
 		num: 10009,
-		shortDesc: "暴雪之力:兼备降雪和雪之力这两种特性",
+		shortDesc: "兼备降雪和雪之力这两种特性",
 	},
 	xuenv: {
 		onStart(pokemon) {
@@ -1114,7 +1114,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Xue Nv",
 		rating: 3,
 		num: 10010,
-		shortDesc: "雪女:在首次出场以及被打倒时，会创造一次黑雾",
+		shortDesc: "在首次出场以及被打倒时，会创造一次黑雾",
 	},
 	zhengfa: {
 		onModifyMove(move, pokemon, target) {
@@ -1142,7 +1142,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Zheng Fa",
 		rating: 3.5,
 		num: 10011,
-		shortDesc: "蒸发:使用的火属性招式会对水属性宝可梦造成效果绝佳",
+		shortDesc: "使用的火属性招式会对水属性宝可梦造成效果绝佳",
 	},
 	tiekai: {
 		onSourceModifyDamage(damage, source, target, move) {
@@ -1156,7 +1156,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Tie Kai",
 		rating: 3,
 		num: 10012,
-		shortDesc: "铁铠:效果一般和效果不好招式造成的伤害降低1/4",
+		shortDesc: "效果一般和效果不好招式造成的伤害降低1/4",
 	},
 	jizhineng: {
 		onModifyMove(move, attacker) {
@@ -1198,7 +1198,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Ji Zhi Neng",
 		rating: 3,
 		num: 10013,
-		shortDesc: "极智能:以攻击和特攻中较高的一项的数值,使出物理技能和特殊技能",
+		shortDesc: "以攻击和特攻中较高的一项的数值,使出物理技能和特殊技能",
 	},
 	jiguangxingzhe: {
 		onStart(source) {
@@ -1220,9 +1220,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Ji Guang Xing Zhe",
-		rating: 4,
+		rating: 5,
 		num: 10014,
-		shortDesc: "极光行者:首次出场时,可以使己方场地进入5回合极光幕状态,如果使用者携带光之黏土则持续8回合",
+		shortDesc: "首次出场时,可以使己方场地进入5回合极光幕状态,如果使用者携带光之黏土则持续8回合",
 	},
 	huoshanxingzhe: {
 		onStart(source) {
@@ -1243,7 +1243,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Huo Shan Xing Zhe",
 		rating: 4,
 		num: 10015,
-		shortDesc: "火山行者:登场时创造火海,直到离场或失去该特性",
+		shortDesc: "登场时创造火海,直到离场或失去该特性",
 	},
 	leitingxingzhe: {
 		// onStart 和 onEnd 确保登场和离场时能正确处理
@@ -1294,7 +1294,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Lei Ting Xing Zhe",
 		rating: 4,
 		num: 10016,
-		shortDesc: "雷霆行者:登场时以及下次使用招式前创造等离子浴,电属性招式能击中地面属性但效果不好",
+		shortDesc: "登场时以及下次使用招式前创造等离子浴,电属性招式能击中地面属性但效果不好",
 	},
 	woju: {
 		// onStart 在宝可梦登场时触发
@@ -1325,7 +1325,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Wo Ju",
 		rating: 4,
 		num: 10017,
-		shortDesc: "蜗居:使用技能时钻出壳,在壳中时无视场地天气威力变化和对方强化影响但闪避-1",
+		shortDesc: "使用技能时钻出壳,在壳中时无视场地天气威力变化和对方强化影响但闪避-1",
 	},
 	chonghuapi: {
 		// onStart 会在每次宝可梦登场时触发
@@ -1351,7 +1351,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Chong Hua Pi",
 		rating: 4.5,
 		num: 10018,
-		shortDesc: "重画皮:仿照眼前宝可梦的模样重画皮,永久获得对方的特性",
+		shortDesc: "仿照眼前宝可梦的模样重画皮,永久获得对方的特性",
 	},
 	muhouheishou: {
 		// 物理攻击修正
@@ -1378,7 +1378,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mu Hou Hei Shou",
 		num: 10019,
 		rating: 2.5,
-		shortDesc: "幕后黑手:如果目标的HP为其最大HP的1/2或以下,对其造成的伤害提升1.5倍",
+		shortDesc: "如果目标的HP为其最大HP的1/2或以下,对其造成的伤害提升1.5倍",
 	},
 	shichong: {
 		onTryHit(target, source, move) {
@@ -1402,7 +1402,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Shi Chong",
 		num: 10020,
 		rating: 3.5,
-		shortDesc: "食虫:受到虫属性招式攻击时回复1/8最大HP,对手损失1/8最大HP;免疫虫属性伤害",
+		shortDesc: "受到虫属性招式攻击时回复1/8最大HP,对手损失1/8最大HP;免疫虫属性伤害",
 	},
 	shouhun: {
 		// 当任何宝可梦倒下时触发，设置一个优先级
@@ -1424,7 +1424,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Shou Hun",
 		num: 10021,
 		rating: 2.5,
-		shortDesc: "收魂:每当场上有宝可梦被打倒时,恢复1/4的最大HP",
+		shortDesc: "每当场上有宝可梦被打倒时,恢复1/4的最大HP",
 	},
 	chaoyueqianbanbianshen: {
 		// 登场时触发
@@ -1457,7 +1457,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Chao Yue Qian Ban Bian Shen",
 		num: 10022,
 		rating: 5,
-		shortDesc: "超越牵绊变身:携带智忍蛙Z或击倒对方一只宝可梦,变身为幻想小智版甲贺忍蛙",
+		shortDesc: "携带智忍蛙Z或击倒对方一只宝可梦,变身为幻想小智版甲贺忍蛙",
 	},
 	duwupifu: {
 		onModifyTypePriority: -1,
@@ -1481,7 +1481,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Du Wu Pi Fu",
 		num: 10023,
 		rating: 4,
-		shortDesc: "毒污皮肤:一般属性招式变为毒属性招式,威力提升20%",
+		shortDesc: "一般属性招式变为毒属性招式,威力提升20%",
 	},
 	qingguanghuayu: {
 		// onStart checks for conditions the moment the Pokémon enters battle.
@@ -1524,7 +1524,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Qing Guang Hua Yu",
 		num: 10024,
 		rating: 3,
-		shortDesc: "晴光花语:每当处于大晴天或青草场地上时,特防提升2级",
+		shortDesc: "每当处于大晴天或青草场地上时,特防提升2级",
 	},
 	huolinfen: {
 		// 1. 核心逻辑：入场清除我方场地副作用（一场战斗仅触发一次）
@@ -1571,7 +1571,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Huo Lin Fen",
 		rating: 3.5,
 		num: 10025,
-		shortDesc: "火鳞粉:出场时烧除我方场地效果(限1次);受到的火属性招式伤害减半",
+		shortDesc: "出场时烧除我方场地效果(限1次);受到的火属性招式伤害减半",
 	},
 	tundu: {
 		onTryHit(target, source, move) {
@@ -1614,7 +1614,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Tun Du",
 		rating: 3.5,
 		num: 10026,
-		shortDesc: "吞毒:免疫毒属性招式伤害,受到毒属性招式攻击时毒属性招式威力提升50%",
+		shortDesc: "免疫毒属性招式伤害,受到毒属性招式攻击时毒属性招式威力提升50%",
 	},
 	fengya: {
 		// 效果1：自身的速度不会被降低。
@@ -1647,9 +1647,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: { breakable: 1 },
 		name: "Feng Ya",
-		rating: 3.5,
+		rating: 3,
 		num: 10027,
-		shortDesc: "风压:自身的速度不会被降低。首次出场时用强风压制对手,降低对手的速度1级",
+		shortDesc: "自身的速度不会被降低。首次出场时用强风压制对手,降低对手的速度1级",
 	},
 	longzhihuxi: {
 		// 效果1 & 2: 使用技能不会降低自身能力（每次出场仅一次）
@@ -1714,7 +1714,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Long Zhi Hu Xi",
 		rating: 3.5,
 		num: 10028,
-		shortDesc: "龙之呼吸:使用技能不会降低自身能力,每次出场战斗仅生效一次。一般属性的招式会变为龙属性",
+		shortDesc: "使用技能不会降低自身能力,每次出场战斗仅生效一次。一般属性的招式会变为龙属性",
 	},
 	bianhuanziyou: {
 		onPrepareHit(source, target, move) {
@@ -1729,7 +1729,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Bian Huan Zi You",
 		rating: 4.5,
 		num: 10029,
-		shortDesc: "变幻自由:自身属性变为即将使用的招式的属性",
+		shortDesc: "自身属性变为即将使用的招式的属性",
 	},
 	quanlidamo: {
 		onBeforeMove(pokemon) {
@@ -1764,9 +1764,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			breakable: 1, notransform: 1,
 		},
 		name: "Quan Li Da Mo",
-		rating: 2,
+		rating: 1,
 		num: 10030,
-		shortDesc: "全力达摩:使用招式前会变为达摩模式,且该形态会一直持续",
+		shortDesc: "使用招式前会变为达摩模式,且该形态会一直持续",
 	},
 	weichongnitai: {
 		onTryHit(target, source, move) {
@@ -1809,7 +1809,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Wei Chong Ni Tai",
 		rating: 3.5,
 		num: 10031,
-		shortDesc: "伪虫拟态:变为只弱火、岩石、飞行。虫属性招式威力提升1.5倍",
+		shortDesc: "变为只弱火、岩石、飞行。虫属性招式威力提升1.5倍",
 	},
 	shamozhisheng: {
 		onModifyTypePriority: -1,
@@ -1822,7 +1822,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Sha Mo Zhi Sheng",
 		rating: 1.5,
 		num: 10032,
-		shortDesc: "沙漠之声:所有的声音招式都变为地面属性",
+		shortDesc: "所有的声音招式都变为地面属性",
 	},
 	shiyingli: {
 		onTryHit(target, source, move) {
@@ -1850,7 +1850,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Shi Ying Li",
 		rating: 3.5,
 		num: 10033,
-		shortDesc: "噬影力:因为属性相性免疫对手的招式时,回复1/8最大HP;此后使出的幽灵属性招式威力提升50%",
+		shortDesc: "因为属性相性免疫对手的招式时,回复1/8最大HP;此后使出的幽灵属性招式威力提升50%",
 	},
 	meimenggongyou: {
 		// 1. 登场时：仅在此时尝试让我方进入睡眠
@@ -1907,7 +1907,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Mei Meng Gong You",
 		rating: 5,
 		num: 10034,
-		shortDesc: "美梦共游:登场使我方进入睡眠但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠",
+		shortDesc: "登场使我方进入睡眠但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠",
 	},
 	qiyizhizaozhe: {
 		onStart(pokemon) {
@@ -1968,9 +1968,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Qi Yi Zhi Zao Zhe",
-		rating: 4,
+		rating: 5,
 		num: 10035,
-		shortDesc: "奇异制造者:登场引发重力,携带不同空间招式将有不同特殊效果。被击倒时会清除场上所有空间/重力",
+		shortDesc: "登场引发重力,携带不同空间招式将有不同特殊效果。被击倒时会清除场上所有空间/重力",
 	},
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
@@ -1990,7 +1990,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Yan Bu Zhen",
 		rating: 3.5,
 		num: 10036,
-		shortDesc: "岩布阵:受到物理招式的伤害时,会在对手脚下散布隐形岩",
+		shortDesc: "受到物理招式的伤害时,会在对手脚下散布隐形岩",
 	},
 	zhaoyongzexian: {
 		onSourceAfterMoveSecondary(target, source, move) {
@@ -2011,7 +2011,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Zhao Yong Ze Xian",
 		rating: 4.5,
 		num: 10037,
-		shortDesc: "沼涌泽现:水属性招式命中非水属性目标后,使目标场地进入4回合微型湿地状态(速度减半)",
+		shortDesc: "水属性招式命中非水属性目标后,使目标场地进入4回合微型湿地状态(速度减半)",
     }, 
 	gangtiejuhewu: {
 		// 1. 处理主动攻击的钢属性招式 (如铁头、铸铠波)
@@ -2040,7 +2040,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Gang Tie Ju He Wu",
 		rating: 3.5,
 		num: 10038,
-		shortDesc: "钢铁聚合物:受到钢属性招式或碎菱钢攻击时,不受到伤害而是回复1/8最大HP",
+		shortDesc: "受到钢属性招式或碎菱钢攻击时,不受到伤害而是回复1/8最大HP",
 	},
 	pohuaiyu: {
 		onStart(pokemon) {
@@ -2088,7 +2088,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Po Huai Yu",
 		rating: 3,
 		num: 10039,
-		shortDesc: "破坏欲:出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
+		shortDesc: "出场时令场上所有天气与场地消失,每场战斗仅1次;若携带破坏基因会先于清除前生效",
 	},
 	yuanhaiyangliu: {
 		// 1. 受到攻击时，将天气变为下雨
@@ -2177,7 +2177,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Yuan Hai Yang Liu",
 		rating: 4.5,
 		num: 10040,
-		shortDesc: "渊海洋流:受击降雨,雨天下治愈异常且不会被效果绝佳,非水系每回合损血1/16,随水/飞克制倍数提升",
+		shortDesc: "受击降雨,雨天下治愈异常且不会被效果绝佳,非水系每回合损血1/16,随水/飞克制倍数提升",
 	},
 	heianqinshi: {
 		onModifyTypePriority: -1,
@@ -2209,7 +2209,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Hei An Qin Shi",
 		rating: 5, 
 		num: 10041,
-		shortDesc: "黑暗侵蚀:自身所有攻击招式都将变为无属性,但对其他宝可梦效果绝佳",
+		shortDesc: "自身所有攻击招式都将变为无属性,但对其他宝可梦效果绝佳",
 	},
 	emengchanrao: {
 		onSourceAfterMoveSecondary(target, source, move) {
@@ -2225,7 +2225,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "E Meng Chan Rao",
 		rating: 4.5,
 		num: 10042,
-		shortDesc: "噩梦缠绕:对敌方目标成功使用变化招式后,使目标在3回合内陷入恶梦状态",
+		shortDesc: "对敌方目标成功使用变化招式后,使目标在3回合内陷入恶梦状态",
 	},
 	zengfuxitong: {
 		// 1. 恢复HP效果受到增幅变为2倍
@@ -2308,8 +2308,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Zeng Fu Xi Tong",
 		rating: 5,
 		num: 10043,
-		desc: "增幅系统:携带特定道具获得的能力提高效果和恢复HP效果会受到增幅变为2倍。当使用与自身属性不同的招式时,该招式的威力会提高1/3。",
-		shortDesc: "增幅系统:道具能力提升与HP恢复增幅为2倍,非本系招式威力提升1/3",
+		shortDesc: "道具能力提升与HP恢复增幅为2倍,非本系招式威力提升1/3",
 	},
 	arxitonggai: {
 		onStart(pokemon) {
@@ -2358,7 +2357,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "AR Xi Tong Gai",
 		rating: 4,
 		num: 10044,
-		shortDesc: "AR系统·改:根据持有的存储碟改变第一属性,原本的第二属性保持不变",
+		shortDesc: "根据持有的存储碟改变第一属性,原本的第二属性保持不变",
 	},
 	leizhu: {
         onStart(pokemon) {
@@ -2425,7 +2424,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Lei Zhu",
         rating: 4,
         num: 10045,
-        shortDesc: "擂主:使场上所有非幽灵属性宝可梦无法替换2回合;期间每倒下1只,自身双攻防提升10%,最多触发5次",
+        shortDesc: "使场上所有非幽灵属性宝可梦无法替换2回合;期间每倒下1只,自身双攻防提升10%,最多触发5次",
     },
 	paiwaizuqun: {
 		// 1. 出场时的挑衅效果
@@ -2485,7 +2484,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Pai Wai Zu Qun",
 		rating: 3,
 		num: 10046,
-		shortDesc: "排外族群:无同伴濒死时出场挑衅对手,连续招式威力+50%;使用者为幻想萨戮德-阿爸,防心灵攻击",
+		shortDesc: "无同伴濒死时出场挑衅对手,连续招式威力+50%;使用者为幻想萨戮德-阿爸,不会受到心灵攻击",
 	},
 	bingheshenqu: {
 		// 1. 免疫灼伤逻辑（如果因特性交换等原因获得该特性时已灼伤，则自动治愈）
@@ -2525,11 +2524,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-		flags: { breakable: 1 }, // 允许被破格等特性无视
+		flags: { breakable: 1 }, 
 		name: "Bing He Shen Qu",
 		rating: 3.5,
 		num: 10047,
-		shortDesc: "冰河身躯:不会陷入灼伤状态。使用冰属性招式前会恢复自己下降的能力",
+		shortDesc: "不会陷入灼伤状态。使用冰属性招式前会恢复自己下降的能力",
 	},
 	wenlihua: {
 		onStart(pokemon) {
@@ -2564,7 +2563,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Wen Li Hua",
 		rating: 2,
 		num: 10048,
-		shortDesc: "纹理化:上场后,如果自身携带有纹理、纹理2或纹理Z,会立即使用一次该招式",
+		shortDesc: "上场后,如果自身携带有纹理、纹理2或纹理Z,会立即使用一次该招式",
 	},
 	zhengqiang: {
 		onAfterEachBoost(boost, target, source, effect) {
@@ -2586,7 +2585,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Zheng Qiang",
 		rating: 3.5,
 		num: 10047,
-		shortDesc: "争强:能力阶级被降低时防御和特防提升2级",
+		shortDesc: "能力阶级被降低时防御和特防提升2级",
 	},
 	chuanshuodejuren: {
 		onDamage(damage, target, source, effect) {
@@ -2616,6 +2615,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Chuan Shuo De Ju Ren",
 		rating: 5,
 		num: 10049,
-		shortDesc: "传说的巨人:受到任何伤害时,损失的HP固定降低等于自己等级一半的数值",
+		shortDesc: "受到任何伤害时,损失的HP固定降低等于自己等级一半的数值",
 	},
 };

@@ -465,7 +465,7 @@
             {
                 "role": "Fast Bulky Setup",
                 "movepool": [
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Chuan Yun",
                     "Agility",
                     "Rest",
@@ -663,7 +663,7 @@
             {
                 "role": "Bulky Support",
                 "movepool": [
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Draco Meteor",
                     "Rest",
                     "Toxic Spikes",
@@ -1210,7 +1210,7 @@
                 "role": "Bulky Setup",
                 "movepool": [
                     "Steel Beam",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Shelter",
                     "Curse",
                     "Sludge Wave",
@@ -1382,7 +1382,7 @@
                 "movepool": [
                     "Punishment",
                     "Chuan Yun",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Calm Mind",
                     "Sky Attack",
                     "Brave Bird",
@@ -1818,7 +1818,7 @@
                     "Huan Zhi Wu",
                     "Yao Jing Zhi Ya",
                     "Cut",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Blast Burn"
                 ],
                 "abilities": [
@@ -2097,7 +2097,7 @@
             {
                 "role": "Bulky Setup",
                 "movepool": [
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Bitter Malice",
                     "Punishment",
                     "Curse",
@@ -2243,7 +2243,7 @@
                 "movepool": [
                     "Yao Lan",
                     "Aqua Tail",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Curse",
                     "Gunk Shot",
                     "Yao Jing Zhi Ya",
@@ -2327,7 +2327,7 @@
                 "role": "Setup Sweeper",
                 "movepool": [
                     "Power Whip",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Mei Gui Zhi Wu",
                     "Trailblaze",
                     "Huan Xiang Bao Fa",
@@ -2645,7 +2645,7 @@
                 "role": "Setup Sweeper",
                 "movepool": [
                     "First Impression",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Cut",
                     "Agility",
                     "Gunk Shot",
@@ -2817,7 +2817,7 @@
             {
                 "role": "Bulky Setup",
                 "movepool": [
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Dong Cha Da Ji",
                     "Bulk Up",
                     "Rest",
@@ -3078,7 +3078,7 @@
                 "movepool": [
                     "Overdrive",
                     "Belch",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Clangorous Soul",
                     "Sludge Wave",
                     "Sludge Bomb",
@@ -3109,7 +3109,7 @@
                     "Belch",
                     "Overdrive",
                     "Shift Gear",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Sludge Wave",
                     "Sludge Bomb",
                     "Boomburst"
@@ -3249,7 +3249,7 @@
                 "role": "Fast Bulky Setup",
                 "movepool": [
                     "Focus Punch",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Zui Shen Luan Da",
                     "Bulk Up",
                     "Close Combat",
@@ -3305,7 +3305,7 @@
                 "role": "Setup Sweeper",
                 "movepool": [
                     "Power Whip",
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Cut",
                     "Trailblaze",
                     "Gunk Shot",
@@ -3420,7 +3420,7 @@
             {
                 "role": "Bulky Setup",
                 "movepool": [
-                    "Wu Zhuo Ti Huan",
+                    "Wa Si Ti Huan",
                     "Knock Off",
                     "Curse",
                     "Recover",

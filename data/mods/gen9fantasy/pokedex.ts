@@ -1256,7 +1256,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		types: ["Steel", "Psychic"],
 		gender: "N",
-		baseStats: { hp: 80, atk: 135, def: 135, spa: 85, spd: 95, spe: 70 },
+		baseStats: { hp: 80, atk: 135, def: 130, spa: 95, spd: 90, spe: 70 },
 		abilities: { 0: "Clear Body", 1: "Ji Zhi Neng", H: "Tie Kai" },
 		heightm: 1.6,
 		weightkg: 550,

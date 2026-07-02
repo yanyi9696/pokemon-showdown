@@ -328,8 +328,68 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Fighting",
 		zMove: { basePower: 170 },
 		contestType: "Tough",
-		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于缩小状态,本招式必定命中且伤害翻倍",
-		shortDesc: "此招式拥有飞行属性在属性相克中的克制面,舍去微弱",
+		desc: "此招式拥有飞行属性在属性相克中的克制,舍去微弱。若目标处于变小状态,本招式必定命中且伤害翻倍",
+		shortDesc: "会克制被飞行系克制的属性,若目标变小,必中且伤害翻倍",
+	},
+	kingsshield: {
+		num: 588,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		isNonstandard: "Past",
+		name: "King's Shield",
+		pp: 10,
+		priority: 4,
+		flags: { noassist: 1, failcopycat: 1, failinstruct: 1 },
+		stallingMove: true,
+		volatileStatus: 'kingsshield',
+		onPrepareHit(pokemon) {
+			return !!this.queue.willAct() && this.runEvent('StallMove', pokemon);
+		},
+		onHit(pokemon) {
+			pokemon.addVolatile('stall');
+		},
+		condition: {
+			duration: 1,
+			onStart(target) {
+				this.add('-singleturn', target, 'Protect');
+			},
+			onTryHitPriority: 3,
+			onTryHit(target, source, move) {
+				if (!move.flags['protect'] || move.category === 'Status') {
+					if (['gmaxoneblow', 'gmaxrapidflow'].includes(move.id)) return;
+					if (move.isZ || move.isMax) target.getMoveHitData(move).zBrokeProtect = true;
+					return;
+				}
+				if (move.smartTarget) {
+					move.smartTarget = false;
+				} else {
+					this.add('-activate', target, 'move: Protect');
+				}
+				const lockedmove = source.getVolatile('lockedmove');
+				if (lockedmove) {
+					// Outrage counter is reset
+					if (source.volatiles['lockedmove'].duration === 2) {
+						delete source.volatiles['lockedmove'];
+					}
+				}
+				if (this.checkMoveMakesContact(move, source, target)) {
+					this.boost({ atk: -2 }, source, target, this.dex.getActiveMove("King's Shield"));
+				}
+				return this.NOT_FAIL;
+			},
+			onHit(target, source, move) {
+				if (move.isZOrMaxPowered && this.checkMoveMakesContact(move, source, target)) {
+					this.boost({ atk: -2 }, source, target, this.dex.getActiveMove("King's Shield"));
+				}
+			},
+		},
+		secondary: null,
+		target: "self",
+		type: "Steel",
+		zMove: { effect: 'clearnegativeboost' },
+		contestType: "Cool",
+		shortDesc: "守住并变为防御姿态。降低所接触到的对手的2级攻击",
 	},
 		watershuriken: {
 		num: 594,
@@ -595,8 +655,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Bug",
 		zMove: { boost: { atk: 1 } },
 		contestType: "Clever",
-		desc: "先行指令:首次使用使自身进入先行指令状态,在相同优先度下将优先出手。处于该状态时再次使用此招式,比较自己的攻击和特攻,令数值相对较高一项提高2级。",
-		shortDesc: "先行指令:首次使用获得先制+0.5;再次使用双攻较高项+2"
+		desc: "首次使用使自身进入先行指令状态,在相同优先度下将优先出手。处于该状态时再次使用此招式,比较自己的攻击和特攻,令数值相对较高一项提高2级。",
+		shortDesc: "首次使用获得先制+0.5;再次使用双攻较高项+2"
 	},
 	fuzhuzhiling: {
 		num: 10002,
@@ -618,8 +678,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Clever",
-		desc: "辅助指令:自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力",
-		shortDesc: "辅助指令:每有1项能力上升, 威力+20"
+		desc: "自身每有一项能力变化提升一级,招式威力增加20。自身的能力降低不会影响此招式的威力",
+		shortDesc: "每有1项能力上升, 威力+20"
 	},
 	mijianbairenchuan: {
 		num: 10003,
@@ -649,8 +709,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 120 },
-		desc: "秘剑·百仞川:令目标场地进入碎菱钢状态,使交换上场的宝可梦受到伤害",
-		shortDesc: "秘剑·百仞川:令目标场地进入碎菱钢状态"
+		desc: "令目标场地进入碎菱钢状态,使交换上场的宝可梦受到伤害",
+		shortDesc: "令目标场地进入碎菱钢状态"
 	},
 	dianshanxunji: {
 		num: 10004,
@@ -667,8 +727,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Electric",
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 100 },
-		desc: "电闪迅击:必定能够先制攻击,必定击中要害",
-		shortDesc: "电闪迅击:必定能够先制攻击,必定击中要害"
+		desc: "必定能够先制攻击,必定击中要害",
+		shortDesc: "必定能够先制攻击,必定击中要害"
 	},
 	zuishenluanda: {
 		num: 10005,
@@ -698,27 +758,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Poison",
 		zMove: { basePower: 185 },
 		maxMove: { basePower: 90 },
-		desc: "醉神乱打:一回合内连续攻击3次,每一击都必定击中要害。每击中一次,下一击的命中率就会叠加下降累计命中数×10%(即三击的命中率分别为100%、90%、70%)",
-		shortDesc: "醉神乱打:每一击命中率为100%,90%,70%,必定击中要害"
+		desc: "一回合内连续攻击3次,每一击都必定击中要害。每击中一次,下一击的命中率就会叠加下降累计命中数×10%(即三击的命中率分别为100%、90%、70%)",
+		shortDesc: "每一击命中率为100%,90%,70%,必定击中要害"
 	},
-	wuzhuotihuan: { 
+	biansuzhefan: { 
 		num: 10006,
 		accuracy: 100,
 		basePower: 70,
-		category: "Special",
-		name: "Wu Zhuo Ti Huan",
+		category: "Physical",
+		name: "Bian Su Zhe Fan",
 		pp: 20,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
 		selfSwitch: true,
 		secondary: null,
 		target: "normal",
-		type: "Poison",
+		type: "Steel",
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 85 },
-		contestType: "Cute",
-		desc: "污浊替换:使用者在攻击目标后会替换后备宝可梦上场。",
-		shortDesc: "污浊替换:攻击后替换后备宝可梦上场。",
+		contestType: "Clever",
+		desc: "使用者在攻击目标后会替换后备宝可梦上场。",
+		shortDesc: "攻击后替换后备宝可梦上场。",
 	},
 	chuanyun: {
 		num: 10007,
@@ -735,8 +795,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
 		contestType: "Cool",
-		desc: "穿云:可以无视守住进行攻击。攻击必定命中在场上的目标",
-		shortDesc: "穿云:可以无视守住进行攻击。攻击必定命中在场上的目标"
+		desc: "可以无视守住进行攻击。攻击必定命中在场上的目标",
+		shortDesc: "可以无视守住进行攻击。攻击必定命中在场上的目标"
 	},
 	baoyulihua: {
 		num: 10008,
@@ -763,8 +823,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 90 },
 		contestType: "Cool",
-		desc: "暴雨梨花:连续攻击2~5次。必定能够先制攻击。此招式拥有毒属性在属性相克中的克制,舍去微弱",
-		shortDesc: "暴雨梨花:先制攻击,攻击2~5次。拥有毒属性克制面"
+		desc: "连续攻击2~5次。必定能够先制攻击。此招式拥有毒属性在属性相克中的克制,舍去微弱",
+		shortDesc: "先制攻击,攻击2~5次。会克制被毒系克制的属性"
 	},
 	yanjian: {
 		num: 10009,
@@ -786,8 +846,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Tough",
-		desc: "岩箭:攻击目标造成伤害。20%几率令目标的防御降低1级",
-		shortDesc: "岩箭:攻击目标造成伤害。20%几率令目标的防御降低1级"
+		desc: "攻击目标造成伤害。20%几率令目标的防御降低1级",
+		shortDesc: "攻击目标造成伤害。20%几率令目标的防御降低1级"
 	},
 	chaopinyaogunpoyinbo: {
 		num: 10010, 
@@ -831,13 +891,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, source, source, move);
         }
     },
-		desc: "超频摇滚破音波:攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时,会使对手全体宝可梦陷入中毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时,令使用者的攻击、防御、特攻、特防和速度提升1级",
-		shortDesc: "超频摇滚破音波:高调形态与低调形态使用效果不同"
+		desc: "攻击目标造成伤害。幻想颤弦蝾螈-高调形态使用时,会使对手全体宝可梦陷入中毒状态或麻痹状态。幻想颤弦蝾螈-低调形态使用时,令使用者的攻击、防御、特攻、特防和速度提升1级",
+		shortDesc: "高调形态与低调形态使用效果不同"
 	},
 	yaojingzhiya: {
         num: 10011, 
-        accuracy: 95,
-        basePower: 80,
+        accuracy: 100,
+        basePower: 85,
         category: "Physical",
         name: "Yao Jing Zhi Ya",
         pp: 15,
@@ -849,12 +909,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 volatileStatus: 'flinch',
             },
             {
-                chance: 20,
-                boosts: {
-                    def: -1,
-                },
-            },
-			            {
                 chance: 30,
                 onHit(target, source, move) {
                     // 随机一个状态
@@ -869,8 +923,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         zMove: { basePower: 160 }, 
         maxMove: { basePower: 160 }, 
         contestType: "Cool",
-        desc: "妖精之牙: 有30%几率使目标陷入灼伤、麻痹或冰冻状态。有20%几率令目标的防御降低1级。有10%几率使目标畏缩。",
-        shortDesc: "妖精之牙: 30%灼伤/麻痹/冰冻, 20%降防, 10%畏缩"
+        desc: "有30%几率使目标陷入灼伤、麻痹或冰冻状态,有10%几率使目标畏缩",
+        shortDesc: "有30%几率使目标陷入灼伤/麻痹/冰冻,10%几率使目标畏缩"
     },
 	yuzhaozhijian: {
 		num: 10012,
@@ -888,8 +942,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
 		contestType: "Beautiful",
-		desc: "预兆之剑:计算伤害时按防守方的特防计算,不是防御",
-		shortDesc: "预兆之剑:计算伤害时按防守方的特防计算,不是防御"
+		desc: "计算伤害时按防守方的特防计算,不是防御",
+		shortDesc: "计算伤害时按防守方的特防计算,不是防御"
 	},
 	dongchadaji: {
 		num: 533,
@@ -908,8 +962,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
 		contestType: "Cool",
-		desc: "洞察打击:无视目标的能力阶级变化进行攻击",
-		shortDesc: "洞察打击:无视目标的能力阶级变化进行攻击"
+		desc: "无视目标的能力阶级变化进行攻击",
+		shortDesc: "无视目标的能力阶级变化进行攻击"
 	},
 	lujiao: {
         num: 10013,
@@ -961,8 +1015,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         type: "Normal",
         zMove: { basePower: 175 },
         maxMove: { basePower: 130 },
-        desc: "鹿角:春&哲尔尼亚斯:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低2级,使用者是哲尔尼亚斯时,变为回复给予伤害50%HP",
-		shortDesc: "鹿角:属性效果随形态不同;萌芽鹿50%防-2;哲尔尼亚斯吸血",
+        desc: "春&哲尔尼亚斯:妖精 夏:草 秋:地面 冬:冰。50%几率令目标的防御降低2级,使用者是哲尔尼亚斯时,变为回复给予伤害50%HP",
+		shortDesc: "属性效果随形态不同;萌芽鹿50%降防2级;哲尔尼亚斯吸血",
     },
 	huanji: {
 		num: 10014,
@@ -997,8 +1051,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "self",
 		type: "Normal",
 		zMove: { effect: 'clearnegativeboost' },
-		desc: "换季:提高自身物攻与速度各1级。如果使用者是萌芽鹿,使用该招式后会治愈自身的异常状态,并按季节顺序进行形态变化。",
-		shortDesc: "换季:自身物攻与速度+1;萌芽鹿使用按季节变形并治愈异常",
+		desc: "提高自身物攻与速度各1级。如果使用者是萌芽鹿,使用该招式后会治愈自身的异常状态,并按季节顺序进行形态变化。",
+		shortDesc: "自身物攻与速度+1;萌芽鹿使用时,按季节变形并治愈异常",
 	},
 	yuannengshifang: {
 		num: 10015,
@@ -1036,8 +1090,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Ghost",
 		zMove: { basePower: 175 }, 
 		maxMove: { basePower: 130 }, 
-		desc: "源能释放:比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。连续使用时,威力将提升1.5倍,但双方都将陷入麻痹",
-		shortDesc: "源能释放:连用威力提升1.5倍,双方麻痹,攻击＞特攻变物理"
+		desc: "比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。连续使用时,威力将提升1.5倍,但双方都将陷入麻痹",
+		shortDesc: "连续使用时,威力提升1.5倍,双方麻痹,攻击＞特攻变物理"
 	},
 	longzhige: {
 		num: 10016,
@@ -1093,8 +1147,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Dragon", 
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 90 },
-		desc: "龙之歌:使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下",
-		shortDesc: "龙之歌:困住并伤害目标4~5回合"
+		desc: "使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下",
+		shortDesc: "困住并伤害目标4~5回合"
 	},
 	huanzhiwu: {
 		num: 10017,
@@ -1114,8 +1168,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Psychic", 
 		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Beautiful", 
-		desc: "幻之舞:提高自身特攻与速度各1级",
-		shortDesc: "幻之舞:提高自身特攻与速度各1级"
+		desc: "提高自身特攻与速度各1级",
+		shortDesc: "提高自身特攻与速度各1级"
 	},
 	chabuduowanan: {
         num: 10018,
@@ -1144,8 +1198,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         target: "all",
         type: "Fairy", 
         zMove: { effect: 'healreplacement' },
-        desc: "差不多晚安:接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换",
-        shortDesc: "差不多晚安:交替并使场地变为持续5回合的薄雾场地"
+        desc: "接下来5回合的场地变更为薄雾场地。然后自身与后备宝可梦替换",
+        shortDesc: "交替并使场地变为持续5回合的薄雾场地"
     },
 	yanzhibodong: {
 		num: 10019,
@@ -1165,8 +1219,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Beautiful",
-		desc: "炎之波动:攻击目标造成伤害。有20%几率使目标陷入灼伤状态",
-		shortDesc: "炎之波动:有20%几率使目标陷入灼伤状态"
+		desc: "攻击目标造成伤害。有20%几率使目标陷入灼伤状态",
+		shortDesc: "有20%几率使目标陷入灼伤状态"
 	},
 	fengxing: {
 		num: 10020,
@@ -1227,8 +1281,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 180 },
 		maxMove: { basePower: 130 },
 		contestType: "Beautiful",
-		desc: "凤行:比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。队伍中每有一只凤王/雷公/炎帝/水君威力+20",
-		shortDesc: "凤行:队中每只凤王与凤王卫队威力+20,攻击＞特攻变物理"
+		desc: "比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。队伍中每有一只凤王/雷公/炎帝/水君威力+20",
+		shortDesc: "队伍中每有1只凤王与凤王卫队威力+20,攻击＞特攻变物理"
 	},
 	popipa: {
 		num: 10021,
@@ -1278,8 +1332,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Ghost",
 		zMove: { effect: 'heal' },
-		desc: "破皮帕:用自己最大HP的一半制造出等同于等同1/4最大HP的替身,并使目标进入诅咒状态。如果自身HP不超过最大HP的一半,此招式会失败",
-		shortDesc: "破皮帕:消耗50%HP制造替身并诅咒对手",
+		desc: "用自己最大HP的一半制造出等同于等同1/4最大HP的替身,并使目标进入诅咒状态。如果自身HP不超过最大HP的一半,此招式会失败",
+		shortDesc: "消耗50%HP制造替身并诅咒对手",
 	},
 	zhukaibo: {
 		num: 10022,
@@ -1297,8 +1351,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
 		contestType: "Clever",
-		desc: "铸铠波:使用者将造成伤害的50%转化为自身的HP",
-		shortDesc: "铸铠波:使用者将造成伤害的50%转化为自身的HP",
+		desc: "使用者将造成伤害的50%转化为自身的HP",
+		shortDesc: "使用者将造成伤害的50%转化为自身的HP",
 	},
 	juenianpo: {
 		num: 10023,
@@ -1321,8 +1375,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 190 },
 		maxMove: { basePower: 140 },
 		contestType: "Tough",
-		desc: "绝念破:令使用者的防御和特防下降1级",
-		shortDesc: "绝念破:令使用者的防御和特防下降1级",
+		desc: "令使用者的防御和特防下降1级",
+		shortDesc: "令使用者的防御和特防下降1级",
 	},
 	huangjinjibanshoulijian: {
 		num: 10024,
@@ -1348,8 +1402,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			// 对非守住状态的宝可梦造成其最大HP的 3/4 伤害
 			return Math.floor(target.maxhp * 3 / 4);
 		},
-		desc: "黄金羁绊手里剑:对目标造成目标最大HP 3/4 (向下取整) 的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的 3/16",
-		shortDesc: "黄金羁绊手里剑:造成目标最大HP 3/4 的伤害"
+		desc: "对目标造成目标最大HP 3/4 (向下取整) 的伤害,对守住状态的宝可梦使用,伤害则减至最大HP的 3/16",
+		shortDesc: "造成目标最大HP 3/4 的伤害"
 	},
 	xiangongjiaozhun: {
 		num: 10025,
@@ -1384,8 +1438,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 175 },
 		maxMove: { basePower: 130 },
 		contestType: "Cute",
-		desc: "先攻校准:攻击目标造成伤害后提升命中率2级。出场后立刻使出才能成功,否则招式会失败",
-		shortDesc: "先攻校准:攻击目标后命中率+2。出场后立刻使出才能成功",
+		desc: "攻击目标造成伤害后提升命中率2级。出场后立刻使出才能成功,否则招式会失败",
+		shortDesc: "100%令使用者的命中率上升2级。出场后立刻使出才能成功",
 	},
 	suilinggang: {
 		num: 10026,
@@ -1410,8 +1464,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Steel",
 		zMove: { boost: { def: 1 } },
 		contestType: "Cool",
-		desc: "碎菱钢:向对手场地撒下尖锐的钢刺,使交换上场的宝可梦受到满HP的1/8伤害。伤害值受到钢属性相性的影响",
-		shortDesc: "碎菱钢:伤害交换出的站在地面上的对手,计算钢属性相克",
+		desc: "向对手场地撒下尖锐的钢刺,使交换上场的宝可梦受到满HP的1/8伤害。伤害值受到钢属性相性的影响",
+		shortDesc: "伤害交换出的站在地面上的对手,计算钢属性相克",
 	},
 	yaolan: {
 		num: 10027,
@@ -1444,8 +1498,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 90 },
 		contestType: "Cute",
-		desc: "咬烂:咬烂对手的持有物,直到战斗结束都不能使用",
-		shortDesc: "咬烂:咬烂对手的持有物,直到战斗结束都不能使用",
+		desc: "咬烂对手的持有物,直到战斗结束都不能使用",
+		shortDesc: "咬烂对手的持有物,直到战斗结束都不能使用",
 	},
 	raoliangzhiyin: {
 		num: 10028,
@@ -1467,8 +1521,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Fairy",
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 140 },
-		desc: "绕梁之音:连续3次回音对手进行攻击。每歌唱一次,威力就会提高。使用目标的防御代替目标的特防进行伤害计算。",
-		shortDesc: "绕梁之音:攻击3次,每次威力提升,伤害计算时参考目标防御",
+		desc: "连续3次回音对手进行攻击。每歌唱一次,威力就会提高。使用目标的防御代替目标的特防进行伤害计算。",
+		shortDesc: "攻击3次,每次威力提升,伤害计算时参考目标防御",
 	},
 	qingshenglvye: {
 		num: 10029,
@@ -1498,8 +1552,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "all",
 		type: "Grass", 
 		zMove: { effect: 'healreplacement' },
-		desc: "晴生绿野:接下来5回合的场地变更为青草场地。然后自身与后备宝可梦替换",
-		shortDesc: "晴生绿野:交替并使场地变为持续5回合的青草场地",
+		desc: "接下来5回合的场地变更为青草场地。然后自身与后备宝可梦替换",
+		shortDesc: "交替并使场地变为持续5回合的青草场地",
 	},
 	fanchen: {
         num: 10030,
@@ -1528,8 +1582,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         target: "all",
         type: "Rock",
         zMove: { effect: 'healreplacement' },
-        desc: "翻尘:接下来5回合的天气变更为沙暴。然后自身与后备宝可梦替换",
-        shortDesc: "翻尘:交替并使天气变为持续5回合的沙暴",
+        desc: "接下来5回合的天气变更为沙暴。然后自身与后备宝可梦替换",
+        shortDesc: "交替并使天气变为持续5回合的沙暴",
     },
 	zhishareshe: {
 		num: 10031,
@@ -1552,8 +1606,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
 		contestType: "Tough",
-		desc: "炙沙热射:天气为沙暴时,威力提升1.5倍",
-		shortDesc: "炙沙热射:沙暴下威力提升1.5倍",
+		desc: "天气为沙暴时,威力提升1.5倍",
+		shortDesc: "沙暴下威力提升1.5倍",
 	},
 	qibaoliuxing: {
 		num: 10032,
@@ -1575,8 +1629,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 195 },
 		maxMove: { basePower: 140 },
 		contestType: "Beautiful",
-		desc: "气爆流星:令使用者的特攻下降2级",
-		shortDesc: "气爆流星:令使用者的特攻下降2级",
+		desc: "令使用者的特攻下降2级",
+		shortDesc: "令使用者的特攻下降2级",
 	},
 	huanxiangbaofa: {
 		num: 10033,
@@ -1631,8 +1685,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
-		desc: "幻想爆发:比较自己的攻击和特攻，用数值相对较高的一项给予对方伤害。当使用者太晶化后，这个招式的属性会变为使用者的太晶属性。攻击时会显示“请多多支持幻想杯！”",
-		shortDesc: "幻想爆发:没太晶时也智能判断物特攻的太晶爆发",
+		desc: "比较自己的攻击和特攻，用数值相对较高的一项给予对方伤害。当使用者太晶化后，这个招式的属性会变为使用者的太晶属性。攻击时会显示“请多多支持幻想杯！”",
+		shortDesc: "不太晶也智能判断物特攻的太晶爆发“请多多支持幻想杯！”",
 	},
 	youzhipeiyu: {
 		num: 10034,
@@ -1693,8 +1747,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Grass",
 		zMove: { boost: { spd: 1 } },
 		contestType: "Beautiful",
-		desc: "优质培育:将接下来5回合的天气变更为大晴天,并使所有的草属性宝可梦覆盖水流环。下一回合使用者回复25%最大HP",
-		shortDesc: "优质培育:大晴天+场上全体草宝可梦水流环+半个祈愿",
+		desc: "将接下来5回合的天气变更为大晴天,并使所有的草属性宝可梦覆盖水流环。下一回合使用者回复25%最大HP",
+		shortDesc: "大晴天+场上全体草属性宝可梦覆盖水流环+半个祈愿",
 	},
 	renzhenouda: {
 		num: 10035,
@@ -1729,8 +1783,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 185 },
 		maxMove: { basePower: 140 },
 		contestType: "Tough",
-		desc: "认真殴打:携带后进入对战时可以进行超巨进化。无视目标的特性进行攻击。该招式会穿透并破坏目标的替身、反射壁、光墙和极光幕。攻击必定击中要害。",
-		shortDesc: "认真殴打:无视特性,穿透并破坏替身与壁障,必定击中要害",
+		desc: "携带后进入对战时可以进行超巨进化。无视目标的特性进行攻击。该招式会穿透并破坏目标的替身、反射壁、光墙和极光幕。攻击必定击中要害。",
+		shortDesc: "无视特性,穿透并破坏替身与壁障,必定击中要害",
 	},
 	yishunqianji: {
 		num: 10036,
@@ -1768,8 +1822,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 70 },
 		contestType: "Cool",
-		desc: "一瞬千击:携带后进入对战时可以进行超巨进化。必定能够先制攻击。在一回合内连续攻击10次,但仅在最后一击结算接触类伤害反馈。攻击必定击中要害。",
-		shortDesc: "一瞬千击:先制攻击,连打10次视作1次攻击,必定击中要害",
+		desc: "携带后进入对战时可以进行超巨进化。必定能够先制攻击。在一回合内连续攻击10次,但仅在最后一击结算接触类伤害反馈。攻击必定击中要害。",
+		shortDesc: "先制攻击,连打10次视作1次攻击,必定击中要害",
 	},
 	huazhiwu: {
 		num: 10037,
@@ -1790,8 +1844,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Grass", 
 		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Beautiful", 
-		desc: "花之舞:提高自身物防、特防与速度各1级",
-		shortDesc: "花之舞:提高自身物防、特防与速度各1级",
+		desc: "提高自身物防、特防与速度各1级",
+		shortDesc: "提高自身物防、特防与速度各1级",
 	},
 	meiguizhiwu: {
 		num: 10038,
@@ -1812,8 +1866,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 120 },
 		contestType: "Beautiful",
-		desc: "玫瑰之舞:连续2次给予伤害。每次攻击有20%的几率使目标陷入中毒状态",
-		shortDesc: "玫瑰之舞:连续攻击2次,每一次都有20%几率使对手中毒",
+		desc: "连续2次给予伤害。每次攻击有20%的几率使目标陷入中毒状态",
+		shortDesc: "连续攻击2次,每一次都有20%几率使对手中毒",
 	},
 	fanjibingjia: {
 		num: 10039,
@@ -1872,8 +1926,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 200 },
 		maxMove: { basePower: 160 },
 		contestType: "Beautiful",
-		desc: "反击冰甲:设下陷阱。如果本回合内被对手攻击并受到伤害，就会触发并反击，造成伤害并使对手陷入冻伤状态",
-		shortDesc: "反击冰甲:若受到对手攻击,对目标造成伤害并陷入冻伤状态",
+		desc: "设下陷阱。如果本回合内被对手攻击并受到伤害，就会触发并反击，造成伤害并使对手陷入冻伤状态",
+		shortDesc: "若受到对手攻击,对目标造成伤害并陷入冻伤状态",
 	},
 	nihillight: {
 		num: 920,
@@ -1890,8 +1944,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		ignoreImmunity: true,
 		target: "allAdjacentFoes",
 		type: "Dragon",
-		desc: "归无之光:释放无视所有法则的强光。连妖精属性的宝可梦也能击中，可不顾对手的能力变化给予伤害",
-		shortDesc: "归无之光:无视目标的能力变化,可以命中妖精属性宝可梦",
+		desc: "释放无视所有法则的强光。连妖精属性的宝可梦也能击中，可不顾对手的能力变化给予伤害",
+		shortDesc: "无视目标的能力变化,可以命中妖精属性宝可梦",
 	},
 	cunjinbengji: {
 		num: 10040,
@@ -1914,8 +1968,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 120 },
 		contestType: "Tough",
-		desc: "寸劲崩击:令目标的防御降低1级。攻击必定击中要害",
-		shortDesc: "寸劲崩击:令目标的防御降低1级。必定击中要害",
+		desc: "令目标的防御降低1级。攻击必定击中要害",
+		shortDesc: "令目标的防御降低1级。必定击中要害",
 	},
 	xingyihuanda: {
 		num: 10041,
@@ -1937,8 +1991,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 120 },
 		contestType: "Cool",
-		desc: "形意环打:连续攻击1~3次,每一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45",
-		shortDesc: "形意环打:连续攻击3次,必定击中要害,击中威力会上升",
+		desc: "连续攻击1~3次,每一击都必定击中要害。第二次攻击威力增加到30,第三次攻击威力增加到45",
+		shortDesc: "连续攻击3次,必定击中要害,击中威力会上升",
 	},
 	zengfugongji: {
 		num: 10042,
@@ -1974,8 +2028,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 180 },
 		maxMove: { basePower: 130 },
 		contestType: "Cool",
-		desc: "增幅攻击:根据携带道具提升的能力类型，使用该能力值（享受道具的增幅加成）代替自身的攻击进行伤害计算。若道具同时提升多项能力（如进化奇石/幻之护具），则取面板较高的一项进行计算",
-		shortDesc: "增幅攻击:使用携带道具所提升的能力代替攻击进行伤害计算",
+		desc: "根据携带道具提升的能力类型，使用该能力值（享受道具的增幅加成）代替自身的攻击进行伤害计算。若道具同时提升多项能力（如进化奇石/幻之护具），则取面板较高的一项进行计算",
+		shortDesc: "使用携带道具所提升的能力代替攻击进行伤害计算",
 	},
 	duoshuxinggongjigai: {
 		num: 10043,
@@ -2003,8 +2057,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { basePower: 190 },
 		maxMove: { basePower: 140 },
-		desc: "多属性攻击·改:招式属性会变为使用者的第二属性(若只有单一属性则变为该属性)",
-		shortDesc: "多属性攻击·改:招式属性变为使用者的第二属性",
+		desc: "招式属性会变为使用者的第二属性(若只有单一属性则变为该属性)",
+		shortDesc: "招式属性变为使用者的第二属性",
 	},
 	linghunshayuan: {
 		num: 10044,
@@ -2021,8 +2075,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Ground",
 		zMove: { basePower: 180 },
 		maxMove: { basePower: 130 },
-		desc: "灵魂沙渊:攻击目标造成伤害。使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下",
-		shortDesc: "灵魂沙渊:困住并伤害目标4~5回合",
+		desc: "攻击目标造成伤害。使目标陷入束缚状态。束缚状态持续4~5回合,处于束缚状态的宝可梦会持续受到伤害并不能换下",
+		shortDesc: "困住并伤害目标4~5回合",
 	},
 	conglinzhanshu: {
 		num: 10045,
@@ -2062,8 +2116,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 100 },
 		contestType: "Clever",
-		desc: "丛林战术:所有健康的己方宝可梦会一起攻击目标。使用者是幻想萨戮德-阿爸时,变为单次攻击,招式威力提升至120",
-		shortDesc: "丛林战术:全队健康同伴一起攻击;阿爸形态为120威力单发",
+		desc: "所有健康的己方宝可梦会一起攻击目标。使用者是幻想萨戮德-阿爸时,变为单次攻击,招式威力提升至120",
+		shortDesc: "全队健康同伴一起攻击;阿爸形态则为120威力单次攻击",
 	},
 	xuguanghonglei: {
 		num: 10046,
@@ -2087,8 +2141,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 180 },
 		maxMove: { basePower: 130 },
 		contestType: "Beautiful",
-		desc: "蓄光轰雷:令使用者的特攻提升1级",
-		shortDesc: "蓄光轰雷:令使用者的特攻提升1级",
+		desc: "令使用者的特攻提升1级",
+		shortDesc: "令使用者的特攻提升1级",
 	},
 	wenliz: {
 		num: 10047, 
@@ -2138,8 +2192,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { boost: { spa: 2 } },
 		contestType: "Beautiful",
-		desc: "纹理Z:将自己第一个招式的属性转换成可以克制对手目前的属性",
-		shortDesc: "纹理Z:将自己第一个招式的属性转换成克制对手的属性",
+		desc: "将自己第一个招式的属性转换成可以克制对手目前的属性",
+		shortDesc: "将自己第一个招式的属性转换成克制对手的属性",
 	},
 	zhenxi: {
 		num: 10048, 
@@ -2164,8 +2218,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 85 },
 		contestType: "Clever",
-		desc: "鸩袭:如果目标本回合未准备使用造成伤害的招式，或目标已经行动，此招式将失败",
-		shortDesc: "鸩袭:先制攻击，如果目标不使用攻击招式的话则使用失败",
+		desc: "如果目标本回合未准备使用造成伤害的招式，或目标已经行动，此招式将失败",
+		shortDesc: "先制攻击，如果目标不使用攻击招式的话则使用失败",
 	},
 	huanshenbu: {
 		num: 10049, 
@@ -2198,7 +2252,26 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 90 },
 		contestType: "Cool",
-		desc: "幻身步:通常情况下,此招式能够先制攻击。如果处于精神场地中且使用者在地面上,此招式将失去先制效果(优先级降为0),并在成功命中后使自身的速度提升1级",
-		shortDesc: "幻身步:先制攻击;在精神场地上:无先制度,使速度上升1级",
+		desc: "通常情况下,此招式能够先制攻击。如果处于精神场地中且使用者在地面上,此招式将失去先制效果(优先级降为0),并在成功命中后使自身的速度提升1级",
+		shortDesc: "先制攻击;在精神场地上:无先制度,使速度上升1级",
+	},
+	wasitihuan: { 
+		num: 10050,
+		accuracy: 100,
+		basePower: 70,
+		category: "Special",
+		name: "Wa Si Ti Huan",
+		pp: 20,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		selfSwitch: true,
+		secondary: null,
+		target: "normal",
+		type: "Poison",
+		zMove: { basePower: 140 },
+		maxMove: { basePower: 85 },
+		contestType: "Cute",
+		desc: "使用者在攻击目标后会替换后备宝可梦上场。",
+		shortDesc: "攻击后替换后备宝可梦上场。",
 	},
 };
