@@ -1525,36 +1525,37 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "攻击3次,每次威力提升,伤害计算时参考目标防御",
 	},
 	qingshenglvye: {
-		num: 10029,
-		accuracy: true,
-		basePower: 0,
-		category: "Status",
-		name: "Qing Sheng Lv Ye",
-		pp: 10,
-		priority: 0,
-		flags: {}, 
-		priorityChargeCallback(source) {
-			source.addVolatile('qingshenglvye');
-		},
-		terrain: 'grassyterrain',
-		selfSwitch: true,
-		secondary: null,
-		condition: {
-			duration: 1,
-			onBeforeMovePriority: 100, // High priority to ensure the message appears first
-			onBeforeMove(source, target, move) {
-				// Check if the move is "晴生绿野"
-				if (move.id !== 'qingshenglvye') return;
-				// If it is, display the preparation message
-				this.add('-prepare', source, '晴生绿野', '[premajor]');
-			},
-		},
-		target: "all",
-		type: "Grass", 
-		zMove: { effect: 'healreplacement' },
-		desc: "接下来5回合的场地变更为青草场地。然后自身与后备宝可梦替换",
-		shortDesc: "交替并使场地变为持续5回合的青草场地",
-	},
+        num: 10029,
+        accuracy: true,
+        basePower: 0,
+        category: "Status",
+        name: "Qing Sheng Lv Ye",
+        pp: 10,
+        priority: 0,
+        flags: {}, 
+        priorityChargeCallback(source) {
+            source.addVolatile('qingshenglvye');
+        },
+        weather: 'sunnyday',       
+        terrain: 'grassyterrain',  
+        selfSwitch: true,
+        secondary: null,
+        condition: {
+            duration: 1,
+            onBeforeMovePriority: 100, // High priority to ensure the message appears first
+            onBeforeMove(source, target, move) {
+                // 效仿 Chilly Reception，使用标准的英文名传参
+                if (move.id !== 'qingshenglvye') return;
+                // If it is, display the preparation message
+                this.add('-prepare', source, 'Qing Sheng Lv Ye', '[premajor]');
+            },
+        },
+        target: "all",
+        type: "Grass", 
+        zMove: { effect: 'healreplacement' },
+        desc: "接下来5回合的天气变更为大晴天，场地变更为青草场地。然后自身与后备宝可梦替换",
+        shortDesc: "交替并使天气变为晴天、场地变为青草场地",
+    },
 	fanchen: {
         num: 10030,
         accuracy: true,

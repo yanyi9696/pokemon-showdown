@@ -556,6 +556,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	urshifurapidstrike2fantasy: {
 		tier: "UU",
 	},
+	victreebelfantasy: {
+		tier: "UU",
+	},
 	victreebelmegafantasy: {
 		tier: "UU",
 		abilities: {0: "Corrosion"},	
@@ -592,9 +595,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	tropiusfantasy: {
-		tier: "RUBL",
-	},
-	victreebelfantasy: {
 		tier: "RUBL",
 	},
 	abomasnowfantasy: {
