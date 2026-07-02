@@ -111,7 +111,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	crushgrip: {
 		num: 462,
 		accuracy: 100,
-		basePower: 120,
+		basePower: 100,
 		category: "Physical",
 		name: "Crush Grip",
 		pp: 5,
@@ -127,23 +127,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			for (const ally of pokemon.side.pokemon) {
 				const speciesId = ally.species.id;
 				
-				// 冰柱：50%概率冻伤 (fst)
+				// 冰柱：30%概率冻伤 (fst)
 				// 使用 startsWith 可以完美兼容 regicefantasy 等变种
 				if (speciesId.startsWith('regice')) {
 					// 避免多只相同神柱导致效果重复添加
 					if (!move.secondaries.some(s => s.status === 'fst')) {
 						move.secondaries.push({
-							chance: 50,
+							chance: 30,
 							status: 'fst',
 						});
 					}
 				}
 				
-				// 电柱：50%概率麻痹 (par)
+				// 电柱：30%概率麻痹 (par)
 				if (speciesId.startsWith('regieleki')) {
 					if (!move.secondaries.some(s => s.status === 'par')) {
 						move.secondaries.push({
-							chance: 50,
+							chance: 30,
 							status: 'par',
 						});
 					}
@@ -219,11 +219,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Normal",
-		zMove: { basePower: 190 },
-		maxMove: { basePower: 140 },
+		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
 		contestType: "Tough",
-		desc: "队伍中有不同巨人时附加不同效果:雷吉洛克(撒隐形岩),雷吉艾斯(50%几率冻伤),雷吉斯奇鲁(撒碎菱钢),雷吉艾勒奇(50%几率麻痹),雷吉铎拉戈(回复给予对手伤害的一半HP)",
-		shortDesc: "根据队中神柱附加隐形岩/50%冻伤/碎菱钢/50%麻痹/吸血",
+		desc: "队伍中有不同神柱时附加不同效果:雷吉洛克(撒隐形岩),雷吉艾斯(30%几率冻伤),雷吉斯奇鲁(撒碎菱钢),雷吉艾勒奇(30%几率麻痹),雷吉铎拉戈(回复给予对手伤害的一半HP)",
+		shortDesc: "根据队中神柱附加隐形岩/30%冻伤/碎菱钢/30%麻痹/吸血",
 	},
 	darkvoid: {
 		num: 464,
@@ -303,6 +303,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Psychic",
+		zMove: { basePower: 180 },
 		contestType: "Cool",
 		desc: "给予物理伤害。如果使用者的攻击大于特攻，则此招式变成物理招式，给予特殊伤害",
 		shortDesc: "给予物理伤害。攻击大于特攻变成物理招式，给予特殊伤害",
@@ -513,6 +514,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "allAdjacent",
 		type: "Fairy",
+		zMove: { basePower: 180 },
 		contestType: "Beautiful",
 		desc: "使用者陷入濒死。若使用者在薄雾场地上,威力提升1.5倍,不会陷入濒死而是损失最大HP的1/4。",
 		shortDesc: "在薄雾场地:威力提升1.5倍,不陷入濒死,损失最大HP的1/4",

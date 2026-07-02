@@ -7640,6 +7640,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	regigigasfantasy: {
 		learnset: {
+			wringout: ["9M"],
 			woodhammer: ["9M"],
 			trailblaze: ["9M"],
 			grassyglide: ["9M"],
