@@ -82,8 +82,49 @@ export const Scripts: ModdedBattleScriptsData = {
 				return false;
 			}
 
+			// ==========================================
+			// 【新增】第 1 步：记录变身前的 HP 数据
+			// ==========================================
+			const prevHp = pokemon.hp;
+			const prevMaxHp = pokemon.maxhp;
+
 			// 执行变身
 			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
+
+			// ==========================================
+			// 【新增】第 2 步：计算变身后的真实最大 HP
+			// ==========================================
+			let newMaxHp = 1; // 兼容类似脱壳忍者（HP固定为1）的情况
+			if (targetSpecies.baseStats.hp !== 1) {
+				// 套用 Showdown 底层的 HP 计算公式，结合了当前的 IV、EV 和等级
+				newMaxHp = Math.floor(
+					Math.floor(
+						2 * targetSpecies.baseStats.hp + pokemon.set.ivs.hp + Math.floor(pokemon.set.evs.hp / 4) + 100
+					) * pokemon.level / 100
+				) + 10;
+			}
+
+			// ==========================================
+			// 【新增】第 3 步：如果 HP 上限变了，刷新当前的 HP 状态
+			// ==========================================
+			if (newMaxHp !== prevMaxHp) {
+				pokemon.baseMaxhp = newMaxHp;
+				pokemon.maxhp = newMaxHp;
+
+				// 核心需求：保持损失的HP与改变形态前一致
+				// 推导公式：新的当前HP = 新的最大HP - (旧的最大HP - 旧的当前HP)
+				pokemon.hp = pokemon.maxhp - (prevMaxHp - prevHp);
+
+				// 容错处理：确保血量既不会因为奇葩机制变负，也不会超过最大值
+				if (pokemon.hp <= 0) pokemon.hp = 1;
+				if (pokemon.hp > pokemon.maxhp) pokemon.hp = pokemon.maxhp;
+
+				// 向客户端发送静默加血/扣血指令，用于刷新前端血条视觉
+				this.battle.add('-heal', pokemon, pokemon.getHealth, '[silent]');
+			}
+			// ==========================================
+
+			// 发送特性变更动画和 Mega 进化提示语
 			this.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] Mega Evolution');
 
 			for (const ally of pokemon.side.pokemon) {
