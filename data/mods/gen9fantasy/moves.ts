@@ -127,23 +127,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			for (const ally of pokemon.side.pokemon) {
 				const speciesId = ally.species.id;
 				
-				// 冰柱：30%概率冻伤 (fst)
+				// 冰柱：50%概率冻伤 (fst)
 				// 使用 startsWith 可以完美兼容 regicefantasy 等变种
 				if (speciesId.startsWith('regice')) {
 					// 避免多只相同神柱导致效果重复添加
 					if (!move.secondaries.some(s => s.status === 'fst')) {
 						move.secondaries.push({
-							chance: 30,
+							chance: 50,
 							status: 'fst',
 						});
 					}
 				}
 				
-				// 电柱：30%概率麻痹 (par)
+				// 电柱：50%概率麻痹 (par)
 				if (speciesId.startsWith('regieleki')) {
 					if (!move.secondaries.some(s => s.status === 'par')) {
 						move.secondaries.push({
-							chance: 30,
+							chance: 50,
 							status: 'par',
 						});
 					}
@@ -222,8 +222,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 180 },
 		maxMove: { basePower: 130 },
 		contestType: "Tough",
-		desc: "队伍中有不同神柱时附加不同效果:雷吉洛克(撒隐形岩),雷吉艾斯(30%几率冻伤),雷吉斯奇鲁(撒碎菱钢),雷吉艾勒奇(30%几率麻痹),雷吉铎拉戈(回复给予对手伤害的一半HP)",
-		shortDesc: "根据队中神柱附加隐形岩/30%冻伤/碎菱钢/30%麻痹/吸血",
+		desc: "队伍中有不同神柱时附加不同效果:雷吉洛克(撒隐形岩),雷吉艾斯(50%几率冻伤),雷吉斯奇鲁(撒碎菱钢),雷吉艾勒奇(50%几率麻痹),雷吉铎拉戈(回复给予对手伤害的一半HP)",
+		shortDesc: "根据队中神柱附加隐形岩/50%冻伤/碎菱钢/50%麻痹/吸血",
 	},
 	darkvoid: {
 		num: 464,
