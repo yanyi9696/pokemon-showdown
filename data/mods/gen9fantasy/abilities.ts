@@ -1910,68 +1910,89 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "登场使我方进入睡眠但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠",
 	},
 	qiyizhizaozhe: {
-		onStart(pokemon) {
-			this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+        onStart(pokemon) {
+            this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+            
+            // 初始化本回合是否使用过变化招式的标记
+            this.effectState.usedStatusMove = false;
 
-			// 1. 优先检查戏法空间
-			if (pokemon.hasMove('trickroom')) {
-				// 【修改点】如果携带了戏法空间，则不再引发重力，仅标记待触发戏法空间
-				this.effectState.pendingTrickRoom = true;
-				this.add('-message', `${pokemon.name} 正在扭曲周围的时间...`);
-			} else {
-				// 【修改点】如果没有携带戏法空间，登场立即引发重力
-				if (this.field.addPseudoWeather('gravity', pokemon)) {
-					this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
-				}
-			}
+            // 1. 优先检查戏法空间
+            if (pokemon.hasMove('trickroom')) {
+                // 【修改点】如果携带了戏法空间，则不再引发重力，仅标记待触发戏法空间
+                this.effectState.pendingTrickRoom = true;
+                this.add('-message', `${pokemon.name} 正在扭曲周围的时间...`);
+            } else {
+                // 【修改点】如果没有携带戏法空间，登场立即引发重力
+                if (this.field.addPseudoWeather('gravity', pokemon)) {
+                    this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
+                }
+            }
 
-			// 2. 检查并一并引发魔法空间或奇妙空间
-			if (pokemon.hasMove('magicroom')) {
-				this.field.addPseudoWeather('magicroom', pokemon);
-			}
-			if (pokemon.hasMove('wonderroom')) {
-				this.field.addPseudoWeather('wonderroom', pokemon);
-			}
-		},
-		// 回合结束时触发
-		onResidualOrder: 27,
-		onResidual(pokemon) {
-			// 如果有戏法空间待触发标记
-			if (this.effectState.pendingTrickRoom) {
-				// 引发戏法空间
-				if (this.field.addPseudoWeather('trickroom', pokemon)) {
-					this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
-					this.add('-message', `${pokemon.name} 扭曲了周围的一切！`);
+            // 2. 检查并一并引发魔法空间或奇妙空间
+            if (pokemon.hasMove('magicroom')) {
+                this.field.addPseudoWeather('magicroom', pokemon);
+            }
+            if (pokemon.hasMove('wonderroom')) {
+                this.field.addPseudoWeather('wonderroom', pokemon);
+            }
+        },
 
-					// 【核心修正逻辑】
-					// 获取当前场上的戏法空间状态数据
-					const trickRoomData = this.field.pseudoWeather['trickroom'];
-					if (trickRoomData && trickRoomData.duration) {
-						// 手动将持续时间减 1，确保总长度为 5 回合（包含开启的这一回合）
-						trickRoomData.duration--;
-						this.debug(`Trick Room duration adjusted to ${trickRoomData.duration} to account for end-of-turn activation.`);
-					}
-				}
-				// 无论成功与否，重置标记防止重复触发
-				this.effectState.pendingTrickRoom = false;
-			}
-		},
-		// 宝可梦濒死时清除效果
-		onFaint(pokemon) {
-			const roomEffects = ['trickroom', 'wonderroom', 'magicroom', 'gravity'];
-			for (const effect of roomEffects) {
-				if (this.field.getPseudoWeather(effect)) {
-					this.field.removePseudoWeather(effect);
-					this.add('-message', `${pokemon.name} 倒下了，场上的奇异状态随之平静！`);
-				}
-			}
-		},
-		flags: {},
-		name: "Qi Yi Zhi Zao Zhe",
-		rating: 5,
-		num: 10035,
-		shortDesc: "登场引发重力,携带不同空间招式将有不同特殊效果。被击倒时会清除场上所有空间/重力",
-	},
+        // 监听宝可梦使用招式的动作，用于判断是否使用了变化招式
+        onModifyMove(move, pokemon) {
+            if (move.category === 'Status') {
+                this.effectState.usedStatusMove = true;
+            }
+        },
+
+        // 回合结束时触发
+        onResidualOrder: 27,
+        onResidual(pokemon) {
+            // 如果有戏法空间待触发标记
+            if (this.effectState.pendingTrickRoom) {
+                
+                // 检查戏法空间是否被封印 (Imprison)
+                let isSealed = false;
+                for (const target of pokemon.foes()) {
+                    // 如果对手处于封印状态，且对手也会戏法空间，则我方戏法空间被封印
+                    if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
+                        isSealed = true;
+                        break;
+                    }
+                }
+                // （可选）挑衅也会让宝可梦无法使用变化招式，通常也算作广义上的封印
+                if (pokemon.volatiles['taunt']) {
+                    isSealed = true; 
+                }
+
+                // 【核心修正逻辑】：若回合内未使用过变化招式，且戏法空间未被封印
+                if (!this.effectState.usedStatusMove && !isSealed) {
+                    // 引发戏法空间
+                    if (this.field.addPseudoWeather('trickroom', pokemon)) {
+                        this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+                        this.add('-message', `${pokemon.name} 扭曲了周围的一切！`);
+
+                        // 获取当前场上的戏法空间状态数据并调整回合数
+                        const trickRoomData = this.field.getPseudoWeather('trickroom');
+                        if (trickRoomData && trickRoomData.duration) {
+                            // 手动将持续时间减 1，确保总长度为 5 回合（包含开启的这一回合）
+                            trickRoomData.duration--;
+                            this.debug(`Trick Room duration adjusted to ${trickRoomData.duration} to account for end-of-turn activation.`);
+                        }
+                    }
+                }
+
+                // 无论本回合戏法空间是否成功开启（比如因为使用了变化招式错失机会），重置标记防止后续回合重复触发
+                this.effectState.pendingTrickRoom = false;
+            }
+        },
+
+        // 删除了原有的 onFaint 逻辑
+        flags: {},
+        name: "Qi Yi Zhi Zao Zhe",
+        rating: 5,
+        num: 10035,
+        shortDesc: "登场引发重力与携带的魔法/奇妙空间。若带戏法空间则不引发重力，回合末若未用变化招式且未被封印则制造戏法空间。",
+    },
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
 			// 确定对手的场地侧

@@ -1785,7 +1785,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["Ice", "Ghost"],
 		gender: "F",
 		baseStats: { hp: 80, atk: 80, def: 80, spa: 140, spd: 120, spe: 140 },
-		abilities: { 0: "Xue Nv" },
+		abilities: { 0: "Snow Warning" },
 		heightm: 2.6,
 		weightkg: 29.9,
 		color: "White",

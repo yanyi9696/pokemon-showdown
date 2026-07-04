@@ -123,7 +123,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	froslassmegafantasy: {
 		tier: "(Uber)",
-		abilities: {0: "Mold Breaker"},		
+		abilities: {0: "Snow Warning"},		
 	},
 	garchompmegafantasy: {
 		tier: "(Uber)",
@@ -1011,9 +1011,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	dragonitemega: {
 		tier: "OU",	
 	},
-	excadrillmega: {
-		tier: "OU",	
-	},
 	floettemega: {
 		tier: "OU",	
 	},
@@ -1033,6 +1030,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	corviknight: {
+		tier: "UUBL",
+	},
+	excadrillmega: {
 		tier: "UUBL",
 	},
 	garchomp: {
