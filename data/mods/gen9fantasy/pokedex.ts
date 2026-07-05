@@ -3623,7 +3623,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Orbeetle",
 		forme: "Mega",
 		types: ["Bug", "Psychic"],
-		baseStats: { hp: 100, atk: 45, def: 110, spa: 135, spd: 150, spe: 65 },
+		baseStats: { hp: 100, atk: 45, def: 110, spa: 135, spd: 160, spe: 55 },
 		abilities: { 0: "Qi Yi Zhi Zao Zhe" },
 		heightm: 0.4,
 		weightkg: 40.8,
