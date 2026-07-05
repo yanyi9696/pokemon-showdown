@@ -742,11 +742,10 @@ export const commands: Chat.ChatCommands = {
 
 		const out = [];
 
-		// 新增：提取所有的自定义头像并生成全服画廊
-		out.push(<p><strong>✨ 全服可用自定义头像列表 ✨</strong></p>);
+		out.push(<p><strong>✨ 全服可用专属/隐藏头像列表 ✨</strong></p>);
 
+		// 1. 提取服务器自己上传的自定义头像
 		const allCustomAvatars = new Set<string>();
-		// 遍历 customAvatars 对象，提取所有注册过的头像
 		for (const id in customAvatars) {
 			const allowed = customAvatars[id]?.allowed;
 			if (allowed) {
@@ -756,28 +755,29 @@ export const commands: Chat.ChatCommands = {
 			}
 		}
 
-		if (allCustomAvatars.size > 0) {
-			const avatarArray = Array.from(allCustomAvatars);
-			// 渲染头像按钮阵列
+		// 2. 将自定义头像与系统自带的几百个隐藏/画师头像合并
+		const allAvailable = new Set<string>([...allCustomAvatars, ...OFFICIAL_AVATARS]);
+
+		if (allAvailable.size > 0) {
+			const avatarArray = Array.from(allAvailable);
+			// 渲染带滚动条的头像阵列，防止撑爆屏幕
 			out.push(
-				<div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+				<div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', maxHeight: '400px', overflowY: 'auto', padding: '5px', background: 'rgba(0,0,0,0.05)', borderRadius: '5px' }}>
 					{avatarArray.map(avatar => (
-						<button name="send" value={`/avatar ${avatar}`} class="button" style={{ padding: '5px', textAlign: 'center' }}>
+						<button name="send" value={`/avatar ${avatar}`} class="button" style={{ padding: '5px', textAlign: 'center', width: '90px' }}>
 							{Avatars.img(avatar)}<br />
-							<small><code>{avatar.replace('#', '')}</code></small>
+							<small style={{ wordBreak: 'break-all' }}><code>{avatar.replace('#', '')}</code></small>
 						</button>
 					))}
 				</div>
 			);
 		} else {
-			out.push(<p>当前服务器还没有任何自定义头像数据。</p>);
+			out.push(<p>当前服务器没有任何头像数据。</p>);
 		}
 
 		this.sendReplyBox(<>
 			{!target && [<p>
-				你可以点击上方的专属头像直接使用，或者点击右上角 <button name="openOptions" class="button" aria-label="Options"><i class="fa fa-cog"></i></button> 菜单中的头像来 <button name="avatars" class="button">更改你的官方头像</button>。
-			</p>, <p>
-				你也可以直接输入 <code>/avatar [头像名称]</code> 来更换，例如 <code>/avatar cynthia</code>。
+				你可以直接在下方画廊中挑选喜欢的头像点击使用！或者点击右上角 <button name="openOptions" class="button" aria-label="Options"><i class="fa fa-cog"></i></button> 菜单更改基础头像。
 			</p>]}
 			{out}
 		</>);
