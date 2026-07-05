@@ -1985,7 +1985,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                     if (isSealed) {
                         this.add('-message', `但是${pokemon.name}的戏法空间被封印了，未能扭曲时空！`);
                     } else if (this.effectState.usedStatusMove) {
-                        this.add('-message', `但是${pokemon.name}因为使用了变化招式，没有足够的力量扭曲时空！`);
+                        this.add('-message', `${pokemon.name}使用了变化招式，没有足够的力量扭曲时空！`);
                     }
                 }
 
@@ -1997,7 +1997,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Qi Yi Zhi Zao Zhe",
         rating: 5,
         num: 10035,
-        shortDesc: "登场引发重力与携带的魔法/奇妙空间;携带戏法空间不引发重力,若未用变化招式且未被封印,回合末将其制造",
+        shortDesc: "登场引发重力与携带的空间;携带戏法空间不引发重力,回合内未用变化招式且未被封印,回合末将其制造",
     },
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
