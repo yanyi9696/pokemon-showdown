@@ -1971,13 +1971,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                         this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
                         this.add('-message', `${pokemon.name} 扭曲了周围的一切！`);
 
-                        // 获取当前场上的戏法空间状态数据并调整回合数
-                        const trickRoomData = this.field.getPseudoWeather('trickroom');
-                        if (trickRoomData && trickRoomData.duration) {
+                        // 获取当前场上的戏法空间实际活动状态数据并调整回合数
+                        const trickRoomState = this.field.pseudoWeather['trickroom'];
+                        if (trickRoomState && trickRoomState.duration) {
                             // 手动将持续时间减 1，确保总长度为 5 回合（包含开启的这一回合）
-                            trickRoomData.duration--;
-                            this.debug(`Trick Room duration adjusted to ${trickRoomData.duration} to account for end-of-turn activation.`);
+                            trickRoomState.duration--;
+                            this.debug(`Trick Room duration adjusted to ${trickRoomState.duration} to account for end-of-turn activation.`);
                         }
+                    }
+                } else {
+                    // 触发失败时的文字提示
+                    this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+                    if (isSealed) {
+                        this.add('-message', `但是${pokemon.name}的戏法空间被封印了，未能扭曲时空！`);
+                    } else if (this.effectState.usedStatusMove) {
+                        this.add('-message', `但是${pokemon.name}因为使用了变化招式，没有足够的力量扭曲时空！`);
                     }
                 }
 
@@ -1985,13 +1993,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                 this.effectState.pendingTrickRoom = false;
             }
         },
-
-        // 删除了原有的 onFaint 逻辑
         flags: {},
         name: "Qi Yi Zhi Zao Zhe",
         rating: 5,
         num: 10035,
-        shortDesc: "登场引发重力与携带的魔法/奇妙空间。若带戏法空间则不引发重力，回合末若未用变化招式且未被封印则制造戏法空间。",
+        shortDesc: "登场引发重力与携带的魔法/奇妙空间;携带戏法空间不引发重力,若未用变化招式且未被封印,回合末将其制造",
     },
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
