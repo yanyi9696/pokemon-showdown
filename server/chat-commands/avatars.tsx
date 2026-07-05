@@ -678,12 +678,19 @@ export const commands: Chat.ChatCommands = {
 	avatar(target, room, user) {
 		if (!target) return this.parse(`${this.cmdToken}avatars`);
 		const [maybeAvatar, silent] = target.split(',');
+        
+		// ⬇️ 1. 注释掉原本的权限验证逻辑 ⬇️
+		/*
 		const avatar = Avatars.userCanUse(user, maybeAvatar);
 
 		if (!avatar) {
 			if (silent) return false;
 			throw new Chat.ErrorMessage("Unrecognized avatar - make sure you're on the right account?");
 		}
+		*/
+
+		// ⬇️ 2. 添加这行代码：直接将输入的头像名称赋值，并清理非法字符 ⬇️
+		const avatar = maybeAvatar.toLowerCase().replace(/[^a-z0-9-.#]+/g, '');
 
 		this.runBroadcast();
 		if (!this.broadcasting) {
