@@ -78,15 +78,16 @@ export const Avatars = new class {
 	}
 	canUse(userid: ID, avatar: string): AvatarID | null {
 		avatar = avatar.toLowerCase().replace(/[^a-z0-9-.#]+/g, '');
+		
+		// 1. 如果是官方头像，直接允许
 		if (OFFICIAL_AVATARS.has(avatar)) return avatar;
 
-		const customs = customAvatars[userid]?.allowed;
-		if (!customs) return null;
+		// 2. 如果已经包含了 # 或 .png，说明是标准的自定义头像格式，直接放行
+		if (avatar.startsWith('#') || avatar.includes('.')) return avatar;
 
-		if (customs.includes(avatar)) return avatar;
-		if (customs.includes('#' + avatar)) return '#' + avatar;
-		if (avatar.startsWith('#') && customs.includes(avatar.slice(1))) return avatar.slice(1);
-		return null;
+		// 3. 如果玩家输入了自定义头像名称但没有加 #，我们自动帮他补上 # 并放行
+		// 这样所有玩家都可以直接使用任何自定义头像
+		return '#' + avatar;
 	}
 	save(instant?: boolean) {
 		saveCustomAvatars(instant);
@@ -678,19 +679,12 @@ export const commands: Chat.ChatCommands = {
 	avatar(target, room, user) {
 		if (!target) return this.parse(`${this.cmdToken}avatars`);
 		const [maybeAvatar, silent] = target.split(',');
-        
-		// ⬇️ 1. 注释掉原本的权限验证逻辑 ⬇️
-		/*
 		const avatar = Avatars.userCanUse(user, maybeAvatar);
 
 		if (!avatar) {
 			if (silent) return false;
 			throw new Chat.ErrorMessage("Unrecognized avatar - make sure you're on the right account?");
 		}
-		*/
-
-		// ⬇️ 2. 添加这行代码：直接将输入的头像名称赋值，并清理非法字符 ⬇️
-		const avatar = maybeAvatar.toLowerCase().replace(/[^a-z0-9-.#]+/g, '');
 
 		this.runBroadcast();
 		if (!this.broadcasting) {
@@ -746,52 +740,44 @@ export const commands: Chat.ChatCommands = {
 
 		if (target.startsWith('#')) return this.parse(`/avatarusers ${target}`);
 
-		const targetUser = this.broadcasting && !target ? null : this.getUserOrSelf(target);
-		const targetUserids = targetUser ? new Set([targetUser.id, ...targetUser.previousIDs]) :
-			target ? new Set([toID(target)]) : null;
-		if (targetUserids && targetUser !== user && !user.can('alts')) {
-			throw new Chat.ErrorMessage("You don't have permission to look at another user's avatars!");
-		}
-
 		const out = [];
-		if (targetUserids) {
-			const hasButton = !this.broadcasting && targetUser === user;
-			for (const id of targetUserids) {
-				const allowed = customAvatars[id]?.allowed;
-				if (allowed) {
-					out.push(
-						<p>Custom avatars from account <strong>{id}</strong>:</p>,
-						allowed.filter(Boolean).map(avatar => (
-							<p>
-								{hasButton ? (
-									<button name="send" value={`/avatar ${avatar}`} class="button">{Avatars.img(avatar!)}</button>
-								) : (
-									Avatars.img(avatar!)
-								)} {}
-								<code>/avatar {avatar!.replace('#', '')}</code>
-							</p>
-						))
-					);
+
+		// 新增：提取所有的自定义头像并生成全服画廊
+		out.push(<p><strong>✨ 全服可用自定义头像列表 ✨</strong></p>);
+
+		const allCustomAvatars = new Set<string>();
+		// 遍历 customAvatars 对象，提取所有注册过的头像
+		for (const id in customAvatars) {
+			const allowed = customAvatars[id]?.allowed;
+			if (allowed) {
+				for (const av of allowed) {
+					if (av) allCustomAvatars.add(av);
 				}
 			}
-			if (!out.length && target) {
-				out.push(<p>User <strong>{toID(target)}</strong> doesn't have any custom avatars.</p>);
-			}
 		}
-		if (!out.length) {
-			out.push(<p>Custom avatars require you to be a contributor/staff or win a tournament prize.</p>);
+
+		if (allCustomAvatars.size > 0) {
+			const avatarArray = Array.from(allCustomAvatars);
+			// 渲染头像按钮阵列
+			out.push(
+				<div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+					{avatarArray.map(avatar => (
+						<button name="send" value={`/avatar ${avatar}`} class="button" style={{ padding: '5px', textAlign: 'center' }}>
+							{Avatars.img(avatar)}<br />
+							<small><code>{avatar.replace('#', '')}</code></small>
+						</button>
+					))}
+				</div>
+			);
+		} else {
+			out.push(<p>当前服务器还没有任何自定义头像数据。</p>);
 		}
 
 		this.sendReplyBox(<>
 			{!target && [<p>
-				You can <button name="avatars" class="button">change your avatar</button> by clicking on it in the {}
-				<button name="openOptions" class="button" aria-label="Options"><i class="fa fa-cog"></i></button> menu in the upper {}
-				right.
+				你可以点击上方的专属头像直接使用，或者点击右上角 <button name="openOptions" class="button" aria-label="Options"><i class="fa fa-cog"></i></button> 菜单中的头像来 <button name="avatars" class="button">更改你的官方头像</button>。
 			</p>, <p>
-				Avatars from generations other than 4-5 are hidden. You can find them in this {}
-				<a href="https://play.pokemonshowdown.com/sprites/trainers/"><strong>full list of avatars</strong></a>. {}
-				You can use them by typing <code>/avatar <i>[avatar's name]</i></code> into any chat. For example, {}
-				<code>/avatar erika-gen2</code>.
+				你也可以直接输入 <code>/avatar [头像名称]</code> 来更换，例如 <code>/avatar cynthia</code>。
 			</p>]}
 			{out}
 		</>);
