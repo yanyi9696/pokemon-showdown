@@ -742,8 +742,6 @@ export const commands: Chat.ChatCommands = {
 
 		const out = [];
 
-		out.push(<p><strong>✨ 全服可用专属/隐藏头像列表 ✨</strong></p>);
-
 		// 1. 提取服务器自己上传的自定义头像
 		const allCustomAvatars = new Set<string>();
 		for (const id in customAvatars) {
@@ -755,15 +753,31 @@ export const commands: Chat.ChatCommands = {
 			}
 		}
 
-		// 2. 将自定义头像与系统自带的几百个隐藏/画师头像合并
-		const allAvailable = new Set<string>([...allCustomAvatars, ...OFFICIAL_AVATARS]);
+		// 2. 将自定义头像与系统自带的隐藏头像合并为一个数组
+		let allAvailable = Array.from(new Set([...allCustomAvatars, ...OFFICIAL_AVATARS]));
 
-		if (allAvailable.size > 0) {
-			const avatarArray = Array.from(allAvailable);
-			// 渲染带滚动条的头像阵列，防止撑爆屏幕
+		// 3. ✨新增逻辑：如果指令带了参数，就进行关键词过滤✨
+		let isSearch = false;
+		if (target) {
+			const searchId = target.toLowerCase().replace(/[^a-z0-9-.#]+/g, '');
+			if (searchId) {
+				isSearch = true;
+				// 过滤出名字里包含你输入关键词的头像
+				allAvailable = allAvailable.filter(av => av.includes(searchId));
+			}
+		}
+
+		if (isSearch) {
+			out.push(<p><strong>✨ "{target}" 的头像搜索结果 ✨</strong></p>);
+		} else {
+			out.push(<p><strong>✨ 全服可用专属/隐藏头像列表 ✨</strong></p>);
+		}
+
+		if (allAvailable.length > 0) {
+			// 渲染带滚动条的头像阵列
 			out.push(
 				<div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', maxHeight: '400px', overflowY: 'auto', padding: '5px', background: 'rgba(0,0,0,0.05)', borderRadius: '5px' }}>
-					{avatarArray.map(avatar => (
+					{allAvailable.map(avatar => (
 						<button name="send" value={`/avatar ${avatar}`} class="button" style={{ padding: '5px', textAlign: 'center', width: '90px' }}>
 							{Avatars.img(avatar)}<br />
 							<small style={{ wordBreak: 'break-all' }}><code>{avatar.replace('#', '')}</code></small>
@@ -772,12 +786,13 @@ export const commands: Chat.ChatCommands = {
 				</div>
 			);
 		} else {
-			out.push(<p>当前服务器没有任何头像数据。</p>);
+			out.push(<p>没有找到与 "<strong>{target}</strong>" 相关的头像。请检查拼写或尝试其他关键词。</p>);
 		}
 
 		this.sendReplyBox(<>
-			{!target && [<p>
-				你可以直接在下方画廊中挑选喜欢的头像点击使用！或者点击右上角 <button name="openOptions" class="button" aria-label="Options"><i class="fa fa-cog"></i></button> 菜单更改基础头像。
+			{!isSearch && [<p>
+				你可以直接在下方画廊中挑选喜欢的头像点击使用！<br />
+				如果头像太多，你可以用名称进行搜索，例如输入 <code>/avatars acerola</code> 或 <code>/avatars red</code>
 			</p>]}
 			{out}
 		</>);
