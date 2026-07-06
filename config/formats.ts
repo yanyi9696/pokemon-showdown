@@ -1002,14 +1002,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
         section: "luaiqin",
     },
     {
-        name: "[Gen 9] NatDex luaiqin",
+        name: "[Gen 9] NatDex luaiqin", 
         mod: 'gen9luaiqin', 
-        ruleset: ['Standard NatDex', 'OHKO Clause', 'Evasion Moves Clause', 'Evasion Items Clause', 'Species Clause', 'Sleep Clause Mod', 'Mega Data Mod'],
-        banlist: [
-            'AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
-            'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
-        ],
-    },
+        ruleset: ['Standard NatDex', 'Terastal Clause'],
+		banlist: [
+			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
+		],
+	},
 
 
 	// S/V Singles
