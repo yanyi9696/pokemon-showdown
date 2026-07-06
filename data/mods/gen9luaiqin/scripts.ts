@@ -1,3 +1,3 @@
 export const Scripts: ModdedBattleScriptsData = {
-    inherit: 'gen9natdex',
+    inherit: 'gen9',
 };
