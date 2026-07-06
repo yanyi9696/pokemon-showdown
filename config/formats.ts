@@ -1004,12 +1004,12 @@ export const Formats: import('../sim/dex-formats').FormatList = [
     {
         name: "[Gen 9] NatDex luaiqin", 
         mod: 'gen9luaiqin', 
-        ruleset: ['Standard NatDex', 'Terastal Clause'],
-		banlist: [
-			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
-			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
-		],
-	},
+        ruleset: ['Standard NatDex', 'Terastal Clause', '+Past', '+Terastallization'],
+        banlist: [
+            'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+            'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
+        ],
+    },
 
 
 	// S/V Singles
