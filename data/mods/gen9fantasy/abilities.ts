@@ -814,6 +814,75 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 262,
 		shortDesc: "电属性招式威力提升50%",
 	},
+	protosynthesis: {
+        onSwitchInPriority: -2,
+        onStart(pokemon) {
+            this.singleEvent('WeatherChange', this.effect, this.effectState, pokemon);
+        },
+        onWeatherChange(pokemon) {
+            // Protosynthesis is not affected by Utility Umbrella
+            // 【修改点】：将 'sunnyday' 改为了包含大日照的数组 ['sunnyday', 'desolateland']
+            if (this.field.isWeather(['sunnyday', 'desolateland'])) {
+                pokemon.addVolatile('protosynthesis');
+            } else if (!pokemon.volatiles['protosynthesis']?.fromBooster && !this.field.isWeather(['sunnyday', 'desolateland'])) {
+                pokemon.removeVolatile('protosynthesis');
+            }
+        },
+        onEnd(pokemon) {
+            delete pokemon.volatiles['protosynthesis'];
+            this.add('-end', pokemon, 'Protosynthesis', '[silent]');
+        },
+        condition: {
+            noCopy: true,
+            onStart(pokemon, source, effect) {
+                if (effect?.name === 'Booster Energy') {
+                    this.effectState.fromBooster = true;
+                    this.add('-activate', pokemon, 'ability: Protosynthesis', '[fromitem]');
+                } else {
+                    this.add('-activate', pokemon, 'ability: Protosynthesis');
+                }
+                this.effectState.bestStat = pokemon.getBestStat(false, true);
+                this.add('-start', pokemon, 'protosynthesis' + this.effectState.bestStat);
+            },
+            onModifyAtkPriority: 5,
+            onModifyAtk(atk, pokemon) {
+                if (this.effectState.bestStat !== 'atk' || pokemon.ignoringAbility()) return;
+                this.debug('Protosynthesis atk boost');
+                return this.chainModify([5325, 4096]);
+            },
+            onModifyDefPriority: 6,
+            onModifyDef(def, pokemon) {
+                if (this.effectState.bestStat !== 'def' || pokemon.ignoringAbility()) return;
+                this.debug('Protosynthesis def boost');
+                return this.chainModify([5325, 4096]);
+            },
+            onModifySpAPriority: 5,
+            onModifySpA(spa, pokemon) {
+                if (this.effectState.bestStat !== 'spa' || pokemon.ignoringAbility()) return;
+                this.debug('Protosynthesis spa boost');
+                return this.chainModify([5325, 4096]);
+            },
+            onModifySpDPriority: 6,
+            onModifySpD(spd, pokemon) {
+                if (this.effectState.bestStat !== 'spd' || pokemon.ignoringAbility()) return;
+                this.debug('Protosynthesis spd boost');
+                return this.chainModify([5325, 4096]);
+            },
+            onModifySpe(spe, pokemon) {
+                if (this.effectState.bestStat !== 'spe' || pokemon.ignoringAbility()) return;
+                this.debug('Protosynthesis spe boost');
+                return this.chainModify(1.5);
+            },
+            onEnd(pokemon) {
+                this.add('-end', pokemon, 'Protosynthesis');
+            },
+        },
+        flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, notransform: 1 },
+        name: "Protosynthesis",
+        rating: 3,
+        num: 281,
+		shortDesc: "携带驱劲能量或天气为大晴天/大日照时,数值最高的能力会提高30%;若该项能力为速度,则会提高50%",
+    },
 	//以下为CAP特性
 	mountaineer: {
 		onDamage(damage, target, source, effect) {
@@ -1939,7 +2008,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
         // 监听宝可梦使用招式的动作，用于判断是否使用了变化招式
         onModifyMove(move, pokemon) {
-            if (move.category === 'Status') {
+            if (this.effectState.pendingTrickRoom && move.category === 'Status') {
                 this.effectState.usedStatusMove = true;
             }
         },
@@ -1959,10 +2028,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                         break;
                     }
                 }
-                // （可选）挑衅也会让宝可梦无法使用变化招式，通常也算作广义上的封印
-                if (pokemon.volatiles['taunt']) {
-                    isSealed = true; 
-                }
 
                 // 【核心修正逻辑】：若回合内未使用过变化招式，且戏法空间未被封印
                 if (!this.effectState.usedStatusMove && !isSealed) {
@@ -1979,20 +2044,24 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                             this.debug(`Trick Room duration adjusted to ${trickRoomState.duration} to account for end-of-turn activation.`);
                         }
                     }
+                    
+                    // 【修改点】仅在满足条件并成功触发后，才取消待触发标记，不再连续制造
+                    this.effectState.pendingTrickRoom = false;
                 } else {
-                    // 触发失败时的文字提示
+                    // 触发失败时的文字提示，保留待触发标记以便下回合继续尝试
                     this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
                     if (isSealed) {
-                        this.add('-message', `但是${pokemon.name}的戏法空间被封印了，未能扭曲时空！`);
+                        this.add('-message', `${pokemon.name}的戏法空间被封印了，扭曲时空的进程被打断了！`);
                     } else if (this.effectState.usedStatusMove) {
-                        this.add('-message', `${pokemon.name}使用了变化招式，没有足够的力量扭曲时空！`);
+                        this.add('-message', `${pokemon.name}使用了变化招式，扭曲时空的进程被打断了！`);
                     }
                 }
-
-                // 无论本回合戏法空间是否成功开启（比如因为使用了变化招式错失机会），重置标记防止后续回合重复触发
-                this.effectState.pendingTrickRoom = false;
             }
+            
+            // 【修改点】无论本回合是否尝试触发空间，重置 usedStatusMove，为下一回合重新判定做准备
+            this.effectState.usedStatusMove = false;
         },
+
         flags: {},
         name: "Qi Yi Zhi Zao Zhe",
         rating: 5,
@@ -2038,7 +2107,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Zhao Yong Ze Xian",
 		rating: 4.5,
 		num: 10037,
-		shortDesc: "水属性招式命中非水属性目标后,使目标场地进入4回合微型湿地状态(速度减半)",
+		shortDesc: "水属性招式命中非水属性目标后,使目标场地进入4回合微型湿地状态(速度降至原本的1/3)",
     }, 
 	gangtiejuhewu: {
 		// 1. 处理主动攻击的钢属性招式 (如铁头、铸铠波)

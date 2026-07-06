@@ -10,7 +10,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		// 核心效果：在该场地侧的宝可梦，速度减半
 		onModifySpe(spe, pokemon) {
 			this.debug('Wei Xing Shi Di speed drop');
-			return this.chainModify(0.5);
+			return this.chainModify([1, 3]);
 		},
 		onSideResidualOrder: 26, // 结算顺位参考原版湿地 (grasspledge)
 		onSideResidualSubOrder: 8,
