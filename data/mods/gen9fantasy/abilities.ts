@@ -1989,7 +1989,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
             if (pokemon.hasMove('trickroom')) {
                 // 【修改点】如果携带了戏法空间，则不再引发重力，仅标记待触发戏法空间
                 this.effectState.pendingTrickRoom = true;
-                this.add('-message', `${pokemon.name} 正在扭曲周围的时间...`);
+                this.add('-message', `${pokemon.name} 正在尝试扭曲周围的时间...`);
             } else {
                 // 【修改点】如果没有携带戏法空间，登场立即引发重力
                 if (this.field.addPseudoWeather('gravity', pokemon)) {
@@ -2055,13 +2055,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                     } else if (this.effectState.usedStatusMove) {
                         this.add('-message', `${pokemon.name}使用了变化招式，扭曲时空的进程被打断了！`);
                     }
+					this.add('-message', `${pokemon.name} 将会再次尝试扭曲周围的时间...`);
                 }
             }
             
             // 【修改点】无论本回合是否尝试触发空间，重置 usedStatusMove，为下一回合重新判定做准备
             this.effectState.usedStatusMove = false;
         },
-
         flags: {},
         name: "Qi Yi Zhi Zao Zhe",
         rating: 5,
