@@ -2055,7 +2055,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                     } else if (this.effectState.usedStatusMove) {
                         this.add('-message', `${pokemon.name}使用了变化招式，扭曲时空的进程被打断了！`);
                     }
-					this.add('-message', `${pokemon.name} 将会再次尝试扭曲周围的时间...`);
+					this.add('-message', `${pokemon.name}将会在下个回合再次尝试扭曲周围的时间...`);
                 }
             }
             

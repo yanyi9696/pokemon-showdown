@@ -995,6 +995,23 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 
 
+	// 其他自创分级
+	///////////////////////////////////////////////////////////////////
+
+	{
+		section: "luaiqin",
+	},
+	{
+		name: "[Gen 9] luaiqin",
+		mod: 'gen9luaiqin',
+		ruleset: ['Standard NatDex', 'Terastal Clause'],
+		banlist: [
+			'ND Uber', 'ND AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock',
+			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
+		],
+	},
+
+
 	// S/V Singles
 	///////////////////////////////////////////////////////////////////
 
