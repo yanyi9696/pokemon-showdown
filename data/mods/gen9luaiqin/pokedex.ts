@@ -103,6 +103,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Monster", "Dragon"],
 	},
 	charizard: {
+		inherit: true,
 		num: 6,
 		name: "Charizard",
 		types: ["Fire", "Dragon"],
