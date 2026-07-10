@@ -23802,7 +23802,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	tapufinifantasy: {
 		learnset: {
 			flipturn: ["9M"],
+			lifedew: ["9M"],
 			mistyexplosion: ["9M"],
+			moonlight: ["9M"],
 			healingwish: ["9M"],
 			wish: ["9M"],
 			//幻想增添技能
