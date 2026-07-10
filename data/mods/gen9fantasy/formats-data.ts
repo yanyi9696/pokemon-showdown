@@ -288,6 +288,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
 		tier: "OU",
 	},
+	palossandfantasy: {
+		tier: "OU",
+	},
 	pidgeotmegafantasy: {
 		tier: "OU",
 		abilities: {0: "No Guard"},		
@@ -424,6 +427,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	magmortarfantasy: {
 		tier: "UUBL",
 	},
+	primarinafantasy: {
+		tier: "UUBL",
+	},
 	raticatefantasy: {
 		tier: "UUBL",
 	},
@@ -501,13 +507,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	orbeetlefantasy: {
 		tier: "UU",
 	},
-	palossandfantasy: {
-		tier: "UU",
-	},
 	pidgeotfantasy: {
-		tier: "UU",
-	},
-	primarinafantasy: {
 		tier: "UU",
 	},
 	rotomfantasy: {
@@ -740,13 +740,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Regenerator"},		
 	},
+	pyroarmega: {
+		tier: "UUBL",
+		abilities: {0: "Fire Mane"},		
+	},
 	tatsugiridroopymega: {
 		tier: "UUBL",
 		abilities: {0: "Drizzle"},		
-	},
-	pyroarmega: {
-		tier: "UU",
-		abilities: {0: "Fire Mane"},		
 	},
 	tatsugiricurlymega: {
 		tier: "UU",
@@ -1008,6 +1008,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	archaludon: {
 		tier: "OU",
 	},
+	banettemega: {
+		tier: "OU",
+	},
 	dragonitemega: {
 		tier: "OU",	
 	},
@@ -1059,6 +1062,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	pelipper: {
 		tier: "UUBL",
 	},
+	porygonzfantasy: {
+		tier: "UUBL",
+	},
 	rillaboom: {
 		tier: "UUBL",
 	},
@@ -1070,9 +1076,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	xurkitree: {
 		tier: "UUBL",
-	},
-	banettemega: {
-		tier: "UU",
 	},
 	chimechomega: {
 		tier: "UU",
@@ -1108,9 +1111,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	pecharunt: {
-		tier: "UU",
-	},
-	porygonzfantasy: {
 		tier: "UU",
 	},
 	scovillainmega: {

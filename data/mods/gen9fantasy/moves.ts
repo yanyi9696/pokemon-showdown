@@ -1976,7 +1976,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
 	xingyihuanda: {
 		num: 10041,
-		accuracy: 100,
+		accuracy: 90,
 		basePower: 15,
 		basePowerCallback(pokemon, target, move) {
 			return 15 * move.hit;
