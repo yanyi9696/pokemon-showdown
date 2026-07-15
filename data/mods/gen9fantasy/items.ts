@@ -2786,6 +2786,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 						"mummy",
 						// 你的自定义永久特性
 						"woju",
+						"zengfuxitong",
+						"arxitonggai",
+						"chonghuapi",
+						"chaoyueqianbanbianshen",
+						"quanlidamo",
+						"pohuaiyu",
+						"heianqinshi",
 					];
 
 					if (unchangeableAbilities.includes(affected.ability)) {
@@ -2862,10 +2869,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					"mummy",
 					// 你的自定义永久特性
 					"woju",
+					"zengfuxitong",
+					"arxitonggai",
 					"chonghuapi",
 					"chaoyueqianbanbianshen",
 					"quanlidamo",
 					"pohuaiyu",
+					"heianqinshi",
 				];
 
 				if (unchangeableAbilities.includes(affected.ability)) {
