@@ -443,6 +443,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Sand Force"},		
 	},
+	urshifurapidstrike2fantasy: {
+		tier: "UUBL",
+	},
 	volcanionfantasy: {
 		tier: "UUBL",
 	},
@@ -551,9 +554,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	urshifurapidstrikefantasy: {
-		tier: "UU",
-	},
-	urshifurapidstrike2fantasy: {
 		tier: "UU",
 	},
 	victreebelfantasy: {
