@@ -12,7 +12,7 @@ export const Scripts: ModdedBattleScriptsData = {
 
 	actions: {
 		// ==========================================
-		// 1. 气场爆发 / 究极爆发的按钮判定逻辑 (保持独立)
+		// 1. 气场爆发 / 究极爆发的按钮判定逻辑
 		// ==========================================
 		canUltraBurst(pokemon) {
 			const item = pokemon.getItem();
@@ -24,39 +24,57 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 
 			// --- 自定义：气场爆发 ---
-			// 核心机制：已经使用了Z招式，直接返回 null，按钮不显示！
 			if (pokemon.side.zMoveUsed) return null;
 
-			if ((item as any).auraBurst && pokemon.baseSpecies.name === (item as any).auraBurstSpecies) {
-				return (item as any).auraBurst;
+			// 【关键修复】：遍历字典，使用底层 ID 匹配当前形态或基础形态
+			if ((item as any).auraBursts) {
+				for (const key in (item as any).auraBursts) {
+					const targetID = this.dex.toID(key);
+					// 如果匹配到当前精确形态 ID (marowakalolafantasy)，或是基础形态 ID (marowak)
+					if (targetID === pokemon.species.id || targetID === pokemon.baseSpecies.id) {
+						return (item as any).auraBursts[key].burstForme;
+					}
+				}
 			}
 
 			return null;
 		},
 
 		// ==========================================
-		// 2. 将变身逻辑统合进 runMegaEvo (解决TS报错)
+		// 2. 变身执行逻辑
 		// ==========================================
 		runMegaEvo(pokemon) {
 			const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
 			if (!speciesid) return false;
 
-			// ==============================
 			// 【处理 气场爆发 / 究极爆发】
-			// ==============================
 			if (pokemon.canUltraBurst) {
 				const item = pokemon.getItem();
+				let burstData = null;
+
+				// 【关键修复】：执行变身时，同样使用 ID 获取配置数据
+				if ((item as any).auraBursts) {
+					for (const key in (item as any).auraBursts) {
+						const targetID = this.dex.toID(key);
+						if (targetID === pokemon.species.id || targetID === pokemon.baseSpecies.id) {
+							burstData = (item as any).auraBursts[key];
+							break;
+						}
+					}
+				}
 
 				// --- 气场爆发逻辑 ---
-				if ((item as any).auraBurst && (item as any).auraBurst === speciesid) {
-					pokemon.side.zMoveUsed = true; // 消耗Z招式机会
+				if (burstData && burstData.burstForme === speciesid) {
+					// 核心机制：消耗Z招式机会！
+					pokemon.side.zMoveUsed = true; 
 					
 					pokemon.formeChange(speciesid, item, true);
-					// 使用 pokemon.battle 替代 this.battle 解决报错
-					pokemon.battle.add('-burst', pokemon, (item as any).auraBurstSpecies, item.name);
 					
-					if ((item as any).auraCondition) {
-						pokemon.addVolatile((item as any).auraCondition);
+					// 播放变身动画（用当前的精确名字作为源，防止显示错乱）
+					pokemon.battle.add('-burst', pokemon, pokemon.species.name, item.name);
+					
+					if (burstData.condition) {
+						pokemon.addVolatile(burstData.condition);
 					}
 
 					for (const ally of pokemon.side.pokemon) {
@@ -128,7 +146,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			return true;
 		},
 
-		// 保持原样不变的 canMegaEvo
+		// --- 下方的 canMegaEvo 保持原样 ---
 		canMegaEvo(pokemon) {
 			const species = pokemon.baseSpecies;
 			const item = pokemon.getItem();
