@@ -1,4 +1,106 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	auraburstatk: {
+        name: 'Aura Burst Atk',
+        noCopy: true,
+        onStart(pokemon) {
+            this.add('-start', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}全身覆盖着特殊的气场，攻击提升了！`);
+        },
+        onModifyAtk(atk, pokemon) {
+            return this.chainModify(1.2); // 攻击1.2倍
+        },
+        onEnd(pokemon) {
+            this.add('-end', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}的气场消散了。`);
+        },
+    },
+	auraburstdef: {
+        name: 'Aura Burst Def',
+        noCopy: true,
+        onStart(pokemon) {
+            this.add('-start', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}全身覆盖着特殊的气场，防御提升了！`);
+        },
+        onModifyDef(def, pokemon) {
+            return this.chainModify(1.2); // 防御1.2倍
+        },
+        onEnd(pokemon) {
+            this.add('-end', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}的气场消散了。`);
+        },
+    },
+	auraburstspa: {
+        name: 'Aura Burst SpA',
+        noCopy: true,
+        onStart(pokemon) {
+            this.add('-start', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}全身覆盖着特殊的气场，特攻提升了！`);
+        },
+        onModifySpA(spa, pokemon) {
+            return this.chainModify(1.2); // 特攻1.2倍
+        },
+        onEnd(pokemon) {
+            this.add('-end', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}的气场消散了。`);
+        },
+    },
+	auraburstspd: {
+        name: 'Aura Burst SpD',
+        noCopy: true,
+        onStart(pokemon) {
+            this.add('-start', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}全身覆盖着特殊的气场，特防提升了！`);
+        },
+        onModifySpD(spd, pokemon) {
+            return this.chainModify(1.2); // 特防1.2倍
+        },
+        onEnd(pokemon) {
+            this.add('-end', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}的气场消散了。`);
+        },
+    },
+	auraburstspe: {
+        name: 'Aura Burst Spe',
+        noCopy: true,
+        onStart(pokemon) {
+            this.add('-start', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}全身覆盖着特殊的气场，速度提升了！`);
+        },
+        onModifySpe(spe, pokemon) {
+            return this.chainModify(1.2); // 速度1.2倍
+        },
+        onEnd(pokemon) {
+            this.add('-end', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}的气场消散了。`);
+        },
+    },
+	auraburstall: {
+        name: 'Aura Burst All',
+        noCopy: true,
+        onStart(pokemon) {
+            this.add('-start', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}全身覆盖着特殊的气场，所有属性都提升了！`);
+        },
+        onModifyAtk(atk, pokemon) {
+            return this.chainModify(1.2); // 攻击1.2倍
+        },
+        onModifyDef(def, pokemon) {
+            return this.chainModify(1.2); // 防御1.2倍
+        },
+        onModifySpA(spa, pokemon) {
+            return this.chainModify(1.2); // 特攻1.2倍
+        },
+        onModifySpD(spd, pokemon) {
+            return this.chainModify(1.2); // 特防1.2倍
+        },
+        onModifySpe(spe, pokemon) {
+            return this.chainModify(1.2); // 速度1.2倍
+        },
+        onEnd(pokemon) {
+            this.add('-end', pokemon, 'Aura Burst', '[silent]');
+            this.add('-message', `${pokemon.name}的气场消散了。`);
+        },
+    },
 	weixingshidi: {
 		name: 'weixingshidi',
 		duration: 4, // 持续 4 回合（包含施加状态的当回合）

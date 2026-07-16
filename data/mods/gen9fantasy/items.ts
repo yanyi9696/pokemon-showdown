@@ -1,4 +1,22 @@
 export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
+	// 新增气场爆发的相关原版Z纯晶
+	firiumz: {
+        inherit: true, // 继承原火Z的所有属性
+		itemUser: ["Marowak-Alola-Fantasy"], // 如果未来你给其他宝可梦也加了火Z气场爆发，可以往这个数组里接着加
+        // 新增：气场爆发字典，支持多个宝可梦携带同一个Z纯晶产生不同爆发
+        auraBursts: {
+            "Marowak-Alola-Fantasy": {
+                burstForme: "Marowak-Alola-Totem-Fantasy", 
+                condition: "auraburstspe", // 对应速度提升的气场
+            },
+            // 未来如果有其他宝可梦，比如某只火系宝可梦携带火Z加攻击，可以像下面这样直接加：
+            // "Charizard-Fantasy": {
+            //     burstForme: "Charizard-Totem-Fantasy",
+            //     condition: "auraburstatk", 
+            // }
+        }
+    } as any,
+	//原版道具
 	berserkgene: {
 		name: "Berserk Gene",
 		spritenum: 388,

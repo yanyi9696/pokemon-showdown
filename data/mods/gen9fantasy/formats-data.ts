@@ -2,6 +2,12 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
+	marowakalolafantasy: {
+		tier: "AG",
+	},
+	marowakalolatotemfantasy: {
+		tier: "AG",
+	},
 
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
