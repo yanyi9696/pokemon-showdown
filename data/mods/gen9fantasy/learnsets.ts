@@ -27889,7 +27889,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zenheadbutt: ["9M", "8M", "7T", "6T", "5T", "4T"],
 		},
 	},
-	marowakalola: {
+	marowakalolafantasy: {
 		learnset: {
 			ragingfury: ["9M"],
 			fierydance: ["9M"],
@@ -27994,7 +27994,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			willowisp: ["8M", "8L36", "8V", "7M", "7L23"],
 		},
 	},
-	marowakalolatotem: {
+	marowakalolatotemfantasy: {
 		learnset: {
 			ragingfury: ["9M"],
 			fierydance: ["9M"],
