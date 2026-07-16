@@ -243,7 +243,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 98,
 		color: "Purple",
 		eggGroups: ["Monster"],
-		requiredItem: "firiumz",
+		requiredItem: "Firium Z",
 		requiredForme: "Marowak-Alola-Fantasy",
 		battleOnly: "Marowak-Alola-Fantasy",
 	},
