@@ -70,8 +70,10 @@ export const Scripts: ModdedBattleScriptsData = {
 					
 					pokemon.formeChange(speciesid, item, true);
 					
-					// 播放变身动画（用当前的精确名字作为源，防止显示错乱）
-					pokemon.battle.add('-burst', pokemon, pokemon.species.name, item.name);
+					// 播放一个类似气场爆发的特效（这里借用了“宇宙力量”的动画，非常符合气场爆发的感觉）
+					pokemon.battle.add('-anim', pokemon, "Cosmic Power", pokemon);
+					// 发送我们自定义的气场爆发文本，避开客户端的硬编码翻译
+					pokemon.battle.add('-message', `${pokemon.name}通过气场爆发展现出了新的样子！`);
 					
 					if (burstData.condition) {
 						pokemon.addVolatile(burstData.condition);
