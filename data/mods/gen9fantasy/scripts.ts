@@ -68,20 +68,19 @@ export const Scripts: ModdedBattleScriptsData = {
 					// 核心机制：消耗Z招式机会！
 					pokemon.side.zMoveUsed = true; 
 					
-					// 变身 (第3个参数 true 代表隐藏系统默认的变身动画和普通提示)
-					pokemon.formeChange(speciesid, item, true);
+					// 【核心修改】：将第二个参数 item 替换为 pokemon.battle.effect
+					// 这样底层协议里就不会带有 "[from] item: Firium Z" 的标签
+					// 汉化插件也就再也不会自作多情地触发“究极爆发”的翻译了！
+					pokemon.formeChange(speciesid, pokemon.battle.effect, true);
 					
-					// ----------------------------------------------------
-					// 1. 检测变身者名字，如果没有取昵称，则手动替换为中文。
 					let displayName = pokemon.name;
 					if (displayName === 'Marowak') {
 						displayName = '嘎啦嘎啦';
 					}
 					// 未来有别的宝可梦，可以在这继续加：if (displayName === 'Charizard') displayName = '喷火龙';
 					
-					// 2. 发送我们唯一的一条自定义文本
+					// 发送我们唯一的一条自定义文本
 					pokemon.battle.add('-message', `${displayName}通过气场爆发展现出了新的样子！`);
-					// ----------------------------------------------------
 					
 					if (burstData.condition) {
 						pokemon.addVolatile(burstData.condition);
