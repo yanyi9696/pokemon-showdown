@@ -16,6 +16,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             // }
         }
     } as any,
+	
 	//原版道具
 	berserkgene: {
 		name: "Berserk Gene",
