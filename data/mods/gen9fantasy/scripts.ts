@@ -68,12 +68,20 @@ export const Scripts: ModdedBattleScriptsData = {
 					// 核心机制：消耗Z招式机会！
 					pokemon.side.zMoveUsed = true; 
 					
+					// 变身 (第3个参数 true 代表隐藏系统默认的变身动画和普通提示)
 					pokemon.formeChange(speciesid, item, true);
 					
-					// 播放一个类似气场爆发的特效（这里借用了“宇宙力量”的动画，非常符合气场爆发的感觉）
-					pokemon.battle.add('-anim', pokemon, "Cosmic Power", pokemon);
-					// 发送我们自定义的气场爆发文本，避开客户端的硬编码翻译
-					pokemon.battle.add('-message', `${pokemon.name}通过气场爆发展现出了新的样子！`);
+					// ----------------------------------------------------
+					// 1. 检测变身者名字，如果没有取昵称，则手动替换为中文。
+					let displayName = pokemon.name;
+					if (displayName === 'Marowak') {
+						displayName = '嘎啦嘎啦';
+					}
+					// 未来有别的宝可梦，可以在这继续加：if (displayName === 'Charizard') displayName = '喷火龙';
+					
+					// 2. 发送我们唯一的一条自定义文本
+					pokemon.battle.add('-message', `${displayName}通过气场爆发展现出了新的样子！`);
+					// ----------------------------------------------------
 					
 					if (burstData.condition) {
 						pokemon.addVolatile(burstData.condition);
