@@ -21,6 +21,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	shadowlugiafantasy: {
 		tier: "Illegal",
+		abilities: {0: "Hei An Qin Shi"},		
 	},
 	darkraimegafantasy: {
 		tier: "Uber",

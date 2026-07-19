@@ -3150,28 +3150,21 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         onResidual(pokemon) {
             // 只有处于基础的“幻想洛奇亚”形态才受到扣血和变身效果影响
             if (pokemon.species.id === 'lugiafantasy') {
-                // 每回合扣除 1/16 的最大 HP，将道具自身作为伤害来源传递进去
                 const damage = this.damage(pokemon.baseMaxhp / 16, pokemon, pokemon, this.effect);
                 
                 if (damage) {
                     this.add('-message', `暗影之瓶中的黑暗力量正在侵蚀${pokemon.name}……`);
-
                     pokemon.itemState.damageTaken = (pokemon.itemState.damageTaken || 0) + damage;
                     
                     if (pokemon.itemState.damageTaken >= pokemon.maxhp / 4) {
                         this.add('-message', `暗影之瓶中的黑暗力量足以彻底封闭${pokemon.name}的感情！`);
                         
-                        // 变身为黑暗形态，保留太晶化判定
+                        // 变身
                         pokemon.formeChange('Shadow Lugia-Fantasy', this.effect, false);
                         
-                        // 【新增核心修复】手动将特性设置为变身后的特性 "Hei An Qin Shi"
-                        pokemon.setAbility('heianqinshi');
-                        // 顺便把基础特性也替换掉，防止被胃液/烦恼种子等技能影响后恢复错特性
+                        // 强制更新特性，利用 true 参数破除一切限制
+                        pokemon.setAbility('heianqinshi', pokemon, true);
                         pokemon.baseAbility = 'heianqinshi' as ID;
-                        
-                        // 【可选】强制在客户端播报新特性，让玩家知道特性变了
-                        // 这里的名字要和你在 abilities.ts 里写的英文名称完全一致
-                        this.add('-ability', pokemon, 'Hei An Qin Shi');
                     }
                 }
             }

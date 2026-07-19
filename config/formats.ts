@@ -187,15 +187,16 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: ['ND AG',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
-			'Arceus-Normal', 'Arceus-Dark', 'Arceus-Ground', 'Calyrex-Ice', 'Chien-Pao', 'Deoxys-Attack', 'Eternatus', 'Giratina-Origin',
+			'Arceus-Normal', 'Arceus-Dark', 'Arceus-Ground', 'Calyrex-Ice', 'Deoxys-Attack', 'Eternatus', 'Giratina-Origin',
 			'Groudon-Primal', 'Ho-Oh', 'Kyogre-Primal', 'Lunala', 'Marshadow', 'Melmetal', 'Mewtwo-Mega-Y', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra',
 			'Salamence-Mega', 'Smeargle', 'Yveltal', 'Zacian-Crowned',
 			// UUBL
-			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Chi-Yu', 'Flutter Mane',
+			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Flutter Mane',
 			'Groudon', 'Kyogre', 'Kyurem-Black', 'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z',
 			// FC
-			'Altaria-Mega-Fantasy', 'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z', 'Barbaracle-Mega','Darmanitan-Fantasy',
-			'Greninja-Mega-Fantasy', 'Delphox-Mega-Fantasy', 'Lucario-Mega-Z', 'Magearna-Mega', 'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy',
+			'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z', 'Barbaracle-Mega','Darmanitan-Fantasy', 'Lucario-Mega-Z',
+			'Greninja-Mega-Fantasy', 'Magearna-Mega', 'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy','Darkrai-Mega-Fantasy','Kartana-Fantasy',
+			'Mewtwo-Fantasy', 'Mewtwo-Mega-X-Fantasy', 'Mewtwo-Mega-Y-Fantasy','Lugia-Fantasy','Xerneas-Fantasy',
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
