@@ -2683,7 +2683,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		flags: {},
 		name: "Zheng Qiang",
 		rating: 3.5,
-		num: 10047,
+		num: 10049,
 		shortDesc: "能力阶级被降低时防御和特防提升2级",
 	},
 	chuanshuodejuren: {
@@ -2713,7 +2713,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		name: "Chuan Shuo De Ju Ren",
 		rating: 5,
-		num: 10049,
+		num: 10050,
 		shortDesc: "受到任何伤害时,损失的HP固定降低等于自己等级一半的数值",
 	},
+	guhun: {
+        onModifyAtkPriority: 5,
+        onModifyAtk(atk) {
+            return this.chainModify(2);
+        },
+        onModifySpAPriority: 5,
+        onModifySpA(spa) {
+            return this.chainModify(2);
+        },
+        flags: {},
+        name: "Gu Hun",
+        rating: 5,
+        num: 10051,
+		shortDesc: "攻击和特攻都会翻倍",
+    },
 };

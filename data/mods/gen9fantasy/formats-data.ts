@@ -7,6 +7,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	marowakalolatotemfantasy: {
 		tier: "AG",
+		abilities: {0: "Gu Hun"},	
 	},
 
 	//定好分级的fantasy宝可梦
