@@ -80,9 +80,34 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Normal",
 		contestType: "Beautiful",
-		desc: "一回合内连续攻击3次。每次攻击有10%的几率随机使目标陷入灼伤、麻痹或冰冻状态。",
+		desc: "一回合内连续攻击3次。每次攻击有10%的几率随机使目标陷入灼伤、麻痹或冰冻状态",
 		shortDesc: "连续攻击3次,每次命中各有10%几率随机灼伤/麻痹/冰冻",
 	},
+	powdersnow: {
+        num: 181,
+        accuracy: 85,
+        basePower: 0,
+        category: "Status",
+        name: "Powder Snow",
+        pp: 15,
+        priority: 0,
+        flags: { protect: 1, reflectable: 1, mirror: 1, metronome: 1 },
+        status: 'fst',
+        secondary: null,
+        target: "normal", // 变为单体目标
+        type: "Ice",
+        zMove: { boost: { spa: 1 } }, // Z效果：特攻上升1阶级↑
+        onTryHit(target) {
+            // 确保对冰属性宝可梦无效
+            if (target.hasType('Ice')) {
+                this.add('-immune', target);
+                return null;
+            }
+        },
+        contestType: "Beautiful",
+		desc: "放出低温的细雪，从而让对手陷入冻伤状态。对冰属性宝可梦无效",
+		shortDesc: "使目标陷入冻伤状态",
+    },
 	punishment: {
 		num: 386,
 		accuracy: 100,

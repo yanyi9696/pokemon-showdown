@@ -9,6 +9,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "AG",
 		abilities: {0: "Gu Hun"},	
 	},
+	typhlosionhisuifantasy: {
+		tier: "AG",
+	},
 
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
