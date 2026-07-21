@@ -2979,13 +2979,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		// 效果2：回合结束时恢复HP
 		onResidual(pokemon) {
-			// 为宝可梦恢复其最大HP的1/10
-			this.heal(pokemon.baseMaxhp / 10);
+			// 为宝可梦恢复其最大HP的1/8
+			this.heal(pokemon.baseMaxhp / 8);
 		},
 		num: 30005,
 		gen: 9,
-		desc: "携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
-		shortDesc: "携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
+		desc: "携带后,回合结束时恢复最大HP的1/8,但物攻和特攻降低20%",
+		shortDesc: "携带后,回合结束时恢复最大HP的1/8,但物攻和特攻降低20%",
 	},
 	fantasyprotector: {
 		name: "Fantasy Protector",
@@ -3014,61 +3014,79 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		shortDesc: "携带后,物防和特防提高20%,但速度会降低至原来的1/2",
 	},
 	fantasyicestone: {
-		name: "Fantasy Ice Stone",
-		spritenum: 693,
-		fling: {
-			basePower: 30,
-		},
-		// 效果 1：将持有者使用的招式中的灼伤效果替换为冻伤（fst）
-		onModifyMove(move) {
-			let changed = false;
+        name: "Fantasy Ice Stone",
+        spritenum: 693,
+        // 投掷效果：威力30，且让目标陷入冻伤(fst)
+        // （注：投掷结算时道具已离手，所以不会被下面的互换逻辑二次影响，会正常造成冻伤）
+        fling: {
+            basePower: 30,
+            status: 'fst',
+        },
+        // 效果 1：无论是招式、特性（如火焰之躯）还是其他途径
+        // 只要是由携带者对目标造成的灼伤/冻伤，都会发生互换
+        onAnySetStatus(status, target, source, effect) {
+            const pokemon = this.effectState.target;
+            
+            // 确保异常状态的来源是携带者，且目标不是携带者自己（比如防止火焰宝珠烧自己变冻伤）
+            if (source !== pokemon || target === pokemon) return;
 
-			// 1. 处理直接造成状态的招式（如：鬼火）
-			if (move.status === "brn") {
-				move.status = "fst" as ID;
-				changed = true;
-			}
+            // 防止状态互换导致的无限循环递归
+            if (pokemon.m.fantasyIceStoneSwapping) return;
 
-			// 2. 处理单数形式的追加效果（兼容性处理）
-			if (move.secondary && move.secondary.status === "brn") {
-				move.secondary.status = "fst" as ID;
-				changed = true;
-			}
-
-			// 3. 处理复数形式的追加效果（如：喷射火焰、大字爆炎）
-			if (move.secondaries) {
-				for (const secondary of move.secondaries) {
-					if (secondary.status === "brn") {
-						secondary.status = "fst" as ID;
-						changed = true;
-					}
-				}
-			}
-
-			if (changed) {
-				this.debug(
-					"Fantasy Ice Stone: 将招式带来的灼伤效果变换为冻伤(FST)"
-				);
-			}
-		},
-		// 效果 2：反伤逻辑保持不变
-		onDamagingHit(damage, target, source, move) {
-			if (source.status === "fst") {
-				this.debug("Fantasy Ice Stone: 冻伤触发额外反伤");
-				this.add(
-					"-activate",
-					target,
-					"item: Fantasy Ice Stone",
-					"[of] " + source
-				);
-				this.damage(source.baseMaxhp / 6, source, target);
-			}
-		},
-		num: 30007,
-		gen: 9,
-		desc: "携带后,使用的招式原本造成灼伤则改为造成冻伤。受到处于冻伤状态的对手攻击时,对手损失最大HP的1/6",
-		shortDesc: "技能造成的灼伤变冻伤,对手在冻伤状态下攻击持有者,损失1/6最大HP",
-	},
+            if (status.id === "brn") {
+                pokemon.m.fantasyIceStoneSwapping = true;
+                this.add('-activate', pokemon, 'item: Fantasy Ice Stone');
+                target.trySetStatus('fst', source, effect);
+                pokemon.m.fantasyIceStoneSwapping = false;
+                return false; // 取消原本的灼伤判定
+            } else if (status.id === "fst") {
+                pokemon.m.fantasyIceStoneSwapping = true;
+                this.add('-activate', pokemon, 'item: Fantasy Ice Stone');
+                target.trySetStatus('brn', source, effect);
+                pokemon.m.fantasyIceStoneSwapping = false;
+                return false; // 取消原本的冻伤判定
+            }
+        },
+        // 效果 2：登场后进入不解冻的冰冻状态
+        onStart(pokemon) {
+            // 只有当前没有异常状态时才能进入冰冻
+            if (!pokemon.status) {
+                pokemon.setStatus('frz', pokemon);
+            }
+        },
+        // 核心逻辑：拦截冰冻的禁止行动判定，允许行动并且阻断系统自带的随机解冻检测
+        onBeforeMovePriority: 1, 
+        onBeforeMove(pokemon) {
+            if (pokemon.status === 'frz') {
+                // 返回 true 强制允许行动
+                return true; 
+            }
+        },
+        // 效果 3：低于最大 HP 的 1/4 时发动，恢复最大 HP 的 1/3 并消耗道具
+        onUpdate(pokemon) {
+            if (pokemon.hp <= pokemon.maxhp / 4 && pokemon.hp > 0) {
+                if (this.heal(pokemon.baseMaxhp / 3)) {
+                    // 消耗道具，会触发常规的消耗提示
+                    pokemon.useItem();
+                    
+                    // 消耗道具后，立刻解冻
+                    if (pokemon.status === 'frz') {
+                        pokemon.cureStatus();
+                    }
+                }
+            }
+        },
+        // 效果 4：被拍落、戏法等强制失去该道具时也会解冻
+        onTakeItem(item, pokemon, source) {
+            if (pokemon.status === 'frz') {
+                pokemon.cureStatus();
+            }
+        },
+        num: 30007,
+        gen: 9,
+        desc: "携带后，佩戴者对其他宝可梦造成的灼伤变冻伤、冻伤变为灼伤;登场后进入不会解冻的冰冻状态但仍可行动;低于最大HP的1/4时发动,恢复最大HP的1/3并消耗该道具,失去该道具将会解冻",
+        shortDesc: "造成的灼伤/冻伤互换;登场进入可行动的冰冻;HP低于1/4时消失并解冻,恢复1/3HP",
+    },
 	fantasylaxincense: {
 		name: "Fantasy Lax Incense",
 		spritenum: 240, // 使用原版悠闲薰香的图标编号
