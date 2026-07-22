@@ -130,7 +130,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	spark: {
 		num: 209,
 		accuracy: 100,
-		basePower: 65,
+		basePower: 40,
 		category: "Physical",
 		name: "Spark",
 		pp: 30,
@@ -923,13 +923,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1, noparentalbond: 1, shooting: 1 },
 		multihit: 2,
+		smartTarget: true,
+		secondary: null,
 		target: "normal",
 		type: "Rock",
 		zMove: { basePower: 185 },
 		maxMove: { basePower: 130 },
 		contestType: "Tough",
-		desc: "攻击目标造成伤害。20%几率令目标的防御降低1级",
-		shortDesc: "攻击目标造成伤害。20%几率令目标的防御降低1级"
+		desc: "连续攻击2次。双打：对两只对手宝可梦分别进行一次攻击",
+		shortDesc: "连续攻击2次。双打：对两只对手宝可梦分别进行一次攻击"
 	},
 	chaopinyaogunpoyinbo: {
 		num: 10010, 
