@@ -12350,6 +12350,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	electivirefantasy: {
 		learnset: {
 			volttackle: ["9M"],
+			spark: ["9M"],
 			suckerpunch: ["9M"],
 			pursuit: ["9M"],
 			obstruct: ["9M"],
@@ -12565,6 +12566,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	ironthornsfantasy: {
 		learnset: {
+			spark: ["9M"],
 			volttackle: ["9M"],
 			zingzap: ["9M"],
 			paraboliccharge: ["9M"],
