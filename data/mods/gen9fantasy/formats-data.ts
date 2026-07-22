@@ -12,6 +12,12 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	typhlosionhisuifantasy: {
 		tier: "AG",
 	},
+	koraidonfantasy: {
+		tier: "Uber",
+	},
+	miraidonfantasy: {
+		tier: "AG",
+	},
 
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {

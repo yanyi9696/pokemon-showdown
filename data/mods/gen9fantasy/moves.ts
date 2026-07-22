@@ -2324,7 +2324,57 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 85 },
 		contestType: "Cute",
-		desc: "使用者在攻击目标后会替换后备宝可梦上场。",
-		shortDesc: "攻击后替换后备宝可梦上场。",
+		desc: "使用者在攻击目标后会替换后备宝可梦上场",
+		shortDesc: "攻击后替换后备宝可梦上场",
 	},
+	liehuomengzhuang: {
+        num: 878,
+        accuracy: 100,
+        basePower: 100,
+        category: "Physical",
+        name: "Lie Huo Meng Zhuang",
+        pp: 5,
+        priority: 0,
+        flags: { contact: 1, protect: 1, mirror: 1 },
+        onBasePower(basePower, source, target, move) {
+            if (target.runEffectiveness(move) > 0) {
+                // Placeholder
+                this.debug(`liehuomengzhuang super effective buff`);
+                return this.chainModify([5461, 4096]);
+            }
+        },
+        secondary: null,
+        target: "normal",
+        type: "Fire",
+		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
+        contestType: "Tough",
+		desc: "招式出现效果绝佳时威力提升33%",
+		shortDesc: "招式出现效果绝佳时威力提升33%",
+    },
+	kejimengchong: {
+        num: 879,
+        accuracy: 100,
+        basePower: 100,
+        category: "Special",
+        name: "Ke Ji Meng Chong",
+        pp: 5,
+        priority: 0,
+        flags: { contact: 1, protect: 1, mirror: 1 },
+        onBasePower(basePower, source, target, move) {
+            if (target.runEffectiveness(move) > 0) {
+                // Placeholder
+                this.debug(`kejimengchong super effective buff`);
+                return this.chainModify([5461, 4096]);
+            }
+        },
+        secondary: null,
+        target: "normal",
+        type: "Steel",
+		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
+        contestType: "Cool",
+		desc: "招式出现效果绝佳时威力提升33%",
+		shortDesc: "招式出现效果绝佳时威力提升33%",
+    },
 };

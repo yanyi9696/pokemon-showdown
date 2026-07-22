@@ -132,6 +132,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: ['ND AG', 'Shedinja', 'Assist', 'Baton Pass',
 			'Arena Trap', 'Moody', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
+			// 在这里添加组合禁用
+			'Koraidon-Fantasy + Orichalcum Pulse',
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
@@ -196,7 +198,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			// FC
 			'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z', 'Barbaracle-Mega','Darmanitan-Fantasy', 'Lucario-Mega-Z',
 			'Greninja-Mega-Fantasy', 'Magearna-Mega', 'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy','Darkrai-Mega-Fantasy','Kartana-Fantasy',
-			'Mewtwo-Fantasy', 'Mewtwo-Mega-X-Fantasy', 'Mewtwo-Mega-Y-Fantasy','Lugia-Fantasy','Xerneas-Fantasy',
+			'Mewtwo-Fantasy', 'Mewtwo-Mega-X-Fantasy', 'Mewtwo-Mega-Y-Fantasy','Lugia-Fantasy','Xerneas-Fantasy','Koraidon-Fantasy','Miraidon-Fantasy',
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
