@@ -1,4 +1,28 @@
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+	recover: {
+		inherit: true,
+		pp: 10,
+	},
+	roost: {
+		inherit: true,
+		pp: 10,
+	},
+	slackoff: {
+		inherit: true,
+		pp: 10,
+	},
+	softboiled: {
+		inherit: true,
+		pp: 10,
+	},
+	milkdrink: {
+		inherit: true,
+		pp: 10,
+	},
+	rest: {
+		inherit: true,
+		pp: 10,
+	},
 	veeveevolley: {
         inherit: true,
         isNonstandard: null,
@@ -23,6 +47,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Cool",
 		desc: "有50%几率使目标的防御下降1级",
 		shortDesc: "有50%几率使目标的防御下降1级",
+	},
+	jumpkick: {
+		num: 26,
+		accuracy: 90,
+		basePower: 130,
+		category: "Physical",
+		isNonstandard: "Past",
+		name: "Jump Kick",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, gravity: 1, metronome: 1 },
+		hasCrashDamage: true,
+		onMoveFail(target, source, move) {
+			this.damage(source.baseMaxhp / 2, source, source, this.dex.conditions.get('Jump Kick'));
+		},
+		secondary: null,
+		target: "normal",
+		type: "Flying",
+		contestType: "Cool",
+		zMove: { basePower: 195 },
+		maxMove: { basePower: 140 },
 	},
 	rockthrow: {
 		num: 88,
@@ -709,6 +754,25 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "self",
 		type: "Fire",
 	},
+	supercellslam: {
+		num: 916,
+		accuracy: 90,
+		basePower: 130,
+		category: "Physical",
+		name: "Supercell Slam",
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		hasCrashDamage: true,
+		onMoveFail(target, source, move) {
+			this.damage(source.baseMaxhp / 2, source, source, this.dex.conditions.get('Supercell Slam'));
+		},
+		secondary: null,
+		target: "normal",
+		type: "Electric",
+		zMove: { basePower: 195 },
+		maxMove: { basePower: 140 },
+	},
  	//以下为自制技能
 	xianxingzhiling: {
 		num: 10001,
@@ -742,7 +806,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Bug",
 		zMove: { boost: { atk: 1 } },
 		contestType: "Clever",
-		desc: "首次使用使自身进入先行指令状态,在相同优先度下将优先出手。处于该状态时再次使用此招式,比较自己的攻击和特攻,令数值相对较高一项提高2级。",
+		desc: "首次使用使自身进入先行指令状态,在相同优先度下将优先出手。处于该状态时再次使用此招式,比较自己的攻击和特攻,令数值相对较高一项提高2级",
 		shortDesc: "首次使用获得先制+0.5;再次使用双攻较高项+2"
 	},
 	fuzhuzhiling: {
