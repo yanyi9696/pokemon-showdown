@@ -3277,60 +3277,103 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	legendplate: {
         name: "Legend Plate",
         spritenum: 8,
-        onModifyTypePriority: 1,
-        onModifyType(move, pokemon, target) {
-            // 只在对目标使用“制裁光砾”时触发判定
-            if (move.id !== 'judgment' || !target) return;
-
-            const types = ['Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel', 'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy'];
-            let bestTypes: string[] = [];
-            let maxEffectiveness = -999;
-
-            // 遍历所有18个属性，寻找对当前目标克制倍数最高的属性
-            for (const t of types) {
-                // 如果目标免疫该属性（如飞行系免疫地面系，或蓄水等特性），直接跳过
-                if (!this.dex.getImmunity(t, target)) continue;
-
-                let effectiveness = 0;
-                for (const targetType of target.getTypes()) {
-                    effectiveness += this.dex.getEffectiveness(t, targetType);
-                }
-
-                // 记录最高克制倍率的属性集合
-                if (effectiveness > maxEffectiveness) {
-                    maxEffectiveness = effectiveness;
-                    bestTypes = [t];
-                } else if (effectiveness === maxEffectiveness) {
-                    bestTypes.push(t);
-                }
-            }
-
-            // 从最高倍率的属性中随机选出一个，如果没有任何有效属性，则默认为一般系
-            const chosenType = bestTypes.length > 0 ? this.sample(bestTypes) : 'Normal';
-
-            // 1. 改变制裁光砾的招式属性
-            move.type = chosenType;
-
-            // 2. 改变阿尔宙斯的自身属性和外观模型
-            if (pokemon.getTypes().join() !== chosenType) {
-                if (!pokemon.setType(chosenType)) return;
-                
-                // 发送底层属性改变提示
-                this.add('-start', pokemon, 'typechange', chosenType, '[from] item: Legend Plate');
-                
-                // 巧妙利用 '-formechange' 协议欺骗客户端：
-                // 这行代码只会让玩家的视觉模型变成对应的 Arceus-Water/Fire 等官方形态，
-                // 但服务器后端的底层数据依然是你自定义的 "Arceus-Legend-Fantasy"，无需写满17个新形态代码。
-                const formeName = chosenType === 'Normal' ? 'Arceus' : 'Arceus-' + chosenType;
-                this.add('-formechange', pokemon, formeName, '[msg]');
-            }
+        fling: {
+            basePower: 90,
         },
-        onTakeItem(item, pokemon, source) {
-            // 防止石板被戏法、掉包等技能换走
-            if ((source && source.baseSpecies.name.includes("Arceus")) || pokemon.baseSpecies.name.includes("Arceus")) {
-                return false;
+		// 防止被拍落、戏法等移除
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 493) || pokemon.baseSpecies.num === 493) {
+				return false;
+			}
+			return true;
+		},
+        onModifyTypePriority: -1, // 确保在招式原本属性结算后覆盖它
+        onModifyType(move, pokemon, target) {
+            // 只有在使用“制裁光砾 (Judgment)”且有目标时才触发
+            if (move.id === 'judgment' && target) {
+                let bestType = 'Normal';
+                let maxEff = -4; // 用于记录最高克制倍率
+                let candidateTypes: string[] = [];
+
+                for (const type of this.dex.types.names()) {
+                    if (type === '???' || type === 'Stellar') continue;
+
+                    // 1. 检查基础属性免疫 (例如: 地面打飞行)
+                    if (!this.dex.getImmunity(type, target)) continue;
+
+                    // 2. 检查天气导致减弱或无效化
+                    const weather = this.field.effectiveWeather();
+                    if (weather === 'desolateland' && type === 'Water') continue; // 终结之地防水
+                    if (weather === 'primordialsea' && type === 'Fire') continue; // 始源之海防火
+
+                    // 3. 检查常见特性导致的属性免疫
+                    const targetAbility = target.getAbility().name;
+                    const immunities: {[k: string]: string[]} = {
+                        'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain'],
+                        'Fire': ['Flash Fire', 'Well-Baked Body'],
+                        'Electric': ['Volt Absorb', 'Lightning Rod', 'Motor Drive'],
+                        'Ground': ['Levitate', 'Earth Eater'],
+                        'Grass': ['Sap Sipper']
+                    };
+                    
+                    if (immunities[type] && immunities[type].includes(targetAbility)) {
+                        // 特殊判定：如果是漂浮特性，但处于击落或重力状态，则地面系依然有效
+                        if (type === 'Ground' && (target.volatiles['smackdown'] || this.field.getPseudoWeather('gravity'))) {
+                            // 保持有效，继续往下走
+                        } else {
+                            continue; // 跳过此属性
+                        }
+                    }
+
+                    // 4. 计算综合克制倍率
+                    let eff = 0;
+                    for (const targetType of target.getTypes()) {
+                        let e = this.dex.getEffectiveness(type, targetType);
+                        // 德尔塔气流 (Delta Stream) 消除飞行系弱点
+                        if (weather === 'deltastream' && targetType === 'Flying' && e > 0) {
+                            e = 0; 
+                        }
+                        eff += e;
+                    }
+
+                    // 特殊判定：神奇守护 (Wonder Guard) 必须效果绝佳
+                    if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
+
+                    // 记录最高克制倍率的属性
+                    if (eff > maxEff) {
+                        maxEff = eff;
+                        candidateTypes = [type];
+                    } else if (eff === maxEff) {
+                        // 如果有多个相同倍率的克制属性，加入候选列表
+                        candidateTypes.push(type);
+                    }
+                }
+
+                // 5. 随机选择一个最高克制倍率的属性
+                if (candidateTypes.length > 0) {
+                    bestType = this.sample(candidateTypes);
+                } else {
+                    bestType = 'Normal'; // 如果因为各种奇怪的原因没有可选属性，保底一般系
+                }
+
+                // === 核心：改变招式与宝可梦状态 ===
+                
+                // 将制裁光砾的属性改为计算出的最优属性
+                move.type = bestType;
+
+                // 如果当前宝可梦属性不是该最优属性，则进行变身
+                if (pokemon.getTypes().join() !== bestType) {
+                    if (pokemon.setType(bestType)) {
+                        // 播报属性改变的信息
+                        this.add('-start', pokemon, 'typechange', bestType, '[from] item: Legend Plate');
+                        
+                        // 客户端模型与外观同步切换（核心魔法）
+                        // 这会命令客户端直接调用官方存在的 Arceus-X 模型，而不需要你额外手写 pokedex 数据
+                        const formeName = bestType === 'Normal' ? 'Arceus' : 'Arceus-' + bestType;
+                        this.add('-formechange', pokemon, formeName, '[msg]');
+                    }
+                }
             }
-            return true;
         },
         num: 30012,
         gen: 9,
