@@ -3277,66 +3277,63 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	legendplate: {
         name: "Legend Plate",
         spritenum: 8,
-        onTakeItem: false, // 强制绑定，不可被拍落或戏法交换
-        forcedForme: "Arceus-Legend-Fantasy", // 强制对应的形态
-        
-        // 步骤 1: 改变招式属性 (在计算伤害前的最早阶段)
+        onModifyTypePriority: 1,
         onModifyType(move, pokemon, target) {
-            if (move.id === 'judgment' && target) {
-                // 定义需要遍历的基础18种属性
-                const types = [
-                    'Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel', 
-                    'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy'
-                ];
-                
-                let bestType = 'Normal';
-                let maxMod = -3; // 记录最大的克制倍率 (Showdown中通常最大为2，最小为-2)
-                
-                for (const type of types) {
-                    // 如果对手对该属性免疫（例如幽灵系对一般系），则直接跳过
-                    if (!this.dex.getImmunity(type, target)) continue; 
-                    
-                    // 获取属性克制倍率
-                    let mod = this.dex.getEffectiveness(type, target);
-                    if (mod > maxMod) {
-                        maxMod = mod;
-                        bestType = type;
-                    }
+            // 只在对目标使用“制裁光砾”时触发判定
+            if (move.id !== 'judgment' || !target) return;
+
+            const types = ['Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel', 'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark', 'Fairy'];
+            let bestTypes: string[] = [];
+            let maxEffectiveness = -999;
+
+            // 遍历所有18个属性，寻找对当前目标克制倍数最高的属性
+            for (const t of types) {
+                // 如果目标免疫该属性（如飞行系免疫地面系，或蓄水等特性），直接跳过
+                if (!this.dex.getImmunity(t, target)) continue;
+
+                let effectiveness = 0;
+                for (const targetType of target.getTypes()) {
+                    effectiveness += this.dex.getEffectiveness(t, targetType);
                 }
+
+                // 记录最高克制倍率的属性集合
+                if (effectiveness > maxEffectiveness) {
+                    maxEffectiveness = effectiveness;
+                    bestTypes = [t];
+                } else if (effectiveness === maxEffectiveness) {
+                    bestTypes.push(t);
+                }
+            }
+
+            // 从最高倍率的属性中随机选出一个，如果没有任何有效属性，则默认为一般系
+            const chosenType = bestTypes.length > 0 ? this.sample(bestTypes) : 'Normal';
+
+            // 1. 改变制裁光砾的招式属性
+            move.type = chosenType;
+
+            // 2. 改变阿尔宙斯的自身属性和外观模型
+            if (pokemon.getTypes().join() !== chosenType) {
+                if (!pokemon.setType(chosenType)) return;
                 
-                // 将制裁光砾的属性修改为最高克制的属性
-                move.type = bestType; 
+                // 发送底层属性改变提示
+                this.add('-start', pokemon, 'typechange', chosenType, '[from] item: Legend Plate');
+                
+                // 巧妙利用 '-formechange' 协议欺骗客户端：
+                // 这行代码只会让玩家的视觉模型变成对应的 Arceus-Water/Fire 等官方形态，
+                // 但服务器后端的底层数据依然是你自定义的 "Arceus-Legend-Fantasy"，无需写满17个新形态代码。
+                const formeName = chosenType === 'Normal' ? 'Arceus' : 'Arceus-' + chosenType;
+                this.add('-formechange', pokemon, formeName, '[msg]');
             }
         },
-
-        // 步骤 2: 参考“变化自在”，改变自身属性并同步外观 (招式命中前)
-        onPrepareHit(source, target, move) {
-            if (move.id === 'judgment' && target) {
-                const bestType = move.type; // 这里的属性已经是 onModifyType 计算好并赋予招式的了
-                
-                if (bestType && bestType !== '???' && source.getTypes().join() !== bestType) {
-                    // 修改 Pokemon 在后端的真实属性
-                    if (!source.setType(bestType)) return;
-                    
-                    // 在战斗日志中输出属性改变的提示
-                    this.add('-start', source, 'typechange', bestType, '[from] item: Legend Plate');
-                    
-                    // 【核心】仅在客户端触发外观形态更新，不需要注册全新的 Pokedex 条目
-                    // 如果是最优解是一般系，则调用无后缀的 Arceus，否则调用 Arceus-属性
-                    const formeName = bestType === 'Normal' ? 'Arceus' : 'Arceus-' + bestType;
-                    
-                    // 拼接 details 字符串 (包含等级、性别、闪光等现有状态)，发送给客户端
-                    const details = formeName + 
-                        (source.level === 100 ? '' : ', L' + source.level) + 
-                        (source.gender === '' ? '' : ', ' + source.gender) + 
-                        (source.set.shiny ? ', shiny' : '');
-                        
-                    this.add('detailschange', source, details);
-                }
+        onTakeItem(item, pokemon, source) {
+            // 防止石板被戏法、掉包等技能换走
+            if ((source && source.baseSpecies.name.includes("Arceus")) || pokemon.baseSpecies.name.includes("Arceus")) {
+                return false;
             }
+            return true;
         },
         num: 30012,
         gen: 9,
-        desc: "在对战中使出制裁光砾前，将招式与自身属性转换为克制对手的属性，并同步改变外观。",
+        desc: "在对战中使出制裁光砾前,将形态与制裁光砾转换为克制对手的属性",
     },
 };
