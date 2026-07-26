@@ -3287,13 +3287,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
-        onModifyTypePriority: -1,
-        onModifyType(move, pokemon, target) {
+        // 【关键修复】放弃静态的 onModifyType，改用主动的 onModifyMove
+        onModifyMove(move, pokemon, target) {
             if (move.id === 'judgment' && target) {
                 let bestType = 'Normal';
                 let maxEff = -4; 
                 let candidateTypes: string[] = [];
 
+                // 核心逻辑：遍历 18 种属性，寻找最高克制倍率
                 for (const type of this.dex.types.names()) {
                     if (type === '???' || type === 'Stellar') continue;
                     if (!this.dex.getImmunity(type, target)) continue;
@@ -3344,13 +3345,16 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     bestType = 'Normal'; 
                 }
                 
+                // 1. 改变当前制裁光砾的属性
                 move.type = bestType;
 
-                // 因为去除了 Multitype 拦截，现在 setType 会成功触发了！
+                // 2. 模仿“变化自在”的逻辑，在出招瞬间改变自身属性并触发外观变化
                 if (pokemon.getTypes().join() !== bestType) {
                     if (pokemon.setType(bestType)) {
+                        // 【视觉效果一】在公屏播报：阿尔宙斯 的属性变成了 XXX！
                         this.add('-start', pokemon, 'typechange', bestType, '[from] item: Legend Plate');
                         
+                        // 【视觉效果二】客户端模型立刻同步切换为对应属性
                         const formeName = bestType === 'Normal' ? 'Arceus' : 'Arceus-' + bestType;
                         this.add('-formechange', pokemon, formeName, '[msg]');
                     }
