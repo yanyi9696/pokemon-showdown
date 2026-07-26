@@ -2731,4 +2731,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         num: 10051,
 		shortDesc: "攻击和特攻都会翻倍",
     },
+	legendarypower: {
+        // 完美继承多属性的免疫特性交换、扮演、特性互换等 flag
+        flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
+        name: "Legendary Power",
+        rating: 4,
+        num: 10052,
+        shortDesc: "自己的属性会根据传说石板而自由变化",
+    },
 };

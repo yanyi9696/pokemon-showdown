@@ -3287,26 +3287,21 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
-        onModifyTypePriority: -1, // 确保在招式原本属性结算后覆盖它
+        onModifyTypePriority: -1,
         onModifyType(move, pokemon, target) {
-            // 只有在使用“制裁光砾 (Judgment)”且有目标时才触发
             if (move.id === 'judgment' && target) {
                 let bestType = 'Normal';
-                let maxEff = -4; // 用于记录最高克制倍率
+                let maxEff = -4; 
                 let candidateTypes: string[] = [];
 
                 for (const type of this.dex.types.names()) {
                     if (type === '???' || type === 'Stellar') continue;
-
-                    // 1. 检查基础属性免疫 (例如: 地面打飞行)
                     if (!this.dex.getImmunity(type, target)) continue;
 
-                    // 2. 检查天气导致减弱或无效化
                     const weather = this.field.effectiveWeather();
-                    if (weather === 'desolateland' && type === 'Water') continue; // 终结之地防水
-                    if (weather === 'primordialsea' && type === 'Fire') continue; // 始源之海防火
+                    if (weather === 'desolateland' && type === 'Water') continue; 
+                    if (weather === 'primordialsea' && type === 'Fire') continue; 
 
-                    // 3. 检查常见特性导致的属性免疫
                     const targetAbility = target.getAbility().name;
                     const immunities: {[k: string]: string[]} = {
                         'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain'],
@@ -3317,58 +3312,45 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     };
                     
                     if (immunities[type] && immunities[type].includes(targetAbility)) {
-                        // 特殊判定：如果是漂浮特性，但处于击落或重力状态，则地面系依然有效
                         if (type === 'Ground' && (target.volatiles['smackdown'] || this.field.getPseudoWeather('gravity'))) {
-                            // 保持有效，继续往下走
+                            // 落地状态，地面系有效
                         } else {
-                            continue; // 跳过此属性
+                            continue; 
                         }
                     }
 
-                    // 4. 计算综合克制倍率
                     let eff = 0;
                     for (const targetType of target.getTypes()) {
                         let e = this.dex.getEffectiveness(type, targetType);
-                        // 德尔塔气流 (Delta Stream) 消除飞行系弱点
                         if (weather === 'deltastream' && targetType === 'Flying' && e > 0) {
                             e = 0; 
                         }
                         eff += e;
                     }
 
-                    // 特殊判定：神奇守护 (Wonder Guard) 必须效果绝佳
                     if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
 
-                    // 记录最高克制倍率的属性
                     if (eff > maxEff) {
                         maxEff = eff;
                         candidateTypes = [type];
                     } else if (eff === maxEff) {
-                        // 如果有多个相同倍率的克制属性，加入候选列表
                         candidateTypes.push(type);
                     }
                 }
 
-                // 5. 随机选择一个最高克制倍率的属性
                 if (candidateTypes.length > 0) {
                     bestType = this.sample(candidateTypes);
                 } else {
-                    bestType = 'Normal'; // 如果因为各种奇怪的原因没有可选属性，保底一般系
+                    bestType = 'Normal'; 
                 }
-
-                // === 核心：改变招式与宝可梦状态 ===
                 
-                // 将制裁光砾的属性改为计算出的最优属性
                 move.type = bestType;
 
-                // 如果当前宝可梦属性不是该最优属性，则进行变身
+                // 因为去除了 Multitype 拦截，现在 setType 会成功触发了！
                 if (pokemon.getTypes().join() !== bestType) {
                     if (pokemon.setType(bestType)) {
-                        // 播报属性改变的信息
                         this.add('-start', pokemon, 'typechange', bestType, '[from] item: Legend Plate');
                         
-                        // 客户端模型与外观同步切换（核心魔法）
-                        // 这会命令客户端直接调用官方存在的 Arceus-X 模型，而不需要你额外手写 pokedex 数据
                         const formeName = bestType === 'Normal' ? 'Arceus' : 'Arceus-' + bestType;
                         this.add('-formechange', pokemon, formeName, '[msg]');
                     }

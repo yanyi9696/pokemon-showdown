@@ -1990,7 +1990,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		types: ["???"],
 		gender: "N",
 		baseStats: { hp: 120, atk: 120, def: 120, spa: 120, spd: 120, spe: 120 },
-		abilities: { 0: "Multitype" },
+		abilities: { 0: "Legendary Power" },
 		heightm: 3.2,
 		weightkg: 320,
 		color: "White",
