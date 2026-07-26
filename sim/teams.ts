@@ -193,14 +193,31 @@ export const Teams = new class Teams {
 				buf += '|';
 			}
 
-			if (set.pokeball || set.hpType || set.gigantamax ||
-				(set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10) || set.teraType) {
-				buf += `,${set.hpType || ''}`;
-				buf += `,${this.packName(set.pokeball || '')}`;
-				buf += `,${set.gigantamax ? 'G' : ''}`;
-				buf += `,${set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10 ? set.dynamaxLevel : ''}`;
-				buf += `,${set.teraType || ''}`;
-			}
+			// 【核心修复开始】
+            // 在判断是否需要写入额外数据前，先计算出“实际应生效的太晶属性”
+            let effectiveTeraType = set.teraType || '';
+            
+            if (!effectiveTeraType || effectiveTeraType === '???') {
+                const speciesData = Dex.species.get(set.species);
+                const firstType = (speciesData && speciesData.types && speciesData.types.length > 0) ? speciesData.types[0] : 'Normal';
+                
+                // 如果第一属性是 '???'，强制将打包数据写为 'Normal'
+                if (firstType === '???') {
+                    effectiveTeraType = 'Normal';
+                }
+            }
+
+            // 注意：这里的 if 条件把 set.teraType 换成了 effectiveTeraType
+            if (set.pokeball || set.hpType || set.gigantamax ||
+                (set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10) || effectiveTeraType) {
+                buf += `,${set.hpType || ''}`;
+                buf += `,${this.packName(set.pokeball || '')}`;
+                buf += `,${set.gigantamax ? 'G' : ''}`;
+                buf += `,${set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10 ? set.dynamaxLevel : ''}`;
+                // 把原本的 (set.teraType || '') 替换为计算好的 effectiveTeraType
+                buf += `,${effectiveTeraType}`;
+            }
+            // 【核心修复结束】
 		}
 
 		return buf;
@@ -407,25 +424,8 @@ export const Teams = new class Teams {
 			out += `Gigantamax: Yes  \n`;
 		}
 		if (set.teraType) {
-		let currentTera = set.teraType;
-		
-		// 获取宝可梦数据及第一属性
-		const speciesData = Dex.species.get(set.species);
-		const firstType = (speciesData && speciesData.types && speciesData.types.length > 0) ? speciesData.types[0] : 'Normal';
-
-		// 修复 1：不仅仅判断 '???'，还要拦截 currentTera 为空（未设置或被系统省略）的情况
-		if (!currentTera || currentTera === '???') {
-			
-			// 如果第一属性也是 '???'，默认赋值为 Normal，否则使用第一属性
-			currentTera = (firstType === '???') ? 'Normal' : firstType;
-			
-			// 修复 2：【最关键的一步】强制将修正后的太晶属性写回 set 对象！
-			// 这样能够防止后续的 Validator 读到空值而自动回退到 '???'
-			set.teraType = currentTera;
-		}
-		
-		out += `Tera Type: ${currentTera}  \n`;
-	}
+        out += `Tera Type: ${set.teraType}  \n`;
+    }
 
 		// stats
 		if (!hideStats) {
