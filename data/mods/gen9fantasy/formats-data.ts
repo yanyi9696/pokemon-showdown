@@ -3,20 +3,23 @@ import {FantasySpeciesFormatsData} from './types';
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
 	marowakalolafantasy: {
-		tier: "AG",
+		tier: "RU",
 	},
 	marowakalolatotemfantasy: {
-		tier: "AG",
+		tier: "OU",
 		abilities: {0: "Gu Hun"},	
 	},
 	typhlosionhisuifantasy: {
-		tier: "AG",
+		tier: "OU",
 	},
 	koraidonfantasy: {
 		tier: "Uber",
 	},
 	miraidonfantasy: {
-		tier: "AG",
+		tier: "Uber",
+	},
+	arceuslegendfantasy: {
+		tier: "Uber",
 	},
 
 	//定好分级的fantasy宝可梦
