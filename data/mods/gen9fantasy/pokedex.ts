@@ -1984,6 +1984,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	arceuslegendfantasy: {
 		num: 493,
 		name: "Arceus-Legend-Fantasy",
+		baseSpecies: "Arceus",
 		baseForme: "Normal",
 		forme: "Fantasy",
 		types: ["???"],
