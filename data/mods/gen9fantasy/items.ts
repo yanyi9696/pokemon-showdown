@@ -3296,6 +3296,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                 for (const type of this.dex.types.names()) {
                     if (type === '???' || type === 'Stellar') continue;
+                    // 引擎自带的无效判定（比如一般打幽灵，地面打飞行）
                     if (!this.dex.getImmunity(type, target)) continue;
 
                     const weather = this.field.effectiveWeather();
@@ -3303,12 +3304,17 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     if (weather === 'primordialsea' && type === 'Fire') continue; 
 
                     const targetAbility = target.getAbility().name;
+                    
+                    // 【扩展字典】将你的私服自定义免疫特性全部加入进去
                     const immunities: {[k: string]: string[]} = {
-                        'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain'],
+                        'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'], // 增加了 Water Compaction
                         'Fire': ['Flash Fire', 'Well-Baked Body'],
                         'Electric': ['Volt Absorb', 'Lightning Rod', 'Motor Drive'],
                         'Ground': ['Levitate', 'Earth Eater'],
-                        'Grass': ['Sap Sipper']
+                        'Grass': ['Sap Sipper'],
+                        'Bug': ['Shi Chong'],          // 增加了 食虫 免疫
+                        'Poison': ['Tun Du'],          // 增加了 吞毒 免疫
+                        'Steel': ['Gang Tie Ju He Wu'] // 增加了 钢铁聚合物 免疫
                     };
                     
                     if (immunities[type] && immunities[type].includes(targetAbility)) {
@@ -3319,6 +3325,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                         }
                     }
 
+                    // 计算基础的属性克制倍率
                     let eff = 0;
                     for (const targetType of target.getTypes()) {
                         let e = this.dex.getEffectiveness(type, targetType);
@@ -3326,6 +3333,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                             e = 0; 
                         }
                         eff += e;
+                    }
+
+                    // 【新增逻辑】处理“渊海洋流”在雨天的特殊效果
+                    // 如果对手是渊海洋流特性，且当前天气为下雨或始源之海
+                    if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
+                        if (eff > 0) {
+                            eff = 0; // 效果绝佳(eff > 0)会被直接抹平为普通的 1倍(eff = 0)
+                        }
                     }
 
                     if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
@@ -3346,8 +3361,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 if (pokemon.getTypes().join() !== bestType) {
                     pokemon.setType(bestType);
                     
-                    // 【关键新增】完美复刻“变换自如”！
-                    // 发送原生的静默 typechange 协议，这会让客户端底层自动把血条下的 ??? 替换成新属性！
+                    // 发送原生的静默 typechange 协议，这会让客户端底层自动把血条下的 ??? 替换成新属性
                     this.add('-start', pokemon, 'typechange', bestType, '[silent]');
                     
                     // 继续发送我们的自定义协议，触发耀眼的究极爆发动画和模型替换
