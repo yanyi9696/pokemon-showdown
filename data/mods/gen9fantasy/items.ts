@@ -3342,10 +3342,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     bestType = this.sample(candidateTypes);
                 }
 
-                // 【核心】修改服务端内在属性，并向客户端发送自定义的变身指令
+                // 【核心】修改服务端内在属性，并向客户端发送指令
                 if (pokemon.getTypes().join() !== bestType) {
                     pokemon.setType(bestType);
-                    // 完美调用刚才在客户端写好的 protocol
+                    
+                    // 【关键新增】完美复刻“变换自如”！
+                    // 发送原生的静默 typechange 协议，这会让客户端底层自动把血条下的 ??? 替换成新属性！
+                    this.add('-start', pokemon, 'typechange', bestType, '[silent]');
+                    
+                    // 继续发送我们的自定义协议，触发耀眼的究极爆发动画和模型替换
                     this.add('-legendplate', pokemon, bestType);
                 }
                 
