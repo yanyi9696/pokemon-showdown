@@ -3287,6 +3287,15 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             }
             return true;
         },
+		onModifyType(move, pokemon) {
+            if (move.id === 'judgment') {
+                const currentTypes = pokemon.getTypes();
+                // 如果当前属性不再是 ???，就把面板上的招式改成对应属性
+                if (currentTypes.length > 0 && currentTypes[0] !== '???') {
+                    move.type = currentTypes[0];
+                }
+            }
+        },
         // 在出招时计算克制，并发送自定义协议改变外观
         onModifyMove(move, pokemon, target) {
             if (move.id === 'judgment' && target && pokemon.species.name === 'Arceus-Legend-Fantasy') {
