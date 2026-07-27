@@ -3280,21 +3280,20 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         fling: {
             basePower: 90,
         },
-		// 防止被拍落、戏法等移除
-		onTakeItem(item, pokemon, source) {
-			if ((source && source.baseSpecies.num === 493) || pokemon.baseSpecies.num === 493) {
-				return false;
-			}
-			return true;
-		},
-        // 【关键修复】放弃静态的 onModifyType，改用主动的 onModifyMove
+        // 防止被拍落、戏法等移除
+        onTakeItem(item, pokemon, source) {
+            if ((source && source.baseSpecies.num === 493) || pokemon.baseSpecies.num === 493) {
+                return false;
+            }
+            return true;
+        },
+        // 在出招时计算克制，并发送自定义协议改变外观
         onModifyMove(move, pokemon, target) {
-            if (move.id === 'judgment' && target) {
+            if (move.id === 'judgment' && target && pokemon.species.name === 'Arceus-Legend-Fantasy') {
                 let bestType = 'Normal';
                 let maxEff = -4; 
                 let candidateTypes: string[] = [];
 
-                // 核心逻辑：遍历 18 种属性，寻找最高克制倍率
                 for (const type of this.dex.types.names()) {
                     if (type === '???' || type === 'Stellar') continue;
                     if (!this.dex.getImmunity(type, target)) continue;
@@ -3341,24 +3340,17 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                 if (candidateTypes.length > 0) {
                     bestType = this.sample(candidateTypes);
-                } else {
-                    bestType = 'Normal'; 
+                }
+
+                // 【核心】修改服务端内在属性，并向客户端发送自定义的变身指令
+                if (pokemon.getTypes().join() !== bestType) {
+                    pokemon.setType(bestType);
+                    // 完美调用刚才在客户端写好的 protocol
+                    this.add('-legendplate', pokemon, bestType);
                 }
                 
-                // 1. 改变当前制裁光砾的属性
+                // 强制修正招式属性，覆盖掉原有的判断
                 move.type = bestType;
-
-                // 2. 模仿“变化自在”的逻辑，在出招瞬间改变自身属性并触发外观变化
-                if (pokemon.getTypes().join() !== bestType) {
-                    if (pokemon.setType(bestType)) {
-                        // 【视觉效果一】在公屏播报：阿尔宙斯 的属性变成了 XXX！
-                        this.add('-start', pokemon, 'typechange', bestType, '[from] item: Legend Plate');
-                        
-                        // 【视觉效果二】客户端模型立刻同步切换为对应属性
-                        const formeName = bestType === 'Normal' ? 'Arceus' : 'Arceus-' + bestType;
-                        this.add('-formechange', pokemon, formeName, '[msg]');
-                    }
-                }
             }
         },
         num: 30012,
