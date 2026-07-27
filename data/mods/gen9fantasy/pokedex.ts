@@ -1579,7 +1579,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Garchomp",
 		forme: "Mega-Z",
 		types: ["Flying", "Ground"],
-		baseStats: { hp: 108, atk: 150, def: 100, spa: 100, spd: 100, spe: 142 },
+		baseStats: { hp: 108, atk: 130, def: 95, spa: 130, spd: 85, spe: 152 },
 		abilities: { 0: "Sharpness" },
 		heightm: 1.9,
 		weightkg: 99,

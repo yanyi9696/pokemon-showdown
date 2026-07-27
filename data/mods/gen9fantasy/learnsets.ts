@@ -4948,6 +4948,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	garchompfantasy: {
 		learnset: {
 			dragondance: ["9M"],
+			airslash: ["9M"],
 			//幻想增添技能
 			nastyplot: ["9M"],
 			vacuumwave: ["9M"],
@@ -5058,6 +5059,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	garchompmegafantasy: {
 		learnset: {
 			dragondance: ["9M"],
+			airslash: ["9M"],
 			//幻想增添技能
 			nastyplot: ["9M"],
 			vacuumwave: ["9M"],
@@ -5168,6 +5170,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	garchompmegazfantasy: {
 		learnset: {
 			dragondance: ["9M"],
+			airslash: ["9M"],
 			//幻想增添技能
 			nastyplot: ["9M"],
 			vacuumwave: ["9M"],
