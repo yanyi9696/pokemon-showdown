@@ -212,7 +212,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	marowak: {
 		inherit: true,
 		otherFormes: ["Marowak-Alola","Marowak-Alola-Fantasy", "Marowak-Alola-Totem", "Marowak-Alola-Totem-Fantasy"],
-		formeOrder: ["Marowak", "Marowak-Alola", "Marowak-Alola-Totem"],
+		formeOrder: ["Marowak", "Marowak-Alola", "Marowak-Alola-Fantasy", "Marowak-Alola-Totem", "Marowak-Alola-Totem-Fantasy"],
 	},
 	marowakalolafantasy: {
 		num: 105,
@@ -3006,8 +3006,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	lurantis: {
 		inherit: true,
-		otherFormes: ["Lurantis-Fantasy", "Lurantis-Totem"],
-		formeOrder: ["Lurantis", "Lurantis-Fantasy", "Lurantis-Totem"],
+		otherFormes: ["Lurantis-Fantasy", "Lurantis-Totem", "Lurantis-Totem-Fantasy"],
+		formeOrder: ["Lurantis", "Lurantis-Fantasy", "Lurantis-Totem", "Lurantis-Totem-Fantasy"],
 	},
 	lurantisfantasy: {
 		num: 754,
@@ -3024,6 +3024,22 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		evoLevel: 34,
 		evoCondition: "during the day",
 		eggGroups: ["Grass"],
+	},
+	lurantistotemfantasy: {
+		num: 754,
+		name: "Lurantis-Totem-Fantasy",
+		baseSpecies: "Lurantis",
+		forme: "Totem",
+		types: ["Grass", "Flying"],
+		baseStats: { hp: 70, atk: 105, def: 90, spa: 125, spd: 90, spe: 110 },
+		abilities: { 0: "Wei Chong Ni Tai" },
+		heightm: 1.5,
+		weightkg: 58,
+		color: "Pink",
+		eggGroups: ["Grass"],
+		requiredItem: "Grassium Z",
+		requiredForme: "Lurantis-Fantasy",
+		battleOnly: "Lurantis-Fantasy",
 	},
 	salazzle: {
 		inherit: true,

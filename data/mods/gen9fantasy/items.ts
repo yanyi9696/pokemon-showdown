@@ -15,6 +15,21 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             // }
         }
     } as any,
+	grassiumz: {
+        inherit: true, // 继承原火Z的所有属性
+        // 新增：气场爆发字典，支持多个宝可梦携带同一个Z纯晶产生不同爆发
+        auraBursts: {
+            "Lurantis-Fantasy": {
+                burstForme: "Lurantis-Totem-Fantasy", 
+                condition: "auraburstspe", // 对应速度提升的气场
+            },
+            // 未来如果有其他宝可梦，比如某只火系宝可梦携带火Z加攻击，可以像下面这样直接加：
+            // "Charizard-Fantasy": {
+            //     burstForme: "Charizard-Totem-Fantasy",
+            //     condition: "auraburstatk", 
+            // }
+        }
+    } as any,
 
 	//原版道具
 	berserkgene: {

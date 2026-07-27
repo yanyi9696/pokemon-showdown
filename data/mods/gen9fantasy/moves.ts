@@ -31,6 +31,46 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	    inherit: true,
         isNonstandard: null,
 	},
+	razorwind: {
+        num: 13,
+        accuracy: 100,
+        basePower: 100,
+        category: "Special",
+        name: "Razor Wind",
+        pp: 10,
+        priority: 0,
+        flags: { allyanim: 1, metronome: 1, futuremove: 1, slicing: 1 },
+        ignoreImmunity: true,
+        onTry(source, target) {
+            if (!target.side.addSlotCondition(target, 'futuremove')) return false;
+            Object.assign(target.side.slotConditions[target.position]['futuremove'], {
+                move: 'razorwind',
+                source,
+                moveData: {
+                    id: 'razorwind',
+                    name: "Razor Wind",
+                    accuracy: 100,
+                    basePower: 100,
+                    category: "Special",
+                    priority: 0,
+                    flags: { allyanim: 1, metronome: 1, futuremove: 1 },
+                    ignoreImmunity: false, // 实际砸下来的时候会正常计算属性免疫（如对地面系无效...不过飞行系没有无效盲点）
+                    effectType: 'Move',
+                    type: 'Flying', // 【修改】结算属性改为飞行系
+                },
+            });
+            this.add('-start', source, 'move: Razor Wind');
+            return this.NOT_FAIL;
+        },
+        secondary: null,
+        target: "normal",
+        type: "Flying",
+        contestType: "Cool",
+		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
+   		desc: "在使用招式2回合后,向对手发送一团风之刃进行攻击",
+		shortDesc: "使用该招式后,两回合后触发攻击效果",
+	},
 	cut: {
 		num: 15,
 		accuracy: 95,
@@ -45,6 +85,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Steel",
 		contestType: "Cool",
+		zMove: { basePower: 140 },
+		maxMove: { basePower: 130 },
 		desc: "有50%几率使目标的防御下降1级",
 		shortDesc: "有50%几率使目标的防御下降1级",
 	},

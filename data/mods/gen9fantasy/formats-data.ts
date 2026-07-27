@@ -21,6 +21,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	arceuslegendfantasy: {
 		tier: "Uber",
 	},
+	lurantistotemfantasy: {
+		tier: "OU",
+	},
 
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
