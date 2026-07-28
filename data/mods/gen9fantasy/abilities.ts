@@ -2725,11 +2725,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         onModifySpA(spa) {
             return this.chainModify(2);
         },
+        onAfterMoveSecondarySelf(source, target, move) {
+            if (source && source !== target && move && move.category !== 'Status' && !source.forceSwitchFlag) {
+                this.damage(source.baseMaxhp / 10, source, source, this.effect);
+            }
+        },
         flags: {},
         name: "Gu Hun",
         rating: 5,
         num: 10051,
-		shortDesc: "攻击和特攻都会翻倍",
+        shortDesc: "攻击和特攻翻倍;攻击招式命中后损失1/10最大HP",
     },
 	legendarypower: {
         // 完美继承多属性的免疫特性交换、扮演、特性互换等 flag
