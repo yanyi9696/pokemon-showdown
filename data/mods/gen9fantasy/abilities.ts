@@ -2717,24 +2717,24 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "受到任何伤害时,损失的HP固定降低等于自己等级一半的数值",
 	},
 	guhun: {
-        onModifyAtkPriority: 5,
-        onModifyAtk(atk) {
-            return this.chainModify(2);
-        },
-        onModifySpAPriority: 5,
-        onModifySpA(spa) {
-            return this.chainModify(2);
-        },
-        onAfterMoveSecondarySelf(source, target, move) {
-            if (source && source !== target && move && move.category !== 'Status' && !source.forceSwitchFlag) {
-                this.damage(source.baseMaxhp / 10, source, source, this.effect);
-            }
-        },
-        flags: {},
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk) {
+			return this.chainModify(2);
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(spa) {
+			return this.chainModify(2);
+		},
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon);
+		},
+		flags: {},
         name: "Gu Hun",
         rating: 5,
         num: 10051,
-        shortDesc: "攻击和特攻翻倍;攻击招式命中后损失1/10最大HP",
+        shortDesc: "攻击和特攻翻倍,回合结束时损失1/8最大HP",
     },
 	legendarypower: {
         // 完美继承多属性的免疫特性交换、扮演、特性互换等 flag
