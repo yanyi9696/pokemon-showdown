@@ -2,28 +2,6 @@ import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	//还未定分级的宝可梦
-	marowakalolafantasy: {
-		tier: "RU",
-	},
-	marowakalolatotemfantasy: {
-		tier: "OU",
-		abilities: {0: "Gu Hun"},	
-	},
-	typhlosionhisuifantasy: {
-		tier: "OU",
-	},
-	koraidonfantasy: {
-		tier: "Uber",
-	},
-	miraidonfantasy: {
-		tier: "Uber",
-	},
-	arceuslegendfantasy: {
-		tier: "Uber",
-	},
-	lurantistotemfantasy: {
-		tier: "OU",
-	},
 
 	//定好分级的fantasy宝可梦
 	cherrimsunshinefantasy: {
@@ -38,6 +16,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	shadowlugiafantasy: {
 		tier: "Illegal",
 		abilities: {0: "Hei An Qin Shi"},		
+	},
+	arceuslegendfantasy: {
+		tier: "Uber",
 	},
 	darkraimegafantasy: {
 		tier: "Uber",
@@ -54,6 +35,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 	},
 	kartanafantasy: {
+		tier: "Uber",
+	},
+	koraidonfantasy: {
 		tier: "Uber",
 	},
 	lugiafantasy: {
@@ -78,7 +62,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "Uber",
 		abilities: {0: "Ji Zhi Neng"},	
 	},
+	miraidonfantasy: {
+		tier: "Uber",
+	},
 	regigigasfantasy: {
+		tier: "Uber",
+	},
+	tapukokofantasy: {
 		tier: "Uber",
 	},
 	xerneasfantasy: {
@@ -177,6 +167,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Sand Stream"},	
 	},
 	suicunefantasy: {
+		tier: "(Uber)",
+	},
+	tapulelefantasy: {
 		tier: "(Uber)",
 	},
 	toxtricitygmegafantasy: {
@@ -289,8 +282,16 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Pixilate"},	
 	},
+	lurantistotemfantasy: {
+		tier: "OU",
+		abilities: {0: "Wei Chong Ni Tai" },
+	},
 	magnezonefantasy: {
 		tier: "OU",
+	},
+	marowakalolatotemfantasy: {
+		tier: "OU",
+		abilities: {0: "Gu Hun"},	
 	},
 	mamoswinefantasy: {
 		tier: "OU",
@@ -403,6 +404,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Swift Swim"},		
 	},
+	tapubulufantasy: {
+		tier: "OU",
+	},
 	tapufinifantasy: {
 		tier: "OU",
 	},
@@ -410,6 +414,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	toxtricitylowkeyfantasy: {
+		tier: "OU",
+	},
+	typhlosionhisuifantasy: {
 		tier: "OU",
 	},
 	urshifufantasy: {
@@ -661,6 +668,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	incineroarfantasy: {
+		tier: "RU",
+	},
+	marowakalolafantasy: {
 		tier: "RU",
 	},
 	marshtompfantasy: {
