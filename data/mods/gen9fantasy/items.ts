@@ -2567,11 +2567,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	slowbrogalarnite: {
         name: "Slowbrogalarnite",
         spritenum: 519,
-        // 这里填入伽勒尔呆壳兽mega后的形态名（包括幻想形态）
-        megaStone: ["Slowbro-Galar-Mega", "Slowbro-Galar-Mega-Fantasy"], 
-        // 这里填入可以进行mega进化的基础形态名
-        megaEvolves: ["Slowbro-Galar", "Slowbro-Galar-Fantasy"],
-        itemUser: ["Slowbro-Galar", "Slowbro-Galar-Fantasy"],
+        megaStone: ["Slowbro-Galar-Mega-Fantasy"], 
+        megaEvolves: ["Slowbro-Galar-Fantasy"],
+        itemUser: ["Slowbro-Galar-Fantasy"],
         onTakeItem(item, source) {
             // 使用 .name 严格匹配完整形态名，不剥离后缀
             const name = source.baseSpecies.name;
