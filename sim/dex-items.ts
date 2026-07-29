@@ -47,7 +47,7 @@ export class Item extends BasicEffect implements Readonly<BasicEffect> {
 	 * forme this allows transformation into.
 	 * undefined, if not a mega stone.
 	 */
-	readonly megaStone?: string | string[];
+	megaStone?: string | string[] | {[speciesid: string]: string};
 	/**
 	 * If this is a mega stone: The name (e.g. Charizard) of the
 	 * forme this allows transformation from.

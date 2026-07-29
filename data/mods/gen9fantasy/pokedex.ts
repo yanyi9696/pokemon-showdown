@@ -173,7 +173,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	slowbrogalarmegafantasy: {
 		num: 80,
 		name: "Slowbro-Galar-Mega-Fantasy",
-		baseSpecies: "Slowbro-Galar",
+		baseSpecies: "Slowbro",
 		forme: "Galar-Mega",
 		types: ["Poison", "Psychic"],
 		baseStats: { hp: 100, atk: 145, def: 155, spa: 75, spd: 115, spe: 30 },

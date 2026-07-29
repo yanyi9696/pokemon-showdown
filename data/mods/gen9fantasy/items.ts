@@ -1410,15 +1410,10 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	slowbronite: {
         name: "Slowbronite",
         spritenum: 620,
-        megaStone: "Slowbro-Mega",
-        megaEvolves: "Slowbro",
+        megaStone: { "Slowbro": "Slowbro-Mega" },
         itemUser: ["Slowbro"],
         onTakeItem(item, source) {
-            // 同样改为严格匹配，这样伽勒尔形态就不会识别到普通进化石了
-            const name = source.baseSpecies.name;
-            const isBaseForm = (Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves]).includes(name);
-            const isMegaForm = (Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone]).includes(name);
-            return !(isBaseForm || isMegaForm);
+            return !(item.megaStone as any)?.[source.baseSpecies.name];
         },
         num: 760,
         gen: 6,
@@ -2567,17 +2562,16 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	slowbrogalarnite: {
         name: "Slowbrogalarnite",
         spritenum: 519,
-        // 这里填入伽勒尔呆壳兽mega后的形态名（包括幻想形态）
-        megaStone: ["Slowbro-Galar-Mega", "Slowbro-Galar-Mega-Fantasy"], 
-        // 这里填入可以进行mega进化的基础形态名
-        megaEvolves: ["Slowbro-Galar", "Slowbro-Galar-Fantasy"],
+        // 【关键】使用对象字典格式，左边是基础形态，右边是Mega后的形态
+        megaStone: { 
+            "Slowbro-Galar": "Slowbro-Galar-Mega",
+            "Slowbro-Galar-Fantasy": "Slowbro-Galar-Mega-Fantasy"
+        },
+        // itemUser 严格指定哪些形态专属
         itemUser: ["Slowbro-Galar", "Slowbro-Galar-Fantasy"],
         onTakeItem(item, source) {
-            // 使用 .name 严格匹配完整形态名，不剥离后缀
-            const name = source.baseSpecies.name;
-            const isBaseForm = (Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves]).includes(name);
-            const isMegaForm = (Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone]).includes(name);
-            return !(isBaseForm || isMegaForm);
+            // 这里使用 source.baseSpecies.name 确保只有这两个形态拿不掉道具
+            return !(item.megaStone as any)?.[source.baseSpecies.name];
         },
         num: 10047,
         gen: 9,

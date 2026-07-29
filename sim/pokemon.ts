@@ -474,7 +474,7 @@ export class Pokemon {
 		this.weighthg = 1;
 		this.speed = 0;
 
-		this.canMegaEvo = this.battle.actions.canMegaEvo(this);
+		this.canMegaEvo = this.battle.actions.canMegaEvo(this) as string | null | undefined;
 		this.canMegaEvoX = this.battle.actions.canMegaEvoX?.(this);
 		this.canMegaEvoY = this.battle.actions.canMegaEvoY?.(this);
 		this.canUltraBurst = this.battle.actions.canUltraBurst(this);
