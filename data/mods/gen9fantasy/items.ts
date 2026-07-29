@@ -1408,24 +1408,21 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		gen: 6,
 	},
 	slowbronite: {
-		name: "Slowbronite",
-		spritenum: 620,
-		megaStone: "Slowbro-Mega",
-		megaEvolves: "Slowbro",
-		itemUser: ["Slowbro"],
-		onTakeItem(item, source) {
-            if (
-                (Array.isArray(item.megaEvolves)
-                    ? item.megaEvolves
-                    : [item.megaEvolves]
-                ).includes(source.baseSpecies.baseSpecies)
-            )
-                return false;
-            return true;
+        name: "Slowbronite",
+        spritenum: 620,
+        megaStone: "Slowbro-Mega",
+        megaEvolves: "Slowbro",
+        itemUser: ["Slowbro"],
+        onTakeItem(item, source) {
+            // 同样改为严格匹配，这样伽勒尔形态就不会识别到普通进化石了
+            const name = source.baseSpecies.name;
+            const isBaseForm = (Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves]).includes(name);
+            const isMegaForm = (Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone]).includes(name);
+            return !(isBaseForm || isMegaForm);
         },
-		num: 760,
-		gen: 6,
-	},
+        num: 760,
+        gen: 6,
+    },
 	steelixite: {
 		name: "Steelixite",
 		spritenum: 621,
@@ -2568,26 +2565,25 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		shortDesc: "让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
 	},
 	slowbrogalarnite: {
-		name: "Slowbrogalarnite",
-		spritenum: 519,
-		megaStone: "Slowbro-Galar-Mega",
-		megaEvolves: "Slowbro-Galar",
-		itemUser: ["Slowbro-Galar"],
-		onTakeItem(item, source) {
-            if (
-                (Array.isArray(item.megaEvolves)
-                    ? item.megaEvolves
-                    : [item.megaEvolves]
-                ).includes(source.baseSpecies.baseSpecies)
-            )
-                return false;
-            return true;
+        name: "Slowbrogalarnite",
+        spritenum: 519,
+        // 这里填入伽勒尔呆壳兽mega后的形态名（包括幻想形态）
+        megaStone: ["Slowbro-Galar-Mega", "Slowbro-Galar-Mega-Fantasy"], 
+        // 这里填入可以进行mega进化的基础形态名
+        megaEvolves: ["Slowbro-Galar", "Slowbro-Galar-Fantasy"],
+        itemUser: ["Slowbro-Galar", "Slowbro-Galar-Fantasy"],
+        onTakeItem(item, source) {
+            // 使用 .name 严格匹配完整形态名，不剥离后缀
+            const name = source.baseSpecies.name;
+            const isBaseForm = (Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves]).includes(name);
+            const isMegaForm = (Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone]).includes(name);
+            return !(isBaseForm || isMegaForm);
         },
-		num: 10047,
-		gen: 9,
-		desc: "让呆壳兽-伽勒尔-幻想携带后,在战斗时就能进行超级进化",
-		shortDesc: "让呆壳兽-伽勒尔-幻想携带后,在战斗时就能进行超级进化",
-	},
+        num: 10047,
+        gen: 9,
+        desc: "让呆壳兽-伽勒尔-幻想携带后,在战斗时就能进行超级进化",
+        shortDesc: "让呆壳兽-伽勒尔-幻想携带后,在战斗时就能进行超级进化",
+    },
 	//以下为Z num从20000开始
 	toxtricityz: {
 		name: "Toxtricity Z",
