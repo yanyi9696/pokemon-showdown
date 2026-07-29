@@ -529,13 +529,9 @@ export class TeamValidator {
 				if (!item.megaStone) throw new Error(`Item ${item.name} has no base form for mega evolution`);
 				if (Array.isArray(item.megaEvolves)) {
 					const idx = item.megaEvolves.indexOf(species.name);
-					tierSpecies = dex.species.get((item.megaStone as any)[idx]);
+					tierSpecies = dex.species.get(item.megaStone[idx]);
 				} else {
-					let mStone = item.megaStone;
-					if (mStone && typeof mStone === 'object' && !Array.isArray(mStone)) {
-						mStone = (mStone as any)[species.name] || (mStone as any)[species.baseSpecies];
-					}
-					tierSpecies = dex.species.get(mStone as string);
+					tierSpecies = dex.species.get(item.megaStone as string);
 				}
 			} else if (item.id === 'redorb' && species.id === 'groudon') {
 				tierSpecies = dex.species.get('Groudon-Primal');
