@@ -182,7 +182,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 120,
 		color: "Pink",
 		eggGroups: ["Monster", "Water 1"],
-		requiredItem: "Slowbronite",
+		requiredItem: "Slowbrogalarnite",
 		requiredForme: "Slowbro-Galar-Fantasy",
 		battleOnly: "Slowbro-Galar-Fantasy",
 		spriteid: 'slowbro-mega',

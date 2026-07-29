@@ -1410,24 +1410,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	slowbronite: {
 		name: "Slowbronite",
 		spritenum: 620,
-		megaStone: [
-            "Slowbro-Mega",
-			"Slowbro-Mega",
-            "Slowbro-Mega-Fantasy",
-            "Slowbro-Mega-Fantasy" 
-        ],
-        megaEvolves: [
-            "Slowbro", 
-			"Slowbro-Galar",
-            "Slowbro-Fantasy", 
-            "Slowbro-Galar-Fantasy"
-        ],
-        itemUser: [
-            "Slowbro", 
-			"Slowbro-Galar",
-            "Slowbro-Fantasy", 
-            "Slowbro-Galar-Fantasy"
-        ],
+		megaStone: "Slowbro-Mega",
+		megaEvolves: "Slowbro",
+		itemUser: ["Slowbro"],
 		onTakeItem(item, source) {
             if (
                 (Array.isArray(item.megaEvolves)
@@ -2581,6 +2566,27 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		gen: 9,
 		desc: "让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
 		shortDesc: "让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
+	},
+	slowbrogalarnite: {
+		name: "Slowbrogalarnite",
+		spritenum: 519,
+		megaStone: "Slowbro-Galar-Mega",
+		megaEvolves: "Slowbro-Galar",
+		itemUser: ["Slowbro-Galar"],
+		onTakeItem(item, source) {
+            if (
+                (Array.isArray(item.megaEvolves)
+                    ? item.megaEvolves
+                    : [item.megaEvolves]
+                ).includes(source.baseSpecies.baseSpecies)
+            )
+                return false;
+            return true;
+        },
+		num: 10047,
+		gen: 9,
+		desc: "让呆壳兽-伽勒尔-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "让呆壳兽-伽勒尔-幻想携带后,在战斗时就能进行超级进化",
 	},
 	//以下为Z num从20000开始
 	toxtricityz: {
