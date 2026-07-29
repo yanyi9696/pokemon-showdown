@@ -174,7 +174,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		num: 80,
 		name: "Slowbro-Galar-Mega-Fantasy",
 		baseSpecies: "Slowbro",
-		forme: "Mega",
+		forme: "Galar-Mega",
 		types: ["Poison", "Psychic"],
 		baseStats: { hp: 100, atk: 145, def: 155, spa: 75, spd: 115, spe: 30 },
 		abilities: { 0: "Shell Armor" },
@@ -185,7 +185,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Slowbrogalarnite",
 		requiredForme: "Slowbro-Galar-Fantasy",
 		battleOnly: "Slowbro-Galar-Fantasy",
-		spriteid: 'slowbro-mega',
+		spriteid: 'slowbro-galar-mega',
 	},
 	muk: {
 		inherit: true,
