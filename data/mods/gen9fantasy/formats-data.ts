@@ -346,6 +346,17 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	slowbrofantasy: {
 		tier: "OU",
 	},
+	slowbromegafantasy: {
+		tier: "OU",
+		abilities: {0: "Filter"},		
+	},
+	slowbrogalarfantasy: {
+		tier: "OU",
+	},
+	slowbrogalarmegafantasy: {
+		tier: "OU",
+		abilities: {0: "Shell Armor"},		
+	},
 	silvallyfantasy: {
 		tier: "OU",
 	},
@@ -559,13 +570,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	skarmorymegafantasy: {
 		tier: "UU",
 		abilities: {0: "Good as Gold"},	
-	},
-	slowbrogalarfantasy: {
-		tier: "UU",
-	},
-	slowbromegafantasy: {
-		tier: "UU",
-		abilities: {0: "Shell Armor"},		
 	},
 	swampertfantasy: {
 		tier: "UU",
