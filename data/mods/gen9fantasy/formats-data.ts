@@ -68,6 +68,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	regigigasfantasy: {
 		tier: "Uber",
 	},
+	sharpedomegafantasy: {
+		tier: "Uber",
+		abilities: {0: "Strong Jaw" },
+	},
 	tapukokofantasy: {
 		tier: "Uber",
 	},
@@ -165,6 +169,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sandacondagmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Sand Stream"},	
+	},
+	sharpedofantasy: {
+		tier: "(Uber)",
 	},
 	suicunefantasy: {
 		tier: "(Uber)",
@@ -702,6 +709,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	thievulfantasy: {
+		tier: "RU",
+	},
+	vikavoltfantasy: {
 		tier: "RU",
 	},
 	duskullfantasy: {
