@@ -59,10 +59,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                     type: 'Flying', // 结算属性改为飞行系
                 },
             });
-            // 【新增】静止指令，取消第一回合释放技能时的动画
+            // 【修改1】静止指令，取消第一回合释放技能时的动画
             this.attrLastMove('[still]');
-            // 【修改】将原本的 '-start' 改为直接输出自定义的中文信息
-            // source.name 会自动获取当前宝可梦的名字（包括玩家起的昵称）
+            // 【修改2】发送隐藏的 -start 信号，专门用来激活客户端左上角的倒计时 UI
+            this.add('-start', source, 'move: Razor Wind', '[silent]');
+            // 【修改3】发送自定义文本在聊天框显示
             this.add('-message', `${source.name}周围的空气产生了旋涡！！`);
             return this.NOT_FAIL;
         },
