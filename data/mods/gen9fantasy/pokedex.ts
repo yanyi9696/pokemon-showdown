@@ -3106,7 +3106,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Lurantis",
 		forme: "Totem",
 		types: ["Grass", "Flying"],
-		baseStats: { hp: 70, atk: 125, def: 80, spa: 125, spd: 80, spe: 80 },
+		baseStats: { hp: 90, atk: 125, def: 80, spa: 125, spd: 80, spe: 80 },
 		abilities: { 0: "Wei Chong Ni Tai" },
 		heightm: 1.5,
 		weightkg: 58,

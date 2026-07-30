@@ -54,23 +54,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                     category: "Special",
                     priority: 0,
                     flags: { allyanim: 1, metronome: 1, futuremove: 1 },
-                    ignoreImmunity: false, // 实际砸下来的时候会正常计算属性免疫（如对地面系无效...不过飞行系没有无效盲点）
+                    ignoreImmunity: false, // 实际砸下来的时候会正常计算属性免疫
                     effectType: 'Move',
-                    type: 'Flying', // 【修改】结算属性改为飞行系
+                    type: 'Flying', // 结算属性改为飞行系
                 },
             });
-            this.add('-start', source, 'move: Razor Wind');
+            // 【新增】静止指令，取消第一回合释放技能时的动画
+            this.attrLastMove('[still]');
+            // 【修改】将原本的 '-start' 改为直接输出自定义的中文信息
+            // source.name 会自动获取当前宝可梦的名字（包括玩家起的昵称）
+            this.add('-message', `${source.name}周围的空气产生了旋涡！！`);
             return this.NOT_FAIL;
         },
         secondary: null,
         target: "normal",
         type: "Flying",
         contestType: "Cool",
-		zMove: { basePower: 180 },
-		maxMove: { basePower: 130 },
-   		desc: "在使用招式2回合后,向对手发送一团风之刃进行攻击",
-		shortDesc: "使用该招式后,两回合后触发攻击效果",
-	},
+        zMove: { basePower: 180 },
+        maxMove: { basePower: 130 },
+        desc: "在使用招式2回合后,向对手发送一团风之刃进行攻击",
+        shortDesc: "使用该招式后,两回合后触发攻击效果",
+    },
 	cut: {
 		num: 15,
 		accuracy: 95,
@@ -1113,8 +1117,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         zMove: { basePower: 160 }, 
         maxMove: { basePower: 160 }, 
         contestType: "Cool",
-        desc: "有30%几率使目标陷入灼伤、麻痹或冰冻状态,有10%几率使目标畏缩",
-        shortDesc: "有30%几率使目标陷入灼伤/麻痹/冰冻,10%几率使目标畏缩"
+        desc: "有10%几率使目标陷入灼伤、麻痹或冰冻状态,有10%几率使目标畏缩",
+        shortDesc: "有10%几率使目标陷入灼伤/麻痹/冰冻,10%几率使目标畏缩"
     },
 	yuzhaozhijian: {
 		num: 10012,
