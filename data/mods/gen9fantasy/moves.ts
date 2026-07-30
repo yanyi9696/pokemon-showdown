@@ -59,14 +59,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                     type: 'Flying', // 结算属性改为飞行系
                 },
             });
-            // 【修改1】静止指令，取消第一回合释放技能时的动画
-            this.attrLastMove('[still]');
-            // 【修改2】发送隐藏的 -start 信号，专门用来激活客户端左上角的倒计时 UI
-            this.add('-start', source, 'move: Razor Wind', '[silent]');
-            // 【修改3】发送自定义文本在聊天框显示
-            this.add('-message', `${source.name}周围的空气产生了旋涡！！`);
-            return this.NOT_FAIL;
-        },
+            // 【关键修改1】静止指令，取消第一回合释放技能时的动画
+			this.attrLastMove('[still]');
+			// 【关键修改2】去掉了 'move: ' 前缀！完全模仿 Doom Desire。
+			// 加上 '[silent]' 是为了阻止系统自动输出未汉化的英文提示，避免和我们的自定义文本冲突。
+			this.add('-start', source, 'Razor Wind', '[silent]');
+			// 【关键修改3】输出你的自定义汉化文本
+			this.add('-message', `${source.name}周围的空气产生了旋涡！！`);
+			return this.NOT_FAIL;
+		},
         secondary: null,
         target: "normal",
         type: "Flying",
