@@ -1099,7 +1099,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 volatileStatus: 'flinch',
             },
             {
-                chance: 30,
+                chance: 10,
                 onHit(target, source, move) {
                     // 随机一个状态
                     const statuses = ['brn', 'par', 'frz'];

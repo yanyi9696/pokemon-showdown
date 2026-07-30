@@ -289,10 +289,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Pixilate"},	
 	},
-	lurantistotemfantasy: {
-		tier: "OU",
-		abilities: {0: "Wei Chong Ni Tai" },
-	},
 	magnezonefantasy: {
 		tier: "OU",
 	},
@@ -548,6 +544,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	illumisefantasy: {
 		tier: "UU",
+	},
+	lurantistotemfantasy: {
+		tier: "UU",
+		abilities: {0: "Wei Chong Ni Tai" },
 	},
 	mienshaofantasy: {
 		tier: "UU",

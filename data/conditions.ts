@@ -9,7 +9,7 @@ auraburstatk: {
             this.add('-message', `${displayName}全身覆盖着特殊的气场，攻击提升了！`);
         },
         onModifyAtk(atk, pokemon) {
-            return this.chainModify(1.2); 
+            return this.chainModify(1.5); 
         },
         onEnd(pokemon) {
             this.add('-end', pokemon, this.effect.name, '[silent]');
@@ -28,7 +28,7 @@ auraburstatk: {
             this.add('-message', `${displayName}全身覆盖着特殊的气场，防御提升了！`);
         },
         onModifyDef(def, pokemon) {
-            return this.chainModify(1.2); 
+            return this.chainModify(1.5); 
         },
         onEnd(pokemon) {
             this.add('-end', pokemon, this.effect.name, '[silent]');
@@ -47,7 +47,7 @@ auraburstatk: {
             this.add('-message', `${displayName}全身覆盖着特殊的气场，特攻提升了！`);
         },
         onModifySpA(spa, pokemon) {
-            return this.chainModify(1.2); 
+            return this.chainModify(1.5); 
         },
         onEnd(pokemon) {
             this.add('-end', pokemon, this.effect.name, '[silent]');
@@ -66,7 +66,7 @@ auraburstatk: {
             this.add('-message', `${displayName}全身覆盖着特殊的气场，特防提升了！`);
         },
         onModifySpD(spd, pokemon) {
-            return this.chainModify(1.2); 
+            return this.chainModify(1.5); 
         },
         onEnd(pokemon) {
             this.add('-end', pokemon, this.effect.name, '[silent]');
@@ -85,7 +85,7 @@ auraburstatk: {
             this.add('-message', `${displayName}全身覆盖着特殊的气场，速度提升了！`);
         },
         onModifySpe(spe, pokemon) {
-            return this.chainModify(1.2); 
+            return this.chainModify(1.5); 
         },
         onEnd(pokemon) {
             this.add('-end', pokemon, this.effect.name, '[silent]');
