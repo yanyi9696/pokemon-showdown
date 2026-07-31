@@ -3012,7 +3012,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 					};
 					pokemon.moveSlots[coreEnforcerIndex] = newMove;
 					pokemon.baseMoveSlots[coreEnforcerIndex] = newMove;
-					battle.add('-ms', pokemon, nihilLight.name);
+					battle.add('-message', `${pokemon.name}的招式变成了${nihilLight.name}！`);
 
 					// 重点：因为这是在招式准备执行时修改，还需要把当前准备打出的招式也变成归无之光
 					move.id = nihilLight.id;
