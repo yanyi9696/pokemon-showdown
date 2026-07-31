@@ -1,194 +1,200 @@
 export const Scripts: ModdedBattleScriptsData = {
-	gen: 9,
+    gen: 9,
 
-	init() {
-		for (const id in this.data.FormatsData) {
-			if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
-			if (this.data.FormatsData[id].natDexTier) {
-				this.data.FormatsData[id].tier = this.data.FormatsData[id].natDexTier;
-			}
-		}
-	},
+    init() {
+        for (const id in this.data.FormatsData) {
+            if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
+            if (this.data.FormatsData[id].natDexTier) {
+                this.data.FormatsData[id].tier = this.data.FormatsData[id].natDexTier;
+            }
+        }
+    },
 
-	actions: {
-		// ==========================================
-		// 1. 气场爆发 / 究极爆发的按钮判定逻辑
-		// ==========================================
-		canUltraBurst(pokemon) {
-			const item = pokemon.getItem();
+    actions: {
+        // ==========================================
+        // 1. 气场爆发 / 究极爆发的按钮判定逻辑
+        // ==========================================
+        canUltraBurst(pokemon) {
+            // 【关键修复】：如果宝可梦已经处于太晶化状态，则禁止其进行 气场爆发/究极爆发，防止双重状态报错
+            if (pokemon.terastallized) return null;
 
-			// --- 原版奈克洛兹玛究极爆发 ---
-			if (['Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane'].includes(pokemon.baseSpecies.name) &&
-				item.id === 'ultranecroziumz') {
-				return "Necrozma-Ultra";
-			}
+            const item = pokemon.getItem();
 
-			// --- 自定义：气场爆发 ---
-			if (pokemon.side.zMoveUsed) return null;
+            // --- 原版奈克洛兹玛究极爆发 ---
+            if (['Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane'].includes(pokemon.baseSpecies.name) &&
+                item.id === 'ultranecroziumz') {
+                return "Necrozma-Ultra";
+            }
 
-			// 【关键修复】：遍历字典，使用底层 ID 匹配当前形态或基础形态
-			if ((item as any).auraBursts) {
-				for (const key in (item as any).auraBursts) {
-					const targetID = this.dex.toID(key);
-					// 如果匹配到当前精确形态 ID (marowakalolafantasy)，或是基础形态 ID (marowak)
-					if (targetID === pokemon.species.id || targetID === pokemon.baseSpecies.id) {
-						return (item as any).auraBursts[key].burstForme;
-					}
-				}
-			}
+            // --- 自定义：气场爆发 ---
+            if (pokemon.side.zMoveUsed) return null;
 
-			return null;
-		},
+            // 【关键修复】：遍历字典，使用底层 ID 匹配当前形态或基础形态
+            if ((item as any).auraBursts) {
+                for (const key in (item as any).auraBursts) {
+                    const targetID = this.dex.toID(key);
+                    // 如果匹配到当前精确形态 ID (marowakalolafantasy)，或是基础形态 ID (marowak)
+                    if (targetID === pokemon.species.id || targetID === pokemon.baseSpecies.id) {
+                        return (item as any).auraBursts[key].burstForme;
+                    }
+                }
+            }
 
-		// ==========================================
-		// 2. 变身执行逻辑
-		// ==========================================
-		runMegaEvo(pokemon) {
-			const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
-			if (!speciesid) return false;
+            return null;
+        },
 
-			// 【处理 气场爆发 / 究极爆发】
-			if (pokemon.canUltraBurst) {
-				const item = pokemon.getItem();
-				let burstData = null;
+        // ==========================================
+        // 2. 变身执行逻辑
+        // ==========================================
+        runMegaEvo(pokemon) {
+            const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
+            if (!speciesid) return false;
 
-				// 【关键修复】：执行变身时，同样使用 ID 获取配置数据
-				if ((item as any).auraBursts) {
-					for (const key in (item as any).auraBursts) {
-						const targetID = this.dex.toID(key);
-						if (targetID === pokemon.species.id || targetID === pokemon.baseSpecies.id) {
-							burstData = (item as any).auraBursts[key];
-							break;
-						}
-					}
-				}
+            // 【处理 气场爆发 / 究极爆发】
+            if (pokemon.canUltraBurst) {
+                const item = pokemon.getItem();
+                let burstData = null;
 
-				// --- 气场爆发逻辑 ---
-				if (burstData && burstData.burstForme === speciesid) {
-					// 核心机制：消耗Z招式机会！
-					pokemon.side.zMoveUsed = true; 
-					
-					// 【核心修改】：将第二个参数 item 替换为 pokemon.battle.effect
-					// 这样底层协议里就不会带有 "[from] item: Firium Z" 的标签
-					// 汉化插件也就再也不会自作多情地触发“究极爆发”的翻译了！
-					pokemon.formeChange(speciesid, pokemon.battle.effect, true);
-					
-					let displayName = pokemon.name;
-					if (displayName === 'Marowak') {
-						displayName = '嘎啦嘎啦';
-					}
-					// 未来有别的宝可梦，可以在这继续加：if (displayName === 'Charizard') displayName = '喷火龙';
-					
-					// 发送我们唯一的一条自定义文本
-					pokemon.battle.add('-message', `${displayName}通过气场爆发展现出了新的样子！`);
-					
-					if (burstData.condition) {
-						pokemon.addVolatile(burstData.condition);
-					}
+                // 【关键修复】：执行变身时，同样使用 ID 获取配置数据
+                if ((item as any).auraBursts) {
+                    for (const key in (item as any).auraBursts) {
+                        const targetID = this.dex.toID(key);
+                        if (targetID === pokemon.species.id || targetID === pokemon.baseSpecies.id) {
+                            burstData = (item as any).auraBursts[key];
+                            break;
+                        }
+                    }
+                }
 
-					for (const ally of pokemon.side.pokemon) {
-						ally.canUltraBurst = null;
-					}
-					return true;
-				}
+                // --- 气场爆发逻辑 ---
+                if (burstData && burstData.burstForme === speciesid) {
+                    // 核心机制：消耗Z招式机会！
+                    pokemon.side.zMoveUsed = true; 
+                    
+                    // 【核心修改】：将第二个参数 item 替换为 pokemon.battle.effect
+                    // 这样底层协议里就不会带有 "[from] item: Firium Z" 的标签
+                    // 汉化插件也就再也不会自作多情地触发“究极爆发”的翻译了！
+                    pokemon.formeChange(speciesid, pokemon.battle.effect, true);
+                    
+                    let displayName = pokemon.name;
+                    if (displayName === 'Marowak') {
+                        displayName = '嘎啦嘎啦';
+                    }
+                    // 未来有别的宝可梦，可以在这继续加：if (displayName === 'Charizard') displayName = '喷火龙';
+                    
+                    // 发送我们唯一的一条自定义文本
+                    pokemon.battle.add('-message', `${displayName}通过气场爆发展现出了新的样子！`);
+                    
+                    if (burstData.condition) {
+                        pokemon.addVolatile(burstData.condition);
+                    }
 
-				// --- 原版奈克洛兹玛爆发逻辑 ---
-				if (speciesid === 'Necrozma-Ultra') {
-					pokemon.formeChange(speciesid, item, true);
-					pokemon.battle.add('-burst', pokemon, pokemon.baseSpecies.name, item.name);
-					
-					for (const ally of pokemon.side.pokemon) {
-						ally.canUltraBurst = null;
-					}
-					return true;
-				}
-				return false;
-			}
+                    for (const ally of pokemon.side.pokemon) {
+                        ally.canUltraBurst = null;
+                    }
+                    return true;
+                }
 
-			// ==============================
-			// 【处理 常规 Mega 进化】
-			// ==============================
-			const standardMega = pokemon.battle.dex.species.get(speciesid);
-			let targetSpecies = standardMega;
-			if (pokemon.species.name.endsWith('-Fantasy')) {
-				const fantasyMega = pokemon.battle.dex.species.get(standardMega.id + '-fantasy');
-				if (fantasyMega.exists) targetSpecies = fantasyMega;
-			}
+                // --- 原版奈克洛兹玛爆发逻辑 ---
+                if (speciesid === 'Necrozma-Ultra') {
+                    pokemon.formeChange(speciesid, item, true);
+                    pokemon.battle.add('-burst', pokemon, pokemon.baseSpecies.name, item.name);
+                    
+                    for (const ally of pokemon.side.pokemon) {
+                        ally.canUltraBurst = null;
+                    }
+                    return true;
+                }
+                return false;
+            }
 
-			if (pokemon.battle.ruleTable.isBanned('megarayquazaclause') && targetSpecies.id === 'rayquazamega') {
-				pokemon.battle.runEvent('Cant', pokemon, null, null, 'mega');
-				return false;
-			}
+            // ==============================
+            // 【处理 常规 Mega 进化】
+            // ==============================
+            const standardMega = pokemon.battle.dex.species.get(speciesid);
+            let targetSpecies = standardMega;
+            if (pokemon.species.name.endsWith('-Fantasy')) {
+                const fantasyMega = pokemon.battle.dex.species.get(standardMega.id + '-fantasy');
+                if (fantasyMega.exists) targetSpecies = fantasyMega;
+            }
 
-			const prevHp = pokemon.hp;
-			const prevMaxHp = pokemon.maxhp;
+            if (pokemon.battle.ruleTable.isBanned('megarayquazaclause') && targetSpecies.id === 'rayquazamega') {
+                pokemon.battle.runEvent('Cant', pokemon, null, null, 'mega');
+                return false;
+            }
 
-			pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
+            const prevHp = pokemon.hp;
+            const prevMaxHp = pokemon.maxhp;
 
-			let newMaxHp = 1; 
-			if (targetSpecies.baseStats.hp !== 1) {
-				newMaxHp = Math.floor(
-					Math.floor(
-						2 * targetSpecies.baseStats.hp + pokemon.set.ivs.hp + Math.floor(pokemon.set.evs.hp / 4) + 100
-					) * pokemon.level / 100
-				) + 10;
-			}
+            pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
 
-			if (newMaxHp !== prevMaxHp) {
-				pokemon.baseMaxhp = newMaxHp;
-				pokemon.maxhp = newMaxHp;
-				pokemon.hp = pokemon.maxhp - (prevMaxHp - prevHp);
+            let newMaxHp = 1; 
+            if (targetSpecies.baseStats.hp !== 1) {
+                newMaxHp = Math.floor(
+                    Math.floor(
+                        2 * targetSpecies.baseStats.hp + pokemon.set.ivs.hp + Math.floor(pokemon.set.evs.hp / 4) + 100
+                    ) * pokemon.level / 100
+                ) + 10;
+            }
 
-				if (pokemon.hp <= 0) pokemon.hp = 1;
-				if (pokemon.hp > pokemon.maxhp) pokemon.hp = pokemon.maxhp;
+            if (newMaxHp !== prevMaxHp) {
+                pokemon.baseMaxhp = newMaxHp;
+                pokemon.maxhp = newMaxHp;
+                pokemon.hp = pokemon.maxhp - (prevMaxHp - prevHp);
 
-				pokemon.battle.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-			}
+                if (pokemon.hp <= 0) pokemon.hp = 1;
+                if (pokemon.hp > pokemon.maxhp) pokemon.hp = pokemon.maxhp;
 
-			pokemon.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] Mega Evolution');
+                pokemon.battle.add('-heal', pokemon, pokemon.getHealth, '[silent]');
+            }
 
-			for (const ally of pokemon.side.pokemon) {
-				ally.canMegaEvo = null;
-			}
+            pokemon.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] Mega Evolution');
 
-			pokemon.battle.runEvent('AfterMega', pokemon);
-			return true;
-		},
+            for (const ally of pokemon.side.pokemon) {
+                ally.canMegaEvo = null;
+            }
 
-		// --- 下方的 canMegaEvo 保持原样 ---
-		canMegaEvo(pokemon) {
-			const species = pokemon.baseSpecies;
-			const item = pokemon.getItem();
+            pokemon.battle.runEvent('AfterMega', pokemon);
+            return true;
+        },
 
-			const altFormes = species.otherFormes || (species.baseSpecies && pokemon.battle.dex.species.get(species.baseSpecies).otherFormes);
-			if (altFormes) {
-				for (const formeName of altFormes) {
-					const forme = pokemon.battle.dex.species.get(formeName);
-					if (forme.isMega && forme.requiredMove &&
-						pokemon.baseMoves.includes(pokemon.battle.toID(forme.requiredMove)) && !item.zMove) {
-						if (forme.requiredForme && species.name !== forme.requiredForme) {
-							continue;
-						}
-						return forme.name;
-					}
-				}
-			}
+        // --- Mega 判定逻辑 ---
+        canMegaEvo(pokemon) {
+            // 【关键修复】：如果宝可梦已经处于太晶化状态，则禁止其进行 Mega 进化，防止双重状态导致客户端 -ms 报错崩溃
+            if (pokemon.terastallized) return null;
 
-			if (Array.isArray(item.megaEvolves)) {
-				const index = item.megaEvolves.indexOf(species.name);
-				if (index >= 0) {
-					if (Array.isArray(item.megaStone)) {
-						return item.megaStone[index];
-					}
-				}
-				return null;
-			}
+            const species = pokemon.baseSpecies;
+            const item = pokemon.getItem();
 
-			if (item.megaEvolves === species.name) {
-				return item.megaStone as string;
-			}
+            const altFormes = species.otherFormes || (species.baseSpecies && pokemon.battle.dex.species.get(species.baseSpecies).otherFormes);
+            if (altFormes) {
+                for (const formeName of altFormes) {
+                    const forme = pokemon.battle.dex.species.get(formeName);
+                    if (forme.isMega && forme.requiredMove &&
+                        pokemon.baseMoves.includes(pokemon.battle.toID(forme.requiredMove)) && !item.zMove) {
+                        if (forme.requiredForme && species.name !== forme.requiredForme) {
+                            continue;
+                        }
+                        return forme.name;
+                    }
+                }
+            }
 
-			return null;
-		},
-	},
+            if (Array.isArray(item.megaEvolves)) {
+                const index = item.megaEvolves.indexOf(species.name);
+                if (index >= 0) {
+                    if (Array.isArray(item.megaStone)) {
+                        return item.megaStone[index];
+                    }
+                }
+                return null;
+            }
+
+            if (item.megaEvolves === species.name) {
+                return item.megaStone as string;
+            }
+
+            return null;
+        },
+    },
 };
