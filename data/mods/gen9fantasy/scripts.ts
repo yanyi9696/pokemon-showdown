@@ -15,21 +15,22 @@ export const Scripts: ModdedBattleScriptsData = {
         // 1. 气场爆发 / 究极爆发的按钮判定逻辑
         // ==========================================
         canUltraBurst(pokemon) {
-            // 【关键修复】：如果宝可梦已经处于太晶化状态，则禁止其进行 气场爆发/究极爆发，防止双重状态报错
-            if (pokemon.terastallized) return null;
-
             const item = pokemon.getItem();
 
             // --- 原版奈克洛兹玛究极爆发 ---
+            // 【设定】：究极爆发可以在太晶化的情况下进行，因此不被拦截
             if (['Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane'].includes(pokemon.baseSpecies.name) &&
                 item.id === 'ultranecroziumz') {
                 return "Necrozma-Ultra";
             }
 
+            // 【关键修复】：之后的逻辑属于“气场爆发”，如果宝可梦已经处于太晶化状态，则禁止其进行气场爆发！
+            if (pokemon.terastallized) return null;
+
             // --- 自定义：气场爆发 ---
             if (pokemon.side.zMoveUsed) return null;
 
-            // 【关键修复】：遍历字典，使用底层 ID 匹配当前形态或基础形态
+            // 遍历字典，使用底层 ID 匹配当前形态或基础形态
             if ((item as any).auraBursts) {
                 for (const key in (item as any).auraBursts) {
                     const targetID = this.dex.toID(key);
@@ -55,7 +56,7 @@ export const Scripts: ModdedBattleScriptsData = {
                 const item = pokemon.getItem();
                 let burstData = null;
 
-                // 【关键修复】：执行变身时，同样使用 ID 获取配置数据
+                // 执行变身时，同样使用 ID 获取配置数据
                 if ((item as any).auraBursts) {
                     for (const key in (item as any).auraBursts) {
                         const targetID = this.dex.toID(key);
@@ -71,7 +72,7 @@ export const Scripts: ModdedBattleScriptsData = {
                     // 核心机制：消耗Z招式机会！
                     pokemon.side.zMoveUsed = true; 
                     
-                    // 【核心修改】：将第二个参数 item 替换为 pokemon.battle.effect
+                    // 将第二个参数 item 替换为 pokemon.battle.effect
                     // 这样底层协议里就不会带有 "[from] item: Firium Z" 的标签
                     // 汉化插件也就再也不会自作多情地触发“究极爆发”的翻译了！
                     pokemon.formeChange(speciesid, pokemon.battle.effect, true);
