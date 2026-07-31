@@ -27997,6 +27997,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			calmmind: ["9M"],
 			psychic: ["9M"],
 			psybeam: ["9M"],
+			flamethrower: ["9M"],
 			bodypress: ["9M"],
 			//幻想增添技能
 			afteryou: ["7T", "6T", "5T"],

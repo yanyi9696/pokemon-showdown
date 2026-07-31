@@ -2105,9 +2105,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		flags: {},
 		name: "Zhao Yong Ze Xian",
-		rating: 4.5,
+		rating: 4,
 		num: 10037,
-		shortDesc: "水属性招式命中非水属性目标后,使目标场地进入4回合微型湿地状态(速度降至原本的1/3)",
+		shortDesc: "水属性招式命中非水属性目标后,使目标场地进入4回合微型湿地状态(速度降至原本的1/2)",
     }, 
 	gangtiejuhewu: {
 		// 1. 处理主动攻击的钢属性招式 (如铁头、铸铠波)
