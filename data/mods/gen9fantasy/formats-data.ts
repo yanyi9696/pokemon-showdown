@@ -344,6 +344,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sandyshocksfantasy: {
 		tier: "OU",
 	},
+	sceptilemegafantasy: {
+		tier: "OU",
+		abilities: {0: "Dragonize"},		
+	},
 	skeledirgefantasy: {
 		tier: "OU",
 	},
@@ -562,6 +566,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	rotomfantasy: {
+		tier: "UU",
+	},
+	sceptilefantasy: {
 		tier: "UU",
 	},
 	scolipedefantasy: {

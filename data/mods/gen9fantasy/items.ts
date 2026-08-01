@@ -3062,11 +3062,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 return false; // 取消原本的冻伤判定
             }
         },
-        // 效果 2：登场后进入不解冻的冰冻状态
+       // 效果 2：登场后进入不解冻的冰冻状态
         onStart(pokemon) {
             // 只有当前没有异常状态时才能进入冰冻
             if (!pokemon.status) {
-                pokemon.setStatus('frz', pokemon);
+                // setStatus(status, source, sourceEffect, ignoreImmunities)
+                // 第四个参数传入 true，强制无视属性、特性等任何免疫效果
+                pokemon.setStatus('frz', pokemon, this.effect, true);
             }
         },
         // 核心逻辑：拦截冰冻的禁止行动判定，允许行动并且阻断系统自带的随机解冻检测
@@ -3099,7 +3101,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
         num: 30007,
         gen: 9,
-        desc: "携带后，佩戴者对其他宝可梦造成的灼伤变冻伤、冻伤变为灼伤;登场后进入不会解冻的冰冻状态但仍可行动;低于最大HP的1/4时发动,恢复最大HP的1/3并消耗该道具,失去该道具将会解冻",
+        desc: "携带后，佩戴者对其他宝可梦造成的灼伤变冻伤、冻伤变为灼伤;登场后必定进入不会解冻的冰冻状态但仍可行动;低于最大HP的1/4时发动,恢复最大HP的1/3并消耗该道具,失去该道具将会解冻",
         shortDesc: "造成的灼伤/冻伤互换;登场进入可行动的冰冻;HP低于1/4时消失并解冻,恢复1/3HP",
     },
 	fantasylaxincense: {

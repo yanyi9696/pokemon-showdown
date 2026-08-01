@@ -136,6 +136,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "攻击目标造成伤害。有10%的几率使尚未行动的目标陷入畏缩状态",
 		shortDesc: "有10%几率使目标陷入畏缩状态",
 	},
+	swift: {
+		num: 129,
+		accuracy: 100,
+		basePower: 60,
+		category: "Special",
+		name: "Swift",
+		pp: 30,
+		priority: 1,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		secondary: null,
+		target: "allAdjacentFoes",
+		type: "Normal",
+		contestType: "Cool",
+		zMove: { basePower: 100 },
+		maxMove: { basePower: 100 },
+		desc: "通常会先手行动 (优先度 +1)",
+		shortDesc: "先制攻击",
+	},
 	transform: {
 		num: 144,
 		accuracy: true,
@@ -233,6 +251,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Electric",
 		contestType: "Cool",
+		zMove: { basePower: 100 },
+		maxMove: { basePower: 100 },
 		desc: "通常会先手行动 (优先度 +1)",
 		shortDesc: "先制攻击",
 	},
@@ -260,6 +280,39 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Cool",
 		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
 		shortDesc: "80威力,目标每有1项能力上升+20,使目标强化无效2回合",
+	},
+	wringout: {
+        num: 378,
+        accuracy: 100,
+        basePower: 0,
+        basePowerCallback(pokemon, target, move) {
+            const hp = target.hp;
+            const maxHP = target.maxhp;
+            const bp = Math.floor(Math.floor((120 * (100 * Math.floor(hp * 4096 / maxHP)) + 2048 - 1) / 4096) / 100) || 1;
+            this.debug(`BP for ${hp}/${maxHP} HP: ${bp}`);
+            return bp;
+        },
+        category: "Special",
+        isNonstandard: "Past",
+        name: "Wring Out",
+        pp: 5,
+        priority: 0,
+        flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+        // 新增的 onModifyMove 钩子
+        onModifyMove(move, pokemon) {
+            // 对比使用者的物攻和特攻（考虑能力变化，但不考虑讲究头带等道具修正，与太晶爆发/光子喷涌判定机制一致）
+            if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
+                move.category = 'Physical';
+            }
+        },
+        secondary: null,
+        target: "normal",
+        type: "Normal",
+        zMove: { basePower: 190 },
+        maxMove: { basePower: 140 },
+        contestType: "Tough",
+		desc: "威力 = 120 × 当前HP/最大HP。向下取整一半,但不小于1。若使用者的攻击大于特攻,则此招式变成物理招式",
+		shortDesc: "目标剩余的HP越多,此招式威力越高;攻击大于特攻变为物理",
 	},
 	crushgrip: {
 		num: 462,
