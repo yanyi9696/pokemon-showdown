@@ -139,7 +139,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	swift: {
 		num: 129,
 		accuracy: 100,
-		basePower: 60,
+		basePower: 40,
 		category: "Special",
 		name: "Swift",
 		pp: 30,
