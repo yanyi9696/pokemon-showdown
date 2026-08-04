@@ -1423,25 +1423,6 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 760,
         gen: 6,
     },
-	steelixite: {
-		name: "Steelixite",
-		spritenum: 621,
-		megaStone: ["Steelix-Mega", "Steelix-Mega-Fantasy"],
-		megaEvolves: ["Steelix", "Steelix-Fantasy"],
-		itemUser: ["Steelix", "Steelix-Fantasy"],
-		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
-		num: 761,
-		gen: 6,
-	},
 	swampertite: {
 		name: "Swampertite",
 		spritenum: 612,
@@ -2563,6 +2544,48 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		gen: 9,
 		desc: "让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
 		shortDesc: "让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
+	},
+	steelixitex: {
+		name: "Steelixite X",
+		spritenum: 518,
+		megaStone: ["Steelix-Mega-X-Fantasy"],
+		megaEvolves: ["Steelix-Fantasy"],
+		itemUser: ["Steelix-Fantasy"],
+		onTakeItem(item, source) {
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
+			return true;
+		},
+		num: 761,
+		gen: 9,
+		desc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
+	},
+	steelixitey: {
+		name: "Steelixite Y",
+		spritenum: 621,
+		megaStone: ["Steelix-Mega-Y-Fantasy"],
+		megaEvolves: ["Steelix-Fantasy"],
+		itemUser: ["Steelix-Fantasy"],
+		onTakeItem(item, source) {
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
+			return true;
+		},
+		num: 761,
+		gen: 9,
+		desc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
 	},
 	slowbrogalarnite: {
         name: "Slowbrogalarnite",

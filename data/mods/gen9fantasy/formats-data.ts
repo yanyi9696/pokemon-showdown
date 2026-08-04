@@ -491,9 +491,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	steelixfantasy: {
 		tier: "UUBL",
 	},
-	steelixmegafantasy: {
+	steelixmegaxfantasy: {
 		tier: "UUBL",
 		abilities: {0: "Sand Force"},		
+	},
+	steelixmegayfantasy: {
+		tier: "UUBL",
+		abilities: {0: "Heatproof"},		
 	},
 	urshifurapidstrike2fantasy: {
 		tier: "UUBL",

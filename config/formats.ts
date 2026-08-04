@@ -797,40 +797,41 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	{
-		name: "[Gen 9] FC Champions Doubles F",
-		mod: 'gen9fantasy',
-		gameType: 'doubles',
-		ruleset: [
-			'Standard AG',
-			'Species Clause',
-			'Nickname Clause',
-			'OHKO Clause',
-			//以上是从'Standard Doubles'节选的适用的规则
-			'NatDex Mod',
-			'Limit One Restricted', //单神战，解禁一只一级神
-			'Item Clause = 1',
-			'Adjust Level = 50',
-			'Max Team Size = 6',
-			'Picked Team Size = 4',
-			'FC Mega Ban Check',
-				'FC Forme Preview',
-			'Ignore Event Shiny Clause'
-		],
-		banlist: [
-			// 要求禁用的宝可梦分类
-			'Mythical',             // 禁用所有幻兽 (梦幻、玛夏多等)
-			//'Restricted Legendary', // 禁用所有一级神（由于单神战，不在此禁用）
-			'Sub-Legendary',        // 禁用所有二级神 (三鸟、三犬、三云等)
-			'Paradox',              // 禁用所有悖谬宝可梦
-			'Ultra Beast',          // 禁用所有究极异兽
-			'Mega',                 // 禁用所有Mega进化
-			'Shedinja',             // 禁用脱壳忍者
-		],
-		restricted: ['Restricted Legendary'],
-		unbanlist: [
+        name: "[Gen 9] FC Champions Doubles G-I",
+        mod: 'gen9fantasy',
+        gameType: 'doubles',
+        ruleset: [
+            'Standard AG',
+            'Species Clause',
+            'Nickname Clause',
+            'OHKO Clause',
+            //以上是从'Standard Doubles'节选的适用的规则
+            'NatDex Mod',
+            'Limit Two Restricted', // 规则修改：允许最多两只受限宝可梦（一级神或幻兽）
+            'Item Clause = 1',
+            'Adjust Level = 50',
+            'Max Team Size = 6',
+            'Picked Team Size = 4',
+            'FC Mega Ban Check',
+            'FC Forme Preview',
+            'Ignore Event Shiny Clause'
+        ],
+        banlist: [
+            // 要求禁用的宝可梦分类
+            // 'Mythical',             // 修改：注释掉此行，不再全员禁用幻兽
+            // 'Restricted Legendary', // 禁用所有一级神（在此不禁用）
+            'Sub-Legendary',        // 禁用所有二级神 (三鸟、三犬、三云等)
+            'Paradox',              // 禁用所有悖谬宝可梦
+            'Ultra Beast',          // 禁用所有究极异兽
+            'Mega',                 // 禁用所有Mega进化
+            'Shedinja',             // 禁用脱壳忍者
+        ],
+        // 修改：将一级神和幻兽同时放入限制池，这样它们就会共享 'Limit Two Restricted' 的2个名额
+        restricted: ['Restricted Legendary', 'Mythical'], 
+       unbanlist: [
 			'Mega', 'Ultra Beast', 'Paradox', 'Sub-Legendary',  // 但我们在这里特例解禁某一类
 		],
-		onSwitchIn(pokemon) {
+        onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
 			pokemon.m.fantasySync = (mon: Pokemon) => {
 				// 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）

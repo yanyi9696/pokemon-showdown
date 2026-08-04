@@ -182,6 +182,39 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 75,
 		shortDesc: "不会被击中要害,也不会被己方场地上的入场可生效的状态伤害",
 	},
+	heatproof: {
+        onSourceModifyAtkPriority: 6,
+        onSourceModifyAtk(atk, attacker, defender, move) {
+            if (move.type === 'Fire') {
+                this.debug('Heatproof Atk weaken');
+                return this.chainModify(0.5); // 基础效果：火系物攻减半
+            }
+        },
+        onSourceModifySpAPriority: 5,
+        onSourceModifySpA(atk, attacker, defender, move) {
+            if (move.type === 'Fire') {
+                this.debug('Heatproof SpA weaken');
+                return this.chainModify(0.5); // 基础效果：火系特攻减半
+            }
+        },
+        onSourceModifyDamage(damage, source, target, move) {
+            // 新增逻辑：在最终伤害结算时，如果是火系招式，且对该宝可梦造成了效果绝佳
+            if (move.type === 'Fire' && target.getMoveHitData(move).typeMod > 0) {
+                this.debug('Heatproof Super Effective weaken');
+                return this.chainModify(0.5); // 在原本双攻减半的基础上，由于被克制，伤害再减半（合计1/4）
+            }
+        },
+        onDamage(damage, target, source, effect) {
+            if (effect && effect.id === 'brn') {
+                return damage / 2; // 灼伤伤害依然减半
+            }
+        },
+        flags: { breakable: 1 },
+        name: "Heatproof",
+        rating: 3,
+        num: 85,
+		shortDesc: "火属性招式和灼伤对您造成的伤害变为原本的一半,被火属性招式效果绝佳时伤害会再减半",
+    },
 	slowstart: {
 		onStart(pokemon) {
 			pokemon.addVolatile('slowstart');
