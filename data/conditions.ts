@@ -1,37 +1,13 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-	// 将你原本的 commanding 替换为这个版本：
-    commanding: {
-        name: "Commanding",
-        noCopy: true,
-        onDragOutPriority: 2,
-        onDragOut() {
-            return false;
-        },
-        onTrapPokemonPriority: -11,
-        onTrapPokemon(pokemon) {
-            pokemon.trapped = true;
-        },
-        // 核心修改：如果是由于“寄生”获得的此状态，不提供无敌效果（保持靶子属性）
-        // 普通米立龙没有 parasite 状态，所以依然正常获得无敌效果，不影响原版！
-        onInvulnerability(target, source, move) {
-            if (target.volatiles['parasite']) return; 
-            return false;
-        },
-        onBeforeTurn(pokemon) {
-            this.queue.cancelAction(pokemon);
-        },
-    },
-
-    // 队友（被寄生者）的状态
+	// 队友（被寄生者）的状态：免疫任何技能
     parasitized: {
         name: 'parasitized',
         noCopy: true, 
-        onInvulnerability: false,
+        onInvulnerability: false, // 只有队友拥有无敌属性，所有技能对其 miss
         onSwitchOut(pokemon) {
             const source = pokemon.volatiles['parasitized'].parasiteSource;
             if (source && source.volatiles['parasite']) {
                 source.removeVolatile('parasite');
-                source.removeVolatile('commanding'); // 队友离场时，一并解除使用者的挂机状态
                 this.add('-message', `${pokemon.name} 离场了，${source.name} 解除了寄生状态，可以重新行动了！`);
             }
         },
@@ -39,18 +15,25 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
             const source = pokemon.volatiles['parasitized'].parasiteSource;
             if (source && source.volatiles['parasite']) {
                 source.removeVolatile('parasite');
-                source.removeVolatile('commanding'); // 队友倒下时，一并解除使用者的挂机状态
                 this.add('-message', `${pokemon.name} 倒下了，${source.name} 解除了寄生状态，可以重新行动了！`);
             }
         },
     },
 
-    // 使用者（寄生者本体）的状态
+    // 使用者（躯壳本体）的状态：自动跳过 UI 且挨打
     parasite: {
         name: 'parasite',
         noCopy: true,
-        // 注意：这里的"禁止操作/锁技能"已经被 commanding 完美代劳，UI直接跳过。
-        // 所以我们只需要在这里处理：如果虚吾伊德（使用者）作为靶子被打死/离场了，消除队友的能力。
+        onLockMove() {
+            // 【核心魔法】：'recharge' 是 PS 前端识别的跳过代码
+            // 只要返回这个词，客户端就完全不会弹出技能菜单，全自动跳过！
+            return 'recharge';
+        },
+        onBeforeTurn(pokemon) {
+            // 在战斗实际执行前，偷偷把自动生成的 recharge 动作取消掉
+            // 这样它就什么动作都不会做，单纯站着当靶子
+            this.queue.cancelAction(pokemon);
+        },
         onSwitchOut(pokemon) {
             const target = pokemon.volatiles['parasite'].parasiteTarget;
             if (target && target.volatiles['parasitized']) {
@@ -1519,26 +1502,25 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 	},
 	// Tatsugiri
-	// 因为寄生状态的协同效果，被修改了和寄生有联动，代码放在寄生状态前
-	//commanding: {
-		//name: "Commanding",
-		//noCopy: true,
-		//onDragOutPriority: 2,
-		//onDragOut() {
-			//return false;
-		//},
+	commanding: {
+		name: "Commanding",
+		noCopy: true,
+		onDragOutPriority: 2,
+		onDragOut() {
+			return false;
+		},
 		// Prevents Shed Shell allowing a swap
-		//onTrapPokemonPriority: -11,
-		//onTrapPokemon(pokemon) {
-			//pokemon.trapped = true;
-		//},
+		onTrapPokemonPriority: -11,
+		onTrapPokemon(pokemon) {
+			pokemon.trapped = true;
+		},
 		// Dodging moves is handled in BattleActions#hitStepInvulnerabilityEvent
 		// This is here for moves that manually call this event like Perish Song
-		//onInvulnerability: false,
-		//onBeforeTurn(pokemon) {
-			//this.queue.cancelAction(pokemon);
-		//},
-	//},
+		onInvulnerability: false,
+		onBeforeTurn(pokemon) {
+			this.queue.cancelAction(pokemon);
+		},
+	},
 
 	// Arceus and Silvally's actual typing is implemented here.
 	// Their true typing for all their formes is Normal, and it's only

@@ -2593,12 +2593,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
             this.boost({ atk: 2, spa: 2, spe: 2 }, target, source, move);
 
-            // 给使用者同时挂上“寄生”和“发号施令”状态，目标挂上“被寄生”
+            // 【修正】：只给本体挂寄生，不再挂发号施令，防止获得底层写死的无敌
             source.addVolatile('parasite');
-            source.addVolatile('commanding'); // 核心：白嫖底层引擎跳过 UI 界面的特权
             target.addVolatile('parasitized');
 
-            // 绑定数据
             source.volatiles['parasite'].parasiteTarget = target;
             target.volatiles['parasitized'].parasiteSource = source;
             
