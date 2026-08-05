@@ -1,45 +1,41 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-	// 队友（被寄生者）的状态：免疫任何技能
+	// 队友（被寄生者）的状态
     parasitized: {
         name: 'parasitized',
         noCopy: true, 
-        onInvulnerability: false, // 只有队友拥有无敌属性，所有技能对其 miss
+        // 绝对闪避已经交由 battle-actions.ts 完美处理，这里保留 false 兜底（针对灭亡之歌等特殊技能）
+        onInvulnerability: false, 
         onSwitchOut(pokemon) {
             const source = pokemon.volatiles['parasitized'].parasiteSource;
             if (source && source.volatiles['parasite']) {
                 source.removeVolatile('parasite');
-                this.add('-message', `${pokemon.name} 离场了，${source.name} 解除了寄生状态，可以重新行动了！`);
+                this.add('-message', `${pokemon.name} 离场了，${source.name} 解除了寄生状态！`);
             }
         },
         onFaint(pokemon) {
             const source = pokemon.volatiles['parasitized'].parasiteSource;
             if (source && source.volatiles['parasite']) {
                 source.removeVolatile('parasite');
-                this.add('-message', `${pokemon.name} 倒下了，${source.name} 解除了寄生状态，可以重新行动了！`);
+                this.add('-message', `${pokemon.name} 倒下了，${source.name} 解除了寄生状态！`);
             }
         },
     },
 
-    // 使用者（躯壳本体）的状态：自动跳过 UI 且挨打
+    // 使用者（寄生者本体）的状态
     parasite: {
         name: 'parasite',
         noCopy: true,
-        onLockMove() {
-            // 【核心魔法】：'recharge' 是 PS 前端识别的跳过代码
-            // 只要返回这个词，客户端就完全不会弹出技能菜单，全自动跳过！
-            return 'recharge';
-        },
+        // 取消当回合可能已经下达的指令
         onBeforeTurn(pokemon) {
-            // 在战斗实际执行前，偷偷把自动生成的 recharge 动作取消掉
-            // 这样它就什么动作都不会做，单纯站着当靶子
             this.queue.cancelAction(pokemon);
         },
+        // 底层引擎 pokemon.ts 已经帮你完全跳过了操作界面，这里不需要写任何 UI 相关的逻辑了！
         onSwitchOut(pokemon) {
             const target = pokemon.volatiles['parasite'].parasiteTarget;
             if (target && target.volatiles['parasitized']) {
                 this.boost({ atk: -2, spa: -2, spe: -2 }, target, target);
                 target.removeVolatile('parasitized');
-                this.add('-message', `${pokemon.name} 离场了，${target.name} 失去了寄生带来的能力强化和保护！`);
+                this.add('-message', `${pokemon.name} 离场了，${target.name} 失去了寄生带来的能力强化！`);
             }
         },
         onFaint(pokemon) {
@@ -47,7 +43,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
             if (target && target.volatiles['parasitized']) {
                 this.boost({ atk: -2, spa: -2, spe: -2 }, target, target);
                 target.removeVolatile('parasitized');
-                this.add('-message', `${pokemon.name} 倒下了，${target.name} 失去了寄生带来的能力强化和保护！`);
+                this.add('-message', `${pokemon.name} 倒下了，${target.name} 失去了寄生带来的能力强化！`);
             }
         },
     },

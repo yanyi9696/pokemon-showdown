@@ -847,7 +847,7 @@ export class Pokemon {
 		for (const pokemon of this.battle.getAllActive()) {
 			// can't use hasAbility because it would lead to infinite recursion
 			if (pokemon.ability === ('neutralizinggas' as ID) && !pokemon.volatiles['gastroacid'] &&
-				!pokemon.transformed && !pokemon.abilityState.ending && !this.volatiles['commanding']) {
+				!pokemon.transformed && !pokemon.abilityState.ending && !(this.volatiles['commanding'] || this.volatiles['parasite'])) {
 				return true;
 			}
 		}
@@ -1131,7 +1131,7 @@ export class Pokemon {
 		};
 		if (this.battle.gen > 6) entry.ability = this.ability;
 		if (this.battle.gen >= 9) {
-			entry.commanding = !!this.volatiles['commanding'] && !this.fainted;
+			entry.commanding = !!(this.volatiles['commanding'] || this.volatiles['parasite']) && !this.fainted;
 			entry.reviving = this.isActive && !!this.side.slotConditions[this.position]['revivalblessing'];
 		}
 		if (this.battle.gen === 9) {

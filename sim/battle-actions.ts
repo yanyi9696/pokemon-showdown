@@ -615,7 +615,7 @@ export class BattleActions {
 		if (move.id === 'helpinghand') return new Array(targets.length).fill(true);
 		const hitResults: boolean[] = [];
 		for (const [i, target] of targets.entries()) {
-			if (target.volatiles['commanding']) {
+			if (target.volatiles['commanding'] || target.volatiles['parasitized']) {
 				hitResults[i] = false;
 			} else if (this.battle.gen >= 8 && move.id === 'toxic' && pokemon.hasType('Poison')) {
 				hitResults[i] = true;
