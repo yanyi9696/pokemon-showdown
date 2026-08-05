@@ -2589,15 +2589,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         },
         onHit(target, source, move) {
             const damage = this.directDamage(target.maxhp / 4, target, source);
-            
             if (target.fainted || !damage) return false;
 
             this.boost({ atk: 2, spa: 2, spe: 2 }, target, source, move);
 
+            // 给使用者同时挂上“寄生”和“发号施令”状态，目标挂上“被寄生”
             source.addVolatile('parasite');
+            source.addVolatile('commanding'); // 核心：白嫖底层引擎跳过 UI 界面的特权
             target.addVolatile('parasitized');
 
-            // 核心修正1：避开底层保留字 linkedPokemon，改用自定义属性名
+            // 绑定数据
             source.volatiles['parasite'].parasiteTarget = target;
             target.volatiles['parasitized'].parasiteSource = source;
             
