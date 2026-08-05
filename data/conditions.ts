@@ -1,5 +1,62 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
-auraburstatk: {
+	parasitized: {
+        name: 'parasitized',
+        noCopy: true, // 接力棒无法传递该状态
+        // 核心修正：利用 PS 原生的 onInvulnerability 属性，让所有技能判定对其 miss（失效）
+        onInvulnerability: false,
+        onSwitchOut(pokemon) {
+            // 如果被寄生者（队友）自己离场了，解除使用者的束缚
+            const source = pokemon.volatiles['parasitized'].linkedPokemon;
+            if (source && source.volatiles['parasite']) {
+                source.removeVolatile('parasite');
+                this.add('-message', `${pokemon.name} 离场了，${source.name} 解除了寄生状态！`);
+            }
+        },
+        onFaint(pokemon) {
+            // 如果被寄生者（队友）倒下了，解除使用者的束缚
+            const source = pokemon.volatiles['parasitized'].linkedPokemon;
+            if (source && source.volatiles['parasite']) {
+                source.removeVolatile('parasite');
+                this.add('-message', `${pokemon.name} 倒下了，${source.name} 解除了寄生状态！`);
+            }
+        },
+    },
+
+    // 使用者（寄生者）的状态：无法操作
+    parasite: {
+        name: 'parasite',
+        noCopy: true,
+        onBeforeTurn(pokemon) {
+            // 取消当前回合已下达的任何指令（参考发号施令代码）
+            this.queue.cancelAction(pokemon);
+        },
+        onDisableMove(pokemon) {
+            // 禁用所有技能栏，配合上面的 cancelAction 确保使用者彻底变成木桩
+            for (const moveSlot of pokemon.moveSlots) {
+                pokemon.disableMove(moveSlot.id);
+            }
+        },
+        onSwitchOut(pokemon) {
+            // 使用者离场，消除目标的能力强化并解除无法选中状态
+            const target = pokemon.volatiles['parasite'].linkedPokemon;
+            if (target && target.volatiles['parasitized']) {
+                // 以 target 为 source 降属性，可以无视恒净之躯
+                this.boost({ atk: -2, spa: -2, spe: -2 }, target, target);
+                target.removeVolatile('parasitized');
+                this.add('-message', `${pokemon.name} 离场了，${target.name} 失去了寄生带来的能力强化！`);
+            }
+        },
+        onFaint(pokemon) {
+            // 使用者倒下，消除目标的能力强化并解除无法选中状态
+            const target = pokemon.volatiles['parasite'].linkedPokemon;
+            if (target && target.volatiles['parasitized']) {
+                this.boost({ atk: -2, spa: -2, spe: -2 }, target, target);
+                target.removeVolatile('parasitized');
+                this.add('-message', `${pokemon.name} 倒下了，${target.name} 失去了寄生带来的能力强化！`);
+            }
+        },
+    },
+	auraburstatk: {
         name: 'Aura Burst Atk',
         noCopy: true,
         onStart(pokemon) {

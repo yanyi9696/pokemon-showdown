@@ -2525,7 +2525,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "攻击后替换后备宝可梦上场",
 	},
 	liehuomengzhuang: {
-        num: 878,
+        num: 10051,
         accuracy: 100,
         basePower: 100,
         category: "Physical",
@@ -2550,7 +2550,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "招式出现效果绝佳时威力提升33%",
     },
 	kejimengchong: {
-        num: 879,
+        num: 10052,
         accuracy: 100,
         basePower: 100,
         category: "Special",
@@ -2573,5 +2573,47 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         contestType: "Cool",
 		desc: "招式出现效果绝佳时威力提升33%",
 		shortDesc: "招式出现效果绝佳时威力提升33%",
+    },
+	jisheng: {
+       num: 10053,
+        accuracy: true,
+        basePower: 0,
+        category: "Status",
+        name: "Ji Sheng",
+        pp: 5,
+        priority: 3,
+        flags: { bypasssub: 1, allyanim: 1 },
+        onTryHit(target, source) {
+            // 如果目标已经被寄生，或使用者已经在寄生状态中，则技能失败
+            if (target.volatiles['parasitized']) return false;
+            if (source.volatiles['parasite']) return false;
+        },
+        onHit(target, source, move) {
+            // 目标损失 1/4 最大HP。注意：directDamage 必定直接扣血，无视"魔法防守"
+            const damage = this.directDamage(target.maxhp / 4, target, source);
+            
+            // 如果目标HP不够 1/4 导致被直接抽死，则中断后续强化和状态绑定效果
+            if (target.fainted || !damage) return false;
+
+            // 目标提升物攻、特攻与速度各 2 级
+            this.boost({ atk: 2, spa: 2, spe: 2 }, target, source, move);
+
+            // 给使用者挂上“寄生者”状态，给目标挂上“被寄生”状态
+            source.addVolatile('parasite');
+            target.addVolatile('parasitized');
+
+            // 将双方绑定，方便在条件中互相调用
+            source.volatiles['parasite'].linkedPokemon = target;
+            target.volatiles['parasitized'].linkedPokemon = source;
+            
+            this.add('-message', `${source.name} 寄生在了 ${target.name} 身上！${target.name} 被保护起来了！`);
+        },
+		secondary: null,
+        target: "adjacentAlly", 
+        type: "Poison",
+		zMove: { effect: 'heal' },
+        contestType: "Cool",
+		desc: "寄生一名我方宝可梦，令其损失1/4最大HP，提高物攻、特攻与速度各2级。期间目标将无法选中，而自己将无法使出技能",
+		shortDesc: "队友损失1/4最大HP,提高双攻速度2级;自己无法使出技能",
     },
 };

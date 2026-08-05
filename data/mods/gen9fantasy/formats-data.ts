@@ -315,6 +315,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mimikyubustedfantasy: {
 		tier: "OU",
 	},
+	nihilegofantasy: {
+		tier: "OU",
+	},
 	orbeetlegmegafantasy: {	
 		abilities: {0: "Qi Yi Zhi Zao Zhe"},	
 		tier: "OU",

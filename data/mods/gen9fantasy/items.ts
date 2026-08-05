@@ -2849,6 +2849,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 						"quanlidamo",
 						"pohuaiyu",
 						"heianqinshi",
+						"chuanshuozhili",
+						"poisonpuppeteer",
 					];
 
 					if (unchangeableAbilities.includes(affected.ability)) {
@@ -2932,6 +2934,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					"quanlidamo",
 					"pohuaiyu",
 					"heianqinshi",
+					"chuanshuozhili",
+					"poisonpuppeteer",
 				];
 
 				if (unchangeableAbilities.includes(affected.ability)) {

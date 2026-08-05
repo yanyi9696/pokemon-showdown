@@ -916,6 +916,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         num: 281,
 		shortDesc: "携带驱劲能量或天气为大晴天/大日照时,数值最高的能力会提高30%;若该项能力为速度,则会提高50%",
     },
+	poisonpuppeteer: {
+        onAnyAfterSetStatus(status, target, source, effect) {
+            // 删除了限定桃歹郎的代码行
+            if (source !== this.effectState.target || target === source || effect.effectType !== 'Move') return;
+            if (status.id === 'psn' || status.id === 'tox') {
+                target.addVolatile('confusion');
+            }
+        },
+        flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
+        name: "Poison Puppeteer",
+        rating: 3,
+        num: 310,
+    	shortDesc: "因招式而陷入中毒状态的对手同时也会陷入混乱状态",
+    },
 	//以下为CAP特性
 	mountaineer: {
 		onDamage(damage, target, source, effect) {
@@ -2769,10 +2783,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         num: 10051,
         shortDesc: "攻击和特攻翻倍;攻击招式命中后损失1/10最大HP",
     },
-	legendarypower: {
+	chuanshuozhili: {
         // 完美继承多属性的免疫特性交换、扮演、特性互换等 flag
         flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1 },
-        name: "Legendary Power",
+        name: "Chuan Shuo Zhi Li",
         rating: 4,
         num: 10052,
         shortDesc: "自己的属性会根据传说石板而自由变化",
