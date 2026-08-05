@@ -133,7 +133,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arena Trap', 'Moody', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 			// 在这里添加组合禁用
-			'Koraidon-Fantasy + Orichalcum Pulse',
+			'Koraidon-Fantasy + Orichalcum Pulse', 'Rayquaza-Fantasy + V-create', 'Rayquaza-Mega-Fantasy + V-create'
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
@@ -199,7 +199,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z', 'Barbaracle-Mega','Darmanitan-Fantasy', 'Lucario-Mega-Z',
 			'Greninja-Mega-Fantasy', 'Magearna-Mega', 'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy','Darkrai-Mega-Fantasy','Kartana-Fantasy',
 			'Mewtwo-Fantasy', 'Mewtwo-Mega-X-Fantasy', 'Mewtwo-Mega-Y-Fantasy','Lugia-Fantasy','Xerneas-Fantasy','Koraidon-Fantasy','Miraidon-Fantasy',
-			"Arceus-Legend-Fantasy", "Tapu Koko-Fantasy",
+			"Arceus-Legend-Fantasy", "Tapu Koko-Fantasy","Rayquaza-Fantasy", "Rayquaza-Mega-Fantasy",
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
@@ -576,6 +576,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		banlist: [
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
+			// 在这里添加组合禁用
+			'Koraidon-Fantasy + Orichalcum Pulse', 'Rayquaza-Fantasy + V-create', 'Rayquaza-Mega-Fantasy + V-create'
 		],
 		onValidateTeam(team) {
 			const tierPoints: {[k: string]: number} = {
@@ -717,7 +719,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	{
-		name: "[Gen 9] FC Champions Doubles B Double-Mega",
+		name: "[Gen 9] FC Champions Doubles C Double-Mega",
 		mod: 'gen9fantasy',
 		gameType: 'doubles',
 		ruleset: [
@@ -747,7 +749,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Shedinja',             // 禁用脱壳忍者
 		],
 		unbanlist: [
-			'Mega', // 但我们在这里特例解禁某一类
+			'Mega','Ultra Beast', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突

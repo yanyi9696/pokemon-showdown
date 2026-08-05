@@ -65,6 +65,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	miraidonfantasy: {
 		tier: "Uber",
 	},
+	rayquazafantasy: {
+		tier: "Uber",
+	},
+	rayquazamegafantasy: {
+		tier: "Uber",
+		abilities: {0: "Delta Stream"},	
+	},
 	regigigasfantasy: {
 		tier: "Uber",
 	},
