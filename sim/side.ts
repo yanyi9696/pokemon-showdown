@@ -1163,7 +1163,7 @@ export class Side {
 				// auto-pass
 				while (
 					index < this.active.length &&
-					(this.active[index].fainted || this.active[index].volatiles['commanding'])
+					(this.active[index].fainted || this.active[index].volatiles['commanding'] || this.active[index].volatiles['parasite'])
 				) {
 					this.choosePass();
 					index++;
@@ -1196,7 +1196,7 @@ export class Side {
 			}
 			break;
 		case 'move':
-			if (!pokemon.fainted && !pokemon.volatiles['commanding']) {
+			if (!pokemon.fainted && !pokemon.volatiles['commanding'] && !pokemon.volatiles['parasite']) {
 				return this.emitChoiceError(`Can't pass: Your ${pokemon.name} must make a move (or switch)`);
 			}
 			break;
