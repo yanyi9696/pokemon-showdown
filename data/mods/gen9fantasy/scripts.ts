@@ -197,5 +197,30 @@ export const Scripts: ModdedBattleScriptsData = {
 
             return null;
         },
+        
+        // ==========================================
+        // 3. 伤害结算拦截 (专属于你 Mod 的灼伤修复逻辑)
+        // ==========================================
+        modifyDamage(baseDamage, pokemon, target, move, suppressMessages = false) {
+            // 1. 先执行第 9 世代系统底层的默认伤害结算逻辑
+            // 【修改点】：使用 (this as any) 强制绕过 TypeScript 的类型检查报错
+            if ((this as any).super?.modifyDamage) {
+                baseDamage = (this as any).super.modifyDamage(baseDamage, pokemon, target, move, suppressMessages);
+            }
+
+            // 2. 判定：如果处于灼伤状态，并且是物理招式，此时系统底层已经将威力砍半了。
+            // (注意避开硬撑 facade，因为它本身就有无视灼伤惩罚的机制)
+            if (pokemon.status === 'brn' && baseDamage && move.category === 'Physical' && move.id !== 'facade') {
+                // 检查是否有我们自定义的免疫灼伤减半的特性/道具
+                const ignoreBurn = pokemon.hasAbility('zhiliao') || pokemon.getItem().id === 'fantasylifeorb';
+                
+                // 3. 如果拥有上述特性/道具，我们将被砍半的伤害强行乘 2 补救回来！
+                if (ignoreBurn) {
+                    baseDamage = this.battle.modify(baseDamage, 2);
+                }
+            }
+
+            return baseDamage;
+        },
     },
 };
