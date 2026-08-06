@@ -266,6 +266,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Earth Eater"},	
 	},
+	gliscorfantasy: {
+		tier: "OU",
+	},
 	garchompfantasy: {
 		tier: "OU",
 	},
@@ -591,6 +594,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	scolipedemegafantasy: {
 		tier: "UU",
 		abilities: {0: "No Guard"},		
+	},
+	seismitoadfantasy: {
+		tier: "UU",
 	},
 	skarmoryfantasy: {
 		tier: "UU",

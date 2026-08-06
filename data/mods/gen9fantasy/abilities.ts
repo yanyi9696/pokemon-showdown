@@ -1947,8 +1947,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				// 1. 尝试添加“噬影力”状态（用于后续威力提升50%）
 				const addedState = target.addVolatile('shiyingli');
 				
-				// 2. 尝试回复 1/8 最大HP，并传入 this.effect 触发特性横幅提示
-				const healed = this.heal(target.baseMaxhp / 8, target, target, this.effect);
+				// 2. 尝试回复 1/4 最大HP，并传入 this.effect 触发特性横幅提示
+				const healed = this.heal(target.baseMaxhp / 4, target, target, this.effect);
 
 				// 3. 如果既没能加状态（说明已经有了），也没能回血（说明已经满血），则单纯显示免疫信息
 				if (!addedState && !healed) {
@@ -1966,7 +1966,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Shi Ying Li",
 		rating: 3.5,
 		num: 10033,
-		shortDesc: "因为属性相性免疫对手的招式时,回复1/8最大HP;此后使出的幽灵属性招式威力提升50%",
+		shortDesc: "因为属性相性免疫对手的招式时,回复1/4最大HP;此后使出的幽灵属性招式威力提升50%",
 	},
 	meimenggongyou: {
 		// 1. 登场时：仅在此时尝试让我方进入睡眠
@@ -2791,4 +2791,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         num: 10052,
         shortDesc: "自己的属性会根据传说石板而自由变化",
     },
+	zhiliao: {
+		onDamagePriority: 1,
+		onDamage(damage, target, source, effect) {
+			// 当受到的是灼伤 (brn) 伤害时触发
+			if (effect.id === 'brn') {
+				// 回复 1/8 的最大生命值
+				this.heal(target.baseMaxhp / 8);
+				// 返回 false 来取消原本的灼伤扣血伤害
+				return false; 
+			}
+		},
+		flags: {},
+		name: "Zhi Liao",
+		rating: 4,
+		num: 10053,
+		shortDesc: "处于灼伤状态时不会损失HP和物攻减半，每回合回复1/8最大HP",
+	},
 };

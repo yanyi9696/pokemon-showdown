@@ -654,7 +654,8 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onModifyAtkPriority: 5,
 		onModifyAtk(atk, pokemon) {
-			if (pokemon.hasItem('fantasylifeorb')) return; 
+			// 如果携带有 fantasylifeorb 或者 特性为 炙疗(zhiliao)，则不减半物攻
+			if (pokemon.hasItem('fantasylifeorb') || pokemon.hasAbility('zhiliao')) return; 
 			return this.chainModify(0.5);
 		},
 		onResidualOrder: 10,
