@@ -2279,7 +2279,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Seismitoad",
 		forme: "Fantasy",
 		types: ["Water", "Ground"],
-		baseStats: { hp: 125, atk: 100, def: 75, spa: 60, spd: 75, spe: 74 },
+		baseStats: { hp: 125, atk: 110, def: 75, spa: 45, spd: 75, spe: 79 },
 		abilities: { 0: "Swift Swim", 1: "Poison Heal", H: "Water Absorb" },
 		heightm: 1.5,
 		weightkg: 62,

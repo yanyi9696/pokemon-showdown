@@ -652,22 +652,9 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				this.add('-status', target, 'brn');
 			}
 		},
-		// 【必须显式重写】：强制覆盖官方底层的减半逻辑，否则会自动继承原版
-		onBasePowerPriority: 15,
-		onBasePower(basePower, attacker, defender, move) {
-			// 如果是物理招式，并且不是“硬撑(facade)”
-			if (move && move.category === 'Physical' && move.id !== 'facade') {
-				// 检查：如果携带幻生宝珠、拥有炙疗、拥有毅力，强制 return 终止，无视减半！
-				if (attacker.hasItem('fantasylifeorb') || attacker.hasAbility('zhiliao') || attacker.hasAbility('guts')) {
-					return;
-				}
-				// 如果啥都没有，就执行标准的 0.5 倍威力惩罚
-				return this.chainModify(0.5);
-			}
-		},
 		onResidualOrder: 10,
 		onResidual(pokemon) {
-			// 携带幻之生命宝珠时，免除回合末的灼伤扣血
+			// 你原有的：携带幻之生命宝珠时，免除回合末的灼伤扣血
 			if (pokemon.hasItem('fantasylifeorb')) return;
 			this.damage(pokemon.baseMaxhp / 16);
 		},
