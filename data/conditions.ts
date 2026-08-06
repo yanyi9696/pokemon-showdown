@@ -652,14 +652,22 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				this.add('-status', target, 'brn');
 			}
 		},
-		onModifyAtkPriority: 5,
-		onModifyAtk(atk, pokemon) {
-			// 如果携带有 fantasylifeorb 或者 特性为 炙疗(zhiliao)，则不减半物攻
-			if (pokemon.hasItem('fantasylifeorb') || pokemon.hasAbility('zhiliao')) return; 
-			return this.chainModify(0.5);
+		// 【关键修改】：使用 onBasePower 直接干预威力，取代原先的 onModifyAtk
+		onBasePowerPriority: 15,
+		onBasePower(basePower, attacker, defender, move) {
+			// 如果是物理招式，且不是硬撑 (facade)
+			if (move && move.category === 'Physical' && move.id !== 'facade') {
+				// 检查：如果拥有幻之生命宝珠、炙疗 (zhiliao) 之一，则不减半
+				if (attacker.hasItem('fantasylifeorb') || attacker.hasAbility('zhiliao')) {
+					return;
+				}
+				// 否则，物理伤害减半
+				return this.chainModify(0.5);
+			}
 		},
 		onResidualOrder: 10,
 		onResidual(pokemon) {
+			// 携带幻之生命宝珠时，免除回合末的灼伤扣血
 			if (pokemon.hasItem('fantasylifeorb')) return;
 			this.damage(pokemon.baseMaxhp / 16);
 		},
