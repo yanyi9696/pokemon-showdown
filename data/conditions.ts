@@ -652,16 +652,16 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 				this.add('-status', target, 'brn');
 			}
 		},
-		// 【关键修改】：使用 onBasePower 直接干预威力，取代原先的 onModifyAtk
+		// 【必须显式重写】：强制覆盖官方底层的减半逻辑，否则会自动继承原版
 		onBasePowerPriority: 15,
 		onBasePower(basePower, attacker, defender, move) {
-			// 如果是物理招式，且不是硬撑 (facade)
+			// 如果是物理招式，并且不是“硬撑(facade)”
 			if (move && move.category === 'Physical' && move.id !== 'facade') {
-				// 检查：如果拥有幻之生命宝珠、炙疗 (zhiliao) 之一，则不减半
-				if (attacker.hasItem('fantasylifeorb') || attacker.hasAbility('zhiliao')) {
+				// 检查：如果携带幻生宝珠、拥有炙疗、拥有毅力，强制 return 终止，无视减半！
+				if (attacker.hasItem('fantasylifeorb') || attacker.hasAbility('zhiliao') || attacker.hasAbility('guts')) {
 					return;
 				}
-				// 否则，物理伤害减半
+				// 如果啥都没有，就执行标准的 0.5 倍威力惩罚
 				return this.chainModify(0.5);
 			}
 		},
