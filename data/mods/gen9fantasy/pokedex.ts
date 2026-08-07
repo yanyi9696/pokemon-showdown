@@ -385,7 +385,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Dragonite",
 		forme: "Fantasy",
 		types: ["Dragon", "Flying"],
-		baseStats: { hp: 91, atk: 80, def: 95, spa: 134, spd: 100, spe: 80 },
+		baseStats: { hp: 91, atk: 80, def: 95, spa: 134, spd: 100, spe: 100 },
 		abilities: { 0: "Chao Ji Yu Shui", H: "Multiscale" },
 		heightm: 2.2,
 		weightkg: 210,
