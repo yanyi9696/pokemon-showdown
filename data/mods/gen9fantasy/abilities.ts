@@ -2808,4 +2808,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10053,
 		shortDesc: "处于灼伤状态时不会损失HP和物攻减半，每回合回复1/8最大HP",
 	},
+	chaojiyushui: {
+        isNonstandard: "Custom", // 或是 "Future"
+        flags: {},
+        name: "Chao Ji Yu Shui",
+        rating: 3,
+        num: -2, // 分配一个未被使用的负数或其他编号
+        // Partially implemented in Pokemon.effectiveWeather() in sim/pokemon.ts
+    },
 };

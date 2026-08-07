@@ -1771,9 +1771,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	dragoninite: {
 		name: "Dragoninite",
 		spritenum: 547,
-		megaStone: "Dragonite-Mega",
-		megaEvolves: "Dragonite",
-		itemUser: ["Dragonite"],
+		megaStone: ["Dragonite-Mega", "Dragonite-Mega-Fantasy"],
+		megaEvolves: ["Dragonite", "Dragonite-Fantasy"],
+		itemUser: ["Dragonite", "Dragonite-Fantasy"],
 		onTakeItem(item, source) {
 			if (
 				(Array.isArray(item.megaEvolves)

@@ -125,6 +125,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Adaptability"},		
 	},
+	dragonitemegafantasy: {
+		tier: "(Uber)",
+		abilities: {0: "Pixilate"},		
+	},
 	drednawgmegafantasy: {	
 		abilities: {0: "Rock Head"},	
 		tier: "(Uber)",
@@ -241,6 +245,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	delphoxfantasy: {
 		tier: "OU",
+	},
+	dragonitefantasy: {
+		tier: "OU",	
 	},
 	durantfantasy: {
 		tier: "OU",
