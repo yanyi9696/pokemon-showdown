@@ -1052,6 +1052,9 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Black",
 		eggGroups: ["Field", "Fairy"],
 		requiredItem: "Mawilite",
+		requiredForme: "Mawile-Fantasy",
+		battleOnly: "Mawile-Fantasy",
+		spriteid: 'mawile-mega',
 	},
 	aggron: {
 		inherit: true,
