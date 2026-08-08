@@ -320,6 +320,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mamoswinefantasy: {
 		tier: "OU",
 	},
+	awilemegafantasy: {
+		tier: "OU",
+		abilities: {0: "Shuang Chong Da Zui" },	
+	},
 	melmetalfantasy: {
 		tier: "OU",
 	},
@@ -721,6 +725,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	marshtompfantasy: {
 		tier: "RU",
 	},
+	mawilefantasy: {
+		tier: "RU",
+	},
 	mukalolafantasy: {
 		tier: "RU",
 	},
@@ -743,6 +750,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	thievulfantasy: {
+		tier: "RU",
+	},
+	tsareenafantasy: {
 		tier: "RU",
 	},
 	vikavoltfantasy: {

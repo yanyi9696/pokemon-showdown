@@ -2815,4 +2815,43 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         num: 10054,
 		shortDesc: "即使天气不是下雨状态，也能以下雨态使用招式",
     },
+	bingnenglizhe: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Ice') {
+				this.debug('Bing Neng Li Zhe boost');
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Ice') {
+				this.debug('Bing Neng Li Zhe boost');
+				return this.chainModify(1.5);
+			}
+		},
+		flags: {},
+		name: "Bing Neng Li Zhe",
+		rating: 3.5,
+		num: 10055,
+		shortDesc: "该特性的宝可梦使出冰属性招式的威力提升50%",
+	},
+	shuangzhongdazui: {
+		onPrepareHit(source, target, move) {
+			// 核心判定：如果没有 'bite'（啃咬）标签，直接跳过，不触发特性
+			if (!move.flags['bite']) return;
+			// 排除变化类招式、本身已经是多段攻击的招式、蓄力招式、未来预知类、AOE、Z招式、极巨招式
+			if (move.category === 'Status' || move.multihit || move.flags['noparentalbond'] || move.flags['charge'] ||
+				move.flags['futuremove'] || move.spreadHit || move.isZ || move.isMax) return;
+			
+			// 将攻击段数设为 2（不需要 multihitType 标记，即可实现无衰减的两次满威力攻击）
+			move.multihit = 2;
+		},
+		flags: {},
+		name: "Shuang Zhong Da Zui",
+		rating: 4.5,
+		num: 10056,
+		desc: "使用啃咬类招式时，该招式会变为攻击2次。",
+		shortDesc: "啃咬类招式会合计攻击2次。",
+	},
 };
