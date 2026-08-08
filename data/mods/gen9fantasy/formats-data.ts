@@ -320,7 +320,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mamoswinefantasy: {
 		tier: "OU",
 	},
-	awilemegafantasy: {
+	mawilemegafantasy: {
 		tier: "OU",
 		abilities: {0: "Shuang Chong Da Zui" },	
 	},

@@ -30791,7 +30791,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{generation: 6, level: 100, abilities: ["intimidate"], moves: ["suckerpunch", "protect", "playrough", "ironhead"], pokeball: "cherishball"},
 		],
 	},
-	mmawilemegafantasy: {
+	mawilemegafantasy: {
 		learnset: {
 			qingsumihun: ["9M"],
 			yaojingzhiya: ["9M"],
