@@ -446,6 +446,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	silvallywaterfantasy: {
 		tier: "OU",
 	},
+	steelixmegazfantasy: {
+		tier: "OU",
+		abilities: {0: "Refrigerate"},		
+	},
 	swampertmegayfantasy: {
 		tier: "OU",
 		abilities: {0: "Swift Swim"},		
@@ -522,10 +526,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	steelixmegayfantasy: {
 		tier: "UUBL",
 		abilities: {0: "Heatproof"},		
-	},
-	steelixmegazfantasy: {
-		tier: "UUBL",
-		abilities: {0: "Refrigerate"},		
 	},
 	urshifurapidstrike2fantasy: {
 		tier: "UUBL",
