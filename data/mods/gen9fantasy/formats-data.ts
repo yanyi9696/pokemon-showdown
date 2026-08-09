@@ -582,6 +582,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	goodrahisuifantasy: {
 		tier: "UU",
 	},
+	heatmorfantasy: {
+		tier: "UU",
+	},
 	illumisefantasy: {
 		tier: "UU",
 	},

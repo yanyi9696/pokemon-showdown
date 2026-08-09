@@ -1158,7 +1158,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 volatileStatus: 'flinch',
             },
             {
-                chance: 10,
+                chance: 30,
                 onHit(target, source, move) {
                     // 随机一个状态
                     const statuses = ['brn', 'par', 'frz'];
@@ -1172,8 +1172,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         zMove: { basePower: 160 }, 
         maxMove: { basePower: 160 }, 
         contestType: "Cool",
-        desc: "有10%几率使目标陷入灼伤、麻痹或冰冻状态,有10%几率使目标畏缩",
-        shortDesc: "有10%几率使目标陷入灼伤/麻痹/冰冻,10%几率使目标畏缩"
+        desc: "有30%几率使目标陷入灼伤、麻痹或冰冻状态,有10%几率使目标畏缩",
+        shortDesc: "有30%几率使目标陷入灼伤/麻痹/冰冻,10%几率使目标畏缩"
     },
 	yuzhaozhijian: {
 		num: 10012,

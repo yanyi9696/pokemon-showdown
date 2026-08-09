@@ -60,6 +60,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 316,
 		shortDesc: "火属性招式的威力会变为1.5倍",
 	},
+
+	//以上是官方新特性
 	shellarmor: {
 		onCriticalHit: false,
 		onDamagingHit(damage, target, source, move) {
@@ -166,6 +168,33 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 56,
 		shortDesc: "接触时有30%机率使对手着迷。受到的伤害降低20%,若对手为异性则伤害再降低10%",
 	},
+	whitesmoke: {
+        // 1. 将 onTryBoost 改为 onAllyTryBoost，使其对我方全体生效
+        onAllyTryBoost(boost, target, source, effect) {
+            // 2. 删除了 if (source && target === source) return; 
+            // 从而允许防护自身招式带来的能力下降（例如蛮力、过热）
+            
+            let showMsg = false;
+            let i: BoostID;
+            for (i in boost) {
+                if (boost[i]! < 0) {
+                    delete boost[i];
+                    showMsg = true;
+                }
+            }
+            if (showMsg && !(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
+                // 3. 将提示信息里的来源从 target 改为 this.effectState.target
+                // 这样当队友受到保护时，战斗文本能正确显示是哪只宝可梦的“白色烟雾”发挥了作用
+                const effectHolder = this.effectState.target; 
+                this.add("-fail", target, "unboost", "[from] ability: White Smoke", `[of] ${effectHolder}`);
+            }
+        },
+        flags: { breakable: 1 },
+        name: "White Smoke",
+        rating: 2, 
+        num: 73,
+		shortDesc: "我方全体都能力都不会被降低,包括使用技能也不会降低自身能力",
+    },
 	battlearmor: {
 		onCriticalHit: false,
 		// 新增效果：免疫入场时生效的伤害类场地状态
