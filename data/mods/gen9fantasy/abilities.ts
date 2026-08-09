@@ -191,7 +191,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         },
         flags: { breakable: 1 },
         name: "White Smoke",
-        rating: 2, 
+        rating: 4, 
         num: 73,
 		shortDesc: "我方全体都能力都不会被降低,包括使用技能也不会降低自身能力",
     },
@@ -1498,15 +1498,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10018,
 		shortDesc: "仿照眼前宝可梦的模样重画皮,永久获得对方的特性",
 	},
-	muhouheishou: {
+	luojingxiashi: {
 		// 物理攻击修正
 		onModifyAtkPriority: 5,
 		onModifyAtk(atk, attacker, defender, move) {
 			// 检查防御方 (defender) 的HP是否小于等于一半
 			if (defender.hp * 2 <= defender.maxhp) {
-				this.debug('Mu Hou Hei Shou (ATK) boost');
-				// 将攻击方 (attacker) 的攻击 (atk) 数值临时乘以 1.5
-				return this.chainModify(1.5);
+				this.debug('Luo Jing Xia Shi (ATK) boost');
+				// 将攻击方 (attacker) 的攻击 (atk) 数值临时乘以 2
+				return this.chainModify(2);
 			}
 		},
 		// 特殊攻击修正
@@ -1514,16 +1514,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifySpA(spa, attacker, defender, move) {
 			// 同样，检查防御方 (defender) 的HP
 			if (defender.hp * 2 <= defender.maxhp) {
-				this.debug('Mu Hou Hei Shou (SPA) boost');
-				// 将攻击方 (attacker) 的特攻 (spa) 数值临时乘以 1.5
-				return this.chainModify(1.5);
+				this.debug('Luo Jing Xia Shi (SPA) boost');
+				// 将攻击方 (attacker) 的特攻 (spa) 数值临时乘以 2
+				return this.chainModify(2);
 			}
 		},
 		flags: {},
-		name: "Mu Hou Hei Shou",
+		name: "Luo Jing Xia Shi",
 		num: 10019,
-		rating: 2.5,
-		shortDesc: "如果目标的HP为其最大HP的1/2或以下,对其造成的伤害提升1.5倍",
+		rating: 3.5,
+		shortDesc: "如果目标的HP为其最大HP的1/2或以下,对其造成的伤害提升2倍",
 	},
 	shichong: {
 		onTryHit(target, source, move) {
@@ -2865,6 +2865,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10055,
 		shortDesc: "该特性的宝可梦使出冰属性招式的威力提升50%",
 	},
+	huonenglizhe: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Fire') {
+				this.debug('Huo Neng Li Zhe boost');
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Fire') {
+				this.debug('Huo Neng Li Zhe boost');
+				return this.chainModify(1.5);
+			}
+		},
+		flags: {},
+		name: "Huo Neng Li Zhe",
+		rating: 3.5,
+		num: 10056,
+		shortDesc: "该特性的宝可梦使出火属性招式的威力提升50%",
+	},
 	shuangzhongdazui: {
 		onPrepareHit(source, target, move) {
 			// 核心判定：如果没有 'bite'（啃咬）标签，直接跳过，不触发特性
@@ -2879,7 +2900,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		flags: {},
 		name: "Shuang Zhong Da Zui",
 		rating: 4.5,
-		num: 10056,
+		num: 10057,
 		desc: "使用啃咬类招式时，该招式会变为攻击2次。",
 		shortDesc: "啃咬类招式会合计攻击2次。",
 	},
