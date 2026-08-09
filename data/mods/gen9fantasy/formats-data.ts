@@ -523,6 +523,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 		abilities: {0: "Heatproof"},		
 	},
+	steelixmegazfantasy: {
+		tier: "UUBL",
+		abilities: {0: "Refrigerate"},		
+	},
 	urshifurapidstrike2fantasy: {
 		tier: "UUBL",
 	},

@@ -2547,7 +2547,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	},
 	slowbrogalarnite: {
         name: "Slowbrogalarnite",
-        spritenum: 519,
+        spritenum: 534,
         megaStone: ["Slowbro-Galar-Mega-Fantasy"], 
         megaEvolves: ["Slowbro-Galar-Fantasy"],
         itemUser: ["Slowbro-Galar-Fantasy"],
@@ -2605,6 +2605,27 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		desc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
 		shortDesc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
 	},
+	steelixitez: {
+		name: "Steelixite Z",
+		spritenum: 519,
+		megaStone: ["Steelix-Mega-Z-Fantasy"],
+		megaEvolves: ["Steelix-Fantasy"],
+		itemUser: ["Steelix-Fantasy"],
+		onTakeItem(item, source) {
+			if (
+				(Array.isArray(item.megaEvolves)
+					? item.megaEvolves
+					: [item.megaEvolves]
+				).includes(source.baseSpecies.baseSpecies)
+			)
+				return false;
+			return true;
+		},
+		num: 10051,
+		gen: 9,
+		desc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
+		shortDesc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
+	},
 	rayquazite: {
 		name: "Rayquazite",
 		spritenum: 522,
@@ -2621,7 +2642,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 				return false;
 			return true;
 		},
-		num: 10051,
+		num: 10052,
 		gen: 9,
 		desc: "让烈空坐-幻想携带后,在战斗时就能进行超级进化",
 		shortDesc: "让烈空坐-幻想携带后,在战斗时就能进行超级进化",
