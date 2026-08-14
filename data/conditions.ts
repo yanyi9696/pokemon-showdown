@@ -26,11 +26,11 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
             // 如果使用的招式属性在记录中，提供 1.1 倍永久加成
             if (user.m.gemBoosts && user.m.gemBoosts.includes(move.type)) {
                 this.debug('Gem Permanent Boost 10%');
-                return this.chainModify(1.1);
+                // 【修复核心】：使用 Showdown 标准的分数系统 [4506, 4096] 代表 1.1倍，避免浮点数失效
+                return this.chainModify([4506, 4096]);
             }
         },
     },
-
     // 2. 隐形场地监听器（你原代码中触发的 SideCondition）
     gemboost: {
         name: 'gemboost',
