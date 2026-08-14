@@ -23,12 +23,8 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 
             // 如果使用的招式属性在记录中，提供 1.1 倍永久加成
             if (user.m.gemBoosts && user.m.gemBoosts.includes(move.type)) {
-                
-                // 【新增提示】：在战斗记录里强制输出一条消息，证明服务端计算生效了
-                this.add('-message', `[系统提示] ${user.name} 的属性宝石将持续提供力量！`);
-                
-                // 使用 Showdown 标准的分数系统 [4506, 4096] 代表 1.1倍
-                return this.chainModify([4506, 4096]);
+                this.debug('Gem Permanent Boost 10%');
+                return this.chainModify([4506, 4096]); // 精准的 1.1 倍增幅
             }
         },
     },
