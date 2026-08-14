@@ -1752,9 +1752,9 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	slowbronite: {
         name: "Slowbronite",
         spritenum: 620,
-        megaStone: "Slowbro-Mega",
-        megaEvolves: "Slowbro",
-        itemUser: ["Slowbro"],
+        megaStone: ["Slowbro-Mega", "Slowbro-Mega-Fantasy"],
+		megaEvolves: ["Slowbro", "Slowbro-Fantasy"],
+		itemUser: ["Slowbro", "Slowbro-Fantasy"],
         onTakeItem(item, source) {
             // 同样改为严格匹配，这样伽勒尔形态就不会识别到普通进化石了
             const name = source.baseSpecies.name;

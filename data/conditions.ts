@@ -2,7 +2,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 	gempermanentboost: {
         name: 'Gem Permanent Boost',
         noCopy: true,
-        // 像大将一样，在上场或获得状态时，发送 |-start| 触发 UI 绿牌
         onStart(pokemon) {
             if (pokemon.m.gemBoosts) {
                 for (const type of pokemon.m.gemBoosts) {
@@ -10,7 +9,6 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
                 }
             }
         },
-        // 像大将一样，在宝可梦下场时，发送 |-end| 清除 UI 绿牌（防止 UI 错乱）
         onEnd(pokemon) {
             if (pokemon.m.gemBoosts) {
                 for (const type of pokemon.m.gemBoosts) {
@@ -25,8 +23,11 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 
             // 如果使用的招式属性在记录中，提供 1.1 倍永久加成
             if (user.m.gemBoosts && user.m.gemBoosts.includes(move.type)) {
-                this.debug('Gem Permanent Boost 10%');
-                // 【修复核心】：使用 Showdown 标准的分数系统 [4506, 4096] 代表 1.1倍，避免浮点数失效
+                
+                // 【新增提示】：在战斗记录里强制输出一条消息，证明服务端计算生效了
+                this.add('-message', `[系统提示] ${user.name} 的属性宝石将持续提供力量！`);
+                
+                // 使用 Showdown 标准的分数系统 [4506, 4096] 代表 1.1倍
                 return this.chainModify([4506, 4096]);
             }
         },
