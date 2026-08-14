@@ -1,4 +1,48 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	gempermanentboost: {
+        name: 'Gem Permanent Boost',
+        noCopy: true,
+        // 像大将一样，在上场或获得状态时，发送 |-start| 触发 UI 绿牌
+        onStart(pokemon) {
+            if (pokemon.m.gemBoosts) {
+                for (const type of pokemon.m.gemBoosts) {
+                    this.add('-start', pokemon, 'gemboost' + type, '[silent]');
+                }
+            }
+        },
+        // 像大将一样，在宝可梦下场时，发送 |-end| 清除 UI 绿牌（防止 UI 错乱）
+        onEnd(pokemon) {
+            if (pokemon.m.gemBoosts) {
+                for (const type of pokemon.m.gemBoosts) {
+                    this.add('-end', pokemon, 'gemboost' + type, '[silent]');
+                }
+            }
+        },
+        onBasePowerPriority: 15,
+        onBasePower(basePower, user, target, move) {
+            // 核心拦截：如果当前回合正在享受原本的 30% 爆发，则不叠加这 10%
+            if (user.volatiles['gem']) return;
+
+            // 如果使用的招式属性在记录中，提供 1.1 倍永久加成
+            if (user.m.gemBoosts && user.m.gemBoosts.includes(move.type)) {
+                this.debug('Gem Permanent Boost 10%');
+                return this.chainModify(1.1);
+            }
+        },
+    },
+
+    // 2. 隐形场地监听器（你原代码中触发的 SideCondition）
+    gemboost: {
+        name: 'gemboost',
+        // onSwitchIn 会在己方任何宝可梦上场时触发
+        onSwitchIn(pokemon) {
+            // 检查这只刚上场的宝可梦，它的内存(m)里有没有吃过宝石的记录
+            if (pokemon.m.gemBoosts && pokemon.m.gemBoosts.length > 0) {
+                // 如果有记录，就重新给它赋予上面的状态，触发大将式的 onStart UI
+                pokemon.addVolatile('gempermanentboost');
+            }
+        },
+    },
 	// 队友（被寄生者）的状态
     parasitized: {
         name: 'parasitized',

@@ -32,6 +32,348 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
     } as any,
 
 	//原版道具
+	buggem: {
+        name: "Bug Gem",
+        spritenum: 53,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Bug' && source.useItem()) {
+                source.addVolatile('gem'); // 触发原版一次性30%加成
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Bug')) source.m.gemBoosts.push('Bug');
+                source.addVolatile('gempermanentboost'); // 触发永久加成状态
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 558,
+        gen: 5,
+        desc: "使用虫属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的虫属性招式威力将永久提升10%",
+        shortDesc: "虫属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    darkgem: {
+        name: "Dark Gem",
+        spritenum: 89,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Dark' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Dark')) source.m.gemBoosts.push('Dark');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 562,
+        gen: 5,
+        desc: "使用恶属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的恶属性招式威力将永久提升10%",
+        shortDesc: "恶属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    dragongem: {
+        name: "Dragon Gem",
+        spritenum: 107,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Dragon' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Dragon')) source.m.gemBoosts.push('Dragon');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 561,
+        gen: 5,
+        desc: "使用龙属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的龙属性招式威力将永久提升10%",
+        shortDesc: "龙属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    electricgem: {
+        name: "Electric Gem",
+        spritenum: 120,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+            if (move.type === 'Electric' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Electric')) source.m.gemBoosts.push('Electric');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 550,
+        gen: 5,
+        desc: "使用电属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的电属性招式威力将永久提升10%",
+        shortDesc: "电属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    fairygem: {
+        name: "Fairy Gem",
+        spritenum: 611,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Fairy' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Fairy')) source.m.gemBoosts.push('Fairy');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 715,
+        gen: 6,
+        desc: "使用妖精属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的妖精属性招式威力将永久提升10%",
+        shortDesc: "妖精属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    fightinggem: {
+        name: "Fighting Gem",
+        spritenum: 139,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Fighting' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Fighting')) source.m.gemBoosts.push('Fighting');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 553,
+        gen: 5,
+        desc: "使用格斗属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的格斗属性招式威力将永久提升10%",
+        shortDesc: "格斗属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    firegem: {
+        name: "Fire Gem",
+        spritenum: 141,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+            if (move.type === 'Fire' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Fire')) source.m.gemBoosts.push('Fire');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 548,
+        gen: 5,
+        desc: "使用火属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的火属性招式威力将永久提升10%",
+        shortDesc: "火属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    flyinggem: {
+        name: "Flying Gem",
+        spritenum: 149,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Flying' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Flying')) source.m.gemBoosts.push('Flying');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 556,
+        gen: 5,
+        desc: "使用飞行属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的飞行属性招式威力将永久提升10%",
+        shortDesc: "飞行属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    ghostgem: {
+        name: "Ghost Gem",
+        spritenum: 161,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Ghost' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Ghost')) source.m.gemBoosts.push('Ghost');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 560,
+        gen: 5,
+        desc: "使用幽灵属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的幽灵属性招式威力将永久提升10%",
+        shortDesc: "幽灵属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    grassgem: {
+        name: "Grass Gem",
+        spritenum: 172,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+            if (move.type === 'Grass' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Grass')) source.m.gemBoosts.push('Grass');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 551,
+        gen: 5,
+        desc: "使用草属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的草属性招式威力将永久提升10%",
+        shortDesc: "草属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    groundgem: {
+        name: "Ground Gem",
+        spritenum: 182,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Ground' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Ground')) source.m.gemBoosts.push('Ground');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 555,
+        gen: 5,
+        desc: "使用地面属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的地面属性招式威力将永久提升10%",
+        shortDesc: "地面属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    icegem: {
+        name: "Ice Gem",
+        spritenum: 218,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Ice' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Ice')) source.m.gemBoosts.push('Ice');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 552,
+        gen: 5,
+        desc: "使用冰属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的冰属性招式威力将永久提升10%",
+        shortDesc: "冰属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    normalgem: {
+        name: "Normal Gem",
+        spritenum: 307,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+            if (move.type === 'Normal' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Normal')) source.m.gemBoosts.push('Normal');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 564,
+        gen: 5,
+        desc: "使用一般属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的一般属性招式威力将永久提升10%",
+        shortDesc: "一般属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    poisongem: {
+        name: "Poison Gem",
+        spritenum: 344,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Poison' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Poison')) source.m.gemBoosts.push('Poison');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 554,
+        gen: 5,
+        desc: "使用毒属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的毒属性招式威力将永久提升10%",
+        shortDesc: "毒属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    psychicgem: {
+        name: "Psychic Gem",
+        spritenum: 369,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Psychic' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Psychic')) source.m.gemBoosts.push('Psychic');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 557,
+        gen: 5,
+        desc: "使用超能力属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的超能力属性招式威力将永久提升10%",
+        shortDesc: "超能力属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    rockgem: {
+        name: "Rock Gem",
+        spritenum: 415,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Rock' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Rock')) source.m.gemBoosts.push('Rock');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 559,
+        gen: 5,
+        desc: "使用岩石属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的岩石属性招式威力将永久提升10%",
+        shortDesc: "岩石属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    steelgem: {
+        name: "Steel Gem",
+        spritenum: 473,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status') return;
+            if (move.type === 'Steel' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Steel')) source.m.gemBoosts.push('Steel');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 563,
+        gen: 5,
+        desc: "使用钢属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的钢属性招式威力将永久提升10%",
+        shortDesc: "钢属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
+    watergem: {
+        name: "Water Gem",
+        spritenum: 528,
+        isGem: true,
+        onSourceTryPrimaryHit(target, source, move) {
+            if (target === source || move.category === 'Status' || move.flags['pledgecombo']) return;
+            if (move.type === 'Water' && source.useItem()) {
+                source.addVolatile('gem');
+                if (!source.m.gemBoosts) source.m.gemBoosts = [];
+                if (!source.m.gemBoosts.includes('Water')) source.m.gemBoosts.push('Water');
+                source.addVolatile('gempermanentboost');
+                source.side.addSideCondition('gemboost');
+            }
+        },
+        num: 549,
+        gen: 5,
+        desc: "使用水属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的水属性招式威力将永久提升10%",
+        shortDesc: "水属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+    },
 	berserkgene: {
 		name: "Berserk Gene",
 		spritenum: 388,

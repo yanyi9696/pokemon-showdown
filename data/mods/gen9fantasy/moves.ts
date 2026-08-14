@@ -39,7 +39,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         name: "Razor Wind",
         pp: 10,
         priority: 0,
-        flags: { allyanim: 1, metronome: 1, futuremove: 1, slicing: 1 },
+        flags: { allyanim: 1, metronome: 1, futuremove: 1, slicing: 1, wind: 1 },
         ignoreImmunity: true,
         onTry(source, target) {
             if (!target.side.addSlotCondition(target, 'futuremove')) return false;
