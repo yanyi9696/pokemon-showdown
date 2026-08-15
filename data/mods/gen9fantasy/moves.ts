@@ -31,6 +31,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	    inherit: true,
         isNonstandard: null,
 	},
+	bouncybubble: {
+		inherit: true,
+        isNonstandard: null,
+	},
+	sizzlyslide: {
+		inherit: true,
+        isNonstandard: null,
+	},
+	sappyseed: {
+		inherit: true,
+        isNonstandard: null,
+	},
 	razorwind: {
         num: 13,
         accuracy: 100,
@@ -2611,14 +2623,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         shortDesc: "队友损失1/4最大HP,提高双攻速度2级;自己无法使出技能",
     },
 	qingsumihun: {
-		 num: 10054,
+		num: 10054,
 		accuracy: 90,
 		basePower: 60,
 		category: "Physical",
 		name: "Qing Su Mi Hun",
 		pp: 15,
 		priority: 0,
-		flags: {contact: 1, protect: 1, mirror: 1},
+		flags: { contact: 1, protect: 1, mirror: 1},
 		secondary: {
 			chance: 100,
 			volatileStatus: 'attract',
@@ -2627,7 +2639,121 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Fairy",
 		zMove: { basePower: 120 },
 		maxMove: { basePower: 110 },
-		desc: "如果目标与使用者的性别相异，在造成伤害后会使目标陷入着迷状态。如果任何一方是无性别，则不会陷入着迷状态。",
-		shortDesc: "100%几率使异性目标陷入着迷状态。",
+		desc: "如果目标与使用者的性别相异,在造成伤害后会使目标陷入着迷状态。如果任何一方是无性别,则不会陷入着迷状态",
+		shortDesc: "100%几率使异性目标陷入着迷状态",
 	},
+	houbaxi: {
+		num: 10055,
+		accuracy: 100,
+		basePower: 100,
+		category: "Physical",
+		name: "Hou Ba Xi",
+		pp: 5,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1 },
+		onModifyMove(move, pokemon, target) {
+			// 【光子阁逻辑】特攻大于攻击时此招式变成特殊招式
+			if (pokemon.getStat('atk', false, true) < pokemon.getStat('spa', false, true)) {
+				move.category = 'Special';
+			}
+
+			if (!target) return;
+
+			const validSpecies = ['Simisage-Fantasy', 'Simisear-Fantasy', 'Simipour-Fantasy'];
+			
+			// 只在特定的幻想形态下触发变属性变形态
+			if (validSpecies.includes(pokemon.species.name)) {
+				let bestType = 'Normal';
+				let maxEff = -4; 
+				let candidateTypes: string[] = [];
+				
+				// 猴把戏只能在草、火、水中切换
+				const typesToTest = ['Grass', 'Fire', 'Water'];
+
+				for (const type of typesToTest) {
+					// 引擎自带的无效判定
+					if (!this.dex.getImmunity(type, target)) continue;
+
+					const weather = this.field.effectiveWeather();
+					if (weather === 'desolateland' && type === 'Water') continue; 
+					if (weather === 'primordialsea' && type === 'Fire') continue; 
+
+					const targetAbility = target.getAbility().name;
+					
+					// 提取与草火水相关的免疫特性（支持你的自定义扩展）
+					const immunities: {[k: string]: string[]} = {
+						'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'], 
+						'Fire': ['Flash Fire', 'Well-Baked Body'],
+						'Grass': ['Sap Sipper']
+					};
+					
+					if (immunities[type] && immunities[type].includes(targetAbility)) {
+						continue; 
+					}
+
+					// 计算基础的属性克制倍率
+					let eff = 0;
+					for (const targetType of target.getTypes()) {
+						let e = this.dex.getEffectiveness(type, targetType);
+						eff += e;
+					}
+
+					// 自定义特性（如渊海洋流等）的拦截
+					if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
+						if (eff > 0) {
+							eff = 0; // 抹平克制
+						}
+					}
+					if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
+
+					if (eff > maxEff) {
+						maxEff = eff;
+						candidateTypes = [type];
+					} else if (eff === maxEff) {
+						candidateTypes.push(type);
+					}
+				}
+
+				// 取当前形态对应的属性作为保底（如果全部被免疫/被阻挡）
+				let currentType = 'Grass';
+				if (pokemon.species.name === 'Simisear-Fantasy') currentType = 'Fire';
+				if (pokemon.species.name === 'Simipour-Fantasy') currentType = 'Water';
+
+				if (candidateTypes.length > 0) {
+					bestType = this.sample(candidateTypes);
+				} else {
+					bestType = currentType;
+				}
+
+				// 确定新属性对应的官方/自定义形态名称
+				let targetForme = 'Simisage-Fantasy';
+				if (bestType === 'Fire') targetForme = 'Simisear-Fantasy';
+				if (bestType === 'Water') targetForme = 'Simipour-Fantasy';
+
+				// 强制修正招式属性，覆盖掉原有判断
+				move.type = bestType;
+
+				// 【核心】若计算出的新形态与目前不同，进行形态变化与通讯
+				if (pokemon.species.name !== targetForme) {
+					pokemon.formeChange(targetForme, this.effect, true);
+					pokemon.setType(bestType);
+					
+					// 发送原生的静默 typechange 协议
+					this.add('-start', pokemon, 'typechange', bestType, '[silent]');
+					
+					// 发送猴把戏的自定义协议触发动画
+					this.add('-houbaxi', pokemon, targetForme, bestType);
+				}
+			}
+		},
+		ignoreAbility: false,
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		zMove: { basePower: 180 },
+		maxMove: { basePower: 130 },
+		contestType: "Cool",
+		desc: "使出招式前将在花椰猿-幻想/爆香猿-幻想/冷水猿-幻想间进行形态变化,招式也将随之变为更优势的属性。特攻大于攻击时此招式变成特殊招式",
+        shortDesc: "在花椰猿/爆香猿/冷水猿间智能切换;特攻＞攻击变为特殊",
+    },
 };

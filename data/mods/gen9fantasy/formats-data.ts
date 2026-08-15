@@ -759,6 +759,15 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sawsbuckwinterfantasy: {
 		tier: "RU",
 	},
+	simisagefantasy: {
+		tier: "RU",
+	},
+	simisearfantasy: {
+		tier: "RU",
+	},
+	simipourfantasy: {
+		tier: "RU",
+	},
 	stonjournerfantasy: {
 		tier: "RU",
 	},
