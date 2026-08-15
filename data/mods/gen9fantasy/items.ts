@@ -3723,11 +3723,10 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 
                 let maxEff = 0; 
                 let candidateTypes: string[] = [];
-                let neutralTypes: string[] = []; // 新增：用于记录所有未被对方免疫的属性，作为兜底池
 
                 for (const type of this.dex.types.names()) {
                     if (type === '???' || type === 'Stellar') continue;
-                    // 引擎自带的无效判定（比如一般打幽灵,地面打飞行）
+                    // 引擎自带的无效判定
                     if (!this.dex.getImmunity(type, target)) continue;
 
                     const weather = this.field.effectiveWeather();
@@ -3736,6 +3735,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                     const targetAbility = target.getAbility().name;
                     
+                    // 【扩展字典】将你的私服自定义免疫特性全部加入进去
                     const immunities: {[k: string]: string[]} = {
                         'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'],
                         'Fire': ['Flash Fire', 'Well-Baked Body'],
@@ -3768,17 +3768,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     // 处理“渊海洋流”在雨天的特殊效果
                     if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
                         if (eff > 0) {
-                            eff = 0; // 效果绝佳(eff > 0)会被直接抹平为普通的 1倍(eff = 0)
+                            eff = 0; 
                         }
                     }
 
                     if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
 
-                    // 【核心逻辑】：只要走到了这里，说明这个属性没有被免疫，可以造成伤害
-                    // 把它放进兜底池，以防我们处于 ??? 属性且找不到克制属性
-                    neutralTypes.push(type);
-
-                    // 只有计算出的倍率大于 0（即克制），才进入最高倍率比对池
+                    // 只有计算出的倍率大于 0（即克制），才进入最高倍率比对
                     if (eff > 0) {
                         if (eff > maxEff) {
                             maxEff = eff;
@@ -3789,20 +3785,27 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     }
                 }
 
-                // 【核心修复】：优先选克制属性；如果不克制且自身是 ???，则随机选一个能打出伤害的兜底属性以确保获得本系加成 (STAB)
+                // 【核心修复2】：处理找不到弱点时的属性分配逻辑
                 if (candidateTypes.length > 0) {
                     bestType = this.sample(candidateTypes);
                 } else if (currentType === '???') {
-                    if (neutralTypes.length > 0) {
-                        bestType = this.sample(neutralTypes);
-                    } else {
-                        bestType = 'Normal'; // 绝对兜底（例如目标拥有神奇守护且没有弱点）
-                    }
+                    // 如果对方没有弱点，且自身还是初始的“？？？”，在所有常规属性里随机选一个，确保获得本系和抵抗
+                    const allTypes = this.dex.types.names().filter(t => t !== '???' && t !== 'Stellar');
+                    bestType = this.sample(allTypes);
+                } else {
+                    // 对方没弱点，且自身已经是正常的某种属性，则不改变形态
+                    bestType = currentType;
                 }
 
                 // 修改服务端内在属性，并向客户端发送指令
                 if (pokemon.getTypes().join() !== bestType) {
-                    pokemon.setType(bestType); // 覆盖自身属性，确保后续伤害计算拥有 1.5 倍 STAB 加成
+                    // 【核心修复1】：强改底层属性，解决吃不到 1.5 倍本系加成的问题
+                    // 尝试使用带 enforce 参数的强制变身（兼容部分新版本 Showdown）
+                    const success = pokemon.setType(bestType, true);
+                    // 如果引擎依然拦截（返回 false），则使用终极手段：直接覆盖服务端的属性数组！
+                    if (!success) {
+                        (pokemon as any).types = [bestType]; 
+                    }
                     
                     this.add('-start', pokemon, 'typechange', bestType, '[silent]');
                     this.add('-legendplate', pokemon, bestType);
