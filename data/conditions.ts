@@ -3,24 +3,34 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
         name: 'Gem Defense Permanent Boost',
         noCopy: true,
         onStart(pokemon) {
-            // 发送标识给客户端，客户端会将其识别为小写的 gemboostdefense
             this.add('-start', pokemon, 'gemboostdefense', '[silent]');
         },
         onEnd(pokemon) {
             this.add('-end', pokemon, 'gemboostdefense', '[silent]');
         },
-        // 提升 10% 的物理防御
+        // 提升 10% 的物理防御（受到物理攻击时触发）
         onModifyDefPriority: 6,
-        onModifyDef(def, pokemon) {
+        onModifyDef(def, pokemon, target, move) {
+            // 【核心防叠加逻辑】
+            // 使用 (move as any) 绕过 TS 类型检查
+            if (move && (move as any).fantasyDefenseAttacker === pokemon) return;
             return this.chainModify(1.1);
         },
-        // 提升 10% 的特殊防御
+        // 提升 10% 的特殊防御（受到特殊攻击时触发）
         onModifySpDPriority: 6,
         onModifySpD(spd, pokemon) {
             return this.chainModify(1.1);
         },
+        // ================= 新增：专门针对扑击等基于防御攻击的招式 =================
+        onBasePowerPriority: 19,
+        onBasePower(basePower, attacker, defender, move) {
+            if (move.id === 'bodypress' || move.overrideOffensiveStat === 'def') {
+                // 使用 (move as any) 强行写入自定义标记，证明扑击已经吃过加成了
+                (move as any).fantasyDefenseAttacker = attacker;
+                return this.chainModify(1.1);
+            }
+        },
     },
-
     gemdefenseboost: {
         name: 'gemdefenseboost',
         onSwitchIn(pokemon) {
