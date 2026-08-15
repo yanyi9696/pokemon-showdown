@@ -3718,8 +3718,12 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         // 在出招时计算克制,并发送自定义协议改变外观
         onModifyMove(move, pokemon, target) {
             if (move.id === 'judgment' && target && pokemon.species.name === 'Arceus-Legend-Fantasy') {
-                let bestType = 'Normal';
-                let maxEff = -4; 
+                // 【核心修改1】：将默认的最佳属性设为宝可梦当前的属性
+                let currentType = pokemon.getTypes()[0];
+                let bestType = currentType; 
+                
+                // 将初始最大倍率设为0，后续只有 >0 的属性才能更新它
+                let maxEff = 0; 
                 let candidateTypes: string[] = [];
 
                 for (const type of this.dex.types.names()) {
@@ -3735,14 +3739,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     
                     // 【扩展字典】将你的私服自定义免疫特性全部加入进去
                     const immunities: {[k: string]: string[]} = {
-                        'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'], // 增加了 Water Compaction
+                        'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'],
                         'Fire': ['Flash Fire', 'Well-Baked Body'],
                         'Electric': ['Volt Absorb', 'Lightning Rod', 'Motor Drive'],
                         'Ground': ['Levitate', 'Earth Eater'],
                         'Grass': ['Sap Sipper'],
-                        'Bug': ['Shi Chong'],          // 增加了 食虫 免疫
-                        'Poison': ['Tun Du'],          // 增加了 吞毒 免疫
-                        'Steel': ['Gang Tie Ju He Wu'] // 增加了 钢铁聚合物 免疫
+                        'Bug': ['Shi Chong'],          
+                        'Poison': ['Tun Du'],          
+                        'Steel': ['Gang Tie Ju He Wu'] 
                     };
                     
                     if (immunities[type] && immunities[type].includes(targetAbility)) {
@@ -3763,8 +3767,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                         eff += e;
                     }
 
-                    // 【新增逻辑】处理“渊海洋流”在雨天的特殊效果
-                    // 如果对手是渊海洋流特性,且当前天气为下雨或始源之海
+                    // 处理“渊海洋流”在雨天的特殊效果
                     if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
                         if (eff > 0) {
                             eff = 0; // 效果绝佳(eff > 0)会被直接抹平为普通的 1倍(eff = 0)
@@ -3773,36 +3776,37 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                     if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
 
-                    if (eff > maxEff) {
-                        maxEff = eff;
-                        candidateTypes = [type];
-                    } else if (eff === maxEff) {
-                        candidateTypes.push(type);
+                    // 【核心修改2】：只有计算出的倍率大于 0（即克制），才进入最高倍率比对
+                    if (eff > 0) {
+                        if (eff > maxEff) {
+                            maxEff = eff;
+                            candidateTypes = [type];
+                        } else if (eff === maxEff) {
+                            candidateTypes.push(type);
+                        }
                     }
                 }
 
+                // 如果找到了克制的属性，则从中随机选一个；如果没找到，bestType 依然是当前的 currentType
                 if (candidateTypes.length > 0) {
                     bestType = this.sample(candidateTypes);
                 }
 
-                // 【核心】修改服务端内在属性,并向客户端发送指令
+                // 修改服务端内在属性，并向客户端发送指令（如果属性没变，这里就不会触发变身动画）
                 if (pokemon.getTypes().join() !== bestType) {
                     pokemon.setType(bestType);
                     
-                    // 发送原生的静默 typechange 协议,这会让客户端底层自动把血条下的 ??? 替换成新属性
                     this.add('-start', pokemon, 'typechange', bestType, '[silent]');
-                    
-                    // 继续发送我们的自定义协议,触发耀眼的究极爆发动画和模型替换
                     this.add('-legendplate', pokemon, bestType);
                 }
                 
-                // 强制修正招式属性,覆盖掉原有的判断
+                // 强制修正招式属性，覆盖掉原有的判断
                 move.type = bestType;
             }
         },
         num: 30012,
         gen: 9,
-        desc: "在对战中使出制裁光砾前,将形态与制裁光砾转换为克制对手的属性",
+        desc: "在对战中使出制裁光砾前,若能克制对手,则将形态与制裁光砾转换为对应的属性",
     },
 	fantasydefensegem: {
         name: "Fantasy Defense Gem",
