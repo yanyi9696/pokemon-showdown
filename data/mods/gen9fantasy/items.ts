@@ -3723,6 +3723,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 
                 let maxEff = 0; 
                 let candidateTypes: string[] = [];
+                // 【新增】专门收集对目标造成 1 倍伤害（既不克制也不抵抗）的属性池
+                let neutralTypes: string[] = []; 
 
                 for (const type of this.dex.types.names()) {
                     if (type === '???' || type === 'Stellar') continue;
@@ -3774,35 +3776,43 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                     if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
 
-                    // 只有计算出的倍率大于 0（即克制），才进入最高倍率比对
+                    // 【核心修改】：精准分类克制与不抵抗
                     if (eff > 0) {
+                        // 克制对方的属性，放入最高倍率角逐
                         if (eff > maxEff) {
                             maxEff = eff;
                             candidateTypes = [type];
                         } else if (eff === maxEff) {
                             candidateTypes.push(type);
                         }
+                    } else if (eff === 0) {
+                        // 【收集1倍伤害】：打对方不微弱的属性，收入备选池
+                        neutralTypes.push(type);
                     }
                 }
 
-                // 【核心修复2】：处理找不到弱点时的属性分配逻辑
+                // 【逻辑更新】：没有克制时寻找不抵抗的最优解
                 if (candidateTypes.length > 0) {
+                    // 1. 有克制属性，直接选最优
                     bestType = this.sample(candidateTypes);
-                } else if (currentType === '???') {
-                    // 如果对方没有弱点，且自身还是初始的“？？？”，在所有常规属性里随机选一个，确保获得本系和抵抗
-                    const allTypes = this.dex.types.names().filter(t => t !== '???' && t !== 'Stellar');
-                    bestType = this.sample(allTypes);
-                } else {
-                    // 对方没弱点，且自身已经是正常的某种属性，则不改变形态
+                } else if (neutralTypes.includes(currentType)) {
+                    // 2. 没有克制，但现在的属性打对方是1倍伤害。
+                    // （注：因为“???”和被免疫的属性根本进不了 neutralTypes，所以这里自带了当前属性不是“???”的排雷判断）
+                    // 结论：现在的属性就是最佳属性，按兵不动！
                     bestType = currentType;
+                } else if (neutralTypes.length > 0) {
+                    // 3. 没有克制，且现在的属性打对方微弱（或者是“???”）。
+                    // 结论：从所有1倍伤害的属性中随机挑一个，绝对不打微弱伤害！
+                    bestType = this.sample(neutralTypes);
+                } else {
+                    // 4. 极端情况兜底（比如没有弱点的脱壳忍者，全部属性都被免疫或微弱）
+                    bestType = currentType === '???' ? 'Normal' : currentType;
                 }
 
                 // 修改服务端内在属性，并向客户端发送指令
                 if (pokemon.getTypes().join() !== bestType) {
-                    // 【核心修复1】：强改底层属性，解决吃不到 1.5 倍本系加成的问题
-                    // 尝试使用带 enforce 参数的强制变身（兼容部分新版本 Showdown）
+                    // 强改底层属性，解决吃不到 1.5 倍本系加成的问题
                     const success = pokemon.setType(bestType, true);
-                    // 如果引擎依然拦截（返回 false），则使用终极手段：直接覆盖服务端的属性数组！
                     if (!success) {
                         (pokemon as any).types = [bestType]; 
                     }
@@ -3817,7 +3827,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
         num: 30012,
         gen: 9,
-        desc: "在对战中使出制裁光砾前,若能克制对手,则将形态与制裁光砾转换为对应的属性",
+        desc: "在对战中使出制裁光砾前,将形态与制裁光砾转换为克制对手或不被抵抗的属性",
     },
 	fantasydefensegem: {
         name: "Fantasy Defense Gem",
