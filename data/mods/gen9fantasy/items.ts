@@ -3804,35 +3804,35 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         gen: 9,
         desc: "在对战中使出制裁光砾前,将形态与制裁光砾转换为克制对手的属性",
     },
-	fantasydefensegem: {
-        name: "Fantasy Defense Gem",
-        spritenum: 9,
-        isGem: true,
-        onSourceModifyDamage(damage, source, target, move) {
-            // 如果是变化类招式,或是自己打自己（比如混乱）,则不触发
-            if (move.category === 'Status' || target === source) return;
-            
-            // typeMod > 0 代表招式对当前宝可梦是“效果绝佳”
-            if (target.getMoveHitData(move).typeMod > 0) {
-                // 检查是否打在替身上（打在替身上且招式不穿透时,不消耗道具）
-                const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
-                if (hitSub) return;
-                
-                // 如果成功消耗掉道具
-                if (target.useItem()) {
-                    // 记录这只宝可梦吃过幻防宝石
-                    target.m.hasFantasyDefenseGem = true;
-                    // 赋予永久双防提升状态
-                    target.addVolatile('gemdefensepermanentboost');
-                    // 挂上场地监听,保证下场后状态不丢失
-                    target.side.addSideCondition('gemdefenseboost');
-                    
-                    // 游戏内提示
-                    this.add('-message', `${target.name}的幻之防御宝石使其受到的伤害降低了！`);
-                    
-                    // 减伤30%,等效于将伤害/威力乘以 0.7
-                    return this.chainModify(0.7); 
-                }
+	gemdefensepermanentboost: {
+        name: 'Gem Defense Permanent Boost',
+        noCopy: true,
+        onStart(pokemon) {
+            this.add('-start', pokemon, 'gemboostdefense', '[silent]');
+        },
+        onEnd(pokemon) {
+            this.add('-end', pokemon, 'gemboostdefense', '[silent]');
+        },
+        // 提升 10% 的物理防御（受到物理攻击时触发）
+        onModifyDefPriority: 6,
+        onModifyDef(def, pokemon, target, move) {
+            // 【核心防叠加逻辑】
+            // 使用 (move as any) 绕过 TS 类型检查
+            if (move && (move as any).fantasyDefenseAttacker === pokemon) return;
+            return this.chainModify(1.1);
+        },
+        // 提升 10% 的特殊防御（受到特殊攻击时触发）
+        onModifySpDPriority: 6,
+        onModifySpD(spd, pokemon) {
+            return this.chainModify(1.1);
+        },
+        // ================= 新增：专门针对扑击等基于防御攻击的招式 =================
+        onBasePowerPriority: 19,
+        onBasePower(basePower, attacker, defender, move) {
+            if (move.id === 'bodypress' || move.overrideOffensiveStat === 'def') {
+                // 使用 (move as any) 强行写入自定义标记，证明扑击已经吃过加成了
+                (move as any).fantasyDefenseAttacker = attacker;
+                return this.chainModify(1.1);
             }
         },
         num: 30013,
