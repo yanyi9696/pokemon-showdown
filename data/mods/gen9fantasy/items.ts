@@ -2,13 +2,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	// 新增气场爆发的相关原版Z纯晶
 	firiumz: {
         inherit: true, // 继承原火Z的所有属性
-        // 新增：气场爆发字典，支持多个宝可梦携带同一个Z纯晶产生不同爆发
+        // 新增：气场爆发字典,支持多个宝可梦携带同一个Z纯晶产生不同爆发
         auraBursts: {
             "Marowak-Alola-Fantasy": {
                 burstForme: "Marowak-Alola-Totem-Fantasy", 
                 condition: "auraburstspe", // 对应速度提升的气场
             },
-            // 未来如果有其他宝可梦，比如某只火系宝可梦携带火Z加攻击，可以像下面这样直接加：
+            // 未来如果有其他宝可梦,比如某只火系宝可梦携带火Z加攻击,可以像下面这样直接加：
             // "Charizard-Fantasy": {
             //     burstForme: "Charizard-Totem-Fantasy",
             //     condition: "auraburstatk", 
@@ -17,13 +17,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
     } as any,
 	grassiumz: {
         inherit: true, // 继承原火Z的所有属性
-        // 新增：气场爆发字典，支持多个宝可梦携带同一个Z纯晶产生不同爆发
+        // 新增：气场爆发字典,支持多个宝可梦携带同一个Z纯晶产生不同爆发
         auraBursts: {
             "Lurantis-Fantasy": {
                 burstForme: "Lurantis-Totem-Fantasy", 
                 condition: "auraburstspe", // 对应速度提升的气场
             },
-            // 未来如果有其他宝可梦，比如某只火系宝可梦携带火Z加攻击，可以像下面这样直接加：
+            // 未来如果有其他宝可梦,比如某只火系宝可梦携带火Z加攻击,可以像下面这样直接加：
             // "Charizard-Fantasy": {
             //     burstForme: "Charizard-Totem-Fantasy",
             //     condition: "auraburstatk", 
@@ -378,7 +378,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		name: "Berserk Gene",
 		spritenum: 388,
 		itemUser: ["Mewtwo-Fantasy"],
-		// 将原本的自动触发逻辑删除，改为被动检测
+		// 将原本的自动触发逻辑删除,改为被动检测
 		// 只有拥有 破坏欲 特性的宝可梦才能通过特性逻辑消耗它
 		onTakeItem(item, pokemon) {
 			if (pokemon.ability === 'pohuaiyu') return true;
@@ -1756,7 +1756,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaEvolves: ["Slowbro", "Slowbro-Fantasy"],
 		itemUser: ["Slowbro", "Slowbro-Fantasy"],
         onTakeItem(item, source) {
-            // 同样改为严格匹配，这样伽勒尔形态就不会识别到普通进化石了
+            // 同样改为严格匹配,这样伽勒尔形态就不会识别到普通进化石了
             const name = source.baseSpecies.name;
             const isBaseForm = (Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves]).includes(name);
             const isMegaForm = (Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone]).includes(name);
@@ -2894,7 +2894,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         megaEvolves: ["Slowbro-Galar-Fantasy"],
         itemUser: ["Slowbro-Galar-Fantasy"],
         onTakeItem(item, source) {
-            // 使用 .name 严格匹配完整形态名，不剥离后缀
+            // 使用 .name 严格匹配完整形态名,不剥离后缀
             const name = source.baseSpecies.name;
             const isBaseForm = (Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves]).includes(name);
             const isMegaForm = (Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone]).includes(name);
@@ -3027,10 +3027,10 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		// 效果2：提升命中率。
 		onSourceModifyAccuracy(accuracy, source, target, move) {
-			// 首先，检查是不是变化类招式。如果是，则道具不生效。
+			// 首先,检查是不是变化类招式。如果是,则道具不生效。
 			if (move.category === "Status") return;
 
-			// 然后，再检查招式命中率的类型
+			// 然后,再检查招式命中率的类型
 			if (typeof move.accuracy !== "number") return;
 
 			// 在这里进行完整的条件判断
@@ -3046,7 +3046,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		// 效果3：提升威力。
 		onBasePower(basePower, source, target, move) {
-			// 变化类招式没有威力，直接返回。
+			// 变化类招式没有威力,直接返回。
 			if (move.category === "Status") return;
 
 			// 检查招式的原始命中率是否为数字。
@@ -3073,7 +3073,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		spritenum: 410,
 		fling: { basePower: 30 },
 		onStart(pokemon) {
-			// 在宝可梦登场时显示提示信息，暴露道具
+			// 在宝可梦登场时显示提示信息,暴露道具
 			this.add("-message", `${pokemon.name}的幻之标靶正在锁定目标!`);
 			this.add("-item", pokemon, "Fantasy Ring Target");
 		},
@@ -3081,23 +3081,23 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			// 让该招式无视所有常规的属性免疫
 			move.ignoreImmunity = true;
 
-			// 单独处理地面系招式，以保留气球、漂浮特性等“非属性”带来的免疫效果
+			// 单独处理地面系招式,以保留气球、漂浮特性等“非属性”带来的免疫效果
 			if (move.type === 'Ground') {
 				const baseOnTryHit = move.onTryHit;
 				move.onTryHit = function (target, source, effect) {
-					// isGrounded(true) 表示“强制跳过飞行属性判定，仅检查气球、漂浮、重力等状态”
+					// isGrounded(true) 表示“强制跳过飞行属性判定,仅检查气球、漂浮、重力等状态”
 					if (!target.isGrounded(true)) {
 						this.add('-immune', target);
-						return null; // 返回 null，向引擎声明本次攻击无效
+						return null; // 返回 null,向引擎声明本次攻击无效
 					}
 					
-					// 如果原本有 onTryHit 逻辑，则执行
+					// 如果原本有 onTryHit 逻辑,则执行
 					if (baseOnTryHit) {
 						// 修复报错：先判断 baseOnTryHit 是否为函数
 						if (typeof baseOnTryHit === 'function') {
 							return baseOnTryHit.call(this, target, source, effect);
 						}
-						// 如果它不是函数（比如它是布尔值 true），直接返回该值
+						// 如果它不是函数（比如它是布尔值 true）,直接返回该值
 						return baseOnTryHit;
 					}
 				};
@@ -3191,7 +3191,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 				)
 					return;
 
-				// 检查：如果在此之前道具已经因为某些特殊反馈效果（如对方的特性“顺手牵羊”）丢失，则不触发
+				// 检查：如果在此之前道具已经因为某些特殊反馈效果（如对方的特性“顺手牵羊”）丢失,则不触发
 				if (!source.hasItem("fantasysachet")) return;
 
 				if (source.useItem()) {
@@ -3238,7 +3238,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					];
 
 					if (unchangeableAbilities.includes(affected.ability)) {
-						// 如果对方的特性在此名单中，则判定失败
+						// 如果对方的特性在此名单中,则判定失败
 						this.add("-fail", source);
 					} else if (affected.hasItem("abilityshield")) {
 						// 对特性护具的检查保持不变
@@ -3268,14 +3268,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			// 2. 核心避让逻辑：预判断招式是否会成功移除道具
 			// 针对 拍落 (Knock Off) 或 你的自制技能 咬烂 (Yao Lan)
 			if (move.id === "knockoff" || move.id === "yaolan") {
-				// 如果持有者没有“黏着”特性，则该招式会成功移除道具，香袋此时不应触发
+				// 如果持有者没有“黏着”特性,则该招式会成功移除道具,香袋此时不应触发
 				if (!target.hasAbility("stickyhold")) return;
 			}
 
 			// 针对 小偷 (Thief) 或 渴望 (Covet)
 			if (move.id === "thief" || move.id === "covet") {
 				// 小偷只有在使用者没有道具时才会偷取成功。
-				// 如果偷取会成功，香袋不触发。
+				// 如果偷取会成功,香袋不触发。
 				if (source && !source.item) return;
 			}
 
@@ -3350,7 +3350,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		fling: {
 			basePower: 10,
 		},
-		// 效果 1：基础威力小于等于 100 的招式，贴上必定击中要害的标签
+		// 效果 1：基础威力小于等于 100 的招式,贴上必定击中要害的标签
 		onModifyMove(move, pokemon, target) {
 			if (move.basePower && move.basePower <= 100) {
 				move.willCrit = true; 
@@ -3361,25 +3361,25 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			// 读取图鉴中的原始招式数据
 			const moveData = this.dex.moves.get(move.id);
 			
-			// 判定 1：若招式原本就必定击中要害（如：冰息、山岚摔），威力提升 50%
+			// 判定 1：若招式原本就必定击中要害（如：冰息、山岚摔）,威力提升 50%
 			if (moveData.willCrit) {
 				this.debug('Fantasy Scope Lens: +100% Base Power for natural guaranteed crit');
 				return this.chainModify(2);
 			}
 			
-			// 判定 2：排除上面的情况后，计算当前的击中要害率（包含招式自带、聚气、超幸运等加成）
-			// 在引擎中，默认暴击等级是 1（即 0% 概率），所以 >1 即代表“击中要害率大于0”
+			// 判定 2：排除上面的情况后,计算当前的击中要害率（包含招式自带、聚气、超幸运等加成）
+			// 在引擎中,默认暴击等级是 1（即 0% 概率）,所以 >1 即代表“击中要害率大于0”
 			const critRatio = this.runEvent('ModifyCritRatio', pokemon, target, move, move.critRatio || 1);
 			if (critRatio > 1) {
 				this.debug('Fantasy Scope Lens: +20% Base Power for >0 crit ratio');
 				return this.chainModify(1.2);
 			}
 		},
-		// 效果 4：只要招式击中要害（无论是自带的还是道具强加的），一律取消 1.5 倍的暴击伤害加成
+		// 效果 4：只要招式击中要害（无论是自带的还是道具强加的）,一律取消 1.5 倍的暴击伤害加成
 		onModifyDamage(damage, source, target, move) {
 			if (target.getMoveHitData(move).crit) {
 				this.debug('Fantasy Scope Lens: neutralizing the 1.5x crit multiplier for ALL moves');
-				return this.chainModify([2, 3]); // 乘以 2/3，完美抵消系统的 1.5 倍暴击乘区
+				return this.chainModify([2, 3]); // 乘以 2/3,完美抵消系统的 1.5 倍暴击乘区
 			}
 		},
 		num: 30004,
@@ -3395,12 +3395,12 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		// 效果1：降低物攻
 		onModifyAtk(atk) {
-			// 将物攻值乘以0.8，即降低20%
+			// 将物攻值乘以0.8,即降低20%
 			return this.chainModify(0.8);
 		},
 		// 效果1：降低特攻
 		onModifySpA(spa) {
-			// 将特攻值乘以0.8，即降低20%
+			// 将特攻值乘以0.8,即降低20%
 			return this.chainModify(0.8);
 		},
 		// 效果2：回合结束时恢复HP
@@ -3421,17 +3421,17 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		// 效果1：提升物防
 		onModifyDef(def) {
-			// 将物防值乘以1.2，即提升20%
+			// 将物防值乘以1.2,即提升20%
 			return this.chainModify(1.2);
 		},
 		// 效果1：提升特防
 		onModifySpD(spd) {
-			// 将特防值乘以1.2，即提升20%
+			// 将特防值乘以1.2,即提升20%
 			return this.chainModify(1.2);
 		},
 		// 效果2：降低速度
 		onModifySpe(spe) {
-			// 将速度值乘以0.5，即降低1/2
+			// 将速度值乘以0.5,即降低1/2
 			return this.chainModify(0.5);
 		},
 		num: 30006,
@@ -3442,18 +3442,18 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	fantasyicestone: {
         name: "Fantasy Ice Stone",
         spritenum: 693,
-        // 投掷效果：威力30，且让目标陷入冻伤(fst)
-        // （注：投掷结算时道具已离手，所以不会被下面的互换逻辑二次影响，会正常造成冻伤）
+        // 投掷效果：威力30,且让目标陷入冻伤(fst)
+        // （注：投掷结算时道具已离手,所以不会被下面的互换逻辑二次影响,会正常造成冻伤）
         fling: {
             basePower: 30,
             status: 'fst',
         },
         // 效果 1：无论是招式、特性（如火焰之躯）还是其他途径
-        // 只要是由携带者对目标造成的灼伤/冻伤，都会发生互换
+        // 只要是由携带者对目标造成的灼伤/冻伤,都会发生互换
         onAnySetStatus(status, target, source, effect) {
             const pokemon = this.effectState.target;
             
-            // 确保异常状态的来源是携带者，且目标不是携带者自己（比如防止火焰宝珠烧自己变冻伤）
+            // 确保异常状态的来源是携带者,且目标不是携带者自己（比如防止火焰宝珠烧自己变冻伤）
             if (source !== pokemon || target === pokemon) return;
 
             // 防止状态互换导致的无限循环递归
@@ -3478,11 +3478,11 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             // 只有当前没有异常状态时才能进入冰冻
             if (!pokemon.status) {
                 // setStatus(status, source, sourceEffect, ignoreImmunities)
-                // 第四个参数传入 true，强制无视属性、特性等任何免疫效果
+                // 第四个参数传入 true,强制无视属性、特性等任何免疫效果
                 pokemon.setStatus('frz', pokemon, this.effect, true);
             }
         },
-        // 核心逻辑：拦截冰冻的禁止行动判定，允许行动并且阻断系统自带的随机解冻检测
+        // 核心逻辑：拦截冰冻的禁止行动判定,允许行动并且阻断系统自带的随机解冻检测
         onBeforeMovePriority: 1, 
         onBeforeMove(pokemon) {
             if (pokemon.status === 'frz') {
@@ -3490,14 +3490,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 return true; 
             }
         },
-        // 效果 3：低于最大 HP 的 1/4 时发动，恢复最大 HP 的 1/3 并消耗道具
+        // 效果 3：低于最大 HP 的 1/4 时发动,恢复最大 HP 的 1/3 并消耗道具
         onUpdate(pokemon) {
             if (pokemon.hp <= pokemon.maxhp / 4 && pokemon.hp > 0) {
                 if (this.heal(pokemon.baseMaxhp / 3)) {
-                    // 消耗道具，会触发常规的消耗提示
+                    // 消耗道具,会触发常规的消耗提示
                     pokemon.useItem();
                     
-                    // 消耗道具后，立刻解冻
+                    // 消耗道具后,立刻解冻
                     if (pokemon.status === 'frz') {
                         pokemon.cureStatus();
                     }
@@ -3512,7 +3512,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
         num: 30007,
         gen: 9,
-        desc: "携带后，佩戴者对其他宝可梦造成的灼伤变冻伤、冻伤变为灼伤;登场后必定进入不会解冻的冰冻状态但仍可行动;低于最大HP的1/4时发动,恢复最大HP的1/3并消耗该道具,失去该道具将会解冻",
+        desc: "携带后,佩戴者对其他宝可梦造成的灼伤变冻伤、冻伤变为灼伤;登场后必定进入不会解冻的冰冻状态但仍可行动;低于最大HP的1/4时发动,恢复最大HP的1/3并消耗该道具,失去该道具将会解冻",
         shortDesc: "造成的灼伤/冻伤互换;登场进入可行动的冰冻;HP低于1/4时消失并解冻,恢复1/3HP",
     },
 	fantasylaxincense: {
@@ -3534,14 +3534,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 		},
 		onDamagingHit(damage, target, source, move) {
-			// 受到攻击后，道具消失（参考气球的逻辑）
+			// 受到攻击后,道具消失（参考气球的逻辑）
 			this.add('-enditem', target, 'Fantasy Lax Incense', '[weaken]');
 			target.useItem();
 		},
 		num: 30008,
 		gen: 9,
-		desc: "携带后，宝可梦会免疫声音类招式。受到攻击就会消失",
-		shortDesc: "携带后会免疫声音类招式，受到攻击后消失",
+		desc: "携带后,宝可梦会免疫声音类招式。受到攻击就会消失",
+		shortDesc: "携带后会免疫声音类招式,受到攻击后消失",
 	},
 	fantasyultraenergy: {
 		name: "Fantasy Ultra Energy",
@@ -3566,8 +3566,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					const bestStat = pokemon.getBestStat(true, true);
 					this.boost({ [bestStat]: 1 }, pokemon);
 					
-					// 2. [关键] 使用 pokemon.addVolatile 之前，先手动触发一次 endability 指令
-					// 这样能确保在道具消耗的同一个时间点，前端 UI 立即更新
+					// 2. [关键] 使用 pokemon.addVolatile 之前,先手动触发一次 endability 指令
+					// 这样能确保在道具消耗的同一个时间点,前端 UI 立即更新
 					this.add('-endability', pokemon, 'Beast Boost', '[from] item: Fantasy Ultra Energy');
 					pokemon.addVolatile('suppressability');
                 this.add('-message', `${pokemon.name}的"异兽提升"暂时失效了！`);
@@ -3608,7 +3608,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                         // 变身
                         pokemon.formeChange('Shadow Lugia-Fantasy', this.effect, false);
                         
-                        // 强制更新特性，利用 true 参数破除一切限制
+                        // 强制更新特性,利用 true 参数破除一切限制
                         pokemon.setAbility('heianqinshi', pokemon, true);
                         pokemon.baseAbility = 'heianqinshi' as ID;
                     }
@@ -3651,7 +3651,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			if (pokemon.species.id === 'zarudefantasy') {
 				this.add('-item', pokemon, "Dada's Cloak");
 				pokemon.formeChange('Zarude-Dada-Fantasy', this.effect, true);
-				this.add('-message', `${pokemon.name}披上了阿爸的披风，这份感情带给它一种特别的力量！`);
+				this.add('-message', `${pokemon.name}披上了阿爸的披风,这份感情带给它一种特别的力量！`);
 			}
 		},
 
@@ -3688,7 +3688,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			move.multihit = 2;
 			move.multihitType = 'parentalbond';
 		},
-		// 伤害修正由于在 BattleActions#modifyDamage() 中根据 'parentalbond' 标签自动执行，这里只需复制处理异常即可
+		// 伤害修正由于在 BattleActions#modifyDamage() 中根据 'parentalbond' 标签自动执行,这里只需复制处理异常即可
 		onSourceModifySecondaries(secondaries, target, source, move) {
 			if (move.multihitType === 'parentalbond' && move.id === 'secretpower' && move.hit < 2) {
 				// hack to prevent accidentally suppressing King's Rock/Razor Fang
@@ -3715,7 +3715,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             }
             return true;
         },
-        // 在出招时计算克制，并发送自定义协议改变外观
+        // 在出招时计算克制,并发送自定义协议改变外观
         onModifyMove(move, pokemon, target) {
             if (move.id === 'judgment' && target && pokemon.species.name === 'Arceus-Legend-Fantasy') {
                 let bestType = 'Normal';
@@ -3724,7 +3724,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                 for (const type of this.dex.types.names()) {
                     if (type === '???' || type === 'Stellar') continue;
-                    // 引擎自带的无效判定（比如一般打幽灵，地面打飞行）
+                    // 引擎自带的无效判定（比如一般打幽灵,地面打飞行）
                     if (!this.dex.getImmunity(type, target)) continue;
 
                     const weather = this.field.effectiveWeather();
@@ -3747,7 +3747,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     
                     if (immunities[type] && immunities[type].includes(targetAbility)) {
                         if (type === 'Ground' && (target.volatiles['smackdown'] || this.field.getPseudoWeather('gravity'))) {
-                            // 落地状态，地面系有效
+                            // 落地状态,地面系有效
                         } else {
                             continue; 
                         }
@@ -3764,7 +3764,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     }
 
                     // 【新增逻辑】处理“渊海洋流”在雨天的特殊效果
-                    // 如果对手是渊海洋流特性，且当前天气为下雨或始源之海
+                    // 如果对手是渊海洋流特性,且当前天气为下雨或始源之海
                     if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
                         if (eff > 0) {
                             eff = 0; // 效果绝佳(eff > 0)会被直接抹平为普通的 1倍(eff = 0)
@@ -3785,18 +3785,18 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     bestType = this.sample(candidateTypes);
                 }
 
-                // 【核心】修改服务端内在属性，并向客户端发送指令
+                // 【核心】修改服务端内在属性,并向客户端发送指令
                 if (pokemon.getTypes().join() !== bestType) {
                     pokemon.setType(bestType);
                     
-                    // 发送原生的静默 typechange 协议，这会让客户端底层自动把血条下的 ??? 替换成新属性
+                    // 发送原生的静默 typechange 协议,这会让客户端底层自动把血条下的 ??? 替换成新属性
                     this.add('-start', pokemon, 'typechange', bestType, '[silent]');
                     
-                    // 继续发送我们的自定义协议，触发耀眼的究极爆发动画和模型替换
+                    // 继续发送我们的自定义协议,触发耀眼的究极爆发动画和模型替换
                     this.add('-legendplate', pokemon, bestType);
                 }
                 
-                // 强制修正招式属性，覆盖掉原有的判断
+                // 强制修正招式属性,覆盖掉原有的判断
                 move.type = bestType;
             }
         },
@@ -3809,12 +3809,12 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         spritenum: 9,
         isGem: true,
         onSourceModifyDamage(damage, source, target, move) {
-            // 如果是变化类招式，或是自己打自己（比如混乱），则不触发
+            // 如果是变化类招式,或是自己打自己（比如混乱）,则不触发
             if (move.category === 'Status' || target === source) return;
             
             // typeMod > 0 代表招式对当前宝可梦是“效果绝佳”
             if (target.getMoveHitData(move).typeMod > 0) {
-                // 检查是否打在替身上（打在替身上且招式不穿透时，不消耗道具）
+                // 检查是否打在替身上（打在替身上且招式不穿透时,不消耗道具）
                 const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
                 if (hitSub) return;
                 
@@ -3824,20 +3824,20 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     target.m.hasFantasyDefenseGem = true;
                     // 赋予永久双防提升状态
                     target.addVolatile('gemdefensepermanentboost');
-                    // 挂上场地监听，保证下场后状态不丢失
+                    // 挂上场地监听,保证下场后状态不丢失
                     target.side.addSideCondition('gemdefenseboost');
                     
                     // 游戏内提示
                     this.add('-message', `${target.name}的幻之防御宝石使其受到的伤害降低了！`);
                     
-                    // 减伤30%，等效于将伤害/威力乘以 0.7
+                    // 减伤30%,等效于将伤害/威力乘以 0.7
                     return this.chainModify(0.7); 
                 }
             }
         },
         num: 30013,
         gen: 9,
-        desc: "首次受到效果绝佳的伤害时，降低本次攻击30%的伤害，生效一次后消失。失去该道具后，该宝可梦的双防将永久提升10%。",
-        shortDesc: "首次受效果绝佳伤害时减伤30%并消耗。失去后双防永久提升10%。",
+        desc: "首次受到效果绝佳的伤害时,降低本次攻击30%的伤害,生效一次后消失。失去该道具后,该宝可梦的防御和特防将永久提升10%",
+		shortDesc: "首次受效果绝佳伤害时减伤30%,使用后消失。失去后防御和特防永久提升10%",
     },
 };
