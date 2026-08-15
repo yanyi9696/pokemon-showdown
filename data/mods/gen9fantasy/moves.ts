@@ -2643,16 +2643,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		shortDesc: "100%几率使异性目标陷入着迷状态",
 	},
 	houbaxi: {
-		num: 10055,
+		num: 30013,
 		accuracy: 100,
 		basePower: 100,
 		category: "Physical",
 		name: "Hou Ba Xi",
 		pp: 5,
 		priority: 0,
-		flags: { contact: 1, protect: 1, mirror: 1 },
+		flags: { protect: 1, mirror: 1 },
+		// 【新增修复2】：登场与未出招时，招式属性面板同步当前的形态属性
+		onModifyType(move, pokemon) {
+			if (pokemon.species.name === 'Simisage-Fantasy') {
+				move.type = 'Grass';
+			} else if (pokemon.species.name === 'Simisear-Fantasy') {
+				move.type = 'Fire';
+			} else if (pokemon.species.name === 'Simipour-Fantasy') {
+				move.type = 'Water';
+			}
+		},
+
 		onModifyMove(move, pokemon, target) {
-			// 【光子阁逻辑】特攻大于攻击时此招式变成特殊招式
+			// 特攻大于攻击时此招式变成特殊招式
 			if (pokemon.getStat('atk', false, true) < pokemon.getStat('spa', false, true)) {
 				move.category = 'Special';
 			}
@@ -2661,17 +2672,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
 			const validSpecies = ['Simisage-Fantasy', 'Simisear-Fantasy', 'Simipour-Fantasy'];
 			
-			// 只在特定的幻想形态下触发变属性变形态
 			if (validSpecies.includes(pokemon.species.name)) {
 				let bestType = 'Normal';
 				let maxEff = -4; 
 				let candidateTypes: string[] = [];
 				
-				// 猴把戏只能在草、火、水中切换
 				const typesToTest = ['Grass', 'Fire', 'Water'];
 
 				for (const type of typesToTest) {
-					// 引擎自带的无效判定
 					if (!this.dex.getImmunity(type, target)) continue;
 
 					const weather = this.field.effectiveWeather();
@@ -2680,7 +2688,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
 					const targetAbility = target.getAbility().name;
 					
-					// 提取与草火水相关的免疫特性（支持你的自定义扩展）
 					const immunities: {[k: string]: string[]} = {
 						'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'], 
 						'Fire': ['Flash Fire', 'Well-Baked Body'],
@@ -2691,17 +2698,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 						continue; 
 					}
 
-					// 计算基础的属性克制倍率
 					let eff = 0;
 					for (const targetType of target.getTypes()) {
 						let e = this.dex.getEffectiveness(type, targetType);
 						eff += e;
 					}
 
-					// 自定义特性（如渊海洋流等）的拦截
 					if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
 						if (eff > 0) {
-							eff = 0; // 抹平克制
+							eff = 0; 
 						}
 					}
 					if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
@@ -2714,42 +2719,39 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					}
 				}
 
-				// 取当前形态对应的属性作为保底（如果全部被免疫/被阻挡）
+				// 获取当前形态对应的属性
 				let currentType = 'Grass';
 				if (pokemon.species.name === 'Simisear-Fantasy') currentType = 'Fire';
 				if (pokemon.species.name === 'Simipour-Fantasy') currentType = 'Water';
 
 				if (candidateTypes.length > 0) {
-					bestType = this.sample(candidateTypes);
+					// 【核心修复1】：如果当前属性已经在最优解（最高克制倍率）的候选池中
+					// 说明没有找到比当前属性更优的解，优先保持当前属性，避免无意义的变身
+					if (candidateTypes.includes(currentType)) {
+						bestType = currentType;
+					} else {
+						bestType = this.sample(candidateTypes);
+					}
 				} else {
 					bestType = currentType;
 				}
 
-				// 确定新属性对应的官方/自定义形态名称
 				let targetForme = 'Simisage-Fantasy';
 				if (bestType === 'Fire') targetForme = 'Simisear-Fantasy';
 				if (bestType === 'Water') targetForme = 'Simipour-Fantasy';
 
-				// 强制修正招式属性，覆盖掉原有判断
+				// 强制修正招式出招时的属性
 				move.type = bestType;
 
-				// 【核心】若计算出的新形态与目前不同，进行形态变化与通讯
 				if (pokemon.species.name !== targetForme) {
-					// 【关键修复：解决闪两次】
-					// 使用底层的 setSpecies 替代 formeChange，避免服务端自动发送多余的 |-formechange| 协议。
-					// 这样就能确保只有 |-houbaxi| 会被发送，呈现完美的一次性究极爆发动画！
 					const targetSpecies = this.dex.species.get(targetForme);
 					if (targetSpecies.exists) {
 						pokemon.setSpecies(targetSpecies);
 					}
 					
-					// setSpecies 会自动重置宝可梦的属性，所以必须在这里紧接着覆盖为我们算出的最佳属性
 					pokemon.setType(bestType);
 					
-					// 发送原生的静默 typechange 协议，底层会默默替换血条下的属性图标
 					this.add('-start', pokemon, 'typechange', bestType, '[silent]');
-					
-					// 发送猴把戏的自定义协议，触发耀眼白光与模型替换
 					this.add('-houbaxi', pokemon, targetForme, bestType);
 				}
 			}
