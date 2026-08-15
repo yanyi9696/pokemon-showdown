@@ -2735,13 +2735,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
 				// 【核心】若计算出的新形态与目前不同，进行形态变化与通讯
 				if (pokemon.species.name !== targetForme) {
-					pokemon.formeChange(targetForme, this.effect, true);
+					// 【关键修复：解决闪两次】
+					// 使用底层的 setSpecies 替代 formeChange，避免服务端自动发送多余的 |-formechange| 协议。
+					// 这样就能确保只有 |-houbaxi| 会被发送，呈现完美的一次性究极爆发动画！
+					const targetSpecies = this.dex.species.get(targetForme);
+					if (targetSpecies.exists) {
+						pokemon.setSpecies(targetSpecies);
+					}
+					
+					// setSpecies 会自动重置宝可梦的属性，所以必须在这里紧接着覆盖为我们算出的最佳属性
 					pokemon.setType(bestType);
 					
-					// 发送原生的静默 typechange 协议
+					// 发送原生的静默 typechange 协议，底层会默默替换血条下的属性图标
 					this.add('-start', pokemon, 'typechange', bestType, '[silent]');
 					
-					// 发送猴把戏的自定义协议触发动画
+					// 发送猴把戏的自定义协议，触发耀眼白光与模型替换
 					this.add('-houbaxi', pokemon, targetForme, bestType);
 				}
 			}
