@@ -548,6 +548,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	beheeyemfantasy: {
 		tier: "UU",
 	},
+	buzzwolefantasy: {
+		tier: "UU",
+	},
 	ceruledgefantasy: {
 		tier: "UU",
 	},
