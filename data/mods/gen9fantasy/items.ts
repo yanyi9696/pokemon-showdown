@@ -3804,4 +3804,40 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         gen: 9,
         desc: "在对战中使出制裁光砾前,将形态与制裁光砾转换为克制对手的属性",
     },
+	fantasydefensegem: {
+        name: "Fantasy Defense Gem",
+        spritenum: 9,
+        isGem: true,
+        onSourceModifyDamage(damage, source, target, move) {
+            // 如果是变化类招式，或是自己打自己（比如混乱），则不触发
+            if (move.category === 'Status' || target === source) return;
+            
+            // typeMod > 0 代表招式对当前宝可梦是“效果绝佳”
+            if (target.getMoveHitData(move).typeMod > 0) {
+                // 检查是否打在替身上（打在替身上且招式不穿透时，不消耗道具）
+                const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+                if (hitSub) return;
+                
+                // 如果成功消耗掉道具
+                if (target.useItem()) {
+                    // 记录这只宝可梦吃过幻防宝石
+                    target.m.hasFantasyDefenseGem = true;
+                    // 赋予永久双防提升状态
+                    target.addVolatile('gemdefensepermanentboost');
+                    // 挂上场地监听，保证下场后状态不丢失
+                    target.side.addSideCondition('gemdefenseboost');
+                    
+                    // 游戏内提示
+                    this.add('-message', `${target.name}的幻之防御宝石使其受到的伤害降低了！`);
+                    
+                    // 减伤30%，等效于将伤害/威力乘以 0.7
+                    return this.chainModify(0.7); 
+                }
+            }
+        },
+        num: 30013,
+        gen: 9,
+        desc: "首次受到效果绝佳的伤害时，降低本次攻击30%的伤害，生效一次后消失。失去该道具后，该宝可梦的双防将永久提升10%。",
+        shortDesc: "首次受效果绝佳伤害时减伤30%并消耗。失去后双防永久提升10%。",
+    },
 };

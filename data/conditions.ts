@@ -1,4 +1,36 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	gemdefensepermanentboost: {
+        name: 'Gem Defense Permanent Boost',
+        noCopy: true,
+        onStart(pokemon) {
+            // 发送标识给客户端，客户端会将其识别为小写的 gemboostdefense
+            this.add('-start', pokemon, 'gemboostdefense', '[silent]');
+        },
+        onEnd(pokemon) {
+            this.add('-end', pokemon, 'gemboostdefense', '[silent]');
+        },
+        // 提升 10% 的物理防御
+        onModifyDefPriority: 6,
+        onModifyDef(def, pokemon) {
+            return this.chainModify(1.1);
+        },
+        // 提升 10% 的特殊防御
+        onModifySpDPriority: 6,
+        onModifySpD(spd, pokemon) {
+            return this.chainModify(1.1);
+        },
+    },
+
+    gemdefenseboost: {
+        name: 'gemdefenseboost',
+        onSwitchIn(pokemon) {
+            // 当宝可梦上场时，检测它以前是不是吃过幻防宝石
+            if (pokemon.m.hasFantasyDefenseGem) {
+                // 如果有记录，重新赋予它状态，激活 UI
+                pokemon.addVolatile('gemdefensepermanentboost');
+            }
+        },
+    },
 	gempermanentboost: {
         name: 'Gem Permanent Boost',
         noCopy: true,
