@@ -3718,13 +3718,12 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         // 在出招时计算克制,并发送自定义协议改变外观
         onModifyMove(move, pokemon, target) {
             if (move.id === 'judgment' && target && pokemon.species.name === 'Arceus-Legend-Fantasy') {
-                // 【核心修改1】：将默认的最佳属性设为宝可梦当前的属性
                 let currentType = pokemon.getTypes()[0];
                 let bestType = currentType; 
                 
-                // 将初始最大倍率设为0，后续只有 >0 的属性才能更新它
                 let maxEff = 0; 
                 let candidateTypes: string[] = [];
+                let neutralTypes: string[] = []; // 新增：用于记录所有未被对方免疫的属性，作为兜底池
 
                 for (const type of this.dex.types.names()) {
                     if (type === '???' || type === 'Stellar') continue;
@@ -3737,7 +3736,6 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                     const targetAbility = target.getAbility().name;
                     
-                    // 【扩展字典】将你的私服自定义免疫特性全部加入进去
                     const immunities: {[k: string]: string[]} = {
                         'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'],
                         'Fire': ['Flash Fire', 'Well-Baked Body'],
@@ -3776,7 +3774,11 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                     if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
 
-                    // 【核心修改2】：只有计算出的倍率大于 0（即克制），才进入最高倍率比对
+                    // 【核心逻辑】：只要走到了这里，说明这个属性没有被免疫，可以造成伤害
+                    // 把它放进兜底池，以防我们处于 ??? 属性且找不到克制属性
+                    neutralTypes.push(type);
+
+                    // 只有计算出的倍率大于 0（即克制），才进入最高倍率比对池
                     if (eff > 0) {
                         if (eff > maxEff) {
                             maxEff = eff;
@@ -3787,14 +3789,20 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     }
                 }
 
-                // 如果找到了克制的属性，则从中随机选一个；如果没找到，bestType 依然是当前的 currentType
+                // 【核心修复】：优先选克制属性；如果不克制且自身是 ???，则随机选一个能打出伤害的兜底属性以确保获得本系加成 (STAB)
                 if (candidateTypes.length > 0) {
                     bestType = this.sample(candidateTypes);
+                } else if (currentType === '???') {
+                    if (neutralTypes.length > 0) {
+                        bestType = this.sample(neutralTypes);
+                    } else {
+                        bestType = 'Normal'; // 绝对兜底（例如目标拥有神奇守护且没有弱点）
+                    }
                 }
 
-                // 修改服务端内在属性，并向客户端发送指令（如果属性没变，这里就不会触发变身动画）
+                // 修改服务端内在属性，并向客户端发送指令
                 if (pokemon.getTypes().join() !== bestType) {
-                    pokemon.setType(bestType);
+                    pokemon.setType(bestType); // 覆盖自身属性，确保后续伤害计算拥有 1.5 倍 STAB 加成
                     
                     this.add('-start', pokemon, 'typechange', bestType, '[silent]');
                     this.add('-legendplate', pokemon, bestType);
