@@ -273,6 +273,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Earth Eater"},	
 	},
+	garganaclfantasy: {
+		tier: "OU",
+	},
 	gliscorfantasy: {
 		tier: "OU",
 	},
