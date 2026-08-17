@@ -161,6 +161,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Sharpness"},		
 	},
+	gengarmegafantasy: {
+		tier: "(Uber)",
+		abilities: { 0: "Gui Ying" },
+	},
 	kricketunefantasy: {
 		tier: "(Uber)",
 	},
@@ -573,6 +577,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	froslassfantasy: {
+		tier: "UU",
+	},
+	gengarfantasy: {
 		tier: "UU",
 	},
 	glaliemegafantasy: {

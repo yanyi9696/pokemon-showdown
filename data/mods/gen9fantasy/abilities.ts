@@ -2901,7 +2901,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Shuang Zhong Da Zui",
 		rating: 4.5,
 		num: 10057,
-		desc: "使用啃咬类招式时，该招式会变为攻击2次。",
-		shortDesc: "啃咬类招式会合计攻击2次。",
+		shortDesc: "啃咬类招式会合计攻击2次",
+	},
+	guiying: {
+		name: "Gui Ying",
+		onDamagePriority: -40,
+		onDamage(damage, target, source, effect) {
+			// 删除了 effect.effectType === 'Move' 的判断
+			// 现在只要受到的伤害大于等于当前HP，且特性未被触发过，就会生效
+			if (damage >= target.hp && !target.m.guiYingUsed) {
+				// 标记为已触发
+				target.m.guiYingUsed = true;
+				
+				this.add('-ability', target, 'Gui Ying');
+				this.add('-message', `${target.name} 化作鬼影，保留了最后1点HP！`);
+				
+				// 修改最终受到的伤害，使其剩下1点HP
+				return target.hp - 1;
+			}
+		},
+		flags: { breakable: 1 },
+		rating: 4,
+		num: 10058,
+		shortDesc: "在第一次即将陷入濒死状态时，保留1点HP不陷入濒死状态",
 	},
 };
