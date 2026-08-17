@@ -754,7 +754,9 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onModifySpePriority: -101,
 		onModifySpe(spe, pokemon) {
-			if (pokemon.hasItem('fantasylifeorb')) return spe;
+			// 【修改点 1】：如果拥有 幻之生命宝珠 或 电疗(dianliao) 特性，直接返回原本速度，无视减半！
+			if (pokemon.hasItem('fantasylifeorb') || pokemon.hasAbility('dianliao')) return spe;
+			
 			// Paralysis occurs after all other Speed modifiers, so evaluate all modifiers up to this point first
 			spe = this.finalModify(spe);
 			if (!pokemon.hasAbility('quickfeet')) {
@@ -764,7 +766,9 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onBeforeMovePriority: 1,
 		onBeforeMove(pokemon) {
-			if (pokemon.hasItem('fantasylifeorb')) return true;
+			// 【修改点 2】：如果拥有 幻之生命宝珠 或 电疗(dianliao) 特性，强制允许行动，不会触发麻痹不能动！
+			if (pokemon.hasItem('fantasylifeorb') || pokemon.hasAbility('dianliao')) return true;
+			
 			if (this.randomChance(1, 4)) {
 				this.add('cant', pokemon, 'par');
 				return false;

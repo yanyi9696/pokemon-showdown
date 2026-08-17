@@ -268,30 +268,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "通常会先手行动 (优先度 +1)",
 		shortDesc: "先制攻击",
 	},
-	punishment: {
-		num: 386,
-		accuracy: 100,
-		basePower: 0,
-		basePowerCallback(pokemon, target) {
-			let power = 80 + 20 * target.positiveBoosts();
-			if (power > 200) power = 200;
-			this.debug(`BP: ${power}`);
-			return power;
-		},
+	shadowpunch: {
+		num: 325,
+		accuracy: true,
+		basePower: 75,
 		category: "Physical",
-		name: "Punishment",
-		pp: 10,
+		name: "Shadow Punch",
+		pp: 15,
 		priority: 0,
-		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
-		volatileStatus: 'qianghuawuxiao', 
+		flags: { contact: 1, protect: 1, mirror: 1, punch: 1, metronome: 1 },
 		secondary: null,
 		target: "normal",
-		type: "Dark",
-		zMove: { basePower: 160 },
-		maxMove: { basePower: 130 },
-		contestType: "Cool",
-		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
-		shortDesc: "80威力,目标每有1项能力上升+20,使目标强化无效2回合",
+		type: "Ghost",
+		contestType: "Clever",
+		zMove: { basePower: 140 },
+		maxMove: { basePower: 120 },
 	},
 	wringout: {
         num: 378,
@@ -325,6 +316,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         contestType: "Tough",
 		desc: "威力 = 120 × 当前HP/最大HP。向下取整一半,但不小于1。若使用者的攻击大于特攻,则此招式变成物理招式",
 		shortDesc: "目标剩余的HP越多,此招式威力越高;攻击大于特攻变为物理",
+	},
+	punishment: {
+		num: 386,
+		accuracy: 100,
+		basePower: 0,
+		basePowerCallback(pokemon, target) {
+			let power = 80 + 20 * target.positiveBoosts();
+			if (power > 200) power = 200;
+			this.debug(`BP: ${power}`);
+			return power;
+		},
+		category: "Physical",
+		name: "Punishment",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		volatileStatus: 'qianghuawuxiao', 
+		secondary: null,
+		target: "normal",
+		type: "Dark",
+		zMove: { basePower: 160 },
+		maxMove: { basePower: 130 },
+		contestType: "Cool",
+		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
+		shortDesc: "80威力,目标每有1项能力上升+20,使目标强化无效2回合",
 	},
 	crushgrip: {
 		num: 462,

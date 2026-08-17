@@ -2925,4 +2925,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10058,
 		shortDesc: "在第一次即将陷入濒死状态时，保留1点HP不陷入濒死状态",
 	},
+	dianliao: {
+		// 设定回合末结算的优先级
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			// 只有处于麻痹 (par) 状态时才触发回血
+			if (pokemon.status === 'par') {
+				this.heal(pokemon.baseMaxhp / 8);
+			}
+		},
+		flags: {},
+		name: "Dian Liao",
+		rating: 4,
+		num: 10059,
+		shortDesc: "处于麻痹状态时不会陷入无法行动且速度不会减半，每回合回复1/8最大HP",
+	},
 };
