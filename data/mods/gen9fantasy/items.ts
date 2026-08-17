@@ -32,6 +32,37 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
     } as any,
 
 	//原版道具
+	lightball: {
+        name: "Light Ball",
+        spritenum: 251,
+        fling: {
+            basePower: 30,
+            status: 'par',
+        },
+        onModifyAtkPriority: 1,
+        onModifyAtk(atk, pokemon) {
+            if (pokemon.baseSpecies.baseSpecies === 'Pikachu') {
+                return this.chainModify(2);
+            }
+        },
+        onModifySpAPriority: 1,
+        onModifySpA(spa, pokemon) {
+            if (pokemon.baseSpecies.baseSpecies === 'Pikachu') {
+                return this.chainModify(2);
+            }
+        },
+        // 新增：回合结束时赋予麻痹状态
+        onResidualOrder: 28,
+        onResidualSubOrder: 3,
+        onResidual(pokemon) {
+            pokemon.trySetStatus('par', pokemon);
+        },
+        itemUser: ["Pikachu", "Pikachu-Cosplay", "Pikachu-Rock-Star", "Pikachu-Belle", "Pikachu-Pop-Star", "Pikachu-PhD", "Pikachu-Libre", "Pikachu-Original", "Pikachu-Hoenn", "Pikachu-Sinnoh", "Pikachu-Unova", "Pikachu-Kalos", "Pikachu-Alola", "Pikachu-Partner", "Pikachu-Starter", "Pikachu-World"],
+        num: 236,
+        gen: 2,
+		desc: "回合结束时进入麻痹状态,皮卡丘携带后攻击和特攻翻倍",
+        shortDesc: "回合结束时进入麻痹状态,皮卡丘携带后攻击和特攻翻倍",
+    },
 	buggem: {
         name: "Bug Gem",
         spritenum: 53,
