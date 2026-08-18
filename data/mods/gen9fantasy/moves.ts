@@ -2347,6 +2347,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
+		onHit(target, source, move) {
+			// 强制发送一条带名字的自定义消息
+			this.add('-message', target.name + ' became trapped by Ling Hun Sha Yuan!');
+		},
 		volatileStatus: 'partiallytrapped',
 		secondary: null,
 		target: "normal",

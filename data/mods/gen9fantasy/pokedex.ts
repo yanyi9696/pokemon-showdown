@@ -2502,7 +2502,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		otherFormes: ["Throh-Fantasy"],
 		formeOrder: ["Throh", "Throh-Fantasy"],
 	},
-	throhfantasyh: {
+	throhfantasy: {
 		num: 538,
 		name: "Throh-Fantasy",
 		baseSpecies: "Throh",
