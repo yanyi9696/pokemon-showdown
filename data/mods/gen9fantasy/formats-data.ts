@@ -280,6 +280,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	garganaclfantasy: {
 		tier: "OU",
 	},
+	gengargmegafantasy: {
+		tier: "OU",
+		abilities: { 0: "Shi Ying Li" },
+	},
 	gliscorfantasy: {
 		tier: "OU",
 	},
