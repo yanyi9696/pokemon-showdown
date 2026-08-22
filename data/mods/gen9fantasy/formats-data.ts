@@ -202,6 +202,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Du Wu Pi Fu"},		
 	},
+	tyranitarmegafantasy: {
+		tier: "(Uber)",
+		abilities: { 0: "Kuang Sha Zhi Li" },
+	},
 	urshifugmegafantasy: {
 		tier: "(Uber)",
 		abilities: {0: "Unseen Fist"},	
@@ -662,6 +666,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	typenullfantasy: {
 		tier: "UU",
 	},
+	tyranitarfantasy: {
+		tier: "UU",
+	},
 	tyrantrumfantasy: {
 		tier: "UU",
 	},
@@ -821,10 +828,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 
 
 	//ZA新mega
-	barbaraclemega: {
-		tier: "Uber",
-		abilities: {0: "Tough Claws"},		
-	},
 	lucariomegaz: {
 		tier: "Uber",
 		abilities: {0: "Mega Launcher"},		
@@ -840,6 +843,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	absolmegaz: {
 		tier: "(Uber)",
 		abilities: { 0: "Super Luck" },
+	},
+	barbaraclemega: {
+		tier: "(Uber)",
+		abilities: {0: "Tough Claws"},		
 	},
 	baxcaliburmega: {
 		tier: "(Uber)",

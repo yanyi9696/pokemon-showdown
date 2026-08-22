@@ -196,7 +196,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arceus-Dragon', 'Arceus-Fairy', 'Arceus-Fire', 'Arceus-Flying', 'Arceus-Ghost', 'Arceus-Water', 'Blaziken-Mega', 'Flutter Mane',
 			'Groudon', 'Kyogre', 'Kyurem-Black', 'Rayquaza', 'Shaymin-Sky', 'Zacian', 'Zekrom', 'Ultranecrozium Z',
 			// FC
-			'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z', 'Barbaracle-Mega','Darmanitan-Fantasy', 'Lucario-Mega-Z',
+			'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z','Darmanitan-Fantasy', 'Lucario-Mega-Z',
 			'Greninja-Mega-Fantasy', 'Magearna-Mega', 'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy','Darkrai-Mega-Fantasy','Kartana-Fantasy',
 			'Mewtwo-Fantasy', 'Mewtwo-Mega-X-Fantasy', 'Mewtwo-Mega-Y-Fantasy','Lugia-Fantasy','Xerneas-Fantasy','Koraidon-Fantasy','Miraidon-Fantasy',
 			"Arceus-Legend-Fantasy", "Tapu Koko-Fantasy","Rayquaza-Fantasy", "Rayquaza-Mega-Fantasy",

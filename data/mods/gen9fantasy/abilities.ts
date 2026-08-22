@@ -2941,4 +2941,51 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10059,
 		shortDesc: "处于麻痹状态时不会陷入无法行动且速度不会减半，每回合回复1/8最大HP",
 	},
+	zhenshe: {
+        onStart(pokemon) {
+            let activated = false;
+            for (const target of pokemon.adjacentFoes()) {
+                if (!activated) {
+                    this.add('-ability', pokemon, 'Zhen She', 'boost');
+                    activated = true;
+                }
+                if (target.volatiles['substitute']) {
+                    this.add('-immune', target);
+                } else {
+                    // 将 atk: -1 改为 spa: -1 (特攻下降1级)
+                    this.boost({ spa: -1 }, target, pokemon, null, true);
+                }
+            }
+        },
+        flags: {},
+        name: "Zhen She",
+        rating: 3.5,
+        num: 10060,
+        shortDesc: "出场时,使范围内的对手特攻下降1级",
+    },
+	kuangshazhili: {
+		// 效果1: 来自“扬沙”的登场发动天气效果
+		onStart(source) {
+			this.field.setWeather('sandstorm');
+		},
+		// 效果2: 来自修改版“沙之力”的威力提升
+		onBasePowerPriority: 21,
+		onBasePower(basePower, attacker, defender, move) {
+			// 只要当前天气是沙暴，直接提升威力
+			if (this.field.isWeather('sandstorm')) {
+				this.debug('Kuang Sha Zhi Li boost');
+				// 将招式威力进行连锁修正，提升 30% (5325 / 4096 约等于 1.3)
+				return this.chainModify([5325, 4096]);
+			}
+		},
+		// 效果3: 来自“沙之力”的伤害免疫
+		onImmunity(type, pokemon) {
+			if (type === 'sandstorm') return false;
+		},
+        flags: {},
+        name: "Kuang Sha Zhi Li",
+        rating: 4.5,
+        num: 10061,
+        shortDesc: "兼备扬沙和沙之力这两种特性",
+    },
 };
