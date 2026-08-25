@@ -3661,6 +3661,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             }
             return true;
         },
+		forcedForme: "Lugia-Fantasy",
         itemUser: ["Lugia-Fantasy", "Shadow Lugia-Fantasy"],
         num: 30010,
         gen: 9,
@@ -3729,8 +3730,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 				return secondaries.filter(effect => effect.volatileStatus === 'flinch');
 			}
 		},
-
-		itemUser: ["Zarude-Fantasy", "Zarude-Dada-Fantasy"],
+		itemUser: [ "Zarude-Dada-Fantasy"],
 		num: 30011,
 		gen: 9,
 		desc: "幻想萨戮德携带后形态转换为幻想萨戮德-阿爸形态,并且发挥出【我行我素】与【亲子爱】的力量。",
@@ -3859,6 +3859,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 move.type = bestType;
             }
         },
+		itemUser: [ "Arceus-Legend-Fantasy"],
         num: 30012,
         gen: 9,
         desc: "在对战中使出制裁光砾前,将形态与制裁光砾转换为克制对手或不被抵抗的属性",

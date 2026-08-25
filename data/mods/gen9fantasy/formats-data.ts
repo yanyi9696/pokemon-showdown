@@ -401,14 +401,14 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	slowbromegafantasy: {
 		tier: "OU",
-		abilities: {0: "Filter"},		
+		abilities: {0: "Shell Armor"},		
 	},
 	slowbrogalarfantasy: {
 		tier: "OU",
 	},
 	slowbrogalarmegafantasy: {
 		tier: "OU",
-		abilities: {0: "Shell Armor"},		
+		abilities: {0: "Filter"},		
 	},
 	silvallyfantasy: {
 		tier: "OU",

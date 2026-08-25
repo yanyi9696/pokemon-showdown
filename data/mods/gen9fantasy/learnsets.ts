@@ -19839,6 +19839,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			earthpower: ["9M"],
 			spikes: ["9M"],
 			stealthrock: ["9M"],
+			flashcannon: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M"],
 			afteryou: ["7T", "6T", "5T"],
@@ -19995,6 +19996,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			earthpower: ["9M"],
 			spikes: ["9M"],
 			stealthrock: ["9M"],
+			flashcannon: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M"],
 			afteryou: ["7T", "6T", "5T"],
@@ -32204,7 +32206,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			meteorbeam: ["9M"],
 			suckerpunch: ["9M"],
 			nastyplot: ["9M"],
-			shoreup: ["9M"],
 			fanchen: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
@@ -32360,7 +32361,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			meteorbeam: ["9M"],
 			suckerpunch: ["9M"],
 			nastyplot: ["9M"],
-			shoreup: ["9M"],
 			fanchen: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],

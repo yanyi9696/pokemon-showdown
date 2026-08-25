@@ -63,18 +63,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 	//以上是官方新特性
 	shellarmor: {
-		onCriticalHit: false,
-		onDamagingHit(damage, target, source, move) {
-			if (move.flags['contact']) {
-				this.boost({ atk: -1 }, source, target, null, true);
-			}
-		},
-		flags: { breakable: 1 },
-		name: "Shell Armor",
-		rating: 3,
-		num: 4,
-		shortDesc: "不会被击中要害。被接触类招式击中时,攻击方的攻击降低1级",
-	},
+        onCriticalHit: false,
+        onSourceModifyDamage(damage, source, target, move) {
+            if (move.flags['contact']) {
+                return this.chainModify([2, 3]); 
+            }
+        },
+        flags: { breakable: 1 },
+        name: "Shell Armor",
+        rating: 3,
+        num: 4,
+        shortDesc: "不会被击中要害,受到接触类招式的伤害会降低1/3",
+    },
 	illuminate: {
 		onTryBoost(boost, target, source, effect) {
 			if (source && target === source) return;
@@ -2961,7 +2961,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Zhen She",
         rating: 3.5,
         num: 10060,
-        shortDesc: "出场时,使范围内的对手特攻下降1级",
+        shortDesc: "出场时使范围内的对手特攻下降1级",
     },
 	kuangshazhili: {
 		// 效果1: 来自“扬沙”的登场发动天气效果
