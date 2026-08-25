@@ -3681,15 +3681,6 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			}
 			return true;
 		},
-		// 登场时进行形态转换
-		onStart(pokemon) {
-			if (pokemon.species.id === 'zarudefantasy') {
-				this.add('-item', pokemon, "Dada's Cloak");
-				pokemon.formeChange('Zarude-Dada-Fantasy', this.effect, true);
-				this.add('-message', `${pokemon.name}披上了阿爸的披风,这份感情带给它一种特别的力量！`);
-			}
-		},
-
 		// ==========================================
 		// --- 【我行我素】效果 ---
 		// ==========================================
@@ -3730,11 +3721,12 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 				return secondaries.filter(effect => effect.volatileStatus === 'flinch');
 			}
 		},
+		forcedForme: "Zarude-Dada-Fantasy",
 		itemUser: [ "Zarude-Dada-Fantasy"],
 		num: 30011,
 		gen: 9,
-		desc: "幻想萨戮德携带后形态转换为幻想萨戮德-阿爸形态,并且发挥出【我行我素】与【亲子爱】的力量。",
-		shortDesc: "变为阿爸形态,发挥出【我行我素】与【亲子爱】的力量",
+		desc: "萨戮德-幻想携带后形态转换为萨戮德-阿爸-幻想形态,并且发挥出【我行我素】与【亲子爱】的力量。",
+		shortDesc: "萨戮德-幻想携带后形态转换为阿爸形态,发挥出【我行我素】与【亲子爱】的力量",
 	},
 	legendplate: {
         name: "Legend Plate",
@@ -3859,6 +3851,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 move.type = bestType;
             }
         },
+		forcedForme: "Arceus-Legend-Fantasy",
 		itemUser: [ "Arceus-Legend-Fantasy"],
         num: 30012,
         gen: 9,
