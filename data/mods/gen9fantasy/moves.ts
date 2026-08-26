@@ -71,10 +71,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                     type: 'Flying', // 结算属性改为飞行系
                 },
             });
-            // 【关键修改1】静止指令，取消第一回合释放技能时的动画
+            // 【关键修改1】静止指令,取消第一回合释放技能时的动画
 			this.attrLastMove('[still]');
 			// 【关键修改2】去掉了 'move: ' 前缀！完全模仿 Doom Desire。
-			// 加上 '[silent]' 是为了阻止系统自动输出未汉化的英文提示，避免和我们的自定义文本冲突。
+			// 加上 '[silent]' 是为了阻止系统自动输出未汉化的英文提示,避免和我们的自定义文本冲突。
 			this.add('-start', source, 'Razor Wind', '[silent]');
 			// 【关键修改3】输出你的自定义汉化文本
 			this.add('-message', `${source.name}周围的空气产生了旋涡！！`);
@@ -166,6 +166,36 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "通常会先手行动 (优先度 +1)",
 		shortDesc: "先制攻击",
 	},
+	skullbash: {
+		num: 130,
+		accuracy: 100,
+		basePower: 130,
+		category: "Physical",
+		isNonstandard: "Past",
+		name: "Skull Bash",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, charge: 1, protect: 1, mirror: 1, metronome: 1, nosleeptalk: 1, failinstruct: 1 },
+		overrideOffensiveStat: 'def', // <--- 添加了这一行,使其使用防御代替攻击计算伤害
+		onTryMove(attacker, defender, move) {
+			if (attacker.removeVolatile(move.id)) {
+				return;
+			}
+			this.add('-prepare', attacker, move.name);
+			this.boost({ def: 1 }, attacker, attacker, move);
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
+				return;
+			}
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		contestType: "Tough",
+		desc: "第1回合把头缩进去,从而提高防御。第2回合攻击对手。使用自身的防御代替自身的攻击进行伤害计算",
+		shortDesc: "第一回合提升1级防御,第二回合使用防御代替攻击进行攻击",
+	},
 	transform: {
 		num: 144,
 		accuracy: true,
@@ -180,12 +210,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				return false;
 			}
 			// --- 修复逻辑开始 ---
-			// 手动调用同步逻辑。由于是在技能命中时触发，
+			// 手动调用同步逻辑。由于是在技能命中时触发,
 			// 我们直接调用 effectState 上的同步函数（如果存在）
 			if (this.effectState.fantasySync) {
 				this.effectState.fantasySync(pokemon);
 			} else {
-				// 如果直接调用失败，则触发 SwitchIn 事件来联动 formats.ts 中的逻辑
+				// 如果直接调用失败,则触发 SwitchIn 事件来联动 formats.ts 中的逻辑
 				this.runEvent('SwitchIn', pokemon);
 			}
 			// --- 修复逻辑结束 ---
@@ -247,7 +277,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
         contestType: "Beautiful",
-		desc: "放出低温的细雪，从而让对手陷入冻伤状态。对冰属性宝可梦无效",
+		desc: "放出低温的细雪,从而让对手陷入冻伤状态。对冰属性宝可梦无效",
 		shortDesc: "使目标陷入冻伤状态",
     },
 	spark: {
@@ -303,7 +333,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
         // 新增的 onModifyMove 钩子
         onModifyMove(move, pokemon) {
-            // 对比使用者的物攻和特攻（考虑能力变化，但不考虑讲究头带等道具修正，与太晶爆发/光子喷涌判定机制一致）
+            // 对比使用者的物攻和特攻（考虑能力变化,但不考虑讲究头带等道具修正,与太晶爆发/光子喷涌判定机制一致）
             if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
                 move.category = 'Physical';
             }
@@ -352,12 +382,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
 		onModifyMove(move, pokemon) {
-			// 初始化 secondaries 数组，用于动态挂载异常状态的附加效果
+			// 初始化 secondaries 数组,用于动态挂载异常状态的附加效果
 			if (!move.secondaries) move.secondaries = [];
 			
 			let hasRegidrago = false;
 
-			// 遍历队伍，检查是否存在各种神柱
+			// 遍历队伍,检查是否存在各种神柱
 			for (const ally of pokemon.side.pokemon) {
 				const speciesId = ally.species.id;
 				
@@ -392,14 +422,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			// 龙柱效果结算：吸收50%伤害转化为HP
 			if (hasRegidrago) {
 				move.drain = [1, 2];
-				// 安全检查并赋予 heal 标签，确保能被“回复封印”等招式正常限制
+				// 安全检查并赋予 heal 标签,确保能被“回复封印”等招式正常限制
 				if (!move.flags) move.flags = {};
 				move.flags.heal = 1;
 			}
 		},
-		// 场地效果（岩/钢）需要在命中后触发，使用 onAfterHit 
+		// 场地效果（岩/钢）需要在命中后触发,使用 onAfterHit 
 		onAfterHit(target, source, move) {
-			// 如果受到强行(Sheer Force)特性影响或使用者濒死，则不触发附加撒钉效果
+			// 如果受到强行(Sheer Force)特性影响或使用者濒死,则不触发附加撒钉效果
 			if (move.hasSheerForce || !source.hp) return;
 			
 			let hasRegirock = false;
@@ -479,20 +509,20 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			return null;
 		},
 		onModifyMove(move, pokemon) {
-			// 当使用者是幻想超级达克莱伊时，改变技能属性
+			// 当使用者是幻想超级达克莱伊时,改变技能属性
 			if (pokemon.species.name === 'Darkrai-Mega-Fantasy') {
 				move.accuracy = true; // 必定命中
 				delete move.status; // 移除默认的睡眠效果
 				
-				// 动态添加治愈标签，以防被回复封印等技能影响
+				// 动态添加治愈标签,以防被回复封印等技能影响
 				if (!move.flags) move.flags = {};
 				move.flags.heal = 1;
 			}
 		},
 		onHit(target, source) {
-			// 命中时，如果是幻想超级达克莱伊，触发吸取速度效果
+			// 命中时,如果是幻想超级达克莱伊,触发吸取速度效果
 			if (source.species.name === 'Darkrai-Mega-Fantasy') {
-				// 如果对手速度已经降到最低(-6)，则该次吸取失败
+				// 如果对手速度已经降到最低(-6),则该次吸取失败
 				if (target.boosts.spe === -6) return false;
 				
 				// 获取对手当前的速度真实数值
@@ -522,12 +552,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
-		// 默认情况下（特攻 >= 攻击），打击对方的防御 (原本的精神击破效果)
+		// 默认情况下（特攻 >= 攻击）,打击对方的防御 (原本的精神击破效果)
 		overrideDefensiveStat: 'def',
 		onModifyMove(move, pokemon) {
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
 				move.category = 'Physical';
-				// 当变为物理招式时，改为打击对方的特防
+				// 当变为物理招式时,改为打击对方的特防
 				move.overrideDefensiveStat = 'spd';
 			} else {
 				move.category = 'Special';
@@ -539,8 +569,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Psychic",
 		zMove: { basePower: 180 },
 		contestType: "Cool",
-		desc: "给予物理伤害。如果使用者的攻击大于特攻，则此招式变成物理招式，给予特殊伤害",
-		shortDesc: "给予物理伤害。攻击大于特攻变成物理招式，给予特殊伤害",
+		desc: "给予物理伤害。如果使用者的攻击大于特攻,则此招式变成物理招式,给予特殊伤害",
+		shortDesc: "给予物理伤害。攻击大于特攻变成物理招式,给予特殊伤害",
 	},
 	flyingpress: {
 		num: 560,
@@ -631,7 +661,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 15, // 变身前基础威力
 		basePowerCallback(pokemon, target, move) {
-			// 只有当宝可梦是“小智版幻想甲贺忍蛙”时，威力才变为 20
+			// 只有当宝可梦是“小智版幻想甲贺忍蛙”时,威力才变为 20
 			if (pokemon.species.name === 'Greninja-Ash-Fantasy') {
 				return 20; // 威力固定为 20
 			}
@@ -644,7 +674,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { protect: 1, mirror: 1, metronome: 1 },
 		multihit: [2, 5],
 		onModifyMove(move, pokemon) {
-			// 只有当宝可梦是“小智版幻想甲贺忍蛙”时，攻击次数才变为 3
+			// 只有当宝可梦是“小智版幻想甲贺忍蛙”时,攻击次数才变为 3
 			if (pokemon.species.name === 'Greninja-Ash-Fantasy') {
 				move.multihit = 3;
 			}
@@ -710,8 +740,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 100 },
 		maxMove: { basePower: 130 },
         contestType: "Cool",
-		desc: "一回合内连续攻击2次，10%几率令目标的防御降低1级",
-		shortDesc: "一回合内连续攻击2次，10%几率令目标的防御降低1级",
+		desc: "一回合内连续攻击2次,10%几率令目标的防御降低1级",
+		shortDesc: "一回合内连续攻击2次,10%几率令目标的防御降低1级",
     },
 	overdrive: {
 		num: 786,
@@ -751,7 +781,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
-		// 移除 selfdestruct: "always"，改用自定义处理
+		// 移除 selfdestruct: "always",改用自定义处理
 		onBasePower(basePower, source) {
 			if (this.field.isTerrain('mistyterrain') && source.isGrounded()) {
 				this.debug('misty terrain boost');
@@ -863,7 +893,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				
 				// --- 核心修改部分：检测幻之冰之石 ---
 				if (this.checkMoveMakesContact(move, source, target)) {
-					// 如果防御方持有幻之冰之石，则给攻击方上冻伤，否则上烧伤
+					// 如果防御方持有幻之冰之石,则给攻击方上冻伤,否则上烧伤
 					const statusToSet = target.hasItem('fantasyicestone') ? 'fst' : 'brn';
 					source.trySetStatus(statusToSet, target);
 				}
@@ -917,17 +947,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onHit(target, source, move) {
 			// 核心逻辑：检查使用者身上是否已经存在 'xianxingzhiling' 状态
 			if (!source.volatiles['xianxingzhiling']) {
-				// 第一次使用：身上没有该状态，则赋予状态，不提升能力
+				// 第一次使用：身上没有该状态,则赋予状态,不提升能力
 				source.addVolatile('xianxingzhiling');
 			} else {
-				// 再次使用：身上已经有该状态，则比较双攻并提升能力
+				// 再次使用：身上已经有该状态,则比较双攻并提升能力
 				const atk = source.getStat('atk', false, true);
 				const spa = source.getStat('spa', false, true);
 		
 				if (atk > spa) {
-					this.boost({ atk: 2 }, source); // 物攻较高，提升物攻2级
+					this.boost({ atk: 2 }, source); // 物攻较高,提升物攻2级
 				} else {
-					this.boost({ spa: 2 }, source); // 特攻较高，提升特攻2级
+					this.boost({ spa: 2 }, source); // 特攻较高,提升特攻2级
 				}
 			}
 		},
@@ -1022,14 +1052,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		willCrit: true,
 		multihit: 3,
 		multiaccuracy: true,
-		// 使用 onHit 替代 onModifyAccuracy，这是 TS 原生支持的属性
+		// 使用 onHit 替代 onModifyAccuracy,这是 TS 原生支持的属性
 		onHit(target, source, move) {
 			// move.hit 记录了当前是第几次命中
 			if (move.hit === 1) {
-				// 第一击命中后，将下一击的命中率设为 90
+				// 第一击命中后,将下一击的命中率设为 90
 				move.accuracy = 90; 
 			} else if (move.hit === 2) {
-				// 第二击命中后，将下一击的命中率设为 70
+				// 第二击命中后,将下一击的命中率设为 70
 				move.accuracy = 70; 
 			}
 		},
@@ -1091,10 +1121,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onEffectiveness(typeMod, target, type, move) {
             // 毒属性克制的属性有：草、妖精
 			if (['Grass', 'Fairy'].includes(type)) {
-                // 如果目标属性是草或妖精，则增加克制效果
+                // 如果目标属性是草或妖精,则增加克制效果
 				return typeMod + 1;
 			}
-            // 否则，返回默认的克制效果
+            // 否则,返回默认的克制效果
 			return typeMod;
 		},
 		secondary: null,
@@ -1137,7 +1167,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { sound: 1, bypasssub: 1 }, 
 		isZ: "toxtricityz",
 		target: "allAdjacentFoes",
-		type: 'Electric', // 占位符，将被修改
+		type: 'Electric', // 占位符,将被修改
 		onPrepareHit(target, source, move) {
 			this.attrLastMove('[anim] Overdrive'); 
 			if (source.species.name === 'Toxtricity-Fantasy') { // 确认形态名称
@@ -1272,12 +1302,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 // 哲尔尼亚斯：赋予吸血（造成伤害的 50%）
                 move.drain = [1, 2];
                 
-                // 安全检查，赋予回复标签
+                // 安全检查,赋予回复标签
                 if (!move.flags) move.flags = {}; 
                 move.flags.heal = 1; 
             } else if (['Sawsbuck-Fantasy', 'Sawsbuck-Summer-Fantasy', 'Sawsbuck-Autumn-Fantasy', 'Sawsbuck-Winter-Fantasy'].includes(pokemon.species.name)) {
                 // 【核心修改】萌芽鹿：使用 secondaries (数组形式) 动态赋予降防的追加效果
-                // 这样写可以被战斗引擎正确读取，并且完美兼容天恩特性 (Serene Grace)
+                // 这样写可以被战斗引擎正确读取,并且完美兼容天恩特性 (Serene Grace)
                 move.secondaries = [
                     {
                         chance: 50,
@@ -1315,7 +1345,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			// 核心加强逻辑：现在治愈异常状态仅在使用者是萌芽鹿时触发
 			pokemon.cureStatus();
 
-			// 原有的形态变化逻辑，额外加上排除变身状态的判断
+			// 原有的形态变化逻辑,额外加上排除变身状态的判断
 			if (!pokemon.transformed) {
 				const formeOrder = ['Sawsbuck-Fantasy', 'Sawsbuck-Summer-Fantasy', 'Sawsbuck-Autumn-Fantasy', 'Sawsbuck-Winter-Fantasy'];
 				const currentForme = pokemon.species.name;
@@ -1340,27 +1370,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
-		// 比较物攻和特攻，决定伤害类型
+		// 比较物攻和特攻,决定伤害类型
 		onModifyMove(move, pokemon) {
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
 				move.category = 'Physical';
 			}
 		},
-		// 检查上一回合的状态，提升威力
+		// 检查上一回合的状态,提升威力
 		onBasePower(basePower, pokemon) {
 			if (pokemon.volatiles['yuannengshifang']) {
 				return this.chainModify(1.5);
 			}
 			return basePower;
 		},
-		// 检查上一回合的状态以施加麻痹，并在成功命中后刷新/添加新状态
+		// 检查上一回合的状态以施加麻痹,并在成功命中后刷新/添加新状态
 		onHit(target, source, move) {
-			// 如果是连续使用，则麻痹双方
+			// 如果是连续使用,则麻痹双方
 			if (source.volatiles['yuannengshifang']) {
 				target.trySetStatus('par', source, move);
 				source.trySetStatus('par', source, move);
 			}
-			// 只要命中，就添加/刷新状态。这会触发 conditions.ts 中的 onStart 或 onRestart
+			// 只要命中,就添加/刷新状态。这会触发 conditions.ts 中的 onStart 或 onRestart
 			source.addVolatile('yuannengshifang');
 		},
 		target: "normal",
@@ -1379,9 +1409,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 15,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, sound: 1, bypasssub: 1 }, 
-		// 像挑衅一样，直接指定状态ID
+		// 像挑衅一样,直接指定状态ID
 		volatileStatus: 'longzhige',
-		// 像挑衅一样，把所有状态逻辑直接写在这里
+		// 像挑衅一样,把所有状态逻辑直接写在这里
 		condition: {
 			name: 'longzhige',
 			duration: 5,
@@ -1401,7 +1431,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onResidualOrder: 13,
 			onResidual(pokemon) {
 				const source = this.effectState.source;
-				// 如果施加状态的宝可梦离场或濒死，则状态解除
+				// 如果施加状态的宝可梦离场或濒死,则状态解除
 				if (source && (!source.isActive || source.hp <= 0 || !source.activeTurns)) {
 					pokemon.removeVolatile('longzhige');
 					this.add('-end', pokemon, this.effectState.sourceEffect, '[partiallytrapped]', '[silent]');
@@ -1410,7 +1440,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				this.damage(pokemon.baseMaxhp / this.effectState.boundDivisor);
 			},
 			onEnd(pokemon) {
-				// 状态结束时，发送 '-end' 指令，客户端将移除状态显示
+				// 状态结束时,发送 '-end' 指令,客户端将移除状态显示
 				this.add('-end', pokemon, 'move: Long Zhi Ge', '[partiallytrapped]');
 				this.add('-message', `龙之歌的旋律消散了。`);
 			},
@@ -1468,7 +1498,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             onBeforeMovePriority: 100,
             onBeforeMove(source, target, move) {
                 if (move.id !== 'chabuduowanan') return;
-                // 效仿 Chilly Reception，使用标准的英文名传参
+                // 效仿 Chilly Reception,使用标准的英文名传参
                 this.add('-prepare', source, 'Cha Bu Duo Wan An', '[premajor]');
             },
         },
@@ -1528,11 +1558,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				// 检查该宝可梦的物种ID是否以列表中的任何一个名字开头
 				for (const legendary of legendaries) {
 					if (speciesId.startsWith(legendary)) {
-						// 如果条件符合，威力+20
+						// 如果条件符合,威力+20
 						newPower += 20;
-						// 调试信息，可以在对战日志中看到威力加成的过程
+						// 调试信息,可以在对战日志中看到威力加成的过程
 						this.debug(`凤行: 威力因队伍中的 ${ally.name} 提升了`);
-						// 找到后就跳出内层循环，避免重复计算
+						// 找到后就跳出内层循环,避免重复计算
 						break;
 					}
 				}
@@ -1549,7 +1579,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			// 比较使用者的攻击和特攻数值
 			// pokemon.getStat('atk', false, true) 会获取包括能力变化在内的最终攻击力
 			if (pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true)) {
-				// 如果攻击力更高，将这个招式的类别（category）从“Special”变为“Physical”
+				// 如果攻击力更高,将这个招式的类别（category）从“Special”变为“Physical”
 				move.category = 'Physical';
 			}
 		},
@@ -1571,16 +1601,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { metronome: 1 },
 		/**
-		 * @description onTry 在招式尝试使用时触发，用于检查使用者自身的状态
+		 * @description onTry 在招式尝试使用时触发,用于检查使用者自身的状态
 		 */
 		onTry(source) {
-			// 检查1: 使用者的HP是否低于最大HP的一半。如果是，招式失败。
+			// 检查1: 使用者的HP是否低于最大HP的一半。如果是,招式失败。
 			if (source.hp <= source.maxhp / 2) {
 				this.add('-fail', source, 'move: Po Pi Pa', '[weak]');
 				this.hint("HP must be greater than 50% to use Po Pi Pa.");
 				return false;
 			}
-			// 检查2: 使用者是否已经有替身了。如果是，招式失败。
+			// 检查2: 使用者是否已经有替身了。如果是,招式失败。
 			if (source.volatiles['substitute']) {
 				this.add('-fail', source, 'move: Po Pi Pa');
 				this.hint("Po Pi Pa cannot be used while a substitute is up.");
@@ -1588,18 +1618,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 		},
 		/**
-		 * @description onHit 在招式成功命中目标后触发，用于执行招式的核心效果
+		 * @description onHit 在招式成功命中目标后触发,用于执行招式的核心效果
 		 */
 		onHit(target, source) {
 			// 计算需要消耗的HP（最大HP的一半）
 			const hpCost = Math.floor(source.maxhp / 2);
 			
-			// 使用 directDamage 扣除使用者的HP。这个函数会处理HP扣减，并确保使用者不会因此而立刻濒死。
+			// 使用 directDamage 扣除使用者的HP。这个函数会处理HP扣减,并确保使用者不会因此而立刻濒死。
 			// 如果HP成功扣除...
 			if (this.directDamage(hpCost, source, source)) {
 				// 效果1: 为使用者创建替身
 				source.addVolatile('substitute', source);
-				// 将替身的HP手动设置为最大HP的1/4，而不是消耗的HP量
+				// 将替身的HP手动设置为最大HP的1/4,而不是消耗的HP量
 				source.volatiles['substitute'].hp = Math.floor(source.maxhp / 4);
 				
 				// 效果2: 使目标陷入诅咒状态
@@ -1729,7 +1759,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { reflectable: 1, metronome: 1, mustpressure: 1 },
 	/**
 		 * @description 核心效果：直接在对手场地上设置'gmaxsteelsurge'状态。
-		 * 程序会自动查找并应用游戏中已有的'gmaxsteelsurge'效果，
+		 * 程序会自动查找并应用游戏中已有的'gmaxsteelsurge'效果,
 		 * 包括它的伤害计算逻辑。
 		 * (Core Effect: Directly applies the 'gmaxsteelsurge' side condition.
 		 * The game will automatically find and use the existing 'gmaxsteelsurge'
@@ -1758,10 +1788,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             if (item) {
                 const success = target.takeItem(source);
                 if (success) {
-                    // 标记道具已被移除，防止香袋在 onAfterHit 中触发
+                    // 标记道具已被移除,防止香袋在 onAfterHit 中触发
                     (move as any).itemRemoved = true; 
                     
-                    // 核心修改：伪装成 Knock Off 触发客户端的飘字和掉落动画，用 [silent] 屏蔽默认的英文错误文本
+                    // 核心修改：伪装成 Knock Off 触发客户端的飘字和掉落动画,用 [silent] 屏蔽默认的英文错误文本
                     this.add('-enditem', target, success.name, '[from] move: Knock Off', `[of] ${source}`, '[silent]');
                     
                     // 手动补充正确的中文战斗日志
@@ -1821,7 +1851,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             duration: 1,
             onBeforeMovePriority: 100, // High priority to ensure the message appears first
             onBeforeMove(source, target, move) {
-                // 效仿 Chilly Reception，使用标准的英文名传参
+                // 效仿 Chilly Reception,使用标准的英文名传参
                 if (move.id !== 'qingshenglvye') return;
                 // If it is, display the preparation message
                 this.add('-prepare', source, 'Qing Sheng Lv Ye', '[premajor]');
@@ -1830,7 +1860,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         target: "all",
         type: "Grass", 
         zMove: { effect: 'healreplacement' },
-        desc: "接下来5回合的天气变更为大晴天，场地变更为青草场地。然后自身与后备宝可梦替换",
+        desc: "接下来5回合的天气变更为大晴天,场地变更为青草场地。然后自身与后备宝可梦替换",
         shortDesc: "交替并使天气变为晴天、场地变为青草场地",
     },
 	fanchen: {
@@ -1853,7 +1883,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             onBeforeMovePriority: 100, 
             onBeforeMove(source, target, move) {
                 if (move.id !== 'fanchen') return;
-                // 效仿 Chilly Reception，使用标准的英文名传参
+                // 效仿 Chilly Reception,使用标准的英文名传参
                 this.add('-prepare', source, 'Fan Chen', '[premajor]');
             },
         },
@@ -1920,11 +1950,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1, mustpressure: 1 },
 		/**
-		 * @description 在技能准备命中时触发，用于显示额外信息和处理太晶动画
+		 * @description 在技能准备命中时触发,用于显示额外信息和处理太晶动画
 		 * (Triggered when the move is preparing to hit, used to display extra messages and handle Tera animations)
 		 */
 		onPrepareHit(target, source, move) {
-			// 3. 每次使用时，都会在对战日志中显示这条消息
+			// 3. 每次使用时,都会在对战日志中显示这条消息
 			// (3. Every time the move is used, this message will be displayed in the battle log)
 			this.add('-message', '请多多支持幻想杯！');
 			
@@ -1935,11 +1965,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 		},
 		/**
-		 * @description 修改技能的属性，仅在太晶化时生效
+		 * @description 修改技能的属性,仅在太晶化时生效
 		 * (Modifies the move's type, only takes effect when terastallized)
 		 */
 		onModifyType(move, pokemon, target) {
-			// 4. 如果使用者已太晶化，技能属性变为其太晶属性
+			// 4. 如果使用者已太晶化,技能属性变为其太晶属性
 			// (4. If the user is terastallized, the move's type becomes its Tera Type)
 			if (pokemon.terastallized) {
 				move.type = pokemon.teraType;
@@ -1953,7 +1983,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			// 2. 比较最终的特攻和物攻数值
 			// (2. Compare the final Special Attack and Attack stats)
 			if (pokemon.getStat('spa', false, true) > pokemon.getStat('atk', false, true)) {
-				// 如果特攻更高，则将技能类别变为“特殊”
+				// 如果特攻更高,则将技能类别变为“特殊”
 				// (If Special Attack is higher, change the move category to "Special")
 				move.category = 'Special';
 			}
@@ -1963,7 +1993,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		type: "Normal",
 		zMove: { basePower: 160 },
 		maxMove: { basePower: 130 },
-		desc: "比较自己的攻击和特攻，用数值相对较高的一项给予对方伤害。当使用者太晶化后，这个招式的属性会变为使用者的太晶属性。攻击时会显示“请多多支持幻想杯！”",
+		desc: "比较自己的攻击和特攻,用数值相对较高的一项给予对方伤害。当使用者太晶化后,这个招式的属性会变为使用者的太晶属性。攻击时会显示“请多多支持幻想杯！”",
 		shortDesc: "不太晶也智能判断物特攻的太晶爆发“请多多支持幻想杯！”",
 	},
 	youzhipeiyu: {
@@ -2007,8 +2037,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					const source = this.effectState.source;
 					
 					// --- 核心修改 ---
-					// 1. 我们不再使用 this.heal()，因为它会自动发送消息。
-					//    改为使用 target.heal()，这个函数只负责回复HP并返回实际回复量，不会发送消息。
+					// 1. 我们不再使用 this.heal(),因为它会自动发送消息。
+					//    改为使用 target.heal(),这个函数只负责回复HP并返回实际回复量,不会发送消息。
 					const amount = target.heal(hp, source, this.effect);
 
 					// 2. 只有在确实回复了HP的情况下（满血时 amount 会是 0）...
@@ -2082,15 +2112,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (move.multihit && typeof move.hit === 'number') {
 				if (move.hit < 10) {
 					// 解决方法：使用 delete 关键字彻底移除 contact 标记
-					// 这样在计算反伤（如凸凸头盔）时，系统会找不到该标记，从而判定为非接触
+					// 这样在计算反伤（如凸凸头盔）时,系统会找不到该标记,从而判定为非接触
 					delete move.flags.contact;
 				} else {
-					// 最后一次攻击时，重新补回标记
+					// 最后一次攻击时,重新补回标记
 					move.flags.contact = 1;
 				}
 			}
 		},
-		// 容错处理：确保招式彻底结束或中断后，flag 恢复正常
+		// 容错处理：确保招式彻底结束或中断后,flag 恢复正常
 		onAfterMove(source, target, move) {
 			move.flags.contact = 1;
 		},
@@ -2157,7 +2187,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: -3,
 		flags: { protect: 1, failmefirst: 1, nosleeptalk: 1, noassist: 1, failcopycat: 1, failinstruct: 1 },
 		/**
-		 * 在回合开始时（优先级阶段）为使用者添加状态，开始监听攻击
+		 * 在回合开始时（优先级阶段）为使用者添加状态,开始监听攻击
 		 */
 		priorityChargeCallback(pokemon) {
 			pokemon.addVolatile('fanjibingjia');
@@ -2169,7 +2199,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (!pokemon.volatiles['fanjibingjia']?.gotHit) {
 				this.attrLastMove('[still]');
 				this.add('-fail', pokemon, 'move: Fan Ji Bing Jia');
-				this.hint("只有在本回合受到攻击招式伤害后，反击冰甲才会发动。");
+				this.hint("只有在本回合受到攻击招式伤害后,反击冰甲才会发动。");
 				return null;
 			}
 		},
@@ -2184,7 +2214,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onDamagingHit(damage, target, source, move) {
 				if (!target.isAlly(source)) {
 					this.effectState.gotHit = true;
-					// 提升当前行动的优先级，确保触发后立即反击
+					// 提升当前行动的优先级,确保触发后立即反击
 					const action = this.queue.willMove(target);
 					if (action) {
 						this.queue.prioritizeAction(action);
@@ -2204,7 +2234,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 200 },
 		maxMove: { basePower: 160 },
 		contestType: "Beautiful",
-		desc: "设下陷阱。如果本回合内被对手攻击并受到伤害，就会触发并反击，造成伤害并使对手陷入冻伤状态",
+		desc: "设下陷阱。如果本回合内被对手攻击并受到伤害,就会触发并反击,造成伤害并使对手陷入冻伤状态",
 		shortDesc: "若受到对手攻击,对目标造成伤害并陷入冻伤状态",
 	},
 	nihillight: {
@@ -2222,7 +2252,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		ignoreImmunity: true,
 		target: "allAdjacentFoes",
 		type: "Dragon",
-		desc: "释放无视所有法则的强光。连妖精属性的宝可梦也能击中，可不顾对手的能力变化给予伤害",
+		desc: "释放无视所有法则的强光。连妖精属性的宝可梦也能击中,可不顾对手的能力变化给予伤害",
 		shortDesc: "无视目标的能力变化,可以命中妖精属性宝可梦",
 	},
 	cunjinbengji: {
@@ -2282,8 +2312,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1 },
 		onModifyMove(move, pokemon) {
-			// 根据携带的道具，动态切换用于计算伤害的面板属性
-			// 在 Showdown 引擎中，切换 overrideOffensiveStat 会自动让伤害计算去抓取对应的 onModify[Stat] 钩子
+			// 根据携带的道具,动态切换用于计算伤害的面板属性
+			// 在 Showdown 引擎中,切换 overrideOffensiveStat 会自动让伤害计算去抓取对应的 onModify[Stat] 钩子
 			// 这使得该招式能够完美且自动地享受到“进化奇石/突击背心”以及“道具增幅”特性的加成！
 			
 			if (pokemon.hasItem('choicespecs')) {
@@ -2293,12 +2323,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			} else if (pokemon.hasItem('assaultvest')) {
 				move.overrideOffensiveStat = 'spd'; // 突击背心：使用特防计算
 			} else if ((pokemon.hasItem('eviolite') && pokemon.baseSpecies.nfe) || pokemon.hasItem('fantasyprotector')) {
-				// 进化奇石、幻之护具：同时提升双防，自动比较并取较高的一项作为攻击力
+				// 进化奇石、幻之护具：同时提升双防,自动比较并取较高的一项作为攻击力
 				const def = pokemon.getStat('def', false, true);
 				const spd = pokemon.getStat('spd', false, true);
 				move.overrideOffensiveStat = def >= spd ? 'def' : 'spd';
 			}
-			// 讲究头带 (choiceband) 本身就是提升物攻，另外像吃剩的东西、幻之蜜汁苹果等道具不提升面板，则默认保持使用物攻 (atk)
+			// 讲究头带 (choiceband) 本身就是提升物攻,另外像吃剩的东西、幻之蜜汁苹果等道具不提升面板,则默认保持使用物攻 (atk)
 		},
 		secondary: null,
 		target: "normal",
@@ -2306,7 +2336,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 180 },
 		maxMove: { basePower: 130 },
 		contestType: "Cool",
-		desc: "根据携带道具提升的能力类型，使用该能力值（享受道具的增幅加成）代替自身的攻击进行伤害计算。若道具同时提升多项能力（如进化奇石/幻之护具），则取面板较高的一项进行计算",
+		desc: "根据携带道具提升的能力类型,使用该能力值（享受道具的增幅加成）代替自身的攻击进行伤害计算。若道具同时提升多项能力（如进化奇石/幻之护具）,则取面板较高的一项进行计算",
 		shortDesc: "使用携带道具所提升的能力代替攻击进行伤害计算",
 	},
 	duoshuxinggongjigai: {
@@ -2321,7 +2351,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onModifyType(move, pokemon) {
 			const types = pokemon.getTypes();
 			// 判断宝可梦是否有第二属性
-			// types[1] 就是第二属性，如果只有单属性则回退使用第一属性 types[0]
+			// types[1] 就是第二属性,如果只有单属性则回退使用第一属性 types[0]
 			let type = types.length > 1 ? types[1] : types[0];
 			
 			// 过滤掉不可用的 Bird 属性
@@ -2365,7 +2395,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 0,
 		basePowerCallback(pokemon, target, move) {
-			// 如果是“幻想萨戮德-阿爸”，直接返回 120 的固定威力
+			// 如果是“幻想萨戮德-阿爸”,直接返回 120 的固定威力
 			if (pokemon.species.id === 'zarudedadafantasy') {
 				return 120;
 			}
@@ -2468,7 +2498,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			
 			this.add('-message', `${source.name}将「${moveName}」的属性转换为了${randomType}属性！`);
 		},
-		// 【注意】：删除了原本在这里的 condition: { ... } 对象，因为我们移到了 conditions.ts 中
+		// 【注意】：删除了原本在这里的 condition: { ... } 对象,因为我们移到了 conditions.ts 中
 		secondary: null,
 		target: "normal",
 		type: "Normal",
@@ -2489,7 +2519,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onTry(source, target) {
 			const action = this.queue.willMove(target);
 			const move = action?.choice === 'move' ? action.move : null;
-			// 核心判定逻辑：如果对手不使用招式、使用变化类招式（抢先一步除外），或者处于硬直状态，则招式失败
+			// 核心判定逻辑：如果对手不使用招式、使用变化类招式（抢先一步除外）,或者处于硬直状态,则招式失败
 			if (!move || (move.category === 'Status' && move.id !== 'mefirst') || target.volatiles['mustrecharge']) {
 				return false;
 			}
@@ -2500,8 +2530,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 140 },
 		maxMove: { basePower: 85 },
 		contestType: "Clever",
-		desc: "如果目标本回合未准备使用造成伤害的招式，或目标已经行动，此招式将失败",
-		shortDesc: "先制攻击，如果目标不使用攻击招式的话则使用失败",
+		desc: "如果目标本回合未准备使用造成伤害的招式,或目标已经行动,此招式将失败",
+		shortDesc: "先制攻击,如果目标不使用攻击招式的话则使用失败",
 	},
 	huanshenbu: {
 		num: 10049, 
@@ -2513,13 +2543,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 1,
 		flags: { contact: 1, protect: 1, mirror: 1 },
 		onModifyPriority(priority, source, target, move) {
-			// 如果在精神场地且使用者接地（未浮空），先制度变为 0
+			// 如果在精神场地且使用者接地（未浮空）,先制度变为 0
 			if (this.field.isTerrain('psychicterrain') && source.isGrounded()) {
 				return 0;
 			}
 		},
 		onModifyMove(move, pokemon) {
-			// 同理，在精神场地且使用者接地时，为招式赋予“提升1级速度”的自我增益效果
+			// 同理,在精神场地且使用者接地时,为招式赋予“提升1级速度”的自我增益效果
 			if (this.field.isTerrain('psychicterrain') && pokemon.isGrounded()) {
 				move.self = {
 					boosts: {
@@ -2625,7 +2655,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
             this.boost({ atk: 2, spa: 2, spe: 2 }, target, source, move);
 
-            // 【修正】：只给本体挂寄生，不再挂发号施令，防止获得底层写死的无敌
+            // 【修正】：只给本体挂寄生,不再挂发号施令,防止获得底层写死的无敌
             source.addVolatile('parasite');
             target.addVolatile('parasitized');
 
@@ -2639,7 +2669,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         type: "Poison",
         zMove: { effect: 'heal' },
         contestType: "Cool",
-        desc: "寄生一名我方宝可梦，令其损失1/4最大HP，提高物攻、特攻与速度各2级。期间目标将无法选中，而自己将无法使出技能",
+        desc: "寄生一名我方宝可梦,令其损失1/4最大HP,提高物攻、特攻与速度各2级。期间目标将无法选中,而自己将无法使出技能",
         shortDesc: "队友损失1/4最大HP,提高双攻速度2级;自己无法使出技能",
     },
 	qingsumihun: {
@@ -2671,7 +2701,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1 },
-		// 【新增修复2】：登场与未出招时，招式属性面板同步当前的形态属性
+		// 【新增修复2】：登场与未出招时,招式属性面板同步当前的形态属性
 		onModifyType(move, pokemon) {
 			if (pokemon.species.name === 'Simisage-Fantasy') {
 				move.type = 'Grass';
@@ -2746,7 +2776,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
 				if (candidateTypes.length > 0) {
 					// 【核心修复1】：如果当前属性已经在最优解（最高克制倍率）的候选池中
-					// 说明没有找到比当前属性更优的解，优先保持当前属性，避免无意义的变身
+					// 说明没有找到比当前属性更优的解,优先保持当前属性,避免无意义的变身
 					if (candidateTypes.includes(currentType)) {
 						bestType = currentType;
 					} else {

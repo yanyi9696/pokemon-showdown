@@ -3804,7 +3804,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 
                     // 【核心修改】：精准分类克制与不抵抗
                     if (eff > 0) {
-                        // 克制对方的属性，放入最高倍率角逐
+                        // 克制对方的属性,放入最高倍率角逐
                         if (eff > maxEff) {
                             maxEff = eff;
                             candidateTypes = [type];
@@ -3812,32 +3812,32 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                             candidateTypes.push(type);
                         }
                     } else if (eff === 0) {
-                        // 【收集1倍伤害】：打对方不微弱的属性，收入备选池
+                        // 【收集1倍伤害】：打对方不微弱的属性,收入备选池
                         neutralTypes.push(type);
                     }
                 }
 
                 // 【逻辑更新】：没有克制时寻找不抵抗的最优解
                 if (candidateTypes.length > 0) {
-                    // 1. 有克制属性，直接选最优
+                    // 1. 有克制属性,直接选最优
                     bestType = this.sample(candidateTypes);
                 } else if (neutralTypes.includes(currentType)) {
-                    // 2. 没有克制，但现在的属性打对方是1倍伤害。
-                    // （注：因为“???”和被免疫的属性根本进不了 neutralTypes，所以这里自带了当前属性不是“???”的排雷判断）
-                    // 结论：现在的属性就是最佳属性，按兵不动！
+                    // 2. 没有克制,但现在的属性打对方是1倍伤害。
+                    // （注：因为“???”和被免疫的属性根本进不了 neutralTypes,所以这里自带了当前属性不是“???”的排雷判断）
+                    // 结论：现在的属性就是最佳属性,按兵不动！
                     bestType = currentType;
                 } else if (neutralTypes.length > 0) {
-                    // 3. 没有克制，且现在的属性打对方微弱（或者是“???”）。
-                    // 结论：从所有1倍伤害的属性中随机挑一个，绝对不打微弱伤害！
+                    // 3. 没有克制,且现在的属性打对方微弱（或者是“???”）。
+                    // 结论：从所有1倍伤害的属性中随机挑一个,绝对不打微弱伤害！
                     bestType = this.sample(neutralTypes);
                 } else {
-                    // 4. 极端情况兜底（比如没有弱点的脱壳忍者，全部属性都被免疫或微弱）
+                    // 4. 极端情况兜底（比如没有弱点的脱壳忍者,全部属性都被免疫或微弱）
                     bestType = currentType === '???' ? 'Normal' : currentType;
                 }
 
-                // 修改服务端内在属性，并向客户端发送指令
+                // 修改服务端内在属性,并向客户端发送指令
                 if (pokemon.getTypes().join() !== bestType) {
-                    // 强改底层属性，解决吃不到 1.5 倍本系加成的问题
+                    // 强改底层属性,解决吃不到 1.5 倍本系加成的问题
                     const success = pokemon.setType(bestType, true);
                     if (!success) {
                         (pokemon as any).types = [bestType]; 
@@ -3847,7 +3847,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                     this.add('-legendplate', pokemon, bestType);
                 }
                 
-                // 强制修正招式属性，覆盖掉原有的判断
+                // 强制修正招式属性,覆盖掉原有的判断
                 move.type = bestType;
             }
         },
@@ -3892,5 +3892,41 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         gen: 9,
         desc: "首次受到效果绝佳的伤害时,降低本次攻击30%的伤害,生效一次后消失。失去该道具后,该宝可梦的防御和特防将永久提升10%",
 		shortDesc: "首次受效果绝佳伤害时减伤30%,使用后消失。失去后防御和特防永久提升10%",
+    },
+	fantasymachobrace: {
+        name: "Fantasy Macho Brace",
+		spritenum: 269,
+        fling: {
+            basePower: 60,
+        },
+        onModifyMove(move, pokemon) {
+            // 检查是否为蓄力招式
+            if (move.flags?.charge) {
+                // 删除 onTryMove 阶段（跳过第一回合蓄力和 -prepare 文本）
+                // 因为流星光束、火箭头锤等招式的能力提升写在此阶段内,删除后自然失效
+                delete move.onTryMove;
+                
+                // 动态注入 cantusetwice 标签,确保在执行阶段（如被“号令”等招式判定时）表现得和血月一致
+                if (!move.flags) move.flags = {};
+                move.flags.cantusetwice = 1;
+            }
+        },
+        onBasePowerPriority: 21,
+        onBasePower(basePower, pokemon, target, move) {
+            // 蓄力招式威力提升 1.2 倍
+            if (move.flags?.charge) {
+                return this.chainModify(1.2);
+            }
+        },
+        onDisableMove(pokemon) {
+            // 完美模拟血月效果：回合开始选择招式时,如果上回合使用的是蓄力招式,则将其禁用
+            if (pokemon.lastMove?.flags?.charge && pokemon.lastMove.id !== 'struggle') {
+                pokemon.disableMove(pokemon.lastMove.id);
+            }
+        },
+        num: 30014,
+        gen: 9,
+        desc: "携带后,蓄力的招式变为无法连续使出2次的招式,将不再经历积蓄状态,原本在积蓄状态获得能力提升的效果也会消失,但威力会提升1.2倍",
+		shortDesc: "蓄力的招式变为无法连续使出2次的招式,将不再经历积蓄状态,威力提升1.2倍",
     },
 };
