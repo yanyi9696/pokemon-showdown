@@ -2988,4 +2988,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         num: 10061,
         shortDesc: "兼备扬沙和沙之力这两种特性",
     },
+	jingshencaozongzhe: {
+		onChangeBoost(boost, target, source, effect) {
+			// 能力的变化发生逆转（继承自唱反调）
+			if (effect && effect.id === 'zpower') return;
+			let i: BoostID;
+			for (i in boost) {
+				boost[i]! *= -1;
+			}
+		},
+		onSourceHit(target, source, move) {
+			// 确保是变化招式，且目标是敌方（通过判断双方 side 是否不同）
+			if (move.category === 'Status' && target.side !== source.side) {
+				// 避免与原版着迷或已有的专属着迷状态叠加
+				if (!target.volatiles['attract'] && !target.volatiles['jingshencaozongzheattract']) {
+					target.addVolatile('jingshencaozongzheattract', source);
+				}
+			}
+		},
+		flags: {},
+		name: "Jing Shen Cao Zong Zhe",
+		rating: 4.5,
+        num: 10062,
+        shortDesc: "唱反调+对敌方目标成功使用变化招式后,使目标在3回合内陷入无视性别的着迷状态",
+    },
 };

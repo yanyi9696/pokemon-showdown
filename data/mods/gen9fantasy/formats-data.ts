@@ -335,6 +335,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mamoswinefantasy: {
 		tier: "OU",
 	},
+	malamarmegafantasy: {
+		tier: "OU",
+		abilities: { 0: "Jing Shen Cao Zong Zhe" },
+	},
 	mawilemegafantasy: {
 		tier: "OU",
 		abilities: {0: "Shuang Chong Da Zui" },	
@@ -389,6 +393,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sceptilemegafantasy: {
 		tier: "OU",
 		abilities: {0: "Dragonize"},		
+	},
+	screamtailfantasy: {
+		tier: "OU",	
 	},
 	skeledirgefantasy: {
 		tier: "OU",
@@ -757,6 +764,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	incineroarfantasy: {
+		tier: "RU",
+	},
+	malamarfantasy: {
 		tier: "RU",
 	},
 	marowakalolafantasy: {

@@ -1,4 +1,32 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	jingshencaozongzheattract: {
+		name: 'Jing Shen Cao Zong Zhe Attract',
+		noCopy: true, // 接棒无法传递该状态
+		duration: 3,  // 强制限定在 3 回合内
+		onStart(pokemon, source, effect) {
+			// 客户端依然会收到 'Attract' 的指令，从而正常播放爱心动画
+			this.add('-start', pokemon, 'Attract', '[from] ability: Jing Shen Cao Zong Zhe', `[of] ${source}`);
+		},
+		onUpdate(pokemon) {
+			// 如果施法者离场，着迷状态自动解除（与原版保持一致）
+			if (this.effectState.source && !this.effectState.source.isActive && pokemon.volatiles['jingshencaozongzheattract']) {
+				this.debug(`Removing Attract volatile on ${pokemon}`);
+				pokemon.removeVolatile('jingshencaozongzheattract');
+			}
+		},
+		onBeforeMovePriority: 2,
+		onBeforeMove(pokemon, target, move) {
+			this.add('-activate', pokemon, 'move: Attract', '[of] ' + this.effectState.source);
+			// 50% 概率无法出招
+			if (this.randomChance(1, 2)) {
+				this.add('cant', pokemon, 'Attract');
+				return false;
+			}
+		},
+		onEnd(pokemon) {
+			this.add('-end', pokemon, 'Attract', '[silent]');
+		},
+	},
 	gemdefensepermanentboost: {
         name: 'Gem Defense Permanent Boost',
         noCopy: true,

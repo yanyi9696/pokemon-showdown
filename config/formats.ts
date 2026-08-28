@@ -749,7 +749,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Shedinja',             // 禁用脱壳忍者
 		],
 		unbanlist: [
-			'Mega','Ultra Beast', // 但我们在这里特例解禁某一类
+			'Mega', 'Ultra Beast', // 但我们在这里特例解禁某一类
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
