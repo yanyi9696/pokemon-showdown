@@ -485,7 +485,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	tapufinifantasy: {
 		tier: "OU",
 	},
-	throhfantasyh: {
+	throhfantasy: {
 		tier: "OU",
 	},
 	toxtricityfantasy: {
