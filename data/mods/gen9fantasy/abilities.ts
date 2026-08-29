@@ -2055,92 +2055,109 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "登场使我方进入睡眠但仍可行动;每回合结束回复1/16HP。离场时解除全队睡眠",
 	},
 	qiyizhizaozhe: {
-		onStart(pokemon) {
-			this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
-			
-			// 初始化本回合是否使用过超能系招式的标记
-			this.effectState.usedPsychicMove = false;
+        onStart(pokemon) {
+            this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+            
+            // 初始化本回合是否使用过超能系招式的标记
+            this.effectState.usedPsychicMove = false;
 
-			// 1. 【修改点】登场立即引发重力，不再受是否携带戏法空间影响
-			if (this.field.addPseudoWeather('gravity', pokemon)) {
-				this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
-			}
+            // 1. 登场立即引发重力，不再受是否携带戏法空间影响
+            if (this.field.addPseudoWeather('gravity', pokemon)) {
+                this.add('-message', `${pokemon.name} 周身的引力变得沉重了！`);
+            }
 
-			// 2. 检查并一并引发魔法空间或奇妙空间
-			if (pokemon.hasMove('magicroom')) {
-				this.field.addPseudoWeather('magicroom', pokemon);
-			}
-			if (pokemon.hasMove('wonderroom')) {
-				this.field.addPseudoWeather('wonderroom', pokemon);
-			}
+            // 2. 检查并一并引发魔法空间或奇妙空间
+            if (pokemon.hasMove('magicroom')) {
+                this.field.addPseudoWeather('magicroom', pokemon);
+            }
+            if (pokemon.hasMove('wonderroom')) {
+                this.field.addPseudoWeather('wonderroom', pokemon);
+            }
 
-			// 3. 检查戏法空间，打上首回合待触发的标记
-			if (pokemon.hasMove('trickroom')) {
-				this.effectState.pendingTrickRoom = true;
-				this.add('-message', `${pokemon.name} 正在尝试扭曲周围的时间...`);
-			}
-		},
+            // 3. 检查戏法空间，打上首回合待触发的标记
+            if (pokemon.hasMove('trickroom')) {
+                this.effectState.pendingTrickRoom = true;
+                // 【核心修改2】：记录登场时的回合数，用于准确判断“首个可行动回合”
+                this.effectState.startTurn = this.turn;
+                this.add('-message', `${pokemon.name} 正在尝试扭曲周围的时间...`);
+            }
+        },
 
-		// 监听宝可梦使用招式的动作
-		onModifyMove(move, pokemon) {
-			// 【修改点】改为判断本回合是否使用了超能系招式
-			if (this.effectState.pendingTrickRoom && move.type === 'Psychic') {
-				this.effectState.usedPsychicMove = true;
-			}
-		},
+        // 监听宝可梦使用招式的动作
+        onModifyMove(move, pokemon) {
+            // 判断本回合是否使用了超能系招式
+            if (this.effectState.pendingTrickRoom && move.type === 'Psychic') {
+                this.effectState.usedPsychicMove = true;
+            }
+        },
 
-		// 回合结束时触发
-		onResidualOrder: 27,
-		onResidual(pokemon) {
-			// 如果有戏法空间待触发标记（即登场首回合结束时）
-			if (this.effectState.pendingTrickRoom) {
-				
-				// 检查戏法空间是否被封印 (Imprison)
-				let isSealed = false;
-				for (const target of pokemon.foes()) {
-					if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
-						isSealed = true;
-						break;
-					}
-				}
+        // 回合结束时触发
+        onResidualOrder: 27,
+        onResidual(pokemon) {
+            if (this.effectState.pendingTrickRoom) {
+                
+                // 【核心修改2】：如果当前回合数等于它上场的初始回合数，说明是在本回合中途换上场的。
+                // 它还没有经历过完整的出招阶段，所以跳过本次结算，留到下回合。
+                if (this.turn === this.effectState.startTurn) {
+                    return;
+                }
 
-				// 【核心修正逻辑】：若首回合内使用了超能系招式，且戏法空间未被封印
-				if (this.effectState.usedPsychicMove && !isSealed) {
-					// 引发戏法空间
-					if (this.field.addPseudoWeather('trickroom', pokemon)) {
-						this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
-						this.add('-message', `${pokemon.name} 扭曲了周围的一切！`);
+                // 【核心修改1】：检查戏法空间是否处于“可使用”状态（检查挑衅与封印）
+                let isRestricted = false;
+                let failReason = '';
+                
+                if (pokemon.volatiles['taunt']) {
+                    isRestricted = true;
+                    failReason = 'taunt';
+                } else {
+                    for (const target of pokemon.foes()) {
+                        if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
+                            isRestricted = true;
+                            failReason = 'imprison';
+                            break;
+                        }
+                    }
+                }
 
-						// 获取当前场上的戏法空间实际活动状态数据并调整回合数
-						const trickRoomState = this.field.pseudoWeather['trickroom'];
-						if (trickRoomState && trickRoomState.duration) {
-							trickRoomState.duration--;
-							this.debug(`Trick Room duration adjusted to ${trickRoomState.duration} to account for end-of-turn activation.`);
-						}
-					}
-				} else {
-					// 触发失败时的文字提示
-					this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
-					if (isSealed) {
-						this.add('-message', `${pokemon.name}的戏法空间被封印了，扭曲时空的进程被打断了！`);
-					} else if (!this.effectState.usedPsychicMove) {
-						this.add('-message', `${pokemon.name}未能使用超能系招式，扭曲时空的进程被打断了！`);
-					}
-				}
-				
-				// 【修改点】由于限定在“登场首回合”，无论本回合触发成功与否，回合末一律取消待触发标记
-				this.effectState.pendingTrickRoom = false;
-			}
-			
-			// 重置 usedPsychicMove，保持状态干净
-			this.effectState.usedPsychicMove = false;
-		},
-		flags: {},
-		name: "Qi Yi Zhi Zao Zhe",
-		rating: 5,
-		num: 10035,
-		shortDesc: "登场引发重力与携带的空间;若携带戏法空间,首回合成功使用超能系招式且未被封印,回合末将其制造",
-	},
+                // 若首回合内使用了超能系招式，且戏法空间未受到限制
+                if (this.effectState.usedPsychicMove && !isRestricted) {
+                    // 引发戏法空间
+                    if (this.field.addPseudoWeather('trickroom', pokemon)) {
+                        this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+                        this.add('-message', `${pokemon.name} 扭曲了周围的一切！`);
+
+                        // 获取当前场上的戏法空间实际活动状态数据并调整回合数
+                        const trickRoomState = this.field.pseudoWeather['trickroom'];
+                        if (trickRoomState && trickRoomState.duration) {
+                            trickRoomState.duration--;
+                            this.debug(`Trick Room duration adjusted to ${trickRoomState.duration} to account for end-of-turn activation.`);
+                        }
+                    }
+                } else {
+                    // 触发失败时的分类文字提示
+                    this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
+                    if (failReason === 'taunt') {
+                        this.add('-message', `${pokemon.name}受到了挑衅，扭曲时空的进程被打断了！`);
+                    } else if (failReason === 'imprison') {
+                        this.add('-message', `${pokemon.name}的戏法空间被封印了，扭曲时空的进程被打断了！`);
+                    } else if (!this.effectState.usedPsychicMove) {
+                        this.add('-message', `${pokemon.name}未能使用超能系招式，扭曲时空的进程被打断了！`);
+                    }
+                }
+                
+                // 由于已经历了“首个可行动回合”，无论成功与否，一律取消待触发标记
+                this.effectState.pendingTrickRoom = false;
+            }
+            
+            // 回合末重置 usedPsychicMove，保持状态干净
+            this.effectState.usedPsychicMove = false;
+        },
+        flags: {},
+        name: "Qi Yi Zhi Zao Zhe",
+        rating: 5,
+        num: 10035,
+        shortDesc: "登场引发重力与携带的空间;若携带戏法空间,首回合成功使用超能系招式且可使用该招式,回合末将其制造",
+    },
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
 			// 确定对手的场地侧

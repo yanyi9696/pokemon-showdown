@@ -573,6 +573,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	zoroarkhisuifantasy: {
 		tier: "UUBL",
 	},
+	aggronfantasy: {
+		tier: "UU",
+	},
 	beheeyemfantasy: {
 		tier: "UU",
 	},
@@ -694,9 +697,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	wochienfantasy: {
 		tier: "UU",
-	},
-	aggronfantasy: {
-		tier: "RUBL",
 	},
 	floetteeternalfantasy: {
 		tier: "RUBL",

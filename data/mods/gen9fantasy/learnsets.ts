@@ -17630,7 +17630,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			baoyulihua: ["9M"],
 			metalburst: ["9M"],
 			suilinggang: ["9M"],
-			spikecannon: ["9M"],
 			popipa: ["9M"],
 			//幻想增添技能
 			acidspray: ["8L1", "7L12", "6L12", "5L12"],
@@ -17717,7 +17716,6 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			baoyulihua: ["9M"],
 			metalburst: ["9M"],
 			suilinggang: ["9M"],
-			spikecannon: ["9M"],
 			popipa: ["9M"],
 			//幻想增添技能
 			acidspray: ["8L1", "7L12", "6L12", "5L12"],
@@ -20617,6 +20615,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	tropiusfantasy: {
 		learnset: {
 			youzhipeiyu: ["9M"],
+			qingshenglvye: ["9M"],
 			gravapple: ["9M"],
 			tropkick: ["9M"],
 			dracometeor: ["9M"],
