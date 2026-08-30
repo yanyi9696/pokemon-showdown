@@ -512,7 +512,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	{
-        name: "[Gen 9] FC RU <Max 9 Pick 6>",
+        name: "[Gen 9] FC RU (Max 9 Pick 6)",
         mod: 'gen9fantasy',
         ruleset: [
             '[Gen 9] FC UU',
