@@ -130,8 +130,8 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Pixilate"},		
 	},
 	drednawgmegafantasy: {	
-		abilities: {0: "Rock Head"},	
 		tier: "(Uber)",
+		abilities: {0: "Shi Shan"},	
 	},
 	darmanitangalarfantasy: {
 		tier: "(Uber)",

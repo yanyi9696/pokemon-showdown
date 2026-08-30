@@ -63,18 +63,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 	//以上是官方新特性
 	shellarmor: {
-        onCriticalHit: false,
-        onSourceModifyDamage(damage, source, target, move) {
-            if (move.flags['contact']) {
-                return this.chainModify([2, 3]); 
-            }
-        },
-        flags: { breakable: 1 },
-        name: "Shell Armor",
-        rating: 3,
-        num: 4,
-        shortDesc: "不会被击中要害,受到接触类招式的伤害会降低1/3",
-    },
+		onCriticalHit: false,
+		onSourceModifyDamage(damage, source, target, move) {
+			// 判断攻击招式是否为物理招式，且目标（拥有该特性的宝可梦）在当前回合还未行动
+			if (move.category === 'Physical' && this.queue.willMove(target)) {
+				this.debug('Shell Armor damage reduction');
+				// 乘以 0.75，即降低 25% 的伤害
+				return this.chainModify(0.75); 
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Shell Armor",
+		rating: 3,
+		num: 4,
+		shortDesc: "不会被击中要害,在使用招式前受到的物理招式伤害会降低25%",
+	},
 	illuminate: {
 		onTryBoost(boost, target, source, effect) {
 			if (source && target === source) return;
@@ -3026,4 +3029,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         num: 10062,
         shortDesc: "唱反调+对敌方目标成功使用变化招式后,使目标在3回合内陷入无视性别的着迷状态",
     },
+	shishan: {
+		onTryHit(target, source, move) {
+			// 判断攻击来源不是自己，且招式属性为草属性或地面属性
+			if (target !== source && (move.type === 'Grass' || move.type === 'Ground')) {
+				// 显示免疫信息
+				this.add('-immune', target, '[from] ability: Shi Shan');
+				
+				// 中断攻击，使其不造成伤害和效果
+				return null;
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Shi Shan",
+		rating: 4,
+		num: 10063,
+		shortDesc: "受到草属性和地面属性的招式攻击时,都不会受到伤害",
+	},
 };

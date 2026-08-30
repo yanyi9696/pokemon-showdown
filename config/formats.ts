@@ -512,6 +512,62 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	{
+        name: "[Gen 9] FC RU <Max 9 Pick 6>",
+        mod: 'gen9fantasy',
+        ruleset: [
+            '[Gen 9] FC UU',
+            'Max Team Size = 9',    // 队伍中允许带入的最多宝可梦数量改为9
+            'Picked Team Size = 6', // 对战开始前的 Team Preview 阶段选出6只
+        ],
+        banlist: ['ND UU', 'ND RUBL', 'Slowbro-Base + Slowbronite'],
+        onSwitchIn(pokemon) {
+            // 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突
+            pokemon.m.fantasySync = (mon: Pokemon) => {
+                // 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+                const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+                const isFantasy = !Dex.species.get(visualSpecies.id).exists;
+
+                if (isFantasy) {
+                    // 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+                    const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+                    this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
+                    this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+
+                    // 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+                    mon.m.fantasyUIAttached = true;
+                } else {
+                    // 2. 如果视觉上是原版宝可梦：清除数值UI
+                    this.add('-end', mon, 'fantasystats', '[silent]');
+
+                    // 【核心修复】：
+                    // 增加 !mon.transformed 判断。
+                    // 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+                    // 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+                    if (mon.m.fantasyUIAttached && !mon.transformed) {
+                        this.add('-end', mon, 'typechange', '[silent]');
+                        mon.m.fantasyUIAttached = false;
+                    }
+                }
+            };
+
+            pokemon.m.fantasySync(pokemon);
+        },
+
+        onUpdate(pokemon) {
+            // 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+            // 使用 pokemon.m.lastVisualShown 进行独立比对
+            const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+            if (pokemon.m.lastVisualShown !== currentVisualId) {
+                pokemon.m.lastVisualShown = currentVisualId;
+
+                if (pokemon.m.fantasySync) {
+                    pokemon.m.fantasySync(pokemon);
+                }
+            }
+        },
+    },
+	{
 		name: "[Gen 9] FC LC",
 		mod: 'gen9fantasy',
 		ruleset: ['Standard NatDex', 'Little Cup', 'FC Mega Ban Check', 'FC Forme Preview', 'Ignore Event Shiny Clause'],
@@ -718,6 +774,84 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			}
 		},
 	},
+	{
+        name: "[Gen 9] FC Champions Singles A",
+        mod: 'gen9fantasy',
+        ruleset: [
+            'Standard AG', 
+            'Species Clause',
+            'Nickname Clause',
+            'OHKO Clause',
+            // 以上是从标准单打中沿用的规则
+            'NatDex Mod',
+            'Item Clause = 1',
+            'Adjust Level = 50',
+            'Max Team Size = 6',
+            'Picked Team Size = 3', // 核心改动：6选3
+            'FC Mega Ban Check',
+            'FC Forme Preview',
+            'Ignore Event Shiny Clause'
+        ],
+        banlist: [
+            // 要求禁用的宝可梦分类
+            'Mythical',             // 禁用所有幻兽 (梦幻、玛夏多等)
+            'Restricted Legendary', // 禁用所有一级神
+            'Sub-Legendary',        // 禁用所有二级神 (三鸟、三犬、三云等)
+            'Paradox',              // 禁用所有悖谬宝可梦
+            'Ultra Beast',          // 禁用所有究极异兽
+            'Mega',                 // 禁用所有Mega进化
+            'Shedinja',             // 禁用脱壳忍者
+        ],
+        unbanlist: [
+            //'Mega', // 特例解禁
+        ],
+        onSwitchIn(pokemon) {
+            // 将同步逻辑和状态绑定在 pokemon.m 上，确保数据隔离不冲突
+            pokemon.m.fantasySync = (mon: Pokemon) => {
+                // 【关键优先级】：如果有幻觉伪装，取幻觉对象；否则取当前种族（变身者变身后会改变 species）
+                const visualSpecies = mon.illusion ? mon.illusion.species : mon.species;
+                const isFantasy = !Dex.species.get(visualSpecies.id).exists;
+
+                if (isFantasy) {
+                    // 1. 如果视觉上是幻想宝可梦：显示对应的属性和数值，并打上“已接管”标记
+                    const types = mon.illusion ? mon.illusion.species.types : mon.getTypes();
+                    this.add('-start', mon, 'typechange', types.join('/'), '[silent]');
+                    this.add('-start', mon, 'fantasystats', Object.values(visualSpecies.baseStats).join('/'), '[silent]');
+
+                    // 标记：这只宝可梦当前的 typechange UI 是由我们强制显示的
+                    mon.m.fantasyUIAttached = true;
+                } else {
+                    // 2. 如果视觉上是原版宝可梦：清除数值UI
+                    this.add('-end', mon, 'fantasystats', '[silent]');
+
+                    // 【核心修复】：
+                    // 增加 !mon.transformed 判断。
+                    // 当幻想宝可梦变身为原版宝可梦时，Showdown 原生逻辑会自动显示变身后的属性。
+                    // 只要它处于变身状态，我们就千万不要去 -end typechange，否则会误删原生标签！
+                    if (mon.m.fantasyUIAttached && !mon.transformed) {
+                        this.add('-end', mon, 'typechange', '[silent]');
+                        mon.m.fantasyUIAttached = false;
+                    }
+                }
+            };
+
+            pokemon.m.fantasySync(pokemon);
+        },
+
+        onUpdate(pokemon) {
+            // 实时监控：当种族 ID 改变（变身）或幻觉状态改变时触发
+            // 使用 pokemon.m.lastVisualShown 进行独立比对
+            const currentVisualId = pokemon.illusion ? ('illusion_' + pokemon.illusion.species.id) : pokemon.species.id;
+
+            if (pokemon.m.lastVisualShown !== currentVisualId) {
+                pokemon.m.lastVisualShown = currentVisualId;
+
+                if (pokemon.m.fantasySync) {
+                    pokemon.m.fantasySync(pokemon);
+                }
+            }
+        },
+    },
 	{
 		name: "[Gen 9] FC Champions Doubles C Double-Mega",
 		mod: 'gen9fantasy',
