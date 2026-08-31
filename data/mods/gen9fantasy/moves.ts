@@ -43,6 +43,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
         isNonstandard: null,
 	},
+	splishysplash: {
+		inherit: true,
+        isNonstandard: null,
+	},
 	razorwind: {
         num: 13,
         accuracy: 100,

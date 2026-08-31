@@ -317,6 +317,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Berserk"},		
 	},
+	haxorusfantasy: {
+		tier: "OU",
+	},
 	lopunnymegafantasy: {
 		tier: "OU",
 		abilities: {0: "Pixilate"},	
@@ -628,6 +631,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	illumisefantasy: {
 		tier: "UU",
 	},
+	lanturnfantasy: {
+		tier: "UU",
+	},
 	mienshaofantasy: {
 		tier: "UU",
 	},
@@ -753,6 +759,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	glaliefantasy: {
 		tier: "RU",
 	},
+	golemalolafantasy: {
+		tier: "RU",
+	},
 	hawluchafantasy: {
 		tier: "RU",
 	},
@@ -818,6 +827,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	duskullfantasy: {
+		tier: "LC",
+	},
+	rookideefantasy: {
 		tier: "LC",
 	},
 	mudkipfantasy: {
