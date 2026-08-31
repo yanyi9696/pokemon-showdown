@@ -247,6 +247,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 		abilities: {0: "Magic Guard"},		
 	},
+	chesnaughtmegafantasy: {
+		tier: "OU",
+		abilities: { 0: "Stamina" },
+	},
 	corviknightfantasy: {
 		tier: "OU",
 	},
@@ -606,6 +610,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	dusknoirfantasy: {
 		tier: "UU",
 	},
+	emboarfantasy: {
+		tier: "UU",
+	},
+	emboarmegafantasy: {
+		tier: "UU",
+		abilities: { 0: "Supreme Overlord" },		
+	},
 	froslassfantasy: {
 		tier: "UU",
 	},
@@ -751,6 +762,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	cherrimfantasy: {
+		tier: "RU",
+	},
+	chesnaughtfantasy: {
 		tier: "RU",
 	},
 	corvisquirefantasy: {
