@@ -3060,4 +3060,56 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10063,
 		shortDesc: "受到草属性和地面属性的招式攻击时,都不会受到伤害",
 	},
+	fengraoguodu: {
+        onStart(pokemon) {
+            // 尝试铺设青草场地。如果当前已经是青草场地（铺设失败），则仅弹出特性发动提示
+            if (!this.field.setTerrain('grassyterrain') && this.field.isTerrain('grassyterrain')) {
+                this.add('-activate', pokemon, 'ability: Feng Rao Guo Du');
+            }
+        },
+        // 提升攻击 (1/3 约等于 1.33倍，即 Showdown 引擎内的 5461/4096)
+        onModifyAtkPriority: 5,
+        onModifyAtk(atk, pokemon) {
+            if (this.field.isTerrain('grassyterrain')) {
+                this.debug('Feng Rao Guo Du Atk boost');
+                return this.chainModify([5461, 4096]);
+            }
+        },
+        // 提升防御
+        onModifyDefPriority: 5,
+        onModifyDef(def, pokemon) {
+            if (this.field.isTerrain('grassyterrain')) {
+                this.debug('Feng Rao Guo Du Def boost');
+                return this.chainModify([5461, 4096]);
+            }
+        },
+        // 提升特攻
+        onModifySpAPriority: 5,
+        onModifySpA(spa, pokemon) {
+            if (this.field.isTerrain('grassyterrain')) {
+                this.debug('Feng Rao Guo Du SpA boost');
+                return this.chainModify([5461, 4096]);
+            }
+        },
+        // 提升特防
+        onModifySpDPriority: 5,
+        onModifySpD(spd, pokemon) {
+            if (this.field.isTerrain('grassyterrain')) {
+                this.debug('Feng Rao Guo Du SpD boost');
+                return this.chainModify([5461, 4096]);
+            }
+        },
+        // 提升速度
+        onModifySpe(spe, pokemon) {
+            if (this.field.isTerrain('grassyterrain')) {
+                this.debug('Feng Rao Guo Du Spe boost');
+                return this.chainModify([5461, 4096]);
+            }
+        },
+        flags: {},
+        name: "Feng Rao Guo Du",
+        rating: 5,
+        num: 10064,
+        shortDesc: "出场时,场地转为青草场地并持续5回合。场地为青草场地时,全能力提高33%",
+    },
 };

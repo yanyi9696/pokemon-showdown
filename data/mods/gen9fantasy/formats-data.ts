@@ -20,6 +20,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	arceuslegendfantasy: {
 		tier: "Uber",
 	},
+	calyrexfantasy: {
+		tier: "Uber",
+	},
 	darkraimegafantasy: {
 		tier: "Uber",
 		abilities: {0: "E Meng Chan Rao"},		

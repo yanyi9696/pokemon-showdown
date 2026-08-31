@@ -4891,6 +4891,26 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		requiredItem: "Dada's Cloak",
 		eggGroups: ["Undiscovered"],
 	},
+	calyrex: {
+		inherit: true,
+		otherFormes: ["Calyrex-Fantasy", "Calyrex-Ice", "Calyrex-Shadow"],
+		formeOrder: ["Calyrex", "Calyrex-Fantasy", "Calyrex-Ice", "Calyrex-Shadow"],
+	},
+	calyrexfantasy: {
+		num: 898,
+		name: "Calyrex-Fantasy",
+		baseSpecies: "Calyrex",
+		forme: "Fantasy",
+		types: ["Psychic", "Grass"],
+		gender: "N",
+		baseStats: { hp: 100, atk: 100, def: 90, spa: 100, spd: 90, spe: 100 },
+		abilities: { 0: "Unnerve", H: "Feng Rao Guo Du" },
+		heightm: 1.1,
+		weightkg: 7.7,
+		color: "Green",
+		eggGroups: ["Undiscovered"],
+		tags: ["Restricted Legendary"],
+	},
 
 	// 第9世代 (906-1025)
 	skeledirge: {
