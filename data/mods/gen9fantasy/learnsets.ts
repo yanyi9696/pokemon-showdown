@@ -12763,7 +12763,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			thief: ["9M"],
 			punishment: ["9M"],
 			bodypress: ["9M"],
-			irondefense: ["9M"],
+			barrier: ["9M"],
 			//幻想增添技能
 			acidspray: ["9M"],
 			astonish: ["9L1"],
