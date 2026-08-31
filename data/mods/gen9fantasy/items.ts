@@ -99,7 +99,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 562,
         gen: 5,
         desc: "使用恶属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的恶属性招式威力将永久提升10%",
-        shortDesc: "恶属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "恶属性招式威力提升30%,使用后消失。失去后恶属性招式威力永久提升10%",
     },
     dragongem: {
         name: "Dragon Gem",
@@ -118,7 +118,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 561,
         gen: 5,
         desc: "使用龙属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的龙属性招式威力将永久提升10%",
-        shortDesc: "龙属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "龙属性招式威力提升30%,使用后消失。失去后龙属性招式威力永久提升10%",
     },
     electricgem: {
         name: "Electric Gem",
@@ -137,7 +137,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 550,
         gen: 5,
         desc: "使用电属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的电属性招式威力将永久提升10%",
-        shortDesc: "电属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "电属性招式威力提升30%,使用后消失。失去后电属性招式威力永久提升10%",
     },
     fairygem: {
         name: "Fairy Gem",
@@ -156,7 +156,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 715,
         gen: 6,
         desc: "使用妖精属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的妖精属性招式威力将永久提升10%",
-        shortDesc: "妖精属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "妖精属性招式威力提升30%,使用后消失。失去后妖精属性招式威力永久提升10%",
     },
     fightinggem: {
         name: "Fighting Gem",
@@ -175,7 +175,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 553,
         gen: 5,
         desc: "使用格斗属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的格斗属性招式威力将永久提升10%",
-        shortDesc: "格斗属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "格斗属性招式威力提升30%,使用后消失。失去后格斗属性招式威力永久提升10%",
     },
     firegem: {
         name: "Fire Gem",
@@ -194,7 +194,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 548,
         gen: 5,
         desc: "使用火属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的火属性招式威力将永久提升10%",
-        shortDesc: "火属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "火属性招式威力提升30%,使用后消失。失去后火属性招式威力永久提升10%",
     },
     flyinggem: {
         name: "Flying Gem",
@@ -213,7 +213,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 556,
         gen: 5,
         desc: "使用飞行属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的飞行属性招式威力将永久提升10%",
-        shortDesc: "飞行属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "飞行属性招式威力提升30%,使用后消失。失去后飞行属性招式威力永久提升10%",
     },
     ghostgem: {
         name: "Ghost Gem",
@@ -232,7 +232,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 560,
         gen: 5,
         desc: "使用幽灵属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的幽灵属性招式威力将永久提升10%",
-        shortDesc: "幽灵属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "幽灵属性招式威力提升30%,使用后消失。失去后幽灵属性招式威力永久提升10%",
     },
     grassgem: {
         name: "Grass Gem",
@@ -251,7 +251,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 551,
         gen: 5,
         desc: "使用草属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的草属性招式威力将永久提升10%",
-        shortDesc: "草属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "草属性招式威力提升30%,使用后消失。失去后草属性招式威力永久提升10%",
     },
     groundgem: {
         name: "Ground Gem",
@@ -270,7 +270,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 555,
         gen: 5,
         desc: "使用地面属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的地面属性招式威力将永久提升10%",
-        shortDesc: "地面属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "地面属性招式威力提升30%,使用后消失。失去后地面属性招式威力永久提升10%",
     },
     icegem: {
         name: "Ice Gem",
@@ -289,7 +289,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 552,
         gen: 5,
         desc: "使用冰属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的冰属性招式威力将永久提升10%",
-        shortDesc: "冰属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "冰属性招式威力提升30%,使用后消失。失去后冰属性招式威力永久提升10%",
     },
     normalgem: {
         name: "Normal Gem",
@@ -308,7 +308,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 564,
         gen: 5,
         desc: "使用一般属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的一般属性招式威力将永久提升10%",
-        shortDesc: "一般属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "一般属性招式威力提升30%,使用后消失。失去后一般属性招式威力永久提升10%",
     },
     poisongem: {
         name: "Poison Gem",
@@ -327,7 +327,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 554,
         gen: 5,
         desc: "使用毒属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的毒属性招式威力将永久提升10%",
-        shortDesc: "毒属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "毒属性招式威力提升30%,使用后消失。失去后毒属性招式威力永久提升10%",
     },
     psychicgem: {
         name: "Psychic Gem",
@@ -345,8 +345,8 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
         num: 557,
         gen: 5,
-        desc: "使用超能力属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的超能力属性招式威力将永久提升10%",
-        shortDesc: "超能力属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        desc: "使用超能属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的超能属性招式威力将永久提升10%",
+        shortDesc: "超能属性招式威力提升30%,使用后消失。失去后超能属性招式威力永久提升10%",
     },
     rockgem: {
         name: "Rock Gem",
@@ -365,7 +365,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 559,
         gen: 5,
         desc: "使用岩石属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的岩石属性招式威力将永久提升10%",
-        shortDesc: "岩石属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "岩石属性招式威力提升30%,使用后消失。失去后岩石属性招式威力永久提升10%",
     },
     steelgem: {
         name: "Steel Gem",
@@ -384,7 +384,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 563,
         gen: 5,
         desc: "使用钢属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的钢属性招式威力将永久提升10%",
-        shortDesc: "钢属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "钢属性招式威力提升30%,使用后消失。失去后钢属性招式威力永久提升10%",
     },
     watergem: {
         name: "Water Gem",
@@ -403,7 +403,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         num: 549,
         gen: 5,
         desc: "使用水属性招式时,提升本次攻击30%的威力,生效一次后消失。失去该道具后,该宝可梦的水属性招式威力将永久提升10%",
-        shortDesc: "水属性招式威力提升30%,使用后消失。失去后该属性招式威力永久提升10%",
+        shortDesc: "水属性招式威力提升30%,使用后消失。失去后水属性招式威力永久提升10%",
     },
 	berserkgene: {
 		name: "Berserk Gene",

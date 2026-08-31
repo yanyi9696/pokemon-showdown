@@ -718,6 +718,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	wochienfantasy: {
 		tier: "UU",
 	},
+	wyrdeerfantasy: {
+		tier: "UU",
+	},
 	floetteeternalfantasy: {
 		tier: "RUBL",
 	},

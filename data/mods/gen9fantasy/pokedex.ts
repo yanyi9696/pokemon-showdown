@@ -4989,6 +4989,27 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		eggGroups: ["Undiscovered"],
 		tags: ["Restricted Legendary"],
 	},
+	wyrdeer: {
+		inherit: true,
+		otherFormes: ["Wyrdeer-Fantasy"],
+		formeOrder: ["Wyrdeer",  "Wyrdeer-Fantasy"],
+	},
+	wyrdeerfantasy: {
+		num: 899,
+		name: "Wyrdeer-Fantasy",
+		baseSpecies: "Wyrdee",
+		forme: "Fantasy",
+		types: ["Normal", "Psychic"],
+		baseStats: { hp: 103, atk: 105, def: 72, spa: 65, spd: 75, spe: 105 },
+		abilities: { 0: "Intimidate", 1: "Fur Coat", H: "Sap Sipper" },
+		heightm: 1.8,
+		weightkg: 95.1,
+		color: "Gray",
+		prevo: "Stantler",
+		evoType: "other",
+		evoCondition: "Use Agile style Psyshield Bash 20 times",
+		eggGroups: ["Field"],
+	},
 
 	// 第9世代 (906-1025)
 	skeledirge: {
