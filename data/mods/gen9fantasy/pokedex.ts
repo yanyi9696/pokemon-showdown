@@ -4997,7 +4997,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	wyrdeerfantasy: {
 		num: 899,
 		name: "Wyrdeer-Fantasy",
-		baseSpecies: "Wyrdee",
+		baseSpecies: "Wyrdeer",
 		forme: "Fantasy",
 		types: ["Normal", "Psychic"],
 		baseStats: { hp: 103, atk: 105, def: 72, spa: 65, spd: 75, spe: 105 },
