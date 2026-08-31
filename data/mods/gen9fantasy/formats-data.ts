@@ -838,10 +838,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 
 
 	//ZA新mega
-	lucariomegaz: {
-		tier: "Uber",
-		abilities: {0: "Mega Launcher"},		
-	},
 	magearnamega: {
 		tier: "Uber",
 		abilities: {0: "Soul-Heart"},		
@@ -852,7 +848,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	absolmegaz: {
 		tier: "(Uber)",
-		abilities: { 0: "Super Luck" },
+		abilities: { 0: "Sharpness" },
 	},
 	barbaraclemega: {
 		tier: "(Uber)",
@@ -869,6 +865,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	heatranmega: {
 		tier: "(Uber)",
 		abilities: {0: "Magma Armor"},		
+	},
+	lucariomegaz: {
+		tier: "(Uber)",
+		abilities: { 0: "Aura Guard" },		
 	},
 	raichumegay: {
 		tier: "(Uber)",

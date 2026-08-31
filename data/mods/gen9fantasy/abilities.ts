@@ -60,6 +60,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 316,
 		shortDesc: "火属性招式的威力会变为1.5倍",
 	},
+	auraguard: {
+        onSourceModifyDamage(damage, source, target, move) {
+            let mod = 1;
+            // 检查对方使用的招式是否属于“接触类” (contact)
+            if (move.flags['contact']) mod /= 2; // 伤害减少50%
+            
+            return this.chainModify(mod);
+        },
+        flags: { breakable: 1 }, // 允许被破格（Mold Breaker）等无视特性的效果穿透
+        name: "Aura Guard",
+        rating: 4,
+        num: 317,
+        shortDesc: "受到接触类招式的攻击时，受到的伤害减少50%。",
+    },
 
 	//以上是官方新特性
 	shellarmor: {
