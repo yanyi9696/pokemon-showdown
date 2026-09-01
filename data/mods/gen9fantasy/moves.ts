@@ -2647,17 +2647,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         category: "Status",
         name: "Ji Sheng",
         pp: 5,
-        priority: 3,
+        priority: 0,
         flags: { bypasssub: 1, allyanim: 1 },
         onTryHit(target, source) {
             if (target.volatiles['parasitized']) return false;
             if (source.volatiles['parasite']) return false;
         },
         onHit(target, source, move) {
-            const damage = this.directDamage(target.maxhp / 4, target, source);
+            const damage = this.directDamage(target.maxhp / 2, target, source);
             if (target.fainted || !damage) return false;
 
-            this.boost({ atk: 2, spa: 2, spe: 2 }, target, source, move);
+            this.boost({ atk: 1, spa: 1, spe: 1 }, target, source, move);
 
             // 【修正】：只给本体挂寄生,不再挂发号施令,防止获得底层写死的无敌
             source.addVolatile('parasite');
@@ -2673,8 +2673,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         type: "Poison",
         zMove: { effect: 'heal' },
         contestType: "Cool",
-        desc: "寄生一名我方宝可梦,令其损失1/4最大HP,提高物攻、特攻与速度各2级。期间目标将无法选中,而自己将无法使出技能",
-        shortDesc: "队友损失1/4最大HP,提高双攻速度2级;自己无法使出技能",
+        desc: "寄生一名我方宝可梦,令其损失1/2最大HP,提高物攻、特攻与速度各1级。期间目标将无法选中,而自己将无法使出技能",
+        shortDesc: "队友损失1/2最大HP,提高双攻速度1级;自己无法使出技能",
     },
 	qingsumihun: {
 		num: 10054,
