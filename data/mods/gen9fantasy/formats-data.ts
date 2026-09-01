@@ -18,7 +18,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Hei An Qin Shi"},		
 	},
 	arceuslegendfantasy: {
-		tier: "Uber",
+		tier: "AG",
 	},
 	calyrexfantasy: {
 		tier: "Uber",

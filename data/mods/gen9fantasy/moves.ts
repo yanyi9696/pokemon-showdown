@@ -2654,7 +2654,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             if (source.volatiles['parasite']) return false;
         },
         onHit(target, source, move) {
-            const damage = this.directDamage(target.maxhp / 2, target, source);
+            const damage = this.directDamage(target.maxhp / 3, target, source);
             if (target.fainted || !damage) return false;
 
             this.boost({ atk: 1, spa: 1, spe: 1 }, target, source, move);
@@ -2673,8 +2673,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         type: "Poison",
         zMove: { effect: 'heal' },
         contestType: "Cool",
-        desc: "寄生一名我方宝可梦,令其损失1/2最大HP,提高物攻、特攻与速度各1级。期间目标将无法选中,而自己将无法使出技能",
-        shortDesc: "队友损失1/2最大HP,提高双攻速度1级;自己无法使出技能",
+        desc: "寄生一名我方宝可梦,令其损失1/3最大HP,提高物攻、特攻与速度各1级。期间目标将无法选中,而自己将无法使出技能",
+        shortDesc: "队友损失1/3最大HP,提高双攻速度1级;自己无法使出技能",
     },
 	qingsumihun: {
 		num: 10054,
