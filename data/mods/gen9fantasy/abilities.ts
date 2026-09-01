@@ -2163,7 +2163,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Qi Yi Zhi Zao Zhe",
         rating: 5,
         num: 10035,
-        shortDesc: "登场引发重力与携带的空间;若携带戏法空间,满足首回合成功使出超能系招式且未被封印,回合末将其制造",
+        shortDesc: "登场引发重力与携带的空间;若携带戏法空间,满足首回合使出超能系招式且未被封印,则回合末将其制造",
     },
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
