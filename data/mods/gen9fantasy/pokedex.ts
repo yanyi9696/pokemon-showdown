@@ -1192,7 +1192,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Mawile-Mega-Fantasy",
 		baseSpecies: "Mawile",
 		forme: "Mega",
-		types: ["Steel", "Dark"],
+		types: ["Dark", "Fairy"],
 		baseStats: { hp: 75, atk: 125, def: 125, spa: 55, spd: 105, spe: 50 },
 		abilities: { 0: "Shuang Chong Da Zui" },
 		heightm: 1,
