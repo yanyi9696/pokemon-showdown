@@ -30767,6 +30767,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			longzhige: ["9M"],
 			chuanyun: ["9M"],
 			qibaoliuxing: ["9M"],
+			razorwind: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
 			airslash: ["9M", "9L1", "8M", "8L1", "7L30", "6L30", "5L35", "4L35", "4S1"],
@@ -30896,6 +30897,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			longzhige: ["9M"],
 			chuanyun: ["9M"],
 			qibaoliuxing: ["9M"],
+			razorwind: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M", "3M"],
 			airslash: ["9M", "9L1", "8M", "8L1", "7L30", "6L30", "5L35", "4L35", "4S1"],
