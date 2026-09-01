@@ -2094,7 +2094,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
             // 3. 检查戏法空间，打上首回合待触发的标记
             if (pokemon.hasMove('trickroom')) {
                 this.effectState.pendingTrickRoom = true;
-                // 【核心修改2】：记录登场时的回合数，用于准确判断“首个可行动回合”
+                // 记录登场时的回合数，用于准确判断“首个可行动回合”
                 this.effectState.startTurn = this.turn;
                 this.add('-message', `${pokemon.name} 正在尝试扭曲周围的时间...`);
             }
@@ -2113,31 +2113,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         onResidual(pokemon) {
             if (this.effectState.pendingTrickRoom) {
                 
-                // 【核心修改2】：如果当前回合数等于它上场的初始回合数，说明是在本回合中途换上场的。
+                // 如果当前回合数等于它上场的初始回合数，说明是在本回合中途换上场的。
                 // 它还没有经历过完整的出招阶段，所以跳过本次结算，留到下回合。
                 if (this.turn === this.effectState.startTurn) {
                     return;
                 }
 
-                // 【核心修改1】：检查戏法空间是否处于“可使用”状态（检查挑衅与封印）
-                let isRestricted = false;
-                let failReason = '';
-                
-                if (pokemon.volatiles['taunt']) {
-                    isRestricted = true;
-                    failReason = 'taunt';
-                } else {
-                    for (const target of pokemon.foes()) {
-                        if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
-                            isRestricted = true;
-                            failReason = 'imprison';
-                            break;
-                        }
+                // 【修改点】：取消挑衅判断，改回仅检查戏法空间是否被封印 (Imprison)
+                let isSealed = false;
+                for (const target of pokemon.foes()) {
+                    if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
+                        isSealed = true;
+                        break;
                     }
                 }
 
-                // 若首回合内使用了超能系招式，且戏法空间未受到限制
-                if (this.effectState.usedPsychicMove && !isRestricted) {
+                // 若首个可行动回合内使用了超能系招式，且戏法空间未被封印
+                if (this.effectState.usedPsychicMove && !isSealed) {
                     // 引发戏法空间
                     if (this.field.addPseudoWeather('trickroom', pokemon)) {
                         this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
@@ -2153,9 +2145,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                 } else {
                     // 触发失败时的分类文字提示
                     this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
-                    if (failReason === 'taunt') {
-                        this.add('-message', `${pokemon.name}受到了挑衅，扭曲时空的进程被打断了！`);
-                    } else if (failReason === 'imprison') {
+                    if (isSealed) {
                         this.add('-message', `${pokemon.name}的戏法空间被封印了，扭曲时空的进程被打断了！`);
                     } else if (!this.effectState.usedPsychicMove) {
                         this.add('-message', `${pokemon.name}未能使用超能系招式，扭曲时空的进程被打断了！`);
@@ -2173,7 +2163,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Qi Yi Zhi Zao Zhe",
         rating: 5,
         num: 10035,
-        shortDesc: "登场引发重力与携带的空间;若携带戏法空间,首回合成功使用超能系招式且可使用该招式,回合末将其制造",
+        shortDesc: "登场引发重力与携带的空间;若携带戏法空间,首回合成功使出超能系招式且未被封印,回合末将其制造",
     },
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
