@@ -1145,6 +1145,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	pheromosa: {
 		tier: "(Uber)",
 	},
+	rayquaza: {
+		tier: "(Uber)",
+	},
 	regieleki: {
 		tier: "(Uber)",
 	},
