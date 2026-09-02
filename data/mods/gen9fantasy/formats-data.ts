@@ -481,6 +481,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	silvallywaterfantasy: {
 		tier: "OU",
 	},
+	steelixmegayfantasy: {
+		tier: "UUBL",
+		abilities: {0: "Heatproof"},		
+	},
 	steelixmegazfantasy: {
 		tier: "OU",
 		abilities: {0: "Refrigerate"},		
@@ -553,17 +557,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	stakatakafantasy: {
 		tier: "UUBL",
-	},
-	steelixfantasy: {
-		tier: "UUBL",
-	},
-	steelixmegaxfantasy: {
-		tier: "UUBL",
-		abilities: {0: "Sand Force"},		
-	},
-	steelixmegayfantasy: {
-		tier: "UUBL",
-		abilities: {0: "Heatproof"},		
 	},
 	urshifurapidstrike2fantasy: {
 		tier: "UUBL",
@@ -682,6 +675,13 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	skarmorymegafantasy: {
 		tier: "UU",
 		abilities: {0: "Good as Gold"},	
+	},
+	steelixfantasy: {
+		tier: "UU",
+	},
+	steelixmegaxfantasy: {
+		tier: "UU",
+		abilities: {0: "Sand Force"},		
 	},
 	swampertfantasy: {
 		tier: "UU",

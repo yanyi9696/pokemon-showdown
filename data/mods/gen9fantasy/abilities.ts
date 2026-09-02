@@ -2907,7 +2907,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 10056,
 		shortDesc: "该特性的宝可梦使出火属性招式的威力提升50%",
 	},
-	shuangzhongdazui: {
+	shuangchongdazui: {
 		onPrepareHit(source, target, move) {
 			// 核心判定：如果没有 'bite'（啃咬）标签，直接跳过，不触发特性
 			if (!move.flags['bite']) return;
@@ -2919,7 +2919,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			move.multihit = 2;
 		},
 		flags: {},
-		name: "Shuang Zhong Da Zui",
+		name: "Shuang Chong Da Zui",
 		rating: 4.5,
 		num: 10057,
 		shortDesc: "啃咬类招式会合计攻击2次",

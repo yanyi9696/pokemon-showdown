@@ -133,7 +133,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arena Trap', 'Moody', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 			// 在这里添加组合禁用
-			'Koraidon-Fantasy + Orichalcum Pulse',
+			'Koraidon-Fantasy + Orichalcum Pulse', 'Miraidon-Fantasy + Hadron Engine',
 		],
 		onSwitchIn(pokemon) {
 			// 将同步逻辑和状态绑定在 pokemon.m 上，确保双打等多只宝可梦在场时数据隔离不冲突

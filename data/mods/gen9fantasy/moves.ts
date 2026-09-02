@@ -177,7 +177,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		category: "Physical",
 		isNonstandard: "Past",
 		name: "Skull Bash",
-		pp: 10,
+		pp: 5,
 		priority: 0,
 		flags: { contact: 1, charge: 1, protect: 1, mirror: 1, metronome: 1, nosleeptalk: 1, failinstruct: 1 },
 		overrideOffensiveStat: 'def', // <--- 添加了这一行,使其使用防御代替攻击计算伤害

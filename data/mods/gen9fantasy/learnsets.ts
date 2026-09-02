@@ -25249,7 +25249,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	tapulelefantasy: {
 		learnset: {
 			expandingforce: ["9M"],
-			huamzhiwu: ["9M"],
+			huanzhiwu: ["9M"],
 			//幻想增添技能
 			allyswitch: ["8M", "7T"],
 			aromatherapy: ["8L10", "7L1"],

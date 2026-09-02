@@ -3895,7 +3895,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
     },
 	fantasymachobrace: {
         name: "Fantasy Macho Brace",
-		spritenum: 269,
+        spritenum: 269,
         fling: {
             basePower: 60,
         },
@@ -3918,6 +3918,14 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
                 return this.chainModify(1.2);
             }
         },
+        onBeforeMove(pokemon, target, move) {
+            // ==================== 新增逻辑 ====================
+            // 在招式即将成功执行前,额外扣除 1 点 PP
+            // 这样加上招式本身消耗的 1 点 PP,总共会损失 2 点 PP
+            if (move.flags?.charge) {
+                pokemon.deductPP(move.id, 1);
+            }
+        },
         onDisableMove(pokemon) {
             // 完美模拟血月效果：回合开始选择招式时,如果上回合使用的是蓄力招式,则将其禁用
             if (pokemon.lastMove?.flags?.charge && pokemon.lastMove.id !== 'struggle') {
@@ -3926,7 +3934,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
         },
         num: 30014,
         gen: 9,
-        desc: "携带后,蓄力的招式变为无法连续使出2次的招式,将不再经历积蓄状态,原本在积蓄状态获得能力提升的效果也会消失,但威力会提升1.2倍",
-		shortDesc: "蓄力的招式变为无法连续使出2次的招式,将不再经历积蓄状态,威力提升1.2倍",
+        desc: "携带后,虽然蓄力的招式威力会提升1.2倍,不再经历积蓄状态,变为无法连续使出2次的招式,但会多损失1点PP,原本在积蓄状态获得的效果也会消失",
+        shortDesc: "蓄力招式不再经历积蓄状态且威力提升1.2倍,但无法连续使出且会多损失1点PP",
     },
 };
