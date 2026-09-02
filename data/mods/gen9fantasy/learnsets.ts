@@ -29806,6 +29806,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	koraidonfantasy: {
 		learnset: {
 			liehuomengzhuang: ["9M"],
+			dragondance: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
 			agility: ["9M", "9L35"],
@@ -29889,6 +29890,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	miraidonfantasy: {
 		learnset: {
 			kejimengchong: ["9M"],
+			huanzhiwu: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M"],
 			agility: ["9M", "9L35"],
