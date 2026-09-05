@@ -12328,6 +12328,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			fellstinger: ["9M"],
 			longzhige: ["9M"],
 			chuanyun: ["9M"],
+			echoedvoice: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M"],
 			agility: ["9M"],
@@ -12453,6 +12454,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			fellstinger: ["9M"],
 			longzhige: ["9M"],
 			chuanyun: ["9M"],
+			echoedvoice: ["9M"],
 			//幻想增添技能
 			aerialace: ["9M", "7M", "6M", "5M", "4M"],
 			agility: ["9M"],
@@ -31027,9 +31029,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	gliscorfantasy: {
 		learnset: {
 			yaolan: ["9M"],
+			barbbarrage: ["9M"],
 			zhenxi: ["9M"],
 			poisonfang: ["9M"],
 			clearsmog: ["9M"],
+			bodypress: ["9M"],
 			//幻想增添技能
 			acrobatics: ["9M", "9L22", "7M", "7L22", "6M", "6L22", "5M", "5L22"],
 			aerialace: ["9M", "7M", "6M", "5M", "4M"],
@@ -31138,6 +31142,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	seismitoadfantasy: {
 		learnset: {
 			wavecrash: ["9M"],
+			flipturn: ["9M"],
 			spikes: ["9M"],
 			toxicspikes: ["9M"],
 			//幻想增添技能
