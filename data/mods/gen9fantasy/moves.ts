@@ -123,6 +123,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, gravity: 1, metronome: 1 },
 		hasCrashDamage: true,
+		onTryHit(target) {
+			if (!target.isGrounded()) {
+				this.add('-immune', target);
+				return null;
+			}
+		},
 		onMoveFail(target, source, move) {
 			this.damage(source.baseMaxhp / 2, source, source, this.dex.conditions.get('Jump Kick'));
 		},
@@ -132,6 +138,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		contestType: "Cool",
 		zMove: { basePower: 195 },
 		maxMove: { basePower: 140 },
+		desc: "如果招式未命中则使用者失去50%最大HP,无法命中不在地面上的目标",
+		shortDesc: "招式未命中使用者失去50%最大HP,无法命中不在地面上的目标",
 	},
 	rockthrow: {
 		num: 88,

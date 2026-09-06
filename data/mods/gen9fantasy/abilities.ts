@@ -156,6 +156,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		num: 40,
 		shortDesc: "不会变为冰冻或冻伤状态。每场战斗中第一次受到效果绝佳招式时伤害减半",
 	},
+	pressure: {
+		onStart(pokemon) {
+			this.add('-ability', pokemon, 'Pressure');
+		},
+		onAnyBeforeMove(pokemon, target, move) {
+			// 友方出招时不触发
+			if (this.effectState.target.isAlly(pokemon)) return;
+			// 避免由梦话、挥指、自然之力等招式间接调用的招式重复扣除PP
+			if (this.effect && this.effect.id && this.effect.id !== 'pursuit') return;
+
+			pokemon.deductPP(move.baseMove || move.id, 1);
+		},
+		flags: {},
+		name: "Pressure",
+		rating: 2.5,
+		num: 46,
+	},
 	cutecharm: {
 		onDamagingHit(damage, target, source, move) {
 			if (this.checkMoveMakesContact(move, source, target)) {
