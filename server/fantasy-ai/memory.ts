@@ -20,12 +20,22 @@ export interface SeenPokemon {
 	teraType?: string;
 	transformed: boolean;
 	ambiguousIdentity: boolean;
+	enteredTurn?: number;
+	lastMove?: string;
+	lastMoveTurn?: number;
+	activeMoveActions?: number;
+	statusTurn?: number;
+	statusActivations?: number;
+	statusTicks?: number;
+	statusSource?: SinglesSide;
+	effects?: Record<string, { turn: number, source?: SinglesSide, value?: string }>;
 }
 export interface SeenSide {
 	preview: { species: string, level: number }[];
 	appearances: SeenPokemon[];
 	active?: SeenPokemon;
 	conditions: Record<string, number>;
+	conditionTurns?: Record<string, number>;
 	resources: { mega: boolean, zmove: boolean, tera: boolean, aura: boolean };
 }
 export interface BattleMemory {
@@ -34,6 +44,7 @@ export interface BattleMemory {
 	weather: string;
 	terrain: string;
 	pseudoWeather: string[];
+	fieldTurns?: Record<string, number>;
 	switches: { side: SinglesSide, turn: number, ident: string }[];
 	/** Observed order at equal base priority; ties and priority modifiers remain possible. */
 	speedEvidence: { first: string, second: string, turn: number, trickRoom: boolean }[];
@@ -60,7 +71,7 @@ export function conditionID(text: string): string {
 
 function newSide(): SeenSide {
 	return {
-		preview: [], appearances: [], conditions: {},
+		preview: [], appearances: [], conditions: {}, conditionTurns: {},
 		resources: { mega: false, zmove: false, tera: false, aura: false },
 	};
 }
@@ -69,7 +80,7 @@ function newSide(): SeenSide {
 export function readBattleMemory(log: readonly string[], dex: ModdedDex): BattleMemory {
 	const memory: BattleMemory = {
 		turn: 0, sides: { p1: newSide(), p2: newSide() }, weather: '', terrain: '',
-		pseudoWeather: [], switches: [], speedEvidence: [],
+		pseudoWeather: [], fieldTurns: {}, switches: [], speedEvidence: [],
 	};
 	let turnMoves: { mon: SeenPokemon, priority: number }[] = [];
 	const lookup = (ident: string): SeenPokemon | undefined => {
@@ -106,7 +117,8 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 			const details = parseDetails(value);
 			const illusionPossible = side.preview.some(member => Object.values(dex.species.get(member.species).abilities)
 				.some(ability => toID(ability) === 'illusion'));
-			const unique = side.preview.filter(member => member.species === details.species).length === 1;
+			const family = dex.species.get(details.species).baseSpecies;
+			const unique = side.preview.filter(member => dex.species.get(member.species).baseSpecies === family).length === 1;
 			const previous = !illusionPossible && unique ? side.appearances.slice().reverse().find(member =>
 				member.ident === target && member.species === details.species && !member.transformed) : undefined;
 			const seen: SeenPokemon = {
@@ -114,6 +126,10 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				health: parseHealth(extra), status: extra.split(' ')[1] || '',
 				moves: previous?.moves.slice() || [], moveUses: { ...previous?.moveUses },
 				boosts: {}, volatiles: [], item: previous?.item,
+				teraType: previous?.teraType, enteredTurn: memory.turn, effects: {},
+				activeMoveActions: 0,
+				statusTurn: previous?.statusTurn, statusActivations: previous?.statusActivations || 0,
+				statusTicks: 0, statusSource: previous?.statusSource,
 				// Temporary ability/type changes can end on switching: leave ability unknown.
 				transformed: false, ambiguousIdentity: illusionPossible || !unique,
 			};
@@ -144,8 +160,13 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				const move = dex.moves.get(value);
 				// Metronome, Sleep Talk, etc. do not reveal another selectable move or spend its PP.
 				if (!tags.some(tag => tag.startsWith('[from]'))) {
-					if (move.exists && !mon.moves.includes(move.id)) mon.moves.push(move.id);
-					mon.moveUses[move.id] = (mon.moveUses[move.id] || 0) + 1;
+					if (move.exists && !move.isZ && !['struggle', 'recharge'].includes(move.id)) {
+						if (!mon.moves.includes(move.id)) mon.moves.push(move.id);
+						mon.moveUses[move.id] = (mon.moveUses[move.id] || 0) + 1;
+					}
+					mon.lastMove = move.id;
+					mon.lastMoveTurn = memory.turn;
+					mon.activeMoveActions = (mon.activeMoveActions || 0) + 1;
 					const first = turnMoves[0];
 					if (first && first.mon.side !== mon.side && first.priority === move.priority) {
 						memory.speedEvidence.push({
@@ -159,6 +180,9 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 			break;
 		case '-damage': case '-heal': case '-sethp':
 			if (mon) { mon.health = parseHealth(value); mon.status = value.split(' ')[1] || ''; }
+			if (mon?.status === 'tox' && event === '-damage' && markers.includes('[from] psn')) {
+				mon.statusTicks = (mon.statusTicks || 0) + 1;
+			}
 			if (event === '-sethp' && extra) {
 				const second = lookup(extra);
 				if (second) second.health = parseHealth(tags[0] || '');
@@ -167,7 +191,21 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 		case 'faint':
 			if (mon) { mon.health = { lower: 0, upper: 0 }; mon.status = 'fnt'; }
 			break;
-		case '-status': if (mon) mon.status = value; break;
+		case 'cant':
+			if (mon) mon.activeMoveActions = (mon.activeMoveActions || 0) + 1;
+			if (mon && value === 'slp') mon.statusActivations = (mon.statusActivations || 0) + 1;
+			break;
+		case '-status':
+			if (mon) {
+				mon.status = value;
+				mon.statusTurn = memory.turn;
+				mon.statusActivations = 0;
+				mon.statusTicks = 0;
+				mon.statusSource = holder ? holder.slice(5, 7) as SinglesSide :
+					markers.some(tag => tag === '[from] move: Rest' || tag.startsWith('[from] item: ')) ? mon.side :
+					turnMoves[turnMoves.length - 1]?.mon.side;
+			}
+			break;
 		case '-curestatus': if (mon) mon.status = ''; break;
 		case '-item': if (mon) mon.item = toID(value); break;
 		case '-enditem': if (mon) mon.item = ''; break;
@@ -215,6 +253,12 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				if (effect === 'fantasystats') break;
 				if (event === '-start' && !mon.volatiles.includes(effect)) mon.volatiles.push(effect);
 				if (event === '-end') mon.volatiles = mon.volatiles.filter(id => id !== effect);
+				mon.effects ||= {};
+				if (event === '-start') {
+					mon.effects[effect] = { turn: memory.turn, source: holder?.slice(5, 7) as SinglesSide, value: extra };
+				} else {
+					delete mon.effects[effect];
+				}
 				if (effect.startsWith('auraburst')) { side.resources.aura = true; side.resources.zmove = true; }
 			}
 			break;
@@ -236,12 +280,37 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 			if (side) {
 				const effect = conditionID(value);
 				if (event === '-sideend') delete side.conditions[effect];
-				else side.conditions[effect] = (side.conditions[effect] || 0) + 1;
+				else {
+					side.conditions[effect] = (side.conditions[effect] || 0) + 1;
+					(side.conditionTurns ||= {})[effect] = memory.turn;
+				}
 			}
 			break;
-		case '-weather': memory.weather = target === 'none' ? '' : toID(target); break;
+		case '-swapsideconditions':
+			for (const id of [
+				'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'stealthrock',
+				'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'luckychant', 'gmaxsteelsurge',
+				'gmaxcannonade', 'gmaxvinelash', 'gmaxwildfire', 'gmaxvolcalith',
+			]) {
+				const first = memory.sides.p1;
+				const second = memory.sides.p2;
+				const layers = first.conditions[id];
+				const started = first.conditionTurns?.[id];
+				if (second.conditions[id]) first.conditions[id] = second.conditions[id];
+				else delete first.conditions[id];
+				if (layers) second.conditions[id] = layers;
+				else delete second.conditions[id];
+				(first.conditionTurns ||= {})[id] = second.conditionTurns?.[id] ?? memory.turn;
+				(second.conditionTurns ||= {})[id] = started ?? memory.turn;
+			}
+			break;
+		case '-weather':
+			memory.weather = target === 'none' ? '' : toID(target);
+			if (value !== '[upkeep]') (memory.fieldTurns ||= {})[memory.weather] = memory.turn;
+			break;
 		case '-fieldstart': case '-fieldend': {
 			const effect = conditionID(target);
+			if (event === '-fieldstart') (memory.fieldTurns ||= {})[effect] = memory.turn;
 			if (effect.endsWith('terrain')) memory.terrain = event === '-fieldstart' ? effect : '';
 			else if (event === '-fieldstart') memory.pseudoWeather.push(effect);
 			else memory.pseudoWeather = memory.pseudoWeather.filter(id => id !== effect);
