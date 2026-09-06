@@ -3729,134 +3729,159 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		shortDesc: "萨戮德-幻想携带后形态转换为阿爸形态,发挥出【我行我素】与【亲子爱】的力量",
 	},
 	legendplate: {
-        name: "Legend Plate",
-        spritenum: 8,
-        fling: {
-            basePower: 90,
-        },
-        // 防止被拍落、戏法等移除
-        onTakeItem(item, pokemon, source) {
-            if ((source && source.baseSpecies.num === 493) || pokemon.baseSpecies.num === 493) {
-                return false;
-            }
-            return true;
-        },
-        // 在出招时计算克制,并发送自定义协议改变外观
-        onModifyMove(move, pokemon, target) {
-            if (move.id === 'judgment' && target && pokemon.species.name === 'Arceus-Legend-Fantasy') {
-                let currentType = pokemon.getTypes()[0];
-                let bestType = currentType; 
-                
-                let maxEff = 0; 
-                let candidateTypes: string[] = [];
-                // 【新增】专门收集对目标造成 1 倍伤害（既不克制也不抵抗）的属性池
-                let neutralTypes: string[] = []; 
+		name: "Legend Plate",
+		spritenum: 8,
+		fling: {
+			basePower: 90,
+		},
+		// 防止被拍落、戏法等移除
+		onTakeItem(item, pokemon, source) {
+			if ((source && source.baseSpecies.num === 493) || pokemon.baseSpecies.num === 493) {
+				return false;
+			}
+			return true;
+		},
+		// 在出招时计算克制及抗性,并发送自定义协议改变外观
+		onModifyMove(move, pokemon, target) {
+			if (move.id === 'judgment' && target && pokemon.species.name === 'Arceus-Legend-Fantasy') {
+				const currentType = pokemon.getTypes()[0];
+				const targetTypes = target.getTypes();
+				const weather = this.field.effectiveWeather();
+				const targetAbility = target.getAbility().name;
 
-                for (const type of this.dex.types.names()) {
-                    if (type === '???' || type === 'Stellar') continue;
-                    // 引擎自带的无效判定
-                    if (!this.dex.getImmunity(type, target)) continue;
+				// 1. 过滤所有有效属性，并计算【攻击克制倍率】
+				let maxEff = -99;
+				const validTypes: { type: string; eff: number }[] = [];
 
-                    const weather = this.field.effectiveWeather();
-                    if (weather === 'desolateland' && type === 'Water') continue; 
-                    if (weather === 'primordialsea' && type === 'Fire') continue; 
+				// 自定义免疫特性字典
+				const immunities: { [k: string]: string[] } = {
+					'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'],
+					'Fire': ['Flash Fire', 'Well-Baked Body'],
+					'Electric': ['Volt Absorb', 'Lightning Rod', 'Motor Drive'],
+					'Ground': ['Levitate', 'Earth Eater'],
+					'Grass': ['Sap Sipper'],
+					'Bug': ['Shi Chong'],
+					'Poison': ['Tun Du'],
+					'Steel': ['Gang Tie Ju He Wu'],
+				};
 
-                    const targetAbility = target.getAbility().name;
-                    
-                    // 【扩展字典】将你的私服自定义免疫特性全部加入进去
-                    const immunities: {[k: string]: string[]} = {
-                        'Water': ['Water Absorb', 'Dry Skin', 'Storm Drain', 'Water Compaction'],
-                        'Fire': ['Flash Fire', 'Well-Baked Body'],
-                        'Electric': ['Volt Absorb', 'Lightning Rod', 'Motor Drive'],
-                        'Ground': ['Levitate', 'Earth Eater'],
-                        'Grass': ['Sap Sipper'],
-                        'Bug': ['Shi Chong'],          
-                        'Poison': ['Tun Du'],          
-                        'Steel': ['Gang Tie Ju He Wu'] 
-                    };
-                    
-                    if (immunities[type] && immunities[type].includes(targetAbility)) {
-                        if (type === 'Ground' && (target.volatiles['smackdown'] || this.field.getPseudoWeather('gravity'))) {
-                            // 落地状态,地面系有效
-                        } else {
-                            continue; 
-                        }
-                    }
+				for (const type of this.dex.types.names()) {
+					if (type === '???' || type === 'Stellar') continue;
 
-                    // 计算基础的属性克制倍率
-                    let eff = 0;
-                    for (const targetType of target.getTypes()) {
-                        let e = this.dex.getEffectiveness(type, targetType);
-                        if (weather === 'deltastream' && targetType === 'Flying' && e > 0) {
-                            e = 0; 
-                        }
-                        eff += e;
-                    }
+					// 免疫判定 (属性相克表免疫)
+					if (!this.dex.getImmunity(type, target)) continue;
 
-                    // 处理“渊海洋流”在雨天的特殊效果
-                    if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
-                        if (eff > 0) {
-                            eff = 0; 
-                        }
-                    }
+					// 绝顶天气封印
+					if (weather === 'desolateland' && type === 'Water') continue;
+					if (weather === 'primordialsea' && type === 'Fire') continue;
 
-                    if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
+					// 特性免疫判定
+					if (immunities[type] && immunities[type].includes(targetAbility)) {
+						// 地面系落地特判
+						const isGrounded = target.isGrounded() || target.volatiles['smackdown'] || this.field.getPseudoWeather('gravity');
+						if (type === 'Ground' && isGrounded) {
+							// 落地则继续结算
+						} else {
+							continue;
+						}
+					}
 
-                    // 【核心修改】：精准分类克制与不抵抗
-                    if (eff > 0) {
-                        // 克制对方的属性,放入最高倍率角逐
-                        if (eff > maxEff) {
-                            maxEff = eff;
-                            candidateTypes = [type];
-                        } else if (eff === maxEff) {
-                            candidateTypes.push(type);
-                        }
-                    } else if (eff === 0) {
-                        // 【收集1倍伤害】：打对方不微弱的属性,收入备选池
-                        neutralTypes.push(type);
-                    }
-                }
+					// 基础攻击克制阶数计算 (+2: 4倍, +1: 2倍, 0: 1倍, -1: 0.5倍, -2: 0.25倍)
+					let eff = 0;
+					for (const tType of targetTypes) {
+						let e = this.dex.getEffectiveness(type, tType);
+						if (weather === 'deltastream' && tType === 'Flying' && e > 0) {
+							e = 0;
+						}
+						eff += e;
+					}
 
-                // 【逻辑更新】：没有克制时寻找不抵抗的最优解
-                if (candidateTypes.length > 0) {
-                    // 1. 有克制属性,直接选最优
-                    bestType = this.sample(candidateTypes);
-                } else if (neutralTypes.includes(currentType)) {
-                    // 2. 没有克制,但现在的属性打对方是1倍伤害。
-                    // （注：因为“???”和被免疫的属性根本进不了 neutralTypes,所以这里自带了当前属性不是“???”的排雷判断）
-                    // 结论：现在的属性就是最佳属性,按兵不动！
-                    bestType = currentType;
-                } else if (neutralTypes.length > 0) {
-                    // 3. 没有克制,且现在的属性打对方微弱（或者是“???”）。
-                    // 结论：从所有1倍伤害的属性中随机挑一个,绝对不打微弱伤害！
-                    bestType = this.sample(neutralTypes);
-                } else {
-                    // 4. 极端情况兜底（比如没有弱点的脱壳忍者,全部属性都被免疫或微弱）
-                    bestType = currentType === '???' ? 'Normal' : currentType;
-                }
+					// 自定义机制：渊海洋流在雨天下抵消弱点
+					if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
+						if (eff > 0) eff = 0;
+					}
 
-                // 修改服务端内在属性,并向客户端发送指令
-                if (pokemon.getTypes().join() !== bestType) {
-                    // 强改底层属性,解决吃不到 1.5 倍本系加成的问题
-                    const success = pokemon.setType(bestType, true);
-                    if (!success) {
-                        (pokemon as any).types = [bestType]; 
-                    }
-                    
-                    this.add('-start', pokemon, 'typechange', bestType, '[silent]');
-                    this.add('-legendplate', pokemon, bestType);
-                }
-                
-                // 强制修正招式属性,覆盖掉原有的判断
-                move.type = bestType;
-            }
-        },
+					// 神奇守护判定
+					if (targetAbility === 'Wonder Guard' && eff <= 0) continue;
+
+					validTypes.push({ type, eff });
+					if (eff > maxEff) maxEff = eff;
+				}
+
+				// 2. 筛选出攻击倍率最高的一组属性池 (Primary Candidate Pool)
+				let candidatePool: string[] = [];
+				if (maxEff > 0) {
+					// 有克制属性：挑出所有最高克制倍率的属性 (优先 4 倍，其次 2 倍)
+					candidatePool = validTypes.filter(t => t.eff === maxEff).map(t => t.type);
+				} else {
+					// 无克制属性：如果当前属性不被抵抗且可用，优先保持当前属性
+					const currentValid = validTypes.find(t => t.type === currentType);
+					if (currentValid && currentValid.eff === 0) {
+						candidatePool = [currentType];
+					} else {
+						// 挑选所有能打 1 倍伤害的属性；若全被抵抗则挑负面影响最小的
+						const neutralPool = validTypes.filter(t => t.eff === 0).map(t => t.type);
+						candidatePool = neutralPool.length > 0 ? neutralPool : validTypes.map(t => t.type);
+					}
+				}
+
+				// 3. 【核心补全：觉醒力量/传说石板的防守端打分机制】
+				// 当存在多个相同克制倍率的属性时，挑选“自身对敌方属性抗性最好”的属性
+				let bestType = currentType;
+
+				if (candidatePool.length === 1) {
+					bestType = candidatePool[0];
+				} else if (candidatePool.length > 1) {
+					// 计算防守得分：对方属性打我方，倍率越低（我方越抗），防御得分越“高”
+					// target 攻击我方：克制计 -1 分，1倍计 0 分，抵抗计 +1 分，免疫计 +2 分
+					let bestDefScore = -999;
+					let defenseCandidates: string[] = [];
+
+					for (const candType of candidatePool) {
+						let defScore = 0;
+						for (const foeType of targetTypes) {
+							if (!this.dex.getImmunity(foeType, candType)) {
+								defScore += 2; // 完全免疫对方本系，防御极佳
+							} else {
+								// getEffectiveness(foe, me): >0 代表克制我方(减分), <0 代表我方抵抗(加分)
+								const resistValue = this.dex.getEffectiveness(foeType, candType);
+								defScore -= resistValue;
+							}
+						}
+
+						if (defScore > bestDefScore) {
+							bestDefScore = defScore;
+							defenseCandidates = [candType];
+						} else if (defScore === bestDefScore) {
+							defenseCandidates.push(candType);
+						}
+					}
+
+					// 如果经过防守打分仍有多个平手选项（例如都是2倍克制且防御端都打1倍），随机抽取
+					bestType = this.sample(defenseCandidates);
+				}
+
+				// 4. 修改形态、内在属性并发送对战动画协议
+				if (pokemon.getTypes().join() !== bestType) {
+					const success = pokemon.setType(bestType, true);
+					if (!success) {
+						(pokemon as any).types = [bestType];
+					}
+
+					this.add('-start', pokemon, 'typechange', bestType, '[silent]');
+					this.add('-legendplate', pokemon, bestType);
+				}
+
+				// 5. 确保制裁光砾的攻击属性被正确覆盖为最佳属性
+				move.type = bestType;
+			}
+		},
 		forcedForme: "Arceus-Legend-Fantasy",
-		itemUser: [ "Arceus-Legend-Fantasy"],
-        num: 30012,
-        gen: 9,
-        desc: "在对战中使出制裁光砾前,将形态与制裁光砾转换为克制对手或不被抵抗的属性",
-    },
+		itemUser: ["Arceus-Legend-Fantasy"],
+		num: 30012,
+		gen: 9,
+		desc: "使出制裁光砾时，自动变为克制目标且自身抗性最优的属性",
+	},
 	fantasydefensegem: {
         name: "Fantasy Defense Gem",
         spritenum: 9,
