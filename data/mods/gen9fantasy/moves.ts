@@ -139,7 +139,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { basePower: 195 },
 		maxMove: { basePower: 140 },
 		desc: "如果招式未命中则使用者失去50%最大HP,无法命中不在地面上的目标",
-		shortDesc: "招式未命中使用者失去50%最大HP,无法命中不在地面上的目标",
+		shortDesc: "未命中则使用者失去50%最大HP,无法命中不在地面上的目标",
 	},
 	rockthrow: {
 		num: 88,
