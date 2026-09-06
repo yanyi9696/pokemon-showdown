@@ -1,0 +1,12 @@
+[
+  {
+    "id": "development-balanced",
+    "name": "开发测试训练家（非正式）",
+    "format": "gen9fcag",
+    "style": "balanced",
+    "developmentOnly": true,
+    "keyMembers": [6],
+    "resourcePreferences": ["terastallize"],
+    "team": "Mew @ Leftovers\nAbility: Synchronize\nEVs: 252 HP / 4 SpA / 252 Spe\nTimid Nature\n- Psychic\n- Roost\n- Will-O-Wisp\n- Stealth Rock\n\nGarchomp @ Rocky Helmet\nAbility: Rough Skin\nEVs: 252 HP / 164 Def / 92 Spe\nImpish Nature\n- Earthquake\n- Dragon Tail\n- Stealth Rock\n- Fire Blast\n\nCorviknight @ Leftovers\nAbility: Pressure\nEVs: 252 HP / 252 Def / 4 SpD\nImpish Nature\n- Brave Bird\n- Roost\n- Defog\n- U-turn\n\nRotom-Wash @ Leftovers\nAbility: Levitate\nEVs: 252 HP / 200 Def / 56 Spe\nBold Nature\n- Hydro Pump\n- Volt Switch\n- Will-O-Wisp\n- Pain Split\n\nClefable @ Leftovers\nAbility: Magic Guard\nEVs: 252 HP / 252 Def / 4 SpD\nBold Nature\n- Moonblast\n- Soft-Boiled\n- Calm Mind\n- Thunder Wave\n\nWeavile @ Heavy-Duty Boots\nAbility: Pressure\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Knock Off\n- Triple Axel\n- Ice Shard\n- Swords Dance"
+  }
+]

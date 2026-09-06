@@ -1,6 +1,8 @@
 /config/*
 !/config/formats.ts
 !/config/custom-formats.ts
+!/config/fantasy-ai-trainers.ts
+!/config/fantasy-ai-trainers.example.json
 /logs/**/*
 /test/modlogs
 /test/replays/*.html
