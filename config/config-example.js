@@ -371,6 +371,17 @@ exports.laddermodchat = false;
  */
 exports.forcetimer = false;
 
+// Fantasy AI stays closed until trainer content and acceptance benchmarks are ready.
+// Definitions: config/fantasy-ai-trainers.ts. Restart to apply changes.
+exports.fantasyai = {
+	enabled: false,
+	allowDevelopmentTrainers: false,
+	maxBattles: 2,
+	maxBattlesPerPlayer: 1,
+	decisionMs: 5000,
+	disconnectMs: 10 * 60 * 1000,
+};
+
 /**
  * force register ELO - unregistered users cannot search for ladder battles
  * in formats where their ELO is at or above this value.

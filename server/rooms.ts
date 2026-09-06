@@ -1962,6 +1962,11 @@ export class GameRoom extends BasicRoom {
 		this.pokeExpireTimer();
 	}
 	override pokeExpireTimer() {
+		if (this.battle?.fantasyAI && !this.battle.ended) {
+			if (this.expireTimer) clearTimeout(this.expireTimer);
+			this.expireTimer = null;
+			return;
+		}
 		// empty rooms time out after ten minutes
 		if (!this.userCount) {
 			if (this.expireTimer) clearTimeout(this.expireTimer);

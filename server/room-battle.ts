@@ -19,6 +19,9 @@ import type { Tournament } from './tournaments/index';
 import type { RoomSettings } from './rooms';
 import type { BestOfGame } from './room-battle-bestof';
 import type { GameTimerSettings } from '../sim/dex-formats';
+import { AIController, type AIChallengeOptions } from './fantasy-ai/controller';
+import { captureInitialTeam } from './fantasy-ai/initial-snapshot';
+import type { Difficulty } from './fantasy-ai/types';
 
 type ChannelIndex = 0 | 1 | 2 | 3 | 4;
 export type PlayerIndex = 1 | 2 | 3 | 4;
@@ -55,6 +58,7 @@ const TIMER_COOLDOWN = 20 * SECONDS;
 const LOCKDOWN_PERIOD = 30 * 60 * 1000; // 30 minutes
 
 export class RoomBattlePlayer extends RoomGamePlayer<RoomBattle> {
+	readonly isAI: boolean = false;
 	readonly slot: SideID;
 	readonly channelIndex: ChannelIndex;
 	request: BattleRequestTracker;
@@ -159,6 +163,15 @@ export class RoomBattlePlayer extends RoomGamePlayer<RoomBattle> {
 	}
 }
 
+/** An occupied simulator seat, with no user account, socket or reconnect lifecycle. */
+export class RoomBattleAIPlayer extends RoomBattlePlayer {
+	override readonly isAI = true;
+	constructor(game: RoomBattle, num: PlayerIndex, name: string) {
+		super(name, game, num);
+		this.active = this.knownActive = true;
+	}
+}
+
 export class RoomBattleTimer {
 	readonly battle: RoomBattle;
 	readonly timerRequesters: Set<ID>;
@@ -221,6 +234,10 @@ export class RoomBattleTimer {
 		}
 	}
 	start(requester?: User) {
+		if (this.battle.fantasyAI) {
+			requester?.sendTo(this.battle.roomid, '|inactiveoff|AI 挑战不设每回合思考倒计时。');
+			return false;
+		}
 		const userid = requester ? requester.id : 'staff' as ID;
 		if (this.timerRequesters.has(userid)) return false;
 		if (this.battle.ended) {
@@ -466,6 +483,8 @@ export interface RoomBattlePlayerOptions {
 
 export interface RoomBattleOptions {
 	format: string;
+	/** Internal single-player challenge; players contains only the human in p1. */
+	fantasyAI?: AIChallengeOptions;
 	/**
 	 * length should be equal to the format's playerCount, except in two
 	 * special cases:
@@ -534,6 +553,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	rqid = 1;
 	requestCount = 0;
 	options: RoomBattleOptions;
+	readonly fantasyAI?: AIController;
 	frozen?: boolean;
 	dataResolvers?: [((args: string[]) => void), ((error: Error) => void)][];
 	constructor(room: GameRoom, options: RoomBattleOptions) {
@@ -541,6 +561,10 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const format = Dex.formats.get(options.format, true);
 		this.title = format.name;
 		this.options = options;
+		if (options.fantasyAI && (options.players.length !== 1 || options.rated || options.tour ||
+			options.inputLog || format.gameType !== 'singles' || format.playerCount !== 2)) {
+			throw new Error('Invalid AI battle options');
+		}
 		if (!this.title.endsWith(" Battle")) this.title += " Battle";
 		this.allowRenames = options.allowRenames !== undefined ? !!options.allowRenames : (!options.rated && !options.tour);
 
@@ -561,6 +585,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		}
 
 		this.room.battle = this;
+		if (options.fantasyAI) this.fantasyAI = new AIController(this, options.fantasyAI);
 
 		const battleOptions = {
 			formatid: this.format,
@@ -572,6 +597,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			void this.stream.write(options.inputLog);
 		} else {
 			void this.stream.write(`>start ` + JSON.stringify(battleOptions));
+			if (options.fantasyAI) void this.stream.write(`>fantasyai ${options.fantasyAI.difficulty}`);
 		}
 
 		void this.listen();
@@ -581,7 +607,8 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		}
 		for (let i = 0; i < this.playerCap; i++) {
 			const p = options.players[i];
-			const player = this.addPlayer(p?.user || null, p || null);
+			const player = this.addPlayer(p?.user || null, p ||
+				(i === 1 && options.fantasyAI ? { team: options.fantasyAI.trainer.packedTeam } : null));
 			if (!player) throw new Error(`failed to create player ${i + 1} in ${room.roomid}`);
 		}
 		if (options.inputLog) {
@@ -652,6 +679,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		void this.stream.write(`>${player.slot} undo`);
 	}
 	override joinGame(user: User, slot?: SideID, playerOpts?: { team?: string }) {
+		if (this.fantasyAI) { user.popup('AI 挑战不支持替换参战席位。'); return false; }
 		if (user.id in this.playerTable) {
 			user.popup(`You have already joined this battle.`);
 			return false;
@@ -701,6 +729,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	}
 	override leaveGame(user: User) {
 		if (!user) return false; // ...
+		if (this.fantasyAI) return this.forfeit(user);
 		if (this.room.rated || this.room.tour) {
 			user.popup(`Players can't be swapped out in a ${this.room.tour ? "tournament" : "rated"} battle.`);
 			return false;
@@ -739,11 +768,13 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		}
 		if (!this.ended) {
 			this.room.add(`|bigerror|The simulator process crashed. We've been notified and will fix this ASAP.`);
+			this.fantasyAI?.finish('simulator-error');
 			if (!disconnected) Monitor.crashlog(new Error(`Sim stream interrupted`), `A sim stream`);
 			this.setEnded();
 		}
 	}
 	override setEnded() {
+		this.fantasyAI?.finish(this.endType);
 		this.started = true;
 		for (const player of this.players) {
 			player.request = { rqid: 0, request: '', isWait: 'cantUndo', choice: '' };
@@ -756,6 +787,12 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		for (const player of this.players) player.wantsTie = false;
 
 		switch (lines[0]) {
+		case 'fantasyai':
+			this.fantasyAI?.initialSnapshot(JSON.parse(lines[1]));
+			break;
+		case 'fantasyaiready':
+			this.fantasyAI?.flush();
+			break;
 		case 'requesteddata':
 			lines = lines.slice(1);
 			const [resolver] = this.dataResolvers!.shift()!;
@@ -763,6 +800,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			break;
 
 		case 'update':
+			this.fantasyAI?.update(lines.slice(1).join('\n'));
 			for (const line of lines.slice(1)) {
 				if (line.startsWith('|turn|')) {
 					this.turn = parseInt(line.slice(6));
@@ -780,6 +818,17 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		case 'sideupdate': {
 			const slot = lines[1] as SideID;
 			const player = this[slot];
+			if (player?.isAI && /^\|error\|\[(Invalid|Unavailable) choice\]/.test(lines[2])) {
+				this.fantasyAI?.invalidChoice();
+				const request = player.request;
+				request.isWait = false;
+				request.choice = '';
+				if (request.request) {
+					request.rqid = ++this.rqid;
+					this.fantasyAI?.request(JSON.parse(request.request), request.rqid);
+				}
+				break;
+			}
 			if (lines[2].startsWith(`|error|[Invalid choice] Can't do anything`)) {
 				// ... should not happen
 			} else if (lines[2].startsWith(`|error|[Invalid choice]`)) {
@@ -799,6 +848,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 					choice: '',
 				};
 				this.requestCount++;
+				if (player?.isAI) this.fantasyAI?.request(request, this.rqid);
 				player?.sendRoom(`|request|${requestJSON}`);
 				break;
 			}
@@ -835,7 +885,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		// Check if the battle was rated to update the ladder, return its response, and log the battle.
 		if (winnerid === this.p1.id) {
 			p1score = 1;
-		} else if (winnerid === this.p2.id) {
+		} else if (winnerid === this.p2.id || (this.p2.isAI && winnerid === toID(this.p2.name))) {
 			p1score = 0;
 		}
 		Chat.runHandlers('onBattleEnd', this, winnerid, this.players.map(p => p.id));
@@ -977,7 +1027,9 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (user.id in this.playerTable) return;
 		const player = this.playerTable[oldUserid];
 		if (player) {
-			this.updatePlayer(player, user);
+			// Preserve the human's authenticated rename while keeping AI challenge seats fixed.
+			if (this.fantasyAI) super.setPlayerUser(player, user);
+			else this.updatePlayer(player, user);
 		}
 		const options = {
 			name: user.name,
@@ -989,6 +1041,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const player = this.playerTable[user.id];
 		if (player && !player.active) {
 			player.active = true;
+			this.fantasyAI?.connected();
 			this.timer.checkActivity();
 			this.room.add(`|player|${player.slot}|${user.name}|${user.avatar}|`);
 			Chat.runHandlers('onBattleJoin', player.slot, user, this);
@@ -999,6 +1052,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (player?.active) {
 			player.sendRoom(`|request|null`);
 			player.active = false;
+			this.fantasyAI?.disconnected();
 			this.timer.checkActivity();
 			this.room.add(`|player|${player.slot}|`);
 		}
@@ -1045,10 +1099,11 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	 * playerOpts should be empty only if importing an inputlog
 	 * (so the player isn't recreated)
 	 */
-	override addPlayer(user: User | string | null, playerOpts?: RoomBattlePlayerOptions | null) {
+	override addPlayer(user: User | string | null, playerOpts?: Omit<RoomBattlePlayerOptions, 'user'> | null) {
 		const player = super.addPlayer(user);
 		if (typeof user === 'string') user = null;
 		if (!player) return null;
+		if (player.isAI) this.playerCount++;
 		const slot = player.slot;
 		this[slot] = player;
 
@@ -1131,11 +1186,15 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	}
 
 	makePlayer(user: User) {
+		if (this.options.fantasyAI && this.players.length === 1) {
+			return new RoomBattleAIPlayer(this, 2, `AI · ${this.options.fantasyAI.trainer.name}`);
+		}
 		const num = (this.players.length + 1) as PlayerIndex;
 		return new RoomBattlePlayer(user, this, num);
 	}
 
 	override setPlayerUser(player: RoomBattlePlayer, user: User | null, playerOpts?: { team?: string }) {
+		if (this.fantasyAI) return;
 		if (user === null && this.room.auth.get(player.id) === Users.PLAYER_SYMBOL) {
 			this.room.auth.set(player.id, '+');
 		}
@@ -1195,7 +1254,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			this.started = true;
 		}
 		const delayStart = this.options.delayedStart || !!this.options.inputLog;
-		const users = this.players.map(player => {
+		const users = this.players.filter(player => !player.isAI).map(player => {
 			const user = player.getUser();
 			if (!user && !delayStart) {
 				throw new Error(`User ${player.id} not found on ${this.roomid} battle creation`);
@@ -1241,6 +1300,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	}
 
 	override destroy() {
+		this.fantasyAI?.finish('destroyed');
 		if (!this.ended) {
 			this.setEnded();
 			this.room.parent?.game?.onBattleWin?.(this.room, '');
@@ -1307,9 +1367,31 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 
 export class RoomBattleStream extends BattleStream {
 	override readonly battle: Battle;
+	private fantasyAI?: Difficulty;
+	private snapshotSent = false;
 	constructor() {
 		super({ keepAlive: true });
 		this.battle = null!;
+	}
+
+	override _writeLine(type: string, message: string) {
+		if (type === 'fantasyai') {
+			if (!this.battle || this.battle.started || this.fantasyAI || !['normal', 'hard'].includes(message)) {
+				throw new Error('Invalid AI stream initialization');
+			}
+			this.fantasyAI = message as Difficulty;
+			return;
+		}
+		super._writeLine(type, message);
+	}
+
+	override pushMessage(type: string, data: string) {
+		if (this.fantasyAI === 'hard' && !this.snapshotSent && type === 'sideupdate' &&
+			data.startsWith('p2\n|request|') && this.battle.requestState === 'teampreview') {
+			this.push(`fantasyai\n${JSON.stringify(captureInitialTeam(this.battle, 'p1'))}`);
+			this.snapshotSent = true;
+		}
+		super.pushMessage(type, data);
 	}
 
 	override _write(chunk: string) {
@@ -1339,6 +1421,7 @@ export class RoomBattleStream extends BattleStream {
 			this.push(`error\n${err.stack}`);
 		}
 		if (this.battle) this.battle.sendUpdates();
+		if (this.fantasyAI) this.push('fantasyaiready\n');
 		const deltaTime = Date.now() - startTime;
 		if (deltaTime > 1000) {
 			Monitor.slow(`[slow battle] ${deltaTime}ms - ${chunk.replace(/\n/ig, ' | ')}`);

@@ -66,12 +66,23 @@ export class DecisionScheduler {
 	private sequence = 0;
 	private disposed = false;
 	readonly metrics = { completed: 0, timeouts: 0, workerErrors: 0, cancelled: 0, capacity: 0, staleResults: 0 };
+	private readonly maxBattles: number;
+	private readonly decisionMs: number;
+
+	constructor(options: { maxBattles?: number, decisionMs?: number } = {}) {
+		this.maxBattles = options.maxBattles ?? DEFAULT_LIMITS.maxBattles;
+		this.decisionMs = options.decisionMs ?? DEFAULT_LIMITS.decisionMs;
+		if (!Number.isInteger(this.maxBattles) || this.maxBattles < 1 || this.maxBattles > 16 ||
+			!Number.isFinite(this.decisionMs) || this.decisionMs < 0 || this.decisionMs > DEFAULT_LIMITS.decisionMs) {
+			throw new Error('invalid-scheduler-limits');
+		}
+	}
 
 	register(roomId: string, instanceId: string) {
 		if (this.disposed || !roomId || !instanceId) throw new Error('invalid-scheduler-instance');
 		const previous = this.instances.get(roomId);
 		if (previous?.id === instanceId) return;
-		if (!previous && this.instances.size >= DEFAULT_LIMITS.maxBattles) throw new Error('ai-battle-capacity');
+		if (!previous && this.instances.size >= this.maxBattles) throw new Error('ai-battle-capacity');
 		this.cancelRoom(roomId);
 		this.instances.set(roomId, { id: instanceId, latest: -1 });
 	}
@@ -80,6 +91,10 @@ export class DecisionScheduler {
 		if (this.instances.get(roomId)?.id !== instanceId) return;
 		this.instances.delete(roomId);
 		this.cancelRoom(roomId);
+	}
+
+	cancel(roomId: string, instanceId: string) {
+		if (this.instances.get(roomId)?.id === instanceId) this.cancelRoom(roomId);
 	}
 
 	submit(input: ScheduledRequest): Promise<ScheduledResult> {
@@ -96,11 +111,11 @@ export class DecisionScheduler {
 		instance.latest = input.key.rqid;
 		this.cancelRoom(input.key.roomId);
 		const best = fallback(input.observation, input.excluded);
-		if (this.queue.length + Number(!!this.active) >= DEFAULT_LIMITS.maxBattles) {
+		if (this.queue.length + Number(!!this.active) >= this.maxBattles) {
 			this.metrics.capacity++;
 			return Promise.resolve({ key: { ...input.key }, status: 'capacity', decision: best, queueMs: 0, totalMs: 0 });
 		}
-		const deadline = created + Math.min(DEFAULT_LIMITS.decisionMs, input.budgetMs ?? DEFAULT_LIMITS.decisionMs);
+		const deadline = created + Math.min(this.decisionMs, input.budgetMs ?? this.decisionMs);
 		return new Promise(resolve => {
 			const job: Job = {
 				token: ++this.sequence, input: structuredClone(input), created, deadline, best,
