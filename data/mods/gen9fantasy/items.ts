@@ -3890,33 +3890,30 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
             // 如果是变化类招式,或是自己打自己（比如混乱）,则不触发
             if (move.category === 'Status' || target === source) return;
             
-            // typeMod > 0 代表招式对当前宝可梦是“效果绝佳”
-            if (target.getMoveHitData(move).typeMod > 0) {
-                // 检查是否打在替身上（打在替身上且招式不穿透时,不消耗道具）
-                const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
-                if (hitSub) return;
-                
-                // 如果成功消耗掉道具
-                if (target.useItem()) {
-                    // 记录这只宝可梦吃过幻防宝石
-                    target.m.hasFantasyDefenseGem = true;
-                    // 赋予永久双防提升状态
-                    target.addVolatile('gemdefensepermanentboost');
-                    // 挂上场地监听,保证下场后状态不丢失
-                    target.side.addSideCondition('gemdefenseboost');
-                    
-                    // 游戏内提示
-                    this.add('-message', `${target.name}的幻之防御宝石使其受到的伤害降低了！`);
-                    
-                    // 减伤30%,等效于将伤害/威力乘以 0.7
-                    return this.chainModify(0.7); 
-                }
+            // 检查是否打在替身上（打在替身上且招式不穿透时,不消耗道具）
+            const hitSub = target.volatiles['substitute'] && !move.flags['bypasssub'] && !(move.infiltrates && this.gen >= 6);
+            if (hitSub) return;
+
+            // 首次受到招式伤害时触发,不限制属性克制关系
+            if (target.useItem()) {
+                // 记录这只宝可梦吃过幻防宝石
+                target.m.hasFantasyDefenseGem = true;
+                // 赋予永久双防提升状态
+                target.addVolatile('gemdefensepermanentboost');
+                // 挂上场地监听,保证下场后状态不丢失
+                target.side.addSideCondition('gemdefenseboost');
+
+                // 游戏内提示
+                this.add('-message', `${target.name}的幻之防御宝石使其受到的伤害降低了！`);
+
+                // 沿用原有减伤结算: 本次伤害乘以 0.7
+                return this.chainModify(0.7);
             }
         },
         num: 30013,
         gen: 9,
-        desc: "首次受到效果绝佳的伤害时,降低本次攻击30%的伤害,生效一次后消失。失去该道具后,该宝可梦的防御和特防将永久提升10%",
-		shortDesc: "首次受效果绝佳伤害时减伤30%,使用后消失。失去后防御和特防永久提升10%",
+        desc: "首次受到招式伤害时,降低本次攻击30%的伤害,生效一次后消失。失去该道具后,该宝可梦的防御和特防将额外提升10%",
+		shortDesc: "首次受到招式伤害时减伤30%,使用后消失。失去后防御和特防永久提升10%",
     },
 	fantasymachobrace: {
         name: "Fantasy Macho Brace",
