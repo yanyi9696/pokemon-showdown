@@ -40,6 +40,38 @@ exports.fantasyai = {
 
 客户端通过原有用户名与登录界面访问真正的身份服务。本地服务仅将 `/~~localhost/action.php` 透传到 `https://play.pokemonshowdown.com`，不生成身份断言、不替换登录函数、不记录登录请求内容；缺失的图片与音频资源也使用官方资源地址。因此本机游玩仍需要网络访问身份服务及外部资源。PHP 新闻生成器缺失时仅显示无法读取新闻的提示，不影响客户端构建与对战。
 
+## 更新线上服务器后开启 AI
+
+`config/config.js` 是每台服务器独立维护的运行配置，被 Git 忽略。本机的 `enabled: true` 不会随 `git pull` 同步到线上；线上没有配置 `fantasyai` 时，仍使用 `config/config-example.js` 中的默认值 `enabled: false`。客户端收到服务端的 `enabled: false` 才显示「AI 挑战尚未开放」，这与玩家是否已经选择用户名无关。
+
+在**线上实际运行的服务端目录**中，先检查 AI 配置：
+
+```sh
+node -e "console.log(require('./config/config.js').fantasyai)"
+```
+
+如果输出为 `undefined` 或 `enabled: false`，在该服务器的 `config/config.js` 末尾加入以下配置；已有 AI 配置时也可以直接修改其中的开关。这里保留已有的并发和时间预算设置，只启用正式训练家：
+
+```javascript
+exports.fantasyai = {
+    ...exports.fantasyai,
+    enabled: true,
+    allowDevelopmentTrainers: false,
+};
+```
+
+保留线上原有的其余配置，不要用本机 `config/config.js` 或示例文件整份覆盖。正式训练家读取随仓库更新的 `config/fantasy-ai-trainers.ts`，当前包含阿塞萝拉的 FC UBUU、FC OU、FC UU 三支队伍，不需要启用开发样例。
+
+更新服务端代码后，在同一目录运行构建和正式队伍校验：
+
+```sh
+npm run validate:fantasy-ai
+```
+
+校验通过后，使用线上原有的进程管理方式**重启正在提供服务的 Pokémon Showdown 服务端进程**，然后在 AI 挑战页点击「刷新 / 查询结果」。AI 管理器在首次使用时缓存配置，仅刷新网页、热更新配置或重启客户端静态站点不会替换该实例。线上继续使用原来的启动方式；`start:fantasy-ai:local` 会强制回环监听和本机身份服务配置，仅供本机开发使用。
+
+如重启后仍显示「尚未开放」，检查被重启进程的运行目录，以及客户端连接的服务端是否正是本次修改的实例。管理员可在该服务端使用 `/fantasyai status` 查看当前 `enabled` 和训练家 `diagnostics`。如果提示变为「目前没有可挑战的 AI 训练家」，说明开关已经生效，应检查正式队伍校验输出和训练家诊断。
+
 ## 玩家操作
 
 1. 打开首页，按正常流程选择用户名或登录，然后进入「AI 挑战」。

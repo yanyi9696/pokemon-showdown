@@ -374,7 +374,7 @@ exports.forcetimer = false;
 // Fantasy AI stays closed until trainer content and acceptance benchmarks are ready.
 // Definitions: config/fantasy-ai-trainers.ts. Restart to apply changes.
 exports.fantasyai = {
-	enabled: false,
+	enabled: true,
 	allowDevelopmentTrainers: false,
 	maxBattles: 2,
 	maxBattlesPerPlayer: 1,
