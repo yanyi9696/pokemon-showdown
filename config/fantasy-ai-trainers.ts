@@ -151,17 +151,18 @@ export const Trainers: TrainerDefinition[] = [
 		description: "由魔灵珊瑚与黑夜魔灵开启戏法空间，支持Mega泥偶巨人和粗骨头阿罗拉嘎啦嘎啦输出，以耿鬼干扰和坚盾剑怪消耗衔接攻防的幽灵主题空间队。",
 		format: "gen9fcuu",
 		style: "balanced",
-		keyMembers: [3, 4, 6],
+		keyMembers: [2, 3, 6],
 		resourcePreferences: ["mega", "terastallize"],
 		team: `
-		Gengar-Fantasy @ Heavy-Duty Boots
-		Ability: Prankster
-		EVs: 252 SpA / 4 SpD / 252 Spe
-		Timid Nature
-		IVs: 0 Atk
-		- wasitihuan
-		- Bitter Malice
-		- Encore
+		Gengar-Fantasy @ Heavy-Duty Boots  
+		Ability: Prankster  
+		Tera Type: Fairy  
+		EVs: 252 SpA / 4 SpD / 252 Spe  
+		Timid Nature  
+		IVs: 0 Atk  
+		- Wa Si Ti Huan  
+		- Yuan Neng Shi Fang  
+		- Dazzling Gleam  
 		- Destiny Bond
 
 		Cursola-Fantasy @ fantasydefensegem
