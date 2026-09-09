@@ -34,6 +34,8 @@ export interface SeenPokemon {
 	effects?: Record<string, { turn: number, source?: SinglesSide, value?: string }>;
 	persistentEffects?: string[];
 	fantasy?: FantasyState;
+	substituteHP?: HealthRange;
+	protection?: { turn: number, counter: number };
 }
 export interface MoveEvidence {
 	turn: number;
@@ -222,6 +224,7 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 			finishTurn();
 			memory.turn = Number(target);
 			for (const team of Object.values(memory.sides)) {
+				if (team.active?.protection && team.active.protection.turn < memory.turn - 1) delete team.active.protection;
 				for (const [id, effect] of Object.entries(team.slotConditions!)) {
 					if (memory.turn > effect.turn + 1) delete team.slotConditions![id];
 				}
@@ -267,7 +270,7 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				appearance: `${sideID}:${side.appearances.length + 1}`, side: sideID, ident: target, ...details,
 				health: parseHealth(extra), status: extra.split(' ')[1] || '',
 				moves: previous?.moves.slice() || [], moveUses: { ...previous?.moveUses },
-				boosts: {}, volatiles: [], item: previous?.item,
+				boosts: {}, volatiles: [], item: previous?.item, ability: previous?.fantasy?.baseAbility,
 				teraType: value.split(', ').find(part => part.startsWith('tera:'))?.slice(5) || previous?.teraType,
 				enteredTurn: memory.turn, effects: {},
 				activeMoveActions: 0,
@@ -373,6 +376,13 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 			break;
 		case '-fail':
 			if (lastAction) lastAction.failed = true;
+			if (mon && lastAction?.user === mon.appearance && dex.moves.get(lastAction.move).stallingMove) delete mon.protection;
+			break;
+		case '-singleturn':
+			if (mon && lastAction?.user === mon.appearance && dex.moves.get(lastAction.move).stallingMove) {
+				const previous = mon.protection?.turn === memory.turn - 1 ? mon.protection.counter : 1;
+				mon.protection = { turn: memory.turn, counter: Math.min(729, previous * 3) };
+			}
 			break;
 		case '-singlemove':
 			if (mon && conditionID(value) === 'destinybond' && !mon.volatiles.includes('destinybond')) {
@@ -411,6 +421,7 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 		case '-ability':
 			if (mon) {
 				mon.ability = toID(value);
+				if (markers.includes('[from] item: Fantasy Sachet')) (mon.fantasy ||= {}).baseAbility = mon.ability;
 				pendingGuiYing = mon.ability === 'guiying' ? mon : undefined;
 				if (mon.ability === 'beastboost') mon.volatiles = mon.volatiles.filter(id => id !== 'suppressability');
 			}
@@ -432,6 +443,11 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 			}
 			break;
 		case '-activate':
+			if (mon && conditionID(value) === 'poltergeist' && dex.items.get(extra).exists) mon.item = toID(extra);
+			if (mon && conditionID(value) === 'substitute' && markers.includes('[damage]')) {
+				// The public log reveals survival, not the exact remaining substitute HP.
+				mon.substituteHP = { lower: 0, upper: mon.substituteHP?.upper || 0.25 };
+			}
 			if (mon && value.startsWith('ability: ')) mon.ability = conditionID(value);
 			if (mon && value.startsWith('item: ') && mon.item !== '') mon.item = conditionID(value);
 			break;
@@ -471,6 +487,7 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				const effect = conditionID(value);
 				if (event === '-start' && value.startsWith('ability: ')) mon.ability = effect;
 				if (effect === 'typechange') { mon.types = event === '-start' ? extra.split('/') : undefined; break; }
+				if (effect === 'substitute') mon.substituteHP = event === '-start' ? { lower: 0.25, upper: 0.25 } : undefined;
 				if (effect === 'fantasystats') break;
 				const type = gemType(value);
 				if (event === '-start' && type) {

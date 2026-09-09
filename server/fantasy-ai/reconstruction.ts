@@ -82,6 +82,9 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 				mon.isActive = mon.isStarted = index === 0 && !mon.fainted;
 				mon.activeTurns = index === 0 ? Math.max(1, world.turn - (seen?.enteredTurn ?? world.turn - 1)) : 0;
 				mon.activeMoveActions = seen?.activeMoveActions || 0;
+				if (index === 0 && seen?.protection) mon.volatiles.stall = battle.initEffectState({
+					id: 'stall', target: mon, counter: seen.protection.counter, duration: 1,
+				});
 				if (seen?.lastMove) mon.lastMove = battle.dex.getActiveMove(seen.lastMove);
 				mon.m.fantasyVisualsInitialized = index === 0 || !!seen;
 				mon.m.lastVisualShown = member.disguise ? `illusion_${toID(member.disguise)}` : mon.species.id;
@@ -121,7 +124,11 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 					if (id === 'imprison') { state.source = mon; state.sourceSlot = mon.getSlot(); }
 					if (effect.duration) state.duration = Math.max(1, effect.duration - (world.turn - (publicEffect?.turn ?? world.turn)));
 					if (id === 'confusion') state.time = world.variant ? 3 : 1;
-					if (id === 'substitute') state.hp = Math.max(1, Math.floor(mon.maxhp / (world.variant ? 8 : 4)));
+					if (id === 'substitute') {
+						const hp = member.seen?.substituteHP;
+						const fraction = hp ? (world.variant ? (hp.lower + hp.upper) / 2 : hp.upper) : (world.variant ? 1 / 8 : 1 / 4);
+						state.hp = Math.max(1, Math.floor(mon.maxhp * fraction));
+					}
 					if (id === 'encore' || id === 'disable') {
 						const namedMove = battle.dex.moves.get(publicEffect?.value || '');
 						state.move = namedMove.exists ? namedMove.id : member.seen?.lastMove;

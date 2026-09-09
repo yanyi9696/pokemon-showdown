@@ -30,6 +30,13 @@ export interface Combatant {
 	persistentEffects?: string[];
 	fantasy?: FantasyState;
 	reserves?: number;
+	/** Own configured spread only; opponent probe spreads remain compatible hypotheses. */
+	spread?: Pick<PokemonSet, 'nature' | 'evs' | 'ivs'>;
+	substituteHP?: { lower: number, upper: number };
+	protectCounter?: number;
+	lastMove?: string;
+	moveUses?: Record<string, number>;
+	moveLocks?: { encore?: string, disable?: string };
 }
 export interface OpponentHypothesis extends Combatant {
 	probability: number;
@@ -59,10 +66,12 @@ export class HypothesisBuilder {
 	readonly dex: ModdedDex;
 	readonly format: string;
 	private readonly movePools = new Map<string, string[]>();
+	private readonly ownSets: readonly PokemonSet[];
 
-	constructor(format: string) {
+	constructor(format: string, ownSets: readonly PokemonSet[] = []) {
 		this.format = format;
 		this.dex = Dex.forFormat(format);
+		this.ownSets = structuredClone(ownSets);
 	}
 
 	private priorMoves(species: Species, variant: number, revealed: readonly string[]): string[] {
@@ -83,26 +92,28 @@ export class HypothesisBuilder {
 		const rank = (id: string) => {
 			const move = this.dex.moves.get(id);
 			if (move.category === 'Status') {
-				if (recoveryAmount(move)) return variant ? 140 : 65;
+				if (recoveryAmount(move)) return (variant ? 140 : 65) - (id === 'rest' ? 20 : 0);
 				if (PIVOT_MOVES.has(id)) return 90;
 				if (move.sideCondition || ['defog', 'taunt', 'encore', 'willowisp', 'toxic', 'protect'].includes(id)) {
 					return variant ? 85 : 35;
 				}
 				return move.boosts ? 70 : move.status ? 45 : 0;
 			}
-			return (move.basePower || (move.damage ? 80 : 0)) * (species.types.includes(move.type) ? 1.5 : 1) *
+			const commitment = move.flags.recharge || move.flags.charge || id === 'focuspunch' ? 0.5 : move.selfdestruct ? 0.65 : 1;
+			return commitment * (move.basePower || (move.damage ? 80 : 0)) * (species.types.includes(move.type) ? 1.5 : 1) *
 				(move.category === (species.baseStats.atk >= species.baseStats.spa ? 'Physical' : 'Special') ? 1 : 0.6) *
 				(typeof move.accuracy === 'number' ? move.accuracy / 100 : 1);
 		};
-		const candidates = pool.slice().sort((a, b) =>
-			(Number(preferred.includes(b as ID)) - Number(preferred.includes(a as ID))) || rank(b) - rank(a) || a.localeCompare(b));
+		const preference = (id: string) => rank(id) + (preferred.includes(id as ID) ? 18 : 0);
+		const candidates = pool.slice().sort((a, b) => preference(b) - preference(a) || a.localeCompare(b));
 		const moves = revealed.filter(id => !this.dex.moves.get(id).isZ).slice(-4);
 		const add = (id?: string) => { if (id && moves.length < 4 && !moves.includes(id)) moves.push(id); };
 		// Build coherent offensive / physical-wall / special-wall sets. Templates are
 		// priors only; revealed recovery and utility moves must survive all variants.
-		if (!moves.some(id => this.dex.moves.get(id).category !== 'Status')) {
-			add(candidates.find(id => this.dex.moves.get(id).category !== 'Status' &&
-				species.types.includes(this.dex.moves.get(id).type)));
+		for (const type of species.types) {
+			if (moves.some(id => this.dex.moves.get(id).category !== 'Status' && this.dex.moves.get(id).type === type)) continue;
+			// A random-team template must not erase the current form's other STAB.
+			add(candidates.find(id => this.dex.moves.get(id).category !== 'Status' && this.dex.moves.get(id).type === type));
 		}
 		if (variant && !moves.some(id => recoveryAmount(this.dex.moves.get(id)))) {
 			add(candidates.find(id => recoveryAmount(this.dex.moves.get(id)) > 0));
@@ -111,6 +122,7 @@ export class HypothesisBuilder {
 			if (moves.length >= 4) break;
 			if (moves.includes(id)) continue;
 			const move = this.dex.moves.get(id);
+			if (recoveryAmount(move) && moves.some(other => recoveryAmount(this.dex.moves.get(other)))) continue;
 			// Avoid four nearly identical STAB attacks in a fallback prior.
 			if (moves.some(other => {
 				const existing = this.dex.moves.get(other);
@@ -180,20 +192,52 @@ export class HypothesisBuilder {
 					teraType: snapshot?.teraType || species.types[0], terastallized: seen.teraType,
 					appearance: seen.appearance, persistentEffects: seen.persistentEffects?.slice(),
 					fantasy: seen.fantasy && structuredClone(seen.fantasy),
+					substituteHP: seen.substituteHP && { ...seen.substituteHP }, protectCounter: seen.protection?.counter,
+					lastMove: seen.lastMove, moveUses: { ...seen.moveUses },
+					moveLocks: this.moveLocks(seen),
 					probability: (illusion ? 0.25 : 1) * (!snapshot && defensiveEvidence ? (variant ? 1.4 : 0.45) : 1),
 					source: snapshot ? 'initial' : 'prior', identity: illusion ? 'illusion' : 'visible',
 				});
 			}
+		}
+		// Preserve one plausible fast attacker when the item is undisclosed. This is
+		// a risk scenario, not a declaration that the opponent holds a Choice Scarf.
+		const offensive = result.find(mon => mon.source === 'prior' && mon.identity === 'visible');
+		if (offensive && !defensiveEvidence && seen.item === undefined && !seen.ambiguousIdentity &&
+			!visible.requiredItem && !visible.requiredItems?.length && !visible.isMega && !visible.isPrimal &&
+			result.length < DEFAULT_LIMITS.hypotheses &&
+			priorItems(this.dex, this.format, visible, offensive.moves.filter(id =>
+				this.dex.moves.get(id).category !== 'Status'), offensive.ability, false, seen.status).includes('choicescarf')) {
+			const stats = { ...offensive.stats, spe: Math.floor(offensive.stats.spe * 1.1) };
+			const lowered = visible.baseStats.atk >= visible.baseStats.spa ? 'spa' : 'atk';
+			stats[lowered] = Math.floor(stats[lowered] * 0.9);
+			result.push({ ...offensive, stats, item: 'choicescarf', probability: 0.8 });
 		}
 		const total = result.reduce((sum, hypothesis) => sum + hypothesis.probability, 0);
 		for (const hypothesis of result) hypothesis.probability /= total;
 		return result;
 	}
 
+	private moveLocks(seen?: SeenPokemon): Combatant['moveLocks'] {
+		if (!seen) return;
+		const move = (id: string) => seen.volatiles.includes(id) ?
+			this.dex.moves.get(seen.effects?.[id]?.value || seen.lastMove || '').id || undefined : undefined;
+		return { encore: move('encore'), disable: move('disable') };
+	}
+
 	own(mon: PokemonSwitchRequestData, seen?: SeenPokemon): Combatant {
-		const { species, level } = parseDetails(mon.details);
+		const details = parseDetails(mon.details);
+		const { level } = details;
+		// Own requests retain the base name for temporary forms. A same-family public
+		// form change is authoritative; an Illusion disguise is not our own species.
+		const species = mon.active && seen?.species &&
+			this.dex.species.get(seen.species).baseSpecies === this.dex.species.get(details.species).baseSpecies ?
+			seen.species : details.species;
 		const estimated = estimateStats(this.dex.species.get(species), level);
 		const hp = Number((/^\d+\/(\d+)/.exec(mon.condition))?.[1]) || estimated.hp;
+		const name = toID(mon.ident.split(': ').slice(1).join(': '));
+		const matches = this.ownSets.filter(set => toID(battleNickname(set, this.dex)) === name);
+		const set = !seen?.transformed && matches.length === 1 ? matches[0] : undefined;
 		return {
 			species, level, stats: { hp, ...mon.stats }, moves: mon.moves.slice(), ability: mon.ability ?? mon.baseAbility,
 			item: mon.item, health: parseHealth(mon.condition, true), status: mon.condition.split(' ')[1] || '',
@@ -205,6 +249,11 @@ export class HypothesisBuilder {
 			teraType: mon.teraType || this.dex.species.get(species).types[0], terastallized: mon.terastallized || undefined,
 			appearance: seen?.appearance, persistentEffects: seen?.persistentEffects?.slice(),
 			fantasy: seen?.fantasy && structuredClone(seen.fantasy),
+			spread: set && { nature: set.nature, evs: { ...set.evs }, ivs: { ...set.ivs } },
+			substituteHP: mon.active ? seen?.substituteHP : undefined,
+			protectCounter: mon.active ? seen?.protection?.counter : undefined,
+			lastMove: mon.active ? seen?.lastMove : undefined, moveUses: { ...seen?.moveUses },
+			moveLocks: mon.active ? this.moveLocks(seen) : undefined,
 		};
 	}
 }

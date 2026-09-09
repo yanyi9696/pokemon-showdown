@@ -1,5 +1,5 @@
 import { Battle } from '../../sim/battle';
-import { toID } from '../../sim/dex';
+import { Dex, toID } from '../../sim/dex';
 import { Teams } from '../../sim/teams';
 import type { Pokemon } from '../../sim/pokemon';
 import { HAZARDS, hazardLayers, sameHazards, type HazardChange, type HazardID } from './hazards';
@@ -7,6 +7,7 @@ import type { Combatant } from './hypotheses';
 import type { BattleMemory, SinglesSide } from './memory';
 import { FANTASY_VOLATILES, restoreDelayedHealing, restoreFantasyState } from './fantasy-state';
 import { statusCost } from './mechanics';
+import { compatibleSpreads } from './sets';
 
 const PROBE_SEEDS = ['gen5,0001000200030004', 'gen5,0011001200130014'] as const;
 const SIMPLE_VOLATILES = new Set([
@@ -14,11 +15,12 @@ const SIMPLE_VOLATILES = new Set([
 	'focusenergy', 'roost', 'auraburstspe', 'auraburstatk', 'auraburstspa', 'auraburstdef', 'auraburstspd', 'auraburstall',
 	'saltcure', 'destinybond', 'gemdefensepermanentboost',
 	...FANTASY_VOLATILES,
-	'flashfire', 'charge', 'imprison',
+	'flashfire', 'charge', 'imprison', 'substitute', 'stall', 'encore', 'disable',
+	'protect', 'detect', 'kingsshield', 'spikyshield', 'banefulbunker', 'silktrap', 'burningbulwark', 'endure',
 ]);
 const SELF_BENEFITS = new Set([
 	'protect', 'detect', 'kingsshield', 'spikyshield', 'banefulbunker', 'silktrap', 'burningbulwark', 'endure',
-	'substitute', 'focusenergy', 'aquaring', 'ingrain', 'magnetrise', 'charge', 'twoturnmove', 'bide',
+	'substitute', 'focusenergy', 'aquaring', 'ingrain', 'magnetrise', 'charge', 'twoturnmove', 'bide', 'destinybond',
 	'gempermanentboost', 'gemdefensepermanentboost', 'fantasyultraenergyboost',
 ]);
 const TARGET_HINDRANCES = new Set([
@@ -56,6 +58,29 @@ export interface MoveEstimate {
 	userAfterMove?: Combatant;
 	/** Native status outcomes for bounded follow-up probes (e.g. Will-O-Wisp into Infernal Parade). */
 	targetAfterStatus?: { profile: Combatant, probability: number }[];
+	/** Conditional on getting to act; preserves native form, barrier, and protection outcomes. */
+	postAction?: { profile: Combatant, probability: number }[];
+	protection?: number;
+	substituteDamage?: number;
+	substituteBroken?: number;
+	/** A native direct-attack knockout also faints its attacker (e.g. Destiny Bond). */
+	selfKnockout?: number;
+	destinyBond?: number;
+	targetAfterMove?: { profile: Combatant, probability: number }[];
+}
+
+const spreadCache = new Map<string, ReturnType<typeof compatibleSpreads>>();
+function probeSpread(format: string, mon: Combatant, sample: number) {
+	if (mon.spread) return mon.spread;
+	if (mon.ability !== 'stancechange') return {};
+	const key = JSON.stringify([format, mon.species, mon.level, mon.stats]);
+	let spreads = spreadCache.get(key);
+	if (!spreads) {
+		spreads = compatibleSpreads(Dex.forFormat(format), mon.species, mon.level, mon.stats);
+		if (spreadCache.size >= 128) spreadCache.clear();
+		spreadCache.set(key, spreads);
+	}
+	return spreads[sample % spreads.length] || {};
 }
 
 function afterMove(mon: Pokemon, profile: Combatant): Combatant {
@@ -64,6 +89,12 @@ function afterMove(mon: Pokemon, profile: Combatant): Combatant {
 		ability: mon.ability, item: mon.item, types: mon.getTypes(), status: mon.status,
 		terastallized: mon.terastallized || undefined, boosts: { ...mon.boosts },
 		volatiles: Object.keys(mon.volatiles), health: { lower: mon.hp / mon.maxhp, upper: mon.hp / mon.maxhp },
+		substituteHP: mon.volatiles.substitute ? {
+			lower: mon.volatiles.substitute.hp / mon.maxhp, upper: mon.volatiles.substitute.hp / mon.maxhp,
+		} : undefined,
+		protectCounter: mon.volatiles.stall?.counter,
+		lastMove: mon.lastMove?.id,
+		moveLocks: { encore: mon.volatiles.encore?.move, disable: mon.volatiles.disable?.move },
 	};
 }
 
@@ -72,6 +103,7 @@ export function createMatchup(
 	format: string, attacker: Combatant, defender: Combatant, memory: BattleMemory, side: SinglesSide, sample = 0,
 ): { battle: Battle, omittedVolatiles: string[] } {
 	const set = (mon: Combatant) => ({
+		...probeSpread(format, mon, sample),
 		species: mon.species, level: mon.level, ability: mon.ability, item: mon.item,
 		moves: mon.moves, teraType: mon.teraType,
 	});
@@ -99,12 +131,15 @@ export function createMatchup(
 			team.active[0] = mon;
 			mon.isActive = mon.isStarted = true;
 			mon.activeTurns = 1;
+			if (mon.species.id !== toID(profile.species)) mon.setSpecies(battle.dex.species.get(profile.species));
 			mon.baseStoredStats = { ...profile.stats };
 			for (const stat of ['atk', 'def', 'spa', 'spd', 'spe'] as const) mon.storedStats[stat] = profile.stats[stat];
 			mon.baseMaxhp = mon.maxhp = profile.stats.hp;
 			mon.hp = Math.max(1, Math.ceil(profile.health.upper * mon.maxhp));
 			mon.status = profile.status === 'fnt' ? '' as ID : profile.status as ID;
 			mon.statusState = battle.initEffectState({ id: mon.status, target: mon });
+			if (profile.lastMove) mon.lastMove = battle.dex.getActiveMove(profile.lastMove);
+			for (const slot of mon.moveSlots) slot.pp = Math.max(0, slot.maxpp - (profile.moveUses?.[slot.id] || 0));
 			Object.assign(mon.boosts, profile.boosts);
 			if (profile.types?.length) mon.setType(profile.types, true);
 			if (profile.terastallized) mon.terastallized = profile.terastallized;
@@ -112,7 +147,18 @@ export function createMatchup(
 			for (const id of profile.volatiles) {
 				if (!SIMPLE_VOLATILES.has(id)) { omittedVolatiles.push(id); continue; }
 				mon.volatiles[id] = battle.initEffectState({ id, target: mon, ...(id === 'imprison' ? { source: mon } : {}) });
+				if (id === 'substitute') {
+					const hp = profile.substituteHP;
+					mon.volatiles[id].hp = Math.max(1, Math.floor(mon.maxhp * (hp ? (hp.lower + hp.upper) / 2 : 0.25)));
+				}
+				if (id === 'encore' || id === 'disable') {
+					mon.volatiles[id].move = profile.moveLocks?.[id] || profile.lastMove;
+					mon.volatiles[id].duration = 1;
+				}
 			}
+			if (profile.protectCounter) mon.volatiles.stall = battle.initEffectState({
+				id: 'stall', target: mon, counter: profile.protectCounter, duration: 1,
+			});
 			const sourceSide = index === 0 ? side : side === 'p1' ? 'p2' : 'p1';
 			for (const [id, layers] of Object.entries(memory.sides[sourceSide].conditions)) {
 				team.sideConditions[id] = battle.initEffectState({ id, target: team, layers });
@@ -188,6 +234,13 @@ export function estimateMove(
 				result.userAfterMechanic = afterMove(source, attacker);
 			}
 			const move = battle.dex.getActiveMove(moveID);
+			const expiredBond = !!source.volatiles.destinybond && move.id !== 'destinybond';
+			if (expiredBond) {
+				// useMove omits BeforeMove. Run this native expiry hook without also
+				// resampling status-based action failure, which the policy models separately.
+				battle.singleEvent('BeforeMove', battle.dex.conditions.get('destinybond'),
+					source.volatiles.destinybond, source, target, move);
+			}
 			let hitChance = 1;
 			const nativeAccuracy = battle.actions.hitStepAccuracy.bind(battle.actions);
 			battle.actions.hitStepAccuracy = (targets, pokemon, activeMove) => {
@@ -207,7 +260,9 @@ export function estimateMove(
 			};
 			if (move.willCrit === undefined) move.willCrit = false;
 			const beforeHP = source.hp;
+			const beforeSpecies = source.species.id;
 			const targetHP = target.hp;
+			const substituteHP = target.volatiles.substitute?.hp || 0;
 			const beforeStatus = target.status;
 			const ownStatusBefore = source.status;
 			const beforeBoosts = { ...source.boosts };
@@ -225,15 +280,52 @@ export function estimateMove(
 			const roomBefore = !!battle.field.pseudoWeather.trickroom;
 			result.speed += source.getStat('spe') / sampleCount;
 			result.opponentSpeed += target.getStat('spe') / sampleCount;
-			result.priority = battle.runEvent('ModifyPriority', source, target, move, move.priority);
+			move.priority = battle.runEvent('ModifyPriority', source, target, move, move.priority);
+			result.priority = move.priority;
 			const zMove = event === 'zmove' ? battle.actions.getZMove(move, source) : undefined;
 			const cursor = battle.log.length;
 			// Respect deterministic move restrictions without resampling sleep/paralysis,
 			// which the policy already accounts for via actionOpportunity.
 			battle.runEvent('DisableMove', source);
 			const disabled = !zMove && source.getMoveData(move)?.disabled;
+			let protectionChance = 1;
+			if (move.stallingMove) {
+				// A protection probe measures the attempt, not a secretly chosen opponent move.
+				// A pending placeholder lets the native onPrepareHit check run; it is never executed.
+				battle.queue.addChoice({ choice: 'move', pokemon: target, move: 'splash' });
+				const nativeRandom = battle.randomChance.bind(battle);
+				battle.randomChance = (numerator, denominator) => {
+					if (battle.event?.id === 'StallMove') {
+						protectionChance *= numerator / denominator;
+						return numerator > 0;
+					}
+					return nativeRandom(numerator, denominator);
+				};
+			}
 			const didSomething = !disabled && battle.actions.useMove(move, source, { target, zMove });
+			// useMove queues faints; resolve Destiny Bond's native onFaint trade.
+			// Other probes do not need to finish an artificial battle here.
+			if (target.volatiles.destinybond && battle.faintQueue.length) battle.faintMessages();
 			const factor = hitChance / sampleCount;
+			result.selfKnockout = (result.selfKnockout || 0) + Number(source.hp <= 0) * factor;
+			const protectedNow = !!(move.stallingMove && source.volatiles[move.volatileStatus || move.id]);
+			const bonded = move.id === 'destinybond' && !!source.volatiles.destinybond;
+			if (bonded) result.destinyBond = (result.destinyBond || 0) + factor;
+			if (protectedNow) result.protection = (result.protection || 0) + protectionChance / sampleCount;
+			if (beforeSpecies !== source.species.id || protectedNow || bonded || expiredBond || move.id === 'substitute' &&
+				!ownVolatilesBefore.includes('substitute') && source.volatiles.substitute) {
+				const profile = afterMove(source, attacker);
+				(result.postAction ||= []).push({ profile, probability: (protectedNow ? protectionChance : 1) / sampleCount });
+				if (protectedNow && protectionChance < 1) {
+					result.postAction.push({ profile: { ...profile,
+						volatiles: profile.volatiles.filter(id => id !== (move.volatileStatus || move.id) && id !== 'stall'),
+					}, probability: (1 - protectionChance) / sampleCount });
+				}
+			}
+			result.substituteDamage = (result.substituteDamage || 0) +
+				Math.max(0, substituteHP - (target.volatiles.substitute?.hp || 0)) / target.maxhp * factor;
+			result.substituteBroken = (result.substituteBroken || 0) +
+				Number(substituteHP > 0 && !target.volatiles.substitute) * factor;
 			const roomChange = Number(!!battle.field.pseudoWeather.trickroom) - Number(roomBefore);
 			result.trickRoom += roomChange * factor;
 			const ownHazards = hazardLayers(source.side.sideConditions);
@@ -256,6 +348,9 @@ export function estimateMove(
 			}
 			result.status += statusValue * factor;
 			const newTargetEffects = Object.keys(target.volatiles).filter(id => !beforeVolatiles.includes(id));
+			if (newTargetEffects.includes('encore') || newTargetEffects.includes('disable')) {
+				(result.targetAfterMove ||= []).push({ profile: targetAfter, probability: factor });
+			}
 			const hindrance = newTargetEffects.some(id => TARGET_HINDRANCES.has(id));
 			const helpedTarget = newTargetEffects.some(id => id === 'flashfire' || SELF_BENEFITS.has(id));
 			result.volatile += (Number(hindrance) - Number(helpedTarget)) * factor;
@@ -289,11 +384,12 @@ export function estimateMove(
 					battle.dex.moves.get(id).category === (stat === 'atk' ? 'Physical' : 'Special'));
 				if (relevant) result.boosts += (source.boosts[stat] - beforeBoosts[stat]) * factor;
 			}
-			if (!result.userAfterMove && (ownStatusBefore !== source.status ||
+			if (!result.userAfterMove && (beforeSpecies !== source.species.id || ownStatusBefore !== source.status ||
 				Object.keys(source.boosts).some(stat => source.boosts[stat as BoostID] !== beforeBoosts[stat as BoostID]))) {
 				result.userAfterMove = afterMove(source, attacker);
 			}
-			const progressed = target.hp < targetHP || source.hp > beforeHP || delayedHeal > 0 || utility > 0 ||
+			const progressed = target.hp < targetHP || source.hp > beforeHP || beforeSpecies !== source.species.id ||
+				(substituteHP > (target.volatiles.substitute?.hp || 0)) || delayedHeal > 0 || utility > 0 ||
 				source.switchFlag || statusValue > 0 || hindrance ||
 				Object.keys(source.boosts).some(stat => source.boosts[stat as BoostID] > beforeBoosts[stat as BoostID]) ||
 				!sameHazards(ownHazardsBefore, ownHazards) || !sameHazards(foeHazardsBefore, foeHazards) ||

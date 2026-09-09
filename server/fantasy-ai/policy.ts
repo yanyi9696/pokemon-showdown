@@ -42,8 +42,8 @@ export function selectCandidates(
 	};
 	retain(ranked.find(candidate => candidate.choice === selected));
 	for (const reason of [
-		'attack', 'trick-room-setup', 'trick-room-pivot', 'switch-matchup', 'urgent-recovery',
-		'hazard-removal', 'hazard-pressure', 'setup',
+		'emergency-counterplay', 'reliable-finish', 'attack', 'trick-room-setup', 'trick-room-pivot', 'switch-matchup', 'urgent-recovery',
+		'defensive-cycle', 'hazard-removal', 'hazard-pressure', 'setup',
 	]) {
 		retain(ranked.find(candidate => candidate.reasons.includes(reason)));
 	}
@@ -70,8 +70,8 @@ export class RulePolicy {
 	constructor(trainer: PolicyTrainer) {
 		getTrainerFormat(trainer.format);
 		this.trainer = structuredClone(trainer);
-		this.hypotheses = new HypothesisBuilder(trainer.format);
 		const team = Teams.unpack(trainer.packedTeam) || [];
+		this.hypotheses = new HypothesisBuilder(trainer.format, team);
 		this.keyNames = new Set(trainer.keyMembers.map(slot => {
 			const mon = team[slot - 1];
 			if (!mon) return '';
@@ -247,14 +247,18 @@ export class RulePolicy {
 				return remainingPP(dex.moves.get(id), mon === current ? active : undefined) > 0;
 			});
 			const offense = (mon: Combatant, opponent: Combatant) =>
-				Math.max(0, ...moveIDs(mon).map(id => probe(mon, opponent, id).damage));
+				Math.max(0, ...moveIDs(mon).map(id => {
+					const attack = probe(mon, opponent, id);
+					return attack.damage + (attack.substituteDamage || 0) * 0.6;
+				}));
 			const modelCache = new Map<string, { id: string, weight: number }[]>();
 			const model = (opponent: Combatant, target = current) => {
 				const key = JSON.stringify([opponent, target]);
 				let responses = modelCache.get(key);
 				if (responses) return responses;
 				const outgoing = offense(target, opponent);
-				const scored = opponent.moves.filter(id => remainingPP(dex.moves.get(id), seen) > 0).map(id => {
+				const scored = opponent.moves.filter(id => remainingPP(dex.moves.get(id), seen) > 0 &&
+					(!opponent.moveLocks?.encore || opponent.moveLocks.encore === id) && opponent.moveLocks?.disable !== id).map(id => {
 					const move = dex.moves.get(id);
 					const estimate = probe(opponent, target, id, '', foe);
 					const slower = memory.pseudoWeather.includes('trickroom') ? estimate.speed > estimate.opponentSpeed :
@@ -281,16 +285,39 @@ export class RulePolicy {
 				return responses;
 			};
 			const dangerCache = new Map<string, ReturnType<typeof assessDanger>>();
-			function assessDanger(mon: Combatant, opponent: Combatant) {
+			function assessDanger(mon: Combatant, opponent: Combatant, action?: { attack: MoveEstimate, opportunity: number }) {
 				// These probabilities are fixed against the CURRENT active Pokemon.
 				// A proposed switch must not make the opponent magically choose its perfect coverage move.
 				const responses = model(opponent, takesEntryAction ? current : mon).map(entry => {
-					const estimate = probe(opponent, mon, entry.id, '', foe);
+					const before = probe(opponent, mon, entry.id, '', foe);
+					const estimate = { ...before };
+					if (action?.attack.postAction || action?.attack.targetAfterMove) {
+						const first = firstChance(action.attack, before) * action.opportunity;
+						if (first) {
+							const states = (outcomes: MoveEstimate['postAction'], fallback: Combatant) => {
+								const entries = outcomes || [];
+								const remaining = Math.max(0, 1 - entries.reduce((sum, outcome) => sum + outcome.probability, 0));
+								return remaining ? [...entries, { profile: fallback, probability: remaining }] : entries;
+							};
+							// One action can change both sides: Encore expires our old Destiny
+							// Bond while locking the opponent. Neither outcome may hide the other.
+							for (const user of states(action.attack.postAction, mon)) {
+								for (const target of states(action.attack.targetAfterMove, opponent)) {
+									const after = probe(target.profile, user.profile, target.profile.moveLocks?.encore || entry.id, '', foe);
+									const probability = user.probability * target.probability * first;
+									for (const key of ['damage', 'knockout', 'status', 'disruption', 'volatile', 'boosts', 'healing',
+										'substituteDamage', 'substituteBroken', 'selfKnockout'] as const) {
+										estimate[key] = (estimate[key] || 0) + ((after[key] || 0) - (before[key] || 0)) * probability;
+									}
+								}
+							}
+						}
+					}
 					const opportunity = actionOpportunity(opponent, dex.moves.get(entry.id), memory);
 					return { ...entry, estimate: { ...estimate, damage: estimate.damage * opportunity,
 						knockout: estimate.knockout * opportunity, boosts: estimate.boosts * opportunity,
 						status: estimate.status * opportunity, disruption: estimate.disruption * opportunity,
-						volatile: estimate.volatile * opportunity } };
+						volatile: estimate.volatile * opportunity, selfKnockout: (estimate.selfKnockout || 0) * opportunity } };
 				});
 				const worst = responses.slice().sort((a, b) =>
 					b.estimate.damage + b.estimate.knockout - a.estimate.damage - a.estimate.knockout)[0].estimate;
@@ -323,7 +350,10 @@ export class RulePolicy {
 				return {
 					worst, damage: average('damage') * 0.7 + worst.damage * 0.3,
 					knockout: average('knockout') * 0.7 + worst.knockout * 0.3,
-					setup: Math.max(0, average('boosts')), responses, followup,
+					// Contact into a shield can lower Attack, but that alternative must
+					// not cancel the risk of a different response using Swords Dance.
+					setup: responses.reduce((sum, entry) => sum + entry.weight * Math.max(0, entry.estimate.boosts), 0),
+					responses, followup,
 					disruption: average('status') * 28 + Math.max(0, average('disruption')) * 16 +
 						Math.max(0, average('volatile')) * 16,
 				};
@@ -333,6 +363,32 @@ export class RulePolicy {
 				let value = dangerCache.get(key);
 				if (!value) { value = assessDanger(mon, opponent); dangerCache.set(key, value); }
 				return value;
+			};
+			// The most damaging response can have a different priority (e.g. Focus
+			// Punch). It must not lend its slow action order to every other attack.
+			const orderRisk = (attack: MoveEstimate, incoming: ReturnType<typeof danger>, useEvidence = true) => {
+				const replies = incoming.responses.map(entry => ({ ...entry,
+					first: firstChance(attack, entry.estimate, useEvidence) }));
+				const beforeKO = (entry: typeof replies[number]) => entry.estimate.knockout * (1 - entry.first);
+				return {
+					first: replies.reduce((sum, entry) => sum + entry.weight * entry.first, 0),
+					survives: 1 - replies.reduce((sum, entry) => sum + entry.weight * beforeKO(entry), 0) * 0.7 -
+						Math.max(0, ...replies.map(beforeKO)) * 0.3,
+				};
+			};
+			const finishCache = new Map<Combatant, number>();
+			const finishWindow = (opponent: Combatant) => {
+				if (!roomTurns || request.forceSwitch) return 0;
+				let chance = finishCache.get(opponent);
+				if (chance !== undefined) return chance;
+				const incoming = danger(current, opponent);
+				chance = Math.max(0, ...moveIDs(current).map(id => {
+					const attack = probe(current, opponent, id);
+					return attack.knockout * orderRisk(attack, incoming).first *
+						actionOpportunity(current, dex.moves.get(id), memory);
+				}));
+				finishCache.set(opponent, chance);
+				return chance;
 			};
 			const recoveryWall = (opponent: Combatant, damage: number, knockout = 0) => {
 				if (knockout > 0.5 || opponent.volatiles.some(id => ['taunt', 'healblock'].includes(id))) return 0;
@@ -372,6 +428,7 @@ export class RulePolicy {
 				const reasons: string[] = [];
 				let score = 0;
 				let strategic = 0;
+				let finishProbability = 0;
 				let ineffective = kind === 'move';
 				try {
 					for (const opponent of hypotheses) {
@@ -399,18 +456,24 @@ export class RulePolicy {
 							// the next turn. Free replacements and slow pivots have no entry attack.
 							const future = endurance > 0 ? moveIDs(mon).map(id => {
 								const attack = probe(afterEntry, opponent, id);
-								const first = firstChance(attack, incoming.worst, false);
-								const canAct = (first + (1 - first) * Number(endurance > incoming.worst.damage + incoming.followup)) *
+								const afterDanger = danger(afterEntry, opponent);
+								const canAct = orderRisk(attack, afterDanger, false).survives *
 									actionOpportunity(afterEntry, dex.moves.get(id), memory);
-								return { id, attack, canAct };
+								const counterplay = attack.destinyBond ? attack.destinyBond * afterDanger.responses.reduce((sum, entry) =>
+									sum + entry.weight * entry.estimate.knockout * firstChance(attack, entry.estimate, false), 0) : 0;
+								return { id, attack, canAct, counterplay };
 							}) : [];
-							const attackValue = Math.max(0, ...future.map(({ attack, canAct }) => canAct *
-								(attack.damage * 75 * (1 - recoveryWall(opponent, attack.damage, attack.knockout) * 0.8) + attack.knockout * 75)));
+							const attackValue = Math.max(0, ...future.map(({ attack, canAct, counterplay }) => canAct *
+								(attack.damage * 75 * (1 - recoveryWall(opponent, attack.damage, attack.knockout) * 0.8) +
+									attack.knockout * 75 + counterplay * 150)));
 							const futureChance = Math.max(0, ...future.map(move => move.canAct)) *
 								(1 - (takesEntryAction ? incoming.knockout : 0));
 							const canRecover = future.some(({ id, canAct }) => canAct > 0.5 &&
 								recoveryAmount(dex.moves.get(id), afterEntry, memory) > incoming.worst.damage + incoming.followup - passive);
 							const discount = takesEntryAction ? 0.4 : 1;
+							if (!takesEntryAction && future.some(entry => entry.counterplay > 0.5 && entry.canAct > 0.5)) {
+								reasons.push('emergency-counterplay', 'counterplay-entry');
+							}
 							value = attackValue * discount * (1 - (takesEntryAction ? incoming.knockout : 0)) -
 								weights.risk * (entryHit * 80 + incoming.knockout * (takesEntryAction ? 125 : 35) + entryDamage * 100);
 							if (takesEntryAction) {
@@ -461,6 +524,12 @@ export class RulePolicy {
 								if (effectiveAbility(current) === 'naturalcure') value += Math.max(0, statusCost(current, memory, dex)) * 0.75;
 								if (effectiveAbility(current) === 'regenerator') value += Math.min(1 / 3, 1 - current.health.upper) * 55;
 								if (this.isKey(observation, activeIndex)) value += present.knockout * 35;
+								const finish = finishWindow(opponent);
+								if (finish > 0.85 && !opponent.volatiles.includes('destinybond')) {
+									const canEscape = seen.moves.some(id => recoveryAmount(dex.moves.get(id)) || dex.moves.get(id).selfSwitch);
+									longTerm -= finish * (canEscape ? 55 : 30);
+									reasons.push('concedes-finishing-window');
+								}
 								if (stalled && futureChance > 0.75 && attackValue > 45 &&
 									future.some(({ attack }) => attack.damage > offense(current, opponent) + 0.15 &&
 										!recoveryWall(opponent, attack.damage, attack.knockout))) {
@@ -490,7 +559,7 @@ export class RulePolicy {
 							const id = request.active[0].moves[index].id;
 							const move = this.hypotheses.dex.moves.get(id);
 							const attack = probe(mon, opponent, id, event);
-							const futileSetup = !!attack.userAfterMove && !attack.damage && !attack.healing &&
+							const futileSetup = !!attack.userAfterMove && !attack.postAction && !attack.damage && !attack.healing &&
 								!attack.delayedHealing && !attack.status && !attack.field && !attack.trickRoom && !attack.hazardChanges.length &&
 								!attack.utility && !attack.volatile && !attack.pivot &&
 								!moveIDs(mon).some(moveID => dex.moves.get(moveID).selfSwitch === 'copyvolatile') &&
@@ -498,10 +567,11 @@ export class RulePolicy {
 								offense({ ...attack.userAfterMove, moves: moveIDs(mon) }, opponent) === 0;
 							ineffective &&= attack.ineffective >= 0.999 || futileSetup;
 							const defending = attack.userAfterMechanic || mon;
-							const incoming = danger(defending, opponent);
-							const first = firstChance(attack, incoming.worst, !event);
-							const survives = 1 - incoming.knockout * (1 - first);
+							const baseIncoming = danger(defending, opponent);
 							const opportunity = actionOpportunity(defending, move, memory);
+							const incoming = attack.postAction || attack.targetAfterMove ?
+								assessDanger(defending, opponent, { attack, opportunity }) : baseIncoming;
+							const { first, survives } = orderRisk(attack, incoming, !event);
 							let damage = attack.damage * opportunity;
 							let knockout = attack.knockout * opportunity;
 							for (const response of incoming.responses) {
@@ -530,6 +600,7 @@ export class RulePolicy {
 								reasons.push('recovery-wall');
 							}
 							const stopped = knockout * first;
+							finishProbability += stopped * survives * opponent.probability / hypothesisWeight;
 							const passive = passiveRecovery(defending, dex, memory);
 							const residual = Math.max(0, residualDamage(defending, dex, active, memory) - passive);
 							let fatal = incoming.knockout;
@@ -561,7 +632,69 @@ export class RulePolicy {
 							if (incoming.disruption > 12 || incoming.followup > 0.08) reasons.push('status-or-setup-exposure');
 							if (mon.health.upper <= incoming.damage + residual && !stopped) value -= 20;
 							value -= attack.selfDamage * 55;
+							value += survives * opportunity * (attack.substituteDamage || 0) * 60;
 							value += survives * (attack.field * 16 + attack.volatile * 12 + attack.utility * 12);
+							if (attack.destinyBond) {
+								const trade = incoming.responses.reduce((sum, entry) => sum +
+									entry.weight * (entry.estimate.selfKnockout || 0), 0);
+								const threatened = own.filter((member, slot) => slot !== activeIndex && member.health.upper > 0 &&
+									danger(member, opponent).knockout > 0.5).length;
+								value += trade * (180 + Math.min(60, threatened * 20));
+								if (trade > 0.25 && alive > 1) reasons.push('emergency-counterplay', 'destiny-bond-trade');
+							}
+							if (id === 'encore' && attack.targetAfterMove) {
+								const denied = Math.max(0, baseIncoming.knockout - incoming.knockout);
+								longTerm += denied * 35;
+								if (denied > 0.25) reasons.push('emergency-counterplay', 'encore-disruption');
+							}
+							const cycle = mon.moves.includes('toxic') && mon.moves.some(moveID => dex.moves.get(moveID).stallingMove);
+							const poison = Math.max(0, residualDamage(opponent, dex, seen, memory) - passiveRecovery(opponent, dex, memory));
+							if (move.stallingMove && attack.protection) {
+								// Apply the same key-member rescue credit as a safe switch.
+								if (this.isKey(observation, activeIndex)) value += Math.max(0,
+									baseIncoming.knockout - incoming.knockout) * 35;
+								const recovery = incoming.responses.reduce((sum, entry) =>
+									sum + entry.estimate.healing * entry.weight, 0);
+								const progress = Math.max(0, poison - recovery);
+								value += opportunity * attack.protection *
+									(Math.min(passive, 1 - mon.health.upper) * 85 + progress * 100);
+								if (progress >= opponent.health.upper && progress > 0) value += attack.protection * 80;
+								longTerm -= (1 - attack.protection) * 22 + incoming.setup * 28 + recovery * 25;
+								if (cycle && (progress > 0 || baseIncoming.knockout > incoming.knockout + 0.2)) {
+									// An escalating poison clock can force a future recovery/switch beyond the short horizon.
+									if (opponent.status === 'tox') longTerm += attack.protection * Math.min(20, progress * 160);
+									reasons.push('defensive-cycle', 'residual-stall');
+								}
+								if (id === 'kingsshield' && attack.userAfterMove && mon.species !== attack.userAfterMove.species) {
+									const shield = { ...attack.userAfterMove,
+										volatiles: attack.userAfterMove.volatiles.filter(effect => !['kingsshield', 'stall'].includes(effect)) };
+									longTerm += opportunity * Math.min(30, Math.max(0,
+										baseIncoming.damage - danger(shield, opponent).damage) * 45);
+									reasons.push('defensive-cycle', 'shield-forme');
+								}
+							}
+							if (cycle && id === 'substitute' && attack.postAction && !mon.volatiles.includes('substitute')) {
+								const afterSub = attack.postAction[0].profile;
+								const future = danger(afterSub, opponent);
+								const holds = future.responses.reduce((sum, entry) => sum + entry.weight *
+									(1 - (entry.estimate.substituteBroken || 0)) * Math.max(0, 1 - entry.estimate.damage * 4), 0);
+								const statusSaved = Math.max(0, baseIncoming.disruption - future.disruption);
+								const canPlace = first + (1 - first) * Number(mon.health.upper > baseIncoming.worst.damage + attack.selfDamage);
+								longTerm += survives * opportunity * canPlace *
+									(holds * 36 + Math.min(30, statusSaved * 1.5) + poison * 40);
+								longTerm -= (1 - canPlace) * 80 + future.setup * 30;
+								if (canPlace && holds > 0.5 && future.knockout < 0.2) reasons.push('defensive-cycle', 'safe-substitute');
+							}
+							if (cycle && id === 'toxic') {
+								const pressure = (attack.targetAfterStatus || []).reduce((sum, outcome) => {
+									if (outcome.profile.status !== 'tox') return sum;
+									const next = residualDamage(outcome.profile, dex, undefined, memory);
+									const gain = next > 0 ? Math.max(0, next * 6 - passiveRecovery(outcome.profile, dex, memory) * 3) : 0;
+									return sum + gain * outcome.probability;
+								}, 0);
+								longTerm += survives * opportunity * Math.min(30, pressure * 100);
+								if (pressure > 0) reasons.push('defensive-cycle', 'toxic-pressure');
+							}
 							if (id === 'trickroom') {
 								if (attack.trickRoom > 0) {
 									const duration = effectiveAbility(defending) === 'persistent' ? 7 : 5;
@@ -651,6 +784,7 @@ export class RulePolicy {
 					diagnostics.add(`probe-failed:${error instanceof Error ? error.message : 'unknown'}`);
 					score = -1000;
 				}
+				if (finishProbability > 0.85) reasons.push('reliable-finish');
 				return { choice, score, strategic, ineffective, reasons: [...new Set(reasons)] };
 			});
 			// Filter before publishing either the rule fallback or search candidates.

@@ -7,6 +7,8 @@ import { DELAYED_HEALING } from './mechanics';
 
 export interface FantasyState {
 	guiYingUsed?: boolean;
+	/** Fantasy Sachet publicly replaces the base ability, surviving switches. */
+	baseAbility?: string;
 	gemTypes?: string[];
 	/** Public rounded HP losses form an interval, not an exact hidden counter. */
 	shadowBottle?: { lower: number, upper: number, ticks: number };
@@ -25,6 +27,7 @@ export function gemType(effect: string): string | undefined {
 /** Restore public permanent state without re-firing an item's/ability's onStart callback. */
 export function restoreFantasyState(battle: Battle, mon: Pokemon, profile: Combatant, seen?: SeenPokemon): void {
 	const state = profile.fantasy;
+	if (state?.baseAbility) mon.baseAbility = state.baseAbility as ID;
 	if (state?.guiYingUsed) mon.m.guiYingUsed = true;
 	if (state?.gemTypes?.length) {
 		mon.m.gemBoosts = state.gemTypes.slice();

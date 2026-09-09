@@ -242,7 +242,11 @@ export class RolloutPolicy {
 			const scenarios: {
 				world: WorldHypothesis, opponentPolicy: RulePolicy, choice: string, weight: number, responseIndex: number,
 			}[] = [];
+			let preparedWorlds = 0;
 			for (const world of worlds) {
+				// A finite development work cap may only fit one root comparison.
+				// Do not spend most of that run preparing worlds it can never visit.
+				if (preparedWorlds * candidates.length >= limit) break;
 				if (performance.now() >= deadline) { result.stopReason = 'budget'; break; }
 				const opponentPolicy = new RulePolicy({
 					...this.trainer, style: 'balanced', keyMembers: [], resourcePreferences: [],
@@ -260,6 +264,7 @@ export class RolloutPolicy {
 						responses.candidates, DEFAULT_LIMITS.opponentCandidates, responses.choice || undefined)
 						.sort((a, b) => b.score - a.score);
 					if (!opponents.length) throw new Error('no-opponent-candidates');
+					preparedWorlds++;
 					const best = Math.max(...opponents.map(candidate => candidate.score));
 					const weights = opponents.map(candidate => Math.exp(Math.max(-4, (candidate.score - best) / 22)));
 					const total = weights.reduce((sum, weight) => sum + weight, 0);

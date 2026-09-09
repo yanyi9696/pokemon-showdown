@@ -350,7 +350,10 @@ describe('Fantasy AI full-turn search', function () {
 		assert.equal(decision.choice, 'switch 6', JSON.stringify(decision));
 	});
 
-	it('finishes a legal attacking-team match through the search-enabled offline driver', () => {
+	it('finishes a legal attacking-team match through the search-enabled offline driver', function () {
+		// This covers an entire match, including additional plausible speed worlds.
+		// Keep the per-decision limit explicit instead of capping all turns at 30s.
+		this.timeout(90000);
 		const dex = Dex.forFormat(trainer.format);
 		const team = Teams.unpack(trainer.packedTeam);
 		for (const mon of team) mon.moves = mon.moves.filter(id => dex.moves.get(id).category !== 'Status');
@@ -364,6 +367,7 @@ describe('Fantasy AI full-turn search', function () {
 		assert(result.rollouts > 0);
 		assert.equal(result.illegalChoices, 0);
 		assert.equal(result.probeFailures, 0);
+		assert(result.maxDecisionMs < 10000, JSON.stringify(result));
 	});
 
 	it('limits development traces to spectator-visible protocol', () => {

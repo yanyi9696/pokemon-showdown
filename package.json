@@ -49,7 +49,7 @@
     "full-lint": "npm run lint",
     "pretest": "npm run lint",
     "test": "mocha",
-    "test:fantasy-ai": "mocha --no-config test/main.js test/server/fantasy-ai.js test/server/fantasy-ai-policy.js test/server/fantasy-ai-rollout.js test/server/fantasy-ai-trick-room.js test/server/fantasy-ai-online.js test/sim/misc/fantasy-state.js --timeout 10000 --reporter dot --exit",
+    "test:fantasy-ai": "mocha --no-config test/main.js test/server/fantasy-ai.js test/server/fantasy-ai-policy.js test/server/fantasy-ai-rollout.js test/server/fantasy-ai-trick-room.js test/server/fantasy-ai-subtoxic.js test/server/fantasy-ai-counterplay.js test/server/fantasy-ai-online.js test/sim/misc/fantasy-state.js --timeout 10000 --reporter dot --exit",
     "smoke:fantasy-ai": "node build && node tools/fantasy-ai-smoke.js",
     "smoke:fantasy-ai:rollout": "node build && node tools/fantasy-ai-smoke.js --rollout",
     "posttest": "npm run tsc",
