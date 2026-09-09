@@ -196,6 +196,7 @@ export const Trainers: TrainerDefinition[] = [
 
 		Aegislash @ Leftovers
 		Ability: Stance Change
+		Tera Type: Water
 		EVs: 252 HP / 56 SpA / 156 SpD / 44 Spe
 		Modest Nature
 		IVs: 0 Atk
