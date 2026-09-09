@@ -11,6 +11,7 @@ import { reconstructWorld } from './reconstruction';
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
 import { WorldBuilder, type WorldHypothesis } from './world';
 import { recoveryCapacity, statusCost } from './mechanics';
+import { assessTrickRoom, trickRoomPosition, type RoomMember } from './trick-room';
 
 export interface SearchDecision extends RuleDecision {
 	method: 'rules' | 'rollout';
@@ -50,6 +51,22 @@ function hazardMembers(battle: Battle, side: SinglesSide, keys: ReadonlySet<Poke
 		},
 		active: mon.isActive, probability: 1, key: keys.has(mon),
 	}));
+}
+
+function roomMembers(battle: Battle, side: SinglesSide, keys: ReadonlySet<Pokemon>): RoomMember[] {
+	return hazardMembers(battle, side, keys).map((member, index) => {
+		const mon = battle.getSide(side).pokemon[index];
+		// Native inactive Pokemon suppress their item/ability; reserves must instead
+		// be assessed for what they could do after entering (e.g. Thick Club/Scarf).
+		return { ...member, speed: mon.isActive ? mon.getStat('spe') : undefined,
+			tailwind: !!mon.side.sideConditions.tailwind,
+			profile: {
+				...member.profile, boosts: { ...mon.boosts }, volatiles: Object.keys(mon.volatiles), types: mon.getTypes(),
+				ability: mon.isActive && mon.ignoringAbility() ? '' : mon.ability,
+				item: mon.isActive && mon.ignoringItem() ? '' : mon.item,
+			},
+		};
+	});
 }
 
 function positionValue(battle: Battle, side: SinglesSide, keys: ReadonlySet<Pokemon>, switches: number): number {
@@ -94,6 +111,14 @@ function positionValue(battle: Battle, side: SinglesSide, keys: ReadonlySet<Poke
 			hazardMembers(battle, side === 'p1' ? 'p2' : 'p1', keys), battle.dex, {
 				terrain: battle.field.terrain, weather: battle.field.weather, pseudoWeather: Object.keys(battle.field.pseudoWeather),
 			}, switches);
+	}
+	const room = battle.field.pseudoWeather.trickroom;
+	if (room) {
+		const field = { weather: battle.field.weather, terrain: battle.field.terrain,
+			pseudoWeather: Object.keys(battle.field.pseudoWeather) };
+		const assessment = assessTrickRoom(roomMembers(battle, side, keys),
+			roomMembers(battle, side === 'p1' ? 'p2' : 'p1', keys), battle.dex, field);
+		value += trickRoomPosition(assessment, team.pokemon.findIndex(mon => mon.isActive), room.duration || 1);
 	}
 	if (team.zMoveUsed) value -= 15;
 	if (team.pokemon.some(mon => mon.terastallized)) value -= 12;

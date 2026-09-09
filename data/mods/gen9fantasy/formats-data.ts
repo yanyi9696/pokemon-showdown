@@ -910,6 +910,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Iron Fist"},		
 	},
+	golisopodmega: {
+		tier: "OU",
+		abilities: {0: "Tough Claws"},		
+	},
 	raichumegax: {
 		tier: "OU",
 		abilities: {0: "Electric Surge"},		
@@ -929,10 +933,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	tatsugiridroopymega: {
 		tier: "UUBL",
 		abilities: {0: "Drizzle"},		
-	},
-	golisopodmega: {
-		tier: "UU",
-		abilities: {0: "Tough Claws"},		
 	},
 	tatsugiricurlymega: {
 		tier: "UU",

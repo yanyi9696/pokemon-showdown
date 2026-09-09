@@ -73,6 +73,7 @@ export interface BattleMemory {
 	terrain: string;
 	pseudoWeather: string[];
 	fieldTurns?: Record<string, number>;
+	fieldDurations?: Record<string, number>;
 	switches: {
 		side: SinglesSide, turn: number, ident: string,
 		kind?: 'initial' | 'voluntary' | 'pivot' | 'forced', from?: string, opponent?: string,
@@ -540,6 +541,9 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 		case '-fieldstart': case '-fieldend': {
 			const effect = conditionID(target);
 			if (event === '-fieldstart') (memory.fieldTurns ||= {})[effect] = memory.turn;
+			if (effect === 'trickroom' && event === '-fieldstart') {
+				(memory.fieldDurations ||= {})[effect] = 5 + (markers.includes('[persistent]') ? 2 : 0);
+			}
 			if (effect.endsWith('terrain')) memory.terrain = event === '-fieldstart' ? effect : '';
 			else if (event === '-fieldstart') memory.pseudoWeather.push(effect);
 			else memory.pseudoWeather = memory.pseudoWeather.filter(id => id !== effect);

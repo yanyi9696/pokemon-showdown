@@ -14,7 +14,7 @@ const SIMPLE_VOLATILES = new Set([
 	'focusenergy', 'roost', 'auraburstspe', 'auraburstatk', 'auraburstspa', 'auraburstdef', 'auraburstspd', 'auraburstall',
 	'saltcure', 'destinybond', 'gemdefensepermanentboost',
 	...FANTASY_VOLATILES,
-	'flashfire', 'charge',
+	'flashfire', 'charge', 'imprison',
 ]);
 const SELF_BENEFITS = new Set([
 	'protect', 'detect', 'kingsshield', 'spikyshield', 'banefulbunker', 'silktrap', 'burningbulwark', 'endure',
@@ -41,6 +41,8 @@ export interface MoveEstimate {
 	boosts: number;
 	status: number;
 	field: number;
+	/** Signed probability of actually starting (+1) or ending (-1) Trick Room. */
+	trickRoom: number;
 	hazardChanges: HazardChange[];
 	volatile: number;
 	accuracy: number;
@@ -109,7 +111,7 @@ export function createMatchup(
 			restoreFantasyState(battle, mon, profile);
 			for (const id of profile.volatiles) {
 				if (!SIMPLE_VOLATILES.has(id)) { omittedVolatiles.push(id); continue; }
-				mon.volatiles[id] = battle.initEffectState({ id, target: mon });
+				mon.volatiles[id] = battle.initEffectState({ id, target: mon, ...(id === 'imprison' ? { source: mon } : {}) });
 			}
 			const sourceSide = index === 0 ? side : side === 'p1' ? 'p2' : 'p1';
 			for (const [id, layers] of Object.entries(memory.sides[sourceSide].conditions)) {
@@ -172,7 +174,7 @@ export function estimateMove(
 	const result: MoveEstimate = {
 		damage: 0, knockout: 0, healing: 0, selfDamage: 0, delayedHealing: 0, utility: 0,
 		disruption: 0, pivot: 0, ineffective: 0,
-		boosts: 0, status: 0, field: 0, hazardChanges: [], volatile: 0,
+		boosts: 0, status: 0, field: 0, trickRoom: 0, hazardChanges: [], volatile: 0,
 		accuracy: 0, speed: 0, opponentSpeed: 0, priority: 0, omittedVolatiles: [],
 	};
 	const sampleCount = Math.max(1, Math.min(PROBE_SEEDS.length, samples));
@@ -220,13 +222,20 @@ export function estimateMove(
 			const foeHazardsBefore = hazardLayers(target.side.sideConditions);
 			const weatherBefore = battle.field.weather;
 			const terrainBefore = battle.field.terrain;
+			const roomBefore = !!battle.field.pseudoWeather.trickroom;
 			result.speed += source.getStat('spe') / sampleCount;
 			result.opponentSpeed += target.getStat('spe') / sampleCount;
 			result.priority = battle.runEvent('ModifyPriority', source, target, move, move.priority);
 			const zMove = event === 'zmove' ? battle.actions.getZMove(move, source) : undefined;
 			const cursor = battle.log.length;
-			const didSomething = battle.actions.useMove(move, source, { target, zMove });
+			// Respect deterministic move restrictions without resampling sleep/paralysis,
+			// which the policy already accounts for via actionOpportunity.
+			battle.runEvent('DisableMove', source);
+			const disabled = !zMove && source.getMoveData(move)?.disabled;
+			const didSomething = !disabled && battle.actions.useMove(move, source, { target, zMove });
 			const factor = hitChance / sampleCount;
+			const roomChange = Number(!!battle.field.pseudoWeather.trickroom) - Number(roomBefore);
+			result.trickRoom += roomChange * factor;
 			const ownHazards = hazardLayers(source.side.sideConditions);
 			const foeHazards = hazardLayers(target.side.sideConditions);
 			// Observe actual side effects: this also handles extra layers, reflection,
@@ -288,7 +297,7 @@ export function estimateMove(
 				source.switchFlag || statusValue > 0 || hindrance ||
 				Object.keys(source.boosts).some(stat => source.boosts[stat as BoostID] > beforeBoosts[stat as BoostID]) ||
 				!sameHazards(ownHazardsBefore, ownHazards) || !sameHazards(foeHazardsBefore, foeHazards) ||
-				newFieldCondition || weatherBefore !== battle.field.weather || terrainBefore !== battle.field.terrain;
+				newFieldCondition || roomChange || weatherBefore !== battle.field.weather || terrainBefore !== battle.field.terrain;
 			const log = battle.log.slice(cursor);
 			const temporary = log.some(line => /\|(?:-miss|-prepare|cant)\|/.test(line) ||
 				/\|-activate\|[^|]+\|move: (?:Protect|Detect|King's Shield|Spiky Shield|Baneful Bunker|Silk Trap|Burning Bulwark)/.test(line));

@@ -5,6 +5,7 @@ import type { SinglesSide } from './memory';
 import type { WorldHypothesis } from './world';
 import { FANTASY_VOLATILES, restoreDelayedHealing, restoreFantasyState } from './fantasy-state';
 import { hasUltraBurstResource } from './actions';
+import { trickRoomTurns } from './trick-room';
 
 const VOLATILES = new Set([
 	'confusion', 'taunt', 'torment', 'healblock', 'ingrain', 'aquaring', 'magnetrise', 'telekinesis',
@@ -13,7 +14,7 @@ const VOLATILES = new Set([
 	'roost', 'auraburstatk', 'auraburstdef', 'auraburstspa', 'auraburstspd', 'auraburstspe', 'auraburstall',
 	'saltcure', 'destinybond', 'gemdefensepermanentboost',
 	...FANTASY_VOLATILES,
-	'flashfire', 'charge',
+	'flashfire', 'charge', 'imprison',
 ]);
 
 /** Data-only world -> new Fantasy Battle. No real Battle can be passed to this boundary. */
@@ -117,6 +118,7 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 					const publicEffect = member.seen?.effects?.[id];
 					const source = publicEffect?.source ? battle.getSide(publicEffect.source).active[0] : side.foe.active[0];
 					const state = battle.initEffectState({ id, target: mon, source, sourceSlot: source.getSlot() });
+					if (id === 'imprison') { state.source = mon; state.sourceSlot = mon.getSlot(); }
 					if (effect.duration) state.duration = Math.max(1, effect.duration - (world.turn - (publicEffect?.turn ?? world.turn)));
 					if (id === 'confusion') state.time = world.variant ? 3 : 1;
 					if (id === 'substitute') state.hp = Math.max(1, Math.floor(mon.maxhp / (world.variant ? 8 : 4)));
@@ -160,6 +162,7 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 				state.duration = Math.max(1, effect.duration + (extendable ? world.variant * 3 : 0) -
 				(world.turn - (world.memory.fieldTurns?.[id] ?? world.turn)));
 			}
+			if (id === 'trickroom') state.duration = trickRoomTurns(world.memory);
 			return state;
 		};
 		battle.field.weather = world.memory.weather as ID;

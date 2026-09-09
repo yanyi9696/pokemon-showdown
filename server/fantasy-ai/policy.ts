@@ -10,6 +10,7 @@ import { ownSeen, readBattleMemory, speedContext, type BattleMemory, type SeenPo
 import { actionOpportunity, DELAYED_HEALING, effectiveAbility, statusCost } from './mechanics';
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
 import { getTrainerFormat } from './trainers';
+import { assessTrickRoom, trickRoomTurns } from './trick-room';
 import {
 	observedDamage, observedImmunity, passiveRecovery, PIVOT_MOVES, recoveryAmount, remainingPP,
 	repeatedRecovery, residualDamage, stalledAttacks, switchCycleCost,
@@ -40,7 +41,10 @@ export function selectCandidates(
 		if (candidate && candidates.length < limit && !candidates.includes(candidate)) candidates.push(candidate);
 	};
 	retain(ranked.find(candidate => candidate.choice === selected));
-	for (const reason of ['attack', 'switch-matchup', 'urgent-recovery', 'hazard-removal', 'hazard-pressure', 'setup']) {
+	for (const reason of [
+		'attack', 'trick-room-setup', 'trick-room-pivot', 'switch-matchup', 'urgent-recovery',
+		'hazard-removal', 'hazard-pressure', 'setup',
+	]) {
 		retain(ranked.find(candidate => candidate.reasons.includes(reason)));
 	}
 	for (const candidate of ranked) retain(candidate);
@@ -89,6 +93,8 @@ export class RulePolicy {
 			this.hypotheses.build(this.previewMember(member.species, member.level, foe), observation, memory));
 		const own = observation.request.side.pokemon.map(mon => this.hypotheses.own(mon));
 		const teams = observedHazardTeams(this.hypotheses, observation, memory, own, index => this.isKey(observation, index));
+		const room = own.some(mon => mon.moves.includes('trickroom')) ?
+			assessTrickRoom(teams[observation.ownSide], teams[foe], dex, memory) : undefined;
 		const threat = (attacker: Combatant, defender: Combatant) => Math.max(0, ...attacker.moves.map(id => {
 			const move = dex.moves.get(id);
 			if (move.category === 'Status' || !dex.getImmunity(move.type, dex.species.get(defender.species).types)) return 0;
@@ -104,7 +110,8 @@ export class RulePolicy {
 				const hazard = moveHazard(dex.moves.get(id));
 				return hazard ? hazardCost({ [hazard]: 1 }, teams[foe], teams[observation.ownSide], dex, memory) * 0.12 : 0;
 			})));
-			return average / 10 + hazards - (this.isKey(observation, index) ? 4 : 0);
+			const roomLead = mon.moves.includes('trickroom') ? Math.max(0, room?.value || 0) * 12 : 0;
+			return average / 10 + hazards + roomLead - (this.isKey(observation, index) ? 4 : 0);
 		});
 		return choices.map(choice => {
 			const order = choice.slice(5).split('').map(Number);
@@ -160,6 +167,14 @@ export class RulePolicy {
 			const healingLoop = repeatedRecovery(memory, active, dex);
 			const weights = WEIGHTS[this.trainer.style];
 			let hazardTeams: ReturnType<typeof observedHazardTeams> | undefined;
+			const roomTurns = trickRoomTurns(memory);
+			let room = { value: 0, benefits: own.map(() => 0) };
+			if (roomTurns || own.some(mon => mon.health.upper && mon.moves.includes('trickroom'))) {
+				hazardTeams = observedHazardTeams(this.hypotheses, observation, memory, own, index => this.isKey(observation, index));
+				room = assessTrickRoom(own.map((profile, index) => ({ profile, active: index === activeIndex, probability: 1,
+					tailwind: !!memory.sides[observation.ownSide].conditions.tailwind })),
+				hazardTeams[foe].map(member => ({ ...member, tailwind: !!memory.sides[foe].conditions.tailwind })), dex, memory);
+			}
 			const hazardCache = new Map<string, number>();
 			const cost = (side: typeof foe, layers: HazardLayers) => {
 				const key = JSON.stringify([side, layers]);
@@ -194,7 +209,7 @@ export class RulePolicy {
 					}
 					if (isCurrent && observedImmunity(memory, active, seen, id) && !estimate.omittedVolatiles.length &&
 						!estimate.healing && !estimate.delayedHealing && !estimate.utility && !estimate.field &&
-						!estimate.hazardChanges.length && !estimate.boosts && !estimate.volatile && !estimate.pivot) {
+						!estimate.hazardChanges.length && !estimate.boosts && !estimate.volatile && !estimate.pivot && !estimate.trickRoom) {
 						estimate.damage = estimate.knockout = 0;
 						estimate.ineffective = 1;
 					}
@@ -453,6 +468,22 @@ export class RulePolicy {
 									reasons.push('break-recovery-loop');
 								}
 							}
+							if (!roomTurns && room.value > 0.15) {
+								const setter = future.find(entry => entry.id === 'trickroom' && entry.attack.trickRoom > 0);
+								if (setter && setter.canAct > 0 && (!moveIDs(current).includes('trickroom') || request.forceSwitch)) {
+									const benefit = room.value * 65 * setter.canAct * discount *
+										(1 - (takesEntryAction ? incoming.knockout : 0));
+									value += benefit;
+									if (benefit > 5) reasons.push('trick-room-setup', 'trick-room-setter-entry');
+								}
+							} else if (roomTurns > (takesEntryAction ? 1 : 0) && room.value > 0.15) {
+								value += Math.max(0, room.benefits[index]) * futureChance * Math.min(1, attackValue / 60) * 24;
+								if (room.benefits[index] > 0.2 && futureChance > 0.5 && attackValue > 20) {
+									reasons.push('trick-room-attacker-entry');
+								}
+								if (takesEntryAction && room.benefits[activeIndex] > 0.2 &&
+									offense(current, opponent) >= attackValue / 75) longTerm -= 16;
+							}
 							reasons.push('switch-matchup');
 						} else if (kind === 'move' && !request.forceSwitch) {
 							const mon = current;
@@ -460,7 +491,7 @@ export class RulePolicy {
 							const move = this.hypotheses.dex.moves.get(id);
 							const attack = probe(mon, opponent, id, event);
 							const futileSetup = !!attack.userAfterMove && !attack.damage && !attack.healing &&
-								!attack.delayedHealing && !attack.status && !attack.field && !attack.hazardChanges.length &&
+								!attack.delayedHealing && !attack.status && !attack.field && !attack.trickRoom && !attack.hazardChanges.length &&
 								!attack.utility && !attack.volatile && !attack.pivot &&
 								!moveIDs(mon).some(moveID => dex.moves.get(moveID).selfSwitch === 'copyvolatile') &&
 								residualDamage(opponent, dex, seen, memory) <= passiveRecovery(opponent, dex, memory) &&
@@ -531,6 +562,44 @@ export class RulePolicy {
 							if (mon.health.upper <= incoming.damage + residual && !stopped) value -= 20;
 							value -= attack.selfDamage * 55;
 							value += survives * (attack.field * 16 + attack.volatile * 12 + attack.utility * 12);
+							if (id === 'trickroom') {
+								if (attack.trickRoom > 0) {
+									const duration = effectiveAbility(defending) === 'persistent' ? 7 : 5;
+									value += survives * opportunity * attack.trickRoom * Math.max(0, room.value) * 65 * (duration - 1) / 4;
+									if (room.value > 0.15) reasons.push('trick-room-setup');
+									else { longTerm -= 45; reasons.push('trick-room-unfavorable'); }
+								} else if (attack.trickRoom < 0) {
+									value -= survives * opportunity * room.value * Math.min(1.4, roomTurns / 3) * 65;
+									if (room.value > 0.15) {
+										longTerm -= 35;
+										reasons.push('trick-room-cancels-own-window');
+									} else if (room.value < -0.15) reasons.push('trick-room-setup', 'trick-room-reverse');
+									else longTerm -= 25;
+								}
+							} else if (roomTurns && room.value > 0.15) {
+								if (damage > 0 && move.priority <= 0) {
+									value += survives * Math.max(0, room.benefits[activeIndex]) * Math.min(1, damage * 2) * 18;
+									reasons.push('trick-room-attack');
+								}
+								if (attack.pivot && roomTurns > 1) {
+									const candidates = own.map((member, slot) => ({ member, slot }))
+										.filter(entry => entry.slot !== activeIndex && room.benefits[entry.slot] > 0.2)
+										.sort((a, b) => room.benefits[b.slot] - room.benefits[a.slot]).slice(0, 2);
+									const best = Math.max(0, ...candidates.map(({ member, slot }) => {
+										const entry = entryHazards(member, memory.sides[observation.ownSide].conditions, dex, memory);
+										if (member.health.upper <= entry.damage) return 0;
+										return Math.max(0, offense(member, opponent) - offense(mon, opponent)) *
+											Math.max(0, room.benefits[slot]) * (1 - entry.damage);
+									}));
+									value += survives * opportunity * attack.pivot * Math.min(1.5, best) * 70;
+									if (best > 0.1) reasons.push('trick-room-pivot');
+								}
+								if (move.category === 'Status' && !attack.pivot) {
+									const urgent = reasons.includes('urgent-recovery');
+									longTerm -= room.value * (roomTurns <= 2 ? 22 : 10) * (urgent ? 0.15 : 1);
+									reasons.push('trick-room-turn-cost');
+								}
+							}
 							let removal = 0;
 							let pressure = 0;
 							for (const change of attack.hazardChanges) {
