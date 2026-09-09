@@ -18,7 +18,7 @@ const { reconstructWorld } = require('../../dist/server/fantasy-ai/reconstructio
 const { simulateTurn, RolloutPolicy } = require('../../dist/server/fantasy-ai/rollout');
 const { DecisionScheduler } = require('../../dist/server/fantasy-ai/scheduler');
 const { runOfflineBattle } = require('../../dist/server/fantasy-ai/offline');
-const examples = require('../../config/fantasy-ai-trainers.example.json');
+const examples = require('../fixtures/fantasy-ai-trainers.json');
 const trainer = new TrainerRegistry(examples, { enabled: true, allowDevelopmentTrainers: true }).get(examples[0].id);
 const SEED = 'gen5,0011001200130014';
 

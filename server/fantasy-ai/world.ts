@@ -1,10 +1,10 @@
 import { toID } from '../../sim/dex';
 import { Teams } from '../../sim/teams';
 import type { PokemonMoveRequestData } from '../../sim/side';
-import { HypothesisBuilder, type Combatant } from './hypotheses';
+import { battleNickname, estimateStats, HypothesisBuilder, type Combatant } from './hypotheses';
 import type { Observation } from './information';
 import type { InitialPokemon } from './initial-snapshot';
-import { readBattleMemory, type BattleMemory, type SeenPokemon, type SinglesSide } from './memory';
+import { ownSeen, readBattleMemory, type BattleMemory, type SeenPokemon, type SinglesSide } from './memory';
 import { HypotheticalSets } from './sets';
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
 
@@ -15,6 +15,7 @@ export interface WorldMember {
 	seen?: SeenPokemon;
 	disguise?: string;
 	request?: PokemonMoveRequestData;
+	keyMember?: boolean;
 }
 export interface WorldHypothesis {
 	format: string;
@@ -28,7 +29,8 @@ export interface WorldHypothesis {
 	initialOpponent?: InitialPokemon[];
 	diagnostics: string[];
 }
-export type WorldTrainer = Pick<ValidatedTrainer, 'format' | 'packedTeam'>;
+export type WorldTrainer =
+	Pick<ValidatedTrainer, 'format' | 'packedTeam'> & Partial<Pick<ValidatedTrainer, 'keyMembers'>>;
 
 function unseen(species: string, level: number, side: SinglesSide): SeenPokemon {
 	return {
@@ -73,20 +75,20 @@ export class WorldBuilder {
 		if (!ownSets || ownSets.length !== 6) throw new Error('missing-own-team');
 		const remaining = ownSets.slice();
 		const own = request.side.pokemon.map((mon, index): WorldMember => {
-			const profile = this.hypotheses.own(mon, mon.active ? memory.sides[side].active : undefined);
+			const seen = ownSeen(memory, side, mon.ident, mon.active);
+			const profile = this.hypotheses.own(mon, seen);
 			const name = toID(mon.ident.split(': ').slice(1).join(': '));
 			const matchingNames = remaining.map((set, position) => ({ set, index: position }))
-				.filter(({ set }) => toID(set.name || family(set.species)) === name);
+				.filter(({ set }) => toID(battleNickname(set, dex)) === name);
 			const matchingMoves = matchingNames.filter(({ set }) =>
 				set.moves.map(toID).sort().join(',') === profile.moves.map(toID).sort().join(','));
 			const matches = matchingNames.length === 1 ? matchingNames : matchingMoves;
 			const match = matches.length === 1 ? matches[0].index : -1;
 			if (match < 0) throw new Error('ambiguous-own-configuration');
 			const [set] = remaining.splice(match, 1);
-			const seen = mon.active ? memory.sides[side].active : memory.sides[side].appearances.slice().reverse()
-				.find(member => toID(member.ident.split(': ').slice(1).join(': ')) === name);
 			return {
 				set, profile, exactStats: true, seen: seen && structuredClone(seen),
+				keyMember: this.trainer.keyMembers?.includes(ownSets.indexOf(set) + 1),
 				request: index === 0 ? structuredClone(request.active[0]) : undefined,
 			};
 		});
@@ -108,13 +110,22 @@ export class WorldBuilder {
 							mon !== active && !mon.ambiguousIdentity && !mon.transformed && family(mon.species) === family(member.species));
 						const shell = unseen(member.species, member.level, foe);
 						const snapshot = member.snapshot;
-						const priors = this.hypotheses.build(shell, { ...observation, difficulty: 'normal' }, memory);
+						const priors = this.hypotheses.build(seen || shell, { ...observation, difficulty: 'normal' }, memory);
 						const prior = priors[variant % priors.length];
 						const base: Combatant = snapshot ? {
 							...prior, ...snapshot, moves: snapshot.moves.slice(), stats: { ...snapshot.stats },
-						} : { ...prior, moves: onField ? option.moves.slice() : seen?.moves.length ?
-							[...new Set([...seen.moves, ...prior.moves])].slice(0, 4) : prior.moves.slice() };
-						const set = this.sets.create(base, !!snapshot, variant, seen?.moves.filter(id => !dex.moves.get(id).isZ));
+						} : { ...(onField ? option : prior), species: member.species,
+							moves: (onField ? option : prior).moves.slice() };
+						const changedForme = onField && toID(option.species) !== toID(member.species);
+						if (!snapshot && changedForme) {
+							const original = dex.species.get(member.species);
+							base.stats = estimateStats(original, member.level, variant > 0);
+							base.ability = toID(original.abilities['0']);
+						}
+						const set = this.sets.create(base, !!snapshot, variant, seen?.moves.filter(id => !dex.moves.get(id).isZ), {
+							ability: !changedForme && seen?.ability !== undefined && !!seen.ability,
+							item: seen?.item !== undefined,
+						});
 						// Synthetic names never encode the real opponent's initial position.
 						set.name = onField ? active.ident.split(': ').slice(1).join(': ') : `Hypothesis ${index + 1}`;
 						let profile: Combatant = { ...base, ability: toID(set.ability), item: toID(set.item), moves: set.moves.slice() };
@@ -123,6 +134,9 @@ export class WorldBuilder {
 							const changed = dex.species.get(visible.species).id !== dex.species.get(member.species).id;
 							profile = {
 								...profile, species: visible.species, health: { ...seen.health }, status: seen.status,
+								stats: { ...visible.stats }, appearance: seen.appearance,
+								persistentEffects: seen.persistentEffects?.slice(),
+								fantasy: seen.fantasy && structuredClone(seen.fantasy),
 								boosts: onField ? { ...seen.boosts } : {}, volatiles: onField ? seen.volatiles.slice() : [],
 								types: onField && option.identity !== 'illusion' ? seen.types?.slice() : undefined,
 								ability: (onField ? seen.ability : undefined) ?? (changed ?
@@ -141,6 +155,9 @@ export class WorldBuilder {
 					opponents.unshift(lead);
 					if (lead.disguise) diagnostics.push('hypothesized-illusion-identity');
 					const teams = { [side]: structuredClone(own), [foe]: opponents } as WorldHypothesis['teams'];
+					if (Object.values(teams).some(team => team.some(mon => mon.profile.fantasy?.shadowBottle))) {
+						diagnostics.push('hypothesized-shadow-bottle-counter');
+					}
 					worlds.push({
 						format: this.trainer.format, ownSide: side, turn: memory.turn, variant, probability: option.probability,
 						teams, memory: structuredClone(memory), publicLog: observation.publicLog.slice(), diagnostics,

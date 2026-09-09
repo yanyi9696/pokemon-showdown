@@ -1,12 +1,50 @@
 [
   {
-    "id": "development-balanced",
-    "name": "开发测试训练家（非正式）",
-    "format": "gen9fcag",
+    "id": "development-ubuu",
+    "name": "FC UBUU 测试训练家（非正式）",
+    "avatar": "1",
+    "description": "FC UBUU 本机开发使用的固定队伍测试训练家，不是正式训练家内容。",
+    "format": "gen9fcubersuu",
     "style": "balanced",
     "developmentOnly": true,
-    "keyMembers": [6],
-    "resourcePreferences": ["terastallize"],
+    "keyMembers": [
+      6
+    ],
+    "resourcePreferences": [
+      "terastallize"
+    ],
     "team": "Mew @ Leftovers\nAbility: Synchronize\nEVs: 252 HP / 4 SpA / 252 Spe\nTimid Nature\n- Psychic\n- Roost\n- Will-O-Wisp\n- Stealth Rock\n\nGarchomp @ Rocky Helmet\nAbility: Rough Skin\nEVs: 252 HP / 164 Def / 92 Spe\nImpish Nature\n- Earthquake\n- Dragon Tail\n- Stealth Rock\n- Fire Blast\n\nCorviknight @ Leftovers\nAbility: Pressure\nEVs: 252 HP / 252 Def / 4 SpD\nImpish Nature\n- Brave Bird\n- Roost\n- Defog\n- U-turn\n\nRotom-Wash @ Leftovers\nAbility: Levitate\nEVs: 252 HP / 200 Def / 56 Spe\nBold Nature\n- Hydro Pump\n- Volt Switch\n- Will-O-Wisp\n- Pain Split\n\nClefable @ Leftovers\nAbility: Magic Guard\nEVs: 252 HP / 252 Def / 4 SpD\nBold Nature\n- Moonblast\n- Soft-Boiled\n- Calm Mind\n- Thunder Wave\n\nWeavile @ Heavy-Duty Boots\nAbility: Pressure\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Knock Off\n- Triple Axel\n- Ice Shard\n- Swords Dance"
+  },
+  {
+    "id": "development-ou",
+    "name": "FC OU 测试训练家（非正式）",
+    "avatar": "1",
+    "description": "FC OU 本机开发使用的固定队伍测试训练家，不是正式训练家内容。",
+    "format": "gen9fcou",
+    "style": "balanced",
+    "developmentOnly": true,
+    "keyMembers": [
+      6
+    ],
+    "resourcePreferences": [
+      "terastallize"
+    ],
+    "team": "Mew @ Leftovers\nAbility: Synchronize\nEVs: 252 HP / 4 SpA / 252 Spe\nTimid Nature\n- Psychic\n- Roost\n- Will-O-Wisp\n- Stealth Rock\n\nGarchomp @ Rocky Helmet\nAbility: Rough Skin\nEVs: 252 HP / 164 Def / 92 Spe\nImpish Nature\n- Earthquake\n- Dragon Tail\n- Stealth Rock\n- Fire Blast\n\nCorviknight @ Leftovers\nAbility: Pressure\nEVs: 252 HP / 252 Def / 4 SpD\nImpish Nature\n- Brave Bird\n- Roost\n- Defog\n- U-turn\n\nRotom-Wash @ Leftovers\nAbility: Levitate\nEVs: 252 HP / 200 Def / 56 Spe\nBold Nature\n- Hydro Pump\n- Volt Switch\n- Will-O-Wisp\n- Pain Split\n\nClefable @ Leftovers\nAbility: Magic Guard\nEVs: 252 HP / 252 Def / 4 SpD\nBold Nature\n- Moonblast\n- Soft-Boiled\n- Calm Mind\n- Thunder Wave\n\nWeavile @ Heavy-Duty Boots\nAbility: Pressure\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Knock Off\n- Triple Axel\n- Ice Shard\n- Swords Dance"
+  },
+  {
+    "id": "development-uu",
+    "name": "FC UU 测试训练家（非正式）",
+    "avatar": "1",
+    "description": "FC UU 本机开发使用的固定队伍测试训练家，不是正式训练家内容。",
+    "format": "gen9fcuu",
+    "style": "balanced",
+    "developmentOnly": true,
+    "keyMembers": [
+      6
+    ],
+    "resourcePreferences": [
+      "terastallize"
+    ],
+    "team": "Mew @ Leftovers\nAbility: Synchronize\nEVs: 252 HP / 4 SpA / 252 Spe\nTimid Nature\n- Psychic\n- Roost\n- Will-O-Wisp\n- Stealth Rock\n\nHippowdon @ Leftovers\nAbility: Sand Stream\nEVs: 252 HP / 252 Def / 4 SpD\nImpish Nature\n- Earthquake\n- Slack Off\n- Stealth Rock\n- Whirlwind\n\nScizor @ Heavy-Duty Boots\nAbility: Technician\nEVs: 248 HP / 252 Atk / 8 SpD\nAdamant Nature\n- Bullet Punch\n- U-turn\n- Roost\n- Defog\n\nRotom-Wash @ Leftovers\nAbility: Levitate\nEVs: 252 HP / 200 Def / 56 Spe\nBold Nature\n- Hydro Pump\n- Volt Switch\n- Will-O-Wisp\n- Pain Split\n\nClefable @ Leftovers\nAbility: Magic Guard\nEVs: 252 HP / 252 Def / 4 SpD\nBold Nature\n- Moonblast\n- Soft-Boiled\n- Calm Mind\n- Thunder Wave\n\nExcadrill @ Leftovers\nAbility: Mold Breaker\nEVs: 252 Atk / 4 SpD / 252 Spe\nJolly Nature\n- Earthquake\n- Iron Head\n- Rapid Spin\n- Swords Dance"
   }
 ]

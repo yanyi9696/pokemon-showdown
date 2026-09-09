@@ -983,6 +983,12 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const player = this.playerTable[user.id];
 		if (!player) return;
 		player.updateChannel(connection || user);
+		if (this.fantasyAI) {
+			const { trainer, difficulty, disconnectMs } = this.fantasyAI.options;
+			(connection || user).sendTo(this.roomid, `|fantasyai|${JSON.stringify({
+				trainerId: trainer.id, format: trainer.format, difficulty, userid: user.id, disconnectMs,
+			})}`);
+		}
 		const request = player.request;
 		if (request.request) {
 			let data = `|request|${request.request}`;

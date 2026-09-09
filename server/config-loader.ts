@@ -25,6 +25,16 @@ const CONFIG_PATH = FS('./config/config.js').path;
 export function load(invalidate = false) {
 	if (invalidate) delete require.cache[CONFIG_PATH];
 	const config = ({ ...defaults, ...require(CONFIG_PATH) }) as ConfigType;
+	// Explicit local development preset, inherited by simulator/socket child processes.
+	// Production config files and authentication rules remain authoritative outside this mode.
+	if (process.argv.includes('--fantasy-ai-local')) process.env.FANTASY_AI_LOCAL = '1';
+	if (process.env.FANTASY_AI_LOCAL === '1') {
+		Object.assign(config, {
+			bindaddress: '127.0.0.1', port: 8000, ssl: null, watchconfig: false,
+			loginserver: 'https://play.pokemonshowdown.com/', fantasyailocal: true,
+			fantasyai: { ...defaults.fantasyai, enabled: true, allowDevelopmentTrainers: true },
+		});
+	}
 	// config.routes is nested - we need to ensure values are set for its keys as well.
 	config.routes = { ...defaults.routes, ...config.routes };
 

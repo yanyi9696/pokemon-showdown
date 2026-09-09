@@ -33,7 +33,10 @@ const searches = new Map<string, {
  * attempting to make a match with looser restrictions until one can be made.
  */
 class Ladder extends LadderStore {
-	async prepBattle(connection: Connection, challengeType: ChallengeType, team: string | null = null, isRated = false) {
+	async prepBattle(
+		connection: Connection, challengeType: ChallengeType, team: string | null = null, isRated = false,
+		onError = (message: string) => connection.popup(message),
+	) {
 		// all validation for a battle goes through here
 		const user = connection.user;
 		const userid = user.id;
@@ -44,11 +47,11 @@ class Ladder extends LadderStore {
 			if (Rooms.global.lockdown === 'ddos') {
 				message = `The server is under attack. Battles cannot be started at this time.`;
 			}
-			connection.popup(message);
+			onError(message);
 			return null;
 		}
 		if (Punishments.isBattleBanned(user)) {
-			connection.popup(`You are barred from starting any new games until your battle ban expires.`);
+			onError(`You are barred from starting any new games until your battle ban expires.`);
 			return null;
 		}
 		const gameCount = user.games.size;
@@ -62,7 +65,7 @@ class Ladder extends LadderStore {
 		try {
 			this.formatid = Dex.formats.validate(this.formatid);
 		} catch (e: any) {
-			connection.popup(`Your selected format is invalid:\n\n- ${e.message}`);
+			onError(`Your selected format is invalid:\n\n- ${e.message}`);
 			return null;
 		}
 
@@ -82,7 +85,7 @@ class Ladder extends LadderStore {
 			if (nickname) {
 				const filtered = Chat.nicknamefilter(nickname, user);
 				if (typeof filtered === 'string' && (!filtered || filtered !== match[1])) {
-					connection.popup(
+					onError(
 						`Your team was rejected for the following reason:\n\n` +
 						`- Your Pokémon has a banned nickname: ${match[1]}`
 					);
@@ -96,7 +99,7 @@ class Ladder extends LadderStore {
 		if (unownWord) {
 			const filtered = Chat.nicknamefilter(unownWord, user);
 			if (!filtered || filtered !== unownWord) {
-				connection.popup(
+				onError(
 					`Your team was rejected for the following reason:\n\n` +
 					`- Your Unowns spell out a banned word: ${unownWord.toUpperCase()}`
 				);
@@ -125,7 +128,7 @@ class Ladder extends LadderStore {
 		}
 
 		if (!valResult.startsWith('1')) {
-			connection.popup(
+			onError(
 				`Your team was rejected for the following reasons:\n\n` +
 				`- ` + valResult.slice(1).replace(/\n/g, `\n- `)
 			);

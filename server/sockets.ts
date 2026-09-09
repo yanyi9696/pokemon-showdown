@@ -77,6 +77,10 @@ export const Sockets = new class {
 				port = cloudenv.get('PORT', port);
 			} catch {}
 		}
+		if (Config.fantasyailocal) {
+			bindAddress = '127.0.0.1';
+			port = 8000;
+		}
 		if (bindAddress !== undefined) {
 			Config.bindaddress = bindAddress;
 		}

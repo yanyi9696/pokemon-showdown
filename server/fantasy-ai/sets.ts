@@ -45,9 +45,12 @@ export class HypotheticalSets {
 		this.validator = new TeamValidator(format);
 	}
 
-	create(profile: Combatant, exact: boolean, variant: number, revealed: readonly string[] = []): PokemonSet {
+	create(
+		profile: Combatant, exact: boolean, variant: number, revealed: readonly string[] = [],
+		known: { item?: boolean, ability?: boolean } = {},
+	): PokemonSet {
 		const key = JSON.stringify([profile.species, profile.level, profile.stats, profile.moves,
-			profile.ability, profile.item, profile.teraType, exact, variant, revealed]);
+			profile.ability, profile.item, profile.teraType, exact, variant, revealed, known]);
 		const cached = this.cache.get(key);
 		if (cached) return structuredClone(cached);
 		const spreads = compatibleSpreads(this.dex, profile.species, profile.level, profile.stats);
@@ -58,8 +61,9 @@ export class HypotheticalSets {
 			ability: profile.ability, item: profile.item, teraType: profile.teraType, ...spread,
 		} as PokemonSet;
 		const species = this.dex.species.get(profile.species);
-		const abilities = exact ? [base.ability] : [...new Set([base.ability, ...Object.values(species.abilities)])];
-		const items = exact ? [base.item] : [...new Set([base.item, ''])];
+		const abilities = exact || known.ability ? [base.ability] :
+			[...new Set([base.ability, ...Object.values(species.abilities)])];
+		const items = exact || known.item ? [base.item] : [...new Set([base.item, ''])];
 		for (let count = base.moves.length; count > 0; count--) {
 			const moves = base.moves.slice(0, count);
 			if (revealed.some(id => !moves.some(move => toID(move) === id))) break;

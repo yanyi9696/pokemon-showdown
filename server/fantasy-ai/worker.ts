@@ -12,6 +12,7 @@ if (!isMainThread && parentPort) {
 			if (key !== cacheKey) { policy = new RolloutPolicy(message.trainer); cacheKey = key; }
 			const decision = policy.decide(message.observation, message.seed, {
 				budgetMs: message.budgetMs, maxRollouts: message.maxRollouts, excluded: message.excluded,
+				critical: message.critical,
 				onProgress: progress => port.postMessage({ type: 'progress', token: message.token, decision: progress }),
 			});
 			port.postMessage({ type: 'complete', token: message.token, decision });

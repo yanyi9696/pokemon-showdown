@@ -4,9 +4,10 @@ import type { ChoiceRequest } from '../../sim/side';
 import type { RoomBattle } from '../room-battle';
 import { InformationView } from './information';
 import type { InitialPokemon } from './initial-snapshot';
-import { enumerateRequestChoices } from './actions';
+import { emergencyChoice } from './fallback';
 import type { DecisionScheduler } from './scheduler';
 import type { Difficulty, ValidatedTrainer } from './types';
+import { DecisionTimeManager, type TimeBudgetSettings } from './time-management';
 
 export interface ChallengeMetrics {
 	roomId: string;
@@ -21,13 +22,16 @@ export interface ChallengeMetrics {
 	totalDecisionMs: number;
 	maxDecisionMs: number;
 	endReason: string;
+	searchDepths?: Record<string, number>;
+	fallbackReasons?: Record<string, number>;
+	criticalDecisions?: number;
+	criticalDecisionReasons?: Record<string, number>;
 }
-export interface AIChallengeOptions {
+export interface AIChallengeOptions extends TimeBudgetSettings {
 	trainer: ValidatedTrainer;
 	difficulty: Difficulty;
 	instanceId: string;
 	scheduler: DecisionScheduler;
-	decisionMs: number;
 	disconnectMs: number;
 	maxRollouts?: number;
 	onEnd: (metrics: ChallengeMetrics) => void;
@@ -46,17 +50,21 @@ export class AIController {
 	private disconnectTimer?: NodeJS.Timeout;
 	readonly metrics: ChallengeMetrics;
 	private readonly battle: RoomBattle;
+	private readonly timing: DecisionTimeManager;
 	readonly options: AIChallengeOptions;
 
 	constructor(battle: RoomBattle, options: AIChallengeOptions) {
 		this.battle = battle;
 		this.options = options;
+		this.timing = new DecisionTimeManager(options);
 		if (options.difficulty === 'normal') this.view = new InformationView({ ownSide: 'p2', difficulty: 'normal' });
 		options.scheduler.register(battle.roomid, options.instanceId);
 		this.metrics = {
 			roomId: battle.roomid, trainer: options.trainer.id, difficulty: options.difficulty,
 			decisions: 0, timeouts: 0, workerErrors: 0, searchFallbacks: 0, rollouts: 0, illegalChoices: 0,
 			totalDecisionMs: 0, maxDecisionMs: 0, endReason: '',
+			searchDepths: {}, fallbackReasons: {},
+			criticalDecisions: 0, criticalDecisionReasons: {},
 		};
 	}
 
@@ -98,7 +106,11 @@ export class AIController {
 		const key = { roomId: this.battle.roomid, instanceId: this.options.instanceId, rqid };
 		const seed = this.rng.getSeed();
 		this.rng.random();
-		const fallback = enumerateRequestChoices(request).find(choice => !this.rejected.includes(choice)) || 'default';
+		const window = this.timing.allocate(
+			observation, this.battle.turn, received, this.options.trainer.format, this.rejected);
+		this.metrics.criticalDecisions = this.timing.criticalDecisions;
+		this.metrics.criticalDecisionReasons = { ...this.timing.criticalReasons };
+		const fallback = emergencyChoice(observation, this.options.trainer.format, this.rejected);
 		const submit = (choice: string) => {
 			if (this.closed || this.battle.ended || this.battle.p1.eliminated || this.pending?.rqid !== rqid) return;
 			const current = this.battle.p2.request;
@@ -110,7 +122,8 @@ export class AIController {
 		};
 		void this.options.scheduler.submit({
 			key, trainer: this.options.trainer, observation, seed, excluded: this.rejected.slice(),
-			budgetMs: Math.max(0, this.options.decisionMs - (performance.now() - received)),
+			budgetMs: Number.isFinite(window.deadline) ? Math.max(0, window.deadline - performance.now()) : null,
+			critical: !!window.criticalReason, fallbackChoice: fallback,
 			maxRollouts: this.options.maxRollouts,
 		}).then(result => {
 			if (this.closed || this.pending?.rqid !== rqid || result.status === 'cancelled') return;
@@ -121,6 +134,29 @@ export class AIController {
 			if (result.status === 'timeout') this.metrics.timeouts++;
 			if (result.status === 'worker-error') this.metrics.workerErrors++;
 			if (result.decision?.phase === 'move' && result.decision.method !== 'rollout') this.metrics.searchFallbacks++;
+			if (result.decision?.phase === 'move') {
+				const depth = String(result.decision.searchDepth || 0);
+				const depths = this.metrics.searchDepths!;
+				depths[depth] = (depths[depth] || 0) + 1;
+				// Aggregate reason codes only. Never log guessed teams, hidden snapshots
+				// or engine exception payloads into either the replay or the server metrics.
+				if (result.decision.method !== 'rollout') {
+					const known = new Set([
+						'ambiguous-own-configuration', 'no-compatible-spread', 'no-legal-configuration-hypothesis',
+						'illegal-team-hypothesis', 'unsupported-transform', 'unsupported-request-move-mapping',
+						'unresolved-fainted-identity', 'no-supported-world', 'rollout-budget',
+					]);
+					const codes = result.decision.diagnostics.filter(code => known.has(code));
+					if (result.decision.diagnostics.some(code => code.startsWith('unsupported-volatile:'))) {
+						codes.push('unsupported-volatile');
+					}
+					if (!codes.length) codes.push(result.decision.stopReason);
+					for (const code of new Set(codes)) {
+						const reasons = this.metrics.fallbackReasons!;
+						reasons[code] = (reasons[code] || 0) + 1;
+					}
+				}
+			}
 			this.metrics.rollouts += result.decision?.rollouts || 0;
 			submit(result.decision?.choice || fallback);
 		}).catch(() => { this.metrics.workerErrors++; submit(fallback); });

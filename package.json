@@ -35,6 +35,9 @@
   },
   "scripts": {
     "start": "node pokemon-showdown start",
+    "start:fantasy-ai:local": "node pokemon-showdown start --fantasy-ai-local",
+    "validate:fantasy-ai": "node build && node tools/validate-fantasy-ai-trainers.js",
+    "validate:fantasy-ai:examples": "node build && node tools/validate-fantasy-ai-trainers.js --examples",
     "start-replay-server": "node pokemon-showdown replay-server",
     "cleanup-replays": "node tools/cleanup-replays.js",
     "build": "node build",

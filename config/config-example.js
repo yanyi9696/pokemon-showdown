@@ -378,7 +378,11 @@ exports.fantasyai = {
 	allowDevelopmentTrainers: false,
 	maxBattles: 2,
 	maxBattlesPerPlayer: 1,
-	decisionMs: 5000,
+	// Deadlines include queue time. null explicitly disables the normal deadline.
+	decisionMs: 10000,
+	criticalDecisionMs: 20000,
+	criticalDecisionLimit: 2,
+	criticalDecisionCooldownTurns: 10,
 	disconnectMs: 10 * 60 * 1000,
 };
 

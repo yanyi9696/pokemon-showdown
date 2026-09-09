@@ -5,7 +5,7 @@ const { runOfflineBattle } = require('../dist/server/fantasy-ai/offline');
 const { TrainerRegistry } = require('../dist/server/fantasy-ai/trainers');
 const fs = require('fs');
 
-const examples = require('../config/fantasy-ai-trainers.example.json');
+const examples = require('../test/fixtures/fantasy-ai-trainers.json');
 const registry = new TrainerRegistry(examples, { enabled: true, allowDevelopmentTrainers: true });
 const trainer = registry.get('development-balanced');
 if (!trainer) throw new Error(JSON.stringify(registry.getDiagnostics()));

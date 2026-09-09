@@ -158,6 +158,8 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 	readonly abilities: SpeciesAbility;
 	/** Types. */
 	readonly types: string[];
+	/** Default Tera type, using the second type when the first is ???. */
+	readonly defaultTeraType: string;
 	/** Added type (added by Trick-Or-Treat or Forest's Curse, but only listed in species by OMs). */
 	readonly addedType?: string;
 	/** Pre-evolution. '' if nothing evolves into this Pokemon. */
@@ -289,6 +291,7 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 			(toID(this.baseSpecies) + (this.baseSpecies !== this.name ? `-${toID(this.forme)}` : ''));
 		this.abilities = data.abilities || { 0: "" };
 		this.types = data.types || ['???'];
+		this.defaultTeraType = this.types[0] === '???' ? (this.types[1] || 'Normal') : this.types[0];
 		this.addedType = data.addedType || undefined;
 		this.prevo = data.prevo || '';
 		this.tier = data.tier || '';

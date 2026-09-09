@@ -8,6 +8,13 @@ import type {
 const STYLES: readonly string[] = ['balanced', 'aggressive', 'defensive'];
 const RESOURCES: readonly string[] = ['mega', 'zmove', 'terastallize', 'aura'];
 
+/** Formats offered by the player-facing AI challenge page. UBUU is the existing Ubers UU format. */
+export const CHALLENGE_FORMATS = Object.freeze([
+	{ id: 'gen9fcubersuu', name: 'FC UBUU' },
+	{ id: 'gen9fcou', name: 'FC OU' },
+	{ id: 'gen9fcuu', name: 'FC UU' },
+]);
+
 /** Reject format variants which cannot be handled by the first singles AI. */
 export function getTrainerFormat(name: string): Format {
 	if (!name || name.includes('@@@')) throw new Error('必须指定现有 FC 赛制，不能附加自定义规则。');
@@ -61,6 +68,15 @@ function validateTrainer(input: unknown): ValidatedTrainer {
 		throw new Error('训练家名称必须为 1 至 60 字符，不能包含换行或协议分隔符。');
 	}
 	if (typeof raw.style !== 'string' || !STYLES.includes(raw.style)) throw new Error('未知的训练家战术风格。');
+	if (raw.avatar !== undefined && (typeof raw.avatar !== 'string' || !/^#?[a-z0-9-]{1,80}$/.test(raw.avatar))) {
+		throw new Error('训练家头像必须使用客户端已有的头像标识。');
+	}
+	if (raw.description !== undefined && (typeof raw.description !== 'string' || raw.description.length > 500 ||
+		// Reject protocol/control bytes; newlines in plain descriptions are harmless.
+		// eslint-disable-next-line no-control-regex
+		/[\x00-\x08\x0b-\x1f]/.test(raw.description))) {
+		throw new Error('训练家简介必须是最多 500 字符的普通文本。');
+	}
 	if (raw.developmentOnly !== undefined && typeof raw.developmentOnly !== 'boolean') {
 		throw new Error('developmentOnly 必须是布尔值。');
 	}
@@ -85,6 +101,8 @@ function validateTrainer(input: unknown): ValidatedTrainer {
 	return {
 		id: raw.id,
 		name: raw.name.trim(),
+		avatar: raw.avatar || 'unknown',
+		description: (raw.description || '').trim(),
 		format: format.id,
 		style: raw.style as TrainerStyle,
 		developmentOnly: raw.developmentOnly === true,
@@ -134,8 +152,8 @@ export class TrainerRegistry {
 		for (const id of this.trainers.keys()) {
 			const trainer = this.get(id);
 			if (!trainer) continue;
-			const { name, format, style, developmentOnly } = trainer;
-			result.push({ id, name, format, style, developmentOnly });
+			const { name, avatar, description, format, style, developmentOnly } = trainer;
+			result.push({ id, name, avatar, description, format, style, developmentOnly });
 		}
 		return result;
 	}

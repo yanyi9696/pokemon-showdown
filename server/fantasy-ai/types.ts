@@ -6,6 +6,9 @@ export type ResourcePreference = 'mega' | 'zmove' | 'terastallize' | 'aura';
 export interface TrainerDefinition {
 	id: string;
 	name: string;
+	/** Existing client trainer avatar identifier; never an arbitrary URL. */
+	avatar?: string;
+	description?: string;
 	format: string;
 	/** Showdown import text, not a generated or packed team. */
 	team: string;
@@ -19,6 +22,8 @@ export interface TrainerDefinition {
 export interface TrainerSummary {
 	id: string;
 	name: string;
+	avatar: string;
+	description: string;
 	format: string;
 	style: TrainerStyle;
 	developmentOnly: boolean;
@@ -41,10 +46,22 @@ export const DEFAULT_LIMITS = Object.freeze({
 	workers: 1,
 	maxBattles: 2,
 	maxBattlesPerPlayer: 1,
-	decisionMs: 5000,
+	/** Normal decisions have a hard deadline; null remains an explicit development override. */
+	decisionMs: 10000 as number | null,
+	criticalDecisionMs: 20000,
+	criticalDecisionLimit: 2,
+	criticalDecisionCooldownTurns: 10,
+	/** Explicit finite budgets are still available to development tools. */
+	maxRollouts: null as number | null,
 	disconnectMs: 10 * 60 * 1000,
 	ownCandidates: 6,
+	criticalOwnCandidates: 8,
 	opponentCandidates: 4,
 	hypotheses: 4,
 	samples: 2,
+	searchDepth: 4,
+	criticalSearchDepth: 6,
+	/** Only narrow the root choices when an explicit finite budget was requested. */
+	deepCandidates: 3,
+	criticalDeepCandidates: 4,
 });

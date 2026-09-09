@@ -1,11 +1,18 @@
 import type { ChoiceRequest } from '../../sim/side';
+import { toID } from '../../sim/dex';
+import type { SeenSide } from './memory';
+
+/** Fantasy Aura consumes the team's Z opportunity; native Necrozma Ultra Burst does not. */
+export function hasUltraBurstResource(resources: SeenSide['resources'] | undefined, item: string): boolean {
+	return !resources?.aura && (!resources?.zmove || toID(item) === 'ultranecroziumz');
+}
 
 /**
- * Enumerate singles candidates using only the AI's own request. Unknown
+ * Enumerate singles candidates from the AI's own request and public resource use. Unknown
  * trapping/disable information can still cause the engine to reject a choice;
- * the future controller must handle its updated request, as a human client does.
+ * the controller must handle its updated request, as a human client does.
  */
-export function enumerateRequestChoices(request: ChoiceRequest): string[] {
+export function enumerateRequestChoices(request: ChoiceRequest, resources?: SeenSide['resources']): string[] {
 	if (request.wait) return [];
 	const pokemon = request.side.pokemon;
 	if (pokemon.length !== 6) throw new Error('AI 行动枚举只支持六只宝可梦的队伍。');
@@ -37,17 +44,20 @@ export function enumerateRequestChoices(request: ChoiceRequest): string[] {
 	if (active.canDynamax || active.maxMoves) throw new Error('首版 FC AI 不支持极巨化。');
 	const choices: string[] = [];
 	const events: string[] = [''];
-	if (active.canMegaEvo) events.push('mega');
-	if (active.canMegaEvoX) events.push('megax');
-	if (active.canMegaEvoY) events.push('megay');
+	if (active.canMegaEvo && !resources?.mega) events.push('mega');
+	if (active.canMegaEvoX && !resources?.mega) events.push('megax');
+	if (active.canMegaEvoY && !resources?.mega) events.push('megay');
 	// Fantasy Aura Burst uses the existing `ultra` choice protocol.
-	if (active.canUltraBurst) events.push('ultra');
-	if (active.canTerastallize) events.push('terastallize');
+	// The native flag may still be cached after a Z move. Public resource use is authoritative.
+	const item = pokemon.find(mon => mon.active)?.item || '';
+	if (active.canUltraBurst && hasUltraBurstResource(resources, item)) events.push('ultra');
+	if (active.canTerastallize && !resources?.tera) events.push('terastallize');
 	for (const [index, move] of active.moves.entries()) {
-		if (!move.disabled) {
+		const pp = (move as typeof move & { pp?: number }).pp;
+		if (!move.disabled && pp !== 0) {
 			for (const event of events) choices.push(`move ${index + 1}${event ? ` ${event}` : ''}`);
 		}
-		if (active.canZMove?.[index]) choices.push(`move ${index + 1} zmove`);
+		if (active.canZMove?.[index] && !resources?.zmove && !resources?.aura) choices.push(`move ${index + 1} zmove`);
 	}
 	if (!active.trapped) {
 		for (const [index, mon] of pokemon.entries()) {

@@ -13,6 +13,19 @@ Variables storing teams inside PS's codebase will generally be stored in JSON fo
 
 Export format is basically only used by the client, to show users.
 
+Default Tera type
+----------------
+
+When no Tera type is selected, use the species's first type. If the first type is
+`???`, use its second type, or `Normal` if it has no second type. Explicit Tera
+types and species with a forced Tera type keep their existing behavior.
+
+The teambuilder display, details form, sample sets, and export must agree with
+team validation and battle initialization. Packed teams leave an unspecified
+Tera type empty (including the legacy `???` placeholder), so the format's Dex
+can resolve the default. The base Dex does not contain every Fantasy species;
+looking up an unknown species while packing must not turn its default into `Normal`.
+
 
 Export format
 -------------

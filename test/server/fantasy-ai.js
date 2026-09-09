@@ -3,17 +3,29 @@
 const assert = require('assert').strict;
 const common = require('../common');
 const { Teams } = require('../../dist/sim/teams');
-const { TrainerRegistry, getTrainerFormat, validatePlayerTeam } = require('../../dist/server/fantasy-ai/trainers');
+const { CHALLENGE_FORMATS, TrainerRegistry, getTrainerFormat, validatePlayerTeam } = require('../../dist/server/fantasy-ai/trainers');
 const { InformationView } = require('../../dist/server/fantasy-ai/information');
 const { captureInitialTeam } = require('../../dist/server/fantasy-ai/initial-snapshot');
 const { enumerateRequestChoices } = require('../../dist/server/fantasy-ai/actions');
-const samples = require('../../config/fantasy-ai-trainers.example.json');
+const samples = require('../fixtures/fantasy-ai-trainers.json');
 
 const sample = samples[0];
 const enabled = { enabled: true, allowDevelopmentTrainers: true };
 const sampleTeam = () => Teams.import(sample.team);
 
 describe('Fantasy AI trainer configuration', () => {
+	it('provides a legal local example for each of the three player-selectable formats', () => {
+		const definitions = require('../../config/fantasy-ai-trainers.example.json');
+		const registry = new TrainerRegistry(definitions, enabled);
+		assert.deepEqual(registry.getDiagnostics(), []);
+		assert.deepEqual(CHALLENGE_FORMATS.map(format => format.id), ['gen9fcubersuu', 'gen9fcou', 'gen9fcuu']);
+		assert.deepEqual(registry.list().map(trainer => trainer.format), CHALLENGE_FORMATS.map(format => format.id));
+		for (const entry of registry.list()) {
+			assert.equal(entry.team, undefined);
+			assert.equal(entry.packedTeam, undefined);
+			assert.equal(Teams.unpack(registry.get(entry.id).packedTeam).length, 6);
+		}
+	});
 	it('starts closed and does not expose development trainers in production', () => {
 		assert.deepEqual(new TrainerRegistry([]).list(), []);
 		assert.deepEqual(new TrainerRegistry(samples).list(), []);
@@ -29,6 +41,10 @@ describe('Fantasy AI trainer configuration', () => {
 		assert.equal(Teams.unpack(trainer.packedTeam).length, 6);
 		assert.equal(registry.list()[0].packedTeam, undefined);
 		assert.equal(registry.list()[0].team, undefined);
+		assert.equal(registry.list()[0].avatar, sample.avatar);
+		assert.equal(registry.list()[0].description, sample.description);
+		assert.deepEqual(Object.keys(registry.list()[0]).sort(),
+			['avatar', 'description', 'developmentOnly', 'format', 'id', 'name', 'style']);
 		trainer.keyMembers.push(1);
 		trainer.resourcePreferences.push('mega');
 		assert.deepEqual(registry.get(sample.id).keyMembers, [6]);
@@ -59,6 +75,9 @@ describe('Fantasy AI trainer configuration', () => {
 		['invalid identifiers', { id: '../trainer' }],
 		['protocol injection in names', { name: 'AI\n|win|AI' }],
 		['invalid styles', { style: 'omniscient' }],
+		['avatar URLs', { avatar: 'https://example.com/tracker.png' }],
+		['avatar path traversal', { avatar: '../secret' }],
+		['oversized descriptions', { description: 'x'.repeat(501) }],
 		['invalid key members', { keyMembers: [0, 7] }],
 		['duplicate key members', { keyMembers: [2, 2] }],
 		['invalid resources', { resourcePreferences: ['dynamax'] }],

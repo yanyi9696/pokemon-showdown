@@ -8,7 +8,7 @@ const { AIChallengeManager } = require('../../dist/server/fantasy-ai/manager');
 const { TrainerRegistry } = require('../../dist/server/fantasy-ai/trainers');
 const { enumerateRequestChoices } = require('../../dist/server/fantasy-ai/actions');
 const { RoomBattleStream } = require('../../dist/server/room-battle');
-const examples = require('../../config/fantasy-ai-trainers.example.json');
+const examples = require('../fixtures/fantasy-ai-trainers.json');
 const trainer = new TrainerRegistry(examples, { enabled: true, allowDevelopmentTrainers: true }).get(examples[0].id);
 
 async function until(check, description = 'condition', timeout = 8000) {
@@ -57,6 +57,119 @@ describe('Fantasy AI online challenges', function () {
 		assert.deepEqual(new AIChallengeManager([], { enabled: true }).list(), []);
 		assert.throws(() => new AIChallengeManager([], { maxBattles: 0 }), /配置|limits/);
 		assert.equal(manager.settings.disconnectMs, 600000);
+	});
+
+	it('correlates client creation results and never creates another room for a repeated request', async () => {
+		setup();
+		const player = human();
+		const connection = player.connections[0];
+		const first = manager.challengeForClient(connection, trainer.id, 'hard', 'request-1234');
+		assert.equal(manager.getPublicState(player, 'request-1234').challenge.status, 'pending');
+		const duplicate = await manager.challengeForClient(connection, trainer.id, 'normal', 'request-1234');
+		assert.equal(duplicate.status, 'pending');
+		const result = await first;
+		assert.equal(result.status, 'success');
+		const room = Rooms.get(result.roomid);
+		rooms.push(room);
+		assert.equal(room.battle.fantasyAI.options.difficulty, 'hard');
+		assert.deepEqual(await manager.challengeForClient(connection, trainer.id, 'normal', 'request-1234'), result);
+		assert.equal(manager.getStatus().active, 1);
+		assert.deepEqual(manager.getPublicState(player, 'request-1234').activeBattles, [result.roomid]);
+		const other = human();
+		assert.equal(manager.getPublicState(other, 'request-1234').challenge.status, 'unknown');
+		assert.deepEqual(manager.getPublicState(other).activeBattles, []);
+	});
+
+	for (const definition of require('../../config/fantasy-ai-trainers.example.json')) {
+		it(`creates a real ${definition.format} room using the explicitly selected AI team`, async () => {
+			setup({}, [definition]);
+			const player = human();
+			player.battleSettings.team = Teams.pack(Teams.import(definition.team));
+			const result = await manager.challengeForClient(player.connections[0], definition.id, 'normal', 'format-12345', definition.format);
+			assert.equal(result.status, 'success', result.message);
+			const room = Rooms.get(result.roomid);
+			rooms.push(room);
+			assert.equal(room.battle.format, definition.format);
+			assert.equal(room.battle.fantasyAI.options.trainer.format, definition.format);
+			// The validator fills unspecified gender/tera defaults and canonicalizes names.
+			const configured = team => team.map(set => ({
+				species: toID(set.species), item: toID(set.item), ability: toID(set.ability),
+				moves: set.moves.map(toID), nature: set.nature, evs: set.evs,
+			}));
+			assert.deepEqual(configured(Teams.unpack(room.battle.fantasyAI.options.trainer.packedTeam)),
+				configured(Teams.import(definition.team)));
+			assert.equal(manager.getPublicState(player).protocolVersion, 2);
+			assert.equal(manager.getPublicState(player).formats.length, 3);
+			await until(() => room.battle.p2.request.isWait === true, 'selected-format preview request');
+			room.battle.choose(player, 'team 123456');
+			await until(() => room.battle.turn === 1, 'selected-format team preview');
+			room.battle.choose(player, 'move 1');
+			await until(() => room.battle.turn === 2, 'selected-format first turn');
+		});
+	}
+
+	it('rejects forged format/trainer pairs and checks player legality under the selected format', async () => {
+		const definitions = require('../../config/fantasy-ai-trainers.example.json');
+		setup({}, definitions);
+		const player = human();
+		const connection = player.connections[0];
+		const mismatch = await manager.challengeForClient(connection, definitions[0].id, 'normal', 'mismatch-123', 'gen9fcuu');
+		assert.equal(mismatch.status, 'error');
+		assert(/不支持该赛制/.test(mismatch.message));
+		const unsupported = await manager.challengeForClient(connection, definitions[0].id, 'normal', 'unknown-1234', 'gen9fcag');
+		assert.equal(unsupported.status, 'error');
+		const illegal = await manager.challengeForClient(connection, definitions[2].id, 'normal', 'illegal-1234', 'gen9fcuu');
+		assert.equal(illegal.status, 'error');
+		assert(/banned/.test(illegal.message));
+		assert.equal(manager.getStatus().active, 0);
+	});
+
+	it('returns actual validation errors in structured client responses and releases reservations', async () => {
+		setup();
+		const player = human();
+		player.battleSettings.team = trainer.packedTeam.replace(/psychic/i, 'notarealmove');
+		const result = await manager.challengeForClient(player.connections[0], trainer.id, 'normal', 'invalid-1234');
+		assert.equal(result.status, 'error');
+		assert(/notarealmove|not a real move|does not exist/i.test(result.message));
+		assert.equal(manager.getStatus().active, 0);
+		assert.equal(manager.getPublicState(player, 'invalid-1234').challenge.message, result.message);
+		player.battleSettings.team = trainer.packedTeam;
+		const retry = await manager.challengeForClient(player.connections[0], trainer.id, 'normal', 'valid-123456');
+		assert.equal(retry.status, 'success');
+		rooms.push(Rooms.get(retry.roomid));
+	});
+
+	it('reports disabled, missing trainer, capacity and identity failures to the client', async () => {
+		setup();
+		const player = human();
+		const connection = player.connections[0];
+		const missing = await manager.challengeForClient(connection, 'missing', 'normal', 'missing-1234');
+		assert(/训练家/.test(missing.message));
+		await challenge(player);
+		const full = await manager.challengeForClient(connection, trainer.id, 'normal', 'occupied-1234');
+		assert(/已有/.test(full.message));
+		const invalid = await manager.challengeForClient(connection, trainer.id, 'normal', '../');
+		assert.equal(invalid.status, 'error');
+		await manager.dispose();
+		const closed = await manager.challengeForClient(connection, trainer.id, 'normal', 'closed-1234');
+		assert(/未开放/.test(closed.message));
+	});
+
+	it('sends only public challenge metadata to the participant on reconnect', async () => {
+		setup();
+		const player = human();
+		const room = await challenge(player, 'hard');
+		const connection = player.connections[0];
+		const messages = [];
+		const sendTo = connection.sendTo;
+		connection.sendTo = (roomid, message) => messages.push([roomid, message]);
+		try { room.battle.onConnect(player, connection); } finally { connection.sendTo = sendTo; }
+		const metadata = messages.find(entry => entry[1].startsWith('|fantasyai|'));
+		assert(metadata);
+		assert.deepEqual(JSON.parse(metadata[1].slice(11)), {
+			trainerId: trainer.id, format: trainer.format, difficulty: 'hard', userid: player.id, disconnectMs: 600000,
+		});
+		assert(!room.getLog(0).includes('|fantasyai|'));
 	});
 
 	for (const difficulty of ['normal', 'hard']) {

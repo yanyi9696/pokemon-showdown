@@ -3,12 +3,17 @@ import { toID } from '../../sim/dex';
 import type { PRNGSeed } from '../../sim/prng';
 import type { SinglesSide } from './memory';
 import type { WorldHypothesis } from './world';
+import { FANTASY_VOLATILES, restoreDelayedHealing, restoreFantasyState } from './fantasy-state';
+import { hasUltraBurstResource } from './actions';
 
 const VOLATILES = new Set([
 	'confusion', 'taunt', 'torment', 'healblock', 'ingrain', 'aquaring', 'magnetrise', 'telekinesis',
 	'focusenergy', 'substitute', 'leechseed', 'encore', 'disable', 'yawn', 'nightmare', 'curse',
 	'embargo', 'perishsong', 'perish0', 'perish1', 'perish2', 'perish3', 'gastroacid', 'smackdown',
 	'roost', 'auraburstatk', 'auraburstdef', 'auraburstspa', 'auraburstspd', 'auraburstspe', 'auraburstall',
+	'saltcure', 'destinybond', 'gemdefensepermanentboost',
+	...FANTASY_VOLATILES,
+	'flashfire', 'charge',
 ]);
 
 /** Data-only world -> new Fantasy Battle. No real Battle can be passed to this boundary. */
@@ -56,7 +61,8 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 				mon.status = (mon.fainted ? 'fnt' : profile.status) as ID;
 				mon.statusState = battle.initEffectState({ id: mon.status, target: mon });
 				if (mon.status === 'slp') {
-					mon.statusState.time = 1 + Math.min(world.variant * 2, Math.max(0, 3 - (seen?.statusActivations || 0)));
+					mon.statusState.time = profile.item === 'fantasylifeorb' ? Math.max(1, 4 - (seen?.statusActions || 0)) :
+						1 + Math.min(world.variant * 2, Math.max(0, 3 - (seen?.statusActivations || 0)));
 					mon.statusState.startTime = mon.statusState.time + (seen?.statusActivations || 0);
 				}
 				if (mon.status === 'tox') {
@@ -78,8 +84,9 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 				if (seen?.lastMove) mon.lastMove = battle.dex.getActiveMove(seen.lastMove);
 				mon.m.fantasyVisualsInitialized = index === 0 || !!seen;
 				mon.m.lastVisualShown = member.disguise ? `illusion_${toID(member.disguise)}` : mon.species.id;
+				restoreFantasyState(battle, mon, profile, seen);
 				if (resources.mega) mon.canMegaEvo = mon.canMegaEvoX = mon.canMegaEvoY = null;
-				if (resources.aura) mon.canUltraBurst = null;
+				if (!hasUltraBurstResource(resources, mon.item)) mon.canUltraBurst = null;
 				if (resources.tera || mon.terastallized) mon.canTerastallize = null;
 				for (const slot of mon.moveSlots) {
 					const request = member.request?.moves.find(move => move.id === slot.id) as
@@ -135,6 +142,15 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 				}
 				side.sideConditions[id] = state;
 			}
+			restoreDelayedHealing(battle, side, world.memory.sides[sideID], (appearance, ident) => {
+				let index = world.teams[sideID].findIndex(member => member.seen?.appearance === appearance);
+				if (index < 0) {
+					const matches = world.teams[sideID].map((member, position) => ({ member, position }))
+						.filter(({ member }) => member.seen?.ident === ident && !member.seen.ambiguousIdentity);
+					if (matches.length === 1) index = matches[0].position;
+				}
+				return index >= 0 ? side.pokemon[index] : undefined;
+			});
 		}
 		const fieldState = (id: string) => {
 			const effect = battle.dex.conditions.get(id);

@@ -193,31 +193,16 @@ export const Teams = new class Teams {
 				buf += '|';
 			}
 
-			// 【核心修复开始】
-            // 在判断是否需要写入额外数据前，先计算出“实际应生效的太晶属性”
-            let effectiveTeraType = set.teraType || '';
-            
-            if (!effectiveTeraType || effectiveTeraType === '???') {
-                const speciesData = Dex.species.get(set.species);
-                const firstType = (speciesData && speciesData.types && speciesData.types.length > 0) ? speciesData.types[0] : 'Normal';
-                
-                // 如果第一属性是 '???'，强制将打包数据写为 'Normal'
-                if (firstType === '???') {
-                    effectiveTeraType = 'Normal';
-                }
-            }
-
-            // 注意：这里的 if 条件把 set.teraType 换成了 effectiveTeraType
-            if (set.pokeball || set.hpType || set.gigantamax ||
-                (set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10) || effectiveTeraType) {
-                buf += `,${set.hpType || ''}`;
-                buf += `,${this.packName(set.pokeball || '')}`;
-                buf += `,${set.gigantamax ? 'G' : ''}`;
-                buf += `,${set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10 ? set.dynamaxLevel : ''}`;
-                // 把原本的 (set.teraType || '') 替换为计算好的 effectiveTeraType
-                buf += `,${effectiveTeraType}`;
-            }
-            // 【核心修复结束】
+			// Resolve unspecified Tera types later, using the battle format's Dex.
+			const teraType = set.teraType === '???' ? '' : (set.teraType || '');
+			if (set.pokeball || set.hpType || set.gigantamax ||
+				(set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10) || teraType) {
+				buf += `,${set.hpType || ''}`;
+				buf += `,${this.packName(set.pokeball || '')}`;
+				buf += `,${set.gigantamax ? 'G' : ''}`;
+				buf += `,${set.dynamaxLevel !== undefined && set.dynamaxLevel !== 10 ? set.dynamaxLevel : ''}`;
+				buf += `,${teraType}`;
+			}
 		}
 
 		return buf;

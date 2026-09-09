@@ -4,7 +4,7 @@ import type { Difficulty } from '../fantasy-ai/types';
 
 export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
 	fantasyai(target, user, trustable) {
-		return trustable ? getAIManager().getPublicState(user) : null;
+		return trustable ? getAIManager().getPublicState(user, target.trim()) : null;
 	},
 };
 
@@ -21,6 +21,11 @@ export const commands: Chat.ChatCommands = {
 		},
 		async challenge(target, room, user, connection) {
 			const args = target.split(',').map(arg => arg.trim());
+			if (args.length === 3 || args.length === 4) {
+				const result = await getAIManager().challengeForClient(connection, args[0], args[1] as Difficulty, args[2], args[3]);
+				connection.send(`|queryresponse|fantasyaichallenge|${JSON.stringify({ ...result, userid: user.id })}`);
+				return;
+			}
 			if (args.length !== 2) throw new Chat.ErrorMessage('用法：/fantasyai challenge 训练家标识, normal 或 hard');
 			const battleRoom = await getAIManager().challenge(connection, args[0], args[1] as Difficulty);
 			if (battleRoom) this.sendReply(`AI 挑战已开始：${battleRoom.roomid}`);
@@ -31,7 +36,7 @@ export const commands: Chat.ChatCommands = {
 				throw new Chat.ErrorMessage('请在你已结束的 AI 对局房间中重新挑战。');
 			}
 			const { trainer, difficulty } = battle.fantasyAI.options;
-			await getAIManager().challenge(connection, trainer.id, difficulty);
+			await getAIManager().challenge(connection, trainer.id, difficulty, undefined, undefined, trainer.format);
 		},
 		status() {
 			this.checkCan('lock');
