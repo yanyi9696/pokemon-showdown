@@ -3,7 +3,7 @@ import { Teams } from '../../sim/teams';
 import type { PokemonMoveRequestData } from '../../sim/side';
 import { battleNickname, estimateStats, HypothesisBuilder, type Combatant } from './hypotheses';
 import type { Observation } from './information';
-import type { InitialPokemon } from './initial-snapshot';
+import type { InitialPokemon, OpponentMoves } from './initial-snapshot';
 import { ownSeen, readBattleMemory, type BattleMemory, type SeenPokemon, type SinglesSide } from './memory';
 import { HypotheticalSets } from './sets';
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
@@ -27,6 +27,7 @@ export interface WorldHypothesis {
 	memory: BattleMemory;
 	publicLog: string[];
 	initialOpponent?: InitialPokemon[];
+	opponentMoves?: OpponentMoves[];
 	diagnostics: string[];
 }
 export type WorldTrainer =
@@ -123,6 +124,7 @@ export class WorldBuilder {
 							base.ability = toID(original.abilities['0']);
 						}
 						const set = this.sets.create(base, !!snapshot, variant, seen?.moves.filter(id => !dex.moves.get(id).isZ), {
+							moves: base.movesKnown,
 							ability: !changedForme && seen?.ability !== undefined && !!seen.ability,
 							item: seen?.item !== undefined,
 						});
@@ -162,6 +164,7 @@ export class WorldBuilder {
 						format: this.trainer.format, ownSide: side, turn: memory.turn, variant, probability: option.probability,
 						teams, memory: structuredClone(memory), publicLog: observation.publicLog.slice(), diagnostics,
 						initialOpponent: initial.length ? structuredClone(initial) : undefined,
+						opponentMoves: observation.opponentMoves && structuredClone(observation.opponentMoves),
 					});
 				} catch (error) {
 					failures.push(error instanceof Error ? error.message : 'world-build-failed');

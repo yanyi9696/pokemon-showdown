@@ -193,7 +193,9 @@ export class AIChallengeManager {
 			}
 			room.add(`|-message|断线或离开房间后保留 ${Math.ceil(this.settings.disconnectMs / 60000)} 分钟，期间不会替你自动出招。`).update();
 			if (difficulty === 'hard') {
-				room.add('|-message|高难 AI 开局获知全队初始配置及精确能力值；不会读取当前隐藏状态或未执行的行动。').update();
+				room.add('|-message|高难 AI 知晓全队初始配置及精确能力值，还会在你提交后读取本回合所选招式。').update();
+			} else {
+				room.add('|-message|普通 AI 知晓全队每只宝可梦的配招，并根据公开对战信息进行判断。').update();
 			}
 			return room;
 		} finally {

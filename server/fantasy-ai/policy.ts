@@ -53,7 +53,7 @@ export function selectCandidates(
 
 /**
  * 策略开发入口（普通 / 高难共用，不为某名训练家写固定回合脚本）：
- * - 先根据公开配招、用招频率和局面生成对手行动分布；主动换人仍面对同一分布，不能偷看玩家输入。
+ * - 普通档根据已知配招和公开局面预测；高难档当前回合使用获准读取的已提交招式。
  * - 伤害要扣除可持续回复的影响。连续打不出净损耗时，比较破盾、轮转、异常状态与保留 PP。
  * - 回血按实际缺血量、速度、斩杀线和对手强化机会估值；少量缺血不能自动成为最高收益行动。
  * - 每个特殊机制候选用变化后的属性与能力值重新计算承伤；换人按入场伤害和下一次行动机会估值。
@@ -251,8 +251,13 @@ export class RulePolicy {
 					const attack = probe(mon, opponent, id);
 					return attack.damage + (attack.substituteDamage || 0) * 0.6;
 				}));
-			const modelCache = new Map<string, { id: string, weight: number }[]>();
-			const model = (opponent: Combatant, target = current) => {
+			const selectedMove = observation.difficulty === 'hard' && !request.forceSwitch ? observation.opponentMove : undefined;
+			const modelCache = new Map<string, { id: string, weight: number, event?: string }[]>();
+			type Response = { id: string, weight: number, event?: string };
+			const model = (opponent: Combatant, target = current, future = false): Response[] => {
+				if (!future && selectedMove !== undefined) {
+					return [{ id: selectedMove?.baseMove || 'splash', weight: 1, event: selectedMove?.event }];
+				}
 				const key = JSON.stringify([opponent, target]);
 				let responses = modelCache.get(key);
 				if (responses) return responses;
@@ -289,7 +294,7 @@ export class RulePolicy {
 				// These probabilities are fixed against the CURRENT active Pokemon.
 				// A proposed switch must not make the opponent magically choose its perfect coverage move.
 				const responses = model(opponent, takesEntryAction ? current : mon).map(entry => {
-					const before = probe(opponent, mon, entry.id, '', foe);
+					const before = probe(opponent, mon, entry.id, entry.event || '', foe);
 					const estimate = { ...before };
 					if (action?.attack.postAction || action?.attack.targetAfterMove) {
 						const first = firstChance(action.attack, before) * action.opportunity;
@@ -303,7 +308,8 @@ export class RulePolicy {
 							// Bond while locking the opponent. Neither outcome may hide the other.
 							for (const user of states(action.attack.postAction, mon)) {
 								for (const target of states(action.attack.targetAfterMove, opponent)) {
-									const after = probe(target.profile, user.profile, target.profile.moveLocks?.encore || entry.id, '', foe);
+									const nextMove = target.profile.moveLocks?.encore || entry.id;
+									const after = probe(target.profile, user.profile, nextMove, nextMove === entry.id ? entry.event || '' : '', foe);
 									const probability = user.probability * target.probability * first;
 									for (const key of ['damage', 'knockout', 'status', 'disruption', 'volatile', 'boosts', 'healing',
 										'substituteDamage', 'substituteBroken', 'selfKnockout'] as const) {
@@ -326,7 +332,11 @@ export class RulePolicy {
 				// Bound the extra native probes: inspect the strongest coverage options,
 				// never recursively run another danger model. Probabilities still come
 				// from the current matchup, including when pricing a proposed switch.
-				const coverage = responses.filter(entry => dex.moves.get(entry.id).category !== 'Status')
+				// A known setup/status move still threatens its full coverage on the next turn.
+				const futureResponses = selectedMove === undefined ? responses : model(opponent, mon, true).map(entry => ({
+					...entry, estimate: probe(opponent, mon, entry.id, entry.event || '', foe),
+				}));
+				const coverage = futureResponses.filter(entry => dex.moves.get(entry.id).category !== 'Status')
 					.sort((a, b) => b.estimate.damage - a.estimate.damage).slice(0, options.quick ? 1 : 2);
 				let followup = 0;
 				for (const response of responses) {

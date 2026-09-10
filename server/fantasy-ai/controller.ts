@@ -3,7 +3,8 @@ import { PRNG } from '../../sim/prng';
 import type { ChoiceRequest } from '../../sim/side';
 import type { RoomBattle } from '../room-battle';
 import { InformationView } from './information';
-import type { InitialPokemon } from './initial-snapshot';
+import type { InitialPokemon, OpponentMoves } from './initial-snapshot';
+import type { OpponentChoiceState } from './opponent-choice';
 import { emergencyChoice } from './fallback';
 import type { DecisionScheduler } from './scheduler';
 import type { Difficulty, ValidatedTrainer } from './types';
@@ -41,7 +42,8 @@ export interface AIChallengeOptions extends TimeBudgetSettings {
 export class AIController {
 	private view?: InformationView;
 	private readonly rng = new PRNG();
-	private pending?: { request: ChoiceRequest, rqid: number, received: number };
+	private pending?: { request: ChoiceRequest, rqid: number, received: number, thinkingStarted?: number };
+	private opponent?: OpponentChoiceState;
 	private submitted = 0;
 	private submittedChoice = '';
 	private fingerprint = '';
@@ -73,6 +75,23 @@ export class AIController {
 		this.view = new InformationView({ ownSide: 'p2', difficulty: 'hard', initialOpponent: snapshot });
 	}
 
+	initialMoves(snapshot: OpponentMoves[]) {
+		if (!this.closed && this.options.difficulty === 'normal') this.view?.setOpponentMoves(snapshot);
+	}
+
+	opponentChoice(state: OpponentChoiceState) {
+		if (this.closed || this.options.difficulty !== 'hard' || this.opponent?.version === state.version) return;
+		this.opponent = state;
+		if (!this.pending || !('active' in this.pending.request)) return;
+		this.options.scheduler.cancel(this.battle.roomid, this.options.instanceId);
+		this.submitted = 0;
+		const current = this.battle.p2.request;
+		if (current.rqid === this.pending.rqid) {
+			current.isWait = false;
+			current.choice = '';
+		}
+	}
+
 	update(publicPacket: string) {
 		if (!this.closed) this.view?.receiveUpdate(publicPacket);
 	}
@@ -96,10 +115,14 @@ export class AIController {
 	/** The simulator's private flush marker follows requests AND their public update packet. */
 	flush() {
 		if (this.closed || !this.pending || this.battle.ended) return;
-		const { request, rqid, received } = this.pending;
+		const { request, rqid } = this.pending;
 		if (request.wait || rqid === this.submitted) return;
+		const readsChoice = this.options.difficulty === 'hard' && 'active' in request;
+		if (readsChoice && !this.opponent?.ready) return;
+		const choiceVersion = readsChoice ? this.opponent!.version : undefined;
+		const received = readsChoice ? this.pending.thinkingStarted ??= performance.now() : this.pending.received;
 		if (!this.view) { this.fail('missing-initial-snapshot'); return; }
-		const observation = this.view.observe(request);
+		const observation = this.view.observe(request, readsChoice ? this.opponent?.move : undefined);
 		const fingerprint = `${this.battle.turn}:${JSON.stringify(observation.request)}`;
 		if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
 		this.submitted = rqid;
@@ -113,12 +136,14 @@ export class AIController {
 		const fallback = emergencyChoice(observation, this.options.trainer.format, this.rejected);
 		const submit = (choice: string) => {
 			if (this.closed || this.battle.ended || this.battle.p1.eliminated || this.pending?.rqid !== rqid) return;
+			if (choiceVersion !== undefined && this.opponent?.version !== choiceVersion) return;
 			const current = this.battle.p2.request;
 			if (current.rqid !== rqid || current.isWait !== false) return;
 			this.submittedChoice = choice;
 			current.isWait = true;
 			current.choice = choice;
-			void this.battle.stream.write(`>p2 ${choice}`);
+			void this.battle.stream.write(choiceVersion === undefined ? `>p2 ${choice}` :
+				`>fantasyaichoose ${JSON.stringify({ version: choiceVersion, choice })}`);
 		};
 		void this.options.scheduler.submit({
 			key, trainer: this.options.trainer, observation, seed, excluded: this.rejected.slice(),
@@ -127,6 +152,7 @@ export class AIController {
 			maxRollouts: this.options.maxRollouts,
 		}).then(result => {
 			if (this.closed || this.pending?.rqid !== rqid || result.status === 'cancelled') return;
+			if (choiceVersion !== undefined && this.opponent?.version !== choiceVersion) return;
 			this.metrics.decisions++;
 			const elapsed = performance.now() - received;
 			this.metrics.totalDecisionMs += elapsed;

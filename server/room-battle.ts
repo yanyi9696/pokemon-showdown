@@ -20,7 +20,8 @@ import type { RoomSettings } from './rooms';
 import type { BestOfGame } from './room-battle-bestof';
 import type { GameTimerSettings } from '../sim/dex-formats';
 import { AIController, type AIChallengeOptions } from './fantasy-ai/controller';
-import { captureInitialTeam } from './fantasy-ai/initial-snapshot';
+import { captureInitialTeam, captureInitialMoves } from './fantasy-ai/initial-snapshot';
+import { captureOpponentChoice } from './fantasy-ai/opponent-choice';
 import type { Difficulty } from './fantasy-ai/types';
 
 type ChannelIndex = 0 | 1 | 2 | 3 | 4;
@@ -790,6 +791,12 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		case 'fantasyai':
 			this.fantasyAI?.initialSnapshot(JSON.parse(lines[1]));
 			break;
+		case 'fantasyaimoves':
+			this.fantasyAI?.initialMoves(JSON.parse(lines[1]));
+			break;
+		case 'fantasyaichoice':
+			this.fantasyAI?.opponentChoice(JSON.parse(lines[1]));
+			break;
 		case 'fantasyaiready':
 			this.fantasyAI?.flush();
 			break;
@@ -1375,6 +1382,7 @@ export class RoomBattleStream extends BattleStream {
 	override readonly battle: Battle;
 	private fantasyAI?: Difficulty;
 	private snapshotSent = false;
+	private opponentChoiceVersion = 0;
 	constructor() {
 		super({ keepAlive: true });
 		this.battle = null!;
@@ -1388,13 +1396,26 @@ export class RoomBattleStream extends BattleStream {
 			this.fantasyAI = message as Difficulty;
 			return;
 		}
+		if (type === 'fantasyaichoose') {
+			if (this.fantasyAI !== 'hard') throw new Error('Invalid AI choice channel');
+			const input: { version: number, choice: string } = JSON.parse(message);
+			// The human may undo/change a move while a worker reply is in transit.
+			if (input.version === this.opponentChoiceVersion &&
+				captureOpponentChoice(this.battle, 'p1').ready) super._writeLine('p2', input.choice);
+			return;
+		}
+		if (this.fantasyAI === 'hard' && type === 'p1') this.opponentChoiceVersion++;
 		super._writeLine(type, message);
 	}
 
 	override pushMessage(type: string, data: string) {
-		if (this.fantasyAI === 'hard' && !this.snapshotSent && type === 'sideupdate' &&
+		if (this.fantasyAI === 'hard' && type === 'sideupdate' && data.startsWith('p2\n|request|')) {
+			this.opponentChoiceVersion++;
+		}
+		if (this.fantasyAI && !this.snapshotSent && type === 'sideupdate' &&
 			data.startsWith('p2\n|request|') && this.battle.requestState === 'teampreview') {
-			this.push(`fantasyai\n${JSON.stringify(captureInitialTeam(this.battle, 'p1'))}`);
+			this.push(this.fantasyAI === 'hard' ? `fantasyai\n${JSON.stringify(captureInitialTeam(this.battle, 'p1'))}` :
+				`fantasyaimoves\n${JSON.stringify(captureInitialMoves(this.battle, 'p1'))}`);
 			this.snapshotSent = true;
 		}
 		super.pushMessage(type, data);
@@ -1427,6 +1448,9 @@ export class RoomBattleStream extends BattleStream {
 			this.push(`error\n${err.stack}`);
 		}
 		if (this.battle) this.battle.sendUpdates();
+		if (this.fantasyAI === 'hard' && this.battle?.p1) {
+			this.push(`fantasyaichoice\n${JSON.stringify(captureOpponentChoice(this.battle, 'p1', this.opponentChoiceVersion))}`);
+		}
 		if (this.fantasyAI) this.push('fantasyaiready\n');
 		const deltaTime = Date.now() - startTime;
 		if (deltaTime > 1000) {

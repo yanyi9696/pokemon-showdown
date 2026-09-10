@@ -17,6 +17,7 @@ export interface Combatant {
 	level: number;
 	stats: StatsTable;
 	moves: string[];
+	movesKnown?: boolean;
 	ability: string;
 	item: string;
 	health: { lower: number, upper: number };
@@ -135,14 +136,20 @@ export class HypothesisBuilder {
 
 	build(seen: SeenPokemon, observation: Observation, memory: BattleMemory): OpponentHypothesis[] {
 		const initial = observation.difficulty === 'hard' ? observation.initialOpponent || [] : [];
+		const knownMoves = observation.opponentMoves || initial;
 		const visible = this.dex.species.get(seen.species);
 		if (!visible.exists) throw new Error(`Unknown observed species: ${seen.species}`);
 		const matches = initial.filter(mon => {
 			const species = this.dex.species.get(mon.species);
 			return species.id === visible.id || (!seen.ambiguousIdentity && species.baseSpecies === visible.baseSpecies);
 		});
-		const identities: { species: Species, initial?: InitialPokemon, illusion: boolean }[] =
+		const moveMatches = knownMoves.filter(mon => {
+			const species = this.dex.species.get(mon.species);
+			return species.id === visible.id || (!seen.ambiguousIdentity && species.baseSpecies === visible.baseSpecies);
+		});
+		const identities: { species: Species, initial?: InitialPokemon, moves?: string[], illusion: boolean }[] =
 			matches.length ? matches.map(mon => ({ species: visible, initial: mon, illusion: false })) :
+			moveMatches.length ? moveMatches.map(mon => ({ species: visible, moves: mon.moves, illusion: false })) :
 			[{ species: visible, illusion: false }];
 		if (seen.ambiguousIdentity) {
 			if (initial.length) {
@@ -155,7 +162,9 @@ export class HypothesisBuilder {
 				for (const member of memory.sides[seen.side].preview) {
 					const species = this.dex.species.get(member.species);
 					if (species.id !== visible.id && Object.values(species.abilities).some(ability => toID(ability) === 'illusion')) {
-						identities.push({ species, illusion: true });
+						const moves = knownMoves.filter(mon => this.dex.species.get(mon.species).id === species.id);
+						if (moves.length) identities.push(...moves.map(mon => ({ species, moves: mon.moves, illusion: true })));
+						else identities.push({ species, illusion: true });
 					}
 				}
 			}
@@ -178,14 +187,16 @@ export class HypothesisBuilder {
 				const revealedMoves = seen.moves.filter(id => !this.dex.moves.get(id).isZ);
 				const assumedAbility = unchangedForme ? snapshot.ability : abilities[variant % abilities.length];
 				const ability = seen.ability ?? (illusion ? 'illusion' : toID(assumedAbility));
-				const moves = snapshot && !seen.transformed ? [...new Set([...revealedMoves, ...snapshot.moves])].slice(0, 4) :
+				const configuredMoves = snapshot?.moves || identity.moves;
+				const movesKnown = !!configuredMoves && !seen.transformed;
+				const moves = movesKnown ? [...new Set([...revealedMoves, ...configuredMoves])].slice(0, 4) :
 					this.priorMoves(species, variant, revealedMoves);
 				const items = seen.item === undefined && !snapshot ?
 					priorItems(this.dex, this.format, species, moves, ability, variant > 0, seen.status) : [];
 				result.push({
 					species: species.name, level,
 					stats: unchangedForme ? { ...snapshot.stats } : estimateStats(species, level, variant > 0, variant === 2),
-					moves, ability, reserves,
+					moves, movesKnown, ability, reserves,
 					item: seen.item ?? snapshot?.item ?? items[Math.min(variant, items.length - 1)] ?? '',
 					health: { ...seen.health }, status: seen.status, boosts: { ...seen.boosts },
 					volatiles: seen.volatiles.slice(), types: illusion ? undefined : seen.types?.slice(),

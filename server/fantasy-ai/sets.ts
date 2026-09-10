@@ -47,7 +47,7 @@ export class HypotheticalSets {
 
 	create(
 		profile: Combatant, exact: boolean, variant: number, revealed: readonly string[] = [],
-		known: { item?: boolean, ability?: boolean } = {},
+		known: { item?: boolean, ability?: boolean, moves?: boolean } = {},
 	): PokemonSet {
 		const key = JSON.stringify([profile.species, profile.level, profile.stats, profile.moves,
 			profile.ability, profile.item, profile.teraType, exact, variant, revealed, known]);
@@ -75,7 +75,7 @@ export class HypotheticalSets {
 					return structuredClone(set);
 				}
 			}
-			if (exact) break;
+			if (exact || known.moves) break;
 		}
 		throw new Error('no-legal-configuration-hypothesis');
 	}

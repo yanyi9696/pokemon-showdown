@@ -3,7 +3,8 @@ import { performance } from 'perf_hooks';
 import { PRNG, type PRNGSeed } from '../../sim/prng';
 import { toID } from '../../sim/dex';
 import { InformationView } from './information';
-import { captureInitialTeam } from './initial-snapshot';
+import { captureInitialTeam, captureInitialMoves } from './initial-snapshot';
+import { captureOpponentChoice } from './opponent-choice';
 import { RulePolicy } from './policy';
 import { RolloutPolicy } from './rollout';
 import { validatePlayerTeam } from './trainers';
@@ -62,7 +63,9 @@ export function runOfflineBattle(options: OfflineOptions): OfflineResult {
 	try {
 		const views = options.difficulties.map((difficulty, index) => {
 			const ownSide = index === 0 ? 'p1' : 'p2';
-			return new InformationView(difficulty === 'normal' ? { ownSide, difficulty } : {
+			return new InformationView(difficulty === 'normal' ? {
+				ownSide, difficulty, opponentMoves: captureInitialMoves(battle, index === 0 ? 'p2' : 'p1'),
+			} : {
 				ownSide, difficulty, initialOpponent: captureInitialTeam(battle, index === 0 ? 'p2' : 'p1'),
 			});
 		});
@@ -78,10 +81,17 @@ export function runOfflineBattle(options: OfflineOptions): OfflineResult {
 			logCursor = battle.log.length;
 			for (const view of views) view.receiveUpdate(update);
 			options.onPublicUpdate?.(extractChannelMessages(update, [0])[0].join('\n'));
-			const pending = battle.sides.map((side, index) => {
-				if (!side.activeRequest || side.activeRequest.wait || side.isChoiceDone()) return null;
-				const request = side.activeRequest;
-				const observation = views[index].observe(request);
+			const pending = battle.sides.map((side, index) => ({ side, index, request: side.activeRequest }))
+				.filter(({ side, request }) => request && !request.wait && !side.isChoiceDone())
+				.sort((a, b) => Number(options.difficulties[a.index] === 'hard') - Number(options.difficulties[b.index] === 'hard') ||
+					(battle.turn % 2 ? a.index - b.index : b.index - a.index));
+			// Normal submits first, letting hard mode use the same accepted-move adapter as online play.
+			// With two hard AIs there is no simultaneous foresight solution; alternate the first mover.
+			for (const { side, index, request } of pending) {
+				if (!request || battle.ended || side.activeRequest !== request) continue;
+				const selected = options.difficulties[index] === 'hard' ?
+					captureOpponentChoice(battle, index === 0 ? 'p2' : 'p1').move : undefined;
+				const observation = views[index].observe(request, selected);
 				const fingerprint = JSON.stringify(observation.request);
 				const started = performance.now();
 				const excluded = rejected[index].get(fingerprint);
@@ -104,15 +114,12 @@ export function runOfflineBattle(options: OfflineOptions): OfflineResult {
 				result.maxDecisionMs = Math.max(result.maxDecisionMs, elapsed);
 				if (decision.diagnostics.some(note => note.startsWith('probe-failed:'))) result.probeFailures++;
 				if (decision.diagnostics.some(note => note.startsWith('approximate-volatile:'))) result.approximateDecisions++;
-				return { request, choice: decision.choice, fingerprint };
-			});
-			for (const [index, decision] of pending.entries()) {
-				if (!decision?.choice || battle.ended || battle.sides[index].activeRequest !== decision.request) continue;
+				if (!decision.choice) continue;
 				if (!battle.choose(index === 0 ? 'p1' : 'p2', decision.choice)) {
 					result.illegalChoices++;
-					const failed = rejected[index].get(decision.fingerprint) || [];
+					const failed = rejected[index].get(fingerprint) || [];
 					failed.push(decision.choice);
-					rejected[index].set(decision.fingerprint, failed);
+					rejected[index].set(fingerprint, failed);
 				}
 			}
 		}

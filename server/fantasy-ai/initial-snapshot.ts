@@ -1,13 +1,22 @@
 import type { Battle } from '../../sim/battle';
 
-export interface InitialPokemon {
+export interface OpponentMoves {
 	species: string;
-	level: number;
 	moves: string[];
+}
+
+export interface InitialPokemon extends OpponentMoves {
+	level: number;
 	item: string;
 	ability: string;
 	teraType: string;
 	stats: StatsTable;
+}
+
+/** Both difficulties may know moves, without learning another configuration field or team order. */
+export function copyOpponentMoves(team: readonly OpponentMoves[]): OpponentMoves[] {
+	return team.map(mon => ({ species: mon.species, moves: mon.moves.slice().sort() }))
+		.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
 }
 
 /** Copy a whitelist, with no team position, nickname or dynamic state. */
@@ -32,16 +41,26 @@ export function copyInitialTeam(team: readonly InitialPokemon[]): InitialPokemon
 
 /**
  * Trusted simulator-side adapter. Call once at team preview, before passing
- * JSON to a hard-mode AI. Never send this snapshot to clients or public logs.
+ * JSON to an AI. Never send these snapshots to clients or public logs.
  * The decision code receives its result, never the Battle passed here.
  */
-export function captureInitialTeam(battle: Battle, side: 'p1' | 'p2'): InitialPokemon[] {
+function initialPokemon(battle: Battle, side: 'p1' | 'p2') {
 	if (battle.gameType !== 'singles' || battle.requestState !== 'teampreview' || battle.turn !== 0) {
 		throw new Error('初始快照只能在单打队伍预览阶段采集。');
 	}
 	const pokemon = battle.getSide(side).pokemon;
 	if (pokemon.length !== 6) throw new Error('初始快照要求六只宝可梦。');
-	return copyInitialTeam(pokemon.map(mon => ({
+	return pokemon;
+}
+
+export function captureInitialMoves(battle: Battle, side: 'p1' | 'p2'): OpponentMoves[] {
+	return copyOpponentMoves(initialPokemon(battle, side).map(mon => ({
+		species: mon.species.name, moves: mon.baseMoveSlots.map(move => move.id),
+	})));
+}
+
+export function captureInitialTeam(battle: Battle, side: 'p1' | 'p2'): InitialPokemon[] {
+	return copyInitialTeam(initialPokemon(battle, side).map(mon => ({
 		species: mon.species.name,
 		level: mon.level,
 		moves: mon.baseMoveSlots.map(move => move.id),

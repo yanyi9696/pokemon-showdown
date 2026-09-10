@@ -191,18 +191,28 @@ describe('Fantasy AI online challenges', function () {
 			assert.equal(Object.keys(battle.playerTable).length, 1);
 			assert(player.games.has(room.roomid));
 			battle.choose(player, `team 123456|${battle.p1.request.rqid}`);
-			await until(() => battle.turn === 1 && battle.p2.request.isWait === true, 'first move decision');
-			const input = calls[calls.length - 1];
+			await until(() => battle.turn === 1, 'first turn');
+			const rqid = battle.p2.request.rqid;
+			if (difficulty === 'hard') {
+				assert.equal(calls.filter(input => input.observation.request.active).length, 0);
+				battle.choose(player, 'move 1');
+			}
+			await until(() => calls.some(input => input.observation.request.active), 'first move decision');
+			const input = calls.find(input => input.observation.request.active);
 			assert(input.observation.publicLog.includes('|turn|1'), 'decision sees current public turn before dispatch');
 			assert.equal(input.observation.publicLog.filter(line => line.startsWith('|poke|p1|')).length, 6);
 			assert.equal(input.observation.publicLog.filter(line => line.startsWith('|poke|p2|')).length, 6);
 			assert.equal(input.observation.request.side.id, 'p2');
-			assert.equal(input.key.rqid, battle.p2.request.rqid);
+			assert.equal(input.key.rqid, rqid);
+			assert.equal(input.observation.opponentMoves.length, 6);
+			assert(input.observation.opponentMoves.every(mon => Object.keys(mon).sort().join(',') === 'moves,species'));
 			if (difficulty === 'hard') {
 				assert.equal(input.observation.initialOpponent.length, 6);
 				assert(input.observation.initialOpponent.every(mon => !('hp' in mon) && !('position' in mon) && !('name' in mon)));
+				assert(input.observation.opponentMove.baseMove);
 			} else {
 				assert(!('initialOpponent' in input.observation));
+				assert(!('opponentMove' in input.observation));
 			}
 			const log = room.getLog(0);
 			assert(!log.includes('|request|') && !log.includes('fantasyai\n') && !log.includes('initialOpponent'));
@@ -218,7 +228,7 @@ describe('Fantasy AI online challenges', function () {
 		});
 	}
 
-	it('runs search in the actual worker while the human can submit independently', async () => {
+	it('runs hard-mode search in the actual worker after the human submits', async () => {
 		setup({ decisionMs: 5000 });
 		const player = human();
 		const room = await challenge(player, 'hard');
@@ -230,6 +240,79 @@ describe('Fantasy AI online challenges', function () {
 		assert.equal(room.battle.fantasyAI.metrics.illegalChoices, 0);
 		assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
 		assert(room.battle.fantasyAI.metrics.rollouts > 0);
+	});
+
+	it('waits for a legal human move, cancels on undo/change, and discards stale worker results', async () => {
+		setup({ decisionMs: 1000 });
+		const decisions = [];
+		manager.scheduler.submit = input => {
+			if (!input.observation.request.active) {
+				return Promise.resolve({ key: input.key, status: 'completed', decision: { choice: 'team 123456' } });
+			}
+			return new Promise(resolve => { decisions.push({ input, resolve }); });
+		};
+		const player = human();
+		const room = await challenge(player, 'hard');
+		const battle = room.battle;
+		battle.choose(player, 'team 123456');
+		await until(() => battle.turn === 1, 'first turn');
+		await delay(30);
+		assert.equal(decisions.length, 0);
+		battle.choose(player, 'move 999');
+		await until(() => battle.p1.request.isWait === false, 'invalid human move rejected');
+		assert.equal(decisions.length, 0);
+		const request = JSON.parse(battle.p1.request.request);
+		battle.choose(player, 'move 1');
+		await until(() => decisions.length === 1, 'first accepted human move');
+		assert.equal(decisions[0].input.observation.opponentMove.baseMove, request.active[0].moves[0].id);
+		assert(decisions[0].input.budgetMs > 980, 'waiting for the human must not consume the AI budget');
+		battle.undo(player, '');
+		await delay(20);
+		battle.choose(player, 'move 2');
+		await until(() => decisions.length === 2, 'changed human move');
+		assert.equal(decisions[1].input.observation.opponentMove.baseMove, request.active[0].moves[1].id);
+		assert(decisions[1].input.budgetMs < decisions[0].input.budgetMs, 'retries share the original thinking window');
+		decisions[0].resolve({ key: decisions[0].input.key, status: 'completed', decision: { choice: 'move 1' } });
+		await delay(20);
+		assert.equal(battle.turn, 1);
+		assert.equal(battle.p2.request.isWait, false);
+		decisions[1].resolve({ key: decisions[1].input.key, status: 'completed', decision: { choice: 'move 1' } });
+		await until(() => battle.turn === 2, 'current worker result');
+		assert.equal(decisions.length, 2, 'new turn must wait for another human choice');
+		assert(!room.getLog(0).includes('opponentMove'));
+		assert(!room.getLog(0).includes('fantasyaichoice'));
+	});
+
+	it('checks the human selection version again inside the simulator before accepting an AI answer', async () => {
+		const stream = new RoomBattleStream();
+		async function exchange(input) {
+			await stream.write(input);
+			let state;
+			for (;;) {
+				const packet = await stream.read();
+				if (packet.startsWith('fantasyaiready')) return state;
+				if (packet.startsWith('fantasyaichoice\n')) state = JSON.parse(packet.split('\n')[1]);
+			}
+		}
+		try {
+			await exchange(`>start ${JSON.stringify({ formatid: trainer.format })}\n>fantasyai hard\n` +
+				`>player p1 ${JSON.stringify({ name: 'Human', team: trainer.packedTeam })}\n` +
+				`>player p2 ${JSON.stringify({ name: 'AI', team: trainer.packedTeam })}`);
+			assert.equal((await exchange('>p1 team 123456\n>p2 team 123456')).ready, false);
+			const old = await exchange('>p1 move 1');
+			assert(old.ready && old.move.baseMove);
+			assert.equal((await exchange('>p1 undo')).ready, false);
+			const current = await exchange('>p1 move 2');
+			assert(current.version > old.version);
+			await exchange(`>fantasyaichoose ${JSON.stringify({ version: old.version, choice: 'move 1' })}`);
+			assert.equal(stream.battle.turn, 1);
+			assert.equal(stream.battle.p2.isChoiceDone(), false);
+			await exchange(`>fantasyaichoose ${JSON.stringify({ version: current.version, choice: 'move 1' })}`);
+			assert.equal(stream.battle.turn, 2);
+			assert(!stream.battle.inputLog.some(line => line.includes('fantasyaichoose')));
+		} finally {
+			await stream.destroy();
+		}
 	});
 
 	it('retries a native invalid action with a fresh request identity and excludes the rejected candidate', async () => {
@@ -521,9 +604,10 @@ describe('Fantasy AI private simulator transport', () => {
 					`>player p2 ${JSON.stringify({ name: 'AI', team: trainer.packedTeam })}`);
 				const first = await readBatch();
 				assert.equal(first.filter(packet => packet.startsWith('fantasyai\n')).length, difficulty === 'hard' ? 1 : 0);
+				assert.equal(first.filter(packet => packet.startsWith('fantasyaimoves\n')).length, difficulty === 'normal' ? 1 : 0);
 				assert(first.filter(packet => packet.startsWith('update\n')).every(packet => !packet.includes('"stats"')));
 				await stream.write('>p1 team 123456\n>p2 team 123456');
-				assert((await readBatch()).every(packet => !packet.startsWith('fantasyai\n')));
+				assert((await readBatch()).every(packet => !packet.startsWith('fantasyai\n') && !packet.startsWith('fantasyaimoves\n')));
 				assert(stream.battle.inputLog.every(line => !line.includes('fantasyai') && !line.includes('"stats"')));
 			} finally { await stream.destroy(); }
 		});

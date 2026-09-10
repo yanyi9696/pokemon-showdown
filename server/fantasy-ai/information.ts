@@ -1,6 +1,7 @@
 import { extractChannelMessages } from '../../sim/battle';
 import type { ChoiceRequest, PokemonMoveRequestData } from '../../sim/side';
-import { copyInitialTeam, type InitialPokemon } from './initial-snapshot';
+import { copyInitialTeam, copyOpponentMoves, type InitialPokemon, type OpponentMoves } from './initial-snapshot';
+import type { SelectedOpponentMove } from './opponent-choice';
 import type { Difficulty } from './types';
 
 // Only battle information. Requests, chat, debug output and input logs must
@@ -22,7 +23,7 @@ const PUBLIC_EVENTS = new Set([
 ]);
 
 type InformationOptions = { ownSide: 'p1' | 'p2' } & (
-	{ difficulty: 'normal', initialOpponent?: never } |
+	{ difficulty: 'normal', initialOpponent?: never, opponentMoves?: readonly OpponentMoves[] } |
 	{ difficulty: 'hard', initialOpponent: readonly InitialPokemon[] }
 );
 
@@ -32,6 +33,8 @@ export interface Observation {
 	request: ChoiceRequest;
 	publicLog: string[];
 	initialOpponent?: InitialPokemon[];
+	opponentMoves?: OpponentMoves[];
+	opponentMove?: SelectedOpponentMove | null;
 }
 
 function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
@@ -78,13 +81,14 @@ function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
 
 /**
  * An AI owns this detached information view. Its only changing inputs are
- * its own request and public battle updates. There is no live Battle/Side,
- * opponent request, choice queue or battle RNG in this interface.
+ * its own request, public updates and authorized whitelisted snapshots. There
+ * is no live Battle/Side, opponent request, choice queue or battle RNG here.
  */
 export class InformationView {
 	private readonly ownSide: 'p1' | 'p2';
 	private readonly difficulty: Difficulty;
 	private readonly initialOpponent?: InitialPokemon[];
+	private opponentMoves?: OpponentMoves[];
 	private readonly publicLog: string[] = [];
 
 	constructor(options: InformationOptions) {
@@ -95,7 +99,15 @@ export class InformationView {
 		if (options.difficulty === 'hard') {
 			if (options.initialOpponent?.length !== 6) throw new Error('高难档需要完整的开局六只宝可梦快照。');
 			this.initialOpponent = copyInitialTeam(options.initialOpponent);
+			this.setOpponentMoves(options.initialOpponent);
+		} else if (options.opponentMoves) {
+			this.setOpponentMoves(options.opponentMoves);
 		}
+	}
+
+	setOpponentMoves(team: readonly OpponentMoves[]) {
+		if (team.length !== 6) throw new Error('配招快照需要完整的六只宝可梦。');
+		this.opponentMoves = copyOpponentMoves(team);
 	}
 
 	/** Feed complete simulator update packets, never partially split lines. */
@@ -115,7 +127,7 @@ export class InformationView {
 		}
 	}
 
-	observe(request: ChoiceRequest): Observation {
+	observe(request: ChoiceRequest, selectedMove?: SelectedOpponentMove | null): Observation {
 		if (request.side.id !== this.ownSide) throw new Error('不能读取对手的私有行动请求。');
 		const observation: Observation = {
 			difficulty: this.difficulty,
@@ -124,6 +136,12 @@ export class InformationView {
 			publicLog: this.publicLog.slice(),
 		};
 		if (this.initialOpponent) observation.initialOpponent = copyInitialTeam(this.initialOpponent);
+		if (this.opponentMoves) observation.opponentMoves = copyOpponentMoves(this.opponentMoves);
+		if (this.difficulty === 'hard' && 'active' in request && selectedMove !== undefined) {
+			observation.opponentMove = selectedMove === null ? null : {
+				move: selectedMove.move, baseMove: selectedMove.baseMove, event: selectedMove.event,
+			};
+		}
 		return observation;
 	}
 }

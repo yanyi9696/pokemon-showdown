@@ -11,6 +11,8 @@ import { reconstructWorld } from './reconstruction';
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
 import { WorldBuilder, type WorldHypothesis } from './world';
 import { recoveryCapacity, statusCost } from './mechanics';
+import { enumerateRequestChoices } from './actions';
+import { matchesOpponentMove } from './opponent-choice';
 import { assessTrickRoom, trickRoomPosition, type RoomMember } from './trick-room';
 
 export interface SearchDecision extends RuleDecision {
@@ -36,7 +38,7 @@ export interface SearchOptions {
 function observeHypothesis(battle: Battle, world: WorldHypothesis, side: SinglesSide): Observation {
 	const view = new InformationView(side === world.ownSide && world.initialOpponent ? {
 		ownSide: side, difficulty: 'hard', initialOpponent: world.initialOpponent,
-	} : { ownSide: side, difficulty: 'normal' });
+	} : { ownSide: side, difficulty: 'normal', opponentMoves: side === world.ownSide ? world.opponentMoves : undefined });
 	view.receiveUpdate(battle.log.join('\n'));
 	return view.observe(battle.getSide(side).activeRequest!);
 }
@@ -256,7 +258,11 @@ export class RolloutPolicy {
 					const setup = reconstructWorld(world, samples[0]);
 					let responses: RuleDecision;
 					try {
-						responses = opponentPolicy.decide(observeHypothesis(setup, world, foe), seed, [], { quick: true });
+						const view = observeHypothesis(setup, world, foe);
+						const selected = observation.difficulty === 'hard' ? observation.opponentMove : undefined;
+						const excluded = selected === undefined ? [] : enumerateRequestChoices(view.request)
+							.filter(choice => !matchesOpponentMove(view.request, choice, selected));
+						responses = opponentPolicy.decide(view, seed, excluded, { quick: true });
 					} finally {
 						setup.destroy();
 					}
