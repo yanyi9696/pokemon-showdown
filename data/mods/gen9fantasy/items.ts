@@ -1,3 +1,10 @@
+function canTakeMegaStone(item: Item, pokemon: Pokemon) {
+	// Keep complete forme names and protect both sides of a permanent Mega Evolution.
+	// itemUser also includes Zygarde's formes before Power Construct activates.
+	const protectedFormes = [item.megaEvolves, item.megaStone, item.itemUser || []].flat();
+	return !protectedFormes.includes(pokemon.baseSpecies.name);
+}
+
 export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 	// 新增气场爆发的相关原版Z纯晶
 	firiumz: {
@@ -2843,16 +2850,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaStone: ["Zygarde-Mega"],
 		megaEvolves: ["Zygarde-Complete"],
 		itemUser:  ["Zygarde","Zygarde-10%","Zygarde-Complete"],
-		onTakeItem(item, source) {
-            if (
-                (Array.isArray(item.megaEvolves)
-                    ? item.megaEvolves
-                    : [item.megaEvolves]
-                ).includes(source.baseSpecies.baseSpecies)
-            )
-                return false;
-            return true;
-        },
+		onTakeItem: canTakeMegaStone,
 		num: 10044,
 		gen: 9,
 		desc: "让基格尔德携带后,在战斗时就能进行超级进化",
@@ -2864,16 +2862,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaStone: "Flygon-Mega-Fantasy",
 		megaEvolves: "Flygon-Fantasy",
 		itemUser: ["Flygon-Fantasy"],
-		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
+		onTakeItem: canTakeMegaStone,
 		num: 10045,
 		gen: 9,
 		desc: "让沙漠蜻蜓-幻想携带后,在战斗时就能进行超级进化",
@@ -2885,16 +2874,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaStone: ["Swampert-Mega-X-Fantasy"],
 		megaEvolves: ["Swampert-Fantasy"],
 		itemUser: ["Swampert-Fantasy"],
-		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
+		onTakeItem: canTakeMegaStone,
 		num: 10046,
 		gen: 9,
 		desc: "让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
@@ -2906,16 +2886,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaStone: ["Swampert-Mega-Y-Fantasy"],
 		megaEvolves: ["Swampert-Fantasy"],
 		itemUser: ["Swampert-Fantasy"],
-		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
+		onTakeItem: canTakeMegaStone,
 		num: 10047,
 		gen: 9,
 		desc: "让巨沼怪-幻想携带后,在战斗时就能进行超级进化",
@@ -2945,16 +2916,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaStone: ["Steelix-Mega-X-Fantasy"],
 		megaEvolves: ["Steelix-Fantasy"],
 		itemUser: ["Steelix-Fantasy"],
-		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
+		onTakeItem: canTakeMegaStone,
 		num: 10049,
 		gen: 9,
 		desc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
@@ -2966,16 +2928,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaStone: ["Steelix-Mega-Y-Fantasy"],
 		megaEvolves: ["Steelix-Fantasy"],
 		itemUser: ["Steelix-Fantasy"],
-		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
+		onTakeItem: canTakeMegaStone,
 		num: 10050,
 		gen: 9,
 		desc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
@@ -2987,16 +2940,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaStone: ["Steelix-Mega-Z-Fantasy"],
 		megaEvolves: ["Steelix-Fantasy"],
 		itemUser: ["Steelix-Fantasy"],
-		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
+		onTakeItem: canTakeMegaStone,
 		num: 10051,
 		gen: 9,
 		desc: "让大钢蛇-幻想携带后,在战斗时就能进行超级进化",
@@ -3008,16 +2952,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		megaStone: "Rayquaza-Mega-Fantasy",
 		megaEvolves: "Rayquaza-Fantasy",
 		itemUser: ["Rayquaza-Fantasy"],
-		onTakeItem(item, source) {
-			if (
-				(Array.isArray(item.megaEvolves)
-					? item.megaEvolves
-					: [item.megaEvolves]
-				).includes(source.baseSpecies.baseSpecies)
-			)
-				return false;
-			return true;
-		},
+		onTakeItem: canTakeMegaStone,
 		num: 10052,
 		gen: 9,
 		desc: "让烈空坐-幻想携带后,在战斗时就能进行超级进化",
