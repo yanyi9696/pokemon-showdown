@@ -15,10 +15,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		pp: 10,
 	},
-	milkdrink: {
-		inherit: true,
-		pp: 10,
-	},
 	rest: {
 		inherit: true,
 		pp: 10,
@@ -292,6 +288,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "放出低温的细雪,从而让对手陷入冻伤状态。对冰属性宝可梦无效",
 		shortDesc: "使目标陷入冻伤状态",
     },
+	milkdrink: {
+		num: 208,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Milk Drink",
+		pp: 10,
+		priority: 0,
+		flags: { snatch: 1, heal: 1, metronome: 1 },
+		heal: [1, 2],
+		secondary: null,
+		target: "adjacentAllyOrSelf",
+		type: "Normal",
+		zMove: { effect: 'clearnegativeboost' },
+		contestType: "Cute",
+		desc: "会让自己或同伴的HP回复最大HP的1/2",
+		shortDesc: "会让自己或同伴的HP回复最大HP的1/2",
+	},
 	spark: {
 		num: 209,
 		accuracy: 100,
@@ -2662,7 +2676,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             if (source.volatiles['parasite']) return false;
         },
         onHit(target, source, move) {
-            const damage = this.directDamage(target.maxhp / 3, target, source);
+            const damage = this.directDamage(target.maxhp / 4, target, source);
             if (target.fainted || !damage) return false;
 
             this.boost({ atk: 1, spa: 1, spe: 1 }, target, source, move);
@@ -2681,8 +2695,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         type: "Poison",
         zMove: { effect: 'heal' },
         contestType: "Cool",
-        desc: "寄生一名我方宝可梦,令其损失1/3最大HP,提高物攻、特攻与速度各1级。期间目标将无法选中,而自己将无法使出技能",
-        shortDesc: "队友损失1/3最大HP,提高双攻速度1级;自己无法使出技能",
+        desc: "寄生一名我方宝可梦,令其损失1/4最大HP,提高物攻、特攻与速度各1级。期间目标将无法选中,而自己将无法使出技能",
+        shortDesc: "队友损失1/4最大HP,提高双攻速度1级;自己无法使出技能",
     },
 	qingsumihun: {
 		num: 10054,
