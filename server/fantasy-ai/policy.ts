@@ -11,6 +11,7 @@ import { actionOpportunity, DELAYED_HEALING, effectiveAbility, statusCost } from
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
 import { getTrainerFormat } from './trainers';
 import { assessTrickRoom, trickRoomTurns } from './trick-room';
+import { assessMegaPreference, isMegaEvent, type MegaPreference } from './mega';
 import {
 	observedDamage, observedImmunity, passiveRecovery, PIVOT_MOVES, recoveryAmount, remainingPP,
 	repeatedRecovery, residualDamage, stalledAttacks, switchCycleCost,
@@ -41,8 +42,22 @@ export function selectCandidates(
 		if (candidate && candidates.length < limit && !candidates.includes(candidate)) candidates.push(candidate);
 	};
 	retain(ranked.find(candidate => candidate.choice === selected));
+	for (const reason of ['emergency-counterplay', 'reliable-finish']) {
+		retain(ranked.find(candidate => candidate.reasons.includes(reason)));
+	}
+	// At the wider root, compare the same move with/without Mega when both are
+	// credible. Keep the narrow continuation budget available for other tactics.
+	if (limit >= DEFAULT_LIMITS.ownCandidates) {
+		const mega = ranked.find(candidate => isMegaEvent(candidate.choice.split(' ')[2]) &&
+			!candidate.ineffective && candidate.score >= (ranked[0]?.score || 0) - 35);
+		if (mega) {
+			retain(mega);
+			retain(ranked.find(candidate => candidate.choice === mega.choice.split(' ').slice(0, 2).join(' ') &&
+				candidate.score >= mega.score - 45));
+		}
+	}
 	for (const reason of [
-		'emergency-counterplay', 'reliable-finish', 'attack', 'trick-room-setup', 'trick-room-pivot', 'switch-matchup', 'urgent-recovery',
+		'attack', 'trick-room-setup', 'trick-room-pivot', 'switch-matchup', 'urgent-recovery',
 		'defensive-cycle', 'hazard-removal', 'hazard-pressure', 'setup',
 	]) {
 		retain(ranked.find(candidate => candidate.reasons.includes(reason)));
@@ -57,6 +72,7 @@ export function selectCandidates(
  * - 伤害要扣除可持续回复的影响。连续打不出净损耗时，比较破盾、轮转、异常状态与保留 PP。
  * - 回血按实际缺血量、速度、斩杀线和对手强化机会估值；少量缺血不能自动成为最高收益行动。
  * - 每个特殊机制候选用变化后的属性与能力值重新计算承伤；换人按入场伤害和下一次行动机会估值。
+ * - 种族值净提升的 Mega 通常尽早使用；mega.ts 处理平级变形与全队严重克制，不重复扣一次性资源分。
  * - 盾牌安全入场后能恢复 / 铺钉也有价值；残局、对方强化或撒钉手将被击杀时压低远期钉子收益。
  * - strategic 保存短搜索容易遗漏的机会成本，交给 rollout.ts 使用；不要用它重复奖励即时伤害。
  * - quick 仅用于假想世界的后续决策，减少配置及伤害采样，让更多回合的推演能够完成。
@@ -167,6 +183,20 @@ export class RulePolicy {
 			const healingLoop = repeatedRecovery(memory, active, dex);
 			const weights = WEIGHTS[this.trainer.style];
 			let hazardTeams: ReturnType<typeof observedHazardTeams> | undefined;
+			const megaCache = new Map<string, MegaPreference>();
+			const megaPreference = (evolved: Combatant) => {
+				let preference = megaCache.get(evolved.species);
+				if (!preference) {
+					preference = assessMegaPreference(current, evolved, () => {
+						hazardTeams ||= observedHazardTeams(
+							this.hypotheses, observation, memory, own, index => this.isKey(observation, index));
+						return hazardTeams[foe];
+					}, dex, (attacker, defender, id) =>
+						estimateMove(this.trainer.format, attacker, defender, id, '', memory, foe, 1));
+					megaCache.set(evolved.species, preference);
+				}
+				return preference;
+			};
 			const roomTurns = trickRoomTurns(memory);
 			let room = { value: 0, benefits: own.map(() => 0) };
 			if (roomTurns || own.some(mon => mon.health.upper && mon.moves.includes('trickroom'))) {
@@ -775,8 +805,28 @@ export class RulePolicy {
 							}
 							if (event) {
 								const resource = event === 'ultra' ? 'aura' : event.startsWith('mega') ? 'mega' : event;
-								longTerm -= resource === 'mega' ? 8 : 20;
-								if (this.trainer.resourcePreferences.some(preference => preference === resource)) value += 5;
+								if (isMegaEvent(event) && attack.userAfterMechanic) {
+									const preference = megaPreference(attack.userAfterMechanic);
+									let bonus = preference.value;
+									reasons.push(preference.reason);
+									if (bonus > 0) {
+										const baseAttack = probe(mon, opponent, id);
+										const baseRisk = danger(mon, opponent);
+										const baseOrder = orderRisk(baseAttack, baseRisk);
+										const baseFatal = baseRisk.knockout *
+											(1 - baseAttack.knockout * baseOrder.first * actionOpportunity(mon, move, memory));
+										const evolvedFatal = fatal * (1 - stopped);
+										if (evolvedFatal > baseFatal + 0.4) {
+											bonus = 0;
+											reasons.push('mega-immediate-danger');
+										}
+										if (bonus > 0 && this.trainer.resourcePreferences.includes('mega')) bonus += 5;
+									}
+									longTerm += bonus;
+								} else if (!isMegaEvent(event)) {
+									longTerm -= 20;
+									if (this.trainer.resourcePreferences.some(preference => preference === resource)) value += 5;
+								}
 							}
 							if (attack.knockout) reasons.push('knockout');
 							if (attack.damage) reasons.push('attack');

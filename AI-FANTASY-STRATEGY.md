@@ -1,5 +1,7 @@
 # Fantasy AI 策略开发说明
 
+2026-09-18 增加通常优先 Mega 的策略，移除重复的进化资源扣分；种族值没有净提升、进化后全队承伤显著恶化及即时危险保留取舍。实现与难度权限复核见 [AI-FANTASY-MEGA.md](AI-FANTASY-MEGA.md)。
+
 2026-09-08 用户反馈不限时等待过长。当前改为常规决策 10 秒、每局最多两次关键决策 20 秒，从第十回合起且间隔至少十回合；详见 [AI-FANTASY-TIME-BUDGET.md](AI-FANTASY-TIME-BUDGET.md)。
 
 2026-09-08 最新一轮先按用户要求阅读官服 10 份高分 6v6 回放，形成 [回放学习记录](AI-FANTASY-HIGH-LADDER-STUDY.md)，随后修正连续换人与异常风险。具体实现、参数和限制见 [AI-FANTASY-SWITCHING.md](AI-FANTASY-SWITCHING.md)；下方早一轮的换人策略已由该文档更新。

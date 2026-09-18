@@ -124,7 +124,8 @@ function positionValue(battle: Battle, side: SinglesSide, keys: ReadonlySet<Poke
 	}
 	if (team.zMoveUsed) value -= 15;
 	if (team.pokemon.some(mon => mon.terastallized)) value -= 12;
-	if (team.pokemon.some(mon => mon.species.isMega)) value -= 5;
+	// Mega's permanent form is evaluated by native outcomes and the root's
+	// strategic preference. Spending it alone is not a loss of position.
 	return value;
 }
 
