@@ -11,6 +11,9 @@ import { Dex, toID } from './dex';
 import type { PRNG, PRNGSeed } from './prng';
 
 export interface PokemonSet {
+	/** Internal Fantasy Rogue metadata; omitted by ordinary team import/packing. */
+	fantasyRogueStats?: StatsTable;
+	fantasyRogueId?: string;
 	/**
 	 * Nickname. Should be identical to its base species if not specified
 	 * by the player, e.g. "Minior".

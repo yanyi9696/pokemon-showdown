@@ -64,6 +64,10 @@ class Ladder extends LadderStore {
 
 		try {
 			this.formatid = Dex.formats.validate(this.formatid);
+			if (Dex.formats.get(this.formatid).id === 'gen9fantasyrogue') {
+				onError('幻想杯肉鸽请从首页的专用入口进入，不能导入队伍发起普通挑战。');
+				return null;
+			}
 		} catch (e: any) {
 			onError(`Your selected format is invalid:\n\n- ${e.message}`);
 			return null;

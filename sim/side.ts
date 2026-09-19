@@ -24,10 +24,11 @@ import type { RequestState } from './battle';
 import { Pokemon, type EffectState } from './pokemon';
 import { State } from './state';
 import { toID } from './dex';
+import { chooseRogueBall } from './fantasy-rogue';
 
 /** A single action that can be chosen. Choices will have one Action for each pokemon. */
 export interface ChosenAction {
-	choice: 'move' | 'switch' | 'instaswitch' | 'revivalblessing' | 'team' | 'shift' | 'pass';// action type
+	choice: 'move' | 'switch' | 'instaswitch' | 'revivalblessing' | 'team' | 'shift' | 'pass' | 'rogueball';// action type
 	pokemon?: Pokemon; // the pokemon doing the action
 	targetLoc?: number; // relative location of the target to pokemon (move action only)
 	moveid: string; // a move to use (move action only)
@@ -73,6 +74,7 @@ export interface PokemonSwitchRequestData {
 	condition: string;
 	active: boolean;
 	stats: StatsExceptHPTable;
+	fantasyRogueStats?: StatsTable;
 	/**
 	 * Move IDs for choosable moves. Also includes Hidden Power Type, Frustration/Return power.
 	 */
@@ -293,6 +295,8 @@ export class Side {
 		}
 		return this.choice.actions.map(action => {
 			switch (action.choice) {
+			case 'rogueball':
+				return `rogueball ${action.moveid}`;
 			case 'move':
 				let details = ``;
 				if (action.targetLoc && this.active.length > 1) details += ` ${action.targetLoc > 0 ? '+' : ''}${action.targetLoc}`;
@@ -484,7 +488,12 @@ export class Side {
 	}
 
 	emitRequest(update: ChoiceRequest) {
-		this.battle.send('sideupdate', `${this.id}\n|request|${JSON.stringify(update)}`);
+		const rogue = this.id === 'p1' ? this.battle.fantasyRogue : undefined;
+		const payload = rogue ? { ...update, fantasyRogue: {
+			catchable: rogue.catchable && rogue.team.length < 6,
+			balls: rogue.balls.map(ball => ({ id: ball.id, name: ball.name, count: rogue.bag[ball.id] || 0 })),
+		} } : update;
+		this.battle.send('sideupdate', `${this.id}\n|request|${JSON.stringify(payload)}`);
 		this.activeRequest = update;
 	}
 
@@ -937,6 +946,9 @@ export class Side {
 		}
 
 		for (const [index, pos] of positions.entries()) {
+			if (index === 0 && this.battle.fantasyRogue && !this.pokemon[pos]?.hp) {
+				return this.emitChoiceError('请选择仍然存活的宝可梦首发。');
+			}
 			if (isNaN(pos) || pos < 0 || pos >= this.pokemon.length) {
 				return this.emitChoiceError(`Can't choose for Team Preview: You do not have a Pokémon in slot ${pos + 1}`);
 			}
@@ -1066,6 +1078,9 @@ export class Side {
 			}
 
 			switch (choiceType) {
+			case 'rogueball':
+				if (!chooseRogueBall(this, data)) return false;
+				break;
 			case 'move':
 				const original = data;
 				const error = () => this.emitChoiceError(`Conflicting arguments for "move": ${original}`);

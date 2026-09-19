@@ -32,7 +32,7 @@ export const commands: Chat.ChatCommands = {
 		},
 		async rematch(target, room, user, connection) {
 			const battle = this.requireRoom().battle;
-			if (!battle?.fantasyAI || battle.p1.id !== user.id || !battle.ended) {
+			if (!battle?.fantasyAI || battle.options.fantasyRogue || battle.p1.id !== user.id || !battle.ended) {
 				throw new Chat.ErrorMessage('请在你已结束的 AI 对局房间中重新挑战。');
 			}
 			const { trainer, difficulty } = battle.fantasyAI.options;

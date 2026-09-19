@@ -1109,6 +1109,8 @@ export class Pokemon {
 			details: this.details,
 			condition: this.getHealth().secret,
 			active: (this.position < this.side.active.length),
+			...(this.set.fantasyRogueStats && this.battle.format.id === 'gen9fantasyrogue' ?
+				{ fantasyRogueStats: { ...this.set.fantasyRogueStats } } : {}),
 			stats: {
 				atk: this.baseStoredStats['atk'],
 				def: this.baseStoredStats['def'],
@@ -1347,7 +1349,10 @@ export class Pokemon {
 		this.weighthg = species.weighthg;
 
 		const stats = this.battle.spreadModify(this.species.baseStats, this.set);
-		if (this.species.maxHP) stats.hp = this.species.maxHP;
+		if (this.species.maxHP) {
+			stats.hp = this.species.maxHP +
+				(this.battle.format.id === 'gen9fantasyrogue' ? this.set.fantasyRogueStats?.hp || 0 : 0);
+		}
 
 		if (!this.maxhp) {
 			this.baseMaxhp = stats.hp;

@@ -18,6 +18,7 @@ export interface WorldMember {
 	keyMember?: boolean;
 }
 export interface WorldHypothesis {
+	rogueBoosts?: StatsTable;
 	format: string;
 	ownSide: SinglesSide;
 	turn: number;
@@ -71,9 +72,12 @@ export class WorldBuilder {
 		const roster = initial.length ? initial.map(mon => ({ species: mon.species, level: mon.level, snapshot: mon })) :
 			memory.sides[foe].preview.map(mon => ({ ...mon, snapshot: undefined as InitialPokemon | undefined }))
 				.sort((a, b) => a.species.localeCompare(b.species) || a.level - b.level);
-		if (roster.length !== 6) throw new Error('missing-full-public-preview');
+		const rogue = this.trainer.format === 'gen9fantasyrogue';
+		if (rogue ? !roster.length || roster.length > 6 : roster.length !== 6) throw new Error('missing-full-public-preview');
 		const ownSets = Teams.unpack(this.trainer.packedTeam);
-		if (!ownSets || ownSets.length !== 6) throw new Error('missing-own-team');
+		if (!ownSets || (rogue ? !ownSets.length || ownSets.length > 6 : ownSets.length !== 6)) {
+			throw new Error('missing-own-team');
+		}
 		const remaining = ownSets.slice();
 		const own = request.side.pokemon.map((mon, index): WorldMember => {
 			const seen = ownSeen(memory, side, mon.ident, mon.active);
@@ -87,6 +91,7 @@ export class WorldBuilder {
 			const match = matches.length === 1 ? matches[0].index : -1;
 			if (match < 0) throw new Error('ambiguous-own-configuration');
 			const [set] = remaining.splice(match, 1);
+			if (rogue && side === 'p1' && observation.rogueBoosts) set.fantasyRogueStats = { ...observation.rogueBoosts };
 			return {
 				set, profile, exactStats: true, seen: seen && structuredClone(seen),
 				keyMember: this.trainer.keyMembers?.includes(ownSets.indexOf(set) + 1),
@@ -123,13 +128,21 @@ export class WorldBuilder {
 							base.stats = estimateStats(original, member.level, variant > 0);
 							base.ability = toID(original.abilities['0']);
 						}
-						const set = this.sets.create(base, !!snapshot, variant, seen?.moves.filter(id => !dex.moves.get(id).isZ), {
+						const spreadProfile = { ...base, stats: { ...base.stats } };
+						if (rogue && side === 'p2' && observation.rogueBoosts) {
+							for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) {
+								// Reconstruct ordinary IV/EV/nature first; add the known absolute bonus once in the simulator.
+								if (!changedForme || snapshot) spreadProfile.stats[stat] -= observation.rogueBoosts[stat];
+							}
+						}
+						const set = this.sets.create(spreadProfile, !!snapshot, variant, seen?.moves.filter(id => !dex.moves.get(id).isZ), {
 							moves: base.movesKnown,
 							ability: !changedForme && seen?.ability !== undefined && !!seen.ability,
 							item: seen?.item !== undefined,
 						});
 						// Synthetic names never encode the real opponent's initial position.
 						set.name = onField ? active.ident.split(': ').slice(1).join(': ') : `Hypothesis ${index + 1}`;
+						if (rogue && side === 'p2' && observation.rogueBoosts) set.fantasyRogueStats = { ...observation.rogueBoosts };
 						let profile: Combatant = { ...base, ability: toID(set.ability), item: toID(set.item), moves: set.moves.slice() };
 						if (seen) {
 							const visible = onField ? option : this.hypotheses.build(seen, observation, memory)[0];
@@ -163,6 +176,7 @@ export class WorldBuilder {
 					worlds.push({
 						format: this.trainer.format, ownSide: side, turn: memory.turn, variant, probability: option.probability,
 						teams, memory: structuredClone(memory), publicLog: observation.publicLog.slice(), diagnostics,
+						rogueBoosts: observation.rogueBoosts && { ...observation.rogueBoosts },
 						initialOpponent: initial.length ? structuredClone(initial) : undefined,
 						opponentMoves: observation.opponentMoves && structuredClone(observation.opponentMoves),
 					});

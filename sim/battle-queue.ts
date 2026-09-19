@@ -105,7 +105,16 @@ export interface PokemonAction {
 	event?: string;
 }
 
-export type Action = MoveAction | SwitchAction | TeamAction | FieldAction | PokemonAction;
+export interface RogueBallAction {
+	choice: 'rogueball';
+	order: number;
+	priority: number;
+	speed: number;
+	pokemon: Pokemon;
+	moveid: string;
+}
+
+export type Action = MoveAction | SwitchAction | TeamAction | FieldAction | PokemonAction | RogueBallAction;
 
 /**
  * An ActionChoice is like an Action and has the same structure, but it doesn't need to be fully filled out.
@@ -163,7 +172,9 @@ export class BattleQueue {
 		const actions = [action];
 
 		if (!action.side && action.pokemon) action.side = action.pokemon.side;
-		if (!action.move && action.moveid) action.move = this.battle.dex.getActiveMove(action.moveid);
+		if (!action.move && action.moveid && action.choice !== 'rogueball') {
+			action.move = this.battle.dex.getActiveMove(action.moveid);
+		}
 		if (!action.order) {
 			const orders: { [choice: string]: number } = {
 				team: 1,
@@ -180,6 +191,7 @@ export class BattleQueue {
 				megaEvoY: 104,
 				runDynamax: 105,
 				terastallize: 106,
+				rogueball: 108,
 				priorityChargeMove: 107,
 
 				shift: 200,

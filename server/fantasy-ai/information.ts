@@ -22,12 +22,14 @@ const PUBLIC_EVENTS = new Set([
 	'-message', '-center',
 ]);
 
-type InformationOptions = { ownSide: 'p1' | 'p2' } & (
+type InformationOptions = { ownSide: 'p1' | 'p2', partySize?: number, rogueBoosts?: StatsTable } & (
 	{ difficulty: 'normal', initialOpponent?: never, opponentMoves?: readonly OpponentMoves[] } |
 	{ difficulty: 'hard', initialOpponent: readonly InitialPokemon[] }
 );
 
 export interface Observation {
+	/** Public p1 campaign modifiers, not IVs, EVs or current private state. */
+	rogueBoosts?: StatsTable;
 	difficulty: Difficulty;
 	ownSide: 'p1' | 'p2';
 	request: ChoiceRequest;
@@ -43,6 +45,7 @@ function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
 		name: request.side.name,
 		pokemon: request.side.pokemon.map(mon => ({
 			ident: mon.ident, details: mon.details, condition: mon.condition, active: mon.active,
+			...(mon.fantasyRogueStats ? { fantasyRogueStats: { ...mon.fantasyRogueStats } } : {}),
 			stats: { atk: mon.stats.atk, def: mon.stats.def, spa: mon.stats.spa, spd: mon.stats.spd, spe: mon.stats.spe },
 			moves: mon.moves.slice(), baseAbility: mon.baseAbility, ability: mon.ability,
 			item: mon.item, pokeball: mon.pokeball, commanding: mon.commanding, reviving: mon.reviving,
@@ -87,6 +90,8 @@ function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
 export class InformationView {
 	private readonly ownSide: 'p1' | 'p2';
 	private readonly difficulty: Difficulty;
+	private readonly partySize: number;
+	private readonly rogueBoosts?: StatsTable;
 	private readonly initialOpponent?: InitialPokemon[];
 	private opponentMoves?: OpponentMoves[];
 	private readonly publicLog: string[] = [];
@@ -96,8 +101,11 @@ export class InformationView {
 		if (options.difficulty !== 'normal' && options.difficulty !== 'hard') throw new Error('未知的 AI 难度。');
 		this.ownSide = options.ownSide;
 		this.difficulty = options.difficulty;
+		this.partySize = options.partySize ?? 6;
+		if (!Number.isInteger(this.partySize) || this.partySize < 1 || this.partySize > 6) throw new Error('AI 队伍大小无效。');
+		this.rogueBoosts = options.rogueBoosts && { ...options.rogueBoosts };
 		if (options.difficulty === 'hard') {
-			if (options.initialOpponent?.length !== 6) throw new Error('高难档需要完整的开局六只宝可梦快照。');
+			if (options.initialOpponent?.length !== this.partySize) throw new Error('高难档需要完整的开局队伍快照。');
 			this.initialOpponent = copyInitialTeam(options.initialOpponent);
 			this.setOpponentMoves(options.initialOpponent);
 		} else if (options.opponentMoves) {
@@ -106,7 +114,7 @@ export class InformationView {
 	}
 
 	setOpponentMoves(team: readonly OpponentMoves[]) {
-		if (team.length !== 6) throw new Error('配招快照需要完整的六只宝可梦。');
+		if (team.length !== this.partySize) throw new Error('配招快照需要完整的队伍。');
 		this.opponentMoves = copyOpponentMoves(team);
 	}
 
@@ -136,6 +144,7 @@ export class InformationView {
 			publicLog: this.publicLog.slice(),
 		};
 		if (this.initialOpponent) observation.initialOpponent = copyInitialTeam(this.initialOpponent);
+		if (this.rogueBoosts) observation.rogueBoosts = { ...this.rogueBoosts };
 		if (this.opponentMoves) observation.opponentMoves = copyOpponentMoves(this.opponentMoves);
 		if (this.difficulty === 'hard' && 'active' in request && selectedMove !== undefined) {
 			observation.opponentMove = selectedMove === null ? null : {

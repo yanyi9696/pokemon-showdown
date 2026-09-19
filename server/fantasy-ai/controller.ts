@@ -29,6 +29,7 @@ export interface ChallengeMetrics {
 	criticalDecisionReasons?: Record<string, number>;
 }
 export interface AIChallengeOptions extends TimeBudgetSettings {
+	rogue?: { partySize: number, boosts: StatsTable };
 	trainer: ValidatedTrainer;
 	difficulty: Difficulty;
 	instanceId: string;
@@ -52,15 +53,20 @@ export class AIController {
 	private disconnectTimer?: NodeJS.Timeout;
 	readonly metrics: ChallengeMetrics;
 	private readonly battle: RoomBattle;
+	/** Privacy settings can rename the room after its controller is constructed. */
+	private readonly schedulerRoomId: string;
 	private readonly timing: DecisionTimeManager;
 	readonly options: AIChallengeOptions;
 
 	constructor(battle: RoomBattle, options: AIChallengeOptions) {
 		this.battle = battle;
+		this.schedulerRoomId = battle.roomid;
 		this.options = options;
 		this.timing = new DecisionTimeManager(options);
-		if (options.difficulty === 'normal') this.view = new InformationView({ ownSide: 'p2', difficulty: 'normal' });
-		options.scheduler.register(battle.roomid, options.instanceId);
+		if (options.difficulty === 'normal') this.view = new InformationView({
+			ownSide: 'p2', difficulty: 'normal', partySize: options.rogue?.partySize, rogueBoosts: options.rogue?.boosts,
+		});
+		options.scheduler.register(this.schedulerRoomId, options.instanceId);
 		this.metrics = {
 			roomId: battle.roomid, trainer: options.trainer.id, difficulty: options.difficulty,
 			decisions: 0, timeouts: 0, workerErrors: 0, searchFallbacks: 0, rollouts: 0, illegalChoices: 0,
@@ -83,7 +89,7 @@ export class AIController {
 		if (this.closed || this.options.difficulty !== 'hard' || this.opponent?.version === state.version) return;
 		this.opponent = state;
 		if (!this.pending || !('active' in this.pending.request)) return;
-		this.options.scheduler.cancel(this.battle.roomid, this.options.instanceId);
+		this.options.scheduler.cancel(this.schedulerRoomId, this.options.instanceId);
 		this.submitted = 0;
 		const current = this.battle.p2.request;
 		if (current.rqid === this.pending.rqid) {
@@ -98,7 +104,7 @@ export class AIController {
 
 	request(request: ChoiceRequest, rqid: number) {
 		if (this.closed) return;
-		this.options.scheduler.cancel(this.battle.roomid, this.options.instanceId);
+		this.options.scheduler.cancel(this.schedulerRoomId, this.options.instanceId);
 		this.pending = { request, rqid, received: performance.now() };
 	}
 
@@ -126,7 +132,7 @@ export class AIController {
 		const fingerprint = `${this.battle.turn}:${JSON.stringify(observation.request)}`;
 		if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
 		this.submitted = rqid;
-		const key = { roomId: this.battle.roomid, instanceId: this.options.instanceId, rqid };
+		const key = { roomId: this.schedulerRoomId, instanceId: this.options.instanceId, rqid };
 		const seed = this.rng.getSeed();
 		this.rng.random();
 		const window = this.timing.allocate(
@@ -214,7 +220,8 @@ export class AIController {
 		this.connected();
 		this.pending = undefined;
 		this.view = undefined;
-		this.options.scheduler.unregister(this.battle.roomid, this.options.instanceId);
+		this.options.scheduler.unregister(this.schedulerRoomId, this.options.instanceId);
+		this.metrics.roomId = this.battle.roomid;
 		this.metrics.endReason = reason;
 		this.options.onEnd({ ...this.metrics });
 	}

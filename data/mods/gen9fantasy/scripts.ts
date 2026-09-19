@@ -138,6 +138,7 @@ export const Scripts: ModdedBattleScriptsData = {
                 ) + 10;
             }
 
+			if (this.battle.format.id === 'gen9fantasyrogue') newMaxHp += pokemon.set.fantasyRogueStats?.hp || 0;
             if (newMaxHp !== prevMaxHp) {
                 pokemon.baseMaxhp = newMaxHp;
                 pokemon.maxhp = newMaxHp;

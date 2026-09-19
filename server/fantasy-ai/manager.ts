@@ -3,9 +3,11 @@ import { FS } from '../../lib';
 import { Trainers } from '../../config/fantasy-ai-trainers';
 import { DecisionScheduler } from './scheduler';
 import { CHALLENGE_FORMATS, TrainerRegistry, validatePlayerTeam } from './trainers';
-import { DEFAULT_LIMITS, type Difficulty } from './types';
+import { DEFAULT_LIMITS, type Difficulty, type ValidatedTrainer } from './types';
 import type { ChallengeMetrics } from './controller';
 import type { TimeBudgetSettings } from './time-management';
+import type { RogueRoomOptions } from '../room-battle';
+import { Teams } from '../../sim/teams';
 
 export interface ClientChallengeResult {
 	requestId: string;
@@ -204,6 +206,50 @@ export class AIChallengeManager {
 				this.scheduler.unregister(roomid || '', instanceId);
 				this.reservations.delete(instanceId);
 			}
+		}
+	}
+
+	/** Only the server-owned campaign may supply this validated team and private checkpoint. */
+	createRogueBattle(user: User, trainer: ValidatedTrainer, team: string, rogue: RogueRoomOptions) {
+		if (this.disposed || !this.settings.enabled) throw new Chat.ErrorMessage('AI 对战尚未开放。');
+		if (Rooms.global.lockdown && Rooms.global.lockdown !== 'pre') throw new Chat.ErrorMessage('服务器维护中，请稍后开始战斗。');
+		if (!user.named || !user.connected || Punishments.isBattleBanned(user)) throw new Chat.ErrorMessage('当前账号不能开始对局。');
+		if (trainer.format !== 'gen9fantasyrogue' || !Teams.unpack(team)?.length ||
+			!Teams.unpack(trainer.packedTeam)?.length) throw new Error('Invalid internal rogue teams');
+		const existing = [...this.reservations.values()].filter(entry =>
+			(entry.room?.battle?.p1.id || entry.user.id) === user.id);
+		if (existing.length >= this.settings.maxBattlesPerPlayer) throw new Chat.ErrorMessage('请先结束已有的 AI 对局。');
+		if (this.reservations.size >= this.settings.maxBattles) throw new Chat.ErrorMessage('AI 对战名额已满，请稍后重试。');
+		const instanceId = randomUUID();
+		const reservation: { user: User, room?: GameRoom } = { user };
+		this.reservations.set(instanceId, reservation);
+		const roomid = Rooms.global.prepBattleRoom(trainer.format);
+		try {
+			const room = Rooms.createBattle({
+				roomid, format: trainer.format, rated: false, challengeType: 'challenge', allowRenames: false,
+				players: [{ user, team, hidden: true, inviteOnly: true }], fantasyRogue: rogue,
+				fantasyAI: {
+					trainer, difficulty: 'normal', instanceId, scheduler: this.scheduler,
+					rogue: { partySize: rogue.state.team.length, boosts: { ...rogue.state.boosts } },
+					decisionMs: this.settings.decisionMs, disconnectMs: this.settings.disconnectMs, maxRollouts: this.maxRollouts,
+					criticalDecisionMs: this.settings.criticalDecisionMs, criticalDecisionLimit: this.settings.criticalDecisionLimit,
+					criticalDecisionCooldownTurns: this.settings.criticalDecisionCooldownTurns,
+					onEnd: metrics => {
+						this.reservations.delete(instanceId);
+						this.completed.push(metrics);
+						if (this.completed.length > 100) this.completed.shift();
+					},
+				},
+			});
+			if (!room) throw new Error('未能建立肉鸽战斗。');
+			reservation.room = room;
+			room.add(`|-message|幻想杯肉鸽第 ${rogue.floor} 层；永久六维加成 ${Object.values(rogue.state.boosts).join('/')}。`).update();
+			return room;
+		} catch (error) {
+			Rooms.get(roomid)?.destroy();
+			this.scheduler.unregister(roomid, instanceId);
+			this.reservations.delete(instanceId);
+			throw error;
 		}
 	}
 

@@ -36,9 +36,13 @@ export interface SearchOptions {
 }
 
 function observeHypothesis(battle: Battle, world: WorldHypothesis, side: SinglesSide): Observation {
+	const campaign = world.format === 'gen9fantasyrogue' ? {
+		partySize: battle.getSide(side === 'p1' ? 'p2' : 'p1').pokemon.length, rogueBoosts: world.rogueBoosts,
+	} : {};
 	const view = new InformationView(side === world.ownSide && world.initialOpponent ? {
-		ownSide: side, difficulty: 'hard', initialOpponent: world.initialOpponent,
-	} : { ownSide: side, difficulty: 'normal', opponentMoves: side === world.ownSide ? world.opponentMoves : undefined });
+		ownSide: side, difficulty: 'hard', initialOpponent: world.initialOpponent, ...campaign,
+	} : { ownSide: side, difficulty: 'normal', ...campaign,
+		opponentMoves: side === world.ownSide ? world.opponentMoves : undefined });
 	view.receiveUpdate(battle.log.join('\n'));
 	return view.observe(battle.getSide(side).activeRequest!);
 }

@@ -23,6 +23,15 @@ import { AIController, type AIChallengeOptions } from './fantasy-ai/controller';
 import { captureInitialTeam, captureInitialMoves } from './fantasy-ai/initial-snapshot';
 import { captureOpponentChoice } from './fantasy-ai/opponent-choice';
 import type { Difficulty } from './fantasy-ai/types';
+import type { RogueBattleResult, RogueBattleState, RoguePokemon } from '../sim/fantasy-rogue';
+
+export interface RogueRoomOptions {
+	state: RogueBattleState;
+	floor: number;
+	onCapture: (captured: RoguePokemon) => void;
+	onResult: (result: RogueBattleResult) => void;
+	onClose: () => void;
+}
 
 type ChannelIndex = 0 | 1 | 2 | 3 | 4;
 export type PlayerIndex = 1 | 2 | 3 | 4;
@@ -486,6 +495,7 @@ export interface RoomBattleOptions {
 	format: string;
 	/** Internal single-player challenge; players contains only the human in p1. */
 	fantasyAI?: AIChallengeOptions;
+	fantasyRogue?: RogueRoomOptions;
 	/**
 	 * length should be equal to the format's playerCount, except in two
 	 * special cases:
@@ -562,6 +572,9 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const format = Dex.formats.get(options.format, true);
 		this.title = format.name;
 		this.options = options;
+		if (options.fantasyRogue && (!options.fantasyAI || options.format !== 'gen9fantasyrogue')) {
+			throw new Error('Invalid rogue battle options');
+		}
 		if (options.fantasyAI && (options.players.length !== 1 || options.rated || options.tour ||
 			options.inputLog || format.gameType !== 'singles' || format.playerCount !== 2)) {
 			throw new Error('Invalid AI battle options');
@@ -593,6 +606,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			roomid: this.roomid,
 			rated: ratedMessage,
 			seed: options.seed,
+			fantasyRogue: options.fantasyRogue?.state,
 		};
 		if (options.inputLog) {
 			void this.stream.write(options.inputLog);
@@ -788,6 +802,12 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		for (const player of this.players) player.wantsTie = false;
 
 		switch (lines[0]) {
+		case 'fantasyroguecapture':
+			this.options.fantasyRogue?.onCapture(JSON.parse(lines[1]));
+			break;
+		case 'fantasyrogueresult':
+			this.options.fantasyRogue?.onResult(JSON.parse(lines[1]));
+			break;
 		case 'fantasyai':
 			this.fantasyAI?.initialSnapshot(JSON.parse(lines[1]));
 			break;
@@ -990,6 +1010,11 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const player = this.playerTable[user.id];
 		if (!player) return;
 		player.updateChannel(connection || user);
+		if (this.options.fantasyRogue) {
+			(connection || user).sendTo(this.roomid, `|fantasyrogue|${JSON.stringify({
+				floor: this.options.fantasyRogue.floor, userid: user.id,
+			})}`);
+		}
 		if (this.fantasyAI) {
 			const { trainer, difficulty, disconnectMs } = this.fantasyAI.options;
 			(connection || user).sendTo(this.roomid, `|fantasyai|${JSON.stringify({
@@ -1313,6 +1338,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	}
 
 	override destroy() {
+		this.options.fantasyRogue?.onClose();
 		this.fantasyAI?.finish('destroyed');
 		if (!this.ended) {
 			this.setEnded();

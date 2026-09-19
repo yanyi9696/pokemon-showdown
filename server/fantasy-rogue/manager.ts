@@ -1,0 +1,113 @@
+import { FS } from '../../lib';
+import { Teams } from '../../sim/teams';
+import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
+import { FantasyRogueContent } from '../../config/fantasy-rogue';
+import { getAIManager, type AIChallengeManager } from '../fantasy-ai/manager';
+import { RogueEngine } from './engine';
+import { RogueStore } from './store';
+import { BOSS_FLOORS, fixedFloor } from './content';
+import type { RogueCommand } from './types';
+
+export class RogueManager {
+	readonly engine: RogueEngine;
+	private readonly ai: () => AIChallengeManager;
+	constructor(engine: RogueEngine, ai: () => AIChallengeManager = getAIManager) {
+		this.engine = engine;
+		this.ai = ai;
+	}
+	private authorize(user: User) {
+		if (Config.fantasyrogue?.enabled === false) throw new Error('幻想杯肉鸽尚未开放。');
+		if (!user.named || !user.connected || (!user.registered && !Config.fantasyailocal)) {
+			throw new Error('请先登录注册账号，以保存冒险进度。');
+		}
+	}
+	private recoverMissingRoom(userid: string) {
+		const battle = this.engine.store.get(userid).run?.battle;
+		if (!battle) return;
+		const roomBattle = battle.roomid && Rooms.get(battle.roomid)?.battle;
+		if (!roomBattle || roomBattle.ended || roomBattle.p1.id !== userid ||
+			roomBattle.options.fantasyRogue?.state.encounterId !== battle.encounterId) {
+			this.engine.recover(userid, battle.token);
+		}
+	}
+	state(user: User) {
+		const common = { userid: user.id, protocolVersion: 1, enabled: Config.fantasyrogue?.enabled !== false };
+		try { this.authorize(user); } catch (error) {
+			return { ...common, message: (error as Error).message, account: null };
+		}
+		this.recoverMissingRoom(user.id);
+		const account = this.engine.store.get(user.id);
+		const content = this.engine.content;
+		const run = account.run;
+		return {
+			...common, configured: !!content, message: content ? '' : '正式队伍与数值等待配置，目前可查看局外成长。',
+			account: {
+				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
+				captures: account.captures, unlocked: account.unlocked,
+			},
+			starters: content?.starters.map(starter => ({
+				id: starter.id, species: starter.set.species, level: starter.set.level,
+				available: starter.availableInitially || account.unlocked.includes(starter.id),
+			})) || [],
+			items: content?.items || [],
+			run: run ? {
+				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
+				encounters: run.node?.encounters.length || 0, node: run.node && { name: run.node.name, kind: run.node.kind },
+				team: run.team, bag: run.bag, money: run.money, boosts: run.boosts,
+				roomid: run.battle?.roomid, fixed: fixedFloor(run.floor), boss: BOSS_FLOORS.get(run.floor),
+				choices: run.phase === 'choose' ? (content?.floors[run.floor] || []).map(node => ({
+					id: node.id, kind: node.kind, name: node.name,
+				})) : [],
+			} : null,
+		};
+	}
+	/** Never accepts a team, battle outcome, balance or capture count from the browser. */
+	command(connection: Connection, command: RogueCommand) {
+		const user = connection.user;
+		this.authorize(user);
+		this.recoverMissingRoom(user.id);
+		const account = this.engine.command(user.id, command);
+		const run = account.run;
+		if (command.action === 'battle' && run?.phase === 'battle' && run.battle && !run.battle.roomid) {
+			const userid = user.id;
+			const token = run.battle.token;
+			const encounter = run.node!.encounters[run.encounter];
+			const broadcast = () => user.send(`|queryresponse|fantasyrogue|${JSON.stringify(this.state(user))}`);
+			try {
+				const room = this.ai().createRogueBattle(user, {
+					id: `rogue-${run.node!.id}`, name: encounter.name, avatar: '1', description: '', format: ROGUE_FORMAT,
+					style: encounter.style, developmentOnly: false, packedTeam: Teams.pack(encounter.team),
+					keyMembers: [], resourcePreferences: [],
+				}, Teams.pack(run.team.map(mon => mon.set)), {
+					state: this.engine.battleState(userid), floor: run.floor,
+					onCapture: captured => { this.engine.capture(userid, token, captured); },
+					onResult: result => { this.engine.settle(userid, token, result); broadcast(); },
+					onClose: () => {
+						if (this.engine.store.get(userid).run?.battle?.token === token) {
+							this.engine.recover(userid, token);
+							broadcast();
+						}
+					},
+				});
+				this.engine.store.change(userid, saved => {
+					if (saved.run?.battle?.token === token) saved.run.battle.roomid = room.roomid;
+				});
+			} catch (error) {
+				this.engine.recover(userid, token);
+				throw error;
+			}
+		}
+		return this.state(user);
+	}
+}
+
+let manager: RogueManager | undefined;
+export function getRogueManager() {
+	if (!manager) {
+		FS('databases').mkdirpSync();
+		manager = new RogueManager(new RogueEngine(new RogueStore(
+			Config.fantasyrogue?.database || 'databases/fantasy-rogue.db'
+		), FantasyRogueContent));
+	}
+	return manager;
+}

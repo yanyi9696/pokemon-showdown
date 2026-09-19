@@ -49,7 +49,9 @@ function initialPokemon(battle: Battle, side: 'p1' | 'p2') {
 		throw new Error('初始快照只能在单打队伍预览阶段采集。');
 	}
 	const pokemon = battle.getSide(side).pokemon;
-	if (pokemon.length !== 6) throw new Error('初始快照要求六只宝可梦。');
+	if (battle.format.id === 'gen9fantasyrogue' ? !pokemon.length || pokemon.length > 6 : pokemon.length !== 6) {
+		throw new Error('初始快照队伍数量不符合赛制。');
+	}
 	return pokemon;
 }
 

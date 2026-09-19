@@ -76,7 +76,11 @@ function probeSpread(format: string, mon: Combatant, sample: number) {
 	const key = JSON.stringify([format, mon.species, mon.level, mon.stats]);
 	let spreads = spreadCache.get(key);
 	if (!spreads) {
-		spreads = compatibleSpreads(Dex.forFormat(format), mon.species, mon.level, mon.stats);
+		const stats = { ...mon.stats };
+		if (format === 'gen9fantasyrogue' && mon.rogueBoosts) {
+			for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) stats[stat] -= mon.rogueBoosts[stat];
+		}
+		spreads = compatibleSpreads(Dex.forFormat(format), mon.species, mon.level, stats);
 		if (spreadCache.size >= 128) spreadCache.clear();
 		spreadCache.set(key, spreads);
 	}
@@ -128,6 +132,7 @@ export function createMatchup(
 		for (const [index, profile] of [attacker, defender].entries()) {
 			const team = battle.sides[index];
 			const mon = team.pokemon[0];
+			if (format === 'gen9fantasyrogue' && profile.rogueBoosts) mon.set.fantasyRogueStats = { ...profile.rogueBoosts };
 			team.active[0] = mon;
 			mon.isActive = mon.isStarted = true;
 			mon.activeTurns = 1;

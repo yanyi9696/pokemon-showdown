@@ -15,9 +15,9 @@ export function hasUltraBurstResource(resources: SeenSide['resources'] | undefin
 export function enumerateRequestChoices(request: ChoiceRequest, resources?: SeenSide['resources']): string[] {
 	if (request.wait) return [];
 	const pokemon = request.side.pokemon;
-	if (pokemon.length !== 6) throw new Error('AI 行动枚举只支持六只宝可梦的队伍。');
+	if (!pokemon.length || pokemon.length > 6) throw new Error('AI 行动枚举支持一到六只宝可梦。');
 	if (request.teamPreview) {
-		if (request.maxChosenTeamSize !== undefined && request.maxChosenTeamSize !== 6) {
+		if (request.maxChosenTeamSize !== undefined && request.maxChosenTeamSize !== pokemon.length) {
 			throw new Error('AI 不支持选出部分队伍的赛制。');
 		}
 		const orders: string[] = [];
@@ -28,7 +28,7 @@ export function enumerateRequestChoices(request: ChoiceRequest, resources?: Seen
 			}
 			for (const slot of remaining) visit(`${prefix}${slot}`, remaining.filter(other => other !== slot));
 		};
-		visit('', [1, 2, 3, 4, 5, 6]);
+		visit('', pokemon.map((mon, index) => index + 1));
 		return orders;
 	}
 	const fainted = (condition: string) => condition === '0 fnt' || condition.endsWith(' fnt');

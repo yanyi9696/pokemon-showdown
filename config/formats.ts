@@ -18,10 +18,20 @@ The column value will be ignored for repeat sections.
 */
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
+import { initializeRogueBattle } from '../sim/fantasy-rogue';
 
 export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		section: "FC",
+	},
+	{
+		name: '[Gen 9] Fantasy Rogue',
+		mod: 'gen9fantasy',
+		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
+		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
+		onBegin() { initializeRogueBattle(this); },
+		onSwitchIn: onFantasySwitchIn,
+		onUpdate: onFantasyUpdate,
 	},
 	{
 		name: "[Gen 9] FC Random Battle",

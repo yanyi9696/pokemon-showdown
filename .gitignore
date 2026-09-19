@@ -3,6 +3,7 @@
 !/config/custom-formats.ts
 !/config/fantasy-ai-trainers.ts
 !/config/fantasy-ai-trainers.example.json
+!/config/fantasy-rogue.ts
 /logs/**/*
 /test/modlogs
 /test/replays/*.html

@@ -13,6 +13,7 @@ const fantasySamples: SetSamples = require('../../data/random-battles/gen9fantas
 const standardSamples: SetSamples = require('../../data/random-battles/gen9/sets.json');
 
 export interface Combatant {
+	rogueBoosts?: StatsTable;
 	species: string;
 	level: number;
 	stats: StatsTable;
@@ -225,6 +226,15 @@ export class HypothesisBuilder {
 			result.push({ ...offensive, stats, item: 'choicescarf', probability: 0.8 });
 		}
 		const total = result.reduce((sum, hypothesis) => sum + hypothesis.probability, 0);
+		if (this.format === 'gen9fantasyrogue' && observation.ownSide === 'p2' && observation.rogueBoosts) {
+			for (const hypothesis of result) {
+				hypothesis.rogueBoosts = { ...observation.rogueBoosts };
+				if (hypothesis.source === 'initial') continue;
+				for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) {
+					hypothesis.stats[stat] += observation.rogueBoosts[stat];
+				}
+			}
+		}
 		for (const hypothesis of result) hypothesis.probability /= total;
 		return result;
 	}
@@ -251,6 +261,7 @@ export class HypothesisBuilder {
 		const set = !seen?.transformed && matches.length === 1 ? matches[0] : undefined;
 		return {
 			species, level, stats: { hp, ...mon.stats }, moves: mon.moves.slice(), ability: mon.ability ?? mon.baseAbility,
+			rogueBoosts: mon.fantasyRogueStats && { ...mon.fantasyRogueStats },
 			item: mon.item, health: parseHealth(mon.condition, true), status: mon.condition.split(' ')[1] || '',
 			// A benched member has shed Salt Cure, stat stages and temporary types.
 			// Permanent Fantasy effects are restored from the separate fields below.

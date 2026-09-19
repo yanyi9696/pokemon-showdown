@@ -58,7 +58,10 @@ export function extractChannelMessages<T extends ChannelID | -1>(message: string
 	return channelMessages;
 }
 
+import { ROGUE_FORMAT, ROGUE_STATS, rogueBattleResult, throwRogueBall, type RogueBattleState } from './fantasy-rogue';
+
 interface BattleOptions {
+	fantasyRogue?: RogueBattleState;
 	format?: Format;
 	formatid: ID;
 	/** Output callback */
@@ -107,6 +110,7 @@ type Part = string | number | boolean | Pokemon | Side | Effect | Move | null | 
 export type RequestState = 'teampreview' | 'move' | 'switch' | '';
 
 export class Battle {
+	fantasyRogue?: RogueBattleState;
 	readonly id: ID;
 	readonly debugMode: boolean;
 	readonly forceRandomChance: boolean | null;
@@ -193,6 +197,8 @@ export class Battle {
 
 		const format = options.format || Dex.formats.get(options.formatid, true);
 		this.format = format;
+		if (options.fantasyRogue && format.id !== ROGUE_FORMAT) throw new Error('Invalid rogue format');
+		this.fantasyRogue = options.fantasyRogue && structuredClone(options.fantasyRogue);
 		this.dex = Dex.forFormat(format);
 		this.gen = this.dex.gen;
 		this.ruleTable = this.dex.formats.getRuleTable(format);
@@ -2295,7 +2301,11 @@ export class Battle {
 			const stat = baseStats['hp'];
 			modStats['hp'] = tr(tr(2 * stat + set.ivs['hp'] + tr(set.evs['hp'] / 4) + 100) * set.level / 100 + 10);
 		}
-		return this.natureModify(modStats as StatsTable, set);
+		const stats = this.natureModify(modStats as StatsTable, set);
+		if (this.format.id === ROGUE_FORMAT && set.fantasyRogueStats) {
+			for (const stat of ROGUE_STATS) stats[stat] += set.fantasyRogueStats[stat];
+		}
+		return stats;
 	}
 
 	natureModify(stats: StatsTable, set: PokemonSet): StatsTable {
@@ -2609,9 +2619,12 @@ export class Battle {
 		let residualPokemon: (readonly [Pokemon, number])[] = [];
 		// returns whether or not we ended in a callback
 		switch (action.choice) {
+		case 'rogueball':
+			throwRogueBall(this, action.moveid);
+			break;
 		case 'start': {
 			for (const side of this.sides) {
-				if (side.pokemonLeft) side.pokemonLeft = side.pokemon.length;
+				if (side.pokemonLeft) side.pokemonLeft = side.pokemon.filter(mon => !mon.fainted).length;
 			}
 
 			this.add('start');
@@ -3193,6 +3206,13 @@ export class Battle {
 		if (!this.sides[slotNum]) {
 			// create player
 			const team = this.getTeam(options);
+			if (this.fantasyRogue && slot === 'p1') {
+				if (team.length !== this.fantasyRogue.team.length) throw new Error('Invalid rogue team');
+				for (const [i, set] of team.entries()) {
+					set.fantasyRogueStats = { ...this.fantasyRogue.boosts };
+					set.fantasyRogueId = this.fantasyRogue.team[i].id;
+				}
+			}
 			side = new Side(options.name || `Player ${slotNum + 1}`, this, slotNum, team);
 			if (options.avatar) side.avatar = `${options.avatar}`;
 			this.sides[slotNum] = side;
@@ -3260,6 +3280,7 @@ export class Battle {
 				delete log.p4;
 				delete log.p4team;
 			}
+			if (this.fantasyRogue) this.send('fantasyrogueresult', JSON.stringify(rogueBattleResult(this)));
 			this.send('end', JSON.stringify(log));
 			this.sentEnd = true;
 		}
