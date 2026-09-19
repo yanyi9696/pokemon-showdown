@@ -4,7 +4,7 @@
 
 ## 本地试玩
 
-两边均在 `codex/fantasy-rogue` 开发。服务端 `master` 保持 `ffbaf54da`，客户端原 `fantasy` 保持 `bbd1b7e8`；未合并、未推送、未部署。迁移前的 stash 备份保留。
+两边均在 `codex/fantasy-rogue` 开发。服务端 `master` 保持 `ffbaf54da`，客户端原 `fantasy` 保持 `bbd1b7e8`；肉鸽开发仍在独立分支，未合并到原分支。迁移前的 stash 备份保留。
 
 先完整构建：
 
@@ -15,7 +15,26 @@ node build full --local-server ..\pokemon-showdown
 
 该命令构建旁边的服务端并生成客户端数据，不执行 Git 拉取，解决原 `node build full` 因 GitHub 443 不通而提前失败的问题。两边需要已安装依赖；未提供 `--local-server` 时保留原远端缓存流程。PHP 新闻提示不阻止编译。
 
-另开两个终端，分别启动：
+本地开发入口改为直接打开客户端文件，连接现有的 `localhost:8000`。若该服务尚未启动，另开终端运行：
+
+```powershell
+cd F:\fantasy\pokemon-showdown
+node .\pokemon-showdown
+```
+
+在浏览器地址栏打开（`~~` 前不加反斜杠）：
+
+```text
+file:///F:/fantasy/pokemon-showdown-client/play.pokemonshowdown.com/testclient.html?~~localhost:8000
+```
+
+登录后，点击首页「AI 挑战」下方的「幻想杯肉鸽」。首次任选一只御三家；逐层点数可购买下局生效的初始栏位与六维加成。`testclient.html` 已引入肉鸽脚本与样式，道具图集使用相对路径，直接打开文件也能定位资源。修改 HTML、CSS 或客户端原生 JS 后刷新页面即可；修改需编译的代码时先重新构建。更新服务端代码后需重启现有服务。
+
+8000 普通私服沿用其原有账号认证和配置，肉鸽要求登录注册账号，默认存档为 `databases/fantasy-rogue.db`。此前 18000 试玩服的 `databases/fantasy-rogue-preview.db` 仍保留，切换入口不迁移或清空存档。此入口不需要运行 18080 网页服务。
+
+### 可选：独立试玩服
+
+需要用任意固定测试昵称、与 8000 私服分开试玩时，仍可另开两个终端，分别启动：
 
 ```powershell
 cd F:\fantasy\pokemon-showdown
@@ -27,7 +46,7 @@ cd F:\fantasy\pokemon-showdown-client
 node build-tools/serve-rogue-preview.js
 ```
 
-打开 **http://localhost:18080/**，输入固定测试昵称，点击首页「AI 挑战」下方的「幻想杯肉鸽」。首次任选一只御三家；逐层点数可购买下局生效的初始栏位与六维加成。
+打开 **http://localhost:18080/**，输入固定测试昵称，点击首页「AI 挑战」下方的「幻想杯肉鸽」。这是可选的独立环境，日常开发默认使用上方 `file://` 入口。
 
 试玩对战仅监听 `127.0.0.1:18000`，网页仅监听 `127.0.0.1:18080`，无需停用现有 8000 私服。试玩存档为 `databases/fantasy-rogue-preview.db`，以测试昵称绑定；关闭进程不清空存档，之后用同一昵称继续。只有显式本地模式接受测试昵称，生产认证规则及 `config/config.js` 未修改。试玩 AI 决策预算 1 秒、关键决策 1.5 秒，实际私服继续使用自身配置。
 
@@ -100,6 +119,8 @@ node node_modules/mocha/bin/mocha.js --no-config test/main.js test/server/fantas
 37 项通过，包括真实引擎参与／击倒记录、经验结算幂等、捕捉、满队释放和替换、糖果进化、伤害／PP／异常延续、等级上限、学招后的跨层快照，以及 200 层固定节点与点数。200 层检查注入胜利结果验证状态机，不代表 AI 实战或真人完整通关。
 
 客户端：`node node_modules/mocha/bin/mocha.js --no-config test/fantasy-rogue.test.js test/fantasy-ai.test.js --reporter dot`，23 项通过。完整本地构建成功；新增模块与客户端修改的定向 ESLint 通过。
+
+入口切换补充核验：`node build --local-server ..\pokemon-showdown` 成功生成包含肉鸽脚本和样式的 `testclient.html`；修复已写入 `testclient.template.html`，后续构建可保留。客户端 23 项回归通过，直接连接 `localhost:8000` 的肉鸽状态接口返回 `enabled: true`，未登录时提示登录注册账号。所需肉鸽本地资源存在，原有两份动画尺寸数据仍使用页面已有的官方在线回退。内置浏览器的 URL 安全策略阻止自动打开 `file://`，本轮未实测该入口的页面和战斗；下述浏览器实测来自此前独立试玩环境。
 
 全库 TypeScript 仍有六项既有 Mega 返回值类型错误，位于 Gen 8 rulesets、Gen 9 SSB、Gen 7 random teams、othermetas；本次路径无新增错误。本机 TypeScript 5.7.3 检查使用 `--ignoreDeprecations 5.0`，未改全局设置。上一阶段的扩大 AI 回归还记录过正式训练家 ID 和重复换人惩罚的两项旧断言问题，本轮未修改相关策略。
 
