@@ -1,4 +1,5 @@
 import type { RogueContent } from '../server/fantasy-rogue/types';
+import { createPreviewContent } from '../server/fantasy-rogue/preview-content';
 
-/** Awaiting the owner's starter sets, encounter teams and economy values. */
-export const FantasyRogueContent: RogueContent | null = null;
+/** Owner-authorized playtest pack. Replace with a new content version for the final release. */
+export const FantasyRogueContent: RogueContent | null = createPreviewContent();

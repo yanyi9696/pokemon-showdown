@@ -18,7 +18,7 @@ The column value will be ignored for repeat sections.
 */
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
-import { initializeRogueBattle } from '../sim/fantasy-rogue';
+import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat } from '../sim/fantasy-rogue';
 
 export const Formats: import('../sim/dex-formats').FormatList = [
 	{
@@ -30,7 +30,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
 		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
 		onBegin() { initializeRogueBattle(this); },
-		onSwitchIn: onFantasySwitchIn,
+		onSwitchIn(pokemon) { markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); },
+		onFaint(pokemon) { recordRogueDefeat(this, pokemon); },
 		onUpdate: onFantasyUpdate,
 	},
 	{

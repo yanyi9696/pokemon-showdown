@@ -8,7 +8,7 @@ export interface RogueEncounter {
 	style: TrainerStyle;
 	catchable: boolean;
 	/** Per-ball probabilities; no default catch formula or implicit chance. */
-	catchChances: Record<string, number>;
+	catchChances?: Record<string, number>;
 }
 export interface RogueNode {
 	id: string;
@@ -20,10 +20,12 @@ export interface RogueNode {
 export interface RogueItem {
 	id: string;
 	name: string;
-	kind: 'ball' | 'revive' | 'heal';
+	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution';
 	price: number;
 	/** Healing amount, or fraction of max HP for a revive. */
 	amount?: number;
+	multiplier?: number;
+	icon?: string;
 }
 export interface RogueStarter {
 	id: string;
@@ -32,6 +34,9 @@ export interface RogueStarter {
 }
 export interface RogueContent {
 	version: string;
+	label?: string;
+	progression?: 'mainline7';
+	allowReplacement?: boolean;
 	starters: RogueStarter[];
 	initialMoney: number;
 	initialBag: Record<string, number>;
@@ -50,12 +55,15 @@ export interface RogueRun extends RogueInventory {
 	id: string;
 	contentVersion: string;
 	floor: number;
-	phase: 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'failed' | 'complete';
+	phase: 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete';
 	node?: RogueNode;
 	encounter: number;
 	attempt: number;
 	boosts: StatsTable;
 	startingSlots: number;
+	pendingCapture?: RoguePokemon;
+	pendingMoves?: { member: string, move: string }[];
+	notices?: string[];
 	checkpoint: RogueInventory;
 	/** Stable across retries. Only account-level catch counting uses this ledger. */
 	caught: string[];
@@ -68,12 +76,14 @@ export interface RogueAccount {
 	slots: number;
 	captures: Record<string, number>;
 	unlocked: string[];
+	caughtSpecies?: string[];
 	run?: RogueRun;
 }
 export interface RogueCommand {
 	id: string;
 	revision: number;
-	action: 'start' | 'select' | 'battle' | 'retry' | 'heal' | 'buy' | 'use' | 'continue' | 'upgrade' | 'abandon';
+	action: 'start' | 'select' | 'battle' | 'retry' | 'heal' | 'buy' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+		'learn' | 'replace' | 'evolve';
 	value?: string;
 	starters?: string[];
 	member?: string;

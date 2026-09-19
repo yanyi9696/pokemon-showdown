@@ -1,6 +1,7 @@
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
 import type { RogueContent } from './types';
+import { rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 
 export const BOSS_FLOORS = new Map<number, string>([
 	...[10, 30, 50, 70, 90, 110, 130, 150, 170].map(floor => [floor, '精英首领'] as const),
@@ -28,9 +29,14 @@ export function validateContent(content: RogueContent): RogueContent {
 		ensure(/^[a-z0-9]+$/.test(item.id) && !itemIds.has(item.id), '道具标识重复或无效');
 		itemIds.add(item.id);
 		ensure(item.name && whole(item.price), `道具 ${item.id} 名称或价格无效`);
-		ensure(['ball', 'heal', 'revive'].includes(item.kind), '未支持的道具类型');
-		if (item.kind === 'heal') ensure(Number.isSafeInteger(item.amount) && item.amount! > 0, '治疗量无效');
+		ensure(['ball', 'heal', 'revive', 'ether', 'cure', 'candy', 'evolution'].includes(item.kind), '未支持的道具类型');
+		if (['heal', 'ether', 'candy'].includes(item.kind)) {
+			ensure(Number.isSafeInteger(item.amount) && item.amount! > 0, '道具数值无效');
+		}
 		if (item.kind === 'revive') ensure(item.amount! > 0 && item.amount! <= 1, '复活比例无效');
+		if (item.kind === 'ball' && content.progression) {
+			ensure(item.multiplier! > 0 && Number.isFinite(item.multiplier), '球倍率无效');
+		}
 	}
 	const inventory = (items: Record<string, number>) => {
 		for (const [id, count] of Object.entries(items)) ensure(itemIds.has(id) && whole(count), `库存 ${id} 无效`);
@@ -45,6 +51,7 @@ export function validateContent(content: RogueContent): RogueContent {
 			ensure(dex.abilities.get(set.ability).exists && dex.natures.get(set.nature).exists, '特性或性格无效');
 			ensure(!set.item || dex.items.get(set.item).exists, '持有物无效');
 			ensure(!set.fantasyRogueStats && !set.fantasyRogueId, '配置不能注入存档元数据');
+			if (content.progression) { rogueSpeciesData(set.species); ensure(set.level <= 100, '试玩版等级上限为 100'); }
 		}
 	};
 	const starterIds = new Set<string>();
@@ -90,7 +97,8 @@ export function validateContent(content: RogueContent): RogueContent {
 					ensure(['wild', 'elite'].includes(node.kind), '训练家／Boss 不可捕捉');
 					ensure(content.unlocks[toID(encounter.team[0].species)], '缺少捕捉对象的初始解锁映射');
 				}
-				for (const [id, chance] of Object.entries(encounter.catchChances)) {
+				if (encounter.catchable && !content.progression) ensure(Object.keys(encounter.catchChances || {}).length, '缺少捕捉配置');
+				for (const [id, chance] of Object.entries(encounter.catchChances || {})) {
 					ensure(content.items.some(item => item.id === id && item.kind === 'ball') &&
 						Number.isFinite(chance) && chance >= 0 && chance <= 1, '捕捉概率无效');
 				}

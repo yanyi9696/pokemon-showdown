@@ -7,6 +7,7 @@ import { RogueEngine } from './engine';
 import { RogueStore } from './store';
 import { BOSS_FLOORS, fixedFloor } from './content';
 import type { RogueCommand } from './types';
+import { experienceProgress, evolutionOptions } from './progression';
 
 export class RogueManager {
 	readonly engine: RogueEngine;
@@ -40,7 +41,7 @@ export class RogueManager {
 		const content = this.engine.content;
 		const run = account.run;
 		return {
-			...common, configured: !!content, message: content ? '' : '正式队伍与数值等待配置，目前可查看局外成长。',
+			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			account: {
 				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
 				captures: account.captures, unlocked: account.unlocked,
@@ -53,7 +54,10 @@ export class RogueManager {
 			run: run ? {
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
 				encounters: run.node?.encounters.length || 0, node: run.node && { name: run.node.name, kind: run.node.kind },
-				team: run.team, bag: run.bag, money: run.money, boosts: run.boosts,
+				team: run.team.map(mon => ({ ...mon, experienceProgress: experienceProgress(mon),
+					evolutions: content?.progression ? evolutionOptions(mon) : [],
+				})), bag: run.bag, money: run.money, boosts: run.boosts,
+				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture, pendingMoves: run.pendingMoves || [],
 				roomid: run.battle?.roomid, fixed: fixedFloor(run.floor), boss: BOSS_FLOORS.get(run.floor),
 				choices: run.phase === 'choose' ? (content?.floors[run.floor] || []).map(node => ({
 					id: node.id, kind: node.kind, name: node.name,

@@ -1,12 +1,16 @@
 import { randomUUID } from 'crypto';
-import { Battle } from '../../sim/battle';
 import { toID } from '../../sim/dex';
 import {
-	ROGUE_FORMAT, ROGUE_STATS, type RogueBattleResult, type RogueBattleState, type RoguePokemon,
+	ROGUE_STATS, type RogueBattleResult, type RogueBattleState, type RoguePokemon,
 } from '../../sim/fantasy-rogue';
 import { fixedFloor, validateContent } from './content';
 import type { RogueStore } from './store';
 import type { RogueAccount, RogueCommand, RogueContent, RogueInventory, RogueRun } from './types';
+import {
+	createRoguePokemon, evolveMember, evolutionOptions, gainExperience, initializeExperience, rebuildMember,
+} from './progression';
+import { experienceYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
+export { createRoguePokemon } from './progression';
 
 function requireRule(ok: unknown, message: string): asserts ok {
 	if (!ok) throw new Error(message);
@@ -14,23 +18,6 @@ function requireRule(ok: unknown, message: string): asserts ok {
 const inventory = (run: RogueInventory): RogueInventory => structuredClone({
 	team: run.team, bag: run.bag, money: run.money,
 });
-
-/** Uses the real format's stat and PP calculations, including Fantasy species data. */
-export function createRoguePokemon(set: PokemonSet, boosts: StatsTable, id: string = randomUUID()): RoguePokemon {
-	const battle = new Battle({ formatid: toID(ROGUE_FORMAT), deserialized: true });
-	try {
-		battle.setPlayer('p1', { name: 'Rogue', team: [{ ...structuredClone(set), fantasyRogueStats: { ...boosts } }] });
-		const mon = battle.p1.pokemon[0];
-		const normalized = structuredClone(mon.set);
-		delete normalized.fantasyRogueStats;
-		return {
-			id, set: normalized, hp: mon.maxhp, maxhp: mon.maxhp, status: '', statusState: {},
-			pp: mon.moveSlots.map(slot => ({ id: slot.id, pp: slot.pp, maxpp: slot.maxpp })),
-		};
-	} finally {
-		battle.destroy();
-	}
-}
 
 export class RogueEngine {
 	readonly content: RogueContent | null;
@@ -75,6 +62,11 @@ export class RogueEngine {
 		run.floor++;
 		this.enterFloor(run);
 	}
+	private finishSettlement(account: RogueAccount, run: RogueRun) {
+		if (run.phase !== 'settlement' || run.pendingCapture || run.pendingMoves?.length) return;
+		if (run.encounter < run.node!.encounters.length) run.phase = 'ready';
+		else this.completeFloor(account, run);
+	}
 	command(userid: string, command: RogueCommand) {
 		return this.store.change(userid, account => {
 			if (command.action === 'upgrade') {
@@ -99,7 +91,9 @@ export class RogueEngine {
 				const team = selected.map(id => {
 					const starter = content.starters.find(entry => entry.id === id);
 					requireRule(starter && (starter.availableInitially || account.unlocked.includes(id)), '初始宝可梦尚未解锁。');
-					return createRoguePokemon(starter.set, account.boosts);
+					const mon = createRoguePokemon(starter.set, account.boosts);
+					if (content.progression) initializeExperience(mon);
+					return mon;
 				});
 				const initial = { team, bag: { ...content.initialBag }, money: content.initialMoney };
 				account.run = {
@@ -116,7 +110,47 @@ export class RogueEngine {
 				delete account.run;
 				return;
 			}
+			requireRule(!run.pendingMoves?.length || ['learn', 'replace'].includes(command.action), '请先处理待学习的招式。');
 			switch (command.action) {
+			case 'learn': {
+				const pending = run.pendingMoves?.[0];
+				const mon = run.team.find(entry => entry.id === pending?.member);
+				requireRule(pending && mon && command.member === mon.id, '没有对应的待学习招式。');
+				if (command.value !== 'skip') {
+					const slot = Number(command.value);
+					requireRule(Number.isInteger(slot) && slot >= 0 && slot < mon.set.moves.length, '替换招式位置无效。');
+					mon.set.moves[slot] = pending.move;
+					rebuildMember(mon, run.boosts);
+				}
+				run.pendingMoves!.shift();
+				this.finishSettlement(account, run);
+				break;
+			}
+			case 'replace': {
+				requireRule(run.phase === 'settlement' && run.pendingCapture, '没有待安置的捕获成员。');
+				if (command.value !== 'release') {
+					const index = run.team.findIndex(mon => mon.id === command.value);
+					requireRule(index >= 0, '替换成员无效。');
+					const removed = run.team[index].id;
+					run.team[index] = run.pendingCapture;
+					run.pendingMoves = run.pendingMoves?.filter(move => move.member !== removed);
+				}
+				delete run.pendingCapture;
+				this.finishSettlement(account, run);
+				break;
+			}
+			case 'evolve': {
+				requireRule(this.configured().progression && ['choose', 'ready', 'rest', 'reward'].includes(run.phase), '当前不能进化。');
+				const mon = run.team.find(entry => entry.id === command.member);
+				const option = mon && evolutionOptions(mon).find(entry => toID(entry.species) === command.value);
+				requireRule(mon?.hp && option, '没有满足条件的进化。');
+				if (option.item) {
+					requireRule(run.bag[option.item] > 0, '缺少进化道具。');
+					run.bag[option.item]--;
+				}
+				evolveMember(run, mon, option.species);
+				break;
+			}
 			case 'select': this.select(run, command.value || ''); break;
 			case 'battle':
 				requireRule(run.phase === 'ready' && run.team.some(mon => mon.hp > 0), '当前不能进入战斗。');
@@ -132,6 +166,9 @@ export class RogueEngine {
 				run.attempt++;
 				run.phase = 'ready';
 				delete run.battle;
+				delete run.pendingCapture;
+				delete run.pendingMoves;
+				run.notices = ['已恢复进入本层时的队伍、经验、道具和货币。'];
 				break;
 			case 'heal':
 				requireRule(run.phase === 'rest', '只能在休整中心恢复。');
@@ -152,13 +189,24 @@ export class RogueEngine {
 				break;
 			}
 			case 'use': {
-				requireRule(run.phase === 'rest', '本版补给道具在休整中心使用。');
+				requireRule(['rest', 'ready', 'choose', 'reward'].includes(run.phase), '请在战斗间隙使用补给。');
 				const item = this.configured().items.find(entry => entry.id === command.value);
 				const mon = run.team.find(entry => entry.id === command.member);
 				requireRule(item && mon && run.bag[item.id] > 0, '道具、数量或目标无效。');
 				if (item.kind === 'revive') {
 					requireRule(!mon.hp, '活力碎片只能对倒下成员使用。');
 					mon.hp = Math.max(1, Math.floor(mon.maxhp * item.amount!));
+					mon.status = '';
+					mon.statusState = {};
+				} else if (item.kind === 'candy') {
+					requireRule(this.configured().progression && mon.hp > 0 && mon.set.level < 100, '该成员不能再获得经验。');
+					run.notices = [];
+					gainExperience(run, mon, item.amount!);
+				} else if (item.kind === 'ether') {
+					requireRule(mon.hp > 0 && mon.pp.some(slot => slot.pp < slot.maxpp), '该成员不需要恢复 PP。');
+					for (const slot of mon.pp) slot.pp = Math.min(slot.maxpp, slot.pp + item.amount!);
+				} else if (item.kind === 'cure') {
+					requireRule(mon.hp > 0 && mon.status, '该成员没有异常状态。');
 					mon.status = '';
 					mon.statusState = {};
 				} else {
@@ -177,14 +225,20 @@ export class RogueEngine {
 		}, command);
 	}
 	battleState(userid: string): RogueBattleState {
-		const run = this.run(this.store.get(userid));
+		const account = this.store.get(userid);
+		const run = this.run(account);
 		requireRule(run.phase === 'battle' && run.battle, '当前没有待建立的战斗。');
 		const encounter = run.node!.encounters[run.encounter];
 		return {
 			encounterId: run.battle.encounterId, team: structuredClone(run.team), boosts: { ...run.boosts }, bag: { ...run.bag },
 			catchable: encounter.catchable,
-			balls: this.configured().items.filter(item => item.kind === 'ball' && item.id in encounter.catchChances)
-				.map(item => ({ id: item.id, name: item.name, chance: encounter.catchChances[item.id] })),
+			progression: !!this.configured().progression, allowReplacement: this.configured().allowReplacement,
+			caughtSpecies: account.caughtSpecies?.length || 0,
+			balls: this.configured().items.filter(item => item.kind === 'ball' &&
+				(item.multiplier || item.id in (encounter.catchChances || {})))
+				.map(item => ({
+					id: item.id, name: item.name, chance: encounter.catchChances?.[item.id], multiplier: item.multiplier,
+				})),
 		};
 	}
 	private recordCatch(account: RogueAccount, run: RogueRun, captured: RoguePokemon) {
@@ -193,6 +247,9 @@ export class RogueEngine {
 		const rule = this.configured().unlocks[toID(captured.set.species)];
 		requireRule(rule, '缺少捕捉解锁配置。');
 		run.caught.push(captured.id);
+		account.caughtSpecies ||= [];
+		const species = toID(captured.set.species);
+		if (!account.caughtSpecies.includes(species)) account.caughtSpecies.push(species);
 		const count = account.captures[rule.starter] = (account.captures[rule.starter] || 0) + 1;
 		if (count >= rule.captures && !account.unlocked.includes(rule.starter)) account.unlocked.push(rule.starter);
 	}
@@ -211,18 +268,30 @@ export class RogueEngine {
 			if (!result.won) { run.phase = 'failed'; return; }
 			run.team = structuredClone(result.team);
 			run.bag = { ...result.bag };
+			run.notices = [];
+			if (this.configured().progression) {
+				for (const defeated of result.defeated || []) {
+					for (const mon of run.team) {
+						if (!defeated.eligible.includes(mon.id)) continue;
+						gainExperience(run, mon, experienceYield(rogueSpeciesData(defeated.species).baseExperience,
+							defeated.level, mon.set.level, defeated.participants.includes(mon.id)));
+					}
+				}
+			}
 			if (result.captured) {
-				requireRule(run.team.length < 6, '队伍已满。');
+				requireRule(run.team.length < 6 || this.configured().allowReplacement, '队伍已满。');
 				const mon = createRoguePokemon(result.captured.set, run.boosts, result.captured.id);
 				mon.hp = Math.max(1, mon.maxhp - (result.captured.maxhp - result.captured.hp));
 				mon.pp = structuredClone(result.captured.pp);
 				mon.status = result.captured.status;
 				mon.statusState = { ...result.captured.statusState };
-				run.team.push(mon);
+				if (this.configured().progression) initializeExperience(mon);
+				if (run.team.length < 6) run.team.push(mon);
+				else run.pendingCapture = mon;
 			}
 			run.encounter++;
-			if (run.encounter < run.node!.encounters.length) run.phase = 'ready';
-			else this.completeFloor(account, run);
+			run.phase = 'settlement';
+			this.finishSettlement(account, run);
 		});
 	}
 	/** A missing room resumes its pre-battle save; never awards a win or silently heals. */

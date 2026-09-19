@@ -79,7 +79,7 @@ export const Sockets = new class {
 		}
 		if (Config.fantasyailocal) {
 			bindAddress = '127.0.0.1';
-			port = 8000;
+			// Keep local-only binding while allowing a separate preview port.
 		}
 		if (bindAddress !== undefined) {
 			Config.bindaddress = bindAddress;
