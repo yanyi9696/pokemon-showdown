@@ -20,7 +20,7 @@ async function until(check, name) {
 
 describe('Fantasy Rogue real rooms', function () {
 	this.timeout(20000);
-	let ai, store, manager, user, oldLocal;
+	let ai, store, manager, user, oldLocal, oldReporting;
 	let serial = 0;
 	const rooms = [];
 	const account = () => store.get(user.id);
@@ -28,6 +28,7 @@ describe('Fantasy Rogue real rooms', function () {
 		return manager.command(user.connections[0], { id: randomUUID(), revision: account().revision, action, ...details });
 	}
 	beforeEach(() => {
+		oldReporting = Config.reportbattles;
 		oldLocal = Config.fantasyailocal; Config.fantasyailocal = true;
 		store = new RogueStore(':memory:');
 		ai = new AIChallengeManager([], { enabled: true, decisionMs: 0, maxBattles: 1 }, 6);
@@ -39,6 +40,7 @@ describe('Fantasy Rogue real rooms', function () {
 		for (const room of rooms.splice(0)) Rooms.get(room.roomid)?.destroy();
 		user.disconnectAll(); user.destroy(); store.close();
 		Config.fantasyailocal = oldLocal;
+		Config.reportbattles = oldReporting;
 	});
 	it('opens a one-versus-one real AI room, captures, saves, and continues with two party members', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
@@ -108,5 +110,31 @@ describe('Fantasy Rogue real rooms', function () {
 			text => { message = text; });
 		assert.equal(ready, null);
 		assert(message.includes('专用入口'));
+	});
+	it('announces a new adventure once and suppresses only rogue battle reports', async () => {
+		const existing = Rooms.get('lobby');
+		const lobby = existing || Rooms.createChatRoom('lobby', 'Lobby');
+		const startIndex = lobby.log.log.length;
+		Config.reportbattles = ['lobby'];
+		try {
+			const request = { id: randomUUID(), revision: account().revision, action: 'start', starters: ['bulbasaur'] };
+			manager.command(user.connections[0], request);
+			manager.command(user.connections[0], request);
+			manager.state(user);
+			assert.equal(lobby.log.log.slice(startIndex).filter(line => line.includes('开启了幻想杯肉鸽之旅')).length, 1);
+			command('select', { value: 'grass' });
+			const state = command('battle');
+			const room = Rooms.get(state.run.roomid); rooms.push(room);
+			await until(() => room.battle.started, 'battle start');
+			assert(!lobby.log.log.slice(startIndex).some(line => line.startsWith('|b|')));
+			// The ordinary battle report path is unaffected.
+			Rooms.global.onCreateBattleRoom([user], { roomid: 'battle-normal-report-test', battle: { options: {} } }, {});
+			assert(lobby.log.log.slice(startIndex).some(line => line.startsWith('|b|battle-normal-report-test|')));
+			assert.equal(manager.state(user).run.node.reward.points, 0);
+			const mon = manager.state(user).run.team[0];
+			assert(mon.baseStats.hp && mon.stats.hp && mon.moveMemory.length && mon.abilityPool.length);
+		} finally {
+			if (!existing) lobby.destroy();
+		}
 	});
 });

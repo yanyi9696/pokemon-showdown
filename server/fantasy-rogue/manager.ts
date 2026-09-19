@@ -1,4 +1,5 @@
-import { FS } from '../../lib';
+import { FS, Utils } from '../../lib';
+import { Dex, toID } from '../../sim/dex';
 import { Teams } from '../../sim/teams';
 import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
 import { FantasyRogueContent } from '../../config/fantasy-rogue';
@@ -7,7 +8,8 @@ import { RogueEngine } from './engine';
 import { RogueStore } from './store';
 import { BOSS_FLOORS, fixedFloor } from './content';
 import type { RogueCommand } from './types';
-import { experienceProgress, evolutionOptions } from './progression';
+import { experienceProgress, evolutionOptions, ensureMemberMemory, rebuildMember } from './progression';
+import { inventoryItem } from './team';
 
 export class RogueManager {
 	readonly engine: RogueEngine;
@@ -43,6 +45,14 @@ export class RogueManager {
 		const account = this.engine.store.get(user.id);
 		const content = this.engine.content;
 		const run = account.run;
+		const items = content ? [...content.items] : [];
+		if (run && content) {
+			for (const id of [...Object.keys(run.bag), ...run.team.map(mon => toID(mon.set.item))]) {
+				if (!id || items.some(item => item.id === id)) continue;
+				const item = inventoryItem(content, id);
+				if (item) items.push(item);
+			}
+		}
 		return {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			account: {
@@ -53,17 +63,28 @@ export class RogueManager {
 				id: starter.id, species: starter.set.species, level: starter.set.level,
 				available: starter.availableInitially || account.unlocked.includes(starter.id),
 			})) || [],
-			items: content?.items || [],
+			items, shopItems: content?.items.map(item => item.id) || [],
 			run: run ? {
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
-				encounters: run.node?.encounters.length || 0, node: run.node && { name: run.node.name, kind: run.node.kind },
-				team: run.team.map(mon => ({ ...mon, experienceProgress: experienceProgress(mon),
-					evolutions: content?.progression ? evolutionOptions(mon) : [],
-				})), bag: run.bag, money: run.money, boosts: run.boosts,
+				encounters: run.node?.encounters.length || 0, node: run.node && {
+					name: run.node.name, kind: run.node.kind,
+					reward: { ...run.node.reward, points: run.node.kind === 'boss' ? 1 : 0 },
+				},
+				team: run.team.map(saved => {
+					const mon = structuredClone(saved);
+					ensureMemberMemory(mon);
+					if (!mon.stats) rebuildMember(mon, run.boosts);
+					const species = Dex.mod('gen9fantasy').species.get(mon.set.species);
+					return { ...mon, baseStats: species.baseStats, types: species.types,
+						experienceProgress: experienceProgress(mon),
+						evolutions: content?.progression ? evolutionOptions(mon) : [],
+					};
+				}), bag: run.bag, money: run.money, boosts: run.boosts, lastReward: run.lastReward,
 				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture, pendingMoves: run.pendingMoves || [],
 				roomid: run.battle?.roomid, fixed: fixedFloor(run.floor), boss: BOSS_FLOORS.get(run.floor),
 				choices: run.phase === 'choose' ? (content?.floors[run.floor] || []).map(node => ({
 					id: node.id, kind: node.kind, name: node.name,
+					reward: { ...node.reward, points: node.kind === 'boss' ? 1 : 0 },
 				})) : [],
 			} : null,
 		};
@@ -73,8 +94,13 @@ export class RogueManager {
 		const user = connection.user;
 		this.authorize(user);
 		this.recoverMissingRoom(user.id);
+		const previousRun = this.engine.store.get(user.id).run?.id;
 		const account = this.engine.command(user.id, command);
 		const run = account.run;
+		if (command.action === 'start' && run && run.id !== previousRun && !run.announced) {
+			this.engine.store.change(user.id, saved => { saved.run!.announced = true; });
+			Rooms.get('lobby')?.add(`|raw|${Utils.escapeHTML(user.name)} 开启了幻想杯肉鸽之旅`).update();
+		}
 		if (command.action === 'battle' && run?.phase === 'battle' && run.battle && !run.battle.roomid) {
 			const userid = user.id;
 			const token = run.battle.token;

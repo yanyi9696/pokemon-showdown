@@ -142,21 +142,26 @@ describe('Fantasy Rogue playable preview', () => {
 	});
 	it('advances the whole 200-floor state machine without skipping mandatory centers or duplicating points', () => {
 		cmd('start', { starters: ['bulbasaur'] });
+		let points = 0;
 		for (let floor = 1; floor <= 200; floor++) {
 			if (account().run.phase === 'choose') cmd('select', { value: 'wild0' });
 			if (account().run.phase === 'rest') {
-				cmd('heal'); cmd('heal'); assert.equal(account().points, floor - 1);
+				cmd('heal'); cmd('heal'); assert.equal(account().points, points);
 				cmd('continue');
 			} else {
+				if (account().run.node.kind === 'boss') points++;
 				const count = account().run.node.encounters.length;
 				for (let i = 0; i < count; i++) {
 					cmd('battle'); const run = account().run;
 					engine.settle(user, run.battle.token, { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag });
 				}
 			}
-			assert.equal(account().points, floor);
+			assert.equal(account().points, points);
 		}
 		assert.equal(account().run.phase, 'complete');
+		assert.equal(points, Object.keys(PreviewBosses).length);
+		cmd('upgrade', { value: 'hp' });
+		assert.equal(account().points, points - 1);
 	});
 	it('replaces a member whose stable id contains colons without changing the capture ledger', () => {
 		const run = nativeBattle(true);
@@ -184,7 +189,7 @@ describe('Fantasy Rogue playable preview', () => {
 		assert.equal(account().run.phase, 'settlement');
 		const learned = account().run.pendingMoves[0].move;
 		cmd('learn', { member, value: '0' }); learnAll();
-		assert.equal(account().run.floor, 2); assert.equal(account().points, 1);
+		assert.equal(account().run.floor, 2); assert.equal(account().points, 0);
 		assert.equal(account().run.checkpoint.team[0].set.moves[0], learned);
 		const checkpoint = structuredClone(account().run.checkpoint);
 		cmd('select', { value: 'wild0' }); cmd('battle');

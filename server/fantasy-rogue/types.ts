@@ -20,7 +20,7 @@ export interface RogueNode {
 export interface RogueItem {
 	id: string;
 	name: string;
-	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution';
+	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held';
 	price: number;
 	/** Healing amount, or fraction of max HP for a revive. */
 	amount?: number;
@@ -64,6 +64,9 @@ export interface RogueRun extends RogueInventory {
 	pendingCapture?: RoguePokemon;
 	pendingMoves?: { member: string, move: string }[];
 	notices?: string[];
+	lastReward?: { floor: number, name: string, money: number, items: Record<string, number>, points: number };
+	/** Existing adventures and retried start requests do not announce again. */
+	announced?: boolean;
 	checkpoint: RogueInventory;
 	/** Stable across retries. Only account-level catch counting uses this ledger. */
 	caught: string[];
@@ -83,8 +86,11 @@ export interface RogueCommand {
 	id: string;
 	revision: number;
 	action: 'start' | 'select' | 'battle' | 'retry' | 'heal' | 'buy' | 'use' | 'continue' | 'upgrade' | 'abandon' |
-		'learn' | 'replace' | 'evolve';
+		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'ability' | 'evs';
 	value?: string;
 	starters?: string[];
 	member?: string;
+	order?: string[];
+	slot?: number;
+	evs?: StatsTable;
 }

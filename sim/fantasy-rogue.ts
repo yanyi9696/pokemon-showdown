@@ -19,6 +19,12 @@ export interface RoguePokemon {
 	statusState: { time?: number, startTime?: number, stage?: number };
 	experience?: number;
 	seenMoves?: string[];
+	/** Learned moves retain their remaining PP even while not equipped. */
+	moveMemory?: { id: string, pp: number, maxpp: number }[];
+	abilityPool?: { id: string, hidden: boolean }[];
+	/** A server-granted event permits one redistribution of this many EVs. */
+	evRespec?: { total: number };
+	stats?: StatsTable;
 }
 
 export interface RogueDefeat {
@@ -26,6 +32,7 @@ export interface RogueDefeat {
 	level: number;
 	participants: string[];
 	eligible: string[];
+	captured?: boolean;
 }
 
 export interface RogueBattleState {
@@ -101,12 +108,12 @@ export function markRogueParticipants(battle: Battle) {
 	if (!participants.includes(active.set.fantasyRogueId!)) participants.push(active.set.fantasyRogueId!);
 }
 
-export function recordRogueDefeat(battle: Battle, mon: Pokemon) {
+export function recordRogueDefeat(battle: Battle, mon: Pokemon, captured = false) {
 	const state = battle.fantasyRogue;
 	if (!state?.progression || mon.side.id !== 'p2') return;
 	markRogueParticipants(battle);
 	state.defeated!.push({
-		species: mon.set.species, level: mon.level,
+		species: mon.set.species, level: mon.level, captured,
 		participants: [...(state.participants![mon.set.fantasyRogueId!] || [])],
 		eligible: battle.p1.pokemon.filter(member => member.hp > 0).map(member => member.set.fantasyRogueId!),
 	});
@@ -159,7 +166,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 	delete original.set.fantasyRogueStats;
 	delete original.set.fantasyRogueId;
 	state.captured = snapshotRoguePokemon(target, original);
-	recordRogueDefeat(battle, target);
+	recordRogueDefeat(battle, target, true);
 	battle.add('-message', `成功捕捉了${target.species.name}！`);
 	// A private message commits the account-level catch immediately, before the end packet.
 	battle.send('fantasyroguecapture', JSON.stringify(state.captured));

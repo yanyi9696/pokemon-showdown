@@ -29,7 +29,8 @@ export function validateContent(content: RogueContent): RogueContent {
 		ensure(/^[a-z0-9]+$/.test(item.id) && !itemIds.has(item.id), '道具标识重复或无效');
 		itemIds.add(item.id);
 		ensure(item.name && whole(item.price), `道具 ${item.id} 名称或价格无效`);
-		ensure(['ball', 'heal', 'revive', 'ether', 'cure', 'candy', 'evolution'].includes(item.kind), '未支持的道具类型');
+		ensure(['ball', 'heal', 'revive', 'ether', 'cure', 'candy', 'evolution', 'held'].includes(item.kind), '未支持的道具类型');
+		if (item.kind === 'held') ensure(dex.items.get(item.id).exists, '携带道具不存在');
 		if (['heal', 'ether', 'candy'].includes(item.kind)) {
 			ensure(Number.isSafeInteger(item.amount) && item.amount! > 0, '道具数值无效');
 		}

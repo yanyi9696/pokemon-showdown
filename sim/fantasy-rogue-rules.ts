@@ -1,5 +1,6 @@
 import { Dex, toID } from './dex';
 import { RogueExperienceTables, RogueSpeciesData } from './fantasy-rogue-data';
+import { RogueEffortData } from './fantasy-rogue-evs';
 
 /** Fantasy forms explicitly inherit their base species' out-of-battle RPG data. */
 export function rogueSpeciesData(name: string) {
@@ -7,6 +8,13 @@ export function rogueSpeciesData(name: string) {
 	const data = RogueSpeciesData[species.id] || RogueSpeciesData[toID(species.baseSpecies)];
 	if (!data) throw new Error(`缺少 ${name} 的经验与捕获率数据。`);
 	return { growth: data[0], baseExperience: data[1], catchRate: data[2] };
+}
+
+export function rogueEffortYield(name: string): StatsTable {
+	const species = Dex.mod('gen9fantasy').species.get(name);
+	const data = RogueEffortData[species.id] || RogueEffortData[toID(species.baseSpecies)];
+	if (!data) throw new Error(`缺少 ${name} 的努力值产出数据。`);
+	return { hp: data[0], atk: data[1], def: data[2], spa: data[3], spd: data[4], spe: data[5] };
 }
 
 export function experienceAtLevel(growth: number, level: number) {

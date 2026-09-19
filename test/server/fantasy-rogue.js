@@ -48,7 +48,7 @@ describe('Fantasy Rogue storage and campaign', () => {
 		assert.throws(() => cmd('start', {starters: ['bulbasaur', 'magikarp']}), /栏位/);
 		assert.equal(state().revision, 0);
 	});
-	it('finishes three real encounters per wild floor and awards one point only', () => {
+	it('finishes three encounters per wild floor, awards loot once and no growth point', () => {
 		start();
 		for (let i = 0; i < 3; i++) {
 			cmd('battle');
@@ -59,11 +59,12 @@ describe('Fantasy Rogue storage and campaign', () => {
 			const settled = state();
 			engine.settle(user, before.battle.token, result);
 			assert.deepEqual(state(), settled);
-			assert.equal(state().points, i === 2 ? 1 : 0);
+			assert.equal(state().points, 0);
 			assert.equal(state().run.team[0].hp, before.team[0].hp);
 		}
 		assert.equal(state().run.floor, 2);
 		assert.equal(state().run.money, 130);
+		assert.deepEqual(state().run.lastReward, {floor: 1, name: '测试草地', money: 30, items: {}, points: 0});
 		assert.equal(state().run.team[0].status, 'par');
 	});
 	it('rolls back an entire failed floor while retaining immediate, deduplicated catches', () => {
@@ -113,16 +114,20 @@ describe('Fantasy Rogue storage and campaign', () => {
 	it('shares a 160-point budget, enforces caps, and snapshots upgrades at run start', () => {
 		store.change(user, account => { account.points = 161; });
 		start();
+		assert.throws(() => cmd('upgrade', {value: 'hp'}), /进行中的冒险/);
+		assert.throws(() => cmd('upgrade', {value: 'slot'}), /进行中的冒险/);
+		assert.deepEqual(state().run.boosts, stats(0));
+		assert.equal(state().run.startingSlots, 1);
+		assert.equal(state().points, 161);
+		cmd('abandon');
 		for (const stat of Object.keys(stats(0))) for (let i = 0; i < 10; i++) cmd('upgrade', {value: stat});
 		for (let i = 0; i < 5; i++) cmd('upgrade', {value: 'slot'});
 		assert.equal(state().points, 1); assert.equal(state().slots, 6);
 		assert.deepEqual(state().boosts, stats(10));
-		assert.deepEqual(state().run.boosts, stats(0));
-		assert.equal(state().run.startingSlots, 1);
 		assert.throws(() => cmd('upgrade', {value: 'slot'}), /栏位已满/);
 		assert.throws(() => cmd('upgrade', {value: 'hp'}), /属性已满/);
 		assert.equal(state().points, 1);
-		cmd('abandon'); cmd('start', {starters: ['bulbasaur']});
+		cmd('start', {starters: ['bulbasaur']});
 		assert.deepEqual(state().run.boosts, stats(10));
 		assert.equal(state().run.startingSlots, 6);
 	});
@@ -143,7 +148,7 @@ describe('Fantasy Rogue storage and campaign', () => {
 		assert.equal(state().run.team[0].hp, state().run.team[0].maxhp);
 		assert.equal(state().run.phase, 'rest'); assert.equal(state().points, 0);
 		cmd('continue');
-		assert.equal(state().points, 1); assert.equal(state().run.floor, 10);
+		assert.equal(state().points, 0); assert.equal(state().run.floor, 10);
 		assert.equal(state().run.node.kind, 'boss'); assert.equal(state().run.phase, 'ready');
 		assert.throws(() => cmd('select', {value: 'grass'}), /已经选择/);
 	});

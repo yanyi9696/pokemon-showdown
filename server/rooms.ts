@@ -1637,7 +1637,7 @@ export class GlobalRoomState {
 				player.setStatusType('online');
 			}
 		}
-		if (Config.reportbattles) {
+		if (Config.reportbattles && !room.battle?.options.fantasyRogue) {
 			if (typeof Config.reportbattles === 'string') {
 				Config.reportbattles = [Config.reportbattles];
 			} else if (Config.reportbattles === true) {

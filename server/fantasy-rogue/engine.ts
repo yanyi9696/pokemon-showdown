@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { toID } from '../../sim/dex';
+import { Dex, toID } from '../../sim/dex';
 import {
 	ROGUE_STATS, type RogueBattleResult, type RogueBattleState, type RoguePokemon,
 } from '../../sim/fantasy-rogue';
@@ -7,9 +7,11 @@ import { fixedFloor, validateContent } from './content';
 import type { RogueStore } from './store';
 import type { RogueAccount, RogueCommand, RogueContent, RogueInventory, RogueRun } from './types';
 import {
-	createRoguePokemon, evolveMember, evolutionOptions, gainExperience, initializeExperience, rebuildMember,
+	createRoguePokemon, ensureMemberMemory, evolveMember, evolutionOptions, gainEffort, gainExperience,
+	initializeExperience, rebuildMember, rememberMove,
 } from './progression';
-import { experienceYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
+import { experienceYield, rogueEffortYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
+import { canEditParty, editParty, TEAM_ACTIONS } from './team';
 export { createRoguePokemon } from './progression';
 
 function requireRule(ok: unknown, message: string): asserts ok {
@@ -56,7 +58,9 @@ export class RogueEngine {
 		const reward = run.node!.reward;
 		run.money += reward.money;
 		for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
-		account.points++;
+		const points = run.node!.kind === 'boss' ? 1 : 0;
+		account.points += points;
+		run.lastReward = { floor: run.floor, name: run.node!.name, ...structuredClone(reward), points };
 		delete run.battle;
 		if (run.floor === 200) { run.phase = 'complete'; return; }
 		run.floor++;
@@ -70,6 +74,7 @@ export class RogueEngine {
 	command(userid: string, command: RogueCommand) {
 		return this.store.change(userid, account => {
 			if (command.action === 'upgrade') {
+				requireRule(!account.run || account.run.phase === 'complete', '进行中的冒险不能花费成长点数，请结束或放弃本局后再加点。');
 				if (command.value === 'slot') {
 					requireRule(account.slots < 6 && account.points >= 20, '栏位已满或成长点数不足 20。');
 					account.points -= 20;
@@ -111,11 +116,21 @@ export class RogueEngine {
 				return;
 			}
 			requireRule(!run.pendingMoves?.length || ['learn', 'replace'].includes(command.action), '请先处理待学习的招式。');
+			if (TEAM_ACTIONS.includes(command.action)) {
+				editParty(run, command, this.configured());
+				return;
+			}
 			switch (command.action) {
 			case 'learn': {
 				const pending = run.pendingMoves?.[0];
 				const mon = run.team.find(entry => entry.id === pending?.member);
 				requireRule(pending && mon && command.member === mon.id, '没有对应的待学习招式。');
+				const legacyNewMove = !mon.moveMemory && !mon.set.moves.some(move => toID(move) === pending.move);
+				rememberMove(mon, pending.move);
+				if (legacyNewMove) {
+					const learned = mon.moveMemory!.find(move => move.id === pending.move)!;
+					learned.pp = learned.maxpp;
+				}
 				if (command.value !== 'skip') {
 					const slot = Number(command.value);
 					requireRule(Number.isInteger(slot) && slot >= 0 && slot < mon.set.moves.length, '替换招式位置无效。');
@@ -178,6 +193,8 @@ export class RogueEngine {
 					mon.status = '';
 					mon.statusState = {};
 					for (const slot of mon.pp) slot.pp = slot.maxpp;
+					ensureMemberMemory(mon);
+					for (const slot of mon.moveMemory!) slot.pp = slot.maxpp;
 				}
 				break;
 			case 'buy': {
@@ -273,6 +290,7 @@ export class RogueEngine {
 				for (const defeated of result.defeated || []) {
 					for (const mon of run.team) {
 						if (!defeated.eligible.includes(mon.id)) continue;
+						if (!defeated.captured) gainEffort(run, mon, rogueEffortYield(defeated.species));
 						gainExperience(run, mon, experienceYield(rogueSpeciesData(defeated.species).baseExperience,
 							defeated.level, mon.set.level, defeated.participants.includes(mon.id)));
 					}
@@ -292,6 +310,28 @@ export class RogueEngine {
 			run.encounter++;
 			run.phase = 'settlement';
 			this.finishSettlement(account, run);
+		});
+	}
+	/** Future event handlers call these methods; the public command API cannot grant unlocks. */
+	unlockAbility(userid: string, member: string, ability: string) {
+		return this.store.change(userid, account => {
+			const run = this.run(account);
+			const mon = run.team.find(entry => entry.id === member);
+			const dex = Dex.mod('gen9fantasy');
+			const entry = dex.abilities.get(ability);
+			requireRule(mon && canEditParty(run) && entry.exists, '当前不能解锁该特性。');
+			ensureMemberMemory(mon);
+			if (!mon.abilityPool!.some(known => known.id === entry.id)) {
+				mon.abilityPool!.push({ id: entry.id, hidden: toID(dex.species.get(mon.set.species).abilities.H) === entry.id });
+			}
+		});
+	}
+	unlockEVRespec(userid: string, member: string) {
+		return this.store.change(userid, account => {
+			const run = this.run(account);
+			const mon = run.team.find(entry => entry.id === member);
+			requireRule(mon && canEditParty(run), '当前不能调整努力值。');
+			mon.evRespec = { total: ROGUE_STATS.reduce((sum, stat) => sum + mon.set.evs[stat], 0) };
 		});
 	}
 	/** A missing room resumes its pre-battle save; never awards a win or silently heals. */
