@@ -1,14 +1,14 @@
 'use strict';
 
 const assert = require('assert').strict;
-const {randomUUID} = require('crypto');
-const {setTimeout: delay} = require('timers/promises');
-const {makeUser} = require('../users-utils');
-const {AIChallengeManager} = require('../../dist/server/fantasy-ai/manager');
-const {RogueStore} = require('../../dist/server/fantasy-rogue/store');
-const {RogueEngine} = require('../../dist/server/fantasy-rogue/engine');
-const {RogueManager} = require('../../dist/server/fantasy-rogue/manager');
-const {content} = require('../fixtures/fantasy-rogue');
+const { randomUUID } = require('crypto');
+const { setTimeout: delay } = require('timers/promises');
+const { makeUser } = require('../users-utils');
+const { AIChallengeManager } = require('../../dist/server/fantasy-ai/manager');
+const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
+const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
+const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
+const { content } = require('../fixtures/fantasy-rogue');
 
 async function until(check, name) {
 	const start = Date.now();
@@ -25,30 +25,31 @@ describe('Fantasy Rogue real rooms', function () {
 	const rooms = [];
 	const account = () => store.get(user.id);
 	function command(action, details = {}) {
-		return manager.command(user.connections[0], {id: randomUUID(), revision: account().revision, action, ...details});
+		return manager.command(user.connections[0], { id: randomUUID(), revision: account().revision, action, ...details });
 	}
 	beforeEach(() => {
 		oldLocal = Config.fantasyailocal; Config.fantasyailocal = true;
 		store = new RogueStore(':memory:');
-		ai = new AIChallengeManager([], {enabled: true, decisionMs: 0, maxBattles: 1}, 6);
+		ai = new AIChallengeManager([], { enabled: true, decisionMs: 0, maxBattles: 1 }, 6);
 		manager = new RogueManager(new RogueEngine(store, content()), () => ai);
 		user = makeUser(`Rogue UI ${++serial}`, `127.0.3.${serial}`);
 	});
 	afterEach(async () => {
 		await ai.dispose();
 		for (const room of rooms.splice(0)) Rooms.get(room.roomid)?.destroy();
-		user.disconnectAll(); user.destroy(); store.close(); Config.fantasyailocal = oldLocal;
+		user.disconnectAll(); user.destroy(); store.close();
+		Config.fantasyailocal = oldLocal;
 	});
 	it('opens a one-versus-one real AI room, captures, saves, and continues with two party members', async () => {
-		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		for (let encounter = 0; encounter < 2; encounter++) {
 			const response = command('battle');
 			const room = Rooms.get(response.run.roomid); rooms.push(room);
 			assert.equal(ai.getStatus().active, 1);
 			await until(() => room.battle.p2.request.isWait === true, 'AI team preview').catch(error => {
-				throw new Error(`${error.message}: ${JSON.stringify({request: room.battle.p2.request, metrics: room.battle.fantasyAI.metrics,
+				throw new Error(`${error.message}: ${JSON.stringify({ request: room.battle.p2.request, metrics: room.battle.fantasyAI.metrics,
 					pending: room.battle.fantasyAI.pending, submitted: room.battle.fantasyAI.submitted,
-					isAI: room.battle.p2.isAI, scheduler: ai.scheduler.metrics, log: room.log.log.slice(-4)})}`);
+					isAI: room.battle.p2.isAI, scheduler: ai.scheduler.metrics, log: room.log.log.slice(-4) })}`);
 			});
 			assert.equal(room.battle.options.fantasyRogue.state.team.length, encounter + 1);
 			room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
@@ -66,8 +67,8 @@ describe('Fantasy Rogue real rooms', function () {
 		}
 	});
 	it('shares the existing AI quota, prevents duplicate battle creation, and recovers a destroyed room', async () => {
-		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
-		const request = {id: randomUUID(), revision: account().revision, action: 'battle'};
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		const request = { id: randomUUID(), revision: account().revision, action: 'battle' };
 		const first = manager.command(user.connections[0], request);
 		const again = manager.command(user.connections[0], request);
 		assert.equal(first.run.roomid, again.run.roomid);
@@ -85,9 +86,17 @@ describe('Fantasy Rogue real rooms', function () {
 		Config.fantasyailocal = false;
 		user.registered = false;
 		assert.equal(manager.state(user).account, null);
-		assert.throws(() => command('start', {starters: ['bulbasaur']}), /登录注册账号/);
+		assert(manager.state(user).message.includes('当前仅使用昵称'));
+		assert.throws(() => command('start', { starters: ['bulbasaur'] }), /登录注册账号/);
+		user.registered = true;
+		assert(manager.state(user).account);
+		user.registered = false;
 		Config.fantasyailocal = true;
-		command('start', {starters: ['bulbasaur']});
+		user.named = false;
+		assert.equal(manager.state(user).account, null);
+		assert(manager.state(user).message.includes('固定测试昵称'));
+		user.named = true;
+		command('start', { starters: ['bulbasaur'] });
 		const publicState = manager.state(user);
 		assert(!JSON.stringify(publicState.run.choices).includes('Magikarp'));
 		assert(!('checkpoint' in publicState.run));

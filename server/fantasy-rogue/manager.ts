@@ -18,8 +18,11 @@ export class RogueManager {
 	}
 	private authorize(user: User) {
 		if (Config.fantasyrogue?.enabled === false) throw new Error('幻想杯肉鸽尚未开放。');
-		if (!user.named || !user.connected || (!user.registered && !Config.fantasyailocal)) {
-			throw new Error('请先登录注册账号，以保存冒险进度。');
+		if (!user.named || !user.connected) {
+			throw new Error(Config.fantasyailocal ? '请先选择固定测试昵称，以保存冒险进度。' : '请先登录注册账号，以保存冒险进度。');
+		}
+		if (!user.registered && !Config.fantasyailocal) {
+			throw new Error('当前仅使用昵称，尚未登录注册账号。请使用账号密码登录后刷新存档。');
 		}
 	}
 	private recoverMissingRoom(userid: string) {

@@ -15,11 +15,11 @@ node build full --local-server ..\pokemon-showdown
 
 该命令构建旁边的服务端并生成客户端数据，不执行 Git 拉取，解决原 `node build full` 因 GitHub 443 不通而提前失败的问题。两边需要已安装依赖；未提供 `--local-server` 时保留原远端缓存流程。PHP 新闻提示不阻止编译。
 
-本地开发入口改为直接打开客户端文件，连接现有的 `localhost:8000`。若该服务尚未启动，另开终端运行：
+本地开发入口直接打开客户端文件，连接 `localhost:8000`。只输入昵称试玩时，必须使用本地试玩启动命令。先停止原来占用 8000 的普通私服；若旧 18000 试玩服仍在运行，也先停止，避免两个试玩进程同时使用同一份存档。另开终端运行：
 
 ```powershell
 cd F:\fantasy\pokemon-showdown
-node .\pokemon-showdown
+npm run start:fantasy-rogue:local
 ```
 
 在浏览器地址栏打开（`~~` 前不加反斜杠）：
@@ -28,9 +28,11 @@ node .\pokemon-showdown
 file:///F:/fantasy/pokemon-showdown-client/play.pokemonshowdown.com/testclient.html?~~localhost:8000
 ```
 
-登录后，点击首页「AI 挑战」下方的「幻想杯肉鸽」。首次任选一只御三家；逐层点数可购买下局生效的初始栏位与六维加成。`testclient.html` 已引入肉鸽脚本与样式，道具图集使用相对路径，直接打开文件也能定位资源。修改 HTML、CSS 或客户端原生 JS 后刷新页面即可；修改需编译的代码时先重新构建。更新服务端代码后需重启现有服务。
+输入固定测试昵称后，点击首页「AI 挑战」下方的「幻想杯肉鸽」。首次任选一只御三家；逐层点数可购买下局生效的初始栏位与六维加成。`testclient.html` 已引入肉鸽脚本与样式，道具图集使用相对路径，直接打开文件也能定位资源。修改 HTML、CSS 或客户端原生 JS 后刷新页面即可；修改需编译的代码时先重新构建。更新服务端代码后需重启现有服务。
 
-8000 普通私服沿用其原有账号认证和配置，肉鸽要求登录注册账号，默认存档为 `databases/fantasy-rogue.db`。此前 18000 试玩服的 `databases/fantasy-rogue-preview.db` 仍保留，切换入口不迁移或清空存档。此入口不需要运行 18080 网页服务。
+该命令先构建服务端，再以 `node tools/fantasy-rogue-preview.js --port 8000` 启动；仅监听 `127.0.0.1`，使用此前 18000 试玩服的 `databases/fantasy-rogue-preview.db`，同一昵称可继续原来的试玩进度。此入口不需要运行 18080 网页服务。不要同时启动两个使用该数据库的试玩进程。
+
+若使用 `node .\pokemon-showdown` 启动，则仍是普通私服模式：肉鸽要求通过账号密码验证的注册账号，仅输入昵称不符合条件；普通存档默认在 `databases/fantasy-rogue.db`。本地试玩启动器不修改 `config/config.js`、普通服务的认证规则或普通存档。
 
 ### 可选：独立试玩服
 
@@ -121,6 +123,8 @@ node node_modules/mocha/bin/mocha.js --no-config test/main.js test/server/fantas
 客户端：`node node_modules/mocha/bin/mocha.js --no-config test/fantasy-rogue.test.js test/fantasy-ai.test.js --reporter dot`，23 项通过。完整本地构建成功；新增模块与客户端修改的定向 ESLint 通过。
 
 入口切换补充核验：`node build --local-server ..\pokemon-showdown` 成功生成包含肉鸽脚本和样式的 `testclient.html`；修复已写入 `testclient.template.html`，后续构建可保留。客户端 23 项回归通过，直接连接 `localhost:8000` 的肉鸽状态接口返回 `enabled: true`，未登录时提示登录注册账号。所需肉鸽本地资源存在，原有两份动画尺寸数据仍使用页面已有的官方在线回退。内置浏览器的 URL 安全策略阻止自动打开 `file://`，本轮未实测该入口的页面和战斗；下述浏览器实测来自此前独立试玩环境。
+
+昵称试玩补充修正：原 8000 以普通私服模式运行，输入昵称只获得未注册身份，不能读取普通肉鸽存档。新增 `npm run start:fantasy-rogue:local` 在 8000 使用已有的本地试玩模式和独立试玩存档；生产认证条件未放宽。页面监听服务端确认登录的事件，同一昵称完成账号验证后也会重新读取存档。构建和定向 ESLint 通过，客户端 24 项测试、服务端真实房间 4 项测试通过，包括未注册用户在普通模式被拒、本地模式可试玩、未命名访客被拒及注册账号可读取存档。现有服务必须重启切换模式后才生效；上述测试不代表已完成 8000 运行实例的切换。
 
 全库 TypeScript 仍有六项既有 Mega 返回值类型错误，位于 Gen 8 rulesets、Gen 9 SSB、Gen 7 random teams、othermetas；本次路径无新增错误。本机 TypeScript 5.7.3 检查使用 `--ignoreDeprecations 5.0`，未改全局设置。上一阶段的扩大 AI 回归还记录过正式训练家 ID 和重复换人惩罚的两项旧断言问题，本轮未修改相关策略。
 
