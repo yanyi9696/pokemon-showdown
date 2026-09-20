@@ -43,6 +43,7 @@ function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
 	const side = {
 		id: request.side.id,
 		name: request.side.name,
+		...(request.side.fantasyRogueTera !== undefined ? { fantasyRogueTera: request.side.fantasyRogueTera } : {}),
 		pokemon: request.side.pokemon.map(mon => ({
 			ident: mon.ident, details: mon.details, condition: mon.condition, active: mon.active,
 			...(mon.fantasyRogueStats ? { fantasyRogueStats: { ...mon.fantasyRogueStats } } : {}),

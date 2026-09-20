@@ -1,4 +1,5 @@
 import { Dex, toID } from './dex';
+import { canRogueTerastallize } from './fantasy-rogue';
 
 const CHOOSABLE_TARGETS = new Set(['normal', 'any', 'adjacentAlly', 'adjacentAllyOrSelf', 'adjacentFoe']);
 
@@ -1924,6 +1925,7 @@ export class BattleActions {
 	runMegaEvoY?: (this: BattleActions, pokemon: Pokemon) => boolean;
 
 	canTerastallize(pokemon: Pokemon) {
+		if (!canRogueTerastallize(pokemon)) return null;
 		if (pokemon.getItem().zMove || pokemon.canMegaEvo || this.dex.gen !== 9) {
 			return null;
 		}
@@ -1931,6 +1933,7 @@ export class BattleActions {
 	}
 
 	terastallize(pokemon: Pokemon) {
+		if (!canRogueTerastallize(pokemon)) return;
 		if (pokemon.illusion && ['Ogerpon', 'Terapagos'].includes(pokemon.illusion.species.baseSpecies)) {
 			this.battle.singleEvent('End', this.dex.abilities.get('Illusion'), pokemon.abilityState, pokemon);
 		}

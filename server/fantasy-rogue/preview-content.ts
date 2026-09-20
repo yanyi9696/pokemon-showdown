@@ -1,7 +1,8 @@
-/** Replaceable playtest pack. These rosters and prices are NOT the final game balance. */
+/** Playtest pack with user-authored Fantasy elites; other rosters and prices remain provisional. */
 import { Dex, toID } from '../../sim/dex';
 import { fixedFloor, BOSS_FLOORS } from './content';
 import { levelMoves } from './progression';
+import { eliteBossCandidates } from './elite-bosses';
 import type { RogueContent, RogueEncounter, RogueNode } from './types';
 
 const dex = Dex.mod('gen9fantasy');
@@ -11,7 +12,7 @@ const stats = (value: number): StatsTable => ({
 });
 
 export const PreviewBalance = {
-	version: 'preview-2026-09-v2',
+	version: 'preview-2026-09-v3',
 	initialMoney: 1500,
 	initialBag: { pokeball: 12, potion: 6, revive: 1, elixir: 1, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
@@ -39,24 +40,15 @@ const starters = [
 
 /** Theme rosters: size and stage scale by floor, with explicit endgame teams. */
 export const PreviewBosses: Record<number, { name: string, team: string[] }> = {
-	10: { name: '精英首领 · 林间蝶王', team: ['Butterfree'] },
 	20: { name: '岩石道馆 · 小刚', team: ['Geodude', 'Onix'] },
-	30: { name: '精英首领 · 沼泽毒牙', team: ['Arbok'] },
 	40: { name: '水系道馆 · 小霞', team: ['Starmie', 'Gyarados', 'Quagsire'] },
-	50: { name: '精英首领 · 雷霆狮王', team: ['Luxray'] },
 	60: { name: '电系道馆 · 马志士', team: ['Raichu', 'Electrode', 'Magneton'] },
-	70: { name: '精英首领 · 沙海飞龙', team: ['Flygon'] },
 	80: { name: '草系道馆 · 莉佳', team: ['Tangrowth', 'Victreebel', 'Vileplume', 'Leafeon'] },
-	90: { name: '精英首领 · 炉心钢蛇', team: ['Steelix'] },
 	100: { name: '毒系道馆 · 阿桔', team: ['Crobat', 'Muk', 'Weezing', 'Drapion'] },
-	110: { name: '精英首领 · 深海歌者', team: ['Milotic'] },
 	120: { name: '超能道馆 · 娜姿', team: ['Alakazam', 'Espeon', 'Slowbro', 'Gardevoir', 'Bronzong'] },
-	130: { name: '精英首领 · 冰原猛犸', team: ['Mamoswine'] },
 	140: { name: '火系道馆 · 夏伯', team: ['Arcanine', 'Ninetales', 'Magmortar', 'Torkoal', 'Volcarona'] },
-	150: { name: '精英首领 · 古代暴君', team: ['Tyranitar'] },
 	160: { name: '龙系道馆 · 小椿', team: ['Kingdra', 'Flygon', 'Haxorus', 'Altaria', 'Dragonite', 'Dragalge'] },
 	165: { name: '四天王 · 恶之试炼', team: ['Umbreon', 'Honchkrow', 'Krookodile', 'Weavile', 'Bisharp', 'Hydreigon'] },
-	170: { name: '精英首领 · 合金巨像', team: ['Metagross'] },
 	175: { name: '四天王 · 幽灵试炼', team: ['Dusknoir', 'Gengar', 'Chandelure', 'Aegislash', 'Mimikyu', 'Dragapult'] },
 	180: { name: '四天王 · 钢铁试炼', team: ['Skarmory', 'Scizor', 'Excadrill', 'Magnezone', 'Lucario', 'Metagross'] },
 	185: { name: '四天王 · 龙之试炼', team: ['Kingdra', 'Flygon', 'Haxorus', 'Salamence', 'Garchomp', 'Dragonite'] },
@@ -106,7 +98,8 @@ function makeSet(name: string, level: number, quality = 15, boss = false): Pokem
 
 export function createPreviewContent(): RogueContent {
 	const content: RogueContent = {
-		version: PreviewBalance.version, label: '幻想杯肉鸽 · 200 层试玩版（队伍与价格为测试配置）',
+		version: PreviewBalance.version, compatibleVersions: ['preview-2026-09-v2'],
+		label: '幻想杯肉鸽 · 200 层试玩版',
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },
 		starters: starters.map(name => ({ id: toID(name), set: makeSet(name, 5, 20), availableInitially: true })),
@@ -163,11 +156,14 @@ export function createPreviewContent(): RogueContent {
 		}
 		if (BOSS_FLOORS.has(floor)) {
 			const boss = PreviewBosses[floor];
-			if (!boss) throw new Error(`缺少第 ${floor} 层试玩 Boss`);
+			const candidates = eliteBossCandidates(floor);
+			if (!boss && !candidates.length) throw new Error(`缺少第 ${floor} 层试玩 Boss`);
+			const name = candidates.length ? '幻想精英' : boss.name;
 			const bossLevel = PreviewBalance.bossLevel(floor);
-			content.floors[floor] = [{ id: 'boss', name: boss.name, kind: 'boss',
+			content.floors[floor] = [{ id: 'boss', name, kind: 'boss',
 				reward: { money: 800 + floor * 40, items: { greatball: 3, revive: 1 } }, encounters: [{
-					name: boss.name, team: boss.team.map(name => makeSet(name, bossLevel, 25, true)), style: 'balanced', catchable: false,
+					name, team: candidates.length ? [candidates[0]] : boss.team.map(species => makeSet(species, bossLevel, 25, true)),
+					...(candidates.length ? { candidates } : {}), style: 'balanced', catchable: false,
 				}] }];
 			continue;
 		}

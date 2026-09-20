@@ -5,6 +5,8 @@ export type RogueNodeKind = 'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 're
 export interface RogueEncounter {
 	name: string;
 	team: PokemonSet[];
+	/** Single-Pokemon elite alternatives, drawn once and removed from the saved encounter. */
+	candidates?: PokemonSet[];
 	style: TrainerStyle;
 	catchable: boolean;
 	/** Per-ball probabilities; no default catch formula or implicit chance. */
@@ -34,6 +36,8 @@ export interface RogueStarter {
 }
 export interface RogueContent {
 	version: string;
+	/** Explicitly compatible saves retain their current encounter and use new content on later floors. */
+	compatibleVersions?: string[];
 	label?: string;
 	progression?: 'mainline7';
 	allowReplacement?: boolean;
@@ -50,6 +54,8 @@ export interface RogueInventory {
 	team: RoguePokemon[];
 	bag: Record<string, number>;
 	money: number;
+	/** Per-adventure event unlock; missing in old saves means locked. Included in floor rollback. */
+	teraUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
 	id: string;

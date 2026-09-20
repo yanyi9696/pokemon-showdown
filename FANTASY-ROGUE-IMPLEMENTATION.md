@@ -1,6 +1,6 @@
 # 幻想杯肉鸽试玩版开发记录
 
-更新：2026-09-19。当前交付为 200 层测试内容和基础养成，供试玩调参；正式阵容和经济数值后续替换。依据见 [设计文档](FANTASY-ROGUE-DESIGN.md)，来源见 [数据与许可说明](FANTASY-ROGUE-DATA.md)。
+更新：2026-09-20。当前交付为 200 层测试内容和基础养成，九个幻想精英池已使用用户配置，太晶权限按事件与楼层限制；其他正式阵容和经济数值后续替换。依据见 [设计文档](FANTASY-ROGUE-DESIGN.md)，来源见 [数据与许可说明](FANTASY-ROGUE-DATA.md)。
 
 ## 本地试玩
 
@@ -56,7 +56,7 @@ node build-tools/serve-rogue-preview.js
 
 ## 测试内容与调参
 
-`config/fantasy-rogue.ts` 加载 `server/fantasy-rogue/preview-content.ts`，版本 `preview-2026-09-v2`。这是用户授权的测试配置，不代表正式平衡。
+`config/fantasy-rogue.ts` 加载 `server/fantasy-rogue/preview-content.ts`，版本 `preview-2026-09-v3`。10～170 层的九个幻想精英池已采用用户提供的 42 套配置；其他敌队、经济及掉落仍为用户授权的测试配置。
 
 | 项目 | 当前测试值 |
 |---|---|
@@ -65,7 +65,8 @@ node build-tools/serve-rogue-preview.js
 | 普通野怪 | 10 区各 8 条候选进化链；15 IV、0 EV；每层三场单敌战 |
 | 野怪等级 | min(100, max(3, 2 + ceil(层数 / 2))) |
 | 精英 | 同层等级 +5，上限 100；31 IV；后段包含可捕捉的传说／幻之宝可梦 |
-| Boss 等级 | min(100, 5 + ceil(层数 / 2))；25 IV，队伍从 1 只增至 6 只 |
+| 幻想精英 | 10/30/…/170 层，等级 10/20/…/90；候选数 3/4/5/5/5/5/5/5/5，每层抽取一只 |
+| 其他 Boss 等级 | min(100, 5 + ceil(层数 / 2))；25 IV，队伍从 1 只增至 6 只 |
 | 野怪层收益 | 150 + 12 × 层数金币，每三层附伤药 |
 | Boss 收益 | 800 + 40 × 层数金币、超级球 3、活力碎片 1 |
 | 球价／捕捉倍率 | 精灵球 200／1，超级球 600／1.5，高级球 1200／2 |
@@ -74,11 +75,19 @@ node build-tools/serve-rogue-preview.js
 | 糖果价格／经验 | XS 100／100，S 600／800，M 1800／3000，L 5000／10000 |
 | 进化道具 | 进化石 1200，联系绳 2000，暂代通信进化 |
 
-普通层有两条不同区域的野怪路线，第三项轮换补给箱、训练家或精英。测试内容是可重复的固定表，便于调参与重试去重，未实现随机地图和正式事件系统。
+普通层有两条不同区域的野怪路线，第三项轮换补给箱、训练家或精英。普通层仍使用固定测试表；幻想精英在入层时由服务器等概率抽取并持久化，刷新、重连、重复请求和整层重试保持同一只对手。未实现随机地图和正式事件系统。
 
-Boss 全部已配置：10/30/…/170 精英首领，20/40/…/160 八道馆；165/175/180/185 四天王；190 冠军；200 幻想超梦。所有 Boss 前一层固定休整，无三选一。完整临时名单见 `PreviewBosses`，并非正式馆主及八时期阵容。
+Boss 全部已配置：10/30/…/170 幻想精英，20/40/…/160 八道馆；165/175/180/185 四天王；190 冠军；200 幻想超梦。所有 Boss 前一层固定休整，无三选一。用户指定的精英配置见 `server/fantasy-rogue/elite-bosses.ts`；其余临时名单见 `PreviewBosses`，并非正式馆主及八时期阵容。
 
-调参位置：`PreviewBalance` 管开局和等级，`PreviewBiomes` 管野怪，`PreviewBosses` 管队伍，`content.items` 管价格及效果，各节点 `reward` 管金币和糖果掉落。修改阵容和经济时更新内容版本；存量冒险版本不匹配时停止写入，需保留旧版本或明确迁移。
+调参位置：`PreviewBalance` 管开局和普通等级，`PreviewBiomes` 管野怪，`FantasyEliteBosses` 管九个幻想精英池及明确等级，`PreviewBosses` 管其余队伍，`content.items` 管价格及效果，各节点 `reward` 管金币和糖果掉落。修改阵容和经济时更新内容版本；存量冒险版本不匹配且未显式声明兼容时停止写入。
+
+### 幻想精英与太晶权限（2026-09-20）
+
+- 42 套配置保留用户的物种、特性、招式顺序、明确性别、Aggronite 及耿鬼 0 攻击 IV。未指定的 IV 为 31、EV 为 0、性格为 Hardy（无修正），不额外添加树果；未指定性别按物种比例在入层时生成并保存，重试不改变。未指定太晶属性沿用幻想图鉴 `defaultTeraType`。
+- 对手仅在 10、30、50、70、90、110、130、150、170 层的固定幻想精英 Boss 战获得太晶权限。普通野怪、可捕捉精英、训练家、道馆、四天王、冠军和 200 层最终 Boss 均关闭。已有 Mega／Z／太晶互斥仍有效：携带 Aggronite 的波士可多拉可 Mega，不额外绕过互斥开放太晶。
+- 玩家每局默认锁定，存档字段 `teraUnlocked` 缺失也按锁定处理。未来事件由服务端调用 `RogueEngine.unlockTerastallization(userid)` 为本局全队解锁；没有浏览器解锁命令，也未虚构尚未设计的触发事件。当前测试版自然游玩尚不能解锁玩家太晶。
+- 解锁范围暂按本局全队、每场一次处理，沿用原生战斗次数；当前层的解锁随整层失败回退，已经完成的前一层解锁保留。新冒险重新锁定。队伍页展示状态，原生招式请求和服务端执行同时校验。
+- AI 仅从自己的请求获知自己的权限；推演重建仍禁用其无权使用的太晶。玩家的事件状态不加入 AI 对手初始快照或观察，也不复制完整冒险存档。
 
 ## 原作机制的试玩基线
 
@@ -110,13 +119,14 @@ Boss 全部已配置：10/30/…/170 精英首领，20/40/…/160 八道馆；16
 
 ### 本次兼容策略
 
-楼层与敌队内容版本维持 `preview-2026-09-v2`。本次新增字段均可选并按需补齐，现有队伍、点数和存档继续有效。旧点数不追溯扣除，新奖励与局中禁购规则更新后执行。新增测试携带商品：橙橙果 200、文柚果 600、吃剩的东西 3000、奇迹种子／神秘水滴／木炭各 1500。正式阵容或经济的大幅替换仍应升级内容版本并明确迁移。
+本次升级为 `preview-2026-09-v3`，仅明确兼容 `preview-2026-09-v2`。旧存档在下一次成功操作时更新版本，保留队伍、道具、点数、入层快照和已选定的当前对手；进入后续幻想精英层时才使用新池。太晶权限对新建战斗生效，旧存档未获得事件解锁，默认锁定。重启本地服前确认无进行中战斗并备份。未知版本仍拒绝继续，不自动清档。原队伍改版保留的旧点数不追溯扣除。
 
 ## 文件
 
 | 文件 | 用途 |
 |---|---|
 | server/fantasy-rogue/preview-content.ts | 可替换的 200 层内容 |
+| server/fantasy-rogue/elite-bosses.ts | 用户指定的九个幻想精英池、等级与逐只配置 |
 | server/fantasy-rogue/progression.ts、team.ts | 经验、努力值、进化、招式记忆及队伍编辑 |
 | sim/fantasy-rogue-data.ts、fantasy-rogue-evs.ts、fantasy-rogue-rules.ts | 离线数据与公式 |
 | server/fantasy-rogue/engine.ts、store.ts | 楼层、背包、账目和事务 |
@@ -129,12 +139,12 @@ Boss 全部已配置：10/30/…/170 精英首领，20/40/…/160 八道馆；16
 服务端：
 
 ```powershell
-node node_modules/mocha/bin/mocha.js --no-config test/main.js test/server/fantasy-rogue.js test/server/fantasy-rogue-online.js test/server/fantasy-rogue-preview.js test/server/fantasy-rogue-team.js test/server/fantasy-ai-information.js --timeout 20000 --reporter dot --exit
+node node_modules/mocha/bin/mocha.js --no-config test/main.js test/server/fantasy-rogue.js test/server/fantasy-rogue-online.js test/server/fantasy-rogue-preview.js test/server/fantasy-rogue-team.js test/server/fantasy-rogue-bosses.js test/server/fantasy-ai-information.js test/server/fantasy-ai-rollout.js test/sim/misc/default-tera-type.js test/sim/misc/terastal.js --timeout 20000 --reporter dot --exit
 ```
 
-48 项通过，包括原生对战、捕捉、经验、Boss 点数、换招 PP、携带物守恒、队伍换位、努力值与回退、事件权限、大厅通知及 200 层固定节点。200 层检查注入胜利结果验证状态机，不代表 AI 实战或真人完整通关。
+2026-09-20 相关回归共 120 项通过：首次合并运行 119 项通过，一项旧测试仍只统计拆分后的非精英临时表（14），修正为实际固定 Boss 总数 23 后，重跑所属 10 项全部通过。最终增加未指定性别的入层保存后，精英及试玩专项 20 项再次通过。覆盖 42 套指定精英的真实模拟器入场、41 套太晶及 Aggronite Mega、太晶开关与非法指令、玩家事件解锁和回退、旧版本兼容、随机候选固定、原有肉鸽机制、AI 信息边界／推演和普通太晶规则。200 层检查注入胜利结果验证状态机，不代表 AI 实战或真人完整通关。
 
-客户端：`node node_modules/mocha/bin/mocha.js --no-config test/fantasy-rogue.test.js test/fantasy-ai.test.js --reporter dot`，29 项通过。服务端及客户端本地构建成功；新增模块与客户端修改的定向 ESLint 通过。
+客户端：`node node_modules/mocha/bin/mocha.js --no-config test/fantasy-rogue.test.js test/fantasy-ai.test.js --reporter dot`，30 项通过。服务端及客户端本地构建成功；新增模块与客户端修改的定向 ESLint 通过。`sim/battle-actions.ts` 有既有 4 个缩进错误和 1 条行长警告，已用 HEAD 原文与工作区对比确认完全一致，本次三个新增行未引入 lint 问题。
 
 入口切换补充核验：`node build --local-server ..\pokemon-showdown` 成功生成包含肉鸽脚本和样式的 `testclient.html`；修复已写入 `testclient.template.html`，后续构建可保留。客户端 23 项回归通过，直接连接 `localhost:8000` 的肉鸽状态接口返回 `enabled: true`，未登录时提示登录注册账号。所需肉鸽本地资源存在，原有两份动画尺寸数据仍使用页面已有的官方在线回退。内置浏览器的 URL 安全策略阻止自动打开 `file://`，本轮未实测该入口的页面和战斗；下述浏览器实测来自此前独立试玩环境。
 
@@ -153,6 +163,12 @@ node node_modules/mocha/bin/mocha.js --no-config test/main.js test/server/fantas
 本次队伍改版实测：通过独立的内存 QA 服务（18001）和 HTTP 客户端（18081），实看并操作了换招／换回后 PP 保持 3/40、已解锁隐藏特性选择、携带物装备与归还、队伍前后移动和待学招式面板。QA 直接设置的 Boss 待结算存档在完成选择后，显示金币 +1200、超级球 ×3、活力碎片 ×1、成长点 +1；该测试不代表实际打败 Boss。420 像素视口下，页面与肉鸽容器无横向溢出，路线奖励和队伍面板可读。
 
 本地 8000 服务更新前没有进行中的战斗，4 份存档已通过 SQLite 一致性备份保存至 `databases/fantasy-rogue-before-team-editor-2026-09-19T15-34-17-745Z.db`；重启后逐账号内容哈希一致。临时 QA 使用内存存档，不改玩家数据。本次浏览器验证仍为 HTTP 页面，未自动打开 `file://`。
+
+### 幻想精英与太晶验证（2026-09-20）
+
+独立内存 QA 服务（18001）配 HTTP 客户端（18081）实测：未解锁昵称的队伍页显示锁定、原生战斗无太晶选项，完成一场野怪战；通过服务端事件接口解锁的另一个 QA 昵称显示已解锁，在原生战斗勾选太晶后，战斗日志实际出现幸福蛋太晶化为一般属性。QA 使用明确设置的队伍和授权，不代表自然触发事件，也不是 `file://` 入口的浏览器测试。临时页面及服务已关闭。
+
+8000 本地试玩已重新构建并重启，仍绑定 `127.0.0.1`、使用独立试玩数据库。更新前无进行中战斗；最终一致性备份为 `databases/fantasy-rogue-before-elite-tera-2026-09-20T10-42-01-787Z.db`，重启后四份账号存档逐项哈希一致。使用既有专用 QA 昵称通过真实 WebSocket 重连，确认冒险恢复、`teraUnlocked: false` 和队伍编辑字段正确。原 `testclient.html?~~localhost:8000#fantasyrogue` 页面刷新即可读取新规则。
 
 ## 尚未完成的正式版内容
 

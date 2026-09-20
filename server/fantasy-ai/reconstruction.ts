@@ -35,6 +35,7 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 		}
 		for (const side of battle.sides) {
 			const sideID = side.id as SinglesSide;
+			if (sideID === world.ownSide) side.fantasyRogueTera = world.ownRogueTera;
 			const resources = world.memory.sides[sideID].resources;
 			side.active[0] = side.pokemon[0];
 			side.zMoveUsed = resources.zmove || resources.aura;
@@ -91,7 +92,7 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 				restoreFantasyState(battle, mon, profile, seen);
 				if (resources.mega) mon.canMegaEvo = mon.canMegaEvoX = mon.canMegaEvoY = null;
 				if (!hasUltraBurstResource(resources, mon.item)) mon.canUltraBurst = null;
-				if (resources.tera || mon.terastallized) mon.canTerastallize = null;
+				if (side.fantasyRogueTera === false || resources.tera || mon.terastallized) mon.canTerastallize = null;
 				for (const slot of mon.moveSlots) {
 					const request = member.request?.moves.find(move => move.id === slot.id) as
 						{ pp?: number, disabled?: boolean | string, disabledSource?: string } | undefined;

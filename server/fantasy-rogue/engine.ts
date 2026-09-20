@@ -1,9 +1,9 @@
-import { randomUUID } from 'crypto';
+import { randomInt, randomUUID } from 'crypto';
 import { Dex, toID } from '../../sim/dex';
 import {
 	ROGUE_STATS, type RogueBattleResult, type RogueBattleState, type RoguePokemon,
 } from '../../sim/fantasy-rogue';
-import { fixedFloor, validateContent } from './content';
+import { ELITE_BOSS_FLOORS, fixedFloor, validateContent } from './content';
 import type { RogueStore } from './store';
 import type { RogueAccount, RogueCommand, RogueContent, RogueInventory, RogueRun } from './types';
 import {
@@ -18,7 +18,7 @@ function requireRule(ok: unknown, message: string): asserts ok {
 	if (!ok) throw new Error(message);
 }
 const inventory = (run: RogueInventory): RogueInventory => structuredClone({
-	team: run.team, bag: run.bag, money: run.money,
+	team: run.team, bag: run.bag, money: run.money, teraUnlocked: !!run.teraUnlocked,
 });
 
 export class RogueEngine {
@@ -34,7 +34,12 @@ export class RogueEngine {
 	}
 	private run(account: RogueAccount): RogueRun {
 		requireRule(account.run && account.run.phase !== 'complete', '没有进行中的冒险。');
-		requireRule(account.run.contentVersion === this.configured().version, '内容版本已变更，请由管理员恢复对应版本后继续存档。');
+		const content = this.configured();
+		requireRule(
+			account.run.contentVersion === content.version || content.compatibleVersions?.includes(account.run.contentVersion),
+			'内容版本已变更，请由管理员恢复对应版本后继续存档。'
+		);
+		account.run.contentVersion = content.version;
 		return account.run;
 	}
 	private enterFloor(run: RogueRun) {
@@ -52,6 +57,16 @@ export class RogueEngine {
 		const node = this.configured().floors[run.floor]?.find(option => option.id === id);
 		requireRule(node, '本层内容尚未配置或路线无效。');
 		run.node = structuredClone(node);
+		for (const encounter of run.node.encounters) {
+			if (!encounter.candidates) continue;
+			const selected = encounter.candidates[randomInt(encounter.candidates.length)];
+			if (!selected.gender) {
+				const species = Dex.mod('gen9fantasy').species.get(selected.species);
+				selected.gender = species.gender || (randomInt(256) < species.genderRatio.F * 256 ? 'F' : 'M');
+			}
+			encounter.team = [selected];
+			delete encounter.candidates;
+		}
 		run.phase = node.kind === 'rest' ? 'rest' : node.kind === 'reward' ? 'reward' : 'ready';
 	}
 	private completeFloor(account: RogueAccount, run: RogueRun) {
@@ -100,7 +115,7 @@ export class RogueEngine {
 					if (content.progression) initializeExperience(mon);
 					return mon;
 				});
-				const initial = { team, bag: { ...content.initialBag }, money: content.initialMoney };
+				const initial = { team, bag: { ...content.initialBag }, money: content.initialMoney, teraUnlocked: false };
 				account.run = {
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
 					encounter: 0, attempt: 0, boosts: { ...account.boosts }, startingSlots: account.slots,
@@ -249,6 +264,7 @@ export class RogueEngine {
 		return {
 			encounterId: run.battle.encounterId, team: structuredClone(run.team), boosts: { ...run.boosts }, bag: { ...run.bag },
 			catchable: encounter.catchable,
+			tera: { player: !!run.teraUnlocked, opponent: run.node!.kind === 'boss' && ELITE_BOSS_FLOORS.has(run.floor) },
 			progression: !!this.configured().progression, allowReplacement: this.configured().allowReplacement,
 			caughtSpecies: account.caughtSpecies?.length || 0,
 			balls: this.configured().items.filter(item => item.kind === 'ball' &&
@@ -313,6 +329,13 @@ export class RogueEngine {
 		});
 	}
 	/** Future event handlers call these methods; the public command API cannot grant unlocks. */
+	unlockTerastallization(userid: string) {
+		return this.store.change(userid, account => {
+			const run = this.run(account);
+			requireRule(canEditParty(run), '当前不能解锁太晶化。');
+			run.teraUnlocked = true;
+		});
+	}
 	unlockAbility(userid: string, member: string, ability: string) {
 		return this.store.change(userid, account => {
 			const run = this.run(account);

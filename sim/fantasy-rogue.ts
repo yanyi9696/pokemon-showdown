@@ -43,6 +43,8 @@ export interface RogueBattleState {
 	/** Explicit per-ball probabilities supplied by the content configuration (0..1). */
 	balls: { id: string, name: string, chance?: number, multiplier?: number }[];
 	catchable: boolean;
+	/** Permissions for this encounter, issued by the campaign server. Old/missing flags are locked. */
+	tera?: { player: boolean, opponent: boolean };
 	captured?: RoguePokemon;
 	progression?: boolean;
 	allowReplacement?: boolean;
@@ -96,6 +98,10 @@ export function initializeRogueBattle(battle: Battle) {
 	}
 	battle.p1.pokemonLeft = battle.p1.pokemon.filter(mon => mon.hp > 0).length;
 	if (!battle.p1.pokemonLeft) throw new Error('没有可出战的宝可梦。');
+}
+
+export function canRogueTerastallize(pokemon: Pokemon): boolean {
+	return pokemon.side.fantasyRogueTera !== false;
 }
 
 export function markRogueParticipants(battle: Battle) {

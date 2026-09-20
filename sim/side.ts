@@ -112,6 +112,8 @@ export interface DynamaxOptions {
 	gigantamax?: string;
 }
 export interface SideRequestData {
+	/** Only this side's campaign permission, never the opposing player's event state. */
+	fantasyRogueTera?: boolean;
 	name: string;
 	/** Side ID (`p1`, `p2`, `p3`, or `p4`), not the ID of the side's name. */
 	id: SideID;
@@ -168,6 +170,8 @@ export class Side {
 
 	pokemonLeft: number;
 	zMoveUsed: boolean;
+	/** Also retained when reconstructing the AI's own side from its request. */
+	fantasyRogueTera?: boolean;
 	/**
 	 * This will be true in any gen before 8 or if the player (or their battle partner) has dynamaxed once already
 	 *
@@ -204,6 +208,9 @@ export class Side {
 		if (this.battle.format.side) Object.assign(this, this.battle.format.side);
 		this.id = ['p1', 'p2', 'p3', 'p4'][sideNum] as SideID;
 		this.n = sideNum;
+		if (battle.fantasyRogue) {
+			this.fantasyRogueTera = !!battle.fantasyRogue.tera?.[this.id === 'p1' ? 'player' : 'opponent'];
+		}
 
 		this.name = name;
 		this.avatar = '';
@@ -327,6 +334,7 @@ export class Side {
 		const data: SideRequestData = {
 			name: this.name,
 			id: this.id,
+			...(this.fantasyRogueTera !== undefined ? { fantasyRogueTera: this.fantasyRogueTera } : {}),
 			pokemon: [] as PokemonSwitchRequestData[],
 		};
 		for (const pokemon of this.pokemon) {

@@ -19,6 +19,8 @@ export interface WorldMember {
 }
 export interface WorldHypothesis {
 	rogueBoosts?: StatsTable;
+	/** Own request permission only; the opponent's event unlock is not observed. */
+	ownRogueTera?: boolean;
 	format: string;
 	ownSide: SinglesSide;
 	turn: number;
@@ -177,6 +179,7 @@ export class WorldBuilder {
 						format: this.trainer.format, ownSide: side, turn: memory.turn, variant, probability: option.probability,
 						teams, memory: structuredClone(memory), publicLog: observation.publicLog.slice(), diagnostics,
 						rogueBoosts: observation.rogueBoosts && { ...observation.rogueBoosts },
+						ownRogueTera: request.side.fantasyRogueTera,
 						initialOpponent: initial.length ? structuredClone(initial) : undefined,
 						opponentMoves: observation.opponentMoves && structuredClone(observation.opponentMoves),
 					});

@@ -48,7 +48,7 @@ describe('Fantasy Rogue playable preview', () => {
 		assert.equal(content.starters.filter(starter => starter.availableInitially).length, 27);
 		for (let floor = 1; floor <= 200; floor++) {
 			assert.equal(content.floors[floor].length, fixedFloor(floor) ? 1 : 3);
-			if (fixedFloor(floor) === 'boss') assert.equal(content.floors[floor][0].name, PreviewBosses[floor].name);
+			if (fixedFloor(floor) === 'boss') assert.equal(content.floors[floor][0].name, PreviewBosses[floor]?.name || '幻想精英');
 		}
 		assert.equal(content.items.find(item => item.id === 'pokeball').multiplier, 1);
 		assert.equal(content.items.find(item => item.id === 'expcandyl').amount, 10000);
@@ -159,7 +159,7 @@ describe('Fantasy Rogue playable preview', () => {
 			assert.equal(account().points, points);
 		}
 		assert.equal(account().run.phase, 'complete');
-		assert.equal(points, Object.keys(PreviewBosses).length);
+		assert.equal(points, 23);
 		cmd('upgrade', { value: 'hp' });
 		assert.equal(account().points, points - 1);
 	});

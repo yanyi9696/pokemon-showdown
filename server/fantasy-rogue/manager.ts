@@ -66,6 +66,7 @@ export class RogueManager {
 			items, shopItems: content?.items.map(item => item.id) || [],
 			run: run ? {
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
+				teraUnlocked: !!run.teraUnlocked,
 				encounters: run.node?.encounters.length || 0, node: run.node && {
 					name: run.node.name, kind: run.node.kind,
 					reward: { ...run.node.reward, points: run.node.kind === 'boss' ? 1 : 0 },

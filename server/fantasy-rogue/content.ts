@@ -3,8 +3,9 @@ import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
 import type { RogueContent } from './types';
 import { rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 
+export const ELITE_BOSS_FLOORS = new Set([10, 30, 50, 70, 90, 110, 130, 150, 170]);
 export const BOSS_FLOORS = new Map<number, string>([
-	...[10, 30, 50, 70, 90, 110, 130, 150, 170].map(floor => [floor, '精英首领'] as const),
+	...[...ELITE_BOSS_FLOORS].map(floor => [floor, '精英首领'] as const),
 	...[20, 40, 60, 80, 100, 120, 140, 160].map(floor => [floor, '道馆'] as const),
 	...[165, 175, 180, 185].map(floor => [floor, '四天王'] as const),
 	[190, '冠军'], [200, '最终 Boss'],
@@ -22,6 +23,8 @@ const whole = (n: number) => Number.isSafeInteger(n) && n >= 0;
 export function validateContent(content: RogueContent): RogueContent {
 	const dex = Dex.forFormat(ROGUE_FORMAT);
 	ensure(content.version && content.version.length < 80, '缺少版本');
+	ensure(!content.compatibleVersions || content.compatibleVersions.every(version =>
+		typeof version === 'string' && version.length > 0 && version.length < 80), '兼容版本无效');
 	ensure(content.starters.length && Object.keys(content.floors).length, '缺少初始宝可梦或楼层');
 	ensure(whole(content.initialMoney), '初始货币无效');
 	const itemIds = new Set<string>();
@@ -92,6 +95,12 @@ export function validateContent(content: RogueContent): RogueContent {
 			inventory(node.reward.items);
 			for (const encounter of node.encounters) {
 				team(encounter.team);
+				if (encounter.candidates) {
+					ensure(node.kind === 'boss' && ELITE_BOSS_FLOORS.has(floor) && !encounter.catchable,
+						'随机候选仅用于固定幻想精英 Boss');
+					ensure(encounter.team.length === 1 && encounter.candidates.length > 0, '幻想精英候选不能为空且必须为单只对手');
+					for (const candidate of encounter.candidates) team([candidate]);
+				}
 				ensure(encounter.name && ['balanced', 'aggressive', 'defensive'].includes(encounter.style), 'AI 名称或风格无效');
 				if (node.kind === 'wild' || encounter.catchable) ensure(encounter.team.length === 1, '野怪／可捕捉对局必须只有一只');
 				if (encounter.catchable) {
