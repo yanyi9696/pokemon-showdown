@@ -70,7 +70,10 @@ export function snapshotRoguePokemon(mon: Pokemon, original: RoguePokemon): Rogu
 		id: original.id,
 		set: { ...structuredClone(original.set), item: mon.item },
 		hp: Math.min(original.maxhp, hp), maxhp: original.maxhp,
-		pp: original.pp.map(slot => ({ ...slot, pp: mon.baseMoveSlots.find(move => move.id === slot.id)?.pp ?? slot.pp })),
+		pp: original.pp.map(slot => {
+			const current = mon.baseMoveSlots.find(move => move.id === slot.id);
+			return { ...slot, pp: current?.pp ?? slot.pp, maxpp: current?.maxpp ?? slot.maxpp };
+		}),
 		status: mon.status,
 		statusState: { time: mon.statusState.time, startTime: mon.statusState.startTime, stage: mon.statusState.stage },
 	};

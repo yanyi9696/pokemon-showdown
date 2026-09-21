@@ -7,6 +7,8 @@ const dex = Dex.mod('gen9fantasy');
 export const TEAM_ACTIONS = ['order', 'setmove', 'moves', 'equip', 'ability', 'evs'];
 export const canEditParty = (run: RogueRun) => ['choose', 'ready', 'rest', 'reward'].includes(run.phase) &&
 	!run.pendingCapture && !run.pendingMoves?.length;
+export const healingLocked = (run: RogueRun) => !!run.node?.noHealing &&
+	(run.encounter > 0 || !!run.battle || !!run.recovery || run.phase === 'failed');
 function requireRule(ok: unknown, message: string): asserts ok {
 	if (!ok) throw new Error(message);
 }

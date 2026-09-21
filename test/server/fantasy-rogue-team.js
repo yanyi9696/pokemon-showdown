@@ -91,7 +91,7 @@ describe('Fantasy Rogue earned party editor', () => {
 		store.change(user, account => { account.run.phase = 'rest'; });
 		assert.throws(() => cmd('buy', { value: 'leftovers' }), /商品无效/);
 	});
-	it('permutes stable party identities only and blocks edits during battle and failed floors', () => {
+	it('permutes stable party identities, blocks battle edits and retains the party after a wipe', () => {
 		store.change(user, account => {
 			account.run.team.push(createRoguePokemon(set('Magikarp', 'Swift Swim'), stats(0), 'run:1:catch:0'));
 		});
@@ -102,10 +102,13 @@ describe('Fantasy Rogue earned party editor', () => {
 		cmd('select', { value: 'grass' }); cmd('battle');
 		assert.throws(() => cmd('order', { order: [...order].reverse() }), /战斗外/);
 		const run = saved().run;
-		engine.settle(user, run.battle.token, { encounterId: run.battle.encounterId, won: false, team: [], bag: {} });
-		assert.throws(() => cmd('ability', { member: order[0], value: 'swiftswim' }), /战斗外/);
-		cmd('retry');
-		assert.equal(member().set.species, 'Bulbasaur');
+		for (const mon of run.team) mon.hp = 0;
+		engine.settle(user, run.battle.token, { encounterId: run.battle.encounterId, won: false, team: run.team, bag: run.bag });
+		assert.equal(saved().run.phase, 'ready');
+		assert.deepEqual(saved().run.team.map(mon => mon.id), order);
+		cmd('ability', { member: order[0], value: 'swiftswim' });
+		assert(saved().run.team.every(mon => mon.hp === 0));
+		assert.throws(() => cmd('retry'), /连续挑战/);
 	});
 	it('allows only event-unlocked abilities and labels native hidden abilities through evolution', () => {
 		const id = member().id;
@@ -139,7 +142,7 @@ describe('Fantasy Rogue earned party editor', () => {
 		assert(!member().evRespec);
 		assert.throws(() => cmd('evs', { member: id, evs: stats(0) }), /特殊事件/);
 	});
-	it('awards defeat EVs to eligible living teammates once and rolls them back on a failed floor', () => {
+	it('awards defeat EVs once and retains them when the next encounter is lost', () => {
 		store.change(user, account => {
 			account.run.team.push(createRoguePokemon(set('Bulbasaur', 'Overgrow'), stats(0), 'bench'));
 			account.run.team.push(createRoguePokemon(set('Bulbasaur', 'Overgrow'), stats(0), 'fainted'));
@@ -156,9 +159,10 @@ describe('Fantasy Rogue earned party editor', () => {
 		engine.settle(user, run.battle.token, result);
 		assert.deepEqual(saved(), settled);
 		cmd('battle'); const next = saved().run;
-		engine.settle(user, next.battle.token, { encounterId: next.battle.encounterId, won: false, team: [], bag: {} });
-		cmd('retry');
-		assert.deepEqual(saved().run.team.map(mon => mon.set.evs.spe), [0, 0, 0]);
+		for (const mon of next.team) mon.hp = 0;
+		engine.settle(user, next.battle.token, { encounterId: next.battle.encounterId, won: false, team: next.team, bag: next.bag });
+		assert.equal(saved().run.encounter, 1);
+		assert.deepEqual(saved().run.team.map(mon => mon.set.evs.spe), [1, 1, 0]);
 	});
 	it('carries move memory through a real battle, marks catches separately, and restores memory only for living members', () => {
 		store.change(user, account => {
@@ -197,8 +201,8 @@ describe('Fantasy Rogue earned party editor', () => {
 			account.run.floor = 10; account.run.phase = 'ready'; account.run.node = content().floors[10][0];
 		});
 		cmd('battle'); let run = saved().run;
-		engine.settle(user, run.battle.token, { encounterId: run.battle.encounterId, won: false, team: [], bag: {} });
-		assert.equal(saved().points, 7); cmd('retry'); cmd('battle');
+		engine.settle(user, run.battle.token, { encounterId: run.battle.encounterId, won: false, team: run.team, bag: run.bag });
+		assert.equal(saved().points, 7); cmd('battle');
 		run = saved().run;
 		const result = { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag };
 		engine.settle(user, run.battle.token, result); engine.settle(user, run.battle.token, result);

@@ -11,8 +11,10 @@ import {
 	initializeExperience, rebuildMember, rememberMove,
 } from './progression';
 import { experienceYield, rogueEffortYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
-import { canEditParty, editParty, TEAM_ACTIONS } from './team';
+import { canEditParty, editParty, healingLocked, TEAM_ACTIONS } from './team';
 export { createRoguePokemon } from './progression';
+
+export const ROGUE_EMERGENCY_COST = 5000;
 
 function requireRule(ok: unknown, message: string): asserts ok {
 	if (!ok) throw new Error(message);
@@ -40,13 +42,52 @@ export class RogueEngine {
 			'内容版本已变更，请由管理员恢复对应版本后继续存档。'
 		);
 		account.run.contentVersion = content.version;
+		this.normalizeRun(account.run);
 		return account.run;
+	}
+	private normalizeRun(run: RogueRun) {
+		for (const mon of [...run.team, ...run.checkpoint.team, ...(run.pendingCapture ? [run.pendingCapture] : [])]) {
+			const legacyMemory = !mon.moveMemory;
+			ensureMemberMemory(mon);
+			if (legacyMemory && run.team.includes(mon)) {
+				for (const pending of run.pendingMoves || []) {
+					if (pending.member !== mon.id || mon.set.moves.some(move => toID(move) === pending.move)) continue;
+					rememberMove(mon, pending.move);
+					const learned = mon.moveMemory!.find(move => move.id === pending.move)!;
+					learned.pp = learned.maxpp;
+				}
+			}
+		}
+		if (run.phase === 'failed' && !run.node?.noHealing) {
+			// Older versions discarded the loss snapshot. Do not silently restore their pre-fight HP.
+			for (const mon of run.team) mon.hp = 0;
+			run.phase = 'ready';
+			run.recovery = 'defeat';
+			delete run.battle;
+		}
+	}
+	migrate(userid: string) {
+		return this.store.change(userid, account => {
+			if (account.run) this.normalizeRun(account.run);
+		});
+	}
+	canEmergency(run: RogueRun): boolean {
+		return canEditParty(run) && !healingLocked(run) && !run.team.some(mon => mon.hp > 0) &&
+			!this.configured().items.some(item => item.kind === 'revive' && run.bag[item.id] > 0);
+	}
+	private healMember(mon: RoguePokemon) {
+		ensureMemberMemory(mon);
+		mon.hp = mon.maxhp;
+		mon.status = '';
+		mon.statusState = {};
+		for (const slot of [...mon.pp, ...mon.moveMemory!]) slot.pp = slot.maxpp;
 	}
 	private enterFloor(run: RogueRun) {
 		run.checkpoint = inventory(run);
 		run.encounter = 0;
 		run.attempt = 0;
 		delete run.battle;
+		delete run.recovery;
 		delete run.node;
 		run.phase = 'choose';
 		const options = this.configured().floors[run.floor];
@@ -140,12 +181,7 @@ export class RogueEngine {
 				const pending = run.pendingMoves?.[0];
 				const mon = run.team.find(entry => entry.id === pending?.member);
 				requireRule(pending && mon && command.member === mon.id, '没有对应的待学习招式。');
-				const legacyNewMove = !mon.moveMemory && !mon.set.moves.some(move => toID(move) === pending.move);
 				rememberMove(mon, pending.move);
-				if (legacyNewMove) {
-					const learned = mon.moveMemory!.find(move => move.id === pending.move)!;
-					learned.pp = learned.maxpp;
-				}
 				if (command.value !== 'skip') {
 					const slot = Number(command.value);
 					requireRule(Number.isInteger(slot) && slot >= 0 && slot < mon.set.moves.length, '替换招式位置无效。');
@@ -171,6 +207,7 @@ export class RogueEngine {
 			}
 			case 'evolve': {
 				requireRule(this.configured().progression && ['choose', 'ready', 'rest', 'reward'].includes(run.phase), '当前不能进化。');
+				requireRule(!healingLocked(run), '本层要求连续战斗，途中不能通过进化调整状态。');
 				const mon = run.team.find(entry => entry.id === command.member);
 				const option = mon && evolutionOptions(mon).find(entry => toID(entry.species) === command.value);
 				requireRule(mon?.hp && option, '没有满足条件的进化。');
@@ -183,14 +220,26 @@ export class RogueEngine {
 			}
 			case 'select': this.select(run, command.value || ''); break;
 			case 'battle':
-				requireRule(run.phase === 'ready' && run.team.some(mon => mon.hp > 0), '当前不能进入战斗。');
+				requireRule(run.phase === 'ready' && run.team.some(mon => mon.hp > 0), '当前不能进入战斗，请先复活至少一名队员。');
 				run.battle = {
 					token: randomUUID(), encounterId: `${run.id}:${run.floor}:${run.node!.id}:${run.encounter}`,
 				};
 				run.phase = 'battle';
+				delete run.recovery;
+				break;
+			case 'retreat':
+				requireRule(run.phase === 'battle' && run.battle, '当前没有可撤退的战斗。');
+				run.battle.retreatRequested = true;
+				break;
+			case 'emergency':
+				requireRule(this.canEmergency(run), '仅在全队濒死、没有复活道具且允许场外治疗时可急救。');
+				requireRule(run.money >= ROGUE_EMERGENCY_COST, `急救需要 ${ROGUE_EMERGENCY_COST} 金币，当前余额不足。`);
+				run.money -= ROGUE_EMERGENCY_COST;
+				for (const mon of run.team) this.healMember(mon);
+				run.notices = [`已花费 ${ROGUE_EMERGENCY_COST} 金币急救全队，HP、PP 和异常状态已恢复。`];
 				break;
 			case 'retry':
-				requireRule(run.phase === 'failed', '当前不是失败待重试状态。');
+				requireRule(run.phase === 'failed' && run.node?.noHealing, '只有连续挑战全队倒下后可重试整层；普通战斗请治疗后继续当前场次。');
 				Object.assign(run, inventory(run.checkpoint));
 				run.encounter = 0;
 				run.attempt++;
@@ -198,18 +247,14 @@ export class RogueEngine {
 				delete run.battle;
 				delete run.pendingCapture;
 				delete run.pendingMoves;
+				delete run.recovery;
 				run.notices = ['已恢复进入本层时的队伍、经验、道具和货币。'];
 				break;
 			case 'heal':
 				requireRule(run.phase === 'rest', '只能在休整中心恢复。');
 				for (const mon of run.team) {
 					if (!mon.hp) continue;
-					mon.hp = mon.maxhp;
-					mon.status = '';
-					mon.statusState = {};
-					for (const slot of mon.pp) slot.pp = slot.maxpp;
-					ensureMemberMemory(mon);
-					for (const slot of mon.moveMemory!) slot.pp = slot.maxpp;
+					this.healMember(mon);
 				}
 				break;
 			case 'buy': {
@@ -222,6 +267,7 @@ export class RogueEngine {
 			}
 			case 'use': {
 				requireRule(['rest', 'ready', 'choose', 'reward'].includes(run.phase), '请在战斗间隙使用补给。');
+				requireRule(!healingLocked(run), '本层要求连续战斗，途中不能使用治疗和补给道具。');
 				const item = this.configured().items.find(entry => entry.id === command.value);
 				const mon = run.team.find(entry => entry.id === command.member);
 				requireRule(item && mon && run.bag[item.id] > 0, '道具、数量或目标无效。');
@@ -297,11 +343,20 @@ export class RogueEngine {
 			const run = account.run;
 			if (run?.phase !== 'battle' || run.battle?.token !== token || run.battle.encounterId !== result.encounterId) return;
 			if (result.captured) this.recordCatch(account, run, result.captured);
+			const retreated = run.battle.retreatRequested;
 			delete run.battle;
-			if (!result.won) { run.phase = 'failed'; return; }
 			run.team = structuredClone(result.team);
 			run.bag = { ...result.bag };
+			for (const mon of run.team) ensureMemberMemory(mon);
 			run.notices = [];
+			if (!result.won) {
+				run.recovery = retreated ? 'retreat' : 'defeat';
+				run.phase = run.node!.noHealing && !run.team.some(mon => mon.hp > 0) ? 'failed' : 'ready';
+				run.attempt++;
+				run.notices = [retreated ? '已撤退，伤害、PP、异常状态和道具消耗已保存。' : '本场战斗未通过，队伍当前状态已保存。'];
+				return;
+			}
+			delete run.recovery;
 			if (this.configured().progression) {
 				for (const defeated of result.defeated || []) {
 					for (const mon of run.team) {

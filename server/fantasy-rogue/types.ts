@@ -16,6 +16,8 @@ export interface RogueNode {
 	id: string;
 	name: string;
 	kind: RogueNodeKind;
+	/** Once the first fight starts, supplies are locked until this continuous challenge ends. */
+	noHealing?: boolean;
 	encounters: RogueEncounter[];
 	reward: { money: number, items: Record<string, number> };
 }
@@ -65,6 +67,8 @@ export interface RogueRun extends RogueInventory {
 	node?: RogueNode;
 	encounter: number;
 	attempt: number;
+	/** Failed/retreated encounters keep their index and all spent resources. */
+	recovery?: 'defeat' | 'retreat';
 	boosts: StatsTable;
 	startingSlots: number;
 	pendingCapture?: RoguePokemon;
@@ -76,7 +80,7 @@ export interface RogueRun extends RogueInventory {
 	checkpoint: RogueInventory;
 	/** Stable across retries. Only account-level catch counting uses this ledger. */
 	caught: string[];
-	battle?: { token: string, encounterId: string, roomid?: string };
+	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean };
 }
 export interface RogueAccount {
 	revision: number;
@@ -91,7 +95,7 @@ export interface RogueAccount {
 export interface RogueCommand {
 	id: string;
 	revision: number;
-	action: 'start' | 'select' | 'battle' | 'retry' | 'heal' | 'buy' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+	action: 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'use' | 'continue' | 'upgrade' | 'abandon' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'ability' | 'evs';
 	value?: string;
 	starters?: string[];

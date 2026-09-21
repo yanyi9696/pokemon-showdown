@@ -9,6 +9,14 @@ export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
 
 export const commands: Chat.ChatCommands = {
 	fantasyrogue: {
+		retreat(target, room, user, connection) {
+			try {
+				if (!room?.battle?.options.fantasyRogue) throw new Error('请在幻想杯肉鸽战斗中使用撤退。');
+				getRogueManager().retreat(connection, room.roomid);
+			} catch (error) {
+				this.errorReply((error as Error).message);
+			}
+		},
 		action(target, room, user, connection) {
 			let id = '';
 			try {

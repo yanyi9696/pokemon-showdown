@@ -85,6 +85,8 @@ export function validateContent(content: RogueContent): RogueContent {
 		ensure(nodes.length === (fixed ? 1 : 3), `第 ${floor} 层需要 ${fixed ? '一个固定节点' : '三个选项'}`);
 		const ids = new Set<string>();
 		for (const node of nodes) {
+			ensure(node.noHealing === undefined || (typeof node.noHealing === 'boolean' && node.encounters.length > 0),
+				'连续战斗治疗限制必须为布尔值且仅用于战斗节点');
 			ensure(/^[a-z0-9]+$/.test(node.id) && !ids.has(node.id), '节点标识重复或无效');
 			ids.add(node.id);
 			ensure(node.name && (fixed ? node.kind === fixed : !['boss', 'rest'].includes(node.kind)), `第 ${floor} 层固定类型不匹配`);

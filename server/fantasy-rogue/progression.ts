@@ -28,13 +28,20 @@ export function createRoguePokemon(set: PokemonSet, boosts: StatsTable, id: stri
 }
 
 function movePP(id: string) {
-	const move = battleDex.moves.get(id);
-	return move.noPPBoosts || move.isZ ? move.pp : Math.floor(move.pp * 8 / 5);
+	return battleDex.moves.get(id).pp;
+}
+
+/** Remove legacy PP Ups without refunding uses already spent. Safe to apply repeatedly. */
+function normalizePP(slot: RoguePokemon['pp'][number]) {
+	const maxpp = movePP(slot.id);
+	slot.pp = Math.max(0, Math.min(maxpp, slot.pp - Math.max(0, slot.maxpp - maxpp)));
+	slot.maxpp = maxpp;
 }
 
 /** Older saves remember seen moves; unknown historical PP starts at zero until healing. */
 export function ensureMemberMemory(mon: RoguePokemon) {
 	mon.moveMemory ||= [];
+	for (const slot of [...mon.pp, ...mon.moveMemory]) normalizePP(slot);
 	for (const id of [...new Set([...(mon.seenMoves || []), ...mon.set.moves].map(toID))]) {
 		if (!mon.moveMemory.some(move => move.id === id)) mon.moveMemory.push({ id, pp: 0, maxpp: movePP(id) });
 	}

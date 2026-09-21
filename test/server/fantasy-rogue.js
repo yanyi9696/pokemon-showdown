@@ -67,8 +67,9 @@ describe('Fantasy Rogue storage and campaign', () => {
 		assert.deepEqual(state().run.lastReward, {floor: 1, name: '测试草地', money: 30, items: {}, points: 0});
 		assert.equal(state().run.team[0].status, 'par');
 	});
-	it('rolls back an entire failed floor while retaining immediate, deduplicated catches', () => {
+	it('rolls back only an explicitly continuous challenge and retains immediate, deduplicated catches', () => {
 		start();
+		store.change(user, account => { account.run.node.noHealing = true; });
 		const checkpoint = structuredClone(state().run.checkpoint);
 		cmd('battle');
 		const first = state().run.battle;
@@ -77,7 +78,9 @@ describe('Fantasy Rogue storage and campaign', () => {
 		assert.equal(state().captures.magikarp, 1);
 		assert(state().unlocked.includes('magikarp'));
 		finish(true, captured);
-		cmd('battle'); finish(false);
+		cmd('battle');
+		store.change(user, account => { for (const mon of account.run.team) mon.hp = 0; });
+		finish(false);
 		cmd('retry');
 		assert.deepEqual(state().run.team, checkpoint.team);
 		assert.deepEqual(state().run.bag, checkpoint.bag);

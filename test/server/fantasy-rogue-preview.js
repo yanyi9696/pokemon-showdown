@@ -106,10 +106,13 @@ describe('Fantasy Rogue playable preview', () => {
 		assert.equal(account().run.bag.expcandym, 0);
 		cmd('battle');
 		const ticket = account().run.battle;
-		engine.settle(user, ticket.token, { encounterId: ticket.encounterId, won: false, team: [], bag: {} });
-		cmd('retry');
-		assert.equal(account().run.team[0].set.level, 5);
-		assert.equal(account().run.team[0].experience, experienceAtLevel(4, 5));
+		const lost = account().run;
+		lost.team[0].hp = 0;
+		engine.settle(user, ticket.token, { encounterId: ticket.encounterId, won: false, team: lost.team, bag: lost.bag });
+		assert.equal(account().run.team[0].set.level, after.set.level);
+		assert.equal(account().run.team[0].experience, after.experience);
+		assert.equal(account().run.team[0].hp, 0);
+		assert.equal(account().run.bag.expcandym, 0);
 	});
 	it('does not revive fainted members during growth or exceed level 100', () => {
 		start();
@@ -194,8 +197,10 @@ describe('Fantasy Rogue playable preview', () => {
 		const checkpoint = structuredClone(account().run.checkpoint);
 		cmd('select', { value: 'wild0' }); cmd('battle');
 		const ticket = account().run.battle;
-		engine.settle(user, ticket.token, { encounterId: ticket.encounterId, won: false, team: [], bag: {} });
-		cmd('retry');
+		const lost = account().run;
+		lost.team[0].hp = 0;
+		engine.settle(user, ticket.token, { encounterId: ticket.encounterId, won: false, team: lost.team, bag: lost.bag });
+		checkpoint.team[0].hp = 0;
 		assert.deepEqual(account().run.team, checkpoint.team);
 	});
 });

@@ -1,15 +1,16 @@
+import { randomUUID } from 'crypto';
 import { FS, Utils } from '../../lib';
 import { Dex, toID } from '../../sim/dex';
 import { Teams } from '../../sim/teams';
 import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
 import { FantasyRogueContent } from '../../config/fantasy-rogue';
 import { getAIManager, type AIChallengeManager } from '../fantasy-ai/manager';
-import { RogueEngine } from './engine';
+import { ROGUE_EMERGENCY_COST, RogueEngine } from './engine';
 import { RogueStore } from './store';
 import { BOSS_FLOORS, fixedFloor } from './content';
 import type { RogueCommand } from './types';
 import { experienceProgress, evolutionOptions, ensureMemberMemory, rebuildMember } from './progression';
-import { inventoryItem } from './team';
+import { healingLocked, inventoryItem } from './team';
 
 export class RogueManager {
 	readonly engine: RogueEngine;
@@ -42,7 +43,7 @@ export class RogueManager {
 			return { ...common, message: (error as Error).message, account: null };
 		}
 		this.recoverMissingRoom(user.id);
-		const account = this.engine.store.get(user.id);
+		const account = this.engine.migrate(user.id);
 		const content = this.engine.content;
 		const run = account.run;
 		const items = content ? [...content.items] : [];
@@ -66,9 +67,12 @@ export class RogueManager {
 			items, shopItems: content?.items.map(item => item.id) || [],
 			run: run ? {
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
+				recovery: run.recovery, retreating: !!run.battle?.retreatRequested,
+				healingLocked: healingLocked(run), emergencyCost: ROGUE_EMERGENCY_COST,
+				canEmergency: !!content && this.engine.canEmergency(run),
 				teraUnlocked: !!run.teraUnlocked,
 				encounters: run.node?.encounters.length || 0, node: run.node && {
-					name: run.node.name, kind: run.node.kind,
+					name: run.node.name, kind: run.node.kind, noHealing: !!run.node.noHealing,
 					reward: { ...run.node.reward, points: run.node.kind === 'boss' ? 1 : 0 },
 				},
 				team: run.team.map(saved => {
@@ -95,9 +99,20 @@ export class RogueManager {
 		const user = connection.user;
 		this.authorize(user);
 		this.recoverMissingRoom(user.id);
+		const current = this.engine.store.get(user.id).run;
+		const retreatRoom = command.action === 'retreat' && current?.phase === 'battle' && current.battle?.roomid ?
+			Rooms.get(current.battle.roomid)?.battle : undefined;
+		if (command.action === 'retreat' && current?.phase === 'battle') {
+			if (!retreatRoom?.started || retreatRoom.ended || retreatRoom.p1.id !== user.id) {
+				throw new Error('战斗尚未准备好或已经结束，请刷新后重试。');
+			}
+		}
 		const previousRun = this.engine.store.get(user.id).run?.id;
 		const account = this.engine.command(user.id, command);
 		const run = account.run;
+		if (command.action === 'retreat' && run?.battle?.retreatRequested && retreatRoom && !retreatRoom.p1.eliminated) {
+			retreatRoom.forfeit(user, ' 撤退了。');
+		}
 		if (command.action === 'start' && run && run.id !== previousRun && !run.announced) {
 			this.engine.store.change(user.id, saved => { saved.run!.announced = true; });
 			Rooms.get('lobby')?.add(`|raw|${Utils.escapeHTML(user.name)} 开启了幻想杯肉鸽之旅`).update();
@@ -115,7 +130,13 @@ export class RogueManager {
 				}, Teams.pack(run.team.map(mon => mon.set)), {
 					state: this.engine.battleState(userid), floor: run.floor,
 					onCapture: captured => { this.engine.capture(userid, token, captured); },
-					onResult: result => { this.engine.settle(userid, token, result); broadcast(); },
+					onResult: result => {
+						const pending = this.engine.store.get(userid).run?.battle;
+						if (pending?.token !== token) return;
+						this.engine.settle(userid, token, result);
+						broadcast();
+						if (!result.won && pending.roomid) user.sendTo(pending.roomid as RoomID, '|fantasyrogueend|');
+					},
 					onClose: () => {
 						if (this.engine.store.get(userid).run?.battle?.token === token) {
 							this.engine.recover(userid, token);
@@ -132,6 +153,16 @@ export class RogueManager {
 			}
 		}
 		return this.state(user);
+	}
+	/** A battle-room button can only retreat from the caller's current campaign room. */
+	retreat(connection: Connection, roomid: string) {
+		this.authorize(connection.user);
+		const account = this.engine.store.get(connection.user.id);
+		if (account.run?.phase !== 'battle' || account.run.battle?.roomid !== roomid) {
+			throw new Error('只能从自己当前的肉鸽战斗撤退。');
+		}
+		if (account.run.battle.retreatRequested) return;
+		this.command(connection, { id: randomUUID(), revision: account.revision, action: 'retreat' });
 	}
 }
 

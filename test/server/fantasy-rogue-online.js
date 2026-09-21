@@ -6,9 +6,9 @@ const { setTimeout: delay } = require('timers/promises');
 const { makeUser } = require('../users-utils');
 const { AIChallengeManager } = require('../../dist/server/fantasy-ai/manager');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
-const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
+const { RogueEngine, createRoguePokemon } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, set, stats } = require('../fixtures/fantasy-rogue');
 
 async function until(check, name) {
 	const start = Date.now();
@@ -83,6 +83,67 @@ describe('Fantasy Rogue real rooms', function () {
 		assert.equal(account().run.phase, 'ready');
 		assert.equal(account().run.team[0].hp, hp);
 		assert.equal(account().points, 0);
+	});
+	it('retreats through the real room, saves turn damage and PP, returns the owner and resets only the foe', async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			saved.run.encounter = 2;
+			saved.run.node.encounters[2].team = [set('Magikarp', 'Swift Swim', 5, ['Tackle'])];
+		});
+		const returned = [];
+		const testedUser = user;
+		const sendTo = testedUser.sendTo;
+		testedUser.sendTo = function (roomid, data) { returned.push([roomid, data]); return sendTo.call(this, roomid, data); };
+		try {
+			const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+			await until(() => room.battle.p2.request.isWait === true, 'AI preview');
+			room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+			await until(() => JSON.parse(room.battle.p1.request.request).active, 'first move');
+			const first = room.battle.p1.request.rqid;
+			room.battle.choose(user, `move 2|${first}`);
+			await until(() => room.battle.p1.request.rqid > first, 'completed turn');
+			const current = JSON.parse(room.battle.p1.request.request);
+			assert.equal(current.active[0].moves[1].pp, 39);
+			const hp = Number(current.side.pokemon[0].condition.split('/')[0]);
+			assert(hp < account().run.team[0].hp);
+			assert.throws(() => manager.retreat(user.connections[0], 'battle-wrong-room'), /自己当前/);
+			manager.retreat(user.connections[0], room.roomid); manager.retreat(user.connections[0], room.roomid);
+			await until(() => room.battle.ended && account().run.phase === 'ready', 'retreat settlement');
+			assert.equal(account().run.encounter, 2); assert.equal(account().run.recovery, 'retreat');
+			assert.equal(account().run.team[0].hp, hp); assert.equal(account().run.team[0].pp[1].pp, 39);
+			assert(returned.some(([id, data]) => id === room.roomid && data === '|fantasyrogueend|'));
+			assert.equal(ai.getStatus().active, 0);
+			const next = Rooms.get(command('battle').run.roomid); rooms.push(next);
+			await until(() => next.battle.p2.request.isWait === true, 'replay preview');
+			next.battle.choose(user, `team 1|${next.battle.p1.request.rqid}`);
+			await until(() => JSON.parse(next.battle.p1.request.request).active, 'replay moves');
+			const resumed = JSON.parse(next.battle.p1.request.request);
+			assert.equal(Number(resumed.side.pokemon[0].condition.split('/')[0]), hp);
+			assert.equal(resumed.active[0].moves[1].pp, 39);
+			assert.equal(next.battle.options.fantasyRogue.state.encounterId, room.battle.options.fantasyRogue.state.encounterId);
+			const foe = JSON.parse(next.battle.p2.request.request).side.pokemon[0].condition.split('/');
+			assert.equal(foe[0], foe[1]);
+		} finally { testedUser.sendTo = sendTo; }
+	});
+	it('returns a real third-encounter wipe to the adventure and accepts 5000-coin emergency recovery', async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			saved.run.encounter = 2; saved.run.money = 5000;
+			saved.run.team = [createRoguePokemon(set('Magikarp', 'Swift Swim', 1, ['Splash']), stats(0))];
+			saved.run.node.encounters[2].team = [set('Bulbasaur', 'Overgrow', 30, ['Tackle'])];
+		});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p2.request.isWait === true, 'wipe preview');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active, 'wipe move');
+		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
+		await until(() => room.battle.ended && account().run.phase === 'ready', 'wipe settlement');
+		assert.equal(account().run.team[0].hp, 0); assert.equal(account().run.encounter, 2);
+		assert.equal(manager.state(user).run.canEmergency, true);
+		assert.throws(() => command('battle'), /复活/);
+		command('emergency');
+		assert.equal(account().run.team[0].hp, account().run.team[0].maxhp);
+		assert.equal(account().run.money, 0); assert.equal(account().run.encounter, 2);
 	});
 	it('binds production saves to authenticated accounts and excludes enemy teams from state replies', () => {
 		Config.fantasyailocal = false;
