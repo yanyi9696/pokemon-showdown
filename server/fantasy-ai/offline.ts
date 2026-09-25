@@ -18,6 +18,11 @@ export interface OfflineOptions {
 	maxTurns?: number;
 	strategy?: 'rules' | 'rollout';
 	maxRollouts?: number;
+	budgetMs?: number;
+	/** Development-only injection for paired old/new comparisons. No live simulator object is passed. */
+	createPolicy?: (trainer: ValidatedTrainer, side: 'p1' | 'p2') => {
+		rules: Pick<RulePolicy, 'decide'>, search?: Pick<RolloutPolicy, 'decide'>,
+	};
 	/** Optional development trace, containing spectator-visible protocol only. */
 	onPublicUpdate?: (update: string) => void;
 }
@@ -69,8 +74,12 @@ export function runOfflineBattle(options: OfflineOptions): OfflineResult {
 				ownSide, difficulty, initialOpponent: captureInitialTeam(battle, index === 0 ? 'p2' : 'p1'),
 			});
 		});
-		const policies = options.trainers.map(trainer => new RulePolicy(trainer));
-		const searches = options.strategy === 'rollout' ? options.trainers.map(trainer => new RolloutPolicy(trainer)) : null;
+		const policies = options.trainers.map((trainer, index) => options.createPolicy?.(structuredClone(trainer),
+			index === 0 ? 'p1' : 'p2') || { rules: new RulePolicy(trainer),
+			search: options.strategy === 'rollout' ? new RolloutPolicy(trainer) : undefined });
+		if (options.strategy === 'rollout' && policies.some(policy => !policy.search)) {
+			throw new Error('离线搜索对照必须为双方提供搜索策略。');
+		}
 		const rng = new PRNG(options.decisionSeed);
 		const rejected = [new Map<string, string[]>(), new Map<string, string[]>()];
 		let logCursor = 0;
@@ -95,8 +104,10 @@ export function runOfflineBattle(options: OfflineOptions): OfflineResult {
 				const fingerprint = JSON.stringify(observation.request);
 				const started = performance.now();
 				const excluded = rejected[index].get(fingerprint);
-				const search = searches?.[index].decide(observation, rng.getSeed(), { maxRollouts: options.maxRollouts, excluded });
-				const decision = search || policies[index].decide(observation, rng.getSeed(), excluded);
+				const search = options.strategy === 'rollout' ? policies[index].search!.decide(observation, rng.getSeed(), {
+					maxRollouts: options.maxRollouts, budgetMs: options.budgetMs, excluded,
+				}) : undefined;
+				const decision = search || policies[index].rules.decide(observation, rng.getSeed(), excluded);
 				if (search) {
 					result.rollouts += search.rollouts;
 					if (search.method === 'rules' && search.phase === 'move') result.searchFallbacks++;

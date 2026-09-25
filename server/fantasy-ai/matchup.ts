@@ -16,6 +16,9 @@ const SIMPLE_VOLATILES = new Set([
 	'saltcure', 'destinybond', 'gemdefensepermanentboost',
 	...FANTASY_VOLATILES,
 	'flashfire', 'charge', 'imprison', 'substitute', 'stall', 'encore', 'disable',
+	'gastroacid', 'embargo', 'smackdown',
+	'trapped', 'partiallytrapped',
+	'yuannengshifang', 'shiyingli',
 	'protect', 'detect', 'kingsshield', 'spikyshield', 'banefulbunker', 'silktrap', 'burningbulwark', 'endure',
 ]);
 const SELF_BENEFITS = new Set([
@@ -67,7 +70,36 @@ export interface MoveEstimate {
 	selfKnockout?: number;
 	destinyBond?: number;
 	targetAfterMove?: { profile: Combatant, probability: number }[];
+	/** Native environment after a weather, terrain or screen-changing move. */
+	fieldAfter?: ProbeField;
+	/** Damage-roll bounds for a single hit, before clipping to the target's current HP. */
+	damageRange?: { min: number, max: number };
 }
+
+export interface ProbeField {
+	weather: string;
+	terrain: string;
+	pseudoWeather: string[];
+	conditions: Record<SinglesSide, Record<string, number>>;
+}
+
+function captureField(battle: Battle, side: SinglesSide): ProbeField {
+	const conditions = (index: number) => Object.fromEntries(Object.entries(battle.sides[index].sideConditions)
+		.filter(([, state]) => !!state).map(([id, state]) => [id, state.layers || 1]));
+	const foe = side === 'p1' ? 'p2' : 'p1';
+	return { weather: battle.field.weather, terrain: battle.field.terrain,
+		pseudoWeather: Object.keys(battle.field.pseudoWeather),
+		conditions: { [side]: conditions(0), [foe]: conditions(1) } as ProbeField['conditions'] };
+}
+
+export function withProbeField(memory: BattleMemory, field: ProbeField): BattleMemory {
+	return { ...memory, weather: field.weather, terrain: field.terrain, pseudoWeather: field.pseudoWeather,
+		sides: { p1: { ...memory.sides.p1, conditions: field.conditions.p1 },
+			p2: { ...memory.sides.p2, conditions: field.conditions.p2 } } };
+}
+
+/** Conditional priority moves need a hypothetical queued reply, never the live opponent queue. */
+export const CONDITIONAL_ATTACKS = new Set(['suckerpunch', 'thunderclap', 'upperhand']);
 
 const spreadCache = new Map<string, ReturnType<typeof compatibleSpreads>>();
 function probeSpread(format: string, mon: Combatant, sample: number) {
@@ -94,6 +126,7 @@ function afterMove(mon: Pokemon, profile: Combatant): Combatant {
 		} : undefined,
 		protectCounter: mon.volatiles.stall?.counter,
 		lastMove: mon.lastMove?.id,
+		activeMoveActions: mon.activeMoveActions,
 		moveLocks: { encore: mon.volatiles.encore?.move, disable: mon.volatiles.disable?.move },
 	};
 }
@@ -130,7 +163,8 @@ export function createMatchup(
 			const mon = team.pokemon[0];
 			team.active[0] = mon;
 			mon.isActive = mon.isStarted = true;
-			mon.activeTurns = 1;
+			mon.activeTurns = profile.activeMoveActions ? 1 : 0;
+			mon.activeMoveActions = profile.activeMoveActions || 0;
 			if (mon.species.id !== toID(profile.species)) mon.setSpecies(battle.dex.species.get(profile.species));
 			mon.baseStoredStats = { ...profile.stats };
 			for (const stat of ['atk', 'def', 'spa', 'spd', 'spe'] as const) mon.storedStats[stat] = profile.stats[stat];
@@ -139,6 +173,9 @@ export function createMatchup(
 			mon.status = profile.status === 'fnt' ? '' as ID : profile.status as ID;
 			mon.statusState = battle.initEffectState({ id: mon.status, target: mon });
 			if (profile.lastMove) mon.lastMove = battle.dex.getActiveMove(profile.lastMove);
+			if (battle.dex.items.get(mon.item).isChoice && profile.lastMove && mon.hasMove(profile.lastMove)) {
+				mon.volatiles.choicelock = battle.initEffectState({ id: 'choicelock', target: mon, move: profile.lastMove });
+			}
 			for (const slot of mon.moveSlots) slot.pp = Math.max(0, slot.maxpp - (profile.moveUses?.[slot.id] || 0));
 			Object.assign(mon.boosts, profile.boosts);
 			if (profile.types?.length) mon.setType(profile.types, true);
@@ -166,6 +203,10 @@ export function createMatchup(
 		}
 		for (const [index, profile] of [attacker, defender].entries()) {
 			const sourceSide = index === 0 ? side : side === 'p1' ? 'p2' : 'p1';
+			for (const id of ['trapped', 'partiallytrapped']) {
+				const state = battle.sides[index].active[0].volatiles[id];
+				if (state) state.source = battle.sides[1 - index].active[0];
+			}
 			omittedVolatiles.push(...restoreDelayedHealing(battle, battle.sides[index], memory.sides[sourceSide],
 				appearance => appearance === profile.appearance ? battle.sides[index].active[0] : undefined, true));
 		}
@@ -208,6 +249,41 @@ function applyMechanic(battle: Battle, event: string) {
 	}
 }
 
+/** Run the real entry event, including hazards, status, items, Intimidate and field setters. */
+export function estimateEntry(
+	format: string, entrant: Combatant, opponent: Combatant, memory: BattleMemory, side: SinglesSide,
+) {
+	const { battle, omittedVolatiles } = createMatchup(format, entrant, opponent, memory, side);
+	try {
+		const mon = battle.p1.active[0];
+		mon.isStarted = false;
+		mon.activeTurns = mon.activeMoveActions = 0;
+		mon.lastMove = null;
+		delete mon.volatiles.choicelock;
+		mon.abilityState.effectOrder = battle.effectOrder++;
+		mon.itemState.effectOrder = battle.effectOrder++;
+		battle.runEvent('BeforeSwitchIn', mon);
+		battle.actions.runSwitch(mon);
+		const profile = afterMove(mon, entrant);
+		// Public HP may be an interval; preserve its width after deterministic entry damage.
+		profile.health.lower = Math.max(0, profile.health.upper - (entrant.health.upper - entrant.health.lower));
+		return { entrant: profile, opponent: afterMove(battle.p2.active[0], opponent),
+			memory: withProbeField(memory, captureField(battle, side)), omittedVolatiles,
+			damage: Math.max(0, entrant.health.upper - profile.health.upper) };
+	} finally { battle.destroy(); }
+}
+
+/** Native trapping rules include Ghosts, groundedness, Shed Shell and custom abilities. */
+export function canEscapeMatchup(
+	format: string, mon: Combatant, opponent: Combatant, memory: BattleMemory, side: SinglesSide,
+): boolean {
+	const { battle } = createMatchup(format, mon, opponent, memory, side);
+	try {
+		battle.runEvent('TrapPokemon', battle.p1.active[0]);
+		return !battle.p1.active[0].trapped;
+	} finally { battle.destroy(); }
+}
+
 /** Legal Mega possibilities from a disclosed/guessed set, never the player's selected mechanic. */
 export function possibleMegaForms(
 	format: string, profile: Combatant, target: Combatant, memory: BattleMemory, side: SinglesSide,
@@ -238,6 +314,7 @@ export function possibleMegaForms(
 export function estimateMove(
 	format: string, attacker: Combatant, defender: Combatant, moveID: string, event: string,
 	memory: BattleMemory, side: SinglesSide, samples: number = PROBE_SEEDS.length,
+	reply?: { id: string, event?: string } | null,
 ): MoveEstimate {
 	const result: MoveEstimate = {
 		damage: 0, knockout: 0, healing: 0, selfDamage: 0, delayedHealing: 0, utility: 0,
@@ -246,6 +323,7 @@ export function estimateMove(
 		accuracy: 0, speed: 0, opponentSpeed: 0, priority: 0, omittedVolatiles: [],
 	};
 	const sampleCount = Math.max(1, Math.min(PROBE_SEEDS.length, samples));
+	const rolls: { damage: number, hp: number, maxhp: number, calls: number, knockout: boolean, accuracy: number }[] = [];
 	for (let sample = 0; sample < sampleCount; sample++) {
 		const { battle, omittedVolatiles } = createMatchup(format, attacker, defender, memory, side, sample);
 		try {
@@ -256,6 +334,19 @@ export function estimateMove(
 				result.userAfterMechanic = afterMove(source, attacker);
 			}
 			const move = battle.dex.getActiveMove(moveID);
+			let rolledDamage = 0;
+			let damageCalls = 0;
+			const nativeDamage = battle.actions.getDamage.bind(battle.actions);
+			battle.actions.getDamage = (...args) => {
+				const damage = nativeDamage(...args);
+				if (args[0] === source && args[1] === target && typeof damage === 'number') {
+					rolledDamage += damage;
+					damageCalls++;
+				}
+				return damage;
+			};
+			// Two endpoint probes bound ordinary damage rolls without sixteen Battle allocations.
+			if (sampleCount === 2) battle.randomizer = base => Math.floor(base * (sample ? 100 : 85) / 100);
 			const expiredBond = !!source.volatiles.destinybond && move.id !== 'destinybond';
 			if (expiredBond) {
 				// useMove omits BeforeMove. Run this native expiry hook without also
@@ -300,11 +391,29 @@ export function estimateMove(
 			const weatherBefore = battle.field.weather;
 			const terrainBefore = battle.field.terrain;
 			const roomBefore = !!battle.field.pseudoWeather.trickroom;
+			const fieldBefore = captureField(battle, side);
 			result.speed += source.getStat('spe') / sampleCount;
 			result.opponentSpeed += target.getStat('spe') / sampleCount;
 			move.priority = battle.runEvent('ModifyPriority', source, target, move, move.priority);
 			result.priority = move.priority;
 			const zMove = event === 'zmove' ? battle.actions.getZMove(move, source) : undefined;
+			if (CONDITIONAL_ATTACKS.has(move.id) && !zMove) {
+				// Without a supplied reply this is only potential coverage. RulePolicy
+				// later mixes concrete replies; a known switch/status move cannot trigger it.
+				const id = reply === undefined ? defender.moves.find(replyID => {
+					const other = battle.dex.moves.get(replyID);
+					return other.category !== 'Status' && (move.id !== 'upperhand' || other.priority > 0);
+				}) : reply?.id;
+				if (id) {
+					const other = battle.dex.getActiveMove(id);
+					other.priority = battle.runEvent('ModifyPriority', target, source, other, other.priority);
+					const first = move.priority !== other.priority ? move.priority > other.priority :
+						source.getStat('spe') === target.getStat('spe') ? sample === 0 :
+						memory.pseudoWeather.includes('trickroom') ? source.getStat('spe') < target.getStat('spe') :
+						source.getStat('spe') > target.getStat('spe');
+					if (first) battle.queue.addChoice({ choice: 'move', pokemon: target, move: other });
+				}
+			}
 			const cursor = battle.log.length;
 			// Respect deterministic move restrictions without resampling sleep/paralysis,
 			// which the policy already accounts for via actionOpportunity.
@@ -324,6 +433,8 @@ export function estimateMove(
 					return nativeRandom(numerator, denominator);
 				};
 			}
+			// useMove bypasses runMove's first-action counter (Fake Out / First Impression).
+			source.activeMoveActions++;
 			const didSomething = !disabled && battle.actions.useMove(move, source, { target, zMove });
 			// useMove queues faints; resolve Destiny Bond's native onFaint trade.
 			// Other probes do not need to finish an artificial battle here.
@@ -360,6 +471,8 @@ export function estimateMove(
 			result.accuracy += factor;
 			result.damage += Math.max(0, targetHP - target.hp) / target.maxhp * factor;
 			result.knockout += (target.hp <= 0 ? 1 : 0) * factor;
+			rolls.push({ damage: rolledDamage, hp: targetHP, maxhp: target.maxhp, calls: damageCalls,
+				knockout: target.hp <= 0, accuracy: hitChance });
 			result.healing += Math.max(0, source.hp - beforeHP) / source.maxhp * factor;
 			result.selfDamage += Math.max(0, beforeHP - source.hp) / source.maxhp * factor;
 			const targetAfter = afterMove(target, defender);
@@ -401,6 +514,8 @@ export function estimateMove(
 				newFieldCondition ||
 				weatherBefore !== battle.field.weather || terrainBefore !== battle.field.terrain
 			) result.field += factor;
+			const fieldAfter = captureField(battle, side);
+			if (JSON.stringify(fieldAfter) !== JSON.stringify(fieldBefore)) result.fieldAfter = fieldAfter;
 			for (const stat of ['atk', 'def', 'spa', 'spd', 'spe'] as const) {
 				const relevant = !['atk', 'spa'].includes(stat) || attacker.moves.some(id =>
 					battle.dex.moves.get(id).category === (stat === 'atk' ? 'Physical' : 'Special'));
@@ -427,6 +542,19 @@ export function estimateMove(
 			result.omittedVolatiles = [...new Set([...result.omittedVolatiles, ...omittedVolatiles])];
 		} finally {
 			battle.destroy();
+		}
+	}
+	if (rolls.length === 2 && rolls.every(roll => roll.calls === 1) && rolls[0].hp === rolls[1].hp &&
+		rolls[0].maxhp === rolls[1].maxhp && rolls[0].accuracy === rolls[1].accuracy &&
+		rolls[0].damage <= rolls[1].damage) {
+		const [low, high] = rolls;
+		result.damageRange = { min: low.damage / low.maxhp, max: high.damage / high.maxhp };
+		if (!low.knockout && high.knockout) {
+			// Interpolate the 16 damage rolls; the native endpoints still decide guaranteed
+			// survival / KO, including Sturdy, Sash, immunities and custom damage prevention.
+			let lethal = 0;
+			for (let roll = 0; roll < 16; roll++) if (low.damage + (high.damage - low.damage) * roll / 15 >= low.hp) lethal++;
+			result.knockout = lethal / 16 * high.accuracy;
 		}
 	}
 	return result;

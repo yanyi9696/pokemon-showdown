@@ -14,6 +14,7 @@ import { recoveryCapacity, statusCost } from './mechanics';
 import { enumerateRequestChoices } from './actions';
 import { matchesOpponentMove } from './opponent-choice';
 import { assessTrickRoom, trickRoomPosition, type RoomMember } from './trick-room';
+import { adaptiveRisk, coverageAdjustedScore } from './planning';
 
 export interface SearchDecision extends RuleDecision {
 	method: 'rules' | 'rollout';
@@ -71,7 +72,10 @@ function roomMembers(battle: Battle, side: SinglesSide, keys: ReadonlySet<Pokemo
 	});
 }
 
-function positionValue(battle: Battle, side: SinglesSide, keys: ReadonlySet<Pokemon>, switches: number): number {
+function positionValue(
+	battle: Battle, side: SinglesSide, keys: ReadonlySet<Pokemon>, switches: number,
+	resources: ReadonlyMap<Pokemon, number>,
+): number {
 	const team = battle.getSide(side);
 	let value = team.pokemon.reduce((sum, mon) => {
 		if (mon.fainted) return sum;
@@ -98,7 +102,9 @@ function positionValue(battle: Battle, side: SinglesSide, keys: ReadonlySet<Poke
 			const recovery = recoveryCapacity(move);
 			return remaining + slot.pp / Math.max(1, slot.maxpp) * (recovery ? 24 : 8);
 		}, 0);
-		return sum + 120 + (keys.has(mon) ? 30 : 0) + mon.hp / mon.maxhp * (keys.has(mon) ? 95 : 80) -
+		const resource = resources.get(mon) || 0;
+		return sum + 120 + (keys.has(mon) ? 30 : 0) + resource * 0.7 +
+			mon.hp / mon.maxhp * ((keys.has(mon) ? 95 : 80) + resource * 0.3) -
 			conditionCost + boosts + pp +
 			(mon.volatiles.substitute ? 12 : 0) - (mon.isActive && exhausted ? 20 : 0);
 	}, 0);
@@ -149,8 +155,11 @@ export function simulateTurn(
 	const foe = world.ownSide === 'p1' ? 'p2' : 'p1';
 	const keys = new Set(world.teams[world.ownSide].flatMap((member, index) =>
 		member.keyMember ? [battle.getSide(world.ownSide).pokemon[index]] : []));
+	const resources = new Map(world.teams[world.ownSide].map((member, index) =>
+		[battle.getSide(world.ownSide).pokemon[index], member.resourceValue || 0]));
 	const position = (side: SinglesSide) => positionValue(battle, side, keys,
-		world.memory.switches.filter(entry => entry.side === side && entry.turn > 0 && entry.turn >= world.turn - 4).length);
+		world.memory.switches.filter(entry => entry.side === side && entry.turn > 0 && entry.turn >= world.turn - 4).length,
+		resources);
 	const base = position(world.ownSide) - position(foe);
 	const cursor = battle.log.length;
 	let additionalChoices = 0;
@@ -242,13 +251,20 @@ export class RolloutPolicy {
 		if (rule.phase !== 'move' || !rule.candidates.length) return result;
 		result.stopReason = 'complete';
 		let candidates = rule.candidates.slice(0, ownCandidates);
-		const risk = { balanced: 0.2, aggressive: 0.1, defensive: 0.35 }[this.trainer.style];
+		let risk = { balanced: 0.2, aggressive: 0.1, defensive: 0.35 }[this.trainer.style];
 		const rng = new PRNG(seed);
 		const samples = Array.from({ length: DEFAULT_LIMITS.samples }, () => { rng.random(); return rng.getSeed(); });
 		try {
 			if (performance.now() >= deadline || limit < candidates.length) { result.stopReason = 'budget'; return result; }
 			const worlds = this.worlds.build(observation);
 			const foe = observation.ownSide === 'p1' ? 'p2' : 'p1';
+			const material = (side: SinglesSide) => worlds.reduce((sum, world) => sum + world.probability *
+				world.teams[side].reduce((total, mon) => total +
+					(mon.profile.health.upper > 0 ? 0.65 + mon.profile.health.upper * 0.35 : 0), 0), 0);
+			risk = adaptiveRisk(this.trainer.style, material(observation.ownSide), material(foe));
+			for (const world of worlds) for (const [index, member] of world.teams[observation.ownSide].entries()) {
+				member.resourceValue = rule.teamValues?.[index] || 0;
+			}
 			const scenarios: {
 				world: WorldHypothesis, opponentPolicy: RulePolicy, choice: string, weight: number, responseIndex: number,
 			}[] = [];
@@ -297,10 +313,14 @@ export class RolloutPolicy {
 			scenarios.sort((a, b) => a.responseIndex - b.responseIndex);
 			const schedule = samples.flatMap(sample => scenarios.map(scenario => ({ ...scenario, sample })));
 			let msPerStep = 0;
+			let previousCoverage = 0;
+			const totalMass = scenarios.reduce((sum, scenario) => sum + scenario.weight, 0);
 			search: for (let depth = 1; depth <= maxDepth; depth++) {
-				if (depth > 1 && !completePlan) {
+				if (depth > 1 && !completePlan && previousCoverage >= 0.85) {
 					candidates = selectCandidates(result.candidates, deepCandidates, result.choice || undefined);
 				}
+				const covered = new Set<string>();
+				let coveredMass = 0;
 				const moments = candidates.map(() => ({ weight: 0, sum: 0, square: 0, worst: Infinity }));
 				let completed = 0;
 				for (const scenario of schedule) {
@@ -332,6 +352,12 @@ export class RolloutPolicy {
 					const measuredMs = (performance.now() - roundStarted) / work;
 					msPerStep = msPerStep ? msPerStep * 0.5 + measuredMs * 0.5 : measuredMs;
 					if (values.length !== candidates.length) continue;
+					const scenarioKey = `${worlds.indexOf(world)}:${scenario.choice}`;
+					if (!covered.has(scenarioKey)) {
+						covered.add(scenarioKey);
+						coveredMass += scenario.weight;
+					}
+					previousCoverage = coveredMass / totalMass;
 					// Only complete, equal-depth rounds can replace a published decision.
 					for (const [index, value] of values.entries()) {
 						const moment = moments[index];
@@ -348,9 +374,11 @@ export class RolloutPolicy {
 						const moment = moments[index];
 						const mean = moment.sum / moment.weight;
 						const deviation = Math.sqrt(Math.max(0, moment.square / moment.weight - mean * mean));
-						const score = mean - risk * deviation - risk * Math.max(0, mean - moment.worst) * 0.25 +
+						const searched = mean - risk * deviation - risk * Math.max(0, mean - moment.worst) * 0.25 +
 							original.score * 0.1 + (original.strategic || 0) * 0.8;
-						return { ...original, score, reasons: [...original.reasons, 'full-turn-expectation', `search-depth:${depth}`] };
+						const score = coverageAdjustedScore(searched, original.score, previousCoverage);
+						return { ...original, score, reasons: [...original.reasons, 'full-turn-expectation', `search-depth:${depth}`,
+							...(previousCoverage < 0.85 ? ['partial-response-coverage'] : [])] };
 					}).sort((a, b) => b.score - a.score || a.choice.localeCompare(b.choice));
 					const close = ranked.filter(candidate => candidate.score >= ranked[0].score - 1.5);
 					result.choice = new PRNG(seed).sample(close).choice;

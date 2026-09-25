@@ -15,6 +15,7 @@ const VOLATILES = new Set([
 	'saltcure', 'destinybond', 'gemdefensepermanentboost',
 	...FANTASY_VOLATILES,
 	'flashfire', 'charge', 'imprison',
+	'yuannengshifang', 'shiyingli',
 ]);
 
 /** Data-only world -> new Fantasy Battle. No real Battle can be passed to this boundary. */
@@ -121,7 +122,7 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 					const publicEffect = member.seen?.effects?.[id];
 					const source = publicEffect?.source ? battle.getSide(publicEffect.source).active[0] : side.foe.active[0];
 					const state = battle.initEffectState({ id, target: mon, source, sourceSlot: source.getSlot() });
-					if (id === 'imprison') { state.source = mon; state.sourceSlot = mon.getSlot(); }
+					if (id === 'imprison' || id === 'yuannengshifang') { state.source = mon; state.sourceSlot = mon.getSlot(); }
 					if (effect.duration) state.duration = Math.max(1, effect.duration - (world.turn - (publicEffect?.turn ?? world.turn)));
 					if (id === 'confusion') state.time = world.variant ? 3 : 1;
 					if (id === 'substitute') {
