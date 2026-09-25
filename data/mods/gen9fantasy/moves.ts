@@ -567,7 +567,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		zMove: { effect: 'clearnegativeboost' },
 		contestType: "Clever",
 		desc: "使对方全体陷入睡眠,仅在使用者为达克莱伊时奏效。使用者是幻想超级达克莱伊时,效果发生改变,变为给自己回复和对手速度相同数值的血,并降低对手的速度,必定命中",
-		shortDesc: "达克莱伊:催眠;幻想超达:必中,吸取对手速度数值的HP并降速",
+		shortDesc: "达克莱伊:催眠;幻想mega:必中,吸取对手速度数值的HP,降速",
 	},
 	psystrike: {
 		num: 540,

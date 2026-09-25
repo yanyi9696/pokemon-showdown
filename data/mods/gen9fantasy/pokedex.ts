@@ -162,7 +162,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Slowbro-Mega-Fantasy",
 		baseSpecies: "Slowbro",
 		forme: "Mega",
-		types: ["Water", "Steel"],
+		types: ["Steel", "Psychic"],
 		baseStats: { hp: 100, atk: 75, def: 180, spa: 135, spd: 100, spe: 30 },
 		abilities: { 0: "Shell Armor" },
 		heightm: 2,
@@ -1678,6 +1678,10 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		tags: ["Restricted Legendary"],
 		eggGroups: ["Undiscovered"],
 	},
+	rayquazamega: {
+		inherit: true,
+		requiredForme: "Rayquaza",
+	},
 	rayquazamegafantasy: {
 		num: 384,
 		name: "Rayquaza-Mega-Fantasy",
@@ -1691,7 +1695,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		weightkg: 392,
 		color: "Green",
 		eggGroups: ["Undiscovered"],
-		requiredMove: "Dragon Ascent",
 		requiredItem: "Rayquazite",
 		requiredForme: "Rayquaza-Fantasy",
 		battleOnly: "Rayquaza-Fantasy",

@@ -9137,6 +9137,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dongchadaji: ["9M"],
 			sacredsword: ["9M"],
 			direclaw: ["9M"],
+			poltergeist: ["9M"],
 			uturn: ["9M"],
 			//幻想增添技能
 			confuseray: ["9M"],
@@ -9275,6 +9276,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dongchadaji: ["9M"],
 			sacredsword: ["9M"],
 			direclaw: ["9M"],
+			poltergeist: ["9M"],
 			uturn: ["9M"],
 			//幻想增添技能
 			confuseray: ["9M"],
@@ -9413,6 +9415,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dongchadaji: ["9M"],
 			sacredsword: ["9M"],
 			direclaw: ["9M"],
+			poltergeist: ["9M"],
 			uturn: ["9M"],
 			//幻想增添技能
 			confuseray: ["9M"],
@@ -21419,6 +21422,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dualwingbeat: ["9M"],
 			airslash: ["9M"],
 			razorwind: ["9M"],
+			closecombat: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M"],
 			attract: ["8M", "7M"],
@@ -21507,6 +21511,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			dualwingbeat: ["9M"],
 			airslash: ["9M"],
 			razorwind: ["9M"],
+			closecombat: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M"],
 			attract: ["8M", "7M"],
@@ -33456,6 +33461,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			huanzhiwu: ["9M"],
 			swordsdance: ["9M"],
 			wish: ["9M"],
+			earthpower: ["9M"],
+			nastyplot: ["9M"],
 			//幻想增添技能
 			agility: ["9M", "8M"],
 			allyswitch: ["8M"],

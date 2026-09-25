@@ -128,10 +128,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 		abilities: {0: "Adaptability"},		
 	},
-	dragonitemegafantasy: {
-		tier: "(Uber)",
-		abilities: {0: "Pixilate"},		
-	},
 	drednawgmegafantasy: {	
 		tier: "(Uber)",
 		abilities: {0: "Shi Shan"},	
@@ -263,6 +259,10 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	dragonitefantasy: {
 		tier: "OU",	
+	},
+	dragonitemegafantasy: {
+		tier: "OU",	
+		abilities: {0: "Pixilate"},		
 	},
 	durantfantasy: {
 		tier: "OU",
@@ -397,9 +397,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	sandyshocksfantasy: {
 		tier: "OU",
 	},
-	sawkfantasy: {
-		tier: "OU",
-	},
 	sceptilemegafantasy: {
 		tier: "OU",
 		abilities: {0: "Dragonize"},		
@@ -497,9 +494,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "OU",
 	},
 	tapufinifantasy: {
-		tier: "OU",
-	},
-	throhfantasy: {
 		tier: "OU",
 	},
 	toxtricityfantasy: {
@@ -656,6 +650,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	rotomfantasy: {
 		tier: "UU",
 	},
+	sawkfantasy: {
+		tier: "UU",
+	},
 	sceptilefantasy: {
 		tier: "UU",
 	},
@@ -691,6 +688,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Iron Fist"},		
 	},
 	tentacruelfantasy: {
+		tier: "UU",
+	},
+	throhfantasy: {
 		tier: "UU",
 	},
 	typenullfantasy: {
