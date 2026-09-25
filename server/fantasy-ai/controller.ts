@@ -45,6 +45,7 @@ export class AIController {
 	private pending?: { request: ChoiceRequest, rqid: number, received: number, thinkingStarted?: number };
 	private opponent?: OpponentChoiceState;
 	private submitted = 0;
+	private revision = 0;
 	private submittedChoice = '';
 	private fingerprint = '';
 	private rejected: string[] = [];
@@ -53,6 +54,7 @@ export class AIController {
 	readonly metrics: ChallengeMetrics;
 	private readonly battle: RoomBattle;
 	private readonly timing: DecisionTimeManager;
+	private queuedWindow?: { deadline: number };
 	readonly options: AIChallengeOptions;
 
 	constructor(battle: RoomBattle, options: AIChallengeOptions) {
@@ -60,7 +62,11 @@ export class AIController {
 		this.options = options;
 		this.timing = new DecisionTimeManager(options);
 		if (options.difficulty === 'normal') this.view = new InformationView({ ownSide: 'p2', difficulty: 'normal' });
-		options.scheduler.register(battle.roomid, options.instanceId);
+		options.scheduler.register(battle.roomid, options.instanceId, milliseconds => {
+			// Refund queue waiting synchronously, including cancelled queued jobs,
+			// before an undo/retry reads the same turn's remaining thinking budget.
+			if (this.queuedWindow) this.queuedWindow.deadline += milliseconds;
+		});
 		this.metrics = {
 			roomId: battle.roomid, trainer: options.trainer.id, difficulty: options.difficulty,
 			decisions: 0, timeouts: 0, workerErrors: 0, searchFallbacks: 0, rollouts: 0, illegalChoices: 0,
@@ -83,6 +89,7 @@ export class AIController {
 		if (this.closed || this.options.difficulty !== 'hard' || this.opponent?.version === state.version) return;
 		this.opponent = state;
 		if (!this.pending || !('active' in this.pending.request)) return;
+		this.revision++;
 		this.options.scheduler.cancel(this.battle.roomid, this.options.instanceId);
 		this.submitted = 0;
 		const current = this.battle.p2.request;
@@ -98,6 +105,7 @@ export class AIController {
 
 	request(request: ChoiceRequest, rqid: number) {
 		if (this.closed) return;
+		this.revision++;
 		this.options.scheduler.cancel(this.battle.roomid, this.options.instanceId);
 		this.pending = { request, rqid, received: performance.now() };
 	}
@@ -114,6 +122,34 @@ export class AIController {
 
 	/** The simulator's private flush marker follows requests AND their public update packet. */
 	flush() {
+		try {
+			this.decide();
+		} catch {
+			// Observation/ability preparation runs before submit's Promise. A
+			// synchronous failure must not strand an otherwise playable turn.
+			if (this.closed || !this.pending || this.pending.request.wait || this.battle.ended) return;
+			const readsChoice = this.options.difficulty === 'hard' && 'active' in this.pending.request;
+			if (readsChoice && !this.opponent?.ready) return;
+			this.metrics.workerErrors++;
+			this.submitted = this.pending.rqid;
+			this.sendChoice('default', this.pending.rqid, this.revision, readsChoice ? this.opponent!.version : undefined);
+		}
+	}
+
+	private sendChoice(choice: string, rqid: number, revision: number, choiceVersion?: number) {
+		if (this.closed || this.revision !== revision || this.battle.ended || this.battle.p1.eliminated ||
+			this.pending?.rqid !== rqid) return;
+		if (choiceVersion !== undefined && this.opponent?.version !== choiceVersion) return;
+		const current = this.battle.p2.request;
+		if (current.rqid !== rqid || current.isWait !== false) return;
+		this.submittedChoice = choice;
+		current.isWait = true;
+		current.choice = choice;
+		void this.battle.stream.write(choiceVersion === undefined ? `>p2 ${choice}` :
+			`>fantasyaichoose ${JSON.stringify({ version: choiceVersion, choice })}`);
+	}
+
+	private decide() {
 		if (this.closed || !this.pending || this.battle.ended) return;
 		const { request, rqid } = this.pending;
 		if (request.wait || rqid === this.submitted) return;
@@ -126,32 +162,24 @@ export class AIController {
 		const fingerprint = `${this.battle.turn}:${JSON.stringify(observation.request)}`;
 		if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
 		this.submitted = rqid;
-		const key = { roomId: this.battle.roomid, instanceId: this.options.instanceId, rqid };
+		const revision = this.revision;
+		const key = { roomId: this.battle.roomid, instanceId: this.options.instanceId, rqid, revision };
 		const seed = this.rng.getSeed();
 		this.rng.random();
 		const window = this.timing.allocate(
 			observation, this.battle.turn, received, this.options.trainer.format, this.rejected);
+		this.queuedWindow = window;
 		this.metrics.criticalDecisions = this.timing.criticalDecisions;
 		this.metrics.criticalDecisionReasons = { ...this.timing.criticalReasons };
 		const fallback = emergencyChoice(observation, this.options.trainer.format, this.rejected);
-		const submit = (choice: string) => {
-			if (this.closed || this.battle.ended || this.battle.p1.eliminated || this.pending?.rqid !== rqid) return;
-			if (choiceVersion !== undefined && this.opponent?.version !== choiceVersion) return;
-			const current = this.battle.p2.request;
-			if (current.rqid !== rqid || current.isWait !== false) return;
-			this.submittedChoice = choice;
-			current.isWait = true;
-			current.choice = choice;
-			void this.battle.stream.write(choiceVersion === undefined ? `>p2 ${choice}` :
-				`>fantasyaichoose ${JSON.stringify({ version: choiceVersion, choice })}`);
-		};
+		const submit = (choice: string) => this.sendChoice(choice, rqid, revision, choiceVersion);
 		void this.options.scheduler.submit({
 			key, trainer: this.options.trainer, observation, seed, excluded: this.rejected.slice(),
 			budgetMs: Number.isFinite(window.deadline) ? Math.max(0, window.deadline - performance.now()) : null,
 			critical: !!window.criticalReason, fallbackChoice: fallback,
 			maxRollouts: this.options.maxRollouts,
 		}).then(result => {
-			if (this.closed || this.pending?.rqid !== rqid || result.status === 'cancelled') return;
+			if (this.closed || this.revision !== revision || this.pending?.rqid !== rqid || result.status === 'cancelled') return;
 			if (choiceVersion !== undefined && this.opponent?.version !== choiceVersion) return;
 			this.metrics.decisions++;
 			const elapsed = performance.now() - received;

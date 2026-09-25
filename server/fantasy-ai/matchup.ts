@@ -208,6 +208,28 @@ function applyMechanic(battle: Battle, event: string) {
 	}
 }
 
+/** Legal Mega possibilities from a disclosed/guessed set, never the player's selected mechanic. */
+export function possibleMegaForms(
+	format: string, profile: Combatant, target: Combatant, memory: BattleMemory, side: SinglesSide,
+): Combatant[] {
+	if (memory.sides[side].resources.mega || profile.terastallized) return [];
+	const { battle } = createMatchup(format, profile, target, memory, side);
+	let events: string[];
+	try {
+		const mon = battle.p1.active[0];
+		events = [mon.canMegaEvo && 'mega', mon.canMegaEvoX && 'megax', mon.canMegaEvoY && 'megay']
+			.filter((event): event is string => !!event);
+	} finally { battle.destroy(); }
+	return events.flatMap(event => {
+		const matchup = createMatchup(format, profile, target, memory, side).battle;
+		try {
+			applyMechanic(matchup, event);
+			const evolved = afterMove(matchup.p1.active[0], profile);
+			return evolved.species === profile.species ? [] : [evolved];
+		} finally { matchup.destroy(); }
+	});
+}
+
 /**
  * A native single-move probe, not a full-turn rollout. Accuracy is scored
  * separately; non-guaranteed critical hits are excluded. All mutations and

@@ -43,7 +43,7 @@ export interface TrainerDiagnostic {
 
 /** These limits will be shared by both difficulty levels. */
 export const DEFAULT_LIMITS = Object.freeze({
-	workers: 1,
+	workers: 2,
 	maxBattles: 2,
 	maxBattlesPerPlayer: 1,
 	/** Normal decisions have a hard deadline; null remains an explicit development override. */

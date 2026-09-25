@@ -12,11 +12,14 @@ export const commands: Chat.ChatCommands = {
 	fantasyai: {
 		'': 'list',
 		list() {
-			const trainers = getAIManager().list();
+			const manager = getAIManager();
+			const trainers = manager.list();
+			const { maxBattles, maxBattlesPerPlayer } = manager.settings;
 			if (!trainers.length) return this.sendReply('目前没有可挑战的 AI 训练家。');
 			this.sendReplyBox('<strong>Fantasy AI 训练家</strong><ul>' + trainers.map(trainer =>
 				Utils.html`<li>${trainer.name} — ${Dex.formats.get(trainer.format).name}（${trainer.id}）</li>`
 			).join('') + '</ul><p>挑战：<code>/fantasyai challenge 训练家标识, normal</code>；高难用 <code>hard</code>。</p>' +
+			Utils.html`<p>全服最多 ${maxBattles} 场 AI 挑战，每人最多 ${maxBattlesPerPlayer} 场；所有训练家、赛制和难度共用名额。</p>` +
 			'<p>高难 AI 开局获知全队初始配置与精确能力值。请先选择并提交队伍。</p>');
 		},
 		async challenge(target, room, user, connection) {

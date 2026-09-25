@@ -96,9 +96,9 @@ export const Trainers: TrainerDefinition[] = [
 		Tera Type: Ghost
 		EVs: 252 HP / 252 Atk / 4 SpD
 		Adamant Nature
-		- yishunqianji
+		- Yi Shun Qian Ji
 		- Close Combat
-		- U-turn
+		- Zui Shen Luan Da
 		- Swords Dance
 
 		Dragapult-Fantasy @ fantasypowerlens
@@ -114,32 +114,31 @@ export const Trainers: TrainerDefinition[] = [
 		Aegislash-Fantasy @ Leftovers
 		Ability: Stance Change
 		Tera Type: Water
-		EVs: 252 HP / 56 SpA / 156 SpD / 44 Spe
-		Modest Nature
-		IVs: 0 Atk
-		- Toxic
+		EVs: 252 HP / 252 Atk / 4 SpD
+		Adamant Nature
 		- King's Shield
-		- Shadow Ball
-		- Tachyon Cutter
+		- Behemoth Blade
+		- Poltergeist
+		- Bitter Blade
 
 		Pecharunt-Fantasy @ fantasydefensegem
 		Ability: Levitate
 		Tera Type: Steel
-		EVs: 252 HP / 252 Def / 4 SpA
+		EVs: 252 HP / 4 SpA / 252 SpD
 		Modest Nature
 		IVs: 0 Atk
 		- Malignant Chain
 		- Hex
-		- Body Press
+		- Parting Shot
 		- Recover
 
 		Giratina @ Leftovers
 		Ability: Pressure
 		Tera Type: Fairy
-		EVs: 252 HP / 4 Def / 252 SpD
-		Careful Nature
+		EVs: 252 HP / 4 Atk / 252 Def
+		Impish Nature
 		- Dragon Tail
-		- Thunder Wave
+		- Toxic
 		- Defog
 		- Rest
 		`,

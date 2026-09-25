@@ -5,7 +5,8 @@ import { enumerateRequestChoices } from './actions';
 import { entryHazards, hazardCost, moveHazard, observedHazardTeams, type HazardLayers } from './hazards';
 import { battleNickname, HypothesisBuilder, type Combatant } from './hypotheses';
 import type { Observation } from './information';
-import { estimateMove, type MoveEstimate } from './matchup';
+import { estimateMove, possibleMegaForms, type MoveEstimate } from './matchup';
+import { anticipateSwitches } from './prediction';
 import { ownSeen, readBattleMemory, speedContext, type BattleMemory, type SeenPokemon } from './memory';
 import { actionOpportunity, DELAYED_HEALING, effectiveAbility, statusCost } from './mechanics';
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
@@ -42,18 +43,20 @@ export function selectCandidates(
 		if (candidate && candidates.length < limit && !candidates.includes(candidate)) candidates.push(candidate);
 	};
 	retain(ranked.find(candidate => candidate.choice === selected));
-	for (const reason of ['emergency-counterplay', 'reliable-finish']) {
+	for (const reason of ['emergency-counterplay', 'reliable-finish', 'double-switch']) {
 		retain(ranked.find(candidate => candidate.reasons.includes(reason)));
 	}
-	// At the wider root, compare the same move with/without Mega when both are
-	// credible. Keep the narrow continuation budget available for other tactics.
-	if (limit >= DEFAULT_LIMITS.ownCandidates) {
+	// Retain a credible Mega even in the opponent's narrower response set.
+	// At the wider root, also compare the same move without Mega.
+	if (limit >= DEFAULT_LIMITS.opponentCandidates) {
 		const mega = ranked.find(candidate => isMegaEvent(candidate.choice.split(' ')[2]) &&
 			!candidate.ineffective && candidate.score >= (ranked[0]?.score || 0) - 35);
 		if (mega) {
 			retain(mega);
-			retain(ranked.find(candidate => candidate.choice === mega.choice.split(' ').slice(0, 2).join(' ') &&
-				candidate.score >= mega.score - 45));
+			if (limit >= DEFAULT_LIMITS.ownCandidates) {
+				retain(ranked.find(candidate => candidate.choice === mega.choice.split(' ').slice(0, 2).join(' ') &&
+					candidate.score >= mega.score - 45));
+			}
 		}
 	}
 	for (const reason of [
@@ -143,7 +146,7 @@ export class RulePolicy {
 
 	decide(
 		observation: Observation, seed: PRNGSeed, excluded: readonly string[] = [],
-		options: { quick?: boolean, critical?: boolean } = {},
+		options: { quick?: boolean, critical?: boolean, onProgress?: (decision: RuleDecision) => void } = {},
 	): RuleDecision {
 		const request = observation.request;
 		if (request.wait) return { choice: null, candidates: [], phase: 'wait', diagnostics: [] };
@@ -161,14 +164,28 @@ export class RulePolicy {
 			if (!seen) {
 				return { choice: choices[0] || 'default', candidates: [], phase, diagnostics: ['missing-public-opponent'] };
 			}
-			const hypotheses = this.hypotheses.build(seen, observation, memory).slice(0, options.quick ? 1 : undefined);
-			const hypothesisWeight = hypotheses.reduce((sum, opponent) => sum + opponent.probability, 0);
+			let hypotheses = this.hypotheses.build(seen, observation, memory).slice(0, options.quick ? 1 : undefined);
 			const active = memory.sides[observation.ownSide].active;
 			const own = request.side.pokemon.map(mon =>
 				this.hypotheses.own(mon, ownSeen(memory, observation.ownSide, mon.ident, mon.active)));
 			const activeIndex = Math.max(0, request.side.pokemon.findIndex(mon => mon.active));
 			const current = own[activeIndex];
 			const dex = this.hypotheses.dex;
+			// Keep both possibilities: a Mega stone does not disclose whether the
+			// player clicked Mega. Native forms carry the changed type/ability/speed.
+			if (!request.forceSwitch && observation.opponentMove !== null) {
+				hypotheses = hypotheses.flatMap(opponent => {
+					const forms = possibleMegaForms(this.trainer.format, opponent, current, memory, foe);
+					if (!forms.length) return [opponent];
+					const baseTotal = Object.values(dex.species.get(opponent.species).baseStats).reduce((a, b) => a + b, 0);
+					const gains = forms.some(form => Object.values(dex.species.get(form.species).baseStats)
+						.reduce((a, b) => a + b, 0) > baseTotal);
+					const probability = gains ? 0.8 : 0.5;
+					return [{ ...opponent, probability: opponent.probability * (1 - probability) },
+						...forms.map(form => ({ ...opponent, ...form, probability: opponent.probability * probability / forms.length }))];
+				});
+			}
+			const hypothesisWeight = hypotheses.reduce((sum, opponent) => sum + opponent.probability, 0);
 			const turnStart = observation.publicLog.lastIndexOf(`|turn|${memory.turn}`);
 			const opponentActed = memory.moveEvidence?.some(entry =>
 				entry.turn === memory.turn && entry.user === seen.appearance) ||
@@ -229,8 +246,8 @@ export class RulePolicy {
 				if (!estimate) {
 					estimate = estimateMove(
 						this.trainer.format, attacker, defender, id, event, memory, attackingSide, options.quick ? 1 : 2);
-					const isCurrent = attacker === current && !event;
-					const isIncoming = defender === current && attackingSide === foe;
+					const isCurrent = attacker === current && !event && defender.species === seen.species;
+					const isIncoming = defender === current && attackingSide === foe && attacker.species === seen.species;
 					const measured = isCurrent ? observedDamage(memory, active, seen, id) :
 						isIncoming ? observedDamage(memory, seen, active, id) : undefined;
 					if (measured !== undefined && !estimate.knockout) {
@@ -252,7 +269,8 @@ export class RulePolicy {
 				if (attack.priority !== incoming.priority) return Number(attack.priority > incoming.priority);
 				const modifiers = ['prankster', 'galewings', 'triage', 'quickdraw', 'stall', 'myceliummight'];
 				const orderItems = ['quickclaw', 'custapberry', 'laggingtail', 'fullincense'];
-				if (active && useEvidence && !modifiers.includes(active.ability || '') && !modifiers.includes(seen.ability || '') &&
+				if (active && useEvidence && !hypotheses.some(mon => mon.species !== seen.species) &&
+					!modifiers.includes(active.ability || '') && !modifiers.includes(seen.ability || '') &&
 					![active.item, seen.item].some(item => orderItems.includes(item || ''))) {
 					const ownState = speedContext(active, memory);
 					const foeState = speedContext(seen, memory);
@@ -462,6 +480,7 @@ export class RulePolicy {
 					incoming.setup < 0.1 && incoming.disruption < 8 &&
 					mon.health.lower > turns * (attrition + incoming.damage) + 0.15;
 			};
+			const completed: ScoredChoice[] = [];
 			ranked = choices.map(choice => {
 				const [kind, slotText, event = ''] = choice.split(' ');
 				const index = Number(slotText) - 1;
@@ -599,6 +618,13 @@ export class RulePolicy {
 							const id = request.active[0].moves[index].id;
 							const move = this.hypotheses.dex.moves.get(id);
 							const attack = probe(mon, opponent, id, event);
+							const offensiveSetup = move.category === 'Status' && attack.boosts > 0 && attack.userAfterMove &&
+								Object.entries(move.boosts || {}).filter(([, boost]) => boost && boost > 0)
+									.every(([stat]) => stat === 'atk' || stat === 'spa');
+							if (offensiveSetup && offense(attack.userAfterMove!, opponent) <= offense(mon, opponent) + 0.01) {
+								longTerm -= 45;
+								reasons.push('setup-no-damage-gain');
+							}
 							const futileSetup = !!attack.userAfterMove && !attack.postAction && !attack.damage && !attack.healing &&
 								!attack.delayedHealing && !attack.status && !attack.field && !attack.trickRoom && !attack.hazardChanges.length &&
 								!attack.utility && !attack.volatile && !attack.pivot &&
@@ -845,8 +871,21 @@ export class RulePolicy {
 					score = -1000;
 				}
 				if (finishProbability > 0.85) reasons.push('reliable-finish');
-				return { choice, score, strategic, ineffective, reasons: [...new Set(reasons)] };
+				const candidate = { choice, score, strategic, ineffective, reasons: [...new Set(reasons)] };
+				completed.push(candidate);
+				if (options.onProgress) {
+					const usable = completed.filter(entry => !entry.ineffective && entry.score > -1000)
+						.sort((a, b) => b.score - a.score);
+					if (usable.length) options.onProgress({ choice: usable[0].choice, candidates: usable,
+						phase, diagnostics: [...diagnostics] });
+				}
+				return candidate;
 			});
+			if (!options.quick && phase === 'move' && (selectedMove === undefined || selectedMove === null)) {
+				hazardTeams ||= observedHazardTeams(
+					this.hypotheses, observation, memory, own, index => this.isKey(observation, index));
+				anticipateSwitches(ranked, observation, memory, own, hypotheses, hazardTeams[foe], dex, probe);
+			}
 			// Filter before publishing either the rule fallback or search candidates.
 			// A native probe failure/omitted effect never proves immunity. Keep the last
 			// legal move if trapped or no replacement/other effective action exists.

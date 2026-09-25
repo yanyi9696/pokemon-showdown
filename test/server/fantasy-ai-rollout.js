@@ -132,6 +132,25 @@ describe('Fantasy AI whole-team reconstruction', function () {
 		assert.equal(copy.p1.activeRequest.active[0].moves[0].id, 'struggle');
 	});
 
+	for (const difficulty of ['normal', 'hard']) {
+		it(`${difficulty}: applies Fantasy Pressure in restored AI rollouts`, () => {
+			game = fixture({ moves: ['Rest'] }, {
+				species: 'Giratina', name: 'Giratina', ability: 'Pressure', moves: ['Rest'],
+			}, 'p1', difficulty);
+			game.battle.makeChoices('move rest', 'move rest');
+			const world = new WorldBuilder(game.trainer).build(game.observe())[0];
+			const copy = reconstructWorld(world, SEED);
+			const restored = Battle.fromJSON(JSON.stringify(copy));
+			hypothetical.push(copy, restored);
+			const previousPP = game.battle.p1.active[0].moveSlots[0].pp;
+			for (const simulation of [game.battle, copy, restored]) {
+				assert.equal(simulation.p1.active[0].moveSlots[0].pp, previousPP);
+				simulation.makeChoices('move rest', 'move rest');
+				assert.equal(simulation.p1.active[0].moveSlots[0].pp, previousPP - 2);
+			}
+		});
+	}
+
 	it('resets Choice lock and first-action counters on returning to the field', () => {
 		game = fixture({ item: 'Choice Scarf', moves: ['Psychic', 'Fake Out'] }, { moves: ['Psychic'] });
 		game.battle.makeChoices('move 1', 'move 1');
@@ -389,7 +408,7 @@ describe('Fantasy AI decision worker scheduling', function () {
 	this.timeout(20000);
 	let game;
 	let scheduler;
-	beforeEach(() => { game = fixture(); scheduler = new DecisionScheduler(); });
+	beforeEach(() => { game = fixture(); scheduler = new DecisionScheduler({ workers: 1 }); });
 	afterEach(async () => { await scheduler.dispose(); game.battle.destroy(); });
 	function request(roomId, instanceId, rqid, extras = {}) {
 		return { key: { roomId, instanceId, rqid }, trainer: game.trainer, observation: game.observe(), seed: SEED, maxRollouts: 6, ...extras };
@@ -409,15 +428,19 @@ describe('Fantasy AI decision worker scheduling', function () {
 		} finally { clearInterval(timer); }
 	});
 
-	it('includes queued time in the deadline and preserves an already completed candidate on timeout', async () => {
+	it('preserves queued thinking time and the best completed candidate on timeout', async () => {
 		scheduler.register('first', 'a');
-		scheduler.register('second', 'b');
+		let refunded = 0;
+		scheduler.register('second', 'b', milliseconds => { refunded += milliseconds; });
 		const first = scheduler.submit(request('first', 'a', 1, { budgetMs: 100, maxRollouts: 192 }));
-		const active = scheduler.active;
-		scheduler.worker.emit('message', { token: active.token, type: 'progress', decision: { ...active.best, choice: 'move 2', reasons: ['completed-rule-candidate'] } });
-		const second = await scheduler.submit(request('second', 'b', 1, { budgetMs: 10 }));
+		const slot = scheduler.slots[0];
+		const active = slot.active;
+		slot.worker.emit('message', { token: active.token, type: 'progress', decision: { ...active.best, choice: 'move 2', reasons: ['completed-rule-candidate'] } });
+		const second = await scheduler.submit(request('second', 'b', 1, { budgetMs: 100 }));
 		assert.equal(second.status, 'timeout');
-		assert(second.queueMs >= 5 && second.totalMs < 1000);
+		assert(second.queueMs >= 90 && second.totalMs < 3000);
+		assert(second.totalMs - second.queueMs >= 90, 'the queued job receives its own thinking budget');
+		assert(Math.abs(refunded - second.queueMs) < 1, 'the controller can preserve the same budget across retries');
 		const result = await first;
 		assert.equal(result.status, 'timeout');
 		assert.equal(result.decision.choice, 'move 2');
@@ -427,8 +450,8 @@ describe('Fantasy AI decision worker scheduling', function () {
 	it('cancels superseded requests and rejects results from an old battle instance', async () => {
 		scheduler.register('test', 'old');
 		const old = scheduler.submit(request('test', 'old', 1));
-		const oldWorker = scheduler.worker;
-		const oldToken = scheduler.active.token;
+		const oldWorker = scheduler.slots[0].worker;
+		const oldToken = scheduler.slots[0].active.token;
 		scheduler.register('test', 'new');
 		const stale = await scheduler.submit(request('test', 'old', 2));
 		assert.equal(stale.status, 'cancelled');
@@ -448,12 +471,75 @@ describe('Fantasy AI decision worker scheduling', function () {
 		scheduler.register('second', 'b');
 		const first = scheduler.submit(request('first', 'a', 1));
 		const next = scheduler.submit(request('second', 'b', 1));
-		await scheduler.worker.terminate();
+		await scheduler.slots[0].worker.terminate();
 		const failed = await first;
 		assert.equal(failed.status, 'worker-error');
 		assert(failed.decision.choice);
 		assert.equal((await next).status, 'completed');
 		assert.equal(scheduler.metrics.workerErrors, 1);
+	});
+
+	it('accepts a changed choice in the same request and rejects older revisions', async () => {
+		scheduler.register('test', 'first');
+		const input = request('test', 'first', 1);
+		const first = scheduler.submit({ ...input, key: { ...input.key, revision: 1 } });
+		scheduler.cancel('test', 'first');
+		const second = scheduler.submit({ ...input, key: { ...input.key, revision: 2 } });
+		assert.equal((await first).status, 'cancelled');
+		assert.equal((await scheduler.submit({ ...input, key: { ...input.key, revision: 1 } })).status, 'cancelled');
+		assert.equal((await second).status, 'completed');
+	});
+
+	it('runs two battles independently and cancelling one does not interrupt the other', async () => {
+		const previous = scheduler;
+		scheduler = new DecisionScheduler({ workers: 2 });
+		await previous.dispose();
+		scheduler.register('first', 'a');
+		scheduler.register('second', 'b');
+		const first = scheduler.submit(request('first', 'a', 1));
+		const second = scheduler.submit(request('second', 'b', 1));
+		assert.deepEqual(scheduler.getStatus(), { workers: 2, active: 2, queued: 0 });
+		scheduler.cancel('first', 'a');
+		assert.equal((await first).status, 'cancelled');
+		const result = await second;
+		assert.equal(result.status, 'completed');
+		assert.equal(result.decision.method, 'rollout');
+		assert(result.queueMs < 100);
+	});
+
+	it('gives both simultaneous battles the same search work budget without blocking the server thread', async () => {
+		const previous = scheduler;
+		scheduler = new DecisionScheduler({ workers: 2, decisionMs: 5000 });
+		await previous.dispose();
+		scheduler.register('first', 'a');
+		scheduler.register('second', 'b');
+		let ticks = 0;
+		const timer = setInterval(() => ticks++, 5);
+		try {
+			const results = await Promise.all([
+				scheduler.submit(request('first', 'a', 1, { maxRollouts: 12 })),
+				scheduler.submit(request('second', 'b', 1, { maxRollouts: 12 })),
+			]);
+			assert(ticks > 0);
+			for (const result of results) {
+				assert.equal(result.status, 'completed');
+				assert.equal(result.decision.method, 'rollout');
+				assert.equal(result.decision.rollouts, 12);
+				assert(result.queueMs < 100);
+			}
+		} finally { clearInterval(timer); }
+	});
+
+	it('returns immediately on zero budget even when every worker is occupied', async () => {
+		scheduler.register('first', 'a');
+		scheduler.register('second', 'b');
+		const running = scheduler.submit(request('first', 'a', 1));
+		const immediate = await scheduler.submit(request('second', 'b', 1, { budgetMs: 0 }));
+		assert.equal(immediate.status, 'timeout');
+		assert.equal(immediate.queueMs, 0);
+		assert.equal(scheduler.getStatus().active, 1);
+		scheduler.cancel('first', 'a');
+		assert.equal((await running).status, 'cancelled');
 	});
 
 	it('bounds registered instances and releases them without accepting old requests', async () => {

@@ -409,6 +409,11 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 			}
 			break;
 		case '-curestatus': if (mon) mon.status = ''; break;
+		case '-cureteam':
+			if (side) for (const member of side.appearances) {
+				if (member.status !== 'fnt') member.status = '';
+			}
+			break;
 		case '-item':
 			if (mon) {
 				if (mon.item !== toID(value) && mon.fantasy) delete mon.fantasy.shadowBottle;

@@ -160,13 +160,19 @@ describe('Fantasy AI rule decisions', function () {
 		assert.equal(choose().choice, 'switch 2');
 	});
 
-	it('penalizes repeated switching to the same public identity', () => {
+	it('penalizes a losing voluntary switch cycle against the same opponent', () => {
 		setup({ species: 'Mew', ability: 'Synchronize', moves: ['tackle'] }, { species: 'Mew', ability: 'Synchronize', moves: ['splash'] });
 		const observation = observe();
 		const excluded = enumerateRequestChoices(observation.request).filter(choice => !['move 1', 'switch 2'].includes(choice));
 		const before = policy.decide(observation, SEED, excluded);
 		const copy = structuredClone(observation);
-		copy.publicLog.unshift('|switch|p1a: Garchomp|Garchomp|100/100', '|switch|p1a: Mew|Mew|100/100');
+		// Team-preview appearances are not a voluntary losing cycle. Record actual
+		// switches and lost HP while the same opponent remains on the field.
+		copy.publicLog.push('|switch|p1a: Garchomp|Garchomp|100/100', '|-damage|p1a: Garchomp|80/100',
+			'|turn|2', '|switch|p1a: Mew|Mew|100/100', '|turn|3');
+		const garchomp = copy.request.side.pokemon[1];
+		const maxHP = Number(garchomp.condition.split('/')[1]);
+		garchomp.condition = `${Math.floor(maxHP * 0.8)}/${maxHP}`;
 		const after = policy.decide(copy, SEED, excluded);
 		const oldSwitch = before.candidates.find(candidate => candidate.choice === 'switch 2');
 		const newSwitch = after.candidates.find(candidate => candidate.choice === 'switch 2');

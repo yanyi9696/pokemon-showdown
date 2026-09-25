@@ -737,6 +737,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 		abilities: {0: "Flower Gift"},		
 	},
+	ribombeefantasy: {
+		tier: "RUBL",
+	},
 	roseradefantasy: {
 		tier: "RUBL",
 	},
@@ -808,9 +811,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	mukalolafantasy: {
-		tier: "RU",
-	},
-	ribombeefantasy: {
 		tier: "RU",
 	},
 	sawsbuckfantasy: {
