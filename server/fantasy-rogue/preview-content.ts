@@ -12,7 +12,7 @@ const stats = (value: number): StatsTable => ({
 });
 
 export const PreviewBalance = {
-	version: 'preview-2026-09-v3',
+	version: 'preview-2026-09-v4',
 	initialMoney: 1500,
 	initialBag: { pokeball: 12, potion: 6, revive: 1, elixir: 1, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
@@ -98,7 +98,7 @@ function makeSet(name: string, level: number, quality = 15, boss = false): Pokem
 
 export function createPreviewContent(): RogueContent {
 	const content: RogueContent = {
-		version: PreviewBalance.version, compatibleVersions: ['preview-2026-09-v2'],
+		version: PreviewBalance.version, compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3'],
 		label: '幻想杯肉鸽 · 200 层试玩版',
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },

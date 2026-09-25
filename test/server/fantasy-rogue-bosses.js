@@ -58,11 +58,12 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 	});
 	afterEach(() => store.close());
 
-	it('runs all 42 authored opponents at their exact levels, with their moves, abilities and native transformations', () => {
+	it('runs all 54 authored opponents at their exact levels, with their moves, abilities, IVs and Tera', () => {
 		const dex = Dex.mod('gen9fantasy');
 		let count = 0;
 		for (const [floor, pool] of Object.entries(FantasyEliteBosses)) {
-			assert.equal(pool.candidates.length, Number(floor) === 10 ? 3 : Number(floor) === 30 ? 4 : 5);
+			assert.equal(pool.candidates.length, 6);
+			assert.equal(new Set(pool.candidates.map(candidate => toID(candidate.species))).size, 6);
 			for (const [index, candidate] of eliteBossCandidates(Number(floor)).entries()) {
 				const original = pool.candidates[index];
 				const battle = nativeBattle([candidate], { player: false, opponent: true });
@@ -74,26 +75,18 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 					assert.deepEqual(mon.baseMoves, original.moves.map(toID));
 					assert.equal(mon.item, toID(original.item));
 					if (original.gender) assert.equal(mon.gender, original.gender);
-					assert.equal(mon.set.ivs.atk, toID(original.species) === 'gengarfantasy' ? 0 : 31);
+					assert.deepEqual(mon.set.ivs, { ...stats(31), ...original.ivs });
 					assert.equal(mon.teraType, dex.species.get(original.species).defaultTeraType);
 					assert(!battle.p1.activeRequest.active[0].canTerastallize);
-					if (original.item === 'Aggronite') {
-						assert(mon.canMegaEvo);
-						assert(!mon.canTerastallize, 'Native Mega/Tera exclusivity must remain intact');
-						battle.choose('p1', 'move 1');
-						assert(battle.choose('p2', 'move 1 mega'));
-						assert(battle.log.some(line => line.startsWith('|-mega|p2')));
-					} else {
-						assert.equal(battle.p2.activeRequest.active[0].canTerastallize, mon.teraType);
-						battle.choose('p1', 'move 1');
-						assert(battle.choose('p2', 'move 1 terastallize'));
-						assert(battle.log.some(line => line.startsWith('|-terastallize|p2')));
-					}
+					assert.equal(battle.p2.activeRequest.active[0].canTerastallize, mon.teraType);
+					battle.choose('p1', 'move 1');
+					assert(battle.choose('p2', 'move 1 terastallize'));
+					assert(battle.log.some(line => line.startsWith('|-terastallize|p2')));
 					count++;
 				} finally { battle.destroy(); }
 			}
 		}
-		assert.equal(count, 42);
+		assert.equal(count, 54);
 	});
 	it('validates every candidate, including those beyond the default team', () => {
 		const invalid = createPreviewContent();
@@ -164,25 +157,27 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 		cmd('abandon'); cmd('start', { starters: ['bulbasaur'] });
 		assert.equal(account().run.teraUnlocked, false, 'New adventures start locked');
 	});
-	it('accepts only explicitly compatible saves and keeps an already selected legacy enemy', () => {
-		restBefore(10); cmd('continue');
-		store.change(user, saved => {
-			saved.run.contentVersion = 'preview-2026-09-v2';
-			saved.run.node.encounters[0].team = [set('Butterfree', 'Compound Eyes', 10, ['Gust'])];
-			delete saved.run.teraUnlocked;
-			delete saved.run.checkpoint.teraUnlocked;
+	for (const version of ['preview-2026-09-v2', 'preview-2026-09-v3']) {
+		it(`preserves the selected enemy when upgrading ${version}, and rejects unknown versions`, () => {
+			restBefore(10); cmd('continue');
+			store.change(user, saved => {
+				saved.run.contentVersion = version;
+				saved.run.node.encounters[0].team = [set('Butterfree', 'Compound Eyes', 10, ['Gust'])];
+				delete saved.run.teraUnlocked;
+				delete saved.run.checkpoint.teraUnlocked;
+			});
+			const original = account().run;
+			cmd('battle');
+			assert.equal(account().run.contentVersion, engine.content.version);
+			assert.deepEqual(account().run.node, original.node);
+			assert.deepEqual(account().run.team, original.team);
+			assert.equal(engine.battleState(user).tera.player, false);
+			finish();
+			assert.equal(!!account().run.teraUnlocked, false);
+			store.change(user, saved => { saved.run.contentVersion = 'incompatible-content'; });
+			assert.throws(() => cmd('battle'), /内容版本/);
 		});
-		const original = account().run;
-		cmd('battle');
-		assert.equal(account().run.contentVersion, engine.content.version);
-		assert.deepEqual(account().run.node, original.node);
-		assert.deepEqual(account().run.team, original.team);
-		assert.equal(engine.battleState(user).tera.player, false);
-		finish();
-		assert.equal(!!account().run.teraUnlocked, false);
-		store.change(user, saved => { saved.run.contentVersion = 'incompatible-content'; });
-		assert.throws(() => cmd('battle'), /内容版本/);
-	});
+	}
 });
 
 describe('Fantasy Rogue native Tera permissions', () => {
