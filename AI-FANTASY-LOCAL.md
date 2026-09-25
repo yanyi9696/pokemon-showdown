@@ -26,7 +26,7 @@ exports.fantasyai = {
     allowDevelopmentTrainers: true,
     maxBattles: 2,
     maxBattlesPerPlayer: 1,
-    decisionMs: 10000, // 常规总预算，含排队；0 立即兜底，null 手动不限时
+    decisionMs: 10000, // 常规思考预算，排队不扣除；0 立即兜底，null 手动不限时
     criticalDecisionMs: 20000, // 关键决策的总上限，不是额外追加 20 秒
     criticalDecisionLimit: 2, // 每局最多分配两次
     criticalDecisionCooldownTurns: 10, // 两次至少间隔十回合
@@ -35,6 +35,10 @@ exports.fantasyai = {
 ```
 
 当前常规决策最多 10 秒；从第 10 回合起，残局资源选择、低血量收割或残兵面对公开强化威胁，才可能分配一次 20 秒关键额度，每局最多两次且间隔至少十回合。同一次决策重试不刷新时间；提前完成便提前出招。常规搜索最多四回合，关键最多六回合，截止时使用已完成结果。配置含义、取消与算法边界见 [AI-FANTASY-TIME-BUDGET.md](AI-FANTASY-TIME-BUDGET.md)。
+
+并发上限是**全服所有 AI 挑战合计 2 场、每人 1 场，即默认最多同时 2 人**。阿塞萝拉的 UBUU、OU、UU，以及普通和高难共用名额；队伍校验期间和断线保留的对局也占用名额，结束后释放。挑战页显示当前占用、全服上限和个人上限；点击刷新更新。
+
+AI 计算默认使用最多 2 个独立线程，不超过逻辑 CPU 数和 `maxBattles`。可在 `exports.fantasyai` 内设置 `workers`，这与负责网络连接的顶层 `exports.workers` 不同。线程不足时等待空闲槽位，排队不消耗思考预算，但会增加玩家等待时间。取消、超时、线程异常只影响对应任务。增加 `maxBattles` 前需按机器 CPU、内存评估，并搭配 `fantasyai.workers`；每个计算线程的 V8 old-generation 上限为 384 MB，实际进程占用还包含其他内存。
 
 训练家优先读取 `config/fantasy-ai-trainers.ts`；数组为空且允许开发训练家时才加载开发样例。需要仅监听回环地址时仍可使用 `npm run start:fantasy-ai:local`，同样使用 8000。8000 上只能运行一个服务，更新时重启原服务；不再使用额外的 8001 服务或端口环境变量。
 

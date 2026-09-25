@@ -21,6 +21,7 @@ export interface AISettings extends Partial<TimeBudgetSettings> {
 	allowDevelopmentTrainers?: boolean;
 	maxBattles?: number;
 	maxBattlesPerPlayer?: number;
+	workers?: number;
 	disconnectMs?: number;
 }
 
@@ -35,10 +36,12 @@ export class AIChallengeManager {
 	private readonly maxRollouts?: number;
 	constructor(definitions: readonly unknown[], settings: AISettings = {}, maxRollouts?: number) {
 		this.maxRollouts = maxRollouts;
+		this.scheduler = new DecisionScheduler(settings);
 		this.settings = {
 			enabled: settings.enabled === true, allowDevelopmentTrainers: settings.allowDevelopmentTrainers === true,
 			maxBattles: settings.maxBattles ?? DEFAULT_LIMITS.maxBattles,
 			maxBattlesPerPlayer: settings.maxBattlesPerPlayer ?? DEFAULT_LIMITS.maxBattlesPerPlayer,
+			workers: this.scheduler.getStatus().workers,
 			decisionMs: settings.decisionMs === undefined ? DEFAULT_LIMITS.decisionMs : settings.decisionMs,
 			criticalDecisionMs: settings.criticalDecisionMs ?? DEFAULT_LIMITS.criticalDecisionMs,
 			criticalDecisionLimit: settings.criticalDecisionLimit ?? DEFAULT_LIMITS.criticalDecisionLimit,
@@ -55,7 +58,6 @@ export class AIChallengeManager {
 			!Number.isSafeInteger(this.settings.criticalDecisionCooldownTurns) || this.settings.criticalDecisionCooldownTurns < 1) {
 			throw new Error('AI 关键决策时间、次数或间隔配置无效。');
 		}
-		this.scheduler = new DecisionScheduler(this.settings);
 		this.registry = new TrainerRegistry(definitions, this.settings);
 	}
 
@@ -69,6 +71,10 @@ export class AIChallengeManager {
 			enabled: !this.disposed && this.settings.enabled,
 			trainers: this.list(), difficulties: ['normal', 'hard'],
 			disconnectMs: this.settings.disconnectMs,
+			capacity: {
+				active: this.reservations.size, maxBattles: this.settings.maxBattles,
+				maxBattlesPerPlayer: this.settings.maxBattlesPerPlayer,
+			},
 			challenge: requestId ? {
 				...(this.clientRequests.get(user)?.get(requestId) || { requestId, status: 'unknown' }),
 			} : null,
@@ -124,7 +130,7 @@ export class AIChallengeManager {
 	getStatus() {
 		return {
 			enabled: !this.disposed && this.settings.enabled, active: this.reservations.size,
-			maxBattles: this.settings.maxBattles, worker: { ...this.scheduler.metrics },
+			maxBattles: this.settings.maxBattles, worker: { ...this.scheduler.metrics, ...this.scheduler.getStatus() },
 			diagnostics: this.registry.getDiagnostics(), completed: this.completed.map(entry => ({ ...entry })),
 		};
 	}
@@ -149,7 +155,9 @@ export class AIChallengeManager {
 		const existing = [...this.reservations.values()]
 			.filter(entry => (entry.room?.battle?.p1.id || entry.user.id) === userid);
 		if (existing.length >= this.settings.maxBattlesPerPlayer) throw new Chat.ErrorMessage('请先结束已有的 AI 对局。');
-		if (this.reservations.size >= this.settings.maxBattles) throw new Chat.ErrorMessage('AI 挑战名额已满，请稍后再试。');
+		if (this.reservations.size >= this.settings.maxBattles) {
+			throw new Chat.ErrorMessage(`全服 AI 挑战名额已满（最多 ${this.settings.maxBattles} 场，所有训练家、赛制和难度共用），请稍后再试。`);
+		}
 		// Reserve before asynchronous validation so simultaneous requests cannot oversubscribe either limit.
 		const instanceId = randomUUID();
 		const reservation: { user: User, room?: GameRoom } = { user };

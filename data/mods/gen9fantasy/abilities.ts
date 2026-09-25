@@ -160,18 +160,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onStart(pokemon) {
 			this.add('-ability', pokemon, 'Pressure');
 		},
-		onAnyBeforeMove(pokemon, target, move) {
-			// 友方出招时不触发
-			if (this.effectState.target.isAlly(pokemon)) return;
-			// 避免由梦话、挥指、自然之力等招式间接调用的招式重复扣除PP
-			if (this.effect && this.effect.id && this.effect.id !== 'pursuit') return;
-
-			pokemon.deductPP(move.baseMove || move.id, 1);
+		onFoeModifyMove(move, pokemon) {
+			// This runs after normal PP deduction, so a move with 1 PP can still execute.
+			// lastMoveUsed is the original move, before Z/Max Move conversion.
+			const baseMove = pokemon.lastMoveUsed;
+			if (!baseMove) return;
+			// Skip called/reflected moves, Dancer and locked-move continuations.
+			// Z-Weather Ball uses itself as sourceEffect when its type changes.
+			if (move.sourceEffect && move.sourceEffect !== 'pursuit' && move.sourceEffect !== baseMove.id) return;
+			pokemon.deductPP(baseMove, 1);
 		},
 		flags: {},
 		name: "Pressure",
 		rating: 2.5,
 		num: 46,
+		shortDesc: "在场时，对手使用的所有招式额外消耗1PP。",
+		desc: "在场时，对手使用的所有招式额外消耗1PP，包括回复、强化和场地招式。间接调用的招式不会重复扣除PP。",
 	},
 	cutecharm: {
 		onDamagingHit(damage, target, source, move) {

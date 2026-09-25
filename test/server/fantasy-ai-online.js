@@ -283,6 +283,34 @@ describe('Fantasy AI online challenges', function () {
 		assert(!room.getLog(0).includes('fantasyaichoice'));
 	});
 
+	it('resumes real hard-mode worker search after undoing and changing a move in the same turn', async () => {
+		setup({ decisionMs: 5000 });
+		const decisions = [];
+		const submit = manager.scheduler.submit.bind(manager.scheduler);
+		manager.scheduler.submit = input => {
+			const result = submit(input);
+			if (input.observation.request.active) decisions.push({ input, result });
+			return result;
+		};
+		const player = human();
+		const room = await challenge(player, 'hard');
+		const battle = room.battle;
+		battle.choose(player, 'team 123456');
+		await until(() => battle.turn === 1, 'first turn');
+		battle.choose(player, 'move 1');
+		await until(() => decisions.length === 1, 'first actual search');
+		battle.undo(player, '');
+		await until(() => battle.p1.request.isWait === false, 'undo acknowledged');
+		battle.choose(player, 'move 2');
+		await until(() => decisions.length === 2, 'replacement search');
+		assert.equal(decisions[0].input.key.rqid, decisions[1].input.key.rqid);
+		assert(decisions[1].input.key.revision > decisions[0].input.key.revision);
+		assert.equal((await decisions[0].result).status, 'cancelled');
+		assert.equal((await decisions[1].result).status, 'completed');
+		await until(() => battle.turn === 2, 'replacement choice resolves the turn');
+		assert.equal(battle.fantasyAI.metrics.illegalChoices, 0);
+	});
+
 	it('checks the human selection version again inside the simulator before accepting an AI answer', async () => {
 		const stream = new RoomBattleStream();
 		async function exchange(input) {
@@ -391,6 +419,7 @@ describe('Fantasy AI online challenges', function () {
 		await assert.rejects(() => manager.challenge(first.connections[0], trainer.id, 'normal'), /已有/);
 		const room = await starting;
 		await challenge(second);
+		assert.deepEqual(manager.getPublicState(third).capacity, { active: 2, maxBattles: 2, maxBattlesPerPlayer: 1 });
 		await assert.rejects(() => manager.challenge(third.connections[0], trainer.id, 'normal'), /名额已满/);
 		room.battle.forfeit(first);
 		await until(() => room.battle.ended);
@@ -399,13 +428,27 @@ describe('Fantasy AI online challenges', function () {
 		assert.notEqual(rematch.battle.fantasyAI.options.instanceId, room.battle.fantasyAI.options.instanceId);
 	});
 
+	it('still completes a hard-mode turn if observation preparation throws before scheduling', async () => {
+		setup();
+		const player = human();
+		const room = await challenge(player, 'hard');
+		const battle = room.battle;
+		battle.choose(player, 'team 123456');
+		await until(() => battle.turn === 1, 'first turn');
+		battle.fantasyAI.view.observe = () => { throw new Error('fixture-observation-error'); };
+		battle.choose(player, 'move 1');
+		await until(() => battle.turn === 2, 'native fallback after preparation failure');
+		assert.equal(battle.fantasyAI.metrics.workerErrors, 1);
+		assert.equal(battle.fantasyAI.metrics.illegalChoices, 0);
+	});
+
 	it('uses an engine-legal fallback on worker exit and recovers the next request', async () => {
 		setup({ decisionMs: 5000 });
 		let killed = false;
 		const submit = manager.scheduler.submit.bind(manager.scheduler);
 		manager.scheduler.submit = input => {
 			const promise = submit(input);
-			if (!killed) { killed = true; void manager.scheduler.worker.terminate(); }
+			if (!killed) { killed = true; void manager.scheduler.slots.find(slot => slot.active).worker.terminate(); }
 			return promise;
 		};
 		const player = human();
@@ -532,7 +575,7 @@ describe('Fantasy AI online challenges', function () {
 		connection.send = message => { replies.push(message); };
 		try {
 			Config.fantasyai = { enabled: true, allowDevelopmentTrainers: true, decisionMs: 0 };
-			definitions.push(...examples);
+			definitions.splice(0, definitions.length, ...examples);
 			manager = require('../../dist/server/fantasy-ai/manager').getAIManager();
 			await Chat.parse('/fantasyai list', null, player, connection);
 			assert(replies.some(line => line.includes(trainer.id)));

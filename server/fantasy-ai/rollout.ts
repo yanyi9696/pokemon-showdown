@@ -224,10 +224,17 @@ export class RolloutPolicy {
 		const ownCandidates = expanded ? DEFAULT_LIMITS.criticalOwnCandidates : DEFAULT_LIMITS.ownCandidates;
 		const deepCandidates = options.critical ? DEFAULT_LIMITS.criticalDeepCandidates : DEFAULT_LIMITS.deepCandidates;
 		// Return just before the scheduler's hard deadline, leaving room for the
-		// worker message. The controller's original receipt time remains authoritative.
+		// worker message. Queue waiting does not consume the allocated search budget.
 		const reserve = Number.isFinite(budget) ? Math.min(150, budget * 0.03) : 0;
 		const deadline = start + budget - reserve;
-		const rule = this.rules.decide(observation, seed, options.excluded, { critical: expanded });
+		const rule = this.rules.decide(observation, seed, options.excluded, {
+			critical: expanded,
+			// Even if an expensive later candidate exhausts the worker's deadline,
+			// retain a native ability-aware choice rather than the initial static fallback.
+			onProgress: options.onProgress ? partial => options.onProgress!({ ...partial,
+				method: 'rules', rollouts: 0, rounds: 0, stopReason: 'budget', elapsedMs: performance.now() - start, searchDepth: 0,
+			}) : undefined,
+		});
 		const result: SearchDecision = {
 			...rule, method: 'rules', rollouts: 0, rounds: 0, stopReason: 'phase', elapsedMs: 0, searchDepth: 0,
 		};
