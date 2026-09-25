@@ -5,10 +5,13 @@ import { enumerateRequestChoices } from './actions';
 import { entryHazards, hazardCost, moveHazard, observedHazardTeams, type HazardLayers } from './hazards';
 import { battleNickname, HypothesisBuilder, type Combatant } from './hypotheses';
 import type { Observation } from './information';
-import { estimateMove, possibleMegaForms, type MoveEstimate } from './matchup';
+import {
+	CONDITIONAL_ATTACKS, estimateEntry, estimateMove, possibleMegaForms, withProbeField, type MoveEstimate,
+} from './matchup';
 import { anticipateSwitches } from './prediction';
-import { ownSeen, readBattleMemory, speedContext, type BattleMemory, type SeenPokemon } from './memory';
-import { actionOpportunity, DELAYED_HEALING, effectiveAbility, statusCost } from './mechanics';
+import { teamResourceValues } from './planning';
+import { fieldContext, ownSeen, readBattleMemory, speedContext, type BattleMemory, type SeenPokemon } from './memory';
+import { actionOpportunity, DELAYED_HEALING, effectiveAbility, effectiveItem, statusCost } from './mechanics';
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
 import { getTrainerFormat } from './trainers';
 import { assessTrickRoom, trickRoomTurns } from './trick-room';
@@ -26,6 +29,8 @@ export interface RuleDecision {
 	candidates: ScoredChoice[];
 	phase: 'wait' | 'preview' | 'switch' | 'move';
 	diagnostics: string[];
+	/** Own request order only; reused in detached rollout terminal evaluations. */
+	teamValues?: number[];
 }
 type PolicyTrainer = Pick<ValidatedTrainer, 'format' | 'style' | 'packedTeam' | 'keyMembers' | 'resourcePreferences'>;
 const WEIGHTS = {
@@ -156,6 +161,7 @@ export class RulePolicy {
 		const phase = request.teamPreview ? 'preview' : request.forceSwitch ? 'switch' : 'move';
 		const diagnostics = new Set<string>();
 		let ranked: ScoredChoice[];
+		let teamValues: number[] | undefined;
 		if (request.teamPreview) {
 			ranked = this.previewScores(observation, memory, choices);
 		} else {
@@ -173,7 +179,7 @@ export class RulePolicy {
 			const dex = this.hypotheses.dex;
 			// Keep both possibilities: a Mega stone does not disclose whether the
 			// player clicked Mega. Native forms carry the changed type/ability/speed.
-			if (!request.forceSwitch && observation.opponentMove !== null) {
+			if (!request.forceSwitch && !(observation.difficulty === 'hard' && observation.opponentMove === null)) {
 				hypotheses = hypotheses.flatMap(opponent => {
 					const forms = possibleMegaForms(this.trainer.format, opponent, current, memory, foe);
 					if (!forms.length) return [opponent];
@@ -239,15 +245,18 @@ export class RulePolicy {
 			};
 			const cache = new Map<string, MoveEstimate>();
 			const probe = (
-				attacker: Combatant, defender: Combatant, id: string, event = '', attackingSide = observation.ownSide
+				attacker: Combatant, defender: Combatant, id: string, event = '', attackingSide = observation.ownSide,
+				context = memory, reply?: { id: string, event?: string } | null,
 			) => {
-				const key = JSON.stringify([attacker, defender, id, event, attackingSide]);
+				const key = JSON.stringify([attacker, defender, id, event, attackingSide, fieldContext(context),
+					reply === undefined ? 'unknown' : reply]);
 				let estimate = cache.get(key);
 				if (!estimate) {
 					estimate = estimateMove(
-						this.trainer.format, attacker, defender, id, event, memory, attackingSide, options.quick ? 1 : 2);
-					const isCurrent = attacker === current && !event && defender.species === seen.species;
-					const isIncoming = defender === current && attackingSide === foe && attacker.species === seen.species;
+						this.trainer.format, attacker, defender, id, event, context, attackingSide, options.quick ? 1 : 2, reply);
+					const isCurrent = context === memory && attacker === current && !event && defender.species === seen.species;
+					const isIncoming = context === memory && defender === current &&
+						attackingSide === foe && attacker.species === seen.species;
 					const measured = isCurrent ? observedDamage(memory, active, seen, id) :
 						isIncoming ? observedDamage(memory, seen, active, id) : undefined;
 					if (measured !== undefined && !estimate.knockout) {
@@ -294,29 +303,32 @@ export class RulePolicy {
 				}
 				return remainingPP(dex.moves.get(id), mon === current ? active : undefined) > 0;
 			});
-			const offense = (mon: Combatant, opponent: Combatant) =>
+			const offense = (mon: Combatant, opponent: Combatant, context = memory) =>
 				Math.max(0, ...moveIDs(mon).map(id => {
-					const attack = probe(mon, opponent, id);
+					const attack = probe(mon, opponent, id, '', observation.ownSide, context);
 					return attack.damage + (attack.substituteDamage || 0) * 0.6;
 				}));
 			const selectedMove = observation.difficulty === 'hard' && !request.forceSwitch ? observation.opponentMove : undefined;
 			const modelCache = new Map<string, { id: string, weight: number, event?: string }[]>();
 			type Response = { id: string, weight: number, event?: string };
-			const model = (opponent: Combatant, target = current, future = false): Response[] => {
+			const model = (opponent: Combatant, target = current, future = false, context = memory): Response[] => {
 				if (!future && selectedMove !== undefined) {
 					return [{ id: selectedMove?.baseMove || 'splash', weight: 1, event: selectedMove?.event }];
 				}
-				const key = JSON.stringify([opponent, target]);
+				const key = JSON.stringify([opponent, target, fieldContext(context)]);
 				let responses = modelCache.get(key);
 				if (responses) return responses;
-				const outgoing = offense(target, opponent);
+				const outgoing = offense(target, opponent, context);
+				const locked = dex.items.get(effectiveItem(opponent, context)).isChoice &&
+					opponent.moves.includes(opponent.lastMove || '') ? opponent.lastMove : undefined;
 				const scored = opponent.moves.filter(id => remainingPP(dex.moves.get(id), seen) > 0 &&
-					(!opponent.moveLocks?.encore || opponent.moveLocks.encore === id) && opponent.moveLocks?.disable !== id).map(id => {
+					(!opponent.moveLocks?.encore || opponent.moveLocks.encore === id) && opponent.moveLocks?.disable !== id &&
+					(!locked || locked === id)).map(id => {
 					const move = dex.moves.get(id);
-					const estimate = probe(opponent, target, id, '', foe);
-					const slower = memory.pseudoWeather.includes('trickroom') ? estimate.speed > estimate.opponentSpeed :
+					const estimate = probe(opponent, target, id, '', foe, context);
+					const slower = context.pseudoWeather.includes('trickroom') ? estimate.speed > estimate.opponentSpeed :
 						estimate.speed < estimate.opponentSpeed;
-					const recoverable = Math.min(recoveryAmount(move, opponent, memory),
+					const recoverable = Math.min(recoveryAmount(move, opponent, context),
 						1 - opponent.health.upper + (slower ? outgoing : 0));
 					const learned = seen.moves.includes(id) ? 1 + Math.min(0.5, (seen.moveUses[id] || 0) * 0.08) : 0.55;
 					let value = estimate.damage * 90 + estimate.knockout * 85 + recoverable * (DELAYED_HEALING[id] ? 65 : 105) +
@@ -337,14 +349,40 @@ export class RulePolicy {
 				modelCache.set(key, responses);
 				return responses;
 			};
+			const attackAgainstReplies = (mon: Combatant, opponent: Combatant, id: string, event: string) => {
+				if (!CONDITIONAL_ATTACKS.has(id) || event === 'zmove') return probe(mon, opponent, id, event);
+				const replies = model(opponent);
+				const outcomes = replies.map(reply => ({ weight: reply.weight,
+					estimate: probe(mon, opponent, id, event, observation.ownSide, memory,
+						selectedMove === null ? null : reply) }));
+				const result = { ...outcomes[0].estimate };
+				for (const key of Object.keys(result) as (keyof MoveEstimate)[]) {
+					if (typeof result[key] === 'number') {
+						(result as unknown as Record<string, unknown>)[key] = outcomes.reduce((sum, outcome) =>
+							sum + Number(outcome.estimate[key] || 0) * outcome.weight, 0);
+					}
+				}
+				for (const key of ['postAction', 'targetAfterMove', 'targetAfterStatus'] as const) {
+					result[key] = outcomes.flatMap(outcome => (outcome.estimate[key] || []).map(entry =>
+						({ ...entry, probability: entry.probability * outcome.weight })));
+					if (!result[key].length) delete result[key];
+				}
+				return result;
+			};
 			const dangerCache = new Map<string, ReturnType<typeof assessDanger>>();
-			function assessDanger(mon: Combatant, opponent: Combatant, action?: { attack: MoveEstimate, opportunity: number }) {
+			function assessDanger(
+				mon: Combatant, opponent: Combatant, action?: { attack: MoveEstimate, opportunity: number, id: string },
+				context = memory, future = false, predictionProfile = opponent,
+			) {
 				// These probabilities are fixed against the CURRENT active Pokemon.
 				// A proposed switch must not make the opponent magically choose its perfect coverage move.
-				const responses = model(opponent, takesEntryAction ? current : mon).map(entry => {
-					const before = probe(opponent, mon, entry.id, entry.event || '', foe);
+				const responses = model(predictionProfile, future || !takesEntryAction ? mon : current, future,
+					future ? context : memory).map(entry => {
+					const reply = CONDITIONAL_ATTACKS.has(entry.id) ?
+						action ? { id: action.id } : future || mon === current ? undefined : null : undefined;
+					const before = probe(opponent, mon, entry.id, entry.event || '', foe, context, reply);
 					const estimate = { ...before };
-					if (action?.attack.postAction || action?.attack.targetAfterMove) {
+					if (action?.attack.postAction || action?.attack.targetAfterMove || action?.attack.fieldAfter) {
 						const first = firstChance(action.attack, before) * action.opportunity;
 						if (first) {
 							const states = (outcomes: MoveEstimate['postAction'], fallback: Combatant) => {
@@ -357,7 +395,8 @@ export class RulePolicy {
 							for (const user of states(action.attack.postAction, mon)) {
 								for (const target of states(action.attack.targetAfterMove, opponent)) {
 									const nextMove = target.profile.moveLocks?.encore || entry.id;
-									const after = probe(target.profile, user.profile, nextMove, nextMove === entry.id ? entry.event || '' : '', foe);
+									const after = probe(target.profile, user.profile, nextMove, nextMove === entry.id ? entry.event || '' : '', foe,
+										action.attack.fieldAfter ? withProbeField(context, action.attack.fieldAfter) : context, reply);
 									const probability = user.probability * target.probability * first;
 									for (const key of ['damage', 'knockout', 'status', 'disruption', 'volatile', 'boosts', 'healing',
 										'substituteDamage', 'substituteBroken', 'selfKnockout'] as const) {
@@ -367,7 +406,7 @@ export class RulePolicy {
 							}
 						}
 					}
-					const opportunity = actionOpportunity(opponent, dex.moves.get(entry.id), memory);
+					const opportunity = actionOpportunity(opponent, dex.moves.get(entry.id), context);
 					return { ...entry, estimate: { ...estimate, damage: estimate.damage * opportunity,
 						knockout: estimate.knockout * opportunity, boosts: estimate.boosts * opportunity,
 						status: estimate.status * opportunity, disruption: estimate.disruption * opportunity,
@@ -381,26 +420,26 @@ export class RulePolicy {
 				// never recursively run another danger model. Probabilities still come
 				// from the current matchup, including when pricing a proposed switch.
 				// A known setup/status move still threatens its full coverage on the next turn.
-				const futureResponses = selectedMove === undefined ? responses : model(opponent, mon, true).map(entry => ({
-					...entry, estimate: probe(opponent, mon, entry.id, entry.event || '', foe),
+				const futureResponses = selectedMove === undefined ? responses : model(opponent, mon, true, context).map(entry => ({
+					...entry, estimate: probe(opponent, mon, entry.id, entry.event || '', foe, context),
 				}));
 				const coverage = futureResponses.filter(entry => dex.moves.get(entry.id).category !== 'Status')
 					.sort((a, b) => b.estimate.damage - a.estimate.damage).slice(0, options.quick ? 1 : 2);
 				let followup = 0;
 				for (const response of responses) {
 					const estimate = response.estimate;
-					const opportunity = actionOpportunity(opponent, dex.moves.get(response.id), memory);
+					const opportunity = actionOpportunity(opponent, dex.moves.get(response.id), context);
 					for (const outcome of estimate.targetAfterStatus || []) {
 						const changed = { ...outcome.profile, health: mon.health };
 						const extra = Math.max(0, ...coverage.map(entry =>
-							probe(opponent, changed, entry.id, '', foe).damage *
+							probe(opponent, changed, entry.id, '', foe, context).damage *
 							actionOpportunity(opponent, dex.moves.get(entry.id), memory) - entry.estimate.damage));
 						followup += extra * outcome.probability * response.weight * opportunity;
 					}
 					if (estimate.boosts > 0 && estimate.userAfterMove) {
 						const boosted = estimate.userAfterMove;
 						const extra = Math.max(0, ...coverage.map(entry =>
-							probe(boosted, mon, entry.id, '', foe).damage *
+							probe(boosted, mon, entry.id, '', foe, context).damage *
 							actionOpportunity(boosted, dex.moves.get(entry.id), memory) - entry.estimate.damage));
 						followup += extra * response.weight * estimate.accuracy * opportunity;
 					}
@@ -416,10 +455,15 @@ export class RulePolicy {
 						Math.max(0, average('volatile')) * 16,
 				};
 			}
-			const danger = (mon: Combatant, opponent: Combatant) => {
-				const key = JSON.stringify([mon, opponent]);
+			const danger = (
+				mon: Combatant, opponent: Combatant, context = memory, future = false, predictionProfile = opponent,
+			) => {
+				const key = JSON.stringify([mon, opponent, fieldContext(context), future, predictionProfile]);
 				let value = dangerCache.get(key);
-				if (!value) { value = assessDanger(mon, opponent); dangerCache.set(key, value); }
+				if (!value) {
+					value = assessDanger(mon, opponent, undefined, context, future, predictionProfile);
+					dangerCache.set(key, value);
+				}
 				return value;
 			};
 			// The most damaging response can have a different priority (e.g. Focus
@@ -481,6 +525,7 @@ export class RulePolicy {
 					mon.health.lower > turns * (attrition + incoming.damage) + 0.15;
 			};
 			const completed: ScoredChoice[] = [];
+			const lossRisks = new Map<string, { index: number, probability: number }>();
 			ranked = choices.map(choice => {
 				const [kind, slotText, event = ''] = choice.split(' ');
 				const index = Number(slotText) - 1;
@@ -488,6 +533,7 @@ export class RulePolicy {
 				let score = 0;
 				let strategic = 0;
 				let finishProbability = 0;
+				let lossProbability = 0;
 				let ineffective = kind === 'move';
 				try {
 					for (const opponent of hypotheses) {
@@ -497,15 +543,17 @@ export class RulePolicy {
 							const mon = own[index];
 							const layers = memory.sides[observation.ownSide].conditions;
 							const hazardEntry = entryHazards(mon, layers, this.hypotheses.dex, memory);
-							const entrant = { ...mon, health: {
-								lower: Math.max(0, mon.health.lower - hazardEntry.damage),
-								upper: Math.max(0, mon.health.upper - hazardEntry.damage),
-							} };
-							const incoming = danger(entrant, opponent);
-							const entryDamage = hazardEntry.damage;
-							const passive = passiveRecovery(entrant, dex, memory);
+							const switchOutcome = estimateEntry(this.trainer.format, mon, opponent, memory, observation.ownSide);
+							const { entrant, opponent: entryFoe, memory: entryField } = switchOutcome;
+							for (const effect of switchOutcome.omittedVolatiles) diagnostics.add(`approximate-entry:${effect}`);
+							const incoming = danger(entrant, entryFoe, entryField, !takesEntryAction,
+								takesEntryAction ? opponent : entryFoe);
+							const entryDamage = switchOutcome.damage;
+							lossProbability += (entrant.health.upper <= 0 ? 1 : takesEntryAction ? incoming.knockout : 0) *
+								opponent.probability / hypothesisWeight;
+							const passive = passiveRecovery(entrant, dex, entryField);
 							const entryHit = takesEntryAction ? incoming.damage : 0;
-							const entryResidual = takesEntryAction ? residualDamage(entrant, dex, undefined, memory) - passive : 0;
+							const entryResidual = takesEntryAction ? residualDamage(entrant, dex, undefined, entryField) - passive : 0;
 							const endurance = Math.max(0, Math.min(1, entrant.health.upper - entryHit - entryResidual));
 							const afterEntry = { ...entrant, health: {
 								lower: Math.max(0, Math.min(1, entrant.health.lower - entryHit - entryResidual)), upper: endurance,
@@ -514,8 +562,8 @@ export class RulePolicy {
 							// is discounted and requires surviving the entry AND reaching a move on
 							// the next turn. Free replacements and slow pivots have no entry attack.
 							const future = endurance > 0 ? moveIDs(mon).map(id => {
-								const attack = probe(afterEntry, opponent, id);
-								const afterDanger = danger(afterEntry, opponent);
+								const attack = probe(afterEntry, entryFoe, id, '', observation.ownSide, entryField);
+								const afterDanger = danger(afterEntry, entryFoe, entryField, true);
 								const canAct = orderRisk(attack, afterDanger, false).survives *
 									actionOpportunity(afterEntry, dex.moves.get(id), memory);
 								const counterplay = attack.destinyBond ? attack.destinyBond * afterDanger.responses.reduce((sum, entry) =>
@@ -535,6 +583,10 @@ export class RulePolicy {
 							}
 							value = attackValue * discount * (1 - (takesEntryAction ? incoming.knockout : 0)) -
 								weights.risk * (entryHit * 80 + incoming.knockout * (takesEntryAction ? 125 : 35) + entryDamage * 100);
+							value -= Math.max(0, statusCost(entrant, entryField, dex) - statusCost(mon, memory, dex));
+							if (JSON.stringify(entrant.boosts) !== JSON.stringify(mon.boosts) ||
+								JSON.stringify(entryFoe.boosts) !== JSON.stringify(opponent.boosts) ||
+								fieldContext(entryField) !== fieldContext(memory)) reasons.push('native-switch-effects');
 							if (takesEntryAction) {
 								const revealedFatal = Math.max(0, ...incoming.responses.filter(entry => seen.moves.includes(entry.id))
 									.map(entry => entry.estimate.knockout));
@@ -617,7 +669,7 @@ export class RulePolicy {
 							const mon = current;
 							const id = request.active[0].moves[index].id;
 							const move = this.hypotheses.dex.moves.get(id);
-							const attack = probe(mon, opponent, id, event);
+							const attack = attackAgainstReplies(mon, opponent, id, event);
 							const offensiveSetup = move.category === 'Status' && attack.boosts > 0 && attack.userAfterMove &&
 								Object.entries(move.boosts || {}).filter(([, boost]) => boost && boost > 0)
 									.every(([stat]) => stat === 'atk' || stat === 'spa');
@@ -635,8 +687,10 @@ export class RulePolicy {
 							const defending = attack.userAfterMechanic || mon;
 							const baseIncoming = danger(defending, opponent);
 							const opportunity = actionOpportunity(defending, move, memory);
-							const incoming = attack.postAction || attack.targetAfterMove ?
-								assessDanger(defending, opponent, { attack, opportunity }) : baseIncoming;
+							const incoming = attack.postAction || attack.targetAfterMove || attack.fieldAfter ||
+								opponent.moves.some(moveID => CONDITIONAL_ATTACKS.has(moveID)) ?
+								assessDanger(defending, opponent, { attack, opportunity, id }) : baseIncoming;
+							if (CONDITIONAL_ATTACKS.has(id)) reasons.push('conditional-attack-prediction');
 							const { first, survives } = orderRisk(attack, incoming, !event);
 							let damage = attack.damage * opportunity;
 							let knockout = attack.knockout * opportunity;
@@ -695,6 +749,8 @@ export class RulePolicy {
 							}
 							value -= weights.risk * (1 - stopped) * (incoming.damage * 45 + fatal * 105 + residual * 70 +
 								incoming.disruption + incoming.setup * 12 + incoming.followup * 60);
+							lossProbability += Math.max(fatal * (1 - stopped), attack.selfKnockout || 0) *
+								opponent.probability / hypothesisWeight;
 							if (incoming.disruption > 12 || incoming.followup > 0.08) reasons.push('status-or-setup-exposure');
 							if (mon.health.upper <= incoming.damage + residual && !stopped) value -= 20;
 							value -= attack.selfDamage * 55;
@@ -872,6 +928,7 @@ export class RulePolicy {
 				}
 				if (finishProbability > 0.85) reasons.push('reliable-finish');
 				const candidate = { choice, score, strategic, ineffective, reasons: [...new Set(reasons)] };
+				lossRisks.set(choice, { index: kind === 'switch' ? index : activeIndex, probability: lossProbability });
 				completed.push(candidate);
 				if (options.onProgress) {
 					const usable = completed.filter(entry => !entry.ineffective && entry.score > -1000)
@@ -884,7 +941,23 @@ export class RulePolicy {
 			if (!options.quick && phase === 'move' && (selectedMove === undefined || selectedMove === null)) {
 				hazardTeams ||= observedHazardTeams(
 					this.hypotheses, observation, memory, own, index => this.isKey(observation, index));
-				anticipateSwitches(ranked, observation, memory, own, hypotheses, hazardTeams[foe], dex, probe);
+				anticipateSwitches(ranked, observation, memory, own, hypotheses, hazardTeams[foe], dex, probe, this.trainer.format);
+			}
+			if (!options.quick && alive > 1 && [...lossRisks.values()].some(risk => risk.probability > 0.15)) {
+				hazardTeams ||= observedHazardTeams(
+					this.hypotheses, observation, memory, own, index => this.isKey(observation, index));
+				try {
+					teamValues = teamResourceValues(own, hazardTeams[foe], dex, memory, observation.ownSide, probe);
+				} catch (error) {
+					diagnostics.add(`team-value-unavailable:${error instanceof Error ? error.message : 'unknown'}`);
+				}
+				for (const candidate of ranked) {
+					const loss = lossRisks.get(candidate.choice)!;
+					const preservationCost = (teamValues?.[loss.index] || 0) * loss.probability;
+					candidate.score -= preservationCost;
+					// Rollout's state evaluation carries the same preservation value; do not count it twice.
+					if (preservationCost > 8) candidate.reasons.push('preserve-team-answer');
+				}
 			}
 			// Filter before publishing either the rule fallback or search candidates.
 			// A native probe failure/omitted effect never proves immunity. Keep the last
@@ -904,6 +977,6 @@ export class RulePolicy {
 		const choice = close.length ? new PRNG(seed).sample(close).choice : 'default';
 		const candidates = selectCandidates(ranked,
 			options.critical ? DEFAULT_LIMITS.criticalOwnCandidates : DEFAULT_LIMITS.ownCandidates, choice);
-		return { choice, candidates, phase, diagnostics: [...diagnostics] };
+		return { choice, candidates, phase, diagnostics: [...diagnostics], ...(teamValues ? { teamValues } : {}) };
 	}
 }

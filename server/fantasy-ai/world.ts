@@ -16,6 +16,7 @@ export interface WorldMember {
 	disguise?: string;
 	request?: PokemonMoveRequestData;
 	keyMember?: boolean;
+	resourceValue?: number;
 }
 export interface WorldHypothesis {
 	rogueBoosts?: StatsTable;
@@ -124,11 +125,20 @@ export class WorldBuilder {
 							...prior, ...snapshot, moves: snapshot.moves.slice(), stats: { ...snapshot.stats },
 						} : { ...(onField ? option : prior), species: member.species,
 							moves: (onField ? option : prior).moves.slice() };
-						const changedForme = onField && toID(option.species) !== toID(member.species);
+						// A revealed Mega/Busted form can be on the bench. Its current stats
+						// are not a legal EV spread for the original preview species.
+						const changedForme = toID((onField ? option : prior).species) !== toID(member.species);
 						if (!snapshot && changedForme) {
 							const original = dex.species.get(member.species);
 							base.stats = estimateStats(original, member.level, variant > 0);
 							base.ability = toID(original.abilities['0']);
+						}
+						const legalAbility = Object.values(dex.species.get(member.species).abilities)
+							.some(ability => toID(ability) === toID(base.ability));
+						if (!snapshot && !legalAbility) {
+							// Trace/Skill Swap/Chong Hua Pi disclose a current ability, not
+							// an impossible initial set. Restore that current state below.
+							base.ability = toID(dex.species.get(member.species).abilities['0']);
 						}
 						const spreadProfile = { ...base, stats: { ...base.stats } };
 						if (rogue && side === 'p2' && observation.rogueBoosts) {
@@ -139,7 +149,7 @@ export class WorldBuilder {
 						}
 						const set = this.sets.create(spreadProfile, !!snapshot, variant, seen?.moves.filter(id => !dex.moves.get(id).isZ), {
 							moves: base.movesKnown,
-							ability: !changedForme && seen?.ability !== undefined && !!seen.ability,
+							ability: !changedForme && legalAbility && seen?.ability !== undefined && !!seen.ability,
 							item: seen?.item !== undefined,
 						});
 						// Synthetic names never encode the real opponent's initial position.

@@ -2,11 +2,14 @@ import { Dex, toID } from '../../sim/dex';
 import type { PokemonSwitchRequestData } from '../../sim/side';
 import type { Observation } from './information';
 import type { InitialPokemon } from './initial-snapshot';
-import { type BattleMemory, type SeenPokemon, parseDetails, parseHealth } from './memory';
+import {
+	type BattleMemory, type SeenPokemon, damageContext, fieldContext, parseDetails, parseHealth, speedContext,
+} from './memory';
 import { DEFAULT_LIMITS } from './types';
 import { PIVOT_MOVES, recoveryAmount } from './strategy';
 import type { FantasyState } from './fantasy-state';
 import { priorItems } from './item-priors';
+import { createMatchup, estimateMove } from './matchup';
 
 interface SetSamples { [species: string]: { sets: { movepool: string[], abilities?: string[] }[] } }
 const fantasySamples: SetSamples = require('../../data/random-battles/gen9fantasy/sets.json');
@@ -38,6 +41,7 @@ export interface Combatant {
 	protectCounter?: number;
 	lastMove?: string;
 	moveUses?: Record<string, number>;
+	activeMoveActions?: number;
 	moveLocks?: { encore?: string, disable?: string };
 }
 export interface OpponentHypothesis extends Combatant {
@@ -175,7 +179,8 @@ export class HypothesisBuilder {
 		const fainted = new Set(publicSide.appearances.filter(mon => mon.health.upper === 0 && !mon.ambiguousIdentity)
 			.map(mon => this.dex.species.get(mon.species).baseSpecies)).size;
 		const reserves = Math.max(0, publicSide.preview.length - fainted - 1);
-		const defensiveEvidence = seen.moves.some(id => recoveryAmount(this.dex.moves.get(id)) ||
+		const disclosedMoves = [...seen.moves, ...moveMatches.flatMap(mon => mon.moves)];
+		const defensiveEvidence = disclosedMoves.some(id => recoveryAmount(this.dex.moves.get(id)) ||
 			['protect', 'saltcure', 'willowisp', 'toxic', 'defog'].includes(id));
 		for (let variant = 0; result.length < DEFAULT_LIMITS.hypotheses && variant < 3; variant++) {
 			for (const identity of identities) {
@@ -184,7 +189,8 @@ export class HypothesisBuilder {
 				const { species, initial: snapshot, illusion } = identity;
 				const unchangedForme = snapshot && toID(snapshot.species) === species.id && !seen.transformed;
 				const level = snapshot?.level || seen.level;
-				const abilities = Object.values(species.abilities);
+				const abilities = Object.values(species.abilities).sort((a, b) =>
+					(this.dex.abilities.get(b).rating || 0) - (this.dex.abilities.get(a).rating || 0));
 				const revealedMoves = seen.moves.filter(id => !this.dex.moves.get(id).isZ);
 				const assumedAbility = unchangedForme ? snapshot.ability : abilities[variant % abilities.length];
 				const ability = seen.ability ?? (illusion ? 'illusion' : toID(assumedAbility));
@@ -205,27 +211,27 @@ export class HypothesisBuilder {
 					appearance: seen.appearance, persistentEffects: seen.persistentEffects?.slice(),
 					fantasy: seen.fantasy && structuredClone(seen.fantasy),
 					substituteHP: seen.substituteHP && { ...seen.substituteHP }, protectCounter: seen.protection?.counter,
-					lastMove: seen.lastMove, moveUses: { ...seen.moveUses },
+					lastMove: seen.lastMove, moveUses: { ...seen.moveUses }, activeMoveActions: seen.activeMoveActions,
 					moveLocks: this.moveLocks(seen),
 					probability: (illusion ? 0.25 : 1) * (!snapshot && defensiveEvidence ? (variant ? 1.4 : 0.45) : 1),
 					source: snapshot ? 'initial' : 'prior', identity: illusion ? 'illusion' : 'visible',
 				});
 			}
 		}
-		// Preserve one plausible fast attacker when the item is undisclosed. This is
-		// a risk scenario, not a declaration that the opponent holds a Choice Scarf.
+		// Include a plausible Speed-boosting nature even after an item is revealed.
+		// An undisclosed Scarf is another risk scenario, never a known item.
 		const offensive = result.find(mon => mon.source === 'prior' && mon.identity === 'visible');
-		if (offensive && !defensiveEvidence && seen.item === undefined && !seen.ambiguousIdentity &&
+		if (offensive && !seen.ambiguousIdentity &&
 			!visible.requiredItem && !visible.requiredItems?.length && !visible.isMega && !visible.isPrimal &&
-			result.length < DEFAULT_LIMITS.hypotheses &&
-			priorItems(this.dex, this.format, visible, offensive.moves.filter(id =>
-				this.dex.moves.get(id).category !== 'Status'), offensive.ability, false, seen.status).includes('choicescarf')) {
+			result.length < DEFAULT_LIMITS.hypotheses) {
 			const stats = { ...offensive.stats, spe: Math.floor(offensive.stats.spe * 1.1) };
 			const lowered = visible.baseStats.atk >= visible.baseStats.spa ? 'spa' : 'atk';
 			stats[lowered] = Math.floor(stats[lowered] * 0.9);
-			result.push({ ...offensive, stats, item: 'choicescarf', probability: 0.8 });
+			const scarf = !defensiveEvidence && seen.item === undefined &&
+				priorItems(this.dex, this.format, visible, offensive.moves.filter(id =>
+					this.dex.moves.get(id).category !== 'Status'), offensive.ability, false, seen.status).includes('choicescarf');
+			result.push({ ...offensive, stats, item: scarf ? 'choicescarf' : offensive.item, probability: scarf ? 0.8 : 0.6 });
 		}
-		const total = result.reduce((sum, hypothesis) => sum + hypothesis.probability, 0);
 		if (this.format === 'gen9fantasyrogue' && observation.ownSide === 'p2' && observation.rogueBoosts) {
 			for (const hypothesis of result) {
 				hypothesis.rogueBoosts = { ...observation.rogueBoosts };
@@ -235,8 +241,85 @@ export class HypothesisBuilder {
 				}
 			}
 		}
+		this.refineSpeed(result, seen, observation, memory);
+		this.refineDamage(result, seen, observation, memory);
+		const total = result.reduce((sum, hypothesis) => sum + hypothesis.probability, 0);
 		for (const hypothesis of result) hypothesis.probability /= total;
 		return result;
+	}
+
+	/** Reweight configurations that contradict an actual, nonlethal public damage roll. */
+	private refineDamage(result: OpponentHypothesis[], seen: SeenPokemon, observation: Observation, memory: BattleMemory) {
+		const active = observation.ownSide && memory.sides[observation.ownSide].active;
+		const request = observation.request?.side.pokemon.find(mon => mon.active);
+		if (!active || !request || seen.ambiguousIdentity || seen !== memory.sides[seen.side].active ||
+			!result.some(candidate => candidate.source === 'prior')) return;
+		const own = this.own(request, active);
+		const contexts = { outgoing: damageContext(active, seen), incoming: damageContext(seen, active) };
+		const used = new Set<string>();
+		const evidence = (memory.moveEvidence || []).slice().reverse().filter(entry => {
+			const outgoing = entry.user === active.appearance && entry.target === seen.appearance;
+			const incoming = entry.user === seen.appearance && entry.target === active.appearance;
+			const move = this.dex.moves.get(entry.move);
+			if ((!outgoing && !incoming) || entry.turn < memory.turn - 6 || entry.critical ||
+				entry.damage <= 0 || entry.damage >= entry.targetHealth - 0.02 ||
+				entry.context !== contexts[outgoing ? 'outgoing' : 'incoming'] ||
+				entry.environment !== fieldContext(memory) || move.multihit ||
+				move.basePowerCallback || move.damageCallback) return false;
+			const key = `${entry.user}:${entry.move}`;
+			if (used.has(key)) return false;
+			used.add(key);
+			return true;
+		}).slice(0, 2);
+		for (const candidate of result) {
+			if (candidate.source === 'initial' || candidate.identity === 'illusion') continue;
+			for (const entry of evidence) {
+				const outgoing = entry.user === active.appearance;
+				// Recreate the disclosed HP at the time of the hit (Blaze, Multiscale, etc.).
+				const attacker = { ...(outgoing ? own : candidate), health: { lower: entry.health, upper: entry.health } };
+				const defender = { ...(outgoing ? candidate : own),
+					health: { lower: entry.targetHealth, upper: entry.targetHealth } };
+				const estimate = estimateMove(this.format, attacker, defender, entry.move, '', memory,
+					outgoing ? observation.ownSide : seen.side);
+				const range = estimate.damageRange;
+				if (!range || estimate.omittedVolatiles.length) continue;
+				const distance = Math.max(0, range.min - entry.damage - 0.02, entry.damage - range.max - 0.02);
+				// Rounding and unmodeled mechanics leave a nonzero probability for every set.
+				candidate.probability *= Math.max(0.05, Math.exp(-distance / 0.04));
+			}
+		}
+	}
+
+	/** Public action order updates plausibility; it never reveals an exact Speed stat or held item. */
+	private refineSpeed(result: OpponentHypothesis[], seen: SeenPokemon, observation: Observation, memory: BattleMemory) {
+		const side = observation.ownSide;
+		const active = side && memory.sides[side].active;
+		const request = observation.request?.side.pokemon.find(mon => mon.active);
+		if (!active || !request || seen.ambiguousIdentity || seen !== memory.sides[seen.side].active) return;
+		const evidence = memory.speedEvidence.filter(entry => entry.turn >= memory.turn - 5 && (
+			entry.first === seen.appearance && entry.second === active.appearance &&
+			entry.firstState === speedContext(seen, memory) && entry.secondState === speedContext(active, memory) ||
+			entry.second === seen.appearance && entry.first === active.appearance &&
+			entry.secondState === speedContext(seen, memory) && entry.firstState === speedContext(active, memory)
+		)).slice(-3);
+		if (!evidence.length) return;
+		const own = this.own(request, active);
+		const priority = ['prankster', 'galewings', 'triage', 'quickdraw', 'stall', 'myceliummight'];
+		const orderItems = ['quickclaw', 'custapberry', 'laggingtail', 'fullincense'];
+		for (const candidate of result) {
+			if (candidate.source === 'initial' || candidate.identity === 'illusion' ||
+				priority.includes(candidate.ability) || priority.includes(own.ability) ||
+				orderItems.includes(candidate.item) || orderItems.includes(own.item)) continue;
+			const { battle } = createMatchup(this.format, candidate, own, memory, seen.side);
+			try {
+				const speed = battle.p1.active[0].getStat('spe');
+				const otherSpeed = battle.p2.active[0].getStat('spe');
+				for (const entry of evidence) {
+					const faster = (entry.first === seen.appearance) !== entry.trickRoom;
+					candidate.probability *= speed === otherSpeed ? 0.5 : faster === (speed > otherSpeed) ? 0.85 : 0.15;
+				}
+			} finally { battle.destroy(); }
+		}
 	}
 
 	private moveLocks(seen?: SeenPokemon): Combatant['moveLocks'] {
@@ -275,6 +358,7 @@ export class HypothesisBuilder {
 			substituteHP: mon.active ? seen?.substituteHP : undefined,
 			protectCounter: mon.active ? seen?.protection?.counter : undefined,
 			lastMove: mon.active ? seen?.lastMove : undefined, moveUses: { ...seen?.moveUses },
+			activeMoveActions: mon.active ? seen?.activeMoveActions : 0,
 			moveLocks: mon.active ? this.moveLocks(seen) : undefined,
 		};
 	}
