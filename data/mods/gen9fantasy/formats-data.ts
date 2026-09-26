@@ -1217,6 +1217,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	ogerponwellspringtera: {
 		tier: "OU",
 	},
+	porygonzfantasy: {
+		tier: "OU",
+	},
 	corviknight: {
 		tier: "UUBL",
 	},
@@ -1245,9 +1248,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UUBL",
 	},
 	pelipper: {
-		tier: "UUBL",
-	},
-	porygonzfantasy: {
 		tier: "UUBL",
 	},
 	rillaboom: {

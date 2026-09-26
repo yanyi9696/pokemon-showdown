@@ -2749,36 +2749,39 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	wenlihua: {
 		onStart(pokemon) {
-			// 1. 查找宝可梦是否携带了纹理、纹理2或纹理Z
-			const moveList = ['conversion', 'conversion2', 'wenliz'];
-			const targetMoveSlot = pokemon.moveSlots.find(m => moveList.includes(m.id));
+			// 1. 定义连续释放的顺序列表
+			const executionOrder = ['wenliz', 'conversion', 'conversion2'];
+			// 找出宝可梦已携带的招式，并严格按上述顺序排列
+			const movesToCast = executionOrder.filter(id => pokemon.moveSlots.some(m => m.id === id));
 			
-			if (targetMoveSlot) {
-				// 在对战日志中弹出特性发动的提示框
+			if (movesToCast.length > 0) {
 				this.add('-ability', pokemon, 'Wen Li Hua');
 				
-				let target: Pokemon | null = null;
-				const moveData = this.dex.moves.get(targetMoveSlot.id);
-				
-				// 2. 智能索敌：如果该招式（如纹理2/纹理Z）需要指定目标，则在存活的对手中随机选一个
-				if (['normal', 'any', 'allAdjacentFoes'].includes(moveData.target)) {
-					const foes = pokemon.adjacentFoes();
-					if (foes.length > 0) {
-						target = this.sample(foes);
+				for (const moveId of movesToCast) {
+					let target: Pokemon | null = null;
+					const moveData = this.dex.moves.get(moveId);
+					
+					// 智能索敌
+					if (['normal', 'any', 'allAdjacentFoes'].includes(moveData.target)) {
+						const foes = pokemon.adjacentFoes();
+						if (foes.length > 0) {
+							target = this.sample(foes);
+						}
 					}
-				}
-				
-				// 3. 执行招式。使用 (this as any) 来向下兼容不同版本的 Showdown 引擎的类型定义
-				if ((this as any).actions && typeof (this as any).actions.useMove === 'function') {
-					(this as any).actions.useMove(targetMoveSlot.id, pokemon, target);
-				} else if (typeof (this as any).useMove === 'function') {
-					(this as any).useMove(targetMoveSlot.id, pokemon, target);
+					
+					// 执行招式
+					const actions = (this as any).actions;
+					if (actions && typeof actions.useMove === 'function') {
+						actions.useMove(moveId, pokemon, target);
+					} else if (typeof (this as any).useMove === 'function') {
+						(this as any).useMove(moveId, pokemon, target);
+					}
 				}
 			}
 		},
 		flags: {},
 		name: "Wen Li Hua",
-		rating: 2,
+		rating: 3,
 		num: 10048,
 		shortDesc: "上场后,如果自身携带有纹理、纹理2或纹理Z,会立即使用一次该招式",
 	},

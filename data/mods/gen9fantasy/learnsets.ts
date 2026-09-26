@@ -29436,11 +29436,14 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	porygonzfantasy: {
 		learnset: {
 			wenliz: ["9M"],
+			technoblast: ["9M"],
 			fireblast: ["9M"],
 			psychicnoise: ["9M"],
+			storedpower: ["9M"],
 			calmmind: ["9M"],
 			flashcannon: ["9M"],
 			dazzlinggleam: ["9M"],
+			voltswitch: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M"],
 			agility: ["9M", "9L30", "8M", "8L30", "7L12", "6L12", "5L12", "4L12"],
