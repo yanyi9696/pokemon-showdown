@@ -24427,8 +24427,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			huanshenbu: ["9M"],
-			skyuppercut: ["9M"],
-			hammerarm: ["9M"],
+			closecombat: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
@@ -24624,8 +24623,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			huanshenbu: ["9M"],
-			skyuppercut: ["9M"],
-			hammerarm: ["9M"],
+			closecombat: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
@@ -24821,8 +24819,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			huanshenbu: ["9M"],
-			skyuppercut: ["9M"],
-			hammerarm: ["9M"],
+			closecombat: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
@@ -25256,7 +25253,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	tapulelefantasy: {
 		learnset: {
 			expandingforce: ["9M"],
-			huanzhiwu: ["9M"],
+			quiverdance: ["9M"],
 			//幻想增添技能
 			allyswitch: ["8M", "7T"],
 			aromatherapy: ["8L10", "7L1"],

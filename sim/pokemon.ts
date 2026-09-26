@@ -1390,7 +1390,8 @@ export class Pokemon {
 		const apparentSpecies =
 			this.illusion ? this.illusion.species.name : species.baseSpecies;
 		if (isPermanent) {
-			if (!this.transformed) this.regressionForme = true;
+			// 修改此处：排除 Mega 形态，使其倒下时不会被打上“退回原形态”的标记
+			if (!this.transformed && !rawSpecies.isMega) this.regressionForme = true;
 			this.baseSpecies = rawSpecies;
 			this.details = this.getUpdatedDetails();
 			let details = (this.illusion || this).details;

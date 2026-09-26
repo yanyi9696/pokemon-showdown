@@ -4144,7 +4144,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		name: "Double Shock",
 		pp: 5,
 		priority: 0,
-		flags: { contact: 1, protect: 1, mirror: 1, light: 1 },
+		flags: { contact: 1, protect: 1, mirror: 1, light: 1, punch: 1 },
 		onTryMove(pokemon, target, move) {
 			if (pokemon.hasType('Electric')) return;
 			this.add('-fail', pokemon, 'move: Double Shock');

@@ -59,7 +59,7 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	},
 	mewtwomegaxfantasy: {
 		tier: "Uber",
-		abilities: {0: "Iron Fist"},	
+		abilities: {0: "Inner Focus"},	
 	},
 	mewtwomegayfantasy: {
 		tier: "Uber",
@@ -83,6 +83,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Strong Jaw" },
 	},
 	tapukokofantasy: {
+		tier: "Uber",
+	},
+	tapulelefantasy: {
 		tier: "Uber",
 	},
 	xerneasfantasy: {
@@ -188,9 +191,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "(Uber)",
 	},
 	suicunefantasy: {
-		tier: "(Uber)",
-	},
-	tapulelefantasy: {
 		tier: "(Uber)",
 	},
 	toxtricitygmegafantasy: {
@@ -650,9 +650,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	rotomfantasy: {
 		tier: "UU",
 	},
-	sawkfantasy: {
-		tier: "UU",
-	},
 	sceptilefantasy: {
 		tier: "UU",
 	},
@@ -688,9 +685,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		abilities: {0: "Iron Fist"},		
 	},
 	tentacruelfantasy: {
-		tier: "UU",
-	},
-	throhfantasy: {
 		tier: "UU",
 	},
 	typenullfantasy: {
@@ -813,6 +807,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	mukalolafantasy: {
 		tier: "RU",
 	},
+	sawkfantasy: {
+		tier: "RU",
+	},
 	sawsbuckfantasy: {
 		tier: "RU",
 	},
@@ -835,6 +832,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	stonjournerfantasy: {
+		tier: "RU",
+	},
+	throhfantasy: {
 		tier: "RU",
 	},
 	thievulfantasy: {
