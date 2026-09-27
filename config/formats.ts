@@ -47,7 +47,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arena Trap', 'Moody', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Last Respects', 'Shed Tail',
 			// 在这里添加组合禁用
-			'Koraidon-Fantasy + Orichalcum Pulse', 'Miraidon-Fantasy + Hadron Engine',
+			'Koraidon-Fantasy + Orichalcum Pulse', 'Miraidon-Fantasy + Hadron Engine', 'Xerneas-Fantasy + Geomancy',
 		],
 		onSwitchIn: onFantasySwitchIn,
 		onUpdate: onFantasyUpdate,
@@ -151,7 +151,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Lei Zhu', 'King\'s Rock',
 			'Quick Claw', 'Razor Fang', 'Assist', 'Baton Pass', 'Last Respects', 'Shed Tail',
 			// 在这里添加组合禁用
-			'Koraidon-Fantasy + Orichalcum Pulse',
+			'Koraidon-Fantasy + Orichalcum Pulse', 'Miraidon-Fantasy + Hadron Engine', 'Xerneas-Fantasy + Geomancy',
 		],
 		onValidateTeam(team) {
 			const tierPoints: {[k: string]: number} = {
