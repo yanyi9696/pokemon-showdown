@@ -18519,6 +18519,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	volcaronafantasy: {
 		learnset: {
 			sacredfire: ["9M"],
+			burningbulwark: ["9M"],
 			scorchingsands: ["9M"],
 			psyshock: ["9M"],
 			weatherball: ["9M"],
@@ -25254,6 +25255,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			expandingforce: ["9M"],
 			quiverdance: ["9M"],
+			pollenpuff: ["9M"],
+			strengthsap: ["9M"],
 			//幻想增添技能
 			allyswitch: ["8M", "7T"],
 			aromatherapy: ["8L10", "7L1"],

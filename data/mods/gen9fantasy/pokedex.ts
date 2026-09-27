@@ -4187,7 +4187,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Fantasy",
 		gender: "N",
 		baseStats: { hp: 70, atk: 85, def: 75, spa: 130, spd: 115, spe: 95 },
-		abilities: { 0: "Psychic Surge", 1: "Friend Guard", H: "Telepathy" },
+		abilities: { 0: "Psychic Surge", 1: "Shield Dust", H: "Telepathy" },
 		heightm: 1.2,
 		weightkg: 18.6,
 		color: "Pink",
