@@ -23,6 +23,8 @@ import {
 
 export interface ScoredChoice {
 	choice: string; score: number; reasons: string[]; strategic?: number; ineffective?: boolean;
+	/** Target-dependent failure cost, replaced when predicting a different defender. */
+	targetPenalty?: number;
 }
 export interface RuleDecision {
 	choice: string | null;
@@ -48,7 +50,7 @@ export function selectCandidates(
 		if (candidate && candidates.length < limit && !candidates.includes(candidate)) candidates.push(candidate);
 	};
 	retain(ranked.find(candidate => candidate.choice === selected));
-	for (const reason of ['emergency-counterplay', 'reliable-finish', 'double-switch']) {
+	for (const reason of ['emergency-counterplay', 'reliable-finish', 'switch-coverage', 'double-switch']) {
 		retain(ranked.find(candidate => candidate.reasons.includes(reason)));
 	}
 	// Retain a credible Mega even in the opponent's narrower response set.
@@ -480,12 +482,13 @@ export class RulePolicy {
 			};
 			const finishCache = new Map<Combatant, number>();
 			const finishWindow = (opponent: Combatant) => {
-				if (!roomTurns || request.forceSwitch) return 0;
+				if (request.forceSwitch || selectedMove === null) return 0;
 				let chance = finishCache.get(opponent);
 				if (chance !== undefined) return chance;
 				const incoming = danger(current, opponent);
 				chance = Math.max(0, ...moveIDs(current).map(id => {
-					const attack = probe(current, opponent, id);
+					const attack = attackAgainstReplies(current, opponent, id, '');
+					if (attack.selfKnockout || attack.omittedVolatiles.length) return 0;
 					return attack.knockout * orderRisk(attack, incoming).first *
 						actionOpportunity(current, dex.moves.get(id), memory);
 				}));
@@ -535,6 +538,7 @@ export class RulePolicy {
 				let finishProbability = 0;
 				let lossProbability = 0;
 				let ineffective = kind === 'move';
+				let targetPenalty = 0;
 				try {
 					for (const opponent of hypotheses) {
 						let value: number;
@@ -675,6 +679,7 @@ export class RulePolicy {
 									.every(([stat]) => stat === 'atk' || stat === 'spa');
 							if (offensiveSetup && offense(attack.userAfterMove!, opponent) <= offense(mon, opponent) + 0.01) {
 								longTerm -= 45;
+								targetPenalty += 45 * opponent.probability / hypothesisWeight;
 								reasons.push('setup-no-damage-gain');
 							}
 							const futileSetup = !!attack.userAfterMove && !attack.postAction && !attack.damage && !attack.healing &&
@@ -878,6 +883,7 @@ export class RulePolicy {
 							if (attack.pivot && alive > 1) { value += attack.pivot * (14 + wall * 12); reasons.push('pivot'); }
 							if (attack.ineffective >= 0.999 || futileSetup) {
 								longTerm -= 100;
+								if (attack.ineffective >= 0.999) targetPenalty += 100 * opponent.probability / hypothesisWeight;
 								reasons.push(futileSetup ? 'setup-cannot-break-immunity' : 'ineffective-action');
 							}
 							const bond = incoming.responses.find(entry => entry.id === 'destinybond');
@@ -927,7 +933,7 @@ export class RulePolicy {
 					score = -1000;
 				}
 				if (finishProbability > 0.85) reasons.push('reliable-finish');
-				const candidate = { choice, score, strategic, ineffective, reasons: [...new Set(reasons)] };
+				const candidate = { choice, score, strategic, ineffective, targetPenalty, reasons: [...new Set(reasons)] };
 				lossRisks.set(choice, { index: kind === 'switch' ? index : activeIndex, probability: lossProbability });
 				completed.push(candidate);
 				if (options.onProgress) {

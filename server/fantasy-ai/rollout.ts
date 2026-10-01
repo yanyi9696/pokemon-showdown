@@ -2,6 +2,7 @@ import { performance } from 'perf_hooks';
 import type { Battle } from '../../sim/battle';
 import type { Pokemon } from '../../sim/pokemon';
 import { PRNG, type PRNGSeed } from '../../sim/prng';
+import { switchHistoryBonus } from './prediction';
 import { Teams } from '../../sim/teams';
 import { InformationView, type Observation } from './information';
 import { hazardCost, hazardLayers, type HazardMember } from './hazards';
@@ -290,8 +291,17 @@ export class RolloutPolicy {
 					} finally {
 						setup.destroy();
 					}
+					// Keep public switch habits in the full-turn model too; otherwise a
+					// shallow search can overwrite the rule policy with the same failed prediction.
+					for (const response of responses.candidates) {
+						if (!response.choice.startsWith('switch ')) continue;
+						const member = world.teams[foe][Number(response.choice.split(' ')[1]) - 1];
+						if (member) response.score += switchHistoryBonus(world.memory, foe,
+							world.teams[observation.ownSide][0].profile, member.profile, this.rules.hypotheses.dex);
+					}
+					responses.candidates.sort((a, b) => b.score - a.score);
 					const opponents = selectCandidates(
-						responses.candidates, DEFAULT_LIMITS.opponentCandidates, responses.choice || undefined)
+						responses.candidates, DEFAULT_LIMITS.opponentCandidates)
 						.sort((a, b) => b.score - a.score);
 					if (!opponents.length) throw new Error('no-opponent-candidates');
 					preparedWorlds++;
