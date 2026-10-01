@@ -18519,6 +18519,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	volcaronafantasy: {
 		learnset: {
 			sacredfire: ["9M"],
+			burningbulwark: ["9M"],
 			scorchingsands: ["9M"],
 			psyshock: ["9M"],
 			weatherball: ["9M"],
@@ -24427,8 +24428,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			huanshenbu: ["9M"],
-			skyuppercut: ["9M"],
-			hammerarm: ["9M"],
+			closecombat: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
@@ -24624,8 +24624,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			huanshenbu: ["9M"],
-			skyuppercut: ["9M"],
-			hammerarm: ["9M"],
+			closecombat: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
@@ -24821,8 +24820,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			dongchadaji: ["9M"],
 			huanshenbu: ["9M"],
-			skyuppercut: ["9M"],
-			hammerarm: ["9M"],
+			closecombat: ["9M"],
 			machpunch: ["9M"],
 			punishment: ["9M"],
 			suckerpunch: ["9M"],
@@ -25104,6 +25102,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			flashcannon: ["8M", "7M", "6M"],
 			focusblast: ["8M", "7M", "7S4", "6M", "6S1"],
 			frustration: ["7M", "6M"],
+			geomancy: ["8L55", "7L26", "7S2", "7S3", "7S4", "6L26", "6S0", "6S1"],
 			gigaimpact: ["8M", "8L85", "7M", "7L88", "6M", "6L88"],
 			grassknot: ["8M", "7M", "7S4", "6M"],
 			gravity: ["8L1", "7T", "7L18", "6T", "6L18", "6S0"],
@@ -25154,11 +25153,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zenheadbutt: ["8M", "7T", "6T"],
 		},
 		eventData: [
-			{generation: 6, level: 50, moves: ["gravity", "moonblast", "megahorn"]},
-			{generation: 6, level: 100, shiny: true, moves: ["moonblast", "aromatherapy", "focusblast"], pokeball: "cherishball"},
-			{generation: 7, level: 60, shiny: 1, moves: ["hornleech", "nightslash", "moonblast"]},
-			{generation: 7, level: 60, moves: ["hornleech", "nightslash", "moonblast"], pokeball: "cherishball"},
-			{generation: 7, level: 100, moves: ["focusblast", "grassknot", "moonblast"], pokeball: "cherishball"},
+			{generation: 6, level: 50, moves: ["gravity", "geomancy", "moonblast", "megahorn"]},
+			{generation: 6, level: 100, shiny: true, moves: ["geomancy", "moonblast", "aromatherapy", "focusblast"], pokeball: "cherishball"},
+			{generation: 7, level: 60, shiny: 1, moves: ["geomancy", "hornleech", "nightslash", "moonblast"]},
+			{generation: 7, level: 60, moves: ["geomancy", "hornleech", "nightslash", "moonblast"], pokeball: "cherishball"},
+			{generation: 7, level: 100, moves: ["geomancy", "focusblast", "grassknot", "moonblast"], pokeball: "cherishball"},
 			{generation: 8, level: 70, shiny: 1, moves: ["ingrain", "dazzlinggleam", "moonblast", "hornleech"]},
 		],
 		eventOnly: true,
@@ -25256,7 +25255,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	tapulelefantasy: {
 		learnset: {
 			expandingforce: ["9M"],
-			huanzhiwu: ["9M"],
+			quiverdance: ["9M"],
+			pollenpuff: ["9M"],
+			strengthsap: ["9M"],
 			//幻想增添技能
 			allyswitch: ["8M", "7T"],
 			aromatherapy: ["8L10", "7L1"],
@@ -29436,11 +29437,14 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	porygonzfantasy: {
 		learnset: {
 			wenliz: ["9M"],
+			technoblast: ["9M"],
 			fireblast: ["9M"],
 			psychicnoise: ["9M"],
+			storedpower: ["9M"],
 			calmmind: ["9M"],
 			flashcannon: ["9M"],
 			dazzlinggleam: ["9M"],
+			voltswitch: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M", "4M"],
 			agility: ["9M", "9L30", "8M", "8L30", "7L12", "6L12", "5L12", "4L12"],

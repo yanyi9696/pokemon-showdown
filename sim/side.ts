@@ -55,6 +55,7 @@ export interface Choice {
 	switchIns: Set<number>; // indexes of pokemon chosen to switch in
 	zMove: boolean; // true if a Z-move has already been selected
 	mega: boolean; // true if a mega evolution has already been selected
+	gmega: boolean; // true if a G-Mega evolution has already been selected
 	ultra: boolean; // true if an ultra burst has already been selected
 	dynamax: boolean; // true if a dynamax has already been selected
 	terastallize: boolean; // true if a terastallization has already been inputted
@@ -99,6 +100,8 @@ export interface PokemonMoveRequestData {
 	trapped?: boolean;
 	maybeTrapped?: boolean;
 	canMegaEvo?: boolean;
+	/** Uses the G-Mega opportunity, with the same `mega` choice command. */
+	canGMegaEvo?: boolean;
 	canMegaEvoX?: boolean;
 	canMegaEvoY?: boolean;
 	canUltraBurst?: boolean;
@@ -255,6 +258,7 @@ export class Side {
 			switchIns: new Set(),
 			zMove: false,
 			mega: false,
+			gmega: false,
 			ultra: false,
 			dynamax: false,
 			terastallize: false,
@@ -728,6 +732,7 @@ export class Side {
 
 		const mixandmega = this.battle.format.mod === 'mixandmega';
 		const mega = (event === 'mega');
+		const gmega = mega && !!this.battle.dex.species.get(pokemon.canMegaEvo || '').isGMega;
 		const megax = (event === 'megax');
 		const megay = (event === 'megay');
 		if (mega && !pokemon.canMegaEvo) {
@@ -739,7 +744,10 @@ export class Side {
 		if (megay && !pokemon.canMegaEvoY) {
 			return this.emitChoiceError(`Can't move: ${pokemon.name} can't mega evolve Y`);
 		}
-		if ((mega || megax || megay) && this.choice.mega && !mixandmega) {
+		if (gmega && this.choice.gmega) {
+			return this.emitChoiceError(`Can't move: You can only G-Mega evolve once per battle`);
+		}
+		if (((mega && !gmega) || megax || megay) && this.choice.mega && !mixandmega) {
 			return this.emitChoiceError(`Can't move: You can only mega-evolve once per battle`);
 		}
 		const ultra = (event === 'ultra');
@@ -795,7 +803,8 @@ export class Side {
 			this.choice.cantUndo = this.choice.cantUndo || pokemon.isLastActive();
 		}
 
-		if (mega || megax || megay) this.choice.mega = true;
+		if (gmega) this.choice.gmega = true;
+		if ((mega && !gmega) || megax || megay) this.choice.mega = true;
 		if (ultra) this.choice.ultra = true;
 		if (zMove) this.choice.zMove = true;
 		if (dynamax) this.choice.dynamax = true;
@@ -1050,6 +1059,7 @@ export class Side {
 			switchIns: new Set(),
 			zMove: false,
 			mega: false,
+			gmega: false,
 			ultra: false,
 			dynamax: false,
 			terastallize: false,

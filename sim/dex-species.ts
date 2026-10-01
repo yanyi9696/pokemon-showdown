@@ -219,6 +219,8 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 	readonly mother?: string;
 	/** True if a pokemon is mega. */
 	readonly isMega?: boolean;
+	/** Fantasy G-Mega formes use a separate evolution opportunity. */
+	readonly isGMega?: boolean;
 	/** True if a pokemon is primal. */
 	declare readonly isPrimal?: boolean;
 	/** Name of its Gigantamax move, if a pokemon is capable of gigantamaxing. */
@@ -323,6 +325,7 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 		this.maleOnlyHidden = !!data.maleOnlyHidden;
 		this.maxHP = data.maxHP || undefined;
 		this.isMega = this.forme.includes('Mega') || undefined;
+		this.isGMega = (this.isMega && this.name.includes('-G-Mega')) || undefined;
 		this.canGigantamax = data.canGigantamax || undefined;
 		this.gmaxUnreleased = !!data.gmaxUnreleased;
 		this.cannotDynamax = !!data.cannotDynamax;

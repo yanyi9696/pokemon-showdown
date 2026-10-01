@@ -70,6 +70,7 @@ function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
 		maybeDisabled: mon.maybeDisabled, maybeLocked: mon.maybeLocked,
 		trapped: mon.trapped, maybeTrapped: mon.maybeTrapped,
 		canMegaEvo: mon.canMegaEvo, canMegaEvoX: mon.canMegaEvoX, canMegaEvoY: mon.canMegaEvoY,
+		canGMegaEvo: mon.canGMegaEvo,
 		canUltraBurst: mon.canUltraBurst, canTerastallize: mon.canTerastallize,
 		canZMove: mon.canZMove?.map((move: { move: string, target: string } | null) => (
 			move ? { move: move.move, target: move.target } : null

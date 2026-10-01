@@ -66,7 +66,7 @@ export interface SeenSide {
 	slotConditions?: Record<string, {
 		id: string, turn: number, source: string, sourceIdent: string, sourceSpecies: string, sourceLevel: number,
 	}>;
-	resources: { mega: boolean, zmove: boolean, tera: boolean, aura: boolean };
+	resources: { mega: boolean, gmega: boolean, zmove: boolean, tera: boolean, aura: boolean };
 }
 export interface BattleMemory {
 	turn: number;
@@ -151,7 +151,7 @@ export function conditionID(text: string): string {
 function newSide(): SeenSide {
 	return {
 		preview: [], appearances: [], conditions: {}, conditionTurns: {}, slotConditions: {},
-		resources: { mega: false, zmove: false, tera: false, aura: false },
+		resources: { mega: false, gmega: false, zmove: false, tera: false, aura: false },
 	};
 }
 
@@ -522,7 +522,13 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				mon.moves = [];
 			}
 			break;
-		case '-mega': if (side) side.resources.mega = true; break;
+		case '-mega':
+			if (side) {
+				// detailschange precedes -mega, including move-based Urshifu G-Mega.
+				const gmega = dex.species.get(mon?.species || '').isGMega || toID(extra) === 'gmegawishingstar';
+				side.resources[gmega ? 'gmega' : 'mega'] = true;
+			}
+			break;
 		case '-zpower': if (side) side.resources.zmove = true; break;
 		case '-terastallize':
 			if (side) side.resources.tera = true;

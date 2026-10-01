@@ -293,12 +293,17 @@ export function canEscapeMatchup(
 export function possibleMegaForms(
 	format: string, profile: Combatant, target: Combatant, memory: BattleMemory, side: SinglesSide,
 ): Combatant[] {
-	if (memory.sides[side].resources.mega || profile.terastallized) return [];
+	if (profile.terastallized) return [];
 	const { battle } = createMatchup(format, profile, target, memory, side);
 	let events: string[];
 	try {
 		const mon = battle.p1.active[0];
-		events = [mon.canMegaEvo && 'mega', mon.canMegaEvoX && 'megax', mon.canMegaEvoY && 'megay']
+		const resources = memory.sides[side].resources;
+		const gmega = battle.dex.species.get(mon.canMegaEvo || '').isGMega;
+		events = [
+			mon.canMegaEvo && !(gmega ? resources.gmega : resources.mega) && 'mega',
+			mon.canMegaEvoX && !resources.mega && 'megax', mon.canMegaEvoY && !resources.mega && 'megay',
+		]
 			.filter((event): event is string => !!event);
 	} finally { battle.destroy(); }
 	return events.flatMap(event => {

@@ -2140,17 +2140,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                     return;
                 }
 
-                // 【修改点】：取消挑衅判断，改回仅检查戏法空间是否被封印 (Imprison)
+                // 检查场上是否存在同伴（队友是否存活）
+                const hasAlly = pokemon.side.pokemon.some(ally => ally && !ally.fainted && ally !== pokemon);
+
                 let isSealed = false;
-                for (const target of pokemon.foes()) {
-                    if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
-                        isSealed = true;
-                        break;
+                // 只有在场上有同伴的情况下，才去检查封印（Imprison）限制
+                if (hasAlly) {
+                    for (const target of pokemon.foes()) {
+                        if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
+                            isSealed = true;
+                            break;
+                        }
                     }
                 }
 
-                // 若首个可行动回合内使用了超能系招式，且戏法空间未被封印
-                if (this.effectState.usedPsychicMove && !isSealed) {
+                // 判断是否满足条件：
+                // 1. 如果没有同伴（单打或队友全倒），直接满足条件。
+                // 2. 如果有同伴，则需要满足：使用了超能系招式 且 未被封印。
+                const satisfiesCondition = !hasAlly || (this.effectState.usedPsychicMove && !isSealed);
+
+                if (satisfiesCondition) {
                     // 引发戏法空间
                     if (this.field.addPseudoWeather('trickroom', pokemon)) {
                         this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
@@ -2164,7 +2173,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                         }
                     }
                 } else {
-                    // 触发失败时的分类文字提示
+                    // 仅在受同伴限制而导致触发失败时给出提示
                     this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
                     if (isSealed) {
                         this.add('-message', `${pokemon.name}的戏法空间被封印了，扭曲时空的进程被打断了！`);
@@ -2184,7 +2193,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Qi Yi Zhi Zao Zhe",
         rating: 5,
         num: 10035,
-        shortDesc: "登场引发重力与携带的空间;若携带戏法空间,满足首回合使出超能系招式且未被封印,则回合末将其制造",
+        shortDesc: "登场引发重力与携带空间;戏法空间在回合末制造,场上存在同伴时,需首回合使出超能系招式且未被封印",
     },
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {
@@ -2749,36 +2758,39 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	wenlihua: {
 		onStart(pokemon) {
-			// 1. 查找宝可梦是否携带了纹理、纹理2或纹理Z
-			const moveList = ['conversion', 'conversion2', 'wenliz'];
-			const targetMoveSlot = pokemon.moveSlots.find(m => moveList.includes(m.id));
+			// 1. 定义连续释放的顺序列表
+			const executionOrder = ['wenliz', 'conversion', 'conversion2'];
+			// 找出宝可梦已携带的招式，并严格按上述顺序排列
+			const movesToCast = executionOrder.filter(id => pokemon.moveSlots.some(m => m.id === id));
 			
-			if (targetMoveSlot) {
-				// 在对战日志中弹出特性发动的提示框
+			if (movesToCast.length > 0) {
 				this.add('-ability', pokemon, 'Wen Li Hua');
 				
-				let target: Pokemon | null = null;
-				const moveData = this.dex.moves.get(targetMoveSlot.id);
-				
-				// 2. 智能索敌：如果该招式（如纹理2/纹理Z）需要指定目标，则在存活的对手中随机选一个
-				if (['normal', 'any', 'allAdjacentFoes'].includes(moveData.target)) {
-					const foes = pokemon.adjacentFoes();
-					if (foes.length > 0) {
-						target = this.sample(foes);
+				for (const moveId of movesToCast) {
+					let target: Pokemon | null = null;
+					const moveData = this.dex.moves.get(moveId);
+
+					// 智能索敌
+					if (['normal', 'any', 'allAdjacentFoes'].includes(moveData.target)) {
+						const foes = pokemon.adjacentFoes();
+						if (foes.length > 0) {
+							target = this.sample(foes);
+						}
 					}
-				}
-				
-				// 3. 执行招式。使用 (this as any) 来向下兼容不同版本的 Showdown 引擎的类型定义
-				if ((this as any).actions && typeof (this as any).actions.useMove === 'function') {
-					(this as any).actions.useMove(targetMoveSlot.id, pokemon, target);
-				} else if (typeof (this as any).useMove === 'function') {
-					(this as any).useMove(targetMoveSlot.id, pokemon, target);
+
+					// 执行招式
+					const actions = (this as any).actions;
+					if (actions && typeof actions.useMove === 'function') {
+						actions.useMove(moveId, pokemon, target);
+					} else if (typeof (this as any).useMove === 'function') {
+						(this as any).useMove(moveId, pokemon, target);
+					}
 				}
 			}
 		},
 		flags: {},
 		name: "Wen Li Hua",
-		rating: 2,
+		rating: 3,
 		num: 10048,
 		shortDesc: "上场后,如果自身携带有纹理、纹理2或纹理Z,会立即使用一次该招式",
 	},

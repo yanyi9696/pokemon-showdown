@@ -91,7 +91,9 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 				mon.m.fantasyVisualsInitialized = index === 0 || !!seen;
 				mon.m.lastVisualShown = member.disguise ? `illusion_${toID(member.disguise)}` : mon.species.id;
 				restoreFantasyState(battle, mon, profile, seen);
-				if (resources.mega) mon.canMegaEvo = mon.canMegaEvoX = mon.canMegaEvoY = null;
+				const gmega = battle.dex.species.get(mon.canMegaEvo || '').isGMega;
+				if (mon.species.isMega || (gmega ? resources.gmega : resources.mega)) mon.canMegaEvo = null;
+				if (resources.mega) mon.canMegaEvoX = mon.canMegaEvoY = null;
 				if (!hasUltraBurstResource(resources, mon.item)) mon.canUltraBurst = null;
 				if (side.fantasyRogueTera === false || resources.tera || mon.terastallized) mon.canTerastallize = null;
 				for (const slot of mon.moveSlots) {

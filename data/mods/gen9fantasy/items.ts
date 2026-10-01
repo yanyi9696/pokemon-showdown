@@ -3851,47 +3851,55 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		shortDesc: "首次受到招式伤害时减伤30%,使用后消失。失去后防御和特防永久提升10%",
     },
 	fantasymachobrace: {
-        name: "Fantasy Macho Brace",
-        spritenum: 269,
-        fling: {
-            basePower: 60,
-        },
-        onModifyMove(move, pokemon) {
-            // 检查是否为蓄力招式
-            if (move.flags?.charge) {
-                // 删除 onTryMove 阶段（跳过第一回合蓄力和 -prepare 文本）
-                // 因为流星光束、火箭头锤等招式的能力提升写在此阶段内,删除后自然失效
-                delete move.onTryMove;
-                
-                // 动态注入 cantusetwice 标签,确保在执行阶段（如被“号令”等招式判定时）表现得和血月一致
-                if (!move.flags) move.flags = {};
-                move.flags.cantusetwice = 1;
-            }
-        },
-        onBasePowerPriority: 21,
-        onBasePower(basePower, pokemon, target, move) {
-            // 蓄力招式威力提升 1.2 倍
-            if (move.flags?.charge) {
-                return this.chainModify(1.2);
-            }
-        },
-        onBeforeMove(pokemon, target, move) {
-            // ==================== 新增逻辑 ====================
-            // 在招式即将成功执行前,额外扣除 1 点 PP
-            // 这样加上招式本身消耗的 1 点 PP,总共会损失 2 点 PP
-            if (move.flags?.charge) {
-                pokemon.deductPP(move.id, 1);
-            }
-        },
-        onDisableMove(pokemon) {
-            // 完美模拟血月效果：回合开始选择招式时,如果上回合使用的是蓄力招式,则将其禁用
-            if (pokemon.lastMove?.flags?.charge && pokemon.lastMove.id !== 'struggle') {
-                pokemon.disableMove(pokemon.lastMove.id);
-            }
-        },
-        num: 30014,
-        gen: 9,
-        desc: "携带后,虽然蓄力的招式威力会提升1.2倍,不再经历积蓄状态,变为无法连续使出2次的招式,但会多损失1点PP,原本在积蓄状态获得的效果也会消失",
-        shortDesc: "蓄力招式不再经历积蓄状态且威力提升1.2倍,但无法连续使出且会多损失1点PP",
-    },
+		name: "Fantasy Macho Brace",
+		spritenum: 269,
+		fling: {
+			basePower: 60,
+		},
+		onModifyMove(move, pokemon) {
+			// 严格限定为：具有 charge 标记且非变化类（物理/特殊）招式
+			// 避免影响大地掌控（Geomancy）等变化蓄力招式
+			if (move.flags?.charge && move.category !== 'Status') {
+				// 删除 onTryMove 阶段：
+				// 1. 跳过第一回合的蓄力等待与 -prepare 提示文本
+				// 2. 蓄力期效果自然消失（如流星光束/电光束的特攻提升、火箭头锤的物防提升、飞翔/挖洞的半无敌状态均写在此阶段内）
+				delete move.onTryMove;
+
+				// 注入 cantusetwice 标签
+				if (!move.flags) move.flags = {};
+				move.flags.cantusetwice = 1;
+			}
+		},
+		onBasePowerPriority: 21,
+		onBasePower(basePower, pokemon, target, move) {
+			// 仅提升蓄力的非变化招式威力
+			if (move.flags?.charge && move.category !== 'Status') {
+				return this.chainModify(1.2);
+			}
+		},
+		onBeforeMove(pokemon, target, move) {
+			if (move.flags?.charge && move.category !== 'Status') {
+				// 后置拦截：防止通过“号令”、“梦话”等特殊机制在同一怪连续使出该招式
+				if (pokemon.lastMove?.id === move.id) {
+					this.add('cant', pokemon, 'move: ' + move.name);
+					return false;
+				}
+				// 招式正式执行前额外扣除 1 点 PP（加上系统默认消耗的 1 点共损失 2 点）
+				pokemon.deductPP(move.id, 1);
+			}
+		},
+		onDisableMove(pokemon) {
+			// 前置禁用：在回合开始选择招式时，若上一回合使出的是蓄力非变化招式，则禁用该招式（模拟血月/巨力锤）
+			if (pokemon.lastMove && pokemon.lastMove.id !== 'struggle') {
+				const lastMove = this.dex.moves.get(pokemon.lastMove.id);
+				if (lastMove.flags?.charge && lastMove.category !== 'Status') {
+					pokemon.disableMove(pokemon.lastMove.id);
+				}
+			}
+		},
+		num: 30014,
+		gen: 9,
+		desc: "携带后,虽然蓄力的非变化招式威力会提升1.2倍,不再经历积蓄状态,变为无法连续使出2次的招式,但会多损失1点PP,原本在积蓄状态获得的效果也会消失",
+        shortDesc: "非变化蓄力招式不再经历积蓄状态且威力提升1.2倍,但无法连续使出且会多损失1点PP",
+	},
 };
