@@ -132,6 +132,52 @@ describe('Fantasy AI shared tactical reasoning', function () {
 		assert.equal(result.choice, 'move 2', JSON.stringify(result));
 	});
 
+	for (const difficulty of ['normal', 'hard']) {
+		it(`${difficulty}: preserves a faster guaranteed finish outside Trick Room despite lethal retaliation`, () => {
+			setup({ species: 'Gengar', ability: 'Cursed Body', item: 'Choice Scarf', nature: 'Timid',
+				evs: { spa: 252, spe: 252 }, moves: ['shadowball'] },
+			{ species: 'Alakazam', ability: 'Magic Guard', nature: 'Timid',
+				evs: { spa: 252, spe: 252 }, moves: ['psychic'] },
+			{ species: 'Blissey', ability: 'Natural Cure', moves: ['seismictoss'] });
+			battle.p1.active[0].hp = Math.ceil(battle.p1.active[0].maxhp / 10);
+			battle.p2.active[0].hp = Math.ceil(battle.p2.active[0].maxhp / 4);
+			for (const side of battle.sides) battle.add('-damage', side.active[0], side.active[0].getHealth);
+			battle.makeRequest('move');
+			const view = observe(difficulty, { move: 'psychic', baseMove: 'psychic' });
+			const result = policy.decide(view, SEED);
+			assert.equal(result.choice, 'move 1', JSON.stringify(result));
+			assert(result.candidates.some(candidate => candidate.choice.startsWith('switch ') &&
+				candidate.reasons.includes('concedes-finishing-window')), JSON.stringify(result));
+			const searched = new RolloutPolicy(trainer).decide(view, SEED, { maxRollouts: 12, budgetMs: null });
+			assert.equal(searched.method, 'rollout', JSON.stringify(searched));
+			assert.equal(searched.choice, 'move 1', JSON.stringify(searched));
+			battle.makeChoices(result.choice, 'move 1');
+			assert.equal(battle.p2.pokemon[0].hp, 0);
+			assert(battle.p1.pokemon[0].hp > 0);
+		});
+	}
+
+	for (const obstruction of ['trickroom', 'priority', 'sash', 'paralysis']) {
+		it(`does not call a finish reliable through ${obstruction}`, () => {
+			setup({ species: 'Gengar', ability: 'Cursed Body', item: 'Choice Scarf', nature: 'Timid',
+				evs: { spa: 252, spe: 252 }, moves: ['shadowball'] },
+			{ species: 'Alakazam', ability: 'Magic Guard', nature: 'Timid', item: obstruction === 'sash' ? 'Focus Sash' : '',
+				evs: { spa: 252, spe: 252 }, moves: [obstruction === 'priority' ? 'shadowsneak' : 'psychic'] },
+			{ species: 'Blissey', ability: 'Natural Cure', moves: ['seismictoss'] });
+			battle.p1.active[0].hp = Math.ceil(battle.p1.active[0].maxhp / 10);
+			if (obstruction !== 'sash') battle.p2.active[0].hp = Math.ceil(battle.p2.active[0].maxhp / 4);
+			if (obstruction === 'trickroom') battle.field.addPseudoWeather('trickroom', battle.p2.active[0]);
+			if (obstruction === 'paralysis') battle.p1.active[0].setStatus('par');
+			for (const side of battle.sides) battle.add('-damage', side.active[0], side.active[0].getHealth);
+			battle.makeRequest('move');
+			const move = obstruction === 'priority' ? 'shadowsneak' : 'psychic';
+			const result = policy.decide(observe('hard', { move, baseMove: move }), SEED);
+			assert(!result.candidates.some(candidate => candidate.reasons.includes('reliable-finish') ||
+				candidate.reasons.includes('concedes-finishing-window')), JSON.stringify(result));
+			assert(result.choice.startsWith('switch '), JSON.stringify(result));
+		});
+	}
+
 	it('keeps first-turn attacks usable only for their native first-action window', () => {
 		setup({ species: 'Mew', ability: 'Synchronize', moves: ['fakeout', 'psychic'] },
 			{ species: 'Mew', ability: 'Synchronize', moves: ['splash'] });

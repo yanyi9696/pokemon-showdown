@@ -109,6 +109,60 @@ describe('Fantasy AI switch prediction, Mega and abilities', function () {
 		assert.equal(estimateMove(trainer.format, own, floating, 'earthquake', '', memory, 'p1').damage, 0);
 	});
 
+	it('uses Poison coverage on a disclosed Mega Audino switch even though the active Steel type is immune', () => {
+		setup({ species: 'Urshifu-Rapid-Strike-G-Mega-Fantasy', ability: 'Unseen Fist',
+			nature: 'Adamant', evs: { hp: 252, atk: 252 }, moves: ['yishunqianji', 'closecombat', 'zuishenluanda', 'splash'] },
+		{ species: 'Empoleon-Fantasy', ability: 'Competitive', moves: ['scald'] },
+		{ species: 'Blissey', ability: 'Natural Cure', moves: ['seismictoss'] },
+		{ species: 'Audino-Mega-Fantasy', ability: 'Unaware', item: 'Audinite',
+			nature: 'Bold', evs: { hp: 252, def: 252 }, moves: ['moonblast'] });
+		// Reveal the other members before fainting them, so the public model can
+		// identify the eliminated reserves instead of inventing private bench HP.
+		for (const name of battle.p2.pokemon.slice(2).map(mon => mon.name)) {
+			battle.makeChoices('move 4', `switch ${name}`);
+			battle.p2.active[0].faint();
+			battle.faintMessages();
+			battle.p2.active[0].switchFlag = true;
+			battle.makeRequest('switch');
+			battle.makeChoices('', 'switch Empoleon');
+		}
+		finishBench(2);
+		const view = observe('hard', null);
+		const before = structuredClone(view);
+		const result = policy.decide(view, SEED);
+		assert.equal(result.choice, 'move 3', explain(result));
+		const coverage = result.candidates.find(candidate => candidate.choice === 'move 3');
+		assert(!coverage.ineffective);
+		assert(coverage.strategic > -20, explain(coverage));
+		assert.deepEqual(view, before);
+		battle.makeChoices(result.choice, 'switch 2');
+		assert(battle.p2.active[0].hp < battle.p2.active[0].maxhp / 2);
+	});
+
+	it('learns repeated Ghost-immune switches from public turns without being given the next replacement', () => {
+		setup({ species: 'Urshifu-Rapid-Strike-Fantasy', ability: 'Unseen Fist',
+			nature: 'Adamant', evs: { hp: 252, atk: 252 }, moves: ['yishunqianji', 'zuishenluanda', 'splash', 'swordsdance'] },
+		{ species: 'Audino-Fantasy', ability: 'Regenerator', item: 'Audinite',
+			nature: 'Bold', evs: { hp: 252, def: 252 }, moves: ['protect', 'moonblast'] },
+		{ species: 'Blissey', ability: 'Natural Cure', moves: ['seismictoss'] },
+		{ species: 'Empoleon-Fantasy', ability: 'Competitive', moves: ['scald'] });
+		battle.makeChoices('move 4 mega', 'move 1 mega');
+		battle.makeChoices('move 3', 'switch Empoleon');
+		for (let turn = 0; turn < 2; turn++) {
+			battle.makeChoices('move 1', 'switch Audino');
+			battle.makeChoices('move 3', 'switch Empoleon');
+		}
+		const view = observe('hard', null);
+		const before = structuredClone(view);
+		const result = policy.decide(view, SEED);
+		assert.equal(result.choice, 'move 2', explain(result));
+		assert.deepEqual(view, before);
+		const searched = new RolloutPolicy(trainer).decide(view, SEED, { maxRollouts: 18, budgetMs: null });
+		assert.equal(searched.method, 'rollout', explain(searched));
+		assert(searched.choice === 'move 2' || searched.choice.startsWith('switch '), explain(searched));
+		assert(searched.candidates.some(candidate => candidate.choice === 'move 2'), explain(searched));
+	});
+
 	it('does not value Attack setup that Unaware will ignore', () => {
 		setup({ species: 'Giratina', ability: 'Pressure', moves: ['howl', 'earthquake'] },
 			{ species: 'Audino-Mega-Fantasy', ability: 'Unaware', item: 'Audinite', moves: ['hypervoice'] });
