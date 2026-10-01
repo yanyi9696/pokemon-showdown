@@ -2140,17 +2140,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                     return;
                 }
 
-                // 【修改点】：取消挑衅判断，改回仅检查戏法空间是否被封印 (Imprison)
+                // 检查场上是否存在同伴（队友是否存活）
+                const hasAlly = pokemon.side.pokemon.some(ally => ally && !ally.fainted && ally !== pokemon);
+
                 let isSealed = false;
-                for (const target of pokemon.foes()) {
-                    if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
-                        isSealed = true;
-                        break;
+                // 只有在场上有同伴的情况下，才去检查封印（Imprison）限制
+                if (hasAlly) {
+                    for (const target of pokemon.foes()) {
+                        if (target.volatiles['imprison'] && target.hasMove('trickroom')) {
+                            isSealed = true;
+                            break;
+                        }
                     }
                 }
 
-                // 若首个可行动回合内使用了超能系招式，且戏法空间未被封印
-                if (this.effectState.usedPsychicMove && !isSealed) {
+                // 判断是否满足条件：
+                // 1. 如果没有同伴（单打或队友全倒），直接满足条件。
+                // 2. 如果有同伴，则需要满足：使用了超能系招式 且 未被封印。
+                const satisfiesCondition = !hasAlly || (this.effectState.usedPsychicMove && !isSealed);
+
+                if (satisfiesCondition) {
                     // 引发戏法空间
                     if (this.field.addPseudoWeather('trickroom', pokemon)) {
                         this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
@@ -2164,7 +2173,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
                         }
                     }
                 } else {
-                    // 触发失败时的分类文字提示
+                    // 仅在受同伴限制而导致触发失败时给出提示
                     this.add('-ability', pokemon, 'Qi Yi Zhi Zao Zhe');
                     if (isSealed) {
                         this.add('-message', `${pokemon.name}的戏法空间被封印了，扭曲时空的进程被打断了！`);
@@ -2184,7 +2193,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Qi Yi Zhi Zao Zhe",
         rating: 5,
         num: 10035,
-        shortDesc: "登场引发重力与携带的空间;若携带戏法空间,满足首回合使出超能系招式且未被封印,则回合末将其制造",
+        shortDesc: "登场引发重力与携带空间;戏法空间在回合末制造,场上存在同伴时,需首回合使出超能系招式且未被封印",
     },
 	yanbuzhen: {
 		onDamagingHit(damage, target, source, move) {

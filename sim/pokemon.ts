@@ -1088,7 +1088,10 @@ export class Pokemon {
 		}
 
 		if (!lockedMove) {
-			if (this.canMegaEvo) data.canMegaEvo = true;
+			if (this.canMegaEvo) {
+				data.canMegaEvo = true;
+				if (this.battle.dex.species.get(this.canMegaEvo).isGMega) data.canGMegaEvo = true;
+			}
 			if (this.canMegaEvoX) data.canMegaEvoX = true;
 			if (this.canMegaEvoY) data.canMegaEvoY = true;
 			if (this.canUltraBurst) data.canUltraBurst = true;

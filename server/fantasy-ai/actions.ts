@@ -44,7 +44,7 @@ export function enumerateRequestChoices(request: ChoiceRequest, resources?: Seen
 	if (active.canDynamax || active.maxMoves) throw new Error('首版 FC AI 不支持极巨化。');
 	const choices: string[] = [];
 	const events: string[] = [''];
-	if (active.canMegaEvo && !resources?.mega) events.push('mega');
+	if (active.canMegaEvo && !(active.canGMegaEvo ? resources?.gmega : resources?.mega)) events.push('mega');
 	if (active.canMegaEvoX && !resources?.mega) events.push('megax');
 	if (active.canMegaEvoY && !resources?.mega) events.push('megay');
 	// Fantasy Aura Burst uses the existing `ultra` choice protocol.

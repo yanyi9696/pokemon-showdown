@@ -110,7 +110,7 @@ export const Scripts: ModdedBattleScriptsData = {
             }
 
             // ==============================
-            // 【处理 常规 Mega 进化】
+            // 【处理普通 Mega / G-Mega 进化，各有一次独立名额】
             // ==============================
             const standardMega = pokemon.battle.dex.species.get(speciesid);
             let targetSpecies = standardMega;
@@ -152,7 +152,10 @@ export const Scripts: ModdedBattleScriptsData = {
             pokemon.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] Mega Evolution');
 
             for (const ally of pokemon.side.pokemon) {
-                ally.canMegaEvo = null;
+                if (ally.canMegaEvo &&
+                    !!this.dex.species.get(ally.canMegaEvo).isGMega === !!targetSpecies.isGMega) {
+                    ally.canMegaEvo = null;
+                }
             }
 
             pokemon.battle.runEvent('AfterMega', pokemon);
@@ -166,6 +169,8 @@ export const Scripts: ModdedBattleScriptsData = {
 
             const species = pokemon.baseSpecies;
             const item = pokemon.getItem();
+
+            if (species.isMega) return null;
 
             const altFormes = species.otherFormes || (species.baseSpecies && pokemon.battle.dex.species.get(species.baseSpecies).otherFormes);
             if (altFormes) {
