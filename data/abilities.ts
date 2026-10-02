@@ -2524,7 +2524,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		num: 178,
 	},
 	megasol: {
-		isNonstandard: "Future",
 		flags: {},
 		name: "Mega Sol",
 		rating: 3,
