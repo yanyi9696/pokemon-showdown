@@ -1039,7 +1039,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		num: 88,
 	},
 	dragonize: {
-		isNonstandard: "Future",
 		onModifyTypePriority: -1,
 		onModifyType(move, pokemon) {
 			const noModifyType = [
