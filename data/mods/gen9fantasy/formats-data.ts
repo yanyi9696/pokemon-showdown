@@ -570,6 +570,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	zoroarkhisuifantasy: {
 		tier: "UUBL",
 	},
+	armarougefantasy: {
+		tier: "UU",
+	},
 	aggronfantasy: {
 		tier: "UU",
 	},
@@ -753,9 +756,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RU",
 	},
 	armaldofantasy: {
-		tier: "RU",
-	},
-	armarougefantasy: {
 		tier: "RU",
 	},
 	carnivinefantasy: {
