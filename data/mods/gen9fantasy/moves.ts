@@ -2677,7 +2677,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         },
         onHit(target, source, move) {
             const damage = this.directDamage(target.maxhp / 4, target, source);
-            if (target.fainted || !damage) return false;
+            // Fainting is queued: HP reaches zero before target.fainted is set.
+            if (!target.hp || !damage) return false;
 
             this.boost({ atk: 1, spa: 1, spe: 1 }, target, source, move);
 
