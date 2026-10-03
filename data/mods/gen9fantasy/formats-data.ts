@@ -638,6 +638,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	lanturnfantasy: {
 		tier: "UU",
 	},
+	lurantisfantasy: {
+		tier: "UU",
+	},
 	mienshaofantasy: {
 		tier: "UU",
 	},
@@ -722,9 +725,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "RUBL",
 	},
 	garbodorfantasy: {
-		tier: "RUBL",
-	},
-	lurantisfantasy: {
 		tier: "RUBL",
 	},
 	meganiumfantasy: {

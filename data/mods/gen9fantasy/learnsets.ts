@@ -21424,6 +21424,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			airslash: ["9M"],
 			razorwind: ["9M"],
 			closecombat: ["9M"],
+			earthpower: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M"],
 			attract: ["8M", "7M"],
@@ -21513,6 +21514,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			airslash: ["9M"],
 			razorwind: ["9M"],
 			closecombat: ["9M"],
+			earthpower: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M"],
 			attract: ["8M", "7M"],
@@ -30433,6 +30435,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			airslash: ["9M"],
 			wringout: ["9M"],
 			uturn: ["9M"],
+			earthpower: ["9M"],
 			//幻想增添技能
 			absorb: ["7L1", "6L1", "5L1", "4L1", "3L1"],
 			acrobatics: ["9M", "8M", "7M", "6M", "5M"],
@@ -30562,6 +30565,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			airslash: ["9M"],
 			wringout: ["9M"],
 			uturn: ["9M"],
+			earthpower: ["9M"],
 			//幻想增添技能
 			absorb: ["7L1", "6L1", "5L1", "4L1", "3L1"],
 			acrobatics: ["9M", "8M", "7M", "6M", "5M"],
