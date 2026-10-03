@@ -3728,12 +3728,11 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 						if (weather === 'deltastream' && tType === 'Flying' && e > 0) {
 							e = 0;
 						}
+						// 与渊海洋流的 onEffectiveness 一致：逐属性消除弱点，保留抵抗。
+						if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather) && e > 0) {
+							e = 0;
+						}
 						eff += e;
-					}
-
-					// 自定义机制：渊海洋流在雨天下抵消弱点
-					if (targetAbility === 'Yuan Hai Yang Liu' && ['raindance', 'primordialsea'].includes(weather)) {
-						if (eff > 0) eff = 0;
 					}
 
 					// 神奇守护判定
@@ -3743,20 +3742,18 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 					if (eff > maxEff) maxEff = eff;
 				}
 
-				// 2. 筛选出攻击倍率最高的一组属性池 (Primary Candidate Pool)
-				let candidatePool: string[] = [];
-				if (maxEff > 0) {
-					// 有克制属性：挑出所有最高克制倍率的属性 (优先 4 倍，其次 2 倍)
-					candidatePool = validTypes.filter(t => t.eff === maxEff).map(t => t.type);
-				} else {
-					// 无克制属性：如果当前属性不被抵抗且可用，优先保持当前属性
-					const currentValid = validTypes.find(t => t.type === currentType);
-					if (currentValid && currentValid.eff === 0) {
+				// 2. 只按原目标筛选最高攻击倍率；看我嘛等效果仍可随后重定向。
+				let candidatePool = validTypes.filter(t => t.eff === maxEff).map(t => t.type);
+				if (maxEff <= 0) {
+					// 无克制属性时，先选属性相性表中没有免疫对象的属性，不检查其他对手。
+					const noImmunityPool = candidatePool.filter(type =>
+						this.dex.types.names().every(defenderType => this.dex.getImmunity(type, defenderType))
+					);
+					if (noImmunityPool.length) candidatePool = noImmunityPool;
+
+					// 仅在上述优先级相同时，保留当前能打等倍伤害的属性。
+					if (maxEff === 0 && candidatePool.includes(currentType)) {
 						candidatePool = [currentType];
-					} else {
-						// 挑选所有能打 1 倍伤害的属性；若全被抵抗则挑负面影响最小的
-						const neutralPool = validTypes.filter(t => t.eff === 0).map(t => t.type);
-						candidatePool = neutralPool.length > 0 ? neutralPool : validTypes.map(t => t.type);
 					}
 				}
 
@@ -3815,7 +3812,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		itemUser: ["Arceus-Legend-Fantasy"],
 		num: 30012,
 		gen: 9,
-		desc: "使出制裁光砾时，自动变为克制目标且自身抗性最优的属性",
+		desc: "使出制裁光砾时，按原目标选择攻击倍率最高的属性。无克制属性时，优先选择不会被属性相性免疫的属性，再优先保留当前等倍属性；其余情况按自身抗性择优。",
 	},
 	fantasydefensegem: {
         name: "Fantasy Defense Gem",
