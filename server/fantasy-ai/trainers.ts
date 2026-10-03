@@ -1,8 +1,9 @@
 import { Dex } from '../../sim/dex';
 import { Teams } from '../../sim/teams';
 import { TeamValidator } from '../../sim/team-validator';
+import { validateExtremeTeam } from './restrictions';
 import type {
-	ResourcePreference, TrainerDiagnostic, TrainerStyle, TrainerSummary, ValidatedTrainer,
+	ChallengeDifficulty, ResourcePreference, TrainerDiagnostic, TrainerStyle, TrainerSummary, ValidatedTrainer,
 } from './types';
 
 const STYLES: readonly string[] = ['balanced', 'aggressive', 'defensive'];
@@ -42,9 +43,11 @@ function validateTeam(format: Format, team: PokemonSet[] | null): string[] {
 }
 
 /** Use the same structure and legality checks for the player's submitted team. */
-export function validatePlayerTeam(formatName: string, packedTeam: string): {
-	packedTeam?: string, problems: string[],
-} {
+export function validatePlayerTeam(
+	formatName: string, packedTeam: string, difficulty: ChallengeDifficulty = 'normal',
+): {
+		packedTeam?: string, problems: string[],
+	} {
 	try {
 		const format = getTrainerFormat(formatName);
 		if (typeof packedTeam !== 'string' || packedTeam.length > 20000) {
@@ -52,6 +55,7 @@ export function validatePlayerTeam(formatName: string, packedTeam: string): {
 		}
 		const team = Teams.unpack(packedTeam);
 		const problems = validateTeam(format, team);
+		if (!problems.length && difficulty === 'extreme') problems.push(...validateExtremeTeam(formatName, team!));
 		return problems.length ? { problems } : { problems, packedTeam: Teams.pack(team) };
 	} catch (error) {
 		return { problems: [error instanceof Error ? error.message : '玩家队伍校验失败。'] };

@@ -1,3 +1,4 @@
+import { captureFullState } from './full-state';
 import { Battle, extractChannelMessages } from '../../sim/battle';
 import { performance } from 'perf_hooks';
 import { PRNG, type PRNGSeed } from '../../sim/prng';
@@ -100,7 +101,8 @@ export function runOfflineBattle(options: OfflineOptions): OfflineResult {
 				if (!request || battle.ended || side.activeRequest !== request) continue;
 				const selected = options.difficulties[index] === 'hard' ?
 					captureOpponentChoice(battle, index === 0 ? 'p2' : 'p1').move : undefined;
-				const observation = views[index].observe(request, selected);
+				const observation = views[index].observe(request, selected, options.difficulties[index] === 'hard' ?
+					captureFullState(battle, index === 0 ? 'p2' : 'p1') : undefined);
 				const fingerprint = JSON.stringify(observation.request);
 				const started = performance.now();
 				const excluded = rejected[index].get(fingerprint);

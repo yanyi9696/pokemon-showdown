@@ -21,8 +21,8 @@ import type { BestOfGame } from './room-battle-bestof';
 import type { GameTimerSettings } from '../sim/dex-formats';
 import { AIController, type AIChallengeOptions } from './fantasy-ai/controller';
 import { captureInitialTeam, captureInitialMoves } from './fantasy-ai/initial-snapshot';
-import { captureOpponentChoice } from './fantasy-ai/opponent-choice';
-import type { Difficulty } from './fantasy-ai/types';
+import { captureFullChoice } from './fantasy-ai/full-state';
+import { aiDifficulty, type Difficulty } from './fantasy-ai/types';
 
 type ChannelIndex = 0 | 1 | 2 | 3 | 4;
 export type PlayerIndex = 1 | 2 | 3 | 4;
@@ -598,7 +598,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			void this.stream.write(options.inputLog);
 		} else {
 			void this.stream.write(`>start ` + JSON.stringify(battleOptions));
-			if (options.fantasyAI) void this.stream.write(`>fantasyai ${options.fantasyAI.difficulty}`);
+			if (options.fantasyAI) void this.stream.write(`>fantasyai ${aiDifficulty(options.fantasyAI.difficulty)}`);
 		}
 
 		void this.listen();
@@ -1400,8 +1400,9 @@ export class RoomBattleStream extends BattleStream {
 			if (this.fantasyAI !== 'hard') throw new Error('Invalid AI choice channel');
 			const input: { version: number, choice: string } = JSON.parse(message);
 			// The human may undo/change a move while a worker reply is in transit.
+			const player = this.battle.p1;
 			if (input.version === this.opponentChoiceVersion &&
-				captureOpponentChoice(this.battle, 'p1').ready) super._writeLine('p2', input.choice);
+				(!player.activeRequest || player.activeRequest.wait || player.isChoiceDone())) super._writeLine('p2', input.choice);
 			return;
 		}
 		if (this.fantasyAI === 'hard' && type === 'p1') this.opponentChoiceVersion++;
@@ -1448,8 +1449,8 @@ export class RoomBattleStream extends BattleStream {
 			this.push(`error\n${err.stack}`);
 		}
 		if (this.battle) this.battle.sendUpdates();
-		if (this.fantasyAI === 'hard' && this.battle?.p1) {
-			this.push(`fantasyaichoice\n${JSON.stringify(captureOpponentChoice(this.battle, 'p1', this.opponentChoiceVersion))}`);
+		if (this.fantasyAI === 'hard' && this.snapshotSent) {
+			this.push(`fantasyaichoice\n${JSON.stringify(captureFullChoice(this.battle, 'p1', this.opponentChoiceVersion))}`);
 		}
 		if (this.fantasyAI) this.push('fantasyaiready\n');
 		const deltaTime = Date.now() - startTime;

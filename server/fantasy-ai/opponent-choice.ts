@@ -1,6 +1,7 @@
 import type { Battle } from '../../sim/battle';
 import type { ChoiceRequest } from '../../sim/side';
 import { toID } from '../../sim/dex';
+import type { FullBattleState } from './full-state';
 
 /** Only the selected move is authorized; no target, Mega/Tera choice, PP or live Pokemon. */
 export interface SelectedOpponentMove {
@@ -10,6 +11,7 @@ export interface SelectedOpponentMove {
 }
 
 export interface OpponentChoiceState {
+	fullState?: FullBattleState;
 	version: number;
 	ready: boolean;
 	/** null means the submitted action is not a move; omission means no actionable move request. */

@@ -19,6 +19,16 @@ async function until(check, description = 'condition', timeout = 8000) {
 	}
 }
 
+async function finishFirstTurn(battle, player) {
+	while (!battle.ended && battle.turn < 2) {
+		await until(() => battle.ended || battle.turn >= 2 || battle.p1.request.isWait === false &&
+		JSON.parse(battle.p1.request.request).forceSwitch, 'first turn or required human replacement');
+		// A hard AI may now choose a lead that knocks the human's opener out.
+		// Complete only that human replacement; do not submit a new attack turn.
+		if (!battle.ended && battle.turn < 2) battle.choose(player, 'default');
+	}
+}
+
 describe('Fantasy AI online challenges', function () {
 	this.timeout(20000);
 	let manager;
@@ -39,7 +49,8 @@ describe('Fantasy AI online challenges', function () {
 		const room = await manager.challenge(user.connections[0], trainer.id, difficulty);
 		assert(room, 'room created');
 		rooms.push(room);
-		await until(() => room.battle.p2.request.isWait === true, 'AI team preview choice');
+		await until(() => difficulty === 'normal' ? room.battle.p2.request.isWait === true :
+			room.battle.p2.request.request.includes('teamPreview'), 'AI team preview request');
 		return room;
 	}
 	afterEach(async () => {
@@ -210,9 +221,11 @@ describe('Fantasy AI online challenges', function () {
 				assert.equal(input.observation.initialOpponent.length, 6);
 				assert(input.observation.initialOpponent.every(mon => !('hp' in mon) && !('position' in mon) && !('name' in mon)));
 				assert(input.observation.opponentMove.baseMove);
+				assert(input.observation.fullState.choice.startsWith('move '));
 			} else {
 				assert(!('initialOpponent' in input.observation));
 				assert(!('opponentMove' in input.observation));
+				assert(!('fullState' in input.observation));
 			}
 			const log = room.getLog(0);
 			assert(!log.includes('|request|') && !log.includes('fantasyai\n') && !log.includes('initialOpponent'));
@@ -235,11 +248,83 @@ describe('Fantasy AI online challenges', function () {
 		room.battle.choose(player, 'team 123456');
 		await until(() => room.battle.turn === 1, 'first turn');
 		room.battle.choose(player, `move 1|${room.battle.p1.request.rqid}`);
-		await until(() => room.battle.turn === 2, 'worker response and full turn');
+		await finishFirstTurn(room.battle, player);
 		assert(manager.scheduler.metrics.completed >= 2);
 		assert.equal(room.battle.fantasyAI.metrics.illegalChoices, 0);
 		assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
 		assert(room.battle.fantasyAI.metrics.rollouts > 0);
+	});
+
+	it('rejects excessive extreme teams, then runs the same hard worker on a legal player team', async () => {
+		const definitions = require('../../config/fantasy-ai-trainers.example.json');
+		const definition = definitions.find(entry => entry.format === 'gen9fcou');
+		setup({ decisionMs: 3000 }, [definition]);
+		const player = human();
+		const team = ['Gengar', 'Skarmory', 'Salamence', 'Porygon-Z', 'Tentacruel', 'Pidgeot'].map(species => ({
+			species, ability: Dex.forFormat('gen9fcou').species.get(species).abilities['0'], moves: ['protect'], evs: { hp: 252 },
+		}));
+		const illegal = structuredClone(team);
+		illegal[0] = { species: 'Audino-Fantasy', ability: 'Regenerator', moves: ['protect'], evs: { hp: 252 } };
+		player.battleSettings.team = Teams.pack(illegal);
+		const failure = await manager.challengeForClient(player.connections[0], definition.id, 'extreme', 'extreme-illegal', 'gen9fcou');
+		assert.equal(failure.status, 'error'); assert(/Audino-Fantasy.*OU.*UUBL/.test(failure.message));
+		assert.equal(manager.getStatus().active, 0);
+		player.battleSettings.team = Teams.pack(team);
+		const inputs = [];
+		const submit = manager.scheduler.submit.bind(manager.scheduler);
+		manager.scheduler.submit = input => { inputs.push(input); return submit(input); };
+		const result = await manager.challengeForClient(player.connections[0], definition.id, 'extreme', 'extreme-legal', 'gen9fcou');
+		assert.equal(result.status, 'success', result.message);
+		const room = Rooms.get(result.roomid); rooms.push(room);
+		await until(() => room.battle.p2.request.request.includes('teamPreview'));
+		assert.equal(inputs.length, 0, 'extreme preview waits for the human');
+		assert.equal(room.battle.fantasyAI.options.difficulty, 'extreme');
+		assert.deepEqual(manager.getPublicState(player).difficulties, ['normal', 'hard', 'extreme']);
+		assert.equal(manager.getPublicState(player).formats.find(format => format.id === 'gen9fcou').extremeCap, 'UUBL');
+		room.battle.choose(player, 'team 213456');
+		await until(() => room.battle.turn === 1);
+		assert.equal(inputs[0].observation.difficulty, 'hard');
+		assert(inputs[0].observation.fullState.choice.startsWith('team 2'));
+		room.battle.choose(player, 'move 1');
+		await finishFirstTurn(room.battle, player);
+		assert.equal(room.battle.fantasyAI.metrics.illegalChoices, 0);
+		assert(room.getLog(0).includes('UUBL 及以下'));
+		assert(!room.getLog(0).includes('fullState'));
+	});
+
+	it('invalidates an earlier preview answer when the player undoes and changes the lead', async () => {
+		setup({ decisionMs: 1000 });
+		const pending = [];
+		manager.scheduler.submit = input => new Promise(resolve => { pending.push({ input, resolve }); });
+		const player = human();
+		const room = await challenge(player, 'hard');
+		const battle = room.battle;
+		assert.equal(pending.length, 0);
+		battle.choose(player, 'team 123456'); await until(() => pending.length === 1);
+		battle.undo(player, ''); await until(() => battle.p1.request.isWait === false);
+		battle.choose(player, 'team 213456'); await until(() => pending.length === 2);
+		assert(pending[1].input.observation.fullState.choice.startsWith('team 2'));
+		pending[0].resolve({ key: pending[0].input.key, status: 'completed', decision: { choice: 'team 123456' } });
+		await delay(20); assert.equal(battle.turn, 0);
+		pending[1].resolve({ key: pending[1].input.key, status: 'completed', decision: { choice: 'team 123456' } });
+		await until(() => battle.turn === 1);
+	});
+	it('lets hard AI replace its fainted active while the human has only a wait request', async () => {
+		setup({ decisionMs: 3000 });
+		const inputs = [];
+		const submit = manager.scheduler.submit.bind(manager.scheduler);
+		manager.scheduler.submit = input => { inputs.push(input); return submit(input); };
+		const player = human();
+		const room = await challenge(player, 'hard');
+		const battle = room.battle;
+		battle.choose(player, 'team 123456'); await until(() => battle.turn === 1);
+		await battle.stream.write('>eval battle.p2.active[0].faint(); battle.faintMessages(); ' +
+			'battle.p2.active[0].switchFlag = true; battle.makeRequest("switch")');
+		await until(() => inputs.some(input => input.observation.request.forceSwitch), 'AI-only replacement search');
+		const input = inputs.find(entry => entry.observation.request.forceSwitch);
+		assert.equal(input.observation.fullState.choice, null);
+		await until(() => JSON.parse(battle.p2.request.request).active, 'replacement finishes without human input');
+		assert.equal(battle.fantasyAI.metrics.illegalChoices, 0);
 	});
 
 	it('waits for a legal human move, cancels on undo/change, and discards stale worker results', async () => {
@@ -307,7 +392,7 @@ describe('Fantasy AI online challenges', function () {
 		assert(decisions[1].input.key.revision > decisions[0].input.key.revision);
 		assert.equal((await decisions[0].result).status, 'cancelled');
 		assert.equal((await decisions[1].result).status, 'completed');
-		await until(() => battle.turn === 2, 'replacement choice resolves the turn');
+		await finishFirstTurn(battle, player);
 		assert.equal(battle.fantasyAI.metrics.illegalChoices, 0);
 	});
 

@@ -1,4 +1,5 @@
 import { PRNG, type PRNGSeed } from '../../sim/prng';
+import { decideFullInformation } from './full-policy';
 import { Teams } from '../../sim/teams';
 import { toID } from '../../sim/dex';
 import { enumerateRequestChoices } from './actions';
@@ -78,7 +79,7 @@ export function selectCandidates(
 
 /**
  * 策略开发入口（普通 / 高难共用，不为某名训练家写固定回合脚本）：
- * - 普通档根据已知配招和公开局面预测；高难档当前回合使用获准读取的已提交招式。
+ * - 普通档根据已知配招和公开局面预测；高难完整快照交给 full-policy.ts 执行原生精确推演。
  * - 伤害要扣除可持续回复的影响。连续打不出净损耗时，比较破盾、轮转、异常状态与保留 PP。
  * - 回血按实际缺血量、速度、斩杀线和对手强化机会估值；少量缺血不能自动成为最高收益行动。
  * - 每个特殊机制候选用变化后的属性与能力值重新计算承伤；换人按入场伤害和下一次行动机会估值。
@@ -155,6 +156,11 @@ export class RulePolicy {
 		observation: Observation, seed: PRNGSeed, excluded: readonly string[] = [],
 		options: { quick?: boolean, critical?: boolean, onProgress?: (decision: RuleDecision) => void } = {},
 	): RuleDecision {
+		if (observation.difficulty === 'hard' && observation.fullState) {
+			return decideFullInformation(observation, this.trainer, seed, {
+				excluded, budgetMs: null, critical: options.critical, onProgress: options.onProgress,
+			}, 1);
+		}
 		const request = observation.request;
 		if (request.wait) return { choice: null, candidates: [], phase: 'wait', diagnostics: [] };
 		const memory = readBattleMemory(observation.publicLog, this.hypotheses.dex);
