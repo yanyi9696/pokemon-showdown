@@ -3,9 +3,10 @@ import type { ChoiceRequest, PokemonMoveRequestData } from '../../sim/side';
 import { copyInitialTeam, copyOpponentMoves, type InitialPokemon, type OpponentMoves } from './initial-snapshot';
 import type { SelectedOpponentMove } from './opponent-choice';
 import type { Difficulty } from './types';
+import type { FullBattleState } from './full-state';
 
-// Only battle information. Requests, chat, debug output and input logs must
-// not enter the opponent model even if a caller supplies a raw update packet.
+// The public log remains filtered for both modes. Complete hard-mode state
+// travels separately through the trusted simulator adapter, never this parser.
 const PUBLIC_EVENTS = new Set([
 	'gametype', 'gen', 'tier', 'rule', 'teamsize', 'clearpoke', 'poke', 'teampreview',
 	'start', 'turn', 'upkeep', 'win', 'tie', 'switch', 'drag', 'replace', 'detailschange',
@@ -30,6 +31,8 @@ type InformationOptions = { ownSide: 'p1' | 'p2', partySize?: number, rogueBoost
 export interface Observation {
 	/** Public p1 campaign modifiers, not IVs, EVs or current private state. */
 	rogueBoosts?: StatsTable;
+	/** Hard only: detached native state with real RNG and unrelated logs removed. */
+	fullState?: FullBattleState;
 	difficulty: Difficulty;
 	ownSide: 'p1' | 'p2';
 	request: ChoiceRequest;
@@ -137,7 +140,7 @@ export class InformationView {
 		}
 	}
 
-	observe(request: ChoiceRequest, selectedMove?: SelectedOpponentMove | null): Observation {
+	observe(request: ChoiceRequest, selectedMove?: SelectedOpponentMove | null, fullState?: FullBattleState): Observation {
 		if (request.side.id !== this.ownSide) throw new Error('不能读取对手的私有行动请求。');
 		const observation: Observation = {
 			difficulty: this.difficulty,
@@ -147,6 +150,7 @@ export class InformationView {
 		};
 		if (this.initialOpponent) observation.initialOpponent = copyInitialTeam(this.initialOpponent);
 		if (this.rogueBoosts) observation.rogueBoosts = { ...this.rogueBoosts };
+		if (this.difficulty === 'hard' && fullState) observation.fullState = structuredClone(fullState);
 		if (this.opponentMoves) observation.opponentMoves = copyOpponentMoves(this.opponentMoves);
 		if (this.difficulty === 'hard' && 'active' in request && selectedMove !== undefined) {
 			observation.opponentMove = selectedMove === null ? null : {

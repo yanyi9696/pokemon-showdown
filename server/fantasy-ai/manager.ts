@@ -3,7 +3,10 @@ import { FS } from '../../lib';
 import { Trainers } from '../../config/fantasy-ai-trainers';
 import { DecisionScheduler } from './scheduler';
 import { CHALLENGE_FORMATS, TrainerRegistry, validatePlayerTeam } from './trainers';
-import { DEFAULT_LIMITS, type Difficulty, type ValidatedTrainer } from './types';
+import {
+	DEFAULT_LIMITS, CHALLENGE_DIFFICULTIES, DIFFICULTY_NAMES, aiDifficulty, type ChallengeDifficulty, type ValidatedTrainer,
+} from './types';
+import { EXTREME_CAPS, extremeDescription } from './restrictions';
 import type { ChallengeMetrics } from './controller';
 import type { TimeBudgetSettings } from './time-management';
 import type { RogueRoomOptions } from '../room-battle';
@@ -67,9 +70,9 @@ export class AIChallengeManager {
 		return {
 			userid: user.id,
 			protocolVersion: 2,
-			formats: CHALLENGE_FORMATS.map(format => ({ ...format })),
+			formats: CHALLENGE_FORMATS.map(format => ({ ...format, extremeCap: EXTREME_CAPS[format.id] })),
 			enabled: !this.disposed && this.settings.enabled,
-			trainers: this.list(), difficulties: ['normal', 'hard'],
+			trainers: this.list(), difficulties: CHALLENGE_DIFFICULTIES.slice(),
 			disconnectMs: this.settings.disconnectMs,
 			capacity: {
 				active: this.reservations.size, maxBattles: this.settings.maxBattles,
@@ -86,7 +89,7 @@ export class AIChallengeManager {
 
 	/** A client retries the status query, never blindly repeats a timed-out challenge. */
 	async challengeForClient(
-		connection: Connection, trainerId: string, difficulty: Difficulty, requestId: string, formatId?: string,
+		connection: Connection, trainerId: string, difficulty: ChallengeDifficulty, requestId: string, formatId?: string,
 	) {
 		if (!/^[a-zA-Z0-9-]{8,80}$/.test(requestId)) {
 			return { requestId: '', status: 'error', message: '挑战请求标识无效，请重新打开 AI 挑战。' } as ClientChallengeResult;
@@ -136,11 +139,12 @@ export class AIChallengeManager {
 	}
 
 	async challenge(
-		connection: Connection, trainerId: string, difficulty: Difficulty, packedTeam = connection.user.battleSettings.team,
+		connection: Connection, trainerId: string, difficulty: ChallengeDifficulty,
+		packedTeam = connection.user.battleSettings.team,
 		onValidationError?: (message: string) => void, formatId?: string,
 	) {
 		if (this.disposed || !this.settings.enabled) throw new Chat.ErrorMessage('AI 挑战尚未开放。');
-		if (!['normal', 'hard'].includes(difficulty)) throw new Chat.ErrorMessage('请选择 normal（普通）或 hard（高难）。');
+		if (!CHALLENGE_DIFFICULTIES.includes(difficulty)) throw new Chat.ErrorMessage('请选择 normal（普通）、hard（高难）或 extreme（极限）。');
 		const trainer = this.registry.get(trainerId);
 		if (!trainer) throw new Chat.ErrorMessage('该训练家暂不可挑战。');
 		if (formatId !== undefined && trainer.format !== formatId) {
@@ -169,7 +173,7 @@ export class AIChallengeManager {
 			if (!ready) return null;
 			if (this.disposed || user.id !== userid || !user.connected || connection.user !== user ||
 				Punishments.isBattleBanned(user)) return null;
-			const validated = validatePlayerTeam(trainer.format, ready.settings.team);
+			const validated = validatePlayerTeam(trainer.format, ready.settings.team, difficulty);
 			if (validated.problems.length) throw new Chat.ErrorMessage(validated.problems.join('\n'));
 			roomid = Rooms.global.prepBattleRoom(trainer.format);
 			room = Rooms.createBattle({
@@ -191,7 +195,7 @@ export class AIChallengeManager {
 			});
 			if (!room) return null;
 			reservation.room = room;
-			room.add(`|-message|AI 训练家：${trainer.name}；难度：${difficulty === 'hard' ? '高难' : '普通'}。`).update();
+			room.add(`|-message|AI 训练家：${trainer.name}；难度：${DIFFICULTY_NAMES[difficulty]}。`).update();
 			if (this.settings.decisionMs === null) {
 				room.add('|-message|AI 本局不设思考时限，请等待其完成决策。').update();
 			} else {
@@ -202,11 +206,12 @@ export class AIChallengeManager {
 				room.add(`|-message|AI 通常最多思考 ${normal} 秒${extra}，完成后会提前出招。`).update();
 			}
 			room.add(`|-message|断线或离开房间后保留 ${Math.ceil(this.settings.disconnectMs / 60000)} 分钟，期间不会替你自动出招。`).update();
-			if (difficulty === 'hard') {
-				room.add('|-message|高难 AI 知晓全队初始配置及精确能力值，还会在你提交后读取本回合所选招式。').update();
+			if (aiDifficulty(difficulty) === 'hard') {
+				room.add('|-message|高难 AI 知晓你全队的完整配置与当前状态（包括道具、太晶属性、精确 HP 和 PP），并读取你已提交的招式、换人目标、太晶、Mega／超巨进化等操作。').update();
 			} else {
 				room.add('|-message|普通 AI 知晓全队每只宝可梦的配招，并根据公开对战信息进行判断。').update();
 			}
+			if (difficulty === 'extreme') room.add(`|-message|${extremeDescription(trainer.format)}`).update();
 			return room;
 		} finally {
 			if (!room) {

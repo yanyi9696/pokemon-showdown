@@ -7,13 +7,13 @@ import type { InitialPokemon, OpponentMoves } from './initial-snapshot';
 import type { OpponentChoiceState } from './opponent-choice';
 import { emergencyChoice } from './fallback';
 import type { DecisionScheduler } from './scheduler';
-import type { Difficulty, ValidatedTrainer } from './types';
+import { aiDifficulty, type ChallengeDifficulty, type ValidatedTrainer } from './types';
 import { DecisionTimeManager, type TimeBudgetSettings } from './time-management';
 
 export interface ChallengeMetrics {
 	roomId: string;
 	trainer: string;
-	difficulty: Difficulty;
+	difficulty: ChallengeDifficulty;
 	decisions: number;
 	timeouts: number;
 	workerErrors: number;
@@ -31,7 +31,7 @@ export interface ChallengeMetrics {
 export interface AIChallengeOptions extends TimeBudgetSettings {
 	rogue?: { partySize: number, boosts: StatsTable };
 	trainer: ValidatedTrainer;
-	difficulty: Difficulty;
+	difficulty: ChallengeDifficulty;
 	instanceId: string;
 	scheduler: DecisionScheduler;
 	disconnectMs: number;
@@ -83,7 +83,7 @@ export class AIController {
 	}
 
 	initialSnapshot(snapshot: InitialPokemon[]) {
-		if (this.closed || this.options.difficulty !== 'hard' || this.view) return;
+		if (this.closed || aiDifficulty(this.options.difficulty) !== 'hard' || this.view) return;
 		this.view = new InformationView({ ownSide: 'p2', difficulty: 'hard', initialOpponent: snapshot });
 	}
 
@@ -92,9 +92,9 @@ export class AIController {
 	}
 
 	opponentChoice(state: OpponentChoiceState) {
-		if (this.closed || this.options.difficulty !== 'hard' || this.opponent?.version === state.version) return;
+		if (this.closed || aiDifficulty(this.options.difficulty) !== 'hard' || this.opponent?.version === state.version) return;
 		this.opponent = state;
-		if (!this.pending || !('active' in this.pending.request)) return;
+		if (!this.pending || this.pending.request.wait) return;
 		this.revision++;
 		this.options.scheduler.cancel(this.schedulerRoomId, this.options.instanceId);
 		this.submitted = 0;
@@ -134,7 +134,7 @@ export class AIController {
 			// Observation/ability preparation runs before submit's Promise. A
 			// synchronous failure must not strand an otherwise playable turn.
 			if (this.closed || !this.pending || this.pending.request.wait || this.battle.ended) return;
-			const readsChoice = this.options.difficulty === 'hard' && 'active' in this.pending.request;
+			const readsChoice = aiDifficulty(this.options.difficulty) === 'hard';
 			if (readsChoice && !this.opponent?.ready) return;
 			this.metrics.workerErrors++;
 			this.submitted = this.pending.rqid;
@@ -159,12 +159,13 @@ export class AIController {
 		if (this.closed || !this.pending || this.battle.ended) return;
 		const { request, rqid } = this.pending;
 		if (request.wait || rqid === this.submitted) return;
-		const readsChoice = this.options.difficulty === 'hard' && 'active' in request;
+		const readsChoice = aiDifficulty(this.options.difficulty) === 'hard';
 		if (readsChoice && !this.opponent?.ready) return;
 		const choiceVersion = readsChoice ? this.opponent!.version : undefined;
 		const received = readsChoice ? this.pending.thinkingStarted ??= performance.now() : this.pending.received;
 		if (!this.view) { this.fail('missing-initial-snapshot'); return; }
-		const observation = this.view.observe(request, readsChoice ? this.opponent?.move : undefined);
+		const observation = this.view.observe(request, readsChoice ? this.opponent?.move : undefined,
+			readsChoice ? this.opponent?.fullState : undefined);
 		const fingerprint = `${this.battle.turn}:${JSON.stringify(observation.request)}`;
 		if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
 		this.submitted = rqid;

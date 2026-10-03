@@ -1,5 +1,11 @@
 /** Data crossing the AI boundary must be JSON, never live simulator objects. */
 export type Difficulty = 'normal' | 'hard';
+export type ChallengeDifficulty = Difficulty | 'extreme';
+export const CHALLENGE_DIFFICULTIES: readonly ChallengeDifficulty[] = ['normal', 'hard', 'extreme'];
+export const DIFFICULTY_NAMES = { normal: '普通', hard: '高难', extreme: '极限' } as const;
+export function aiDifficulty(difficulty: ChallengeDifficulty): Difficulty {
+	return difficulty === 'normal' ? 'normal' : 'hard';
+}
 export type TrainerStyle = 'balanced' | 'aggressive' | 'defensive';
 export type ResourcePreference = 'mega' | 'zmove' | 'terastallize' | 'aura';
 
