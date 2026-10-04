@@ -782,6 +782,9 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 	hawluchafantasy: {
 		tier: "RU",
 	},
+	hawluchamega: {
+		tier: "RU",
+	},
 	hawluchamegafantasy: {
 		tier: "RU",
 		abilities: {0: "Stamina"},
@@ -1278,9 +1281,6 @@ export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
 		tier: "UU",
 	},
 	gyarados: {
-		tier: "UU",
-	},
-	hawluchamega: {
 		tier: "UU",
 	},
 	latiasmega: {
