@@ -1924,8 +1924,16 @@ export class BattleActions {
 	runMegaEvoY?: (this: BattleActions, pokemon: Pokemon) => boolean;
 
 	canTerastallize(pokemon: Pokemon) {
-		if (pokemon.getItem().zMove || pokemon.canMegaEvo || this.dex.gen !== 9) {
+		const item = pokemon.getItem();
+		if (item.zMove || pokemon.canMegaEvo || this.dex.gen !== 9) {
 			return null;
+		}
+		if (this.dex.currentMod === 'gen9fantasy') {
+			if (pokemon.baseSpecies.isMega || pokemon.baseSpecies.isGMega) return null;
+			// Zygarde gains Mega eligibility only after Power Construct. Its matching
+			// stone must block Tera before that change, when canMegaEvo is still null.
+			if (item.megaStone && [item.megaEvolves, item.megaStone, item.itemUser || []]
+				.flat().includes(pokemon.baseSpecies.name)) return null;
 		}
 		return pokemon.teraType;
 	}
