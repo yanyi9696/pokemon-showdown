@@ -2134,9 +2134,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         onResidual(pokemon) {
             if (this.effectState.pendingTrickRoom) {
                 
-                // 如果当前回合数等于它上场的初始回合数，说明是在本回合中途换上场的。
-                // 它还没有经历过完整的出招阶段，所以跳过本次结算，留到下回合。
-                if (this.turn === this.effectState.startTurn) {
+                // 仅跳过本回合刚换上场、还没有行动机会的宝可梦。
+                // Mega / G-Mega 获得特性时 activeTurns 不会清零，仍须在进化当回合结算。
+                if (this.turn === this.effectState.startTurn && !pokemon.activeTurns) {
                     return;
                 }
 
