@@ -112,6 +112,8 @@ export const Scripts: ModdedBattleScriptsData = {
             // ==============================
             // 【处理普通 Mega / G-Mega 进化，各有一次独立名额】
             // ==============================
+			// Eligibility may have been cached before Tera; enforce exclusion at execution too.
+			if (pokemon.terastallized) return false;
             const standardMega = pokemon.battle.dex.species.get(speciesid);
             let targetSpecies = standardMega;
             if (pokemon.species.name.endsWith('-Fantasy')) {
