@@ -1148,7 +1148,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (playerOpts) {
 			const options = {
 				name: player.name,
-				avatar: user ? `${user.avatar}` : '',
+				avatar: player.isAI ? this.options.fantasyAI?.trainer.avatar || '' : user ? `${user.avatar}` : '',
 				team: playerOpts.team || undefined,
 				rating: Math.round(playerOpts.rating || 0),
 			};
