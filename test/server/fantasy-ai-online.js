@@ -112,6 +112,11 @@ describe('Fantasy AI online challenges', function () {
 			assert.equal(manager.getPublicState(player).protocolVersion, 2);
 			assert.equal(manager.getPublicState(player).formats.length, 3);
 			await until(() => room.battle.p2.request.isWait === true, 'selected-format preview request');
+			const publicTrainer = manager.list().find(entry => entry.id === definition.id);
+			assert(room.log.log.some(line => line.startsWith(`|player|p2|AI · ${publicTrainer.name}|${publicTrainer.avatar}|`)),
+				'The battle must use the same trainer avatar as the challenge menu');
+			assert(room.log.log.some(line => line.startsWith(`|player|p1|${player.name}|${player.avatar}|`)),
+				'The human player must keep their selected avatar');
 			room.battle.choose(player, 'team 123456');
 			await until(() => room.battle.turn === 1, 'selected-format team preview');
 			room.battle.choose(player, 'move 1');
