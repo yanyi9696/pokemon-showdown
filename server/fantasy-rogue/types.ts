@@ -4,6 +4,8 @@ import type { TrainerStyle } from '../fantasy-ai/types';
 export type RogueNodeKind = 'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 'reward';
 export interface RogueEncounter {
 	name: string;
+	/** The independent 1% fourth encounter; no extra item drop is enabled yet. */
+	bonus?: boolean;
 	team: PokemonSet[];
 	/** Single-Pokemon elite alternatives, drawn once and removed from the saved encounter. */
 	candidates?: PokemonSet[];
@@ -16,6 +18,7 @@ export interface RogueNode {
 	id: string;
 	name: string;
 	kind: RogueNodeKind;
+	biome?: { id: string, name: string, tier: number, level: number };
 	/** Once the first fight starts, supplies are locked until this continuous challenge ends. */
 	noHealing?: boolean;
 	encounters: RogueEncounter[];
@@ -38,6 +41,8 @@ export interface RogueStarter {
 }
 export interface RogueContent {
 	version: string;
+	/** Draw the authored 14-region routes once per floor and persist them in the run. */
+	biomeEncounters?: boolean;
 	/** Explicitly compatible saves retain their current encounter and use new content on later floors. */
 	compatibleVersions?: string[];
 	label?: string;
@@ -65,6 +70,8 @@ export interface RogueRun extends RogueInventory {
 	floor: number;
 	phase: 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete';
 	node?: RogueNode;
+	/** Saved route candidates, including encounters, must survive reloads and reconnects. */
+	choices?: RogueNode[];
 	encounter: number;
 	attempt: number;
 	/** Failed/retreated encounters keep their index and all spent resources. */

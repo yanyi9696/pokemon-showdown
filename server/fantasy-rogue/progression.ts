@@ -4,6 +4,7 @@ import { Dex, toID } from '../../sim/dex';
 import { ROGUE_FORMAT, ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
 import { experienceAtLevel, levelAtExperience, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import type { RogueRun } from './types';
+import { evolutionChildren, partyEvolutionLevel } from './evolution';
 
 /** RPG move/evolution data uses ordinary species, never the locked Fantasy move pool. */
 const baseDex = Dex.mod('gen9');
@@ -65,15 +66,22 @@ export function rememberMove(mon: RoguePokemon, id: string) {
 	}
 }
 
-export function levelMoves(name: string) {
+export function levelMoves(name: string): { move: string, level: number, generation: number }[] {
 	const species = baseDex.species.get(name);
-	const learnset = baseDex.species.getLearnsetData(species.id).learnset || {};
+	let learnset = baseDex.species.getLearnsetData(species.id).learnset;
+	if (!learnset && species.baseSpecies !== species.name) {
+		return levelMoves(species.changesFrom || species.baseSpecies);
+	}
+	learnset ||= {};
 	const entries: { move: string, level: number, generation: number }[] = [];
 	for (const [move, sources] of Object.entries(learnset)) {
 		for (const source of sources) {
 			const match = /^([1-9])L(\d+)$/.exec(source);
 			if (match) entries.push({ move, generation: Number(match[1]), level: Number(match[2]) });
 		}
+	}
+	if (species.changesFrom && species.changesFrom !== species.name) {
+		entries.push(...levelMoves(species.changesFrom));
 	}
 	const generation = Math.max(0, ...entries.map(entry => entry.generation));
 	return entries.filter(entry => entry.generation === generation)
@@ -116,14 +124,14 @@ function offerMoves(run: RogueRun, mon: RoguePokemon, from: number, to: number) 
 }
 
 export function evolutionOptions(mon: RoguePokemon): { species: string, item?: string }[] {
-	const parent = baseDex.species.get(mon.set.species);
-	return parent.evos.flatMap(name => {
-		const child = baseDex.species.get(name);
+	return evolutionChildren(mon.set.species).flatMap(child => {
 		if (child.gender && mon.set.gender && child.gender !== mon.set.gender) return [];
-		if (child.evoType === 'useItem') return [{ species: child.name, item: toID(child.evoItem) }];
+		if (mon.set.level < partyEvolutionLevel(child.name)) return [];
+		if (child.evoType === 'useItem') {
+			return [{ species: child.name, item: toID(child.evoItem || (child.id === 'kleavor' ? 'Black Augurite' : '')) }];
+		}
 		if (child.evoType === 'trade') return [{ species: child.name, item: 'linkingcord' }];
-		if (!child.evoType && child.evoLevel && mon.set.level >= child.evoLevel) return [{ species: child.name }];
-		return [];
+		return [{ species: child.name }];
 	});
 }
 

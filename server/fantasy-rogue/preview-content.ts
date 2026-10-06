@@ -4,6 +4,12 @@ import { fixedFloor, BOSS_FLOORS } from './content';
 import { levelMoves } from './progression';
 import { eliteBossCandidates } from './elite-bosses';
 import type { RogueContent, RogueEncounter, RogueNode } from './types';
+import { RogueBiomes } from './biome-data';
+import { createBiomeRoutes } from './biome-routes';
+import { MajorLegendaryPool, unlistedFamilies, validateBiomePools } from './biome-pools';
+import { makeEncounterSet } from './encounter-sets';
+import { evolutionChildren } from './evolution';
+import { rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
 
 const dex = Dex.mod('gen9fantasy');
 const ordinary = Dex.mod('gen9');
@@ -12,14 +18,15 @@ const stats = (value: number): StatsTable => ({
 });
 
 export const PreviewBalance = {
-	version: 'preview-2026-09-v4',
+	version: 'preview-2026-10-v5',
 	initialMoney: 1500,
 	initialBag: { pokeball: 12, potion: 6, revive: 1, elixir: 1, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
 	bossLevel: (floor: number) => Math.min(100, 5 + Math.ceil(floor / 2)),
 };
 
-export const PreviewBiomes = [
+/** Provisional trainer themes only; wild/elite encounters use the authored 14-region ecology. */
+const PreviewTrainerThemes = [
 	{ name: '晨曦草地', pool: ['Pidgey', 'Rattata', 'Sentret', 'Zigzagoon', 'Bidoof', 'Fletchling', 'Rookidee', 'Caterpie'] },
 	{ name: '林间溪流', pool: ['Magikarp', 'Poliwag', 'Wooper', 'Buizel', 'Tympole', 'Chewtle', 'Wingull', 'Lotad'] },
 	{ name: '苔光森林', pool: ['Weedle', 'Oddish', 'Bellsprout', 'Sewaddle', 'Shroomish', 'Ralts', 'Seedot', 'Venipede'] },
@@ -97,8 +104,10 @@ function makeSet(name: string, level: number, quality = 15, boss = false): Pokem
 }
 
 export function createPreviewContent(): RogueContent {
+	validateBiomePools();
 	const content: RogueContent = {
-		version: PreviewBalance.version, compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3'],
+		version: PreviewBalance.version, biomeEncounters: true,
+		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4'],
 		label: '幻想杯肉鸽 · 200 层试玩版',
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },
@@ -131,15 +140,37 @@ export function createPreviewContent(): RogueContent {
 	};
 	const registerCatch = (name: string) => {
 		const captured = ordinary.species.get(name);
-		let first = captured;
-		while (first.prevo) first = ordinary.species.get(first.prevo);
+		const first = rogueStarterSpecies(name);
 		if (!content.starters.some(starter => starter.id === first.id)) {
-			content.starters.push({ id: first.id, set: makeSet(first.name, 5, 20), availableInitially: false });
+			content.starters.push({ id: first.id, set: makeEncounterSet(first.name, 5, 20), availableInitially: false });
 		}
-		const legendary = !captured.prevo && !captured.evos.length &&
+		const legendary = first.id !== 'meltan' && !first.prevo && !first.evos.length &&
 			captured.tags.some(tag => ['Mythical', 'Restricted Legendary', 'Sub-Legendary'].includes(tag));
 		content.unlocks[captured.id] = { starter: first.id, captures: legendary ? 10 : 1 };
 	};
+	// Include every possible branch and fallback, not just the minimum forms written in each slot.
+	const catchableSpecies = new Set([
+		...RogueBiomes.flatMap(biome => biome.tiers.flatMap(tier => tier.flatMap(slot => slot.species))),
+		...unlistedFamilies(), ...MajorLegendaryPool,
+	]);
+	for (const name of catchableSpecies) {
+		registerCatch(name);
+		const species = ordinary.species.get(name);
+		if (species.prevo) catchableSpecies.add(species.prevo);
+		const first = rogueStarterSpecies(name);
+		catchableSpecies.add(first.name);
+		for (const child of evolutionChildren(name)) {
+			catchableSpecies.add(child.name);
+			if (child.evoType === 'useItem') {
+				const itemName = child.evoItem || (child.id === 'kleavor' ? 'Black Augurite' : '');
+				const id = toID(itemName);
+				if (!id) throw new Error(`缺少 ${child.name} 的进化道具配置`);
+				if (!content.items.some(item => item.id === id)) {
+					content.items.push({ id, name: itemName, kind: 'evolution', price: 1200 });
+				}
+			}
+		}
+	}
 	const encounter = (name: string, level: number, catchable: boolean, elite = false): RogueEncounter => {
 		const species = stageAtLevel(name, level);
 		if (catchable) registerCatch(species);
@@ -169,7 +200,7 @@ export function createPreviewContent(): RogueContent {
 		}
 		const zone = Math.min(9, Math.floor((floor - 1) / 20));
 		const wild = (offset: number): RogueNode => {
-			const biome = PreviewBiomes[(zone + offset) % PreviewBiomes.length];
+			const biome = PreviewTrainerThemes[(zone + offset) % PreviewTrainerThemes.length];
 			return { id: `wild${offset}`, name: biome.name, kind: 'wild',
 				reward: { money: 150 + floor * 12, items: floor % 3 === 0 ? { potion: 1 } : {} },
 				encounters: [0, 1, 2].map(i => encounter(biome.pool[(floor * 3 + i) % biome.pool.length], level, true)),
@@ -178,13 +209,13 @@ export function createPreviewContent(): RogueContent {
 		let third: RogueNode;
 		if (floor >= 6 && floor % 3 === 0) {
 			const legends = ['Articuno', 'Zapdos', 'Moltres', 'Raikou', 'Entei', 'Suicune', 'Latias', 'Latios', 'Mew'];
-			const pool = PreviewBiomes[zone].pool;
+			const pool = PreviewTrainerThemes[zone].pool;
 			const name = floor >= 130 ? legends[Math.floor(floor / 3) % legends.length] : pool[floor % pool.length];
 			third = { id: 'elite', name: '精英挑战（等级 +5）', kind: 'elite',
 				reward: { money: 280 + floor * 20, items: { greatball: 1 } },
 				encounters: [encounter(name, Math.min(100, level + 5), true, true)] };
 		} else if (floor >= 5 && floor % 3 === 1) {
-			const pool = PreviewBiomes[zone].pool;
+			const pool = PreviewTrainerThemes[zone].pool;
 			third = { id: 'trainer', name: '旅行训练家', kind: 'trainer', reward: { money: 400 + floor * 24, items: {} }, encounters: [{
 				name: '旅行训练家', style: 'balanced', catchable: false,
 				team: Array.from({ length: Math.min(4, 2 + Math.floor(floor / 70)) }, (_, i) =>
@@ -195,7 +226,8 @@ export function createPreviewContent(): RogueContent {
 			third = { id: 'supplies', name: '补给箱', kind: 'reward', encounters: [],
 				reward: { money: 100 + floor * 8, items: { [candy]: 1, potion: 1, pokeball: 2 } } };
 		}
-		content.floors[floor] = [wild(0), wild(1), third];
+		// Deterministic examples validate the pack. Each run draws and saves its own routes on entering a floor.
+		content.floors[floor] = createBiomeRoutes(floor, [wild(0), wild(1), third], undefined, max => Math.min(1, max - 1));
 	}
 	return content;
 }

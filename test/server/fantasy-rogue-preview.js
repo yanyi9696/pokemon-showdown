@@ -39,7 +39,10 @@ describe('Fantasy Rogue playable preview', () => {
 		battle.choose('p2', 'team 1');
 		return run;
 	}
-	beforeEach(() => { store = new RogueStore(':memory:'); engine = new RogueEngine(store, createPreviewContent()); });
+	beforeEach(() => {
+		store = new RogueStore(':memory:');
+		engine = new RogueEngine(store, createPreviewContent(), max => Math.min(1, max - 1));
+	});
 	afterEach(() => {
 		battle?.destroy(); battle = undefined; store.close();
 	});

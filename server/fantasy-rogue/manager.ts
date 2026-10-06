@@ -73,6 +73,7 @@ export class RogueManager {
 				teraUnlocked: !!run.teraUnlocked,
 				encounters: run.node?.encounters.length || 0, node: run.node && {
 					name: run.node.name, kind: run.node.kind, noHealing: !!run.node.noHealing,
+					biome: run.node.biome, bonusEncounter: !!run.node.encounters[run.encounter]?.bonus,
 					reward: { ...run.node.reward, points: run.node.kind === 'boss' ? 1 : 0 },
 				},
 				team: run.team.map(saved => {
@@ -87,8 +88,9 @@ export class RogueManager {
 				}), bag: run.bag, money: run.money, boosts: run.boosts, lastReward: run.lastReward,
 				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture, pendingMoves: run.pendingMoves || [],
 				roomid: run.battle?.roomid, fixed: fixedFloor(run.floor), boss: BOSS_FLOORS.get(run.floor),
-				choices: run.phase === 'choose' ? (content?.floors[run.floor] || []).map(node => ({
+				choices: run.phase === 'choose' ? (run.choices || content?.floors[run.floor] || []).map(node => ({
 					id: node.id, kind: node.kind, name: node.name,
+					biome: node.biome,
 					reward: { ...node.reward, points: node.kind === 'boss' ? 1 : 0 },
 				})) : [],
 			} : null,

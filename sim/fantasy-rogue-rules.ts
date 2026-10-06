@@ -2,6 +2,32 @@ import { Dex, toID } from './dex';
 import { RogueExperienceTables, RogueSpeciesData } from './fantasy-rogue-data';
 import { RogueEffortData } from './fantasy-rogue-evs';
 
+// PokéAPI gives these default forms explicit suffixes; PS omits them from the species ID.
+const effortAliases: Record<string, string> = {
+	frillish: 'frillishmale', jellicent: 'jellicentmale', pyroar: 'pyroarmale',
+	basculegion: 'basculegionmale', basculegionf: 'basculegionfemale',
+	indeedee: 'indeedeemale', indeedeef: 'indeedeefemale',
+	eiscue: 'eiscueice', morpeko: 'morpekofullbelly',
+	maushold: 'mausholdfamilyoffour', mausholdfour: 'mausholdfamilyoffour',
+	mausholdthree: 'mausholdfamilyofthree', oinkologne: 'oinkolognemale', oinkolognef: 'oinkolognefemale',
+	squawkabilly: 'squawkabillygreenplumage', squawkabillyblue: 'squawkabillyblueplumage',
+	squawkabillywhite: 'squawkabillywhiteplumage', squawkabillyyellow: 'squawkabillyyellowplumage',
+};
+
+/** Battle-only and alternate forms share the original family's starter, not a Lv.5 battle form. */
+export function rogueStarterSpecies(name: string) {
+	const dex = Dex.mod('gen9');
+	let species = dex.species.get(name);
+	for (let depth = 0; depth < 8; depth++) {
+		if (species.id === 'melmetal') species = dex.species.get('Meltan');
+		else if (species.prevo) species = dex.species.get(species.prevo);
+		else if (species.battleOnly || species.changesFrom || species.id === 'ursalunabloodmoon') {
+			species = dex.species.get(species.changesFrom || species.baseSpecies);
+		} else break;
+	}
+	return species;
+}
+
 /** Fantasy forms explicitly inherit their base species' out-of-battle RPG data. */
 export function rogueSpeciesData(name: string) {
 	const species = Dex.mod('gen9fantasy').species.get(name);
@@ -12,7 +38,9 @@ export function rogueSpeciesData(name: string) {
 
 export function rogueEffortYield(name: string): StatsTable {
 	const species = Dex.mod('gen9fantasy').species.get(name);
-	const data = RogueEffortData[species.id] || RogueEffortData[toID(species.baseSpecies)];
+	const base = toID(species.baseSpecies);
+	const data = RogueEffortData[species.id] || RogueEffortData[effortAliases[species.id]] ||
+		RogueEffortData[base] || RogueEffortData[effortAliases[base]];
 	if (!data) throw new Error(`缺少 ${name} 的努力值产出数据。`);
 	return { hp: data[0], atk: data[1], def: data[2], spa: data[3], spd: data[4], spe: data[5] };
 }

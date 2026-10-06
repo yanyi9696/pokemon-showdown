@@ -98,6 +98,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 	});
 	it('draws any pool member once and persists the choice across retries, duplicate requests and engine reloads', () => {
 		const originalRandomInt = crypto.randomInt;
+		const reloadedContent = createPreviewContent();
 		try {
 			for (const [floor, pool] of Object.entries(FantasyEliteBosses)) {
 				for (let index = 0; index < pool.candidates.length; index++) {
@@ -115,7 +116,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 					assert(!selected.encounters[0].candidates);
 					engine.command(user, request);
 					cmd('battle'); finish();
-					engine = new RogueEngine(store, createPreviewContent());
+					engine = new RogueEngine(store, reloadedContent);
 					cmd('battle'); engine.recover(user, account().run.battle.token);
 					assert.deepEqual(account().run.node, selected);
 					assert.equal(draws, 1);
@@ -157,7 +158,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 		cmd('abandon'); cmd('start', { starters: ['bulbasaur'] });
 		assert.equal(account().run.teraUnlocked, false, 'New adventures start locked');
 	});
-	for (const version of ['preview-2026-09-v2', 'preview-2026-09-v3']) {
+	for (const version of ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4']) {
 		it(`preserves the selected enemy when upgrading ${version}, and rejects unknown versions`, () => {
 			restBefore(10); cmd('continue');
 			store.change(user, saved => {

@@ -12,6 +12,8 @@ import {
 } from './progression';
 import { experienceYield, rogueEffortYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { canEditParty, editParty, healingLocked, TEAM_ACTIONS } from './team';
+import { createBiomeRoutes } from './biome-routes';
+import type { RogueRandom } from './biome-pools';
 export { createRoguePokemon } from './progression';
 
 export const ROGUE_EMERGENCY_COST = 5000;
@@ -26,7 +28,9 @@ const inventory = (run: RogueInventory): RogueInventory => structuredClone({
 export class RogueEngine {
 	readonly content: RogueContent | null;
 	readonly store: RogueStore;
-	constructor(store: RogueStore, content: RogueContent | null) {
+	private readonly random: RogueRandom;
+	constructor(store: RogueStore, content: RogueContent | null, random: RogueRandom = max => randomInt(max)) {
+		this.random = random;
 		this.store = store;
 		this.content = content && validateContent(content);
 	}
@@ -46,6 +50,8 @@ export class RogueEngine {
 		return account.run;
 	}
 	private normalizeRun(run: RogueRun) {
+		if (this.content && (run.contentVersion === this.content.version ||
+			this.content.compatibleVersions?.includes(run.contentVersion))) this.prepareChoices(run);
 		for (const mon of [...run.team, ...run.checkpoint.team, ...(run.pendingCapture ? [run.pendingCapture] : [])]) {
 			const legacyMemory = !mon.moveMemory;
 			ensureMemberMemory(mon);
@@ -89,21 +95,29 @@ export class RogueEngine {
 		delete run.battle;
 		delete run.recovery;
 		delete run.node;
+		delete run.choices;
 		run.phase = 'choose';
+		this.prepareChoices(run);
 		const options = this.configured().floors[run.floor];
 		if (options && fixedFloor(run.floor)) this.select(run, options[0].id);
 	}
+	private prepareChoices(run: RogueRun) {
+		if (run.phase !== 'choose' || run.choices || !this.content?.biomeEncounters || fixedFloor(run.floor)) return;
+		const templates = this.content.floors[run.floor];
+		if (templates) run.choices = createBiomeRoutes(run.floor, templates, undefined, this.random);
+	}
 	private select(run: RogueRun, id: string) {
 		requireRule(run.phase === 'choose', '本层已经选择了路线。');
-		const node = this.configured().floors[run.floor]?.find(option => option.id === id);
+		const node = (run.choices || this.configured().floors[run.floor])?.find(option => option.id === id);
 		requireRule(node, '本层内容尚未配置或路线无效。');
 		run.node = structuredClone(node);
+		delete run.choices;
 		for (const encounter of run.node.encounters) {
 			if (!encounter.candidates) continue;
-			const selected = encounter.candidates[randomInt(encounter.candidates.length)];
+			const selected = encounter.candidates[this.random(encounter.candidates.length)];
 			if (!selected.gender) {
 				const species = Dex.mod('gen9fantasy').species.get(selected.species);
-				selected.gender = species.gender || (randomInt(256) < species.genderRatio.F * 256 ? 'F' : 'M');
+				selected.gender = species.gender || (this.random(256) < species.genderRatio.F * 256 ? 'F' : 'M');
 			}
 			encounter.team = [selected];
 			delete encounter.candidates;
