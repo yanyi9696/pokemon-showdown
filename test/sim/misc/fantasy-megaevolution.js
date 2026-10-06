@@ -4,6 +4,62 @@ const assert = require('../../assert');
 const { Battle, TeamValidator } = require('../../../dist/sim');
 const { Format } = require('../../../dist/sim/dex-formats');
 
+describe('Fantasy Mega Gengar', () => {
+	let battle;
+	const createSet = (species = 'Gengar-Mega-Fantasy') => ({
+		species, item: 'Gengarite', ability: 'Levitate', nature: 'Timid',
+		moves: ['Wa Si Ti Huan', 'Sludge Bomb', 'Destiny Bond', 'Bitter Malice'],
+		evs: { spa: 252, spd: 4, spe: 252 },
+	});
+
+	afterEach(() => {
+		battle?.destroy();
+		battle = null;
+	});
+
+	for (const species of ['Gengar-Fantasy', 'Gengar-Mega-Fantasy']) {
+		it(`should validate ${species} with Levitate and Wa Si Ti Huan in FC Uber`, () => {
+			const team = [createSet(species)];
+			assert.legalTeam(team, 'gen9fcuber');
+			assert.equal(team[0].species, 'Gengar-Fantasy');
+			assert.equal(team[0].ability, 'Levitate');
+			assert.equal(team[0].moves[0], 'Wa Si Ti Huan');
+		});
+	}
+
+	it('should retain the Fantasy Mega tier ban in FC OU', () => {
+		const problems = TeamValidator.get('gen9fcou').validateTeam([createSet()]);
+		assert(problems?.some(problem => problem.includes('banned')));
+		assert(problems.some(problem => problem.includes('Gengar-Mega-Fantasy')));
+		assert(!problems.some(problem => problem.includes('ND AG') || problem.includes("can't learn")));
+	});
+
+	it('should not give ordinary Mega Gengar the Fantasy learnset or tier', () => {
+		const set = { ...createSet('Gengar-Mega'), ability: 'Cursed Body' };
+		const problems = TeamValidator.get('gen9fcuber').validateTeam([set]);
+		assert(problems?.some(problem => problem.includes('ND AG')));
+		assert(problems.some(problem => problem.includes("can't learn Wa Si Ti Huan")));
+	});
+
+	it('should start the imported Mega set as Fantasy Gengar and evolve into its Fantasy Mega', () => {
+		const team = [createSet()];
+		assert.legalTeam(team, 'gen9fcuber');
+		battle = new Battle({
+			format: new Format({ name: 'Fantasy Mega Gengar test', mod: 'gen9fantasy', ruleset: [] }),
+			strictChoices: true, seed: [1, 2, 3, 4],
+		});
+		battle.setPlayer('p1', { team });
+		battle.setPlayer('p2', { team: [{ species: 'Blissey', ability: 'Natural Cure', moves: ['Splash'] }] });
+		const gengar = battle.p1.active[0];
+		assert.equal(gengar.species.name, 'Gengar-Fantasy');
+		assert.equal(gengar.ability, 'levitate');
+		assert.equal(gengar.canMegaEvo, 'Gengar-Mega-Fantasy');
+		battle.makeChoices('move sludgebomb mega', 'move splash');
+		assert.equal(gengar.species.name, 'Gengar-Mega-Fantasy');
+		assert.equal(gengar.ability, 'guiying');
+	});
+});
+
 describe('Fantasy Mega Rayquaza', () => {
 	let battle;
 
