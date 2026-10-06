@@ -261,6 +261,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		color: "Purple",
 		eggGroups: ["Amorphous"],
 		requiredItem: "Gengarite",
+		requiredForme: "Gengar-Fantasy",
+		battleOnly: "Gengar-Fantasy",
 	},
 	gengargmegafantasy: {
 		num: 569,
