@@ -1,16 +1,21 @@
 import { randomUUID } from 'crypto';
 import { FS, Utils } from '../../lib';
 import { Dex, toID } from '../../sim/dex';
+import { rogueOpponentAvatar } from './trainer-bosses';
 import { Teams } from '../../sim/teams';
 import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
 import { FantasyRogueContent } from '../../config/fantasy-rogue';
 import { getAIManager, type AIChallengeManager } from '../fantasy-ai/manager';
-import { ROGUE_EMERGENCY_COST, RogueEngine } from './engine';
+import { ROGUE_EMERGENCY_COST, RogueEngine, rogueSlotCost } from './engine';
+import { ROGUE_CAPTURE_COUNTS } from '../../sim/fantasy-rogue-rules';
 import { RogueStore } from './store';
 import { BOSS_FLOORS, fixedFloor } from './content';
 import type { RogueCommand } from './types';
 import { experienceProgress, evolutionOptions, ensureMemberMemory, rebuildMember } from './progression';
 import { healingLocked, inventoryItem } from './team';
+import { starterMoves, starterTraits } from './starter-traits';
+import { spiritItems, spiritShopAvailable } from './spirits';
+import { activeRogueSpirits, rogueSpirit, roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 
 export class RogueManager {
 	readonly engine: RogueEngine;
@@ -46,9 +51,9 @@ export class RogueManager {
 		const account = this.engine.migrate(user.id);
 		const content = this.engine.content;
 		const run = account.run;
-		const items = content ? [...content.items] : [];
+		const items = content ? [...spiritItems(content, run)] : [];
 		if (run && content) {
-			for (const id of [...Object.keys(run.bag), ...run.team.map(mon => toID(mon.set.item))]) {
+			for (const id of [...Object.keys(run.bag), ...[...run.team, ...(run.box || [])].map(mon => toID(mon.set.item))]) {
 				if (!id || items.some(item => item.id === id)) continue;
 				const item = inventoryItem(content, id);
 				if (item) items.push(item);
@@ -58,14 +63,30 @@ export class RogueManager {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			account: {
 				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
+				slotCost: rogueSlotCost(account.slots),
 				captures: account.captures, unlocked: account.unlocked,
+				spiritUnlocked: !!content?.spirits && (!!account.spiritUnlocked || this.engine.localSpirits),
 			},
+			localSpirits: this.engine.localSpirits,
+			spirits: this.engine.localSpirits && content?.spirits ? activeRogueSpirits() : [],
+			unlockRequirements: ROGUE_CAPTURE_COUNTS,
+			natures: Dex.natures.all().map(nature => ({
+				id: nature.id, name: nature.name, plus: nature.plus, minus: nature.minus,
+			})),
 			starters: content?.starters.map(starter => ({
 				id: starter.id, species: starter.set.species, level: starter.set.level,
 				available: starter.availableInitially || account.unlocked.includes(starter.id),
+				traits: starterTraits(account, starter.id),
+				abilities: Object.entries(Dex.mod('gen9fantasy').species.get(starter.set.species).abilities)
+					.map(([slot, name]) => ({ id: toID(name), name, hidden: slot === 'H' })),
+				gender: Dex.mod('gen9fantasy').species.get(starter.set.species).gender,
+				defaultMoves: starter.set.moves.map(toID),
+				moves: starterMoves(account, content, starter.id),
 			})) || [],
-			items, shopItems: content?.items.map(item => item.id) || [],
+			items, shopItems: items.filter(item => spiritShopAvailable(item, run?.floor || 1) &&
+				content?.items.some(entry => entry.id === item.id)).map(item => item.id),
 			run: run ? {
+				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box,
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
 				recovery: run.recovery, retreating: !!run.battle?.retreatRequested,
 				healingLocked: healingLocked(run), emergencyCost: ROGUE_EMERGENCY_COST,
@@ -73,7 +94,9 @@ export class RogueManager {
 				teraUnlocked: !!run.teraUnlocked,
 				encounters: run.node?.encounters.length || 0, node: run.node && {
 					name: run.node.name, kind: run.node.kind, noHealing: !!run.node.noHealing,
+					rocket: run.node.rocket, hpPurchases: run.node.hpPurchases || 0,
 					biome: run.node.biome, bonusEncounter: !!run.node.encounters[run.encounter]?.bonus,
+					wildLoot: run.node.wildLoot, encounterLoot: run.node.wildLoot?.[run.encounter],
 					reward: { ...run.node.reward, points: run.node.kind === 'boss' ? 1 : 0 },
 				},
 				team: run.team.map(saved => {
@@ -88,9 +111,12 @@ export class RogueManager {
 				}), bag: run.bag, money: run.money, boosts: run.boosts, lastReward: run.lastReward,
 				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture, pendingMoves: run.pendingMoves || [],
 				roomid: run.battle?.roomid, fixed: fixedFloor(run.floor), boss: BOSS_FLOORS.get(run.floor),
-				choices: run.phase === 'choose' ? (run.choices || content?.floors[run.floor] || []).map(node => ({
+				choices: run.phase === 'choose' ? (run.choices || content?.floors[run.floor] || []).map(node => node.fogged ? {
+					id: node.id, kind: 'fog', name: '迷雾区域', fogged: true, reward: { money: 0, items: {}, points: 0 },
+				} : ({
 					id: node.id, kind: node.kind, name: node.name,
 					biome: node.biome,
+					wildLoot: node.wildLoot,
 					reward: { ...node.reward, points: node.kind === 'boss' ? 1 : 0 },
 				})) : [],
 			} : null,
@@ -126,7 +152,8 @@ export class RogueManager {
 			const broadcast = () => user.send(`|queryresponse|fantasyrogue|${JSON.stringify(this.state(user))}`);
 			try {
 				const room = this.ai().createRogueBattle(user, {
-					id: `rogue-${run.node!.id}`, name: encounter.name, avatar: '1', description: '', format: ROGUE_FORMAT,
+					id: `rogue-${encounter.trainer?.id || run.node!.id}`, name: encounter.name,
+					avatar: rogueOpponentAvatar(run), description: '', format: ROGUE_FORMAT,
 					style: encounter.style, developmentOnly: false, packedTeam: Teams.pack(encounter.team),
 					keyMembers: [], resourcePreferences: [],
 				}, Teams.pack(run.team.map(mon => mon.set)), {
@@ -137,7 +164,21 @@ export class RogueManager {
 						if (pending?.token !== token) return;
 						this.engine.settle(userid, token, result);
 						broadcast();
-						if (!result.won && pending.roomid) user.sendTo(pending.roomid as RoomID, '|fantasyrogueend|');
+						if (!result.won && pending.roomid) {
+							if (pending.retreatRequested) {
+								user.sendTo(pending.roomid as RoomID, '|fantasyrogueend|');
+							} else {
+								const settled = this.engine.store.get(userid).run!;
+								const defeat = {
+									floor: settled.floor, encounter: settled.encounter + 1, encounters: settled.node!.encounters.length,
+									retryFloor: settled.phase === 'failed', noHealing: !!settled.node!.noHealing,
+									emergencyCost: ROGUE_EMERGENCY_COST,
+								};
+								// Retain the notice for reconnects; the client waits for the native playback queue.
+								room.battle!.options.fantasyRogue!.defeat = defeat;
+								user.sendTo(pending.roomid as RoomID, `|fantasyroguedefeat|${JSON.stringify(defeat)}`);
+							}
+						}
 					},
 					onClose: () => {
 						if (this.engine.store.get(userid).run?.battle?.token === token) {
@@ -174,7 +215,7 @@ export function getRogueManager() {
 		FS('databases').mkdirpSync();
 		manager = new RogueManager(new RogueEngine(new RogueStore(
 			Config.fantasyrogue?.database || 'databases/fantasy-rogue.db'
-		), FantasyRogueContent));
+		), FantasyRogueContent, undefined, !!Config.fantasyailocal && ['127.0.0.1', '::1'].includes(Config.bindaddress || '')));
 	}
 	return manager;
 }

@@ -13,7 +13,8 @@ export type WildEvolutionResolver = (
 
 /** Called only inside the save transaction when a floor's routes are first created. */
 export function createBiomeRoutes(
-	floor: number, templates: RogueNode[], evolve: WildEvolutionResolver = wildStageAtLevel, random: RogueRandom = randomInt
+	floor: number, templates: RogueNode[], evolve: WildEvolutionResolver = wildStageAtLevel, random: RogueRandom = randomInt,
+	spirit?: string
 ): RogueNode[] {
 	const extraPool = unlistedFamilies();
 	return templates.map(template => {
@@ -21,20 +22,21 @@ export function createBiomeRoutes(
 		const elite = template.kind === 'elite';
 		const biome = weightedPick(RogueBiomes, random);
 		const tier = biomeTier(floor, elite);
-		const level = Math.min(100, Math.max(3, Math.ceil(floor / 2)) + (elite ? 5 : 0));
+		const level = Math.min(100, Math.max(3, Math.ceil(floor / 2)) + (elite ? 5 : 0) +
+			(spirit === 'mew' ? floor <= 40 ? 1 : floor <= 120 ? 2 : 3 : 0));
 		const majorBranch = elite && floor >= 161;
 		const encounter = (bonus = false): RogueEncounter => {
 			let name: string;
 			if (bonus) {
 				name = extraPool[random(extraPool.length)];
-			} else if (majorBranch && random(2) === 0) {
+			} else if (majorBranch && (spirit === 'mew' ? random(100) < 65 : random(2) === 0)) {
 				name = MajorLegendaryPool[random(MajorLegendaryPool.length)];
 			} else {
 				// Keep the endgame elite split exactly 50/50, including species also named in regional pools.
 				const slots = majorBranch ? biome.tiers[tier].map(slot => ({
 					...slot, species: slot.species.filter(species => !isMajorLegendary(species)),
 				})).filter(slot => slot.species.length) : biome.tiers[tier];
-				name = pickBiomeSlot(slots, random);
+				name = pickBiomeSlot(spirit === 'mew' ? slots.map(slot => ({ ...slot, weight: slot.weight === 2 ? 6 : slot.weight })) : slots, random);
 			}
 			name = evolve(name, level, biome, tier, random);
 			const set = makeEncounterSet(name, level, elite ? 31 : 15);
@@ -47,7 +49,7 @@ export function createBiomeRoutes(
 			};
 		};
 		const encounters = Array.from({ length: elite ? 1 : 3 }, () => encounter());
-		if (!elite && extraPool.length && random(100) === 0) encounters.push(encounter(true));
+		if (!elite && extraPool.length && random(100) < (spirit === 'mew' ? 3 : 1)) encounters.push(encounter(true));
 		return {
 			...structuredClone(template), name: elite ? `${biome.name} · 精英` : biome.name,
 			biome: { id: biome.id, name: biome.name, tier, level }, encounters,

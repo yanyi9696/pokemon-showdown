@@ -7,12 +7,19 @@ const { Teams } = require('../../dist/sim/teams');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine, createRoguePokemon } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent, PreviewBosses } = require('../../dist/server/fantasy-rogue/preview-content');
-const { validateContent, fixedFloor } = require('../../dist/server/fantasy-rogue/content');
+const { validateContent, fixedFloor, BOSS_FLOORS } = require('../../dist/server/fantasy-rogue/content');
 const { initializeExperience, gainExperience } = require('../../dist/server/fantasy-rogue/progression');
-const { experienceAtLevel, experienceYield, captureThresholds, rogueSpeciesData } = require('../../dist/sim/fantasy-rogue-rules');
+const { experienceAtLevel, experienceYield, captureThresholds, rogueSpeciesData, rogueCaptureCount } = require('../../dist/sim/fantasy-rogue-rules');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 
 describe('Fantasy Rogue playable preview', () => {
+	it('keeps displayed capture categories consistent with the configured unlock rules', () => {
+		for (const name of ['Bulbasaur', 'Charizard', 'Ditto']) {
+			assert.equal(rogueCaptureCount(name), 1, name);
+		}
+		for (const name of ['Mewtwo', 'Articuno', 'Mew', 'Regigigas', 'Nihilego', 'Poipole', 'Naganadel',
+			'Iron Bundle', 'Cosmog', 'Kubfu', 'Meltan', 'Melmetal']) assert.equal(rogueCaptureCount(name), 10, name);
+	});
 	let store, engine, battle;
 	const user = 'previewtester';
 	const account = () => store.get(user);
@@ -51,7 +58,11 @@ describe('Fantasy Rogue playable preview', () => {
 		assert.equal(content.starters.filter(starter => starter.availableInitially).length, 27);
 		for (let floor = 1; floor <= 200; floor++) {
 			assert.equal(content.floors[floor].length, fixedFloor(floor) ? 1 : 3);
-			if (fixedFloor(floor) === 'boss') assert.equal(content.floors[floor][0].name, PreviewBosses[floor]?.name || '幻想精英');
+			if (fixedFloor(floor) === 'boss') {
+				const node = content.floors[floor][0];
+				assert.equal(node.name, node.encounters[0].trainerCandidates ?
+					BOSS_FLOORS.get(floor) : PreviewBosses[floor]?.name || '幻想精英');
+			}
 		}
 		assert.equal(content.items.find(item => item.id === 'pokeball').multiplier, 1);
 		assert.equal(content.items.find(item => item.id === 'expcandyl').amount, 10000);

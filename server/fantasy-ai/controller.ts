@@ -29,7 +29,7 @@ export interface ChallengeMetrics {
 	criticalDecisionReasons?: Record<string, number>;
 }
 export interface AIChallengeOptions extends TimeBudgetSettings {
-	rogue?: { partySize: number, boosts: StatsTable };
+	rogue?: { partySize: number, boosts: StatsTable, spirit?: { id: string, floor: number } };
 	trainer: ValidatedTrainer;
 	difficulty: ChallengeDifficulty;
 	instanceId: string;
@@ -67,6 +67,7 @@ export class AIController {
 		this.timing = new DecisionTimeManager(options);
 		if (options.difficulty === 'normal') this.view = new InformationView({
 			ownSide: 'p2', difficulty: 'normal', partySize: options.rogue?.partySize, rogueBoosts: options.rogue?.boosts,
+			rogueSpirit: options.rogue?.spirit,
 		});
 		options.scheduler.register(this.schedulerRoomId, options.instanceId, milliseconds => {
 			// Refund queue waiting synchronously, including cancelled queued jobs,

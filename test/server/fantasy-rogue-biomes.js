@@ -164,17 +164,24 @@ describe('Fantasy Rogue saved regional encounters', () => {
 		assert.deepEqual(account().run.choices, choices);
 		const request = { id: randomUUID(), revision: account().revision, action: 'select', value: 'wild0' };
 		engine.command(user, request); engine.command(user, request);
+		const selected = account().run.node;
+		// Nature is assigned on route entry; the encounter identity, moves and promised loot are retained.
+		const expected = structuredClone(choices[0]);
+		expected.encounters.forEach((encounter, i) => {
+			encounter.team.forEach((set, j) => { set.nature = selected.encounters[i].team[j].nature; });
+		});
+		assert.deepEqual(selected, expected);
 		cmd('battle');
 		const run = account().run;
 		run.team[0].hp = 0;
 		engine.settle(user, run.battle.token, { encounterId: run.battle.encounterId, won: false, team: run.team, bag: run.bag });
 		engine = new RogueEngine(store, content, () => { throw new Error('must not reroll'); });
 		engine.migrate(user);
-		assert.deepEqual(account().run.node, choices[0]);
+		assert.deepEqual(account().run.node, selected);
 		assert.equal(account().run.encounter, 0);
 		assert.equal(account().run.team[0].hp, 0);
 	});
-	it('pays floor rewards once after all four encounters, and issues no bonus drop', () => {
+	it('pays normal wild loot once per encounter including the fourth, with no extra bonus candy', () => {
 		cmd('select', { value: 'wild0' });
 		const reward = account().run.node.reward;
 		const money = account().run.money;
@@ -188,8 +195,9 @@ describe('Fantasy Rogue saved regional encounters', () => {
 			assert.deepEqual(account(), settled);
 			assert.equal(account().run.floor, index < 3 ? 1 : 2);
 			assert.equal(account().run.money, index < 3 ? money : money + reward.money);
+			assert.equal(account().run.bag.tinymushroom, index + 1);
 		}
-		assert.deepEqual(account().run.bag, bag);
+		assert.deepEqual(account().run.bag, { ...bag, tinymushroom: 4 });
 	});
 	it('retains a selected v4 encounter and initializes only unselected routes during migration', () => {
 		cmd('select', { value: 'wild0' });

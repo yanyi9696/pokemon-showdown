@@ -4078,6 +4078,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 	serenegrace: {
 		onModifyMovePriority: -2,
 		onModifyMove(move) {
+			if (this.fantasyRogue?.spirit?.id === 'zygardeorder') return;
 			if (move.secondaries) {
 				this.debug('doubling secondary chance');
 				for (const secondary of move.secondaries) {

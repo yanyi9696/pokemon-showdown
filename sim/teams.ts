@@ -13,6 +13,7 @@ import type { PRNG, PRNGSeed } from './prng';
 export interface PokemonSet {
 	/** Internal Fantasy Rogue metadata; omitted by ordinary team import/packing. */
 	fantasyRogueStats?: StatsTable;
+	fantasyRogueScale?: number;
 	fantasyRogueId?: string;
 	/**
 	 * Nickname. Should be identical to its base species if not specified

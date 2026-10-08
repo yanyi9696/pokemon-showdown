@@ -6,6 +6,7 @@ import type { WorldHypothesis } from './world';
 import { FANTASY_VOLATILES, restoreDelayedHealing, restoreFantasyState } from './fantasy-state';
 import { hasUltraBurstResource } from './actions';
 import { trickRoomTurns } from './trick-room';
+import { rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 
 const VOLATILES = new Set([
 	'confusion', 'taunt', 'torment', 'healblock', 'ingrain', 'aquaring', 'magnetrise', 'telekinesis',
@@ -30,6 +31,13 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 		battle.p2.foe = battle.p1;
 		battle.started = true;
 		battle.turn = world.turn;
+		if (world.format === 'gen9fantasyrogue' && world.rogueSpirit) {
+			battle.fantasyRogue = {
+				encounterId: 'hypothetical-spirit', team: [], bag: {}, balls: [], catchable: false,
+				boosts: world.rogueBoosts || { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+				spirit: { ...world.rogueSpirit, windSide: Math.floor((world.turn - 1) / 4) % 2 },
+			};
+		}
 		battle.format.onBegin?.call(battle);
 		for (const rule of battle.ruleTable.keys()) {
 			if (!'+*-!'.includes(rule.charAt(0))) battle.dex.formats.get(rule).onBegin?.call(battle);
@@ -180,6 +188,9 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 		battle.field.weatherState = fieldState(world.memory.weather);
 		battle.field.terrain = world.memory.terrain as ID;
 		battle.field.terrainState = fieldState(world.memory.terrain);
+		const spirit = rogueSpirit(world.rogueSpirit?.id);
+		if (spirit?.weather === battle.field.weather) delete battle.field.weatherState.duration;
+		if (spirit?.terrain === battle.field.terrain) delete battle.field.terrainState.duration;
 		for (const id of world.memory.pseudoWeather) battle.field.pseudoWeather[id] = fieldState(id);
 		battle.log.length = 0;
 		battle.log.push(...world.publicLog);

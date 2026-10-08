@@ -349,15 +349,21 @@ export class Battle {
 	}
 
 	random(m?: number, n?: number) {
+		if (this.fantasyRogue?.spirit?.id === 'zygardeorder') {
+			if (m === undefined) return 0.5;
+			return n === undefined ? Math.floor((m - 1) / 2) : Math.floor((m + n - 1) / 2);
+		}
 		return this.prng.random(m, n);
 	}
 
 	randomChance(numerator: number, denominator: number) {
+		if (this.fantasyRogue?.spirit?.id === 'zygardeorder') return numerator * 2 >= denominator;
 		if (this.forceRandomChance !== null) return this.forceRandomChance;
 		return this.prng.randomChance(numerator, denominator);
 	}
 
 	sample<T>(items: readonly T[]): T {
+		if (this.fantasyRogue?.spirit?.id === 'zygardeorder' && items.length) return items[Math.floor((items.length - 1) / 2)];
 		return this.prng.sample(items);
 	}
 
@@ -458,7 +464,18 @@ export class Battle {
 				}
 			}
 			if (nextIndexes.length > 1) {
-				this.prng.shuffle(list, sorted, sorted + nextIndexes.length);
+				if (this.fantasyRogue?.spirit?.id === 'zygardeorder') {
+					const firstSide = (Math.max(1, this.turn) - 1) % 2;
+					const rank = (entry: AnyObject) => {
+						const mon = entry.pokemon || entry.effectHolder || entry;
+						const side = mon.side || (mon.n !== undefined ? mon : entry.side);
+						return side ? ((side.n - firstSide + 2) % 2) * 10 + (mon.position || 0) : 20;
+					};
+					const tied = list.slice(sorted, sorted + nextIndexes.length).sort((a, b) => rank(a) - rank(b));
+					list.splice(sorted, tied.length, ...tied);
+				} else {
+					this.prng.shuffle(list, sorted, sorted + nextIndexes.length);
+				}
 			}
 			sorted += nextIndexes.length;
 		}
@@ -2305,6 +2322,9 @@ export class Battle {
 		if (this.format.id === ROGUE_FORMAT && set.fantasyRogueStats) {
 			for (const stat of ROGUE_STATS) stats[stat] += set.fantasyRogueStats[stat];
 		}
+		if (this.format.id === ROGUE_FORMAT && set.fantasyRogueScale) {
+			for (const stat of ROGUE_STATS) stats[stat] = Math.max(1, Math.floor(stats[stat] * set.fantasyRogueScale));
+		}
 		return stats;
 	}
 
@@ -2338,6 +2358,7 @@ export class Battle {
 	}
 
 	randomizer(baseDamage: number) {
+		if (this.fantasyRogue?.spirit?.id === 'zygardeorder') return this.trunc(baseDamage * 925 / 1000);
 		const tr = this.trunc;
 		return tr(tr(baseDamage * (100 - this.random(16))) / 100);
 	}
@@ -3210,6 +3231,7 @@ export class Battle {
 				if (team.length !== this.fantasyRogue.team.length) throw new Error('Invalid rogue team');
 				for (const [i, set] of team.entries()) {
 					set.fantasyRogueStats = { ...this.fantasyRogue.boosts };
+					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 3][this.fantasyRogue.team[i].stars || 1];
 					set.fantasyRogueId = this.fantasyRogue.team[i].id;
 				}
 			}

@@ -24,7 +24,7 @@ import type { RequestState } from './battle';
 import { Pokemon, type EffectState } from './pokemon';
 import { State } from './state';
 import { toID } from './dex';
-import { chooseRogueBall } from './fantasy-rogue';
+import { chooseRogueBall, rogueCaptureChance } from './fantasy-rogue';
 
 /** A single action that can be chosen. Choices will have one Action for each pokemon. */
 export interface ChosenAction {
@@ -503,7 +503,10 @@ export class Side {
 		const rogue = this.id === 'p1' ? this.battle.fantasyRogue : undefined;
 		const payload = rogue ? { ...update, fantasyRogue: {
 			catchable: rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
-			balls: rogue.balls.map(ball => ({ id: ball.id, name: ball.name, count: rogue.bag[ball.id] || 0 })),
+			balls: rogue.balls.map(ball => ({
+				id: ball.id, name: ball.name, count: rogue.bag[ball.id] || 0,
+				chance: rogueCaptureChance(this.battle, ball),
+			})),
 		} } : update;
 		this.battle.send('sideupdate', `${this.id}\n|request|${JSON.stringify(payload)}`);
 		this.activeRequest = update;

@@ -4,6 +4,7 @@ import { copyInitialTeam, copyOpponentMoves, type InitialPokemon, type OpponentM
 import type { SelectedOpponentMove } from './opponent-choice';
 import type { Difficulty } from './types';
 import type { FullBattleState } from './full-state';
+export interface PublicRogueSpirit { id: string; floor: number }
 
 // The public log remains filtered for both modes. Complete hard-mode state
 // travels separately through the trusted simulator adapter, never this parser.
@@ -23,7 +24,7 @@ const PUBLIC_EVENTS = new Set([
 	'-message', '-center',
 ]);
 
-type InformationOptions = { ownSide: 'p1' | 'p2', partySize?: number, rogueBoosts?: StatsTable } & (
+type InformationOptions = { ownSide: 'p1' | 'p2', partySize?: number, rogueBoosts?: StatsTable, rogueSpirit?: PublicRogueSpirit } & (
 	{ difficulty: 'normal', initialOpponent?: never, opponentMoves?: readonly OpponentMoves[] } |
 	{ difficulty: 'hard', initialOpponent: readonly InitialPokemon[] }
 );
@@ -31,6 +32,7 @@ type InformationOptions = { ownSide: 'p1' | 'p2', partySize?: number, rogueBoost
 export interface Observation {
 	/** Public p1 campaign modifiers, not IVs, EVs or current private state. */
 	rogueBoosts?: StatsTable;
+	rogueSpirit?: PublicRogueSpirit;
 	/** Hard only: detached native state with real RNG and unrelated logs removed. */
 	fullState?: FullBattleState;
 	difficulty: Difficulty;
@@ -97,6 +99,7 @@ export class InformationView {
 	private readonly difficulty: Difficulty;
 	private readonly partySize: number;
 	private readonly rogueBoosts?: StatsTable;
+	private readonly rogueSpirit?: PublicRogueSpirit;
 	private readonly initialOpponent?: InitialPokemon[];
 	private opponentMoves?: OpponentMoves[];
 	private readonly publicLog: string[] = [];
@@ -109,6 +112,7 @@ export class InformationView {
 		this.partySize = options.partySize ?? 6;
 		if (!Number.isInteger(this.partySize) || this.partySize < 1 || this.partySize > 6) throw new Error('AI 队伍大小无效。');
 		this.rogueBoosts = options.rogueBoosts && { ...options.rogueBoosts };
+		this.rogueSpirit = options.rogueSpirit && { id: options.rogueSpirit.id, floor: options.rogueSpirit.floor };
 		if (options.difficulty === 'hard') {
 			if (options.initialOpponent?.length !== this.partySize) throw new Error('高难档需要完整的开局队伍快照。');
 			this.initialOpponent = copyInitialTeam(options.initialOpponent);
@@ -150,6 +154,7 @@ export class InformationView {
 		};
 		if (this.initialOpponent) observation.initialOpponent = copyInitialTeam(this.initialOpponent);
 		if (this.rogueBoosts) observation.rogueBoosts = { ...this.rogueBoosts };
+		if (this.rogueSpirit) observation.rogueSpirit = { ...this.rogueSpirit };
 		if (this.difficulty === 'hard' && fullState) observation.fullState = structuredClone(fullState);
 		if (this.opponentMoves) observation.opponentMoves = copyOpponentMoves(this.opponentMoves);
 		if (this.difficulty === 'hard' && 'active' in request && selectedMove !== undefined) {

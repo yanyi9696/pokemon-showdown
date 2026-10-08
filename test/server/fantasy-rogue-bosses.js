@@ -93,6 +93,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 		invalid.floors[10][0].encounters[0].candidates[2].moves[0] = 'not-a-move';
 		assert.throws(() => validateContent(invalid), /招式无效/);
 		const wrongFloor = createPreviewContent();
+		delete wrongFloor.floors[20][0].encounters[0].trainerCandidates;
 		wrongFloor.floors[20][0].encounters[0].candidates = eliteBossCandidates(10);
 		assert.throws(() => validateContent(wrongFloor), /固定幻想精英/);
 	});
@@ -105,6 +106,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 					let draws = 0;
 					crypto.randomInt = max => {
 						if (max === 256) return 128; // Gender is resolved once, before saving the encounter.
+						if (max === 10000 || max === 2) return 0; // Independently persisted loot kind / count.
 						assert.equal(max, pool.candidates.length); draws++; return index;
 					};
 					restBefore(Number(floor));
@@ -124,15 +126,20 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 			}
 		} finally { crypto.randomInt = originalRandomInt; }
 	});
-	it('grants opposing Tera only on the nine elite Boss floors, never ordinary elites, gyms or final bosses', () => {
+	it('grants opposing Tera to Fantasy elite bosses and authored trainers, never ordinary wilds or final bosses', () => {
 		const allowed = [10, 30, 50, 70, 90, 110, 130, 150, 170];
 		for (const [floor, nodes] of Object.entries(engine.content.floors)) {
 			for (const node of nodes.filter(node => node.encounters.length)) {
+				const candidate = node.encounters[0].trainerCandidates?.[0];
+				const selected = structuredClone(node);
+				if (candidate) selected.encounters[0].trainer = candidate.trainer;
 				store.change(user, saved => {
-					Object.assign(saved.run, { floor: Number(floor), phase: 'battle', node, encounter: 0,
+					Object.assign(saved.run, { floor: Number(floor), phase: 'battle', node: selected, encounter: 0,
 						battle: { token: 'test', encounterId: 'test' } });
 				});
-				assert.deepEqual(engine.battleState(user).tera, { player: false, opponent: allowed.includes(Number(floor)) });
+				assert.deepEqual(engine.battleState(user).tera, {
+					player: false, opponent: !!candidate || allowed.includes(Number(floor)),
+				});
 			}
 		}
 	});

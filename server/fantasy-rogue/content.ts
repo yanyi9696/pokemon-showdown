@@ -1,7 +1,7 @@
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
-import type { RogueContent } from './types';
-import { rogueSpeciesData, rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
+import type { RogueContent, RogueTrainer } from './types';
+import { rogueCaptureCount, rogueSpeciesData, rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
 
 export const ELITE_BOSS_FLOORS = new Set([10, 30, 50, 70, 90, 110, 130, 150, 170]);
 export const BOSS_FLOORS = new Map<number, string>([
@@ -32,7 +32,15 @@ export function validateContent(content: RogueContent): RogueContent {
 		ensure(/^[a-z0-9]+$/.test(item.id) && !itemIds.has(item.id), '道具标识重复或无效');
 		itemIds.add(item.id);
 		ensure(item.name && whole(item.price), `道具 ${item.id} 名称或价格无效`);
-		ensure(['ball', 'heal', 'revive', 'ether', 'cure', 'candy', 'evolution', 'held'].includes(item.kind), '未支持的道具类型');
+		const kinds = ['ball', 'heal', 'revive', 'ether', 'cure', 'candy', 'evolution', 'held', 'treasure', 'effort'];
+		ensure(kinds.includes(item.kind), '未支持的道具类型');
+		ensure(item.shopFloor === undefined || item.shopFloor === false ||
+			(Number.isSafeInteger(item.shopFloor) && item.shopFloor >= 1 && item.shopFloor <= 200), '商店解锁层数无效');
+		if (item.kind === 'treasure') ensure(whole(item.sellPrice!) && item.sellPrice! > 0, '战利品售价无效');
+		if (item.kind === 'effort') {
+			ensure(['hp', 'atk', 'def', 'spa', 'spd', 'spe'].includes(item.stat!), '基础点数类型无效');
+			ensure(item.amount === 1 || item.amount === 10, '基础点数道具数值无效');
+		}
 		if (item.kind === 'held') ensure(dex.items.get(item.id).exists, '携带道具不存在');
 		if (['heal', 'ether', 'candy'].includes(item.kind)) {
 			ensure(Number.isSafeInteger(item.amount) && item.amount! > 0, '道具数值无效');
@@ -58,6 +66,12 @@ export function validateContent(content: RogueContent): RogueContent {
 			if (content.progression) { rogueSpeciesData(set.species); ensure(set.level <= 100, '试玩版等级上限为 100'); }
 		}
 	};
+	const trainer = (entry: RogueTrainer, floor: number) => {
+		ensure(entry.name && /^[a-z0-9]+$/.test(entry.id) && /^[a-z0-9-]+$/.test(entry.avatar), '训练家身份或头像无效');
+		const roles = { gym: '道馆', elitefour: '四天王', champion: '冠军', rocket: '' };
+		ensure(roles[entry.role] === BOSS_FLOORS.get(floor) && typeof entry.tera === 'boolean', '训练家楼层或太晶化权限无效');
+		ensure(!entry.requiresGym || (entry.role === 'elitefour' && /^[a-z0-9]+$/.test(entry.requiresGym)), '隐藏天王条件无效');
+	};
 	const starterIds = new Set<string>();
 	for (const starter of content.starters) {
 		ensure(/^[a-z0-9]+$/.test(starter.id) && !starterIds.has(starter.id), '初始标识重复或无效');
@@ -71,9 +85,7 @@ export function validateContent(content: RogueContent): RogueContent {
 		ensure(unlock.captures === 1 || unlock.captures === 10, '解锁门槛只能为 1 或 10');
 		const captured = dex.species.get(species);
 		const first = rogueStarterSpecies(captured.name);
-		const singleLegendary = first.id !== 'meltan' && !first.prevo && !first.evos.length &&
-			captured.tags.some(tag => ['Mythical', 'Restricted Legendary', 'Sub-Legendary'].includes(tag));
-		ensure(unlock.captures === (singleLegendary ? 10 : 1), `${species} 的捕捉门槛与普通／单阶段神兽规则不符`);
+		ensure(unlock.captures === rogueCaptureCount(captured.name), `${species} 的捕捉门槛与普通／特殊宝可梦规则不符`);
 		const starter = content.starters.find(entry => entry.id === unlock.starter)!;
 		ensure(dex.species.get(starter.set.species).id === first.id, `${species} 必须解锁最初进化形态 ${first.name}`);
 	}
@@ -95,8 +107,25 @@ export function validateContent(content: RogueContent): RogueContent {
 				node.encounters.length === 4 && node.encounters[3].bonus), '战斗场次数量不符合节点类型');
 			ensure(whole(node.reward.money), '奖励金额无效');
 			inventory(node.reward.items);
+			if (node.wildLoot) {
+				ensure(node.wildLoot.length === node.encounters.length && node.reward.money === 0, '野怪战利品配置无效');
+				for (const loot of node.wildLoot) {
+					inventory(loot);
+					ensure(Object.keys(loot).every(id => content.items.find(item => item.id === id)?.kind === 'treasure'), '掉落必须为贵重物品');
+				}
+			}
 			for (const encounter of node.encounters) {
 				team(encounter.team);
+				if (encounter.trainer || encounter.trainerCandidates) {
+					ensure(node.kind === 'boss' && !encounter.catchable && !encounter.candidates, '训练家候选只能用于不可捕捉的训练家 Boss');
+					if (encounter.trainer) trainer(encounter.trainer, floor);
+					if (encounter.trainerCandidates) {
+						const candidates = encounter.trainerCandidates;
+						ensure(candidates.length && new Set(candidates.map(entry => entry.trainer.id)).size === candidates.length,
+							'训练家候选不能为空或重复');
+						for (const candidate of candidates) { trainer(candidate.trainer, floor); team(candidate.team); }
+					}
+				}
 				if (encounter.candidates) {
 					ensure(node.kind === 'boss' && ELITE_BOSS_FLOORS.has(floor) && !encounter.catchable,
 						'随机候选仅用于固定幻想精英 Boss');

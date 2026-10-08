@@ -5,18 +5,21 @@ import { ROGUE_FORMAT, ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-
 import { experienceAtLevel, levelAtExperience, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import type { RogueRun } from './types';
 import { evolutionChildren, partyEvolutionLevel } from './evolution';
+import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
 
 /** RPG move/evolution data uses ordinary species, never the locked Fantasy move pool. */
 const baseDex = Dex.mod('gen9');
 const battleDex = Dex.mod('gen9fantasy');
 
-export function createRoguePokemon(set: PokemonSet, boosts: StatsTable, id: string = randomUUID()): RoguePokemon {
+export function createRoguePokemon(set: PokemonSet, boosts: StatsTable, id: string = randomUUID(), stars = 1): RoguePokemon {
 	const battle = new Battle({ formatid: toID(ROGUE_FORMAT), deserialized: true });
 	try {
-		battle.setPlayer('p1', { name: 'Rogue', team: [{ ...structuredClone(set), fantasyRogueStats: { ...boosts } }] });
+		battle.setPlayer('p1', { name: 'Rogue', team: [{ ...structuredClone(set), fantasyRogueStats: { ...boosts },
+			fantasyRogueScale: rogueStarScale(stars) }] });
 		const mon = battle.p1.pokemon[0];
 		const normalized = structuredClone(mon.set);
 		delete normalized.fantasyRogueStats;
+		delete normalized.fantasyRogueScale;
 		delete normalized.fantasyRogueId;
 		const saved: RoguePokemon = {
 			id, set: normalized, hp: mon.maxhp, maxhp: mon.maxhp, status: '', statusState: {},
@@ -97,7 +100,7 @@ export function initializeExperience(mon: RoguePokemon) {
 /** Preserve damage, status, consumed items and PP. A stat rebuild cannot revive a fainted member. */
 export function rebuildMember(mon: RoguePokemon, boosts: StatsTable) {
 	ensureMemberMemory(mon);
-	const rebuilt = createRoguePokemon(mon.set, boosts, mon.id);
+	const rebuilt = createRoguePokemon(mon.set, boosts, mon.id, mon.stars);
 	mon.hp = mon.hp > 0 ? Math.max(1, Math.min(rebuilt.maxhp, mon.hp + rebuilt.maxhp - mon.maxhp)) : 0;
 	mon.maxhp = rebuilt.maxhp;
 	mon.pp = rebuilt.pp.map(slot => ({
@@ -175,6 +178,7 @@ export function gainEffort(run: RogueRun, mon: RoguePokemon, yieldStats: StatsTa
 
 export function gainExperience(run: RogueRun, mon: RoguePokemon, amount: number) {
 	initializeExperience(mon);
+	if (mon.fixedLevel) return;
 	const growth = rogueSpeciesData(mon.set.species).growth;
 	const before = mon.experience!;
 	mon.experience = Math.min(experienceAtLevel(growth, 100), before + amount);

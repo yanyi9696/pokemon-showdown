@@ -42,6 +42,23 @@ describe('Fantasy Rogue real rooms', function () {
 		Config.fantasyailocal = oldLocal;
 		Config.reportbattles = oldReporting;
 	});
+	for (const avatar of ['unknown', 'unknownf', 'brock', 'acerola', 'steven']) {
+		it(`sends the ${avatar} portrait through a real AI room player message`, async () => {
+			command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+			store.change(user.id, saved => {
+				const encounter = saved.run.node.encounters[0];
+				encounter.team[0].gender = avatar === 'unknownf' ? 'F' : 'M';
+				if (!avatar.startsWith('unknown')) encounter.trainer = {
+					id: avatar, avatar, name: avatar, role: 'gym', tera: true,
+				};
+			});
+			const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+			await until(() => room.log.log.some(line => line.startsWith('|player|p2|')), 'opponent player message');
+			assert(room.log.log.some(line => line.startsWith('|player|p2|') && line.split('|')[4] === avatar));
+			assert.equal(room.battle.fantasyAI.options.trainer.avatar, avatar);
+			room.destroy();
+		});
+	}
 	it('opens a one-versus-one real AI room, captures, saves, and continues with two party members', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		for (let encounter = 0; encounter < 2; encounter++) {
@@ -125,7 +142,7 @@ describe('Fantasy Rogue real rooms', function () {
 			assert.equal(foe[0], foe[1]);
 		} finally { testedUser.sendTo = sendTo; }
 	});
-	it('returns a real third-encounter wipe to the adventure and accepts 5000-coin emergency recovery', async () => {
+	it('settles a third-encounter wipe without forcing the room closed, restores its notice and allows emergency recovery', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			saved.run.encounter = 2; saved.run.money = 5000;
@@ -133,12 +150,29 @@ describe('Fantasy Rogue real rooms', function () {
 			saved.run.node.encounters[2].team = [set('Bulbasaur', 'Overgrow', 30, ['Tackle'])];
 		});
 		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		const notifications = [];
+		const originalSendTo = user.sendTo;
+		user.sendTo = function (roomid, data) { notifications.push([roomid, data]); return originalSendTo.call(this, roomid, data); };
 		await until(() => room.battle.p2.request.isWait === true, 'wipe preview');
 		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
 		await until(() => JSON.parse(room.battle.p1.request.request).active, 'wipe move');
 		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
 		await until(() => room.battle.ended && account().run.phase === 'ready', 'wipe settlement');
 		assert.equal(account().run.team[0].hp, 0); assert.equal(account().run.encounter, 2);
+		assert(!notifications.some(([, data]) => data === '|fantasyrogueend|'));
+		const notice = notifications.find(([id, data]) => id === room.roomid && data.startsWith('|fantasyroguedefeat|'));
+		assert(notice);
+		assert.deepEqual(JSON.parse(notice[1].slice(20)), { floor: 1, encounter: 3, encounters: 3,
+			retryFloor: false, noHealing: false, emergencyCost: 5000 });
+		assert(room.log.log.some(line => line.startsWith('|faint|')));
+		assert(room.log.log.some(line => line.startsWith('|win|')));
+		const restored = [];
+		const connection = user.connections[0], originalConnectionSendTo = connection.sendTo;
+		try {
+			connection.sendTo = (id, data) => { restored.push([id, data]); };
+			room.battle.onConnect(user, connection);
+		} finally { connection.sendTo = originalConnectionSendTo; user.sendTo = originalSendTo; }
+		assert(restored.some(([id, data]) => id === room.roomid && data === notice[1]));
 		assert.equal(manager.state(user).run.canEmergency, true);
 		assert.throws(() => command('battle'), /复活/);
 		command('emergency');

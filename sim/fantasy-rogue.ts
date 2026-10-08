@@ -10,6 +10,8 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	stars?: number;
+	fixedLevel?: number;
 	id: string;
 	set: PokemonSet;
 	hp: number;
@@ -36,6 +38,7 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	spirit?: { id: string, floor: number, hazards?: string[], windSide?: number };
 	encounterId: string;
 	team: RoguePokemon[];
 	boosts: StatsTable;
@@ -140,6 +143,21 @@ export function chooseRogueBall(side: Side, id: string) {
 	return true;
 }
 
+/** Uses the exact integer shake/critical thresholds used by throwRogueBall, without drawing RNG. */
+export function rogueCaptureChance(battle: Battle, ball: RogueBattleState['balls'][number]): number | null {
+	const state = battle.fantasyRogue;
+	const target = battle.p2?.active[0];
+	if (!state?.catchable || !target?.hp || battle.p2.pokemon.length !== 1) return null;
+	const multiplier = state.spirit?.id === 'mew' ? 2 : 1;
+	if (ball.chance !== undefined) return Math.min(1, Math.round(ball.chance * 1000000) / 1000000 * multiplier);
+	const threshold = captureThresholds(rogueSpeciesData(target.set.species).catchRate,
+		target.maxhp, target.hp, target.status, ball.multiplier!, state.caughtSpecies || 0);
+	if (threshold.guaranteed) return 1;
+	const shake = threshold.shake / 65536;
+	const critical = threshold.critical / 256;
+	return Math.min(1, (critical * shake + (1 - critical) * shake ** 4) * multiplier);
+}
+
 export function throwRogueBall(battle: Battle, id: string) {
 	const state = battle.fantasyRogue!;
 	const ball = state.balls.find(entry => entry.id === id)!;
@@ -148,18 +166,23 @@ export function throwRogueBall(battle: Battle, id: string) {
 	state.bag[id]--;
 	battle.add('-message', `投出了${ball.name}！`);
 	let success: boolean;
-	if (ball.chance !== undefined) {
-		success = battle.randomChance(Math.round(ball.chance * 1000000), 1000000);
+	// The order spirit removes battle randomness, never the advertised capture roll.
+	const chance = state.spirit?.id === 'zygardeorder' ?
+		battle.prng.randomChance.bind(battle.prng) : battle.randomChance.bind(battle);
+	if (state.spirit?.id === 'mew') {
+		success = chance(Math.round(rogueCaptureChance(battle, ball)! * 1000000), 1000000);
+	} else if (ball.chance !== undefined) {
+		success = chance(Math.round(ball.chance * 1000000), 1000000);
 	} else {
 		const threshold = captureThresholds(rogueSpeciesData(target.set.species).catchRate,
 			target.maxhp, target.hp, target.status, ball.multiplier!, state.caughtSpecies || 0);
-		const critical = battle.randomChance(threshold.critical, 256);
+		const critical = chance(threshold.critical, 256);
 		if (critical) battle.add('-message', '会心捕捉！');
 		success = threshold.guaranteed;
 		if (!success) {
 			success = true;
 			for (let i = 0; i < (critical ? 1 : 4); i++) {
-				if (!battle.randomChance(threshold.shake, 65536)) { success = false; break; }
+				if (!chance(threshold.shake, 65536)) { success = false; break; }
 			}
 		}
 	}
@@ -173,6 +196,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 		status: target.status, statusState: {},
 	};
 	delete original.set.fantasyRogueStats;
+	delete original.set.fantasyRogueScale;
 	delete original.set.fantasyRogueId;
 	state.captured = snapshotRoguePokemon(target, original);
 	recordRogueDefeat(battle, target, true);

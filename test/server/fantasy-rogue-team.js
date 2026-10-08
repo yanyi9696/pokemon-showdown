@@ -89,7 +89,7 @@ describe('Fantasy Rogue earned party editor', () => {
 		assert.equal(saved().run.bag.leftovers, 1);
 		assert.equal(member().set.item, '');
 		store.change(user, account => { account.run.phase = 'rest'; });
-		assert.throws(() => cmd('buy', { value: 'leftovers' }), /商品无效/);
+		assert.throws(() => cmd('buy', { value: 'leftovers' }), /未解锁|不在商店/);
 	});
 	it('permutes stable party identities, blocks battle edits and retains the party after a wipe', () => {
 		store.change(user, account => {

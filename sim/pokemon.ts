@@ -1355,6 +1355,9 @@ export class Pokemon {
 		if (this.species.maxHP) {
 			stats.hp = this.species.maxHP +
 				(this.battle.format.id === 'gen9fantasyrogue' ? this.set.fantasyRogueStats?.hp || 0 : 0);
+			if (this.battle.format.id === 'gen9fantasyrogue' && this.set.fantasyRogueScale) {
+				stats.hp = Math.max(1, Math.floor(stats.hp * this.set.fantasyRogueScale));
+			}
 		}
 
 		if (!this.maxhp) {

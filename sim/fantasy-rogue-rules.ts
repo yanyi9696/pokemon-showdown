@@ -28,6 +28,15 @@ export function rogueStarterSpecies(name: string) {
 	return species;
 }
 
+export const ROGUE_CAPTURE_COUNTS = { ordinary: 1, special: 10 } as const;
+
+export function rogueCaptureCount(name: string): 1 | 10 {
+	const captured = Dex.mod('gen9fantasy').species.get(name);
+	const special = captured.tags.some(tag =>
+		['Mythical', 'Restricted Legendary', 'Sub-Legendary', 'Ultra Beast', 'Paradox'].includes(tag));
+	return special ? ROGUE_CAPTURE_COUNTS.special : ROGUE_CAPTURE_COUNTS.ordinary;
+}
+
 /** Fantasy forms explicitly inherit their base species' out-of-battle RPG data. */
 export function rogueSpeciesData(name: string) {
 	const species = Dex.mod('gen9fantasy').species.get(name);

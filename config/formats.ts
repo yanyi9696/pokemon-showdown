@@ -19,6 +19,7 @@ The column value will be ignored for repeat sections.
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
 import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat } from '../sim/fantasy-rogue';
+import { maintainRogueEnvironment, startRogueSpirit } from '../sim/fantasy-rogue-spirits';
 
 export const Formats: import('../sim/dex-formats').FormatList = [
 	{
@@ -30,6 +31,32 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
 		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
 		onBegin() { initializeRogueBattle(this); },
+		onBattleStart() { startRogueSpirit(this); },
+		onResidualOrder: 100,
+		onResidual() { maintainRogueEnvironment(this); },
+		onDamage(damage, target, source, effect) {
+			const spirit = this.fantasyRogue?.spirit;
+			if (!spirit || effect.effectType !== 'Move' || !source || target.side === source.side) return;
+			if (spirit.id === 'regigigas') return Math.max(1, Math.floor(damage * (source.side.id === 'p1' ? 2 : 0.5)));
+			if (spirit.id === 'darkrai' && source.side.id === 'p1') {
+				return Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));
+			}
+		},
+		onDamagingHit(damage, target, source) {
+			if (this.fantasyRogue?.spirit?.id === 'yveltal' && source.side.id === 'p1' &&
+				target.side.id === 'p2' && source.hp > 0 && damage > 0) {
+				this.heal(Math.max(1, Math.floor(damage / 2)), source, source, this.format);
+			}
+		},
+		onNegateImmunity() {
+			if (this.fantasyRogue?.spirit?.id === 'malamar') return false;
+		},
+		onEffectivenessPriority: 1,
+		onEffectiveness(typeMod, target, type, move) {
+			if (this.fantasyRogue?.spirit?.id !== 'malamar') return;
+			if (move && !this.dex.getImmunity(move, type)) return 1;
+			if (typeMod) return -typeMod;
+		},
 		onSwitchIn(pokemon) { markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); },
 		onFaint(pokemon) { recordRogueDefeat(this, pokemon); },
 		onUpdate: onFantasyUpdate,

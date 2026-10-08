@@ -28,6 +28,9 @@ import type { RogueBattleResult, RogueBattleState, RoguePokemon } from '../sim/f
 export interface RogueRoomOptions {
 	state: RogueBattleState;
 	floor: number;
+	defeat?: {
+		floor: number, encounter: number, encounters: number, retryFloor: boolean, noHealing: boolean, emergencyCost: number,
+	};
 	onCapture: (captured: RoguePokemon) => void;
 	onResult: (result: RogueBattleResult) => void;
 	onClose: () => void;
@@ -1014,6 +1017,9 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			(connection || user).sendTo(this.roomid, `|fantasyrogue|${JSON.stringify({
 				floor: this.options.fantasyRogue.floor, userid: user.id,
 			})}`);
+			if (this.options.fantasyRogue.defeat) {
+				(connection || user).sendTo(this.roomid, `|fantasyroguedefeat|${JSON.stringify(this.options.fantasyRogue.defeat)}`);
+			}
 		}
 		if (this.fantasyAI) {
 			const { trainer, difficulty, disconnectMs } = this.fantasyAI.options;

@@ -859,7 +859,10 @@ export class BattleActions {
 		let targetHits = move.multihit || 1;
 		if (Array.isArray(targetHits)) {
 			// yes, it's hardcoded... meh
-			if (targetHits[0] === 2 && targetHits[1] === 5) {
+			if (this.battle.fantasyRogue?.spirit?.id === 'zygardeorder') {
+				const min = targetHits[0] === 2 && targetHits[1] === 5 && pokemon.hasItem('loadeddice') ? 4 : targetHits[0];
+				targetHits = Math.floor((min + targetHits[1]) / 2);
+			} else if (targetHits[0] === 2 && targetHits[1] === 5) {
 				if (this.battle.gen >= 5) {
 					// 35-35-15-15 out of 100 for 2-3-4-5 hits
 					targetHits = this.battle.sample([2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5]);
@@ -1358,8 +1361,9 @@ export class BattleActions {
 				const secondaryRoll = this.battle.random(100);
 				// User stat boosts or target stat drops can possibly overflow if it goes beyond 256 in Gen 8 or prior
 				const secondaryOverflow = (secondary.boosts || secondary.self) && this.battle.gen <= 8;
-				if (typeof secondary.chance === 'undefined' ||
-					secondaryRoll < (secondaryOverflow ? secondary.chance % 256 : secondary.chance)) {
+				const chance = secondary.chance !== undefined && secondaryOverflow ? secondary.chance % 256 : secondary.chance;
+				if (chance === undefined || (this.battle.fantasyRogue?.spirit?.id === 'zygardeorder' ?
+					chance >= 50 : secondaryRoll < chance)) {
 					this.moveHit(target, source, move, secondary, true, isSelf);
 				}
 			}
@@ -1635,10 +1639,11 @@ export class BattleActions {
 		}
 
 		const moveHit = target.getMoveHitData(move);
+		const ordered = this.battle.fantasyRogue?.spirit?.id === 'zygardeorder';
 		moveHit.crit = move.willCrit || false;
 		if (move.willCrit === undefined) {
 			if (critRatio) {
-				moveHit.crit = this.battle.randomChance(1, critMult[critRatio]);
+				moveHit.crit = ordered ? critRatio > 1 : this.battle.randomChance(1, critMult[critRatio]);
 			}
 		}
 
@@ -1666,6 +1671,9 @@ export class BattleActions {
 			basePower = 60;
 		}
 
+		if (ordered && moveHit.crit && !move.willCrit && critRatio < 4) {
+			basePower = Math.max(1, Math.floor(basePower * (critRatio === 2 ? 0.7 : 0.85)));
+		}
 		const level = source.level;
 
 		const attacker = move.overrideOffensivePokemon === 'target' ? target : source;

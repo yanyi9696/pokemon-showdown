@@ -1,15 +1,17 @@
-/** Playtest pack with user-authored Fantasy elites; other rosters and prices remain provisional. */
+/** Playtest pack with authored wild, Fantasy elite, gym, Elite Four and champion rosters. */
 import { Dex, toID } from '../../sim/dex';
 import { fixedFloor, BOSS_FLOORS } from './content';
 import { levelMoves } from './progression';
 import { eliteBossCandidates } from './elite-bosses';
+import { trainerBossCandidates } from './trainer-bosses';
 import type { RogueContent, RogueEncounter, RogueNode } from './types';
 import { RogueBiomes } from './biome-data';
 import { createBiomeRoutes } from './biome-routes';
 import { MajorLegendaryPool, unlistedFamilies, validateBiomePools } from './biome-pools';
 import { makeEncounterSet } from './encounter-sets';
 import { evolutionChildren } from './evolution';
-import { rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
+import { configureShop } from './economy';
+import { rogueCaptureCount, rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
 
 const dex = Dex.mod('gen9fantasy');
 const ordinary = Dex.mod('gen9');
@@ -18,7 +20,7 @@ const stats = (value: number): StatsTable => ({
 });
 
 export const PreviewBalance = {
-	version: 'preview-2026-10-v5',
+	version: 'preview-2026-10-v8',
 	initialMoney: 1500,
 	initialBag: { pokeball: 12, potion: 6, revive: 1, elixir: 1, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
@@ -45,21 +47,8 @@ const starters = [
 	'Rowlet', 'Litten', 'Popplio', 'Grookey', 'Scorbunny', 'Sobble', 'Sprigatito', 'Fuecoco', 'Quaxly',
 ];
 
-/** Theme rosters: size and stage scale by floor, with explicit endgame teams. */
+/** The final trainerless Boss remains provisional. Named trainers live in trainer-boss-data.ts. */
 export const PreviewBosses: Record<number, { name: string, team: string[] }> = {
-	20: { name: '岩石道馆 · 小刚', team: ['Geodude', 'Onix'] },
-	40: { name: '水系道馆 · 小霞', team: ['Starmie', 'Gyarados', 'Quagsire'] },
-	60: { name: '电系道馆 · 马志士', team: ['Raichu', 'Electrode', 'Magneton'] },
-	80: { name: '草系道馆 · 莉佳', team: ['Tangrowth', 'Victreebel', 'Vileplume', 'Leafeon'] },
-	100: { name: '毒系道馆 · 阿桔', team: ['Crobat', 'Muk', 'Weezing', 'Drapion'] },
-	120: { name: '超能道馆 · 娜姿', team: ['Alakazam', 'Espeon', 'Slowbro', 'Gardevoir', 'Bronzong'] },
-	140: { name: '火系道馆 · 夏伯', team: ['Arcanine', 'Ninetales', 'Magmortar', 'Torkoal', 'Volcarona'] },
-	160: { name: '龙系道馆 · 小椿', team: ['Kingdra', 'Flygon', 'Haxorus', 'Altaria', 'Dragonite', 'Dragalge'] },
-	165: { name: '四天王 · 恶之试炼', team: ['Umbreon', 'Honchkrow', 'Krookodile', 'Weavile', 'Bisharp', 'Hydreigon'] },
-	175: { name: '四天王 · 幽灵试炼', team: ['Dusknoir', 'Gengar', 'Chandelure', 'Aegislash', 'Mimikyu', 'Dragapult'] },
-	180: { name: '四天王 · 钢铁试炼', team: ['Skarmory', 'Scizor', 'Excadrill', 'Magnezone', 'Lucario', 'Metagross'] },
-	185: { name: '四天王 · 龙之试炼', team: ['Kingdra', 'Flygon', 'Haxorus', 'Salamence', 'Garchomp', 'Dragonite'] },
-	190: { name: '冠军 · 幻想之巅', team: ['Togekiss', 'Milotic', 'Roserade', 'Lucario', 'Spiritomb', 'Garchomp'] },
 	200: { name: '最终首领 · 幻想超梦', team: ['Mewtwo-Fantasy'] },
 };
 
@@ -106,8 +95,9 @@ function makeSet(name: string, level: number, quality = 15, boss = false): Pokem
 export function createPreviewContent(): RogueContent {
 	validateBiomePools();
 	const content: RogueContent = {
-		version: PreviewBalance.version, biomeEncounters: true,
-		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4'],
+		version: PreviewBalance.version, biomeEncounters: true, wildTreasures: true,
+		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7'],
+		spirits: true,
 		label: '幻想杯肉鸽 · 200 层试玩版',
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },
@@ -126,6 +116,7 @@ export function createPreviewContent(): RogueContent {
 			{ id: 'expcandys', name: '经验糖果 S（800 经验）', kind: 'candy', price: 600, amount: 800 },
 			{ id: 'expcandym', name: '经验糖果 M（3000 经验）', kind: 'candy', price: 1800, amount: 3000 },
 			{ id: 'expcandyl', name: '经验糖果 L（10000 经验）', kind: 'candy', price: 5000, amount: 10000 },
+			{ id: 'expcandyxl', name: '经验糖果 XL（30000 经验）', kind: 'candy', price: 18000, amount: 30000 },
 			...['Fire', 'Water', 'Thunder', 'Leaf', 'Moon', 'Sun', 'Shiny', 'Dusk', 'Dawn', 'Ice'].map(name => ({
 				id: toID(`${name} Stone`), name: dex.items.get(`${name} Stone`).name, kind: 'evolution' as const, price: 1200,
 			})),
@@ -144,9 +135,7 @@ export function createPreviewContent(): RogueContent {
 		if (!content.starters.some(starter => starter.id === first.id)) {
 			content.starters.push({ id: first.id, set: makeEncounterSet(first.name, 5, 20), availableInitially: false });
 		}
-		const legendary = first.id !== 'meltan' && !first.prevo && !first.evos.length &&
-			captured.tags.some(tag => ['Mythical', 'Restricted Legendary', 'Sub-Legendary'].includes(tag));
-		content.unlocks[captured.id] = { starter: first.id, captures: legendary ? 10 : 1 };
+		content.unlocks[captured.id] = { starter: first.id, captures: rogueCaptureCount(name) };
 	};
 	// Include every possible branch and fallback, not just the minimum forms written in each slot.
 	const catchableSpecies = new Set([
@@ -188,12 +177,15 @@ export function createPreviewContent(): RogueContent {
 		if (BOSS_FLOORS.has(floor)) {
 			const boss = PreviewBosses[floor];
 			const candidates = eliteBossCandidates(floor);
-			if (!boss && !candidates.length) throw new Error(`缺少第 ${floor} 层试玩 Boss`);
-			const name = candidates.length ? '幻想精英' : boss.name;
 			const bossLevel = PreviewBalance.bossLevel(floor);
+			const trainers = trainerBossCandidates(floor, bossLevel);
+			if (!boss && !candidates.length && !trainers.length) throw new Error(`缺少第 ${floor} 层试玩 Boss`);
+			const name = trainers.length ? BOSS_FLOORS.get(floor)! : candidates.length ? '幻想精英' : boss.name;
 			content.floors[floor] = [{ id: 'boss', name, kind: 'boss',
 				reward: { money: 800 + floor * 40, items: { greatball: 3, revive: 1 } }, encounters: [{
-					name, team: candidates.length ? [candidates[0]] : boss.team.map(species => makeSet(species, bossLevel, 25, true)),
+					name, team: trainers.length ? trainers[0].team : candidates.length ?
+						[candidates[0]] : boss.team.map(species => makeSet(species, bossLevel, 25, true)),
+					...(trainers.length ? { trainerCandidates: trainers } : {}),
 					...(candidates.length ? { candidates } : {}), style: 'balanced', catchable: false,
 				}] }];
 			continue;
@@ -229,5 +221,6 @@ export function createPreviewContent(): RogueContent {
 		// Deterministic examples validate the pack. Each run draws and saves its own routes on entering a floor.
 		content.floors[floor] = createBiomeRoutes(floor, [wild(0), wild(1), third], undefined, max => Math.min(1, max - 1));
 	}
+	configureShop(content.items);
 	return content;
 }

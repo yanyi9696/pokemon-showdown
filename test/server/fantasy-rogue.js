@@ -114,17 +114,33 @@ describe('Fantasy Rogue storage and campaign', () => {
 		assert(state().unlocked.includes('magikarp'));
 		assert(!state().unlocked.includes('gyarados'));
 	});
-	it('shares a 160-point budget, enforces caps, and snapshots upgrades at run start', () => {
-		store.change(user, account => { account.points = 161; });
+	it('uses escalating prices for existing slots and rejects insufficient or duplicate purchases', () => {
+		store.change(user, account => { account.slots = 2; account.points = 39; });
+		const before = state();
+		assert.throws(() => cmd('upgrade', {value: 'slot'}), /需要 40 点/);
+		assert.deepEqual(state(), before);
+		store.change(user, account => { account.points = 100; });
+		const request = {id: randomUUID(), revision: state().revision, action: 'upgrade', value: 'slot'};
+		engine.command(user, request); engine.command(user, request);
+		assert.equal(state().slots, 3); assert.equal(state().points, 60);
+		cmd('upgrade', {value: 'slot'});
+		assert.equal(state().slots, 4); assert.equal(state().points, 0);
+	});
+	it('shares a 360-point budget, enforces caps, and snapshots upgrades at run start', () => {
+		store.change(user, account => { account.points = 361; });
 		start();
 		assert.throws(() => cmd('upgrade', {value: 'hp'}), /进行中的冒险/);
 		assert.throws(() => cmd('upgrade', {value: 'slot'}), /进行中的冒险/);
 		assert.deepEqual(state().run.boosts, stats(0));
 		assert.equal(state().run.startingSlots, 1);
-		assert.equal(state().points, 161);
+		assert.equal(state().points, 361);
 		cmd('abandon');
 		for (const stat of Object.keys(stats(0))) for (let i = 0; i < 10; i++) cmd('upgrade', {value: stat});
-		for (let i = 0; i < 5; i++) cmd('upgrade', {value: 'slot'});
+		for (const cost of [20, 40, 60, 80, 100]) {
+			const before = state().points;
+			cmd('upgrade', {value: 'slot'});
+			assert.equal(before - state().points, cost);
+		}
 		assert.equal(state().points, 1); assert.equal(state().slots, 6);
 		assert.deepEqual(state().boosts, stats(10));
 		assert.throws(() => cmd('upgrade', {value: 'slot'}), /栏位已满/);
