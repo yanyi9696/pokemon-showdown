@@ -24154,6 +24154,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	melmetalfantasy: {
 		learnset: {
+			chargebeam: ["9M"],
+			wideguard: ["9M"],
 			zhukaibo: ["9M"],
 			rapidspin: ["9M"],
 			trattack: ["9M"],
@@ -24217,6 +24219,8 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	melmetalgmegafantasy: {
 		learnset: {
+			chargebeam: ["9M"],
+			wideguard: ["9M"],
 			zhukaibo: ["9M"],
 			rapidspin: ["9M"],
 			trattack: ["9M"],
