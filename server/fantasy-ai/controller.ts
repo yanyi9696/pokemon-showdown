@@ -6,6 +6,7 @@ import { InformationView } from './information';
 import type { InitialPokemon, OpponentMoves } from './initial-snapshot';
 import type { OpponentChoiceState } from './opponent-choice';
 import { emergencyChoice } from './fallback';
+import { enumerateRequestChoices } from './actions';
 import type { DecisionScheduler } from './scheduler';
 import { aiDifficulty, type ChallengeDifficulty, type ValidatedTrainer } from './types';
 import { DecisionTimeManager, type TimeBudgetSettings } from './time-management';
@@ -29,7 +30,7 @@ export interface ChallengeMetrics {
 	criticalDecisionReasons?: Record<string, number>;
 }
 export interface AIChallengeOptions extends TimeBudgetSettings {
-	rogue?: { partySize: number, boosts: StatsTable, spirit?: { id: string, floor: number } };
+	rogue?: { wild?: boolean, partySize: number, boosts: StatsTable, spirit?: { id: string, floor: number } };
 	trainer: ValidatedTrainer;
 	difficulty: ChallengeDifficulty;
 	instanceId: string;
@@ -160,6 +161,21 @@ export class AIController {
 		if (this.closed || !this.pending || this.battle.ended) return;
 		const { request, rqid } = this.pending;
 		if (request.wait || rqid === this.submitted) return;
+		if (this.options.rogue?.wild) {
+			// Wild opponents commit while the player is choosing, with no search queue or thinking timer.
+			const fingerprint = `${this.battle.turn}:${JSON.stringify(request)}`;
+			if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
+			const choices = enumerateRequestChoices(request).filter(choice => !this.rejected.includes(choice));
+			const moves = choices.filter(choice => choice.startsWith('move '));
+			const pool = moves.length ? moves : choices;
+			this.submitted = rqid;
+			this.metrics.decisions++;
+			const elapsed = performance.now() - this.pending.received;
+			this.metrics.totalDecisionMs += elapsed;
+			this.metrics.maxDecisionMs = Math.max(this.metrics.maxDecisionMs, elapsed);
+			this.sendChoice(pool.length ? this.rng.sample(pool) : 'default', rqid, this.revision);
+			return;
+		}
 		const readsChoice = aiDifficulty(this.options.difficulty) === 'hard';
 		if (readsChoice && !this.opponent?.ready) return;
 		const choiceVersion = readsChoice ? this.opponent!.version : undefined;

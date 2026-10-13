@@ -56,9 +56,24 @@ describe('Fantasy Rogue real rooms', function () {
 			await until(() => room.log.log.some(line => line.startsWith('|player|p2|')), 'opponent player message');
 			assert(room.log.log.some(line => line.startsWith('|player|p2|') && line.split('|')[4] === avatar));
 			assert.equal(room.battle.fantasyAI.options.trainer.avatar, avatar);
+			assert.equal(room.battle.fantasyAI.options.rogue.wild, avatar.startsWith('unknown'));
 			room.destroy();
 		});
 	}
+	it('commits wild moves before human input without submitting a worker search', async () => {
+		ai.scheduler.submit = () => { throw new Error('Wild opponents must not enter the search queue'); };
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p2.request.isWait === true, 'instant wild preview');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => room.battle.p2.request.choice.startsWith('move '), 'wild already chose a move');
+		assert.equal(room.battle.p1.request.isWait, false);
+		assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
+		assert.equal(room.battle.fantasyAI.metrics.rollouts, 0);
+		const turn = room.battle.turn;
+		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
+		await until(() => room.battle.turn > turn || room.battle.ended, 'turn proceeds without thinking');
+	});
 	it('opens a one-versus-one real AI room, captures, saves, and continues with two party members', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		for (let encounter = 0; encounter < 2; encounter++) {

@@ -1,17 +1,19 @@
 import { Dex, toID } from '../../sim/dex';
-import { activeRogueSpirits, roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
+import { activeRogueSpirits, roguePartyLimit, rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
 import type { RogueRandom } from './biome-pools';
 import type { RogueContent, RogueItem, RogueNode, RogueRun } from './types';
 import { createRoguePokemon, initializeExperience, rebuildMember } from './progression';
+import { ROGUE_INITIAL_FRIENDSHIP } from './friendship';
 import { makeEncounterSet } from './encounter-sets';
 import { canEditParty, healingLocked, inventoryItem } from './team';
 
 export const SPIRIT_HAZARDS = [
 	'stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'gmaxsteelsurge', 'reflect', 'lightscreen', 'safeguard',
 ];
+// The approved rogue pool is explicit; other custom or signature items are not fantasy-pool rewards.
 const FANTASY_ITEMS = ['fantasypowerlens', 'fantasyringtarget', 'fantasylifeorb', 'fantasysachet',
 	'fantasyscopelens', 'fantasysyrupyapple', 'fantasyprotector', 'fantasyicestone', 'fantasylaxincense',
-	'fantasyultraenergy', 'fantasydefensegem', 'fantasymachobrace'];
+	'fantasydefensegem', 'fantasymachobrace'];
 function requireRule(ok: unknown, message: string): asserts ok { if (!ok) throw new Error(message); }
 
 export function initializeSpirit(run: RogueRun, content: RogueContent, random: RogueRandom, chosen?: string) {
@@ -26,6 +28,7 @@ export function initializeSpirit(run: RogueRun, content: RogueContent, random: R
 		const candidates = content.starters.filter(entry => !Dex.mod('gen9fantasy').species.get(entry.set.species).battleOnly);
 		const species = candidates[random(candidates.length)].set.species;
 		const set = makeEncounterSet(species, 40, 20);
+		set.happiness = ROGUE_INITIAL_FRIENDSHIP;
 		const mon = createRoguePokemon(set, run.boosts);
 		mon.fixedLevel = 40;
 		initializeExperience(mon);
@@ -70,9 +73,11 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 	for (const encounter of node.encounters) {
 		if (encounter.trainer) continue;
 		for (const set of encounter.team) {
-			if (encounter.catchable && !set.shiny) set.shiny = random(1000) < (run.spirit === 'hooh' ? 20 : 2);
+			if (encounter.catchable && !set.shiny) {
+				set.shiny = random(1000) < (run.spirit === 'hooh' ? 20 : 2) + (run.startCard === 'all' ? 1 : 0);
+			}
 			if (run.spirit === 'mew' && !node.biome) {
-				set.level = Math.min(100, set.level + (run.floor <= 40 ? 1 : run.floor <= 120 ? 2 : 3));
+				set.level = Math.min(100, set.level + rogueWildLevelBonus(run.floor, run.spirit));
 			}
 		}
 	}

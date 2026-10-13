@@ -397,6 +397,7 @@ export class User extends Chat.MessageContext {
 	chatQueue: ChatQueueEntry[] | null;
 	chatQueueTimeout: NodeJS.Timeout | null;
 	lastChatMessage: number;
+	lastRogueStoryMessage = 0;
 	lastCommand: string;
 
 	notified: {
@@ -1426,8 +1427,14 @@ export class User extends Chat.MessageContext {
 	chat(message: string, room: Room | null, connection: Connection) {
 		const now = Date.now();
 		const noThrottle = this.hasSysopAccess() || Config.nothrottle;
+		// Story clicks are UI navigation, not chat. Keep a separate bounded fast
+		// lane; excess requests still use the normal queue. The endpoint only
+		// accepts next/skip and retains account, revision and page-key validation.
+		const fastRogueStory = message.startsWith('/fantasyrogue story ') && message.length <= 1024 &&
+			now >= this.lastRogueStoryMessage + 100;
+		if (fastRogueStory) this.lastRogueStoryMessage = now;
 
-		if (message.startsWith('/cmd userdetails') || message.startsWith('>> ') || noThrottle) {
+		if (message.startsWith('/cmd userdetails') || message.startsWith('>> ') || noThrottle || fastRogueStory) {
 			// certain commands are exempt from the queue
 			Monitor.activeIp = connection.ip;
 			Chat.parse(message, room, this, connection);

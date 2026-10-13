@@ -3,3 +3,4 @@ import { createPreviewContent } from '../server/fantasy-rogue/preview-content';
 
 /** Owner-authorized playtest pack. Replace with a new content version for the final release. */
 export const FantasyRogueContent: RogueContent | null = createPreviewContent();
+FantasyRogueContent.story = true;

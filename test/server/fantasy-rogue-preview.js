@@ -111,12 +111,16 @@ describe('Fantasy Rogue playable preview', () => {
 		const before = account().run.team[0];
 		cmd('use', { value: 'expcandym', member: before.id });
 		const after = account().run.team[0];
-		assert.equal(after.set.species, 'Ivysaur');
+		assert.equal(after.set.species, 'Bulbasaur', 'levels do not evolve the party without confirmation');
 		assert.equal(after.maxhp - after.hp, 3); assert.equal(after.status, 'par');
 		assert.equal(after.pp.find(move => move.id === before.pp[0].id).pp, 1);
 		assert(account().run.pendingMoves.length);
 		assert.throws(() => cmd('battle'), /待学习/);
 		cmd('learn', { member: before.id, value: '1' }); learnAll();
+		cmd('evolve', { member: before.id, value: 'ivysaur' }); learnAll();
+		const evolved = account().run.team[0];
+		assert.equal(evolved.set.species, 'Ivysaur');
+		assert.equal(evolved.maxhp - evolved.hp, 3); assert.equal(evolved.status, 'par');
 		assert.equal(account().run.bag.expcandym, 0);
 		cmd('battle');
 		const ticket = account().run.battle;
@@ -215,6 +219,7 @@ describe('Fantasy Rogue playable preview', () => {
 		lost.team[0].hp = 0;
 		engine.settle(user, ticket.token, { encounterId: ticket.encounterId, won: false, team: lost.team, bag: lost.bag });
 		checkpoint.team[0].hp = 0;
+		checkpoint.team[0].set.happiness -= 5;
 		assert.deepEqual(account().run.team, checkpoint.team);
 	});
 });

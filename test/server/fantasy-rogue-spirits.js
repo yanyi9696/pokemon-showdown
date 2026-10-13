@@ -10,6 +10,7 @@ const { createRoguePokemon, rebuildMember, gainExperience } = require('../../dis
 const { activeRogueSpirits, ROGUE_SPIRITS } = require('../../dist/sim/fantasy-rogue-spirits');
 const { rogueCaptureChance, rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const { convertSpiritItem, SPIRIT_HAZARDS } = require('../../dist/server/fantasy-rogue/spirits');
+const { inventoryItem } = require('../../dist/server/fantasy-rogue/team');
 const { set, stats } = require('../fixtures/fantasy-rogue');
 const { InformationView } = require('../../dist/server/fantasy-ai/information');
 const { WorldBuilder } = require('../../dist/server/fantasy-ai/world');
@@ -161,6 +162,29 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		assert(rolled.startsWith('fantasy'));
 		assert.equal(convertSpiritItem(run, engine.content, 'leftovers', 'test', () => { throw new Error('rerolled'); }), rolled);
 		for (const id of ['healthfeather', 'potion', 'fantasydefensegem']) assert.equal(convertSpiritItem(run, engine.content, id, id, () => 0), id);
+	});
+	it('uses exactly the approved eleven fantasy items and preserves already saved conversion outcomes', () => {
+		start('hoopagift'); const run = account().run;
+		const expected = ['fantasydefensegem', 'fantasyicestone', 'fantasylaxincense', 'fantasylifeorb',
+			'fantasymachobrace', 'fantasypowerlens', 'fantasyprotector', 'fantasyringtarget', 'fantasysachet',
+			'fantasyscopelens', 'fantasysyrupyapple'];
+		const outcomes = expected.map((_, index) => convertSpiritItem(run, engine.content, 'leftovers', `pool:${index}`, n => {
+			if (n === 2) return 0;
+			assert.equal(n, 11);
+			return index;
+		}));
+		assert.deepEqual(outcomes.sort(), expected.sort());
+		for (const id of expected) {
+			assert.equal(inventoryItem(engine.content, id)?.kind, 'held');
+			assert.equal(convertSpiritItem(run, engine.content, id, `existing:${id}`, () => {
+				throw new Error('Existing fantasy items must not reroll');
+			}), id);
+		}
+		assert.equal(convertSpiritItem(run, engine.content, 'leftovers', 'no-conversion', () => 1), 'leftovers');
+		run.spiritConversions.legacy = 'fantasyultraenergy';
+		assert.equal(convertSpiritItem(run, engine.content, 'leftovers', 'legacy', () => {
+			throw new Error('A saved conversion must not reroll');
+		}), 'fantasyultraenergy');
 	});
 	it('boosts Mew wild levels and Ho-Oh shiny battle experience without multiplying candy', () => {
 		start('mew'); cmd('spiritack');

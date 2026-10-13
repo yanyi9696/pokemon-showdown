@@ -62,6 +62,42 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onUpdate: onFantasyUpdate,
 	},
 	{
+		name: '[Gen 9] Fantasy Rogue Duel',
+		mod: 'gen9fantasy',
+		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
+		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
+		onValidateTeam() { return ['请通过肉鸽通关卡展示页发起约战。']; },
+		onBegin() {
+			if (!this.fantasyRogue?.duel) throw new Error('通关约战必须使用服务器保存的通关卡。');
+			initializeRogueBattle(this);
+		},
+		onBattleStart() { startRogueSpirit(this); },
+		onResidualOrder: 100,
+		onResidual() { maintainRogueEnvironment(this); },
+		onDamage(damage, target, source, effect) {
+			if (effect.effectType !== 'Move' || !source || target.side === source.side) return;
+			const spirit = this.fantasyRogue?.spirit;
+			if (spirit?.id === 'darkrai') return Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));
+			// With Regigigas on both sides, outgoing ×2 and incoming ×0.5 cancel exactly.
+		},
+		onDamagingHit(damage, target, source) {
+			if (this.fantasyRogue?.spirit?.id === 'yveltal' && source.side !== target.side && source.hp > 0 && damage > 0) {
+				this.heal(Math.max(1, Math.floor(damage / 2)), source, source, this.format);
+			}
+		},
+		onNegateImmunity() {
+			if (this.fantasyRogue?.spirit?.id === 'malamar') return false;
+		},
+		onEffectivenessPriority: 1,
+		onEffectiveness(typeMod, target, type, move) {
+			if (this.fantasyRogue?.spirit?.id !== 'malamar') return;
+			if (move && !this.dex.getImmunity(move, type)) return 1;
+			if (typeMod) return -typeMod;
+		},
+		onSwitchIn: onFantasySwitchIn,
+		onUpdate: onFantasyUpdate,
+	},
+	{
 		name: "[Gen 9] FC Random Battle",
 		desc: `Randomized teams of Fantasy Pok&eacute;mon with sets that prioritize Fantasy moves and items when they fit the Pok&eacute;mon's role.`,
 		mod: 'gen9fantasy',

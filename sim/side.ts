@@ -500,7 +500,7 @@ export class Side {
 	}
 
 	emitRequest(update: ChoiceRequest) {
-		const rogue = this.id === 'p1' ? this.battle.fantasyRogue : undefined;
+		const rogue = this.id === 'p1' && !this.battle.fantasyRogue?.duel ? this.battle.fantasyRogue : undefined;
 		const payload = rogue ? { ...update, fantasyRogue: {
 			catchable: rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
 			balls: rogue.balls.map(ball => ({

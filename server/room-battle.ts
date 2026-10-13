@@ -28,6 +28,7 @@ import type { RogueBattleResult, RogueBattleState, RoguePokemon } from '../sim/f
 export interface RogueRoomOptions {
 	state: RogueBattleState;
 	floor: number;
+	wild?: boolean;
 	defeat?: {
 		floor: number, encounter: number, encounters: number, retryFloor: boolean, noHealing: boolean, emergencyCost: number,
 	};
@@ -499,6 +500,7 @@ export interface RoomBattleOptions {
 	/** Internal single-player challenge; players contains only the human in p1. */
 	fantasyAI?: AIChallengeOptions;
 	fantasyRogue?: RogueRoomOptions;
+	fantasyRogueDuel?: RogueBattleState;
 	/**
 	 * length should be equal to the format's playerCount, except in two
 	 * special cases:
@@ -575,6 +577,10 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const format = Dex.formats.get(options.format, true);
 		this.title = format.name;
 		this.options = options;
+		if (options.fantasyRogueDuel && (options.format !== 'gen9fantasyrogueduel' || !options.fantasyRogueDuel.duel ||
+			options.players.length !== 2 || options.fantasyAI || options.fantasyRogue || options.rated || options.tour)) {
+			throw new Error('Invalid rogue duel options');
+		}
 		if (options.fantasyRogue && (!options.fantasyAI || options.format !== 'gen9fantasyrogue')) {
 			throw new Error('Invalid rogue battle options');
 		}
@@ -609,7 +615,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			roomid: this.roomid,
 			rated: ratedMessage,
 			seed: options.seed,
-			fantasyRogue: options.fantasyRogue?.state,
+			fantasyRogue: options.fantasyRogue?.state || options.fantasyRogueDuel,
 		};
 		if (options.inputLog) {
 			void this.stream.write(options.inputLog);

@@ -4,7 +4,7 @@ import { Dex, toID } from '../../sim/dex';
 import { ROGUE_FORMAT, ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
 import { experienceAtLevel, levelAtExperience, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import type { RogueRun } from './types';
-import { evolutionChildren, partyEvolutionLevel } from './evolution';
+import { partyEvolutions } from './party-evolution';
 import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
 
 /** RPG move/evolution data uses ordinary species, never the locked Fantasy move pool. */
@@ -126,20 +126,18 @@ function offerMoves(run: RogueRun, mon: RoguePokemon, from: number, to: number) 
 	}
 }
 
-export function evolutionOptions(mon: RoguePokemon): { species: string, item?: string }[] {
-	return evolutionChildren(mon.set.species).flatMap(child => {
-		if (child.gender && mon.set.gender && child.gender !== mon.set.gender) return [];
-		if (mon.set.level < partyEvolutionLevel(child.name)) return [];
-		if (child.evoType === 'useItem') {
-			return [{ species: child.name, item: toID(child.evoItem || (child.id === 'kleavor' ? 'Black Augurite' : '')) }];
-		}
-		if (child.evoType === 'trade') return [{ species: child.name, item: 'linkingcord' }];
-		return [{ species: child.name }];
-	});
+export function evolutionOptions(
+	mon: RoguePokemon, run?: Pick<RogueRun, 'floor' | 'bag'>
+): { species: string, item?: string }[] {
+	return partyEvolutions(mon, run)
+		.filter(entry => entry.requirements.every(condition => condition.met || condition.resource))
+		.map(({ species, item }) => ({ species, ...(item ? { item } : {}) }));
 }
 
 export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
-	ensureMemberMemory(mon);
+	initializeExperience(mon);
+	const heldItem = partyEvolutions(mon, run).find(option => toID(option.species) === toID(name))?.heldItem;
+	if (heldItem && toID(mon.set.item) === heldItem) mon.set.item = '';
 	const old = Dex.mod('gen9fantasy').species.get(mon.set.species);
 	const next = Dex.mod('gen9fantasy').species.get(name);
 	const slot = Object.entries(old.abilities).find(([, ability]) => ability === mon.set.ability)?.[0] || '0';
@@ -191,11 +189,7 @@ export function gainExperience(run: RogueRun, mon: RoguePokemon, amount: number)
 	rebuildMember(mon, run.boosts);
 	run.notices.push(`${mon.set.species} 升到 Lv.${level}！`);
 	offerMoves(run, mon, previousLevel + 1, level);
-	for (let i = 0; i < 3; i++) {
-		const automatic = evolutionOptions(mon).filter(option => !option.item);
-		if (automatic.length !== 1) break;
-		evolveMember(run, mon, automatic[0].species);
-	}
+	// Evolution is always a separate, confirmed action outside battle, including chained evolutions.
 }
 
 export function experienceProgress(mon: RoguePokemon) {

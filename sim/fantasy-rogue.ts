@@ -6,10 +6,13 @@ import { toID } from './dex';
 import { captureThresholds, rogueSpeciesData } from './fantasy-rogue-rules';
 
 export const ROGUE_FORMAT = 'gen9fantasyrogue';
+export const ROGUE_DUEL_FORMAT = 'gen9fantasyrogueduel';
+export const isRogueFormat = (id: string) => id === ROGUE_FORMAT || id === ROGUE_DUEL_FORMAT;
 export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	/** Friendship evolutions qualified at an actual level-up, not by merely opening the party. */
 	stars?: number;
 	fixedLevel?: number;
 	id: string;
@@ -38,6 +41,8 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	/** Trusted second archive, only for the dedicated, unranked legacy duel format. */
+	duel?: { team: RoguePokemon[], boosts: StatsTable, hazards?: string[] };
 	spirit?: { id: string, floor: number, hazards?: string[], windSide?: number };
 	encounterId: string;
 	team: RoguePokemon[];
@@ -90,20 +95,25 @@ export function initializeRogueBattle(battle: Battle) {
 	state.participants = {};
 	state.defeated = [];
 	for (const [i, mon] of battle.p2.pokemon.entries()) mon.set.fantasyRogueId = `${state.encounterId}:foe:${i}`;
-	for (const mon of battle.p1.pokemon) {
-		const saved = state.team.find(entry => entry.id === mon.set.fantasyRogueId);
-		if (!saved) throw new Error('Missing rogue party member');
-		mon.hp = Math.min(mon.maxhp, saved.hp);
-		mon.fainted = !mon.hp;
-		mon.status = toID(saved.status);
-		mon.statusState = battle.initEffectState({ id: mon.status, target: mon, ...saved.statusState });
-		for (const slot of mon.moveSlots) {
-			const pp = saved.pp.find(entry => entry.id === slot.id);
-			if (pp) slot.pp = Math.min(slot.maxpp, pp.pp);
-		}
+	if (state.duel) {
+		for (const [i, mon] of battle.p2.pokemon.entries()) mon.set.fantasyRogueId = state.duel.team[i].id;
 	}
-	battle.p1.pokemonLeft = battle.p1.pokemon.filter(mon => mon.hp > 0).length;
-	if (!battle.p1.pokemonLeft) throw new Error('没有可出战的宝可梦。');
+	for (const side of state.duel ? battle.sides : [battle.p1]) {
+		for (const mon of side.pokemon) {
+			const saved = (side.id === 'p1' ? state.team : state.duel!.team).find(entry => entry.id === mon.set.fantasyRogueId);
+			if (!saved) throw new Error('Missing rogue party member');
+			mon.hp = Math.min(mon.maxhp, saved.hp);
+			mon.fainted = !mon.hp;
+			mon.status = toID(saved.status);
+			mon.statusState = battle.initEffectState({ id: mon.status, target: mon, ...saved.statusState });
+			for (const slot of mon.moveSlots) {
+				const pp = saved.pp.find(entry => entry.id === slot.id);
+				if (pp) slot.pp = Math.min(slot.maxpp, pp.pp);
+			}
+		}
+		side.pokemonLeft = side.pokemon.filter(mon => mon.hp > 0).length;
+		if (!side.pokemonLeft) throw new Error('没有可出战的宝可梦。');
+	}
 }
 
 export function canRogueTerastallize(pokemon: Pokemon): boolean {
@@ -166,26 +176,34 @@ export function throwRogueBall(battle: Battle, id: string) {
 	state.bag[id]--;
 	battle.add('-message', `投出了${ball.name}！`);
 	let success: boolean;
+	let shakes = 0;
+	let critical = false;
 	// The order spirit removes battle randomness, never the advertised capture roll.
 	const chance = state.spirit?.id === 'zygardeorder' ?
 		battle.prng.randomChance.bind(battle.prng) : battle.randomChance.bind(battle);
 	if (state.spirit?.id === 'mew') {
 		success = chance(Math.round(rogueCaptureChance(battle, ball)! * 1000000), 1000000);
+		shakes = success ? 3 : 1;
 	} else if (ball.chance !== undefined) {
 		success = chance(Math.round(ball.chance * 1000000), 1000000);
+		shakes = success ? 3 : 1;
 	} else {
 		const threshold = captureThresholds(rogueSpeciesData(target.set.species).catchRate,
 			target.maxhp, target.hp, target.status, ball.multiplier!, state.caughtSpecies || 0);
-		const critical = chance(threshold.critical, 256);
+		critical = chance(threshold.critical, 256);
 		if (critical) battle.add('-message', '会心捕捉！');
 		success = threshold.guaranteed;
 		if (!success) {
 			success = true;
 			for (let i = 0; i < (critical ? 1 : 4); i++) {
 				if (!chance(threshold.shake, 65536)) { success = false; break; }
+				shakes++;
 			}
 		}
+		shakes = critical ? 1 : threshold.guaranteed ? 3 : Math.min(3, shakes);
 	}
+	// Presentation data is authoritative and consumes no extra RNG. Replays use the same outcome.
+	battle.add('-roguecapture', target, id, success ? 'success' : 'failure', shakes, critical ? 'critical' : 'normal');
 	if (!success) {
 		battle.add('-message', '宝可梦挣脱了精灵球！');
 		return;

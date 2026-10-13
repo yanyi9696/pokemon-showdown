@@ -58,7 +58,9 @@ export function extractChannelMessages<T extends ChannelID | -1>(message: string
 	return channelMessages;
 }
 
-import { ROGUE_FORMAT, ROGUE_STATS, rogueBattleResult, throwRogueBall, type RogueBattleState } from './fantasy-rogue';
+import {
+	ROGUE_DUEL_FORMAT, isRogueFormat, ROGUE_STATS, rogueBattleResult, throwRogueBall, type RogueBattleState,
+} from './fantasy-rogue';
 
 interface BattleOptions {
 	fantasyRogue?: RogueBattleState;
@@ -197,7 +199,8 @@ export class Battle {
 
 		const format = options.format || Dex.formats.get(options.formatid, true);
 		this.format = format;
-		if (options.fantasyRogue && format.id !== ROGUE_FORMAT) throw new Error('Invalid rogue format');
+		if (options.fantasyRogue && (!isRogueFormat(format.id) ||
+			!!options.fantasyRogue.duel !== (format.id === ROGUE_DUEL_FORMAT))) throw new Error('Invalid rogue format');
 		this.fantasyRogue = options.fantasyRogue && structuredClone(options.fantasyRogue);
 		this.dex = Dex.forFormat(format);
 		this.gen = this.dex.gen;
@@ -2319,10 +2322,10 @@ export class Battle {
 			modStats['hp'] = tr(tr(2 * stat + set.ivs['hp'] + tr(set.evs['hp'] / 4) + 100) * set.level / 100 + 10);
 		}
 		const stats = this.natureModify(modStats as StatsTable, set);
-		if (this.format.id === ROGUE_FORMAT && set.fantasyRogueStats) {
+		if (isRogueFormat(this.format.id) && set.fantasyRogueStats) {
 			for (const stat of ROGUE_STATS) stats[stat] += set.fantasyRogueStats[stat];
 		}
-		if (this.format.id === ROGUE_FORMAT && set.fantasyRogueScale) {
+		if (isRogueFormat(this.format.id) && set.fantasyRogueScale) {
 			for (const stat of ROGUE_STATS) stats[stat] = Math.max(1, Math.floor(stats[stat] * set.fantasyRogueScale));
 		}
 		return stats;
@@ -3227,12 +3230,13 @@ export class Battle {
 		if (!this.sides[slotNum]) {
 			// create player
 			const team = this.getTeam(options);
-			if (this.fantasyRogue && slot === 'p1') {
-				if (team.length !== this.fantasyRogue.team.length) throw new Error('Invalid rogue team');
+			const rogueSide = slot === 'p1' ? this.fantasyRogue : this.fantasyRogue?.duel;
+			if (rogueSide) {
+				if (team.length !== rogueSide.team.length) throw new Error('Invalid rogue team');
 				for (const [i, set] of team.entries()) {
-					set.fantasyRogueStats = { ...this.fantasyRogue.boosts };
-					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 3][this.fantasyRogue.team[i].stars || 1];
-					set.fantasyRogueId = this.fantasyRogue.team[i].id;
+					set.fantasyRogueStats = { ...rogueSide.boosts };
+					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 3][rogueSide.team[i].stars || 1];
+					set.fantasyRogueId = rogueSide.team[i].id;
 				}
 			}
 			side = new Side(options.name || `Player ${slotNum + 1}`, this, slotNum, team);
@@ -3302,7 +3306,9 @@ export class Battle {
 				delete log.p4;
 				delete log.p4team;
 			}
-			if (this.fantasyRogue) this.send('fantasyrogueresult', JSON.stringify(rogueBattleResult(this)));
+			if (this.fantasyRogue && !this.fantasyRogue.duel) {
+				this.send('fantasyrogueresult', JSON.stringify(rogueBattleResult(this)));
+			}
 			this.send('end', JSON.stringify(log));
 			this.sentEnd = true;
 		}

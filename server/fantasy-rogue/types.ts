@@ -1,5 +1,7 @@
 import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import type { TrainerStyle } from '../fantasy-ai/types';
+import type { RogueStoryStage } from './story';
+import type { RogueClearCard } from './legacy';
 
 export type RogueNodeKind = 'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 'reward';
 export interface RogueTrainer {
@@ -68,6 +70,7 @@ export interface RogueStarter {
 	availableInitially: boolean;
 }
 export interface RogueContent {
+	story?: boolean;
 	spirits?: boolean;
 	version: string;
 	wildTreasures?: boolean;
@@ -96,6 +99,14 @@ export interface RogueInventory {
 	teraUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	owner?: { id: string, name: string };
+	story?: { stage: RogueStoryStage, page: number, skip: boolean, canSkip: boolean };
+	startCard?: string;
+	clearRecorded?: boolean;
+	/** Per-floor friendship awards are not part of the inventory rollback. */
+	friendshipProgress?: {
+		floor: number, battles: Record<string, number>, fainted: Record<string, number>, settled: string[], completed?: boolean,
+	};
 	spirit?: string;
 	spiritVersion?: number;
 	spiritConversions?: Record<string, string>;
@@ -104,7 +115,7 @@ export interface RogueRun extends RogueInventory {
 	/** Per-run identities; gym history also unlocks the two hidden Elite Four trainers. */
 	trainerHistory?: { gyms: string[], eliteFour: string[], elitePlan?: Record<number, string> };
 	floor: number;
-	phase: 'intro' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete';
+	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete';
 	node?: RogueNode;
 	/** Saved route candidates, including encounters, must survive reloads and reconnects. */
 	choices?: RogueNode[];
@@ -128,6 +139,10 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean };
 }
 export interface RogueAccount {
+	adventures?: number;
+	opening?: { page: number, skip: boolean };
+	cards?: RogueClearCard[];
+	pendingClear?: RogueClearCard;
 	spiritUnlocked?: boolean;
 	revision: number;
 	points: number;
@@ -159,7 +174,8 @@ export interface RogueCommand {
 	revision: number;
 	action: 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'ability' | 'evs' |
-		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp';
+		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
+		'saveclear' | 'publishcard' | 'deletecard';
 	useSpirit?: boolean;
 	/** Only the loopback preview may choose a specific enabled spirit. */
 	testSpirit?: string;

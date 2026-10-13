@@ -79,9 +79,10 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		assert.equal(partyEvolutionLevel('Crobat'), 37);
 		assert.equal(partyEvolutionLevel('Rhyperior'), 57);
 		const before = createRoguePokemon(makeEncounterSet('Golbat', 36), emptyRogueStats());
+		before.set.happiness = 159;
 		assert.deepEqual(evolutionOptions(before), []);
-		before.set.level = 37;
-		assert.deepEqual(evolutionOptions(before), [{ species: 'Crobat' }]);
+		before.set.happiness = 160;
+		assert.deepEqual(evolutionOptions(before), [{ species: 'Crobat' }], 'party friendship evolution no longer uses the wild level gap');
 		const rockruff = createRoguePokemon(makeEncounterSet('Rockruff', 25), emptyRogueStats());
 		assert.equal(evolutionOptions(rockruff).length, 3);
 	});
@@ -127,16 +128,55 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		const [ordinary] = createBiomeRoutes(1, [template], undefined, max => Math.min(1, max - 1));
 		assert.equal(ordinary.encounters.length, 3);
 	});
-	it('splits endgame elite draws 50/50 and permits captures, starting at floor 161', () => {
+	it('permits legendary elite captures only from floor 161', () => {
 		const template = { id: 'elite', name: 'old', kind: 'elite', encounters: [], reward: { money: 100, items: {} } };
 		const [major] = createBiomeRoutes(162, [template], undefined, () => 0);
 		assert.equal(major.encounters[0].team[0].species, 'Mewtwo');
 		assert.equal(major.encounters[0].team[0].level, 86);
 		assert.equal(major.encounters[0].catchable, true);
-		const [regional] = createBiomeRoutes(162, [template], undefined, max => max === 2 ? 1 : 0);
+		let draws = 0;
+		const [regional] = createBiomeRoutes(162, [template], undefined, () => ++draws === 2 ? 25 : 0);
 		assert.equal(regional.encounters[0].team[0].species, 'Scolipede');
 		const [early] = createBiomeRoutes(159, [template], undefined, () => 0);
 		assert.equal(early.encounters[0].team[0].species, 'Scolipede');
+	});
+	it('uses exact 25/50 percent elite legendary chances, boosted to 50/75, across floor boundaries', () => {
+		const template = { id: 'elite', name: 'old', kind: 'elite', encounters: [], reward: { money: 0, items: {} } };
+		for (const spirit of [undefined, 'mew']) {
+			for (const [floor, ordinary, boosted] of [[160, 0, 0], [161, 25, 50], [180, 25, 50], [181, 50, 75], [200, 50, 75]]) {
+				let majors = 0;
+				for (let roll = 0; roll < 100; roll++) {
+					let calls = 0;
+					const [route] = createBiomeRoutes(floor, [template], name => name,
+						() => ++calls === 2 && floor >= 161 ? roll : 0, spirit);
+					if (MajorLegendaryPool.includes(route.encounters[0].team[0].species)) majors++;
+				}
+				assert.equal(majors, spirit ? boosted : ordinary, `floor ${floor}, spirit ${spirit}`);
+			}
+		}
+	});
+	it('boosts both rare and uncommon slots while preserving ordinary slots and total draws', () => {
+		const template = { id: 'wild', name: 'old', kind: 'wild', encounters: [], reward: { money: 0, items: {} } };
+		const counts = new Map();
+		for (let roll = 0; roll < 156; roll++) {
+			const [route] = createBiomeRoutes(1, [template], name => name, max => max === 156 ? roll : 0, 'mew');
+			const name = route.encounters[0].team[0].species;
+			counts.set(name, (counts.get(name) || 0) + 1);
+		}
+		for (const slot of RogueBiomes[0].tiers[0]) {
+			assert.equal(counts.get(slot.species[0]), slot.weight === 4 ? 12 : 6, slot.species[0]);
+		}
+	});
+	it('adds one to five wild levels by 40-floor stage without exceeding 100 or changing trainers', () => {
+		const wild = { id: 'wild', name: 'old', kind: 'wild', encounters: [], reward: { money: 0, items: {} } };
+		for (const [floor, bonus] of [[1, 1], [40, 1], [41, 2], [80, 2], [81, 3], [120, 3], [121, 4], [160, 4], [161, 5], [200, 5]]) {
+			for (const kind of ['wild', 'elite']) {
+				const [route] = createBiomeRoutes(floor, [{ ...wild, kind }], name => name, () => 0, 'mew');
+				assert.equal(route.biome.level, Math.min(100, Math.max(3, Math.ceil(floor / 2)) + bonus + (kind === 'elite' ? 5 : 0)));
+			}
+		}
+		const trainer = { ...wild, kind: 'gym', encounters: [{ trainer: { id: 'brock' }, team: [{ species: 'Onix', level: 20 }] }] };
+		assert.deepEqual(createBiomeRoutes(40, [trainer], undefined, () => 0, 'mew'), [trainer]);
 	});
 });
 

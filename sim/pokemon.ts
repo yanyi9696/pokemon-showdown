@@ -7,6 +7,7 @@
 
 import { State } from './state';
 import { toID } from './dex';
+import { isRogueFormat } from './fantasy-rogue';
 import type { DynamaxOptions, PokemonMoveRequestData, PokemonSwitchRequestData } from './side';
 
 /** A Pokemon's move slot. */
@@ -348,7 +349,7 @@ export class Pokemon {
 				if (!set.hpType) set.hpType = move.type;
 				move = this.battle.dex.moves.get('hiddenpower');
 			}
-			let basepp = move.noPPBoosts || this.battle.format.id === 'gen9fantasyrogue' ? move.pp : move.pp * 8 / 5;
+			let basepp = move.noPPBoosts || isRogueFormat(this.battle.format.id) ? move.pp : move.pp * 8 / 5;
 			if (this.battle.gen < 3) basepp = Math.min(61, basepp);
 			this.baseMoveSlots.push({
 				move: move.name,
@@ -1112,7 +1113,7 @@ export class Pokemon {
 			details: this.details,
 			condition: this.getHealth().secret,
 			active: (this.position < this.side.active.length),
-			...(this.set.fantasyRogueStats && this.battle.format.id === 'gen9fantasyrogue' ?
+			...(this.set.fantasyRogueStats && isRogueFormat(this.battle.format.id) ?
 				{ fantasyRogueStats: { ...this.set.fantasyRogueStats } } : {}),
 			stats: {
 				atk: this.baseStoredStats['atk'],
@@ -1354,8 +1355,8 @@ export class Pokemon {
 		const stats = this.battle.spreadModify(this.species.baseStats, this.set);
 		if (this.species.maxHP) {
 			stats.hp = this.species.maxHP +
-				(this.battle.format.id === 'gen9fantasyrogue' ? this.set.fantasyRogueStats?.hp || 0 : 0);
-			if (this.battle.format.id === 'gen9fantasyrogue' && this.set.fantasyRogueScale) {
+				(isRogueFormat(this.battle.format.id) ? this.set.fantasyRogueStats?.hp || 0 : 0);
+			if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueScale) {
 				stats.hp = Math.max(1, Math.floor(stats.hp * this.set.fantasyRogueScale));
 			}
 		}

@@ -18,8 +18,13 @@ import { recordStarterMoves, recordStarterTraits, starterMoves, starterTraits } 
 import { chooseTrainer } from './trainer-bosses';
 import { prepareEconomy } from './economy';
 import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
+import {
+	battleFriendship, changeFriendship, floorFriendship, friendship, ROGUE_INITIAL_FRIENDSHIP,
+} from './friendship';
 import { initializeSpirit, prepareSpiritNode, spiritItems, spiritShopAvailable, hpPurchaseCost,
 	convertSpiritItem, editSpiritBox, mergeSpiritPokemon } from './spirits';
+import { ROGUE_STORY, afterSpirit, startCard, storyView } from './story';
+import { recordClear, editClearCard } from './legacy';
 export { createRoguePokemon } from './progression';
 
 export const ROGUE_EMERGENCY_COST = 5000;
@@ -89,8 +94,13 @@ export class RogueEngine {
 	}
 	migrate(userid: string) {
 		return this.store.change(userid, account => {
+			if (account.run && !account.run.owner) {
+				account.run.owner = { id: userid, name: userid };
+				account.adventures ||= 1;
+			}
 			this.normalizeAccount(account);
 			if (account.run) this.normalizeRun(account.run);
+			if (account.run?.phase === 'complete' && account.run.floor === 200) recordClear(account, account.run);
 		});
 	}
 	private normalizeAccount(account: RogueAccount) {
@@ -145,7 +155,7 @@ export class RogueEngine {
 		const templates = this.content.floors[run.floor];
 		if (!templates) return;
 		run.choices = this.content.biomeEncounters ?
-			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit) : structuredClone(templates);
+			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard) : structuredClone(templates);
 		if (this.content.wildTreasures) {
 			for (const node of run.choices) prepareEconomy(node, run.floor, this.random);
 		}
@@ -194,6 +204,7 @@ export class RogueEngine {
 		}
 	}
 	private completeFloor(account: RogueAccount, run: RogueRun) {
+		if (this.configured().progression) floorFriendship(run);
 		const reward = run.node!.reward;
 		run.money += reward.money;
 		for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
@@ -209,6 +220,8 @@ export class RogueEngine {
 		if (run.floor === 200) {
 			run.phase = 'complete';
 			if (!run.spirit) account.spiritUnlocked = true;
+			recordClear(account, run);
+			if (this.content?.story) run.story = { stage: 'ending', page: 0, skip: false, canSkip: true };
 			return;
 		}
 		run.floor++;
@@ -225,9 +238,45 @@ export class RogueEngine {
 			run.phase = 'rest';
 		} else this.completeFloor(account, run);
 	}
-	command(userid: string, command: RogueCommand) {
+	command(userid: string, command: RogueCommand, name = userid) {
 		return this.store.change(userid, account => {
 			this.normalizeAccount(account);
+			if (['saveclear', 'publishcard', 'deletecard'].includes(command.action)) {
+				editClearCard(account, command);
+				return;
+			}
+			if (command.action === 'newstory') {
+				requireRule(account.run?.phase === 'complete' && !account.run.story && !account.pendingClear,
+					'请先读完终章并处理待保存的通关卡。');
+				delete account.run;
+				account.opening = { page: 0, skip: false };
+				return;
+			}
+			if (command.action === 'storynext' || command.action === 'storyskip') {
+				const view = storyView(account, !!this.content?.story, this.localSpirits);
+				requireRule(view && 'key' in view && command.value === view.key, '剧情进度已更新，请刷新后继续。');
+				const skip = command.action === 'storyskip';
+				requireRule(!skip || view.canSkip, '首次冒险请先阅读序章。');
+				const length = ROGUE_STORY[view.stage]!.length;
+				if (view.stage === 'opening') {
+					account.opening = { page: skip ? length : view.index + 1, skip };
+				} else {
+					const run = account.run!;
+					const story = run.story!;
+					if (skip) story.skip = true;
+					story.page = skip ? length : story.page + 1;
+					if (story.page >= length) {
+						story.page = 0;
+						if (story.stage === 'spirit') story.stage = 'spiritEffect';
+						else if (story.stage === 'climb') story.stage = 'cards';
+						else {
+							delete run.story;
+							if (view.stage === 'portal') this.enterFloor(run);
+						}
+					}
+				}
+				return;
+			}
 			if (command.action === 'upgrade') {
 				requireRule(!account.run || account.run.phase === 'complete', '进行中的冒险不能花费成长点数，请结束或放弃本局后再加点。');
 				if (command.value === 'slot') {
@@ -246,6 +295,9 @@ export class RogueEngine {
 			}
 			if (command.action === 'start') {
 				const content = this.configured();
+				requireRule(!account.pendingClear, '请先选择保存或放下本次通关卡。');
+				requireRule(!content.story || (!account.run && account.opening?.page === ROGUE_STORY.opening!.length),
+					'请先完成开场阅读，再选择初始伙伴。');
 				requireRule(command.useSpirit === undefined || typeof command.useSpirit === 'boolean', '塔灵选项无效。');
 				requireRule(!command.useSpirit || (content.spirits && (this.localSpirits || account.spiritUnlocked)),
 					'无塔灵通关 200 层后解锁塔灵。');
@@ -285,7 +337,7 @@ export class RogueEngine {
 					requireRule(Array.isArray(moves) && moves.length >= 1 && moves.length <= 4 &&
 						moves.every(move => typeof move === 'string' && availableMoves.includes(toID(move))) &&
 						new Set(moves.map(toID)).size === moves.length, '请选择 1～4 个不重复、已解锁且初始形态可合法学习的招式。');
-					const set = { ...structuredClone(starter.set), ivs: { ...ivs },
+					const set = { ...structuredClone(starter.set), ivs: { ...ivs }, happiness: ROGUE_INITIAL_FRIENDSHIP,
 						ability: ability === 'random' ? normalAbilities[this.random(normalAbilities.length)]! :
 						Dex.mod('gen9fantasy').abilities.get(ability).name,
 						moves: moves.map(toID),
@@ -304,12 +356,19 @@ export class RogueEngine {
 				const initial = { team, bag: { ...content.initialBag }, money: content.initialMoney, teraUnlocked: false };
 				account.run = {
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
+					owner: { id: userid, name },
 					encounter: 0, attempt: 0, boosts: { ...account.boosts }, startingSlots: account.slots,
 					checkpoint: inventory(initial), caught: [], trainerHistory: { gyms: [], eliteFour: [] },
 				};
 				if (content.spirits) account.run.spiritVersion = 1;
 				if (command.useSpirit) initializeSpirit(account.run, content, this.random, command.testSpirit);
-				else this.enterFloor(account.run);
+				if (content.story) {
+					account.run.story = { stage: command.useSpirit ? account.opening?.skip ? 'spiritEffect' : 'spirit' : 'climb',
+						page: 0, skip: !!account.opening?.skip, canSkip: this.localSpirits || !!account.adventures };
+					if (!command.useSpirit) afterSpirit(account.run);
+				} else if (!command.useSpirit) this.enterFloor(account.run);
+				account.adventures = (account.adventures || 0) + 1;
+				delete account.opening;
 				return;
 			}
 			const run = this.run(account);
@@ -325,10 +384,23 @@ export class RogueEngine {
 				return;
 			}
 			switch (command.action) {
+			case 'startcard':
+				requireRule(run.phase === 'story' && run.story?.stage === 'cards' && !run.startCard && startCard(command.value),
+					'当前不能选择这张开局卡片。');
+				run.startCard = command.value;
+				if (run.story.skip) {
+					delete run.story;
+					this.enterFloor(run);
+				} else {
+					run.story.stage = 'portal';
+					run.story.page = 0;
+				}
+				break;
 			case 'spiritack':
 				requireRule(run.phase === 'intro' && !run.pendingCapture && run.team.length <= roguePartyLimit(run.spirit),
 					'请先安置赠送伙伴或将队伍缩减至塔灵允许的数量。');
-				this.enterFloor(run);
+				requireRule(!run.story || run.story.stage === 'spiritEffect', '请先读完塔灵现身的剧情。');
+				if (!afterSpirit(run)) this.enterFloor(run);
 				break;
 			case 'trimparty':
 				requireRule(run.phase === 'intro' && run.spirit === 'regigigas' && run.team.length > 3 &&
@@ -369,7 +441,7 @@ export class RogueEngine {
 				requireRule(this.configured().progression && ['choose', 'ready', 'rest', 'reward'].includes(run.phase), '当前不能进化。');
 				requireRule(!healingLocked(run), '本层要求连续战斗，途中不能通过进化调整状态。');
 				const mon = run.team.find(entry => entry.id === command.member);
-				const option = mon && evolutionOptions(mon).find(entry => toID(entry.species) === command.value);
+				const option = mon && evolutionOptions(mon, run).find(entry => toID(entry.species) === command.value);
 				requireRule(mon?.hp && option, '没有满足条件的进化。');
 				if (option.item) {
 					requireRule(run.bag[option.item] > 0, '缺少进化道具。');
@@ -400,9 +472,13 @@ export class RogueEngine {
 				for (const mon of run.team) this.healMember(mon);
 				run.notices = [`已花费 ${ROGUE_EMERGENCY_COST} 金币急救全队，HP、PP 和异常状态已恢复。`];
 				break;
-			case 'retry':
+			case 'retry': {
 				requireRule(run.phase === 'failed' && run.node?.noHealing, '只有连续挑战全队倒下后可重试整层；普通战斗请治疗后继续当前场次。');
+				const friendships = new Map(run.team.map(mon => [mon.id, friendship(mon)]));
 				Object.assign(run, inventory(run.checkpoint));
+				for (const mon of run.team) {
+					if (friendships.has(mon.id)) mon.set.happiness = friendships.get(mon.id)!;
+				}
 				run.encounter = 0;
 				run.attempt++;
 				run.phase = 'ready';
@@ -413,6 +489,7 @@ export class RogueEngine {
 				run.notices = ['已恢复进入本层时的队伍、经验、道具和货币。'];
 				delete run.lastReward;
 				break;
+			}
 			case 'heal':
 				requireRule(run.phase === 'rest', '只能在休整中心恢复。');
 				for (const mon of run.team) {
@@ -546,6 +623,7 @@ export class RogueEngine {
 			if (run?.phase !== 'battle' || run.battle?.token !== token || run.battle.encounterId !== result.encounterId) return;
 			if (result.captured) this.recordCatch(account, run, result.captured);
 			const retreated = run.battle.retreatRequested;
+			const previousTeam = run.team;
 			const previousItems = new Map(run.team.map(mon => [mon.id, toID(mon.set.item)]));
 			delete run.battle;
 			run.team = structuredClone(result.team);
@@ -559,6 +637,7 @@ export class RogueEngine {
 			run.bag = { ...result.bag };
 			for (const mon of run.team) ensureMemberMemory(mon);
 			run.notices = [];
+			if (this.configured().progression) battleFriendship(run, result, token, previousTeam);
 			if (!result.won) {
 				run.recovery = retreated ? 'retreat' : 'defeat';
 				run.phase = run.node!.noHealing && !run.team.some(mon => mon.hp > 0) ? 'failed' : 'ready';
@@ -587,7 +666,9 @@ export class RogueEngine {
 			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
 			if (result.captured) {
 				requireRule(run.team.length < roguePartyLimit(run.spirit) || this.configured().allowReplacement, '队伍已满。');
-				const mon = createRoguePokemon(result.captured.set, run.boosts, result.captured.id);
+				const mon = createRoguePokemon(
+					{ ...result.captured.set, happiness: ROGUE_INITIAL_FRIENDSHIP }, run.boosts, result.captured.id
+				);
 				mon.hp = Math.max(1, mon.maxhp - (result.captured.maxhp - result.captured.hp));
 				mon.pp = structuredClone(result.captured.pp);
 				mon.status = result.captured.status;
@@ -606,6 +687,15 @@ export class RogueEngine {
 		});
 	}
 	/** Future event handlers call these methods; the public command API cannot grant unlocks. */
+	adjustEventFriendship(userid: string, member: string, amount: number) {
+		return this.store.change(userid, account => {
+			const run = this.run(account);
+			const mon = run.team.find(entry => entry.id === member);
+			requireRule(mon && canEditParty(run) && Number.isInteger(amount) && Math.abs(amount) <= 255,
+				'当前不能调整亲密度。');
+			changeFriendship(mon, amount);
+		});
+	}
 	setEventIVs(userid: string, member: string, ivs: Partial<StatsTable>) {
 		return this.store.change(userid, account => {
 			this.normalizeAccount(account);

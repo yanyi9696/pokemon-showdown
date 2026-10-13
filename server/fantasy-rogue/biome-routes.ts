@@ -1,11 +1,13 @@
 import { randomInt } from 'crypto';
 import { Dex } from '../../sim/dex';
+import { rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
 import { RogueBiomes, type RogueBiome } from './biome-data';
 import { biomeTier, isMajorLegendary, MajorLegendaryPool, pickBiomeSlot, unlistedFamilies, weightedPick,
 	type RogueRandom } from './biome-pools';
 import { makeEncounterSet } from './encounter-sets';
 import { wildStageAtLevel } from './evolution';
 import type { RogueEncounter, RogueNode } from './types';
+import { cardBiasedSpecies } from './story';
 
 export type WildEvolutionResolver = (
 	name: string, level: number, biome: RogueBiome, tier: number, random: RogueRandom
@@ -13,8 +15,8 @@ export type WildEvolutionResolver = (
 
 /** Called only inside the save transaction when a floor's routes are first created. */
 export function createBiomeRoutes(
-	floor: number, templates: RogueNode[], evolve: WildEvolutionResolver = wildStageAtLevel, random: RogueRandom = randomInt,
-	spirit?: string
+	floor: number, templates: RogueNode[], evolve: WildEvolutionResolver = wildStageAtLevel,
+	random: RogueRandom = randomInt, spirit?: string, card?: string
 ): RogueNode[] {
 	const extraPool = unlistedFamilies();
 	return templates.map(template => {
@@ -23,22 +25,30 @@ export function createBiomeRoutes(
 		const biome = weightedPick(RogueBiomes, random);
 		const tier = biomeTier(floor, elite);
 		const level = Math.min(100, Math.max(3, Math.ceil(floor / 2)) + (elite ? 5 : 0) +
-			(spirit === 'mew' ? floor <= 40 ? 1 : floor <= 120 ? 2 : 3 : 0));
+			rogueWildLevelBonus(floor, spirit));
 		const majorBranch = elite && floor >= 161;
+		const majorChance = (floor <= 180 ? 25 : 50) + (spirit === 'mew' ? 25 : 0);
 		const encounter = (bonus = false): RogueEncounter => {
-			let name: string;
-			if (bonus) {
-				name = extraPool[random(extraPool.length)];
-			} else if (majorBranch && (spirit === 'mew' ? random(100) < 65 : random(2) === 0)) {
-				name = MajorLegendaryPool[random(MajorLegendaryPool.length)];
-			} else {
-				// Keep the endgame elite split exactly 50/50, including species also named in regional pools.
-				const slots = majorBranch ? biome.tiers[tier].map(slot => ({
-					...slot, species: slot.species.filter(species => !isMajorLegendary(species)),
-				})).filter(slot => slot.species.length) : biome.tiers[tier];
-				name = pickBiomeSlot(spirit === 'mew' ? slots.map(slot => ({ ...slot, weight: slot.weight === 2 ? 6 : slot.weight })) : slots, random);
-			}
-			name = evolve(name, level, biome, tier, random);
+			// Draw the legendary branch once; the card only reweights species inside that branch.
+			const major = !bonus && majorBranch && random(100) < majorChance;
+			const draw = () => {
+				let name: string;
+				if (bonus) {
+					name = extraPool[random(extraPool.length)];
+				} else if (major) {
+					name = MajorLegendaryPool[random(MajorLegendaryPool.length)];
+				} else {
+				// Keep the dedicated legendary probability exact, even for species also in regional pools.
+					const slots = majorBranch ? biome.tiers[tier].map(slot => ({
+						...slot, species: slot.species.filter(species => !isMajorLegendary(species)),
+					})).filter(slot => slot.species.length) : biome.tiers[tier];
+					name = pickBiomeSlot(spirit === 'mew' ? slots.map(slot => ({
+						...slot, weight: slot.weight < 6 ? slot.weight * 3 : slot.weight,
+					})) : slots, random);
+				}
+				return evolve(name, level, biome, tier, random);
+			};
+			const name = cardBiasedSpecies(draw, card, random);
 			const set = makeEncounterSet(name, level, elite ? 31 : 15);
 			const species = Dex.mod('gen9').species.get(name);
 			set.gender = species.gender || (random(256) < species.genderRatio.F * 256 ? 'F' : 'M');

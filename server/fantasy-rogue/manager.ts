@@ -12,17 +12,24 @@ import { RogueStore } from './store';
 import { BOSS_FLOORS, fixedFloor } from './content';
 import type { RogueCommand } from './types';
 import { experienceProgress, evolutionOptions, ensureMemberMemory, rebuildMember } from './progression';
+import { partyEvolutions } from './party-evolution';
+import { friendship, rogueTime, ROGUE_TIME_NAMES } from './friendship';
 import { healingLocked, inventoryItem } from './team';
 import { starterMoves, starterTraits } from './starter-traits';
 import { spiritItems, spiritShopAvailable } from './spirits';
 import { activeRogueSpirits, rogueSpirit, roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
+import { storyView, startCard } from './story';
+import { RogueDuels, type DuelCommand } from './duels';
+import { rogueRulesVersion } from './legacy';
 
 export class RogueManager {
 	readonly engine: RogueEngine;
 	private readonly ai: () => AIChallengeManager;
+	readonly duels: RogueDuels;
 	constructor(engine: RogueEngine, ai: () => AIChallengeManager = getAIManager) {
 		this.engine = engine;
 		this.ai = ai;
+		this.duels = new RogueDuels(engine.store);
 	}
 	private authorize(user: User) {
 		if (Config.fantasyrogue?.enabled === false) throw new Error('幻想杯肉鸽尚未开放。');
@@ -41,6 +48,18 @@ export class RogueManager {
 			roomBattle.options.fantasyRogue?.state.encounterId !== battle.encounterId) {
 			this.engine.recover(userid, battle.token);
 		}
+	}
+	gallery(user: User, offset = 0) {
+		const account = this.state(user).account;
+		const own = account ? this.engine.store.get(user.id) : undefined;
+		return { userid: user.id, account, own: own?.cards || [], pending: own?.pendingClear,
+			rulesVersion: rogueRulesVersion(), offset,
+			cards: this.engine.store.gallery(offset).map(card => ({ ...card, online: !!Users.get(card.owner)?.connected })),
+			invitations: account ? this.duels.list(user.id) : [] };
+	}
+	duel(user: User, command: DuelCommand) {
+		this.authorize(user);
+		return this.duels.command(user, command);
 	}
 	state(user: User) {
 		const common = { userid: user.id, protocolVersion: 1, enabled: Config.fantasyrogue?.enabled !== false };
@@ -61,6 +80,9 @@ export class RogueManager {
 		}
 		return {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
+			storyEnabled: !!content?.story,
+			story: storyView(account, !!content?.story, this.engine.localSpirits),
+			cards: account.cards || [], pendingClear: account.pendingClear,
 			account: {
 				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
 				slotCost: rogueSlotCost(account.slots),
@@ -86,8 +108,10 @@ export class RogueManager {
 			items, shopItems: items.filter(item => spiritShopAvailable(item, run?.floor || 1) &&
 				content?.items.some(entry => entry.id === item.id)).map(item => item.id),
 			run: run ? {
+				story: run.story, startCard: startCard(run.startCard),
 				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box,
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
+				time: { id: rogueTime(run.floor), name: ROGUE_TIME_NAMES[rogueTime(run.floor)] },
 				recovery: run.recovery, retreating: !!run.battle?.retreatRequested,
 				healingLocked: healingLocked(run), emergencyCost: ROGUE_EMERGENCY_COST,
 				canEmergency: !!content && this.engine.canEmergency(run),
@@ -106,7 +130,9 @@ export class RogueManager {
 					const species = Dex.mod('gen9fantasy').species.get(mon.set.species);
 					return { ...mon, baseStats: species.baseStats, types: species.types,
 						experienceProgress: experienceProgress(mon),
-						evolutions: content?.progression ? evolutionOptions(mon) : [],
+						friendship: friendship(mon),
+						evolutionDetails: content?.progression ? partyEvolutions(mon, run) : undefined,
+						evolutions: content?.progression ? evolutionOptions(mon, run) : [],
 					};
 				}), bag: run.bag, money: run.money, boosts: run.boosts, lastReward: run.lastReward,
 				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture, pendingMoves: run.pendingMoves || [],
@@ -136,7 +162,7 @@ export class RogueManager {
 			}
 		}
 		const previousRun = this.engine.store.get(user.id).run?.id;
-		const account = this.engine.command(user.id, command);
+		const account = this.engine.command(user.id, command, user.name);
 		const run = account.run;
 		if (command.action === 'retreat' && run?.battle?.retreatRequested && retreatRoom && !retreatRoom.p1.eliminated) {
 			retreatRoom.forfeit(user, ' 撤退了。');
@@ -158,6 +184,7 @@ export class RogueManager {
 					keyMembers: [], resourcePreferences: [],
 				}, Teams.pack(run.team.map(mon => mon.set)), {
 					state: this.engine.battleState(userid), floor: run.floor,
+					wild: ['unknown', 'unknownf'].includes(rogueOpponentAvatar(run)),
 					onCapture: captured => { this.engine.capture(userid, token, captured); },
 					onResult: result => {
 						const pending = this.engine.store.get(userid).run?.battle;
