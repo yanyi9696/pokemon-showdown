@@ -398,6 +398,34 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		desc: "威力基数为80。使目标强化无效2回合。目标的能力(不包括命中率与闪避率)且每上升1级,威力提升20,最高为200",
 		shortDesc: "80威力,目标每有1项能力上升+20,使目标强化无效2回合",
 	},
+	chargebeam: {
+		num: 451,
+		accuracy: 90,
+		basePower: 75,
+		category: "Special",
+		name: "Charge Beam",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1, light: 1 },
+		onTryMove(source, target, move) {
+			if (source.volatiles['charge']) {
+				this.boost({ spa: 1 }, source, source, move);
+			}
+		},
+		secondary: {
+			chance: 70,
+			self: {
+				boosts: {
+					spa: 1,
+				},
+			},
+		},
+		target: "normal",
+		type: "Electric",
+		contestType: "Beautiful",
+		desc: "70%几率令使用者的特攻提升1级。如果使用者已经进入充电状态,则在攻击前先令使用者的特攻提升1级,攻击后仍可触发70%几率的特攻提升。",
+		shortDesc: "70%几率令使用者特攻+1;充电状态下攻击前额外令特攻+1",
+	},
 	crushgrip: {
 		num: 462,
 		accuracy: 100,
