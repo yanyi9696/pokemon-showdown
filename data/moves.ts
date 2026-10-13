@@ -3014,13 +3014,13 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 					pokemon.baseMoveSlots[coreEnforcerIndex] = newMove;
 					battle.add('-message', `${pokemon.name}的招式变成了${nihilLight.name}！`);
 
-					// 重点：因为这是在招式准备执行时修改，还需要把当前准备打出的招式也变成归无之光
-					move.id = nihilLight.id;
-					move.name = nihilLight.name;
-					move.type = nihilLight.type;
-					move.basePower = nihilLight.basePower;
-					move.category = nihilLight.category;
-					move.target = nihilLight.target;
+					// 首发也要使用当前 mod 的完整招式数据，包括无视免疫、能力变化和招式标签。
+					// 新招式未定义的回调不会被 Object.assign 自动清除，需要移除核心惩罚的残留效果。
+					Object.assign(move, battle.dex.getActiveMove(nihilLight), {
+						onModifyMove: nihilLight.onModifyMove,
+						onHit: nihilLight.onHit,
+						onAfterSubDamage: nihilLight.onAfterSubDamage,
+					});
 				}
 			}
 		},
