@@ -6,6 +6,7 @@ import { createRoguePokemon, initializeExperience, rebuildMember } from './progr
 import { ROGUE_INITIAL_FRIENDSHIP } from './friendship';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { canEditParty, healingLocked, inventoryItem } from './team';
+import { drawGiftSpecies } from './gifts';
 
 export const SPIRIT_HAZARDS = [
 	'stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'gmaxsteelsurge', 'reflect', 'lightscreen', 'safeguard',
@@ -24,11 +25,20 @@ export function initializeSpirit(run: RogueRun, content: RogueContent, random: R
 	run.phase = 'intro';
 	if (spirit.id === 'zygarde') run.box = [];
 	if (spirit.id === 'celebi') {
+		if (content.story) run.pendingSpiritGift = true;
+		else grantSpiritGift(run, content, random);
+	}
+}
+
+export function grantSpiritGift(run: RogueRun, content: RogueContent, random: RogueRandom) {
+	delete run.pendingSpiritGift;
+	if (run.spirit === 'celebi') {
 		// Use the configured starter families, excluding temporary battle-only forms.
 		const candidates = content.starters.filter(entry => !Dex.mod('gen9fantasy').species.get(entry.set.species).battleOnly);
-		const species = candidates[random(candidates.length)].set.species;
+		const species = drawGiftSpecies(candidates.map(entry => entry.set.species), run.startCard, random);
 		const set = makeEncounterSet(species, 40, randomEncounterIVs(random));
 		set.happiness = ROGUE_INITIAL_FRIENDSHIP;
+		set.shiny = random(1000) < 2 + (run.startCard === 'all' ? 1 : 0);
 		const mon = createRoguePokemon(set, run.boosts);
 		mon.fixedLevel = 40;
 		initializeExperience(mon);

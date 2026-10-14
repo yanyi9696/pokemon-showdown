@@ -2,6 +2,7 @@ import type Database = require('better-sqlite3');
 import { emptyRogueStats } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueCommand } from './types';
 import type { RogueClearCard } from './legacy';
+import { recordRogueDiscoveries } from './discoveries';
 
 export class RogueStore {
 	private readonly db: Database.Database;
@@ -57,7 +58,10 @@ export class RogueStore {
 					throw new Error('存档已更新，请刷新后重试。');
 				}
 			}
+			// Capture old evidence before an abandon/new run/card deletion, then the newly earned entries.
+			recordRogueDiscoveries(account);
 			update(account);
+			recordRogueDiscoveries(account);
 			if (!command && JSON.stringify(account) === before) return account;
 			account.revision++;
 			this.db.prepare('INSERT OR REPLACE INTO rogue_accounts (userid, data) VALUES (?, ?)').run(userid, JSON.stringify(account));

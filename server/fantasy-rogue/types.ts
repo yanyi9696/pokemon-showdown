@@ -39,6 +39,7 @@ export interface RogueEncounter {
 	catchChances?: Record<string, number>;
 }
 export interface RogueNode {
+	event?: import('./events').RogueEvent;
 	blessingPrepared?: boolean;
 	regiBoss?: boolean;
 	id: string;
@@ -78,6 +79,7 @@ export interface RogueStarter {
 	availableInitially: boolean;
 }
 export interface RogueContent {
+	events?: boolean;
 	blessings?: boolean;
 	story?: boolean;
 	spirits?: boolean;
@@ -111,6 +113,9 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	eventHistory?: { id: string, floor: number }[];
+	eventBuff?: { battles: number };
+	pendingSpiritGift?: boolean;
 	gymGiftReceived?: boolean;
 	/** Frozen at adventure creation; only the immediately previous adventure affects offers. */
 	previousBlessings?: string[];
@@ -132,7 +137,7 @@ export interface RogueRun extends RogueInventory {
 	/** Per-run identities; gym history also unlocks the two hidden Elite Four trainers. */
 	trainerHistory?: { gyms: string[], eliteFour: string[], elitePlan?: Record<number, string> };
 	floor: number;
-	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete' | 'blessing';
+	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete' | 'blessing' | 'event';
 	node?: RogueNode;
 	/** Saved route candidates, including encounters, must survive reloads and reconnects. */
 	choices?: RogueNode[];
@@ -144,7 +149,7 @@ export interface RogueRun extends RogueInventory {
 	startingSlots: number;
 	pendingCapture?: RoguePokemon;
 	pendingCaptures?: RoguePokemon[];
-	captureResume?: 'ready' | 'failed' | 'shopclosed';
+	captureResume?: 'ready' | 'failed' | 'shopclosed' | 'choose';
 	pendingMoves?: { member: string, move: string }[];
 	notices?: string[];
 	lastReward?: {
@@ -155,9 +160,11 @@ export interface RogueRun extends RogueInventory {
 	checkpoint: RogueInventory;
 	/** Stable across retries. Only account-level catch counting uses this ledger. */
 	caught: string[];
-	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean };
+	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	/** Permanent codex collection, independent of the current and previous adventures. */
+	discoveries?: { blessings: string[], events: string[] };
 	previousBlessings?: string[];
 	adventures?: number;
 	opening?: { page: number, skip: boolean };
@@ -193,7 +200,7 @@ export interface RogueCommand {
 	id: string;
 	revision: number;
 	action: 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
-		'shopchallenge' |
+		'shopchallenge' | 'event' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
 		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'learnbonus';

@@ -18,7 +18,7 @@ export interface RogueClearCard {
 	contentVersion: string;
 	rulesVersion: string;
 	snapshot: RogueInventory & {
-		floor: 200, boosts: StatsTable, spirit?: string, startCard?: string,
+		floor: 200, boosts: StatsTable, spirit?: string, startCard?: string, eventBuff?: boolean,
 		spiritName?: string, spiritText?: string, cardName?: string, cardText?: string,
 		hazards?: string[], blessings: { id: string, text: string }[],
 		blessingEffects?: BlessingEffects,
@@ -57,6 +57,7 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 		snapshot: {
 			team, box: structuredClone(run.box || []), bag: { ...run.bag }, money: run.money,
 			floor: 200, boosts: { ...run.boosts }, spirit: run.spirit, startCard: run.startCard,
+			eventBuff: !!run.eventBuff?.battles,
 			spiritName: rogueSpirit(run.spirit)?.name, spiritText: rogueSpirit(run.spirit)?.text,
 			cardName: startCard(run.startCard)?.name, cardText: startCard(run.startCard)?.text,
 			hazards: structuredClone(run.node?.encounters[run.encounter - 1]?.spiritHazards),

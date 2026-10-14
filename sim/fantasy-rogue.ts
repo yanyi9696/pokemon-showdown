@@ -57,6 +57,7 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	eventBuff?: boolean;
 	blessingRuntime?: Record<string, import('./fantasy-rogue-blessings').SideRuntime>;
 	blessingDefeated?: string[];
 	blessingPsychicLosses?: string[];
@@ -64,7 +65,7 @@ export interface RogueBattleState {
 	blessingProgress?: { kos: { id: string, member: string }[], swords: number, insight: Record<string, { points: number, gain: number }>,
 		psychic?: number, psychicLosses?: string[] };
 	/** Trusted second archive, only for the dedicated, unranked legacy duel format. */
-	duel?: { team: RoguePokemon[], boosts: StatsTable, hazards?: string[], money?: number,
+	duel?: { team: RoguePokemon[], boosts: StatsTable, hazards?: string[], money?: number, eventBuff?: boolean,
 		blessings?: import('./rogue-blessing-data').BlessingEffects };
 	spirit?: { id: string, floor: number, hazards?: string[], windSide?: number, money?: number };
 	opponentStars?: number[];
@@ -100,6 +101,17 @@ export interface RogueBattleResult {
 	bag: Record<string, number>;
 	captured?: RoguePokemon;
 	defeated?: RogueDefeat[];
+}
+
+/** Mushroom vitality affects direct opposing damage, never recoil, weather or one-hit KO moves. */
+export function rogueEventDamage(damage: number, target: Pokemon, source: Pokemon, effect: Effect) {
+	const state = target.battle.fantasyRogue;
+	if (!state || damage <= 0 || !(state.eventBuff || state.duel?.eventBuff) ||
+		effect.effectType !== 'Move' || effect.ohko || !source || source.side === target.side) return damage;
+	const buff = (mon: Pokemon) => mon.side.id === 'p1' ? state.eventBuff : state.duel?.eventBuff;
+	if (buff(source)) damage *= 1.2;
+	if (buff(target)) damage *= 0.9;
+	return Math.max(1, Math.floor(damage));
 }
 
 export function snapshotRoguePokemon(mon: Pokemon, original: RoguePokemon): RoguePokemon {

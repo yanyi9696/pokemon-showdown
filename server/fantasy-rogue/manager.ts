@@ -1,4 +1,6 @@
 import { randomUUID } from 'crypto';
+import { eventView } from './events';
+import { rogueCodex, type CodexSection } from './codex';
 import { FS, Utils } from '../../lib';
 import { Dex, toID } from '../../sim/dex';
 import { rogueOpponentAvatar } from './trainer-bosses';
@@ -58,6 +60,11 @@ export class RogueManager {
 			cards: this.engine.store.gallery(offset).map(card => ({ ...card, online: !!Users.get(card.owner)?.connected })),
 			invitations: account ? this.duels.list(user.id) : [] };
 	}
+	codex(user: User, section: CodexSection) {
+		let account;
+		try { this.authorize(user); account = this.engine.store.get(user.id); } catch {}
+		return { userid: user.id, revision: account?.revision, ...rogueCodex(account, section) };
+	}
 	duel(user: User, command: DuelCommand) {
 		this.authorize(user);
 		return this.duels.command(user, command);
@@ -114,6 +121,7 @@ export class RogueManager {
 				story: run.story, startCard: startCard(run.startCard),
 				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box,
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
+				event: eventView(run), eventBuff: run.eventBuff,
 				time: { id: rogueTime(run.floor), name: ROGUE_TIME_NAMES[rogueTime(run.floor)] },
 				recovery: run.recovery, retreating: !!run.battle?.retreatRequested,
 				healingLocked: healingLocked(run), emergencyCost: ROGUE_EMERGENCY_COST,
@@ -205,6 +213,7 @@ export class RogueManager {
 								const defeat = {
 									floor: run.floor, encounter: run.encounter + 1, encounters: run.node!.encounters.length,
 									...(run.node!.shopChallenge ? { shopClosed: true } : {}),
+									...(run.node!.event ? { eventClosed: true } : {}),
 									retryFloor: settled.phase === 'failed', noHealing: !!settled.node!.noHealing,
 									emergencyCost: ROGUE_EMERGENCY_COST,
 								};

@@ -53,7 +53,9 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 	}
 	beforeEach(() => {
 		store = new RogueStore(':memory:');
-		engine = new RogueEngine(store, createPreviewContent());
+		const content = createPreviewContent();
+		content.events = false; // These fixtures exercise the original wild and fixed-boss routes.
+		engine = new RogueEngine(store, content);
 		cmd('start', { starters: ['bulbasaur'] });
 	});
 	afterEach(() => store.close());

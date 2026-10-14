@@ -21,11 +21,12 @@ import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 import {
 	battleFriendship, changeFriendship, floorFriendship, friendship, ROGUE_INITIAL_FRIENDSHIP,
 } from './friendship';
-import { initializeSpirit, prepareSpiritNode, spiritItems, spiritShopAvailable, hpPurchaseCost,
+import { initializeSpirit, grantSpiritGift, prepareSpiritNode, spiritItems, spiritShopAvailable, hpPurchaseCost,
 	convertSpiritItem, editSpiritBox, mergeSpiritPokemon, completeSpiritRegion } from './spirits';
 import { ROGUE_STORY, afterSpirit, startCard, storyView } from './story';
 import { recordClear, editClearCard } from './legacy';
 import { beginShopChallenge } from './shop-challenge';
+import { beginEvent, chooseEventOption, eventRouteTemplates, settleEventBattle } from './events';
 import { normalizeBlessings, beginBlessingFloor, completeBlessingFloor, blessingRouteTemplates,
 	prepareBlessingEncounter, handleBlessingCommand, settleBlessingBattle, syncBlessingParty, blessingExperience, blessingLoot,
 	recordNegativeBlessingEvent, gymSystemGift } from './blessings';
@@ -146,6 +147,7 @@ export class RogueEngine {
 		for (const slot of mon.blessingPP || []) slot.pp = slot.maxpp;
 	}
 	private enterFloor(run: RogueRun) {
+		if (run.pendingSpiritGift) grantSpiritGift(run, this.configured(), this.random);
 		if (this.content?.blessings) beginBlessingFloor(run, this.random);
 		run.checkpoint = inventory(run);
 		run.blessingCheckpoint = structuredClone(run.blessings);
@@ -159,11 +161,13 @@ export class RogueEngine {
 		this.prepareChoices(run);
 		const options = this.configured().floors[run.floor];
 		if (options && fixedFloor(run.floor)) this.select(run, options[0].id);
+		if (run.pendingCapture) { run.captureResume = 'choose'; run.phase = 'settlement'; }
 	}
 	private prepareChoices(run: RogueRun) {
 		if (run.phase !== 'choose' || run.choices || !this.content || fixedFloor(run.floor)) return;
 		let templates = this.content.floors[run.floor];
 		if (!templates) return;
+		if (this.content.events) templates = eventRouteTemplates(templates, this.random);
 		if (this.content.blessings) templates = blessingRouteTemplates(run, templates);
 		run.choices = this.content.biomeEncounters ?
 			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard) : structuredClone(templates);
@@ -181,6 +185,11 @@ export class RogueEngine {
 		const node = (run.choices || this.configured().floors[run.floor])?.find(option => option.id === id);
 		requireRule(node, '本层内容尚未配置或路线无效。');
 		run.node = structuredClone(node);
+		if (this.content?.events && node.kind === 'event') {
+			delete run.choices;
+			beginEvent(run, this.random);
+			return;
+		}
 		if (this.content?.wildTreasures) prepareEconomy(run.node, run.floor, this.random);
 		delete run.choices;
 		for (const encounter of run.node.encounters) {
@@ -227,7 +236,7 @@ export class RogueEngine {
 		for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
 		const points = run.node!.kind === 'boss' ? 1 : 0;
 		account.points += points;
-		if (run.node!.wildLoot || run.node!.shopChallenge) {
+		if (run.node!.wildLoot || run.node!.shopChallenge || run.node!.event) {
 			// Wild drops have already been credited per encounter; the final receipt only adds the Boss point.
 			if (run.lastReward?.floor === run.floor) run.lastReward.points += points;
 		} else {
@@ -261,6 +270,7 @@ export class RogueEngine {
 			return;
 		}
 		if (this.pendingBlessings(run)) { run.phase = 'blessing'; return; }
+		if (run.node?.event?.stage === 'result') { run.phase = 'event'; return; }
 		if (run.encounter < run.node!.encounters.length) run.phase = 'ready';
 		else if (run.node!.rocket && !run.node!.rocket.cleared) {
 			const rocket = run.node!.rocket;
@@ -450,6 +460,16 @@ export class RogueEngine {
 				return;
 			}
 			switch (command.action) {
+			case 'event':
+				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value);
+				if (run.phase === 'ready') {
+					prepareEconomy(run.node!, run.floor, this.random);
+					prepareSpiritNode(run, run.node!, this.configured(), this.random);
+					this.resolveOpponentGenders(run.node!.encounters.flatMap(encounter => encounter.team));
+					if (this.content?.blessings) prepareBlessingEncounter(run, this.random);
+				}
+				if (this.pendingBlessings(run)) run.phase = 'blessing';
+				break;
 			case 'startcard':
 				requireRule(run.phase === 'story' && run.story?.stage === 'cards' && !run.startCard && startCard(command.value),
 					'当前不能选择这张开局卡片。');
@@ -504,7 +524,7 @@ export class RogueEngine {
 				break;
 			}
 			case 'evolve': {
-				requireRule(this.configured().progression && ['choose', 'ready', 'rest', 'reward'].includes(run.phase), '当前不能进化。');
+				requireRule(this.configured().progression && ['choose', 'ready', 'rest', 'reward', 'event'].includes(run.phase), '当前不能进化。');
 				requireRule(!healingLocked(run), '本层要求连续战斗，途中不能通过进化调整状态。');
 				const mon = run.team.find(entry => entry.id === command.member);
 				const option = mon && evolutionOptions(mon, run).find(entry => toID(entry.species) === command.value);
@@ -530,6 +550,7 @@ export class RogueEngine {
 				run.battle = {
 					token: randomUUID(), encounterId: `${run.id}:${run.floor}:${run.node!.id}:${run.encounter}`,
 				};
+				if (run.eventBuff?.battles) { run.eventBuff.battles--; run.battle.eventBuff = true; }
 				run.phase = 'battle';
 				delete run.recovery;
 				break;
@@ -607,7 +628,7 @@ export class RogueEngine {
 				break;
 			}
 			case 'use': {
-				requireRule(['rest', 'ready', 'choose', 'reward'].includes(run.phase), '请在战斗间隙使用补给。');
+				requireRule(['rest', 'ready', 'choose', 'reward', 'event'].includes(run.phase), '请在战斗间隙使用补给。');
 				requireRule(!healingLocked(run), '本层要求连续战斗，途中不能使用治疗和补给道具。');
 				const item = this.configured().items.find(entry => entry.id === command.value);
 				const mon = run.team.find(entry => entry.id === command.member);
@@ -648,7 +669,8 @@ export class RogueEngine {
 				break;
 			}
 			case 'continue':
-				requireRule(run.phase === 'rest' || run.phase === 'reward', '请先完成本层。');
+				requireRule(run.phase === 'rest' || run.phase === 'reward' || run.phase === 'event' && run.node?.event?.stage === 'result', '请先完成本层。');
+				if (run.node?.event) requireRule(run.team.some(mon => mon.hp > 0), '请先复活至少一名伙伴，再继续前进。');
 				this.completeFloor(account, run);
 				break;
 			default: throw new Error('未知的肉鸽操作。');
@@ -663,6 +685,7 @@ export class RogueEngine {
 		requireRule(run.phase === 'battle' && run.battle, '当前没有待建立的战斗。');
 		const encounter = run.node!.encounters[run.encounter];
 		return {
+			eventBuff: !!run.battle.eventBuff,
 			blessings: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution, psychic: run.blessings.psychic }),
 			blessingDefeated: run.blessings?.defeated.slice(),
 			blessingPsychicLosses: run.blessings?.psychicLosses?.slice(),
@@ -770,6 +793,11 @@ export class RogueEngine {
 			};
 			if (!result.won) {
 				if (finishShop()) return;
+				if (run.node!.event) {
+					settleEventBattle(run, this.configured(), this.random, false, retreated);
+					run.phase = 'settlement'; this.finishSettlement(account, run);
+					return;
+				}
 				run.recovery = retreated ? 'retreat' : 'defeat';
 				run.phase = run.node!.noHealing && !run.team.some(mon => mon.hp > 0) ? 'failed' : 'ready';
 				if (run.pendingCaptures?.length) { run.captureResume = run.phase as 'ready' | 'failed'; run.phase = 'settlement'; this.finishSettlement(account, run); }
@@ -799,6 +827,7 @@ export class RogueEngine {
 			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
 
 			if (finishShop()) return;
+			if (run.node!.event) settleEventBattle(run, this.configured(), this.random, true);
 			run.encounter++;
 			run.phase = 'settlement';
 			this.finishSettlement(account, run);
@@ -864,6 +893,8 @@ export class RogueEngine {
 			const run = account.run;
 			if (run?.phase === 'battle' && run.battle?.token === token) {
 				run.phase = 'ready';
+				// A missing room has no battle result: restore its unused charge before retrying.
+				if (run.battle.eventBuff) (run.eventBuff ||= { battles: 0 }).battles++;
 				delete run.battle;
 			}
 		});

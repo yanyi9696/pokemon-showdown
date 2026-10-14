@@ -3,6 +3,10 @@ import type { RogueCommand } from '../fantasy-rogue/types';
 import type { DuelCommand } from '../fantasy-rogue/duels';
 
 export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
+	fantasyroguecodex(target, user, trustable) {
+		return trustable && (target === 'guide' || target === 'blessings' || target === 'events') ?
+			getRogueManager().codex(user, target) : null;
+	},
 	fantasyroguegallery(target, user, trustable) {
 		const offset = Number(target || 0);
 		return trustable && Number.isSafeInteger(offset) && offset >= 0 && offset <= 1000000 ?

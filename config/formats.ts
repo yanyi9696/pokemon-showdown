@@ -18,7 +18,7 @@ The column value will be ignored for repeat sections.
 */
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
-import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat } from '../sim/fantasy-rogue';
+import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, rogueEventDamage } from '../sim/fantasy-rogue';
 import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
 	blessingEffectiveness, blessingHit } from '../sim/fantasy-rogue-blessings';
 import { maintainRogueEnvironment, startRogueSpirit, rogueCoinDamageMultiplier,
@@ -39,6 +39,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onResidualOrder: 100,
 		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
 		onDamage(damage, target, source, effect) {
+			damage = rogueEventDamage(damage, target, source, effect);
 			const spirit = this.fantasyRogue?.spirit;
 			if (!spirit || effect.effectType !== 'Move' || (effect as ActiveMove).ohko || !source || target.side === source.side) return blessingDamage(damage, target, source, effect);
 			if (spirit.id === 'regigigas') damage = Math.max(1, Math.floor(damage * (source.side.id === 'p1' ? 2 : 0.5)));
@@ -86,6 +87,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onResidualOrder: 100,
 		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
 		onDamage(damage, target, source, effect) {
+			damage = rogueEventDamage(damage, target, source, effect);
 			if (effect.effectType !== 'Move' || (effect as ActiveMove).ohko || !source || target.side === source.side) return blessingDamage(damage, target, source, effect);
 			const spirit = this.fantasyRogue?.spirit;
 			if (spirit?.id === 'darkrai') damage = Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));

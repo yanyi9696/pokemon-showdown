@@ -102,7 +102,7 @@ add('silver', 'reservetera', '预定太晶化', '通关第 100 层后，解锁�
 add('silver', 'reservez', '预定Z招式', '通关第 100 层后，解锁 Z 招式并自选一颗 Z 纯晶。', { floors: [50] });
 add('silver', 'coin', '命运决定一切', '每次伤害类出招抛一次硬币：正面伤害 ×1.5，反面 ×0.5；多段共用结果。');
 add('silver', 'dice', '灌铅骰子', '明确的抛硬币总为正面，掷骰子总为最大点数。', { floors: [50] });
-typed('silver', 'friend', () => '来个好伙计！', '获得一只本局未捕获的对应属性二星伙伴（六维 ×1.2）。极低概率获得神兽！');
+add('silver', 'friend', '来个好伙计！', '随机获得一只本局未捕获的二星伙伴（六维 ×1.2），受开局偏爱卡片影响。极低概率获得神兽！');
 add('silver', 'catcher', '我收服，宝可梦了', '最终捕捉成功率 ×1.5，最高 100%；与哲尔尼亚斯乘算。');
 add('silver', 'battletask', '战斗，爽', '可选路线必含战斗；完成 15 个完整战斗区域后获得一次随机奖励。三战区域计一次。');
 add('silver', 'eventtask', '事件，爽', '可选路线必含事件；完成 15 个事件区域后获得一次随机奖励。');
@@ -162,7 +162,9 @@ for (const [tier, title] of [['silver', '白银'], ['gold', '黄金'], ['prismat
 }
 add('prismatic', 'psychic', '灵能百分百', '全队共用灵能：击倒对手 +3%，完成事件 +8%，被对手击倒额外 +20%，事件负面结果额外 +25%。超过 100% 后积攒效率降至 5%。灵能达到 100% 时，可在对战中消耗全部灵能发动一次一击必杀，占用一次行动；无视守住、替身且必中场上目标。');
 export const ROGUE_BLESSINGS: readonly BlessingDefinition[] = definitions;
-export const blessing = (id: string) => ROGUE_BLESSINGS.find(entry => entry.id === id);
+// Resolve saved offers from before the eighteen typed friend variants were consolidated.
+export const blessing = (id: string) => ROGUE_BLESSINGS.find(entry => entry.id ===
+	(Object.keys(BLESSING_TYPES).some(type => id === 'friend' + type.toLowerCase()) ? 'friend' : id));
 export const ownsBlessing = (state: BlessingEffects | undefined, family: string) => state?.owned.find(entry => entry.family === family);
 export function blessingTitle(entry: Pick<OwnedBlessing, 'id' | 'floor'>) {
 	const def = blessing(entry.id);

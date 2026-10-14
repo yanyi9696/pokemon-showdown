@@ -39,10 +39,9 @@ const TYPES = ['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting'
 const NAMES = ['一般', '火', '水', '电', '草', '冰', '格斗', '毒', '地面', '飞行', '超能力', '虫', '岩石', '幽灵', '龙', '恶', '钢', '妖精'];
 export const ROGUE_START_CARDS = TYPES.map((type, i) => ({
 	id: type.toLowerCase(), type, name: `${NAMES[i]}属性的宝可梦`,
-	text: `进入生态区域后，${NAMES[i]}属性野生宝可梦的出现权重 ×1.25。` +
-		'不会改变区域种类，池内没有该属性时不生效。',
+	text: `区域野生遭遇和随机赠送伙伴中，${NAMES[i]}属性出现权重 ×1.25；不改变区域及奖励范围。`,
 })).concat([{ id: 'all', type: '', name: '所有属性的宝可梦',
-	text: '野生宝可梦闪光概率增加 0.1 个百分点：普通 0.2% → 0.3%；凤王塔灵 2% → 2.1%。' }]);
+	text: '野生与随机赠送宝可梦的闪光率 +0.1 个百分点（普通 0.3%，凤王塔灵 2.1%）。' }]);
 export const startCard = (id?: string) => ROGUE_START_CARDS.find(card => card.id === id);
 
 /** Reweight the original nested draw by actual evolved type without flattening its slot/group weights. */

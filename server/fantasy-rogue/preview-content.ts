@@ -97,7 +97,7 @@ export function createPreviewContent(): RogueContent {
 	const content: RogueContent = {
 		version: PreviewBalance.version, biomeEncounters: true, wildTreasures: true,
 		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8'],
-		spirits: true, blessings: true,
+		spirits: true, blessings: true, events: true,
 		label: '幻想杯肉鸽 · 200 层试玩版',
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },

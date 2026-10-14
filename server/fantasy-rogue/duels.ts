@@ -36,8 +36,9 @@ export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): Rogue
 	return {
 		encounterId: `duel:${a.id}:${b.id}`, team: snapshots[0].team, boosts: snapshots[0].boosts,
 		blessings: snapshots[0].blessingEffects,
+		eventBuff: snapshots[0].eventBuff,
 		duel: { team: snapshots[1].team, boosts: snapshots[1].boosts,
-			hazards: snapshots[1].hazards, money: snapshots[1].money, blessings: snapshots[1].blessingEffects },
+			hazards: snapshots[1].hazards, money: snapshots[1].money, blessings: snapshots[1].blessingEffects, eventBuff: snapshots[1].eventBuff },
 		bag: {}, balls: [], catchable: false,
 		systems: { player: { mega: !!snapshots[0].megaUnlocked, gmega: !!snapshots[0].gmegaUnlocked, z: !!snapshots[0].zUnlocked },
 			opponent: { mega: !!snapshots[1].megaUnlocked, gmega: !!snapshots[1].gmegaUnlocked, z: !!snapshots[1].zUnlocked } },

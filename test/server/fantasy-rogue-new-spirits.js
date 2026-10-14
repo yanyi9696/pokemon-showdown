@@ -172,7 +172,9 @@ describe('Fantasy Rogue additional tower spirits', () => {
 	it('applies growth only on full-region success and later captures inherit it', () => {
 		const store = new RogueStore(':memory:');
 		try {
-			const engine = new RogueEngine(store, createPreviewContent(), max => max - 1, true);
+			const content = createPreviewContent();
+			content.events = false;
+			const engine = new RogueEngine(store, content, max => max - 1, true);
 			const cmd = (action, extra = {}) => engine.command('growth', { id: randomUUID(), revision: store.get('growth').revision, action, ...extra });
 			cmd('start', { starters: ['bulbasaur'], useSpirit: true, testSpirit: 'zacian' }); cmd('spiritack'); cmd('select', { value: 'wild0' });
 			const fight = won => {
