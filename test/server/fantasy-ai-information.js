@@ -68,6 +68,22 @@ describe('Fantasy AI authorized move information', function () {
 		before.opponentMoves[0].moves.push('another');
 		assert(!JSON.stringify(view.observe(battle.p1.activeRequest)).includes('another'));
 	});
+	it('passes detached public blessing rules without exposing saved targets, tasks or psychic reserves', () => {
+		create();
+		const rules = { owned: [{id: 'entrance', family: 'entrance', tier: 'prismatic', floor: 150, target: 'secret-member', progress: 9}],
+			psychic: 108, pending: [{pokemon: 'private-gift'}],
+			evolution: {type: 'Fire', direction: 'moves', power: 0.1, offense: {}, defense: {}, stats: {}, extras: []} };
+		const view = new InformationView({ownSide: 'p1', difficulty: 'normal', opponentMoves: moves, rogueBlessings: rules});
+		view.receiveUpdate(battle.log.join('\n'));
+		const observation = view.observe(battle.p1.activeRequest);
+		assert.deepEqual(Object.keys(observation.rogueBlessings.owned[0]).sort(), ['family', 'floor', 'id', 'tier', 'type']);
+		assert.equal(observation.rogueBlessings.psychic, undefined); assert.equal(observation.rogueBlessings.pending, undefined);
+		rules.evolution.power = 99; observation.rogueBlessings.owned[0].target = 'injected';
+		const fresh = view.observe(battle.p1.activeRequest);
+		assert.equal(fresh.rogueBlessings.evolution.power, 0.1); assert.equal(fresh.rogueBlessings.owned[0].target, undefined);
+		const world = new WorldBuilder(trainer).build(fresh)[0];
+		assert.deepEqual(world.rogueBlessings, fresh.rogueBlessings);
+	});
 
 	it('uses known moves in every normal hypothesis and every reconstructed reserve', () => {
 		create();

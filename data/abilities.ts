@@ -5147,8 +5147,9 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 			}
 		},
 		onBeforeMovePriority: 9,
-		onBeforeMove(pokemon) {
+		onBeforeMove(pokemon, target, move) {
 			if (pokemon.removeVolatile('truant')) {
+				if (pokemon.hasRogueBlessing('slacker') && move.id === 'slackoff') return;
 				this.add('cant', pokemon, 'ability: Truant');
 				return false;
 			}

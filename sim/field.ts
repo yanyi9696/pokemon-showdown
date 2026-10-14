@@ -8,6 +8,7 @@
 import { State } from './state';
 import { type EffectState } from './pokemon';
 import { toID } from './dex';
+import { extendBlessingEnvironment } from './fantasy-rogue-blessings';
 
 export class Field {
 	readonly battle: Battle;
@@ -84,6 +85,7 @@ export class Field {
 			this.weatherState = prevWeatherState;
 			return false;
 		}
+		extendBlessingEnvironment(this.battle, status.id, source, this.weatherState);
 		this.battle.eachEvent('WeatherChange', sourceEffect);
 		return true;
 	}
@@ -152,6 +154,7 @@ export class Field {
 			this.terrainState = prevTerrainState;
 			return false;
 		}
+		extendBlessingEnvironment(this.battle, status.id, source, this.terrainState);
 		this.battle.eachEvent('TerrainChange', sourceEffect);
 		return true;
 	}
@@ -211,6 +214,7 @@ export class Field {
 			delete this.pseudoWeather[status.id];
 			return false;
 		}
+		extendBlessingEnvironment(this.battle, status.id, source, state);
 		this.battle.runEvent('PseudoWeatherChange', source, source, status);
 		return true;
 	}

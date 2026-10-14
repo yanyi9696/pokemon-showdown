@@ -1,5 +1,8 @@
 import { Dex, toID } from './dex';
-import { canRogueTerastallize } from './fantasy-rogue';
+import { canRogueTerastallize, canRogueSystem } from './fantasy-rogue';
+import { queueRogueFutureAttack } from './fantasy-rogue-spirits';
+import { blessingExtraZ, spendBlessingZ } from './fantasy-rogue-blessings';
+import { hasRogueStatus } from './fantasy-rogue-status';
 
 const CHOOSABLE_TARGETS = new Set(['normal', 'any', 'adjacentAlly', 'adjacentAllyOrSelf', 'adjacentFoe']);
 
@@ -274,7 +277,7 @@ export class BattleActions {
 		}
 		pokemon.lastDamage = 0;
 		let lockedMove;
-		if (!externalMove) {
+		if (!externalMove && !(this.battle.fantasyRogue && ['roguepsychicburst', 'rogueevoboost'].includes(move.id))) {
 			lockedMove = this.battle.runEvent('LockMove', pokemon);
 			if (lockedMove === true) lockedMove = false;
 			if (!lockedMove) {
@@ -299,7 +302,8 @@ export class BattleActions {
 				this.battle.singleEvent('End', this.dex.abilities.get('Illusion'), pokemon.abilityState, pokemon);
 			}
 			this.battle.add('-zpower', pokemon);
-			pokemon.side.zMoveUsed = true;
+			if (blessingExtraZ(pokemon)) spendBlessingZ(pokemon);
+			else pokemon.side.zMoveUsed = true;
 		}
 
 		const oldActiveMove = move;
@@ -514,6 +518,7 @@ export class BattleActions {
 			}
 			moveResult = this.trySpreadMoveHit(targets, pokemon, move);
 		}
+		if (move.rogueDelayed) return moveResult;
 		if (move.selfBoost && moveResult) this.moveHit(pokemon, pokemon, move, move.selfBoost, false, true);
 		if (!pokemon.hp) {
 			this.battle.faint(pokemon, pokemon, move);
@@ -582,7 +587,10 @@ export class BattleActions {
 
 		if (notActive) this.battle.setActiveMove(move, pokemon, targets[0]);
 
-		const hitResult = this.battle.singleEvent('Try', move, null, pokemon, targets[0], move) &&
+		const nativeFuture = this.battle.fantasyRogue?.spirit?.id === 'dialga' &&
+			['futuresight', 'doomdesire'].includes(move.id);
+		const hitResult = move.rogueFutureReleased ||
+			(nativeFuture || this.battle.singleEvent('Try', move, null, pokemon, targets[0], move)) &&
 			this.battle.singleEvent('PrepareHit', move, {}, targets[0], pokemon, move) &&
 			this.battle.runEvent('PrepareHit', pokemon, targets[0], move);
 		if (!hitResult) {
@@ -592,6 +600,7 @@ export class BattleActions {
 			}
 			return hitResult === this.battle.NOT_FAIL;
 		}
+		if (queueRogueFutureAttack(this.battle, targets, pokemon, move)) return true;
 
 		let atLeastOneFailure = false;
 		for (const step of moveSteps) {
@@ -688,7 +697,7 @@ export class BattleActions {
 			this.battle.activeTarget = target;
 			// calculate true accuracy
 			let accuracy = move.accuracy;
-			if (move.ohko) { // bypasses accuracy modifiers
+			if (move.ohko && move.id !== 'roguepsychicburst') { // bypasses accuracy modifiers
 				if (!target.isSemiInvulnerable()) {
 					accuracy = 30;
 					if (move.ohko === 'Ice' && this.battle.gen >= 7 && !pokemon.hasType('Ice')) {
@@ -970,7 +979,7 @@ export class BattleActions {
 				}
 			}
 			this.battle.eachEvent('Update');
-			if (!pokemon.hp && targets.length === 1) {
+			if (!pokemon.hp && targets.length === 1 && !move.rogueFutureReleased) {
 				hit++; // report the correct number of hits for multihit moves
 				break;
 			}
@@ -1401,6 +1410,10 @@ export class BattleActions {
 	}
 
 	getZMove(move: Move, pokemon: Pokemon, skipChecks?: boolean): string | undefined {
+		if (blessingExtraZ(pokemon) && (skipChecks || pokemon.getMoveData(move)?.pp)) {
+			return move.category === 'Status' ? move.name : move.zMove?.basePower ? this.Z_MOVES[move.type] : undefined;
+		}
+		if (!canRogueSystem(pokemon, 'z')) return;
 		const item = pokemon.getItem();
 		if (!skipChecks) {
 			if (pokemon.side.zMoveUsed) return;
@@ -1450,13 +1463,14 @@ export class BattleActions {
 	}
 
 	canZMove(pokemon: Pokemon) {
-		if (pokemon.side.zMoveUsed ||
+		const extraZ = blessingExtraZ(pokemon);
+		if (!extraZ && (pokemon.side.zMoveUsed ||
 			(pokemon.transformed &&
 				(pokemon.species.isMega || pokemon.species.isPrimal || pokemon.species.forme === "Ultra"))
-		) return;
+		)) return;
 		const item = pokemon.getItem();
-		if (!item.zMove) return;
-		if (item.itemUser && !item.itemUser.includes(pokemon.species.name)) return;
+		if (!extraZ && !item.zMove) return;
+		if (!extraZ && item.itemUser && !item.itemUser.includes(pokemon.species.name)) return;
 		let atLeastOne = false;
 		let mustStruggle = true;
 		const zMoves: ZMoveOptions = [];
@@ -1821,7 +1835,7 @@ export class BattleActions {
 
 		if (isCrit && !suppressMessages) this.battle.add('-crit', target);
 
-		if (pokemon.status === 'brn' && move.category === 'Physical' && !pokemon.hasAbility('guts') && !pokemon.hasItem('fantasylifeorb') && !pokemon.hasAbility('zhiliao')) {
+		if (hasRogueStatus(pokemon, 'brn') && move.category === 'Physical' && !pokemon.hasAbility('guts') && !pokemon.hasItem('fantasylifeorb') && !pokemon.hasAbility('zhiliao')) {
                 if (this.battle.gen < 6 || move.id !== 'facade') {
                     baseDamage = this.battle.modify(baseDamage, 0.5);
                 }
@@ -1871,6 +1885,7 @@ export class BattleActions {
 	// ==================================================================
 
 	canMegaEvo(pokemon: Pokemon) {
+		if (!canRogueSystem(pokemon, 'mega')) return null;
 		const species = pokemon.baseSpecies;
 		const altForme = species.otherFormes && this.dex.species.get(species.otherFormes[0]);
 		const item = pokemon.getItem();
@@ -1899,6 +1914,7 @@ export class BattleActions {
 	}
 
 	canUltraBurst(pokemon: Pokemon) {
+		if (!canRogueSystem(pokemon, 'z')) return null;
 		if (['Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane'].includes(pokemon.baseSpecies.name) &&
 			pokemon.getItem().id === 'ultranecroziumz') {
 			return "Necrozma-Ultra";

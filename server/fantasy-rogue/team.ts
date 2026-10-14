@@ -37,6 +37,7 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 		const id = command.value || '';
 		const old = toID(mon.set.item);
 		if (old === id) return;
+		requireRule(!(old === 'eviolite' && run.blessings?.owned.some(entry => entry.family === 'kid')), '小鬼当家：进化奇石不可取下。');
 		if (id) {
 			requireRule(inventoryItem(content, id)?.kind === 'held' && run.bag[id] > 0, '背包中没有可用的携带道具。');
 			run.bag[id]--;
@@ -52,8 +53,9 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 	case 'setmove': {
 		const slot = command.slot!;
 		const move = command.value || '';
-		requireRule(Number.isInteger(slot) && slot >= 0 && slot < 4 && slot <= mon.set.moves.length, '招式位置无效。');
-		requireRule(mon.moveMemory!.some(entry => entry.id === move), '该成员尚未学会这个招式。');
+		const limit = run.blessings?.owned.some(entry => entry.family === 'learnall') ? 5 : 4;
+		requireRule(Number.isInteger(slot) && slot >= 0 && slot < limit && slot <= mon.set.moves.length, '招式位置无效。');
+		requireRule(mon.moveMemory!.some(entry => entry.id === move) || mon.blessingMoves?.includes(move), '该成员尚未学会这个招式。');
 		const current = mon.set.moves.findIndex(name => toID(name) === move);
 		if (current >= 0) {
 			requireRule(slot < mon.set.moves.length, '这个招式已经在使用中。');

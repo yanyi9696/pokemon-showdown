@@ -1,4 +1,13 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	roguegreatmage: {
+		name: "Rogue Great Mage",
+		isNonstandard: "Custom",
+		flags: {},
+		onModifySpAPriority: 5,
+		onModifySpA(spa) { return this.chainModify(2); },
+		rating: 5,
+		num: -101,
+	},
 	piercingdrill: {
 		onModifyMove(move) {
 			if (move.flags['contact']) delete move.flags['protect'];
@@ -1364,7 +1373,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifyAtk(atk, attacker, defender, move) {
 			// 当游戏引擎来获取“攻击(atk)”数值时，检查标记
 			// 如果标记是 'spa'，说明我们需要用特攻来代替
-			if (move.overrideOffensiveStat === 'spa') {
+			if (move?.overrideOffensiveStat === 'spa') {
 				this.debug('极智能: 攻击(atk)数值被特攻(spa)替代');
 				return attacker.getStat('spa', false, true); // 返回特攻数值
 			}
@@ -1372,7 +1381,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifySpA(spa, attacker, defender, move) {
 			// 当游戏引擎来获取“特攻(spa)”数值时，检查标记
 			// 如果标记是 'atk'，说明我们需要用物攻来代替
-			if (move.overrideOffensiveStat === 'atk') {
+			if (move?.overrideOffensiveStat === 'atk') {
 				this.debug('极智能: 特攻(spa)数值被攻击(atk)替代');
 				return attacker.getStat('atk', false, true); // 返回物攻数值
 			}

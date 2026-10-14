@@ -15,6 +15,7 @@ export interface PokemonSet {
 	fantasyRogueStats?: StatsTable;
 	fantasyRogueScale?: number;
 	fantasyRogueId?: string;
+	fantasyRogueModifiers?: import('./rogue-blessing-data').RogueStatModifiers;
 	/**
 	 * Nickname. Should be identical to its base species if not specified
 	 * by the player, e.g. "Minior".

@@ -4,6 +4,8 @@ import type { Side } from './side';
 import type { Pokemon } from './pokemon';
 import { toID } from './dex';
 import { captureThresholds, rogueSpeciesData } from './fantasy-rogue-rules';
+import { blessingProgress, hasBlessing, failedTrainerCapture } from './fantasy-rogue-blessings';
+import { savedRogueStatuses } from './fantasy-rogue-status';
 
 export const ROGUE_FORMAT = 'gen9fantasyrogue';
 export const ROGUE_DUEL_FORMAT = 'gen9fantasyrogueduel';
@@ -12,6 +14,18 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	joinOrder?: number;
+	initialPartner?: boolean;
+	bond?: number;
+	bondReady?: boolean;
+	bonusHP?: number;
+	insight?: { points: number, gain: number };
+	extraAbilities?: string[];
+	/** Temporary learning permissions are kept apart from permanently learned moves. */
+	blessingMoves?: string[];
+	blessingPP?: { id: string, pp: number, maxpp: number }[];
+	statModifiers?: import('./rogue-blessing-data').RogueStatModifiers;
+	statuses?: Record<string, { time?: number, startTime?: number, stage?: number, blessingToxic?: boolean }>;
 	/** Friendship evolutions qualified at an actual level-up, not by merely opening the party. */
 	stars?: number;
 	fixedLevel?: number;
@@ -21,7 +35,7 @@ export interface RoguePokemon {
 	maxhp: number;
 	pp: { id: string, pp: number, maxpp: number }[];
 	status: string;
-	statusState: { time?: number, startTime?: number, stage?: number };
+	statusState: { time?: number, startTime?: number, stage?: number, blessingToxic?: boolean };
 	experience?: number;
 	seenMoves?: string[];
 	/** Learned moves retain their remaining PP even while not equipped. */
@@ -33,6 +47,8 @@ export interface RoguePokemon {
 }
 
 export interface RogueDefeat {
+	id?: string;
+	attacker?: string;
 	species: string;
 	level: number;
 	participants: string[];
@@ -41,9 +57,19 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	blessingRuntime?: Record<string, import('./fantasy-rogue-blessings').SideRuntime>;
+	blessingDefeated?: string[];
+	blessingPsychicLosses?: string[];
+	blessings?: import('./rogue-blessing-data').BlessingEffects;
+	blessingProgress?: { kos: { id: string, member: string }[], swords: number, insight: Record<string, { points: number, gain: number }>,
+		psychic?: number, psychicLosses?: string[] };
 	/** Trusted second archive, only for the dedicated, unranked legacy duel format. */
-	duel?: { team: RoguePokemon[], boosts: StatsTable, hazards?: string[] };
-	spirit?: { id: string, floor: number, hazards?: string[], windSide?: number };
+	duel?: { team: RoguePokemon[], boosts: StatsTable, hazards?: string[], money?: number,
+		blessings?: import('./rogue-blessing-data').BlessingEffects };
+	spirit?: { id: string, floor: number, hazards?: string[], windSide?: number, money?: number };
+	opponentStars?: number[];
+	/** Simulator references are serialized by the native battle serializer. */
+	futureAttacks?: { turn: number, source: Pokemon, slots: PokemonSlot[], move: ActiveMove }[];
 	encounterId: string;
 	team: RoguePokemon[];
 	boosts: StatsTable;
@@ -51,8 +77,12 @@ export interface RogueBattleState {
 	/** Explicit per-ball probabilities supplied by the content configuration (0..1). */
 	balls: { id: string, name: string, chance?: number, multiplier?: number }[];
 	catchable: boolean;
+	/** Only NPC captures granted by the Rocket blessing provoke the trainer. */
+	npcCapture?: boolean;
 	/** Permissions for this encounter, issued by the campaign server. Old/missing flags are locked. */
 	tera?: { player: boolean, opponent: boolean };
+	systems?: { player: { mega: boolean, z: boolean, gmega?: boolean }, opponent?: { mega: boolean, z: boolean, gmega?: boolean } };
+	captures?: RoguePokemon[];
 	captured?: RoguePokemon;
 	progression?: boolean;
 	allowReplacement?: boolean;
@@ -62,6 +92,8 @@ export interface RogueBattleState {
 }
 
 export interface RogueBattleResult {
+	captures?: RoguePokemon[];
+	blessingProgress?: RogueBattleState['blessingProgress'];
 	encounterId: string;
 	won: boolean;
 	team: RoguePokemon[];
@@ -72,18 +104,25 @@ export interface RogueBattleResult {
 
 export function snapshotRoguePokemon(mon: Pokemon, original: RoguePokemon): RoguePokemon {
 	// Temporary battle forms, Transform, Dynamax and volatile effects do not become save data.
-	const hp = mon.hp ? Math.max(1, original.maxhp - (mon.baseMaxhp - mon.getUndynamaxedHP())) : 0;
+	const growth = mon.m.rogueBlessing?.bonusHP || 0;
+	const maxhp = original.maxhp + growth;
+	const hp = mon.hp ? Math.max(1, maxhp - (mon.baseMaxhp - mon.getUndynamaxedHP())) : 0;
 	return {
 		...structuredClone(original),
 		id: original.id,
-		set: { ...structuredClone(original.set), item: mon.item },
-		hp: Math.min(original.maxhp, hp), maxhp: original.maxhp,
+		set: { ...structuredClone(original.set), item: mon.item || mon.m.rogueBlessing?.consumed || '' },
+		hp: Math.min(maxhp, hp), maxhp,
+		bonusHP: (original.bonusHP || 0) + growth,
+		statModifiers: { ...original.statModifiers, hp: (original.bonusHP || 0) + growth },
+		stats: original.stats && { ...original.stats, hp: maxhp },
 		pp: original.pp.map(slot => {
 			const current = mon.baseMoveSlots.find(move => move.id === slot.id);
 			return { ...slot, pp: current?.pp ?? slot.pp, maxpp: current?.maxpp ?? slot.maxpp };
 		}),
 		status: mon.status,
-		statusState: { time: mon.statusState.time, startTime: mon.statusState.startTime, stage: mon.statusState.stage },
+		statuses: savedRogueStatuses(mon),
+		statusState: { time: mon.statusState.time, startTime: mon.statusState.startTime, stage: mon.statusState.stage,
+			blessingToxic: mon.statusState.blessingToxic },
 	};
 }
 
@@ -94,7 +133,13 @@ export function initializeRogueBattle(battle: Battle) {
 	if (!state) throw new Error('幻想杯肉鸽必须从冒险存档进入。');
 	state.participants = {};
 	state.defeated = [];
-	for (const [i, mon] of battle.p2.pokemon.entries()) mon.set.fantasyRogueId = `${state.encounterId}:foe:${i}`;
+	state.blessingProgress = { kos: [], swords: 0, insight: {} };
+	for (const [i, mon] of battle.p2.pokemon.entries()) {
+		mon.set.fantasyRogueId = `${state.encounterId}:foe:${i}`;
+		if (!state.duel && (state.opponentStars?.[i] || 1) > 1) {
+			battle.add('-message', `野生${mon.species.name}为二星宝可梦，六项能力值 ×1.2。`);
+		}
+	}
 	if (state.duel) {
 		for (const [i, mon] of battle.p2.pokemon.entries()) mon.set.fantasyRogueId = state.duel.team[i].id;
 	}
@@ -106,6 +151,11 @@ export function initializeRogueBattle(battle: Battle) {
 			mon.fainted = !mon.hp;
 			mon.status = toID(saved.status);
 			mon.statusState = battle.initEffectState({ id: mon.status, target: mon, ...saved.statusState });
+			if (saved.statuses) {
+				mon.m.rogueStatusStack = Object.fromEntries(Object.entries(saved.statuses).map(([id, state]) =>
+					[id, battle.initEffectState({ id, target: mon, ...state })]));
+				if (mon.m.rogueStatusStack[mon.status]) mon.statusState = mon.m.rogueStatusStack[mon.status];
+			}
 			for (const slot of mon.moveSlots) {
 				const pp = saved.pp.find(entry => entry.id === slot.id);
 				if (pp) slot.pp = Math.min(slot.maxpp, pp.pp);
@@ -114,6 +164,13 @@ export function initializeRogueBattle(battle: Battle) {
 		side.pokemonLeft = side.pokemon.filter(mon => mon.hp > 0).length;
 		if (!side.pokemonLeft) throw new Error('没有可出战的宝可梦。');
 	}
+}
+
+export function canRogueSystem(pokemon: Pokemon, system: 'mega' | 'gmega' | 'z'): boolean {
+	const state = pokemon.battle.fantasyRogue;
+	if (!state) return true;
+	if (pokemon.side.id === 'p1') return !!state.systems?.player[system];
+	return state.duel ? !!state.systems?.opponent?.[system] : true;
 }
 
 export function canRogueTerastallize(pokemon: Pokemon): boolean {
@@ -135,6 +192,7 @@ export function recordRogueDefeat(battle: Battle, mon: Pokemon, captured = false
 	if (!state?.progression || mon.side.id !== 'p2') return;
 	markRogueParticipants(battle);
 	state.defeated!.push({
+		id: mon.set.fantasyRogueId,
 		species: mon.set.species, level: mon.level, captured,
 		participants: [...(state.participants![mon.set.fantasyRogueId!] || [])],
 		eligible: battle.p1.pokemon.filter(member => member.hp > 0).map(member => member.set.fantasyRogueId!),
@@ -146,7 +204,7 @@ export function chooseRogueBall(side: Side, id: string) {
 	if (!state || side.id !== 'p1' || side.requestState !== 'move' || !state.catchable ||
 		(state.team.length >= 6 && !state.allowReplacement) ||
 		!state.balls.some(ball => ball.id === id) || !(state.bag[id] > 0) ||
-		!side.active[0]?.hp || !side.foe.active[0]?.hp || side.foe.pokemon.length !== 1) {
+		!side.active[0]?.hp || !side.foe.active[0]?.hp) {
 		return side.emitChoiceError('当前不能使用这个精灵球。');
 	}
 	side.choice.actions.push({ choice: 'rogueball', pokemon: side.active[0], moveid: id });
@@ -157,8 +215,8 @@ export function chooseRogueBall(side: Side, id: string) {
 export function rogueCaptureChance(battle: Battle, ball: RogueBattleState['balls'][number]): number | null {
 	const state = battle.fantasyRogue;
 	const target = battle.p2?.active[0];
-	if (!state?.catchable || !target?.hp || battle.p2.pokemon.length !== 1) return null;
-	const multiplier = state.spirit?.id === 'mew' ? 2 : 1;
+	if (!state?.catchable || !target?.hp) return null;
+	const multiplier = (state.spirit?.id === 'mew' ? 2 : 1) * (hasBlessing(battle.p1.active[0], 'catcher') ? 1.5 : 1);
 	if (ball.chance !== undefined) return Math.min(1, Math.round(ball.chance * 1000000) / 1000000 * multiplier);
 	const threshold = captureThresholds(rogueSpeciesData(target.set.species).catchRate,
 		target.maxhp, target.hp, target.status, ball.multiplier!, state.caughtSpecies || 0);
@@ -181,7 +239,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 	// The order spirit removes battle randomness, never the advertised capture roll.
 	const chance = state.spirit?.id === 'zygardeorder' ?
 		battle.prng.randomChance.bind(battle.prng) : battle.randomChance.bind(battle);
-	if (state.spirit?.id === 'mew') {
+	if (state.spirit?.id === 'mew' || hasBlessing(battle.p1.active[0], 'catcher')) {
 		success = chance(Math.round(rogueCaptureChance(battle, ball)! * 1000000), 1000000);
 		shakes = success ? 3 : 1;
 	} else if (ball.chance !== undefined) {
@@ -206,22 +264,33 @@ export function throwRogueBall(battle: Battle, id: string) {
 	battle.add('-roguecapture', target, id, success ? 'success' : 'failure', shakes, critical ? 'critical' : 'normal');
 	if (!success) {
 		battle.add('-message', '宝可梦挣脱了精灵球！');
+		failedTrainerCapture(battle);
 		return;
 	}
 	const original: RoguePokemon = {
-		id: state.encounterId, set: structuredClone(target.set), hp: target.hp, maxhp: target.baseMaxhp,
+		...(target.set.fantasyRogueScale === 1.2 ? { stars: 2 } : {}),
+		id: battle.p2.pokemon.length === 1 ? state.encounterId : target.set.fantasyRogueId!,
+		set: structuredClone(target.set), hp: target.hp, maxhp: target.baseMaxhp,
 		pp: target.baseMoveSlots.map(slot => ({ id: slot.id, pp: slot.pp, maxpp: slot.maxpp })),
 		status: target.status, statusState: {},
 	};
 	delete original.set.fantasyRogueStats;
 	delete original.set.fantasyRogueScale;
+	delete original.set.fantasyRogueModifiers;
 	delete original.set.fantasyRogueId;
 	state.captured = snapshotRoguePokemon(target, original);
+	(state.captures ||= []).push(state.captured);
 	recordRogueDefeat(battle, target, true);
 	battle.add('-message', `成功捕捉了${target.species.name}！`);
 	// A private message commits the account-level catch immediately, before the end packet.
 	battle.send('fantasyroguecapture', JSON.stringify(state.captured));
-	battle.win(battle.p1);
+	// Remove the caught opponent without KO abilities, KO rewards or a second faint animation.
+	battle.queue.cancelAction(target);
+	target.hp = 0;
+	target.fainted = true;
+	target.side.pokemonLeft--;
+	battle.add('-sethp', target, '0 fnt', '[silent]');
+	if (!target.side.pokemonLeft) battle.win(battle.p1);
 }
 
 export function rogueBattleResult(battle: Battle): RogueBattleResult {
@@ -233,6 +302,8 @@ export function rogueBattleResult(battle: Battle): RogueBattleResult {
 			return snapshotRoguePokemon(mon, saved);
 		}),
 		bag: { ...state.bag }, captured: state.captured && structuredClone(state.captured),
+		captures: state.captures && structuredClone(state.captures),
 		defeated: state.defeated && structuredClone(state.defeated),
+		blessingProgress: structuredClone(blessingProgress(battle)),
 	};
 }

@@ -25,6 +25,7 @@ import { Pokemon, type EffectState } from './pokemon';
 import { State } from './state';
 import { toID } from './dex';
 import { chooseRogueBall, rogueCaptureChance } from './fantasy-rogue';
+import { chooseRoguePsychic, psychicCharge, chooseRogueEeveeZ, eeveeZAvailable } from './fantasy-rogue-blessings';
 
 /** A single action that can be chosen. Choices will have one Action for each pokemon. */
 export interface ChosenAction {
@@ -501,10 +502,14 @@ export class Side {
 
 	emitRequest(update: ChoiceRequest) {
 		const rogue = this.id === 'p1' && !this.battle.fantasyRogue?.duel ? this.battle.fantasyRogue : undefined;
-		const payload = rogue ? { ...update, fantasyRogue: {
-			catchable: rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
-			balls: rogue.balls.map(ball => ({
-				id: ball.id, name: ball.name, count: rogue.bag[ball.id] || 0,
+		const psychic = psychicCharge(this.active[0]);
+		const eeveeZ = this.active.map(mon => eeveeZAvailable(mon));
+		const payload = rogue || psychic !== undefined || eeveeZ.some(Boolean) ? { ...update, fantasyRogue: {
+			psychic,
+			eeveeZ,
+			catchable: !!rogue && rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
+			balls: (rogue?.balls || []).map(ball => ({
+				id: ball.id, name: ball.name, count: rogue!.bag[ball.id] || 0,
 				chance: rogueCaptureChance(this.battle, ball),
 			})),
 		} } : update;
@@ -1099,6 +1104,12 @@ export class Side {
 			}
 
 			switch (choiceType) {
+			case 'rogueeeveez':
+				if (!chooseRogueEeveeZ(this)) return false;
+				break;
+			case 'roguepsychic':
+				if (!chooseRoguePsychic(this, data || '1')) return false;
+				break;
 			case 'rogueball':
 				if (!chooseRogueBall(this, data)) return false;
 				break;

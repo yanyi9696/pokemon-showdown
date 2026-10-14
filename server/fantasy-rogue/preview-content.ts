@@ -20,7 +20,7 @@ const stats = (value: number): StatsTable => ({
 });
 
 export const PreviewBalance = {
-	version: 'preview-2026-10-v8',
+	version: 'preview-2026-10-v9',
 	initialMoney: 1500,
 	initialBag: { pokeball: 12, potion: 6, revive: 1, elixir: 1, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
@@ -96,8 +96,8 @@ export function createPreviewContent(): RogueContent {
 	validateBiomePools();
 	const content: RogueContent = {
 		version: PreviewBalance.version, biomeEncounters: true, wildTreasures: true,
-		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7'],
-		spirits: true,
+		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8'],
+		spirits: true, blessings: true,
 		label: '幻想杯肉鸽 · 200 层试玩版',
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },

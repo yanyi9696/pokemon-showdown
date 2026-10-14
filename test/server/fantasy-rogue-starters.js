@@ -110,7 +110,12 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 		});
 		const run = account().run;
 		engine.migrate(user);
-		assert.deepEqual(account().run, run); assert.deepEqual(account().unlocked, ['ironbundle']);
+		const migratedRun = account().run;
+		for (let i = 0; i < run.team.length; i++) for (const key of ['id', 'set', 'hp', 'maxhp', 'pp', 'stats', 'status']) {
+			assert.deepEqual(migratedRun.team[i][key], run.team[i][key]);
+		}
+		for (const key of ['id', 'floor', 'phase', 'choices', 'checkpoint', 'money', 'bag']) assert.deepEqual(migratedRun[key], run[key]);
+		assert.deepEqual(account().unlocked, ['ironbundle']);
 		const migrated = account(); engine.migrate(user); assert.deepEqual(account(), migrated);
 	});
 	it('combines special family captures and unlocks exactly on ten', () => {

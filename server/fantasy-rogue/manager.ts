@@ -21,6 +21,7 @@ import { activeRogueSpirits, rogueSpirit, roguePartyLimit } from '../../sim/fant
 import { storyView, startCard } from './story';
 import { RogueDuels, type DuelCommand } from './duels';
 import { rogueRulesVersion } from './legacy';
+import { blessingView, blessingItems, blessingMemberTypes, fantasyForm, equipmentCategory } from './blessings';
 
 export class RogueManager {
 	readonly engine: RogueEngine;
@@ -70,7 +71,7 @@ export class RogueManager {
 		const account = this.engine.migrate(user.id);
 		const content = this.engine.content;
 		const run = account.run;
-		const items = content ? [...spiritItems(content, run)] : [];
+		const items = content ? [...spiritItems(content, run), ...(content.blessings ? blessingItems() : [])] : [];
 		if (run && content) {
 			for (const id of [...Object.keys(run.bag), ...[...run.team, ...(run.box || [])].map(mon => toID(mon.set.item))]) {
 				if (!id || items.some(item => item.id === id)) continue;
@@ -78,6 +79,7 @@ export class RogueManager {
 				if (item) items.push(item);
 			}
 		}
+		for (const item of items) item.category = equipmentCategory(item.id);
 		return {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			storyEnabled: !!content?.story,
@@ -108,6 +110,7 @@ export class RogueManager {
 			items, shopItems: items.filter(item => spiritShopAvailable(item, run?.floor || 1) &&
 				content?.items.some(entry => entry.id === item.id)).map(item => item.id),
 			run: run ? {
+				blessings: blessingView(run), moveSlots: run.blessings?.owned.some(b => b.family === 'learnall') ? 5 : 4,
 				story: run.story, startCard: startCard(run.startCard),
 				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box,
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
@@ -116,9 +119,10 @@ export class RogueManager {
 				healingLocked: healingLocked(run), emergencyCost: ROGUE_EMERGENCY_COST,
 				canEmergency: !!content && this.engine.canEmergency(run),
 				teraUnlocked: !!run.teraUnlocked,
+				megaUnlocked: !!run.megaUnlocked, gmegaUnlocked: !!run.gmegaUnlocked, zUnlocked: !!run.zUnlocked,
 				encounters: run.node?.encounters.length || 0, node: run.node && {
 					name: run.node.name, kind: run.node.kind, noHealing: !!run.node.noHealing,
-					rocket: run.node.rocket, hpPurchases: run.node.hpPurchases || 0,
+					rocket: run.node.rocket, shopChallenge: run.node.shopChallenge, hpPurchases: run.node.hpPurchases || 0,
 					biome: run.node.biome, bonusEncounter: !!run.node.encounters[run.encounter]?.bonus,
 					wildLoot: run.node.wildLoot, encounterLoot: run.node.wildLoot?.[run.encounter],
 					reward: { ...run.node.reward, points: run.node.kind === 'boss' ? 1 : 0 },
@@ -128,7 +132,9 @@ export class RogueManager {
 					ensureMemberMemory(mon);
 					if (!mon.stats) rebuildMember(mon, run.boosts);
 					const species = Dex.mod('gen9fantasy').species.get(mon.set.species);
-					return { ...mon, baseStats: species.baseStats, types: species.types,
+					const baseStats = { ...species.baseStats };
+					for (const [key, value] of Object.entries(mon.statModifiers?.baseStats || {})) baseStats[key as StatID] += value;
+					return { ...mon, baseStats, types: blessingMemberTypes(mon), fantasyForm: fantasyForm(mon.set.species),
 						experienceProgress: experienceProgress(mon),
 						friendship: friendship(mon),
 						evolutionDetails: content?.progression ? partyEvolutions(mon, run) : undefined,
@@ -171,7 +177,7 @@ export class RogueManager {
 			this.engine.store.change(user.id, saved => { saved.run!.announced = true; });
 			Rooms.get('lobby')?.add(`|raw|${Utils.escapeHTML(user.name)} 开启了幻想杯肉鸽之旅`).update();
 		}
-		if (command.action === 'battle' && run?.phase === 'battle' && run.battle && !run.battle.roomid) {
+		if (['battle', 'shopchallenge'].includes(command.action) && run?.phase === 'battle' && run.battle && !run.battle.roomid) {
 			const userid = user.id;
 			const token = run.battle.token;
 			const encounter = run.node!.encounters[run.encounter];
@@ -197,7 +203,8 @@ export class RogueManager {
 							} else {
 								const settled = this.engine.store.get(userid).run!;
 								const defeat = {
-									floor: settled.floor, encounter: settled.encounter + 1, encounters: settled.node!.encounters.length,
+									floor: run.floor, encounter: run.encounter + 1, encounters: run.node!.encounters.length,
+									...(run.node!.shopChallenge ? { shopClosed: true } : {}),
 									retryFloor: settled.phase === 'failed', noHealing: !!settled.node!.noHealing,
 									emergencyCost: ROGUE_EMERGENCY_COST,
 								};

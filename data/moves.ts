@@ -10656,7 +10656,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 					this.debug('Nothing to leech into');
 					return;
 				}
-				const damage = this.damage(pokemon.baseMaxhp / 8, pokemon, target);
+				const damage = this.damage(pokemon.baseMaxhp / (pokemon.volatiles.leechseed.source?.hasRogueBlessing('seeds') ? 6 : 8), pokemon, target);
 				if (damage) {
 					this.heal(damage, target, pokemon);
 				}

@@ -12,6 +12,7 @@ const { TrainerBossData } = require('../../dist/server/fantasy-rogue/trainer-bos
 const { trainerBossCandidates, rogueOpponentAvatar } = require('../../dist/server/fantasy-rogue/trainer-bosses');
 const { validateContent } = require('../../dist/server/fantasy-rogue/content');
 const { set, stats } = require('../fixtures/fantasy-rogue');
+const { storyView } = require('../../dist/server/fantasy-rogue/story');
 
 describe('Fantasy Rogue authored trainers', function () {
 	this.timeout(20000);
@@ -119,6 +120,11 @@ describe('Fantasy Rogue authored trainers', function () {
 		const met = [];
 		for (const floor of [20, 40, 60, 80, 100, 120, 140, 160]) {
 			const encounter = enter(floor);
+			while (account().run.story?.stage === 'gymgift') command('storynext', {value: storyView(account(), false, false).key});
+			while (account().run.blessings?.beforeGym) {
+				const reward = account().run.blessings.pending[0];
+				command('blessingreward', {member: reward.id, value: reward.options[0]});
+			}
 			met.push(encounter.trainer.id);
 			assert(!encounter.trainerCandidates);
 			assert.equal(rogueOpponentAvatar(account().run), encounter.trainer.id);

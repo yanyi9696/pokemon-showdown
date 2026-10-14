@@ -68,7 +68,7 @@ export function validateContent(content: RogueContent): RogueContent {
 	};
 	const trainer = (entry: RogueTrainer, floor: number) => {
 		ensure(entry.name && /^[a-z0-9]+$/.test(entry.id) && /^[a-z0-9-]+$/.test(entry.avatar), '训练家身份或头像无效');
-		const roles = { gym: '道馆', elitefour: '四天王', champion: '冠军', rocket: '' };
+		const roles = { gym: '道馆', elitefour: '四天王', champion: '冠军', rocket: '', nurse: '', merchant: '' };
 		ensure(roles[entry.role] === BOSS_FLOORS.get(floor) && typeof entry.tera === 'boolean', '训练家楼层或太晶化权限无效');
 		ensure(!entry.requiresGym || (entry.role === 'elitefour' && /^[a-z0-9]+$/.test(entry.requiresGym)), '隐藏天王条件无效');
 	};
@@ -101,8 +101,9 @@ export function validateContent(content: RogueContent): RogueContent {
 			ensure(/^[a-z0-9]+$/.test(node.id) && !ids.has(node.id), '节点标识重复或无效');
 			ids.add(node.id);
 			ensure(node.name && (fixed ? node.kind === fixed : !['boss', 'rest'].includes(node.kind)), `第 ${floor} 层固定类型不匹配`);
-			ensure(['wild', 'elite', 'trainer', 'rest', 'boss', 'reward'].includes(node.kind), '节点类型未接入');
-			const fights = ['rest', 'reward'].includes(node.kind) ? 0 : node.kind === 'wild' ? 3 : 1;
+			ensure(['wild', 'elite', 'trainer', 'rest', 'boss', 'reward', 'event', 'adventure', 'encounter']
+				.includes(node.kind), '节点类型未接入');
+			const fights = ['rest', 'reward', 'event', 'adventure'].includes(node.kind) ? 0 : node.kind === 'wild' ? 3 : 1;
 			ensure(node.encounters.length === fights || (content.biomeEncounters && node.kind === 'wild' &&
 				node.encounters.length === 4 && node.encounters[3].bonus), '战斗场次数量不符合节点类型');
 			ensure(whole(node.reward.money), '奖励金额无效');
@@ -135,7 +136,7 @@ export function validateContent(content: RogueContent): RogueContent {
 				ensure(encounter.name && ['balanced', 'aggressive', 'defensive'].includes(encounter.style), 'AI 名称或风格无效');
 				if (node.kind === 'wild' || encounter.catchable) ensure(encounter.team.length === 1, '野怪／可捕捉对局必须只有一只');
 				if (encounter.catchable) {
-					ensure(['wild', 'elite'].includes(node.kind), '训练家／Boss 不可捕捉');
+					ensure(['wild', 'elite', 'encounter'].includes(node.kind), '训练家／Boss 不可捕捉');
 					ensure(content.unlocks[toID(encounter.team[0].species)], '缺少捕捉对象的初始解锁映射');
 				}
 				if (encounter.catchable && !content.progression) ensure(Object.keys(encounter.catchChances || {}).length, '缺少捕捉配置');

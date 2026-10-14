@@ -5,7 +5,7 @@ import { evolutionChildren, partyEvolutionLevel } from './evolution';
 import { friendship, ROGUE_FRIENDSHIP_EVOLUTION, rogueTime } from './friendship';
 
 const dex = Dex.mod('gen9');
-type Context = Pick<RogueRun, 'floor' | 'bag'>;
+type Context = Pick<RogueRun, 'floor' | 'bag'> & Partial<Pick<RogueRun, 'blessings'>>;
 export interface EvolutionRequirement {
 	text: string;
 	/** Names are translated by the same client dictionary as the party editor. */
@@ -49,6 +49,9 @@ function friendshipRequirements(mon: RoguePokemon, child: Species, floor: number
 export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1, bag: {} }): PartyEvolution[] {
 	return evolutionChildren(mon.set.species).map(child => {
 		const conditions: EvolutionRequirement[] = [];
+		if (context.blessings?.owned.some(entry => entry.family === 'kid') && toID(mon.set.item) === 'eviolite' && !child.evos.length) {
+			conditions.push({ text: '小鬼当家：携带进化奇石时不能进化为最终形态', met: false });
+		}
 		let item: string | undefined;
 		let heldItem: string | undefined;
 		if (isFriendshipEvolution(child)) {

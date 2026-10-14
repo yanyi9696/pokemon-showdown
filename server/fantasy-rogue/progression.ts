@@ -11,17 +11,20 @@ import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
 const baseDex = Dex.mod('gen9');
 const battleDex = Dex.mod('gen9fantasy');
 
-export function createRoguePokemon(set: PokemonSet, boosts: StatsTable, id: string = randomUUID(), stars = 1): RoguePokemon {
+export function createRoguePokemon(set: PokemonSet, boosts: StatsTable, id: string = randomUUID(), stars = 1,
+	modifiers?: RoguePokemon['statModifiers']): RoguePokemon {
 	const battle = new Battle({ formatid: toID(ROGUE_FORMAT), deserialized: true });
 	try {
 		battle.setPlayer('p1', { name: 'Rogue', team: [{ ...structuredClone(set), fantasyRogueStats: { ...boosts },
-			fantasyRogueScale: rogueStarScale(stars) }] });
+			fantasyRogueScale: rogueStarScale(stars), fantasyRogueModifiers: modifiers }] });
 		const mon = battle.p1.pokemon[0];
 		const normalized = structuredClone(mon.set);
 		delete normalized.fantasyRogueStats;
 		delete normalized.fantasyRogueScale;
 		delete normalized.fantasyRogueId;
+		delete normalized.fantasyRogueModifiers;
 		const saved: RoguePokemon = {
+			...(stars > 1 ? { stars } : {}),
 			id, set: normalized, hp: mon.maxhp, maxhp: mon.maxhp, status: '', statusState: {},
 			pp: mon.moveSlots.map(slot => ({ id: slot.id, pp: slot.pp, maxpp: slot.maxpp })),
 			stats: { ...mon.baseStoredStats, hp: mon.maxhp },
@@ -47,9 +50,13 @@ export function ensureMemberMemory(mon: RoguePokemon) {
 	mon.moveMemory ||= [];
 	for (const slot of [...mon.pp, ...mon.moveMemory]) normalizePP(slot);
 	for (const id of [...new Set([...(mon.seenMoves || []), ...mon.set.moves].map(toID))]) {
+		if ((mon.blessingMoves?.includes(id) || mon.blessingPP?.some(move => move.id === id)) &&
+			!mon.moveMemory.some(move => move.id === id)) continue;
 		if (!mon.moveMemory.some(move => move.id === id)) mon.moveMemory.push({ id, pp: 0, maxpp: movePP(id) });
 	}
 	for (const slot of mon.pp) {
+		if ((mon.blessingMoves?.includes(slot.id) || mon.blessingPP?.some(move => move.id === slot.id)) &&
+			!mon.moveMemory.some(move => move.id === slot.id)) continue;
 		const saved = mon.moveMemory.find(move => move.id === slot.id);
 		if (saved) Object.assign(saved, slot);
 		else mon.moveMemory.push({ ...slot });
@@ -100,11 +107,12 @@ export function initializeExperience(mon: RoguePokemon) {
 /** Preserve damage, status, consumed items and PP. A stat rebuild cannot revive a fainted member. */
 export function rebuildMember(mon: RoguePokemon, boosts: StatsTable) {
 	ensureMemberMemory(mon);
-	const rebuilt = createRoguePokemon(mon.set, boosts, mon.id, mon.stars);
+	const rebuilt = createRoguePokemon(mon.set, boosts, mon.id, mon.stars, mon.statModifiers);
 	mon.hp = mon.hp > 0 ? Math.max(1, Math.min(rebuilt.maxhp, mon.hp + rebuilt.maxhp - mon.maxhp)) : 0;
 	mon.maxhp = rebuilt.maxhp;
 	mon.pp = rebuilt.pp.map(slot => ({
-		...slot, pp: Math.min(slot.maxpp, mon.moveMemory!.find(old => old.id === slot.id)?.pp ?? slot.pp),
+		...slot, pp: Math.min(slot.maxpp, mon.moveMemory!.find(old => old.id === slot.id)?.pp ??
+			mon.blessingPP?.find(old => old.id === slot.id)?.pp ?? slot.pp),
 	}));
 	mon.stats = rebuilt.stats;
 	ensureMemberMemory(mon);
@@ -116,7 +124,7 @@ function offerMoves(run: RogueRun, mon: RoguePokemon, from: number, to: number) 
 		rememberMove(mon, entry.move);
 		mon.seenMoves!.push(entry.move);
 		if (mon.set.moves.some(move => toID(move) === entry.move)) continue;
-		if (mon.set.moves.length < 4) {
+		if (mon.set.moves.length < (run.blessings?.owned.some(entry => entry.family === 'learnall') ? 5 : 4)) {
 			mon.set.moves.push(entry.move);
 			rebuildMember(mon, run.boosts);
 			run.notices!.push(`${mon.set.species} 学会了 ${baseDex.moves.get(entry.move).name}。`);

@@ -15,6 +15,7 @@
  */
 
 import { Dex, toID } from './dex';
+import { sharedRogueItems, sharedRogueItemData, rogueItemCallback } from './fantasy-rogue-items';
 import { Teams } from './teams';
 import { Field } from './field';
 import { Pokemon, type EffectState, RESTORATIVE_BERRIES } from './pokemon';
@@ -24,6 +25,8 @@ import { State } from './state';
 import { BattleQueue, type Action } from './battle-queue';
 import { BattleActions } from './battle-actions';
 import { Utils } from '../lib/utils';
+import { hasRogueStatus, rogueStatusStates, wrapRogueStatus } from './fantasy-rogue-status';
+import { emblemType } from './rogue-blessing-data';
 declare const __version: any;
 
 export type ChannelID = 0 | 1 | 2 | 3 | 4;
@@ -555,7 +558,7 @@ export class Battle {
 				} else if (effect.effectType === 'Item' && !handler.state.id.startsWith('item:')) {
 					expectedStateLocation = handler.state.target.itemState;
 				} else if (effect.effectType === 'Status') {
-					expectedStateLocation = handler.state.target.statusState;
+					expectedStateLocation = rogueStatusStates(handler.state.target)?.[effect.id] || handler.state.target.statusState;
 				} else {
 					expectedStateLocation = handler.state.target.volatiles[effect.id];
 				}
@@ -620,7 +623,7 @@ export class Battle {
 			hasRelayVar = false;
 		}
 
-		if (effect.effectType === 'Status' && (target instanceof Pokemon) && target.status !== effect.id) {
+		if (effect.effectType === 'Status' && (target instanceof Pokemon) && !hasRogueStatus(target, effect.id)) {
 			// it's changed; call it off
 			return relayVar;
 		}
@@ -849,7 +852,7 @@ export class Battle {
 			const effect = handler.effect;
 			const effectHolder = handler.effectHolder;
 			// this.debug('match ' + eventid + ': ' + status.id + ' ' + status.effectType);
-			if (effect.effectType === 'Status' && (effectHolder as Pokemon).status !== effect.id) {
+			if (effect.effectType === 'Status' && !hasRogueStatus(effectHolder as Pokemon, effect.id)) {
 				// it's changed; call it off
 				continue;
 			}
@@ -1087,12 +1090,14 @@ export class Battle {
 		const status = pokemon.getStatus();
 		// @ts-expect-error dynamic lookup
 		let callback = status[callbackName];
-		if (callback !== undefined || (getKey && pokemon.statusState[getKey])) {
+		if (!rogueStatusStates(pokemon) && (callback !== undefined || (getKey && pokemon.statusState[getKey]))) {
 			handlers.push(this.resolvePriority({
 				effect: status, callback, state: pokemon.statusState, end: pokemon.clearStatus, effectHolder: pokemon,
 			}, callbackName));
 		}
 		for (const id in pokemon.volatiles) {
+			if (pokemon.volatiles[id].rogueSharedItem) continue;
+			if (this.fantasyRogue && id === 'ability:' + pokemon.ability) continue;
 			const volatileState = pokemon.volatiles[id];
 			const volatile = this.dex.conditions.getByID(id as ID);
 			// @ts-expect-error dynamic lookup
@@ -1114,6 +1119,15 @@ export class Battle {
 				}
 			}
 		}
+		for (const [id, state] of Object.entries(rogueStatusStates(pokemon) || {})) {
+			const condition = this.dex.conditions.get(id);
+			// @ts-expect-error Dynamic event lookup mirrors the native status above.
+			const statusCallback = condition[callbackName];
+			if (statusCallback !== undefined || (getKey && state[getKey])) handlers.push(this.resolvePriority({
+				effect: condition, callback: wrapRogueStatus(pokemon, id, statusCallback), state,
+				end: pokemon.clearStatus, effectHolder: pokemon,
+			}, callbackName));
+		}
 		// Abilities and items Start at different times during the SwitchIn event, so we run their onStart handlers
 		// during the SwitchIn event instead of running the Start event during switch-ins
 		// gens 4 and before still use the old system, though
@@ -1134,7 +1148,17 @@ export class Battle {
 				}, callbackName));
 			}
 		}
-		const item = pokemon.getItem();
+		const sharedItems = sharedRogueItems(pokemon);
+		for (const id of sharedItems) {
+			const item = sharedRogueItemData(pokemon, this.dex.items.get(id));
+			const state = pokemon.volatiles[`item:${id}`] ||= this.initEffectState({ id: `item:${id}`, target: pokemon, rogueSharedItem: true });
+			const sharedCallback = (item as any)[callbackName] ?? (this.gen >= 5 && callbackName === 'onSwitchIn' && !(item as any).onAnySwitchIn ? item.onStart : undefined);
+			if (sharedCallback !== undefined) handlers.push(this.resolvePriority({
+				effect: { ...item, id: `item:${id}` as ID }, callback: rogueItemCallback(pokemon, item, sharedCallback),
+				state, end: pokemon.removeVolatile, effectHolder: pokemon,
+			}, callbackName));
+		}
+		const item = sharedItems.includes(pokemon.item) ? this.dex.items.get('') : pokemon.getItem();
 		// @ts-expect-error dynamic lookup
 		callback = item[callbackName];
 		if (callback !== undefined || (getKey && pokemon.itemState[getKey])) {
@@ -2310,6 +2334,14 @@ export class Battle {
 
 	/** Given a table of base stats and a pokemon set, return the actual stats. */
 	spreadModify(baseStats: StatsTable, set: PokemonSet): StatsTable {
+		const rogue = isRogueFormat(this.format.id) ? set.fantasyRogueModifiers : undefined;
+		if (rogue?.baseStats) baseStats = Object.fromEntries(ROGUE_STATS.map(stat =>
+			[stat, baseStats[stat] + (rogue.baseStats?.[stat] || 0)])) as StatsTable;
+		if (rogue?.smallFinal && ROGUE_STATS.reduce((sum, stat) => sum + baseStats[stat], 0) <= 400 &&
+			!this.dex.species.get(set.species).evos.length) {
+			baseStats = { ...baseStats };
+			for (const stat of ROGUE_STATS) baseStats[stat] = Math.floor(baseStats[stat] * 1.5);
+		}
 		const modStats: SparseStatsTable = { atk: 10, def: 10, spa: 10, spd: 10, spe: 10 };
 		const tr = this.trunc;
 		let statName: keyof StatsTable;
@@ -2327,6 +2359,20 @@ export class Battle {
 		}
 		if (isRogueFormat(this.format.id) && set.fantasyRogueScale) {
 			for (const stat of ROGUE_STATS) stats[stat] = Math.max(1, Math.floor(stats[stat] * set.fantasyRogueScale));
+		}
+		if (rogue) {
+			const types = [...this.dex.species.get(set.species).types];
+			if (rogue.extraType) types[1] = rogue.extraType;
+			const emblem = emblemType(toID(set.item));
+			if (emblem) types[1] = emblem;
+			if (!rogue.statsType || types.includes(rogue.statsType)) {
+				for (const stat of ROGUE_STATS) stats[stat] = Math.floor(stats[stat] * (1 + (rogue.stats?.[stat] || 0)));
+			}
+			stats.hp += rogue.hp || 0;
+			if (rogue.swap) {
+				[stats.atk, stats.def] = [stats.def, stats.atk];
+				[stats.spa, stats.spd] = [stats.spd, stats.spa];
+			}
 		}
 		return stats;
 	}
@@ -2362,6 +2408,12 @@ export class Battle {
 
 	randomizer(baseDamage: number) {
 		if (this.fantasyRogue?.spirit?.id === 'zygardeorder') return this.trunc(baseDamage * 925 / 1000);
+		if (this.fantasyRogue && this.activePokemon) {
+			const source = this.activePokemon;
+			const saved = (source.side.id === 'p1' ? this.fantasyRogue.team : this.fantasyRogue.duel?.team)
+				?.find(mon => mon.id === source.set.fantasyRogueId);
+			if ((saved?.bond || 0) >= 100) return this.trunc(baseDamage);
+		}
 		const tr = this.trunc;
 		return tr(tr(baseDamage * (100 - this.random(16))) / 100);
 	}
@@ -3230,12 +3282,18 @@ export class Battle {
 		if (!this.sides[slotNum]) {
 			// create player
 			const team = this.getTeam(options);
+			if (slot === 'p2' && this.fantasyRogue?.opponentStars && !this.fantasyRogue.duel) {
+				for (const [i, set] of team.entries()) {
+					set.fantasyRogueScale = this.fantasyRogue.opponentStars[i] === 2 ? 1.2 : 1;
+				}
+			}
 			const rogueSide = slot === 'p1' ? this.fantasyRogue : this.fantasyRogue?.duel;
 			if (rogueSide) {
 				if (team.length !== rogueSide.team.length) throw new Error('Invalid rogue team');
 				for (const [i, set] of team.entries()) {
 					set.fantasyRogueStats = { ...rogueSide.boosts };
-					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 3][rogueSide.team[i].stars || 1];
+					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 2, 3][rogueSide.team[i].stars || 1];
+					set.fantasyRogueModifiers = structuredClone(rogueSide.team[i].statModifiers);
 					set.fantasyRogueId = rogueSide.team[i].id;
 				}
 			}

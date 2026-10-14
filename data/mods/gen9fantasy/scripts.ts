@@ -1,3 +1,5 @@
+import { canRogueSystem } from '../../../sim/fantasy-rogue';
+
 export const Scripts: ModdedBattleScriptsData = {
     gen: 9,
 
@@ -184,7 +186,7 @@ export const Scripts: ModdedBattleScriptsData = {
                         if (forme.requiredForme && species.name !== forme.requiredForme) {
                             continue;
                         }
-                        return forme.name;
+                        return canRogueSystem(pokemon, forme.isGMega ? 'gmega' : 'mega') ? forme.name : null;
                     }
                 }
             }
@@ -193,14 +195,16 @@ export const Scripts: ModdedBattleScriptsData = {
                 const index = item.megaEvolves.indexOf(species.name);
                 if (index >= 0) {
                     if (Array.isArray(item.megaStone)) {
-                        return item.megaStone[index];
+                        const forme = pokemon.battle.dex.species.get(item.megaStone[index]);
+                        return canRogueSystem(pokemon, forme.isGMega ? 'gmega' : 'mega') ? forme.name : null;
                     }
                 }
                 return null;
             }
 
             if (item.megaEvolves === species.name) {
-                return item.megaStone as string;
+                const forme = pokemon.battle.dex.species.get(item.megaStone as string);
+                return canRogueSystem(pokemon, forme.isGMega ? 'gmega' : 'mega') ? forme.name : null;
             }
 
             return null;

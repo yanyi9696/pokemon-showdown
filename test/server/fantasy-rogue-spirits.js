@@ -40,15 +40,16 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	}
 	beforeEach(() => { store = new RogueStore(':memory:'); engine = new RogueEngine(store, createPreviewContent(), () => 0, true); });
 	afterEach(() => store.close());
-	it('opens only 23 complete spirits and rejects remote overrides or locked accounts', () => {
-		assert.equal(activeRogueSpirits().length, 23);
+	it('opens 35 complete spirits and rejects remote overrides or locked accounts', () => {
+		assert.equal(activeRogueSpirits().length, 35);
 		const remote = new RogueEngine(store, createPreviewContent());
 		assert.throws(() => remote.command(user, { id: randomUUID(), revision: 0, action: 'start', starters: ['bulbasaur'], useSpirit: true }), /通关/);
 		store.change(user, saved => { saved.spiritUnlocked = true; });
 		assert.throws(() => remote.command(user, { id: randomUUID(), revision: account().revision,
 			action: 'start', starters: ['bulbasaur'], useSpirit: true, testSpirit: 'zygardeorder' }), /指定塔灵仅在本地/);
 		assert.throws(() => start('latios'), /尚未开放/);
-		assert.throws(() => start('terapagos'), /尚未开放/);
+		assert(activeRogueSpirits().some(spirit => spirit.id === 'terapagos'));
+		assert(activeRogueSpirits().some(spirit => spirit.id === 'necrozma' && spirit.species === 'Necrozma'));
 		start('kyurem'); const before = account();
 		assert.equal(before.run.phase, 'intro'); assert(!before.run.choices);
 		engine.migrate(user); assert.deepEqual(account(), before);
@@ -91,8 +92,10 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	});
 	it('grants the fixed-level partner once and rejects experience candy without consuming it', () => {
 		start('celebi'); const gift = account().run.team.find(mon => mon.fixedLevel);
+		assert(Object.values(gift.set.ivs).every(iv => Number.isInteger(iv) && iv >= 20 && iv <= 31));
 		assert.equal(gift.set.level, 40); cmd('spiritack');
 		assert.equal(account().run.team.length, 2);
+		assert.deepEqual(account().run.team.find(mon => mon.id === gift.id).set.ivs, gift.set.ivs);
 		store.change(user, a => { a.run.bag.expcandyxs = 1; });
 		assert.throws(() => cmd('use', { value: 'expcandyxs', member: gift.id }), /不能再获得经验/);
 		assert.equal(account().run.bag.expcandyxs, 1);
@@ -283,7 +286,7 @@ describe('Fantasy Rogue tower spirit native battles', () => {
 	it('uses scaled six-dimensional final stats once and preserves stars in settlement', () => {
 		const saved = begin('zygarde', { stars: 4 });
 		const plain = createRoguePokemon(saved.set, stats(0));
-		for (const stat of Object.keys(stats(0))) assert.equal(saved.stats[stat], plain.stats[stat] * 3);
+		for (const stat of Object.keys(stats(0))) assert.equal(saved.stats[stat], plain.stats[stat] * 2);
 		assert.equal(battle.p1.active[0].maxhp, saved.maxhp);
 		assert.equal(rogueBattleResult(battle).team[0].stars, 4);
 	});

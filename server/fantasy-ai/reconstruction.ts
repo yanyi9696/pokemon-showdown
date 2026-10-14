@@ -31,11 +31,12 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 		battle.p2.foe = battle.p1;
 		battle.started = true;
 		battle.turn = world.turn;
-		if (world.format === 'gen9fantasyrogue' && world.rogueSpirit) {
+		if (world.format === 'gen9fantasyrogue' && (world.rogueSpirit || world.rogueBlessings)) {
 			battle.fantasyRogue = {
 				encounterId: 'hypothetical-spirit', team: [], bag: {}, balls: [], catchable: false,
 				boosts: world.rogueBoosts || { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
-				spirit: { ...world.rogueSpirit, windSide: Math.floor((world.turn - 1) / 4) % 2 },
+				spirit: world.rogueSpirit && { ...world.rogueSpirit, windSide: Math.floor((world.turn - 1) / 4) % 2 },
+				blessings: world.rogueBlessings && structuredClone(world.rogueBlessings),
 			};
 		}
 		battle.format.onBegin?.call(battle);
@@ -191,7 +192,24 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 		const spirit = rogueSpirit(world.rogueSpirit?.id);
 		if (spirit?.weather === battle.field.weather) delete battle.field.weatherState.duration;
 		if (spirit?.terrain === battle.field.terrain) delete battle.field.terrainState.duration;
-		for (const id of world.memory.pseudoWeather) battle.field.pseudoWeather[id] = fieldState(id);
+		for (const id of world.memory.pseudoWeather) {
+			battle.field.pseudoWeather[id] = fieldState(id);
+			if (id === 'trickroom' && world.memory.fieldDurations?.trickroom === Infinity) {
+				delete battle.field.pseudoWeather[id].duration;
+			}
+		}
+		if (battle.fantasyRogue?.spirit?.id === 'dialga') {
+			battle.fantasyRogue.futureAttacks = (world.memory.rogueFutureAttacks || [])
+				.filter(attack => attack.turn >= world.turn).flatMap(attack => {
+					const side = attack.source.slice(0, 2) as SinglesSide;
+					const index = world.teams[side]?.findIndex(member => member.seen?.ident === attack.source);
+					const source = index === undefined || index < 0 ? undefined : battle.getSide(side).pokemon[index];
+					if (!source) return [];
+					const move = battle.dex.getActiveMove(attack.move);
+					move.rogueFutureReleased = true;
+					return [{ turn: attack.turn, slots: attack.slots as PokemonSlot[], source, move }];
+				});
+		}
 		battle.log.length = 0;
 		battle.log.push(...world.publicLog);
 		battle.sentLogPos = battle.log.length;

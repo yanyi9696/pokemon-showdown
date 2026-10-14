@@ -3,12 +3,13 @@ import type { TrainerStyle } from '../fantasy-ai/types';
 import type { RogueStoryStage } from './story';
 import type { RogueClearCard } from './legacy';
 
-export type RogueNodeKind = 'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 'reward';
+export type RogueNodeKind =
+	'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 'reward' | 'event' | 'adventure' | 'encounter';
 export interface RogueTrainer {
 	id: string;
 	name: string;
 	avatar: string;
-	role: 'gym' | 'elitefour' | 'champion' | 'rocket';
+	role: 'gym' | 'elitefour' | 'champion' | 'rocket' | 'nurse' | 'merchant';
 	tera: boolean;
 	/** Hidden Elite Four entry guaranteed by meeting this gym leader. */
 	requiresGym?: string;
@@ -18,6 +19,9 @@ export interface RogueTrainerCandidate {
 	team: PokemonSet[];
 }
 export interface RogueEncounter {
+	blessingLevels?: number;
+	/** Aligned with the saved opponent team; retries retain the same rolls. */
+	stars?: number[];
 	name: string;
 	/** Independent per-battle Hoopa roll, fixed on retries. */
 	spiritHazards?: string[];
@@ -35,6 +39,8 @@ export interface RogueEncounter {
 	catchChances?: Record<string, number>;
 }
 export interface RogueNode {
+	blessingPrepared?: boolean;
+	regiBoss?: boolean;
 	id: string;
 	name: string;
 	kind: RogueNodeKind;
@@ -44,6 +50,7 @@ export interface RogueNode {
 	spiritPrepared?: boolean;
 	fogged?: boolean;
 	rocket?: { cleared: boolean, reward: number };
+	shopChallenge?: { rewards: Record<string, number>, closed: boolean };
 	hpPurchases?: number;
 	encounters: RogueEncounter[];
 	/** Rolled once, saved with the route; each completed wild encounter pays its own entry. */
@@ -63,6 +70,7 @@ export interface RogueItem {
 	amount?: number;
 	multiplier?: number;
 	icon?: string;
+	category?: string;
 }
 export interface RogueStarter {
 	id: string;
@@ -70,6 +78,7 @@ export interface RogueStarter {
 	availableInitially: boolean;
 }
 export interface RogueContent {
+	blessings?: boolean;
 	story?: boolean;
 	spirits?: boolean;
 	version: string;
@@ -97,8 +106,16 @@ export interface RogueInventory {
 	money: number;
 	/** Per-adventure event unlock; missing in old saves means locked. Included in floor rollback. */
 	teraUnlocked?: boolean;
+	megaUnlocked?: boolean;
+	gmegaUnlocked?: boolean;
+	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	gymGiftReceived?: boolean;
+	/** Frozen at adventure creation; only the immediately previous adventure affects offers. */
+	previousBlessings?: string[];
+	blessings?: import('./blessings').RogueBlessings;
+	blessingCheckpoint?: import('./blessings').RogueBlessings;
 	owner?: { id: string, name: string };
 	story?: { stage: RogueStoryStage, page: number, skip: boolean, canSkip: boolean };
 	startCard?: string;
@@ -115,7 +132,7 @@ export interface RogueRun extends RogueInventory {
 	/** Per-run identities; gym history also unlocks the two hidden Elite Four trainers. */
 	trainerHistory?: { gyms: string[], eliteFour: string[], elitePlan?: Record<number, string> };
 	floor: number;
-	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete';
+	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete' | 'blessing';
 	node?: RogueNode;
 	/** Saved route candidates, including encounters, must survive reloads and reconnects. */
 	choices?: RogueNode[];
@@ -126,6 +143,8 @@ export interface RogueRun extends RogueInventory {
 	boosts: StatsTable;
 	startingSlots: number;
 	pendingCapture?: RoguePokemon;
+	pendingCaptures?: RoguePokemon[];
+	captureResume?: 'ready' | 'failed' | 'shopclosed';
 	pendingMoves?: { member: string, move: string }[];
 	notices?: string[];
 	lastReward?: {
@@ -139,6 +158,7 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean };
 }
 export interface RogueAccount {
+	previousBlessings?: string[];
 	adventures?: number;
 	opening?: { page: number, skip: boolean };
 	cards?: RogueClearCard[];
@@ -173,9 +193,10 @@ export interface RogueCommand {
 	id: string;
 	revision: number;
 	action: 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+		'shopchallenge' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
-		'saveclear' | 'publishcard' | 'deletecard';
+		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'learnbonus';
 	useSpirit?: boolean;
 	/** Only the loopback preview may choose a specific enabled spirit. */
 	testSpirit?: string;

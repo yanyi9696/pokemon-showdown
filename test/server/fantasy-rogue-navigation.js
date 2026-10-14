@@ -31,7 +31,7 @@ describe('Fantasy Rogue dialogue navigation transport', () => {
 			commands.fantasyrogue.story.call({}, JSON.stringify({ id: action, action }), null, user,
 				{ send: value => responses.push(JSON.parse(value.split('|').slice(3).join('|'))) });
 			assert.equal(responses.length, 1); assert.equal(responses[0].ok, false);
-			assert.equal(responses[0].id, action); assert.match(responses[0].message, /仅用于剧情/);
+			assert.equal(responses[0].id, action); assert(/仅用于剧情/.test(responses[0].message));
 		}
 	});
 });

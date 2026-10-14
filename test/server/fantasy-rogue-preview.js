@@ -11,6 +11,7 @@ const { validateContent, fixedFloor, BOSS_FLOORS } = require('../../dist/server/
 const { initializeExperience, gainExperience } = require('../../dist/server/fantasy-rogue/progression');
 const { experienceAtLevel, experienceYield, captureThresholds, rogueSpeciesData, rogueCaptureCount } = require('../../dist/sim/fantasy-rogue-rules');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
+const { storyView } = require('../../dist/server/fantasy-rogue/story');
 
 describe('Fantasy Rogue playable preview', () => {
 	it('keeps displayed capture categories consistent with the configured unlock rules', () => {
@@ -166,6 +167,11 @@ describe('Fantasy Rogue playable preview', () => {
 		let points = 0;
 		for (let floor = 1; floor <= 200; floor++) {
 			if (account().run.phase === 'choose') cmd('select', { value: 'wild0' });
+			while (account().run.story?.stage === 'gymgift') cmd('storynext', {value: storyView(account(), false, false).key});
+			while (account().run.blessings?.beforeGym) {
+				const reward = account().run.blessings.pending[0];
+				cmd('blessingreward', {member: reward.id, value: reward.options[0]});
+			}
 			if (account().run.phase === 'rest') {
 				cmd('heal'); cmd('heal'); assert.equal(account().points, points);
 				cmd('continue');
@@ -176,6 +182,12 @@ describe('Fantasy Rogue playable preview', () => {
 					cmd('battle'); const run = account().run;
 					engine.settle(user, run.battle.token, { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag });
 				}
+			}
+			while (account().run.phase === 'blessing') {
+				const blessings = account().run.blessings, reward = blessings.pending[0];
+				if (reward) cmd('blessingreward', { member: reward.id, value: reward.kind === 'gift' ? 'release' : reward.options[0] });
+				else if (blessings.stage) cmd('blessing', { value: blessings.stage.options[0] });
+				else cmd('blessing', { slot: blessings.round.options.findIndex(option => !option.chosen) });
 			}
 			assert.equal(account().points, points);
 		}

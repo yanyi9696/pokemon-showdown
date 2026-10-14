@@ -22,9 +22,13 @@ import {
 	battleFriendship, changeFriendship, floorFriendship, friendship, ROGUE_INITIAL_FRIENDSHIP,
 } from './friendship';
 import { initializeSpirit, prepareSpiritNode, spiritItems, spiritShopAvailable, hpPurchaseCost,
-	convertSpiritItem, editSpiritBox, mergeSpiritPokemon } from './spirits';
+	convertSpiritItem, editSpiritBox, mergeSpiritPokemon, completeSpiritRegion } from './spirits';
 import { ROGUE_STORY, afterSpirit, startCard, storyView } from './story';
 import { recordClear, editClearCard } from './legacy';
+import { beginShopChallenge } from './shop-challenge';
+import { normalizeBlessings, beginBlessingFloor, completeBlessingFloor, blessingRouteTemplates,
+	prepareBlessingEncounter, handleBlessingCommand, settleBlessingBattle, syncBlessingParty, blessingExperience, blessingLoot,
+	recordNegativeBlessingEvent, gymSystemGift } from './blessings';
 export { createRoguePokemon } from './progression';
 
 export const ROGUE_EMERGENCY_COST = 5000;
@@ -38,6 +42,7 @@ function requireRule(ok: unknown, message: string): asserts ok {
 }
 const inventory = (run: RogueInventory): RogueInventory => structuredClone({
 	team: run.team, bag: run.bag, money: run.money, teraUnlocked: !!run.teraUnlocked,
+	megaUnlocked: run.megaUnlocked, gmegaUnlocked: run.gmegaUnlocked, zUnlocked: run.zUnlocked,
 	...(run.box ? { box: run.box } : {}),
 });
 
@@ -69,6 +74,7 @@ export class RogueEngine {
 		return account.run;
 	}
 	private normalizeRun(run: RogueRun) {
+		if (this.content?.blessings) syncBlessingParty(run);
 		if (this.content && (run.contentVersion === this.content.version ||
 			this.content.compatibleVersions?.includes(run.contentVersion))) this.prepareChoices(run);
 		for (const mon of [...run.team, ...(run.box || []), ...run.checkpoint.team, ...(run.checkpoint.box || []),
@@ -135,10 +141,14 @@ export class RogueEngine {
 		mon.hp = mon.maxhp;
 		mon.status = '';
 		mon.statusState = {};
+		delete mon.statuses;
 		for (const slot of [...mon.pp, ...mon.moveMemory!]) slot.pp = slot.maxpp;
+		for (const slot of mon.blessingPP || []) slot.pp = slot.maxpp;
 	}
 	private enterFloor(run: RogueRun) {
+		if (this.content?.blessings) beginBlessingFloor(run, this.random);
 		run.checkpoint = inventory(run);
+		run.blessingCheckpoint = structuredClone(run.blessings);
 		run.encounter = 0;
 		run.attempt = 0;
 		delete run.battle;
@@ -152,8 +162,9 @@ export class RogueEngine {
 	}
 	private prepareChoices(run: RogueRun) {
 		if (run.phase !== 'choose' || run.choices || !this.content || fixedFloor(run.floor)) return;
-		const templates = this.content.floors[run.floor];
+		let templates = this.content.floors[run.floor];
 		if (!templates) return;
+		if (this.content.blessings) templates = blessingRouteTemplates(run, templates);
 		run.choices = this.content.biomeEncounters ?
 			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard) : structuredClone(templates);
 		if (this.content.wildTreasures) {
@@ -193,8 +204,13 @@ export class RogueEngine {
 		}
 		prepareSpiritNode(run, run.node, this.configured(), this.random);
 		this.resolveOpponentGenders(run.node.encounters.flatMap(encounter => encounter.team));
+		if (this.content?.blessings) prepareBlessingEncounter(run, this.random);
 		run.phase = run.node.rocket && !run.node.rocket.cleared ? 'ready' :
-			node.kind === 'rest' ? 'rest' : node.kind === 'reward' ? 'reward' : 'ready';
+			node.kind === 'rest' ? 'rest' : ['reward', 'event', 'adventure'].includes(node.kind) ? 'reward' : 'ready';
+		if (run.floor === 100 && run.node.encounters[0]?.trainer?.role === 'gym' && !run.gymGiftReceived) {
+			run.phase = 'story';
+			run.story = { stage: 'gymgift', page: 0, skip: false, canSkip: true };
+		}
 	}
 	private resolveOpponentGenders(team: PokemonSet[]) {
 		for (const set of team) {
@@ -204,19 +220,21 @@ export class RogueEngine {
 		}
 	}
 	private completeFloor(account: RogueAccount, run: RogueRun) {
+		completeSpiritRegion(run);
 		if (this.configured().progression) floorFriendship(run);
 		const reward = run.node!.reward;
 		run.money += reward.money;
 		for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
 		const points = run.node!.kind === 'boss' ? 1 : 0;
 		account.points += points;
-		if (run.node!.wildLoot) {
+		if (run.node!.wildLoot || run.node!.shopChallenge) {
 			// Wild drops have already been credited per encounter; the final receipt only adds the Boss point.
 			if (run.lastReward?.floor === run.floor) run.lastReward.points += points;
 		} else {
 			run.lastReward = { floor: run.floor, name: run.node!.name, ...structuredClone(reward), points };
 		}
 		delete run.battle;
+		if (this.content?.blessings) completeBlessingFloor(account, run, this.configured(), this.random);
 		if (run.floor === 200) {
 			run.phase = 'complete';
 			if (!run.spirit) account.spiritUnlocked = true;
@@ -224,11 +242,25 @@ export class RogueEngine {
 			if (this.content?.story) run.story = { stage: 'ending', page: 0, skip: false, canSkip: true };
 			return;
 		}
+		if (this.pendingBlessings(run)) {
+			run.blessings!.afterFloor = true;
+			run.phase = 'blessing';
+			return;
+		}
 		run.floor++;
 		this.enterFloor(run);
 	}
 	private finishSettlement(account: RogueAccount, run: RogueRun) {
+		if (!run.pendingCapture && run.pendingCaptures?.length) run.pendingCapture = run.pendingCaptures.shift();
 		if (run.phase !== 'settlement' || run.pendingCapture || run.pendingMoves?.length) return;
+		if (run.captureResume) {
+			const resume = run.captureResume;
+			delete run.captureResume;
+			if (resume === 'shopclosed') this.completeFloor(account, run);
+			else run.phase = resume;
+			return;
+		}
+		if (this.pendingBlessings(run)) { run.phase = 'blessing'; return; }
 		if (run.encounter < run.node!.encounters.length) run.phase = 'ready';
 		else if (run.node!.rocket && !run.node!.rocket.cleared) {
 			const rocket = run.node!.rocket;
@@ -237,6 +269,24 @@ export class RogueEngine {
 			run.lastReward = { floor: run.floor, name: '击退火箭队', money: rocket.reward, items: {}, points: 0 };
 			run.phase = 'rest';
 		} else this.completeFloor(account, run);
+	}
+	private pendingBlessings(run: RogueRun) {
+		return !!(run.blessings?.pending.length || run.blessings?.stage || run.blessings?.round?.remaining);
+	}
+	private finishBlessings(account: RogueAccount, run: RogueRun) {
+		if (run.phase !== 'blessing' || this.pendingBlessings(run)) return;
+		if (run.blessings?.beforeGym) {
+			delete run.blessings.beforeGym;
+			run.checkpoint = inventory(run);
+			run.blessingCheckpoint = structuredClone(run.blessings);
+			run.phase = 'ready';
+			return;
+		}
+		if (run.blessings?.afterFloor) {
+			delete run.blessings.afterFloor;
+			run.floor++;
+			this.enterFloor(run);
+		} else { run.phase = 'settlement'; this.finishSettlement(account, run); }
 	}
 	command(userid: string, command: RogueCommand, name = userid) {
 		return this.store.change(userid, account => {
@@ -248,6 +298,7 @@ export class RogueEngine {
 			if (command.action === 'newstory') {
 				requireRule(account.run?.phase === 'complete' && !account.run.story && !account.pendingClear,
 					'请先读完终章并处理待保存的通关卡。');
+				account.previousBlessings = account.run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
 				delete account.run;
 				account.opening = { page: 0, skip: false };
 				return;
@@ -257,7 +308,7 @@ export class RogueEngine {
 				requireRule(view && 'key' in view && command.value === view.key, '剧情进度已更新，请刷新后继续。');
 				const skip = command.action === 'storyskip';
 				requireRule(!skip || view.canSkip, '首次冒险请先阅读序章。');
-				const length = ROGUE_STORY[view.stage]!.length;
+				const length = view.total;
 				if (view.stage === 'opening') {
 					account.opening = { page: skip ? length : view.index + 1, skip };
 				} else {
@@ -272,6 +323,7 @@ export class RogueEngine {
 						else {
 							delete run.story;
 							if (view.stage === 'portal') this.enterFloor(run);
+							if (view.stage === 'gymgift') gymSystemGift(run);
 						}
 					}
 				}
@@ -344,6 +396,7 @@ export class RogueEngine {
 						gender: gender === 'random' ? species.gender || (this.random(256) < species.genderRatio.F * 256 ? 'F' : 'M') : gender,
 						nature: nature === 'random' ? natures[this.random(natures.length)].name : Dex.natures.get(nature).name };
 					const mon = createRoguePokemon(set, account.boosts);
+					mon.initialPartner = true;
 					// All unlocked legal moves are available immediately in the in-run editor.
 					mon.moveMemory = availableMoves.map(moveid => {
 						const move = Dex.mod('gen9fantasy').moves.get(moveid);
@@ -354,14 +407,18 @@ export class RogueEngine {
 					return mon;
 				});
 				const initial = { team, bag: { ...content.initialBag }, money: content.initialMoney, teraUnlocked: false };
+				if (account.run) account.previousBlessings = account.run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
 				account.run = {
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
 					owner: { id: userid, name },
+					previousBlessings: [...account.previousBlessings || []],
 					encounter: 0, attempt: 0, boosts: { ...account.boosts }, startingSlots: account.slots,
 					checkpoint: inventory(initial), caught: [], trainerHistory: { gyms: [], eliteFour: [] },
 				};
 				if (content.spirits) account.run.spiritVersion = 1;
+				if (content.blessings) normalizeBlessings(account.run);
 				if (command.useSpirit) initializeSpirit(account.run, content, this.random, command.testSpirit);
+				if (content.blessings) syncBlessingParty(account.run);
 				if (content.story) {
 					account.run.story = { stage: command.useSpirit ? account.opening?.skip ? 'spiritEffect' : 'spirit' : 'climb',
 						page: 0, skip: !!account.opening?.skip, canSkip: this.localSpirits || !!account.adventures };
@@ -372,14 +429,23 @@ export class RogueEngine {
 				return;
 			}
 			const run = this.run(account);
+			if (['blessing', 'blessingrefresh', 'blessingreward', 'fantasize', 'meltanevolve', 'swordreward', 'exchangeshards', 'settera', 'learnbonus'].includes(command.action)) {
+				requireRule(this.content?.blessings || (command.action === 'blessingreward' && run.blessings?.beforeGym),
+					'祝福系统尚未开放。');
+				handleBlessingCommand(account, run, this.configured(), command, this.random);
+				this.finishBlessings(account, run);
+				return;
+			}
 			if (command.action === 'abandon') {
 				requireRule(run.phase !== 'battle', '请先结束当前战斗，再放弃冒险。');
+				account.previousBlessings = run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
 				delete account.run;
 				return;
 			}
 			requireRule(!run.pendingMoves?.length || ['learn', 'replace'].includes(command.action), '请先处理待学习的招式。');
 			if (TEAM_ACTIONS.includes(command.action)) {
 				editParty(run, command, this.configured());
+				if (this.content?.blessings) syncBlessingParty(run);
 				for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
 				return;
 			}
@@ -443,14 +509,20 @@ export class RogueEngine {
 				const mon = run.team.find(entry => entry.id === command.member);
 				const option = mon && evolutionOptions(mon, run).find(entry => toID(entry.species) === command.value);
 				requireRule(mon?.hp && option, '没有满足条件的进化。');
+				requireRule(!(run.blessings?.owned.some(entry => entry.family === 'kid') && toID(mon.set.item) === 'eviolite' &&
+					!Dex.mod('gen9fantasy').species.get(option.species).evos.length), '小鬼当家：携带进化奇石时不能进化为最终形态。');
 				if (option.item) {
 					requireRule(run.bag[option.item] > 0, '缺少进化道具。');
 					run.bag[option.item]--;
 				}
 				evolveMember(run, mon, option.species);
+				if (this.content?.blessings) syncBlessingParty(run);
 				break;
 			}
 			case 'select': this.select(run, command.value || ''); break;
+			case 'shopchallenge':
+				beginShopChallenge(run, this.configured(), this.random);
+				// falls through: the challenge begins immediately after confirmation.
 			case 'battle':
 				requireRule(run.phase === 'ready' && run.team.some(mon => mon.hp > 0), '当前不能进入战斗，请先复活至少一名队员。');
 				// Old saves may predate persisted opponent gender; resolve it once before choosing the portrait.
@@ -476,6 +548,7 @@ export class RogueEngine {
 				requireRule(run.phase === 'failed' && run.node?.noHealing, '只有连续挑战全队倒下后可重试整层；普通战斗请治疗后继续当前场次。');
 				const friendships = new Map(run.team.map(mon => [mon.id, friendship(mon)]));
 				Object.assign(run, inventory(run.checkpoint));
+				if (run.blessingCheckpoint) run.blessings = structuredClone(run.blessingCheckpoint);
 				for (const mon of run.team) {
 					if (friendships.has(mon.id)) mon.set.happiness = friendships.get(mon.id)!;
 				}
@@ -544,6 +617,11 @@ export class RogueEngine {
 					mon.hp = Math.max(1, Math.floor(mon.maxhp * item.amount!));
 					mon.status = '';
 					mon.statusState = {};
+					delete mon.statuses;
+					if (run.blessings?.owned.some(entry => entry.family === 'insight')) {
+						mon.insight ||= { points: 0, gain: 1 };
+						mon.insight.points = Math.min(100, mon.insight.points + mon.insight.gain);
+					}
 				} else if (item.kind === 'effort') {
 					const stat = item.stat!;
 					requireRule(mon.set.evs[stat] < 252 && ROGUE_STATS.reduce((sum, key) => sum + mon.set.evs[key], 0) < 510,
@@ -561,6 +639,7 @@ export class RogueEngine {
 					requireRule(mon.hp > 0 && mon.status, '该成员没有异常状态。');
 					mon.status = '';
 					mon.statusState = {};
+					delete mon.statuses;
 				} else {
 					requireRule(item.kind === 'heal' && mon.hp > 0 && mon.hp < mon.maxhp, '该目标不能使用治疗道具。');
 					mon.hp = Math.min(mon.maxhp, mon.hp + item.amount!);
@@ -575,6 +654,7 @@ export class RogueEngine {
 			default: throw new Error('未知的肉鸽操作。');
 			}
 			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+			if (this.content?.blessings) syncBlessingParty(run);
 		}, command);
 	}
 	battleState(userid: string): RogueBattleState {
@@ -583,9 +663,18 @@ export class RogueEngine {
 		requireRule(run.phase === 'battle' && run.battle, '当前没有待建立的战斗。');
 		const encounter = run.node!.encounters[run.encounter];
 		return {
-			...(run.spirit ? { spirit: { id: run.spirit, floor: run.floor, hazards: encounter.spiritHazards } } : {}),
+			blessings: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution, psychic: run.blessings.psychic }),
+			blessingDefeated: run.blessings?.defeated.slice(),
+			blessingPsychicLosses: run.blessings?.psychicLosses?.slice(),
+			...(run.spirit ? { spirit: { id: run.spirit, floor: run.floor, hazards: encounter.spiritHazards,
+				money: run.spirit === 'gimmighoul' ? run.money : undefined } } : {}),
+			opponentStars: encounter.stars && [...encounter.stars],
 			encounterId: run.battle.encounterId, team: structuredClone(run.team), boosts: { ...run.boosts }, bag: { ...run.bag },
-			catchable: encounter.catchable,
+			catchable: encounter.catchable || !!(run.blessings?.owned.some(entry => entry.family === 'rocketcatch') &&
+				run.node!.kind !== 'boss' && !run.node!.regiBoss &&
+				!['gym', 'elitefour', 'champion'].includes(encounter.trainer?.role || '')),
+			npcCapture: !!encounter.trainer && !!run.blessings?.owned.some(entry => entry.family === 'rocketcatch'),
+			systems: { player: { mega: !!run.megaUnlocked, gmega: !!run.gmegaUnlocked, z: !!run.zUnlocked } },
 			tera: { player: !!run.teraUnlocked, opponent: !!encounter.trainer?.tera ||
 				(run.node!.kind === 'boss' && ELITE_BOSS_FLOORS.has(run.floor)) },
 			progression: !!this.configured().progression, allowReplacement: this.configured().allowReplacement,
@@ -598,7 +687,9 @@ export class RogueEngine {
 		};
 	}
 	private recordCatch(account: RogueAccount, run: RogueRun, captured: RoguePokemon) {
-		requireRule(captured.id === run.battle?.encounterId, '捕捉对象与当前战斗不符。');
+		const encounterId = run.battle?.encounterId;
+		requireRule(encounterId && (captured.id === encounterId || run.node!.encounters[run.encounter].team.some((_, i) =>
+			captured.id === `${encounterId}:foe:${i}`)), '捕捉对象与当前战斗不符。');
 		if (run.caught.includes(captured.id)) return;
 		const rule = this.configured().unlocks[toID(captured.set.species)];
 		requireRule(rule, '缺少捕捉解锁配置。');
@@ -621,7 +712,8 @@ export class RogueEngine {
 		return this.store.change(userid, account => {
 			const run = account.run;
 			if (run?.phase !== 'battle' || run.battle?.token !== token || run.battle.encounterId !== result.encounterId) return;
-			if (result.captured) this.recordCatch(account, run, result.captured);
+			const captures = result.captures || (result.captured ? [result.captured] : []);
+			for (const captured of captures) this.recordCatch(account, run, captured);
 			const retreated = run.battle.retreatRequested;
 			const previousTeam = run.team;
 			const previousItems = new Map(run.team.map(mon => [mon.id, toID(mon.set.item)]));
@@ -638,15 +730,56 @@ export class RogueEngine {
 			for (const mon of run.team) ensureMemberMemory(mon);
 			run.notices = [];
 			if (this.configured().progression) battleFriendship(run, result, token, previousTeam);
+			if (this.content?.blessings) settleBlessingBattle(account, run, this.configured(), result, this.random);
+			for (const captured of captures) {
+				if ([...run.team, ...(run.box || []), ...(run.pendingCaptures || [])].some(mon => mon.id === captured.id)) continue;
+				requireRule(run.team.length < roguePartyLimit(run.spirit) || this.configured().allowReplacement, '队伍已满。');
+				const mon = createRoguePokemon(
+					{ ...captured.set, level: captured.set.level - (run.node!.encounters[run.encounter].blessingLevels || 0),
+						happiness: ROGUE_INITIAL_FRIENDSHIP }, run.boosts, captured.id, captured.stars
+				);
+				mon.hp = Math.max(1, mon.maxhp - (captured.maxhp - captured.hp));
+				mon.pp = structuredClone(captured.pp);
+				mon.status = captured.status;
+				mon.statusState = { ...captured.statusState };
+				mon.statuses = captured.statuses && structuredClone(captured.statuses);
+				if (this.configured().progression) initializeExperience(mon);
+				if (mon.set.item) {
+					mon.set.item = convertSpiritItem(run, this.configured(), toID(mon.set.item), `capture:${mon.id}`, this.random);
+				}
+				if (run.team.length < roguePartyLimit(run.spirit)) run.team.push(mon);
+				else if (run.box && run.box.length < 30) run.box.push(mon);
+				else (run.pendingCaptures ||= []).push(mon);
+			}
+			if (this.content?.blessings) syncBlessingParty(run);
+			const finishShop = () => {
+				if (!run.node!.shopChallenge || run.node!.shopChallenge.closed) return false;
+				const challenge = run.node!.shopChallenge;
+				challenge.closed = true;
+				if (result.won) for (const [item, count] of Object.entries(challenge.rewards)) {
+					const received = convertSpiritItem(run, this.configured(), item, `shopchallenge:${run.floor}:${item}`, this.random);
+					run.bag[received] = (run.bag[received] || 0) + count;
+				}
+				run.lastReward = { floor: run.floor, name: result.won ? '零元购 · 挑战成功' : '零元购 · 商店关闭',
+					money: 0, items: result.won ? { ...challenge.rewards } : {}, points: 0 };
+				run.node!.reward = { money: 0, items: {} };
+				run.captureResume = 'shopclosed';
+				run.phase = 'settlement';
+				this.finishSettlement(account, run);
+				return true;
+			};
 			if (!result.won) {
+				if (finishShop()) return;
 				run.recovery = retreated ? 'retreat' : 'defeat';
 				run.phase = run.node!.noHealing && !run.team.some(mon => mon.hp > 0) ? 'failed' : 'ready';
+				if (run.pendingCaptures?.length) { run.captureResume = run.phase as 'ready' | 'failed'; run.phase = 'settlement'; this.finishSettlement(account, run); }
 				run.attempt++;
 				run.notices = [retreated ? '已撤退，伤害、PP、异常状态和道具消耗已保存。' : '本场战斗未通过，队伍当前状态已保存。'];
 				return;
 			}
 			delete run.recovery;
-			const loot = run.node!.wildLoot?.[run.encounter];
+			const baseLoot = run.node!.wildLoot?.[run.encounter];
+			const loot = baseLoot && blessingLoot(run, baseLoot, this.random);
 			if (loot) {
 				for (const [id, count] of Object.entries(loot)) run.bag[id] = (run.bag[id] || 0) + count;
 				run.lastReward = { floor: run.floor, encounter: run.encounter + 1, name: run.node!.name,
@@ -657,30 +790,15 @@ export class RogueEngine {
 					for (const mon of run.team) {
 						if (!defeated.eligible.includes(mon.id)) continue;
 						if (!defeated.captured) gainEffort(run, mon, rogueEffortYield(defeated.species));
-						gainExperience(run, mon, experienceYield(rogueSpeciesData(defeated.species).baseExperience,
+						gainExperience(run, mon, Math.floor(experienceYield(rogueSpeciesData(defeated.species).baseExperience,
 							defeated.level, mon.set.level, defeated.participants.includes(mon.id)) *
-							(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1));
+							(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon)));
 					}
 				}
 			}
 			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
-			if (result.captured) {
-				requireRule(run.team.length < roguePartyLimit(run.spirit) || this.configured().allowReplacement, '队伍已满。');
-				const mon = createRoguePokemon(
-					{ ...result.captured.set, happiness: ROGUE_INITIAL_FRIENDSHIP }, run.boosts, result.captured.id
-				);
-				mon.hp = Math.max(1, mon.maxhp - (result.captured.maxhp - result.captured.hp));
-				mon.pp = structuredClone(result.captured.pp);
-				mon.status = result.captured.status;
-				mon.statusState = { ...result.captured.statusState };
-				if (this.configured().progression) initializeExperience(mon);
-				if (mon.set.item) {
-					mon.set.item = convertSpiritItem(run, this.configured(), toID(mon.set.item), `capture:${mon.id}`, this.random);
-				}
-				if (run.team.length < roguePartyLimit(run.spirit)) run.team.push(mon);
-				else if (run.box && run.box.length < 30) run.box.push(mon);
-				else run.pendingCapture = mon;
-			}
+
+			if (finishShop()) return;
 			run.encounter++;
 			run.phase = 'settlement';
 			this.finishSettlement(account, run);
@@ -694,6 +812,7 @@ export class RogueEngine {
 			requireRule(mon && canEditParty(run) && Number.isInteger(amount) && Math.abs(amount) <= 255,
 				'当前不能调整亲密度。');
 			changeFriendship(mon, amount);
+			if (amount < 0) recordNegativeBlessingEvent(run, 'outcome');
 		});
 	}
 	setEventIVs(userid: string, member: string, ivs: Partial<StatsTable>) {
@@ -705,6 +824,7 @@ export class RogueEngine {
 			requireRule(ivs && Object.keys(ivs).length > 0 && Object.entries(ivs).every(([stat, value]) =>
 				ROGUE_STATS.includes(stat as StatID) && Number.isInteger(value) && value >= 0 && value <= 31),
 			'个体值必须为 0～31 的整数。');
+			if (Object.entries(ivs).some(([stat, value]) => value < mon.set.ivs[stat as StatID])) recordNegativeBlessingEvent(run, 'outcome');
 			Object.assign(mon.set.ivs, ivs);
 			rebuildMember(mon, run.boosts);
 			recordStarterTraits(account, this.configured(), mon.set, false);

@@ -5,6 +5,7 @@ import type { RogueRun, RogueAccount, RogueCommand, RogueInventory } from './typ
 import { rebuildMember } from './progression';
 import { rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 import { startCard } from './story';
+import { blessing, blessingTitle, type BlessingEffects } from '../../sim/rogue-blessing-data';
 
 export interface RogueClearCard {
 	version: 1;
@@ -20,6 +21,7 @@ export interface RogueClearCard {
 		floor: 200, boosts: StatsTable, spirit?: string, startCard?: string,
 		spiritName?: string, spiritText?: string, cardName?: string, cardText?: string,
 		hazards?: string[], blessings: { id: string, text: string }[],
+		blessingEffects?: BlessingEffects,
 	};
 }
 let fingerprint: string | undefined;
@@ -58,7 +60,10 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 			spiritName: rogueSpirit(run.spirit)?.name, spiritText: rogueSpirit(run.spirit)?.text,
 			cardName: startCard(run.startCard)?.name, cardText: startCard(run.startCard)?.text,
 			hazards: structuredClone(run.node?.encounters[run.encounter - 1]?.spiritHazards),
-			teraUnlocked: !!run.teraUnlocked, blessings: [],
+			teraUnlocked: !!run.teraUnlocked,
+			megaUnlocked: run.megaUnlocked, gmegaUnlocked: run.gmegaUnlocked, zUnlocked: run.zUnlocked,
+			blessings: (run.blessings?.owned || []).map(entry => ({ id: entry.id, name: blessingTitle(entry), text: blessing(entry.id)!.text })),
+			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution, psychic: run.blessings.psychic }),
 		},
 	};
 	const cards = account.cards ||= [];

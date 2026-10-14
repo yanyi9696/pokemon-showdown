@@ -1,7 +1,7 @@
 import { Dex } from '../../sim/dex';
 import type { RogueAccount, RogueRun } from './types';
 
-export type RogueStoryStage = 'opening' | 'spirit' | 'spiritEffect' | 'climb' | 'cards' | 'portal' | 'ending';
+export type RogueStoryStage = 'opening' | 'spirit' | 'spiritEffect' | 'climb' | 'cards' | 'portal' | 'ending' | 'gymgift';
 type Page = { scene: string, title: string, text: string, speaker?: string };
 const page = (scene: string, title: string, text: string, speaker?: string): Page => ({ scene, title, text, speaker });
 export const ROGUE_STORY: Partial<Record<RogueStoryStage, Page[]>> = {
@@ -58,16 +58,35 @@ export function cardBiasedSpecies(
 }
 
 export function storyView(account: RogueAccount, enabled: boolean, local: boolean) {
-	if (!enabled) return null;
+	if (!enabled && account.run?.story?.stage !== 'gymgift') return null;
 	const run = account.run;
 	const stage = run?.story?.stage || (!run ? 'opening' : undefined);
 	if (!stage) return null;
 	const index = stage === 'opening' ? account.opening?.page || 0 : run!.story!.page;
-	const pages = ROGUE_STORY[stage];
+	const pages = stage === 'gymgift' ? gymGiftPages(run!) : ROGUE_STORY[stage];
 	if (!pages || index >= pages.length) return stage === 'cards' ? { stage, index, cards: ROGUE_START_CARDS } : null;
 	return { stage, index, total: pages.length, ...pages[index],
 		canSkip: local || (stage === 'opening' ? !!account.adventures : !!run?.story?.canSkip) || stage === 'ending',
 		key: `${run?.id || 'opening'}:${stage}:${index}` };
+}
+
+const GYM_GIFT_LINES: Record<string, string> = {
+	brock: '能走到这里，说明你与宝可梦之间的信赖已经足够坚实。接下来的路会更难，就让我再帮你们打好一点基础吧。',
+	sabrina: '我看见了你们尚未显露的可能性。力量已经在这里，只差你亲手推开那扇门。',
+	flannery: '一百层！你们的斗志真够火热啊！来，在开打之前，让我帮你们点燃一种新的力量！',
+	roxie: '爬了这么久，还能听见你们响亮的心跳！好，给这支队伍加一点新的声音，再来打一场痛快的！',
+	viola: '你和伙伴一路走来的样子，真是一幅好画面。来，试着换一个角度，发现伙伴不一样的光彩吧。',
+	acerola: '嘻嘻，居然真的走到这里啦！别担心，今天送你的不是吓人的东西。选一种力量，给接下来的冒险壮壮胆吧！',
+	nessa: '一路走到这里，你们配合得越来越流畅了。接住这份力量，下一次浪头来临时，要站稳哦。',
+	bea: '能坚持到这里，值得敬意。不过修行还没有结束。选择一种新的力量，让我看看你与伙伴如何驾驭它。',
+	iono: '到达一百层的挑战者登场——！奇树特别福利时间！选一种新力量，让接下来的对战成为最闪亮的节目吧！',
+	larry: '已经一百层了啊，辛苦了。这算是阶段性的支援物资。选一种用得上的，办完手续，我们再开始对战。',
+};
+function gymGiftPages(run: RogueRun): Page[] {
+	const trainer = run.node?.encounters[0]?.trainer;
+	return [page('chamber', '第一百层 · 馆主的赠礼',
+		GYM_GIFT_LINES[trainer?.id || ''] || '能来到第一百层，已经证明了你们的实力。开战之前，选一种新的力量吧。', trainer?.name),
+	page('chamber', '选择新的力量', '你可以解锁一种尚未解锁的系统：超进化、超巨进化、Z 招式或太晶化，并领取配套的自选超级进化石、超巨进化许愿星、自选 Z 纯晶或 50 片自选属性太晶碎片。领完后先调整队伍，准备好了再来挑战。', trainer?.name)];
 }
 
 export function afterSpirit(run: RogueRun) {

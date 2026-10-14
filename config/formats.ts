@@ -19,7 +19,10 @@ The column value will be ignored for repeat sections.
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
 import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat } from '../sim/fantasy-rogue';
-import { maintainRogueEnvironment, startRogueSpirit } from '../sim/fantasy-rogue-spirits';
+import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
+	blessingEffectiveness, blessingHit } from '../sim/fantasy-rogue-blessings';
+import { maintainRogueEnvironment, startRogueSpirit, rogueCoinDamageMultiplier,
+	resolveRogueFutureAttacks } from '../sim/fantasy-rogue-spirits';
 
 export const Formats: import('../sim/dex-formats').FormatList = [
 	{
@@ -27,22 +30,28 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 	{
 		name: '[Gen 9] Fantasy Rogue',
+		...ROGUE_BLESSING_EVENTS,
 		mod: 'gen9fantasy',
 		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
 		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
 		onBegin() { initializeRogueBattle(this); },
 		onBattleStart() { startRogueSpirit(this); },
 		onResidualOrder: 100,
-		onResidual() { maintainRogueEnvironment(this); },
+		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
 		onDamage(damage, target, source, effect) {
 			const spirit = this.fantasyRogue?.spirit;
-			if (!spirit || effect.effectType !== 'Move' || !source || target.side === source.side) return;
-			if (spirit.id === 'regigigas') return Math.max(1, Math.floor(damage * (source.side.id === 'p1' ? 2 : 0.5)));
-			if (spirit.id === 'darkrai' && source.side.id === 'p1') {
-				return Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));
+			if (!spirit || effect.effectType !== 'Move' || (effect as ActiveMove).ohko || !source || target.side === source.side) return blessingDamage(damage, target, source, effect);
+			if (spirit.id === 'regigigas') damage = Math.max(1, Math.floor(damage * (source.side.id === 'p1' ? 2 : 0.5)));
+			if (spirit.id === 'gimmighoul' && source.side.id === 'p1') {
+				damage = Math.max(1, Math.floor(damage * rogueCoinDamageMultiplier(spirit.money)));
 			}
+			if (spirit.id === 'darkrai' && source.side.id === 'p1') {
+				damage = Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));
+			}
+			return blessingDamage(damage, target, source, effect);
 		},
-		onDamagingHit(damage, target, source) {
+		onDamagingHit(damage, target, source, move) {
+			blessingHit(damage, target, source, move);
 			if (this.fantasyRogue?.spirit?.id === 'yveltal' && source.side.id === 'p1' &&
 				target.side.id === 'p2' && source.hp > 0 && damage > 0) {
 				this.heal(Math.max(1, Math.floor(damage / 2)), source, source, this.format);
@@ -53,16 +62,18 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 		onEffectivenessPriority: 1,
 		onEffectiveness(typeMod, target, type, move) {
-			if (this.fantasyRogue?.spirit?.id !== 'malamar') return;
-			if (move && !this.dex.getImmunity(move, type)) return 1;
-			if (typeMod) return -typeMod;
+			if (this.fantasyRogue?.spirit?.id === 'malamar') {
+				typeMod = move && !this.dex.getImmunity(move, type) ? 1 : -typeMod;
+			}
+			return blessingEffectiveness(typeMod, target, type, move);
 		},
-		onSwitchIn(pokemon) { markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); },
-		onFaint(pokemon) { recordRogueDefeat(this, pokemon); },
-		onUpdate: onFantasyUpdate,
+		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); },
+		onFaint(pokemon, source) { blessingKO(this, pokemon, source); recordRogueDefeat(this, pokemon); },
+		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},
 	{
 		name: '[Gen 9] Fantasy Rogue Duel',
+		...ROGUE_BLESSING_EVENTS,
 		mod: 'gen9fantasy',
 		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
 		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
@@ -73,14 +84,20 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 		onBattleStart() { startRogueSpirit(this); },
 		onResidualOrder: 100,
-		onResidual() { maintainRogueEnvironment(this); },
+		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
 		onDamage(damage, target, source, effect) {
-			if (effect.effectType !== 'Move' || !source || target.side === source.side) return;
+			if (effect.effectType !== 'Move' || (effect as ActiveMove).ohko || !source || target.side === source.side) return blessingDamage(damage, target, source, effect);
 			const spirit = this.fantasyRogue?.spirit;
-			if (spirit?.id === 'darkrai') return Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));
+			if (spirit?.id === 'darkrai') damage = Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));
+			if (spirit?.id === 'gimmighoul') {
+				const money = source.side.id === 'p1' ? spirit.money : this.fantasyRogue?.duel?.money;
+				damage = Math.max(1, Math.floor(damage * rogueCoinDamageMultiplier(money)));
+			}
 			// With Regigigas on both sides, outgoing ×2 and incoming ×0.5 cancel exactly.
+			return blessingDamage(damage, target, source, effect);
 		},
-		onDamagingHit(damage, target, source) {
+		onDamagingHit(damage, target, source, move) {
+			blessingHit(damage, target, source, move);
 			if (this.fantasyRogue?.spirit?.id === 'yveltal' && source.side !== target.side && source.hp > 0 && damage > 0) {
 				this.heal(Math.max(1, Math.floor(damage / 2)), source, source, this.format);
 			}
@@ -90,12 +107,14 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 		onEffectivenessPriority: 1,
 		onEffectiveness(typeMod, target, type, move) {
-			if (this.fantasyRogue?.spirit?.id !== 'malamar') return;
-			if (move && !this.dex.getImmunity(move, type)) return 1;
-			if (typeMod) return -typeMod;
+			if (this.fantasyRogue?.spirit?.id === 'malamar') {
+				typeMod = move && !this.dex.getImmunity(move, type) ? 1 : -typeMod;
+			}
+			return blessingEffectiveness(typeMod, target, type, move);
 		},
-		onSwitchIn: onFantasySwitchIn,
-		onUpdate: onFantasyUpdate,
+		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); onFantasySwitchIn.call(this, pokemon); },
+		onFaint(pokemon, source) { blessingKO(this, pokemon, source); },
+		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},
 	{
 		name: "[Gen 9] FC Random Battle",

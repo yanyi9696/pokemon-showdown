@@ -17,7 +17,7 @@ export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): Rogue
 	requireRule(!spirit || rogueSpirit(spirit)?.enabled, '这张通关卡的塔灵尚不支持约战。');
 	const snapshots = [a, b].map(card => {
 		const snap = structuredClone(card.snapshot);
-		requireRule(!snap.blessings.length, '这张卡含有尚未接入约战的祝福效果。');
+		requireRule(!snap.blessings.length || snap.blessingEffects, '这张卡缺少可复现的祝福记录。');
 		requireRule(snap.team.length > 0 && snap.team.length <= roguePartyLimit(spirit), '通关卡的队伍数量无效。');
 		for (const mon of snap.team) {
 			const expected = { ...mon.stats };
@@ -26,7 +26,8 @@ export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): Rogue
 			mon.hp = mon.maxhp;
 			mon.status = '';
 			mon.statusState = {};
-			for (const move of [...mon.pp, ...(mon.moveMemory || [])]) {
+			delete mon.statuses;
+			for (const move of [...mon.pp, ...(mon.moveMemory || []), ...(mon.blessingPP || [])]) {
 				move.pp = move.maxpp = Dex.mod('gen9fantasy').moves.get(move.id).pp;
 			}
 		}
@@ -34,10 +35,14 @@ export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): Rogue
 	});
 	return {
 		encounterId: `duel:${a.id}:${b.id}`, team: snapshots[0].team, boosts: snapshots[0].boosts,
-		duel: { team: snapshots[1].team, boosts: snapshots[1].boosts, hazards: snapshots[1].hazards },
+		blessings: snapshots[0].blessingEffects,
+		duel: { team: snapshots[1].team, boosts: snapshots[1].boosts,
+			hazards: snapshots[1].hazards, money: snapshots[1].money, blessings: snapshots[1].blessingEffects },
 		bag: {}, balls: [], catchable: false,
+		systems: { player: { mega: !!snapshots[0].megaUnlocked, gmega: !!snapshots[0].gmegaUnlocked, z: !!snapshots[0].zUnlocked },
+			opponent: { mega: !!snapshots[1].megaUnlocked, gmega: !!snapshots[1].gmegaUnlocked, z: !!snapshots[1].zUnlocked } },
 		tera: { player: !!snapshots[0].teraUnlocked, opponent: !!snapshots[1].teraUnlocked },
-		spirit: spirit ? { id: spirit, floor: 200, hazards: snapshots[0].hazards } : undefined,
+		spirit: spirit ? { id: spirit, floor: 200, hazards: snapshots[0].hazards, money: snapshots[0].money } : undefined,
 	};
 }
 interface Invitation {

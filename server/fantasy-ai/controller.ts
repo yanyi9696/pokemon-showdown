@@ -30,7 +30,10 @@ export interface ChallengeMetrics {
 	criticalDecisionReasons?: Record<string, number>;
 }
 export interface AIChallengeOptions extends TimeBudgetSettings {
-	rogue?: { wild?: boolean, partySize: number, boosts: StatsTable, spirit?: { id: string, floor: number } };
+	rogue?: {
+		wild?: boolean, partySize: number, boosts: StatsTable, spirit?: { id: string, floor: number, money?: number },
+		blessings?: import('../../sim/rogue-blessing-data').BlessingEffects,
+	};
 	trainer: ValidatedTrainer;
 	difficulty: ChallengeDifficulty;
 	instanceId: string;
@@ -69,6 +72,7 @@ export class AIController {
 		if (options.difficulty === 'normal') this.view = new InformationView({
 			ownSide: 'p2', difficulty: 'normal', partySize: options.rogue?.partySize, rogueBoosts: options.rogue?.boosts,
 			rogueSpirit: options.rogue?.spirit,
+			rogueBlessings: options.rogue?.blessings,
 		});
 		options.scheduler.register(this.schedulerRoomId, options.instanceId, milliseconds => {
 			// Refund queue waiting synchronously, including cancelled queued jobs,

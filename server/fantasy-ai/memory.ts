@@ -69,6 +69,7 @@ export interface SeenSide {
 	resources: { mega: boolean, gmega: boolean, zmove: boolean, tera: boolean, aura: boolean };
 }
 export interface BattleMemory {
+	rogueFutureAttacks?: { source: string, move: string, slots: string[], turn: number }[];
 	turn: number;
 	sides: Record<SinglesSide, SeenSide>;
 	weather: string;
@@ -219,6 +220,19 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 			if (revealedHolder && marker.startsWith('[from] ability: ')) revealedHolder.ability = toID(marker.slice(16));
 		}
 		switch (event) {
+		case '-message': {
+			if (pendingGuiYing && target.endsWith(' 化作鬼影，保留了最后1点HP！')) {
+				(pendingGuiYing.fantasy ||= {}).guiYingUsed = true;
+			}
+			pendingGuiYing = undefined;
+			const fields = line.split('|');
+			if (fields[3] === '[roguepermanentroom]') (memory.fieldDurations ||= {}).trickroom = Infinity;
+			if (fields[3] === '[roguefuture]' && dex.moves.get(fields[5]).exists) {
+				(memory.rogueFutureAttacks ||= []).push({ source: fields[4], move: fields[5],
+					slots: fields[6].split(','), turn: Number(fields[7]) });
+			}
+			break;
+		}
 		case 'turn':
 			finishMove();
 			finishTurn();
@@ -430,12 +444,6 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				pendingGuiYing = mon.ability === 'guiying' ? mon : undefined;
 				if (mon.ability === 'beastboost') mon.volatiles = mon.volatiles.filter(id => id !== 'suppressability');
 			}
-			break;
-		case '-message':
-			if (pendingGuiYing && target.endsWith(' 化作鬼影，保留了最后1点HP！')) {
-				(pendingGuiYing.fantasy ||= {}).guiYingUsed = true;
-			}
-			pendingGuiYing = undefined;
 			break;
 		case '-endability':
 			if (mon) {

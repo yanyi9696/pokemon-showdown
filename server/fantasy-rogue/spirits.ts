@@ -4,7 +4,7 @@ import type { RogueRandom } from './biome-pools';
 import type { RogueContent, RogueItem, RogueNode, RogueRun } from './types';
 import { createRoguePokemon, initializeExperience, rebuildMember } from './progression';
 import { ROGUE_INITIAL_FRIENDSHIP } from './friendship';
-import { makeEncounterSet } from './encounter-sets';
+import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { canEditParty, healingLocked, inventoryItem } from './team';
 
 export const SPIRIT_HAZARDS = [
@@ -27,7 +27,7 @@ export function initializeSpirit(run: RogueRun, content: RogueContent, random: R
 		// Use the configured starter families, excluding temporary battle-only forms.
 		const candidates = content.starters.filter(entry => !Dex.mod('gen9fantasy').species.get(entry.set.species).battleOnly);
 		const species = candidates[random(candidates.length)].set.species;
-		const set = makeEncounterSet(species, 40, 20);
+		const set = makeEncounterSet(species, 40, randomEncounterIVs(random));
 		set.happiness = ROGUE_INITIAL_FRIENDSHIP;
 		const mon = createRoguePokemon(set, run.boosts);
 		mon.fixedLevel = 40;
@@ -59,7 +59,7 @@ export function hpPurchaseCost(item: RogueItem, maxhp: number) {
 
 export function convertSpiritItem(run: RogueRun, content: RogueContent, id: string, key: string, random: RogueRandom) {
 	const item = inventoryItem(content, id);
-	if (run.spirit !== 'hoopagift' || item?.kind !== 'held' || FANTASY_ITEMS.includes(id)) return id;
+	if (run.spirit !== 'hoopagift' || item?.kind !== 'held' || FANTASY_ITEMS.includes(id) || id.startsWith('rogueemblem')) return id;
 	const ledger = run.spiritConversions ||= {};
 	if (ledger[key]) return ledger[key];
 	ledger[key] = random(2) === 0 ? FANTASY_ITEMS[random(FANTASY_ITEMS.length)] : id;
@@ -72,6 +72,9 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 	node.spiritPrepared = true;
 	for (const encounter of node.encounters) {
 		if (encounter.trainer) continue;
+		if (run.spirit === 'diancie' && encounter.catchable) {
+			encounter.stars = encounter.team.map(() => random(100) < 8 ? 2 : 1);
+		}
 		for (const set of encounter.team) {
 			if (encounter.catchable && !set.shiny) {
 				set.shiny = random(1000) < (run.spirit === 'hooh' ? 20 : 2) + (run.startCard === 'all' ? 1 : 0);
@@ -109,6 +112,17 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 			encounter.spiritHazards = [0, 1].map(() => SPIRIT_HAZARDS[random(SPIRIT_HAZARDS.length)]);
 		}
 	}
+}
+
+/** The run owns these flat bonuses, so future captures inherit them too. */
+export function completeSpiritRegion(run: RogueRun) {
+	const kind = run.node?.kind;
+	const stat = run.spirit === 'zacian' && ['wild', 'elite', 'trainer', 'encounter'].includes(kind || '') ? 'atk' :
+		run.spirit === 'mewtwo' && ['event', 'reward', 'adventure'].includes(kind || '') ? 'spa' : undefined;
+	if (!stat) return;
+	run.boosts[stat]++;
+	for (const mon of [...run.team, ...(run.box || [])]) rebuildMember(mon, run.boosts);
+	(run.notices ||= []).push(`本局全队永久${stat === 'atk' ? '攻击' : '特攻'} +1，后续加入的伙伴同样享受。`);
 }
 
 export function editSpiritBox(run: RogueRun, member: string, target?: string) {

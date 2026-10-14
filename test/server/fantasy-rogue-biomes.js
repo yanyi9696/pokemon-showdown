@@ -8,7 +8,7 @@ const { weightedPick, pickBiomeSlot, biomeTier, unlistedFamilies, MajorLegendary
 const { createBiomeRoutes } = require('../../dist/server/fantasy-rogue/biome-routes');
 const { lowerToEligibleStage, evolutionChildren, wildStageAtLevel, partyEvolutionLevel } =
 	require('../../dist/server/fantasy-rogue/evolution');
-const { makeEncounterSet } = require('../../dist/server/fantasy-rogue/encounter-sets');
+const { makeEncounterSet, randomEncounterIVs } = require('../../dist/server/fantasy-rogue/encounter-sets');
 const { createRoguePokemon, levelMoves, evolutionOptions } = require('../../dist/server/fantasy-rogue/progression');
 const { rogueStarterSpecies, rogueEffortYield } = require('../../dist/sim/fantasy-rogue-rules');
 const { emptyRogueStats } = require('../../dist/sim/fantasy-rogue');
@@ -128,6 +128,39 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		const [ordinary] = createBiomeRoutes(1, [template], undefined, max => Math.min(1, max - 1));
 		assert.equal(ordinary.encounters.length, 3);
 	});
+	it('rolls the six IVs independently from 20 through 31 and preserves them on rebuild', () => {
+		const values = [0, 11, 3, 8, 1, 6];
+		let calls = 0;
+		const ivs = randomEncounterIVs(max => { assert.equal(max, 12); return values[calls++]; });
+		assert.equal(calls, 6);
+		assert.deepEqual(ivs, { hp: 20, atk: 31, def: 23, spa: 28, spd: 21, spe: 26 });
+		const set = makeEncounterSet('Bulbasaur', 5, ivs);
+		assert.notEqual(set.ivs, ivs);
+		const mon = createRoguePokemon(set, emptyRogueStats());
+		const { rebuildMember } = require('../../dist/server/fantasy-rogue/progression');
+		rebuildMember(mon, emptyRogueStats());
+		assert.deepEqual(mon.set.ivs, ivs);
+		const legacy = createRoguePokemon(makeEncounterSet('Bulbasaur', 5, 15), emptyRogueStats());
+		rebuildMember(legacy, emptyRogueStats());
+		assert(Object.values(legacy.set.ivs).every(iv => iv === 15), 'saved IVs are not retroactively raised');
+	});
+	it('uses random IVs for all new ordinary wild encounters and all 31 for regional elites', () => {
+		const template = { id: 'wild', name: 'old', kind: 'wild', encounters: [], reward: { money: 0, items: {} } };
+		for (const value of [0, 11]) {
+			const [route] = createBiomeRoutes(1, [template], name => name, max => max === 12 ? value : 0);
+			assert.equal(route.encounters.length, 4, 'the bonus encounter is included');
+			for (const encounter of route.encounters) {
+				assert(Object.values(encounter.team[0].ivs).every(iv => iv === 20 + value));
+			}
+		}
+		for (const floor of [1, 100, 161, 181]) {
+			const [route] = createBiomeRoutes(floor, [{ ...template, kind: 'elite' }], name => name, max => {
+				assert.notEqual(max, 12, 'elites do not consume IV rolls');
+				return 0;
+			});
+			assert(Object.values(route.encounters[0].team[0].ivs).every(iv => iv === 31));
+		}
+	});
 	it('permits legendary elite captures only from floor 161', () => {
 		const template = { id: 'elite', name: 'old', kind: 'elite', encounters: [], reward: { money: 100, items: {} } };
 		const [major] = createBiomeRoutes(162, [template], undefined, () => 0);
@@ -207,7 +240,9 @@ describe('Fantasy Rogue saved regional encounters', () => {
 		const selected = account().run.node;
 		// Nature is assigned on route entry; the encounter identity, moves and promised loot are retained.
 		const expected = structuredClone(choices[0]);
+		expected.blessingPrepared = true;
 		expected.encounters.forEach((encounter, i) => {
+			encounter.blessingLevels = 0;
 			encounter.team.forEach((set, j) => { set.nature = selected.encounters[i].team[j].nature; });
 		});
 		assert.deepEqual(selected, expected);

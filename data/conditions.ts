@@ -1,4 +1,25 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	rogueascent: {
+		name: 'Rogue Ascent', noCopy: true, duration: 2,
+		onStart(pokemon) {
+			this.effectState.turn = this.turn;
+			this.add('-prepare', pokemon, 'Bounce');
+			this.add('-message', '登龙：跃至空中，下回合落地招式威力提升 20%。');
+		},
+		onBeforeMovePriority: 100,
+		onBeforeMove(pokemon, target, move) {
+			if (this.turn > this.effectState.turn) { move.rogueLanding = true; pokemon.removeVolatile('rogueascent'); }
+		},
+		onInvulnerability(target, source, move) {
+			if (!['gust', 'twister', 'skyuppercut', 'thunder', 'hurricane', 'smackdown', 'thousandarrows'].includes(move.id)) return false;
+		},
+		onSourceBasePower(basePower, target, source, move) {
+			if (move.id === 'gust' || move.id === 'twister') return this.chainModify(2);
+		},
+		onUpdate(pokemon) {
+			if (pokemon.volatiles.smackdown || this.field.getPseudoWeather('gravity')) pokemon.removeVolatile('rogueascent');
+		},
+	},
 	jingshencaozongzheattract: {
 		name: 'Jing Shen Cao Zong Zhe Attract',
 		noCopy: true, // 接棒无法传递该状态
@@ -713,7 +734,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		effectType: 'Status',
 		onStart(target, source, sourceEffect) {
 			// 确保冰系免疫冻伤
-			if (target.hasType('Ice')) return false; 
+			if (target.hasType('Ice') && !source?.canStackRogueStatus('fst')) return false;
 			
 			if (sourceEffect && sourceEffect.effectType === 'Ability') {
 				this.add('-status', target, 'fst', '[from] ability: ' + sourceEffect.name, `[of] ${source}`);
@@ -725,7 +746,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		// 免疫逻辑：冰属性宝可梦免疫冻伤
 		onSetStatus(status, target, source, effect) {
 			if (status.id !== 'fst') return;
-			if (target.hasType('Ice')) {
+			if (target.hasType('Ice') && !source?.canStackRogueStatus('fst')) {
 				this.debug('ice type immunity');
 				return false;
 			}
@@ -1116,7 +1137,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			this.effectState.move = this.activeMove.id;
 		},
 		onBeforeMove(pokemon, target, move) {
-			if (!pokemon.getItem().isChoice) {
+			if (!pokemon.getItem().isChoice && !pokemon.getRogueSharedItems().some(id => this.dex.items.get(id).isChoice)) {
 				pokemon.removeVolatile('choicelock');
 				return;
 			}
@@ -1133,7 +1154,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			}
 		},
 		onDisableMove(pokemon) {
-			if (!pokemon.getItem().isChoice || !pokemon.hasMove(this.effectState.move)) {
+			if ((!pokemon.getItem().isChoice && !pokemon.getRogueSharedItems().some(id => this.dex.items.get(id).isChoice)) || !pokemon.hasMove(this.effectState.move)) {
 				pokemon.removeVolatile('choicelock');
 				return;
 			}

@@ -1,4 +1,18 @@
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+	rogueevoboost: {
+		name: 'Rogue Evoboost', num: -31001, accuracy: true, basePower: 0,
+		category: 'Status', pp: 1, priority: 0, type: 'Normal', target: 'self', flags: {},
+		isNonstandard: 'Custom', boosts: { atk: 2, def: 2, spa: 2, spd: 2, spe: 2 },
+		onTry(source) { return source.spendRogueEeveeZ(); },
+		onPrepareHit(target, source) { this.attrLastMove('[anim] Extreme Evoboost'); },
+	},
+	roguepsychicburst: {
+		name: 'Rogue Psychic Burst', num: -31000, accuracy: true, alwaysHit: true, basePower: 0,
+		category: 'Special', pp: 1, priority: 0, type: '???', target: 'normal',
+		flags: { bypasssub: 1 }, ohko: true, ignoreImmunity: true, isNonstandard: 'Custom',
+		onTry(source) { return source.spendRoguePsychic(); },
+		onTryHit(target) { if (target.isSemiInvulnerable()) { this.add('-miss', target); return false; } },
+	},
 	recover: {
 		inherit: true,
 		pp: 10,

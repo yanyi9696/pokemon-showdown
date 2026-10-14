@@ -1,11 +1,20 @@
 import { Dex } from '../../sim/dex';
 import { levelMoves } from './progression';
+import type { RogueRandom } from './biome-pools';
 
 const ordinary = Dex.mod('gen9');
 const dex = Dex.mod('gen9fantasy');
 const stats = (value: number): StatsTable => ({
 	hp: value, atk: value, def: value, spa: value, spd: value, spe: value,
 });
+
+/** Roll once when creating a new wild encounter or gift, never when rebuilding a saved member. */
+export function randomEncounterIVs(random: RogueRandom): StatsTable {
+	return {
+		hp: 20 + random(12), atk: 20 + random(12), def: 20 + random(12),
+		spa: 20 + random(12), spd: 20 + random(12), spe: 20 + random(12),
+	};
+}
 
 function movesFor(name: string, level: number): string[] {
 	const species = ordinary.species.get(name);
@@ -28,12 +37,12 @@ function movesFor(name: string, level: number): string[] {
 }
 
 /** Preserve regional learnsets and the held item required by an explicitly listed form. */
-export function makeEncounterSet(name: string, level: number, quality = 15): PokemonSet {
+export function makeEncounterSet(name: string, level: number, quality: number | StatsTable = 15): PokemonSet {
 	const species = dex.species.get(name);
 	if (!species.exists) throw new Error(`肉鸽物种不存在：${name}`);
 	return {
 		name: species.name, species: species.name, ability: species.abilities[0], level, nature: 'Hardy',
 		moves: movesFor(name, level), item: species.requiredItem || '',
-		evs: stats(0), ivs: stats(quality), gender: species.gender || 'M',
+		evs: stats(0), ivs: typeof quality === 'number' ? stats(quality) : { ...quality }, gender: species.gender || 'M',
 	};
 }

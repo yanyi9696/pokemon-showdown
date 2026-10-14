@@ -6,8 +6,11 @@
  */
 
 import { State } from './state';
+import { sharedRogueItems, consumeRogueItem } from './fantasy-rogue-items';
 import { toID } from './dex';
 import { isRogueFormat } from './fantasy-rogue';
+import { blessingActionUsed, blessingTypes, hasBlessing, spendRogueEeveeZ, spendRoguePsychic } from './fantasy-rogue-blessings';
+import { canStackRogueStatus, clearRogueStatus, hasRogueStatus, rememberRogueStatus } from './fantasy-rogue-status';
 import type { DynamaxOptions, PokemonMoveRequestData, PokemonSwitchRequestData } from './side';
 
 /** A Pokemon's move slot. */
@@ -884,6 +887,7 @@ export class Pokemon {
 	}
 
 	moveUsed(move: ActiveMove, targetLoc?: number) {
+		blessingActionUsed(this);
 		this.lastMove = move;
 		if (this.battle.gen === 2) this.lastMoveEncore = move;
 		this.lastMoveTargetLoc = targetLoc;
@@ -1352,12 +1356,19 @@ export class Pokemon {
 		this.knownType = true;
 		this.weighthg = species.weighthg;
 
-		const stats = this.battle.spreadModify(this.species.baseStats, this.set);
+		const rogueModifiers = isRogueFormat(this.battle.format.id) ? this.set.fantasyRogueModifiers : undefined;
+		const stats = this.battle.spreadModify(this.species.baseStats,
+			rogueModifiers ? { ...this.set, species: this.species.name } : this.set);
 		if (this.species.maxHP) {
 			stats.hp = this.species.maxHP +
 				(isRogueFormat(this.battle.format.id) ? this.set.fantasyRogueStats?.hp || 0 : 0);
 			if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueScale) {
 				stats.hp = Math.max(1, Math.floor(stats.hp * this.set.fantasyRogueScale));
+			}
+			if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueModifiers) {
+				const modifiers = this.set.fantasyRogueModifiers;
+				const eligible = !modifiers.statsType || this.getTypes().includes(modifiers.statsType);
+				stats.hp = Math.floor(stats.hp * (1 + (eligible ? modifiers.stats?.hp || 0 : 0))) + (modifiers.hp || 0);
 			}
 		}
 
@@ -1365,6 +1376,12 @@ export class Pokemon {
 			this.baseMaxhp = stats.hp;
 			this.maxhp = stats.hp;
 			this.hp = stats.hp;
+		} else if (!isTransform && rogueModifiers?.smallFinal && this.baseMaxhp !== stats.hp) {
+			// A battle forme can enter or leave the low-BST blessing's eligibility.
+			const change = (stats.hp - this.baseMaxhp) * (this.volatiles.dynamax ? 2 : 1);
+			this.baseMaxhp = stats.hp;
+			this.maxhp += change;
+			if (this.hp) this.hp = Math.max(1, Math.min(this.maxhp, this.hp + change));
 		}
 
 		if (!isTransform) this.baseStoredStats = stats;
@@ -1635,7 +1652,7 @@ export class Pokemon {
 	}
 
 	trySetStatus(status: string | Condition, source: Pokemon | null = null, sourceEffect: Effect | null = null) {
-		return this.setStatus(this.status || status, source, sourceEffect);
+		return this.setStatus(canStackRogueStatus(source || this.battle.event?.source, typeof status === 'string' ? status : status.id) ? status : this.status || status, source, sourceEffect);
 	}
 
 	/** Unlike clearStatus, gives cure message */
@@ -1663,7 +1680,9 @@ export class Pokemon {
 		}
 		if (!source) source = this;
 
-		if (this.status === status.id) {
+		if (!status.id && clearRogueStatus(this)) return true;
+		const stack = canStackRogueStatus(source, status.id);
+		if (hasRogueStatus(this, status.id)) {
 			if ((sourceEffect as Move)?.status === this.status) {
 				this.battle.add('-fail', this, this.status);
 			} else if ((sourceEffect as Move)?.status) {
@@ -1677,7 +1696,8 @@ export class Pokemon {
 			!ignoreImmunities && status.id && !(source?.hasAbility('corrosion') && ['tox', 'psn'].includes(status.id))
 		) {
 			// the game currently never ignores immunities
-			if (!this.runStatusImmunity(status.id === 'tox' ? 'psn' : status.id)) {
+			if (!(stack ? this.battle.runEvent('Immunity', this, null, null, status.id === 'tox' ? 'psn' : status.id) :
+				this.runStatusImmunity(status.id === 'tox' ? 'psn' : status.id))) {
 				this.battle.debug('immune to status');
 				if ((sourceEffect as Move)?.status) {
 					this.battle.add('-immune', this);
@@ -1710,6 +1730,7 @@ export class Pokemon {
 			this.statusState = prevStatusState;
 			return false;
 		}
+		rememberRogueStatus(this, prevStatus, prevStatusState, stack);
 		if (status.id && !this.battle.runEvent('AfterSetStatus', this, source, sourceEffect, status)) {
 			return false;
 		}
@@ -1749,8 +1770,12 @@ export class Pokemon {
 		) {
 			this.battle.add('-enditem', this, item, '[eat]');
 
-			this.battle.singleEvent('Eat', item, this.itemState, this, source, sourceEffect);
-			this.battle.runEvent('EatItem', this, null, null, item);
+			const usingItem = this.m.rogueUsingItem;
+			if (this.battle.fantasyRogue) this.m.rogueUsingItem = item.id;
+			try {
+				this.battle.singleEvent('Eat', item, this.itemState, this, source, sourceEffect);
+				this.battle.runEvent('EatItem', this, null, null, item);
+			} finally { this.m.rogueUsingItem = usingItem; }
 
 			if (RESTORATIVE_BERRIES.has(item.id)) {
 				switch (this.pendingStaleness) {
@@ -1765,8 +1790,10 @@ export class Pokemon {
 			}
 
 			this.lastItem = this.item;
-			this.item = '';
-			this.battle.clearEffectState(this.itemState);
+			if (!consumeRogueItem(this, item)) {
+				this.item = '';
+				this.battle.clearEffectState(this.itemState);
+			}
 			this.usedItemThisTurn = true;
 			this.ateBerry = true;
 			this.battle.runEvent('AfterUseItem', this, null, null, item);
@@ -1806,8 +1833,10 @@ export class Pokemon {
 			this.battle.singleEvent('Use', item, this.itemState, this, source, sourceEffect);
 
 			this.lastItem = this.item;
-			this.item = '';
-			this.battle.clearEffectState(this.itemState);
+			if (!consumeRogueItem(this, item)) {
+				this.item = '';
+				this.battle.clearEffectState(this.itemState);
+			}
 			this.usedItemThisTurn = true;
 			this.battle.runEvent('AfterUseItem', this, null, null, item);
 			return true;
@@ -1864,6 +1893,7 @@ export class Pokemon {
 	}
 
 	hasItem(item: string | string[]) {
+		if (sharedRogueItems(this).some(id => (Array.isArray(item) ? item : [item]).map(toID).includes(id))) return !this.ignoringItem();
 		if (Array.isArray(item)) {
 			if (!item.map(toID).includes(this.item)) return false;
 		} else {
@@ -1871,6 +1901,13 @@ export class Pokemon {
 		}
 		return !this.ignoringItem();
 	}
+
+	// Keep Dex data self-contained; campaign hooks live in the simulator.
+	hasRogueBlessing(family: string) { return hasBlessing(this, family); }
+	canStackRogueStatus(status: string) { return canStackRogueStatus(this, status); }
+	getRogueSharedItems() { return sharedRogueItems(this); }
+	spendRogueEeveeZ() { return spendRogueEeveeZ(this); }
+	spendRoguePsychic() { return spendRoguePsychic(this); }
 
 	clearItem() {
 		return this.setItem('');
@@ -1908,6 +1945,10 @@ export class Pokemon {
 	}
 
 	hasAbility(ability: string | string[]) {
+		if (this.battle.fantasyRogue) {
+			const ids = (Array.isArray(ability) ? ability : [ability]).map(toID);
+			return ids.some(id => id === this.ability || !!this.volatiles['ability:' + id]) && !this.ignoringAbility();
+		}
 		if (Array.isArray(ability)) {
 			if (!ability.map(toID).includes(this.ability)) return false;
 		} else {
@@ -2082,7 +2123,7 @@ export class Pokemon {
 		if (!preterastallized && this.terastallized && this.terastallized !== 'Stellar') {
 			return [this.terastallized];
 		}
-		const types = this.battle.runEvent('Type', this, null, null, this.types);
+		const types = blessingTypes(this, this.battle.runEvent('Type', this, null, null, this.types));
 		if (!types.length) types.push(this.battle.gen >= 5 ? 'Normal' : '???');
 		if (!excludeAdded && this.addedType) return types.concat(this.addedType);
 		return types;
@@ -2092,19 +2133,18 @@ export class Pokemon {
 		if ('gravity' in this.battle.field.pseudoWeather) return true;
 		if ('ingrain' in this.volatiles && this.battle.gen >= 4) return true;
 		if ('smackdown' in this.volatiles) return true;
-		const item = (this.ignoringItem() ? '' : this.item);
-		if (item === 'ironball') return true;
+		if (this.hasItem('ironball')) return true;
 		// If a Fire/Flying type uses Burn Up and Roost, it becomes ???/Flying-type, but it's still grounded.
 		if (!negateImmunity && this.hasType('Flying') && !(this.hasType('???') && 'roost' in this.volatiles)) return false;
 		// 加入 'eelevate'
 		if (this.hasAbility(['levitate', 'eelevate']) && !this.battle.suppressingAbility(this)) return null;
 		if ('magnetrise' in this.volatiles) return false;
 		if ('telekinesis' in this.volatiles) return false;
-		return item !== 'airballoon';
+		return !this.hasItem('airballoon');
 	}
 
 	isSemiInvulnerable() {
-		return (this.volatiles['fly'] || this.volatiles['bounce'] || this.volatiles['dive'] || this.volatiles['dig'] ||
+		return (this.volatiles['rogueascent'] || this.volatiles['fly'] || this.volatiles['bounce'] || this.volatiles['dive'] || this.volatiles['dig'] ||
 			this.volatiles['phantomforce'] || this.volatiles['shadowforce'] || this.isSkyDropped());
 	}
 
