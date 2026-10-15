@@ -1,3 +1,4 @@
+import { rollRoutes } from './routes';
 import { randomInt, randomUUID } from 'crypto';
 import { Dex, toID } from '../../sim/dex';
 import {
@@ -11,24 +12,30 @@ import {
 	initializeExperience, rebuildMember, rememberMove,
 } from './progression';
 import { experienceYield, rogueEffortYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
-import { canEditParty, editParty, healingLocked, TEAM_ACTIONS } from './team';
+import { prepareTrade, tradeRouteTemplates, shopStock, machineMoves } from './trading';
+import { canEditParty, inventoryItem, editParty, healingLocked, cureMember, TEAM_ACTIONS } from './team';
+import { useTonic } from './blessing-consumables';
+import { DRAGON_KING_ABILITIES, type DragonKingAbility, TONIC_SECRET } from '../../sim/rogue-blessing-permanent';
 import { createBiomeRoutes } from './biome-routes';
 import type { RogueRandom } from './biome-pools';
 import { recordStarterMoves, recordStarterTraits, starterMoves, starterTraits } from './starter-traits';
 import { chooseTrainer } from './trainer-bosses';
-import { prepareEconomy } from './economy';
+import { centerCare, prepareEconomy } from './economy';
 import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 import {
 	battleFriendship, changeFriendship, floorFriendship, friendship, ROGUE_INITIAL_FRIENDSHIP,
 } from './friendship';
-import { initializeSpirit, grantSpiritGift, prepareSpiritNode, spiritItems, spiritShopAvailable, hpPurchaseCost,
+import { initializeSpirit, grantSpiritGift, prepareSpiritNode, spiritShopAvailable, hpPurchaseCost,
 	convertSpiritItem, editSpiritBox, mergeSpiritPokemon, completeSpiritRegion } from './spirits';
 import { ROGUE_STORY, afterSpirit, startCard, storyView } from './story';
 import { recordClear, editClearCard } from './legacy';
 import { beginShopChallenge } from './shop-challenge';
-import { beginEvent, chooseEventOption, eventRouteTemplates, settleEventBattle } from './events';
+import { beginEvent, chooseEventOption, eventRouteTemplates, settleEventBattle, canRetreatRogue } from './events';
+import { snapshotTravelBattle, restoreTravelBattle } from './event-travel';
+import { settleServiceBattle } from './event-services';
 import { normalizeBlessings, beginBlessingFloor, completeBlessingFloor, blessingRouteTemplates,
-	prepareBlessingEncounter, handleBlessingCommand, settleBlessingBattle, syncBlessingParty, blessingExperience, blessingLoot,
+	prepareBlessingEncounter, handleBlessingCommand, settleBlessingBattle,
+	syncBlessingParty, blessingExperience, blessingLoot,
 	recordNegativeBlessingEvent, gymSystemGift } from './blessings';
 export { createRoguePokemon } from './progression';
 
@@ -167,7 +174,12 @@ export class RogueEngine {
 		if (run.phase !== 'choose' || run.choices || !this.content || fixedFloor(run.floor)) return;
 		let templates = this.content.floors[run.floor];
 		if (!templates) return;
-		if (this.content.events) templates = eventRouteTemplates(templates, this.random);
+		if (this.content.events && this.content.routePools?.[run.floor]) {
+			templates = rollRoutes(run, this.content.routePools[run.floor], this.random);
+		} else if (this.content.events) {
+			templates = eventRouteTemplates(templates, this.random);
+			templates = tradeRouteTemplates(templates, this.random);
+		}
 		if (this.content.blessings) templates = blessingRouteTemplates(run, templates);
 		run.choices = this.content.biomeEncounters ?
 			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard) : structuredClone(templates);
@@ -211,11 +223,13 @@ export class RogueEngine {
 			}
 			this.resolveOpponentGenders(encounter.team);
 		}
+		prepareTrade(run, this.configured(), this.random);
 		prepareSpiritNode(run, run.node, this.configured(), this.random);
 		this.resolveOpponentGenders(run.node.encounters.flatMap(encounter => encounter.team));
 		if (this.content?.blessings) prepareBlessingEncounter(run, this.random);
 		run.phase = run.node.rocket && !run.node.rocket.cleared ? 'ready' :
-			node.kind === 'rest' ? 'rest' : ['reward', 'event', 'adventure'].includes(node.kind) ? 'reward' : 'ready';
+			['rest', 'trade'].includes(node.kind) ? 'rest' :
+			['reward', 'event', 'adventure'].includes(node.kind) ? 'reward' : 'ready';
 		if (run.floor === 100 && run.node.encounters[0]?.trainer?.role === 'gym' && !run.gymGiftReceived) {
 			run.phase = 'story';
 			run.story = { stage: 'gymgift', page: 0, skip: false, canSkip: true };
@@ -270,7 +284,7 @@ export class RogueEngine {
 			return;
 		}
 		if (this.pendingBlessings(run)) { run.phase = 'blessing'; return; }
-		if (run.node?.event?.stage === 'result') { run.phase = 'event'; return; }
+		if (run.node?.event && run.node.event.stage !== 'battle') { run.phase = 'event'; return; }
 		if (run.encounter < run.node!.encounters.length) run.phase = 'ready';
 		else if (run.node!.rocket && !run.node!.rocket.cleared) {
 			const rocket = run.node!.rocket;
@@ -417,7 +431,10 @@ export class RogueEngine {
 					return mon;
 				});
 				const initial = { team, bag: { ...content.initialBag }, money: content.initialMoney, teraUnlocked: false };
-				if (account.run) account.previousBlessings = account.run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
+				if (account.run) {
+					account.previousBlessings = account.run.blessings?.owned
+						.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
+				}
 				account.run = {
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
 					owner: { id: userid, name },
@@ -439,7 +456,8 @@ export class RogueEngine {
 				return;
 			}
 			const run = this.run(account);
-			if (['blessing', 'blessingrefresh', 'blessingreward', 'fantasize', 'meltanevolve', 'swordreward', 'exchangeshards', 'settera', 'learnbonus'].includes(command.action)) {
+			if (['blessing', 'blessingrefresh', 'blessingreward', 'fantasize', 'meltanevolve',
+				'swordreward', 'exchangeshards', 'settera', 'learnbonus'].includes(command.action)) {
 				requireRule(this.content?.blessings || (command.action === 'blessingreward' && run.blessings?.beforeGym),
 					'祝福系统尚未开放。');
 				handleBlessingCommand(account, run, this.configured(), command, this.random);
@@ -461,7 +479,7 @@ export class RogueEngine {
 			}
 			switch (command.action) {
 			case 'event':
-				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value);
+				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value, command.evs);
 				if (run.phase === 'ready') {
 					prepareEconomy(run.node!, run.floor, this.random);
 					prepareSpiritNode(run, run.node!, this.configured(), this.random);
@@ -524,7 +542,8 @@ export class RogueEngine {
 				break;
 			}
 			case 'evolve': {
-				requireRule(this.configured().progression && ['choose', 'ready', 'rest', 'reward', 'event'].includes(run.phase), '当前不能进化。');
+				requireRule(this.configured().progression &&
+					['choose', 'ready', 'rest', 'reward', 'event'].includes(run.phase), '当前不能进化。');
 				requireRule(!healingLocked(run), '本层要求连续战斗，途中不能通过进化调整状态。');
 				const mon = run.team.find(entry => entry.id === command.member);
 				const option = mon && evolutionOptions(mon, run).find(entry => toID(entry.species) === command.value);
@@ -539,14 +558,26 @@ export class RogueEngine {
 				if (this.content?.blessings) syncBlessingParty(run);
 				break;
 			}
+			case 'dragonking': {
+				requireRule(canEditParty(run) || run.phase === 'blessing', '请在战斗外选择龙王的额外特性。');
+				syncBlessingParty(run);
+				const king = run.blessings?.dragonKing;
+				requireRule(king && king.member === command.member && !king.ability &&
+					DRAGON_KING_ABILITIES.includes(command.value as DragonKingAbility), '龙王或特性选项已经变化，请刷新后重新选择。');
+				king.ability = command.value as DragonKingAbility;
+				break;
+			}
 			case 'select': this.select(run, command.value || ''); break;
 			case 'shopchallenge':
 				beginShopChallenge(run, this.configured(), this.random);
 				// falls through: the challenge begins immediately after confirmation.
 			case 'battle':
 				requireRule(run.phase === 'ready' && run.team.some(mon => mon.hp > 0), '当前不能进入战斗，请先复活至少一名队员。');
+				if (this.content?.blessings) syncBlessingParty(run);
+				requireRule(!run.blessings?.dragonKing || run.blessings.dragonKing.ability, '请先在队伍面板中选择龙王的额外特性。');
 				// Old saves may predate persisted opponent gender; resolve it once before choosing the portrait.
 				this.resolveOpponentGenders(run.node!.encounters[run.encounter].team);
+				snapshotTravelBattle(run);
 				run.battle = {
 					token: randomUUID(), encounterId: `${run.id}:${run.floor}:${run.node!.id}:${run.encounter}`,
 				};
@@ -556,6 +587,7 @@ export class RogueEngine {
 				break;
 			case 'retreat':
 				requireRule(run.phase === 'battle' && run.battle, '当前没有可撤退的战斗。');
+				requireRule(canRetreatRogue(run), '本次事件对战不能撤退，请完成战斗。');
 				run.battle.retreatRequested = true;
 				break;
 			case 'emergency':
@@ -584,18 +616,23 @@ export class RogueEngine {
 				delete run.lastReward;
 				break;
 			}
-			case 'heal':
-				requireRule(run.phase === 'rest', '只能在休整中心恢复。');
+			case 'heal': {
+				requireRule(run.phase === 'rest' && run.node?.kind === 'rest', '只能在休整中心恢复。');
+				const care = centerCare(run);
+				requireRule(care.needed, '全队状态良好，无需支付治疗费。');
+				requireRule(run.money >= care.cost, `治疗需要 ${care.cost} 金币，余额不足。`);
+				run.money -= care.cost;
 				for (const mon of run.team) {
-					if (!mon.hp) continue;
+					if (!mon.hp && !care.revives) continue;
 					const hp = mon.hp;
 					this.healMember(mon);
 					if (run.spirit === 'yveltal') mon.hp = hp;
 				}
 				break;
+			}
 			case 'buy': case 'buyhp': {
 				requireRule(run.phase === 'rest', '只能在休整商店购买。');
-				const item = spiritItems(this.configured(), run).find(entry => entry.id === command.value);
+				const item = shopStock(this.configured(), run).find(entry => entry.id === command.value);
 				requireRule(item && spiritShopAvailable(item, run.floor), '商品尚未解锁或不在商店售卖。');
 				if (command.action === 'buyhp') {
 					const mon = run.team.find(entry => entry.id === command.member);
@@ -608,6 +645,10 @@ export class RogueEngine {
 				} else {
 					requireRule(run.money >= item.price, '金币余额不足。');
 					run.money -= item.price;
+				}
+				if (run.node?.trade) {
+					run.node.trade.stock.find(entry => entry.id === item.id)!.remaining--;
+					run.node.trade.purchases++;
 				}
 				const received = convertSpiritItem(run, this.configured(), item.id, `purchase:${command.id}`, this.random);
 				run.bag[received] = (run.bag[received] || 0) + 1;
@@ -630,10 +671,23 @@ export class RogueEngine {
 			case 'use': {
 				requireRule(['rest', 'ready', 'choose', 'reward', 'event'].includes(run.phase), '请在战斗间隙使用补给。');
 				requireRule(!healingLocked(run), '本层要求连续战斗，途中不能使用治疗和补给道具。');
-				const item = this.configured().items.find(entry => entry.id === command.value);
+				const item = inventoryItem(this.configured(), command.value || '');
 				const mon = run.team.find(entry => entry.id === command.member);
 				requireRule(item && mon && run.bag[item.id] > 0, '道具、数量或目标无效。');
-				if (item.kind === 'revive') {
+				if (item.kind === 'tonic') {
+					useTonic(account, mon, item);
+					run.notices = [`已为伙伴使用${item.name}。` + (mon.tonics?.wine && mon.tonics.cephalosporin ? TONIC_SECRET : '')];
+				} else if (item.kind === 'mint') {
+					requireRule(mon.mintNature !== item.nature, '已具有该薄荷效果，道具未消耗。');
+					mon.mintNature = item.nature;
+					mon.statModifiers = { ...mon.statModifiers, nature: item.nature };
+					rebuildMember(mon, run.boosts);
+				} else if (item.kind === 'machine') {
+					requireRule(machineMoves(mon).includes(item.move!), '该伙伴不能通过学习机学习此招式，或已经掌握；道具未消耗。');
+					rememberMove(mon, item.move!);
+					recordStarterMoves(account, this.configured(), { ...mon.set, moves: [item.move!] });
+					run.notices = ['已加入伙伴的招式池，可在队伍面板中更换招式。'];
+				} else if (item.kind === 'revive') {
 					requireRule(!mon.hp, '活力碎片只能对倒下成员使用。');
 					mon.hp = Math.max(1, Math.floor(mon.maxhp * item.amount!));
 					mon.status = '';
@@ -655,12 +709,16 @@ export class RogueEngine {
 					gainExperience(run, mon, item.amount!);
 				} else if (item.kind === 'ether') {
 					requireRule(mon.hp > 0 && mon.pp.some(slot => slot.pp < slot.maxpp), '该成员不需要恢复 PP。');
-					for (const slot of mon.pp) slot.pp = Math.min(slot.maxpp, slot.pp + item.amount!);
+					const slots = item.singleMove ? [mon.pp[command.slot!]] : mon.pp;
+					requireRule(!item.singleMove || Number.isInteger(command.slot) && slots[0] && slots[0].pp < slots[0].maxpp,
+						'请选择需要恢复 PP 的招式。');
+					for (const slot of slots) {
+						slot.pp = Math.min(slot.maxpp, slot.pp + item.amount!);
+						const memory = mon.moveMemory?.find(move => move.id === slot.id);
+						if (memory) memory.pp = slot.pp;
+					}
 				} else if (item.kind === 'cure') {
-					requireRule(mon.hp > 0 && mon.status, '该成员没有异常状态。');
-					mon.status = '';
-					mon.statusState = {};
-					delete mon.statuses;
+					cureMember(mon, item);
 				} else {
 					requireRule(item.kind === 'heal' && mon.hp > 0 && mon.hp < mon.maxhp, '该目标不能使用治疗道具。');
 					mon.hp = Math.min(mon.maxhp, mon.hp + item.amount!);
@@ -669,7 +727,8 @@ export class RogueEngine {
 				break;
 			}
 			case 'continue':
-				requireRule(run.phase === 'rest' || run.phase === 'reward' || run.phase === 'event' && run.node?.event?.stage === 'result', '请先完成本层。');
+				requireRule(run.phase === 'rest' || run.phase === 'reward' ||
+					run.phase === 'event' && run.node?.event?.stage === 'result', '请先完成本层。');
 				if (run.node?.event) requireRule(run.team.some(mon => mon.hp > 0), '请先复活至少一名伙伴，再继续前进。');
 				this.completeFloor(account, run);
 				break;
@@ -686,7 +745,10 @@ export class RogueEngine {
 		const encounter = run.node!.encounters[run.encounter];
 		return {
 			eventBuff: !!run.battle.eventBuff,
-			blessings: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution, psychic: run.blessings.psychic }),
+			blessings: run.blessings && structuredClone({
+				owned: run.blessings.owned, evolution: run.blessings.evolution, psychic: run.blessings.psychic,
+				dragonKing: run.blessings.dragonKing,
+			}),
 			blessingDefeated: run.blessings?.defeated.slice(),
 			blessingPsychicLosses: run.blessings?.psychicLosses?.slice(),
 			...(run.spirit ? { spirit: { id: run.spirit, floor: run.floor, hazards: encounter.spiritHazards,
@@ -738,6 +800,7 @@ export class RogueEngine {
 			const captures = result.captures || (result.captured ? [result.captured] : []);
 			for (const captured of captures) this.recordCatch(account, run, captured);
 			const retreated = run.battle.retreatRequested;
+			const memoryBattle = run.node?.event?.id === 'travel' && !!run.node.event.memory;
 			const previousTeam = run.team;
 			const previousItems = new Map(run.team.map(mon => [mon.id, toID(mon.set.item)]));
 			delete run.battle;
@@ -752,8 +815,11 @@ export class RogueEngine {
 			run.bag = { ...result.bag };
 			for (const mon of run.team) ensureMemberMemory(mon);
 			run.notices = [];
-			if (this.configured().progression) battleFriendship(run, result, token, previousTeam);
-			if (this.content?.blessings) settleBlessingBattle(account, run, this.configured(), result, this.random);
+			if (memoryBattle) restoreTravelBattle(run, result);
+			else {
+				if (this.configured().progression) battleFriendship(run, result, token, previousTeam);
+				if (this.content?.blessings) settleBlessingBattle(account, run, this.configured(), result, this.random);
+			}
 			for (const captured of captures) {
 				if ([...run.team, ...(run.box || []), ...(run.pendingCaptures || [])].some(mon => mon.id === captured.id)) continue;
 				requireRule(run.team.length < roguePartyLimit(run.spirit) || this.configured().allowReplacement, '队伍已满。');
@@ -775,6 +841,13 @@ export class RogueEngine {
 				else (run.pendingCaptures ||= []).push(mon);
 			}
 			if (this.content?.blessings) syncBlessingParty(run);
+			if (memoryBattle) {
+				settleServiceBattle(run, result.won, retreated, !!captures.length);
+				for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+				run.encounter++;
+				run.phase = 'settlement'; this.finishSettlement(account, run);
+				return;
+			}
 			const finishShop = () => {
 				if (!run.node!.shopChallenge || run.node!.shopChallenge.closed) return false;
 				const challenge = run.node!.shopChallenge;
@@ -800,7 +873,11 @@ export class RogueEngine {
 				}
 				run.recovery = retreated ? 'retreat' : 'defeat';
 				run.phase = run.node!.noHealing && !run.team.some(mon => mon.hp > 0) ? 'failed' : 'ready';
-				if (run.pendingCaptures?.length) { run.captureResume = run.phase as 'ready' | 'failed'; run.phase = 'settlement'; this.finishSettlement(account, run); }
+				if (run.pendingCaptures?.length) {
+					run.captureResume = run.phase;
+					run.phase = 'settlement';
+					this.finishSettlement(account, run);
+				}
 				run.attempt++;
 				run.notices = [retreated ? '已撤退，伤害、PP、异常状态和道具消耗已保存。' : '本场战斗未通过，队伍当前状态已保存。'];
 				return;
@@ -820,7 +897,7 @@ export class RogueEngine {
 						if (!defeated.captured) gainEffort(run, mon, rogueEffortYield(defeated.species));
 						gainExperience(run, mon, Math.floor(experienceYield(rogueSpeciesData(defeated.species).baseExperience,
 							defeated.level, mon.set.level, defeated.participants.includes(mon.id)) *
-							(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon)));
+							(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing)));
 					}
 				}
 			}
@@ -853,7 +930,9 @@ export class RogueEngine {
 			requireRule(ivs && Object.keys(ivs).length > 0 && Object.entries(ivs).every(([stat, value]) =>
 				ROGUE_STATS.includes(stat as StatID) && Number.isInteger(value) && value >= 0 && value <= 31),
 			'个体值必须为 0～31 的整数。');
-			if (Object.entries(ivs).some(([stat, value]) => value < mon.set.ivs[stat as StatID])) recordNegativeBlessingEvent(run, 'outcome');
+			if (Object.entries(ivs).some(([stat, value]) => value < mon.set.ivs[stat as StatID])) {
+				recordNegativeBlessingEvent(run, 'outcome');
+			}
 			Object.assign(mon.set.ivs, ivs);
 			rebuildMember(mon, run.boosts);
 			recordStarterTraits(account, this.configured(), mon.set, false);

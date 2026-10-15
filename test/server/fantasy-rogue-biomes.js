@@ -231,7 +231,7 @@ describe('Fantasy Rogue saved regional encounters', () => {
 	it('persists visible routes, all opponents and the extra encounter across queries, losses and reloads', () => {
 		const choices = account().run.choices;
 		const drawn = draws;
-		assert.equal(choices[0].encounters.length, 4);
+		assert.equal(choices.find(node => node.id === 'wild0').encounters.length, 4);
 		engine.migrate(user); engine.migrate(user);
 		assert.equal(draws, drawn);
 		assert.deepEqual(account().run.choices, choices);
@@ -239,7 +239,7 @@ describe('Fantasy Rogue saved regional encounters', () => {
 		engine.command(user, request); engine.command(user, request);
 		const selected = account().run.node;
 		// Nature is assigned on route entry; the encounter identity, moves and promised loot are retained.
-		const expected = structuredClone(choices[0]);
+		const expected = structuredClone(choices.find(node => node.id === 'wild0'));
 		expected.blessingPrepared = true;
 		expected.encounters.forEach((encounter, i) => {
 			encounter.blessingLevels = 0;
@@ -292,6 +292,6 @@ describe('Fantasy Rogue saved regional encounters', () => {
 		const migrated = account();
 		engine.migrate(user);
 		assert.deepEqual(account(), migrated);
-		assert.equal(migrated.run.choices[0].biome.name, '绿茵森林');
+		assert.equal(migrated.run.choices.find(node => node.kind === 'wild').biome.name, '绿茵森林');
 	});
 });

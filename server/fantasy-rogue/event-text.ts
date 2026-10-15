@@ -1,10 +1,13 @@
 /** Shared narrative copy for live events and their read-only codex replays. */
+import { SERVICE_TEXT } from './event-service-text';
 export const EVENT_NAMES = {
 	mysteryball: '谜之宝可梦球', forest: '斗蛐蛐！', mushrooms: '蘑菇走私犯', room: '不战斗就无法出去的房间',
+	travel: '旅行的回忆', martial: '这是武术的胜利', tutor: '读万卷书，行万里路',
 };
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
 	return {
+		travel: SERVICE_TEXT.travel, martial: SERVICE_TEXT.martial, tutor: SERVICE_TEXT.tutor,
 		mysteryball: ['来到了一条杂草丛生的小路，你正在试图穿越这片区域。草叶不规则的边缘划过你的脚踝，带来一种奇特的痒意。',
 			'再前行两步。「诶呦！」你的脚底踩到了什么光滑而圆滚滚的东西。这导致你的身体失去平衡，整个人摔倒在草丛中。',
 			`揉揉发疼的脑袋，你伸手摸索过去，捡起了它。映入眼帘的是一颗${ball}。`],

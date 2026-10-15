@@ -1,7 +1,8 @@
 import { Dex } from '../../sim/dex';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
 import { makeEncounterSet } from './encounter-sets';
-import { spiritItems, spiritShopAvailable, SPIRIT_HAZARDS } from './spirits';
+import { shopStock } from './trading';
+import { SPIRIT_HAZARDS } from './spirits';
 import type { RogueRandom } from './biome-pools';
 import type { RogueRun, RogueContent } from './types';
 
@@ -29,7 +30,7 @@ export function beginShopChallenge(run: RogueRun, content: RogueContent, random:
 		if (species.genderRatio.F === 0) set.gender = 'M';
 		return set;
 	});
-	const stock = spiritItems(content, run).filter(item => spiritShopAvailable(item, run.floor) && item.kind !== 'treasure');
+	const stock = shopStock(content, run).slice();
 	const rewards: Record<string, number> = {};
 	for (let i = 0; i < 3 && stock.length; i++) rewards[stock.splice(random(stock.length), 1)[0].id] = 1;
 	run.node.shopChallenge = { rewards, closed: false };

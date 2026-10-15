@@ -6,6 +6,7 @@ import { rebuildMember } from './progression';
 import { rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 import { startCard } from './story';
 import { blessing, blessingTitle, type BlessingEffects } from '../../sim/rogue-blessing-data';
+import { tonicDescription } from '../../sim/rogue-blessing-permanent';
 
 export interface RogueClearCard {
 	version: 1;
@@ -63,8 +64,10 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 			hazards: structuredClone(run.node?.encounters[run.encounter - 1]?.spiritHazards),
 			teraUnlocked: !!run.teraUnlocked,
 			megaUnlocked: run.megaUnlocked, gmegaUnlocked: run.gmegaUnlocked, zUnlocked: run.zUnlocked,
-			blessings: (run.blessings?.owned || []).map(entry => ({ id: entry.id, name: blessingTitle(entry), text: blessing(entry.id)!.text })),
-			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution, psychic: run.blessings.psychic }),
+			blessings: (run.blessings?.owned || []).map(entry => ({ id: entry.id, name: blessingTitle(entry),
+				text: ['wine', 'cephalosporin'].includes(entry.family) ? '获得一个一次性道具。' + tonicDescription(entry.family, account.tonicSecret) : blessing(entry.id)!.text })),
+			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution,
+				psychic: run.blessings.psychic, dragonKing: run.blessings.dragonKing }),
 		},
 	};
 	const cards = account.cards ||= [];

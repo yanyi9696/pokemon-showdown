@@ -4,7 +4,7 @@ import type { Side } from './side';
 import type { Pokemon } from './pokemon';
 import { toID } from './dex';
 import { captureThresholds, rogueSpeciesData } from './fantasy-rogue-rules';
-import { blessingProgress, hasBlessing, failedTrainerCapture } from './fantasy-rogue-blessings';
+import { blessingProgress, hasBlessing, failedTrainerCapture, battleDragonKing } from './fantasy-rogue-blessings';
 import { savedRogueStatuses } from './fantasy-rogue-status';
 
 export const ROGUE_FORMAT = 'gen9fantasyrogue';
@@ -14,6 +14,8 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	tonics?: import('./rogue-blessing-permanent').RogueTonics;
+	mintNature?: string;
 	joinOrder?: number;
 	initialPartner?: boolean;
 	bond?: number;
@@ -47,6 +49,8 @@ export interface RoguePokemon {
 }
 
 export interface RogueDefeat {
+	/** King when this opponent was defeated; used by experience settlement. */
+	dragonKing?: string;
 	id?: string;
 	attacker?: string;
 	species: string;
@@ -208,6 +212,7 @@ export function recordRogueDefeat(battle: Battle, mon: Pokemon, captured = false
 		species: mon.set.species, level: mon.level, captured,
 		participants: [...(state.participants![mon.set.fantasyRogueId!] || [])],
 		eligible: battle.p1.pokemon.filter(member => member.hp > 0).map(member => member.set.fantasyRogueId!),
+		dragonKing: battleDragonKing(battle.p1)?.member || '',
 	});
 }
 

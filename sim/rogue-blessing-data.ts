@@ -11,6 +11,7 @@ export interface TypeEvolution {
 	stats: Partial<StatsTable>; power: number; extras: string[];
 }
 export interface BlessingEffects {
+	dragonKing?: import('./rogue-blessing-permanent').DragonKing;
 	owned: OwnedBlessing[];
 	evolution?: TypeEvolution;
 	psychic?: number;
@@ -22,6 +23,7 @@ export function addPsychicCharge(current: number, amount: number) {
 	return Math.round((current + ordinary + (amount - ordinary) * 0.05) * 100) / 100;
 }
 export interface RogueStatModifiers {
+	nature?: string;
 	smallFinal?: boolean; swap?: boolean; stats?: Partial<StatsTable>; hp?: number;
 	statsType?: string;
 	baseStats?: Partial<StatsTable>; extraType?: string;
@@ -132,7 +134,10 @@ add('gold', 'smallfinal', '谁说我到头了', '原始种族值不超过 400 �
 add('gold', 'prayer', '聚集的祈愿', '原本双攻种族值均低于 80 的伙伴倒下后，下一名同样符合条件的伙伴继承其 1/3 双攻，包含已继承数值，仅本场。下一轮前未在对战外换队，整组黄金概率升至 60%；若为黄金或一银一金一彩，黄金位置必出 Top Clear Mind。固定品质塔灵优先。', { floors: [50, 100] });
 add('gold', 'topclearmind', 'Top Clear Mind', '我方全体招式先制度 +1。');
 add('gold', 'hazards', '小心脚下', '指定队员获得额外特性岩布阵；我方造成的隐形岩、撒菱、碎菱钢伤害翻倍。', { target: 'member' });
-add('gold', 'toxic', '毒上加毒', '指定队员获得额外特性毒满地；我方施加的中毒、剧毒伤害翻倍。', { target: 'member' });
+add('gold', 'toxic', '曼陀罗饮品', '指定队员获得额外特性毒满地；我方施加的中毒、剧毒伤害翻倍。', { target: 'member' });
+add('gold', 'dragonking', '龙王的工作', '六项常驻能力值总和最高的龙系伙伴成为龙王，自选额外特性龙之呼吸或降雨。龙王倒下后，剩余最强龙系继任并重选特性，仅持续本场。龙王以外成员战斗经验 +30%。');
+add('silver', 'wine', '酒', '获得一次性道具「酒」：每次登场陷入混乱；每场首个实际使出的招式威力 ×2，变化招式或打空也消耗机会。与头孢同用会有特殊效果，尤其是毒系伙伴！');
+add('silver', 'cephalosporin', '头孢', '获得一次性道具「头孢」：永久免疫中毒、剧毒、烧伤、麻痹、睡眠、冰冻与冻伤，不免疫混乱。与酒同用会有特殊效果，尤其是毒系伙伴！');
 add('gold', 'stackstatus', '异常大满贯', '我方施加的烧伤、麻痹、睡眠、中毒、剧毒、冻伤、冰冻可共存，绕过属性免疫；仍受特性、场地、神秘守护阻挡。');
 add('gold', 'starters', '最初的伙伴', '选择一只御三家加入。队内每只御三家使所有御三家减伤 5%；满亲密度后开始积累羁绊。', { target: 'starter' });
 add('gold', 'bugchoir', '林间大合唱', '队伍每携带一个虫鸣，全队虫鸣威力 +10。');

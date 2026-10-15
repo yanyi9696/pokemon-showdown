@@ -8,7 +8,7 @@ export const ROGUE_SPIRITS = [
 		text: '每完成一个战斗、精英或遭遇区域，本局全队永久获得 1 点攻击。按区域结算，后来加入的伙伴同样享受；首领、道馆和休整不计入。' },
 	// Keep the saved ID so existing adventures and clear cards retain this effect.
 	{ id: 'mewtwo', species: 'Calyrex', name: '蕾冠王的研悟', enabled: true,
-		text: '每完成一个事件、奖励或奇遇区域，本局全队永久获得 1 点特攻，后来加入的伙伴同样享受。休整与购物不计入。' },
+		text: '每完成一个事件、奖励或交易区域，本局全队永久获得 1 点特攻，后来加入的伙伴同样享受。每个区域结算一次，奇遇与休整不计入。' },
 	{ id: 'diancie', species: 'Diancie', name: '蒂安希的琢光', enabled: true,
 		text: '每只可捕捉的野生宝可梦有 8% 概率初始为二星，六项能力值为一星的 120%，捕捉后保留星级。重试不重抽；不附带箱子或合成功能。' },
 	{ id: 'palkia', species: 'Palkia', name: '帕路奇亚的扭曲', enabled: true,

@@ -1,5 +1,6 @@
 import type { Pokemon } from './pokemon';
 import type { Battle } from './battle';
+import type { ItemData } from './dex-items';
 import { hasBlessing } from './fantasy-rogue-blessings';
 import { ELECTRIC_MOUSE_FAMILY, inBlessingFamily } from './rogue-blessing-data';
 
@@ -38,7 +39,7 @@ export function rogueItemCallback(mon: Pokemon, item: Item, callback: any): any 
 		}
 	};
 }
-export function sharedRogueItemData(mon: Pokemon, item: Item): Item {
+export function sharedRogueItemData(mon: Pokemon, item: Item): Item & ItemData {
 	if (item.id !== 'lightball' || !mouseFamilyActive(mon)) return item;
 	return {
 		...item,

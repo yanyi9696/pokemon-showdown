@@ -1,17 +1,16 @@
 /**
  * Assert extensions
  *
- * WARNING: These extensions are added directly to Node's `assert.strict`,
- * modifying built-ins. We don't personally consider this a problem because
- * it only happens in tests, but you should be aware in case you care.
+ * Extend a local copy so loading simulator assertions cannot change Node's
+ * built-in assertions used by other test suites in the same process.
  *
  * by Slayer95 and Zarel
  */
 
 'use strict';
 
-const legacyAssert = require('assert');
-const assert = legacyAssert.strict;
+const nativeAssert = require('assert').strict;
+const assert = Object.assign((...args) => nativeAssert(...args), nativeAssert);
 const AssertionError = assert.AssertionError;
 
 assert.bounded = function (value, range, message) {
@@ -242,14 +241,6 @@ assert.notDeepStrictEqual = () => {
 assert.ok = () => {
 	throw new Error(`This API is deprecated; please use assert()`);
 };
-for (const fn in legacyAssert) {
-	if (fn !== 'strict' && typeof legacyAssert[fn] === 'function') {
-		legacyAssert[fn] = () => {
-			throw new Error(`This API is deprecated; please use assert.strict`);
-		};
-	}
-}
-
 const assertMethods = Object.getOwnPropertyNames(assert).filter(methodName => (
 	methodName !== 'constructor' && methodName !== 'AssertionError' && typeof assert[methodName] === 'function'
 ));

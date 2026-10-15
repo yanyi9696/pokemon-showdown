@@ -55,7 +55,7 @@ export function spiritItems(content: RogueContent, run?: RogueRun): RogueItem[] 
 	return content.items.map(item => {
 		if (item.kind === 'treasure') return item;
 		const candy = candies[item.id];
-		return { ...item, price: candy ? candy[1] : Math.ceil(item.price * 1.25),
+		return { ...item, price: candy ? Math.ceil(candy[1] * 1.25 / 25) * 25 : Math.ceil(item.price * 1.25),
 			shopFloor: candy ? candy[0] : typeof item.shopFloor === 'number' ? Math.max(9, item.shopFloor - 20) : item.shopFloor };
 	});
 }
@@ -69,7 +69,8 @@ export function hpPurchaseCost(item: RogueItem, maxhp: number) {
 
 export function convertSpiritItem(run: RogueRun, content: RogueContent, id: string, key: string, random: RogueRandom) {
 	const item = inventoryItem(content, id);
-	if (run.spirit !== 'hoopagift' || item?.kind !== 'held' || FANTASY_ITEMS.includes(id) || id.startsWith('rogueemblem')) return id;
+	if (run.spirit !== 'hoopagift' || item?.kind !== 'held' || FANTASY_ITEMS.includes(id) ||
+		id.startsWith('rogueemblem')) return id;
 	const ledger = run.spiritConversions ||= {};
 	if (ledger[key]) return ledger[key];
 	ledger[key] = random(2) === 0 ? FANTASY_ITEMS[random(FANTASY_ITEMS.length)] : id;
@@ -102,7 +103,7 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 		}
 	}
 	node.reward.items = reward;
-	if (run.spirit === 'persian' && node.kind === 'rest' && random(100) < 15) {
+	if (run.spirit === 'persian' && ['rest', 'trade'].includes(node.kind) && random(100) < 15) {
 		const stage = Math.min(4, Math.floor((run.floor - 1) / 40));
 		const level = Math.min(100, Math.max(3, Math.ceil(run.floor / 2)) + 3);
 		const species = stage === 0 ? ['Rattata', 'Ekans', 'Zubat', 'Koffing', 'Meowth'] :
@@ -128,7 +129,7 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 export function completeSpiritRegion(run: RogueRun) {
 	const kind = run.node?.kind;
 	const stat = run.spirit === 'zacian' && ['wild', 'elite', 'trainer', 'encounter'].includes(kind || '') ? 'atk' :
-		run.spirit === 'mewtwo' && ['event', 'reward', 'adventure'].includes(kind || '') ? 'spa' : undefined;
+		run.spirit === 'mewtwo' && ['event', 'reward', 'trade'].includes(kind || '') ? 'spa' : undefined;
 	if (!stat) return;
 	run.boosts[stat]++;
 	for (const mon of [...run.team, ...(run.box || [])]) rebuildMember(mon, run.boosts);

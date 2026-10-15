@@ -28,6 +28,7 @@ export function createBiomeRoutes(
 			rogueWildLevelBonus(floor, spirit));
 		const majorBranch = elite && floor >= 161;
 		const majorChance = (floor <= 180 ? 25 : 50) + (spirit === 'mew' ? 25 : 0);
+		const seen = new Map<string, number>();
 		const encounter = (bonus = false): RogueEncounter => {
 			// Draw the legendary branch once; the card only reweights species inside that branch.
 			const major = !bonus && majorBranch && random(100) < majorChance;
@@ -48,7 +49,14 @@ export function createBiomeRoutes(
 				}
 				return evolve(name, level, biome, tier, random);
 			};
-			const name = cardBiasedSpecies(draw, card, random);
+			// Rejection sampling preserves the authored slot/card weights, then discounts repeats.
+			let name: string;
+			for (let attempt = 0; ; attempt++) {
+				name = cardBiasedSpecies(draw, card, random);
+				const appearances = seen.get(name) || 0;
+				if (!appearances || random(4 ** appearances) === 0 || attempt >= 128) break;
+			}
+			seen.set(name, (seen.get(name) || 0) + 1);
 			const set = makeEncounterSet(name, level, elite ? 31 : randomEncounterIVs(random));
 			const species = Dex.mod('gen9').species.get(name);
 			set.gender = species.gender || (random(256) < species.genderRatio.F * 256 ? 'F' : 'M');

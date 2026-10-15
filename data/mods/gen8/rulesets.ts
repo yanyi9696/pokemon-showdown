@@ -94,7 +94,7 @@ export const Rulesets: import('../../../sim/dex-formats').ModdedFormatDataTable 
 				}
 				if (set.item && this.dex.items.get(set.item).megaStone) {
 					const item = this.dex.items.get(set.item);
-					if (item.megaEvolves === species.baseSpecies) {
+					if (item.megaEvolves === species.baseSpecies && typeof item.megaStone === 'string') {
 						species = this.dex.species.get(item.megaStone);
 					}
 				}
@@ -123,7 +123,9 @@ export const Rulesets: import('../../../sim/dex-formats').ModdedFormatDataTable 
 				}
 				if (set.item) {
 					const item = this.dex.items.get(set.item);
-					if (item.megaEvolves === set.species) godSpecies = this.dex.species.get(item.megaStone);
+					if (item.megaEvolves === set.species && typeof item.megaStone === 'string') {
+						godSpecies = this.dex.species.get(item.megaStone);
+					}
 					if (["Zacian", "Zamazenta"].includes(godSpecies.baseSpecies) && item.id.startsWith('rusted')) {
 						godSpecies = this.dex.species.get(set.species + "-Crowned");
 					}

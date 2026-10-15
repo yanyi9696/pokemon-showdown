@@ -7,6 +7,7 @@ import { ownsBlessing, emblemType, addPsychicCharge, EEVEE_FAMILY, inBlessingFam
 import type { Side } from './side';
 import { reportRogueStatuses } from './fantasy-rogue-status';
 import { consumeRogueItem } from './fantasy-rogue-items';
+import { DRAGON_KING_ABILITIES, strongestDragon, type DragonKingAbility } from './rogue-blessing-permanent';
 
 interface MemberRuntime {
 	abilities: string[]; entries: number; actions: number; inherited: string[]; inheritedSlots?: Pokemon['moveSlots'];
@@ -15,6 +16,7 @@ interface MemberRuntime {
 	insight: { points: number, gain: number }; consumed?: string;
 	bonusHP?: number;
 	eeveeZUsed?: boolean;
+	wineUsed?: boolean;
 }
 export interface SideRuntime {
 	combo: number; style: number; lastMove?: string; faintedTypes: string[];
@@ -23,6 +25,7 @@ export interface SideRuntime {
 	seeds: Record<string, { source: Pokemon, sourceSlot: PokemonSlot }>;
 	strongest?: Record<string, string>;
 	psychicDefeats?: string[];
+	dragonKing?: { member: string, ability?: DragonKingAbility, token: number, pending: boolean };
 }
 export function blessingEffects(mon: Pokemon): BlessingEffects | undefined {
 	const state = mon.battle.fantasyRogue;
@@ -44,6 +47,58 @@ function side(mon: Pokemon): SideRuntime {
 	state.blessingRuntime ||= {};
 	state.blessingRuntime[mon.side.id] ||= { combo: 0, style: 0, faintedTypes: [], drops: {}, seeds: {} };
 	return state.blessingRuntime[mon.side.id];
+}
+/** The campaign king is immutable here; succession belongs only to this battle. */
+export function battleDragonKing(player: Side) {
+	const first = player.pokemon[0];
+	if (!hasBlessing(first, 'dragonking')) return undefined;
+	const runtime = side(first);
+	if (!runtime.dragonKing) {
+		const saved = blessingEffects(first)?.dragonKing;
+		const available = player.pokemon.find(mon => mon.set.fantasyRogueId === saved?.member && mon.hp && !mon.fainted);
+		const successor = available ? undefined : strongestDragon(player.pokemon.filter(mon => mon.hp && !mon.fainted)
+			.map(savedBlessingMember).filter((mon): mon is RoguePokemon => !!mon));
+		runtime.dragonKing = { member: available ? saved!.member : successor?.id || '',
+			ability: available ? saved?.ability : undefined, token: 1,
+			pending: !!(available || successor) && !(available && saved?.ability) };
+	}
+	return runtime.dragonKing;
+}
+export function dragonKingRequest(player: Side) {
+	const king = battleDragonKing(player);
+	if (!king?.member) return undefined;
+	const pokemon = player.pokemon.find(mon => mon.set.fantasyRogueId === king.member)!;
+	return { ...king, species: pokemon.species.name };
+}
+export function chooseDragonKing(player: Side, input: string) {
+	const [ability, token] = input.trim().split(' ');
+	const king = battleDragonKing(player);
+	if (player.battle.ended || !king?.pending || String(king.token) !== token ||
+		!DRAGON_KING_ABILITIES.includes(ability as DragonKingAbility)) {
+		return player.emitChoiceError('龙王特性选项已经失效，请按当前提示选择。');
+	}
+	const pokemon = player.pokemon.find(mon => mon.set.fantasyRogueId === king.member);
+	if (!pokemon?.hp || pokemon.fainted) return player.emitChoiceError('该龙王已经倒下。');
+	player.battle.inputLog.push(`>${player.id} rogueking ${ability} ${king.token}`);
+	king.ability = ability as DragonKingAbility; king.pending = false;
+	const already = pokemon.hasAbility(ability);
+	prepareBlessingMember(pokemon);
+	player.battle.add('-message', `${pokemon.species.name}成为本场龙王，获得额外特性${ability === 'drizzle' ? '降雨' : '龙之呼吸'}。`);
+	if (pokemon.isActive && !already && !pokemon.ignoringAbility()) {
+		player.battle.singleEvent('Start', player.battle.dex.abilities.get(ability), pokemon.volatiles[`ability:${ability}`], pokemon);
+	}
+	if (player.activeRequest) player.emitRequest(player.activeRequest);
+	return true;
+}
+function succeedDragonKing(pokemon: Pokemon) {
+	const king = battleDragonKing(pokemon.side);
+	if (!king || king.member !== pokemon.set.fantasyRogueId) return;
+	const next = strongestDragon(pokemon.side.pokemon.filter(mon => mon !== pokemon && mon.hp && !mon.fainted)
+		.map(savedBlessingMember).filter((mon): mon is RoguePokemon => !!mon));
+	king.member = next?.id || ''; delete king.ability;
+	king.token++; king.pending = !!next;
+	prepareBlessingMember(pokemon);
+	if (next) pokemon.battle.add('-message', `${next.set.species}接任本场龙王，请选择额外特性。`);
 }
 function strongest(mon: Pokemon, species: string) {
 	if (!mon.battle.fantasyRogue) return false;
@@ -78,6 +133,8 @@ export function prepareBlessingMember(mon: Pokemon) {
 	}
 	if (hasBlessing(mon, 'arsenal')) abilities.push('protean');
 	if (hasBlessing(mon, 'restinball')) abilities.push('regenerator', 'naturalcure');
+	const king = battleDragonKing(mon.side);
+	if (king && king.member === mon.set.fantasyRogueId && king.ability) abilities.push(king.ability);
 	if (hasBlessing(mon, 'duck') && strongest(mon, 'psyduck|golduck')) abilities.push('neuroforce');
 	if (strongest(mon, 'meloetta')) {
 		if (hasBlessing(mon, 'singer')) abilities.push('tianlaizhiyin', 'jizhineng');
@@ -86,6 +143,7 @@ export function prepareBlessingMember(mon: Pokemon) {
 			mon.formeChange('Meloetta-Pirouette', mon.battle.format, false, '[silent]');
 		}
 	}
+	for (const old of runtime.abilities) if (!abilities.includes(old)) delete mon.volatiles[`ability:${old}`];
 	runtime.abilities = [...new Set(abilities)];
 	for (const ability of runtime.abilities) {
 		const id = `ability:${ability}`;
@@ -100,6 +158,7 @@ export function blessingSwitchIn(mon: Pokemon) {
 	}
 	const runtime = member(mon), team = side(mon);
 	runtime.entries++; runtime.actions = 0;
+	if (savedBlessingMember(mon)?.tonics?.wine) mon.addVolatile('confusion', mon, mon.battle.format);
 	for (const move of runtime.inheritedSlots || []) if (!mon.moveSlots.some(slot => slot.id === move.id)) {
 		mon.moveSlots.push({ ...move, disabled: false });
 	}
@@ -146,6 +205,7 @@ export function blessingLeave(mon: Pokemon, fainted = false) {
 	const seed = mon.volatiles.leechseed;
 	if (seed && hasBlessing(seed.source, 'seeds')) team.seeds[mon.getSlot()] = { source: seed.source, sourceSlot: seed.sourceSlot };
 	if (!fainted) return;
+	succeedDragonKing(mon);
 	team.faintedTypes.push(...mon.getTypes());
 	if (hasBlessing(mon, 'prayer') && qualifiesPrayer(mon)) team.prayer = {
 		atk: Math.floor(mon.getStat('atk', true) / 3), spa: Math.floor(mon.getStat('spa', true) / 3),
@@ -297,7 +357,9 @@ export function blessingTypes(mon: Pokemon, types: string[]) {
 		types = [...new Set([types[0], mon.set.fantasyRogueModifiers.extraType])];
 	}
 	const type = mon.battle.fantasyRogue && emblemType(mon.item);
-	return type ? [...new Set([types[0], type])] : types;
+	if (type) types = [...new Set([types[0], type])];
+	const tonics = savedBlessingMember(mon)?.tonics;
+	return tonics?.wine && tonics.cephalosporin ? [...new Set([types[0], 'Ghost'])] : types;
 }
 export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<StatID, 'hp'>) {
 	if (!mon.battle.fantasyRogue) return stat;
@@ -334,6 +396,10 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onModifySpe(spe, pokemon) { return blessingModifyStat(spe, pokemon, 'spe'); },
 	onModifyPriority(priority, pokemon) { if (hasBlessing(pokemon, 'topclearmind')) return priority + 1; },
 	onModifyMove(move, pokemon) {
+		if (savedBlessingMember(pokemon)?.tonics?.wine && !member(pokemon).wineUsed) {
+			member(pokemon).wineUsed = true;
+			move.rogueWine = true;
+		}
 		if (move.id === 'roguepsychicburst') return;
 		if (move.id === 'crushgrip' && hasBlessing(pokemon, 'regis')?.target === pokemon.set.fantasyRogueId) {
 			move.secondaries ||= [];
@@ -357,6 +423,8 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	},
 	onBasePower(basePower, pokemon, target, move) {
 		let result = basePower;
+		if (move.rogueWine) result *= 2;
+		if (move.type === 'Poison' && savedBlessingMember(pokemon)?.tonics?.poison) result *= 1.5;
 		if (move.rogueLanding) result *= 1.2;
 		if (hasBlessing(pokemon, 'speedpower')) result *= 1 + pokemon.getStat('spe') / 10000;
 		if (move.id === 'bugbuzz' && hasBlessing(pokemon, 'bugchoir')) result += 10 * pokemon.side.pokemon.reduce((n, p) => n + p.moveSlots.filter(slot => slot.id === 'bugbuzz').length, 0);
@@ -392,6 +460,9 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	},
 	onTakeItem(item, pokemon) { if (hasBlessing(pokemon, 'kid') && item.id === 'eviolite') return false; },
 	onTryAddVolatile(status, pokemon) { if (status.id === 'choicelock' && blessingFirstChoice(pokemon)) return false; },
+	onSetStatus(status, target) {
+		if (savedBlessingMember(target)?.tonics?.cephalosporin && ['psn', 'tox', 'brn', 'par', 'slp', 'frz', 'fst'].includes(status.id)) return false;
+	},
 	onAfterSetStatus(status, target, source) { if (hasBlessing(source, 'toxic') && ['psn', 'tox'].includes(status.id)) target.statusState.blessingToxic = true; },
 	onAfterUseItem(item, pokemon) {
 		if (pokemon.battle.fantasyRogue && toID(savedBlessingMember(pokemon)?.set.item) === item.id) member(pokemon).consumed = item.id;

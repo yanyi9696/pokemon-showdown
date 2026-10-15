@@ -19,12 +19,24 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		cmd('start', { starters: ['bulbasaur'] });
 	});
 	afterEach(() => store.close());
+	it('exposes every entry for local preview without changing real discovery records', () => {
+		const a = account(), before = JSON.stringify(a);
+		for (const section of ['events', 'blessings']) {
+			const preview = rogueCodex(a, section, true);
+			assert(preview.preview);
+			assert(preview.entries.every(entry => entry.unlocked && entry.text !== '？？？'));
+			if (section === 'events') assert(preview.entries.every(entry => entry.replay));
+			assert(rogueCodex(a, section).entries.every(entry => !entry.unlocked));
+		}
+		assert.equal(JSON.stringify(a), before);
+	});
 	it('sends only names, tiers and question marks for never obtained entries', () => {
 		const data = rogueCodex(account(), 'blessings');
 		assert.equal(data.entries.length, ROGUE_BLESSINGS.length);
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
-		assert.equal(events.length, Object.keys(EVENT_NAMES).length);
+		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).length);
+		assert.equal(events.filter(e => e.category === 'trade').length, 3);
 		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 	});
 	it('records an actual selection once, never unlocks an offer, and keeps it after abandoning', () => {
@@ -68,7 +80,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 	it('has traversable narrative-only branches and the same opening text as live events', () => {
 		const a = account(); a.discoveries = { blessings: [], events: Object.keys(EVENT_NAMES) };
 		const before = JSON.stringify(a);
-		for (const entry of rogueCodex(a, 'events').entries) {
+		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event')) {
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
 			assert.deepEqual(replay.pages.start.text, eventView(run).paragraphs);
@@ -91,5 +103,27 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(modules.moves.some(move => move.id === 'recover' && move.pp === 10));
 		assert(modules.pokemon.length > 100 && modules.abilities.length > 10);
 		assert(Object.values(modules).every(entries => entries.every(e => !e.id.startsWith('rogue'))));
+		assert(modules.items.every(item => item.icon === item.id && item.spritenum > 0));
+		assert.equal(modules.items.filter(item => item.category === 'general').length, 11);
+		assert(modules.items.some(item => item.id === 'dadascloak' && item.category === 'exclusive'));
+		assert(!modules.items.some(item => ['firegem', 'charizarditex', 'firiumz'].includes(item.id)));
+		const { Dex } = require('../../dist/sim/dex');
+		for (const id of ['piercingdrill', 'spicyspray', 'eelevate', 'firemane', 'auraguard']) {
+			assert(Dex.abilities.get(id).exists);
+			assert(!modules.abilities.some(item => item.id === id));
+		}
+		for (const kind of ['moves', 'abilities']) {
+			assert(modules[kind].some(item => item.origin === 'fantasy'));
+			assert(modules[kind].some(item => item.origin === 'enhanced'));
+			for (const item of modules[kind]) assert.equal(item.origin === 'enhanced', Dex.mod('gen9')[kind].get(item.id).exists);
+		}
+		assert(rogueCodex(account(), 'blessings').entries.every(item => item.family));
+	});
+	it('does not advertise an unapproved battle exit in any authored event replay', () => {
+		for (const entry of rogueCodex(undefined, 'events', true).entries) {
+			for (const page of Object.values(entry.replay.pages)) {
+				assert(page.options.every(option => !/撤退|退出战斗/.test(option.label)));
+			}
+		}
 	});
 });

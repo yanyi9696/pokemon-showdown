@@ -46,6 +46,8 @@ export function validateContent(content: RogueContent): RogueContent {
 			ensure(Number.isSafeInteger(item.amount) && item.amount! > 0, '道具数值无效');
 		}
 		if (item.kind === 'revive') ensure(item.amount! > 0 && item.amount! <= 1, '复活比例无效');
+		if (item.cureStatuses) ensure(item.kind === 'cure' && item.cureStatuses.length > 0 &&
+			item.cureStatuses.every(status => ['psn', 'tox', 'brn', 'par', 'slp', 'frz', 'fst'].includes(status)), '状态恢复范围无效');
 		if (item.kind === 'ball' && content.progression) {
 			ensure(item.multiplier! > 0 && Number.isFinite(item.multiplier), '球倍率无效');
 		}
@@ -68,7 +70,7 @@ export function validateContent(content: RogueContent): RogueContent {
 	};
 	const trainer = (entry: RogueTrainer, floor: number) => {
 		ensure(entry.name && /^[a-z0-9]+$/.test(entry.id) && /^[a-z0-9-]+$/.test(entry.avatar), '训练家身份或头像无效');
-		const roles = { gym: '道馆', elitefour: '四天王', champion: '冠军', rocket: '', nurse: '', merchant: '' };
+		const roles = { gym: '道馆', elitefour: '四天王', champion: '冠军', rocket: '', nurse: '', merchant: '', traveller: '' };
 		ensure(roles[entry.role] === BOSS_FLOORS.get(floor) && typeof entry.tera === 'boolean', '训练家楼层或太晶化权限无效');
 		ensure(!entry.requiresGym || (entry.role === 'elitefour' && /^[a-z0-9]+$/.test(entry.requiresGym)), '隐藏天王条件无效');
 	};
@@ -101,9 +103,9 @@ export function validateContent(content: RogueContent): RogueContent {
 			ensure(/^[a-z0-9]+$/.test(node.id) && !ids.has(node.id), '节点标识重复或无效');
 			ids.add(node.id);
 			ensure(node.name && (fixed ? node.kind === fixed : !['boss', 'rest'].includes(node.kind)), `第 ${floor} 层固定类型不匹配`);
-			ensure(['wild', 'elite', 'trainer', 'rest', 'boss', 'reward', 'event', 'adventure', 'encounter']
+			ensure(['wild', 'elite', 'trainer', 'rest', 'boss', 'reward', 'event', 'adventure', 'encounter', 'trade']
 				.includes(node.kind), '节点类型未接入');
-			const fights = ['rest', 'reward', 'event', 'adventure'].includes(node.kind) ? 0 : node.kind === 'wild' ? 3 : 1;
+			const fights = ['rest', 'reward', 'event', 'adventure', 'trade'].includes(node.kind) ? 0 : node.kind === 'wild' ? 3 : 1;
 			ensure(node.encounters.length === fights || (content.biomeEncounters && node.kind === 'wild' &&
 				node.encounters.length === 4 && node.encounters[3].bonus), '战斗场次数量不符合节点类型');
 			ensure(whole(node.reward.money), '奖励金额无效');

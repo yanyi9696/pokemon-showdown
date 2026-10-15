@@ -4,12 +4,12 @@ import type { RogueStoryStage } from './story';
 import type { RogueClearCard } from './legacy';
 
 export type RogueNodeKind =
-	'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 'reward' | 'event' | 'adventure' | 'encounter';
+	'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 'reward' | 'event' | 'adventure' | 'encounter' | 'trade';
 export interface RogueTrainer {
 	id: string;
 	name: string;
 	avatar: string;
-	role: 'gym' | 'elitefour' | 'champion' | 'rocket' | 'nurse' | 'merchant';
+	role: 'gym' | 'elitefour' | 'champion' | 'rocket' | 'nurse' | 'merchant' | 'traveller';
 	tera: boolean;
 	/** Hidden Elite Four entry guaranteed by meeting this gym leader. */
 	requiresGym?: string;
@@ -39,6 +39,7 @@ export interface RogueEncounter {
 	catchChances?: Record<string, number>;
 }
 export interface RogueNode {
+	trade?: { kind: 'mint' | 'candy' | 'machine', stock: (RogueItem & { remaining: number })[], purchases: number };
 	event?: import('./events').RogueEvent;
 	blessingPrepared?: boolean;
 	regiBoss?: boolean;
@@ -61,7 +62,11 @@ export interface RogueNode {
 export interface RogueItem {
 	id: string;
 	name: string;
-	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'treasure' | 'effort';
+	singleMove?: boolean;
+	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic';
+	nature?: string; move?: string; description?: string;
+	/** Omitted on cure items means all persistent status conditions. */
+	cureStatuses?: string[];
 	price: number;
 	/** false excludes an item from shops; omitted keeps custom packs compatible. */
 	shopFloor?: number | false;
@@ -79,6 +84,7 @@ export interface RogueStarter {
 	availableInitially: boolean;
 }
 export interface RogueContent {
+	routePools?: Record<number, RogueNode[]>;
 	events?: boolean;
 	blessings?: boolean;
 	story?: boolean;
@@ -163,6 +169,8 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	/** Once discovered, the combination's description remains visible across adventures. */
+	tonicSecret?: boolean;
 	/** Permanent codex collection, independent of the current and previous adventures. */
 	discoveries?: { blessings: string[], events: string[] };
 	previousBlessings?: string[];
@@ -199,7 +207,7 @@ export interface RogueStarterBuild {
 export interface RogueCommand {
 	id: string;
 	revision: number;
-	action: 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+	action: 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
 		'shopchallenge' | 'event' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |

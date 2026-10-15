@@ -12,6 +12,9 @@ export function rogueDiscoveries(account: RogueAccount) {
 	const events = new Set([
 		...(account.discoveries?.events || []), ...(account.run?.eventHistory || []).map(entry => entry.id),
 		...(account.run?.node?.event ? [account.run.node.event.id] : []),
+		...(account.run?.node?.trade ? [`trade:${account.run.node.trade.kind}`] : []),
+		...(account.run?.node?.kind === 'trainer' ? ['encounter:trainer'] : []),
+		...(account.run?.node?.rocket ? ['encounter:rocket'] : []),
 	]);
 	return { blessings: [...blessings].sort(), events: [...events].sort() };
 }

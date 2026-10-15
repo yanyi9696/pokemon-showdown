@@ -18,6 +18,8 @@ import { ELITE_BOSS_FLOORS, fixedFloor } from './content';
 import { convertSpiritItem } from './spirits';
 import { drawGiftSpecies } from './gifts';
 import { lowerToEligibleStage } from './evolution';
+import { permanentMemberTypes, strongestDragon, memberStatTotal, tonicDescription } from '../../sim/rogue-blessing-permanent';
+import { tonicItems } from './blessing-consumables';
 import type { RogueAccount, RogueCommand, RogueContent, RogueItem, RogueNode, RogueRun } from './types';
 
 const dex = Dex.mod('gen9fantasy');
@@ -121,11 +123,7 @@ export function futureFantasy(name: string, seen = new Set<string>()): boolean {
 	return !!fantasyForm(name) || species.evos.some(next => futureFantasy(next, seen));
 }
 export function blessingMemberTypes(mon: RoguePokemon) {
-	const types = [...dex.species.get(mon.set.species).types];
-	if (mon.statModifiers?.extraType) types[1] = mon.statModifiers.extraType;
-	const emblem = emblemType(toID(mon.set.item));
-	if (emblem) types[types.length > 1 ? 1 : types[0] === emblem ? 0 : 1] = emblem;
-	return [...new Set(types)];
+	return permanentMemberTypes(mon);
 }
 export function strongestMember(team: RoguePokemon[], baseSpecies: string) {
 	const sum = (stats: StatsTable) => ROGUE_STATS.reduce((n, stat) => n + (stats?.[stat] || 0), 0);
@@ -147,6 +145,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 		if (def.family === 'swords' && !run.team.some(mon => swords.includes(toID(dex.species.get(mon.set.species).baseSpecies)))) return false;
 		if (def.family === 'topclearmind' && (!state.prayer || state.prayer.changed)) return false;
 		if (def.family === 'typeevolution' && !run.team.some(mon => blessingMemberTypes(mon).includes(def.type!))) return false;
+		if (def.family === 'dragonking' && !strongestDragon(run.team)) return false;
 		if (def.family === 'friend' && !giftPool(run, content, def.type, true).length) return false;
 		return true;
 	}).map(def => ({ ...def, appearanceWeight: run.previousBlessings?.includes(def.id) ? 80 : 100 }));
@@ -336,12 +335,17 @@ export function syncBlessingParty(run: RogueRun) {
 			const data = dex.moves.get(move); mon.blessingPP.push({ id: move, pp: data.pp, maxpp: data.pp });
 		}
 		if (!mon.set.moves.length) mon.set.moves = [mon.moveMemory?.[0]?.id || 'struggle'];
-		const modifiers = { smallFinal: !!has('smallfinal'), swap: !!has('swapstats'), hp: mon.bonusHP || 0,
+		const modifiers = { ...(mon.mintNature ? { nature: mon.mintNature } : {}), smallFinal: !!has('smallfinal'), swap: !!has('swapstats'), hp: mon.bonusHP || 0,
 			...(duck && duck.id === mon.id ? { baseStats: { spa: 20, spe: 20 }, extraType: 'Psychic' } : {}),
 			stats: { ...state.evolution?.stats }, ...(state.evolution ? { statsType: state.evolution.type } : {}) };
 		if (oldMoves !== mon.set.moves.join(',') || JSON.stringify(mon.statModifiers) !== JSON.stringify(modifiers)) {
 			mon.statModifiers = modifiers; rebuildMember(mon, run.boosts);
 		}
+	}
+	if (has('dragonking')) {
+		const king = strongestDragon(run.team);
+		if (!king) delete state.dragonKing;
+		else if (state.dragonKing?.member !== king.id) state.dragonKing = { member: king.id };
 	}
 }
 export function beginBlessingFloor(run: RogueRun, random: RogueRandom) {
@@ -484,6 +488,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		(run.notices ||= []).push(`${def.name}：获得${received.name}及 ${coins} 金币，赠送祝福不额外加级。`);
 	}
 	if (def.family === 'psychic') state.psychic = 0;
+	if (def.family === 'wine' || def.family === 'cephalosporin') give(run, `rogue${def.family}`);
 	if (def.family === 'renewable') {
 		const pool = [...gems, 'focussash', 'whiteherb', 'mentalherb', 'powerherb', 'sitrusberry', 'lumberry', 'weaknesspolicy'];
 		giveEquipment(run, content, random, pool[random(pool.length)]);
@@ -729,11 +734,12 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 	}
 	syncBlessingParty(run);
 }
-export function blessingExperience(run: RogueRun, mon: RoguePokemon) {
+export function blessingExperience(run: RogueRun, mon: RoguePokemon, dragonKing = run.blessings?.dragonKing?.member) {
 	const state = run.blessings; let multiplier = 1;
 	const ordinary = ownsBlessing(state, 'ordinary');
 	if (ordinary && run.team.every(member => dex.species.get(member.set.species).bst <= 500)) multiplier *= 1 + (ordinary.floor / 50 + 1) / 10;
 	for (const entry of state?.owned || []) if (entry.family === 'typexp' && blessingMemberTypes(mon).includes(entry.type!)) multiplier *= 1.3;
+	if (ownsBlessing(state, 'dragonking') && mon.id !== dragonKing) multiplier *= 1.3;
 	return multiplier;
 }
 /** Stochastic rounding preserves the advertised expected quantity even for one-item drops. */
@@ -746,21 +752,24 @@ export function blessingLoot(run: RogueRun, loot: Record<string, number>, random
 		return [id, count + whole + (random(1000) < Math.round((extra - whole) * 1000) ? 1 : 0)];
 	}));
 }
-export function blessingItems(): RogueItem[] {
-	return Object.entries(BLESSING_TYPES).map(([type, name]) => ({ id: EMBLEM_PREFIX + type.toLowerCase(),
-		name: `${name}属性转`, kind: 'held', price: 0, shopFloor: false, icon: toID(type + 'gem') }));
+export function blessingItems(discovered = false): RogueItem[] {
+	return [...Object.entries(BLESSING_TYPES).map(([type, name]): RogueItem => ({ id: EMBLEM_PREFIX + type.toLowerCase(),
+		name: `${name}属性转`, kind: 'held', price: 0, shopFloor: false, icon: toID(type + 'gem') })), ...tonicItems(discovered)];
 }
-export function blessingView(run: RogueRun) {
+export function blessingView(run: RogueRun, discovered = false) {
 	const state = run.blessings; if (!state) return undefined;
 	const describe = (id: string, floor = run.floor) => {
 		const def = blessing(id)!; let text = def.text;
+		if (['wine', 'cephalosporin'].includes(def.family)) text = '获得一个一次性道具【' + def.name + '】。' + tonicDescription(def.family, discovered);
 		if (def.family === 'money' || def.family === 'bigmoney') text = `立即获得 ${(4000 + floor * 80) * (def.family === 'bigmoney' ? 2 : 1)} 金币。`;
 		if (def.family.startsWith('fate')) text += `本次额外获得 ${{ silver: 800, gold: 1000, prismatic: 1200 }[def.tier] * floor / 50} 金币。`;
 		if (def.family === 'ordinary') text = `全队原始种族值均不超过 500 时，对战经验及贵重战利品数量期望 +${(floor / 50 + 1) * 10}%。` +
 			(floor === 150 ? '每完成野外战斗区域，额外 3% 获得藏宝袋、1% 工具箱、6% 获得 5 碎片。' : '');
 		return { ...def, name: blessingTitle({ id, floor }), text };
 	};
-	return { ...state, learning: ownsBlessing(state, 'learnall') ? run.team.filter(mon => !state.learnedMembers?.includes(mon.id))
+	const king = run.team.find(mon => mon.id === state.dragonKing?.member);
+	return { ...state, dragonKing: king && { ...state.dragonKing!, species: king.set.species, total: memberStatTotal(king) },
+		learning: ownsBlessing(state, 'learnall') ? run.team.filter(mon => !state.learnedMembers?.includes(mon.id))
 		.map(mon => ({ member: mon.id, moves: blessingLearnChoices(mon) })) : [],
 	owned: state.owned.map(entry => ({ ...entry, ...describe(entry.id, entry.floor),
 		targetName: [...run.team, ...(run.box || [])].find(mon => mon.id === entry.target)?.set.species })),

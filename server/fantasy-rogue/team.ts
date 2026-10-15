@@ -1,5 +1,7 @@
+import { tradeItem } from './trading';
+import { tonicItems } from './blessing-consumables';
 import { Dex, toID } from '../../sim/dex';
-import { ROGUE_STATS } from '../../sim/fantasy-rogue';
+import { ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
 import { ensureMemberMemory, rebuildMember } from './progression';
 import type { RogueCommand, RogueContent, RogueItem, RogueRun } from './types';
 
@@ -15,8 +17,21 @@ function requireRule(ok: unknown, message: string): asserts ok {
 export function inventoryItem(content: RogueContent, id: string): RogueItem | undefined {
 	const configured = content.items.find(item => item.id === id);
 	if (configured) return configured;
+	const special = tradeItem(id) || tonicItems().find(item => item.id === id);
+	if (special) return special;
 	const item = dex.items.get(id);
 	return item.exists ? { id: item.id, name: item.name, kind: 'held', price: 0, icon: item.id } : undefined;
+}
+export function cureMember(mon: RoguePokemon, item: RogueItem) {
+	const statuses = { ...mon.statuses };
+	if (mon.status) statuses[mon.status] = statuses[mon.status] || { ...mon.statusState };
+	const cured = Object.keys(statuses).filter(status => !item.cureStatuses || item.cureStatuses.includes(status));
+	requireRule(mon.hp > 0 && cured.length, '该道具无法解除此成员当前的异常状态，道具未消耗。');
+	for (const status of cured) delete statuses[status];
+	mon.status = statuses[mon.status] ? mon.status : Object.keys(statuses)[0] || '';
+	mon.statusState = statuses[mon.status] || {};
+	if (Object.keys(statuses).length) mon.statuses = statuses;
+	else delete mon.statuses;
 }
 function permutation(order: string[] | undefined, current: string[]): order is string[] {
 	return Array.isArray(order) && order.length === current.length && new Set(order).size === current.length &&

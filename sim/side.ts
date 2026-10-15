@@ -25,7 +25,10 @@ import { Pokemon, type EffectState } from './pokemon';
 import { State } from './state';
 import { toID } from './dex';
 import { chooseRogueBall, rogueCaptureChance } from './fantasy-rogue';
-import { chooseRoguePsychic, psychicCharge, chooseRogueEeveeZ, eeveeZAvailable } from './fantasy-rogue-blessings';
+import {
+	chooseRoguePsychic, psychicCharge, chooseRogueEeveeZ, eeveeZAvailable,
+	battleDragonKing, dragonKingRequest, chooseDragonKing,
+} from './fantasy-rogue-blessings';
 
 /** A single action that can be chosen. Choices will have one Action for each pokemon. */
 export interface ChosenAction {
@@ -504,7 +507,9 @@ export class Side {
 		const rogue = this.id === 'p1' && !this.battle.fantasyRogue?.duel ? this.battle.fantasyRogue : undefined;
 		const psychic = psychicCharge(this.active[0]);
 		const eeveeZ = this.active.map(mon => eeveeZAvailable(mon));
-		const payload = rogue || psychic !== undefined || eeveeZ.some(Boolean) ? { ...update, fantasyRogue: {
+		const dragonKing = dragonKingRequest(this);
+		const payload = rogue || dragonKing || psychic !== undefined || eeveeZ.some(Boolean) ? { ...update, fantasyRogue: {
+			dragonKing,
 			psychic,
 			eeveeZ,
 			catchable: !!rogue && rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
@@ -530,6 +535,7 @@ export class Side {
 	}
 
 	isChoiceDone() {
+		if (battleDragonKing(this)?.pending) return false;
 		if (!this.requestState) return true;
 		if (this.choice.forcedSwitchesLeft) return false;
 
@@ -1075,6 +1081,7 @@ export class Side {
 	}
 
 	choose(input: string) {
+		if (battleDragonKing(this)?.pending) return this.emitChoiceError('请先为接任的龙王选择额外特性。');
 		if (!this.requestState) {
 			return this.emitChoiceError(
 				this.battle.ended ? `Can't do anything: The game is over` : `Can't do anything: It's not your turn`
@@ -1259,6 +1266,9 @@ export class Side {
 
 	/** Automatically finish a choice if not currently complete. */
 	autoChoose() {
+		// Native timer defaults must not strand a battle on this out-of-turn choice.
+		const king = battleDragonKing(this);
+		if (king?.pending) chooseDragonKing(this, `longzhihuxi ${king.token}`);
 		if (this.requestState === 'teampreview') {
 			if (!this.isChoiceDone()) this.chooseTeam();
 		} else if (this.requestState === 'switch') {

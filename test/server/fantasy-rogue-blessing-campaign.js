@@ -97,6 +97,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 			run.team[0] = createRoguePokemon(set(species.name, species.abilities[0], 50), run.boosts);
 		}
 		if (def.family === 'topclearmind') run.blessings.prayer = { floor: 50, changed: false, team: run.team.map(m => m.id) };
+		if (def.family === 'dragonking') run.team[0] = createRoguePokemon(set('Dragonite', 'Inner Focus', 50), run.boosts);
 		assert(b.blessingCandidates(run, content).some(entry => entry.id === def.id));
 		choose(account, run, def);
 		assert(run.blessings.owned.some(entry => entry.id === def.id));

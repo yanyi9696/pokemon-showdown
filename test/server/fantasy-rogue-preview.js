@@ -173,7 +173,7 @@ describe('Fantasy Rogue playable preview', () => {
 				cmd('blessingreward', {member: reward.id, value: reward.options[0]});
 			}
 			if (account().run.phase === 'rest') {
-				cmd('heal'); cmd('heal'); assert.equal(account().points, points);
+				assert.throws(() => cmd('heal'), /状态良好/); assert.equal(account().points, points);
 				cmd('continue');
 			} else {
 				if (account().run.node.kind === 'boss') points++;

@@ -164,7 +164,7 @@ describe('Fantasy Rogue earned party editor', () => {
 		assert.equal(saved().run.encounter, 1);
 		assert.deepEqual(saved().run.team.map(mon => mon.set.evs.spe), [1, 1, 0]);
 	});
-	it('carries move memory through a real battle, marks catches separately, and restores memory only for living members', () => {
+	it('carries move memory through a real battle, marks catches separately, and restores memory for the revived party after paid center care', () => {
 		store.change(user, account => {
 			rememberMove(account.run.team[0], 'vinewhip');
 			account.run.team[0].pp[0].pp = 3;
@@ -186,14 +186,15 @@ describe('Fantasy Rogue earned party editor', () => {
 		cmd('setmove', { member: id, slot: 0, value: 'tackle' });
 		assert.equal(member().pp[0].pp, 3);
 		store.change(user, account => {
-			account.run.phase = 'rest';
+			account.run.phase = 'rest'; account.run.money = 10000;
 			account.run.team[0].moveMemory.find(move => move.id === 'vinewhip').pp = 0;
+			account.run.node.kind = 'rest';
 			account.run.team[1].hp = 0; account.run.team[1].pp[0].pp = 0;
 		});
 		cmd('heal');
 		assert(member().moveMemory.every(move => move.pp === move.maxpp));
-		assert.equal(saved().run.team[1].hp, 0);
-		assert.equal(saved().run.team[1].pp[0].pp, 0);
+		assert.equal(saved().run.team[1].hp, saved().run.team[1].maxhp);
+		assert.equal(saved().run.team[1].pp[0].pp, saved().run.team[1].pp[0].maxpp);
 	});
 	it('awards one growth point per boss victory, never on loss or replayed settlement', () => {
 		store.change(user, account => {

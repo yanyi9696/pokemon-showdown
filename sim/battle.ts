@@ -27,6 +27,7 @@ import { BattleActions } from './battle-actions';
 import { Utils } from '../lib/utils';
 import { hasRogueStatus, rogueStatusStates, wrapRogueStatus } from './fantasy-rogue-status';
 import { emblemType } from './rogue-blessing-data';
+import { chooseDragonKing } from './fantasy-rogue-blessings';
 declare const __version: any;
 
 export type ChannelID = 0 | 1 | 2 | 3 | 4;
@@ -2353,7 +2354,7 @@ export class Battle {
 			const stat = baseStats['hp'];
 			modStats['hp'] = tr(tr(2 * stat + set.ivs['hp'] + tr(set.evs['hp'] / 4) + 100) * set.level / 100 + 10);
 		}
-		const stats = this.natureModify(modStats as StatsTable, set);
+		const stats = this.natureModify(modStats as StatsTable, rogue?.nature ? { ...set, nature: rogue.nature } : set);
 		if (isRogueFormat(this.format.id) && set.fantasyRogueStats) {
 			for (const stat of ROGUE_STATS) stats[stat] += set.fantasyRogueStats[stat];
 		}
@@ -3028,6 +3029,11 @@ export class Battle {
 	 */
 	choose(sideid: SideID, input: string) {
 		const side = this.getSide(sideid);
+		if (input.startsWith('rogueking ')) {
+			if (!chooseDragonKing(side, input.slice(10))) return false;
+			if (this.allChoicesDone()) this.commitChoices();
+			return true;
+		}
 
 		if (!side.choose(input)) {
 			if (!side.choice.error) {

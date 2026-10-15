@@ -22,7 +22,7 @@ const stats = (value: number): StatsTable => ({
 export const PreviewBalance = {
 	version: 'preview-2026-10-v9',
 	initialMoney: 1500,
-	initialBag: { pokeball: 12, potion: 6, revive: 1, elixir: 1, expcandyxs: 3 },
+	initialBag: { pokeball: 12, potion: 6, revive: 1, ether: 6, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
 	bossLevel: (floor: number) => Math.min(100, 5 + Math.ceil(floor / 2)),
 };
@@ -102,7 +102,7 @@ export function createPreviewContent(): RogueContent {
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },
 		starters: starters.map(name => ({ id: toID(name), set: makeSet(name, 5, 20), availableInitially: true })),
-		unlocks: {}, floors: {}, items: [
+		unlocks: {}, floors: {}, routePools: {}, items: [
 			{ id: 'pokeball', name: '精灵球', kind: 'ball', price: 200, multiplier: 1, icon: 'pokeball' },
 			{ id: 'greatball', name: '超级球', kind: 'ball', price: 600, multiplier: 1.5, icon: 'greatball' },
 			{ id: 'ultraball', name: '高级球', kind: 'ball', price: 1200, multiplier: 2, icon: 'ultraball' },
@@ -111,6 +111,17 @@ export function createPreviewContent(): RogueContent {
 			{ id: 'hyperpotion', name: '厉害伤药（120 HP）', kind: 'heal', price: 1200, amount: 120, icon: 'hyperpotion' },
 			{ id: 'revive', name: '活力碎片（复活至半血）', kind: 'revive', price: 1000, amount: 0.5, icon: 'revive' },
 			{ id: 'fullheal', name: '万灵药', kind: 'cure', price: 400, icon: 'fullheal' },
+			{ id: 'antidote', name: '解毒药', kind: 'cure', price: 100, icon: 'antidote',
+				cureStatuses: ['psn', 'tox'], description: '解除中毒和剧毒，保留其他异常状态。' },
+			{ id: 'burnheal', name: '灼伤药', kind: 'cure', price: 150, icon: 'burnheal',
+				cureStatuses: ['brn'], description: '解除灼伤，保留其他异常状态。' },
+			{ id: 'iceheal', name: '解冻药', kind: 'cure', price: 150, icon: 'iceheal',
+				cureStatuses: ['frz', 'fst'], description: '解除冰冻和冻伤，保留其他异常状态。' },
+			{ id: 'awakening', name: '解眠药', kind: 'cure', price: 150, icon: 'awakening',
+				cureStatuses: ['slp'], description: '解除睡眠，保留其他异常状态。' },
+			{ id: 'paralyzeheal', name: '解麻药', kind: 'cure', price: 150, icon: 'paralyzeheal',
+				cureStatuses: ['par'], description: '解除麻痹，保留其他异常状态。' },
+			{ id: 'ether', name: 'PP 单项小补剂（单招 +10）', kind: 'ether', singleMove: true, price: 400, amount: 10, icon: 'ether' },
 			{ id: 'elixir', name: 'PP 多项小补剂（各招 +10）', kind: 'ether', price: 800, amount: 10, icon: 'elixir' },
 			{ id: 'expcandyxs', name: '经验糖果 XS（100 经验）', kind: 'candy', price: 100, amount: 100 },
 			{ id: 'expcandys', name: '经验糖果 S（800 经验）', kind: 'candy', price: 600, amount: 800 },
@@ -198,26 +209,25 @@ export function createPreviewContent(): RogueContent {
 				encounters: [0, 1, 2].map(i => encounter(biome.pool[(floor * 3 + i) % biome.pool.length], level, true)),
 			};
 		};
-		let third: RogueNode;
-		if (floor >= 6 && floor % 3 === 0) {
-			const legends = ['Articuno', 'Zapdos', 'Moltres', 'Raikou', 'Entei', 'Suicune', 'Latias', 'Latios', 'Mew'];
-			const pool = PreviewTrainerThemes[zone].pool;
-			const name = floor >= 130 ? legends[Math.floor(floor / 3) % legends.length] : pool[floor % pool.length];
-			third = { id: 'elite', name: '精英挑战（等级 +5）', kind: 'elite',
-				reward: { money: 280 + floor * 20, items: { greatball: 1 } },
-				encounters: [encounter(name, Math.min(100, level + 5), true, true)] };
-		} else if (floor >= 5 && floor % 3 === 1) {
-			const pool = PreviewTrainerThemes[zone].pool;
-			third = { id: 'trainer', name: '旅行训练家', kind: 'trainer', reward: { money: 400 + floor * 24, items: {} }, encounters: [{
+		const pool = PreviewTrainerThemes[zone].pool;
+		const elite: RogueNode = { id: 'elite', name: '精英挑战（等级 +5）', kind: 'elite',
+			reward: { money: 280 + floor * 20, items: { greatball: 1 } },
+			encounters: [encounter(pool[floor % pool.length], Math.min(100, level + 5), true, true)] };
+		const trainer: RogueNode = { id: 'trainer', name: '旅行训练家', kind: 'trainer',
+			reward: { money: 400 + floor * 24, items: {} }, encounters: [{
 				name: '旅行训练家', style: 'balanced', catchable: false,
 				team: Array.from({ length: Math.min(4, 2 + Math.floor(floor / 70)) }, (_, i) =>
 					makeSet(stageAtLevel(pool[(floor + i) % pool.length], level), level, 20)),
 			}] };
-		} else {
-			const candy = floor < 30 ? 'expcandyxs' : floor < 80 ? 'expcandys' : floor < 140 ? 'expcandym' : 'expcandyl';
-			third = { id: 'supplies', name: '补给箱', kind: 'reward', encounters: [],
-				reward: { money: 100 + floor * 8, items: { [candy]: 1, potion: 1, pokeball: 2 } } };
-		}
+		const candy = floor < 30 ? 'expcandyxs' : floor < 80 ? 'expcandys' : floor < 140 ? 'expcandym' : 'expcandyl';
+		const reward: RogueNode = { id: 'supplies', name: '补给箱', kind: 'reward', encounters: [],
+			reward: { money: 100 + floor * 8, items: { [candy]: 1, potion: 1, pokeball: 2 } } };
+		content.routePools![floor] = [wild(0), elite, trainer, reward,
+			{ id: 'event0', name: '路途见闻', kind: 'event', encounters: [], reward: { money: 0, items: {} } },
+			{ id: 'trade', name: '交易', kind: 'trade', encounters: [], reward: { money: 0, items: {} },
+				trade: { kind: 'mint', stock: [], purchases: 0 } },
+		];
+		const third = floor >= 6 && floor % 3 === 0 ? elite : floor >= 5 && floor % 3 === 1 ? trainer : reward;
 		// Deterministic examples validate the pack. Each run draws and saves its own routes on entering a floor.
 		content.floors[floor] = createBiomeRoutes(floor, [wild(0), wild(1), third], undefined, max => Math.min(1, max - 1));
 	}

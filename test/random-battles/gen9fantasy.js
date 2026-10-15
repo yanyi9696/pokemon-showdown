@@ -9,8 +9,8 @@ const assert = require('../assert');
 
 global.Dex = Dex;
 
-describe('[Gen 9] Fantasy Random Battle (slow)', () => {
-	const format = Dex.formats.get('gen9fantasyrandombattle');
+describe('[Gen 9] FC Random Battle (slow)', () => {
+	const format = Dex.formats.get('gen9fcrandombattle');
 	const dex = Dex.forFormat(format);
 	const fantasyItems = new Set([
 		'fantasypowerlens', 'fantasyscopelens', 'fantasylifeorb',
@@ -21,10 +21,12 @@ describe('[Gen 9] Fantasy Random Battle (slow)', () => {
 		.map(([id]) => id));
 
 	it('should generate valid Fantasy-only teams with Fantasy content', () => {
+		assert(format.exists, 'The configured FC random format must exist');
+		assert.equal(format.mod, 'gen9fantasy');
 		let fantasyItemCount = 0;
 		let fantasyMoveCount = 0;
 
-		testTeam({ format: 'gen9fantasyrandombattle', rounds: 100 }, team => {
+		testTeam({ format: format.id, rounds: 100 }, team => {
 			assert.equal(team.length, 6);
 			for (const set of team) {
 				const species = dex.species.get(set.species);

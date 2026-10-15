@@ -9,10 +9,16 @@ import {
 } from './blessings';
 import { LOOT_STAGES, TREASURES } from './economy';
 import { simulateForestBattle } from './event-battle';
+import {
+	trainingEvent, trainingFloor, serviceEventView, chooseServiceOption, settleServiceBattle,
+} from './event-services';
 
 import { EVENT_NAMES, EVENT_TEXT, eventOpening, type EventID } from './event-text';
 export { EVENT_NAMES, type EventID } from './event-text';
 export interface RogueEvent {
+	service?: import('./event-services').ServiceEvent;
+	memory?: import('./event-travel').TravelMemory;
+	exchange?: { before: string, after: string, member: string };
 	id: EventID;
 	key: string;
 	stage: 'choice' | 'watch' | 'battle' | 'result';
@@ -24,6 +30,11 @@ export interface RogueEvent {
 	battleReward?: number | 'room';
 	/** Persisted before returning to the client. All payouts are inside the account transaction. */
 	settled?: boolean;
+	/** Only authored dialogue may explicitly allow leaving an ongoing battle. */
+	allowRetreat?: boolean;
+}
+export function canRetreatRogue(run: RogueRun) {
+	return !run.node?.event || run.node.event.allowRetreat === true;
 }
 const dex = Dex.mod('gen9fantasy');
 const ordinaryLevel = (floor: number) => Math.max(3, Math.min(100, Math.ceil(floor / 2)));
@@ -47,7 +58,7 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last);
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && run.floor >= trainingFloor(id));
 	const unseen = candidates.filter(id => !history.some(entry => entry.id === id));
 	if (unseen.length) return unseen[random(unseen.length)];
 	const cooled = candidates.filter(id => {
@@ -56,7 +67,7 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 		return !old || run.floor - old.floor >= (limited ? 25 : 8) && history.length - index - 1 >= (limited ? 4 : 2);
 	});
 	const pool = cooled.length ? cooled : candidates;
-	// Prefer the least recent when all four events are on cooldown, without repeating the last event.
+	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
 	const weights = pool.map(id => 1 + history.length - history.map(entry => entry.id).lastIndexOf(id));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	return pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
@@ -145,12 +156,21 @@ function rewardReceipt(run: RogueRun, before: { money: number, bag: Record<strin
 }
 
 export function chooseEventOption(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom,
-	key: string | undefined, choice: string | undefined) {
+	key: string | undefined, choice: string | undefined, evs?: StatsTable) {
 	const event = run.node?.event;
+	const view = eventView(run), service = serviceEventView(run);
 	if (run.phase !== 'event' || !event || event.key !== key || event.settled ||
-		!eventView(run)?.options.some(option => option.id === choice && !option.disabled)) throw new Error('事件选项已更新或无法选择。');
+		![...(view?.options || []), ...(service?.picker?.options || [])]
+			.some(option => option.id === choice && !option.disabled)) {
+		throw new Error('事件选项已更新或无法选择。');
+	}
 	normalizeBlessings(run);
 	const before = { money: run.money, bag: { ...run.bag } };
+	if (trainingEvent(event.id)) {
+		chooseServiceOption(account, run, content, random, choice!, evs);
+		rewardReceipt(run, before);
+		return;
+	}
 	const level = Math.min(100, ordinaryLevel(run.floor) + 3);
 	if (event.stage === 'watch' && choice === 'watched') {
 		const winner = event.replay!.winner;
@@ -201,8 +221,10 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 			const cost = eventBudget(run.floor, 0.4);
 			run.money -= cost;
 			if (random(100) < 75) {
-				let value = Math.round((cost + eventBudget(run.floor, 1.15)) / 250) * 250;
-				for (const [id, price] of [['balmmushroom', 7500], ['bigmushroom', 2500], ['tinymushroom', 250]] as const) {
+				const unit = TREASURES.find(item => item.id === 'tinymushroom')!.sellPrice!;
+				let value = Math.round((cost + eventBudget(run.floor, 1.15)) / unit) * unit;
+				for (const id of ['balmmushroom', 'bigmushroom', 'tinymushroom']) {
+					const price = TREASURES.find(item => item.id === id)!.sellPrice!;
 					const count = Math.floor(value / price);
 					if (count) giveEquipment(run, content, random, id, count);
 					value %= price;
@@ -249,6 +271,7 @@ export function settleEventBattle(
 ) {
 	const event = run.node?.event;
 	if (!event || event.stage !== 'battle' || event.settled) return;
+	if (trainingEvent(event.id)) { settleServiceBattle(run, won, retreated); return; }
 	const before = { money: run.money, bag: { ...run.bag } };
 	if (won) {
 		if (event.battleReward === 'room') {
@@ -269,6 +292,12 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (trainingEvent(event.id)) return {
+		id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id],
+		paragraphs: event.result || eventOpening(event.id), options: [],
+		exchange: event.exchange, memoryBattle: event.id === 'travel' && event.stage === 'battle',
+		...serviceEventView(run),
+	};
 	const option = (id: string, name: string, text: string, disabled = false) => ({ id, name, text, disabled });
 	const ballNames: Record<string, string> = { pokeball: '精灵球', greatball: '超级球', ultraball: '高级球' };
 	const paragraphs = eventOpening(event.id, ballNames[event.ball || 'pokeball']);
@@ -286,7 +315,7 @@ export function eventView(run: RogueRun) {
 		option('leave', '不了，你有点奇怪。', '直接离开，不获得奖励。')],
 		room: [option('fight', '不战斗就无法生存！', '挑战三只野生宝可梦；获胜得到工具箱（四选一）、幻想碎片与正常掉落。'),
 			option('sleep', '那种事情不要啊！', `50% 概率获得丰厚物资，30% 无事发生，20% 损失最多 ${eventBudget(run.floor, 0.5)} 金币；不恢复队伍。`)],
-	})[event.id];
+	})[event.id as 'mysteryball' | 'forest' | 'mushrooms' | 'room'];
 	return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id],
 		paragraphs: event.stage === 'choice' ? paragraphs : event.result || ['两队宝可梦的战斗开始了。'],
 		options, teams: event.teams?.map(team => team.map(set => ({ species: set.species, level: set.level }))),

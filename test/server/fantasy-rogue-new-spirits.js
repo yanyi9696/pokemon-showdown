@@ -189,9 +189,9 @@ describe('Fantasy Rogue additional tower spirits', () => {
 			const later = createRoguePokemon(set(), run.boosts), plain = createRoguePokemon(set(), stats(0));
 			assert.equal(later.stats.atk, plain.stats.atk + 1);
 			run = { ...run, spirit: 'mewtwo', node: { kind: 'event' } };
-			for (const kind of ['event', 'adventure', 'reward']) { run.node.kind = kind; completeSpiritRegion(run); }
+			for (const kind of ['event', 'trade', 'reward']) { run.node.kind = kind; completeSpiritRegion(run); }
 			assert.equal(run.boosts.spa, 3);
-			for (const kind of ['rest', 'boss', 'wild']) { run.node.kind = kind; completeSpiritRegion(run); }
+			for (const kind of ['rest', 'boss', 'wild', 'adventure']) { run.node.kind = kind; completeSpiritRegion(run); }
 			assert.equal(run.boosts.spa, 3);
 		} finally { store.close(); }
 	});

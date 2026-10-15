@@ -17,6 +17,7 @@ npm-debug.log
 .eslintcache-no-types
 /tools/set-import/sets
 databases/*.db*
+/databases/backups/
 *.o
 *.o.dSYM
 # Typescript build artifacts

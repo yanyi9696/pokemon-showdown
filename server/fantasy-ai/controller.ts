@@ -6,7 +6,6 @@ import { InformationView } from './information';
 import type { InitialPokemon, OpponentMoves } from './initial-snapshot';
 import type { OpponentChoiceState } from './opponent-choice';
 import { emergencyChoice } from './fallback';
-import { enumerateRequestChoices } from './actions';
 import type { DecisionScheduler } from './scheduler';
 import { aiDifficulty, type ChallengeDifficulty, type ValidatedTrainer } from './types';
 import { DecisionTimeManager, type TimeBudgetSettings } from './time-management';
@@ -69,7 +68,7 @@ export class AIController {
 		this.schedulerRoomId = battle.roomid;
 		this.options = options;
 		this.timing = new DecisionTimeManager(options);
-		if (options.difficulty === 'normal') this.view = new InformationView({
+		if (options.difficulty === 'normal' || options.rogue) this.view = new InformationView({
 			ownSide: 'p2', difficulty: 'normal', partySize: options.rogue?.partySize, rogueBoosts: options.rogue?.boosts,
 			rogueSpirit: options.rogue?.spirit,
 			rogueBlessings: options.rogue?.blessings,
@@ -140,7 +139,7 @@ export class AIController {
 			// Observation/ability preparation runs before submit's Promise. A
 			// synchronous failure must not strand an otherwise playable turn.
 			if (this.closed || !this.pending || this.pending.request.wait || this.battle.ended) return;
-			const readsChoice = aiDifficulty(this.options.difficulty) === 'hard';
+			const readsChoice = !this.options.rogue && aiDifficulty(this.options.difficulty) === 'hard';
 			if (readsChoice && !this.opponent?.ready) return;
 			this.metrics.workerErrors++;
 			this.submitted = this.pending.rqid;
@@ -165,22 +164,7 @@ export class AIController {
 		if (this.closed || !this.pending || this.battle.ended) return;
 		const { request, rqid } = this.pending;
 		if (request.wait || rqid === this.submitted) return;
-		if (this.options.rogue?.wild) {
-			// Wild opponents commit while the player is choosing, with no search queue or thinking timer.
-			const fingerprint = `${this.battle.turn}:${JSON.stringify(request)}`;
-			if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
-			const choices = enumerateRequestChoices(request).filter(choice => !this.rejected.includes(choice));
-			const moves = choices.filter(choice => choice.startsWith('move '));
-			const pool = moves.length ? moves : choices;
-			this.submitted = rqid;
-			this.metrics.decisions++;
-			const elapsed = performance.now() - this.pending.received;
-			this.metrics.totalDecisionMs += elapsed;
-			this.metrics.maxDecisionMs = Math.max(this.metrics.maxDecisionMs, elapsed);
-			this.sendChoice(pool.length ? this.rng.sample(pool) : 'default', rqid, this.revision);
-			return;
-		}
-		const readsChoice = aiDifficulty(this.options.difficulty) === 'hard';
+		const readsChoice = !this.options.rogue && aiDifficulty(this.options.difficulty) === 'hard';
 		if (readsChoice && !this.opponent?.ready) return;
 		const choiceVersion = readsChoice ? this.opponent!.version : undefined;
 		const received = readsChoice ? this.pending.thinkingStarted ??= performance.now() : this.pending.received;
@@ -191,6 +175,16 @@ export class AIController {
 		if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
 		this.submitted = rqid;
 		const revision = this.revision;
+		if (this.options.rogue) {
+			// Tower opponents score the current public position immediately, without a rollout queue.
+			const choice = emergencyChoice(observation, this.options.trainer.format, this.rejected, true);
+			this.metrics.decisions++;
+			const elapsed = performance.now() - received;
+			this.metrics.totalDecisionMs += elapsed;
+			this.metrics.maxDecisionMs = Math.max(this.metrics.maxDecisionMs, elapsed);
+			this.sendChoice(choice, rqid, revision);
+			return;
+		}
 		const key = { roomId: this.schedulerRoomId, instanceId: this.options.instanceId, rqid, revision };
 		const seed = this.rng.getSeed();
 		this.rng.random();

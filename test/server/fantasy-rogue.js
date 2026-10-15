@@ -150,26 +150,30 @@ describe('Fantasy Rogue storage and campaign', () => {
 		assert.deepEqual(state().run.boosts, stats(10));
 		assert.equal(state().run.startingSlots, 6);
 	});
-	it('allows heal, revive and heal again without leaving a rest floor or reviving through healing', () => {
+	it('charges full-party care once, revives fainted partners and rejects redundant healing', () => {
 		start();
 		store.change(user, account => {
 			const run = account.run;
-			run.floor = 9; run.phase = 'rest'; run.node = content().floors[9][0];
+			run.money = 1000;
+			run.floor = 9;
+			run.phase = 'rest';
+			run.node = content().floors[9][0];
 			run.team.push(createRoguePokemon(set('Magikarp', 'Swift Swim'), stats(0)));
 			run.team[0].hp = 0; run.team[1].hp = 1; run.team[1].status = 'psn'; run.team[1].pp[0].pp = 0;
 		});
-		cmd('heal');
-		assert.equal(state().run.team[0].hp, 0);
-		assert.equal(state().run.team[1].hp, state().run.team[1].maxhp);
-		cmd('buy', {value: 'revive'}); cmd('use', {value: 'revive', member: state().run.team[0].id});
-		assert(state().run.team[0].hp < state().run.team[0].maxhp);
-		cmd('heal'); cmd('heal');
-		assert.equal(state().run.team[0].hp, state().run.team[0].maxhp);
+		const request = { id: randomUUID(), revision: state().revision, action: 'heal' };
+		engine.command(user, request); engine.command(user, request);
+		assert.equal(state().run.money, 450);
+		assert(state().run.team.every(mon => mon.hp === mon.maxhp && !mon.status && mon.pp.every(move => move.pp === move.maxpp)));
+		assert.throws(() => cmd('heal'), /状态良好/);
+		store.change(user, account => { account.run.team[0].hp--; });
+		cmd('heal'); assert.equal(state().run.money, 250, 'no revival surcharge for a living party');
+		store.change(user, account => { account.run.team[0].hp = 0; });
+		const before = state();
+		assert.throws(() => cmd('heal'), /余额不足/); assert.deepEqual(state(), before);
 		assert.equal(state().run.phase, 'rest'); assert.equal(state().points, 0);
 		cmd('continue');
-		assert.equal(state().points, 0); assert.equal(state().run.floor, 10);
-		assert.equal(state().run.node.kind, 'boss'); assert.equal(state().run.phase, 'ready');
-		assert.throws(() => cmd('select', {value: 'grass'}), /已经选择/);
+		assert.equal(state().run.floor, 10); assert.equal(state().run.node.kind, 'boss');
 	});
 	it('persists receipts, rejects stale writes, and resumes a pre-battle checkpoint after reopening SQLite', () => {
 		const filename = path.join(os.tmpdir(), `fantasy-rogue-${randomUUID()}.db`);

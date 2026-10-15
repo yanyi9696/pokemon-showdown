@@ -1,12 +1,12 @@
-import type { RogueItem, RogueNode } from './types';
+import type { RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 
-/** Ordinary shop sale prices in Generation IX, not specialist NPC premiums. */
+/** Tower sale prices: 60% of the previous ordinary-shop values. */
 export const TREASURES: RogueItem[] = [
-	['tinymushroom', '小蘑菇', 250], ['bigmushroom', '大蘑菇', 2500], ['balmmushroom', '芳香蘑菇', 7500],
-	['prettyfeather', '美丽之羽', 500], ['stardust', '星星沙子', 1500], ['starpiece', '星星碎片', 6000],
-	['cometshard', '彗星碎片', 12500], ['pearl', '珍珠', 1000], ['bigpearl', '大珍珠', 4000],
-	['pearlstring', '丸子珍珠', 10000], ['nugget', '金珠', 5000], ['bignugget', '巨大金珠', 20000],
+	['tinymushroom', '小蘑菇', 150], ['bigmushroom', '大蘑菇', 1500], ['balmmushroom', '芳香蘑菇', 4500],
+	['prettyfeather', '美丽之羽', 300], ['stardust', '星星沙子', 900], ['starpiece', '星星碎片', 3600],
+	['cometshard', '彗星碎片', 7500], ['pearl', '珍珠', 600], ['bigpearl', '大珍珠', 2400],
+	['pearlstring', '丸子珍珠', 6000], ['nugget', '金珠', 3000], ['bignugget', '巨大金珠', 12000],
 ].map(([id, name, sellPrice]) => ({
 	id: id as string, name: name as string, kind: 'treasure', price: 0, shopFloor: false, sellPrice: sellPrice as number,
 }));
@@ -14,10 +14,10 @@ export const TREASURES: RogueItem[] = [
 /** Weights follow TREASURES order; every item stays possible at every floor. */
 export const LOOT_STAGES = [
 	{ min: 1, max: 1, weights: [7600, 150, 5, 1400, 200, 15, 1, 580, 30, 3, 15, 1] },
-	{ min: 1, max: 2, weights: [5900, 750, 40, 1400, 650, 80, 5, 800, 200, 20, 150, 5] },
-	{ min: 2, max: 2, weights: [3900, 1400, 150, 1200, 1000, 300, 30, 900, 450, 80, 570, 20] },
-	{ min: 2, max: 3, weights: [2100, 1800, 400, 800, 1300, 650, 100, 900, 700, 200, 1000, 50] },
-	{ min: 3, max: 3, weights: [1000, 1900, 700, 500, 1300, 1050, 200, 850, 900, 400, 1100, 100] },
+	{ min: 1, max: 1, weights: [5900, 750, 40, 1400, 650, 80, 5, 800, 200, 20, 150, 5] },
+	{ min: 1, max: 2, weights: [3900, 1400, 150, 1200, 1000, 300, 30, 900, 450, 80, 570, 20] },
+	{ min: 1, max: 2, weights: [2100, 1800, 400, 800, 1300, 650, 100, 900, 700, 200, 1000, 50] },
+	{ min: 2, max: 2, weights: [1000, 1900, 700, 500, 1300, 1050, 200, 850, 900, 400, 1100, 100] },
 ];
 
 export function rollWildLoot(floor: number, random: RogueRandom): Record<string, number> {
@@ -53,19 +53,64 @@ export function shopAvailable(item: RogueItem, floor: number): boolean {
 
 const SHOP_FLOORS: Record<string, number> = {
 	pokeball: 9, potion: 9, revive: 9, oranberry: 9,
-	fullheal: 19,
+	antidote: 9, burnheal: 9, iceheal: 9, awakening: 9, paralyzeheal: 9,
+	fullheal: 39, ether: 9,
 	greatball: 29, superpotion: 29, sitrusberry: 29,
-	miracleseed: 39, mysticwater: 39, charcoal: 39,
+	miracleseed: 69, mysticwater: 69, charcoal: 69,
 	firestone: 39, waterstone: 39, thunderstone: 39, leafstone: 39, moonstone: 39, sunstone: 39,
-	elixir: 49, shinystone: 49, duskstone: 49, dawnstone: 49, icestone: 49,
-	ultraball: 69, hyperpotion: 69, linkingcord: 69,
+	elixir: 49, shinystone: 39, duskstone: 39, dawnstone: 39, icestone: 39,
+	ultraball: 69, hyperpotion: 69, linkingcord: 89,
 	leftovers: 99,
 };
 
+export const TYPE_BOOSTERS = [
+	['silkscarf', '丝绸围巾'], ['charcoal', '木炭'], ['mysticwater', '神秘水滴'], ['miracleseed', '奇迹种子'],
+	['magnet', '磁铁'], ['nevermeltice', '不融冰'], ['blackbelt', '黑带'], ['poisonbarb', '毒针'],
+	['softsand', '柔软沙子'], ['sharpbeak', '锐利鸟嘴'], ['twistedspoon', '弯曲的汤匙'], ['silverpowder', '银粉'],
+	['hardstone', '硬石头'], ['spelltag', '诅咒之符'], ['dragonfang', '龙之牙'], ['blackglasses', '黑色眼镜'],
+	['metalcoat', '金属膜'], ['fairyfeather', '妖精之羽'],
+];
+export const BATTLE_GOODS: [string, string, number][] = [
+	['leftovers', '吃剩的东西', 8000], ['choiceband', '讲究头带', 10000], ['choicespecs', '讲究眼镜', 10000],
+	['choicescarf', '讲究围巾', 10000], ['lifeorb', '生命宝珠', 10000], ['assaultvest', '突击背心', 8000],
+	['focussash', '气势披带', 6000], ['rockyhelmet', '凸凸头盔', 6000], ['heavydutyboots', '厚底靴', 6000],
+	['expertbelt', '达人带', 5000], ['airballoon', '气球', 4000], ['lightclay', '光之黏土', 4000],
+	['flameorb', '火焰宝珠', 5000], ['toxicorb', '剧毒宝珠', 5000], ['whiteherb', '白色香草', 4000],
+	['powerherb', '强力香草', 5000], ['mentalherb', '心灵香草', 4000],
+];
+const PRICES: Record<string, number> = {
+	pokeball: 250, greatball: 750, ultraball: 1500, potion: 200, superpotion: 650, hyperpotion: 1500,
+	revive: 1500, fullheal: 600, antidote: 500, burnheal: 500, iceheal: 500, awakening: 500, paralyzeheal: 500,
+	ether: 400, elixir: 1200, oranberry: 300, sitrusberry: 800, linkingcord: 2500,
+};
+
+/** Same quote for the client and transaction; no fee when there is nothing this center can restore. */
+export function centerCare(run: RogueRun) {
+	const revives = run.spirit !== 'yveltal';
+	const fainted = revives ? run.team.filter(mon => !mon.hp).length : 0;
+	const needed = run.team.some(mon => (revives || mon.hp > 0) &&
+		(revives && mon.hp < mon.maxhp || mon.status || Object.keys(mon.statuses || {}).length ||
+			[...mon.pp, ...(mon.moveMemory || []), ...(mon.blessingPP || [])].some(slot => slot.pp < slot.maxpp)));
+	const base = Math.ceil((150 + 5 * run.floor) / 50) * 50;
+	const perRevive = Math.ceil((300 + 5 * run.floor) / 50) * 50;
+	return { cost: needed ? base + fainted * perRevive : 0, fainted, needed: !!needed, revives };
+}
+
 export function configureShop(items: RogueItem[]) {
 	for (const item of items) {
-		item.shopFloor = item.kind === 'candy' ? false : SHOP_FLOORS[item.id] ?? 69;
+		item.shopFloor = item.kind === 'candy' ? false : SHOP_FLOORS[item.id] ?? (item.kind === 'evolution' ? 89 : 99);
+		item.price = PRICES[item.id] ?? (item.kind === 'evolution' ? 1600 : Math.ceil(item.price * 1.25 / 50) * 50);
 		if (item.id === 'blackaugurite') item.name = '黑奇石';
+	}
+	for (const [id, name] of TYPE_BOOSTERS) {
+		const item = items.find(entry => entry.id === id);
+		const data: RogueItem = { id, name, kind: 'held', price: 3000, shopFloor: 69 };
+		if (item) Object.assign(item, data); else items.push(data);
+	}
+	for (const [id, name, price] of BATTLE_GOODS) {
+		const item = items.find(entry => entry.id === id);
+		const data: RogueItem = { id, name, kind: 'held', price, shopFloor: 99 };
+		if (item) Object.assign(item, data); else items.push(data);
 	}
 	const stats: StatID[] = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 	const feathers = ['healthfeather', 'musclefeather', 'resistfeather', 'geniusfeather', 'cleverfeather', 'swiftfeather'];

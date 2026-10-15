@@ -29,6 +29,7 @@ export interface RogueRoomOptions {
 	state: RogueBattleState;
 	floor: number;
 	wild?: boolean;
+	canRetreat?: boolean;
 	defeat?: {
 		floor: number, encounter: number, encounters: number, retryFloor: boolean, noHealing: boolean, emergencyCost: number,
 	};
@@ -880,7 +881,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 				this[slot].request = {
 					rqid: this.rqid,
 					request: requestJSON,
-					isWait: request.wait ? 'cantUndo' : false,
+					isWait: request.wait && !request.fantasyRogue?.dragonKing?.pending ? 'cantUndo' : false,
 					choice: '',
 				};
 				this.requestCount++;
@@ -1022,6 +1023,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (this.options.fantasyRogue) {
 			(connection || user).sendTo(this.roomid, `|fantasyrogue|${JSON.stringify({
 				floor: this.options.fantasyRogue.floor, userid: user.id,
+				canRetreat: this.options.fantasyRogue.canRetreat !== false,
 			})}`);
 			if (this.options.fantasyRogue.defeat) {
 				(connection || user).sendTo(this.roomid, `|fantasyroguedefeat|${JSON.stringify(this.options.fantasyRogue.defeat)}`);
@@ -1126,6 +1128,10 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	override forfeit(user: User | string, message = '') {
 		if (typeof user !== 'string') user = user.id;
 		else user = toID(user);
+		if (this.options.fantasyRogue?.canRetreat === false && user === this.p1.id && !this.ended) {
+			Users.get(user)?.popup('本次事件对战不能撤退或投降，请完成战斗。');
+			return false;
+		}
 
 		if (!(user in this.playerTable)) return false;
 		return this.forfeitPlayer(this.playerTable[user], message);

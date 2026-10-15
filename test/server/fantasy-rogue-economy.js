@@ -156,12 +156,12 @@ describe('Fantasy Rogue economy', () => {
 		const request = { id: randomUUID(), revision: before.revision, action: 'sell', value: 'tinymushroom' };
 		engine.command(user, request);
 		const sold = account();
-		assert.equal(sold.run.money, before.run.money + 500);
+		assert.equal(sold.run.money, before.run.money + 300);
 		assert.equal(sold.run.bag.tinymushroom, 0);
 		assert.equal(sold.run.bag.bignugget, 1);
 		engine.command(user, request); assert.deepEqual(account(), sold);
 		cmd('sell', { value: 'all' });
-		assert.equal(account().run.money, before.run.money + 20500);
+		assert.equal(account().run.money, before.run.money + 12300);
 		assert.equal(account().run.bag.potion, before.run.bag.potion);
 		assert.throws(() => cmd('sell', { value: 'all' }), /没有可兑换/);
 	});
@@ -183,5 +183,35 @@ describe('Fantasy Rogue economy', () => {
 		assert.equal(account().run.team[0].set.evs.spe, 6);
 		assert.throws(() => cmd('use', { value: 'swiftfeather', member }), /上限/);
 		assert.equal(account().run.bag.swiftfeather, 1);
+	});
+	it('sells targeted medicines at the first center and cures only matching stacked conditions', () => {
+		floor(9);
+		store.change(user, a => { a.run.money = 10000; });
+		const medicines = { antidote: ['psn', 'tox'], burnheal: ['brn'], iceheal: ['frz', 'fst'], awakening: ['slp'], paralyzeheal: ['par'] };
+		for (const [id, cleared] of Object.entries(medicines)) {
+			cmd('buy', { value: id });
+			store.change(user, a => {
+				const mon = a.run.team[0]; mon.hp = 1; mon.pp[0].pp = 1;
+				mon.status = 'slp'; mon.statusState = { time: 2 };
+				mon.statuses = { slp: { time: 2 }, brn: {}, par: {}, psn: {}, tox: { stage: 3 }, frz: {}, fst: {} };
+			});
+			const mon = account().run.team[0];
+			const request = { id: randomUUID(), revision: account().revision, action: 'use', value: id, member: mon.id };
+			engine.command(user, request);
+			const after = account(), cured = after.run.team[0];
+			assert.deepEqual(Object.keys(cured.statuses).sort(), Object.keys(mon.statuses).filter(s => !cleared.includes(s)).sort());
+			assert.deepEqual(cured.statusState, cured.statuses[cured.status]);
+			if (id !== 'awakening') assert.deepEqual(cured.statuses.slp, { time: 2 });
+			if (id !== 'antidote') assert.deepEqual(cured.statuses.tox, { stage: 3 });
+			assert.equal(cured.hp, 1); assert.equal(cured.pp[0].pp, 1); assert.equal(after.run.bag[id], 0);
+			engine.command(user, request); assert.deepEqual(account(), after);
+			cmd('buy', { value: id });
+			const before = account();
+			assert.throws(() => cmd('use', { value: id, member: mon.id }), /无法解除/);
+			assert.deepEqual(account(), before);
+		}
+		floor(39); cmd('buy', { value: 'fullheal' });
+		cmd('use', { value: 'fullheal', member: account().run.team[0].id });
+		assert.equal(account().run.team[0].status, ''); assert(!account().run.team[0].statuses);
 	});
 });

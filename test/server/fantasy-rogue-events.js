@@ -61,7 +61,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 			a.run.floor = 21; a.run.phase = 'choose'; delete a.run.choices;
 		});
 		engine.migrate('eventtester');
-		assert.equal(account().run.choices.filter(node => node.kind === 'event').length, 2);
+		assert.equal(account().run.choices.filter(node => node.kind === 'event').length, 1);
 		for (const floor of [19, 20, 100]) {
 			store.change('eventtester', a => {
 				a.run.floor = floor; a.run.phase = 'choose'; delete a.run.choices;
@@ -132,12 +132,11 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		cmd('use', { value: 'revive', member: account().run.team[0].id }); cmd('continue');
 		assert.equal(account().run.floor, 22);
 	});
-	it('ends a retreated event without a retry or a toolbox', () => {
-		enter('room'); choose('fight'); settle(false, true);
-		assert.equal(account().run.node.event.stage, 'result');
-		assert.equal(account().run.blessings.pending.length, 0);
-		assert.match(account().run.node.event.result.join(''), /退出/);
-		cmd('continue'); assert.equal(account().run.floor, 22);
+	it('rejects retreat without changing the event, battle or resources', () => {
+		enter('room'); choose('fight'); cmd('battle');
+		const before = account();
+		assert.throws(() => cmd('retreat'), /不能撤退/);
+		assert.deepEqual(account(), before);
 	});
 	it('keeps companions caught before an event defeat and settles the event only after placing them', () => {
 		enter('room'); choose('fight');
@@ -188,7 +187,10 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(eventView(account().run).options[0].disabled, true);
 		assert.throws(() => choose('trade'), /无法选择/);
 		store.change('eventtester', a => { a.run.money = cost; }); choose('trade');
-		assert.equal(account().run.money, 0); assert.equal(account().run.bag.tinymushroom, 6);
+		assert.equal(account().run.money, 0);
+		const { TREASURES } = require('../../dist/server/fantasy-rogue/economy');
+		const value = TREASURES.reduce((sum, item) => sum + (account().run.bag[item.id] || 0) * item.sellPrice, 0);
+		assert.equal(value, 1350);
 	});
 	it('consumes mushroom vitality per entered battle, not per floor or spectator battle', () => {
 		enter('mushrooms'); choose('taste');
@@ -294,8 +296,8 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 	});
 	it('keeps wild loot budgets inclusive of the existing drop, not paid twice', () => {
 		assert.equal(eventBudget(21, 1.15), 1050);
-		assert.equal(expectedWildLoot(1), 424);
-		assert.equal(expectedWildLoot(161), 11160);
+		assert.equal(expectedWildLoot(1), 254.4);
+		assert.equal(expectedWildLoot(161), 4464);
 	});
 	it('allows catching one wild event opponent without ending a multi-opponent battle', () => {
 		enter('forest'); choose('mediate', 99); cmd('battle');

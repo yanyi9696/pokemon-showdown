@@ -75,6 +75,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		assert.equal(account().run.node.hpPurchases, 3);
 		assert.throws(() => cmd('buyhp', { value: 'potion', member }), /限额/);
 		const hp = account().run.team[0].hp;
+		store.change(user, a => { a.run.team[0].pp[0].pp = 0; });
 		cmd('heal'); assert.equal(account().run.team[0].hp, hp);
 		floor(19); assert(!account().run.node.hpPurchases);
 		store.change(user, a => { a.run.team[0].hp = 1; });
@@ -83,8 +84,8 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	it('keeps coin shopping and special-shop candy prices server authoritative', () => {
 		start('meowth'); cmd('spiritack'); floor(9);
 		store.change(user, a => { a.run.money = 10000; });
-		cmd('buy', { value: 'expcandyxs' }); assert.equal(account().run.money, 9750);
-		cmd('buy', { value: 'potion' }); assert.equal(account().run.money, 9562);
+		cmd('buy', { value: 'expcandyxs' }); assert.equal(account().run.money, 9675);
+		cmd('buy', { value: 'potion' }); assert.equal(account().run.money, 9425);
 		assert.throws(() => cmd('buy', { value: 'expcandys' }), /未解锁/);
 		cmd('abandon'); start('yveltal'); cmd('spiritack');
 		floor(9);
@@ -191,7 +192,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	});
 	it('boosts Mew wild levels and Ho-Oh shiny battle experience without multiplying candy', () => {
 		start('mew'); cmd('spiritack');
-		assert.equal(account().run.choices[0].biome.level, 4);
+		assert.equal(account().run.choices.find(node => node.kind === 'wild').biome.level, 4);
 		cmd('abandon'); start('hooh');
 		cmd('spiritack'); cmd('select', { value: 'wild0' });
 		store.change(user, a => { a.run.team[0].set.shiny = true; });

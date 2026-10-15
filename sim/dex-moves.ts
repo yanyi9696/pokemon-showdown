@@ -314,6 +314,7 @@ type MutableMove = BasicEffect & MoveData;
 export interface ActiveMove extends MutableMove {
 	rogueCoin?: number;
 	rogueLanding?: boolean;
+	rogueWine?: boolean;
 	rogueHitTargets?: string[];
 	/** Dialga queues a prepared attack once and releases it without spending PP again. */
 	rogueDelayed?: boolean;

@@ -42,6 +42,35 @@ describe('Fantasy Rogue real rooms', function () {
 		Config.fantasyailocal = oldLocal;
 		Config.reportbattles = oldReporting;
 	});
+	it('delivers king succession through real room requests and resumes the native replacement choice', async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			const { normalizeBlessings, syncBlessingParty } = require('../../dist/server/fantasy-rogue/blessings');
+			const { blessing } = require('../../dist/sim/rogue-blessing-data');
+			const run = saved.run;
+			run.team = [set('Dragonite', 'Inner Focus', 50, ['Splash']), set('Dratini', 'Shed Skin', 50, ['Splash'])]
+				.map(s => createRoguePokemon(s, stats(0)));
+			normalizeBlessings(run).owned.push({ ...blessing('dragonking'), floor: 50 }); syncBlessingParty(run);
+			run.blessings.dragonKing.ability = 'drizzle'; run.team[0].hp = 1;
+			run.node.encounters[0].team = [set('Snorlax', 'Immunity', 50, ['Dragon Rage'])];
+		});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p2.request.isWait === true, 'AI preview');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active, 'first turn');
+		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).fantasyRogue?.dragonKing?.pending, 'succession prompt');
+		const request = JSON.parse(room.battle.p1.request.request), turn = room.battle.turn;
+		assert(request.forceSwitch[0]); assert.equal(room.battle.p1.request.isWait, false);
+		assert.equal(request.fantasyRogue.dragonKing.member, account().run.team[1].id);
+		room.battle.choose(user, `rogueking longzhihuxi ${request.fantasyRogue.dragonKing.token}|${request.rqid}`);
+		await until(() => room.battle.p1.request.rqid > request.rqid, 'ability accepted without taking a turn');
+		assert.equal(room.battle.turn, turn);
+		assert.equal(JSON.parse(room.battle.p1.request.request).fantasyRogue.dragonKing.pending, false);
+		room.battle.choose(user, `switch 2|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active, 'replacement enters battle');
+		assert.equal(account().run.blessings.dragonKing.member, account().run.team[0].id);
+	});
 	for (const avatar of ['unknown', 'unknownf', 'brock', 'acerola', 'steven']) {
 		it(`sends the ${avatar} portrait through a real AI room player message`, async () => {
 			command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
@@ -60,6 +89,22 @@ describe('Fantasy Rogue real rooms', function () {
 			room.destroy();
 		});
 	}
+	it('blocks both campaign retreat and native forfeiting for an authored event battle', async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, a => { a.run.node.event = { id: 'room', key: 'locked-event', stage: 'battle' }; });
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p2.request.isWait === true, 'event preview');
+		assert.equal(manager.state(user).run.canRetreat, false);
+		assert.equal(room.battle.options.fantasyRogue.canRetreat, false);
+		const before = account();
+		assert.throws(() => manager.retreat(user.connections[0], room.roomid), /不能撤退/);
+		assert.equal(room.battle.forfeit(user), false);
+		assert.equal(room.battle.leaveGame(user), false);
+		assert(!room.battle.ended && !room.battle.p1.eliminated);
+		assert.deepEqual(account(), before);
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => room.battle.p1.request.isWait === false, 'event still playable');
+	});
 	it('commits wild moves before human input without submitting a worker search', async () => {
 		ai.scheduler.submit = () => { throw new Error('Wild opponents must not enter the search queue'); };
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
@@ -73,6 +118,24 @@ describe('Fantasy Rogue real rooms', function () {
 		const turn = room.battle.turn;
 		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
 		await until(() => room.battle.turn > turn || room.battle.ended, 'turn proceeds without thinking');
+	});
+	it('commits ordinary trainer moves before human input without the NPC search delay', async () => {
+		ai.scheduler.submit = () => { throw new Error('Tower NPC must not enter the search queue'); };
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			const encounter = saved.run.node.encounters[0];
+			encounter.catchable = false;
+			encounter.team = [set('Bulbasaur', 'Overgrow', 5, ['Tackle', 'Growl'])];
+			saved.run.node.kind = 'trainer';
+		});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p2.request.isWait === true, 'instant NPC preview');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => room.battle.p2.request.choice.startsWith('move '), 'NPC already chose');
+		assert.equal(room.battle.p1.request.isWait, false);
+		assert.equal(room.battle.fantasyAI.options.rogue.wild, false);
+		assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
+		assert.equal(room.battle.fantasyAI.metrics.rollouts, 0);
 	});
 	it('opens a one-versus-one real AI room, captures, saves, and continues with two party members', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
