@@ -1,0 +1,98 @@
+|t:|1792222598
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L11, M|
+|poke|p1|Pidgey, L9, M|
+|poke|p1|Meowth, L7, F|
+|poke|p1|Slakoth, L7, M|
+|poke|p1|Swablu, L6, F|
+|poke|p2|Zorua-Hisui-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792222598
+|start
+|split|p1
+|switch|p1a: Popplio|Popplio, L11, M|34/34
+|switch|p1a: Popplio|Popplio, L11, M|100/100
+|split|p2
+|switch|p2a: Zorua|Zorua-Hisui-Fantasy, L13, M|34/34
+|switch|p2a: Zorua|Zorua-Hisui-Fantasy, L13, M|100/100
+|-start|p2a: Zorua|typechange|Normal/Ghost|[silent]
+|-start|p2a: Zorua|fantasystats|30/60/40/85/40/75|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Zorua|typechange|Normal/Ghost|[silent]
+|-start|p2a: Zorua|fantasystats|30/60/40/85/40/75|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222598
+|-terastallize|p2a: Zorua|Normal
+|move|p1a: Popplio|Aqua Jet|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|25/34
+|-damage|p2a: Zorua|74/100
+|split|p1
+|-damage|p1a: Popplio|31/34|[from] item: Life Orb
+|-damage|p1a: Popplio|92/100|[from] item: Life Orb
+|move|p2a: Zorua|Hex|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|9/34
+|-damage|p1a: Popplio|27/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792222598
+|move|p1a: Popplio|Aqua Jet|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|9/34
+|-damage|p2a: Zorua|27/100
+|split|p1
+|-damage|p1a: Popplio|6/34|[from] item: Life Orb
+|-damage|p1a: Popplio|18/100|[from] item: Life Orb
+|move|p2a: Zorua|Hex|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|0 fnt
+|-damage|p1a: Popplio|0 fnt
+|faint|p1a: Popplio
+|
+|upkeep
+|
+|t:|1792222599
+|split|p1
+|switch|p1a: Meowth|Meowth, L7, F|24/24
+|switch|p1a: Meowth|Meowth, L7, F|100/100
+|-end|p1a: Meowth|fantasystats|[silent]
+|turn|3
+|
+|t:|1792222599
+|move|p1a: Meowth|Fake Out|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|4/34
+|-damage|p2a: Zorua|12/100
+|split|p1
+|-damage|p1a: Meowth|22/24|[from] item: Life Orb
+|-damage|p1a: Meowth|92/100|[from] item: Life Orb
+|cant|p2a: Zorua|flinch
+|
+|upkeep
+|turn|4
+|
+|t:|1792222599
+|move|p1a: Meowth|Feint|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|0 fnt
+|-damage|p2a: Zorua|0 fnt
+|faint|p2a: Zorua
+|split|p1
+|-damage|p1a: Meowth|20/24|[from] item: Life Orb
+|-damage|p1a: Meowth|84/100|[from] item: Life Orb
+|
+|win|Player

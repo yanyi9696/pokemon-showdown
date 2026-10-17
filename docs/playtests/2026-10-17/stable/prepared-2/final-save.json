@@ -1,0 +1,1013 @@
+{
+  "revision": 27,
+  "points": 0,
+  "boosts": {
+    "hp": 0,
+    "atk": 0,
+    "def": 0,
+    "spa": 0,
+    "spd": 0,
+    "spe": 0
+  },
+  "slots": 1,
+  "captures": {
+    "sandygast": 1,
+    "spiritomb": 1
+  },
+  "unlocked": [
+    "sandygast",
+    "spiritomb"
+  ],
+  "unlockedSpirits": [],
+  "starterTraits": {
+    "fuecoco": {
+      "natures": [
+        "relaxed"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "blaze"
+      ],
+      "moves": [
+        "ember",
+        "tackle",
+        "leer",
+        "round"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        }
+      }
+    },
+    "sandygast": {
+      "natures": [
+        "serious"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "watercompaction"
+      ],
+      "moves": [
+        "absorb",
+        "harden"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 27,
+          "atk": 26,
+          "def": 30,
+          "spa": 21,
+          "spd": 22,
+          "spe": 25
+        }
+      }
+    },
+    "spiritomb": {
+      "natures": [
+        "hardy"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "pressure"
+      ],
+      "moves": [
+        "nightshade",
+        "shadowsneak",
+        "confuseray"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 29,
+          "atk": 26,
+          "def": 28,
+          "spa": 24,
+          "spd": 21,
+          "spe": 23
+        }
+      }
+    }
+  },
+  "run": {
+    "team": [
+      {
+        "id": "bf4c187e-cb05-4bbc-b129-7c8616db3672",
+        "set": {
+          "name": "Fuecoco",
+          "species": "Fuecoco",
+          "ability": "Blaze",
+          "level": 9,
+          "nature": "Relaxed",
+          "moves": [
+            "ember",
+            "round",
+            "tackle",
+            "leer"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 0,
+            "atk": 1,
+            "def": 1,
+            "spa": 0,
+            "spd": 1,
+            "spe": 0
+          },
+          "ivs": {
+            "hp": 20,
+            "atk": 20,
+            "def": 20,
+            "spa": 20,
+            "spd": 20,
+            "spe": 20
+          },
+          "gender": "M",
+          "happiness": 65
+        },
+        "hp": 0,
+        "maxhp": 32,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "ember",
+            "pp": 14,
+            "maxpp": 25
+          },
+          {
+            "id": "round",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "tackle",
+            "pp": 34,
+            "maxpp": 35
+          },
+          {
+            "id": "leer",
+            "pp": 30,
+            "maxpp": 30
+          }
+        ],
+        "stats": {
+          "atk": 14,
+          "def": 18,
+          "spa": 18,
+          "spd": 14,
+          "spe": 11,
+          "hp": 32
+        },
+        "moveMemory": [
+          {
+            "id": "ember",
+            "pp": 14,
+            "maxpp": 25
+          },
+          {
+            "id": "tackle",
+            "pp": 34,
+            "maxpp": 35
+          },
+          {
+            "id": "leer",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "round",
+            "pp": 15,
+            "maxpp": 15
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "blaze",
+            "hidden": false
+          }
+        ],
+        "initialPartner": true,
+        "seenMoves": [
+          "ember",
+          "tackle",
+          "leer",
+          "round"
+        ],
+        "experience": 515,
+        "joinOrder": 0,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:2",
+        "set": {
+          "name": "Sandygast",
+          "species": "Sandygast",
+          "ability": "Water Compaction",
+          "level": 3,
+          "nature": "Serious",
+          "moves": [
+            "absorb",
+            "harden"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 0,
+            "atk": 0,
+            "def": 0,
+            "spa": 0,
+            "spd": 0,
+            "spe": 0
+          },
+          "ivs": {
+            "hp": 27,
+            "atk": 26,
+            "def": 30,
+            "spa": 21,
+            "spd": 22,
+            "spe": 25
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 68
+        },
+        "hp": 0,
+        "maxhp": 17,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "absorb",
+            "pp": 24,
+            "maxpp": 25
+          },
+          {
+            "id": "harden",
+            "pp": 29,
+            "maxpp": 30
+          }
+        ],
+        "stats": {
+          "atk": 9,
+          "def": 10,
+          "spa": 9,
+          "spd": 8,
+          "spe": 6,
+          "hp": 17
+        },
+        "moveMemory": [
+          {
+            "id": "absorb",
+            "pp": 24,
+            "maxpp": 25
+          },
+          {
+            "id": "harden",
+            "pp": 29,
+            "maxpp": 30
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "watercompaction",
+            "hidden": false
+          }
+        ],
+        "experience": 27,
+        "seenMoves": [
+          "absorb",
+          "harden"
+        ],
+        "joinOrder": 1,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "fdfe3fa5-81e0-4af1-8071-729031dd04a3:2:event0:0:foe:0",
+        "set": {
+          "name": "Spiritomb",
+          "species": "Spiritomb",
+          "ability": "Pressure",
+          "level": 6,
+          "nature": "Hardy",
+          "moves": [
+            "nightshade",
+            "shadowsneak",
+            "confuseray"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 0,
+            "atk": 0,
+            "def": 0,
+            "spa": 0,
+            "spd": 0,
+            "spe": 0
+          },
+          "ivs": {
+            "hp": 29,
+            "atk": 26,
+            "def": 28,
+            "spa": 24,
+            "spd": 21,
+            "spe": 23
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 68
+        },
+        "hp": 0,
+        "maxhp": 23,
+        "status": "brn",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "nightshade",
+            "pp": 10,
+            "maxpp": 15
+          },
+          {
+            "id": "shadowsneak",
+            "pp": 29,
+            "maxpp": 30
+          },
+          {
+            "id": "confuseray",
+            "pp": 10,
+            "maxpp": 10
+          }
+        ],
+        "stats": {
+          "atk": 17,
+          "def": 19,
+          "spa": 17,
+          "spd": 19,
+          "spe": 10,
+          "hp": 23
+        },
+        "moveMemory": [
+          {
+            "id": "nightshade",
+            "pp": 10,
+            "maxpp": 15
+          },
+          {
+            "id": "shadowsneak",
+            "pp": 29,
+            "maxpp": 30
+          },
+          {
+            "id": "confuseray",
+            "pp": 10,
+            "maxpp": 10
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "pressure",
+            "hidden": false
+          }
+        ],
+        "experience": 216,
+        "seenMoves": [
+          "nightshade",
+          "shadowsneak",
+          "confuseray"
+        ],
+        "joinOrder": 2,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      }
+    ],
+    "bag": {
+      "pokeball": 3,
+      "potion": 3,
+      "revive": 0,
+      "ether": 6,
+      "expcandyxs": 0,
+      "tinymushroom": 3
+    },
+    "money": 1500,
+    "teraUnlocked": false,
+    "id": "fdfe3fa5-81e0-4af1-8071-729031dd04a3",
+    "contentVersion": "preview-2026-10-v12",
+    "floor": 3,
+    "phase": "event",
+    "owner": {
+      "id": "combatqa",
+      "name": "combatqa"
+    },
+    "previousBlessings": [],
+    "encounter": 0,
+    "attempt": 0,
+    "boosts": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 0
+    },
+    "startingSlots": 1,
+    "checkpoint": {
+      "team": [
+        {
+          "id": "bf4c187e-cb05-4bbc-b129-7c8616db3672",
+          "set": {
+            "name": "Fuecoco",
+            "species": "Fuecoco",
+            "ability": "Blaze",
+            "level": 9,
+            "nature": "Relaxed",
+            "moves": [
+              "ember",
+              "round",
+              "tackle",
+              "leer"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 0,
+              "atk": 1,
+              "def": 1,
+              "spa": 0,
+              "spd": 1,
+              "spe": 0
+            },
+            "ivs": {
+              "hp": 20,
+              "atk": 20,
+              "def": 20,
+              "spa": 20,
+              "spd": 20,
+              "spe": 20
+            },
+            "gender": "M",
+            "happiness": 70
+          },
+          "hp": 0,
+          "maxhp": 32,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "ember",
+              "pp": 14,
+              "maxpp": 25
+            },
+            {
+              "id": "round",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "tackle",
+              "pp": 34,
+              "maxpp": 35
+            },
+            {
+              "id": "leer",
+              "pp": 30,
+              "maxpp": 30
+            }
+          ],
+          "stats": {
+            "atk": 14,
+            "def": 18,
+            "spa": 18,
+            "spd": 14,
+            "spe": 11,
+            "hp": 32
+          },
+          "moveMemory": [
+            {
+              "id": "ember",
+              "pp": 14,
+              "maxpp": 25
+            },
+            {
+              "id": "tackle",
+              "pp": 34,
+              "maxpp": 35
+            },
+            {
+              "id": "leer",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "round",
+              "pp": 15,
+              "maxpp": 15
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "blaze",
+              "hidden": false
+            }
+          ],
+          "initialPartner": true,
+          "seenMoves": [
+            "ember",
+            "tackle",
+            "leer",
+            "round"
+          ],
+          "experience": 515,
+          "joinOrder": 0,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:2",
+          "set": {
+            "name": "Sandygast",
+            "species": "Sandygast",
+            "ability": "Water Compaction",
+            "level": 3,
+            "nature": "Serious",
+            "moves": [
+              "absorb",
+              "harden"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 0,
+              "atk": 0,
+              "def": 0,
+              "spa": 0,
+              "spd": 0,
+              "spe": 0
+            },
+            "ivs": {
+              "hp": 27,
+              "atk": 26,
+              "def": 30,
+              "spa": 21,
+              "spd": 22,
+              "spe": 25
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 68
+          },
+          "hp": 0,
+          "maxhp": 17,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "absorb",
+              "pp": 24,
+              "maxpp": 25
+            },
+            {
+              "id": "harden",
+              "pp": 29,
+              "maxpp": 30
+            }
+          ],
+          "stats": {
+            "atk": 9,
+            "def": 10,
+            "spa": 9,
+            "spd": 8,
+            "spe": 6,
+            "hp": 17
+          },
+          "moveMemory": [
+            {
+              "id": "absorb",
+              "pp": 24,
+              "maxpp": 25
+            },
+            {
+              "id": "harden",
+              "pp": 29,
+              "maxpp": 30
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "watercompaction",
+              "hidden": false
+            }
+          ],
+          "experience": 27,
+          "seenMoves": [
+            "absorb",
+            "harden"
+          ],
+          "joinOrder": 1,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "fdfe3fa5-81e0-4af1-8071-729031dd04a3:2:event0:0:foe:0",
+          "set": {
+            "name": "Spiritomb",
+            "species": "Spiritomb",
+            "ability": "Pressure",
+            "level": 6,
+            "nature": "Hardy",
+            "moves": [
+              "nightshade",
+              "shadowsneak",
+              "confuseray"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 0,
+              "atk": 0,
+              "def": 0,
+              "spa": 0,
+              "spd": 0,
+              "spe": 0
+            },
+            "ivs": {
+              "hp": 29,
+              "atk": 26,
+              "def": 28,
+              "spa": 24,
+              "spd": 21,
+              "spe": 23
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 73
+          },
+          "hp": 9,
+          "maxhp": 23,
+          "status": "brn",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "nightshade",
+              "pp": 12,
+              "maxpp": 15
+            },
+            {
+              "id": "shadowsneak",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "confuseray",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "stats": {
+            "atk": 17,
+            "def": 19,
+            "spa": 17,
+            "spd": 19,
+            "spe": 10,
+            "hp": 23
+          },
+          "moveMemory": [
+            {
+              "id": "nightshade",
+              "pp": 12,
+              "maxpp": 15
+            },
+            {
+              "id": "shadowsneak",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "confuseray",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "pressure",
+              "hidden": false
+            }
+          ],
+          "experience": 216,
+          "seenMoves": [
+            "nightshade",
+            "shadowsneak",
+            "confuseray"
+          ],
+          "joinOrder": 2,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          }
+        }
+      ],
+      "bag": {
+        "pokeball": 6,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      },
+      "money": 1500,
+      "teraUnlocked": false
+    },
+    "caught": [
+      "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:2",
+      "fdfe3fa5-81e0-4af1-8071-729031dd04a3:2:event0:0:foe:0"
+    ],
+    "trainerHistory": {
+      "gyms": [],
+      "eliteFour": []
+    },
+    "routeHistory": {
+      "floor": 3,
+      "factors": {
+        "wild": 0.9625,
+        "elite": 0.8375,
+        "trainer": 0.4262500000000001,
+        "event": 0.78625,
+        "reward": 0.76,
+        "trade": 0.675
+      },
+      "tradeSeen": true,
+      "eliteMisses": 2
+    },
+    "spiritVersion": 1,
+    "blessings": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "pivot",
+          "family": "pivot",
+          "tier": "silver",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2
+      ],
+      "settled": [
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:0",
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:1",
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:2"
+      ],
+      "defeated": [
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:0:foe:0",
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:1:foe:0"
+      ],
+      "caught": [
+        "fuecoco",
+        "sandygast",
+        "spiritomb"
+      ],
+      "nextJoin": 4,
+      "shards": 0,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 0
+    },
+    "blessingCheckpoint": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "pivot",
+          "family": "pivot",
+          "tier": "silver",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2
+      ],
+      "settled": [
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:0",
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:1",
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:2"
+      ],
+      "defeated": [
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:0:foe:0",
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:1:wild0:1:foe:0"
+      ],
+      "caught": [
+        "fuecoco",
+        "sandygast",
+        "spiritomb"
+      ],
+      "nextJoin": 3,
+      "shards": 0,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 0
+    },
+    "notices": [
+      "全队倒下且没有复活道具；急救需要 2000 金币，余额不足，尚未扣款或复活。"
+    ],
+    "friendshipProgress": {
+      "floor": 3,
+      "battles": {},
+      "fainted": {
+        "bf4c187e-cb05-4bbc-b129-7c8616db3672": 1,
+        "fdfe3fa5-81e0-4af1-8071-729031dd04a3:2:event0:0:foe:0": 1
+      },
+      "settled": [
+        "d62b4197-bb6d-48d4-8599-86d5c84aff55"
+      ]
+    },
+    "lastReward": {
+      "floor": 3,
+      "name": "谜之宝可梦球",
+      "items": {},
+      "money": 0,
+      "points": 0
+    },
+    "eventHistory": [
+      {
+        "id": "room",
+        "floor": 2
+      },
+      {
+        "id": "mysteryball",
+        "floor": 3
+      }
+    ],
+    "node": {
+      "id": "event0",
+      "name": "谜之宝可梦球",
+      "kind": "event",
+      "encounters": [
+        {
+          "name": "野生宝可梦",
+          "style": "balanced",
+          "team": [
+            {
+              "name": "Magnemite",
+              "species": "Magnemite",
+              "ability": "Analytic",
+              "level": 6,
+              "nature": "Lax",
+              "moves": [
+                "thundershock",
+                "tackle",
+                "supersonic"
+              ],
+              "item": "",
+              "evs": {
+                "hp": 0,
+                "atk": 0,
+                "def": 0,
+                "spa": 0,
+                "spd": 0,
+                "spe": 0
+              },
+              "ivs": {
+                "hp": 23,
+                "atk": 20,
+                "def": 22,
+                "spa": 22,
+                "spd": 23,
+                "spe": 26
+              },
+              "gender": "N",
+              "shiny": false,
+              "happiness": 70
+            }
+          ],
+          "catchable": true,
+          "blessingLevels": 0
+        }
+      ],
+      "reward": {
+        "money": 0,
+        "items": {}
+      },
+      "event": {
+        "id": "mysteryball",
+        "key": "6967f0f0-150b-4a53-8297-7e720f0c7fc7",
+        "stage": "result",
+        "ball": "pokeball",
+        "committed": true,
+        "battleReward": 3,
+        "result": [
+          "这场战斗未能获胜，事件到此结束。",
+          "HP、PP、异常状态、道具消耗和已捕获的伙伴均保留，不发放胜利奖励。整理好队伍后继续前进。"
+        ],
+        "trainingAidBlocked": true,
+        "settled": true
+      },
+      "wildLoot": [
+        {
+          "tinymushroom": 1
+        }
+      ],
+      "spiritPrepared": true,
+      "blessingPrepared": true
+    },
+    "emergencyRecovery": {
+      "cost": 2000,
+      "paid": false
+    }
+  },
+  "adventures": 1,
+  "onboardingSeen": true,
+  "discoveries": {
+    "blessings": [
+      "pivot"
+    ],
+    "events": [
+      "mysteryball",
+      "room"
+    ]
+  },
+  "caughtSpecies": [
+    "sandygast",
+    "spiritomb"
+  ]
+}

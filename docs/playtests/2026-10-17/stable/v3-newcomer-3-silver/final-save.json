@@ -1,0 +1,2406 @@
+{
+  "revision": 196,
+  "points": 1,
+  "boosts": {
+    "hp": 0,
+    "atk": 0,
+    "def": 0,
+    "spa": 0,
+    "spd": 0,
+    "spe": 0
+  },
+  "slots": 1,
+  "captures": {
+    "snorunt": 1,
+    "solosis": 1,
+    "wynaut": 1,
+    "ralts": 1,
+    "tinkatink": 1,
+    "drifloon": 1
+  },
+  "unlocked": [
+    "snorunt",
+    "solosis",
+    "wynaut",
+    "ralts",
+    "tinkatink",
+    "drifloon"
+  ],
+  "unlockedSpirits": [],
+  "starterTraits": {
+    "bulbasaur": {
+      "natures": [
+        "bashful"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "overgrow"
+      ],
+      "moves": [
+        "vinewhip",
+        "tackle",
+        "growl",
+        "growth",
+        "razorleaf"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        }
+      }
+    },
+    "snorunt": {
+      "natures": [
+        "careful"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "innerfocus"
+      ],
+      "moves": [
+        "headbutt",
+        "astonish",
+        "powdersnow",
+        "leer"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 24,
+          "atk": 27,
+          "def": 26,
+          "spa": 25,
+          "spd": 21,
+          "spe": 22
+        }
+      }
+    },
+    "solosis": {
+      "natures": [
+        "calm"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "overcoat"
+      ],
+      "moves": [
+        "confusion",
+        "protect",
+        "recover",
+        "endeavor"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 30,
+          "atk": 21,
+          "def": 26,
+          "spa": 31,
+          "spd": 20,
+          "spe": 22
+        }
+      }
+    },
+    "wynaut": {
+      "natures": [
+        "docile"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "shadowtag"
+      ],
+      "moves": [
+        "mirrorcoat",
+        "counter",
+        "splash",
+        "safeguard"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 23,
+          "atk": 21,
+          "def": 31,
+          "spa": 20,
+          "spd": 27,
+          "spe": 29
+        }
+      }
+    },
+    "ralts": {
+      "natures": [
+        "naughty"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "synchronize"
+      ],
+      "moves": [
+        "disarmingvoice",
+        "doubleteam",
+        "growl"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 24,
+          "atk": 27,
+          "def": 31,
+          "spa": 20,
+          "spd": 27,
+          "spe": 24
+        }
+      }
+    },
+    "tinkatink": {
+      "natures": [
+        "calm"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "moldbreaker"
+      ],
+      "moves": [
+        "fairywind",
+        "astonish",
+        "babydolleyes",
+        "metalclaw",
+        "covet"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 27,
+          "atk": 21,
+          "def": 22,
+          "spa": 28,
+          "spd": 28,
+          "spe": 27
+        }
+      }
+    },
+    "drifloon": {
+      "natures": [
+        "naughty"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "aftermath"
+      ],
+      "moves": [
+        "gust",
+        "astonish",
+        "minimize",
+        "focusenergy",
+        "payback"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 24,
+          "atk": 24,
+          "def": 24,
+          "spa": 24,
+          "spd": 24,
+          "spe": 25
+        }
+      }
+    }
+  },
+  "onboardingSeen": true,
+  "run": {
+    "team": [
+      {
+        "id": "243af08b-a657-48a0-85a3-94fa701326a3",
+        "set": {
+          "name": "Bulbasaur",
+          "species": "Bulbasaur",
+          "ability": "Overgrow",
+          "level": 13,
+          "nature": "Bashful",
+          "moves": [
+            "razorleaf",
+            "tackle",
+            "vinewhip",
+            "growl"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 3,
+            "atk": 2,
+            "def": 3,
+            "spa": 8,
+            "spd": 5,
+            "spe": 2
+          },
+          "ivs": {
+            "hp": 20,
+            "atk": 20,
+            "def": 20,
+            "spa": 20,
+            "spd": 20,
+            "spe": 20
+          },
+          "gender": "M",
+          "happiness": 110
+        },
+        "hp": 0,
+        "maxhp": 37,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "razorleaf",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "vinewhip",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          }
+        ],
+        "stats": {
+          "atk": 20,
+          "def": 20,
+          "spa": 24,
+          "spd": 24,
+          "spe": 19,
+          "hp": 37
+        },
+        "moveMemory": [
+          {
+            "id": "vinewhip",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          },
+          {
+            "id": "growth",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "leechseed",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "razorleaf",
+            "pp": 25,
+            "maxpp": 25
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "overgrow",
+            "hidden": false
+          }
+        ],
+        "initialPartner": true,
+        "seenMoves": [
+          "vinewhip",
+          "tackle",
+          "growl",
+          "growth",
+          "leechseed",
+          "razorleaf"
+        ],
+        "experience": 1421,
+        "joinOrder": 0,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:0",
+        "set": {
+          "name": "Snorunt",
+          "species": "Snorunt",
+          "ability": "Inner Focus",
+          "level": 9,
+          "nature": "Careful",
+          "moves": [
+            "headbutt",
+            "astonish",
+            "powdersnow",
+            "leer"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 1,
+            "atk": 1,
+            "def": 1,
+            "spa": 6,
+            "spd": 4,
+            "spe": 1
+          },
+          "ivs": {
+            "hp": 24,
+            "atk": 27,
+            "def": 26,
+            "spa": 25,
+            "spd": 21,
+            "spe": 22
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 71
+        },
+        "hp": 0,
+        "maxhp": 30,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "headbutt",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "astonish",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "powdersnow",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "leer",
+            "pp": 30,
+            "maxpp": 30
+          }
+        ],
+        "stats": {
+          "atk": 16,
+          "def": 16,
+          "spa": 14,
+          "spd": 16,
+          "spe": 15,
+          "hp": 30
+        },
+        "moveMemory": [
+          {
+            "id": "headbutt",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "astonish",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "powdersnow",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "leer",
+            "pp": 30,
+            "maxpp": 30
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "innerfocus",
+            "hidden": false
+          }
+        ],
+        "experience": 786,
+        "seenMoves": [
+          "headbutt",
+          "astonish",
+          "powdersnow",
+          "leer"
+        ],
+        "joinOrder": 1,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:1",
+        "set": {
+          "name": "Solosis",
+          "species": "Solosis",
+          "ability": "Overcoat",
+          "level": 8,
+          "nature": "Calm",
+          "moves": [
+            "confusion",
+            "recover",
+            "endeavor",
+            "protect"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 2,
+            "atk": 1,
+            "def": 3,
+            "spa": 2,
+            "spd": 1,
+            "spe": 1
+          },
+          "ivs": {
+            "hp": 30,
+            "atk": 21,
+            "def": 26,
+            "spa": 31,
+            "spd": 20,
+            "spe": 22
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 87
+        },
+        "hp": 0,
+        "maxhp": 27,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "confusion",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "recover",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "endeavor",
+            "pp": 5,
+            "maxpp": 5
+          },
+          {
+            "id": "protect",
+            "pp": 10,
+            "maxpp": 10
+          }
+        ],
+        "stats": {
+          "atk": 9,
+          "def": 13,
+          "spa": 24,
+          "spd": 15,
+          "spe": 9,
+          "hp": 27
+        },
+        "moveMemory": [
+          {
+            "id": "confusion",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "protect",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "recover",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "endeavor",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "overcoat",
+            "hidden": false
+          }
+        ],
+        "experience": 318,
+        "seenMoves": [
+          "confusion",
+          "protect",
+          "recover",
+          "endeavor"
+        ],
+        "joinOrder": 2,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:2",
+        "set": {
+          "name": "Wynaut",
+          "species": "Wynaut",
+          "ability": "Shadow Tag",
+          "level": 10,
+          "nature": "Docile",
+          "moves": [
+            "mirrorcoat",
+            "counter",
+            "splash",
+            "safeguard"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 3,
+            "atk": 3,
+            "def": 4,
+            "spa": 5,
+            "spd": 5,
+            "spe": 3
+          },
+          "ivs": {
+            "hp": 23,
+            "atk": 21,
+            "def": 31,
+            "spa": 20,
+            "spd": 27,
+            "spe": 29
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 103
+        },
+        "hp": 0,
+        "maxhp": 41,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "mirrorcoat",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "counter",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "splash",
+            "pp": 40,
+            "maxpp": 40
+          },
+          {
+            "id": "safeguard",
+            "pp": 25,
+            "maxpp": 25
+          }
+        ],
+        "stats": {
+          "atk": 11,
+          "def": 17,
+          "spa": 11,
+          "spd": 17,
+          "spe": 12,
+          "hp": 41
+        },
+        "moveMemory": [
+          {
+            "id": "mirrorcoat",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "counter",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "splash",
+            "pp": 40,
+            "maxpp": 40
+          },
+          {
+            "id": "safeguard",
+            "pp": 25,
+            "maxpp": 25
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "shadowtag",
+            "hidden": false
+          }
+        ],
+        "experience": 1295,
+        "seenMoves": [
+          "mirrorcoat",
+          "counter",
+          "splash",
+          "safeguard"
+        ],
+        "joinOrder": 3,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:0",
+        "set": {
+          "name": "Drifloon",
+          "species": "Drifloon",
+          "ability": "Aftermath",
+          "level": 14,
+          "nature": "Naughty",
+          "moves": [
+            "gust",
+            "payback",
+            "astonish",
+            "minimize"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 2,
+            "atk": 4,
+            "def": 5,
+            "spa": 7,
+            "spd": 4,
+            "spe": 2
+          },
+          "ivs": {
+            "hp": 24,
+            "atk": 24,
+            "def": 24,
+            "spa": 24,
+            "spd": 24,
+            "spe": 25
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 106
+        },
+        "hp": 0,
+        "maxhp": 52,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "gust",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "payback",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "astonish",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "minimize",
+            "pp": 10,
+            "maxpp": 10
+          }
+        ],
+        "stats": {
+          "atk": 24,
+          "def": 18,
+          "spa": 25,
+          "spd": 18,
+          "spe": 28,
+          "hp": 52
+        },
+        "moveMemory": [
+          {
+            "id": "gust",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "astonish",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "minimize",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "focusenergy",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "payback",
+            "pp": 10,
+            "maxpp": 10
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "aftermath",
+            "hidden": false
+          }
+        ],
+        "experience": 1608,
+        "seenMoves": [
+          "gust",
+          "astonish",
+          "minimize",
+          "focusenergy",
+          "payback"
+        ],
+        "joinOrder": 6,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:2",
+        "set": {
+          "name": "Tinkatink",
+          "species": "Tinkatink",
+          "ability": "Mold Breaker",
+          "level": 13,
+          "nature": "Calm",
+          "moves": [
+            "metalclaw",
+            "fairywind",
+            "covet",
+            "astonish"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 4,
+            "atk": 5,
+            "def": 7,
+            "spa": 7,
+            "spd": 5,
+            "spe": 3
+          },
+          "ivs": {
+            "hp": 27,
+            "atk": 21,
+            "def": 22,
+            "spa": 28,
+            "spd": 28,
+            "spe": 27
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 116
+        },
+        "hp": 0,
+        "maxhp": 39,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "metalclaw",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "fairywind",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "covet",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "astonish",
+            "pp": 15,
+            "maxpp": 15
+          }
+        ],
+        "stats": {
+          "atk": 17,
+          "def": 19,
+          "spa": 17,
+          "spd": 27,
+          "spe": 23,
+          "hp": 39
+        },
+        "moveMemory": [
+          {
+            "id": "fairywind",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "astonish",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "babydolleyes",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "metalclaw",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "covet",
+            "pp": 25,
+            "maxpp": 25
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "moldbreaker",
+            "hidden": false
+          }
+        ],
+        "experience": 1321,
+        "seenMoves": [
+          "fairywind",
+          "astonish",
+          "babydolleyes",
+          "metalclaw",
+          "covet"
+        ],
+        "joinOrder": 5,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      }
+    ],
+    "bag": {
+      "pokeball": 12,
+      "potion": 8,
+      "revive": 0,
+      "ether": 7,
+      "expcandyxs": 0,
+      "stardust": 0,
+      "tinymushroom": 0,
+      "pearl": 0,
+      "prettyfeather": 0,
+      "bigmushroom": 0,
+      "rockyhelmet": 1
+    },
+    "money": 794,
+    "teraUnlocked": false,
+    "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637",
+    "contentVersion": "preview-2026-10-v12",
+    "floor": 20,
+    "phase": "ready",
+    "owner": {
+      "id": "combatqa",
+      "name": "combatqa"
+    },
+    "previousBlessings": [],
+    "encounter": 0,
+    "attempt": 1,
+    "boosts": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 0
+    },
+    "startingSlots": 1,
+    "checkpoint": {
+      "team": [
+        {
+          "id": "243af08b-a657-48a0-85a3-94fa701326a3",
+          "set": {
+            "name": "Bulbasaur",
+            "species": "Bulbasaur",
+            "ability": "Overgrow",
+            "level": 13,
+            "nature": "Bashful",
+            "moves": [
+              "razorleaf",
+              "tackle",
+              "vinewhip",
+              "growl"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 3,
+              "atk": 2,
+              "def": 3,
+              "spa": 8,
+              "spd": 5,
+              "spe": 2
+            },
+            "ivs": {
+              "hp": 20,
+              "atk": 20,
+              "def": 20,
+              "spa": 20,
+              "spd": 20,
+              "spe": 20
+            },
+            "gender": "M",
+            "happiness": 115
+          },
+          "hp": 37,
+          "maxhp": 37,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "razorleaf",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "vinewhip",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            }
+          ],
+          "stats": {
+            "atk": 20,
+            "def": 20,
+            "spa": 24,
+            "spd": 24,
+            "spe": 19,
+            "hp": 37
+          },
+          "moveMemory": [
+            {
+              "id": "vinewhip",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            },
+            {
+              "id": "growth",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "leechseed",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "razorleaf",
+              "pp": 25,
+              "maxpp": 25
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "overgrow",
+              "hidden": false
+            }
+          ],
+          "initialPartner": true,
+          "seenMoves": [
+            "vinewhip",
+            "tackle",
+            "growl",
+            "growth",
+            "leechseed",
+            "razorleaf"
+          ],
+          "experience": 1421,
+          "joinOrder": 0,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:0",
+          "set": {
+            "name": "Snorunt",
+            "species": "Snorunt",
+            "ability": "Inner Focus",
+            "level": 9,
+            "nature": "Careful",
+            "moves": [
+              "headbutt",
+              "astonish",
+              "powdersnow",
+              "leer"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 1,
+              "atk": 1,
+              "def": 1,
+              "spa": 6,
+              "spd": 4,
+              "spe": 1
+            },
+            "ivs": {
+              "hp": 24,
+              "atk": 27,
+              "def": 26,
+              "spa": 25,
+              "spd": 21,
+              "spe": 22
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 76
+          },
+          "hp": 30,
+          "maxhp": 30,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "headbutt",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "astonish",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "powdersnow",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "leer",
+              "pp": 30,
+              "maxpp": 30
+            }
+          ],
+          "stats": {
+            "atk": 16,
+            "def": 16,
+            "spa": 14,
+            "spd": 16,
+            "spe": 15,
+            "hp": 30
+          },
+          "moveMemory": [
+            {
+              "id": "headbutt",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "astonish",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "powdersnow",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "leer",
+              "pp": 30,
+              "maxpp": 30
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "innerfocus",
+              "hidden": false
+            }
+          ],
+          "experience": 786,
+          "seenMoves": [
+            "headbutt",
+            "astonish",
+            "powdersnow",
+            "leer"
+          ],
+          "joinOrder": 1,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:1",
+          "set": {
+            "name": "Solosis",
+            "species": "Solosis",
+            "ability": "Overcoat",
+            "level": 8,
+            "nature": "Calm",
+            "moves": [
+              "confusion",
+              "recover",
+              "endeavor",
+              "protect"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 2,
+              "atk": 1,
+              "def": 3,
+              "spa": 2,
+              "spd": 1,
+              "spe": 1
+            },
+            "ivs": {
+              "hp": 30,
+              "atk": 21,
+              "def": 26,
+              "spa": 31,
+              "spd": 20,
+              "spe": 22
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 92
+          },
+          "hp": 27,
+          "maxhp": 27,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "confusion",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "recover",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "endeavor",
+              "pp": 5,
+              "maxpp": 5
+            },
+            {
+              "id": "protect",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "stats": {
+            "atk": 9,
+            "def": 13,
+            "spa": 24,
+            "spd": 15,
+            "spe": 9,
+            "hp": 27
+          },
+          "moveMemory": [
+            {
+              "id": "confusion",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "protect",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "recover",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "endeavor",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "overcoat",
+              "hidden": false
+            }
+          ],
+          "experience": 318,
+          "seenMoves": [
+            "confusion",
+            "protect",
+            "recover",
+            "endeavor"
+          ],
+          "joinOrder": 2,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:2",
+          "set": {
+            "name": "Wynaut",
+            "species": "Wynaut",
+            "ability": "Shadow Tag",
+            "level": 10,
+            "nature": "Docile",
+            "moves": [
+              "mirrorcoat",
+              "counter",
+              "splash",
+              "safeguard"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 3,
+              "atk": 3,
+              "def": 4,
+              "spa": 5,
+              "spd": 5,
+              "spe": 3
+            },
+            "ivs": {
+              "hp": 23,
+              "atk": 21,
+              "def": 31,
+              "spa": 20,
+              "spd": 27,
+              "spe": 29
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 108
+          },
+          "hp": 41,
+          "maxhp": 41,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "mirrorcoat",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "counter",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "splash",
+              "pp": 40,
+              "maxpp": 40
+            },
+            {
+              "id": "safeguard",
+              "pp": 25,
+              "maxpp": 25
+            }
+          ],
+          "stats": {
+            "atk": 11,
+            "def": 17,
+            "spa": 11,
+            "spd": 17,
+            "spe": 12,
+            "hp": 41
+          },
+          "moveMemory": [
+            {
+              "id": "mirrorcoat",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "counter",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "splash",
+              "pp": 40,
+              "maxpp": 40
+            },
+            {
+              "id": "safeguard",
+              "pp": 25,
+              "maxpp": 25
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "shadowtag",
+              "hidden": false
+            }
+          ],
+          "experience": 1295,
+          "seenMoves": [
+            "mirrorcoat",
+            "counter",
+            "splash",
+            "safeguard"
+          ],
+          "joinOrder": 3,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:0",
+          "set": {
+            "name": "Drifloon",
+            "species": "Drifloon",
+            "ability": "Aftermath",
+            "level": 14,
+            "nature": "Naughty",
+            "moves": [
+              "gust",
+              "payback",
+              "astonish",
+              "minimize"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 2,
+              "atk": 4,
+              "def": 5,
+              "spa": 7,
+              "spd": 4,
+              "spe": 2
+            },
+            "ivs": {
+              "hp": 24,
+              "atk": 24,
+              "def": 24,
+              "spa": 24,
+              "spd": 24,
+              "spe": 25
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 111
+          },
+          "hp": 52,
+          "maxhp": 52,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "gust",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "payback",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "astonish",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "minimize",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "stats": {
+            "atk": 24,
+            "def": 18,
+            "spa": 25,
+            "spd": 18,
+            "spe": 28,
+            "hp": 52
+          },
+          "moveMemory": [
+            {
+              "id": "gust",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "astonish",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "minimize",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "focusenergy",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "payback",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "aftermath",
+              "hidden": false
+            }
+          ],
+          "experience": 1608,
+          "seenMoves": [
+            "gust",
+            "astonish",
+            "minimize",
+            "focusenergy",
+            "payback"
+          ],
+          "joinOrder": 6,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:2",
+          "set": {
+            "name": "Tinkatink",
+            "species": "Tinkatink",
+            "ability": "Mold Breaker",
+            "level": 13,
+            "nature": "Calm",
+            "moves": [
+              "metalclaw",
+              "fairywind",
+              "covet",
+              "astonish"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 4,
+              "atk": 5,
+              "def": 7,
+              "spa": 7,
+              "spd": 5,
+              "spe": 3
+            },
+            "ivs": {
+              "hp": 27,
+              "atk": 21,
+              "def": 22,
+              "spa": 28,
+              "spd": 28,
+              "spe": 27
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 121
+          },
+          "hp": 39,
+          "maxhp": 39,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "metalclaw",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "fairywind",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "covet",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "astonish",
+              "pp": 15,
+              "maxpp": 15
+            }
+          ],
+          "stats": {
+            "atk": 17,
+            "def": 19,
+            "spa": 17,
+            "spd": 27,
+            "spe": 23,
+            "hp": 39
+          },
+          "moveMemory": [
+            {
+              "id": "fairywind",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "astonish",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "babydolleyes",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "metalclaw",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "covet",
+              "pp": 25,
+              "maxpp": 25
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "moldbreaker",
+              "hidden": false
+            }
+          ],
+          "experience": 1321,
+          "seenMoves": [
+            "fairywind",
+            "astonish",
+            "babydolleyes",
+            "metalclaw",
+            "covet"
+          ],
+          "joinOrder": 5,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 8,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "stardust": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "prettyfeather": 0,
+        "bigmushroom": 0,
+        "rockyhelmet": 1
+      },
+      "money": 794,
+      "teraUnlocked": false
+    },
+    "caught": [
+      "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:0",
+      "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:1",
+      "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:2",
+      "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:0",
+      "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:2",
+      "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:0"
+    ],
+    "trainerHistory": {
+      "gyms": [
+        "acerola"
+      ],
+      "eliteFour": []
+    },
+    "routeHistory": {
+      "floor": 18,
+      "factors": {
+        "wild": 0.8821627191524777,
+        "elite": 0.9039017192442595,
+        "trainer": 0.42138931283929354,
+        "event": 0.7975224142963909,
+        "reward": 0.6711392518144002,
+        "trade": 0.9996791458129883
+      },
+      "tradeSeen": true,
+      "eliteMisses": 3
+    },
+    "spiritVersion": 1,
+    "blessings": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "seeds",
+          "family": "seeds",
+          "tier": "gold",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "settled": [
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:10:boss:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:15:event0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:2"
+      ],
+      "defeated": [
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:10:boss:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:15:event0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:15:event0:0:foe:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:15:event0:0:foe:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:2:foe:0"
+      ],
+      "caught": [
+        "bulbasaur",
+        "snorunt",
+        "solosis",
+        "wynaut",
+        "ralts",
+        "tinkatink",
+        "drifloon"
+      ],
+      "nextJoin": 7,
+      "shards": 12,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 5,
+      "itemGifts": 1
+    },
+    "startCard": "all",
+    "blessingCheckpoint": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "seeds",
+          "family": "seeds",
+          "tier": "gold",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "settled": [
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:10:boss:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:15:event0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:2"
+      ],
+      "defeated": [
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:5:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:6:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:10:boss:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:12:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:13:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:14:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:15:event0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:15:event0:0:foe:1",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:15:event0:0:foe:2",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:16:wild0:2:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:0:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:1:foe:0",
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:17:wild0:2:foe:0"
+      ],
+      "caught": [
+        "bulbasaur",
+        "snorunt",
+        "solosis",
+        "wynaut",
+        "ralts",
+        "tinkatink",
+        "drifloon"
+      ],
+      "nextJoin": 7,
+      "shards": 12,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 5,
+      "itemGifts": 1
+    },
+    "notices": [
+      "本场战斗未通过，队伍当前状态已保存。",
+      "全队倒下且没有复活道具；急救需要 2700 金币，余额不足，尚未扣款或复活。"
+    ],
+    "pendingMoves": [],
+    "friendshipProgress": {
+      "floor": 20,
+      "battles": {},
+      "fainted": {
+        "243af08b-a657-48a0-85a3-94fa701326a3": 1,
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:1:wild0:0": 1,
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:1": 1,
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:2:wild0:2": 1,
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:8:wild0:0": 1,
+        "a1de546a-d9c8-4700-a5f1-5a4699a6f637:3:wild0:2": 1
+      },
+      "settled": [
+        "47d31772-4058-4c0b-b127-b70c70de5fd1"
+      ]
+    },
+    "lastReward": {
+      "floor": 19,
+      "name": "宝可梦中心",
+      "money": 0,
+      "items": {},
+      "points": 0
+    },
+    "eventHistory": [
+      {
+        "id": "dice",
+        "floor": 4
+      },
+      {
+        "id": "room",
+        "floor": 15
+      },
+      {
+        "id": "travel",
+        "floor": 18
+      }
+    ],
+    "pendingCaptures": [],
+    "bossPreviews": {
+      "10": {
+        "id": "boss",
+        "name": "幻想精英",
+        "kind": "boss",
+        "reward": {
+          "money": 1200,
+          "items": {
+            "greatball": 3,
+            "revive": 1
+          }
+        },
+        "encounters": [
+          {
+            "name": "幻想精英",
+            "team": [
+              {
+                "name": "Skitty-Fantasy",
+                "species": "Skitty-Fantasy",
+                "level": 8,
+                "ability": "Pixilate",
+                "moves": [
+                  "Qing Su Mi Hun",
+                  "Swift",
+                  "Earth Power"
+                ],
+                "item": "",
+                "gender": "M",
+                "nature": "Hardy",
+                "teraType": "Fairy",
+                "evs": {
+                  "hp": 0,
+                  "atk": 0,
+                  "def": 0,
+                  "spa": 0,
+                  "spd": 0,
+                  "spe": 0
+                },
+                "ivs": {
+                  "hp": 31,
+                  "atk": 31,
+                  "def": 31,
+                  "spa": 31,
+                  "spd": 31,
+                  "spe": 31
+                }
+              }
+            ],
+            "style": "balanced",
+            "catchable": false
+          }
+        ]
+      },
+      "20": {
+        "id": "boss",
+        "name": "道馆 · 阿塞萝拉（幽灵）",
+        "kind": "boss",
+        "reward": {
+          "money": 1600,
+          "items": {
+            "greatball": 3,
+            "revive": 1
+          }
+        },
+        "encounters": [
+          {
+            "name": "道馆 · 阿塞萝拉（幽灵）",
+            "team": [
+              {
+                "name": "",
+                "species": "Mimikyu",
+                "item": "Life Orb",
+                "ability": "Disguise",
+                "gender": "M",
+                "nature": "Adamant",
+                "evs": {
+                  "hp": 252,
+                  "atk": 252,
+                  "def": 4,
+                  "spa": 0,
+                  "spd": 0,
+                  "spe": 0
+                },
+                "ivs": {
+                  "hp": 31,
+                  "atk": 31,
+                  "def": 31,
+                  "spa": 31,
+                  "spd": 31,
+                  "spe": 31
+                },
+                "level": 15,
+                "moves": [
+                  "Shadow Claw",
+                  "Play Rough",
+                  "Shadow Sneak"
+                ]
+              },
+              {
+                "name": "",
+                "species": "Gastly",
+                "item": "Spell Tag",
+                "ability": "Levitate",
+                "gender": "M",
+                "nature": "Timid",
+                "evs": {
+                  "hp": 0,
+                  "atk": 0,
+                  "def": 0,
+                  "spa": 252,
+                  "spd": 4,
+                  "spe": 252
+                },
+                "ivs": {
+                  "hp": 31,
+                  "atk": 0,
+                  "def": 31,
+                  "spa": 31,
+                  "spd": 31,
+                  "spe": 31
+                },
+                "level": 15,
+                "moves": [
+                  "Hex",
+                  "Sludge Bomb",
+                  "Destiny Bond"
+                ]
+              },
+              {
+                "name": "",
+                "species": "Sandygast",
+                "item": "Leftovers",
+                "ability": "Water Compaction",
+                "gender": "F",
+                "nature": "Modest",
+                "evs": {
+                  "hp": 252,
+                  "atk": 0,
+                  "def": 0,
+                  "spa": 252,
+                  "spd": 4,
+                  "spe": 0
+                },
+                "ivs": {
+                  "hp": 31,
+                  "atk": 0,
+                  "def": 31,
+                  "spa": 31,
+                  "spd": 31,
+                  "spe": 31
+                },
+                "level": 15,
+                "moves": [
+                  "Earth Power",
+                  "Shadow Ball",
+                  "Shore Up"
+                ]
+              }
+            ],
+            "style": "balanced",
+            "catchable": false,
+            "trainer": {
+              "id": "acerola",
+              "name": "道馆 · 阿塞萝拉（幽灵）",
+              "role": "gym",
+              "avatar": "acerola",
+              "tera": true
+            }
+          }
+        ]
+      }
+    },
+    "mentorGifts": [
+      9,
+      19
+    ],
+    "mentorCard": {
+      "floor": 20,
+      "kind": "balanced"
+    },
+    "node": {
+      "id": "boss",
+      "name": "道馆 · 阿塞萝拉（幽灵）",
+      "kind": "boss",
+      "reward": {
+        "money": 1600,
+        "items": {}
+      },
+      "encounters": [
+        {
+          "name": "道馆 · 阿塞萝拉（幽灵）",
+          "team": [
+            {
+              "name": "",
+              "species": "Mimikyu",
+              "item": "Life Orb",
+              "ability": "Disguise",
+              "gender": "M",
+              "nature": "Adamant",
+              "evs": {
+                "hp": 252,
+                "atk": 252,
+                "def": 4,
+                "spa": 0,
+                "spd": 0,
+                "spe": 0
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 31,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              },
+              "level": 20,
+              "moves": [
+                "Shadow Claw",
+                "Play Rough",
+                "Shadow Sneak"
+              ]
+            },
+            {
+              "name": "",
+              "species": "Gastly",
+              "item": "Spell Tag",
+              "ability": "Levitate",
+              "gender": "M",
+              "nature": "Timid",
+              "evs": {
+                "hp": 0,
+                "atk": 0,
+                "def": 0,
+                "spa": 252,
+                "spd": 4,
+                "spe": 252
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 0,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              },
+              "level": 20,
+              "moves": [
+                "Hex",
+                "Sludge Bomb",
+                "Destiny Bond"
+              ]
+            },
+            {
+              "name": "",
+              "species": "Sandygast",
+              "item": "Leftovers",
+              "ability": "Water Compaction",
+              "gender": "F",
+              "nature": "Modest",
+              "evs": {
+                "hp": 252,
+                "atk": 0,
+                "def": 0,
+                "spa": 252,
+                "spd": 4,
+                "spe": 0
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 0,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              },
+              "level": 20,
+              "moves": [
+                "Earth Power",
+                "Shadow Ball",
+                "Shore Up"
+              ]
+            }
+          ],
+          "style": "balanced",
+          "catchable": false,
+          "trainer": {
+            "id": "acerola",
+            "name": "道馆 · 阿塞萝拉（幽灵）",
+            "role": "gym",
+            "avatar": "acerola",
+            "tera": true
+          },
+          "blessingLevels": 5
+        }
+      ],
+      "spiritPrepared": true,
+      "blessingPrepared": true
+    },
+    "seenBossDialogues": [
+      "20:boss:0:gym:acerola"
+    ],
+    "recovery": "defeat",
+    "emergencyRecovery": {
+      "cost": 2700,
+      "paid": false
+    }
+  },
+  "adventures": 1,
+  "discoveries": {
+    "blessings": [
+      "seeds"
+    ],
+    "events": [
+      "dice",
+      "room",
+      "travel"
+    ]
+  },
+  "caughtSpecies": [
+    "snorunt",
+    "solosis",
+    "wynaut",
+    "ralts",
+    "tinkatink",
+    "drifloon"
+  ]
+}

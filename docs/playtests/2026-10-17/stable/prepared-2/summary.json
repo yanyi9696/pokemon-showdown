@@ -1,0 +1,240 @@
+{
+  "profile": "prepared",
+  "seed": 2,
+  "halfMeta": false,
+  "battles": [
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sableye",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nickit",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "event",
+      "name": "不战斗就无法出去的房间",
+      "won": false,
+      "escaped": false,
+      "turns": 10,
+      "faints": 2,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Mismagius",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "event",
+      "name": "谜之宝可梦球",
+      "won": false,
+      "escaped": false,
+      "turns": 8,
+      "faints": 2,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Magnemite",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rescue": {
+        "cost": 2000,
+        "paid": false
+      },
+      "rejected": 0
+    }
+  ],
+  "purchases": [],
+  "floors": [
+    {
+      "floor": 1,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3
+      }
+    },
+    {
+      "floor": 2,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 3,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 6,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    }
+  ],
+  "choices": [
+    {
+      "floor": 1,
+      "blessing": "pivot",
+      "tier": "silver"
+    }
+  ],
+  "issues": [
+    {
+      "floor": 3,
+      "reason": "driver-error",
+      "error": "Error: 请先复活至少一名伙伴，再继续前进。\n    at requireRule (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:65:18)\n    at F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:1010:32\n    at Function.<anonymous> (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\store.js:82:7)\n    at Function.sqliteTransaction (F:\\fantasy\\pokemon-showdown\\node_modules\\better-sqlite3\\lib\\methods\\transaction.js:65:24)\n    at RogueStore.change (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\store.js:99:8)\n    at RogueEngine.command (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:468:23)\n    at cmd (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-combat-playtest.js:39:40)\n    at Object.<anonymous> (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-combat-playtest.js:190:35)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Object..js (node:internal/modules/cjs/loader:1706:10)"
+    }
+  ],
+  "lastFloor": 3,
+  "phase": "event"
+}

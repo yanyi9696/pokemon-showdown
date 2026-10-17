@@ -1,0 +1,1688 @@
+{
+  "revision": 118,
+  "points": 0,
+  "boosts": {
+    "hp": 0,
+    "atk": 0,
+    "def": 0,
+    "spa": 0,
+    "spd": 0,
+    "spe": 0
+  },
+  "slots": 1,
+  "captures": {
+    "pidgey": 1,
+    "meowth": 1,
+    "slakoth": 1,
+    "swablu": 1
+  },
+  "unlocked": [
+    "pidgey",
+    "meowth",
+    "slakoth",
+    "swablu"
+  ],
+  "unlockedSpirits": [],
+  "starterTraits": {
+    "popplio": {
+      "natures": [
+        "docile"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "torrent"
+      ],
+      "moves": [
+        "watergun",
+        "pound",
+        "growl",
+        "disarmingvoice",
+        "aquajet"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        }
+      }
+    },
+    "pidgey": {
+      "natures": [
+        "serious"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "keeneye"
+      ],
+      "moves": [
+        "tackle",
+        "sandattack",
+        "gust"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 26,
+          "atk": 25,
+          "def": 23,
+          "spa": 20,
+          "spd": 20,
+          "spe": 28
+        }
+      }
+    },
+    "meowth": {
+      "natures": [
+        "impish"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "pickup"
+      ],
+      "moves": [
+        "fakeout",
+        "growl",
+        "feint"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 20,
+          "atk": 29,
+          "def": 26,
+          "spa": 23,
+          "spd": 24,
+          "spe": 27
+        }
+      }
+    },
+    "slakoth": {
+      "natures": [
+        "hasty"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "truant"
+      ],
+      "moves": [
+        "scratch",
+        "yawn",
+        "encore"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 28,
+          "atk": 26,
+          "def": 29,
+          "spa": 24,
+          "spd": 31,
+          "spe": 23
+        }
+      }
+    },
+    "swablu": {
+      "natures": [
+        "mild"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "naturalcure"
+      ],
+      "moves": [
+        "peck",
+        "growl",
+        "disarmingvoice"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 27,
+          "atk": 21,
+          "def": 31,
+          "spa": 27,
+          "spd": 24,
+          "spe": 27
+        }
+      }
+    }
+  },
+  "onboardingSeen": true,
+  "run": {
+    "team": [
+      {
+        "id": "f2ffc931-829f-4130-9ca4-a36b64dc1f34",
+        "set": {
+          "name": "Popplio",
+          "species": "Popplio",
+          "ability": "Torrent",
+          "level": 11,
+          "nature": "Docile",
+          "moves": [
+            "watergun",
+            "disarmingvoice",
+            "pound",
+            "aquajet"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 1,
+            "atk": 4,
+            "def": 5,
+            "spa": 2,
+            "spd": 4,
+            "spe": 5
+          },
+          "ivs": {
+            "hp": 20,
+            "atk": 20,
+            "def": 20,
+            "spa": 20,
+            "spd": 20,
+            "spe": 20
+          },
+          "gender": "M",
+          "happiness": 100
+        },
+        "hp": 0,
+        "maxhp": 34,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "watergun",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "disarmingvoice",
+            "pp": 13,
+            "maxpp": 15
+          },
+          {
+            "id": "pound",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "aquajet",
+            "pp": 20,
+            "maxpp": 20
+          }
+        ],
+        "stats": {
+          "atk": 19,
+          "def": 19,
+          "spa": 21,
+          "spd": 19,
+          "spe": 16,
+          "hp": 34
+        },
+        "moveMemory": [
+          {
+            "id": "watergun",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "pound",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          },
+          {
+            "id": "disarmingvoice",
+            "pp": 13,
+            "maxpp": 15
+          },
+          {
+            "id": "aquajet",
+            "pp": 20,
+            "maxpp": 20
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "torrent",
+            "hidden": false
+          }
+        ],
+        "initialPartner": true,
+        "seenMoves": [
+          "watergun",
+          "pound",
+          "growl",
+          "disarmingvoice",
+          "aquajet"
+        ],
+        "experience": 946,
+        "joinOrder": 0,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:0",
+        "set": {
+          "name": "Pidgey",
+          "species": "Pidgey",
+          "ability": "Keen Eye",
+          "level": 9,
+          "nature": "Serious",
+          "moves": [
+            "tackle",
+            "gust",
+            "sandattack"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 1,
+            "atk": 4,
+            "def": 5,
+            "spa": 2,
+            "spd": 4,
+            "spe": 5
+          },
+          "ivs": {
+            "hp": 26,
+            "atk": 25,
+            "def": 23,
+            "spa": 20,
+            "spd": 20,
+            "spe": 28
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 87
+        },
+        "hp": 0,
+        "maxhp": 28,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "gust",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "sandattack",
+            "pp": 15,
+            "maxpp": 15
+          }
+        ],
+        "stats": {
+          "atk": 15,
+          "def": 14,
+          "spa": 13,
+          "spd": 13,
+          "spe": 17,
+          "hp": 28
+        },
+        "moveMemory": [
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "sandattack",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "gust",
+            "pp": 35,
+            "maxpp": 35
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "keeneye",
+            "hidden": false
+          }
+        ],
+        "experience": 440,
+        "seenMoves": [
+          "tackle",
+          "sandattack",
+          "gust"
+        ],
+        "joinOrder": 1,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:1",
+        "set": {
+          "name": "Meowth",
+          "species": "Meowth",
+          "ability": "Pickup",
+          "level": 7,
+          "nature": "Impish",
+          "moves": [
+            "fakeout",
+            "feint",
+            "growl"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 1,
+            "atk": 4,
+            "def": 5,
+            "spa": 2,
+            "spd": 4,
+            "spe": 5
+          },
+          "ivs": {
+            "hp": 20,
+            "atk": 29,
+            "def": 26,
+            "spa": 23,
+            "spd": 24,
+            "spe": 27
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 87
+        },
+        "hp": 0,
+        "maxhp": 24,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "fakeout",
+            "pp": 8,
+            "maxpp": 10
+          },
+          {
+            "id": "feint",
+            "pp": 8,
+            "maxpp": 10
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          }
+        ],
+        "stats": {
+          "atk": 13,
+          "def": 12,
+          "spa": 10,
+          "spd": 12,
+          "spe": 19,
+          "hp": 24
+        },
+        "moveMemory": [
+          {
+            "id": "fakeout",
+            "pp": 8,
+            "maxpp": 10
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          },
+          {
+            "id": "feint",
+            "pp": 8,
+            "maxpp": 10
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "pickup",
+            "hidden": false
+          }
+        ],
+        "experience": 449,
+        "seenMoves": [
+          "fakeout",
+          "growl",
+          "feint"
+        ],
+        "joinOrder": 2,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:2",
+        "set": {
+          "name": "Slakoth",
+          "species": "Slakoth",
+          "ability": "Truant",
+          "level": 7,
+          "nature": "Hasty",
+          "moves": [
+            "scratch",
+            "yawn",
+            "encore"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 1,
+            "atk": 4,
+            "def": 5,
+            "spa": 2,
+            "spd": 4,
+            "spe": 5
+          },
+          "ivs": {
+            "hp": 28,
+            "atk": 26,
+            "def": 29,
+            "spa": 24,
+            "spd": 31,
+            "spe": 23
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 92
+        },
+        "hp": 0,
+        "maxhp": 27,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "scratch",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "yawn",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "encore",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "stats": {
+          "atk": 15,
+          "def": 13,
+          "spa": 11,
+          "spd": 12,
+          "spe": 11,
+          "hp": 27
+        },
+        "moveMemory": [
+          {
+            "id": "scratch",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "yawn",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "encore",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "truant",
+            "hidden": false
+          }
+        ],
+        "experience": 460,
+        "seenMoves": [
+          "scratch",
+          "yawn",
+          "encore"
+        ],
+        "joinOrder": 3,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:0",
+        "set": {
+          "name": "Swablu",
+          "species": "Swablu",
+          "ability": "Natural Cure",
+          "level": 6,
+          "nature": "Mild",
+          "moves": [
+            "peck",
+            "disarmingvoice",
+            "growl"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 1,
+            "atk": 4,
+            "def": 5,
+            "spa": 2,
+            "spd": 4,
+            "spe": 5
+          },
+          "ivs": {
+            "hp": 27,
+            "atk": 21,
+            "def": 31,
+            "spa": 27,
+            "spd": 24,
+            "spe": 27
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 86
+        },
+        "hp": 0,
+        "maxhp": 23,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "peck",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "disarmingvoice",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          }
+        ],
+        "stats": {
+          "atk": 11,
+          "def": 12,
+          "spa": 12,
+          "spd": 15,
+          "spe": 12,
+          "hp": 23
+        },
+        "moveMemory": [
+          {
+            "id": "peck",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          },
+          {
+            "id": "disarmingvoice",
+            "pp": 15,
+            "maxpp": 15
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "naturalcure",
+            "hidden": false
+          }
+        ],
+        "experience": 495,
+        "seenMoves": [
+          "peck",
+          "growl",
+          "disarmingvoice"
+        ],
+        "joinOrder": 4,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      }
+    ],
+    "bag": {
+      "pokeball": 10,
+      "potion": 5,
+      "revive": 0,
+      "ether": 6,
+      "expcandyxs": 0,
+      "prettyfeather": 0,
+      "tinymushroom": 0,
+      "pearl": 0,
+      "iceheal": 2
+    },
+    "money": 791,
+    "teraUnlocked": false,
+    "id": "f31abac9-a383-4d3a-b313-0027708b76d3",
+    "contentVersion": "preview-2026-10-v12",
+    "floor": 10,
+    "phase": "ready",
+    "owner": {
+      "id": "combatqa",
+      "name": "combatqa"
+    },
+    "previousBlessings": [],
+    "encounter": 0,
+    "attempt": 2,
+    "boosts": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 0
+    },
+    "startingSlots": 1,
+    "checkpoint": {
+      "team": [
+        {
+          "id": "f2ffc931-829f-4130-9ca4-a36b64dc1f34",
+          "set": {
+            "name": "Popplio",
+            "species": "Popplio",
+            "ability": "Torrent",
+            "level": 11,
+            "nature": "Docile",
+            "moves": [
+              "watergun",
+              "disarmingvoice",
+              "pound",
+              "aquajet"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 1,
+              "atk": 4,
+              "def": 5,
+              "spa": 2,
+              "spd": 4,
+              "spe": 5
+            },
+            "ivs": {
+              "hp": 20,
+              "atk": 20,
+              "def": 20,
+              "spa": 20,
+              "spd": 20,
+              "spe": 20
+            },
+            "gender": "M",
+            "happiness": 110
+          },
+          "hp": 34,
+          "maxhp": 34,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "watergun",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "disarmingvoice",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "pound",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "aquajet",
+              "pp": 20,
+              "maxpp": 20
+            }
+          ],
+          "stats": {
+            "atk": 19,
+            "def": 19,
+            "spa": 21,
+            "spd": 19,
+            "spe": 16,
+            "hp": 34
+          },
+          "moveMemory": [
+            {
+              "id": "watergun",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "pound",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            },
+            {
+              "id": "disarmingvoice",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "aquajet",
+              "pp": 20,
+              "maxpp": 20
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "torrent",
+              "hidden": false
+            }
+          ],
+          "initialPartner": true,
+          "seenMoves": [
+            "watergun",
+            "pound",
+            "growl",
+            "disarmingvoice",
+            "aquajet"
+          ],
+          "experience": 946,
+          "joinOrder": 0,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:0",
+          "set": {
+            "name": "Pidgey",
+            "species": "Pidgey",
+            "ability": "Keen Eye",
+            "level": 9,
+            "nature": "Serious",
+            "moves": [
+              "tackle",
+              "gust",
+              "sandattack"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 1,
+              "atk": 4,
+              "def": 5,
+              "spa": 2,
+              "spd": 4,
+              "spe": 5
+            },
+            "ivs": {
+              "hp": 26,
+              "atk": 25,
+              "def": 23,
+              "spa": 20,
+              "spd": 20,
+              "spe": 28
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 97
+          },
+          "hp": 28,
+          "maxhp": 28,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "gust",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "sandattack",
+              "pp": 15,
+              "maxpp": 15
+            }
+          ],
+          "stats": {
+            "atk": 15,
+            "def": 14,
+            "spa": 13,
+            "spd": 13,
+            "spe": 17,
+            "hp": 28
+          },
+          "moveMemory": [
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "sandattack",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "gust",
+              "pp": 35,
+              "maxpp": 35
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "keeneye",
+              "hidden": false
+            }
+          ],
+          "experience": 440,
+          "seenMoves": [
+            "tackle",
+            "sandattack",
+            "gust"
+          ],
+          "joinOrder": 1,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:1",
+          "set": {
+            "name": "Meowth",
+            "species": "Meowth",
+            "ability": "Pickup",
+            "level": 7,
+            "nature": "Impish",
+            "moves": [
+              "fakeout",
+              "feint",
+              "growl"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 1,
+              "atk": 4,
+              "def": 5,
+              "spa": 2,
+              "spd": 4,
+              "spe": 5
+            },
+            "ivs": {
+              "hp": 20,
+              "atk": 29,
+              "def": 26,
+              "spa": 23,
+              "spd": 24,
+              "spe": 27
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 97
+          },
+          "hp": 24,
+          "maxhp": 24,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "fakeout",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "feint",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            }
+          ],
+          "stats": {
+            "atk": 13,
+            "def": 12,
+            "spa": 10,
+            "spd": 12,
+            "spe": 19,
+            "hp": 24
+          },
+          "moveMemory": [
+            {
+              "id": "fakeout",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            },
+            {
+              "id": "feint",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "pickup",
+              "hidden": false
+            }
+          ],
+          "experience": 449,
+          "seenMoves": [
+            "fakeout",
+            "growl",
+            "feint"
+          ],
+          "joinOrder": 2,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:2",
+          "set": {
+            "name": "Slakoth",
+            "species": "Slakoth",
+            "ability": "Truant",
+            "level": 7,
+            "nature": "Hasty",
+            "moves": [
+              "scratch",
+              "yawn",
+              "encore"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 1,
+              "atk": 4,
+              "def": 5,
+              "spa": 2,
+              "spd": 4,
+              "spe": 5
+            },
+            "ivs": {
+              "hp": 28,
+              "atk": 26,
+              "def": 29,
+              "spa": 24,
+              "spd": 31,
+              "spe": 23
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 97
+          },
+          "hp": 27,
+          "maxhp": 27,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "scratch",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "yawn",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "encore",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "stats": {
+            "atk": 15,
+            "def": 13,
+            "spa": 11,
+            "spd": 12,
+            "spe": 11,
+            "hp": 27
+          },
+          "moveMemory": [
+            {
+              "id": "scratch",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "yawn",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "encore",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "truant",
+              "hidden": false
+            }
+          ],
+          "experience": 460,
+          "seenMoves": [
+            "scratch",
+            "yawn",
+            "encore"
+          ],
+          "joinOrder": 3,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:0",
+          "set": {
+            "name": "Swablu",
+            "species": "Swablu",
+            "ability": "Natural Cure",
+            "level": 6,
+            "nature": "Mild",
+            "moves": [
+              "peck",
+              "disarmingvoice",
+              "growl"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 1,
+              "atk": 4,
+              "def": 5,
+              "spa": 2,
+              "spd": 4,
+              "spe": 5
+            },
+            "ivs": {
+              "hp": 27,
+              "atk": 21,
+              "def": 31,
+              "spa": 27,
+              "spd": 24,
+              "spe": 27
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 91
+          },
+          "hp": 23,
+          "maxhp": 23,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "peck",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "disarmingvoice",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            }
+          ],
+          "stats": {
+            "atk": 11,
+            "def": 12,
+            "spa": 12,
+            "spd": 15,
+            "spe": 12,
+            "hp": 23
+          },
+          "moveMemory": [
+            {
+              "id": "peck",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            },
+            {
+              "id": "disarmingvoice",
+              "pp": 15,
+              "maxpp": 15
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "naturalcure",
+              "hidden": false
+            }
+          ],
+          "experience": 495,
+          "seenMoves": [
+            "peck",
+            "growl",
+            "disarmingvoice"
+          ],
+          "joinOrder": 4,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "prettyfeather": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "iceheal": 2
+      },
+      "money": 791,
+      "teraUnlocked": false
+    },
+    "caught": [
+      "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:0",
+      "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:1",
+      "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:2",
+      "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:0"
+    ],
+    "trainerHistory": {
+      "gyms": [],
+      "eliteFour": []
+    },
+    "routeHistory": {
+      "floor": 8,
+      "factors": {
+        "wild": 0.763978831665039,
+        "elite": 0.334537109375,
+        "trainer": 0.7082861816406251,
+        "event": 0.7999559947509766,
+        "reward": 0.83632,
+        "trade": 1
+      },
+      "tradeSeen": false,
+      "eliteMisses": 0
+    },
+    "spiritVersion": 1,
+    "blessings": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "lifepower",
+          "family": "lifepower",
+          "tier": "gold",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "settled": [
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:2"
+      ],
+      "defeated": [
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:2:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:2:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:2:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:3",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:4",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:5",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:2:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:2:foe:0"
+      ],
+      "caught": [
+        "popplio",
+        "pidgey",
+        "meowth",
+        "slakoth",
+        "swablu"
+      ],
+      "nextJoin": 5,
+      "shards": 0,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 5,
+      "itemGifts": 2
+    },
+    "startCard": "all",
+    "blessingCheckpoint": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "lifepower",
+          "family": "lifepower",
+          "tier": "gold",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "settled": [
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:2"
+      ],
+      "defeated": [
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:2:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:4:wild0:2:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:5:wild0:2:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:1",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:2",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:3",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:4",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:6:event0:0:foe:5",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:7:wild0:2:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:0:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:1:foe:0",
+        "f31abac9-a383-4d3a-b313-0027708b76d3:8:wild0:2:foe:0"
+      ],
+      "caught": [
+        "popplio",
+        "pidgey",
+        "meowth",
+        "slakoth",
+        "swablu"
+      ],
+      "nextJoin": 5,
+      "shards": 0,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 5,
+      "itemGifts": 2
+    },
+    "notices": [
+      "本场战斗未通过，队伍当前状态已保存。",
+      "全队倒下且没有复活道具；急救需要 2300 金币，余额不足，尚未扣款或复活。"
+    ],
+    "pendingMoves": [],
+    "friendshipProgress": {
+      "floor": 10,
+      "battles": {},
+      "fainted": {
+        "f2ffc931-829f-4130-9ca4-a36b64dc1f34": 2,
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:0": 2,
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:1": 2,
+        "f31abac9-a383-4d3a-b313-0027708b76d3:1:wild0:2": 1,
+        "f31abac9-a383-4d3a-b313-0027708b76d3:3:wild0:0": 1
+      },
+      "settled": [
+        "c6c9d650-de66-4497-8f99-413860d5bda0",
+        "d2b1fb30-26b1-47e1-a980-9e79d196001d"
+      ]
+    },
+    "lastReward": {
+      "floor": 9,
+      "name": "宝可梦中心",
+      "money": 0,
+      "items": {},
+      "points": 0
+    },
+    "eventHistory": [
+      {
+        "id": "bandits",
+        "floor": 2
+      },
+      {
+        "id": "forest",
+        "floor": 6
+      }
+    ],
+    "bossPreviews": {
+      "10": {
+        "id": "boss",
+        "name": "幻想精英",
+        "kind": "boss",
+        "reward": {
+          "money": 1200,
+          "items": {
+            "greatball": 3,
+            "revive": 1
+          }
+        },
+        "encounters": [
+          {
+            "name": "幻想精英",
+            "team": [
+              {
+                "name": "Rookidee-Fantasy",
+                "species": "Rookidee-Fantasy",
+                "level": 8,
+                "ability": "Zheng Qiang",
+                "moves": [
+                  "Chuan Yun",
+                  "Foul Play",
+                  "Roost"
+                ],
+                "item": "",
+                "gender": "F",
+                "nature": "Hardy",
+                "teraType": "Flying",
+                "evs": {
+                  "hp": 0,
+                  "atk": 0,
+                  "def": 0,
+                  "spa": 0,
+                  "spd": 0,
+                  "spe": 0
+                },
+                "ivs": {
+                  "hp": 31,
+                  "atk": 31,
+                  "def": 31,
+                  "spa": 31,
+                  "spd": 31,
+                  "spe": 31
+                }
+              }
+            ],
+            "style": "balanced",
+            "catchable": false
+          }
+        ]
+      }
+    },
+    "mentorCard": {
+      "floor": 10,
+      "kind": "balanced"
+    },
+    "mentorGifts": [
+      9
+    ],
+    "node": {
+      "id": "boss",
+      "name": "幻想精英",
+      "kind": "boss",
+      "reward": {
+        "money": 0,
+        "items": {}
+      },
+      "encounters": [
+        {
+          "name": "幻想精英",
+          "team": [
+            {
+              "name": "Rookidee-Fantasy",
+              "species": "Rookidee-Fantasy",
+              "level": 13,
+              "ability": "Zheng Qiang",
+              "moves": [
+                "Chuan Yun",
+                "Foul Play",
+                "Roost"
+              ],
+              "item": "",
+              "gender": "F",
+              "nature": "Hardy",
+              "teraType": "Flying",
+              "evs": {
+                "hp": 0,
+                "atk": 0,
+                "def": 0,
+                "spa": 0,
+                "spd": 0,
+                "spe": 0
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 31,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              }
+            }
+          ],
+          "style": "balanced",
+          "catchable": false,
+          "blessingLevels": 5
+        }
+      ],
+      "wildLoot": [
+        {
+          "tinymushroom": 1
+        }
+      ],
+      "spiritPrepared": true,
+      "blessingPrepared": true
+    },
+    "recovery": "defeat",
+    "emergencyRecovery": {
+      "cost": 2300,
+      "paid": false
+    }
+  },
+  "adventures": 1,
+  "discoveries": {
+    "blessings": [
+      "lifepower"
+    ],
+    "events": [
+      "bandits",
+      "forest"
+    ]
+  },
+  "caughtSpecies": [
+    "pidgey",
+    "meowth",
+    "slakoth",
+    "swablu"
+  ]
+}

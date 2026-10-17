@@ -1,0 +1,148 @@
+|init|battle
+|title|RoguePlay1016E vs. AI · 道馆 · 小刚（岩石）
+
+|-message|幻想杯肉鸽第 40 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792132146
+|gametype|singles
+|player|p1|RoguePlay1016E|2|
+|player|p2|AI · 道馆 · 小刚（岩石）|brock|
+|teamsize|p1|3
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L23, M|
+|poke|p1|Geodude-Alola, L19, F|
+|poke|p1|Pachirisu, L17, M|
+|poke|p2|Onix, L25, M|
+|poke|p2|Nacli, L25, F|
+|poke|p2|Aerodactyl, L25, F|
+|poke|p2|Pupitar, L25, M|
+|teampreview
+|
+|t:|1792132147
+|start
+|-message|塔灵：雷吉奇卡斯的试炼
+|switch|p1a: Crocalor|Crocalor, L23, M|74/74
+|switch|p2a: Onix|Onix, L25, M|100/100
+|-end|p2a: Onix|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Onix|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792132148
+|-terastallize|p2a: Onix|Rock
+|move|p2a: Onix|Rock Throw|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|-damage|p1a: Crocalor|42/74
+|move|p1a: Crocalor|Fire Pledge|p2a: Onix
+|-resisted|p2a: Onix
+|-damage|p2a: Onix|34/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792132148
+|move|p2a: Onix|Rock Throw|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|-damage|p1a: Crocalor|10/74
+|move|p1a: Crocalor|Fire Pledge|p2a: Onix
+|-resisted|p2a: Onix
+|-damage|p2a: Onix|0 fnt
+|faint|p2a: Onix
+|
+|upkeep
+|
+|t:|1792132148
+|switch|p2a: Nacli|Nacli, L25, F|100/100
+|-end|p2a: Nacli|fantasystats|[silent]
+|turn|3
+|
+|t:|1792132149
+|move|p1a: Crocalor|Fire Pledge|p2a: Nacli
+|-resisted|p2a: Nacli
+|-damage|p2a: Nacli|9/100
+|move|p2a: Nacli|Rock Throw|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|
+|upkeep
+|
+|t:|1792132149
+|switch|p1a: Geodude|Geodude-Alola, L19, F|49/49
+|-end|p1a: Geodude|fantasystats|[silent]
+|turn|4
+|
+|t:|1792132150
+|move|p1a: Geodude|Spark|p2a: Nacli
+|-damage|p2a: Nacli|0 fnt
+|faint|p2a: Nacli
+|
+|upkeep
+|
+|t:|1792132150
+|switch|p2a: Aerodactyl|Aerodactyl, L25, F|100/100
+|-end|p2a: Aerodactyl|fantasystats|[silent]
+|turn|5
+|
+|t:|1792132151
+|move|p2a: Aerodactyl|Rock Throw|p1a: Geodude
+|-damage|p1a: Geodude|30/49
+|cant|p1a: Geodude|flinch
+|
+|upkeep
+|turn|6
+|
+|t:|1792132151
+|move|p1a: Geodude|Spark|p2a: Aerodactyl
+|-supereffective|p2a: Aerodactyl
+|-damage|p2a: Aerodactyl|52/100
+|move|p2a: Aerodactyl|Rock Throw|p1a: Geodude
+|-damage|p1a: Geodude|10/49
+|
+|upkeep
+|turn|7
+|
+|t:|1792132152
+|move|p1a: Geodude|Spark|p2a: Aerodactyl
+|-supereffective|p2a: Aerodactyl
+|-damage|p2a: Aerodactyl|8/100
+|move|p2a: Aerodactyl|Rock Throw|p1a: Geodude
+|-damage|p1a: Geodude|0 fnt
+|faint|p1a: Geodude
+|
+|upkeep
+|
+|t:|1792132152
+|switch|p1a: Pachirisu|Pachirisu, L17, M|51/51
+|-end|p1a: Pachirisu|fantasystats|[silent]
+|turn|8
+|
+|t:|1792132153
+|move|p1a: Pachirisu|Spark|p2a: Aerodactyl
+|-supereffective|p2a: Aerodactyl
+|-damage|p2a: Aerodactyl|0 fnt
+|faint|p2a: Aerodactyl
+|
+|upkeep
+|
+|t:|1792132153
+|switch|p2a: Pupitar|Pupitar, L25, M|100/100
+|-end|p2a: Pupitar|fantasystats|[silent]
+|turn|9
+|
+|t:|1792132154
+|move|p1a: Pachirisu|Quick Attack|p2a: Pupitar
+|-resisted|p2a: Pupitar
+|-damage|p2a: Pupitar|98/100
+|move|p2a: Pupitar|Earthquake|p1a: Pachirisu
+|-supereffective|p1a: Pachirisu
+|-damage|p1a: Pachirisu|0 fnt
+|faint|p1a: Pachirisu
+|
+|win|AI · 道馆 · 小刚（岩石）
+|fantasyroguedefeat|{"floor":40,"encounter":1,"encounters":1,"retryFloor":false,"noHealing":false,"emergencyCost":5000}
+|deinit

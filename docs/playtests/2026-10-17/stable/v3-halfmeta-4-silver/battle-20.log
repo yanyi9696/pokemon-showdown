@@ -1,0 +1,174 @@
+|t:|1792223323
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L11, M|
+|poke|p1|Pidgey, L9, M|
+|poke|p1|Meowth, L7, F|
+|poke|p1|Slakoth, L7, M|
+|poke|p1|Swablu, L6, F|
+|poke|p2|Rookidee-Fantasy, L13, F|
+|teampreview
+|
+|t:|1792223323
+|start
+|split|p1
+|switch|p1a: Popplio|Popplio, L11, M|39/39
+|switch|p1a: Popplio|Popplio, L11, M|100/100
+|split|p2
+|switch|p2a: Rookidee|Rookidee-Fantasy, L13, F|47/47
+|switch|p2a: Rookidee|Rookidee-Fantasy, L13, F|100/100
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|turn|1
+|
+|t:|1792223323
+|-terastallize|p2a: Rookidee|Flying
+|move|p1a: Popplio|Disarming Voice|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|39/47
+|-damage|p2a: Rookidee|83/100
+|split|p1
+|-damage|p1a: Popplio|36/39|[from] item: Life Orb
+|-damage|p1a: Popplio|93/100|[from] item: Life Orb
+|move|p2a: Rookidee|Foul Play|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|17/39
+|-damage|p1a: Popplio|44/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223324
+|move|p1a: Popplio|Aqua Jet|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|26/47
+|-damage|p2a: Rookidee|56/100
+|split|p1
+|-damage|p1a: Popplio|14/39|[from] item: Life Orb
+|-damage|p1a: Popplio|36/100|[from] item: Life Orb
+|move|p2a: Rookidee|Chuan Yun|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|0 fnt
+|-damage|p1a: Popplio|0 fnt
+|faint|p1a: Popplio
+|
+|upkeep
+|
+|t:|1792223324
+|split|p1
+|switch|p1a: Pidgey|Pidgey, L9, M|33/33
+|switch|p1a: Pidgey|Pidgey, L9, M|100/100
+|-end|p1a: Pidgey|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223324
+|move|p1a: Pidgey|Tackle|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|18/47
+|-damage|p2a: Rookidee|39/100
+|split|p1
+|-damage|p1a: Pidgey|30/33|[from] item: Life Orb
+|-damage|p1a: Pidgey|91/100|[from] item: Life Orb
+|move|p2a: Rookidee|Chuan Yun|p1a: Pidgey
+|split|p1
+|-damage|p1a: Pidgey|0 fnt
+|-damage|p1a: Pidgey|0 fnt
+|faint|p1a: Pidgey
+|
+|upkeep
+|
+|t:|1792223324
+|split|p1
+|switch|p1a: Slakoth|Slakoth, L7, M|32/32
+|switch|p1a: Slakoth|Slakoth, L7, M|100/100
+|-end|p1a: Slakoth|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223324
+|move|p2a: Rookidee|Chuan Yun|p1a: Slakoth
+|split|p1
+|-damage|p1a: Slakoth|0 fnt
+|-damage|p1a: Slakoth|0 fnt
+|faint|p1a: Slakoth
+|
+|upkeep
+|
+|t:|1792223324
+|split|p1
+|switch|p1a: Meowth|Meowth, L7, F|29/29
+|switch|p1a: Meowth|Meowth, L7, F|100/100
+|-end|p1a: Meowth|fantasystats|[silent]
+|turn|5
+|
+|t:|1792223324
+|move|p1a: Meowth|Fake Out|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|13/47
+|-damage|p2a: Rookidee|28/100
+|split|p1
+|-damage|p1a: Meowth|27/29|[from] item: Life Orb
+|-damage|p1a: Meowth|94/100|[from] item: Life Orb
+|cant|p2a: Rookidee|flinch
+|
+|upkeep
+|turn|6
+|
+|t:|1792223324
+|move|p1a: Meowth|Feint|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|9/47
+|-damage|p2a: Rookidee|20/100
+|split|p1
+|-damage|p1a: Meowth|25/29|[from] item: Life Orb
+|-damage|p1a: Meowth|87/100|[from] item: Life Orb
+|move|p2a: Rookidee|Roost|p2a: Rookidee
+|split|p2
+|-heal|p2a: Rookidee|33/47
+|-heal|p2a: Rookidee|71/100
+|-hint|If a Terastallized Pokemon uses Roost, it remains Flying-type.
+|
+|upkeep
+|turn|7
+|
+|t:|1792223324
+|move|p1a: Meowth|Feint|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|29/47
+|-damage|p2a: Rookidee|62/100
+|split|p1
+|-damage|p1a: Meowth|23/29|[from] item: Life Orb
+|-damage|p1a: Meowth|80/100|[from] item: Life Orb
+|move|p2a: Rookidee|Chuan Yun|p1a: Meowth
+|split|p1
+|-damage|p1a: Meowth|0 fnt
+|-damage|p1a: Meowth|0 fnt
+|faint|p1a: Meowth
+|
+|upkeep
+|
+|t:|1792223324
+|split|p1
+|switch|p1a: Swablu|Swablu, L6, F|28/28
+|switch|p1a: Swablu|Swablu, L6, F|100/100
+|-end|p1a: Swablu|fantasystats|[silent]
+|turn|8
+|
+|t:|1792223324
+|move|p2a: Rookidee|Chuan Yun|p1a: Swablu
+|split|p1
+|-damage|p1a: Swablu|0 fnt
+|-damage|p1a: Swablu|0 fnt
+|faint|p1a: Swablu
+|
+|win|NPC

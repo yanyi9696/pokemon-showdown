@@ -1,0 +1,100 @@
+|init|battle
+|title|RoguePlay1016F vs. AI · 道馆 · 露璃娜（水）
+
+|-message|幻想杯肉鸽第 40 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792133443
+|gametype|singles
+|player|p1|RoguePlay1016F|266|
+|player|p2|AI · 道馆 · 露璃娜（水）|nessa|
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L21, M|
+|poke|p1|Muk-Alola, L40, M|
+|poke|p1|Munna, L18, F|
+|poke|p1|Mankey, L17, F|
+|poke|p1|Solosis, L18, M|
+|poke|p1|Psyduck, L17, M|
+|poke|p2|Chewtle, L30, F|
+|poke|p2|Feebas, L30, F|
+|poke|p2|Wimpod, L30, F|
+|poke|p2|Slowpoke, L30, M|
+|teampreview
+|
+|t:|1792133444
+|start
+|-message|塔灵：时拉比的驻时
+|switch|p1a: Muk|Muk-Alola, L40, M|144/144
+|switch|p2a: Chewtle|Chewtle, L30, F|100/100
+|-end|p2a: Chewtle|fantasystats|[silent]
+|-end|p1a: Muk|fantasystats|[silent]
+|-end|p2a: Chewtle|fantasystats|[silent]
+|-end|p1a: Muk|fantasystats|[silent]
+|turn|1
+|
+|t:|1792133445
+|-terastallize|p2a: Chewtle|Water
+|move|p2a: Chewtle|Stomping Tantrum|p1a: Muk
+|-supereffective|p1a: Muk
+|-damage|p1a: Muk|110/144
+|move|p1a: Muk|Gunk Shot|p2a: Chewtle
+|-enditem|p2a: Chewtle|Focus Sash
+|-damage|p2a: Chewtle|2/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792133446
+|move|p2a: Chewtle|Stomping Tantrum|p1a: Muk
+|-supereffective|p1a: Muk
+|-damage|p1a: Muk|78/144
+|move|p1a: Muk|Pound|p2a: Chewtle
+|-damage|p2a: Chewtle|0 fnt
+|faint|p2a: Chewtle
+|
+|upkeep
+|
+|t:|1792133446
+|switch|p2a: Feebas|Feebas, L30, F|100/100
+|-end|p2a: Feebas|fantasystats|[silent]
+|turn|3
+|
+|t:|1792133446
+|move|p2a: Feebas|Ice Beam|p1a: Muk
+|-damage|p1a: Muk|72/144
+|-enditem|p1a: Muk|Sitrus Berry|[eat]
+|-heal|p1a: Muk|108/144|[from] item: Sitrus Berry
+|move|p1a: Muk|Crunch|p2a: Feebas
+|-damage|p2a: Feebas|0 fnt
+|faint|p2a: Feebas
+|
+|upkeep
+|
+|t:|1792133446
+|switch|p2a: Wimpod|Wimpod, L30, F|100/100
+|-end|p2a: Wimpod|fantasystats|[silent]
+|turn|4
+|
+|t:|1792133447
+|move|p1a: Muk|Crunch|p2a: Wimpod
+|-damage|p2a: Wimpod|0 fnt
+|faint|p2a: Wimpod
+|
+|upkeep
+|
+|t:|1792133447
+|switch|p2a: Slowpoke|Slowpoke, L30, M|100/100
+|-end|p2a: Slowpoke|fantasystats|[silent]
+|turn|5
+|
+|t:|1792133447
+|move|p1a: Muk|Crunch|p2a: Slowpoke
+|-supereffective|p2a: Slowpoke
+|-damage|p2a: Slowpoke|0 fnt
+|faint|p2a: Slowpoke
+|
+|win|RoguePlay1016F
+|deinit

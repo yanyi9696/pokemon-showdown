@@ -1,0 +1,79 @@
+|t:|1792222538
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|4
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L13, M|
+|poke|p1|Sandygast, L9, F|
+|poke|p1|Spiritomb, L8, M|
+|poke|p1|Baltoy, L8|
+|poke|p2|Skitty-Fantasy, L8, F|
+|teampreview
+|
+|t:|1792222538
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L13, M|43/43
+|switch|p1a: Mudkip|Mudkip, L13, M|100/100
+|split|p2
+|switch|p2a: Skitty|Skitty-Fantasy, L8, F|28/28
+|switch|p2a: Skitty|Skitty-Fantasy, L8, F|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|turn|1
+|
+|t:|1792222538
+|-terastallize|p2a: Skitty|Fairy
+|move|p1a: Mudkip|Water Gun|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|12/28
+|-damage|p2a: Skitty|43/100
+|
+|t:|1792222539
+|split|p1
+|switch|p1a: Baltoy|Baltoy, L8|31/31|[from] Water Gun
+|switch|p1a: Baltoy|Baltoy, L8|100/100|[from] Water Gun
+|-end|p1a: Baltoy|fantasystats|[silent]
+|move|p2a: Skitty|Earth Power|p1a: Baltoy
+|-immune|p1a: Baltoy|[from] ability: Levitate
+|
+|upkeep
+|turn|2
+|
+|t:|1792222539
+|move|p1a: Baltoy|Confusion|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|2/28
+|-damage|p2a: Skitty|8/100
+|
+|t:|1792222539
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L13, M|43/43|[from] Confusion
+|switch|p1a: Mudkip|Mudkip, L13, M|100/100|[from] Confusion
+|-end|p1a: Mudkip|fantasystats|[silent]
+|move|p2a: Skitty|Earth Power|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|36/43
+|-damage|p1a: Mudkip|84/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792222539
+|move|p1a: Mudkip|Rock Smash|p2a: Skitty
+|-resisted|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|0 fnt
+|-damage|p2a: Skitty|0 fnt
+|faint|p2a: Skitty
+|
+|win|Player

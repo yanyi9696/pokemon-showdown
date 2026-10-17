@@ -1,0 +1,201 @@
+|t:|1792222091
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L26, M|
+|poke|p1|Alcremie, L26, F|
+|poke|p1|Meowth, L19, F|
+|poke|p1|Vigoroth, L18, M|
+|poke|p1|Shroomish, L22, F|
+|poke|p1|Maractus, L20, M|
+|poke|p2|Magnemite, L30|
+|poke|p2|Pikachu, L30, F|
+|poke|p2|Misdreavus, L30, F|
+|teampreview
+|
+|t:|1792222091
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L26, M|88/88
+|switch|p1a: Crocalor|Crocalor, L26, M|100/100
+|split|p2
+|switch|p2a: Magnemite|Magnemite, L30|64/64
+|switch|p2a: Magnemite|Magnemite, L30|100/100
+|-end|p2a: Magnemite|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Magnemite|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222092
+|-terastallize|p2a: Magnemite|Electric
+|move|p2a: Magnemite|Discharge|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|4/88
+|-damage|p1a: Crocalor|5/100
+|-status|p1a: Crocalor|par
+|cant|p1a: Crocalor|par
+|
+|upkeep
+|turn|2
+|
+|t:|1792222093
+|split|p1
+|switch|p1a: Alcremie|Alcremie, L26, F|82/82
+|switch|p1a: Alcremie|Alcremie, L26, F|100/100
+|-end|p1a: Alcremie|fantasystats|[silent]
+|move|p2a: Magnemite|Discharge|p1a: Alcremie
+|split|p1
+|-damage|p1a: Alcremie|26/82
+|-damage|p1a: Alcremie|32/100
+|-status|p1a: Alcremie|par
+|
+|upkeep
+|turn|3
+|
+|t:|1792222094
+|split|p1
+|switch|p1a: Maractus|Maractus, L20, M|71/71
+|switch|p1a: Maractus|Maractus, L20, M|100/100
+|-end|p1a: Maractus|fantasystats|[silent]
+|move|p2a: Magnemite|Discharge|p1a: Maractus
+|-resisted|p1a: Maractus
+|split|p1
+|-damage|p1a: Maractus|23/71
+|-damage|p1a: Maractus|33/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792222094
+|move|p2a: Magnemite|Signal Beam|p1a: Maractus
+|-supereffective|p1a: Maractus
+|split|p1
+|-damage|p1a: Maractus|0 fnt
+|-damage|p1a: Maractus|0 fnt
+|faint|p1a: Maractus
+|
+|upkeep
+|
+|t:|1792222095
+|split|p1
+|switch|p1a: Vigoroth|Vigoroth, L18, M|67/67
+|switch|p1a: Vigoroth|Vigoroth, L18, M|100/100
+|-end|p1a: Vigoroth|fantasystats|[silent]
+|turn|5
+|
+|t:|1792222096
+|move|p2a: Magnemite|Signal Beam|p1a: Vigoroth
+|-crit|p1a: Vigoroth
+|split|p1
+|-damage|p1a: Vigoroth|0 fnt
+|-damage|p1a: Vigoroth|0 fnt
+|faint|p1a: Vigoroth
+|
+|upkeep
+|
+|t:|1792222096
+|split|p1
+|switch|p1a: Shroomish|Shroomish, L22, F|70/70
+|switch|p1a: Shroomish|Shroomish, L22, F|100/100
+|-end|p1a: Shroomish|fantasystats|[silent]
+|turn|6
+|
+|t:|1792222096
+|split|p1
+|switch|p1a: Alcremie|Alcremie, L26, F|26/82 par
+|switch|p1a: Alcremie|Alcremie, L26, F|32/100 par
+|-end|p1a: Alcremie|fantasystats|[silent]
+|move|p2a: Magnemite|Discharge|p1a: Alcremie
+|split|p1
+|-damage|p1a: Alcremie|0 fnt
+|-damage|p1a: Alcremie|0 fnt
+|faint|p1a: Alcremie
+|
+|upkeep
+|
+|t:|1792222096
+|split|p1
+|switch|p1a: Shroomish|Shroomish, L22, F|70/70
+|switch|p1a: Shroomish|Shroomish, L22, F|100/100
+|-end|p1a: Shroomish|fantasystats|[silent]
+|turn|7
+|
+|t:|1792222097
+|move|p2a: Magnemite|Discharge|p1a: Shroomish
+|-resisted|p1a: Shroomish
+|split|p1
+|-damage|p1a: Shroomish|24/70
+|-damage|p1a: Shroomish|35/100
+|move|p1a: Shroomish|Headbutt|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|52/64
+|-damage|p2a: Magnemite|82/100
+|split|p1
+|-damage|p1a: Shroomish|17/70|[from] item: Life Orb
+|-damage|p1a: Shroomish|25/100|[from] item: Life Orb
+|
+|upkeep
+|turn|8
+|
+|t:|1792222097
+|move|p2a: Magnemite|Signal Beam|p1a: Shroomish
+|-supereffective|p1a: Shroomish
+|-crit|p1a: Shroomish
+|split|p1
+|-damage|p1a: Shroomish|0 fnt
+|-damage|p1a: Shroomish|0 fnt
+|faint|p1a: Shroomish
+|
+|upkeep
+|
+|t:|1792222097
+|split|p1
+|switch|p1a: Meowth|Meowth, L19, F|53/53
+|switch|p1a: Meowth|Meowth, L19, F|100/100
+|-end|p1a: Meowth|fantasystats|[silent]
+|turn|9
+|
+|t:|1792222097
+|move|p1a: Meowth|Fake Out|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|43/64
+|-damage|p2a: Magnemite|68/100
+|split|p1
+|-damage|p1a: Meowth|48/53|[from] item: Life Orb
+|-damage|p1a: Meowth|91/100|[from] item: Life Orb
+|cant|p2a: Magnemite|flinch
+|
+|upkeep
+|turn|10
+|
+|t:|1792222097
+|move|p2a: Magnemite|Discharge|p1a: Meowth
+|split|p1
+|-damage|p1a: Meowth|0 fnt
+|-damage|p1a: Meowth|0 fnt
+|faint|p1a: Meowth
+|
+|upkeep
+|
+|t:|1792222097
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L26, M|4/88 par
+|switch|p1a: Crocalor|Crocalor, L26, M|5/100 par
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|11
+|
+|t:|1792222097
+|move|p2a: Magnemite|Discharge|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|
+|win|NPC

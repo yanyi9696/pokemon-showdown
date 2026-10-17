@@ -1,0 +1,178 @@
+{
+  "method": "Budget scenarios from production reward functions; not live difficulty measurements",
+  "assumptions": [
+    "No tower spirit or economy blessing; no starting cash included",
+    "All treasure is eventually sold; jackpot variation is represented by its expectation",
+    "Event net coins assumed zero because choices include costs, non-cash rewards and losses",
+    "Ordinary upkeep: one center visit, one bought potion and one bought Ether per ten floors",
+    "Gifted balls and boss revive are not sold or valued as cash; extra training/TMs/equipment are discretionary",
+    "Lost attempts pay the applicable penalty and emergency, then win on retry; victory income is paid only once"
+  ],
+  "curves": [
+    {
+      "floor": 1,
+      "eliteCandyEXP": 200,
+      "encounterCandyEXP": 300,
+      "rewardCandyEXP": 100,
+      "eliteGuaranteedTreasure": 150,
+      "eliteAverageTreasure": 404,
+      "encounterCoins": 750,
+      "eventBaseBudget": 350
+    },
+    {
+      "floor": 5,
+      "eliteCandyEXP": 300,
+      "encounterCandyEXP": 400,
+      "rewardCandyEXP": 100,
+      "eliteGuaranteedTreasure": 300,
+      "eliteAverageTreasure": 554,
+      "encounterCoins": 950,
+      "eventBaseBudget": 450
+    },
+    {
+      "floor": 10,
+      "eliteCandyEXP": 500,
+      "encounterCandyEXP": 800,
+      "rewardCandyEXP": 100,
+      "eliteGuaranteedTreasure": 300,
+      "eliteAverageTreasure": 554,
+      "encounterCoins": 1150,
+      "eventBaseBudget": 550
+    },
+    {
+      "floor": 15,
+      "eliteCandyEXP": 900,
+      "encounterCandyEXP": 1400,
+      "rewardCandyEXP": 200,
+      "eliteGuaranteedTreasure": 450,
+      "eliteAverageTreasure": 704,
+      "encounterCoins": 1400,
+      "eventBaseBudget": 700
+    },
+    {
+      "floor": 20,
+      "eliteCandyEXP": 1400,
+      "encounterCandyEXP": 2200,
+      "rewardCandyEXP": 300,
+      "eliteGuaranteedTreasure": 600,
+      "eliteAverageTreasure": 854,
+      "encounterCoins": 1600,
+      "eventBaseBudget": 800
+    },
+    {
+      "floor": 25,
+      "eliteCandyEXP": 2100,
+      "encounterCandyEXP": 3300,
+      "rewardCandyEXP": 400,
+      "eliteGuaranteedTreasure": 600,
+      "eliteAverageTreasure": 854,
+      "encounterCoins": 1850,
+      "eventBaseBudget": 950
+    },
+    {
+      "floor": 30,
+      "eliteCandyEXP": 2900,
+      "encounterCandyEXP": 4600,
+      "rewardCandyEXP": 600,
+      "eliteGuaranteedTreasure": 750,
+      "eliteAverageTreasure": 1004,
+      "encounterCoins": 2050,
+      "eventBaseBudget": 1100
+    },
+    {
+      "floor": 40,
+      "eliteCandyEXP": 5000,
+      "encounterCandyEXP": 8000,
+      "rewardCandyEXP": 1000,
+      "eliteGuaranteedTreasure": 900,
+      "eliteAverageTreasure": 1154,
+      "encounterCoins": 2500,
+      "eventBaseBudget": 1400
+    },
+    {
+      "floor": 50,
+      "eliteCandyEXP": 7700,
+      "encounterCandyEXP": 12300,
+      "rewardCandyEXP": 1500,
+      "eliteGuaranteedTreasure": 1200,
+      "eliteAverageTreasure": 1711,
+      "encounterCoins": 2950,
+      "eventBaseBudget": 1750
+    },
+    {
+      "floor": 80,
+      "eliteCandyEXP": 19400,
+      "encounterCandyEXP": 31000,
+      "rewardCandyEXP": 3900,
+      "eliteGuaranteedTreasure": 1800,
+      "eliteAverageTreasure": 2311,
+      "encounterCoins": 4300,
+      "eventBaseBudget": 2900
+    },
+    {
+      "floor": 120,
+      "eliteCandyEXP": 43400,
+      "encounterCandyEXP": 69400,
+      "rewardCandyEXP": 8700,
+      "eliteGuaranteedTreasure": 2550,
+      "eliteAverageTreasure": 4046,
+      "encounterCoins": 6100,
+      "eventBaseBudget": 4900
+    },
+    {
+      "floor": 160,
+      "eliteCandyEXP": 77000,
+      "encounterCandyEXP": 123200,
+      "rewardCandyEXP": 15400,
+      "eliteGuaranteedTreasure": 3300,
+      "eliteAverageTreasure": 5750,
+      "encounterCoins": 7900,
+      "eventBaseBudget": 7400
+    },
+    {
+      "floor": 200,
+      "eliteCandyEXP": 120200,
+      "encounterCandyEXP": 192300,
+      "rewardCandyEXP": 24000,
+      "eliteGuaranteedTreasure": 4200,
+      "eliteAverageTreasure": 8664,
+      "encounterCoins": 9700,
+      "eventBaseBudget": 10350
+    }
+  ],
+  "scenarios": [
+    {
+      "floors": "1–10",
+      "expectedCashAndSaleValue": 4852,
+      "cleanWinsNet": 4052,
+      "oneExtraRevivePurchaseNet": 3152,
+      "lostEncounterThenWonNet": 1212,
+      "twoLossesThenWonNet": -788,
+      "care": 200,
+      "emergency": 2200,
+      "extraRevive": 900
+    },
+    {
+      "floors": "11–20",
+      "expectedCashAndSaleValue": 7027,
+      "cleanWinsNet": 6177,
+      "oneExtraRevivePurchaseNet": 5277,
+      "lostEncounterThenWonNet": 2737,
+      "twoLossesThenWonNet": 337,
+      "care": 250,
+      "emergency": 2600,
+      "extraRevive": 900
+    },
+    {
+      "floors": "21–30",
+      "expectedCashAndSaleValue": 6362,
+      "cleanWinsNet": 5462,
+      "oneExtraRevivePurchaseNet": 4562,
+      "lostEncounterThenWonNet": 1322,
+      "twoLossesThenWonNet": -1578,
+      "care": 300,
+      "emergency": 3100,
+      "extraRevive": 900
+    }
+  ]
+}

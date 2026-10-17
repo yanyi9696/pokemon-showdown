@@ -1,0 +1,74 @@
+{"type":"action","action":"start","starters":["fuecoco"],"useSpirit":false}
+{"type":"action","floor":1,"action":"blessing","slot":2}
+{"type":"action","floor":1,"action":"use","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","value":"expcandyxs"}
+{"type":"action","floor":1,"action":"use","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","value":"expcandyxs"}
+{"type":"action","floor":1,"action":"use","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","value":"expcandyxs"}
+{"type":"action","floor":1,"action":"setmove","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","slot":1,"value":"round"}
+{"type":"action","floor":1,"action":"setmove","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","slot":2,"value":"tackle"}
+{"type":"route","floor":1,"kind":"wild","name":"极光雪峰"}
+{"type":"action","floor":1,"action":"select","value":"wild0"}
+{"type":"action","floor":1,"action":"battle"}
+{"type":"battle","floor":1,"kind":"wild","name":"极光雪峰","won":true,"escaped":false,"turns":1,"faints":0,"caught":1,"team":[{"species":"Fuecoco","level":9}],"foe":[{"species":"Snorunt","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":1,"action":"battle"}
+{"type":"battle","floor":1,"kind":"wild","name":"极光雪峰","won":true,"escaped":false,"turns":1,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":9},{"species":"Snorunt","level":3}],"foe":[{"species":"Smoochum","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":1,"action":"battle"}
+{"type":"battle","floor":1,"kind":"wild","name":"极光雪峰","won":true,"escaped":false,"turns":1,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":9},{"species":"Snorunt","level":3}],"foe":[{"species":"Smoochum","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"route","floor":2,"kind":"wild","name":"旧日遗迹"}
+{"type":"action","floor":2,"action":"select","value":"wild0"}
+{"type":"action","floor":2,"action":"battle"}
+{"type":"battle","floor":2,"kind":"wild","name":"旧日遗迹","won":true,"escaped":false,"turns":5,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":9},{"species":"Snorunt","level":4}],"foe":[{"species":"Elgyem","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":2,"action":"battle"}
+{"type":"battle","floor":2,"kind":"wild","name":"旧日遗迹","won":true,"escaped":false,"turns":4,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":9},{"species":"Snorunt","level":4}],"foe":[{"species":"Solosis","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":2,"action":"use","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","value":"potion"}
+{"type":"action","floor":2,"action":"battle"}
+{"type":"battle","floor":2,"kind":"wild","name":"旧日遗迹","won":true,"escaped":false,"turns":2,"faints":1,"caught":1,"team":[{"species":"Fuecoco","level":9},{"species":"Snorunt","level":4}],"foe":[{"species":"Wynaut","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":3,"action":"use","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","value":"revive"}
+{"type":"action","floor":3,"action":"use","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","value":"potion"}
+{"type":"action","floor":3,"action":"use","member":"e44b2826-643c-4559-af6a-02ad93f54b94:2:wild0:2","value":"potion"}
+{"type":"route","floor":3,"kind":"wild","name":"太晶空洞"}
+{"type":"action","floor":3,"action":"select","value":"wild0"}
+{"type":"action","floor":3,"action":"battle"}
+{"type":"battle","floor":3,"kind":"wild","name":"太晶空洞","won":true,"escaped":false,"turns":1,"faints":0,"caught":1,"team":[{"species":"Fuecoco","level":9},{"species":"Snorunt","level":5},{"species":"Wynaut","level":3}],"foe":[{"species":"Ralts","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":3,"action":"battle"}
+{"type":"battle","floor":3,"kind":"wild","name":"太晶空洞","won":true,"escaped":false,"turns":7,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":9},{"species":"Snorunt","level":5},{"species":"Wynaut","level":3},{"species":"Ralts","level":3}],"foe":[{"species":"Glimmet","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":3,"action":"use","member":"e44b2826-643c-4559-af6a-02ad93f54b94:2:wild0:2","value":"potion"}
+{"type":"action","floor":3,"action":"battle"}
+{"type":"battle","floor":3,"kind":"wild","name":"太晶空洞","won":true,"escaped":false,"turns":4,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":10},{"species":"Snorunt","level":5},{"species":"Wynaut","level":4},{"species":"Ralts","level":3}],"foe":[{"species":"Tinkatink","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":4,"action":"use","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","value":"potion"}
+{"type":"route","floor":4,"kind":"elite","name":"幽影墓地 · 精英"}
+{"type":"action","floor":4,"action":"select","value":"elite"}
+{"type":"action","floor":4,"action":"battle"}
+{"type":"battle","floor":4,"kind":"elite","name":"幽影墓地 · 精英","won":true,"escaped":false,"turns":3,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":10},{"species":"Snorunt","level":5},{"species":"Wynaut","level":4},{"species":"Ralts","level":4}],"foe":[{"species":"Murkrow","level":8}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":5,"action":"use","member":"e44b2826-643c-4559-af6a-02ad93f54b94:1:wild0:0","value":"expcandyxs"}
+{"type":"action","floor":5,"action":"use","member":"e44b2826-643c-4559-af6a-02ad93f54b94:1:wild0:0","value":"expcandyxs"}
+{"type":"action","floor":5,"action":"use","member":"09f7b9df-ddb4-4545-9a33-3ebc185b77b1","value":"potion"}
+{"type":"route","floor":5,"kind":"wild","name":"郊外小径"}
+{"type":"action","floor":5,"action":"select","value":"wild0"}
+{"type":"action","floor":5,"action":"battle"}
+{"type":"battle","floor":5,"kind":"wild","name":"郊外小径","won":true,"escaped":false,"turns":2,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":10},{"species":"Snorunt","level":7},{"species":"Wynaut","level":5},{"species":"Ralts","level":5}],"foe":[{"species":"Hoothoot","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":5,"action":"battle"}
+{"type":"battle","floor":5,"kind":"wild","name":"郊外小径","won":true,"escaped":false,"turns":2,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":10},{"species":"Snorunt","level":7},{"species":"Wynaut","level":6},{"species":"Ralts","level":5}],"foe":[{"species":"Meowth","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":5,"action":"battle"}
+{"type":"battle","floor":5,"kind":"wild","name":"郊外小径","won":true,"escaped":false,"turns":2,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":10},{"species":"Snorunt","level":7},{"species":"Wynaut","level":6},{"species":"Ralts","level":5}],"foe":[{"species":"Whismur","level":3}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"route","floor":6,"kind":"elite","name":"攀岩峡谷 · 精英"}
+{"type":"action","floor":6,"action":"select","value":"elite"}
+{"type":"action","floor":6,"action":"battle"}
+{"type":"battle","floor":6,"kind":"elite","name":"攀岩峡谷 · 精英","won":true,"escaped":false,"turns":3,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":10},{"species":"Snorunt","level":8},{"species":"Wynaut","level":6},{"species":"Ralts","level":5}],"foe":[{"species":"Geodude-Alola","level":8}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":7,"action":"use","member":"e44b2826-643c-4559-af6a-02ad93f54b94:1:wild0:0","value":"expcandyxs"}
+{"type":"action","floor":7,"action":"use","member":"e44b2826-643c-4559-af6a-02ad93f54b94:1:wild0:0","value":"expcandyxs"}
+{"type":"action","floor":7,"action":"use","member":"e44b2826-643c-4559-af6a-02ad93f54b94:1:wild0:0","value":"expcandyxs"}
+{"type":"action","floor":7,"action":"setmove","member":"e44b2826-643c-4559-af6a-02ad93f54b94:3:wild0:0","slot":0,"value":"confusion"}
+{"type":"action","floor":7,"action":"setmove","member":"e44b2826-643c-4559-af6a-02ad93f54b94:3:wild0:0","slot":1,"value":"disarmingvoice"}
+{"type":"action","floor":7,"action":"setmove","member":"e44b2826-643c-4559-af6a-02ad93f54b94:3:wild0:0","slot":2,"value":"doubleteam"}
+{"type":"route","floor":7,"kind":"wild","name":"极光雪峰"}
+{"type":"action","floor":7,"action":"select","value":"wild0"}
+{"type":"action","floor":7,"action":"battle"}
+{"type":"battle","floor":7,"kind":"wild","name":"极光雪峰","won":true,"escaped":false,"turns":1,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":11},{"species":"Snorunt","level":9},{"species":"Wynaut","level":6},{"species":"Ralts","level":6}],"foe":[{"species":"Sandshrew-Alola","level":4}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":7,"action":"battle"}
+{"type":"battle","floor":7,"kind":"wild","name":"极光雪峰","won":true,"escaped":false,"turns":1,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":11},{"species":"Snorunt","level":9},{"species":"Wynaut","level":7},{"species":"Ralts","level":6}],"foe":[{"species":"Vulpix-Alola","level":4}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"action","floor":7,"action":"battle"}
+{"type":"battle","floor":7,"kind":"wild","name":"极光雪峰","won":true,"escaped":false,"turns":1,"faints":0,"caught":0,"team":[{"species":"Fuecoco","level":11},{"species":"Snorunt","level":9},{"species":"Wynaut","level":7},{"species":"Ralts","level":6}],"foe":[{"species":"Mime Jr.","level":4}],"moneyBefore":1500,"moneyAfter":1500,"rejected":0}
+{"type":"route","floor":8,"kind":"elite","name":"攀岩峡谷 · 精英"}
+{"type":"action","floor":8,"action":"select","value":"elite"}
+{"type":"action","floor":8,"action":"battle"}
+{"type":"battle","floor":8,"kind":"elite","name":"攀岩峡谷 · 精英","won":false,"escaped":false,"turns":9,"faints":4,"caught":0,"team":[{"species":"Fuecoco","level":11},{"species":"Snorunt","level":9},{"species":"Wynaut","level":7},{"species":"Ralts","level":6}],"foe":[{"species":"Solrock","level":9}],"moneyBefore":1500,"moneyAfter":1500,"rescue":{"cost":2200,"paid":false},"rejected":0}

@@ -1,0 +1,57 @@
+|t:|1792223754
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L11, M|
+|poke|p1|Fuecoco, L10, M|
+|poke|p1|Mudkip, L9, M|
+|poke|p1|Milcery, L7, F|
+|poke|p1|Croagunk, L7, M|
+|poke|p1|Igglybuff, L8, F|
+|poke|p2|Zorua-Hisui-Fantasy, L8, M|
+|teampreview
+|
+|t:|1792223754
+|start
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|38/38
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|100/100
+|split|p2
+|switch|p2a: Zorua|Zorua-Hisui-Fantasy, L8, M|25/25
+|switch|p2a: Zorua|Zorua-Hisui-Fantasy, L8, M|100/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-start|p2a: Zorua|typechange|Normal/Ghost|[silent]
+|-start|p2a: Zorua|fantasystats|30/60/40/85/40/75|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-start|p2a: Zorua|typechange|Normal/Ghost|[silent]
+|-start|p2a: Zorua|fantasystats|30/60/40/85/40/75|[silent]
+|turn|1
+|
+|t:|1792223754
+|-terastallize|p2a: Zorua|Normal
+|move|p1a: Bulbasaur|Vine Whip|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|9/25
+|-damage|p2a: Zorua|36/100
+|move|p2a: Zorua|Hex|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|31/38
+|-damage|p1a: Bulbasaur|82/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223755
+|move|p1a: Bulbasaur|Vine Whip|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|0 fnt
+|-damage|p2a: Zorua|0 fnt
+|faint|p2a: Zorua
+|
+|win|Player

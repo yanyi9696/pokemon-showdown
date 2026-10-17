@@ -1,0 +1,3700 @@
+{
+  "method": "Offline route sampling and clean-win EXP sensitivity; not actual battle win rates",
+  "assumptions": [
+    "2000 seeded 200-floor route histories per distribution; fixed floors excluded, no spirit or route quest",
+    "24 seeded campaigns per no-purchase baseline, 48 per purchase case; start with one Lv5 partner and recruit five on floors 3/6/12/18/24",
+    "All encounters won, no catches replacing KOs or defeats; native half EXP for eligible living reserves; healing costs only modeled in purchase cases",
+    "No-purchase trajectories are a lower-resource diagnostic only, not the primary difficulty benchmark",
+    "Purchase cases prioritize affordable candy shops, sell actual treasure at trades/centers, use actual stock and prices, reserve max(1500, two center visits plus two potions/Ethers)",
+    "Purchase-case clean-win upkeep: one center visit, one potion and one Ether per fixed rest; consume initial/reward supplies before buying replacements",
+    "Purchased and dropped candy goes to the weaker of two primary members (core), or weakest party member (wholeParty); two primaries alternate participation",
+    "Events have zero net coins in the primary model; positiveEventCash is an explicit favorable sensitivity case, not a promised payout",
+    "No event battle/gift EXP, no TM or held-item spending/benefits; largerReserve sensitivity raises the minimum cash reserve from 1500 to 3500",
+    "First-trade guarantee does not guarantee candy subtype; no imaginary candy purchase on fixed rest floors",
+    "Only opening blessing level tax included; later silver picks; all blessing benefits and star/stat modifiers excluded",
+    "Pre-revision route weights use event=22, as already changed before this request; before omits new 25 percent ordinary wild KO EXP",
+    "Comparison represents resource availability, not a claim that a low-level team can win every high-reward encounter"
+  ],
+  "routes": {
+    "before": {
+      "samples": 2000,
+      "stages": [
+        {
+          "floors": "1-40",
+          "offerPercent": {
+            "wild": 64,
+            "elite": 52.9,
+            "trainer": 43.9,
+            "event": 66.4,
+            "reward": 62,
+            "trade": 7.4
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 63.7,
+            "elite": 52.9,
+            "trainer": 44.2,
+            "event": 66.1,
+            "reward": 61.7,
+            "trade": 7.5
+          }
+        },
+        {
+          "floors": "41-80",
+          "offerPercent": {
+            "wild": 63.1,
+            "elite": 52,
+            "trainer": 43.5,
+            "event": 64.3,
+            "reward": 59.7,
+            "trade": 14.1
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 63,
+            "elite": 51.9,
+            "trainer": 43.1,
+            "event": 64.2,
+            "reward": 59.8,
+            "trade": 14.1
+          }
+        },
+        {
+          "floors": "81-120",
+          "offerPercent": {
+            "wild": 61.9,
+            "elite": 50.8,
+            "trainer": 42.2,
+            "event": 60.7,
+            "reward": 56.1,
+            "trade": 25.2
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 62,
+            "elite": 50.7,
+            "trainer": 41.8,
+            "event": 60.8,
+            "reward": 56.3,
+            "trade": 25.3
+          }
+        },
+        {
+          "floors": "121-160",
+          "offerPercent": {
+            "wild": 60.1,
+            "elite": 51.6,
+            "trainer": 40.8,
+            "event": 56.8,
+            "reward": 53.8,
+            "trade": 34.1
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 60.1,
+            "elite": 51.4,
+            "trainer": 40.8,
+            "event": 57,
+            "reward": 53.9,
+            "trade": 34
+          }
+        },
+        {
+          "floors": "161-200",
+          "offerPercent": {
+            "wild": 59.8,
+            "elite": 49.3,
+            "trainer": 40.8,
+            "event": 54.6,
+            "reward": 51,
+            "trade": 41.9
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 60.4,
+            "elite": 49.1,
+            "trainer": 40.9,
+            "event": 54.6,
+            "reward": 50.8,
+            "trade": 41.5
+          }
+        }
+      ],
+      "firstTrade": {
+        "medianFloor": 12,
+        "latestFloor": 88,
+        "missingBy18Percent": 29.9,
+        "firstAt18Percent": 2.2
+      },
+      "meanEliteOffers": 79.2,
+      "meanEliteOffersBefore40": 16.9
+    },
+    "after": {
+      "samples": 2000,
+      "stages": [
+        {
+          "floors": "1-40",
+          "offerPercent": {
+            "wild": 75.6,
+            "elite": 43.1,
+            "trainer": 38.8,
+            "event": 67.3,
+            "reward": 62.3,
+            "trade": 8.8
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 74.8,
+            "elite": 37,
+            "trainer": 34.6,
+            "event": 66.2,
+            "reward": 61.1,
+            "trade": 5.4
+          }
+        },
+        {
+          "floors": "41-80",
+          "offerPercent": {
+            "wild": 74.9,
+            "elite": 42.3,
+            "trainer": 38.2,
+            "event": 65.4,
+            "reward": 60.5,
+            "trade": 14.6
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 74.2,
+            "elite": 36.2,
+            "trainer": 33.9,
+            "event": 64.1,
+            "reward": 59,
+            "trade": 10.5
+          }
+        },
+        {
+          "floors": "81-120",
+          "offerPercent": {
+            "wild": 73.7,
+            "elite": 41.3,
+            "trainer": 37.2,
+            "event": 61.6,
+            "reward": 57.6,
+            "trade": 24.9
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 72.7,
+            "elite": 34.6,
+            "trainer": 33,
+            "event": 60.3,
+            "reward": 56.2,
+            "trade": 19.9
+          }
+        },
+        {
+          "floors": "121-160",
+          "offerPercent": {
+            "wild": 73.1,
+            "elite": 40.2,
+            "trainer": 36.3,
+            "event": 59.6,
+            "reward": 54.4,
+            "trade": 32.9
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 72.1,
+            "elite": 34.3,
+            "trainer": 31.9,
+            "event": 58.6,
+            "reward": 52.3,
+            "trade": 27
+          }
+        },
+        {
+          "floors": "161-200",
+          "offerPercent": {
+            "wild": 72,
+            "elite": 40.2,
+            "trainer": 36,
+            "event": 56.4,
+            "reward": 52.2,
+            "trade": 39.9
+          },
+          "nextConsecutiveFloorPercent": {
+            "wild": 71.1,
+            "elite": 33.5,
+            "trainer": 31.7,
+            "event": 55.2,
+            "reward": 50.2,
+            "trade": 32.9
+          }
+        }
+      ],
+      "firstTrade": {
+        "medianFloor": 11,
+        "latestFloor": 18,
+        "missingBy18Percent": 0,
+        "firstAt18Percent": 27.4
+      },
+      "meanEliteOffers": 63.9,
+      "meanEliteOffersBefore40": 13.8
+    }
+  },
+  "tradeAccess": {
+    "samples": 2000,
+    "firstTradeMedian": 11,
+    "firstTradeLatest": 18,
+    "firstCandyMedian": 18,
+    "noCandyByFloorPercent": {
+      "10": 72.9,
+      "20": 38.7,
+      "30": 27.3,
+      "40": 20,
+      "50": 13.1,
+      "80": 2.6
+    }
+  },
+  "noPurchaseDiagnostic": {
+    "silver-steady": {
+      "10": {
+        "before": {
+          "partyMean": 8,
+          "carry": 11,
+          "weakest": 6,
+          "boss": 8
+        },
+        "after": {
+          "partyMean": 8.7,
+          "carry": 11,
+          "weakest": 7,
+          "boss": 8
+        }
+      },
+      "20": {
+        "before": {
+          "partyMean": 10.8,
+          "carry": 14,
+          "weakest": 9,
+          "boss": 15
+        },
+        "after": {
+          "partyMean": 12,
+          "carry": 15,
+          "weakest": 10,
+          "boss": 15
+        }
+      },
+      "30": {
+        "before": {
+          "partyMean": 15.2,
+          "carry": 18,
+          "weakest": 13,
+          "boss": 20
+        },
+        "after": {
+          "partyMean": 16.3,
+          "carry": 20,
+          "weakest": 14,
+          "boss": 20
+        }
+      },
+      "40": {
+        "before": {
+          "partyMean": 18.7,
+          "carry": 22,
+          "weakest": 17,
+          "boss": 25
+        },
+        "after": {
+          "partyMean": 20,
+          "carry": 24,
+          "weakest": 18,
+          "boss": 25
+        }
+      },
+      "50": {
+        "before": {
+          "partyMean": 23.3,
+          "carry": 27,
+          "weakest": 21,
+          "boss": 30
+        },
+        "after": {
+          "partyMean": 25.3,
+          "carry": 30,
+          "weakest": 23,
+          "boss": 30
+        }
+      },
+      "80": {
+        "before": {
+          "partyMean": 35.5,
+          "carry": 41,
+          "weakest": 33,
+          "boss": 45
+        },
+        "after": {
+          "partyMean": 38.5,
+          "carry": 45,
+          "weakest": 36,
+          "boss": 45
+        }
+      },
+      "100": {
+        "before": {
+          "partyMean": 43.2,
+          "carry": 50,
+          "weakest": 41,
+          "boss": 55
+        },
+        "after": {
+          "partyMean": 47.2,
+          "carry": 54,
+          "weakest": 44,
+          "boss": 55
+        }
+      },
+      "150": {
+        "before": {
+          "partyMean": 62,
+          "carry": 71,
+          "weakest": 60,
+          "boss": 80
+        },
+        "after": {
+          "partyMean": 66.8,
+          "carry": 76,
+          "weakest": 64,
+          "boss": 80
+        }
+      },
+      "190": {
+        "before": {
+          "partyMean": 76.8,
+          "carry": 88,
+          "weakest": 74,
+          "boss": 100
+        },
+        "after": {
+          "partyMean": 82,
+          "carry": 94,
+          "weakest": 78,
+          "boss": 100
+        }
+      },
+      "200": {
+        "before": {
+          "partyMean": 80.7,
+          "carry": 92,
+          "weakest": 78,
+          "boss": 100
+        },
+        "after": {
+          "partyMean": 85.8,
+          "carry": 98,
+          "weakest": 82,
+          "boss": 100
+        }
+      }
+    },
+    "silver-highReward": {
+      "10": {
+        "before": {
+          "partyMean": 13.3,
+          "carry": 14,
+          "weakest": 13,
+          "boss": 8
+        },
+        "after": {
+          "partyMean": 13.3,
+          "carry": 14,
+          "weakest": 13,
+          "boss": 8
+        }
+      },
+      "20": {
+        "before": {
+          "partyMean": 16.4,
+          "carry": 18,
+          "weakest": 14,
+          "boss": 15
+        },
+        "after": {
+          "partyMean": 16.4,
+          "carry": 18,
+          "weakest": 14,
+          "boss": 15
+        }
+      },
+      "30": {
+        "before": {
+          "partyMean": 21.2,
+          "carry": 22,
+          "weakest": 21,
+          "boss": 20
+        },
+        "after": {
+          "partyMean": 21,
+          "carry": 22,
+          "weakest": 21,
+          "boss": 20
+        }
+      },
+      "40": {
+        "before": {
+          "partyMean": 27,
+          "carry": 27,
+          "weakest": 27,
+          "boss": 25
+        },
+        "after": {
+          "partyMean": 26.2,
+          "carry": 27,
+          "weakest": 26,
+          "boss": 25
+        }
+      },
+      "50": {
+        "before": {
+          "partyMean": 32,
+          "carry": 32,
+          "weakest": 32,
+          "boss": 30
+        },
+        "after": {
+          "partyMean": 32,
+          "carry": 32,
+          "weakest": 32,
+          "boss": 30
+        }
+      },
+      "80": {
+        "before": {
+          "partyMean": 49,
+          "carry": 49,
+          "weakest": 49,
+          "boss": 45
+        },
+        "after": {
+          "partyMean": 48.7,
+          "carry": 49,
+          "weakest": 48,
+          "boss": 45
+        }
+      },
+      "100": {
+        "before": {
+          "partyMean": 59,
+          "carry": 59,
+          "weakest": 59,
+          "boss": 55
+        },
+        "after": {
+          "partyMean": 59,
+          "carry": 59,
+          "weakest": 59,
+          "boss": 55
+        }
+      },
+      "150": {
+        "before": {
+          "partyMean": 86.2,
+          "carry": 87,
+          "weakest": 86,
+          "boss": 80
+        },
+        "after": {
+          "partyMean": 85,
+          "carry": 85,
+          "weakest": 84,
+          "boss": 80
+        }
+      },
+      "190": {
+        "before": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 100
+        },
+        "after": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 100
+        }
+      },
+      "200": {
+        "before": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 100
+        },
+        "after": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 100
+        }
+      }
+    },
+    "gold-steady": {
+      "10": {
+        "before": {
+          "partyMean": 8,
+          "carry": 11,
+          "weakest": 6,
+          "boss": 13
+        },
+        "after": {
+          "partyMean": 8.7,
+          "carry": 11,
+          "weakest": 7,
+          "boss": 13
+        }
+      },
+      "20": {
+        "before": {
+          "partyMean": 11,
+          "carry": 14,
+          "weakest": 9,
+          "boss": 20
+        },
+        "after": {
+          "partyMean": 12,
+          "carry": 15,
+          "weakest": 10,
+          "boss": 20
+        }
+      },
+      "30": {
+        "before": {
+          "partyMean": 15.7,
+          "carry": 19,
+          "weakest": 13,
+          "boss": 25
+        },
+        "after": {
+          "partyMean": 16.3,
+          "carry": 20,
+          "weakest": 14,
+          "boss": 25
+        }
+      },
+      "40": {
+        "before": {
+          "partyMean": 19.2,
+          "carry": 23,
+          "weakest": 17,
+          "boss": 30
+        },
+        "after": {
+          "partyMean": 20.3,
+          "carry": 24,
+          "weakest": 18,
+          "boss": 30
+        }
+      },
+      "50": {
+        "before": {
+          "partyMean": 23.8,
+          "carry": 28,
+          "weakest": 21,
+          "boss": 35
+        },
+        "after": {
+          "partyMean": 25.7,
+          "carry": 30,
+          "weakest": 23,
+          "boss": 35
+        }
+      },
+      "80": {
+        "before": {
+          "partyMean": 35.7,
+          "carry": 42,
+          "weakest": 34,
+          "boss": 50
+        },
+        "after": {
+          "partyMean": 38.7,
+          "carry": 45,
+          "weakest": 36,
+          "boss": 50
+        }
+      },
+      "100": {
+        "before": {
+          "partyMean": 43.7,
+          "carry": 50,
+          "weakest": 41,
+          "boss": 60
+        },
+        "after": {
+          "partyMean": 47.3,
+          "carry": 55,
+          "weakest": 45,
+          "boss": 60
+        }
+      },
+      "150": {
+        "before": {
+          "partyMean": 62.7,
+          "carry": 71,
+          "weakest": 60,
+          "boss": 85
+        },
+        "after": {
+          "partyMean": 67.5,
+          "carry": 77,
+          "weakest": 64,
+          "boss": 85
+        }
+      },
+      "190": {
+        "before": {
+          "partyMean": 77.5,
+          "carry": 89,
+          "weakest": 75,
+          "boss": 105
+        },
+        "after": {
+          "partyMean": 82.3,
+          "carry": 94,
+          "weakest": 79,
+          "boss": 105
+        }
+      },
+      "200": {
+        "before": {
+          "partyMean": 81.3,
+          "carry": 93,
+          "weakest": 78,
+          "boss": 105
+        },
+        "after": {
+          "partyMean": 86.5,
+          "carry": 99,
+          "weakest": 83,
+          "boss": 105
+        }
+      }
+    },
+    "gold-highReward": {
+      "10": {
+        "before": {
+          "partyMean": 13.3,
+          "carry": 14,
+          "weakest": 13,
+          "boss": 13
+        },
+        "after": {
+          "partyMean": 13.3,
+          "carry": 14,
+          "weakest": 13,
+          "boss": 13
+        }
+      },
+      "20": {
+        "before": {
+          "partyMean": 16.4,
+          "carry": 18,
+          "weakest": 14,
+          "boss": 20
+        },
+        "after": {
+          "partyMean": 16.4,
+          "carry": 18,
+          "weakest": 14,
+          "boss": 20
+        }
+      },
+      "30": {
+        "before": {
+          "partyMean": 21.2,
+          "carry": 22,
+          "weakest": 21,
+          "boss": 25
+        },
+        "after": {
+          "partyMean": 21.2,
+          "carry": 22,
+          "weakest": 21,
+          "boss": 25
+        }
+      },
+      "40": {
+        "before": {
+          "partyMean": 27,
+          "carry": 27,
+          "weakest": 27,
+          "boss": 30
+        },
+        "after": {
+          "partyMean": 26.3,
+          "carry": 27,
+          "weakest": 26,
+          "boss": 30
+        }
+      },
+      "50": {
+        "before": {
+          "partyMean": 32,
+          "carry": 33,
+          "weakest": 32,
+          "boss": 35
+        },
+        "after": {
+          "partyMean": 32.7,
+          "carry": 33,
+          "weakest": 32,
+          "boss": 35
+        }
+      },
+      "80": {
+        "before": {
+          "partyMean": 49,
+          "carry": 49,
+          "weakest": 49,
+          "boss": 50
+        },
+        "after": {
+          "partyMean": 49,
+          "carry": 49,
+          "weakest": 49,
+          "boss": 50
+        }
+      },
+      "100": {
+        "before": {
+          "partyMean": 59,
+          "carry": 59,
+          "weakest": 59,
+          "boss": 60
+        },
+        "after": {
+          "partyMean": 59,
+          "carry": 59,
+          "weakest": 59,
+          "boss": 60
+        }
+      },
+      "150": {
+        "before": {
+          "partyMean": 86.8,
+          "carry": 87,
+          "weakest": 86,
+          "boss": 85
+        },
+        "after": {
+          "partyMean": 85.2,
+          "carry": 86,
+          "weakest": 85,
+          "boss": 85
+        }
+      },
+      "190": {
+        "before": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 105
+        },
+        "after": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 105
+        }
+      },
+      "200": {
+        "before": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 105
+        },
+        "after": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 105
+        }
+      }
+    },
+    "prismatic-steady": {
+      "10": {
+        "before": {
+          "partyMean": 8,
+          "carry": 11,
+          "weakest": 6,
+          "boss": 18
+        },
+        "after": {
+          "partyMean": 8.7,
+          "carry": 11,
+          "weakest": 7,
+          "boss": 18
+        }
+      },
+      "20": {
+        "before": {
+          "partyMean": 11.2,
+          "carry": 14,
+          "weakest": 9,
+          "boss": 25
+        },
+        "after": {
+          "partyMean": 12.2,
+          "carry": 15,
+          "weakest": 10,
+          "boss": 25
+        }
+      },
+      "30": {
+        "before": {
+          "partyMean": 16.2,
+          "carry": 20,
+          "weakest": 14,
+          "boss": 30
+        },
+        "after": {
+          "partyMean": 16.5,
+          "carry": 20,
+          "weakest": 14,
+          "boss": 30
+        }
+      },
+      "40": {
+        "before": {
+          "partyMean": 19.5,
+          "carry": 23,
+          "weakest": 17,
+          "boss": 35
+        },
+        "after": {
+          "partyMean": 20.8,
+          "carry": 25,
+          "weakest": 18,
+          "boss": 35
+        }
+      },
+      "50": {
+        "before": {
+          "partyMean": 24.3,
+          "carry": 29,
+          "weakest": 22,
+          "boss": 40
+        },
+        "after": {
+          "partyMean": 26.2,
+          "carry": 31,
+          "weakest": 23,
+          "boss": 40
+        }
+      },
+      "80": {
+        "before": {
+          "partyMean": 36.5,
+          "carry": 42,
+          "weakest": 34,
+          "boss": 55
+        },
+        "after": {
+          "partyMean": 39.3,
+          "carry": 45,
+          "weakest": 36,
+          "boss": 55
+        }
+      },
+      "100": {
+        "before": {
+          "partyMean": 44,
+          "carry": 51,
+          "weakest": 42,
+          "boss": 65
+        },
+        "after": {
+          "partyMean": 47.8,
+          "carry": 55,
+          "weakest": 45,
+          "boss": 65
+        }
+      },
+      "150": {
+        "before": {
+          "partyMean": 63.2,
+          "carry": 72,
+          "weakest": 61,
+          "boss": 90
+        },
+        "after": {
+          "partyMean": 67.7,
+          "carry": 78,
+          "weakest": 65,
+          "boss": 90
+        }
+      },
+      "190": {
+        "before": {
+          "partyMean": 78.5,
+          "carry": 90,
+          "weakest": 76,
+          "boss": 110
+        },
+        "after": {
+          "partyMean": 83.3,
+          "carry": 95,
+          "weakest": 80,
+          "boss": 110
+        }
+      },
+      "200": {
+        "before": {
+          "partyMean": 82.3,
+          "carry": 94,
+          "weakest": 79,
+          "boss": 110
+        },
+        "after": {
+          "partyMean": 87.2,
+          "carry": 99,
+          "weakest": 83,
+          "boss": 110
+        }
+      }
+    },
+    "prismatic-highReward": {
+      "10": {
+        "before": {
+          "partyMean": 13.3,
+          "carry": 14,
+          "weakest": 13,
+          "boss": 18
+        },
+        "after": {
+          "partyMean": 13.3,
+          "carry": 14,
+          "weakest": 13,
+          "boss": 18
+        }
+      },
+      "20": {
+        "before": {
+          "partyMean": 16.4,
+          "carry": 18,
+          "weakest": 14,
+          "boss": 25
+        },
+        "after": {
+          "partyMean": 16.4,
+          "carry": 18,
+          "weakest": 14,
+          "boss": 25
+        }
+      },
+      "30": {
+        "before": {
+          "partyMean": 21.7,
+          "carry": 23,
+          "weakest": 21,
+          "boss": 30
+        },
+        "after": {
+          "partyMean": 21.3,
+          "carry": 22,
+          "weakest": 21,
+          "boss": 30
+        }
+      },
+      "40": {
+        "before": {
+          "partyMean": 27.2,
+          "carry": 28,
+          "weakest": 27,
+          "boss": 35
+        },
+        "after": {
+          "partyMean": 26.7,
+          "carry": 27,
+          "weakest": 26,
+          "boss": 35
+        }
+      },
+      "50": {
+        "before": {
+          "partyMean": 32.7,
+          "carry": 33,
+          "weakest": 32,
+          "boss": 40
+        },
+        "after": {
+          "partyMean": 32.7,
+          "carry": 33,
+          "weakest": 32,
+          "boss": 40
+        }
+      },
+      "80": {
+        "before": {
+          "partyMean": 49,
+          "carry": 49,
+          "weakest": 49,
+          "boss": 55
+        },
+        "after": {
+          "partyMean": 49,
+          "carry": 49,
+          "weakest": 49,
+          "boss": 55
+        }
+      },
+      "100": {
+        "before": {
+          "partyMean": 59.5,
+          "carry": 60,
+          "weakest": 59,
+          "boss": 65
+        },
+        "after": {
+          "partyMean": 59,
+          "carry": 59,
+          "weakest": 59,
+          "boss": 65
+        }
+      },
+      "150": {
+        "before": {
+          "partyMean": 86.8,
+          "carry": 87,
+          "weakest": 86,
+          "boss": 90
+        },
+        "after": {
+          "partyMean": 85.3,
+          "carry": 86,
+          "weakest": 85,
+          "boss": 90
+        }
+      },
+      "190": {
+        "before": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 110
+        },
+        "after": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 110
+        }
+      },
+      "200": {
+        "before": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 110
+        },
+        "after": {
+          "partyMean": 100,
+          "carry": 100,
+          "weakest": 100,
+          "boss": 110
+        }
+      }
+    }
+  },
+  "purchases": {
+    "silver-steady-core": {
+      "10": {
+        "partyMean": 9,
+        "coreMean": 10,
+        "carry": 10,
+        "weakest": 7,
+        "boss": 8,
+        "money": 5480,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 11,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.4,
+        "coreMean": 15,
+        "carry": 15,
+        "weakest": 10,
+        "boss": 15,
+        "money": 9050,
+        "treasure": 0,
+        "candySpent": 320,
+        "candyEXP": 400,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 14,
+        "coreLevelP90": 16.5,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 16.5,
+        "coreMean": 19.5,
+        "carry": 20,
+        "weakest": 14,
+        "boss": 20,
+        "money": 14366,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 18.5,
+        "coreLevelP90": 20.5,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 20.5,
+        "coreMean": 23.5,
+        "carry": 24,
+        "weakest": 18,
+        "boss": 25,
+        "money": 18062,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 22,
+        "coreLevelP90": 24,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 25.8,
+        "coreMean": 29,
+        "carry": 29,
+        "weakest": 22,
+        "boss": 30,
+        "money": 28114,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 27,
+        "coreLevelP90": 31,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39,
+        "coreMean": 43.5,
+        "carry": 44,
+        "weakest": 35,
+        "boss": 45,
+        "money": 47370,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 41.5,
+        "coreLevelP90": 45,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 47.8,
+        "coreMean": 53.5,
+        "carry": 54,
+        "weakest": 42,
+        "boss": 55,
+        "money": 87656,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 51.5,
+        "coreLevelP90": 56,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 69,
+        "coreMean": 81,
+        "carry": 81,
+        "weakest": 61,
+        "boss": 80,
+        "money": 116842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 77,
+        "coreLevelP90": 83.5,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 84.8,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 75,
+        "boss": 100,
+        "money": 139020,
+        "treasure": 0,
+        "candySpent": 420370,
+        "candyEXP": 954800,
+        "upkeep": 23500,
+        "candyVisits": 11,
+        "coreLevelP10": 96,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 87.5,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 78,
+        "boss": 100,
+        "money": 80226,
+        "treasure": 0,
+        "candySpent": 508410,
+        "candyEXP": 1192400,
+        "upkeep": 25250,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "silver-steady-wholeParty": {
+      "10": {
+        "partyMean": 9,
+        "coreMean": 10,
+        "carry": 10,
+        "weakest": 7,
+        "boss": 8,
+        "money": 5480,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 11,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.6,
+        "coreMean": 14,
+        "carry": 14,
+        "weakest": 10,
+        "boss": 15,
+        "money": 9050,
+        "treasure": 0,
+        "candySpent": 320,
+        "candyEXP": 400,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 13.5,
+        "coreLevelP90": 15,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 16.7,
+        "coreMean": 18.5,
+        "carry": 19,
+        "weakest": 14,
+        "boss": 20,
+        "money": 14366,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 17,
+        "coreLevelP90": 19,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 20.5,
+        "coreMean": 22.5,
+        "carry": 23,
+        "weakest": 18,
+        "boss": 25,
+        "money": 18062,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 21.5,
+        "coreLevelP90": 23,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 26,
+        "coreMean": 28,
+        "carry": 28,
+        "weakest": 23,
+        "boss": 30,
+        "money": 28114,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 26.5,
+        "coreLevelP90": 28.5,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39.2,
+        "coreMean": 41.5,
+        "carry": 42,
+        "weakest": 37,
+        "boss": 45,
+        "money": 47370,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 40,
+        "coreLevelP90": 42.5,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 48.2,
+        "coreMean": 50,
+        "carry": 50,
+        "weakest": 46,
+        "boss": 55,
+        "money": 87656,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 48.5,
+        "coreLevelP90": 51.5,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 69.8,
+        "coreMean": 71,
+        "carry": 71,
+        "weakest": 69,
+        "boss": 80,
+        "money": 116842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 69.5,
+        "coreLevelP90": 72,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 86.7,
+        "coreMean": 87.5,
+        "carry": 88,
+        "weakest": 86,
+        "boss": 100,
+        "money": 139020,
+        "treasure": 0,
+        "candySpent": 420370,
+        "candyEXP": 954800,
+        "upkeep": 23500,
+        "candyVisits": 11,
+        "coreLevelP10": 86,
+        "coreLevelP90": 89,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 91.2,
+        "coreMean": 92,
+        "carry": 92,
+        "weakest": 90,
+        "boss": 100,
+        "money": 80226,
+        "treasure": 0,
+        "candySpent": 508410,
+        "candyEXP": 1192400,
+        "upkeep": 25250,
+        "candyVisits": 13,
+        "coreLevelP10": 90,
+        "coreLevelP90": 93,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "silver-highReward-core": {
+      "10": {
+        "partyMean": 13,
+        "coreMean": 15,
+        "carry": 15,
+        "weakest": 9,
+        "boss": 8,
+        "money": 6650,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 14,
+        "coreLevelP90": 16,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 15.4,
+        "coreMean": 21,
+        "carry": 21,
+        "weakest": 10,
+        "boss": 15,
+        "money": 12500,
+        "treasure": 0,
+        "candySpent": 880,
+        "candyEXP": 1100,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 20,
+        "coreLevelP90": 22,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 19.7,
+        "coreMean": 27,
+        "carry": 27,
+        "weakest": 14,
+        "boss": 20,
+        "money": 21710,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 25.5,
+        "coreLevelP90": 28,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 25.2,
+        "coreMean": 34,
+        "carry": 34,
+        "weakest": 19,
+        "boss": 25,
+        "money": 31300,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 32,
+        "coreLevelP90": 35,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 30.5,
+        "coreMean": 41,
+        "carry": 41,
+        "weakest": 24,
+        "boss": 30,
+        "money": 46130,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 39,
+        "coreLevelP90": 43,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 45.8,
+        "coreMean": 62,
+        "carry": 62,
+        "weakest": 36,
+        "boss": 45,
+        "money": 89990,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 4200,
+        "candyVisits": 3,
+        "coreLevelP10": 59,
+        "coreLevelP90": 64,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 56,
+        "coreMean": 76,
+        "carry": 76,
+        "weakest": 44,
+        "boss": 55,
+        "money": 136880,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6650,
+        "candyVisits": 5,
+        "coreLevelP10": 73,
+        "coreLevelP90": 79,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 76.3,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 62,
+        "boss": 80,
+        "money": 195690,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 13650,
+        "candyVisits": 9,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 86.2,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 76,
+        "boss": 100,
+        "money": 190910,
+        "treasure": 0,
+        "candySpent": 433280,
+        "candyEXP": 994400,
+        "upkeep": 25100,
+        "candyVisits": 11,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 89,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 81,
+        "boss": 100,
+        "money": 146490,
+        "treasure": 0,
+        "candySpent": 557520,
+        "candyEXP": 1291600,
+        "upkeep": 26850,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "silver-highReward-wholeParty": {
+      "10": {
+        "partyMean": 13.3,
+        "coreMean": 14,
+        "carry": 14,
+        "weakest": 13,
+        "boss": 8,
+        "money": 6650,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 13,
+        "coreLevelP90": 14.5,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 16.4,
+        "coreMean": 17,
+        "carry": 17,
+        "weakest": 14,
+        "boss": 15,
+        "money": 12500,
+        "treasure": 0,
+        "candySpent": 880,
+        "candyEXP": 1100,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 17,
+        "coreLevelP90": 18,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 21,
+        "coreMean": 21,
+        "carry": 21,
+        "weakest": 21,
+        "boss": 20,
+        "money": 21710,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 20,
+        "coreLevelP90": 22,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 26.7,
+        "coreMean": 27,
+        "carry": 27,
+        "weakest": 26,
+        "boss": 25,
+        "money": 31300,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 25,
+        "coreLevelP90": 28,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 32,
+        "coreMean": 32,
+        "carry": 32,
+        "weakest": 32,
+        "boss": 30,
+        "money": 46130,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 31,
+        "coreLevelP90": 33,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 48,
+        "coreMean": 48,
+        "carry": 48,
+        "weakest": 48,
+        "boss": 45,
+        "money": 89990,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 4200,
+        "candyVisits": 3,
+        "coreLevelP10": 47,
+        "coreLevelP90": 50,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 59,
+        "coreMean": 59,
+        "carry": 59,
+        "weakest": 59,
+        "boss": 55,
+        "money": 136880,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6650,
+        "candyVisits": 5,
+        "coreLevelP10": 57,
+        "coreLevelP90": 61,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 85.8,
+        "coreMean": 86,
+        "carry": 86,
+        "weakest": 85,
+        "boss": 80,
+        "money": 195690,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 13650,
+        "candyVisits": 9,
+        "coreLevelP10": 83.5,
+        "coreLevelP90": 88,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 100,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 100,
+        "boss": 100,
+        "money": 190910,
+        "treasure": 0,
+        "candySpent": 433280,
+        "candyEXP": 994400,
+        "upkeep": 25100,
+        "candyVisits": 11,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 100,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 100,
+        "boss": 100,
+        "money": 146490,
+        "treasure": 0,
+        "candySpent": 557520,
+        "candyEXP": 1291600,
+        "upkeep": 26850,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "gold-steady-core": {
+      "10": {
+        "partyMean": 9,
+        "coreMean": 10,
+        "carry": 10,
+        "weakest": 7,
+        "boss": 13,
+        "money": 5480,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 11,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.4,
+        "coreMean": 15.5,
+        "carry": 16,
+        "weakest": 10,
+        "boss": 20,
+        "money": 9050,
+        "treasure": 0,
+        "candySpent": 320,
+        "candyEXP": 400,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 14,
+        "coreLevelP90": 16.5,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 16.8,
+        "coreMean": 19.5,
+        "carry": 20,
+        "weakest": 14,
+        "boss": 25,
+        "money": 14366,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 19,
+        "coreLevelP90": 21,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 20.8,
+        "coreMean": 23.5,
+        "carry": 24,
+        "weakest": 18,
+        "boss": 30,
+        "money": 18062,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 22.5,
+        "coreLevelP90": 24.5,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 26.2,
+        "coreMean": 29.5,
+        "carry": 30,
+        "weakest": 23,
+        "boss": 35,
+        "money": 28114,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 27.5,
+        "coreLevelP90": 31.5,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39.3,
+        "coreMean": 44,
+        "carry": 44,
+        "weakest": 35,
+        "boss": 50,
+        "money": 47370,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 42,
+        "coreLevelP90": 45,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 48.2,
+        "coreMean": 54,
+        "carry": 54,
+        "weakest": 43,
+        "boss": 60,
+        "money": 87656,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 52,
+        "coreLevelP90": 56,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 69.3,
+        "coreMean": 81,
+        "carry": 81,
+        "weakest": 61,
+        "boss": 85,
+        "money": 116842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 77,
+        "coreLevelP90": 84,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 85.3,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 76,
+        "boss": 105,
+        "money": 139020,
+        "treasure": 0,
+        "candySpent": 420370,
+        "candyEXP": 954800,
+        "upkeep": 23500,
+        "candyVisits": 11,
+        "coreLevelP10": 96.5,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 88.2,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 79,
+        "boss": 105,
+        "money": 80226,
+        "treasure": 0,
+        "candySpent": 508410,
+        "candyEXP": 1192400,
+        "upkeep": 25250,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "gold-steady-wholeParty": {
+      "10": {
+        "partyMean": 9,
+        "coreMean": 10,
+        "carry": 10,
+        "weakest": 7,
+        "boss": 13,
+        "money": 5480,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 11,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.6,
+        "coreMean": 14.5,
+        "carry": 15,
+        "weakest": 10,
+        "boss": 20,
+        "money": 9050,
+        "treasure": 0,
+        "candySpent": 320,
+        "candyEXP": 400,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 13.5,
+        "coreLevelP90": 15,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 16.8,
+        "coreMean": 19,
+        "carry": 19,
+        "weakest": 14,
+        "boss": 25,
+        "money": 14366,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 17.5,
+        "coreLevelP90": 19.5,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 20.8,
+        "coreMean": 23,
+        "carry": 23,
+        "weakest": 19,
+        "boss": 30,
+        "money": 18062,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 22,
+        "coreLevelP90": 23.5,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 26.3,
+        "coreMean": 28.5,
+        "carry": 29,
+        "weakest": 24,
+        "boss": 35,
+        "money": 28114,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 27,
+        "coreLevelP90": 29,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39.5,
+        "coreMean": 42,
+        "carry": 42,
+        "weakest": 37,
+        "boss": 50,
+        "money": 47370,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 40,
+        "coreLevelP90": 43,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 48.3,
+        "coreMean": 50.5,
+        "carry": 51,
+        "weakest": 46,
+        "boss": 60,
+        "money": 87656,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 49,
+        "coreLevelP90": 52,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 70.2,
+        "coreMean": 71.5,
+        "carry": 72,
+        "weakest": 69,
+        "boss": 85,
+        "money": 116842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 70,
+        "coreLevelP90": 72.5,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 87.2,
+        "coreMean": 88,
+        "carry": 88,
+        "weakest": 86,
+        "boss": 105,
+        "money": 139020,
+        "treasure": 0,
+        "candySpent": 420370,
+        "candyEXP": 954800,
+        "upkeep": 23500,
+        "candyVisits": 11,
+        "coreLevelP10": 86.5,
+        "coreLevelP90": 89.5,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 91.5,
+        "coreMean": 92.5,
+        "carry": 93,
+        "weakest": 91,
+        "boss": 105,
+        "money": 80226,
+        "treasure": 0,
+        "candySpent": 508410,
+        "candyEXP": 1192400,
+        "upkeep": 25250,
+        "candyVisits": 13,
+        "coreLevelP10": 90.5,
+        "coreLevelP90": 94,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "gold-highReward-core": {
+      "10": {
+        "partyMean": 13,
+        "coreMean": 15,
+        "carry": 15,
+        "weakest": 9,
+        "boss": 13,
+        "money": 6650,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 14,
+        "coreLevelP90": 16,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 15.4,
+        "coreMean": 21,
+        "carry": 21,
+        "weakest": 10,
+        "boss": 20,
+        "money": 12500,
+        "treasure": 0,
+        "candySpent": 880,
+        "candyEXP": 1100,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 20,
+        "coreLevelP90": 22,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 19.8,
+        "coreMean": 27,
+        "carry": 27,
+        "weakest": 14,
+        "boss": 25,
+        "money": 21710,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 26,
+        "coreLevelP90": 28,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 25.5,
+        "coreMean": 34,
+        "carry": 34,
+        "weakest": 20,
+        "boss": 30,
+        "money": 31300,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 33,
+        "coreLevelP90": 36,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 30.7,
+        "coreMean": 41,
+        "carry": 41,
+        "weakest": 24,
+        "boss": 35,
+        "money": 46130,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 39,
+        "coreLevelP90": 43,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 46,
+        "coreMean": 62,
+        "carry": 62,
+        "weakest": 36,
+        "boss": 50,
+        "money": 89990,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 4200,
+        "candyVisits": 3,
+        "coreLevelP10": 59.5,
+        "coreLevelP90": 64,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 56.3,
+        "coreMean": 76,
+        "carry": 76,
+        "weakest": 44,
+        "boss": 60,
+        "money": 136880,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6650,
+        "candyVisits": 5,
+        "coreLevelP10": 74,
+        "coreLevelP90": 79,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 76.7,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 62,
+        "boss": 85,
+        "money": 195690,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 13650,
+        "candyVisits": 9,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 86.8,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 77,
+        "boss": 105,
+        "money": 190910,
+        "treasure": 0,
+        "candySpent": 433280,
+        "candyEXP": 994400,
+        "upkeep": 25100,
+        "candyVisits": 11,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 89.5,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 81,
+        "boss": 105,
+        "money": 146490,
+        "treasure": 0,
+        "candySpent": 557520,
+        "candyEXP": 1291600,
+        "upkeep": 26850,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "gold-highReward-wholeParty": {
+      "10": {
+        "partyMean": 13.3,
+        "coreMean": 14,
+        "carry": 14,
+        "weakest": 13,
+        "boss": 13,
+        "money": 6650,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 13,
+        "coreLevelP90": 14.5,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 16.4,
+        "coreMean": 17,
+        "carry": 17,
+        "weakest": 14,
+        "boss": 20,
+        "money": 12500,
+        "treasure": 0,
+        "candySpent": 880,
+        "candyEXP": 1100,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 17,
+        "coreLevelP90": 18,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 21,
+        "coreMean": 21,
+        "carry": 21,
+        "weakest": 21,
+        "boss": 25,
+        "money": 21710,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 20.5,
+        "coreLevelP90": 22,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 26.8,
+        "coreMean": 27,
+        "carry": 27,
+        "weakest": 26,
+        "boss": 30,
+        "money": 31300,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 26,
+        "coreLevelP90": 28,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 32,
+        "coreMean": 32,
+        "carry": 32,
+        "weakest": 32,
+        "boss": 35,
+        "money": 46130,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 31,
+        "coreLevelP90": 34,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 48.7,
+        "coreMean": 49,
+        "carry": 49,
+        "weakest": 48,
+        "boss": 50,
+        "money": 89990,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 4200,
+        "candyVisits": 3,
+        "coreLevelP10": 47,
+        "coreLevelP90": 50,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 59.2,
+        "coreMean": 59.5,
+        "carry": 60,
+        "weakest": 59,
+        "boss": 60,
+        "money": 136880,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6650,
+        "candyVisits": 5,
+        "coreLevelP10": 58,
+        "coreLevelP90": 61,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 86.2,
+        "coreMean": 86,
+        "carry": 87,
+        "weakest": 86,
+        "boss": 85,
+        "money": 195690,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 13650,
+        "candyVisits": 9,
+        "coreLevelP10": 84,
+        "coreLevelP90": 88,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 100,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 100,
+        "boss": 105,
+        "money": 190910,
+        "treasure": 0,
+        "candySpent": 433280,
+        "candyEXP": 994400,
+        "upkeep": 25100,
+        "candyVisits": 11,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 100,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 100,
+        "boss": 105,
+        "money": 146490,
+        "treasure": 0,
+        "candySpent": 557520,
+        "candyEXP": 1291600,
+        "upkeep": 26850,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "prismatic-steady-core": {
+      "10": {
+        "partyMean": 9,
+        "coreMean": 10,
+        "carry": 10,
+        "weakest": 7,
+        "boss": 18,
+        "money": 5480,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 11,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.6,
+        "coreMean": 15.5,
+        "carry": 16,
+        "weakest": 10,
+        "boss": 25,
+        "money": 9050,
+        "treasure": 0,
+        "candySpent": 320,
+        "candyEXP": 400,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 14,
+        "coreLevelP90": 17,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 17.2,
+        "coreMean": 20,
+        "carry": 20,
+        "weakest": 14,
+        "boss": 30,
+        "money": 14366,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 19,
+        "coreLevelP90": 21,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 21.2,
+        "coreMean": 24,
+        "carry": 24,
+        "weakest": 18,
+        "boss": 35,
+        "money": 18062,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 23,
+        "coreLevelP90": 25,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 26.5,
+        "coreMean": 29.5,
+        "carry": 30,
+        "weakest": 23,
+        "boss": 40,
+        "money": 28114,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 28,
+        "coreLevelP90": 32,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39.7,
+        "coreMean": 44,
+        "carry": 44,
+        "weakest": 35,
+        "boss": 55,
+        "money": 47370,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 42.5,
+        "coreLevelP90": 45.5,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 48.3,
+        "coreMean": 54.5,
+        "carry": 55,
+        "weakest": 43,
+        "boss": 65,
+        "money": 87656,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 52,
+        "coreLevelP90": 57,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 70,
+        "coreMean": 81.5,
+        "carry": 82,
+        "weakest": 62,
+        "boss": 90,
+        "money": 116842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 78,
+        "coreLevelP90": 84,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 86,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 76,
+        "boss": 110,
+        "money": 139020,
+        "treasure": 0,
+        "candySpent": 420370,
+        "candyEXP": 954800,
+        "upkeep": 23500,
+        "candyVisits": 11,
+        "coreLevelP10": 97,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 88.3,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 80,
+        "boss": 110,
+        "money": 80226,
+        "treasure": 0,
+        "candySpent": 508410,
+        "candyEXP": 1192400,
+        "upkeep": 25250,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "prismatic-steady-wholeParty": {
+      "10": {
+        "partyMean": 9,
+        "coreMean": 10,
+        "carry": 10,
+        "weakest": 7,
+        "boss": 18,
+        "money": 5480,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 11,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.6,
+        "coreMean": 14.5,
+        "carry": 15,
+        "weakest": 10,
+        "boss": 25,
+        "money": 9050,
+        "treasure": 0,
+        "candySpent": 320,
+        "candyEXP": 400,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 14,
+        "coreLevelP90": 15.5,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 17.2,
+        "coreMean": 19.5,
+        "carry": 20,
+        "weakest": 14,
+        "boss": 30,
+        "money": 14366,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 18,
+        "coreLevelP90": 20,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 21.2,
+        "coreMean": 23.5,
+        "carry": 24,
+        "weakest": 19,
+        "boss": 35,
+        "money": 18062,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 22.5,
+        "coreLevelP90": 24,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 26.7,
+        "coreMean": 29,
+        "carry": 29,
+        "weakest": 24,
+        "boss": 40,
+        "money": 28114,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 27.5,
+        "coreLevelP90": 29.5,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39.8,
+        "coreMean": 42,
+        "carry": 42,
+        "weakest": 37,
+        "boss": 55,
+        "money": 47370,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 40.5,
+        "coreLevelP90": 43,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 48.8,
+        "coreMean": 51,
+        "carry": 51,
+        "weakest": 46,
+        "boss": 65,
+        "money": 87656,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 49.5,
+        "coreLevelP90": 52,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 70.7,
+        "coreMean": 72,
+        "carry": 72,
+        "weakest": 70,
+        "boss": 90,
+        "money": 116842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 70.5,
+        "coreLevelP90": 73,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 87.8,
+        "coreMean": 89,
+        "carry": 89,
+        "weakest": 87,
+        "boss": 110,
+        "money": 139020,
+        "treasure": 0,
+        "candySpent": 420370,
+        "candyEXP": 954800,
+        "upkeep": 23500,
+        "candyVisits": 11,
+        "coreLevelP10": 87,
+        "coreLevelP90": 90,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 92.3,
+        "coreMean": 93,
+        "carry": 93,
+        "weakest": 92,
+        "boss": 110,
+        "money": 80226,
+        "treasure": 0,
+        "candySpent": 508410,
+        "candyEXP": 1192400,
+        "upkeep": 25250,
+        "candyVisits": 13,
+        "coreLevelP10": 91,
+        "coreLevelP90": 94.5,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "prismatic-highReward-core": {
+      "10": {
+        "partyMean": 13,
+        "coreMean": 15,
+        "carry": 15,
+        "weakest": 9,
+        "boss": 18,
+        "money": 6650,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 14,
+        "coreLevelP90": 16,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 15.4,
+        "coreMean": 21,
+        "carry": 21,
+        "weakest": 10,
+        "boss": 25,
+        "money": 12500,
+        "treasure": 0,
+        "candySpent": 880,
+        "candyEXP": 1100,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 20,
+        "coreLevelP90": 22,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 20,
+        "coreMean": 28,
+        "carry": 28,
+        "weakest": 14,
+        "boss": 30,
+        "money": 21710,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 26,
+        "coreLevelP90": 29,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 25.5,
+        "coreMean": 34,
+        "carry": 34,
+        "weakest": 20,
+        "boss": 35,
+        "money": 31300,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 33,
+        "coreLevelP90": 36,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 31,
+        "coreMean": 41,
+        "carry": 41,
+        "weakest": 24,
+        "boss": 40,
+        "money": 46130,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 40,
+        "coreLevelP90": 43,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 46.3,
+        "coreMean": 62,
+        "carry": 62,
+        "weakest": 36,
+        "boss": 55,
+        "money": 89990,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 4200,
+        "candyVisits": 3,
+        "coreLevelP10": 60,
+        "coreLevelP90": 64.5,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 56.5,
+        "coreMean": 76,
+        "carry": 76,
+        "weakest": 44,
+        "boss": 65,
+        "money": 136880,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6650,
+        "candyVisits": 5,
+        "coreLevelP10": 74,
+        "coreLevelP90": 80,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 76.8,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 63,
+        "boss": 90,
+        "money": 195690,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 13650,
+        "candyVisits": 9,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 87,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 78,
+        "boss": 110,
+        "money": 190910,
+        "treasure": 0,
+        "candySpent": 433280,
+        "candyEXP": 994400,
+        "upkeep": 25100,
+        "candyVisits": 11,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 89.8,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 82,
+        "boss": 110,
+        "money": 146490,
+        "treasure": 0,
+        "candySpent": 557520,
+        "candyEXP": 1291600,
+        "upkeep": 26850,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "prismatic-highReward-wholeParty": {
+      "10": {
+        "partyMean": 13.3,
+        "coreMean": 14,
+        "carry": 14,
+        "weakest": 13,
+        "boss": 18,
+        "money": 6650,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 13,
+        "coreLevelP90": 14.5,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 16.4,
+        "coreMean": 17.5,
+        "carry": 18,
+        "weakest": 14,
+        "boss": 25,
+        "money": 12500,
+        "treasure": 0,
+        "candySpent": 880,
+        "candyEXP": 1100,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 17,
+        "coreLevelP90": 18.5,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 21.2,
+        "coreMean": 21.5,
+        "carry": 22,
+        "weakest": 21,
+        "boss": 30,
+        "money": 21710,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 21,
+        "coreLevelP90": 22,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 27,
+        "coreMean": 27,
+        "carry": 27,
+        "weakest": 27,
+        "boss": 35,
+        "money": 31300,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 26,
+        "coreLevelP90": 28,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 32.7,
+        "coreMean": 33,
+        "carry": 33,
+        "weakest": 32,
+        "boss": 40,
+        "money": 46130,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 31,
+        "coreLevelP90": 34,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 48.8,
+        "coreMean": 49,
+        "carry": 49,
+        "weakest": 48,
+        "boss": 55,
+        "money": 89990,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 4200,
+        "candyVisits": 3,
+        "coreLevelP10": 47.5,
+        "coreLevelP90": 50,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 59.7,
+        "coreMean": 60,
+        "carry": 60,
+        "weakest": 59,
+        "boss": 65,
+        "money": 136880,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6650,
+        "candyVisits": 5,
+        "coreLevelP10": 58,
+        "coreLevelP90": 61,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 86.2,
+        "coreMean": 86,
+        "carry": 87,
+        "weakest": 86,
+        "boss": 90,
+        "money": 195690,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 13650,
+        "candyVisits": 9,
+        "coreLevelP10": 84,
+        "coreLevelP90": 88,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 100,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 100,
+        "boss": 110,
+        "money": 190910,
+        "treasure": 0,
+        "candySpent": 433280,
+        "candyEXP": 994400,
+        "upkeep": 25100,
+        "candyVisits": 11,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 100,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 100,
+        "boss": 110,
+        "money": 146490,
+        "treasure": 0,
+        "candySpent": 557520,
+        "candyEXP": 1291600,
+        "upkeep": 26850,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    }
+  },
+  "economySensitivity": {
+    "silverMoney": {
+      "10": {
+        "partyMean": 9.3,
+        "coreMean": 10.5,
+        "carry": 11,
+        "weakest": 7,
+        "boss": 8,
+        "money": 9198,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 13,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.4,
+        "coreMean": 15.5,
+        "carry": 16,
+        "weakest": 10,
+        "boss": 15,
+        "money": 12944,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 14,
+        "coreLevelP90": 17,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 16.7,
+        "coreMean": 19.5,
+        "carry": 20,
+        "weakest": 14,
+        "boss": 20,
+        "money": 17340,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 18.5,
+        "coreLevelP90": 20.5,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 20.5,
+        "coreMean": 23.5,
+        "carry": 24,
+        "weakest": 18,
+        "boss": 25,
+        "money": 21550,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 22,
+        "coreLevelP90": 24,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 25.8,
+        "coreMean": 29,
+        "carry": 29,
+        "weakest": 22,
+        "boss": 30,
+        "money": 31150,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 27.5,
+        "coreLevelP90": 31,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39,
+        "coreMean": 43.5,
+        "carry": 44,
+        "weakest": 35,
+        "boss": 45,
+        "money": 50572,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 41.5,
+        "coreLevelP90": 45,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 47.8,
+        "coreMean": 53.5,
+        "carry": 54,
+        "weakest": 42,
+        "boss": 55,
+        "money": 91656,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 51.5,
+        "coreLevelP90": 56,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 69,
+        "coreMean": 81,
+        "carry": 81,
+        "weakest": 61,
+        "boss": 80,
+        "money": 120842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 77,
+        "coreLevelP90": 83.5,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 85,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 75,
+        "boss": 100,
+        "money": 138960,
+        "treasure": 0,
+        "candySpent": 422960,
+        "candyEXP": 963700,
+        "upkeep": 23500,
+        "candyVisits": 12,
+        "coreLevelP10": 96,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 87.5,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 78,
+        "boss": 100,
+        "money": 80206,
+        "treasure": 0,
+        "candySpent": 512370,
+        "candyEXP": 1195900,
+        "upkeep": 25250,
+        "candyVisits": 14,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "goldBigMoney": {
+      "10": {
+        "partyMean": 9.3,
+        "coreMean": 10.5,
+        "carry": 11,
+        "weakest": 7,
+        "boss": 13,
+        "money": 15198,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 13,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.4,
+        "coreMean": 16,
+        "carry": 16,
+        "weakest": 10,
+        "boss": 20,
+        "money": 18944,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 14,
+        "coreLevelP90": 17,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 16.8,
+        "coreMean": 20,
+        "carry": 20,
+        "weakest": 14,
+        "boss": 25,
+        "money": 23340,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 19,
+        "coreLevelP90": 21,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 20.7,
+        "coreMean": 23.5,
+        "carry": 24,
+        "weakest": 18,
+        "boss": 30,
+        "money": 27550,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 22.5,
+        "coreLevelP90": 24.5,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 26.2,
+        "coreMean": 29.5,
+        "carry": 30,
+        "weakest": 23,
+        "boss": 35,
+        "money": 37150,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 27.5,
+        "coreLevelP90": 31.5,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39.3,
+        "coreMean": 44,
+        "carry": 44,
+        "weakest": 35,
+        "boss": 50,
+        "money": 56572,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 42,
+        "coreLevelP90": 45,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 48.2,
+        "coreMean": 54,
+        "carry": 54,
+        "weakest": 43,
+        "boss": 60,
+        "money": 97656,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 52,
+        "coreLevelP90": 57,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 69.3,
+        "coreMean": 81,
+        "carry": 81,
+        "weakest": 61,
+        "boss": 85,
+        "money": 126842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 77,
+        "coreLevelP90": 84,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 85.5,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 76,
+        "boss": 105,
+        "money": 138950,
+        "treasure": 0,
+        "candySpent": 422960,
+        "candyEXP": 973600,
+        "upkeep": 23500,
+        "candyVisits": 12,
+        "coreLevelP10": 96.5,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 88.2,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 79,
+        "boss": 105,
+        "money": 82232,
+        "treasure": 0,
+        "candySpent": 522560,
+        "candyEXP": 1215500,
+        "upkeep": 25250,
+        "candyVisits": 14,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "goldLargerReserve": {
+      "10": {
+        "partyMean": 8.7,
+        "coreMean": 10,
+        "carry": 10,
+        "weakest": 7,
+        "boss": 13,
+        "money": 5500,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 10.5,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.4,
+        "coreMean": 15,
+        "carry": 15,
+        "weakest": 9,
+        "boss": 20,
+        "money": 9050,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 450,
+        "candyVisits": 0,
+        "coreLevelP10": 14,
+        "coreLevelP90": 16.5,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 16.7,
+        "coreMean": 19.5,
+        "carry": 20,
+        "weakest": 14,
+        "boss": 25,
+        "money": 13782,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 19,
+        "coreLevelP90": 20.5,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 20.8,
+        "coreMean": 23.5,
+        "carry": 24,
+        "weakest": 18,
+        "boss": 30,
+        "money": 17876,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 22.5,
+        "coreLevelP90": 24.5,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 26.2,
+        "coreMean": 29,
+        "carry": 29,
+        "weakest": 23,
+        "boss": 35,
+        "money": 27716,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 1,
+        "coreLevelP10": 27.5,
+        "coreLevelP90": 31,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39.2,
+        "coreMean": 44,
+        "carry": 44,
+        "weakest": 35,
+        "boss": 50,
+        "money": 47370,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 41.5,
+        "coreLevelP90": 45,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 48.2,
+        "coreMean": 54,
+        "carry": 54,
+        "weakest": 43,
+        "boss": 60,
+        "money": 86620,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 52,
+        "coreLevelP90": 56.5,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 69.3,
+        "coreMean": 81,
+        "carry": 81,
+        "weakest": 61,
+        "boss": 85,
+        "money": 116842,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 77,
+        "coreLevelP90": 84,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 85.5,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 76,
+        "boss": 105,
+        "money": 139320,
+        "treasure": 0,
+        "candySpent": 419720,
+        "candyEXP": 955500,
+        "upkeep": 23500,
+        "candyVisits": 11,
+        "coreLevelP10": 96.5,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 88,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 79,
+        "boss": 105,
+        "money": 80316,
+        "treasure": 0,
+        "candySpent": 498710,
+        "candyEXP": 1171100,
+        "upkeep": 25050,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    },
+    "goldPositiveEvents": {
+      "10": {
+        "partyMean": 9,
+        "coreMean": 10,
+        "carry": 10,
+        "weakest": 7,
+        "boss": 13,
+        "money": 5866,
+        "treasure": 0,
+        "candySpent": 0,
+        "candyEXP": 0,
+        "upkeep": 200,
+        "candyVisits": 0,
+        "coreLevelP10": 9.5,
+        "coreLevelP90": 12.5,
+        "noCandyOfferPercent": 68.8
+      },
+      "20": {
+        "partyMean": 12.4,
+        "coreMean": 15.5,
+        "carry": 16,
+        "weakest": 10,
+        "boss": 20,
+        "money": 10996,
+        "treasure": 0,
+        "candySpent": 720,
+        "candyEXP": 900,
+        "upkeep": 450,
+        "candyVisits": 1,
+        "coreLevelP10": 14,
+        "coreLevelP90": 17,
+        "noCandyOfferPercent": 43.8
+      },
+      "30": {
+        "partyMean": 16.8,
+        "coreMean": 19.5,
+        "carry": 20,
+        "weakest": 14,
+        "boss": 25,
+        "money": 17650,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 750,
+        "candyVisits": 1,
+        "coreLevelP10": 19,
+        "coreLevelP90": 21,
+        "noCandyOfferPercent": 25
+      },
+      "40": {
+        "partyMean": 20.8,
+        "coreMean": 23.5,
+        "carry": 24,
+        "weakest": 18,
+        "boss": 30,
+        "money": 23240,
+        "treasure": 0,
+        "candySpent": 1600,
+        "candyEXP": 2000,
+        "upkeep": 1100,
+        "candyVisits": 1,
+        "coreLevelP10": 22.5,
+        "coreLevelP90": 24.5,
+        "noCandyOfferPercent": 18.8
+      },
+      "50": {
+        "partyMean": 26.2,
+        "coreMean": 29.5,
+        "carry": 30,
+        "weakest": 23,
+        "boss": 35,
+        "money": 35124,
+        "treasure": 0,
+        "candySpent": 3200,
+        "candyEXP": 4000,
+        "upkeep": 1500,
+        "candyVisits": 2,
+        "coreLevelP10": 27.5,
+        "coreLevelP90": 31.5,
+        "noCandyOfferPercent": 14.6
+      },
+      "80": {
+        "partyMean": 39.3,
+        "coreMean": 44,
+        "carry": 44,
+        "weakest": 35,
+        "boss": 50,
+        "money": 64440,
+        "treasure": 0,
+        "candySpent": 12320,
+        "candyEXP": 23200,
+        "upkeep": 3800,
+        "candyVisits": 3,
+        "coreLevelP10": 42,
+        "coreLevelP90": 45,
+        "noCandyOfferPercent": 2.1
+      },
+      "100": {
+        "partyMean": 48.2,
+        "coreMean": 54,
+        "carry": 54,
+        "weakest": 43,
+        "boss": 60,
+        "money": 113968,
+        "treasure": 0,
+        "candySpent": 34080,
+        "candyEXP": 64800,
+        "upkeep": 6050,
+        "candyVisits": 5,
+        "coreLevelP10": 52,
+        "coreLevelP90": 57,
+        "noCandyOfferPercent": 2.1
+      },
+      "150": {
+        "partyMean": 69.5,
+        "coreMean": 81,
+        "carry": 81,
+        "weakest": 61,
+        "boss": 85,
+        "money": 179998,
+        "treasure": 0,
+        "candySpent": 200640,
+        "candyEXP": 440800,
+        "upkeep": 12450,
+        "candyVisits": 9,
+        "coreLevelP10": 77,
+        "coreLevelP90": 85,
+        "noCandyOfferPercent": 0
+      },
+      "190": {
+        "partyMean": 85.3,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 76,
+        "boss": 105,
+        "money": 190222,
+        "treasure": 0,
+        "candySpent": 433280,
+        "candyEXP": 994400,
+        "upkeep": 23500,
+        "candyVisits": 11,
+        "coreLevelP10": 96.5,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      },
+      "200": {
+        "partyMean": 88.2,
+        "coreMean": 100,
+        "carry": 100,
+        "weakest": 79,
+        "boss": 105,
+        "money": 154534,
+        "treasure": 0,
+        "candySpent": 557520,
+        "candyEXP": 1291600,
+        "upkeep": 25250,
+        "candyVisits": 13,
+        "coreLevelP10": 100,
+        "coreLevelP90": 100,
+        "noCandyOfferPercent": 0
+      }
+    }
+  }
+}

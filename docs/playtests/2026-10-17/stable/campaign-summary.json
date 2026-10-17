@@ -1,0 +1,502 @@
+{
+  "method": "Native automatic campaigns in isolated memory stores. No forced victories or injected run resources. halfmeta: six +5 stats and 3 starter slots. Earlier single-slot halfmeta v3 results excluded. Profile names describe script policies, not actual human skill levels. Matching seeds are not matched routes because starting-party RNG draws differ.",
+  "campaigns": 12,
+  "battles": 681,
+  "records": [
+    {
+      "evidence": "v3-newcomer-1-silver",
+      "profile": "newcomer",
+      "seed": 1,
+      "startingSlots": 1,
+      "starters": [
+        "fuecoco"
+      ],
+      "lastFloor": 10,
+      "battles": 20,
+      "wins": 18,
+      "wonBossFloors": [],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "catcher",
+          "tier": "silver"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 6100,
+      "tradeVisits": [],
+      "issues": [
+        {
+          "floor": 10,
+          "reason": "no-living-member-no-revive",
+          "money": 742
+        }
+      ]
+    },
+    {
+      "evidence": "v3-newcomer-2-silver",
+      "profile": "newcomer",
+      "seed": 2,
+      "startingSlots": 1,
+      "starters": [
+        "mudkip"
+      ],
+      "lastFloor": 20,
+      "battles": 42,
+      "wins": 39,
+      "wonBossFloors": [
+        10
+      ],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "pivot",
+          "tier": "silver"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 10350,
+      "tradeVisits": [],
+      "issues": [
+        {
+          "floor": 20,
+          "reason": "no-living-member-no-revive",
+          "money": 502
+        }
+      ]
+    },
+    {
+      "evidence": "v3-newcomer-3-silver",
+      "profile": "newcomer",
+      "seed": 3,
+      "startingSlots": 1,
+      "starters": [
+        "bulbasaur"
+      ],
+      "lastFloor": 20,
+      "battles": 37,
+      "wins": 35,
+      "wonBossFloors": [
+        10
+      ],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "seeds",
+          "tier": "gold"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 10850,
+      "tradeVisits": [],
+      "issues": [
+        {
+          "floor": 20,
+          "reason": "no-living-member-no-revive",
+          "money": 794
+        }
+      ]
+    },
+    {
+      "evidence": "v3-newcomer-4-silver",
+      "profile": "newcomer",
+      "seed": 4,
+      "startingSlots": 1,
+      "starters": [
+        "popplio"
+      ],
+      "lastFloor": 10,
+      "battles": 21,
+      "wins": 19,
+      "wonBossFloors": [],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "lifepower",
+          "tier": "gold"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 6100,
+      "tradeVisits": [],
+      "issues": [
+        {
+          "floor": 10,
+          "reason": "no-living-member-no-revive",
+          "money": 791
+        }
+      ]
+    },
+    {
+      "evidence": "v3-prepared-1-silver",
+      "profile": "prepared",
+      "seed": 1,
+      "startingSlots": 1,
+      "starters": [
+        "fuecoco"
+      ],
+      "lastFloor": 20,
+      "battles": 35,
+      "wins": 33,
+      "wonBossFloors": [
+        10
+      ],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "catcher",
+          "tier": "silver"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 10500,
+      "tradeVisits": [],
+      "issues": [
+        {
+          "floor": 20,
+          "reason": "no-living-member-no-revive",
+          "money": 1292
+        }
+      ]
+    },
+    {
+      "evidence": "v3-prepared-2-silver",
+      "profile": "prepared",
+      "seed": 2,
+      "startingSlots": 1,
+      "starters": [
+        "mudkip"
+      ],
+      "lastFloor": 30,
+      "battles": 57,
+      "wins": 54,
+      "wonBossFloors": [
+        10,
+        20
+      ],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "pivot",
+          "tier": "silver"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 17750,
+      "tradeVisits": [
+        {
+          "type": "route",
+          "floor": 22,
+          "kind": "trade",
+          "name": "招式学习机商店"
+        }
+      ],
+      "issues": [
+        {
+          "floor": 30,
+          "reason": "no-living-member-no-revive",
+          "money": 552
+        }
+      ]
+    },
+    {
+      "evidence": "v3-prepared-3-silver",
+      "profile": "prepared",
+      "seed": 3,
+      "startingSlots": 1,
+      "starters": [
+        "bulbasaur"
+      ],
+      "lastFloor": 10,
+      "battles": 21,
+      "wins": 18,
+      "wonBossFloors": [],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "seeds",
+          "tier": "gold"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 6150,
+      "tradeVisits": [],
+      "issues": [
+        {
+          "floor": 10,
+          "reason": "no-living-member-no-revive",
+          "money": 456
+        }
+      ]
+    },
+    {
+      "evidence": "v3-prepared-4-silver",
+      "profile": "prepared",
+      "seed": 4,
+      "startingSlots": 1,
+      "starters": [
+        "popplio"
+      ],
+      "lastFloor": 10,
+      "battles": 21,
+      "wins": 19,
+      "wonBossFloors": [],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "lifepower",
+          "tier": "gold"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 6100,
+      "tradeVisits": [],
+      "issues": [
+        {
+          "floor": 10,
+          "reason": "no-living-member-no-revive",
+          "money": 791
+        }
+      ]
+    },
+    {
+      "evidence": "v4-halfmeta-1-silver",
+      "profile": "halfmeta",
+      "seed": 1,
+      "startingSlots": 3,
+      "starters": [
+        "fuecoco",
+        "mudkip",
+        "bulbasaur"
+      ],
+      "lastFloor": 47,
+      "battles": 92,
+      "wins": 91,
+      "wonBossFloors": [
+        10,
+        20,
+        30,
+        40
+      ],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "coin",
+          "tier": "silver"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 21500,
+      "tradeVisits": [],
+      "issues": [
+        {
+          "floor": 47,
+          "reason": "no-living-member-no-revive",
+          "money": 3168
+        }
+      ]
+    },
+    {
+      "evidence": "v4-halfmeta-2-silver",
+      "profile": "halfmeta",
+      "seed": 2,
+      "startingSlots": 3,
+      "starters": [
+        "mudkip",
+        "fuecoco",
+        "bulbasaur"
+      ],
+      "lastFloor": 41,
+      "battles": 82,
+      "wins": 81,
+      "wonBossFloors": [
+        10,
+        20,
+        30,
+        40
+      ],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "reservemega",
+          "tier": "silver"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 25120,
+      "tradeVisits": [
+        {
+          "type": "route",
+          "floor": 22,
+          "kind": "trade",
+          "name": "招式学习机商店"
+        },
+        {
+          "type": "route",
+          "floor": 27,
+          "kind": "trade",
+          "name": "招式学习机商店"
+        }
+      ],
+      "issues": [
+        {
+          "floor": 41,
+          "reason": "no-living-member-no-revive",
+          "money": 2890
+        }
+      ]
+    },
+    {
+      "evidence": "v4-halfmeta-3-silver",
+      "profile": "halfmeta",
+      "seed": 3,
+      "startingSlots": 3,
+      "starters": [
+        "bulbasaur",
+        "fuecoco",
+        "mudkip"
+      ],
+      "lastFloor": 100,
+      "battles": 153,
+      "wins": 151,
+      "wonBossFloors": [
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "reservation",
+          "tier": "silver"
+        },
+        {
+          "floor": 50,
+          "blessing": "lowhp",
+          "tier": "silver"
+        }
+      ],
+      "purchasedCandy": 71,
+      "candySpending": 36040,
+      "spending": 129540,
+      "tradeVisits": [
+        {
+          "type": "route",
+          "floor": 42,
+          "kind": "trade",
+          "name": "经验糖果商店"
+        },
+        {
+          "type": "route",
+          "floor": 63,
+          "kind": "trade",
+          "name": "薄荷商店"
+        },
+        {
+          "type": "route",
+          "floor": 81,
+          "kind": "trade",
+          "name": "薄荷商店"
+        },
+        {
+          "type": "route",
+          "floor": 82,
+          "kind": "trade",
+          "name": "经验糖果商店"
+        },
+        {
+          "type": "route",
+          "floor": 94,
+          "kind": "trade",
+          "name": "经验糖果商店"
+        },
+        {
+          "type": "route",
+          "floor": 97,
+          "kind": "trade",
+          "name": "经验糖果商店"
+        }
+      ],
+      "issues": [
+        {
+          "floor": 100,
+          "reason": "no-living-member-no-revive",
+          "money": 624
+        }
+      ]
+    },
+    {
+      "evidence": "v4-halfmeta-4-silver",
+      "profile": "halfmeta",
+      "seed": 4,
+      "startingSlots": 3,
+      "starters": [
+        "popplio",
+        "fuecoco",
+        "bulbasaur"
+      ],
+      "lastFloor": 57,
+      "battles": 100,
+      "wins": 99,
+      "wonBossFloors": [
+        10,
+        20,
+        30,
+        40,
+        50
+      ],
+      "choices": [
+        {
+          "floor": 1,
+          "blessing": "kid",
+          "tier": "silver"
+        },
+        {
+          "floor": 50,
+          "blessing": "pandorasilver",
+          "tier": "silver"
+        }
+      ],
+      "purchasedCandy": 0,
+      "candySpending": 0,
+      "spending": 33650,
+      "tradeVisits": [
+        {
+          "type": "route",
+          "floor": 5,
+          "kind": "trade",
+          "name": "招式学习机商店"
+        },
+        {
+          "type": "route",
+          "floor": 46,
+          "kind": "trade",
+          "name": "招式学习机商店"
+        }
+      ],
+      "issues": [
+        {
+          "floor": 57,
+          "reason": "no-living-member-no-revive",
+          "money": 460
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
@@ -16,7 +17,7 @@ describe('Fantasy Rogue earned party editor', () => {
 	const user = 'partytester';
 	const saved = () => store.get(user);
 	const member = () => saved().run.team[0];
-	const cmd = (action, data = {}) => engine.command(user, {
+	const cmd = (action, data = {}) => commandAfterOpening(engine, user, {
 		id: randomUUID(), revision: saved().revision, action, ...data,
 	});
 	beforeEach(() => {

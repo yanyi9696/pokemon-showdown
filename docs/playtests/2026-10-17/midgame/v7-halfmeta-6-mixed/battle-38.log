@@ -1,0 +1,717 @@
+|t:|1792230480
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L21, M|
+|poke|p1|Crocalor, L21, M|
+|poke|p1|Ivysaur, L20, M|
+|poke|p1|Machop, L16, M|
+|poke|p1|Kadabra, L16, M|
+|poke|p1|Klefki, L15, M|
+|poke|p2|Illumise-Fantasy, L25, F|
+|teampreview
+|
+|t:|1792230480
+|start
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L20, M|63/63
+|switch|p1a: Ivysaur|Ivysaur, L20, M|100/100
+|split|p2
+|switch|p2a: Illumise|Illumise-Fantasy, L25, F|90/90
+|switch|p2a: Illumise|Illumise-Fantasy, L25, F|100/100
+|-start|p2a: Illumise|typechange|Bug/Fairy|[silent]
+|-start|p2a: Illumise|fantasystats|95/73/105/47/115/85|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-start|p2a: Illumise|typechange|Bug/Fairy|[silent]
+|-start|p2a: Illumise|fantasystats|95/73/105/47/115/85|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230480
+|-terastallize|p2a: Illumise|Bug
+|move|p2a: Illumise|Spirit Break|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|48/63
+|-damage|p1a: Ivysaur|77/100
+|-unboost|p1a: Ivysaur|spa|1
+|move|p1a: Ivysaur|Tackle|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|85/90
+|-damage|p2a: Illumise|95/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230481
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L21, M|74/74
+|switch|p1a: Crocalor|Crocalor, L21, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Illumise|Encore||[still]
+|-fail|p2a: Illumise
+|
+|upkeep
+|turn|3
+|
+|t:|1792230481
+|move|p2a: Illumise|Spirit Break|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|63/74
+|-damage|p1a: Crocalor|86/100
+|-unboost|p1a: Crocalor|spa|1
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|66/90
+|-damage|p2a: Illumise|74/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792230482
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|75/90
+|-damage|p2a: Illumise|84/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792230482
+|move|p2a: Illumise|Encore|p1a: Crocalor
+|-start|p1a: Crocalor|Encore
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|56/90
+|-damage|p2a: Illumise|63/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792230482
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|71/90
+|-damage|p2a: Illumise|79/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792230483
+|move|p2a: Illumise|Spirit Break|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|51/74
+|-damage|p1a: Crocalor|69/100
+|-unboost|p1a: Crocalor|spa|1
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|56/90
+|-damage|p2a: Illumise|63/100
+|
+|-end|p1a: Crocalor|Encore
+|upkeep
+|turn|8
+|
+|t:|1792230483
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|75/90
+|-damage|p2a: Illumise|84/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792230484
+|move|p2a: Illumise|Encore|p1a: Crocalor
+|-start|p1a: Crocalor|Encore
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|60/90
+|-damage|p2a: Illumise|67/100
+|
+|upkeep
+|turn|10
+|
+|t:|1792230484
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|75/90
+|-damage|p2a: Illumise|84/100
+|
+|upkeep
+|turn|11
+|
+|t:|1792230484
+|move|p2a: Illumise|Spirit Break|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|39/74
+|-damage|p1a: Crocalor|53/100
+|-unboost|p1a: Crocalor|spa|1
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|62/90
+|-damage|p2a: Illumise|69/100
+|
+|-end|p1a: Crocalor|Encore
+|upkeep
+|turn|12
+|
+|t:|1792230485
+|split|p1
+|switch|p1a: Klefki|Klefki, L15, M|50/50
+|switch|p1a: Klefki|Klefki, L15, M|100/100
+|-end|p1a: Klefki|fantasystats|[silent]
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|
+|upkeep
+|turn|13
+|
+|t:|1792230486
+|move|p1a: Klefki|Torment|p2a: Illumise
+|-start|p2a: Illumise|Torment
+|move|p2a: Illumise|Spirit Break|p1a: Klefki
+|-resisted|p1a: Klefki
+|split|p1
+|-damage|p1a: Klefki|37/50
+|-damage|p1a: Klefki|74/100
+|-unboost|p1a: Klefki|spa|1
+|
+|upkeep
+|turn|14
+|
+|t:|1792230486
+|move|p2a: Illumise|Encore|p1a: Klefki
+|-start|p1a: Klefki|Encore
+|move|p1a: Klefki|Torment||[still]
+|-fail|p1a: Klefki
+|
+|upkeep
+|turn|15
+|
+|t:|1792230487
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|69/69
+|switch|p1a: Marshtomp|Marshtomp, L21, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Illumise|Spirit Break|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|42/69
+|-damage|p1a: Marshtomp|61/100
+|-unboost|p1a: Marshtomp|spa|1
+|
+|upkeep
+|turn|16
+|
+|t:|1792230487
+|split|p1
+|switch|p1a: Klefki|Klefki, L15, M|37/50
+|switch|p1a: Klefki|Klefki, L15, M|74/100
+|-end|p1a: Klefki|fantasystats|[silent]
+|move|p2a: Illumise|Encore||[still]
+|-fail|p2a: Illumise
+|
+|upkeep
+|turn|17
+|
+|t:|1792230488
+|move|p2a: Illumise|Spirit Break|p1a: Klefki
+|-resisted|p1a: Klefki
+|split|p1
+|-damage|p1a: Klefki|23/50
+|-damage|p1a: Klefki|46/100
+|-unboost|p1a: Klefki|spa|1
+|move|p1a: Klefki|Astonish|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|87/90
+|-damage|p2a: Illumise|97/100
+|
+|upkeep
+|turn|18
+|
+|t:|1792230488
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Klefki|Tackle|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|85/90
+|-damage|p2a: Illumise|95/100
+|
+|upkeep
+|turn|19
+|
+|t:|1792230489
+|move|p2a: Illumise|Spirit Break|p1a: Klefki
+|-resisted|p1a: Klefki
+|split|p1
+|-damage|p1a: Klefki|8/50
+|-damage|p1a: Klefki|16/100
+|-unboost|p1a: Klefki|spa|1
+|move|p1a: Klefki|Fairy Wind|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|82/90
+|-damage|p2a: Illumise|92/100
+|
+|upkeep
+|turn|20
+|
+|t:|1792230489
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L21, M|39/74
+|switch|p1a: Crocalor|Crocalor, L21, M|53/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|
+|upkeep
+|turn|21
+|
+|t:|1792230490
+|move|p2a: Illumise|Spirit Break|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|-crit|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|21/74
+|-damage|p1a: Crocalor|29/100
+|-unboost|p1a: Crocalor|spa|1
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|64/90
+|-damage|p2a: Illumise|72/100
+|
+|upkeep
+|turn|22
+|
+|t:|1792230490
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|64/90
+|-damage|p2a: Illumise|72/100
+|
+|upkeep
+|turn|23
+|
+|t:|1792230491
+|move|p2a: Illumise|Strength Sap|p1a: Crocalor
+|-unboost|p1a: Crocalor|atk|1
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|62/90
+|-damage|p2a: Illumise|69/100
+|
+|upkeep
+|turn|24
+|
+|t:|1792230491
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L20, M|48/63
+|switch|p1a: Ivysaur|Ivysaur, L20, M|77/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|
+|upkeep
+|turn|25
+|
+|t:|1792230491
+|move|p2a: Illumise|Spirit Break|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|33/63
+|-damage|p1a: Ivysaur|53/100
+|-unboost|p1a: Ivysaur|spa|1
+|move|p1a: Ivysaur|Razor Leaf|p2a: Illumise
+|-resisted|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|85/90
+|-damage|p2a: Illumise|95/100
+|
+|upkeep
+|turn|26
+|
+|t:|1792230492
+|move|p2a: Illumise|Roost|p2a: Illumise
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Ivysaur|Seed Bomb|p2a: Illumise
+|-resisted|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|83/90
+|-damage|p2a: Illumise|93/100
+|
+|upkeep
+|turn|27
+|
+|t:|1792230492
+|move|p2a: Illumise|Spirit Break|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|19/63
+|-damage|p1a: Ivysaur|31/100
+|-unboost|p1a: Ivysaur|spa|1
+|move|p1a: Ivysaur|Razor Leaf|p2a: Illumise
+|-resisted|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|75/90
+|-damage|p2a: Illumise|84/100
+|
+|upkeep
+|turn|28
+|
+|t:|1792230492
+|move|p2a: Illumise|Strength Sap|p1a: Ivysaur
+|-unboost|p1a: Ivysaur|atk|1
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Ivysaur|Tackle|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|86/90
+|-damage|p2a: Illumise|96/100
+|
+|upkeep
+|turn|29
+|
+|t:|1792230493
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|42/69
+|switch|p1a: Marshtomp|Marshtomp, L21, M|61/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Illumise|Spirit Break|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|15/69
+|-damage|p1a: Marshtomp|22/100
+|-unboost|p1a: Marshtomp|spa|1
+|
+|upkeep
+|turn|30
+|
+|t:|1792230493
+|move|p2a: Illumise|Strength Sap|p1a: Marshtomp
+|-unboost|p1a: Marshtomp|atk|1
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|move|p1a: Marshtomp|Mud Shot|p2a: Illumise
+|-resisted|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|87/90
+|-damage|p2a: Illumise|97/100
+|-unboost|p2a: Illumise|spe|1
+|
+|upkeep
+|turn|31
+|
+|t:|1792230493
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L21, M|21/74
+|switch|p1a: Crocalor|Crocalor, L21, M|29/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Illumise|Spirit Break|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|9/74
+|-damage|p1a: Crocalor|13/100
+|-unboost|p1a: Crocalor|spa|1
+|
+|upkeep
+|turn|32
+|
+|t:|1792230494
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|59/90
+|-damage|p2a: Illumise|66/100
+|move|p2a: Illumise|Strength Sap|p1a: Crocalor
+|-unboost|p1a: Crocalor|atk|1
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|
+|upkeep
+|turn|33
+|
+|t:|1792230494
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L20, M|19/63
+|switch|p1a: Ivysaur|Ivysaur, L20, M|31/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Illumise|Spirit Break|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|4/63
+|-damage|p1a: Ivysaur|7/100
+|-unboost|p1a: Ivysaur|spa|1
+|
+|upkeep
+|turn|34
+|
+|t:|1792230494
+|move|p1a: Ivysaur|Tackle|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|85/90
+|-damage|p2a: Illumise|95/100
+|move|p2a: Illumise|Strength Sap|p1a: Ivysaur
+|-unboost|p1a: Ivysaur|atk|1
+|split|p2
+|-heal|p2a: Illumise|90/90
+|-heal|p2a: Illumise|100/100
+|
+|upkeep
+|turn|35
+|
+|t:|1792230495
+|split|p1
+|switch|p1a: Kadabra|Kadabra, L16, M|47/47
+|switch|p1a: Kadabra|Kadabra, L16, M|100/100
+|-end|p1a: Kadabra|fantasystats|[silent]
+|move|p2a: Illumise|Spirit Break|p1a: Kadabra
+|split|p1
+|-damage|p1a: Kadabra|0 fnt
+|-damage|p1a: Kadabra|0 fnt
+|faint|p1a: Kadabra
+|
+|upkeep
+|
+|t:|1792230495
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L21, M|9/74
+|switch|p1a: Crocalor|Crocalor, L21, M|13/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|36
+|
+|t:|1792230496
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|49/90
+|-damage|p2a: Illumise|55/100
+|move|p2a: Illumise|Strength Sap|p1a: Crocalor
+|-unboost|p1a: Crocalor|atk|1
+|split|p2
+|-heal|p2a: Illumise|86/90
+|-heal|p2a: Illumise|96/100
+|
+|upkeep
+|turn|37
+|
+|t:|1792230496
+|move|p1a: Crocalor|Incinerate|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|45/90
+|-damage|p2a: Illumise|50/100
+|-activate|p2a: Illumise|move: Struggle
+|move|p2a: Illumise|Struggle|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|split|p2
+|-damage|p2a: Illumise|22/90|[from] recoil
+|-damage|p2a: Illumise|25/100|[from] recoil
+|
+|upkeep
+|
+|t:|1792230496
+|split|p1
+|switch|p1a: Machop|Machop, L16, M|57/57
+|switch|p1a: Machop|Machop, L16, M|100/100
+|-end|p1a: Machop|fantasystats|[silent]
+|turn|38
+|
+|t:|1792230496
+|move|p2a: Illumise|Strength Sap|p1a: Machop
+|-unboost|p1a: Machop|atk|1
+|split|p2
+|-heal|p2a: Illumise|61/90
+|-heal|p2a: Illumise|68/100
+|move|p1a: Machop|Knock Off|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|56/90
+|-damage|p2a: Illumise|63/100
+|
+|upkeep
+|turn|39
+|
+|t:|1792230497
+|-activate|p2a: Illumise|move: Struggle
+|move|p2a: Illumise|Struggle|p1a: Machop
+|split|p1
+|-damage|p1a: Machop|41/57
+|-damage|p1a: Machop|72/100
+|split|p2
+|-damage|p2a: Illumise|33/90|[from] recoil
+|-damage|p2a: Illumise|37/100|[from] recoil
+|move|p1a: Machop|Low Kick|p2a: Illumise
+|-resisted|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|31/90
+|-damage|p2a: Illumise|35/100
+|
+|upkeep
+|turn|40
+|
+|t:|1792230497
+|move|p2a: Illumise|Strength Sap|p1a: Machop
+|-unboost|p1a: Machop|atk|1
+|split|p2
+|-heal|p2a: Illumise|57/90
+|-heal|p2a: Illumise|64/100
+|move|p1a: Machop|Revenge|p2a: Illumise
+|-resisted|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|55/90
+|-damage|p2a: Illumise|62/100
+|
+|upkeep
+|turn|41
+|
+|t:|1792230498
+|-activate|p2a: Illumise|move: Struggle
+|move|p2a: Illumise|Struggle|p1a: Machop
+|split|p1
+|-damage|p1a: Machop|23/57
+|-damage|p1a: Machop|41/100
+|split|p2
+|-damage|p2a: Illumise|32/90|[from] recoil
+|-damage|p2a: Illumise|36/100|[from] recoil
+|move|p1a: Machop|Low Sweep|p2a: Illumise
+|-resisted|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|29/90
+|-damage|p2a: Illumise|33/100
+|-unboost|p2a: Illumise|spe|1
+|
+|upkeep
+|turn|42
+|
+|t:|1792230498
+|move|p2a: Illumise|Strength Sap|p1a: Machop
+|-unboost|p1a: Machop|atk|1
+|split|p2
+|-heal|p2a: Illumise|48/90
+|-heal|p2a: Illumise|54/100
+|move|p1a: Machop|Knock Off|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|45/90
+|-damage|p2a: Illumise|50/100
+|
+|upkeep
+|turn|43
+|
+|t:|1792230498
+|-activate|p2a: Illumise|move: Struggle
+|move|p2a: Illumise|Struggle|p1a: Machop
+|split|p1
+|-damage|p1a: Machop|6/57
+|-damage|p1a: Machop|11/100
+|split|p2
+|-damage|p2a: Illumise|22/90|[from] recoil
+|-damage|p2a: Illumise|25/100|[from] recoil
+|move|p1a: Machop|Low Kick|p2a: Illumise
+|-resisted|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|21/90
+|-damage|p2a: Illumise|24/100
+|
+|upkeep
+|turn|44
+|
+|t:|1792230498
+|move|p2a: Illumise|Strength Sap|p1a: Machop
+|-unboost|p1a: Machop|atk|1
+|split|p2
+|-heal|p2a: Illumise|36/90
+|-heal|p2a: Illumise|40/100
+|move|p1a: Machop|Knock Off|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|33/90
+|-damage|p2a: Illumise|37/100
+|
+|upkeep
+|turn|45
+|
+|t:|1792230499
+|-activate|p2a: Illumise|move: Struggle
+|move|p2a: Illumise|Struggle|p1a: Machop
+|split|p1
+|-damage|p1a: Machop|0 fnt
+|-damage|p1a: Machop|0 fnt
+|faint|p1a: Machop
+|split|p2
+|-damage|p2a: Illumise|10/90|[from] recoil
+|-damage|p2a: Illumise|12/100|[from] recoil
+|
+|upkeep
+|
+|t:|1792230499
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|15/69
+|switch|p1a: Marshtomp|Marshtomp, L21, M|22/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|46
+|
+|t:|1792230500
+|move|p1a: Marshtomp|Rock Throw|p2a: Illumise
+|-supereffective|p2a: Illumise
+|split|p2
+|-damage|p2a: Illumise|0 fnt
+|-damage|p2a: Illumise|0 fnt
+|faint|p2a: Illumise
+|
+|win|Player

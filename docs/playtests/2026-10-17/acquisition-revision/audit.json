@@ -1,0 +1,613 @@
+{
+  "method": "Native engine, level 50 player versus level 60 opponent; same neutral spread and move; no blessings, items or permanent training. No campaign-clear claim.",
+  "candyUnlocks": {
+    "expcandyxs": {
+      "floor": 1,
+      "price": 80,
+      "stock": 20
+    },
+    "expcandys": {
+      "floor": 30,
+      "price": 380,
+      "stock": 12
+    },
+    "expcandym": {
+      "floor": 50,
+      "price": 1350,
+      "stock": 8
+    },
+    "expcandyl": {
+      "floor": 100,
+      "price": 4200,
+      "stock": 6
+    },
+    "expcandyxl": {
+      "floor": 150,
+      "price": 12000,
+      "stock": 4
+    }
+  },
+  "rewards": [
+    {
+      "floor": 9,
+      "oldEliteEXP": 400,
+      "elite": {
+        "expcandyxs": 4
+      },
+      "encounter": {
+        "expcandyxs": 6
+      },
+      "reward": {
+        "expcandyxs": 1
+      }
+    },
+    {
+      "floor": 10,
+      "oldEliteEXP": 500,
+      "elite": {
+        "expcandyxs": 4
+      },
+      "encounter": {
+        "expcandyxs": 7
+      },
+      "reward": {
+        "expcandyxs": 1
+      }
+    },
+    {
+      "floor": 19,
+      "oldEliteEXP": 1300,
+      "elite": {
+        "expcandyxs": 11
+      },
+      "encounter": {
+        "expcandyxs": 17
+      },
+      "reward": {
+        "expcandyxs": 2
+      }
+    },
+    {
+      "floor": 20,
+      "oldEliteEXP": 1400,
+      "elite": {
+        "expcandyxs": 12
+      },
+      "encounter": {
+        "expcandyxs": 19
+      },
+      "reward": {
+        "expcandyxs": 2
+      }
+    },
+    {
+      "floor": 29,
+      "oldEliteEXP": 2700,
+      "elite": {
+        "expcandyxs": 23
+      },
+      "encounter": {
+        "expcandyxs": 37
+      },
+      "reward": {
+        "expcandyxs": 5
+      }
+    },
+    {
+      "floor": 30,
+      "oldEliteEXP": 2900,
+      "elite": {
+        "expcandys": 3,
+        "expcandyxs": 1
+      },
+      "encounter": {
+        "expcandys": 4,
+        "expcandyxs": 7
+      },
+      "reward": {
+        "expcandyxs": 5
+      }
+    },
+    {
+      "floor": 39,
+      "oldEliteEXP": 4800,
+      "elite": {
+        "expcandys": 5
+      },
+      "encounter": {
+        "expcandys": 8,
+        "expcandyxs": 1
+      },
+      "reward": {
+        "expcandys": 1
+      }
+    },
+    {
+      "floor": 40,
+      "oldEliteEXP": 5000,
+      "elite": {
+        "expcandys": 5,
+        "expcandyxs": 3
+      },
+      "encounter": {
+        "expcandys": 8,
+        "expcandyxs": 4
+      },
+      "reward": {
+        "expcandys": 1,
+        "expcandyxs": 1
+      }
+    },
+    {
+      "floor": 49,
+      "oldEliteEXP": 7400,
+      "elite": {
+        "expcandys": 7,
+        "expcandyxs": 7
+      },
+      "encounter": {
+        "expcandys": 12,
+        "expcandyxs": 5
+      },
+      "reward": {
+        "expcandys": 1,
+        "expcandyxs": 5
+      }
+    },
+    {
+      "floor": 50,
+      "oldEliteEXP": 7700,
+      "elite": {
+        "expcandym": 2,
+        "expcandyxs": 5
+      },
+      "encounter": {
+        "expcandym": 3,
+        "expcandys": 1,
+        "expcandyxs": 7
+      },
+      "reward": {
+        "expcandys": 1,
+        "expcandyxs": 5
+      }
+    },
+    {
+      "floor": 69,
+      "oldEliteEXP": 14500,
+      "elite": {
+        "expcandym": 4,
+        "expcandyxs": 3
+      },
+      "encounter": {
+        "expcandym": 6,
+        "expcandys": 2,
+        "expcandyxs": 1
+      },
+      "reward": {
+        "expcandys": 3,
+        "expcandyxs": 1
+      }
+    },
+    {
+      "floor": 99,
+      "oldEliteEXP": 29600,
+      "elite": {
+        "expcandym": 8,
+        "expcandys": 1,
+        "expcandyxs": 4
+      },
+      "encounter": {
+        "expcandym": 13,
+        "expcandys": 1,
+        "expcandyxs": 5
+      },
+      "reward": {
+        "expcandym": 1,
+        "expcandys": 2,
+        "expcandyxs": 4
+      }
+    },
+    {
+      "floor": 100,
+      "oldEliteEXP": 30200,
+      "elite": {
+        "expcandyl": 2,
+        "expcandym": 1,
+        "expcandys": 3,
+        "expcandyxs": 3
+      },
+      "encounter": {
+        "expcandyl": 4,
+        "expcandys": 1,
+        "expcandyxs": 3
+      },
+      "reward": {
+        "expcandym": 1,
+        "expcandys": 2,
+        "expcandyxs": 5
+      }
+    },
+    {
+      "floor": 149,
+      "oldEliteEXP": 66800,
+      "elite": {
+        "expcandyl": 5,
+        "expcandym": 2,
+        "expcandys": 1
+      },
+      "encounter": {
+        "expcandyl": 9,
+        "expcandys": 1,
+        "expcandyxs": 1
+      },
+      "reward": {
+        "expcandyl": 1,
+        "expcandys": 1,
+        "expcandyxs": 6
+      }
+    },
+    {
+      "floor": 150,
+      "oldEliteEXP": 67700,
+      "elite": {
+        "expcandyxl": 1,
+        "expcandyl": 2,
+        "expcandym": 2,
+        "expcandys": 1,
+        "expcandyxs": 7
+      },
+      "encounter": {
+        "expcandyxl": 3,
+        "expcandys": 2,
+        "expcandyxs": 5
+      },
+      "reward": {
+        "expcandyl": 1,
+        "expcandys": 1,
+        "expcandyxs": 7
+      }
+    },
+    {
+      "floor": 199,
+      "oldEliteEXP": 119000,
+      "elite": {
+        "expcandyxl": 3,
+        "expcandyl": 1,
+        "expcandys": 1,
+        "expcandyxs": 4
+      },
+      "encounter": {
+        "expcandyxl": 5,
+        "expcandyl": 1,
+        "expcandys": 2,
+        "expcandyxs": 2
+      },
+      "reward": {
+        "expcandyl": 2,
+        "expcandyxs": 2
+      }
+    },
+    {
+      "floor": 200,
+      "oldEliteEXP": 120200,
+      "elite": {
+        "expcandyxl": 3,
+        "expcandyl": 1,
+        "expcandys": 2,
+        "expcandyxs": 6
+      },
+      "encounter": {
+        "expcandyxl": 5,
+        "expcandyl": 1,
+        "expcandym": 1,
+        "expcandyxs": 5
+      },
+      "reward": {
+        "expcandyl": 2,
+        "expcandyxs": 4
+      }
+    }
+  ],
+  "restShops": [
+    {
+      "floor": 9,
+      "id": "expcandyxs",
+      "stock": 4,
+      "price": 80
+    },
+    {
+      "floor": 19,
+      "id": "expcandyxs",
+      "stock": 6,
+      "price": 80
+    },
+    {
+      "floor": 29,
+      "id": "expcandyxs",
+      "stock": 8,
+      "price": 80
+    },
+    {
+      "floor": 39,
+      "id": "expcandys",
+      "stock": 3,
+      "price": 380
+    },
+    {
+      "floor": 49,
+      "id": "expcandys",
+      "stock": 4,
+      "price": 380
+    },
+    {
+      "floor": 69,
+      "id": "expcandym",
+      "stock": 3,
+      "price": 1350
+    },
+    {
+      "floor": 99,
+      "id": "expcandym",
+      "stock": 5,
+      "price": 1350
+    },
+    {
+      "floor": 149,
+      "id": "expcandyl",
+      "stock": 4,
+      "price": 4200
+    },
+    {
+      "floor": 199,
+      "id": "expcandyxl",
+      "stock": 2,
+      "price": 12000
+    }
+  ],
+  "bossCards": [
+    {
+      "tier": "elite",
+      "kind": "attack",
+      "name": "破阵之证",
+      "damage": 50,
+      "defense": 25,
+      "speed": 0,
+      "text": "首领战中，全队招式伤害 +50%，双防 +25%。",
+      "baseline": {
+        "dealt": 16,
+        "taken": 26,
+        "defense": 120,
+        "speed": 120
+      },
+      "actual": {
+        "dealt": 24,
+        "taken": 21,
+        "defense": 150,
+        "speed": 120
+      },
+      "damageMultiplier": 1.5,
+      "incomingMultiplier": 0.8076923076923077
+    },
+    {
+      "tier": "elite",
+      "kind": "guard",
+      "name": "坚守之证",
+      "damage": 25,
+      "defense": 60,
+      "speed": 0,
+      "text": "首领战中，全队招式伤害 +25%，双防 +60%。",
+      "baseline": {
+        "dealt": 16,
+        "taken": 26,
+        "defense": 120,
+        "speed": 120
+      },
+      "actual": {
+        "dealt": 20,
+        "taken": 17,
+        "defense": 192,
+        "speed": 120
+      },
+      "damageMultiplier": 1.25,
+      "incomingMultiplier": 0.6538461538461539
+    },
+    {
+      "tier": "elite",
+      "kind": "balanced",
+      "name": "同行之证",
+      "damage": 35,
+      "defense": 35,
+      "speed": 20,
+      "text": "首领战中，全队招式伤害 +35%，双防 +35%，速度 +20%。",
+      "baseline": {
+        "dealt": 16,
+        "taken": 26,
+        "defense": 120,
+        "speed": 120
+      },
+      "actual": {
+        "dealt": 21,
+        "taken": 20,
+        "defense": 162,
+        "speed": 144
+      },
+      "damageMultiplier": 1.3125,
+      "incomingMultiplier": 0.7692307692307693
+    },
+    {
+      "tier": "gym",
+      "kind": "attack",
+      "name": "破阵之证",
+      "damage": 75,
+      "defense": 35,
+      "speed": 0,
+      "text": "首领战中，全队招式伤害 +75%，双防 +35%。",
+      "baseline": {
+        "dealt": 16,
+        "taken": 26,
+        "defense": 120,
+        "speed": 120
+      },
+      "actual": {
+        "dealt": 28,
+        "taken": 20,
+        "defense": 162,
+        "speed": 120
+      },
+      "damageMultiplier": 1.75,
+      "incomingMultiplier": 0.7692307692307693
+    },
+    {
+      "tier": "gym",
+      "kind": "guard",
+      "name": "坚守之证",
+      "damage": 35,
+      "defense": 85,
+      "speed": 0,
+      "text": "首领战中，全队招式伤害 +35%，双防 +85%。",
+      "baseline": {
+        "dealt": 16,
+        "taken": 26,
+        "defense": 120,
+        "speed": 120
+      },
+      "actual": {
+        "dealt": 21,
+        "taken": 15,
+        "defense": 222,
+        "speed": 120
+      },
+      "damageMultiplier": 1.3125,
+      "incomingMultiplier": 0.5769230769230769
+    },
+    {
+      "tier": "gym",
+      "kind": "balanced",
+      "name": "同行之证",
+      "damage": 55,
+      "defense": 55,
+      "speed": 25,
+      "text": "首领战中，全队招式伤害 +55%，双防 +55%，速度 +25%。",
+      "baseline": {
+        "dealt": 16,
+        "taken": 26,
+        "defense": 120,
+        "speed": 120
+      },
+      "actual": {
+        "dealt": 24,
+        "taken": 17,
+        "defense": 186,
+        "speed": 150
+      },
+      "damageMultiplier": 1.5,
+      "incomingMultiplier": 0.6538461538461539
+    }
+  ],
+  "economy": [
+    {
+      "floor": 1,
+      "multiplier": 1.25,
+      "eliteTreasure": 150,
+      "encounterCoins": 900,
+      "eventReward": 416.41875,
+      "eventFee": 350
+    },
+    {
+      "floor": 10,
+      "multiplier": 1.25,
+      "eliteTreasure": 450,
+      "encounterCoins": 1350,
+      "eventReward": 635.625,
+      "eventFee": 500
+    },
+    {
+      "floor": 20,
+      "multiplier": 1.25,
+      "eliteTreasure": 600,
+      "encounterCoins": 1900,
+      "eventReward": 911.25,
+      "eventFee": 750
+    },
+    {
+      "floor": 30,
+      "multiplier": 1.25,
+      "eliteTreasure": 900,
+      "encounterCoins": 2450,
+      "eventReward": 1220.625,
+      "eventFee": 1000
+    },
+    {
+      "floor": 40,
+      "multiplier": 1.1666666666666667,
+      "eliteTreasure": 1050,
+      "encounterCoins": 2750,
+      "eventReward": 1459.5,
+      "eventFee": 1250
+    },
+    {
+      "floor": 50,
+      "multiplier": 1.0833333333333333,
+      "eliteTreasure": 1050,
+      "encounterCoins": 3050,
+      "eventReward": 1681.8749999999998,
+      "eventFee": 1550
+    },
+    {
+      "floor": 60,
+      "multiplier": 1,
+      "eliteTreasure": 1200,
+      "encounterCoins": 3250,
+      "eventReward": 1881,
+      "eventFee": 1900
+    },
+    {
+      "floor": 100,
+      "multiplier": 1,
+      "eliteTreasure": 1950,
+      "encounterCoins": 4950,
+      "eventReward": 3465,
+      "eventFee": 3450
+    }
+  ],
+  "ivs": {
+    "ordinary31": 0.005,
+    "elite31": 0.016666666666666666,
+    "eliteAtLeastOne31": 0.09592477621313478,
+    "eliteSix31": 2.1433470507544583e-11,
+    "existingCapturesUnchanged": true
+  },
+  "validation": {
+    "serverFullSuite": {
+      "passed": 2031,
+      "outdatedRewardExpectations": 2
+    },
+    "followup": {
+      "passed": 112,
+      "scope": "All changed acquisition, event, service, flow, economy, healing, growth and boss-card tests passed after updating the old reward assertions and separating fees from payouts."
+    },
+    "client": {
+      "passed": 166,
+      "pending": 1
+    },
+    "typescript": "both passed",
+    "builds": "both passed",
+    "browser": "Visual review unavailable: earlier automatic approval review rejected the local file URL; no workaround used.",
+    "codexFollowupPassed": 9,
+    "live": {
+      "at": "2026-10-17T15:51:06.377Z",
+      "transport": "real localhost WebSocket",
+      "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\acquisition-revision-1792252244878",
+      "savedAdventureRestored": true,
+      "restoredFloor": 60,
+      "teamSize": 6,
+      "testedSaveHpPpItemsEmblemsBagMoneyPointsPreserved": true,
+      "unchangedAccounts": 19,
+      "concurrentProgress": [],
+      "newRewardsAndTrainingPublished": true,
+      "executionThresholdFivePercentPublished": true,
+      "blessingEntries": 164,
+      "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+    }
+  }
+}

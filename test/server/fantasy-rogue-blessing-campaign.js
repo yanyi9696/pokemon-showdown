@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { Dex } = require('../../dist/sim/dex');
@@ -38,14 +39,17 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		b.handleBlessingCommand(account, run, content, { action: 'blessingreward', member: run.blessings.pending[0].id, value }, zero);
 	}
 	for (const spirit of [undefined, ...require('../../dist/sim/fantasy-rogue-spirits').activeRogueSpirits().map(s => s.id)]) {
-		it(`finishes all three blessing checkpoints with refreshes and save restores under ${spirit || 'no spirit'}`, () => {
+		it(`finishes all four blessing checkpoints with refreshes and save restores under ${spirit || 'no spirit'}`, () => {
 			for (let seed = 1; seed <= 8; seed++) {
 				let randomState = seed;
 				const random = max => ((randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0) % max);
 				let { run, account } = setup(); run.spirit = spirit;
-				for (const floor of [50, 100, 150]) {
+				for (const floor of [1, 50, 100, 150]) {
 					run.floor = floor; run.phase = 'blessing';
-					b.completeBlessingFloor(account, run, content, random);
+					if (floor === 1) {
+						run.blessings.beforeAdventure = true;
+						b.prepareOpeningBlessings(run, content, random);
+					} else b.completeBlessingFloor(account, run, content, random);
 					let actions = 0;
 					while (run.blessings.pending.length || run.blessings.round || run.blessings.stage) {
 						assert(++actions <= 30, 'must leave every selection checkpoint');
@@ -64,16 +68,22 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 						b.syncBlessingParty(run);
 					}
 					assert.equal(run.blessings.levels, run.blessings.owned.reduce((sum, entry) => sum +
-						(entry.grantedBy ? 0 : blessingLevelCost(entry.tier, entry.floor)), 0));
+						(entry.grantedBy ? 0 : blessingLevelCost(entry.tier, entry.floor)), 0) +
+						(run.blessings.evolutionCosts || []).reduce((sum, floor) => sum + blessingLevelCost('prismatic', floor), 0));
+					assert.equal(run.blessings.bossLevels, run.blessings.owned.reduce((sum, entry) => sum +
+						(entry.grantedBy ? 0 : blessingLevelCost(entry.tier, entry.floor, true)), 0) +
+						(run.blessings.evolutionCosts || []).reduce((sum, floor) => sum + blessingLevelCost('prismatic', floor, true), 0));
+					delete run.blessings.beforeAdventure;
 					assert.equal(new Set(run.blessings.owned.map(entry => entry.id)).size, run.blessings.owned.length);
 				}
 			}
 		});
 	}
-	it('replaces an exhausted Jirachi card when the first gift removes its required teammate', () => {
+	it('keeps an opening attribute card selectable after the first Jirachi gift replaces its matching teammate', () => {
 		const { run, account } = setup(); run.spirit = 'jirachi';
+		run.floor = 1;
 		const steel = ROGUE_BLESSINGS.find(def => def.family === 'typeevolution' && def.type === 'Steel');
-		run.blessings.round = { floor: 50, tier: 'prismatic', remaining: 2,
+		run.blessings.round = { floor: 1, tier: 'prismatic', remaining: 2,
 			options: [{ id: 'hero', refreshes: 0, chosen: false }, { id: steel.id, refreshes: 0, chosen: false }],
 			familiesSeen: ['hero', 'typeevolution'] };
 		b.handleBlessingCommand(account, run, content, { action: 'blessing', slot: 0 }, zero);
@@ -81,7 +91,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		run.blessings.pending[0].pokemon = createRoguePokemon(set('Squirtle', 'Torrent'), run.boosts);
 		resolve(account, run, run.team[2].id);
 		const remaining = run.blessings.round.options[1];
-		assert.notEqual(remaining.id, steel.id, 'the remaining card must be selectable after replacing the only Steel member');
+		assert.equal(remaining.id, steel.id, 'the card now gifts its own matching partner');
 		assert.equal(remaining.refreshes, 0, 'automatic repair must not grant extra refreshes');
 		assert.equal(blessing(remaining.id).tier, 'prismatic');
 		assert(run.blessings.round.options[0].chosen);
@@ -108,7 +118,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 			const reward = run.blessings.pending[0];
 			resolve(account, run, reward.kind === 'gift' ? 'join' : reward.options[0]);
 		}
-		if (run.blessings.stage) b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stats' }, zero);
+		while (run.blessings.stage) b.handleBlessingCommand(account, run, content,
+			{ action: 'blessing', value: run.blessings.stage.kind === 'direction' ? 'stats' : run.blessings.stage.options[0] }, zero);
 		const restored = JSON.parse(JSON.stringify(run));
 		b.syncBlessingParty(restored);
 		assert.deepEqual(restored.blessings.owned, JSON.parse(JSON.stringify(run.blessings.owned)));
@@ -123,11 +134,11 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		assert.equal(convertSpiritItem(run, content, 'rogueemblemfire', 'gift:emblem', zero), 'rogueemblemfire');
 	});
 	it('charges only the outer Fate and excludes Fate gifts for all three tiers', () => {
-		for (const tier of ['silver', 'gold', 'prismatic']) for (const floor of [50, 100, 150]) {
+		for (const tier of ['silver', 'gold', 'prismatic']) for (const floor of [1, 50, 100, 150]) {
 			const { run, account } = setup(floor);
 			choose(account, run, blessing('fate' + tier));
 			assert.equal(run.blessings.owned.length, 2);
-			assert.equal(run.blessings.owned[1].tier, 'gold');
+			assert.equal(run.blessings.owned[1].tier, tier);
 			assert(!run.blessings.owned[1].family.startsWith('fate'));
 			assert.equal(run.blessings.owned[1].grantedBy, 'fate' + tier);
 			assert.equal(run.blessings.levels, blessingLevelCost(tier, floor));
@@ -136,7 +147,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 	});
 	it('raises encounters once and keeps level costs cumulative after a reload', () => {
 		const { run, account } = setup();
-		for (const [floor, id] of [[50, 'lowhp'], [100, 'smallfinal'], [150, 'hpgrowth']]) {
+		for (const [floor, id] of [[50, 'lowhp'], [100, 'smallfinal'], [150, 'speedpower']]) {
 			run.floor = floor; choose(account, run, blessing(id));
 		}
 		assert.equal(run.blessings.levels, 40);
@@ -148,7 +159,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 	});
 	it('grants mixed cards with the selected quality cost at each checkpoint and preserves their saved offer', () => {
 		const { createBlessingRound } = require('../../dist/server/fantasy-rogue/blessing-selection');
-		const candidates = ['lowhp', 'smallfinal', 'hpgrowth'].map(blessing);
+		const candidates = ['lowhp', 'smallfinal', 'speedpower'].map(blessing);
 		for (const floor of [50, 100, 150]) for (const slot of [0, 1, 2]) {
 			const { run, account } = setup(floor); run.spirit = 'necrozma';
 			run.blessings.round = createBlessingRound({ floor, spirit: run.spirit }, candidates, zero);
@@ -171,7 +182,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 			b.completeBlessingFloor(account, run, content, zero);
 		}
 		const entry = run.blessings.owned[0];
-		assert.equal(entry.progress, 15); assert(entry.completed); assert.equal(run.bag.expcandym, 2);
+		assert.equal(entry.progress, 15); assert(entry.completed); assert.equal(run.bag.expcandys, 8);
 		run.floor = 81;
 		assert(b.blessingRouteTemplates(run, [{ id: 'event', kind: 'event' }]).some(node => node.kind === 'wild'));
 	});
@@ -190,10 +201,10 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		mon.set.item = 'rogueemblemfire'; b.syncBlessingParty(run);
 		assert(mon.blessingMoves.includes('flareblitz'));
 		mon.set.moves[0] = 'flareblitz'; mon.pp[0] = { id: 'flareblitz', pp: 2, maxpp: 15 };
-		b.syncBlessingParty(run); mon.set.item = ''; b.syncBlessingParty(run);
+		b.syncBlessingParty(run); mon.emblem = ''; b.syncBlessingParty(run);
 		assert(!mon.set.moves.includes('flareblitz'));
 		assert(!mon.moveMemory.some(move => move.id === 'flareblitz'));
-		mon.set.item = 'rogueemblemfire'; b.syncBlessingParty(run);
+		mon.emblem = 'rogueemblemfire'; b.syncBlessingParty(run);
 		assert.equal(mon.blessingPP.find(move => move.id === 'flareblitz').pp, 2);
 	});
 	it('keeps all six Pandora categories separate and does not roll equipped or evolution items', () => {
@@ -207,7 +218,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 	});
 	it('builds 3–6 distinct treasure groups near their stated reward valuation', () => {
 		const { run } = setup();
-		b.treasure(run, content, zero, 6000);
+		b.treasure(run, content, zero);
 		assert.equal(Object.keys(run.bag).length, 3);
 		let value = run.money;
 		for (const [id, count] of Object.entries(run.bag)) {
@@ -217,7 +228,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		assert.equal(value, 4800);
 	});
 	it('does not downgrade a reserved five-star partner when the star quest pays out', () => {
-		const { run, account } = setup(); choose(account, run, blessing('starquest')); resolve(account, run, 'join');
+		const { run, account } = setup(1); choose(account, run, blessing('starquest')); resolve(account, run, 'join');
 		const entry = run.blessings.owned[0], mon = run.team.find(mon => mon.id === entry.target);
 		mon.stars = 5; entry.progress = 9;
 		b.settleBlessingBattle(account, run, content, { won: true, encounterId: 'ten', blessingProgress: { kos: [{ id: 'tenth', member: mon.id }], swords: 0, insight: {} } }, zero);
@@ -229,27 +240,34 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		run.team.pop(); b.normalizeBlessings(run); assert(run.blessings.prayer.changed);
 		assert(!b.blessingCandidates(run, content).some(def => def.id === 'topclearmind'));
 	});
-	it('keeps both initial Jirachi choices and replaces later rounds with twelve attribute upgrades', () => {
-		const { run, account } = setup(); run.spirit = 'jirachi';
-		run.blessings.round = { floor: 50, tier: 'prismatic', remaining: 2, options: [
+	it('keeps both initial Jirachi choices and charges one prism per later direction with 21 total upgrades', () => {
+		const { run, account } = setup(1); run.spirit = 'jirachi';
+		run.blessings.round = { floor: 1, tier: 'prismatic', remaining: 2, options: [
 			{ id: 'typeevolutiongrass', refreshes: 1, chosen: false }, { id: 'hpgrowth', refreshes: 1, chosen: false },
 		], familiesSeen: ['typeevolution', 'hpgrowth'], topClearMindEligible: false };
 		b.handleBlessingCommand(account, run, content, { action: 'blessing', slot: 0 }, zero);
 		assert.equal(run.blessings.round.remaining, 1);
+		resolve(account, run, 'join');
 		b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stats' }, zero);
+		b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stat:hp' }, zero);
 		b.handleBlessingCommand(account, run, content, { action: 'blessing', slot: 1 }, zero);
-		assert.equal(run.blessings.levels, 20);
-		let upgrades = 0;
-		for (let floor = 60; floor <= 190; floor += 10) {
+		assert.equal(run.blessings.levels, 0); assert.equal(run.blessings.bossLevels, 20);
+		let upgrades = 1;
+		for (let floor = 10; floor <= 200; floor += 10) {
 			run.floor = floor; run.node = { id: 'checkpoint', kind: 'boss', encounters: [] };
 			b.completeBlessingFloor(account, run, content, zero);
 			assert(!run.blessings.round);
-			const stage = run.blessings.stage;
-			if (stage.kind === 'upgrade') { upgrades++; assert.equal(new Set(stage.options).size, 3); }
-			b.handleBlessingCommand(account, run, content, { action: 'blessing', value: stage.kind === 'direction' ? 'stats' : stage.options[0] }, zero);
+			if (run.blessings.stage.kind === 'direction') {
+				b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stats' }, zero);
+			}
+			assert.equal(run.blessings.stage.kind, 'upgrade');
+			assert.equal(new Set(run.blessings.stage.options).size, 3);
+			b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stat:hp' }, zero);
+			upgrades++;
 		}
-		assert.equal(upgrades, 12); assert.equal(run.blessings.levels, 20);
-		assert(Math.abs(run.blessings.evolution.stats.hp - 1.8) < 0.0001);
+		assert.equal(upgrades, 21); assert.equal(run.blessings.levels, 60); assert.equal(run.blessings.bossLevels, 110);
+		assert.deepEqual(run.blessings.evolutionCosts, [50, 100, 150]);
+		assert(Math.abs(run.blessings.evolution.stats.hp - 3.15) < 0.0001);
 	});
 	it('rewards all five Regis and the bound final giant before the last fixed elite only', () => {
 		const { run, account } = setup(100); choose(account, run, blessing('regis'));
@@ -304,7 +322,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		try {
 			const engine = new RogueEngine(store, content, zero), user = 'blessingflow';
 			const account = () => store.get(user);
-			const cmd = (action, details = {}) => engine.command(user, { action, id: randomUUID(), revision: account().revision, ...details });
+			const cmd = (action, details = {}) => commandAfterOpening(engine, user, { action, id: randomUUID(), revision: account().revision, ...details });
 			cmd('start', { starters: ['bulbasaur'] });
 			store.change(user, saved => {
 				saved.run.floor = 50;
@@ -318,6 +336,11 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 			reloaded.migrate(user);
 			assert.deepEqual(account().run.blessings.round, before);
 			cmd('blessing', { slot: 0 });
+			while (account().run.blessings.pending.length) {
+				const reward = account().run.blessings.pending[0];
+				assert.equal(reward.kind, 'toolbox');
+				cmd('blessingreward', {member: reward.id, value: reward.options[0]});
+			}
 			assert.equal(account().run.floor, 51); assert.equal(account().run.phase, 'choose');
 			store.change(user, saved => {
 				saved.run.blessings.levels = 30;

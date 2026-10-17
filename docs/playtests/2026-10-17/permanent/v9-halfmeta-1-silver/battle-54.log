@@ -1,0 +1,52 @@
+|t:|1792234680
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L22, M|
+|poke|p1|Marshtomp, L22, M|
+|poke|p1|Ivysaur, L17, F|
+|poke|p1|Sewaddle, L17, F|
+|poke|p1|Grubbin, L15, F|
+|poke|p1|Budew, L16, F|
+|poke|p2|Simisage-Fantasy, L20, F|
+|teampreview
+|
+|t:|1792234680
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L22, M|77/77
+|switch|p1a: Crocalor|Crocalor, L22, M|100/100
+|split|p2
+|switch|p2a: Simisage|Simisage-Fantasy, L20, F|75/75
+|switch|p2a: Simisage|Simisage-Fantasy, L20, F|100/100
+|-start|p2a: Simisage|typechange|Grass|[silent]
+|-start|p2a: Simisage|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-start|p2a: Simisage|typechange|Grass|[silent]
+|-start|p2a: Simisage|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792234681
+|-terastallize|p2a: Simisage|Grass
+|move|p2a: Simisage|Sappy Seed|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|59/77
+|-damage|p1a: Crocalor|77/100
+|-start|p1a: Crocalor|move: Leech Seed
+|move|p1a: Crocalor|Incinerate|p2a: Simisage
+|-supereffective|p2a: Simisage
+|-crit|p2a: Simisage
+|split|p2
+|-damage|p2a: Simisage|0 fnt
+|-damage|p2a: Simisage|0 fnt
+|faint|p2a: Simisage
+|
+|win|Player

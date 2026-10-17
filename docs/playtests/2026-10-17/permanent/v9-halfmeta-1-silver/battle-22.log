@@ -1,0 +1,57 @@
+|t:|1792234660
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L12, M|
+|poke|p1|Mudkip, L11, M|
+|poke|p1|Bulbasaur, L9, F|
+|poke|p1|Sewaddle, L7, F|
+|poke|p1|Grubbin, L6, F|
+|poke|p1|Budew, L7, F|
+|poke|p2|Skitty-Fantasy, L8, F|
+|teampreview
+|
+|t:|1792234660
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L11, M|39/39
+|switch|p1a: Mudkip|Mudkip, L11, M|100/100
+|split|p2
+|switch|p2a: Skitty|Skitty-Fantasy, L8, F|28/28
+|switch|p2a: Skitty|Skitty-Fantasy, L8, F|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|turn|1
+|
+|t:|1792234661
+|-terastallize|p2a: Skitty|Fairy
+|move|p1a: Mudkip|Water Gun|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|14/28
+|-damage|p2a: Skitty|50/100
+|move|p2a: Skitty|Earth Power|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|29/39
+|-damage|p1a: Mudkip|75/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792234661
+|move|p1a: Mudkip|Rock Throw|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|0 fnt
+|-damage|p2a: Skitty|0 fnt
+|faint|p2a: Skitty
+|
+|win|Player

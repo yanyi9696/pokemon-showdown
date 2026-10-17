@@ -1,0 +1,97 @@
+|t:|1792222011
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L22, M|
+|poke|p1|Togedemaru, L16, M|
+|poke|p1|Spiritomb, L21, M|
+|poke|p1|Emolga, L17, M|
+|poke|p1|Aron, L15, F|
+|poke|p1|Nosepass, L17, F|
+|poke|p2|Cherrim-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792222011
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L22, M|77/77
+|switch|p1a: Crocalor|Crocalor, L22, M|100/100
+|split|p2
+|switch|p2a: Cherrim|Cherrim-Fantasy, L20, M|65/65
+|switch|p2a: Cherrim|Cherrim-Fantasy, L20, M|100/100
+|-start|p2a: Cherrim|typechange|Grass|[silent]
+|-start|p2a: Cherrim|fantasystats|74/70/98/105/98/55|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-start|p2a: Cherrim|typechange|Grass|[silent]
+|-start|p2a: Cherrim|fantasystats|74/70/98/105/98/55|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222011
+|-terastallize|p2a: Cherrim|Grass
+|move|p2a: Cherrim|Giga Drain|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|56/77
+|-damage|p1a: Crocalor|73/100
+|move|p1a: Crocalor|Incinerate|p2a: Cherrim
+|-supereffective|p2a: Cherrim
+|split|p2
+|-damage|p2a: Cherrim|29/65
+|-damage|p2a: Cherrim|45/100
+|
+|t:|1792222011
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L21, M|63/63|[from] Incinerate
+|switch|p1a: Spiritomb|Spiritomb, L21, M|100/100|[from] Incinerate
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|turn|2
+|
+|t:|1792222011
+|move|p2a: Cherrim|Giga Drain|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|37/63
+|-damage|p1a: Spiritomb|59/100
+|split|p2
+|-heal|p2a: Cherrim|42/65|[from] drain|[of] p1a: Spiritomb
+|-heal|p2a: Cherrim|65/100|[from] drain|[of] p1a: Spiritomb
+|move|p1a: Spiritomb|Night Shade|p2a: Cherrim
+|split|p2
+|-damage|p2a: Cherrim|21/65
+|-damage|p2a: Cherrim|33/100
+|
+|t:|1792222012
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L22, M|56/77|[from] Night Shade
+|switch|p1a: Crocalor|Crocalor, L22, M|73/100|[from] Night Shade
+|-end|p1a: Crocalor|fantasystats|[silent]
+|
+|upkeep
+|turn|3
+|
+|t:|1792222012
+|move|p2a: Cherrim|Giga Drain|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|35/77
+|-damage|p1a: Crocalor|46/100
+|split|p2
+|-heal|p2a: Cherrim|32/65|[from] drain|[of] p1a: Crocalor
+|-heal|p2a: Cherrim|50/100|[from] drain|[of] p1a: Crocalor
+|move|p1a: Crocalor|Incinerate|p2a: Cherrim
+|-supereffective|p2a: Cherrim
+|split|p2
+|-damage|p2a: Cherrim|0 fnt
+|-damage|p2a: Cherrim|0 fnt
+|faint|p2a: Cherrim
+|
+|win|Player

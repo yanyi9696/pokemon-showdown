@@ -56,7 +56,13 @@ export function ensureMemberMemory(mon: RoguePokemon) {
 	}
 	for (const slot of mon.pp) {
 		if ((mon.blessingMoves?.includes(slot.id) || mon.blessingPP?.some(move => move.id === slot.id)) &&
-			!mon.moveMemory.some(move => move.id === slot.id)) continue;
+			!mon.moveMemory.some(move => move.id === slot.id)) {
+			mon.blessingPP ||= [];
+			const borrowed = mon.blessingPP.find(move => move.id === slot.id);
+			if (borrowed) Object.assign(borrowed, slot);
+			else mon.blessingPP.push({ ...slot });
+			continue;
+		}
 		const saved = mon.moveMemory.find(move => move.id === slot.id);
 		if (saved) Object.assign(saved, slot);
 		else mon.moveMemory.push({ ...slot });
@@ -104,6 +110,23 @@ export function initializeExperience(mon: RoguePokemon) {
 	ensureMemberMemory(mon);
 }
 
+/** The campaign party remains the battle-start snapshot until settlement. Escape commits resources only. */
+export function escapedMember(original: RoguePokemon, current: RoguePokemon): RoguePokemon {
+	const restored = structuredClone(original);
+	// Remove HP gained with a temporary stack as well as its max HP; keep the actual damage taken.
+	restored.hp = current.hp > 0 ? Math.max(1, Math.min(original.maxhp,
+		original.maxhp - (current.maxhp - current.hp))) : 0;
+	restored.set.item = current.set.item;
+	restored.pp = original.pp.map(slot => ({ ...slot,
+		pp: Math.min(slot.maxpp, current.pp.find(move => move.id === slot.id)?.pp ?? slot.pp),
+	}));
+	restored.status = current.status;
+	restored.statusState = structuredClone(current.statusState);
+	restored.statuses = current.statuses && structuredClone(current.statuses);
+	ensureMemberMemory(restored);
+	return restored;
+}
+
 /** Preserve damage, status, consumed items and PP. A stat rebuild cannot revive a fainted member. */
 export function rebuildMember(mon: RoguePokemon, boosts: StatsTable) {
 	ensureMemberMemory(mon);
@@ -143,6 +166,11 @@ export function evolutionOptions(
 }
 
 export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
+	if (toID(mon.set.species) === 'meltan' && toID(name) === 'melmetal') {
+		if ((run.blessings?.candy || 0) < 400) throw new Error('需要 400 颗美录坦糖果。');
+		run.blessings!.candy -= 400;
+	}
+	delete mon.evolutionNotice;
 	initializeExperience(mon);
 	const heldItem = partyEvolutions(mon, run).find(option => toID(option.species) === toID(name))?.heldItem;
 	if (heldItem && toID(mon.set.item) === heldItem) mon.set.item = '';
@@ -197,6 +225,7 @@ export function gainExperience(run: RogueRun, mon: RoguePokemon, amount: number)
 	rebuildMember(mon, run.boosts);
 	run.notices.push(`${mon.set.species} 升到 Lv.${level}！`);
 	offerMoves(run, mon, previousLevel + 1, level);
+	if (partyEvolutions(mon, run).some(evo => evo.ready && !evo.item)) mon.evolutionNotice = true;
 	// Evolution is always a separate, confirmed action outside battle, including chained evolutions.
 }
 
@@ -205,5 +234,8 @@ export function experienceProgress(mon: RoguePokemon) {
 	const growth = rogueSpeciesData(mon.set.species).growth;
 	const base = experienceAtLevel(growth, mon.set.level);
 	const next = experienceAtLevel(growth, Math.min(100, mon.set.level + 1));
-	return { current: mon.experience - base, needed: next - base, total: mon.experience };
+	return { current: mon.experience - base, needed: next - base, total: mon.experience,
+		// Server-authored thresholds let the client preview every growth group without duplicating formulas.
+		levels: Array.from({ length: 100 }, (_, index) => experienceAtLevel(growth, index + 1)),
+	};
 }

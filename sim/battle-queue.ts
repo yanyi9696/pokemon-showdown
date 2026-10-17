@@ -44,6 +44,8 @@ export interface MoveAction {
 	maxMove?: string;
 	/** effect that called the move (eg Instruct) if any */
 	sourceEffect?: Effect | null;
+	/** A revived Rogue boss continues in the original action position this turn. */
+	rogueBossContinuation?: boolean;
 }
 
 /** A switch action */

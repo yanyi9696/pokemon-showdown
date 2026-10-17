@@ -315,6 +315,8 @@ export interface ActiveMove extends MutableMove {
 	rogueCoin?: number;
 	rogueLanding?: boolean;
 	rogueWine?: boolean;
+	/** Ordering bonus is separate from move priority; only these explicit blockers are bypassed. */
+	rogueTopClearMind?: boolean;
 	rogueHitTargets?: string[];
 	/** Dialga queues a prepared attack once and releases it without spending PP again. */
 	rogueDelayed?: boolean;

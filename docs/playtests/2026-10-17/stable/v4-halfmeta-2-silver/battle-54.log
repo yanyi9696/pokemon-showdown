@@ -1,0 +1,119 @@
+|t:|1792223784
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L21, M|
+|poke|p1|Crocalor, L20, F|
+|poke|p1|Ivysaur, L17, M|
+|poke|p1|Flamigo, L17, M|
+|poke|p1|Munna, L16, M|
+|poke|p1|Drowzee, L15, M|
+|poke|p2|Simisear-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792223784
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|69/69
+|switch|p1a: Marshtomp|Marshtomp, L21, M|100/100
+|split|p2
+|switch|p2a: Simisear|Simisear-Fantasy, L20, M|75/75
+|switch|p2a: Simisear|Simisear-Fantasy, L20, M|100/100
+|-start|p2a: Simisear|typechange|Fire|[silent]
+|-start|p2a: Simisear|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-start|p2a: Simisear|typechange|Fire|[silent]
+|-start|p2a: Simisear|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223784
+|split|p1
+|switch|p1a: Flamigo|Flamigo, L17, M|64/64
+|switch|p1a: Flamigo|Flamigo, L17, M|100/100
+|-end|p1a: Flamigo|fantasystats|[silent]
+|-terastallize|p2a: Simisear|Fire
+|move|p2a: Simisear|Flamethrower|p1a: Flamigo
+|split|p1
+|-damage|p1a: Flamigo|22/64
+|-damage|p1a: Flamigo|35/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223785
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L20, F|71/71
+|switch|p1a: Crocalor|Crocalor, L20, F|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Simisear|Flamethrower|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|50/71
+|-damage|p1a: Crocalor|71/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792223786
+|move|p2a: Simisear|Flamethrower|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|29/71
+|-damage|p1a: Crocalor|41/100
+|move|p1a: Crocalor|Round|p2a: Simisear
+|split|p2
+|-damage|p2a: Simisear|59/75
+|-damage|p2a: Simisear|79/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792223786
+|move|p2a: Simisear|Flamethrower|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|9/71
+|-damage|p1a: Crocalor|13/100
+|move|p1a: Crocalor|Round|p2a: Simisear
+|split|p2
+|-damage|p2a: Simisear|42/75
+|-damage|p2a: Simisear|57/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792223787
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|69/69
+|switch|p1a: Marshtomp|Marshtomp, L21, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Simisear|Flamethrower|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|52/69
+|-damage|p1a: Marshtomp|76/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792223787
+|move|p2a: Simisear|Flamethrower|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|33/69
+|-damage|p1a: Marshtomp|48/100
+|move|p1a: Marshtomp|Liquidation|p2a: Simisear
+|-supereffective|p2a: Simisear
+|split|p2
+|-damage|p2a: Simisear|0 fnt
+|-damage|p2a: Simisear|0 fnt
+|faint|p2a: Simisear
+|
+|win|Player

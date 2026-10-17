@@ -126,16 +126,20 @@ describe('Fantasy Rogue storage and campaign', () => {
 		cmd('upgrade', {value: 'slot'});
 		assert.equal(state().slots, 4); assert.equal(state().points, 0);
 	});
-	it('shares a 360-point budget, enforces caps, and snapshots upgrades at run start', () => {
-		store.change(user, account => { account.points = 361; });
+	it('shares a 630-point budget, enforces caps, and snapshots upgrades at run start', () => {
+		store.change(user, account => { account.points = 631; });
 		start();
 		assert.throws(() => cmd('upgrade', {value: 'hp'}), /进行中的冒险/);
 		assert.throws(() => cmd('upgrade', {value: 'slot'}), /进行中的冒险/);
 		assert.deepEqual(state().run.boosts, stats(0));
 		assert.equal(state().run.startingSlots, 1);
-		assert.equal(state().points, 361);
+		assert.equal(state().points, 631);
 		cmd('abandon');
-		for (const stat of Object.keys(stats(0))) for (let i = 0; i < 10; i++) cmd('upgrade', {value: stat});
+		for (const stat of Object.keys(stats(0))) for (let i = 0; i < 10; i++) {
+			const before = state().points;
+			cmd('upgrade', {value: stat});
+			assert.equal(before - state().points, i + 1);
+		}
 		for (const cost of [20, 40, 60, 80, 100]) {
 			const before = state().points;
 			cmd('upgrade', {value: 'slot'});
@@ -163,11 +167,11 @@ describe('Fantasy Rogue storage and campaign', () => {
 		});
 		const request = { id: randomUUID(), revision: state().revision, action: 'heal' };
 		engine.command(user, request); engine.command(user, request);
-		assert.equal(state().run.money, 450);
+		assert.equal(state().run.money, 250);
 		assert(state().run.team.every(mon => mon.hp === mon.maxhp && !mon.status && mon.pp.every(move => move.pp === move.maxpp)));
 		assert.throws(() => cmd('heal'), /状态良好/);
 		store.change(user, account => { account.run.team[0].hp--; });
-		cmd('heal'); assert.equal(state().run.money, 250, 'no revival surcharge for a living party');
+		cmd('heal'); assert.equal(state().run.money, 50, 'no revival surcharge for a living party');
 		store.change(user, account => { account.run.team[0].hp = 0; });
 		const before = state();
 		assert.throws(() => cmd('heal'), /余额不足/); assert.deepEqual(state(), before);

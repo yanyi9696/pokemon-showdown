@@ -1,0 +1,40 @@
+|init|battle
+|title|RoguePlay1016E vs. AI · 野生宝可梦
+
+|-message|幻想杯肉鸽第 17 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792130652
+|gametype|singles
+|player|p1|RoguePlay1016E|169|
+|player|p2|AI · 野生宝可梦|unknown|
+|teamsize|p1|3
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L15, M|
+|poke|p1|Swablu, L8, F|
+|poke|p1|Pachirisu, L9, M|
+|poke|p2|Minun, L9, M|
+|teampreview
+|
+|t:|1792130653
+|start
+|-message|塔灵：雷吉奇卡斯的试炼
+|switch|p1a: Fuecoco|Fuecoco, L15, M|42/48 par
+|switch|p2a: Minun|Minun, L9, M|100/100
+|-end|p2a: Minun|fantasystats|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-end|p2a: Minun|fantasystats|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|1
+|
+|t:|1792130654
+|move|p2a: Minun|Helping Hand|null|[notarget]
+|-fail|p2a: Minun
+|move|p1a: Fuecoco|Incinerate|p2a: Minun
+|-damage|p2a: Minun|0 fnt
+|faint|p2a: Minun
+|
+|win|RoguePlay1016E
+|deinit

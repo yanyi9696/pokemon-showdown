@@ -27,7 +27,7 @@ import { toID } from './dex';
 import { chooseRogueBall, rogueCaptureChance } from './fantasy-rogue';
 import {
 	chooseRoguePsychic, psychicCharge, chooseRogueEeveeZ, eeveeZAvailable,
-	battleDragonKing, dragonKingRequest, chooseDragonKing,
+	battleDragonKing, dragonKingRequest, chooseDragonKing, extendBlessingEnvironment,
 } from './fantasy-rogue-blessings';
 
 /** A single action that can be chosen. Choices will have one Action for each pokemon. */
@@ -80,6 +80,7 @@ export interface PokemonSwitchRequestData {
 	active: boolean;
 	stats: StatsExceptHPTable;
 	fantasyRogueStats?: StatsTable;
+	rogueAbilityInfo?: ReturnType<typeof import('./fantasy-rogue-blessings').rogueAbilityInfo>;
 	/**
 	 * Move IDs for choosable moves. Also includes Hidden Power Type, Frustration/Return power.
 	 */
@@ -423,6 +424,7 @@ export class Side {
 			delete this.sideConditions[status.id];
 			return false;
 		}
+		extendBlessingEnvironment(this.battle, status.id, source, this.sideConditions[status.id]);
 		this.battle.runEvent('SideConditionStart', source, source, status);
 		return true;
 	}

@@ -1,0 +1,150 @@
+|t:|1792223856
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L54, M|
+|poke|p1|Skeledirge, L54, M|
+|poke|p1|Pyroar, L44, F|
+|poke|p1|Alcremie, L35, F|
+|poke|p1|Porygon2, L35|
+|poke|p1|Centiskorch, L37, M|
+|poke|p2|Mimikyu, L45, M|
+|poke|p2|Gengar, L45, M|
+|poke|p2|Sandygast, L45, M|
+|poke|p2|Dhelmise, L45|
+|teampreview
+|
+|t:|1792223856
+|start
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L54, M|167/167
+|switch|p1a: Venusaur|Venusaur, L54, M|100/100
+|split|p2
+|switch|p2a: Mimikyu|Mimikyu, L45, M|146/146
+|switch|p2a: Mimikyu|Mimikyu, L45, M|100/100
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223856
+|-terastallize|p2a: Mimikyu|Ghost
+|move|p1a: Venusaur|Power Whip|p2a: Mimikyu
+|-activate|p2a: Mimikyu|ability: Disguise
+|split|p2
+|-damage|p2a: Mimikyu|146/146
+|-damage|p2a: Mimikyu|100/100
+|detailschange|p2a: Mimikyu|Mimikyu-Busted, L45, M, tera:Ghost
+|-start|p2a: Mimikyu|typechange|Ghost/Fairy|[silent]
+|split|p2
+|-damage|p2a: Mimikyu|128/146|[from] pokemon: Mimikyu-Busted
+|-damage|p2a: Mimikyu|88/100|[from] pokemon: Mimikyu-Busted
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|move|p2a: Mimikyu|Shadow Claw|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|84/167
+|-damage|p1a: Venusaur|51/100
+|split|p2
+|-damage|p2a: Mimikyu|114/146|[from] item: Life Orb
+|-damage|p2a: Mimikyu|79/100|[from] item: Life Orb
+|
+|upkeep
+|turn|2
+|
+|t:|1792223856
+|move|p1a: Venusaur|Power Whip|p2a: Mimikyu|[miss]
+|-miss|p1a: Venusaur|p2a: Mimikyu
+|move|p2a: Mimikyu|Shadow Claw|p1a: Venusaur
+|-crit|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|0 fnt
+|-damage|p1a: Venusaur|0 fnt
+|faint|p1a: Venusaur
+|split|p2
+|-damage|p2a: Mimikyu|100/146|[from] item: Life Orb
+|-damage|p2a: Mimikyu|69/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792223857
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L54, M|193/193
+|switch|p1a: Skeledirge|Skeledirge, L54, M|100/100
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223857
+|move|p1a: Skeledirge|Shadow Ball|p2a: Mimikyu
+|-supereffective|p2a: Mimikyu
+|split|p2
+|-damage|p2a: Mimikyu|0 fnt
+|-damage|p2a: Mimikyu|0 fnt
+|faint|p2a: Mimikyu
+|
+|upkeep
+|
+|t:|1792223857
+|split|p2
+|switch|p2a: Gengar|Gengar, L45, M|122/122
+|switch|p2a: Gengar|Gengar, L45, M|100/100
+|-end|p2a: Gengar|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223857
+|move|p2a: Gengar|Hex|p1a: Skeledirge
+|-supereffective|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|37/193
+|-damage|p1a: Skeledirge|20/100
+|-boost|p1a: Skeledirge|atk|1
+|-boost|p1a: Skeledirge|spa|1
+|move|p1a: Skeledirge|Shadow Ball|p2a: Gengar
+|-supereffective|p2a: Gengar
+|split|p2
+|-damage|p2a: Gengar|0 fnt
+|-damage|p2a: Gengar|0 fnt
+|faint|p2a: Gengar
+|
+|upkeep
+|
+|t:|1792223857
+|split|p2
+|switch|p2a: Sandygast|Sandygast, L45, M|146/146
+|switch|p2a: Sandygast|Sandygast, L45, M|100/100
+|-end|p2a: Sandygast|fantasystats|[silent]
+|turn|5
+|
+|t:|1792223858
+|move|p1a: Skeledirge|Shadow Ball|p2a: Sandygast
+|-supereffective|p2a: Sandygast
+|split|p2
+|-damage|p2a: Sandygast|0 fnt
+|-damage|p2a: Sandygast|0 fnt
+|faint|p2a: Sandygast
+|
+|upkeep
+|
+|t:|1792223858
+|split|p2
+|switch|p2a: Dhelmise|Dhelmise, L45|160/160
+|switch|p2a: Dhelmise|Dhelmise, L45|100/100
+|-end|p2a: Dhelmise|fantasystats|[silent]
+|turn|6
+|
+|t:|1792223858
+|move|p1a: Skeledirge|Torch Song|p2a: Dhelmise
+|-supereffective|p2a: Dhelmise
+|split|p2
+|-damage|p2a: Dhelmise|0 fnt
+|-damage|p2a: Dhelmise|0 fnt
+|-boost|p1a: Skeledirge|spa|1
+|faint|p2a: Dhelmise
+|
+|win|Player

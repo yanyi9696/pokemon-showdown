@@ -3,6 +3,9 @@ import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	bandits: '半边脸布满伤疤的山贼，想用一枚硬币决定你的去留。',
+	dice: '热闹集市上的骰盅摊，大奖似乎就在下一把。',
+	fishing: '湖边的钓鱼佬借你一根鱼竿，邀你试试今天的手气。',
 	mysteryball: '草丛里的一颗宝可梦球，可能装着一位新伙伴，也可能藏着麻烦。',
 	forest: '两队宝可梦为果实争吵。声援一方，还是上前调解？',
 	mushrooms: '大树后的陌生人兜售魔法蘑菇。交换、验货，或者转身离开。',
@@ -25,7 +28,34 @@ export function eventReplay(id: EventID) {
 	page('win', [text.fightWin]);
 	page('roomwin', [text.roomWin, '获得工具箱 ×1（四件选一件）和幻想碎片，碎片数量随楼层增加。']);
 	page('lose', [text.fightLose, text.fightLossRule]);
-	if (id === 'mysteryball') {
+	if (id === 'bandits') {
+		page('start', eventOpening(id), [['拼运气的时候到了！', 'coin'], ['给这个走错片场的家伙一点教训。', 'fight'], ['好汉有话好好说。', 'plead']]);
+		possibilities('coin', [['正面', 'free'], ['反面', 'robbed']]);
+		page('free', ['硬币正面朝上。男人挥了挥手，这伙人居然真的放你走了。']);
+		page('robbed', ['硬币反面朝上，山贼搜走了一些金币。']);
+		page('plead', ['你话还没说完，就被人从背后击晕。醒来后，身上的金币少了一些。']);
+		page('fight', ['你挣开束缚，抛出精灵球。'], [['胜利', 'victory'], ['战败', 'failure']], true);
+		page('victory', ['山贼横七竖八地倒了一地。你索性搜出财物，装进背包。']);
+		page('failure', ['你被攻击击晕。醒来后，更多金币被搜走了。']);
+	} else if (id === 'dice') {
+		page('start', eventOpening(id), [['是时候展现真正的技术了。', 'roll'], ['我对大奖是什么更加好奇。', 'buy'], ['这种骗局只有小孩会中招。', 'leave']]);
+		page('roll', ['你付了入场费，摇响骰盅。'], [['6 点', 'grand'], ['1 点', 'small'], ['2～5 点', 'nothing']]);
+		page('grand', ['摊主的笑容僵了一下，还是递来了大奖。']);
+		page('small', ['「最小点数也有奖！」摊主递来一份小些的奖品。']);
+		page('nothing', ['这次没有奖品。你摆摆手，离开了摊位。']);
+		page('buy', ['摊主说大奖也能直接购买。你付了钱，拿到一个包裹。']);
+		page('leave', ['你摇摇头，离开了摊位。']);
+	} else if (id === 'fishing') {
+		page('start', eventOpening(id), [['借我试试！', 'fish'], ['今天就看你钓吧。', 'leave']]);
+		page('fish', ['你看着浮标，试着控制收线的时机。'], [['钓到伙伴', 'friend'], ['钓到精英', 'elite'], ['钓到藏宝袋', 'bag'], ['没有钓到', 'empty']]);
+		page('friend', ['一只宝可梦跃上岸。钓鱼佬竖起拇指：「看来它很喜欢你！」']);
+		page('elite', ['被拉上岸的精英摆出战斗姿势。'], [['获胜', 'won'], ['战败', 'lost']], true);
+		page('won', ['湖面恢复安静。「这可真是条大家伙！」钓鱼佬送来额外的金币，庆祝你捕捉或击败了精英。']);
+		page('lost', ['宝可梦跃回水中。「这条太凶了，下次换个地方！」']);
+		page('bag', ['你和钓鱼佬拆开湿漉漉的藏宝袋，把里面的物资收进背包。']);
+		page('empty', ['鱼线轻飘飘地收了回来。钓鱼佬拍拍你的肩膀，送来一点零钱：「就当今天的收获！」']);
+		page('leave', ['你在岸边看了一会儿，挥手道别。']);
+	} else if (id === 'mysteryball') {
 		page('start', eventOpening(id), [['或许我该打开看看。', 'open'], ['不明来路的东西最好不要碰。', 'leave']]);
 		possibilities('open', [['新伙伴', 'friend'], ['一颗空球', 'empty'], ['不愿被打扰', 'grumpy'], ['突然袭击', 'battle']]);
 		page('friend', [text.ballFriend]); page('empty', [text.ballEmpty]); page('grumpy', [text.ballGrumpy]);
@@ -51,9 +81,7 @@ export function eventReplay(id: EventID) {
 		page('sleep', [text.sleep], [['床边的礼物', 'gift'], ['无事发生', 'nothing'], ['背包变轻了', 'lost']]);
 		page('gift', [text.sleepGift]); page('nothing', [text.sleepNothing]); page('lost', [text.sleepLost('一些')]);
 	} else if (id === 'travel') {
-		page('start', service.travel, [...Object.entries(POSTCARDS).map(([key, card]): [string, string] => [card.name + '明信片', key]),
-			['今天先到这里。', 'left']]);
-		page('left', ['你收好明信片，向摊主道别。']);
+		page('start', service.travel, Object.entries(POSTCARDS).map(([key, card]): [string, string] => [card.name + '明信片', key]));
 		for (const [key, card] of Object.entries(POSTCARDS)) {
 			page(key, [card.text], [['触碰明信片', key + 'paths']]);
 			page(key + 'paths', [card.scene], [['走大路', 'road'], ['走小路', 'professor']]);
@@ -83,6 +111,16 @@ export function eventReplay(id: EventID) {
 		page('fantasy', service.fantasy, [['挑战获胜', 'victory'], ['战败', 'failure']], true);
 		page('victory', [...service.tutorWin, '全队每只可自选一个合法且尚未掌握的招式，不限来源。'], [['完成教学', 'done']]);
 		page('done', service.tutorDone); page('failure', service.tutorLose); page('left', service.tutorLeave);
+	}
+	const shardBranches = id === 'forest' ? ['cheerwin', 'gift'] : id === 'room' ? ['roomwin'] : id === 'bandits' ? ['victory'] : [];
+	for (const branch of shardBranches) {
+		pages[branch].options.push({label: '回顾中期的碎片选择', next: 'fragments'});
+	}
+	if (shardBranches.length) {
+		page('fragments', ['第 51 层起，部分成功结局可以在幻想碎片与原有物资之间选择一份。'],
+			[['带走幻想碎片', 'fragmentreward'], ['带走原有物资', 'originalreward']]);
+		page('fragmentreward', ['你收好了发光的碎片，继续上路。']);
+		page('originalreward', ['你收下了物资，继续上路。']);
 	}
 	// Ship only pages reachable from this event, so the archive cannot reveal unrelated events.
 	const reachable: Record<string, ReplayPage> = {};

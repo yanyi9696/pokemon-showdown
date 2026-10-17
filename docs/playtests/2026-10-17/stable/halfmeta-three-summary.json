@@ -1,0 +1,1232 @@
+[
+  {
+    "profile": "halfmeta",
+    "seed": 1,
+    "startingSlots": 3,
+    "starters": [
+      "fuecoco",
+      "mudkip",
+      "bulbasaur"
+    ],
+    "lastFloor": 47,
+    "battles": 92,
+    "wins": 91,
+    "defeats": 1,
+    "escapes": 0,
+    "bosses": [
+      {
+        "floor": 10,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 1,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Fuecoco",
+            "level": 11
+          },
+          {
+            "species": "Mudkip",
+            "level": 10
+          },
+          {
+            "species": "Bulbasaur",
+            "level": 9
+          },
+          {
+            "species": "Dedenne",
+            "level": 5
+          },
+          {
+            "species": "Cacnea",
+            "level": 8
+          },
+          {
+            "species": "Nosepass",
+            "level": 6
+          }
+        ],
+        "foe": [
+          {
+            "species": "Onix-Fantasy",
+            "level": 8
+          }
+        ]
+      },
+      {
+        "floor": 20,
+        "name": "道馆 · 露璃娜（水）",
+        "won": true,
+        "turns": 12,
+        "faints": 1,
+        "team": [
+          {
+            "species": "Crocalor",
+            "level": 16
+          },
+          {
+            "species": "Minun",
+            "level": 9
+          },
+          {
+            "species": "Bulbasaur",
+            "level": 13
+          },
+          {
+            "species": "Dedenne",
+            "level": 11
+          },
+          {
+            "species": "Cacnea",
+            "level": 13
+          },
+          {
+            "species": "Nosepass",
+            "level": 11
+          }
+        ],
+        "foe": [
+          {
+            "species": "Chewtle",
+            "level": 15
+          },
+          {
+            "species": "Feebas",
+            "level": 15
+          },
+          {
+            "species": "Wimpod",
+            "level": 15
+          }
+        ]
+      },
+      {
+        "floor": 30,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 52,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Crocalor",
+            "level": 21
+          },
+          {
+            "species": "Minun",
+            "level": 15
+          },
+          {
+            "species": "Ivysaur",
+            "level": 20
+          },
+          {
+            "species": "Dedenne",
+            "level": 16
+          },
+          {
+            "species": "Cacnea",
+            "level": 17
+          },
+          {
+            "species": "Nosepass",
+            "level": 16
+          }
+        ],
+        "foe": [
+          {
+            "species": "Illumise-Fantasy",
+            "level": 20
+          }
+        ]
+      },
+      {
+        "floor": 40,
+        "name": "道馆 · 紫罗兰（虫）",
+        "won": true,
+        "turns": 14,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Crocalor",
+            "level": 25
+          },
+          {
+            "species": "Minun",
+            "level": 18
+          },
+          {
+            "species": "Ivysaur",
+            "level": 24
+          },
+          {
+            "species": "Dedenne",
+            "level": 18
+          },
+          {
+            "species": "Cacnea",
+            "level": 20
+          },
+          {
+            "species": "Nosepass",
+            "level": 19
+          }
+        ],
+        "foe": [
+          {
+            "species": "Combee",
+            "level": 25
+          },
+          {
+            "species": "Nymble",
+            "level": 25
+          },
+          {
+            "species": "Ninjask",
+            "level": 25
+          },
+          {
+            "species": "Dewpider",
+            "level": 25
+          }
+        ]
+      }
+    ],
+    "choices": [
+      {
+        "floor": 1,
+        "blessing": "coin",
+        "tier": "silver"
+      }
+    ],
+    "purchases": {
+      "candy": 0,
+      "machines": 0,
+      "totalSpent": 21500,
+      "candySpent": 0
+    },
+    "issues": [
+      {
+        "floor": 47,
+        "reason": "no-living-member-no-revive",
+        "money": 3168
+      }
+    ]
+  },
+  {
+    "profile": "halfmeta",
+    "seed": 2,
+    "startingSlots": 3,
+    "starters": [
+      "mudkip",
+      "fuecoco",
+      "bulbasaur"
+    ],
+    "lastFloor": 41,
+    "battles": 82,
+    "wins": 81,
+    "defeats": 1,
+    "escapes": 0,
+    "bosses": [
+      {
+        "floor": 10,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 3,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Mudkip",
+            "level": 11
+          },
+          {
+            "species": "Fuecoco",
+            "level": 9
+          },
+          {
+            "species": "Bulbasaur",
+            "level": 9
+          },
+          {
+            "species": "Wynaut",
+            "level": 7
+          },
+          {
+            "species": "Munna",
+            "level": 7
+          },
+          {
+            "species": "Drowzee",
+            "level": 7
+          }
+        ],
+        "foe": [
+          {
+            "species": "Duskull-Fantasy",
+            "level": 8
+          }
+        ]
+      },
+      {
+        "floor": 20,
+        "name": "道馆 · 彩豆（格斗）",
+        "won": true,
+        "turns": 6,
+        "faints": 1,
+        "team": [
+          {
+            "species": "Marshtomp",
+            "level": 16
+          },
+          {
+            "species": "Fuecoco",
+            "level": 15
+          },
+          {
+            "species": "Bulbasaur",
+            "level": 13
+          },
+          {
+            "species": "Flamigo",
+            "level": 12
+          },
+          {
+            "species": "Munna",
+            "level": 12
+          },
+          {
+            "species": "Drowzee",
+            "level": 11
+          }
+        ],
+        "foe": [
+          {
+            "species": "Machop",
+            "level": 15
+          },
+          {
+            "species": "Clobbopus",
+            "level": 15
+          },
+          {
+            "species": "Mienfoo",
+            "level": 15
+          }
+        ]
+      },
+      {
+        "floor": 30,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 6,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Marshtomp",
+            "level": 21
+          },
+          {
+            "species": "Crocalor",
+            "level": 20
+          },
+          {
+            "species": "Ivysaur",
+            "level": 17
+          },
+          {
+            "species": "Flamigo",
+            "level": 17
+          },
+          {
+            "species": "Munna",
+            "level": 16
+          },
+          {
+            "species": "Drowzee",
+            "level": 15
+          }
+        ],
+        "foe": [
+          {
+            "species": "Simisear-Fantasy",
+            "level": 20
+          }
+        ]
+      },
+      {
+        "floor": 40,
+        "name": "道馆 · 霍米加（毒）",
+        "won": true,
+        "turns": 15,
+        "faints": 2,
+        "team": [
+          {
+            "species": "Marshtomp",
+            "level": 23
+          },
+          {
+            "species": "Crocalor",
+            "level": 25
+          },
+          {
+            "species": "Ivysaur",
+            "level": 22
+          },
+          {
+            "species": "Flamigo",
+            "level": 22
+          },
+          {
+            "species": "Ponyta",
+            "level": 19
+          },
+          {
+            "species": "Drowzee",
+            "level": 20
+          }
+        ],
+        "foe": [
+          {
+            "species": "Venipede",
+            "level": 25
+          },
+          {
+            "species": "Toxel",
+            "level": 25
+          },
+          {
+            "species": "Trubbish",
+            "level": 25
+          },
+          {
+            "species": "Slowbro-Galar",
+            "level": 25
+          }
+        ]
+      }
+    ],
+    "choices": [
+      {
+        "floor": 1,
+        "blessing": "reservemega",
+        "tier": "silver"
+      }
+    ],
+    "purchases": {
+      "candy": 0,
+      "machines": 0,
+      "totalSpent": 25120,
+      "candySpent": 0
+    },
+    "issues": [
+      {
+        "floor": 41,
+        "reason": "no-living-member-no-revive",
+        "money": 2890
+      }
+    ]
+  },
+  {
+    "profile": "halfmeta",
+    "seed": 3,
+    "startingSlots": 3,
+    "starters": [
+      "bulbasaur",
+      "fuecoco",
+      "mudkip"
+    ],
+    "lastFloor": 100,
+    "battles": 153,
+    "wins": 151,
+    "defeats": 2,
+    "escapes": 0,
+    "bosses": [
+      {
+        "floor": 10,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 2,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Bulbasaur",
+            "level": 11
+          },
+          {
+            "species": "Fuecoco",
+            "level": 10
+          },
+          {
+            "species": "Mudkip",
+            "level": 9
+          },
+          {
+            "species": "Milcery",
+            "level": 7
+          },
+          {
+            "species": "Croagunk",
+            "level": 7
+          },
+          {
+            "species": "Igglybuff",
+            "level": 8
+          }
+        ],
+        "foe": [
+          {
+            "species": "Zorua-Hisui-Fantasy",
+            "level": 8
+          }
+        ]
+      },
+      {
+        "floor": 20,
+        "name": "道馆 · 青木（一般）",
+        "won": true,
+        "turns": 9,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Ivysaur",
+            "level": 16
+          },
+          {
+            "species": "Crocalor",
+            "level": 16
+          },
+          {
+            "species": "Mudkip",
+            "level": 13
+          },
+          {
+            "species": "Milcery",
+            "level": 10
+          },
+          {
+            "species": "Croagunk",
+            "level": 10
+          },
+          {
+            "species": "Sizzlipede",
+            "level": 10
+          }
+        ],
+        "foe": [
+          {
+            "species": "Starly",
+            "level": 15
+          },
+          {
+            "species": "Duskull",
+            "level": 15
+          },
+          {
+            "species": "Porygon",
+            "level": 15
+          }
+        ]
+      },
+      {
+        "floor": 30,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 3,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Ivysaur",
+            "level": 22
+          },
+          {
+            "species": "Crocalor",
+            "level": 22
+          },
+          {
+            "species": "Marshtomp",
+            "level": 17
+          },
+          {
+            "species": "Milcery",
+            "level": 14
+          },
+          {
+            "species": "Croagunk",
+            "level": 14
+          },
+          {
+            "species": "Sizzlipede",
+            "level": 14
+          }
+        ],
+        "foe": [
+          {
+            "species": "Simipour-Fantasy",
+            "level": 20
+          }
+        ]
+      },
+      {
+        "floor": 40,
+        "name": "道馆 · 小刚（岩石）",
+        "won": true,
+        "turns": 12,
+        "faints": 3,
+        "team": [
+          {
+            "species": "Ivysaur",
+            "level": 29
+          },
+          {
+            "species": "Crocalor",
+            "level": 28
+          },
+          {
+            "species": "Marshtomp",
+            "level": 21
+          },
+          {
+            "species": "Milcery",
+            "level": 19
+          },
+          {
+            "species": "Croagunk",
+            "level": 19
+          },
+          {
+            "species": "Sizzlipede",
+            "level": 19
+          }
+        ],
+        "foe": [
+          {
+            "species": "Onix",
+            "level": 25
+          },
+          {
+            "species": "Nacli",
+            "level": 25
+          },
+          {
+            "species": "Aerodactyl",
+            "level": 25
+          },
+          {
+            "species": "Pupitar",
+            "level": 25
+          }
+        ]
+      },
+      {
+        "floor": 50,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 2,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Venusaur",
+            "level": 34
+          },
+          {
+            "species": "Crocalor",
+            "level": 33
+          },
+          {
+            "species": "Marshtomp",
+            "level": 22
+          },
+          {
+            "species": "Alcremie",
+            "level": 23
+          },
+          {
+            "species": "Porygon2",
+            "level": 24
+          },
+          {
+            "species": "Centiskorch",
+            "level": 29
+          }
+        ],
+        "foe": [
+          {
+            "species": "Ribombee-Fantasy",
+            "level": 30
+          }
+        ]
+      },
+      {
+        "floor": 60,
+        "name": "道馆 · 霍米加（毒）",
+        "won": true,
+        "turns": 6,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Venusaur",
+            "level": 40
+          },
+          {
+            "species": "Skeledirge",
+            "level": 40
+          },
+          {
+            "species": "Marshtomp",
+            "level": 27
+          },
+          {
+            "species": "Alcremie",
+            "level": 27
+          },
+          {
+            "species": "Porygon2",
+            "level": 27
+          },
+          {
+            "species": "Centiskorch",
+            "level": 31
+          }
+        ],
+        "foe": [
+          {
+            "species": "Whirlipede",
+            "level": 35
+          },
+          {
+            "species": "Toxtricity-Low-Key",
+            "level": 35
+          },
+          {
+            "species": "Trubbish",
+            "level": 35
+          },
+          {
+            "species": "Slowbro-Galar",
+            "level": 35
+          }
+        ]
+      },
+      {
+        "floor": 70,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 3,
+        "faints": 1,
+        "team": [
+          {
+            "species": "Venusaur",
+            "level": 48
+          },
+          {
+            "species": "Skeledirge",
+            "level": 47
+          },
+          {
+            "species": "Marshtomp",
+            "level": 31
+          },
+          {
+            "species": "Alcremie",
+            "level": 31
+          },
+          {
+            "species": "Porygon2",
+            "level": 31
+          },
+          {
+            "species": "Centiskorch",
+            "level": 34
+          }
+        ],
+        "foe": [
+          {
+            "species": "Honchkrow-Fantasy",
+            "level": 40
+          }
+        ]
+      },
+      {
+        "floor": 80,
+        "name": "道馆 · 阿塞萝拉（幽灵）",
+        "won": true,
+        "turns": 6,
+        "faints": 1,
+        "team": [
+          {
+            "species": "Venusaur",
+            "level": 54
+          },
+          {
+            "species": "Skeledirge",
+            "level": 54
+          },
+          {
+            "species": "Pyroar",
+            "level": 44
+          },
+          {
+            "species": "Alcremie",
+            "level": 35
+          },
+          {
+            "species": "Porygon2",
+            "level": 35
+          },
+          {
+            "species": "Centiskorch",
+            "level": 37
+          }
+        ],
+        "foe": [
+          {
+            "species": "Mimikyu",
+            "level": 45
+          },
+          {
+            "species": "Gengar",
+            "level": 45
+          },
+          {
+            "species": "Sandygast",
+            "level": 45
+          },
+          {
+            "species": "Dhelmise",
+            "level": 45
+          }
+        ]
+      },
+      {
+        "floor": 90,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 2,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Venusaur",
+            "level": 59
+          },
+          {
+            "species": "Skeledirge",
+            "level": 58
+          },
+          {
+            "species": "Pyroar",
+            "level": 47
+          },
+          {
+            "species": "Alcremie",
+            "level": 40
+          },
+          {
+            "species": "Porygon2",
+            "level": 40
+          },
+          {
+            "species": "Centiskorch",
+            "level": 41
+          }
+        ],
+        "foe": [
+          {
+            "species": "Absol-Fantasy",
+            "level": 50
+          }
+        ]
+      },
+      {
+        "floor": 100,
+        "name": "道馆 · 娜姿（超能）",
+        "won": false,
+        "turns": 9,
+        "faints": 6,
+        "team": [
+          {
+            "species": "Venusaur",
+            "level": 67
+          },
+          {
+            "species": "Skeledirge-Fantasy",
+            "level": 66
+          },
+          {
+            "species": "Pyroar",
+            "level": 48
+          },
+          {
+            "species": "Kommo-o",
+            "level": 49
+          },
+          {
+            "species": "Porygon2",
+            "level": 43
+          },
+          {
+            "species": "Centiskorch",
+            "level": 44
+          }
+        ],
+        "foe": [
+          {
+            "species": "Alakazam",
+            "level": 55
+          },
+          {
+            "species": "Metagross-Fantasy",
+            "level": 55
+          },
+          {
+            "species": "Indeedee",
+            "level": 55
+          },
+          {
+            "species": "Espathra",
+            "level": 55
+          },
+          {
+            "species": "Hatterene",
+            "level": 55
+          }
+        ]
+      },
+      {
+        "floor": 100,
+        "name": "道馆 · 娜姿（超能）",
+        "won": false,
+        "turns": 8,
+        "faints": 3,
+        "team": [
+          {
+            "species": "Venusaur",
+            "level": 67
+          },
+          {
+            "species": "Skeledirge-Fantasy",
+            "level": 66
+          },
+          {
+            "species": "Pyroar",
+            "level": 48
+          },
+          {
+            "species": "Kommo-o",
+            "level": 49
+          },
+          {
+            "species": "Porygon2",
+            "level": 43
+          },
+          {
+            "species": "Centiskorch",
+            "level": 44
+          }
+        ],
+        "foe": [
+          {
+            "species": "Alakazam",
+            "level": 55
+          },
+          {
+            "species": "Metagross-Fantasy",
+            "level": 55
+          },
+          {
+            "species": "Indeedee",
+            "level": 55
+          },
+          {
+            "species": "Espathra",
+            "level": 55
+          },
+          {
+            "species": "Hatterene",
+            "level": 55
+          }
+        ]
+      }
+    ],
+    "choices": [
+      {
+        "floor": 1,
+        "blessing": "reservation",
+        "tier": "silver"
+      },
+      {
+        "floor": 50,
+        "blessing": "lowhp",
+        "tier": "silver"
+      }
+    ],
+    "purchases": {
+      "candy": 71,
+      "machines": 0,
+      "totalSpent": 129540,
+      "candySpent": 36040
+    },
+    "issues": [
+      {
+        "floor": 100,
+        "reason": "no-living-member-no-revive",
+        "money": 624
+      }
+    ]
+  },
+  {
+    "profile": "halfmeta",
+    "seed": 4,
+    "startingSlots": 3,
+    "starters": [
+      "popplio",
+      "fuecoco",
+      "bulbasaur"
+    ],
+    "lastFloor": 57,
+    "battles": 100,
+    "wins": 99,
+    "defeats": 1,
+    "escapes": 0,
+    "bosses": [
+      {
+        "floor": 10,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 2,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Popplio",
+            "level": 11
+          },
+          {
+            "species": "Fuecoco",
+            "level": 10
+          },
+          {
+            "species": "Bulbasaur",
+            "level": 9
+          },
+          {
+            "species": "Grubbin",
+            "level": 7
+          },
+          {
+            "species": "Nidoran-M",
+            "level": 8
+          },
+          {
+            "species": "Ekans",
+            "level": 6
+          }
+        ],
+        "foe": [
+          {
+            "species": "Rookidee-Fantasy",
+            "level": 8
+          }
+        ]
+      },
+      {
+        "floor": 20,
+        "name": "道馆 · 奇树（电）",
+        "won": true,
+        "turns": 13,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Popplio",
+            "level": 15
+          },
+          {
+            "species": "Fuecoco",
+            "level": 13
+          },
+          {
+            "species": "Bulbasaur",
+            "level": 13
+          },
+          {
+            "species": "Grubbin",
+            "level": 11
+          },
+          {
+            "species": "Minun",
+            "level": 9
+          },
+          {
+            "species": "Ekans",
+            "level": 10
+          }
+        ],
+        "foe": [
+          {
+            "species": "Magnemite",
+            "level": 15
+          },
+          {
+            "species": "Pichu",
+            "level": 15
+          },
+          {
+            "species": "Misdreavus",
+            "level": 15
+          }
+        ]
+      },
+      {
+        "floor": 30,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 3,
+        "faints": 0,
+        "team": [
+          {
+            "species": "Brionne",
+            "level": 22
+          },
+          {
+            "species": "Crocalor",
+            "level": 21
+          },
+          {
+            "species": "Ivysaur",
+            "level": 17
+          },
+          {
+            "species": "Grubbin",
+            "level": 15
+          },
+          {
+            "species": "Minun",
+            "level": 15
+          },
+          {
+            "species": "Ekans",
+            "level": 15
+          }
+        ],
+        "foe": [
+          {
+            "species": "Simisage-Fantasy",
+            "level": 20
+          }
+        ]
+      },
+      {
+        "floor": 40,
+        "name": "道馆 · 彩豆（格斗）",
+        "won": true,
+        "turns": 18,
+        "faints": 4,
+        "team": [
+          {
+            "species": "Brionne",
+            "level": 30
+          },
+          {
+            "species": "Crocalor",
+            "level": 29
+          },
+          {
+            "species": "Ivysaur",
+            "level": 21
+          },
+          {
+            "species": "Corsola-Galar",
+            "level": 24
+          },
+          {
+            "species": "Minun",
+            "level": 19
+          },
+          {
+            "species": "Dedenne",
+            "level": 19
+          }
+        ],
+        "foe": [
+          {
+            "species": "Machop",
+            "level": 25
+          },
+          {
+            "species": "Clobbopus",
+            "level": 25
+          },
+          {
+            "species": "Mienfoo",
+            "level": 25
+          },
+          {
+            "species": "Sneasel-Hisui",
+            "level": 25
+          }
+        ]
+      },
+      {
+        "floor": 50,
+        "name": "幻想精英",
+        "won": true,
+        "turns": 14,
+        "faints": 3,
+        "team": [
+          {
+            "species": "Brionne",
+            "level": 32
+          },
+          {
+            "species": "Crocalor",
+            "level": 31
+          },
+          {
+            "species": "Ivysaur",
+            "level": 24
+          },
+          {
+            "species": "Corsola-Galar",
+            "level": 26
+          },
+          {
+            "species": "Minun",
+            "level": 19
+          },
+          {
+            "species": "Dedenne",
+            "level": 23
+          }
+        ],
+        "foe": [
+          {
+            "species": "Ampharos-Fantasy",
+            "level": 30
+          }
+        ]
+      }
+    ],
+    "choices": [
+      {
+        "floor": 1,
+        "blessing": "kid",
+        "tier": "silver"
+      },
+      {
+        "floor": 50,
+        "blessing": "pandorasilver",
+        "tier": "silver"
+      }
+    ],
+    "purchases": {
+      "candy": 0,
+      "machines": 0,
+      "totalSpent": 33650,
+      "candySpent": 0
+    },
+    "issues": [
+      {
+        "floor": 57,
+        "reason": "no-living-member-no-revive",
+        "money": 460
+      }
+    ]
+  }
+]

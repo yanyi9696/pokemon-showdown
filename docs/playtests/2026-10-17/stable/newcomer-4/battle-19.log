@@ -1,0 +1,160 @@
+|t:|1792221976
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Pikipek, L8, M|
+|poke|p1|Venipede, L8, M|
+|poke|p1|Drifloon, L7, F|
+|poke|p1|Rookidee, L8, F|
+|poke|p1|Oddish, L8, F|
+|poke|p2|Skitty-Fantasy, L13, F|
+|teampreview
+|
+|t:|1792221976
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|37/37
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|split|p2
+|switch|p2a: Skitty|Skitty-Fantasy, L13, F|40/40
+|switch|p2a: Skitty|Skitty-Fantasy, L13, F|100/100
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221976
+|-terastallize|p2a: Skitty|Fairy
+|move|p2a: Skitty|Earth Power|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792221976
+|split|p1
+|switch|p1a: Pikipek|Pikipek, L8, M|25/25
+|switch|p1a: Pikipek|Pikipek, L8, M|100/100
+|-end|p1a: Pikipek|fantasystats|[silent]
+|turn|2
+|
+|t:|1792221976
+|move|p2a: Skitty|Earth Power|p1a: Pikipek
+|-immune|p1a: Pikipek
+|move|p1a: Pikipek|Tailwind|p1a: Pikipek
+|-sidestart|p1: Player|move: Tailwind
+|
+|upkeep
+|turn|3
+|
+|t:|1792221976
+|move|p1a: Pikipek|Peck|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|34/40
+|-damage|p2a: Skitty|85/100
+|move|p2a: Skitty|Earth Power|p1a: Pikipek
+|-immune|p1a: Pikipek
+|
+|upkeep
+|turn|4
+|
+|t:|1792221976
+|move|p1a: Pikipek|Peck|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|28/40
+|-damage|p2a: Skitty|70/100
+|move|p2a: Skitty|Earth Power|p1a: Pikipek
+|-immune|p1a: Pikipek
+|
+|upkeep
+|turn|5
+|
+|t:|1792221976
+|move|p1a: Pikipek|Peck|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|22/40
+|-damage|p2a: Skitty|56/100
+|move|p2a: Skitty|Qing Su Mi Hun|p1a: Pikipek
+|split|p1
+|-damage|p1a: Pikipek|0 fnt
+|-damage|p1a: Pikipek|0 fnt
+|faint|p1a: Pikipek
+|
+|upkeep
+|
+|t:|1792221976
+|split|p1
+|switch|p1a: Venipede|Venipede, L8, M|24/24
+|switch|p1a: Venipede|Venipede, L8, M|100/100
+|-end|p1a: Venipede|fantasystats|[silent]
+|turn|6
+|
+|t:|1792221976
+|move|p1a: Venipede|Poison Sting|p2a: Skitty
+|-supereffective|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|16/40
+|-damage|p2a: Skitty|40/100
+|move|p2a: Skitty|Earth Power|p1a: Venipede
+|split|p1
+|-damage|p1a: Venipede|0 fnt
+|-damage|p1a: Venipede|0 fnt
+|faint|p1a: Venipede
+|
+|upkeep
+|
+|t:|1792221976
+|split|p1
+|switch|p1a: Drifloon|Drifloon, L7, F|31/31
+|switch|p1a: Drifloon|Drifloon, L7, F|100/100
+|-end|p1a: Drifloon|fantasystats|[silent]
+|turn|7
+|
+|t:|1792221976
+|move|p1a: Drifloon|Gust|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|10/40
+|-damage|p2a: Skitty|25/100
+|move|p2a: Skitty|Earth Power|p1a: Drifloon
+|-immune|p1a: Drifloon
+|
+|upkeep
+|turn|8
+|
+|t:|1792221976
+|move|p1a: Drifloon|Gust|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|6/40
+|-damage|p2a: Skitty|15/100
+|move|p2a: Skitty|Earth Power|p1a: Drifloon
+|-immune|p1a: Drifloon
+|
+|-sideend|p1: Player|move: Tailwind
+|upkeep
+|turn|9
+|
+|t:|1792221976
+|move|p2a: Skitty|Qing Su Mi Hun|p1a: Drifloon
+|split|p1
+|-damage|p1a: Drifloon|0 fnt
+|-damage|p1a: Drifloon|0 fnt
+|split|p2
+|-damage|p2a: Skitty|0 fnt|[from] ability: Aftermath|[of] p1a: Drifloon
+|-damage|p2a: Skitty|0 fnt|[from] ability: Aftermath|[of] p1a: Drifloon
+|faint|p1a: Drifloon
+|faint|p2a: Skitty
+|
+|win|Player

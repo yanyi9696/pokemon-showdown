@@ -1,0 +1,89 @@
+|init|battle
+|title|RoguePlay1016G vs. AI · 山崖边的武学家
+
+|-message|幻想杯肉鸽第 21 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792134544
+|gametype|singles
+|player|p1|RoguePlay1016G|101|
+|player|p2|AI · 山崖边的武学家|sage|
+|teamsize|p1|3
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L15, M|
+|poke|p1|Minun, L8, F|
+|poke|p1|Stunky, L10, F|
+|poke|p2|Tyrogue, L13, M|
+|poke|p2|Mienfoo, L13, M|
+|poke|p2|Meditite, L13, M|
+|teampreview
+|
+|t:|1792134545
+|start
+|-message|塔灵：雷吉奇卡斯的试炼
+|switch|p1a: Mudkip|Mudkip, L15, M|41/43
+|switch|p2a: Tyrogue|Tyrogue, L13, M|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-end|p2a: Tyrogue|fantasystats|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-end|p2a: Tyrogue|fantasystats|[silent]
+|turn|1
+|
+|t:|1792134546
+|move|p2a: Tyrogue|Helping Hand|null|[notarget]
+|-fail|p2a: Tyrogue
+|move|p1a: Mudkip|Water Gun|p2a: Tyrogue
+|-damage|p2a: Tyrogue|20/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792134546
+|move|p2a: Tyrogue|Helping Hand|null|[notarget]
+|-fail|p2a: Tyrogue
+|move|p1a: Mudkip|Water Gun|p2a: Tyrogue
+|-damage|p2a: Tyrogue|0 fnt
+|faint|p2a: Tyrogue
+|
+|upkeep
+|
+|t:|1792134546
+|switch|p2a: Mienfoo|Mienfoo, L13, M|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|turn|3
+|
+|t:|1792134547
+|move|p2a: Mienfoo|Reversal|p1a: Mudkip
+|-damage|p1a: Mudkip|38/43
+|move|p1a: Mudkip|Water Gun|p2a: Mienfoo
+|-crit|p2a: Mienfoo
+|-damage|p2a: Mienfoo|0 fnt
+|faint|p2a: Mienfoo
+|
+|upkeep
+|
+|t:|1792134547
+|switch|p2a: Meditite|Meditite, L13, M|100/100
+|-end|p2a: Meditite|fantasystats|[silent]
+|turn|4
+|
+|t:|1792134548
+|move|p2a: Meditite|Confusion|p1a: Mudkip
+|-damage|p1a: Mudkip|34/43
+|move|p1a: Mudkip|Water Gun|p2a: Meditite
+|-damage|p2a: Meditite|30/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792134548
+|move|p2a: Meditite|Confusion|p1a: Mudkip
+|-damage|p1a: Mudkip|30/43
+|move|p1a: Mudkip|Water Gun|p2a: Meditite
+|-damage|p2a: Meditite|0 fnt
+|faint|p2a: Meditite
+|
+|win|RoguePlay1016G
+|deinit

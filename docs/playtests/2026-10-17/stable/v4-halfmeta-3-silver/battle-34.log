@@ -1,0 +1,152 @@
+|t:|1792223773
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L16, M|
+|poke|p1|Crocalor, L16, M|
+|poke|p1|Mudkip, L13, M|
+|poke|p1|Milcery, L10, F|
+|poke|p1|Croagunk, L10, M|
+|poke|p1|Sizzlipede, L10, M|
+|poke|p2|Starly, L15, M|
+|poke|p2|Duskull, L15, M|
+|poke|p2|Porygon, L15|
+|teampreview
+|
+|t:|1792223773
+|start
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L16, M|53/53
+|switch|p1a: Ivysaur|Ivysaur, L16, M|100/100
+|split|p2
+|switch|p2a: Starly|Starly, L15, M|41/41
+|switch|p2a: Starly|Starly, L15, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Starly|fantasystats|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Starly|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223774
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L16, M|60/60
+|switch|p1a: Crocalor|Crocalor, L16, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-terastallize|p2a: Starly|Normal
+|move|p2a: Starly|Wing Attack|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|51/60
+|-damage|p1a: Crocalor|85/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223775
+|move|p1a: Crocalor|Incinerate|p2a: Starly
+|split|p2
+|-damage|p2a: Starly|5/41
+|-damage|p2a: Starly|13/100
+|move|p2a: Starly|Facade|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|37/60
+|-damage|p1a: Crocalor|62/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792223776
+|move|p1a: Crocalor|Incinerate|p2a: Starly
+|split|p2
+|-damage|p2a: Starly|0 fnt
+|-damage|p2a: Starly|0 fnt
+|faint|p2a: Starly
+|
+|upkeep
+|
+|t:|1792223776
+|split|p2
+|switch|p2a: Duskull|Duskull, L15, M|35/35
+|switch|p2a: Duskull|Duskull, L15, M|100/100
+|-end|p2a: Duskull|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223777
+|move|p1a: Crocalor|Lick|p2a: Duskull
+|-supereffective|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|24/35
+|-damage|p2a: Duskull|69/100
+|-status|p2a: Duskull|par
+|cant|p2a: Duskull|par
+|
+|upkeep
+|turn|5
+|
+|t:|1792223777
+|move|p1a: Crocalor|Bite|p2a: Duskull
+|-supereffective|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|7/35 par
+|-damage|p2a: Duskull|20/100 par
+|cant|p2a: Duskull|flinch
+|
+|upkeep
+|turn|6
+|
+|t:|1792223778
+|move|p1a: Crocalor|Incinerate|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|0 fnt
+|-damage|p2a: Duskull|0 fnt
+|faint|p2a: Duskull
+|
+|upkeep
+|
+|t:|1792223778
+|split|p2
+|switch|p2a: Porygon|Porygon, L15|49/49
+|switch|p2a: Porygon|Porygon, L15|100/100
+|-end|p2a: Porygon|fantasystats|[silent]
+|-ability|p2a: Porygon|Blaze|[from] ability: Trace|[of] p1a: Crocalor
+|turn|7
+|
+|t:|1792223778
+|move|p1a: Crocalor|Incinerate|p2a: Porygon
+|split|p2
+|-damage|p2a: Porygon|29/49
+|-damage|p2a: Porygon|60/100
+|move|p2a: Porygon|Psybeam|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|25/60
+|-damage|p1a: Crocalor|42/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792223779
+|move|p1a: Crocalor|Incinerate|p2a: Porygon
+|split|p2
+|-damage|p2a: Porygon|9/49
+|-damage|p2a: Porygon|19/100
+|move|p2a: Porygon|Psybeam|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|14/60
+|-damage|p1a: Crocalor|24/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792223780
+|move|p1a: Crocalor|Incinerate|p2a: Porygon
+|split|p2
+|-damage|p2a: Porygon|0 fnt
+|-damage|p2a: Porygon|0 fnt
+|faint|p2a: Porygon
+|
+|win|Player

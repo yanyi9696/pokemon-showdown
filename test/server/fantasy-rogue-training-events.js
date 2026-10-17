@@ -1,4 +1,6 @@
 'use strict';
+const {eventCost} = require('../../dist/server/fantasy-rogue/early-balance');
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { Dex } = require('../../dist/sim/dex');
@@ -6,7 +8,7 @@ const { Battle } = require('../../dist/sim/battle');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
-const { EVENT_NAMES, eventView, eventBudget, chooseEvent } = require('../../dist/server/fantasy-rogue/events');
+const { EVENT_NAMES, eventView, chooseEvent } = require('../../dist/server/fantasy-rogue/events');
 const { createRoguePokemon, initializeExperience, rememberMove, levelMoves } = require('../../dist/server/fantasy-rogue/progression');
 const { teachingMoves, FREE_TUTOR_MOVES, effortTotal, legalFormMoves } = require('../../dist/server/fantasy-rogue/event-learning');
 const { demonstrationCost } = require('../../dist/server/fantasy-rogue/event-services');
@@ -17,7 +19,7 @@ describe('Fantasy Rogue travel memories and training events', function () {
 	this.timeout(20000);
 	let store, engine, content, random;
 	const account = () => store.get('trainingtester');
-	const cmd = (action, details = {}) => engine.command('trainingtester', {
+	const cmd = (action, details = {}) => commandAfterOpening(engine, 'trainingtester', {
 		id: randomUUID(), revision: account().revision, action, ...details,
 	});
 	const choose = (value, details = {}) => cmd('event', { member: account().run.node.event.key, value, ...details });
@@ -74,6 +76,21 @@ describe('Fantasy Rogue travel memories and training events', function () {
 			}
 			assert.equal(found.size, expected);
 		}
+	});
+	it('lets Hisuian Growlithe choose any legal unknown move, including non-tutor moves', () => {
+		party(['Growlithe-Hisui'], 17); enter('tutor');
+		store.change('trainingtester', a => { a.run.money = 100000; });
+		choose('ask'); const mon = account().run.team[0];
+		assert(!view().options.find(o => o.id === `member:${encodeURIComponent(mon.id)}`).disabled);
+		chooseMember(mon);
+		const tutors = teachingMoves(mon, true);
+		const option = view().picker.options.find(o => !o.disabled && !tutors.includes(o.id.slice(5)));
+		assert(option, 'a legitimate machine/level/egg move should be available');
+		choose(option.id); assert(account().run.team[0].moveMemory.some(m => m.id === option.id.slice(5)));
+	});
+	it('never offers a leave branch in travel memories', () => {
+		enter('travel'); assert(!view().options.some(o => o.id === 'leave'));
+		choose('postcard:alola'); assert(!view().options.some(o => o.id === 'leave'));
 	});
 	it('has stage-eligible regional opponents in every postcard, with no hats or battle forms', () => {
 		for (const region of ['alola', 'galar', 'hisui', 'paldea']) for (const lv of [6, 25, 50, 100]) {
@@ -135,12 +152,11 @@ describe('Fantasy Rogue travel memories and training events', function () {
 		assert.equal(account().run.node.event.exchange.before, 'Vulpix');
 		assert.throws(() => choose('confirm'), /已更新/);
 	});
-	it('rejects fabricated conversion targets and leaves the original team untouched on refusal', () => {
+	it('rejects fabricated conversion targets and intermediate exits without changing the original team', () => {
 		party(['Vulpix']); enter('travel'); path('alola');
 		const before = structuredClone(account().run.team);
 		assert.throws(() => choose('swap:training%3Amember%3A0:arceus'), /已更新/);
-		choose('leave'); assert.deepEqual(account().run.team, before);
-		assert.match(account().run.node.event.result.join(''), /原来你已经去过/);
+		assert.throws(() => choose('leave'), /选项/); assert.deepEqual(account().run.team, before);
 	});
 	it('offers each Paldean Tauros style and cannot convert to the already-current form', () => {
 		party(['Tauros']);
@@ -154,7 +170,9 @@ describe('Fantasy Rogue travel memories and training events', function () {
 				const mon = a.run.team[0]; mon.hp = 7; mon.set.item = 'oranberry';
 				mon.status = 'psn'; mon.pp[0].pp = 2;
 				a.run.eventBuff = { battles: 2 };
+				a.run.growth = {offense: 0, defense: 0, experience: 2000};
 			});
+			engine.migrate('trainingtester');
 			const old = structuredClone(account().run);
 			const { result, token } = settle(won, (result, run) => {
 				result.team[0].hp = 0; result.team[0].set.item = ''; result.team[0].pp[0].pp = 0;
@@ -166,9 +184,13 @@ describe('Fantasy Rogue travel memories and training events', function () {
 			assert.equal(now.team[0].hp, old.team[0].hp); assert.equal(now.team[0].status, 'psn');
 			assert.equal(now.team[0].set.item, 'oranberry'); assert.equal(now.team[0].pp[0].pp, 2);
 			assert.deepEqual(now.bag, old.bag); assert.equal(now.money, old.money);
-			assert.deepEqual(now.eventBuff, old.eventBuff); assert.deepEqual(now.team[0].set.evs, old.team[0].set.evs);
+			assert.deepEqual(now.team[0].training, old.team[0].training); assert.deepEqual(now.team[0].set.evs, old.team[0].set.evs);
 			assert.equal(now.team[0].set.happiness, old.team[0].set.happiness);
 			assert(now.team[0].experience > old.team[0].experience);
+			const {towerExperience} = require('../../dist/server/fantasy-rogue/early-balance');
+			const {rogueSpeciesData} = require('../../dist/sim/fantasy-rogue-rules');
+			assert.equal(now.team[0].experience - old.team[0].experience, Math.floor(towerExperience(
+				rogueSpeciesData('Rattata-Alola').baseExperience, 24, old.team[0].set.level, true, old.floor) * 1.2));
 			engine.settle('trainingtester', token, result);
 			assert.equal(account().run.team[0].experience, now.team[0].experience);
 			assert(!now.node.event.memory);
@@ -185,12 +207,14 @@ describe('Fantasy Rogue travel memories and training events', function () {
 		assert.equal(account().run.team[1].set.species.includes('Hisui'), true);
 		assert.match(account().run.node.event.result.join(''), /新伙伴/);
 	});
-	it('resumes a travel battle safely after a missing room without spending a vitality charge twice', () => {
+	it('resumes a travel battle safely after migrating mushroom vitality into permanent training', () => {
 		enter('travel'); path('alola', 'road');
 		store.change('trainingtester', a => { a.run.eventBuff = { battles: 2 }; });
+		engine.migrate('trainingtester');
+		const training = account().run.team[0].training;
 		cmd('battle'); engine.recover('trainingtester', account().run.battle.token);
-		assert.equal(account().run.eventBuff.battles, 2);
-		settle(false); assert.equal(account().run.eventBuff.battles, 2);
+		assert.deepEqual(account().run.team[0].training, training);
+		settle(false); assert.deepEqual(account().run.team[0].training, training);
 	});
 	it('respecs exactly existing EVs once, without charging, restoring HP, or reviving', () => {
 		party(['Bulbasaur']); enter('martial');
@@ -245,7 +269,7 @@ describe('Fantasy Rogue travel memories and training events', function () {
 		const nonTutor = pool.find(move => !teachingMoves(before.team[0], true).includes(move));
 		assert(nonTutor, 'needs a legal level/egg/TM move not available from a tutor');
 		random = n => n === pool.length ? pool.indexOf(nonTutor) : 0;
-		assert.match(view().options.find(o => o.id === 'demo').text, /不限来源/);
+		assert.match(view().options.find(o => o.id === 'demo').text, /金币/);
 		choose('demo');
 		const now = account().run;
 		assert.equal(now.money, before.money - cost);
@@ -267,7 +291,7 @@ describe('Fantasy Rogue travel memories and training events', function () {
 		assert(view().options.find(o => o.id === 'demo').disabled);
 		assert.throws(() => choose('demo'), /已更新/);
 		assert.deepEqual(account().run.team, before);
-		assert.equal(demonstrationCost(account().run), eventBudget(41, 0.25));
+		assert.equal(demonstrationCost(account().run), eventCost(41, 0.25));
 		store.change('trainingtester', a => { a.run.money = demonstrationCost(a.run); });
 		choose('demo'); assert.equal(account().run.money, 0);
 		assert.deepEqual(account().run.team[1], before[1]);
@@ -286,7 +310,7 @@ describe('Fantasy Rogue travel memories and training events', function () {
 		assert(!view().picker.options.some(option => option.id === 'move:grasspledge'));
 		const paid = view().picker.options.find(option => !option.disabled && !option.text.startsWith('免费'));
 		assert(paid); choose(paid.id);
-		assert.equal(account().run.money, money - eventBudget(41, 0.75));
+		assert.equal(account().run.money, money - eventCost(41, 0.75));
 	});
 	it('shows the fantasy challenge only for actually known custom moves and grants one legal choice per partner', () => {
 		party(['Bulbasaur', 'Squirtle']); enter('tutor');

@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { Battle } = require('../../dist/sim/battle');
@@ -175,7 +176,7 @@ describe('Fantasy Rogue additional tower spirits', () => {
 			const content = createPreviewContent();
 			content.events = false;
 			const engine = new RogueEngine(store, content, max => max - 1, true);
-			const cmd = (action, extra = {}) => engine.command('growth', { id: randomUUID(), revision: store.get('growth').revision, action, ...extra });
+			const cmd = (action, extra = {}) => commandAfterOpening(engine, 'growth', { id: randomUUID(), revision: store.get('growth').revision, action, ...extra });
 			cmd('start', { starters: ['bulbasaur'], useSpirit: true, testSpirit: 'zacian' }); cmd('spiritack'); cmd('select', { value: 'wild0' });
 			const fight = won => {
 				cmd('battle'); const run = store.get('growth').run;

@@ -6,6 +6,7 @@ import { InformationView } from './information';
 import type { InitialPokemon, OpponentMoves } from './initial-snapshot';
 import type { OpponentChoiceState } from './opponent-choice';
 import { emergencyChoice } from './fallback';
+import { rogueBossChoice } from '../../sim/rogue-bosses';
 import type { DecisionScheduler } from './scheduler';
 import { aiDifficulty, type ChallengeDifficulty, type ValidatedTrainer } from './types';
 import { DecisionTimeManager, type TimeBudgetSettings } from './time-management';
@@ -30,6 +31,7 @@ export interface ChallengeMetrics {
 }
 export interface AIChallengeOptions extends TimeBudgetSettings {
 	rogue?: {
+		orderedBoss?: boolean;
 		wild?: boolean, partySize: number, boosts: StatsTable, spirit?: { id: string, floor: number, money?: number },
 		blessings?: import('../../sim/rogue-blessing-data').BlessingEffects,
 	};
@@ -177,7 +179,8 @@ export class AIController {
 		const revision = this.revision;
 		if (this.options.rogue) {
 			// Tower opponents score the current public position immediately, without a rollout queue.
-			const choice = emergencyChoice(observation, this.options.trainer.format, this.rejected, true);
+			const choice = (this.options.rogue.orderedBoss && rogueBossChoice(request)) ||
+				emergencyChoice(observation, this.options.trainer.format, this.rejected, true, !!this.options.rogue.wild);
 			this.metrics.decisions++;
 			const elapsed = performance.now() - received;
 			this.metrics.totalDecisionMs += elapsed;

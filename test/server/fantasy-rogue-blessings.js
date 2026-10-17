@@ -185,12 +185,17 @@ describe('Fantasy Rogue blessings in native battles', () => {
 		assert.equal(incoming.boosts.atk, -2); assert.equal(incoming.boosts.def, 0); assert(incoming.volatiles.leechseed);
 		assert.equal(incoming.maxhp - incoming.hp, Math.floor(incoming.maxhp / 6));
 	});
-	it('adds two critical stages only on the turn following a successful Detect', () => {
+	it('banks a guaranteed critical damaging move after Detect across a nonattacking turn', () => {
 		begin(['detect']); turn('move 3', 'move 2');
-		assert.equal(battle.p1.active[0].m.rogueBlessing.detectTurn, battle.turn);
+		assert.equal(battle.p1.active[0].m.rogueBlessing.detectReady, true);
+		turn('move 2');
+		assert.equal(battle.p1.active[0].m.rogueBlessing.detectReady, true);
 		const move = battle.dex.getActiveMove('tackle');
 		battle.runEvent('ModifyMove', battle.p1.active[0], battle.p2.active[0], move, move);
-		assert.equal(move.critRatio, 3);
+		assert.equal(move.willCrit, true);
+		const next = battle.dex.getActiveMove('tackle');
+		battle.runEvent('ModifyMove', battle.p1.active[0], battle.p2.active[0], next, next);
+		assert(!next.willCrit);
 	});
 	it('lets Truant use its own Slack Off, while other moves still loaf', () => {
 		begin(['slacker'], [set('Slaking', 'Truant', 50, ['Tackle', 'Slack Off'])]);

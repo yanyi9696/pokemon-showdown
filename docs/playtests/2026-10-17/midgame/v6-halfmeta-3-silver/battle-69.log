@@ -1,0 +1,97 @@
+|t:|1792230322
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L33, M|
+|poke|p1|Crocalor, L33, M|
+|poke|p1|Marshtomp, L33, M|
+|poke|p1|Vigoroth, L21, M|
+|poke|p1|Aron, L22, M|
+|poke|p1|Shuckle, L26, F|
+|poke|p2|Ribombee-Fantasy, L30, M|
+|teampreview
+|
+|t:|1792230322
+|start
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L33, M|107/107
+|switch|p1a: Venusaur|Venusaur, L33, M|100/100
+|split|p2
+|switch|p2a: Ribombee|Ribombee-Fantasy, L30, M|91/91
+|switch|p2a: Ribombee|Ribombee-Fantasy, L30, M|100/100
+|-start|p2a: Ribombee|typechange|Bug/Fairy|[silent]
+|-start|p2a: Ribombee|fantasystats|70/45/70/105/80/130|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-start|p2a: Ribombee|typechange|Bug/Fairy|[silent]
+|-start|p2a: Ribombee|fantasystats|70/45/70/105/80/130|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230323
+|-terastallize|p2a: Ribombee|Bug
+|move|p2a: Ribombee|Psychic|p1a: Venusaur
+|-supereffective|p1a: Venusaur
+|-crit|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|51/107
+|-damage|p1a: Venusaur|48/100
+|move|p1a: Venusaur|Petal Dance|p2a: Ribombee
+|-resisted|p2a: Ribombee
+|split|p2
+|-damage|p2a: Ribombee|55/91
+|-damage|p2a: Ribombee|61/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230323
+|move|p2a: Ribombee|Psychic|p1a: Venusaur
+|-supereffective|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|11/107
+|-damage|p1a: Venusaur|11/100
+|move|p1a: Venusaur|Petal Dance|p2a: Ribombee|[from] lockedmove
+|-resisted|p2a: Ribombee
+|split|p2
+|-damage|p2a: Ribombee|3/91
+|-damage|p2a: Ribombee|4/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792230323
+|move|p2a: Ribombee|Psychic|p1a: Venusaur
+|-supereffective|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|0 fnt
+|-damage|p1a: Venusaur|0 fnt
+|faint|p1a: Venusaur
+|
+|upkeep
+|
+|t:|1792230323
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L33, M|101/101
+|switch|p1a: Marshtomp|Marshtomp, L33, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|4
+|
+|t:|1792230324
+|move|p2a: Ribombee|Psychic|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|74/101
+|-damage|p1a: Marshtomp|74/100
+|move|p1a: Marshtomp|Rock Throw|p2a: Ribombee
+|-supereffective|p2a: Ribombee
+|split|p2
+|-damage|p2a: Ribombee|0 fnt
+|-damage|p2a: Ribombee|0 fnt
+|faint|p2a: Ribombee
+|
+|win|Player

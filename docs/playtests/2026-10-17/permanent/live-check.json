@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-17T11:13:11.886Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\permanent-growth-1792235498987",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "testedSaveHpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "unchangedAccounts": 18,
+  "concurrentProgress": [
+    {
+      "database": "fantasy-rogue-preview.db",
+      "previousRevision": 1335,
+      "currentRevision": 1336,
+      "actions": [
+        "learn"
+      ],
+      "floor": 50
+    }
+  ],
+  "newRewardsAndTrainingPublished": true,
+  "blessingEntries": 164,
+  "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+}

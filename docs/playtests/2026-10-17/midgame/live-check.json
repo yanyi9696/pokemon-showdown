@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-17T10:05:03.602Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\recalibration-1792231249706",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "hpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "allAccountHashesPreserved": true,
+  "updatedBlessingTextPublished": true,
+  "blessingEntries": 164,
+  "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+}

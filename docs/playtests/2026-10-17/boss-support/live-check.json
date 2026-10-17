@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-17T12:36:53.629Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\boss-support-1792240395816",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "testedSaveHpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "unchangedAccounts": 19,
+  "concurrentProgress": [],
+  "newRewardsAndTrainingPublished": true,
+  "executionThresholdFivePercentPublished": true,
+  "blessingEntries": 164,
+  "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+}

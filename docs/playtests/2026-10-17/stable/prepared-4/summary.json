@@ -1,0 +1,1170 @@
+{
+  "profile": "prepared",
+  "seed": 4,
+  "halfMeta": false,
+  "battles": [
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pidgey",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pidgey",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Meowth",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pidgey",
+          "level": 3
+        },
+        {
+          "species": "Meowth",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Slakoth",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "elite",
+      "name": "绿茵森林 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pidgey",
+          "level": 3
+        },
+        {
+          "species": "Meowth",
+          "level": 3
+        },
+        {
+          "species": "Slakoth",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Shroomish",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pidgey",
+          "level": 5
+        },
+        {
+          "species": "Meowth",
+          "level": 5
+        },
+        {
+          "species": "Slakoth",
+          "level": 4
+        },
+        {
+          "species": "Shroomish",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Swablu",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pidgey",
+          "level": 6
+        },
+        {
+          "species": "Meowth",
+          "level": 5
+        },
+        {
+          "species": "Slakoth",
+          "level": 4
+        },
+        {
+          "species": "Shroomish",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Hoppip",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pidgey",
+          "level": 6
+        },
+        {
+          "species": "Meowth",
+          "level": 5
+        },
+        {
+          "species": "Slakoth",
+          "level": 4
+        },
+        {
+          "species": "Shroomish",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Swablu",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "elite",
+      "name": "污泥沼泽 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pidgey",
+          "level": 6
+        },
+        {
+          "species": "Meowth",
+          "level": 5
+        },
+        {
+          "species": "Slakoth",
+          "level": 5
+        },
+        {
+          "species": "Shroomish",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Varoom",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "elite",
+      "name": "太晶空洞 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pidgey",
+          "level": 7
+        },
+        {
+          "species": "Meowth",
+          "level": 6
+        },
+        {
+          "species": "Slakoth",
+          "level": 5
+        },
+        {
+          "species": "Shroomish",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nacli",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 6
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Phanpy",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 6
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Makuhita",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 6
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Aron",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 6
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Oddish",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 7
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Burmy",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 7
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Grubbin",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "elite",
+      "name": "污泥沼泽 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 7
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Toxel",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 10,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": false,
+      "escaped": false,
+      "turns": 8,
+      "faints": 5,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Pidgey",
+          "level": 9
+        },
+        {
+          "species": "Meowth",
+          "level": 7
+        },
+        {
+          "species": "Slakoth",
+          "level": 7
+        },
+        {
+          "species": "Shroomish",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tyrunt-Fantasy",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 400,
+      "moneyAfter": 400,
+      "rejected": 0
+    },
+    {
+      "floor": 10,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": false,
+      "escaped": false,
+      "turns": 2,
+      "faints": 2,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Pidgey",
+          "level": 9
+        },
+        {
+          "species": "Meowth",
+          "level": 7
+        },
+        {
+          "species": "Slakoth",
+          "level": 7
+        },
+        {
+          "species": "Shroomish",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tyrunt-Fantasy",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 400,
+      "moneyAfter": 400,
+      "rescue": {
+        "cost": 2300,
+        "paid": false
+      },
+      "rejected": 1
+    }
+  ],
+  "purchases": [
+    {
+      "floor": 9,
+      "action": "heal",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    }
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3
+      }
+    },
+    {
+      "floor": 2,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pidgey",
+          "level": 3
+        },
+        {
+          "species": "Meowth",
+          "level": 3
+        },
+        {
+          "species": "Slakoth",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 4,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "prettyfeather": 2,
+        "tinymushroom": 1
+      }
+    },
+    {
+      "floor": 3,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pidgey",
+          "level": 5
+        },
+        {
+          "species": "Meowth",
+          "level": 5
+        },
+        {
+          "species": "Slakoth",
+          "level": 4
+        },
+        {
+          "species": "Shroomish",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 3,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 2,
+        "prettyfeather": 2,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 4,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pidgey",
+          "level": 6
+        },
+        {
+          "species": "Meowth",
+          "level": 5
+        },
+        {
+          "species": "Slakoth",
+          "level": 5
+        },
+        {
+          "species": "Shroomish",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "prettyfeather": 3,
+        "tinymushroom": 5
+      }
+    },
+    {
+      "floor": 5,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pidgey",
+          "level": 7
+        },
+        {
+          "species": "Meowth",
+          "level": 6
+        },
+        {
+          "species": "Slakoth",
+          "level": 5
+        },
+        {
+          "species": "Shroomish",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 2,
+        "prettyfeather": 3,
+        "tinymushroom": 7
+      }
+    },
+    {
+      "floor": 6,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 6
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3,
+        "prettyfeather": 4,
+        "tinymushroom": 8
+      }
+    },
+    {
+      "floor": 7,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 6
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 4,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "prettyfeather": 4,
+        "tinymushroom": 11
+      }
+    },
+    {
+      "floor": 8,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 8
+        },
+        {
+          "species": "Meowth",
+          "level": 7
+        },
+        {
+          "species": "Slakoth",
+          "level": 6
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 2,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "prettyfeather": 5,
+        "tinymushroom": 13
+      }
+    },
+    {
+      "floor": 9,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pidgey",
+          "level": 9
+        },
+        {
+          "species": "Meowth",
+          "level": 7
+        },
+        {
+          "species": "Slakoth",
+          "level": 7
+        },
+        {
+          "species": "Shroomish",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 2,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 4,
+        "prettyfeather": 6,
+        "tinymushroom": 14
+      }
+    },
+    {
+      "floor": 10,
+      "money": 400,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Pidgey",
+          "level": 9
+        },
+        {
+          "species": "Meowth",
+          "level": 7
+        },
+        {
+          "species": "Slakoth",
+          "level": 7
+        },
+        {
+          "species": "Shroomish",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 0,
+        "prettyfeather": 0,
+        "tinymushroom": 0
+      }
+    }
+  ],
+  "choices": [
+    {
+      "floor": 1,
+      "blessing": "lifepower",
+      "tier": "gold"
+    }
+  ],
+  "issues": [
+    {
+      "floor": 10,
+      "reason": "no-living-member-no-revive",
+      "money": 400
+    }
+  ],
+  "lastFloor": 10,
+  "phase": "ready"
+}

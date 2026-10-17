@@ -1,0 +1,711 @@
+{
+  "date": "2026-10-16",
+  "method": "Local normal WebSocket actions and native battle engine. Separate test accounts; no spirits, meta upgrades, injected floors/stats/money/wins or RNG reseeding. Automated player decisions, not a complete human 200-floor playthrough.",
+  "limitations": [
+    "Highest-level lead without matchup planning",
+    "Automatic move selection and little voluntary switching",
+    "Repeated team replacement leaves new catches underlevelled",
+    "Feeds living members before center recovery",
+    "Does not optimize TM or held-item purchases; overbuys balls",
+    "Small random samples do not measure win rate"
+  ],
+  "samples": {
+    "H": {
+      "initialBlessing": "诸武精通",
+      "laterBlessing": null,
+      "version": "第一次方案，29～59 层糖果增加前",
+      "floorReached": 30,
+      "battleCount": 39,
+      "ordinary": {
+        "count": 33,
+        "medianTurns": 1,
+        "completedWithin3Turns": 33,
+        "totalFaints": 0
+      },
+      "bossBattles": [
+        {
+          "floor": 10,
+          "kind": "boss",
+          "name": "幻想精英",
+          "won": true,
+          "turns": 3,
+          "fainted": 0,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Mudkip",
+              "level": 14,
+              "hp": 40,
+              "maxhp": 40
+            },
+            {
+              "species": "Aron",
+              "level": 13,
+              "hp": 39,
+              "maxhp": 39
+            },
+            {
+              "species": "Geodude",
+              "level": 15,
+              "hp": 30,
+              "maxhp": 40
+            },
+            {
+              "species": "Shuckle",
+              "level": 15,
+              "hp": 34,
+              "maxhp": 34
+            },
+            {
+              "species": "Helioptile",
+              "level": 13,
+              "hp": 37,
+              "maxhp": 37
+            },
+            {
+              "species": "Pachirisu",
+              "level": 13,
+              "hp": 41,
+              "maxhp": 41
+            }
+          ],
+          "opponent": [
+            "Tyrunt-Fantasy, L18, F"
+          ],
+          "psychicUsed": false,
+          "replayLog": "battle-gen9fantasyrogue-8389-mcj8xvsgl8xcu36bci2b7x5qi6om78ypw.log"
+        },
+        {
+          "floor": 20,
+          "kind": "boss",
+          "name": "道馆 · 紫罗兰（虫）",
+          "won": true,
+          "turns": 9,
+          "fainted": 2,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Marshtomp",
+              "level": 19,
+              "hp": 0,
+              "maxhp": 59
+            },
+            {
+              "species": "Aron",
+              "level": 19,
+              "hp": 3,
+              "maxhp": 53
+            },
+            {
+              "species": "Geodude",
+              "level": 20,
+              "hp": 0,
+              "maxhp": 51
+            },
+            {
+              "species": "Shuckle",
+              "level": 20,
+              "hp": 42,
+              "maxhp": 42
+            },
+            {
+              "species": "Helioptile",
+              "level": 19,
+              "hp": 51,
+              "maxhp": 51
+            },
+            {
+              "species": "Pachirisu",
+              "level": 19,
+              "hp": 56,
+              "maxhp": 56
+            }
+          ],
+          "opponent": [
+            "Combee, L25, F",
+            "Nincada, L25, F",
+            "Nymble, L25, M"
+          ],
+          "psychicUsed": false,
+          "replayLog": "battle-gen9fantasyrogue-8400-k497v64jjfetnqy33rd59jolobsfjwnpw.log"
+        },
+        {
+          "floor": 30,
+          "kind": "boss",
+          "name": "幻想精英",
+          "won": false,
+          "turns": 11,
+          "fainted": 6,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Marshtomp",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 72
+            },
+            {
+              "species": "Aron",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 65
+            },
+            {
+              "species": "Graveler",
+              "level": 25,
+              "hp": 0,
+              "maxhp": 68
+            },
+            {
+              "species": "Shuckle",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 49
+            },
+            {
+              "species": "Ponyta-Galar",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 64
+            },
+            {
+              "species": "Pachirisu",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 68
+            }
+          ],
+          "opponent": [
+            "Simipour-Fantasy, L30, M"
+          ],
+          "psychicUsed": false,
+          "replayLog": "battle-gen9fantasyrogue-8411-3q31k70xsod2txl065jy2snylilpvh6pw.log"
+        },
+        {
+          "floor": 30,
+          "kind": "boss",
+          "name": "幻想精英",
+          "won": false,
+          "turns": 2,
+          "fainted": 1,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Marshtomp",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 72
+            },
+            {
+              "species": "Aron",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 65
+            },
+            {
+              "species": "Graveler",
+              "level": 25,
+              "hp": 0,
+              "maxhp": 68
+            },
+            {
+              "species": "Shuckle",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 49
+            },
+            {
+              "species": "Ponyta-Galar",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 64
+            },
+            {
+              "species": "Pachirisu",
+              "level": 24,
+              "hp": 0,
+              "maxhp": 68
+            }
+          ],
+          "opponent": [
+            "Simipour-Fantasy, L30, M"
+          ],
+          "psychicUsed": false,
+          "replayLog": "battle-gen9fantasyrogue-8412-9vnmj451qwmswwllmvnuvi0egv57p5xpw.log"
+        }
+      ],
+      "stop": {
+        "type": "resource-wall",
+        "floor": 30,
+        "phase": "ready",
+        "money": 855,
+        "bag": {
+          "pokeball": 25,
+          "potion": 4,
+          "revive": 0,
+          "ether": 12,
+          "expcandyxs": 0,
+          "tinymushroom": 0,
+          "prettyfeather": 0,
+          "starpiece": 0,
+          "nugget": 0,
+          "expcandys": 0,
+          "pearl": 0,
+          "greatball": 12,
+          "hyperpotion": 1,
+          "swiftfeather": 1,
+          "healthfeather": 1,
+          "oranberry": 0,
+          "leftovers": 0,
+          "expcandym": 0,
+          "superpotion": 8
+        }
+      }
+    },
+    "I": {
+      "initialBlessing": "棱彩命运 → 灵能百分百",
+      "laterBlessing": "第 50 层：战斗，爽",
+      "version": "最终方案",
+      "floorReached": 60,
+      "battleCount": 106,
+      "ordinary": {
+        "count": 96,
+        "medianTurns": 2,
+        "completedWithin3Turns": 84,
+        "totalFaints": 6
+      },
+      "bossBattles": [
+        {
+          "floor": 10,
+          "kind": "boss",
+          "name": "幻想精英",
+          "won": false,
+          "turns": 5,
+          "fainted": 4,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Bulbasaur",
+              "level": 15,
+              "hp": 0,
+              "maxhp": 41
+            },
+            {
+              "species": "Spheal",
+              "level": 13,
+              "hp": 0,
+              "maxhp": 44
+            },
+            {
+              "species": "Snorunt",
+              "level": 14,
+              "hp": 0,
+              "maxhp": 41
+            },
+            {
+              "species": "Grimer-Alola",
+              "level": 14,
+              "hp": 0,
+              "maxhp": 50
+            }
+          ],
+          "opponent": [
+            "Onix-Fantasy, L18, F"
+          ],
+          "psychicUsed": false,
+          "replayLog": "battle-gen9fantasyrogue-8436-uvrhw3iss4k21qmeqlb5sl7obe91ai5pw.log"
+        },
+        {
+          "floor": 10,
+          "kind": "boss",
+          "name": "幻想精英",
+          "won": true,
+          "turns": 1,
+          "fainted": 0,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Bulbasaur",
+              "level": 16,
+              "hp": 42,
+              "maxhp": 43
+            },
+            {
+              "species": "Spheal",
+              "level": 14,
+              "hp": 45,
+              "maxhp": 47
+            },
+            {
+              "species": "Snorunt",
+              "level": 14,
+              "hp": 0,
+              "maxhp": 41
+            },
+            {
+              "species": "Grimer-Alola",
+              "level": 14,
+              "hp": 0,
+              "maxhp": 50
+            }
+          ],
+          "opponent": [
+            "Onix-Fantasy, L18, F"
+          ],
+          "psychicUsed": true,
+          "replayLog": "battle-gen9fantasyrogue-8437-udahwtnywc6yhgmt30hfn99hwx5jr9rpw.log"
+        },
+        {
+          "floor": 20,
+          "kind": "boss",
+          "name": "道馆 · 亚莎（火）",
+          "won": true,
+          "turns": 8,
+          "fainted": 2,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Ivysaur",
+              "level": 21,
+              "hp": 0,
+              "maxhp": 60
+            },
+            {
+              "species": "Spheal",
+              "level": 19,
+              "hp": 60,
+              "maxhp": 60
+            },
+            {
+              "species": "Snorunt",
+              "level": 17,
+              "hp": 47,
+              "maxhp": 47
+            },
+            {
+              "species": "Grimer-Alola",
+              "level": 17,
+              "hp": 58,
+              "maxhp": 58
+            },
+            {
+              "species": "Flamigo",
+              "level": 21,
+              "hp": 53,
+              "maxhp": 71
+            },
+            {
+              "species": "Aron",
+              "level": 20,
+              "hp": 0,
+              "maxhp": 54
+            }
+          ],
+          "opponent": [
+            "Torkoal, L25, F",
+            "Litwick, L25, F",
+            "Capsakid, L25, F"
+          ],
+          "psychicUsed": true,
+          "replayLog": "battle-gen9fantasyrogue-8447-186y2ed8cmspe8kikwffwha9rya1hujpw.log"
+        },
+        {
+          "floor": 30,
+          "kind": "boss",
+          "name": "幻想精英",
+          "won": true,
+          "turns": 1,
+          "fainted": 0,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Ivysaur",
+              "level": 28,
+              "hp": 77,
+              "maxhp": 77
+            },
+            {
+              "species": "Spheal",
+              "level": 29,
+              "hp": 87,
+              "maxhp": 87
+            },
+            {
+              "species": "Snorunt",
+              "level": 28,
+              "hp": 72,
+              "maxhp": 72
+            },
+            {
+              "species": "Grimer-Alola",
+              "level": 27,
+              "hp": 87,
+              "maxhp": 87
+            },
+            {
+              "species": "Flamigo",
+              "level": 28,
+              "hp": 92,
+              "maxhp": 92
+            },
+            {
+              "species": "Aron",
+              "level": 21,
+              "hp": 56,
+              "maxhp": 56
+            }
+          ],
+          "opponent": [
+            "Carnivine-Fantasy, L30, M"
+          ],
+          "psychicUsed": true,
+          "replayLog": "battle-gen9fantasyrogue-8461-9m96n14qmje6ylmngn605s19p0g4e06pw.log"
+        },
+        {
+          "floor": 40,
+          "kind": "boss",
+          "name": "道馆 · 霍米加（毒）",
+          "won": true,
+          "turns": 11,
+          "fainted": 1,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Venusaur",
+              "level": 33,
+              "hp": 0,
+              "maxhp": 102
+            },
+            {
+              "species": "Pachirisu",
+              "level": 33,
+              "hp": 91,
+              "maxhp": 91
+            },
+            {
+              "species": "Snorunt",
+              "level": 32,
+              "hp": 81,
+              "maxhp": 81
+            },
+            {
+              "species": "Grimer-Alola",
+              "level": 33,
+              "hp": 66,
+              "maxhp": 104
+            },
+            {
+              "species": "Flamigo",
+              "level": 32,
+              "hp": 104,
+              "maxhp": 104
+            },
+            {
+              "species": "Aron",
+              "level": 32,
+              "hp": 80,
+              "maxhp": 80
+            }
+          ],
+          "opponent": [
+            "Venipede, L35, M",
+            "Toxel, L35, F",
+            "Trubbish, L35, F",
+            "Slowbro-Galar, L35, M"
+          ],
+          "psychicUsed": true,
+          "replayLog": "battle-gen9fantasyrogue-8483-47a6t4usnpqjdnjw306rlkl4xeg0av6pw.log"
+        },
+        {
+          "floor": 50,
+          "kind": "boss",
+          "name": "幻想精英",
+          "won": true,
+          "turns": 5,
+          "fainted": 2,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Venusaur",
+              "level": 35,
+              "hp": 0,
+              "maxhp": 108
+            },
+            {
+              "species": "Golbat",
+              "level": 36,
+              "hp": 107,
+              "maxhp": 107
+            },
+            {
+              "species": "Meganium",
+              "level": 35,
+              "hp": 108,
+              "maxhp": 108
+            },
+            {
+              "species": "Gligar",
+              "level": 34,
+              "hp": 0,
+              "maxhp": 98
+            },
+            {
+              "species": "Flamigo",
+              "level": 34,
+              "hp": 109,
+              "maxhp": 109
+            },
+            {
+              "species": "Lairon",
+              "level": 34,
+              "hp": 91,
+              "maxhp": 91
+            }
+          ],
+          "opponent": [
+            "Ribombee-Fantasy, L40, M"
+          ],
+          "psychicUsed": false,
+          "replayLog": "battle-gen9fantasyrogue-8499-uc1p1cvo12qe1lm89ic6dmuv62bf8jgpw.log"
+        },
+        {
+          "floor": 60,
+          "kind": "boss",
+          "name": "道馆 · 阿塞萝拉（幽灵）",
+          "won": false,
+          "turns": 8,
+          "fainted": 6,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Venusaur",
+              "level": 43,
+              "hp": 0,
+              "maxhp": 130
+            },
+            {
+              "species": "Golbat",
+              "level": 37,
+              "hp": 0,
+              "maxhp": 111
+            },
+            {
+              "species": "Meganium",
+              "level": 38,
+              "hp": 0,
+              "maxhp": 117
+            },
+            {
+              "species": "Gligar",
+              "level": 34,
+              "hp": 0,
+              "maxhp": 98
+            },
+            {
+              "species": "Flamigo",
+              "level": 43,
+              "hp": 0,
+              "maxhp": 137
+            },
+            {
+              "species": "Aggron",
+              "level": 43,
+              "hp": 0,
+              "maxhp": 123
+            }
+          ],
+          "opponent": [
+            "Mimikyu, L45, F",
+            "Haunter, L45, F",
+            "Sandygast, L45, F",
+            "Dhelmise, L45"
+          ],
+          "psychicUsed": true,
+          "replayLog": "battle-gen9fantasyrogue-8519-ofmi83oa19erlwtodhix3i2itt93tu7pw.log"
+        },
+        {
+          "floor": 60,
+          "kind": "boss",
+          "name": "道馆 · 阿塞萝拉（幽灵）",
+          "won": false,
+          "turns": 2,
+          "fainted": 1,
+          "captureAttempts": 0,
+          "teamAfter": [
+            {
+              "species": "Venusaur",
+              "level": 43,
+              "hp": 0,
+              "maxhp": 130
+            },
+            {
+              "species": "Golbat",
+              "level": 37,
+              "hp": 0,
+              "maxhp": 111
+            },
+            {
+              "species": "Meganium",
+              "level": 38,
+              "hp": 0,
+              "maxhp": 117
+            },
+            {
+              "species": "Gligar",
+              "level": 34,
+              "hp": 0,
+              "maxhp": 98
+            },
+            {
+              "species": "Flamigo",
+              "level": 43,
+              "hp": 0,
+              "maxhp": 137
+            },
+            {
+              "species": "Aggron",
+              "level": 43,
+              "hp": 0,
+              "maxhp": 123
+            }
+          ],
+          "opponent": [
+            "Mimikyu, L45, F",
+            "Haunter, L45, F",
+            "Sandygast, L45, F",
+            "Dhelmise, L45"
+          ],
+          "psychicUsed": true,
+          "replayLog": "battle-gen9fantasyrogue-8520-wo3bdvc8pl7rvfubxl6m3gcnrsaaw2cpw.log"
+        }
+      ],
+      "stop": {
+        "type": "resource-wall",
+        "floor": 60,
+        "phase": "ready",
+        "money": 469,
+        "bag": {
+          "pokeball": 28,
+          "potion": 0,
+          "revive": 0,
+          "ether": 17,
+          "expcandyxs": 0,
+          "tinymushroom": 0,
+          "pearl": 0,
+          "prettyfeather": 0,
+          "oranberry": 0,
+          "expcandys": 0,
+          "stardust": 0,
+          "expcandym": 0,
+          "greatball": 12,
+          "fullheal": 1,
+          "nugget": 0,
+          "bigmushroom": 0,
+          "superpotion": 9,
+          "bigpearl": 0,
+          "choiceband": 1
+        }
+      }
+    }
+  }
+}

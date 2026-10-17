@@ -1,0 +1,171 @@
+|t:|1792221999
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L17, M|
+|poke|p1|Togedemaru, L13, M|
+|poke|p1|Spiritomb, L16, M|
+|poke|p1|Emolga, L14, M|
+|poke|p1|Aron, L11, F|
+|poke|p1|Nosepass, L12, F|
+|poke|p2|Chewtle, L15, F|
+|poke|p2|Feebas, L15, F|
+|poke|p2|Wimpod, L15, M|
+|teampreview
+|
+|t:|1792221999
+|start
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L16, M|51/51
+|switch|p1a: Spiritomb|Spiritomb, L16, M|100/100
+|split|p2
+|switch|p2a: Chewtle|Chewtle, L15, F|44/44
+|switch|p2a: Chewtle|Chewtle, L15, F|100/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|-end|p2a: Chewtle|fantasystats|[silent]
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-end|p2a: Chewtle|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221999
+|-terastallize|p2a: Chewtle|Water
+|move|p1a: Spiritomb|Payback|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|22/44
+|-damage|p2a: Chewtle|50/100
+|
+|t:|1792221999
+|split|p1
+|switch|p1a: Togedemaru|Togedemaru, L13, M|48/48|[from] Payback
+|switch|p1a: Togedemaru|Togedemaru, L13, M|100/100|[from] Payback
+|-end|p1a: Togedemaru|fantasystats|[silent]
+|move|p2a: Chewtle|Water Gun|p1a: Togedemaru
+|split|p1
+|-damage|p1a: Togedemaru|34/48
+|-damage|p1a: Togedemaru|71/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792222000
+|move|p1a: Togedemaru|Nuzzle|p2a: Chewtle
+|-supereffective|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|8/44
+|-damage|p2a: Chewtle|19/100
+|-status|p2a: Chewtle|par
+|
+|t:|1792222000
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L16, M|51/51|[from] Nuzzle
+|switch|p1a: Spiritomb|Spiritomb, L16, M|100/100|[from] Nuzzle
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|cant|p2a: Chewtle|par
+|
+|upkeep
+|turn|3
+|
+|t:|1792222001
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|0 fnt
+|-damage|p2a: Chewtle|0 fnt
+|faint|p2a: Chewtle
+|
+|t:|1792222001
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L12, F|37/37|[from] Shadow Sneak
+|switch|p1a: Nosepass|Nosepass, L12, F|100/100|[from] Shadow Sneak
+|-end|p1a: Nosepass|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222001
+|split|p2
+|switch|p2a: Feebas|Feebas, L15, F|35/35
+|switch|p2a: Feebas|Feebas, L15, F|100/100
+|-end|p2a: Feebas|fantasystats|[silent]
+|turn|4
+|
+|t:|1792222001
+|move|p2a: Feebas|Flail|p1a: Nosepass
+|-resisted|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|36/37
+|-damage|p1a: Nosepass|98/100
+|move|p1a: Nosepass|Rock Throw|p2a: Feebas
+|split|p2
+|-damage|p2a: Feebas|11/35
+|-damage|p2a: Feebas|32/100
+|
+|t:|1792222001
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L17, M|63/63|[from] Rock Throw
+|switch|p1a: Crocalor|Crocalor, L17, M|100/100|[from] Rock Throw
+|-end|p1a: Crocalor|fantasystats|[silent]
+|
+|upkeep
+|turn|5
+|
+|t:|1792222001
+|move|p2a: Feebas|Flail|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|58/63
+|-damage|p1a: Crocalor|93/100
+|move|p1a: Crocalor|Bite|p2a: Feebas
+|-crit|p2a: Feebas
+|split|p2
+|-damage|p2a: Feebas|0 fnt
+|-damage|p2a: Feebas|0 fnt
+|faint|p2a: Feebas
+|
+|t:|1792222001
+|split|p1
+|switch|p1a: Emolga|Emolga, L14, M|48/48|[from] Bite
+|switch|p1a: Emolga|Emolga, L14, M|100/100|[from] Bite
+|-end|p1a: Emolga|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222001
+|split|p2
+|switch|p2a: Wimpod|Wimpod, L15, M|46/46
+|switch|p2a: Wimpod|Wimpod, L15, M|100/100
+|-end|p2a: Wimpod|fantasystats|[silent]
+|turn|6
+|
+|t:|1792222002
+|move|p1a: Emolga|Nuzzle|p2a: Wimpod
+|-supereffective|p2a: Wimpod
+|split|p2
+|-damage|p2a: Wimpod|32/46
+|-damage|p2a: Wimpod|70/100
+|-status|p2a: Wimpod|par
+|
+|t:|1792222002
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L12, F|36/37|[from] Nuzzle
+|switch|p1a: Nosepass|Nosepass, L12, F|98/100|[from] Nuzzle
+|-end|p1a: Nosepass|fantasystats|[silent]
+|cant|p2a: Wimpod|par
+|
+|upkeep
+|turn|7
+|
+|t:|1792222002
+|move|p1a: Nosepass|Rock Throw|p2a: Wimpod
+|-supereffective|p2a: Wimpod
+|split|p2
+|-damage|p2a: Wimpod|0 fnt
+|-damage|p2a: Wimpod|0 fnt
+|faint|p2a: Wimpod
+|
+|win|Player

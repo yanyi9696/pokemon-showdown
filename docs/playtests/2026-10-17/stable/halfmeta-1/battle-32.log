@@ -1,0 +1,158 @@
+|t:|1792221841
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L19, M|
+|poke|p1|Litleo, L18, F|
+|poke|p1|Klawf, L14, M|
+|poke|p1|Kecleon, L14, F|
+|poke|p1|Tentacool, L11, M|
+|poke|p1|Comfey, L13, M|
+|poke|p2|Onix, L15, M|
+|poke|p2|Nacli, L15, F|
+|poke|p2|Larvitar, L15, F|
+|teampreview
+|
+|t:|1792221841
+|start
+|split|p1
+|switch|p1a: Comfey|Comfey, L13, M|45/45
+|switch|p1a: Comfey|Comfey, L13, M|100/100
+|split|p2
+|switch|p2a: Onix|Onix, L15, M|40/40
+|switch|p2a: Onix|Onix, L15, M|100/100
+|-end|p1a: Comfey|fantasystats|[silent]
+|-end|p2a: Onix|fantasystats|[silent]
+|-end|p1a: Comfey|fantasystats|[silent]
+|-end|p2a: Onix|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221842
+|-terastallize|p2a: Onix|Rock
+|move|p1a: Comfey|Draining Kiss|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|25/40
+|-damage|p2a: Onix|63/100
+|move|p2a: Onix|Rock Throw|p1a: Comfey
+|split|p1
+|-damage|p1a: Comfey|27/45
+|-damage|p1a: Comfey|60/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792221842
+|move|p1a: Comfey|Draining Kiss|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|10/40
+|-damage|p2a: Onix|25/100
+|split|p1
+|-heal|p1a: Comfey|38/45|[from] drain|[of] p2a: Onix
+|-heal|p1a: Comfey|85/100|[from] drain|[of] p2a: Onix
+|move|p2a: Onix|Rock Throw|p1a: Comfey
+|split|p1
+|-damage|p1a: Comfey|20/45
+|-damage|p1a: Comfey|45/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792221842
+|move|p1a: Comfey|Draining Kiss|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|0 fnt
+|-damage|p2a: Onix|0 fnt
+|split|p1
+|-heal|p1a: Comfey|28/45|[from] drain|[of] p2a: Onix
+|-heal|p1a: Comfey|63/100|[from] drain|[of] p2a: Onix
+|faint|p2a: Onix
+|
+|upkeep
+|
+|t:|1792221842
+|split|p2
+|switch|p2a: Nacli|Nacli, L15, F|46/46
+|switch|p2a: Nacli|Nacli, L15, F|100/100
+|-end|p2a: Nacli|fantasystats|[silent]
+|turn|4
+|
+|t:|1792221843
+|move|p1a: Comfey|Draining Kiss|p2a: Nacli
+|split|p2
+|-damage|p2a: Nacli|27/46
+|-damage|p2a: Nacli|59/100
+|split|p1
+|-heal|p1a: Comfey|42/45|[from] drain|[of] p2a: Nacli
+|-heal|p1a: Comfey|94/100|[from] drain|[of] p2a: Nacli
+|move|p2a: Nacli|Rock Throw|p1a: Comfey
+|split|p1
+|-damage|p1a: Comfey|27/45
+|-damage|p1a: Comfey|60/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792221843
+|move|p1a: Comfey|Draining Kiss|p2a: Nacli
+|split|p2
+|-damage|p2a: Nacli|9/46
+|-damage|p2a: Nacli|20/100
+|split|p1
+|-heal|p1a: Comfey|41/45|[from] drain|[of] p2a: Nacli
+|-heal|p1a: Comfey|92/100|[from] drain|[of] p2a: Nacli
+|move|p2a: Nacli|Rock Throw|p1a: Comfey
+|split|p1
+|-damage|p1a: Comfey|28/45
+|-damage|p1a: Comfey|63/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792221843
+|move|p1a: Comfey|Draining Kiss|p2a: Nacli
+|split|p2
+|-damage|p2a: Nacli|0 fnt
+|-damage|p2a: Nacli|0 fnt
+|split|p1
+|-heal|p1a: Comfey|35/45|[from] drain|[of] p2a: Nacli
+|-heal|p1a: Comfey|78/100|[from] drain|[of] p2a: Nacli
+|faint|p2a: Nacli
+|
+|upkeep
+|
+|t:|1792221843
+|split|p2
+|switch|p2a: Larvitar|Larvitar, L15, F|44/44
+|switch|p2a: Larvitar|Larvitar, L15, F|100/100
+|-end|p2a: Larvitar|fantasystats|[silent]
+|turn|7
+|
+|t:|1792221844
+|move|p1a: Comfey|Vine Whip|p2a: Larvitar
+|-supereffective|p2a: Larvitar
+|split|p2
+|-damage|p2a: Larvitar|12/44
+|-damage|p2a: Larvitar|28/100
+|move|p2a: Larvitar|Rock Throw|p1a: Comfey
+|split|p1
+|-damage|p1a: Comfey|20/45
+|-damage|p1a: Comfey|45/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792221844
+|move|p1a: Comfey|Vine Whip|p2a: Larvitar
+|-supereffective|p2a: Larvitar
+|split|p2
+|-damage|p2a: Larvitar|0 fnt
+|-damage|p2a: Larvitar|0 fnt
+|faint|p2a: Larvitar
+|
+|win|Player

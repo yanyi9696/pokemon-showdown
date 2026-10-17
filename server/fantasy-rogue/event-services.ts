@@ -3,10 +3,10 @@ import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueContent, RogueRun, RogueTrainer } from './types';
 import type { RogueRandom } from './biome-pools';
 import { drawGiftSpecies } from './gifts';
-import { makeEncounterSet } from './encounter-sets';
-import { lowerToEligibleStage } from './evolution';
+import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
+import { themedEventTeam } from './event-teams';
 import { gift } from './blessings';
-import { eventBudget } from './events';
+import { eventCost } from './early-balance';
 import { SERVICE_TEXT as text, POSTCARDS } from './event-service-text';
 import {
 	teachingMoves, hasFantasyMove, teachMove, FREE_TUTOR_MOVES, effortTotal, allocateEffort,
@@ -39,9 +39,9 @@ const level = (run: RogueRun) => Math.max(3, Math.min(100, Math.ceil(run.floor /
 export const trainingEvent = (id: string) => ['travel', 'martial', 'tutor'].includes(id);
 export const trainingFloor = (id: string) => id === 'travel' ? 11 : id === 'martial' ? 20 : id === 'tutor' ? 25 : 1;
 const effortReward = (run: RogueRun) => 8 + 4 * Math.min(4, Math.floor((run.floor - 1) / 40));
-const tuition = (run: RogueRun) => eventBudget(run.floor, 0.75);
+const tuition = (run: RogueRun) => eventCost(run.floor, 0.75);
 export const demonstrationCost = (run: RogueRun) =>
-	eventBudget(run.floor, 0.25) * run.team.filter(mon => teachingMoves(mon).length).length;
+	eventCost(run.floor, 0.25) * run.team.filter(mon => teachingMoves(mon).length).length;
 function end(run: RogueRun, paragraphs: string[]) {
 	Object.assign(run.node!.event!, { stage: 'result', result: [...paragraphs], settled: true });
 	run.phase = 'event';
@@ -54,11 +54,9 @@ function fight(run: RogueRun, team: PokemonSet[], paragraphs: string[], trainer?
 	node.encounters = [{ name: trainer?.name || '地区形态精英', team, trainer, catchable: !trainer, style: 'balanced' }];
 	run.encounter = 0; run.phase = 'ready';
 }
-function trainerBattle(run: RogueRun, tutor: boolean) {
-	const names = tutor ? ['Smeargle', 'Mienshao', 'Oricorio'] : ['Hitmontop', 'Mienshao', 'Medicham'];
+function trainerBattle(run: RogueRun, tutor: boolean, random: RogueRandom) {
 	const lv = Math.min(100, level(run) + 2);
-	const team = names.map(name => makeEncounterSet(lowerToEligibleStage(name, lv), lv, 25));
-	// Smeargle's legal signature reinforces the travelling student's theme without invented learnsets.
+	const team = themedEventTeam(tutor ? 'tutor' : 'martial', lv, 3, random);
 	const trainer: RogueTrainer = { id: tutor ? 'travellingtutor' : 'cliffmaster',
 		name: tutor ? '旅行中的武学少女' : '山崖边的武学家', avatar: tutor ? 'backpackerf' : 'sage', role: 'traveller', tera: false };
 	fight(run, team, tutor ? text.fantasy : text.power, trainer);
@@ -75,7 +73,21 @@ export function serviceEventView(run: RogueRun): ServiceView | undefined {
 	const event = run.node?.event;
 	if (!event || !trainingEvent(event.id) || event.stage !== 'choice') return;
 	const s = event.service || {}, step = s.step || '', mon = run.team.find(p => p.id === s.member);
-	const result = (paragraphs: string[], options: ServiceOption[]): ServiceView => ({ paragraphs, options });
+	const canLearn = (partner: RoguePokemon) => teachingMoves(partner).some(move =>
+		FREE_TUTOR_MOVES.has(move) || run.money >= tuition(run));
+	const result = (paragraphs: string[], options: ServiceOption[]): ServiceView => {
+		options = options.filter(o => o.id !== 'leave' || event.id !== 'travel' && !event.committed && !step);
+		// If the party changes or a lesson becomes unaffordable, conclude without a reward or a dead end.
+		if (!options.some(o => !o.disabled)) {
+			paragraphs = [...paragraphs, '现在没有能继续接受这次教学或帮助的伙伴，这次交流到这里结束。'];
+			options.push(option('unavailable', '听完对方的话。'));
+		}
+		return { paragraphs, options: options.map(o => ({ ...o,
+			text: o.id === 'demo' ? '本次共 ' + demonstrationCost(run) + ' 金币，教学后付款。' :
+				o.id === 'ask' ? '收费招式 ' + tuition(run) + ' 金币，部分招式免费。' :
+				o.id.startsWith('member:') || o.id.startsWith('swap:') || o.id.startsWith('postcard:') ? o.text : '',
+		})) };
+	};
 	if (event.id === 'travel') {
 		if (!step) return result(text.travel, [...Object.entries(POSTCARDS).map(([id, card]) =>
 			option(`postcard:${id}`, `${card.name}明信片`, card.text)), leaving()]);
@@ -124,17 +136,17 @@ export function serviceEventView(run: RogueRun): ServiceView | undefined {
 		if (!step) return result(text.tutor, [option('demo', '先露两手看看。',
 			`全队每只随机学会一个合法新招式，不限来源；本次共 ${demonstrationCost(run)} 金币，教学后统一付款。`,
 			!run.team.some(p => teachingMoves(p).length) || run.money < demonstrationCost(run)),
-		option('ask', '求求你，教教我们吧。', `为一只伙伴自选一个合法传授招式，${tuition(run)} 金币；指定十招免费。`),
+		option('ask', '求求你，教教我们吧。', `为一只伙伴自选一个合法招式，${tuition(run)} 金币；指定十招免费。`, !run.team.some(canLearn)),
 		option('fantasy', '这个招式，你也会吗？', '展示已掌握的幻想招式并挑战；获胜后全队每只自选一个合法新招式，不限来源。', !hasFantasyMove(run)), leaving()]);
 		if (step === 'ask' || step === 'rewards') return result(step === 'ask' ? text.beg : text.tutorWin,
-			[...partnerOptions(run, p => (step === 'ask' || !!s.grants?.some(g => g.member === p.id)) &&
-				teachingMoves(p, step === 'ask').length > 0),
+			[...partnerOptions(run, p => step === 'ask' ? canLearn(p) : !!s.grants?.some(g => g.member === p.id) &&
+				teachingMoves(p).length > 0),
 			option('leave', step === 'ask' ? '暂时不学，告辞。' : '结束教学，放弃剩余机会。')]);
 		if (step === 'moves' && mon) {
 			const reward = !!s.grants;
-			return { ...result([`为 ${mon.set.species} 选择一个尚未掌握的${reward ? '合法招式' : '合法传授招式'}。`,
+			return { ...result([`为 ${mon.set.species} 选择一个尚未掌握的合法招式。`,
 				'学习后加入招式池，不替换当前招式，不恢复已有 PP。'], [option('back', '返回伙伴选择。')]),
-			picker: { label: '选择招式', options: teachingMoves(mon, !reward).map(id => {
+				picker: { label: '选择招式', options: teachingMoves(mon).map(id => {
 				const move = dex.moves.get(id), cost = reward || FREE_TUTOR_MOVES.has(id) ? 0 : tuition(run);
 				return option(`move:${id}`, move.name,
 					`${cost ? `${cost} 金币` : '免费'} · ${move.type} · ${move.category} · 威力 ${move.basePower || '—'}`, run.money < cost);
@@ -148,6 +160,11 @@ export function chooseServiceOption(account: RogueAccount, run: RogueRun, conten
 	choice: string, evs?: StatsTable) {
 	const event = run.node!.event!, s = state(run), [action, encodedMember, target] = choice.split(':');
 	const member = encodedMember && decodeURIComponent(encodedMember);
+	if (choice === 'unavailable') {
+		event.trainingAidBlocked = true;
+		end(run, event.id === 'martial' ? text.powerLeave : event.id === 'tutor' ? text.tutorLeave : text.travelLeave);
+		return;
+	}
 	if (choice === 'leave') {
 		end(run, event.id === 'martial' ? text.powerLeave : event.id === 'tutor' ? text.tutorLeave :
 			s.region && s.step !== 'postcard' ? text.travelLeave : ['你收好明信片，向摊主道别。']);
@@ -161,8 +178,8 @@ export function chooseServiceOption(account: RogueAccount, run: RogueRun, conten
 		else if (choice === 'road') {
 			const lv = Math.min(100, level(run) + 3), pool = regionalPool(s.region!, lv, content);
 			const name = drawGiftSpecies(pool, run.startCard, random);
-			fight(run, [makeEncounterSet(name, lv, 31)], [`沿着大路走了一段，一只 ${name} 挡在前面，看起来可不好惹。`,
-				'这场幻境战斗可捕捉；结束后恢复原队伍与背包的战前状态，仅保留捕捉与实际经验。']);
+			fight(run, [makeEncounterSet(name, lv, randomEncounterIVs(random, true))], [`沿着大路走了一段，一只 ${name} 挡在前面，看起来可不好惹。`,
+				'这场幻境战斗可捕捉；胜利或战败后恢复原队伍与背包的战前状态，仅保留捕捉与实际经验。主动逃跑仍保留本次损耗，重新准备后可再战。']);
 		} else if (choice === 'path') {
 			if (conversionChoices(run, s.region!).length) s.step = 'professor';
 			else { s.step = 'adopt'; s.partner ||= regionalGift(run, content, s.region!, random); }
@@ -179,7 +196,7 @@ export function chooseServiceOption(account: RogueAccount, run: RogueRun, conten
 		}
 	} else if (event.id === 'martial') {
 		if (choice === 'skill') s.step = 'skill';
-		else if (choice === 'power') trainerBattle(run, false);
+		else if (choice === 'power') trainerBattle(run, false, random);
 		else if (action === 'member') {
 			s.member = member; s.step = 'evs';
 		} else if (choice === 'back') s.step = s.grants ? 'rewards' : 'skill';
@@ -203,7 +220,7 @@ export function chooseServiceOption(account: RogueAccount, run: RogueRun, conten
 			run.money -= cost;
 			end(run, [...text.demo, ...learned, `已支付 ${cost} 金币。`]);
 		} else if (choice === 'ask') s.step = 'ask';
-		else if (choice === 'fantasy') trainerBattle(run, true);
+		else if (choice === 'fantasy') trainerBattle(run, true, random);
 		else if (action === 'member') {
 			s.member = member; s.step = 'moves';
 		} else if (choice === 'back') s.step = s.grants ? 'rewards' : 'ask';
@@ -223,6 +240,8 @@ export function chooseServiceOption(account: RogueAccount, run: RogueRun, conten
 }
 export function settleServiceBattle(run: RogueRun, won: boolean, retreated = false, captured = false) {
 	const event = run.node!.event!, s = state(run);
+	if (!won || retreated || event.id === 'travel') event.trainingAidBlocked = true;
+	else event.trainingAidBattleWin = true;
 	if (event.id === 'travel') end(run, captured ? text.travelCatch : won ? text.travelWin : text.travelLose);
 	else if (!won) end(run, event.id === 'martial' ? retreated ? text.powerLeave : text.powerLose : text.tutorLose);
 	else {

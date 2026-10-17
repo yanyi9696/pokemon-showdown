@@ -1,0 +1,130 @@
+|t:|1792231067
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L28, M|
+|poke|p1|Crocalor, L25, M|
+|poke|p1|Marshtomp, L25, M|
+|poke|p1|Kirlia, L21, M|
+|poke|p1|Aron, L21, M|
+|poke|p1|Shuckle, L28, F|
+|poke|p2|Ampharos-Fantasy, L30, M|
+|teampreview
+|
+|t:|1792231067
+|start
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L28, F|60/60
+|switch|p1a: Shuckle|Shuckle, L28, F|100/100
+|split|p2
+|switch|p2a: Ampharos|Ampharos-Fantasy, L30, M|103/103
+|switch|p2a: Ampharos|Ampharos-Fantasy, L30, M|100/100
+|-start|p2a: Ampharos|typechange|Electric/Psychic|[silent]
+|-start|p2a: Ampharos|fantasystats|90/40/85/115/90/90|[silent]
+|-end|p1a: Shuckle|fantasystats|[silent]
+|-start|p2a: Ampharos|typechange|Electric/Psychic|[silent]
+|-start|p2a: Ampharos|fantasystats|90/40/85/115/90/90|[silent]
+|-end|p1a: Shuckle|fantasystats|[silent]
+|turn|1
+|
+|t:|1792231067
+|-terastallize|p2a: Ampharos|Electric
+|move|p2a: Ampharos|Discharge|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|38/60
+|-damage|p1a: Shuckle|64/100
+|-status|p1a: Shuckle|par
+|move|p1a: Shuckle|Struggle Bug|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|96/103
+|-damage|p2a: Ampharos|94/100
+|-unboost|p2a: Ampharos|spa|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792231068
+|move|p2a: Ampharos|Discharge|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|24/60 par
+|-damage|p1a: Shuckle|40/100 par
+|cant|p1a: Shuckle|par
+|
+|upkeep
+|turn|3
+|
+|t:|1792231068
+|move|p2a: Ampharos|Discharge|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|12/60 par
+|-damage|p1a: Shuckle|20/100 par
+|move|p1a: Shuckle|Wrap|p2a: Ampharos|[miss]
+|-miss|p1a: Shuckle|p2a: Ampharos
+|
+|upkeep
+|turn|4
+|
+|t:|1792231068
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L25, M|80/80
+|switch|p1a: Marshtomp|Marshtomp, L25, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Ampharos|Discharge|p1a: Marshtomp
+|-immune|p1a: Marshtomp
+|
+|upkeep
+|turn|5
+|
+|t:|1792231069
+|move|p2a: Ampharos|Electroweb|p1a: Marshtomp
+|-immune|p1a: Marshtomp
+|move|p1a: Marshtomp|Mud Shot|p2a: Ampharos
+|-supereffective|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|63/103
+|-damage|p2a: Ampharos|62/100
+|-unboost|p2a: Ampharos|spe|1
+|
+|upkeep
+|turn|6
+|
+|t:|1792231069
+|move|p1a: Marshtomp|Mud Shot|p2a: Ampharos
+|-supereffective|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|35/103
+|-damage|p2a: Ampharos|34/100
+|-unboost|p2a: Ampharos|spe|1
+|move|p2a: Ampharos|Discharge|p1a: Marshtomp
+|-immune|p1a: Marshtomp
+|
+|upkeep
+|turn|7
+|
+|t:|1792231069
+|move|p1a: Marshtomp|Mud Shot|p2a: Ampharos
+|-supereffective|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|7/103
+|-damage|p2a: Ampharos|7/100
+|-unboost|p2a: Ampharos|spe|1
+|move|p2a: Ampharos|Electroweb|p1a: Marshtomp
+|-immune|p1a: Marshtomp
+|
+|upkeep
+|turn|8
+|
+|t:|1792231070
+|move|p1a: Marshtomp|Rock Throw|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|0 fnt
+|-damage|p2a: Ampharos|0 fnt
+|faint|p2a: Ampharos
+|
+|win|Player

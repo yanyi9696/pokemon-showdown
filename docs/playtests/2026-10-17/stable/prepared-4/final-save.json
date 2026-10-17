@@ -1,0 +1,1623 @@
+{
+  "revision": 101,
+  "points": 0,
+  "boosts": {
+    "hp": 0,
+    "atk": 0,
+    "def": 0,
+    "spa": 0,
+    "spd": 0,
+    "spe": 0
+  },
+  "slots": 1,
+  "captures": {
+    "pidgey": 1,
+    "meowth": 1,
+    "slakoth": 1,
+    "shroomish": 1
+  },
+  "unlocked": [
+    "pidgey",
+    "meowth",
+    "slakoth",
+    "shroomish"
+  ],
+  "unlockedSpirits": [],
+  "starterTraits": {
+    "fuecoco": {
+      "natures": [
+        "docile"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "blaze"
+      ],
+      "moves": [
+        "ember",
+        "tackle",
+        "leer",
+        "round",
+        "bite"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        }
+      }
+    },
+    "pidgey": {
+      "natures": [
+        "serious"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "keeneye"
+      ],
+      "moves": [
+        "tackle",
+        "sandattack",
+        "gust"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 26,
+          "atk": 25,
+          "def": 23,
+          "spa": 20,
+          "spd": 20,
+          "spe": 28
+        }
+      }
+    },
+    "meowth": {
+      "natures": [
+        "impish"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "pickup"
+      ],
+      "moves": [
+        "fakeout",
+        "growl",
+        "feint"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 20,
+          "atk": 29,
+          "def": 26,
+          "spa": 23,
+          "spd": 24,
+          "spe": 27
+        }
+      }
+    },
+    "slakoth": {
+      "natures": [
+        "hasty"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "truant"
+      ],
+      "moves": [
+        "scratch",
+        "yawn",
+        "encore"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 28,
+          "atk": 26,
+          "def": 29,
+          "spa": 24,
+          "spd": 31,
+          "spe": 23
+        }
+      }
+    },
+    "shroomish": {
+      "natures": [
+        "modest"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "effectspore"
+      ],
+      "moves": [
+        "tackle",
+        "absorb",
+        "leechseed",
+        "stunspore",
+        "megadrain"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      }
+    }
+  },
+  "run": {
+    "team": [
+      {
+        "id": "1a911820-bcca-4d30-944d-9cf753968cc1",
+        "set": {
+          "name": "Fuecoco",
+          "species": "Fuecoco",
+          "ability": "Blaze",
+          "level": 13,
+          "nature": "Docile",
+          "moves": [
+            "ember",
+            "round",
+            "bite",
+            "tackle"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 2,
+            "atk": 2,
+            "def": 2,
+            "spa": 2,
+            "spd": 4,
+            "spe": 0
+          },
+          "ivs": {
+            "hp": 20,
+            "atk": 20,
+            "def": 20,
+            "spa": 20,
+            "spd": 20,
+            "spe": 20
+          },
+          "gender": "M",
+          "happiness": 98
+        },
+        "hp": 0,
+        "maxhp": 43,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "ember",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "round",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "bite",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          }
+        ],
+        "stats": {
+          "atk": 19,
+          "def": 22,
+          "spa": 23,
+          "spd": 18,
+          "spe": 16,
+          "hp": 43
+        },
+        "moveMemory": [
+          {
+            "id": "ember",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "leer",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "round",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "bite",
+            "pp": 25,
+            "maxpp": 25
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "blaze",
+            "hidden": false
+          }
+        ],
+        "initialPartner": true,
+        "seenMoves": [
+          "ember",
+          "tackle",
+          "leer",
+          "round",
+          "bite"
+        ],
+        "experience": 1318,
+        "joinOrder": 0,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:0",
+        "set": {
+          "name": "Pidgey",
+          "species": "Pidgey",
+          "ability": "Keen Eye",
+          "level": 9,
+          "nature": "Serious",
+          "moves": [
+            "tackle",
+            "gust",
+            "sandattack"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 2,
+            "atk": 2,
+            "def": 2,
+            "spa": 2,
+            "spd": 4,
+            "spe": 0
+          },
+          "ivs": {
+            "hp": 26,
+            "atk": 25,
+            "def": 23,
+            "spa": 20,
+            "spd": 20,
+            "spe": 28
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 87
+        },
+        "hp": 0,
+        "maxhp": 28,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "gust",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "sandattack",
+            "pp": 15,
+            "maxpp": 15
+          }
+        ],
+        "stats": {
+          "atk": 15,
+          "def": 14,
+          "spa": 13,
+          "spd": 13,
+          "spe": 17,
+          "hp": 28
+        },
+        "moveMemory": [
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "sandattack",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "gust",
+            "pp": 35,
+            "maxpp": 35
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "keeneye",
+            "hidden": false
+          }
+        ],
+        "experience": 462,
+        "seenMoves": [
+          "tackle",
+          "sandattack",
+          "gust"
+        ],
+        "joinOrder": 1,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:1",
+        "set": {
+          "name": "Meowth",
+          "species": "Meowth",
+          "ability": "Pickup",
+          "level": 7,
+          "nature": "Impish",
+          "moves": [
+            "fakeout",
+            "feint",
+            "growl"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 2,
+            "atk": 2,
+            "def": 2,
+            "spa": 2,
+            "spd": 4,
+            "spe": 0
+          },
+          "ivs": {
+            "hp": 20,
+            "atk": 29,
+            "def": 26,
+            "spa": 23,
+            "spd": 24,
+            "spe": 27
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 92
+        },
+        "hp": 0,
+        "maxhp": 24,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "fakeout",
+            "pp": 9,
+            "maxpp": 10
+          },
+          {
+            "id": "feint",
+            "pp": 9,
+            "maxpp": 10
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          }
+        ],
+        "stats": {
+          "atk": 13,
+          "def": 12,
+          "spa": 10,
+          "spd": 12,
+          "spe": 19,
+          "hp": 24
+        },
+        "moveMemory": [
+          {
+            "id": "fakeout",
+            "pp": 9,
+            "maxpp": 10
+          },
+          {
+            "id": "growl",
+            "pp": 40,
+            "maxpp": 40
+          },
+          {
+            "id": "feint",
+            "pp": 9,
+            "maxpp": 10
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "pickup",
+            "hidden": false
+          }
+        ],
+        "experience": 453,
+        "seenMoves": [
+          "fakeout",
+          "growl",
+          "feint"
+        ],
+        "joinOrder": 2,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:2",
+        "set": {
+          "name": "Slakoth",
+          "species": "Slakoth",
+          "ability": "Truant",
+          "level": 7,
+          "nature": "Hasty",
+          "moves": [
+            "scratch",
+            "yawn",
+            "encore"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 2,
+            "atk": 2,
+            "def": 2,
+            "spa": 2,
+            "spd": 4,
+            "spe": 0
+          },
+          "ivs": {
+            "hp": 28,
+            "atk": 26,
+            "def": 29,
+            "spa": 24,
+            "spd": 31,
+            "spe": 23
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 92
+        },
+        "hp": 0,
+        "maxhp": 27,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "scratch",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "yawn",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "encore",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "stats": {
+          "atk": 15,
+          "def": 13,
+          "spa": 11,
+          "spd": 12,
+          "spe": 11,
+          "hp": 27
+        },
+        "moveMemory": [
+          {
+            "id": "scratch",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "yawn",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "encore",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "truant",
+            "hidden": false
+          }
+        ],
+        "experience": 464,
+        "seenMoves": [
+          "scratch",
+          "yawn",
+          "encore"
+        ],
+        "joinOrder": 3,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "31f322d1-890e-43dc-ac89-43670fece04c:2:elite:0",
+        "set": {
+          "name": "Shroomish",
+          "species": "Shroomish",
+          "ability": "Effect Spore",
+          "level": 12,
+          "nature": "Modest",
+          "moves": [
+            "megadrain",
+            "tackle",
+            "absorb",
+            "leechseed"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 2,
+            "atk": 2,
+            "def": 2,
+            "spa": 2,
+            "spd": 4,
+            "spe": 0
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 90
+        },
+        "hp": 0,
+        "maxhp": 40,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "megadrain",
+            "pp": 14,
+            "maxpp": 15
+          },
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "absorb",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "leechseed",
+            "pp": 10,
+            "maxpp": 10
+          }
+        ],
+        "stats": {
+          "atk": 16,
+          "def": 23,
+          "spa": 19,
+          "spd": 23,
+          "spe": 17,
+          "hp": 40
+        },
+        "moveMemory": [
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "absorb",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "leechseed",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "stunspore",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "megadrain",
+            "pp": 14,
+            "maxpp": 15
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "effectspore",
+            "hidden": false
+          }
+        ],
+        "experience": 1227,
+        "seenMoves": [
+          "tackle",
+          "absorb",
+          "leechseed",
+          "stunspore",
+          "megadrain"
+        ],
+        "joinOrder": 4,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      }
+    ],
+    "bag": {
+      "pokeball": 10,
+      "potion": 5,
+      "revive": 0,
+      "ether": 6,
+      "expcandyxs": 0,
+      "prettyfeather": 0,
+      "tinymushroom": 0
+    },
+    "money": 400,
+    "teraUnlocked": false,
+    "id": "31f322d1-890e-43dc-ac89-43670fece04c",
+    "contentVersion": "preview-2026-10-v12",
+    "floor": 10,
+    "phase": "ready",
+    "owner": {
+      "id": "combatqa",
+      "name": "combatqa"
+    },
+    "previousBlessings": [],
+    "encounter": 0,
+    "attempt": 2,
+    "boosts": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "spa": 0,
+      "spd": 0,
+      "spe": 0
+    },
+    "startingSlots": 1,
+    "checkpoint": {
+      "team": [
+        {
+          "id": "1a911820-bcca-4d30-944d-9cf753968cc1",
+          "set": {
+            "name": "Fuecoco",
+            "species": "Fuecoco",
+            "ability": "Blaze",
+            "level": 13,
+            "nature": "Docile",
+            "moves": [
+              "ember",
+              "round",
+              "bite",
+              "tackle"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 2,
+              "atk": 2,
+              "def": 2,
+              "spa": 2,
+              "spd": 4,
+              "spe": 0
+            },
+            "ivs": {
+              "hp": 20,
+              "atk": 20,
+              "def": 20,
+              "spa": 20,
+              "spd": 20,
+              "spe": 20
+            },
+            "gender": "M",
+            "happiness": 108
+          },
+          "hp": 43,
+          "maxhp": 43,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "ember",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "round",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "bite",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            }
+          ],
+          "stats": {
+            "atk": 19,
+            "def": 22,
+            "spa": 23,
+            "spd": 18,
+            "spe": 16,
+            "hp": 43
+          },
+          "moveMemory": [
+            {
+              "id": "ember",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "leer",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "round",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "bite",
+              "pp": 25,
+              "maxpp": 25
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "blaze",
+              "hidden": false
+            }
+          ],
+          "initialPartner": true,
+          "seenMoves": [
+            "ember",
+            "tackle",
+            "leer",
+            "round",
+            "bite"
+          ],
+          "experience": 1318,
+          "joinOrder": 0,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:0",
+          "set": {
+            "name": "Pidgey",
+            "species": "Pidgey",
+            "ability": "Keen Eye",
+            "level": 9,
+            "nature": "Serious",
+            "moves": [
+              "tackle",
+              "gust",
+              "sandattack"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 2,
+              "atk": 2,
+              "def": 2,
+              "spa": 2,
+              "spd": 4,
+              "spe": 0
+            },
+            "ivs": {
+              "hp": 26,
+              "atk": 25,
+              "def": 23,
+              "spa": 20,
+              "spd": 20,
+              "spe": 28
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 97
+          },
+          "hp": 28,
+          "maxhp": 28,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "gust",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "sandattack",
+              "pp": 15,
+              "maxpp": 15
+            }
+          ],
+          "stats": {
+            "atk": 15,
+            "def": 14,
+            "spa": 13,
+            "spd": 13,
+            "spe": 17,
+            "hp": 28
+          },
+          "moveMemory": [
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "sandattack",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "gust",
+              "pp": 35,
+              "maxpp": 35
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "keeneye",
+              "hidden": false
+            }
+          ],
+          "experience": 462,
+          "seenMoves": [
+            "tackle",
+            "sandattack",
+            "gust"
+          ],
+          "joinOrder": 1,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:1",
+          "set": {
+            "name": "Meowth",
+            "species": "Meowth",
+            "ability": "Pickup",
+            "level": 7,
+            "nature": "Impish",
+            "moves": [
+              "fakeout",
+              "feint",
+              "growl"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 2,
+              "atk": 2,
+              "def": 2,
+              "spa": 2,
+              "spd": 4,
+              "spe": 0
+            },
+            "ivs": {
+              "hp": 20,
+              "atk": 29,
+              "def": 26,
+              "spa": 23,
+              "spd": 24,
+              "spe": 27
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 97
+          },
+          "hp": 24,
+          "maxhp": 24,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "fakeout",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "feint",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            }
+          ],
+          "stats": {
+            "atk": 13,
+            "def": 12,
+            "spa": 10,
+            "spd": 12,
+            "spe": 19,
+            "hp": 24
+          },
+          "moveMemory": [
+            {
+              "id": "fakeout",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "growl",
+              "pp": 40,
+              "maxpp": 40
+            },
+            {
+              "id": "feint",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "pickup",
+              "hidden": false
+            }
+          ],
+          "experience": 453,
+          "seenMoves": [
+            "fakeout",
+            "growl",
+            "feint"
+          ],
+          "joinOrder": 2,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:2",
+          "set": {
+            "name": "Slakoth",
+            "species": "Slakoth",
+            "ability": "Truant",
+            "level": 7,
+            "nature": "Hasty",
+            "moves": [
+              "scratch",
+              "yawn",
+              "encore"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 2,
+              "atk": 2,
+              "def": 2,
+              "spa": 2,
+              "spd": 4,
+              "spe": 0
+            },
+            "ivs": {
+              "hp": 28,
+              "atk": 26,
+              "def": 29,
+              "spa": 24,
+              "spd": 31,
+              "spe": 23
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 97
+          },
+          "hp": 27,
+          "maxhp": 27,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "scratch",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "yawn",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "encore",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "stats": {
+            "atk": 15,
+            "def": 13,
+            "spa": 11,
+            "spd": 12,
+            "spe": 11,
+            "hp": 27
+          },
+          "moveMemory": [
+            {
+              "id": "scratch",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "yawn",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "encore",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "truant",
+              "hidden": false
+            }
+          ],
+          "experience": 464,
+          "seenMoves": [
+            "scratch",
+            "yawn",
+            "encore"
+          ],
+          "joinOrder": 3,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "31f322d1-890e-43dc-ac89-43670fece04c:2:elite:0",
+          "set": {
+            "name": "Shroomish",
+            "species": "Shroomish",
+            "ability": "Effect Spore",
+            "level": 12,
+            "nature": "Modest",
+            "moves": [
+              "megadrain",
+              "tackle",
+              "absorb",
+              "leechseed"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 2,
+              "atk": 2,
+              "def": 2,
+              "spa": 2,
+              "spd": 4,
+              "spe": 0
+            },
+            "ivs": {
+              "hp": 31,
+              "atk": 31,
+              "def": 31,
+              "spa": 31,
+              "spd": 31,
+              "spe": 31
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 95
+          },
+          "hp": 40,
+          "maxhp": 40,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "megadrain",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "absorb",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "leechseed",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "stats": {
+            "atk": 16,
+            "def": 23,
+            "spa": 19,
+            "spd": 23,
+            "spe": 17,
+            "hp": 40
+          },
+          "moveMemory": [
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "absorb",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "leechseed",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "stunspore",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "megadrain",
+              "pp": 15,
+              "maxpp": 15
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "effectspore",
+              "hidden": false
+            }
+          ],
+          "experience": 1227,
+          "seenMoves": [
+            "tackle",
+            "absorb",
+            "leechseed",
+            "stunspore",
+            "megadrain"
+          ],
+          "joinOrder": 4,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 0,
+        "prettyfeather": 0,
+        "tinymushroom": 0
+      },
+      "money": 400,
+      "teraUnlocked": false
+    },
+    "caught": [
+      "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:0",
+      "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:1",
+      "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:2",
+      "31f322d1-890e-43dc-ac89-43670fece04c:2:elite:0"
+    ],
+    "trainerHistory": {
+      "gyms": [],
+      "eliteFour": []
+    },
+    "routeHistory": {
+      "floor": 8,
+      "factors": {
+        "wild": 0.7287109131652832,
+        "elite": 0.31615048828125,
+        "trainer": 0.7429990234375,
+        "event": 0.974852587890625,
+        "reward": 0.68032,
+        "trade": 0.9796875
+      },
+      "tradeSeen": true,
+      "eliteMisses": 0
+    },
+    "spiritVersion": 1,
+    "blessings": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "lifepower",
+          "family": "lifepower",
+          "tier": "gold",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "settled": [
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:1",
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:2",
+        "31f322d1-890e-43dc-ac89-43670fece04c:2:elite:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:1",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:2",
+        "31f322d1-890e-43dc-ac89-43670fece04c:4:elite:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:5:elite:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:1",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:2",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:1",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:2",
+        "31f322d1-890e-43dc-ac89-43670fece04c:8:elite:0"
+      ],
+      "defeated": [
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:1:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:2:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:4:elite:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:5:elite:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:1:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:2:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:1:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:2:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:8:elite:0:foe:0"
+      ],
+      "caught": [
+        "fuecoco",
+        "pidgey",
+        "meowth",
+        "slakoth",
+        "shroomish"
+      ],
+      "nextJoin": 5,
+      "shards": 0,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 5
+    },
+    "blessingCheckpoint": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "lifepower",
+          "family": "lifepower",
+          "tier": "gold",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "settled": [
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:1",
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:2",
+        "31f322d1-890e-43dc-ac89-43670fece04c:2:elite:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:1",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:2",
+        "31f322d1-890e-43dc-ac89-43670fece04c:4:elite:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:5:elite:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:1",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:2",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:1",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:2",
+        "31f322d1-890e-43dc-ac89-43670fece04c:8:elite:0"
+      ],
+      "defeated": [
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:1:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:3:wild0:2:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:4:elite:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:5:elite:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:1:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:6:wild0:2:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:0:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:1:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:7:wild0:2:foe:0",
+        "31f322d1-890e-43dc-ac89-43670fece04c:8:elite:0:foe:0"
+      ],
+      "caught": [
+        "fuecoco",
+        "pidgey",
+        "meowth",
+        "slakoth",
+        "shroomish"
+      ],
+      "nextJoin": 5,
+      "shards": 0,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 5
+    },
+    "notices": [
+      "本场战斗未通过，队伍当前状态已保存。",
+      "全队倒下且没有复活道具；急救需要 2300 金币，余额不足，尚未扣款或复活。"
+    ],
+    "friendshipProgress": {
+      "floor": 10,
+      "battles": {},
+      "fainted": {
+        "1a911820-bcca-4d30-944d-9cf753968cc1": 2,
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:0": 2,
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:1": 1,
+        "31f322d1-890e-43dc-ac89-43670fece04c:1:wild0:2": 1,
+        "31f322d1-890e-43dc-ac89-43670fece04c:2:elite:0": 1
+      },
+      "settled": [
+        "2346b382-e6c7-4954-9084-a81019f4511b",
+        "b005d442-3f3a-425d-9de0-05b6d36295a9"
+      ]
+    },
+    "lastReward": {
+      "floor": 9,
+      "name": "宝可梦中心",
+      "money": 0,
+      "items": {},
+      "points": 0
+    },
+    "pendingMoves": [],
+    "node": {
+      "id": "boss",
+      "name": "幻想精英",
+      "kind": "boss",
+      "reward": {
+        "money": 0,
+        "items": {}
+      },
+      "encounters": [
+        {
+          "name": "幻想精英",
+          "team": [
+            {
+              "name": "Tyrunt-Fantasy",
+              "species": "Tyrunt-Fantasy",
+              "level": 13,
+              "ability": "Sand Rush",
+              "moves": [
+                "Yao Lan",
+                "Rock Tomb",
+                "Rock Polish"
+              ],
+              "item": "",
+              "gender": "M",
+              "nature": "Hardy",
+              "teraType": "Rock",
+              "evs": {
+                "hp": 0,
+                "atk": 0,
+                "def": 0,
+                "spa": 0,
+                "spd": 0,
+                "spe": 0
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 31,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              }
+            }
+          ],
+          "style": "balanced",
+          "catchable": false,
+          "blessingLevels": 5
+        }
+      ],
+      "wildLoot": [
+        {
+          "tinymushroom": 1
+        }
+      ],
+      "spiritPrepared": true,
+      "blessingPrepared": true
+    },
+    "recovery": "defeat",
+    "emergencyRecovery": {
+      "cost": 2300,
+      "paid": false
+    }
+  },
+  "adventures": 1,
+  "onboardingSeen": true,
+  "discoveries": {
+    "blessings": [
+      "lifepower"
+    ],
+    "events": []
+  },
+  "caughtSpecies": [
+    "pidgey",
+    "meowth",
+    "slakoth",
+    "shroomish"
+  ]
+}

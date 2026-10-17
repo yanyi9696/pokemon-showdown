@@ -5,9 +5,38 @@ import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import type { RogueContent, RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { spiritItems, spiritShopAvailable } from './spirits';
+import { CANDY_SHOP, restCandyOffer } from './early-balance';
 
 const dex = Dex.mod('gen9fantasy');
-export const TRADE_NAMES = { mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店' };
+export const TRADE_NAMES = { mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营' };
+export function tradeKind(floor: number, random: RogueRandom): keyof typeof TRADE_NAMES {
+	const roll = random(100);
+	if (floor >= 51) {
+		const growthWeight = floor < 100 ? 30 : 40;
+		if (roll < growthWeight) return 'growth';
+		const next = (roll - growthWeight) / (100 - growthWeight);
+		return next < 0.45 ? 'candy' : next < 0.8 ? 'machine' : 'mint';
+	}
+	const weights = floor <= 40 ? [50, 90] : floor <= 80 ? [40, 80] : [34, 67];
+	return roll < weights[0] ? 'candy' : roll < weights[1] ? 'machine' : 'mint';
+}
+
+const USEFUL_STATUS = new Set(['protect', 'substitute', 'toxic', 'willowisp', 'thunderwave', 'roost', 'rest',
+	'recover', 'synthesis', 'calmmind', 'nastyplot', 'swordsdance', 'bulkup', 'dragondance', 'reflect', 'lightscreen',
+	'stealthrock', 'taunt', 'encore', 'trickroom', 'tailwind']);
+function machineWeight(id: string, run: RogueRun) {
+	const move = dex.moves.get(id);
+	if (move.category === 'Status') return USEFUL_STATUS.has(id) ? 6 : 1;
+	if (move.ohko || move.selfdestruct || move.flags.charge || move.self?.volatileStatus === 'mustrecharge') return 1;
+	const power = move.basePower * (typeof move.multihit === 'number' ? move.multihit : move.multihit ? 3 : 1);
+	if (power < 50 || move.accuracy !== true && move.accuracy < 85) return 2;
+	const suited = run.team.some(mon => {
+		if (!machineMoves(mon).includes(id)) return false;
+		const stats = mon.stats || dex.species.get(mon.set.species).baseStats;
+		return move.category === 'Physical' ? stats.atk >= stats.spa * 0.8 : stats.spa >= stats.atk * 0.8;
+	});
+	return suited ? 8 : 3;
+}
 const stats: Record<string, string> = { atk: '攻击', def: '防御', spa: '特攻', spd: '特防', spe: '速度' };
 const validator = new TeamValidator(new Format({
 	...Dex.formats.get('gen9nationaldex'), name: 'Rogue TM', mod: 'gen9fantasy',
@@ -49,10 +78,10 @@ export function tradeItem(id: string): RogueItem | undefined {
 	}
 }
 
-export function tradeRouteTemplates(templates: RogueNode[], random: RogueRandom): RogueNode[] {
+export function tradeRouteTemplates(templates: RogueNode[], random: RogueRandom, floor = 1): RogueNode[] {
 	return templates.map((node, i) => {
 		if (node.kind !== 'wild' || random(100) < 88) return node;
-		const kind = (Object.keys(TRADE_NAMES) as (keyof typeof TRADE_NAMES)[])[random(3)];
+		const kind = tradeKind(floor, random);
 		return { id: `trade${i}`, name: TRADE_NAMES[kind], kind: 'trade', trade: { kind, stock: [], purchases: 0 },
 			encounters: [], reward: { money: 0, items: {} } };
 	});
@@ -60,7 +89,7 @@ export function tradeRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function prepareTrade(run: RogueRun, content: RogueContent, random: RogueRandom) {
 	const trade = run.node?.trade;
-	if (!trade || trade.stock.length) return;
+	if (!trade || trade.stock.length || trade.kind === 'growth') return;
 	const budget = (run.floor < 30 ? 750 : run.floor < 80 ? 1250 : run.floor < 140 ? 2450 : 5650) + 8 * run.floor;
 	let pool: RogueItem[];
 	if (trade.kind === 'mint') {
@@ -68,20 +97,39 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 	} else if (trade.kind === 'machine') {
 		pool = [...new Set(run.team.flatMap(machineMoves))].map(id => tradeItem(`roguetm${id}`)!);
 	} else {
-		pool = content.items.filter(item => item.kind === 'candy' && item.amount! <=
-		(run.floor < 40 ? 800 : run.floor < 80 ? 3000 : run.floor < 120 ? 10000 : 30000)).map(item => ({ ...item }));
+		pool = content.items.filter(item => item.kind === 'candy' && CANDY_SHOP[item.id]?.floor <= run.floor)
+			.map(item => ({ ...item }));
 	}
-	while (pool.length && trade.stock.length < 3) {
-		const item = pool.splice(random(pool.length), 1)[0];
-		const price = trade.kind === 'candy' ? Math.max(70, Math.round(item.amount! * 0.42 / 10) * 10) :
-			Math.round(budget * (trade.kind === 'mint' ? 0.6 : 0.75) / 50) * 50;
-		const adjusted = Math.ceil(price * 1.25 / 10) * 10;
+	const limit = trade.kind === 'machine' ? run.floor < 80 ? 6 : 8 : trade.kind === 'candy' ? 5 : 3;
+	while (pool.length && trade.stock.length < limit) {
+		let index = random(pool.length);
+		if (trade.kind === 'machine') {
+			let weighted = pool.map((item, i) => ({ i, weight: machineWeight(item.move!, run) }));
+			const practical = weighted.filter(entry => entry.weight >= 6);
+			if (trade.stock.length < 4 && practical.length) weighted = practical;
+			let roll = random(weighted.reduce((sum, entry) => sum + entry.weight, 0));
+			index = weighted.find(entry => { roll -= entry.weight; return roll < 0; })!.i;
+		}
+		const item = pool.splice(index, 1)[0];
+		const price = Math.round(budget * (trade.kind === 'mint' ? 0.6 : 0.75) / 50) * 50;
+		const adjusted = trade.kind === 'candy' ? CANDY_SHOP[item.id].price : Math.ceil(price * 1.25 / 10) * 10;
 		trade.stock.push({ ...item, price: Math.ceil(adjusted * (run.spirit === 'meowth' ? 1.25 : 1)),
-			shopFloor: 1, remaining: 1 });
+			shopFloor: 1, remaining: trade.kind === 'candy' ? CANDY_SHOP[item.id].stock : 1 });
 	}
 }
 
 export function shopStock(content: RogueContent, run?: RogueRun): RogueItem[] {
 	if (run?.node?.kind === 'trade') return run.node.trade?.stock.filter(item => item.remaining > 0) || [];
-	return spiritItems(content, run).filter(item => spiritShopAvailable(item, run?.floor || 1));
+	const stock = spiritItems(content, run).filter(item => spiritShopAvailable(item, run?.floor || 1));
+	// Meowth retains its existing unlimited, premium-priced spirit shop.
+	if (run?.node?.kind === 'rest' && run.floor >= 9 && run.spirit !== 'meowth') {
+		const offer = restCandyOffer(run.floor), item = content.items.find(entry => entry.id === offer.id);
+		if (item) {
+			const candy = { ...item, price: offer.price, shopFloor: 9,
+				remaining: Math.max(0, offer.stock - (run.node.restCandyPurchases?.[item.id] || 0)) };
+			const index = stock.findIndex(entry => entry.id === item.id);
+			if (index >= 0) stock[index] = candy; else stock.push(candy);
+		}
+	}
+	return stock;
 }

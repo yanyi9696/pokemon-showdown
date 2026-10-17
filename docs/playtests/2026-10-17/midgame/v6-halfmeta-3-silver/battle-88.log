@@ -1,0 +1,318 @@
+|t:|1792230339
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L38, M|
+|poke|p1|Skeledirge, L38, M|
+|poke|p1|Swampert, L37, M|
+|poke|p1|Vigoroth, L27, M|
+|poke|p1|Aron, L27, M|
+|poke|p1|Shuckle, L31, F|
+|poke|p2|Staraptor, L45, F|
+|poke|p2|Porygon2, L45|
+|poke|p2|Zoroark-Hisui, L45, M|
+|poke|p2|Dusclops, L45, M|
+|teampreview
+|
+|t:|1792230339
+|start
+|split|p1
+|switch|p1a: Aron|Aron, L27, M|77/77
+|switch|p1a: Aron|Aron, L27, M|100/100
+|split|p2
+|switch|p2a: Staraptor|Staraptor, L45, F|145/145
+|switch|p2a: Staraptor|Staraptor, L45, F|100/100
+|-end|p2a: Staraptor|fantasystats|[silent]
+|-end|p1a: Aron|fantasystats|[silent]
+|-end|p2a: Staraptor|fantasystats|[silent]
+|-end|p1a: Aron|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230340
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L38, M|140/140
+|switch|p1a: Skeledirge|Skeledirge, L38, M|100/100
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|-terastallize|p2a: Staraptor|Normal
+|move|p2a: Staraptor|Knock Off|p1a: Skeledirge
+|-supereffective|p1a: Skeledirge
+|-crit|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|48/140
+|-damage|p1a: Skeledirge|35/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230340
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L31, F|64/64
+|switch|p1a: Shuckle|Shuckle, L31, F|100/100
+|-end|p1a: Shuckle|fantasystats|[silent]
+|move|p2a: Staraptor|Knock Off|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|44/64
+|-damage|p1a: Shuckle|69/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792230341
+|split|p1
+|switch|p1a: Aron|Aron, L27, M|77/77
+|switch|p1a: Aron|Aron, L27, M|100/100
+|-end|p1a: Aron|fantasystats|[silent]
+|move|p2a: Staraptor|Knock Off|p1a: Aron
+|-crit|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|6/77
+|-damage|p1a: Aron|8/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792230342
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L31, F|44/64
+|switch|p1a: Shuckle|Shuckle, L31, F|69/100
+|-end|p1a: Shuckle|fantasystats|[silent]
+|move|p2a: Staraptor|Knock Off|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|23/64
+|-damage|p1a: Shuckle|36/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792230343
+|move|p2a: Staraptor|Knock Off|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|0 fnt
+|-damage|p1a: Shuckle|0 fnt
+|faint|p1a: Shuckle
+|
+|upkeep
+|
+|t:|1792230343
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L38, M|122/122
+|switch|p1a: Venusaur|Venusaur, L38, M|100/100
+|-end|p1a: Venusaur|fantasystats|[silent]
+|turn|6
+|
+|t:|1792230343
+|move|p2a: Staraptor|Knock Off|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|82/122
+|-damage|p1a: Venusaur|68/100
+|move|p1a: Venusaur|Petal Dance|p2a: Staraptor
+|split|p2
+|-damage|p2a: Staraptor|70/145
+|-damage|p2a: Staraptor|49/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792230344
+|move|p2a: Staraptor|Knock Off|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|40/122
+|-damage|p1a: Venusaur|33/100
+|move|p1a: Venusaur|Petal Dance|p2a: Staraptor|[from] lockedmove
+|-crit|p2a: Staraptor
+|split|p2
+|-damage|p2a: Staraptor|0 fnt
+|-damage|p2a: Staraptor|0 fnt
+|faint|p2a: Staraptor
+|
+|upkeep
+|
+|t:|1792230344
+|split|p2
+|switch|p2a: Porygon2|Porygon2, L45|173/173
+|switch|p2a: Porygon2|Porygon2, L45|100/100
+|-end|p2a: Porygon2|fantasystats|[silent]
+|-ability|p2a: Porygon2|Overgrow|[from] ability: Trace|[of] p1a: Venusaur
+|turn|8
+|
+|t:|1792230344
+|move|p1a: Venusaur|Petal Dance|p2a: Porygon2|[from] lockedmove
+|split|p2
+|-damage|p2a: Porygon2|93/173
+|-damage|p2a: Porygon2|54/100
+|-start|p1a: Venusaur|confusion|[fatigue]
+|move|p2a: Porygon2|Tri Attack|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|21/122
+|-damage|p1a: Venusaur|18/100
+|split|p1
+|-damage|p1a: Venusaur|0 fnt
+|-damage|p1a: Venusaur|0 fnt
+|faint|p1a: Venusaur
+|-hitcount|p1: Venusaur|2
+|
+|split|p2
+|-heal|p2a: Porygon2|103/173|[from] item: Leftovers
+|-heal|p2a: Porygon2|60/100|[from] item: Leftovers
+|upkeep
+|
+|t:|1792230344
+|split|p1
+|switch|p1a: Swampert|Swampert, L37, M|134/134
+|switch|p1a: Swampert|Swampert, L37, M|100/100
+|-end|p1a: Swampert|fantasystats|[silent]
+|turn|9
+|
+|t:|1792230345
+|move|p1a: Swampert|Earthquake|p2a: Porygon2
+|split|p2
+|-damage|p2a: Porygon2|64/173
+|-damage|p2a: Porygon2|37/100
+|move|p2a: Porygon2|Tri Attack|p1a: Swampert
+|split|p1
+|-damage|p1a: Swampert|109/134
+|-damage|p1a: Swampert|82/100
+|-status|p1a: Swampert|frz
+|split|p1
+|-damage|p1a: Swampert|85/134 frz
+|-damage|p1a: Swampert|64/100 frz
+|split|p1
+|-damage|p1a: Swampert|61/134 frz
+|-damage|p1a: Swampert|46/100 frz
+|-hitcount|p1a: Swampert|3
+|
+|split|p2
+|-heal|p2a: Porygon2|74/173|[from] item: Leftovers
+|-heal|p2a: Porygon2|43/100|[from] item: Leftovers
+|upkeep
+|turn|10
+|
+|t:|1792230345
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L38, M|48/140
+|switch|p1a: Skeledirge|Skeledirge, L38, M|35/100
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|move|p2a: Porygon2|Tri Attack|p1a: Skeledirge
+|-immune|p1a: Skeledirge
+|
+|split|p2
+|-heal|p2a: Porygon2|84/173|[from] item: Leftovers
+|-heal|p2a: Porygon2|49/100|[from] item: Leftovers
+|upkeep
+|turn|11
+|
+|t:|1792230345
+|move|p1a: Skeledirge|Torch Song|p2a: Porygon2
+|split|p2
+|-damage|p2a: Porygon2|44/173
+|-damage|p2a: Porygon2|26/100
+|-boost|p1a: Skeledirge|spa|1
+|move|p2a: Porygon2|Tri Attack|p1a: Skeledirge
+|-immune|p1a: Skeledirge
+|
+|split|p2
+|-heal|p2a: Porygon2|54/173|[from] item: Leftovers
+|-heal|p2a: Porygon2|32/100|[from] item: Leftovers
+|upkeep
+|turn|12
+|
+|t:|1792230346
+|move|p1a: Skeledirge|Torch Song|p2a: Porygon2
+|split|p2
+|-damage|p2a: Porygon2|0 fnt
+|-damage|p2a: Porygon2|0 fnt
+|-boost|p1a: Skeledirge|spa|1
+|faint|p2a: Porygon2
+|
+|upkeep
+|
+|t:|1792230346
+|split|p2
+|switch|p2a: Dusclops|Dusclops, L45, M|118/118
+|switch|p2a: Dusclops|Dusclops, L45, M|100/100
+|-end|p2a: Dusclops|fantasystats|[silent]
+|turn|13
+|
+|t:|1792230346
+|move|p2a: Dusclops|Bitter Malice|p1a: Skeledirge
+|-supereffective|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|0 fnt
+|-damage|p1a: Skeledirge|0 fnt
+|faint|p1a: Skeledirge
+|
+|upkeep
+|
+|t:|1792230346
+|split|p1
+|switch|p1a: Vigoroth|Vigoroth, L27, M|92/92
+|switch|p1a: Vigoroth|Vigoroth, L27, M|100/100
+|-end|p1a: Vigoroth|fantasystats|[silent]
+|turn|14
+|
+|t:|1792230347
+|move|p2a: Dusclops|Bitter Malice|p1a: Vigoroth
+|-immune|p1a: Vigoroth
+|move|p1a: Vigoroth|Throat Chop|p2a: Dusclops
+|-supereffective|p2a: Dusclops
+|split|p2
+|-damage|p2a: Dusclops|83/118
+|-damage|p2a: Dusclops|71/100
+|-start|p2a: Dusclops|Throat Chop|[silent]
+|replace|p2a: Zoroark|Zoroark-Hisui, L45, M
+|-end|p2a: Zoroark|Illusion
+|-end|p2a: Zoroark|fantasystats|[silent]
+|
+|upkeep
+|turn|15
+|
+|t:|1792230347
+|move|p2a: Zoroark|Flamethrower|p1a: Vigoroth
+|split|p1
+|-damage|p1a: Vigoroth|0 fnt
+|-damage|p1a: Vigoroth|0 fnt
+|faint|p1a: Vigoroth
+|
+|-end|p2a: Zoroark|Throat Chop|[silent]
+|upkeep
+|
+|t:|1792230347
+|split|p1
+|switch|p1a: Swampert|Swampert, L37, M|61/134 frz
+|switch|p1a: Swampert|Swampert, L37, M|46/100 frz
+|-end|p1a: Swampert|fantasystats|[silent]
+|turn|16
+|
+|t:|1792230347
+|move|p2a: Zoroark|Hyper Voice|p1a: Swampert
+|-enditem|p2a: Zoroark|Normal Gem|[from] gem
+|-start|p2a: Zoroark|gemboostNormal|[silent]
+|split|p1
+|-damage|p1a: Swampert|0 fnt
+|-damage|p1a: Swampert|0 fnt
+|faint|p1a: Swampert
+|
+|upkeep
+|
+|t:|1792230347
+|split|p1
+|switch|p1a: Aron|Aron, L27, M|6/77
+|switch|p1a: Aron|Aron, L27, M|8/100
+|-end|p1a: Aron|fantasystats|[silent]
+|turn|17
+|
+|t:|1792230347
+|move|p2a: Zoroark|Hyper Voice|p1a: Aron
+|-resisted|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|0 fnt
+|-damage|p1a: Aron|0 fnt
+|faint|p1a: Aron
+|
+|win|NPC

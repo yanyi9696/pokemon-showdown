@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { Battle } = require('../../dist/sim/battle');
 const { State } = require('../../dist/sim/state');
@@ -83,17 +84,17 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 			const { run, account } = campaign([set('Bulbasaur', 'Overgrow', 50)]);
 			for (const id of order) grant(account, run, id);
 			assert.equal(run.bag.roguewine, 1); assert.equal(run.bag.roguecephalosporin, 1);
-			assert(!b.blessingView(run).owned.find(x => x.id === 'wine').text.includes('×1.5'));
+			assert(!b.blessingView(run).owned.find(x => x.id === 'wine').text.includes('威力永久提升 50%'));
 			const mon = run.team[0]; mon.status = 'brn'; mon.statuses = { brn: {}, psn: {} };
 			for (const id of order) useTonic(account, mon, tonicItems().find(item => item.id === `rogue${id}`));
 			assert.equal(mon.status, ''); assert.equal(mon.statuses, undefined);
 			assert.deepEqual(permanentMemberTypes(mon), ['Grass', 'Ghost']); assert(mon.tonics.poison);
 			assert(account.tonicSecret);
 			assert.throws(() => useTonic(account, mon, tonicItems()[0]), /已经使用过/);
-			assert(b.blessingView(run, account.tonicSecret).owned.find(x => x.id === 'wine').text.includes('×1.5'));
+			assert(b.blessingView(run, account.tonicSecret).owned.find(x => x.id === 'wine').text.includes('威力永久提升 50%'));
 			delete account.run;
 			const texts = rogueCodex(account, 'blessings', true).entries.filter(x => ['wine', 'cephalosporin'].includes(x.id));
-			assert(texts.every(x => x.text.includes('×1.5')));
+			assert(texts.every(x => x.text.includes('威力永久提升 50%')));
 		}
 	});
 	it('keeps tonics and poison eligibility across rebuilding and does not give poison bonus to other species', () => {
@@ -153,7 +154,7 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 	it('requires a real outside-battle selection, applies items exactly once, and persists discovery across adventures', () => {
 		store = new RogueStore(':memory:'); const user = 'tonicplayer', engine = new RogueEngine(store, content, () => 0);
 		const account = () => store.get(user);
-		const cmd = (action, details = {}) => engine.command(user, { action, ...details, id: randomUUID(), revision: account().revision });
+		const cmd = (action, details = {}) => commandAfterOpening(engine, user, { action, ...details, id: randomUUID(), revision: account().revision });
 		cmd('start', { starters: ['bulbasaur'] });
 		store.change(user, saved => {
 			const prepared = campaign(); Object.assign(saved, prepared.account);

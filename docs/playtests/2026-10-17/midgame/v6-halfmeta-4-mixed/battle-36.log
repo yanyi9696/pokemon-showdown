@@ -1,0 +1,128 @@
+|t:|1792230269
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L14, M|
+|poke|p1|Fuecoco, L14, M|
+|poke|p1|Bulbasaur, L14, M|
+|poke|p1|Grubbin, L11, F|
+|poke|p1|Nidoran-M, L12, M|
+|poke|p1|Shinx, L12, F|
+|poke|p2|Mimikyu, L15, F|
+|poke|p2|Gastly, L15, M|
+|poke|p2|Sandygast, L15, F|
+|teampreview
+|
+|t:|1792230269
+|start
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L14, M|44/44
+|switch|p1a: Bulbasaur|Bulbasaur, L14, M|100/100
+|split|p2
+|switch|p2a: Mimikyu|Mimikyu, L15, F|55/55
+|switch|p2a: Mimikyu|Mimikyu, L15, F|100/100
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230270
+|-terastallize|p2a: Mimikyu|Ghost
+|move|p2a: Mimikyu|Shadow Claw|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|split|p2
+|-damage|p2a: Mimikyu|50/55|[from] item: Life Orb
+|-damage|p2a: Mimikyu|91/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792230270
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L14, M|50/50
+|switch|p1a: Fuecoco|Fuecoco, L14, M|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|2
+|
+|t:|1792230270
+|move|p2a: Mimikyu|Shadow Claw|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|3/50
+|-damage|p1a: Fuecoco|6/100
+|split|p2
+|-damage|p2a: Mimikyu|45/55|[from] item: Life Orb
+|-damage|p2a: Mimikyu|82/100|[from] item: Life Orb
+|move|p1a: Fuecoco|Ember|p2a: Mimikyu
+|-activate|p2a: Mimikyu|ability: Disguise
+|split|p2
+|-damage|p2a: Mimikyu|45/55
+|-damage|p2a: Mimikyu|82/100
+|detailschange|p2a: Mimikyu|Mimikyu-Busted, L15, F, tera:Ghost
+|-start|p2a: Mimikyu|typechange|Ghost/Fairy|[silent]
+|split|p2
+|-damage|p2a: Mimikyu|39/55|[from] pokemon: Mimikyu-Busted
+|-damage|p2a: Mimikyu|71/100|[from] pokemon: Mimikyu-Busted
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|
+|upkeep
+|turn|3
+|
+|t:|1792230270
+|split|p1
+|switch|p1a: Popplio|Popplio, L14, M|45/45
+|switch|p1a: Popplio|Popplio, L14, M|100/100
+|-end|p1a: Popplio|fantasystats|[silent]
+|move|p2a: Mimikyu|Shadow Claw|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|14/45
+|-damage|p1a: Popplio|32/100
+|split|p2
+|-damage|p2a: Mimikyu|34/55|[from] item: Life Orb
+|-damage|p2a: Mimikyu|62/100|[from] item: Life Orb
+|
+|upkeep
+|turn|4
+|
+|t:|1792230270
+|move|p1a: Popplio|Aqua Jet|p2a: Mimikyu
+|split|p2
+|-damage|p2a: Mimikyu|23/55
+|-damage|p2a: Mimikyu|42/100
+|move|p2a: Mimikyu|Shadow Claw|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|0 fnt
+|-damage|p1a: Popplio|0 fnt
+|faint|p1a: Popplio
+|split|p2
+|-damage|p2a: Mimikyu|18/55|[from] item: Life Orb
+|-damage|p2a: Mimikyu|33/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792230270
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L14, M|3/50
+|switch|p1a: Fuecoco|Fuecoco, L14, M|6/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|5
+|
+|t:|1792230270
+|move|p2a: Mimikyu|Shadow Claw|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|split|p2
+|-damage|p2a: Mimikyu|13/55|[from] item: Life Orb
+|-damage|p2a: Mimikyu|24/100|[from] item: Life Orb
+|
+|win|NPC

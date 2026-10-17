@@ -1,0 +1,56 @@
+|t:|1792221637
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|1
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p2|Tyrunt-Fantasy, L8, M|
+|teampreview
+|
+|t:|1792221637
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|37/37
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|split|p2
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L8, M|29/29
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L8, M|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|turn|1
+|
+|t:|1792221637
+|-terastallize|p2a: Tyrunt|Rock
+|move|p1a: Fuecoco|Round|p2a: Tyrunt
+|-resisted|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|24/29
+|-damage|p2a: Tyrunt|83/100
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|9/37
+|-damage|p1a: Fuecoco|25/100
+|-unboost|p1a: Fuecoco|spe|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792221637
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|win|NPC

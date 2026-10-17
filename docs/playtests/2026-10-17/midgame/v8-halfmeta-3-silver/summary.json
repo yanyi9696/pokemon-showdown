@@ -1,0 +1,7211 @@
+{
+  "profile": "halfmeta",
+  "seed": 3,
+  "starter": "bulbasaur",
+  "starters": [
+    "bulbasaur",
+    "fuecoco",
+    "mudkip"
+  ],
+  "startingSlots": 3,
+  "desiredTier": "silver",
+  "driverVersion": 8,
+  "halfMeta": true,
+  "battles": [
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Fuecoco",
+          "level": 6
+        },
+        {
+          "species": "Mudkip",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Milcery",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Fuecoco",
+          "level": 7
+        },
+        {
+          "species": "Mudkip",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Fuecoco",
+          "level": 7
+        },
+        {
+          "species": "Mudkip",
+          "level": 5
+        },
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Igglybuff",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Fuecoco",
+          "level": 7
+        },
+        {
+          "species": "Mudkip",
+          "level": 5
+        },
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Koffing",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Fuecoco",
+          "level": 7
+        },
+        {
+          "species": "Mudkip",
+          "level": 6
+        },
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Croagunk",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Fuecoco",
+          "level": 7
+        },
+        {
+          "species": "Mudkip",
+          "level": 6
+        },
+        {
+          "species": "Ralts",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wooper-Paldea",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 6
+        },
+        {
+          "species": "Ralts",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pidgey",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Ralts",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Turtwig",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Ralts",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Chespin",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Ralts",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Bonsly",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1450,
+      "moneyAfter": 1450,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Ralts",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Aron",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1450,
+      "moneyAfter": 1450,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Ralts",
+          "level": 5
+        },
+        {
+          "species": "Aron",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Shuckle",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1450,
+      "moneyAfter": 1450,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "trainer",
+      "name": "旅行训练家",
+      "won": true,
+      "escaped": false,
+      "turns": 11,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Ralts",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 4
+        },
+        {
+          "species": "Shuckle",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rookidee",
+          "level": 9
+        },
+        {
+          "species": "Metapod",
+          "level": 9
+        },
+        {
+          "species": "Pidgey",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1450,
+      "moneyAfter": 1450,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "event",
+      "name": "斗蛐蛐！",
+      "won": true,
+      "escaped": false,
+      "turns": 7,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Shuckle",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Lilligant",
+          "level": 4
+        },
+        {
+          "species": "Bidoof",
+          "level": 4
+        },
+        {
+          "species": "Bellsprout",
+          "level": 4
+        },
+        {
+          "species": "Zigzagoon",
+          "level": 4
+        },
+        {
+          "species": "Fidough",
+          "level": 4
+        },
+        {
+          "species": "Trevenant",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 2556,
+      "moneyAfter": 2684,
+      "rejected": 0
+    },
+    {
+      "floor": 10,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Ralts",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Shuckle",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tyrunt-Fantasy",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 1364,
+      "moneyAfter": 1364,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Ralts",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Shuckle",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Delibird",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1364,
+      "moneyAfter": 1364,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 8
+        },
+        {
+          "species": "Shuckle",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cubchoo",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1364,
+      "moneyAfter": 1364,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 8
+        },
+        {
+          "species": "Shuckle",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Snom",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1364,
+      "moneyAfter": 1364,
+      "rejected": 0
+    },
+    {
+      "floor": 12,
+      "kind": "event",
+      "name": "谜之宝可梦球",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 8
+        },
+        {
+          "species": "Shuckle",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mankey",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1364,
+      "moneyAfter": 1405,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Shuckle",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pikachu",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 1215,
+      "moneyAfter": 1215,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Shuckle",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Klink",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 1215,
+      "moneyAfter": 1215,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Shuckle",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Blitzle",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 1215,
+      "moneyAfter": 1215,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Shuckle",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Horsea",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 1215,
+      "moneyAfter": 1215,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Shuckle",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Finneon",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 1215,
+      "moneyAfter": 1215,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Ralts",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Shuckle",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ducklett",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 1215,
+      "moneyAfter": 1215,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Ralts",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Shuckle",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tirtouga",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1389,
+      "moneyAfter": 1389,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 15
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Ralts",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Shuckle",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Maractus",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1389,
+      "moneyAfter": 1389,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 15
+        },
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Ralts",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Shuckle",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Scraggy",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1389,
+      "moneyAfter": 1389,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 15
+        },
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Ralts",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Shuckle",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Plusle",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1389,
+      "moneyAfter": 1389,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 15
+        },
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Ralts",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Shuckle",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Toxel",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1389,
+      "moneyAfter": 1389,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 15
+        },
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Ralts",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Shuckle",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pachirisu",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 1389,
+      "moneyAfter": 1389,
+      "rejected": 0
+    },
+    {
+      "floor": 20,
+      "kind": "boss",
+      "name": "道馆 · 紫罗兰（虫）",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 16
+        },
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Ralts",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Shuckle",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Combee",
+          "level": 15
+        },
+        {
+          "species": "Nincada",
+          "level": 15
+        },
+        {
+          "species": "Nymble",
+          "level": 15
+        }
+      ],
+      "moneyBefore": 5009,
+      "moneyAfter": 5009,
+      "rejected": 0
+    },
+    {
+      "floor": 21,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 16
+        },
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Ralts",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 12
+        },
+        {
+          "species": "Shuckle",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Exeggcute",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 21,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 16
+        },
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Ralts",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 12
+        },
+        {
+          "species": "Shuckle",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Dedenne",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 21,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Ralts",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Azurill",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rockruff",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sandile",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Timburr",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Barboach",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Hippopotas",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Trapinch",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 26,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Diglett-Alola",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 26,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 8,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Makuhita",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 26,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Charcadet",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tirtouga",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Baltoy",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Kabuto",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 6609,
+      "moneyAfter": 6609,
+      "rejected": 0
+    },
+    {
+      "floor": 30,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 7,
+      "faints": 1,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 19
+        },
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Simipour-Fantasy",
+          "level": 20
+        }
+      ],
+      "moneyBefore": 469,
+      "moneyAfter": 469,
+      "rejected": 0
+    },
+    {
+      "floor": 34,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Misdreavus",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 34,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nickit",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 34,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Poltchageist",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 35,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 19
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spritzee",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 35,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 19
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Igglybuff",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 35,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 19
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cleffa",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 19
+        },
+        {
+          "species": "Ralts",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Shuckle",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Beautifly",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Marshtomp",
+          "level": 20
+        },
+        {
+          "species": "Ralts",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 16
+        },
+        {
+          "species": "Shuckle",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Corvisquire",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 22
+        },
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Marshtomp",
+          "level": 20
+        },
+        {
+          "species": "Ralts",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 16
+        },
+        {
+          "species": "Shuckle",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Beedrill",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 38,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 22
+        },
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Marshtomp",
+          "level": 20
+        },
+        {
+          "species": "Ralts",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 17
+        },
+        {
+          "species": "Shuckle",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Trapinch",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 38,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 22
+        },
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Marshtomp",
+          "level": 20
+        },
+        {
+          "species": "Ralts",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 17
+        },
+        {
+          "species": "Shuckle",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Larvitar",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 38,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 22
+        },
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Marshtomp",
+          "level": 21
+        },
+        {
+          "species": "Ralts",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 17
+        },
+        {
+          "species": "Shuckle",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tirtouga",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1181,
+      "moneyAfter": 1181,
+      "rejected": 0
+    },
+    {
+      "floor": 40,
+      "kind": "boss",
+      "name": "道馆 · 小刚（岩石）",
+      "won": true,
+      "escaped": false,
+      "turns": 12,
+      "faints": 1,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Marshtomp",
+          "level": 21
+        },
+        {
+          "species": "Ralts",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 17
+        },
+        {
+          "species": "Shuckle",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Onix",
+          "level": 25
+        },
+        {
+          "species": "Nacli",
+          "level": 25
+        },
+        {
+          "species": "Aerodactyl",
+          "level": 25
+        },
+        {
+          "species": "Pupitar",
+          "level": 25
+        }
+      ],
+      "moneyBefore": 731,
+      "moneyAfter": 731,
+      "rejected": 0
+    },
+    {
+      "floor": 41,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23
+        },
+        {
+          "species": "Ralts",
+          "level": 19
+        },
+        {
+          "species": "Aron",
+          "level": 19
+        },
+        {
+          "species": "Shuckle",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Frogadier",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3131,
+      "moneyAfter": 3131,
+      "rejected": 0
+    },
+    {
+      "floor": 41,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23
+        },
+        {
+          "species": "Ralts",
+          "level": 19
+        },
+        {
+          "species": "Aron",
+          "level": 19
+        },
+        {
+          "species": "Shuckle",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gyarados",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3131,
+      "moneyAfter": 3131,
+      "rejected": 0
+    },
+    {
+      "floor": 41,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23
+        },
+        {
+          "species": "Ralts",
+          "level": 19
+        },
+        {
+          "species": "Aron",
+          "level": 20
+        },
+        {
+          "species": "Shuckle",
+          "level": 24
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tentacool",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3131,
+      "moneyAfter": 3131,
+      "rejected": 0
+    },
+    {
+      "floor": 42,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23
+        },
+        {
+          "species": "Ralts",
+          "level": 19
+        },
+        {
+          "species": "Aron",
+          "level": 20
+        },
+        {
+          "species": "Shuckle",
+          "level": 24
+        }
+      ],
+      "foe": [
+        {
+          "species": "Electrode-Hisui",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3131,
+      "moneyAfter": 3131,
+      "rejected": 0
+    },
+    {
+      "floor": 42,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 24
+        },
+        {
+          "species": "Kirlia",
+          "level": 20
+        },
+        {
+          "species": "Aron",
+          "level": 20
+        },
+        {
+          "species": "Shuckle",
+          "level": 25
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wattrel",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3131,
+      "moneyAfter": 3131,
+      "rejected": 0
+    },
+    {
+      "floor": 42,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 24
+        },
+        {
+          "species": "Kirlia",
+          "level": 20
+        },
+        {
+          "species": "Aron",
+          "level": 20
+        },
+        {
+          "species": "Shuckle",
+          "level": 25
+        }
+      ],
+      "foe": [
+        {
+          "species": "Dedenne",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3131,
+      "moneyAfter": 3131,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 26
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 24
+        },
+        {
+          "species": "Kirlia",
+          "level": 20
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 25
+        }
+      ],
+      "foe": [
+        {
+          "species": "Corsola-Galar",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3955,
+      "moneyAfter": 3955,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 26
+        },
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Marshtomp",
+          "level": 24
+        },
+        {
+          "species": "Kirlia",
+          "level": 20
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 26
+        }
+      ],
+      "foe": [
+        {
+          "species": "Duskull",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3955,
+      "moneyAfter": 3955,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 26
+        },
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Marshtomp",
+          "level": 24
+        },
+        {
+          "species": "Kirlia",
+          "level": 20
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 26
+        }
+      ],
+      "foe": [
+        {
+          "species": "Bramblin",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3955,
+      "moneyAfter": 3955,
+      "rejected": 0
+    },
+    {
+      "floor": 50,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 8,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Marshtomp",
+          "level": 25
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 28
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ampharos-Fantasy",
+          "level": 30
+        }
+      ],
+      "moneyBefore": 543,
+      "moneyAfter": 543,
+      "rejected": 0
+    },
+    {
+      "floor": 51,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Marshtomp",
+          "level": 25
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 22
+        },
+        {
+          "species": "Shuckle",
+          "level": 28
+        }
+      ],
+      "foe": [
+        {
+          "species": "Salandit",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 51,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Marshtomp",
+          "level": 26
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 22
+        },
+        {
+          "species": "Shuckle",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cranidos",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 51,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Marshtomp",
+          "level": 26
+        },
+        {
+          "species": "Kirlia",
+          "level": 22
+        },
+        {
+          "species": "Aron",
+          "level": 22
+        },
+        {
+          "species": "Shuckle",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Salandit",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 52,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 13,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Marshtomp",
+          "level": 26
+        },
+        {
+          "species": "Kirlia",
+          "level": 22
+        },
+        {
+          "species": "Aron",
+          "level": 22
+        },
+        {
+          "species": "Shuckle",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sinistcha",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 52,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 29
+        },
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Marshtomp",
+          "level": 26
+        },
+        {
+          "species": "Kirlia",
+          "level": 22
+        },
+        {
+          "species": "Aron",
+          "level": 22
+        },
+        {
+          "species": "Shuckle",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Polteageist",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 52,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 6,
+      "faints": 1,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 29
+        },
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Marshtomp",
+          "level": 27
+        },
+        {
+          "species": "Kirlia",
+          "level": 22
+        },
+        {
+          "species": "Aron",
+          "level": 23
+        },
+        {
+          "species": "Shuckle",
+          "level": 30
+        }
+      ],
+      "foe": [
+        {
+          "species": "Haunter",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 53,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 29
+        },
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Marshtomp",
+          "level": 27
+        },
+        {
+          "species": "Kirlia",
+          "level": 23
+        },
+        {
+          "species": "Aron",
+          "level": 23
+        },
+        {
+          "species": "Shuckle",
+          "level": 30
+        }
+      ],
+      "foe": [
+        {
+          "species": "Carnivine",
+          "level": 27
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 53,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 6,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 29
+        },
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Marshtomp",
+          "level": 27
+        },
+        {
+          "species": "Kirlia",
+          "level": 23
+        },
+        {
+          "species": "Aron",
+          "level": 23
+        },
+        {
+          "species": "Shuckle",
+          "level": 30
+        }
+      ],
+      "foe": [
+        {
+          "species": "Steenee",
+          "level": 27
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 53,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 6,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 30
+        },
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Marshtomp",
+          "level": 28
+        },
+        {
+          "species": "Kirlia",
+          "level": 23
+        },
+        {
+          "species": "Aron",
+          "level": 23
+        },
+        {
+          "species": "Shuckle",
+          "level": 31
+        }
+      ],
+      "foe": [
+        {
+          "species": "Lombre",
+          "level": 27
+        }
+      ],
+      "moneyBefore": 8543,
+      "moneyAfter": 8543,
+      "rejected": 0
+    },
+    {
+      "floor": 55,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 7,
+      "faints": 1,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 30
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 28
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 31
+        }
+      ],
+      "foe": [
+        {
+          "species": "Honchkrow",
+          "level": 28
+        }
+      ],
+      "moneyBefore": 9075,
+      "moneyAfter": 9075,
+      "rejected": 0
+    },
+    {
+      "floor": 55,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 31
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 28
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 31
+        }
+      ],
+      "foe": [
+        {
+          "species": "Haunter",
+          "level": 28
+        }
+      ],
+      "moneyBefore": 9075,
+      "moneyAfter": 9075,
+      "rejected": 0
+    },
+    {
+      "floor": 55,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 1,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 31
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 29
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 31
+        }
+      ],
+      "foe": [
+        {
+          "species": "Corsola-Galar",
+          "level": 28
+        }
+      ],
+      "moneyBefore": 9075,
+      "moneyAfter": 9075,
+      "rejected": 0
+    },
+    {
+      "floor": 60,
+      "kind": "boss",
+      "name": "道馆 · 露璃娜（水）",
+      "won": false,
+      "escaped": false,
+      "turns": 15,
+      "faints": 6,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Venusaur",
+          "level": 33
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 29
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 33
+        }
+      ],
+      "foe": [
+        {
+          "species": "Drednaw",
+          "level": 35
+        },
+        {
+          "species": "Golisopod",
+          "level": 35
+        },
+        {
+          "species": "Milotic",
+          "level": 35
+        },
+        {
+          "species": "Slowbro",
+          "level": 35
+        }
+      ],
+      "moneyBefore": 4473,
+      "moneyAfter": 4473,
+      "rejected": 0
+    },
+    {
+      "floor": 60,
+      "kind": "boss",
+      "name": "道馆 · 露璃娜（水）",
+      "won": false,
+      "escaped": false,
+      "turns": 5,
+      "faints": 3,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Venusaur",
+          "level": 33
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 29
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 33
+        }
+      ],
+      "foe": [
+        {
+          "species": "Drednaw",
+          "level": 35
+        },
+        {
+          "species": "Golisopod",
+          "level": 35
+        },
+        {
+          "species": "Milotic",
+          "level": 35
+        },
+        {
+          "species": "Slowbro",
+          "level": 35
+        }
+      ],
+      "moneyBefore": 4473,
+      "moneyAfter": 4473,
+      "rescue": {
+        "cost": 4500,
+        "paid": false
+      },
+      "rejected": 0
+    }
+  ],
+  "purchases": [
+    {
+      "floor": 9,
+      "action": "heal",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 19,
+      "action": "heal",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "heal",
+      "coins": 300
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 39,
+      "action": "heal",
+      "coins": 350
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 49,
+      "action": "heal",
+      "coins": 400
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 59,
+      "action": "heal",
+      "coins": 450
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "fullheal",
+      "coins": 600
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "fullheal",
+      "coins": 600
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "fullheal",
+      "coins": 600
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    }
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 5
+        },
+        {
+          "species": "Fuecoco",
+          "level": 5
+        },
+        {
+          "species": "Mudkip",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3
+      }
+    },
+    {
+      "floor": 2,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Fuecoco",
+          "level": 7
+        },
+        {
+          "species": "Mudkip",
+          "level": 5
+        },
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 9,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 3,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 6
+        },
+        {
+          "species": "Ralts",
+          "level": 4
+        }
+      ],
+      "bag": {
+        "pokeball": 9,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6
+      }
+    },
+    {
+      "floor": 4,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Ralts",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 9,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 9
+      }
+    },
+    {
+      "floor": 5,
+      "money": 1450,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Ralts",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 9,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 13
+      }
+    },
+    {
+      "floor": 6,
+      "money": 1450,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Ralts",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 4
+        },
+        {
+          "species": "Shuckle",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 5,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 15,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 7,
+      "money": 2400,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Shuckle",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 5,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 5,
+        "roguecephalosporin": 1,
+        "tinymushroom": 15,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 8,
+      "money": 2556,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Shuckle",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 4,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 1,
+        "roguecephalosporin": 1,
+        "tinymushroom": 15,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 9,
+      "money": 2834,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Ralts",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Shuckle",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 18,
+        "prettyfeather": 1,
+        "burnheal": 1
+      }
+    },
+    {
+      "floor": 10,
+      "money": 1364,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Ralts",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Shuckle",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "burnheal": 1
+      }
+    },
+    {
+      "floor": 11,
+      "money": 1364,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Ralts",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Shuckle",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "burnheal": 1
+      }
+    },
+    {
+      "floor": 12,
+      "money": 1364,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 8
+        },
+        {
+          "species": "Shuckle",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 4,
+        "prettyfeather": 0,
+        "burnheal": 1
+      }
+    },
+    {
+      "floor": 13,
+      "money": 1605,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Shuckle",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 5,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 1
+      }
+    },
+    {
+      "floor": 14,
+      "money": 1215,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Shuckle",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 5,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 1
+      }
+    },
+    {
+      "floor": 15,
+      "money": 1215,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Ralts",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Shuckle",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 1
+      }
+    },
+    {
+      "floor": 16,
+      "money": 1215,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Ralts",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Shuckle",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 9,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 1
+      }
+    },
+    {
+      "floor": 17,
+      "money": 1389,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Ralts",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Shuckle",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 9,
+        "prettyfeather": 2,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 18,
+      "money": 1389,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 15
+        },
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Ralts",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Shuckle",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 12,
+        "prettyfeather": 2,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 19,
+      "money": 1389,
+      "team": [
+        {
+          "species": "Bulbasaur",
+          "level": 15
+        },
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Ralts",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Shuckle",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 13,
+        "prettyfeather": 3,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 1,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 20,
+      "money": 5009,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 16
+        },
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Ralts",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Shuckle",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 21,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 16
+        },
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Ralts",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 12
+        },
+        {
+          "species": "Shuckle",
+          "level": 14
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 22,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 1,
+        "prettyfeather": 2,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 23,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 3,
+        "prettyfeather": 3,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 24,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 25,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 26,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 13
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Shuckle",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 27,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Marshtomp",
+          "level": 17
+        },
+        {
+          "species": "Ralts",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 8,
+        "prettyfeather": 4,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 28,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 2,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 9,
+        "prettyfeather": 6,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 29,
+      "money": 6609,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 1,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 9,
+        "prettyfeather": 6,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 1,
+        "pearl": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 30,
+      "money": 469,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 19
+        },
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 5
+      }
+    },
+    {
+      "floor": 31,
+      "money": 469,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 19
+        },
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "burnheal": 2,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 5
+      }
+    },
+    {
+      "floor": 32,
+      "money": 817,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 19
+        },
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 3,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 6,
+        "roguecephalosporin": 1,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 4
+      }
+    },
+    {
+      "floor": 33,
+      "money": 817,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 3,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 4
+      }
+    },
+    {
+      "floor": 34,
+      "money": 1181,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Marshtomp",
+          "level": 18
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 4,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 7,
+        "roguecephalosporin": 1,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 4
+      }
+    },
+    {
+      "floor": 35,
+      "money": 1181,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 19
+        },
+        {
+          "species": "Ralts",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Shuckle",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 4,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 2,
+        "prettyfeather": 1,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 4,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 36,
+      "money": 1181,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 19
+        },
+        {
+          "species": "Ralts",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Shuckle",
+          "level": 20
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 3,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 5,
+        "prettyfeather": 1,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 4,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 37,
+      "money": 1181,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Marshtomp",
+          "level": 19
+        },
+        {
+          "species": "Ralts",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Shuckle",
+          "level": 20
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 2,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 5,
+        "prettyfeather": 1,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 4,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 38,
+      "money": 1181,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 22
+        },
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Marshtomp",
+          "level": 20
+        },
+        {
+          "species": "Ralts",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 17
+        },
+        {
+          "species": "Shuckle",
+          "level": 22
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 2,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 4,
+        "stardust": 1,
+        "starpiece": 1
+      }
+    },
+    {
+      "floor": 39,
+      "money": 1181,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 22
+        },
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Marshtomp",
+          "level": 21
+        },
+        {
+          "species": "Ralts",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 17
+        },
+        {
+          "species": "Shuckle",
+          "level": 22
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 8,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 7,
+        "pearl": 1,
+        "bigmushroom": 0,
+        "superpotion": 3,
+        "stardust": 1,
+        "starpiece": 1
+      }
+    },
+    {
+      "floor": 40,
+      "money": 731,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Marshtomp",
+          "level": 21
+        },
+        {
+          "species": "Ralts",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 17
+        },
+        {
+          "species": "Shuckle",
+          "level": 22
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 10,
+        "stardust": 0,
+        "starpiece": 0
+      }
+    },
+    {
+      "floor": 41,
+      "money": 3131,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23
+        },
+        {
+          "species": "Ralts",
+          "level": 19
+        },
+        {
+          "species": "Aron",
+          "level": 19
+        },
+        {
+          "species": "Shuckle",
+          "level": 23
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 10,
+        "stardust": 0,
+        "starpiece": 0
+      }
+    },
+    {
+      "floor": 42,
+      "money": 3131,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23
+        },
+        {
+          "species": "Ralts",
+          "level": 19
+        },
+        {
+          "species": "Aron",
+          "level": 20
+        },
+        {
+          "species": "Shuckle",
+          "level": 24
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 2,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 2,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 1
+      }
+    },
+    {
+      "floor": 43,
+      "money": 3131,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 24
+        },
+        {
+          "species": "Kirlia",
+          "level": 20
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 25
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 3,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 0,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 1
+      }
+    },
+    {
+      "floor": 44,
+      "money": 3575,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 24
+        },
+        {
+          "species": "Kirlia",
+          "level": 20
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 25
+        }
+      ],
+      "bag": {
+        "pokeball": 16,
+        "potion": 1,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 3,
+        "roguecephalosporin": 1,
+        "tinymushroom": 3,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 0,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 1,
+        "expcandys": 1
+      }
+    },
+    {
+      "floor": 45,
+      "money": 3955,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 26
+        },
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Marshtomp",
+          "level": 24
+        },
+        {
+          "species": "Kirlia",
+          "level": 20
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 25
+        }
+      ],
+      "bag": {
+        "pokeball": 16,
+        "potion": 1,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 3,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 1,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 0,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 1,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 46,
+      "money": 3955,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 26
+        },
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Marshtomp",
+          "level": 25
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 26
+        }
+      ],
+      "bag": {
+        "pokeball": 16,
+        "potion": 0,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 0,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 1,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 47,
+      "money": 4423,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 26
+        },
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Marshtomp",
+          "level": 25
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 26
+        }
+      ],
+      "bag": {
+        "pokeball": 18,
+        "potion": 1,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 5,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 0,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 1,
+        "expcandys": 1,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 48,
+      "money": 4899,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 27
+        },
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Marshtomp",
+          "level": 25
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 26
+        }
+      ],
+      "bag": {
+        "pokeball": 20,
+        "potion": 1,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 6,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 0,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 1,
+        "expcandys": 1,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 49,
+      "money": 5383,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 27
+        },
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Marshtomp",
+          "level": 25
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 27
+        }
+      ],
+      "bag": {
+        "pokeball": 22,
+        "potion": 1,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 6,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 0,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 1,
+        "expcandys": 1,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 50,
+      "money": 543,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Marshtomp",
+          "level": 25
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 21
+        },
+        {
+          "species": "Shuckle",
+          "level": 28
+        }
+      ],
+      "bag": {
+        "pokeball": 22,
+        "potion": 1,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 10,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 51,
+      "money": 8543,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Marshtomp",
+          "level": 25
+        },
+        {
+          "species": "Kirlia",
+          "level": 21
+        },
+        {
+          "species": "Aron",
+          "level": 22
+        },
+        {
+          "species": "Shuckle",
+          "level": 28
+        }
+      ],
+      "bag": {
+        "pokeball": 22,
+        "potion": 1,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 1,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 10,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 52,
+      "money": 8543,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Marshtomp",
+          "level": 26
+        },
+        {
+          "species": "Kirlia",
+          "level": 22
+        },
+        {
+          "species": "Aron",
+          "level": 22
+        },
+        {
+          "species": "Shuckle",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 22,
+        "potion": 1,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 2,
+        "prettyfeather": 1,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 8,
+        "stardust": 1,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 53,
+      "money": 8543,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 29
+        },
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Marshtomp",
+          "level": 27
+        },
+        {
+          "species": "Kirlia",
+          "level": 23
+        },
+        {
+          "species": "Aron",
+          "level": 23
+        },
+        {
+          "species": "Shuckle",
+          "level": 30
+        }
+      ],
+      "bag": {
+        "pokeball": 22,
+        "potion": 0,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 4,
+        "prettyfeather": 2,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 7,
+        "stardust": 1,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 54,
+      "money": 8543,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 30
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 28
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 31
+        }
+      ],
+      "bag": {
+        "pokeball": 22,
+        "potion": 0,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 2,
+        "stardust": 1,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 55,
+      "money": 9075,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 30
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 28
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 31
+        }
+      ],
+      "bag": {
+        "pokeball": 24,
+        "potion": 1,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 2,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 1,
+        "stardust": 1,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 2,
+        "musclefeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 56,
+      "money": 9075,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 31
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 29
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 32
+        }
+      ],
+      "bag": {
+        "pokeball": 24,
+        "potion": 0,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 1,
+        "superpotion": 0,
+        "stardust": 2,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0,
+        "bigpearl": 1
+      }
+    },
+    {
+      "floor": 57,
+      "money": 9623,
+      "team": [
+        {
+          "species": "Ivysaur",
+          "level": 31
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 29
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 32
+        }
+      ],
+      "bag": {
+        "pokeball": 26,
+        "potion": 1,
+        "revive": 0,
+        "ether": 6,
+        "expcandyxs": 3,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 1,
+        "superpotion": 0,
+        "stardust": 2,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 2,
+        "musclefeather": 1,
+        "oranberry": 0,
+        "bigpearl": 1
+      }
+    },
+    {
+      "floor": 58,
+      "money": 10179,
+      "team": [
+        {
+          "species": "Venusaur",
+          "level": 32
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 29
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 32
+        }
+      ],
+      "bag": {
+        "pokeball": 28,
+        "potion": 1,
+        "revive": 0,
+        "ether": 6,
+        "expcandyxs": 4,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 1,
+        "superpotion": 0,
+        "stardust": 2,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 2,
+        "musclefeather": 1,
+        "oranberry": 0,
+        "bigpearl": 1
+      }
+    },
+    {
+      "floor": 59,
+      "money": 10743,
+      "team": [
+        {
+          "species": "Venusaur",
+          "level": 33
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 29
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 32
+        }
+      ],
+      "bag": {
+        "pokeball": 30,
+        "potion": 1,
+        "revive": 0,
+        "ether": 6,
+        "expcandyxs": 5,
+        "roguecephalosporin": 1,
+        "tinymushroom": 6,
+        "prettyfeather": 3,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 1,
+        "superpotion": 0,
+        "stardust": 2,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 2,
+        "musclefeather": 1,
+        "oranberry": 0,
+        "bigpearl": 1
+      }
+    },
+    {
+      "floor": 60,
+      "money": 4473,
+      "team": [
+        {
+          "species": "Venusaur",
+          "level": 33
+        },
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Marshtomp",
+          "level": 29
+        },
+        {
+          "species": "Kirlia",
+          "level": 24
+        },
+        {
+          "species": "Aron",
+          "level": 24
+        },
+        {
+          "species": "Shuckle",
+          "level": 33
+        }
+      ],
+      "bag": {
+        "pokeball": 30,
+        "potion": 1,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "roguecephalosporin": 1,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "burnheal": 1,
+        "hyperpotion": 0,
+        "greatball": 8,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "superpotion": 10,
+        "stardust": 0,
+        "starpiece": 0,
+        "nugget": 0,
+        "expcandys": 0,
+        "musclefeather": 1,
+        "oranberry": 0,
+        "bigpearl": 0,
+        "fullheal": 3
+      }
+    }
+  ],
+  "choices": [
+    {
+      "floor": 1,
+      "blessing": "cephalosporin",
+      "tier": "silver"
+    },
+    {
+      "floor": 50,
+      "blessing": "money",
+      "tier": "silver"
+    }
+  ],
+  "issues": [
+    {
+      "floor": 60,
+      "reason": "no-living-member-no-revive",
+      "money": 4473
+    }
+  ],
+  "lastFloor": 60,
+  "phase": "ready"
+}

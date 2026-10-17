@@ -5,8 +5,8 @@ import type { RogueRun, RogueAccount, RogueCommand, RogueInventory } from './typ
 import { rebuildMember } from './progression';
 import { rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 import { startCard } from './story';
-import { blessing, blessingTitle, type BlessingEffects } from '../../sim/rogue-blessing-data';
-import { tonicDescription } from '../../sim/rogue-blessing-permanent';
+import { blessing, type BlessingEffects } from '../../sim/rogue-blessing-data';
+import { blessingDisplay } from './blessing-text';
 
 export interface RogueClearCard {
 	version: 1;
@@ -48,6 +48,10 @@ export function rogueRulesVersion() {
 	return fingerprint;
 }
 export function recordClear(account: RogueAccount, run: RogueRun) {
+	if (run.floor === 200 && run.phase === 'complete') {
+		if (run.spirit) account.unlockedSpirits = [...new Set([...account.unlockedSpirits || [], run.spirit])];
+		else account.spiritUnlocked = true;
+	}
 	if (run.clearRecorded || !run.owner) return;
 	run.clearRecorded = true;
 	const team = structuredClone(run.team);
@@ -57,6 +61,7 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 		completedAt: Date.now(), public: false, contentVersion: run.contentVersion, rulesVersion: rogueRulesVersion(),
 		snapshot: {
 			team, box: structuredClone(run.box || []), bag: { ...run.bag }, money: run.money,
+			growth: run.growth && { ...run.growth },
 			floor: 200, boosts: { ...run.boosts }, spirit: run.spirit, startCard: run.startCard,
 			eventBuff: !!run.eventBuff?.battles,
 			spiritName: rogueSpirit(run.spirit)?.name, spiritText: rogueSpirit(run.spirit)?.text,
@@ -64,8 +69,10 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 			hazards: structuredClone(run.node?.encounters[run.encounter - 1]?.spiritHazards),
 			teraUnlocked: !!run.teraUnlocked,
 			megaUnlocked: run.megaUnlocked, gmegaUnlocked: run.gmegaUnlocked, zUnlocked: run.zUnlocked,
-			blessings: (run.blessings?.owned || []).map(entry => ({ id: entry.id, name: blessingTitle(entry),
-				text: ['wine', 'cephalosporin'].includes(entry.family) ? '获得一个一次性道具。' + tonicDescription(entry.family, account.tonicSecret) : blessing(entry.id)!.text })),
+			blessings: (run.blessings?.owned || []).map(entry => {
+				const { name, text } = blessingDisplay(blessing(entry.id)!, entry.floor, account.tonicSecret);
+				return { id: entry.id, name, text };
+			}),
 			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution,
 				psychic: run.blessings.psychic, dragonKing: run.blessings.dragonKing }),
 		},

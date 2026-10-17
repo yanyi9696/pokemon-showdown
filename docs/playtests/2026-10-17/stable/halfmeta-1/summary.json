@@ -1,0 +1,4762 @@
+{
+  "profile": "halfmeta",
+  "seed": 1,
+  "halfMeta": true,
+  "battles": [
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Exeggcute",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Eevee",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wooper",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 3
+        },
+        {
+          "species": "Wooper",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ducklett",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 4
+        },
+        {
+          "species": "Wooper",
+          "level": 3
+        },
+        {
+          "species": "Ducklett",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tentacool",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 4
+        },
+        {
+          "species": "Wooper",
+          "level": 4
+        },
+        {
+          "species": "Ducklett",
+          "level": 3
+        },
+        {
+          "species": "Tentacool",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rolycoly",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 4
+        },
+        {
+          "species": "Wooper",
+          "level": 4
+        },
+        {
+          "species": "Ducklett",
+          "level": 3
+        },
+        {
+          "species": "Tentacool",
+          "level": 3
+        },
+        {
+          "species": "Rolycoly",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Litleo",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 6,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 3
+        },
+        {
+          "species": "Wooper",
+          "level": 4
+        },
+        {
+          "species": "Ducklett",
+          "level": 4
+        },
+        {
+          "species": "Tentacool",
+          "level": 4
+        },
+        {
+          "species": "Rolycoly",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sizzlipede",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 3
+        },
+        {
+          "species": "Wooper",
+          "level": 4
+        },
+        {
+          "species": "Ducklett",
+          "level": 4
+        },
+        {
+          "species": "Tentacool",
+          "level": 4
+        },
+        {
+          "species": "Rolycoly",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Baltoy",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 4
+        },
+        {
+          "species": "Wooper",
+          "level": 5
+        },
+        {
+          "species": "Ducklett",
+          "level": 5
+        },
+        {
+          "species": "Tentacool",
+          "level": 4
+        },
+        {
+          "species": "Rolycoly",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Barboach",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 4
+        },
+        {
+          "species": "Wooper",
+          "level": 5
+        },
+        {
+          "species": "Ducklett",
+          "level": 5
+        },
+        {
+          "species": "Tentacool",
+          "level": 4
+        },
+        {
+          "species": "Rolycoly",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tirtouga",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 5
+        },
+        {
+          "species": "Wooper",
+          "level": 5
+        },
+        {
+          "species": "Ducklett",
+          "level": 5
+        },
+        {
+          "species": "Tentacool",
+          "level": 5
+        },
+        {
+          "species": "Rolycoly",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Houndour",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 5
+        },
+        {
+          "species": "Wooper",
+          "level": 5
+        },
+        {
+          "species": "Ducklett",
+          "level": 5
+        },
+        {
+          "species": "Tentacool",
+          "level": 5
+        },
+        {
+          "species": "Rolycoly",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Numel",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 6
+        },
+        {
+          "species": "Wooper",
+          "level": 6
+        },
+        {
+          "species": "Ducklett",
+          "level": 6
+        },
+        {
+          "species": "Tentacool",
+          "level": 5
+        },
+        {
+          "species": "Rolycoly",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cyndaquil",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 6
+        },
+        {
+          "species": "Wooper",
+          "level": 6
+        },
+        {
+          "species": "Ducklett",
+          "level": 6
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Bonsly",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 7
+        },
+        {
+          "species": "Wooper",
+          "level": 6
+        },
+        {
+          "species": "Ducklett",
+          "level": 6
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Drilbur",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 7
+        },
+        {
+          "species": "Wooper",
+          "level": 6
+        },
+        {
+          "species": "Ducklett",
+          "level": 7
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Machop",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1592,
+      "moneyAfter": 1592,
+      "rejected": 0
+    },
+    {
+      "floor": 10,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Litleo",
+          "level": 7
+        },
+        {
+          "species": "Wooper",
+          "level": 6
+        },
+        {
+          "species": "Ducklett",
+          "level": 7
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tyrunt-Fantasy",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "elite",
+      "name": "攀岩峡谷 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Litleo",
+          "level": 8
+        },
+        {
+          "species": "Wooper",
+          "level": 7
+        },
+        {
+          "species": "Ducklett",
+          "level": 7
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Klawf",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 12,
+      "kind": "elite",
+      "name": "迷幻花海 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 7,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Litleo",
+          "level": 10
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 8
+        },
+        {
+          "species": "Tentacool",
+          "level": 8
+        },
+        {
+          "species": "Rolycoly",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 13,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Litleo",
+          "level": 13
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 9
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Buizel",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 13,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Litleo",
+          "level": 13
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 9
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tentacool",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 13,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Litleo",
+          "level": 13
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 10
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Goldeen",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "elite",
+      "name": "熔岩矿脉 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Litleo",
+          "level": 13
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 10
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Numel",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Litleo",
+          "level": 14
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 10
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Bergmite",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Litleo",
+          "level": 14
+        },
+        {
+          "species": "Klawf",
+          "level": 13
+        },
+        {
+          "species": "Ducklett",
+          "level": 10
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Vanillite",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Litleo",
+          "level": 14
+        },
+        {
+          "species": "Klawf",
+          "level": 13
+        },
+        {
+          "species": "Ducklett",
+          "level": 11
+        },
+        {
+          "species": "Tentacool",
+          "level": 10
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Vulpix-Alola",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 16,
+      "kind": "elite",
+      "name": "沙海龙窟 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Litleo",
+          "level": 15
+        },
+        {
+          "species": "Klawf",
+          "level": 13
+        },
+        {
+          "species": "Ducklett",
+          "level": 11
+        },
+        {
+          "species": "Tentacool",
+          "level": 10
+        },
+        {
+          "species": "Comfey",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Capsakid",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "elite",
+      "name": "郊外小径 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Litleo",
+          "level": 16
+        },
+        {
+          "species": "Klawf",
+          "level": 13
+        },
+        {
+          "species": "Ducklett",
+          "level": 11
+        },
+        {
+          "species": "Tentacool",
+          "level": 10
+        },
+        {
+          "species": "Comfey",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Kecleon",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "elite",
+      "name": "熔岩矿脉 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Litleo",
+          "level": 17
+        },
+        {
+          "species": "Klawf",
+          "level": 14
+        },
+        {
+          "species": "Kecleon",
+          "level": 14
+        },
+        {
+          "species": "Tentacool",
+          "level": 11
+        },
+        {
+          "species": "Comfey",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Monferno",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 742,
+      "moneyAfter": 742,
+      "rejected": 0
+    },
+    {
+      "floor": 20,
+      "kind": "boss",
+      "name": "道馆 · 小刚（岩石）",
+      "won": true,
+      "escaped": false,
+      "turns": 8,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 14
+        },
+        {
+          "species": "Kecleon",
+          "level": 14
+        },
+        {
+          "species": "Tentacool",
+          "level": 11
+        },
+        {
+          "species": "Comfey",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Onix",
+          "level": 15
+        },
+        {
+          "species": "Nacli",
+          "level": 15
+        },
+        {
+          "species": "Larvitar",
+          "level": 15
+        }
+      ],
+      "moneyBefore": 4442,
+      "moneyAfter": 4442,
+      "rejected": 0
+    },
+    {
+      "floor": 21,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 15
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Snorunt",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 21,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 15
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Vanillite",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 21,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 15
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Amaura",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "elite",
+      "name": "旧日遗迹 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 15
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Munna",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 24,
+      "kind": "elite",
+      "name": "废弃电厂 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Litleo",
+          "level": 20
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 16
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Luxio",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 25,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Litleo",
+          "level": 21
+        },
+        {
+          "species": "Klawf",
+          "level": 16
+        },
+        {
+          "species": "Kecleon",
+          "level": 16
+        },
+        {
+          "species": "Tentacool",
+          "level": 13
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Grubbin",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 25,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Litleo",
+          "level": 21
+        },
+        {
+          "species": "Klawf",
+          "level": 16
+        },
+        {
+          "species": "Kecleon",
+          "level": 16
+        },
+        {
+          "species": "Tentacool",
+          "level": 13
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Beedrill",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 25,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Litleo",
+          "level": 21
+        },
+        {
+          "species": "Klawf",
+          "level": 17
+        },
+        {
+          "species": "Kecleon",
+          "level": 16
+        },
+        {
+          "species": "Tentacool",
+          "level": 13
+        },
+        {
+          "species": "Comfey",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Burmy",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 26,
+      "kind": "elite",
+      "name": "轻风海岸 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Litleo",
+          "level": 21
+        },
+        {
+          "species": "Klawf",
+          "level": 17
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Feebas",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 6042,
+      "moneyAfter": 6042,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 17
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Oddish",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 7742,
+      "moneyAfter": 7742,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 17
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Dustox",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 7742,
+      "moneyAfter": 7742,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 18
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Staravia",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 7742,
+      "moneyAfter": 7742,
+      "rejected": 0
+    },
+    {
+      "floor": 30,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 18
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Simisage-Fantasy",
+          "level": 20
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 31,
+      "kind": "elite",
+      "name": "迷幻花海 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 18
+        },
+        {
+          "species": "Kecleon",
+          "level": 18
+        },
+        {
+          "species": "Tentacool",
+          "level": 15
+        },
+        {
+          "species": "Comfey",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Hatenna",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 32,
+      "kind": "wild",
+      "name": "太晶空洞",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Litleo",
+          "level": 25
+        },
+        {
+          "species": "Klawf",
+          "level": 18
+        },
+        {
+          "species": "Kecleon",
+          "level": 18
+        },
+        {
+          "species": "Tentacool",
+          "level": 15
+        },
+        {
+          "species": "Comfey",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gimmighoul",
+          "level": 16
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 32,
+      "kind": "wild",
+      "name": "太晶空洞",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Litleo",
+          "level": 25
+        },
+        {
+          "species": "Klawf",
+          "level": 19
+        },
+        {
+          "species": "Kecleon",
+          "level": 19
+        },
+        {
+          "species": "Tentacool",
+          "level": 15
+        },
+        {
+          "species": "Comfey",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pawniard",
+          "level": 16
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 32,
+      "kind": "wild",
+      "name": "太晶空洞",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Litleo",
+          "level": 25
+        },
+        {
+          "species": "Klawf",
+          "level": 19
+        },
+        {
+          "species": "Kecleon",
+          "level": 19
+        },
+        {
+          "species": "Tentacool",
+          "level": 15
+        },
+        {
+          "species": "Comfey",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Eevee",
+          "level": 16
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 33,
+      "kind": "elite",
+      "name": "天空之柱 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Litleo",
+          "level": 25
+        },
+        {
+          "species": "Klawf",
+          "level": 19
+        },
+        {
+          "species": "Kecleon",
+          "level": 19
+        },
+        {
+          "species": "Tentacool",
+          "level": 16
+        },
+        {
+          "species": "Comfey",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Vivillon",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 34,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 20
+        },
+        {
+          "species": "Kecleon",
+          "level": 19
+        },
+        {
+          "species": "Tentacool",
+          "level": 16
+        },
+        {
+          "species": "Comfey",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Shroomish",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 34,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 20
+        },
+        {
+          "species": "Kecleon",
+          "level": 19
+        },
+        {
+          "species": "Tentacool",
+          "level": 16
+        },
+        {
+          "species": "Comfey",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Turtwig",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 34,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 20
+        },
+        {
+          "species": "Kecleon",
+          "level": 20
+        },
+        {
+          "species": "Tentacool",
+          "level": 16
+        },
+        {
+          "species": "Comfey",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Beedrill",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 35,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 20
+        },
+        {
+          "species": "Kecleon",
+          "level": 20
+        },
+        {
+          "species": "Tentacool",
+          "level": 17
+        },
+        {
+          "species": "Comfey",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Comfey",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 35,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 21
+        },
+        {
+          "species": "Kecleon",
+          "level": 20
+        },
+        {
+          "species": "Tentacool",
+          "level": 17
+        },
+        {
+          "species": "Comfey",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ralts",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 35,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 21
+        },
+        {
+          "species": "Kecleon",
+          "level": 20
+        },
+        {
+          "species": "Tentacool",
+          "level": 17
+        },
+        {
+          "species": "Comfey",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Fidough",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 36,
+      "kind": "elite",
+      "name": "废弃电厂 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 21
+        },
+        {
+          "species": "Kecleon",
+          "level": 20
+        },
+        {
+          "species": "Tentacool",
+          "level": 17
+        },
+        {
+          "species": "Comfey",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Voltorb",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Litleo",
+          "level": 28
+        },
+        {
+          "species": "Klawf",
+          "level": 21
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 17
+        },
+        {
+          "species": "Comfey",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Bombirdier",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Litleo",
+          "level": 28
+        },
+        {
+          "species": "Klawf",
+          "level": 22
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 18
+        },
+        {
+          "species": "Comfey",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Surskit",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Litleo",
+          "level": 28
+        },
+        {
+          "species": "Klawf",
+          "level": 22
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 18
+        },
+        {
+          "species": "Comfey",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Axew",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 642,
+      "moneyAfter": 642,
+      "rejected": 0
+    },
+    {
+      "floor": 40,
+      "kind": "boss",
+      "name": "道馆 · 彩豆（格斗）",
+      "won": false,
+      "escaped": false,
+      "turns": 16,
+      "faints": 6,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Litleo",
+          "level": 28
+        },
+        {
+          "species": "Klawf",
+          "level": 22
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 18
+        },
+        {
+          "species": "Comfey",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Machop",
+          "level": 25
+        },
+        {
+          "species": "Clobbopus",
+          "level": 25
+        },
+        {
+          "species": "Mienfoo",
+          "level": 25
+        },
+        {
+          "species": "Sneasel-Hisui",
+          "level": 25
+        }
+      ],
+      "moneyBefore": 400,
+      "moneyAfter": 400,
+      "rejected": 0
+    },
+    {
+      "floor": 40,
+      "kind": "boss",
+      "name": "道馆 · 彩豆（格斗）",
+      "won": false,
+      "escaped": false,
+      "turns": 7,
+      "faints": 3,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Litleo",
+          "level": 28
+        },
+        {
+          "species": "Klawf",
+          "level": 22
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 18
+        },
+        {
+          "species": "Comfey",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Machop",
+          "level": 25
+        },
+        {
+          "species": "Clobbopus",
+          "level": 25
+        },
+        {
+          "species": "Mienfoo",
+          "level": 25
+        },
+        {
+          "species": "Sneasel-Hisui",
+          "level": 25
+        }
+      ],
+      "moneyBefore": 400,
+      "moneyAfter": 400,
+      "rescue": {
+        "cost": 3600,
+        "paid": false
+      },
+      "rejected": 1
+    }
+  ],
+  "purchases": [
+    {
+      "floor": 9,
+      "action": "heal",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 19,
+      "action": "heal",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 27,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 29,
+      "action": "heal",
+      "coins": 300
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "heal",
+      "coins": 350
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    }
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3
+      }
+    },
+    {
+      "floor": 2,
+      "money": 1832,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0
+      }
+    },
+    {
+      "floor": 3,
+      "money": 1592,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0
+      }
+    },
+    {
+      "floor": 4,
+      "money": 1592,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 5,
+      "money": 1592,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Ralts",
+          "level": 4
+        },
+        {
+          "species": "Wooper",
+          "level": 4
+        },
+        {
+          "species": "Ducklett",
+          "level": 3
+        },
+        {
+          "species": "Tentacool",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 4,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 6,
+      "money": 1592,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 3
+        },
+        {
+          "species": "Wooper",
+          "level": 4
+        },
+        {
+          "species": "Ducklett",
+          "level": 4
+        },
+        {
+          "species": "Tentacool",
+          "level": 4
+        },
+        {
+          "species": "Rolycoly",
+          "level": 4
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "prettyfeather": 2
+      }
+    },
+    {
+      "floor": 7,
+      "money": 1592,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 5
+        },
+        {
+          "species": "Wooper",
+          "level": 5
+        },
+        {
+          "species": "Ducklett",
+          "level": 5
+        },
+        {
+          "species": "Tentacool",
+          "level": 5
+        },
+        {
+          "species": "Rolycoly",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 9,
+        "prettyfeather": 2,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 8,
+      "money": 1592,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Litleo",
+          "level": 6
+        },
+        {
+          "species": "Wooper",
+          "level": 6
+        },
+        {
+          "species": "Ducklett",
+          "level": 6
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 4,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 11,
+        "prettyfeather": 2,
+        "stardust": 1,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 9,
+      "money": 1592,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Litleo",
+          "level": 7
+        },
+        {
+          "species": "Wooper",
+          "level": 6
+        },
+        {
+          "species": "Ducklett",
+          "level": 7
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 4,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 13,
+        "prettyfeather": 3,
+        "stardust": 1,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 10,
+      "money": 742,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Litleo",
+          "level": 7
+        },
+        {
+          "species": "Wooper",
+          "level": 6
+        },
+        {
+          "species": "Ducklett",
+          "level": 7
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 11,
+      "money": 742,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Litleo",
+          "level": 8
+        },
+        {
+          "species": "Wooper",
+          "level": 7
+        },
+        {
+          "species": "Ducklett",
+          "level": 7
+        },
+        {
+          "species": "Tentacool",
+          "level": 6
+        },
+        {
+          "species": "Rolycoly",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 12,
+      "money": 742,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Litleo",
+          "level": 10
+        },
+        {
+          "species": "Klawf",
+          "level": 11
+        },
+        {
+          "species": "Ducklett",
+          "level": 8
+        },
+        {
+          "species": "Tentacool",
+          "level": 8
+        },
+        {
+          "species": "Rolycoly",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 9,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 6,
+        "tinymushroom": 2,
+        "prettyfeather": 1,
+        "stardust": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 13,
+      "money": 742,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Litleo",
+          "level": 12
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 9
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 6,
+        "tinymushroom": 3,
+        "prettyfeather": 2,
+        "stardust": 0,
+        "bigmushroom": 0
+      }
+    },
+    {
+      "floor": 14,
+      "money": 742,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Litleo",
+          "level": 13
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 10
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 4,
+        "prettyfeather": 3,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 15,
+      "money": 742,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Litleo",
+          "level": 13
+        },
+        {
+          "species": "Klawf",
+          "level": 12
+        },
+        {
+          "species": "Ducklett",
+          "level": 10
+        },
+        {
+          "species": "Tentacool",
+          "level": 9
+        },
+        {
+          "species": "Comfey",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 8,
+        "tinymushroom": 5,
+        "prettyfeather": 4,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 16,
+      "money": 742,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Litleo",
+          "level": 15
+        },
+        {
+          "species": "Klawf",
+          "level": 13
+        },
+        {
+          "species": "Ducklett",
+          "level": 11
+        },
+        {
+          "species": "Tentacool",
+          "level": 10
+        },
+        {
+          "species": "Comfey",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "prettyfeather": 4,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 17,
+      "money": 742,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Litleo",
+          "level": 15
+        },
+        {
+          "species": "Klawf",
+          "level": 13
+        },
+        {
+          "species": "Ducklett",
+          "level": 11
+        },
+        {
+          "species": "Tentacool",
+          "level": 10
+        },
+        {
+          "species": "Comfey",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 10,
+        "tinymushroom": 9,
+        "prettyfeather": 6,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 18,
+      "money": 742,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Litleo",
+          "level": 16
+        },
+        {
+          "species": "Klawf",
+          "level": 14
+        },
+        {
+          "species": "Kecleon",
+          "level": 14
+        },
+        {
+          "species": "Tentacool",
+          "level": 11
+        },
+        {
+          "species": "Comfey",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 6,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 11,
+        "tinymushroom": 11,
+        "prettyfeather": 7,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 19,
+      "money": 742,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Litleo",
+          "level": 17
+        },
+        {
+          "species": "Klawf",
+          "level": 14
+        },
+        {
+          "species": "Kecleon",
+          "level": 14
+        },
+        {
+          "species": "Tentacool",
+          "level": 11
+        },
+        {
+          "species": "Comfey",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 6,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 12,
+        "tinymushroom": 13,
+        "prettyfeather": 8,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 20,
+      "money": 4442,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 14
+        },
+        {
+          "species": "Kecleon",
+          "level": 14
+        },
+        {
+          "species": "Tentacool",
+          "level": 11
+        },
+        {
+          "species": "Comfey",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 21,
+      "money": 6042,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 15
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 14
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 22,
+      "money": 6042,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 15
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 23,
+      "money": 6042,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 15
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 24,
+      "money": 6042,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Litleo",
+          "level": 18
+        },
+        {
+          "species": "Klawf",
+          "level": 15
+        },
+        {
+          "species": "Kecleon",
+          "level": 16
+        },
+        {
+          "species": "Tentacool",
+          "level": 12
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 18,
+        "tinymushroom": 4,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 25,
+      "money": 6042,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Litleo",
+          "level": 20
+        },
+        {
+          "species": "Klawf",
+          "level": 16
+        },
+        {
+          "species": "Kecleon",
+          "level": 16
+        },
+        {
+          "species": "Tentacool",
+          "level": 13
+        },
+        {
+          "species": "Comfey",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 19,
+        "tinymushroom": 5,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 26,
+      "money": 6042,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Litleo",
+          "level": 21
+        },
+        {
+          "species": "Klawf",
+          "level": 17
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "prettyfeather": 1,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 27,
+      "money": 6042,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Litleo",
+          "level": 21
+        },
+        {
+          "species": "Klawf",
+          "level": 17
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 22,
+        "tinymushroom": 8,
+        "prettyfeather": 1,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 3
+      }
+    },
+    {
+      "floor": 28,
+      "money": 7742,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 17
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 29,
+      "money": 7742,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 18
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 2,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 30,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 18
+        },
+        {
+          "species": "Kecleon",
+          "level": 17
+        },
+        {
+          "species": "Tentacool",
+          "level": 14
+        },
+        {
+          "species": "Comfey",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 0,
+        "greatball": 8,
+        "superpotion": 2
+      }
+    },
+    {
+      "floor": 31,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 18
+        },
+        {
+          "species": "Kecleon",
+          "level": 18
+        },
+        {
+          "species": "Tentacool",
+          "level": 15
+        },
+        {
+          "species": "Comfey",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 1,
+        "bigmushroom": 0,
+        "pearl": 0,
+        "greatball": 8,
+        "superpotion": 2
+      }
+    },
+    {
+      "floor": 32,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Litleo",
+          "level": 23
+        },
+        {
+          "species": "Klawf",
+          "level": 18
+        },
+        {
+          "species": "Kecleon",
+          "level": 18
+        },
+        {
+          "species": "Tentacool",
+          "level": 15
+        },
+        {
+          "species": "Comfey",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 31,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "stardust": 1,
+        "bigmushroom": 0,
+        "pearl": 2,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 33,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Litleo",
+          "level": 25
+        },
+        {
+          "species": "Klawf",
+          "level": 19
+        },
+        {
+          "species": "Kecleon",
+          "level": 19
+        },
+        {
+          "species": "Tentacool",
+          "level": 16
+        },
+        {
+          "species": "Comfey",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 4,
+        "prettyfeather": 0,
+        "stardust": 1,
+        "bigmushroom": 0,
+        "pearl": 2,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 34,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Litleo",
+          "level": 25
+        },
+        {
+          "species": "Klawf",
+          "level": 20
+        },
+        {
+          "species": "Kecleon",
+          "level": 19
+        },
+        {
+          "species": "Tentacool",
+          "level": 16
+        },
+        {
+          "species": "Comfey",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 35,
+        "tinymushroom": 6,
+        "prettyfeather": 0,
+        "stardust": 1,
+        "bigmushroom": 0,
+        "pearl": 3,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 35,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 20
+        },
+        {
+          "species": "Kecleon",
+          "level": 20
+        },
+        {
+          "species": "Tentacool",
+          "level": 17
+        },
+        {
+          "species": "Comfey",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 9,
+        "prettyfeather": 0,
+        "stardust": 1,
+        "bigmushroom": 0,
+        "pearl": 3,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 36,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 21
+        },
+        {
+          "species": "Kecleon",
+          "level": 20
+        },
+        {
+          "species": "Tentacool",
+          "level": 17
+        },
+        {
+          "species": "Comfey",
+          "level": 20
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 12,
+        "prettyfeather": 0,
+        "stardust": 1,
+        "bigmushroom": 0,
+        "pearl": 3,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 37,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Litleo",
+          "level": 26
+        },
+        {
+          "species": "Klawf",
+          "level": 21
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 17
+        },
+        {
+          "species": "Comfey",
+          "level": 20
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 41,
+        "tinymushroom": 12,
+        "prettyfeather": 1,
+        "stardust": 2,
+        "bigmushroom": 0,
+        "pearl": 3,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 38,
+      "money": 642,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Litleo",
+          "level": 28
+        },
+        {
+          "species": "Klawf",
+          "level": 22
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 18
+        },
+        {
+          "species": "Comfey",
+          "level": 21
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 14,
+        "prettyfeather": 1,
+        "stardust": 2,
+        "bigmushroom": 0,
+        "pearl": 4,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 39,
+      "money": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Litleo",
+          "level": 28
+        },
+        {
+          "species": "Klawf",
+          "level": 22
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 18
+        },
+        {
+          "species": "Comfey",
+          "level": 21
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 14,
+        "prettyfeather": 1,
+        "stardust": 2,
+        "bigmushroom": 0,
+        "pearl": 4,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 40,
+      "money": 400,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Litleo",
+          "level": 28
+        },
+        {
+          "species": "Klawf",
+          "level": 22
+        },
+        {
+          "species": "Kecleon",
+          "level": 21
+        },
+        {
+          "species": "Tentacool",
+          "level": 18
+        },
+        {
+          "species": "Comfey",
+          "level": 21
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 0,
+        "greatball": 8,
+        "superpotion": 10
+      }
+    }
+  ],
+  "choices": [
+    {
+      "floor": 1,
+      "blessing": "catcher",
+      "tier": "silver"
+    }
+  ],
+  "issues": [
+    {
+      "floor": 40,
+      "reason": "no-living-member-no-revive",
+      "money": 400
+    }
+  ],
+  "lastFloor": 40,
+  "phase": "ready"
+}

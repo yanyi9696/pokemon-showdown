@@ -1,0 +1,307 @@
+|t:|1792230517
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L27, M|
+|poke|p1|Crocalor, L26, M|
+|poke|p1|Ivysaur, L26, M|
+|poke|p1|Machop, L20, M|
+|poke|p1|Kadabra, L20, M|
+|poke|p1|Duskull, L24, F|
+|poke|p2|Machop, L30, M|
+|poke|p2|Clobbopus, L30, F|
+|poke|p2|Mienfoo, L30, F|
+|poke|p2|Sneasel-Hisui, L30, F|
+|teampreview
+|
+|t:|1792230517
+|start
+|split|p1
+|switch|p1a: Kadabra|Kadabra, L20, M|55/55
+|switch|p1a: Kadabra|Kadabra, L20, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L30, M|109/109
+|switch|p2a: Machop|Machop, L30, M|100/100
+|-end|p1a: Kadabra|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Kadabra|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230517
+|-terastallize|p2a: Machop|Fighting
+|move|p1a: Kadabra|Psybeam|p2a: Machop
+|-supereffective|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|37/109
+|-damage|p2a: Machop|34/100
+|move|p2a: Machop|Knock Off|p1a: Kadabra
+|-supereffective|p1a: Kadabra
+|split|p1
+|-damage|p1a: Kadabra|0 fnt
+|-damage|p1a: Kadabra|0 fnt
+|faint|p1a: Kadabra
+|
+|-status|p2a: Machop|brn|[from] item: Flame Orb
+|upkeep
+|
+|t:|1792230517
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L26, M|88/88
+|switch|p1a: Crocalor|Crocalor, L26, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|2
+|
+|t:|1792230518
+|move|p1a: Crocalor|Incinerate|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|0 fnt
+|-damage|p2a: Machop|0 fnt
+|faint|p2a: Machop
+|
+|upkeep
+|
+|t:|1792230518
+|split|p2
+|switch|p2a: Clobbopus|Clobbopus, L30, F|98/98
+|switch|p2a: Clobbopus|Clobbopus, L30, F|100/100
+|-end|p2a: Clobbopus|fantasystats|[silent]
+|turn|3
+|
+|t:|1792230518
+|move|p1a: Crocalor|Incinerate|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|75/98
+|-damage|p2a: Clobbopus|77/100
+|move|p2a: Clobbopus|Close Combat|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|27/88
+|-damage|p1a: Crocalor|31/100
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|
+|upkeep
+|turn|4
+|
+|t:|1792230518
+|split|p1
+|switch|p1a: Duskull|Duskull, L24, F|56/56
+|switch|p1a: Duskull|Duskull, L24, F|100/100
+|-end|p1a: Duskull|fantasystats|[silent]
+|move|p2a: Clobbopus|Close Combat|p1a: Duskull
+|-immune|p1a: Duskull
+|
+|upkeep
+|turn|5
+|
+|t:|1792230518
+|move|p2a: Clobbopus|Sucker Punch||[still]
+|-fail|p2a: Clobbopus
+|move|p1a: Duskull|Will-O-Wisp|p2a: Clobbopus
+|-status|p2a: Clobbopus|brn
+|
+|split|p2
+|-damage|p2a: Clobbopus|69/98 brn|[from] brn
+|-damage|p2a: Clobbopus|71/100 brn|[from] brn
+|upkeep
+|turn|6
+|
+|t:|1792230519
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L26, M|77/77
+|switch|p1a: Ivysaur|Ivysaur, L26, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Clobbopus|Sucker Punch||[still]
+|-fail|p2a: Clobbopus
+|
+|split|p2
+|-damage|p2a: Clobbopus|63/98 brn|[from] brn
+|-damage|p2a: Clobbopus|65/100 brn|[from] brn
+|upkeep
+|turn|7
+|
+|t:|1792230519
+|move|p1a: Ivysaur|Seed Bomb|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|33/98 brn
+|-damage|p2a: Clobbopus|34/100 brn
+|move|p2a: Clobbopus|Close Combat|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|59/77
+|-damage|p1a: Ivysaur|77/100
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|
+|split|p2
+|-damage|p2a: Clobbopus|27/98 brn|[from] brn
+|-damage|p2a: Clobbopus|28/100 brn|[from] brn
+|upkeep
+|turn|8
+|
+|t:|1792230520
+|move|p1a: Ivysaur|Seed Bomb|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|0 fnt
+|-damage|p2a: Clobbopus|0 fnt
+|faint|p2a: Clobbopus
+|
+|upkeep
+|
+|t:|1792230520
+|split|p2
+|switch|p2a: Mienfoo|Mienfoo, L30, F|76/76
+|switch|p2a: Mienfoo|Mienfoo, L30, F|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|turn|9
+|
+|t:|1792230521
+|move|p2a: Mienfoo|Jump Kick|p1a: Ivysaur
+|-supereffective|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|faint|p1a: Ivysaur
+|
+|upkeep
+|
+|t:|1792230521
+|split|p1
+|switch|p1a: Duskull|Duskull, L24, F|56/56
+|switch|p1a: Duskull|Duskull, L24, F|100/100
+|-end|p1a: Duskull|fantasystats|[silent]
+|turn|10
+|
+|t:|1792230521
+|move|p2a: Mienfoo|Jump Kick|p1a: Duskull
+|-immune|p1a: Duskull
+|split|p2
+|-damage|p2a: Mienfoo|38/76|[from] jumpkick
+|-damage|p2a: Mienfoo|50/100|[from] jumpkick
+|move|p1a: Duskull|Will-O-Wisp|p2a: Mienfoo
+|-status|p2a: Mienfoo|brn
+|
+|split|p2
+|-damage|p2a: Mienfoo|34/76 brn|[from] brn
+|-damage|p2a: Mienfoo|45/100 brn|[from] brn
+|upkeep
+|turn|11
+|
+|t:|1792230522
+|move|p2a: Mienfoo|Knock Off|p1a: Duskull
+|-supereffective|p1a: Duskull
+|split|p1
+|-damage|p1a: Duskull|30/56
+|-damage|p1a: Duskull|54/100
+|move|p1a: Duskull|Night Shade|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|8/76 brn
+|-damage|p2a: Mienfoo|11/100 brn
+|
+|split|p2
+|-damage|p2a: Mienfoo|4/76 brn|[from] brn
+|-damage|p2a: Mienfoo|6/100 brn|[from] brn
+|upkeep
+|turn|12
+|
+|t:|1792230522
+|move|p1a: Duskull|Shadow Sneak|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|0 fnt
+|-damage|p2a: Mienfoo|0 fnt
+|faint|p2a: Mienfoo
+|
+|upkeep
+|
+|t:|1792230522
+|split|p2
+|switch|p2a: Sneasel|Sneasel-Hisui, L30, F|82/82
+|switch|p2a: Sneasel|Sneasel-Hisui, L30, F|100/100
+|-end|p2a: Sneasel|fantasystats|[silent]
+|turn|13
+|
+|t:|1792230522
+|move|p2a: Sneasel|Throat Chop|p1a: Duskull
+|-supereffective|p1a: Duskull
+|split|p1
+|-damage|p1a: Duskull|0 fnt
+|-damage|p1a: Duskull|0 fnt
+|faint|p1a: Duskull
+|
+|upkeep
+|
+|t:|1792230523
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L27, M|85/85
+|switch|p1a: Marshtomp|Marshtomp, L27, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|14
+|
+|t:|1792230523
+|move|p2a: Sneasel|Throat Chop|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|51/85
+|-damage|p1a: Marshtomp|60/100
+|-start|p1a: Marshtomp|Throat Chop|[silent]
+|move|p1a: Marshtomp|Mud Shot|p2a: Sneasel
+|-supereffective|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|56/82
+|-damage|p2a: Sneasel|69/100
+|-unboost|p2a: Sneasel|spe|1
+|
+|upkeep
+|turn|15
+|
+|t:|1792230523
+|move|p2a: Sneasel|Close Combat|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|-unboost|p2a: Sneasel|def|1
+|-unboost|p2a: Sneasel|spd|1
+|faint|p1a: Marshtomp
+|
+|upkeep
+|
+|t:|1792230523
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L26, M|27/88
+|switch|p1a: Crocalor|Crocalor, L26, M|31/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|16
+|
+|t:|1792230524
+|move|p2a: Sneasel|Close Combat|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|-unboost|p2a: Sneasel|def|1
+|-unboost|p2a: Sneasel|spd|1
+|faint|p1a: Crocalor
+|
+|upkeep
+|
+|t:|1792230524
+|split|p1
+|switch|p1a: Machop|Machop, L20, M|67/67
+|switch|p1a: Machop|Machop, L20, M|100/100
+|-end|p1a: Machop|fantasystats|[silent]
+|turn|17
+|
+|t:|1792230524
+|move|p2a: Sneasel|Close Combat|p1a: Machop
+|split|p1
+|-damage|p1a: Machop|0 fnt
+|-damage|p1a: Machop|0 fnt
+|-unboost|p2a: Sneasel|def|1
+|-unboost|p2a: Sneasel|spd|1
+|faint|p1a: Machop
+|
+|win|NPC

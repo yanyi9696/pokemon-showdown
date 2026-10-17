@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { Battle } = require('../../dist/sim/battle');
@@ -9,7 +10,7 @@ const { createPreviewContent } = require('../../dist/server/fantasy-rogue/previe
 const { createRoguePokemon, rebuildMember, gainExperience } = require('../../dist/server/fantasy-rogue/progression');
 const { activeRogueSpirits, ROGUE_SPIRITS } = require('../../dist/sim/fantasy-rogue-spirits');
 const { rogueCaptureChance, rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
-const { convertSpiritItem, SPIRIT_HAZARDS } = require('../../dist/server/fantasy-rogue/spirits');
+const { convertSpiritItem, SPIRIT_HAZARDS, spiritItems, spiritShopAvailable } = require('../../dist/server/fantasy-rogue/spirits');
 const { inventoryItem } = require('../../dist/server/fantasy-rogue/team');
 const { set, stats } = require('../fixtures/fantasy-rogue');
 const { InformationView } = require('../../dist/server/fantasy-ai/information');
@@ -22,7 +23,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	let store, engine;
 	const user = 'spirittester';
 	const account = () => store.get(user);
-	const cmd = (action, details = {}) => engine.command(user, { id: randomUUID(), revision: account().revision, action, ...details });
+	const cmd = (action, details = {}) => commandAfterOpening(engine, user, { id: randomUUID(), revision: account().revision, action, ...details });
 	const start = id => { cmd('start', { starters: ['bulbasaur'], useSpirit: true, testSpirit: id }); };
 	function floor(n) {
 		store.change(user, saved => {
@@ -59,12 +60,17 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	});
 	it('unlocks only after an unaided 200-floor clear and preserves legacy runs', () => {
 		cmd('start', { starters: ['bulbasaur'] }); floor(200); fight();
-		assert.equal(account().run.phase, 'complete'); assert(account().spiritUnlocked);
+		assert.equal(account().run.phase, 'postgame'); assert(account().spiritUnlocked);
+		cmd('storyskip', { value: account().run.id + ':godinvite:0' });
+		cmd('godchallenge', { value: 'decline' });
 		start('kyurem'); cmd('spiritack');
 		floor(200); fight();
 		assert(account().spiritUnlocked);
 		store.change(user, a => { delete a.spiritUnlocked; });
-		engine.migrate(user); assert(!account().spiritUnlocked);
+		engine.migrate(user); assert(account().spiritUnlocked, 'the retained no-spirit clear restores access');
+		assert(account().unlockedSpirits.includes('kyurem'));
+		store.change(user, a => { delete a.spiritUnlocked; a.cards = []; });
+		engine.migrate(user); assert(!account().spiritUnlocked, 'a spirit clear alone must not grant initial access');
 	});
 	it('uses at most three HP purchases per shop, includes healing, and never faints the payer', () => {
 		start('yveltal'); cmd('spiritack');
@@ -89,7 +95,21 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		assert.throws(() => cmd('buy', { value: 'expcandys' }), /未解锁/);
 		cmd('abandon'); start('yveltal'); cmd('spiritack');
 		floor(9);
-		assert.throws(() => cmd('buy', { value: 'expcandyxs' }), /未解锁/);
+		const money = account().run.money;
+		cmd('buy', { value: 'expcandyxs' });
+		assert.equal(account().run.money, money - 80);
+		assert.equal(account().run.node.restCandyPurchases.expcandyxs, 1);
+	});
+	it('keeps Meowth candy unlocks aligned with the shared grade boundaries', () => {
+		start('meowth');
+		const items = spiritItems(engine.content, account().run);
+		for (const [id, floor] of [['expcandyxs', 9], ['expcandys', 30], ['expcandym', 50],
+			['expcandyl', 100], ['expcandyxl', 150]]) {
+			const item = items.find(entry => entry.id === id);
+			assert.equal(item.shopFloor, floor);
+			assert(!spiritShopAvailable(item, floor - 1));
+			assert(spiritShopAvailable(item, floor));
+		}
 	});
 	it('grants the fixed-level partner once and rejects experience candy without consuming it', () => {
 		start('celebi'); const gift = account().run.team.find(mon => mon.fixedLevel);
@@ -197,7 +217,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		cmd('spiritack'); cmd('select', { value: 'wild0' });
 		store.change(user, a => { a.run.team[0].set.shiny = true; });
 		const mon = account().run.team[0], before = mon.experience;
-		const expected = experienceYield(rogueSpeciesData('Caterpie').baseExperience, 1, mon.set.level, true) * 3;
+		const expected = Math.floor(experienceYield(rogueSpeciesData('Caterpie').baseExperience, 1, mon.set.level, true) * 1.25) * 3;
 		fight(true, { defeated: [{ species: 'Caterpie', level: 1, participants: [mon.id], eligible: [mon.id] }] });
 		assert.equal(account().run.team[0].experience, before + expected);
 		store.change(user, a => { a.run.bag.expcandyxs = 1; });

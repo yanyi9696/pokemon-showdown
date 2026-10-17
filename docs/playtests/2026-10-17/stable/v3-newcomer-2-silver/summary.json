@@ -1,0 +1,2619 @@
+{
+  "profile": "newcomer",
+  "seed": 2,
+  "starter": "mudkip",
+  "desiredTier": "silver",
+  "driverVersion": 3,
+  "halfMeta": false,
+  "battles": [
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sableye",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nickit",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 7,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "event",
+      "name": "不战斗就无法出去的房间",
+      "won": true,
+      "escaped": false,
+      "turns": 8,
+      "faints": 1,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Mismagius",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ducklett",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Corsola",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 4
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Popplio",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 5
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Exeggcute",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 5
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Flabébé",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 5
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        },
+        {
+          "species": "Flabébé",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Exeggcute",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 5
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        },
+        {
+          "species": "Flabébé",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Growlithe",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 5
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nosepass",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Salandit",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Oddish",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spinarak",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ekans",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mienfoo",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 7
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Munna",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 7
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Smeargle",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 7
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Phione",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Vanillite",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mime Jr.",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Swinub",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1600,
+      "moneyAfter": 1600,
+      "rejected": 0
+    },
+    {
+      "floor": 10,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Duskull-Fantasy",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 1800,
+      "moneyAfter": 1800,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Skrelp",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1800,
+      "moneyAfter": 1800,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        },
+        {
+          "species": "Skrelp",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spinarak",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1800,
+      "moneyAfter": 1800,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 8
+        },
+        {
+          "species": "Skrelp",
+          "level": 6
+        },
+        {
+          "species": "Spinarak",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Stunky",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1800,
+      "moneyAfter": 1800,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 8
+        },
+        {
+          "species": "Skrelp",
+          "level": 6
+        },
+        {
+          "species": "Spinarak",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Poochyena",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 10
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 8
+        },
+        {
+          "species": "Skrelp",
+          "level": 7
+        },
+        {
+          "species": "Spinarak",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Maractus",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Sandygast",
+          "level": 10
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 9
+        },
+        {
+          "species": "Skrelp",
+          "level": 7
+        },
+        {
+          "species": "Maractus",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Barboach",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 16,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Sandygast",
+          "level": 10
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 9
+        },
+        {
+          "species": "Skrelp",
+          "level": 8
+        },
+        {
+          "species": "Maractus",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Fidough",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 16,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Sandygast",
+          "level": 11
+        },
+        {
+          "species": "Baltoy",
+          "level": 10
+        },
+        {
+          "species": "Flabébé",
+          "level": 9
+        },
+        {
+          "species": "Skrelp",
+          "level": 8
+        },
+        {
+          "species": "Maractus",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ralts",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 16,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Sandygast",
+          "level": 11
+        },
+        {
+          "species": "Baltoy",
+          "level": 10
+        },
+        {
+          "species": "Flabébé",
+          "level": 9
+        },
+        {
+          "species": "Skrelp",
+          "level": 8
+        },
+        {
+          "species": "Maractus",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Milcery",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Sandygast",
+          "level": 11
+        },
+        {
+          "species": "Baltoy",
+          "level": 10
+        },
+        {
+          "species": "Flabébé",
+          "level": 9
+        },
+        {
+          "species": "Skrelp",
+          "level": 9
+        },
+        {
+          "species": "Maractus",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Machop",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Sandygast",
+          "level": 11
+        },
+        {
+          "species": "Baltoy",
+          "level": 10
+        },
+        {
+          "species": "Flabébé",
+          "level": 10
+        },
+        {
+          "species": "Skrelp",
+          "level": 9
+        },
+        {
+          "species": "Maractus",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nincada",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Sandygast",
+          "level": 11
+        },
+        {
+          "species": "Baltoy",
+          "level": 10
+        },
+        {
+          "species": "Flabébé",
+          "level": 10
+        },
+        {
+          "species": "Skrelp",
+          "level": 9
+        },
+        {
+          "species": "Maractus",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rockruff",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Sandygast",
+          "level": 11
+        },
+        {
+          "species": "Baltoy",
+          "level": 10
+        },
+        {
+          "species": "Flabébé",
+          "level": 10
+        },
+        {
+          "species": "Skrelp",
+          "level": 9
+        },
+        {
+          "species": "Maractus",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Passimian",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Sandygast",
+          "level": 12
+        },
+        {
+          "species": "Baltoy",
+          "level": 11
+        },
+        {
+          "species": "Flabébé",
+          "level": 10
+        },
+        {
+          "species": "Skrelp",
+          "level": 10
+        },
+        {
+          "species": "Maractus",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Unown",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Sandygast",
+          "level": 13
+        },
+        {
+          "species": "Baltoy",
+          "level": 11
+        },
+        {
+          "species": "Flabébé",
+          "level": 11
+        },
+        {
+          "species": "Skrelp",
+          "level": 10
+        },
+        {
+          "species": "Maractus",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Klefki",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 2352,
+      "moneyAfter": 2352,
+      "rejected": 0
+    },
+    {
+      "floor": 20,
+      "kind": "boss",
+      "name": "道馆 · 彩豆（格斗）",
+      "won": false,
+      "escaped": false,
+      "turns": 12,
+      "faints": 6,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Sandygast",
+          "level": 13
+        },
+        {
+          "species": "Klefki",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 11
+        },
+        {
+          "species": "Skrelp",
+          "level": 11
+        },
+        {
+          "species": "Maractus",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Machop",
+          "level": 15
+        },
+        {
+          "species": "Clobbopus",
+          "level": 15
+        },
+        {
+          "species": "Mienfoo",
+          "level": 15
+        }
+      ],
+      "moneyBefore": 3202,
+      "moneyAfter": 3202,
+      "rejected": 0
+    },
+    {
+      "floor": 20,
+      "kind": "boss",
+      "name": "道馆 · 彩豆（格斗）",
+      "won": false,
+      "escaped": false,
+      "turns": 10,
+      "faints": 3,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Sandygast",
+          "level": 13
+        },
+        {
+          "species": "Klefki",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 11
+        },
+        {
+          "species": "Skrelp",
+          "level": 11
+        },
+        {
+          "species": "Maractus",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Machop",
+          "level": 15
+        },
+        {
+          "species": "Clobbopus",
+          "level": 15
+        },
+        {
+          "species": "Mienfoo",
+          "level": 15
+        }
+      ],
+      "moneyBefore": 3202,
+      "moneyAfter": 502,
+      "rescue": {
+        "cost": 2700,
+        "paid": true
+      },
+      "rejected": 0
+    },
+    {
+      "floor": 20,
+      "kind": "boss",
+      "name": "道馆 · 彩豆（格斗）",
+      "won": false,
+      "escaped": false,
+      "turns": 14,
+      "faints": 6,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Sandygast",
+          "level": 13
+        },
+        {
+          "species": "Klefki",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 11
+        },
+        {
+          "species": "Skrelp",
+          "level": 11
+        },
+        {
+          "species": "Maractus",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Machop",
+          "level": 15
+        },
+        {
+          "species": "Clobbopus",
+          "level": 15
+        },
+        {
+          "species": "Mienfoo",
+          "level": 15
+        }
+      ],
+      "moneyBefore": 502,
+      "moneyAfter": 502,
+      "rescue": {
+        "cost": 2700,
+        "paid": false
+      },
+      "rejected": 0
+    }
+  ],
+  "purchases": [
+    {
+      "floor": 9,
+      "action": "heal",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 19,
+      "action": "heal",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    }
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3
+      }
+    },
+    {
+      "floor": 2,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 3,
+      "money": 1600,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 6,
+        "potion": 2,
+        "revive": 0,
+        "ether": 5,
+        "expcandyxs": 0,
+        "tinymushroom": 4,
+        "eviolite": 0
+      }
+    },
+    {
+      "floor": 4,
+      "money": 1600,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 5
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 3,
+        "potion": 2,
+        "revive": 0,
+        "ether": 5,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "eviolite": 0,
+        "stardust": 2
+      }
+    },
+    {
+      "floor": 5,
+      "money": 1600,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 5
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        },
+        {
+          "species": "Flabébé",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 2,
+        "potion": 2,
+        "revive": 0,
+        "ether": 5,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "eviolite": 0,
+        "stardust": 2,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 6,
+      "money": 1600,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 2,
+        "revive": 0,
+        "ether": 5,
+        "expcandyxs": 0,
+        "tinymushroom": 9,
+        "eviolite": 0,
+        "stardust": 2,
+        "prettyfeather": 2
+      }
+    },
+    {
+      "floor": 7,
+      "money": 1600,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 7
+        },
+        {
+          "species": "Flabébé",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 2,
+        "revive": 0,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 12,
+        "eviolite": 0,
+        "stardust": 2,
+        "prettyfeather": 2
+      }
+    },
+    {
+      "floor": 8,
+      "money": 1600,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 2,
+        "revive": 0,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 15,
+        "eviolite": 0,
+        "stardust": 3,
+        "prettyfeather": 2
+      }
+    },
+    {
+      "floor": 9,
+      "money": 1600,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 2,
+        "revive": 0,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 16,
+        "eviolite": 0,
+        "stardust": 3,
+        "prettyfeather": 3,
+        "bigpearl": 1
+      }
+    },
+    {
+      "floor": 10,
+      "money": 1800,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "bigpearl": 0
+      }
+    },
+    {
+      "floor": 11,
+      "money": 1800,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Baltoy",
+          "level": 8
+        },
+        {
+          "species": "Flabébé",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 1,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "bigpearl": 0
+      }
+    },
+    {
+      "floor": 12,
+      "money": 1800,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 8
+        },
+        {
+          "species": "Skrelp",
+          "level": 6
+        },
+        {
+          "species": "Spinarak",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "bigpearl": 0,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 13,
+      "money": 2148,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 8
+        },
+        {
+          "species": "Skrelp",
+          "level": 6
+        },
+        {
+          "species": "Spinarak",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "bigpearl": 0,
+        "pearl": 1,
+        "swiftfeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 14,
+      "money": 2352,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 8
+        },
+        {
+          "species": "Skrelp",
+          "level": 6
+        },
+        {
+          "species": "Spinarak",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 1,
+        "tinymushroom": 3,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "bigpearl": 0,
+        "pearl": 1,
+        "swiftfeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 15,
+      "money": 2352,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 8
+        },
+        {
+          "species": "Skrelp",
+          "level": 6
+        },
+        {
+          "species": "Spinarak",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "bigpearl": 0,
+        "pearl": 1,
+        "swiftfeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 16,
+      "money": 2352,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Sandygast",
+          "level": 10
+        },
+        {
+          "species": "Baltoy",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 9
+        },
+        {
+          "species": "Skrelp",
+          "level": 8
+        },
+        {
+          "species": "Maractus",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 9,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 1,
+        "bigpearl": 0,
+        "pearl": 1,
+        "swiftfeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 17,
+      "money": 2352,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 14
+        },
+        {
+          "species": "Sandygast",
+          "level": 11
+        },
+        {
+          "species": "Baltoy",
+          "level": 10
+        },
+        {
+          "species": "Flabébé",
+          "level": 9
+        },
+        {
+          "species": "Skrelp",
+          "level": 9
+        },
+        {
+          "species": "Maractus",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 9,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 1,
+        "bigpearl": 0,
+        "pearl": 1,
+        "swiftfeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 18,
+      "money": 2352,
+      "team": [
+        {
+          "species": "Mudkip",
+          "level": 15
+        },
+        {
+          "species": "Sandygast",
+          "level": 11
+        },
+        {
+          "species": "Baltoy",
+          "level": 10
+        },
+        {
+          "species": "Flabébé",
+          "level": 10
+        },
+        {
+          "species": "Skrelp",
+          "level": 9
+        },
+        {
+          "species": "Maractus",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 9,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 11,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 1,
+        "bigpearl": 0,
+        "pearl": 1,
+        "swiftfeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 19,
+      "money": 2352,
+      "team": [
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Sandygast",
+          "level": 13
+        },
+        {
+          "species": "Klefki",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 11
+        },
+        {
+          "species": "Skrelp",
+          "level": 11
+        },
+        {
+          "species": "Maractus",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 14,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 1,
+        "bigpearl": 0,
+        "pearl": 1,
+        "swiftfeather": 1,
+        "oranberry": 0
+      }
+    },
+    {
+      "floor": 20,
+      "money": 3202,
+      "team": [
+        {
+          "species": "Marshtomp",
+          "level": 16
+        },
+        {
+          "species": "Sandygast",
+          "level": 13
+        },
+        {
+          "species": "Klefki",
+          "level": 9
+        },
+        {
+          "species": "Flabébé",
+          "level": 11
+        },
+        {
+          "species": "Skrelp",
+          "level": 11
+        },
+        {
+          "species": "Maractus",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "eviolite": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "bigpearl": 0,
+        "pearl": 0,
+        "swiftfeather": 1,
+        "oranberry": 0
+      }
+    }
+  ],
+  "choices": [
+    {
+      "floor": 1,
+      "blessing": "pivot",
+      "tier": "silver"
+    }
+  ],
+  "issues": [
+    {
+      "floor": 20,
+      "reason": "no-living-member-no-revive",
+      "money": 502
+    }
+  ],
+  "lastFloor": 20,
+  "phase": "ready"
+}

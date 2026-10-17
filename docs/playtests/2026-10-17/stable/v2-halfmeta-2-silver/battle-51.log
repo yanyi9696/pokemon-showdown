@@ -1,0 +1,188 @@
+|t:|1792222586
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L19, M|
+|poke|p1|Sandygast, L17, F|
+|poke|p1|Spiritomb, L15, M|
+|poke|p1|Baltoy, L15|
+|poke|p1|Skrelp, L14, F|
+|poke|p1|Spinarak, L15, M|
+|poke|p2|Simipour-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792222586
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L19, M|64/64
+|switch|p1a: Marshtomp|Marshtomp, L19, M|100/100
+|split|p2
+|switch|p2a: Simipour|Simipour-Fantasy, L20, M|75/75
+|switch|p2a: Simipour|Simipour-Fantasy, L20, M|100/100
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222587
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L15, M|49/49
+|switch|p1a: Spiritomb|Spiritomb, L15, M|100/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|-terastallize|p2a: Simipour|Water
+|move|p2a: Simipour|Scald|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|15/49
+|-damage|p1a: Spiritomb|31/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792222587
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L17, F|55/55
+|switch|p1a: Sandygast|Sandygast, L17, F|100/100
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Simipour|Scald|p1a: Sandygast
+|-ability|p1a: Sandygast|Water Compaction|boost
+|-boost|p1a: Sandygast|def|2
+|
+|upkeep
+|turn|3
+|
+|t:|1792222588
+|move|p2a: Simipour|Scald|p1a: Sandygast
+|-ability|p1a: Sandygast|Water Compaction|boost
+|-boost|p1a: Sandygast|def|2
+|move|p1a: Sandygast|Sand Tomb|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|68/75
+|-damage|p2a: Simipour|91/100
+|-activate|p2a: Simipour|move: Sand Tomb|[of] p1a: Sandygast
+|
+|t:|1792222588
+|split|p1
+|switch|p1a: Skrelp|Skrelp, L14, F|46/46|[from] Sand Tomb
+|switch|p1a: Skrelp|Skrelp, L14, F|100/100|[from] Sand Tomb
+|-end|p1a: Skrelp|fantasystats|[silent]
+|
+|-end|p2a: Simipour|Sand Tomb|[partiallytrapped]|[silent]
+|upkeep
+|turn|4
+|
+|t:|1792222589
+|move|p2a: Simipour|Scald|p1a: Skrelp
+|-resisted|p1a: Skrelp
+|split|p1
+|-damage|p1a: Skrelp|22/46
+|-damage|p1a: Skrelp|48/100
+|move|p1a: Skrelp|Acid|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|62/75
+|-damage|p2a: Simipour|83/100
+|
+|t:|1792222589
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L19, M|64/64|[from] Acid
+|switch|p1a: Marshtomp|Marshtomp, L19, M|100/100|[from] Acid
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|
+|upkeep
+|turn|5
+|
+|t:|1792222590
+|move|p2a: Simipour|Scald|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|38/64
+|-damage|p1a: Marshtomp|60/100
+|move|p1a: Marshtomp|Body Slam|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|44/75
+|-damage|p2a: Simipour|59/100
+|
+|t:|1792222590
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L17, F|55/55|[from] Body Slam
+|switch|p1a: Sandygast|Sandygast, L17, F|100/100|[from] Body Slam
+|-end|p1a: Sandygast|fantasystats|[silent]
+|
+|upkeep
+|turn|6
+|
+|t:|1792222591
+|move|p2a: Simipour|Scald|p1a: Sandygast
+|-ability|p1a: Sandygast|Water Compaction|boost
+|-boost|p1a: Sandygast|def|2
+|move|p1a: Sandygast|Sand Tomb|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|37/75
+|-damage|p2a: Simipour|50/100
+|-activate|p2a: Simipour|move: Sand Tomb|[of] p1a: Sandygast
+|
+|t:|1792222591
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L19, M|38/64|[from] Sand Tomb
+|switch|p1a: Marshtomp|Marshtomp, L19, M|60/100|[from] Sand Tomb
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|
+|-end|p2a: Simipour|Sand Tomb|[partiallytrapped]|[silent]
+|upkeep
+|turn|7
+|
+|t:|1792222591
+|move|p2a: Simipour|Scald|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|12/64
+|-damage|p1a: Marshtomp|19/100
+|move|p1a: Marshtomp|Body Slam|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|18/75
+|-damage|p2a: Simipour|24/100
+|
+|t:|1792222592
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L17, F|55/55|[from] Body Slam
+|switch|p1a: Sandygast|Sandygast, L17, F|100/100|[from] Body Slam
+|-end|p1a: Sandygast|fantasystats|[silent]
+|
+|upkeep
+|turn|8
+|
+|t:|1792222592
+|move|p2a: Simipour|Scald|p1a: Sandygast
+|-ability|p1a: Sandygast|Water Compaction|boost
+|-boost|p1a: Sandygast|def|2
+|move|p1a: Sandygast|Mega Drain|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|4/75
+|-damage|p2a: Simipour|6/100
+|
+|t:|1792222593
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L15, M|15/49|[from] Mega Drain
+|switch|p1a: Spiritomb|Spiritomb, L15, M|31/100|[from] Mega Drain
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|turn|9
+|
+|t:|1792222593
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|0 fnt
+|-damage|p2a: Simipour|0 fnt
+|faint|p2a: Simipour
+|
+|win|Player

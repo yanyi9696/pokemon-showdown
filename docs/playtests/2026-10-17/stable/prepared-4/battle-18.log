@@ -1,0 +1,61 @@
+|t:|1792222000
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L13, M|
+|poke|p1|Pidgey, L9, M|
+|poke|p1|Meowth, L7, F|
+|poke|p1|Slakoth, L7, M|
+|poke|p1|Shroomish, L12, F|
+|poke|p2|Tyrunt-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792222000
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L13, M|43/43
+|switch|p1a: Fuecoco|Fuecoco, L13, M|100/100
+|split|p2
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L13, M|42/42
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L13, M|100/100
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222000
+|-terastallize|p2a: Tyrunt|Rock
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792222000
+|split|p1
+|switch|p1a: Pidgey|Pidgey, L9, M|28/28
+|switch|p1a: Pidgey|Pidgey, L9, M|100/100
+|-end|p1a: Pidgey|fantasystats|[silent]
+|turn|2
+|
+|t:|1792222000
+|move|p2a: Tyrunt|Rock Tomb|p1a: Pidgey
+|-supereffective|p1a: Pidgey
+|split|p1
+|-damage|p1a: Pidgey|0 fnt
+|-damage|p1a: Pidgey|0 fnt
+|faint|p1a: Pidgey
+|
+|win|NPC

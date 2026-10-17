@@ -13,6 +13,7 @@ export function rogueDiscoveries(account: RogueAccount) {
 		...(account.discoveries?.events || []), ...(account.run?.eventHistory || []).map(entry => entry.id),
 		...(account.run?.node?.event ? [account.run.node.event.id] : []),
 		...(account.run?.node?.trade ? [`trade:${account.run.node.trade.kind}`] : []),
+		...(account.run?.node?.rewardScene ? [`reward:${account.run.node.rewardScene.id}`] : []),
 		...(account.run?.node?.kind === 'trainer' ? ['encounter:trainer'] : []),
 		...(account.run?.node?.rocket ? ['encounter:rocket'] : []),
 	]);

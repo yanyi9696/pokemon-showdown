@@ -1,0 +1,111 @@
+|init|battle
+|title|RoguePlay1016D vs. AI · 幻想精英
+
+|-message|幻想杯肉鸽第 10 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792130589
+|gametype|singles
+|player|p1|RoguePlay1016D|265|
+|player|p2|AI · 幻想精英|unknown|
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L11, M|
+|poke|p1|Helioptile, L7, M|
+|poke|p1|Meowth, L6, F|
+|poke|p1|Ponyta, L6, M|
+|poke|p1|Maractus, L5, F|
+|poke|p1|Pancham, L5, F|
+|poke|p2|Onix-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792130590
+|start
+|-message|塔灵：伊裴尔塔尔的交易
+|switch|p1a: Mudkip|Mudkip, L11, M|34/34
+|switch|p2a: Onix|Onix-Fantasy, L20, M|100/100
+|-start|p2a: Onix|typechange|Rock/Ice|[silent]
+|-start|p2a: Onix|fantasystats|35/45/160/30/45/70|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Onix|typechange|Rock/Ice|[silent]
+|-start|p2a: Onix|fantasystats|35/45/160/30/45/70|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|turn|1
+|
+|t:|1792130591
+|-terastallize|p2a: Onix|Rock
+|move|p2a: Onix|Rock Throw|p1a: Mudkip
+|-damage|p1a: Mudkip|0 fnt
+|faint|p1a: Mudkip
+|
+|upkeep
+|
+|t:|1792130591
+|switch|p1a: Meowth|Meowth, L6, F|22/22
+|-end|p1a: Meowth|fantasystats|[silent]
+|turn|2
+|
+|t:|1792130592
+|move|p1a: Meowth|Feint|p2a: Onix
+|-supereffective|p2a: Onix
+|-damage|p2a: Onix|96/100
+|move|p2a: Onix|Body Press|p1a: Meowth
+|-supereffective|p1a: Meowth
+|-damage|p1a: Meowth|0 fnt
+|faint|p1a: Meowth
+|
+|upkeep
+|
+|t:|1792130592
+|switch|p1a: Pancham|Pancham, L5, F|23/23
+|-end|p1a: Pancham|fantasystats|[silent]
+|turn|3
+|
+|t:|1792130593
+|move|p2a: Onix|Body Press|p1a: Pancham
+|-damage|p1a: Pancham|0 fnt
+|faint|p1a: Pancham
+|
+|upkeep
+|
+|t:|1792130594
+|switch|p1a: Maractus|Maractus, L5, F|23/23
+|-end|p1a: Maractus|fantasystats|[silent]
+|turn|4
+|
+|t:|1792130594
+|move|p2a: Onix|Rock Throw|p1a: Maractus
+|-damage|p1a: Maractus|0 fnt
+|faint|p1a: Maractus
+|
+|upkeep
+|
+|t:|1792130595
+|switch|p1a: Ponyta|Ponyta, L6, M|23/23
+|-end|p1a: Ponyta|fantasystats|[silent]
+|turn|5
+|
+|t:|1792130595
+|move|p2a: Onix|Rock Throw|p1a: Ponyta
+|-supereffective|p1a: Ponyta
+|-damage|p1a: Ponyta|0 fnt
+|faint|p1a: Ponyta
+|
+|upkeep
+|
+|t:|1792130596
+|switch|p1a: Helioptile|Helioptile, L7, M|24/24
+|-end|p1a: Helioptile|fantasystats|[silent]
+|turn|6
+|
+|t:|1792130597
+|move|p2a: Onix|Body Press|p1a: Helioptile
+|-supereffective|p1a: Helioptile
+|-damage|p1a: Helioptile|0 fnt
+|faint|p1a: Helioptile
+|
+|win|AI · 幻想精英
+|fantasyroguedefeat|{"floor":10,"encounter":1,"encounters":1,"retryFloor":false,"noHealing":false,"emergencyCost":5000}
+|deinit

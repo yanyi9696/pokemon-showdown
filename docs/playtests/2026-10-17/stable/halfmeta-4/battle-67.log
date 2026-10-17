@@ -1,0 +1,97 @@
+|t:|1792222097
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L26, M|
+|poke|p1|Alcremie, L26, F|
+|poke|p1|Meowth, L19, F|
+|poke|p1|Vigoroth, L18, M|
+|poke|p1|Shroomish, L22, F|
+|poke|p1|Maractus, L20, M|
+|poke|p2|Magnemite, L30|
+|poke|p2|Pikachu, L30, F|
+|poke|p2|Misdreavus, L30, F|
+|teampreview
+|
+|t:|1792222097
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L26, M|88/88
+|switch|p1a: Crocalor|Crocalor, L26, M|100/100
+|split|p2
+|switch|p2a: Magnemite|Magnemite, L30|64/64
+|switch|p2a: Magnemite|Magnemite, L30|100/100
+|-end|p2a: Magnemite|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Magnemite|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222097
+|-terastallize|p2a: Magnemite|Electric
+|move|p2a: Magnemite|Discharge|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|6/88
+|-damage|p1a: Crocalor|7/100
+|move|p1a: Crocalor|Incinerate|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|9/64
+|-damage|p2a: Magnemite|15/100
+|split|p1
+|-damage|p1a: Crocalor|0 fnt|[from] item: Life Orb
+|-damage|p1a: Crocalor|0 fnt|[from] item: Life Orb
+|faint|p1a: Crocalor
+|
+|upkeep
+|
+|t:|1792222097
+|split|p1
+|switch|p1a: Alcremie|Alcremie, L26, F|82/82
+|switch|p1a: Alcremie|Alcremie, L26, F|100/100
+|-end|p1a: Alcremie|fantasystats|[silent]
+|turn|2
+|
+|t:|1792222097
+|move|p2a: Magnemite|Discharge|p1a: Alcremie
+|split|p1
+|-damage|p1a: Alcremie|28/82
+|-damage|p1a: Alcremie|35/100
+|-status|p1a: Alcremie|par
+|move|p1a: Alcremie|Draining Kiss|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|0 fnt
+|-damage|p2a: Magnemite|0 fnt
+|split|p1
+|-heal|p1a: Alcremie|35/82 par|[from] drain|[of] p2a: Magnemite
+|-heal|p1a: Alcremie|43/100 par|[from] drain|[of] p2a: Magnemite
+|faint|p2a: Magnemite
+|split|p1
+|-damage|p1a: Alcremie|27/82 par|[from] item: Life Orb
+|-damage|p1a: Alcremie|33/100 par|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792222097
+|split|p2
+|switch|p2a: Pikachu|Pikachu, L30, F|70/70
+|switch|p2a: Pikachu|Pikachu, L30, F|100/100
+|-end|p2a: Pikachu|fantasystats|[silent]
+|turn|3
+|
+|t:|1792222097
+|move|p2a: Pikachu|Volt Tackle|p1a: Alcremie
+|split|p1
+|-damage|p1a: Alcremie|0 fnt
+|-damage|p1a: Alcremie|0 fnt
+|faint|p1a: Alcremie
+|split|p2
+|-damage|p2a: Pikachu|61/70|[from] Recoil
+|-damage|p2a: Pikachu|88/100|[from] Recoil
+|
+|win|NPC

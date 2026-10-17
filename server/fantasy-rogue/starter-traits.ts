@@ -12,10 +12,10 @@ export function starterTraits(account: RogueAccount, id: string): RogueStarterTr
 	});
 }
 
-/** Only trusted captures/events may expand permanent choices; starting a run never unlocks a nature. */
+/** Trusted captures, event gifts and confirmed starting partners expand permanent choices. */
 export function recordStarterTraits(account: RogueAccount, content: RogueContent, set: PokemonSet, nature: boolean) {
 	const dex = Dex.mod('gen9fantasy');
-	const id = content.unlocks[dex.species.get(set.species).id]?.starter;
+	const id = content.unlocks[dex.species.get(set.species).id]?.starter || content.starters.find(s => toID(s.set.species) === toID(set.species))?.id;
 	if (!id) return;
 	const traits = starterTraits(account, id);
 	const knownNature = dex.natures.get(set.nature);

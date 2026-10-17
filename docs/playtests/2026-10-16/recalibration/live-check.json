@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-16T16:02:09.748Z",
+  "transport": "real localhost WebSocket",
+  "user": "RogueBalance1016I",
+  "savedAdventureRestored": true,
+  "floor": 60,
+  "teamSize": 6,
+  "hpPpBagMoneyPointsPreserved": true,
+  "activeBattles": 0,
+  "blessingCount": 140,
+  "checks": [
+    "speed +5% per 100",
+    "Merciless",
+    "floor restrictions",
+    "renewable prismatic",
+    "mouse family rename",
+    "Tailwind",
+    "guide growth rules"
+  ],
+  "browserVisualReview": "not performed; browser URL policy blocked local page"
+}

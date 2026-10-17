@@ -1,0 +1,156 @@
+|t:|1792230995
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|4
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L12, M|
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Bulbasaur, L8, M|
+|poke|p1|Machop, L7, M|
+|poke|p2|Tyrunt-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792230995
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L12, M|41/41
+|switch|p1a: Mudkip|Mudkip, L12, M|100/100
+|split|p2
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L13, M|42/42
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L13, M|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|turn|1
+|
+|t:|1792230996
+|-terastallize|p2a: Tyrunt|Rock
+|move|p1a: Mudkip|Rock Smash|p2a: Tyrunt
+|-supereffective|p2a: Tyrunt
+|-crit|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|27/42
+|-damage|p2a: Tyrunt|65/100
+|move|p2a: Tyrunt|Rock Tomb|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|21/41
+|-damage|p1a: Mudkip|52/100
+|-unboost|p1a: Mudkip|spe|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792230996
+|split|p1
+|switch|p1a: Machop|Machop, L7, M|33/33
+|switch|p1a: Machop|Machop, L7, M|100/100
+|-end|p1a: Machop|fantasystats|[silent]
+|move|p2a: Tyrunt|Rock Tomb|p1a: Machop
+|-resisted|p1a: Machop
+|split|p1
+|-damage|p1a: Machop|18/33
+|-damage|p1a: Machop|55/100
+|-unboost|p1a: Machop|spe|1
+|
+|upkeep
+|turn|3
+|
+|t:|1792230997
+|move|p2a: Tyrunt|Yao Lan|p1a: Machop
+|split|p1
+|-damage|p1a: Machop|0 fnt
+|-damage|p1a: Machop|0 fnt
+|faint|p1a: Machop
+|
+|upkeep
+|
+|t:|1792230997
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L8, M|31/31
+|switch|p1a: Bulbasaur|Bulbasaur, L8, M|100/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|4
+|
+|t:|1792230997
+|move|p2a: Tyrunt|Yao Lan|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|12/31
+|-damage|p1a: Bulbasaur|39/100
+|move|p1a: Bulbasaur|Vine Whip|p2a: Tyrunt
+|-supereffective|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|19/42
+|-damage|p2a: Tyrunt|46/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792230997
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L12, M|21/41
+|switch|p1a: Mudkip|Mudkip, L12, M|52/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|move|p2a: Tyrunt|Rock Tomb|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|0 fnt
+|-damage|p1a: Mudkip|0 fnt
+|faint|p1a: Mudkip
+|
+|upkeep
+|
+|t:|1792230997
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|42/42
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|6
+|
+|t:|1792230997
+|move|p1a: Fuecoco|Round|p2a: Tyrunt
+|-resisted|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|14/42
+|-damage|p2a: Tyrunt|34/100
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|2/42
+|-damage|p1a: Fuecoco|5/100
+|-unboost|p1a: Fuecoco|spe|1
+|
+|upkeep
+|turn|7
+|
+|t:|1792230997
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792230997
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L8, M|12/31
+|switch|p1a: Bulbasaur|Bulbasaur, L8, M|39/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|8
+|
+|t:|1792230997
+|move|p2a: Tyrunt|Rock Tomb|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|
+|win|NPC

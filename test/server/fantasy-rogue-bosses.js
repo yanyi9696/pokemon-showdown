@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 
 const assert = require('assert').strict;
 const crypto = require('crypto');
@@ -35,7 +36,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 	let store, engine;
 	const user = 'eliteqatester';
 	const account = () => store.get(user);
-	const cmd = (action, details = {}) => engine.command(user, {
+	const cmd = (action, details = {}) => commandAfterOpening(engine, user, {
 		id: crypto.randomUUID(), revision: account().revision, action, ...details,
 	});
 	function restBefore(floor) {
@@ -72,7 +73,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 				try {
 					const mon = battle.p2.active[0];
 					assert.equal(mon.species.id, toID(original.species));
-					assert.equal(mon.level, 5 + Number(floor) / 2);
+					assert.equal(mon.level, Number(floor) === 10 ? 8 : 5 + Number(floor) / 2);
 					assert.equal(mon.baseAbility, toID(original.ability));
 					assert.deepEqual(mon.baseMoves, original.moves.map(toID));
 					assert.equal(mon.item, toID(original.item));
@@ -128,7 +129,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 			}
 		} finally { crypto.randomInt = originalRandomInt; }
 	});
-	it('grants opposing Tera to Fantasy elite bosses and authored trainers, never ordinary wilds or final bosses', () => {
+	it('grants opposing Tera to Fantasy elite bosses, authored trainers and the summit roster, never ordinary wilds', () => {
 		const allowed = [10, 30, 50, 70, 90, 110, 130, 150, 170];
 		for (const [floor, nodes] of Object.entries(engine.content.floors)) {
 			for (const node of nodes.filter(node => node.encounters.length)) {
@@ -140,7 +141,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 						battle: { token: 'test', encounterId: 'test' } });
 				});
 				assert.deepEqual(engine.battleState(user).tera, {
-					player: false, opponent: !!candidate || allowed.includes(Number(floor)),
+					player: false, opponent: !!candidate || allowed.includes(Number(floor)) || Number(floor) === 200,
 				});
 			}
 		}

@@ -6,6 +6,7 @@ import { toID } from './dex';
 import { captureThresholds, rogueSpeciesData } from './fantasy-rogue-rules';
 import { blessingProgress, hasBlessing, failedTrainerCapture, battleDragonKing } from './fantasy-rogue-blessings';
 import { savedRogueStatuses } from './fantasy-rogue-status';
+import { mentorCardProfile } from './rogue-mentor';
 
 export const ROGUE_FORMAT = 'gen9fantasyrogue';
 export const ROGUE_DUEL_FORMAT = 'gen9fantasyrogueduel';
@@ -14,15 +15,22 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	/** Run-local personal training in basis points; not EVs or account upgrades. */
+	training?: { offense?: number, defense?: number };
+	evolutionNotice?: boolean;
 	tonics?: import('./rogue-blessing-permanent').RogueTonics;
 	mintNature?: string;
 	joinOrder?: number;
 	initialPartner?: boolean;
 	bond?: number;
 	bondReady?: boolean;
+	/** Half-point remainder for the initial-partner friendship bonus. */
+	bondFriendshipRemainder?: number;
 	bonusHP?: number;
 	insight?: { points: number, gain: number };
 	extraAbilities?: string[];
+	/** A removable type emblem has its own slot, independent of the held item. */
+	emblem?: string;
 	/** Temporary learning permissions are kept apart from permanently learned moves. */
 	blessingMoves?: string[];
 	blessingPP?: { id: string, pp: number, maxpp: number }[];
@@ -61,6 +69,10 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	mentorCard?: 'attack' | 'guard' | 'balanced';
+	mentorTier?: import('./rogue-mentor').MentorTier;
+	fishingElite?: boolean;
+	boss?: import('./rogue-bosses').RogueBossState;
 	eventBuff?: boolean;
 	blessingRuntime?: Record<string, import('./fantasy-rogue-blessings').SideRuntime>;
 	blessingDefeated?: string[];
@@ -110,9 +122,10 @@ export interface RogueBattleResult {
 /** Mushroom vitality affects direct opposing damage, never recoil, weather or one-hit KO moves. */
 export function rogueEventDamage(damage: number, target: Pokemon, source: Pokemon, effect: Effect) {
 	const state = target.battle.fantasyRogue;
-	if (!state || damage <= 0 || !(state.eventBuff || state.duel?.eventBuff) ||
+	if (!state || damage <= 0 || !(state.eventBuff || state.duel?.eventBuff || state.mentorCard) ||
 		effect.effectType !== 'Move' || effect.ohko || !source || source.side === target.side) return damage;
 	const buff = (mon: Pokemon) => mon.side.id === 'p1' ? state.eventBuff : state.duel?.eventBuff;
+	if (source.side.id === 'p1' && state.mentorCard) damage *= 1 + mentorCardProfile(state.mentorCard, state.mentorTier).damage / 100;
 	if (buff(source)) damage *= 1.2;
 	if (buff(target)) damage *= 0.9;
 	return Math.max(1, Math.floor(damage));
@@ -126,7 +139,7 @@ export function snapshotRoguePokemon(mon: Pokemon, original: RoguePokemon): Rogu
 	return {
 		...structuredClone(original),
 		id: original.id,
-		set: { ...structuredClone(original.set), item: mon.item || mon.m.rogueBlessing?.consumed || '' },
+		set: { ...structuredClone(original.set), item: mon.item || '' },
 		hp: Math.min(maxhp, hp), maxhp,
 		bonusHP: (original.bonusHP || 0) + growth,
 		statModifiers: { ...original.statModifiers, hp: (original.bonusHP || 0) + growth },
@@ -150,6 +163,7 @@ export function initializeRogueBattle(battle: Battle) {
 	state.participants = {};
 	state.defeated = [];
 	state.blessingProgress = { kos: [], swords: 0, insight: {} };
+	if (state.boss?.kind === 'arceus') battle.add('-message', '神之挑战：阿尔宙斯拥有十九条生命。当前为第 1 / 19 条生命。');
 	for (const [i, mon] of battle.p2.pokemon.entries()) {
 		mon.set.fantasyRogueId = `${state.encounterId}:foe:${i}`;
 		if (!state.duel && (state.opponentStars?.[i] || 1) > 1) {
@@ -190,6 +204,8 @@ export function canRogueSystem(pokemon: Pokemon, system: 'mega' | 'gmega' | 'z')
 }
 
 export function canRogueTerastallize(pokemon: Pokemon): boolean {
+	if (pokemon.side.id === 'p2' && pokemon.battle.fantasyRogue?.boss &&
+		(pokemon.battle.fantasyRogue.boss.kind === 'arceus' || pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy')) return false;
 	return pokemon.side.fantasyRogueTera !== false;
 }
 
@@ -306,7 +322,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 	target.hp = 0;
 	target.fainted = true;
 	target.side.pokemonLeft--;
-	battle.add('-sethp', target, '0 fnt', '[silent]');
+	// The capture protocol removes it visually; a zero-HP update would look like a knockout.
 	if (!target.side.pokemonLeft) battle.win(battle.p1);
 }
 

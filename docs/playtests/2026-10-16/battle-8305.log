@@ -1,0 +1,68 @@
+|init|battle
+|title|RoguePlay1016F vs. AI · 幻想精英
+
+|-message|幻想杯肉鸽第 50 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792133679
+|gametype|singles
+|player|p1|RoguePlay1016F|266|
+|player|p2|AI · 幻想精英|unknown|
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L25, M|
+|poke|p1|Muk-Alola, L40, M|
+|poke|p1|Munna, L23, F|
+|poke|p1|Mankey, L22, F|
+|poke|p1|Solosis, L23, M|
+|poke|p1|Psyduck, L22, M|
+|poke|p2|Golem-Alola-Fantasy, L35, M|
+|teampreview
+|
+|t:|1792133681
+|start
+|-message|塔灵：时拉比的驻时
+|switch|p1a: Muk|Muk-Alola, L40, M|144/144
+|switch|p2a: Golem|Golem-Alola-Fantasy, L35, M|100/100
+|-end|p1a: Muk|fantasystats|[silent]
+|-start|p2a: Golem|typechange|Rock/Electric|[silent]
+|-start|p2a: Golem|fantasystats|80/125/130/55/65/45|[silent]
+|-end|p1a: Muk|fantasystats|[silent]
+|-start|p2a: Golem|typechange|Rock/Electric|[silent]
+|-start|p2a: Golem|fantasystats|80/125/130/55/65/45|[silent]
+|turn|1
+|
+|t:|1792133681
+|-terastallize|p2a: Golem|Rock
+|move|p1a: Muk|Mud Shot|p2a: Golem
+|-supereffective|p2a: Golem
+|-damage|p2a: Golem|57/100
+|-unboost|p2a: Golem|spe|1
+|move|p2a: Golem|Rock Throw|p1a: Muk
+|-damage|p1a: Muk|78/144
+|
+|upkeep
+|turn|2
+|
+|t:|1792133682
+|move|p1a: Muk|Crunch|p2a: Golem
+|-damage|p2a: Golem|22/100
+|-status|p2a: Golem|psn|[from] ability: Poison Touch|[of] p1a: Muk
+|move|p2a: Golem|Rock Throw|p1a: Muk
+|-damage|p1a: Muk|4/144
+|-enditem|p1a: Muk|Sitrus Berry|[eat]
+|-heal|p1a: Muk|40/144|[from] item: Sitrus Berry
+|
+|-damage|p2a: Golem|10/100 psn|[from] psn
+|upkeep
+|turn|3
+|
+|t:|1792133682
+|move|p1a: Muk|Crunch|p2a: Golem
+|-damage|p2a: Golem|0 fnt
+|faint|p2a: Golem
+|
+|win|RoguePlay1016F
+|deinit

@@ -13,7 +13,7 @@ import { activeTypes, observedImmunity } from './strategy';
  * Complex move/type callbacks are left uncertain and handled by the worker's native probes.
  */
 export function emergencyChoice(
-	observation: Observation, format: string, excluded: readonly string[] = [], smart = false
+	observation: Observation, format: string, excluded: readonly string[] = [], smart = false, enhancedMoves = smart
 ): string {
 	const request = observation.request;
 	if (request.wait || request.teamPreview || request.forceSwitch) {
@@ -48,14 +48,29 @@ export function emergencyChoice(
 		if (['scrappy', 'mindseye'].includes(ability) && ['Normal', 'Fighting'].includes(move.type)) return false;
 		return !dex.getImmunity(move.type, types);
 	};
+	const abilityImmune = (id: string) => {
+		const move = dex.moves.get(id);
+		if (['self', 'allySide', 'all', 'allyTeam'].includes(move.target) || move.onModifyType || foe.volatiles.includes('gastroacid')) return false;
+		if (move.ignoreAbility || ['moldbreaker', 'teravolt', 'turboblaze'].includes(effectiveAbility(own))) return false;
+		// Only revealed abilities are used, never the opponent's private set or selected move.
+		const ability = foe.ability;
+		return (move.type === 'Ground' && (ability === 'eartheater' || ability === 'levitate' && !memory.pseudoWeather.includes('gravity'))) ||
+			(move.type === 'Water' && ['waterabsorb', 'stormdrain', 'dryskin'].includes(ability || '')) ||
+			(move.type === 'Electric' && ['voltabsorb', 'lightningrod', 'motordrive'].includes(ability || '')) ||
+			(move.type === 'Fire' && ability === 'flashfire') || (move.type === 'Grass' && ability === 'sapsipper') ||
+			(!!move.flags.sound && ability === 'soundproof') || (!!move.flags.bullet && ability === 'bulletproof');
+	};
 	const blocked = (choice: string) => {
 		const [kind, slot, event] = choice.split(' ');
 		if (kind !== 'move') return false;
+		// A legal singles choice can still have no recipient (e.g. Helping Hand).
+		const target = request.active[0].moves[Number(slot) - 1]?.target;
+		if (target === 'adjacentAlly' && request.active.length === 1) return true;
 		if (event && event !== 'terastallize') return false;
 		const id = request.active[0].moves[Number(slot) - 1]?.id;
 		if (!id) return false;
 		if (!event && observedImmunity(memory, active, foe, id)) return true;
-		return typeImmune(own, id);
+		return typeImmune(own, id) || enhancedMoves && abilityImmune(id);
 	};
 	const available = choices.filter(choice => !blocked(choice));
 	const moves = available.filter(choice => choice.startsWith('move '));
@@ -65,31 +80,70 @@ export function emergencyChoice(
 		const attackStat = (category: string) => category === 'Physical' ? 'atk' : 'spa';
 		const strongest = Math.max(own.stats.atk * boost(own.boosts.atk), own.stats.spa * boost(own.boosts.spa));
 		const foeSide = memory.sides[side === 'p1' ? 'p2' : 'p1'];
+		const species = dex.species.get(foe.species);
+		const estimateStat = (stat: 'hp' | 'def' | 'spd' | 'spe') => Math.floor((2 * species.baseStats[stat] + 31) * foe.level / 100) +
+			(stat === 'hp' ? foe.level + 10 : 5);
+		const foeHP = estimateStat('hp') * foe.health.upper;
 		const score = (choice: string) => {
 			const [kind, slot, event] = choice.split(' ');
 			const move = dex.moves.get(request.active[0].moves[Number(slot) - 1]?.id);
 			if (kind !== 'move' || !move.exists) return -100;
+			if (enhancedMoves && ['snore', 'sleeptalk'].includes(move.id) && own.status !== 'slp') return -90;
+			if (enhancedMoves && own.status === 'slp' && !move.sleepUsable) return -90;
 			if (move.id === 'fakeout' && (active?.activeMoveActions || 0) > 0) return -90;
 			if (move.category !== 'Status') {
 				const stat = attackStat(move.category);
 				let power = move.basePower || (move.damage ? 70 : move.ohko ? 100 : 50);
+				// Preserve the existing trainer policy; this revision targets wild opponents.
+				if (!enhancedMoves) {
+					if (move.multihit) power *= typeof move.multihit === 'number' ? move.multihit : (move.multihit[0] + move.multihit[1]) / 2;
+					if (move.flags.charge && !own.volatiles.includes(move.id)) power *= .65;
+					if (move.selfdestruct) power *= .6;
+					return power * (activeTypes(own, dex).includes(move.type) ? 1.5 : 1) * 2 ** dex.getEffectiveness(move.type, types) *
+						(move.accuracy === true ? 1 : move.accuracy / 100) * own.stats[stat] * boost(own.boosts[stat]) / strongest +
+						(move.priority > 0 && foe.health.upper < .25 ? 25 : 0) + (event ? 1 : 0);
+				}
+				if (['storedpower', 'powertrip'].includes(move.id)) power = 20 + 20 * Object.values(own.boosts).reduce((n, stage) => n + Math.max(0, stage), 0);
+				if (move.id === 'acrobatics' && !own.item) power *= 2;
+				if (move.id === 'hex' && foe.status || move.id === 'venoshock' && ['psn', 'tox'].includes(foe.status) ||
+					move.id === 'brine' && foe.health.upper <= .5 || move.id === 'facade' && own.status) power *= 2;
+				if (['eruption', 'waterspout', 'dragonenergy'].includes(move.id)) power = Math.max(1, 150 * own.health.upper);
+				if (['flail', 'reversal'].includes(move.id)) {
+					const hp = own.health.upper; power = hp <= .04 ? 200 : hp <= .1 ? 150 : hp <= .2 ? 100 : hp <= .35 ? 80 : hp <= .7 ? 40 : 20;
+				}
+				if (move.id === 'gyroball') power = Math.min(150, 25 * estimateStat('spe') * boost(foe.boosts.spe) / (own.stats.spe * boost(own.boosts.spe)) + 1);
+				if (move.ohko && (own.level < foe.level || foe.ability === 'sturdy')) return -90;
 				if (move.multihit) {
 					power *= typeof move.multihit === 'number' ? move.multihit : (move.multihit[0] + move.multihit[1]) / 2;
 				}
-				if (move.flags.charge && !own.volatiles.includes(move.id)) power *= 0.65;
+				if (move.flags.charge && !own.volatiles.includes(move.id) && own.item !== 'powerherb' &&
+					!(['solarbeam', 'solarblade'].includes(move.id) && ['sunnyday', 'desolateland'].includes(memory.weather))) power *= 0.55;
+				if (move.self?.volatileStatus === 'mustrecharge') power *= 0.65;
 				if (move.selfdestruct) power *= 0.6;
 				const stab = activeTypes(own, dex).includes(move.type) ? 1.5 : 1;
 				const effectiveness = 2 ** dex.getEffectiveness(move.type, types);
 				const accuracy = move.accuracy === true ? 1 : move.accuracy / 100;
-				return power * stab * effectiveness * accuracy * own.stats[stat] * boost(own.boosts[stat]) / strongest +
+				const defensiveStat = move.overrideDefensiveStat || (stat === 'atk' ? 'def' : 'spd');
+				const defense = estimateStat(defensiveStat === 'def' ? 'def' : 'spd') * boost(foe.boosts[defensiveStat]);
+				let attack = own.stats[stat] * boost(own.boosts[stat]);
+				if (stat === 'atk' && own.status === 'brn' && effectiveAbility(own) !== 'guts' && move.id !== 'facade') attack *= .5;
+				let damage = ((2 * own.level / 5 + 2) * power * attack / defense / 50 + 2) * stab * effectiveness * .925;
+				if (move.damage) damage = move.damage === 'level' ? own.level : Number(move.damage);
+				if (['superfang', 'naturesmadness', 'ruination'].includes(move.id)) damage = foeHP / 2;
+				if (move.id === 'endeavor') damage = Math.max(0, foeHP - own.stats.hp * own.health.upper);
+				// Prefer a reliable finish over setup or a needlessly risky stronger move.
+				if (damage * .85 >= foeHP && !move.flags.charge && !move.selfdestruct) return 500 + accuracy * 100 + Math.max(0, move.priority) * 5;
+				return damage / Math.max(1, estimateStat('hp')) * 200 * accuracy +
 					(move.priority > 0 && foe.health.upper < 0.25 ? 25 : 0) + (event ? 1 : 0);
 			}
 			if (['splash', 'celebrate', 'holdhands', 'happyhour', 'teleport'].includes(move.id)) return -100;
 			if (move.heal || ['rest', 'strengthsap', 'wish'].includes(move.id)) {
+				if (enhancedMoves && (own.volatiles.includes('healblock') || move.id === 'wish' && own.volatiles.includes('wish'))) return -80;
 				return own.health.upper > 0.75 ? -80 : (1 - own.health.upper) * 190;
 			}
 			if (move.status) {
 				if (foe.status || !dex.getImmunity(move.status, types) ||
+					enhancedMoves && move.flags.powder && (types.includes('Grass') || foe.ability === 'overcoat' || foe.item === 'safetygoggles') ||
 					move.ignoreImmunity !== true && !dex.getImmunity(move.type, types) ||
 					foe.volatiles.includes('substitute') || foeSide.conditions.safeguard) return -80;
 				return foe.health.upper < 0.25 ? 5 : 65;

@@ -1,0 +1,149 @@
+|t:|1792223146
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L13, M|
+|poke|p1|Snorunt, L9, F|
+|poke|p1|Solosis, L8, F|
+|poke|p1|Wynaut, L10, F|
+|poke|p1|Drifloon, L14, M|
+|poke|p1|Tinkatink, L13, F|
+|poke|p2|Mimikyu, L20, M|
+|poke|p2|Gastly, L20, M|
+|poke|p2|Sandygast, L20, F|
+|teampreview
+|
+|t:|1792223146
+|start
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L13, M|37/37
+|switch|p1a: Bulbasaur|Bulbasaur, L13, M|100/100
+|split|p2
+|switch|p2a: Mimikyu|Mimikyu, L20, M|70/70
+|switch|p2a: Mimikyu|Mimikyu, L20, M|100/100
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223146
+|-terastallize|p2a: Mimikyu|Ghost
+|move|p2a: Mimikyu|Shadow Claw|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|split|p2
+|-damage|p2a: Mimikyu|63/70|[from] item: Life Orb
+|-damage|p2a: Mimikyu|90/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792223146
+|split|p1
+|switch|p1a: Snorunt|Snorunt, L9, F|30/30
+|switch|p1a: Snorunt|Snorunt, L9, F|100/100
+|-end|p1a: Snorunt|fantasystats|[silent]
+|turn|2
+|
+|t:|1792223146
+|move|p2a: Mimikyu|Shadow Claw|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|0 fnt
+|-damage|p1a: Snorunt|0 fnt
+|faint|p1a: Snorunt
+|split|p2
+|-damage|p2a: Mimikyu|56/70|[from] item: Life Orb
+|-damage|p2a: Mimikyu|80/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792223146
+|split|p1
+|switch|p1a: Solosis|Solosis, L8, F|27/27
+|switch|p1a: Solosis|Solosis, L8, F|100/100
+|-end|p1a: Solosis|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223146
+|move|p2a: Mimikyu|Shadow Claw|p1a: Solosis
+|-supereffective|p1a: Solosis
+|split|p1
+|-damage|p1a: Solosis|0 fnt
+|-damage|p1a: Solosis|0 fnt
+|faint|p1a: Solosis
+|split|p2
+|-damage|p2a: Mimikyu|49/70|[from] item: Life Orb
+|-damage|p2a: Mimikyu|70/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792223146
+|split|p1
+|switch|p1a: Wynaut|Wynaut, L10, F|41/41
+|switch|p1a: Wynaut|Wynaut, L10, F|100/100
+|-end|p1a: Wynaut|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223146
+|move|p2a: Mimikyu|Shadow Claw|p1a: Wynaut
+|-supereffective|p1a: Wynaut
+|split|p1
+|-damage|p1a: Wynaut|0 fnt
+|-damage|p1a: Wynaut|0 fnt
+|faint|p1a: Wynaut
+|split|p2
+|-damage|p2a: Mimikyu|42/70|[from] item: Life Orb
+|-damage|p2a: Mimikyu|60/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792223146
+|split|p1
+|switch|p1a: Drifloon|Drifloon, L14, M|52/52
+|switch|p1a: Drifloon|Drifloon, L14, M|100/100
+|-end|p1a: Drifloon|fantasystats|[silent]
+|turn|5
+|
+|t:|1792223146
+|move|p2a: Mimikyu|Shadow Claw|p1a: Drifloon
+|-supereffective|p1a: Drifloon
+|split|p1
+|-damage|p1a: Drifloon|0 fnt
+|-damage|p1a: Drifloon|0 fnt
+|split|p2
+|-damage|p2a: Mimikyu|25/70|[from] ability: Aftermath|[of] p1a: Drifloon
+|-damage|p2a: Mimikyu|36/100|[from] ability: Aftermath|[of] p1a: Drifloon
+|faint|p1a: Drifloon
+|split|p2
+|-damage|p2a: Mimikyu|18/70|[from] item: Life Orb
+|-damage|p2a: Mimikyu|26/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792223146
+|split|p1
+|switch|p1a: Tinkatink|Tinkatink, L13, F|39/39
+|switch|p1a: Tinkatink|Tinkatink, L13, F|100/100
+|-end|p1a: Tinkatink|fantasystats|[silent]
+|-ability|p1a: Tinkatink|Mold Breaker
+|turn|6
+|
+|t:|1792223146
+|move|p2a: Mimikyu|Shadow Claw|p1a: Tinkatink
+|split|p1
+|-damage|p1a: Tinkatink|0 fnt
+|-damage|p1a: Tinkatink|0 fnt
+|faint|p1a: Tinkatink
+|split|p2
+|-damage|p2a: Mimikyu|11/70|[from] item: Life Orb
+|-damage|p2a: Mimikyu|16/100|[from] item: Life Orb
+|
+|win|NPC

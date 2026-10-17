@@ -1,0 +1,196 @@
+|t:|1792223232
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L23, M|
+|poke|p1|Sandygast, L20, F|
+|poke|p1|Spiritomb, L16, M|
+|poke|p1|Baltoy, L19|
+|poke|p1|Dedenne, L19, F|
+|poke|p1|Scraggy, L21, M|
+|poke|p2|Torkoal, L25, F|
+|poke|p2|Litwick, L25, M|
+|poke|p2|Capsakid, L25, M|
+|teampreview
+|
+|t:|1792223232
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L23, M|75/75
+|switch|p1a: Marshtomp|Marshtomp, L23, M|100/100
+|split|p2
+|switch|p2a: Torkoal|Torkoal, L25, F|77/77
+|switch|p2a: Torkoal|Torkoal, L25, F|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Torkoal|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Torkoal|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223233
+|-terastallize|p2a: Torkoal|Fire
+|move|p1a: Marshtomp|Surf|p2a: Torkoal
+|-supereffective|p2a: Torkoal
+|split|p2
+|-damage|p2a: Torkoal|16/77
+|-damage|p2a: Torkoal|21/100
+|
+|t:|1792223233
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L20, F|62/62|[from] Surf
+|switch|p1a: Sandygast|Sandygast, L20, F|100/100|[from] Surf
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Torkoal|Lava Plume|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|0 fnt
+|-damage|p1a: Sandygast|0 fnt
+|faint|p1a: Sandygast
+|
+|upkeep
+|
+|t:|1792223234
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L23, M|75/75
+|switch|p1a: Marshtomp|Marshtomp, L23, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|2
+|
+|t:|1792223234
+|move|p1a: Marshtomp|Surf|p2a: Torkoal
+|-supereffective|p2a: Torkoal
+|split|p2
+|-damage|p2a: Torkoal|0 fnt
+|-damage|p2a: Torkoal|0 fnt
+|faint|p2a: Torkoal
+|
+|t:|1792223234
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L16, M|51/51|[from] Surf
+|switch|p1a: Spiritomb|Spiritomb, L16, M|100/100|[from] Surf
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|
+|t:|1792223234
+|split|p2
+|switch|p2a: Litwick|Litwick, L25, M|67/67
+|switch|p2a: Litwick|Litwick, L25, M|100/100
+|-end|p2a: Litwick|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223234
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L23, M|75/75
+|switch|p1a: Marshtomp|Marshtomp, L23, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Litwick|Heat Wave|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|-crit|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|54/75
+|-damage|p1a: Marshtomp|72/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792223235
+|move|p1a: Marshtomp|Surf|p2a: Litwick
+|-supereffective|p2a: Litwick
+|split|p2
+|-damage|p2a: Litwick|1/67
+|-damage|p2a: Litwick|2/100
+|
+|t:|1792223235
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L16, M|51/51|[from] Surf
+|switch|p1a: Spiritomb|Spiritomb, L16, M|100/100|[from] Surf
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Litwick|Shadow Ball|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|26/51
+|-damage|p1a: Spiritomb|51/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792223235
+|move|p1a: Spiritomb|Night Shade|p2a: Litwick
+|split|p2
+|-damage|p2a: Litwick|0 fnt
+|-damage|p2a: Litwick|0 fnt
+|faint|p2a: Litwick
+|
+|t:|1792223235
+|split|p1
+|switch|p1a: Scraggy|Scraggy, L21, M|63/63|[from] Night Shade
+|switch|p1a: Scraggy|Scraggy, L21, M|100/100|[from] Night Shade
+|-end|p1a: Scraggy|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792223235
+|split|p2
+|switch|p2a: Capsakid|Capsakid, L25, M|67/67
+|switch|p2a: Capsakid|Capsakid, L25, M|100/100
+|-end|p2a: Capsakid|fantasystats|[silent]
+|turn|6
+|
+|t:|1792223236
+|move|p1a: Scraggy|Close Combat|p2a: Capsakid
+|split|p2
+|-damage|p2a: Capsakid|15/67
+|-damage|p2a: Capsakid|23/100
+|-unboost|p1a: Scraggy|def|1
+|-unboost|p1a: Scraggy|spd|1
+|
+|t:|1792223236
+|split|p1
+|switch|p1a: Dedenne|Dedenne, L19, F|64/64|[from] Close Combat
+|switch|p1a: Dedenne|Dedenne, L19, F|100/100|[from] Close Combat
+|-end|p1a: Dedenne|fantasystats|[silent]
+|move|p2a: Capsakid|Giga Drain|p1a: Dedenne
+|-crit|p1a: Dedenne
+|split|p1
+|-damage|p1a: Dedenne|25/64
+|-damage|p1a: Dedenne|40/100
+|split|p2
+|-heal|p2a: Capsakid|35/67|[from] drain|[of] p1a: Dedenne
+|-heal|p2a: Capsakid|53/100|[from] drain|[of] p1a: Dedenne
+|
+|upkeep
+|turn|7
+|
+|t:|1792223236
+|split|p1
+|switch|p1a: Scraggy|Scraggy, L21, M|63/63
+|switch|p1a: Scraggy|Scraggy, L21, M|100/100
+|-end|p1a: Scraggy|fantasystats|[silent]
+|move|p2a: Capsakid|Giga Drain|p1a: Scraggy
+|split|p1
+|-damage|p1a: Scraggy|41/63
+|-damage|p1a: Scraggy|66/100
+|split|p2
+|-heal|p2a: Capsakid|46/67|[from] drain|[of] p1a: Scraggy
+|-heal|p2a: Capsakid|69/100|[from] drain|[of] p1a: Scraggy
+|
+|upkeep
+|turn|8
+|
+|t:|1792223237
+|move|p1a: Scraggy|Close Combat|p2a: Capsakid
+|split|p2
+|-damage|p2a: Capsakid|0 fnt
+|-damage|p2a: Capsakid|0 fnt
+|-unboost|p1a: Scraggy|def|1
+|-unboost|p1a: Scraggy|spd|1
+|faint|p2a: Capsakid
+|
+|win|Player

@@ -1,6 +1,11 @@
 import { centerCare } from './economy';
+import { companionView } from './companions';
+import { growthView, growthOffers } from './growth';
+import { rewardSceneView } from './reward-scenes';
 import { randomUUID } from 'crypto';
+import { emergencyCost, MENTOR_CARDS, mentorCardAtFloor, type MentorCard } from './early-balance';
 import { eventView, canRetreatRogue } from './events';
+import { needsOnboarding } from './onboarding';
 import { rogueCodex, type CodexSection } from './codex';
 import { FS, Utils } from '../../lib';
 import { Dex, toID } from '../../sim/dex';
@@ -9,7 +14,7 @@ import { Teams } from '../../sim/teams';
 import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
 import { FantasyRogueContent } from '../../config/fantasy-rogue';
 import { getAIManager, type AIChallengeManager } from '../fantasy-ai/manager';
-import { ROGUE_EMERGENCY_COST, RogueEngine, rogueSlotCost } from './engine';
+import { RogueEngine, rogueSlotCost, rogueStatCost } from './engine';
 import { ROGUE_CAPTURE_COUNTS } from '../../sim/fantasy-rogue-rules';
 import { RogueStore } from './store';
 import { BOSS_FLOORS, fixedFloor } from './content';
@@ -26,6 +31,7 @@ import { storyView, startCard } from './story';
 import { RogueDuels, type DuelCommand } from './duels';
 import { rogueRulesVersion } from './legacy';
 import { blessingView, blessingItems, blessingMemberTypes, fantasyForm, equipmentCategory } from './blessings';
+import { assignedExtraAbilities, canGrantExtraAbility } from '../../sim/rogue-blessing-permanent';
 
 export class RogueManager {
 	readonly engine: RogueEngine;
@@ -80,15 +86,16 @@ export class RogueManager {
 		const account = this.engine.migrate(user.id);
 		const content = this.engine.content;
 		const run = account.run;
+		const stock = content ? shopStock(content, run) : [];
 		const items = content ? [...spiritItems(content, run), ...(content.blessings ? blessingItems(account.tonicSecret) : [])] : [];
-		if (run?.node?.trade) {
-			for (const item of run.node.trade.stock) {
+		if (run?.node) {
+			for (const item of run.node.trade?.stock || stock) {
 				const index = items.findIndex(entry => entry.id === item.id);
 				if (index >= 0) items[index] = { ...item }; else items.push({ ...item });
 			}
 		}
 		if (run && content) {
-			for (const id of [...Object.keys(run.bag), ...[...run.team, ...(run.box || [])].map(mon => toID(mon.set.item))]) {
+			for (const id of [...Object.keys(run.bag), ...[...run.team, ...(run.box || [])].flatMap(mon => [toID(mon.set.item), mon.emblem || ''])]) {
 				if (!id || items.some(item => item.id === id)) continue;
 				const item = inventoryItem(content, id);
 				if (item) items.push(item);
@@ -101,12 +108,15 @@ export class RogueManager {
 			story: storyView(account, !!content?.story, this.engine.localSpirits),
 			cards: account.cards || [], pendingClear: account.pendingClear,
 			account: {
+				needsOnboarding: !!content && needsOnboarding(account),
 				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
 				slotCost: rogueSlotCost(account.slots),
+				statCosts: Object.fromEntries(Object.entries(account.boosts).map(([stat, value]) => [stat, rogueStatCost(value)])),
 				captures: account.captures, unlocked: account.unlocked,
 				spiritUnlocked: !!content?.spirits && (!!account.spiritUnlocked || this.engine.localSpirits),
 			},
 			localSpirits: this.engine.localSpirits,
+			selectableSpirits: content?.spirits ? activeRogueSpirits().filter(spirit => account.unlockedSpirits?.includes(spirit.id)) : [],
 			spirits: this.engine.localSpirits && content?.spirits ? activeRogueSpirits() : [],
 			unlockRequirements: ROGUE_CAPTURE_COUNTS,
 			natures: Dex.natures.all().map(nature => ({
@@ -122,18 +132,25 @@ export class RogueManager {
 				defaultMoves: starter.set.moves.map(toID),
 				moves: starterMoves(account, content, starter.id),
 			})) || [],
-			items, shopItems: content ? shopStock(content, run).map(item => item.id) : [],
+			items, shopItems: stock.map(item => item.id),
 			run: run ? {
+				companions: companionView(run, eventView(run)?.options || []),
+				preview: run.preview && { trainer: run.preview.trainer, stage: run.preview.stage, won: run.preview.result?.won },
+				growth: growthView(run), growthOffers: growthOffers(run), rewardScene: rewardSceneView(run),
 				blessings: blessingView(run, account.tonicSecret), moveSlots: run.blessings?.owned.some(b => b.family === 'learnall') ? 5 : 4,
 				story: run.story, startCard: startCard(run.startCard),
 				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box,
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
+				postgame: run.postgame?.stage,
 				event: eventView(run), eventBuff: run.eventBuff,
+                mentorOffer: run.mentorOffer ? {floor: run.mentorOffer, cards: Object.keys(MENTOR_CARDS).map(id => ({id, ...mentorCardAtFloor(id as MentorCard, run.mentorOffer!)}))} : undefined,
+                mentorCard: run.mentorCard ? {...run.mentorCard, ...mentorCardAtFloor(run.mentorCard.kind, run.mentorCard.floor)} : undefined,
 				time: { id: rogueTime(run.floor), name: ROGUE_TIME_NAMES[rogueTime(run.floor)] },
 				recovery: run.recovery, retreating: !!run.battle?.retreatRequested,
+				emergencyRecovery: run.emergencyRecovery,
 				canRetreat: canRetreatRogue(run),
 				centerCare: run.node?.kind === 'rest' ? centerCare(run) : undefined,
-				healingLocked: healingLocked(run), emergencyCost: ROGUE_EMERGENCY_COST,
+				healingLocked: healingLocked(run), emergencyCost: emergencyCost(run.floor),
 				canEmergency: !!content && this.engine.canEmergency(run),
 				teraUnlocked: !!run.teraUnlocked,
 				megaUnlocked: !!run.megaUnlocked, gmegaUnlocked: !!run.gmegaUnlocked, zUnlocked: !!run.zUnlocked,
@@ -142,7 +159,7 @@ export class RogueManager {
 					rocket: run.node.rocket, shopChallenge: run.node.shopChallenge, hpPurchases: run.node.hpPurchases || 0,
 					biome: run.node.biome, bonusEncounter: !!run.node.encounters[run.encounter]?.bonus,
 					wildLoot: run.node.wildLoot, encounterLoot: run.node.wildLoot?.[run.encounter],
-					reward: { ...run.node.reward, points: run.node.kind === 'boss' ? 1 : 0 },
+					reward: { ...run.node.reward, points: run.postgame?.stage === 'battle' ? 20 : run.node.kind === 'boss' ? 1 : 0 },
 				},
 				team: run.team.map(saved => {
 					const mon = structuredClone(saved);
@@ -152,6 +169,8 @@ export class RogueManager {
 					const baseStats = { ...species.baseStats };
 					for (const [key, value] of Object.entries(mon.statModifiers?.baseStats || {})) baseStats[key as StatID] += value;
 					return { ...mon, baseStats, machineMoves: items.some(item => item.kind === 'machine') ? machineMoves(mon) : [],
+						extraAbilities: assignedExtraAbilities(saved, run.team, run.blessings).filter(id => id !== toID(mon.set.ability)),
+						canReceiveSharpness: canGrantExtraAbility(saved, 'sharpness', run.team, run.blessings),
 						types: blessingMemberTypes(mon), fantasyForm: fantasyForm(mon.set.species),
 						experienceProgress: experienceProgress(mon),
 						friendship: friendship(mon),
@@ -164,10 +183,10 @@ export class RogueManager {
 				choices: run.phase === 'choose' ? (run.choices || content?.floors[run.floor] || []).map(node => node.fogged ? {
 					id: node.id, kind: 'fog', name: '迷雾区域', fogged: true, reward: { money: 0, items: {}, points: 0 },
 				} : ({
-					id: node.id, kind: node.kind, name: node.name,
+					id: node.id, kind: node.kind, name: node.kind === 'trainer' ? '未知遭遇' : node.name, hidden: node.kind === 'trainer',
 					biome: node.biome,
 					wildLoot: node.wildLoot,
-					reward: { ...node.reward, points: node.kind === 'boss' ? 1 : 0 },
+					reward: { money: 0, items: {}, points: 0 },
 				})) : [],
 			} : null,
 		};
@@ -189,13 +208,13 @@ export class RogueManager {
 		const account = this.engine.command(user.id, command, user.name);
 		const run = account.run;
 		if (command.action === 'retreat' && run?.battle?.retreatRequested && retreatRoom && !retreatRoom.p1.eliminated) {
-			retreatRoom.forfeit(user, ' 撤退了。');
+			retreatRoom.forfeit(user, ' 逃跑了。');
 		}
 		if (command.action === 'start' && run && run.id !== previousRun && !run.announced) {
 			this.engine.store.change(user.id, saved => { saved.run!.announced = true; });
 			Rooms.get('lobby')?.add(`|raw|${Utils.escapeHTML(user.name)} 开启了幻想杯肉鸽之旅`).update();
 		}
-		if (['battle', 'shopchallenge'].includes(command.action) &&
+		if (['battle', 'shopchallenge', 'godchallenge'].includes(command.action) &&
 			run?.phase === 'battle' && run.battle && !run.battle.roomid) {
 			const userid = user.id;
 			const token = run.battle.token;
@@ -209,25 +228,33 @@ export class RogueManager {
 					keyMembers: [], resourcePreferences: [],
 				}, Teams.pack(run.team.map(mon => mon.set)), {
 					state: this.engine.battleState(userid), floor: run.floor, canRetreat: canRetreatRogue(run),
+					preview: run.preview?.stage === 'running' ? run.preview.trainer : undefined,
 					wild: ['unknown', 'unknownf'].includes(rogueOpponentAvatar(run)),
 					onCapture: captured => { this.engine.capture(userid, token, captured); },
 					onResult: result => {
 						const pending = this.engine.store.get(userid).run?.battle;
 						if (pending?.token !== token) return;
+						const previewing = this.engine.store.get(userid).run?.preview?.stage === 'running';
 						this.engine.settle(userid, token, result);
 						broadcast();
-						if (!result.won && pending.roomid) {
+						if (previewing) {
+							if (pending.retreatRequested && pending.roomid) user.sendTo(pending.roomid as RoomID, '|fantasyrogueend|');
+							return;
+						}
+						if ((!result.won || pending.retreatRequested) && pending.roomid) {
 							if (pending.retreatRequested) {
 								user.sendTo(pending.roomid as RoomID, '|fantasyrogueend|');
 							} else {
 								const settled = this.engine.store.get(userid).run!;
 								const defeat = {
+									...(settled.postgame ? { postgame: true } : {}),
+									...(settled.emergencyRecovery ? { emergencyRecovery: settled.emergencyRecovery } : {}),
 									floor: run.floor, encounter: run.encounter + 1, encounters: run.node!.encounters.length,
 									...(run.node!.shopChallenge ? { shopClosed: true } : {}),
 									...(run.node!.event ? { eventClosed: true } : {}),
 									...(run.node!.event?.id === 'travel' ? { memoryRestored: true } : {}),
-									retryFloor: settled.phase === 'failed', noHealing: !!settled.node!.noHealing,
-									emergencyCost: ROGUE_EMERGENCY_COST,
+									retryFloor: settled.phase === 'failed', noHealing: !!settled.node?.noHealing,
+									emergencyCost: emergencyCost(run.floor),
 								};
 								// Retain the notice for reconnects; the client waits for the native playback queue.
 								room.battle!.options.fantasyRogue!.defeat = defeat;
@@ -257,7 +284,7 @@ export class RogueManager {
 		this.authorize(connection.user);
 		const account = this.engine.store.get(connection.user.id);
 		if (account.run?.phase !== 'battle' || account.run.battle?.roomid !== roomid) {
-			throw new Error('只能从自己当前的肉鸽战斗撤退。');
+			throw new Error('只能从自己当前的肉鸽战斗逃跑。');
 		}
 		if (account.run.battle.retreatRequested) return;
 		this.command(connection, { id: randomUUID(), revision: account.revision, action: 'retreat' });

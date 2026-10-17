@@ -1,0 +1,46 @@
+|t:|1792223817
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L24, M|
+|poke|p1|Crocalor, L25, F|
+|poke|p1|Ivysaur, L22, M|
+|poke|p1|Flamigo, L23, M|
+|poke|p1|Ponyta, L21, M|
+|poke|p1|Drowzee, L21, M|
+|poke|p2|Rufflet, L21, M|
+|teampreview
+|
+|t:|1792223817
+|start
+|split|p1
+|switch|p1a: Ponyta|Ponyta, L21, M|20/63
+|switch|p1a: Ponyta|Ponyta, L21, M|32/100
+|split|p2
+|switch|p2a: Rufflet|Rufflet, L21, M|65/65
+|switch|p2a: Rufflet|Rufflet, L21, M|100/100
+|-end|p1a: Ponyta|fantasystats|[silent]
+|-end|p2a: Rufflet|fantasystats|[silent]
+|-end|p1a: Ponyta|fantasystats|[silent]
+|-end|p2a: Rufflet|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223817
+|move|p1a: Ponyta|Flame Charge|p2a: Rufflet
+|split|p2
+|-damage|p2a: Rufflet|43/65
+|-damage|p2a: Rufflet|67/100
+|-boost|p1a: Ponyta|spe|1
+|move|p2a: Rufflet|Wing Attack|p1a: Ponyta
+|split|p1
+|-damage|p1a: Ponyta|0 fnt
+|-damage|p1a: Ponyta|0 fnt
+|faint|p1a: Ponyta
+|
+|win|NPC

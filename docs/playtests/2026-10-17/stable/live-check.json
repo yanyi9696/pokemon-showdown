@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-17T07:36:00.525Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\recalibration-1792222092482",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "hpPpItemsEmblemsBagMoneyPointsAndStacksPreserved": true,
+  "blessingEntries": 164,
+  "eventCount": 10,
+  "browserVisualReview": "not performed: Computer Use stopped for browser URL policy"
+}

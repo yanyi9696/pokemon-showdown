@@ -54,7 +54,10 @@ export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1
 		}
 		let item: string | undefined;
 		let heldItem: string | undefined;
-		if (isFriendshipEvolution(child)) {
+		if (toID(mon.set.species) === 'meltan' && child.id === 'melmetal') {
+			conditions.push({ text: `专属糖果 ${context.blessings?.candy || 0} / 400（携带美录坦击倒或捕捉：钢系 +10，其他 +1）`,
+				met: (context.blessings?.candy || 0) >= 400 });
+		} else if (isFriendshipEvolution(child)) {
 			conditions.push(...friendshipRequirements(mon, child, context.floor));
 		} else {
 			const level = partyEvolutionLevel(child.name);

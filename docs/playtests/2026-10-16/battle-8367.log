@@ -1,0 +1,103 @@
+|init|battle
+|title|RoguePlay1016G vs. AI · 道馆 · 阿塞萝拉（幽灵）
+
+|-message|幻想杯肉鸽第 40 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792134762
+|gametype|singles
+|player|p1|RoguePlay1016G|101|
+|player|p2|AI · 道馆 · 阿塞萝拉（幽灵）|acerola|
+|teamsize|p1|3
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L23, M|
+|poke|p1|Minun, L17, F|
+|poke|p1|Stunky, L18, F|
+|poke|p2|Mimikyu, L25, M|
+|poke|p2|Gastly, L25, F|
+|poke|p2|Sandygast, L25, M|
+|poke|p2|Dhelmise, L25|
+|teampreview
+|
+|t:|1792134763
+|start
+|-message|塔灵：雷吉奇卡斯的试炼
+|switch|p1a: Marshtomp|Marshtomp, L23, M|70/70
+|switch|p2a: Mimikyu|Mimikyu, L25, M|100/100
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|
+|t:|1792134764
+|-terastallize|p2a: Mimikyu|Ghost
+|move|p2a: Mimikyu|Play Rough|p1a: Marshtomp
+|-damage|p1a: Marshtomp|31/70
+|-damage|p2a: Mimikyu|91/100|[from] item: Life Orb
+|move|p1a: Marshtomp|Mud Shot|p2a: Mimikyu
+|-activate|p2a: Mimikyu|ability: Disguise
+|-damage|p2a: Mimikyu|91/100
+|-unboost|p2a: Mimikyu|spe|1
+|detailschange|p2a: Mimikyu|Mimikyu-Busted, L25, M, tera:Ghost
+|-start|p2a: Mimikyu|typechange|Ghost/Fairy|[silent]
+|-damage|p2a: Mimikyu|80/100|[from] pokemon: Mimikyu-Busted
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|
+|-heal|p1a: Marshtomp|35/70|[from] item: Leftovers
+|upkeep
+|turn|2
+|
+|t:|1792134764
+|move|p2a: Mimikyu|Shadow Claw|p1a: Marshtomp
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|-damage|p2a: Mimikyu|70/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792134765
+|switch|p1a: Stunky|Stunky, L18, F|55/55
+|-end|p1a: Stunky|fantasystats|[silent]
+|turn|3
+|
+|t:|1792134766
+|move|p1a: Stunky|Acid Spray|p2a: Mimikyu
+|-resisted|p2a: Mimikyu
+|-damage|p2a: Mimikyu|66/100
+|-unboost|p2a: Mimikyu|spd|2
+|cant|p2a: Mimikyu|flinch
+|
+|upkeep
+|turn|4
+|
+|t:|1792134766
+|move|p1a: Stunky|Bite|p2a: Mimikyu
+|-supereffective|p2a: Mimikyu
+|-damage|p2a: Mimikyu|24/100
+|move|p2a: Mimikyu|Play Rough|p1a: Stunky
+|-damage|p1a: Stunky|0 fnt
+|faint|p1a: Stunky
+|-damage|p2a: Mimikyu|14/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792134767
+|switch|p1a: Minun|Minun, L17, F|51/51
+|-end|p1a: Minun|fantasystats|[silent]
+|turn|5
+|
+|t:|1792134767
+|move|p1a: Minun|Spark|p2a: Mimikyu
+|-damage|p2a: Mimikyu|5/100
+|move|p2a: Mimikyu|Shadow Claw|p1a: Minun
+|-crit|p1a: Minun
+|-damage|p1a: Minun|0 fnt
+|faint|p1a: Minun
+|-damage|p2a: Mimikyu|0 fnt|[from] item: Life Orb
+|faint|p2a: Mimikyu
+|
+|win|AI · 道馆 · 阿塞萝拉（幽灵）
+|fantasyroguedefeat|{"floor":40,"encounter":1,"encounters":1,"retryFloor":false,"noHealing":false,"emergencyCost":5000}

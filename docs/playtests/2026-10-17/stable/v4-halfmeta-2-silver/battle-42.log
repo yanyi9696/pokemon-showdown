@@ -1,0 +1,140 @@
+|t:|1792223766
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L16, M|
+|poke|p1|Fuecoco, L15, F|
+|poke|p1|Bulbasaur, L13, M|
+|poke|p1|Flamigo, L12, M|
+|poke|p1|Munna, L12, M|
+|poke|p1|Drowzee, L11, M|
+|poke|p2|Machop, L15, M|
+|poke|p2|Clobbopus, L15, F|
+|poke|p2|Mienfoo, L15, M|
+|teampreview
+|
+|t:|1792223766
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L16, M|56/56
+|switch|p1a: Marshtomp|Marshtomp, L16, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L15, M|59/59
+|switch|p2a: Machop|Machop, L15, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223767
+|-terastallize|p2a: Machop|Fighting
+|move|p1a: Marshtomp|Mud Shot|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|35/59
+|-damage|p2a: Machop|60/100
+|-unboost|p2a: Machop|spe|1
+|move|p2a: Machop|Close Combat|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|16/56
+|-damage|p1a: Marshtomp|29/100
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|
+|-status|p2a: Machop|brn|[from] item: Flame Orb
+|upkeep
+|turn|2
+|
+|t:|1792223768
+|move|p1a: Marshtomp|Water Gun|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|0 fnt
+|-damage|p2a: Machop|0 fnt
+|faint|p2a: Machop
+|
+|upkeep
+|
+|t:|1792223768
+|split|p2
+|switch|p2a: Clobbopus|Clobbopus, L15, F|54/54
+|switch|p2a: Clobbopus|Clobbopus, L15, F|100/100
+|-end|p2a: Clobbopus|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223769
+|move|p1a: Marshtomp|Mud Shot|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|43/54
+|-damage|p2a: Clobbopus|80/100
+|-unboost|p2a: Clobbopus|spe|1
+|move|p2a: Clobbopus|Close Combat|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|faint|p1a: Marshtomp
+|
+|upkeep
+|
+|t:|1792223769
+|split|p1
+|switch|p1a: Flamigo|Flamigo, L12, M|50/50
+|switch|p1a: Flamigo|Flamigo, L12, M|100/100
+|-end|p1a: Flamigo|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223770
+|move|p1a: Flamigo|Wing Attack|p2a: Clobbopus
+|-supereffective|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|8/54
+|-damage|p2a: Clobbopus|15/100
+|move|p2a: Clobbopus|Close Combat|p1a: Flamigo
+|-resisted|p1a: Flamigo
+|split|p1
+|-damage|p1a: Flamigo|32/50
+|-damage|p1a: Flamigo|64/100
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|
+|upkeep
+|turn|5
+|
+|t:|1792223771
+|move|p1a: Flamigo|Wing Attack|p2a: Clobbopus
+|-supereffective|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|0 fnt
+|-damage|p2a: Clobbopus|0 fnt
+|faint|p2a: Clobbopus
+|
+|upkeep
+|
+|t:|1792223771
+|split|p2
+|switch|p2a: Mienfoo|Mienfoo, L15, M|43/43
+|switch|p2a: Mienfoo|Mienfoo, L15, M|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|turn|6
+|
+|t:|1792223771
+|move|p2a: Mienfoo|Jump Kick|p1a: Flamigo
+|-immune|p1a: Flamigo
+|split|p2
+|-damage|p2a: Mienfoo|22/43|[from] jumpkick
+|-damage|p2a: Mienfoo|52/100|[from] jumpkick
+|move|p1a: Flamigo|Wing Attack|p2a: Mienfoo
+|-supereffective|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|0 fnt
+|-damage|p2a: Mienfoo|0 fnt
+|faint|p2a: Mienfoo
+|
+|win|Player

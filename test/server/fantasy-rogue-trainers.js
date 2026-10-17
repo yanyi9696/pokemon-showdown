@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
@@ -9,7 +10,8 @@ const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine, createRoguePokemon } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent, PreviewBalance } = require('../../dist/server/fantasy-rogue/preview-content');
 const { TrainerBossData } = require('../../dist/server/fantasy-rogue/trainer-boss-data');
-const { trainerBossCandidates, rogueOpponentAvatar } = require('../../dist/server/fantasy-rogue/trainer-bosses');
+const { trainerBossCandidates, rogueOpponentAvatar, chooseTrainer } = require('../../dist/server/fantasy-rogue/trainer-bosses');
+const { PRNG } = require('../../dist/sim/prng');
 const { validateContent } = require('../../dist/server/fantasy-rogue/content');
 const { set, stats } = require('../fixtures/fantasy-rogue');
 const { storyView } = require('../../dist/server/fantasy-rogue/story');
@@ -19,7 +21,7 @@ describe('Fantasy Rogue authored trainers', function () {
 	let content, store, engine;
 	const user = 'trainerqa';
 	const account = () => store.get(user);
-	const command = (action, data = {}) => engine.command(user, {
+	const command = (action, data = {}) => commandAfterOpening(engine, user, {
 		id: randomUUID(), revision: account().revision, action, ...data,
 	});
 	function enter(floor) {
@@ -37,6 +39,26 @@ describe('Fantasy Rogue authored trainers', function () {
 		command('start', { starters: ['bulbasaur'] });
 	});
 	afterEach(() => store.close());
+	it('offers the entire configured gym identity pool at every gym floor, with a uniform fresh-run draw', () => {
+		const identities = [...new Set(TrainerBossData.filter(entry => entry.role === 'gym').map(entry => entry.id))].sort();
+		for (const floor of [20, 40, 60, 80, 100, 120, 140, 160]) {
+			const candidates = trainerBossCandidates(floor, PreviewBalance.bossLevel(floor));
+			assert.deepEqual(candidates.map(c => c.trainer.id).sort(), identities);
+			// Every random index must select exactly its corresponding available identity.
+			for (let index = 0; index < identities.length; index++) {
+				const run = {floor, trainerHistory: {gyms: [], eliteFour: []}};
+				const chosen = chooseTrainer(run, candidates, max => {assert.equal(max, identities.length); return index;});
+				assert.equal(chosen.trainer.id, candidates[index].trainer.id);
+			}
+		}
+		const rng = new PRNG([2026, 10, 17, 77]);
+		const candidates = trainerBossCandidates(20, 15), counts = Object.fromEntries(identities.map(id => [id, 0]));
+		for (let i = 0; i < 10000; i++) {
+			const run = {floor: 20, trainerHistory: {gyms: [], eliteFour: []}};
+			counts[chooseTrainer(run, candidates, max => rng.random(max)).trainer.id]++;
+		}
+		for (const count of Object.values(counts)) assert(count > 850 && count < 1150, JSON.stringify(counts));
+	});
 
 	it('loads all 80 gym, 6 Elite Four and 1 champion rosters into native battles without rewriting authored choices', () => {
 		assert.equal(TrainerBossData.length, 87);

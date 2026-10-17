@@ -1,0 +1,130 @@
+|t:|1792230286
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L22, M|
+|poke|p1|Crocalor, L21, M|
+|poke|p1|Marshtomp, L21, M|
+|poke|p1|Slakoth, L13, M|
+|poke|p1|Aron, L14, M|
+|poke|p1|Shuckle, L17, F|
+|poke|p2|Simisear-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792230286
+|start
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L17, F|42/42
+|switch|p1a: Shuckle|Shuckle, L17, F|100/100
+|split|p2
+|switch|p2a: Simisear|Simisear-Fantasy, L20, M|75/75
+|switch|p2a: Simisear|Simisear-Fantasy, L20, M|100/100
+|-start|p2a: Simisear|typechange|Fire|[silent]
+|-start|p2a: Simisear|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Shuckle|fantasystats|[silent]
+|-start|p2a: Simisear|typechange|Fire|[silent]
+|-start|p2a: Simisear|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Shuckle|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230287
+|-terastallize|p2a: Simisear|Fire
+|move|p2a: Simisear|Flamethrower|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|26/42
+|-damage|p1a: Shuckle|62/100
+|move|p1a: Shuckle|Rock Throw|p2a: Simisear
+|-supereffective|p2a: Simisear
+|split|p2
+|-damage|p2a: Simisear|56/75
+|-damage|p2a: Simisear|75/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230288
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L21, M|74/74
+|switch|p1a: Crocalor|Crocalor, L21, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Simisear|Flamethrower|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|52/74
+|-damage|p1a: Crocalor|71/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792230288
+|move|p2a: Simisear|Flamethrower|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|28/74
+|-damage|p1a: Crocalor|38/100
+|move|p1a: Crocalor|Lick|p2a: Simisear
+|split|p2
+|-damage|p2a: Simisear|51/75
+|-damage|p2a: Simisear|68/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792230290
+|move|p2a: Simisear|Flamethrower|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|6/74
+|-damage|p1a: Crocalor|9/100
+|move|p1a: Crocalor|Lick|p2a: Simisear
+|split|p2
+|-damage|p2a: Simisear|45/75
+|-damage|p2a: Simisear|60/100
+|-status|p2a: Simisear|par
+|
+|upkeep
+|turn|5
+|
+|t:|1792230290
+|split|p1
+|switch|p1a: Aron|Aron, L14, M|47/47
+|switch|p1a: Aron|Aron, L14, M|100/100
+|-end|p1a: Aron|fantasystats|[silent]
+|move|p2a: Simisear|Flamethrower|p1a: Aron
+|-ability|p1a: Aron|Sturdy
+|split|p1
+|-damage|p1a: Aron|1/47
+|-damage|p1a: Aron|3/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792230291
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|69/69
+|switch|p1a: Marshtomp|Marshtomp, L21, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Simisear|Flamethrower|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|49/69
+|-damage|p1a: Marshtomp|72/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792230291
+|move|p1a: Marshtomp|Rock Throw|p2a: Simisear
+|-supereffective|p2a: Simisear
+|split|p2
+|-damage|p2a: Simisear|0 fnt
+|-damage|p2a: Simisear|0 fnt
+|faint|p2a: Simisear
+|
+|win|Player

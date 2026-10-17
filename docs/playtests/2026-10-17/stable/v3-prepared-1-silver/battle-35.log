@@ -1,0 +1,148 @@
+|t:|1792223235
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L16, M|
+|poke|p1|Litleo, L15, F|
+|poke|p1|Finneon, L9, F|
+|poke|p1|Ducklett, L11, M|
+|poke|p1|Tentacool, L10, M|
+|poke|p1|Flamigo, L11, F|
+|poke|p2|Mimikyu, L15, M|
+|poke|p2|Gastly, L15, M|
+|poke|p2|Sandygast, L15, F|
+|teampreview
+|
+|t:|1792223235
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L16, M|55/55
+|switch|p1a: Crocalor|Crocalor, L16, M|100/100
+|split|p2
+|switch|p2a: Mimikyu|Mimikyu, L15, M|55/55
+|switch|p2a: Mimikyu|Mimikyu, L15, M|100/100
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223235
+|-terastallize|p2a: Mimikyu|Ghost
+|move|p2a: Mimikyu|Shadow Claw|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|16/55
+|-damage|p1a: Crocalor|30/100
+|split|p2
+|-damage|p2a: Mimikyu|50/55|[from] item: Life Orb
+|-damage|p2a: Mimikyu|91/100|[from] item: Life Orb
+|move|p1a: Crocalor|Lick|p2a: Mimikyu
+|-activate|p2a: Mimikyu|ability: Disguise
+|split|p2
+|-damage|p2a: Mimikyu|50/55
+|-damage|p2a: Mimikyu|91/100
+|detailschange|p2a: Mimikyu|Mimikyu-Busted, L15, M, tera:Ghost
+|-start|p2a: Mimikyu|typechange|Ghost/Fairy|[silent]
+|split|p2
+|-damage|p2a: Mimikyu|44/55|[from] pokemon: Mimikyu-Busted
+|-damage|p2a: Mimikyu|80/100|[from] pokemon: Mimikyu-Busted
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|
+|upkeep
+|turn|2
+|
+|t:|1792223235
+|split|p1
+|switch|p1a: Litleo|Litleo, L15, F|46/46
+|switch|p1a: Litleo|Litleo, L15, F|100/100
+|-end|p1a: Litleo|fantasystats|[silent]
+|move|p2a: Mimikyu|Shadow Claw|p1a: Litleo
+|-immune|p1a: Litleo
+|
+|upkeep
+|turn|3
+|
+|t:|1792223235
+|move|p2a: Mimikyu|Play Rough|p1a: Litleo|[miss]
+|-miss|p2a: Mimikyu|p1a: Litleo
+|move|p1a: Litleo|Leer|p2a: Mimikyu
+|-unboost|p2a: Mimikyu|def|1
+|
+|upkeep
+|turn|4
+|
+|t:|1792223236
+|move|p2a: Mimikyu|Play Rough|p1a: Litleo|[miss]
+|-miss|p2a: Mimikyu|p1a: Litleo
+|move|p1a: Litleo|Leer|p2a: Mimikyu
+|-unboost|p2a: Mimikyu|def|1
+|
+|upkeep
+|turn|5
+|
+|t:|1792223236
+|move|p2a: Mimikyu|Play Rough|p1a: Litleo
+|-resisted|p1a: Litleo
+|split|p1
+|-damage|p1a: Litleo|19/46
+|-damage|p1a: Litleo|42/100
+|split|p2
+|-damage|p2a: Mimikyu|39/55|[from] item: Life Orb
+|-damage|p2a: Mimikyu|71/100|[from] item: Life Orb
+|move|p1a: Litleo|Ember|p2a: Mimikyu
+|split|p2
+|-damage|p2a: Mimikyu|33/55
+|-damage|p2a: Mimikyu|60/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792223236
+|move|p2a: Mimikyu|Play Rough|p1a: Litleo
+|-resisted|p1a: Litleo
+|split|p1
+|-damage|p1a: Litleo|0 fnt
+|-damage|p1a: Litleo|0 fnt
+|faint|p1a: Litleo
+|split|p2
+|-damage|p2a: Mimikyu|28/55|[from] item: Life Orb
+|-damage|p2a: Mimikyu|51/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792223236
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L16, M|16/55
+|switch|p1a: Crocalor|Crocalor, L16, M|30/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|7
+|
+|t:|1792223236
+|move|p2a: Mimikyu|Play Rough|p1a: Crocalor|[miss]
+|-miss|p2a: Mimikyu|p1a: Crocalor
+|move|p1a: Crocalor|Incinerate|p2a: Mimikyu
+|split|p2
+|-damage|p2a: Mimikyu|5/55
+|-damage|p2a: Mimikyu|10/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792223236
+|move|p2a: Mimikyu|Shadow Claw|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|split|p2
+|-damage|p2a: Mimikyu|0 fnt|[from] item: Life Orb
+|-damage|p2a: Mimikyu|0 fnt|[from] item: Life Orb
+|faint|p2a: Mimikyu
+|
+|win|NPC

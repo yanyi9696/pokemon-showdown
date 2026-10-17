@@ -7,6 +7,7 @@ import type { RogueRandom } from './biome-pools';
 import type { RogueRun, RogueContent } from './types';
 
 export function beginShopChallenge(run: RogueRun, content: RogueContent, random: RogueRandom) {
+	if (run.node?.trade?.kind === 'growth') throw new Error('训练营提供训练服务，没有可争取的商店商品。');
 	if (run.phase !== 'rest' || !run.node || run.node.shopChallenge || !ownsBlessing(run.blessings, 'shopraid') ||
 		!run.team.some(mon => mon.hp > 0)) throw new Error('当前不能发起商店挑战。');
 	const nurse = /中心|医院/.test(run.node.name);
@@ -30,7 +31,7 @@ export function beginShopChallenge(run: RogueRun, content: RogueContent, random:
 		if (species.genderRatio.F === 0) set.gender = 'M';
 		return set;
 	});
-	const stock = shopStock(content, run).slice();
+	const stock = shopStock(content, run).filter(item => item.remaining === undefined || item.remaining > 0);
 	const rewards: Record<string, number> = {};
 	for (let i = 0; i < 3 && stock.length; i++) rewards[stock.splice(random(stock.length), 1)[0].id] = 1;
 	run.node.shopChallenge = { rewards, closed: false };

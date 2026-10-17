@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-17T03:04:59.707Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\recalibration-1792206074793",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "hpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "liveEventCount": 10,
+  "localEventReplaysUnlocked": true,
+  "liveRevivePrice": 900,
+  "blessingEntries": 164,
+  "browserVisualReview": "not performed; browser local page access blocked in this session"
+}

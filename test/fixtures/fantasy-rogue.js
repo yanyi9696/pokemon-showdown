@@ -44,4 +44,31 @@ function content() {
 		floors,
 	};
 }
-module.exports = {content, set, stats};
+// Older focused tests start at route selection with no blessing effects. Keep that explicit
+// fixture boundary; the opening suite and 200-floor smoke use unwrapped real commands.
+function commandAfterOpening(engine, user, command) {
+	const result = engine.command(user, command);
+	if (result.run?.floor !== 1 || result.run.phase !== 'blessing' || !result.run.blessings?.beforeAdventure) return result;
+	return engine.store.change(user, account => {
+		delete account.run.blessings.beforeAdventure;
+		delete account.run.blessings.round;
+		engine.enterFloor(account.run);
+	});
+}
+function chooseCompanions(engine, user, cmd) {
+	const { companionView } = require('../../dist/server/fantasy-rogue/companions');
+	let run = engine.store.get(user).run;
+	if (run.blessings?.owned.some(b => b.family === 'companionai') &&
+		!run.blessings.companions?.some(c => ['sada', 'turo'].includes(c.id))) {
+		cmd('companion', {member: 'sada', value: 'chooseai'});
+	}
+	for (let n = 0; n < 8; n++) {
+		run = engine.store.get(user).run;
+		const entry = companionView(run).find(c => c.typeOptions.some(t => t.member) || c.abilityOptions.length);
+		if (!entry) return;
+		const type = entry.typeOptions.find(t => t.member);
+		cmd('companion', {member: entry.id, value: type ? 'type:' + type.id : 'ability:' + entry.abilityOptions[0]});
+	}
+	throw new Error('Unresolved companion choices');
+}
+module.exports = { content, set, stats, commandAfterOpening, chooseCompanions };

@@ -1,0 +1,140 @@
+|t:|1792223834
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L40, M|
+|poke|p1|Skeledirge, L40, M|
+|poke|p1|Marshtomp, L27, M|
+|poke|p1|Alcremie, L27, F|
+|poke|p1|Porygon2, L27|
+|poke|p1|Centiskorch, L31, M|
+|poke|p2|Whirlipede, L35, M|
+|poke|p2|Toxtricity-Low-Key, L35, M|
+|poke|p2|Trubbish, L35, F|
+|poke|p2|Slowbro-Galar, L35, F|
+|teampreview
+|
+|t:|1792223834
+|start
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L40, M|127/127
+|switch|p1a: Venusaur|Venusaur, L40, M|100/100
+|split|p2
+|switch|p2a: Whirlipede|Whirlipede, L35, M|83/83
+|switch|p2a: Whirlipede|Whirlipede, L35, M|100/100
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-end|p2a: Whirlipede|fantasystats|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-end|p2a: Whirlipede|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223834
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L40, M|147/147
+|switch|p1a: Skeledirge|Skeledirge, L40, M|100/100
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|move|p2a: Whirlipede|Toxic Spikes|p1a: Skeledirge
+|-sidestart|p1: Player|move: Toxic Spikes
+|
+|-ability|p2a: Whirlipede|Speed Boost|boost
+|-boost|p2a: Whirlipede|spe|1
+|upkeep
+|turn|2
+|
+|t:|1792223834
+|move|p1a: Skeledirge|Torch Song|p2a: Whirlipede
+|-supereffective|p2a: Whirlipede
+|-enditem|p2a: Whirlipede|Focus Sash
+|split|p2
+|-damage|p2a: Whirlipede|1/83
+|-damage|p2a: Whirlipede|2/100
+|-boost|p1a: Skeledirge|spa|1
+|move|p2a: Whirlipede|Toxic|p1a: Skeledirge
+|-status|p1a: Skeledirge|tox
+|
+|split|p1
+|-damage|p1a: Skeledirge|138/147 tox|[from] psn
+|-damage|p1a: Skeledirge|94/100 tox|[from] psn
+|-ability|p2a: Whirlipede|Speed Boost|boost
+|-boost|p2a: Whirlipede|spe|1
+|upkeep
+|turn|3
+|
+|t:|1792223835
+|move|p2a: Whirlipede|Toxic Spikes|p1a: Skeledirge
+|-sidestart|p1: Player|move: Toxic Spikes
+|move|p1a: Skeledirge|Torch Song|p2a: Whirlipede
+|-supereffective|p2a: Whirlipede
+|split|p2
+|-damage|p2a: Whirlipede|0 fnt
+|-damage|p2a: Whirlipede|0 fnt
+|-boost|p1a: Skeledirge|spa|1
+|faint|p2a: Whirlipede
+|
+|split|p1
+|-damage|p1a: Skeledirge|120/147 tox|[from] psn
+|-damage|p1a: Skeledirge|82/100 tox|[from] psn
+|upkeep
+|
+|t:|1792223835
+|split|p2
+|switch|p2a: Toxtricity|Toxtricity-Low-Key, L35, M|108/108
+|switch|p2a: Toxtricity|Toxtricity-Low-Key, L35, M|100/100
+|-end|p2a: Toxtricity|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223836
+|-terastallize|p2a: Toxtricity|Electric
+|move|p1a: Skeledirge|Shadow Ball|p2a: Toxtricity
+|split|p2
+|-damage|p2a: Toxtricity|0 fnt
+|-damage|p2a: Toxtricity|0 fnt
+|faint|p2a: Toxtricity
+|
+|split|p1
+|-damage|p1a: Skeledirge|93/147 tox|[from] psn
+|-damage|p1a: Skeledirge|64/100 tox|[from] psn
+|upkeep
+|
+|t:|1792223836
+|split|p2
+|switch|p2a: Trubbish|Trubbish, L35, F|112/112
+|switch|p2a: Trubbish|Trubbish, L35, F|100/100
+|-end|p2a: Trubbish|fantasystats|[silent]
+|turn|5
+|
+|t:|1792223836
+|move|p1a: Skeledirge|Torch Song|p2a: Trubbish
+|split|p2
+|-damage|p2a: Trubbish|0 fnt
+|-damage|p2a: Trubbish|0 fnt
+|-boost|p1a: Skeledirge|spa|1
+|faint|p2a: Trubbish
+|
+|split|p1
+|-damage|p1a: Skeledirge|57/147 tox|[from] psn
+|-damage|p1a: Skeledirge|39/100 tox|[from] psn
+|upkeep
+|
+|t:|1792223836
+|split|p2
+|switch|p2a: Slowbro|Slowbro-Galar, L35, F|144/144
+|switch|p2a: Slowbro|Slowbro-Galar, L35, F|100/100
+|-end|p2a: Slowbro|fantasystats|[silent]
+|turn|6
+|
+|t:|1792223837
+|move|p1a: Skeledirge|Shadow Ball|p2a: Slowbro
+|-supereffective|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|0 fnt
+|-damage|p2a: Slowbro|0 fnt
+|faint|p2a: Slowbro
+|
+|win|Player

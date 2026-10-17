@@ -1,0 +1,57 @@
+|t:|1792223869
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L59, M|
+|poke|p1|Skeledirge, L58, M|
+|poke|p1|Pyroar, L47, F|
+|poke|p1|Alcremie, L40, F|
+|poke|p1|Porygon2, L40|
+|poke|p1|Centiskorch, L41, M|
+|poke|p2|Absol-Fantasy, L50, M|
+|teampreview
+|
+|t:|1792223869
+|start
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L59, M|183/183
+|switch|p1a: Venusaur|Venusaur, L59, M|100/100
+|split|p2
+|switch|p2a: Absol|Absol-Fantasy, L50, M|165/165
+|switch|p2a: Absol|Absol-Fantasy, L50, M|100/100
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-start|p2a: Absol|typechange|Dark/Fairy|[silent]
+|-start|p2a: Absol|fantasystats|90/130/85/75/85/80|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-start|p2a: Absol|typechange|Dark/Fairy|[silent]
+|-start|p2a: Absol|fantasystats|90/130/85/75/85/80|[silent]
+|turn|1
+|
+|t:|1792223870
+|-terastallize|p2a: Absol|Dark
+|move|p1a: Venusaur|Petal Dance|p2a: Absol
+|split|p2
+|-damage|p2a: Absol|37/165
+|-damage|p2a: Absol|23/100
+|move|p2a: Absol|Yu Zhao Zhi Jian|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|85/183
+|-damage|p1a: Venusaur|47/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223870
+|move|p1a: Venusaur|Petal Dance|p2a: Absol|[from] lockedmove
+|split|p2
+|-damage|p2a: Absol|0 fnt
+|-damage|p2a: Absol|0 fnt
+|faint|p2a: Absol
+|
+|win|Player

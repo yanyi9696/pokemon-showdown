@@ -1,0 +1,156 @@
+|t:|1792234708
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L25, M|
+|poke|p1|Marshtomp, L25, M|
+|poke|p1|Ivysaur, L21, F|
+|poke|p1|Vigoroth, L19, F|
+|poke|p1|Goomy, L19, F|
+|poke|p1|Roselia, L21, F|
+|poke|p2|Combee, L25, M|
+|poke|p2|Nymble, L25, F|
+|poke|p2|Ninjask, L25, F|
+|poke|p2|Dewpider, L25, F|
+|teampreview
+|
+|t:|1792234708
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L25, M|80/80
+|switch|p1a: Marshtomp|Marshtomp, L25, M|100/100
+|split|p2
+|switch|p2a: Combee|Combee, L25, M|57/57
+|switch|p2a: Combee|Combee, L25, M|100/100
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|
+|t:|1792234710
+|-terastallize|p2a: Combee|Bug
+|move|p2a: Combee|Bug Buzz|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|60/80
+|-damage|p1a: Marshtomp|75/100
+|move|p1a: Marshtomp|Rock Throw|p2a: Combee
+|-supereffective|p2a: Combee
+|split|p2
+|-damage|p2a: Combee|0 fnt
+|-damage|p2a: Combee|0 fnt
+|faint|p2a: Combee
+|
+|upkeep
+|
+|t:|1792234710
+|split|p2
+|switch|p2a: Nymble|Nymble, L25, F|59/59
+|switch|p2a: Nymble|Nymble, L25, F|100/100
+|-end|p2a: Nymble|fantasystats|[silent]
+|turn|2
+|
+|t:|1792234711
+|move|p1a: Marshtomp|Rock Throw|p2a: Nymble
+|-supereffective|p2a: Nymble
+|split|p2
+|-damage|p2a: Nymble|0 fnt
+|-damage|p2a: Nymble|0 fnt
+|faint|p2a: Nymble
+|
+|upkeep
+|
+|t:|1792234711
+|split|p2
+|switch|p2a: Ninjask|Ninjask, L25, F|73/73
+|switch|p2a: Ninjask|Ninjask, L25, F|100/100
+|-end|p2a: Ninjask|fantasystats|[silent]
+|turn|3
+|
+|t:|1792234711
+|move|p2a: Ninjask|Leech Life|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|33/80
+|-damage|p1a: Marshtomp|42/100
+|move|p1a: Marshtomp|Rock Throw|p2a: Ninjask
+|-supereffective|p2a: Ninjask
+|split|p2
+|-damage|p2a: Ninjask|0 fnt
+|-damage|p2a: Ninjask|0 fnt
+|faint|p2a: Ninjask
+|
+|upkeep
+|
+|t:|1792234711
+|split|p2
+|switch|p2a: Dewpider|Dewpider, L25, F|61/61
+|switch|p2a: Dewpider|Dewpider, L25, F|100/100
+|-end|p2a: Dewpider|fantasystats|[silent]
+|turn|4
+|
+|t:|1792234712
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L21, F|65/65
+|switch|p1a: Ivysaur|Ivysaur, L21, F|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Dewpider|Bug Buzz|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|47/65
+|-damage|p1a: Ivysaur|73/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792234712
+|move|p1a: Ivysaur|Seed Bomb|p2a: Dewpider
+|split|p2
+|-damage|p2a: Dewpider|37/61
+|-damage|p2a: Dewpider|61/100
+|move|p2a: Dewpider|Bug Buzz|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|28/65
+|-damage|p1a: Ivysaur|44/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792234714
+|split|p1
+|switch|p1a: Roselia|Roselia, L21, F|62/62
+|switch|p1a: Roselia|Roselia, L21, F|100/100
+|-end|p1a: Roselia|fantasystats|[silent]
+|move|p2a: Dewpider|Bug Buzz|p1a: Roselia
+|split|p1
+|-damage|p1a: Roselia|43/62
+|-damage|p1a: Roselia|70/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792234714
+|move|p1a: Roselia|Magical Leaf|p2a: Dewpider
+|split|p2
+|-damage|p2a: Dewpider|14/61
+|-damage|p2a: Dewpider|23/100
+|move|p2a: Dewpider|Bug Buzz|p1a: Roselia
+|split|p1
+|-damage|p1a: Roselia|19/62
+|-damage|p1a: Roselia|31/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792234715
+|move|p1a: Roselia|Magical Leaf|p2a: Dewpider
+|split|p2
+|-damage|p2a: Dewpider|0 fnt
+|-damage|p2a: Dewpider|0 fnt
+|faint|p2a: Dewpider
+|
+|win|Player

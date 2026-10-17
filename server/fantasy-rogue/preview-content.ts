@@ -1,9 +1,11 @@
+import { routeCandyReward } from './early-balance';
 /** Playtest pack with authored wild, Fantasy elite, gym, Elite Four and champion rosters. */
 import { Dex, toID } from '../../sim/dex';
 import { fixedFloor, BOSS_FLOORS } from './content';
 import { levelMoves } from './progression';
 import { eliteBossCandidates } from './elite-bosses';
 import { trainerBossCandidates } from './trainer-bosses';
+import { summitEncounter, arceusChallengeReady, ARCEUS_PHYSICAL_MOVES } from './final-bosses';
 import type { RogueContent, RogueEncounter, RogueNode } from './types';
 import { RogueBiomes } from './biome-data';
 import { createBiomeRoutes } from './biome-routes';
@@ -20,7 +22,7 @@ const stats = (value: number): StatsTable => ({
 });
 
 export const PreviewBalance = {
-	version: 'preview-2026-10-v9',
+	version: 'preview-2026-10-v12',
 	initialMoney: 1500,
 	initialBag: { pokeball: 12, potion: 6, revive: 1, ether: 6, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
@@ -47,9 +49,10 @@ const starters = [
 	'Rowlet', 'Litten', 'Popplio', 'Grookey', 'Scorbunny', 'Sobble', 'Sprigatito', 'Fuecoco', 'Quaxly',
 ];
 
-/** The final trainerless Boss remains provisional. Named trainers live in trainer-boss-data.ts. */
+/** Display metadata; the final boss's complete team and second phase live in final-bosses.ts. */
 export const PreviewBosses: Record<number, { name: string, team: string[] }> = {
-	200: { name: '最终首领 · 幻想超梦', team: ['Mewtwo-Fantasy'] },
+	200: { name: '塔顶 · 最后的守卫', team: ['Koraidon-Fantasy', 'Miraidon-Fantasy', 'Calyrex-Fantasy',
+		'Xerneas-Fantasy', 'Lugia-Fantasy', 'Mewtwo-Fantasy'] },
 };
 
 function stageAtLevel(name: string, level: number): string {
@@ -96,8 +99,9 @@ export function createPreviewContent(): RogueContent {
 	validateBiomePools();
 	const content: RogueContent = {
 		version: PreviewBalance.version, biomeEncounters: true, wildTreasures: true,
-		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8'],
-		spirits: true, blessings: true, events: true,
+		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8', 'preview-2026-10-v9', 'preview-2026-10-v10', 'preview-2026-10-v11'],
+		...(arceusChallengeReady() ? { arceusMoves: ARCEUS_PHYSICAL_MOVES as Record<string, string> } : {}),
+		spirits: true, blessings: true, events: true, rewardScenes: true,
 		label: '幻想杯肉鸽 · 200 层试玩版',
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },
@@ -110,6 +114,7 @@ export function createPreviewContent(): RogueContent {
 			{ id: 'superpotion', name: '好伤药（60 HP）', kind: 'heal', price: 500, amount: 60, icon: 'superpotion' },
 			{ id: 'hyperpotion', name: '厉害伤药（120 HP）', kind: 'heal', price: 1200, amount: 120, icon: 'hyperpotion' },
 			{ id: 'revive', name: '活力碎片（复活至半血）', kind: 'revive', price: 1000, amount: 0.5, icon: 'revive' },
+			{ id: 'maxrevive', name: '活力块（复活至满血）', kind: 'revive', price: 3000, amount: 1, icon: 'maxrevive' },
 			{ id: 'fullheal', name: '万灵药', kind: 'cure', price: 400, icon: 'fullheal' },
 			{ id: 'antidote', name: '解毒药', kind: 'cure', price: 100, icon: 'antidote',
 				cureStatuses: ['psn', 'tox'], description: '解除中毒和剧毒，保留其他异常状态。' },
@@ -199,6 +204,7 @@ export function createPreviewContent(): RogueContent {
 					...(trainers.length ? { trainerCandidates: trainers } : {}),
 					...(candidates.length ? { candidates } : {}), style: 'balanced', catchable: false,
 				}] }];
+			if (floor === 200) content.floors[floor][0].encounters = [summitEncounter(bossLevel)];
 			continue;
 		}
 		const zone = Math.min(9, Math.floor((floor - 1) / 20));
@@ -216,12 +222,11 @@ export function createPreviewContent(): RogueContent {
 		const trainer: RogueNode = { id: 'trainer', name: '旅行训练家', kind: 'trainer',
 			reward: { money: 400 + floor * 24, items: {} }, encounters: [{
 				name: '旅行训练家', style: 'balanced', catchable: false,
-				team: Array.from({ length: Math.min(4, 2 + Math.floor(floor / 70)) }, (_, i) =>
-					makeSet(stageAtLevel(pool[(floor + i) % pool.length], level), level, 20)),
+				team: Array.from({ length: Math.min(5, 3 + Math.floor(floor / 70)) }, (_, i) =>
+					makeSet(stageAtLevel(pool[(floor + i) % pool.length], Math.min(100, level + 4)), Math.min(100, level + 4), 25)),
 			}] };
-		const candy = floor < 30 ? 'expcandyxs' : floor < 80 ? 'expcandys' : floor < 140 ? 'expcandym' : 'expcandyl';
-		const reward: RogueNode = { id: 'supplies', name: '补给箱', kind: 'reward', encounters: [],
-			reward: { money: 100 + floor * 8, items: { [candy]: 1, potion: 1, pokeball: 2 } } };
+		const reward: RogueNode = { id: 'supplies', name: '旅途补给', kind: 'reward', encounters: [],
+			reward: { money: 100 + floor * 8, items: { ...routeCandyReward(floor, 'reward'), potion: 1, pokeball: 2 } } };
 		content.routePools![floor] = [wild(0), elite, trainer, reward,
 			{ id: 'event0', name: '路途见闻', kind: 'event', encounters: [], reward: { money: 0, items: {} } },
 			{ id: 'trade', name: '交易', kind: 'trade', encounters: [], reward: { money: 0, items: {} },

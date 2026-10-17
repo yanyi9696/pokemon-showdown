@@ -1,0 +1,126 @@
+|t:|1792222649
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L28, M|
+|poke|p1|Sandygast, L27, F|
+|poke|p1|Spiritomb, L24, M|
+|poke|p1|Frosmoth, L22, F|
+|poke|p1|Skrelp, L22, F|
+|poke|p1|Ponyta, L21, M|
+|poke|p2|Froslass, L23, F|
+|teampreview
+|
+|t:|1792222649
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L28, M|14/88
+|switch|p1a: Marshtomp|Marshtomp, L28, M|16/100
+|split|p2
+|switch|p2a: Froslass|Froslass, L23, F|71/71
+|switch|p2a: Froslass|Froslass, L23, F|100/100
+|-end|p2a: Froslass|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Froslass|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222649
+|split|p1
+|switch|p1a: Frosmoth|Frosmoth, L22, F|19/73
+|switch|p1a: Frosmoth|Frosmoth, L22, F|27/100
+|-end|p1a: Frosmoth|fantasystats|[silent]
+|move|p2a: Froslass|Hex|p1a: Frosmoth
+|split|p1
+|-damage|p1a: Frosmoth|0 fnt
+|-damage|p1a: Frosmoth|0 fnt
+|faint|p1a: Frosmoth
+|
+|upkeep
+|
+|t:|1792222649
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L28, M|14/88
+|switch|p1a: Marshtomp|Marshtomp, L28, M|16/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|2
+|
+|t:|1792222649
+|move|p2a: Froslass|Hex|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|2/88
+|-damage|p1a: Marshtomp|3/100
+|move|p1a: Marshtomp|Rock Throw|p2a: Froslass
+|-supereffective|p2a: Froslass
+|split|p2
+|-damage|p2a: Froslass|13/71
+|-damage|p2a: Froslass|19/100
+|
+|t:|1792222649
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L24, M|16/70 tox|[from] Rock Throw
+|switch|p1a: Spiritomb|Spiritomb, L24, M|23/100 tox|[from] Rock Throw
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|split|p1
+|-damage|p1a: Spiritomb|12/70 tox|[from] psn
+|-damage|p1a: Spiritomb|18/100 tox|[from] psn
+|upkeep
+|turn|3
+|
+|t:|1792222649
+|-message|投出了超级球！
+|-roguecapture|p2a: Froslass|greatball|failure|2|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Froslass|Hex|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|0 fnt
+|-damage|p1a: Spiritomb|0 fnt
+|faint|p1a: Spiritomb
+|
+|upkeep
+|
+|t:|1792222649
+|split|p1
+|switch|p1a: Ponyta|Ponyta, L21, M|21/63
+|switch|p1a: Ponyta|Ponyta, L21, M|34/100
+|-end|p1a: Ponyta|fantasystats|[silent]
+|turn|4
+|
+|t:|1792222649
+|-message|投出了超级球！
+|-roguecapture|p2a: Froslass|greatball|failure|1|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Froslass|Hex|p1a: Ponyta
+|split|p1
+|-damage|p1a: Ponyta|0 fnt
+|-damage|p1a: Ponyta|0 fnt
+|faint|p1a: Ponyta
+|
+|upkeep
+|
+|t:|1792222649
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L28, M|2/88
+|switch|p1a: Marshtomp|Marshtomp, L28, M|3/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|5
+|
+|t:|1792222649
+|-message|投出了超级球！
+|-roguecapture|p2a: Froslass|greatball|failure|1|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Froslass|Hex|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|
+|win|NPC

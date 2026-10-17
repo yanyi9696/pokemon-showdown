@@ -1,0 +1,92 @@
+|t:|1792230422
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Mudkip, L11, F|
+|poke|p1|Bulbasaur, L10, M|
+|poke|p1|Tinkatink, L8, F|
+|poke|p1|Mime Jr., L6, M|
+|poke|p1|Charcadet, L5, F|
+|poke|p2|Duskull-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792230422
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L11, F|39/39
+|switch|p1a: Mudkip|Mudkip, L11, F|100/100
+|split|p2
+|switch|p2a: Duskull|Duskull-Fantasy, L13, M|37/37
+|switch|p2a: Duskull|Duskull-Fantasy, L13, M|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Duskull|typechange|Ghost/Normal|[silent]
+|-start|p2a: Duskull|fantasystats|40/60/115/15/115/15|[silent]
+|-ability|p2a: Duskull|Intimidate|boost
+|-unboost|p1a: Mudkip|atk|1
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Duskull|typechange|Ghost/Normal|[silent]
+|-start|p2a: Duskull|fantasystats|40/60/115/15/115/15|[silent]
+|turn|1
+|
+|t:|1792230423
+|-terastallize|p2a: Duskull|Ghost
+|move|p1a: Mudkip|Water Gun|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|33/37
+|-damage|p2a: Duskull|90/100
+|move|p2a: Duskull|Astonish|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|21/39
+|-damage|p1a: Mudkip|54/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230423
+|move|p1a: Mudkip|Water Gun|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|29/37
+|-damage|p2a: Duskull|79/100
+|move|p2a: Duskull|Curse|p1a: Mudkip
+|-start|p1a: Mudkip|Curse|[of] p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|11/37
+|-damage|p2a: Duskull|30/100
+|
+|split|p1
+|-damage|p1a: Mudkip|12/39|[from] Curse
+|-damage|p1a: Mudkip|31/100|[from] Curse
+|upkeep
+|turn|3
+|
+|t:|1792230424
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|42/42
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|move|p2a: Duskull|Astonish|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|28/42
+|-damage|p1a: Fuecoco|67/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792230424
+|move|p1a: Fuecoco|Leer|p2a: Duskull
+|-unboost|p2a: Duskull|def|1
+|move|p2a: Duskull|Curse|p1a: Fuecoco
+|-start|p1a: Fuecoco|Curse|[of] p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|0 fnt
+|-damage|p2a: Duskull|0 fnt
+|faint|p2a: Duskull
+|
+|win|Player

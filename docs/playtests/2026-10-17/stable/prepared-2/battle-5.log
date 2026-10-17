@@ -1,0 +1,151 @@
+|t:|1792221967
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|3
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L9, M|
+|poke|p1|Sandygast, L3, F|
+|poke|p1|Spiritomb, L6, M|
+|poke|p2|Magnemite, L6|
+|teampreview
+|
+|t:|1792221967
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L9, M|32/32
+|switch|p1a: Fuecoco|Fuecoco, L9, M|100/100
+|split|p2
+|switch|p2a: Magnemite|Magnemite, L6|20/20
+|switch|p2a: Magnemite|Magnemite, L6|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-end|p2a: Magnemite|fantasystats|[silent]
+|-end|p2a: Magnemite|fantasystats|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221967
+|-message|投出了精灵球！
+|-roguecapture|p2a: Magnemite|pokeball|failure|1|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Magnemite|Thunder Shock|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|23/32
+|-damage|p1a: Fuecoco|72/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792221967
+|-message|投出了精灵球！
+|-roguecapture|p2a: Magnemite|pokeball|failure|2|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Magnemite|Thunder Shock|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|14/32
+|-damage|p1a: Fuecoco|44/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792221967
+|-message|投出了精灵球！
+|-roguecapture|p2a: Magnemite|pokeball|failure|2|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Magnemite|Thunder Shock|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|5/32
+|-damage|p1a: Fuecoco|16/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792221967
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L6, M|23/23 brn
+|switch|p1a: Spiritomb|Spiritomb, L6, M|100/100 brn
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Magnemite|Thunder Shock|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|17/23 brn
+|-damage|p1a: Spiritomb|74/100 brn
+|
+|split|p1
+|-damage|p1a: Spiritomb|16/23 brn|[from] brn
+|-damage|p1a: Spiritomb|70/100 brn|[from] brn
+|upkeep
+|turn|5
+|
+|t:|1792221967
+|move|p2a: Magnemite|Thunder Shock|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|12/23 brn
+|-damage|p1a: Spiritomb|53/100 brn
+|move|p1a: Spiritomb|Night Shade|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|14/20
+|-damage|p2a: Magnemite|70/100
+|
+|t:|1792221968
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L9, M|5/32|[from] Night Shade
+|switch|p1a: Fuecoco|Fuecoco, L9, M|16/100|[from] Night Shade
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|
+|upkeep
+|turn|6
+|
+|t:|1792221968
+|move|p2a: Magnemite|Thunder Shock|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792221968
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L6, M|12/23 brn
+|switch|p1a: Spiritomb|Spiritomb, L6, M|53/100 brn
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|7
+|
+|t:|1792221968
+|move|p2a: Magnemite|Thunder Shock|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|8/23 brn
+|-damage|p1a: Spiritomb|35/100 brn
+|move|p1a: Spiritomb|Night Shade|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|8/20
+|-damage|p2a: Magnemite|40/100
+|
+|split|p1
+|-damage|p1a: Spiritomb|7/23 brn|[from] brn
+|-damage|p1a: Spiritomb|31/100 brn|[from] brn
+|upkeep
+|turn|8
+|
+|t:|1792221968
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|5/20
+|-damage|p2a: Magnemite|25/100
+|move|p2a: Magnemite|Thunder Shock|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|1/23 brn
+|-damage|p1a: Spiritomb|5/100 brn
+|
+|split|p1
+|-damage|p1a: Spiritomb|0 fnt|[from] brn
+|-damage|p1a: Spiritomb|0 fnt|[from] brn
+|faint|p1a: Spiritomb
+|
+|win|NPC

@@ -7,6 +7,7 @@ import { ROGUE_INITIAL_FRIENDSHIP } from './friendship';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { canEditParty, healingLocked, inventoryItem } from './team';
 import { drawGiftSpecies } from './gifts';
+import { CANDY_SHOP } from './early-balance';
 
 export const SPIRIT_HAZARDS = [
 	'stealthrock', 'spikes', 'toxicspikes', 'stickyweb', 'gmaxsteelsurge', 'reflect', 'lightscreen', 'safeguard',
@@ -49,14 +50,14 @@ export function grantSpiritGift(run: RogueRun, content: RogueContent, random: Ro
 
 export function spiritItems(content: RogueContent, run?: RogueRun): RogueItem[] {
 	if (run?.spirit !== 'meowth') return content.items;
-	const candies: Record<string, [number, number]> = {
-		expcandyxs: [9, 250], expcandys: [29, 1125], expcandym: [69, 3750], expcandyl: [109, 10000], expcandyxl: [149, 22500],
+	const candies: Record<string, number> = {
+		expcandyxs: 250, expcandys: 1125, expcandym: 3750, expcandyl: 10000, expcandyxl: 22500,
 	};
 	return content.items.map(item => {
 		if (item.kind === 'treasure') return item;
 		const candy = candies[item.id];
-		return { ...item, price: candy ? Math.ceil(candy[1] * 1.25 / 25) * 25 : Math.ceil(item.price * 1.25),
-			shopFloor: candy ? candy[0] : typeof item.shopFloor === 'number' ? Math.max(9, item.shopFloor - 20) : item.shopFloor };
+		return { ...item, price: candy ? Math.ceil(candy * 1.25 / 25) * 25 : Math.ceil(item.price * 1.25),
+			shopFloor: candy ? Math.max(9, CANDY_SHOP[item.id].floor) : typeof item.shopFloor === 'number' ? Math.max(9, item.shopFloor - 20) : item.shopFloor };
 	});
 }
 export function spiritShopAvailable(item: RogueItem, floor: number) {
@@ -91,7 +92,8 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 				set.shiny = random(1000) < (run.spirit === 'hooh' ? 20 : 2) + (run.startCard === 'all' ? 1 : 0);
 			}
 			if (run.spirit === 'mew' && !node.biome) {
-				set.level = Math.min(100, set.level + rogueWildLevelBonus(run.floor, run.spirit));
+				const level = set.level + rogueWildLevelBonus(run.floor, run.spirit);
+				set.level = encounter.boss ? level : Math.min(100, level);
 			}
 		}
 	}
@@ -163,13 +165,13 @@ export function mergeSpiritPokemon(run: RogueRun, member: string, consume: strin
 	const removed = consume.map(id => owned.find(mon => mon.id === id));
 	requireRule(removed.every(mon => mon && toID(mon.set.species) === toID(keep.set.species) &&
 		(mon.stars || 1) === (keep.stars || 1)), '需要三只同物种、同形态、同星级的伙伴。');
-	for (const mon of removed) if (mon!.set.item) {
-		const id = toID(mon!.set.item); run.bag[id] = (run.bag[id] || 0) + 1;
+	for (const mon of removed) for (const item of [mon!.set.item, mon!.emblem]) if (item) {
+		const id = toID(item); run.bag[id] = (run.bag[id] || 0) + 1;
 	}
 	run.team = run.team.filter(mon => !consume.includes(mon.id));
 	run.box = run.box.filter(mon => !consume.includes(mon.id));
 	if (!run.team.length) { run.box = run.box.filter(mon => mon.id !== keep.id); run.team.push(keep); }
 	keep.stars = (keep.stars || 1) + 1;
 	rebuildMember(keep, run.boosts);
-	run.notices = [`${keep.set.species} 已升至 ${keep.stars} 星。消耗成员的携带道具已返还背包。`];
+	run.notices = [`${keep.set.species} 已升至 ${keep.stars} 星。消耗成员的携带道具及属性转已返还背包。`];
 }

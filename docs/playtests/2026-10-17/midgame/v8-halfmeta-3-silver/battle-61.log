@@ -1,0 +1,232 @@
+|t:|1792231048
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L23, M|
+|poke|p1|Crocalor, L22, M|
+|poke|p1|Marshtomp, L21, M|
+|poke|p1|Ralts, L17, M|
+|poke|p1|Aron, L17, M|
+|poke|p1|Shuckle, L22, F|
+|poke|p2|Onix, L25, F|
+|poke|p2|Nacli, L25, F|
+|poke|p2|Aerodactyl, L25, M|
+|poke|p2|Pupitar, L25, M|
+|teampreview
+|
+|t:|1792231048
+|start
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L23, M|70/70
+|switch|p1a: Ivysaur|Ivysaur, L23, M|100/100
+|split|p2
+|switch|p2a: Onix|Onix, L25, F|60/60
+|switch|p2a: Onix|Onix, L25, F|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Onix|fantasystats|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Onix|fantasystats|[silent]
+|turn|1
+|
+|t:|1792231048
+|-terastallize|p2a: Onix|Rock
+|move|p1a: Ivysaur|Seed Bomb|p2a: Onix
+|-supereffective|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|34/60
+|-damage|p2a: Onix|57/100
+|move|p2a: Onix|Rock Throw|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|40/70
+|-damage|p1a: Ivysaur|58/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792231049
+|move|p2a: Onix|Rock Throw|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|14/70
+|-damage|p1a: Ivysaur|20/100
+|move|p1a: Ivysaur|Seed Bomb|p2a: Onix
+|-supereffective|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|0 fnt
+|-damage|p2a: Onix|0 fnt
+|faint|p2a: Onix
+|
+|upkeep
+|
+|t:|1792231049
+|split|p2
+|switch|p2a: Nacli|Nacli, L25, F|70/70
+|switch|p2a: Nacli|Nacli, L25, F|100/100
+|-end|p2a: Nacli|fantasystats|[silent]
+|turn|3
+|
+|t:|1792231049
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|70/70
+|switch|p1a: Marshtomp|Marshtomp, L21, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Nacli|Rock Throw|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|58/70
+|-damage|p1a: Marshtomp|83/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792231050
+|move|p1a: Marshtomp|Water Pulse|p2a: Nacli
+|-supereffective|p2a: Nacli
+|split|p2
+|-damage|p2a: Nacli|18/70
+|-damage|p2a: Nacli|26/100
+|move|p2a: Nacli|Rock Throw|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|45/70
+|-damage|p1a: Marshtomp|65/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792231051
+|move|p1a: Marshtomp|Water Pulse|p2a: Nacli
+|-supereffective|p2a: Nacli
+|split|p2
+|-damage|p2a: Nacli|0 fnt
+|-damage|p2a: Nacli|0 fnt
+|faint|p2a: Nacli
+|
+|upkeep
+|
+|t:|1792231051
+|split|p2
+|switch|p2a: Aerodactyl|Aerodactyl, L25, M|82/82
+|switch|p2a: Aerodactyl|Aerodactyl, L25, M|100/100
+|-end|p2a: Aerodactyl|fantasystats|[silent]
+|turn|6
+|
+|t:|1792231052
+|move|p2a: Aerodactyl|Dual Wingbeat|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|27/70
+|-damage|p1a: Marshtomp|39/100
+|split|p1
+|-damage|p1a: Marshtomp|9/70
+|-damage|p1a: Marshtomp|13/100
+|-hitcount|p1a: Marshtomp|2
+|move|p1a: Marshtomp|Rock Throw|p2a: Aerodactyl
+|-supereffective|p2a: Aerodactyl
+|split|p2
+|-damage|p2a: Aerodactyl|45/82
+|-damage|p2a: Aerodactyl|55/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792231052
+|split|p1
+|switch|p1a: Aron|Aron, L17, M|54/54
+|switch|p1a: Aron|Aron, L17, M|100/100
+|-end|p1a: Aron|fantasystats|[silent]
+|move|p2a: Aerodactyl|Dual Wingbeat|p1a: Aron
+|-resisted|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|50/54
+|-damage|p1a: Aron|93/100
+|-resisted|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|46/54
+|-damage|p1a: Aron|86/100
+|-hitcount|p1a: Aron|2
+|
+|upkeep
+|turn|8
+|
+|t:|1792231053
+|move|p2a: Aerodactyl|Rock Throw|p1a: Aron
+|-resisted|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|28/54
+|-damage|p1a: Aron|52/100
+|move|p1a: Aron|Rock Tomb|p2a: Aerodactyl
+|-supereffective|p2a: Aerodactyl
+|split|p2
+|-damage|p2a: Aerodactyl|17/82
+|-damage|p2a: Aerodactyl|21/100
+|-unboost|p2a: Aerodactyl|spe|1
+|
+|upkeep
+|turn|9
+|
+|t:|1792231053
+|move|p2a: Aerodactyl|Rock Throw|p1a: Aron
+|-resisted|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|11/54
+|-damage|p1a: Aron|21/100
+|move|p1a: Aron|Rock Tomb|p2a: Aerodactyl
+|-supereffective|p2a: Aerodactyl
+|split|p2
+|-damage|p2a: Aerodactyl|0 fnt
+|-damage|p2a: Aerodactyl|0 fnt
+|faint|p2a: Aerodactyl
+|
+|upkeep
+|
+|t:|1792231053
+|split|p2
+|switch|p2a: Pupitar|Pupitar, L25, M|93/93
+|switch|p2a: Pupitar|Pupitar, L25, M|100/100
+|-end|p2a: Pupitar|fantasystats|[silent]
+|turn|10
+|
+|t:|1792231054
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L22, F|50/50
+|switch|p1a: Shuckle|Shuckle, L22, F|100/100
+|-end|p1a: Shuckle|fantasystats|[silent]
+|move|p2a: Pupitar|Earthquake|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|28/50
+|-damage|p1a: Shuckle|57/100
+|
+|upkeep
+|turn|11
+|
+|t:|1792231054
+|move|p2a: Pupitar|Rock Throw|p1a: Shuckle
+|-supereffective|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|0 fnt
+|-damage|p1a: Shuckle|0 fnt
+|faint|p1a: Shuckle
+|
+|upkeep
+|
+|t:|1792231054
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L23, M|14/70
+|switch|p1a: Ivysaur|Ivysaur, L23, M|20/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|turn|12
+|
+|t:|1792231055
+|move|p1a: Ivysaur|Seed Bomb|p2a: Pupitar
+|-supereffective|p2a: Pupitar
+|split|p2
+|-damage|p2a: Pupitar|0 fnt
+|-damage|p2a: Pupitar|0 fnt
+|faint|p2a: Pupitar
+|
+|win|Player

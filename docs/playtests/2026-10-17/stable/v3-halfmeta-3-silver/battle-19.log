@@ -1,0 +1,160 @@
+|t:|1792223286
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L11, M|
+|poke|p1|Snorunt, L7, F|
+|poke|p1|Wynaut, L6, F|
+|poke|p1|Ralts, L6, F|
+|poke|p1|Drifloon, L5, M|
+|poke|p2|Skitty-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792223286
+|start
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|38/38
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|100/100
+|split|p2
+|switch|p2a: Skitty|Skitty-Fantasy, L13, M|40/40
+|switch|p2a: Skitty|Skitty-Fantasy, L13, M|100/100
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223286
+|-terastallize|p2a: Skitty|Fairy
+|move|p2a: Skitty|Earth Power|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|23/38
+|-damage|p1a: Bulbasaur|61/100
+|move|p1a: Bulbasaur|Vine Whip|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|31/40
+|-damage|p2a: Skitty|78/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223286
+|move|p2a: Skitty|Earth Power|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|7/38
+|-damage|p1a: Bulbasaur|19/100
+|move|p1a: Bulbasaur|Vine Whip|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|18/40
+|-damage|p2a: Skitty|45/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792223287
+|split|p1
+|switch|p1a: Drifloon|Drifloon, L5, M|30/30
+|switch|p1a: Drifloon|Drifloon, L5, M|100/100
+|-end|p1a: Drifloon|fantasystats|[silent]
+|move|p2a: Skitty|Earth Power|p1a: Drifloon
+|-immune|p1a: Drifloon
+|
+|upkeep
+|turn|4
+|
+|t:|1792223287
+|split|p1
+|switch|p1a: Snorunt|Snorunt, L7, F|30/30
+|switch|p1a: Snorunt|Snorunt, L7, F|100/100
+|-end|p1a: Snorunt|fantasystats|[silent]
+|move|p2a: Skitty|Qing Su Mi Hun|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|10/30
+|-damage|p1a: Snorunt|34/100
+|-start|p1a: Snorunt|Attract
+|
+|upkeep
+|turn|5
+|
+|t:|1792223288
+|move|p2a: Skitty|Earth Power|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|0 fnt
+|-damage|p1a: Snorunt|0 fnt
+|faint|p1a: Snorunt
+|
+|upkeep
+|
+|t:|1792223288
+|split|p1
+|switch|p1a: Wynaut|Wynaut, L6, F|33/33
+|switch|p1a: Wynaut|Wynaut, L6, F|100/100
+|-end|p1a: Wynaut|fantasystats|[silent]
+|turn|6
+|
+|t:|1792223288
+|move|p2a: Skitty|Earth Power|p1a: Wynaut
+|split|p1
+|-damage|p1a: Wynaut|11/33
+|-damage|p1a: Wynaut|34/100
+|move|p1a: Wynaut|Safeguard|p1a: Wynaut
+|-sidestart|p1: Player|Safeguard
+|
+|upkeep
+|turn|7
+|
+|t:|1792223288
+|split|p1
+|switch|p1a: Drifloon|Drifloon, L5, M|30/30
+|switch|p1a: Drifloon|Drifloon, L5, M|100/100
+|-end|p1a: Drifloon|fantasystats|[silent]
+|move|p2a: Skitty|Earth Power|p1a: Drifloon
+|-immune|p1a: Drifloon
+|
+|upkeep
+|turn|8
+|
+|t:|1792223288
+|move|p2a: Skitty|Earth Power|p1a: Drifloon
+|-immune|p1a: Drifloon
+|move|p1a: Drifloon|Astonish|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|14/40
+|-damage|p2a: Skitty|35/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792223289
+|move|p2a: Skitty|Qing Su Mi Hun|p1a: Drifloon
+|split|p1
+|-damage|p1a: Drifloon|2/30
+|-damage|p1a: Drifloon|7/100
+|move|p1a: Drifloon|Gust|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|10/40
+|-damage|p2a: Skitty|25/100
+|
+|upkeep
+|turn|10
+|
+|t:|1792223289
+|move|p2a: Skitty|Qing Su Mi Hun|p1a: Drifloon
+|split|p1
+|-damage|p1a: Drifloon|0 fnt
+|-damage|p1a: Drifloon|0 fnt
+|split|p2
+|-damage|p2a: Skitty|0 fnt|[from] ability: Aftermath|[of] p1a: Drifloon
+|-damage|p2a: Skitty|0 fnt|[from] ability: Aftermath|[of] p1a: Drifloon
+|faint|p1a: Drifloon
+|faint|p2a: Skitty
+|
+|win|Player

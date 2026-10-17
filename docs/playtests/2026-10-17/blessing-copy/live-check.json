@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-17T03:03:44.063Z",
+  "transport": "real localhost WebSocket",
+  "user": "RogueBalance1016I",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\recalibration-1792206074793",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "hpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "codexEntries": 164,
+  "checks": [
+    "four-stage names and exact coin rewards",
+    "25/30/35/40 healing",
+    "pinyin ordering",
+    "named terms",
+    "opening-only bond",
+    "ascent 30 percent",
+    "emblem description",
+    "clear psychic overflow wording"
+  ],
+  "browserVisualReview": "not performed; browser local page access blocked in this session"
+}

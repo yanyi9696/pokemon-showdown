@@ -1,0 +1,93 @@
+|init|battle
+|title|RoguePlay1016F vs. AI · 山崖边的武学家
+
+|-message|幻想杯肉鸽第 21 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792133303
+|gametype|singles
+|player|p1|RoguePlay1016F|266|
+|player|p2|AI · 山崖边的武学家|sage|
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L15, M|
+|poke|p1|Muk-Alola, L40, M|
+|poke|p1|Munna, L11, F|
+|poke|p1|Mankey, L10, F|
+|poke|p1|Solosis, L12, M|
+|poke|p1|Psyduck, L10, M|
+|poke|p2|Tyrogue, L13, M|
+|poke|p2|Mienfoo, L13, M|
+|poke|p2|Meditite, L13, M|
+|teampreview
+|
+|t:|1792133304
+|start
+|-message|塔灵：时拉比的驻时
+|switch|p1a: Muk|Muk-Alola, L40, M|144/144
+|switch|p2a: Tyrogue|Tyrogue, L13, M|100/100
+|-end|p1a: Muk|fantasystats|[silent]
+|-end|p2a: Tyrogue|fantasystats|[silent]
+|-end|p1a: Muk|fantasystats|[silent]
+|-end|p2a: Tyrogue|fantasystats|[silent]
+|turn|1
+|
+|t:|1792133305
+|move|p2a: Tyrogue|Helping Hand|null|[notarget]
+|-fail|p2a: Tyrogue
+|move|p1a: Muk|Pound|p2a: Tyrogue
+|-damage|p2a: Tyrogue|0 fnt
+|faint|p2a: Tyrogue
+|
+|upkeep
+|
+|t:|1792133305
+|switch|p2a: Mienfoo|Mienfoo, L13, M|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|turn|2
+|
+|t:|1792133305
+|move|p1a: Muk|Crunch|p2a: Mienfoo
+|-resisted|p2a: Mienfoo
+|-damage|p2a: Mienfoo|0 fnt
+|faint|p2a: Mienfoo
+|
+|upkeep
+|
+|t:|1792133305
+|switch|p2a: Meditite|Meditite, L13, M|100/100
+|-end|p2a: Meditite|fantasystats|[silent]
+|turn|3
+|
+|t:|1792133306
+|move|p2a: Meditite|Endure|p2a: Meditite
+|-singleturn|p2a: Meditite|move: Endure
+|move|p1a: Muk|Crunch|p2a: Meditite
+|-activate|p2a: Meditite|move: Endure
+|-damage|p2a: Meditite|3/100
+|-unboost|p2a: Meditite|def|1
+|
+|upkeep
+|turn|4
+|
+|t:|1792133307
+|move|p2a: Meditite|Endure|p2a: Meditite
+|-singleturn|p2a: Meditite|move: Endure
+|move|p1a: Muk|Crunch|p2a: Meditite
+|-activate|p2a: Meditite|move: Endure
+|-damage|p2a: Meditite|3/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792133307
+|move|p2a: Meditite|Endure||[still]
+|-fail|p2a: Meditite
+|move|p1a: Muk|Pound|p2a: Meditite
+|-damage|p2a: Meditite|0 fnt
+|faint|p2a: Meditite
+|
+|win|RoguePlay1016F
+|deinit

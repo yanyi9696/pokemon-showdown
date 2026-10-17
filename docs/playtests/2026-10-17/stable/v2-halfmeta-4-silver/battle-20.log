@@ -1,0 +1,125 @@
+|t:|1792222669
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L11, M|
+|poke|p1|Pidgey, L9, M|
+|poke|p1|Meowth, L7, F|
+|poke|p1|Slakoth, L7, M|
+|poke|p1|Swablu, L6, F|
+|poke|p2|Zorua-Hisui-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792222669
+|start
+|split|p1
+|switch|p1a: Popplio|Popplio, L11, M|39/39
+|switch|p1a: Popplio|Popplio, L11, M|100/100
+|split|p2
+|switch|p2a: Zorua|Zorua-Hisui-Fantasy, L13, M|34/34
+|switch|p2a: Zorua|Zorua-Hisui-Fantasy, L13, M|100/100
+|-start|p2a: Zorua|typechange|Normal/Ghost|[silent]
+|-start|p2a: Zorua|fantasystats|30/60/40/85/40/75|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Zorua|typechange|Normal/Ghost|[silent]
+|-start|p2a: Zorua|fantasystats|30/60/40/85/40/75|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222669
+|-terastallize|p2a: Zorua|Normal
+|move|p2a: Zorua|Hex|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|21/39
+|-damage|p1a: Popplio|54/100
+|move|p1a: Popplio|Water Gun|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|22/34
+|-damage|p2a: Zorua|65/100
+|split|p1
+|-damage|p1a: Popplio|18/39|[from] item: Life Orb
+|-damage|p1a: Popplio|47/100|[from] item: Life Orb
+|
+|upkeep
+|turn|2
+|
+|t:|1792222669
+|move|p1a: Popplio|Aqua Jet|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|10/34
+|-damage|p2a: Zorua|30/100
+|split|p1
+|-damage|p1a: Popplio|15/39|[from] item: Life Orb
+|-damage|p1a: Popplio|39/100|[from] item: Life Orb
+|move|p2a: Zorua|Hex|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|0 fnt
+|-damage|p1a: Popplio|0 fnt
+|faint|p1a: Popplio
+|
+|upkeep
+|
+|t:|1792222669
+|split|p1
+|switch|p1a: Pidgey|Pidgey, L9, M|33/33
+|switch|p1a: Pidgey|Pidgey, L9, M|100/100
+|-end|p1a: Pidgey|fantasystats|[silent]
+|turn|3
+|
+|t:|1792222669
+|move|p2a: Zorua|Swift|p1a: Pidgey
+|split|p1
+|-damage|p1a: Pidgey|13/33
+|-damage|p1a: Pidgey|40/100
+|move|p1a: Pidgey|Sand Attack|p2a: Zorua
+|-unboost|p2a: Zorua|accuracy|1
+|
+|upkeep
+|turn|4
+|
+|t:|1792222669
+|move|p2a: Zorua|Swift|p1a: Pidgey
+|split|p1
+|-damage|p1a: Pidgey|0 fnt
+|-damage|p1a: Pidgey|0 fnt
+|faint|p1a: Pidgey
+|
+|upkeep
+|
+|t:|1792222670
+|split|p1
+|switch|p1a: Meowth|Meowth, L7, F|29/29
+|switch|p1a: Meowth|Meowth, L7, F|100/100
+|-end|p1a: Meowth|fantasystats|[silent]
+|turn|5
+|
+|t:|1792222670
+|move|p1a: Meowth|Fake Out|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|2/34
+|-damage|p2a: Zorua|6/100
+|split|p1
+|-damage|p1a: Meowth|27/29|[from] item: Life Orb
+|-damage|p1a: Meowth|94/100|[from] item: Life Orb
+|cant|p2a: Zorua|flinch
+|
+|upkeep
+|turn|6
+|
+|t:|1792222670
+|move|p1a: Meowth|Feint|p2a: Zorua
+|split|p2
+|-damage|p2a: Zorua|0 fnt
+|-damage|p2a: Zorua|0 fnt
+|faint|p2a: Zorua
+|split|p1
+|-damage|p1a: Meowth|25/29|[from] item: Life Orb
+|-damage|p1a: Meowth|87/100|[from] item: Life Orb
+|
+|win|Player

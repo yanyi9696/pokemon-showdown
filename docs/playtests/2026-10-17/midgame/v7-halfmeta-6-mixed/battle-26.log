@@ -1,0 +1,138 @@
+|t:|1792230468
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L17, M|
+|poke|p1|Crocalor, L17, M|
+|poke|p1|Ivysaur, L16, M|
+|poke|p1|Machop, L12, M|
+|poke|p1|Abra, L12, M|
+|poke|p1|Klefki, L11, M|
+|poke|p2|Chewtle, L20, M|
+|poke|p2|Feebas, L20, M|
+|poke|p2|Wimpod, L20, M|
+|teampreview
+|
+|t:|1792230468
+|start
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L16, M|53/53
+|switch|p1a: Ivysaur|Ivysaur, L16, M|100/100
+|split|p2
+|switch|p2a: Chewtle|Chewtle, L20, M|56/56
+|switch|p2a: Chewtle|Chewtle, L20, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Chewtle|fantasystats|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Chewtle|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230468
+|-terastallize|p2a: Chewtle|Water
+|move|p1a: Ivysaur|Razor Leaf|p2a: Chewtle
+|-supereffective|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|28/56
+|-damage|p2a: Chewtle|50/100
+|move|p2a: Chewtle|Mud Shot|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|46/53
+|-damage|p1a: Ivysaur|87/100
+|-unboost|p1a: Ivysaur|spe|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792230469
+|move|p2a: Chewtle|Mud Shot|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|39/53
+|-damage|p1a: Ivysaur|74/100
+|-unboost|p1a: Ivysaur|spe|1
+|move|p1a: Ivysaur|Razor Leaf|p2a: Chewtle
+|-supereffective|p2a: Chewtle
+|-crit|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|0 fnt
+|-damage|p2a: Chewtle|0 fnt
+|faint|p2a: Chewtle
+|
+|upkeep
+|
+|t:|1792230469
+|split|p2
+|switch|p2a: Feebas|Feebas, L20, M|44/44
+|switch|p2a: Feebas|Feebas, L20, M|100/100
+|-end|p2a: Feebas|fantasystats|[silent]
+|turn|3
+|
+|t:|1792230469
+|move|p2a: Feebas|Flail|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|37/53
+|-damage|p1a: Ivysaur|70/100
+|move|p1a: Ivysaur|Razor Leaf|p2a: Feebas
+|-supereffective|p2a: Feebas
+|split|p2
+|-damage|p2a: Feebas|0 fnt
+|-damage|p2a: Feebas|0 fnt
+|faint|p2a: Feebas
+|
+|upkeep
+|
+|t:|1792230469
+|split|p2
+|switch|p2a: Wimpod|Wimpod, L20, M|58/58
+|switch|p2a: Wimpod|Wimpod, L20, M|100/100
+|-end|p2a: Wimpod|fantasystats|[silent]
+|turn|4
+|
+|t:|1792230470
+|move|p2a: Wimpod|Leech Life|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|12/53
+|-damage|p1a: Ivysaur|23/100
+|move|p1a: Ivysaur|Razor Leaf|p2a: Wimpod
+|split|p2
+|-damage|p2a: Wimpod|32/58
+|-damage|p2a: Wimpod|56/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792230470
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L17, M|63/63
+|switch|p1a: Crocalor|Crocalor, L17, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Wimpod|Leech Life|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|52/63
+|-damage|p1a: Crocalor|83/100
+|split|p2
+|-heal|p2a: Wimpod|38/58|[from] drain|[of] p1a: Crocalor
+|-heal|p2a: Wimpod|66/100|[from] drain|[of] p1a: Crocalor
+|
+|upkeep
+|turn|6
+|
+|t:|1792230470
+|move|p2a: Wimpod|Waterfall|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|8/63
+|-damage|p1a: Crocalor|13/100
+|move|p1a: Crocalor|Incinerate|p2a: Wimpod
+|split|p2
+|-damage|p2a: Wimpod|0 fnt
+|-damage|p2a: Wimpod|0 fnt
+|faint|p2a: Wimpod
+|
+|win|Player

@@ -1,0 +1,149 @@
+|t:|1792231036
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L19, M|
+|poke|p1|Crocalor, L19, M|
+|poke|p1|Marshtomp, L18, M|
+|poke|p1|Ralts, L14, M|
+|poke|p1|Aron, L14, M|
+|poke|p1|Shuckle, L17, F|
+|poke|p2|Simipour-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792231036
+|start
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L17, F|42/42
+|switch|p1a: Shuckle|Shuckle, L17, F|100/100
+|split|p2
+|switch|p2a: Simipour|Simipour-Fantasy, L20, M|75/75
+|switch|p2a: Simipour|Simipour-Fantasy, L20, M|100/100
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Shuckle|fantasystats|[silent]
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Shuckle|fantasystats|[silent]
+|turn|1
+|
+|t:|1792231036
+|-terastallize|p2a: Simipour|Water
+|move|p2a: Simipour|Scald|p1a: Shuckle
+|-supereffective|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|10/42
+|-damage|p1a: Shuckle|24/100
+|move|p1a: Shuckle|Struggle Bug|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|69/75
+|-damage|p2a: Simipour|92/100
+|-unboost|p2a: Simipour|spa|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792231037
+|split|p1
+|switch|p1a: Aron|Aron, L14, M|47/47
+|switch|p1a: Aron|Aron, L14, M|100/100
+|-end|p1a: Aron|fantasystats|[silent]
+|move|p2a: Simipour|Scald|p1a: Aron
+|-supereffective|p1a: Aron
+|-ability|p1a: Aron|Sturdy
+|split|p1
+|-damage|p1a: Aron|1/47
+|-damage|p1a: Aron|3/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792231038
+|move|p2a: Simipour|Scald|p1a: Aron
+|-supereffective|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|0 fnt
+|-damage|p1a: Aron|0 fnt
+|faint|p1a: Aron
+|
+|upkeep
+|
+|t:|1792231038
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L19, M|60/60
+|switch|p1a: Ivysaur|Ivysaur, L19, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|turn|4
+|
+|t:|1792231038
+|move|p2a: Simipour|Scald|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|49/60
+|-damage|p1a: Ivysaur|82/100
+|move|p1a: Ivysaur|Razor Leaf|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|36/75
+|-damage|p2a: Simipour|48/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792231038
+|move|p2a: Simipour|Scald|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|38/60
+|-damage|p1a: Ivysaur|64/100
+|-status|p1a: Ivysaur|brn
+|move|p1a: Ivysaur|Razor Leaf|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|22/75
+|-damage|p2a: Simipour|30/100
+|
+|split|p1
+|-damage|p1a: Ivysaur|35/60 brn|[from] brn
+|-damage|p1a: Ivysaur|59/100 brn|[from] brn
+|upkeep
+|turn|6
+|
+|t:|1792231039
+|move|p2a: Simipour|Scald|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|24/60 brn
+|-damage|p1a: Ivysaur|40/100 brn
+|move|p1a: Ivysaur|Vine Whip|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|9/75
+|-damage|p2a: Simipour|12/100
+|
+|split|p1
+|-damage|p1a: Ivysaur|21/60 brn|[from] brn
+|-damage|p1a: Ivysaur|35/100 brn|[from] brn
+|upkeep
+|turn|7
+|
+|t:|1792231039
+|move|p2a: Simipour|Scald|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|10/60 brn
+|-damage|p1a: Ivysaur|17/100 brn
+|move|p1a: Ivysaur|Razor Leaf|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|0 fnt
+|-damage|p2a: Simipour|0 fnt
+|faint|p2a: Simipour
+|
+|win|Player

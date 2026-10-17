@@ -1,0 +1,113 @@
+|t:|1792231092
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L33, M|
+|poke|p1|Crocalor, L28, M|
+|poke|p1|Marshtomp, L29, M|
+|poke|p1|Kirlia, L24, M|
+|poke|p1|Aron, L24, M|
+|poke|p1|Shuckle, L33, F|
+|poke|p2|Drednaw, L35, M|
+|poke|p2|Golisopod, L35, F|
+|poke|p2|Milotic, L35, M|
+|poke|p2|Slowbro, L35, F|
+|teampreview
+|
+|t:|1792231092
+|start
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L33, M|108/108
+|switch|p1a: Venusaur|Venusaur, L33, M|100/100
+|split|p2
+|switch|p2a: Drednaw|Drednaw, L35, M|118/118
+|switch|p2a: Drednaw|Drednaw, L35, M|100/100
+|-end|p2a: Drednaw|fantasystats|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-end|p2a: Drednaw|fantasystats|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792231093
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L29, M|90/90
+|switch|p1a: Marshtomp|Marshtomp, L29, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Drednaw|Shell Smash|p2a: Drednaw
+|-unboost|p2a: Drednaw|def|1
+|-unboost|p2a: Drednaw|spd|1
+|-boost|p2a: Drednaw|atk|2
+|-boost|p2a: Drednaw|spa|2
+|-boost|p2a: Drednaw|spe|2
+|
+|upkeep
+|turn|2
+|
+|t:|1792231094
+|-terastallize|p2a: Drednaw|Water
+|move|p2a: Drednaw|Liquidation|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|
+|upkeep
+|
+|t:|1792231094
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L33, M|108/108
+|switch|p1a: Venusaur|Venusaur, L33, M|100/100
+|-end|p1a: Venusaur|fantasystats|[silent]
+|turn|3
+|
+|t:|1792231094
+|move|p2a: Drednaw|Liquidation|p1a: Venusaur
+|-resisted|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|35/108
+|-damage|p1a: Venusaur|33/100
+|-enditem|p1a: Venusaur|Oran Berry|[eat]
+|split|p1
+|-heal|p1a: Venusaur|45/108|[from] item: Oran Berry
+|-heal|p1a: Venusaur|42/100|[from] item: Oran Berry
+|move|p1a: Venusaur|Petal Dance|p2a: Drednaw
+|-supereffective|p2a: Drednaw
+|-enditem|p2a: Drednaw|Focus Sash
+|split|p2
+|-damage|p2a: Drednaw|1/118
+|-damage|p2a: Drednaw|1/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792231094
+|move|p2a: Drednaw|Earthquake|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|0 fnt
+|-damage|p1a: Venusaur|0 fnt
+|faint|p1a: Venusaur
+|
+|upkeep
+|
+|t:|1792231094
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L28, M|94/94
+|switch|p1a: Crocalor|Crocalor, L28, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|5
+|
+|t:|1792231094
+|move|p2a: Drednaw|Earthquake|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|
+|win|NPC

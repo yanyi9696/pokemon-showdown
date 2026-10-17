@@ -1,0 +1,404 @@
+|t:|1792222036
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Skeledirge, L41, M|
+|poke|p1|Togedemaru, L27, M|
+|poke|p1|Spiritomb, L41, M|
+|poke|p1|Emolga, L27, M|
+|poke|p1|Eiscue, L28, F|
+|poke|p1|Probopass, L29, F|
+|poke|p2|Mimikyu, L35, M|
+|poke|p2|Haunter, L35, M|
+|poke|p2|Sandygast, L35, F|
+|poke|p2|Dhelmise, L35|
+|teampreview
+|
+|t:|1792222036
+|start
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L41, M|150/150
+|switch|p1a: Skeledirge|Skeledirge, L41, M|100/100
+|split|p2
+|switch|p2a: Mimikyu|Mimikyu, L35, M|116/116
+|switch|p2a: Mimikyu|Mimikyu, L35, M|100/100
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222036
+|split|p1
+|switch|p1a: Eiscue|Eiscue, L28, F|93/93
+|switch|p1a: Eiscue|Eiscue, L28, F|100/100
+|-end|p1a: Eiscue|fantasystats|[silent]
+|-terastallize|p2a: Mimikyu|Ghost
+|move|p2a: Mimikyu|Shadow Claw|p1a: Eiscue
+|-activate|p1a: Eiscue|ability: Ice Face
+|split|p1
+|-damage|p1a: Eiscue|93/93
+|-damage|p1a: Eiscue|100/100
+|detailschange|p1a: Eiscue|Eiscue-Noice, L28, F
+|-start|p1a: Eiscue|typechange|Ice|[silent]
+|-end|p1a: Eiscue|fantasystats|[silent]
+|split|p2
+|-damage|p2a: Mimikyu|105/116|[from] item: Life Orb
+|-damage|p2a: Mimikyu|91/100|[from] item: Life Orb
+|
+|upkeep
+|turn|2
+|
+|t:|1792222036
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L41, M|110/110
+|switch|p1a: Spiritomb|Spiritomb, L41, M|100/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Mimikyu|Shadow Claw|p1a: Spiritomb
+|-crit|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|22/110
+|-damage|p1a: Spiritomb|20/100
+|split|p2
+|-damage|p2a: Mimikyu|94/116|[from] item: Life Orb
+|-damage|p2a: Mimikyu|82/100|[from] item: Life Orb
+|
+|upkeep
+|turn|3
+|
+|t:|1792222037
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L41, M|150/150
+|switch|p1a: Skeledirge|Skeledirge, L41, M|100/100
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|move|p2a: Mimikyu|Play Rough|p1a: Skeledirge|[miss]
+|-miss|p2a: Mimikyu|p1a: Skeledirge
+|
+|upkeep
+|turn|4
+|
+|t:|1792222037
+|move|p2a: Mimikyu|Shadow Claw|p1a: Skeledirge
+|-supereffective|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|30/150
+|-damage|p1a: Skeledirge|20/100
+|split|p2
+|-damage|p2a: Mimikyu|83/116|[from] item: Life Orb
+|-damage|p2a: Mimikyu|72/100|[from] item: Life Orb
+|move|p1a: Skeledirge|Snarl|p2a: Mimikyu
+|-activate|p2a: Mimikyu|ability: Disguise
+|split|p2
+|-damage|p2a: Mimikyu|83/116
+|-damage|p2a: Mimikyu|72/100
+|-unboost|p2a: Mimikyu|spa|1
+|detailschange|p2a: Mimikyu|Mimikyu-Busted, L35, M, tera:Ghost
+|-start|p2a: Mimikyu|typechange|Ghost/Fairy|[silent]
+|split|p2
+|-damage|p2a: Mimikyu|69/116|[from] pokemon: Mimikyu-Busted
+|-damage|p2a: Mimikyu|60/100|[from] pokemon: Mimikyu-Busted
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|
+|t:|1792222037
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L41, M|22/110|[from] Snarl
+|switch|p1a: Spiritomb|Spiritomb, L41, M|20/100|[from] Snarl
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|turn|5
+|
+|t:|1792222038
+|move|p1a: Spiritomb|Sucker Punch|p2a: Mimikyu
+|-supereffective|p2a: Mimikyu
+|split|p2
+|-damage|p2a: Mimikyu|0 fnt
+|-damage|p2a: Mimikyu|0 fnt
+|faint|p2a: Mimikyu
+|
+|t:|1792222038
+|split|p1
+|switch|p1a: Probopass|Probopass, L29, F|88/88|[from] Sucker Punch
+|switch|p1a: Probopass|Probopass, L29, F|100/100|[from] Sucker Punch
+|-end|p1a: Probopass|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222038
+|split|p2
+|switch|p2a: Haunter|Haunter, L35, M|87/87
+|switch|p2a: Haunter|Haunter, L35, M|100/100
+|-end|p2a: Haunter|fantasystats|[silent]
+|turn|6
+|
+|t:|1792222038
+|move|p2a: Haunter|Hex|p1a: Probopass
+|split|p1
+|-damage|p1a: Probopass|51/88
+|-damage|p1a: Probopass|58/100
+|move|p1a: Probopass|Rock Throw|p2a: Haunter
+|split|p2
+|-damage|p2a: Haunter|51/87
+|-damage|p2a: Haunter|59/100
+|
+|t:|1792222038
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L41, M|22/110|[from] Rock Throw
+|switch|p1a: Spiritomb|Spiritomb, L41, M|20/100|[from] Rock Throw
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|turn|7
+|
+|t:|1792222039
+|move|p1a: Spiritomb|Sucker Punch|p2a: Haunter
+|-supereffective|p2a: Haunter
+|split|p2
+|-damage|p2a: Haunter|0 fnt
+|-damage|p2a: Haunter|0 fnt
+|faint|p2a: Haunter
+|
+|t:|1792222039
+|split|p1
+|switch|p1a: Togedemaru|Togedemaru, L27, M|85/85|[from] Sucker Punch
+|switch|p1a: Togedemaru|Togedemaru, L27, M|100/100|[from] Sucker Punch
+|-end|p1a: Togedemaru|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222039
+|split|p2
+|switch|p2a: Sandygast|Sandygast, L35, F|116/116
+|switch|p2a: Sandygast|Sandygast, L35, F|100/100
+|-end|p2a: Sandygast|fantasystats|[silent]
+|turn|8
+|
+|t:|1792222040
+|split|p1
+|switch|p1a: Emolga|Emolga, L27, M|80/80
+|switch|p1a: Emolga|Emolga, L27, M|100/100
+|-end|p1a: Emolga|fantasystats|[silent]
+|move|p2a: Sandygast|Earth Power|p1a: Emolga
+|-immune|p1a: Emolga
+|
+|upkeep
+|turn|9
+|
+|t:|1792222041
+|move|p1a: Emolga|Acrobatics|p2a: Sandygast
+|split|p2
+|-damage|p2a: Sandygast|82/116
+|-damage|p2a: Sandygast|71/100
+|
+|t:|1792222041
+|split|p1
+|switch|p1a: Eiscue|Eiscue-Noice, L28, F|93/93|[from] Acrobatics
+|switch|p1a: Eiscue|Eiscue-Noice, L28, F|100/100|[from] Acrobatics
+|-end|p1a: Eiscue|fantasystats|[silent]
+|move|p2a: Sandygast|Shadow Ball|p1a: Eiscue
+|split|p1
+|-damage|p1a: Eiscue|24/93
+|-damage|p1a: Eiscue|26/100
+|
+|split|p2
+|-heal|p2a: Sandygast|89/116|[from] item: Leftovers
+|-heal|p2a: Sandygast|77/100|[from] item: Leftovers
+|upkeep
+|turn|10
+|
+|t:|1792222043
+|split|p1
+|switch|p1a: Emolga|Emolga, L27, M|80/80
+|switch|p1a: Emolga|Emolga, L27, M|100/100
+|-end|p1a: Emolga|fantasystats|[silent]
+|move|p2a: Sandygast|Shadow Ball|p1a: Emolga
+|split|p1
+|-damage|p1a: Emolga|10/80
+|-damage|p1a: Emolga|13/100
+|-unboost|p1a: Emolga|spd|1
+|
+|split|p2
+|-heal|p2a: Sandygast|96/116|[from] item: Leftovers
+|-heal|p2a: Sandygast|83/100|[from] item: Leftovers
+|upkeep
+|turn|11
+|
+|t:|1792222043
+|move|p1a: Emolga|Acrobatics|p2a: Sandygast
+|split|p2
+|-damage|p2a: Sandygast|62/116
+|-damage|p2a: Sandygast|54/100
+|
+|t:|1792222043
+|split|p1
+|switch|p1a: Probopass|Probopass, L29, F|51/88|[from] Acrobatics
+|switch|p1a: Probopass|Probopass, L29, F|58/100|[from] Acrobatics
+|-end|p1a: Probopass|fantasystats|[silent]
+|move|p2a: Sandygast|Earth Power|p1a: Probopass
+|-supereffective|p1a: Probopass
+|split|p1
+|-damage|p1a: Probopass|0 fnt
+|-damage|p1a: Probopass|0 fnt
+|faint|p1a: Probopass
+|
+|split|p2
+|-heal|p2a: Sandygast|69/116|[from] item: Leftovers
+|-heal|p2a: Sandygast|60/100|[from] item: Leftovers
+|upkeep
+|
+|t:|1792222043
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L41, M|22/110
+|switch|p1a: Spiritomb|Spiritomb, L41, M|20/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|12
+|
+|t:|1792222044
+|move|p1a: Spiritomb|Sucker Punch|p2a: Sandygast
+|-supereffective|p2a: Sandygast
+|-crit|p2a: Sandygast
+|split|p2
+|-damage|p2a: Sandygast|0 fnt
+|-damage|p2a: Sandygast|0 fnt
+|faint|p2a: Sandygast
+|
+|t:|1792222044
+|split|p1
+|switch|p1a: Togedemaru|Togedemaru, L27, M|85/85|[from] Sucker Punch
+|switch|p1a: Togedemaru|Togedemaru, L27, M|100/100|[from] Sucker Punch
+|-end|p1a: Togedemaru|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222044
+|split|p2
+|switch|p2a: Dhelmise|Dhelmise, L35|126/126
+|switch|p2a: Dhelmise|Dhelmise, L35|100/100
+|-end|p2a: Dhelmise|fantasystats|[silent]
+|turn|13
+|
+|t:|1792222044
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L41, M|30/150
+|switch|p1a: Skeledirge|Skeledirge, L41, M|20/100
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|move|p2a: Dhelmise|Earthquake|p1a: Skeledirge
+|-supereffective|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|0 fnt
+|-damage|p1a: Skeledirge|0 fnt
+|faint|p1a: Skeledirge
+|
+|upkeep
+|
+|t:|1792222044
+|split|p1
+|switch|p1a: Emolga|Emolga, L27, M|10/80
+|switch|p1a: Emolga|Emolga, L27, M|13/100
+|-end|p1a: Emolga|fantasystats|[silent]
+|turn|14
+|
+|t:|1792222044
+|move|p1a: Emolga|Nuzzle|p2a: Dhelmise
+|-resisted|p2a: Dhelmise
+|split|p2
+|-damage|p2a: Dhelmise|123/126
+|-damage|p2a: Dhelmise|98/100
+|-status|p2a: Dhelmise|par
+|
+|t:|1792222044
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L41, M|22/110|[from] Nuzzle
+|switch|p1a: Spiritomb|Spiritomb, L41, M|20/100|[from] Nuzzle
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Dhelmise|Earthquake|p1a: Spiritomb
+|-crit|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|0 fnt
+|-damage|p1a: Spiritomb|0 fnt
+|faint|p1a: Spiritomb
+|
+|upkeep
+|
+|t:|1792222044
+|split|p1
+|switch|p1a: Emolga|Emolga, L27, M|10/80
+|switch|p1a: Emolga|Emolga, L27, M|13/100
+|-end|p1a: Emolga|fantasystats|[silent]
+|turn|15
+|
+|t:|1792222045
+|move|p1a: Emolga|Acrobatics|p2a: Dhelmise
+|-supereffective|p2a: Dhelmise
+|split|p2
+|-damage|p2a: Dhelmise|73/126 par
+|-damage|p2a: Dhelmise|58/100 par
+|
+|t:|1792222045
+|split|p1
+|switch|p1a: Eiscue|Eiscue-Noice, L28, F|24/93|[from] Acrobatics
+|switch|p1a: Eiscue|Eiscue-Noice, L28, F|26/100|[from] Acrobatics
+|-end|p1a: Eiscue|fantasystats|[silent]
+|move|p2a: Dhelmise|Earthquake|p1a: Eiscue
+|split|p1
+|-damage|p1a: Eiscue|0 fnt
+|-damage|p1a: Eiscue|0 fnt
+|faint|p1a: Eiscue
+|
+|upkeep
+|
+|t:|1792222045
+|split|p1
+|switch|p1a: Emolga|Emolga, L27, M|10/80
+|switch|p1a: Emolga|Emolga, L27, M|13/100
+|-end|p1a: Emolga|fantasystats|[silent]
+|turn|16
+|
+|t:|1792222045
+|move|p1a: Emolga|Acrobatics|p2a: Dhelmise
+|-supereffective|p2a: Dhelmise
+|split|p2
+|-damage|p2a: Dhelmise|19/126 par
+|-damage|p2a: Dhelmise|16/100 par
+|
+|t:|1792222045
+|split|p1
+|switch|p1a: Togedemaru|Togedemaru, L27, M|85/85|[from] Acrobatics
+|switch|p1a: Togedemaru|Togedemaru, L27, M|100/100|[from] Acrobatics
+|-end|p1a: Togedemaru|fantasystats|[silent]
+|move|p2a: Dhelmise|Earthquake|p1a: Togedemaru
+|-supereffective|p1a: Togedemaru
+|split|p1
+|-damage|p1a: Togedemaru|0 fnt
+|-damage|p1a: Togedemaru|0 fnt
+|faint|p1a: Togedemaru
+|
+|upkeep
+|
+|t:|1792222045
+|split|p1
+|switch|p1a: Emolga|Emolga, L27, M|10/80
+|switch|p1a: Emolga|Emolga, L27, M|13/100
+|-end|p1a: Emolga|fantasystats|[silent]
+|turn|17
+|
+|t:|1792222045
+|move|p1a: Emolga|Acrobatics|p2a: Dhelmise
+|-supereffective|p2a: Dhelmise
+|split|p2
+|-damage|p2a: Dhelmise|0 fnt
+|-damage|p2a: Dhelmise|0 fnt
+|faint|p2a: Dhelmise
+|
+|win|Player

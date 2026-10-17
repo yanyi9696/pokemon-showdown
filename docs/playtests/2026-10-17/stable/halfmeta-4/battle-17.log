@@ -1,0 +1,94 @@
+|t:|1792222073
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L13, M|
+|poke|p1|Pidgey, L9, M|
+|poke|p1|Meowth, L7, F|
+|poke|p1|Slakoth, L7, M|
+|poke|p1|Shroomish, L12, F|
+|poke|p2|Tyrunt-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792222073
+|start
+|split|p1
+|switch|p1a: Shroomish|Shroomish, L12, F|45/45
+|switch|p1a: Shroomish|Shroomish, L12, F|100/100
+|split|p2
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L13, M|42/42
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L13, M|100/100
+|-end|p1a: Shroomish|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Shroomish|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|turn|1
+|
+|t:|1792222074
+|-terastallize|p2a: Tyrunt|Rock
+|move|p1a: Shroomish|Mega Drain|p2a: Tyrunt
+|-supereffective|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|19/42
+|-damage|p2a: Tyrunt|46/100
+|split|p1
+|-damage|p1a: Shroomish|41/45|[from] item: Life Orb
+|-damage|p1a: Shroomish|92/100|[from] item: Life Orb
+|move|p2a: Tyrunt|Yao Lan|p1a: Shroomish
+|-supereffective|p1a: Shroomish
+|split|p1
+|-damage|p1a: Shroomish|15/45
+|-damage|p1a: Shroomish|34/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792222074
+|move|p1a: Shroomish|Mega Drain|p2a: Tyrunt
+|-supereffective|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|1/42
+|-damage|p2a: Tyrunt|3/100
+|split|p1
+|-heal|p1a: Shroomish|24/45|[from] drain|[of] p2a: Tyrunt
+|-heal|p1a: Shroomish|54/100|[from] drain|[of] p2a: Tyrunt
+|split|p1
+|-damage|p1a: Shroomish|20/45|[from] item: Life Orb
+|-damage|p1a: Shroomish|45/100|[from] item: Life Orb
+|move|p2a: Tyrunt|Yao Lan|p1a: Shroomish
+|-supereffective|p1a: Shroomish
+|split|p1
+|-damage|p1a: Shroomish|0 fnt
+|-damage|p1a: Shroomish|0 fnt
+|-status|p2a: Tyrunt|par|[from] ability: Effect Spore|[of] p1a: Shroomish
+|faint|p1a: Shroomish
+|
+|upkeep
+|
+|t:|1792222074
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L13, M|48/48
+|switch|p1a: Fuecoco|Fuecoco, L13, M|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|3
+|
+|t:|1792222074
+|move|p1a: Fuecoco|Ember|p2a: Tyrunt
+|-resisted|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|0 fnt
+|-damage|p2a: Tyrunt|0 fnt
+|faint|p2a: Tyrunt
+|split|p1
+|-damage|p1a: Fuecoco|44/48|[from] item: Life Orb
+|-damage|p1a: Fuecoco|92/100|[from] item: Life Orb
+|
+|win|Player

@@ -1,0 +1,2764 @@
+{
+  "revision": 572,
+  "points": 3,
+  "boosts": {
+    "hp": 5,
+    "atk": 5,
+    "def": 5,
+    "spa": 5,
+    "spd": 5,
+    "spe": 5
+  },
+  "slots": 1,
+  "captures": {
+    "ralts": 1,
+    "wooper": 1,
+    "ducklett": 1,
+    "tentacool": 1,
+    "rolycoly": 1,
+    "litleo": 1,
+    "klawf": 1,
+    "comfey": 1,
+    "kecleon": 1
+  },
+  "unlocked": [
+    "ralts",
+    "wooper",
+    "ducklett",
+    "tentacool",
+    "rolycoly",
+    "litleo",
+    "klawf",
+    "comfey",
+    "kecleon"
+  ],
+  "unlockedSpirits": [],
+  "starterTraits": {
+    "fuecoco": {
+      "natures": [
+        "naive"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "blaze"
+      ],
+      "moves": [
+        "ember",
+        "tackle",
+        "leer",
+        "round",
+        "bite",
+        "incinerate",
+        "snarl"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        }
+      }
+    },
+    "ralts": {
+      "natures": [
+        "serious"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "synchronize"
+      ],
+      "moves": [
+        "disarmingvoice",
+        "doubleteam",
+        "growl"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 23,
+          "atk": 28,
+          "def": 22,
+          "spa": 22,
+          "spd": 24,
+          "spe": 21
+        }
+      }
+    },
+    "wooper": {
+      "natures": [
+        "hasty"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "damp"
+      ],
+      "moves": [
+        "watergun",
+        "tailwhip",
+        "raindance",
+        "mudshot"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 28,
+          "atk": 22,
+          "def": 20,
+          "spa": 29,
+          "spd": 29,
+          "spe": 20
+        }
+      }
+    },
+    "ducklett": {
+      "natures": [
+        "quirky"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "keeneye"
+      ],
+      "moves": [
+        "watergun",
+        "defog",
+        "wingattack"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 31,
+          "atk": 29,
+          "def": 25,
+          "spa": 26,
+          "spd": 28,
+          "spe": 24
+        }
+      }
+    },
+    "tentacool": {
+      "natures": [
+        "brave"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "clearbody"
+      ],
+      "moves": [
+        "watergun",
+        "poisonsting",
+        "acid",
+        "wrap",
+        "waterpulse"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 26,
+          "atk": 28,
+          "def": 30,
+          "spa": 27,
+          "spd": 21,
+          "spe": 20
+        }
+      }
+    },
+    "rolycoly": {
+      "natures": [
+        "bashful"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "steamengine"
+      ],
+      "moves": [
+        "tackle",
+        "smokescreen",
+        "rapidspin",
+        "smackdown"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 28,
+          "atk": 29,
+          "def": 24,
+          "spa": 28,
+          "spd": 25,
+          "spe": 26
+        }
+      }
+    },
+    "litleo": {
+      "natures": [
+        "jolly"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "rivalry"
+      ],
+      "moves": [
+        "tackle",
+        "leer",
+        "ember",
+        "workup",
+        "headbutt",
+        "takedown",
+        "firefang",
+        "endeavor"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 20,
+          "atk": 29,
+          "def": 23,
+          "spa": 27,
+          "spd": 20,
+          "spe": 31
+        }
+      }
+    },
+    "klawf": {
+      "natures": [
+        "serious"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "angershell"
+      ],
+      "moves": [
+        "rockthrow",
+        "visegrip",
+        "harden",
+        "rocksmash",
+        "rocktomb",
+        "metalclaw"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      }
+    },
+    "comfey": {
+      "natures": [
+        "naive"
+      ],
+      "genders": [
+        "M"
+      ],
+      "abilities": [
+        "flowerveil"
+      ],
+      "moves": [
+        "drainingkiss",
+        "vinewhip",
+        "helpinghand",
+        "wrap",
+        "magicalleaf",
+        "synthesis"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      }
+    },
+    "kecleon": {
+      "natures": [
+        "quirky"
+      ],
+      "genders": [
+        "F"
+      ],
+      "abilities": [
+        "colorchange"
+      ],
+      "moves": [
+        "scratch",
+        "thief",
+        "tailwhip",
+        "feint",
+        "feintattack",
+        "psybeam",
+        "ancientpower"
+      ],
+      "ivs": {
+        "min": {
+          "hp": 20,
+          "atk": 20,
+          "def": 20,
+          "spa": 20,
+          "spd": 20,
+          "spe": 20
+        },
+        "max": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      }
+    }
+  },
+  "run": {
+    "team": [
+      {
+        "id": "5cfd2ebf-eed7-4123-9fdd-5a74211dea91",
+        "set": {
+          "name": "Crocalor",
+          "species": "Crocalor",
+          "ability": "Blaze",
+          "level": 28,
+          "nature": "Naive",
+          "moves": [
+            "incinerate",
+            "round",
+            "snarl",
+            "lick"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 6,
+            "atk": 19,
+            "def": 6,
+            "spa": 11,
+            "spd": 12,
+            "spe": 13
+          },
+          "ivs": {
+            "hp": 20,
+            "atk": 20,
+            "def": 20,
+            "spa": 20,
+            "spd": 20,
+            "spe": 20
+          },
+          "gender": "M",
+          "happiness": 194
+        },
+        "hp": 0,
+        "maxhp": 94,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "incinerate",
+            "pp": 10,
+            "maxpp": 15
+          },
+          {
+            "id": "round",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "snarl",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "lick",
+            "pp": 29,
+            "maxpp": 30
+          }
+        ],
+        "stats": {
+          "atk": 47,
+          "def": 59,
+          "spa": 66,
+          "spd": 43,
+          "spe": 46,
+          "hp": 94
+        },
+        "moveMemory": [
+          {
+            "id": "ember",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "leer",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "round",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "bite",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "incinerate",
+            "pp": 10,
+            "maxpp": 15
+          },
+          {
+            "id": "lick",
+            "pp": 29,
+            "maxpp": 30
+          },
+          {
+            "id": "yawn",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "snarl",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "roar",
+            "pp": 20,
+            "maxpp": 20
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "blaze",
+            "hidden": false
+          }
+        ],
+        "initialPartner": true,
+        "seenMoves": [
+          "ember",
+          "tackle",
+          "leer",
+          "round",
+          "bite",
+          "incinerate",
+          "lick",
+          "yawn",
+          "snarl",
+          "roar"
+        ],
+        "experience": 18005,
+        "joinOrder": 0,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:1",
+        "set": {
+          "name": "Litleo",
+          "species": "Litleo",
+          "ability": "Rivalry",
+          "level": 28,
+          "nature": "Jolly",
+          "moves": [
+            "takedown",
+            "firefang",
+            "headbutt",
+            "endeavor"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 6,
+            "atk": 19,
+            "def": 5,
+            "spa": 11,
+            "spd": 11,
+            "spe": 13
+          },
+          "ivs": {
+            "hp": 20,
+            "atk": 29,
+            "def": 23,
+            "spa": 27,
+            "spd": 20,
+            "spe": 31
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 167
+        },
+        "hp": 0,
+        "maxhp": 83,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "takedown",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "firefang",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "headbutt",
+            "pp": 12,
+            "maxpp": 15
+          },
+          {
+            "id": "endeavor",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "stats": {
+          "atk": 47,
+          "def": 49,
+          "spa": 53,
+          "spd": 46,
+          "spe": 64,
+          "hp": 83
+        },
+        "moveMemory": [
+          {
+            "id": "tackle",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "leer",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "ember",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "workup",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "headbutt",
+            "pp": 12,
+            "maxpp": 15
+          },
+          {
+            "id": "nobleroar",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "takedown",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "firefang",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "endeavor",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "rivalry",
+            "hidden": false
+          }
+        ],
+        "experience": 17838,
+        "seenMoves": [
+          "tackle",
+          "leer",
+          "ember",
+          "workup",
+          "headbutt",
+          "nobleroar",
+          "takedown",
+          "firefang",
+          "endeavor"
+        ],
+        "joinOrder": 6,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:11:elite:0",
+        "set": {
+          "name": "Klawf",
+          "species": "Klawf",
+          "ability": "Anger Shell",
+          "level": 22,
+          "nature": "Serious",
+          "moves": [
+            "rockthrow",
+            "visegrip",
+            "metalclaw",
+            "rocksmash"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 5,
+            "atk": 15,
+            "def": 3,
+            "spa": 9,
+            "spd": 10,
+            "spe": 12
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 168
+        },
+        "hp": 0,
+        "maxhp": 74,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "rockthrow",
+            "pp": 9,
+            "maxpp": 10
+          },
+          {
+            "id": "visegrip",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "metalclaw",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "rocksmash",
+            "pp": 15,
+            "maxpp": 15
+          }
+        ],
+        "stats": {
+          "atk": 61,
+          "def": 67,
+          "spa": 32,
+          "spd": 41,
+          "spe": 50,
+          "hp": 74
+        },
+        "moveMemory": [
+          {
+            "id": "rockthrow",
+            "pp": 9,
+            "maxpp": 10
+          },
+          {
+            "id": "visegrip",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "harden",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "rocksmash",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "rocktomb",
+            "pp": 15,
+            "maxpp": 15
+          },
+          {
+            "id": "metalclaw",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "protect",
+            "pp": 10,
+            "maxpp": 10
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "angershell",
+            "hidden": false
+          }
+        ],
+        "experience": 11515,
+        "seenMoves": [
+          "rockthrow",
+          "visegrip",
+          "harden",
+          "rocksmash",
+          "rocktomb",
+          "metalclaw",
+          "protect"
+        ],
+        "joinOrder": 7,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:17:elite:0",
+        "set": {
+          "name": "Kecleon",
+          "species": "Kecleon",
+          "ability": "Color Change",
+          "level": 21,
+          "nature": "Quirky",
+          "moves": [
+            "scratch",
+            "thief",
+            "psybeam",
+            "ancientpower"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 5,
+            "atk": 13,
+            "def": 2,
+            "spa": 7,
+            "spd": 9,
+            "spe": 10
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          },
+          "gender": "F",
+          "shiny": false,
+          "happiness": 137
+        },
+        "hp": 0,
+        "maxhp": 67,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "scratch",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "thief",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "psybeam",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "ancientpower",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "stats": {
+          "atk": 54,
+          "def": 45,
+          "spa": 41,
+          "spd": 67,
+          "spe": 33,
+          "hp": 67
+        },
+        "moveMemory": [
+          {
+            "id": "scratch",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "thief",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "tailwhip",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "feint",
+            "pp": 10,
+            "maxpp": 10
+          },
+          {
+            "id": "feintattack",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "psybeam",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "ancientpower",
+            "pp": 5,
+            "maxpp": 5
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "colorchange",
+            "hidden": false
+          }
+        ],
+        "experience": 7369,
+        "seenMoves": [
+          "scratch",
+          "thief",
+          "tailwhip",
+          "feint",
+          "feintattack",
+          "psybeam",
+          "ancientpower"
+        ],
+        "joinOrder": 9,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:2",
+        "set": {
+          "name": "Tentacool",
+          "species": "Tentacool",
+          "ability": "Clear Body",
+          "level": 18,
+          "nature": "Brave",
+          "moves": [
+            "waterpulse",
+            "acid",
+            "watergun",
+            "wrap"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 6,
+            "atk": 19,
+            "def": 5,
+            "spa": 11,
+            "spd": 11,
+            "spe": 13
+          },
+          "ivs": {
+            "hp": 26,
+            "atk": 28,
+            "def": 30,
+            "spa": 27,
+            "spd": 21,
+            "spe": 20
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 175
+        },
+        "hp": 0,
+        "maxhp": 52,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "waterpulse",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "acid",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "watergun",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "wrap",
+            "pp": 20,
+            "maxpp": 20
+          }
+        ],
+        "stats": {
+          "atk": 32,
+          "def": 28,
+          "spa": 33,
+          "spd": 50,
+          "spe": 35,
+          "hp": 52
+        },
+        "moveMemory": [
+          {
+            "id": "watergun",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "poisonsting",
+            "pp": 35,
+            "maxpp": 35
+          },
+          {
+            "id": "acid",
+            "pp": 30,
+            "maxpp": 30
+          },
+          {
+            "id": "wrap",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "supersonic",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "waterpulse",
+            "pp": 20,
+            "maxpp": 20
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "clearbody",
+            "hidden": false
+          }
+        ],
+        "experience": 8227,
+        "seenMoves": [
+          "watergun",
+          "poisonsting",
+          "acid",
+          "wrap",
+          "supersonic",
+          "waterpulse"
+        ],
+        "joinOrder": 4,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      },
+      {
+        "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:12:elite:0",
+        "set": {
+          "name": "Comfey",
+          "species": "Comfey",
+          "ability": "Flower Veil",
+          "level": 21,
+          "nature": "Naive",
+          "moves": [
+            "drainingkiss",
+            "synthesis",
+            "magicalleaf",
+            "wrap"
+          ],
+          "item": "",
+          "evs": {
+            "hp": 5,
+            "atk": 15,
+            "def": 3,
+            "spa": 9,
+            "spd": 10,
+            "spe": 12
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          },
+          "gender": "M",
+          "shiny": false,
+          "happiness": 151
+        },
+        "hp": 0,
+        "maxhp": 64,
+        "status": "",
+        "statusState": {},
+        "pp": [
+          {
+            "id": "drainingkiss",
+            "pp": 4,
+            "maxpp": 10
+          },
+          {
+            "id": "synthesis",
+            "pp": 3,
+            "maxpp": 5
+          },
+          {
+            "id": "magicalleaf",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "wrap",
+            "pp": 20,
+            "maxpp": 20
+          }
+        ],
+        "stats": {
+          "atk": 38,
+          "def": 54,
+          "spa": 51,
+          "spd": 57,
+          "spe": 64,
+          "hp": 64
+        },
+        "moveMemory": [
+          {
+            "id": "drainingkiss",
+            "pp": 4,
+            "maxpp": 10
+          },
+          {
+            "id": "vinewhip",
+            "pp": 25,
+            "maxpp": 25
+          },
+          {
+            "id": "helpinghand",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "wrap",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "charm",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "magicalleaf",
+            "pp": 20,
+            "maxpp": 20
+          },
+          {
+            "id": "synthesis",
+            "pp": 3,
+            "maxpp": 5
+          },
+          {
+            "id": "leechseed",
+            "pp": 10,
+            "maxpp": 10
+          }
+        ],
+        "abilityPool": [
+          {
+            "id": "flowerveil",
+            "hidden": false
+          }
+        ],
+        "experience": 7809,
+        "seenMoves": [
+          "drainingkiss",
+          "vinewhip",
+          "helpinghand",
+          "wrap",
+          "charm",
+          "magicalleaf",
+          "synthesis",
+          "leechseed"
+        ],
+        "joinOrder": 8,
+        "blessingPP": [],
+        "blessingMoves": [],
+        "statModifiers": {
+          "smallFinal": false,
+          "swap": false,
+          "hp": 0,
+          "stats": {}
+        },
+        "bonusHP": 0
+      }
+    ],
+    "bag": {
+      "pokeball": 10,
+      "potion": 4,
+      "revive": 0,
+      "ether": 6,
+      "expcandyxs": 0,
+      "tinymushroom": 0,
+      "prettyfeather": 0,
+      "stardust": 0,
+      "bigmushroom": 0,
+      "pearl": 0,
+      "greatball": 8,
+      "superpotion": 8
+    },
+    "money": 400,
+    "teraUnlocked": false,
+    "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd",
+    "contentVersion": "preview-2026-10-v12",
+    "floor": 40,
+    "phase": "ready",
+    "owner": {
+      "id": "combatqa",
+      "name": "combatqa"
+    },
+    "previousBlessings": [],
+    "encounter": 0,
+    "attempt": 2,
+    "boosts": {
+      "hp": 5,
+      "atk": 5,
+      "def": 5,
+      "spa": 5,
+      "spd": 5,
+      "spe": 5
+    },
+    "startingSlots": 1,
+    "checkpoint": {
+      "team": [
+        {
+          "id": "5cfd2ebf-eed7-4123-9fdd-5a74211dea91",
+          "set": {
+            "name": "Crocalor",
+            "species": "Crocalor",
+            "ability": "Blaze",
+            "level": 28,
+            "nature": "Naive",
+            "moves": [
+              "incinerate",
+              "round",
+              "snarl",
+              "lick"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 6,
+              "atk": 19,
+              "def": 6,
+              "spa": 11,
+              "spd": 12,
+              "spe": 13
+            },
+            "ivs": {
+              "hp": 20,
+              "atk": 20,
+              "def": 20,
+              "spa": 20,
+              "spd": 20,
+              "spe": 20
+            },
+            "gender": "M",
+            "happiness": 204
+          },
+          "hp": 94,
+          "maxhp": 94,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "incinerate",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "round",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "snarl",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "lick",
+              "pp": 30,
+              "maxpp": 30
+            }
+          ],
+          "stats": {
+            "atk": 47,
+            "def": 59,
+            "spa": 66,
+            "spd": 43,
+            "spe": 46,
+            "hp": 94
+          },
+          "moveMemory": [
+            {
+              "id": "ember",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "leer",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "round",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "bite",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "incinerate",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "lick",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "yawn",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "snarl",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "roar",
+              "pp": 20,
+              "maxpp": 20
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "blaze",
+              "hidden": false
+            }
+          ],
+          "initialPartner": true,
+          "seenMoves": [
+            "ember",
+            "tackle",
+            "leer",
+            "round",
+            "bite",
+            "incinerate",
+            "lick",
+            "yawn",
+            "snarl",
+            "roar"
+          ],
+          "experience": 18005,
+          "joinOrder": 0,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:1",
+          "set": {
+            "name": "Litleo",
+            "species": "Litleo",
+            "ability": "Rivalry",
+            "level": 28,
+            "nature": "Jolly",
+            "moves": [
+              "takedown",
+              "firefang",
+              "headbutt",
+              "endeavor"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 6,
+              "atk": 19,
+              "def": 5,
+              "spa": 11,
+              "spd": 11,
+              "spe": 13
+            },
+            "ivs": {
+              "hp": 20,
+              "atk": 29,
+              "def": 23,
+              "spa": 27,
+              "spd": 20,
+              "spe": 31
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 177
+          },
+          "hp": 83,
+          "maxhp": 83,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "takedown",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "firefang",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "headbutt",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "endeavor",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "stats": {
+            "atk": 47,
+            "def": 49,
+            "spa": 53,
+            "spd": 46,
+            "spe": 64,
+            "hp": 83
+          },
+          "moveMemory": [
+            {
+              "id": "tackle",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "leer",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "ember",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "workup",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "headbutt",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "nobleroar",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "takedown",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "firefang",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "endeavor",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "rivalry",
+              "hidden": false
+            }
+          ],
+          "experience": 17838,
+          "seenMoves": [
+            "tackle",
+            "leer",
+            "ember",
+            "workup",
+            "headbutt",
+            "nobleroar",
+            "takedown",
+            "firefang",
+            "endeavor"
+          ],
+          "joinOrder": 6,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:11:elite:0",
+          "set": {
+            "name": "Klawf",
+            "species": "Klawf",
+            "ability": "Anger Shell",
+            "level": 22,
+            "nature": "Serious",
+            "moves": [
+              "rockthrow",
+              "visegrip",
+              "metalclaw",
+              "rocksmash"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 5,
+              "atk": 15,
+              "def": 3,
+              "spa": 9,
+              "spd": 10,
+              "spe": 12
+            },
+            "ivs": {
+              "hp": 31,
+              "atk": 31,
+              "def": 31,
+              "spa": 31,
+              "spd": 31,
+              "spe": 31
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 178
+          },
+          "hp": 74,
+          "maxhp": 74,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "rockthrow",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "visegrip",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "metalclaw",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "rocksmash",
+              "pp": 15,
+              "maxpp": 15
+            }
+          ],
+          "stats": {
+            "atk": 61,
+            "def": 67,
+            "spa": 32,
+            "spd": 41,
+            "spe": 50,
+            "hp": 74
+          },
+          "moveMemory": [
+            {
+              "id": "rockthrow",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "visegrip",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "harden",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "rocksmash",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "rocktomb",
+              "pp": 15,
+              "maxpp": 15
+            },
+            {
+              "id": "metalclaw",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "protect",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "angershell",
+              "hidden": false
+            }
+          ],
+          "experience": 11515,
+          "seenMoves": [
+            "rockthrow",
+            "visegrip",
+            "harden",
+            "rocksmash",
+            "rocktomb",
+            "metalclaw",
+            "protect"
+          ],
+          "joinOrder": 7,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:17:elite:0",
+          "set": {
+            "name": "Kecleon",
+            "species": "Kecleon",
+            "ability": "Color Change",
+            "level": 21,
+            "nature": "Quirky",
+            "moves": [
+              "scratch",
+              "thief",
+              "psybeam",
+              "ancientpower"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 5,
+              "atk": 13,
+              "def": 2,
+              "spa": 7,
+              "spd": 9,
+              "spe": 10
+            },
+            "ivs": {
+              "hp": 31,
+              "atk": 31,
+              "def": 31,
+              "spa": 31,
+              "spd": 31,
+              "spe": 31
+            },
+            "gender": "F",
+            "shiny": false,
+            "happiness": 142
+          },
+          "hp": 67,
+          "maxhp": 67,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "scratch",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "thief",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "psybeam",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "ancientpower",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "stats": {
+            "atk": 54,
+            "def": 45,
+            "spa": 41,
+            "spd": 67,
+            "spe": 33,
+            "hp": 67
+          },
+          "moveMemory": [
+            {
+              "id": "scratch",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "thief",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "tailwhip",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "feint",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "feintattack",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "psybeam",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "ancientpower",
+              "pp": 5,
+              "maxpp": 5
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "colorchange",
+              "hidden": false
+            }
+          ],
+          "experience": 7369,
+          "seenMoves": [
+            "scratch",
+            "thief",
+            "tailwhip",
+            "feint",
+            "feintattack",
+            "psybeam",
+            "ancientpower"
+          ],
+          "joinOrder": 9,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:2",
+          "set": {
+            "name": "Tentacool",
+            "species": "Tentacool",
+            "ability": "Clear Body",
+            "level": 18,
+            "nature": "Brave",
+            "moves": [
+              "waterpulse",
+              "acid",
+              "watergun",
+              "wrap"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 6,
+              "atk": 19,
+              "def": 5,
+              "spa": 11,
+              "spd": 11,
+              "spe": 13
+            },
+            "ivs": {
+              "hp": 26,
+              "atk": 28,
+              "def": 30,
+              "spa": 27,
+              "spd": 21,
+              "spe": 20
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 180
+          },
+          "hp": 52,
+          "maxhp": 52,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "waterpulse",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "acid",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "watergun",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "wrap",
+              "pp": 20,
+              "maxpp": 20
+            }
+          ],
+          "stats": {
+            "atk": 32,
+            "def": 28,
+            "spa": 33,
+            "spd": 50,
+            "spe": 35,
+            "hp": 52
+          },
+          "moveMemory": [
+            {
+              "id": "watergun",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "poisonsting",
+              "pp": 35,
+              "maxpp": 35
+            },
+            {
+              "id": "acid",
+              "pp": 30,
+              "maxpp": 30
+            },
+            {
+              "id": "wrap",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "supersonic",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "waterpulse",
+              "pp": 20,
+              "maxpp": 20
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "clearbody",
+              "hidden": false
+            }
+          ],
+          "experience": 8227,
+          "seenMoves": [
+            "watergun",
+            "poisonsting",
+            "acid",
+            "wrap",
+            "supersonic",
+            "waterpulse"
+          ],
+          "joinOrder": 4,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        },
+        {
+          "id": "b36a9fe4-e82c-446a-ab01-584d56d438dd:12:elite:0",
+          "set": {
+            "name": "Comfey",
+            "species": "Comfey",
+            "ability": "Flower Veil",
+            "level": 21,
+            "nature": "Naive",
+            "moves": [
+              "drainingkiss",
+              "synthesis",
+              "magicalleaf",
+              "wrap"
+            ],
+            "item": "",
+            "evs": {
+              "hp": 5,
+              "atk": 15,
+              "def": 3,
+              "spa": 9,
+              "spd": 10,
+              "spe": 12
+            },
+            "ivs": {
+              "hp": 31,
+              "atk": 31,
+              "def": 31,
+              "spa": 31,
+              "spd": 31,
+              "spe": 31
+            },
+            "gender": "M",
+            "shiny": false,
+            "happiness": 156
+          },
+          "hp": 64,
+          "maxhp": 64,
+          "status": "",
+          "statusState": {},
+          "pp": [
+            {
+              "id": "drainingkiss",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "synthesis",
+              "pp": 5,
+              "maxpp": 5
+            },
+            {
+              "id": "magicalleaf",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "wrap",
+              "pp": 20,
+              "maxpp": 20
+            }
+          ],
+          "stats": {
+            "atk": 38,
+            "def": 54,
+            "spa": 51,
+            "spd": 57,
+            "spe": 64,
+            "hp": 64
+          },
+          "moveMemory": [
+            {
+              "id": "drainingkiss",
+              "pp": 10,
+              "maxpp": 10
+            },
+            {
+              "id": "vinewhip",
+              "pp": 25,
+              "maxpp": 25
+            },
+            {
+              "id": "helpinghand",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "wrap",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "charm",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "magicalleaf",
+              "pp": 20,
+              "maxpp": 20
+            },
+            {
+              "id": "synthesis",
+              "pp": 5,
+              "maxpp": 5
+            },
+            {
+              "id": "leechseed",
+              "pp": 10,
+              "maxpp": 10
+            }
+          ],
+          "abilityPool": [
+            {
+              "id": "flowerveil",
+              "hidden": false
+            }
+          ],
+          "experience": 7809,
+          "seenMoves": [
+            "drainingkiss",
+            "vinewhip",
+            "helpinghand",
+            "wrap",
+            "charm",
+            "magicalleaf",
+            "synthesis",
+            "leechseed"
+          ],
+          "joinOrder": 8,
+          "blessingPP": [],
+          "blessingMoves": [],
+          "statModifiers": {
+            "smallFinal": false,
+            "swap": false,
+            "hp": 0,
+            "stats": {}
+          },
+          "bonusHP": 0
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "bigmushroom": 0,
+        "pearl": 0,
+        "greatball": 8,
+        "superpotion": 10
+      },
+      "money": 400,
+      "teraUnlocked": false
+    },
+    "caught": [
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:1",
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:0",
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:1",
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:2",
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:0",
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:1",
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:11:elite:0",
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:12:elite:0",
+      "b36a9fe4-e82c-446a-ab01-584d56d438dd:17:elite:0"
+    ],
+    "trainerHistory": {
+      "gyms": [
+        "brock",
+        "bea"
+      ],
+      "eliteFour": []
+    },
+    "routeHistory": {
+      "floor": 38,
+      "factors": {
+        "wild": 0.900732028249867,
+        "elite": 0.8297610498909,
+        "trainer": 0.46560316525430323,
+        "event": 0.7639040653526792,
+        "reward": 0.6834366165756727,
+        "trade": 0.999682617081562
+      },
+      "tradeSeen": true,
+      "eliteMisses": 2
+    },
+    "spiritVersion": 1,
+    "blessings": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "catcher",
+          "family": "catcher",
+          "tier": "silver",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "settled": [
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:10:boss:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:11:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:12:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:14:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:16:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:17:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:18:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:20:boss:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:23:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:24:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:26:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:30:boss:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:31:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:33:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:36:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:2"
+      ],
+      "defeated": [
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:10:boss:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:14:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:16:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:18:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:20:boss:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:20:boss:0:foe:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:20:boss:0:foe:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:23:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:24:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:26:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:30:boss:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:31:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:33:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:36:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:40:boss:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:40:boss:0:foe:1"
+      ],
+      "caught": [
+        "fuecoco",
+        "ralts",
+        "wooper",
+        "ducklett",
+        "tentacool",
+        "rolycoly",
+        "litleo",
+        "klawf",
+        "comfey",
+        "crocalor",
+        "kecleon"
+      ],
+      "nextJoin": 10,
+      "shards": 20,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 0
+    },
+    "blessingCheckpoint": {
+      "version": 1,
+      "owned": [
+        {
+          "id": "catcher",
+          "family": "catcher",
+          "tier": "silver",
+          "floor": 1
+        }
+      ],
+      "levels": 0,
+      "pending": [],
+      "completed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "settled": [
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:10:boss:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:11:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:12:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:14:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:16:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:17:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:18:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:20:boss:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:23:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:24:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:26:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:30:boss:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:31:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:33:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:36:elite:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:2"
+      ],
+      "defeated": [
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:3:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:6:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:7:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:8:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:10:boss:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:13:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:14:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:15:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:16:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:18:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:20:boss:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:20:boss:0:foe:1",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:20:boss:0:foe:2",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:21:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:23:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:24:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:25:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:26:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:28:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:30:boss:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:31:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:32:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:33:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:34:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:35:wild0:2:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:36:elite:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:0:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:1:foe:0",
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:37:wild0:2:foe:0"
+      ],
+      "caught": [
+        "fuecoco",
+        "ralts",
+        "wooper",
+        "ducklett",
+        "tentacool",
+        "rolycoly",
+        "litleo",
+        "klawf",
+        "comfey",
+        "crocalor",
+        "kecleon"
+      ],
+      "nextJoin": 10,
+      "shards": 20,
+      "candy": 0,
+      "swordUses": 0,
+      "swordRewards": [],
+      "regis": [],
+      "bondBattles": [],
+      "bossLevels": 0
+    },
+    "notices": [
+      "本场战斗未通过，队伍当前状态已保存。",
+      "全队倒下且没有复活道具；急救需要 3600 金币，余额不足，尚未扣款或复活。"
+    ],
+    "eventHistory": [
+      {
+        "id": "forest",
+        "floor": 1
+      },
+      {
+        "id": "bandits",
+        "floor": 2
+      },
+      {
+        "id": "dice",
+        "floor": 22
+      },
+      {
+        "id": "mushrooms",
+        "floor": 38
+      }
+    ],
+    "lastReward": {
+      "floor": 39,
+      "name": "宝可梦中心",
+      "money": 0,
+      "items": {},
+      "points": 0
+    },
+    "friendshipProgress": {
+      "floor": 40,
+      "battles": {},
+      "fainted": {
+        "5cfd2ebf-eed7-4123-9fdd-5a74211dea91": 2,
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:5:wild0:1": 2,
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:11:elite:0": 2,
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:17:elite:0": 1,
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:4:wild0:2": 1,
+        "b36a9fe4-e82c-446a-ab01-584d56d438dd:12:elite:0": 1
+      },
+      "settled": [
+        "6ceb1d03-dbc1-47b4-9b7e-7bd393af5a35",
+        "e13b5608-d7b9-4761-9bf2-1fa3867025ea"
+      ]
+    },
+    "pendingCaptures": [],
+    "pendingMoves": [],
+    "node": {
+      "id": "boss",
+      "name": "道馆 · 彩豆（格斗）",
+      "kind": "boss",
+      "reward": {
+        "money": 2400,
+        "items": {}
+      },
+      "encounters": [
+        {
+          "name": "道馆 · 彩豆（格斗）",
+          "team": [
+            {
+              "name": "",
+              "species": "Machop",
+              "item": "Flame Orb",
+              "ability": "Guts",
+              "gender": "F",
+              "nature": "Adamant",
+              "evs": {
+                "hp": 248,
+                "atk": 252,
+                "def": 0,
+                "spa": 0,
+                "spd": 8,
+                "spe": 0
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 31,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              },
+              "level": 25,
+              "moves": [
+                "Close Combat",
+                "Knock Off",
+                "Bullet Punch",
+                "Bulk Up"
+              ]
+            },
+            {
+              "name": "",
+              "species": "Clobbopus",
+              "item": "Eviolite",
+              "ability": "Technician",
+              "gender": "M",
+              "nature": "Adamant",
+              "evs": {
+                "hp": 252,
+                "atk": 252,
+                "def": 0,
+                "spa": 0,
+                "spd": 4,
+                "spe": 0
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 31,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              },
+              "level": 25,
+              "moves": [
+                "Close Combat",
+                "Sucker Punch",
+                "Detect",
+                "Pain Split"
+              ]
+            },
+            {
+              "name": "",
+              "species": "Mienfoo",
+              "item": "Eviolite",
+              "ability": "Regenerator",
+              "gender": "F",
+              "nature": "Adamant",
+              "evs": {
+                "hp": 0,
+                "atk": 252,
+                "def": 0,
+                "spa": 0,
+                "spd": 4,
+                "spe": 252
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 31,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              },
+              "level": 25,
+              "moves": [
+                "High Jump Kick",
+                "Knock Off",
+                "Jump Kick",
+                "U-turn"
+              ]
+            },
+            {
+              "name": "",
+              "species": "Sneasel-Hisui",
+              "item": "Eviolite",
+              "ability": "Pickpocket",
+              "gender": "F",
+              "nature": "Jolly",
+              "evs": {
+                "hp": 0,
+                "atk": 252,
+                "def": 0,
+                "spa": 0,
+                "spd": 4,
+                "spe": 252
+              },
+              "ivs": {
+                "hp": 31,
+                "atk": 31,
+                "def": 31,
+                "spa": 31,
+                "spd": 31,
+                "spe": 31
+              },
+              "level": 25,
+              "moves": [
+                "Close Combat",
+                "Gunk Shot",
+                "Throat Chop",
+                "Swords Dance"
+              ]
+            }
+          ],
+          "style": "balanced",
+          "catchable": false,
+          "trainer": {
+            "id": "bea",
+            "name": "道馆 · 彩豆（格斗）",
+            "role": "gym",
+            "avatar": "bea",
+            "tera": true
+          },
+          "blessingLevels": 0
+        }
+      ],
+      "spiritPrepared": true,
+      "blessingPrepared": true
+    },
+    "recovery": "defeat",
+    "emergencyRecovery": {
+      "cost": 3600,
+      "paid": false
+    }
+  },
+  "adventures": 1,
+  "onboardingSeen": true,
+  "discoveries": {
+    "blessings": [
+      "catcher"
+    ],
+    "events": [
+      "bandits",
+      "dice",
+      "forest",
+      "mushrooms",
+      "trade:candy"
+    ]
+  },
+  "caughtSpecies": [
+    "ralts",
+    "wooper",
+    "ducklett",
+    "tentacool",
+    "rolycoly",
+    "litleo",
+    "klawf",
+    "comfey",
+    "kecleon"
+  ]
+}

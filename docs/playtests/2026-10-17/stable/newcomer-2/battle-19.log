@@ -1,0 +1,285 @@
+|t:|1792221965
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Sandygast, L3, F|
+|poke|p1|Spiritomb, L7, M|
+|poke|p1|Aron, L6, F|
+|poke|p1|Nosepass, L6, F|
+|poke|p2|Rookidee-Fantasy, L8, F|
+|teampreview
+|
+|t:|1792221965
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|37/37
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|split|p2
+|switch|p2a: Rookidee|Rookidee-Fantasy, L8, F|32/32
+|switch|p2a: Rookidee|Rookidee-Fantasy, L8, F|100/100
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221965
+|-terastallize|p2a: Rookidee|Flying
+|move|p2a: Rookidee|Foul Play|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|25/37
+|-damage|p1a: Fuecoco|68/100
+|move|p1a: Fuecoco|Ember|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|22/32
+|-damage|p2a: Rookidee|69/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792221965
+|move|p2a: Rookidee|Chuan Yun|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|11/37
+|-damage|p1a: Fuecoco|30/100
+|move|p1a: Fuecoco|Ember|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|6/32
+|-damage|p2a: Rookidee|19/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792221965
+|move|p2a: Rookidee|Roost|p2a: Rookidee
+|split|p2
+|-heal|p2a: Rookidee|22/32
+|-heal|p2a: Rookidee|69/100
+|-hint|If a Terastallized Pokemon uses Roost, it remains Flying-type.
+|move|p1a: Fuecoco|Ember|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|9/32
+|-damage|p2a: Rookidee|29/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792221965
+|move|p2a: Rookidee|Roost|p2a: Rookidee
+|split|p2
+|-heal|p2a: Rookidee|25/32
+|-heal|p2a: Rookidee|79/100
+|-hint|If a Terastallized Pokemon uses Roost, it remains Flying-type.
+|move|p1a: Fuecoco|Ember|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|10/32
+|-damage|p2a: Rookidee|32/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792221965
+|move|p2a: Rookidee|Chuan Yun|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792221965
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L3, F|17/17
+|switch|p1a: Sandygast|Sandygast, L3, F|100/100
+|-end|p1a: Sandygast|fantasystats|[silent]
+|turn|6
+|
+|t:|1792221965
+|move|p2a: Rookidee|Chuan Yun|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|0 fnt
+|-damage|p1a: Sandygast|0 fnt
+|faint|p1a: Sandygast
+|
+|upkeep
+|
+|t:|1792221965
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L7, M|26/26
+|switch|p1a: Spiritomb|Spiritomb, L7, M|100/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|7
+|
+|t:|1792221965
+|move|p2a: Rookidee|Foul Play|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|14/26
+|-damage|p1a: Spiritomb|54/100
+|move|p1a: Spiritomb|Night Shade|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|3/32
+|-damage|p2a: Rookidee|10/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792221965
+|move|p2a: Rookidee|Roost|p2a: Rookidee
+|split|p2
+|-heal|p2a: Rookidee|19/32
+|-heal|p2a: Rookidee|60/100
+|-hint|If a Terastallized Pokemon uses Roost, it remains Flying-type.
+|move|p1a: Spiritomb|Night Shade|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|12/32
+|-damage|p2a: Rookidee|38/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792221965
+|move|p2a: Rookidee|Chuan Yun|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|0 fnt
+|-damage|p1a: Spiritomb|0 fnt
+|faint|p1a: Spiritomb
+|
+|upkeep
+|
+|t:|1792221965
+|split|p1
+|switch|p1a: Aron|Aron, L6, F|23/23
+|switch|p1a: Aron|Aron, L6, F|100/100
+|-end|p1a: Aron|fantasystats|[silent]
+|turn|10
+|
+|t:|1792221965
+|move|p2a: Rookidee|Chuan Yun|p1a: Aron
+|-resisted|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|19/23
+|-damage|p1a: Aron|83/100
+|move|p1a: Aron|Metal Claw|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|6/32
+|-damage|p2a: Rookidee|19/100
+|
+|upkeep
+|turn|11
+|
+|t:|1792221965
+|move|p2a: Rookidee|Roost|p2a: Rookidee
+|split|p2
+|-heal|p2a: Rookidee|22/32
+|-heal|p2a: Rookidee|69/100
+|-hint|If a Terastallized Pokemon uses Roost, it remains Flying-type.
+|move|p1a: Aron|Metal Claw|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|16/32
+|-damage|p2a: Rookidee|50/100
+|
+|upkeep
+|turn|12
+|
+|t:|1792221965
+|move|p2a: Rookidee|Foul Play|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|7/23
+|-damage|p1a: Aron|31/100
+|move|p1a: Aron|Metal Claw|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|10/32
+|-damage|p2a: Rookidee|32/100
+|
+|upkeep
+|turn|13
+|
+|t:|1792221965
+|move|p2a: Rookidee|Roost|p2a: Rookidee
+|split|p2
+|-heal|p2a: Rookidee|26/32
+|-heal|p2a: Rookidee|82/100
+|-hint|If a Terastallized Pokemon uses Roost, it remains Flying-type.
+|move|p1a: Aron|Metal Claw|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|20/32
+|-damage|p2a: Rookidee|63/100
+|
+|upkeep
+|turn|14
+|
+|t:|1792221965
+|move|p2a: Rookidee|Foul Play|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|0 fnt
+|-damage|p1a: Aron|0 fnt
+|faint|p1a: Aron
+|
+|upkeep
+|
+|t:|1792221965
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L6, F|21/21
+|switch|p1a: Nosepass|Nosepass, L6, F|100/100
+|-end|p1a: Nosepass|fantasystats|[silent]
+|turn|15
+|
+|t:|1792221965
+|move|p2a: Rookidee|Foul Play|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|14/21
+|-damage|p1a: Nosepass|67/100
+|move|p1a: Nosepass|Tackle|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|17/32
+|-damage|p2a: Rookidee|54/100
+|
+|upkeep
+|turn|16
+|
+|t:|1792221965
+|move|p2a: Rookidee|Foul Play|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|7/21
+|-damage|p1a: Nosepass|34/100
+|move|p1a: Nosepass|Tackle|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|14/32
+|-damage|p2a: Rookidee|44/100
+|
+|upkeep
+|turn|17
+|
+|t:|1792221965
+|move|p2a: Rookidee|Roost|p2a: Rookidee
+|split|p2
+|-heal|p2a: Rookidee|30/32
+|-heal|p2a: Rookidee|94/100
+|-hint|If a Terastallized Pokemon uses Roost, it remains Flying-type.
+|move|p1a: Nosepass|Tackle|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|27/32
+|-damage|p2a: Rookidee|85/100
+|
+|upkeep
+|turn|18
+|
+|t:|1792221965
+|move|p2a: Rookidee|Foul Play|p1a: Nosepass
+|-crit|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|0 fnt
+|-damage|p1a: Nosepass|0 fnt
+|faint|p1a: Nosepass
+|
+|win|NPC

@@ -1,0 +1,77 @@
+|init|battle
+|title|RoguePlay1016B vs. AI · 幻想精英
+
+|-message|幻想杯肉鸽第 10 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792129608
+|gametype|singles
+|player|p1|RoguePlay1016B|101|
+|player|p2|AI · 幻想精英|unknownf|
+|teamsize|p1|3
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L12, M|
+|poke|p1|Spinda, L7, M|
+|poke|p1|Cleffa, L6, M|
+|poke|p2|Rookidee-Fantasy, L15, F|
+|teampreview
+|
+|t:|1792129610
+|start
+|switch|p1a: Spinda|Spinda, L7, M|27/27
+|switch|p2a: Rookidee|Rookidee-Fantasy, L15, F|100/100
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Spinda|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Spinda|fantasystats|[silent]
+|turn|1
+|
+|t:|1792129610
+|switch|p1a: Fuecoco|Fuecoco, L12, M|40/40
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-terastallize|p2a: Rookidee|Flying
+|move|p2a: Rookidee|Foul Play|p1a: Fuecoco
+|-damage|p1a: Fuecoco|18/40
+|
+|upkeep
+|turn|2
+|
+|t:|1792129611
+|switch|p1a: Cleffa|Cleffa, L6, M|23/23
+|-end|p1a: Cleffa|fantasystats|[silent]
+|move|p2a: Rookidee|Chuan Yun|p1a: Cleffa
+|-crit|p1a: Cleffa
+|-damage|p1a: Cleffa|0 fnt
+|faint|p1a: Cleffa
+|
+|upkeep
+|
+|t:|1792129611
+|switch|p1a: Spinda|Spinda, L7, M|27/27
+|-end|p1a: Spinda|fantasystats|[silent]
+|turn|3
+|
+|t:|1792129612
+|move|p2a: Rookidee|Chuan Yun|p1a: Spinda
+|-damage|p1a: Spinda|0 fnt
+|faint|p1a: Spinda
+|
+|upkeep
+|
+|t:|1792129613
+|switch|p1a: Fuecoco|Fuecoco, L12, M|18/40
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|4
+|
+|t:|1792129613
+|move|p2a: Rookidee|Chuan Yun|p1a: Fuecoco
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|win|AI · 幻想精英
+|fantasyroguedefeat|{"floor":10,"encounter":1,"encounters":1,"retryFloor":false,"noHealing":false,"emergencyCost":5000}
+|deinit

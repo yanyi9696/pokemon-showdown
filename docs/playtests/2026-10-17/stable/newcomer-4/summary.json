@@ -1,0 +1,1586 @@
+{
+  "profile": "newcomer",
+  "seed": 4,
+  "halfMeta": false,
+  "battles": [
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Venipede",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rookidee",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Weedle",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 3
+        },
+        {
+          "species": "Weedle",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rookidee",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 4
+        },
+        {
+          "species": "Weedle",
+          "level": 3
+        },
+        {
+          "species": "Rookidee",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Oddish",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 4,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 4
+        },
+        {
+          "species": "Weedle",
+          "level": 3
+        },
+        {
+          "species": "Rookidee",
+          "level": 3
+        },
+        {
+          "species": "Oddish",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Lotad",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 4
+        },
+        {
+          "species": "Weedle",
+          "level": 4
+        },
+        {
+          "species": "Rookidee",
+          "level": 3
+        },
+        {
+          "species": "Oddish",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wurmple",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 5
+        },
+        {
+          "species": "Weedle",
+          "level": 4
+        },
+        {
+          "species": "Rookidee",
+          "level": 4
+        },
+        {
+          "species": "Oddish",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Oddish",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 5
+        },
+        {
+          "species": "Weedle",
+          "level": 4
+        },
+        {
+          "species": "Rookidee",
+          "level": 5
+        },
+        {
+          "species": "Oddish",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Turtwig",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 6
+        },
+        {
+          "species": "Weedle",
+          "level": 5
+        },
+        {
+          "species": "Rookidee",
+          "level": 5
+        },
+        {
+          "species": "Oddish",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Drifloon",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 6
+        },
+        {
+          "species": "Drifloon",
+          "level": 3
+        },
+        {
+          "species": "Rookidee",
+          "level": 5
+        },
+        {
+          "species": "Oddish",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sinistea",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 6
+        },
+        {
+          "species": "Drifloon",
+          "level": 4
+        },
+        {
+          "species": "Rookidee",
+          "level": 6
+        },
+        {
+          "species": "Oddish",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sinistea",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 6
+        },
+        {
+          "species": "Drifloon",
+          "level": 4
+        },
+        {
+          "species": "Rookidee",
+          "level": 6
+        },
+        {
+          "species": "Oddish",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Omanyte",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 7
+        },
+        {
+          "species": "Drifloon",
+          "level": 5
+        },
+        {
+          "species": "Rookidee",
+          "level": 6
+        },
+        {
+          "species": "Oddish",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Patrat",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 7
+        },
+        {
+          "species": "Drifloon",
+          "level": 6
+        },
+        {
+          "species": "Rookidee",
+          "level": 7
+        },
+        {
+          "species": "Oddish",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sandile",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 7
+        },
+        {
+          "species": "Drifloon",
+          "level": 6
+        },
+        {
+          "species": "Rookidee",
+          "level": 7
+        },
+        {
+          "species": "Oddish",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Slugma",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 8
+        },
+        {
+          "species": "Drifloon",
+          "level": 6
+        },
+        {
+          "species": "Rookidee",
+          "level": 7
+        },
+        {
+          "species": "Oddish",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Aron",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 8
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 7
+        },
+        {
+          "species": "Oddish",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Torkoal",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 10,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 9,
+      "faints": 4,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 8
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 8
+        },
+        {
+          "species": "Oddish",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Skitty-Fantasy",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 700,
+      "moneyAfter": 700,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 8
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 9
+        },
+        {
+          "species": "Oddish",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pidgey",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 700,
+      "moneyAfter": 700,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 8
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 9
+        },
+        {
+          "species": "Oddish",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Skitty",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 700,
+      "moneyAfter": 700,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 9
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 9
+        },
+        {
+          "species": "Oddish",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ditto",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 700,
+      "moneyAfter": 700,
+      "rejected": 0
+    },
+    {
+      "floor": 12,
+      "kind": "wild",
+      "name": "太晶空洞",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 9
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 10
+        },
+        {
+          "species": "Oddish",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Charcadet",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 700,
+      "moneyAfter": 700,
+      "rejected": 0
+    },
+    {
+      "floor": 12,
+      "kind": "wild",
+      "name": "太晶空洞",
+      "won": true,
+      "escaped": false,
+      "turns": 7,
+      "faints": 2,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 9
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 10
+        },
+        {
+          "species": "Oddish",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Glimmet",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 700,
+      "moneyAfter": 700,
+      "rejected": 0
+    }
+  ],
+  "purchases": [
+    {
+      "floor": 9,
+      "action": "heal",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    }
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3
+      }
+    },
+    {
+      "floor": 2,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 3
+        },
+        {
+          "species": "Weedle",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 5,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 3,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 3
+        },
+        {
+          "species": "Weedle",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 5,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 4,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 3
+        },
+        {
+          "species": "Weedle",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 5,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 5,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 4
+        },
+        {
+          "species": "Weedle",
+          "level": 4
+        },
+        {
+          "species": "Rookidee",
+          "level": 3
+        },
+        {
+          "species": "Oddish",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 3,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 6,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 6
+        },
+        {
+          "species": "Venipede",
+          "level": 6
+        },
+        {
+          "species": "Weedle",
+          "level": 5
+        },
+        {
+          "species": "Rookidee",
+          "level": 5
+        },
+        {
+          "species": "Oddish",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 3,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "prettyfeather": 2
+      }
+    },
+    {
+      "floor": 7,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 6
+        },
+        {
+          "species": "Drifloon",
+          "level": 4
+        },
+        {
+          "species": "Rookidee",
+          "level": 6
+        },
+        {
+          "species": "Oddish",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 4,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "prettyfeather": 3,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 8,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Pikipek",
+          "level": 7
+        },
+        {
+          "species": "Venipede",
+          "level": 7
+        },
+        {
+          "species": "Drifloon",
+          "level": 6
+        },
+        {
+          "species": "Rookidee",
+          "level": 7
+        },
+        {
+          "species": "Oddish",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 4,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 10,
+        "prettyfeather": 4,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 9,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 8
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 8
+        },
+        {
+          "species": "Oddish",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 0,
+        "potion": 4,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 12,
+        "prettyfeather": 4,
+        "stardust": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 10,
+      "money": 700,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 8
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 8
+        },
+        {
+          "species": "Oddish",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 11,
+      "money": 700,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 8
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 9
+        },
+        {
+          "species": "Oddish",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 12,
+      "money": 700,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Pikipek",
+          "level": 8
+        },
+        {
+          "species": "Venipede",
+          "level": 9
+        },
+        {
+          "species": "Drifloon",
+          "level": 7
+        },
+        {
+          "species": "Rookidee",
+          "level": 10
+        },
+        {
+          "species": "Oddish",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 0,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 2,
+        "prettyfeather": 0,
+        "stardust": 0,
+        "pearl": 1,
+        "bigpearl": 1
+      }
+    }
+  ],
+  "choices": [
+    {
+      "floor": 1,
+      "blessing": "overtimetailwind",
+      "tier": "gold"
+    }
+  ],
+  "issues": [
+    {
+      "floor": 12,
+      "reason": "driver-error",
+      "error": "Error: Rejected combat choice: team 123456 / team 123465\n    at combat (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-combat-playtest.js:137:48)\n    at Object.<anonymous> (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-combat-playtest.js:166:30)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Object..js (node:internal/modules/cjs/loader:1706:10)\n    at Module.load (node:internal/modules/cjs/loader:1289:32)\n    at Function._load (node:internal/modules/cjs/loader:1108:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\n    at node:internal/main/run_main_module:36:49"
+    }
+  ],
+  "lastFloor": 12,
+  "phase": "battle"
+}

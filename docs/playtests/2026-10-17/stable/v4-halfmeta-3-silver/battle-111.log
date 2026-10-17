@@ -1,0 +1,79 @@
+|t:|1792223846
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L48, M|
+|poke|p1|Skeledirge, L47, M|
+|poke|p1|Marshtomp, L31, M|
+|poke|p1|Alcremie, L31, F|
+|poke|p1|Porygon2, L31|
+|poke|p1|Centiskorch, L34, M|
+|poke|p2|Honchkrow-Fantasy, L40, F|
+|teampreview
+|
+|t:|1792223846
+|start
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L48, M|150/150
+|switch|p1a: Venusaur|Venusaur, L48, M|100/100
+|split|p2
+|switch|p2a: Honchkrow|Honchkrow-Fantasy, L40, F|142/142
+|switch|p2a: Honchkrow|Honchkrow-Fantasy, L40, F|100/100
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-start|p2a: Honchkrow|typechange|Dark/Flying|[silent]
+|-start|p2a: Honchkrow|fantasystats|100/125/52/125/52/71|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-start|p2a: Honchkrow|typechange|Dark/Flying|[silent]
+|-start|p2a: Honchkrow|fantasystats|100/125/52/125/52/71|[silent]
+|turn|1
+|
+|t:|1792223847
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L47, M|170/170
+|switch|p1a: Skeledirge|Skeledirge, L47, M|100/100
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|-terastallize|p2a: Honchkrow|Dark
+|move|p2a: Honchkrow|Chuan Yun|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|134/170
+|-damage|p1a: Skeledirge|79/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223847
+|move|p1a: Skeledirge|Torch Song|p2a: Honchkrow
+|split|p2
+|-damage|p2a: Honchkrow|30/142
+|-damage|p2a: Honchkrow|22/100
+|-boost|p1a: Skeledirge|spa|1
+|move|p2a: Honchkrow|Fiery Wrath|p1a: Skeledirge
+|-supereffective|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|0 fnt
+|-damage|p1a: Skeledirge|0 fnt
+|faint|p1a: Skeledirge
+|
+|upkeep
+|
+|t:|1792223847
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L48, M|150/150
+|switch|p1a: Venusaur|Venusaur, L48, M|100/100
+|-end|p1a: Venusaur|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223847
+|move|p1a: Venusaur|Petal Blizzard|p2a: Honchkrow
+|split|p2
+|-damage|p2a: Honchkrow|0 fnt
+|-damage|p2a: Honchkrow|0 fnt
+|faint|p2a: Honchkrow
+|
+|win|Player

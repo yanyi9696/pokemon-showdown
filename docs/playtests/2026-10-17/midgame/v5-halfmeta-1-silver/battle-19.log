@@ -1,0 +1,76 @@
+|t:|1792230024
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Mudkip, L11, M|
+|poke|p1|Bulbasaur, L11, F|
+|poke|p1|Dedenne, L5, F|
+|poke|p1|Cacnea, L8, F|
+|poke|p1|Nosepass, L6, F|
+|poke|p2|Onix-Fantasy, L8, F|
+|teampreview
+|
+|t:|1792230024
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L11, M|39/39
+|switch|p1a: Mudkip|Mudkip, L11, M|100/100
+|split|p2
+|switch|p2a: Onix|Onix-Fantasy, L8, F|26/26
+|switch|p2a: Onix|Onix-Fantasy, L8, F|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Onix|typechange|Rock/Ice|[silent]
+|-start|p2a: Onix|fantasystats|35/45/160/30/45/70|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Onix|typechange|Rock/Ice|[silent]
+|-start|p2a: Onix|fantasystats|35/45/160/30/45/70|[silent]
+|turn|1
+|
+|t:|1792230026
+|-terastallize|p2a: Onix|Rock
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Mudkip|Water Gun|p2a: Onix
+|-resisted|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|17/26
+|-damage|p2a: Onix|66/100
+|move|p2a: Onix|Rock Throw|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|29/39
+|-damage|p1a: Mudkip|75/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230027
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Mudkip|Water Gun|p2a: Onix
+|-resisted|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|8/26
+|-damage|p2a: Onix|31/100
+|move|p2a: Onix|Rock Throw|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|19/39
+|-damage|p1a: Mudkip|49/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792230028
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Mudkip|Water Gun|p2a: Onix
+|-resisted|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|0 fnt
+|-damage|p2a: Onix|0 fnt
+|faint|p2a: Onix
+|
+|win|Player

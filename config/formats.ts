@@ -19,6 +19,7 @@ The column value will be ignored for repeat sections.
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
 import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, rogueEventDamage } from '../sim/fantasy-rogue';
+import { isRogueBoss, megaRogueBoss } from '../sim/rogue-bosses';
 import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
 	blessingEffectiveness, blessingHit } from '../sim/fantasy-rogue-blessings';
 import { maintainRogueEnvironment, startRogueSpirit, rogueCoinDamageMultiplier,
@@ -69,6 +70,9 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			return blessingEffectiveness(typeMod, target, type, move);
 		},
 		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); },
+		onBeforeTurn(pokemon) { megaRogueBoss(pokemon); },
+		onTrapPokemon(pokemon) { if (isRogueBoss(pokemon)) pokemon.trapped = true; },
+		onDragOut(pokemon) { if (isRogueBoss(pokemon)) return false; },
 		onFaint(pokemon, source) { blessingKO(this, pokemon, source); recordRogueDefeat(this, pokemon); },
 		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},

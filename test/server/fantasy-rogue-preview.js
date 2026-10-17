@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
@@ -24,7 +25,7 @@ describe('Fantasy Rogue playable preview', () => {
 	let store, engine, battle;
 	const user = 'previewtester';
 	const account = () => store.get(user);
-	const cmd = (action, details = {}) => engine.command(user, { id: randomUUID(), revision: account().revision, action, ...details });
+	const cmd = (action, details = {}) => commandAfterOpening(engine, user, { id: randomUUID(), revision: account().revision, action, ...details });
 	const start = () => { cmd('start', { starters: ['bulbasaur'] }); cmd('select', { value: 'wild0' }); };
 	const learnAll = () => {
 		while (account().run.pendingMoves?.length) cmd('learn', { member: account().run.pendingMoves[0].member, value: 'skip' });
@@ -179,8 +180,10 @@ describe('Fantasy Rogue playable preview', () => {
 				if (account().run.node.kind === 'boss') points++;
 				const count = account().run.node.encounters.length;
 				for (let i = 0; i < count; i++) {
+					require('../fixtures/fantasy-rogue').chooseCompanions(engine, user, cmd);
 					cmd('battle'); const run = account().run;
 					engine.settle(user, run.battle.token, { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag });
+					if (account().run.preview?.stage === 'result') cmd('previewresult', {value: 'accept'});
 				}
 			}
 			while (account().run.phase === 'blessing') {
@@ -191,6 +194,9 @@ describe('Fantasy Rogue playable preview', () => {
 			}
 			assert.equal(account().points, points);
 		}
+		assert.equal(account().run.phase, 'postgame');
+		cmd('storyskip', { value: storyView(account(), false, true).key });
+		cmd('godchallenge', { value: 'decline' });
 		assert.equal(account().run.phase, 'complete');
 		assert.equal(points, 23);
 		cmd('upgrade', { value: 'hp' });

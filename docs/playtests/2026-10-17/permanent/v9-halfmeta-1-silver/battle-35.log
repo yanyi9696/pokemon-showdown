@@ -1,0 +1,90 @@
+|t:|1792234669
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L18, M|
+|poke|p1|Marshtomp, L18, M|
+|poke|p1|Bulbasaur, L12, F|
+|poke|p1|Sewaddle, L12, F|
+|poke|p1|Grubbin, L10, F|
+|poke|p1|Budew, L11, F|
+|poke|p2|Venipede, L15, F|
+|poke|p2|Toxel, L15, F|
+|poke|p2|Trubbish, L15, M|
+|teampreview
+|
+|t:|1792234669
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L18, M|65/65
+|switch|p1a: Crocalor|Crocalor, L18, M|100/100
+|split|p2
+|switch|p2a: Venipede|Venipede, L15, F|38/38
+|switch|p2a: Venipede|Venipede, L15, F|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Venipede|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Venipede|fantasystats|[silent]
+|turn|1
+|
+|t:|1792234670
+|-terastallize|p2a: Venipede|Bug
+|move|p1a: Crocalor|Incinerate|p2a: Venipede
+|-supereffective|p2a: Venipede
+|split|p2
+|-damage|p2a: Venipede|0 fnt
+|-damage|p2a: Venipede|0 fnt
+|faint|p2a: Venipede
+|
+|upkeep
+|
+|t:|1792234670
+|split|p2
+|switch|p2a: Toxel|Toxel, L15, F|41/41
+|switch|p2a: Toxel|Toxel, L15, F|100/100
+|-end|p2a: Toxel|fantasystats|[silent]
+|turn|2
+|
+|t:|1792234670
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L18, M|61/61
+|switch|p1a: Marshtomp|Marshtomp, L18, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Toxel|Charm|p1a: Marshtomp
+|-unboost|p1a: Marshtomp|atk|2
+|
+|upkeep
+|turn|3
+|
+|t:|1792234671
+|move|p1a: Marshtomp|Mud Shot|p2a: Toxel
+|-supereffective|p2a: Toxel
+|split|p2
+|-damage|p2a: Toxel|0 fnt
+|-damage|p2a: Toxel|0 fnt
+|faint|p2a: Toxel
+|
+|upkeep
+|
+|t:|1792234671
+|split|p2
+|switch|p2a: Trubbish|Trubbish, L15, M|44/44
+|switch|p2a: Trubbish|Trubbish, L15, M|100/100
+|-end|p2a: Trubbish|fantasystats|[silent]
+|turn|4
+|
+|t:|1792234671
+|move|p1a: Marshtomp|Mud Shot|p2a: Trubbish
+|-supereffective|p2a: Trubbish
+|split|p2
+|-damage|p2a: Trubbish|0 fnt
+|-damage|p2a: Trubbish|0 fnt
+|faint|p2a: Trubbish
+|
+|win|Player

@@ -1,0 +1,314 @@
+|t:|1792230102
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L24, M|
+|poke|p1|Klefki, L23, F|
+|poke|p1|Ivysaur, L24, F|
+|poke|p1|Dedenne, L20, F|
+|poke|p1|Shuckle, L20, F|
+|poke|p1|Nosepass, L19, F|
+|poke|p2|Mimikyu, L25, M|
+|poke|p2|Gastly, L25, F|
+|poke|p2|Sandygast, L25, F|
+|poke|p2|Dhelmise, L25|
+|teampreview
+|
+|t:|1792230102
+|start
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L20, F|48/48
+|switch|p1a: Shuckle|Shuckle, L20, F|100/100
+|split|p2
+|switch|p2a: Mimikyu|Mimikyu, L25, M|86/86
+|switch|p2a: Mimikyu|Mimikyu, L25, M|100/100
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Shuckle|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Shuckle|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230103
+|-terastallize|p2a: Mimikyu|Ghost
+|move|p2a: Mimikyu|Play Rough|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|21/48
+|-damage|p1a: Shuckle|44/100
+|split|p2
+|-damage|p2a: Mimikyu|78/86|[from] item: Life Orb
+|-damage|p2a: Mimikyu|91/100|[from] item: Life Orb
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Shuckle|Rock Throw|p2a: Mimikyu
+|-activate|p2a: Mimikyu|ability: Disguise
+|split|p2
+|-damage|p2a: Mimikyu|78/86
+|-damage|p2a: Mimikyu|91/100
+|detailschange|p2a: Mimikyu|Mimikyu-Busted, L25, M, tera:Ghost
+|-start|p2a: Mimikyu|typechange|Ghost/Fairy|[silent]
+|split|p2
+|-damage|p2a: Mimikyu|68/86|[from] pokemon: Mimikyu-Busted
+|-damage|p2a: Mimikyu|80/100|[from] pokemon: Mimikyu-Busted
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|
+|upkeep
+|turn|2
+|
+|t:|1792230106
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L24, M|83/83
+|switch|p1a: Crocalor|Crocalor, L24, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Mimikyu|Shadow Claw|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|28/83
+|-damage|p1a: Crocalor|34/100
+|split|p2
+|-damage|p2a: Mimikyu|60/86|[from] item: Life Orb
+|-damage|p2a: Mimikyu|70/100|[from] item: Life Orb
+|
+|upkeep
+|turn|3
+|
+|t:|1792230107
+|split|p1
+|switch|p1a: Klefki|Klefki, L23, F|69/69
+|switch|p1a: Klefki|Klefki, L23, F|100/100
+|-end|p1a: Klefki|fantasystats|[silent]
+|move|p2a: Mimikyu|Shadow Claw|p1a: Klefki
+|split|p1
+|-damage|p1a: Klefki|17/69
+|-damage|p1a: Klefki|25/100
+|split|p2
+|-damage|p2a: Mimikyu|52/86|[from] item: Life Orb
+|-damage|p2a: Mimikyu|61/100|[from] item: Life Orb
+|
+|upkeep
+|turn|4
+|
+|t:|1792230108
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L24, F|73/73
+|switch|p1a: Ivysaur|Ivysaur, L24, F|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Mimikyu|Shadow Claw|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|8/73
+|-damage|p1a: Ivysaur|11/100
+|split|p2
+|-damage|p2a: Mimikyu|44/86|[from] item: Life Orb
+|-damage|p2a: Mimikyu|52/100|[from] item: Life Orb
+|
+|upkeep
+|turn|5
+|
+|t:|1792230109
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L19, F|49/49
+|switch|p1a: Nosepass|Nosepass, L19, F|100/100
+|-end|p1a: Nosepass|fantasystats|[silent]
+|move|p2a: Mimikyu|Shadow Claw|p1a: Nosepass
+|-crit|p1a: Nosepass
+|-ability|p1a: Nosepass|Sturdy
+|split|p1
+|-damage|p1a: Nosepass|1/49
+|-damage|p1a: Nosepass|3/100
+|split|p2
+|-damage|p2a: Mimikyu|36/86|[from] item: Life Orb
+|-damage|p2a: Mimikyu|42/100|[from] item: Life Orb
+|
+|upkeep
+|turn|6
+|
+|t:|1792230110
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Nosepass|Spark|p2a: Mimikyu
+|split|p2
+|-damage|p2a: Mimikyu|29/86
+|-damage|p2a: Mimikyu|34/100
+|move|p2a: Mimikyu|Shadow Claw|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|0 fnt
+|-damage|p1a: Nosepass|0 fnt
+|faint|p1a: Nosepass
+|split|p2
+|-damage|p2a: Mimikyu|21/86|[from] item: Life Orb
+|-damage|p2a: Mimikyu|25/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792230110
+|split|p1
+|switch|p1a: Dedenne|Dedenne, L20, F|67/67
+|switch|p1a: Dedenne|Dedenne, L20, F|100/100
+|-end|p1a: Dedenne|fantasystats|[silent]
+|turn|7
+|
+|t:|1792230112
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Dedenne|Nuzzle|p2a: Mimikyu
+|split|p2
+|-damage|p2a: Mimikyu|12/86
+|-damage|p2a: Mimikyu|14/100
+|-status|p2a: Mimikyu|par
+|move|p2a: Mimikyu|Shadow Claw|p1a: Dedenne
+|split|p1
+|-damage|p1a: Dedenne|0 fnt
+|-damage|p1a: Dedenne|0 fnt
+|faint|p1a: Dedenne
+|split|p2
+|-damage|p2a: Mimikyu|4/86 par|[from] item: Life Orb
+|-damage|p2a: Mimikyu|5/100 par|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792230113
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L24, F|8/73
+|switch|p1a: Ivysaur|Ivysaur, L24, F|11/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|turn|8
+|
+|t:|1792230115
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Ivysaur|Seed Bomb|p2a: Mimikyu
+|split|p2
+|-damage|p2a: Mimikyu|0 fnt
+|-damage|p2a: Mimikyu|0 fnt
+|faint|p2a: Mimikyu
+|
+|upkeep
+|
+|t:|1792230115
+|split|p2
+|switch|p2a: Gastly|Gastly, L25, F|57/57
+|switch|p2a: Gastly|Gastly, L25, F|100/100
+|-end|p2a: Gastly|fantasystats|[silent]
+|turn|9
+|
+|t:|1792230115
+|move|p2a: Gastly|Sludge Bomb|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|faint|p1a: Ivysaur
+|
+|upkeep
+|
+|t:|1792230116
+|split|p1
+|switch|p1a: Klefki|Klefki, L23, F|17/69
+|switch|p1a: Klefki|Klefki, L23, F|25/100
+|-end|p1a: Klefki|fantasystats|[silent]
+|turn|10
+|
+|t:|1792230118
+|move|p2a: Gastly|Sludge Bomb|p1a: Klefki
+|-immune|p1a: Klefki
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Klefki|Astonish|p2a: Gastly
+|-supereffective|p2a: Gastly
+|-crit|p2a: Gastly
+|split|p2
+|-damage|p2a: Gastly|0 fnt
+|-damage|p2a: Gastly|0 fnt
+|faint|p2a: Gastly
+|
+|upkeep
+|
+|t:|1792230118
+|split|p2
+|switch|p2a: Sandygast|Sandygast, L25, F|86/86
+|switch|p2a: Sandygast|Sandygast, L25, F|100/100
+|-end|p2a: Sandygast|fantasystats|[silent]
+|turn|11
+|
+|t:|1792230119
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L20, F|21/48
+|switch|p1a: Shuckle|Shuckle, L20, F|44/100
+|-end|p1a: Shuckle|fantasystats|[silent]
+|move|p2a: Sandygast|Earth Power|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|3/48
+|-damage|p1a: Shuckle|7/100
+|
+|upkeep
+|turn|12
+|
+|t:|1792230119
+|move|p2a: Sandygast|Earth Power|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|0 fnt
+|-damage|p1a: Shuckle|0 fnt
+|faint|p1a: Shuckle
+|
+|upkeep
+|
+|t:|1792230120
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L24, M|28/83
+|switch|p1a: Crocalor|Crocalor, L24, M|34/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|13
+|
+|t:|1792230120
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Crocalor|Snarl|p2a: Sandygast
+|-supereffective|p2a: Sandygast
+|split|p2
+|-damage|p2a: Sandygast|20/86
+|-damage|p2a: Sandygast|24/100
+|-unboost|p2a: Sandygast|spa|1
+|move|p2a: Sandygast|Earth Power|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|
+|split|p2
+|-heal|p2a: Sandygast|25/86|[from] item: Leftovers
+|-heal|p2a: Sandygast|30/100|[from] item: Leftovers
+|upkeep
+|
+|t:|1792230120
+|split|p1
+|switch|p1a: Klefki|Klefki, L23, F|17/69
+|switch|p1a: Klefki|Klefki, L23, F|25/100
+|-end|p1a: Klefki|fantasystats|[silent]
+|turn|14
+|
+|t:|1792230120
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Klefki|Fairy Wind|p2a: Sandygast
+|split|p2
+|-damage|p2a: Sandygast|0 fnt
+|-damage|p2a: Sandygast|0 fnt
+|faint|p2a: Sandygast
+|
+|upkeep
+|
+|t:|1792230120
+|split|p2
+|switch|p2a: Dhelmise|Dhelmise, L25|93/93
+|switch|p2a: Dhelmise|Dhelmise, L25|100/100
+|-end|p2a: Dhelmise|fantasystats|[silent]
+|turn|15
+|
+|t:|1792230120
+|move|p1a: Klefki|Torment|p2a: Dhelmise
+|-start|p2a: Dhelmise|Torment
+|move|p2a: Dhelmise|Earthquake|p1a: Klefki
+|-supereffective|p1a: Klefki
+|split|p1
+|-damage|p1a: Klefki|0 fnt
+|-damage|p1a: Klefki|0 fnt
+|faint|p1a: Klefki
+|
+|win|NPC

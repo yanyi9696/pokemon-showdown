@@ -1,0 +1,62 @@
+|t:|1792222571
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L15, M|
+|poke|p1|Sandygast, L14, F|
+|poke|p1|Spiritomb, L12, M|
+|poke|p1|Baltoy, L14|
+|poke|p1|Flabébé, L11, F|
+|poke|p1|Skrelp, L10, F|
+|poke|p2|Gimmighoul, L13|
+|teampreview
+|
+|t:|1792222571
+|start
+|split|p1
+|switch|p1a: Baltoy|Baltoy, L14|9/39
+|switch|p1a: Baltoy|Baltoy, L14|24/100
+|split|p2
+|switch|p2a: Gimmighoul|Gimmighoul, L13|37/37
+|switch|p2a: Gimmighoul|Gimmighoul, L13|100/100
+|-end|p1a: Baltoy|fantasystats|[silent]
+|-end|p2a: Gimmighoul|fantasystats|[silent]
+|-end|p1a: Baltoy|fantasystats|[silent]
+|-end|p2a: Gimmighoul|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222571
+|move|p1a: Baltoy|Bulldoze|p2a: Gimmighoul
+|split|p2
+|-damage|p2a: Gimmighoul|27/37
+|-damage|p2a: Gimmighoul|73/100
+|-unboost|p2a: Gimmighoul|spe|1
+|move|p2a: Gimmighoul|Astonish|p1a: Baltoy
+|-supereffective|p1a: Baltoy
+|split|p1
+|-damage|p1a: Baltoy|1/39
+|-damage|p1a: Baltoy|3/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792222571
+|move|p1a: Baltoy|Bulldoze|p2a: Gimmighoul
+|split|p2
+|-damage|p2a: Gimmighoul|17/37
+|-damage|p2a: Gimmighoul|46/100
+|-unboost|p2a: Gimmighoul|spe|1
+|move|p2a: Gimmighoul|Astonish|p1a: Baltoy
+|-supereffective|p1a: Baltoy
+|split|p1
+|-damage|p1a: Baltoy|0 fnt
+|-damage|p1a: Baltoy|0 fnt
+|faint|p1a: Baltoy
+|
+|win|NPC

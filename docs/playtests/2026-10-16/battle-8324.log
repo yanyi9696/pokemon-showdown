@@ -1,0 +1,411 @@
+|init|battle
+|title|RoguePlay1016F vs. AI · 道馆 · 奇树（电）
+
+|-message|幻想杯肉鸽第 60 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792133950
+|gametype|singles
+|player|p1|RoguePlay1016F|266|
+|player|p2|AI · 道馆 · 奇树（电）|iono|
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L31, M|
+|poke|p1|Muk-Alola, L40, M|
+|poke|p1|Stunfisk, L29, F|
+|poke|p1|Sneasler, L29, F|
+|poke|p1|Carkol, L29, M|
+|poke|p1|Golbat, L29, F|
+|poke|p2|Magneton, L50|
+|poke|p2|Pikachu, L50, F|
+|poke|p2|Rotom, L50|
+|poke|p2|Mismagius, L50, M|
+|teampreview
+|
+|t:|1792133951
+|start
+|-message|塔灵：时拉比的驻时
+|switch|p1a: Muk|Muk-Alola, L40, M|144/144
+|switch|p2a: Magneton|Magneton, L50|100/100
+|-end|p2a: Magneton|fantasystats|[silent]
+|-end|p1a: Muk|fantasystats|[silent]
+|-end|p2a: Magneton|fantasystats|[silent]
+|-end|p1a: Muk|fantasystats|[silent]
+|turn|1
+|
+|t:|1792133951
+|-terastallize|p2a: Magneton|Electric
+|move|p2a: Magneton|Flash Cannon|p1a: Muk
+|-damage|p1a: Muk|60/144
+|-enditem|p1a: Muk|Sitrus Berry|[eat]
+|-heal|p1a: Muk|96/144|[from] item: Sitrus Berry
+|move|p1a: Muk|Mud Shot|p2a: Magneton
+|-supereffective|p2a: Magneton
+|-enditem|p2a: Magneton|Shuca Berry|[eat]
+|-enditem|p2a: Magneton|Shuca Berry|[weaken]
+|-damage|p2a: Magneton|88/100
+|-unboost|p2a: Magneton|spe|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792133952
+|move|p2a: Magneton|Discharge|p1a: Muk
+|-message|Muk留得青山在！
+|-damage|p1a: Muk|1/144
+|-enditem|p1a: Muk|Sitrus Berry|[eat]
+|-heal|p1a: Muk|37/144|[from] item: Sitrus Berry
+|-enditem|p1a: Muk|Sitrus Berry|[eat]
+|-heal|p1a: Muk|73/144|[from] item: Sitrus Berry
+|
+|t:|1792133953
+|switch|p1a: Sneasler|Sneasler, L29, F|93/93
+|-end|p1a: Sneasler|fantasystats|[silent]
+|-ability|p1a: Sneasler|Pressure
+|
+|upkeep
+|turn|3
+|
+|t:|1792133953
+|move|p1a: Sneasler|Rock Smash|p2a: Magneton
+|-damage|p2a: Magneton|79/100
+|-unboost|p2a: Magneton|def|1
+|move|p2a: Magneton|Discharge|p1a: Sneasler
+|-message|Sneasler留得青山在！
+|-damage|p1a: Sneasler|1/93
+|-status|p1a: Sneasler|par
+|-enditem|p1a: Sneasler|Sitrus Berry|[eat]
+|-heal|p1a: Sneasler|24/93 par|[from] item: Sitrus Berry
+|-enditem|p1a: Sneasler|Sitrus Berry|[eat]
+|-heal|p1a: Sneasler|47/93 par|[from] item: Sitrus Berry
+|
+|t:|1792133954
+|switch|p1a: Stunfisk|Stunfisk, L29, F|111/111
+|-end|p1a: Stunfisk|fantasystats|[silent]
+|
+|upkeep
+|turn|4
+|
+|t:|1792133955
+|move|p1a: Stunfisk|Sucker Punch|p2a: Magneton
+|-damage|p2a: Magneton|69/100
+|move|p2a: Magneton|Tri Attack|p1a: Stunfisk
+|-damage|p1a: Stunfisk|81/111
+|-damage|p1a: Stunfisk|53/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|80/111|[from] item: Sitrus Berry
+|-damage|p1a: Stunfisk|52/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|79/111|[from] item: Sitrus Berry
+|-hitcount|p1a: Stunfisk|3
+|
+|upkeep
+|turn|5
+|
+|t:|1792133955
+|move|p2a: Magneton|Tri Attack|p1a: Stunfisk
+|-damage|p1a: Stunfisk|50/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|77/111|[from] item: Sitrus Berry
+|-damage|p1a: Stunfisk|50/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|77/111|[from] item: Sitrus Berry
+|-damage|p1a: Stunfisk|49/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|76/111|[from] item: Sitrus Berry
+|-hitcount|p1a: Stunfisk|3
+|move|p1a: Stunfisk|Mud Shot|p2a: Magneton
+|-supereffective|p2a: Magneton
+|-damage|p2a: Magneton|45/100
+|-unboost|p2a: Magneton|spe|1
+|
+|upkeep
+|turn|6
+|
+|t:|1792133956
+|move|p2a: Magneton|Tri Attack|p1a: Stunfisk
+|-damage|p1a: Stunfisk|47/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|74/111|[from] item: Sitrus Berry
+|-damage|p1a: Stunfisk|42/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|69/111|[from] item: Sitrus Berry
+|-damage|p1a: Stunfisk|41/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|68/111|[from] item: Sitrus Berry
+|-hitcount|p1a: Stunfisk|3
+|move|p1a: Stunfisk|Mud Shot|p2a: Magneton
+|-supereffective|p2a: Magneton
+|-damage|p2a: Magneton|21/100
+|-unboost|p2a: Magneton|spe|1
+|
+|upkeep
+|turn|7
+|
+|t:|1792133956
+|move|p2a: Magneton|Tri Attack|p1a: Stunfisk
+|-damage|p1a: Stunfisk|37/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|64/111|[from] item: Sitrus Berry
+|-damage|p1a: Stunfisk|33/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|60/111|[from] item: Sitrus Berry
+|-damage|p1a: Stunfisk|28/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|55/111|[from] item: Sitrus Berry
+|-hitcount|p1a: Stunfisk|3
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|82/111|[from] item: Sitrus Berry
+|move|p1a: Stunfisk|Mud Shot|p2a: Magneton
+|-supereffective|p2a: Magneton
+|-damage|p2a: Magneton|0 fnt
+|faint|p2a: Magneton
+|
+|upkeep
+|
+|t:|1792133956
+|switch|p2a: Pikachu|Pikachu, L50, F|100/100
+|-end|p2a: Pikachu|fantasystats|[silent]
+|turn|8
+|
+|t:|1792133957
+|move|p2a: Pikachu|Fake Out|p1a: Stunfisk
+|-damage|p1a: Stunfisk|22/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|49/111|[from] item: Sitrus Berry
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|76/111|[from] item: Sitrus Berry
+|cant|p1a: Stunfisk|flinch
+|
+|upkeep
+|turn|9
+|
+|t:|1792133958
+|switch|p2a: Mismagius|Mismagius, L50, M|100/100
+|-end|p2a: Mismagius|fantasystats|[silent]
+|move|p1a: Stunfisk|Mud Shot|p2a: Mismagius
+|-immune|p2a: Mismagius|[from] ability: Levitate
+|
+|upkeep
+|turn|10
+|
+|t:|1792133958
+|move|p1a: Stunfisk|Sucker Punch|p2a: Mismagius
+|-supereffective|p2a: Mismagius
+|-damage|p2a: Mismagius|84/100
+|move|p2a: Mismagius|Tera Blast|p1a: Stunfisk
+|-damage|p1a: Stunfisk|1/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|28/111|[from] item: Sitrus Berry
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|55/111|[from] item: Sitrus Berry
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|82/111|[from] item: Sitrus Berry
+|
+|upkeep
+|turn|11
+|
+|t:|1792133959
+|move|p1a: Stunfisk|Sucker Punch|p2a: Mismagius
+|-supereffective|p2a: Mismagius
+|-damage|p2a: Mismagius|68/100
+|move|p2a: Mismagius|Tera Blast|p1a: Stunfisk
+|-damage|p1a: Stunfisk|8/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|35/111|[from] item: Sitrus Berry
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|62/111|[from] item: Sitrus Berry
+|
+|upkeep
+|turn|12
+|
+|t:|1792133959
+|move|p1a: Stunfisk|Sucker Punch|p2a: Mismagius
+|-supereffective|p2a: Mismagius
+|-damage|p2a: Mismagius|52/100
+|move|p2a: Mismagius|Tera Blast|p1a: Stunfisk
+|-message|Stunfisk留得青山在！
+|-damage|p1a: Stunfisk|1/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|28/111|[from] item: Sitrus Berry
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|55/111|[from] item: Sitrus Berry
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|82/111|[from] item: Sitrus Berry
+|
+|t:|1792133960
+|switch|p1a: Muk|Muk-Alola, L40, M|73/144
+|-end|p1a: Muk|fantasystats|[silent]
+|
+|upkeep
+|turn|13
+|
+|t:|1792133961
+|move|p2a: Mismagius|Tera Blast|p1a: Muk
+|-damage|p1a: Muk|22/144
+|-enditem|p1a: Muk|Sitrus Berry|[eat]
+|-heal|p1a: Muk|58/144|[from] item: Sitrus Berry
+|-enditem|p1a: Muk|Sitrus Berry|[eat]
+|-heal|p1a: Muk|94/144|[from] item: Sitrus Berry
+|move|p1a: Muk|Crunch|p2a: Mismagius
+|-supereffective|p2a: Mismagius
+|-damage|p2a: Mismagius|0 fnt
+|faint|p2a: Mismagius
+|
+|upkeep
+|
+|t:|1792133961
+|switch|p2a: Rotom|Rotom, L50|100/100
+|-end|p2a: Rotom|fantasystats|[silent]
+|turn|14
+|
+|t:|1792133961
+|move|p2a: Rotom|Discharge|p1a: Muk
+|-enditem|p2a: Rotom|Electric Gem|[from] gem
+|-start|p2a: Rotom|gemboostElectric|[silent]
+|-damage|p1a: Muk|0 fnt
+|faint|p1a: Muk
+|
+|upkeep
+|
+|t:|1792133962
+|switch|p1a: Marshtomp|Marshtomp, L31, M|91/91
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|15
+|
+|t:|1792133963
+|move|p2a: Rotom|Hex|p1a: Marshtomp
+|-damage|p1a: Marshtomp|25/91
+|move|p1a: Marshtomp|Water Pulse|p2a: Rotom
+|-damage|p2a: Rotom|86/100
+|
+|upkeep
+|turn|16
+|
+|t:|1792133963
+|move|p2a: Rotom|Hex|p1a: Marshtomp
+|-message|Marshtomp留得青山在！
+|-damage|p1a: Marshtomp|1/91
+|
+|t:|1792133964
+|switch|p1a: Stunfisk|Stunfisk, L29, F|82/111
+|-end|p1a: Stunfisk|fantasystats|[silent]
+|
+|upkeep
+|turn|17
+|
+|t:|1792133964
+|move|p2a: Rotom|Hex|p1a: Stunfisk
+|-damage|p1a: Stunfisk|9/111
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|36/111|[from] item: Sitrus Berry
+|-enditem|p1a: Stunfisk|Sitrus Berry|[eat]
+|-heal|p1a: Stunfisk|63/111|[from] item: Sitrus Berry
+|move|p1a: Stunfisk|Mud Shot|p2a: Rotom
+|-supereffective|p2a: Rotom
+|-damage|p2a: Rotom|65/100
+|-unboost|p2a: Rotom|spe|1
+|
+|upkeep
+|turn|18
+|
+|t:|1792133965
+|move|p1a: Stunfisk|Sucker Punch|p2a: Rotom
+|-supereffective|p2a: Rotom
+|-damage|p2a: Rotom|49/100
+|move|p2a: Rotom|Hex|p1a: Stunfisk
+|-damage|p1a: Stunfisk|0 fnt
+|faint|p1a: Stunfisk
+|
+|upkeep
+|
+|t:|1792133966
+|switch|p1a: Golbat|Golbat, L29, F|90/90
+|-end|p1a: Golbat|fantasystats|[silent]
+|turn|19
+|
+|t:|1792133966
+|move|p2a: Rotom|Discharge|p1a: Golbat
+|-supereffective|p1a: Golbat
+|-message|Golbat留得青山在！
+|-damage|p1a: Golbat|1/90
+|-enditem|p1a: Golbat|Sitrus Berry|[eat]
+|-heal|p1a: Golbat|23/90|[from] item: Sitrus Berry
+|-enditem|p1a: Golbat|Sitrus Berry|[eat]
+|-heal|p1a: Golbat|45/90|[from] item: Sitrus Berry
+|-enditem|p1a: Golbat|Sitrus Berry|[eat]
+|-heal|p1a: Golbat|67/90|[from] item: Sitrus Berry
+|
+|t:|1792133967
+|switch|p1a: Carkol|Carkol, L29, M|94/94
+|-end|p1a: Carkol|fantasystats|[silent]
+|
+|upkeep
+|turn|20
+|
+|t:|1792133967
+|move|p2a: Rotom|Discharge|p1a: Carkol
+|-message|Carkol留得青山在！
+|-damage|p1a: Carkol|1/94
+|-enditem|p1a: Carkol|Sitrus Berry|[eat]
+|-heal|p1a: Carkol|24/94|[from] item: Sitrus Berry
+|-enditem|p1a: Carkol|Sitrus Berry|[eat]
+|-heal|p1a: Carkol|47/94|[from] item: Sitrus Berry
+|-enditem|p1a: Carkol|Sitrus Berry|[eat]
+|-heal|p1a: Carkol|70/94|[from] item: Sitrus Berry
+|
+|t:|1792133968
+|switch|p1a: Marshtomp|Marshtomp, L31, M|1/91
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|
+|upkeep
+|turn|21
+|
+|t:|1792133969
+|move|p2a: Rotom|Hex|p1a: Marshtomp
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|
+|upkeep
+|
+|t:|1792133969
+|switch|p1a: Sneasler|Sneasler, L29, F|47/93 par
+|-end|p1a: Sneasler|fantasystats|[silent]
+|-ability|p1a: Sneasler|Pressure
+|turn|22
+|
+|t:|1792133970
+|move|p2a: Rotom|Discharge|p1a: Sneasler
+|-damage|p1a: Sneasler|0 fnt
+|faint|p1a: Sneasler
+|
+|upkeep
+|
+|t:|1792133970
+|switch|p1a: Carkol|Carkol, L29, M|70/94
+|-end|p1a: Carkol|fantasystats|[silent]
+|turn|23
+|
+|t:|1792133971
+|move|p2a: Rotom|Discharge|p1a: Carkol
+|-damage|p1a: Carkol|0 fnt
+|faint|p1a: Carkol
+|
+|upkeep
+|
+|t:|1792133972
+|switch|p1a: Golbat|Golbat, L29, F|67/90
+|-end|p1a: Golbat|fantasystats|[silent]
+|turn|24
+|
+|t:|1792133972
+|move|p2a: Rotom|Discharge|p1a: Golbat
+|-supereffective|p1a: Golbat
+|-damage|p1a: Golbat|0 fnt
+|faint|p1a: Golbat
+|
+|win|AI · 道馆 · 奇树（电）
+|fantasyroguedefeat|{"floor":60,"encounter":1,"encounters":1,"retryFloor":false,"noHealing":false,"emergencyCost":5000}
+|deinit

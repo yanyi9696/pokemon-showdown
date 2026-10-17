@@ -1,0 +1,60 @@
+|t:|1792230066
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L20, M|
+|poke|p1|Klefki, L17, F|
+|poke|p1|Ivysaur, L20, F|
+|poke|p1|Dedenne, L16, F|
+|poke|p1|Cacnea, L20, F|
+|poke|p1|Nosepass, L13, F|
+|poke|p2|Cherrim-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792230066
+|start
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L13, F|38/38
+|switch|p1a: Nosepass|Nosepass, L13, F|100/100
+|split|p2
+|switch|p2a: Cherrim|Cherrim-Fantasy, L20, M|65/65
+|switch|p2a: Cherrim|Cherrim-Fantasy, L20, M|100/100
+|-start|p2a: Cherrim|typechange|Grass|[silent]
+|-start|p2a: Cherrim|fantasystats|74/70/98/105/98/55|[silent]
+|-end|p1a: Nosepass|fantasystats|[silent]
+|-start|p2a: Cherrim|typechange|Grass|[silent]
+|-start|p2a: Cherrim|fantasystats|74/70/98/105/98/55|[silent]
+|-end|p1a: Nosepass|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230067
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L20, M|71/71
+|switch|p1a: Crocalor|Crocalor, L20, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-terastallize|p2a: Cherrim|Grass
+|move|p2a: Cherrim|Giga Drain|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|51/71
+|-damage|p1a: Crocalor|72/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230067
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Crocalor|Incinerate|p2a: Cherrim
+|-supereffective|p2a: Cherrim
+|split|p2
+|-damage|p2a: Cherrim|0 fnt
+|-damage|p2a: Cherrim|0 fnt
+|faint|p2a: Cherrim
+|
+|win|Player

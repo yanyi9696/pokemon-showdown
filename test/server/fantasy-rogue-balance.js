@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { Battle } = require('../../dist/sim');
@@ -21,7 +22,7 @@ describe('Fantasy Rogue route, shop and immediate AI balance', () => {
 		for (const floor of [1, 41, 81, 121, 161]) {
 			const rng = new PRNG([3, 16, 25, 94]); let trades = 0;
 			for (let i = 0; i < 4000; i++) {
-				const choices = rollRoutes({ floor }, content.routePools[floor], n => rng.random(n));
+				const choices = rollRoutes({ floor, routeHistory: {floor: floor - 1, factors: {}, tradeSeen: true, eliteMisses: 0} }, content.routePools[floor], n => rng.random(n));
 				const red = choices.filter(node => RED_ROUTES.includes(node.kind)).length;
 				assert(red >= 1 && red <= 2);
 				assert.equal(new Set(choices.map(node => node.id)).size, 3);
@@ -59,7 +60,7 @@ describe('Fantasy Rogue route, shop and immediate AI balance', () => {
 			assert.equal(item(prefix + 'stone').shopFloor, 39);
 		}
 		assert.equal(TYPE_BOOSTERS.length, 18);
-		for (const [id] of TYPE_BOOSTERS) assert.equal(item(id).shopFloor, 69);
+		for (const [id] of TYPE_BOOSTERS) { assert.equal(item(id).shopFloor, 49); assert.equal(item(id).price, 4000); }
 		for (const [id] of BATTLE_GOODS) assert.equal(item(id).shopFloor, 99);
 		assert.equal(item('linkingcord').shopFloor, 89);
 		assert.equal(item('healthfeather').price, 500); assert.equal(item('protein').price, 4000);
@@ -69,7 +70,7 @@ describe('Fantasy Rogue route, shop and immediate AI balance', () => {
 		const store = new RogueStore(':memory:');
 		try {
 			const engine = new RogueEngine(store, content, () => 0);
-			const cmd = (action, details = {}) => engine.command('etherqa', { id: randomUUID(), revision: store.get('etherqa').revision, action, ...details });
+			const cmd = (action, details = {}) => commandAfterOpening(engine, 'etherqa', { id: randomUUID(), revision: store.get('etherqa').revision, action, ...details });
 			cmd('start', { starters: ['bulbasaur'] });
 			store.change('etherqa', account => {
 				const mon = account.run.team[0];
@@ -95,8 +96,16 @@ describe('Fantasy Rogue route, shop and immediate AI balance', () => {
 		['a repeat poison', 'Eevee', ['Toxic', 'Tackle'], 'move 2', 'status'],
 		['paralysis into a Ground type', 'Sandshrew', ['Thunder Wave', 'Tackle'], 'move 2'],
 		['a harmless move', 'Eevee', ['Splash', 'Tackle'], 'move 2'],
+		['Helping Hand without a singles ally', 'Eevee', ['Helping Hand', 'Tackle'], 'move 2'],
 		['a resisted attack instead of super-effective coverage', 'Geodude', ['Tackle', 'Water Gun'], 'move 2'],
 		['a capped setup', 'Eevee', ['Swords Dance', 'Tackle'], 'move 2', 'boost'],
+		['physical resistance instead of a weak special defense', 'Onix', ['Tackle', 'Swift'], 'move 2'],
+		['special bulk instead of Psystrike targeting defense', 'Blissey', ['Psychic', 'Psystrike'], 'move 2'],
+		['Snore while awake', 'Eevee', ['Snore', 'Tackle'], 'move 2'],
+		['powder into a Grass type', 'Bulbasaur', ['Sleep Powder', 'Tackle'], 'move 2'],
+		['an undeveloped Stored Power', 'Eevee', ['Stored Power', 'Psychic'], 'move 2'],
+		['a risky finish instead of an accurate one', 'Eevee', ['Fire Blast', 'Ember'], 'move 2', 'lowfoe'],
+		['a revealed Water Absorb immunity', 'Eevee', ['Hydro Pump', 'Tackle'], 'move 2', 'waterabsorb'],
 	]) {
 		it(`immediately avoids ${label} from visible information`, () => {
 			const member = createRoguePokemon(set(target, 'No Ability', 30, ['Splash']), stats(0));
@@ -106,6 +115,10 @@ describe('Fantasy Rogue route, shop and immediate AI balance', () => {
 				battle.makeChoices('team 1', 'team 1');
 				if (extra === 'status') battle.p1.active[0].setStatus('psn');
 				if (extra === 'boost') battle.boost({ atk: 6 }, battle.p2.active[0]);
+				if (extra === 'lowfoe') {
+					battle.p1.active[0].hp = 1; battle.add('-damage', battle.p1.active[0], '1/100');
+				}
+				if (extra === 'waterabsorb') battle.add('-ability', battle.p1.active[0], 'Water Absorb');
 				const view = new InformationView({ ownSide: 'p2', difficulty: 'normal' });
 				view.receiveUpdate(battle.log.join('\n'));
 				const start = performance.now();

@@ -1,0 +1,87 @@
+|t:|1792223792
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L22, M|
+|poke|p1|Crocalor, L22, M|
+|poke|p1|Marshtomp, L17, M|
+|poke|p1|Milcery, L14, F|
+|poke|p1|Croagunk, L14, M|
+|poke|p1|Sizzlipede, L14, M|
+|poke|p2|Simipour-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792223792
+|start
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L22, M|67/67
+|switch|p1a: Ivysaur|Ivysaur, L22, M|100/100
+|split|p2
+|switch|p2a: Simipour|Simipour-Fantasy, L20, M|75/75
+|switch|p2a: Simipour|Simipour-Fantasy, L20, M|100/100
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223794
+|-terastallize|p2a: Simipour|Water
+|move|p2a: Simipour|Scald|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|53/67
+|-damage|p1a: Ivysaur|80/100
+|-status|p1a: Ivysaur|brn
+|move|p1a: Ivysaur|Seed Bomb|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|46/75
+|-damage|p2a: Simipour|62/100
+|
+|split|p1
+|-damage|p1a: Ivysaur|49/67 brn|[from] brn
+|-damage|p1a: Ivysaur|74/100 brn|[from] brn
+|upkeep
+|turn|2
+|
+|t:|1792223794
+|move|p2a: Simipour|Scald|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|34/67 brn
+|-damage|p1a: Ivysaur|51/100 brn
+|move|p1a: Ivysaur|Seed Bomb|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|22/75
+|-damage|p2a: Simipour|30/100
+|
+|split|p1
+|-damage|p1a: Ivysaur|30/67 brn|[from] brn
+|-damage|p1a: Ivysaur|45/100 brn|[from] brn
+|upkeep
+|turn|3
+|
+|t:|1792223795
+|move|p2a: Simipour|Scald|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|16/67 brn
+|-damage|p1a: Ivysaur|24/100 brn
+|move|p1a: Ivysaur|Seed Bomb|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|0 fnt
+|-damage|p2a: Simipour|0 fnt
+|faint|p2a: Simipour
+|
+|win|Player

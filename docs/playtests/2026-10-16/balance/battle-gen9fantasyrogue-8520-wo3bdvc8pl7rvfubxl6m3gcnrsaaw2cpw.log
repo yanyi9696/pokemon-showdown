@@ -1,0 +1,69 @@
+|init|battle
+|title|RogueBalance1016I vs. AI · 道馆 · 阿塞萝拉（幽灵）
+|raw|<div class="broadcast-red"><strong>This battle is invite-only!</strong><br />Users must be invited with <code>/invite</code> (or be staff) to join</div>
+|j|☆RogueBalance1016I
+
+|fantasyrogue|{"floor":60,"userid":"roguebalance1016i","canRetreat":true}
+|fantasyai|{"trainerId":"rogue-acerola","format":"gen9fantasyrogue","difficulty":"normal","userid":"roguebalance1016i","disconnectMs":600000}
+|-message|幻想杯肉鸽第 60 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792146750
+|gametype|singles
+|player|p1|RogueBalance1016I|170|
+|request|{"teamPreview":true,"side":{"name":"RogueBalance1016I","id":"p1","fantasyRogueTera":false,"pokemon":[{"ident":"p1: Venusaur","details":"Venusaur, L43, M","condition":"125/130","active":true,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":76,"def":93,"spa":101,"spd":100,"spe":83},"moves":["petaldance","synthesis","takedown","petalblizzard"],"baseAbility":"overgrow","item":"oranberry","pokeball":"pokeball","ability":"overgrow","commanding":false,"reviving":false,"teraType":"Grass","terastallized":""},{"ident":"p1: Golbat","details":"Golbat, L37, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":79,"def":68,"spa":60,"spd":60,"spe":80},"moves":["poisonfang","bite","aircutter","astonish"],"baseAbility":"innerfocus","item":"","pokeball":"pokeball","ability":"innerfocus","commanding":false,"reviving":false,"teraType":"Poison","terastallized":""},{"ident":"p1: Meganium","details":"Meganium, L38, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":70,"def":91,"spa":76,"spd":91,"spe":84},"moves":["petaldance","synthesis","tackle","petalblizzard"],"baseAbility":"overgrow","item":"","pokeball":"pokeball","ability":"overgrow","commanding":false,"reviving":false,"teraType":"Grass","terastallized":""},{"ident":"p1: Gligar","details":"Gligar, L34, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":58,"def":85,"spa":35,"spd":58,"spe":79},"moves":["acrobatics","slash","uturn","knockoff"],"baseAbility":"hypercutter","item":"","pokeball":"pokeball","ability":"hypercutter","commanding":false,"reviving":false,"teraType":"Ground","terastallized":""},{"ident":"p1: Flamigo","details":"Flamigo, L43, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":122,"def":81,"spa":88,"spd":63,"spe":97},"moves":["megakick","roost","wingattack","lowkick"],"baseAbility":"scrappy","item":"","pokeball":"pokeball","ability":"scrappy","commanding":false,"reviving":false,"teraType":"Flying","terastallized":""},{"ident":"p1: Aggron","details":"Aggron, L43, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":103,"def":171,"spa":69,"spd":75,"spe":62},"moves":["ironhead","rockslide","takedown","rocktomb"],"baseAbility":"sturdy","item":"","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Steel","terastallized":""}]},"fantasyRogue":{"eeveeZ":[false],"catchable":false,"balls":[{"id":"pokeball","name":"精灵球","count":28,"chance":null},{"id":"greatball","name":"超级球","count":12,"chance":null},{"id":"ultraball","name":"高级球","count":0,"chance":null}]},"rqid":2}
+|player|p2|AI · 道馆 · 阿塞萝拉（幽灵）|acerola|
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L43, M|
+|poke|p1|Golbat, L37, M|
+|poke|p1|Meganium, L38, M|
+|poke|p1|Gligar, L34, F|
+|poke|p1|Flamigo, L43, M|
+|poke|p1|Aggron, L43, M|
+|poke|p2|Mimikyu, L45, F|
+|poke|p2|Haunter, L45, F|
+|poke|p2|Sandygast, L45, F|
+|poke|p2|Dhelmise, L45|
+|teampreview
+|request|{"active":[{"moves":[{"move":"Petal Dance","id":"petaldance","pp":10,"maxpp":10,"target":"randomNormal","disabled":false},{"move":"Synthesis","id":"synthesis","pp":5,"maxpp":5,"target":"self","disabled":false},{"move":"Take Down","id":"takedown","pp":20,"maxpp":20,"target":"normal","disabled":false},{"move":"Petal Blizzard","id":"petalblizzard","pp":15,"maxpp":15,"target":"allAdjacent","disabled":false}]}],"side":{"name":"RogueBalance1016I","id":"p1","fantasyRogueTera":false,"pokemon":[{"ident":"p1: Venusaur","details":"Venusaur, L43, M","condition":"125/130","active":true,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":76,"def":93,"spa":101,"spd":100,"spe":83},"moves":["petaldance","synthesis","takedown","petalblizzard"],"baseAbility":"overgrow","item":"oranberry","pokeball":"pokeball","ability":"overgrow","commanding":false,"reviving":false,"teraType":"Grass","terastallized":""},{"ident":"p1: Golbat","details":"Golbat, L37, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":79,"def":68,"spa":60,"spd":60,"spe":80},"moves":["poisonfang","bite","aircutter","astonish"],"baseAbility":"innerfocus","item":"","pokeball":"pokeball","ability":"innerfocus","commanding":false,"reviving":false,"teraType":"Poison","terastallized":""},{"ident":"p1: Meganium","details":"Meganium, L38, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":70,"def":91,"spa":76,"spd":91,"spe":84},"moves":["petaldance","synthesis","tackle","petalblizzard"],"baseAbility":"overgrow","item":"","pokeball":"pokeball","ability":"overgrow","commanding":false,"reviving":false,"teraType":"Grass","terastallized":""},{"ident":"p1: Gligar","details":"Gligar, L34, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":58,"def":85,"spa":35,"spd":58,"spe":79},"moves":["acrobatics","slash","uturn","knockoff"],"baseAbility":"hypercutter","item":"","pokeball":"pokeball","ability":"hypercutter","commanding":false,"reviving":false,"teraType":"Ground","terastallized":""},{"ident":"p1: Flamigo","details":"Flamigo, L43, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":122,"def":81,"spa":88,"spd":63,"spe":97},"moves":["megakick","roost","wingattack","lowkick"],"baseAbility":"scrappy","item":"","pokeball":"pokeball","ability":"scrappy","commanding":false,"reviving":false,"teraType":"Flying","terastallized":""},{"ident":"p1: Aggron","details":"Aggron, L43, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":103,"def":171,"spa":69,"spd":75,"spe":62},"moves":["ironhead","rockslide","takedown","rocktomb"],"baseAbility":"sturdy","item":"","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Steel","terastallized":""}]},"fantasyRogue":{"psychic":100,"eeveeZ":[false],"catchable":false,"balls":[{"id":"pokeball","name":"精灵球","count":28,"chance":null},{"id":"greatball","name":"超级球","count":12,"chance":null},{"id":"ultraball","name":"高级球","count":0,"chance":null}]},"rqid":4}
+|
+|t:|1792146752
+|start
+|switch|p1a: Venusaur|Venusaur, L43, M|125/130
+|switch|p2a: Mimikyu|Mimikyu, L45, F|100/100
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|turn|1
+|request|{"active":[{"moves":[{"move":"Petal Dance","id":"petaldance","pp":10,"maxpp":10,"target":"randomNormal","disabled":false},{"move":"Synthesis","id":"synthesis","pp":5,"maxpp":5,"target":"self","disabled":false},{"move":"Take Down","id":"takedown","pp":20,"maxpp":20,"target":"normal","disabled":false},{"move":"Petal Blizzard","id":"petalblizzard","pp":15,"maxpp":15,"target":"allAdjacent","disabled":false}]}],"side":{"name":"RogueBalance1016I","id":"p1","fantasyRogueTera":false,"pokemon":[{"ident":"p1: Venusaur","details":"Venusaur, L43, M","condition":"31/130","active":true,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":76,"def":93,"spa":101,"spd":100,"spe":83},"moves":["petaldance","synthesis","takedown","petalblizzard"],"baseAbility":"overgrow","item":"","pokeball":"pokeball","ability":"overgrow","commanding":false,"reviving":false,"teraType":"Grass","terastallized":""},{"ident":"p1: Golbat","details":"Golbat, L37, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":79,"def":68,"spa":60,"spd":60,"spe":80},"moves":["poisonfang","bite","aircutter","astonish"],"baseAbility":"innerfocus","item":"","pokeball":"pokeball","ability":"innerfocus","commanding":false,"reviving":false,"teraType":"Poison","terastallized":""},{"ident":"p1: Meganium","details":"Meganium, L38, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":70,"def":91,"spa":76,"spd":91,"spe":84},"moves":["petaldance","synthesis","tackle","petalblizzard"],"baseAbility":"overgrow","item":"","pokeball":"pokeball","ability":"overgrow","commanding":false,"reviving":false,"teraType":"Grass","terastallized":""},{"ident":"p1: Gligar","details":"Gligar, L34, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":58,"def":85,"spa":35,"spd":58,"spe":79},"moves":["acrobatics","slash","uturn","knockoff"],"baseAbility":"hypercutter","item":"","pokeball":"pokeball","ability":"hypercutter","commanding":false,"reviving":false,"teraType":"Ground","terastallized":""},{"ident":"p1: Flamigo","details":"Flamigo, L43, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":122,"def":81,"spa":88,"spd":63,"spe":97},"moves":["megakick","roost","wingattack","lowkick"],"baseAbility":"scrappy","item":"","pokeball":"pokeball","ability":"scrappy","commanding":false,"reviving":false,"teraType":"Flying","terastallized":""},{"ident":"p1: Aggron","details":"Aggron, L43, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":103,"def":171,"spa":69,"spd":75,"spe":62},"moves":["ironhead","rockslide","takedown","rocktomb"],"baseAbility":"sturdy","item":"","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Steel","terastallized":""}]},"fantasyRogue":{"psychic":0,"eeveeZ":[false],"catchable":false,"balls":[{"id":"pokeball","name":"精灵球","count":28,"chance":null},{"id":"greatball","name":"超级球","count":12,"chance":null},{"id":"ultraball","name":"高级球","count":0,"chance":null}]},"rqid":6}
+|
+|t:|1792146752
+|-terastallize|p2a: Mimikyu|Ghost
+|move|p2a: Mimikyu|Shadow Claw|p1a: Venusaur
+|-damage|p1a: Venusaur|21/130
+|-enditem|p1a: Venusaur|Oran Berry|[eat]
+|-heal|p1a: Venusaur|31/130|[from] item: Oran Berry
+|-damage|p2a: Mimikyu|91/100|[from] item: Life Orb
+|move|p1a: Venusaur|Rogue Psychic Burst|p2a: Mimikyu
+|-activate|p2a: Mimikyu|ability: Disguise
+|-damage|p2a: Mimikyu|91/100
+|detailschange|p2a: Mimikyu|Mimikyu-Busted, L45, F, tera:Ghost
+|-start|p2a: Mimikyu|typechange|Ghost/Fairy|[silent]
+|-damage|p2a: Mimikyu|79/100|[from] pokemon: Mimikyu-Busted
+|-end|p2a: Mimikyu|fantasystats|[silent]
+|
+|upkeep
+|turn|2
+|
+|t:|1792146753
+|move|p2a: Mimikyu|Shadow Claw|p1a: Venusaur
+|-damage|p1a: Venusaur|0 fnt
+|faint|p1a: Venusaur
+|-damage|p2a: Mimikyu|69/100|[from] item: Life Orb
+|
+|win|AI · 道馆 · 阿塞萝拉（幽灵）
+|fantasyroguedefeat|{"floor":60,"encounter":1,"encounters":1,"retryFloor":false,"noHealing":false,"emergencyCost":5000}

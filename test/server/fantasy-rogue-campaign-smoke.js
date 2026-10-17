@@ -9,6 +9,7 @@ const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { storyView } = require('../../dist/server/fantasy-rogue/story');
+const { chooseCompanions } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 	this.timeout(60000);
@@ -61,6 +62,9 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						continue;
 					}
 					switch (run.phase) {
+					case 'postgame':
+						cmd('godchallenge', { value: 'decline' });
+						break;
 					case 'choose': {
 						const options = run.choices.filter(node => node.kind !== 'event');
 						assert(options.length, `route set at ${run.floor}: ${run.choices.map(node => node.kind).join(', ')}`);
@@ -68,6 +72,7 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						break;
 					}
 					case 'ready': {
+						chooseCompanions(engine, user, cmd);
 						const king = run.blessings?.dragonKing;
 						if (king && !king.ability) cmd('dragonking', { member: king.member, value: 'drizzle' });
 						cmd('battle');
@@ -87,6 +92,7 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 							const settled = account();
 							engine.settle(user, current.battle.token, result);
 							assert.deepEqual(account(), settled, 'a repeated result must not grant rewards twice');
+							if (account().run.preview?.stage === 'result') cmd('previewresult', {value: 'accept'});
 							battles++;
 						} finally {
 							battle.destroy();
@@ -94,7 +100,8 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						break;
 					}
 					case 'rest': case 'reward':
-						cmd('continue');
+						if (run.node.rewardScene && !run.node.rewardScene.claimed) cmd('rewardchoice', {value: 'experience'});
+						if (account().run.mentorOffer) cmd('mentorcard', {value: 'balanced'}); cmd('continue');
 						break;
 					case 'blessing': {
 						const state = run.blessings;
@@ -126,7 +133,7 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 				assert.equal(completed.run.phase, 'complete');
 				assert(!completed.run.story, 'ending dialogue must finish');
 				assert.deepEqual([...floors], Array.from({ length: 200 }, (_, i) => i + 1));
-				assert.deepEqual([...checkpoints], [50, 100, 150]);
+				assert.deepEqual([...checkpoints], [1, 50, 100, 150]);
 				assert(battles > 100, 'include wild chains, elites and all fixed bosses');
 				assert(completed.run.gymGiftReceived);
 				assert.equal(completed.cards.length, 1);

@@ -1,0 +1,232 @@
+|t:|1792223880
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Brionne, L32, M|
+|poke|p1|Crocalor, L31, M|
+|poke|p1|Ivysaur, L24, M|
+|poke|p1|Corsola-Galar, L26, F|
+|poke|p1|Minun, L19, M|
+|poke|p1|Dedenne, L23, M|
+|poke|p2|Ampharos-Fantasy, L30, M|
+|teampreview
+|
+|t:|1792223880
+|start
+|split|p1
+|switch|p1a: Brionne|Brionne, L32, M|92/92
+|switch|p1a: Brionne|Brionne, L32, M|100/100
+|split|p2
+|switch|p2a: Ampharos|Ampharos-Fantasy, L30, M|103/103
+|switch|p2a: Ampharos|Ampharos-Fantasy, L30, M|100/100
+|-start|p2a: Ampharos|typechange|Electric/Psychic|[silent]
+|-start|p2a: Ampharos|fantasystats|90/40/85/115/90/90|[silent]
+|-end|p1a: Brionne|fantasystats|[silent]
+|-start|p2a: Ampharos|typechange|Electric/Psychic|[silent]
+|-start|p2a: Ampharos|fantasystats|90/40/85/115/90/90|[silent]
+|-end|p1a: Brionne|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223881
+|-terastallize|p2a: Ampharos|Electric
+|move|p2a: Ampharos|Discharge|p1a: Brionne
+|-supereffective|p1a: Brionne
+|split|p1
+|-damage|p1a: Brionne|32/92
+|-damage|p1a: Brionne|35/100
+|move|p1a: Brionne|Icy Wind|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|77/103
+|-damage|p2a: Ampharos|75/100
+|-unboost|p2a: Ampharos|spe|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792223881
+|split|p1
+|switch|p1a: Dedenne|Dedenne, L23, M|73/73
+|switch|p1a: Dedenne|Dedenne, L23, M|100/100
+|-end|p1a: Dedenne|fantasystats|[silent]
+|move|p2a: Ampharos|Discharge|p1a: Dedenne
+|-resisted|p1a: Dedenne
+|split|p1
+|-damage|p1a: Dedenne|41/73
+|-damage|p1a: Dedenne|57/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792223881
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L31, M|103/103
+|switch|p1a: Crocalor|Crocalor, L31, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Ampharos|Dragon Pulse|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|75/103
+|-damage|p1a: Crocalor|73/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792223882
+|move|p1a: Crocalor|Fire Pledge|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|40/103
+|-damage|p2a: Ampharos|39/100
+|move|p2a: Ampharos|Discharge|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|17/103
+|-damage|p1a: Crocalor|17/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792223882
+|split|p1
+|switch|p1a: Minun|Minun, L19, M|62/62
+|switch|p1a: Minun|Minun, L19, M|100/100
+|-end|p1a: Minun|fantasystats|[silent]
+|move|p2a: Ampharos|Discharge|p1a: Minun
+|-resisted|p1a: Minun
+|split|p1
+|-damage|p1a: Minun|28/62
+|-damage|p1a: Minun|46/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792223883
+|split|p1
+|switch|p1a: Corsola|Corsola-Galar, L26, F|80/80
+|switch|p1a: Corsola|Corsola-Galar, L26, F|100/100
+|-end|p1a: Corsola|fantasystats|[silent]
+|move|p2a: Ampharos|Dragon Pulse|p1a: Corsola
+|split|p1
+|-damage|p1a: Corsola|52/80
+|-damage|p1a: Corsola|65/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792223883
+|split|p1
+|switch|p1a: Dedenne|Dedenne, L23, M|41/73
+|switch|p1a: Dedenne|Dedenne, L23, M|57/100
+|-end|p1a: Dedenne|fantasystats|[silent]
+|move|p2a: Ampharos|Discharge|p1a: Dedenne
+|-resisted|p1a: Dedenne
+|split|p1
+|-damage|p1a: Dedenne|5/73
+|-damage|p1a: Dedenne|7/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792223883
+|move|p1a: Dedenne|Charge|p1a: Dedenne
+|-boost|p1a: Dedenne|spd|1
+|-start|p1a: Dedenne|Charge
+|move|p2a: Ampharos|Dragon Pulse|p1a: Dedenne
+|-immune|p1a: Dedenne
+|
+|upkeep
+|turn|9
+|
+|t:|1792223884
+|move|p1a: Dedenne|Charge|p1a: Dedenne
+|-boost|p1a: Dedenne|spd|1
+|-start|p1a: Dedenne|Charge
+|move|p2a: Ampharos|Psybeam|p1a: Dedenne
+|split|p1
+|-damage|p1a: Dedenne|0 fnt
+|-damage|p1a: Dedenne|0 fnt
+|faint|p1a: Dedenne
+|
+|upkeep
+|
+|t:|1792223884
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L24, M|73/73
+|switch|p1a: Ivysaur|Ivysaur, L24, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|turn|10
+|
+|t:|1792223884
+|split|p1
+|switch|p1a: Brionne|Brionne, L32, M|32/92
+|switch|p1a: Brionne|Brionne, L32, M|35/100
+|-end|p1a: Brionne|fantasystats|[silent]
+|move|p2a: Ampharos|Dragon Pulse|p1a: Brionne
+|split|p1
+|-damage|p1a: Brionne|16/92
+|-damage|p1a: Brionne|18/100
+|
+|upkeep
+|turn|11
+|
+|t:|1792223884
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L24, M|73/73
+|switch|p1a: Ivysaur|Ivysaur, L24, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Ampharos|Psybeam|p1a: Ivysaur
+|-supereffective|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|faint|p1a: Ivysaur
+|
+|upkeep
+|
+|t:|1792223884
+|split|p1
+|switch|p1a: Corsola|Corsola-Galar, L26, F|52/80
+|switch|p1a: Corsola|Corsola-Galar, L26, F|65/100
+|-end|p1a: Corsola|fantasystats|[silent]
+|turn|12
+|
+|t:|1792223885
+|move|p2a: Ampharos|Psybeam|p1a: Corsola
+|split|p1
+|-damage|p1a: Corsola|10/80
+|-damage|p1a: Corsola|13/100
+|move|p1a: Corsola|Ancient Power|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|28/103
+|-damage|p2a: Ampharos|28/100
+|
+|upkeep
+|turn|13
+|
+|t:|1792223885
+|move|p2a: Ampharos|Discharge|p1a: Corsola
+|split|p1
+|-damage|p1a: Corsola|0 fnt
+|-damage|p1a: Corsola|0 fnt
+|faint|p1a: Corsola
+|
+|upkeep
+|
+|t:|1792223885
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L31, M|17/103
+|switch|p1a: Crocalor|Crocalor, L31, M|17/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|14
+|
+|t:|1792223885
+|move|p1a: Crocalor|Fire Pledge|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|0 fnt
+|-damage|p2a: Ampharos|0 fnt
+|faint|p2a: Ampharos
+|
+|win|Player

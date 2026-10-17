@@ -1,0 +1,65 @@
+|t:|1792230990
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L13, M|
+|poke|p1|Fuecoco, L12, M|
+|poke|p1|Mudkip, L10, M|
+|poke|p1|Ralts, L8, M|
+|poke|p1|Aron, L7, M|
+|poke|p1|Shuckle, L9, F|
+|poke|p2|Tyrunt-Fantasy, L8, M|
+|teampreview
+|
+|t:|1792230990
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L10, M|37/37
+|switch|p1a: Mudkip|Mudkip, L10, M|100/100
+|split|p2
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L8, M|29/29
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L8, M|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|turn|1
+|
+|t:|1792230990
+|-terastallize|p2a: Tyrunt|Rock
+|move|p1a: Mudkip|Rock Smash|p2a: Tyrunt
+|-supereffective|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|14/29
+|-damage|p2a: Tyrunt|49/100
+|-unboost|p2a: Tyrunt|def|1
+|move|p2a: Tyrunt|Rock Tomb|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|25/37
+|-damage|p1a: Mudkip|68/100
+|-unboost|p1a: Mudkip|spe|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792230991
+|move|p2a: Tyrunt|Rock Tomb|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|13/37
+|-damage|p1a: Mudkip|36/100
+|-unboost|p1a: Mudkip|spe|1
+|move|p1a: Mudkip|Rock Throw|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|0 fnt
+|-damage|p2a: Tyrunt|0 fnt
+|faint|p2a: Tyrunt
+|
+|win|Player

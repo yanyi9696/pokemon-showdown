@@ -1,0 +1,244 @@
+|t:|1792230067
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L15, M|
+|poke|p1|Fuecoco, L15, F|
+|poke|p1|Bulbasaur, L14, M|
+|poke|p1|Maractus, L10, M|
+|poke|p1|Munna, L13, M|
+|poke|p1|Drowzee, L12, M|
+|poke|p2|Machop, L15, M|
+|poke|p2|Clobbopus, L15, M|
+|poke|p2|Mienfoo, L15, M|
+|teampreview
+|
+|t:|1792230067
+|start
+|split|p1
+|switch|p1a: Munna|Munna, L13, M|51/51
+|switch|p1a: Munna|Munna, L13, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L15, M|59/59
+|switch|p2a: Machop|Machop, L15, M|100/100
+|-end|p1a: Munna|fantasystats|[silent]
+|-activate|p1a: Munna|ability: Forewarn|Close Combat|[of] p2a: Machop
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Munna|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230067
+|-terastallize|p2a: Machop|Fighting
+|move|p1a: Munna|Psybeam|p2a: Machop
+|-supereffective|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|13/59
+|-damage|p2a: Machop|23/100
+|move|p2a: Machop|Close Combat|p1a: Munna
+|-resisted|p1a: Munna
+|split|p1
+|-damage|p1a: Munna|15/51
+|-damage|p1a: Munna|30/100
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|
+|-status|p2a: Machop|brn|[from] item: Flame Orb
+|upkeep
+|turn|2
+|
+|t:|1792230067
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L14, M|44/44
+|switch|p1a: Bulbasaur|Bulbasaur, L14, M|100/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|move|p2a: Machop|Close Combat|p1a: Bulbasaur
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|6/44
+|-damage|p1a: Bulbasaur|14/100
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|
+|split|p2
+|-damage|p2a: Machop|10/59 brn|[from] brn
+|-damage|p2a: Machop|17/100 brn|[from] brn
+|upkeep
+|turn|3
+|
+|t:|1792230068
+|split|p1
+|switch|p1a: Drowzee|Drowzee, L12, M|44/44
+|switch|p1a: Drowzee|Drowzee, L12, M|100/100
+|-end|p1a: Drowzee|fantasystats|[silent]
+|move|p2a: Machop|Close Combat|p1a: Drowzee
+|-resisted|p1a: Drowzee
+|split|p1
+|-damage|p1a: Drowzee|0 fnt
+|-damage|p1a: Drowzee|0 fnt
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|faint|p1a: Drowzee
+|
+|split|p2
+|-damage|p2a: Machop|7/59 brn|[from] brn
+|-damage|p2a: Machop|12/100 brn|[from] brn
+|upkeep
+|
+|t:|1792230068
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L15, M|48/48
+|switch|p1a: Mudkip|Mudkip, L15, M|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|turn|4
+|
+|t:|1792230068
+|move|p1a: Mudkip|Water Gun|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|0 fnt
+|-damage|p2a: Machop|0 fnt
+|faint|p2a: Machop
+|
+|upkeep
+|
+|t:|1792230068
+|split|p2
+|switch|p2a: Clobbopus|Clobbopus, L15, M|54/54
+|switch|p2a: Clobbopus|Clobbopus, L15, M|100/100
+|-end|p2a: Clobbopus|fantasystats|[silent]
+|turn|5
+|
+|t:|1792230068
+|move|p1a: Mudkip|Water Gun|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|47/54
+|-damage|p2a: Clobbopus|88/100
+|move|p2a: Clobbopus|Close Combat|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|12/48
+|-damage|p1a: Mudkip|25/100
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|
+|upkeep
+|turn|6
+|
+|t:|1792230069
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L15, F|53/53
+|switch|p1a: Fuecoco|Fuecoco, L15, F|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|move|p2a: Clobbopus|Close Combat|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|16/53
+|-damage|p1a: Fuecoco|31/100
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|
+|upkeep
+|turn|7
+|
+|t:|1792230069
+|move|p1a: Fuecoco|Incinerate|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|7/54
+|-damage|p2a: Clobbopus|13/100
+|move|p2a: Clobbopus|Close Combat|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792230069
+|split|p1
+|switch|p1a: Maractus|Maractus, L10, M|42/42
+|switch|p1a: Maractus|Maractus, L10, M|100/100
+|-end|p1a: Maractus|fantasystats|[silent]
+|turn|8
+|
+|t:|1792230069
+|move|p1a: Maractus|Peck|p2a: Clobbopus
+|-supereffective|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|0 fnt
+|-damage|p2a: Clobbopus|0 fnt
+|faint|p2a: Clobbopus
+|
+|upkeep
+|
+|t:|1792230069
+|split|p2
+|switch|p2a: Mienfoo|Mienfoo, L15, M|43/43
+|switch|p2a: Mienfoo|Mienfoo, L15, M|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|turn|9
+|
+|t:|1792230070
+|move|p2a: Mienfoo|Jump Kick|p1a: Maractus
+|-supereffective|p1a: Maractus
+|split|p1
+|-damage|p1a: Maractus|0 fnt
+|-damage|p1a: Maractus|0 fnt
+|faint|p1a: Maractus
+|
+|upkeep
+|
+|t:|1792230070
+|split|p1
+|switch|p1a: Munna|Munna, L13, M|15/51
+|switch|p1a: Munna|Munna, L13, M|30/100
+|-end|p1a: Munna|fantasystats|[silent]
+|-activate|p1a: Munna|ability: Forewarn|High Jump Kick|[of] p2a: Mienfoo
+|turn|10
+|
+|t:|1792230070
+|move|p2a: Mienfoo|Jump Kick|p1a: Munna
+|split|p1
+|-damage|p1a: Munna|0 fnt
+|-damage|p1a: Munna|0 fnt
+|faint|p1a: Munna
+|
+|upkeep
+|
+|t:|1792230070
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L15, M|12/48
+|switch|p1a: Mudkip|Mudkip, L15, M|25/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|turn|11
+|
+|t:|1792230070
+|move|p2a: Mienfoo|U-turn|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|0 fnt
+|-damage|p1a: Mudkip|0 fnt
+|faint|p1a: Mudkip
+|
+|upkeep
+|
+|t:|1792230070
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L14, M|6/44
+|switch|p1a: Bulbasaur|Bulbasaur, L14, M|14/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|12
+|
+|t:|1792230070
+|move|p2a: Mienfoo|High Jump Kick|p1a: Bulbasaur
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|
+|win|NPC

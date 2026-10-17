@@ -9,11 +9,13 @@ const stats = (value: number): StatsTable => ({
 });
 
 /** Roll once when creating a new wild encounter or gift, never when rebuilding a saved member. */
-export function randomEncounterIVs(random: RogueRandom): StatsTable {
-	return {
-		hp: 20 + random(12), atk: 20 + random(12), def: 20 + random(12),
-		spa: 20 + random(12), spd: 20 + random(12), spe: 20 + random(12),
+export function randomEncounterIVs(random: RogueRandom, elite = false): StatsTable {
+	const weights = elite ? [100, 70, 50, 35, 25, 15, 5] : [140, 140, 140, 140, 140, 100, 70, 50, 35, 25, 15, 5];
+	const roll = () => {
+		let value = random(weights.reduce((sum, weight) => sum + weight, 0));
+		return (elite ? 25 : 20) + weights.findIndex(weight => { value -= weight; return value < 0; });
 	};
+	return { hp: roll(), atk: roll(), def: roll(), spa: roll(), spd: roll(), spe: roll() };
 }
 
 function movesFor(name: string, level: number): string[] {

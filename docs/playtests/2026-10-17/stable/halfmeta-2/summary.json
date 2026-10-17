@@ -1,0 +1,9118 @@
+{
+  "profile": "halfmeta",
+  "seed": 2,
+  "halfMeta": true,
+  "battles": [
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sableye",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nickit",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "event",
+      "name": "不战斗就无法出去的房间",
+      "won": false,
+      "escaped": false,
+      "turns": 11,
+      "faints": 2,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Mismagius",
+          "level": 6
+        },
+        {
+          "species": "Baltoy",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "event",
+      "name": "谜之宝可梦球",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Magnemite",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1539,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Aron",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cyndaquil",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 5,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nosepass",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 3
+        },
+        {
+          "species": "Nosepass",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Bonsly",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 4
+        },
+        {
+          "species": "Nosepass",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Phanpy",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 4
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Aron",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 4
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nidoran-F",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Stunky",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spinarak",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Paras",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Shinx",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 8
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Joltik",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 8
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Electrike",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 3039,
+      "moneyAfter": 3039,
+      "rejected": 0
+    },
+    {
+      "floor": 10,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 8
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rookidee-Fantasy",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 4
+        },
+        {
+          "species": "Spiritomb",
+          "level": 8
+        },
+        {
+          "species": "Magnemite",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Phanpy",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 5
+        },
+        {
+          "species": "Spiritomb",
+          "level": 8
+        },
+        {
+          "species": "Magnemite",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Nosepass",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Onix",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Spiritomb",
+          "level": 9
+        },
+        {
+          "species": "Magnemite",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Nosepass",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rockruff",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 12,
+      "kind": "elite",
+      "name": "熔岩矿脉 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Spiritomb",
+          "level": 9
+        },
+        {
+          "species": "Magnemite",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Nosepass",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Litten",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 13,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 7
+        },
+        {
+          "species": "Spiritomb",
+          "level": 11
+        },
+        {
+          "species": "Magnemite",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Starly",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 13,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 7
+        },
+        {
+          "species": "Spiritomb",
+          "level": 11
+        },
+        {
+          "species": "Magnemite",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sentret",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 13,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Spiritomb",
+          "level": 11
+        },
+        {
+          "species": "Magnemite",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Lickitung",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Spiritomb",
+          "level": 11
+        },
+        {
+          "species": "Magnemite",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Aron",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Spiritomb",
+          "level": 11
+        },
+        {
+          "species": "Magnemite",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Houndour",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Spiritomb",
+          "level": 12
+        },
+        {
+          "species": "Magnemite",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Litleo",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "elite",
+      "name": "轻风海岸 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Spiritomb",
+          "level": 12
+        },
+        {
+          "species": "Magnemite",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Carvanha",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 16,
+      "kind": "elite",
+      "name": "废弃电厂 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Spiritomb",
+          "level": 13
+        },
+        {
+          "species": "Magnemite",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Togedemaru",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 15
+        },
+        {
+          "species": "Magnemite",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wiglett",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 15
+        },
+        {
+          "species": "Magnemite",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Finneon",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 15
+        },
+        {
+          "species": "Magnemite",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Quaxly",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "elite",
+      "name": "废弃电厂 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 15
+        },
+        {
+          "species": "Magnemite",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Emolga",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 839,
+      "moneyAfter": 839,
+      "rejected": 0
+    },
+    {
+      "floor": 20,
+      "kind": "boss",
+      "name": "道馆 · 露璃娜（水）",
+      "won": true,
+      "escaped": false,
+      "turns": 7,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 16
+        },
+        {
+          "species": "Emolga",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Chewtle",
+          "level": 15
+        },
+        {
+          "species": "Feebas",
+          "level": 15
+        },
+        {
+          "species": "Wimpod",
+          "level": 15
+        }
+      ],
+      "moneyBefore": 2289,
+      "moneyAfter": 2289,
+      "rejected": 0
+    },
+    {
+      "floor": 21,
+      "kind": "elite",
+      "name": "绿茵森林 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Togedemaru",
+          "level": 14
+        },
+        {
+          "species": "Spiritomb",
+          "level": 17
+        },
+        {
+          "species": "Emolga",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nuzleaf",
+          "level": 16
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 14
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Amaura",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 14
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Delibird",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 14
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Vanillite",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gible",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Maschiff",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Capsakid",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 24,
+      "kind": "elite",
+      "name": "幽影墓地 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Greavard",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 25,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 20
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Onix",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 25,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 20
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Riolu",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 25,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 20
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Onix",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 26,
+      "kind": "elite",
+      "name": "熔岩矿脉 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 20
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sizzlipede",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nidoran-F",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Zubat",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Koffing",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Beedrill",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rookidee",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pidgey",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 3889,
+      "moneyAfter": 3889,
+      "rejected": 0
+    },
+    {
+      "floor": 30,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cherrim-Fantasy",
+          "level": 20
+        }
+      ],
+      "moneyBefore": 689,
+      "moneyAfter": 689,
+      "rejected": 0
+    },
+    {
+      "floor": 31,
+      "kind": "elite",
+      "name": "攀岩峡谷 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Togedemaru",
+          "level": 17
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nacli",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 689,
+      "moneyAfter": 689,
+      "rejected": 0
+    },
+    {
+      "floor": 32,
+      "kind": "elite",
+      "name": "极光雪峰 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Togedemaru",
+          "level": 17
+        },
+        {
+          "species": "Spiritomb",
+          "level": 23
+        },
+        {
+          "species": "Emolga",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 16
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Eiscue",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 689,
+      "moneyAfter": 689,
+      "rejected": 0
+    },
+    {
+      "floor": 33,
+      "kind": "elite",
+      "name": "绿茵森林 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Togedemaru",
+          "level": 17
+        },
+        {
+          "species": "Spiritomb",
+          "level": 25
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pidgeotto",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 689,
+      "moneyAfter": 689,
+      "rejected": 0
+    },
+    {
+      "floor": 36,
+      "kind": "elite",
+      "name": "极光雪峰 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 26
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Clobbopus",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 362,
+      "moneyAfter": 362,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "elite",
+      "name": "熔岩矿脉 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 27
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sizzlipede",
+          "level": 24
+        }
+      ],
+      "moneyBefore": 362,
+      "moneyAfter": 362,
+      "rejected": 0
+    },
+    {
+      "floor": 40,
+      "kind": "boss",
+      "name": "道馆 · 彩豆（格斗）",
+      "won": true,
+      "escaped": false,
+      "turns": 12,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 28
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Machop",
+          "level": 25
+        },
+        {
+          "species": "Clobbopus",
+          "level": 25
+        },
+        {
+          "species": "Mienfoo",
+          "level": 25
+        },
+        {
+          "species": "Sneasel-Hisui",
+          "level": 25
+        }
+      ],
+      "moneyBefore": 512,
+      "moneyAfter": 2912,
+      "rejected": 0
+    },
+    {
+      "floor": 41,
+      "kind": "elite",
+      "name": "极光雪峰 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Togedemaru",
+          "level": 19
+        },
+        {
+          "species": "Spiritomb",
+          "level": 28
+        },
+        {
+          "species": "Emolga",
+          "level": 19
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Probopass",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Frosmoth",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 2912,
+      "moneyAfter": 2912,
+      "rejected": 0
+    },
+    {
+      "floor": 42,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 30
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 30
+        },
+        {
+          "species": "Emolga",
+          "level": 20
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Snubbull",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 2912,
+      "moneyAfter": 2912,
+      "rejected": 0
+    },
+    {
+      "floor": 42,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 30
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 30
+        },
+        {
+          "species": "Emolga",
+          "level": 20
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Morelull",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 2912,
+      "moneyAfter": 2912,
+      "rejected": 0
+    },
+    {
+      "floor": 42,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 30
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 30
+        },
+        {
+          "species": "Emolga",
+          "level": 20
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Floette-Yellow",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 2912,
+      "moneyAfter": 2912,
+      "rejected": 0
+    },
+    {
+      "floor": 44,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 32
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 20
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Hatenna",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 44,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 32
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 21
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Clefairy",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 44,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 32
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 21
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Clefairy",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 33
+        },
+        {
+          "species": "Togedemaru",
+          "level": 21
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 21
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Baltoy",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 33
+        },
+        {
+          "species": "Togedemaru",
+          "level": 21
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 21
+        },
+        {
+          "species": "Eiscue",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Inkay",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 33
+        },
+        {
+          "species": "Togedemaru",
+          "level": 21
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 21
+        },
+        {
+          "species": "Eiscue",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mightyena",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 46,
+      "kind": "elite",
+      "name": "极光雪峰 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 33
+        },
+        {
+          "species": "Togedemaru",
+          "level": 21
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 22
+        },
+        {
+          "species": "Eiscue",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Froslass",
+          "level": 28
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 47,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 34
+        },
+        {
+          "species": "Togedemaru",
+          "level": 22
+        },
+        {
+          "species": "Spiritomb",
+          "level": 34
+        },
+        {
+          "species": "Emolga",
+          "level": 22
+        },
+        {
+          "species": "Eiscue",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tirtouga",
+          "level": 24
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 47,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 34
+        },
+        {
+          "species": "Togedemaru",
+          "level": 22
+        },
+        {
+          "species": "Spiritomb",
+          "level": 34
+        },
+        {
+          "species": "Emolga",
+          "level": 22
+        },
+        {
+          "species": "Eiscue",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Inkay",
+          "level": 24
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 47,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 34
+        },
+        {
+          "species": "Togedemaru",
+          "level": 22
+        },
+        {
+          "species": "Spiritomb",
+          "level": 34
+        },
+        {
+          "species": "Emolga",
+          "level": 22
+        },
+        {
+          "species": "Eiscue",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Scovillain",
+          "level": 24
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 48,
+      "kind": "elite",
+      "name": "绿茵森林 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 34
+        },
+        {
+          "species": "Togedemaru",
+          "level": 22
+        },
+        {
+          "species": "Spiritomb",
+          "level": 34
+        },
+        {
+          "species": "Emolga",
+          "level": 23
+        },
+        {
+          "species": "Eiscue",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 24
+        }
+      ],
+      "foe": [
+        {
+          "species": "Heracross",
+          "level": 29
+        }
+      ],
+      "moneyBefore": 1102,
+      "moneyAfter": 1102,
+      "rejected": 0
+    },
+    {
+      "floor": 50,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 36
+        },
+        {
+          "species": "Togedemaru",
+          "level": 23
+        },
+        {
+          "species": "Spiritomb",
+          "level": 35
+        },
+        {
+          "species": "Emolga",
+          "level": 23
+        },
+        {
+          "species": "Eiscue",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 24
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ampharos-Fantasy",
+          "level": 30
+        }
+      ],
+      "moneyBefore": 402,
+      "moneyAfter": 402,
+      "rejected": 0
+    },
+    {
+      "floor": 51,
+      "kind": "elite",
+      "name": "轻风海岸 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 36
+        },
+        {
+          "species": "Togedemaru",
+          "level": 23
+        },
+        {
+          "species": "Spiritomb",
+          "level": 35
+        },
+        {
+          "species": "Emolga",
+          "level": 24
+        },
+        {
+          "species": "Eiscue",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 25
+        }
+      ],
+      "foe": [
+        {
+          "species": "Finizen",
+          "level": 31
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 52,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 37
+        },
+        {
+          "species": "Togedemaru",
+          "level": 24
+        },
+        {
+          "species": "Spiritomb",
+          "level": 36
+        },
+        {
+          "species": "Emolga",
+          "level": 24
+        },
+        {
+          "species": "Eiscue",
+          "level": 25
+        },
+        {
+          "species": "Probopass",
+          "level": 25
+        }
+      ],
+      "foe": [
+        {
+          "species": "Larvitar",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 52,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 37
+        },
+        {
+          "species": "Togedemaru",
+          "level": 24
+        },
+        {
+          "species": "Spiritomb",
+          "level": 37
+        },
+        {
+          "species": "Emolga",
+          "level": 24
+        },
+        {
+          "species": "Eiscue",
+          "level": 25
+        },
+        {
+          "species": "Probopass",
+          "level": 25
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tinkatuff",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 52,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 37
+        },
+        {
+          "species": "Togedemaru",
+          "level": 24
+        },
+        {
+          "species": "Spiritomb",
+          "level": 37
+        },
+        {
+          "species": "Emolga",
+          "level": 24
+        },
+        {
+          "species": "Eiscue",
+          "level": 25
+        },
+        {
+          "species": "Probopass",
+          "level": 25
+        }
+      ],
+      "foe": [
+        {
+          "species": "Braixen",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 53,
+      "kind": "elite",
+      "name": "攀岩峡谷 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 37
+        },
+        {
+          "species": "Togedemaru",
+          "level": 24
+        },
+        {
+          "species": "Spiritomb",
+          "level": 37
+        },
+        {
+          "species": "Emolga",
+          "level": 24
+        },
+        {
+          "species": "Eiscue",
+          "level": 25
+        },
+        {
+          "species": "Probopass",
+          "level": 26
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gliscor",
+          "level": 32
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 54,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 38
+        },
+        {
+          "species": "Togedemaru",
+          "level": 25
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 25
+        },
+        {
+          "species": "Eiscue",
+          "level": 26
+        },
+        {
+          "species": "Probopass",
+          "level": 26
+        }
+      ],
+      "foe": [
+        {
+          "species": "Psyduck",
+          "level": 27
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 54,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 38
+        },
+        {
+          "species": "Togedemaru",
+          "level": 25
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 25
+        },
+        {
+          "species": "Eiscue",
+          "level": 26
+        },
+        {
+          "species": "Probopass",
+          "level": 26
+        }
+      ],
+      "foe": [
+        {
+          "species": "Unown",
+          "level": 27
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 54,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 39
+        },
+        {
+          "species": "Togedemaru",
+          "level": 25
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 25
+        },
+        {
+          "species": "Eiscue",
+          "level": 26
+        },
+        {
+          "species": "Probopass",
+          "level": 26
+        }
+      ],
+      "foe": [
+        {
+          "species": "Smeargle",
+          "level": 27
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 55,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 39
+        },
+        {
+          "species": "Togedemaru",
+          "level": 25
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 25
+        },
+        {
+          "species": "Eiscue",
+          "level": 26
+        },
+        {
+          "species": "Probopass",
+          "level": 27
+        }
+      ],
+      "foe": [
+        {
+          "species": "Comfey",
+          "level": 28
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 55,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 39
+        },
+        {
+          "species": "Togedemaru",
+          "level": 25
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 26
+        },
+        {
+          "species": "Eiscue",
+          "level": 26
+        },
+        {
+          "species": "Probopass",
+          "level": 27
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mr. Mime",
+          "level": 28
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 55,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 39
+        },
+        {
+          "species": "Togedemaru",
+          "level": 26
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 26
+        },
+        {
+          "species": "Eiscue",
+          "level": 27
+        },
+        {
+          "species": "Probopass",
+          "level": 27
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cottonee",
+          "level": 28
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 56,
+      "kind": "elite",
+      "name": "轻风海岸 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 39
+        },
+        {
+          "species": "Togedemaru",
+          "level": 26
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 26
+        },
+        {
+          "species": "Eiscue",
+          "level": 27
+        },
+        {
+          "species": "Probopass",
+          "level": 27
+        }
+      ],
+      "foe": [
+        {
+          "species": "Slowpoke",
+          "level": 33
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 57,
+      "kind": "elite",
+      "name": "天空之柱 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 40
+        },
+        {
+          "species": "Togedemaru",
+          "level": 26
+        },
+        {
+          "species": "Spiritomb",
+          "level": 40
+        },
+        {
+          "species": "Emolga",
+          "level": 26
+        },
+        {
+          "species": "Eiscue",
+          "level": 27
+        },
+        {
+          "species": "Probopass",
+          "level": 27
+        }
+      ],
+      "foe": [
+        {
+          "species": "Bombirdier",
+          "level": 34
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 58,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 41
+        },
+        {
+          "species": "Togedemaru",
+          "level": 26
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 27
+        },
+        {
+          "species": "Eiscue",
+          "level": 27
+        },
+        {
+          "species": "Probopass",
+          "level": 28
+        }
+      ],
+      "foe": [
+        {
+          "species": "Qwilfish-Hisui",
+          "level": 29
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 58,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 41
+        },
+        {
+          "species": "Togedemaru",
+          "level": 27
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 27
+        },
+        {
+          "species": "Eiscue",
+          "level": 28
+        },
+        {
+          "species": "Probopass",
+          "level": 28
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gligar",
+          "level": 29
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 58,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 41
+        },
+        {
+          "species": "Togedemaru",
+          "level": 27
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 27
+        },
+        {
+          "species": "Eiscue",
+          "level": 28
+        },
+        {
+          "species": "Probopass",
+          "level": 28
+        }
+      ],
+      "foe": [
+        {
+          "species": "Arbok",
+          "level": 29
+        }
+      ],
+      "moneyBefore": 8402,
+      "moneyAfter": 8402,
+      "rejected": 0
+    },
+    {
+      "floor": 60,
+      "kind": "boss",
+      "name": "道馆 · 阿塞萝拉（幽灵）",
+      "won": true,
+      "escaped": false,
+      "turns": 17,
+      "faints": 5,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 41
+        },
+        {
+          "species": "Togedemaru",
+          "level": 27
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 27
+        },
+        {
+          "species": "Eiscue",
+          "level": 28
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mimikyu",
+          "level": 35
+        },
+        {
+          "species": "Haunter",
+          "level": 35
+        },
+        {
+          "species": "Sandygast",
+          "level": 35
+        },
+        {
+          "species": "Dhelmise",
+          "level": 35
+        }
+      ],
+      "moneyBefore": 20702,
+      "moneyAfter": 20702,
+      "rejected": 0
+    },
+    {
+      "floor": 61,
+      "kind": "elite",
+      "name": "旧日遗迹 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 42
+        },
+        {
+          "species": "Togedemaru",
+          "level": 28
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 29
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Duosion",
+          "level": 36
+        }
+      ],
+      "moneyBefore": 23902,
+      "moneyAfter": 23902,
+      "rejected": 0
+    },
+    {
+      "floor": 62,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 43
+        },
+        {
+          "species": "Togedemaru",
+          "level": 28
+        },
+        {
+          "species": "Spiritomb",
+          "level": 43
+        },
+        {
+          "species": "Emolga",
+          "level": 29
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Electrode",
+          "level": 31
+        }
+      ],
+      "moneyBefore": 23902,
+      "moneyAfter": 23902,
+      "rejected": 0
+    },
+    {
+      "floor": 62,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 43
+        },
+        {
+          "species": "Togedemaru",
+          "level": 28
+        },
+        {
+          "species": "Spiritomb",
+          "level": 43
+        },
+        {
+          "species": "Emolga",
+          "level": 29
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Magneton",
+          "level": 31
+        }
+      ],
+      "moneyBefore": 23902,
+      "moneyAfter": 23902,
+      "rejected": 0
+    },
+    {
+      "floor": 62,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 43
+        },
+        {
+          "species": "Togedemaru",
+          "level": 29
+        },
+        {
+          "species": "Spiritomb",
+          "level": 43
+        },
+        {
+          "species": "Emolga",
+          "level": 29
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Kilowattrel",
+          "level": 31
+        }
+      ],
+      "moneyBefore": 23902,
+      "moneyAfter": 23902,
+      "rejected": 1
+    },
+    {
+      "floor": 63,
+      "kind": "elite",
+      "name": "攀岩峡谷 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 43
+        },
+        {
+          "species": "Togedemaru",
+          "level": 29
+        },
+        {
+          "species": "Spiritomb",
+          "level": 43
+        },
+        {
+          "species": "Emolga",
+          "level": 30
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sandaconda",
+          "level": 37
+        }
+      ],
+      "moneyBefore": 23902,
+      "moneyAfter": 23902,
+      "rejected": 0
+    },
+    {
+      "floor": 64,
+      "kind": "elite",
+      "name": "郊外小径 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 45
+        },
+        {
+          "species": "Togedemaru",
+          "level": 30
+        },
+        {
+          "species": "Spiritomb",
+          "level": 44
+        },
+        {
+          "species": "Emolga",
+          "level": 30
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Farigiraf",
+          "level": 37
+        }
+      ],
+      "moneyBefore": 23902,
+      "moneyAfter": 23902,
+      "rejected": 0
+    },
+    {
+      "floor": 67,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 47
+        },
+        {
+          "species": "Togedemaru",
+          "level": 30
+        },
+        {
+          "species": "Spiritomb",
+          "level": 46
+        },
+        {
+          "species": "Emolga",
+          "level": 30
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wobbuffet",
+          "level": 34
+        }
+      ],
+      "moneyBefore": 22692,
+      "moneyAfter": 22692,
+      "rejected": 0
+    },
+    {
+      "floor": 67,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 47
+        },
+        {
+          "species": "Togedemaru",
+          "level": 30
+        },
+        {
+          "species": "Spiritomb",
+          "level": 46
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mienfoo",
+          "level": 34
+        }
+      ],
+      "moneyBefore": 22692,
+      "moneyAfter": 22692,
+      "rejected": 0
+    },
+    {
+      "floor": 67,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 47
+        },
+        {
+          "species": "Togedemaru",
+          "level": 30
+        },
+        {
+          "species": "Spiritomb",
+          "level": 46
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gothorita",
+          "level": 34
+        }
+      ],
+      "moneyBefore": 22692,
+      "moneyAfter": 22692,
+      "rejected": 0
+    },
+    {
+      "floor": 68,
+      "kind": "elite",
+      "name": "太晶空洞 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 47
+        },
+        {
+          "species": "Togedemaru",
+          "level": 31
+        },
+        {
+          "species": "Spiritomb",
+          "level": 46
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Arctibax",
+          "level": 39
+        }
+      ],
+      "moneyBefore": 22692,
+      "moneyAfter": 22692,
+      "rejected": 0
+    },
+    {
+      "floor": 70,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 48
+        },
+        {
+          "species": "Togedemaru",
+          "level": 31
+        },
+        {
+          "species": "Spiritomb",
+          "level": 48
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "foe": [
+        {
+          "species": "Heatmor-Fantasy",
+          "level": 40
+        }
+      ],
+      "moneyBefore": 792,
+      "moneyAfter": 792,
+      "rejected": 0
+    },
+    {
+      "floor": 71,
+      "kind": "elite",
+      "name": "轻风海岸 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 48
+        },
+        {
+          "species": "Togedemaru",
+          "level": 31
+        },
+        {
+          "species": "Spiritomb",
+          "level": 48
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 30
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gyarados",
+          "level": 41
+        }
+      ],
+      "moneyBefore": 792,
+      "moneyAfter": 792,
+      "rejected": 0
+    },
+    {
+      "floor": 72,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 50
+        },
+        {
+          "species": "Togedemaru",
+          "level": 32
+        },
+        {
+          "species": "Spiritomb",
+          "level": 49
+        },
+        {
+          "species": "Gyarados",
+          "level": 41
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 30
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spinda",
+          "level": 36
+        }
+      ],
+      "moneyBefore": 792,
+      "moneyAfter": 792,
+      "rejected": 0
+    },
+    {
+      "floor": 72,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 50
+        },
+        {
+          "species": "Togedemaru",
+          "level": 32
+        },
+        {
+          "species": "Spiritomb",
+          "level": 49
+        },
+        {
+          "species": "Gyarados",
+          "level": 41
+        },
+        {
+          "species": "Eiscue",
+          "level": 30
+        },
+        {
+          "species": "Probopass",
+          "level": 31
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gumshoos",
+          "level": 36
+        }
+      ],
+      "moneyBefore": 792,
+      "moneyAfter": 792,
+      "rejected": 0
+    },
+    {
+      "floor": 72,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 50
+        },
+        {
+          "species": "Togedemaru",
+          "level": 32
+        },
+        {
+          "species": "Spiritomb",
+          "level": 49
+        },
+        {
+          "species": "Gyarados",
+          "level": 41
+        },
+        {
+          "species": "Eiscue",
+          "level": 30
+        },
+        {
+          "species": "Probopass",
+          "level": 31
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sylveon",
+          "level": 36
+        }
+      ],
+      "moneyBefore": 792,
+      "moneyAfter": 792,
+      "rejected": 0
+    },
+    {
+      "floor": 73,
+      "kind": "elite",
+      "name": "轻风海岸 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 17,
+      "faints": 4,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 50
+        },
+        {
+          "species": "Togedemaru",
+          "level": 32
+        },
+        {
+          "species": "Spiritomb",
+          "level": 49
+        },
+        {
+          "species": "Gyarados",
+          "level": 41
+        },
+        {
+          "species": "Eiscue",
+          "level": 30
+        },
+        {
+          "species": "Probopass",
+          "level": 31
+        }
+      ],
+      "foe": [
+        {
+          "species": "Milotic",
+          "level": 42
+        }
+      ],
+      "moneyBefore": 792,
+      "moneyAfter": 792,
+      "rejected": 0
+    }
+  ],
+  "purchases": [
+    {
+      "floor": 9,
+      "action": "heal",
+      "coins": 750
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 19,
+      "action": "heal",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 29,
+      "action": "heal",
+      "coins": 300
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "heal",
+      "coins": 350
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 43,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 49,
+      "action": "heal",
+      "coins": 400
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "fullheal",
+      "coins": 600
+    },
+    {
+      "floor": 49,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 59,
+      "action": "heal",
+      "coins": 450
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "fullheal",
+      "coins": 600
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "fullheal",
+      "coins": 600
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "fullheal",
+      "coins": 600
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 59,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandys",
+      "coins": 380
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 65,
+      "action": "buy",
+      "item": "expcandyxs",
+      "coins": 80
+    },
+    {
+      "floor": 69,
+      "action": "heal",
+      "coins": 2400
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ultraball",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ultraball",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ultraball",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ultraball",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ultraball",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ultraball",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ultraball",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ultraball",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "hyperpotion",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "hyperpotion",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "hyperpotion",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "hyperpotion",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "hyperpotion",
+      "coins": 1500
+    },
+    {
+      "floor": 69,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    }
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3
+      }
+    },
+    {
+      "floor": 2,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 3,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 6,
+        "potion": 5,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 4,
+      "money": 1689,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 4,
+        "potion": 3,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 5,
+      "money": 3039,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 4,
+        "potion": 3,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 6,
+      "money": 3039,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 6
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 3
+        },
+        {
+          "species": "Nosepass",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 2,
+        "potion": 3,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 2,
+        "pearl": 0,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 7,
+      "money": 3039,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 6
+        },
+        {
+          "species": "Aron",
+          "level": 4
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "bag": {
+        "pokeball": 2,
+        "potion": 3,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "pearl": 0,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 8,
+      "money": 3039,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 7
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 2,
+        "potion": 3,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 9,
+        "pearl": 0,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 9,
+      "money": 3039,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 8
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 2,
+        "potion": 3,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 11,
+        "pearl": 0,
+        "stardust": 1,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 10,
+      "money": 839,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 3
+        },
+        {
+          "species": "Spiritomb",
+          "level": 8
+        },
+        {
+          "species": "Magnemite",
+          "level": 7
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 11,
+      "money": 839,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Sandygast",
+          "level": 4
+        },
+        {
+          "species": "Spiritomb",
+          "level": 8
+        },
+        {
+          "species": "Magnemite",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 1,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 12,
+      "money": 839,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 6
+        },
+        {
+          "species": "Spiritomb",
+          "level": 9
+        },
+        {
+          "species": "Magnemite",
+          "level": 8
+        },
+        {
+          "species": "Aron",
+          "level": 7
+        },
+        {
+          "species": "Nosepass",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 13,
+      "money": 839,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Sandygast",
+          "level": 7
+        },
+        {
+          "species": "Spiritomb",
+          "level": 9
+        },
+        {
+          "species": "Magnemite",
+          "level": 9
+        },
+        {
+          "species": "Aron",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 6,
+        "tinymushroom": 3,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 2
+      }
+    },
+    {
+      "floor": 14,
+      "money": 839,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 8
+        },
+        {
+          "species": "Spiritomb",
+          "level": 11
+        },
+        {
+          "species": "Magnemite",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 6,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 2
+      }
+    },
+    {
+      "floor": 15,
+      "money": 839,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Spiritomb",
+          "level": 12
+        },
+        {
+          "species": "Magnemite",
+          "level": 10
+        },
+        {
+          "species": "Aron",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 4
+      }
+    },
+    {
+      "floor": 16,
+      "money": 839,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Sandygast",
+          "level": 9
+        },
+        {
+          "species": "Spiritomb",
+          "level": 12
+        },
+        {
+          "species": "Magnemite",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 9,
+        "tinymushroom": 8,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 6
+      }
+    },
+    {
+      "floor": 17,
+      "money": 839,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 14
+        },
+        {
+          "species": "Magnemite",
+          "level": 11
+        },
+        {
+          "species": "Aron",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 4,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 10,
+        "tinymushroom": 10,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 7
+      }
+    },
+    {
+      "floor": 18,
+      "money": 839,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 15
+        },
+        {
+          "species": "Magnemite",
+          "level": 12
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 3,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 13,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 7
+      }
+    },
+    {
+      "floor": 19,
+      "money": 839,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 15
+        },
+        {
+          "species": "Emolga",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 3,
+        "revive": 1,
+        "ether": 8,
+        "expcandyxs": 12,
+        "tinymushroom": 15,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 8
+      }
+    },
+    {
+      "floor": 20,
+      "money": 2289,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Togedemaru",
+          "level": 13
+        },
+        {
+          "species": "Spiritomb",
+          "level": 16
+        },
+        {
+          "species": "Emolga",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 21,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Togedemaru",
+          "level": 14
+        },
+        {
+          "species": "Spiritomb",
+          "level": 17
+        },
+        {
+          "species": "Emolga",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 22,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Togedemaru",
+          "level": 14
+        },
+        {
+          "species": "Spiritomb",
+          "level": 17
+        },
+        {
+          "species": "Emolga",
+          "level": 14
+        },
+        {
+          "species": "Aron",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 15,
+        "tinymushroom": 1,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 23,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "pearl": 2,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 24,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "pearl": 3,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 25,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 18
+        },
+        {
+          "species": "Emolga",
+          "level": 15
+        },
+        {
+          "species": "Aron",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 19,
+        "tinymushroom": 6,
+        "pearl": 4,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 26,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Togedemaru",
+          "level": 15
+        },
+        {
+          "species": "Spiritomb",
+          "level": 20
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "pearl": 5,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 27,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 20
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 22,
+        "tinymushroom": 9,
+        "pearl": 6,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 28,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 16
+        },
+        {
+          "species": "Aron",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 12,
+        "pearl": 6,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 29,
+      "money": 3889,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 15,
+        "pearl": 6,
+        "stardust": 0,
+        "prettyfeather": 0
+      }
+    },
+    {
+      "floor": 30,
+      "money": 689,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Togedemaru",
+          "level": 16
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 3
+      }
+    },
+    {
+      "floor": 31,
+      "money": 689,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Togedemaru",
+          "level": 17
+        },
+        {
+          "species": "Spiritomb",
+          "level": 21
+        },
+        {
+          "species": "Emolga",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 1,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 3
+      }
+    },
+    {
+      "floor": 32,
+      "money": 689,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 23
+        },
+        {
+          "species": "Togedemaru",
+          "level": 17
+        },
+        {
+          "species": "Spiritomb",
+          "level": 22
+        },
+        {
+          "species": "Emolga",
+          "level": 17
+        },
+        {
+          "species": "Aron",
+          "level": 16
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 31,
+        "tinymushroom": 3,
+        "pearl": 1,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 2
+      }
+    },
+    {
+      "floor": 33,
+      "money": 689,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Togedemaru",
+          "level": 17
+        },
+        {
+          "species": "Spiritomb",
+          "level": 23
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 33,
+        "tinymushroom": 4,
+        "pearl": 2,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 6,
+        "superpotion": 1,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 34,
+      "money": 689,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 25
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 35,
+        "tinymushroom": 6,
+        "pearl": 3,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 6,
+        "superpotion": 0,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 35,
+      "money": 962,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 26
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 6,
+        "pearl": 3,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 6,
+        "superpotion": 0,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2
+      }
+    },
+    {
+      "floor": 36,
+      "money": 362,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 26
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 6,
+        "pearl": 3,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 6,
+        "superpotion": 0,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2
+      }
+    },
+    {
+      "floor": 37,
+      "money": 362,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 26
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 41,
+        "tinymushroom": 7,
+        "pearl": 3,
+        "stardust": 1,
+        "prettyfeather": 0,
+        "greatball": 6,
+        "superpotion": 0,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2
+      }
+    },
+    {
+      "floor": 38,
+      "money": 362,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 27
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 43,
+        "tinymushroom": 8,
+        "pearl": 3,
+        "stardust": 2,
+        "prettyfeather": 0,
+        "greatball": 6,
+        "superpotion": 0,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2
+      }
+    },
+    {
+      "floor": 39,
+      "money": 362,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 28
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "pearl": 3,
+        "stardust": 2,
+        "prettyfeather": 0,
+        "greatball": 6,
+        "superpotion": 0,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2
+      }
+    },
+    {
+      "floor": 40,
+      "money": 512,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Togedemaru",
+          "level": 18
+        },
+        {
+          "species": "Spiritomb",
+          "level": 28
+        },
+        {
+          "species": "Emolga",
+          "level": 18
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 6,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2
+      }
+    },
+    {
+      "floor": 41,
+      "money": 2912,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Togedemaru",
+          "level": 19
+        },
+        {
+          "species": "Spiritomb",
+          "level": 28
+        },
+        {
+          "species": "Emolga",
+          "level": 19
+        },
+        {
+          "species": "Eiscue",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 20
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 6,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2
+      }
+    },
+    {
+      "floor": 42,
+      "money": 2912,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 28
+        },
+        {
+          "species": "Emolga",
+          "level": 20
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 4,
+        "tinymushroom": 1,
+        "pearl": 0,
+        "stardust": 1,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 6
+      }
+    },
+    {
+      "floor": 43,
+      "money": 2912,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 30
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 30
+        },
+        {
+          "species": "Emolga",
+          "level": 20
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "pearl": 0,
+        "stardust": 1,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 1
+      }
+    },
+    {
+      "floor": 44,
+      "money": 1102,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 32
+        },
+        {
+          "species": "Togedemaru",
+          "level": 20
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 20
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0
+      }
+    },
+    {
+      "floor": 45,
+      "money": 1102,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 33
+        },
+        {
+          "species": "Togedemaru",
+          "level": 21
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 21
+        },
+        {
+          "species": "Eiscue",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 2,
+        "pearl": 0,
+        "stardust": 1,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0
+      }
+    },
+    {
+      "floor": 46,
+      "money": 1102,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 33
+        },
+        {
+          "species": "Togedemaru",
+          "level": 21
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 22
+        },
+        {
+          "species": "Eiscue",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 4,
+        "pearl": 1,
+        "stardust": 1,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0
+      }
+    },
+    {
+      "floor": 47,
+      "money": 1102,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 33
+        },
+        {
+          "species": "Togedemaru",
+          "level": 22
+        },
+        {
+          "species": "Spiritomb",
+          "level": 32
+        },
+        {
+          "species": "Emolga",
+          "level": 22
+        },
+        {
+          "species": "Eiscue",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 1,
+        "tinymushroom": 5,
+        "pearl": 1,
+        "stardust": 2,
+        "prettyfeather": 1,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 8,
+        "nugget": 0
+      }
+    },
+    {
+      "floor": 48,
+      "money": 1102,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 34
+        },
+        {
+          "species": "Togedemaru",
+          "level": 22
+        },
+        {
+          "species": "Spiritomb",
+          "level": 34
+        },
+        {
+          "species": "Emolga",
+          "level": 23
+        },
+        {
+          "species": "Eiscue",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 24
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "pearl": 1,
+        "stardust": 2,
+        "prettyfeather": 2,
+        "greatball": 8,
+        "superpotion": 3,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0
+      }
+    },
+    {
+      "floor": 49,
+      "money": 1102,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 34
+        },
+        {
+          "species": "Togedemaru",
+          "level": 23
+        },
+        {
+          "species": "Spiritomb",
+          "level": 34
+        },
+        {
+          "species": "Emolga",
+          "level": 23
+        },
+        {
+          "species": "Eiscue",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 24
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 7,
+        "tinymushroom": 9,
+        "pearl": 1,
+        "stardust": 3,
+        "prettyfeather": 2,
+        "greatball": 8,
+        "superpotion": 3,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 8,
+        "nugget": 0
+      }
+    },
+    {
+      "floor": 50,
+      "money": 402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 36
+        },
+        {
+          "species": "Togedemaru",
+          "level": 23
+        },
+        {
+          "species": "Spiritomb",
+          "level": 35
+        },
+        {
+          "species": "Emolga",
+          "level": 23
+        },
+        {
+          "species": "Eiscue",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 24
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 10,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 1
+      }
+    },
+    {
+      "floor": 51,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 36
+        },
+        {
+          "species": "Togedemaru",
+          "level": 23
+        },
+        {
+          "species": "Spiritomb",
+          "level": 35
+        },
+        {
+          "species": "Emolga",
+          "level": 24
+        },
+        {
+          "species": "Eiscue",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 25
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 1,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 10,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 1
+      }
+    },
+    {
+      "floor": 52,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 36
+        },
+        {
+          "species": "Togedemaru",
+          "level": 24
+        },
+        {
+          "species": "Spiritomb",
+          "level": 35
+        },
+        {
+          "species": "Emolga",
+          "level": 24
+        },
+        {
+          "species": "Eiscue",
+          "level": 25
+        },
+        {
+          "species": "Probopass",
+          "level": 25
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 1,
+        "pearl": 0,
+        "stardust": 1,
+        "prettyfeather": 2,
+        "greatball": 8,
+        "superpotion": 9,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 10,
+        "nugget": 0,
+        "fullheal": 0
+      }
+    },
+    {
+      "floor": 53,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 37
+        },
+        {
+          "species": "Togedemaru",
+          "level": 24
+        },
+        {
+          "species": "Spiritomb",
+          "level": 37
+        },
+        {
+          "species": "Emolga",
+          "level": 24
+        },
+        {
+          "species": "Eiscue",
+          "level": 25
+        },
+        {
+          "species": "Probopass",
+          "level": 26
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 2,
+        "pearl": 0,
+        "stardust": 1,
+        "prettyfeather": 3,
+        "greatball": 8,
+        "superpotion": 8,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 0
+      }
+    },
+    {
+      "floor": 54,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 37
+        },
+        {
+          "species": "Togedemaru",
+          "level": 25
+        },
+        {
+          "species": "Spiritomb",
+          "level": 37
+        },
+        {
+          "species": "Emolga",
+          "level": 25
+        },
+        {
+          "species": "Eiscue",
+          "level": 26
+        },
+        {
+          "species": "Probopass",
+          "level": 26
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 6,
+        "tinymushroom": 3,
+        "pearl": 0,
+        "stardust": 2,
+        "prettyfeather": 4,
+        "greatball": 8,
+        "superpotion": 8,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 10,
+        "nugget": 0,
+        "fullheal": 0
+      }
+    },
+    {
+      "floor": 55,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 39
+        },
+        {
+          "species": "Togedemaru",
+          "level": 25
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 25
+        },
+        {
+          "species": "Eiscue",
+          "level": 26
+        },
+        {
+          "species": "Probopass",
+          "level": 27
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "pearl": 0,
+        "stardust": 2,
+        "prettyfeather": 4,
+        "greatball": 8,
+        "superpotion": 8,
+        "bigmushroom": 3,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 1,
+        "fullheal": 0
+      }
+    },
+    {
+      "floor": 56,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 39
+        },
+        {
+          "species": "Togedemaru",
+          "level": 26
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 26
+        },
+        {
+          "species": "Eiscue",
+          "level": 27
+        },
+        {
+          "species": "Probopass",
+          "level": 27
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "pearl": 0,
+        "stardust": 2,
+        "prettyfeather": 4,
+        "greatball": 8,
+        "superpotion": 8,
+        "bigmushroom": 4,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 1,
+        "fullheal": 0
+      }
+    },
+    {
+      "floor": 57,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 39
+        },
+        {
+          "species": "Togedemaru",
+          "level": 26
+        },
+        {
+          "species": "Spiritomb",
+          "level": 38
+        },
+        {
+          "species": "Emolga",
+          "level": 26
+        },
+        {
+          "species": "Eiscue",
+          "level": 27
+        },
+        {
+          "species": "Probopass",
+          "level": 27
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "pearl": 0,
+        "stardust": 4,
+        "prettyfeather": 5,
+        "greatball": 8,
+        "superpotion": 8,
+        "bigmushroom": 4,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 12,
+        "nugget": 1,
+        "fullheal": 0
+      }
+    },
+    {
+      "floor": 58,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 40
+        },
+        {
+          "species": "Togedemaru",
+          "level": 26
+        },
+        {
+          "species": "Spiritomb",
+          "level": 40
+        },
+        {
+          "species": "Emolga",
+          "level": 27
+        },
+        {
+          "species": "Eiscue",
+          "level": 27
+        },
+        {
+          "species": "Probopass",
+          "level": 28
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 5,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 3,
+        "tinymushroom": 6,
+        "pearl": 0,
+        "stardust": 5,
+        "prettyfeather": 6,
+        "greatball": 8,
+        "superpotion": 8,
+        "bigmushroom": 4,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 12,
+        "nugget": 1,
+        "fullheal": 0
+      }
+    },
+    {
+      "floor": 59,
+      "money": 8402,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 41
+        },
+        {
+          "species": "Togedemaru",
+          "level": 27
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 27
+        },
+        {
+          "species": "Eiscue",
+          "level": 28
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 9,
+        "pearl": 0,
+        "stardust": 5,
+        "prettyfeather": 6,
+        "greatball": 8,
+        "superpotion": 8,
+        "bigmushroom": 4,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 1,
+        "fullheal": 0
+      }
+    },
+    {
+      "floor": 60,
+      "money": 20702,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 41
+        },
+        {
+          "species": "Togedemaru",
+          "level": 27
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 27
+        },
+        {
+          "species": "Eiscue",
+          "level": 28
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 10,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 61,
+      "money": 23902,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 42
+        },
+        {
+          "species": "Togedemaru",
+          "level": 28
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 29
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 10,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 62,
+      "money": 23902,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 42
+        },
+        {
+          "species": "Togedemaru",
+          "level": 28
+        },
+        {
+          "species": "Spiritomb",
+          "level": 41
+        },
+        {
+          "species": "Emolga",
+          "level": 29
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 2,
+        "tinymushroom": 2,
+        "pearl": 0,
+        "stardust": 1,
+        "prettyfeather": 1,
+        "greatball": 8,
+        "superpotion": 6,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 14,
+        "nugget": 0,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 63,
+      "money": 23902,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 43
+        },
+        {
+          "species": "Togedemaru",
+          "level": 29
+        },
+        {
+          "species": "Spiritomb",
+          "level": 43
+        },
+        {
+          "species": "Emolga",
+          "level": 30
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "pearl": 0,
+        "stardust": 1,
+        "prettyfeather": 1,
+        "greatball": 8,
+        "superpotion": 6,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 64,
+      "money": 23902,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 43
+        },
+        {
+          "species": "Togedemaru",
+          "level": 30
+        },
+        {
+          "species": "Spiritomb",
+          "level": 43
+        },
+        {
+          "species": "Emolga",
+          "level": 30
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 1,
+        "tinymushroom": 7,
+        "pearl": 0,
+        "stardust": 2,
+        "prettyfeather": 2,
+        "greatball": 8,
+        "superpotion": 6,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 15,
+        "nugget": 0,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 65,
+      "money": 23902,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 45
+        },
+        {
+          "species": "Togedemaru",
+          "level": 30
+        },
+        {
+          "species": "Spiritomb",
+          "level": 44
+        },
+        {
+          "species": "Emolga",
+          "level": 30
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 5,
+        "tinymushroom": 9,
+        "pearl": 0,
+        "stardust": 3,
+        "prettyfeather": 3,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 15,
+        "nugget": 0,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 66,
+      "money": 22692,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 47
+        },
+        {
+          "species": "Togedemaru",
+          "level": 30
+        },
+        {
+          "species": "Spiritomb",
+          "level": 46
+        },
+        {
+          "species": "Emolga",
+          "level": 30
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 67,
+      "money": 22692,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 47
+        },
+        {
+          "species": "Togedemaru",
+          "level": 30
+        },
+        {
+          "species": "Spiritomb",
+          "level": 46
+        },
+        {
+          "species": "Emolga",
+          "level": 30
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 68,
+      "money": 22692,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 47
+        },
+        {
+          "species": "Togedemaru",
+          "level": 31
+        },
+        {
+          "species": "Spiritomb",
+          "level": 46
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 2,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 1,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 69,
+      "money": 22692,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 47
+        },
+        {
+          "species": "Togedemaru",
+          "level": 31
+        },
+        {
+          "species": "Spiritomb",
+          "level": 47
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 7,
+        "expcandyxs": 5,
+        "tinymushroom": 3,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 17,
+        "nugget": 1,
+        "fullheal": 3
+      }
+    },
+    {
+      "floor": 70,
+      "money": 792,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 48
+        },
+        {
+          "species": "Togedemaru",
+          "level": 31
+        },
+        {
+          "species": "Spiritomb",
+          "level": 48
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 29
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 10,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 3,
+        "ultraball": 8,
+        "hyperpotion": 5
+      }
+    },
+    {
+      "floor": 71,
+      "money": 792,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 48
+        },
+        {
+          "species": "Togedemaru",
+          "level": 31
+        },
+        {
+          "species": "Spiritomb",
+          "level": 48
+        },
+        {
+          "species": "Emolga",
+          "level": 31
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 30
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 1,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 0,
+        "greatball": 8,
+        "superpotion": 10,
+        "bigmushroom": 0,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 3,
+        "ultraball": 8,
+        "hyperpotion": 5
+      }
+    },
+    {
+      "floor": 72,
+      "money": 792,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 48
+        },
+        {
+          "species": "Togedemaru",
+          "level": 32
+        },
+        {
+          "species": "Spiritomb",
+          "level": 48
+        },
+        {
+          "species": "Gyarados",
+          "level": 41
+        },
+        {
+          "species": "Eiscue",
+          "level": 29
+        },
+        {
+          "species": "Probopass",
+          "level": 30
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 8,
+        "expcandyxs": 1,
+        "tinymushroom": 1,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 1,
+        "greatball": 8,
+        "superpotion": 9,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 19,
+        "nugget": 0,
+        "fullheal": 3,
+        "ultraball": 7,
+        "hyperpotion": 5
+      }
+    },
+    {
+      "floor": 73,
+      "money": 792,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 50
+        },
+        {
+          "species": "Togedemaru",
+          "level": 32
+        },
+        {
+          "species": "Spiritomb",
+          "level": 49
+        },
+        {
+          "species": "Gyarados",
+          "level": 41
+        },
+        {
+          "species": "Eiscue",
+          "level": 30
+        },
+        {
+          "species": "Probopass",
+          "level": 31
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 4,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 1,
+        "greatball": 8,
+        "superpotion": 7,
+        "bigmushroom": 1,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 0,
+        "nugget": 0,
+        "fullheal": 3,
+        "ultraball": 7,
+        "hyperpotion": 3
+      }
+    },
+    {
+      "floor": 74,
+      "money": 792,
+      "team": [
+        {
+          "species": "Skeledirge",
+          "level": 50
+        },
+        {
+          "species": "Togedemaru",
+          "level": 33
+        },
+        {
+          "species": "Spiritomb",
+          "level": 49
+        },
+        {
+          "species": "Gyarados",
+          "level": 41
+        },
+        {
+          "species": "Eiscue",
+          "level": 31
+        },
+        {
+          "species": "Probopass",
+          "level": 31
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 0,
+        "ether": 8,
+        "expcandyxs": 2,
+        "tinymushroom": 6,
+        "pearl": 0,
+        "stardust": 0,
+        "prettyfeather": 1,
+        "greatball": 8,
+        "superpotion": 7,
+        "bigmushroom": 2,
+        "geniusfeather": 1,
+        "healthfeather": 2,
+        "expcandys": 20,
+        "nugget": 0,
+        "fullheal": 3,
+        "ultraball": 4,
+        "hyperpotion": 3
+      }
+    }
+  ],
+  "choices": [
+    {
+      "floor": 1,
+      "blessing": "pivot",
+      "tier": "silver"
+    },
+    {
+      "floor": 50,
+      "blessing": "money",
+      "tier": "silver"
+    }
+  ],
+  "issues": [
+    {
+      "floor": 74,
+      "reason": "driver-error",
+      "error": "Error: 该成员不能再获得经验。\n    at requireRule (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:65:18)\n    at F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:983:13\n    at Function.<anonymous> (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\store.js:82:7)\n    at Function.sqliteTransaction (F:\\fantasy\\pokemon-showdown\\node_modules\\better-sqlite3\\lib\\methods\\transaction.js:65:24)\n    at RogueStore.change (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\store.js:99:8)\n    at RogueEngine.command (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:468:23)\n    at cmd (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-combat-playtest.js:39:40)\n    at preparation (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-combat-playtest.js:66:17)\n    at Object.<anonymous> (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-combat-playtest.js:197:3)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)"
+    }
+  ],
+  "lastFloor": 74,
+  "phase": "choose"
+}

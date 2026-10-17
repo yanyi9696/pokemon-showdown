@@ -1,0 +1,57 @@
+|t:|1792223252
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L11, M|
+|poke|p1|Snorunt, L4, F|
+|poke|p1|Solosis, L8, F|
+|poke|p1|Wynaut, L6, F|
+|poke|p1|Drifloon, L5, M|
+|poke|p1|Tinkatink, L7, F|
+|poke|p2|Skitty-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792223252
+|start
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|33/33
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|100/100
+|split|p2
+|switch|p2a: Skitty|Skitty-Fantasy, L13, M|40/40
+|switch|p2a: Skitty|Skitty-Fantasy, L13, M|100/100
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223252
+|-terastallize|p2a: Skitty|Fairy
+|move|p2a: Skitty|Earth Power|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|12/33
+|-damage|p1a: Bulbasaur|37/100
+|move|p1a: Bulbasaur|Vine Whip|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|33/40
+|-damage|p2a: Skitty|83/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223253
+|move|p2a: Skitty|Earth Power|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|
+|win|NPC

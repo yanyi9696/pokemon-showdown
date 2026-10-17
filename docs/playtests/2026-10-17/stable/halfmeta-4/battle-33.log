@@ -1,0 +1,90 @@
+|t:|1792222078
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L18, M|
+|poke|p1|Pidgey, L13, M|
+|poke|p1|Meowth, L11, F|
+|poke|p1|Slakoth, L11, M|
+|poke|p1|Shroomish, L17, F|
+|poke|p1|Maractus, L12, M|
+|poke|p2|Combee, L20, M|
+|poke|p2|Nincada, L20, F|
+|poke|p2|Nymble, L20, F|
+|teampreview
+|
+|t:|1792222078
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L18, M|65/65
+|switch|p1a: Crocalor|Crocalor, L18, M|100/100
+|split|p2
+|switch|p2a: Combee|Combee, L20, M|48/48
+|switch|p2a: Combee|Combee, L20, M|100/100
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222079
+|-terastallize|p2a: Combee|Bug
+|move|p2a: Combee|Air Cutter|p1a: Crocalor|[miss]
+|-miss|p2a: Combee|p1a: Crocalor
+|move|p1a: Crocalor|Incinerate|p2a: Combee
+|-supereffective|p2a: Combee
+|split|p2
+|-damage|p2a: Combee|0 fnt
+|-damage|p2a: Combee|0 fnt
+|faint|p2a: Combee
+|split|p1
+|-damage|p1a: Crocalor|59/65|[from] item: Life Orb
+|-damage|p1a: Crocalor|91/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792222079
+|split|p2
+|switch|p2a: Nincada|Nincada, L20, F|48/48
+|switch|p2a: Nincada|Nincada, L20, F|100/100
+|-end|p2a: Nincada|fantasystats|[silent]
+|turn|2
+|
+|t:|1792222079
+|move|p1a: Crocalor|Incinerate|p2a: Nincada
+|-supereffective|p2a: Nincada
+|split|p2
+|-damage|p2a: Nincada|0 fnt
+|-damage|p2a: Nincada|0 fnt
+|faint|p2a: Nincada
+|split|p1
+|-damage|p1a: Crocalor|53/65|[from] item: Life Orb
+|-damage|p1a: Crocalor|82/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792222079
+|split|p2
+|switch|p2a: Nymble|Nymble, L20, F|49/49
+|switch|p2a: Nymble|Nymble, L20, F|100/100
+|-end|p2a: Nymble|fantasystats|[silent]
+|turn|3
+|
+|t:|1792222080
+|move|p1a: Crocalor|Incinerate|p2a: Nymble
+|-supereffective|p2a: Nymble
+|split|p2
+|-damage|p2a: Nymble|0 fnt
+|-damage|p2a: Nymble|0 fnt
+|faint|p2a: Nymble
+|split|p1
+|-damage|p1a: Crocalor|47/65|[from] item: Life Orb
+|-damage|p1a: Crocalor|73/100|[from] item: Life Orb
+|
+|win|Player

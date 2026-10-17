@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { RogueEngine, createRoguePokemon } = require('../../dist/server/fantasy-rogue/engine');
@@ -14,7 +15,7 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 	let store, engine, battle;
 	const user = 'traittester';
 	const account = () => store.get(user);
-	const cmd = (action, details = {}) => engine.command(user, { id: randomUUID(), revision: account().revision, action, ...details });
+	const cmd = (action, details = {}) => commandAfterOpening(engine, user, { id: randomUUID(), revision: account().revision, action, ...details });
 	beforeEach(() => { store = new RogueStore(':memory:'); engine = new RogueEngine(store, createPreviewContent(), max => Math.min(3, max - 1)); });
 	afterEach(() => {
 		battle?.destroy(); battle = undefined; store.close();
@@ -24,10 +25,10 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 		const ticket = account().run.battle;
 		const caught = createRoguePokemon({ ...set('Venusaur', 'Chlorophyll', 50, ['Solar Beam']), nature: 'Modest' }, stats(0), ticket.encounterId);
 		engine.capture(user, ticket.token, caught);
-		assert.deepEqual(starterTraits(account(), 'bulbasaur').abilities, ['chlorophyll']);
+		assert.deepEqual(starterTraits(account(), 'bulbasaur').abilities, ['overgrow', 'chlorophyll']);
 		engine.recover(user, ticket.token); cmd('abandon');
 		const build = { nature: 'random', ivs: stats(20), ability: 'chlorophyll' };
-		assert.throws(() => cmd('start', { starters: ['bulbasaur'], starterBuilds: { bulbasaur: { ...build, ability: 'overgrow' } } }), /特性/);
+		assert.throws(() => cmd('start', { starters: ['bulbasaur'], starterBuilds: { bulbasaur: { ...build, ability: 'drought' } } }), /特性/);
 		cmd('start', { starters: ['bulbasaur'], starterBuilds: { bulbasaur: build } });
 		const member = account().run.team[0];
 		assert.equal(member.set.ability, 'Chlorophyll');
@@ -43,13 +44,13 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 		assert.deepEqual(starterTraits(saved, 'vulpixalola').abilities, ['snowwarning']);
 		assert.deepEqual(starterTraits(saved, 'vulpix').abilities, []);
 	});
-	it('defaults to 20 IVs and random nature, with no nature unlock from starting or duplicate requests', () => {
+	it('defaults to 20 IVs and random nature, and unlocks confirmed starting traits only once', () => {
 		const request = { id: randomUUID(), revision: 0, action: 'start', starters: ['bulbasaur'] };
 		engine.command(user, request);
 		const first = account();
 		assert.deepEqual(first.run.team[0].set.ivs, stats(20));
 		assert.equal(first.run.team[0].set.nature, 'Brave');
-		assert.deepEqual(starterTraits(first, 'bulbasaur').natures, []);
+		assert.deepEqual(starterTraits(first, 'bulbasaur').natures, ['brave']);
 		engine.command(user, request); assert.deepEqual(account(), first);
 	});
 	it('records captured evolved partners immediately, once, and preserves traits after abandonment', () => {
@@ -59,7 +60,7 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 		engine.capture(user, ticket.token, captured);
 		const once = account(); engine.capture(user, ticket.token, captured); assert.deepEqual(account(), once);
 		assert.equal(once.captures.bulbasaur, 1);
-		assert.deepEqual(once.starterTraits.bulbasaur.natures, ['modest']);
+		assert.deepEqual(once.starterTraits.bulbasaur.natures, ['brave', 'modest']);
 		assert.equal(once.starterTraits.bulbasaur.ivs.min.atk, 0);
 		assert.equal(once.starterTraits.bulbasaur.ivs.max.spa, 29);
 		assert.equal(once.starterTraits.bulbasaur.ivs.max.def, 20);
@@ -78,14 +79,14 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 			assert.equal(account().revision, 0); assert(!account().run);
 		}
 	});
-	it('event IV changes expand only each affected range, do not heal, and do not unlock random starter nature', () => {
+	it('event IV changes expand only each affected range, do not heal, and retain previously unlocked starter nature', () => {
 		cmd('start', { starters: ['bulbasaur'] });
 		const id = account().run.team[0].id;
 		store.change(user, saved => { saved.run.team[0].hp -= 3; });
 		engine.setEventIVs(user, id, { atk: 29, spe: 0, hp: 31 });
 		const saved = account();
 		assert.equal(saved.run.team[0].maxhp - saved.run.team[0].hp, 3);
-		assert.deepEqual(saved.starterTraits.bulbasaur.natures, []);
+		assert.deepEqual(saved.starterTraits.bulbasaur.natures, ['brave']);
 		assert.equal(saved.starterTraits.bulbasaur.ivs.max.atk, 29);
 		assert.equal(saved.starterTraits.bulbasaur.ivs.min.spe, 0);
 		assert.equal(saved.starterTraits.bulbasaur.ivs.max.def, 20);

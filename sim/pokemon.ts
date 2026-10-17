@@ -9,7 +9,7 @@ import { State } from './state';
 import { sharedRogueItems, consumeRogueItem } from './fantasy-rogue-items';
 import { toID } from './dex';
 import { isRogueFormat } from './fantasy-rogue';
-import { blessingActionUsed, blessingTypes, hasBlessing, spendRogueEeveeZ, spendRoguePsychic } from './fantasy-rogue-blessings';
+import { blessingActionUsed, blessingTypes, hasBlessing, rogueAbilityInfo, spendRogueEeveeZ, spendRoguePsychic } from './fantasy-rogue-blessings';
 import { canStackRogueStatus, clearRogueStatus, hasRogueStatus, rememberRogueStatus } from './fantasy-rogue-status';
 import type { DynamaxOptions, PokemonMoveRequestData, PokemonSwitchRequestData } from './side';
 
@@ -626,7 +626,7 @@ export class Pokemon {
 		let speed = this.getStat('spe', false, false);
 		const trickRoomCheck = this.battle.ruleTable.has('twisteddimensionmod') ?
 			!this.battle.field.getPseudoWeather('trickroom') : this.battle.field.getPseudoWeather('trickroom');
-		if (trickRoomCheck) {
+		if (trickRoomCheck && !this.hasRogueBlessing('topclearmind')) {
 			speed = 10000 - speed;
 		}
 		return this.battle.trunc(speed, 13);
@@ -1141,6 +1141,7 @@ export class Pokemon {
 			pokeball: this.pokeball,
 		};
 		if (this.battle.gen > 6) entry.ability = this.ability;
+		if (this.battle.fantasyRogue) entry.rogueAbilityInfo = rogueAbilityInfo(this);
 		if (this.battle.gen >= 9) {
 			entry.commanding = !!(this.volatiles['commanding'] || this.volatiles['parasite']) && !this.fainted;
 			entry.reviving = this.isActive && !!this.side.slotConditions[this.position]['revivalblessing'];

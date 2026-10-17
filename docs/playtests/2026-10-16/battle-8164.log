@@ -1,0 +1,118 @@
+|init|battle
+|title|RoguePlay1016C vs. AI · 幻想精英
+
+|-message|幻想杯肉鸽第 10 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792130309
+|gametype|singles
+|player|p1|RoguePlay1016C|169|
+|player|p2|AI · 幻想精英|unknownf|
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L12, M|
+|poke|p1|Joltik, L4, F|
+|poke|p1|Voltorb, L3|
+|poke|p1|Magnemite, L3|
+|poke|p1|Numel, L4, M|
+|poke|p1|Houndour, L3, F|
+|poke|p2|Skitty-Fantasy, L15, F|
+|teampreview
+|
+|t:|1792130311
+|start
+|switch|p1a: Bulbasaur|Bulbasaur, L12, M|35/35
+|switch|p2a: Skitty|Skitty-Fantasy, L15, F|100/100
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792130311
+|-terastallize|p2a: Skitty|Fairy
+|move|p2a: Skitty|Earth Power|p1a: Bulbasaur
+|-damage|p1a: Bulbasaur|8/35
+|move|p1a: Bulbasaur|Razor Leaf|p2a: Skitty
+|-damage|p2a: Skitty|71/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792130312
+|move|p2a: Skitty|Earth Power|p1a: Bulbasaur
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|
+|upkeep
+|
+|t:|1792130312
+|switch|p1a: Houndour|Houndour, L3, F|16/16
+|-end|p1a: Houndour|fantasystats|[silent]
+|turn|3
+|
+|t:|1792130313
+|move|p2a: Skitty|Earth Power|p1a: Houndour
+|-supereffective|p1a: Houndour
+|-damage|p1a: Houndour|0 fnt
+|faint|p1a: Houndour
+|
+|upkeep
+|
+|t:|1792130314
+|switch|p1a: Magnemite|Magnemite, L3|15/15
+|-end|p1a: Magnemite|fantasystats|[silent]
+|turn|4
+|
+|t:|1792130314
+|move|p2a: Skitty|Earth Power|p1a: Magnemite
+|-supereffective|p1a: Magnemite
+|-damage|p1a: Magnemite|0 fnt
+|faint|p1a: Magnemite
+|
+|upkeep
+|
+|t:|1792130315
+|switch|p1a: Joltik|Joltik, L4, F|19/19
+|-end|p1a: Joltik|fantasystats|[silent]
+|turn|5
+|
+|t:|1792130315
+|move|p2a: Skitty|Earth Power|p1a: Joltik
+|-damage|p1a: Joltik|0 fnt
+|faint|p1a: Joltik
+|
+|upkeep
+|
+|t:|1792130316
+|switch|p1a: Voltorb|Voltorb, L3|16/16
+|-end|p1a: Voltorb|fantasystats|[silent]
+|turn|6
+|
+|t:|1792130317
+|move|p2a: Skitty|Earth Power|p1a: Voltorb
+|-supereffective|p1a: Voltorb
+|-damage|p1a: Voltorb|0 fnt
+|faint|p1a: Voltorb
+|
+|upkeep
+|
+|t:|1792130317
+|switch|p1a: Numel|Numel, L4, M|19/19
+|-end|p1a: Numel|fantasystats|[silent]
+|turn|7
+|
+|t:|1792130318
+|move|p2a: Skitty|Earth Power|p1a: Numel
+|-supereffective|p1a: Numel
+|-crit|p1a: Numel
+|-damage|p1a: Numel|0 fnt
+|faint|p1a: Numel
+|
+|win|AI · 幻想精英
+|fantasyroguedefeat|{"floor":10,"encounter":1,"encounters":1,"retryFloor":false,"noHealing":false,"emergencyCost":5000}
+|deinit

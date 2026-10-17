@@ -1,0 +1,83 @@
+|t:|1792221979
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Sandygast, L3, F|
+|poke|p1|Spiritomb, L8, M|
+|poke|p1|Magnemite, L7|
+|poke|p1|Aron, L6, F|
+|poke|p1|Nosepass, L6, F|
+|poke|p2|Rookidee-Fantasy, L8, F|
+|teampreview
+|
+|t:|1792221979
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|42/42
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|split|p2
+|switch|p2a: Rookidee|Rookidee-Fantasy, L8, F|32/32
+|switch|p2a: Rookidee|Rookidee-Fantasy, L8, F|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|turn|1
+|
+|t:|1792221980
+|-terastallize|p2a: Rookidee|Flying
+|move|p1a: Fuecoco|Round|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|20/32
+|-damage|p2a: Rookidee|63/100
+|
+|t:|1792221981
+|split|p1
+|switch|p1a: Magnemite|Magnemite, L7|27/27|[from] Round
+|switch|p1a: Magnemite|Magnemite, L7|100/100|[from] Round
+|-end|p1a: Magnemite|fantasystats|[silent]
+|move|p2a: Rookidee|Foul Play|p1a: Magnemite
+|split|p1
+|-damage|p1a: Magnemite|17/27
+|-damage|p1a: Magnemite|63/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792221982
+|move|p1a: Magnemite|Thunder Shock|p2a: Rookidee
+|-supereffective|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|6/32
+|-damage|p2a: Rookidee|19/100
+|
+|t:|1792221983
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|42/42|[from] Thunder Shock
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100|[from] Thunder Shock
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|move|p2a: Rookidee|Chuan Yun|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|26/42
+|-damage|p1a: Fuecoco|62/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792221984
+|move|p1a: Fuecoco|Round|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|0 fnt
+|-damage|p2a: Rookidee|0 fnt
+|faint|p2a: Rookidee
+|
+|win|Player

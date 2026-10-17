@@ -1,0 +1,94 @@
+|t:|1792231004
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L16, M|
+|poke|p1|Crocalor, L16, M|
+|poke|p1|Mudkip, L15, M|
+|poke|p1|Ralts, L12, M|
+|poke|p1|Aron, L11, M|
+|poke|p1|Shuckle, L13, F|
+|poke|p2|Combee, L15, M|
+|poke|p2|Nincada, L15, M|
+|poke|p2|Nymble, L15, F|
+|teampreview
+|
+|t:|1792231004
+|start
+|split|p1
+|switch|p1a: Aron|Aron, L11, M|40/40
+|switch|p1a: Aron|Aron, L11, M|100/100
+|split|p2
+|switch|p2a: Combee|Combee, L15, M|38/38
+|switch|p2a: Combee|Combee, L15, M|100/100
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Aron|fantasystats|[silent]
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Aron|fantasystats|[silent]
+|turn|1
+|
+|t:|1792231005
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L16, M|60/60
+|switch|p1a: Crocalor|Crocalor, L16, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-terastallize|p2a: Combee|Bug
+|move|p2a: Combee|Bug Buzz|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|52/60
+|-damage|p1a: Crocalor|87/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792231005
+|move|p1a: Crocalor|Incinerate|p2a: Combee
+|-supereffective|p2a: Combee
+|split|p2
+|-damage|p2a: Combee|0 fnt
+|-damage|p2a: Combee|0 fnt
+|faint|p2a: Combee
+|
+|upkeep
+|
+|t:|1792231005
+|split|p2
+|switch|p2a: Nincada|Nincada, L15, M|38/38
+|switch|p2a: Nincada|Nincada, L15, M|100/100
+|-end|p2a: Nincada|fantasystats|[silent]
+|turn|3
+|
+|t:|1792231005
+|move|p1a: Crocalor|Incinerate|p2a: Nincada
+|-supereffective|p2a: Nincada
+|split|p2
+|-damage|p2a: Nincada|0 fnt
+|-damage|p2a: Nincada|0 fnt
+|faint|p2a: Nincada
+|
+|upkeep
+|
+|t:|1792231005
+|split|p2
+|switch|p2a: Nymble|Nymble, L15, F|39/39
+|switch|p2a: Nymble|Nymble, L15, F|100/100
+|-end|p2a: Nymble|fantasystats|[silent]
+|turn|4
+|
+|t:|1792231005
+|move|p1a: Crocalor|Incinerate|p2a: Nymble
+|-supereffective|p2a: Nymble
+|-crit|p2a: Nymble
+|split|p2
+|-damage|p2a: Nymble|0 fnt
+|-damage|p2a: Nymble|0 fnt
+|faint|p2a: Nymble
+|
+|win|Player

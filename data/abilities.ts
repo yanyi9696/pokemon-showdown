@@ -219,6 +219,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 	},
 	armortail: {
 		onFoeTryMove(target, source, move) {
+			if (move.rogueTopClearMind) return;
 			const targetAllExceptions = ['perishsong', 'flowershield', 'rototiller'];
 			if (move.target === 'foeSide' || (move.target === 'all' && !targetAllExceptions.includes(move.id))) {
 				return;
@@ -868,6 +869,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 	},
 	dazzling: {
 		onFoeTryMove(target, source, move) {
+			if (move.rogueTopClearMind) return;
 			const targetAllExceptions = ['perishsong', 'flowershield', 'rototiller'];
 			if (move.target === 'foeSide' || (move.target === 'all' && !targetAllExceptions.includes(move.id))) {
 				return;
@@ -3663,6 +3665,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 	},
 	queenlymajesty: {
 		onFoeTryMove(target, source, move) {
+			if (move.rogueTopClearMind) return;
 			const targetAllExceptions = ['perishsong', 'flowershield', 'rototiller'];
 			if (move.target === 'foeSide' || (move.target === 'all' && !targetAllExceptions.includes(move.id))) {
 				return;

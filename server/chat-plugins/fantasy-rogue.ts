@@ -48,7 +48,7 @@ export const commands: Chat.ChatCommands = {
 		},
 		retreat(target, room, user, connection) {
 			try {
-				if (!room?.battle?.options.fantasyRogue) throw new Error('请在幻想杯肉鸽战斗中使用撤退。');
+				if (!room?.battle?.options.fantasyRogue) throw new Error('请在幻想杯肉鸽战斗中使用逃跑。');
 				getRogueManager().retreat(connection, room.roomid);
 			} catch (error) {
 				this.errorReply((error as Error).message);

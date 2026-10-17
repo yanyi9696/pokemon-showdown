@@ -1,0 +1,206 @@
+|t:|1792222496
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L16, M|
+|poke|p1|Sandygast, L13, F|
+|poke|p1|Klefki, L9, M|
+|poke|p1|Flabébé, L11, F|
+|poke|p1|Skrelp, L11, F|
+|poke|p1|Maractus, L11, M|
+|poke|p2|Machop, L15, M|
+|poke|p2|Clobbopus, L15, M|
+|poke|p2|Mienfoo, L15, M|
+|teampreview
+|
+|t:|1792222496
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L16, M|51/51
+|switch|p1a: Marshtomp|Marshtomp, L16, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L15, M|59/59
+|switch|p2a: Machop|Machop, L15, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222496
+|-terastallize|p2a: Machop|Fighting
+|move|p1a: Marshtomp|Mud Shot|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|41/59
+|-damage|p2a: Machop|70/100
+|-unboost|p2a: Machop|spe|1
+|
+|t:|1792222496
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L13, F|40/40|[from] Mud Shot
+|switch|p1a: Sandygast|Sandygast, L13, F|100/100|[from] Mud Shot
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Machop|Close Combat|p1a: Sandygast
+|-immune|p1a: Sandygast
+|
+|-status|p2a: Machop|brn|[from] item: Flame Orb
+|upkeep
+|turn|2
+|
+|t:|1792222496
+|move|p2a: Machop|Close Combat|p1a: Sandygast
+|-immune|p1a: Sandygast
+|move|p1a: Sandygast|Astonish|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|35/59 brn
+|-damage|p2a: Machop|60/100 brn
+|
+|t:|1792222496
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L16, M|51/51|[from] Astonish
+|switch|p1a: Marshtomp|Marshtomp, L16, M|100/100|[from] Astonish
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|
+|split|p2
+|-damage|p2a: Machop|32/59 brn|[from] brn
+|-damage|p2a: Machop|55/100 brn|[from] brn
+|upkeep
+|turn|3
+|
+|t:|1792222496
+|move|p1a: Marshtomp|Mud Shot|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|16/59 brn
+|-damage|p2a: Machop|28/100 brn
+|-unboost|p2a: Machop|spe|1
+|
+|t:|1792222496
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L13, F|40/40|[from] Mud Shot
+|switch|p1a: Sandygast|Sandygast, L13, F|100/100|[from] Mud Shot
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Machop|Bulk Up|p2a: Machop
+|-boost|p2a: Machop|atk|1
+|-boost|p2a: Machop|def|1
+|
+|split|p2
+|-damage|p2a: Machop|13/59 brn|[from] brn
+|-damage|p2a: Machop|23/100 brn|[from] brn
+|upkeep
+|turn|4
+|
+|t:|1792222496
+|move|p1a: Sandygast|Astonish|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|9/59 brn
+|-damage|p2a: Machop|16/100 brn
+|
+|t:|1792222496
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L16, M|51/51|[from] Astonish
+|switch|p1a: Marshtomp|Marshtomp, L16, M|100/100|[from] Astonish
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Machop|Close Combat|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|faint|p1a: Marshtomp
+|
+|split|p2
+|-damage|p2a: Machop|6/59 brn|[from] brn
+|-damage|p2a: Machop|11/100 brn|[from] brn
+|upkeep
+|
+|t:|1792222496
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L13, F|40/40
+|switch|p1a: Sandygast|Sandygast, L13, F|100/100
+|-end|p1a: Sandygast|fantasystats|[silent]
+|turn|5
+|
+|t:|1792222496
+|move|p1a: Sandygast|Astonish|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|0 fnt
+|-damage|p2a: Machop|0 fnt
+|faint|p2a: Machop
+|
+|t:|1792222496
+|split|p1
+|switch|p1a: Klefki|Klefki, L9, M|31/31|[from] Astonish
+|switch|p1a: Klefki|Klefki, L9, M|100/100|[from] Astonish
+|-end|p1a: Klefki|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222496
+|split|p2
+|switch|p2a: Clobbopus|Clobbopus, L15, M|54/54
+|switch|p2a: Clobbopus|Clobbopus, L15, M|100/100
+|-end|p2a: Clobbopus|fantasystats|[silent]
+|turn|6
+|
+|t:|1792222496
+|move|p2a: Clobbopus|Close Combat|p1a: Klefki
+|split|p1
+|-damage|p1a: Klefki|0 fnt
+|-damage|p1a: Klefki|0 fnt
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|faint|p1a: Klefki
+|
+|upkeep
+|
+|t:|1792222496
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L13, F|40/40
+|switch|p1a: Sandygast|Sandygast, L13, F|100/100
+|-end|p1a: Sandygast|fantasystats|[silent]
+|turn|7
+|
+|t:|1792222496
+|move|p2a: Clobbopus|Close Combat|p1a: Sandygast
+|-immune|p1a: Sandygast
+|move|p1a: Sandygast|Astonish|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|48/54
+|-damage|p2a: Clobbopus|89/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792222496
+|move|p2a: Clobbopus|Sucker Punch|p1a: Sandygast
+|-supereffective|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|6/40
+|-damage|p1a: Sandygast|15/100
+|-enditem|p1a: Sandygast|Oran Berry|[eat]
+|split|p1
+|-heal|p1a: Sandygast|16/40|[from] item: Oran Berry
+|-heal|p1a: Sandygast|40/100|[from] item: Oran Berry
+|move|p1a: Sandygast|Astonish|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|42/54
+|-damage|p2a: Clobbopus|78/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792222496
+|move|p2a: Clobbopus|Sucker Punch|p1a: Sandygast
+|-supereffective|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|0 fnt
+|-damage|p1a: Sandygast|0 fnt
+|faint|p1a: Sandygast
+|
+|win|NPC

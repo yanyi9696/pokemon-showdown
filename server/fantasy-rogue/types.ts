@@ -19,6 +19,7 @@ export interface RogueTrainerCandidate {
 	team: PokemonSet[];
 }
 export interface RogueEncounter {
+	boss?: import('../../sim/rogue-bosses').RogueBossState;
 	blessingLevels?: number;
 	/** Aligned with the saved opponent team; retries retain the same rolls. */
 	stars?: number[];
@@ -39,7 +40,11 @@ export interface RogueEncounter {
 	catchChances?: Record<string, number>;
 }
 export interface RogueNode {
-	trade?: { kind: 'mint' | 'candy' | 'machine', stock: (RogueItem & { remaining: number })[], purchases: number };
+	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
+	restCandyPurchases?: Record<string, number>;
+	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth', stock: (RogueItem & { remaining: number })[], purchases: number,
+		services?: Partial<import('./growth').RogueGrowth> };
+	rewardScene?: import('./reward-scenes').RewardScene;
 	event?: import('./events').RogueEvent;
 	blessingPrepared?: boolean;
 	regiBoss?: boolean;
@@ -63,13 +68,15 @@ export interface RogueItem {
 	id: string;
 	name: string;
 	singleMove?: boolean;
-	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic';
+	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic';
 	nature?: string; move?: string; description?: string;
 	/** Omitted on cure items means all persistent status conditions. */
 	cureStatuses?: string[];
 	price: number;
 	/** false excludes an item from shops; omitted keeps custom packs compatible. */
 	shopFloor?: number | false;
+	/** Present for limited shop offers, including sold-out center candy. */
+	remaining?: number;
 	sellPrice?: number;
 	stat?: StatID;
 	/** Healing amount, or fraction of max HP for a revive. */
@@ -84,8 +91,11 @@ export interface RogueStarter {
 	availableInitially: boolean;
 }
 export interface RogueContent {
+	/** Enables the optional post-clear challenge only with all nineteen authored fourth moves. */
+	arceusMoves?: Record<string, string>;
 	routePools?: Record<number, RogueNode[]>;
 	events?: boolean;
+	rewardScenes?: boolean;
 	blessings?: boolean;
 	story?: boolean;
 	spirits?: boolean;
@@ -108,6 +118,7 @@ export interface RogueContent {
 	unlocks: Record<string, { starter: string, captures: 1 | 10 }>;
 }
 export interface RogueInventory {
+	growth?: import('./growth').RogueGrowth;
 	team: RoguePokemon[];
 	box?: RoguePokemon[];
 	bag: Record<string, number>;
@@ -119,7 +130,26 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	companionPickups?: { settled: string[], items: Record<string, number> };
+	preview?: { key: string, trainer: 'sada' | 'turo', stage: 'running' | 'result' | 'personal', result?: import('../../sim/fantasy-rogue').RogueBattleResult };
+	rewardHistory?: string[];
+	/** Offered routes, not selected routes. Saved with the floor so reconnecting cannot reroll pity. */
+	routeHistory?: {
+		floor: number, factors: Record<string, number>, tradeSeen: boolean, eliteMisses: number,
+	};
+	/** Persisted claims prevent duplicate elder supplies on reconnect or repeated dialogue. */
+	mentorGifts?: number[];
+	mentorOffer?: number;
+	mentorCard?: { floor: number, kind: import('./early-balance').MentorCard };
+	postgame?: {
+		stage: 'offer' | 'battle' | 'won' | 'lost' | 'declined',
+		before: RogueInventory,
+		node: RogueNode,
+		encounter: number,
+	};
 	eventHistory?: { id: string, floor: number }[];
+	/** Extra event fragments, independent of boss and blessing rewards. */
+	eventFragments?: Record<string, number>;
 	eventBuff?: { battles: number };
 	pendingSpiritGift?: boolean;
 	gymGiftReceived?: boolean;
@@ -129,6 +159,11 @@ export interface RogueRun extends RogueInventory {
 	blessingCheckpoint?: import('./blessings').RogueBlessings;
 	owner?: { id: string, name: string };
 	story?: { stage: RogueStoryStage, page: number, skip: boolean, canSkip: boolean };
+	/** Completed pre-battle openings, retained when a battle is retried. */
+	seenBossDialogues?: string[];
+	/** Persist identities/rosters before announcing them; levels are applied on entry. */
+	bossPreviews?: Record<number, RogueNode>;
+	leagueBriefingDone?: boolean;
 	startCard?: string;
 	clearRecorded?: boolean;
 	/** Per-floor friendship awards are not part of the inventory rollback. */
@@ -143,7 +178,7 @@ export interface RogueRun extends RogueInventory {
 	/** Per-run identities; gym history also unlocks the two hidden Elite Four trainers. */
 	trainerHistory?: { gyms: string[], eliteFour: string[], elitePlan?: Record<number, string> };
 	floor: number;
-	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete' | 'blessing' | 'event';
+	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete' | 'blessing' | 'event' | 'postgame';
 	node?: RogueNode;
 	/** Saved route candidates, including encounters, must survive reloads and reconnects. */
 	choices?: RogueNode[];
@@ -151,6 +186,8 @@ export interface RogueRun extends RogueInventory {
 	attempt: number;
 	/** Failed/retreated encounters keep their index and all spent resources. */
 	recovery?: 'defeat' | 'retreat';
+	/** Receipt for one automatic rescue attempt at real defeat; never retried on refresh. */
+	emergencyRecovery?: { cost: number, paid: boolean };
 	boosts: StatsTable;
 	startingSlots: number;
 	pendingCapture?: RoguePokemon;
@@ -160,6 +197,7 @@ export interface RogueRun extends RogueInventory {
 	notices?: string[];
 	lastReward?: {
 		floor: number, encounter?: number, name: string, money: number, items: Record<string, number>, points: number,
+		effect?: string,
 	};
 	/** Existing adventures and retried start requests do not announce again. */
 	announced?: boolean;
@@ -169,6 +207,8 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	/** Account-wide acknowledgement, independent of adventures and codex unlocks. */
+	onboardingSeen?: boolean;
 	/** Once discovered, the combination's description remains visible across adventures. */
 	tonicSecret?: boolean;
 	/** Permanent codex collection, independent of the current and previous adventures. */
@@ -179,6 +219,8 @@ export interface RogueAccount {
 	cards?: RogueClearCard[];
 	pendingClear?: RogueClearCard;
 	spiritUnlocked?: boolean;
+	/** Earned by full clears, independently of the optional spirit-mode access gate. */
+	unlockedSpirits?: string[];
 	revision: number;
 	points: number;
 	boosts: StatsTable;
@@ -207,18 +249,22 @@ export interface RogueStarterBuild {
 export interface RogueCommand {
 	id: string;
 	revision: number;
-	action: 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
-		'shopchallenge' | 'event' |
-		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'ability' | 'evs' |
+	action: 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+		'shopchallenge' | 'event' | 'companion' | 'previewresult' |
+		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
 		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'learnbonus';
 	useSpirit?: boolean;
+	/** A previously cleared spirit; validated against the account ledger on the server. */
+	selectedSpirit?: string;
 	/** Only the loopback preview may choose a specific enabled spirit. */
 	testSpirit?: string;
 	value?: string;
 	starters?: string[];
 	starterBuilds?: Record<string, RogueStarterBuild>;
 	member?: string;
+	/** Candy use only; omitted preserves single-item commands. */
+	count?: number;
 	order?: string[];
 	slot?: number;
 	evs?: StatsTable;

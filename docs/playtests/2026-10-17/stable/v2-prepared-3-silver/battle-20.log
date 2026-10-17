@@ -1,0 +1,159 @@
+|t:|1792222584
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L11, M|
+|poke|p1|Snorunt, L4, F|
+|poke|p1|Solosis, L8, F|
+|poke|p1|Wynaut, L6, F|
+|poke|p1|Drifloon, L5, M|
+|poke|p1|Tinkatink, L7, F|
+|poke|p2|Rookidee-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792222584
+|start
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|33/33
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|100/100
+|split|p2
+|switch|p2a: Rookidee|Rookidee-Fantasy, L13, M|47/47
+|switch|p2a: Rookidee|Rookidee-Fantasy, L13, M|100/100
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222584
+|-terastallize|p2a: Rookidee|Flying
+|move|p2a: Rookidee|Chuan Yun|p1a: Bulbasaur
+|-supereffective|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|
+|upkeep
+|
+|t:|1792222585
+|split|p1
+|switch|p1a: Tinkatink|Tinkatink, L7, F|25/25
+|switch|p1a: Tinkatink|Tinkatink, L7, F|100/100
+|-end|p1a: Tinkatink|fantasystats|[silent]
+|-ability|p1a: Tinkatink|Mold Breaker
+|turn|2
+|
+|t:|1792222585
+|move|p2a: Rookidee|Chuan Yun|p1a: Tinkatink
+|-resisted|p1a: Tinkatink
+|split|p1
+|-damage|p1a: Tinkatink|0 fnt
+|-damage|p1a: Tinkatink|0 fnt
+|faint|p1a: Tinkatink
+|
+|upkeep
+|
+|t:|1792222585
+|split|p1
+|switch|p1a: Snorunt|Snorunt, L4, F|18/18
+|switch|p1a: Snorunt|Snorunt, L4, F|100/100
+|-end|p1a: Snorunt|fantasystats|[silent]
+|turn|3
+|
+|t:|1792222585
+|move|p2a: Rookidee|Chuan Yun|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|0 fnt
+|-damage|p1a: Snorunt|0 fnt
+|faint|p1a: Snorunt
+|
+|upkeep
+|
+|t:|1792222585
+|split|p1
+|switch|p1a: Drifloon|Drifloon, L5, M|25/25
+|switch|p1a: Drifloon|Drifloon, L5, M|100/100
+|-end|p1a: Drifloon|fantasystats|[silent]
+|turn|4
+|
+|t:|1792222585
+|move|p2a: Rookidee|Chuan Yun|p1a: Drifloon
+|split|p1
+|-damage|p1a: Drifloon|0 fnt
+|-damage|p1a: Drifloon|0 fnt
+|faint|p1a: Drifloon
+|
+|upkeep
+|
+|t:|1792222586
+|split|p1
+|switch|p1a: Solosis|Solosis, L8, F|27/27
+|switch|p1a: Solosis|Solosis, L8, F|100/100
+|-end|p1a: Solosis|fantasystats|[silent]
+|turn|5
+|
+|t:|1792222586
+|move|p1a: Solosis|Protect|p1a: Solosis
+|-singleturn|p1a: Solosis|Protect
+|move|p2a: Rookidee|Foul Play|p1a: Solosis
+|-activate|p1a: Solosis|move: Protect
+|
+|upkeep
+|turn|6
+|
+|t:|1792222586
+|move|p1a: Solosis|Protect|p1a: Solosis
+|-singleturn|p1a: Solosis|Protect
+|move|p2a: Rookidee|Foul Play|p1a: Solosis
+|-activate|p1a: Solosis|move: Protect
+|
+|upkeep
+|turn|7
+|
+|t:|1792222586
+|move|p2a: Rookidee|Foul Play|p1a: Solosis
+|-supereffective|p1a: Solosis
+|split|p1
+|-damage|p1a: Solosis|0 fnt
+|-damage|p1a: Solosis|0 fnt
+|faint|p1a: Solosis
+|
+|upkeep
+|
+|t:|1792222586
+|split|p1
+|switch|p1a: Wynaut|Wynaut, L6, F|28/28
+|switch|p1a: Wynaut|Wynaut, L6, F|100/100
+|-end|p1a: Wynaut|fantasystats|[silent]
+|turn|8
+|
+|t:|1792222586
+|move|p2a: Rookidee|Foul Play|p1a: Wynaut
+|-supereffective|p1a: Wynaut
+|split|p1
+|-damage|p1a: Wynaut|2/28
+|-damage|p1a: Wynaut|8/100
+|move|p1a: Wynaut|Safeguard|p1a: Wynaut
+|-sidestart|p1: Player|Safeguard
+|
+|upkeep
+|turn|9
+|
+|t:|1792222586
+|move|p2a: Rookidee|Foul Play|p1a: Wynaut
+|-supereffective|p1a: Wynaut
+|split|p1
+|-damage|p1a: Wynaut|0 fnt
+|-damage|p1a: Wynaut|0 fnt
+|faint|p1a: Wynaut
+|
+|win|NPC

@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
@@ -12,6 +13,7 @@ const { ROGUE_BLESSINGS, blessing } = require('../../dist/sim/rogue-blessing-dat
 const { Battle } = require('../../dist/sim/battle');
 const { throwRogueBall, rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
+const { eventCost } = require('../../dist/server/fantasy-rogue/early-balance');
 const { PRNG } = require('../../dist/sim/prng');
 const { set, stats } = require('../fixtures/fantasy-rogue');
 
@@ -19,7 +21,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 	this.timeout(20000);
 	let store, engine, content, random;
 	const account = () => store.get('eventtester');
-	const cmd = (action, details = {}) => engine.command('eventtester', { id: randomUUID(), revision: account().revision, action, ...details });
+	const cmd = (action, details = {}) => commandAfterOpening(engine, 'eventtester', { id: randomUUID(), revision: account().revision, action, ...details });
 	beforeEach(() => {
 		store = new RogueStore(':memory:'); content = createPreviewContent(); random = () => 0;
 		engine = new RogueEngine(store, content, n => random(n));
@@ -80,7 +82,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		}
 		assert.equal(new Set(run.eventHistory.slice(0, 4).map(e => e.id)).size, 4);
 	});
-	it('keeps spectator rosters and order symmetric with legal randomized wild IVs', () => {
+	it('keeps spectator rosters distinct but comparable with legal randomized wild IVs', () => {
 		const run = account().run, rng = new PRNG([4, 3, 2, 1]);
 		run.floor = 41; run.node = { id: 'event', kind: 'event', name: '事件', encounters: [], reward: { money: 0, items: {} } };
 		let first = true;
@@ -89,7 +91,9 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 			return rng.random(n);
 		});
 		const [a, b] = run.node.event.teams;
-		assert.deepEqual(a, b);
+		assert.equal(new Set([...a, ...b].map(m => m.species)).size, 6);
+		const bst = t => t.reduce((sum, m) => sum + Dex.species.get(m.species).bst, 0);
+		assert(Math.max(bst(a), bst(b)) / Math.min(bst(a), bst(b)) <= 1.1);
 		const ivs = a.flatMap(mon => Object.values(mon.ivs));
 		assert(ivs.every(iv => iv >= 20 && iv <= 31));
 		assert(new Set(ivs).size > 1);
@@ -132,11 +136,14 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		cmd('use', { value: 'revive', member: account().run.team[0].id }); cmd('continue');
 		assert.equal(account().run.floor, 22);
 	});
-	it('rejects retreat without changing the event, battle or resources', () => {
-		enter('room'); choose('fight'); cmd('battle');
-		const before = account();
-		assert.throws(() => cmd('retreat'), /不能撤退/);
-		assert.deepEqual(account(), before);
+	it('escapes an event battle while retaining its pending branch and spent resources', () => {
+		enter('room'); choose('fight');
+		const before = account().run;
+		settle(false, true, true);
+		const after = account().run;
+		assert.equal(after.phase, 'ready'); assert.equal(after.node.event.stage, 'battle');
+		assert.equal(after.recovery, 'retreat'); assert.equal(after.money, before.money);
+		assert.equal(after.team[0].pp[0].pp, 1); assert.deepEqual(after.node.encounters, before.node.encounters);
 	});
 	it('keeps companions caught before an event defeat and settles the event only after placing them', () => {
 		enter('room'); choose('fight');
@@ -163,7 +170,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 			if (roll === 0) assert.notDeepEqual(run.bag, oldBag);
 			else {
 				assert.deepEqual(run.bag, oldBag);
-				assert.equal(run.money, 10000 - (roll === 80 ? eventBudget(21, 0.5) : 0));
+				assert.equal(run.money, 10000 - (roll === 80 ? eventCost(21, 0.5) : 0));
 			}
 			assert.throws(() => choose('sleep'), /已更新/);
 		}
@@ -171,6 +178,8 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 	it('pays room loot and one four-choice toolbox plus stage shards exactly once', () => {
 		enter('room', 101); choose('fight');
 		const { run, result } = settle(true);
+		assert.equal(account().run.node.event.stage, 'fragments');
+		choose('supplies');
 		const now = account().run;
 		assert.equal(now.blessings.shards, 4);
 		assert.equal(now.blessings.pending.length, 1);
@@ -182,7 +191,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(account().run.phase, 'event');
 	});
 	it('shows trade costs, blocks unaffordable trades, and pays the agreed mushroom package', () => {
-		enter('mushrooms'); const cost = eventBudget(21, 0.4);
+		enter('mushrooms'); const cost = eventCost(21, 0.4);
 		store.change('eventtester', a => { a.run.money = cost - 1; });
 		assert.equal(eventView(account().run).options[0].disabled, true);
 		assert.throws(() => choose('trade'), /无法选择/);
@@ -192,24 +201,25 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		const value = TREASURES.reduce((sum, item) => sum + (account().run.bag[item.id] || 0) * item.sellPrice, 0);
 		assert.equal(value, 1350);
 	});
-	it('consumes mushroom vitality per entered battle, not per floor or spectator battle', () => {
+	it('retains permanent mushroom training across repeated battles', () => {
 		enter('mushrooms'); choose('taste');
-		assert.equal(account().run.eventBuff.battles, 3);
+		const training = account().run.team[0].training;
+		assert(training.offense > 0 && training.defense > 0);
+		assert(!account().run.eventBuff);
 		for (let i = 3; i > 0; i--) {
 			enter('room', 21 + i); choose('fight'); cmd('battle');
-			assert.equal(account().run.eventBuff.battles, i - 1);
-			assert.equal(engine.battleState('eventtester').eventBuff, true);
+			assert.deepEqual(engine.battleState('eventtester').team[0].training, training);
 			const run = account().run;
 			engine.settle('eventtester', run.battle.token, { encounterId: run.battle.encounterId, won: false, team: run.team, bag: run.bag });
+			assert.deepEqual(account().run.team[0].training, training);
 		}
-		enter('room'); choose('fight'); cmd('battle');
-		assert.equal(engine.battleState('eventtester').eventBuff, false);
 	});
-	it('restores an unused vitality charge when a battle room could not launch', () => {
+	it('preserves permanent training when a battle room could not launch', () => {
 		enter('mushrooms'); choose('taste');
+		const training = account().run.team[0].training;
 		enter('room'); choose('fight'); cmd('battle');
 		engine.recover('eventtester', account().run.battle.token);
-		assert.equal(account().run.eventBuff.battles, 3);
+		assert.deepEqual(account().run.team[0].training, training);
 	});
 	it('only charges psychic once for actual negative outcomes and never for a voluntary room battle', () => {
 		store.change('eventtester', a => { a.run.blessings.owned.push({ id: 'psychic', family: 'psychic', tier: 'prismatic', floor: 50 }); });
@@ -218,14 +228,16 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		enter('mysteryball', 22); choose('open', 90); assert.equal(account().run.blessings.psychic, 50);
 	});
 	it('saves a real spectator battle and settles according to its actual winner without player progress', () => {
-		enter('forest'); store.change('eventtester', a => { a.run.eventBuff = { battles: 3 }; });
+		enter('mushrooms'); choose('taste');
+		const training = account().run.team[0].training;
+		enter('forest');
 		choose('left');
 		const run = account().run, replay = run.node.event.replay;
 		assert.ok(replay.log.some(line => line.startsWith('|move|')));
 		assert.ok(replay.log.some(line => line.startsWith('|-damage|')));
 		assert.ok(replay.log.some(line => line.startsWith('|win|') || line === '|tie|'));
 		engine.migrate('eventtester'); assert.deepEqual(account().run.node.event.replay, replay);
-		assert.equal(account().run.eventBuff.battles, 3);
+		assert.deepEqual(account().run.team[0].training, training);
 		assert.deepEqual(account().run.blessings.defeated, []);
 		choose('watched');
 		assert.equal(account().run.phase, replay.winner === 1 ? 'ready' : 'event');
@@ -295,7 +307,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(mon.set.species, 'Pikachu'); assert.equal(mon.set.shiny, true);
 	});
 	it('keeps wild loot budgets inclusive of the existing drop, not paid twice', () => {
-		assert.equal(eventBudget(21, 1.15), 1050);
+		assert.equal(eventBudget(21, 1.15), 1100);
 		assert.equal(expectedWildLoot(1), 254.4);
 		assert.equal(expectedWildLoot(161), 4464);
 	});

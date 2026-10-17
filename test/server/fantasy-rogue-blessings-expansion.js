@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const {randomUUID} = require('crypto');
 const {Battle} = require('../../dist/sim/battle');
@@ -66,7 +67,7 @@ describe('Fantasy Rogue expanded blessings', function () {
 		battle.actions.tryMoveHit(a, battle.p2.active[0], battle.dex.getActiveMove('fissure'));
 		assert.equal(a.hp, 1);
 		assert(!battle.p1.pokemon.some(p => p.hasItem('focussash')));
-		assert.equal(rogueBattleResult(battle).team[1].set.item, 'focussash');
+		assert.equal(rogueBattleResult(battle).team[1].set.item, '');
 	});
 	it('does not share a Mega Stone or a Z Crystal', () => {
 		begin(['mousefamily'], mice(['', 'charizarditex', 'eeviumz', '', '', '']));
@@ -196,7 +197,7 @@ describe('Fantasy Rogue expanded blessing campaign', function () {
 	it('reduces only last-run selections, without changing unrelated candidates', () => {
 		const {run} = setup(); run.previousBlessings = ['medic'];
 		const pool = blessings.blessingCandidates(run, content);
-		assert.equal(pool.find(entry => entry.id === 'medic').appearanceWeight, 80);
+		assert.equal(pool.find(entry => entry.id === 'medic').appearanceWeight, 40);
 		assert.equal(pool.find(entry => entry.id === 'lowhp').appearanceWeight, 100);
 	});
 	it('gives every individual one legal learning credit and retains a fifth move slot', () => {
@@ -272,7 +273,7 @@ describe('Fantasy Rogue expanded blessing campaign', function () {
 		const store = new RogueStore(':memory:');
 		const engine = new RogueEngine(store, content, () => 0);
 		const account = () => store.get('expansionqa');
-		const command = (action, data = {}) => engine.command('expansionqa', {
+		const command = (action, data = {}) => commandAfterOpening(engine, 'expansionqa', {
 			id: randomUUID(), revision: account().revision, action, ...data,
 		});
 		try { command('start', {starters: ['bulbasaur']}); fn({store, engine, account, command}); }

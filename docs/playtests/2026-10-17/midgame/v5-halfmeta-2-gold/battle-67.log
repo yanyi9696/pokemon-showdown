@@ -1,0 +1,102 @@
+|t:|1792230076
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L22, M|
+|poke|p1|Crocalor, L16, F|
+|poke|p1|Bulbasaur, L14, M|
+|poke|p1|Maractus, L10, M|
+|poke|p1|Plusle, L15, F|
+|poke|p1|Drowzee, L12, M|
+|poke|p2|Carnivine-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792230076
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L22, M|72/72
+|switch|p1a: Marshtomp|Marshtomp, L22, M|100/100
+|split|p2
+|switch|p2a: Carnivine|Carnivine-Fantasy, L20, M|69/69
+|switch|p2a: Carnivine|Carnivine-Fantasy, L20, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-start|p2a: Carnivine|typechange|Grass/Dark|[silent]
+|-start|p2a: Carnivine|fantasystats|84/120/107/70/107/46|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-start|p2a: Carnivine|typechange|Grass/Dark|[silent]
+|-start|p2a: Carnivine|fantasystats|84/120/107/70/107/46|[silent]
+|turn|1
+|
+|t:|1792230077
+|-terastallize|p2a: Carnivine|Grass
+|move|p1a: Marshtomp|Rock Throw|p2a: Carnivine
+|split|p2
+|-damage|p2a: Carnivine|52/69
+|-damage|p2a: Carnivine|76/100
+|move|p2a: Carnivine|Giga Drain|p1a: Marshtomp
+|-supereffective|p1a: Marshtomp
+|-crit|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|split|p2
+|-heal|p2a: Carnivine|69/69|[from] drain|[of] p1a: Marshtomp
+|-heal|p2a: Carnivine|100/100|[from] drain|[of] p1a: Marshtomp
+|faint|p1a: Marshtomp
+|
+|upkeep
+|
+|t:|1792230077
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L16, F|60/60
+|switch|p1a: Crocalor|Crocalor, L16, F|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|2
+|
+|t:|1792230077
+|move|p1a: Crocalor|Incinerate|p2a: Carnivine
+|-supereffective|p2a: Carnivine
+|split|p2
+|-damage|p2a: Carnivine|43/69
+|-damage|p2a: Carnivine|63/100
+|move|p2a: Carnivine|Giga Drain|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|41/60
+|-damage|p1a: Crocalor|69/100
+|split|p2
+|-heal|p2a: Carnivine|53/69|[from] drain|[of] p1a: Crocalor
+|-heal|p2a: Carnivine|77/100|[from] drain|[of] p1a: Crocalor
+|
+|upkeep
+|turn|3
+|
+|t:|1792230078
+|move|p1a: Crocalor|Incinerate|p2a: Carnivine
+|-supereffective|p2a: Carnivine
+|split|p2
+|-damage|p2a: Carnivine|27/69
+|-damage|p2a: Carnivine|40/100
+|move|p2a: Carnivine|Yao Lan|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|17/60
+|-damage|p1a: Crocalor|29/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792230078
+|move|p1a: Crocalor|Incinerate|p2a: Carnivine
+|-supereffective|p2a: Carnivine
+|split|p2
+|-damage|p2a: Carnivine|0 fnt
+|-damage|p2a: Carnivine|0 fnt
+|faint|p2a: Carnivine
+|
+|win|Player

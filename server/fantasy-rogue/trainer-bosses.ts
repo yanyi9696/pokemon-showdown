@@ -14,6 +14,8 @@ const dex = Dex.mod('gen9fantasy');
 /** Normal Showdown exports may name a Mega forme but enter battle in its underlying forme. */
 export function trainerBossCandidates(floor: number, level: number): RogueTrainerCandidate[] {
 	const kind = BOSS_FLOORS.get(floor);
+	// Every configured gym leader has a roster at every gym floor. This selects roster strength,
+	// not a fixed leader/type; chooseTrainer draws uniformly from all unvisited identities below.
 	return TrainerBossData.filter(entry => kind === '道馆' ? entry.role === 'gym' && entry.floor === floor :
 		kind === '四天王' ? entry.role === 'elitefour' : kind === '冠军' && entry.role === 'champion').map(entry => ({
 		trainer: {

@@ -1,0 +1,77 @@
+|t:|1792223147
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L13, M|
+|poke|p1|Sandygast, L9, F|
+|poke|p1|Spiritomb, L8, M|
+|poke|p1|Baltoy, L8|
+|poke|p1|Flabébé, L7, F|
+|poke|p2|Duskull-Fantasy, L8, M|
+|teampreview
+|
+|t:|1792223147
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L13, M|38/38
+|switch|p1a: Mudkip|Mudkip, L13, M|100/100
+|split|p2
+|switch|p2a: Duskull|Duskull-Fantasy, L8, M|26/26
+|switch|p2a: Duskull|Duskull-Fantasy, L8, M|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Duskull|typechange|Ghost/Normal|[silent]
+|-start|p2a: Duskull|fantasystats|40/60/115/15/115/15|[silent]
+|-ability|p2a: Duskull|Intimidate|boost
+|-unboost|p1a: Mudkip|atk|1
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Duskull|typechange|Ghost/Normal|[silent]
+|-start|p2a: Duskull|fantasystats|40/60/115/15/115/15|[silent]
+|turn|1
+|
+|t:|1792223148
+|-terastallize|p2a: Duskull|Ghost
+|move|p1a: Mudkip|Rock Throw|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|18/26
+|-damage|p2a: Duskull|70/100
+|
+|t:|1792223148
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L8, M|28/28|[from] Rock Throw
+|switch|p1a: Spiritomb|Spiritomb, L8, M|100/100|[from] Rock Throw
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Duskull|Astonish|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|20/28
+|-damage|p1a: Spiritomb|72/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223148
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Duskull
+|-supereffective|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|5/26
+|-damage|p2a: Duskull|20/100
+|
+|t:|1792223149
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L13, M|38/38|[from] Shadow Sneak
+|switch|p1a: Mudkip|Mudkip, L13, M|100/100|[from] Shadow Sneak
+|-end|p1a: Mudkip|fantasystats|[silent]
+|move|p2a: Duskull|Curse|p1a: Mudkip
+|-start|p1a: Mudkip|Curse|[of] p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|0 fnt
+|-damage|p2a: Duskull|0 fnt
+|faint|p2a: Duskull
+|
+|win|Player

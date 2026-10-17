@@ -7,13 +7,14 @@ const mon = (species: string, ability: string, moves: string[], extra: Partial<E
 	({ species, ability, moves, ...extra });
 
 export const FantasyEliteBosses: Record<number, { level: number, candidates: EliteSet[] }> = {
-	10: { level: 10, candidates: [
+	// These opponents already have zero EVs. Lower the first base level instead of adding EVs to "halve" them.
+	10: { level: 8, candidates: [
 		mon('tyruntfantasy', 'Sand Rush', ['yaolan', 'Rock Tomb', 'Rock Polish']),
 		mon('zoruahisuifantasy', 'shiyingli', ['Swift', 'Hex', 'Pain Split']),
 		mon('duskullfantasy', 'Intimidate', ['Curse', 'Mean Look', 'Astonish']),
 		mon('skittyfantasy', 'Pixilate', ['qingsumihun', 'Swift', 'Earth Power']),
 		mon('rookideefantasy', 'zhengqiang', ['chuanyun', 'Foul Play', 'Roost']),
-		mon('onixfantasy', 'mishi', ['Rock Throw', 'Avalanche', 'Body Press']),
+		mon('onixfantasy', 'Rock Head', ['Avalanche', 'Stealth Rock', 'Rock Slide']),
 	] },
 	30: { level: 20, candidates: [
 		mon('cherrimfantasy', 'Flower Gift', ['Giga Drain', 'Synthesis', 'Sunny Day', 'Weather Ball'], { ivs: { atk: 0 } }),

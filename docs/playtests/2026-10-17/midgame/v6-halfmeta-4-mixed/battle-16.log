@@ -1,0 +1,57 @@
+|t:|1792230235
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L11, M|
+|poke|p1|Fuecoco, L10, M|
+|poke|p1|Bulbasaur, L10, M|
+|poke|p1|Grubbin, L6, F|
+|poke|p1|Nidoran-M, L7, M|
+|poke|p1|Bidoof, L5, F|
+|poke|p2|Skitty-Fantasy, L8, M|
+|teampreview
+|
+|t:|1792230235
+|start
+|split|p1
+|switch|p1a: Popplio|Popplio, L11, M|39/39
+|switch|p1a: Popplio|Popplio, L11, M|100/100
+|split|p2
+|switch|p2a: Skitty|Skitty-Fantasy, L8, M|28/28
+|switch|p2a: Skitty|Skitty-Fantasy, L8, M|100/100
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Skitty|typechange|Fairy/Ground|[silent]
+|-start|p2a: Skitty|fantasystats|50/65/45/65/45/65|[silent]
+|turn|1
+|
+|t:|1792230237
+|-terastallize|p2a: Skitty|Fairy
+|move|p1a: Popplio|Aqua Jet|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|12/28
+|-damage|p2a: Skitty|43/100
+|move|p2a: Skitty|Earth Power|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|33/39
+|-damage|p1a: Popplio|85/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230238
+|move|p1a: Popplio|Aqua Jet|p2a: Skitty
+|split|p2
+|-damage|p2a: Skitty|0 fnt
+|-damage|p2a: Skitty|0 fnt
+|faint|p2a: Skitty
+|
+|win|Player

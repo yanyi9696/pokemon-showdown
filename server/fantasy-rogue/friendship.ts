@@ -1,5 +1,6 @@
 import type { RoguePokemon, RogueBattleResult } from '../../sim/fantasy-rogue';
 import type { RogueRun } from './types';
+import { ownsBlessing } from '../../sim/rogue-blessing-data';
 
 export const ROGUE_INITIAL_FRIENDSHIP = 70;
 export const ROGUE_FRIENDSHIP_EVOLUTION = 160;
@@ -15,8 +16,13 @@ export function friendship(mon: RoguePokemon) {
 	return Math.max(0, Math.min(255, Math.floor(mon.set.happiness ?? 255)));
 }
 
-export function changeFriendship(mon: RoguePokemon, amount: number) {
+export function changeFriendship(mon: RoguePokemon, amount: number, run?: RogueRun) {
+	if (amount > 0 && mon.initialPartner && ownsBlessing(run?.blessings, 'bond')) {
+		const boosted = amount * 1.5 + (mon.bondFriendshipRemainder || 0);
+		amount = Math.floor(boosted); mon.bondFriendshipRemainder = boosted - amount;
+	}
 	mon.set.happiness = Math.max(0, Math.min(255, friendship(mon) + amount));
+	if (mon.set.happiness === 255) delete mon.bondFriendshipRemainder;
 }
 
 function ledger(run: RogueRun) {
@@ -40,7 +46,7 @@ export function battleFriendship(run: RogueRun, result: RogueBattleResult, token
 		}
 		if (result.won && mon.hp && participants.has(mon.id)) {
 			const count = progress.battles[mon.id] || 0;
-			if (count < 2) changeFriendship(mon, 1);
+			if (count < 2) changeFriendship(mon, 1, run);
 			progress.battles[mon.id] = count + 1;
 		}
 	}
@@ -50,5 +56,5 @@ export function floorFriendship(run: RogueRun) {
 	const progress = ledger(run);
 	if (progress.completed) return;
 	progress.completed = true;
-	for (const mon of run.team) if (mon.hp > 0) changeFriendship(mon, 3);
+	for (const mon of run.team) if (mon.hp > 0) changeFriendship(mon, 3, run);
 }

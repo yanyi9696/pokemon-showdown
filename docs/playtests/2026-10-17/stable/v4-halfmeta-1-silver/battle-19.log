@@ -1,0 +1,46 @@
+|t:|1792223707
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Mudkip, L10, M|
+|poke|p1|Bulbasaur, L9, F|
+|poke|p1|Dedenne, L5, F|
+|poke|p1|Cacnea, L8, F|
+|poke|p1|Nosepass, L6, F|
+|poke|p2|Onix-Fantasy, L8, F|
+|teampreview
+|
+|t:|1792223707
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|42/42
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|split|p2
+|switch|p2a: Onix|Onix-Fantasy, L8, F|26/26
+|switch|p2a: Onix|Onix-Fantasy, L8, F|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Onix|typechange|Rock/Ice|[silent]
+|-start|p2a: Onix|fantasystats|35/45/160/30/45/70|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Onix|typechange|Rock/Ice|[silent]
+|-start|p2a: Onix|fantasystats|35/45/160/30/45/70|[silent]
+|turn|1
+|
+|t:|1792223708
+|-terastallize|p2a: Onix|Rock
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Fuecoco|Ember|p2a: Onix
+|-supereffective|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|0 fnt
+|-damage|p2a: Onix|0 fnt
+|faint|p2a: Onix
+|
+|win|Player

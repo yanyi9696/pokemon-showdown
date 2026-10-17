@@ -24,18 +24,26 @@ export function evolutionChildren(name: string) {
 		!child.battleOnly && !child.forme.endsWith('Gmax'));
 }
 
-/** Explicitly listed item evolutions skip the extra wild delay, but retain the parent's level floor. */
+/** Acquired encounters/gifts require level 30 for item or trade evolutions, even when listed explicitly. */
 export function minimumEvolutionLevel(name: string): number {
 	const species = dex.species.get(name);
 	const parent = evolutionParent(name);
 	const form = species.name !== species.baseSpecies ? dex.species.get(species.baseSpecies) : species;
-	return Math.max(species.evoLevel || (parent && form.evoLevel) || 1,
+	const itemOrTrade = parent && [species, form].some(entry => entry.evoItem ||
+		['useItem', 'trade', 'levelHold'].includes(entry.evoType || ''));
+	return Math.max(itemOrTrade ? 30 : 1, species.evoLevel || (parent && form.evoLevel) || 1,
 		parent ? minimumEvolutionLevel(parent) : 1);
 }
 
 /** A higher-tier encounter cannot spawn an evolved form below its chain's explicit level requirements. */
 export function lowerToEligibleStage(name: string, level: number): string {
 	let species = dex.species.get(name);
+	if (!species.exists) {
+		const custom = Dex.mod('gen9fantasy').species.get(name);
+		if (!custom.exists) return name;
+		const original = dex.species.get(custom.name.replace('-Fantasy', ''));
+		return original.exists && minimumEvolutionLevel(original.name) > level ? lowerToEligibleStage(original.name, level) : custom.name;
+	}
 	while (minimumEvolutionLevel(species.name) > level) {
 		const parent = evolutionParent(species.name);
 		if (!parent) break;
@@ -78,8 +86,8 @@ export function wildStageAtLevel(
 	for (let depth = 0; depth < 5; depth++) {
 		const choices = evolutionChildren(species.name).map(child => ({
 			child,
-			level: child.evoLevel || (explicitlyListed.has(child.name) ? minimumEvolutionLevel(child.name) :
-			Math.max(20, previous + 15)),
+			level: Math.max(minimumEvolutionLevel(child.name), child.evoLevel ||
+				(explicitlyListed.has(child.name) ? 1 : Math.max(20, previous + 15))),
 		})).filter(option => option.level <= level);
 		if (!choices.length) break;
 		const selected = choices[random(choices.length)];

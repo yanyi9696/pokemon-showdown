@@ -1,0 +1,71 @@
+|t:|1792222049
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Skeledirge, L48, M|
+|poke|p1|Togedemaru, L31, M|
+|poke|p1|Spiritomb, L48, M|
+|poke|p1|Emolga, L31, M|
+|poke|p1|Eiscue, L29, F|
+|poke|p1|Probopass, L29, F|
+|poke|p2|Heatmor-Fantasy, L40, M|
+|teampreview
+|
+|t:|1792222049
+|start
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L48, M|126/126
+|switch|p1a: Spiritomb|Spiritomb, L48, M|100/100
+|split|p2
+|switch|p2a: Heatmor|Heatmor-Fantasy, L40, M|130/130
+|switch|p2a: Heatmor|Heatmor-Fantasy, L40, M|100/100
+|-start|p2a: Heatmor|typechange|Fire/Rock|[silent]
+|-start|p2a: Heatmor|fantasystats|85/137/86/65/66/90|[silent]
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|-start|p2a: Heatmor|typechange|Fire/Rock|[silent]
+|-start|p2a: Heatmor|fantasystats|85/137/86/65/66/90|[silent]
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222050
+|-terastallize|p2a: Heatmor|Fire
+|move|p2a: Heatmor|Fire Lash|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|62/126
+|-damage|p1a: Spiritomb|50/100
+|-unboost|p1a: Spiritomb|def|1
+|move|p1a: Spiritomb|Shadow Ball|p2a: Heatmor
+|split|p2
+|-damage|p2a: Heatmor|52/130
+|-damage|p2a: Heatmor|40/100
+|
+|t:|1792222050
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L48, M|174/174|[from] Shadow Ball
+|switch|p1a: Skeledirge|Skeledirge, L48, M|100/100|[from] Shadow Ball
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|
+|upkeep
+|turn|2
+|
+|t:|1792222050
+|move|p2a: Heatmor|Fire Lash|p1a: Skeledirge
+|-resisted|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|142/174
+|-damage|p1a: Skeledirge|82/100
+|-unboost|p1a: Skeledirge|def|1
+|move|p1a: Skeledirge|Shadow Ball|p2a: Heatmor
+|split|p2
+|-damage|p2a: Heatmor|0 fnt
+|-damage|p2a: Heatmor|0 fnt
+|faint|p2a: Heatmor
+|
+|win|Player

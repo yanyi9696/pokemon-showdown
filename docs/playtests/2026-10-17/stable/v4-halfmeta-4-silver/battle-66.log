@@ -1,0 +1,325 @@
+|t:|1792223870
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Brionne, L30, M|
+|poke|p1|Crocalor, L29, M|
+|poke|p1|Ivysaur, L21, M|
+|poke|p1|Corsola-Galar, L24, F|
+|poke|p1|Minun, L19, M|
+|poke|p1|Dedenne, L19, M|
+|poke|p2|Machop, L25, M|
+|poke|p2|Clobbopus, L25, F|
+|poke|p2|Mienfoo, L25, M|
+|poke|p2|Sneasel-Hisui, L25, F|
+|teampreview
+|
+|t:|1792223870
+|start
+|split|p1
+|switch|p1a: Brionne|Brionne, L30, M|87/87
+|switch|p1a: Brionne|Brionne, L30, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L25, M|93/93
+|switch|p2a: Machop|Machop, L25, M|100/100
+|-end|p1a: Brionne|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Brionne|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223870
+|-terastallize|p2a: Machop|Fighting
+|move|p1a: Brionne|Disarming Voice|p2a: Machop
+|-supereffective|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|16/93
+|-damage|p2a: Machop|18/100
+|move|p2a: Machop|Close Combat|p1a: Brionne
+|split|p1
+|-damage|p1a: Brionne|41/87
+|-damage|p1a: Brionne|48/100
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|
+|-status|p2a: Machop|brn|[from] item: Flame Orb
+|upkeep
+|turn|2
+|
+|t:|1792223871
+|move|p1a: Brionne|Disarming Voice|p2a: Machop
+|-supereffective|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|0 fnt
+|-damage|p2a: Machop|0 fnt
+|faint|p2a: Machop
+|
+|upkeep
+|
+|t:|1792223871
+|split|p2
+|switch|p2a: Clobbopus|Clobbopus, L25, F|83/83
+|switch|p2a: Clobbopus|Clobbopus, L25, F|100/100
+|-end|p2a: Clobbopus|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223871
+|move|p1a: Brionne|Disarming Voice|p2a: Clobbopus
+|-supereffective|p2a: Clobbopus
+|-crit|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|22/83
+|-damage|p2a: Clobbopus|27/100
+|move|p2a: Clobbopus|Close Combat|p1a: Brionne
+|split|p1
+|-damage|p1a: Brionne|13/87
+|-damage|p1a: Brionne|15/100
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|
+|upkeep
+|turn|4
+|
+|t:|1792223871
+|move|p1a: Brionne|Waterfall|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|0 fnt
+|-damage|p2a: Clobbopus|0 fnt
+|faint|p2a: Clobbopus
+|
+|upkeep
+|
+|t:|1792223871
+|split|p2
+|switch|p2a: Mienfoo|Mienfoo, L25, M|65/65
+|switch|p2a: Mienfoo|Mienfoo, L25, M|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|turn|5
+|
+|t:|1792223872
+|split|p1
+|switch|p1a: Corsola|Corsola-Galar, L24, F|75/75
+|switch|p1a: Corsola|Corsola-Galar, L24, F|100/100
+|-end|p1a: Corsola|fantasystats|[silent]
+|move|p2a: Mienfoo|High Jump Kick|p1a: Corsola
+|-immune|p1a: Corsola
+|split|p2
+|-damage|p2a: Mienfoo|33/65|[from] highjumpkick
+|-damage|p2a: Mienfoo|51/100|[from] highjumpkick
+|
+|upkeep
+|turn|6
+|
+|t:|1792223872
+|move|p2a: Mienfoo|Knock Off|p1a: Corsola
+|-supereffective|p1a: Corsola
+|split|p1
+|-damage|p1a: Corsola|41/75
+|-damage|p1a: Corsola|55/100
+|-ability|p1a: Corsola|Weak Armor|boost
+|-unboost|p1a: Corsola|def|1
+|-boost|p1a: Corsola|spe|2
+|move|p1a: Corsola|Astonish|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|24/65
+|-damage|p2a: Mienfoo|37/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792223872
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L29, M|97/97
+|switch|p1a: Crocalor|Crocalor, L29, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Mienfoo|Knock Off|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|78/97
+|-damage|p1a: Crocalor|81/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792223873
+|move|p2a: Mienfoo|High Jump Kick|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|27/97
+|-damage|p1a: Crocalor|28/100
+|move|p1a: Crocalor|Incinerate|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|0 fnt
+|-damage|p2a: Mienfoo|0 fnt
+|faint|p2a: Mienfoo
+|
+|upkeep
+|
+|t:|1792223873
+|split|p2
+|switch|p2a: Sneasel|Sneasel-Hisui, L25, F|70/70
+|switch|p2a: Sneasel|Sneasel-Hisui, L25, F|100/100
+|-end|p2a: Sneasel|fantasystats|[silent]
+|turn|9
+|
+|t:|1792223873
+|split|p1
+|switch|p1a: Corsola|Corsola-Galar, L24, F|41/75
+|switch|p1a: Corsola|Corsola-Galar, L24, F|55/100
+|-end|p1a: Corsola|fantasystats|[silent]
+|move|p2a: Sneasel|Close Combat|p1a: Corsola
+|-immune|p1a: Corsola
+|
+|upkeep
+|turn|10
+|
+|t:|1792223873
+|move|p2a: Sneasel|Throat Chop|p1a: Corsola
+|-supereffective|p1a: Corsola
+|split|p1
+|-damage|p1a: Corsola|5/75
+|-damage|p1a: Corsola|7/100
+|-start|p1a: Corsola|Throat Chop|[silent]
+|-ability|p1a: Corsola|Weak Armor|boost
+|-unboost|p1a: Corsola|def|1
+|-boost|p1a: Corsola|spe|2
+|move|p1a: Corsola|Tackle|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|64/70
+|-damage|p2a: Sneasel|92/100
+|
+|upkeep
+|turn|11
+|
+|t:|1792223874
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L21, M|65/65
+|switch|p1a: Ivysaur|Ivysaur, L21, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Sneasel|Throat Chop|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|35/65
+|-damage|p1a: Ivysaur|54/100
+|-start|p1a: Ivysaur|Throat Chop|[silent]
+|
+|upkeep
+|turn|12
+|
+|t:|1792223874
+|move|p2a: Sneasel|Gunk Shot|p1a: Ivysaur|[miss]
+|-miss|p2a: Sneasel|p1a: Ivysaur
+|move|p1a: Ivysaur|Seed Bomb|p2a: Sneasel
+|-resisted|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|55/70
+|-damage|p2a: Sneasel|79/100
+|
+|-end|p1a: Ivysaur|Throat Chop|[silent]
+|upkeep
+|turn|13
+|
+|t:|1792223875
+|move|p2a: Sneasel|Gunk Shot|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|faint|p1a: Ivysaur
+|
+|upkeep
+|
+|t:|1792223875
+|split|p1
+|switch|p1a: Brionne|Brionne, L30, M|13/87
+|switch|p1a: Brionne|Brionne, L30, M|15/100
+|-end|p1a: Brionne|fantasystats|[silent]
+|turn|14
+|
+|t:|1792223875
+|move|p2a: Sneasel|Gunk Shot|p1a: Brionne
+|split|p1
+|-damage|p1a: Brionne|0 fnt
+|-damage|p1a: Brionne|0 fnt
+|faint|p1a: Brionne
+|
+|upkeep
+|
+|t:|1792223875
+|split|p1
+|switch|p1a: Minun|Minun, L19, M|62/62
+|switch|p1a: Minun|Minun, L19, M|100/100
+|-end|p1a: Minun|fantasystats|[silent]
+|turn|15
+|
+|t:|1792223875
+|move|p1a: Minun|Spark|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|49/70
+|-damage|p2a: Sneasel|70/100
+|move|p2a: Sneasel|Close Combat|p1a: Minun
+|split|p1
+|-damage|p1a: Minun|0 fnt
+|-damage|p1a: Minun|0 fnt
+|-unboost|p2a: Sneasel|def|1
+|-unboost|p2a: Sneasel|spd|1
+|faint|p1a: Minun
+|
+|upkeep
+|
+|t:|1792223875
+|split|p1
+|switch|p1a: Dedenne|Dedenne, L19, M|63/63
+|switch|p1a: Dedenne|Dedenne, L19, M|100/100
+|-end|p1a: Dedenne|fantasystats|[silent]
+|turn|16
+|
+|t:|1792223875
+|move|p2a: Sneasel|Close Combat|p1a: Dedenne
+|-resisted|p1a: Dedenne
+|split|p1
+|-damage|p1a: Dedenne|27/63
+|-damage|p1a: Dedenne|43/100
+|-unboost|p2a: Sneasel|def|1
+|-unboost|p2a: Sneasel|spd|1
+|move|p1a: Dedenne|Nuzzle|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|42/70
+|-damage|p2a: Sneasel|60/100
+|-status|p2a: Sneasel|par
+|
+|upkeep
+|turn|17
+|
+|t:|1792223876
+|split|p1
+|switch|p1a: Corsola|Corsola-Galar, L24, F|5/75
+|switch|p1a: Corsola|Corsola-Galar, L24, F|7/100
+|-end|p1a: Corsola|fantasystats|[silent]
+|move|p2a: Sneasel|Gunk Shot|p1a: Corsola
+|-resisted|p1a: Corsola
+|split|p1
+|-damage|p1a: Corsola|0 fnt
+|-damage|p1a: Corsola|0 fnt
+|faint|p1a: Corsola
+|
+|upkeep
+|
+|t:|1792223876
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L29, M|27/97
+|switch|p1a: Crocalor|Crocalor, L29, M|28/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|18
+|
+|t:|1792223876
+|cant|p2a: Sneasel|par
+|move|p1a: Crocalor|Incinerate|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|0 fnt
+|-damage|p2a: Sneasel|0 fnt
+|faint|p2a: Sneasel
+|
+|win|Player

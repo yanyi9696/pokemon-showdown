@@ -1,0 +1,934 @@
+{
+  "date": "2026-10-16",
+  "method": "Seven isolated real local runs; browser UI plus ordinary WebSocket game actions; no save/stat/floor edits. Scripted combat decisions are not equivalent to skilled human play.",
+  "coverage": {
+    "maxFloorReached": 60,
+    "cleared200": false,
+    "loggedBattles": 222,
+    "totalTurns": 452,
+    "uncounted": [
+      "A floor 1 first manual battle 8145",
+      "AI-versus-AI event spectator match"
+    ]
+  },
+  "reports": [
+    {
+      "user": "RoguePlay1016A",
+      "floor": 2,
+      "wins": 2,
+      "losses": 2,
+      "battles": 4,
+      "kinds": {
+        "wild": {
+          "count": 2,
+          "medianTurns": 1.5,
+          "maxTurns": 2
+        },
+        "elite": {
+          "count": 2,
+          "medianTurns": 4.5,
+          "maxTurns": 7
+        }
+      },
+      "money": 2300,
+      "spirit": "无塔灵",
+      "metaPoints": 0,
+      "blessings": [
+        {
+          "name": "白银命运",
+          "floor": 1,
+          "tier": "silver"
+        },
+        {
+          "name": "林间大合唱",
+          "floor": 1,
+          "tier": "gold"
+        }
+      ],
+      "team": [
+        {
+          "hp": 0,
+          "maxhp": 32
+        },
+        {
+          "hp": 0,
+          "maxhp": 20
+        },
+        {
+          "hp": 0,
+          "maxhp": 16
+        },
+        {
+          "hp": 0,
+          "maxhp": 16
+        }
+      ],
+      "bossLevelBonus": 0,
+      "ordinaryLevelBonus": 0
+    },
+    {
+      "user": "RoguePlay1016B",
+      "floor": 10,
+      "wins": 5,
+      "losses": 2,
+      "battles": 7,
+      "kinds": {
+        "event": {
+          "count": 2,
+          "medianTurns": 5,
+          "maxTurns": 6
+        },
+        "wild": {
+          "count": 3,
+          "medianTurns": 1,
+          "maxTurns": 1
+        },
+        "boss": {
+          "count": 2,
+          "medianTurns": 3.5,
+          "maxTurns": 4
+        }
+      },
+      "money": 1475,
+      "spirit": "无塔灵",
+      "metaPoints": 0,
+      "blessings": [
+        {
+          "name": "下一站，巨星",
+          "floor": 1,
+          "tier": "gold"
+        }
+      ],
+      "team": [
+        {
+          "hp": 0,
+          "maxhp": 40
+        },
+        {
+          "hp": 0,
+          "maxhp": 27
+        },
+        {
+          "hp": 0,
+          "maxhp": 23
+        }
+      ],
+      "bossLevelBonus": 5,
+      "ordinaryLevelBonus": 0
+    },
+    {
+      "user": "RoguePlay1016C",
+      "floor": 10,
+      "wins": 6,
+      "losses": 3,
+      "battles": 9,
+      "kinds": {
+        "wild": {
+          "count": 6,
+          "medianTurns": 1.5,
+          "maxTurns": 3
+        },
+        "event": {
+          "count": 1,
+          "medianTurns": 13,
+          "maxTurns": 13
+        },
+        "boss": {
+          "count": 2,
+          "medianTurns": 4.5,
+          "maxTurns": 7
+        }
+      },
+      "money": 916,
+      "spirit": "无塔灵",
+      "metaPoints": 0,
+      "blessings": [
+        {
+          "name": "小心脚下",
+          "floor": 1,
+          "tier": "gold"
+        }
+      ],
+      "team": [
+        {
+          "hp": 0,
+          "maxhp": 35
+        },
+        {
+          "hp": 0,
+          "maxhp": 19
+        },
+        {
+          "hp": 0,
+          "maxhp": 16
+        },
+        {
+          "hp": 0,
+          "maxhp": 15
+        },
+        {
+          "hp": 0,
+          "maxhp": 19
+        },
+        {
+          "hp": 0,
+          "maxhp": 16
+        }
+      ],
+      "bossLevelBonus": 5,
+      "ordinaryLevelBonus": 0
+    },
+    {
+      "user": "RoguePlay1016D",
+      "floor": 10,
+      "wins": 13,
+      "losses": 2,
+      "battles": 15,
+      "kinds": {
+        "wild": {
+          "count": 12,
+          "medianTurns": 1,
+          "maxTurns": 5
+        },
+        "event": {
+          "count": 1,
+          "medianTurns": 2,
+          "maxTurns": 2
+        },
+        "boss": {
+          "count": 2,
+          "medianTurns": 4,
+          "maxTurns": 6
+        }
+      },
+      "money": 1635,
+      "spirit": "伊裴尔塔尔的交易",
+      "metaPoints": 0,
+      "blessings": [
+        {
+          "name": "宝可梦电进化",
+          "floor": 1,
+          "tier": "prismatic"
+        }
+      ],
+      "team": [
+        {
+          "hp": 0,
+          "maxhp": 34
+        },
+        {
+          "hp": 0,
+          "maxhp": 24
+        },
+        {
+          "hp": 0,
+          "maxhp": 22
+        },
+        {
+          "hp": 0,
+          "maxhp": 23
+        },
+        {
+          "hp": 0,
+          "maxhp": 23
+        },
+        {
+          "hp": 0,
+          "maxhp": 23
+        }
+      ],
+      "bossLevelBonus": 10,
+      "ordinaryLevelBonus": 0
+    },
+    {
+      "user": "RoguePlay1016E",
+      "floor": 40,
+      "wins": 56,
+      "losses": 2,
+      "battles": 58,
+      "kinds": {
+        "wild": {
+          "count": 51,
+          "medianTurns": 1,
+          "maxTurns": 6
+        },
+        "boss": {
+          "count": 5,
+          "medianTurns": 5,
+          "maxTurns": 9
+        },
+        "event": {
+          "count": 2,
+          "medianTurns": 6.5,
+          "maxTurns": 8
+        }
+      },
+      "money": 499,
+      "spirit": "雷吉奇卡斯的试炼",
+      "metaPoints": 3,
+      "blessings": [
+        {
+          "name": "预定幻想",
+          "floor": 1,
+          "tier": "silver"
+        }
+      ],
+      "team": [
+        {
+          "hp": 0,
+          "maxhp": 74
+        },
+        {
+          "hp": 0,
+          "maxhp": 49
+        },
+        {
+          "hp": 0,
+          "maxhp": 51
+        }
+      ],
+      "bossLevelBonus": 0,
+      "ordinaryLevelBonus": 0
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 60,
+      "wins": 85,
+      "losses": 2,
+      "battles": 87,
+      "kinds": {
+        "wild": {
+          "count": 75,
+          "medianTurns": 1,
+          "maxTurns": 8
+        },
+        "event": {
+          "count": 2,
+          "medianTurns": 4,
+          "maxTurns": 5
+        },
+        "boss": {
+          "count": 7,
+          "medianTurns": 3,
+          "maxTurns": 24
+        },
+        "elite": {
+          "count": 3,
+          "medianTurns": 1,
+          "maxTurns": 2
+        }
+      },
+      "money": 448,
+      "spirit": "时拉比的驻时",
+      "metaPoints": 5,
+      "blessings": [
+        {
+          "name": "留得青山在",
+          "floor": 1,
+          "tier": "gold"
+        },
+        {
+          "name": "可再生资源",
+          "floor": 50,
+          "tier": "gold"
+        }
+      ],
+      "team": [
+        {
+          "hp": 0,
+          "maxhp": 91
+        },
+        {
+          "hp": 0,
+          "maxhp": 144
+        },
+        {
+          "hp": 0,
+          "maxhp": 111
+        },
+        {
+          "hp": 0,
+          "maxhp": 93
+        },
+        {
+          "hp": 0,
+          "maxhp": 94
+        },
+        {
+          "hp": 0,
+          "maxhp": 90
+        }
+      ],
+      "bossLevelBonus": 15,
+      "ordinaryLevelBonus": 5
+    },
+    {
+      "user": "RoguePlay1016G",
+      "floor": 40,
+      "wins": 41,
+      "losses": 1,
+      "battles": 42,
+      "kinds": {
+        "wild": {
+          "count": 27,
+          "medianTurns": 1,
+          "maxTurns": 5
+        },
+        "event": {
+          "count": 4,
+          "medianTurns": 4,
+          "maxTurns": 6
+        },
+        "boss": {
+          "count": 4,
+          "medianTurns": 4.5,
+          "maxTurns": 5
+        },
+        "trainer": {
+          "count": 7,
+          "medianTurns": 2,
+          "maxTurns": 4
+        }
+      },
+      "money": 785,
+      "spirit": "雷吉奇卡斯的试炼",
+      "metaPoints": 3,
+      "blessings": [
+        {
+          "name": "入职火箭队",
+          "floor": 1,
+          "tier": "silver"
+        }
+      ],
+      "team": [
+        {
+          "hp": 0,
+          "maxhp": 70
+        },
+        {
+          "hp": 0,
+          "maxhp": 51
+        },
+        {
+          "hp": 0,
+          "maxhp": 55
+        }
+      ],
+      "bossLevelBonus": 0,
+      "ordinaryLevelBonus": 0
+    }
+  ],
+  "bossBattles": [
+    {
+      "user": "RoguePlay1016B",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8155-8mllmf2fodphq9ermybf11ludni3fvfpw",
+      "turns": 4,
+      "win": false,
+      "foes": [
+        "Rookidee-Fantasy, L15, F"
+      ],
+      "team": [
+        "Fuecoco, L12, M",
+        "Spinda, L7, M",
+        "Cleffa, L6, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016B",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8156-ntjsnkjkmsecybd9qvinamm0ctfm7gjpw",
+      "turns": 3,
+      "win": false,
+      "foes": [
+        "Rookidee-Fantasy, L15, F"
+      ],
+      "team": [
+        "Fuecoco, L12, M",
+        "Spinda, L7, M",
+        "Cleffa, L6, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016C",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8164-t046xqjsj9k1gd7ciq8d86rhgerbrsvpw",
+      "turns": 7,
+      "win": false,
+      "foes": [
+        "Skitty-Fantasy, L15, F"
+      ],
+      "team": [
+        "Bulbasaur, L12, M",
+        "Joltik, L4, F",
+        "Voltorb, L3",
+        "Magnemite, L3",
+        "Numel, L4, M",
+        "Houndour, L3, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016C",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8165-b9psd7q2qjh82erda1ol784yj6bossxpw",
+      "turns": 2,
+      "win": false,
+      "foes": [
+        "Skitty-Fantasy, L15, F"
+      ],
+      "team": [
+        "Bulbasaur, L12, M",
+        "Joltik, L4, F",
+        "Voltorb, L3",
+        "Magnemite, L3",
+        "Numel, L4, M",
+        "Houndour, L3, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016E",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8191-2vl6vxvlqtt2qnlomvm665tx4kyxfmxpw",
+      "turns": 2,
+      "win": true,
+      "foes": [
+        "Duskull-Fantasy, L10, F"
+      ],
+      "team": [
+        "Fuecoco, L11, M",
+        "Swablu, L3, F",
+        "Bellsprout, L5, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016D",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8195-qpl2u1dcf76lqucp30b2mm31ifyodkppw",
+      "turns": 6,
+      "win": false,
+      "foes": [
+        "Onix-Fantasy, L20, M"
+      ],
+      "team": [
+        "Mudkip, L11, M",
+        "Helioptile, L7, M",
+        "Meowth, L6, F",
+        "Ponyta, L6, M",
+        "Maractus, L5, F",
+        "Pancham, L5, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016D",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8198-fo5je9e1nkbnyptffbh3xuj68qn900xpw",
+      "turns": 2,
+      "win": false,
+      "foes": [
+        "Onix-Fantasy, L20, M"
+      ],
+      "team": [
+        "Mudkip, L11, M",
+        "Helioptile, L7, M",
+        "Meowth, L6, F",
+        "Ponyta, L6, M",
+        "Maractus, L5, F",
+        "Pancham, L5, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016E",
+      "floor": 20,
+      "node": "道馆 · 青木（一般）",
+      "room": "battle-gen9fantasyrogue-8210-hqre0bd079jksjla5d826deoeqewi5ypw",
+      "turns": 5,
+      "win": true,
+      "foes": [
+        "Starly, L15, M",
+        "Duskull, L15, F",
+        "Porygon, L15"
+      ],
+      "team": [
+        "Fuecoco, L15, M",
+        "Geodude-Alola, L9, F",
+        "Pachirisu, L10, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016E",
+      "floor": 30,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8223-gjkq800bvk01vmq99521cuf7b2q2gnkpw",
+      "turns": 1,
+      "win": true,
+      "foes": [
+        "Carnivine-Fantasy, L20, M"
+      ],
+      "team": [
+        "Crocalor, L18, M",
+        "Geodude-Alola, L14, F",
+        "Pachirisu, L13, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016E",
+      "floor": 40,
+      "node": "道馆 · 小刚（岩石）",
+      "room": "battle-gen9fantasyrogue-8237-3804odb3h3isjdfhuv1omhpfx4vkbmxpw",
+      "turns": 9,
+      "win": false,
+      "foes": [
+        "Onix, L25, M",
+        "Nacli, L25, F",
+        "Aerodactyl, L25, F",
+        "Pupitar, L25, M"
+      ],
+      "team": [
+        "Crocalor, L23, M",
+        "Geodude-Alola, L19, F",
+        "Pachirisu, L17, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016E",
+      "floor": 40,
+      "node": "道馆 · 小刚（岩石）",
+      "room": "battle-gen9fantasyrogue-8238-6es5idg5ywkbh3dcndbm1y0mhtqdf1tpw",
+      "turns": 6,
+      "win": false,
+      "foes": [
+        "Onix, L25, M",
+        "Nacli, L25, F",
+        "Aerodactyl, L25, F",
+        "Pupitar, L25, M"
+      ],
+      "team": [
+        "Crocalor, L23, M",
+        "Geodude-Alola, L19, F",
+        "Pachirisu, L17, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8252-qf8lw18dj8hfu7x0g4hq708w8n0rsnhpw",
+      "turns": 1,
+      "win": true,
+      "foes": [
+        "Duskull-Fantasy, L15, F"
+      ],
+      "team": [
+        "Mudkip, L11, M",
+        "Muk, L40, M",
+        "Ralts, L6, F",
+        "Mankey, L5, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 20,
+      "node": "道馆 · 紫罗兰（虫）",
+      "room": "battle-gen9fantasyrogue-8262-l8ri9o7th69r1so2wcbn75xsxt68p3vpw",
+      "turns": 3,
+      "win": true,
+      "foes": [
+        "Combee, L20, M",
+        "Nincada, L20, F",
+        "Nymble, L20, F"
+      ],
+      "team": [
+        "Mudkip, L14, M",
+        "Muk-Alola, L40, M",
+        "Munna, L8, F",
+        "Mankey, L9, F",
+        "Solosis, L10, M",
+        "Psyduck, L8, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 30,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8273-tsxskmyvc037ric8nvcraw6q8vd8y1lpw",
+      "turns": 1,
+      "win": true,
+      "foes": [
+        "Cherrim-Fantasy, L25, F"
+      ],
+      "team": [
+        "Marshtomp, L16, M",
+        "Muk-Alola, L40, M",
+        "Munna, L13, F",
+        "Mankey, L13, F",
+        "Solosis, L14, M",
+        "Psyduck, L13, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 40,
+      "node": "道馆 · 露璃娜（水）",
+      "room": "battle-gen9fantasyrogue-8286-oy6i1hbvakbdug91eoqxx8j5nitgc0ypw",
+      "turns": 5,
+      "win": true,
+      "foes": [
+        "Chewtle, L30, F",
+        "Feebas, L30, F",
+        "Wimpod, L30, F",
+        "Slowpoke, L30, M"
+      ],
+      "team": [
+        "Marshtomp, L21, M",
+        "Muk-Alola, L40, M",
+        "Munna, L18, F",
+        "Mankey, L17, F",
+        "Solosis, L18, M",
+        "Psyduck, L17, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 50,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8305-ip1ud4tyjfsboq4pebrel7f3rgu1u3mpw",
+      "turns": 3,
+      "win": true,
+      "foes": [
+        "Golem-Alola-Fantasy, L35, M"
+      ],
+      "team": [
+        "Marshtomp, L25, M",
+        "Muk-Alola, L40, M",
+        "Munna, L23, F",
+        "Mankey, L22, F",
+        "Solosis, L23, M",
+        "Psyduck, L22, M"
+      ]
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 60,
+      "node": "道馆 · 奇树（电）",
+      "room": "battle-gen9fantasyrogue-8324-n0mxnqads5s0ifwpe1sxkyp161lic6fpw",
+      "turns": 24,
+      "win": false,
+      "foes": [
+        "Magneton, L50",
+        "Pikachu, L50, F",
+        "Rotom, L50",
+        "Mismagius, L50, M"
+      ],
+      "team": [
+        "Marshtomp, L31, M",
+        "Muk-Alola, L40, M",
+        "Stunfisk, L29, F",
+        "Sneasler, L29, F",
+        "Carkol, L29, M",
+        "Golbat, L29, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 60,
+      "node": "道馆 · 奇树（电）",
+      "room": "battle-gen9fantasyrogue-8325-4ejarxcp8gsivgurqd4evf57re7eb4fpw",
+      "turns": 1,
+      "win": false,
+      "foes": [
+        "Magneton, L50",
+        "Pikachu, L50, F",
+        "Rotom, L50",
+        "Mismagius, L50, M"
+      ],
+      "team": [
+        "Marshtomp, L31, M",
+        "Muk-Alola, L40, M",
+        "Stunfisk, L29, F",
+        "Sneasler, L29, F",
+        "Carkol, L29, M",
+        "Golbat, L29, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016G",
+      "floor": 10,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8342-qxr3ks9m57dmy8iynuwf37awxb52tv1pw",
+      "turns": 1,
+      "win": true,
+      "foes": [
+        "Rookidee-Fantasy, L10, M"
+      ],
+      "team": [
+        "Mudkip, L12, M",
+        "Spinarak, L7, F",
+        "Stunky, L7, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016G",
+      "floor": 20,
+      "node": "道馆 · 露璃娜（水）",
+      "room": "battle-gen9fantasyrogue-8347-512yfgm6d3f1oa9mux9vkghopij2tjtpw",
+      "turns": 4,
+      "win": true,
+      "foes": [
+        "Chewtle, L15, M",
+        "Feebas, L15, F",
+        "Wimpod, L15, F"
+      ],
+      "team": [
+        "Mudkip, L14, M",
+        "Minun, L6, F",
+        "Stunky, L8, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016G",
+      "floor": 30,
+      "node": "幻想精英",
+      "room": "battle-gen9fantasyrogue-8358-b0345pu901iy38luu4yruhnyqxdjhmrpw",
+      "turns": 5,
+      "win": true,
+      "foes": [
+        "Carnivine-Fantasy, L20, F"
+      ],
+      "team": [
+        "Marshtomp, L18, M",
+        "Minun, L12, F",
+        "Stunky, L13, F"
+      ]
+    },
+    {
+      "user": "RoguePlay1016G",
+      "floor": 40,
+      "node": "道馆 · 阿塞萝拉（幽灵）",
+      "room": "battle-gen9fantasyrogue-8367-5qvp2n5s6fmg7m3umltwcy9159c3su4pw",
+      "turns": 5,
+      "win": false,
+      "foes": [
+        "Mimikyu, L25, M",
+        "Gastly, L25, F",
+        "Sandygast, L25, M",
+        "Dhelmise, L25"
+      ],
+      "team": [
+        "Marshtomp, L23, M",
+        "Minun, L17, F",
+        "Stunky, L18, F"
+      ]
+    }
+  ],
+  "wildVariety": {
+    "completeThreeBattleRegions": 58,
+    "distinctSpeciesPerRegion": {
+      "2": 1,
+      "3": 57
+    },
+    "duplicateRegions": [
+      {
+        "key": "RoguePlay1016F:32:迷幻花海",
+        "species": [
+          "Mime Jr.",
+          "Mime Jr.",
+          "Flabébé"
+        ]
+      }
+    ]
+  },
+  "routes": {
+    "observedThreeOptionPages": 133,
+    "pagesWithRedAndBlue": 133,
+    "options": {
+      "elite": 68,
+      "event": 104,
+      "reward": 79,
+      "trainer": 67,
+      "wild": 73,
+      "trade": 8
+    },
+    "chosenRoutes": {
+      "event": 32,
+      "elite": 4,
+      "reward": 36,
+      "wild": 58,
+      "trainer": 7
+    }
+  },
+  "invalidHelpingHand": [
+    {
+      "user": "RoguePlay1016E",
+      "floor": 17,
+      "room": "battle-gen9fantasyrogue-8207-29jarp6s3m6og20vggs4qsi3k1j5rbkpw",
+      "count": 1
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 6,
+      "room": "battle-gen9fantasyrogue-8243-81nprlbqtv62v8fda2uwi0v0sfp6c4hpw",
+      "count": 1
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 21,
+      "room": "battle-gen9fantasyrogue-8263-l5pmp4gl6mpirn2906c7rb1w35a1u65pw",
+      "count": 1
+    },
+    {
+      "user": "RoguePlay1016F",
+      "floor": 22,
+      "room": "battle-gen9fantasyrogue-8265-mo1e6t961idyxrtbceu5cxi448aihfnpw",
+      "count": 1
+    },
+    {
+      "user": "RoguePlay1016G",
+      "floor": 21,
+      "room": "battle-gen9fantasyrogue-8348-l9s307m307bh3ltpecw58yr0egd7tltpw",
+      "count": 2
+    }
+  ],
+  "battle8324SitrusHealMessages": 37,
+  "events": [
+    {
+      "id": "mysteryball",
+      "title": "谜之宝可梦球"
+    },
+    {
+      "id": "room",
+      "title": "不战斗就无法出去的房间"
+    },
+    {
+      "id": "mushrooms",
+      "title": "蘑菇走私犯"
+    },
+    {
+      "id": "forest",
+      "title": "斗蛐蛐！"
+    },
+    {
+      "id": "travel",
+      "title": "旅行的回忆"
+    },
+    {
+      "id": "tutor",
+      "title": "读万卷书，行万里路"
+    },
+    {
+      "id": "martial",
+      "title": "这是武术的胜利"
+    }
+  ],
+  "wildWithoutCaptureAttempts": {
+    "battles": 138,
+    "oneTurnBattles": 119,
+    "medianTurns": 1
+  }
+}

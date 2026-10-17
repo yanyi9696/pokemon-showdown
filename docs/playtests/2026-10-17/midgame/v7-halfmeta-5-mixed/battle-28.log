@@ -1,0 +1,230 @@
+|t:|1792230436
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L12, M|
+|poke|p1|Mudkip, L14, F|
+|poke|p1|Bulbasaur, L12, M|
+|poke|p1|Tinkatink, L10, F|
+|poke|p1|Mime Jr., L8, M|
+|poke|p1|Charcadet, L8, F|
+|poke|p2|Tauros-Paldea-Blaze, L14, M|
+|teampreview
+|
+|t:|1792230436
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L14, F|42/45
+|switch|p1a: Mudkip|Mudkip, L14, F|94/100
+|split|p2
+|switch|p2a: Tauros|Tauros-Paldea-Blaze, L14, M|49/49
+|switch|p2a: Tauros|Tauros-Paldea-Blaze, L14, M|100/100
+|-end|p2a: Tauros|fantasystats|[silent]
+|-ability|p2a: Tauros|Intimidate|boost
+|-unboost|p1a: Mudkip|atk|1
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-end|p2a: Tauros|fantasystats|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230437
+|move|p2a: Tauros|Double Kick|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|33/45
+|-damage|p1a: Mudkip|74/100
+|split|p1
+|-damage|p1a: Mudkip|24/45
+|-damage|p1a: Mudkip|54/100
+|-hitcount|p1a: Mudkip|2
+|move|p1a: Mudkip|Water Gun|p2a: Tauros
+|-supereffective|p2a: Tauros
+|split|p2
+|-damage|p2a: Tauros|31/49
+|-damage|p2a: Tauros|64/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792230437
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L12, M|42/45
+|switch|p1a: Fuecoco|Fuecoco, L12, M|94/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|move|p2a: Tauros|Double Kick|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|33/45
+|-damage|p1a: Fuecoco|74/100
+|split|p1
+|-damage|p1a: Fuecoco|23/45
+|-damage|p1a: Fuecoco|52/100
+|-hitcount|p1a: Fuecoco|2
+|
+|upkeep
+|turn|3
+|
+|t:|1792230437
+|move|p2a: Tauros|Double Kick|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|13/45
+|-damage|p1a: Fuecoco|29/100
+|split|p1
+|-damage|p1a: Fuecoco|4/45
+|-damage|p1a: Fuecoco|9/100
+|-hitcount|p1a: Fuecoco|2
+|move|p1a: Fuecoco|Round|p2a: Tauros
+|split|p2
+|-damage|p2a: Tauros|23/49
+|-damage|p2a: Tauros|47/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792230437
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L12, M|40/40
+|switch|p1a: Bulbasaur|Bulbasaur, L12, M|100/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|move|p2a: Tauros|Double Kick|p1a: Bulbasaur
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|35/40
+|-damage|p1a: Bulbasaur|88/100
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|30/40
+|-damage|p1a: Bulbasaur|75/100
+|-hitcount|p1a: Bulbasaur|2
+|
+|upkeep
+|turn|5
+|
+|t:|1792230438
+|move|p2a: Tauros|Double Kick|p1a: Bulbasaur
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|24/40
+|-damage|p1a: Bulbasaur|60/100
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|18/40
+|-damage|p1a: Bulbasaur|45/100
+|-hitcount|p1a: Bulbasaur|2
+|move|p1a: Bulbasaur|Growl|p2a: Tauros
+|-unboost|p2a: Tauros|atk|1
+|
+|upkeep
+|turn|6
+|
+|t:|1792230438
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L14, F|24/45
+|switch|p1a: Mudkip|Mudkip, L14, F|54/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|move|p2a: Tauros|Double Kick|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|17/45
+|-damage|p1a: Mudkip|38/100
+|split|p1
+|-damage|p1a: Mudkip|10/45
+|-damage|p1a: Mudkip|23/100
+|-hitcount|p1a: Mudkip|2
+|
+|upkeep
+|turn|7
+|
+|t:|1792230438
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L12, M|18/40
+|switch|p1a: Bulbasaur|Bulbasaur, L12, M|45/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|move|p2a: Tauros|Double Kick|p1a: Bulbasaur
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|14/40
+|-damage|p1a: Bulbasaur|35/100
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|11/40
+|-damage|p1a: Bulbasaur|28/100
+|-hitcount|p1a: Bulbasaur|2
+|
+|upkeep
+|turn|8
+|
+|t:|1792230438
+|move|p2a: Tauros|Double Kick|p1a: Bulbasaur
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|8/40
+|-damage|p1a: Bulbasaur|20/100
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|5/40
+|-damage|p1a: Bulbasaur|13/100
+|-hitcount|p1a: Bulbasaur|2
+|move|p1a: Bulbasaur|Razor Leaf|p2a: Tauros
+|-resisted|p2a: Tauros
+|split|p2
+|-damage|p2a: Tauros|18/49
+|-damage|p2a: Tauros|37/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792230439
+|move|p2a: Tauros|Double Kick|p1a: Bulbasaur
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|2/40
+|-damage|p1a: Bulbasaur|5/100
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|-hitcount|p1: Bulbasaur|2
+|
+|upkeep
+|
+|t:|1792230439
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L14, F|10/45
+|switch|p1a: Mudkip|Mudkip, L14, F|23/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|turn|10
+|
+|t:|1792230439
+|move|p2a: Tauros|Double Kick|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|3/45
+|-damage|p1a: Mudkip|7/100
+|split|p1
+|-damage|p1a: Mudkip|0 fnt
+|-damage|p1a: Mudkip|0 fnt
+|faint|p1a: Mudkip
+|-hitcount|p1: Mudkip|2
+|
+|upkeep
+|
+|t:|1792230439
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L12, M|4/45
+|switch|p1a: Fuecoco|Fuecoco, L12, M|9/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|11
+|
+|t:|1792230439
+|move|p2a: Tauros|Double Kick|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|-hitcount|p1: Fuecoco|1
+|
+|win|NPC

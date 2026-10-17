@@ -1,0 +1,143 @@
+|t:|1792223150
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L11, M|
+|poke|p1|Pidgey, L9, M|
+|poke|p1|Meowth, L7, F|
+|poke|p1|Slakoth, L7, M|
+|poke|p1|Swablu, L6, F|
+|poke|p2|Rookidee-Fantasy, L13, F|
+|teampreview
+|
+|t:|1792223150
+|start
+|split|p1
+|switch|p1a: Popplio|Popplio, L11, M|34/34
+|switch|p1a: Popplio|Popplio, L11, M|100/100
+|split|p2
+|switch|p2a: Rookidee|Rookidee-Fantasy, L13, F|47/47
+|switch|p2a: Rookidee|Rookidee-Fantasy, L13, F|100/100
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223150
+|-terastallize|p2a: Rookidee|Flying
+|move|p2a: Rookidee|Foul Play|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|15/34
+|-damage|p1a: Popplio|45/100
+|move|p1a: Popplio|Disarming Voice|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|41/47
+|-damage|p2a: Rookidee|88/100
+|split|p1
+|-damage|p1a: Popplio|12/34|[from] item: Life Orb
+|-damage|p1a: Popplio|36/100|[from] item: Life Orb
+|
+|upkeep
+|turn|2
+|
+|t:|1792223150
+|move|p2a: Rookidee|Chuan Yun|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|0 fnt
+|-damage|p1a: Popplio|0 fnt
+|faint|p1a: Popplio
+|
+|upkeep
+|
+|t:|1792223150
+|split|p1
+|switch|p1a: Pidgey|Pidgey, L9, M|28/28
+|switch|p1a: Pidgey|Pidgey, L9, M|100/100
+|-end|p1a: Pidgey|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223150
+|move|p2a: Rookidee|Chuan Yun|p1a: Pidgey
+|split|p1
+|-damage|p1a: Pidgey|0 fnt
+|-damage|p1a: Pidgey|0 fnt
+|faint|p1a: Pidgey
+|
+|upkeep
+|
+|t:|1792223150
+|split|p1
+|switch|p1a: Meowth|Meowth, L7, F|24/24
+|switch|p1a: Meowth|Meowth, L7, F|100/100
+|-end|p1a: Meowth|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223150
+|move|p1a: Meowth|Fake Out|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|37/47
+|-damage|p2a: Rookidee|79/100
+|split|p1
+|-damage|p1a: Meowth|22/24|[from] item: Life Orb
+|-damage|p1a: Meowth|92/100|[from] item: Life Orb
+|cant|p2a: Rookidee|flinch
+|
+|upkeep
+|turn|5
+|
+|t:|1792223150
+|move|p1a: Meowth|Feint|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|33/47
+|-damage|p2a: Rookidee|71/100
+|split|p1
+|-damage|p1a: Meowth|20/24|[from] item: Life Orb
+|-damage|p1a: Meowth|84/100|[from] item: Life Orb
+|move|p2a: Rookidee|Chuan Yun|p1a: Meowth
+|split|p1
+|-damage|p1a: Meowth|0 fnt
+|-damage|p1a: Meowth|0 fnt
+|faint|p1a: Meowth
+|
+|upkeep
+|
+|t:|1792223150
+|split|p1
+|switch|p1a: Slakoth|Slakoth, L7, M|27/27
+|switch|p1a: Slakoth|Slakoth, L7, M|100/100
+|-end|p1a: Slakoth|fantasystats|[silent]
+|turn|6
+|
+|t:|1792223150
+|move|p2a: Rookidee|Chuan Yun|p1a: Slakoth
+|split|p1
+|-damage|p1a: Slakoth|0 fnt
+|-damage|p1a: Slakoth|0 fnt
+|faint|p1a: Slakoth
+|
+|upkeep
+|
+|t:|1792223150
+|split|p1
+|switch|p1a: Swablu|Swablu, L6, F|23/23
+|switch|p1a: Swablu|Swablu, L6, F|100/100
+|-end|p1a: Swablu|fantasystats|[silent]
+|turn|7
+|
+|t:|1792223150
+|move|p2a: Rookidee|Chuan Yun|p1a: Swablu
+|split|p1
+|-damage|p1a: Swablu|0 fnt
+|-damage|p1a: Swablu|0 fnt
+|faint|p1a: Swablu
+|
+|win|NPC

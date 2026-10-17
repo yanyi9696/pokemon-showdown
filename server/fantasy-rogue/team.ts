@@ -2,19 +2,24 @@ import { tradeItem } from './trading';
 import { tonicItems } from './blessing-consumables';
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
+import { emblemType, BLESSING_TYPES } from '../../sim/rogue-blessing-data';
 import { ensureMemberMemory, rebuildMember } from './progression';
 import type { RogueCommand, RogueContent, RogueItem, RogueRun } from './types';
 
 const dex = Dex.mod('gen9fantasy');
-export const TEAM_ACTIONS = ['order', 'setmove', 'moves', 'equip', 'ability', 'evs'];
+export const TEAM_ACTIONS = ['order', 'setmove', 'moves', 'equip', 'equipemblem', 'ability', 'evs'];
 export const canEditParty = (run: RogueRun) => ['choose', 'ready', 'rest', 'reward', 'event'].includes(run.phase) &&
 	!run.pendingCapture && !run.pendingMoves?.length;
 export const healingLocked = (run: RogueRun) => !!run.node?.noHealing &&
+	run.recovery !== 'retreat' &&
 	(run.encounter > 0 || !!run.battle || !!run.recovery || run.phase === 'failed');
 function requireRule(ok: unknown, message: string): asserts ok {
 	if (!ok) throw new Error(message);
 }
 export function inventoryItem(content: RogueContent, id: string): RogueItem | undefined {
+	const type = emblemType(id);
+	if (type) return {id, name: `${BLESSING_TYPES[type]}属性转`, kind: 'emblem', price: 0,
+		shopFloor: false, icon: toID(type + 'gem')};
 	const configured = content.items.find(item => item.id === id);
 	if (configured) return configured;
 	const special = tradeItem(id) || tonicItems().find(item => item.id === id);
@@ -48,6 +53,17 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 	requireRule(mon, '队伍成员无效。');
 	ensureMemberMemory(mon);
 	switch (command.action) {
+	case 'equipemblem': {
+		const id = command.value || '', old = mon.emblem || '';
+		if (old === id) return;
+		if (id) {
+			requireRule(emblemType(id) && run.bag[id] > 0, '背包中没有可用的属性转。');
+			run.bag[id]--;
+		}
+		if (old) run.bag[old] = (run.bag[old] || 0) + 1;
+		mon.emblem = id;
+		break;
+	}
 	case 'equip': {
 		const id = command.value || '';
 		const old = toID(mon.set.item);

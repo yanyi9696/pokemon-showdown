@@ -1,0 +1,65 @@
+|t:|1792223889
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Brionne, L33, M|
+|poke|p1|Crocalor, L35, M|
+|poke|p1|Ivysaur, L24, M|
+|poke|p1|Corsola-Galar, L26, F|
+|poke|p1|Minun, L26, M|
+|poke|p1|Dedenne, L23, M|
+|poke|p2|Morpeko, L29, F|
+|teampreview
+|
+|t:|1792223889
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L35, M|10/114
+|switch|p1a: Crocalor|Crocalor, L35, M|9/100
+|split|p2
+|switch|p2a: Morpeko|Morpeko, L29, F|81/81
+|switch|p2a: Morpeko|Morpeko, L29, F|100/100
+|-end|p2a: Morpeko|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Morpeko|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223889
+|move|p2a: Morpeko|Bite|p1a: Crocalor
+|-crit|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|
+|-formechange|p2a: Morpeko|Morpeko-Hangry||[from] ability: Hunger Switch
+|-start|p2a: Morpeko|typechange|Electric/Dark|[silent]
+|upkeep
+|-end|p2a: Morpeko|fantasystats|[silent]
+|
+|t:|1792223889
+|split|p1
+|switch|p1a: Minun|Minun, L26, M|28/79
+|switch|p1a: Minun|Minun, L26, M|36/100
+|-end|p1a: Minun|fantasystats|[silent]
+|turn|2
+|
+|t:|1792223889
+|move|p1a: Minun|Swift|p2a: Morpeko
+|split|p2
+|-damage|p2a: Morpeko|68/81
+|-damage|p2a: Morpeko|84/100
+|move|p2a: Morpeko|Bite|p1a: Minun
+|split|p1
+|-damage|p1a: Minun|0 fnt
+|-damage|p1a: Minun|0 fnt
+|faint|p1a: Minun
+|
+|win|NPC

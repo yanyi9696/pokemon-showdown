@@ -1,0 +1,45 @@
+|t:|1792222586
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L11, M|
+|poke|p1|Snorunt, L4, F|
+|poke|p1|Solosis, L8, F|
+|poke|p1|Wynaut, L6, F|
+|poke|p1|Drifloon, L5, M|
+|poke|p1|Tinkatink, L7, F|
+|poke|p2|Rookidee-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792222586
+|start
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|33/33
+|switch|p1a: Bulbasaur|Bulbasaur, L11, M|100/100
+|split|p2
+|switch|p2a: Rookidee|Rookidee-Fantasy, L13, M|47/47
+|switch|p2a: Rookidee|Rookidee-Fantasy, L13, M|100/100
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222586
+|-terastallize|p2a: Rookidee|Flying
+|move|p2a: Rookidee|Chuan Yun|p1a: Bulbasaur
+|-supereffective|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|
+|win|NPC

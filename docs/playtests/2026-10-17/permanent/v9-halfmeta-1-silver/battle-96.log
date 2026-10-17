@@ -1,0 +1,143 @@
+|t:|1792234744
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Skeledirge, L36, M|
+|poke|p1|Marshtomp, L33, M|
+|poke|p1|Ivysaur, L30, F|
+|poke|p1|Vigoroth, L28, F|
+|poke|p1|Goomy, L27, F|
+|poke|p1|Roselia, L30, F|
+|poke|p2|Drednaw, L55, F|
+|poke|p2|Golisopod, L55, F|
+|poke|p2|Milotic, L55, M|
+|poke|p2|Slowbro, L55, M|
+|teampreview
+|
+|t:|1792234744
+|start
+|split|p1
+|switch|p1a: Roselia|Roselia, L30, F|82/82
+|switch|p1a: Roselia|Roselia, L30, F|100/100
+|split|p2
+|switch|p2a: Drednaw|Drednaw, L55, F|181/181
+|switch|p2a: Drednaw|Drednaw, L55, F|100/100
+|-end|p2a: Drednaw|fantasystats|[silent]
+|-end|p1a: Roselia|fantasystats|[silent]
+|-end|p2a: Drednaw|fantasystats|[silent]
+|-end|p1a: Roselia|fantasystats|[silent]
+|turn|1
+|
+|t:|1792234747
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L36, M|133/133
+|switch|p1a: Skeledirge|Skeledirge, L36, M|100/100
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|move|p2a: Drednaw|Shell Smash|p2a: Drednaw
+|-unboost|p2a: Drednaw|def|1
+|-unboost|p2a: Drednaw|spd|1
+|-boost|p2a: Drednaw|atk|2
+|-boost|p2a: Drednaw|spa|2
+|-boost|p2a: Drednaw|spe|2
+|
+|upkeep
+|turn|2
+|
+|t:|1792234748
+|-terastallize|p2a: Drednaw|Water
+|move|p2a: Drednaw|Liquidation|p1a: Skeledirge
+|-supereffective|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|0 fnt
+|-damage|p1a: Skeledirge|0 fnt
+|faint|p1a: Skeledirge
+|
+|upkeep
+|
+|t:|1792234748
+|split|p1
+|switch|p1a: Goomy|Goomy, L27, F|74/74
+|switch|p1a: Goomy|Goomy, L27, F|100/100
+|-end|p1a: Goomy|fantasystats|[silent]
+|turn|3
+|
+|t:|1792234749
+|move|p2a: Drednaw|Liquidation|p1a: Goomy
+|-resisted|p1a: Goomy
+|split|p1
+|-damage|p1a: Goomy|0 fnt
+|-damage|p1a: Goomy|0 fnt
+|faint|p1a: Goomy
+|
+|upkeep
+|
+|t:|1792234749
+|split|p1
+|switch|p1a: Vigoroth|Vigoroth, L28, F|94/94
+|switch|p1a: Vigoroth|Vigoroth, L28, F|100/100
+|-end|p1a: Vigoroth|fantasystats|[silent]
+|turn|4
+|
+|t:|1792234749
+|move|p2a: Drednaw|Earthquake|p1a: Vigoroth
+|split|p1
+|-damage|p1a: Vigoroth|0 fnt
+|-damage|p1a: Vigoroth|0 fnt
+|faint|p1a: Vigoroth
+|
+|upkeep
+|
+|t:|1792234749
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L30, F|87/87
+|switch|p1a: Ivysaur|Ivysaur, L30, F|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|turn|5
+|
+|t:|1792234750
+|move|p2a: Drednaw|Liquidation|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|faint|p1a: Ivysaur
+|
+|upkeep
+|
+|t:|1792234750
+|split|p1
+|switch|p1a: Roselia|Roselia, L30, F|82/82
+|switch|p1a: Roselia|Roselia, L30, F|100/100
+|-end|p1a: Roselia|fantasystats|[silent]
+|turn|6
+|
+|t:|1792234750
+|move|p2a: Drednaw|Earthquake|p1a: Roselia
+|split|p1
+|-damage|p1a: Roselia|0 fnt
+|-damage|p1a: Roselia|0 fnt
+|faint|p1a: Roselia
+|
+|upkeep
+|
+|t:|1792234750
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L33, M|101/101
+|switch|p1a: Marshtomp|Marshtomp, L33, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|7
+|
+|t:|1792234751
+|move|p2a: Drednaw|Earthquake|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|
+|win|NPC

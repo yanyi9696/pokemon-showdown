@@ -35,6 +35,31 @@ describe('Fantasy Rogue real rooms', function () {
 		manager = new RogueManager(new RogueEngine(store, content()), () => ai);
 		user = makeUser(`Rogue UI ${++serial}`, `127.0.3.${serial}`);
 	});
+	for (const win of [true, false]) it(`plays a complete native AI preview and ${win ? 'accepts the win' : 'discards the loss'}`, async () => {
+		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		store.change(user.id, saved => {
+			const {normalizeBlessings} = require('../../dist/server/fantasy-rogue/blessings');
+			const {grantCompanion} = require('../../dist/server/fantasy-rogue/companions');
+			const {blessing} = require('../../dist/sim/rogue-blessing-data');
+			const run = saved.run;
+			normalizeBlessings(run).owned.push({...blessing('companionai'), floor: 1}); grantCompanion(run, 'sada');
+			run.team = [createRoguePokemon(win ? set('Mew', 'Synchronize', 100, ['Psychic']) : set('Magikarp', 'Swift Swim', 1, ['Splash']), stats(0))];
+			run.node.encounters[0].team = [win ? set('Magikarp', 'Swift Swim', 1, ['Splash']) : set('Mew', 'Synchronize', 100, ['Psychic'])];
+		});
+		const before = structuredClone(account().run);
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		assert(room.battle.roguePreview);
+		await until(() => room.battle.ended && account().run.preview?.stage === 'result', 'autonomous preview completion');
+		assert.equal(account().run.preview.result.won, win);
+		assert.deepEqual(account().run.team, before.team); assert.deepEqual(account().run.bag, before.bag);
+		assert.equal(account().run.encounter, before.encounter); assert(!account().run.emergencyRecovery);
+		command('previewresult', {value: win ? 'accept' : 'personal'});
+		if (win) assert.equal(account().run.encounter, before.encounter + 1);
+		else {
+			const retry = Rooms.get(command('battle').run.roomid); rooms.push(retry);
+			assert(!retry.battle.roguePreview); assert.deepEqual(account().run.team, before.team);
+		}
+	});
 	afterEach(async () => {
 		await ai.dispose();
 		for (const room of rooms.splice(0)) Rooms.get(room.roomid)?.destroy();
@@ -89,21 +114,18 @@ describe('Fantasy Rogue real rooms', function () {
 			room.destroy();
 		});
 	}
-	it('blocks both campaign retreat and native forfeiting for an authored event battle', async () => {
+	it('escapes an authored event through its real room and preserves the unfinished branch', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, a => { a.run.node.event = { id: 'room', key: 'locked-event', stage: 'battle' }; });
 		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
 		await until(() => room.battle.p2.request.isWait === true, 'event preview');
-		assert.equal(manager.state(user).run.canRetreat, false);
-		assert.equal(room.battle.options.fantasyRogue.canRetreat, false);
-		const before = account();
-		assert.throws(() => manager.retreat(user.connections[0], room.roomid), /不能撤退/);
-		assert.equal(room.battle.forfeit(user), false);
-		assert.equal(room.battle.leaveGame(user), false);
-		assert(!room.battle.ended && !room.battle.p1.eliminated);
-		assert.deepEqual(account(), before);
-		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
-		await until(() => room.battle.p1.request.isWait === false, 'event still playable');
+		assert.equal(manager.state(user).run.canRetreat, true);
+		assert.equal(room.battle.options.fantasyRogue.canRetreat, true);
+		const before = account().run;
+		manager.retreat(user.connections[0], room.roomid);
+		await until(() => room.battle.ended && account().run.phase === 'ready', 'event escape');
+		assert.equal(account().run.node.event.stage, 'battle'); assert.equal(account().run.recovery, 'retreat');
+		assert.equal(account().run.money, before.money); assert.deepEqual(account().run.node.encounters, before.node.encounters);
 	});
 	it('commits wild moves before human input without submitting a worker search', async () => {
 		ai.scheduler.submit = () => { throw new Error('Wild opponents must not enter the search queue'); };
@@ -220,7 +242,7 @@ describe('Fantasy Rogue real rooms', function () {
 			assert.equal(foe[0], foe[1]);
 		} finally { testedUser.sendTo = sendTo; }
 	});
-	it('settles a third-encounter wipe without forcing the room closed, restores its notice and allows emergency recovery', async () => {
+	it('automatically rescues a real wipe once and restores its notice without closing battle playback', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			saved.run.encounter = 2; saved.run.money = 5000;
@@ -236,12 +258,12 @@ describe('Fantasy Rogue real rooms', function () {
 		await until(() => JSON.parse(room.battle.p1.request.request).active, 'wipe move');
 		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
 		await until(() => room.battle.ended && account().run.phase === 'ready', 'wipe settlement');
-		assert.equal(account().run.team[0].hp, 0); assert.equal(account().run.encounter, 2);
+		assert.equal(account().run.team[0].hp, account().run.team[0].maxhp); assert.equal(account().run.encounter, 2);
 		assert(!notifications.some(([, data]) => data === '|fantasyrogueend|'));
 		const notice = notifications.find(([id, data]) => id === room.roomid && data.startsWith('|fantasyroguedefeat|'));
 		assert(notice);
 		assert.deepEqual(JSON.parse(notice[1].slice(20)), { floor: 1, encounter: 3, encounters: 3,
-			retryFloor: false, noHealing: false, emergencyCost: 5000 });
+			retryFloor: false, noHealing: false, emergencyCost: 1900, emergencyRecovery: {cost: 1900, paid: true} });
 		assert(room.log.log.some(line => line.startsWith('|faint|')));
 		assert(room.log.log.some(line => line.startsWith('|win|')));
 		const restored = [];
@@ -251,11 +273,29 @@ describe('Fantasy Rogue real rooms', function () {
 			room.battle.onConnect(user, connection);
 		} finally { connection.sendTo = originalConnectionSendTo; user.sendTo = originalSendTo; }
 		assert(restored.some(([id, data]) => id === room.roomid && data === notice[1]));
-		assert.equal(manager.state(user).run.canEmergency, true);
-		assert.throws(() => command('battle'), /复活/);
-		command('emergency');
+		assert.equal(manager.state(user).run.canEmergency, false);
+		assert.throws(() => command('emergency'), /全队濒死/);
 		assert.equal(account().run.team[0].hp, account().run.team[0].maxhp);
-		assert.equal(account().run.money, 0); assert.equal(account().run.encounter, 2);
+		assert.equal(account().run.money, 3100); assert.equal(account().run.encounter, 2);
+	});
+	it('sends the rescue receipt after a lost shop challenge advances the campaign', async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			saved.run.money = 5000;
+			saved.run.team = [createRoguePokemon(set('Magikarp', 'Swift Swim', 1, ['Splash']), stats(0))];
+			saved.run.node.shopChallenge = {rewards: {revive: 5}, closed: false};
+			saved.run.node.encounters[0].team = [set('Bulbasaur', 'Overgrow', 30, ['Tackle'])];
+		});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p2.request.isWait === true, 'shop defeat preview');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active, 'shop defeat move');
+		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
+		await until(() => room.battle.ended && account().run.floor === 2, 'shop defeat settlement');
+		const receipt = room.battle.options.fantasyRogue.defeat;
+		assert(receipt?.shopClosed); assert.equal(receipt.noHealing, false);
+		assert.deepEqual(receipt.emergencyRecovery, {cost: 1900, paid: true});
+		assert.equal(account().run.money, 3100); assert.equal(account().run.bag.revive || 0, 0);
 	});
 	it('binds production saves to authenticated accounts and excludes enemy teams from state replies', () => {
 		Config.fantasyailocal = false;

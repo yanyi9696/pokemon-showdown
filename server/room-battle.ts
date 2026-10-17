@@ -23,9 +23,11 @@ import { AIController, type AIChallengeOptions } from './fantasy-ai/controller';
 import { captureInitialTeam, captureInitialMoves } from './fantasy-ai/initial-snapshot';
 import { captureFullChoice } from './fantasy-ai/full-state';
 import { aiDifficulty, type Difficulty } from './fantasy-ai/types';
+import { RoguePreviewController } from './fantasy-rogue/preview-controller';
 import type { RogueBattleResult, RogueBattleState, RoguePokemon } from '../sim/fantasy-rogue';
 
 export interface RogueRoomOptions {
+	preview?: 'sada' | 'turo';
 	state: RogueBattleState;
 	floor: number;
 	wild?: boolean;
@@ -571,6 +573,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	requestCount = 0;
 	options: RoomBattleOptions;
 	readonly fantasyAI?: AIController;
+	readonly roguePreview?: RoguePreviewController;
 	frozen?: boolean;
 	dataResolvers?: [((args: string[]) => void), ((error: Error) => void)][];
 	constructor(room: GameRoom, options: RoomBattleOptions) {
@@ -610,6 +613,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 
 		this.room.battle = this;
 		if (options.fantasyAI) this.fantasyAI = new AIController(this, options.fantasyAI);
+		if (options.fantasyRogue?.preview) this.roguePreview = new RoguePreviewController(this);
 
 		const battleOptions = {
 			formatid: this.format,
@@ -661,6 +665,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (Rooms.global.battleCount === 0) Rooms.global.automaticKillRequest();
 	}
 	override choose(user: User, data: string) {
+		if (this.roguePreview) return;
 		if (this.frozen) {
 			user.popup(`Your battle is currently paused, so you cannot move right now.`);
 			return;
@@ -685,6 +690,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		void this.stream.write(`>${player.slot} ${choice}`);
 	}
 	override undo(user: User, data: string) {
+		if (this.roguePreview) return;
 		const player = this.playerTable[user.id];
 		const [, rqid] = data.split('|', 2);
 		if (!player) return;
@@ -799,6 +805,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		}
 	}
 	override setEnded() {
+		this.roguePreview?.finish();
 		this.fantasyAI?.finish(this.endType);
 		this.started = true;
 		for (const player of this.players) {
@@ -837,6 +844,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			break;
 
 		case 'update':
+			this.roguePreview?.update(lines.slice(1).join('\n'));
 			this.fantasyAI?.update(lines.slice(1).join('\n'));
 			for (const line of lines.slice(1)) {
 				if (line.startsWith('|turn|')) {
@@ -855,6 +863,10 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		case 'sideupdate': {
 			const slot = lines[1] as SideID;
 			const player = this[slot];
+			if (slot === 'p1' && this.roguePreview && /^\|error\|\[(Invalid|Unavailable) choice\]/.test(lines[2])) {
+				this.roguePreview.invalidChoice();
+				break;
+			}
 			if (player?.isAI && /^\|error\|\[(Invalid|Unavailable) choice\]/.test(lines[2])) {
 				this.fantasyAI?.invalidChoice();
 				const request = player.request;
@@ -886,6 +898,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 				};
 				this.requestCount++;
 				if (player?.isAI) this.fantasyAI?.request(request, this.rqid);
+				if (slot === 'p1') this.roguePreview?.request(request, this.rqid);
 				player?.sendRoom(`|request|${requestJSON}`);
 				break;
 			}
@@ -1023,6 +1036,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (this.options.fantasyRogue) {
 			(connection || user).sendTo(this.roomid, `|fantasyrogue|${JSON.stringify({
 				floor: this.options.fantasyRogue.floor, userid: user.id,
+				preview: this.options.fantasyRogue.preview,
 				canRetreat: this.options.fantasyRogue.canRetreat !== false,
 			})}`);
 			if (this.options.fantasyRogue.defeat) {
@@ -1128,11 +1142,6 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	override forfeit(user: User | string, message = '') {
 		if (typeof user !== 'string') user = user.id;
 		else user = toID(user);
-		if (this.options.fantasyRogue?.canRetreat === false && user === this.p1.id && !this.ended) {
-			Users.get(user)?.popup('本次事件对战不能撤退或投降，请完成战斗。');
-			return false;
-		}
-
 		if (!(user in this.playerTable)) return false;
 		return this.forfeitPlayer(this.playerTable[user], message);
 	}

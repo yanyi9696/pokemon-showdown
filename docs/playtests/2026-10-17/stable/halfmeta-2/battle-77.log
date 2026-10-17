@@ -1,0 +1,70 @@
+|t:|1792222027
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Skeledirge, L36, M|
+|poke|p1|Togedemaru, L23, M|
+|poke|p1|Spiritomb, L35, M|
+|poke|p1|Emolga, L23, M|
+|poke|p1|Eiscue, L24, F|
+|poke|p1|Probopass, L24, F|
+|poke|p2|Ampharos-Fantasy, L30, M|
+|teampreview
+|
+|t:|1792222027
+|start
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L35, M|95/95
+|switch|p1a: Spiritomb|Spiritomb, L35, M|100/100
+|split|p2
+|switch|p2a: Ampharos|Ampharos-Fantasy, L30, M|103/103
+|switch|p2a: Ampharos|Ampharos-Fantasy, L30, M|100/100
+|-start|p2a: Ampharos|typechange|Electric/Psychic|[silent]
+|-start|p2a: Ampharos|fantasystats|90/40/85/115/90/90|[silent]
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|-start|p2a: Ampharos|typechange|Electric/Psychic|[silent]
+|-start|p2a: Ampharos|fantasystats|90/40/85/115/90/90|[silent]
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222027
+|-terastallize|p2a: Ampharos|Electric
+|move|p1a: Spiritomb|Sucker Punch|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|58/103
+|-damage|p2a: Ampharos|57/100
+|
+|t:|1792222028
+|split|p1
+|switch|p1a: Skeledirge|Skeledirge, L36, M|133/133|[from] Sucker Punch
+|switch|p1a: Skeledirge|Skeledirge, L36, M|100/100|[from] Sucker Punch
+|-end|p1a: Skeledirge|fantasystats|[silent]
+|move|p2a: Ampharos|Discharge|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|81/133
+|-damage|p1a: Skeledirge|61/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792222028
+|move|p2a: Ampharos|Discharge|p1a: Skeledirge
+|split|p1
+|-damage|p1a: Skeledirge|33/133
+|-damage|p1a: Skeledirge|25/100
+|-status|p1a: Skeledirge|par
+|move|p1a: Skeledirge|Torch Song|p2a: Ampharos
+|split|p2
+|-damage|p2a: Ampharos|0 fnt
+|-damage|p2a: Ampharos|0 fnt
+|-boost|p1a: Skeledirge|spa|1
+|faint|p2a: Ampharos
+|
+|win|Player

@@ -97,10 +97,10 @@ describe('Fantasy Rogue encounter recovery', () => {
 		assert.equal(battle.p2.active[0].boosts.atk, 0);
 		assert.equal(battle.p2.active[0].moveSlots[0].pp, 40);
 	});
-	it('charges exactly 5000 once and revives and fully restores the entire team without advancing the encounter', () => {
+	it('charges exactly 1900 once and revives and fully restores the entire team without advancing the encounter', () => {
 		store.change(user, account => {
 			const run = account.run;
-			run.encounter = 2; run.money = 5000; run.recovery = 'defeat';
+			run.encounter = 2; run.money = 1900; run.recovery = 'defeat';
 			run.team.push(createRoguePokemon(set('Magikarp', 'Swift Swim'), stats(0)));
 			for (const mon of run.team) {
 				rememberMove(mon, 'splash');
@@ -123,26 +123,27 @@ describe('Fantasy Rogue encounter recovery', () => {
 	});
 	it('refuses emergency treatment while alive, while holding revives, or with insufficient funds', () => {
 		for (const situation of [
-			{ hp: 1, money: 5000, revive: 0 }, { hp: 0, money: 5000, revive: 1 }, { hp: 0, money: 4999, revive: 0 },
+			{ hp: 1, money: 1900, revive: 0 }, { hp: 0, money: 1900, revive: 1 }, { hp: 0, money: 1899, revive: 0 },
 		]) {
 			store.change(user, account => {
 				account.run.team[0].hp = situation.hp; account.run.money = situation.money; account.run.bag.revive = situation.revive;
 			});
 			const before = saved();
-			assert.throws(() => cmd('emergency'), /全队濒死|5000/);
+			assert.throws(() => cmd('emergency'), /全队濒死|1900/);
 			assert.deepEqual(saved(), before);
 		}
 	});
-	it('blocks healing after a continuous challenge begins, including after retreat, and permits its checkpoint retry', () => {
+	it('allows paid item preparation after escape from a continuous challenge and retains its defeat checkpoint rule', () => {
 		store.change(user, account => {
 			account.run.node.noHealing = true; account.run.bag.revive = 1; account.run.team[0].hp = 0;
 		});
 		assert(!healingLocked(saved().run));
 		cmd('use', { value: 'revive', member: saved().run.team[0].id });
-		cmd('battle'); cmd('retreat'); finish(false);
-		assert(healingLocked(saved().run));
-		assert.throws(() => cmd('use', { value: 'revive', member: saved().run.team[0].id }), /连续战斗/);
-		assert.throws(() => cmd('emergency'), /允许场外治疗/);
+		cmd('battle'); cmd('retreat'); finish(false, result => { result.team[0].hp = 0; });
+		assert(!healingLocked(saved().run));
+		store.change(user, account => {account.run.bag.revive = 1;});
+		cmd('use', { value: 'revive', member: saved().run.team[0].id });
+		assert.equal(saved().run.bag.revive, 0); assert(saved().run.team[0].hp > 0);
 		cmd('battle'); finish(false, result => { result.team[0].hp = 0; });
 		assert.equal(saved().run.phase, 'failed');
 		cmd('retry');

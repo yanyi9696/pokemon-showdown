@@ -1,0 +1,427 @@
+|t:|1792222681
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L15, M|
+|poke|p1|Pidgey, L13, M|
+|poke|p1|Meowth, L11, F|
+|poke|p1|Slakoth, L11, M|
+|poke|p1|Swablu, L9, F|
+|poke|p1|Tentacool, L10, F|
+|poke|p2|Starly, L20, F|
+|poke|p2|Duskull, L20, M|
+|poke|p2|Porygon, L20|
+|teampreview
+|
+|t:|1792222681
+|start
+|split|p1
+|switch|p1a: Popplio|Popplio, L15, M|48/48
+|switch|p1a: Popplio|Popplio, L15, M|100/100
+|split|p2
+|switch|p2a: Starly|Starly, L20, F|52/52
+|switch|p2a: Starly|Starly, L20, F|100/100
+|-end|p2a: Starly|fantasystats|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|-end|p2a: Starly|fantasystats|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222682
+|-terastallize|p2a: Starly|Normal
+|move|p2a: Starly|Facade|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|18/48
+|-damage|p1a: Popplio|38/100
+|move|p1a: Popplio|Icy Wind|p2a: Starly
+|split|p2
+|-damage|p2a: Starly|36/52
+|-damage|p2a: Starly|70/100
+|-unboost|p2a: Starly|spe|1
+|split|p1
+|-damage|p1a: Popplio|14/48|[from] item: Life Orb
+|-damage|p1a: Popplio|30/100|[from] item: Life Orb
+|
+|upkeep
+|turn|2
+|
+|t:|1792222682
+|move|p1a: Popplio|Water Gun|p2a: Starly
+|split|p2
+|-damage|p2a: Starly|11/52
+|-damage|p2a: Starly|22/100
+|split|p1
+|-damage|p1a: Popplio|10/48|[from] item: Life Orb
+|-damage|p1a: Popplio|21/100|[from] item: Life Orb
+|move|p2a: Starly|Facade|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|0 fnt
+|-damage|p1a: Popplio|0 fnt
+|faint|p1a: Popplio
+|
+|upkeep
+|
+|t:|1792222682
+|split|p1
+|switch|p1a: Pidgey|Pidgey, L13, M|41/41
+|switch|p1a: Pidgey|Pidgey, L13, M|100/100
+|-end|p1a: Pidgey|fantasystats|[silent]
+|turn|3
+|
+|t:|1792222682
+|move|p1a: Pidgey|Quick Attack|p2a: Starly
+|split|p2
+|-damage|p2a: Starly|0 fnt
+|-damage|p2a: Starly|0 fnt
+|faint|p2a: Starly
+|split|p1
+|-damage|p1a: Pidgey|37/41|[from] item: Life Orb
+|-damage|p1a: Pidgey|91/100|[from] item: Life Orb
+|
+|upkeep
+|
+|t:|1792222682
+|split|p2
+|switch|p2a: Duskull|Duskull, L20, M|44/44
+|switch|p2a: Duskull|Duskull, L20, M|100/100
+|-end|p2a: Duskull|fantasystats|[silent]
+|turn|4
+|
+|t:|1792222682
+|move|p1a: Pidgey|Gust|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|39/44
+|-damage|p2a: Duskull|89/100
+|split|p1
+|-damage|p1a: Pidgey|33/41|[from] item: Life Orb
+|-damage|p1a: Pidgey|81/100|[from] item: Life Orb
+|move|p2a: Duskull|Will-O-Wisp|p1a: Pidgey
+|-status|p1a: Pidgey|brn
+|
+|split|p1
+|-damage|p1a: Pidgey|31/41 brn|[from] brn
+|-damage|p1a: Pidgey|76/100 brn|[from] brn
+|upkeep
+|turn|5
+|
+|t:|1792222683
+|move|p1a: Pidgey|Sand Attack|p2a: Duskull
+|-unboost|p2a: Duskull|accuracy|1
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|35/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|86/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|35/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|80/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|33/41 brn|[from] brn
+|-damage|p1a: Pidgey|81/100 brn|[from] brn
+|upkeep
+|turn|6
+|
+|t:|1792222683
+|move|p1a: Pidgey|Sand Attack|p2a: Duskull
+|-unboost|p2a: Duskull|accuracy|1
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|34/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|83/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|34/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|78/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|32/41 brn|[from] brn
+|-damage|p1a: Pidgey|79/100 brn|[from] brn
+|upkeep
+|turn|7
+|
+|t:|1792222683
+|move|p1a: Pidgey|Sand Attack|p2a: Duskull
+|-unboost|p2a: Duskull|accuracy|1
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|33/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|81/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|33/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|75/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|31/41 brn|[from] brn
+|-damage|p1a: Pidgey|76/100 brn|[from] brn
+|upkeep
+|turn|8
+|
+|t:|1792222683
+|move|p1a: Pidgey|Sand Attack|p2a: Duskull
+|-unboost|p2a: Duskull|accuracy|1
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|32/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|79/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|32/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|73/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|30/41 brn|[from] brn
+|-damage|p1a: Pidgey|74/100 brn|[from] brn
+|upkeep
+|turn|9
+|
+|t:|1792222683
+|move|p1a: Pidgey|Sand Attack|p2a: Duskull
+|-unboost|p2a: Duskull|accuracy|1
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|31/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|76/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|31/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|71/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|29/41 brn|[from] brn
+|-damage|p1a: Pidgey|71/100 brn|[from] brn
+|upkeep
+|turn|10
+|
+|t:|1792222683
+|move|p1a: Pidgey|Sand Attack|p2a: Duskull
+|-unboost|p2a: Duskull|accuracy|1
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|30/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|74/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|30/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|69/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|28/41 brn|[from] brn
+|-damage|p1a: Pidgey|69/100 brn|[from] brn
+|upkeep
+|turn|11
+|
+|t:|1792222684
+|move|p1a: Pidgey|Gust|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|25/44
+|-damage|p2a: Duskull|57/100
+|split|p1
+|-damage|p1a: Pidgey|24/41 brn|[from] item: Life Orb
+|-damage|p1a: Pidgey|59/100 brn|[from] item: Life Orb
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|24/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|59/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|24/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|55/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|22/41 brn|[from] brn
+|-damage|p1a: Pidgey|54/100 brn|[from] brn
+|upkeep
+|turn|12
+|
+|t:|1792222684
+|move|p1a: Pidgey|Gust|p2a: Duskull
+|-crit|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|15/44
+|-damage|p2a: Duskull|35/100
+|split|p1
+|-damage|p1a: Pidgey|18/41 brn|[from] item: Life Orb
+|-damage|p1a: Pidgey|44/100 brn|[from] item: Life Orb
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|16/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|40/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|16/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|37/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|14/41 brn|[from] brn
+|-damage|p1a: Pidgey|35/100 brn|[from] brn
+|upkeep
+|turn|13
+|
+|t:|1792222684
+|move|p1a: Pidgey|Gust|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|11/44
+|-damage|p2a: Duskull|25/100
+|split|p1
+|-damage|p1a: Pidgey|10/41 brn|[from] item: Life Orb
+|-damage|p1a: Pidgey|25/100 brn|[from] item: Life Orb
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|10/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|25/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|10/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|23/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|8/41 brn|[from] brn
+|-damage|p1a: Pidgey|20/100 brn|[from] brn
+|upkeep
+|turn|14
+|
+|t:|1792222684
+|move|p1a: Pidgey|Gust|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|5/44
+|-damage|p2a: Duskull|12/100
+|split|p1
+|-damage|p1a: Pidgey|4/41 brn|[from] item: Life Orb
+|-damage|p1a: Pidgey|10/100 brn|[from] item: Life Orb
+|move|p2a: Duskull|Pain Split|p1a: Pidgey
+|split|p1
+|-sethp|p1a: Pidgey|4/41 brn|[from] move: Pain Split|[silent]
+|-sethp|p1a: Pidgey|10/100 brn|[from] move: Pain Split|[silent]
+|split|p2
+|-sethp|p2a: Duskull|4/44|[from] move: Pain Split
+|-sethp|p2a: Duskull|10/100|[from] move: Pain Split
+|
+|split|p1
+|-damage|p1a: Pidgey|2/41 brn|[from] brn
+|-damage|p1a: Pidgey|5/100 brn|[from] brn
+|upkeep
+|turn|15
+|
+|t:|1792222684
+|move|p1a: Pidgey|Gust|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|0 fnt
+|-damage|p2a: Duskull|0 fnt
+|faint|p2a: Duskull
+|split|p1
+|-damage|p1a: Pidgey|0 fnt|[from] item: Life Orb
+|-damage|p1a: Pidgey|0 fnt|[from] item: Life Orb
+|faint|p1a: Pidgey
+|
+|upkeep
+|
+|t:|1792222684
+|split|p1
+|switch|p1a: Swablu|Swablu, L9, F|34/34
+|switch|p1a: Swablu|Swablu, L9, F|100/100
+|split|p2
+|switch|p2a: Porygon|Porygon, L20|62/62
+|switch|p2a: Porygon|Porygon, L20|100/100
+|-end|p2a: Porygon|fantasystats|[silent]
+|-ability|p2a: Porygon|Natural Cure|[from] ability: Trace|[of] p1a: Swablu
+|-end|p1a: Swablu|fantasystats|[silent]
+|turn|16
+|
+|t:|1792222685
+|move|p2a: Porygon|Electroweb|p1a: Swablu
+|-supereffective|p1a: Swablu
+|split|p1
+|-damage|p1a: Swablu|0 fnt
+|-damage|p1a: Swablu|0 fnt
+|faint|p1a: Swablu
+|
+|upkeep
+|
+|t:|1792222685
+|split|p1
+|switch|p1a: Slakoth|Slakoth, L11, M|42/42
+|switch|p1a: Slakoth|Slakoth, L11, M|100/100
+|-end|p1a: Slakoth|fantasystats|[silent]
+|turn|17
+|
+|t:|1792222685
+|move|p2a: Porygon|Electroweb|p1a: Slakoth|[miss]
+|-miss|p2a: Porygon|p1a: Slakoth
+|move|p1a: Slakoth|Encore|p2a: Porygon
+|-start|p2a: Porygon|Encore
+|
+|upkeep
+|turn|18
+|
+|t:|1792222685
+|move|p2a: Porygon|Electroweb|p1a: Slakoth
+|split|p1
+|-damage|p1a: Slakoth|17/42
+|-damage|p1a: Slakoth|41/100
+|-unboost|p1a: Slakoth|spe|1
+|cant|p1a: Slakoth|ability: Truant
+|
+|upkeep
+|turn|19
+|
+|t:|1792222685
+|move|p2a: Porygon|Electroweb|p1a: Slakoth
+|split|p1
+|-damage|p1a: Slakoth|0 fnt
+|-damage|p1a: Slakoth|0 fnt
+|faint|p1a: Slakoth
+|
+|upkeep
+|
+|t:|1792222685
+|split|p1
+|switch|p1a: Meowth|Meowth, L11, F|37/37
+|switch|p1a: Meowth|Meowth, L11, F|100/100
+|-end|p1a: Meowth|fantasystats|[silent]
+|turn|20
+|
+|t:|1792222685
+|move|p1a: Meowth|Growl|p2a: Porygon
+|-unboost|p2a: Porygon|atk|1
+|move|p2a: Porygon|Electroweb|p1a: Meowth
+|split|p1
+|-damage|p1a: Meowth|14/37
+|-damage|p1a: Meowth|38/100
+|-unboost|p1a: Meowth|spe|1
+|
+|-end|p2a: Porygon|Encore
+|upkeep
+|turn|21
+|
+|t:|1792222685
+|move|p2a: Porygon|Psybeam|p1a: Meowth
+|split|p1
+|-damage|p1a: Meowth|0 fnt
+|-damage|p1a: Meowth|0 fnt
+|faint|p1a: Meowth
+|
+|upkeep
+|
+|t:|1792222685
+|split|p1
+|switch|p1a: Tentacool|Tentacool, L10, F|35/35
+|switch|p1a: Tentacool|Tentacool, L10, F|100/100
+|-end|p1a: Tentacool|fantasystats|[silent]
+|turn|22
+|
+|t:|1792222685
+|move|p1a: Tentacool|Wrap|p2a: Porygon
+|split|p2
+|-damage|p2a: Porygon|61/62
+|-damage|p2a: Porygon|99/100
+|-activate|p2a: Porygon|move: Wrap|[of] p1a: Tentacool
+|split|p1
+|-damage|p1a: Tentacool|32/35|[from] item: Life Orb
+|-damage|p1a: Tentacool|92/100|[from] item: Life Orb
+|move|p2a: Porygon|Psybeam|p1a: Tentacool
+|-supereffective|p1a: Tentacool
+|split|p1
+|-damage|p1a: Tentacool|0 fnt
+|-damage|p1a: Tentacool|0 fnt
+|faint|p1a: Tentacool
+|
+|win|NPC

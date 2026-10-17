@@ -1,0 +1,74 @@
+|t:|1792223749
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L11, M|
+|poke|p1|Fuecoco, L9, F|
+|poke|p1|Bulbasaur, L9, M|
+|poke|p1|Wynaut, L7, F|
+|poke|p1|Munna, L7, M|
+|poke|p1|Drowzee, L7, M|
+|poke|p2|Duskull-Fantasy, L8, M|
+|teampreview
+|
+|t:|1792223749
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L11, M|39/39
+|switch|p1a: Mudkip|Mudkip, L11, M|100/100
+|split|p2
+|switch|p2a: Duskull|Duskull-Fantasy, L8, M|26/26
+|switch|p2a: Duskull|Duskull-Fantasy, L8, M|100/100
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Duskull|typechange|Ghost/Normal|[silent]
+|-start|p2a: Duskull|fantasystats|40/60/115/15/115/15|[silent]
+|-ability|p2a: Duskull|Intimidate|boost
+|-unboost|p1a: Mudkip|atk|1
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-start|p2a: Duskull|typechange|Ghost/Normal|[silent]
+|-start|p2a: Duskull|fantasystats|40/60/115/15/115/15|[silent]
+|turn|1
+|
+|t:|1792223749
+|-terastallize|p2a: Duskull|Ghost
+|move|p1a: Mudkip|Rock Throw|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|17/26
+|-damage|p2a: Duskull|66/100
+|move|p2a: Duskull|Astonish|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|31/39
+|-damage|p1a: Mudkip|80/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223750
+|move|p1a: Mudkip|Rock Throw|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|9/26
+|-damage|p2a: Duskull|35/100
+|cant|p2a: Duskull|flinch
+|
+|upkeep
+|turn|3
+|
+|t:|1792223751
+|move|p1a: Mudkip|Rock Throw|p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|2/26
+|-damage|p2a: Duskull|8/100
+|move|p2a: Duskull|Curse|p1a: Mudkip
+|-start|p1a: Mudkip|Curse|[of] p2a: Duskull
+|split|p2
+|-damage|p2a: Duskull|0 fnt
+|-damage|p2a: Duskull|0 fnt
+|faint|p2a: Duskull
+|
+|win|Player

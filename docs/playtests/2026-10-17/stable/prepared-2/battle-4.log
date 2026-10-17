@@ -1,0 +1,179 @@
+|t:|1792221965
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|2
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L9, M|
+|poke|p1|Sandygast, L3, F|
+|poke|p2|Spiritomb, L6, M|
+|poke|p2|Mismagius, L6, M|
+|poke|p2|Baltoy, L6|
+|teampreview
+|
+|t:|1792221965
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L9, M|25/32
+|switch|p1a: Fuecoco|Fuecoco, L9, M|79/100
+|split|p2
+|switch|p2a: Spiritomb|Spiritomb, L6, M|23/23
+|switch|p2a: Spiritomb|Spiritomb, L6, M|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-end|p2a: Spiritomb|fantasystats|[silent]
+|-ability|p2a: Spiritomb|Pressure
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-end|p2a: Spiritomb|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221965
+|move|p1a: Fuecoco|Ember|p2a: Spiritomb
+|split|p2
+|-damage|p2a: Spiritomb|17/23
+|-damage|p2a: Spiritomb|74/100
+|
+|t:|1792221966
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L3, F|17/17|[from] Ember
+|switch|p1a: Sandygast|Sandygast, L3, F|100/100|[from] Ember
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Spiritomb|Night Shade|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|11/17
+|-damage|p1a: Sandygast|65/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792221966
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L9, M|25/32
+|switch|p1a: Fuecoco|Fuecoco, L9, M|79/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|move|p2a: Spiritomb|Night Shade|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|19/32
+|-damage|p1a: Fuecoco|60/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792221966
+|move|p1a: Fuecoco|Ember|p2a: Spiritomb
+|split|p2
+|-damage|p2a: Spiritomb|10/23
+|-damage|p2a: Spiritomb|44/100
+|-status|p2a: Spiritomb|brn
+|
+|t:|1792221966
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L3, F|11/17|[from] Ember
+|switch|p1a: Sandygast|Sandygast, L3, F|65/100|[from] Ember
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Spiritomb|Night Shade|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|5/17
+|-damage|p1a: Sandygast|30/100
+|
+|split|p2
+|-damage|p2a: Spiritomb|9/23 brn|[from] brn
+|-damage|p2a: Spiritomb|40/100 brn|[from] brn
+|upkeep
+|turn|4
+|
+|t:|1792221966
+|-message|投出了精灵球！
+|-roguecapture|p2a: Spiritomb|pokeball|success|3|normal
+|-message|成功捕捉了Spiritomb！
+|
+|upkeep
+|
+|t:|1792221966
+|split|p2
+|switch|p2a: Mismagius|Mismagius, L6, M|24/24
+|switch|p2a: Mismagius|Mismagius, L6, M|100/100
+|-end|p2a: Mismagius|fantasystats|[silent]
+|turn|5
+|
+|t:|1792221966
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L9, M|19/32
+|switch|p1a: Fuecoco|Fuecoco, L9, M|60/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|move|p2a: Mismagius|Phantom Force||[still]
+|-prepare|p2a: Mismagius|Phantom Force
+|
+|upkeep
+|turn|6
+|
+|t:|1792221966
+|move|p2a: Mismagius|Phantom Force|p1a: Fuecoco|[from] lockedmove
+|split|p1
+|-damage|p1a: Fuecoco|10/32
+|-damage|p1a: Fuecoco|32/100
+|move|p1a: Fuecoco|Ember|p2a: Mismagius
+|split|p2
+|-damage|p2a: Mismagius|17/24
+|-damage|p2a: Mismagius|71/100
+|
+|t:|1792221967
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L3, F|5/17|[from] Ember
+|switch|p1a: Sandygast|Sandygast, L3, F|30/100|[from] Ember
+|-end|p1a: Sandygast|fantasystats|[silent]
+|
+|upkeep
+|turn|7
+|
+|t:|1792221967
+|move|p2a: Mismagius|Power Gem|p1a: Sandygast
+|-resisted|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|0 fnt
+|-damage|p1a: Sandygast|0 fnt
+|faint|p1a: Sandygast
+|
+|upkeep
+|
+|t:|1792221967
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L9, M|10/32
+|switch|p1a: Fuecoco|Fuecoco, L9, M|32/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|8
+|
+|t:|1792221967
+|move|p2a: Mismagius|Phantom Force||[still]
+|-prepare|p2a: Mismagius|Phantom Force
+|move|p1a: Fuecoco|Ember|p2a: Mismagius|[miss]
+|-miss|p1a: Fuecoco|p2a: Mismagius
+|
+|upkeep
+|turn|9
+|
+|t:|1792221967
+|move|p2a: Mismagius|Phantom Force|p1a: Fuecoco|[from] lockedmove
+|split|p1
+|-damage|p1a: Fuecoco|1/32
+|-damage|p1a: Fuecoco|4/100
+|move|p1a: Fuecoco|Ember|p2a: Mismagius
+|split|p2
+|-damage|p2a: Mismagius|8/24
+|-damage|p2a: Mismagius|34/100
+|
+|upkeep
+|turn|10
+|
+|t:|1792221967
+|move|p2a: Mismagius|Power Gem|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|win|NPC

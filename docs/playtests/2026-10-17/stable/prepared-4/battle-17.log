@@ -1,0 +1,165 @@
+|t:|1792221998
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|5
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L13, M|
+|poke|p1|Pidgey, L9, M|
+|poke|p1|Meowth, L7, F|
+|poke|p1|Slakoth, L7, M|
+|poke|p1|Shroomish, L12, F|
+|poke|p2|Tyrunt-Fantasy, L13, M|
+|teampreview
+|
+|t:|1792221998
+|start
+|split|p1
+|switch|p1a: Shroomish|Shroomish, L12, F|40/40
+|switch|p1a: Shroomish|Shroomish, L12, F|100/100
+|split|p2
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L13, M|42/42
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L13, M|100/100
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Shroomish|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Shroomish|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221999
+|-terastallize|p2a: Tyrunt|Rock
+|move|p2a: Tyrunt|Yao Lan|p1a: Shroomish
+|-supereffective|p1a: Shroomish
+|split|p1
+|-damage|p1a: Shroomish|10/40
+|-damage|p1a: Shroomish|25/100
+|move|p1a: Shroomish|Mega Drain|p2a: Tyrunt
+|-supereffective|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|24/42
+|-damage|p2a: Tyrunt|58/100
+|split|p1
+|-heal|p1a: Shroomish|19/40|[from] drain|[of] p2a: Tyrunt
+|-heal|p1a: Shroomish|48/100|[from] drain|[of] p2a: Tyrunt
+|split|p1
+|-damage|p1a: Shroomish|15/40|[from] item: Life Orb
+|-damage|p1a: Shroomish|38/100|[from] item: Life Orb
+|
+|upkeep
+|turn|2
+|
+|t:|1792221999
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L13, M|43/43
+|switch|p1a: Fuecoco|Fuecoco, L13, M|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|move|p2a: Tyrunt|Yao Lan|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|27/43
+|-damage|p1a: Fuecoco|63/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792221999
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792221999
+|split|p1
+|switch|p1a: Shroomish|Shroomish, L12, F|15/40
+|switch|p1a: Shroomish|Shroomish, L12, F|38/100
+|-end|p1a: Shroomish|fantasystats|[silent]
+|turn|4
+|
+|t:|1792222000
+|move|p2a: Tyrunt|Rock Tomb|p1a: Shroomish
+|split|p1
+|-damage|p1a: Shroomish|0 fnt
+|-damage|p1a: Shroomish|0 fnt
+|faint|p1a: Shroomish
+|
+|upkeep
+|
+|t:|1792222000
+|split|p1
+|switch|p1a: Meowth|Meowth, L7, F|24/24
+|switch|p1a: Meowth|Meowth, L7, F|100/100
+|-end|p1a: Meowth|fantasystats|[silent]
+|turn|5
+|
+|t:|1792222000
+|move|p1a: Meowth|Fake Out|p2a: Tyrunt
+|-resisted|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|23/42
+|-damage|p2a: Tyrunt|55/100
+|split|p1
+|-damage|p1a: Meowth|22/24|[from] item: Life Orb
+|-damage|p1a: Meowth|92/100|[from] item: Life Orb
+|cant|p2a: Tyrunt|flinch
+|
+|upkeep
+|turn|6
+|
+|t:|1792222000
+|move|p1a: Meowth|Feint|p2a: Tyrunt
+|-resisted|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|22/42
+|-damage|p2a: Tyrunt|53/100
+|split|p1
+|-damage|p1a: Meowth|20/24|[from] item: Life Orb
+|-damage|p1a: Meowth|84/100|[from] item: Life Orb
+|move|p2a: Tyrunt|Rock Tomb|p1a: Meowth
+|split|p1
+|-damage|p1a: Meowth|0 fnt
+|-damage|p1a: Meowth|0 fnt
+|faint|p1a: Meowth
+|
+|upkeep
+|
+|t:|1792222000
+|split|p1
+|switch|p1a: Pidgey|Pidgey, L9, M|28/28
+|switch|p1a: Pidgey|Pidgey, L9, M|100/100
+|-end|p1a: Pidgey|fantasystats|[silent]
+|turn|7
+|
+|t:|1792222000
+|move|p2a: Tyrunt|Rock Tomb|p1a: Pidgey
+|-supereffective|p1a: Pidgey
+|split|p1
+|-damage|p1a: Pidgey|0 fnt
+|-damage|p1a: Pidgey|0 fnt
+|faint|p1a: Pidgey
+|
+|upkeep
+|
+|t:|1792222000
+|split|p1
+|switch|p1a: Slakoth|Slakoth, L7, M|27/27
+|switch|p1a: Slakoth|Slakoth, L7, M|100/100
+|-end|p1a: Slakoth|fantasystats|[silent]
+|turn|8
+|
+|t:|1792222000
+|move|p2a: Tyrunt|Rock Tomb|p1a: Slakoth
+|split|p1
+|-damage|p1a: Slakoth|0 fnt
+|-damage|p1a: Slakoth|0 fnt
+|faint|p1a: Slakoth
+|
+|win|NPC

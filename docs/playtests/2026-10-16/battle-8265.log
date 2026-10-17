@@ -1,0 +1,44 @@
+|init|battle
+|title|RoguePlay1016F vs. AI · 野生宝可梦
+
+|-message|幻想杯肉鸽第 22 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792133322
+|gametype|singles
+|player|p1|RoguePlay1016F|266|
+|player|p2|AI · 野生宝可梦|unknown|
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L15, M|
+|poke|p1|Muk-Alola, L40, M|
+|poke|p1|Munna, L12, F|
+|poke|p1|Mankey, L11, F|
+|poke|p1|Solosis, L13, M|
+|poke|p1|Psyduck, L11, M|
+|poke|p2|Tyrogue, L11, M|
+|teampreview
+|
+|t:|1792133323
+|start
+|-message|塔灵：时拉比的驻时
+|switch|p1a: Muk|Muk-Alola, L40, M|144/144
+|switch|p2a: Tyrogue|Tyrogue, L11, M|100/100
+|-end|p1a: Muk|fantasystats|[silent]
+|-end|p2a: Tyrogue|fantasystats|[silent]
+|-end|p1a: Muk|fantasystats|[silent]
+|-end|p2a: Tyrogue|fantasystats|[silent]
+|turn|1
+|
+|t:|1792133324
+|move|p2a: Tyrogue|Helping Hand|null|[notarget]
+|-fail|p2a: Tyrogue
+|move|p1a: Muk|Pound|p2a: Tyrogue
+|-crit|p2a: Tyrogue
+|-damage|p2a: Tyrogue|0 fnt
+|faint|p2a: Tyrogue
+|
+|win|RoguePlay1016F
+|deinit

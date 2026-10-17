@@ -1,0 +1,50 @@
+|init|battle
+|title|RogueBalance1016I vs. AI · 幻想精英
+|raw|<div class="broadcast-red"><strong>This battle is invite-only!</strong><br />Users must be invited with <code>/invite</code> (or be staff) to join</div>
+|j|☆RogueBalance1016I
+
+|fantasyrogue|{"floor":30,"userid":"roguebalance1016i","canRetreat":true}
+|fantasyai|{"trainerId":"rogue-boss","format":"gen9fantasyrogue","difficulty":"normal","userid":"roguebalance1016i","disconnectMs":600000}
+|-message|幻想杯肉鸽第 30 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792146148
+|gametype|singles
+|player|p1|RogueBalance1016I|170|
+|request|{"teamPreview":true,"side":{"name":"RogueBalance1016I","id":"p1","fantasyRogueTera":false,"pokemon":[{"ident":"p1: Ivysaur","details":"Ivysaur, L28, M","condition":"77/77","active":true,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":41,"def":50,"spa":56,"spd":55,"spe":44},"moves":["seedbomb","takedown","razorleaf","vinewhip"],"baseAbility":"overgrow","item":"oranberry","pokeball":"pokeball","ability":"overgrow","commanding":false,"reviving":false,"teraType":"Grass","terastallized":""},{"ident":"p1: Spheal","details":"Spheal, L28, F","condition":"84/84","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":36,"def":40,"spa":45,"spd":42,"spe":22},"moves":["brine","aurorabeam","rest","hiddenpowergrass60"],"baseAbility":"thickfat","item":"","pokeball":"pokeball","ability":"thickfat","commanding":false,"reviving":false,"teraType":"Ice","terastallized":""},{"ident":"p1: Snorunt","details":"Snorunt, L28, M","condition":"72/72","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":44,"def":38,"spa":41,"spd":41,"spe":36},"moves":["headbutt","icywind","astonish","iceshard"],"baseAbility":"innerfocus","item":"","pokeball":"pokeball","ability":"innerfocus","commanding":false,"reviving":false,"teraType":"Ice","terastallized":""},{"ident":"p1: Grimer","details":"Grimer-Alola, L27, F","condition":"87/87","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":52,"def":38,"spa":35,"spd":40,"spe":28},"moves":["bite","poisonfang","gigadrain","pound"],"baseAbility":"poisontouch","item":"","pokeball":"pokeball","ability":"poisontouch","commanding":false,"reviving":false,"teraType":"Poison","terastallized":""},{"ident":"p1: Flamigo","details":"Flamigo, L28, M","condition":"92/92","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":79,"def":53,"spa":58,"spd":42,"spe":63},"moves":["wingattack","takedown","lowkick","payback"],"baseAbility":"scrappy","item":"","pokeball":"pokeball","ability":"scrappy","commanding":false,"reviving":false,"teraType":"Flying","terastallized":""},{"ident":"p1: Aron","details":"Aron, L20, M","condition":"54/54","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":34,"def":49,"spa":26,"spd":28,"spe":23},"moves":["rocktomb","headbutt","metalclaw","hiddenpowerflying60"],"baseAbility":"sturdy","item":"","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Steel","terastallized":""}]},"fantasyRogue":{"eeveeZ":[false],"catchable":false,"balls":[{"id":"pokeball","name":"精灵球","count":19,"chance":null},{"id":"greatball","name":"超级球","count":4,"chance":null},{"id":"ultraball","name":"高级球","count":0,"chance":null}]},"rqid":2}
+|player|p2|AI · 幻想精英|unknown|
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L28, M|
+|poke|p1|Spheal, L28, F|
+|poke|p1|Snorunt, L28, M|
+|poke|p1|Grimer-Alola, L27, F|
+|poke|p1|Flamigo, L28, M|
+|poke|p1|Aron, L20, M|
+|poke|p2|Carnivine-Fantasy, L30, M|
+|teampreview
+|request|{"active":[{"moves":[{"move":"Seed Bomb","id":"seedbomb","pp":15,"maxpp":15,"target":"normal","disabled":false},{"move":"Take Down","id":"takedown","pp":20,"maxpp":20,"target":"normal","disabled":false},{"move":"Razor Leaf","id":"razorleaf","pp":25,"maxpp":25,"target":"allAdjacentFoes","disabled":false},{"move":"Vine Whip","id":"vinewhip","pp":25,"maxpp":25,"target":"normal","disabled":false}]}],"side":{"name":"RogueBalance1016I","id":"p1","fantasyRogueTera":false,"pokemon":[{"ident":"p1: Ivysaur","details":"Ivysaur, L28, M","condition":"77/77","active":true,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":41,"def":50,"spa":56,"spd":55,"spe":44},"moves":["seedbomb","takedown","razorleaf","vinewhip"],"baseAbility":"overgrow","item":"oranberry","pokeball":"pokeball","ability":"overgrow","commanding":false,"reviving":false,"teraType":"Grass","terastallized":""},{"ident":"p1: Spheal","details":"Spheal, L28, F","condition":"84/84","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":36,"def":40,"spa":45,"spd":42,"spe":22},"moves":["brine","aurorabeam","rest","hiddenpowergrass60"],"baseAbility":"thickfat","item":"","pokeball":"pokeball","ability":"thickfat","commanding":false,"reviving":false,"teraType":"Ice","terastallized":""},{"ident":"p1: Snorunt","details":"Snorunt, L28, M","condition":"72/72","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":44,"def":38,"spa":41,"spd":41,"spe":36},"moves":["headbutt","icywind","astonish","iceshard"],"baseAbility":"innerfocus","item":"","pokeball":"pokeball","ability":"innerfocus","commanding":false,"reviving":false,"teraType":"Ice","terastallized":""},{"ident":"p1: Flamigo","details":"Flamigo, L28, M","condition":"92/92","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":79,"def":53,"spa":58,"spd":42,"spe":63},"moves":["wingattack","takedown","lowkick","payback"],"baseAbility":"scrappy","item":"","pokeball":"pokeball","ability":"scrappy","commanding":false,"reviving":false,"teraType":"Flying","terastallized":""},{"ident":"p1: Grimer","details":"Grimer-Alola, L27, F","condition":"87/87","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":52,"def":38,"spa":35,"spd":40,"spe":28},"moves":["bite","poisonfang","gigadrain","pound"],"baseAbility":"poisontouch","item":"","pokeball":"pokeball","ability":"poisontouch","commanding":false,"reviving":false,"teraType":"Poison","terastallized":""},{"ident":"p1: Aron","details":"Aron, L20, M","condition":"54/54","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":34,"def":49,"spa":26,"spd":28,"spe":23},"moves":["rocktomb","headbutt","metalclaw","hiddenpowerflying60"],"baseAbility":"sturdy","item":"","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Steel","terastallized":""}]},"fantasyRogue":{"psychic":101.5,"eeveeZ":[false],"catchable":false,"balls":[{"id":"pokeball","name":"精灵球","count":19,"chance":null},{"id":"greatball","name":"超级球","count":4,"chance":null},{"id":"ultraball","name":"高级球","count":0,"chance":null}]},"rqid":4}
+|
+|t:|1792146149
+|start
+|switch|p1a: Ivysaur|Ivysaur, L28, M|77/77
+|switch|p2a: Carnivine|Carnivine-Fantasy, L30, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-start|p2a: Carnivine|typechange|Grass/Dark|[silent]
+|-start|p2a: Carnivine|fantasystats|84/120/107/70/107/46|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-start|p2a: Carnivine|typechange|Grass/Dark|[silent]
+|-start|p2a: Carnivine|fantasystats|84/120/107/70/107/46|[silent]
+|turn|1
+|
+|t:|1792146150
+|-terastallize|p2a: Carnivine|Grass
+|move|p1a: Ivysaur|Rogue Psychic Burst|p2a: Carnivine
+|-damage|p2a: Carnivine|0 fnt
+|faint|p2a: Carnivine
+|-ohko
+|
+|win|RogueBalance1016I
+|deinit

@@ -1,0 +1,54 @@
+{
+  "at": "2026-10-17T17:39:29.202Z",
+  "server": {
+    "build": "passed",
+    "typecheck": "passed (installed TypeScript 5.7.3; --ignoreDeprecations 5.0)",
+    "fullRogueRegression": {
+      "passed": 2063,
+      "failed": 0,
+      "log": "server-regression.log"
+    },
+    "additionalFocusedRegression": {
+      "passed": 51,
+      "failed": 0,
+      "scope": [
+        "effect-display",
+        "companions",
+        "recalibration",
+        "online"
+      ],
+      "log": "focused-regression.log",
+      "note": "Final focused run includes the additional Max-move regression and native room preview coverage, after formatting checks."
+    },
+    "newCompanionFilesLint": "passed: 4 source modules and 2 regression suites, zero warnings"
+  },
+  "client": {
+    "build": "passed",
+    "typecheck": "passed (installed TypeScript 5.8.3; --ignoreDeprecations 5.0)",
+    "regression": {
+      "passed": 171,
+      "pending": 1,
+      "failed": 0,
+      "files": [
+        "fantasy-rogue.test.js",
+        "battle.test.js",
+        "battle-assist.test.js",
+        "ps-china-translator.test.js"
+      ]
+    },
+    "buildWarning": "Existing PHP news hook unavailable; client compilation completed."
+  },
+  "nativeRoomIntegration": [
+    "AI preview win accepts normal settlement exactly once",
+    "AI preview defeat leaves campaign unchanged and enables personal retry"
+  ],
+  "localService": {
+    "restarted": true,
+    "saveRestore": "live-check.json"
+  },
+  "visual": {
+    "generatedPortraitsInspected": true,
+    "liveBrowserReviewed": false,
+    "reason": "Automatic approval rejected local file URL browser operation; no workaround attempted."
+  }
+}

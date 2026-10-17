@@ -1,0 +1,100 @@
+|t:|1792221987
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|4
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Snorunt, L9, F|
+|poke|p1|Wynaut, L7, F|
+|poke|p1|Ralts, L6, F|
+|poke|p2|Solrock, L9|
+|teampreview
+|
+|t:|1792221987
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|8/37
+|switch|p1a: Fuecoco|Fuecoco, L11, M|22/100
+|split|p2
+|switch|p2a: Solrock|Solrock, L9|37/37
+|switch|p2a: Solrock|Solrock, L9|100/100
+|-end|p2a: Solrock|fantasystats|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-end|p2a: Solrock|fantasystats|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221987
+|move|p2a: Solrock|Rock Throw|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792221987
+|split|p1
+|switch|p1a: Wynaut|Wynaut, L7, F|31/31
+|switch|p1a: Wynaut|Wynaut, L7, F|100/100
+|-end|p1a: Wynaut|fantasystats|[silent]
+|turn|2
+|
+|t:|1792221987
+|move|p2a: Solrock|Rock Throw|p1a: Wynaut
+|split|p1
+|-damage|p1a: Wynaut|10/31
+|-damage|p1a: Wynaut|33/100
+|move|p1a: Wynaut|Safeguard|p1a: Wynaut
+|-sidestart|p1: Player|Safeguard
+|
+|upkeep
+|turn|3
+|
+|t:|1792221988
+|move|p2a: Solrock|Rock Throw|p1a: Wynaut
+|split|p1
+|-damage|p1a: Wynaut|0 fnt
+|-damage|p1a: Wynaut|0 fnt
+|faint|p1a: Wynaut
+|
+|upkeep
+|
+|t:|1792221988
+|split|p1
+|switch|p1a: Snorunt|Snorunt, L9, F|25/30
+|switch|p1a: Snorunt|Snorunt, L9, F|84/100
+|-end|p1a: Snorunt|fantasystats|[silent]
+|turn|4
+|
+|t:|1792221988
+|move|p2a: Solrock|Rock Throw|p1a: Snorunt
+|-supereffective|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|0 fnt
+|-damage|p1a: Snorunt|0 fnt
+|faint|p1a: Snorunt
+|
+|upkeep
+|
+|t:|1792221988
+|split|p1
+|switch|p1a: Ralts|Ralts, L6, F|20/20
+|switch|p1a: Ralts|Ralts, L6, F|100/100
+|-end|p1a: Ralts|fantasystats|[silent]
+|turn|5
+|
+|t:|1792221988
+|move|p2a: Solrock|Rock Throw|p1a: Ralts
+|split|p1
+|-damage|p1a: Ralts|0 fnt
+|-damage|p1a: Ralts|0 fnt
+|faint|p1a: Ralts
+|
+|win|NPC

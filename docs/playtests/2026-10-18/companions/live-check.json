@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-17T17:47:48.334Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\companion-release-1792259239247",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "testedSaveHpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "unchangedAccounts": 19,
+  "concurrentProgress": [],
+  "companionBlessingsPublished": true,
+  "ascentThirtyPercentPublished": true,
+  "executionThresholdFivePercentPublished": true,
+  "blessingEntries": 168,
+  "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+}

@@ -1,0 +1,10 @@
+{
+  "source": "Actual client base data plus Fantasy overrides; official and Fantasy content, excluding CAP/Pokestar.",
+  "counts": {
+    "species": 1644,
+    "moves": 1998,
+    "abilities": 764,
+    "items": 1229
+  },
+  "missing": []
+}

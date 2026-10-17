@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
@@ -11,7 +12,7 @@ describe('Fantasy Rogue economy', () => {
 	let store, engine;
 	const user = 'economytester';
 	const account = () => store.get(user);
-	const cmd = (action, details = {}) => engine.command(user, { id: randomUUID(), revision: account().revision, action, ...details });
+	const cmd = (action, details = {}) => commandAfterOpening(engine, user, { id: randomUUID(), revision: account().revision, action, ...details });
 	function floor(n, route) {
 		store.change(user, saved => {
 			const run = saved.run;
@@ -128,11 +129,11 @@ describe('Fantasy Rogue economy', () => {
 		engine.migrate(user);
 		assert.deepEqual(account().run.node, legacy);
 	});
-	it('rejects locked merchandise and candy purchases on the server, and unlocks each threshold exactly', () => {
+	it('rejects locked merchandise and higher candy grades, and unlocks each threshold exactly', () => {
 		floor(9);
 		store.change(user, saved => { saved.run.money = 999999; });
 		cmd('buy', { value: 'potion' });
-		for (const id of ['greatball', 'healthfeather', 'protein', 'expcandyxs', 'tinymushroom']) {
+		for (const id of ['greatball', 'healthfeather', 'protein', 'expcandys', 'tinymushroom']) {
 			const before = account();
 			assert.throws(() => cmd('buy', { value: id }), /未解锁|不在商店/);
 			assert.deepEqual(account(), before);

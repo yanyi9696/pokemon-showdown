@@ -1,0 +1,204 @@
+|t:|1792223207
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L20, M|
+|poke|p1|Sandygast, L15, F|
+|poke|p1|Spiritomb, L17, M|
+|poke|p1|Minun, L14, F|
+|poke|p1|Flabébé, L15, F|
+|poke|p1|Skrelp, L15, F|
+|poke|p2|Simisage-Fantasy, L20, M|
+|teampreview
+|
+|t:|1792223207
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L20, M|62/62
+|switch|p1a: Marshtomp|Marshtomp, L20, M|100/100
+|split|p2
+|switch|p2a: Simisage|Simisage-Fantasy, L20, M|75/75
+|switch|p2a: Simisage|Simisage-Fantasy, L20, M|100/100
+|-start|p2a: Simisage|typechange|Grass|[silent]
+|-start|p2a: Simisage|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-start|p2a: Simisage|typechange|Grass|[silent]
+|-start|p2a: Simisage|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223208
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L17, M|49/49
+|switch|p1a: Spiritomb|Spiritomb, L17, M|100/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|-terastallize|p2a: Simisage|Grass
+|move|p2a: Simisage|Sappy Seed|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|11/49
+|-damage|p1a: Spiritomb|23/100
+|-start|p1a: Spiritomb|move: Leech Seed
+|
+|split|p1
+|-damage|p1a: Spiritomb|5/49|[from] Leech Seed|[of] p2a: Simisage
+|-damage|p1a: Spiritomb|11/100|[from] Leech Seed|[of] p2a: Simisage
+|upkeep
+|turn|2
+|
+|t:|1792223208
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Simisage
+|split|p2
+|-damage|p2a: Simisage|64/75
+|-damage|p2a: Simisage|86/100
+|
+|t:|1792223208
+|split|p1
+|switch|p1a: Flabébé|Flabébé, L15, F|41/41|[from] Shadow Sneak
+|switch|p1a: Flabébé|Flabébé, L15, F|100/100|[from] Shadow Sneak
+|-end|p1a: Flabébé|fantasystats|[silent]
+|move|p2a: Simisage|Sappy Seed|p1a: Flabébé
+|-crit|p1a: Flabébé
+|split|p1
+|-damage|p1a: Flabébé|0 fnt
+|-damage|p1a: Flabébé|0 fnt
+|faint|p1a: Flabébé
+|
+|upkeep
+|
+|t:|1792223209
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L17, M|5/49
+|switch|p1a: Spiritomb|Spiritomb, L17, M|11/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|3
+|
+|t:|1792223209
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Simisage
+|split|p2
+|-damage|p2a: Simisage|55/75
+|-damage|p2a: Simisage|74/100
+|
+|t:|1792223210
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L20, M|62/62|[from] Shadow Sneak
+|switch|p1a: Marshtomp|Marshtomp, L20, M|100/100|[from] Shadow Sneak
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Simisage|Sappy Seed|p1a: Marshtomp
+|-supereffective|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|
+|upkeep
+|
+|t:|1792223210
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L17, M|5/49
+|switch|p1a: Spiritomb|Spiritomb, L17, M|11/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|4
+|
+|t:|1792223210
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Simisage
+|split|p2
+|-damage|p2a: Simisage|44/75
+|-damage|p2a: Simisage|59/100
+|
+|t:|1792223210
+|split|p1
+|switch|p1a: Minun|Minun, L14, F|44/44|[from] Shadow Sneak
+|switch|p1a: Minun|Minun, L14, F|100/100|[from] Shadow Sneak
+|-end|p1a: Minun|fantasystats|[silent]
+|move|p2a: Simisage|Sappy Seed|p1a: Minun
+|split|p1
+|-damage|p1a: Minun|0 fnt
+|-damage|p1a: Minun|0 fnt
+|faint|p1a: Minun
+|
+|upkeep
+|
+|t:|1792223210
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L17, M|5/49
+|switch|p1a: Spiritomb|Spiritomb, L17, M|11/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|5
+|
+|t:|1792223211
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Simisage
+|split|p2
+|-damage|p2a: Simisage|33/75
+|-damage|p2a: Simisage|44/100
+|
+|t:|1792223211
+|split|p1
+|switch|p1a: Skrelp|Skrelp, L15, F|43/43|[from] Shadow Sneak
+|switch|p1a: Skrelp|Skrelp, L15, F|100/100|[from] Shadow Sneak
+|-end|p1a: Skrelp|fantasystats|[silent]
+|move|p2a: Simisage|Sappy Seed|p1a: Skrelp
+|split|p1
+|-damage|p1a: Skrelp|0 fnt
+|-damage|p1a: Skrelp|0 fnt
+|faint|p1a: Skrelp
+|
+|upkeep
+|
+|t:|1792223211
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L17, M|5/49
+|switch|p1a: Spiritomb|Spiritomb, L17, M|11/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|6
+|
+|t:|1792223211
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Simisage
+|split|p2
+|-damage|p2a: Simisage|24/75
+|-damage|p2a: Simisage|32/100
+|
+|t:|1792223211
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L15, F|45/45|[from] Shadow Sneak
+|switch|p1a: Sandygast|Sandygast, L15, F|100/100|[from] Shadow Sneak
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Simisage|Sappy Seed|p1a: Sandygast
+|-supereffective|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|0 fnt
+|-damage|p1a: Sandygast|0 fnt
+|faint|p1a: Sandygast
+|
+|upkeep
+|
+|t:|1792223211
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L17, M|5/49
+|switch|p1a: Spiritomb|Spiritomb, L17, M|11/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|7
+|
+|t:|1792223212
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Simisage
+|split|p2
+|-damage|p2a: Simisage|13/75
+|-damage|p2a: Simisage|18/100
+|move|p2a: Simisage|Sappy Seed|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|0 fnt
+|-damage|p1a: Spiritomb|0 fnt
+|faint|p1a: Spiritomb
+|
+|win|NPC

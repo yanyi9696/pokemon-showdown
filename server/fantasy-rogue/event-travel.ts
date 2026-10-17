@@ -1,6 +1,7 @@
 import { Dex, toID } from '../../sim/dex';
 import { type RoguePokemon, type RogueBattleResult } from '../../sim/fantasy-rogue';
-import { experienceYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
+import { rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
+import { towerExperience } from './early-balance';
 import { drawBlessingGift, blessingExperience } from './blessings';
 import { partyEvolutionLevel } from './evolution';
 import { gainExperience, levelMoves, rebuildMember, rememberMove } from './progression';
@@ -104,9 +105,10 @@ export function restoreTravelBattle(run: RogueRun, result: RogueBattleResult) {
 	for (const defeated of result.defeated || []) {
 		for (const mon of run.team) {
 			if (!defeated.eligible.includes(mon.id)) continue;
-			gainExperience(run, mon, Math.floor(experienceYield(rogueSpeciesData(defeated.species).baseExperience,
-				defeated.level, mon.set.level, defeated.participants.includes(mon.id)) *
-				(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing)));
+			gainExperience(run, mon, Math.floor(towerExperience(rogueSpeciesData(defeated.species).baseExperience,
+				defeated.level, mon.set.level, defeated.participants.includes(mon.id), run.floor) *
+				(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing) *
+				(1 + (run.growth?.experience || 0) / 10000)));
 		}
 	}
 	for (const mon of run.team) {

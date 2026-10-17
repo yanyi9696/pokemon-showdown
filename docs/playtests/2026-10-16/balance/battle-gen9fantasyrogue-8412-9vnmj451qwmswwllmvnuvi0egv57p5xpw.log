@@ -1,0 +1,64 @@
+|init|battle
+|title|RogueBalance1016H vs. AI · 幻想精英
+|raw|<div class="broadcast-red"><strong>This battle is invite-only!</strong><br />Users must be invited with <code>/invite</code> (or be staff) to join</div>
+|j|☆RogueBalance1016H
+
+|fantasyrogue|{"floor":30,"userid":"roguebalance1016h","canRetreat":true}
+|fantasyai|{"trainerId":"rogue-boss","format":"gen9fantasyrogue","difficulty":"normal","userid":"roguebalance1016h","disconnectMs":600000}
+|-message|幻想杯肉鸽第 30 层；永久六维加成 0/0/0/0/0/0。
+|t:|1792145199
+|gametype|singles
+|player|p1|RogueBalance1016H|101|
+|request|{"teamPreview":true,"side":{"name":"RogueBalance1016H","id":"p1","fantasyRogueTera":false,"pokemon":[{"ident":"p1: Marshtomp","details":"Marshtomp, L24, M","condition":"72/72","active":true,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":50,"def":47,"spa":38,"spd":38,"spe":34},"moves":["rockthrow","waterpulse","mudshot","tackle"],"baseAbility":"torrent","item":"oranberry","pokeball":"pokeball","ability":"torrent","commanding":false,"reviving":false,"teraType":"Water","terastallized":""},{"ident":"p1: Aron","details":"Aron, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":47,"def":53,"spa":31,"spd":31,"spe":24},"moves":["rockslide","headbutt","metalclaw","rocktomb"],"baseAbility":"sturdy","item":"leftovers","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Steel","terastallized":""},{"ident":"p1: Graveler","details":"Graveler, L25, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":54,"def":68,"spa":33,"spd":38,"spe":30},"moves":["selfdestruct","rockthrow","bulldoze","smackdown"],"baseAbility":"rockhead","item":"","pokeball":"pokeball","ability":"rockhead","commanding":false,"reviving":false,"teraType":"Rock","terastallized":""},{"ident":"p1: Shuckle","details":"Shuckle, L24, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":16,"def":133,"spa":16,"spd":121,"spe":11},"moves":["rockthrow","strugglebug","wrap","rollout"],"baseAbility":"sturdy","item":"","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Bug","terastallized":""},{"ident":"p1: Ponyta","details":"Ponyta-Galar, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":57,"def":37,"spa":41,"spd":42,"spe":47},"moves":["confusion","tackle","fairywind","tailwhip"],"baseAbility":"runaway","item":"","pokeball":"pokeball","ability":"runaway","commanding":false,"reviving":false,"teraType":"Psychic","terastallized":""},{"ident":"p1: Pachirisu","details":"Pachirisu, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":28,"def":43,"spa":33,"spd":53,"spe":63},"moves":["thundershock","swift","spark","quickattack"],"baseAbility":"runaway","item":"","pokeball":"pokeball","ability":"runaway","commanding":false,"reviving":false,"teraType":"Electric","terastallized":""}]},"fantasyRogue":{"eeveeZ":[false],"catchable":false,"balls":[{"id":"pokeball","name":"精灵球","count":25,"chance":null},{"id":"greatball","name":"超级球","count":12,"chance":null},{"id":"ultraball","name":"高级球","count":0,"chance":null}]},"rqid":2}
+|player|p2|AI · 幻想精英|unknown|
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L24, M|
+|poke|p1|Aron, L24, M|
+|poke|p1|Graveler, L25, F|
+|poke|p1|Shuckle, L24, F|
+|poke|p1|Ponyta-Galar, L24, M|
+|poke|p1|Pachirisu, L24, M|
+|poke|p2|Simipour-Fantasy, L30, M|
+|teampreview
+|request|{"active":[{"moves":[{"move":"Rock Throw","id":"rockthrow","pp":10,"maxpp":10,"target":"normal","disabled":false},{"move":"Water Pulse","id":"waterpulse","pp":20,"maxpp":20,"target":"any","disabled":false},{"move":"Mud Shot","id":"mudshot","pp":14,"maxpp":15,"target":"normal","disabled":false},{"move":"Tackle","id":"tackle","pp":35,"maxpp":35,"target":"normal","disabled":false}]}],"side":{"name":"RogueBalance1016H","id":"p1","fantasyRogueTera":false,"pokemon":[{"ident":"p1: Marshtomp","details":"Marshtomp, L24, M","condition":"72/72","active":true,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":50,"def":47,"spa":38,"spd":38,"spe":34},"moves":["rockthrow","waterpulse","mudshot","tackle"],"baseAbility":"torrent","item":"oranberry","pokeball":"pokeball","ability":"torrent","commanding":false,"reviving":false,"teraType":"Water","terastallized":""},{"ident":"p1: Aron","details":"Aron, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":47,"def":53,"spa":31,"spd":31,"spe":24},"moves":["rockslide","headbutt","metalclaw","rocktomb"],"baseAbility":"sturdy","item":"leftovers","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Steel","terastallized":""},{"ident":"p1: Graveler","details":"Graveler, L25, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":54,"def":68,"spa":33,"spd":38,"spe":30},"moves":["selfdestruct","rockthrow","bulldoze","smackdown"],"baseAbility":"rockhead","item":"","pokeball":"pokeball","ability":"rockhead","commanding":false,"reviving":false,"teraType":"Rock","terastallized":""},{"ident":"p1: Shuckle","details":"Shuckle, L24, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":16,"def":133,"spa":16,"spd":121,"spe":11},"moves":["rockthrow","strugglebug","wrap","rollout"],"baseAbility":"sturdy","item":"","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Bug","terastallized":""},{"ident":"p1: Ponyta","details":"Ponyta-Galar, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":57,"def":37,"spa":41,"spd":42,"spe":47},"moves":["confusion","tackle","fairywind","tailwhip"],"baseAbility":"runaway","item":"","pokeball":"pokeball","ability":"runaway","commanding":false,"reviving":false,"teraType":"Psychic","terastallized":""},{"ident":"p1: Pachirisu","details":"Pachirisu, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":28,"def":43,"spa":33,"spd":53,"spe":63},"moves":["thundershock","swift","spark","quickattack"],"baseAbility":"runaway","item":"","pokeball":"pokeball","ability":"runaway","commanding":false,"reviving":false,"teraType":"Electric","terastallized":""}]},"fantasyRogue":{"eeveeZ":[false],"catchable":false,"balls":[{"id":"pokeball","name":"精灵球","count":25,"chance":null},{"id":"greatball","name":"超级球","count":12,"chance":null},{"id":"ultraball","name":"高级球","count":0,"chance":null}]},"rqid":4}
+|
+|t:|1792145200
+|start
+|switch|p1a: Marshtomp|Marshtomp, L24, M|72/72
+|switch|p2a: Simipour|Simipour-Fantasy, L30, M|100/100
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|request|{"active":[{"moves":[{"move":"Rock Throw","id":"rockthrow","pp":10,"maxpp":10,"target":"normal","disabled":false},{"move":"Water Pulse","id":"waterpulse","pp":19,"maxpp":20,"target":"any","disabled":false},{"move":"Mud Shot","id":"mudshot","pp":14,"maxpp":15,"target":"normal","disabled":false},{"move":"Tackle","id":"tackle","pp":35,"maxpp":35,"target":"normal","disabled":false}]}],"side":{"name":"RogueBalance1016H","id":"p1","fantasyRogueTera":false,"pokemon":[{"ident":"p1: Marshtomp","details":"Marshtomp, L24, M","condition":"12/72","active":true,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":50,"def":47,"spa":38,"spd":38,"spe":34},"moves":["rockthrow","waterpulse","mudshot","tackle"],"baseAbility":"torrent","item":"","pokeball":"pokeball","ability":"torrent","commanding":false,"reviving":false,"teraType":"Water","terastallized":""},{"ident":"p1: Aron","details":"Aron, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":47,"def":53,"spa":31,"spd":31,"spe":24},"moves":["rockslide","headbutt","metalclaw","rocktomb"],"baseAbility":"sturdy","item":"leftovers","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Steel","terastallized":""},{"ident":"p1: Graveler","details":"Graveler, L25, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":54,"def":68,"spa":33,"spd":38,"spe":30},"moves":["selfdestruct","rockthrow","bulldoze","smackdown"],"baseAbility":"rockhead","item":"","pokeball":"pokeball","ability":"rockhead","commanding":false,"reviving":false,"teraType":"Rock","terastallized":""},{"ident":"p1: Shuckle","details":"Shuckle, L24, F","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":16,"def":133,"spa":16,"spd":121,"spe":11},"moves":["rockthrow","strugglebug","wrap","rollout"],"baseAbility":"sturdy","item":"","pokeball":"pokeball","ability":"sturdy","commanding":false,"reviving":false,"teraType":"Bug","terastallized":""},{"ident":"p1: Ponyta","details":"Ponyta-Galar, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":57,"def":37,"spa":41,"spd":42,"spe":47},"moves":["confusion","tackle","fairywind","tailwhip"],"baseAbility":"runaway","item":"","pokeball":"pokeball","ability":"runaway","commanding":false,"reviving":false,"teraType":"Psychic","terastallized":""},{"ident":"p1: Pachirisu","details":"Pachirisu, L24, M","condition":"0 fnt","active":false,"fantasyRogueStats":{"hp":0,"atk":0,"def":0,"spa":0,"spd":0,"spe":0},"stats":{"atk":28,"def":43,"spa":33,"spd":53,"spe":63},"moves":["thundershock","swift","spark","quickattack"],"baseAbility":"runaway","item":"","pokeball":"pokeball","ability":"runaway","commanding":false,"reviving":false,"teraType":"Electric","terastallized":""}]},"fantasyRogue":{"eeveeZ":[false],"catchable":false,"balls":[{"id":"pokeball","name":"精灵球","count":25,"chance":null},{"id":"greatball","name":"超级球","count":12,"chance":null},{"id":"ultraball","name":"高级球","count":0,"chance":null}]},"rqid":6}
+|
+|t:|1792145201
+|-terastallize|p2a: Simipour|Water
+|move|p2a: Simipour|Scald|p1a: Marshtomp
+|-damage|p1a: Marshtomp|2/72
+|-enditem|p1a: Marshtomp|Oran Berry|[eat]
+|-heal|p1a: Marshtomp|12/72|[from] item: Oran Berry
+|move|p1a: Marshtomp|Water Pulse|p2a: Simipour
+|-start|p1a: Marshtomp|typechange|Water|[from] ability: Protean
+|-resisted|p2a: Simipour
+|-damage|p2a: Simipour|92/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792145201
+|move|p2a: Simipour|Scald|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|
+|win|AI · 幻想精英
+|fantasyroguedefeat|{"floor":30,"encounter":1,"encounters":1,"retryFloor":false,"noHealing":false,"emergencyCost":5000}

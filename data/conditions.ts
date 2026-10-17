@@ -4,7 +4,8 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		onStart(pokemon) {
 			this.effectState.turn = this.turn;
 			this.add('-prepare', pokemon, 'Bounce');
-			this.add('-message', '登龙：跃至空中，下回合落地招式威力提升 20%。');
+			pokemon.m.rogueAscentReadyTurn = this.turn + 3;
+			this.add('-message', '登龙：跃至空中，下回合落地招式威力提升 30%；落地回合及其下一回合不能再次跃起。');
 		},
 		onBeforeMovePriority: 100,
 		onBeforeMove(pokemon, target, move) {

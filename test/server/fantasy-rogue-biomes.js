@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 
 const assert = require('assert').strict;
 const { Dex } = require('../../dist/sim/dex');
@@ -68,7 +69,8 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		assert.equal(wildStageAtLevel('Scyther', 34, forest, 1, () => 0), 'Scyther');
 		assert.equal(wildStageAtLevel('Scyther', 35, forest, 1, () => 0), 'Scizor');
 		assert.equal(wildStageAtLevel('Scyther', 35, forest, 1, max => max - 1), 'Kleavor');
-		assert.equal(wildStageAtLevel('Victreebel', 24, forest, 2, () => 0), 'Victreebel');
+		assert.equal(wildStageAtLevel('Victreebel', 24, forest, 2, () => 0), 'Weepinbell');
+		assert.equal(wildStageAtLevel('Victreebel', 30, forest, 2, () => 0), 'Victreebel');
 		assert.equal(wildStageAtLevel('Victreebel', 20, forest, 2, () => 0), 'Bellsprout');
 		assert.equal(wildStageAtLevel('Glalie', 26, RogueBiomes[6], 2, () => 0), 'Snorunt');
 		assert.equal(wildStageAtLevel('Magneton', 44, RogueBiomes[4], 2, () => 0), 'Magneton');
@@ -129,9 +131,9 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		assert.equal(ordinary.encounters.length, 3);
 	});
 	it('rolls the six IVs independently from 20 through 31 and preserves them on rebuild', () => {
-		const values = [0, 11, 3, 8, 1, 6];
+		const values = [0, 999, 420, 920, 140, 800];
 		let calls = 0;
-		const ivs = randomEncounterIVs(max => { assert.equal(max, 12); return values[calls++]; });
+		const ivs = randomEncounterIVs(max => { assert.equal(max, 1000); return values[calls++]; });
 		assert.equal(calls, 6);
 		assert.deepEqual(ivs, { hp: 20, atk: 31, def: 23, spa: 28, spd: 21, spe: 26 });
 		const set = makeEncounterSet('Bulbasaur', 5, ivs);
@@ -144,21 +146,20 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		rebuildMember(legacy, emptyRogueStats());
 		assert(Object.values(legacy.set.ivs).every(iv => iv === 15), 'saved IVs are not retroactively raised');
 	});
-	it('uses random IVs for all new ordinary wild encounters and all 31 for regional elites', () => {
+	it('uses weighted independent IVs for ordinary encounters and regional elites', () => {
 		const template = { id: 'wild', name: 'old', kind: 'wild', encounters: [], reward: { money: 0, items: {} } };
-		for (const value of [0, 11]) {
-			const [route] = createBiomeRoutes(1, [template], name => name, max => max === 12 ? value : 0);
+		for (const value of [0, 999]) {
+			const [route] = createBiomeRoutes(1, [template], name => name, max => max === 1000 ? value : 0);
 			assert.equal(route.encounters.length, 4, 'the bonus encounter is included');
 			for (const encounter of route.encounters) {
-				assert(Object.values(encounter.team[0].ivs).every(iv => iv === 20 + value));
+				assert(Object.values(encounter.team[0].ivs).every(iv => iv === (value ? 31 : 20)));
 			}
 		}
 		for (const floor of [1, 100, 161, 181]) {
 			const [route] = createBiomeRoutes(floor, [{ ...template, kind: 'elite' }], name => name, max => {
-				assert.notEqual(max, 12, 'elites do not consume IV rolls');
 				return 0;
 			});
-			assert(Object.values(route.encounters[0].team[0].ivs).every(iv => iv === 31));
+			assert(Object.values(route.encounters[0].team[0].ivs).every(iv => iv === 25));
 		}
 	});
 	it('permits legendary elite captures only from floor 161', () => {
@@ -217,7 +218,7 @@ describe('Fantasy Rogue saved regional encounters', () => {
 	let content, store, engine, draws;
 	const user = 'biometest';
 	const account = () => store.get(user);
-	const cmd = (action, details = {}) => engine.command(user, {
+	const cmd = (action, details = {}) => commandAfterOpening(engine, user, {
 		id: randomUUID(), revision: account().revision, action, ...details,
 	});
 	before(() => { content = createPreviewContent(); });

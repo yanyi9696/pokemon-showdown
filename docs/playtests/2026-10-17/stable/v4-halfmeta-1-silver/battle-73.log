@@ -1,0 +1,245 @@
+|t:|1792223781
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L25, M|
+|poke|p1|Minun, L18, F|
+|poke|p1|Ivysaur, L24, F|
+|poke|p1|Dedenne, L18, F|
+|poke|p1|Cacnea, L20, F|
+|poke|p1|Nosepass, L19, F|
+|poke|p2|Combee, L25, F|
+|poke|p2|Nymble, L25, F|
+|poke|p2|Ninjask, L25, F|
+|poke|p2|Dewpider, L25, F|
+|teampreview
+|
+|t:|1792223781
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L25, M|85/85
+|switch|p1a: Crocalor|Crocalor, L25, M|100/100
+|split|p2
+|switch|p2a: Combee|Combee, L25, F|57/57
+|switch|p2a: Combee|Combee, L25, F|100/100
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223781
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L24, F|72/72
+|switch|p1a: Ivysaur|Ivysaur, L24, F|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-terastallize|p2a: Combee|Bug
+|move|p2a: Combee|Air Cutter|p1a: Ivysaur
+|-supereffective|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|52/72
+|-damage|p1a: Ivysaur|73/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223782
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L25, M|85/85
+|switch|p1a: Crocalor|Crocalor, L25, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Combee|Bug Buzz|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|73/85
+|-damage|p1a: Crocalor|86/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792223782
+|move|p2a: Combee|Bug Buzz|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|59/85
+|-damage|p1a: Crocalor|70/100
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Crocalor|Incinerate|p2a: Combee
+|-supereffective|p2a: Combee
+|split|p2
+|-damage|p2a: Combee|11/57
+|-damage|p2a: Combee|20/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792223783
+|move|p2a: Combee|Bug Buzz|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|46/85
+|-damage|p1a: Crocalor|55/100
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Crocalor|Round|p2a: Combee
+|split|p2
+|-damage|p2a: Combee|0 fnt
+|-damage|p2a: Combee|0 fnt
+|faint|p2a: Combee
+|
+|upkeep
+|
+|t:|1792223783
+|split|p2
+|switch|p2a: Nymble|Nymble, L25, F|59/59
+|switch|p2a: Nymble|Nymble, L25, F|100/100
+|-end|p2a: Nymble|fantasystats|[silent]
+|turn|5
+|
+|t:|1792223784
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L24, F|52/72
+|switch|p1a: Ivysaur|Ivysaur, L24, F|73/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Nymble|Sucker Punch||[still]
+|-fail|p2a: Nymble
+|
+|upkeep
+|turn|6
+|
+|t:|1792223784
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L25, M|46/85
+|switch|p1a: Crocalor|Crocalor, L25, M|55/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Nymble|Skitter Smack|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|32/85
+|-damage|p1a: Crocalor|38/100
+|-unboost|p1a: Crocalor|spa|1
+|
+|upkeep
+|turn|7
+|
+|t:|1792223784
+|move|p2a: Nymble|Sucker Punch|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|22/85
+|-damage|p1a: Crocalor|26/100
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Crocalor|Lick|p2a: Nymble
+|split|p2
+|-damage|p2a: Nymble|43/59
+|-damage|p2a: Nymble|73/100
+|-status|p2a: Nymble|par
+|
+|upkeep
+|turn|8
+|
+|t:|1792223785
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L24, F|52/72
+|switch|p1a: Ivysaur|Ivysaur, L24, F|73/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Nymble|Sucker Punch||[still]
+|-fail|p2a: Nymble
+|
+|upkeep
+|turn|9
+|
+|t:|1792223785
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L25, M|22/85
+|switch|p1a: Crocalor|Crocalor, L25, M|26/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|cant|p2a: Nymble|par
+|
+|upkeep
+|turn|10
+|
+|t:|1792223786
+|cant|p2a: Nymble|par
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Crocalor|Incinerate|p2a: Nymble
+|-supereffective|p2a: Nymble
+|split|p2
+|-damage|p2a: Nymble|0 fnt
+|-damage|p2a: Nymble|0 fnt
+|faint|p2a: Nymble
+|
+|upkeep
+|
+|t:|1792223786
+|split|p2
+|switch|p2a: Ninjask|Ninjask, L25, F|73/73
+|switch|p2a: Ninjask|Ninjask, L25, F|100/100
+|-end|p2a: Ninjask|fantasystats|[silent]
+|turn|11
+|
+|t:|1792223786
+|move|p2a: Ninjask|Leech Life|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|9/85
+|-damage|p1a: Crocalor|11/100
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Crocalor|Incinerate|p2a: Ninjask
+|-supereffective|p2a: Ninjask
+|-crit|p2a: Ninjask
+|split|p2
+|-damage|p2a: Ninjask|0 fnt
+|-damage|p2a: Ninjask|0 fnt
+|faint|p2a: Ninjask
+|
+|upkeep
+|
+|t:|1792223786
+|split|p2
+|switch|p2a: Dewpider|Dewpider, L25, F|61/61
+|switch|p2a: Dewpider|Dewpider, L25, F|100/100
+|-end|p2a: Dewpider|fantasystats|[silent]
+|turn|12
+|
+|t:|1792223787
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L24, F|52/72
+|switch|p1a: Ivysaur|Ivysaur, L24, F|73/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Dewpider|Scald|p1a: Ivysaur
+|-resisted|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|38/72
+|-damage|p1a: Ivysaur|53/100
+|
+|upkeep
+|turn|13
+|
+|t:|1792223787
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Ivysaur|Seed Bomb|p2a: Dewpider
+|split|p2
+|-damage|p2a: Dewpider|45/61
+|-damage|p2a: Dewpider|74/100
+|move|p2a: Dewpider|Bug Buzz|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|22/72
+|-damage|p1a: Ivysaur|31/100
+|
+|upkeep
+|turn|14
+|
+|t:|1792223788
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Ivysaur|Seed Bomb|p2a: Dewpider
+|split|p2
+|-damage|p2a: Dewpider|0 fnt
+|-damage|p2a: Dewpider|0 fnt
+|faint|p2a: Dewpider
+|
+|win|Player

@@ -57,7 +57,7 @@ export function createBiomeRoutes(
 				if (!appearances || random(4 ** appearances) === 0 || attempt >= 128) break;
 			}
 			seen.set(name, (seen.get(name) || 0) + 1);
-			const set = makeEncounterSet(name, level, elite ? 31 : randomEncounterIVs(random));
+			const set = makeEncounterSet(name, level, randomEncounterIVs(random, elite));
 			const species = Dex.mod('gen9').species.get(name);
 			set.gender = species.gender || (random(256) < species.genderRatio.F * 256 ? 'F' : 'M');
 			return {

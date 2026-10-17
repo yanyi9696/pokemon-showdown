@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
@@ -21,7 +22,7 @@ describe('Fantasy Rogue story and legacy cards', function () {
 	let store, engine;
 	const user = 'storytester';
 	const account = () => store.get(user);
-	const cmd = (action, extra = {}) => engine.command(user, { id: randomUUID(), revision: account().revision, action, ...extra });
+	const cmd = (action, extra = {}) => commandAfterOpening(engine, user, { id: randomUUID(), revision: account().revision, action, ...extra });
 	const view = () => storyView(account(), true, engine.localSpirits);
 	const advance = () => cmd('storynext', { value: view().key });
 	const skip = () => cmd('storyskip', { value: view().key });
@@ -42,11 +43,14 @@ describe('Fantasy Rogue story and legacy cards', function () {
 			a.run.floor = 200; a.run.phase = 'choose';
 			delete a.run.choices; delete a.run.node;
 		});
-		cmd('select', { value: 'boss' }); cmd('battle');
+		cmd('select', { value: 'boss' });
+		while (view()?.stage === 'bossintro') advance();
+		cmd('battle');
 		const run = account().run;
 		const result = { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag };
 		engine.settle(user, run.battle.token, result);
 		engine.settle(user, run.battle.token, result);
+		if (account().run.phase === 'postgame') { skip(); cmd('godchallenge', { value: 'decline' }); }
 	}
 	it('requires the first prologue, persists every page, and makes repeated requests idempotent', () => {
 		assert.throws(() => cmd('start', { starters: ['bulbasaur'] }), /开场/);

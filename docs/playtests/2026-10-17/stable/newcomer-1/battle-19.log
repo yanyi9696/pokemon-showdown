@@ -1,0 +1,128 @@
+|t:|1792221818
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Ralts, L6, M|
+|poke|p1|Wooper, L6, M|
+|poke|p1|Ducklett, L6, M|
+|poke|p1|Rolycoly, L7, F|
+|poke|p1|Litleo, L7, F|
+|poke|p2|Tyrunt-Fantasy, L18, M|
+|teampreview
+|
+|t:|1792221818
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|37/37
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|split|p2
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L18, M|54/54
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L18, M|100/100
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221818
+|-terastallize|p2a: Tyrunt|Rock
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792221818
+|split|p1
+|switch|p1a: Ralts|Ralts, L6, M|20/20
+|switch|p1a: Ralts|Ralts, L6, M|100/100
+|-end|p1a: Ralts|fantasystats|[silent]
+|turn|2
+|
+|t:|1792221818
+|move|p2a: Tyrunt|Rock Tomb|p1a: Ralts
+|split|p1
+|-damage|p1a: Ralts|0 fnt
+|-damage|p1a: Ralts|0 fnt
+|faint|p1a: Ralts
+|
+|upkeep
+|
+|t:|1792221818
+|split|p1
+|switch|p1a: Wooper|Wooper, L6, M|24/24
+|switch|p1a: Wooper|Wooper, L6, M|100/100
+|-end|p1a: Wooper|fantasystats|[silent]
+|turn|3
+|
+|t:|1792221818
+|move|p2a: Tyrunt|Yao Lan|p1a: Wooper
+|-resisted|p1a: Wooper
+|split|p1
+|-damage|p1a: Wooper|0 fnt
+|-damage|p1a: Wooper|0 fnt
+|faint|p1a: Wooper
+|
+|upkeep
+|
+|t:|1792221818
+|split|p1
+|switch|p1a: Ducklett|Ducklett, L6, M|25/25
+|switch|p1a: Ducklett|Ducklett, L6, M|100/100
+|-end|p1a: Ducklett|fantasystats|[silent]
+|turn|4
+|
+|t:|1792221818
+|move|p2a: Tyrunt|Rock Tomb|p1a: Ducklett
+|-supereffective|p1a: Ducklett
+|split|p1
+|-damage|p1a: Ducklett|0 fnt
+|-damage|p1a: Ducklett|0 fnt
+|faint|p1a: Ducklett
+|
+|upkeep
+|
+|t:|1792221818
+|split|p1
+|switch|p1a: Rolycoly|Rolycoly, L7, F|23/23
+|switch|p1a: Rolycoly|Rolycoly, L7, F|100/100
+|-end|p1a: Rolycoly|fantasystats|[silent]
+|turn|5
+|
+|t:|1792221818
+|move|p2a: Tyrunt|Rock Tomb|p1a: Rolycoly
+|split|p1
+|-damage|p1a: Rolycoly|0 fnt
+|-damage|p1a: Rolycoly|0 fnt
+|faint|p1a: Rolycoly
+|
+|upkeep
+|
+|t:|1792221818
+|split|p1
+|switch|p1a: Litleo|Litleo, L7, F|27/27
+|switch|p1a: Litleo|Litleo, L7, F|100/100
+|-end|p1a: Litleo|fantasystats|[silent]
+|turn|6
+|
+|t:|1792221818
+|move|p2a: Tyrunt|Rock Tomb|p1a: Litleo
+|-supereffective|p1a: Litleo
+|split|p1
+|-damage|p1a: Litleo|0 fnt
+|-damage|p1a: Litleo|0 fnt
+|faint|p1a: Litleo
+|
+|win|NPC

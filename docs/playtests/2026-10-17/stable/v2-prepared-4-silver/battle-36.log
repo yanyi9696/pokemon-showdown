@@ -1,0 +1,48 @@
+|t:|1792222608
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L11, M|
+|poke|p1|Minun, L8, M|
+|poke|p1|Meowth, L11, F|
+|poke|p1|Slakoth, L7, M|
+|poke|p1|Swablu, L6, F|
+|poke|p1|Wingull, L10, F|
+|poke|p2|Combee, L8, M|
+|teampreview
+|
+|t:|1792222608
+|start
+|split|p1
+|switch|p1a: Wingull|Wingull, L10, F|6/30
+|switch|p1a: Wingull|Wingull, L10, F|20/100
+|split|p2
+|switch|p2a: Combee|Combee, L8, M|24/24
+|switch|p2a: Combee|Combee, L8, M|100/100
+|-end|p1a: Wingull|fantasystats|[silent]
+|-end|p2a: Combee|fantasystats|[silent]
+|-end|p1a: Wingull|fantasystats|[silent]
+|-end|p2a: Combee|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222608
+|move|p1a: Wingull|Quick Attack|p2a: Combee
+|split|p2
+|-damage|p2a: Combee|18/24
+|-damage|p2a: Combee|75/100
+|split|p1
+|-damage|p1a: Wingull|3/30|[from] item: Life Orb
+|-damage|p1a: Wingull|10/100|[from] item: Life Orb
+|move|p2a: Combee|Gust|p1a: Wingull
+|split|p1
+|-damage|p1a: Wingull|0 fnt
+|-damage|p1a: Wingull|0 fnt
+|faint|p1a: Wingull
+|
+|win|NPC

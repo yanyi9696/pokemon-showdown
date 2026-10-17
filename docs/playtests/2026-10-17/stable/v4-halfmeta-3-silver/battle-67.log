@@ -1,0 +1,241 @@
+|t:|1792223813
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L29, M|
+|poke|p1|Crocalor, L28, M|
+|poke|p1|Marshtomp, L21, M|
+|poke|p1|Milcery, L19, F|
+|poke|p1|Croagunk, L19, M|
+|poke|p1|Sizzlipede, L19, M|
+|poke|p2|Onix, L25, F|
+|poke|p2|Nacli, L25, M|
+|poke|p2|Aerodactyl, L25, M|
+|poke|p2|Pupitar, L25, F|
+|teampreview
+|
+|t:|1792223813
+|start
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L29, M|84/84
+|switch|p1a: Ivysaur|Ivysaur, L29, M|100/100
+|split|p2
+|switch|p2a: Onix|Onix, L25, F|60/60
+|switch|p2a: Onix|Onix, L25, F|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Onix|fantasystats|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Onix|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223814
+|-terastallize|p2a: Onix|Rock
+|move|p1a: Ivysaur|Seed Bomb|p2a: Onix
+|-supereffective|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|21/60
+|-damage|p2a: Onix|35/100
+|move|p2a: Onix|Rock Throw|p1a: Ivysaur
+|-crit|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|48/84
+|-damage|p1a: Ivysaur|58/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223814
+|move|p1a: Ivysaur|Seed Bomb|p2a: Onix
+|-supereffective|p2a: Onix
+|split|p2
+|-damage|p2a: Onix|0 fnt
+|-damage|p2a: Onix|0 fnt
+|faint|p2a: Onix
+|
+|upkeep
+|
+|t:|1792223814
+|split|p2
+|switch|p2a: Nacli|Nacli, L25, M|70/70
+|switch|p2a: Nacli|Nacli, L25, M|100/100
+|-end|p2a: Nacli|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223814
+|move|p1a: Ivysaur|Seed Bomb|p2a: Nacli
+|-supereffective|p2a: Nacli
+|split|p2
+|-damage|p2a: Nacli|4/70
+|-damage|p2a: Nacli|6/100
+|move|p2a: Nacli|Rock Throw|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|29/84
+|-damage|p1a: Ivysaur|35/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792223815
+|move|p1a: Ivysaur|Vine Whip|p2a: Nacli
+|-supereffective|p2a: Nacli
+|split|p2
+|-damage|p2a: Nacli|0 fnt
+|-damage|p2a: Nacli|0 fnt
+|faint|p2a: Nacli
+|
+|upkeep
+|
+|t:|1792223815
+|split|p2
+|switch|p2a: Aerodactyl|Aerodactyl, L25, M|82/82
+|switch|p2a: Aerodactyl|Aerodactyl, L25, M|100/100
+|-end|p2a: Aerodactyl|fantasystats|[silent]
+|turn|5
+|
+|t:|1792223815
+|move|p2a: Aerodactyl|Dual Wingbeat|p1a: Ivysaur
+|-supereffective|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|faint|p1a: Ivysaur
+|-hitcount|p1: Ivysaur|1
+|
+|upkeep
+|
+|t:|1792223815
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|69/69
+|switch|p1a: Marshtomp|Marshtomp, L21, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|6
+|
+|t:|1792223815
+|move|p2a: Aerodactyl|Dual Wingbeat|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|50/69
+|-damage|p1a: Marshtomp|73/100
+|split|p1
+|-damage|p1a: Marshtomp|29/69
+|-damage|p1a: Marshtomp|43/100
+|-hitcount|p1a: Marshtomp|2
+|move|p1a: Marshtomp|Rock Throw|p2a: Aerodactyl
+|-supereffective|p2a: Aerodactyl
+|split|p2
+|-damage|p2a: Aerodactyl|45/82
+|-damage|p2a: Aerodactyl|55/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792223816
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L28, M|94/94
+|switch|p1a: Crocalor|Crocalor, L28, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Aerodactyl|Dual Wingbeat|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|82/94
+|-damage|p1a: Crocalor|88/100
+|split|p1
+|-damage|p1a: Crocalor|69/94
+|-damage|p1a: Crocalor|74/100
+|-hitcount|p1a: Crocalor|2
+|
+|upkeep
+|turn|8
+|
+|t:|1792223816
+|move|p2a: Aerodactyl|Dual Wingbeat|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|56/94
+|-damage|p1a: Crocalor|60/100
+|split|p1
+|-damage|p1a: Crocalor|43/94
+|-damage|p1a: Crocalor|46/100
+|-hitcount|p1a: Crocalor|2
+|move|p1a: Crocalor|Lick|p2a: Aerodactyl
+|split|p2
+|-damage|p2a: Aerodactyl|37/82
+|-damage|p2a: Aerodactyl|46/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792223816
+|move|p2a: Aerodactyl|Rock Throw|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|
+|upkeep
+|
+|t:|1792223816
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L21, M|29/69
+|switch|p1a: Marshtomp|Marshtomp, L21, M|43/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|10
+|
+|t:|1792223816
+|move|p2a: Aerodactyl|Rock Throw|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|11/69
+|-damage|p1a: Marshtomp|16/100
+|move|p1a: Marshtomp|Rock Throw|p2a: Aerodactyl
+|-supereffective|p2a: Aerodactyl
+|split|p2
+|-damage|p2a: Aerodactyl|0 fnt
+|-damage|p2a: Aerodactyl|0 fnt
+|faint|p2a: Aerodactyl
+|
+|upkeep
+|
+|t:|1792223816
+|split|p2
+|switch|p2a: Pupitar|Pupitar, L25, F|93/93
+|switch|p2a: Pupitar|Pupitar, L25, F|100/100
+|-end|p2a: Pupitar|fantasystats|[silent]
+|turn|11
+|
+|t:|1792223816
+|move|p1a: Marshtomp|Water Pulse|p2a: Pupitar
+|-supereffective|p2a: Pupitar
+|split|p2
+|-damage|p2a: Pupitar|23/93
+|-damage|p2a: Pupitar|25/100
+|move|p2a: Pupitar|Earthquake|p1a: Marshtomp
+|-crit|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|
+|upkeep
+|
+|t:|1792223817
+|split|p1
+|switch|p1a: Croagunk|Croagunk, L19, M|57/57
+|switch|p1a: Croagunk|Croagunk, L19, M|100/100
+|-end|p1a: Croagunk|fantasystats|[silent]
+|-ability|p1a: Croagunk|Anticipation
+|turn|12
+|
+|t:|1792223817
+|move|p1a: Croagunk|Low Kick|p2a: Pupitar
+|-supereffective|p2a: Pupitar
+|split|p2
+|-damage|p2a: Pupitar|0 fnt
+|-damage|p2a: Pupitar|0 fnt
+|faint|p2a: Pupitar
+|
+|win|Player

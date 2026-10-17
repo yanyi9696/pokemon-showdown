@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-17T05:59:53.020Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\recalibration-1792216577890",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "hpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "oldAccountNoTutorial": true,
+  "updatedGuideServed": true,
+  "liveEventCount": 10,
+  "blessingEntries": 164,
+  "freshAccountTutorialPersists": true,
+  "tutorialDoesNotStartStoryOrRun": true,
+  "browserVisualReview": "not performed; local browser page access was blocked in this session",
+  "campaignDifficulty": "offline purchased-candy resource scenarios, not a live 200-floor playthrough"
+}

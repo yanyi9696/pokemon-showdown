@@ -1,0 +1,154 @@
+|t:|1792221864
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L28, M|
+|poke|p1|Litleo, L28, F|
+|poke|p1|Klawf, L22, M|
+|poke|p1|Kecleon, L21, F|
+|poke|p1|Tentacool, L18, M|
+|poke|p1|Comfey, L21, M|
+|poke|p2|Machop, L25, F|
+|poke|p2|Clobbopus, L25, M|
+|poke|p2|Mienfoo, L25, F|
+|poke|p2|Sneasel-Hisui, L25, F|
+|teampreview
+|
+|t:|1792221864
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L28, M|94/94
+|switch|p1a: Crocalor|Crocalor, L28, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L25, F|93/93
+|switch|p2a: Machop|Machop, L25, F|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|turn|1
+|
+|t:|1792221864
+|-terastallize|p2a: Machop|Fighting
+|move|p1a: Crocalor|Incinerate|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|44/93
+|-damage|p2a: Machop|48/100
+|move|p2a: Machop|Close Combat|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|24/94
+|-damage|p1a: Crocalor|26/100
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|
+|-status|p2a: Machop|brn|[from] item: Flame Orb
+|upkeep
+|turn|2
+|
+|t:|1792221864
+|move|p1a: Crocalor|Incinerate|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|0 fnt
+|-damage|p2a: Machop|0 fnt
+|faint|p2a: Machop
+|
+|upkeep
+|
+|t:|1792221864
+|split|p2
+|switch|p2a: Clobbopus|Clobbopus, L25, M|83/83
+|switch|p2a: Clobbopus|Clobbopus, L25, M|100/100
+|-end|p2a: Clobbopus|fantasystats|[silent]
+|turn|3
+|
+|t:|1792221864
+|move|p1a: Crocalor|Incinerate|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|46/83
+|-damage|p2a: Clobbopus|56/100
+|move|p2a: Clobbopus|Close Combat|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|faint|p1a: Crocalor
+|
+|upkeep
+|
+|t:|1792221864
+|split|p1
+|switch|p1a: Klawf|Klawf, L22, M|74/74
+|switch|p1a: Klawf|Klawf, L22, M|100/100
+|-end|p1a: Klawf|fantasystats|[silent]
+|turn|4
+|
+|t:|1792221864
+|move|p1a: Klawf|Rock Throw|p2a: Clobbopus
+|-resisted|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|29/83
+|-damage|p2a: Clobbopus|35/100
+|move|p2a: Clobbopus|Close Combat|p1a: Klawf
+|-supereffective|p1a: Klawf
+|split|p1
+|-damage|p1a: Klawf|0 fnt
+|-damage|p1a: Klawf|0 fnt
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|faint|p1a: Klawf
+|
+|upkeep
+|
+|t:|1792221864
+|split|p1
+|switch|p1a: Litleo|Litleo, L28, F|83/83
+|switch|p1a: Litleo|Litleo, L28, F|100/100
+|-end|p1a: Litleo|fantasystats|[silent]
+|turn|5
+|
+|t:|1792221864
+|move|p1a: Litleo|Headbutt|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|0 fnt
+|-damage|p2a: Clobbopus|0 fnt
+|faint|p2a: Clobbopus
+|
+|upkeep
+|
+|t:|1792221864
+|split|p2
+|switch|p2a: Mienfoo|Mienfoo, L25, F|65/65
+|switch|p2a: Mienfoo|Mienfoo, L25, F|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|turn|6
+|
+|t:|1792221864
+|move|p1a: Litleo|Headbutt|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|35/65
+|-damage|p2a: Mienfoo|54/100
+|cant|p2a: Mienfoo|flinch
+|
+|upkeep
+|turn|7
+|
+|t:|1792221864
+|move|p1a: Litleo|Headbutt|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|7/65
+|-damage|p2a: Mienfoo|11/100
+|move|p2a: Mienfoo|High Jump Kick|p1a: Litleo
+|-supereffective|p1a: Litleo
+|split|p1
+|-damage|p1a: Litleo|0 fnt
+|-damage|p1a: Litleo|0 fnt
+|faint|p1a: Litleo
+|
+|win|NPC

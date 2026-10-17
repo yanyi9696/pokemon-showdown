@@ -1,0 +1,57 @@
+|t:|1792223837
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L11, M|
+|poke|p1|Fuecoco, L10, M|
+|poke|p1|Bulbasaur, L9, M|
+|poke|p1|Grubbin, L7, F|
+|poke|p1|Nidoran-M, L8, M|
+|poke|p1|Ekans, L6, F|
+|poke|p2|Rookidee-Fantasy, L8, M|
+|teampreview
+|
+|t:|1792223837
+|start
+|split|p1
+|switch|p1a: Popplio|Popplio, L11, M|39/39
+|switch|p1a: Popplio|Popplio, L11, M|100/100
+|split|p2
+|switch|p2a: Rookidee|Rookidee-Fantasy, L8, M|32/32
+|switch|p2a: Rookidee|Rookidee-Fantasy, L8, M|100/100
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|-start|p2a: Rookidee|typechange|Flying/Dark|[silent]
+|-start|p2a: Rookidee|fantasystats|78/67/55/33/55/57|[silent]
+|turn|1
+|
+|t:|1792223838
+|-terastallize|p2a: Rookidee|Flying
+|move|p1a: Popplio|Waterfall|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|2/32
+|-damage|p2a: Rookidee|7/100
+|move|p2a: Rookidee|Foul Play|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|30/39
+|-damage|p1a: Popplio|77/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223839
+|move|p1a: Popplio|Disarming Voice|p2a: Rookidee
+|split|p2
+|-damage|p2a: Rookidee|0 fnt
+|-damage|p2a: Rookidee|0 fnt
+|faint|p2a: Rookidee
+|
+|win|Player

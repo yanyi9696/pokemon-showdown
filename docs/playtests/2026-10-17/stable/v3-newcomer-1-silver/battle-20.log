@@ -1,0 +1,117 @@
+|t:|1792223139
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Fuecoco, L11, M|
+|poke|p1|Litleo, L7, F|
+|poke|p1|Wooper, L6, M|
+|poke|p1|Ducklett, L6, M|
+|poke|p1|Tentacool, L6, M|
+|poke|p1|Rolycoly, L7, F|
+|poke|p2|Tyrunt-Fantasy, L8, F|
+|teampreview
+|
+|t:|1792223139
+|start
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L11, M|37/37
+|switch|p1a: Fuecoco|Fuecoco, L11, M|100/100
+|split|p2
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L8, F|29/29
+|switch|p2a: Tyrunt|Tyrunt-Fantasy, L8, F|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|-start|p2a: Tyrunt|typechange|Rock/Dragon|[silent]
+|-start|p2a: Tyrunt|fantasystats|58/89/77/45/45/48|[silent]
+|turn|1
+|
+|t:|1792223139
+|-terastallize|p2a: Tyrunt|Rock
+|move|p1a: Fuecoco|Round|p2a: Tyrunt
+|-resisted|p2a: Tyrunt
+|-crit|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|21/29
+|-damage|p2a: Tyrunt|73/100
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|13/37
+|-damage|p1a: Fuecoco|36/100
+|-unboost|p1a: Fuecoco|spe|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792223139
+|move|p2a: Tyrunt|Rock Tomb|p1a: Fuecoco
+|-supereffective|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|0 fnt
+|-damage|p1a: Fuecoco|0 fnt
+|faint|p1a: Fuecoco
+|
+|upkeep
+|
+|t:|1792223139
+|split|p1
+|switch|p1a: Litleo|Litleo, L7, F|27/27
+|switch|p1a: Litleo|Litleo, L7, F|100/100
+|-end|p1a: Litleo|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223139
+|move|p1a: Litleo|Ember|p2a: Tyrunt
+|-resisted|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|18/29
+|-damage|p2a: Tyrunt|63/100
+|move|p2a: Tyrunt|Rock Tomb|p1a: Litleo
+|-supereffective|p1a: Litleo
+|split|p1
+|-damage|p1a: Litleo|0 fnt
+|-damage|p1a: Litleo|0 fnt
+|faint|p1a: Litleo
+|
+|upkeep
+|
+|t:|1792223139
+|split|p1
+|switch|p1a: Wooper|Wooper, L6, M|24/24
+|switch|p1a: Wooper|Wooper, L6, M|100/100
+|-end|p1a: Wooper|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223139
+|move|p2a: Tyrunt|Rock Tomb|p1a: Wooper
+|-resisted|p1a: Wooper
+|split|p1
+|-damage|p1a: Wooper|11/24
+|-damage|p1a: Wooper|46/100
+|-unboost|p1a: Wooper|spe|1
+|move|p1a: Wooper|Water Gun|p2a: Tyrunt
+|-supereffective|p2a: Tyrunt
+|split|p2
+|-damage|p2a: Tyrunt|5/29
+|-damage|p2a: Tyrunt|18/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792223139
+|move|p2a: Tyrunt|Rock Tomb|p1a: Wooper
+|-resisted|p1a: Wooper
+|split|p1
+|-damage|p1a: Wooper|0 fnt
+|-damage|p1a: Wooper|0 fnt
+|faint|p1a: Wooper
+|
+|win|NPC

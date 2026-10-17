@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
@@ -103,7 +104,7 @@ describe('Fantasy Rogue friendship and evolution conditions', () => {
 		try {
 			const engine = new RogueEngine(store, createPreviewContent(), () => 0);
 			const user = 'friendshiptester';
-			const command = (action, extra = {}) => engine.command(user, {
+			const command = (action, extra = {}) => commandAfterOpening(engine, user, {
 				id: randomUUID(), revision: store.get(user).revision, action, ...extra,
 			});
 			command('start', { starters: ['bulbasaur'] });
@@ -122,7 +123,7 @@ describe('Fantasy Rogue friendship and evolution conditions', () => {
 		const store = new RogueStore(':memory:');
 		try {
 			const engine = new RogueEngine(store, createPreviewContent(), () => 0), user = 'manualevolution';
-			const command = (action, extra = {}) => engine.command(user, {
+			const command = (action, extra = {}) => commandAfterOpening(engine, user, {
 				id: randomUUID(), revision: store.get(user).revision, action, ...extra,
 			});
 			const learnAll = () => {

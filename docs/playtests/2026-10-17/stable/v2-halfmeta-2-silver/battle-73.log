@@ -1,0 +1,357 @@
+|t:|1792222624
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L24, M|
+|poke|p1|Sandygast, L21, F|
+|poke|p1|Spiritomb, L20, M|
+|poke|p1|Baltoy, L19|
+|poke|p1|Skrelp, L19, F|
+|poke|p1|Ponyta, L19, M|
+|poke|p2|Venipede, L25, M|
+|poke|p2|Toxel, L25, F|
+|poke|p2|Trubbish, L25, M|
+|poke|p2|Slowbro-Galar, L25, F|
+|teampreview
+|
+|t:|1792222624
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L24, M|77/77
+|switch|p1a: Marshtomp|Marshtomp, L24, M|100/100
+|split|p2
+|switch|p2a: Venipede|Venipede, L25, M|57/57
+|switch|p2a: Venipede|Venipede, L25, M|100/100
+|-end|p2a: Venipede|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Venipede|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222624
+|-terastallize|p2a: Venipede|Bug
+|move|p2a: Venipede|Pin Missile|p1a: Marshtomp
+|-crit|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|67/77
+|-damage|p1a: Marshtomp|88/100
+|split|p1
+|-damage|p1a: Marshtomp|61/77
+|-damage|p1a: Marshtomp|80/100
+|-hitcount|p1a: Marshtomp|2
+|move|p1a: Marshtomp|Body Slam|p2a: Venipede
+|split|p2
+|-damage|p2a: Venipede|34/57
+|-damage|p2a: Venipede|60/100
+|-status|p2a: Venipede|par
+|
+|t:|1792222624
+|split|p1
+|switch|p1a: Ponyta|Ponyta, L19, M|58/58|[from] Body Slam
+|switch|p1a: Ponyta|Ponyta, L19, M|100/100|[from] Body Slam
+|-end|p1a: Ponyta|fantasystats|[silent]
+|
+|upkeep
+|turn|2
+|
+|t:|1792222625
+|move|p1a: Ponyta|Flame Charge|p2a: Venipede
+|-supereffective|p2a: Venipede
+|split|p2
+|-damage|p2a: Venipede|10/57 par
+|-damage|p2a: Venipede|18/100 par
+|-boost|p1a: Ponyta|spe|1
+|
+|t:|1792222625
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L24, M|61/77|[from] Flame Charge
+|switch|p1a: Marshtomp|Marshtomp, L24, M|80/100|[from] Flame Charge
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|cant|p2a: Venipede|par
+|
+|upkeep
+|turn|3
+|
+|t:|1792222626
+|move|p1a: Marshtomp|Rock Throw|p2a: Venipede
+|-supereffective|p2a: Venipede
+|split|p2
+|-damage|p2a: Venipede|0 fnt
+|-damage|p2a: Venipede|0 fnt
+|faint|p2a: Venipede
+|
+|t:|1792222626
+|split|p1
+|switch|p1a: Skrelp|Skrelp, L19, F|57/57|[from] Rock Throw
+|switch|p1a: Skrelp|Skrelp, L19, F|100/100|[from] Rock Throw
+|-end|p1a: Skrelp|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222626
+|split|p2
+|switch|p2a: Toxel|Toxel, L25, F|62/62
+|switch|p2a: Toxel|Toxel, L25, F|100/100
+|-end|p2a: Toxel|fantasystats|[silent]
+|turn|4
+|
+|t:|1792222626
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L21, F|64/64
+|switch|p1a: Sandygast|Sandygast, L21, F|100/100
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Toxel|Charm|p1a: Sandygast
+|-unboost|p1a: Sandygast|atk|2
+|
+|upkeep
+|turn|5
+|
+|t:|1792222626
+|move|p2a: Toxel|Endure|p2a: Toxel
+|-singleturn|p2a: Toxel|move: Endure
+|move|p1a: Sandygast|Sand Tomb|p2a: Toxel
+|-supereffective|p2a: Toxel
+|split|p2
+|-damage|p2a: Toxel|26/62
+|-damage|p2a: Toxel|42/100
+|-activate|p2a: Toxel|move: Sand Tomb|[of] p1a: Sandygast
+|
+|t:|1792222626
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L24, M|61/77|[from] Sand Tomb
+|switch|p1a: Marshtomp|Marshtomp, L24, M|80/100|[from] Sand Tomb
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|
+|-end|p2a: Toxel|Sand Tomb|[partiallytrapped]|[silent]
+|upkeep
+|turn|6
+|
+|t:|1792222627
+|move|p2a: Toxel|Endure||[still]
+|-fail|p2a: Toxel
+|move|p1a: Marshtomp|Body Slam|p2a: Toxel
+|split|p2
+|-damage|p2a: Toxel|0 fnt
+|-damage|p2a: Toxel|0 fnt
+|-status|p1a: Marshtomp|par|[from] ability: Static|[of] p2a: Toxel
+|faint|p2a: Toxel
+|
+|t:|1792222627
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L20, M|61/61|[from] Body Slam
+|switch|p1a: Spiritomb|Spiritomb, L20, M|100/100|[from] Body Slam
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|
+|t:|1792222627
+|split|p2
+|switch|p2a: Trubbish|Trubbish, L25, M|67/67
+|switch|p2a: Trubbish|Trubbish, L25, M|100/100
+|-end|p2a: Trubbish|fantasystats|[silent]
+|turn|7
+|
+|t:|1792222627
+|move|p2a: Trubbish|Toxic|p1a: Spiritomb
+|-status|p1a: Spiritomb|tox
+|move|p1a: Spiritomb|Night Shade|p2a: Trubbish
+|split|p2
+|-damage|p2a: Trubbish|47/67
+|-damage|p2a: Trubbish|71/100
+|
+|t:|1792222627
+|split|p1
+|switch|p1a: Baltoy|Baltoy, L19|54/54|[from] Night Shade
+|switch|p1a: Baltoy|Baltoy, L19|100/100|[from] Night Shade
+|-end|p1a: Baltoy|fantasystats|[silent]
+|
+|upkeep
+|turn|8
+|
+|t:|1792222627
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L24, M|61/77 par
+|switch|p1a: Marshtomp|Marshtomp, L24, M|80/100 par
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Trubbish|Toxic Spikes|p1a: Marshtomp
+|-sidestart|p1: Player|move: Toxic Spikes
+|
+|upkeep
+|turn|9
+|
+|t:|1792222628
+|move|p2a: Trubbish|Toxic||[still]
+|-fail|p2a: Trubbish
+|move|p1a: Marshtomp|Body Slam|p2a: Trubbish
+|split|p2
+|-damage|p2a: Trubbish|24/67
+|-damage|p2a: Trubbish|36/100
+|-status|p2a: Trubbish|par
+|
+|t:|1792222628
+|split|p1
+|switch|p1a: Baltoy|Baltoy, L19|54/54|[from] Body Slam
+|switch|p1a: Baltoy|Baltoy, L19|100/100|[from] Body Slam
+|-end|p1a: Baltoy|fantasystats|[silent]
+|
+|upkeep
+|turn|10
+|
+|t:|1792222628
+|move|p1a: Baltoy|Zen Headbutt|p2a: Trubbish
+|-supereffective|p2a: Trubbish
+|-crit|p2a: Trubbish
+|split|p2
+|-damage|p2a: Trubbish|0 fnt
+|-damage|p2a: Trubbish|0 fnt
+|faint|p2a: Trubbish
+|
+|t:|1792222628
+|split|p1
+|switch|p1a: Skrelp|Skrelp, L19, F|57/57|[from] Zen Headbutt
+|switch|p1a: Skrelp|Skrelp, L19, F|100/100|[from] Zen Headbutt
+|-sideend|p1: Player|move: Toxic Spikes|[of] p1a: Skrelp
+|-end|p1a: Skrelp|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222628
+|split|p2
+|switch|p2a: Slowbro|Slowbro-Galar, L25, F|90/90
+|switch|p2a: Slowbro|Slowbro-Galar, L25, F|100/100
+|-end|p2a: Slowbro|fantasystats|[silent]
+|turn|11
+|
+|t:|1792222628
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L20, M|61/61 tox
+|switch|p1a: Spiritomb|Spiritomb, L20, M|100/100 tox
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Slowbro|Shell Side Arm|p1a: Spiritomb|[anim] Shell Side Arm Special
+|-resisted|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|45/61 tox
+|-damage|p1a: Spiritomb|74/100 tox
+|-hint|Special Shell Side Arm
+|
+|split|p1
+|-damage|p1a: Spiritomb|42/61 tox|[from] psn
+|-damage|p1a: Spiritomb|69/100 tox|[from] psn
+|upkeep
+|turn|12
+|
+|t:|1792222629
+|move|p1a: Spiritomb|Payback|p2a: Slowbro
+|-supereffective|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|64/90
+|-damage|p2a: Slowbro|72/100
+|
+|t:|1792222629
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L24, M|61/77 par|[from] Payback
+|switch|p1a: Marshtomp|Marshtomp, L24, M|80/100 par|[from] Payback
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Slowbro|Shell Side Arm|p1a: Marshtomp|[anim] Shell Side Arm Special
+|-resisted|p1a: Marshtomp
+|-crit|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|40/77 par
+|-damage|p1a: Marshtomp|52/100 par
+|-hint|Special Shell Side Arm
+|
+|upkeep
+|turn|13
+|
+|t:|1792222629
+|move|p2a: Slowbro|Shell Side Arm|p1a: Marshtomp|[anim] Shell Side Arm Special
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|26/77 par
+|-damage|p1a: Marshtomp|34/100 par
+|-hint|Special Shell Side Arm
+|move|p1a: Marshtomp|Body Slam|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|45/90
+|-damage|p2a: Slowbro|50/100
+|
+|t:|1792222629
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L20, M|42/61 tox|[from] Body Slam
+|switch|p1a: Spiritomb|Spiritomb, L20, M|69/100 tox|[from] Body Slam
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|split|p1
+|-damage|p1a: Spiritomb|39/61 tox|[from] psn
+|-damage|p1a: Spiritomb|64/100 tox|[from] psn
+|upkeep
+|turn|14
+|
+|t:|1792222630
+|move|p1a: Spiritomb|Payback|p2a: Slowbro
+|-supereffective|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|21/90
+|-damage|p2a: Slowbro|24/100
+|
+|t:|1792222630
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L21, F|64/64|[from] Payback
+|switch|p1a: Sandygast|Sandygast, L21, F|100/100|[from] Payback
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Slowbro|Shell Side Arm|p1a: Sandygast|[anim] Shell Side Arm Special
+|-resisted|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|50/64
+|-damage|p1a: Sandygast|79/100
+|-hint|Special Shell Side Arm
+|
+|upkeep
+|turn|15
+|
+|t:|1792222630
+|move|p2a: Slowbro|Shell Side Arm|p1a: Sandygast|[anim] Shell Side Arm Special
+|-resisted|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|37/64
+|-damage|p1a: Sandygast|58/100
+|-hint|Special Shell Side Arm
+|move|p1a: Sandygast|Sand Tomb|p2a: Slowbro
+|-supereffective|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|7/90
+|-damage|p2a: Slowbro|8/100
+|-activate|p2a: Slowbro|move: Sand Tomb|[of] p1a: Sandygast
+|
+|t:|1792222630
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L20, M|39/61 tox|[from] Sand Tomb
+|switch|p1a: Spiritomb|Spiritomb, L20, M|64/100 tox|[from] Sand Tomb
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|split|p1
+|-damage|p1a: Spiritomb|36/61 tox|[from] psn
+|-damage|p1a: Spiritomb|60/100 tox|[from] psn
+|-end|p2a: Slowbro|Sand Tomb|[partiallytrapped]|[silent]
+|upkeep
+|turn|16
+|
+|t:|1792222631
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Slowbro
+|-supereffective|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|0 fnt
+|-damage|p2a: Slowbro|0 fnt
+|faint|p2a: Slowbro
+|
+|win|Player

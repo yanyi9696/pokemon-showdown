@@ -1,0 +1,227 @@
+|t:|1792223718
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L16, M|
+|poke|p1|Minun, L9, F|
+|poke|p1|Bulbasaur, L13, F|
+|poke|p1|Dedenne, L11, F|
+|poke|p1|Cacnea, L13, F|
+|poke|p1|Nosepass, L11, F|
+|poke|p2|Chewtle, L15, F|
+|poke|p2|Feebas, L15, M|
+|poke|p2|Wimpod, L15, F|
+|teampreview
+|
+|t:|1792223718
+|start
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L16, M|60/60
+|switch|p1a: Crocalor|Crocalor, L16, M|100/100
+|split|p2
+|switch|p2a: Chewtle|Chewtle, L15, F|44/44
+|switch|p2a: Chewtle|Chewtle, L15, F|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Chewtle|fantasystats|[silent]
+|-end|p1a: Crocalor|fantasystats|[silent]
+|-end|p2a: Chewtle|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223718
+|-terastallize|p2a: Chewtle|Water
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Crocalor|Lick|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|41/44
+|-damage|p2a: Chewtle|94/100
+|move|p2a: Chewtle|Water Gun|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|32/60
+|-damage|p1a: Crocalor|54/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223719
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L13, F|42/42
+|switch|p1a: Bulbasaur|Bulbasaur, L13, F|100/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|move|p2a: Chewtle|Water Gun|p1a: Bulbasaur
+|-resisted|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|36/42
+|-damage|p1a: Bulbasaur|86/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792223719
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Bulbasaur|Razor Leaf|p2a: Chewtle
+|-supereffective|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|28/44
+|-damage|p2a: Chewtle|64/100
+|move|p2a: Chewtle|Mud Shot|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|30/42
+|-damage|p1a: Bulbasaur|72/100
+|-unboost|p1a: Bulbasaur|spe|1
+|
+|upkeep
+|turn|4
+|
+|t:|1792223720
+|move|p2a: Chewtle|Mud Shot|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|24/42
+|-damage|p1a: Bulbasaur|58/100
+|-unboost|p1a: Bulbasaur|spe|1
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Bulbasaur|Razor Leaf|p2a: Chewtle
+|-supereffective|p2a: Chewtle
+|-crit|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|11/44
+|-damage|p2a: Chewtle|25/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792223720
+|move|p2a: Chewtle|Mud Shot|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|18/42
+|-damage|p1a: Bulbasaur|43/100
+|-unboost|p1a: Bulbasaur|spe|1
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Bulbasaur|Razor Leaf|p2a: Chewtle
+|-supereffective|p2a: Chewtle
+|split|p2
+|-damage|p2a: Chewtle|0 fnt
+|-damage|p2a: Chewtle|0 fnt
+|faint|p2a: Chewtle
+|
+|upkeep
+|
+|t:|1792223720
+|split|p2
+|switch|p2a: Feebas|Feebas, L15, M|35/35
+|switch|p2a: Feebas|Feebas, L15, M|100/100
+|-end|p2a: Feebas|fantasystats|[silent]
+|turn|6
+|
+|t:|1792223720
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L11, F|35/35
+|switch|p1a: Nosepass|Nosepass, L11, F|100/100
+|-end|p1a: Nosepass|fantasystats|[silent]
+|move|p2a: Feebas|Flail|p1a: Nosepass
+|-resisted|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|34/35
+|-damage|p1a: Nosepass|98/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792223720
+|move|p2a: Feebas|Flail|p1a: Nosepass
+|-resisted|p1a: Nosepass
+|-crit|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|33/35
+|-damage|p1a: Nosepass|95/100
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Nosepass|Rock Throw|p2a: Feebas
+|split|p2
+|-damage|p2a: Feebas|0 fnt
+|-damage|p2a: Feebas|0 fnt
+|faint|p2a: Feebas
+|
+|upkeep
+|
+|t:|1792223720
+|split|p2
+|switch|p2a: Wimpod|Wimpod, L15, F|46/46
+|switch|p2a: Wimpod|Wimpod, L15, F|100/100
+|-end|p2a: Wimpod|fantasystats|[silent]
+|turn|8
+|
+|t:|1792223721
+|move|p2a: Wimpod|Waterfall|p1a: Nosepass
+|-supereffective|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|3/35
+|-damage|p1a: Nosepass|9/100
+|cant|p1a: Nosepass|flinch
+|
+|upkeep
+|turn|9
+|
+|t:|1792223721
+|split|p1
+|switch|p1a: Cacnea|Cacnea, L13, F|44/44
+|switch|p1a: Cacnea|Cacnea, L13, F|100/100
+|-end|p1a: Cacnea|fantasystats|[silent]
+|move|p2a: Wimpod|Waterfall|p1a: Cacnea
+|-resisted|p1a: Cacnea
+|split|p1
+|-damage|p1a: Cacnea|34/44
+|-damage|p1a: Cacnea|78/100
+|
+|upkeep
+|turn|10
+|
+|t:|1792223721
+|move|p2a: Wimpod|Leech Life|p1a: Cacnea
+|-supereffective|p1a: Cacnea
+|split|p1
+|-damage|p1a: Cacnea|0 fnt
+|-damage|p1a: Cacnea|0 fnt
+|faint|p1a: Cacnea
+|
+|upkeep
+|
+|t:|1792223721
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L16, M|32/60
+|switch|p1a: Crocalor|Crocalor, L16, M|54/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|11
+|
+|t:|1792223721
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Crocalor|Incinerate|p2a: Wimpod
+|split|p2
+|-damage|p2a: Wimpod|30/46
+|-damage|p2a: Wimpod|66/100
+|move|p2a: Wimpod|Leech Life|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|24/60
+|-damage|p1a: Crocalor|40/100
+|split|p2
+|-heal|p2a: Wimpod|34/46|[from] drain|[of] p1a: Crocalor
+|-heal|p2a: Wimpod|74/100|[from] drain|[of] p1a: Crocalor
+|
+|upkeep
+|turn|12
+|
+|t:|1792223721
+|-message|命运决定一切：正面，伤害 ×1.5。
+|move|p1a: Crocalor|Incinerate|p2a: Wimpod
+|split|p2
+|-damage|p2a: Wimpod|0 fnt
+|-damage|p2a: Wimpod|0 fnt
+|faint|p2a: Wimpod
+|
+|win|Player

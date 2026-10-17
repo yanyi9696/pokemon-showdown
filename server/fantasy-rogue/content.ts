@@ -1,6 +1,7 @@
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
 import type { RogueContent, RogueTrainer } from './types';
+import { arceusChallengeReady } from './final-bosses';
 import { rogueCaptureCount, rogueSpeciesData, rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
 
 export const ELITE_BOSS_FLOORS = new Set([10, 30, 50, 70, 90, 110, 130, 150, 170]);
@@ -27,6 +28,7 @@ export function validateContent(content: RogueContent): RogueContent {
 		typeof version === 'string' && version.length > 0 && version.length < 80), '兼容版本无效');
 	ensure(content.starters.length && Object.keys(content.floors).length, '缺少初始宝可梦或楼层');
 	ensure(whole(content.initialMoney), '初始货币无效');
+	ensure(!content.arceusMoves || arceusChallengeReady(content.arceusMoves), '阿尔宙斯物理招式配置不完整');
 	const itemIds = new Set<string>();
 	for (const item of content.items) {
 		ensure(/^[a-z0-9]+$/.test(item.id) && !itemIds.has(item.id), '道具标识重复或无效');
@@ -134,6 +136,11 @@ export function validateContent(content: RogueContent): RogueContent {
 						'随机候选仅用于固定幻想精英 Boss');
 					ensure(encounter.team.length === 1 && encounter.candidates.length > 0, '幻想精英候选不能为空且必须为单只对手');
 					for (const candidate of encounter.candidates) team([candidate]);
+				}
+				if (encounter.boss) {
+					ensure(floor === 200 && node.kind === 'boss' && encounter.boss.kind === 'summit' &&
+						!encounter.catchable && encounter.team.length === 6 && encounter.boss.mewtwoY, '最终首领配置无效');
+					team([encounter.boss.mewtwoY!]);
 				}
 				ensure(encounter.name && ['balanced', 'aggressive', 'defensive'].includes(encounter.style), 'AI 名称或风格无效');
 				if (node.kind === 'wild' || encounter.catchable) ensure(encounter.team.length === 1, '野怪／可捕捉对局必须只有一只');

@@ -1,0 +1,268 @@
+|t:|1792222017
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L28, M|
+|poke|p1|Togedemaru, L18, M|
+|poke|p1|Spiritomb, L28, M|
+|poke|p1|Emolga, L18, M|
+|poke|p1|Eiscue, L21, F|
+|poke|p1|Nosepass, L19, F|
+|poke|p2|Machop, L25, F|
+|poke|p2|Clobbopus, L25, M|
+|poke|p2|Mienfoo, L25, F|
+|poke|p2|Sneasel-Hisui, L25, M|
+|teampreview
+|
+|t:|1792222017
+|start
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L28, M|79/79
+|switch|p1a: Spiritomb|Spiritomb, L28, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L25, F|93/93
+|switch|p2a: Machop|Machop, L25, F|100/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222017
+|-terastallize|p2a: Machop|Fighting
+|move|p1a: Spiritomb|Hex|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|39/93
+|-damage|p2a: Machop|42/100
+|
+|t:|1792222017
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L28, M|94/94|[from] Hex
+|switch|p1a: Crocalor|Crocalor, L28, M|100/100|[from] Hex
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Machop|Knock Off|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|74/94
+|-damage|p1a: Crocalor|79/100
+|
+|-status|p2a: Machop|brn|[from] item: Flame Orb
+|upkeep
+|turn|2
+|
+|t:|1792222017
+|move|p1a: Crocalor|Incinerate|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|0 fnt
+|-damage|p2a: Machop|0 fnt
+|faint|p2a: Machop
+|
+|t:|1792222017
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L28, M|79/79|[from] Incinerate
+|switch|p1a: Spiritomb|Spiritomb, L28, M|100/100|[from] Incinerate
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|
+|t:|1792222017
+|split|p2
+|switch|p2a: Clobbopus|Clobbopus, L25, M|83/83
+|switch|p2a: Clobbopus|Clobbopus, L25, M|100/100
+|-end|p2a: Clobbopus|fantasystats|[silent]
+|turn|3
+|
+|t:|1792222017
+|move|p2a: Clobbopus|Sucker Punch|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|65/79
+|-damage|p1a: Spiritomb|83/100
+|move|p1a: Spiritomb|Hex|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|55/83
+|-damage|p2a: Clobbopus|67/100
+|
+|t:|1792222017
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L28, M|74/94|[from] Hex
+|switch|p1a: Crocalor|Crocalor, L28, M|79/100|[from] Hex
+|-end|p1a: Crocalor|fantasystats|[silent]
+|
+|upkeep
+|turn|4
+|
+|t:|1792222018
+|move|p2a: Clobbopus|Sucker Punch|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|58/94
+|-damage|p1a: Crocalor|62/100
+|move|p1a: Crocalor|Incinerate|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|28/83
+|-damage|p2a: Clobbopus|34/100
+|
+|t:|1792222018
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L28, M|65/79|[from] Incinerate
+|switch|p1a: Spiritomb|Spiritomb, L28, M|83/100|[from] Incinerate
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|turn|5
+|
+|t:|1792222018
+|move|p1a: Spiritomb|Hex|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|0 fnt
+|-damage|p2a: Clobbopus|0 fnt
+|faint|p2a: Clobbopus
+|
+|t:|1792222018
+|split|p1
+|switch|p1a: Emolga|Emolga, L18, M|58/58|[from] Hex
+|switch|p1a: Emolga|Emolga, L18, M|100/100|[from] Hex
+|-end|p1a: Emolga|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222018
+|split|p2
+|switch|p2a: Mienfoo|Mienfoo, L25, F|65/65
+|switch|p2a: Mienfoo|Mienfoo, L25, F|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|turn|6
+|
+|t:|1792222018
+|split|p1
+|switch|p1a: Eiscue|Eiscue, L21, F|74/74
+|switch|p1a: Eiscue|Eiscue, L21, F|100/100
+|-end|p1a: Eiscue|fantasystats|[silent]
+|move|p2a: Mienfoo|High Jump Kick|p1a: Eiscue
+|-activate|p1a: Eiscue|ability: Ice Face
+|split|p1
+|-damage|p1a: Eiscue|74/74
+|-damage|p1a: Eiscue|100/100
+|detailschange|p1a: Eiscue|Eiscue-Noice, L21, F
+|-start|p1a: Eiscue|typechange|Ice|[silent]
+|-end|p1a: Eiscue|fantasystats|[silent]
+|
+|upkeep
+|turn|7
+|
+|t:|1792222019
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L28, M|65/79
+|switch|p1a: Spiritomb|Spiritomb, L28, M|83/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Mienfoo|High Jump Kick|p1a: Spiritomb
+|-immune|p1a: Spiritomb
+|split|p2
+|-damage|p2a: Mienfoo|33/65|[from] highjumpkick
+|-damage|p2a: Mienfoo|51/100|[from] highjumpkick
+|
+|upkeep
+|turn|8
+|
+|t:|1792222019
+|move|p2a: Mienfoo|Jump Kick|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|37/79
+|-damage|p1a: Spiritomb|47/100
+|move|p1a: Spiritomb|Hex|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|2/65
+|-damage|p2a: Mienfoo|4/100
+|
+|t:|1792222019
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L19, F|51/51|[from] Hex
+|switch|p1a: Nosepass|Nosepass, L19, F|100/100|[from] Hex
+|-end|p1a: Nosepass|fantasystats|[silent]
+|
+|upkeep
+|turn|9
+|
+|t:|1792222019
+|move|p1a: Nosepass|Spark|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|0 fnt
+|-damage|p2a: Mienfoo|0 fnt
+|faint|p2a: Mienfoo
+|
+|t:|1792222020
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L28, M|37/79|[from] Spark
+|switch|p1a: Spiritomb|Spiritomb, L28, M|47/100|[from] Spark
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|
+|t:|1792222020
+|split|p2
+|switch|p2a: Sneasel|Sneasel-Hisui, L25, M|70/70
+|switch|p2a: Sneasel|Sneasel-Hisui, L25, M|100/100
+|-end|p2a: Sneasel|fantasystats|[silent]
+|turn|10
+|
+|t:|1792222020
+|move|p2a: Sneasel|Throat Chop|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|18/79
+|-damage|p1a: Spiritomb|23/100
+|-start|p1a: Spiritomb|Throat Chop|[silent]
+|move|p1a: Spiritomb|Hex|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|48/70
+|-damage|p2a: Sneasel|69/100
+|
+|t:|1792222020
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L28, M|58/94|[from] Hex
+|switch|p1a: Crocalor|Crocalor, L28, M|62/100|[from] Hex
+|-end|p1a: Crocalor|fantasystats|[silent]
+|
+|upkeep
+|turn|11
+|
+|t:|1792222020
+|move|p2a: Sneasel|Throat Chop|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|37/94
+|-damage|p1a: Crocalor|40/100
+|-start|p1a: Crocalor|Throat Chop|[silent]
+|move|p1a: Crocalor|Lick|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|40/70
+|-damage|p2a: Sneasel|58/100
+|-status|p2a: Sneasel|par
+|
+|t:|1792222020
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L28, M|18/79|[from] Lick
+|switch|p1a: Spiritomb|Spiritomb, L28, M|23/100|[from] Lick
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|upkeep
+|turn|12
+|
+|t:|1792222021
+|move|p2a: Sneasel|Close Combat|p1a: Spiritomb
+|-immune|p1a: Spiritomb
+|move|p1a: Spiritomb|Hex|p2a: Sneasel
+|split|p2
+|-damage|p2a: Sneasel|0 fnt
+|-damage|p2a: Sneasel|0 fnt
+|faint|p2a: Sneasel
+|
+|win|Player

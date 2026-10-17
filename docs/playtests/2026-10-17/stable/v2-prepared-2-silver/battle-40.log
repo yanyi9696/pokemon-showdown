@@ -1,0 +1,397 @@
+|t:|1792222545
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Mudkip, L15, M|
+|poke|p1|Sandygast, L14, F|
+|poke|p1|Spiritomb, L11, M|
+|poke|p1|Baltoy, L11|
+|poke|p1|Flabébé, L10, F|
+|poke|p1|Skrelp, L10, F|
+|poke|p2|Machop, L15, M|
+|poke|p2|Clobbopus, L15, F|
+|poke|p2|Mienfoo, L15, M|
+|teampreview
+|
+|t:|1792222545
+|start
+|split|p1
+|switch|p1a: Mudkip|Mudkip, L15, M|43/43
+|switch|p1a: Mudkip|Mudkip, L15, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L15, M|59/59
+|switch|p2a: Machop|Machop, L15, M|100/100
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Mudkip|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222546
+|-terastallize|p2a: Machop|Fighting
+|move|p2a: Machop|Close Combat|p1a: Mudkip
+|split|p1
+|-damage|p1a: Mudkip|0 fnt
+|-damage|p1a: Mudkip|0 fnt
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|faint|p1a: Mudkip
+|
+|-status|p2a: Machop|brn|[from] item: Flame Orb
+|upkeep
+|
+|t:|1792222546
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L11, M|35/35
+|switch|p1a: Spiritomb|Spiritomb, L11, M|100/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|turn|2
+|
+|t:|1792222546
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|46/59 brn
+|-damage|p2a: Machop|78/100 brn
+|
+|t:|1792222546
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L14, F|43/43|[from] Shadow Sneak
+|switch|p1a: Sandygast|Sandygast, L14, F|100/100|[from] Shadow Sneak
+|-end|p1a: Sandygast|fantasystats|[silent]
+|move|p2a: Machop|Close Combat|p1a: Sandygast
+|-immune|p1a: Sandygast
+|
+|split|p2
+|-damage|p2a: Machop|43/59 brn|[from] brn
+|-damage|p2a: Machop|73/100 brn|[from] brn
+|upkeep
+|turn|3
+|
+|t:|1792222547
+|move|p2a: Machop|Bulk Up|p2a: Machop
+|-boost|p2a: Machop|atk|1
+|-boost|p2a: Machop|def|1
+|move|p1a: Sandygast|Sand Tomb|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|36/59 brn
+|-damage|p2a: Machop|62/100 brn
+|-activate|p2a: Machop|move: Sand Tomb|[of] p1a: Sandygast
+|
+|t:|1792222547
+|split|p1
+|switch|p1a: Baltoy|Baltoy, L11|32/32|[from] Sand Tomb
+|switch|p1a: Baltoy|Baltoy, L11|100/100|[from] Sand Tomb
+|-end|p1a: Baltoy|fantasystats|[silent]
+|
+|split|p2
+|-damage|p2a: Machop|33/59 brn|[from] brn
+|-damage|p2a: Machop|56/100 brn|[from] brn
+|-end|p2a: Machop|Sand Tomb|[partiallytrapped]|[silent]
+|upkeep
+|turn|4
+|
+|t:|1792222547
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L11, M|35/35
+|switch|p1a: Spiritomb|Spiritomb, L11, M|100/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Machop|Bulk Up|p2a: Machop
+|-boost|p2a: Machop|atk|1
+|-boost|p2a: Machop|def|1
+|
+|split|p2
+|-damage|p2a: Machop|30/59 brn|[from] brn
+|-damage|p2a: Machop|51/100 brn|[from] brn
+|upkeep
+|turn|5
+|
+|t:|1792222547
+|move|p2a: Machop|Close Combat|p1a: Spiritomb
+|-immune|p1a: Spiritomb
+|move|p1a: Spiritomb|Night Shade|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|19/59 brn
+|-damage|p2a: Machop|33/100 brn
+|
+|t:|1792222547
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L14, F|43/43|[from] Night Shade
+|switch|p1a: Sandygast|Sandygast, L14, F|100/100|[from] Night Shade
+|-end|p1a: Sandygast|fantasystats|[silent]
+|
+|split|p2
+|-damage|p2a: Machop|16/59 brn|[from] brn
+|-damage|p2a: Machop|28/100 brn|[from] brn
+|upkeep
+|turn|6
+|
+|t:|1792222548
+|move|p2a: Machop|Bullet Punch|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|14/43
+|-damage|p1a: Sandygast|33/100
+|-enditem|p1a: Sandygast|Oran Berry|[eat]
+|split|p1
+|-heal|p1a: Sandygast|24/43|[from] item: Oran Berry
+|-heal|p1a: Sandygast|56/100|[from] item: Oran Berry
+|move|p1a: Sandygast|Sand Tomb|p2a: Machop
+|-crit|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|4/59 brn
+|-damage|p2a: Machop|7/100 brn
+|-activate|p2a: Machop|move: Sand Tomb|[of] p1a: Sandygast
+|
+|t:|1792222548
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L11, M|35/35|[from] Sand Tomb
+|switch|p1a: Spiritomb|Spiritomb, L11, M|100/100|[from] Sand Tomb
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|
+|split|p2
+|-damage|p2a: Machop|1/59 brn|[from] brn
+|-damage|p2a: Machop|2/100 brn|[from] brn
+|-end|p2a: Machop|Sand Tomb|[partiallytrapped]|[silent]
+|upkeep
+|turn|7
+|
+|t:|1792222548
+|move|p2a: Machop|Bullet Punch|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|7/35
+|-damage|p1a: Spiritomb|20/100
+|move|p1a: Spiritomb|Shadow Sneak|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|0 fnt
+|-damage|p2a: Machop|0 fnt
+|faint|p2a: Machop
+|
+|t:|1792222548
+|split|p1
+|switch|p1a: Sandygast|Sandygast, L14, F|24/43|[from] Shadow Sneak
+|switch|p1a: Sandygast|Sandygast, L14, F|56/100|[from] Shadow Sneak
+|-end|p1a: Sandygast|fantasystats|[silent]
+|
+|upkeep
+|
+|t:|1792222548
+|split|p2
+|switch|p2a: Clobbopus|Clobbopus, L15, F|54/54
+|switch|p2a: Clobbopus|Clobbopus, L15, F|100/100
+|-end|p2a: Clobbopus|fantasystats|[silent]
+|turn|8
+|
+|t:|1792222549
+|move|p2a: Clobbopus|Sucker Punch|p1a: Sandygast
+|-supereffective|p1a: Sandygast
+|split|p1
+|-damage|p1a: Sandygast|0 fnt
+|-damage|p1a: Sandygast|0 fnt
+|faint|p1a: Sandygast
+|
+|upkeep
+|
+|t:|1792222549
+|split|p1
+|switch|p1a: Flabébé|Flabébé, L10, F|31/31
+|switch|p1a: Flabébé|Flabébé, L10, F|100/100
+|-end|p1a: Flabébé|fantasystats|[silent]
+|turn|9
+|
+|t:|1792222549
+|move|p2a: Clobbopus|Sucker Punch||[still]
+|-fail|p2a: Clobbopus
+|move|p1a: Flabébé|Safeguard|p1a: Flabébé
+|-sidestart|p1: Player|Safeguard
+|
+|upkeep
+|turn|10
+|
+|t:|1792222549
+|move|p2a: Clobbopus|Close Combat|p1a: Flabébé
+|-resisted|p1a: Flabébé
+|split|p1
+|-damage|p1a: Flabébé|0 fnt
+|-damage|p1a: Flabébé|0 fnt
+|-unboost|p2a: Clobbopus|def|1
+|-unboost|p2a: Clobbopus|spd|1
+|faint|p1a: Flabébé
+|
+|upkeep
+|
+|t:|1792222549
+|split|p1
+|switch|p1a: Skrelp|Skrelp, L10, F|32/32
+|switch|p1a: Skrelp|Skrelp, L10, F|100/100
+|-end|p1a: Skrelp|fantasystats|[silent]
+|turn|11
+|
+|t:|1792222549
+|split|p1
+|switch|p1a: Spiritomb|Spiritomb, L11, M|7/35
+|switch|p1a: Spiritomb|Spiritomb, L11, M|20/100
+|-end|p1a: Spiritomb|fantasystats|[silent]
+|-ability|p1a: Spiritomb|Pressure
+|move|p2a: Clobbopus|Close Combat|p1a: Spiritomb
+|-immune|p1a: Spiritomb
+|
+|upkeep
+|turn|12
+|
+|t:|1792222549
+|move|p2a: Clobbopus|Close Combat|p1a: Spiritomb
+|-immune|p1a: Spiritomb
+|move|p1a: Spiritomb|Confuse Ray|p2a: Clobbopus
+|-start|p2a: Clobbopus|confusion
+|
+|upkeep
+|turn|13
+|
+|t:|1792222549
+|-activate|p2a: Clobbopus|confusion
+|split|p2
+|-damage|p2a: Clobbopus|39/54|[from] confusion
+|-damage|p2a: Clobbopus|73/100|[from] confusion
+|move|p1a: Spiritomb|Spite||[still]
+|-fail|p1a: Spiritomb
+|
+|-sideend|p1: Player|Safeguard
+|upkeep
+|turn|14
+|
+|t:|1792222550
+|-activate|p2a: Clobbopus|confusion
+|move|p2a: Clobbopus|Sucker Punch||[still]
+|-fail|p2a: Clobbopus
+|move|p1a: Spiritomb|Spite|p2a: Clobbopus
+|-activate|p2a: Clobbopus|move: Spite|Sucker Punch|1
+|
+|upkeep
+|turn|15
+|
+|t:|1792222550
+|-activate|p2a: Clobbopus|confusion
+|move|p2a: Clobbopus|Detect|p2a: Clobbopus
+|-singleturn|p2a: Clobbopus|Protect
+|move|p1a: Spiritomb|Spite|p2a: Clobbopus
+|-activate|p2a: Clobbopus|move: Protect
+|
+|upkeep
+|turn|16
+|
+|t:|1792222550
+|-activate|p2a: Clobbopus|confusion
+|move|p2a: Clobbopus|Detect||[still]
+|-fail|p2a: Clobbopus
+|move|p1a: Spiritomb|Spite|p2a: Clobbopus
+|-activate|p2a: Clobbopus|move: Spite|Detect|1
+|
+|upkeep
+|turn|17
+|
+|t:|1792222550
+|-end|p2a: Clobbopus|confusion
+|-activate|p2a: Clobbopus|move: Struggle
+|move|p2a: Clobbopus|Struggle|p1a: Spiritomb
+|split|p1
+|-damage|p1a: Spiritomb|0 fnt
+|-damage|p1a: Spiritomb|0 fnt
+|faint|p1a: Spiritomb
+|split|p2
+|-damage|p2a: Clobbopus|25/54|[from] recoil
+|-damage|p2a: Clobbopus|47/100|[from] recoil
+|
+|upkeep
+|
+|t:|1792222550
+|split|p1
+|switch|p1a: Skrelp|Skrelp, L10, F|32/32
+|switch|p1a: Skrelp|Skrelp, L10, F|100/100
+|-end|p1a: Skrelp|fantasystats|[silent]
+|turn|18
+|
+|t:|1792222550
+|-activate|p2a: Clobbopus|move: Struggle
+|move|p2a: Clobbopus|Struggle|p1a: Skrelp
+|split|p1
+|-damage|p1a: Skrelp|9/32
+|-damage|p1a: Skrelp|29/100
+|split|p2
+|-damage|p2a: Clobbopus|11/54|[from] recoil
+|-damage|p2a: Clobbopus|21/100|[from] recoil
+|move|p1a: Skrelp|Acid|p2a: Clobbopus
+|split|p2
+|-damage|p2a: Clobbopus|5/54
+|-damage|p2a: Clobbopus|10/100
+|
+|t:|1792222550
+|split|p1
+|switch|p1a: Baltoy|Baltoy, L11|32/32|[from] Acid
+|switch|p1a: Baltoy|Baltoy, L11|100/100|[from] Acid
+|-end|p1a: Baltoy|fantasystats|[silent]
+|
+|upkeep
+|turn|19
+|
+|t:|1792222551
+|split|p1
+|switch|p1a: Skrelp|Skrelp, L10, F|9/32
+|switch|p1a: Skrelp|Skrelp, L10, F|29/100
+|-end|p1a: Skrelp|fantasystats|[silent]
+|-activate|p2a: Clobbopus|move: Struggle
+|move|p2a: Clobbopus|Struggle|p1a: Skrelp
+|split|p1
+|-damage|p1a: Skrelp|0 fnt
+|-damage|p1a: Skrelp|0 fnt
+|-status|p2a: Clobbopus|psn|[from] ability: Poison Point|[of] p1a: Skrelp
+|faint|p1a: Skrelp
+|split|p2
+|-damage|p2a: Clobbopus|0 fnt|[from] recoil
+|-damage|p2a: Clobbopus|0 fnt|[from] recoil
+|faint|p2a: Clobbopus
+|
+|upkeep
+|
+|t:|1792222551
+|split|p2
+|switch|p2a: Mienfoo|Mienfoo, L15, M|43/43
+|switch|p2a: Mienfoo|Mienfoo, L15, M|100/100
+|split|p1
+|switch|p1a: Baltoy|Baltoy, L11|32/32
+|switch|p1a: Baltoy|Baltoy, L11|100/100
+|-end|p2a: Mienfoo|fantasystats|[silent]
+|-end|p1a: Baltoy|fantasystats|[silent]
+|turn|20
+|
+|t:|1792222551
+|move|p2a: Mienfoo|Jump Kick|p1a: Baltoy
+|-immune|p1a: Baltoy
+|split|p2
+|-damage|p2a: Mienfoo|22/43|[from] jumpkick
+|-damage|p2a: Mienfoo|52/100|[from] jumpkick
+|move|p1a: Baltoy|Confusion|p2a: Mienfoo
+|-supereffective|p2a: Mienfoo
+|split|p2
+|-damage|p2a: Mienfoo|14/43
+|-damage|p2a: Mienfoo|33/100
+|
+|upkeep
+|turn|21
+|
+|t:|1792222551
+|move|p2a: Mienfoo|U-turn|p1a: Baltoy
+|-supereffective|p1a: Baltoy
+|split|p1
+|-damage|p1a: Baltoy|0 fnt
+|-damage|p1a: Baltoy|0 fnt
+|faint|p1a: Baltoy
+|
+|win|NPC

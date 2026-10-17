@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
@@ -7,13 +8,13 @@ const { createPreviewContent } = require('../../dist/server/fantasy-rogue/previe
 const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
 const { rogueDiscoveries } = require('../../dist/server/fantasy-rogue/discoveries');
 const { EVENT_NAMES, eventView } = require('../../dist/server/fantasy-rogue/events');
-const { ROGUE_BLESSINGS } = require('../../dist/sim/rogue-blessing-data');
+const { ROGUE_BLESSINGS, STAGED_BLESSING_FAMILIES } = require('../../dist/sim/rogue-blessing-data');
 
 describe('Fantasy Rogue permanent codex and read-only event replays', function () {
 	this.timeout(20000);
 	let store, engine;
 	const account = () => store.get('codextest');
-	const cmd = (action, details = {}) => engine.command('codextest', { id: randomUUID(), revision: account().revision, action, ...details });
+	const cmd = (action, details = {}) => commandAfterOpening(engine, 'codextest', { id: randomUUID(), revision: account().revision, action, ...details });
 	beforeEach(() => {
 		store = new RogueStore(':memory:'); engine = new RogueEngine(store, createPreviewContent(), () => 0);
 		cmd('start', { starters: ['bulbasaur'] });
@@ -32,11 +33,12 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 	});
 	it('sends only names, tiers and question marks for never obtained entries', () => {
 		const data = rogueCodex(account(), 'blessings');
-		assert.equal(data.entries.length, ROGUE_BLESSINGS.length);
+		assert.equal(data.entries.length, ROGUE_BLESSINGS.length + STAGED_BLESSING_FAMILIES.length * 3);
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
 		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).length);
-		assert.equal(events.filter(e => e.category === 'trade').length, 3);
+		assert.equal(events.filter(e => e.category === 'trade').length, 4);
+		assert.equal(events.filter(e => e.category === 'reward').length, 5);
 		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 	});
 	it('records an actual selection once, never unlocks an offer, and keeps it after abandoning', () => {

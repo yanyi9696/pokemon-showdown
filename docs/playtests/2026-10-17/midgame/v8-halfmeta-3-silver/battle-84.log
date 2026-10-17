@@ -1,0 +1,314 @@
+|t:|1792231087
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, L33, M|
+|poke|p1|Crocalor, L28, M|
+|poke|p1|Marshtomp, L29, M|
+|poke|p1|Kirlia, L24, M|
+|poke|p1|Aron, L24, M|
+|poke|p1|Shuckle, L33, F|
+|poke|p2|Drednaw, L35, M|
+|poke|p2|Golisopod, L35, F|
+|poke|p2|Milotic, L35, M|
+|poke|p2|Slowbro, L35, F|
+|teampreview
+|
+|t:|1792231087
+|start
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L33, M|108/108
+|switch|p1a: Venusaur|Venusaur, L33, M|100/100
+|split|p2
+|switch|p2a: Drednaw|Drednaw, L35, M|118/118
+|switch|p2a: Drednaw|Drednaw, L35, M|100/100
+|-end|p2a: Drednaw|fantasystats|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|-end|p2a: Drednaw|fantasystats|[silent]
+|-end|p1a: Venusaur|fantasystats|[silent]
+|turn|1
+|
+|t:|1792231088
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L33, F|68/68
+|switch|p1a: Shuckle|Shuckle, L33, F|100/100
+|-end|p1a: Shuckle|fantasystats|[silent]
+|move|p2a: Drednaw|Shell Smash|p2a: Drednaw
+|-unboost|p2a: Drednaw|def|1
+|-unboost|p2a: Drednaw|spd|1
+|-boost|p2a: Drednaw|atk|2
+|-boost|p2a: Drednaw|spa|2
+|-boost|p2a: Drednaw|spe|2
+|
+|upkeep
+|turn|2
+|
+|t:|1792231088
+|-terastallize|p2a: Drednaw|Water
+|move|p2a: Drednaw|Liquidation|p1a: Shuckle
+|-supereffective|p1a: Shuckle
+|-ability|p1a: Shuckle|Sturdy
+|split|p1
+|-damage|p1a: Shuckle|1/68
+|-damage|p1a: Shuckle|2/100
+|move|p1a: Shuckle|Wrap|p2a: Drednaw
+|split|p2
+|-damage|p2a: Drednaw|115/118
+|-damage|p2a: Drednaw|98/100
+|-activate|p2a: Drednaw|move: Wrap|[of] p1a: Shuckle
+|
+|split|p2
+|-damage|p2a: Drednaw|101/118|[from] move: Wrap|[partiallytrapped]
+|-damage|p2a: Drednaw|86/100|[from] move: Wrap|[partiallytrapped]
+|upkeep
+|turn|3
+|
+|t:|1792231089
+|split|p1
+|switch|p1a: Aron|Aron, L24, M|70/70
+|switch|p1a: Aron|Aron, L24, M|100/100
+|-end|p1a: Aron|fantasystats|[silent]
+|move|p2a: Drednaw|Liquidation|p1a: Aron
+|-supereffective|p1a: Aron
+|-ability|p1a: Aron|Sturdy
+|split|p1
+|-damage|p1a: Aron|1/70
+|-damage|p1a: Aron|2/100
+|
+|-end|p2a: Drednaw|Wrap|[partiallytrapped]|[silent]
+|upkeep
+|turn|4
+|
+|t:|1792231089
+|move|p2a: Drednaw|Earthquake|p1a: Aron
+|-supereffective|p1a: Aron
+|split|p1
+|-damage|p1a: Aron|0 fnt
+|-damage|p1a: Aron|0 fnt
+|faint|p1a: Aron
+|
+|upkeep
+|
+|t:|1792231090
+|split|p1
+|switch|p1a: Venusaur|Venusaur, L33, M|108/108
+|switch|p1a: Venusaur|Venusaur, L33, M|100/100
+|-end|p1a: Venusaur|fantasystats|[silent]
+|turn|5
+|
+|t:|1792231090
+|move|p2a: Drednaw|Earthquake|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|19/108
+|-damage|p1a: Venusaur|18/100
+|-enditem|p1a: Venusaur|Oran Berry|[eat]
+|split|p1
+|-heal|p1a: Venusaur|29/108|[from] item: Oran Berry
+|-heal|p1a: Venusaur|27/100|[from] item: Oran Berry
+|move|p1a: Venusaur|Petal Dance|p2a: Drednaw
+|-supereffective|p2a: Drednaw
+|split|p2
+|-damage|p2a: Drednaw|0 fnt
+|-damage|p2a: Drednaw|0 fnt
+|faint|p2a: Drednaw
+|
+|upkeep
+|
+|t:|1792231090
+|split|p2
+|switch|p2a: Golisopod|Golisopod, L35, F|130/130
+|switch|p2a: Golisopod|Golisopod, L35, F|100/100
+|-end|p2a: Golisopod|fantasystats|[silent]
+|turn|6
+|
+|t:|1792231090
+|move|p2a: Golisopod|First Impression|p1a: Venusaur
+|split|p1
+|-damage|p1a: Venusaur|0 fnt
+|-damage|p1a: Venusaur|0 fnt
+|faint|p1a: Venusaur
+|
+|upkeep
+|
+|t:|1792231090
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L29, M|90/90
+|switch|p1a: Marshtomp|Marshtomp, L29, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|7
+|
+|t:|1792231090
+|move|p2a: Golisopod|First Impression||[still]
+|-hint|First Impression only works on your first turn out.
+|-fail|p2a: Golisopod
+|move|p1a: Marshtomp|Rock Throw|p2a: Golisopod
+|-supereffective|p2a: Golisopod
+|split|p2
+|-damage|p2a: Golisopod|104/130
+|-damage|p2a: Golisopod|80/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792231091
+|move|p2a: Golisopod|First Impression||[still]
+|-hint|First Impression only works on your first turn out.
+|-fail|p2a: Golisopod
+|move|p1a: Marshtomp|Rock Throw|p2a: Golisopod
+|-supereffective|p2a: Golisopod
+|split|p2
+|-damage|p2a: Golisopod|78/130
+|-damage|p2a: Golisopod|60/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792231091
+|move|p2a: Golisopod|First Impression||[still]
+|-hint|First Impression only works on your first turn out.
+|-fail|p2a: Golisopod
+|move|p1a: Marshtomp|Rock Throw|p2a: Golisopod
+|-supereffective|p2a: Golisopod
+|split|p2
+|-damage|p2a: Golisopod|52/130
+|-damage|p2a: Golisopod|40/100
+|-activate|p2a: Golisopod|Huibizaisheng
+|
+|t:|1792231091
+|split|p2
+|switch|p2a: Milotic|Milotic, L35, M|144/144
+|switch|p2a: Milotic|Milotic, L35, M|100/100
+|-end|p2a: Milotic|fantasystats|[silent]
+|
+|-status|p2a: Milotic|brn|[from] item: Flame Orb
+|upkeep
+|turn|10
+|
+|t:|1792231091
+|move|p2a: Milotic|Scald|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|33/90
+|-damage|p1a: Marshtomp|37/100
+|move|p1a: Marshtomp|Mud Shot|p2a: Milotic
+|split|p2
+|-damage|p2a: Milotic|131/144 brn
+|-damage|p2a: Milotic|91/100 brn
+|-unboost|p2a: Milotic|spe|1
+|
+|split|p2
+|-damage|p2a: Milotic|122/144 brn|[from] brn
+|-damage|p2a: Milotic|85/100 brn|[from] brn
+|upkeep
+|turn|11
+|
+|t:|1792231092
+|move|p1a: Marshtomp|Mud Shot|p2a: Milotic
+|split|p2
+|-damage|p2a: Milotic|109/144 brn
+|-damage|p2a: Milotic|76/100 brn
+|-unboost|p2a: Milotic|spe|1
+|move|p2a: Milotic|Scald|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|faint|p1a: Marshtomp
+|
+|split|p2
+|-damage|p2a: Milotic|100/144 brn|[from] brn
+|-damage|p2a: Milotic|70/100 brn|[from] brn
+|upkeep
+|
+|t:|1792231092
+|split|p1
+|switch|p1a: Kirlia|Kirlia, L24, M|65/65
+|switch|p1a: Kirlia|Kirlia, L24, M|100/100
+|-end|p1a: Kirlia|fantasystats|[silent]
+|turn|12
+|
+|t:|1792231092
+|move|p1a: Kirlia|Psybeam|p2a: Milotic
+|split|p2
+|-damage|p2a: Milotic|89/144 brn
+|-damage|p2a: Milotic|62/100 brn
+|move|p2a: Milotic|Scald|p1a: Kirlia
+|split|p1
+|-damage|p1a: Kirlia|5/65
+|-damage|p1a: Kirlia|8/100
+|-status|p1a: Kirlia|brn
+|-activate|p1a: Kirlia|ability: Synchronize
+|-fail|p2a: Milotic|brn
+|
+|split|p1
+|-damage|p1a: Kirlia|1/65 brn|[from] brn
+|-damage|p1a: Kirlia|2/100 brn|[from] brn
+|split|p2
+|-damage|p2a: Milotic|80/144 brn|[from] brn
+|-damage|p2a: Milotic|56/100 brn|[from] brn
+|upkeep
+|turn|13
+|
+|t:|1792231092
+|move|p1a: Kirlia|Draining Kiss|p2a: Milotic
+|split|p2
+|-damage|p2a: Milotic|71/144 brn
+|-damage|p2a: Milotic|50/100 brn
+|split|p1
+|-heal|p1a: Kirlia|8/65 brn|[from] drain|[of] p2a: Milotic
+|-heal|p1a: Kirlia|13/100 brn|[from] drain|[of] p2a: Milotic
+|move|p2a: Milotic|Scald|p1a: Kirlia
+|split|p1
+|-damage|p1a: Kirlia|0 fnt
+|-damage|p1a: Kirlia|0 fnt
+|faint|p1a: Kirlia
+|
+|split|p2
+|-damage|p2a: Milotic|62/144 brn|[from] brn
+|-damage|p2a: Milotic|44/100 brn|[from] brn
+|upkeep
+|
+|t:|1792231092
+|split|p1
+|switch|p1a: Shuckle|Shuckle, L33, F|1/68
+|switch|p1a: Shuckle|Shuckle, L33, F|2/100
+|-end|p1a: Shuckle|fantasystats|[silent]
+|turn|14
+|
+|t:|1792231092
+|move|p2a: Milotic|Scald|p1a: Shuckle
+|-supereffective|p1a: Shuckle
+|split|p1
+|-damage|p1a: Shuckle|0 fnt
+|-damage|p1a: Shuckle|0 fnt
+|faint|p1a: Shuckle
+|
+|split|p2
+|-damage|p2a: Milotic|53/144 brn|[from] brn
+|-damage|p2a: Milotic|37/100 brn|[from] brn
+|upkeep
+|
+|t:|1792231092
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L28, M|94/94
+|switch|p1a: Crocalor|Crocalor, L28, M|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|turn|15
+|
+|t:|1792231092
+|move|p1a: Crocalor|Lick|p2a: Milotic
+|split|p2
+|-damage|p2a: Milotic|50/144 brn
+|-damage|p2a: Milotic|35/100 brn
+|move|p2a: Milotic|Scald|p1a: Crocalor
+|-supereffective|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|
+|win|NPC

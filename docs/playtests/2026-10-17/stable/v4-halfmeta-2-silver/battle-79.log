@@ -1,0 +1,302 @@
+|t:|1792223809
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L23, M|
+|poke|p1|Crocalor, L25, F|
+|poke|p1|Ivysaur, L22, M|
+|poke|p1|Flamigo, L22, M|
+|poke|p1|Ponyta, L19, M|
+|poke|p1|Drowzee, L20, M|
+|poke|p2|Venipede, L25, F|
+|poke|p2|Toxel, L25, M|
+|poke|p2|Trubbish, L25, M|
+|poke|p2|Slowbro-Galar, L25, F|
+|teampreview
+|
+|t:|1792223809
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L23, M|75/75
+|switch|p1a: Marshtomp|Marshtomp, L23, M|100/100
+|split|p2
+|switch|p2a: Venipede|Venipede, L25, F|57/57
+|switch|p2a: Venipede|Venipede, L25, F|100/100
+|-end|p2a: Venipede|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Venipede|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223810
+|-terastallize|p2a: Venipede|Bug
+|move|p2a: Venipede|Pin Missile|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|67/75
+|-damage|p1a: Marshtomp|90/100
+|split|p1
+|-damage|p1a: Marshtomp|59/75
+|-damage|p1a: Marshtomp|79/100
+|split|p1
+|-damage|p1a: Marshtomp|51/75
+|-damage|p1a: Marshtomp|68/100
+|split|p1
+|-damage|p1a: Marshtomp|43/75
+|-damage|p1a: Marshtomp|58/100
+|split|p1
+|-damage|p1a: Marshtomp|35/75
+|-damage|p1a: Marshtomp|47/100
+|-hitcount|p1a: Marshtomp|5
+|move|p1a: Marshtomp|Rock Throw|p2a: Venipede
+|-supereffective|p2a: Venipede
+|split|p2
+|-damage|p2a: Venipede|7/57
+|-damage|p2a: Venipede|13/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223810
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L25, F|86/86
+|switch|p1a: Crocalor|Crocalor, L25, F|100/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Venipede|Pin Missile|p1a: Crocalor
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|80/86
+|-damage|p1a: Crocalor|94/100
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|74/86
+|-damage|p1a: Crocalor|87/100
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|68/86
+|-damage|p1a: Crocalor|80/100
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|62/86
+|-damage|p1a: Crocalor|73/100
+|-resisted|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|56/86
+|-damage|p1a: Crocalor|66/100
+|-hitcount|p1a: Crocalor|5
+|
+|upkeep
+|turn|3
+|
+|t:|1792223811
+|move|p1a: Crocalor|Incinerate|p2a: Venipede
+|-supereffective|p2a: Venipede
+|split|p2
+|-damage|p2a: Venipede|0 fnt
+|-damage|p2a: Venipede|0 fnt
+|faint|p2a: Venipede
+|
+|upkeep
+|
+|t:|1792223811
+|split|p2
+|switch|p2a: Toxel|Toxel, L25, M|62/62
+|switch|p2a: Toxel|Toxel, L25, M|100/100
+|-end|p2a: Toxel|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223811
+|move|p1a: Crocalor|Incinerate|p2a: Toxel
+|split|p2
+|-damage|p2a: Toxel|15/62
+|-damage|p2a: Toxel|25/100
+|move|p2a: Toxel|Charm|p1a: Crocalor
+|-unboost|p1a: Crocalor|atk|2
+|
+|upkeep
+|turn|5
+|
+|t:|1792223812
+|move|p2a: Toxel|Endure|p2a: Toxel
+|-singleturn|p2a: Toxel|move: Endure
+|move|p1a: Crocalor|Incinerate|p2a: Toxel
+|-activate|p2a: Toxel|move: Endure
+|split|p2
+|-damage|p2a: Toxel|1/62
+|-damage|p2a: Toxel|2/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792223812
+|move|p2a: Toxel|Endure||[still]
+|-fail|p2a: Toxel
+|move|p1a: Crocalor|Seed Bomb|p2a: Toxel
+|-resisted|p2a: Toxel
+|split|p2
+|-damage|p2a: Toxel|0 fnt
+|-damage|p2a: Toxel|0 fnt
+|faint|p2a: Toxel
+|
+|upkeep
+|
+|t:|1792223812
+|split|p2
+|switch|p2a: Trubbish|Trubbish, L25, M|67/67
+|switch|p2a: Trubbish|Trubbish, L25, M|100/100
+|-end|p2a: Trubbish|fantasystats|[silent]
+|turn|7
+|
+|t:|1792223812
+|move|p2a: Trubbish|Clear Smog|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|43/86
+|-damage|p1a: Crocalor|50/100
+|-clearboost|p1a: Crocalor
+|move|p1a: Crocalor|Incinerate|p2a: Trubbish
+|split|p2
+|-damage|p2a: Trubbish|34/67
+|-damage|p2a: Trubbish|51/100
+|
+|upkeep
+|turn|8
+|
+|t:|1792223813
+|move|p1a: Crocalor|Incinerate|p2a: Trubbish
+|split|p2
+|-damage|p2a: Trubbish|1/67
+|-damage|p2a: Trubbish|2/100
+|move|p2a: Trubbish|Clear Smog|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|30/86
+|-damage|p1a: Crocalor|35/100
+|-clearboost|p1a: Crocalor
+|
+|upkeep
+|turn|9
+|
+|t:|1792223813
+|move|p2a: Trubbish|Clear Smog|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|17/86
+|-damage|p1a: Crocalor|20/100
+|-clearboost|p1a: Crocalor
+|move|p1a: Crocalor|Incinerate|p2a: Trubbish
+|split|p2
+|-damage|p2a: Trubbish|0 fnt
+|-damage|p2a: Trubbish|0 fnt
+|faint|p2a: Trubbish
+|
+|upkeep
+|
+|t:|1792223813
+|split|p2
+|switch|p2a: Slowbro|Slowbro-Galar, L25, F|90/90
+|switch|p2a: Slowbro|Slowbro-Galar, L25, F|100/100
+|-end|p2a: Slowbro|fantasystats|[silent]
+|turn|10
+|
+|t:|1792223813
+|move|p1a: Crocalor|Incinerate|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|48/90
+|-damage|p2a: Slowbro|54/100
+|move|p2a: Slowbro|Shell Side Arm|p1a: Crocalor|[anim] Shell Side Arm Special
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|-hint|Special Shell Side Arm
+|faint|p1a: Crocalor
+|
+|upkeep
+|
+|t:|1792223813
+|split|p1
+|switch|p1a: Flamigo|Flamigo, L22, M|79/79
+|switch|p1a: Flamigo|Flamigo, L22, M|100/100
+|-end|p1a: Flamigo|fantasystats|[silent]
+|turn|11
+|
+|t:|1792223814
+|move|p1a: Flamigo|Wing Attack|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|29/90
+|-damage|p2a: Slowbro|33/100
+|move|p2a: Slowbro|Shell Side Arm|p1a: Flamigo|[anim] Shell Side Arm Special
+|split|p1
+|-damage|p1a: Flamigo|39/79
+|-damage|p1a: Flamigo|50/100
+|-hint|Special Shell Side Arm
+|
+|upkeep
+|turn|12
+|
+|t:|1792223814
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L23, M|35/75
+|switch|p1a: Marshtomp|Marshtomp, L23, M|47/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|move|p2a: Slowbro|Shell Side Arm|p1a: Marshtomp|[anim] Shell Side Arm Special
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|17/75
+|-damage|p1a: Marshtomp|23/100
+|-hint|Special Shell Side Arm
+|-status|p1a: Marshtomp|psn
+|
+|split|p1
+|-damage|p1a: Marshtomp|8/75 psn|[from] psn
+|-damage|p1a: Marshtomp|11/100 psn|[from] psn
+|upkeep
+|turn|13
+|
+|t:|1792223814
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L22, M|68/68
+|switch|p1a: Ivysaur|Ivysaur, L22, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Slowbro|Shell Side Arm|p1a: Ivysaur|[anim] Shell Side Arm Physical
+|split|p1
+|-damage|p1a: Ivysaur|31/68
+|-damage|p1a: Ivysaur|46/100
+|-hint|Physical Shell Side Arm
+|
+|upkeep
+|turn|14
+|
+|t:|1792223814
+|move|p1a: Ivysaur|Razor Leaf|p2a: Slowbro
+|-resisted|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|23/90
+|-damage|p2a: Slowbro|26/100
+|move|p2a: Slowbro|Shell Side Arm|p1a: Ivysaur|[anim] Shell Side Arm Physical
+|-crit|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|-hint|Physical Shell Side Arm
+|faint|p1a: Ivysaur
+|
+|upkeep
+|
+|t:|1792223814
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L23, M|8/75 psn
+|switch|p1a: Marshtomp|Marshtomp, L23, M|11/100 psn
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|turn|15
+|
+|t:|1792223815
+|move|p1a: Marshtomp|Liquidation|p2a: Slowbro
+|split|p2
+|-damage|p2a: Slowbro|0 fnt
+|-damage|p2a: Slowbro|0 fnt
+|faint|p2a: Slowbro
+|
+|win|Player

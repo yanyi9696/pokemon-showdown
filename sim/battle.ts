@@ -27,7 +27,8 @@ import { BattleActions } from './battle-actions';
 import { Utils } from '../lib/utils';
 import { hasRogueStatus, rogueStatusStates, wrapRogueStatus } from './fantasy-rogue-status';
 import { emblemType } from './rogue-blessing-data';
-import { chooseDragonKing } from './fantasy-rogue-blessings';
+import { chooseDragonKing, reportRogueAbilities } from './fantasy-rogue-blessings';
+import { advanceRogueBoss } from './rogue-bosses';
 declare const __version: any;
 
 export type ChannelID = 0 | 1 | 2 | 3 | 4;
@@ -2364,7 +2365,7 @@ export class Battle {
 		if (rogue) {
 			const types = [...this.dex.species.get(set.species).types];
 			if (rogue.extraType) types[1] = rogue.extraType;
-			const emblem = emblemType(toID(set.item));
+			const emblem = emblemType(rogue.emblem || toID(set.item));
 			if (emblem) types[1] = emblem;
 			if (!rogue.statsType || types.includes(rogue.statsType)) {
 				for (const stat of ROGUE_STATS) stats[stat] = Math.floor(stats[stat] * (1 + (rogue.stats?.[stat] || 0)));
@@ -2373,6 +2374,9 @@ export class Battle {
 			if (rogue.swap) {
 				[stats.atk, stats.def] = [stats.def, stats.atk];
 				[stats.spa, stats.spd] = [stats.spd, stats.spa];
+			}
+			for (const stat of ['atk', 'def', 'spa', 'spd'] as const) {
+				stats[stat] = Math.floor(stats[stat] * (1 + (rogue.training?.[stat] || 0)));
 			}
 		}
 		return stats;
@@ -2569,12 +2573,16 @@ export class Battle {
 			this.faintQueue.unshift(this.faintQueue[this.faintQueue.length - 1]);
 			this.faintQueue.pop();
 		}
-		let faintQueueLeft, faintData;
+		let faintQueueLeft, faintData, lastActualFaint;
+		let actualFaints = 0;
 		while (this.faintQueue.length) {
 			faintQueueLeft = this.faintQueue.length;
 			faintData = this.faintQueue.shift()!;
 			const pokemon: Pokemon = faintData.target;
+			if (advanceRogueBoss(pokemon)) continue;
 			if (!pokemon.fainted && this.runEvent('BeforeFaint', pokemon, faintData.source, faintData.effect)) {
+				actualFaints++;
+				lastActualFaint = faintData;
 				this.add('faint', pokemon);
 				if (pokemon.side.pokemonLeft) pokemon.side.pokemonLeft--;
 				if (pokemon.side.totalFainted < 100) pokemon.side.totalFainted++;
@@ -2629,8 +2637,10 @@ export class Battle {
 
 		if (checkWin && this.checkWin(faintData)) return true;
 
-		if (faintData && length) {
-			this.runEvent('AfterFaint', faintData.target, faintData.source, faintData.effect, length);
+		const afterFaint = this.fantasyRogue?.boss ? lastActualFaint : faintData;
+		if (afterFaint) {
+			this.runEvent('AfterFaint', afterFaint.target, afterFaint.source, afterFaint.effect,
+				this.fantasyRogue?.boss ? actualFaints : length);
 		}
 		return false;
 	}
@@ -2653,6 +2663,7 @@ export class Battle {
 	}
 
 	getActionSpeed(action: AnyObject) {
+		if (action.rogueBossContinuation) return;
 		if (action.choice === 'move') {
 			let move = action.move;
 			if (action.zmove) {
@@ -2679,7 +2690,7 @@ export class Battle {
 			// Grassy Glide priority
 			priority = this.singleEvent('ModifyPriority', move, null, action.pokemon, null, null, priority);
 			priority = this.runEvent('ModifyPriority', action.pokemon, null, move, priority);
-			action.priority = priority + action.fractionalPriority;
+			action.priority = priority + (action.pokemon.hasRogueBlessing('topclearmind') ? 0.5 : action.fractionalPriority);
 			// In Gen 6, Quick Guard blocks moves with artificially enhanced priority.
 			if (this.gen > 5) action.move.priority = priority;
 		}
@@ -3339,6 +3350,7 @@ export class Battle {
 
 	sendUpdates() {
 		if (this.sentLogPos >= this.log.length) return;
+		reportRogueAbilities(this);
 		this.send('update', this.log.slice(this.sentLogPos));
 		this.sentLogPos = this.log.length;
 

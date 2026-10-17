@@ -1,0 +1,537 @@
+{
+  "method": "Artificial equal-level six-member teams; neutral natures, IV20, controlled EVs, level-up moves only, no held items or blessing power. Same seeds at zero and +5 permanent stats. Production NPC policy. Not full-playthrough or human win-rate evidence.",
+  "cases": [
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 0,
+      "foe": "Tyrunt-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 5,
+      "foe": "Tyrunt-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 0,
+      "foe": "Zorua-Hisui-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 5,
+      "foe": "Zorua-Hisui-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 0,
+      "foe": "Duskull-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 5,
+      "foe": "Duskull-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 0,
+      "foe": "Skitty-Fantasy",
+      "won": true,
+      "turns": 3,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 5,
+      "foe": "Skitty-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 0,
+      "foe": "Rookidee-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 5,
+      "foe": "Rookidee-Fantasy",
+      "won": true,
+      "turns": 1,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 0,
+      "foe": "Onix-Fantasy",
+      "won": true,
+      "turns": 8,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 10,
+      "level": 11,
+      "meta": 5,
+      "foe": "Onix-Fantasy",
+      "won": true,
+      "turns": 6,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 50,
+      "level": 30,
+      "meta": 0,
+      "foe": "Vikavolt-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 50,
+      "level": 30,
+      "meta": 5,
+      "foe": "Vikavolt-Fantasy",
+      "won": true,
+      "turns": 2,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 50,
+      "level": 30,
+      "meta": 0,
+      "foe": "Altaria-Fantasy",
+      "won": true,
+      "turns": 12,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 50,
+      "level": 30,
+      "meta": 5,
+      "foe": "Altaria-Fantasy",
+      "won": true,
+      "turns": 9,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 50,
+      "level": 30,
+      "meta": 0,
+      "foe": "Ribombee-Fantasy",
+      "won": true,
+      "turns": 3,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 50,
+      "level": 30,
+      "meta": 5,
+      "foe": "Ribombee-Fantasy",
+      "won": true,
+      "turns": 3,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 100,
+      "level": 55,
+      "meta": 0,
+      "foe": "道馆 · 小刚（岩石）",
+      "won": false,
+      "turns": 14,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 2
+    },
+    {
+      "floor": 100,
+      "level": 55,
+      "meta": 5,
+      "foe": "道馆 · 小刚（岩石）",
+      "won": false,
+      "turns": 20,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 1
+    },
+    {
+      "floor": 100,
+      "level": 55,
+      "meta": 0,
+      "foe": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 15,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 3
+    },
+    {
+      "floor": 100,
+      "level": 55,
+      "meta": 5,
+      "foe": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 32,
+      "faints": 5,
+      "partyRemaining": 1,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 100,
+      "level": 55,
+      "meta": 0,
+      "foe": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 16,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 1
+    },
+    {
+      "floor": 100,
+      "level": 55,
+      "meta": 5,
+      "foe": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 15,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 4
+    },
+    {
+      "floor": 150,
+      "level": 80,
+      "meta": 0,
+      "foe": "Stakataka-Fantasy",
+      "won": true,
+      "turns": 4,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 150,
+      "level": 80,
+      "meta": 5,
+      "foe": "Stakataka-Fantasy",
+      "won": true,
+      "turns": 4,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 150,
+      "level": 80,
+      "meta": 0,
+      "foe": "Iron Thorns-Fantasy",
+      "won": true,
+      "turns": 1,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 150,
+      "level": 80,
+      "meta": 5,
+      "foe": "Iron Thorns-Fantasy",
+      "won": true,
+      "turns": 1,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 150,
+      "level": 80,
+      "meta": 0,
+      "foe": "Sandy Shocks-Fantasy",
+      "won": true,
+      "turns": 9,
+      "faints": 2,
+      "partyRemaining": 4,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 150,
+      "level": 80,
+      "meta": 5,
+      "foe": "Sandy Shocks-Fantasy",
+      "won": true,
+      "turns": 3,
+      "faints": 0,
+      "partyRemaining": 6,
+      "opponentRemaining": 0
+    },
+    {
+      "floor": 190,
+      "level": 100,
+      "meta": 0,
+      "foe": "冠军 · 大吾",
+      "won": false,
+      "turns": 24,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 4
+    },
+    {
+      "floor": 190,
+      "level": 100,
+      "meta": 5,
+      "foe": "冠军 · 大吾",
+      "won": false,
+      "turns": 23,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 3
+    },
+    {
+      "floor": 200,
+      "level": 100,
+      "meta": 0,
+      "foe": "Koraidon-Fantasy",
+      "won": false,
+      "turns": 13,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 5
+    },
+    {
+      "floor": 200,
+      "level": 100,
+      "meta": 5,
+      "foe": "Koraidon-Fantasy",
+      "won": false,
+      "turns": 15,
+      "faints": 6,
+      "partyRemaining": 0,
+      "opponentRemaining": 5
+    }
+  ],
+  "stats": [
+    {
+      "species": "Fuecoco",
+      "level": 5,
+      "zero": {
+        "atk": 10,
+        "def": 11,
+        "spa": 12,
+        "spd": 10,
+        "spe": 9,
+        "hp": 22
+      },
+      "half": {
+        "atk": 15,
+        "def": 16,
+        "spa": 17,
+        "spd": 15,
+        "spe": 14,
+        "hp": 27
+      }
+    },
+    {
+      "species": "Fuecoco",
+      "level": 11,
+      "zero": {
+        "atk": 17,
+        "def": 20,
+        "spa": 21,
+        "spd": 16,
+        "spe": 15,
+        "hp": 37
+      },
+      "half": {
+        "atk": 22,
+        "def": 25,
+        "spa": 26,
+        "spd": 21,
+        "spe": 20,
+        "hp": 42
+      }
+    },
+    {
+      "species": "Crocalor",
+      "level": 25,
+      "zero": {
+        "atk": 37,
+        "def": 49,
+        "spa": 55,
+        "spd": 39,
+        "spe": 34,
+        "hp": 80
+      },
+      "half": {
+        "atk": 42,
+        "def": 54,
+        "spa": 60,
+        "spd": 44,
+        "spe": 39,
+        "hp": 85
+      }
+    },
+    {
+      "species": "Skeledirge",
+      "level": 50,
+      "zero": {
+        "atk": 90,
+        "def": 115,
+        "spa": 125,
+        "spd": 90,
+        "spe": 81,
+        "hp": 174
+      },
+      "half": {
+        "atk": 95,
+        "def": 120,
+        "spa": 130,
+        "spd": 95,
+        "spe": 86,
+        "hp": 179
+      }
+    },
+    {
+      "species": "Skeledirge",
+      "level": 100,
+      "zero": {
+        "atk": 175,
+        "def": 225,
+        "spa": 245,
+        "spd": 175,
+        "spe": 157,
+        "hp": 338
+      },
+      "half": {
+        "atk": 180,
+        "def": 230,
+        "spa": 250,
+        "spd": 180,
+        "spe": 162,
+        "hp": 343
+      }
+    }
+  ],
+  "levelCosts": [
+    {
+      "floor": 10,
+      "silver": 0,
+      "gold": 5,
+      "prismatic": 10
+    },
+    {
+      "floor": 20,
+      "silver": 0,
+      "gold": 5,
+      "prismatic": 10
+    },
+    {
+      "floor": 50,
+      "silver": 0,
+      "gold": 5,
+      "prismatic": 10
+    },
+    {
+      "floor": 100,
+      "silver": 0,
+      "gold": 15,
+      "prismatic": 30
+    },
+    {
+      "floor": 150,
+      "silver": 0,
+      "gold": 30,
+      "prismatic": 60
+    },
+    {
+      "floor": 190,
+      "silver": 0,
+      "gold": 50,
+      "prismatic": 100
+    },
+    {
+      "floor": 200,
+      "silver": 0,
+      "gold": 50,
+      "prismatic": 100
+    }
+  ],
+  "gyms": {
+    "larry": 1001,
+    "iono": 1030,
+    "nessa": 961,
+    "bea": 993,
+    "sabrina": 990,
+    "viola": 1044,
+    "flannery": 998,
+    "brock": 976,
+    "acerola": 985,
+    "roxie": 1022
+  }
+}

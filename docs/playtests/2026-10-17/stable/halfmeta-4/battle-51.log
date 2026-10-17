@@ -1,0 +1,124 @@
+|t:|1792222084
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L22, M|
+|poke|p1|Alcremie, L21, F|
+|poke|p1|Meowth, L16, F|
+|poke|p1|Slakoth, L15, M|
+|poke|p1|Shroomish, L19, F|
+|poke|p1|Maractus, L16, M|
+|poke|p2|Simipour-Fantasy, L25, M|
+|teampreview
+|
+|t:|1792222084
+|start
+|split|p1
+|switch|p1a: Maractus|Maractus, L16, M|60/60
+|switch|p1a: Maractus|Maractus, L16, M|100/100
+|split|p2
+|switch|p2a: Simipour|Simipour-Fantasy, L25, M|91/91
+|switch|p2a: Simipour|Simipour-Fantasy, L25, M|100/100
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Maractus|fantasystats|[silent]
+|-start|p2a: Simipour|typechange|Water|[silent]
+|-start|p2a: Simipour|fantasystats|98/98/70/98/70/101|[silent]
+|-end|p1a: Maractus|fantasystats|[silent]
+|turn|1
+|
+|t:|1792222084
+|split|p1
+|switch|p1a: Alcremie|Alcremie, L21, F|69/69
+|switch|p1a: Alcremie|Alcremie, L21, F|100/100
+|-end|p1a: Alcremie|fantasystats|[silent]
+|-terastallize|p2a: Simipour|Water
+|move|p2a: Simipour|Scald|p1a: Alcremie
+|split|p1
+|-damage|p1a: Alcremie|29/69
+|-damage|p1a: Alcremie|43/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792222084
+|split|p1
+|switch|p1a: Maractus|Maractus, L16, M|60/60
+|switch|p1a: Maractus|Maractus, L16, M|100/100
+|-end|p1a: Maractus|fantasystats|[silent]
+|move|p2a: Simipour|Scald|p1a: Maractus
+|-immune|p1a: Maractus|[from] ability: Water Absorb
+|
+|upkeep
+|turn|3
+|
+|t:|1792222085
+|move|p1a: Maractus|Sucker Punch|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|77/91
+|-damage|p2a: Simipour|85/100
+|split|p1
+|-damage|p1a: Maractus|54/60|[from] item: Life Orb
+|-damage|p1a: Maractus|90/100|[from] item: Life Orb
+|move|p2a: Simipour|Bouncy Bubble|p1a: Maractus
+|split|p1
+|-heal|p1a: Maractus|60/60|[from] ability: Water Absorb|[of] p2a: Simipour
+|-heal|p1a: Maractus|100/100|[from] ability: Water Absorb|[of] p2a: Simipour
+|
+|upkeep
+|turn|4
+|
+|t:|1792222085
+|move|p2a: Simipour|Scald|p1a: Maractus
+|-immune|p1a: Maractus|[from] ability: Water Absorb
+|move|p1a: Maractus|Mega Drain|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|46/91
+|-damage|p2a: Simipour|51/100
+|split|p1
+|-damage|p1a: Maractus|54/60|[from] item: Life Orb
+|-damage|p1a: Maractus|90/100|[from] item: Life Orb
+|
+|upkeep
+|turn|5
+|
+|t:|1792222085
+|move|p2a: Simipour|Bouncy Bubble|p1a: Maractus
+|split|p1
+|-heal|p1a: Maractus|60/60|[from] ability: Water Absorb|[of] p2a: Simipour
+|-heal|p1a: Maractus|100/100|[from] ability: Water Absorb|[of] p2a: Simipour
+|move|p1a: Maractus|Mega Drain|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|20/91
+|-damage|p2a: Simipour|22/100
+|split|p1
+|-damage|p1a: Maractus|54/60|[from] item: Life Orb
+|-damage|p1a: Maractus|90/100|[from] item: Life Orb
+|
+|upkeep
+|turn|6
+|
+|t:|1792222086
+|move|p2a: Simipour|Bouncy Bubble|p1a: Maractus
+|split|p1
+|-heal|p1a: Maractus|60/60|[from] ability: Water Absorb|[of] p2a: Simipour
+|-heal|p1a: Maractus|100/100|[from] ability: Water Absorb|[of] p2a: Simipour
+|move|p1a: Maractus|Mega Drain|p2a: Simipour
+|-supereffective|p2a: Simipour
+|split|p2
+|-damage|p2a: Simipour|0 fnt
+|-damage|p2a: Simipour|0 fnt
+|faint|p2a: Simipour
+|split|p1
+|-damage|p1a: Maractus|54/60|[from] item: Life Orb
+|-damage|p1a: Maractus|90/100|[from] item: Life Orb
+|
+|win|Player

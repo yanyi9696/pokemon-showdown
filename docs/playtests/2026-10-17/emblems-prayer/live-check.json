@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-16T16:41:22.275Z",
+  "transport": "real localhost WebSocket",
+  "user": "RogueBalance1016I",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\recalibration-1792168757119",
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "savedAdventureRestored": true,
+  "hpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "emblemCount": 18,
+  "checks": [
+    "independent emblem item category",
+    "equipemblem command accepted",
+    "prayer <=80 and Mega endpoint text",
+    "Top Clear Mind +0.5 ordering and exclusions",
+    "previous speed +5% change retained"
+  ],
+  "browserVisualReview": "not performed; local URL access blocked by browser policy"
+}

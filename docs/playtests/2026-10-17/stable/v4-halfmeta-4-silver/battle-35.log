@@ -1,0 +1,225 @@
+|t:|1792223849
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Popplio, L15, M|
+|poke|p1|Fuecoco, L13, M|
+|poke|p1|Bulbasaur, L13, M|
+|poke|p1|Grubbin, L11, F|
+|poke|p1|Minun, L9, M|
+|poke|p1|Ekans, L10, F|
+|poke|p2|Magnemite, L15|
+|poke|p2|Pichu, L15, F|
+|poke|p2|Misdreavus, L15, M|
+|teampreview
+|
+|t:|1792223849
+|start
+|split|p1
+|switch|p1a: Popplio|Popplio, L15, M|48/48
+|switch|p1a: Popplio|Popplio, L15, M|100/100
+|split|p2
+|switch|p2a: Magnemite|Magnemite, L15|37/37
+|switch|p2a: Magnemite|Magnemite, L15|100/100
+|-end|p1a: Popplio|fantasystats|[silent]
+|-end|p2a: Magnemite|fantasystats|[silent]
+|-end|p1a: Popplio|fantasystats|[silent]
+|-end|p2a: Magnemite|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223849
+|-terastallize|p2a: Magnemite|Electric
+|move|p1a: Popplio|Waterfall|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|13/37
+|-damage|p2a: Magnemite|36/100
+|move|p2a: Magnemite|Charge Beam|p1a: Popplio
+|-supereffective|p1a: Popplio
+|split|p1
+|-damage|p1a: Popplio|8/48
+|-damage|p1a: Popplio|17/100
+|-boost|p2a: Magnemite|spa|1
+|
+|upkeep
+|turn|2
+|
+|t:|1792223850
+|move|p1a: Popplio|Waterfall|p2a: Magnemite
+|split|p2
+|-damage|p2a: Magnemite|0 fnt
+|-damage|p2a: Magnemite|0 fnt
+|faint|p2a: Magnemite
+|
+|upkeep
+|
+|t:|1792223850
+|split|p2
+|switch|p2a: Pichu|Pichu, L15, F|35/35
+|switch|p2a: Pichu|Pichu, L15, F|100/100
+|-end|p2a: Pichu|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223851
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L13, M|42/42
+|switch|p1a: Bulbasaur|Bulbasaur, L13, M|100/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|move|p2a: Pichu|Fake Out|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|37/42
+|-damage|p1a: Bulbasaur|89/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792223852
+|move|p2a: Pichu|Swift|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|32/42
+|-damage|p1a: Bulbasaur|77/100
+|move|p1a: Bulbasaur|Razor Leaf|p2a: Pichu
+|-crit|p2a: Pichu
+|split|p2
+|-damage|p2a: Pichu|0 fnt
+|-damage|p2a: Pichu|0 fnt
+|faint|p2a: Pichu
+|
+|upkeep
+|
+|t:|1792223852
+|split|p2
+|switch|p2a: Misdreavus|Misdreavus, L15, M|47/47
+|switch|p2a: Misdreavus|Misdreavus, L15, M|100/100
+|-end|p2a: Misdreavus|fantasystats|[silent]
+|turn|5
+|
+|t:|1792223852
+|move|p2a: Misdreavus|Ominous Wind|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|14/42
+|-damage|p1a: Bulbasaur|34/100
+|move|p1a: Bulbasaur|Vine Whip|p2a: Misdreavus
+|split|p2
+|-damage|p2a: Misdreavus|31/47
+|-damage|p2a: Misdreavus|66/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792223853
+|split|p1
+|switch|p1a: Fuecoco|Fuecoco, L13, M|48/48
+|switch|p1a: Fuecoco|Fuecoco, L13, M|100/100
+|-end|p1a: Fuecoco|fantasystats|[silent]
+|move|p2a: Misdreavus|Ominous Wind|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|29/48
+|-damage|p1a: Fuecoco|61/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792223853
+|move|p2a: Misdreavus|Ominous Wind|p1a: Fuecoco
+|split|p1
+|-damage|p1a: Fuecoco|10/48
+|-damage|p1a: Fuecoco|21/100
+|move|p1a: Fuecoco|Snarl|p2a: Misdreavus
+|-supereffective|p2a: Misdreavus
+|split|p2
+|-damage|p2a: Misdreavus|18/47
+|-damage|p2a: Misdreavus|39/100
+|-unboost|p2a: Misdreavus|spa|1
+|
+|upkeep
+|turn|8
+|
+|t:|1792223853
+|split|p1
+|switch|p1a: Minun|Minun, L9, M|37/37
+|switch|p1a: Minun|Minun, L9, M|100/100
+|-end|p1a: Minun|fantasystats|[silent]
+|move|p2a: Misdreavus|Ominous Wind|p1a: Minun
+|split|p1
+|-damage|p1a: Minun|25/37
+|-damage|p1a: Minun|68/100
+|
+|upkeep
+|turn|9
+|
+|t:|1792223853
+|move|p2a: Misdreavus|Ominous Wind|p1a: Minun
+|split|p1
+|-damage|p1a: Minun|13/37
+|-damage|p1a: Minun|36/100
+|move|p1a: Minun|Nuzzle|p2a: Misdreavus
+|split|p2
+|-damage|p2a: Misdreavus|15/47
+|-damage|p2a: Misdreavus|32/100
+|-status|p2a: Misdreavus|par
+|
+|upkeep
+|turn|10
+|
+|t:|1792223854
+|split|p1
+|switch|p1a: Ekans|Ekans, L10, F|35/35
+|switch|p1a: Ekans|Ekans, L10, F|100/100
+|-end|p1a: Ekans|fantasystats|[silent]
+|-ability|p1a: Ekans|Intimidate|boost
+|-unboost|p2a: Misdreavus|atk|1
+|move|p2a: Misdreavus|Will-O-Wisp|p1a: Ekans
+|-status|p1a: Ekans|brn
+|
+|split|p1
+|-damage|p1a: Ekans|33/35 brn|[from] brn
+|-damage|p1a: Ekans|95/100 brn|[from] brn
+|upkeep
+|turn|11
+|
+|t:|1792223854
+|move|p1a: Ekans|Leer|p2a: Misdreavus
+|-unboost|p2a: Misdreavus|def|1
+|move|p2a: Misdreavus|Astonish|p1a: Ekans
+|split|p1
+|-damage|p1a: Ekans|27/35 brn
+|-damage|p1a: Ekans|78/100 brn
+|
+|split|p1
+|-damage|p1a: Ekans|25/35 brn|[from] brn
+|-damage|p1a: Ekans|72/100 brn|[from] brn
+|upkeep
+|turn|12
+|
+|t:|1792223854
+|move|p1a: Ekans|Bite|p2a: Misdreavus
+|-supereffective|p2a: Misdreavus
+|split|p2
+|-damage|p2a: Misdreavus|4/47 par
+|-damage|p2a: Misdreavus|9/100 par
+|move|p2a: Misdreavus|Astonish|p1a: Ekans
+|split|p1
+|-damage|p1a: Ekans|19/35 brn
+|-damage|p1a: Ekans|55/100 brn
+|
+|split|p1
+|-damage|p1a: Ekans|17/35 brn|[from] brn
+|-damage|p1a: Ekans|49/100 brn|[from] brn
+|upkeep
+|turn|13
+|
+|t:|1792223855
+|move|p1a: Ekans|Bite|p2a: Misdreavus
+|-supereffective|p2a: Misdreavus
+|split|p2
+|-damage|p2a: Misdreavus|0 fnt
+|-damage|p2a: Misdreavus|0 fnt
+|faint|p2a: Misdreavus
+|
+|win|Player

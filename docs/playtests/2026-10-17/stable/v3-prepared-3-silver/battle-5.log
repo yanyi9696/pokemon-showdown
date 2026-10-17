@@ -1,0 +1,104 @@
+|t:|1792223240
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|2
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Bulbasaur, L9, M|
+|poke|p1|Snorunt, L4, F|
+|poke|p2|Solosis, L3, F|
+|teampreview
+|
+|t:|1792223240
+|start
+|split|p1
+|switch|p1a: Bulbasaur|Bulbasaur, L9, M|24/28
+|switch|p1a: Bulbasaur|Bulbasaur, L9, M|86/100
+|split|p2
+|switch|p2a: Solosis|Solosis, L3, F|16/16
+|switch|p2a: Solosis|Solosis, L3, F|100/100
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-end|p2a: Solosis|fantasystats|[silent]
+|-end|p1a: Bulbasaur|fantasystats|[silent]
+|-end|p2a: Solosis|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223240
+|-message|投出了精灵球！
+|-roguecapture|p2a: Solosis|pokeball|failure|3|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Solosis|Confusion|p1a: Bulbasaur
+|-supereffective|p1a: Bulbasaur
+|-crit|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|10/28
+|-damage|p1a: Bulbasaur|36/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223240
+|-message|投出了精灵球！
+|-roguecapture|p2a: Solosis|pokeball|failure|2|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Solosis|Confusion|p1a: Bulbasaur
+|-supereffective|p1a: Bulbasaur
+|split|p1
+|-damage|p1a: Bulbasaur|0 fnt
+|-damage|p1a: Bulbasaur|0 fnt
+|faint|p1a: Bulbasaur
+|
+|upkeep
+|
+|t:|1792223240
+|split|p1
+|switch|p1a: Snorunt|Snorunt, L4, F|18/18
+|switch|p1a: Snorunt|Snorunt, L4, F|100/100
+|-end|p1a: Snorunt|fantasystats|[silent]
+|turn|3
+|
+|t:|1792223240
+|-message|投出了精灵球！
+|-roguecapture|p2a: Solosis|pokeball|failure|0|normal
+|-message|宝可梦挣脱了精灵球！
+|move|p2a: Solosis|Confusion|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|11/18
+|-damage|p1a: Snorunt|62/100
+|-start|p1a: Snorunt|confusion
+|
+|upkeep
+|turn|4
+|
+|t:|1792223240
+|-activate|p1a: Snorunt|confusion
+|move|p1a: Snorunt|Powder Snow|p2a: Solosis
+|-status|p2a: Solosis|fst
+|-message|Solosis被冻伤了！
+|move|p2a: Solosis|Confusion|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|7/18
+|-damage|p1a: Snorunt|39/100
+|
+|split|p2
+|-damage|p2a: Solosis|15/16 fst|[from] fst
+|-damage|p2a: Solosis|94/100 fst|[from] fst
+|upkeep
+|turn|5
+|
+|t:|1792223240
+|-activate|p1a: Snorunt|confusion
+|split|p1
+|-damage|p1a: Snorunt|4/18|[from] confusion
+|-damage|p1a: Snorunt|23/100|[from] confusion
+|move|p2a: Solosis|Confusion|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|0 fnt
+|-damage|p1a: Snorunt|0 fnt
+|faint|p1a: Snorunt
+|
+|win|NPC

@@ -1,0 +1,94 @@
+|t:|1792223812
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L29, M|
+|poke|p1|Morpeko, L24, F|
+|poke|p1|Ivysaur, L28, F|
+|poke|p1|Dedenne, L23, F|
+|poke|p1|Simipour, L23, M|
+|poke|p1|Probopass, L24, F|
+|poke|p2|Grovyle, L24, M|
+|teampreview
+|
+|t:|1792223812
+|start
+|split|p1
+|switch|p1a: Morpeko|Morpeko, L24, F|5/72
+|switch|p1a: Morpeko|Morpeko, L24, F|7/100
+|split|p2
+|switch|p2a: Grovyle|Grovyle, L24, M|63/63
+|switch|p2a: Grovyle|Grovyle, L24, M|100/100
+|-end|p1a: Morpeko|fantasystats|[silent]
+|-end|p2a: Grovyle|fantasystats|[silent]
+|-end|p1a: Morpeko|fantasystats|[silent]
+|-end|p2a: Grovyle|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223812
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Morpeko|Quick Attack|p2a: Grovyle
+|split|p2
+|-damage|p2a: Grovyle|56/63
+|-damage|p2a: Grovyle|89/100
+|move|p2a: Grovyle|X-Scissor|p1a: Morpeko
+|-supereffective|p1a: Morpeko
+|split|p1
+|-damage|p1a: Morpeko|0 fnt
+|-damage|p1a: Morpeko|0 fnt
+|faint|p1a: Morpeko
+|
+|upkeep
+|
+|t:|1792223812
+|split|p1
+|switch|p1a: Simipour|Simipour, L23, M|37/79 par
+|switch|p1a: Simipour|Simipour, L23, M|47/100 par
+|-end|p1a: Simipour|fantasystats|[silent]
+|turn|2
+|
+|t:|1792223812
+|move|p2a: Grovyle|X-Scissor|p1a: Simipour
+|split|p1
+|-damage|p1a: Simipour|20/79 par
+|-damage|p1a: Simipour|26/100 par
+|-message|命运决定一切：反面，伤害 ×0.5。
+|move|p1a: Simipour|Lick|p2a: Grovyle
+|split|p2
+|-damage|p2a: Grovyle|50/63
+|-damage|p2a: Grovyle|80/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792223812
+|move|p2a: Grovyle|Energy Ball|p1a: Simipour
+|-supereffective|p1a: Simipour
+|split|p1
+|-damage|p1a: Simipour|0 fnt
+|-damage|p1a: Simipour|0 fnt
+|faint|p1a: Simipour
+|
+|upkeep
+|
+|t:|1792223812
+|split|p1
+|switch|p1a: Probopass|Probopass, L24, F|4/73
+|switch|p1a: Probopass|Probopass, L24, F|6/100
+|-end|p1a: Probopass|fantasystats|[silent]
+|turn|4
+|
+|t:|1792223812
+|move|p2a: Grovyle|Energy Ball|p1a: Probopass
+|split|p1
+|-damage|p1a: Probopass|0 fnt
+|-damage|p1a: Probopass|0 fnt
+|faint|p1a: Probopass
+|
+|win|NPC

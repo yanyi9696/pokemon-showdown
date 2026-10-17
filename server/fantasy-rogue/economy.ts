@@ -1,5 +1,6 @@
 import type { RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
+import { CANDY_SHOP, routeCandyReward, eliteTreasureBudget, encounterCoins } from './early-balance';
 
 /** Tower sale prices: 60% of the previous ordinary-shop values. */
 export const TREASURES: RogueItem[] = [
@@ -40,10 +41,22 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 	const trainer = node.kind === 'trainer' || node.encounters.some(encounter =>
 		encounter.trainer || encounter.trainerCandidates?.length);
 	if (trainer) {
-		node.reward.items = {};
+		node.reward.items = node.kind === 'trainer' ? routeCandyReward(floor, 'trainer') : {};
+		if (node.kind === 'trainer') node.reward.money = encounterCoins(floor);
 	} else {
 		node.reward = { money: 0, items: {} };
-		node.wildLoot = node.encounters.map(() => rollWildLoot(floor, random));
+		node.wildLoot = node.encounters.map(() => {
+			const loot = rollWildLoot(floor, random);
+			if (node.kind === 'elite') {
+				let budget = eliteTreasureBudget(floor);
+				for (const item of [...TREASURES].sort((a, b) => b.sellPrice! - a.sellPrice!)) {
+					const count = Math.floor(budget / item.sellPrice!);
+					if (count) { loot[item.id] = (loot[item.id] || 0) + count; budget -= count * item.sellPrice!; }
+				}
+				Object.assign(loot, routeCandyReward(floor, 'elite'));
+			}
+			return loot;
+		});
 	}
 }
 
@@ -51,7 +64,8 @@ export function shopAvailable(item: RogueItem, floor: number): boolean {
 	return item.kind !== 'candy' && item.kind !== 'treasure' && item.shopFloor !== false && floor >= (item.shopFloor ?? 1);
 }
 
-const SHOP_FLOORS: Record<string, number> = {
+const SHOP_FLOORS: Record<string, number | false> = {
+	maxrevive: false,
 	pokeball: 9, potion: 9, revive: 9, oranberry: 9,
 	antidote: 9, burnheal: 9, iceheal: 9, awakening: 9, paralyzeheal: 9,
 	fullheal: 39, ether: 9,
@@ -80,7 +94,7 @@ export const BATTLE_GOODS: [string, string, number][] = [
 ];
 const PRICES: Record<string, number> = {
 	pokeball: 250, greatball: 750, ultraball: 1500, potion: 200, superpotion: 650, hyperpotion: 1500,
-	revive: 1500, fullheal: 600, antidote: 500, burnheal: 500, iceheal: 500, awakening: 500, paralyzeheal: 500,
+	revive: 900, fullheal: 600, antidote: 500, burnheal: 500, iceheal: 500, awakening: 500, paralyzeheal: 500,
 	ether: 400, elixir: 1200, oranberry: 300, sitrusberry: 800, linkingcord: 2500,
 };
 
@@ -92,19 +106,19 @@ export function centerCare(run: RogueRun) {
 		(revives && mon.hp < mon.maxhp || mon.status || Object.keys(mon.statuses || {}).length ||
 			[...mon.pp, ...(mon.moveMemory || []), ...(mon.blessingPP || [])].some(slot => slot.pp < slot.maxpp)));
 	const base = Math.ceil((150 + 5 * run.floor) / 50) * 50;
-	const perRevive = Math.ceil((300 + 5 * run.floor) / 50) * 50;
+	const perRevive = Math.ceil((450 + 7 * run.floor) / 50) * 50;
 	return { cost: needed ? base + fainted * perRevive : 0, fainted, needed: !!needed, revives };
 }
 
 export function configureShop(items: RogueItem[]) {
 	for (const item of items) {
 		item.shopFloor = item.kind === 'candy' ? false : SHOP_FLOORS[item.id] ?? (item.kind === 'evolution' ? 89 : 99);
-		item.price = PRICES[item.id] ?? (item.kind === 'evolution' ? 1600 : Math.ceil(item.price * 1.25 / 50) * 50);
+		item.price = CANDY_SHOP[item.id]?.price ?? PRICES[item.id] ?? (item.kind === 'evolution' ? 1600 : Math.ceil(item.price * 1.25 / 50) * 50);
 		if (item.id === 'blackaugurite') item.name = '黑奇石';
 	}
 	for (const [id, name] of TYPE_BOOSTERS) {
 		const item = items.find(entry => entry.id === id);
-		const data: RogueItem = { id, name, kind: 'held', price: 3000, shopFloor: 69 };
+		const data: RogueItem = { id, name, kind: 'held', price: 4000, shopFloor: 49 };
 		if (item) Object.assign(item, data); else items.push(data);
 	}
 	for (const [id, name, price] of BATTLE_GOODS) {

@@ -1,7 +1,7 @@
 /** Pure selection rules. The campaign persists the returned round before showing it to a player. */
 export type BlessingTier = 'silver' | 'gold' | 'prismatic';
 export type BlessingRoundTier = BlessingTier | 'mixed';
-export type BlessingFloor = 50 | 100 | 150;
+export type BlessingFloor = 1 | 50 | 100 | 150;
 export type BlessingRandom = (max: number) => number;
 
 export interface BlessingSelectionContext {
@@ -21,7 +21,7 @@ const ROUND_TIERS: BlessingRoundTier[] = [...TIERS, 'mixed'];
 /** Only the immediately following round benefits. Missing historical evidence never grants the perk. */
 export function hasPrayerQualityBonus(context: BlessingSelectionContext) {
 	return context.prayerFloor !== undefined && context.prayerFloor < 150 &&
-		context.floor === context.prayerFloor + 50 && context.prayerPartyChanged === false;
+		context.floor === (context.prayerFloor === 1 ? 50 : context.prayerFloor + 50) && context.prayerPartyChanged === false;
 }
 
 export function blessingQualityWeights(context: BlessingSelectionContext): Record<BlessingRoundTier, number> {

@@ -1,0 +1,52 @@
+|t:|1792230524
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|4
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L27, M|
+|poke|p1|Crocalor, L26, M|
+|poke|p1|Ivysaur, L26, M|
+|poke|p1|Machop, L20, M|
+|poke|p1|Kadabra, L20, M|
+|poke|p1|Duskull, L24, F|
+|poke|p2|Machop, L30, M|
+|poke|p2|Clobbopus, L30, F|
+|poke|p2|Mienfoo, L30, F|
+|poke|p2|Sneasel-Hisui, L30, F|
+|teampreview
+|
+|t:|1792230524
+|start
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L27, M|85/85
+|switch|p1a: Marshtomp|Marshtomp, L27, M|100/100
+|split|p2
+|switch|p2a: Machop|Machop, L30, M|109/109
+|switch|p2a: Machop|Machop, L30, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-end|p2a: Machop|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230525
+|-terastallize|p2a: Machop|Fighting
+|move|p1a: Marshtomp|Mud Shot|p2a: Machop
+|split|p2
+|-damage|p2a: Machop|76/109
+|-damage|p2a: Machop|70/100
+|-unboost|p2a: Machop|spe|1
+|move|p2a: Machop|Close Combat|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|0 fnt
+|-damage|p1a: Marshtomp|0 fnt
+|-unboost|p2a: Machop|def|1
+|-unboost|p2a: Machop|spd|1
+|faint|p1a: Marshtomp
+|
+|win|NPC

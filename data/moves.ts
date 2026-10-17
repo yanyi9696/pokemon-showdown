@@ -14726,7 +14726,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			},
 			onTryHitPriority: 4,
 			onTryHit(target, source, effect) {
-				if (effect && (effect.priority <= 0.1 || effect.target === 'self')) {
+				if (effect && (effect.rogueTopClearMind || effect.priority <= 0.1 || effect.target === 'self')) {
 					return;
 				}
 				if (target.isSemiInvulnerable() || target.isAlly(source)) return;

@@ -1,0 +1,75 @@
+|t:|1792234732
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Crocalor, L30, M|
+|poke|p1|Marshtomp, L29, M|
+|poke|p1|Ivysaur, L25, F|
+|poke|p1|Vigoroth, L23, F|
+|poke|p1|Goomy, L23, F|
+|poke|p1|Roselia, L25, F|
+|poke|p2|Golem-Alola-Fantasy, L30, F|
+|teampreview
+|
+|t:|1792234732
+|start
+|split|p1
+|switch|p1a: Vigoroth|Vigoroth, L23, F|80/80
+|switch|p1a: Vigoroth|Vigoroth, L23, F|100/100
+|split|p2
+|switch|p2a: Golem|Golem-Alola-Fantasy, L30, F|97/97
+|switch|p2a: Golem|Golem-Alola-Fantasy, L30, F|100/100
+|-end|p1a: Vigoroth|fantasystats|[silent]
+|-start|p2a: Golem|typechange|Rock/Electric|[silent]
+|-start|p2a: Golem|fantasystats|80/125/130/55/65/45|[silent]
+|-end|p1a: Vigoroth|fantasystats|[silent]
+|-start|p2a: Golem|typechange|Rock/Electric|[silent]
+|-start|p2a: Golem|fantasystats|80/125/130/55/65/45|[silent]
+|turn|1
+|
+|t:|1792234732
+|split|p1
+|switch|p1a: Marshtomp|Marshtomp, L29, M|90/90
+|switch|p1a: Marshtomp|Marshtomp, L29, M|100/100
+|-end|p1a: Marshtomp|fantasystats|[silent]
+|-terastallize|p2a: Golem|Rock
+|move|p2a: Golem|Rock Throw|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|58/90
+|-damage|p1a: Marshtomp|65/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792234733
+|move|p1a: Marshtomp|Mud Shot|p2a: Golem
+|-supereffective|p2a: Golem
+|split|p2
+|-damage|p2a: Golem|51/97
+|-damage|p2a: Golem|53/100
+|-unboost|p2a: Golem|spe|1
+|move|p2a: Golem|Rock Throw|p1a: Marshtomp
+|-resisted|p1a: Marshtomp
+|split|p1
+|-damage|p1a: Marshtomp|29/90
+|-damage|p1a: Marshtomp|33/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792234734
+|move|p1a: Marshtomp|Water Pulse|p2a: Golem
+|-supereffective|p2a: Golem
+|split|p2
+|-damage|p2a: Golem|0 fnt
+|-damage|p2a: Golem|0 fnt
+|faint|p2a: Golem
+|
+|win|Player

@@ -1,0 +1,106 @@
+|t:|1792230089
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|1
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Marshtomp, L22, M|
+|poke|p1|Crocalor, L19, F|
+|poke|p1|Ivysaur, L17, M|
+|poke|p1|Maractus, L14, M|
+|poke|p1|Plusle, L18, F|
+|poke|p1|Drowzee, L15, M|
+|poke|p2|Helioptile, L18, M|
+|teampreview
+|
+|t:|1792230089
+|start
+|split|p1
+|switch|p1a: Plusle|Plusle, L18, F|16/59 tox
+|switch|p1a: Plusle|Plusle, L18, F|28/100 tox
+|split|p2
+|switch|p2a: Helioptile|Helioptile, L18, M|48/48
+|switch|p2a: Helioptile|Helioptile, L18, M|100/100
+|-end|p1a: Plusle|fantasystats|[silent]
+|-end|p2a: Helioptile|fantasystats|[silent]
+|-end|p1a: Plusle|fantasystats|[silent]
+|-end|p2a: Helioptile|fantasystats|[silent]
+|turn|1
+|
+|t:|1792230089
+|move|p1a: Plusle|Quick Attack|p2a: Helioptile
+|split|p2
+|-damage|p2a: Helioptile|38/48
+|-damage|p2a: Helioptile|80/100
+|move|p2a: Helioptile|Pound|p1a: Plusle
+|split|p1
+|-damage|p1a: Plusle|7/59 tox
+|-damage|p1a: Plusle|12/100 tox
+|
+|split|p1
+|-damage|p1a: Plusle|4/59 tox|[from] psn
+|-damage|p1a: Plusle|7/100 tox|[from] psn
+|upkeep
+|turn|2
+|
+|t:|1792230089
+|split|p1
+|switch|p1a: Crocalor|Crocalor, L19, F|8/68
+|switch|p1a: Crocalor|Crocalor, L19, F|12/100
+|-end|p1a: Crocalor|fantasystats|[silent]
+|move|p2a: Helioptile|Quick Attack|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|2/68
+|-damage|p1a: Crocalor|3/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792230089
+|move|p2a: Helioptile|Quick Attack|p1a: Crocalor
+|split|p1
+|-damage|p1a: Crocalor|0 fnt
+|-damage|p1a: Crocalor|0 fnt
+|faint|p1a: Crocalor
+|
+|upkeep
+|
+|t:|1792230090
+|split|p1
+|switch|p1a: Plusle|Plusle, L18, F|4/59 tox
+|switch|p1a: Plusle|Plusle, L18, F|7/100 tox
+|-end|p1a: Plusle|fantasystats|[silent]
+|turn|4
+|
+|t:|1792230090
+|move|p1a: Plusle|Swift|p2a: Helioptile
+|split|p2
+|-damage|p2a: Helioptile|26/48
+|-damage|p2a: Helioptile|55/100
+|move|p2a: Helioptile|Quick Attack|p1a: Plusle
+|split|p1
+|-damage|p1a: Plusle|0 fnt
+|-damage|p1a: Plusle|0 fnt
+|faint|p1a: Plusle
+|
+|upkeep
+|
+|t:|1792230090
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L17, M|1/55
+|switch|p1a: Ivysaur|Ivysaur, L17, M|2/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|turn|5
+|
+|t:|1792230090
+|move|p2a: Helioptile|Quick Attack|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|faint|p1a: Ivysaur
+|
+|win|NPC

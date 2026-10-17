@@ -1,0 +1,6360 @@
+{
+  "profile": "halfmeta",
+  "seed": 1,
+  "starter": "fuecoco",
+  "starters": [
+    "fuecoco",
+    "mudkip",
+    "bulbasaur"
+  ],
+  "startingSlots": 3,
+  "desiredTier": "silver",
+  "driverVersion": 4,
+  "halfMeta": true,
+  "battles": [
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 6
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Maractus",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Barboach",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 1,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 8
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 6
+        },
+        {
+          "species": "Barboach",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Scraggy",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 6
+        },
+        {
+          "species": "Barboach",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Omanyte",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 6
+        },
+        {
+          "species": "Barboach",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cacnea",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 2,
+      "kind": "wild",
+      "name": "沙海龙窟",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 4
+        },
+        {
+          "species": "Cacnea",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Anorith",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 4
+        },
+        {
+          "species": "Cacnea",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nosepass",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 4
+        },
+        {
+          "species": "Nosepass",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sizzlipede",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 3,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 4
+        },
+        {
+          "species": "Nosepass",
+          "level": 3
+        }
+      ],
+      "foe": [
+        {
+          "species": "Charcadet",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1500,
+      "moneyAfter": 1500,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Scatterbug",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Swablu",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 6,
+      "kind": "wild",
+      "name": "天空之柱",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Barboach",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Surskit",
+          "level": 3
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Barboach",
+          "level": 6
+        },
+        {
+          "species": "Cacnea",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "foe": [
+        {
+          "species": "Litleo",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Barboach",
+          "level": 6
+        },
+        {
+          "species": "Cacnea",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Magby",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 7,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Barboach",
+          "level": 6
+        },
+        {
+          "species": "Cacnea",
+          "level": 7
+        },
+        {
+          "species": "Nosepass",
+          "level": 5
+        }
+      ],
+      "foe": [
+        {
+          "species": "Growlithe",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Barboach",
+          "level": 6
+        },
+        {
+          "species": "Cacnea",
+          "level": 7
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Dedenne",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Dedenne",
+          "level": 4
+        },
+        {
+          "species": "Cacnea",
+          "level": 7
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spoink",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 8,
+      "kind": "wild",
+      "name": "迷幻花海",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Dedenne",
+          "level": 4
+        },
+        {
+          "species": "Cacnea",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mime Jr.",
+          "level": 4
+        }
+      ],
+      "moneyBefore": 1362,
+      "moneyAfter": 1362,
+      "rejected": 0
+    },
+    {
+      "floor": 10,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Dedenne",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "foe": [
+        {
+          "species": "Onix-Fantasy",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 462,
+      "moneyAfter": 462,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Dedenne",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Drowzee",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 462,
+      "moneyAfter": 462,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Dedenne",
+          "level": 6
+        },
+        {
+          "species": "Cacnea",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 7
+        }
+      ],
+      "foe": [
+        {
+          "species": "Unown",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 462,
+      "moneyAfter": 462,
+      "rejected": 0
+    },
+    {
+      "floor": 11,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Dedenne",
+          "level": 7
+        },
+        {
+          "species": "Cacnea",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gothita",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 462,
+      "moneyAfter": 462,
+      "rejected": 0
+    },
+    {
+      "floor": 12,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Dedenne",
+          "level": 7
+        },
+        {
+          "species": "Cacnea",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Trubbish",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 462,
+      "moneyAfter": 462,
+      "rejected": 0
+    },
+    {
+      "floor": 12,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Dedenne",
+          "level": 7
+        },
+        {
+          "species": "Cacnea",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sentret",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 462,
+      "moneyAfter": 462,
+      "rejected": 0
+    },
+    {
+      "floor": 12,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Dedenne",
+          "level": 7
+        },
+        {
+          "species": "Cacnea",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Slakoth",
+          "level": 6
+        }
+      ],
+      "moneyBefore": 462,
+      "moneyAfter": 462,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Dedenne",
+          "level": 7
+        },
+        {
+          "species": "Cacnea",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Buizel",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 11
+        },
+        {
+          "species": "Dedenne",
+          "level": 8
+        },
+        {
+          "species": "Cacnea",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ducklett",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 14,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 11
+        },
+        {
+          "species": "Dedenne",
+          "level": 8
+        },
+        {
+          "species": "Cacnea",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wooper",
+          "level": 7
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 11
+        },
+        {
+          "species": "Dedenne",
+          "level": 8
+        },
+        {
+          "species": "Cacnea",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Skorupi",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 11
+        },
+        {
+          "species": "Dedenne",
+          "level": 8
+        },
+        {
+          "species": "Cacnea",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Koffing",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 15,
+      "kind": "wild",
+      "name": "污泥沼泽",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 11
+        },
+        {
+          "species": "Dedenne",
+          "level": 9
+        },
+        {
+          "species": "Cacnea",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Spinarak",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 16,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Dedenne",
+          "level": 9
+        },
+        {
+          "species": "Cacnea",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mawile",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 16,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Dedenne",
+          "level": 9
+        },
+        {
+          "species": "Cacnea",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Klefki",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 16,
+      "kind": "wild",
+      "name": "旧日遗迹",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Dedenne",
+          "level": 10
+        },
+        {
+          "species": "Cacnea",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wynaut",
+          "level": 8
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Dedenne",
+          "level": 10
+        },
+        {
+          "species": "Cacnea",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mareep",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 10
+        },
+        {
+          "species": "Cacnea",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 10
+        }
+      ],
+      "foe": [
+        {
+          "species": "Electrike",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 17,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 10
+        },
+        {
+          "species": "Cacnea",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Minun",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Minun",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 11
+        },
+        {
+          "species": "Cacnea",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ducklett",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Minun",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 11
+        },
+        {
+          "species": "Cacnea",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Buizel",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 18,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Minun",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 11
+        },
+        {
+          "species": "Cacnea",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Staryu",
+          "level": 9
+        }
+      ],
+      "moneyBefore": 866,
+      "moneyAfter": 866,
+      "rejected": 0
+    },
+    {
+      "floor": 20,
+      "kind": "boss",
+      "name": "道馆 · 露璃娜（水）",
+      "won": true,
+      "escaped": false,
+      "turns": 12,
+      "faints": 1,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Minun",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 11
+        },
+        {
+          "species": "Cacnea",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "foe": [
+        {
+          "species": "Chewtle",
+          "level": 15
+        },
+        {
+          "species": "Feebas",
+          "level": 15
+        },
+        {
+          "species": "Wimpod",
+          "level": 15
+        }
+      ],
+      "moneyBefore": 2816,
+      "moneyAfter": 2816,
+      "rejected": 0
+    },
+    {
+      "floor": 21,
+      "kind": "elite",
+      "name": "迷幻花海 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Minun",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Dedenne",
+          "level": 12
+        },
+        {
+          "species": "Cacnea",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 12
+        }
+      ],
+      "foe": [
+        {
+          "species": "Eevee",
+          "level": 16
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Minun",
+          "level": 11
+        },
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Dedenne",
+          "level": 12
+        },
+        {
+          "species": "Cacnea",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sableye",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Minun",
+          "level": 11
+        },
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Dedenne",
+          "level": 12
+        },
+        {
+          "species": "Cacnea",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sandygast",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 22,
+      "kind": "wild",
+      "name": "幽影墓地",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Minun",
+          "level": 11
+        },
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Dedenne",
+          "level": 13
+        },
+        {
+          "species": "Cacnea",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Drifloon",
+          "level": 11
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Minun",
+          "level": 12
+        },
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Dedenne",
+          "level": 13
+        },
+        {
+          "species": "Cacnea",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "foe": [
+        {
+          "species": "Beedrill",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Minun",
+          "level": 12
+        },
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Dedenne",
+          "level": 13
+        },
+        {
+          "species": "Cacnea",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Beautifly",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 23,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Minun",
+          "level": 13
+        },
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Dedenne",
+          "level": 14
+        },
+        {
+          "species": "Cacnea",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Oddish",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 24,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Minun",
+          "level": 13
+        },
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Dedenne",
+          "level": 14
+        },
+        {
+          "species": "Cacnea",
+          "level": 16
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Electrike",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 24,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Minun",
+          "level": 13
+        },
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Dedenne",
+          "level": 14
+        },
+        {
+          "species": "Cacnea",
+          "level": 16
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Magnemite",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 24,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Minun",
+          "level": 13
+        },
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Dedenne",
+          "level": 14
+        },
+        {
+          "species": "Cacnea",
+          "level": 16
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pincurchin",
+          "level": 12
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 25,
+      "kind": "elite",
+      "name": "太晶空洞 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Dedenne",
+          "level": 14
+        },
+        {
+          "species": "Cacnea",
+          "level": 16
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Nacli",
+          "level": 18
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 26,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Slakoth",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 26,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Pidgey",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 26,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Doduo",
+          "level": 13
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wingull",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Krabby",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 27,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 15
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Feebas",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 15
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "foe": [
+        {
+          "species": "Skitty",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 15
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Sentret",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 28,
+      "kind": "wild",
+      "name": "郊外小径",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 15
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 16
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Zigzagoon",
+          "level": 14
+        }
+      ],
+      "moneyBefore": 4416,
+      "moneyAfter": 4416,
+      "rejected": 0
+    },
+    {
+      "floor": 30,
+      "kind": "boss",
+      "name": "幻想精英",
+      "won": true,
+      "escaped": false,
+      "turns": 52,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 15
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 16
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "foe": [
+        {
+          "species": "Illumise-Fantasy",
+          "level": 20
+        }
+      ],
+      "moneyBefore": 516,
+      "moneyAfter": 516,
+      "rejected": 0
+    },
+    {
+      "floor": 31,
+      "kind": "elite",
+      "name": "郊外小径 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 7,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Minun",
+          "level": 16
+        },
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Dedenne",
+          "level": 17
+        },
+        {
+          "species": "Cacnea",
+          "level": 18
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gumshoos",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 516,
+      "moneyAfter": 516,
+      "rejected": 0
+    },
+    {
+      "floor": 32,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 16
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 17
+        },
+        {
+          "species": "Cacnea",
+          "level": 19
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "foe": [
+        {
+          "species": "Plusle",
+          "level": 16
+        }
+      ],
+      "moneyBefore": 516,
+      "moneyAfter": 516,
+      "rejected": 0
+    },
+    {
+      "floor": 32,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 17
+        },
+        {
+          "species": "Cacnea",
+          "level": 19
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Voltorb-Hisui",
+          "level": 16
+        }
+      ],
+      "moneyBefore": 516,
+      "moneyAfter": 516,
+      "rejected": 0
+    },
+    {
+      "floor": 32,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 17
+        },
+        {
+          "species": "Cacnea",
+          "level": 19
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Elekid",
+          "level": 16
+        }
+      ],
+      "moneyBefore": 516,
+      "moneyAfter": 516,
+      "rejected": 0
+    },
+    {
+      "floor": 33,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 19
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Salandit",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 516,
+      "moneyAfter": 516,
+      "rejected": 0
+    },
+    {
+      "floor": 33,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 19
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Charcadet",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 516,
+      "moneyAfter": 516,
+      "rejected": 0
+    },
+    {
+      "floor": 33,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Growlithe",
+          "level": 17
+        }
+      ],
+      "moneyBefore": 516,
+      "moneyAfter": 516,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mime Jr.",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1268,
+      "moneyAfter": 1268,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Minun",
+          "level": 18
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Cubchoo",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1268,
+      "moneyAfter": 1268,
+      "rejected": 0
+    },
+    {
+      "floor": 37,
+      "kind": "wild",
+      "name": "极光雪峰",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Minun",
+          "level": 18
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Snom",
+          "level": 19
+        }
+      ],
+      "moneyBefore": 1268,
+      "moneyAfter": 1268,
+      "rejected": 0
+    },
+    {
+      "floor": 40,
+      "kind": "boss",
+      "name": "道馆 · 紫罗兰（虫）",
+      "won": true,
+      "escaped": false,
+      "turns": 14,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Minun",
+          "level": 18
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "foe": [
+        {
+          "species": "Combee",
+          "level": 25
+        },
+        {
+          "species": "Nymble",
+          "level": 25
+        },
+        {
+          "species": "Ninjask",
+          "level": 25
+        },
+        {
+          "species": "Dewpider",
+          "level": 25
+        }
+      ],
+      "moneyBefore": 768,
+      "moneyAfter": 768,
+      "rejected": 0
+    },
+    {
+      "floor": 41,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Minun",
+          "level": 19
+        },
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Dedenne",
+          "level": 19
+        },
+        {
+          "species": "Cacnea",
+          "level": 21
+        },
+        {
+          "species": "Probopass",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Fletchinder",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 41,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Minun",
+          "level": 19
+        },
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Dedenne",
+          "level": 20
+        },
+        {
+          "species": "Cacnea",
+          "level": 21
+        },
+        {
+          "species": "Probopass",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tinkatink",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 41,
+      "kind": "wild",
+      "name": "熔岩矿脉",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Minun",
+          "level": 19
+        },
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Dedenne",
+          "level": 20
+        },
+        {
+          "species": "Cacnea",
+          "level": 21
+        },
+        {
+          "species": "Probopass",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Larvesta",
+          "level": 21
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 42,
+      "kind": "elite",
+      "name": "污泥沼泽 · 精英",
+      "won": true,
+      "escaped": false,
+      "turns": 5,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Minun",
+          "level": 20
+        },
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Dedenne",
+          "level": 20
+        },
+        {
+          "species": "Cacnea",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 20
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mareanie",
+          "level": 26
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 43,
+      "kind": "wild",
+      "name": "太晶空洞",
+      "won": true,
+      "escaped": false,
+      "turns": 10,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Minun",
+          "level": 20
+        },
+        {
+          "species": "Ivysaur",
+          "level": 27
+        },
+        {
+          "species": "Dedenne",
+          "level": 20
+        },
+        {
+          "species": "Cacnea",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Jangmo-o",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 43,
+      "kind": "wild",
+      "name": "太晶空洞",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Minun",
+          "level": 20
+        },
+        {
+          "species": "Ivysaur",
+          "level": 27
+        },
+        {
+          "species": "Dedenne",
+          "level": 20
+        },
+        {
+          "species": "Cacnea",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Kirlia",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 43,
+      "kind": "wild",
+      "name": "太晶空洞",
+      "won": true,
+      "escaped": false,
+      "turns": 1,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Minun",
+          "level": 20
+        },
+        {
+          "species": "Ivysaur",
+          "level": 27
+        },
+        {
+          "species": "Dedenne",
+          "level": 20
+        },
+        {
+          "species": "Cacnea",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Lucario",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 44,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 2,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Minun",
+          "level": 21
+        },
+        {
+          "species": "Ivysaur",
+          "level": 27
+        },
+        {
+          "species": "Dedenne",
+          "level": 21
+        },
+        {
+          "species": "Cacnea",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Clauncher",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 44,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Minun",
+          "level": 21
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 21
+        },
+        {
+          "species": "Cacnea",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "foe": [
+        {
+          "species": "Tentacool",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 44,
+      "kind": "wild",
+      "name": "轻风海岸",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Minun",
+          "level": 21
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 21
+        },
+        {
+          "species": "Cacnea",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Mareanie",
+          "level": 22
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Minun",
+          "level": 21
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 21
+        },
+        {
+          "species": "Cacnea",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Wattrel",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Minun",
+          "level": 21
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 21
+        },
+        {
+          "species": "Cacnea",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Morpeko",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 45,
+      "kind": "wild",
+      "name": "废弃电厂",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 1,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 23
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 22
+        },
+        {
+          "species": "Cacnea",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Heliolisk",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 46,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 8,
+      "faints": 3,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 23
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 22
+        },
+        {
+          "species": "Cacnea",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "foe": [
+        {
+          "species": "Gligar",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 46,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 23
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 22
+        },
+        {
+          "species": "Cacnea",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Rufflet",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 46,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 3,
+      "faints": 1,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 23
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 22
+        },
+        {
+          "species": "Cacnea",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Lunatone",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 46,
+      "kind": "wild",
+      "name": "攀岩峡谷",
+      "won": true,
+      "escaped": false,
+      "turns": 4,
+      "faints": 1,
+      "caught": 1,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 23
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 23
+        },
+        {
+          "species": "Cacnea",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 23
+        }
+      ],
+      "foe": [
+        {
+          "species": "Simipour",
+          "level": 23
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 47,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": true,
+      "escaped": false,
+      "turns": 14,
+      "faints": 0,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 24
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 23
+        },
+        {
+          "species": "Simipour",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 24
+        }
+      ],
+      "foe": [
+        {
+          "species": "Ferroseed",
+          "level": 24
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rejected": 0
+    },
+    {
+      "floor": 47,
+      "kind": "wild",
+      "name": "绿茵森林",
+      "won": false,
+      "escaped": false,
+      "turns": 4,
+      "faints": 3,
+      "caught": 0,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 24
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 23
+        },
+        {
+          "species": "Simipour",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 24
+        }
+      ],
+      "foe": [
+        {
+          "species": "Grovyle",
+          "level": 24
+        }
+      ],
+      "moneyBefore": 3168,
+      "moneyAfter": 3168,
+      "rescue": {
+        "cost": 4000,
+        "paid": false
+      },
+      "rejected": 0
+    }
+  ],
+  "purchases": [
+    {
+      "floor": 9,
+      "action": "heal",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "revive",
+      "coins": 900
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 9,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 19,
+      "action": "heal",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "pokeball",
+      "coins": 250
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 19,
+      "action": "buy",
+      "item": "ether",
+      "coins": 400
+    },
+    {
+      "floor": 29,
+      "action": "heal",
+      "coins": 300
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "greatball",
+      "coins": 750
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "potion",
+      "coins": 200
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 29,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "heal",
+      "coins": 350
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    },
+    {
+      "floor": 39,
+      "action": "buy",
+      "item": "superpotion",
+      "coins": 650
+    }
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 5
+        },
+        {
+          "species": "Mudkip",
+          "level": 5
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 5
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 3
+      }
+    },
+    {
+      "floor": 2,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 7
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 6
+        },
+        {
+          "species": "Barboach",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 3
+      }
+    },
+    {
+      "floor": 3,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 9
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 4
+        },
+        {
+          "species": "Cacnea",
+          "level": 3
+        }
+      ],
+      "bag": {
+        "pokeball": 6,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 6
+      }
+    },
+    {
+      "floor": 4,
+      "money": 1500,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "bag": {
+        "pokeball": 5,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 5,
+      "money": 1632,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 8
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 7,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 1,
+        "tinymushroom": 8,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 6,
+      "money": 1362,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 7
+        },
+        {
+          "species": "Barboach",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 5
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 7,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 7,
+      "money": 1362,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Barboach",
+          "level": 6
+        },
+        {
+          "species": "Cacnea",
+          "level": 6
+        },
+        {
+          "species": "Nosepass",
+          "level": 4
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 7,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 11,
+        "prettyfeather": 1
+      }
+    },
+    {
+      "floor": 8,
+      "money": 1362,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 10
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 8
+        },
+        {
+          "species": "Barboach",
+          "level": 6
+        },
+        {
+          "species": "Cacnea",
+          "level": 7
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 7,
+        "potion": 7,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 13,
+        "prettyfeather": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 9,
+      "money": 1362,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Dedenne",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 6,
+        "potion": 6,
+        "revive": 1,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 16,
+        "prettyfeather": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 10,
+      "money": 462,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Dedenne",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 6
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 11,
+      "money": 462,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 11
+        },
+        {
+          "species": "Mudkip",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 9
+        },
+        {
+          "species": "Dedenne",
+          "level": 5
+        },
+        {
+          "species": "Cacnea",
+          "level": 8
+        },
+        {
+          "species": "Nosepass",
+          "level": 7
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 1,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 12,
+      "money": 462,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 12
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Dedenne",
+          "level": 7
+        },
+        {
+          "species": "Cacnea",
+          "level": 9
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 2,
+        "prettyfeather": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 13,
+      "money": 462,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Dedenne",
+          "level": 7
+        },
+        {
+          "species": "Cacnea",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "prettyfeather": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 14,
+      "money": 866,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 10
+        },
+        {
+          "species": "Dedenne",
+          "level": 7
+        },
+        {
+          "species": "Cacnea",
+          "level": 10
+        },
+        {
+          "species": "Nosepass",
+          "level": 8
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "prettyfeather": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 15,
+      "money": 866,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 13
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 11
+        },
+        {
+          "species": "Dedenne",
+          "level": 8
+        },
+        {
+          "species": "Cacnea",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 6,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "prettyfeather": 1,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 16,
+      "money": 866,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 14
+        },
+        {
+          "species": "Mudkip",
+          "level": 12
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Dedenne",
+          "level": 9
+        },
+        {
+          "species": "Cacnea",
+          "level": 11
+        },
+        {
+          "species": "Nosepass",
+          "level": 9
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 9,
+        "prettyfeather": 2,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 17,
+      "money": 866,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Mudkip",
+          "level": 13
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 12
+        },
+        {
+          "species": "Dedenne",
+          "level": 10
+        },
+        {
+          "species": "Cacnea",
+          "level": 12
+        },
+        {
+          "species": "Nosepass",
+          "level": 10
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 12,
+        "prettyfeather": 2,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 18,
+      "money": 866,
+      "team": [
+        {
+          "species": "Fuecoco",
+          "level": 15
+        },
+        {
+          "species": "Minun",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 11
+        },
+        {
+          "species": "Cacnea",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 2,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 15,
+        "prettyfeather": 2,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 19,
+      "money": 866,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Minun",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 11
+        },
+        {
+          "species": "Cacnea",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 8,
+        "potion": 1,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 18,
+        "prettyfeather": 2,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 20,
+      "money": 2816,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Minun",
+          "level": 9
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 13
+        },
+        {
+          "species": "Dedenne",
+          "level": 11
+        },
+        {
+          "species": "Cacnea",
+          "level": 13
+        },
+        {
+          "species": "Nosepass",
+          "level": 11
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 21,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 16
+        },
+        {
+          "species": "Minun",
+          "level": 10
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 14
+        },
+        {
+          "species": "Dedenne",
+          "level": 12
+        },
+        {
+          "species": "Cacnea",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 12
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 3,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "pearl": 0
+      }
+    },
+    {
+      "floor": 22,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 17
+        },
+        {
+          "species": "Minun",
+          "level": 11
+        },
+        {
+          "species": "Bulbasaur",
+          "level": 15
+        },
+        {
+          "species": "Dedenne",
+          "level": 12
+        },
+        {
+          "species": "Cacnea",
+          "level": 14
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 4,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 15,
+        "tinymushroom": 1,
+        "prettyfeather": 0,
+        "pearl": 1
+      }
+    },
+    {
+      "floor": 23,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 18
+        },
+        {
+          "species": "Minun",
+          "level": 12
+        },
+        {
+          "species": "Ivysaur",
+          "level": 17
+        },
+        {
+          "species": "Dedenne",
+          "level": 13
+        },
+        {
+          "species": "Cacnea",
+          "level": 15
+        },
+        {
+          "species": "Nosepass",
+          "level": 13
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 2,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "prettyfeather": 0,
+        "pearl": 2
+      }
+    },
+    {
+      "floor": 24,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Minun",
+          "level": 13
+        },
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Dedenne",
+          "level": 14
+        },
+        {
+          "species": "Cacnea",
+          "level": 16
+        },
+        {
+          "species": "Nosepass",
+          "level": 14
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 1,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "prettyfeather": 0,
+        "pearl": 2,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 25,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 19
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Dedenne",
+          "level": 14
+        },
+        {
+          "species": "Cacnea",
+          "level": 16
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 1,
+        "revive": 2,
+        "ether": 8,
+        "expcandyxs": 0,
+        "tinymushroom": 8,
+        "prettyfeather": 0,
+        "pearl": 2,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 26,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 20
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 18
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 1,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 21,
+        "tinymushroom": 9,
+        "prettyfeather": 0,
+        "pearl": 3,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 27,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 14
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 0,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 12,
+        "prettyfeather": 0,
+        "pearl": 3,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 28,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 15
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 15
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 15
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 0,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 13,
+        "prettyfeather": 2,
+        "pearl": 3,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 29,
+      "money": 4416,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 15
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 16
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 0,
+        "revive": 2,
+        "ether": 7,
+        "expcandyxs": 0,
+        "tinymushroom": 14,
+        "prettyfeather": 4,
+        "pearl": 3,
+        "bigmushroom": 1
+      }
+    },
+    {
+      "floor": 30,
+      "money": 516,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 21
+        },
+        {
+          "species": "Minun",
+          "level": 15
+        },
+        {
+          "species": "Ivysaur",
+          "level": 20
+        },
+        {
+          "species": "Dedenne",
+          "level": 16
+        },
+        {
+          "species": "Cacnea",
+          "level": 17
+        },
+        {
+          "species": "Nosepass",
+          "level": 16
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 4
+      }
+    },
+    {
+      "floor": 31,
+      "money": 516,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Minun",
+          "level": 16
+        },
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Dedenne",
+          "level": 17
+        },
+        {
+          "species": "Cacnea",
+          "level": 18
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 8,
+        "revive": 2,
+        "ether": 6,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 1,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 4
+      }
+    },
+    {
+      "floor": 32,
+      "money": 516,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 22
+        },
+        {
+          "species": "Minun",
+          "level": 16
+        },
+        {
+          "species": "Ivysaur",
+          "level": 21
+        },
+        {
+          "species": "Dedenne",
+          "level": 17
+        },
+        {
+          "species": "Cacnea",
+          "level": 19
+        },
+        {
+          "species": "Nosepass",
+          "level": 17
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 7,
+        "revive": 2,
+        "ether": 5,
+        "expcandyxs": 31,
+        "tinymushroom": 1,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 1
+      }
+    },
+    {
+      "floor": 33,
+      "money": 516,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 19
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 3,
+        "revive": 2,
+        "ether": 5,
+        "expcandyxs": 0,
+        "tinymushroom": 4,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 0
+      }
+    },
+    {
+      "floor": 34,
+      "money": 516,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 10,
+        "potion": 2,
+        "revive": 2,
+        "ether": 5,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 0
+      }
+    },
+    {
+      "floor": 35,
+      "money": 888,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 23
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 12,
+        "potion": 3,
+        "revive": 2,
+        "ether": 5,
+        "expcandyxs": 7,
+        "tinymushroom": 7,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 0
+      }
+    },
+    {
+      "floor": 36,
+      "money": 1268,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 24
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 4,
+        "revive": 2,
+        "ether": 5,
+        "expcandyxs": 8,
+        "tinymushroom": 7,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 0
+      }
+    },
+    {
+      "floor": 37,
+      "money": 1268,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Minun",
+          "level": 17
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 18
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 4,
+        "revive": 2,
+        "ether": 5,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 0
+      }
+    },
+    {
+      "floor": 38,
+      "money": 1268,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Minun",
+          "level": 18
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 2,
+        "revive": 2,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 9,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 0,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 39,
+      "money": 1268,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Minun",
+          "level": 18
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 2,
+        "revive": 2,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 9,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 0,
+        "stardust": 1
+      }
+    },
+    {
+      "floor": 40,
+      "money": 768,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 25
+        },
+        {
+          "species": "Minun",
+          "level": 18
+        },
+        {
+          "species": "Ivysaur",
+          "level": 24
+        },
+        {
+          "species": "Dedenne",
+          "level": 18
+        },
+        {
+          "species": "Cacnea",
+          "level": 20
+        },
+        {
+          "species": "Nosepass",
+          "level": 19
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 2,
+        "revive": 2,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 6,
+        "stardust": 0
+      }
+    },
+    {
+      "floor": 41,
+      "money": 3168,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Minun",
+          "level": 19
+        },
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Dedenne",
+          "level": 19
+        },
+        {
+          "species": "Cacnea",
+          "level": 21
+        },
+        {
+          "species": "Nosepass",
+          "level": 20
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 2,
+        "revive": 2,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 0,
+        "prettyfeather": 0,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 6,
+        "stardust": 0
+      }
+    },
+    {
+      "floor": 42,
+      "money": 3168,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 26
+        },
+        {
+          "species": "Minun",
+          "level": 20
+        },
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Dedenne",
+          "level": 20
+        },
+        {
+          "species": "Cacnea",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 20
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 1,
+        "revive": 2,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 3,
+        "prettyfeather": 0,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "stardust": 0
+      }
+    },
+    {
+      "floor": 43,
+      "money": 3168,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 27
+        },
+        {
+          "species": "Minun",
+          "level": 20
+        },
+        {
+          "species": "Ivysaur",
+          "level": 25
+        },
+        {
+          "species": "Dedenne",
+          "level": 20
+        },
+        {
+          "species": "Cacnea",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 1,
+        "revive": 2,
+        "ether": 4,
+        "expcandyxs": 7,
+        "tinymushroom": 4,
+        "prettyfeather": 0,
+        "pearl": 0,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 4,
+        "stardust": 1,
+        "expcandys": 6
+      }
+    },
+    {
+      "floor": 44,
+      "money": 3168,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 28
+        },
+        {
+          "species": "Minun",
+          "level": 21
+        },
+        {
+          "species": "Ivysaur",
+          "level": 27
+        },
+        {
+          "species": "Dedenne",
+          "level": 21
+        },
+        {
+          "species": "Cacnea",
+          "level": 22
+        },
+        {
+          "species": "Probopass",
+          "level": 21
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 2,
+        "ether": 4,
+        "expcandyxs": 0,
+        "tinymushroom": 5,
+        "prettyfeather": 1,
+        "pearl": 1,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 1,
+        "stardust": 1,
+        "expcandys": 0
+      }
+    },
+    {
+      "floor": 45,
+      "money": 3168,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Minun",
+          "level": 21
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 21
+        },
+        {
+          "species": "Cacnea",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 2,
+        "ether": 3,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "prettyfeather": 1,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 8,
+        "superpotion": 0,
+        "stardust": 1,
+        "expcandys": 0
+      }
+    },
+    {
+      "floor": 46,
+      "money": 3168,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 23
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 22
+        },
+        {
+          "species": "Cacnea",
+          "level": 24
+        },
+        {
+          "species": "Probopass",
+          "level": 22
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 2,
+        "ether": 3,
+        "expcandyxs": 0,
+        "tinymushroom": 7,
+        "prettyfeather": 4,
+        "pearl": 2,
+        "bigmushroom": 0,
+        "greatball": 5,
+        "superpotion": 0,
+        "stardust": 1,
+        "expcandys": 0
+      }
+    },
+    {
+      "floor": 47,
+      "money": 3168,
+      "team": [
+        {
+          "species": "Crocalor",
+          "level": 29
+        },
+        {
+          "species": "Morpeko",
+          "level": 24
+        },
+        {
+          "species": "Ivysaur",
+          "level": 28
+        },
+        {
+          "species": "Dedenne",
+          "level": 23
+        },
+        {
+          "species": "Simipour",
+          "level": 23
+        },
+        {
+          "species": "Probopass",
+          "level": 24
+        }
+      ],
+      "bag": {
+        "pokeball": 14,
+        "potion": 0,
+        "revive": 0,
+        "ether": 3,
+        "expcandyxs": 0,
+        "tinymushroom": 10,
+        "prettyfeather": 4,
+        "pearl": 2,
+        "bigmushroom": 1,
+        "greatball": 1,
+        "superpotion": 0,
+        "stardust": 1,
+        "expcandys": 0
+      }
+    }
+  ],
+  "choices": [
+    {
+      "floor": 1,
+      "blessing": "coin",
+      "tier": "silver"
+    }
+  ],
+  "issues": [
+    {
+      "floor": 47,
+      "reason": "no-living-member-no-revive",
+      "money": 3168
+    }
+  ],
+  "lastFloor": 47,
+  "phase": "ready"
+}

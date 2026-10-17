@@ -1,0 +1,160 @@
+|t:|1792223313
+|gametype|singles
+|player|p1|Player||
+|player|p2|NPC||
+|teamsize|p1|6
+|teamsize|p2|3
+|gen|9
+|tier|[Gen 9] Fantasy Rogue
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Ivysaur, L16, M|
+|poke|p1|Snorunt, L12, F|
+|poke|p1|Nosepass, L10, M|
+|poke|p1|Flabébé, L12, F|
+|poke|p1|Drifloon, L16, M|
+|poke|p1|Torkoal, L10, M|
+|poke|p2|Starly, L20, F|
+|poke|p2|Duskull, L20, F|
+|poke|p2|Porygon, L20|
+|teampreview
+|
+|t:|1792223313
+|start
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L16, M|53/53
+|switch|p1a: Ivysaur|Ivysaur, L16, M|100/100
+|split|p2
+|switch|p2a: Starly|Starly, L20, F|52/52
+|switch|p2a: Starly|Starly, L20, F|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Starly|fantasystats|[silent]
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|-end|p2a: Starly|fantasystats|[silent]
+|turn|1
+|
+|t:|1792223313
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L10, M|34/34
+|switch|p1a: Nosepass|Nosepass, L10, M|100/100
+|-end|p1a: Nosepass|fantasystats|[silent]
+|-terastallize|p2a: Starly|Normal
+|move|p2a: Starly|Wing Attack|p1a: Nosepass
+|-resisted|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|26/34
+|-damage|p1a: Nosepass|77/100
+|
+|upkeep
+|turn|2
+|
+|t:|1792223314
+|move|p2a: Starly|Facade|p1a: Nosepass
+|-resisted|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|14/34
+|-damage|p1a: Nosepass|42/100
+|move|p1a: Nosepass|Rock Throw|p2a: Starly
+|split|p2
+|-damage|p2a: Starly|35/52
+|-damage|p2a: Starly|68/100
+|
+|upkeep
+|turn|3
+|
+|t:|1792223314
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L16, M|53/53
+|switch|p1a: Ivysaur|Ivysaur, L16, M|100/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Starly|Facade|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|27/53
+|-damage|p1a: Ivysaur|51/100
+|
+|upkeep
+|turn|4
+|
+|t:|1792223314
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L10, M|14/34
+|switch|p1a: Nosepass|Nosepass, L10, M|42/100
+|-end|p1a: Nosepass|fantasystats|[silent]
+|move|p2a: Starly|Wing Attack|p1a: Nosepass
+|-resisted|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|7/34
+|-damage|p1a: Nosepass|21/100
+|
+|upkeep
+|turn|5
+|
+|t:|1792223314
+|split|p1
+|switch|p1a: Snorunt|Snorunt, L12, F|41/41
+|switch|p1a: Snorunt|Snorunt, L12, F|100/100
+|-end|p1a: Snorunt|fantasystats|[silent]
+|move|p2a: Starly|Quick Attack|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|21/41
+|-damage|p1a: Snorunt|52/100
+|
+|upkeep
+|turn|6
+|
+|t:|1792223314
+|split|p1
+|switch|p1a: Ivysaur|Ivysaur, L16, M|27/53
+|switch|p1a: Ivysaur|Ivysaur, L16, M|51/100
+|-end|p1a: Ivysaur|fantasystats|[silent]
+|move|p2a: Starly|Facade|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|5/53
+|-damage|p1a: Ivysaur|10/100
+|
+|upkeep
+|turn|7
+|
+|t:|1792223314
+|move|p2a: Starly|Wing Attack|p1a: Ivysaur
+|-supereffective|p1a: Ivysaur
+|split|p1
+|-damage|p1a: Ivysaur|0 fnt
+|-damage|p1a: Ivysaur|0 fnt
+|faint|p1a: Ivysaur
+|
+|upkeep
+|
+|t:|1792223314
+|split|p1
+|switch|p1a: Snorunt|Snorunt, L12, F|21/41
+|switch|p1a: Snorunt|Snorunt, L12, F|52/100
+|-end|p1a: Snorunt|fantasystats|[silent]
+|turn|8
+|
+|t:|1792223314
+|move|p2a: Starly|Wing Attack|p1a: Snorunt
+|-crit|p1a: Snorunt
+|split|p1
+|-damage|p1a: Snorunt|0 fnt
+|-damage|p1a: Snorunt|0 fnt
+|faint|p1a: Snorunt
+|
+|upkeep
+|
+|t:|1792223314
+|split|p1
+|switch|p1a: Nosepass|Nosepass, L10, M|7/34
+|switch|p1a: Nosepass|Nosepass, L10, M|21/100
+|-end|p1a: Nosepass|fantasystats|[silent]
+|turn|9
+|
+|t:|1792223314
+|move|p2a: Starly|Facade|p1a: Nosepass
+|-resisted|p1a: Nosepass
+|split|p1
+|-damage|p1a: Nosepass|0 fnt
+|-damage|p1a: Nosepass|0 fnt
+|faint|p1a: Nosepass
+|
+|win|NPC

@@ -1,4 +1,5 @@
 'use strict';
+const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
@@ -14,7 +15,7 @@ describe('Fantasy Rogue trade routes and purchased training items', function () 
 	this.timeout(20000);
 	let store, engine, content;
 	const account = () => store.get('tradetester');
-	const cmd = (action, details = {}) => engine.command('tradetester', { id: randomUUID(), revision: account().revision, action, ...details });
+	const cmd = (action, details = {}) => commandAfterOpening(engine, 'tradetester', { id: randomUUID(), revision: account().revision, action, ...details });
 	beforeEach(() => {
 		store = new RogueStore(':memory:'); content = createPreviewContent();
 		engine = new RogueEngine(store, content, () => 0);
@@ -31,11 +32,35 @@ describe('Fantasy Rogue trade routes and purchased training items', function () 
 		cmd('select', { value: 'trade' });
 		assert.equal(account().run.phase, 'rest');
 	}
+	it('buys a batch atomically, caps stock and funds, and deduplicates retries', () => {
+		enter('candy'); const item = account().run.node.trade.stock[0], before = account().run;
+		for (const count of [0, -1, 1.5, 1000, item.remaining + 1]) {
+			assert.throws(() => cmd('buy', {value: item.id, count})); assert.deepEqual(account().run, before);
+		}
+		const request = {id: randomUUID(), revision: account().revision, action: 'buy', value: item.id, count: 5};
+		engine.command('tradetester', request); engine.command('tradetester', request);
+		assert.equal(account().run.money, before.money - item.price * 5);
+		assert.equal(account().run.bag[item.id], (before.bag[item.id] || 0) + 5);
+		assert.equal(account().run.node.trade.stock[0].remaining, item.remaining - 5);
+		store.change('tradetester', a => {a.run.money = item.price * 2 - 1;});
+		const short = account(); assert.throws(() => cmd('buy', {value: item.id, count: 2}), /余额/);
+		assert.deepEqual(account(), short);
+	});
+	it('accounts for batch purchases against the rest center candy quota', () => {
+		const {restCandyOffer} = require('../../dist/server/fantasy-rogue/early-balance');
+		store.change('tradetester', a => {a.run.floor = 39; a.run.phase = 'choose'; a.run.money = 50000; delete a.run.choices; delete a.run.node;});
+		cmd('select', {value: 'center'});
+		const offer = restCandyOffer(39), held = account().run.bag[offer.id] || 0;
+		cmd('buy', {value: offer.id, count: offer.stock});
+		assert.equal(account().run.node.restCandyPurchases[offer.id], offer.stock);
+		assert.equal(account().run.bag[offer.id], held + offer.stock);
+		assert.throws(() => cmd('buy', {value: offer.id}), /售罄/);
+	});
 	for (const kind of ['mint', 'candy', 'machine']) it(`saves ${kind} stock, refuses off-menu purchases and grants discovery only on entry`, () => {
 		assert(!rogueCodex(account(), 'events').entries.find(e => e.id === `trade:${kind}`).unlocked);
 		enter(kind);
 		const stock = account().run.node.trade.stock;
-		assert(stock.length && stock.length <= 3);
+		assert(stock.length && stock.length <= (kind === 'machine' ? 6 : 3));
 		const run = account().run; prepareTrade(run, content, () => { throw new Error('must not reroll'); });
 		assert.deepEqual(run.node.trade.stock, stock);
 		assert.throws(() => cmd('buy', { value: 'masterball' }));
@@ -44,7 +69,8 @@ describe('Fantasy Rogue trade routes and purchased training items', function () 
 		const request = { id: randomUUID(), revision: account().revision, action: 'buy', value: item.id };
 		engine.command('tradetester', request); engine.command('tradetester', request);
 		assert.equal(account().run.money, before - item.price);
-		assert.equal(account().run.node.trade.stock[0].remaining, 0);
+		assert.equal(account().run.node.trade.stock[0].remaining, item.remaining - 1);
+		for (let i = 1; i < item.remaining; i++) cmd('buy', { value: item.id });
 		assert.throws(() => cmd('buy', { value: item.id }));
 		assert(inventoryItem(content, item.id));
 		cmd('continue');
