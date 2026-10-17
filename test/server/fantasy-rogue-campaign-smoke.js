@@ -103,6 +103,13 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						if (run.node.rewardScene && !run.node.rewardScene.claimed) cmd('rewardchoice', {value: 'experience'});
 						if (account().run.mentorOffer) cmd('mentorcard', {value: 'balanced'}); cmd('continue');
 						break;
+					case 'event': {
+						const event = run.node.event;
+						assert(['auction', 'exclusivechallenge'].includes(event.id));
+						if (event.stage === 'result') cmd('continue');
+						else cmd('event', {member: event.key, value: run.auction.entered ? 'pass' : 'enter'});
+						break;
+					}
 					case 'blessing': {
 						const state = run.blessings;
 						if (state.pending.length) {

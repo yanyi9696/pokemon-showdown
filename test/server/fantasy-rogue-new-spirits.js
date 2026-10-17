@@ -184,7 +184,6 @@ describe('Fantasy Rogue additional tower spirits', () => {
 				engine.settle('growth', run.battle.token, result); engine.settle('growth', run.battle.token, result);
 			};
 			fight(false); assert.equal(store.get('growth').run.boosts.atk, 0);
-			for (let i = 0; i < 2; i++) { fight(true); assert.equal(store.get('growth').run.boosts.atk, 0); }
 			fight(true); let run = store.get('growth').run;
 			assert.equal(run.boosts.atk, 1); assert.equal(store.get('growth').boosts.atk, 0);
 			const later = createRoguePokemon(set(), run.boosts), plain = createRoguePokemon(set(), stats(0));

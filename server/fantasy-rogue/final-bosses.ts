@@ -83,7 +83,7 @@ export function summitEncounter(level = 100): RogueEncounter {
 		ability: dex.abilities.get(set.ability).name,
 		moves: set.moves.map(move => dex.moves.get(move).name),
 	}));
-	return { name: '塔顶 · 最后的守卫', team: sets.slice(0, 6), style: 'balanced', catchable: false,
+	return { name: '幻想超梦', team: sets.slice(0, 6), style: 'balanced', catchable: false,
 		boss: { kind: 'summit', mewtwoY: sets[6] } };
 }
 

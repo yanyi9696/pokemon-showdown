@@ -1,4 +1,5 @@
 import { tradeItem } from './trading';
+import { applyHeldForme } from './held-formes';
 import { tonicItems } from './blessing-consumables';
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
@@ -75,6 +76,7 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 		}
 		if (old) run.bag[old] = (run.bag[old] || 0) + 1;
 		mon.set.item = id;
+		applyHeldForme(mon.set);
 		break;
 	}
 	case 'moves':

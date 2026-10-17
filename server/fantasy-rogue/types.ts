@@ -19,6 +19,10 @@ export interface RogueTrainerCandidate {
 	team: PokemonSet[];
 }
 export interface RogueEncounter {
+	/** Stable identity for successive fights inside one event; retries reuse it. */
+	key?: string;
+	wildPack?: { lootRolls: number };
+	environment?: { weather?: string, terrain?: string, name: string };
 	boss?: import('../../sim/rogue-bosses').RogueBossState;
 	blessingLevels?: number;
 	/** Aligned with the saved opponent team; retries retain the same rolls. */
@@ -42,7 +46,7 @@ export interface RogueEncounter {
 export interface RogueNode {
 	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
 	restCandyPurchases?: Record<string, number>;
-	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth', stock: (RogueItem & { remaining: number })[], purchases: number,
+	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction', stock: (RogueItem & { remaining: number })[], purchases: number,
 		services?: Partial<import('./growth').RogueGrowth> };
 	rewardScene?: import('./reward-scenes').RewardScene;
 	event?: import('./events').RogueEvent;
@@ -130,6 +134,8 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	exclusiveItems?: Record<string, { since: number, misses: number, cooldown: number, obtained?: boolean }>;
+	auction?: import('./auction').RogueAuction;
 	companionPickups?: { settled: string[], items: Record<string, number> };
 	preview?: { key: string, trainer: 'sada' | 'turo', stage: 'running' | 'result' | 'personal', result?: import('../../sim/fantasy-rogue').RogueBattleResult };
 	rewardHistory?: string[];

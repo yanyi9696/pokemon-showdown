@@ -83,6 +83,7 @@ export function chooseTrainer(run: RogueRun, candidates: RogueTrainerCandidate[]
 export function rogueOpponentAvatar(run: RogueRun): string {
 	const node = run.node!;
 	const encounter = node.encounters[run.encounter];
+	if (encounter.boss?.kind === 'summit') return '#rogue-mewtwo';
 	if (encounter.trainer) return encounter.trainer.avatar;
 	if (node.kind === 'trainer') return '1';
 	if (node.kind === 'boss' && ['道馆', '四天王', '冠军'].includes(BOSS_FLOORS.get(run.floor) || '')) {

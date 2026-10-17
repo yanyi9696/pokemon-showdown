@@ -16,7 +16,13 @@ export function isRogueBoss(pokemon: Pokemon) {
 	return pokemon.side.id === 'p2' && !!pokemon.battle.fantasyRogue?.boss;
 }
 
-/** Bosses remain in roster order; this is enforced even for AI fallback requests. */
+export function waitingRogueCommander(pokemon: Pokemon) {
+	return pokemon.side.id === 'p2' && pokemon.battle.fantasyRogue?.boss?.kind === 'summit' &&
+		pokemon.baseSpecies.name.includes('Mewtwo') && pokemon.side.pokemon.some(mon =>
+			mon !== pokemon && !mon.baseSpecies.name.includes('Mewtwo') && mon.hp > 0 && !mon.fainted);
+}
+
+/** Wild packs enter in their generated order, including native fallback requests. */
 export function rogueBossChoice(request: import('./side').ChoiceRequest): string | undefined {
 	if ('teamPreview' in request && request.teamPreview) return 'team ' + request.side.pokemon.map((_, i) => i + 1).join('');
 	if ('forceSwitch' in request) {
@@ -29,6 +35,7 @@ export function rogueBossChoice(request: import('./side').ChoiceRequest): string
 export function megaRogueBoss(pokemon: Pokemon) {
 	if (!isRogueBoss(pokemon) || pokemon.battle.fantasyRogue?.boss?.kind !== 'summit' ||
 		!pokemon.hp || pokemon.species.id !== 'mewtwofantasy') return;
+	pokemon.battle.add('-message', '五位守卫已全部倒下。幻想超梦离开指挥的位置，亲自走进了战场。');
 	pokemon.canMegaEvo = 'Mewtwo-Mega-X-Fantasy';
 	pokemon.battle.actions.runMegaEvo(pokemon);
 }

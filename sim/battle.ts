@@ -28,7 +28,7 @@ import { Utils } from '../lib/utils';
 import { hasRogueStatus, rogueStatusStates, wrapRogueStatus } from './fantasy-rogue-status';
 import { emblemType } from './rogue-blessing-data';
 import { chooseDragonKing, reportRogueAbilities } from './fantasy-rogue-blessings';
-import { advanceRogueBoss } from './rogue-bosses';
+import { advanceRogueBoss, waitingRogueCommander } from './rogue-bosses';
 declare const __version: any;
 
 export type ChannelID = 0 | 1 | 2 | 3 | 4;
@@ -1581,11 +1581,12 @@ export class Battle {
 
 	private possibleSwitches(side: Side) {
 		if (!side.pokemonLeft) return [];
+		if (side.id === 'p2' && this.fantasyRogue?.wild && side.active.some(mon => mon && mon.hp > 0 && !mon.fainted)) return [];
 
 		const canSwitchIn = [];
 		for (let i = side.active.length; i < side.pokemon.length; i++) {
 			const pokemon = side.pokemon[i];
-			if (!pokemon.fainted) {
+			if (!pokemon.fainted && !waitingRogueCommander(pokemon)) {
 				canSwitchIn.push(pokemon);
 			}
 		}

@@ -89,11 +89,14 @@ describe('Fantasy Rogue playable preview', () => {
 	});
 	it('collects real participant/defeat records and awards experience only once on settlement', () => {
 		const run = nativeBattle();
-		battle.p2.active[0].hp = 1;
-		battle.choose('p1', 'move 1'); battle.choose('p2', 'move 1');
+		for (let i = 0; i < run.node.encounters[0].team.length; i++) {
+			battle.p2.active[0].hp = 1;
+			battle.choose('p1', 'move 1'); battle.choose('p2', 'move 1');
+			if (!battle.ended) battle.choose('p2', 'default');
+		}
 		assert(battle.ended);
 		const result = rogueBattleResult(battle);
-		assert.equal(result.defeated.length, 1);
+		assert.equal(result.defeated.length, 3);
 		assert.deepEqual(result.defeated[0].participants, [run.team[0].id]);
 		assert.deepEqual(result.defeated[0].eligible, [run.team[0].id]);
 		engine.settle(user, run.battle.token, result);
@@ -216,7 +219,6 @@ describe('Fantasy Rogue playable preview', () => {
 	});
 	it('finishes floor learning before taking the next floor checkpoint', () => {
 		start();
-		store.change(user, saved => { saved.run.encounter = 2; });
 		cmd('battle');
 		const run = account().run;
 		const member = run.team[0].id;

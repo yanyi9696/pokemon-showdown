@@ -44,7 +44,7 @@ describe('Fantasy Rogue route, shop and immediate AI balance', () => {
 		for (let i = 0; i < 2000; i++) {
 			const [result] = createBiomeRoutes(1, [node], (_name, _level, _biome, _tier, random) =>
 				random(2) ? 'Pikachu' : 'Eevee', n => rng.random(n));
-			const species = result.encounters.map(encounter => encounter.team[0].species);
+			const species = result.encounters[0].team.map(mon => mon.species);
 			if (species[0] === species[1]) repeats++;
 			if (previous === species[0]) crossArea++;
 			previous = species[0];

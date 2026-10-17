@@ -57,9 +57,10 @@ export const emergencyCost = (floor: number) => Math.ceil((1800 + 45 * floor) / 
 /** Living eligible reserves receive half EXP throughout the tower. */
 export function towerExperience(
 	base: number, defeatedLevel: number, recipientLevel: number, participated: boolean, _floor: number,
-	ordinaryWildKO = false
+	ordinaryWildKO = false, ordinaryWildCapture = false
 ) {
-	return Math.floor(experienceYield(base, defeatedLevel, recipientLevel, participated) * (ordinaryWildKO ? 1.25 : 1));
+	return Math.floor(experienceYield(base, defeatedLevel, recipientLevel, participated) *
+		(ordinaryWildKO ? 1.375 : ordinaryWildCapture ? 1.1 : 1));
 }
 
 /** Kept for old callers: the mentor now offers a temporary card instead of supplies. */

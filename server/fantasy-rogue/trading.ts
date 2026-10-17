@@ -6,10 +6,12 @@ import type { RogueContent, RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { spiritItems, spiritShopAvailable } from './spirits';
 import { CANDY_SHOP, restCandyOffer } from './early-balance';
+import { beginAuction } from './auction';
 
 const dex = Dex.mod('gen9fantasy');
-export const TRADE_NAMES = { mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营' };
+export const TRADE_NAMES = { mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '拍卖地摊' };
 export function tradeKind(floor: number, random: RogueRandom): keyof typeof TRADE_NAMES {
+	if (floor >= 31 && random(100) < 20) return 'auction';
 	const roll = random(100);
 	if (floor >= 51) {
 		const growthWeight = floor < 100 ? 30 : 40;
@@ -24,6 +26,14 @@ export function tradeKind(floor: number, random: RogueRandom): keyof typeof TRAD
 const USEFUL_STATUS = new Set(['protect', 'substitute', 'toxic', 'willowisp', 'thunderwave', 'roost', 'rest',
 	'recover', 'synthesis', 'calmmind', 'nastyplot', 'swordsdance', 'bulkup', 'dragondance', 'reflect', 'lightscreen',
 	'stealthrock', 'taunt', 'encore', 'trickroom', 'tailwind']);
+export function premiumMachine(id: string) {
+	const move = dex.moves.get(id);
+	if (move.category === 'Status') return USEFUL_STATUS.has(id);
+	const hits = typeof move.multihit === 'number' ? move.multihit : move.multihit ? 3 : 1;
+	return !move.ohko && !move.selfdestruct && !move.flags.charge && !move.self?.volatileStatus &&
+		(move.accuracy === true || move.accuracy >= 80) &&
+		(move.basePower * hits >= 70 || move.priority > 0 && move.basePower >= 40);
+}
 function machineWeight(id: string, run: RogueRun) {
 	const move = dex.moves.get(id);
 	if (move.category === 'Status') return USEFUL_STATUS.has(id) ? 6 : 1;
@@ -89,6 +99,10 @@ export function tradeRouteTemplates(templates: RogueNode[], random: RogueRandom,
 
 export function prepareTrade(run: RogueRun, content: RogueContent, random: RogueRandom) {
 	const trade = run.node?.trade;
+	if (trade?.kind === 'auction') {
+		if (run.node?.event?.id !== 'auction') beginAuction(run, content, random);
+		return;
+	}
 	if (!trade || trade.stock.length || trade.kind === 'growth') return;
 	const budget = (run.floor < 30 ? 750 : run.floor < 80 ? 1250 : run.floor < 140 ? 2450 : 5650) + 8 * run.floor;
 	let pool: RogueItem[];

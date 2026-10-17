@@ -141,8 +141,11 @@ describe('Fantasy Rogue real rooms', function () {
 		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
 		await until(() => room.battle.turn > turn || room.battle.ended, 'turn proceeds without thinking');
 	});
-	it('commits ordinary trainer moves before human input without the NPC search delay', async () => {
-		ai.scheduler.submit = () => { throw new Error('Tower NPC must not enter the search queue'); };
+	it('uses the normal challenge search for trainers without hidden opponent configurations or choices', async () => {
+		await ai.dispose();
+		ai = new AIChallengeManager([], {enabled: true, decisionMs: 3000, maxBattles: 1}, 6);
+		const submit = ai.scheduler.submit.bind(ai.scheduler), observations = [];
+		ai.scheduler.submit = job => { observations.push(structuredClone(job.observation)); return submit(job); };
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			const encounter = saved.run.node.encounters[0];
@@ -151,13 +154,20 @@ describe('Fantasy Rogue real rooms', function () {
 			saved.run.node.kind = 'trainer';
 		});
 		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
-		await until(() => room.battle.p2.request.isWait === true, 'instant NPC preview');
+		await until(() => room.battle.p2.request.isWait === true, 'NPC preview');
 		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
 		await until(() => room.battle.p2.request.choice.startsWith('move '), 'NPC already chose');
 		assert.equal(room.battle.p1.request.isWait, false);
 		assert.equal(room.battle.fantasyAI.options.rogue.wild, false);
 		assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
-		assert.equal(room.battle.fantasyAI.metrics.rollouts, 0);
+		assert(observations.length >= 2, 'both preview and move use the challenge scheduler');
+		assert(room.battle.fantasyAI.metrics.rollouts > 0, JSON.stringify(room.battle.fantasyAI.metrics));
+		for (const observation of observations) {
+			assert.equal(observation.difficulty, 'normal');
+			assert(!observation.fullState && !observation.opponentChoice && !observation.initialOpponent);
+			assert(!observation.rogueBoosts && !observation.rogueBlessings && !observation.rogueSpirit);
+			assert(!observation.opponentMoves?.length, 'unrevealed initial moves must not be supplied');
+		}
 	});
 	it('opens a one-versus-one real AI room, captures, saves, and continues with two party members', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });

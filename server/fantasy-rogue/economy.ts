@@ -45,8 +45,11 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 		if (node.kind === 'trainer') node.reward.money = encounterCoins(floor);
 	} else {
 		node.reward = { money: 0, items: {} };
-		node.wildLoot = node.encounters.map(() => {
-			const loot = rollWildLoot(floor, random);
+		node.wildLoot = node.encounters.map(encounter => {
+			const loot: Record<string, number> = {};
+			for (let n = 0; n < (encounter.wildPack?.lootRolls || 1); n++) {
+				for (const [id, count] of Object.entries(rollWildLoot(floor, random))) loot[id] = (loot[id] || 0) + count;
+			}
 			if (node.kind === 'elite') {
 				let budget = eliteTreasureBudget(floor);
 				for (const item of [...TREASURES].sort((a, b) => b.sellPrice! - a.sellPrice!)) {

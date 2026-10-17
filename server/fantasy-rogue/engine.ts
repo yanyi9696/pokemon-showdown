@@ -1,4 +1,6 @@
 import { rollRoutes, normalizeRouteHistory } from './routes';
+import { syncExclusiveItems } from './exclusive-items';
+import { beginExclusiveEncounter } from './exclusive-events';
 import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup } from './companions';
 import { companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
@@ -253,6 +255,7 @@ export class RogueEngine {
 		const node = (run.choices || this.configured().floors[run.floor])?.find(option => option.id === id);
 		requireRule(node, '本层内容尚未配置或路线无效。');
 		run.node = structuredClone(run.bossPreviews?.[run.floor] || node);
+		if (node.kind === 'trainer') beginExclusiveEncounter(run, this.random);
 		const announced = run.bossPreviews?.[run.floor];
 		if (announced) for (const encounter of announced.encounters) {
 			const trainer = encounter.trainer;
@@ -293,6 +296,7 @@ export class RogueEngine {
 		this.resolveOpponentGenders(run.node.encounters.flatMap(encounter => encounter.team));
 		if (this.content?.blessings) prepareBlessingEncounter(run, this.random);
 		run.phase = run.node.rocket && !run.node.rocket.cleared ? 'ready' :
+			run.node.trade?.kind === 'auction' ? 'event' :
 			['rest', 'trade'].includes(node.kind) ? 'rest' :
 			['reward', 'event', 'adventure'].includes(node.kind) ? 'reward' : 'ready';
 		this.beginBossDialogue(run);
@@ -662,6 +666,7 @@ export class RogueEngine {
 				editParty(run, command, this.configured());
 				if (this.content?.blessings) syncBlessingParty(run);
 				for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+				syncExclusiveItems(run);
 				return;
 			}
 			switch (command.action) {
@@ -834,7 +839,7 @@ export class RogueEngine {
 				snapshotTravelBattle(run);
 				run.battle = {
 					token: randomUUID(), encounterId: run.postgame?.stage === 'battle' ? `${run.id}:godchallenge` :
-						`${run.id}:${run.floor}:${run.node!.id}:${run.encounter}`,
+						`${run.id}:${run.floor}:${run.node!.id}:${run.node!.encounters[run.encounter].key || run.encounter}`,
 				};
 				this.beginPreview(run);
 				if (run.eventBuff?.battles) { if (run.preview?.stage !== 'running') run.eventBuff.battles--; run.battle.eventBuff = true; }
@@ -1022,6 +1027,7 @@ export class RogueEngine {
 			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
 			if (this.content?.blessings) syncBlessingParty(run);
 			syncGrowthParty(run);
+			syncExclusiveItems(run);
 		}, command);
 	}
 	battleState(userid: string): RogueBattleState {
@@ -1031,6 +1037,8 @@ export class RogueEngine {
 		const encounter = run.node!.encounters[run.encounter];
 		return {
 			boss: encounter.boss && structuredClone(encounter.boss),
+			wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',
+			environment: encounter.environment && { ...encounter.environment },
 			mentorCard: run.node!.kind === 'boss' && run.mentorCard?.floor === run.floor ? run.mentorCard.kind : undefined,
 			mentorTier: run.node!.kind === 'boss' ? mentorTier(run.floor) : undefined,
 			fishingElite: run.node!.event?.id === 'fishing',
@@ -1157,6 +1165,7 @@ export class RogueEngine {
 			}
 			if (this.content?.blessings) syncBlessingParty(run);
 			syncGrowthParty(run);
+			syncExclusiveItems(run);
 			if (retreated) {
 				// Keep the saved enemy and story branch. Only the player's battle losses persist.
 				if (memoryBattle) delete run.node!.event!.memory;
@@ -1251,7 +1260,8 @@ export class RogueEngine {
 						}
 						gainExperience(run, mon, Math.floor(towerExperience(rogueSpeciesData(defeated.species).baseExperience,
 							defeated.level, mon.set.level, defeated.participants.includes(mon.id), run.floor,
-							run.node!.kind === 'wild' && !run.node!.event && !defeated.captured) *
+							run.node!.kind === 'wild' && !run.node!.event && !defeated.captured,
+							run.node!.kind === 'wild' && !run.node!.event && !!defeated.captured) *
 							(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing) *
 							(1 + (run.growth?.experience || 0) / 10000) * companionExperience(run, mon, defeated)));
 					}

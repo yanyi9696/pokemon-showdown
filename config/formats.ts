@@ -18,7 +18,7 @@ The column value will be ignored for repeat sections.
 */
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
-import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, rogueEventDamage } from '../sim/fantasy-rogue';
+import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, rogueEventDamage, startRogueArea } from '../sim/fantasy-rogue';
 import { isRogueBoss, megaRogueBoss } from '../sim/rogue-bosses';
 import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
 	blessingEffectiveness, blessingHit } from '../sim/fantasy-rogue-blessings';
@@ -36,7 +36,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
 		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
 		onBegin() { initializeRogueBattle(this); },
-		onBattleStart() { startRogueSpirit(this); },
+		onBattleStart() { startRogueArea(this); startRogueSpirit(this); },
 		onResidualOrder: 100,
 		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
 		onDamage(damage, target, source, effect) {
@@ -71,8 +71,12 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); },
 		onBeforeTurn(pokemon) { megaRogueBoss(pokemon); },
-		onTrapPokemon(pokemon) { if (isRogueBoss(pokemon)) pokemon.trapped = true; },
-		onDragOut(pokemon) { if (isRogueBoss(pokemon)) return false; },
+		onTrapPokemon(pokemon) {
+			if (pokemon.side.id === 'p2' && (this.fantasyRogue?.wild ||
+				this.fantasyRogue?.boss?.kind === 'arceus' ||
+				this.fantasyRogue?.boss?.kind === 'summit' && pokemon.baseSpecies.name.includes('Mewtwo'))) pokemon.trapped = true;
+		},
+		onDragOut(pokemon) { if (isRogueBoss(pokemon) && pokemon.baseSpecies.name.includes('Mewtwo')) return false; },
 		onFaint(pokemon, source) { blessingKO(this, pokemon, source); recordRogueDefeat(this, pokemon); },
 		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},

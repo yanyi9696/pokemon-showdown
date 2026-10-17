@@ -57,38 +57,45 @@ describe('Fantasy Rogue economy', () => {
 		cmd('select', { value: 'wild0' });
 		const initial = account().run;
 		assert.equal(initial.node.reward.money, 0);
-		for (let i = 0; i < 3; i++) {
+		{
 			const { token, result } = fight();
 			const paid = account();
-			assert.equal(paid.run.bag.tinymushroom, i + 1);
+			assert.equal(paid.run.bag.tinymushroom, 3);
 			assert.equal(paid.run.money, initial.money);
-			assert.equal(paid.run.lastReward.encounter, i + 1);
+			assert.equal(paid.run.lastReward.encounter, 1);
 			engine.settle(user, token, result);
 			assert.deepEqual(account(), paid);
 		}
 		assert.equal(account().run.floor, 2);
 		assert.equal(account().points, 0);
 	});
-	it('gives captured wild opponents the same loot and preserves earlier wins on defeat or retreat', () => {
+	it('gives a captured pack the same loot and preserves prior floor loot on defeat or retreat', () => {
 		cmd('select', { value: 'wild0' });
 		cmd('battle');
 		const run = account().run;
 		const captured = createRoguePokemon(run.node.encounters[0].team[0], run.boosts, run.battle.encounterId);
 		engine.settle(user, run.battle.token, { won: true, encounterId: run.battle.encounterId, team: run.team, bag: run.bag, captured });
-		assert.equal(account().run.bag.tinymushroom, 1);
+		assert.equal(account().run.bag.tinymushroom, 3);
+		cmd('select', {value: 'wild0'});
 		fight(false);
-		assert.equal(account().run.bag.tinymushroom, 1);
-		assert.equal(account().run.encounter, 1);
+		assert.equal(account().run.bag.tinymushroom, 3);
+		assert.equal(account().run.encounter, 0);
 		cmd('battle'); cmd('retreat');
 		const lost = account().run;
 		engine.settle(user, lost.battle.token, { won: false, encounterId: lost.battle.encounterId, team: lost.team, bag: lost.bag });
-		assert.equal(account().run.bag.tinymushroom, 1);
+		assert.equal(account().run.bag.tinymushroom, 3);
 		fight();
-		assert.equal(account().run.bag.tinymushroom, 2);
+		assert.equal(account().run.bag.tinymushroom, 6);
 	});
 	it('rolls back continuous-challenge loot with inventory and reuses the same drop on retry', () => {
 		cmd('select', { value: 'wild0' });
-		store.change(user, saved => { saved.run.node.noHealing = true; });
+		// A retained legacy multi-battle challenge still restores its checkpoint on retry.
+		store.change(user, saved => {
+			const node = saved.run.node, template = node.encounters[0];
+			node.noHealing = true;
+			node.encounters = template.team.map(set => ({...template, wildPack: undefined, team: [set]}));
+			node.wildLoot = node.encounters.map(() => ({tinymushroom: 1}));
+		});
 		const original = account().run;
 		fight();
 		const fainted = structuredClone(account().run.team); fainted.forEach(mon => { mon.hp = 0; });

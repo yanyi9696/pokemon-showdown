@@ -40,7 +40,7 @@ describe('Fantasy Rogue continuous summit and nineteen-life challenge', function
 	this.timeout(15000);
 	let battle;
 	afterEach(() => { battle?.destroy(); battle = null; });
-	it('uses six authored slots in order and keeps the seventh export only as Mewtwo Y', () => {
+	it('keeps the authored guard team and the seventh export only as Mewtwo Y', () => {
 		const encounter = summitEncounter();
 		assert.deepEqual(encounter.team.map(mon => mon.species), ['Koraidon-Fantasy', 'Miraidon-Fantasy',
 			'Calyrex-Fantasy', 'Xerneas-Fantasy', 'Lugia-Fantasy', 'Mewtwo-Fantasy']);
@@ -48,9 +48,7 @@ describe('Fantasy Rogue continuous summit and nineteen-life challenge', function
 		assert.equal(encounter.team[4].moves[0], 'Scald');
 		battle = native(encounter);
 		assert.equal(battle.p2.active[0].species.name, 'Koraidon-Fantasy');
-		assert.equal(battle.choose('p2', 'switch 2'), false, 'no voluntary rotation');
-		battle.makeChoices('move 4', 'move 1');
-		assert.equal(battle.p2.active[0].species.name, 'Koraidon-Fantasy', 'Roar cannot skip the roster');
+		assert.equal(battle.choose('p2', 'switch 6'), false, 'commander must wait');
 		for (let i = 0; i < 5; i++) {
 			deplete(battle);
 			battle.checkFainted();

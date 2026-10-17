@@ -68,6 +68,23 @@ export function createBiomeRoutes(
 		};
 		const encounters = Array.from({ length: elite ? 1 : 3 }, () => encounter());
 		if (!elite && extraPool.length && random(100) < (spirit === 'mew' ? 3 : 1)) encounters.push(encounter(true));
+		if (!elite) encounters.splice(0, encounters.length, {
+			name: '野生宝可梦群', team: encounters.flatMap(entry => entry.team),
+			style: 'balanced', catchable: true, wildPack: { lootRolls: 3 },
+		});
+		const environments: Record<string, [string, string, string]> = {
+			biome01: ['terrain', 'grassyterrain', '青草场地'], biome02: ['weather', 'raindance', '下雨'],
+			biome03: ['weather', 'sandstorm', '沙暴'], biome04: ['weather', 'sunnyday', '大晴天'],
+			biome05: ['terrain', 'electricterrain', '电气场地'], biome06: ['terrain', 'mistyterrain', '薄雾场地'],
+			biome07: ['weather', 'snowscape', '下雪'], biome08: ['terrain', 'grassyterrain', '青草场地'],
+			biome09: ['weather', 'raindance', '下雨'], biome10: ['terrain', 'mistyterrain', '薄雾场地'],
+			biome11: ['weather', 'raindance', '下雨'], biome12: ['weather', 'sandstorm', '沙暴'],
+			biome13: ['terrain', 'psychicterrain', '精神场地'], biome14: ['terrain', 'electricterrain', '电气场地'],
+		};
+		if (random(100) < 30) {
+			const [kind, effect, name] = environments[biome.id];
+			encounters[0].environment = { [kind]: effect, name };
+		}
 		return {
 			...structuredClone(template), name: elite ? `${biome.name} · 精英` : biome.name,
 			biome: { id: biome.id, name: biome.name, tier, level }, encounters,

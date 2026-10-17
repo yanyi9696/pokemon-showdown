@@ -158,6 +158,8 @@ export class RogueManager {
 					name: run.node.name, kind: run.node.kind, trade: run.node.trade, noHealing: !!run.node.noHealing,
 					rocket: run.node.rocket, shopChallenge: run.node.shopChallenge, hpPurchases: run.node.hpPurchases || 0,
 					biome: run.node.biome, bonusEncounter: !!run.node.encounters[run.encounter]?.bonus,
+					wildPack: run.node.encounters[run.encounter]?.wildPack ? run.node.encounters[run.encounter].team.length : undefined,
+					environment: run.node.encounters[run.encounter]?.environment,
 					wildLoot: run.node.wildLoot, encounterLoot: run.node.wildLoot?.[run.encounter],
 					reward: { ...run.node.reward, points: run.postgame?.stage === 'battle' ? 20 : run.node.kind === 'boss' ? 1 : 0 },
 				},
@@ -229,7 +231,7 @@ export class RogueManager {
 				}, Teams.pack(run.team.map(mon => mon.set)), {
 					state: this.engine.battleState(userid), floor: run.floor, canRetreat: canRetreatRogue(run),
 					preview: run.preview?.stage === 'running' ? run.preview.trainer : undefined,
-					wild: ['unknown', 'unknownf'].includes(rogueOpponentAvatar(run)),
+					wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',
 					onCapture: captured => { this.engine.capture(userid, token, captured); },
 					onResult: result => {
 						const pending = this.engine.store.get(userid).run?.battle;
@@ -251,7 +253,8 @@ export class RogueManager {
 									...(settled.emergencyRecovery ? { emergencyRecovery: settled.emergencyRecovery } : {}),
 									floor: run.floor, encounter: run.encounter + 1, encounters: run.node!.encounters.length,
 									...(run.node!.shopChallenge ? { shopClosed: true } : {}),
-									...(run.node!.event ? { eventClosed: true } : {}),
+									...(run.node!.event?.id === 'exclusiveclue' ? { eventContinues: true } :
+										run.node!.event ? { eventClosed: true } : {}),
 									...(run.node!.event?.id === 'travel' ? { memoryRestored: true } : {}),
 									retryFloor: settled.phase === 'failed', noHealing: !!settled.node?.noHealing,
 									emergencyCost: emergencyCost(run.floor),

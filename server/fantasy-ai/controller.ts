@@ -6,6 +6,7 @@ import { InformationView } from './information';
 import type { InitialPokemon, OpponentMoves } from './initial-snapshot';
 import type { OpponentChoiceState } from './opponent-choice';
 import { emergencyChoice } from './fallback';
+import { enumerateRequestChoices } from './actions';
 import { rogueBossChoice } from '../../sim/rogue-bosses';
 import type { DecisionScheduler } from './scheduler';
 import { aiDifficulty, type ChallengeDifficulty, type ValidatedTrainer } from './types';
@@ -32,8 +33,7 @@ export interface ChallengeMetrics {
 export interface AIChallengeOptions extends TimeBudgetSettings {
 	rogue?: {
 		orderedBoss?: boolean;
-		wild?: boolean, partySize: number, boosts: StatsTable, spirit?: { id: string, floor: number, money?: number },
-		blessings?: import('../../sim/rogue-blessing-data').BlessingEffects,
+		wild?: boolean, partySize: number,
 	};
 	trainer: ValidatedTrainer;
 	difficulty: ChallengeDifficulty;
@@ -71,9 +71,7 @@ export class AIController {
 		this.options = options;
 		this.timing = new DecisionTimeManager(options);
 		if (options.difficulty === 'normal' || options.rogue) this.view = new InformationView({
-			ownSide: 'p2', difficulty: 'normal', partySize: options.rogue?.partySize, rogueBoosts: options.rogue?.boosts,
-			rogueSpirit: options.rogue?.spirit,
-			rogueBlessings: options.rogue?.blessings,
+			ownSide: 'p2', difficulty: 'normal', partySize: options.rogue?.partySize,
 		});
 		options.scheduler.register(this.schedulerRoomId, options.instanceId, milliseconds => {
 			// Refund queue waiting synchronously, including cancelled queued jobs,
@@ -95,7 +93,7 @@ export class AIController {
 	}
 
 	initialMoves(snapshot: OpponentMoves[]) {
-		if (!this.closed && this.options.difficulty === 'normal') this.view?.setOpponentMoves(snapshot);
+		if (!this.closed && !this.options.rogue && this.options.difficulty === 'normal') this.view?.setOpponentMoves(snapshot);
 	}
 
 	opponentChoice(state: OpponentChoiceState) {
@@ -177,9 +175,9 @@ export class AIController {
 		if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
 		this.submitted = rqid;
 		const revision = this.revision;
-		if (this.options.rogue) {
-			// Tower opponents score the current public position immediately, without a rollout queue.
-			const choice = (this.options.rogue.orderedBoss && rogueBossChoice(request)) ||
+		if (this.options.rogue?.wild) {
+			// Wild packs score public move choices without tactical switching or a rollout queue.
+			const choice = rogueBossChoice(request) ||
 				emergencyChoice(observation, this.options.trainer.format, this.rejected, true, !!this.options.rogue.wild);
 			this.metrics.decisions++;
 			const elapsed = performance.now() - received;
@@ -189,17 +187,26 @@ export class AIController {
 			return;
 		}
 		const key = { roomId: this.schedulerRoomId, instanceId: this.options.instanceId, rqid, revision };
+		const excluded = [...this.rejected];
+		if (this.options.rogue?.orderedBoss) {
+			const party = observation.request.side.pokemon;
+			const king = party.findIndex(mon => /^Mewtwo.*Fantasy/.test(mon.details));
+			const guards = party.some((mon, i) => i !== king && !mon.condition.endsWith(' fnt'));
+			if (king >= 0 && guards) for (const choice of enumerateRequestChoices(observation.request)) {
+				if (choice === `switch ${king + 1}` || choice.startsWith(`team ${king + 1}`)) excluded.push(choice);
+			}
+		}
 		const seed = this.rng.getSeed();
 		this.rng.random();
 		const window = this.timing.allocate(
-			observation, this.battle.turn, received, this.options.trainer.format, this.rejected);
+			observation, this.battle.turn, received, this.options.trainer.format, excluded);
 		this.queuedWindow = window;
 		this.metrics.criticalDecisions = this.timing.criticalDecisions;
 		this.metrics.criticalDecisionReasons = { ...this.timing.criticalReasons };
-		const fallback = emergencyChoice(observation, this.options.trainer.format, this.rejected);
+		const fallback = emergencyChoice(observation, this.options.trainer.format, excluded, !!this.options.rogue);
 		const submit = (choice: string) => this.sendChoice(choice, rqid, revision, choiceVersion);
 		void this.options.scheduler.submit({
-			key, trainer: this.options.trainer, observation, seed, excluded: this.rejected.slice(),
+			key, trainer: this.options.trainer, observation, seed, excluded,
 			budgetMs: Number.isFinite(window.deadline) ? Math.max(0, window.deadline - performance.now()) : null,
 			critical: !!window.criticalReason, fallbackChoice: fallback,
 			maxRollouts: this.options.maxRollouts,

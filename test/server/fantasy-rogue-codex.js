@@ -37,7 +37,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
 		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).length);
-		assert.equal(events.filter(e => e.category === 'trade').length, 4);
+		assert.equal(events.filter(e => e.category === 'trade').length, 5);
 		assert.equal(events.filter(e => e.category === 'reward').length, 5);
 		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 	});
@@ -85,8 +85,13 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event')) {
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
-			assert.deepEqual(replay.pages.start.text, eventView(run).paragraphs);
-			assert.deepEqual(replay.pages.start.options.map(o => o.label), eventView(run).options.map(o => o.name));
+			if (['exclusiveclue', 'exclusivechallenge', 'auction'].includes(entry.id)) {
+				// These openings incorporate the saved item, owner and NPC budgets at runtime.
+				assert.deepEqual(replay.pages.start.text, require('../../dist/server/fantasy-rogue/event-text').eventOpening(entry.id));
+			} else {
+				assert.deepEqual(replay.pages.start.text, eventView(run).paragraphs);
+				assert.deepEqual(replay.pages.start.options.map(o => o.label), eventView(run).options.map(o => o.name));
+			}
 			let endings = 0;
 			for (const page of Object.values(replay.pages)) {
 				assert(page.text.every(p => typeof p === 'string' && p.length));

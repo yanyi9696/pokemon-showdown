@@ -122,11 +122,12 @@ describe('Fantasy Rogue universal escape, rescue and route pacing', () => {
 		chooseEventOption(saved(), run, content(), () => 0, 'travel', 'back');
 		assert(!eventView(run).options.some(o => o.id === 'leave'));
 	});
-	it('keeps the ordinary wild bonus separate from elite, event, capture EXP and reserve eligibility', () => {
+	it('boosts ordinary KO and capture EXP while keeping elite/event EXP and reserve eligibility unchanged', () => {
 		for (const participated of [true, false]) {
 			const base = experienceYield(100, 15, 15, participated);
 			assert.equal(towerExperience(100, 15, 15, participated, 25), base);
-			assert.equal(towerExperience(100, 15, 15, participated, 25, true), Math.floor(base * 1.25));
+			assert.equal(towerExperience(100, 15, 15, participated, 25, true), Math.floor(base * 1.375));
+			assert.equal(towerExperience(100, 15, 15, participated, 25, false, true), Math.floor(base * 1.1));
 		}
 	});
 });

@@ -535,6 +535,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onModifySpD(spd, pokemon) { return blessingModifyStat(spd, pokemon, 'spd'); },
 	onModifySpe(spe, pokemon) { return blessingModifyStat(spe, pokemon, 'spe'); },
 	onModifyMove(move, pokemon) {
+		if (pokemon.side.id === 'p2' && this.fantasyRogue?.wild) delete move.selfSwitch;
 		if (hasBlessing(pokemon, 'topclearmind')) move.rogueTopClearMind = true;
 		if (savedBlessingMember(pokemon)?.tonics?.wine && !member(pokemon).wineUsed) {
 			member(pokemon).wineUsed = true;

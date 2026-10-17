@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-17T23:35:09.001Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\encounter-release-1792280028180",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "testedSaveHpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "unchangedAccounts": 19,
+  "concurrentProgress": [],
+  "newEventsPublished": [
+    "fantasytutor",
+    "exclusiveclue",
+    "exclusivechallenge",
+    "auction"
+  ],
+  "auctionTradePublished": true,
+  "blessingEntries": 168,
+  "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+}

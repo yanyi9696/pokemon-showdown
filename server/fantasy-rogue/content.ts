@@ -107,7 +107,9 @@ export function validateContent(content: RogueContent): RogueContent {
 			ensure(node.name && (fixed ? node.kind === fixed : !['boss', 'rest'].includes(node.kind)), `第 ${floor} 层固定类型不匹配`);
 			ensure(['wild', 'elite', 'trainer', 'rest', 'boss', 'reward', 'event', 'adventure', 'encounter', 'trade']
 				.includes(node.kind), '节点类型未接入');
-			const fights = ['rest', 'reward', 'event', 'adventure', 'trade'].includes(node.kind) ? 0 : node.kind === 'wild' ? 3 : 1;
+			const pack = node.kind === 'wild' && node.encounters.length === 1 && node.encounters[0].wildPack;
+			if (pack) ensure(pack.lootRolls === 3 && [3, 4].includes(node.encounters[0].team.length), '连续野战必须包含三或四只对手');
+			const fights = ['rest', 'reward', 'event', 'adventure', 'trade'].includes(node.kind) ? 0 : node.kind === 'wild' && !pack ? 3 : 1;
 			ensure(node.encounters.length === fights || (content.biomeEncounters && node.kind === 'wild' &&
 				node.encounters.length === 4 && node.encounters[3].bonus), '战斗场次数量不符合节点类型');
 			ensure(whole(node.reward.money), '奖励金额无效');
@@ -143,10 +145,10 @@ export function validateContent(content: RogueContent): RogueContent {
 					team([encounter.boss.mewtwoY!]);
 				}
 				ensure(encounter.name && ['balanced', 'aggressive', 'defensive'].includes(encounter.style), 'AI 名称或风格无效');
-				if (node.kind === 'wild' || encounter.catchable) ensure(encounter.team.length === 1, '野怪／可捕捉对局必须只有一只');
+				if (node.kind === 'wild' || encounter.catchable) ensure(encounter.team.length === 1 || !!pack, '野怪队伍必须使用连续野战配置');
 				if (encounter.catchable) {
 					ensure(['wild', 'elite', 'encounter'].includes(node.kind), '训练家／Boss 不可捕捉');
-					ensure(content.unlocks[toID(encounter.team[0].species)], '缺少捕捉对象的初始解锁映射');
+					for (const mon of encounter.team) ensure(content.unlocks[toID(mon.species)], '缺少捕捉对象的初始解锁映射');
 				}
 				if (encounter.catchable && !content.progression) ensure(Object.keys(encounter.catchChances || {}).length, '缺少捕捉配置');
 				for (const [id, chance] of Object.entries(encounter.catchChances || {})) {

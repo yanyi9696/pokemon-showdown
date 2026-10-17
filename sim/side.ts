@@ -20,6 +20,7 @@
  */
 
 import { Utils } from '../lib/utils';
+import { waitingRogueCommander } from './rogue-bosses';
 import type { RequestState } from './battle';
 import { Pokemon, type EffectState } from './pokemon';
 import { State } from './state';
@@ -861,7 +862,7 @@ export class Side {
 			} else {
 				if (!this.choice.forcedSwitchesLeft) return this.choosePass();
 				slot = this.active.length;
-				while (this.choice.switchIns.has(slot) || this.pokemon[slot].fainted) slot++;
+				while (this.choice.switchIns.has(slot) || this.pokemon[slot].fainted || waitingRogueCommander(this.pokemon[slot])) slot++;
 			}
 		} else {
 			slot = parseInt(slotText) - 1;
@@ -887,6 +888,10 @@ export class Side {
 			return this.emitChoiceError(`Can't switch: The Pokémon in slot ${slot + 1} can only switch in once`);
 		}
 		const targetPokemon = this.pokemon[slot];
+		if (waitingRogueCommander(targetPokemon)) return this.emitChoiceError('幻想超梦仍在指挥，五位守卫倒下后才会出场。');
+		if (this.id === 'p2' && this.battle.fantasyRogue?.wild && this.requestState === 'move') {
+			return this.emitChoiceError('野生宝可梦不会主动替换。');
+		}
 
 		if (this.slotConditions[pokemon.position]['revivalblessing']) {
 			if (!targetPokemon.fainted) {
@@ -979,6 +984,9 @@ export class Side {
 		}
 
 		for (const [index, pos] of positions.entries()) {
+			if (index === 0 && this.pokemon[pos] && waitingRogueCommander(this.pokemon[pos])) {
+				return this.emitChoiceError('幻想超梦会在五位守卫倒下后出场。');
+			}
 			if (index === 0 && this.battle.fantasyRogue && !this.pokemon[pos]?.hp) {
 				return this.emitChoiceError('请选择仍然存活的宝可梦首发。');
 			}

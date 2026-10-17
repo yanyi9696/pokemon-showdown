@@ -20,6 +20,10 @@ export function randomEncounterIVs(random: RogueRandom, elite = false): StatsTab
 
 function movesFor(name: string, level: number): string[] {
 	const species = ordinary.species.get(name);
+	if (!species.exists) {
+		const plain = ordinary.species.get(name.replace(/-Fantasy$/, ''));
+		return movesFor(plain.exists ? plain.name : dex.species.get(name).baseSpecies, level);
+	}
 	const candidates = [...new Set(levelMoves(name).filter(entry => entry.level <= level).map(entry => entry.move))]
 		.map(move => dex.moves.get(move));
 	const ranked = candidates.filter(move => move.category !== 'Status').sort((a, b) => {

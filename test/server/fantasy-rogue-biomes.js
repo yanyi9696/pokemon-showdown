@@ -122,13 +122,13 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		const before = structuredClone(template);
 		const [route] = createBiomeRoutes(1, [template], name => name, () => 0);
 		assert.equal(route.name, '绿茵森林');
-		assert.equal(route.encounters.length, 4);
-		assert.equal(route.encounters[3].bonus, true);
-		assert.equal(route.encounters[3].catchable, true);
+		assert.equal(route.encounters.length, 1);
+		assert.equal(route.encounters[0].team.length, 4);
+		assert.equal(route.encounters[0].catchable, true);
 		assert.deepEqual(route.reward, template.reward);
 		assert.deepEqual(template, before);
 		const [ordinary] = createBiomeRoutes(1, [template], undefined, max => Math.min(1, max - 1));
-		assert.equal(ordinary.encounters.length, 3);
+		assert.equal(ordinary.encounters[0].team.length, 3);
 	});
 	it('rolls the six IVs independently from 20 through 31 and preserves them on rebuild', () => {
 		const values = [0, 999, 420, 920, 140, 800];
@@ -150,9 +150,9 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		const template = { id: 'wild', name: 'old', kind: 'wild', encounters: [], reward: { money: 0, items: {} } };
 		for (const value of [0, 999]) {
 			const [route] = createBiomeRoutes(1, [template], name => name, max => max === 1000 ? value : 0);
-			assert.equal(route.encounters.length, 4, 'the bonus encounter is included');
-			for (const encounter of route.encounters) {
-				assert(Object.values(encounter.team[0].ivs).every(iv => iv === (value ? 31 : 20)));
+			assert.equal(route.encounters[0].team.length, 4, 'the bonus member is included');
+			for (const mon of route.encounters[0].team) {
+				assert(Object.values(mon.ivs).every(iv => iv === (value ? 31 : 20)));
 			}
 		}
 		for (const floor of [1, 100, 161, 181]) {
@@ -232,7 +232,8 @@ describe('Fantasy Rogue saved regional encounters', () => {
 	it('persists visible routes, all opponents and the extra encounter across queries, losses and reloads', () => {
 		const choices = account().run.choices;
 		const drawn = draws;
-		assert.equal(choices.find(node => node.id === 'wild0').encounters.length, 4);
+		assert.equal(choices.find(node => node.id === 'wild0').encounters.length, 1);
+		assert.equal(choices.find(node => node.id === 'wild0').encounters[0].team.length, 4);
 		engine.migrate(user); engine.migrate(user);
 		assert.equal(draws, drawn);
 		assert.deepEqual(account().run.choices, choices);
@@ -257,23 +258,23 @@ describe('Fantasy Rogue saved regional encounters', () => {
 		assert.equal(account().run.encounter, 0);
 		assert.equal(account().run.team[0].hp, 0);
 	});
-	it('pays normal wild loot once per encounter including the fourth, with no extra bonus candy', () => {
+	it('pays three wild loot rolls for the continuous pack, with no fourth bonus drop', () => {
 		cmd('select', { value: 'wild0' });
 		const reward = account().run.node.reward;
 		const money = account().run.money;
 		const bag = structuredClone(account().run.bag);
-		for (let index = 0; index < 4; index++) {
+		{
 			cmd('battle'); const run = account().run;
 			const result = { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag };
 			engine.settle(user, run.battle.token, result);
 			const settled = account();
 			engine.settle(user, run.battle.token, result);
 			assert.deepEqual(account(), settled);
-			assert.equal(account().run.floor, index < 3 ? 1 : 2);
-			assert.equal(account().run.money, index < 3 ? money : money + reward.money);
-			assert.equal(account().run.bag.tinymushroom, index + 1);
+			assert.equal(account().run.floor, 2);
+			assert.equal(account().run.money, money + reward.money);
+			assert.equal(account().run.bag.tinymushroom, 3);
 		}
-		assert.deepEqual(account().run.bag, { ...bag, tinymushroom: 4 });
+		assert.deepEqual(account().run.bag, { ...bag, tinymushroom: 3 });
 	});
 	it('retains a selected v4 encounter and initializes only unselected routes during migration', () => {
 		cmd('select', { value: 'wild0' });

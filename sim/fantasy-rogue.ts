@@ -69,6 +69,8 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	wild?: boolean;
+	environment?: { weather?: string, terrain?: string, name: string };
 	mentorCard?: 'attack' | 'guard' | 'balanced';
 	mentorTier?: import('./rogue-mentor').MentorTier;
 	fishingElite?: boolean;
@@ -164,6 +166,7 @@ export function initializeRogueBattle(battle: Battle) {
 	state.defeated = [];
 	state.blessingProgress = { kos: [], swords: 0, insight: {} };
 	if (state.boss?.kind === 'arceus') battle.add('-message', '神之挑战：阿尔宙斯拥有十九条生命。当前为第 1 / 19 条生命。');
+	if (state.boss?.kind === 'summit') battle.add('-message', '幻想超梦悬在塔顶，指挥五位守卫作战。击败它们后，超梦才会亲自下场。');
 	for (const [i, mon] of battle.p2.pokemon.entries()) {
 		mon.set.fantasyRogueId = `${state.encounterId}:foe:${i}`;
 		if (!state.duel && (state.opponentStars?.[i] || 1) > 1) {
@@ -194,6 +197,14 @@ export function initializeRogueBattle(battle: Battle) {
 		side.pokemonLeft = side.pokemon.filter(mon => mon.hp > 0).length;
 		if (!side.pokemonLeft) throw new Error('没有可出战的宝可梦。');
 	}
+}
+
+export function startRogueArea(battle: Battle) {
+	const env = battle.fantasyRogue?.environment, source = battle.p2.pokemon[0];
+	if (!env || !source) return;
+	if (env.weather && battle.field.setWeather(env.weather, source, battle.format)) battle.field.weatherState.duration = 5;
+	if (env.terrain && battle.field.setTerrain(env.terrain, source, battle.format)) battle.field.terrainState.duration = 5;
+	battle.add('-message', `区域环境：${env.name}，持续 5 回合。`);
 }
 
 export function canRogueSystem(pokemon: Pokemon, system: 'mega' | 'gmega' | 'z'): boolean {

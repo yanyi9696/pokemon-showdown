@@ -3,6 +3,10 @@ import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	fantasytutor: '第 81 层起，消耗少量幻想碎片，请研究员教会幻想伙伴一个合法的幻想招式。',
+	exclusiveclue: '追寻专属道具的线索。排除错误地点后，藏匿的宝可梦也会露出身影。',
+	exclusivechallenge: '专属道具的持有者想亲自检验你与伙伴的实力。',
+	auction: '看清对手的预算，在一声声加价中争取心仪的拍品。',
 	bandits: '半边脸布满伤疤的山贼，想用一枚硬币决定你的去留。',
 	dice: '热闹集市上的骰盅摊，大奖似乎就在下一把。',
 	fishing: '湖边的钓鱼佬借你一根鱼竿，邀你试试今天的手气。',
@@ -28,7 +32,33 @@ export function eventReplay(id: EventID) {
 	page('win', [text.fightWin]);
 	page('roomwin', [text.roomWin, '获得工具箱 ×1（四件选一件）和幻想碎片，碎片数量随楼层增加。']);
 	page('lose', [text.fightLose, text.fightLossRule]);
-	if (id === 'bandits') {
+	if (id === 'fantasytutor') {
+		page('start', eventOpening(id), [['请指导我们的伙伴。', 'partner'], ['这次先向你请教理论。', 'leave']]);
+		page('partner', ['「挑一位幻想伙伴吧。我只能教它本来就能够掌握的招式。」'], [['选定伙伴与招式', 'learn'], ['没有尚未掌握的招式', 'known']]);
+		page('learn', ['你交出 10 枚幻想碎片。碎片化成细碎的光，伙伴学会了新的幻想招式。', '「记住这种感觉。下次，我们再试试新的可能。」']);
+		page('known', ['研究员翻遍笔记，笑着摇摇头：「这些你们已经学会了。真是了不起的伙伴！」']);
+		page('leave', ['研究员在笔记上画下几个要点，你向他道谢，继续前行。']);
+	} else if (id === 'exclusiveclue') {
+		page('start', eventOpening(id), [['跟着伙伴寻找线索。', 'sites'], ['记下这里，继续赶路。', 'leave']]);
+		page('sites', ['一张发黄的纸片提到伙伴的专属道具。你端详地上的痕迹，四处地方都有些可疑。'], [['猜中了藏匿处', 'found'], ['惊动野生宝可梦', 'attack'], ['第三次仍选错了', 'elite']]);
+		page('attack', ['袭击者从暗处跃出。先应付眼前的袭击，再仔细看清那些痕迹。'], [['战斗后继续寻找', 'clearer']], true);
+		page('elite', ['一个格外强壮的身影挡在眼前。它似乎一直守着最后的线索。'], [['战斗后继续寻找', 'clearer']], true);
+		page('clearer', ['散落的纸片露出更清晰的痕迹。你排除错误地点，终于找到属于伙伴的道具。']);
+		page('found', ['伙伴兴奋地叫了起来。你第一次就找对了地方，把专属道具收进背包。']);
+		page('leave', ['你记下那张纸片，继续走向塔的深处。']);
+	} else if (id === 'exclusivechallenge') {
+		page('start', eventOpening(id), [['迎战', 'fight']]);
+		page('fight', ['「让我亲眼看看，你们能不能承担它的力量！」精灵球划过半空。'], [['胜利', 'gift'], ['落败', 'later'], ['逃跑后重新准备', 'prepare']], true);
+		page('gift', ['训练家认真地点了点头：「我看到了。交给你们，我很放心。」你接过了专属道具。']);
+		page('later', ['「还差一点。先照顾好伙伴，过一段路，我会再来测试你们的实力。」']);
+		page('prepare', ['你带着伙伴退到一旁。体力和道具消耗仍然保留，这场考验还在等你。']);
+	} else if (id === 'auction') {
+		page('start', eventOpening(id), [['坐下参加竞拍。', 'bids'], ['看过拍品，继续赶路。', 'leave']]);
+		page('bids', ['你看清了竞拍者的预算。行商怕吃亏，收藏家受不得激将，训练家只肯为合用的东西加价。'], [['施压后继续加价', 'won'], ['激将对手，再放弃竞拍', 'rival']]);
+		page('won', ['对手迟疑着放下牌子。小槌落下，你支付报价，收好拍得的物品。']);
+		page('rival', ['收藏家举高牌子。你退了下来，看着他付出金币，等待下一件拍品。']);
+		page('leave', ['你向摊主点点头，继续赶路。']);
+	} else if (id === 'bandits') {
 		page('start', eventOpening(id), [['拼运气的时候到了！', 'coin'], ['给这个走错片场的家伙一点教训。', 'fight'], ['好汉有话好好说。', 'plead']]);
 		possibilities('coin', [['正面', 'free'], ['反面', 'robbed']]);
 		page('free', ['硬币正面朝上。男人挥了挥手，这伙人居然真的放你走了。']);
