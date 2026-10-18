@@ -17,6 +17,7 @@ export function friendship(mon: RoguePokemon) {
 }
 
 export function changeFriendship(mon: RoguePokemon, amount: number, run?: RogueRun) {
+	if (amount > 0 && mon.set.pokeball === 'luxuryball') amount *= 2;
 	if (amount > 0 && mon.initialPartner && ownsBlessing(run?.blessings, 'bond')) {
 		const boosted = amount * 1.5 + (mon.bondFriendshipRemainder || 0);
 		amount = Math.floor(boosted); mon.bondFriendshipRemainder = boosted - amount;

@@ -23,6 +23,7 @@ export function normalizeRouteHistory(run: RogueRun) {
 /** One red, one blue, then a weighted third option; only wild/events can repeat. */
 export function rollRoutes(run: RogueRun, pool: RogueNode[], random: RogueRandom): RogueNode[] {
 	const history = normalizeRouteHistory(run), weights = baseRouteWeights(run.floor);
+	if (run.blessings?.owned.some(b => b.family === 'companionpoppy')) weights.reward *= 1.3;
 	const elapsed = Math.max(0, run.floor - history.floor);
 	const factors = Object.fromEntries(Object.keys(weights).map(kind =>
 		[kind, 1 - (1 - (history.factors[kind] ?? 1)) * 0.5 ** elapsed]));

@@ -1,4 +1,4 @@
-import { rogueBallMultiplier, type RogueBallRule } from './rogue-balls';
+import { rogueBallMultiplier, rogueBallCatchRate, type RogueBallRule } from './rogue-balls';
 /** Private campaign state. Never send this object to an opponent or a spectator. */
 import type { Battle } from './battle';
 import type { Side } from './side';
@@ -108,7 +108,7 @@ export interface RogueBattleState {
 	allowReplacement?: boolean;
 	caughtSpecies?: number;
 	caughtSpeciesIds?: string[];
-	captureEnvironment?: { water: boolean, dark: boolean };
+	captureEnvironment?: { water: boolean, dark: boolean, fishing?: boolean };
 	participants?: Record<string, string[]>;
 	defeated?: RogueDefeat[];
 }
@@ -265,7 +265,7 @@ export function rogueCaptureChance(battle: Battle, ball: RogueBattleState['balls
 	if (!state?.catchable || !target?.hp) return null;
 	const multiplier = (state.spirit?.id === 'mew' ? 2 : 1) * (hasBlessing(battle.p1.active[0], 'catcher') ? 1.5 : 1);
 	if (ball.chance !== undefined) return Math.min(1, Math.round(ball.chance * 1000000) / 1000000 * multiplier);
-	const threshold = captureThresholds(rogueSpeciesData(target.set.species).catchRate,
+	const threshold = captureThresholds(rogueBallCatchRate(battle, ball, rogueSpeciesData(target.set.species).catchRate),
 		target.maxhp, target.hp, target.status, rogueBallMultiplier(battle, ball), state.caughtSpecies || 0);
 	if (threshold.guaranteed) return 1;
 	const shake = threshold.shake / 65536;
@@ -293,7 +293,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 		success = chance(Math.round(ball.chance * 1000000), 1000000);
 		shakes = success ? 3 : 1;
 	} else {
-		const threshold = captureThresholds(rogueSpeciesData(target.set.species).catchRate,
+		const threshold = captureThresholds(rogueBallCatchRate(battle, ball, rogueSpeciesData(target.set.species).catchRate),
 			target.maxhp, target.hp, target.status, rogueBallMultiplier(battle, ball), state.caughtSpecies || 0);
 		critical = chance(threshold.critical, 256);
 		if (critical) battle.add('-message', '会心捕捉！');
@@ -326,6 +326,8 @@ export function throwRogueBall(battle: Battle, id: string) {
 	delete original.set.fantasyRogueModifiers;
 	delete original.set.fantasyRogueId;
 	state.captured = snapshotRoguePokemon(target, original);
+	state.captured.set.pokeball = id;
+	if (id === 'friendball') state.captured.set.happiness = 150;
 	if (id === 'healball') {
 		state.captured.hp = state.captured.maxhp; state.captured.status = '';
 		state.captured.statusState = {}; delete state.captured.statuses;

@@ -9,6 +9,7 @@ import { reportRogueStatuses } from './fantasy-rogue-status';
 import { consumeRogueItem } from './fantasy-rogue-items';
 import { mentorCardProfile } from './rogue-mentor';
 import { companionSource } from './rogue-companions';
+import { railgunActive, rulebreakerActive } from './rogue-special-blessings';
 import { DRAGON_KING_ABILITIES, assignedExtraAbilities, strongestDragon, type DragonKingAbility } from './rogue-blessing-permanent';
 
 interface MemberRuntime {
@@ -45,6 +46,7 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 	const modifiers: { source: string, factor?: number, add?: number }[] = [];
 	const add = (source: string, factor: number) => modifiers.push({ source, factor });
 	if (move.category === 'Status') return modifiers;
+	if (move.id === 'zapcannon' && railgunActive(pokemon)) add('某科学超电磁炮', 2);
 	const activeMove = move as ActiveMove;
 	if (activeMove.rogueWine || preview && savedBlessingMember(pokemon)?.tonics?.wine && !member(pokemon).wineUsed) add('酒', 2);
 	if (move.type === 'Poison' && savedBlessingMember(pokemon)?.tonics?.poison) add('酒与头孢', 1.5);
@@ -65,6 +67,7 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 export function rogueDamageSources(mon: Pokemon, move: Move) {
 	if (move.category === 'Status') return [];
 	const sources: string[] = [], state = mon.battle.fantasyRogue!;
+	if (rulebreakerActive(mon)) sources.push('【规则，就是用来打破的】无视防御强化、减伤防护与属性免疫');
 	const ordinary = hasBlessing(mon, 'ordinary');
 	if (ordinary && mon.side.pokemon.every(p => mon.battle.dex.species.get(savedBlessingMember(p)?.set.species || p.baseSpecies.name).bst <= 500)) {
 		sources.push(`【愤怒的普通宝可梦】伤害 +${10 + Math.max(1, Math.floor(ordinary.floor / 50)) * 5}%`);
@@ -103,6 +106,8 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	const card = mon.side.id === 'p1' && state.mentorCard;
 	const stats = rogueStatSnapshot(mon);
 	const statSources: string[] = [];
+	if (rulebreakerActive(mon)) statSources.push('【规则，就是用来打破的】无视自身能力下降与天气减益');
+	if (railgunActive(mon)) statSources.push('【某科学超电磁炮】永久电磁漂浮');
 	const effects = blessingEffects(mon), modifiers = mon.set.fantasyRogueModifiers;
 	if (Object.values(mon.set.fantasyRogueStats || {}).some(Boolean)) statSources.push('局外六维加成已计入基础能力');
 	if ((mon.set.fantasyRogueScale || 1) !== 1) statSources.push(`星级：六维 ×${mon.set.fantasyRogueScale}`);
@@ -126,12 +131,15 @@ export function rogueAbilityInfo(mon: Pokemon) {
 		const typed = !!saved.tonics?.poison || !!effects?.evolution?.power ||
 			!!effects?.owned.some(b => ['typelink', 'hoopa'].includes(b.family));
 		return [move.id, { power: roguePowerModifiers(mon, move, true), damage: rogueDamageSources(mon, move),
+			...(move.id === 'zapcannon' && railgunActive(mon) ? { name: '超电磁炮', accuracyFactor: 2, accuracySource: '某科学超电磁炮' } : {}),
 			...(typed ? { types: Object.fromEntries(mon.battle.dex.types.names().map(type =>
 				[type, roguePowerModifiers(mon, { ...move, type }, true)])) } : {}) }];
 	}));
 	const abilitySources = Object.fromEntries((blessingEffects(mon)?.companions || [])
 		.filter(c => c.member === saved.id && c.ability).map(c => [c.ability!, companionSource(c.id)]));
-	return { abilities, active, abilitySources, stats, maxhp: mon.maxhp, statSources, moves,
+	const king = battleDragonKing(mon.side);
+	if (king?.member === saved.id && king.ability) abilitySources[king.ability] = companionSource('iris');
+	return { abilities, active, abilitySources, stats, maxhp: mon.maxhp, statSources, moves, rulebreaker: rulebreakerActive(mon),
 		training: saved.statModifiers?.training,
 		mentor: card ? mentorCardProfile(card, state.mentorTier) : undefined };
 }
@@ -205,7 +213,7 @@ export function chooseDragonKing(player: Side, input: string) {
 	king.ability = ability as DragonKingAbility; king.pending = false;
 	const already = pokemon.hasAbility(ability);
 	prepareBlessingMember(pokemon);
-	player.battle.add('-message', `${pokemon.species.name}成为本场龙王，获得额外特性${ability === 'drizzle' ? '降雨' : '龙之呼吸'}。`);
+	player.battle.add('-message', `${companionSource('iris')}${pokemon.species.name}成为本场龙王，获得额外特性${ability === 'drizzle' ? '降雨' : '龙之呼吸'}。`);
 	if (pokemon.isActive && !already && !pokemon.ignoringAbility()) {
 		player.battle.singleEvent('Start', player.battle.dex.abilities.get(ability), pokemon.volatiles[`ability:${ability}`], pokemon);
 	}
@@ -279,6 +287,12 @@ export function prepareBlessingMember(mon: Pokemon) {
 }
 export function blessingSwitchIn(mon: Pokemon) {
 	if (!mon.battle.fantasyRogue) return;
+	if (railgunActive(mon)) {
+		mon.addVolatile('magnetrise', mon, mon.battle.format);
+		if (mon.volatiles.magnetrise) mon.volatiles.magnetrise.duration = 0;
+		mon.battle.add('-message', '【某科学超电磁炮】永久电磁漂浮；【电磁炮】升级为【超电磁炮】，威力与命中率翻倍。');
+	}
+	if (rulebreakerActive(mon)) mon.battle.add('-message', '【规则，就是用来打破的】破格伙伴无视能力下降、天气减益与对手的防护和属性免疫。');
 	for (const companion of blessingEffects(mon)?.companions || []) if (companion.member === mon.set.fantasyRogueId && companion.ability) {
 		mon.battle.add('-message', `${companionSource(companion.id)}${mon.name}获得额外特性【${mon.battle.dex.abilities.get(companion.ability).name}】。`);
 	}
@@ -420,6 +434,8 @@ export function spendRoguePsychic(mon: Pokemon) {
 	return true;
 }
 export function blessingDamage(damage: number, target: Pokemon, source: Pokemon | null, effect: Effect) {
+	if (rulebreakerActive(target) && (effect?.effectType === 'Weather' ||
+		['solarpower', 'dryskin'].includes(effect?.id) && target.battle.field.effectiveWeather())) return 0;
 	if (!target.battle.fantasyRogue) return damage;
 	if (['psn', 'tox'].includes(effect.id) && target.statusState.blessingToxic) damage *= 2;
 	if (['stealthrock', 'spikes', 'gmaxsteelsurge'].includes(effect.id) && source && hasBlessing(source, 'hazards')) damage *= 2;
@@ -527,6 +543,12 @@ export function blessingEffectiveness(typeMod: number, target: Pokemon | null, t
 	return typeMod;
 }
 export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
+	onModifyBoost(boosts, pokemon) {
+		if (rulebreakerActive(pokemon)) for (const stat of Object.keys(boosts) as BoostID[]) boosts[stat] = Math.max(0, boosts[stat] || 0);
+	},
+	onTryBoost(boosts, pokemon) {
+		if (rulebreakerActive(pokemon)) for (const stat of Object.keys(boosts) as BoostID[]) if (boosts[stat]! < 0) delete boosts[stat];
+	},
 	onBeforeSwitchIn(pokemon) { prepareBlessingMember(pokemon); },
 	onBeforeSwitchOut(pokemon) { blessingLeave(pokemon); },
 	onModifyAtk(atk, pokemon) { return blessingModifyStat(atk, pokemon, 'atk'); },
@@ -535,6 +557,27 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onModifySpD(spd, pokemon) { return blessingModifyStat(spd, pokemon, 'spd'); },
 	onModifySpe(spe, pokemon) { return blessingModifyStat(spe, pokemon, 'spe'); },
 	onModifyMove(move, pokemon) {
+		if (move.id === 'zapcannon' && railgunActive(pokemon)) {
+			Object.assign(move, { name: '超电磁炮' });
+			if (typeof move.accuracy === 'number') move.accuracy *= 2;
+		}
+		if (rulebreakerActive(pokemon)) {
+			move.ignoreNegativeOffensive = true;
+			move.ignorePositiveDefensive = true;
+			move.ignoreImmunity = true;
+			move.ignoreAbility = true;
+			move.infiltrates = true;
+			delete move.flags.protect;
+			const weather = this.field.effectiveWeather();
+			if (['sunnyday', 'desolateland'].includes(weather) && ['thunder', 'hurricane'].includes(move.id)) {
+				move.accuracy = this.dex.moves.get(move.id).accuracy;
+			}
+			if (['solarbeam', 'solarblade'].includes(move.id)) delete move.onBasePower;
+			if (['synthesis', 'morningsun', 'moonlight'].includes(move.id) &&
+				weather && !['sunnyday', 'desolateland', 'deltastream'].includes(weather)) {
+				move.onHit = function (target) { if (!this.heal(target.baseMaxhp / 2)) return false; };
+			}
+		}
 		if (pokemon.side.id === 'p2' && this.fantasyRogue?.wild) delete move.selfSwitch;
 		if (hasBlessing(pokemon, 'topclearmind')) move.rogueTopClearMind = true;
 		if (savedBlessingMember(pokemon)?.tonics?.wine && !member(pokemon).wineUsed) {

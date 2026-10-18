@@ -11,6 +11,7 @@ const { blessingCandidates, prepareBlessingEncounter, handleBlessingCommand,
 	completeBlessingFloor, blessingView } = require('../../dist/server/fantasy-rogue/blessings');
 const { recordClear, editClearCard } = require('../../dist/server/fantasy-rogue/legacy');
 const { set } = require('../fixtures/fantasy-rogue');
+const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 
 describe('Fantasy Rogue opening blessing and earned spirit selection', function () {
 	this.timeout(20000);
@@ -72,7 +73,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	it('offers all migrated opening-only blessings and excludes other restricted floors', () => {
 		cmd('start', { starters: ['bulbasaur'] });
 		const run = account().run, eligible = new Set(blessingCandidates(run, content).map(b => b.id));
-		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking']);
+		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker']);
 		for (const def of ROGUE_BLESSINGS) {
 			if (def.floors) assert.equal(eligible.has(def.id), def.floors.includes(1), def.name);
 			else if (!requiresParty.has(def.family)) assert(eligible.has(def.id), def.name);
@@ -87,7 +88,12 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	});
 	for (const def of ROGUE_BLESSINGS.filter(b => (!b.floors || b.floors.includes(1)) && !['singer', 'dancer', 'swords', 'topclearmind', 'dragonking'].includes(b.family))) {
 		it(`claims the opening option ${def.id}, including any follow-up rewards`, () => {
-			cmd('start', { starters: ['bulbasaur'] }); forceOption(def.id);
+			cmd('start', { starters: ['bulbasaur'] });
+			if (def.family === 'railgun') store.change(user, a => {
+				a.run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 5), a.run.boosts);
+			});
+			if (def.family === 'rulebreaker') store.change(user, a => { a.run.team[0].extraAbilities = ['moldbreaker']; });
+			forceOption(def.id);
 			cmd('blessing', { slot: 0 }); finishRewards();
 			const run = account().run;
 			assert.equal(run.phase, 'choose'); assert.equal(run.floor, 1);

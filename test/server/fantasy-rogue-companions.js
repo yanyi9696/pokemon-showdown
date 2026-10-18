@@ -103,11 +103,11 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 			c.recordCompanionPreference(run, options, 'power', () => 0); c.recordCompanionPreference(run, options, 'power', () => 0);
 		}
 		assert.equal(run.blessings.companions[0].preferences, 15); assert(run.blessings.companions[0].rewarded);
-		assert.equal(run.money, 10700); assert.equal(run.bag.ether, 1); assert(c.companionView(run, options)[0].smile);
+		assert.equal(run.money, 10250); assert.equal(run.bag.expcandym, 1); assert(c.companionView(run, options)[0].smile);
 		run.node.event.key = 'next-dialogue'; assert(c.companionView(run, options)[0].smile);
 		run.node.event = { id: 'martial', key: 'new', stage: 'choice' };
 		assert(!c.companionView(run, options)[0].smile);
-		c.recordCompanionPreference(run, options, 'power', () => 0); assert.equal(run.money, 10700);
+		c.recordCompanionPreference(run, options, 'power', () => 0); assert.equal(run.money, 10250);
 	});
 	it('applies Fighting XP and Water-opponent XP independently, including captured opponents', () => {
 		const run = party([set('Machop'), set('Eevee')]); c.grantCompanion(run, 'bea'); c.grantCompanion(run, 'lana');

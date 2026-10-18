@@ -38,7 +38,8 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 		for (const floor of [1, 51, 121, 199]) {
 			const r = run(floor, 'trade'); r.node.trade = { kind: 'balls', stock: [], purchases: 0 };
 			prepareTrade(r, content, () => 0);
-			assert.equal(r.node.trade.stock.filter(i => i.id.startsWith('roguetypeball')).length, 18);
+			assert.equal(r.node.trade.stock.length, 24);
+			assert(r.node.trade.stock.every(i => Dex.items.get(i.id).isPokeball));
 			for (const item of r.node.trade.stock) {
 				assert(item.price < content.items.find(i => i.id === item.id).price); assert.equal(item.remaining, 15);
 			}
@@ -66,7 +67,7 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 		const manager = new RogueManager(engine);
 		const publicState = manager.state({ id: user, named: true, registered: true, connected: true });
 		assert.equal(publicState.items.find(i => i.id === 'metronome').category, '对战影响道具');
-		assert.equal(publicState.items.find(i => i.id === 'roguetypeballfire').category, '幻想属性球');
+		assert(!publicState.items.some(i => i.id.startsWith('roguetypeball')));
 		const mon = store.get(user).run.team[0];
 		assert.throws(() => cmd('use', { value: 'bottlecap', member: mon.id, slot: 6 }));
 		cmd('use', { value: 'bottlecap', member: mon.id, slot: 1 });
@@ -85,11 +86,8 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 			p1: { team: [player.set] }, p2: { team: [set('Magikarp', 'Swift Swim', 20)] } });
 		battle.makeChoices('team 1', 'team 1');
 		const ball = id => balls.find(b => b.id === id), target = battle.p2.active[0];
-		for (const type of Dex.types.names()) {
-			if (['Stellar', '???'].includes(type)) continue;
-			target.setType(type); assert.equal(rogueBallMultiplier(battle, ball('roguetypeball' + type.toLowerCase())), 3);
-			target.setType(type === 'Normal' ? 'Water' : 'Normal'); assert.equal(rogueBallMultiplier(battle, ball('roguetypeball' + type.toLowerCase())), 1);
-		}
+		target.setType('Bug'); assert.equal(rogueBallMultiplier(battle, ball('netball')), 3.5);
+		target.setType('Fire'); assert.equal(rogueBallMultiplier(battle, ball('netball')), 1);
 		target.setType('Water'); assert.equal(rogueBallMultiplier(battle, ball('netball')), 3.5);
 		assert(rogueCaptureChance(battle, ball('netball')) > rogueCaptureChance(battle, ball('pokeball')));
 		assert.equal(rogueBallMultiplier(battle, ball('quickball')), 5); battle.turn = 2;
@@ -128,11 +126,11 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 		const options = [{ id: 'investigate', name: '探索' }, { id: 'fight', name: '对战' }];
 		for (let i = 0; i < 16; i++) {
 			r.node.event = { id: 'exclusiveclue', key: 'story' + i, stage: 'choice' };
-			companions.recordCompanionPreference(r, options, 'investigate', () => 0);
-			r.node.event.key += 'branch'; companions.recordCompanionPreference(r, options, 'investigate', () => 0);
+			companions.recordCompanionPreference(r, options, 'fight', () => 0);
+			r.node.event.key += 'branch'; companions.recordCompanionPreference(r, options, 'fight', () => 0);
 		}
 		assert(companions.companionView(r, options)[0].smile);
-		assert.equal(c.preferences, 16); assert(c.rewarded); assert.equal(r.bag.ether, 1);
+		assert.equal(c.preferences, 16); assert(c.rewarded); assert.equal(r.bag.greatball, 1);
 		r.bag.potion = 0;
 		for (let i = 0; i < 10; i++) {
 			const before = { money: r.money, bag: { ...r.bag }, shards: r.blessings.shards };

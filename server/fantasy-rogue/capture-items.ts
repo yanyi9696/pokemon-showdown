@@ -1,5 +1,4 @@
-import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
-import type { RogueItem } from './types';
+import type { RogueItem, RogueRun } from './types';
 
 /** Tower equivalents of ordinary balls; descriptions state the actual tower conditions. */
 export function captureItems(): RogueItem[] {
@@ -15,12 +14,38 @@ export function captureItems(): RogueItem[] {
 		['beastball', '究极球', 1750, '究极异兽的捕捉倍率为 5，其他宝可梦仅为 0.1。', { condition: 'ultra' }],
 		['healball', '治愈球', 500, '捕捉倍率为 1；捕捉成功后，恢复该伙伴的 HP、PP 并解除异常状态。'],
 		['premierball', '纪念球', 250, '捕捉倍率为 1，与精灵球相同。'],
+		['fastball', '速度球', 1250, '速度种族值达到 100 的目标，捕捉倍率为 4；其他目标为 1。', { condition: 'fast' }],
+		['levelball', '等级球', 1250, '我方出场伙伴等级高于目标时倍率为 2；达到目标的 2 倍时为 4，4 倍时为 8；否则为 1。', { condition: 'level' }],
+		['lureball', '诱饵球', 1250, '钓鱼遭遇的捕捉倍率为 4；其他场合为 1。', { condition: 'fishing' }],
+		['heavyball', '沉重球', 1250, '按目标体重修正基础捕获率：低于 100 千克 −20；100～199.9 千克不变；200～299.9 千克 +20；300 千克起 +30。', { condition: 'heavy' }],
+		['loveball', '甜蜜球', 1250, '目标与我方出场伙伴同种且异性时，捕捉倍率为 8；其他目标为 1。', { condition: 'love' }],
+		['moonball', '月亮球', 1250, '使用月之石进化的家族，捕捉倍率为 4；其他目标为 1。', { condition: 'moon' }],
+		['friendball', '友友球', 1250, '捕捉倍率为 1；捕获伙伴的初始亲密度为 150。'],
+		['luxuryball', '豪华球', 1500, '捕捉倍率为 1；捕获伙伴之后获得的亲密度翻倍。'],
+		['safariball', '狩猎球', 1250, '捕捉倍率为 1，与精灵球相同。'],
+		['sportball', '竞赛球', 1250, '捕捉倍率为 1，与精灵球相同。'],
 	];
-	return [...definitions.map(([id, name, price, description, ballRule]) => ({
+	return definitions.map(([id, name, price, description, ballRule]) => ({
 		id, name, price, description, ballRule, multiplier: 1, kind: 'ball' as const, icon: id, shopFloor: false as const,
-	})), ...Object.entries(BLESSING_TYPES).map(([type, label]) => ({
-		id: `roguetypeball${type.toLowerCase()}`, name: `${label}属性球`, kind: 'ball' as const, price: 1250,
-		multiplier: 1, ballRule: { types: [type], bonus: 3 }, icon: 'pokeball', shopFloor: false as const,
-		category: '幻想属性球', description: `对${label}系目标，捕捉倍率为 3；其他目标为 1。`,
-	}))];
+	}));
+}
+
+/** Retired prototype balls become official Ultra Balls, including rollback inventories. */
+export function migrateRetiredBalls(run: RogueRun) {
+	const convert = (bag?: Record<string, number>) => {
+		if (!bag) return 0;
+		let count = 0;
+		for (const id of Object.keys(bag)) if (id.startsWith('roguetypeball')) {
+			count += Math.max(0, bag[id]); delete bag[id];
+		}
+		if (count) bag.ultraball = (bag.ultraball || 0) + count;
+		return count;
+	};
+	const count = convert(run.bag);
+	convert(run.checkpoint?.bag); convert(run.postgame?.before.bag); convert(run.preview?.result?.bag);
+	convert(run.lastReward?.items);
+	for (const node of [run.node, ...run.choices || []]) if (node?.trade) {
+		node.trade.stock = node.trade.stock.filter(item => !item.id.startsWith('roguetypeball'));
+	}
+	if (count) (run.notices ||= []).push(`已将停用的自制属性球 ×${count} 换为等量【高级球】。`);
 }

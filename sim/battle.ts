@@ -29,6 +29,7 @@ import { hasRogueStatus, rogueStatusStates, wrapRogueStatus } from './fantasy-ro
 import { emblemType } from './rogue-blessing-data';
 import { chooseDragonKing, reportRogueAbilities } from './fantasy-rogue-blessings';
 import { advanceRogueBoss, waitingRogueCommander } from './rogue-bosses';
+import { rulebreakerActive, bypassRogueDefense, bypassRogueProtection } from './rogue-special-blessings';
 declare const __version: any;
 
 export type ChannelID = 0 | 1 | 2 | 3 | 4;
@@ -853,6 +854,22 @@ export class Battle {
 			}
 			const effect = handler.effect;
 			const effectHolder = handler.effectHolder;
+			if (bypassRogueProtection(this.activePokemon, effect, eventid)) continue;
+			if (effectHolder instanceof Pokemon && ['Item', 'Ability'].includes(effect.effectType) &&
+				bypassRogueDefense(this.activePokemon, effectHolder, eventid)) continue;
+			if (effect.effectType === 'Weather') {
+				const subject = this.event.target instanceof Pokemon ? this.event.target : null;
+				const attack = this.activeMove;
+				if (subject && rulebreakerActive(subject) && (
+					eventid === 'TryMove' && ['primordialsea', 'desolateland'].includes(effect.id) ||
+					eventid === 'WeatherModifyDamage' && attack && (
+						effect.id === 'raindance' && attack.type === 'Fire' ||
+						effect.id === 'sunnyday' && attack.type === 'Water' && attack.id !== 'hydrosteam'
+					)
+				)) continue;
+				if (subject && this.activePokemon && subject.side !== this.activePokemon.side && rulebreakerActive(this.activePokemon) &&
+					['ModifyDef', 'ModifySpD', 'Effectiveness'].includes(eventid)) continue;
+			}
 			// this.debug('match ' + eventid + ': ' + status.id + ' ' + status.effectType);
 			if (effect.effectType === 'Status' && !hasRogueStatus(effectHolder as Pokemon, effect.id)) {
 				// it's changed; call it off

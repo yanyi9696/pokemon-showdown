@@ -1,7 +1,8 @@
 import { rollRoutes, normalizeRouteHistory } from './routes';
+import { migrateRetiredBalls } from './capture-items';
 import { syncExclusiveItems } from './exclusive-items';
 import { beginExclusiveEncounter } from './exclusive-events';
-import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards } from './companions';
+import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards, poppyRewardPickup } from './companions';
 import { companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
 import { eventView } from './events';
@@ -99,6 +100,8 @@ export class RogueEngine {
 		return account.run;
 	}
 	private normalizeRun(run: RogueRun) {
+		migrateRetiredBalls(run);
+		if (run.node?.trade?.kind === 'balls' && this.content) prepareTrade(run, this.content, this.random);
 		if (run.phase !== 'battle' && run.eventBuff?.battles) {
 			const effect = grantMushroomGrowth(run);
 			delete run.eventBuff;
@@ -401,6 +404,7 @@ export class RogueEngine {
 		}
 		delete run.battle;
 		if (this.content?.blessings) completeBlessingFloor(account, run, this.configured(), this.random);
+		poppyRewardPickup(run, this.random);
 		if (this.pendingBlessings(run)) {
 			run.blessings!.afterFloor = true;
 			run.phase = 'blessing';
@@ -1078,7 +1082,7 @@ export class RogueEngine {
 				(run.node!.kind === 'boss' && ELITE_BOSS_FLOORS.has(run.floor)) },
 			progression: !run.postgame && !!this.configured().progression, allowReplacement: this.configured().allowReplacement,
 			caughtSpecies: account.caughtSpecies?.length || 0, caughtSpeciesIds: [...(account.caughtSpecies || [])],
-			captureEnvironment: { water: run.node!.event?.id === 'fishing' || ['biome02', 'biome09'].includes(run.node!.biome?.id || ''),
+			captureEnvironment: { fishing: run.node!.event?.id === 'fishing', water: run.node!.event?.id === 'fishing' || ['biome02', 'biome09'].includes(run.node!.biome?.id || ''),
 				dark: rogueTime(run.floor) === 'night' || ['biome04', 'biome12', 'biome14'].includes(run.node!.biome?.id || '') },
 			balls: this.configured().items.filter(item => item.kind === 'ball' &&
 				(item.multiplier || item.id in (encounter.catchChances || {})))
@@ -1153,6 +1157,7 @@ export class RogueEngine {
 				}
 			}
 			run.bag = { ...result.bag };
+			migrateRetiredBalls(run);
 			for (const mon of run.team) ensureMemberMemory(mon);
 			run.notices = [];
 			if (memoryBattle && !retreated) restoreTravelBattle(run, result);
@@ -1165,7 +1170,7 @@ export class RogueEngine {
 				requireRule(run.team.length < roguePartyLimit(run.spirit) || this.configured().allowReplacement, '队伍已满。');
 				const mon = createRoguePokemon(
 					{ ...captured.set, level: captured.set.level - (run.node!.encounters[run.encounter].blessingLevels || 0),
-						happiness: ROGUE_INITIAL_FRIENDSHIP }, run.boosts, captured.id, captured.stars
+						happiness: captured.set.pokeball === 'friendball' ? 150 : ROGUE_INITIAL_FRIENDSHIP }, run.boosts, captured.id, captured.stars
 				);
 				mon.hp = Math.max(1, mon.maxhp - (captured.maxhp - captured.hp));
 				mon.pp = structuredClone(captured.pp);
@@ -1262,6 +1267,11 @@ export class RogueEngine {
 					money: 0, items: Object.fromEntries(Object.keys(loot).map(id => [id, run.bag[id] - (before.bag[id] || 0)])), points: 0 };
 			}
 			if (this.configured().progression) {
+				if (companionOwned(run.blessings, 'iris') && result.defeated?.some(defeated => run.team.some(mon =>
+					defeated.eligible.includes(mon.id) && mon.id !== (defeated.dragonKing || run.blessings?.dragonKing?.member) &&
+					permanentMemberTypes(mon).includes('Dragon')))) {
+					run.notices.push('【同行训练家 - 爱丽丝】龙王以外的龙系伙伴战斗经验提升 30%。');
+				}
 				if (companionOwned(run.blessings, 'lana') && result.defeated?.some(defeated =>
 					Dex.mod('gen9fantasy').species.get(defeated.species).types.includes('Water'))) {
 					run.notices.push('【同行训练家 - 水莲】从水系对手身上获得的全队战斗经验提升 25%。');

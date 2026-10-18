@@ -106,15 +106,16 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 		if (run.node?.event?.id !== 'auction') beginAuction(run, content, random);
 		return;
 	}
-	if (!trade || trade.stock.length || trade.kind === 'growth') return;
+	if (!trade || trade.kind === 'growth') return;
 	if (trade.kind === 'balls' || trade.kind === 'crowns') {
 		const pool = content.items.filter(item => trade.kind === 'balls' ? item.kind === 'ball' && item.id !== 'masterball' :
 			item.kind === 'crown' && (item.id === 'bottlecap' || run.floor >= 121));
-		for (const item of pool) trade.stock.push({ ...item, shopFloor: 1,
+		for (const item of pool) if (!trade.stock.some(stock => stock.id === item.id)) trade.stock.push({ ...item, shopFloor: 1,
 			price: Math.ceil(item.price * (trade.kind === 'balls' ? 0.9 : 1) * (run.spirit === 'meowth' ? 1.25 : 1)),
 			remaining: trade.kind === 'balls' ? 15 : item.id === 'bottlecap' ? 2 : 1 });
 		return;
 	}
+	if (trade.stock.length) return;
 	const budget = (run.floor < 30 ? 750 : run.floor < 80 ? 1250 : run.floor < 140 ? 2450 : 5650) + 8 * run.floor;
 	let pool: RogueItem[];
 	if (trade.kind === 'mint') {

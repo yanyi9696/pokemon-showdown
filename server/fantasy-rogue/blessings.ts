@@ -1,5 +1,6 @@
 import { candyAtFloor } from './early-balance';
 import { grantCompanion } from './companions';
+import { memberHasMoldBreaker } from '../../sim/rogue-special-blessings';
 import { companionAppearance, syncCompanions } from '../../sim/rogue-companions';
 import { growthModifiers } from './growth';
 import { randomUUID } from 'crypto';
@@ -147,7 +148,9 @@ export function normalizeBlessings(run: RogueRun) {
 			}
 		}
 		const ability = reward.ability || TARGET_BLESSING_ABILITIES[blessing(reward.blessing || '')?.family || ''];
-		if (reward.kind === 'target' && ability) {
+		if (reward.kind === 'target' && reward.blessing === 'railgun') {
+			reward.options = run.team.filter(canLearnZapCannon).map(mon => mon.id);
+		} else if (reward.kind === 'target' && ability) {
 			reward.options = run.team.filter(mon => canGrantExtraAbility(mon, ability, run.team, state)).map(mon => mon.id);
 		} else if (reward.kind === 'ability') {
 			reward.options = POWER_CHOICE_ABILITIES.filter(id => run.team.some(mon => canGrantExtraAbility(mon, id, run.team, state)));
@@ -158,6 +161,11 @@ export function normalizeBlessings(run: RogueRun) {
 	return state;
 }
 const legalMoveCache = new Map<string, string[]>();
+export function canLearnZapCannon(mon: RoguePokemon) {
+	// Build the same legal pool as the tutor, including moves already mastered.
+	blessingLearnChoices(mon);
+	return legalMoveCache.get(dex.species.get(mon.set.species).id)!.includes('zapcannon');
+}
 export function blessingLearnChoices(mon: RoguePokemon) {
 	const species = dex.species.get(mon.set.species);
 	if (!legalMoveCache.has(species.id)) {
@@ -199,6 +207,8 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 			has(def.family === 'singer' ? 'dancer' : 'singer'))) return false;
 		if (def.family === 'swords' && !run.team.some(mon => swords.includes(toID(dex.species.get(mon.set.species).baseSpecies)))) return false;
 		if (def.family === 'topclearmind' && (!state.prayer || state.prayer.changed)) return false;
+		if (def.family === 'railgun' && !run.team.some(canLearnZapCannon)) return false;
+		if (def.family === 'rulebreaker' && !run.team.some(mon => memberHasMoldBreaker(mon, run.team, state))) return false;
 		if (def.family === 'typeevolution' && !giftPool(run, content, def.type).length) return false;
 		if (def.family === 'friend' && !giftPool(run, content, def.type, true).length) return false;
 		if (def.family === 'overtime' && !overtimeGiftPool(run, content, def.type!).length) return false;
@@ -434,6 +444,7 @@ export function syncBlessingParty(run: RogueRun) {
 		}
 	}
 	if (has('dragonking')) {
+		grantCompanion(run, 'iris');
 		const king = strongestDragon(run.team);
 		if (!king) delete state.dragonKing;
 		else if (state.dragonKing?.member !== king.id) state.dragonKing = { member: king.id };
@@ -604,6 +615,10 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	if (def.family === 'companionbea') grantCompanion(run, 'bea');
 	if (def.family === 'companionacerola') grantCompanion(run, 'acerola');
 	if (def.family === 'companionlana') grantCompanion(run, 'lana');
+	if (def.family === 'companionpoppy') grantCompanion(run, 'poppy');
+	if (def.family === 'companionguzma') grantCompanion(run, 'guzma');
+	if (def.family === 'railgun') state.pending.push({ id: randomUUID(), title: '某科学超电磁炮 · 选择学习【电磁炮】的伙伴',
+		kind: 'target', blessing: def.id, options: run.team.filter(canLearnZapCannon).map(mon => mon.id) });
 	const lateReward = lateBlessingReward(def.family, run.floor);
 	if (lateReward.treasure) treasure(run, content, random);
 	for (let i = 0; i < lateReward.toolboxes; i++) toolbox(run, random, lateReward.advanced);
@@ -813,6 +828,14 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 				const ability = reward.ability || TARGET_BLESSING_ABILITIES[entry.family];
 				requireRule(mon && (!ability || canGrantExtraAbility(mon, ability, run.team, state)), '该伙伴已经拥有这个特性，不能重复赋予。');
 				entry.target = mon.id;
+				if (entry.family === 'railgun') {
+					requireRule(canLearnZapCannon(mon), '请选择可以合法学习【电磁炮】的伙伴。');
+					rememberMove(mon, 'zapcannon');
+					if (!mon.set.moves.some(move => toID(move) === 'zapcannon') && mon.set.moves.length < 4) mon.set.moves.push('zapcannon');
+					rebuildMember(mon, run.boosts);
+					recordStarterMoves(account, content, { ...mon.set, moves: ['zapcannon'] });
+					(run.notices ||= []).push('已学会【电磁炮】。将它装备在招式栏后，队伍中最强的携带者会获得【超电磁炮】与永久【电磁漂浮】。');
+				}
 				if (reward.ability) mon.extraAbilities = [...new Set([...mon.extraAbilities || [], reward.ability])];
 			}
 		}
@@ -917,14 +940,18 @@ export function blessingExperience(run: RogueRun, mon: RoguePokemon, dragonKing 
 	const ordinary = ownsBlessing(state, 'ordinary');
 	if (ordinary && run.team.every(member => dex.species.get(member.set.species).bst <= 500)) multiplier *= 1 + (Math.max(1, Math.floor(ordinary.floor / 50)) + 1) / 10;
 	for (const entry of state?.owned || []) if (entry.family === 'typexp' && blessingMemberTypes(mon).includes(entry.type!)) multiplier *= 1.3;
-	if (ownsBlessing(state, 'dragonking') && mon.id !== dragonKing) multiplier *= 1.3;
+	if (ownsBlessing(state, 'dragonking') && mon.id !== dragonKing && permanentMemberTypes(mon).includes('Dragon')) multiplier *= 1.3;
 	return multiplier;
 }
 /** Stochastic rounding preserves the advertised expected quantity even for one-item drops. */
 export function blessingLoot(run: RogueRun, loot: Record<string, number>, random: RogueRandom) {
 	const entry = ownsBlessing(run.blessings, 'ordinary');
-	if (!entry || !run.team.every(mon => dex.species.get(mon.set.species).bst <= 500)) return { ...loot };
-	const bonus = (Math.max(1, Math.floor(entry.floor / 50)) + 1) / 10;
+	const ordinary = entry && run.team.every(mon => dex.species.get(mon.set.species).bst <= 500) ?
+		(Math.max(1, Math.floor(entry.floor / 50)) + 1) / 10 : 0;
+	const guzma = run.blessings?.companions?.some(c => c.id === 'guzma') ? 0.2 : 0;
+	const bonus = (1 + ordinary) * (1 + guzma) - 1;
+	if (!bonus) return { ...loot };
+	if (guzma && Object.keys(loot).length) (run.notices ||= []).push('【同行训练家 - 古兹马】战利品数量提升 20%。');
 	return Object.fromEntries(Object.entries(loot).map(([id, count]) => {
 		const extra = count * bonus, whole = Math.floor(extra);
 		return [id, count + whole + (random(1000) < Math.round((extra - whole) * 1000) ? 1 : 0)];

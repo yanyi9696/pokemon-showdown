@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-18T04:20:28.001Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\companion-expansion-1792297068522",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "testedSaveHpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "unchangedAccounts": 19,
+  "concurrentProgress": [],
+  "newBlessingsPublished": [
+    "companionpoppy",
+    "companionguzma",
+    "railgun",
+    "rulebreaker"
+  ],
+  "irisAndLanaGiftsPublished": true,
+  "typeBalls": 0,
+  "officialBallKinds": 24,
+  "streamerBattlePreferencePublished": true,
+  "blessingEntries": 173,
+  "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+}
