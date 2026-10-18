@@ -1,8 +1,11 @@
 import { EVENT_NAMES, EVENT_TEXT as text, eventOpening, type EventID } from './event-text';
 import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
+import { HONEYMOON_REGIONS } from './honeymoon';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	honeymoon: '第 80 层起，为一对新婚夫妇推荐旅行地区，收下一份小谢礼，永久解锁后续归程事件。',
+	honeymoonreturn: '完成旅行建议后，至少再前进 8 层才可能重逢。归来的夫妇带来地区特产；若展开友谊对战，胜负均为全队恢复状态。',
 	skiing: '左右换道躲避障碍，在 30 秒雪道挑战中坚持越久，收获越好。',
 	stones: '逐块或连续开启原石，可能开出进化石、道具、化石、宝石和珍贵战利品，也可能没有收获。',
 	feathers: '交换美丽之羽，或展示拥有羽毛的伙伴，获得一份观察谢礼。',
@@ -37,7 +40,18 @@ export function eventReplay(id: EventID) {
 	page('win', [text.fightWin]);
 	page('roomwin', [text.roomWin, '获得工具箱 ×1（四件选一件）和幻想碎片，碎片数量随楼层增加。']);
 	page('lose', [text.fightLose, text.fightLossRule]);
-	if (id === 'skiing') {
+	if (id === 'honeymoon' || id === 'honeymoonreturn') {
+		page('start', eventOpening(id), id === 'honeymoon' ? Object.entries(HONEYMOON_REGIONS).map(([key, region]) =>
+			[`推荐${region.name}地区`, `recommend:${key}`]) : [['听听旅行故事', 'return']]);
+		for (const [key, region] of Object.entries(HONEYMOON_REGIONS)) {
+			page(`recommend:${key}`, [`夫妇将${region.name}圈在地图上，送给你小额金币与恢复用品，约定以后再分享旅途故事。`]);
+		}
+		page('return', ['夫妇从你推荐的地区归来，带来当地特产。'], [['旅途特别愉快，展示新伙伴', 'friendlybattle'], ['平静而开心的旅程', 'souvenir']]);
+		page('friendlybattle', ['与推荐地区的伙伴进行一场友谊对战。'], [['获胜', 'souvenirwin'], ['落败', 'souvenirlose']], true);
+		page('souvenirwin', ['「真厉害！」夫妇让你的全队恢复全部状态，再递来礼物：「这是带给你的特产。」']);
+		page('souvenirlose', ['「谢谢你陪我们对战！」夫妇让你的全队恢复全部状态，再递来礼物：「这是带给你的特产。」']);
+		page('souvenir', ['夫妇递来礼物：「这是带给你的特产。」']);
+	} else if (id === 'skiing') {
 		page('start', eventOpening(id), [['穿好护具，滑向山脚！', 'slide'], ['先在山脚欣赏雪景。', 'leave']]);
 		page('slide', ['树木与岩石从雪道两旁掠过。你调整重心，在三个方向之间换道。'], [['撞到障碍', 'crash'], ['坚持到山脚', 'finish']]);
 		page('crash', ['巡山员把你从松软的雪里拉出，按坚持的时间送上一份鼓励。']);

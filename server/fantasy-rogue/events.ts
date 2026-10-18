@@ -1,4 +1,5 @@
 import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
+import { honeymoonEligible, prepareHoneymoon, honeymoonView, chooseHoneymoon, settleHoneymoon } from './honeymoon';
 import { randomUUID } from 'crypto';
 import { beginLegendaryTracks, legendaryTracksView, chooseLegendaryTracks, settleLegendaryTracks, LEGENDARY_TRACKS_FLOOR, type LegendaryTracks } from './legendary-tracks';
 import { beginExclusiveClue, exclusiveEventView, chooseExclusiveEvent, settleExclusiveEvent, type ExclusiveEvent } from './exclusive-events';
@@ -29,6 +30,7 @@ import { adventureEvent, adventureView, chooseAdventure, settleAdventure, bandit
 import { offerEventFragments, eventFragmentOptions, claimEventFragments, type EventFragmentOffer } from './event-fragments';
 export { EVENT_NAMES, type EventID } from './event-text';
 export interface RogueEvent {
+	honeymoonHappy?: boolean;
 	ski?: SkiState;
 	stonesOpened?: number;
 	tracks?: LegendaryTracks;
@@ -84,7 +86,7 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && run.floor >= trainingFloor(id) &&
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
 		!['exclusivechallenge', 'auction', 'mushroomcollector'].includes(id) &&
 		(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
 		(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
@@ -143,6 +145,7 @@ export function beginEvent(run: RogueRun, random: RogueRandom) {
 	if (id === 'forest') event.teams = forestTeams(ordinaryLevel(run.floor), random);
 	(run.eventHistory ||= []).push({ id, floor: run.floor });
 	run.node!.event = event;
+	prepareHoneymoon(run, random);
 	run.node!.name = EVENT_NAMES[id];
 	run.node!.reward = { money: 0, items: {} };
 	run.phase = 'event';
@@ -217,6 +220,9 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	before.money = run.money; before.bag = { ...run.bag };
 	if (choice === 'leave') event.trainingAidBlocked = true;
 	else event.committed = true;
+	if (event.id === 'honeymoon' || event.id === 'honeymoonreturn') {
+		chooseHoneymoon(account, run, content, random, choice!); rewardReceipt(run, before); return;
+	}
 	if (collectionEvent(event.id)) { chooseCollection(run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.tracks) {
 		chooseLegendaryTracks(run, choice!, random); rewardReceipt(run, before); return;
@@ -355,10 +361,16 @@ function roomReward(run: RogueRun, random: RogueRandom) {
 }
 
 export function settleEventBattle(
-	run: RogueRun, content: RogueContent, random: RogueRandom, won: boolean, retreated = false
+	run: RogueRun, content: RogueContent, random: RogueRandom, won: boolean, retreated = false, account?: RogueAccount
 ) {
 	const event = run.node?.event;
 	if (!event || event.stage !== 'battle' || event.settled) return;
+	if (event.id === 'honeymoonreturn') {
+		if (retreated) return;
+		if (!account) throw new Error('蜜月归程结算缺少账号。');
+		const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
+		settleHoneymoon(account, run, content, won); rewardReceipt(run, before); return;
+	}
 	if (!won || retreated) event.trainingAidBlocked = true;
 	else event.trainingAidBattleWin = true;
 	if (event.tracks) { settleLegendaryTracks(run, won); return; }
@@ -396,6 +408,9 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (event.id === 'honeymoon' || event.id === 'honeymoonreturn') return {
+		id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...honeymoonView(run),
+	};
 	if (collectionEvent(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], paragraphs: event.result || eventOpening(event.id), ...collectionView(run) };
 	if (event.id === 'legendarytracks') return { id: event.id, key: event.key, stage: event.stage, ...legendaryTracksView(run) };
 	if (event.exclusive) return { id: event.id, key: event.key, stage: event.stage, ...exclusiveEventView(run) };

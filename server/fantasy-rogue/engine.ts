@@ -24,6 +24,7 @@ import {
 import { experienceAtLevel, rogueEffortYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { towerExperience, grantEventTraining, MENTOR_CARDS, mentorTier, emergencyCost, type MentorCard } from './early-balance';
 import { prepareTrade, tradeRouteTemplates, shopStock, machineMoves } from './trading';
+import { recycleItems } from './buyback';
 import { canEditParty, inventoryItem, editParty, healingLocked, cureMember, TEAM_ACTIONS } from './team';
 import { useTonic } from './blessing-consumables';
 import { dragonKingAbilityOptions, type DragonKingAbility, TONIC_SECRET } from '../../sim/rogue-blessing-permanent';
@@ -638,6 +639,7 @@ export class RogueEngine {
 						.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
 				}
 				account.run = {
+					honeymoon: account.honeymoon && { ...account.honeymoon },
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
 					owner: { id: userid, name },
 					previousBlessings: [...account.previousBlessings || []],
@@ -957,19 +959,7 @@ export class RogueEngine {
 				feedMushroom(run, command.member || '', command.value || '', command.count ?? 1); break;
 			}
 			case 'sell': {
-				requireRule(run.phase === 'rest', '只能在商店兑换贵重物品。');
-				const items = this.configured().items.filter(item => item.kind === 'treasure' &&
-					(command.value === 'all' || item.id === command.value) && (run.bag[item.id] || 0) > 0);
-				requireRule(items.length, '没有可兑换的贵重物品。');
-				const count = command.count;
-				requireRule(count === undefined || items.length === 1 && Number.isSafeInteger(count) && count > 0 && count <= run.bag[items[0].id], '兑换数量无效。');
-				const premium = run.node?.trade?.kind === 'mushroom';
-				let money = 0;
-				for (const item of items) money += (count ?? run.bag[item.id]) * Math.floor(item.sellPrice! * (premium && item.id.endsWith('mushroom') ? 1.25 : 1));
-				requireRule(Number.isSafeInteger(money) && Number.isSafeInteger(run.money + money), '兑换金额无效。');
-				for (const item of items) run.bag[item.id] -= count ?? run.bag[item.id];
-				run.money += money;
-				run.notices = [`贵重物品兑换完成，获得 ${money} 金币。`];
+				recycleItems(run, this.configured(), command.value || '', command.count);
 				break;
 			}
 			case 'use': {
@@ -1250,7 +1240,7 @@ export class RogueEngine {
 					if (finishShop()) return;
 				}
 				if (run.node!.event) {
-					settleEventBattle(run, this.configured(), this.random, false, retreated);
+					settleEventBattle(run, this.configured(), this.random, false, retreated, account);
 					this.autoEmergency(run);
 					run.phase = 'settlement'; this.finishSettlement(account, run);
 					return;
@@ -1313,7 +1303,7 @@ export class RogueEngine {
 			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
 
 			if (finishShop()) return;
-			if (run.node!.event) settleEventBattle(run, this.configured(), this.random, true);
+			if (run.node!.event) settleEventBattle(run, this.configured(), this.random, true, false, account);
 			run.encounter++;
 			run.phase = 'settlement';
 			this.finishSettlement(account, run);

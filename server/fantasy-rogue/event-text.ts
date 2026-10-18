@@ -1,6 +1,7 @@
 /** Shared narrative copy for live events and their read-only codex replays. */
 import { SERVICE_TEXT } from './event-service-text';
 export const EVENT_NAMES = {
+	honeymoon: '度蜜月的提案', honeymoonreturn: '度蜜月的提案·归程',
 	skiing: '雪山速滑', stones: '赌石', feathers: '羽毛爱好者', mushroomcollector: '蘑菇收藏家',
 	mysteryball: '谜之宝可梦球', forest: '斗蛐蛐！', mushrooms: '蘑菇走私犯', room: '不战斗就无法出去的房间',
 	travel: '旅行的回忆', martial: '这是武术的胜利', tutor: '读万卷书，行万里路',
@@ -10,6 +11,9 @@ export const EVENT_NAMES = {
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
 	return {
+		honeymoon: ['路旁，一对年轻夫妇正对着摊开的地图小声商量。行李上挂着同款的宝可梦挂饰。',
+			'「我们想去度蜜月，却怎么也选不出目的地。」他们看向风尘仆仆的你，「你走过这么多地方，有没有想推荐给我们的地区？」'],
+		honeymoonreturn: ['熟悉的挂饰在行李边晃动。那对夫妇从你推荐的地区回来了。'],
 		skiing: ['山脊上的积雪忽然发出低沉的轰鸣。巡山员将一副雪板递给你，指向山脚。', '「看清树和岩石，左右换道，坚持到山脚！我在防护坡等你。」'],
 		stones: ['石锤一下下敲在粗糙的原石上。摊主掀开布帘，露出装满石头的筐。', '「进化石、化石、宝石，都有机会！也可能只是普通石头。看好价钱，要开几块？」'],
 		feathers: ['旅人将羽毛夹在观察册中，见到你时眼睛一亮。', '「我收集美丽之羽，可以拿训练羽毛交换。如果能观察有羽毛的宝可梦，也有一份谢礼！」'],

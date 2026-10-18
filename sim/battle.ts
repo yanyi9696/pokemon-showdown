@@ -2355,8 +2355,10 @@ export class Battle {
 	/** Given a table of base stats and a pokemon set, return the actual stats. */
 	spreadModify(baseStats: StatsTable, set: PokemonSet): StatsTable {
 		const rogue = isRogueFormat(this.format.id) ? set.fantasyRogueModifiers : undefined;
+		const compoundInactive = rogue?.compound && this.dex.species.get(set.species).bst > 500;
 		if (rogue?.baseStats) baseStats = Object.fromEntries(ROGUE_STATS.map(stat =>
-			[stat, baseStats[stat] + (rogue.baseStats?.[stat] || 0)])) as StatsTable;
+			[stat, baseStats[stat] + (rogue.baseStats?.[stat] || 0) -
+				(compoundInactive ? rogue.compoundBonus?.[stat] || 0 : 0)])) as StatsTable;
 		if (rogue?.smallFinal && ROGUE_STATS.reduce((sum, stat) => sum + baseStats[stat], 0) <= 400 &&
 			!this.dex.species.get(set.species).evos.length) {
 			baseStats = { ...baseStats };

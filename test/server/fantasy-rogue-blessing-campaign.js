@@ -11,7 +11,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const b = require('../../dist/server/fantasy-rogue/blessings');
 const { blessing, ROGUE_BLESSINGS, blessingLevelCost, FANTASY_BLESSING_ITEMS } = require('../../dist/sim/rogue-blessing-data');
-const { stats, set, prepareCompanionParty } = require('../fixtures/fantasy-rogue');
+const { stats, set, prepareCompanionParty, compoundCommand } = require('../fixtures/fantasy-rogue');
 const dex = Dex.mod('gen9fantasy');
 const zero = () => 0;
 
@@ -36,7 +36,9 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		b.handleBlessingCommand(account, run, content, { action: 'blessing', slot: 0 }, random);
 	}
 	function resolve(account, run, value) {
-		b.handleBlessingCommand(account, run, content, { action: 'blessingreward', member: run.blessings.pending[0].id, value }, zero);
+		const reward = run.blessings.pending[0];
+		b.handleBlessingCommand(account, run, content, { action: 'blessingreward',
+			...(reward.kind === 'compound' ? compoundCommand(run, reward) : {member: reward.id, value}) }, zero);
 	}
 	for (const spirit of [undefined, ...require('../../dist/sim/fantasy-rogue-spirits').activeRogueSpirits().map(s => s.id)]) {
 		it(`finishes all four blessing checkpoints with refreshes and save restores under ${spirit || 'no spirit'}`, () => {
@@ -56,7 +58,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 						const state = run.blessings;
 						if (state.pending.length) {
 							const reward = state.pending[0];
-							resolve(account, run, reward.kind === 'gift' ? run.team[random(run.team.length)].id : reward.options[random(reward.options.length)]);
+							resolve(account, run, reward.kind === 'gift' ? run.team[random(run.team.length)].id : reward.options?.[random(reward.options?.length || 1)]);
 						} else if (state.stage) {
 							b.handleBlessingCommand(account, run, content, { action: 'blessing', value: state.stage.options[random(state.stage.options.length)] }, random);
 						} else {
@@ -111,6 +113,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		if (def.family === 'dragonking') run.team[0] = createRoguePokemon(set('Dragonite', 'Inner Focus', 50), run.boosts);
 		if (def.family === 'railgun') run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 50), run.boosts);
 		if (def.family === 'rulebreaker') run.team[0].extraAbilities = ['moldbreaker'];
+		if (def.family === 'compound') run.team[0] = createRoguePokemon(set('Paras', 'Effect Spore', 50), run.boosts);
 		assert(b.blessingCandidates(run, content).some(entry => entry.id === def.id));
 		choose(account, run, def);
 		assert(run.blessings.owned.some(entry => entry.id === def.id));
@@ -119,7 +122,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		while (run.blessings.pending.length) {
 			assert(++steps < 8);
 			const reward = run.blessings.pending[0];
-			resolve(account, run, reward.kind === 'gift' ? 'join' : reward.options[0]);
+			resolve(account, run, reward.kind === 'gift' ? 'join' : reward.options?.[0]);
 		}
 		while (run.blessings.stage) b.handleBlessingCommand(account, run, content,
 			{ action: 'blessing', value: run.blessings.stage.kind === 'direction' ? 'stats' : run.blessings.stage.options[0] }, zero);

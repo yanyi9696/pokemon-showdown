@@ -5,6 +5,7 @@ import { ROGUE_FORMAT, ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-
 import { experienceAtLevel, levelAtExperience, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import type { RogueRun } from './types';
 import { partyEvolutions } from './party-evolution';
+import { compoundEvolutionAllowed } from '../../sim/rogue-compound';
 import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
 
 /** RPG move/evolution data uses ordinary species, never the locked Fantasy move pool. */
@@ -129,6 +130,10 @@ export function escapedMember(original: RoguePokemon, current: RoguePokemon): Ro
 
 /** Preserve damage, status, consumed items and PP. A stat rebuild cannot revive a fainted member. */
 export function rebuildMember(mon: RoguePokemon, boosts: StatsTable) {
+	if (mon.compound) {
+		mon.set.ability = 'Power of Alchemy';
+		mon.abilityPool = [{ id: 'powerofalchemy', hidden: false }];
+	}
 	ensureMemberMemory(mon);
 	const rebuilt = createRoguePokemon(mon.set, boosts, mon.id, mon.stars, mon.statModifiers);
 	mon.hp = mon.hp > 0 ? Math.max(1, Math.min(rebuilt.maxhp, mon.hp + rebuilt.maxhp - mon.maxhp)) : 0;
@@ -166,6 +171,7 @@ export function evolutionOptions(
 }
 
 export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
+	if (!compoundEvolutionAllowed(mon, name)) throw new Error('五号化合物已锁定其他进化方向。');
 	if (toID(mon.set.species) === 'meltan' && toID(name) === 'melmetal') {
 		if ((run.blessings?.candy || 0) < 400) throw new Error('需要 400 颗美录坦糖果。');
 		run.blessings!.candy -= 400;

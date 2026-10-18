@@ -44,6 +44,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 				continue;
 			}
 			if (reward.kind === 'gift') assert.equal(reward.pokemon.set.level, 5);
+			if (reward.kind === 'compound') { cmd('blessingreward', require('../fixtures/fantasy-rogue').compoundCommand(run, reward)); continue; }
 			cmd('blessingreward', { member: reward.id, value: reward.kind === 'gift' ?
 				run.team.length < 6 ? 'join' : 'release' : reward.options[0] });
 		}
@@ -75,7 +76,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	it('offers all migrated opening-only blessings and excludes other restricted floors', () => {
 		cmd('start', { starters: ['bulbasaur'] });
 		const run = account().run, eligible = new Set(blessingCandidates(run, content).map(b => b.id));
-		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker']);
+		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound']);
 		for (const def of ROGUE_BLESSINGS) {
 			if (companionFamily(def.family)) { assert.equal(eligible.has(def.id), def.family === 'companionai'); continue; }
 			if (def.family === 'overtime') { assert.equal(eligible.has(def.id), !!overtimeGiftPool(run, content, def.type).length); continue; }
@@ -101,6 +102,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 				a.run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 5), a.run.boosts);
 			});
 			if (def.family === 'rulebreaker') store.change(user, a => { a.run.team[0].extraAbilities = ['moldbreaker']; });
+			if (def.family === 'compound') store.change(user, a => { a.run.team[0] = createRoguePokemon(set('Paras', 'Effect Spore', 5), a.run.boosts); });
 			forceOption(def.id);
 			cmd('blessing', { slot: 0 }); finishRewards();
 			const run = account().run;

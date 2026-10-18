@@ -37,7 +37,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
 		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).filter(id => !['auction', 'mushroomcollector'].includes(id)).length);
-		assert.equal(events.filter(e => e.category === 'trade').length, 8);
+		assert.equal(events.filter(e => e.category === 'trade').length, 9);
 		assert.equal(events.filter(e => e.category === 'reward').length, 5);
 		assert(events.filter(e => e.category !== 'companion').every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 	});
@@ -86,7 +86,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event')) {
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
-			if (['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers'].includes(entry.id)) {
+			if (['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers', 'honeymoonreturn'].includes(entry.id)) {
 				// These openings incorporate the saved item, owner and NPC budgets at runtime.
 				assert.deepEqual(replay.pages.start.text, require('../../dist/server/fantasy-rogue/event-text').eventOpening(entry.id));
 			} else {

@@ -22,18 +22,18 @@ function speak(c: RogueCompanion, kind: 'chat' | 'praise', random: RogueRandom) 
 	const index = candidates[random(candidates.length)]; seen.push(index);
 	c.message = pool[index]; c.messageAt = Date.now(); c.smile = kind === 'chat' ? 'chat' : 'approval';
 }
-type Option = { id: string, name: string, disabled?: boolean };
+type Option = { id: string, name: string, disabled?: boolean, region?: string };
 export function companionRecommendation(run: RogueRun, c: RogueCompanion, options: Option[]) {
 	const event = run.node?.event;
 	if (!event || !['choice', 'fragments'].includes(event.stage) || ['iono', 'canari'].includes(c.id) && run.node?.kind !== 'event') return;
 	const available = options.filter(o => !o.disabled &&
 		!['leave', 'back', 'unavailable', 'fishtap', 'fishfinish'].includes(o.id));
 	const score = (o: Option) => {
-		if (o.id === `postcard:${COMPANIONS[c.id].region}`) return 100;
+		if (o.id === `postcard:${COMPANIONS[c.id].region}` || o.region === COMPANIONS[c.id].region) return 100;
 		if (c.id === 'grusha' && o.id === 'skistart') return 100;
 		if (['acerola', 'iris', 'grusha', 'rika'].includes(c.id) && event.id === 'legendarytracks' &&
 			(o.id === 'investigate' || o.id.startsWith('site:'))) return 80;
-		if (['bea', 'iono', 'canari', 'guzma', 'lysandre'].includes(c.id)) return ['fight', 'power', 'road', 'fantasy'].includes(o.id) ? 80 : 0;
+		if (['bea', 'iono', 'canari', 'guzma', 'lysandre'].includes(c.id)) return ['fight', 'power', 'road', 'fantasy', 'honeymoonbattle'].includes(o.id) ? 80 : 0;
 		if (['acerola', 'iris', 'grusha', 'rika'].includes(c.id)) return (
 			['open', 'adopt', 'path', 'mediate', 'left', 'right', 'confirm', 'fishstart'].includes(o.id) ||
 			o.id.startsWith('swap:')

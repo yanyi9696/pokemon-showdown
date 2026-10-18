@@ -26,6 +26,7 @@ import { healingLocked, inventoryItem } from './team';
 import { starterMoves, starterTraits } from './starter-traits';
 import { spiritItems } from './spirits';
 import { shopStock, machineMoves } from './trading';
+import { recycleOffers } from './buyback';
 import { activeRogueSpirits, rogueSpirit, roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 import { storyView, startCard } from './story';
 import { RogueDuels, type DuelCommand } from './duels';
@@ -87,7 +88,7 @@ export class RogueManager {
 		const content = this.engine.content;
 		const run = account.run;
 		const stock = content ? shopStock(content, run) : [];
-		const items = content ? [...spiritItems(content, run), ...(content.blessings ? blessingItems(account.tonicSecret) : [])] : [];
+		const items = content ? [...spiritItems(content, run), ...(content.blessings ? blessingItems(account.tonicSecret) : [])].map(item => ({ ...item })) : [];
 		if (run?.node) {
 			for (const item of run.node.trade?.stock || stock) {
 				const index = items.findIndex(entry => entry.id === item.id);
@@ -98,10 +99,14 @@ export class RogueManager {
 			for (const id of [...Object.keys(run.bag), ...[...run.team, ...(run.box || [])].flatMap(mon => [toID(mon.set.item), mon.emblem || ''])]) {
 				if (!id || items.some(item => item.id === id)) continue;
 				const item = inventoryItem(content, id);
-				if (item) items.push(item);
+				if (item) items.push({ ...item });
 			}
 		}
 		for (const item of items) item.category ||= equipmentCategory(item.id);
+		if (run && content) for (const offer of recycleOffers(run, content)) {
+			const item = items.find(entry => entry.id === offer.id);
+			if (item) item.recyclePrice = offer.recyclePrice;
+		}
 		return {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			storyEnabled: !!content?.story,

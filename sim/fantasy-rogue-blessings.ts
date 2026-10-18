@@ -115,6 +115,9 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	if (modifiers?.hp) statSources.push(`越打命越硬：HP +${modifiers.hp}`);
 	if (modifiers?.stats && Object.values(modifiers.stats).some(Boolean)) statSources.push('属性进化的六维增幅已计入基础能力');
 	if (modifiers?.smallFinal) statSources.push('【谁说我到头了】六项种族值提升 50%');
+	if (modifiers?.compound) statSources.push(mon.species.bst > 500 ?
+		'【五号化合物】当前形态原始种族值总和超过 500，新增点数停用；主特性仍锁定为【化学之力】' :
+		'【五号化合物】分配的新增种族值已计入基础能力，主特性锁定为【化学之力】');
 	if (modifiers?.swap) statSources.push('六维数值已经交换');
 	for (const family of ['speedpower', 'swords', 'prayer', 'supercombo', 'kid', 'style']) {
 		const owned = ownsBlessing(effects, family);

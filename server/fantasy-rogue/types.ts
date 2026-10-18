@@ -46,7 +46,7 @@ export interface RogueEncounter {
 export interface RogueNode {
 	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
 	restCandyPurchases?: Record<string, number>;
-	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction' | 'balls' | 'crowns' | 'mushroom', stock: (RogueItem & { remaining: number })[], purchases: number,
+	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction' | 'balls' | 'crowns' | 'mushroom' | 'buyback', stock: (RogueItem & { remaining: number })[], purchases: number,
 		services?: Partial<import('./growth').RogueGrowth> };
 	rewardScene?: import('./reward-scenes').RewardScene;
 	event?: import('./events').RogueEvent;
@@ -82,6 +82,7 @@ export interface RogueItem {
 	/** Present for limited shop offers, including sold-out center candy. */
 	remaining?: number;
 	sellPrice?: number;
+	recyclePrice?: number;
 	stat?: StatID;
 	/** Healing amount, or fraction of max HP for a revive. */
 	amount?: number;
@@ -135,6 +136,7 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	honeymoon?: import('./honeymoon').HoneymoonTrip;
 	exclusiveItems?: Record<string, { since: number, misses: number, cooldown: number, obtained?: boolean }>;
 	auction?: import('./auction').RogueAuction;
 	companionPickups?: { settled: string[], items: Record<string, number> };
@@ -214,6 +216,7 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	honeymoon?: import('./honeymoon').HoneymoonTrip;
 	/** Account-wide acknowledgement, independent of adventures and codex unlocks. */
 	onboardingSeen?: boolean;
 	/** Once discovered, the combination's description remains visible across adventures. */

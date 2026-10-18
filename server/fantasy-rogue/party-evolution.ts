@@ -2,6 +2,7 @@ import { Dex, toID } from '../../sim/dex';
 import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import type { RogueRun } from './types';
 import { evolutionChildren, partyEvolutionLevel } from './evolution';
+import { compoundEvolutionAllowed } from '../../sim/rogue-compound';
 import { friendship, ROGUE_FRIENDSHIP_EVOLUTION, rogueTime } from './friendship';
 
 const dex = Dex.mod('gen9');
@@ -49,6 +50,9 @@ function friendshipRequirements(mon: RoguePokemon, child: Species, floor: number
 export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1, bag: {} }): PartyEvolution[] {
 	return evolutionChildren(mon.set.species).map(child => {
 		const conditions: EvolutionRequirement[] = [];
+		if (!compoundEvolutionAllowed(mon, child.name)) conditions.push({
+			text: '五号化合物已锁定其他进化方向', met: false,
+		});
 		if (context.blessings?.owned.some(entry => entry.family === 'kid') && toID(mon.set.item) === 'eviolite' && !child.evos.length) {
 			conditions.push({ text: '小鬼当家：携带进化奇石时不能进化为最终形态', met: false });
 		}

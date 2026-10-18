@@ -7,6 +7,7 @@ import type { RogueRandom } from './biome-pools';
 import type { RogueRun, RogueContent } from './types';
 
 export function beginShopChallenge(run: RogueRun, content: RogueContent, random: RogueRandom) {
+	if (run.node?.trade?.kind === 'buyback') throw new Error('回收摊位只回收物品，没有出售的商品。');
 	if (run.node?.trade?.kind === 'growth') throw new Error('训练营提供训练服务，没有可争取的商店商品。');
 	if (run.phase !== 'rest' || !run.node || run.node.shopChallenge || !ownsBlessing(run.blessings, 'shopraid') ||
 		!run.team.some(mon => mon.hp > 0)) throw new Error('当前不能发起商店挑战。');

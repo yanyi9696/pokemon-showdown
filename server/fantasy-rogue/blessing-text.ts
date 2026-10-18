@@ -62,6 +62,7 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		if (types.length === 2) notes.push(`队内分别有${types.map(t => BLESSING_TYPES[t] + '系').join('与')}伙伴时更容易出现`);
 	}
 	const conditions: Record<string, string[]> = {
+		compound: ['队伍需有完整进化链、最终进化型种族值总和不超过 500 的伙伴', '已最终进化的伙伴也可选择；每名伙伴限用一次'],
 		singer: ['队伍需有【美洛耶塔】', '与【舞！舞！舞！】互斥'],
 		dancer: ['队伍需有【美洛耶塔】', '与【世界第一的公主殿下】互斥'],
 		swords: ['队伍需有【勾帕路翁】、【代拉基翁】或【毕力吉翁】'],

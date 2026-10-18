@@ -89,4 +89,10 @@ function prepareCompanionParty(run, family, level = 50) {
 	const species = Dex.mod('gen9fantasy').species.get(names[types[0]]);
 	run.team[0] = createRoguePokemon(set(species.name, species.abilities[0], level), run.boosts);
 }
-module.exports = { content, set, stats, commandAfterOpening, chooseCompanions, eventRoll, prepareCompanionParty };
+function compoundCommand(run, reward) {
+	const { compoundView } = require('../../dist/server/fantasy-rogue/compound');
+	const view = compoundView(run, reward);
+	return {member: reward.id, value: view.compound.stage === 'allocate' ? 'allocate' : view.options[0].id,
+		...(view.compound.stage === 'allocate' ? {evs: {...stats(0), atk: view.compound.points}} : {})};
+}
+module.exports = { content, set, stats, commandAfterOpening, chooseCompanions, eventRoll, prepareCompanionParty, compoundCommand };

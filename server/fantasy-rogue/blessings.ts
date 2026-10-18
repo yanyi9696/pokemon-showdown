@@ -30,6 +30,8 @@ import { permanentMemberTypes, strongestDragon, memberStatTotal, strongestBlessi
 	TARGET_BLESSING_ABILITIES, POWER_CHOICE_ABILITIES, canGrantExtraAbility, dragonKingAbilityOptions } from '../../sim/rogue-blessing-permanent';
 import { tonicItems } from './blessing-consumables';
 import { blessingDisplay } from './blessing-text';
+import { compoundFinals } from '../../sim/rogue-compound';
+import { compoundView, chooseCompound } from './compound';
 import { taskRewardTier } from '../../sim/rogue-blessing-data';
 import type { RogueAccount, RogueCommand, RogueContent, RogueItem, RogueNode, RogueRun } from './types';
 
@@ -45,7 +47,8 @@ const regis = ['Regirock', 'Regice', 'Registeel', 'Regieleki', 'Regidrago'];
 const regiTypes = ['Rock', 'Ice', 'Steel', 'Electric', 'Dragon'];
 function requireRule(ok: unknown, message: string): asserts ok { if (!ok) throw new Error(message); }
 export interface BlessingReward {
-	id: string; title: string; kind: 'gift' | 'toolbox' | 'target' | 'starter' | 'ability' | 'tera' | 'stone' | 'system';
+	id: string; title: string; kind: 'gift' | 'toolbox' | 'target' | 'starter' | 'ability' | 'tera' | 'stone' | 'system' | 'compound';
+	compound?: { member?: string, final?: string };
 	pokemon?: RoguePokemon; options?: string[]; blessing?: string;
 	ability?: string;
 }
@@ -211,6 +214,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 		if (def.family === 'swords' && !run.team.some(mon => swords.includes(toID(dex.species.get(mon.set.species).baseSpecies)))) return false;
 		if (def.family === 'topclearmind' && (!state.prayer || state.prayer.changed)) return false;
 		if (def.family === 'railgun' && !run.team.some(canLearnZapCannon)) return false;
+		if (def.family === 'compound' && !run.team.some(mon => compoundFinals(mon).length)) return false;
 		if (def.family === 'rulebreaker' && !run.team.some(mon => memberHasMoldBreaker(mon, run.team, state))) return false;
 		if (def.family === 'typeevolution' && !giftPool(run, content, def.type).length) return false;
 		if (def.family === 'friend' && !giftPool(run, content, def.type, true).length) return false;
@@ -440,7 +444,10 @@ export function syncBlessingParty(run: RogueRun) {
 		const modifiers = { ...(mon.mintNature ? { nature: mon.mintNature } : {}), emblem: mon.emblem,
 			...(growthModifiers(run, mon) ? { training: growthModifiers(run, mon) } : {}),
 			smallFinal: !!has('smallfinal'), swap: !!has('swapstats'), hp: mon.bonusHP || 0,
-			...(duck && duck.id === mon.id ? { baseStats: { spa: 20, spe: 20 }, extraType: 'Psychic' } : {}),
+			...(mon.compound || duck && duck.id === mon.id ? { baseStats: { ...mon.compound?.bonus,
+				...(duck?.id === mon.id ? {spa: (mon.compound?.bonus.spa || 0) + 20, spe: (mon.compound?.bonus.spe || 0) + 20} : {}) } } : {}),
+			...(mon.compound ? { compound: true, compoundBonus: { ...mon.compound.bonus } } : {}),
+			...(duck && duck.id === mon.id ? { extraType: 'Psychic' } : {}),
 			stats: { ...state.evolution?.stats }, ...(state.evolution ? { statsType: state.evolution.type } : {}) };
 		if (oldMoves !== mon.set.moves.join(',') || JSON.stringify(mon.statModifiers) !== JSON.stringify(modifiers)) {
 			mon.statModifiers = modifiers; rebuildMember(mon, run.boosts);
@@ -616,6 +623,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	const entry: OwnedBlessing = { id: def.id, family: def.family, tier: def.tier, floor: run.floor, type: def.type, grantedBy };
 	requireRule(companionAvailable(def.family, run.team, state), '同行祝福互斥，且需要对应属性的伙伴。');
 	state.owned.push(entry);
+	if (def.family === 'compound') state.pending.push({ id: randomUUID(), title: def.name, kind: 'compound', blessing: def.id, compound: {} });
 	const companions = Object.entries(COMPANIONS).filter(([, c]) => c.family === def.family);
 	if (companions.length === 1) grantCompanion(run, companions[0][0] as keyof typeof COMPANIONS);
 	if (def.family === 'railgun') state.pending.push({ id: randomUUID(), title: '某科学超电磁炮 · 选择学习【电磁炮】的伙伴',
@@ -762,6 +770,7 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 				state.swordUses >= (state.swordRewards.length + 1) * 15, '没有可领取的锋锐奖励。');
 			requireRule(canGrantExtraAbility(mon, 'sharpness', run.team, state), '该伙伴已经拥有锋锐，不能重复赋予相同特性。');
 			(mon.extraAbilities ||= []).push('sharpness'); state.swordRewards.push(species);
+			(mon.blessingExtraAbilities ||= []).push('sharpness');
 		}
 		syncBlessingParty(run); return;
 	}
@@ -800,7 +809,9 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 		}
 	} else if (command.action === 'blessingreward') {
 		const reward = state.pending[0]; requireRule(reward && reward.id === command.member, '这份奖励已处理或不存在。');
-		if (reward.kind === 'gift') {
+		if (reward.kind === 'compound') {
+			chooseCompound(run, reward, command); syncBlessingParty(run); repairBlessingRound(run, content, random); return;
+		} else if (reward.kind === 'gift') {
 			const mon = reward.pokemon!;
 			if (command.value !== 'release') {
 				if (command.value === 'join' && run.team.length < roguePartyLimit(run.spirit)) run.team.push(mon);
@@ -838,7 +849,10 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 					recordStarterMoves(account, content, { ...mon.set, moves: ['zapcannon'] });
 					(run.notices ||= []).push('已学会【电磁炮】。将它装备在招式栏后，队伍中最强的携带者会获得【超电磁炮】与永久【电磁漂浮】。');
 				}
-				if (reward.ability) mon.extraAbilities = [...new Set([...mon.extraAbilities || [], reward.ability])];
+				if (reward.ability) {
+					mon.extraAbilities = [...new Set([...mon.extraAbilities || [], reward.ability])];
+					mon.blessingExtraAbilities = [...new Set([...mon.blessingExtraAbilities || [], reward.ability])];
+				}
 			}
 		}
 		state.pending.shift();
@@ -982,7 +996,7 @@ export function blessingView(run: RogueRun, discovered = false) {
 		targetName: [...run.team, ...(run.box || [])].find(mon => mon.id === entry.target)?.set.species })),
 	round: state.round && { ...state.round, options: state.round.options.map(option => ({ ...option, ...describe(option.id) })) },
 	stage: state.stage && { ...state.stage, options: state.stage.options.map(id => ({ id, name: upgradeName(id) })) },
-	pending: state.pending.map(reward => ({ ...reward, options: reward.options?.map(id => ({ id,
+	pending: state.pending.map(reward => reward.kind === 'compound' ? compoundView(run, reward) : ({ ...reward, options: reward.options?.map(id => ({ id,
 		name: id === 'skip' ? '队伍已具备这些特性，无需重复赋予，继续冒险' : reward.kind === 'system' ? ROGUE_SYSTEM_NAMES[id] + (state.owned.some(entry => entry.family === `reserve${id}` && !entry.completed) ? '（已预定：战后也会解锁）' : '') :
 		reward.kind === 'tera' ? BLESSING_TYPES[id] + '太晶碎片 ×50' :
 		reward.kind === 'stone' ? dex.items.get(id).name :

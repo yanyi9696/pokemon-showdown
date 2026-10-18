@@ -16,6 +16,9 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	compound?: import('./rogue-compound').RogueCompound;
+	/** Explicit provenance for extra abilities granted by a blessing, unlike event rewards. */
+	blessingExtraAbilities?: string[];
 	/** Run-local personal training in basis points; not EVs or account upgrades. */
 	training?: { offense?: number, defense?: number };
 	mushroomTraining?: { offense: number, defense: number };

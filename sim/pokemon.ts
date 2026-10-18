@@ -1364,6 +1364,7 @@ export class Pokemon {
 			rogueModifiers ? { ...this.set, species: this.species.name } : this.set);
 		if (this.species.maxHP) {
 			stats.hp = this.species.maxHP +
+				(rogueModifiers?.compound && species.bst <= 500 ? Math.floor(2 * (rogueModifiers.compoundBonus?.hp || 0) * this.level / 100) : 0) +
 				(isRogueFormat(this.battle.format.id) ? this.set.fantasyRogueStats?.hp || 0 : 0);
 			if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueScale) {
 				stats.hp = Math.max(1, Math.floor(stats.hp * this.set.fantasyRogueScale));
@@ -1379,7 +1380,7 @@ export class Pokemon {
 			this.baseMaxhp = stats.hp;
 			this.maxhp = stats.hp;
 			this.hp = stats.hp;
-		} else if (!isTransform && rogueModifiers?.smallFinal && this.baseMaxhp !== stats.hp) {
+		} else if (!isTransform && (rogueModifiers?.smallFinal || rogueModifiers?.compound) && this.baseMaxhp !== stats.hp) {
 			// A battle forme can enter or leave the low-BST blessing's eligibility.
 			const change = (stats.hp - this.baseMaxhp) * (this.volatiles.dynamax ? 2 : 1);
 			this.baseMaxhp = stats.hp;
@@ -1463,7 +1464,8 @@ export class Pokemon {
 			if (this.illusion) {
 				this.ability = ''; // Don't allow Illusion to wear off
 			}
-			const ability = species.abilities[abilitySlot] || species.abilities['0'];
+			const ability = isRogueFormat(this.battle.format.id) && this.set.fantasyRogueModifiers?.compound ?
+				'Power of Alchemy' : species.abilities[abilitySlot] || species.abilities['0'];
 			// Ogerpon's forme change doesn't override permanent abilities
 			if (source || !this.getAbility().flags['cantsuppress']) this.setAbility(ability, null, true);
 			// However, its ability does reset upon switching out
@@ -1919,6 +1921,7 @@ export class Pokemon {
 	setAbility(ability: string | Ability, source?: Pokemon | null, isFromFormeChange = false, isTransform = false) {
 		if (!this.hp) return false;
 		if (typeof ability === 'string') ability = this.battle.dex.abilities.get(ability);
+		if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueModifiers?.compound && ability.id !== 'powerofalchemy') return false;
 		const oldAbility = this.ability;
 		if (!isFromFormeChange) {
 			if (ability.flags['cantsuppress'] || this.getAbility().flags['cantsuppress']) return false;
@@ -1944,7 +1947,12 @@ export class Pokemon {
 	}
 
 	getAbility() {
-		return this.battle.dex.abilities.getByID(this.ability);
+		const ability = this.battle.dex.abilities.getByID(this.ability);
+		// Native move guards must also reject Skill Swap before either participant changes ability.
+		if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueModifiers?.compound) {
+			return { ...ability, flags: { ...ability.flags, cantsuppress: 1, failskillswap: 1 } } as Ability;
+		}
+		return ability;
 	}
 
 	hasAbility(ability: string | string[]) {

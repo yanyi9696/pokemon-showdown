@@ -115,8 +115,8 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						const state = run.blessings;
 						if (state.pending.length) {
 							const reward = state.pending[0];
-							const value = reward.kind === 'gift' ? (run.team.length < 6 ? 'join' : 'release') : reward.options[0];
-							cmd('blessingreward', { member: reward.id, value });
+							const value = reward.kind === 'gift' ? (run.team.length < 6 ? 'join' : 'release') : reward.options?.[0];
+							cmd('blessingreward', reward.kind === 'compound' ? require('../fixtures/fantasy-rogue').compoundCommand(run, reward) : { member: reward.id, value });
 						} else if (state.stage) {
 							if ([50, 100, 150].includes(run.floor)) checkpoints.add(run.floor);
 							cmd('blessing', { value: state.stage.options[0] });

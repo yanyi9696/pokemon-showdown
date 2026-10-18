@@ -99,6 +99,7 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 		break;
 	}
 	case 'ability':
+		requireRule(!mon.compound || command.value === 'powerofalchemy', '五号化合物的主特性固定为化学之力。');
 		requireRule(mon.abilityPool!.some(entry => entry.id === command.value), '该特性尚未通过事件解锁。');
 		mon.set.ability = dex.abilities.get(command.value).name;
 		break;

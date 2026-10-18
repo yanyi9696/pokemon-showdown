@@ -83,6 +83,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 				'以回复药与活力碎片为主的旅途补给。展示符合对方偏好的宝可梦或招式，可以提高谢礼品质。' })),
 		...Object.entries(TRADE_NAMES).map(([id, name]) => ({ id: `trade:${id}`, category: 'trade', name,
 			text: id === 'auction' ? '31 层起有机会遇到。每场上架 3～5 件珍品，观察竞拍者的预算与脾气，交替出价或运用话术，最高出价者在落槌时付款。' :
+			id === 'buyback' ? '第 80 层起有机会遇到。按统一基础标价回收背包中的物品，战利品按自身价值；可按数量出售，也可一次回收全部。已装备物品需先卸下。' :
 			id === 'crowns' ? '51 层起低概率出现银色王冠商店，121 层起加售金色王冠。提升个体值，每店限购。' :
 			id === 'balls' ? '全程可能出现，各类捕捉球九折出售，每种限购 15 个。' :
 			id === 'mushroom' ? '以普通商店 125% 的价格回收各类蘑菇。展示蘑菇伙伴，还能获得小蘑菇与一份观察谢礼。' :
@@ -111,5 +112,5 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 				(companionHasGift(id as keyof typeof COMPANIONS) ? `累计 15 次${id === 'lana' ? '进入钓鱼' : id === 'olivia' ? '完成赌石事件' : '偏好选择'}后，本局获得一次【同行训练家的赠礼】：【${gifts[id]}】×1 及 100＋当前层数×3 金币。` : '通过预演帮助你熟悉对战，没有偏好赠礼。') +
 				`对应祝福：【${def.name}】。` };
 	});
-	return { section, preview, entries: [...events, ...visits, ...companions] };
+	return { section, preview, entries: [...events, ...visits, ...companions].sort(compareBlessingNames) };
 }

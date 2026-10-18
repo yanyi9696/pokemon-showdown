@@ -7,6 +7,7 @@ import { rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 import { startCard } from './story';
 import { blessing, type BlessingEffects } from '../../sim/rogue-blessing-data';
 import { blessingDisplay } from './blessing-text';
+import { clearMemberDetails, type ClearMemberDetails } from './clear-details';
 
 export interface RogueClearCard {
 	version: 1;
@@ -21,7 +22,8 @@ export interface RogueClearCard {
 	snapshot: RogueInventory & {
 		floor: 200, boosts: StatsTable, spirit?: string, startCard?: string, eventBuff?: boolean,
 		spiritName?: string, spiritText?: string, cardName?: string, cardText?: string,
-		hazards?: string[], blessings: { id: string, text: string }[],
+		hazards?: string[], blessings: { id: string, name?: string, floor?: number, text: string }[],
+		memberDetails?: Record<string, ClearMemberDetails>,
 		blessingEffects?: BlessingEffects,
 	};
 }
@@ -56,11 +58,15 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 	run.clearRecorded = true;
 	const team = structuredClone(run.team);
 	for (const mon of team) if (!mon.stats) rebuildMember(mon, run.boosts);
+	const box = structuredClone(run.box || []);
+	for (const mon of box) if (!mon.stats) rebuildMember(mon, run.boosts);
+	const detailsRun = { ...run, team, box };
 	const card: RogueClearCard = {
 		version: 1, id: randomUUID(), runId: run.id, owner: run.owner.id, name: run.owner.name,
 		completedAt: Date.now(), public: false, contentVersion: run.contentVersion, rulesVersion: rogueRulesVersion(),
 		snapshot: {
-			team, box: structuredClone(run.box || []), bag: { ...run.bag }, money: run.money,
+			team, box, bag: { ...run.bag }, money: run.money,
+			memberDetails: Object.fromEntries([...team, ...box].map(mon => [mon.id, clearMemberDetails(mon, detailsRun)])),
 			growth: run.growth && { ...run.growth },
 			floor: 200, boosts: { ...run.boosts }, spirit: run.spirit, startCard: run.startCard,
 			eventBuff: !!run.eventBuff?.battles,
@@ -71,10 +77,10 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 			megaUnlocked: run.megaUnlocked, gmegaUnlocked: run.gmegaUnlocked, zUnlocked: run.zUnlocked,
 			blessings: (run.blessings?.owned || []).map(entry => {
 				const { name, text } = blessingDisplay(blessing(entry.id)!, entry.floor, account.tonicSecret);
-				return { id: entry.id, name, text };
+				return { id: entry.id, name, floor: entry.floor, text };
 			}),
 			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution,
-				psychic: run.blessings.psychic, dragonKing: run.blessings.dragonKing }),
+				psychic: run.blessings.psychic, dragonKing: run.blessings.dragonKing, companions: run.blessings.companions }),
 		},
 	};
 	const cards = account.cards ||= [];

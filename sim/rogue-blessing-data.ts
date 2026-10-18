@@ -28,6 +28,8 @@ export function addPsychicCharge(current: number, amount: number) {
 	return Math.round((current + ordinary + (amount - ordinary) * 0.05) * 100) / 100;
 }
 export interface RogueStatModifiers {
+	compound?: boolean;
+	compoundBonus?: Partial<StatsTable>;
 	training?: Partial<StatsTable>;
 	nature?: string;
 	emblem?: string;
@@ -144,6 +146,10 @@ function typed(tier: BlessingTier, family: string, title: (label: string) => str
 	}
 }
 add('silver', 'shopraid', '零元购', '可挑战商店守卫，获胜后随机获得店内三种商品，各 1 件。挑战结束后商店关闭。');
+for (const [tier, suffix, total] of [['gold', '金', 525], ['prismatic', '彩', 650]] as const) {
+	add(tier, `compound${tier}`, `五号化合物·${suffix}`, `选一名伙伴，将选定最终进化型的种族值总和补至 ${total}，新增点数由你自由分配。` +
+		'只能增加原有种族值；进化前形态同步获得新增点数，分支进化锁定所选方向。当前形态原始种族值总和超过 500 时，新增点数失效。主特性永久锁定为【化学之力】，额外特性保留。', { family: 'compound' });
+}
 add('prismatic', 'renewable', '可再生资源', '获得 1 个随机一次性对战道具。全队使用一次性携带道具后不消耗道具。');
 add('prismatic', 'mousefamily', '电气鼠大家庭', '获得 1 只随机电气鼠。队伍六只均为电气鼠时，共享已掌握招式及不同携带道具的效果，幻想道具和 Mega【雷丘】同样适用。【电气球】对全队生效；相同道具不叠加，一次性道具全队共用消耗。');
 add('prismatic', 'eeveefamily', '伊布大家族', '获得【伊布】与 1 颗自选的伊布进化石。队伍六只均为伊布家族成员时，每只每场可额外使用 1 次【九彩升华齐聚顶】。');

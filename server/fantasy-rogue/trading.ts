@@ -7,10 +7,12 @@ import type { RogueRandom } from './biome-pools';
 import { spiritItems, spiritShopAvailable } from './spirits';
 import { CANDY_SHOP, restCandyOffer } from './early-balance';
 import { beginAuction } from './auction';
+import { BUYBACK_FLOOR } from './buyback';
 
 const dex = Dex.mod('gen9fantasy');
-export const TRADE_NAMES = { mushroom: '蘑菇收藏家', mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '落槌之前', balls: '宝可梦球商店', crowns: '王冠商店' };
+export const TRADE_NAMES = { buyback: '原价回收摊位', mushroom: '蘑菇收藏家', mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '落槌之前', balls: '宝可梦球商店', crowns: '王冠商店' };
 export function tradeKind(floor: number, random: RogueRandom): keyof typeof TRADE_NAMES {
+	if (floor >= BUYBACK_FLOOR && random(100) < 8) return 'buyback';
 	const specialist = random(100);
 	if (specialist < 8) return 'mushroom';
 	if (specialist < 28) return 'balls';
@@ -111,7 +113,7 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 		if (!run.node!.event) { run.node!.event = { id: 'mushroomcollector', key: `collector:${run.floor}`, stage: 'choice' }; run.phase = 'event'; }
 		return;
 	}
-	if (!trade || trade.kind === 'growth') return;
+	if (!trade || trade.kind === 'growth' || trade.kind === 'buyback') return;
 	if (trade.kind === 'balls' || trade.kind === 'crowns') {
 		const pool = content.items.filter(item => trade.kind === 'balls' ? item.kind === 'ball' && item.id !== 'masterball' :
 			item.kind === 'crown' && (item.id === 'bottlecap' || run.floor >= 121));
