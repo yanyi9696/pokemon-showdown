@@ -1,3 +1,4 @@
+import { captureItems } from './capture-items';
 import type { RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { CANDY_SHOP, routeCandyReward, eliteTreasureBudget, encounterCoins } from './early-balance';
@@ -94,6 +95,11 @@ export const BATTLE_GOODS: [string, string, number][] = [
 	['expertbelt', '达人带', 5000], ['airballoon', '气球', 4000], ['lightclay', '光之黏土', 4000],
 	['flameorb', '火焰宝珠', 5000], ['toxicorb', '剧毒宝珠', 5000], ['whiteherb', '白色香草', 4000],
 	['powerherb', '强力香草', 5000], ['mentalherb', '心灵香草', 4000],
+	['metronome', '节拍器', 5000], ['shellbell', '贝壳之铃', 4500], ['widelens', '广角镜', 4500],
+	['zoomlens', '对焦镜', 4000], ['scopelens', '焦点镜', 5000],
+	['protectivepads', '部位护具', 5000], ['safetygoggles', '防尘护目镜', 5000], ['clearamulet', '清净坠饰', 6500],
+	['covertcloak', '密探斗篷', 6500], ['ejectbutton', '逃脱按键', 4000], ['redcard', '红牌', 4000],
+	['blunderpolicy', '打空保险', 4000], ['throatspray', '爽喉喷雾', 4500], ['terrainextender', '大地膜', 4500],
 ];
 const PRICES: Record<string, number> = {
 	pokeball: 250, greatball: 750, ultraball: 1500, potion: 200, superpotion: 650, hyperpotion: 1500,
@@ -126,7 +132,7 @@ export function configureShop(items: RogueItem[]) {
 	}
 	for (const [id, name, price] of BATTLE_GOODS) {
 		const item = items.find(entry => entry.id === id);
-		const data: RogueItem = { id, name, kind: 'held', price, shopFloor: 99 };
+		const data: RogueItem = { id, name, kind: 'held', category: '对战影响道具', price, shopFloor: 99 };
 		if (item) Object.assign(item, data); else items.push(data);
 	}
 	const stats: StatID[] = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
@@ -138,5 +144,8 @@ export function configureShop(items: RogueItem[]) {
 		items.push({ id: feathers[i], name: featherNames[i], kind: 'effort', stat, amount: 1, price: 500, shopFloor: 19 });
 		items.push({ id: vitamins[i], name: vitaminNames[i], kind: 'effort', stat, amount: 10, price: 4000, shopFloor: 89 });
 	});
+	items.push({ id: 'bottlecap', name: '银色王冠', kind: 'crown', price: 6000, shopFloor: false, icon: 'bottlecap', description: '将一名伙伴自选一项个体值提升至 31。' },
+		{ id: 'goldbottlecap', name: '金色王冠', kind: 'crown', price: 24000, shopFloor: false, icon: 'goldbottlecap', description: '将一名伙伴的六项个体值全部提升至 31。' });
+	items.push(...captureItems());
 	items.push(...structuredClone(TREASURES));
 }

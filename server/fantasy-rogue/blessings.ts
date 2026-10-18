@@ -55,6 +55,8 @@ export interface RogueBlessings extends BlessingEffects {
 	caught: string[]; nextJoin: number; afterFloor?: boolean;
 	stage?: { kind: 'direction' | 'upgrade', options: string[] };
 	evolutionCosts?: number[];
+	/** Fighting receives its ten-floor upgrade before the milestone direction change. */
+	evolutionResetPending?: boolean;
 	shards: number; candy: number; swordUses: number; swordRewards: string[];
 	/** Intrinsic Meltan progress; retained here for compatibility with existing saves. */
 	candyDefeated?: string[];
@@ -331,6 +333,7 @@ export function toolbox(run: RogueRun, random: RogueRandom, advanced = false) {
 export function treasure(run: RogueRun, content: RogueContent, random: RogueRandom, extraBudget = 0) {
 	const budget = treasureBudget(run.floor) + extraBudget;
 	const pool = content.items.filter(item => ['heal', 'revive', 'cure', 'ether', 'ball', 'treasure', 'held'].includes(item.kind) &&
+		(item.kind !== 'ball' || ['pokeball', 'greatball', 'ultraball'].includes(item.id)) &&
 		(item.sellPrice || item.price) > 0).map(item => ({ id: item.id, value: item.sellPrice || item.price }));
 	// Stable reward valuations, independent of shop prices and the merchant spirit.
 	for (const item of dex.items.all()) if ((!item.isNonstandard && item.isBerry || item.megaStone) && !pool.some(p => p.id === item.id)) {
@@ -583,7 +586,10 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 				state.levels += blessingLevelCost('prismatic', run.floor);
 				paid.push(run.floor);
 			}
-			state.stage = { kind: 'direction', options: ['resistance', 'moves', 'stats'] };
+			if (state.evolution.type === 'Fighting') {
+				state.evolutionResetPending = true;
+				prepareEvolutionUpgrade(run, random);
+			} else state.stage = { kind: 'direction', options: ['resistance', 'moves', 'stats'] };
 		} else prepareEvolutionUpgrade(run, random);
 	} else if ([50, 100, 150].includes(run.floor)) {
 		state.round = createBlessingRound({ floor: run.floor as BlessingFloor, spirit: run.spirit,
@@ -763,6 +769,10 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 				if (kind === 'defense') evo.defense[key] = (evo.defense[key] || 0) - 1;
 				if (kind === 'offense') evo.offense[key] = (evo.offense[key] || 0) + 1;
 				delete state.stage;
+				if (state.evolutionResetPending) {
+					delete state.evolutionResetPending;
+					state.stage = { kind: 'direction', options: ['resistance', 'moves', 'stats'] };
+				}
 			}
 		} else {
 			requireRule(state.round, '没有可选择的祝福。');

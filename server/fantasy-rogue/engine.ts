@@ -1,7 +1,7 @@
 import { rollRoutes, normalizeRouteHistory } from './routes';
 import { syncExclusiveItems } from './exclusive-items';
 import { beginExclusiveEncounter } from './exclusive-events';
-import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup } from './companions';
+import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards } from './companions';
 import { companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
 import { eventView } from './events';
@@ -32,7 +32,7 @@ import { chooseTrainer, ELITE_FOUR_FLOORS } from './trainer-bosses';
 import { centerCare, prepareEconomy } from './economy';
 import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 import {
-	battleFriendship, changeFriendship, floorFriendship, friendship, ROGUE_INITIAL_FRIENDSHIP,
+	battleFriendship, changeFriendship, floorFriendship, friendship, rogueTime, ROGUE_INITIAL_FRIENDSHIP,
 } from './friendship';
 import { initializeSpirit, grantSpiritGift, prepareSpiritNode, spiritShopAvailable, hpPurchaseCost,
 	convertSpiritItem, editSpiritBox, mergeSpiritPokemon, completeSpiritRegion } from './spirits';
@@ -378,7 +378,13 @@ export class RogueEngine {
 	}
 	private completeFloor(account: RogueAccount, run: RogueRun) {
 		if (run.node?.kind === 'boss' && run.mentorCard?.floor === run.floor) delete run.mentorCard;
-		if (this.content?.events) grantEventTraining(run);
+		if (this.content?.events) {
+			const before = { money: run.money, bag: { ...run.bag } };
+			grantEventTraining(run);
+			const credited = run.money;
+			boostCompanionEventRewards(run, before);
+			if (run.lastReward?.floor === run.floor) run.lastReward.money += run.money - credited;
+		}
 		completeSpiritRegion(run);
 		if (this.configured().progression) floorFriendship(run);
 		const reward = run.node!.reward;
@@ -830,6 +836,8 @@ export class RogueEngine {
 				// Old saves may predate persisted opponent gender; resolve it once before choosing the portrait.
 				requireRule(!run.blessings?.owned.some(b => b.family === 'companionai') ||
 					run.blessings.companions?.some(c => ['sada', 'turo'].includes(c.id)), '请先选择奥琳 AI 或弗图 AI。');
+				requireRule(!run.blessings?.owned.some(b => b.family === 'companionstreamer') ||
+					run.blessings.companions?.some(c => ['iono', 'canari'].includes(c.id)), '请先选择奇树或卡娜莉。');
 				for (const c of run.blessings?.companions || []) {
 					const mon = run.team.find(p => p.id === c.member);
 					requireRule(c.id !== 'acerola' || c.type || !run.team.some(p => permanentMemberTypes(p).some(t => ['Ghost', 'Normal'].includes(t))), '请先选择阿塞罗拉指导的属性。');
@@ -957,7 +965,14 @@ export class RogueEngine {
 				let count = command.count ?? 1;
 				requireRule(Number.isSafeInteger(count) && count > 0 && count <= run.bag[item.id], '道具使用数量无效或库存不足。');
 				requireRule(item.kind === 'candy' || count === 1, '仅经验糖果支持批量使用。');
-				if (item.kind === 'tonic') {
+				if (item.kind === 'crown') {
+					const stats = item.id === 'goldbottlecap' ? ROGUE_STATS : [ROGUE_STATS[command.slot!]];
+					requireRule(stats.every(stat => !!stat) && (item.id === 'goldbottlecap' || Number.isInteger(command.slot)), '请选择要提升的个体值。');
+					requireRule(stats.some(stat => mon.set.ivs[stat] < 31), '个体值已经达到上限，道具未消耗。');
+					for (const stat of stats) mon.set.ivs[stat] = 31;
+					rebuildMember(mon, run.boosts);
+					run.notices = [`已使用【${item.name}】，伙伴的个体值得到了提升。`];
+				} else if (item.kind === 'tonic') {
 					useTonic(account, mon, item);
 					run.notices = [`已为伙伴使用${item.name}。` + (mon.tonics?.wine && mon.tonics.cephalosporin ? TONIC_SECRET : '')];
 				} else if (item.kind === 'mint') {
@@ -1062,11 +1077,13 @@ export class RogueEngine {
 			tera: { player: !!run.teraUnlocked, opponent: encounter.boss?.kind === 'summit' || !!encounter.trainer?.tera ||
 				(run.node!.kind === 'boss' && ELITE_BOSS_FLOORS.has(run.floor)) },
 			progression: !run.postgame && !!this.configured().progression, allowReplacement: this.configured().allowReplacement,
-			caughtSpecies: account.caughtSpecies?.length || 0,
+			caughtSpecies: account.caughtSpecies?.length || 0, caughtSpeciesIds: [...(account.caughtSpecies || [])],
+			captureEnvironment: { water: run.node!.event?.id === 'fishing' || ['biome02', 'biome09'].includes(run.node!.biome?.id || ''),
+				dark: rogueTime(run.floor) === 'night' || ['biome04', 'biome12', 'biome14'].includes(run.node!.biome?.id || '') },
 			balls: this.configured().items.filter(item => item.kind === 'ball' &&
 				(item.multiplier || item.id in (encounter.catchChances || {})))
 				.map(item => ({
-					id: item.id, name: item.name, chance: encounter.catchChances?.[item.id], multiplier: item.multiplier,
+					id: item.id, name: item.name, chance: encounter.catchChances?.[item.id], multiplier: item.multiplier, rule: item.ballRule,
 				})),
 		};
 	}
@@ -1238,9 +1255,11 @@ export class RogueEngine {
 			const baseLoot = run.node!.wildLoot?.[run.encounter];
 			const loot = baseLoot && blessingLoot(run, baseLoot, this.random);
 			if (loot) {
+				const before = { money: run.money, bag: { ...run.bag } };
 				for (const [id, count] of Object.entries(loot)) run.bag[id] = (run.bag[id] || 0) + count;
+				boostCompanionEventRewards(run, before);
 				run.lastReward = { floor: run.floor, encounter: run.encounter + 1, name: run.node!.name,
-					money: 0, items: structuredClone(loot), points: 0 };
+					money: 0, items: Object.fromEntries(Object.keys(loot).map(id => [id, run.bag[id] - (before.bag[id] || 0)])), points: 0 };
 			}
 			if (this.configured().progression) {
 				if (companionOwned(run.blessings, 'lana') && result.defeated?.some(defeated =>

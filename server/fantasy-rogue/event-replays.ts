@@ -3,6 +3,7 @@ import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	legendarytracks: '51 层起追寻罕见宝可梦。选错地点可能惊走目标；越深入高塔，越可能遇到传说中的强大身影。',
 	fantasytutor: '第 81 层起，消耗少量幻想碎片，请研究员教会幻想伙伴一个合法的幻想招式。',
 	exclusiveclue: '追寻专属道具的线索。排除错误地点后，藏匿的宝可梦也会露出身影。',
 	exclusivechallenge: '专属道具的持有者想亲自检验你与伙伴的实力。',
@@ -32,7 +33,15 @@ export function eventReplay(id: EventID) {
 	page('win', [text.fightWin]);
 	page('roomwin', [text.roomWin, '获得工具箱 ×1（四件选一件）和幻想碎片，碎片数量随楼层增加。']);
 	page('lose', [text.fightLose, text.fightLossRule]);
-	if (id === 'fantasytutor') {
+	if (id === 'legendarytracks') {
+		page('start', eventOpening(id), [['放轻脚步，追寻足迹。', 'sites'], ['把线索留给调查员。', 'leave']]);
+		page('sites', ['足迹在几条岔路间变得模糊。你决定前往一处地点。'], [['找到目标', 'found'], ['选错地点但目标未离开', 'clue'], ['目标被惊走', 'gone']]);
+		page('clue', ['只找到旧痕迹，但远处的动静还没有消失。'], [['继续追踪', 'sites']]);
+		page('found', ['一个罕见的身影与伙伴的目光相遇。你握紧精灵球，向它发出了挑战。'], [['对战结束', 'end']], true);
+		page('gone', ['枯枝折断，远处的身影消失了。调查员提醒你，下次再轻一些。']);
+		page('end', ['调查员记下这次珍贵的相遇，与你道别。']);
+		page('leave', ['你将线索留给调查员，继续前行。']);
+	} else if (id === 'fantasytutor') {
 		page('start', eventOpening(id), [['请指导我们的伙伴。', 'partner'], ['这次先向你请教理论。', 'leave']]);
 		page('partner', ['「挑一位幻想伙伴吧。我只能教它本来就能够掌握的招式。」'], [['选定伙伴与招式', 'learn'], ['没有尚未掌握的招式', 'known']]);
 		page('learn', ['你交出 10 枚幻想碎片。碎片化成细碎的光，伙伴学会了新的幻想招式。', '「记住这种感觉。下次，我们再试试新的可能。」']);

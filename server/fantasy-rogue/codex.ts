@@ -14,7 +14,7 @@ const INTRO = [
 	{ title: '这座塔怎么玩？', text: '选择初始伙伴，带着偏爱卡片向 200 层前进。每层挑选路线，在战斗、捕捉、事件与补给间作出选择。打败首领、收集祝福，逐步养成自己的队伍。' },
 	{ title: '队伍与资源', text: '右侧“队伍及背包”可以查看伙伴、换招、装备道具和使用补给。HP、PP 与异常状态会带到下一场；野怪掉落的贵重物品要到商店换金币，训练家战斗则发放奖金。' },
 	{ title: '祝福与塔灵', text: '第一层开战前，以及通关 50、100、150 层后各选择一轮祝福，共四轮；基拉祈每轮可选两项。每张卡可独立刷新。黄金和棱彩按所选轮次累计提高对手等级，固定首领加成高于普通遭遇；开局祝福不提高普通遭遇等级。塔灵默认随机；使用某个塔灵通关 200 层后，永久解锁手动选择该塔灵，未通关塔灵仍在随机池中。' },
-	{ title: '战前准备与队伍成长', text: '普通野怪击倒经验提升 25%，符合结算条件的存活后备伙伴仍获得一半战斗经验。休整时，黑袍老人会介绍下一层首领，并让你三选一领取仅用于该首领战的增益卡。精英与遭遇提供经验糖果，正面事件以金币和其他奖励为主。十八种属性提升道具从第 49 层休整商店开放；糖果 S／M／L／XL 分别从第 30／50／100／150 层开放。' },
+	{ title: '战前准备与队伍成长', text: '普通战斗区域野怪击倒经验提升 37.5%，符合结算条件的存活后备伙伴仍获得一半战斗经验。休整时，黑袍老人会介绍下一层首领，并让你三选一领取仅用于该首领战的增益卡。精英与遭遇提供经验糖果，正面事件以金币和其他奖励为主。十八种属性提升道具从第 49 层休整商店开放；糖果 S／M／L／XL 分别从第 30／50／100／150 层开放。' },
 	{ title: '逃跑与急救', text: '所有肉鸽战斗均可逃跑，保留 HP、PP、异常状态及道具损耗，调整队伍后重打当前对手。逃跑不发胜利奖励、不触发自动急救。战败后全队倒下且没有复活道具时，会自动支付随层数增加的急救费；余额不足则不扣款、不复活。记得提前购买补给。' },
 	{ title: '下一次会更强', text: '捕捉会解锁初始伙伴与可指定的资质；击败首领获得局外成长点。无塔灵通关可解锁塔灵。通关后可以收藏队伍卡，展示成果，并用相同塔灵的通关队伍约战。' },
 ];
@@ -71,7 +71,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			family: def.family, name: display.name, tier: def.tier, floors: floor ? [floor] : def.floors, variantFloor: floor,
 			unlocked, text: unlocked ? display.text : '？？？' };
 	})).sort(compareBlessingNames) };
-	const events = (Object.keys(EVENT_NAMES) as EventID[]).map(id => {
+	const events = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== 'auction').map(id => {
 		const unlocked = preview || discovered.events.includes(id);
 		return { id, category: 'event', name: EVENT_NAMES[id], unlocked, text: unlocked ? EVENT_OVERVIEWS[id] : '？？？',
 			...(unlocked ? { replay: eventReplay(id) } : {}) };
@@ -82,13 +82,15 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 				'以回复药与活力碎片为主的旅途补给。展示符合对方偏好的宝可梦或招式，可以提高谢礼品质。' })),
 		...Object.entries(TRADE_NAMES).map(([id, name]) => ({ id: `trade:${id}`, category: 'trade', name,
 			text: id === 'auction' ? '31 层起有机会遇到。每场上架 3～5 件珍品，观察竞拍者的预算与脾气，交替出价或运用话术，最高出价者在落槌时付款。' :
+			id === 'crowns' ? '51 层起低概率出现银色王冠商店，121 层起加售金色王冠。提升个体值，每店限购。' :
+			id === 'balls' ? '全程可能出现，各类捕捉球九折出售，每种限购 15 个。' :
 			id === 'growth' ? '51 层起有机会遇到。花费金币，让全队获得本局永久的双攻、双防或战斗经验加成。每店限购；不占携带道具栏。' :
 				`欢迎来到${name}！可以购买本店商品，也可以直接离开。商品与库存以当次交易为准。` })),
 		{ id: 'encounter:trainer', category: 'encounter', name: '旅行训练家', text: '路上的训练家向你发起挑战。战胜对手，可以获得金币奖励。' },
 		{ id: 'encounter:rocket', category: 'encounter', name: '火箭队拦路', text: '火箭队挡在店门口。战胜对手后，才能继续使用商店。' },
 	].map(entry => {
-		const unlocked = preview || discovered.events.includes(entry.id);
-		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？', ...(unlocked ? { replay: {
+		const unlocked = preview || discovered.events.includes(entry.id) || entry.id === 'trade:auction' && discovered.events.includes('auction');
+		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？', ...(unlocked ? { replay: entry.id === 'trade:auction' ? eventReplay('auction') : {
 			title: entry.name, start: 'start',
 			pages: { start: { text: [entry.text], options: [], battleSkipped: entry.category === 'encounter' } },
 		} } : {}) };

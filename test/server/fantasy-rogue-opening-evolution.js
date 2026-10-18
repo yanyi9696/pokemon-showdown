@@ -91,6 +91,30 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 		assert.deepEqual(saved.cards[0].snapshot.blessingEffects.evolution, saved.run.blessings.evolution);
 		assert.deepEqual(saved.cards[0].snapshot.team, saved.run.team);
 	});
+
+	it('gives Fighting 24 upgrades, preserving milestone upgrades across reloads and direction resets', () => {
+		choose('typeevolutionfighting'); gift(); upgrade();
+		let upgrades = 1;
+		for (let floor = 10; floor <= 200; floor += 10) {
+			complete(floor);
+			assert.equal(account().run.blessings.stage.kind, 'upgrade');
+			if ([50, 100, 150].includes(floor)) {
+				const before = account(); engine.migrate(user); assert.deepEqual(account(), before);
+				assert(account().run.blessings.evolutionResetPending);
+				upgrade(); upgrades++;
+				assert.equal(account().run.floor, floor);
+				assert.equal(account().run.blessings.stage.kind, 'direction');
+				assert(!account().run.blessings.evolutionResetPending);
+				const after = account(); engine.migrate(user); assert.deepEqual(account(), after);
+			}
+			upgrade(); upgrades++;
+		}
+		const saved = account();
+		assert.equal(upgrades, 24); assert.equal(saved.run.blessings.bossLevels, 100);
+		assert.deepEqual(saved.run.blessings.evolutionCosts, [50, 100, 150]);
+		assert(Math.abs(saved.run.blessings.evolution.stats.hp - 3.6) < 1e-9);
+		assert.deepEqual(saved.cards[0].snapshot.blessingEffects.evolution, saved.run.blessings.evolution);
+	});
 	it('keeps an upgrade available after all resistance choices are exhausted', () => {
 		choose('typeevolutionsteel'); gift();
 		cmd('blessing', { value: 'resistance' });

@@ -34,7 +34,7 @@ export function validateContent(content: RogueContent): RogueContent {
 		ensure(/^[a-z0-9]+$/.test(item.id) && !itemIds.has(item.id), '道具标识重复或无效');
 		itemIds.add(item.id);
 		ensure(item.name && whole(item.price), `道具 ${item.id} 名称或价格无效`);
-		const kinds = ['ball', 'heal', 'revive', 'ether', 'cure', 'candy', 'evolution', 'held', 'treasure', 'effort'];
+		const kinds = ['ball', 'heal', 'revive', 'ether', 'cure', 'candy', 'evolution', 'held', 'treasure', 'effort', 'crown'];
 		ensure(kinds.includes(item.kind), '未支持的道具类型');
 		ensure(item.shopFloor === undefined || item.shopFloor === false ||
 			(Number.isSafeInteger(item.shopFloor) && item.shopFloor >= 1 && item.shopFloor <= 200), '商店解锁层数无效');

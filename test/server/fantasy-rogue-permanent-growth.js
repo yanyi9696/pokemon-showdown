@@ -135,7 +135,7 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 	it('unlocks training trades only at 51, preserves stock, currency, receipts and run caps', () => {
 		for (let roll = 0; roll < 100; roll++) assert.notEqual(tradeKind(50, () => roll), 'growth');
 		let draw = 0;
-		assert.equal(tradeKind(51, () => draw++ === 0 ? 99 : 0), 'growth');
+		assert.equal(tradeKind(51, () => draw++ < 2 ? 99 : 0), 'growth');
 		assert.equal(tradeKind(150, () => 39), 'growth');
 		enter(50, 'trade'); assert.throws(() => cmd('buygrowth', { value: 'offense' }));
 		enter(51, 'trade'); const before = account().run;

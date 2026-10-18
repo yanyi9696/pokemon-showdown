@@ -4,11 +4,14 @@ export const EVENT_NAMES = {
 	mysteryball: '谜之宝可梦球', forest: '斗蛐蛐！', mushrooms: '蘑菇走私犯', room: '不战斗就无法出去的房间',
 	travel: '旅行的回忆', martial: '这是武术的胜利', tutor: '读万卷书，行万里路',
 	bandits: '双面山贼', dice: '骗小孩的把戏', fishing: '永不空军！',
-	fantasytutor: '让想象成为招式', exclusiveclue: '遗落的共鸣', exclusivechallenge: '托付的考验', auction: '落槌之前',
+	fantasytutor: '让想象成为招式', exclusiveclue: '遗落的共鸣', exclusivechallenge: '托付的考验', auction: '落槌之前', legendarytracks: '追寻传说宝可梦的足迹',
 };
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
 	return {
+		legendarytracks: ['一位背着旧挎包的调查员蹲在路旁，正将奇异的足迹描进手册。见你走近，他压低了声音。',
+			'「有人在这一带见过传说中的身影，也有人说那是来自另一个世界的宝可梦。你看，这些痕迹还很新。」',
+			'他指向远处几条岔路：「要试着找找吗？动静太大，它可就走远了。」'],
 		fantasytutor: ['高塔深处，一个研究员正在记录招式留下的光芒。看见你的伙伴，他合上了笔记。',
 			'「幻想的力量也需要练习。我能用幻想碎片引导伙伴学会新的幻想招式，每次只要 10 枚。」'],
 		exclusiveclue: ['伙伴在遗迹前停下了脚步。一件属于它的宝物，似乎就在附近。'],

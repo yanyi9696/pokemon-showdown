@@ -129,8 +129,11 @@ describe('Fantasy Rogue early growth and preparation', function () {
 	});
 	it('favors candy/TM trades early and stocks six/eight distinct legal TMs', () => {
 		const counts = {};
-		for (let i = 0; i < 100; i++) { const kind = tradeKind(1, () => i); counts[kind] = (counts[kind] || 0) + 1; }
-		assert.deepEqual(counts, { candy: 50, machine: 40, mint: 10 });
+		for (let specialist = 0; specialist < 100; specialist++) for (let general = 0; general < 100; general++) {
+			let draw = 0; const kind = tradeKind(1, () => draw++ === 0 ? specialist : general);
+			counts[kind] = (counts[kind] || 0) + 1;
+		}
+		assert.deepEqual(counts, { balls: 2000, candy: 4000, machine: 3200, mint: 800 });
 		for (const floor of [1, 80]) {
 			const run = { floor, team: [createRoguePokemon(set(), stats(0))], node: { trade: { kind: 'machine', stock: [], purchases: 0 } } };
 			prepareTrade(run, content, () => 0);

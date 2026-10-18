@@ -36,8 +36,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert.equal(data.entries.length, ROGUE_BLESSINGS.length + STAGED_BLESSING_FAMILIES.length * 3);
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
-		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).length);
-		assert.equal(events.filter(e => e.category === 'trade').length, 5);
+		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).filter(id => id !== 'auction').length);
+		assert.equal(events.filter(e => e.category === 'trade').length, 7);
 		assert.equal(events.filter(e => e.category === 'reward').length, 5);
 		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 	});

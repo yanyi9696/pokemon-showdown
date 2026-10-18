@@ -25,11 +25,13 @@ function speak(c: RogueCompanion, kind: 'chat' | 'praise', random: RogueRandom) 
 type Option = { id: string, name: string, disabled?: boolean };
 export function companionRecommendation(run: RogueRun, c: RogueCompanion, options: Option[]) {
 	const event = run.node?.event;
-	if (!event || event.stage !== 'choice') return;
+	if (!event || event.stage !== 'choice' || ['iono', 'canari'].includes(c.id) && run.node?.kind !== 'event') return;
 	const available = options.filter(o => !o.disabled &&
 		!['leave', 'back', 'unavailable', 'fishtap', 'fishfinish'].includes(o.id));
 	const score = (o: Option) => {
 		if (o.id === `postcard:${COMPANIONS[c.id].region}`) return 100;
+		if (['iono', 'canari'].includes(c.id)) return ['investigate', 'ask', 'skill', 'sleep', 'taste', 'fragments', 'fishstart'].includes(o.id) ? 90 :
+			['fight', 'power', 'road', 'fantasy', 'leave'].includes(o.id) ? 0 : 40;
 		if (c.id === 'bea') return ['fight', 'power', 'road', 'fantasy'].includes(o.id) ? 80 : 0;
 		if (c.id === 'acerola') return (
 			['open', 'adopt', 'path', 'mediate', 'left', 'right', 'confirm', 'fishstart'].includes(o.id) ||
@@ -47,10 +49,10 @@ export function companionView(run: RogueRun, options: Option[] = []) {
 		const pendingType = !c.type && COMPANIONS[c.id].types.length;
 		return { ...c, name: COMPANIONS[c.id].name, source: companionSource(c.id),
 			smileUntil: c.smile === 'chat' ? (c.messageAt || 0) + 6000 : undefined,
-			smile: c.smile === 'approval' ? c.eventKey === event?.key :
+			smile: c.smile === 'approval' ? c.eventKey === (event?.companionKey || event?.key) :
 			c.smile === 'chat' && Date.now() - (c.messageAt || 0) < 6000,
-			message: c.smile === 'approval' && c.eventKey !== event?.key ? undefined : c.message,
-			canConsult: run.phase === 'event' && event?.stage === 'choice' && options.some(o => !o.disabled),
+			message: c.smile === 'approval' && c.eventKey !== (event?.companionKey || event?.key) ? undefined : c.message,
+			canConsult: run.phase === 'event' && event?.stage === 'choice' && !!companionRecommendation(run, c, options),
 			recommended: c.consulted === event?.key ? companionRecommendation(run, c, options) : undefined,
 			member: member && { id: member.id, species: member.set.species, total: memberStatTotal(member) },
 			typeOptions: pendingType ? COMPANIONS[c.id].types.map(type => ({ id: type,
@@ -61,6 +63,12 @@ export function companionView(run: RogueRun, options: Option[] = []) {
 }
 export function companionCommand(run: RogueRun, command: RogueCommand, random: RogueRandom, options: Option[]) {
 	if (run.phase === 'battle') throw new Error('请在战斗外与同行训练家交流。');
+	if (command.value === 'choosestreamer') {
+		if (!run.blessings?.owned.some(b => b.family === 'companionstreamer') ||
+			run.blessings.companions?.some(c => ['iono', 'canari'].includes(c.id)) ||
+			!['iono', 'canari'].includes(command.member || '')) throw new Error('请在奇树与卡娜莉中选择一位。');
+		grantCompanion(run, command.member as CompanionID); return;
+	}
 	if (command.value === 'chooseai') {
 		if (!run.blessings?.owned.some(b => b.family === 'companionai') ||
 			run.blessings.companions?.some(c => ['sada', 'turo'].includes(c.id)) ||
@@ -77,7 +85,7 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 		c.consulted = run.node.event.key;
 		const recommended = options.find(o => o.id === companionRecommendation(run, c, options));
 		const reason = c.id === 'bea' ? '实战也是修行。' : c.id === 'acerola' ? '去看看会遇到什么伙伴吧。' :
-			c.id === 'lana' ? '也许会有不错的收获。' : '最终的决定由你来做。';
+			c.id === 'lana' ? '也许会有不错的收获。' : ['iono', 'canari'].includes(c.id) ? '这里的故事一定很有意思！' : '最终的决定由你来做。';
 		c.message = recommended ? `我想选择「${recommended.name}」。${reason}` : '先仔细看看眼前的情况吧。';
 		c.messageAt = Date.now(); delete c.smile; return;
 	}
@@ -98,11 +106,13 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 }
 export function recordCompanionPreference(run: RogueRun, options: Option[], choice: string, random: RogueRandom) {
 	const event = run.node!.event!;
+	const key = event.companionKey ||= event.key;
 	for (const c of run.blessings?.companions || []) {
-		if (companionRecommendation(run, c, options) !== choice || c.counted?.includes(event.key)) continue;
-		(c.counted ||= []).push(event.key);
-		c.eventKey = event.key; speak(c, 'praise', random);
-		if (!['bea', 'acerola'].includes(c.id)) continue;
+		if (companionRecommendation(run, c, options) !== choice || c.counted?.includes(key)) continue;
+		(c.counted ||= []).push(key);
+		if (['iono', 'canari'].includes(c.id) && run.node?.kind === 'event') event.streamerBonus = c.id;
+		c.eventKey = key; speak(c, 'praise', random);
+		if (!['bea', 'acerola', 'iono', 'canari'].includes(c.id)) continue;
 		c.preferences++;
 		if (c.preferences >= 15 && !c.rewarded) {
 			c.rewarded = true;
@@ -118,6 +128,33 @@ export function companionExperience(run: RogueRun, mon: RoguePokemon, defeated: 
 	if (companionOwned(run.blessings, 'lana') &&
 		Dex.mod('gen9fantasy').species.get(defeated.species).types.includes('Water')) factor *= 1.25;
 	return factor;
+}
+/** Tenths are saved across events: small rewards are not rounded into a 100% bonus. */
+export function boostCompanionEventRewards(run: RogueRun, before: { money: number, bag: Record<string, number>, shards?: number }) {
+	const event = run.node?.event;
+	if (run.node?.kind !== 'event' || !event?.streamerBonus || run.money < before.money) return;
+	const c = companionOwned(run.blessings, event.streamerBonus);
+	if (!c || !['iono', 'canari'].includes(c.id)) return;
+	const carries = c.rewardRemainder ||= {};
+	const extra = (key: string, gained: number) => {
+		if (gained <= 0) return 0;
+		const total = (carries[key] || 0) + gained;
+		carries[key] = total % 10;
+		return Math.floor(total / 10);
+	};
+	let increased = 0;
+	const coins = extra('money', run.money - before.money); run.money += coins; increased += coins;
+	// Exclusive items, form items and purchased rewards are not duplicated.
+	const supplies = /^(expcandy|potion$|superpotion$|hyperpotion$|revive$|maxrevive$|ether$|elixir$|fullheal$|antidote$|burnheal$|iceheal$|awakening$|paralyzeheal$|pokeball$|greatball$|ultraball$|oranberry$|sitrusberry$|healthfeather$|musclefeather$|resistfeather$|geniusfeather$|cleverfeather$|swiftfeather$|prettyfeather$|.*mushroom$|.*pearl$|.*nugget$|stardust$|starpiece$|cometshard$|pearlstring$)/;
+	for (const [id, count] of Object.entries(run.bag)) {
+		if (!supplies.test(id)) continue;
+		const amount = extra(id, count - (before.bag[id] || 0)); run.bag[id] += amount; increased += amount;
+	}
+	if (run.blessings && before.shards !== undefined) {
+		const amount = extra('shards', run.blessings.shards - before.shards);
+		run.blessings.shards += amount; increased += amount;
+	}
+	if (increased) (run.notices ||= []).push(`${companionSource(c.id)}这次事件的收获增加了，已一并收好。`);
 }
 export function companionPickup(run: RogueRun, encounterId: string, random: RogueRandom) {
 	if (!companionOwned(run.blessings, 'acerola') || run.companionPickups?.settled.includes(encounterId)) return;

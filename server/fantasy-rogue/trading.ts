@@ -9,8 +9,11 @@ import { CANDY_SHOP, restCandyOffer } from './early-balance';
 import { beginAuction } from './auction';
 
 const dex = Dex.mod('gen9fantasy');
-export const TRADE_NAMES = { mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '拍卖地摊' };
+export const TRADE_NAMES = { mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '落槌之前', balls: '宝可梦球商店', crowns: '王冠商店' };
 export function tradeKind(floor: number, random: RogueRandom): keyof typeof TRADE_NAMES {
+	const specialist = random(100);
+	if (specialist < 20) return 'balls';
+	if (floor >= 51 && specialist < (floor >= 121 ? 28 : 26)) return 'crowns';
 	if (floor >= 31 && random(100) < 20) return 'auction';
 	const roll = random(100);
 	if (floor >= 51) {
@@ -104,6 +107,14 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 		return;
 	}
 	if (!trade || trade.stock.length || trade.kind === 'growth') return;
+	if (trade.kind === 'balls' || trade.kind === 'crowns') {
+		const pool = content.items.filter(item => trade.kind === 'balls' ? item.kind === 'ball' && item.id !== 'masterball' :
+			item.kind === 'crown' && (item.id === 'bottlecap' || run.floor >= 121));
+		for (const item of pool) trade.stock.push({ ...item, shopFloor: 1,
+			price: Math.ceil(item.price * (trade.kind === 'balls' ? 0.9 : 1) * (run.spirit === 'meowth' ? 1.25 : 1)),
+			remaining: trade.kind === 'balls' ? 15 : item.id === 'bottlecap' ? 2 : 1 });
+		return;
+	}
 	const budget = (run.floor < 30 ? 750 : run.floor < 80 ? 1250 : run.floor < 140 ? 2450 : 5650) + 8 * run.floor;
 	let pool: RogueItem[];
 	if (trade.kind === 'mint') {

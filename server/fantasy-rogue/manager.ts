@@ -101,7 +101,7 @@ export class RogueManager {
 				if (item) items.push(item);
 			}
 		}
-		for (const item of items) item.category = equipmentCategory(item.id);
+		for (const item of items) item.category ||= equipmentCategory(item.id);
 		return {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			storyEnabled: !!content?.story,

@@ -1,3 +1,4 @@
+import { rogueBallMultiplier, type RogueBallRule } from './rogue-balls';
 /** Private campaign state. Never send this object to an opponent or a spectator. */
 import type { Battle } from './battle';
 import type { Side } from './side';
@@ -94,7 +95,7 @@ export interface RogueBattleState {
 	boosts: StatsTable;
 	bag: Record<string, number>;
 	/** Explicit per-ball probabilities supplied by the content configuration (0..1). */
-	balls: { id: string, name: string, chance?: number, multiplier?: number }[];
+	balls: { id: string, name: string, chance?: number, multiplier?: number, rule?: RogueBallRule }[];
 	catchable: boolean;
 	/** Only NPC captures granted by the Rocket blessing provoke the trainer. */
 	npcCapture?: boolean;
@@ -106,6 +107,8 @@ export interface RogueBattleState {
 	progression?: boolean;
 	allowReplacement?: boolean;
 	caughtSpecies?: number;
+	caughtSpeciesIds?: string[];
+	captureEnvironment?: { water: boolean, dark: boolean };
 	participants?: Record<string, string[]>;
 	defeated?: RogueDefeat[];
 }
@@ -263,7 +266,7 @@ export function rogueCaptureChance(battle: Battle, ball: RogueBattleState['balls
 	const multiplier = (state.spirit?.id === 'mew' ? 2 : 1) * (hasBlessing(battle.p1.active[0], 'catcher') ? 1.5 : 1);
 	if (ball.chance !== undefined) return Math.min(1, Math.round(ball.chance * 1000000) / 1000000 * multiplier);
 	const threshold = captureThresholds(rogueSpeciesData(target.set.species).catchRate,
-		target.maxhp, target.hp, target.status, ball.multiplier!, state.caughtSpecies || 0);
+		target.maxhp, target.hp, target.status, rogueBallMultiplier(battle, ball), state.caughtSpecies || 0);
 	if (threshold.guaranteed) return 1;
 	const shake = threshold.shake / 65536;
 	const critical = threshold.critical / 256;
@@ -291,7 +294,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 		shakes = success ? 3 : 1;
 	} else {
 		const threshold = captureThresholds(rogueSpeciesData(target.set.species).catchRate,
-			target.maxhp, target.hp, target.status, ball.multiplier!, state.caughtSpecies || 0);
+			target.maxhp, target.hp, target.status, rogueBallMultiplier(battle, ball), state.caughtSpecies || 0);
 		critical = chance(threshold.critical, 256);
 		if (critical) battle.add('-message', '会心捕捉！');
 		success = threshold.guaranteed;
@@ -323,7 +326,14 @@ export function throwRogueBall(battle: Battle, id: string) {
 	delete original.set.fantasyRogueModifiers;
 	delete original.set.fantasyRogueId;
 	state.captured = snapshotRoguePokemon(target, original);
+	if (id === 'healball') {
+		state.captured.hp = state.captured.maxhp; state.captured.status = '';
+		state.captured.statusState = {}; delete state.captured.statuses;
+		for (const slot of state.captured.pp) slot.pp = slot.maxpp;
+	}
 	(state.captures ||= []).push(state.captured);
+	const caught = state.caughtSpeciesIds ||= [];
+	if (!caught.includes(target.species.id)) { caught.push(target.species.id); state.caughtSpecies = (state.caughtSpecies || 0) + 1; }
 	recordRogueDefeat(battle, target, true);
 	battle.add('-message', `成功捕捉了${target.species.name}！`);
 	// A private message commits the account-level catch immediately, before the end packet.

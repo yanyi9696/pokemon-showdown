@@ -46,7 +46,7 @@ export interface RogueEncounter {
 export interface RogueNode {
 	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
 	restCandyPurchases?: Record<string, number>;
-	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction', stock: (RogueItem & { remaining: number })[], purchases: number,
+	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction' | 'balls' | 'crowns', stock: (RogueItem & { remaining: number })[], purchases: number,
 		services?: Partial<import('./growth').RogueGrowth> };
 	rewardScene?: import('./reward-scenes').RewardScene;
 	event?: import('./events').RogueEvent;
@@ -72,7 +72,7 @@ export interface RogueItem {
 	id: string;
 	name: string;
 	singleMove?: boolean;
-	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic';
+	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic' | 'crown';
 	nature?: string; move?: string; description?: string;
 	/** Omitted on cure items means all persistent status conditions. */
 	cureStatuses?: string[];
@@ -86,6 +86,7 @@ export interface RogueItem {
 	/** Healing amount, or fraction of max HP for a revive. */
 	amount?: number;
 	multiplier?: number;
+	ballRule?: import('../../sim/rogue-balls').RogueBallRule;
 	icon?: string;
 	category?: string;
 }

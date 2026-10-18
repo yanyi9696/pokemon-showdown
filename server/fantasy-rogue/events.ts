@@ -1,9 +1,10 @@
 import { randomUUID } from 'crypto';
+import { beginLegendaryTracks, legendaryTracksView, chooseLegendaryTracks, settleLegendaryTracks, LEGENDARY_TRACKS_FLOOR, type LegendaryTracks } from './legendary-tracks';
 import { beginExclusiveClue, exclusiveEventView, chooseExclusiveEvent, settleExclusiveEvent, type ExclusiveEvent } from './exclusive-events';
 import { neededExclusiveItems } from './exclusive-items';
 import { fantasyTutorView, chooseFantasyTutor, FANTASY_TUTOR_FLOOR } from './fantasy-tutor';
 import { auctionView, chooseAuction } from './auction';
-import { recordCompanionPreference } from './companions';
+import { recordCompanionPreference, boostCompanionEventRewards } from './companions';
 import { companionOwned } from '../../sim/rogue-companions';
 import { grantMushroomGrowth } from './growth';
 import { Dex } from '../../sim/dex';
@@ -27,6 +28,9 @@ import { adventureEvent, adventureView, chooseAdventure, settleAdventure, bandit
 import { offerEventFragments, eventFragmentOptions, claimEventFragments, type EventFragmentOffer } from './event-fragments';
 export { EVENT_NAMES, type EventID } from './event-text';
 export interface RogueEvent {
+	tracks?: LegendaryTracks;
+	companionKey?: string;
+	streamerBonus?: import('../../sim/rogue-companions').CompanionID;
 	exclusive?: ExclusiveEvent;
 	fragmentOffer?: EventFragmentOffer;
 	fishing?: FishingState;
@@ -80,7 +84,8 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && run.floor >= trainingFloor(id) &&
 		!['exclusivechallenge', 'auction'].includes(id) &&
 		(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
-		(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR));
+		(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
+		(id !== 'legendarytracks' || run.floor >= LEGENDARY_TRACKS_FLOOR));
 	const unseen = candidates.filter(id => !history.some(entry => entry.id === id));
 	if (unseen.length && !companionOwned(run.blessings, 'lana')) return unseen[random(unseen.length)];
 	const cooled = candidates.filter(id => {
@@ -120,6 +125,9 @@ export function forestTeams(level: number, random: RogueRandom) {
 
 export function beginEvent(run: RogueRun, random: RogueRandom) {
 	const id = chooseEvent(run, random);
+	if (id === 'legendarytracks') {
+		beginLegendaryTracks(run, random); (run.eventHistory ||= []).push({ id, floor: run.floor }); return;
+	}
 	if (id === 'exclusiveclue' && beginExclusiveClue(run, random)) {
 		(run.eventHistory ||= []).push({ id, floor: run.floor });
 		run.node!.reward = { money: 0, items: {} }; return;
@@ -141,7 +149,8 @@ function supplies(run: RogueRun, content: RogueContent, random: RogueRandom, bud
 	if (budget <= 0) return;
 	const pool = content.items.filter(item => fruit ?
 		['oranberry', 'sitrusberry'].includes(item.id) || item.kind === 'effort' && item.amount === 1 :
-		['ball', 'heal', 'revive', 'cure', 'ether', 'treasure'].includes(item.kind))
+		['ball', 'heal', 'revive', 'cure', 'ether', 'treasure'].includes(item.kind) &&
+		(item.kind !== 'ball' || ['pokeball', 'greatball', 'ultraball'].includes(item.id)))
 		.map(item => ({ id: item.id, value: item.sellPrice || item.price }))
 		.filter(item => item.value > 0);
 	let left = Math.round(budget * (0.8 + random(401) / 1000));
@@ -176,7 +185,8 @@ function prepareBattle(run: RogueRun, team: PokemonSet[], reward: number | 'room
 	run.encounter = 0; run.phase = 'ready';
 	if (punitive) recordNegativeBlessingEvent(run, 'outcome');
 }
-function rewardReceipt(run: RogueRun, before: { money: number, bag: Record<string, number> }) {
+function rewardReceipt(run: RogueRun, before: { money: number, bag: Record<string, number>, shards?: number }) {
+	boostCompanionEventRewards(run, before);
 	const items: Record<string, number> = {};
 	for (const [id, count] of Object.entries(run.bag)) {
 		const gained = count - (before.bag[id] || 0);
@@ -198,10 +208,15 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		throw new Error('事件选项已更新或无法选择。');
 	}
 	normalizeBlessings(run);
-	const before = { money: run.money, bag: { ...run.bag } };
+	const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
 	recordCompanionPreference(run, view?.options || [], choice!, random);
+	// Milestone gifts are separate from the current event's rewards.
+	before.money = run.money; before.bag = { ...run.bag };
 	if (choice === 'leave') event.trainingAidBlocked = true;
 	else event.committed = true;
+	if (event.tracks) {
+		chooseLegendaryTracks(run, choice!, random); rewardReceipt(run, before); return;
+	}
 	if (event.exclusive) { chooseExclusiveEvent(run, choice!, random); rewardReceipt(run, before); return; }
 	if (event.id === 'fantasytutor') { chooseFantasyTutor(account, run, content, choice!); rewardReceipt(run, before); return; }
 	if (event.id === 'auction') { chooseAuction(run, choice!); rewardReceipt(run, before); return; }
@@ -342,8 +357,9 @@ export function settleEventBattle(
 	if (!event || event.stage !== 'battle' || event.settled) return;
 	if (!won || retreated) event.trainingAidBlocked = true;
 	else event.trainingAidBattleWin = true;
+	if (event.tracks) { settleLegendaryTracks(run, won); return; }
 	if (event.exclusive) {
-		const before = { money: run.money, bag: { ...run.bag } };
+		const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
 		settleExclusiveEvent(run, won);
 		if (!won && event.id === 'exclusivechallenge') {
 			const lost = Math.min(run.money, 500 + run.floor * 20);
@@ -355,7 +371,7 @@ export function settleEventBattle(
 		return;
 	}
 	if (trainingEvent(event.id)) { settleServiceBattle(run, won, retreated); return; }
-	const before = { money: run.money, bag: { ...run.bag } };
+	const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
 	if (adventureEvent(event.id)) {
 		settleAdventure(run, content, random, won && !retreated);
 		rewardReceipt(run, before); return;
@@ -376,6 +392,7 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (event.id === 'legendarytracks') return { id: event.id, key: event.key, stage: event.stage, ...legendaryTracksView(run) };
 	if (event.exclusive) return { id: event.id, key: event.key, stage: event.stage, ...exclusiveEventView(run) };
 	if (event.id === 'fantasytutor') return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...fantasyTutorView(run) };
 	if (event.id === 'auction') return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...auctionView(run) };

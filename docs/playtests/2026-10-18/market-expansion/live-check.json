@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-18T02:28:32.770Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\market-expansion-1792290431803",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "testedSaveHpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "unchangedAccounts": 19,
+  "concurrentProgress": [],
+  "newEventsPublished": [
+    "legendarytracks"
+  ],
+  "auctionTradePublished": true,
+  "crownAndBallShopsPublished": true,
+  "typeBalls": 18,
+  "streamerCompanionPublished": true,
+  "blessingEntries": 169,
+  "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+}

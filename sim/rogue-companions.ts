@@ -3,14 +3,19 @@ import type { RoguePokemon } from './fantasy-rogue';
 import type { BlessingEffects } from './rogue-blessing-data';
 import { assignedExtraAbilities, memberStatTotal, permanentMemberTypes } from './rogue-blessing-permanent';
 
-export type CompanionID = 'bea' | 'acerola' | 'lana' | 'sada' | 'turo';
+export type CompanionID = 'bea' | 'acerola' | 'lana' | 'sada' | 'turo' | 'iono' | 'canari';
 export interface RogueCompanion {
 	id: CompanionID; member?: string; type?: string; ability?: string;
+	rewardRemainder?: Record<string, number>;
 	preferences: number; rewarded?: boolean; counted?: string[];
 	chatSeen?: number[]; praiseSeen?: number[]; message?: string; smile?: 'chat' | 'approval';
 	messageAt?: number; eventKey?: string; consulted?: string;
 }
 export const COMPANIONS = {
+	iono: { name: '奇树', family: 'companionstreamer', types: ['Electric'],
+		abilities: { Electric: ['galvanize', 'leitingxingzhe'] }, region: 'paldea' },
+	canari: { name: '卡娜莉', family: 'companionstreamer', types: ['Electric'],
+		abilities: { Electric: ['galvanize', 'leitingxingzhe'] }, region: 'kalos' },
 	bea: { name: '彩豆', family: 'companionbea', types: ['Fighting'],
 		abilities: { Fighting: ['guts', 'hustle'] }, region: 'galar' },
 	acerola: { name: '阿塞罗拉', family: 'companionacerola', types: ['Ghost', 'Normal'],
@@ -55,7 +60,7 @@ export function companionAppearance(family: string, team: RoguePokemon[]) {
 		return count('Ghost') && count('Normal') ? 1.5 : !count('Ghost') && !count('Normal') ? 0.35 : 1;
 	}
 	const type = ({
-		dragonking: 'Dragon', companionbea: 'Fighting', companionlana: 'Water',
+		dragonking: 'Dragon', companionbea: 'Fighting', companionlana: 'Water', companionstreamer: 'Electric',
 	} as Record<string, string>)[family];
 	return type ? count(type) >= 2 ? 1.5 : count(type) ? 1 : 0.35 : 1;
 }

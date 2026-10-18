@@ -30,6 +30,7 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 			`${BLESSING_TYPES[def.type]}属性伙伴的对战经验提升 30%。` :
 			`全队${BLESSING_TYPES[def.type]}属性招式威力提升 30%；本场有同属性伙伴倒下后提升至 50%。`);
 	}
+	if (def.family === 'typeevolution' && def.type === 'Fighting') text = text.replace('第 50／100／150 层可重选方向并立即强化', '第 50／100／150 层先按原方向强化，再重选方向并立即额外强化一次');
 	if (def.family === 'regis') text += '属性转不占道具位、可取下；赋予后改变副属性，并开放五个对应招式。';
 	const reward = lateBlessingReward(def.family, floor || 1);
 	if (reward.treasure) text += '立即获得【藏宝袋】×1，随机开出 3～6 组物资，层数越高越丰厚。';
