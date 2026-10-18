@@ -173,6 +173,58 @@ describe('Fantasy Rogue economy', () => {
 		assert.equal(account().run.bag.potion, before.run.bag.potion);
 		assert.throws(() => cmd('sell', { value: 'all' }), /没有可兑换/);
 	});
+	it('sells requested quantities atomically and applies collector premiums only to mushrooms', () => {
+		floor(9);
+		store.change(user, saved => {
+			Object.assign(saved.run.bag, { tinymushroom: 12, pearl: 2 });
+			saved.run.node.trade = { kind: 'mushroom', stock: [], purchases: 0 };
+		});
+		const before = account();
+		const request = { id: randomUUID(), revision: before.revision, action: 'sell', value: 'tinymushroom', count: 10 };
+		engine.command(user, request);
+		const sold = account();
+		assert.equal(sold.run.bag.tinymushroom, 2);
+		assert.equal(sold.run.bag.pearl, 2);
+		assert.equal(sold.run.money, before.run.money + 1870);
+		engine.command(user, request); assert.deepEqual(account(), sold);
+		for (const count of [0, -1, 3, 1.5, Number.MAX_SAFE_INTEGER + 1]) {
+			assert.throws(() => cmd('sell', {value: 'tinymushroom', count}), /兑换数量/);
+			assert.deepEqual(account(), sold);
+		}
+		cmd('sell', {value: 'pearl', count: 1});
+		assert.equal(account().run.money, sold.run.money + 600);
+		assert.equal(account().run.bag.pearl, 1);
+	});
+	it('persists feeding on each mushroom partner and does not repeat a retried command', () => {
+		store.change(user, saved => {
+			const run = saved.run;
+			run.team = ['Breloom', 'Parasect', 'Bulbasaur'].map(species => createRoguePokemon(
+				require('../fixtures/fantasy-rogue').set(species), run.boosts));
+			run.blessings.owned.push({...require('../../dist/sim/rogue-blessing-data').blessing('mushroomsynthesis'), floor: 1});
+			Object.assign(run.bag, {tinymushroom: 20, bigmushroom: 5, balmmushroom: 2});
+		});
+		const before = account();
+		const request = {id: randomUUID(), revision: before.revision, action: 'feedmushroom',
+			member: before.run.team[0].id, value: 'tinymushroom', count: 10};
+		engine.command(user, request);
+		const fed = account();
+		assert.equal(fed.run.bag.tinymushroom, 10);
+		assert(fed.run.team[0].mushroomTraining.offense > 0);
+		assert(!fed.run.team[1].mushroomTraining);
+		engine.command(user, request); assert.deepEqual(account(), fed);
+		cmd('feedmushroom', {member: fed.run.team[1].id, value: 'bigmushroom', count: 5});
+		assert.equal(account().run.team[1].mushroomTraining.offense, 0);
+		assert(account().run.team[1].mushroomTraining.defense > 0);
+		const growth = account().run.team[1].mushroomTraining;
+		cmd('feedmushroom', {member: fed.run.team[1].id, value: 'balmmushroom', count: 2});
+		assert(account().run.team[1].mushroomTraining.offense > growth.offense);
+		assert(account().run.team[1].mushroomTraining.defense > growth.defense);
+		const saved = account();
+		assert.throws(() => cmd('feedmushroom', {member: fed.run.team[2].id, value: 'tinymushroom'}), /蘑菇伙伴/);
+		assert.deepEqual(account(), saved);
+		engine.migrate(user);
+		assert.deepEqual(account().run.team.map(m => m.mushroomTraining), saved.run.team.map(m => m.mushroomTraining));
+	});
 	it('caps feather/vitamin gains without spending ineffective items or restoring HP and PP', () => {
 		store.change(user, saved => {
 			const mon = saved.run.team[0];

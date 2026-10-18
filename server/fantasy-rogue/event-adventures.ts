@@ -93,7 +93,7 @@ function fishingReward(account: RogueAccount, run: RogueRun, content: RogueConte
 		'Gorebyss', 'Huntail', 'Barraskewda', 'Drednaw', 'Jellicent', 'Veluza', 'Golisopod'];
 	const special = ['Suicune', 'Keldeo', 'Manaphy', 'Walking Wake'];
 	const roll = random(1000), pool = hits >= 4 && roll < (hits - 3) * 5 ? special : roll < hits * 70 ? rare : common;
-	const mon = drawBlessingGift(run, content, random, { pool: pool.filter(s => content.unlocks[toID(s)]), level, eligibleStage: true });
+	const mon = drawBlessingGift(run, content, random, { pool: pool.filter(s => content.unlocks[toID(s)]), level, eligibleStage: true, legendaryReward: pool === special });
 	for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) mon.set.ivs[stat] = Math.max(mon.set.ivs[stat], 20 + hits);
 	if (random(10000) < hits * 5) mon.set.shiny = true;
 	rebuildMember(mon, run.boosts); mon.hp = mon.maxhp;

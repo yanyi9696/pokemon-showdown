@@ -26,8 +26,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			const preview = rogueCodex(a, section, true);
 			assert(preview.preview);
 			assert(preview.entries.every(entry => entry.unlocked && entry.text !== '？？？'));
-			if (section === 'events') assert(preview.entries.every(entry => entry.replay));
-			assert(rogueCodex(a, section).entries.every(entry => !entry.unlocked));
+			if (section === 'events') assert(preview.entries.filter(e => e.category !== 'companion').every(entry => entry.replay));
+			assert(rogueCodex(a, section).entries.filter(e => e.category !== 'companion').every(entry => !entry.unlocked));
 		}
 		assert.equal(JSON.stringify(a), before);
 	});
@@ -36,10 +36,10 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert.equal(data.entries.length, ROGUE_BLESSINGS.length + STAGED_BLESSING_FAMILIES.length * 3);
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
-		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).filter(id => id !== 'auction').length);
-		assert.equal(events.filter(e => e.category === 'trade').length, 7);
+		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).filter(id => !['auction', 'mushroomcollector'].includes(id)).length);
+		assert.equal(events.filter(e => e.category === 'trade').length, 8);
 		assert.equal(events.filter(e => e.category === 'reward').length, 5);
-		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
+		assert(events.filter(e => e.category !== 'companion').every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 	});
 	it('records an actual selection once, never unlocks an offer, and keeps it after abandoning', () => {
 		store.change('codextest', a => {
@@ -62,16 +62,17 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			a.run.choices = [{ id: 'event', kind: 'event', name: '见闻', encounters: [], reward: { money: 0, items: {} } }];
 		});
 		cmd('select', { value: 'event' });
-		assert.deepEqual(account().discoveries.events, ['mysteryball']);
+		const eventId = account().run.node.event.id;
+		assert.deepEqual(account().discoveries.events, [eventId]);
 		cmd('abandon'); cmd('start', { starters: ['bulbasaur'] });
-		assert(rogueCodex(account(), 'events').entries.find(e => e.id === 'mysteryball').replay);
+		assert(rogueCodex(account(), 'events').entries.find(e => e.id === eventId).replay);
 		assert(!rogueCodex(account(), 'events').entries.find(e => e.id === 'forest').replay);
 	});
 	it('backfills retained legacy evidence without inventing lost older history', () => {
 		const legacy = { revision: 1, previousBlessings: ['friendwater', 'unknown'], cards: [{ snapshot: { blessings: [{ id: 'medic' }] } }],
 			pendingClear: { snapshot: { blessings: [{ id: 'psychic' }] } }, run: { blessings: { owned: [{ id: 'money' }] }, eventHistory: [{ id: 'forest', floor: 21 }] } };
 		assert.deepEqual(rogueDiscoveries(legacy), { blessings: ['friend', 'medic', 'money', 'psychic'], events: ['forest'] });
-		assert.equal(rogueCodex(legacy, 'events').entries.filter(e => e.unlocked).length, 1);
+		assert.equal(rogueCodex(legacy, 'events').entries.filter(e => e.category !== 'companion' && e.unlocked).length, 1);
 	});
 	it('does not record changes from rejected transactions or mutate during codex reading', () => {
 		const before = JSON.stringify(account());
@@ -85,7 +86,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event')) {
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
-			if (['exclusiveclue', 'exclusivechallenge', 'auction'].includes(entry.id)) {
+			if (['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers'].includes(entry.id)) {
 				// These openings incorporate the saved item, owner and NPC budgets at runtime.
 				assert.deepEqual(replay.pages.start.text, require('../../dist/server/fantasy-rogue/event-text').eventOpening(entry.id));
 			} else {
@@ -127,7 +128,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(rogueCodex(account(), 'blessings').entries.every(item => item.family));
 	});
 	it('does not advertise an unapproved battle exit in any authored event replay', () => {
-		for (const entry of rogueCodex(undefined, 'events', true).entries) {
+		for (const entry of rogueCodex(undefined, 'events', true).entries.filter(e => e.replay)) {
 			for (const page of Object.values(entry.replay.pages)) {
 				assert(page.options.every(option => !/撤退|退出战斗/.test(option.label)));
 			}

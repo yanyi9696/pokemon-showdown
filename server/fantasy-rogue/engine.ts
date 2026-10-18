@@ -2,6 +2,7 @@ import { rollRoutes, normalizeRouteHistory } from './routes';
 import { migrateRetiredBalls } from './capture-items';
 import { syncExclusiveItems } from './exclusive-items';
 import { beginExclusiveEncounter } from './exclusive-events';
+import { feedMushroom } from './mushroom-feeding';
 import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards, poppyRewardPickup } from './companions';
 import { companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
@@ -299,7 +300,7 @@ export class RogueEngine {
 		this.resolveOpponentGenders(run.node.encounters.flatMap(encounter => encounter.team));
 		if (this.content?.blessings) prepareBlessingEncounter(run, this.random);
 		run.phase = run.node.rocket && !run.node.rocket.cleared ? 'ready' :
-			run.node.trade?.kind === 'auction' ? 'event' :
+			(run.node.trade?.kind === 'auction' || run.node.trade?.kind === 'mushroom' && !run.node.event?.settled) ? 'event' :
 			['rest', 'trade'].includes(node.kind) ? 'rest' :
 			['reward', 'event', 'adventure'].includes(node.kind) ? 'reward' : 'ready';
 		this.beginBossDialogue(run);
@@ -355,7 +356,7 @@ export class RogueEngine {
 		}
 		run.floor++;
 		this.enterFloor(run);
-		deliverCompanionPickup(run);
+		deliverCompanionPickup(run, this.random);
 	}
 	private beginPreview(run: RogueRun) {
 		const trainer = run.blessings?.companions?.find(c => c.id === 'sada' || c.id === 'turo');
@@ -405,6 +406,11 @@ export class RogueEngine {
 		delete run.battle;
 		if (this.content?.blessings) completeBlessingFloor(account, run, this.configured(), this.random);
 		poppyRewardPickup(run, this.random);
+		if (run.node?.kind === 'elite' && companionOwned(run.blessings, 'lysandre')) {
+			const item = run.floor < 50 ? 'potion' : run.floor < 100 ? 'superpotion' : 'hyperpotion';
+			run.bag[item] = (run.bag[item] || 0) + 1;
+			(run.notices ||= []).push('【同行训练家 - 弗拉达利】留下了一瓶伤药，已放入背包。');
+		}
 		if (this.pendingBlessings(run)) {
 			run.blessings!.afterFloor = true;
 			run.phase = 'blessing';
@@ -947,15 +953,21 @@ export class RogueEngine {
 				if (converted.length) run.notices = [`胡帕变出了：${[...new Set(converted)].join('、')}。`];
 				break;
 			}
+			case 'feedmushroom': {
+				feedMushroom(run, command.member || '', command.value || '', command.count ?? 1); break;
+			}
 			case 'sell': {
 				requireRule(run.phase === 'rest', '只能在商店兑换贵重物品。');
 				const items = this.configured().items.filter(item => item.kind === 'treasure' &&
 					(command.value === 'all' || item.id === command.value) && (run.bag[item.id] || 0) > 0);
 				requireRule(items.length, '没有可兑换的贵重物品。');
+				const count = command.count;
+				requireRule(count === undefined || items.length === 1 && Number.isSafeInteger(count) && count > 0 && count <= run.bag[items[0].id], '兑换数量无效。');
+				const premium = run.node?.trade?.kind === 'mushroom';
 				let money = 0;
-				for (const item of items) money += run.bag[item.id] * item.sellPrice!;
+				for (const item of items) money += (count ?? run.bag[item.id]) * Math.floor(item.sellPrice! * (premium && item.id.endsWith('mushroom') ? 1.25 : 1));
 				requireRule(Number.isSafeInteger(money) && Number.isSafeInteger(run.money + money), '兑换金额无效。');
-				for (const item of items) run.bag[item.id] = 0;
+				for (const item of items) run.bag[item.id] -= count ?? run.bag[item.id];
 				run.money += money;
 				run.notices = [`贵重物品兑换完成，获得 ${money} 金币。`];
 				break;
@@ -1204,6 +1216,7 @@ export class RogueEngine {
 			}
 			if (memoryBattle) {
 				companionPickup(run, result.encounterId, this.random);
+			deliverCompanionPickup(run);
 				settleServiceBattle(run, result.won, retreated, !!captures.length);
 				for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
 				run.encounter++;
@@ -1211,6 +1224,7 @@ export class RogueEngine {
 				return;
 			}
 			companionPickup(run, result.encounterId, this.random);
+			deliverCompanionPickup(run);
 			const finishShop = () => {
 				if (!run.node!.shopChallenge || run.node!.shopChallenge.closed) return false;
 				const challenge = run.node!.shopChallenge;
@@ -1258,7 +1272,7 @@ export class RogueEngine {
 			}
 			delete run.recovery;
 			const baseLoot = run.node!.wildLoot?.[run.encounter];
-			const loot = baseLoot && blessingLoot(run, baseLoot, this.random);
+			const loot = baseLoot && blessingLoot(run, baseLoot, this.random, (result.defeated || []).filter(m => Dex.mod('gen9fantasy').species.get(m.species).types.includes('Rock')).length / Math.max(1, result.defeated?.length || 0));
 			if (loot) {
 				const before = { money: run.money, bag: { ...run.bag } };
 				for (const [id, count] of Object.entries(loot)) run.bag[id] = (run.bag[id] || 0) + count;
@@ -1274,7 +1288,7 @@ export class RogueEngine {
 				}
 				if (companionOwned(run.blessings, 'lana') && result.defeated?.some(defeated =>
 					Dex.mod('gen9fantasy').species.get(defeated.species).types.includes('Water'))) {
-					run.notices.push('【同行训练家 - 水莲】从水系对手身上获得的全队战斗经验提升 25%。');
+					run.notices.push('【同行训练家 - 水莲】从水系对手身上获得的全队战斗经验提升 20%。');
 				}
 				for (const defeated of result.defeated || []) {
 					for (const mon of run.team) {

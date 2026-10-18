@@ -48,8 +48,8 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 			r.node.trade = { kind: 'crowns', stock: [], purchases: 0 }; prepareTrade(r, content, () => 0);
 			assert.equal(r.node.trade.stock.length, floor >= 121 ? 2 : 1);
 		}
-		assert.equal(tradeKind(1, () => 0), 'balls');
-		assert.notEqual(tradeKind(50, () => 22), 'crowns'); assert.equal(tradeKind(51, () => 22), 'crowns');
+		assert.equal(tradeKind(1, () => 0), 'mushroom'); assert.equal(tradeKind(1, () => 10), 'balls');
+		assert.notEqual(tradeKind(50, () => 30), 'crowns'); assert.equal(tradeKind(51, () => 30), 'crowns');
 		const r = run(99, 'rest');
 		for (const id of ['metronome', 'shellbell', 'covertcloak', 'clearamulet']) {
 			const item = shopStock(content, r).find(i => i.id === id); assert(item); assert.equal(item.category, '对战影响道具');
@@ -137,11 +137,11 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 			r.money += 100; r.bag.potion++; r.blessings.shards++;
 			companions.boostCompanionEventRewards(r, before);
 		}
-		assert.equal(r.bag.potion, 11); assert.equal(c.rewardRemainder.potion, 0);
+		assert.equal(r.bag.potion, 12); assert.equal(c.rewardRemainder.potion, 5);
 		r.node.kind = 'trade'; r.node.event.key = 'auction'; r.node.event.companionKey = 'auction';
 		companions.recordCompanionPreference(r, options, 'investigate', () => 0); assert.equal(c.preferences, 16);
 		const before = { money: r.money, bag: { ...r.bag } }; r.bag.potion += 10;
-		companions.boostCompanionEventRewards(r, before); assert.equal(r.bag.potion, 21);
+		companions.boostCompanionEventRewards(r, before); assert.equal(r.bag.potion, 22);
 	});
 	it('boosts loot and completion money inside a recommended event, but never pays a battle twice', () => {
 		store = new RogueStore(':memory:'); const engine = new RogueEngine(store, content, () => 0), user = 'streamerlootqa';
@@ -159,12 +159,12 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 		cmd('battle'); const before = store.get(user).run;
 		const result = { encounterId: before.battle.encounterId, won: true, team: before.team, bag: before.bag };
 		engine.settle(user, before.battle.token, result);
-		assert.equal(store.get(user).run.bag.potion, (before.bag.potion || 0) + 11);
-		assert.equal(store.get(user).run.lastReward.items.potion, 11);
+		assert.equal(store.get(user).run.bag.potion, (before.bag.potion || 0) + 12);
+		assert.equal(store.get(user).run.lastReward.items.potion, 12);
 		const after = store.get(user); engine.settle(user, before.battle.token, result); assert.deepEqual(store.get(user), after);
 		const aidRun = structuredClone(after.run); require('../../dist/server/fantasy-rogue/early-balance').grantEventTraining(aidRun);
 		const expected = aidRun.money - after.run.money;
-		cmd('continue'); assert.equal(store.get(user).run.money, after.run.money + Math.floor(expected * 1.1));
+		cmd('continue'); assert.equal(store.get(user).run.money, after.run.money + Math.floor(expected * 1.25));
 	});
 	it('lists auction only under trade and preserves an older auction discovery', () => {
 		const rows = rogueCodex({ discoveries: { events: ['auction'], blessings: [] } }, 'events').entries;

@@ -1,3 +1,4 @@
+import { COMPANIONS, companionHasGift } from '../../sim/rogue-companions';
 import { Dex } from '../../sim/dex';
 import { REWARD_SCENES } from './reward-scenes';
 import { ROGUE_BLESSINGS, FANTASY_BLESSING_ITEMS } from '../../sim/rogue-blessing-data';
@@ -6,7 +7,7 @@ import { rogueDiscoveries } from './discoveries';
 import { EVENT_NAMES, type EventID } from './event-text';
 import { EVENT_OVERVIEWS, eventReplay } from './event-replays';
 import { TRADE_NAMES } from './trading';
-import { blessingDisplay, blessingCodexFloors, compareBlessingNames } from './blessing-text';
+import { blessingDisplay, blessingCodexFloors, blessingAvailabilityNotes, compareBlessingNames } from './blessing-text';
 
 export type CodexSection = 'guide' | 'blessings' | 'events';
 const INTRO = [
@@ -69,9 +70,9 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 		const display = blessingDisplay(def, floor, account?.tonicSecret);
 		return { id: floor && floor !== 1 ? `${def.id}:${floor}` : def.id, blessingId: def.id,
 			family: def.family, name: display.name, tier: def.tier, floors: floor ? [floor] : def.floors, variantFloor: floor,
-			unlocked, text: unlocked ? display.text : '？？？' };
+			unlocked, availability: blessingAvailabilityNotes(def), text: unlocked ? display.text : '？？？' };
 	})).sort(compareBlessingNames) };
-	const events = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== 'auction').map(id => {
+	const events = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => !['auction', 'mushroomcollector'].includes(id)).map(id => {
 		const unlocked = preview || discovered.events.includes(id);
 		return { id, category: 'event', name: EVENT_NAMES[id], unlocked, text: unlocked ? EVENT_OVERVIEWS[id] : '？？？',
 			...(unlocked ? { replay: eventReplay(id) } : {}) };
@@ -84,16 +85,31 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			text: id === 'auction' ? '31 层起有机会遇到。每场上架 3～5 件珍品，观察竞拍者的预算与脾气，交替出价或运用话术，最高出价者在落槌时付款。' :
 			id === 'crowns' ? '51 层起低概率出现银色王冠商店，121 层起加售金色王冠。提升个体值，每店限购。' :
 			id === 'balls' ? '全程可能出现，各类捕捉球九折出售，每种限购 15 个。' :
+			id === 'mushroom' ? '以普通商店 125% 的价格回收各类蘑菇。展示蘑菇伙伴，还能获得小蘑菇与一份观察谢礼。' :
 			id === 'growth' ? '51 层起有机会遇到。花费金币，让全队获得本局永久的双攻、双防或战斗经验加成。每店限购；不占携带道具栏。' :
 				`欢迎来到${name}！可以购买本店商品，也可以直接离开。商品与库存以当次交易为准。` })),
 		{ id: 'encounter:trainer', category: 'encounter', name: '旅行训练家', text: '路上的训练家向你发起挑战。战胜对手，可以获得金币奖励。' },
 		{ id: 'encounter:rocket', category: 'encounter', name: '火箭队拦路', text: '火箭队挡在店门口。战胜对手后，才能继续使用商店。' },
 	].map(entry => {
 		const unlocked = preview || discovered.events.includes(entry.id) || entry.id === 'trade:auction' && discovered.events.includes('auction');
-		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？', ...(unlocked ? { replay: entry.id === 'trade:auction' ? eventReplay('auction') : {
+		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？', ...(unlocked ? { replay: entry.id === 'trade:auction' ? eventReplay('auction') : entry.id === 'trade:mushroom' ? eventReplay('mushroomcollector') : {
 			title: entry.name, start: 'start',
 			pages: { start: { text: [entry.text], options: [], battleSkipped: entry.category === 'encounter' } },
 		} } : {}) };
 	});
-	return { section, preview, entries: [...events, ...visits] };
+	const companions = Object.entries(COMPANIONS).map(([id, c]) => {
+		const homes: Record<string, string> = { kalos: '卡洛斯', alola: '阿罗拉', paldea: '帕底亚', galar: '伽勒尔', unova: '合众' };
+		const preferences: Record<string, string> = { bea: '战斗', guzma: '战斗', lysandre: '战斗', iono: '战斗', canari: '战斗',
+			acerola: '接触或获得宝可梦', iris: '接触或获得宝可梦', grusha: '遇见宝可梦及雪山速滑', rika: '遇见宝可梦',
+			lana: '进入钓鱼', olivia: '赌石', poppy: '奖励', sada: '调查与探索', turo: '调查与探索' };
+		const gifts: Record<string, string> = { bea: '当前档位经验糖果', iris: '当前档位经验糖果', acerola: 'PP 单项小补剂',
+			iono: '超级球', canari: '超级球', lana: '诱饵球', poppy: '美丽之羽', guzma: '好伤药', lysandre: '厉害伤药',
+			olivia: '珍珠', grusha: '解冻药', rika: '好伤药' };
+		const def = ROGUE_BLESSINGS.find(b => b.family === c.family)!;
+		return { id: `companion:${id}`, category: 'companion', name: c.name, portrait: id, unlocked: true,
+			text: `来自${homes[c.region]}，偏好家乡与${preferences[id]}相关选项。` +
+				(companionHasGift(id as keyof typeof COMPANIONS) ? `累计 15 次${id === 'lana' ? '进入钓鱼' : id === 'olivia' ? '完成赌石事件' : '偏好选择'}后，本局获得一次【同行训练家的赠礼】：【${gifts[id]}】×1 及 100＋当前层数×3 金币。` : '通过预演帮助你熟悉对战，没有偏好赠礼。') +
+				`对应祝福：【${def.name}】。` };
+	});
+	return { section, preview, entries: [...events, ...visits, ...companions] };
 }

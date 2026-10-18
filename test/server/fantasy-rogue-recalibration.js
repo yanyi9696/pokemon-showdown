@@ -50,7 +50,7 @@ describe('Fantasy Rogue recalibrated preparation and blessing rules', function (
 	it('each overtime gift is level-eligible and actually carries the setter ability or learned move', () => {
 		for (const floor of [1, 50, 100, 150]) for (const def of ROGUE_BLESSINGS.filter(d => d.family === 'overtime')) {
 			const {run, account} = setup(floor), pool = b.overtimeGiftPool(run, content, def.type);
-			assert(pool.length, `${def.id}/${floor}`);
+			if (!pool.length) { assert(!b.blessingCandidates(run, content).some(b => b.id === def.id)); continue; }
 			if (floor === 50 && def.type === 'sandstorm') assert(!pool.includes('Tyranitar'));
 			pick(run, account, def.id);
 			const gift = run.blessings.pending.find(r => r.kind === 'gift').pokemon;

@@ -106,6 +106,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	const card = mon.side.id === 'p1' && state.mentorCard;
 	const stats = rogueStatSnapshot(mon);
 	const statSources: string[] = [];
+	if (saved.mushroomTraining) statSources.push(`【合成大蘑菇】双攻 +${Number((saved.mushroomTraining.offense / 100).toFixed(2))}%，双防 +${Number((saved.mushroomTraining.defense / 100).toFixed(2))}%（已计入能力值）`);
 	if (rulebreakerActive(mon)) statSources.push('【规则，就是用来打破的】无视自身能力下降与天气减益');
 	if (railgunActive(mon)) statSources.push('【某科学超电磁炮】永久电磁漂浮');
 	const effects = blessingEffects(mon), modifiers = mon.set.fantasyRogueModifiers;

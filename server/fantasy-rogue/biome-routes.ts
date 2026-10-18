@@ -1,3 +1,4 @@
+import { randomSpeciesEligible } from './species-eligibility';
 import { randomInt } from 'crypto';
 import { Dex } from '../../sim/dex';
 import { rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
@@ -18,7 +19,7 @@ export function createBiomeRoutes(
 	floor: number, templates: RogueNode[], evolve: WildEvolutionResolver = wildStageAtLevel,
 	random: RogueRandom = randomInt, spirit?: string, card?: string
 ): RogueNode[] {
-	const extraPool = unlistedFamilies();
+	const allExtras = unlistedFamilies();
 	return templates.map(template => {
 		if (template.kind !== 'wild' && template.kind !== 'elite') return structuredClone(template);
 		const elite = template.kind === 'elite';
@@ -26,6 +27,7 @@ export function createBiomeRoutes(
 		const tier = biomeTier(floor, elite);
 		const level = Math.min(100, Math.max(3, Math.ceil(floor / 2)) + (elite ? 5 : 0) +
 			rogueWildLevelBonus(floor, spirit));
+		const extraPool = allExtras.filter(s => randomSpeciesEligible(s, level));
 		const majorBranch = elite && floor >= 161;
 		const majorChance = (floor <= 180 ? 25 : 50) + (spirit === 'mew' ? 25 : 0);
 		const seen = new Map<string, number>();
@@ -40,9 +42,9 @@ export function createBiomeRoutes(
 					name = MajorLegendaryPool[random(MajorLegendaryPool.length)];
 				} else {
 				// Keep the dedicated legendary probability exact, even for species also in regional pools.
-					const slots = majorBranch ? biome.tiers[tier].map(slot => ({
-						...slot, species: slot.species.filter(species => !isMajorLegendary(species)),
-					})).filter(slot => slot.species.length) : biome.tiers[tier];
+					const slots = biome.tiers[tier].map(slot => ({
+						...slot, species: slot.species.filter(species => randomSpeciesEligible(species, level) && (!majorBranch || !isMajorLegendary(species))),
+					})).filter(slot => slot.species.length);
 					name = pickBiomeSlot(spirit === 'mew' ? slots.map(slot => ({
 						...slot, weight: slot.weight < 6 ? slot.weight * 3 : slot.weight,
 					})) : slots, random);

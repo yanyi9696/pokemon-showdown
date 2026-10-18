@@ -1,3 +1,4 @@
+import { randomSpeciesEligible } from './species-eligibility';
 import { Dex, toID } from '../../sim/dex';
 import { type RoguePokemon, type RogueBattleResult } from '../../sim/fantasy-rogue';
 import { rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
@@ -26,7 +27,7 @@ export function regionalSpecies(region: Postcard) {
 }
 export function regionalPool(region: Postcard, level: number, content: RogueContent) {
 	return regionalSpecies(region).filter(species =>
-		content.unlocks[species.id] && partyEvolutionLevel(species.name) <= level)
+		content.unlocks[species.id] && randomSpeciesEligible(species.name, level) && partyEvolutionLevel(species.name) <= level)
 		.map(species => species.name);
 }
 export function conversionChoices(run: RogueRun, region: Postcard) {

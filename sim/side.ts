@@ -81,6 +81,7 @@ export interface PokemonSwitchRequestData {
 	active: boolean;
 	stats: StatsExceptHPTable;
 	fantasyRogueStats?: StatsTable;
+	mechanicPowers?: import('./fantasy-move-power').FantasyMovePowers;
 	rogueAbilityInfo?: ReturnType<typeof import('./fantasy-rogue-blessings').rogueAbilityInfo>;
 	/**
 	 * Move IDs for choosable moves. Also includes Hidden Power Type, Frustration/Return power.

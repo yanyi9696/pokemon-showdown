@@ -18,6 +18,7 @@ export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 
 export interface RoguePokemon {
 	/** Run-local personal training in basis points; not EVs or account upgrades. */
 	training?: { offense?: number, defense?: number };
+	mushroomTraining?: { offense: number, defense: number };
 	evolutionNotice?: boolean;
 	tonics?: import('./rogue-blessing-permanent').RogueTonics;
 	mintNature?: string;

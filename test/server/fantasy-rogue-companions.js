@@ -78,11 +78,11 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 	});
 	it('changes only the specified appearance weights and leaves AI neutral', () => {
 		for (const [family, species] of [['dragonking', 'Dratini'], ['companionbea', 'Machop'], ['companionlana', 'Squirtle']]) {
-			assert.equal(companionAppearance(family, []), 0.35);
+			assert.equal(companionAppearance(family, []), 0);
 			const team = party([set(species), set(species)]).team;
-			assert.equal(companionAppearance(family, team.slice(0, 1)), 1); assert.equal(companionAppearance(family, team), 1.5);
+			assert.equal(companionAppearance(family, team.slice(0, 1)), 1); assert.equal(companionAppearance(family, team), 2);
 		}
-		assert.equal(companionAppearance('companionacerola', party([set('Gastly'), set('Eevee')]).team), 1.5);
+		assert.equal(companionAppearance('companionacerola', party([set('Gastly'), set('Eevee')]).team), 2);
 		assert.equal(companionAppearance('companionai', []), 1);
 	});
 	it('offers all 10 chats and 5 praises per trainer without repeating before exhausting the pool', () => {
@@ -111,16 +111,16 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 	});
 	it('applies Fighting XP and Water-opponent XP independently, including captured opponents', () => {
 		const run = party([set('Machop'), set('Eevee')]); c.grantCompanion(run, 'bea'); c.grantCompanion(run, 'lana');
-		assert.equal(c.companionExperience(run, run.team[0], { species: 'Squirtle', captured: true }), 1.625);
-		assert.equal(c.companionExperience(run, run.team[1], { species: 'Squirtle' }), 1.25);
+		assert.equal(c.companionExperience(run, run.team[0], { species: 'Squirtle', captured: true }), 1.56);
+		assert.equal(c.companionExperience(run, run.team[1], { species: 'Squirtle' }), 1.2);
 		assert.equal(c.companionExperience(run, run.team[1], { species: 'Charmander' }), 1);
 	});
-	it('rolls once per Ghost/Normal member, never farms the same encounter, and delivers at the next floor', () => {
+	it('rolls once per Ghost/Normal member immediately at floor entry, never farms reloads', () => {
 		const run = party([set('Zorua-Hisui'), set('Eevee'), set('Machop')]); c.grantCompanion(run, 'acerola');
-		c.companionPickup(run, 'fight1', () => 0); c.companionPickup(run, 'fight1', () => 0);
-		assert.equal(run.companionPickups.items.potion, 2); assert.equal(run.bag.potion, undefined);
-		c.deliverCompanionPickup(run); assert.equal(run.bag.potion, 2);
-		c.deliverCompanionPickup(run); assert.equal(run.bag.potion, 2);
+		c.companionPickup(run, 'fight1', () => 0); assert(!run.companionPickups);
+		c.deliverCompanionPickup(run, () => 0); assert.equal(run.bag.potion, 2);
+		c.deliverCompanionPickup(run, () => 0); assert.equal(run.bag.potion, 2);
+		run.floor++; c.deliverCompanionPickup(run, () => 0); assert.equal(run.bag.potion, 4);
 	});
 	it('does not apply failed preview losses or force emergency recovery, then allows only a personal challenge', () => {
 		const { engine, cmd, run, preview } = campaign(); const before = structuredClone(run()); const { token, result } = preview(false);

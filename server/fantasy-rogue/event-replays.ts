@@ -3,6 +3,10 @@ import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	skiing: '左右换道躲避障碍，在 30 秒雪道挑战中坚持越久，收获越好。',
+	stones: '逐块或连续开启原石，可能开出进化石、道具、化石、宝石和珍贵战利品，也可能没有收获。',
+	feathers: '交换美丽之羽，或展示拥有羽毛的伙伴，获得一份观察谢礼。',
+	mushroomcollector: '高价收购蘑菇，也乐意给带着蘑菇伙伴的旅人一份小礼物。',
 	legendarytracks: '51 层起追寻罕见宝可梦。选错地点可能惊走目标；越深入高塔，越可能遇到传说中的强大身影。',
 	fantasytutor: '第 81 层起，消耗少量幻想碎片，请研究员教会幻想伙伴一个合法的幻想招式。',
 	exclusiveclue: '追寻专属道具的线索。排除错误地点后，藏匿的宝可梦也会露出身影。',
@@ -33,7 +37,28 @@ export function eventReplay(id: EventID) {
 	page('win', [text.fightWin]);
 	page('roomwin', [text.roomWin, '获得工具箱 ×1（四件选一件）和幻想碎片，碎片数量随楼层增加。']);
 	page('lose', [text.fightLose, text.fightLossRule]);
-	if (id === 'legendarytracks') {
+	if (id === 'skiing') {
+		page('start', eventOpening(id), [['穿好护具，滑向山脚！', 'slide'], ['先在山脚欣赏雪景。', 'leave']]);
+		page('slide', ['树木与岩石从雪道两旁掠过。你调整重心，在三个方向之间换道。'], [['撞到障碍', 'crash'], ['坚持到山脚', 'finish']]);
+		page('crash', ['巡山员把你从松软的雪里拉出，按坚持的时间送上一份鼓励。']);
+		page('finish', ['终点的旗子迎风展开。你收到了金币、经验糖果与活力碎片。']);
+		page('leave', ['你在安全的山脚欣赏雪景，挥手向巡山员道别。']);
+	} else if (id === 'stones') {
+		page('start', eventOpening(id), [['只开一块', 'openstone'], ['连开五块', 'openstone'], ['今天先不买。', 'leave']]);
+		page('openstone', ['付过费用，摊主举起石锤。石屑纷纷落下……'], [['获得物品', 'prize'], ['没有收获', 'empty']]);
+		page('prize', ['原石里藏着进化道具、宝石、化石或其他珍品。摊主又推过几块石头，邀请你继续。']);
+		page('empty', ['这次没有开出东西。摊主仍怂恿你再试一次，你可以决定继续或收手。']);
+		page('leave', ['你收好钱袋，离开了原石摊位。']);
+	} else if (id === 'feathers') {
+		page('start', eventOpening(id), [['用美丽之羽交换训练羽毛', 'trade'], ['展示带羽毛的伙伴', 'show'], ['把这次机会留到下次。', 'leave']]);
+		page('trade', ['爱好者把 5 根美丽之羽夹进册子，送给你 6 根随机能力羽毛。']);
+		page('show', ['爱好者认真画下伙伴羽毛的纹路，送给你美丽之羽和一份观察谢礼。']);
+		page('leave', ['你与爱好者约好，下次再带伙伴过来。']);
+	} else if (id === 'mushroomcollector') {
+		page('start', eventOpening(id), [['展示蘑菇伙伴', 'show'], ['看看蘑菇的回收价', 'shop']]);
+		page('show', ['收藏家赞叹着伙伴的菌伞，送出小蘑菇与观察谢礼。'], [['查看回收价', 'shop']]);
+		page('shop', ['收藏家以普通商店 125% 的价格回收蘑菇。你可以按种类和数量出售，再继续旅程。']);
+	} else if (id === 'legendarytracks') {
 		page('start', eventOpening(id), [['放轻脚步，追寻足迹。', 'sites'], ['把线索留给调查员。', 'leave']]);
 		page('sites', ['足迹在几条岔路间变得模糊。你决定前往一处地点。'], [['找到目标', 'found'], ['选错地点但目标未离开', 'clue'], ['目标被惊走', 'gone']]);
 		page('clue', ['只找到旧痕迹，但远处的动静还没有消失。'], [['继续追踪', 'sites']]);

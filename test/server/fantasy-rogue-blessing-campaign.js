@@ -11,7 +11,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const b = require('../../dist/server/fantasy-rogue/blessings');
 const { blessing, ROGUE_BLESSINGS, blessingLevelCost, FANTASY_BLESSING_ITEMS } = require('../../dist/sim/rogue-blessing-data');
-const { stats, set } = require('../fixtures/fantasy-rogue');
+const { stats, set, prepareCompanionParty } = require('../fixtures/fantasy-rogue');
 const dex = Dex.mod('gen9fantasy');
 const zero = () => 0;
 
@@ -101,7 +101,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		assert(!saved.blessings.round, 'the restored second pick must finish the round');
 	});
 	for (const def of ROGUE_BLESSINGS) it(`grants and serializes ${def.id} with its required reward flow`, () => {
-		const floor = def.floors?.[0] || 50, { run, account } = setup(floor);
+		const floor = def.floors?.[0] || (def.family === 'overtime' ? 150 : 50), { run, account } = setup(floor);
+		prepareCompanionParty(run, def.family);
 		if (def.family === 'typeevolution') {
 			const species = dex.species.all().find(s => s.num > 0 && !s.battleOnly && s.types.includes(def.type));
 			run.team[0] = createRoguePokemon(set(species.name, species.abilities[0], 50), run.boosts);

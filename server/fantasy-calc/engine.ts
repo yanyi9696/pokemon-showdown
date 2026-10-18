@@ -39,6 +39,7 @@ export interface CalcInput {
 	hits?: number;
 	useZ?: boolean;
 	useMax?: boolean;
+	mechanicBasePower?: number;
 	moveOverrides?: { basePower?: number, type?: string, category?: string };
 }
 export interface CalcResult {
@@ -108,6 +109,8 @@ export function normalizeInput(input: CalcInput): CalcInput {
 		pseudoWeather: ids(input.pseudoWeather), attackerSide: ids(input.attackerSide), defenderSide: ids(input.defenderSide),
 		critical: !!input.critical, hits: int(input.hits, Array.isArray(move.multihit) ? 3 : 1, 1, 10),
 		useZ: !!input.useZ, useMax: !!input.useMax,
+		mechanicBasePower: ['furycutter', 'rollout', 'iceball', 'echoedvoice'].includes(move.id) &&
+			typeof input.mechanicBasePower === 'number' ? int(input.mechanicBasePower, move.basePower, 1, 960) : undefined,
 		moveOverrides: {
 			basePower: typeof input.moveOverrides?.basePower === 'number' ?
 				int(input.moveOverrides.basePower, 0, 0, 1000) : undefined,
@@ -243,7 +246,14 @@ export function calculateFantasyDamage(raw: CalcInput): CalcResult {
 			} else if (input.useZ) {
 				move = battle.actions.getActiveZMove(move, attacker);
 			}
-			if (input.moveOverrides?.basePower !== undefined) move.basePower = input.moveOverrides.basePower;
+			if (!input.useZ && !input.useMax && input.mechanicBasePower !== undefined) {
+				move.basePower = input.mechanicBasePower;
+				delete move.basePowerCallback;
+			}
+			if (input.moveOverrides?.basePower !== undefined) {
+				move.basePower = input.moveOverrides.basePower;
+				delete move.basePowerCallback;
+			}
 			if (input.moveOverrides?.type) move.type = input.moveOverrides.type;
 			if (input.moveOverrides?.category) move.category = input.moveOverrides.category as ActiveMove['category'];
 			// Report damage conditional on hitting; random critical hits are an explicit UI assumption.

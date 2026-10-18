@@ -15,8 +15,8 @@ export const trainingStats = (kind: PersonalGrowthKind): StatIDExceptHP[] =>
 	kind === 'offense' ? ['atk', 'spa'] : kind === 'defense' ? ['def', 'spd'] : ['atk', 'spa', 'def', 'spd'];
 
 export function growthModifiers(run: Pick<RogueRun, 'growth'>, mon: RoguePokemon) {
-	const offense = (run.growth?.offense || 0) + (mon.training?.offense || 0);
-	const defense = (run.growth?.defense || 0) + (mon.training?.defense || 0);
+	const offense = (run.growth?.offense || 0) + (mon.training?.offense || 0) + (mon.mushroomTraining?.offense || 0);
+	const defense = (run.growth?.defense || 0) + (mon.training?.defense || 0) + (mon.mushroomTraining?.defense || 0);
 	return offense || defense ? { atk: offense / 10000, spa: offense / 10000,
 		def: defense / 10000, spd: defense / 10000 } : undefined;
 }
@@ -125,6 +125,8 @@ export function grantMushroomGrowth(run: RogueRun) {
 export function growthView(run: RogueRun) {
 	return { offense: run.growth?.offense || 0, defense: run.growth?.defense || 0,
 		experience: run.growth?.experience || 0, limits: GROWTH_LIMITS,
+		mushrooms: run.team.filter(mon => mon.mushroomTraining).map(mon =>
+			({ member: mon.id, species: mon.set.species, ...mon.mushroomTraining })),
 		personal: run.team.filter(mon => mon.training?.offense || mon.training?.defense).map(mon =>
 			({ member: mon.id, species: mon.set.species, ...mon.training })) };
 }

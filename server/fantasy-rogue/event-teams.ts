@@ -1,3 +1,4 @@
+import { randomSpeciesEligible } from './species-eligibility';
 import { Dex } from '../../sim/dex';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet } from './encounter-sets';
@@ -27,7 +28,7 @@ export type EventTeamTheme = keyof typeof EVENT_TEAM_POOLS;
 const dex = Dex.mod('gen9fantasy');
 export function eventSpeciesPool(theme: EventTeamTheme, level: number) {
 	return [...new Set(EVENT_TEAM_POOLS[theme].map(name => lowerToEligibleStage(name, level)))]
-		.filter(name => dex.species.get(name).exists);
+		.filter(name => randomSpeciesEligible(name, level));
 }
 export function themedEventTeam(theme: EventTeamTheme, level: number, count: number, random: RogueRandom, ivs = 25) {
 	const pool = eventSpeciesPool(theme, level);

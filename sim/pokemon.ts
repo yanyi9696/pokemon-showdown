@@ -6,6 +6,7 @@
  */
 
 import { State } from './state';
+import { fantasyMovePowers } from './fantasy-move-power';
 import { sharedRogueItems, consumeRogueItem } from './fantasy-rogue-items';
 import { toID } from './dex';
 import { isRogueFormat } from './fantasy-rogue';
@@ -1141,6 +1142,7 @@ export class Pokemon {
 			pokeball: this.pokeball,
 		};
 		if (this.battle.gen > 6) entry.ability = this.ability;
+		if (!forAlly && this.battle.dex.currentMod === 'gen9fantasy') entry.mechanicPowers = fantasyMovePowers(this);
 		if (this.battle.fantasyRogue) entry.rogueAbilityInfo = rogueAbilityInfo(this);
 		if (this.battle.gen >= 9) {
 			entry.commanding = !!(this.volatiles['commanding'] || this.volatiles['parasite']) && !this.fainted;

@@ -9,11 +9,12 @@ import { CANDY_SHOP, restCandyOffer } from './early-balance';
 import { beginAuction } from './auction';
 
 const dex = Dex.mod('gen9fantasy');
-export const TRADE_NAMES = { mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '落槌之前', balls: '宝可梦球商店', crowns: '王冠商店' };
+export const TRADE_NAMES = { mushroom: '蘑菇收藏家', mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '落槌之前', balls: '宝可梦球商店', crowns: '王冠商店' };
 export function tradeKind(floor: number, random: RogueRandom): keyof typeof TRADE_NAMES {
 	const specialist = random(100);
-	if (specialist < 20) return 'balls';
-	if (floor >= 51 && specialist < (floor >= 121 ? 28 : 26)) return 'crowns';
+	if (specialist < 8) return 'mushroom';
+	if (specialist < 28) return 'balls';
+	if (floor >= 51 && specialist < (floor >= 121 ? 36 : 34)) return 'crowns';
 	if (floor >= 31 && random(100) < 20) return 'auction';
 	const roll = random(100);
 	if (floor >= 51) {
@@ -104,6 +105,10 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 	const trade = run.node?.trade;
 	if (trade?.kind === 'auction') {
 		if (run.node?.event?.id !== 'auction') beginAuction(run, content, random);
+		return;
+	}
+	if (trade?.kind === 'mushroom') {
+		if (!run.node!.event) { run.node!.event = { id: 'mushroomcollector', key: `collector:${run.floor}`, stage: 'choice' }; run.phase = 'event'; }
 		return;
 	}
 	if (!trade || trade.kind === 'growth') return;

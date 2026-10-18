@@ -46,7 +46,7 @@ export interface RogueEncounter {
 export interface RogueNode {
 	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
 	restCandyPurchases?: Record<string, number>;
-	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction' | 'balls' | 'crowns', stock: (RogueItem & { remaining: number })[], purchases: number,
+	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction' | 'balls' | 'crowns' | 'mushroom', stock: (RogueItem & { remaining: number })[], purchases: number,
 		services?: Partial<import('./growth').RogueGrowth> };
 	rewardScene?: import('./reward-scenes').RewardScene;
 	event?: import('./events').RogueEvent;
@@ -256,7 +256,7 @@ export interface RogueStarterBuild {
 export interface RogueCommand {
 	id: string;
 	revision: number;
-	action: 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+	action: 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
 		'shopchallenge' | 'event' | 'companion' | 'previewresult' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |

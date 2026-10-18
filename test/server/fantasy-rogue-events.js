@@ -1,5 +1,5 @@
 'use strict';
-const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
+const { commandAfterOpening, eventRoll } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
@@ -36,7 +36,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		});
 		let first = true;
 		random = n => {
-			if (first) { first = false; return Object.keys(EVENT_NAMES).indexOf(id); }
+			if (first) { first = false; return eventRoll(account().run, id); }
 			return 0;
 		};
 		cmd('select', { value: 'eventtest' }); random = () => 0;
@@ -87,7 +87,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		run.floor = 41; run.node = { id: 'event', kind: 'event', name: '事件', encounters: [], reward: { money: 0, items: {} } };
 		let first = true;
 		beginEvent(run, n => {
-			if (first) { first = false; return Object.keys(EVENT_NAMES).indexOf('forest'); }
+			if (first) { first = false; return eventRoll(run, 'forest'); }
 			return rng.random(n);
 		});
 		const [a, b] = run.node.event.teams;

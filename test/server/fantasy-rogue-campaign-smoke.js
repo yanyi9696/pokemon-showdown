@@ -105,7 +105,8 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						break;
 					case 'event': {
 						const event = run.node.event;
-						assert(['auction', 'exclusivechallenge'].includes(event.id));
+						assert(['auction', 'exclusivechallenge', 'mushroomcollector'].includes(event.id));
+						if (event.id === 'mushroomcollector') { cmd('event', {member: event.key, value: 'collectorshop'}); break; }
 						if (event.stage === 'result') cmd('continue');
 						else cmd('event', {member: event.key, value: run.auction.entered ? 'pass' : 'enter'});
 						break;

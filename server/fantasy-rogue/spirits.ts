@@ -1,3 +1,4 @@
+import { randomSpeciesEligible } from './species-eligibility';
 import { Dex, toID } from '../../sim/dex';
 import { activeRogueSpirits, roguePartyLimit, rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
 import type { RogueRandom } from './biome-pools';
@@ -35,7 +36,7 @@ export function grantSpiritGift(run: RogueRun, content: RogueContent, random: Ro
 	delete run.pendingSpiritGift;
 	if (run.spirit === 'celebi') {
 		// Use the configured starter families, excluding temporary battle-only forms.
-		const candidates = content.starters.filter(entry => !Dex.mod('gen9fantasy').species.get(entry.set.species).battleOnly);
+		const candidates = content.starters.filter(entry => randomSpeciesEligible(entry.set.species, 40) && !Dex.mod('gen9fantasy').species.get(entry.set.species).battleOnly);
 		const species = drawGiftSpecies(candidates.map(entry => entry.set.species), run.startCard, random);
 		const set = makeEncounterSet(species, 40, randomEncounterIVs(random));
 		set.happiness = ROGUE_INITIAL_FRIENDSHIP;

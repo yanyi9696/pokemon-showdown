@@ -1,7 +1,9 @@
+import { randomSpeciesEligible } from './species-eligibility';
 import { candyAtFloor } from './early-balance';
+import { mushroomGift } from './mushroom-feeding';
 import { grantCompanion } from './companions';
 import { memberHasMoldBreaker } from '../../sim/rogue-special-blessings';
-import { companionAppearance, syncCompanions } from '../../sim/rogue-companions';
+import { COMPANIONS, companionAvailable, companionAppearance, syncCompanions } from '../../sim/rogue-companions';
 import { growthModifiers } from './growth';
 import { randomUUID } from 'crypto';
 import { Dex, toID } from '../../sim/dex';
@@ -199,6 +201,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 	const has = (id: string) => ownsBlessing(state, id);
 	return ROGUE_BLESSINGS.filter(def => {
 		if (state.owned.some(entry => entry.id === def.id)) return false;
+		if (!companionAvailable(def.family, run.team, state)) return false;
 		if (def.floors && !def.floors.includes(run.floor)) return false;
 		if (def.emblem && state.owned.some(entry => blessing(entry.id)?.emblem)) return false;
 		if (def.family === 'coin' && run.spirit === 'zygardeorder') return false;
@@ -226,7 +229,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 }
 function giftPool(run: RogueRun, content: RogueContent, type?: string, uncaught = false, fantasy = false) {
 	const level = run.floor === 1 ? 5 : Math.max(3, Math.min(100, Math.ceil(run.floor / 2)));
-    return baseDex.species.all().filter(species => lowerToEligibleStage(species.name, level) === species.name && species.exists && species.num > 0 && !species.battleOnly &&
+    return baseDex.species.all().filter(species => lowerToEligibleStage(species.name, level) === species.name && species.exists && randomSpeciesEligible(species.name, level) && species.num > 0 && !species.battleOnly &&
 		!species.isMega && !species.isPrimal && (!species.forme || /Alola|Galar|Hisui|Paldea/.test(species.forme)) &&
 		content.unlocks[species.id] && (!type || species.types.includes(type)) &&
 		(!uncaught || !run.blessings?.caught.includes(species.id)) && (!fantasy || futureFantasy(species.name)));
@@ -239,7 +242,7 @@ export function overtimeGiftPool(run: RogueRun, content: RogueContent, effect: s
 	if (!overtimePoolCache.has(key)) {
 		const validator = new TeamValidator(new Format({ ...Dex.formats.get('gen9nationaldex'), name: 'Rogue setter', mod: 'gen9fantasy' }));
 		const ability = OVERTIME_ABILITIES[effect];
-		overtimePoolCache.set(key, baseDex.species.all().filter(s => s.exists && s.num > 0 && !s.battleOnly &&
+		overtimePoolCache.set(key, baseDex.species.all().filter(s => s.exists && randomSpeciesEligible(s.name, level) && s.num > 0 && !s.battleOnly &&
 			!s.isMega && !s.isPrimal && (!s.forme || /Alola|Galar|Hisui|Paldea/.test(s.forme)) &&
 			lowerToEligibleStage(s.name, level) === s.name && (ability ?
 				Object.values(dex.species.get(s.name).abilities).some(a => toID(a) === ability) :
@@ -250,13 +253,13 @@ export function overtimeGiftPool(run: RogueRun, content: RogueContent, effect: s
 }
 export function drawBlessingGift(run: RogueRun, content: RogueContent, random: RogueRandom,
 	options: { type?: string, uncaught?: boolean, fantasy?: boolean, species?: string, pool?: string[], eligibleStage?: boolean,
-		stars?: number, level?: number, perfect?: number, strong?: boolean, } = {}) {
+		stars?: number, level?: number, perfect?: number, strong?: boolean, legendaryReward?: boolean, } = {}) {
 	const level = options.level || (run.floor === 1 ? 5 : Math.max(3, Math.min(100, Math.ceil(run.floor / 2))));
 	let name = options.species && lowerToEligibleStage(options.species, level);
 	if (!name) {
 		let pool = options.pool || giftPool(run, content, options.type, options.uncaught, options.fantasy).map(s => s.name);
 		pool = [...new Set(pool.map(s => lowerToEligibleStage(s, level)))].filter(s =>
-			(!options.type || dex.species.get(s).types.includes(options.type)) &&
+			randomSpeciesEligible(s, level, options.legendaryReward) && (!options.type || dex.species.get(s).types.includes(options.type)) &&
 			(!options.uncaught || !run.blessings?.caught.includes(toID(s))));
 		requireRule(pool.length, '当前等级没有符合条件的赠送伙伴。');
 		name = drawGiftSpecies(pool, run.startCard, random, options.strong);
@@ -611,12 +614,10 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueContent, def: BlessingDefinition, random: RogueRandom, grantedBy?: string) {
 	const state = run.blessings!;
 	const entry: OwnedBlessing = { id: def.id, family: def.family, tier: def.tier, floor: run.floor, type: def.type, grantedBy };
+	requireRule(companionAvailable(def.family, run.team, state), '同行祝福互斥，且需要对应属性的伙伴。');
 	state.owned.push(entry);
-	if (def.family === 'companionbea') grantCompanion(run, 'bea');
-	if (def.family === 'companionacerola') grantCompanion(run, 'acerola');
-	if (def.family === 'companionlana') grantCompanion(run, 'lana');
-	if (def.family === 'companionpoppy') grantCompanion(run, 'poppy');
-	if (def.family === 'companionguzma') grantCompanion(run, 'guzma');
+	const companions = Object.entries(COMPANIONS).filter(([, c]) => c.family === def.family);
+	if (companions.length === 1) grantCompanion(run, companions[0][0] as keyof typeof COMPANIONS);
 	if (def.family === 'railgun') state.pending.push({ id: randomUUID(), title: '某科学超电磁炮 · 选择学习【电磁炮】的伙伴',
 		kind: 'target', blessing: def.id, options: run.team.filter(canLearnZapCannon).map(mon => mon.id) });
 	const lateReward = lateBlessingReward(def.family, run.floor);
@@ -650,6 +651,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		rebuildMember(mon, run.boosts);
 		gift(account, run, content, mon, def.name);
 	}
+	if (def.family === 'mushroomsynthesis') mushroomGift(account, run, content, random);
 	if (def.family === 'wine' || def.family === 'cephalosporin') give(run, `rogue${def.family}`);
 	if (def.family === 'renewable') {
 		const pool = [...gems, 'focussash', 'whiteherb', 'mentalherb', 'powerherb', 'sitrusberry', 'lumberry', 'weaknesspolicy'];
@@ -944,12 +946,14 @@ export function blessingExperience(run: RogueRun, mon: RoguePokemon, dragonKing 
 	return multiplier;
 }
 /** Stochastic rounding preserves the advertised expected quantity even for one-item drops. */
-export function blessingLoot(run: RogueRun, loot: Record<string, number>, random: RogueRandom) {
+export function blessingLoot(run: RogueRun, loot: Record<string, number>, random: RogueRandom, rockFraction = 0) {
 	const entry = ownsBlessing(run.blessings, 'ordinary');
 	const ordinary = entry && run.team.every(mon => dex.species.get(mon.set.species).bst <= 500) ?
 		(Math.max(1, Math.floor(entry.floor / 50)) + 1) / 10 : 0;
 	const guzma = run.blessings?.companions?.some(c => c.id === 'guzma') ? 0.2 : 0;
-	const bonus = (1 + ordinary) * (1 + guzma) - 1;
+	const olivia = run.blessings?.companions?.some(c => c.id === 'olivia') ? 0.2 * rockFraction : 0;
+	const bonus = (1 + ordinary) * (1 + guzma) * (1 + olivia) - 1;
+	if (olivia) (run.notices ||= []).push('【同行训练家 - 莉兹】岩石系对手的战利品数量提升 20%。');
 	if (!bonus) return { ...loot };
 	if (guzma && Object.keys(loot).length) (run.notices ||= []).push('【同行训练家 - 古兹马】战利品数量提升 20%。');
 	return Object.fromEntries(Object.entries(loot).map(([id, count]) => {

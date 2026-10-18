@@ -1,6 +1,6 @@
 'use strict';
 const {eventCost} = require('../../dist/server/fantasy-rogue/early-balance');
-const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
+const { commandAfterOpening, eventRoll } = require('../fixtures/fantasy-rogue');
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
 const { Dex } = require('../../dist/sim/dex');
@@ -33,7 +33,7 @@ describe('Fantasy Rogue travel memories and training events', function () {
 		});
 		let first = true;
 		random = n => {
-			if (first) { first = false; return Object.keys(EVENT_NAMES).indexOf(id); }
+			if (first) { first = false; return eventRoll(account().run, id); }
 			return 0;
 		};
 		cmd('select', { value: 'training' }); random = () => 0;

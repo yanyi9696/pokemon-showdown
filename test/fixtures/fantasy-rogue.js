@@ -71,4 +71,22 @@ function chooseCompanions(engine, user, cmd) {
 	}
 	throw new Error('Unresolved companion choices');
 }
-module.exports = { content, set, stats, commandAfterOpening, chooseCompanions };
+// Select an authored event through the current weighted pool, without coupling to array order.
+function eventRoll(run, id) {
+	const { chooseEvent } = require('../../dist/server/fantasy-rogue/events');
+	let maximum;
+	chooseEvent(run, n => { maximum = n; return 0; });
+	for (let roll = 0; roll < maximum; roll++) if (chooseEvent(run, () => roll) === id) return roll;
+	throw new Error(`Event ${id} is unavailable at floor ${run.floor}`);
+}
+function prepareCompanionParty(run, family, level = 50) {
+	const types = require('../../dist/sim/rogue-companions').companionFamilyTypes(family);
+	if (!types.length) return;
+	const names = {Fire: 'Charmander', Water: 'Squirtle', Ice: 'Snorunt', Rock: 'Rockruff', Ground: 'Diglett',
+		Steel: 'Magnemite', Fighting: 'Machop', Ghost: 'Gastly', Electric: 'Pikachu', Bug: 'Caterpie', Dragon: 'Dratini'};
+	const { Dex } = require('../../dist/sim/dex');
+	const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
+	const species = Dex.mod('gen9fantasy').species.get(names[types[0]]);
+	run.team[0] = createRoguePokemon(set(species.name, species.abilities[0], level), run.boosts);
+}
+module.exports = { content, set, stats, commandAfterOpening, chooseCompanions, eventRoll, prepareCompanionParty };

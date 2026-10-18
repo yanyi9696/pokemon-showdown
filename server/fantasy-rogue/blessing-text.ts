@@ -1,5 +1,6 @@
 import { BLESSING_STAGES, BLESSING_TYPES, STAGED_BLESSING_FAMILIES, blessingTitle, blessingStage,
 	blessingCoins, medicRecovery, lateBlessingReward, emblemDescription, taskRewardTier, type BlessingDefinition } from '../../sim/rogue-blessing-data';
+import { COMPANIONS, companionFamily, companionFamilyTypes } from '../../sim/rogue-companions';
 import { tonicDescription } from '../../sim/rogue-blessing-permanent';
 
 /** Player copy shared by selection cards, the codex, owned blessings and new clear cards. */
@@ -35,11 +36,51 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 	const reward = lateBlessingReward(def.family, floor || 1);
 	if (reward.treasure) text += '立即获得【藏宝袋】×1，随机开出 3～6 组物资，层数越高越丰厚。';
 	if (reward.toolboxes) text += `立即获得【${reward.advanced ? '高级工具箱' : '工具箱'}】×${reward.toolboxes}，每个可从四件随机装备中选一件。`;
+	if (companionFamily(def.family)) {
+		text = text.replace(/累计[^。]*【同行训练家的赠礼】。/g, '');
+		const regions: Record<string, string> = { kalos: '卡洛斯', alola: '阿罗拉', paldea: '帕底亚', galar: '伽勒尔', unova: '合众' };
+		const homes = [...new Set(Object.values(COMPANIONS).filter(c => c.family === def.family).map(c => regions[c.region]))];
+		text += `也偏好来自家乡（${homes.join('／')}）的选项。`;
+		if (def.family !== 'companionai') text += '累计听从 15 次偏好选择，本局获得一次【同行训练家的赠礼】。' +
+			(def.family === 'companionlana' ? '水莲按进入钓鱼计数。' : def.family === 'companionolivia' ? '莉兹按完成赌石事件计数。' : '');
+	}
 	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name, text };
 }
 
 export function blessingCodexFloors(def: BlessingDefinition): (number | undefined)[] {
 	return STAGED_BLESSING_FAMILIES.includes(def.family) ? [...BLESSING_STAGES] : [undefined];
+}
+
+/** Acquisition conditions belong beside the title, never inside effect copy. */
+export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
+	const notes: string[] = [];
+	if (companionFamily(def.family)) {
+		const types = companionFamilyTypes(def.family);
+		if (types.length) notes.push(`队伍需有${types.map(t => BLESSING_TYPES[t] + '系').join('或')}伙伴`);
+		notes.push('与其他同行训练家祝福互斥');
+		if (types.length === 1) notes.push(`队内有至少两只${BLESSING_TYPES[types[0]]}系伙伴时更容易出现`);
+		if (types.length === 2) notes.push(`队内分别有${types.map(t => BLESSING_TYPES[t] + '系').join('与')}伙伴时更容易出现`);
+	}
+	const conditions: Record<string, string[]> = {
+		singer: ['队伍需有【美洛耶塔】', '与【舞！舞！舞！】互斥'],
+		dancer: ['队伍需有【美洛耶塔】', '与【世界第一的公主殿下】互斥'],
+		swords: ['队伍需有【勾帕路翁】、【代拉基翁】或【毕力吉翁】'],
+		topclearmind: ['需已获得【聚集的祈愿】，且此后未在战斗外更换队员'],
+		railgun: ['队伍需有可合法学习【电磁炮】的伙伴'],
+		rulebreaker: ['队伍需有主特性或额外特性为【破格】的伙伴'],
+		hazards: ['队伍需有尚未拥有【岩布阵】的伙伴'],
+		toxic: ['队伍需有尚未拥有【不仁不义】的伙伴'],
+		powerchoice: ['队伍需有可新增【大力士】或【大法师】的伙伴'],
+		pandorasilver: ['与黄金阶【潘多拉的装备】互斥'],
+		pandoragold: ['与白银阶【潘多拉的装备】互斥'],
+		coin: ['塔灵为【阿尔宙斯的秩序】时不出现'],
+	};
+	notes.push(...conditions[def.family] || []);
+	if (def.family === 'friend') notes.push('当前等级需有本局尚未获得的合法赠送伙伴');
+	if (def.family === 'typeevolution') notes.push(`当前等级需有可获得的${BLESSING_TYPES[def.type!]}系伙伴`);
+	if (def.family === 'overtime') notes.push('当前等级需有符合该天气、场地或招式要求的合法伙伴');
+	if (def.emblem) notes.push('与其他赋予属性转的祝福互斥');
+	return notes;
 }
 
 const nameCollator = new Intl.Collator('zh-CN-u-co-pinyin', { sensitivity: 'base', ignorePunctuation: true, numeric: true });

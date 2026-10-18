@@ -1,3 +1,4 @@
+import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
 import { randomUUID } from 'crypto';
 import { beginLegendaryTracks, legendaryTracksView, chooseLegendaryTracks, settleLegendaryTracks, LEGENDARY_TRACKS_FLOOR, type LegendaryTracks } from './legendary-tracks';
 import { beginExclusiveClue, exclusiveEventView, chooseExclusiveEvent, settleExclusiveEvent, type ExclusiveEvent } from './exclusive-events';
@@ -28,6 +29,8 @@ import { adventureEvent, adventureView, chooseAdventure, settleAdventure, bandit
 import { offerEventFragments, eventFragmentOptions, claimEventFragments, type EventFragmentOffer } from './event-fragments';
 export { EVENT_NAMES, type EventID } from './event-text';
 export interface RogueEvent {
+	ski?: SkiState;
+	stonesOpened?: number;
 	tracks?: LegendaryTracks;
 	companionKey?: string;
 	streamerBonus?: import('../../sim/rogue-companions').CompanionID;
@@ -82,12 +85,12 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
 	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && run.floor >= trainingFloor(id) &&
-		!['exclusivechallenge', 'auction'].includes(id) &&
+		!['exclusivechallenge', 'auction', 'mushroomcollector'].includes(id) &&
 		(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
 		(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
 		(id !== 'legendarytracks' || run.floor >= LEGENDARY_TRACKS_FLOOR));
 	const unseen = candidates.filter(id => !history.some(entry => entry.id === id));
-	if (unseen.length && !companionOwned(run.blessings, 'lana')) return unseen[random(unseen.length)];
+	// Companion encounter bonuses also apply while exploring unseen events.
 	const cooled = candidates.filter(id => {
 		const index = history.map(entry => entry.id).lastIndexOf(id), old = history[index];
 		const limited = id === 'room' || id === 'mushrooms';
@@ -96,7 +99,7 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const pool = unseen.length ? unseen : cooled.length ? cooled : candidates;
 	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
 	const weights = pool.map(id => (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
-		(id === 'fishing' && companionOwned(run.blessings, 'lana') ? 13 : 10));
+		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	return pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
 }
@@ -214,6 +217,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	before.money = run.money; before.bag = { ...run.bag };
 	if (choice === 'leave') event.trainingAidBlocked = true;
 	else event.committed = true;
+	if (collectionEvent(event.id)) { chooseCollection(run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.tracks) {
 		chooseLegendaryTracks(run, choice!, random); rewardReceipt(run, before); return;
 	}
@@ -392,6 +396,7 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (collectionEvent(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], paragraphs: event.result || eventOpening(event.id), ...collectionView(run) };
 	if (event.id === 'legendarytracks') return { id: event.id, key: event.key, stage: event.stage, ...legendaryTracksView(run) };
 	if (event.exclusive) return { id: event.id, key: event.key, stage: event.stage, ...exclusiveEventView(run) };
 	if (event.id === 'fantasytutor') return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...fantasyTutorView(run) };

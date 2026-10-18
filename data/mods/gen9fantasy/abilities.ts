@@ -63,19 +63,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (type === 'frz' || type === 'fst') return false;
 		},
 
-		// 2. 核心逻辑：效果绝佳伤害减半（一场战斗仅一次）
+		// Check HP before each hit; healing above half re-enables the reduction.
 		onSourceModifyDamage(damage, source, target, move) {
-			// 检查：1. 伤害必须是“效果绝佳” (typeMod > 0)
-			//       2. 检查永久标记，确保该宝可梦在此场战斗中还未触发过此效果
-			if (target.getMoveHitData(move).typeMod > 0 && !(target as any).magmaArmorTriggered) {
+			if (target.getMoveHitData(move).typeMod > 0 && target.hp > target.maxhp / 2) {
 				this.debug('Magma Armor super effective reduction');
 				
 				// 提示特性发动
 				this.add('-ability', target, 'Magma Armor');
 				this.add('-message', `${target.name} 的熔岩铠甲迸发出热量，吸收了大量伤害！`);
-
-				// 设置永久标记，(target as any) 用于绕过 TS 类型检查
-				(target as any).magmaArmorTriggered = true;
 
 				// 伤害减半
 				return this.chainModify(0.5);
@@ -86,7 +81,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Magma Armor",
 		rating: 2.5, 
 		num: 40,
-		shortDesc: "不会变为冰冻或冻伤状态。每场战斗中第一次受到效果绝佳招式时伤害减半",
+		shortDesc: "不会变为冰冻或冻伤状态。HP 高于一半时，受到的效果绝佳招式伤害减半。",
 	},
 	pressure: {
 		onStart(pokemon) {

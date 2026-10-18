@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-18T07:52:43.894Z",
+  "transport": "real localhost WebSocket",
+  "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\collections-1792309862397",
+  "savedAdventureRestored": true,
+  "restoredFloor": 60,
+  "teamSize": 6,
+  "testedSaveHpPpItemsEmblemsBagMoneyPointsPreserved": true,
+  "unchangedAccounts": 19,
+  "activeBattlesBeforeUpdate": 0,
+  "concurrentProgress": [],
+  "blessingEntries": 177,
+  "companionEntries": 14,
+  "newEventsPublished": [
+    "skiing",
+    "stones",
+    "feathers",
+    "trade:mushroom"
+  ],
+  "prerequisitesPublished": true,
+  "magmaArmorRulePublished": true,
+  "browserVisualReview": "not performed: browser policy rejected the file URL; no workaround used"
+}

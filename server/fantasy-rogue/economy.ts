@@ -13,6 +13,16 @@ export const TREASURES: RogueItem[] = [
 	id: id as string, name: name as string, kind: 'treasure', price: 0, shopFloor: false, sellPrice: sellPrice as number,
 }));
 
+/** Fossils are collectible treasures here; no unimplemented revival action is advertised. */
+export const FOSSILS: RogueItem[] = [
+	['helixfossil', '贝壳化石'], ['domefossil', '甲壳化石'], ['oldamber', '秘密琥珀'],
+	['rootfossil', '根状化石'], ['clawfossil', '爪子化石'], ['skullfossil', '头盖化石'],
+	['armorfossil', '盾甲化石'], ['coverfossil', '背盖化石'], ['plumefossil', '羽毛化石'],
+	['jawfossil', '颚之化石'], ['sailfossil', '鳍之化石'], ['fossilizedbird', '化石鸟'],
+	['fossilizeddino', '化石海兽'], ['fossilizeddrake', '化石龙'], ['fossilizedfish', '化石鱼'],
+].map(([id, name]) => ({ id, name, kind: 'treasure', price: 0, shopFloor: false, sellPrice: 600,
+	description: '原石中保存的古代化石，可收藏或在商店兑换金币。' }));
+
 /** Weights follow TREASURES order; every item stays possible at every floor. */
 export const LOOT_STAGES = [
 	{ min: 1, max: 1, weights: [7600, 150, 5, 1400, 200, 15, 1, 580, 30, 3, 15, 1] },
@@ -147,5 +157,5 @@ export function configureShop(items: RogueItem[]) {
 	items.push({ id: 'bottlecap', name: '银色王冠', kind: 'crown', price: 6000, shopFloor: false, icon: 'bottlecap', description: '将一名伙伴自选一项个体值提升至 31。' },
 		{ id: 'goldbottlecap', name: '金色王冠', kind: 'crown', price: 24000, shopFloor: false, icon: 'goldbottlecap', description: '将一名伙伴的六项个体值全部提升至 31。' });
 	items.push(...captureItems());
-	items.push(...structuredClone(TREASURES));
+	items.push(...structuredClone(TREASURES), ...structuredClone(FOSSILS));
 }

@@ -1,6 +1,7 @@
 /** Shared narrative copy for live events and their read-only codex replays. */
 import { SERVICE_TEXT } from './event-service-text';
 export const EVENT_NAMES = {
+	skiing: '雪山速滑', stones: '赌石', feathers: '羽毛爱好者', mushroomcollector: '蘑菇收藏家',
 	mysteryball: '谜之宝可梦球', forest: '斗蛐蛐！', mushrooms: '蘑菇走私犯', room: '不战斗就无法出去的房间',
 	travel: '旅行的回忆', martial: '这是武术的胜利', tutor: '读万卷书，行万里路',
 	bandits: '双面山贼', dice: '骗小孩的把戏', fishing: '永不空军！',
@@ -9,6 +10,10 @@ export const EVENT_NAMES = {
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
 	return {
+		skiing: ['山脊上的积雪忽然发出低沉的轰鸣。巡山员将一副雪板递给你，指向山脚。', '「看清树和岩石，左右换道，坚持到山脚！我在防护坡等你。」'],
+		stones: ['石锤一下下敲在粗糙的原石上。摊主掀开布帘，露出装满石头的筐。', '「进化石、化石、宝石，都有机会！也可能只是普通石头。看好价钱，要开几块？」'],
+		feathers: ['旅人将羽毛夹在观察册中，见到你时眼睛一亮。', '「我收集美丽之羽，可以拿训练羽毛交换。如果能观察有羽毛的宝可梦，也有一份谢礼！」'],
+		mushroomcollector: ['木棚里摆满贴着标签的玻璃罐。收藏家戴好眼镜，打量你的行囊。', '「各类蘑菇都按普通商店的 125% 回收。如果带着蘑菇宝可梦，也让我开开眼界吧！」'],
 		legendarytracks: ['一位背着旧挎包的调查员蹲在路旁，正将奇异的足迹描进手册。见你走近，他压低了声音。',
 			'「有人在这一带见过传说中的身影，也有人说那是来自另一个世界的宝可梦。你看，这些痕迹还很新。」',
 			'他指向远处几条岔路：「要试着找找吗？动静太大，它可就走远了。」'],

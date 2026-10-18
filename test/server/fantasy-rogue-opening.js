@@ -10,7 +10,9 @@ const { blessing, blessingLevelCost, ROGUE_BLESSINGS } = require('../../dist/sim
 const { blessingCandidates, prepareBlessingEncounter, handleBlessingCommand,
 	completeBlessingFloor, blessingView } = require('../../dist/server/fantasy-rogue/blessings');
 const { recordClear, editClearCard } = require('../../dist/server/fantasy-rogue/legacy');
-const { set } = require('../fixtures/fantasy-rogue');
+const { set, prepareCompanionParty } = require('../fixtures/fantasy-rogue');
+const { companionFamily } = require('../../dist/sim/rogue-companions');
+const { overtimeGiftPool } = require('../../dist/server/fantasy-rogue/blessings');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 
 describe('Fantasy Rogue opening blessing and earned spirit selection', function () {
@@ -75,6 +77,8 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		const run = account().run, eligible = new Set(blessingCandidates(run, content).map(b => b.id));
 		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker']);
 		for (const def of ROGUE_BLESSINGS) {
+			if (companionFamily(def.family)) { assert.equal(eligible.has(def.id), def.family === 'companionai'); continue; }
+			if (def.family === 'overtime') { assert.equal(eligible.has(def.id), !!overtimeGiftPool(run, content, def.type).length); continue; }
 			if (def.floors) assert.equal(eligible.has(def.id), def.floors.includes(1), def.name);
 			else if (!requiresParty.has(def.family)) assert(eligible.has(def.id), def.name);
 		}
@@ -89,6 +93,10 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	for (const def of ROGUE_BLESSINGS.filter(b => (!b.floors || b.floors.includes(1)) && !['singer', 'dancer', 'swords', 'topclearmind', 'dragonking'].includes(b.family))) {
 		it(`claims the opening option ${def.id}, including any follow-up rewards`, () => {
 			cmd('start', { starters: ['bulbasaur'] });
+			if (def.family === 'overtime' && !overtimeGiftPool(account().run, content, def.type).length) {
+				assert(!blessingCandidates(account().run, content).some(b => b.id === def.id)); return;
+			}
+			store.change(user, a => prepareCompanionParty(a.run, def.family, 5));
 			if (def.family === 'railgun') store.change(user, a => {
 				a.run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 5), a.run.boosts);
 			});
