@@ -136,7 +136,9 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		const choices = account().run.choices;
 		assert.equal(choices.filter(node => node.fogged).length, 2);
 		engine.migrate(user); assert.deepEqual(account().run.choices, choices);
+		const oldAccess = Config.fantasyrogue; Config.fantasyrogue = { enabled: true, publicAccess: true };
 		const view = new RogueManager(engine).state({ id: user, name: user, named: true, connected: true, registered: true });
+		Config.fantasyrogue = oldAccess;
 		assert.equal(view.run.choices.filter(node => node.fogged).length, 2);
 		for (const node of view.run.choices.filter(node => node.fogged)) {
 			assert.equal(node.name, '迷雾区域'); assert(!node.biome);
@@ -217,7 +219,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		cmd('spiritack'); cmd('select', { value: 'wild0' });
 		store.change(user, a => { a.run.team[0].set.shiny = true; });
 		const mon = account().run.team[0], before = mon.experience;
-		const expected = Math.floor(experienceYield(rogueSpeciesData('Caterpie').baseExperience, 1, mon.set.level, true) * 1.25) * 3;
+		const expected = Math.floor(experienceYield(rogueSpeciesData('Caterpie').baseExperience, 1, mon.set.level, true) * 1.15 * 1.375) * 3;
 		fight(true, { defeated: [{ species: 'Caterpie', level: 1, participants: [mon.id], eligible: [mon.id] }] });
 		assert.equal(account().run.team[0].experience, before + expected);
 		store.change(user, a => { a.run.bag.expcandyxs = 1; });

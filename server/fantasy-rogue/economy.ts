@@ -48,12 +48,14 @@ export function rollWildLoot(floor: number, random: RogueRandom): Record<string,
 
 /** Does not modify selected legacy nodes or reroll a persisted route. */
 export function prepareEconomy(node: RogueNode, floor: number, random: RogueRandom) {
-	if (!node.encounters.length || node.wildLoot) return;
+	if (!node.encounters.length || node.wildLoot || node.economyPrepared) return;
+	node.economyPrepared = true;
 	const trainer = node.kind === 'trainer' || node.encounters.some(encounter =>
 		encounter.trainer || encounter.trainerCandidates?.length);
 	if (trainer) {
 		node.reward.items = node.kind === 'trainer' ? routeCandyReward(floor, 'trainer') : {};
 		if (node.kind === 'trainer') node.reward.money = encounterCoins(floor);
+		if (node.kind === 'trainer') diversifyBattleReward(node.reward, floor, random);
 	} else {
 		node.reward = { money: 0, items: {} };
 		node.wildLoot = node.encounters.map(encounter => {
@@ -69,9 +71,44 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 				}
 				Object.assign(loot, routeCandyReward(floor, 'elite'));
 			}
+			if (node.kind !== 'boss') diversifyBattleReward({ money: 0, items: loot }, floor, random);
 			return loot;
 		});
 	}
+}
+
+/** Unchosen equipment is budgeted at half retail. Never replaces healing or unique story gifts. */
+export function diversifyBattleReward(reward: { money: number, items: Record<string, number> }, floor: number, random: RogueRandom) {
+	const chance = floor < 30 ? 10 : floor < 60 ? 18 : floor < 100 ? 26 : 35;
+	if (random(100) >= chance) return;
+	const values: Record<string, number> = Object.fromEntries([
+		...TREASURES.map(i => [i.id, i.sellPrice!]), ...Object.entries(CANDY_SHOP).map(([id, item]) => [id, item.price]),
+	]);
+	const total = reward.money + Object.entries(reward.items).reduce((sum, [id, n]) => sum + (values[id] || 0) * n, 0);
+	const pool: [string, number][] = [['oranberry', 150], ['cheriberry', 150], ['pechaberry', 150], ['rawstberry', 150], ['chestoberry', 150]];
+	if (floor >= 30) pool.push(['sitrusberry', 400], ['lumberry', 500], ['leppaberry', 400], ...TYPE_BOOSTERS.map(([id]) => [id, 2000] as [string, number]));
+	if (floor >= 60) pool.push(...BATTLE_GOODS.map(([id, , price]) => [id, price / 2] as [string, number]));
+	const candidates = pool.filter(([, cost]) => cost <= total * 0.4);
+	if (!candidates.length) return;
+	const [id, cost] = candidates[random(candidates.length)];
+	const items = { ...reward.items };
+	let money = reward.money, remaining = cost;
+	// Mix which resource is exchanged, while leaving at least 60% of the original reward budget.
+	const spendCoins = () => {
+		const n = Math.min(money, remaining);
+		money -= n; remaining -= n;
+	};
+	if (random(2)) spendCoins();
+	for (const [source, value] of Object.entries(values).sort((a, b) => a[1] - b[1])) {
+		const n = Math.min(items[source] || 0, Math.floor(remaining / value));
+		if (n) { items[source] -= n; remaining -= n * value; }
+	}
+	spendCoins();
+	if (remaining) return; // No free upgrade and no rounding away expensive candy.
+	items[id] = (items[id] || 0) + 1;
+	for (const key of Object.keys(reward.items)) delete reward.items[key];
+	Object.assign(reward.items, Object.fromEntries(Object.entries(items).filter(([, n]) => n > 0)));
+	reward.money = money;
 }
 
 export function shopAvailable(item: RogueItem, floor: number): boolean {
@@ -144,6 +181,12 @@ export function configureShop(items: RogueItem[]) {
 		const item = items.find(entry => entry.id === id);
 		const data: RogueItem = { id, name, kind: 'held', category: '对战影响道具', price, shopFloor: 99 };
 		if (item) Object.assign(item, data); else items.push(data);
+	}
+	for (const [id, name, price] of [
+		['cheriberry', '樱子果', 300], ['pechaberry', '桃桃果', 300], ['rawstberry', '莓莓果', 300],
+		['chestoberry', '零余果', 300], ['lumberry', '木子果', 1000], ['leppaberry', '苹野果', 800],
+	] as [string, string, number][]) {
+		items.push({ id, name, kind: 'held', category: '树果', price, shopFloor: false });
 	}
 	const stats: StatID[] = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 	const feathers = ['healthfeather', 'musclefeather', 'resistfeather', 'geniusfeather', 'cleverfeather', 'swiftfeather'];

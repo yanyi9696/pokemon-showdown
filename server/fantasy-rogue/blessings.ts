@@ -456,8 +456,7 @@ export function syncBlessingParty(run: RogueRun) {
 	if (has('dragonking')) {
 		grantCompanion(run, 'iris');
 		const king = strongestDragon(run.team);
-		if (!king) delete state.dragonKing;
-		else if (state.dragonKing?.member !== king.id) state.dragonKing = { member: king.id };
+		state.dragonKing = { ...state.dragonKing, member: king?.id || '' };
 		if (king && state.dragonKing?.ability && !dragonKingAbilityOptions(king, run.team, state).includes(state.dragonKing.ability)) {
 			delete state.dragonKing.ability;
 		}
@@ -991,7 +990,7 @@ export function blessingView(run: RogueRun, discovered = false) {
 			levelCost: { normal: blessingLevelCost(def.tier, floor), boss: blessingLevelCost(def.tier, floor, true) } };
 	};
 	const king = run.team.find(mon => mon.id === state.dragonKing?.member);
-	return { ...state, dragonKing: king && { ...state.dragonKing!, species: king.set.species, total: memberStatTotal(king),
+	return { ...state, dragonKing: state.dragonKing && { ...state.dragonKing, species: king?.set.species || '等待龙系伙伴', total: king ? memberStatTotal(king) : 0,
 		options: dragonKingAbilityOptions(king, run.team, state) },
 		learning: ownsBlessing(state, 'learnall') ? run.team.filter(mon => !state.learnedMembers?.includes(mon.id))
 		.map(mon => ({ member: mon.id, moves: blessingLearnChoices(mon) })) : [],

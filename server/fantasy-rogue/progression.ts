@@ -4,7 +4,7 @@ import { Dex, toID } from '../../sim/dex';
 import { ROGUE_FORMAT, ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
 import { experienceAtLevel, levelAtExperience, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import type { RogueRun } from './types';
-import { partyEvolutions } from './party-evolution';
+import { GHOLDENGO_EVOLUTION_COINS, partyEvolutions } from './party-evolution';
 import { compoundEvolutionAllowed } from '../../sim/rogue-compound';
 import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
 
@@ -175,6 +175,10 @@ export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
 	if (toID(mon.set.species) === 'meltan' && toID(name) === 'melmetal') {
 		if ((run.blessings?.candy || 0) < 400) throw new Error('需要 400 颗美录坦糖果。');
 		run.blessings!.candy -= 400;
+	}
+	if (toID(name) === 'gholdengo' && ['gimmighoul', 'gimmighoulroaming'].includes(toID(mon.set.species))) {
+		if (mon.set.level < 20 || run.money < GHOLDENGO_EVOLUTION_COINS) throw new Error(`进化需要等级 20 与 ${GHOLDENGO_EVOLUTION_COINS} 金币。`);
+		run.money -= GHOLDENGO_EVOLUTION_COINS;
 	}
 	delete mon.evolutionNotice;
 	initializeExperience(mon);

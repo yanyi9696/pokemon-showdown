@@ -62,7 +62,7 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 		syncCompanions(run.blessings, run.team); assert.equal(companion.ability, 'guts');
 		assert(assignedExtraAbilities(run.team[0], run.team, run.blessings).includes('guts'));
 		run.team[1].set.level = 100; rebuildMember(run.team[1], stats(0));
-		syncCompanions(run.blessings, run.team); assert.equal(companion.member, run.team[1].id); assert(!companion.ability);
+		syncCompanions(run.blessings, run.team); assert.equal(companion.member, run.team[1].id); assert.equal(companion.ability, 'guts');
 		assert(!assignedExtraAbilities(run.team[0], run.team, run.blessings).includes('guts'));
 		const dragons = party([set('Dragonite', 'Inner Focus', 50), set('Dratini', 'Shed Skin', 80)]).team;
 		assert.equal(strongestTypedMember(dragons, 'Dragon').id, strongestDragon(dragons).id);

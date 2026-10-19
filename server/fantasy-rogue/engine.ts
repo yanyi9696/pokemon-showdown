@@ -835,7 +835,7 @@ export class RogueEngine {
 				requireRule(canEditParty(run) || run.phase === 'blessing', '请在战斗外选择龙王的额外特性。');
 				syncBlessingParty(run);
 				const king = run.blessings?.dragonKing;
-				requireRule(king && king.member === command.member && !king.ability &&
+				requireRule(king && king.member === command.member &&
 					dragonKingAbilityOptions(run.team.find(mon => mon.id === king.member)!, run.team, run.blessings)
 					.includes(command.value as DragonKingAbility), '龙王或特性选项已经变化；已有同名特性不能重复赋予。');
 				king.ability = command.value as DragonKingAbility;

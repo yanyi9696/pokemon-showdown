@@ -1,0 +1,20 @@
+{
+  "port": 8000,
+  "activeRunPayloadBytes": 43438,
+  "savedAdventureRestored": true,
+  "refreshIdempotent": true,
+  "codices": {
+    "events": {
+      "trainers": 48,
+      "allLocalEntriesEncountered": true,
+      "currentGifts": true
+    },
+    "blessings": {
+      "entries": 184,
+      "newestCompanionsPresent": true
+    },
+    "guide": {
+      "pokemon": 266
+    }
+  }
+}

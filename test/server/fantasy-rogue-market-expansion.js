@@ -65,7 +65,9 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 			a.run.bag.goldbottlecap = 1; a.run.team[0].set.ivs = stats(20);
 		});
 		const manager = new RogueManager(engine);
+		const oldAccess = Config.fantasyrogue; Config.fantasyrogue = { enabled: true, publicAccess: true };
 		const publicState = manager.state({ id: user, named: true, registered: true, connected: true });
+		Config.fantasyrogue = oldAccess;
 		assert.equal(publicState.items.find(i => i.id === 'metronome').category, '对战影响道具');
 		assert(!publicState.items.some(i => i.id.startsWith('roguetypeball')));
 		const mon = store.get(user).run.team[0];

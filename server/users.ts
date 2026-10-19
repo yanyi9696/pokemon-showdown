@@ -398,6 +398,8 @@ export class User extends Chat.MessageContext {
 	chatQueueTimeout: NodeJS.Timeout | null;
 	lastChatMessage: number;
 	lastRogueStoryMessage = 0;
+	rogueSkiWindow = 0;
+	rogueSkiInputs = 0;
 	lastCommand: string;
 
 	notified: {
@@ -1433,8 +1435,11 @@ export class User extends Chat.MessageContext {
 		const fastRogueStory = message.startsWith('/fantasyrogue story ') && message.length <= 1024 &&
 			now >= this.lastRogueStoryMessage + 100;
 		if (fastRogueStory) this.lastRogueStoryMessage = now;
+		// Input has no per-key cooldown; bound abusive traffic independently of chat.
+		if (now >= this.rogueSkiWindow + 1000) { this.rogueSkiWindow = now; this.rogueSkiInputs = 0; }
+		const fastRogueSki = message.startsWith('/fantasyrogue ski ') && message.length <= 1024 && ++this.rogueSkiInputs <= 60;
 
-		if (message.startsWith('/cmd userdetails') || message.startsWith('>> ') || noThrottle || fastRogueStory) {
+		if (message.startsWith('/cmd userdetails') || message.startsWith('>> ') || noThrottle || fastRogueStory || fastRogueSki) {
 			// certain commands are exempt from the queue
 			Monitor.activeIp = connection.ip;
 			Chat.parse(message, room, this, connection);

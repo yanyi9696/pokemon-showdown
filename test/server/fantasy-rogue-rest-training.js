@@ -54,7 +54,9 @@ describe('Fantasy Rogue rest candy and batch training', function () {
 	it('publishes price, quantity and growth thresholds without mutating the save or shared content', () => {
 		const before = account(), item = structuredClone(content.items.find(i => i.id === 'expcandyxs'));
 		const manager = new RogueManager(engine);
+		const oldAccess = Config.fantasyrogue; Config.fantasyrogue = { enabled: true, publicAccess: true };
 		const state = manager.state({id: user, name: user, named: true, registered: true, connected: true});
+		Config.fantasyrogue = oldAccess;
 		assert(state.shopItems.includes('expcandyxs'));
 		assert.equal(state.items.find(i => i.id === 'expcandyxs').remaining, 4);
 		assert.equal(state.items.find(i => i.id === 'expcandyxs').price, 80);

@@ -13,7 +13,7 @@ export interface BlessingSelectionContext {
 	prayerPartyChanged?: boolean;
 }
 
-export const NORMAL_BLESSING_WEIGHTS = { silver: 35, gold: 35, prismatic: 20, mixed: 10 } as const;
+export const NORMAL_BLESSING_WEIGHTS = { silver: 24, gold: 26, prismatic: 22, mixed: 28 } as const;
 export const PRAYER_BLESSING_WEIGHTS = { silver: 20, gold: 60, prismatic: 10, mixed: 10 } as const;
 const TIERS: BlessingTier[] = ['silver', 'gold', 'prismatic'];
 const ROUND_TIERS: BlessingRoundTier[] = [...TIERS, 'mixed'];

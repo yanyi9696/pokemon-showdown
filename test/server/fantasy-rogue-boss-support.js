@@ -24,7 +24,7 @@ describe('Fantasy Rogue boss support revision', () => {
 	for (const [floor, tier] of [[10, 'elite'], [30, 'elite'], [150, 'elite'], [20, 'gym'], [160, 'gym'], [175, 'gym'], [200, 'gym']]) {
 		it(`uses the ${tier} card tier at floor ${floor}`, () => assert.equal(mentorTier(floor), tier));
 	}
-	for (const [kind, offense, defense, speed] of [['attack', 1.75, 1.35, 1], ['guard', 1.35, 1.85, 1], ['balanced', 1.55, 1.55, 1.25]]) {
+	for (const [kind, offense, defense, speed] of [['attack', 1.8, 1.4, 1], ['guard', 1.4, 1.9, 1], ['balanced', 1.6, 1.6, 1.3]]) {
 		it(`combines ${kind} gym support with permanent training and exposes the same values privately`, () => {
 			const battle = fight(kind), baseline = fight(undefined), untrained = fight(undefined, 20, false);
 			try {

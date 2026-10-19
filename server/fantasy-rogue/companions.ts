@@ -63,7 +63,7 @@ export function companionView(run: RogueRun, options: CompanionOption[] = []) {
 	return (run.blessings?.companions || []).map(c => {
 		const approvedHere = c.eventKey === key || c.eventKey === 'routes:' + run.floor;
 		const member = run.team.find(mon => mon.id === c.member);
-		const pendingType = !c.type && COMPANIONS[c.id].types.length;
+		const pendingType = COMPANIONS[c.id].types.length > 1;
 		return { ...c, name: COMPANIONS[c.id].name, source: companionSource(c.id),
 			smileUntil: c.smile === 'chat' ? (c.messageAt || 0) + 6000 : undefined,
 			smile: c.smile === 'approval' ? approvedHere :
@@ -78,7 +78,7 @@ export function companionView(run: RogueRun, options: CompanionOption[] = []) {
 			member: member && { id: member.id, species: member.set.species, total: memberStatTotal(member) },
 			typeOptions: pendingType ? COMPANIONS[c.id].types.map(type => ({ id: type,
 				member: strongestTypedMember(run.team, type)?.set.species })) : [],
-			abilityOptions: member && !c.ability ? companionAbilityOptions(c, member, run.team, run.blessings!) : [],
+			abilityOptions: companionAbilityOptions(c, member, run.team, run.blessings!),
 		};
 	});
 }
@@ -114,19 +114,19 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 		run.blessings!.companionZ = { companion: c.id as 'marnie' | 'roxie' | 'lacey', member: candidate.id };
 		(run.notices ||= []).push(companionSource(c.id) + '已为这位伙伴解锁额外 Z 招式，普通招式仍可正常使用。'); return;
 	}
-	if (action === 'type' && !c.type && (COMPANIONS[c.id].types as readonly string[]).includes(value)) {
-		if (!strongestTypedMember(run.team, value)) throw new Error('队伍里还没有对应属性的伙伴。');
+	if (action === 'type' && (COMPANIONS[c.id].types as readonly string[]).includes(value)) {
+		if (c.type !== value) delete c.ability;
 		c.type = value; syncCompanions(run.blessings!, run.team); return;
 	}
 	syncCompanions(run.blessings!, run.team);
 	const member = run.team.find(mon => mon.id === c.member);
-	if (action !== 'ability' || !member || c.ability ||
+	if (action !== 'ability' ||
 		!companionAbilityOptions(c, member, run.team, run.blessings!).includes(value)) {
 		throw new Error('最强伙伴或额外特性选项已经变化。');
 	}
 	c.ability = value;
 	const abilityName = Dex.mod('gen9fantasy').abilities.get(value).name;
-	(run.notices ||= []).push(`${companionSource(c.id)}${member.set.species} 获得额外特性 ${abilityName}。`);
+	(run.notices ||= []).push(`${companionSource(c.id)}${member ? member.set.species + ' 获得' : '已预选，等待对应属性伙伴加入：'}额外特性 ${abilityName}；战斗外可随时更换。`);
 }
 export function recordCompanionPreference(run: RogueRun, options: CompanionOption[], choice: string, random: RogueRandom) {
 	const event = run.node?.event;

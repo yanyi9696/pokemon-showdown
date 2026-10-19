@@ -77,7 +77,7 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 		const replacement = run.team.find(mon => mon.id !== king.id && permanentMemberTypes(mon).includes('Dragon'));
 		replacement.set.level = 100; replacement.set.species = 'Rayquaza'; rebuildMember(replacement, run.boosts);
 		b.syncBlessingParty(run); assert.equal(run.blessings.dragonKing.member, replacement.id);
-		assert.equal(run.blessings.dragonKing.ability, undefined);
+		assert.equal(run.blessings.dragonKing.ability, 'drizzle');
 	});
 	it('grants one item each, rejects duplicate consumption, reveals both descriptions account-wide in either order', () => {
 		for (const order of [['wine', 'cephalosporin'], ['cephalosporin', 'wine']]) {
@@ -166,7 +166,7 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 		const king = account().run.blessings.dragonKing;
 		assert.throws(() => cmd('dragonking', { member: 'wrong', value: 'drizzle' }), /变化/);
 		cmd('dragonking', { member: king.member, value: 'drizzle' });
-		assert.throws(() => cmd('dragonking', { member: king.member, value: 'longzhihuxi' }), /变化/);
+		cmd('dragonking', { member: king.member, value: 'longzhihuxi' }); assert.equal(account().run.blessings.dragonKing.ability, 'longzhihuxi');
 		const request = { action: 'use', value: 'roguewine', member: king.member, id: randomUUID(), revision: account().revision };
 		engine.command(user, request); engine.command(user, request);
 		assert.equal(account().run.bag.roguewine, 0);
@@ -175,7 +175,7 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 		assert.equal(account().run.bag.roguewine, 1);
 		cmd('use', { value: 'roguecephalosporin', member: king.member });
 		assert(account().tonicSecret); cmd('battle');
-		assert.deepEqual(engine.battleState(user).blessings.dragonKing, king.ability ? king : { ...king, ability: 'drizzle' });
+		assert.deepEqual(engine.battleState(user).blessings.dragonKing, { ...king, ability: 'longzhihuxi' });
 		store.change(user, saved => { saved.run.phase = 'ready'; delete saved.run.battle; });
 		cmd('abandon'); cmd('start', { starters: ['bulbasaur'] });
 		assert(account().tonicSecret); assert(!account().run.team[0].tonics);

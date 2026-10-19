@@ -17,8 +17,8 @@ describe('Fantasy Rogue blessing selection rules', () => {
 		for (let i = 0; i < 100; i++) counts[drawBlessingTier(context, () => i)]++;
 		return counts;
 	}
-	it('gives mixed offers 10 percent while retaining a 60 percent all-gold prayer chance', () => {
-		assert.deepEqual(countTiers(ordinary), { silver: 35, gold: 35, prismatic: 20, mixed: 10 });
+	it('gives mixed offers 28 percent while retaining a 60 percent all-gold prayer chance', () => {
+		assert.deepEqual(countTiers(ordinary), { silver: 24, gold: 26, prismatic: 22, mixed: 28 });
 		assert.deepEqual(countTiers(prayer), { silver: 20, gold: 60, prismatic: 10, mixed: 10 });
 		assert.deepEqual(countTiers({ ...prayer, floor: 150 }), countTiers(ordinary));
 		assert.deepEqual(countTiers({ ...prayer, floor: 150, prayerFloor: 100 }), countTiers(prayer));

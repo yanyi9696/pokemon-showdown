@@ -42,8 +42,8 @@ export function canGrantExtraAbility(mon: RoguePokemon, ability: string, team: R
 	const id = toID(ability);
 	return id !== toID(mon.set.ability) && !assignedExtraAbilities(mon, team, effects, includeKing).includes(id);
 }
-export function dragonKingAbilityOptions(mon: RoguePokemon, team: RoguePokemon[], effects?: BlessingEffects) {
-	return DRAGON_KING_ABILITIES.filter(ability => canGrantExtraAbility(mon, ability, team, effects, false));
+export function dragonKingAbilityOptions(mon: RoguePokemon | undefined, team: RoguePokemon[], effects?: BlessingEffects) {
+	return DRAGON_KING_ABILITIES.filter(ability => !mon || ability === effects?.dragonKing?.ability || canGrantExtraAbility(mon, ability, team, effects, false));
 }
 export function permanentMemberTypes(mon: RoguePokemon) {
 	const types = [...Dex.mod('gen9fantasy').species.get(mon.set.species).types];

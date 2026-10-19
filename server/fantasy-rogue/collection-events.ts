@@ -10,7 +10,7 @@ export interface SkiState {
 	started: number; checked: number; lane: number; ended?: number; crashed?: boolean;
 	obstacles: { at: number, lane: number, kind: string }[];
 }
-export const SKI_DURATION = 30000;
+export const SKI_DURATION = 15000;
 export const collectionEvent = (id: string) => ['skiing', 'stones', 'feathers', 'mushroomcollector'].includes(id);
 const option = (id: string, name: string, text = '', disabled = false) => ({ id, name, text, disabled });
 export const stonePrice = (floor: number) => 350 + floor * 8;
@@ -22,7 +22,7 @@ export function collectionView(run: RogueRun, now = Date.now()) {
 	if (event.stage !== 'choice') return { options: [] };
 	if (event.id === 'skiing') {
 		if (!event.ski) return { options: [
-			option('skistart', '穿好护具，滑向山脚！', '方向键或左右按钮换道；坚持 30 秒，撞上障碍即结束。'),
+			option('skistart', '穿好护具，滑向山脚！', '方向键或左右按钮换道；坚持 15 秒，撞上障碍即结束。'),
 			option('leave', '先在山脚欣赏雪景。'),
 		] };
 		return { ski: { ...event.ski, now, duration: SKI_DURATION },
@@ -66,7 +66,7 @@ export function chooseCollection(
 		if (choice === 'skistart') {
 			if (event.ski) throw new Error('这次滑行已经开始。');
 			const obstacles: SkiState['obstacles'] = [];
-			for (let at = 3200; at < SKI_DURATION; at += Math.round(1600 - 700 * at / SKI_DURATION)) {
+			for (let at = 1800; at < SKI_DURATION; at += Math.round(850 - 350 * at / SKI_DURATION)) {
 				obstacles.push({ at, lane: random(3), kind: random(2) ? 'tree' : 'rock' });
 			}
 			event.ski = { started: now, checked: 0, lane: 1, obstacles };
@@ -79,13 +79,14 @@ export function chooseCollection(
 			if (choice === 'skiright') ski.lane = Math.min(2, ski.lane + 1);
 			return;
 		}
-		const tier = Math.min(5, Math.floor(ski.ended / 6000) + (companionOwned(run.blessings, 'grusha') ? 1 : 0));
+		const tier = Math.min(5, Math.floor(ski.ended / (SKI_DURATION / 5)) + (companionOwned(run.blessings, 'grusha') ? 1 : 0));
 		const coins = Math.round(eventRewardBudget(run.floor) * (0.1 + tier * 0.16));
 		run.money += coins;
-		if (tier) give(run, candyAtFloor(run.floor), tier);
+		const candies = Math.max(tier ? 1 : 0, tier - (run.floor < 60 && tier >= 3 ? 1 : 0));
+		if (candies) give(run, candyAtFloor(run.floor), candies);
 		if (tier >= 4) give(run, 'revive', 1);
 		finish(run, [ski.crashed ? '雪板撞上障碍，身后的雪浪扑了上来。巡山员把你从松软的雪里拉出，拍掉你帽子上的积雪。' : '你越过终点，身后的雪浪停在防护坡外。巡山员朝你挥起了旗子。',
-			`本次坚持 ${(ski.ended / 1000).toFixed(1)} 秒，收获 ${coins} 金币${tier ? `与经验糖果 ×${tier}` : ''}${tier >= 4 ? '、活力碎片 ×1' : ''}。`,
+			`本次坚持 ${(ski.ended / 1000).toFixed(1)} 秒，收获 ${coins} 金币${tier ? `与经验糖果 ×${candies}` : ''}${tier >= 4 ? '、活力碎片 ×1' : ''}。`,
 			...(companionOwned(run.blessings, 'grusha') ? [`${companionSource('grusha')}奖励品质提高一档。`] : [])]);
 		return;
 	}

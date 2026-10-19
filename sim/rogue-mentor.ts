@@ -4,9 +4,9 @@ export type MentorTier = 'elite' | 'gym';
 /** Percent bonuses, shared by the campaign, simulator and owner-only battle UI. */
 export function mentorCardProfile(kind: MentorCard, tier: MentorTier = 'elite') {
 	const values = tier === 'gym' ? {
-		attack: [75, 35, 0], guard: [35, 85, 0], balanced: [55, 55, 25],
+		attack: [80, 40, 0], guard: [40, 90, 0], balanced: [60, 60, 30],
 	} : {
-		attack: [50, 25, 0], guard: [25, 60, 0], balanced: [35, 35, 20],
+		attack: [40, 20, 0], guard: [20, 50, 0], balanced: [30, 30, 15],
 	};
 	const [damage, defense, speed] = values[kind];
 	const name = { attack: '破阵之证', guard: '坚守之证', balanced: '同行之证' }[kind];

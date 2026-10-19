@@ -1,0 +1,48 @@
+{
+  "scope": "Offline cash-flow model; clean wins, no economic blessing, authored boss gifts included; positive events credited half of event budget. Not human playtest evidence.",
+  "performance": {
+    "before": {
+      "bytes": 313091,
+      "medianMs": 15.64,
+      "starters": 567
+    },
+    "after": {
+      "bytes": 34775,
+      "medianMs": 1.5,
+      "starters": 0
+    },
+    "reductionPercent": 88.9
+  },
+  "evolution": {
+    "fee": 80000,
+    "seeds": 500,
+    "saving": {
+      "firstAffordableFloor": {
+        "p10": 59,
+        "median": 60,
+        "p90": 67
+      },
+      "medianCoins": {
+        "20": 18180,
+        "40": 43600,
+        "60": 80330,
+        "80": 121080,
+        "100": 189590
+      }
+    },
+    "ordinary": {
+      "firstAffordableFloor": {
+        "p10": 89,
+        "median": 89,
+        "p90": 99
+      },
+      "medianCoins": {
+        "20": 11072,
+        "40": 21508,
+        "60": 41656,
+        "80": 59890,
+        "100": 113906
+      }
+    }
+  }
+}

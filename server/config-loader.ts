@@ -37,6 +37,7 @@ export function load(invalidate = false) {
 	}
 	// config.routes is nested - we need to ensure values are set for its keys as well.
 	config.routes = { ...defaults.routes, ...config.routes };
+	config.fantasyrogue = { ...defaults.fantasyrogue, ...config.fantasyrogue };
 
 	// Automatically stop startup if better-sqlite3 isn't installed and SQLite is enabled
 	if (config.usesqlite) {

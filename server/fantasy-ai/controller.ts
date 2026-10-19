@@ -33,6 +33,7 @@ export interface ChallengeMetrics {
 export interface AIChallengeOptions extends TimeBudgetSettings {
 	rogue?: {
 		orderedBoss?: boolean;
+		immediate?: boolean,
 		wild?: boolean, partySize: number,
 	};
 	trainer: ValidatedTrainer;
@@ -175,10 +176,14 @@ export class AIController {
 		if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
 		this.submitted = rqid;
 		const revision = this.revision;
-		if (this.options.rogue?.wild) {
-			// Wild packs score public move choices without tactical switching or a rollout queue.
+		if (this.options.rogue?.immediate || this.options.rogue?.wild) {
+			// Non-boss battles resolve immediately from public evidence, without the rollout queue.
+			const excluded = [...this.rejected];
+			if (this.options.rogue.wild && !request.forceSwitch) {
+				excluded.push(...enumerateRequestChoices(request).filter(choice => choice.startsWith('switch ')));
+			}
 			const choice = rogueBossChoice(request) ||
-				emergencyChoice(observation, this.options.trainer.format, this.rejected, true, !!this.options.rogue.wild);
+				emergencyChoice(observation, this.options.trainer.format, excluded, true, true, !this.options.rogue.wild);
 			this.metrics.decisions++;
 			const elapsed = performance.now() - received;
 			this.metrics.totalDecisionMs += elapsed;

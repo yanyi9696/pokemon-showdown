@@ -233,7 +233,7 @@ describe('Fantasy Rogue flow, adventures and ability visibility', function () {
 			const mon = battle.p1.active[0], info = mon.getSwitchRequestData().rogueAbilityInfo;
 			assert.deepEqual(info.abilities, ['roguegreatmage', 'hugepower']);
 			assert.equal(mon.getStat('spa'), mon.storedStats.spa * 2); assert.equal(mon.getStat('atk'), mon.storedStats.atk * 2);
-			assert.equal(mon.getStat('def'), battle.modify(mon.storedStats.def, 1.6));
+			assert.equal(mon.getStat('def'), battle.modify(mon.storedStats.def, 1.5));
 			battle.sendUpdates(); const index = battle.log.findIndex(line => line.startsWith('|-rogueinfo|'));
 			assert(index > 0); assert.equal(battle.log[index - 1], '|split|p1'); assert.equal(battle.log[index + 1], '');
 			mon.addVolatile('gastroacid'); assert.equal(rogueAbilityInfo(mon).active, false);
@@ -251,14 +251,14 @@ describe('Fantasy Rogue flow, adventures and ability visibility', function () {
 		const baseline = makeBattle([], undefined, 'Immunity'), boosted = makeBattle([], card, 'Immunity');
 		try {
 			const source = boosted.p1.active[0], base = baseline.p1.active[0];
-			assert.equal(source.getStat('def'), boosted.modify(base.getStat('def'), card === 'guard' ? 1.6 : card === 'balanced' ? 1.35 : 1.25));
-			assert.equal(source.getStat('spe'), boosted.modify(base.getStat('spe'), card === 'balanced' ? 1.2 : 1));
+			assert.equal(source.getStat('def'), boosted.modify(base.getStat('def'), card === 'guard' ? 1.5 : card === 'balanced' ? 1.3 : 1.2));
+			assert.equal(source.getStat('spe'), boosted.modify(base.getStat('spe'), card === 'balanced' ? 1.15 : 1));
 			baseline.randomizer = boosted.randomizer = n => n;
 			const damage = boosted.damage(boosted.actions.getDamage(source, boosted.p2.active[0], 'tackle'),
 				boosted.p2.active[0], source, boosted.dex.getActiveMove('tackle'));
 			const normal = baseline.damage(baseline.actions.getDamage(base, baseline.p2.active[0], 'tackle'),
 				baseline.p2.active[0], base, baseline.dex.getActiveMove('tackle'));
-			assert(Math.abs(damage / normal - (card === 'attack' ? 1.5 : card === 'balanced' ? 1.35 : 1.25)) < .08);
+			assert(Math.abs(damage / normal - (card === 'attack' ? 1.4 : card === 'balanced' ? 1.3 : 1.2)) < 0.08);
 		} finally { baseline.destroy(); boosted.destroy(); }
 	});
 });

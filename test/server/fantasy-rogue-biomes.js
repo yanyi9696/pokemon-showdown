@@ -272,9 +272,9 @@ describe('Fantasy Rogue saved regional encounters', () => {
 			assert.deepEqual(account(), settled);
 			assert.equal(account().run.floor, 2);
 			assert.equal(account().run.money, money + reward.money);
-			assert.equal(account().run.bag.tinymushroom, 3);
+			assert.equal(account().run.bag.tinymushroom, 2);
 		}
-		assert.deepEqual(account().run.bag, { ...bag, tinymushroom: 3 });
+		assert.deepEqual(account().run.bag, { ...bag, tinymushroom: 2, oranberry: 1 });
 	});
 	it('retains a selected v4 encounter and initializes only unselected routes during migration', () => {
 		cmd('select', { value: 'wild0' });

@@ -125,9 +125,9 @@ describe('Fantasy Rogue universal escape, rescue and route pacing', () => {
 	it('boosts ordinary KO and capture EXP while keeping elite/event EXP and reserve eligibility unchanged', () => {
 		for (const participated of [true, false]) {
 			const base = experienceYield(100, 15, 15, participated);
-			assert.equal(towerExperience(100, 15, 15, participated, 25), base);
-			assert.equal(towerExperience(100, 15, 15, participated, 25, true), Math.floor(base * 1.375));
-			assert.equal(towerExperience(100, 15, 15, participated, 25, false, true), Math.floor(base * 1.1));
+			assert.equal(towerExperience(100, 15, 15, participated, 25), Math.floor(base * 1.15));
+			assert.equal(towerExperience(100, 15, 15, participated, 25, true), Math.floor(base * 1.15 * 1.375));
+			assert.equal(towerExperience(100, 15, 15, participated, 25, false, true), Math.floor(base * 1.15 * 1.1));
 		}
 	});
 });

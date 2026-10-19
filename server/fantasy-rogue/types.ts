@@ -68,6 +68,7 @@ export interface RogueNode {
 	encounters: RogueEncounter[];
 	/** Rolled once, saved with the route; each completed wild encounter pays its own entry. */
 	wildLoot?: Record<string, number>[];
+	economyPrepared?: boolean;
 	reward: { money: number, items: Record<string, number> };
 }
 export interface RogueItem {

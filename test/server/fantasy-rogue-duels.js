@@ -28,14 +28,16 @@ describe('Fantasy Rogue real legacy invitations', function () {
 		return manager.command(user.connections[0], { id: randomUUID(), revision: store.get(user.id).revision, action, ...details });
 	}
 	beforeEach(() => {
-		oldLocal = Config.fantasyailocal; Config.fantasyailocal = true;
+		oldLocal = { local: Config.fantasyailocal, bind: Config.bindaddress, rogue: Config.fantasyrogue };
+		Config.fantasyailocal = true; Config.bindaddress = '127.0.0.1'; Config.fantasyrogue = { enabled: true, publicAccess: true };
 		store = new RogueStore(':memory:'); manager = new RogueManager(new RogueEngine(store, content()));
 		users = [0, 1, 2].map(() => makeUser(`Legacy Test ${++serial}`, `127.0.9.${serial}`));
 	});
 	afterEach(() => {
 		for (const room of rooms.splice(0)) Rooms.get(room.roomid)?.destroy();
 		for (const user of users) { user.disconnectAll(); user.destroy(); }
-		store.close(); Config.fantasyailocal = oldLocal;
+		store.close();
+		Config.fantasyailocal = oldLocal.local; Config.bindaddress = oldLocal.bind; Config.fantasyrogue = oldLocal.rogue;
 	});
 	it('requires the invited player to accept, opens a two-human room once, and never writes battle results to cards', async () => {
 		const [a, b, outsider] = users, ca = save(a), cb = save(b);

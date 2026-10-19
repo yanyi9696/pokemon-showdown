@@ -9,7 +9,7 @@ export const ROUTE_RETENTION: Record<string, number> = {
 	wild: 0.85, event: 0.85, reward: 0.8, elite: 0.35, trade: 0.35, trainer: 0.55,
 };
 export function baseRouteWeights(floor: number): Record<string, number> {
-	return { wild: 34, elite: 17, trainer: 14, event: 22, reward: 20,
+	return { wild: 34, elite: floor < 30 ? 10 : floor < 60 ? 13 : 17, trainer: 14, event: 22, reward: 20,
 		trade: ROUTE_STAGES[Math.min(4, Math.floor((floor - 1) / 40))] };
 }
 

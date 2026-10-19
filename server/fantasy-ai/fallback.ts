@@ -13,7 +13,8 @@ import { activeTypes, observedImmunity } from './strategy';
  * Complex move/type callbacks are left uncertain and handled by the worker's native probes.
  */
 export function emergencyChoice(
-	observation: Observation, format: string, excluded: readonly string[] = [], smart = false, enhancedMoves = smart
+	observation: Observation, format: string, excluded: readonly string[] = [], smart = false, enhancedMoves = smart,
+	tacticalSwitches = false
 ): string {
 	const request = observation.request;
 	if (request.wait || request.teamPreview || request.forceSwitch) {
@@ -180,6 +181,24 @@ export function emergencyChoice(
 			return 5;
 		};
 		const best = moves.map(choice => ({ choice, value: score(choice) })).sort((a, b) => b.value - a.value)[0];
+		if (tacticalSwitches && best.value < 500) {
+			// Switch only against attacks already revealed in the public battle log.
+			// A substantial resistance improvement avoids needless switching loops.
+			const attacks = foe.moves.map(id => dex.moves.get(id)).filter(move => move.category !== 'Status');
+			const threat = (profile: Combatant) => Math.max(0, ...attacks.map(move => {
+				const targetTypes = [...activeTypes(profile, dex)];
+				return dex.getImmunity(move.type, targetTypes) ? 2 ** dex.getEffectiveness(move.type, targetTypes) : 0;
+			}));
+			const danger = threat(own);
+			const candidates = available.filter(choice => choice.startsWith('switch ')).map(choice => {
+				const mon = request.side.pokemon[Number(choice.split(' ')[1]) - 1];
+				const profile = builder.own(mon, ownSeen(memory, side, mon.ident, false));
+				return { choice, profile, danger: threat(profile) };
+			}).filter(candidate => candidate.profile.health.lower > 0.5 && candidate.danger <= 1 &&
+				candidate.profile.moves.some(id => dex.moves.get(id).category !== 'Status' && !typeImmune(candidate.profile, id)))
+				.sort((a, b) => a.danger - b.danger || b.profile.health.lower - a.profile.health.lower);
+			if (danger >= 4 && candidates.length && !Object.values(own.boosts).some(stage => stage >= 2)) return candidates[0].choice;
+		}
 		if (best.value >= 0 || !available.some(choice => choice.startsWith('switch '))) return best.choice;
 	}
 	const switches = available.filter(choice => choice.startsWith('switch ')).map(choice => {

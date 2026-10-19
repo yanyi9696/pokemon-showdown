@@ -32,7 +32,7 @@ describe('Fantasy Rogue economy', () => {
 	}
 	beforeEach(() => {
 		store = new RogueStore(':memory:');
-		engine = new RogueEngine(store, createPreviewContent(), max => Math.min(1, max - 1));
+		engine = new RogueEngine(store, createPreviewContent(), max => max === 100 ? 99 : Math.min(1, max - 1));
 		cmd('start', { starters: ['bulbasaur'] });
 	});
 	afterEach(() => store.close());

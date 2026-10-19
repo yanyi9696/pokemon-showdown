@@ -6,7 +6,8 @@ import { compoundEvolutionAllowed } from '../../sim/rogue-compound';
 import { friendship, ROGUE_FRIENDSHIP_EVOLUTION, rogueTime } from './friendship';
 
 const dex = Dex.mod('gen9');
-type Context = Pick<RogueRun, 'floor' | 'bag'> & Partial<Pick<RogueRun, 'blessings'>>;
+export const GHOLDENGO_EVOLUTION_COINS = 80000;
+type Context = Pick<RogueRun, 'floor' | 'bag'> & Partial<Pick<RogueRun, 'blessings' | 'money'>>;
 export interface EvolutionRequirement {
 	text: string;
 	/** Names are translated by the same client dictionary as the party editor. */
@@ -61,6 +62,10 @@ export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1
 		if (toID(mon.set.species) === 'meltan' && child.id === 'melmetal') {
 			conditions.push({ text: `专属糖果 ${context.blessings?.candy || 0} / 400（携带美录坦击倒或捕捉：钢系 +10，其他 +1）`,
 				met: (context.blessings?.candy || 0) >= 400 });
+		} else if (child.id === 'gholdengo') {
+			conditions.push({ text: '等级达到 Lv.20', met: mon.set.level >= 20 });
+			conditions.push({ text: `消耗 ${GHOLDENGO_EVOLUTION_COINS} 金币（当前 ${context.money || 0}）`,
+				met: (context.money || 0) >= GHOLDENGO_EVOLUTION_COINS });
 		} else if (isFriendshipEvolution(child)) {
 			conditions.push(...friendshipRequirements(mon, child, context.floor));
 		} else {

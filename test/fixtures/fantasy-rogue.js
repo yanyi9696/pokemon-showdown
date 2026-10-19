@@ -68,9 +68,9 @@ function chooseCompanions(engine, user, cmd) {
 	}
 	for (let n = 0; n < 8; n++) {
 		run = engine.store.get(user).run;
-		const entry = companionView(run).find(c => c.typeOptions.some(t => t.member) || c.abilityOptions.length);
+		const entry = companionView(run).find(c => !c.ability && (!c.type && c.typeOptions.some(t => t.member) || c.abilityOptions.length));
 		if (!entry) return;
-		const type = entry.typeOptions.find(t => t.member);
+		const type = !entry.type && entry.typeOptions.find(t => t.member);
 		cmd('companion', {member: entry.id, value: type ? 'type:' + type.id : 'ability:' + entry.abilityOptions[0]});
 	}
 	throw new Error('Unresolved companion choices');

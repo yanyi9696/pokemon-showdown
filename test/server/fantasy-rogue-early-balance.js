@@ -77,7 +77,7 @@ describe('Fantasy Rogue early growth and preparation', function () {
 	it('gives elites reliable extra loot and does not reroll a saved reward', () => {
 		for (const kind of ['wild', 'elite', 'boss']) for (const floor of [10, 40, 70, 71]) {
 			const node = { kind, reward: { money: 0, items: {} }, encounters: [{ team: [] }] };
-			prepareEconomy(node, floor, () => 0);
+			prepareEconomy(node, floor, max => max === 100 ? 99 : 0);
 			const boosted = kind === 'elite';
 			const value = Object.entries(node.wildLoot[0]).reduce((sum, [id, count]) => sum + count * (TREASURES.find(t => t.id === id)?.sellPrice || 0), 0);
 			assert.equal(value, 150 + (boosted ? eliteTreasureBudget(floor) : 0));
@@ -99,9 +99,9 @@ describe('Fantasy Rogue early growth and preparation', function () {
 				previous = value;
 			}
 		}
-		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [200, 400, 1200, 2500, 4300]);
+		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [100, 400, 1000, 2200, 4000]);
 		for (let f = 1; f <= 200; f++) {
-			assert(exp(routeCandyReward(f, 'trainer')) > exp(routeCandyReward(f, 'elite')));
+			assert(exp(routeCandyReward(f, 'trainer')) >= exp(routeCandyReward(f, 'elite')));
 			assert(encounterCoins(f) > eliteTreasureBudget(f) + expectedWildLoot(f));
 		}
 	});

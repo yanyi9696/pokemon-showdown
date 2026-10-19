@@ -35,7 +35,8 @@ describe('Fantasy Rogue continuous encounters and exclusive equipment', function
 			assert.equal(route.encounters[0].wildPack.lootRolls, 3);
 			assert(route.encounters[0].environment);
 			const old = { ...node('wild'), encounters: Array.from({ length: 3 }, () => ({ team: [] })) };
-			prepareEconomy(old, 45, () => 0); prepareEconomy(route, 45, () => 0);
+			const originalLoot = max => max === 100 ? 99 : 0;
+			prepareEconomy(old, 45, originalLoot); prepareEconomy(route, 45, originalLoot);
 			const sum = {};
 			for (const loot of old.wildLoot) for (const [id, n] of Object.entries(loot)) sum[id] = (sum[id] || 0) + n;
 			assert.deepEqual(route.wildLoot, [sum]);

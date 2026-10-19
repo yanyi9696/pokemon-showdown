@@ -95,22 +95,20 @@ export function strongestTypedMember(team: RoguePokemon[], type: string) {
 		memberStatTotal(b) - memberStatTotal(a) || (a.joinOrder || 0) - (b.joinOrder || 0))[0];
 }
 export function companionAbilityOptions(
-	companion: RogueCompanion, mon: RoguePokemon, team: RoguePokemon[], effects: BlessingEffects
+	companion: RogueCompanion, mon: RoguePokemon | undefined, team: RoguePokemon[], effects: BlessingEffects
 ) {
 	const abilities = COMPANIONS[companion.id].abilities as Record<string, readonly string[]>;
 	const other = { ...effects, companions: effects.companions?.filter(c => c !== companion) };
-	return (abilities[companion.type || ''] || []).filter(id => id !== toID(mon.set.ability) &&
-		!assignedExtraAbilities(mon, team, other).includes(toID(id)));
+	return (abilities[companion.type || ''] || []).filter(id => !mon || id === companion.ability ||
+		id !== toID(mon.set.ability) && !assignedExtraAbilities(mon, team, other).includes(toID(id)));
 }
 export function syncCompanions(effects: BlessingEffects, team: RoguePokemon[]) {
 	for (const companion of effects.companions || []) {
 		if (companion.id === 'acerola' && companion.ability === 'stalwart') companion.ability = 'moldbreaker';
 		if (!companion.type) continue;
 		const strongest = strongestTypedMember(team, companion.type);
-		if (companion.member !== strongest?.id) {
-			companion.member = strongest?.id;
-			delete companion.ability;
-		}
+		// Guidance follows the strongest eligible partner; retain the player's chosen lesson while absent.
+		companion.member = strongest?.id;
 		if (strongest && companion.ability &&
 			!companionAbilityOptions(companion, strongest, team, effects).includes(companion.ability)) {
 			delete companion.ability;

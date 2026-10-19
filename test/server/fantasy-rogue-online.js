@@ -29,7 +29,8 @@ describe('Fantasy Rogue real rooms', function () {
 	}
 	beforeEach(() => {
 		oldReporting = Config.reportbattles;
-		oldLocal = Config.fantasyailocal; Config.fantasyailocal = true;
+		oldLocal = { local: Config.fantasyailocal, bind: Config.bindaddress, rogue: Config.fantasyrogue };
+		Config.fantasyailocal = true; Config.bindaddress = '127.0.0.1'; Config.fantasyrogue = { enabled: true, publicAccess: true };
 		store = new RogueStore(':memory:');
 		ai = new AIChallengeManager([], { enabled: true, decisionMs: 0, maxBattles: 1 }, 6);
 		manager = new RogueManager(new RogueEngine(store, content()), () => ai);
@@ -64,7 +65,7 @@ describe('Fantasy Rogue real rooms', function () {
 		await ai.dispose();
 		for (const room of rooms.splice(0)) Rooms.get(room.roomid)?.destroy();
 		user.disconnectAll(); user.destroy(); store.close();
-		Config.fantasyailocal = oldLocal;
+		Config.fantasyailocal = oldLocal.local; Config.bindaddress = oldLocal.bind; Config.fantasyrogue = oldLocal.rogue;
 		Config.reportbattles = oldReporting;
 	});
 	it('delivers king succession through real room requests and resumes the native replacement choice', async () => {
@@ -141,11 +142,11 @@ describe('Fantasy Rogue real rooms', function () {
 		room.battle.choose(user, `move 1|${room.battle.p1.request.rqid}`);
 		await until(() => room.battle.turn > turn || room.battle.ended, 'turn proceeds without thinking');
 	});
-	it('uses the normal challenge search for trainers without hidden opponent configurations or choices', async () => {
+	it('commits non-boss trainer moves immediately without hidden opponent configurations or choices', async () => {
 		await ai.dispose();
 		ai = new AIChallengeManager([], {enabled: true, decisionMs: 3000, maxBattles: 1}, 6);
-		const submit = ai.scheduler.submit.bind(ai.scheduler), observations = [];
-		ai.scheduler.submit = job => { observations.push(structuredClone(job.observation)); return submit(job); };
+		const observations = [];
+		ai.scheduler.submit = () => { throw new Error('Non-boss trainers must not queue a search'); };
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			const encounter = saved.run.node.encounters[0];
@@ -154,14 +155,21 @@ describe('Fantasy Rogue real rooms', function () {
 			saved.run.node.kind = 'trainer';
 		});
 		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		const info = room.battle.fantasyAI.view;
+		const observe = info.observe.bind(info);
+		info.observe = request => {
+			const observation = observe(request);
+			observations.push(structuredClone(observation)); return observation;
+		};
 		await until(() => room.battle.p2.request.isWait === true, 'NPC preview');
 		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
 		await until(() => room.battle.p2.request.choice.startsWith('move '), 'NPC already chose');
 		assert.equal(room.battle.p1.request.isWait, false);
 		assert.equal(room.battle.fantasyAI.options.rogue.wild, false);
 		assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
-		assert(observations.length >= 2, 'both preview and move use the challenge scheduler');
-		assert(room.battle.fantasyAI.metrics.rollouts > 0, JSON.stringify(room.battle.fantasyAI.metrics));
+		assert(observations.length >= 1, 'observe only the public state');
+		assert.equal(room.battle.fantasyAI.metrics.rollouts, 0);
+		assert(!room.battle.p2.name.startsWith('AI ·'));
 		for (const observation of observations) {
 			assert.equal(observation.difficulty, 'normal');
 			assert(!observation.fullState && !observation.opponentChoice && !observation.initialOpponent);

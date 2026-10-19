@@ -1,8 +1,12 @@
 import { getRogueManager } from '../fantasy-rogue/manager';
+import { rogueAccess } from '../fantasy-rogue/access';
 import type { RogueCommand } from '../fantasy-rogue/types';
 import type { DuelCommand } from '../fantasy-rogue/duels';
 
 export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
+	fantasyrogueaccess(target, user, trustable) {
+		return { userid: user.id, enabled: !!trustable && rogueAccess(user) };
+	},
 	fantasyroguecodex(target, user, trustable) {
 		return trustable && (target === 'guide' || target === 'blessings' || target === 'events') ?
 			getRogueManager().codex(user, target) : null;
@@ -19,6 +23,19 @@ export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
 
 export const commands: Chat.ChatCommands = {
 	fantasyrogue: {
+		ski(target, room, user, connection) {
+			let id = '';
+			try {
+				if (target.length > 1000) throw new Error('请求过长。');
+				const command = JSON.parse(target) as RogueCommand;
+				if (!command || typeof command.id !== 'string') throw new Error('请求格式无效。');
+				id = command.id;
+				const delta = getRogueManager().ski(connection, command);
+				connection.send(`|queryresponse|fantasyrogueski|${JSON.stringify({ userid: user.id, id, ok: true, ...delta })}`);
+			} catch (error) {
+				connection.send(`|queryresponse|fantasyrogueski|${JSON.stringify({ userid: user.id, id, ok: false, message: (error as Error).message })}`);
+			}
+		},
 		story(target, room, user, connection) {
 			let id = '';
 			try {

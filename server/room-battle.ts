@@ -31,6 +31,7 @@ export interface RogueRoomOptions {
 	state: RogueBattleState;
 	floor: number;
 	wild?: boolean;
+	boss?: boolean;
 	canRetreat?: boolean;
 	defeat?: {
 		floor: number, encounter: number, encounters: number, retryFloor: boolean, noHealing: boolean, emergencyCost: number,
@@ -1252,7 +1253,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 
 	makePlayer(user: User) {
 		if (this.options.fantasyAI && this.players.length === 1) {
-			return new RoomBattleAIPlayer(this, 2, `AI · ${this.options.fantasyAI.trainer.name}`);
+			return new RoomBattleAIPlayer(this, 2, this.options.fantasyRogue ? this.options.fantasyAI.trainer.name : `AI · ${this.options.fantasyAI.trainer.name}`);
 		}
 		const num = (this.players.length + 1) as PlayerIndex;
 		return new RoomBattlePlayer(user, this, num);

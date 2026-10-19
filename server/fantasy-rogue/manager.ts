@@ -1,4 +1,5 @@
 import { centerCare } from './economy';
+import { rogueAccess } from './access';
 import { companionView } from './companions';
 import { growthView, growthOffers } from './growth';
 import { rewardSceneView } from './reward-scenes';
@@ -51,6 +52,7 @@ export class RogueManager {
 		if (!user.registered && !Config.fantasyailocal) {
 			throw new Error('当前仅使用昵称，尚未登录注册账号。请使用账号密码登录后刷新存档。');
 		}
+		if (!rogueAccess(user)) throw new Error('当前账号尚未获得幻想杯肉鸽内测权限。');
 	}
 	private recoverMissingRoom(userid: string) {
 		const battle = this.engine.store.get(userid).run?.battle;
@@ -62,6 +64,7 @@ export class RogueManager {
 		}
 	}
 	gallery(user: User, offset = 0) {
+		if (!rogueAccess(user)) return { userid: user.id, enabled: false, cards: [], own: [] };
 		const account = this.state(user).account;
 		const own = account ? this.engine.store.get(user.id) : undefined;
 		return { userid: user.id, account, own: own?.cards || [], pending: own?.pendingClear,
@@ -70,6 +73,7 @@ export class RogueManager {
 			invitations: account ? this.duels.list(user.id) : [] };
 	}
 	codex(user: User, section: CodexSection) {
+		if (!rogueAccess(user)) return { userid: user.id, enabled: false, section, entries: [] };
 		let account;
 		try { this.authorize(user); account = this.engine.store.get(user.id); } catch {}
 		return { userid: user.id, revision: account?.revision, ...rogueCodex(account, section, this.engine.localSpirits) };
@@ -79,7 +83,7 @@ export class RogueManager {
 		return this.duels.command(user, command);
 	}
 	state(user: User) {
-		const common = { userid: user.id, protocolVersion: 1, enabled: Config.fantasyrogue?.enabled !== false };
+		const common = { userid: user.id, protocolVersion: 1, enabled: rogueAccess(user) };
 		try { this.authorize(user); } catch (error) {
 			return { ...common, message: (error as Error).message, account: null };
 		}
@@ -127,7 +131,7 @@ export class RogueManager {
 			natures: Dex.natures.all().map(nature => ({
 				id: nature.id, name: nature.name, plus: nature.plus, minus: nature.minus,
 			})),
-			starters: content?.starters.map(starter => ({
+			starters: (!run || run.phase === 'complete' ? content?.starters : [])?.map(starter => ({
 				id: starter.id, species: starter.set.species, level: starter.set.level,
 				available: starter.availableInitially || account.unlocked.includes(starter.id),
 				traits: starterTraits(account, starter.id),
@@ -135,7 +139,7 @@ export class RogueManager {
 					.map(([slot, name]) => ({ id: toID(name), name, hidden: slot === 'H' })),
 				gender: Dex.mod('gen9fantasy').species.get(starter.set.species).gender,
 				defaultMoves: starter.set.moves.map(toID),
-				moves: starterMoves(account, content, starter.id),
+				moves: starterMoves(account, content!, starter.id),
 			})) || [],
 			items, shopItems: stock.map(item => item.id),
 			run: run ? {
@@ -199,6 +203,16 @@ export class RogueManager {
 			} : null,
 		};
 	}
+	/** Ski input uses the same transactional revision/receipt checks without resending the whole party. */
+	ski(connection: Connection, command: RogueCommand) {
+		this.authorize(connection.user);
+		const account = this.engine.store.get(connection.user.id);
+		const event = account.run?.node?.event;
+		if (command.action !== 'event' || !['skileft', 'skiright', 'skitick'].includes(command.value || '') ||
+			event?.id !== 'skiing' || event.key !== command.member) throw new Error('当前没有进行中的滑雪。');
+		const result = this.engine.command(connection.user.id, command, connection.user.name);
+		return { revision: result.revision, event: eventView(result.run!) };
+	}
 	/** Never accepts a team, battle outcome, balance or capture count from the browser. */
 	command(connection: Connection, command: RogueCommand) {
 		const user = connection.user;
@@ -220,7 +234,7 @@ export class RogueManager {
 		}
 		if (command.action === 'start' && run && run.id !== previousRun && !run.announced) {
 			this.engine.store.change(user.id, saved => { saved.run!.announced = true; });
-			Rooms.get('lobby')?.add(`|raw|${Utils.escapeHTML(user.name)} 开启了幻想杯肉鸽之旅`).update();
+			if (Config.fantasyrogue?.publicAccess) Rooms.get('lobby')?.add(`|raw|${Utils.escapeHTML(user.name)} 开启了幻想杯肉鸽之旅`).update();
 		}
 		if (['battle', 'shopchallenge', 'godchallenge'].includes(command.action) &&
 			run?.phase === 'battle' && run.battle && !run.battle.roomid) {
@@ -235,7 +249,7 @@ export class RogueManager {
 					style: encounter.style, developmentOnly: false, packedTeam: Teams.pack(encounter.team),
 					keyMembers: [], resourcePreferences: [],
 				}, Teams.pack(run.team.map(mon => mon.set)), {
-					state: this.engine.battleState(userid), floor: run.floor, canRetreat: canRetreatRogue(run),
+					state: this.engine.battleState(userid), floor: run.floor, boss: run.node!.kind === 'boss', canRetreat: canRetreatRogue(run),
 					preview: run.preview?.stage === 'running' ? run.preview.trainer : undefined,
 					wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',
 					onCapture: captured => { this.engine.capture(userid, token, captured); },
