@@ -44,6 +44,8 @@ export interface RogueEncounter {
 	catchChances?: Record<string, number>;
 }
 export interface RogueNode {
+	/** A companion let the player advance without winning; reward is held in the rematch ledger. */
+	companionLoss?: boolean;
 	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
 	restCandyPurchases?: Record<string, number>;
 	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction' | 'balls' | 'crowns' | 'mushroom' | 'buyback', stock: (RogueItem & { remaining: number })[], purchases: number,
@@ -168,6 +170,11 @@ export interface RogueRun extends RogueInventory {
 	blessingCheckpoint?: import('./blessings').RogueBlessings;
 	owner?: { id: string, name: string };
 	story?: { stage: RogueStoryStage, page: number, skip: boolean, canSkip: boolean };
+	dialogue?: { key: string, pages: import('./narrative').NarrativePage[], resume: 'ready' | 'event' | 'settlement' };
+	rematches?: import('./companion-rematches').CompanionRematch[];
+	police?: import('./police-events').PoliceProgress;
+	/** Terminal receipt stays saved until explicitly acknowledged; distinct from a retryable challenge loss. */
+	failure?: { key: string, floor: number, title: string, reason: string };
 	/** Completed pre-battle openings, retained when a battle is retried. */
 	seenBossDialogues?: string[];
 	/** Persist identities/rosters before announcing them; levels are applied on entry. */
@@ -187,7 +194,7 @@ export interface RogueRun extends RogueInventory {
 	/** Per-run identities; gym history also unlocks the two hidden Elite Four trainers. */
 	trainerHistory?: { gyms: string[], eliteFour: string[], elitePlan?: Record<number, string> };
 	floor: number;
-	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'complete' | 'blessing' | 'event' | 'postgame';
+	phase: 'intro' | 'story' | 'choose' | 'ready' | 'battle' | 'rest' | 'reward' | 'settlement' | 'failed' | 'defeated' | 'complete' | 'blessing' | 'event' | 'postgame';
 	node?: RogueNode;
 	/** Saved route candidates, including encounters, must survive reloads and reconnects. */
 	choices?: RogueNode[];
@@ -259,7 +266,7 @@ export interface RogueStarterBuild {
 export interface RogueCommand {
 	id: string;
 	revision: number;
-	action: 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+	action: 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
 		'shopchallenge' | 'event' | 'companion' | 'previewresult' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |

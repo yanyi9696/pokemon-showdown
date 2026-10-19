@@ -2,6 +2,9 @@ import { rollRoutes, normalizeRouteHistory } from './routes';
 import { migrateRetiredBalls } from './capture-items';
 import { syncExclusiveItems } from './exclusive-items';
 import { beginExclusiveEncounter } from './exclusive-events';
+import { beginPoliceEncounter } from './police-events';
+import { deferCompanionChallenge, opposingCompanion, settleRematch } from './companion-rematches';
+import { healNarrativeParty, queueNarrative } from './narrative';
 import { feedMushroom } from './mushroom-feeding';
 import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards, poppyRewardPickup } from './companions';
 import { companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
@@ -40,7 +43,7 @@ import {
 import { initializeSpirit, grantSpiritGift, prepareSpiritNode, spiritShopAvailable, hpPurchaseCost,
 	convertSpiritItem, editSpiritBox, mergeSpiritPokemon, completeSpiritRegion } from './spirits';
 import {
-	ROGUE_STORY, afterSpirit, startCard, storyView, bossIntroPages, bossDialogueKey, rememberBossDialogue,
+	ROGUE_STORY, afterSpirit, startCard, storyView, bossIntroPages, bossVictoryPages, bossDialogueKey, rememberBossDialogue,
 } from './story';
 import { recordClear, editClearCard } from './legacy';
 import { arceusEncounter } from './final-bosses';
@@ -91,7 +94,7 @@ export class RogueEngine {
 		return this.content;
 	}
 	private run(account: RogueAccount): RogueRun {
-		requireRule(account.run && account.run.phase !== 'complete', '没有进行中的冒险。');
+		requireRule(account.run && !['complete', 'defeated'].includes(account.run.phase), '没有进行中的冒险，请确认本局结算。');
 		const content = this.configured();
 		requireRule(
 			account.run.contentVersion === content.version || content.compatibleVersions?.includes(account.run.contentVersion),
@@ -146,7 +149,11 @@ export class RogueEngine {
 				account.adventures ||= 1;
 			}
 			this.normalizeAccount(account);
-			if (account.run) this.normalizeRun(account.run);
+			if (account.run) {
+				this.normalizeRun(account.run);
+				this.presentNarrative(account.run);
+				this.checkFailure(account.run);
+			}
 			if (account.run?.phase === 'complete' && account.run.floor === 200) recordClear(account, account.run);
 		});
 	}
@@ -260,6 +267,14 @@ export class RogueEngine {
 		const node = (run.choices || this.configured().floors[run.floor])?.find(option => option.id === id);
 		requireRule(node, '本层内容尚未配置或路线无效。');
 		run.node = structuredClone(run.bossPreviews?.[run.floor] || node);
+		if (node.kind === 'trainer' && this.content?.events && beginPoliceEncounter(run, this.random)) {
+			if (run.node.event?.police?.revenge) {
+				prepareSpiritNode(run, run.node, this.configured(), this.random);
+				this.resolveOpponentGenders(run.node.encounters.flatMap(encounter => encounter.team));
+				if (this.content.blessings) prepareBlessingEncounter(run, this.random);
+			}
+			delete run.choices; return;
+		}
 		if (node.kind === 'trainer') beginExclusiveEncounter(run, this.random);
 		const announced = run.bossPreviews?.[run.floor];
 		if (announced) for (const encounter of announced.encounters) {
@@ -395,7 +410,7 @@ export class RogueEngine {
 		const reward = run.node!.reward;
 		run.money += reward.money;
 		for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
-		const points = run.node!.kind === 'boss' ? 1 : 0;
+		const points = run.node!.kind === 'boss' && !run.node!.companionLoss ? 1 : 0;
 		account.points += points;
 		if (run.node!.wildLoot || run.node!.shopChallenge || run.node!.event) {
 			// Wild drops have already been credited per encounter; the final receipt only adds the Boss point.
@@ -451,6 +466,7 @@ export class RogueEngine {
 		if (this.content?.story) run.story = { stage: 'ending', page: 0, skip: false, canSkip: true };
 	}
 	private finishSettlement(account: RogueAccount, run: RogueRun) {
+		if (run.dialogue) { this.presentNarrative(run); return; }
 		if (!run.pendingCapture && run.pendingCaptures?.length) run.pendingCapture = run.pendingCaptures.shift();
 		if (run.phase !== 'settlement' || run.pendingCapture || run.pendingMoves?.length) return;
 		if (run.captureResume) {
@@ -495,8 +511,14 @@ export class RogueEngine {
 		} else { run.phase = 'settlement'; this.finishSettlement(account, run); }
 	}
 	command(userid: string, command: RogueCommand, name = userid) {
-		return this.store.change(userid, account => {
+		const updateAccount = (account: RogueAccount) => {
 			this.normalizeAccount(account);
+			if (command.action === 'ackfailure') {
+				requireRule(account.run?.phase === 'defeated' && account.run.failure?.key === command.value,
+					'本局结算已更新，请刷新后确认。');
+				account.previousBlessings = account.run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
+				delete account.run; account.opening = { page: 0, skip: false }; return;
+			}
 			if (command.action === 'onboarding') {
 				account.onboardingSeen = true;
 				return;
@@ -532,6 +554,11 @@ export class RogueEngine {
 						else if (story.stage === 'climb') story.stage = 'cards';
 						else {
 							delete run.story;
+							if (view.stage === 'interlude') {
+								const resume = run.dialogue!.resume; delete run.dialogue;
+								run.phase = resume;
+								if (resume === 'settlement') this.finishSettlement(account, run);
+							}
 							if (view.stage === 'portal') this.enterFloor(run);
 							if (view.stage === 'gymgift' || view.stage === 'bossintro') rememberBossDialogue(run);
 							if (view.stage === 'gymgift') gymSystemGift(run);
@@ -709,7 +736,7 @@ export class RogueEngine {
 			case 'event':
 				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value, command.evs);
 				if (run.phase === 'ready') {
-					prepareEconomy(run.node!, run.floor, this.random);
+					if (!run.node?.event?.police && !run.node?.event?.rematch) prepareEconomy(run.node!, run.floor, this.random);
 					prepareSpiritNode(run, run.node!, this.configured(), this.random);
 					this.resolveOpponentGenders(run.node!.encounters.flatMap(encounter => encounter.team));
 					if (this.content?.blessings) prepareBlessingEncounter(run, this.random);
@@ -1049,6 +1076,10 @@ export class RogueEngine {
 			if (this.content?.blessings) syncBlessingParty(run);
 			syncGrowthParty(run);
 			syncExclusiveItems(run);
+		};
+		return this.store.change(userid, account => {
+			updateAccount(account);
+			if (account.run) { this.presentNarrative(account.run); this.checkFailure(account.run); }
 		}, command);
 	}
 	battleState(userid: string): RogueBattleState {
@@ -1128,185 +1159,233 @@ export class RogueEngine {
 				return;
 			}
 			this.settleResult(account, run, result);
+			this.presentNarrative(run); this.checkFailure(run);
 		});
 	}
 	private settleResult(account: RogueAccount, run: RogueRun, result: RogueBattleResult) {
-			const token = run.battle!.token;
-			const retreated = !!run.battle!.retreatRequested;
-			if (run.postgame?.stage === 'battle' && !retreated) {
-				this.finishGodChallenge(account, run, result.won ? 'won' : 'lost');
-				return;
+		const token = run.battle!.token;
+		const retreated = !!run.battle!.retreatRequested;
+		if (run.postgame?.stage === 'battle' && !retreated) {
+			this.finishGodChallenge(account, run, result.won ? 'won' : 'lost');
+			return;
+		}
+		// Escape is not a win, including when a late win packet races the escape request.
+		if (retreated && result.won) result = { ...result, won: false };
+		const captures = result.captures || (result.captured ? [result.captured] : []);
+		for (const captured of captures) this.recordCatch(account, run, captured);
+		const memoryBattle = run.node?.event?.id === 'travel' && !!run.node.event.memory;
+		const previousTeam = run.team;
+		const previousItems = new Map(run.team.map(mon => [mon.id, toID(mon.set.item)]));
+		delete run.battle;
+		// run.team is the saved battle-start party, independent of simulator snapshots.
+		// Restore all permanent member progression on escape; only spent resources cross this boundary.
+		run.team = retreated ? result.team.map(mon => {
+			const original = previousTeam.find(member => member.id === mon.id);
+			return original ? escapedMember(original, mon) : structuredClone(mon);
+		}) : structuredClone(result.team);
+		for (const mon of run.team) {
+			const item = toID(mon.set.item);
+			if (item && previousItems.get(mon.id) !== item) {
+				mon.set.item = convertSpiritItem(run, this.configured(), item,
+					`battle:${result.encounterId}:${mon.id}:${item}`, this.random);
 			}
-			// Escape is not a win, including when a late win packet races the escape request.
-			if (retreated && result.won) result = { ...result, won: false };
-			const captures = result.captures || (result.captured ? [result.captured] : []);
-			for (const captured of captures) this.recordCatch(account, run, captured);
-			const memoryBattle = run.node?.event?.id === 'travel' && !!run.node.event.memory;
-			const previousTeam = run.team;
-			const previousItems = new Map(run.team.map(mon => [mon.id, toID(mon.set.item)]));
-			delete run.battle;
-			// run.team is the saved battle-start party, independent of simulator snapshots.
-			// Restore all permanent member progression on escape; only spent resources cross this boundary.
-			run.team = retreated ? result.team.map(mon => {
-				const original = previousTeam.find(member => member.id === mon.id);
-				return original ? escapedMember(original, mon) : structuredClone(mon);
-			}) : structuredClone(result.team);
-			for (const mon of run.team) {
-				const item = toID(mon.set.item);
-				if (item && previousItems.get(mon.id) !== item) {
-					mon.set.item = convertSpiritItem(run, this.configured(), item,
-						`battle:${result.encounterId}:${mon.id}:${item}`, this.random);
-				}
+		}
+		run.bag = { ...result.bag };
+		migrateRetiredBalls(run);
+		for (const mon of run.team) ensureMemberMemory(mon);
+		run.notices = [];
+		if (memoryBattle && !retreated) restoreTravelBattle(run, result);
+		else if (!memoryBattle && !run.postgame) {
+			if (this.configured().progression) battleFriendship(run, result, token, previousTeam);
+			if (this.content?.blessings) settleBlessingBattle(account, run, this.configured(), result, this.random, retreated);
+		}
+		for (const captured of captures) {
+			if ([...run.team, ...(run.box || []), ...(run.pendingCaptures || [])].some(mon => mon.id === captured.id)) continue;
+			requireRule(run.team.length < roguePartyLimit(run.spirit) || this.configured().allowReplacement, '队伍已满。');
+			const mon = createRoguePokemon(
+				{ ...captured.set, level: captured.set.level - (run.node!.encounters[run.encounter].blessingLevels || 0),
+					happiness: captured.set.pokeball === 'friendball' ? 150 : ROGUE_INITIAL_FRIENDSHIP }, run.boosts, captured.id, captured.stars
+			);
+			mon.hp = Math.max(1, mon.maxhp - (captured.maxhp - captured.hp));
+			mon.pp = structuredClone(captured.pp);
+			mon.status = captured.status;
+			mon.statusState = { ...captured.statusState };
+			mon.statuses = captured.statuses && structuredClone(captured.statuses);
+			if (this.configured().progression) initializeExperience(mon);
+			if (mon.set.item) {
+				mon.set.item = convertSpiritItem(run, this.configured(), toID(mon.set.item), `capture:${mon.id}`, this.random);
 			}
-			run.bag = { ...result.bag };
-			migrateRetiredBalls(run);
-			for (const mon of run.team) ensureMemberMemory(mon);
-			run.notices = [];
-			if (memoryBattle && !retreated) restoreTravelBattle(run, result);
-			else if (!memoryBattle && !run.postgame) {
-				if (this.configured().progression) battleFriendship(run, result, token, previousTeam);
-				if (this.content?.blessings) settleBlessingBattle(account, run, this.configured(), result, this.random, retreated);
+			if (run.team.length < roguePartyLimit(run.spirit)) run.team.push(mon);
+			else if (run.box && run.box.length < 30) run.box.push(mon);
+			else (run.pendingCaptures ||= []).push(mon);
+		}
+		if (this.content?.blessings) syncBlessingParty(run);
+		syncGrowthParty(run);
+		syncExclusiveItems(run);
+		if (retreated) {
+			// Keep the saved enemy and story branch. Only the player's battle losses persist.
+			if (memoryBattle) delete run.node!.event!.memory;
+			run.recovery = 'retreat';
+			run.phase = 'ready';
+			run.attempt++;
+			run.notices = ['已逃跑，HP、PP、异常状态和道具消耗已保留；本场叠层恢复至开战前。可使用道具、调整队伍后再次挑战本场。'];
+			if (run.pendingCaptures?.length) {
+				run.captureResume = 'ready';
+				run.phase = 'settlement';
+				this.finishSettlement(account, run);
 			}
-			for (const captured of captures) {
-				if ([...run.team, ...(run.box || []), ...(run.pendingCaptures || [])].some(mon => mon.id === captured.id)) continue;
-				requireRule(run.team.length < roguePartyLimit(run.spirit) || this.configured().allowReplacement, '队伍已满。');
-				const mon = createRoguePokemon(
-					{ ...captured.set, level: captured.set.level - (run.node!.encounters[run.encounter].blessingLevels || 0),
-						happiness: captured.set.pokeball === 'friendball' ? 150 : ROGUE_INITIAL_FRIENDSHIP }, run.boosts, captured.id, captured.stars
-				);
-				mon.hp = Math.max(1, mon.maxhp - (captured.maxhp - captured.hp));
-				mon.pp = structuredClone(captured.pp);
-				mon.status = captured.status;
-				mon.statusState = { ...captured.statusState };
-				mon.statuses = captured.statuses && structuredClone(captured.statuses);
-				if (this.configured().progression) initializeExperience(mon);
-				if (mon.set.item) {
-					mon.set.item = convertSpiritItem(run, this.configured(), toID(mon.set.item), `capture:${mon.id}`, this.random);
-				}
-				if (run.team.length < roguePartyLimit(run.spirit)) run.team.push(mon);
-				else if (run.box && run.box.length < 30) run.box.push(mon);
-				else (run.pendingCaptures ||= []).push(mon);
+			return;
+		}
+		if (memoryBattle) {
+			companionPickup(run, result.encounterId, this.random);
+		deliverCompanionPickup(run);
+			settleServiceBattle(run, result.won, retreated, !!captures.length);
+			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+			run.encounter++;
+			run.phase = 'settlement'; this.finishSettlement(account, run);
+			return;
+		}
+		companionPickup(run, result.encounterId, this.random);
+		deliverCompanionPickup(run);
+		const finishShop = () => {
+			if (!run.node!.shopChallenge || run.node!.shopChallenge.closed) return false;
+			const challenge = run.node!.shopChallenge;
+			challenge.closed = true;
+			if (result.won) for (const [item, count] of Object.entries(challenge.rewards)) {
+				const received = convertSpiritItem(run, this.configured(), item, `shopchallenge:${run.floor}:${item}`, this.random);
+				run.bag[received] = (run.bag[received] || 0) + count;
 			}
-			if (this.content?.blessings) syncBlessingParty(run);
-			syncGrowthParty(run);
-			syncExclusiveItems(run);
-			if (retreated) {
-				// Keep the saved enemy and story branch. Only the player's battle losses persist.
-				if (memoryBattle) delete run.node!.event!.memory;
-				run.recovery = 'retreat';
-				run.phase = 'ready';
-				run.attempt++;
-				run.notices = ['已逃跑，HP、PP、异常状态和道具消耗已保留；本场叠层恢复至开战前。可使用道具、调整队伍后再次挑战本场。'];
-				if (run.pendingCaptures?.length) {
-					run.captureResume = 'ready';
-					run.phase = 'settlement';
-					this.finishSettlement(account, run);
-				}
-				return;
+			run.lastReward = { floor: run.floor, name: result.won ? '零元购 · 挑战成功' : '零元购 · 商店关闭',
+				money: 0, items: result.won ? { ...challenge.rewards } : {}, points: 0 };
+			run.node!.reward = { money: 0, items: {} };
+			run.captureResume = 'shopclosed';
+			run.phase = 'settlement';
+			const emergencyRecovery = run.emergencyRecovery;
+			this.checkFailure(run);
+			if (run.failure) return true;
+			this.finishSettlement(account, run);
+			// Closing the shop can enter the next floor; keep the defeat receipt for the battle popup.
+			if (emergencyRecovery) run.emergencyRecovery = emergencyRecovery;
+			return true;
+		};
+		if (!result.won) {
+			run.recovery = 'defeat';
+			if (run.node?.event?.rematch) {
+				settleRematch(account, run, false); run.phase = 'settlement';
+				this.finishSettlement(account, run); return;
 			}
-			if (memoryBattle) {
-				companionPickup(run, result.encounterId, this.random);
-			deliverCompanionPickup(run);
-				settleServiceBattle(run, result.won, retreated, !!captures.length);
-				for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
-				run.encounter++;
+			const companion = opposingCompanion(run, run.node!.encounters[run.encounter]?.trainer);
+			if (companion && !run.node?.event?.police) {
+				deferCompanionChallenge(run, companion); run.phase = 'settlement';
+				this.finishSettlement(account, run); return;
+			}
+			if (run.node!.shopChallenge) {
+				this.autoEmergency(run);
+				if (finishShop()) return;
+			}
+			if (run.node!.event) {
+				settleEventBattle(run, this.configured(), this.random, false, retreated, account);
+				this.autoEmergency(run);
 				run.phase = 'settlement'; this.finishSettlement(account, run);
 				return;
 			}
-			companionPickup(run, result.encounterId, this.random);
-			deliverCompanionPickup(run);
-			const finishShop = () => {
-				if (!run.node!.shopChallenge || run.node!.shopChallenge.closed) return false;
-				const challenge = run.node!.shopChallenge;
-				challenge.closed = true;
-				if (result.won) for (const [item, count] of Object.entries(challenge.rewards)) {
-					const received = convertSpiritItem(run, this.configured(), item, `shopchallenge:${run.floor}:${item}`, this.random);
-					run.bag[received] = (run.bag[received] || 0) + count;
-				}
-				run.lastReward = { floor: run.floor, name: result.won ? '零元购 · 挑战成功' : '零元购 · 商店关闭',
-					money: 0, items: result.won ? { ...challenge.rewards } : {}, points: 0 };
-				run.node!.reward = { money: 0, items: {} };
-				run.captureResume = 'shopclosed';
+			run.recovery = 'defeat';
+			const encounterLoss = run.node!.kind === 'trainer' ? Math.min(run.money, 500 + run.floor * 20) : 0;
+			if (encounterLoss) { run.money -= encounterLoss; recordNegativeBlessingEvent(run, 'outcome'); }
+			run.phase = run.node!.noHealing && !run.team.some(mon => mon.hp > 0) ? 'failed' : 'ready';
+			if (run.pendingCaptures?.length) {
+				run.captureResume = run.phase;
 				run.phase = 'settlement';
-				const emergencyRecovery = run.emergencyRecovery;
 				this.finishSettlement(account, run);
-				// Closing the shop can enter the next floor; keep the defeat receipt for the battle popup.
-				if (emergencyRecovery) run.emergencyRecovery = emergencyRecovery;
-				return true;
-			};
-			if (!result.won) {
-				if (run.node!.shopChallenge) {
-					this.autoEmergency(run);
-					if (finishShop()) return;
-				}
-				if (run.node!.event) {
-					settleEventBattle(run, this.configured(), this.random, false, retreated, account);
-					this.autoEmergency(run);
-					run.phase = 'settlement'; this.finishSettlement(account, run);
-					return;
-				}
-				run.recovery = 'defeat';
-				const encounterLoss = run.node!.kind === 'trainer' ? Math.min(run.money, 500 + run.floor * 20) : 0;
-				if (encounterLoss) { run.money -= encounterLoss; recordNegativeBlessingEvent(run, 'outcome'); }
-				run.phase = run.node!.noHealing && !run.team.some(mon => mon.hp > 0) ? 'failed' : 'ready';
-				if (run.pendingCaptures?.length) {
-					run.captureResume = run.phase;
-					run.phase = 'settlement';
-					this.finishSettlement(account, run);
-				}
-				run.attempt++;
-				run.notices = ['本场战斗未通过，队伍当前状态已保存。'];
-				if (encounterLoss) run.notices.push(`这次遭遇损失了 ${encounterLoss} 金币。`);
-				this.autoEmergency(run);
-				return;
 			}
-			delete run.recovery;
-			const baseLoot = run.node!.wildLoot?.[run.encounter];
-			const loot = baseLoot && blessingLoot(run, baseLoot, this.random, (result.defeated || []).filter(m => Dex.mod('gen9fantasy').species.get(m.species).types.includes('Rock')).length / Math.max(1, result.defeated?.length || 0));
-			if (loot) {
-				const before = { money: run.money, bag: { ...run.bag } };
-				for (const [id, count] of Object.entries(loot)) run.bag[id] = (run.bag[id] || 0) + count;
-				boostCompanionEventRewards(run, before);
-				run.lastReward = { floor: run.floor, encounter: run.encounter + 1, name: run.node!.name,
-					money: 0, items: Object.fromEntries(Object.keys(loot).map(id => [id, run.bag[id] - (before.bag[id] || 0)])), points: 0 };
+			run.attempt++;
+			run.notices = ['本场战斗未通过，队伍当前状态已保存。'];
+			if (encounterLoss) run.notices.push(`这次遭遇损失了 ${encounterLoss} 金币。`);
+			this.autoEmergency(run);
+			return;
+		}
+		delete run.recovery;
+		const baseLoot = run.node!.wildLoot?.[run.encounter];
+		const loot = baseLoot && blessingLoot(run, baseLoot, this.random, (result.defeated || []).filter(m => Dex.mod('gen9fantasy').species.get(m.species).types.includes('Rock')).length / Math.max(1, result.defeated?.length || 0));
+		if (loot) {
+			const before = { money: run.money, bag: { ...run.bag } };
+			for (const [id, count] of Object.entries(loot)) run.bag[id] = (run.bag[id] || 0) + count;
+			boostCompanionEventRewards(run, before);
+			run.lastReward = { floor: run.floor, encounter: run.encounter + 1, name: run.node!.name,
+				money: 0, items: Object.fromEntries(Object.keys(loot).map(id => [id, run.bag[id] - (before.bag[id] || 0)])), points: 0 };
+		}
+		if (this.configured().progression) {
+			if (companionOwned(run.blessings, 'iris') && result.defeated?.some(defeated => run.team.some(mon =>
+				defeated.eligible.includes(mon.id) && mon.id !== (defeated.dragonKing || run.blessings?.dragonKing?.member) &&
+				permanentMemberTypes(mon).includes('Dragon')))) {
+				run.notices.push('【同行训练家 - 爱丽丝】龙王以外的龙系伙伴战斗经验提升 30%。');
 			}
-			if (this.configured().progression) {
-				if (companionOwned(run.blessings, 'iris') && result.defeated?.some(defeated => run.team.some(mon =>
-					defeated.eligible.includes(mon.id) && mon.id !== (defeated.dragonKing || run.blessings?.dragonKing?.member) &&
-					permanentMemberTypes(mon).includes('Dragon')))) {
-					run.notices.push('【同行训练家 - 爱丽丝】龙王以外的龙系伙伴战斗经验提升 30%。');
-				}
-				if (companionOwned(run.blessings, 'lana') && result.defeated?.some(defeated =>
-					Dex.mod('gen9fantasy').species.get(defeated.species).types.includes('Water'))) {
-					run.notices.push('【同行训练家 - 水莲】从水系对手身上获得的全队战斗经验提升 20%。');
-				}
-				for (const defeated of result.defeated || []) {
-					for (const mon of run.team) {
-						if (!defeated.eligible.includes(mon.id)) continue;
-						if (!defeated.captured) {
-							const yieldStats = { ...rogueEffortYield(defeated.species) };
-							if (companionOwned(run.blessings, 'bea') && permanentMemberTypes(mon).includes('Fighting')) {
-								for (const stat of ROGUE_STATS) yieldStats[stat] *= 2;
-								(run.notices ||= []).push('【同行训练家 - 彩豆】格斗系伙伴的努力值翻倍，战斗经验提升 30%。');
-							}
-							gainEffort(run, mon, yieldStats);
+			if (companionOwned(run.blessings, 'lana') && result.defeated?.some(defeated =>
+				Dex.mod('gen9fantasy').species.get(defeated.species).types.includes('Water'))) {
+				run.notices.push('【同行训练家 - 水莲】从水系对手身上获得的全队战斗经验提升 20%。');
+			}
+			for (const defeated of result.defeated || []) {
+				for (const mon of run.team) {
+					if (!defeated.eligible.includes(mon.id)) continue;
+					if (!defeated.captured) {
+						const yieldStats = { ...rogueEffortYield(defeated.species) };
+						if (companionOwned(run.blessings, 'bea') && permanentMemberTypes(mon).includes('Fighting')) {
+							for (const stat of ROGUE_STATS) yieldStats[stat] *= 2;
+							(run.notices ||= []).push('【同行训练家 - 彩豆】格斗系伙伴的努力值翻倍，战斗经验提升 30%。');
 						}
-						gainExperience(run, mon, Math.floor(towerExperience(rogueSpeciesData(defeated.species).baseExperience,
-							defeated.level, mon.set.level, defeated.participants.includes(mon.id), run.floor,
-							run.node!.kind === 'wild' && !run.node!.event && !defeated.captured,
-							run.node!.kind === 'wild' && !run.node!.event && !!defeated.captured) *
-							(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing) *
-							(1 + (run.growth?.experience || 0) / 10000) * companionExperience(run, mon, defeated)));
+						gainEffort(run, mon, yieldStats);
 					}
+					gainExperience(run, mon, Math.floor(towerExperience(rogueSpeciesData(defeated.species).baseExperience,
+						defeated.level, mon.set.level, defeated.participants.includes(mon.id), run.floor,
+						run.node!.kind === 'wild' && !run.node!.event && !defeated.captured,
+						run.node!.kind === 'wild' && !run.node!.event && !!defeated.captured) *
+						(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing) *
+						(1 + (run.growth?.experience || 0) / 10000) * companionExperience(run, mon, defeated)));
 				}
 			}
-			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+		}
+		for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
 
-			if (finishShop()) return;
-			if (run.node!.event) settleEventBattle(run, this.configured(), this.random, true, false, account);
-			run.encounter++;
-			run.phase = 'settlement';
-			this.finishSettlement(account, run);
+		if (finishShop()) return;
+		if (run.node!.event?.rematch) settleRematch(account, run, true);
+		else if (run.node!.event) settleEventBattle(run, this.configured(), this.random, true, false, account);
+		else {
+			const pages = bossVictoryPages(run);
+			if (pages.length) {
+				healNarrativeParty(run);
+				if (this.content?.story) queueNarrative(run, pages, 'settlement');
+			}
+		}
+		run.encounter++;
+		run.phase = 'settlement';
+		this.finishSettlement(account, run);
+	}
+	private presentNarrative(run: RogueRun) {
+		if (!run.dialogue || run.story || run.phase === 'battle' || run.phase === 'defeated') return;
+		run.story = { stage: 'interlude', page: 0, skip: false, canSkip: true }; run.phase = 'story';
+	}
+	/** Only close a genuinely stranded run. Dialogues and unresolved rewards retain their recovery opportunities. */
+	private checkFailure(run: RogueRun) {
+		if (['battle', 'intro', 'story', 'complete', 'defeated', 'postgame', 'blessing'].includes(run.phase) ||
+			run.postgame || !run.team.length || run.team.some(mon => mon.hp > 0) || run.dialogue) return;
+		if ([...(run.box || []), ...(run.pendingCaptures || []), ...(run.pendingCapture ? [run.pendingCapture] : [])].some(mon => mon.hp > 0)) return;
+		// A scripted continuous challenge still has its existing checkpoint retry.
+		if (run.node?.noHealing && run.phase === 'failed') return;
+		if (!healingLocked(run) && this.configured().items.some(item => item.kind === 'revive' && run.bag[item.id] > 0)) return;
+		if (!healingLocked(run) && run.money >= emergencyCost(run.floor)) return;
+		if (run.phase === 'choose' || run.phase === 'reward' || run.pendingMoves?.length || run.pendingCapture) return;
+		if (run.node?.event?.stage === 'choice' || run.node?.event?.stage === 'fragments') return;
+		if (run.phase === 'rest') {
+			// Accessible shop sales can finance a revive or center treatment; do not discard that option.
+			const saleValue = this.configured().items.reduce((sum, item) => sum + (run.bag[item.id] || 0) * (item.sellPrice || 0), 0);
+			const availableMoney = run.money + saleValue;
+			const care = centerCare(run);
+			if (run.node?.kind === 'rest' && care.revives && availableMoney >= care.cost) return;
+			if (shopStock(this.configured(), run).some(item => item.kind === 'revive' && item.remaining !== 0 && availableMoney >= item.price)) return;
+		}
+		run.failure = { key: randomUUID(), floor: run.floor, title: '爬塔已无法推进',
+			reason: '全队伙伴都已倒下，没有可用的复活道具或其他恢复途径，金币也不足以支付急救费用。本局爬塔失败；已获得的解锁与局外成长点会保留。' };
+		run.phase = 'defeated'; delete run.battle;
 	}
 	/** Future event handlers call these methods; the public command API cannot grant unlocks. */
 	adjustEventFriendship(userid: string, member: string, amount: number) {

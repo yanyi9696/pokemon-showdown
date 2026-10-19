@@ -135,7 +135,7 @@ describe('Fantasy Rogue encounter recovery', () => {
 	});
 	it('allows paid item preparation after escape from a continuous challenge and retains its defeat checkpoint rule', () => {
 		store.change(user, account => {
-			account.run.node.noHealing = true; account.run.bag.revive = 1; account.run.team[0].hp = 0;
+			account.run.node.noHealing = true; account.run.bag.revive = 2; account.run.team[0].hp = 0;
 		});
 		assert(!healingLocked(saved().run));
 		cmd('use', { value: 'revive', member: saved().run.team[0].id });
@@ -179,12 +179,12 @@ describe('Fantasy Rogue encounter recovery', () => {
 		battle = new Battle({ formatid: 'gen9customgame', p1: { name: 'One', team: [set()] }, p2: { name: 'Two', team: [set()] } });
 		assert.equal(battle.p1.pokemon[0].moveSlots[0].maxpp, 56);
 	});
-	it('migrates a legacy failed ordinary floor to fainted recovery without resetting its encounter or rewards', () => {
+	it('settles an unrecoverable legacy wipe without resetting its encounter, HP or rewards', () => {
 		store.change(user, account => {
 			account.run.phase = 'failed'; account.run.encounter = 2; account.run.money = 789;
 		});
 		engine.migrate(user);
-		assert.equal(saved().run.phase, 'ready'); assert.equal(saved().run.recovery, 'defeat');
+		assert.equal(saved().run.phase, 'defeated'); assert.equal(saved().run.recovery, 'defeat');
 		assert.equal(saved().run.encounter, 2); assert.equal(saved().run.money, 789); assert.equal(saved().run.team[0].hp, 0);
 	});
 });

@@ -1,9 +1,13 @@
 import { EVENT_NAMES, EVENT_TEXT as text, eventOpening, type EventID } from './event-text';
 import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
 import { HONEYMOON_REGIONS } from './honeymoon';
+import { POLICE_REGIONS } from './police-data';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	companionrematch: '同行训练家挑战失利后，至少再前进 5 层才可能收到切磋邀请。可接受或暂缓；胜利补发原挑战奖励，失败则恢复全队。每份奖励只能补领一次。',
+	policeassist: '在遭遇区域协助君莎，从随机三个地区中选一处，连续击败两名闹事队员。若对应领头人正在同行，会直接出面制止，并取消后续寻仇。',
+	policerevenge: '处理队员事件后，至少间隔 8 层，才可能在遭遇区域遇到其领头人。对方全队为精英强度；获胜获得认可与奖励。',
 	honeymoon: '第 80 层起，为一对新婚夫妇推荐旅行地区，收下一份小谢礼，永久解锁后续归程事件。',
 	honeymoonreturn: '完成旅行建议后，至少再前进 8 层才可能重逢。归来的夫妇带来地区特产；若展开友谊对战，胜负均为全队恢复状态。',
 	skiing: '左右换道躲避障碍，在 30 秒雪道挑战中坚持越久，收获越好。',
@@ -40,7 +44,26 @@ export function eventReplay(id: EventID) {
 	page('win', [text.fightWin]);
 	page('roomwin', [text.roomWin, '获得工具箱 ×1（四件选一件）和幻想碎片，碎片数量随楼层增加。']);
 	page('lose', [text.fightLose, text.fightLossRule]);
-	if (id === 'honeymoon' || id === 'honeymoonreturn') {
+	if (id === 'companionrematch') {
+		page('start', eventOpening(id), [['接受切磋', 'spar'], ['还没准备好', 'later']]);
+		page('spar', ['沿用原挑战队伍与等级，再次检验彼此的进步。'], [['获胜', 'paid'], ['落败', 'healed']], true);
+		page('paid', ['全队恢复，补领原挑战奖励；同一份奖励不会重复发放。']);
+		page('healed', ['伙伴再次为全队恢复健康，期待下次挑战。之后仍可能收到邀请。']);
+		page('later', ['同伴理解你的决定，约好之后再试。']);
+	} else if (id === 'policeassist') {
+		page('start', eventOpening(id), Object.entries(POLICE_REGIONS).map(([key, region]) => [`前往${region.name}`, key]));
+		for (const [key, region] of Object.entries(POLICE_REGIONS)) {
+			page(key, [`道路旁的${region.group}挡住了去路。`], [['通常发展', 'grunts'], ['领头人正在同行', 'intervene']]);
+		}
+		page('grunts', ['接连战胜两名队员后，他们跑去找领头人。'], [['领取君莎的谢礼', 'thanks']], true);
+		page('intervene', ['同行的领头人站到你这一侧，训斥队员并向你致歉。此次不会再有寻仇。'], [['收下伙伴的歉礼与君莎的谢礼', 'thanks']]);
+		page('thanks', ['君莎感谢你的协助，赠送金币、经验糖果与回复物资。']);
+	} else if (id === 'policerevenge') {
+		page('start', eventOpening(id), [['迎接领头人的挑战', 'leader']]);
+		page('leader', ['对手使用原作阵容，全队为当前楼层的精英强度。'], [['获胜', 'recognition'], ['落败', 'retry']], true);
+		page('recognition', ['领头人认可了你与伙伴的实力，将奖励交给你。这段风波就此结束。']);
+		page('retry', ['保留对战损失，整理队伍后仍需完成当前挑战。']);
+	} else if (id === 'honeymoon' || id === 'honeymoonreturn') {
 		page('start', eventOpening(id), id === 'honeymoon' ? Object.entries(HONEYMOON_REGIONS).map(([key, region]) =>
 			[`推荐${region.name}地区`, `recommend:${key}`]) : [['听听旅行故事', 'return']]);
 		for (const [key, region] of Object.entries(HONEYMOON_REGIONS)) {

@@ -1,6 +1,7 @@
 /** Shared narrative copy for live events and their read-only codex replays. */
 import { SERVICE_TEXT } from './event-service-text';
 export const EVENT_NAMES = {
+	companionrematch: '再来一场，好吗？', policeassist: '君莎的治安协助', policerevenge: '未散的风波',
 	honeymoon: '度蜜月的提案', honeymoonreturn: '度蜜月的提案·归程',
 	skiing: '雪山速滑', stones: '赌石', feathers: '羽毛爱好者', mushroomcollector: '蘑菇收藏家',
 	mysteryball: '谜之宝可梦球', forest: '斗蛐蛐！', mushrooms: '蘑菇走私犯', room: '不战斗就无法出去的房间',
@@ -11,6 +12,9 @@ export const EVENT_NAMES = {
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
 	return {
+		companionrematch: ['同行伙伴提起了上一次切磋，邀请你检验这一路的进步。'],
+		policeassist: ['君莎正安抚受惊的旅人。几处道路有人闹事，她诚恳地请你帮忙，并把三个地区标在地图上。'],
+		policerevenge: ['前些日子那些队员口中的领头人，终于循着消息找到了你。'],
 		honeymoon: ['路旁，一对年轻夫妇正对着摊开的地图小声商量。行李上挂着同款的宝可梦挂饰。',
 			'「我们想去度蜜月，却怎么也选不出目的地。」他们看向风尘仆仆的你，「你走过这么多地方，有没有想推荐给我们的地区？」'],
 		honeymoonreturn: ['熟悉的挂饰在行李边晃动。那对夫妇从你推荐的地区回来了。'],

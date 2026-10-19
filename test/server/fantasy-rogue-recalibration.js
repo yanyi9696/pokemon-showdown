@@ -111,6 +111,8 @@ describe('Fantasy Rogue recalibrated preparation and blessing rules', function (
 			cmd('storyskip', {value: storyView(account(), true, false).key}); cmd('battle');
 			const current = account().run;
 			engine.settle(user, current.battle.token, {encounterId: current.battle.encounterId, won: true, team: current.team, bag: current.bag});
+			assert.equal(account().run.story.stage, 'interlude');
+			cmd('storyskip', {value: storyView(account(), true, false).key});
 			assert.equal(account().run.story.stage, 'leaguebriefing');
 			const pages = leaguePages(account().run); assert.equal(pages.length, 6); assert(pages[0].text.includes('兼着四天王'));
 			assert.equal(new Set(Object.values(account().run.trainerHistory.elitePlan)).size, 4);

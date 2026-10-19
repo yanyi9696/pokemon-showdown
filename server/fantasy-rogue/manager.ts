@@ -147,6 +147,7 @@ export class RogueManager {
 				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box,
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
 				postgame: run.postgame?.stage,
+				failure: run.failure,
 				event: eventView(run), eventBuff: run.eventBuff,
                 mentorOffer: run.mentorOffer ? {floor: run.mentorOffer, cards: Object.keys(MENTOR_CARDS).map(id => ({id, ...mentorCardAtFloor(id as MentorCard, run.mentorOffer!)}))} : undefined,
                 mentorCard: run.mentorCard ? {...run.mentorCard, ...mentorCardAtFloor(run.mentorCard.kind, run.mentorCard.floor)} : undefined,
@@ -166,7 +167,7 @@ export class RogueManager {
 					wildPack: run.node.encounters[run.encounter]?.wildPack ? run.node.encounters[run.encounter].team.length : undefined,
 					environment: run.node.encounters[run.encounter]?.environment,
 					wildLoot: run.node.wildLoot, encounterLoot: run.node.wildLoot?.[run.encounter],
-					reward: { ...run.node.reward, points: run.postgame?.stage === 'battle' ? 20 : run.node.kind === 'boss' ? 1 : 0 },
+					reward: { ...run.node.reward, points: run.postgame?.stage === 'battle' ? 20 : run.node.kind === 'boss' && !run.node.companionLoss ? 1 : 0 },
 				},
 				team: run.team.map(saved => {
 					const mon = structuredClone(saved);
@@ -254,11 +255,13 @@ export class RogueManager {
 							} else {
 								const settled = this.engine.store.get(userid).run!;
 								const defeat = {
+									...(settled.failure ? { failedRun: true } : {}),
+									...(settled.node?.companionLoss || run.node?.event?.rematch ? { companionRescue: true } : {}),
 									...(settled.postgame ? { postgame: true } : {}),
 									...(settled.emergencyRecovery ? { emergencyRecovery: settled.emergencyRecovery } : {}),
 									floor: run.floor, encounter: run.encounter + 1, encounters: run.node!.encounters.length,
 									...(run.node!.shopChallenge ? { shopClosed: true } : {}),
-									...(run.node!.event?.id === 'exclusiveclue' ? { eventContinues: true } :
+									...(run.node!.event?.police ? { eventRetry: true } : run.node!.event?.id === 'exclusiveclue' ? { eventContinues: true } :
 										run.node!.event ? { eventClosed: true } : {}),
 									...(run.node!.event?.id === 'travel' ? { memoryRestored: true } : {}),
 									retryFloor: settled.phase === 'failed', noHealing: !!settled.node?.noHealing,

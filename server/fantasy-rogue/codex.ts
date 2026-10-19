@@ -74,7 +74,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 	})).sort(compareBlessingNames) };
 	const events = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => !['auction', 'mushroomcollector'].includes(id)).map(id => {
 		const unlocked = preview || discovered.events.includes(id);
-		return { id, category: 'event', name: EVENT_NAMES[id], unlocked, text: unlocked ? EVENT_OVERVIEWS[id] : '？？？',
+		return { id, category: ['policeassist', 'policerevenge', 'exclusivechallenge'].includes(id) ? 'encounter' : 'event', name: EVENT_NAMES[id], unlocked, text: unlocked ? EVENT_OVERVIEWS[id] : '？？？',
 			...(unlocked ? { replay: eventReplay(id) } : {}) };
 	});
 	const visits = [

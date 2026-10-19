@@ -94,6 +94,7 @@ describe('Fantasy Rogue earned party editor', () => {
 	});
 	it('permutes stable party identities, blocks battle edits and retains the party after a wipe', () => {
 		store.change(user, account => {
+			account.run.bag.revive = 1;
 			account.run.team.push(createRoguePokemon(set('Magikarp', 'Swift Swim'), stats(0), 'run:1:catch:0'));
 		});
 		const order = saved().run.team.map(mon => mon.id).reverse();

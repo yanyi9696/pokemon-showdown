@@ -50,6 +50,7 @@ describe('Fantasy Rogue story and legacy cards', function () {
 		const result = { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag };
 		engine.settle(user, run.battle.token, result);
 		engine.settle(user, run.battle.token, result);
+		assert.equal(view().stage, 'interlude'); skip();
 		if (account().run.phase === 'postgame') { skip(); cmd('godchallenge', { value: 'decline' }); }
 	}
 	it('requires the first prologue, persists every page, and makes repeated requests idempotent', () => {
