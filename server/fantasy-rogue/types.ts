@@ -49,7 +49,7 @@ export interface RogueNode {
 	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
 	restCandyPurchases?: Record<string, number>;
 	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction' | 'balls' | 'crowns' | 'mushroom' | 'buyback', stock: (RogueItem & { remaining: number })[], purchases: number,
-		services?: Partial<import('./growth').RogueGrowth> };
+		services?: Partial<import('./growth').RogueGrowth>, };
 	rewardScene?: import('./reward-scenes').RewardScene;
 	event?: import('./events').RogueEvent;
 	blessingPrepared?: boolean;
@@ -229,7 +229,7 @@ export interface RogueAccount {
 	/** Once discovered, the combination's description remains visible across adventures. */
 	tonicSecret?: boolean;
 	/** Permanent codex collection, independent of the current and previous adventures. */
-	discoveries?: { blessings: string[], events: string[] };
+	discoveries?: { blessings: string[], events: string[], trainers?: string[] };
 	previousBlessings?: string[];
 	adventures?: number;
 	opening?: { page: number, skip: boolean };

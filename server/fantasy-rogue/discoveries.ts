@@ -17,10 +17,31 @@ export function rogueDiscoveries(account: RogueAccount) {
 		...(account.run?.node?.kind === 'trainer' ? ['encounter:trainer'] : []),
 		...(account.run?.node?.rocket ? ['encounter:rocket'] : []),
 	]);
-	return { blessings: [...blessings].sort(), events: [...events].sort() };
+	const run = account.run;
+	const trainers = new Set([
+		...(account.discoveries?.trainers || []),
+		...(run?.blessings?.companions || []).map(c => c.id),
+		...cards.flatMap(card => (card.snapshot.blessingEffects?.companions || []).map(c => c.id)),
+		...(run?.seenBossDialogues || []).map(key => key.split(':').pop()!).filter(Boolean),
+	]);
+	// Only the opponent the player has reached counts. Route candidates, the elder's
+	// previews, future dialogue pages and unchosen companion options are not meetings.
+	if (run && (['ready', 'battle', 'settlement', 'failed', 'defeated'].includes(run.phase) ||
+		run.phase === 'story' && ['bossintro', 'gymgift', 'leaguebriefing'].includes(run.story?.stage || ''))) {
+		const trainer = run.node?.encounters[run.encounter]?.trainer;
+		if (trainer) trainers.add(trainer.id);
+		if (run.floor === 200 && run.node?.kind === 'boss') trainers.add('mewtwo');
+	}
+	if (run?.phase === 'story' && run.story?.stage === 'interlude') {
+		const portrait = run.dialogue?.pages[run.story.page]?.portrait;
+		if (portrait) trainers.add(portrait);
+	}
+	return { blessings: [...blessings].sort(), events: [...events].sort(), trainers: [...trainers].sort() };
 }
 
 export function recordRogueDiscoveries(account: RogueAccount) {
 	const discovered = rogueDiscoveries(account);
-	if (discovered.blessings.length || discovered.events.length || account.discoveries) account.discoveries = discovered;
+	if (discovered.blessings.length || discovered.events.length || discovered.trainers.length || account.discoveries) {
+		account.discoveries = discovered;
+	}
 }

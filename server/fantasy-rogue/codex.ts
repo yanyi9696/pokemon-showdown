@@ -64,7 +64,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 		guideCache ||= buildFantasyGuide();
 		return { section, guide: guideCache };
 	}
-	const discovered = account ? rogueDiscoveries(account) : { blessings: [], events: [] };
+	const discovered = account ? rogueDiscoveries(account) : { blessings: [], events: [], trainers: [] };
 	if (section === 'blessings') return { section, preview, entries: ROGUE_BLESSINGS.flatMap(def => blessingCodexFloors(def).map(floor => {
 		const unlocked = preview || discovered.blessings.includes(def.id);
 		const display = blessingDisplay(def, floor, account?.tonicSecret);
@@ -80,7 +80,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 	const visits = [
 		...Object.entries(REWARD_SCENES).map(([id, scene]) => ({ id: `reward:${id}`, category: 'reward', name: scene.name,
 			text: id === 'chest' ? '留给旅人的补给箱，以回复药与活力碎片为主。还可按需要挑选经验糖果、路费或本局永久训练；物资随楼层提升。' :
-				'以回复药与活力碎片为主的旅途补给。展示符合对方偏好的宝可梦或招式，可以提高谢礼品质。' })),
+			'以回复药与活力碎片为主的旅途补给。展示符合对方偏好的宝可梦或招式，可以提高谢礼品质。' })),
 		...Object.entries(TRADE_NAMES).map(([id, name]) => ({ id: `trade:${id}`, category: 'trade', name,
 			text: id === 'auction' ? '31 层起有机会遇到。每场上架 3～5 件珍品，观察竞拍者的预算与脾气，交替出价或运用话术，最高出价者在落槌时付款。' :
 			id === 'buyback' ? '第 80 层起有机会遇到。按统一基础标价回收背包中的物品，战利品按自身价值；可按数量出售，也可一次回收全部。已装备物品需先卸下。' :
@@ -88,7 +88,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			id === 'balls' ? '全程可能出现，各类捕捉球九折出售，每种限购 15 个。' :
 			id === 'mushroom' ? '以普通商店 125% 的价格回收各类蘑菇。展示蘑菇伙伴，还能获得小蘑菇与一份观察谢礼。' :
 			id === 'growth' ? '51 层起有机会遇到。花费金币，让全队获得本局永久的双攻、双防或战斗经验加成。每店限购；不占携带道具栏。' :
-				`欢迎来到${name}！可以购买本店商品，也可以直接离开。商品与库存以当次交易为准。` })),
+			`欢迎来到${name}！可以购买本店商品，也可以直接离开。商品与库存以当次交易为准。` })),
 		{ id: 'encounter:trainer', category: 'encounter', name: '旅行训练家', text: '路上的训练家向你发起挑战。战胜对手，可以获得金币奖励。' },
 		{ id: 'encounter:rocket', category: 'encounter', name: '火箭队拦路', text: '火箭队挡在店门口。战胜对手后，才能继续使用商店。' },
 	].map(entry => {
@@ -98,6 +98,9 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			pages: { start: { text: [entry.text], options: [], battleSkipped: entry.category === 'encounter' } },
 		} } : {}) };
 	});
-	const companions = trainerCodex();
+	const companions = trainerCodex().map(entry => {
+		const unlocked = preview || discovered.trainers.includes(entry.portrait);
+		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？' };
+	});
 	return { section, preview, entries: [...events, ...visits, ...companions].sort(compareBlessingNames) };
 }

@@ -27,7 +27,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			assert(preview.preview);
 			assert(preview.entries.every(entry => entry.unlocked && entry.text !== '？？？'));
 			if (section === 'events') assert(preview.entries.filter(e => !['companion', 'trainer'].includes(e.category)).every(entry => entry.replay));
-			assert(rogueCodex(a, section).entries.filter(e => !['companion', 'trainer'].includes(e.category)).every(entry => !entry.unlocked));
+			assert(rogueCodex(a, section).entries.every(entry => !entry.unlocked));
 		}
 		assert.equal(JSON.stringify(a), before);
 	});
@@ -41,7 +41,12 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const id of ['exclusivechallenge', 'policeassist', 'policerevenge']) assert.equal(events.find(e => e.id === id).category, 'encounter');
 		assert.equal(events.filter(e => e.category === 'trade').length, 9);
 		assert.equal(events.filter(e => e.category === 'reward').length, 5);
-		assert(events.filter(e => !['companion', 'trainer'].includes(e.category)).every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
+		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
+		const people = events.filter(e => ['companion', 'trainer'].includes(e.category));
+		assert.equal(people.length, 48);
+		for (const role of ['companion', 'gym', 'elitefour', 'champion', 'antagonist', 'other']) {
+			assert(people.some(e => e.roles.includes(role)), role);
+		}
 	});
 	it('records an actual selection once, never unlocks an offer, and keeps it after abandoning', () => {
 		store.change('codextest', a => {
@@ -73,8 +78,55 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 	it('backfills retained legacy evidence without inventing lost older history', () => {
 		const legacy = { revision: 1, previousBlessings: ['friendwater', 'unknown'], cards: [{ snapshot: { blessings: [{ id: 'medic' }] } }],
 			pendingClear: { snapshot: { blessings: [{ id: 'psychic' }] } }, run: { blessings: { owned: [{ id: 'money' }] }, eventHistory: [{ id: 'forest', floor: 21 }] } };
-		assert.deepEqual(rogueDiscoveries(legacy), { blessings: ['friend', 'medic', 'money', 'psychic'], events: ['forest'] });
+		assert.deepEqual(rogueDiscoveries(legacy), { blessings: ['friend', 'medic', 'money', 'psychic'], events: ['forest'], trainers: [] });
 		assert.equal(rogueCodex(legacy, 'events').entries.filter(e => !['companion', 'trainer'].includes(e.category) && e.unlocked).length, 1);
+	});
+	it('unlocks only the chosen companion and the opponent actually reached, keeping both across adventures', () => {
+		store.change('codextest', a => {
+			a.run.phase = 'choose';
+			a.run.blessings.owned.push({ id: 'companionband', family: 'companionband', floor: 1 });
+			a.run.bossPreviews = { 20: { encounters: [{ trainer: { id: 'brock' } }] } };
+			a.run.choices = [{ encounters: [{ trainer: { id: 'sabrina' } }] }];
+		});
+		assert.deepEqual(rogueDiscoveries(account()).trainers, []);
+		cmd('companion', { member: 'marnie', value: 'chooseband' });
+		assert.deepEqual(account().discoveries.trainers, ['marnie']);
+		store.change('codextest', a => {
+			a.run.phase = 'ready'; a.run.encounter = 0;
+			a.run.node = { kind: 'boss', encounters: [{ trainer: { id: 'brock' } }, { trainer: { id: 'sabrina' } }] };
+		});
+		assert.deepEqual(account().discoveries.trainers, ['brock', 'marnie']);
+		cmd('abandon'); cmd('start', { starters: ['bulbasaur'] });
+		const people = rogueCodex(account(), 'events').entries.filter(e => e.portrait);
+		assert.deepEqual(people.filter(e => e.unlocked).map(e => e.portrait).sort(), ['brock', 'marnie']);
+		for (const id of ['roxie', 'sabrina']) assert.equal(people.find(e => e.portrait === id).text, '？？？');
+	});
+	it('records each displayed dialogue character without unlocking later speakers or future boss previews', () => {
+		store.change('codextest', a => {
+			a.run.phase = 'story'; a.run.story = { stage: 'restguide', page: 0 };
+			a.run.bossPreviews = { 20: { encounters: [{ trainer: { id: 'brock' } }] } };
+		});
+		assert.deepEqual(rogueDiscoveries(account()).trainers, []);
+		store.change('codextest', a => {
+			a.run.story = { stage: 'interlude', page: 0 };
+			a.run.dialogue = { key: 'meeting', resume: 'event', pages: [{ portrait: 'jenny' }, { portrait: 'clover' }] };
+		});
+		assert.deepEqual(account().discoveries.trainers, ['jenny']);
+		store.change('codextest', a => { a.run.story.page = 1; });
+		assert.deepEqual(account().discoveries.trainers, ['clover', 'jenny']);
+		store.change('codextest', a => { delete a.run; });
+		assert.deepEqual(account().discoveries.trainers, ['clover', 'jenny']);
+	});
+	it('backfills actual legacy trainer evidence without interpreting a blessing offer or floor as a meeting', () => {
+		const legacy = { cards: [{ snapshot: { blessings: [], blessingEffects: { companions: [{ id: 'iris' }] } } }],
+			run: { phase: 'choose', floor: 200, blessings: { owned: [{ id: 'companionstreamer' }] },
+				seenBossDialogues: ['20:boss20:0:gym:brock'], bossPreviews: { 200: { kind: 'boss' } } } };
+		assert.deepEqual(rogueDiscoveries(legacy).trainers, ['brock', 'iris']);
+		const before = JSON.stringify(legacy);
+		const full = rogueCodex(legacy, 'events', true);
+		assert(full.entries.filter(e => e.portrait).every(e => e.unlocked));
+		assert.equal(JSON.stringify(legacy), before);
+		assert(!rogueCodex(legacy, 'events').entries.find(e => e.portrait === 'mewtwo').unlocked);
 	});
 	it('does not record changes from rejected transactions or mutate during codex reading', () => {
 		const before = JSON.stringify(account());
