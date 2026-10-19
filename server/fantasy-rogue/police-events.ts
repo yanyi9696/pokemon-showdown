@@ -14,6 +14,10 @@ export interface PoliceProgress {
 	}>>;
 }
 export interface PoliceEvent { choices?: PoliceRegion[]; region?: PoliceRegion; revenge?: boolean }
+const GRUNT_AVATARS: Record<string, string> = {
+	rocket: 'rocketgrunt', magma: 'magmagrunt-rse', galactic: 'galacticgrunt', plasma: 'plasmagrunt-gen5bw',
+	flare: 'flaregrunt', skull: 'skullgrunt', yell: 'yellgrunt', teamstar: 'stargrunt-s',
+};
 const bossCompanion = (run: RogueRun, region: PoliceRegion): CompanionID | undefined => {
 	const id = POLICE_REGIONS[region].boss as CompanionID;
 	return COMPANIONS[id] && companionOwned(run.blessings, id) ? id : undefined;
@@ -28,7 +32,7 @@ function encounter(
 	const team = (revenge ? data.team : data.grunts[index])
 		.map(species => makeEncounterSet(species, level, randomEncounterIVs(random, revenge)));
 	return { key: randomUUID(), name, team, style: 'balanced', catchable: false,
-		trainer: { id, name, avatar: id, role: 'rocket', tera: false } };
+		trainer: { id, name, avatar: GRUNT_AVATARS[id] || id, role: 'rocket', tera: false } };
 }
 function markEvent(run: RogueRun, revenge: boolean, police: PoliceEvent) {
 	const node = run.node!, id = revenge ? 'policerevenge' : 'policeassist';

@@ -131,6 +131,7 @@ describe('Fantasy Rogue narrative settlements and terminal recovery', function (
 	it('offers three distinct mandatory regions, runs two fights and delays the independent leader encounter', () => {
 		police(); assert.equal(run().phase, 'story'); skip();
 		assert.deepEqual(run().node.encounters.map(e => e.team.map(s => s.species)), POLICE_REGIONS.kanto.grunts);
+		assert(run().node.encounters.every(e => e.trainer.avatar === 'rocketgrunt'));
 		assert(run().node.encounters.every(e => !e.catchable)); assert(!eventView(run()).options.length);
 		cmd('battle'); finish(true); assert.equal(run().encounter, 1);
 		skip(); assert.equal(run().phase, 'ready');
