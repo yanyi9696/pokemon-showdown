@@ -1,3 +1,5 @@
+import { rivalCompanionView } from './rivals';
+import { eggView } from './eggs';
 import { centerCare } from './economy';
 import { rogueAccess } from './access';
 import { companionView } from './companions';
@@ -12,7 +14,7 @@ import { FS, Utils } from '../../lib';
 import { Dex, toID } from '../../sim/dex';
 import { rogueOpponentAvatar } from './trainer-bosses';
 import { Teams } from '../../sim/teams';
-import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
+import { ROGUE_FORMAT, ROGUE_COOP_FORMAT } from '../../sim/fantasy-rogue';
 import { FantasyRogueContent } from '../../config/fantasy-rogue';
 import { getAIManager, type AIChallengeManager } from '../fantasy-ai/manager';
 import { RogueEngine, rogueSlotCost, rogueStatCost } from './engine';
@@ -23,7 +25,7 @@ import type { RogueCommand } from './types';
 import { experienceProgress, evolutionOptions, ensureMemberMemory, rebuildMember } from './progression';
 import { partyEvolutions } from './party-evolution';
 import { friendship, rogueTime, ROGUE_TIME_NAMES } from './friendship';
-import { healingLocked, inventoryItem } from './team';
+import { healingLocked, inventoryItem, abilityItemTarget } from './team';
 import { starterMoves, starterTraits } from './starter-traits';
 import { spiritItems } from './spirits';
 import { shopStock, machineMoves } from './trading';
@@ -31,7 +33,7 @@ import { recycleOffers } from './buyback';
 import { activeRogueSpirits, rogueSpirit, roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 import { storyView, startCard } from './story';
 import { RogueDuels, type DuelCommand } from './duels';
-import { rogueRulesVersion } from './legacy';
+import { rogueRulesVersion, clearCardView } from './legacy';
 import { blessingView, blessingItems, blessingMemberTypes, fantasyForm, equipmentCategory } from './blessings';
 import { assignedExtraAbilities, canGrantExtraAbility } from '../../sim/rogue-blessing-permanent';
 
@@ -67,9 +69,9 @@ export class RogueManager {
 		if (!rogueAccess(user)) return { userid: user.id, enabled: false, cards: [], own: [] };
 		const account = this.state(user).account;
 		const own = account ? this.engine.store.get(user.id) : undefined;
-		return { userid: user.id, account, own: own?.cards || [], pending: own?.pendingClear,
+		return { userid: user.id, account, own: own?.cards?.map(clearCardView) || [], pending: own?.pendingClear && clearCardView(own.pendingClear),
 			rulesVersion: rogueRulesVersion(), offset,
-			cards: this.engine.store.gallery(offset).map(card => ({ ...card, online: !!Users.get(card.owner)?.connected })),
+			cards: this.engine.store.gallery(offset).map(card => ({ ...clearCardView(card), online: !!Users.get(card.owner)?.connected })),
 			invitations: account ? this.duels.list(user.id) : [] };
 	}
 	codex(user: User, section: CodexSection) {
@@ -115,7 +117,7 @@ export class RogueManager {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			storyEnabled: !!content?.story,
 			story: storyView(account, !!content?.story, this.engine.localSpirits),
-			cards: account.cards || [], pendingClear: account.pendingClear,
+			cards: account.cards?.map(clearCardView) || [], pendingClear: account.pendingClear && clearCardView(account.pendingClear),
 			account: {
 				needsOnboarding: !!content && needsOnboarding(account),
 				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
@@ -148,7 +150,7 @@ export class RogueManager {
 				growth: growthView(run), growthOffers: growthOffers(run), rewardScene: rewardSceneView(run),
 				blessings: blessingView(run, account.tonicSecret), moveSlots: run.blessings?.owned.some(b => b.family === 'learnall') ? 5 : 4,
 				story: run.story, startCard: startCard(run.startCard),
-				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box,
+				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box?.map(mon => mon.egg ? eggView(mon, run.floor) : mon),
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
 				postgame: run.postgame?.stage,
 				failure: run.failure,
@@ -173,7 +175,9 @@ export class RogueManager {
 					wildLoot: run.node.wildLoot, encounterLoot: run.node.wildLoot?.[run.encounter],
 					reward: { ...run.node.reward, points: run.postgame?.stage === 'battle' ? 20 : run.node.kind === 'boss' && !run.node.companionLoss ? 1 : 0 },
 				},
+				rival: run.rival, rivalCompanion: rivalCompanionView(run),
 				team: run.team.map(saved => {
+					if (saved.egg) return eggView(saved, run.floor);
 					const mon = structuredClone(saved);
 					ensureMemberMemory(mon);
 					if (!mon.stats) rebuildMember(mon, run.boosts);
@@ -181,6 +185,7 @@ export class RogueManager {
 					const baseStats = { ...species.baseStats };
 					for (const [key, value] of Object.entries(mon.statModifiers?.baseStats || {})) baseStats[key as StatID] += value;
 					return { ...mon, baseStats, machineMoves: items.some(item => item.kind === 'machine') ? machineMoves(mon) : [],
+						abilityChanges: { abilitycapsule: abilityItemTarget(mon, 'abilitycapsule'), abilitypatch: abilityItemTarget(mon, 'abilitypatch') },
 						extraAbilities: assignedExtraAbilities(saved, run.team, run.blessings).filter(id => id !== toID(mon.set.ability)),
 						canReceiveSharpness: canGrantExtraAbility(saved, 'sharpness', run.team, run.blessings),
 						types: blessingMemberTypes(mon), fantasyForm: fantasyForm(mon.set.species),
@@ -245,10 +250,11 @@ export class RogueManager {
 			try {
 				const room = this.ai().createRogueBattle(user, {
 					id: `rogue-${encounter.trainer?.id || run.node!.id}`, name: encounter.name,
-					avatar: rogueOpponentAvatar(run), description: '', format: ROGUE_FORMAT,
-					style: encounter.style, developmentOnly: false, packedTeam: Teams.pack(encounter.team),
+					avatar: rogueOpponentAvatar(run), description: '', format: encounter.cooperative ? ROGUE_COOP_FORMAT : ROGUE_FORMAT,
+					style: encounter.style, developmentOnly: false, packedTeam: Teams.pack(encounter.cooperative ? encounter.team.slice(0, Math.ceil(encounter.team.length / 2)) : encounter.team),
 					keyMembers: [], resourcePreferences: [],
-				}, Teams.pack(run.team.map(mon => mon.set)), {
+				}, Teams.pack(run.team.filter(mon => !mon.egg).map(mon => mon.set)), {
+					cooperative: encounter.cooperative && { name: encounter.cooperative.name, avatar: encounter.cooperative.id, ally: Teams.pack(encounter.cooperative.team), foe: Teams.pack(encounter.team.slice(Math.ceil(encounter.team.length / 2))), foeName: encounter.name },
 					state: this.engine.battleState(userid), floor: run.floor, boss: run.node!.kind === 'boss', canRetreat: canRetreatRogue(run),
 					preview: run.preview?.stage === 'running' ? run.preview.trainer : undefined,
 					wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',

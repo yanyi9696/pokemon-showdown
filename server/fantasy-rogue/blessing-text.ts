@@ -7,7 +7,7 @@ import { tonicDescription } from '../../sim/rogue-blessing-permanent';
 export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSecret = false) {
 	let text = def.text;
 	if (def.family === 'money' || def.family === 'bigmoney') text = `立即获得 ${blessingCoins(def.family, floor || 1)} 金币。`;
-	if (def.family === 'medic') text = `每场获胜或捕捉成功后，存活伙伴恢复 ${medicRecovery(floor || 1)}% 最大 HP，并解除异常状态。`;
+	if (def.family === 'medic') text = `每场战斗结束后，存活伙伴恢复 ${medicRecovery(floor || 1)}% 最大 HP，并解除异常状态。与【进球休息】互斥。`;
 	if (['battletask', 'eventtask'].includes(def.family)) {
 		const reward = taskRewardTier(floor || 1), grade = reward.candy.slice(8).toUpperCase();
 		const candy = `【经验糖果 ${grade}】×${reward.candyCount}`;
@@ -20,7 +20,7 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 	if (['reservation', 'reservemega', 'reservegmega', 'reservetera', 'reservez'].includes(def.family)) text = '立即获得 500 金币。' + text;
 	if (def.family === 'reservation') text += '若提前花碎片完成该伙伴的幻想化，通关第 100 层时返还这 100 碎片。';
 	if (def.family.startsWith('fate')) {
-		const coins = { silver: 800, gold: 1000, prismatic: 1200 }[def.tier];
+		const coins = { silver: 800, gold: 1800, prismatic: 3600 }[def.tier];
 		text = `获得 1 个随机${{ silver: '白银', gold: '黄金', prismatic: '棱彩' }[def.tier]}阶祝福，` + (floor ?
 			`额外获得 ${coins * Math.max(1, blessingStage(floor))} 金币。` :
 			`额外金币：第 1／50 层 ${coins}，第 100 层 ${coins * 2}，第 150 层 ${coins * 3}。`);
@@ -29,7 +29,7 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 	if (def.emblem && def.type) {
 		text = '获得 1 个' + emblemDescription(def.type) + (def.family === 'typexp' ?
 			`${BLESSING_TYPES[def.type]}属性伙伴的对战经验提升 30%。` :
-			`全队${BLESSING_TYPES[def.type]}属性招式威力提升 30%；本场有同属性伙伴倒下后提升至 50%。`);
+			`全队${BLESSING_TYPES[def.type]}属性招式威力提升 50%；本场每有同属性伙伴倒下一次，再增加 5 个百分点，复活后再次倒下同样计数。`);
 	}
 	if (def.family === 'typeevolution' && def.type === 'Fighting') text = text.replace('第 50／100／150 层可重选方向并立即强化', '第 50／100／150 层先按原方向强化，再重选方向并立即额外强化一次');
 	if (def.family === 'regis') text += '属性转不占道具位、可取下；赋予后改变副属性，并开放五个对应招式。';
@@ -63,6 +63,7 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		if (types.length === 2) notes.push(`队内分别有${types.map(t => BLESSING_TYPES[t] + '系').join('与')}伙伴时更容易出现`);
 	}
 	const conditions: Record<string, string[]> = {
+		medic: ['与【进球休息】互斥'], restinball: ['与【自带医疗队】互斥'],
 		compound: ['队伍需有完整进化链、最终进化型种族值总和不超过 500 的伙伴', '已最终进化的伙伴也可选择；每名伙伴限用一次'],
 		singer: ['队伍需有【美洛耶塔】', '与【舞！舞！舞！】互斥'],
 		dancer: ['队伍需有【美洛耶塔】', '与【世界第一的公主殿下】互斥'],

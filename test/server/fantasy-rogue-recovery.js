@@ -44,7 +44,7 @@ describe('Fantasy Rogue encounter recovery', () => {
 		const after = saved();
 		assert.equal(after.run.phase, 'ready'); assert.equal(after.run.recovery, 'defeat');
 		assert.equal(after.run.floor, 1); assert.equal(after.run.encounter, 2);
-		assert.equal(after.run.money, before.money); assert.equal(after.points, 0);
+		assert.equal(after.run.money, before.money); assert.equal(after.points, 20);
 		assert.equal(after.run.team[0].hp, 0); assert.equal(after.run.team[0].pp[0].pp, 31);
 		assert.equal(after.run.bag.failball, 1);
 		engine.settle(user, lost.token, lost.result);

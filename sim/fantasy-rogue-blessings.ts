@@ -2,6 +2,7 @@ import type { Battle } from './battle';
 import type { Pokemon } from './pokemon';
 import type { FormatData } from './dex-formats';
 import type { RoguePokemon } from './fantasy-rogue';
+import { rogueEventDamage } from './fantasy-rogue';
 import { toID } from './dex';
 import { ownsBlessing, emblemType, addPsychicCharge, EEVEE_FAMILY, inBlessingFamily, blessing, type BlessingEffects } from './rogue-blessing-data';
 import type { Side } from './side';
@@ -14,6 +15,7 @@ import { railgunActive, rulebreakerActive } from './rogue-special-blessings';
 import { DRAGON_KING_ABILITIES, assignedExtraAbilities, strongestDragon, type DragonKingAbility } from './rogue-blessing-permanent';
 
 interface MemberRuntime {
+	abilitiesPrepared?: boolean;
 	abilities: string[]; entries: number; actions: number; inherited: string[]; inheritedSlots?: Pokemon['moveSlots'];
 	sword: Partial<StatsTable>; prayer: { atk: number, spa: number };
 	low?: boolean; survived?: boolean; bondUsed?: boolean; detectReady?: boolean; extraZ?: boolean;
@@ -59,14 +61,14 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 	if (hasBlessing(pokemon, 'entrance')) add(blessing(hasBlessing(pokemon, 'entrance')!.id)!.name, 1 + member(pokemon).entries * 0.05);
 	if (hasBlessing(pokemon, 'hoopa') && strongest(pokemon, 'hoopa') && ['Dark', 'Ghost'].includes(move.type)) add(blessingSource(pokemon, 'hoopa'), 1.5);
 	for (const b of blessingEffects(pokemon)?.owned || []) if (b.family === 'typelink' && b.type === move.type) {
-		add(blessing(b.id)!.name, side(pokemon).faintedTypes.includes(b.type) ? 1.5 : 1.3);
+		add(blessing(b.id)!.name, 1.5 + side(pokemon).faintedTypes.filter(type => type === b.type).length * 0.05);
 	}
 	const evo = blessingEffects(pokemon)?.evolution;
 	if (evo?.type === move.type && evo.power) add('宝可梦属性进化', 1 + evo.power);
 	return modifiers;
 }
 export function rogueDamageSources(mon: Pokemon, move: Move) {
-	if (move.category === 'Status') return [];
+	if (move.category === 'Status' || move.ohko || move.damage || move.damageCallback) return [];
 	const sources: string[] = [], state = mon.battle.fantasyRogue!;
 	if (rulebreakerActive(mon)) sources.push('【规则，就是用来打破的】无视防御强化、减伤防护与属性免疫');
 	const ordinary = hasBlessing(mon, 'ordinary');
@@ -76,7 +78,7 @@ export function rogueDamageSources(mon: Pokemon, move: Move) {
 	if (hasBlessing(mon, 'lifepower')) sources.push('【氪命】伤害 ×1.3');
 	if (hasBlessing(mon, 'coin')) sources.push(hasBlessing(mon, 'dice') ? '【命运决定一切】伤害 ×1.5' : '【命运决定一切】伤害随机 ×0.5 或 ×1.5');
 	if (hasBlessing(mon, 'sound') && move.flags.sound) sources.push(`【${blessingSource(mon, 'sound')}】伤害 +${mon.side.pokemon.reduce((n, p) =>
-		n + p.moveSlots.filter(slot => mon.battle.dex.moves.get(slot.id).flags.sound).length, 0) * 4}%`);
+		n + p.moveSlots.filter(slot => mon.battle.dex.moves.get(slot.id).flags.sound).length, 0) * 5}%`);
 	if (mon.side.id === 'p1' && state.mentorCard && !move.ohko) {
 		const card = mentorCardProfile(state.mentorCard, state.mentorTier);
 		sources.push(`【首领卡 · ${card.name}】伤害 +${card.damage}%`);
@@ -100,7 +102,8 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	const saved = savedBlessingMember(mon);
 	if (!saved) return undefined;
 	const team = mon.side.id === 'p1' ? mon.battle.fantasyRogue.team : mon.battle.fantasyRogue.duel?.team || [];
-	const ids: string[] = mon.m.rogueBlessing?.abilities || assignedExtraAbilities(saved, team, blessingEffects(mon));
+	const ids: string[] = mon.m.rogueBlessing?.abilitiesPrepared ? mon.m.rogueBlessing.abilities :
+		assignedExtraAbilities(saved, team, blessingEffects(mon));
 	const abilities = [...new Set(ids)].filter(id => id !== mon.ability);
 	const active = !mon.isActive || !mon.ignoringAbility();
 	const state = mon.battle.fantasyRogue;
@@ -288,6 +291,7 @@ export function prepareBlessingMember(mon: Pokemon) {
 	const unique = [...new Set(abilities.map(toID))].filter(ability => ability !== mon.ability);
 	for (const old of runtime.abilities) if (!unique.includes(toID(old))) delete mon.volatiles[`ability:${old}`];
 	runtime.abilities = unique;
+	runtime.abilitiesPrepared = true;
 	for (const ability of runtime.abilities) {
 		const id = `ability:${ability}`;
 		if (ability !== mon.ability && !mon.volatiles[id]) mon.volatiles[id] = mon.battle.initEffectState({ id, target: mon });
@@ -376,7 +380,7 @@ export function blessingKO(battle: Battle, target: Pokemon, source?: Pokemon | n
 	const lossKey = `${battle.fantasyRogue.encounterId}:${target.set.fantasyRogueId}`;
 	const defeats = side(source).psychicDefeats ||= [];
 	if (!defeats.includes(id) && !battle.fantasyRogue.blessingDefeated?.includes(id)) {
-		defeats.push(id); gainBattlePsychic(source, 3);
+		defeats.push(id); gainBattlePsychic(source, 4);
 		if (hasBlessing(source, 'hpgrowth')) {
 			member(source).bonusHP = (member(source).bonusHP || 0) + 2;
 			source.baseMaxhp += 2; source.baseStoredStats.hp += 2;
@@ -392,7 +396,7 @@ export function blessingKO(battle: Battle, target: Pokemon, source?: Pokemon | n
 	}
 	if (hasBlessing(target, 'psychic') && !battle.fantasyRogue.blessingPsychicLosses?.includes(lossKey) &&
 		!progress.psychicLosses?.includes(lossKey)) {
-		(progress.psychicLosses ||= []).push(lossKey); gainBattlePsychic(target, 20);
+		(progress.psychicLosses ||= []).push(lossKey); gainBattlePsychic(target, 25);
 	}
 	if (source.side.id === 'p1' && !progress.kos.some(ko => ko.id === id) &&
 		!battle.fantasyRogue.blessingDefeated?.includes(id)) {
@@ -420,7 +424,6 @@ export function eeveeZAvailable(mon: Pokemon | null | undefined) {
 export function chooseRogueEeveeZ(player: Side) {
 	const mon = player.active[player.choice.actions.length];
 	if (player.requestState !== 'move' || !eeveeZAvailable(mon)) return player.emitChoiceError('当前不能使用家族的额外伊布 Z 招式。');
-	player.choice.actions.push({ choice: 'move', pokemon: mon, moveid: 'rogueevoboost', targetLoc: 0 });
 	return true;
 }
 export function spendRogueEeveeZ(mon: Pokemon) {
@@ -622,6 +625,8 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 		return Math.floor(result + 1e-9);
 	},
 	onModifyDamage(damage, source, target, move) {
+		// Apply boosts before the lethal-damage hooks (Focus Sash / Sturdy). Fixed damage bypasses this event.
+		damage = rogueEventDamage(damage, target, source, move);
 		const ordinary = hasBlessing(source, 'ordinary');
 		if (ordinary && source.side.pokemon.every(p => this.dex.species.get(savedBlessingMember(p)?.set.species || p.baseSpecies.name).bst <= 500)) {
 			damage = damage * (110 + Math.max(1, Math.floor(ordinary.floor / 50)) * 5) / 100;
@@ -633,7 +638,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 			damage *= 1 - Math.min(1, types.size * 0.05);
 		}
 		if (move.rogueCoin) damage *= move.rogueCoin;
-		if (hasBlessing(source, 'sound') && move.flags.sound) damage *= 1 + source.side.pokemon.reduce((n, p) => n + p.moveSlots.filter(slot => this.dex.moves.get(slot.id).flags.sound).length, 0) * 0.04;
+		if (hasBlessing(source, 'sound') && move.flags.sound) damage *= 1 + source.side.pokemon.reduce((n, p) => n + p.moveSlots.filter(slot => this.dex.moves.get(slot.id).flags.sound).length, 0) * 0.05;
 		if (hasBlessing(target, 'weakness') && target.getMoveHitData(move).typeMod > 0) {
 			let count = 0;
 			for (const mon of target.side.pokemon) for (const type of this.dex.types.names()) if (this.dex.getImmunity(type, mon) && this.dex.getEffectiveness(type, mon) >= 2) count++;

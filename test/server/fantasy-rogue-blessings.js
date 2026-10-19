@@ -122,7 +122,7 @@ describe('Fantasy Rogue blessings in native battles', () => {
 			{ effects: { psychic: 125 } });
 		const target = battle.p2.active[0]; target.addVolatile('substitute');
 		turn('roguepsychic 1');
-		assert.equal(target.hp, 0, battle.log.join('\n')); assert.equal(battle.fantasyRogue.blessings.psychic, 3);
+		assert.equal(target.hp, 0, battle.log.join('\n')); assert.equal(battle.fantasyRogue.blessings.psychic, 4);
 		assert(battle.choose('p2', 'switch 2'));
 		assert.equal(battle.choose('p1', 'roguepsychic 1'), false);
 	});
@@ -143,7 +143,7 @@ describe('Fantasy Rogue blessings in native battles', () => {
 		begin(['psychic'], [set('Magikarp', 'Swift Swim', 5, ['Splash']), set('Snorlax', 'Immunity', 50, ['Splash'])],
 			[set('Snorlax', 'Immunity', 50, ['Fly', 'Dragon Rage'])], { effects: { psychic: 80 } });
 		turn('move 1', 'move 2');
-		assert.equal(battle.fantasyRogue.blessings.psychic, 100);
+		assert.equal(battle.fantasyRogue.blessings.psychic, 100.25);
 		assert(battle.choose('p1', 'switch 2'));
 		battle.p2.active[0].addVolatile('fly');
 		turn('roguepsychic 1', 'move 2');

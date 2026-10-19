@@ -1,3 +1,4 @@
+import { EXPEDITION_OVERVIEWS } from './expedition-text';
 import { EVENT_NAMES, EVENT_TEXT as text, eventOpening, type EventID } from './event-text';
 import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
 import { HONEYMOON_REGIONS } from './honeymoon';
@@ -5,6 +6,7 @@ import { POLICE_REGIONS } from './police-data';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	...EXPEDITION_OVERVIEWS, rivalstory: '前 20 层锁定一位劲敌，开启八段专属旅途；共同战斗、交谈提升熟悉度，最终成为永久同行伙伴。',
 	companionrematch: '同行训练家挑战失利后，至少再前进 5 层才可能收到切磋邀请。可接受或暂缓；胜利补发原挑战奖励，失败则恢复全队。每份奖励只能补领一次。',
 	policeassist: '在遭遇区域协助君莎，从随机三个地区中选一处，连续击败两名闹事队员。若对应领头人正在同行，会直接出面制止，并取消后续寻仇。',
 	policerevenge: '处理队员事件后，至少间隔 8 层，才可能在遭遇区域遇到其领头人。对方全队为精英强度；获胜获得认可与奖励。',
@@ -41,6 +43,52 @@ export function eventReplay(id: EventID) {
 	const battle = (key: string, intro: string, room = false) => {
 		page(key, [intro], [['战斗获胜', room ? 'roomwin' : 'win'], ['战败', 'lose']], true);
 	};
+	if (id in EXPEDITION_OVERVIEWS || id === 'rivalstory') {
+		if (id === 'identityquiz') {
+			page('start', eventOpening(id), [['付费抽一题', 'silhouette'], ['笑笑，继续赶路。', 'leave']]);
+			page('silhouette', ['从四个名字中辨认剪影。'], [['普通题答对', 'prize'], ['答错名字', 'wrong'], ['幻想形态题答对', 'types']]);
+			page('prize', ['你收下双倍报名费与好伤药，少女不甘心地收起题板。']);
+			page('wrong', ['「哎呀，真的没认出来？下次先翻翻图鉴吧！」摊主把题板收了起来。']);
+			page('types', ['你从十八种属性中选好答案。摊主却偷偷换成另一张题板，拿普通形态和幻想形态做文章。'], [['别再偷偷换答案了，来对战吧！', 'fight']]);
+			page('fight', ['你握住精灵球，向摊主发起挑战。'], [['获胜', 'won'], ['落败', 'lost']], true);
+			page('won', ['你拿回三倍报名费与 PP 单项小补剂，提醒摊主要守规则。']);
+			page('lost', ['这次挑战没有获胜。先照顾好伙伴，再继续前进吧。']);
+		} else if (id === 'fossillab') {
+			page('start', eventOpening(id), [['交付一套完整化石，进行复活。', 'hatch']]);
+			page('hatch', ['研究员接过完整化石，或一对可以组合的伽勒尔化石碎片。培养舱中苏醒的伙伴保留远古经验，等级与当前层级野生宝可梦相同。']);
+		} else if (id === 'snacks') {
+			page('start', eventOpening(id), [['买点心送给宝可梦', 'partner'], ['买点心送给同行训练家', 'trainer'], ['先把香味记在心里。', 'leave']]);
+			page('partner', ['伙伴开心地吃完点心，亲密度大幅提升；存活时略微恢复生命值。']);
+			page('trainer', ['同行的伙伴露出愉快的神情，拿出一份符合自己喜好的回礼。']);
+		} else if (id === 'starmaster') {
+			page('start', eventOpening(id), [['接受摘星试炼。', 'prepare'], ['下次准备得更充分再来。', 'leave']]);
+			page('prepare', ['大师等待你整备好队伍，然后派出拥有星级力量的伙伴。'], [['获胜', 'won'], ['落败', 'lost']], true);
+			page('won', ['「你们配得上更高的星光。」全队星级各提升一级，最高五星。']);
+			page('lost', ['这次挑战没有获胜。先照顾好伙伴，再继续前进吧。']);
+		} else if (id === 'blackjack') {
+			page('start', eventOpening(id), [['坐近一些，和他搭话。', 'talk'], ['安静地喝完手里的茶。', 'leave']]);
+			page('talk', ['聊到生命与患者，你发现游医看似冷淡，却一直留意着炉边受伤的宝可梦。'], [['夸奖他：医死的人越多，医术越高明。', 'revive'], ['认可他：要为患者带来笑容。', 'capsule'], ['也说说自己作为训练家的烦恼。', 'patch']]);
+			page('revive', ['「还是不要医死人比较好。」他递给你两枚活力碎片。']);
+			page('capsule', ['「这些胶囊和你很有缘。」他送给你一枚特性胶囊。']);
+			page('patch', ['「希望这能解决你的烦恼。」你收到一份特性膏药。']);
+		} else if (id === 'grassegg') {
+			page('start', eventOpening(id), [['小心收好这颗蛋。', 'egg']]);
+			page('egg', ['你把蛋安放在柔软的垫子上。再走 5～8 层，蛋里的伙伴便会自动孵化。']);
+		} else if (id === 'hatchhouse') {
+			page('start', eventOpening(id), [['把蛋交给店长照看。', 'hatch']]);
+			page('hatch', ['恒温箱轻轻响起提示音，队伍和箱子里的蛋都孵化了。店长祝你和新伙伴一路顺利。']);
+		} else if (id === 'terasolo') {
+			page('start', eventOpening(id), [['应战', 'battle']]);
+			page('battle', ['对手以太晶化状态出战。'], [['获胜', 'won'], ['落败', 'lost']], true);
+			page('won', ['晶光散去，你收集到与对手太晶属性对应的太晶碎片。']);
+			page('lost', ['这次挑战没有获胜。先照顾好伙伴，再继续前进吧。']);
+		} else {
+			page('start', eventOpening(id), [['查看流程', 'detail']]);
+			page('detail', [EVENT_OVERVIEWS[id]]);
+		}
+		if (Object.values(pages).some(p => p.options.some(o => o.next === 'leave'))) page('leave', ['你向对方点点头，继续赶路。']);
+		return { title: EVENT_NAMES[id], start: 'start', pages };
+	}
 	page('win', [text.fightWin]);
 	page('roomwin', [text.roomWin, '获得工具箱 ×1（四件选一件）和幻想碎片，碎片数量随楼层增加。']);
 	page('lose', [text.fightLose, text.fightLossRule]);

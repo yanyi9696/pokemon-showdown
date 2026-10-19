@@ -51,7 +51,7 @@ describe('Fantasy Rogue boss support revision', () => {
 		for (let floor = 1; floor <= 200; floor++) {
 			const reward = routeCandyReward(floor, 'elite');
 			const total = Object.entries(reward).reduce((n, [id, count]) => n + count * xp[id], 0);
-			assert(total <= Math.round((200 + 3 * floor ** 2) / 100) * 100);
+			assert(total <= Math.round((200 + 3 * floor ** 2) * (floor <= 50 ? 1 : 1.6) / 100) * 100);
 			for (const id of Object.keys(reward)) assert(CANDY_SHOP[id].floor <= floor);
 			assert(CANDY_SHOP[restCandyOffer(floor).id].floor <= floor);
 			if (floor >= 30) assert((reward.expcandyxs || 0) < 8);

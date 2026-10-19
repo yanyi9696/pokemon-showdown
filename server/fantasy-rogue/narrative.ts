@@ -19,6 +19,7 @@ export function queueNarrative(run: RogueRun, pages: NarrativePage[], resume: 'r
 }
 export function healNarrativeParty(run: RogueRun) {
 	for (const mon of run.team) {
+		if (mon.egg) continue;
 		ensureMemberMemory(mon);
 		mon.hp = mon.maxhp; mon.status = ''; mon.statusState = {};
 		delete mon.statuses;

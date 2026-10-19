@@ -4,10 +4,17 @@ import type { RogueBiome } from './biome-data';
 import type { RogueRandom } from './biome-pools';
 
 const dex = Dex.mod('gen9');
+function generationSpecies(name: string) {
+	const base = dex.species.get(name);
+	if (base.exists) return base;
+	const custom = Dex.mod('gen9fantasy').species.get(name);
+	const original = dex.species.get(custom.name.replace(/-Fantasy/g, ''));
+	return original.exists ? original : custom;
+}
 
 /** Form changes are not extra evolution stages. Preserve regional pre-evolutions. */
 export function evolutionParent(name: string): string | undefined {
-	const species = dex.species.get(name);
+	const species = generationSpecies(name);
 	if (species.prevo) return species.prevo;
 	if (species.id === 'melmetal') return 'Meltan';
 	if (species.name !== species.baseSpecies) return dex.species.get(species.baseSpecies).prevo || undefined;
@@ -24,14 +31,13 @@ export function evolutionChildren(name: string) {
 		!child.battleOnly && !child.forme.endsWith('Gmax'));
 }
 
-/** Acquired encounters/gifts require level 30 for item or trade evolutions, even when listed explicitly. */
+/** Special-condition evolutions cannot be generated below 30; player evolution has its own rules. */
 export function minimumEvolutionLevel(name: string): number {
-	const species = dex.species.get(name);
+	const species = generationSpecies(name);
 	const parent = evolutionParent(name);
 	const form = species.name !== species.baseSpecies ? dex.species.get(species.baseSpecies) : species;
-	const itemOrTrade = parent && [species, form].some(entry => entry.evoItem ||
-		['useItem', 'trade', 'levelHold'].includes(entry.evoType || ''));
-	return Math.max(itemOrTrade ? 30 : 1, species.evoLevel || (parent && form.evoLevel) || 1,
+	const special = parent && [species, form].some(entry => entry.evoItem || entry.evoType);
+	return Math.max(special ? 30 : 1, species.evoLevel || (parent && form.evoLevel) || 1,
 		parent ? minimumEvolutionLevel(parent) : 1);
 }
 
@@ -42,7 +48,9 @@ export function lowerToEligibleStage(name: string, level: number): string {
 		const custom = Dex.mod('gen9fantasy').species.get(name);
 		if (!custom.exists) return name;
 		const original = dex.species.get(custom.name.replace('-Fantasy', ''));
-		return original.exists && minimumEvolutionLevel(original.name) > level ? lowerToEligibleStage(original.name, level) : custom.name;
+		if (original.exists) return minimumEvolutionLevel(original.name) > level ? lowerToEligibleStage(original.name, level) : custom.name;
+		const parent = evolutionParent(custom.name);
+		return parent && minimumEvolutionLevel(custom.name) > level ? lowerToEligibleStage(parent, level) : custom.name;
 	}
 	while (minimumEvolutionLevel(species.name) > level) {
 		const parent = evolutionParent(species.name);

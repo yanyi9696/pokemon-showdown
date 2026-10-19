@@ -1,3 +1,5 @@
+import { rivalView, chooseRival, settleRival, type RivalEvent } from './rivals';
+import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView, chooseExpedition, settleExpedition, type ExpeditionEvent } from './expedition-events';
 import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
 import { eligibleRematches, prepareRematch, rematchView, chooseRematch } from './companion-rematches';
 import { policeView, choosePoliceRegion, settlePoliceBattle, type PoliceEvent } from './police-events';
@@ -32,6 +34,8 @@ import { adventureEvent, adventureView, chooseAdventure, settleAdventure, bandit
 import { offerEventFragments, eventFragmentOptions, claimEventFragments, type EventFragmentOffer } from './event-fragments';
 export { EVENT_NAMES, type EventID } from './event-text';
 export interface RogueEvent {
+	rival?: RivalEvent;
+	expedition?: ExpeditionEvent;
 	rematch?: string;
 	police?: PoliceEvent;
 	honeymoonHappy?: boolean;
@@ -90,8 +94,8 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
-		!['exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
+		!['rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
 		(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
 		(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
 		(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
@@ -105,8 +109,8 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	});
 	const pool = unseen.length ? unseen : cooled.length ? cooled : candidates;
 	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
-	const weights = pool.map(id => (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
-		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10));
+	const weights = pool.map(id => Math.max(1, Math.round(expeditionWeight(run, id) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
+		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	return pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
 }
@@ -150,6 +154,7 @@ export function beginEvent(run: RogueRun, random: RogueRandom) {
 	if (id === 'forest') event.teams = forestTeams(ordinaryLevel(run.floor), random);
 	(run.eventHistory ||= []).push({ id, floor: run.floor });
 	run.node!.event = event;
+	beginExpedition(run);
 	if (id === 'companionrematch') prepareRematch(run);
 	prepareHoneymoon(run, random);
 	run.node!.name = EVENT_NAMES[id];
@@ -226,6 +231,8 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	before.money = run.money; before.bag = { ...run.bag };
 	if (choice === 'leave') event.trainingAidBlocked = true;
 	else event.committed = true;
+	if (event.rival) { chooseRival(run, content, random, choice!); rewardReceipt(run, before); return; }
+	if (event.expedition) { chooseExpedition(account, run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.rematch) { chooseRematch(run, choice!); return; }
 	if (event.police) { choosePoliceRegion(run, choice!, random); return; }
 	if (event.id === 'honeymoon' || event.id === 'honeymoonreturn') {
@@ -373,6 +380,19 @@ export function settleEventBattle(
 ) {
 	const event = run.node?.event;
 	if (!event || event.stage !== 'battle' || event.settled) return;
+	if (event.rival) {
+		if (!retreated) {
+			const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
+			settleRival(run, random, won); rewardReceipt(run, before);
+		}
+		return;
+	}
+	if (event.expedition) {
+		if (retreated) return;
+		event.trainingAidBlocked = true;
+		const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
+		settleExpedition(run, won); rewardReceipt(run, before); return;
+	}
 	if (event.police) { if (!retreated) settlePoliceBattle(run, won); return; }
 	if (event.id === 'honeymoonreturn') {
 		if (retreated) return;
@@ -417,6 +437,8 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (event.rival) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...rivalView(run) };
+	if (expeditionEvent(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...expeditionView(run) };
 	if (event.rematch) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...rematchView(run) };
 	if (event.police) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...policeView(run) };
 	if (event.id === 'honeymoon' || event.id === 'honeymoonreturn') return {

@@ -16,6 +16,11 @@ export const CANDY_SHOP: Record<string, { floor: number, price: number, stock: n
 export const candyAtFloor = (floor: number) =>
 	floor < 30 ? 'expcandyxs' : floor < 50 ? 'expcandys' : floor < 100 ? 'expcandym' : floor < 150 ? 'expcandyl' : 'expcandyxl';
 
+/** A shallow midgame dip, then a smooth rise; no sudden windfall at a grade boundary. */
+export const candyRewardScale = (floor: number) => floor < 30 ? 1 - Math.max(0, floor - 25) * 0.024 : floor <= 50 ? 0.88 :
+	0.88 + Math.min(0.72, (floor - 50) * 0.0048);
+export const lateCoinMultiplier = (floor: number) => 1 + Math.min(0.45, Math.max(0, floor - 50) * 0.003);
+
 /** One current grade per center. No advance unlocks and no free pre-boss experience. */
 export function restCandyOffer(floor: number) {
 	const id = candyAtFloor(floor), step = Math.min(3, Math.floor((floor - CANDY_SHOP[id].floor) / 10));
@@ -28,7 +33,7 @@ export function restCandyOffer(floor: number) {
 export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'reward') {
 	const f = Math.max(1, Math.min(200, floor));
 	const multiplier = (kind === 'trainer' ? 1.6 : kind === 'reward' ? 0.2 : 1) * (0.8 + 0.2 * Math.min(1, (f - 1) / 59));
-	let remaining = Math.max(100, Math.round((200 + 3 * f * f) * multiplier * 0.85 / 100) * 100);
+	let remaining = Math.max(100, Math.round((200 + 3 * f * f) * multiplier * 0.85 * candyRewardScale(f) / 100) * 100);
 	const result: Record<string, number> = {};
 	for (const [id, xp] of [['expcandyxl', 30000], ['expcandyl', 10000], ['expcandym', 3000], ['expcandys', 800], ['expcandyxs', 100]] as const) {
 		if (CANDY_SHOP[id].floor > f) continue;
@@ -38,7 +43,7 @@ export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'rew
 	return result;
 }
 // Money grows more slowly than EXP: clean victories should not finance unlimited training.
-export const earlyCoinMultiplier = (floor: number) => 1 + Math.max(0, Math.min(30, 60 - floor)) / 120;
+export const earlyCoinMultiplier = (floor: number) => (1 + Math.max(0, Math.min(30, 60 - floor)) / 120) * lateCoinMultiplier(floor);
 export const eliteTreasureBudget = (floor: number) => Math.floor((200 + 20 * floor) * 0.9 * earlyCoinMultiplier(floor) / 150) * 150;
 export const encounterCoins = (floor: number) => Math.round((700 + 45 * floor) * 0.95 * earlyCoinMultiplier(floor) / 50) * 50;
 export const eventBaseBudget = (floor: number) => (350 + 20 * floor + 0.15 * floor * floor) * 0.9;

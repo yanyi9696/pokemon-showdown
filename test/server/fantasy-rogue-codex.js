@@ -37,13 +37,13 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
 		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).filter(id =>
-			!['auction', 'mushroomcollector', 'exclusivechallenge', 'policeassist', 'policerevenge'].includes(id)).length);
+			!['auction', 'mushroomcollector', 'exclusivechallenge', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory'].includes(id)).length);
 		for (const id of ['exclusivechallenge', 'policeassist', 'policerevenge']) assert.equal(events.find(e => e.id === id).category, 'encounter');
 		assert.equal(events.filter(e => e.category === 'trade').length, 9);
-		assert.equal(events.filter(e => e.category === 'reward').length, 5);
+		assert.equal(events.filter(e => e.category === 'reward').length, 6);
 		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 		const people = events.filter(e => ['companion', 'trainer'].includes(e.category));
-		assert.equal(people.length, 48);
+		assert.equal(people.length, 56);
 		for (const role of ['companion', 'gym', 'elitefour', 'champion', 'antagonist', 'other']) {
 			assert(people.some(e => e.roles.includes(role)), role);
 		}
@@ -140,7 +140,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event')) {
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
-			if (['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers', 'honeymoonreturn', 'companionrematch'].includes(entry.id)) {
+			const expedition = entry.id in require('../../dist/server/fantasy-rogue/expedition-text').EXPEDITION_OVERVIEWS;
+			if (expedition || ['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers', 'honeymoonreturn', 'companionrematch'].includes(entry.id)) {
 				// These openings incorporate the saved item, owner and NPC budgets at runtime.
 				assert.deepEqual(replay.pages.start.text, require('../../dist/server/fantasy-rogue/event-text').eventOpening(entry.id));
 			} else {
@@ -154,7 +155,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 				if (!page.options.length) endings++;
 				assert(!page.action && !page.reward && !page.log);
 			}
-			assert(endings >= 3);
+			assert(endings >= (expedition ? 1 : 3));
 		}
 		assert.equal(JSON.stringify(a), before);
 	});

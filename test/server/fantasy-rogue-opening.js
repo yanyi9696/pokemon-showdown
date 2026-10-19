@@ -65,7 +65,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		assert.equal(account().run.floor, 1); assert.equal(account().run.phase, 'choose');
 		assert.equal(account().run.blessings.levels, 0); assert.equal(account().run.blessings.bossLevels, 5);
 		assert.equal(account().run.blessings.owned.length, 2, 'one Fate and one free gold blessing');
-		assert.equal(account().run.money, content.initialMoney + 1000);
+		assert.equal(account().run.money, content.initialMoney + 1800);
 		assert(!account().run.blessings.beforeAdventure);
 		store.change(user, a => {
 			a.run.phase = 'reward'; a.run.node = { id: 'supply', kind: 'reward', encounters: [], reward: { money: 0, items: {} } };

@@ -38,11 +38,11 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		cmd('select', { value: 'testreward' });
 		if (kind === 'reward') store.change(user, a => { a.run.node.rewardScene.id = scene; a.run.node.rewardScene.type = scene === 'research' ? 'Normal' : 'Grass'; });
 	}
-	it('creates five noncombat scenes, saves preferences and avoids immediately repeating a scene', () => {
+	it('creates six noncombat scenes, saves preferences and avoids immediately repeating a scene', () => {
 		const ids = new Set();
 		for (let i = 0; i < 6; i++) {
 			const run = account().run; run.node = { kind: 'reward', encounters: [], reward: { money: 1, items: {} } };
-			prepareRewardScene(run, max => Math.min(i, max - 1)); ids.add(run.node.rewardScene.id);
+			prepareRewardScene(run, max => max === 100 ? 99 : Math.min(i, max - 1)); ids.add(run.node.rewardScene.id);
 			const saved = structuredClone(run.node.rewardScene);
 			prepareRewardScene(run, () => { throw Error('must not reroll'); });
 			assert.deepEqual(run.node.rewardScene, saved); assert.equal(run.node.encounters.length, 0);
@@ -50,6 +50,9 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 			assert.notEqual(run.node.rewardScene.id, saved.id);
 		}
 		assert.equal(ids.size, 5);
+		const run = account().run; run.node = {kind: 'reward', encounters: [], reward: {money: 0, items: {}}};
+		delete run.rewardHistory; prepareRewardScene(run, () => 0); ids.add(run.node.rewardScene.id);
+		assert.equal(ids.size, 6);
 	});
 	for (const scene of ['sketch', 'research', 'picnic', 'coach']) it(`upgrades ${scene} only after a valid demonstration and pays once`, () => {
 		enter(61, 'reward', scene);
@@ -129,7 +132,8 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		}
 		for (const floor of [51, 100, 150, 199]) {
 			enter(floor);
-			assert.equal(rewardChoices(account().run).find(c => c.id === 'offense').targets[0].amount, 400);
+			assert.equal(rewardChoices(account().run).find(c => c.id === 'offense').targets[0].amount,
+				400 + (floor >= 80 ? 100 + Math.floor((floor - 80) / 40) * 50 : 0));
 		}
 	});
 	it('unlocks training trades only at 51, preserves stock, currency, receipts and run caps', () => {

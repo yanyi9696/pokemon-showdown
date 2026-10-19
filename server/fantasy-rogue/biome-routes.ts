@@ -5,7 +5,7 @@ import { rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
 import { RogueBiomes, type RogueBiome } from './biome-data';
 import { biomeTier, isMajorLegendary, MajorLegendaryPool, pickBiomeSlot, unlistedFamilies, weightedPick,
 	type RogueRandom } from './biome-pools';
-import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
+import { makeEncounterSet, randomEncounterIVs, randomEncounterAbility } from './encounter-sets';
 import { wildStageAtLevel } from './evolution';
 import type { RogueEncounter, RogueNode } from './types';
 import { cardBiasedSpecies } from './story';
@@ -60,6 +60,7 @@ export function createBiomeRoutes(
 			}
 			seen.set(name, (seen.get(name) || 0) + 1);
 			const set = makeEncounterSet(name, level, randomEncounterIVs(random, elite));
+			set.ability = randomEncounterAbility(name, random, elite);
 			const species = Dex.mod('gen9').species.get(name);
 			set.gender = species.gender || (random(256) < species.genderRatio.F * 256 ? 'F' : 'M');
 			return {

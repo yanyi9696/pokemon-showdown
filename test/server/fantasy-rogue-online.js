@@ -68,6 +68,30 @@ describe('Fantasy Rogue real rooms', function () {
 		Config.fantasyailocal = oldLocal.local; Config.bindaddress = oldLocal.bind; Config.fantasyrogue = oldLocal.rogue;
 		Config.reportbattles = oldReporting;
 	});
+	it('runs three independent AI seats in a cooperative room and settles the human party once', async () => {
+		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		store.change(user.id, saved => {
+			const run = saved.run, foe = set('Magikarp', 'Swift Swim', 1, ['Splash']);
+			run.team = [createRoguePokemon(set('Mew', 'Synchronize', 100, ['Dragon Rage']), stats(0))];
+			run.node.encounters[0].team = [foe, {...foe}];
+			run.node.encounters[0].cooperative = {id: 'marnie', name: '玛俐', team: [set('Snorlax', 'Immunity', 100, ['Dragon Rage'])]};
+		});
+		const initial = account().run;
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => ['p2', 'p3', 'p4'].every(id => room.battle[id]?.request.isWait === true), 'all AI previews');
+		assert.equal(room.battle.gameType, 'multi');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active && ['p2', 'p3', 'p4'].every(id => room.battle[id].request.isWait === true), 'three independent AI moves');
+		for (let turn = 0; turn < 3 && !room.battle.ended; turn++) {
+			const rqid = room.battle.p1.request.rqid;
+			room.battle.choose(user, `default|${rqid}`);
+			await until(() => room.battle.ended || room.battle.p1.request.rqid > rqid, 'cooperative turn');
+		}
+		await until(() => room.battle.ended && !account().run.battle, 'cooperative settlement');
+		assert.equal(account().run.team.length, 1);
+		assert.equal(account().run.team[0].id, initial.team[0].id);
+		assert.equal(account().run.encounter, initial.encounter + 1);
+	});
 	it('delivers king succession through real room requests and resumes the native replacement choice', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
@@ -198,7 +222,7 @@ describe('Fantasy Rogue real rooms', function () {
 			assert.equal(account().run.encounter, encounter + 1);
 			assert.equal(account().run.team.length, encounter + 2);
 			assert.equal(account().captures.magikarp, encounter + 1);
-			assert.equal(account().points, 0);
+			assert.equal(account().points, 20);
 			assert.equal(ai.getStatus().active, 0);
 			assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
 		}
@@ -217,7 +241,7 @@ describe('Fantasy Rogue real rooms', function () {
 		room.destroy();
 		assert.equal(account().run.phase, 'ready');
 		assert.equal(account().run.team[0].hp, hp);
-		assert.equal(account().points, 0);
+		assert.equal(account().points, 20);
 	});
 	it('retreats through the real room, saves turn damage and PP, returns the owner and resets only the foe', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });

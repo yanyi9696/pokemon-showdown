@@ -5,7 +5,7 @@ import { rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { towerExperience } from './early-balance';
 import { drawBlessingGift, blessingExperience } from './blessings';
 import { companionExperience } from './companions';
-import { partyEvolutionLevel } from './evolution';
+import { minimumEvolutionLevel } from './evolution';
 import { gainExperience, levelMoves, rebuildMember, rememberMove } from './progression';
 import { clearIllegalMoves, legalFormMoves } from './event-learning';
 import { POSTCARDS } from './event-service-text';
@@ -28,11 +28,12 @@ export function regionalSpecies(region: Postcard) {
 }
 export function regionalPool(region: Postcard, level: number, content: RogueContent) {
 	return regionalSpecies(region).filter(species =>
-		content.unlocks[species.id] && randomSpeciesEligible(species.name, level) && partyEvolutionLevel(species.name) <= level)
+		content.unlocks[species.id] && randomSpeciesEligible(species.name, level) && minimumEvolutionLevel(species.name) <= level)
 		.map(species => species.name);
 }
 export function conversionChoices(run: RogueRun, region: Postcard) {
 	return run.team.flatMap(mon => {
+		if (mon.egg) return [];
 		const old = dex.species.get(mon.set.species), fantasy = old.name.includes('Fantasy');
 		if (old.isMega || old.battleOnly || /Totem|Gmax/.test(old.forme)) return [];
 		return regionalSpecies(region).filter(species => species.baseSpecies === old.baseSpecies)

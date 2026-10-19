@@ -111,8 +111,9 @@ describe('Fantasy Rogue expanded blessings', function () {
 		begin([], [{...set('Pikachu', 'Static', 60, ['Thunderbolt']), item: 'electriumz'}]);
 		assert(!battle.actions.canZMove(battle.p1.active[0]));
 		begin(['eeveefamily'], ['Eevee', 'Vaporeon', 'Jolteon', 'Flareon', 'Espeon', 'Umbreon'].map(name => set(name, 'Run Away', 60, ['Splash'])));
-		assert(eeveeZAvailable(battle.p1.active[0])); turn('rogueeeveez');
+		assert(eeveeZAvailable(battle.p1.active[0])); turn('rogueeeveez move 1');
 		assert.equal(battle.p1.active[0].boosts.atk, 2); assert(!eeveeZAvailable(battle.p1.active[0]));
+		assert.equal(battle.p1.active[0].lastMove.id, 'splash', 'the regular move still resolves in the same turn');
 		assert(!battle.p1.zMoveUsed); turn('switch 2'); assert(eeveeZAvailable(battle.p1.active[0]));
 	});
 	it('unlocks both ordinary mechanics when campaign permission is present', () => {

@@ -17,6 +17,8 @@ export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): Rogue
 	requireRule(!spirit || rogueSpirit(spirit)?.enabled, '这张通关卡的塔灵尚不支持约战。');
 	const snapshots = [a, b].map(card => {
 		const snap = structuredClone(card.snapshot);
+		// An unhatched egg is archived, but cannot become a battle-ready partner in PVP.
+		snap.team = snap.team.filter(mon => !mon.egg);
 		requireRule(!snap.blessings.length || snap.blessingEffects, '这张卡缺少可复现的祝福记录。');
 		requireRule(snap.team.length > 0 && snap.team.length <= roguePartyLimit(spirit), '通关卡的队伍数量无效。');
 		for (const mon of snap.team) {

@@ -25,7 +25,7 @@ export function teachingMoves(mon: RoguePokemon, tutorOnly = false) {
 	return legal.filter(id => tutorCache.get(species.id)!.has(id));
 }
 export function hasFantasyMove(run: RogueRun) {
-	return run.team.some(mon => [...mon.set.moves, ...mon.moveMemory?.map(slot => slot.id) || []].some(id => {
+	return run.team.some(mon => !mon.egg && [...mon.set.moves, ...mon.moveMemory?.map(slot => slot.id) || []].some(id => {
 		const move = dex.moves.get(id);
 		return move.exists && !move.isZ && !move.isMax && !move.id.startsWith('rogue') && !Dex.mod('gen9').moves.get(id).exists;
 	}));

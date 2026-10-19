@@ -22,7 +22,7 @@ export function fantasyTutorView(run: RogueRun) {
 	if (mon) return { paragraphs: [`「让【${mon.set.species}】想象招式完成的样子，再让力量追上想象。」`],
 		options: [option('back', '换一位伙伴。')], picker: { label: '选择幻想招式', options: fantasyTutorMoves(mon).map(id =>
 			option(`fantasymove:${id}`, dex.moves.get(id).name, `${FANTASY_TUTOR_COST} 幻想碎片`, (run.blessings?.shards || 0) < FANTASY_TUTOR_COST)) } };
-	const options = run.team.map(p => option(`member:${encodeURIComponent(p.id)}`,
+	const options = run.team.filter(p => !p.egg).map(p => option(`member:${encodeURIComponent(p.id)}`,
 		p.set.species, `Lv.${p.set.level}`, !fantasyTutorMoves(p).length));
 	if (!options.some(p => !p.disabled)) options.push(option('unavailable', '记住研究员的指导。'));
 	return { paragraphs: ['「挑一位幻想伙伴吧。我只能教它本来就能够掌握的招式。」'], options };

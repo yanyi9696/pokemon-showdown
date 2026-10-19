@@ -11,11 +11,13 @@ import { mentorCardProfile } from './rogue-mentor';
 
 export const ROGUE_FORMAT = 'gen9fantasyrogue';
 export const ROGUE_DUEL_FORMAT = 'gen9fantasyrogueduel';
-export const isRogueFormat = (id: string) => id === ROGUE_FORMAT || id === ROGUE_DUEL_FORMAT;
+export const ROGUE_COOP_FORMAT = 'gen9fantasyroguecoop';
+export const isRogueFormat = (id: string) => [ROGUE_FORMAT, ROGUE_DUEL_FORMAT, ROGUE_COOP_FORMAT].includes(id);
 export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	egg?: { found: number, hatch: number };
 	compound?: import('./rogue-compound').RogueCompound;
 	/** Explicit provenance for extra abilities granted by a blessing, unlike event rewards. */
 	blessingExtraAbilities?: string[];
@@ -75,6 +77,7 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	cooperative?: { opponentOffset: number };
 	companionZUsed?: Partial<Record<SideID, boolean>>;
 	wild?: boolean;
 	environment?: { weather?: string, terrain?: string, name: string };
@@ -107,6 +110,7 @@ export interface RogueBattleState {
 	npcCapture?: boolean;
 	/** Permissions for this encounter, issued by the campaign server. Old/missing flags are locked. */
 	tera?: { player: boolean, opponent: boolean };
+	forcedTera?: boolean;
 	systems?: { player: { mega: boolean, z: boolean, gmega?: boolean }, opponent?: { mega: boolean, z: boolean, gmega?: boolean } };
 	captures?: RoguePokemon[];
 	captured?: RoguePokemon;
@@ -134,13 +138,22 @@ export interface RogueBattleResult {
 /** Mushroom vitality affects direct opposing damage, never recoil, weather or one-hit KO moves. */
 export function rogueEventDamage(damage: number, target: Pokemon, source: Pokemon, effect: Effect) {
 	const state = target.battle.fantasyRogue;
-	if (!state || damage <= 0 || !(state.eventBuff || state.duel?.eventBuff || state.mentorCard) ||
-		effect.effectType !== 'Move' || effect.ohko || !source || source.side === target.side) return damage;
+	const original = damage;
+	if (!state || damage <= 0 ||
+		effect.effectType !== 'Move' || effect.ohko || effect.damage || effect.damageCallback ||
+		!source || source.isAlly(target)) return damage;
 	const buff = (mon: Pokemon) => mon.side.id === 'p1' ? state.eventBuff : state.duel?.eventBuff;
 	if (source.side.id === 'p1' && state.mentorCard) damage *= 1 + mentorCardProfile(state.mentorCard, state.mentorTier).damage / 100;
 	if (buff(source)) damage *= 1.2;
 	if (buff(target)) damage *= 0.9;
-	return Math.max(1, Math.floor(damage));
+	const spirit = state.spirit;
+	if (spirit?.id === 'regigigas' && !state.duel) damage *= source.side.id === 'p1' ? 2 : target.side.id === 'p1' ? 0.5 : 1;
+	if (source.side.id === 'p1' || state.duel) {
+		if (spirit?.id === 'gimmighoul') damage *= 1 + Math.max(0,
+			(source.side.id === 'p1' ? spirit.money : state.duel?.money) || 0) / 5000000;
+		if (spirit?.id === 'darkrai') damage *= 1 + Math.floor(spirit.floor / 2) / 100;
+	}
+	return damage === original ? damage : Math.max(1, Math.floor(damage));
 }
 
 export function snapshotRoguePokemon(mon: Pokemon, original: RoguePokemon): RoguePokemon {
@@ -177,10 +190,11 @@ export function initializeRogueBattle(battle: Battle) {
 	state.blessingProgress = { kos: [], swords: 0, insight: {} };
 	if (state.boss?.kind === 'arceus') battle.add('-message', '神之挑战：阿尔宙斯拥有十九条生命。当前为第 1 / 19 条生命。');
 	if (state.boss?.kind === 'summit') battle.add('-message', '幻想超梦悬在塔顶，指挥五位守卫作战。击败它们后，超梦才会亲自下场。');
-	for (const [i, mon] of battle.p2.pokemon.entries()) {
+	for (const [i, mon] of [...battle.p2.pokemon, ...(state.cooperative ? battle.p4!.pokemon : [])].entries()) {
 		mon.set.fantasyRogueId = `${state.encounterId}:foe:${i}`;
 		if (!state.duel && (state.opponentStars?.[i] || 1) > 1) {
-			battle.add('-message', `野生${mon.species.name}为二星宝可梦，六项能力值 ×1.2。`);
+			const stars = state.opponentStars![i];
+			battle.add('-message', `${mon.species.name}为${'★'.repeat(stars)}宝可梦，六项能力值 ×${[1, 1, 1.2, 1.5, 2, 3][stars]}。`);
 		}
 	}
 	if (state.duel) {
@@ -211,6 +225,7 @@ export function initializeRogueBattle(battle: Battle) {
 
 export function startRogueArea(battle: Battle) {
 	const env = battle.fantasyRogue?.environment, source = battle.p2.pokemon[0];
+	if (source && battle.fantasyRogue?.forcedTera && !source.terastallized) battle.actions.terastallize(source);
 	if (!env || !source) return;
 	if (env.weather && battle.field.setWeather(env.weather, source, battle.format)) battle.field.weatherState.duration = 5;
 	if (env.terrain && battle.field.setTerrain(env.terrain, source, battle.format)) battle.field.terrainState.duration = 5;
@@ -233,23 +248,26 @@ export function canRogueTerastallize(pokemon: Pokemon): boolean {
 export function markRogueParticipants(battle: Battle) {
 	const state = battle.fantasyRogue;
 	if (!state?.progression) return;
-	const foe = battle.p2.active[0];
 	const active = battle.p1.active[0];
-	if (!foe || !active?.hp) return;
-	const participants = state.participants![foe.set.fantasyRogueId!] ||= [];
-	if (!participants.includes(active.set.fantasyRogueId!)) participants.push(active.set.fantasyRogueId!);
+	if (!active?.hp) return;
+	for (const foe of [...battle.p2.active, ...(state.cooperative ? battle.p4!.active : [])]) {
+		if (!foe) continue;
+		const participants = state.participants![foe.set.fantasyRogueId!] ||= [];
+		if (!participants.includes(active.set.fantasyRogueId!)) participants.push(active.set.fantasyRogueId!);
+	}
 }
 
 export function recordRogueDefeat(battle: Battle, mon: Pokemon, captured = false, source?: Pokemon | null) {
 	const state = battle.fantasyRogue;
-	if (!state?.progression || mon.side.id !== 'p2') return;
+	if (!state?.progression || mon.side.id !== 'p2' && !(state.cooperative && mon.side.id === 'p4')) return;
 	markRogueParticipants(battle);
 	state.defeated!.push({
 		id: mon.set.fantasyRogueId,
 		killer: source?.side.id === 'p1' ? source.set.fantasyRogueId : undefined,
 		species: mon.set.species, level: mon.level, captured,
 		participants: [...(state.participants![mon.set.fantasyRogueId!] || [])],
-		eligible: battle.p1.pokemon.filter(member => member.hp > 0).map(member => member.set.fantasyRogueId!),
+		eligible: battle.p1.pokemon.filter(member => member.hp > 0 || hasBlessing(member, 'insight'))
+			.map(member => member.set.fantasyRogueId!),
 		dragonKing: battleDragonKing(battle.p1)?.member || '',
 	});
 }
@@ -361,7 +379,7 @@ export function rogueBattleResult(battle: Battle): RogueBattleResult {
 	const state = battle.fantasyRogue!;
 	return {
 		companionZUsed: !!state.companionZUsed?.p1,
-		encounterId: state.encounterId, won: battle.winner === battle.p1.name,
+		encounterId: state.encounterId, won: battle.winner === battle.p1.name || !!state.cooperative && battle.winner === battle.p3!.name,
 		team: state.team.map(saved => {
 			const mon = battle.p1.pokemon.find(entry => entry.set.fantasyRogueId === saved.id)!;
 			return snapshotRoguePokemon(mon, saved);

@@ -1,3 +1,7 @@
+import { beginRival, rivalRoutes, rivalActive, rivalTeam, expireRival } from './rivals';
+import { RIVALS } from './rival-data';
+import { beginTeraSolo } from './expedition-events';
+import { hatchEggs } from './eggs';
 import { rollRoutes, normalizeRouteHistory } from './routes';
 import { migrateRetiredBalls } from './capture-items';
 import { syncExclusiveItems } from './exclusive-items';
@@ -28,7 +32,7 @@ import { experienceAtLevel, rogueEffortYield, rogueSpeciesData } from '../../sim
 import { towerExperience, grantEventTraining, MENTOR_CARDS, mentorTier, emergencyCost, type MentorCard } from './early-balance';
 import { prepareTrade, tradeRouteTemplates, shopStock, machineMoves } from './trading';
 import { recycleItems } from './buyback';
-import { canEditParty, inventoryItem, editParty, healingLocked, cureMember, TEAM_ACTIONS } from './team';
+import { canEditParty, inventoryItem, editParty, healingLocked, cureMember, abilityItemTarget, TEAM_ACTIONS } from './team';
 import { useTonic } from './blessing-consumables';
 import { dragonKingAbilityOptions, type DragonKingAbility, TONIC_SECRET } from '../../sim/rogue-blessing-permanent';
 import { createBiomeRoutes } from './biome-routes';
@@ -183,6 +187,7 @@ export class RogueEngine {
 			if (!run) return;
 			// Older ledgers have counts but no nature/IV history. Recover only retained, proven captures.
 			for (const mon of [...run.team, ...run.checkpoint.team, ...(run.pendingCapture ? [run.pendingCapture] : [])]) {
+				if (mon.egg) continue;
 				if (run.caught.includes(mon.id)) recordStarterTraits(account, this.content, mon.set, true);
 				recordStarterMoves(account, this.content, mon.set);
 			}
@@ -197,6 +202,7 @@ export class RogueEngine {
 			!this.configured().items.some(item => item.kind === 'revive' && run.bag[item.id] > 0);
 	}
 	private healMember(mon: RoguePokemon) {
+		if (mon.egg) return;
 		ensureMemberMemory(mon);
 		mon.hp = mon.maxhp;
 		mon.status = '';
@@ -251,6 +257,7 @@ export class RogueEngine {
 			templates = tradeRouteTemplates(templates, this.random, run.floor);
 		}
 		if (this.content.blessings) templates = blessingRouteTemplates(run, templates);
+		if (this.content.events) templates = rivalRoutes(run, templates, this.random);
 		run.choices = this.content.biomeEncounters ?
 			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard) : structuredClone(templates);
 		if (this.content.wildTreasures) {
@@ -268,6 +275,15 @@ export class RogueEngine {
 		requireRule(node, '本层内容尚未配置或路线无效。');
 		recordCompanionPreference(run, [], id, this.random);
 		run.node = structuredClone(run.bossPreviews?.[run.floor] || node);
+		if (node.id === 'rival') {
+			delete run.choices; beginRival(run, this.random);
+			if (run.node.encounters.length) {
+				prepareSpiritNode(run, run.node, this.configured(), this.random);
+				this.resolveOpponentGenders(run.node.encounters.flatMap(encounter => encounter.team));
+				if (this.content?.blessings) prepareBlessingEncounter(run, this.random);
+			}
+			return;
+		}
 		if (node.kind === 'trainer' && this.content?.events && beginPoliceEncounter(run, this.random)) {
 			if (run.node.event?.police?.revenge) {
 				prepareSpiritNode(run, run.node, this.configured(), this.random);
@@ -276,7 +292,7 @@ export class RogueEngine {
 			}
 			delete run.choices; return;
 		}
-		if (node.kind === 'trainer') beginExclusiveEncounter(run, this.random);
+		if (node.kind === 'trainer' && this.content?.events && !beginTeraSolo(run, this.random)) beginExclusiveEncounter(run, this.random);
 		const announced = run.bossPreviews?.[run.floor];
 		if (announced) for (const encounter of announced.encounters) {
 			const trainer = encounter.trainer;
@@ -310,6 +326,12 @@ export class RogueEngine {
 				delete encounter.candidates;
 			}
 			this.resolveOpponentGenders(encounter.team);
+		}
+		if (node.kind === 'trainer' && !run.node.event && rivalActive(run) && this.random(100) < 40) {
+			for (const encounter of run.node.encounters) if (encounter.team.length >= 2) {
+				encounter.cooperative = { id: run.rival!.id, name: RIVALS[run.rival!.id].name, team: rivalTeam(run, Math.min(100, Math.max(5, Math.ceil(run.floor / 2))), 3) };
+				encounter.catchable = false;
+			}
 		}
 		prepareTrade(run, this.configured(), this.random);
 		prepareSpiritNode(run, run.node, this.configured(), this.random);
@@ -372,6 +394,8 @@ export class RogueEngine {
 			return;
 		}
 		run.floor++;
+		hatchEggs(account, run, this.configured());
+		expireRival(run);
 		this.enterFloor(run);
 		deliverCompanionPickup(run, this.random);
 	}
@@ -518,6 +542,7 @@ export class RogueEngine {
 				requireRule(account.run?.phase === 'defeated' && account.run.failure?.key === command.value,
 					'本局结算已更新，请刷新后确认。');
 				account.previousBlessings = account.run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
+				account.previousRival = account.run?.rival?.id || account.previousRival;
 				delete account.run; account.opening = { page: 0, skip: false }; return;
 			}
 			if (command.action === 'onboarding') {
@@ -532,6 +557,7 @@ export class RogueEngine {
 				requireRule(account.run?.phase === 'complete' && !account.run.story && !account.pendingClear,
 					'请先读完终章并处理待保存的通关卡。');
 				account.previousBlessings = account.run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
+				account.previousRival = account.run?.rival?.id || account.previousRival;
 				delete account.run;
 				account.opening = { page: 0, skip: false };
 				return;
@@ -671,9 +697,11 @@ export class RogueEngine {
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
 					owner: { id: userid, name },
 					previousBlessings: [...account.previousBlessings || []],
+					previousRival: account.run?.rival?.id || account.previousRival,
 					encounter: 0, attempt: 0, boosts: { ...account.boosts }, startingSlots: account.slots,
 					checkpoint: inventory(initial), caught: [], trainerHistory: { gyms: [], eliteFour: [] },
 				};
+				if (account.run.previousRival) account.previousRival = account.run.previousRival;
 				if (content.routePools) normalizeRouteHistory(account.run);
 				if (content.spirits) account.run.spiritVersion = 1;
 				if (content.blessings) normalizeBlessings(account.run).beforeAdventure = true;
@@ -704,6 +732,7 @@ export class RogueEngine {
 				requireRule(run.phase !== 'battle', '请先结束当前战斗，再放弃冒险。');
 				if (run.postgame?.stage === 'offer') { this.finishGodChallenge(account, run, 'declined'); return; }
 				account.previousBlessings = run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
+				account.previousRival = account.run?.rival?.id || account.previousRival;
 				delete account.run;
 				return;
 			}
@@ -711,7 +740,7 @@ export class RogueEngine {
 			if (TEAM_ACTIONS.includes(command.action)) {
 				editParty(run, command, this.configured());
 				if (this.content?.blessings) syncBlessingParty(run);
-				for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+				for (const mon of run.team.filter(member => !member.egg)) recordStarterMoves(account, this.configured(), mon.set);
 				syncExclusiveItems(run);
 				return;
 			}
@@ -1000,7 +1029,7 @@ export class RogueEngine {
 				requireRule(!healingLocked(run), '本层要求连续战斗，途中不能使用治疗和补给道具。');
 				const item = inventoryItem(this.configured(), command.value || '');
 				const mon = run.team.find(entry => entry.id === command.member);
-				requireRule(item && mon && run.bag[item.id] > 0, '道具、数量或目标无效。');
+				requireRule(item && mon && !mon.egg && run.bag[item.id] > 0, '道具、数量或目标无效。');
 				let count = command.count ?? 1;
 				requireRule(Number.isSafeInteger(count) && count > 0 && count <= run.bag[item.id], '道具使用数量无效或库存不足。');
 				requireRule(item.kind === 'candy' || count === 1, '仅经验糖果支持批量使用。');
@@ -1059,6 +1088,11 @@ export class RogueEngine {
 						const memory = mon.moveMemory?.find(move => move.id === slot.id);
 						if (memory) memory.pp = slot.pp;
 					}
+				} else if (item.kind === 'ability') {
+					const ability = abilityItemTarget(mon, item.id);
+					requireRule(ability, '该伙伴无法使用此特性道具，道具未消耗。');
+					mon.set.ability = ability;
+					mon.abilityPool = [{ id: toID(ability), hidden: toID(Dex.mod('gen9fantasy').species.get(mon.set.species).abilities.H) === toID(ability) }];
 				} else if (item.kind === 'cure') {
 					cureMember(mon, item);
 				} else {
@@ -1078,7 +1112,7 @@ export class RogueEngine {
 				break;
 			default: throw new Error('未知的肉鸽操作。');
 			}
-			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+			for (const mon of run.team.filter(member => !member.egg)) recordStarterMoves(account, this.configured(), mon.set);
 			if (this.content?.blessings) syncBlessingParty(run);
 			syncGrowthParty(run);
 			syncExclusiveItems(run);
@@ -1094,6 +1128,7 @@ export class RogueEngine {
 		requireRule(run.phase === 'battle' && run.battle, '当前没有待建立的战斗。');
 		const encounter = run.node!.encounters[run.encounter];
 		return {
+			cooperative: encounter.cooperative && { opponentOffset: Math.ceil(encounter.team.length / 2) },
 			boss: encounter.boss && structuredClone(encounter.boss),
 			wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',
 			environment: encounter.environment && { ...encounter.environment },
@@ -1112,13 +1147,14 @@ export class RogueEngine {
 			...(run.spirit ? { spirit: { id: run.spirit, floor: run.floor, hazards: encounter.spiritHazards,
 				money: run.spirit === 'gimmighoul' ? run.money : undefined } } : {}),
 			opponentStars: encounter.stars && [...encounter.stars],
-			encounterId: run.battle.encounterId, team: structuredClone(run.team), boosts: { ...run.boosts }, bag: { ...run.bag },
+			encounterId: run.battle.encounterId, team: structuredClone(run.team.filter(mon => !mon.egg)), boosts: { ...run.boosts }, bag: { ...run.bag },
 			catchable: encounter.catchable || !!(run.blessings?.owned.some(entry => entry.family === 'rocketcatch') &&
 				run.node!.kind !== 'boss' && !run.node!.regiBoss &&
 				!['gym', 'elitefour', 'champion'].includes(encounter.trainer?.role || '')),
 			npcCapture: !!encounter.trainer && !!run.blessings?.owned.some(entry => entry.family === 'rocketcatch'),
 			systems: { player: { mega: !!run.megaUnlocked, gmega: !!run.gmegaUnlocked, z: !!run.zUnlocked } },
-			tera: { player: !!run.teraUnlocked, opponent: encounter.boss?.kind === 'summit' || !!encounter.trainer?.tera ||
+			forcedTera: encounter.forcedTera,
+			tera: { player: !!run.teraUnlocked, opponent: !!encounter.forcedTera || encounter.boss?.kind === 'summit' || !!encounter.trainer?.tera ||
 				(run.node!.kind === 'boss' && ELITE_BOSS_FLOORS.has(run.floor)) },
 			progression: !run.postgame && !!this.configured().progression, allowReplacement: this.configured().allowReplacement,
 			caughtSpecies: account.caughtSpecies?.length || 0, caughtSpeciesIds: [...(account.caughtSpecies || [])],
@@ -1200,6 +1236,10 @@ export class RogueEngine {
 					`battle:${result.encounterId}:${mon.id}:${item}`, this.random);
 			}
 		}
+		if (previousTeam.some(mon => mon.egg)) {
+			const joined = run.team.filter(mon => !previousTeam.some(old => old.id === mon.id));
+			run.team = [...previousTeam.map(old => old.egg ? old : run.team.find(mon => mon.id === old.id)!).filter(Boolean), ...joined];
+		}
 		run.bag = { ...result.bag };
 		migrateRetiredBalls(run);
 		for (const mon of run.team) ensureMemberMemory(mon);
@@ -1250,7 +1290,7 @@ export class RogueEngine {
 			companionPickup(run, result.encounterId, this.random);
 		deliverCompanionPickup(run);
 			settleServiceBattle(run, result.won, retreated, !!captures.length);
-			for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+			for (const mon of run.team.filter(member => !member.egg)) recordStarterMoves(account, this.configured(), mon.set);
 			run.encounter++;
 			run.phase = 'settlement'; this.finishSettlement(account, run);
 			return;
@@ -1318,6 +1358,9 @@ export class RogueEngine {
 		const baseLoot = run.node!.wildLoot?.[run.encounter];
 		const psychicFraction = (result.defeated || []).filter(d => !d.captured && run.team.some(mon => mon.id === d.killer && permanentMemberTypes(mon).includes('Psychic'))).length / Math.max(1, result.defeated?.length || 0);
 		const loot = baseLoot && blessingLoot(run, baseLoot, this.random, (result.defeated || []).filter(m => Dex.mod('gen9fantasy').species.get(m.species).types.includes('Rock')).length / Math.max(1, result.defeated?.length || 0), psychicFraction);
+		if (loot && rivalActive(run)) for (const item of Object.keys(loot)) {
+			if (this.random(100) < 10) loot[item]++;
+		}
 		if (loot) {
 			const before = { money: run.money, bag: { ...run.bag } };
 			for (const [id, count] of Object.entries(loot)) run.bag[id] = (run.bag[id] || 0) + count;
@@ -1362,7 +1405,7 @@ export class RogueEngine {
 				}
 			}
 		}
-		for (const mon of run.team) recordStarterMoves(account, this.configured(), mon.set);
+		for (const mon of run.team.filter(member => !member.egg)) recordStarterMoves(account, this.configured(), mon.set);
 
 		if (finishShop()) return;
 		if (run.node!.event?.rematch) settleRematch(account, run, true);

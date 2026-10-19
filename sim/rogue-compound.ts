@@ -21,7 +21,7 @@ function finals(name: string, seen = new Set<string>()): string[] {
 }
 /** Current forms can only choose a descendant, never turn back into a sibling branch. */
 export function compoundFinals(mon: RoguePokemon): string[] {
-	if (mon.compound) return [];
+	if (mon.compound || mon.egg) return [];
 	const species = plain(mon.set.species);
 	if (!species.exists || species.battleOnly || species.isMega || !species.prevo && !species.evos.length) return [];
 	return finals(species.name).map(name => {

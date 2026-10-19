@@ -6,9 +6,9 @@ import { syncGrowthParty, growthPercent } from './growth';
 import { drawBlessingGift, gift } from './blessings';
 
 export const MUSHROOM_FOOD = {
-	tinymushroom: { kind: 'offense', amount: 20, name: '小蘑菇', effect: '双攻' },
-	bigmushroom: { kind: 'defense', amount: 100, name: '大蘑菇', effect: '双防' },
-	balmmushroom: { kind: 'balanced', amount: 200, name: '芳香蘑菇', effect: '双攻、双防' },
+	tinymushroom: { kind: 'offense', amount: 30, name: '小蘑菇', effect: '双攻' },
+	bigmushroom: { kind: 'defense', amount: 150, name: '大蘑菇', effect: '双防' },
+	balmmushroom: { kind: 'balanced', amount: 300, name: '芳香蘑菇', effect: '双攻、双防' },
 } as const;
 export function mushroomGift(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom) {
 	const pool = run.floor < 50 ? ['Paras', 'Paras', 'Morelull', 'Morelull', 'Shroomish', 'Foongus'] :
@@ -26,7 +26,7 @@ export function feedMushroom(run: RogueRun, member: string, item: string, count:
 		throw new Error('请在获得【合成大蘑菇】后，于战斗外投喂。');
 	}
 	const mon = run.team.find(m => m.id === member), food = MUSHROOM_FOOD[item as keyof typeof MUSHROOM_FOOD];
-	if (!mon || !mushroomSpecies(mon.set.species) || !food ||
+	if (!mon || mon.egg || !mushroomSpecies(mon.set.species) || !food ||
 		!Number.isSafeInteger(count) || count < 1 || count > (run.bag[item] || 0)) {
 		throw new Error('请选择蘑菇伙伴及有效的投喂数量。');
 	}

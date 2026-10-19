@@ -1,3 +1,4 @@
+import { randomEncounterAbility } from './encounter-sets';
 import { Dex, toID } from '../../sim/dex';
 import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
@@ -96,8 +97,11 @@ function fishingReward(account: RogueAccount, run: RogueRun, content: RogueConte
 	const mon = drawBlessingGift(run, content, random, { pool: pool.filter(s => content.unlocks[toID(s)]), level, eligibleStage: true, legendaryReward: pool === special });
 	for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) mon.set.ivs[stat] = Math.max(mon.set.ivs[stat], 20 + hits);
 	if (random(10000) < hits * 5) mon.set.shiny = true;
+	const elite = random(100) < 8 + 3 * hits;
+	mon.set.ability = randomEncounterAbility(mon.set.species, random, elite);
+	mon.abilityPool = [{ id: toID(mon.set.ability), hidden: dex.species.get(mon.set.species).abilities.H === mon.set.ability }];
 	rebuildMember(mon, run.boosts); mon.hp = mon.maxhp;
-	if (random(100) < 8 + 3 * hits) {
+	if (elite) {
 		// Fishing quality already raises the IV floor; an elite is not automatically perfect.
 		beginFight(run, [mon.set], '鱼竿猛地一沉！被拉上岸的精英甩了甩尾巴，摆出战斗姿势。钓鱼佬退到一旁：「拿下这条大家伙，我再送你一份好东西！」');
 		// Its saved shiny roll and IVs belong to this catch, not a second wild roll.

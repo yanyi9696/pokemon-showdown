@@ -15,6 +15,8 @@ export interface ScheduledRequest {
 	observation: Observation;
 	seed: PRNGSeed;
 	budgetMs?: number | null;
+	/** Optional wall-clock ceiling, including queue time, for lightweight campaign battles. */
+	wallClockMs?: number;
 	/** Allocated by the trusted room controller, with a per-battle quota. */
 	critical?: boolean;
 	fallbackChoice?: string;
@@ -132,6 +134,9 @@ export class DecisionScheduler {
 		if (input.budgetMs != null && (!Number.isFinite(input.budgetMs) || input.budgetMs < 0)) {
 			throw new Error('invalid-decision-budget');
 		}
+		if (input.wallClockMs !== undefined && (!Number.isFinite(input.wallClockMs) || input.wallClockMs < 0)) {
+			throw new Error('invalid-wall-clock-budget');
+		}
 		instance.latest = input.key.rqid;
 		instance.revision = revision;
 		this.cancelRoom(input.key.roomId);
@@ -156,6 +161,10 @@ export class DecisionScheduler {
 				resolve,
 			};
 			this.queue.push(job);
+			if (input.wallClockMs !== undefined) {
+				job.deadline = created + input.wallClockMs;
+				this.armTimeout(job);
+			}
 			this.pump();
 		});
 	}
@@ -256,7 +265,8 @@ export class DecisionScheduler {
 		}
 		job.started = performance.now();
 		this.reportQueueTime(job, job.started - job.created);
-		job.deadline = job.started + job.budgetMs;
+		job.deadline = Math.min(job.deadline, job.started + job.budgetMs);
+		if (job.timer) clearTimeout(job.timer);
 		if (!slot.worker) {
 			let worker: Worker;
 			try {

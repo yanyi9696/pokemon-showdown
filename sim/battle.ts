@@ -2802,6 +2802,7 @@ export class Battle {
 		case 'move':
 			if (!action.pokemon.isActive) return false;
 			if (action.pokemon.fainted) return false;
+			if (action.rogueEeveeZ) this.actions.useMove('rogueevoboost', action.pokemon, { target: action.pokemon });
 			this.actions.runMove(action.move, action.pokemon, action.targetLoc, {
 				sourceEffect: action.sourceEffect, zMove: action.zmove,
 				maxMove: action.maxMove, originalTarget: action.originalTarget,
@@ -3319,9 +3320,9 @@ export class Battle {
 		if (!this.sides[slotNum]) {
 			// create player
 			const team = this.getTeam(options);
-			if (slot === 'p2' && this.fantasyRogue?.opponentStars && !this.fantasyRogue.duel) {
+			if ((slot === 'p2' || slot === 'p4' && this.fantasyRogue?.cooperative) && this.fantasyRogue?.opponentStars && !this.fantasyRogue.duel) {
 				for (const [i, set] of team.entries()) {
-					set.fantasyRogueScale = this.fantasyRogue.opponentStars[i] === 2 ? 1.2 : 1;
+					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 2, 3][this.fantasyRogue.opponentStars[i + (slot === 'p4' ? this.fantasyRogue.cooperative!.opponentOffset : 0)] || 1];
 				}
 			}
 			const rogueSide = slot === 'p1' ? this.fantasyRogue : this.fantasyRogue?.duel;

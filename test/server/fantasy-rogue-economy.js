@@ -67,7 +67,7 @@ describe('Fantasy Rogue economy', () => {
 			assert.deepEqual(account(), paid);
 		}
 		assert.equal(account().run.floor, 2);
-		assert.equal(account().points, 0);
+		assert.equal(account().points, 20);
 	});
 	it('gives a captured pack the same loot and preserves prior floor loot on defeat or retreat', () => {
 		cmd('select', { value: 'wild0' });
@@ -115,13 +115,13 @@ describe('Fantasy Rogue economy', () => {
 		fight();
 		assert.equal(account().run.money, before.money + 1600);
 		assert.deepEqual(account().run.bag, before.bag);
-		assert.equal(account().points, 1);
+		assert.equal(account().points, 21);
 		floor(30);
 		const boss = account().run;
 		fight();
 		assert.equal(account().run.money, boss.money);
 		assert.equal(account().run.bag.tinymushroom, 1);
-		assert.equal(account().points, 2);
+		assert.equal(account().points, 22);
 		assert.equal(account().run.lastReward.points, 1);
 		const trainer = structuredClone(engine.content.floors[7].find(node => node.kind === 'trainer'));
 		prepareEconomy(trainer, 7, () => 0);

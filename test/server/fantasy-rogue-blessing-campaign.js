@@ -197,10 +197,10 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		run.floor = 51; run.node = { id: 'event', kind: 'event', encounters: [] };
 		run.blessings.psychic = 98;
 		b.recordNegativeBlessingEvent(run, 'bad'); b.recordNegativeBlessingEvent(run, 'bad');
-		assert.equal(run.blessings.psychic, 101.15);
+		assert.equal(run.blessings.psychic, 101.4);
 		b.completeBlessingFloor(account, run, content, zero);
-		assert.equal(run.blessings.psychic, 101.55);
-		assert.equal(JSON.parse(JSON.stringify(run)).blessings.psychic, 101.55);
+		assert.equal(run.blessings.psychic, 101.9);
+		assert.equal(JSON.parse(JSON.stringify(run)).blessings.psychic, 101.9);
 	});
 	it('does not feed gifted moves into permanent memory and preserves borrowed PP across equipment changes', () => {
 		const { run } = setup(), mon = run.team[0];
@@ -319,7 +319,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 			const a = battle.p1.active[0], z = battle.p2.active[0], move = battle.dex.getActiveMove('tackle');
 			assert.equal(battle.runEvent('BasePower', a, z, move, 40), 42);
 			assert.equal(battle.runEvent('BasePower', z, a, move, 40), 40);
-			assert.equal(battle.runEvent('ModifyDamage', z, a, battle.dex.getActiveMove('snore'), 100), 104);
+			assert.equal(battle.runEvent('ModifyDamage', z, a, battle.dex.getActiveMove('snore'), 100), 105);
 			assert.equal(JSON.stringify(cards), before);
 		} finally { battle.destroy(); }
 	});

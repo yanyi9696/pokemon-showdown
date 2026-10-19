@@ -144,11 +144,12 @@ export function editSpiritBox(run: RogueRun, member: string, target?: string) {
 	const teamIndex = run.team.findIndex(mon => mon.id === member);
 	const boxIndex = run.box.findIndex(mon => mon.id === member);
 	if (teamIndex >= 0) {
-		requireRule(run.team.length > 1 && run.box.length < 30, '至少保留一名队员，且箱子不能超过 30 只。');
+		requireRule(run.team.some((mon, i) => i !== teamIndex && !mon.egg) && run.box.length < 30, '至少保留一名已孵化的队员，且箱子不能超过 30 只。');
 		run.box.push(run.team.splice(teamIndex, 1)[0]);
 	} else {
 		requireRule(boxIndex >= 0, '箱子中没有这位伙伴。');
 		const replace = run.team.findIndex(mon => mon.id === target);
+		requireRule(!run.box[boxIndex].egg || replace < 0 || run.team.some((mon, i) => i !== replace && !mon.egg), '队伍中至少需要一名已孵化的伙伴。');
 		if (replace >= 0) [run.team[replace], run.box[boxIndex]] = [run.box[boxIndex], run.team[replace]];
 		else {
 			requireRule(run.team.length < roguePartyLimit(run.spirit), '队伍已满，请选择交换的队员。');
@@ -159,7 +160,7 @@ export function editSpiritBox(run: RogueRun, member: string, target?: string) {
 
 export function mergeSpiritPokemon(run: RogueRun, member: string, consume: string[] | undefined) {
 	requireRule(run.spirit === 'zygarde' && run.box && canEditParty(run) && !healingLocked(run), '当前不能升星。');
-	const owned = [...run.team, ...run.box];
+	const owned = [...run.team, ...run.box].filter(mon => !mon.egg);
 	const keep = owned.find(mon => mon.id === member);
 	requireRule(keep && (keep.stars || 1) < 4 && Array.isArray(consume) && consume.length === 2 &&
 		new Set([member, ...consume]).size === 3, '请保留一只并选择两只相同伙伴，四星不能继续合成。');

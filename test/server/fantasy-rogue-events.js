@@ -224,8 +224,8 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 	it('only charges psychic once for actual negative outcomes and never for a voluntary room battle', () => {
 		store.change('eventtester', a => { a.run.blessings.owned.push({ id: 'psychic', family: 'psychic', tier: 'prismatic', floor: 50 }); });
 		enter('room'); choose('fight'); assert.equal(account().run.blessings.psychic || 0, 0);
-		enter('mushrooms'); choose('taste', 90); assert.equal(account().run.blessings.psychic, 25);
-		enter('mysteryball', 22); choose('open', 90); assert.equal(account().run.blessings.psychic, 50);
+		enter('mushrooms'); choose('taste', 90); assert.equal(account().run.blessings.psychic, 30);
+		enter('mysteryball', 22); choose('open', 90); assert.equal(account().run.blessings.psychic, 60);
 	});
 	it('saves a real spectator battle and settles according to its actual winner without player progress', () => {
 		enter('mushrooms'); choose('taste');
@@ -304,7 +304,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		for (let i = 0; i < 20; i++) assert.equal(drawGiftSpecies(['Squirtle'], 'fire', random), 'Squirtle');
 		const run = account().run; run.startCard = 'all';
 		const mon = drawBlessingGift(run, content, n => n === 1000 ? 2 : 0, { pool: ['Pikachu'] });
-		assert.equal(mon.set.species, 'Pikachu'); assert.equal(mon.set.shiny, true);
+		assert.equal(mon.set.species, 'Pichu'); assert.equal(mon.set.shiny, true);
 	});
 	it('keeps wild loot budgets inclusive of the existing drop, not paid twice', () => {
 		assert.equal(eventBudget(21, 1.15), 1100);
@@ -328,6 +328,8 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		const { rogueEventDamage } = require('../../dist/sim/fantasy-rogue');
 		const state = { eventBuff: true }, mockBattle = { fantasyRogue: state };
 		const a = { side: { id: 'p1' }, battle: mockBattle }, b = { side: { id: 'p2' }, battle: mockBattle };
+		a.isAlly = mon => mon.side === a.side;
+		b.isAlly = mon => mon.side === b.side;
 		assert.equal(rogueEventDamage(100, b, a, { effectType: 'Move' }), 120);
 		assert.equal(rogueEventDamage(100, a, b, { effectType: 'Move' }), 90);
 		assert.equal(rogueEventDamage(100, b, a, { effectType: 'Move', ohko: true }), 100);
@@ -343,8 +345,8 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 			battle.makeChoices('team 1', 'team 1');
 			const before = battle.sides.map(side => side.active[0].hp);
 			battle.makeChoices('move 1', 'move 1');
-			assert.equal(before[0] - battle.p1.active[0].hp, 36);
-			assert.equal(before[1] - battle.p2.active[0].hp, 48);
+			assert.equal(before[0] - battle.p1.active[0].hp, 40);
+			assert.equal(before[1] - battle.p2.active[0].hp, 40);
 		} finally { battle.destroy(); }
 	});
 });

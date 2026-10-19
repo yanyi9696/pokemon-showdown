@@ -19,6 +19,8 @@ export interface RogueTrainerCandidate {
 	team: PokemonSet[];
 }
 export interface RogueEncounter {
+	cooperative?: { id: string, name: string, team: PokemonSet[] };
+	forcedTera?: boolean;
 	/** Stable identity for successive fights inside one event; retries reuse it. */
 	key?: string;
 	wildPack?: { lootRolls: number };
@@ -75,7 +77,7 @@ export interface RogueItem {
 	id: string;
 	name: string;
 	singleMove?: boolean;
-	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic' | 'crown';
+	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic' | 'crown' | 'ability';
 	nature?: string; move?: string; description?: string;
 	/** Omitted on cure items means all persistent status conditions. */
 	cureStatuses?: string[];
@@ -139,6 +141,8 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	rival?: import('./rivals').RivalState;
+	previousRival?: import('./rival-data').RivalID;
 	honeymoon?: import('./honeymoon').HoneymoonTrip;
 	exclusiveItems?: Record<string, { since: number, misses: number, cooldown: number, obtained?: boolean }>;
 	auction?: import('./auction').RogueAuction;
@@ -224,6 +228,7 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	previousRival?: import('./rival-data').RivalID;
 	honeymoon?: import('./honeymoon').HoneymoonTrip;
 	/** Account-wide acknowledgement, independent of adventures and codex unlocks. */
 	onboardingSeen?: boolean;

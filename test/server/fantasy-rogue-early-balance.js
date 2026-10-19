@@ -94,12 +94,13 @@ describe('Fantasy Rogue early growth and preparation', function () {
 				const items = routeCandyReward(floor, kind), value = exp(items);
 				assert(value >= previous, `${kind}, floor ${floor}`);
 				// No tier-change payout cliff beyond the floor's ordinary growth increment.
-				if (floor > 1) assert(value - previous <= 100 + 6 * floor * (kind === 'trainer' ? 1.6 : kind === 'reward' ? .2 : 1));
+				// Later floors now deliberately grow faster; grade unlocks still cannot create a payout cliff.
+				if (floor > 1) assert(value - previous <= 200 + 12 * floor * (kind === 'trainer' ? 1.6 : kind === 'reward' ? .2 : 1));
 				for (const id of Object.keys(items)) assert(CANDY_SHOP[id].floor <= floor);
 				previous = value;
 			}
 		}
-		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [100, 400, 1000, 2200, 4000]);
+		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [100, 400, 1000, 1900, 3500]);
 		for (let f = 1; f <= 200; f++) {
 			assert(exp(routeCandyReward(f, 'trainer')) >= exp(routeCandyReward(f, 'elite')));
 			assert(encounterCoins(f) > eliteTreasureBudget(f) + expectedWildLoot(f));

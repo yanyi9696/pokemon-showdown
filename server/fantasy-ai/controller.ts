@@ -77,7 +77,7 @@ export class AIController {
 		options.scheduler.register(this.schedulerRoomId, options.instanceId, milliseconds => {
 			// Refund queue waiting synchronously, including cancelled queued jobs,
 			// before an undo/retry reads the same turn's remaining thinking budget.
-			if (this.queuedWindow) this.queuedWindow.deadline += milliseconds;
+			if (this.queuedWindow && !this.options.rogue) this.queuedWindow.deadline += milliseconds;
 		});
 		this.metrics = {
 			roomId: battle.roomid, trainer: options.trainer.id, difficulty: options.difficulty,
@@ -205,6 +205,7 @@ export class AIController {
 		this.rng.random();
 		const window = this.timing.allocate(
 			observation, this.battle.turn, received, this.options.trainer.format, excluded);
+		if (this.options.rogue) window.deadline = Math.min(window.deadline, received + 4500);
 		this.queuedWindow = window;
 		this.metrics.criticalDecisions = this.timing.criticalDecisions;
 		this.metrics.criticalDecisionReasons = { ...this.timing.criticalReasons };
@@ -213,6 +214,7 @@ export class AIController {
 		void this.options.scheduler.submit({
 			key, trainer: this.options.trainer, observation, seed, excluded,
 			budgetMs: Number.isFinite(window.deadline) ? Math.max(0, window.deadline - performance.now()) : null,
+			...(this.options.rogue ? { wallClockMs: Math.max(0, received + 4500 - performance.now()) } : {}),
 			critical: !!window.criticalReason, fallbackChoice: fallback,
 			maxRollouts: this.options.maxRollouts,
 		}).then(result => {

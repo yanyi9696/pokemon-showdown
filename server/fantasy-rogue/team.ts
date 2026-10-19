@@ -18,6 +18,9 @@ function requireRule(ok: unknown, message: string): asserts ok {
 	if (!ok) throw new Error(message);
 }
 export function inventoryItem(content: RogueContent, id: string): RogueItem | undefined {
+	if (id === 'abilitycapsule' || id === 'abilitypatch') return { id, name: id === 'abilitycapsule' ? '特性胶囊' : '特性膏药',
+		kind: 'ability', price: id === 'abilitycapsule' ? 8000 : 12000, shopFloor: false,
+		description: id === 'abilitycapsule' ? '切换另一项普通特性；使用前可查看目标特性。' : '切换隐藏特性与第一项普通特性；使用前可查看目标特性。' };
 	const type = emblemType(id);
 	if (type) return {id, name: `${BLESSING_TYPES[type]}属性转`, kind: 'emblem', price: 0,
 		shopFloor: false, icon: toID(type + 'gem')};
@@ -27,6 +30,14 @@ export function inventoryItem(content: RogueContent, id: string): RogueItem | un
 	if (special) return special;
 	const item = dex.items.get(id);
 	return item.exists ? { id: item.id, name: item.name, kind: 'held', price: 0, icon: item.id } : undefined;
+}
+export function abilityItemTarget(mon: RoguePokemon, item: string): string | undefined {
+	if (mon.compound) return;
+	const species = dex.species.get(mon.set.species), current = toID(mon.set.ability);
+	if (item === 'abilitypatch') return species.abilities.H ?
+		(toID(species.abilities.H) === current ? species.abilities[0] : species.abilities.H) : undefined;
+	const normal = [species.abilities[0], species.abilities[1]].filter(Boolean) as string[];
+	return item === 'abilitycapsule' && normal.some(a => toID(a) === current) ? normal.find(a => toID(a) !== current) : undefined;
 }
 export function cureMember(mon: RoguePokemon, item: RogueItem) {
 	const statuses = { ...mon.statuses };
@@ -51,7 +62,7 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 		return;
 	}
 	const mon = run.team.find(member => member.id === command.member);
-	requireRule(mon, '队伍成员无效。');
+	requireRule(mon && !mon.egg, '蛋尚未孵化，不能调整战斗配置。');
 	ensureMemberMemory(mon);
 	switch (command.action) {
 	case 'equipemblem': {

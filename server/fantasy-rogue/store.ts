@@ -37,7 +37,7 @@ export class RogueStore {
 		const row = this.db.prepare('SELECT data FROM rogue_accounts WHERE userid = ?')
 			.get(userid) as { data: string } | undefined;
 		return row ? JSON.parse(row.data) : {
-			revision: 0, points: 0, boosts: emptyRogueStats(), slots: 1, captures: {}, unlocked: [],
+			revision: 0, points: 20, boosts: emptyRogueStats(), slots: 1, captures: {}, unlocked: [],
 		};
 	}
 	/** Revision and idempotency checks execute in the same write transaction as the mutation. */

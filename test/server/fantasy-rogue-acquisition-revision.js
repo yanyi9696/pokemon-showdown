@@ -68,8 +68,8 @@ describe('Fantasy Rogue acquisition and healing revision', () => {
 				...(enhanced ? {demonstrated: 'partner'} : {})}}};
 			const options = rewardChoices(run); assert.equal(options[0].id, 'recovery');
 			chooseReward(run, content, () => 0, 'recovery');
-			assert.equal(run.node.reward.items.revive, 2);
-			assert.equal(run.node.reward.items[floor < 29 ? 'potion' : floor < 69 ? 'superpotion' : 'hyperpotion'], enhanced ? 6 : 4);
+			assert.equal(run.node.reward.items.revive || 0, floor >= 20 || enhanced ? 2 : 0);
+			assert.equal(run.node.reward.items[floor < 29 ? 'potion' : floor < 69 ? 'superpotion' : 'hyperpotion'], (enhanced ? 6 : 4) - (floor < 20 ? 2 : 0));
 			assert.equal(run.node.reward.items.ether, enhanced ? 2 : 1);
 			assert.throws(() => chooseReward(run, content, () => 0, 'recovery'));
 		}

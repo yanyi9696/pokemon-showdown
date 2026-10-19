@@ -34,6 +34,7 @@ import {
 
 /** A single action that can be chosen. Choices will have one Action for each pokemon. */
 export interface ChosenAction {
+	rogueEeveeZ?: boolean;
 	choice: 'move' | 'switch' | 'instaswitch' | 'revivalblessing' | 'team' | 'shift' | 'pass' | 'rogueball';// action type
 	pokemon?: Pokemon; // the pokemon doing the action
 	targetLoc?: number; // relative location of the target to pokemon (move action only)
@@ -325,7 +326,7 @@ export class Side {
 				if (action.zmove) details += ` zmove`;
 				if (action.maxMove) details += ` dynamax`;
 				if (action.terastallize) details += ` terastallize`;
-				return `move ${action.moveid}${details}`;
+				return `${action.rogueEeveeZ ? 'rogueeeveez ' : ''}move ${action.moveid}${details}`;
 			case 'switch':
 			case 'instaswitch':
 			case 'revivalblessing':
@@ -893,7 +894,7 @@ export class Side {
 		}
 		const targetPokemon = this.pokemon[slot];
 		if (waitingRogueCommander(targetPokemon)) return this.emitChoiceError('幻想超梦仍在指挥，五位守卫倒下后才会出场。');
-		if (this.id === 'p2' && this.battle.fantasyRogue?.wild && this.requestState === 'move') {
+		if ((this.id === 'p2' || this.id === 'p4') && this.battle.fantasyRogue?.wild && this.requestState === 'move') {
 			return this.emitChoiceError('野生宝可梦不会主动替换。');
 		}
 
@@ -1119,6 +1120,11 @@ export class Side {
 		for (const choiceString of choiceStrings) {
 			let [choiceType, data] = Utils.splitFirst(choiceString.trim(), ' ');
 			data = data.trim();
+			const eeveeBonus = choiceType === 'rogueeeveez';
+			if (eeveeBonus) {
+				if (!data.startsWith('move ') || !chooseRogueEeveeZ(this)) return this.emitChoiceError('请同时选择本回合要使用的招式。');
+				choiceType = 'move'; data = data.slice(5).trim();
+			}
 			if (choiceType === 'testfight') {
 				choiceType = 'move';
 				data = 'testfight';
@@ -1127,9 +1133,6 @@ export class Side {
 			switch (choiceType) {
 			case 'roguecompanionz':
 				if (!chooseCompanionZ(this, data || '1')) return false;
-				break;
-			case 'rogueeeveez':
-				if (!chooseRogueEeveeZ(this)) return false;
 				break;
 			case 'roguepsychic':
 				if (!chooseRoguePsychic(this, data || '1')) return false;
@@ -1196,6 +1199,7 @@ export class Side {
 					}
 				}
 				if (!this.chooseMove(data, targetLoc, event)) return false;
+				if (eeveeBonus) this.choice.actions[this.choice.actions.length - 1].rogueEeveeZ = true;
 				break;
 			case 'switch':
 				this.chooseSwitch(data);

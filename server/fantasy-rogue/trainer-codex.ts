@@ -1,3 +1,4 @@
+import { RIVALS } from './rival-data';
 import {
 	COMPANIONS, companionHasGift, companionGiftOptions, companionPreferenceText, type CompanionID,
 } from '../../sim/rogue-companions';
@@ -26,6 +27,7 @@ export function trainerCodex() {
 		`「${COMPANION_GIFT_LINES[key]}」` : '提供战斗预演，没有偏好赠礼。') + `对应祝福：【${def.name}】。`);
 		people.get(id)!.category = 'companion'; people.get(id)!.id = `companion:${id}`;
 	}
+	for (const [id, rival] of Object.entries(RIVALS)) add(id, rival.name, 'rival', `来自${rival.region}的劲敌。前 20 层初识后锁定八段奇遇，至少间隔 10 层重逢，约 100、150 层迎来进阶与最终切磋。交谈与合作提升熟悉度，可短期同行 5～8 层；最终无论胜负都会永久同行。`);
 	for (const trainer of TrainerBossData) add(trainer.id, trainer.name.replace(/[（(].*$/, ''), trainer.role,
 		trainer.role === 'gym' ? '以道馆馆主身份在塔中接受挑战。战胜后会认可你的实力，并恢复队伍状态。' :
 		trainer.role === 'elitefour' ? '塔中四天王之一，使用自己擅长的阵容检验训练家的战术。' : '塔中的冠军挑战者，会全力回应你与伙伴的默契。');

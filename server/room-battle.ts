@@ -1,3 +1,4 @@
+import { RogueCoopController } from './fantasy-rogue/coop-controller';
 /**
  * Room Battle
  * Pokemon Showdown - http://pokemonshowdown.com/
@@ -27,6 +28,7 @@ import { RoguePreviewController } from './fantasy-rogue/preview-controller';
 import type { RogueBattleResult, RogueBattleState, RoguePokemon } from '../sim/fantasy-rogue';
 
 export interface RogueRoomOptions {
+	cooperative?: { name: string, avatar: string, ally: string, foe: string, foeName: string };
 	preview?: 'sada' | 'turo';
 	state: RogueBattleState;
 	floor: number;
@@ -575,6 +577,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	options: RoomBattleOptions;
 	readonly fantasyAI?: AIController;
 	readonly roguePreview?: RoguePreviewController;
+	readonly rogueCoop?: RogueCoopController;
 	frozen?: boolean;
 	dataResolvers?: [((args: string[]) => void), ((error: Error) => void)][];
 	constructor(room: GameRoom, options: RoomBattleOptions) {
@@ -586,11 +589,11 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			options.players.length !== 2 || options.fantasyAI || options.fantasyRogue || options.rated || options.tour)) {
 			throw new Error('Invalid rogue duel options');
 		}
-		if (options.fantasyRogue && (!options.fantasyAI || options.format !== 'gen9fantasyrogue')) {
+		if (options.fantasyRogue && (!options.fantasyAI || options.format !== (options.fantasyRogue.cooperative ? 'gen9fantasyroguecoop' : 'gen9fantasyrogue'))) {
 			throw new Error('Invalid rogue battle options');
 		}
 		if (options.fantasyAI && (options.players.length !== 1 || options.rated || options.tour ||
-			options.inputLog || format.gameType !== 'singles' || format.playerCount !== 2)) {
+			options.inputLog || (options.fantasyRogue?.cooperative ? format.gameType !== 'multi' || format.playerCount !== 4 : format.gameType !== 'singles' || format.playerCount !== 2))) {
 			throw new Error('Invalid AI battle options');
 		}
 		if (!this.title.endsWith(" Battle")) this.title += " Battle";
@@ -614,6 +617,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 
 		this.room.battle = this;
 		if (options.fantasyAI) this.fantasyAI = new AIController(this, options.fantasyAI);
+		if (options.fantasyRogue?.cooperative) this.rogueCoop = new RogueCoopController(this);
 		if (options.fantasyRogue?.preview) this.roguePreview = new RoguePreviewController(this);
 
 		const battleOptions = {
@@ -638,7 +642,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		for (let i = 0; i < this.playerCap; i++) {
 			const p = options.players[i];
 			const player = this.addPlayer(p?.user || null, p ||
-				(i === 1 && options.fantasyAI ? { team: options.fantasyAI.trainer.packedTeam } : null));
+				(i === 1 && options.fantasyAI ? { team: options.fantasyAI.trainer.packedTeam } : options.fantasyRogue?.cooperative && i >= 2 ? { team: i === 2 ? options.fantasyRogue.cooperative.ally : options.fantasyRogue.cooperative.foe } : null));
 			if (!player) throw new Error(`failed to create player ${i + 1} in ${room.roomid}`);
 		}
 		if (options.inputLog) {
@@ -845,6 +849,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			break;
 
 		case 'update':
+			this.rogueCoop?.update(lines.slice(1).join('\n'));
 			this.roguePreview?.update(lines.slice(1).join('\n'));
 			this.fantasyAI?.update(lines.slice(1).join('\n'));
 			for (const line of lines.slice(1)) {
@@ -869,6 +874,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 				break;
 			}
 			if (player?.isAI && /^\|error\|\[(Invalid|Unavailable) choice\]/.test(lines[2])) {
+				if (this.rogueCoop) { this.rogueCoop.invalidChoice(slot); break; }
 				this.fantasyAI?.invalidChoice();
 				const request = player.request;
 				request.isWait = false;
@@ -898,7 +904,10 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 					choice: '',
 				};
 				this.requestCount++;
-				if (player?.isAI) this.fantasyAI?.request(request, this.rqid);
+				if (player?.isAI) {
+					if (this.rogueCoop) this.rogueCoop.request(slot, request, this.rqid);
+					else this.fantasyAI?.request(request, this.rqid);
+				}
 				if (slot === 'p1') this.roguePreview?.request(request, this.rqid);
 				player?.sendRoom(`|request|${requestJSON}`);
 				break;
@@ -1176,7 +1185,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (playerOpts) {
 			const options = {
 				name: player.name,
-				avatar: player.isAI ? this.options.fantasyAI?.trainer.avatar || '' : user ? `${user.avatar}` : '',
+				avatar: player.isAI ? (player.slot === 'p3' ? this.options.fantasyRogue?.cooperative?.avatar : this.options.fantasyAI?.trainer.avatar) || '' : user ? `${user.avatar}` : '',
 				team: playerOpts.team || undefined,
 				rating: Math.round(playerOpts.rating || 0),
 			};
@@ -1252,6 +1261,8 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	}
 
 	makePlayer(user: User) {
+		const coop = this.options.fantasyRogue?.cooperative;
+		if (coop && this.players.length >= 2) return new RoomBattleAIPlayer(this, (this.players.length + 1) as PlayerIndex, this.players.length === 2 ? coop.name : coop.foeName);
 		if (this.options.fantasyAI && this.players.length === 1) {
 			return new RoomBattleAIPlayer(this, 2, this.options.fantasyRogue ? this.options.fantasyAI.trainer.name : `AI · ${this.options.fantasyAI.trainer.name}`);
 		}
@@ -1368,6 +1379,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	override destroy() {
 		this.options.fantasyRogue?.onClose();
 		this.fantasyAI?.finish('destroyed');
+		this.rogueCoop?.finish();
 		if (!this.ended) {
 			this.setEnded();
 			this.room.parent?.game?.onBattleWin?.(this.room, '');
@@ -1467,7 +1479,7 @@ export class RoomBattleStream extends BattleStream {
 		if (this.fantasyAI === 'hard' && type === 'sideupdate' && data.startsWith('p2\n|request|')) {
 			this.opponentChoiceVersion++;
 		}
-		if (this.fantasyAI && !this.snapshotSent && type === 'sideupdate' &&
+		if (this.fantasyAI && !this.snapshotSent && this.battle.gameType === 'singles' && type === 'sideupdate' &&
 			data.startsWith('p2\n|request|') && this.battle.requestState === 'teampreview') {
 			this.push(this.fantasyAI === 'hard' ? `fantasyai\n${JSON.stringify(captureInitialTeam(this.battle, 'p1'))}` :
 				`fantasyaimoves\n${JSON.stringify(captureInitialMoves(this.battle, 'p1'))}`);

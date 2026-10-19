@@ -48,10 +48,13 @@ describe('Fantasy Rogue additional tower spirits', () => {
 		assert.equal(rogueCoinDamageMultiplier(10000000), 3);
 		begin('gimmighoul', undefined, { money: 2500000 });
 		const a = battle.p1.active[0], b = battle.p2.active[0], hp = a.hp, foeHP = b.hp;
+		const move = battle.dex.getActiveMove('tackle');
+		assert.equal(battle.runEvent('ModifyDamage', a, b, move, 100), 150);
+		assert.equal(battle.runEvent('ModifyDamage', b, a, move, 100), 100);
 		turn('move 1', 'move 2');
-		assert.equal(a.hp, hp - 40); assert.equal(b.hp, foeHP - 60);
+		assert.equal(a.hp, hp - 40); assert.equal(b.hp, foeHP - 40);
 		battle.damage(10, b, a, battle.dex.conditions.get('psn'));
-		assert.equal(b.hp, foeHP - 70);
+		assert.equal(b.hp, foeHP - 50);
 	});
 	it('starts permanent Trick Room, allows closing, and later casts have ordinary duration', () => {
 		begin('palkia');
@@ -208,7 +211,10 @@ describe('Fantasy Rogue additional tower spirits', () => {
 			p1: { name: 'One', team: state.team.map(mon => mon.set) }, p2: { name: 'Two', team: state.duel.team.map(mon => mon.set) } });
 		battle.choose('p1', 'team 1'); battle.choose('p2', 'team 1');
 		const p1 = battle.p1.active[0], p2 = battle.p2.active[0], hp = p1.hp;
-		turn('move 1', 'move 1'); assert.equal(p1.hp, hp - 44); assert.equal(p2.hp, hp - 60);
+		const move = battle.dex.getActiveMove('tackle');
+		assert.equal(battle.runEvent('ModifyDamage', p1, p2, move, 100), 150);
+		assert.equal(battle.runEvent('ModifyDamage', p2, p1, move, 100), 110);
+		turn('move 1', 'move 1'); assert.equal(p1.hp, hp - 40); assert.equal(p2.hp, hp - 40);
 		assert.equal(p1.storedStats.atk, state.team[0].stats.atk);
 	});
 });

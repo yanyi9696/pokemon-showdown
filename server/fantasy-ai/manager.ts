@@ -227,7 +227,7 @@ export class AIChallengeManager {
 		if (this.disposed || !this.settings.enabled) throw new Chat.ErrorMessage('AI 对战尚未开放。');
 		if (Rooms.global.lockdown && Rooms.global.lockdown !== 'pre') throw new Chat.ErrorMessage('服务器维护中，请稍后开始战斗。');
 		if (!user.named || !user.connected || Punishments.isBattleBanned(user)) throw new Chat.ErrorMessage('当前账号不能开始对局。');
-		if (trainer.format !== 'gen9fantasyrogue' || !Teams.unpack(team)?.length ||
+		if (trainer.format !== (rogue.cooperative ? 'gen9fantasyroguecoop' : 'gen9fantasyrogue') || !Teams.unpack(team)?.length ||
 			!Teams.unpack(trainer.packedTeam)?.length) throw new Error('Invalid internal rogue teams');
 		const existing = [...this.reservations.values()].filter(entry =>
 			(entry.room?.battle?.p1.id || entry.user.id) === user.id);

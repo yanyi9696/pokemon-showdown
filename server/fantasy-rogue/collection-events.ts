@@ -36,10 +36,10 @@ export function collectionView(run: RogueRun, now = Date.now()) {
 	}
 	if (event.id === 'feathers') return { options: [
 		option('feathertrade', '用美丽之羽交换训练羽毛', '5 根【美丽之羽】换 6 根随机能力羽毛。', (run.bag.prettyfeather || 0) < 5),
-		...run.team.filter(m => featheredSpecies(m.set.species)).map(m => option(`show:${m.id}`, `展示 ${m.set.species}`)),
+		...run.team.filter(m => !m.egg && featheredSpecies(m.set.species)).map(m => option(`show:${m.id}`, `展示 ${m.set.species}`)),
 		option('leave', '把这次机会留到下次。')] };
 	return { options: [
-		...run.team.filter(m => mushroomSpecies(m.set.species)).map(m => option(`show:${m.id}`, `展示 ${m.set.species}`)),
+		...run.team.filter(m => !m.egg && mushroomSpecies(m.set.species)).map(m => option(`show:${m.id}`, `展示 ${m.set.species}`)),
 		option('collectorshop', '看看蘑菇的回收价', '所有蘑菇按普通兑换价的 125% 回收。')] };
 }
 

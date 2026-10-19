@@ -18,11 +18,11 @@ The column value will be ignored for repeat sections.
 */
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
-import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, rogueEventDamage, startRogueArea } from '../sim/fantasy-rogue';
+import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, startRogueArea } from '../sim/fantasy-rogue';
 import { isRogueBoss, megaRogueBoss } from '../sim/rogue-bosses';
 import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
 	blessingEffectiveness, blessingHit } from '../sim/fantasy-rogue-blessings';
-import { maintainRogueEnvironment, startRogueSpirit, rogueCoinDamageMultiplier,
+import { maintainRogueEnvironment, startRogueSpirit,
 	resolveRogueFutureAttacks } from '../sim/fantasy-rogue-spirits';
 
 export const Formats: import('../sim/dex-formats').FormatList = [
@@ -39,23 +39,11 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onBattleStart() { startRogueArea(this); startRogueSpirit(this); },
 		onResidualOrder: 100,
 		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
-		onDamage(damage, target, source, effect) {
-			damage = rogueEventDamage(damage, target, source, effect);
-			const spirit = this.fantasyRogue?.spirit;
-			if (!spirit || effect.effectType !== 'Move' || (effect as ActiveMove).ohko || !source || target.side === source.side) return blessingDamage(damage, target, source, effect);
-			if (spirit.id === 'regigigas') damage = Math.max(1, Math.floor(damage * (source.side.id === 'p1' ? 2 : 0.5)));
-			if (spirit.id === 'gimmighoul' && source.side.id === 'p1') {
-				damage = Math.max(1, Math.floor(damage * rogueCoinDamageMultiplier(spirit.money)));
-			}
-			if (spirit.id === 'darkrai' && source.side.id === 'p1') {
-				damage = Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));
-			}
-			return blessingDamage(damage, target, source, effect);
-		},
+		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
 			blessingHit(damage, target, source, move);
 			if (this.fantasyRogue?.spirit?.id === 'yveltal' && source.side.id === 'p1' &&
-				target.side.id === 'p2' && source.hp > 0 && damage > 0) {
+				!source.isAlly(target) && source.hp > 0 && damage > 0) {
 				this.heal(Math.max(1, Math.floor(damage / 2)), source, source, this.format);
 			}
 		},
@@ -72,7 +60,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); },
 		onBeforeTurn(pokemon) { megaRogueBoss(pokemon); },
 		onTrapPokemon(pokemon) {
-			if (pokemon.side.id === 'p2' && (this.fantasyRogue?.wild ||
+			if ((pokemon.side.id === 'p2' || pokemon.side.id === 'p4') && (this.fantasyRogue?.wild ||
 				this.fantasyRogue?.boss?.kind === 'arceus' ||
 				this.fantasyRogue?.boss?.kind === 'summit' && pokemon.baseSpecies.name.includes('Mewtwo'))) pokemon.trapped = true;
 		},
@@ -94,18 +82,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onBattleStart() { startRogueSpirit(this); },
 		onResidualOrder: 100,
 		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
-		onDamage(damage, target, source, effect) {
-			damage = rogueEventDamage(damage, target, source, effect);
-			if (effect.effectType !== 'Move' || (effect as ActiveMove).ohko || !source || target.side === source.side) return blessingDamage(damage, target, source, effect);
-			const spirit = this.fantasyRogue?.spirit;
-			if (spirit?.id === 'darkrai') damage = Math.max(1, Math.floor(damage * (1 + Math.floor(spirit.floor / 2) / 100)));
-			if (spirit?.id === 'gimmighoul') {
-				const money = source.side.id === 'p1' ? spirit.money : this.fantasyRogue?.duel?.money;
-				damage = Math.max(1, Math.floor(damage * rogueCoinDamageMultiplier(money)));
-			}
-			// With Regigigas on both sides, outgoing ×2 and incoming ×0.5 cancel exactly.
-			return blessingDamage(damage, target, source, effect);
-		},
+		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
 			blessingHit(damage, target, source, move);
 			if (this.fantasyRogue?.spirit?.id === 'yveltal' && source.side !== target.side && source.hp > 0 && damage > 0) {
@@ -5102,3 +5079,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['HP Percentage Mod', 'Cancel Mod', 'Desync Clause Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
 	},
 ];
+
+// Internal four-seat doubles: the player and rival each control their own party.
+const rogueCoopBase = Formats.find(format => 'name' in format && format.name === '[Gen 9] Fantasy Rogue') as import('../sim/dex-formats').FormatData;
+Formats.push({ ...rogueCoopBase, name: '[Gen 9] Fantasy Rogue Co-op', gameType: 'multi' });

@@ -59,7 +59,7 @@ describe('Fantasy Rogue storage and campaign', () => {
 			const settled = state();
 			engine.settle(user, before.battle.token, result);
 			assert.deepEqual(state(), settled);
-			assert.equal(state().points, 0);
+			assert.equal(state().points, 20);
 			assert.equal(state().run.team[0].hp, before.team[0].hp);
 		}
 		assert.equal(state().run.floor, 2);
@@ -93,7 +93,7 @@ describe('Fantasy Rogue storage and campaign', () => {
 		assert.equal(state().captures.magikarp, 1);
 		engine.settle(user, first.token, {encounterId: first.encounterId, won: true, team: [], bag: {}});
 		assert.equal(state().run.phase, 'battle');
-		assert.equal(state().points, 0);
+		assert.equal(state().points, 20);
 	});
 	it('unlocks the configured first stage immediately and single-stage legendaries on catch ten', () => {
 		start();
@@ -175,7 +175,7 @@ describe('Fantasy Rogue storage and campaign', () => {
 		store.change(user, account => { account.run.team[0].hp = 0; });
 		const before = state();
 		assert.throws(() => cmd('heal'), /余额不足/); assert.deepEqual(state(), before);
-		assert.equal(state().run.phase, 'rest'); assert.equal(state().points, 0);
+		assert.equal(state().run.phase, 'rest'); assert.equal(state().points, 20);
 		cmd('continue');
 		assert.equal(state().run.floor, 10); assert.equal(state().run.node.kind, 'boss');
 	});

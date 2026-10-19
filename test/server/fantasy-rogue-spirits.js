@@ -291,14 +291,21 @@ describe('Fantasy Rogue tower spirit native battles', () => {
 	it('applies outgoing/incoming modifiers to direct hits but leaves passive damage unchanged', () => {
 		begin('regigigas');
 		const ours = battle.p1.active[0], foe = battle.p2.active[0];
+		const move = battle.dex.getActiveMove('tackle');
+		assert.equal(battle.runEvent('ModifyDamage', ours, foe, move, 100), 200);
+		assert.equal(battle.runEvent('ModifyDamage', foe, ours, move, 100), 50);
 		const hp = ours.hp, foeHP = foe.hp;
-		turn('move 1', 'move 2'); assert.equal(ours.hp, hp - 20); assert.equal(foe.hp, foeHP - 80);
+		turn('move 1', 'move 2'); assert.equal(ours.hp, hp - 40); assert.equal(foe.hp, foeHP - 40);
 		const before = ours.hp;
 		battle.damage(10, ours, foe, battle.dex.conditions.get('psn')); assert.equal(ours.hp, before - 10);
 	});
 	it('grows Darkrai damage by unique floor progress', () => {
 		begin('darkrai'); const foe = battle.p2.active[0], hp = foe.hp;
-		turn('move 1'); assert.equal(foe.hp, hp - 60);
+		const move = battle.dex.getActiveMove('tackle');
+		assert.equal(battle.runEvent('ModifyDamage', battle.p1.active[0], foe, move, 100), 150);
+		battle.fantasyRogue.spirit.floor = 200;
+		assert.equal(battle.runEvent('ModifyDamage', battle.p1.active[0], foe, move, 100), 200);
+		turn('move 1'); assert.equal(foe.hp, hp - 40);
 	});
 	it('doubles the exact displayed capture chance and caps it at certainty', () => {
 		begin('mew'); const ball = battle.fantasyRogue.balls[0];
@@ -324,8 +331,10 @@ describe('Fantasy Rogue tower spirit native battles', () => {
 		const simulated = reconstructWorld(world, [1, 2, 3, 4]);
 		try {
 			const target = simulated.p1.active[0], hp = target.hp;
+			assert.equal(simulated.runEvent('ModifyDamage', simulated.p2.active[0], target,
+				simulated.dex.getActiveMove('tackle'), 100), 50);
 			simulated.damage(40, target, simulated.p2.active[0], simulated.dex.moves.get('dragonrage'));
-			assert.equal(target.hp, hp - 20);
+			assert.equal(target.hp, hp - 40);
 			assert.equal(simulated.fantasyRogue.catchable, false);
 		} finally { simulated.destroy(); }
 	});

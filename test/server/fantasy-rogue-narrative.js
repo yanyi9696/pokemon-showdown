@@ -77,14 +77,14 @@ describe('Fantasy Rogue narrative settlements and terminal recovery', function (
 		const key = storyView(account(), true, false).key; engine.migrate(user);
 		assert.equal(storyView(account(), true, false).key, key);
 		duplicate(); skip();
-		assert.equal(run().floor, 21); assert.equal(account().points, 1);
+		assert.equal(run().floor, 21); assert.equal(account().points, 21);
 		assert.equal(run().money, 900); duplicate(); assert.equal(run().money, 900);
 	});
 	it('defers companion rewards through a loss, a refused rematch and another loss, then pays exactly once', () => {
 		companion('bea'); boss(); finish(false);
-		assert(run().node.companionLoss); assert.equal(run().money, 100); assert.equal(account().points, 0);
+		assert(run().node.companionLoss); assert.equal(run().money, 100); assert.equal(account().points, 20);
 		assert.equal(run().team[0].hp, run().team[0].maxhp); assert(!run().failure);
-		skip(); assert.equal(run().floor, 21); assert.equal(account().points, 0);
+		skip(); assert.equal(run().floor, 21); assert.equal(account().points, 20);
 		assert.equal(eligibleRematches(run()).length, 0);
 		rematch(25); option('decline'); assert.equal(run().rematches[0].nextFloor, 30);
 		rematch(30); option('accept'); cmd('battle');
@@ -93,7 +93,7 @@ describe('Fantasy Rogue narrative settlements and terminal recovery', function (
 		assert.equal(run().rematches[0].nextFloor, 35); assert.equal(run().money, 100);
 		rematch(35); option('accept'); cmd('battle');
 		if (run().phase === 'story') { skip(); cmd('battle'); }
-		const duplicate = finish(true); assert.equal(run().money, 900); assert.equal(account().points, 1);
+		const duplicate = finish(true); assert.equal(run().money, 900); assert.equal(account().points, 21);
 		assert(run().rematches[0].claimed); duplicate(); skip();
 		assert.equal(run().money, 900);
 		assert.equal(eligibleRematches(run()).length, 0);

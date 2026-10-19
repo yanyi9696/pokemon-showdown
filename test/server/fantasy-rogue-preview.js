@@ -104,7 +104,7 @@ describe('Fantasy Rogue playable preview', () => {
 		const settled = account();
 		engine.settle(user, run.battle.token, result);
 		assert.deepEqual(account(), settled);
-		assert.equal(account().points, 0);
+		assert.equal(account().points, 20);
 	});
 	it('preserves damage, status and existing PP through candy levels, evolution and learning', () => {
 		start();
@@ -168,7 +168,7 @@ describe('Fantasy Rogue playable preview', () => {
 	});
 	it('advances the whole 200-floor state machine without skipping mandatory centers or duplicating points', () => {
 		cmd('start', { starters: ['bulbasaur'] });
-		let points = 0;
+		let points = 20;
 		for (let floor = 1; floor <= 200; floor++) {
 			if (account().run.phase === 'choose') cmd('select', { value: 'wild0' });
 			while (account().run.story?.stage === 'gymgift') cmd('storynext', {value: storyView(account(), false, false).key});
@@ -201,7 +201,7 @@ describe('Fantasy Rogue playable preview', () => {
 		cmd('storyskip', { value: storyView(account(), false, true).key });
 		cmd('godchallenge', { value: 'decline' });
 		assert.equal(account().run.phase, 'complete');
-		assert.equal(points, 23);
+		assert.equal(points, 43);
 		cmd('upgrade', { value: 'hp' });
 		assert.equal(account().points, points - 1);
 	});
@@ -226,11 +226,11 @@ describe('Fantasy Rogue playable preview', () => {
 			encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag,
 			defeated: [{ species: 'Chansey', level: 50, participants: [member], eligible: [member] }],
 		});
-		assert.equal(account().run.floor, 1); assert.equal(account().points, 0);
+		assert.equal(account().run.floor, 1); assert.equal(account().points, 20);
 		assert.equal(account().run.phase, 'settlement');
 		const learned = account().run.pendingMoves[0].move;
 		cmd('learn', { member, value: '0' }); learnAll();
-		assert.equal(account().run.floor, 2); assert.equal(account().points, 0);
+		assert.equal(account().run.floor, 2); assert.equal(account().points, 20);
 		assert.equal(account().run.checkpoint.team[0].set.moves[0], learned);
 		const checkpoint = structuredClone(account().run.checkpoint);
 		cmd('select', { value: 'wild0' }); cmd('battle');

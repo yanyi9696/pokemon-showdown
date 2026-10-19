@@ -45,7 +45,7 @@ describe('Fantasy Rogue universal escape, rescue and route pacing', () => {
 			});
 			const after = saved();
 			assert.equal(after.run.phase, 'ready'); assert.equal(after.run.encounter, before.encounter);
-			assert.equal(after.run.recovery, 'retreat'); assert.equal(after.run.money, 10000); assert.equal(after.points, 0);
+			assert.equal(after.run.recovery, 'retreat'); assert.equal(after.run.money, 10000); assert.equal(after.points, 20);
 			assert.equal(after.run.team[0].hp, 1); assert.equal(after.run.team[0].pp[0].pp, 1);
 			assert.equal(after.run.team[0].status, 'psn'); assert.equal(after.run.team[0].set.item, '');
 			assert.equal(after.run.bag.pokeball, before.bag.pokeball - 1); assert(!after.run.emergencyRecovery);

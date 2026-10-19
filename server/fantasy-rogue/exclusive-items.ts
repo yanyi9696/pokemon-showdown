@@ -85,7 +85,7 @@ export function suitableExclusiveItems(species: string) {
 }
 export function syncExclusiveItems(run: RogueRun) {
 	const ledger = run.exclusiveItems ||= {};
-	for (const mon of [...run.team, ...(run.box || [])]) for (const entry of suitableExclusiveItems(mon.set.species)) {
+	for (const mon of [...run.team, ...(run.box || [])].filter(member => !member.egg)) for (const entry of suitableExclusiveItems(mon.set.species)) {
 		ledger[entry.id] ||= { since: run.floor, misses: 0, cooldown: 0 };
 	}
 	for (const id of Object.keys(ledger)) {
@@ -96,7 +96,7 @@ export function syncExclusiveItems(run: RogueRun) {
 }
 export function neededExclusiveItems(run: RogueRun) {
 	syncExclusiveItems(run);
-	const available = new Set(run.team.flatMap(mon => suitableExclusiveItems(mon.set.species).map(item => item.id)));
+	const available = new Set(run.team.filter(mon => !mon.egg).flatMap(mon => suitableExclusiveItems(mon.set.species).map(item => item.id)));
 	return exclusiveCatalog().filter(item => available.has(item.id) && !run.exclusiveItems![item.id].obtained);
 }
 export function grantExclusiveItem(run: RogueRun, id: string) {

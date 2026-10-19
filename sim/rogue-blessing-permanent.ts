@@ -11,13 +11,14 @@ export const POWER_CHOICE_ABILITIES = ['hugepower', 'roguegreatmage'];
 export function strongestBlessingMember(team: RoguePokemon[], baseSpecies: string) {
 	const sum = (stats: Partial<StatsTable>) => Object.values(stats || {}).reduce((n, value) => n + (value || 0), 0);
 	const species = baseSpecies.split('|').map(toID);
-	return team.filter(mon => species.includes(toID(Dex.mod('gen9fantasy').species.get(mon.set.species).baseSpecies).replace(/fantasy$/, '') as ID))
+	return team.filter(mon => !mon.egg && species.includes(toID(Dex.mod('gen9fantasy').species.get(mon.set.species).baseSpecies).replace(/fantasy$/, '') as ID))
 		.sort((a, b) => b.set.level - a.set.level || sum(b.set.evs) - sum(a.set.evs) ||
 			sum(b.set.ivs) - sum(a.set.ivs) || (b.set.happiness || 0) - (a.set.happiness || 0) ||
 			(a.joinOrder || 0) - (b.joinOrder || 0))[0];
 }
 /** All permanent and team-wide sources, used before granting another copy of an ability. */
 export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], effects?: BlessingEffects, includeKing = true) {
+	if (mon.egg) return [];
 	const result = [...mon.extraAbilities || []].map(toID);
 	const add = (...abilities: string[]) => result.push(...abilities.map(toID));
 	for (const [family, ability] of Object.entries(TARGET_BLESSING_ABILITIES)) {
@@ -40,12 +41,13 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 }
 export function canGrantExtraAbility(mon: RoguePokemon, ability: string, team: RoguePokemon[], effects?: BlessingEffects, includeKing = true) {
 	const id = toID(ability);
-	return id !== toID(mon.set.ability) && !assignedExtraAbilities(mon, team, effects, includeKing).includes(id);
+	return !mon.egg && id !== toID(mon.set.ability) && !assignedExtraAbilities(mon, team, effects, includeKing).includes(id);
 }
 export function dragonKingAbilityOptions(mon: RoguePokemon | undefined, team: RoguePokemon[], effects?: BlessingEffects) {
 	return DRAGON_KING_ABILITIES.filter(ability => !mon || ability === effects?.dragonKing?.ability || canGrantExtraAbility(mon, ability, team, effects, false));
 }
 export function permanentMemberTypes(mon: RoguePokemon) {
+	if (mon.egg) return [];
 	const types = [...Dex.mod('gen9fantasy').species.get(mon.set.species).types];
 	if (mon.statModifiers?.extraType) types[1] = mon.statModifiers.extraType;
 	const emblem = emblemType(mon.emblem || toID(mon.set.item));

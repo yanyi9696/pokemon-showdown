@@ -17,6 +17,7 @@ import type { Battle } from './battle';
 
 /** A move action */
 export interface MoveAction {
+	rogueEeveeZ?: boolean;
 	/** action type */
 	choice: 'move' | 'beforeTurnMove' | 'priorityChargeMove';
 	order: 3 | 5 | 200 | 201 | 199 | 106;

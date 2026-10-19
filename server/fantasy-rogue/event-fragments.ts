@@ -5,8 +5,9 @@ export type FragmentAlternative = 'forest' | 'room' | 'bandits';
 export interface EventFragmentOffer { stage: string; amount: number; alternative: FragmentAlternative }
 
 export function eventFragmentTier(floor: number) {
-	return floor < 51 ? undefined : floor < 100 ? { key: '51', min: 8, max: 12, cap: 30 } :
-		floor < 150 ? { key: '100', min: 10, max: 15, cap: 40 } : { key: '150', min: 15, max: 20, cap: 50 };
+	return floor < 51 ? undefined : floor < 80 ? { key: '51', min: 8, max: 12, cap: 30 } :
+		floor < 100 ? { key: '80', min: 12, max: 18, cap: 45 } :
+		floor < 150 ? { key: '100', min: 16, max: 22, cap: 60 } : { key: '150', min: 20, max: 30, cap: 80 };
 }
 
 /** Offer only after the branch succeeds; the alternative reward has not been paid yet. */

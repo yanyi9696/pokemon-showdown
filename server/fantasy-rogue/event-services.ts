@@ -66,7 +66,7 @@ function state(run: RogueRun) {
 	return run.node!.event!.service;
 }
 function partnerOptions(run: RogueRun, predicate: (mon: RoguePokemon) => boolean) {
-	return run.team.map(mon => option(`member:${encodeURIComponent(mon.id)}`, mon.set.species,
+	return run.team.filter(mon => !mon.egg).map(mon => option(`member:${encodeURIComponent(mon.id)}`, mon.set.species,
 		`Lv.${mon.set.level}`, !predicate(mon)));
 }
 export function serviceEventView(run: RogueRun): ServiceView | undefined {
@@ -245,7 +245,7 @@ export function settleServiceBattle(run: RogueRun, won: boolean, retreated = fal
 	if (event.id === 'travel') end(run, captured ? text.travelCatch : won ? text.travelWin : text.travelLose);
 	else if (!won) end(run, event.id === 'martial' ? retreated ? text.powerLeave : text.powerLose : text.tutorLose);
 	else {
-		s.grants = run.team.filter(mon => event.id === 'martial' ? effortTotal(mon) < 510 : teachingMoves(mon).length > 0)
+		s.grants = run.team.filter(mon => !mon.egg && (event.id === 'martial' ? effortTotal(mon) < 510 : teachingMoves(mon).length > 0))
 			.map(mon => ({ member: mon.id,
 				...(event.id === 'martial' ? { amount: Math.min(effortReward(run), 510 - effortTotal(mon)) } : {}) }));
 		if (!s.grants.length) end(run, event.id === 'martial' ?

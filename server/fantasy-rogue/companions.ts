@@ -11,6 +11,7 @@ import { companionZCandidates, companionZDefinition } from '../../sim/rogue-comp
 import { rewardChoices } from './reward-scenes';
 
 export function grantCompanion(run: RogueRun, id: CompanionID) {
+	if (run.rival?.id === id) throw new Error('这位训练家已经是本局劲敌，不能重复成为祝福同行。');
 	const list = run.blessings!.companions ||= [];
 	if (list.some(c => c.id === id)) return;
 	list.push({ id, preferences: 0, ...(COMPANIONS[id].types.length === 1 ? { type: COMPANIONS[id].types[0] } : {}) });
@@ -87,7 +88,7 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 	const choiceFamilies: Record<string, string> = { choosewinter: 'companionwinter', choosestreamer: 'companionstreamer', chooseai: 'companionai', chooseband: 'companionband' };
 	const family = choiceFamilies[command.value || ''];
 	if (family) {
-		const candidates = (Object.keys(COMPANIONS) as CompanionID[]).filter(id => COMPANIONS[id].family === family);
+		const candidates = (Object.keys(COMPANIONS) as CompanionID[]).filter(id => COMPANIONS[id].family === family && id !== run.rival?.id);
 		if (!run.blessings?.owned.some(b => b.family === family) || run.blessings.companions?.some(c => candidates.includes(c.id)) ||
 			!candidates.includes(command.member as CompanionID)) throw new Error('请从当前同行祝福的训练家中选择一位。');
 		grantCompanion(run, command.member as CompanionID); return;

@@ -57,18 +57,18 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 				} else assert.equal(rewardValue(run), stage ? Math.floor(data.treasureBudget(floor) * 0.8) : 0);
 			}
 		});
-		it(`heals ${25 + stage * 5}% for the medical blessing acquired at floor ${floor}`, () => {
+		it(`heals ${15}% for the medical blessing acquired at floor ${floor}`, () => {
 			const {run, account} = setup(floor, 2); pick(run, account, 'medic');
 			const mon = run.team[0]; mon.hp = 1; mon.status = 'psn'; run.team[1].hp = 0;
 			run.floor = 190; // Its acquired version remains fixed while climbing.
 			b.settleBlessingBattle(account, run, content, {won: false, encounterId: 'loss', defeated: []}, zero);
 			assert.equal(mon.hp, 1); assert.equal(mon.status, 'psn');
-			const expected = 1 + Math.floor(mon.maxhp * (25 + stage * 5) / 100);
+			const expected = 1 + Math.floor(mon.maxhp * (15) / 100);
 			const result = {won: true, encounterId: 'win', defeated: []};
 			b.settleBlessingBattle(account, run, content, result, zero);
 			assert.equal(mon.hp, expected); assert.equal(mon.status, ''); assert.equal(run.team[1].hp, 0);
 			b.settleBlessingBattle(account, run, content, result, zero); assert.equal(mon.hp, expected);
-			assert(b.blessingView(run).owned[0].text.includes(`${25 + stage * 5}%`));
+			assert(b.blessingView(run).owned[0].text.includes(`${15}%`));
 		});
 	}
 	it('scales every treasure bag by its actual acquisition floor, including non-blessing sources', () => {

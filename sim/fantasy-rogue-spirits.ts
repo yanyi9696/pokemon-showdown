@@ -108,6 +108,11 @@ export function resolveRogueFutureAttacks(battle: Battle) {
 	for (const attack of due) {
 		if (battle.ended) break;
 		const { source, move } = attack;
+		// A delayed Endeavor still cannot reduce its target to zero after its user has fainted.
+		if (move.id === 'endeavor' && !source.hp) {
+			battle.add('-fail', source, 'move: Endeavor');
+			continue;
+		}
 		const targets = attack.slots.map(slot => battle.getAtSlot(slot)).filter(target => target?.hp && target !== source);
 		if (!targets.length) continue;
 		move.flags = { ...move.flags, futuremove: 1 };

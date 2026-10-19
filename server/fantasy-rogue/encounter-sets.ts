@@ -7,6 +7,12 @@ const dex = Dex.mod('gen9fantasy');
 const stats = (value: number): StatsTable => ({
 	hp: value, atk: value, def: value, spa: value, spd: value, spe: value,
 });
+export function randomEncounterAbility(name: string, random: RogueRandom, elite = false) {
+	const abilities = dex.species.get(name).abilities;
+	if (elite && abilities.H && random(100) < 15) return abilities.H;
+	const normal = [abilities[0], abilities[1]].filter(Boolean) as string[];
+	return normal[random(normal.length)];
+}
 
 /** Roll once when creating a new wild encounter or gift, never when rebuilding a saved member. */
 export function randomEncounterIVs(random: RogueRandom, elite = false): StatsTable {

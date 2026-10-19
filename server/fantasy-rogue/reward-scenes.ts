@@ -1,4 +1,6 @@
 import { randomUUID } from 'crypto';
+import { giveEgg, eggEventWeight } from './eggs';
+import { normalizeBlessings } from './blessings';
 import { Dex, toID } from '../../sim/dex';
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
@@ -11,6 +13,7 @@ import { availableGrowth, grantGrowth, grantPersonalGrowth, growthPercent, perso
 const dex = Dex.mod('gen9fantasy');
 const CANDIES = [['expcandyxl', 30000], ['expcandyl', 10000], ['expcandym', 3000], ['expcandys', 800], ['expcandyxs', 100]] as const;
 export const REWARD_SCENES = {
+	breederegg: { name: '这颗蛋与你有缘', avatar: 'breeder', preference: '' },
 	chest: { name: '留给后来的人', avatar: '', preference: '' },
 	sketch: { name: '画册还差一页', avatar: 'artist', preference: 'pokemon' },
 	research: { name: '招式观察笔记', avatar: 'scientist', preference: 'move' },
@@ -26,7 +29,7 @@ export function prepareRewardScene(run: RogueRun, random: RogueRandom) {
 	if (run.node?.kind !== 'reward' || run.node.rewardScene) return;
 	const last = run.rewardHistory?.[run.rewardHistory.length - 1];
 	const pool = (['chest', 'chest', 'sketch', 'research', 'picnic', 'coach'] as const).filter(id => id !== last);
-	const id = pool[random(pool.length)];
+	const id: RewardScene['id'] = last !== 'breederegg' && random(100) < eggEventWeight(run.floor) ? 'breederegg' : pool[random(pool.length)];
 	run.node.rewardScene = { id, key: randomUUID(),
 		...(REWARD_SCENES[id].preference ? { type: Object.keys(BLESSING_TYPES)[random(18)] } : {}) };
 	run.node.name = REWARD_SCENES[id].name;
@@ -71,6 +74,7 @@ function demonstration(run: RogueRun) {
 	if (!scene?.type || scene.demonstrated || scene.claimed) return [];
 	const preference = REWARD_SCENES[scene.id].preference;
 	return run.team.flatMap(mon => {
+		if (mon.egg) return [];
 		if (preference === 'pokemon') return permanentMemberTypes(mon).includes(scene.type!) ? [{ member: mon.id, move: '' }] : [];
 		const move = [...new Set([...mon.set.moves.map(toID), ...(mon.moveMemory || []).map(entry => entry.id),
 			...(mon.blessingMoves || [])])].find(id => dex.moves.get(id).exists && dex.moves.get(id).type === scene.type);
@@ -79,19 +83,21 @@ function demonstration(run: RogueRun) {
 }
 
 export function rewardRecovery(floor: number, enhanced = false): Record<string, number> {
-	return { [floor < 29 ? 'potion' : floor < 69 ? 'superpotion' : 'hyperpotion']: enhanced ? 3 : 2, revive: 1 };
+	return { [floor < 29 ? 'potion' : floor < 69 ? 'superpotion' : 'hyperpotion']: (enhanced ? 3 : 2) - (floor < 20 ? 1 : 0),
+		...(floor >= 20 || enhanced ? { revive: 1 } : {}) };
 }
 const baseCoins = (floor: number) => Math.round((100 + 8 * floor) * earlyCoinMultiplier(floor));
 
 export function rewardChoices(run: RogueRun) {
 	const scene = run.node?.rewardScene;
 	if (!scene || scene.claimed) return [];
+	if (scene.id === 'breederegg') return [{ id: 'egg', name: '接过培育家赠送的蛋', text: '获得一颗随机宝可梦蛋，附带少量金币与回复物资。经过 5～8 层自动孵化。', items: { ether: 1 } }];
 	const enhanced = !!scene.demonstrated, experience = rewardExperience(run.floor, enhanced);
 	const items = rewardCandies(run.floor, experience);
 	const money = rewardMoney(run.floor, enhanced);
 	const choices: { id: string, name: string, text: string, items?: Record<string, number>, money?: number,
 		amount?: number, targets?: { member: string, amount: number }[], disabled?: boolean, }[] = [
-		{ id: 'recovery', name: '多备一份药品', text: '额外领取一份回复药、活力碎片和 PP 单项小补剂。',
+		{ id: 'recovery', name: '多备一份药品', text: `额外领取一份回复药${run.floor >= 20 || enhanced ? '、活力碎片' : ''}和 PP 单项小补剂。`,
 			items: { ...rewardRecovery(run.floor, enhanced), ether: enhanced ? 2 : 1 } },
 		{ id: 'experience', name: '经验糖果', text: `获得共 ${experience} 点经验的糖果，可自由分给伙伴。`, items },
 		{ id: 'money', name: '路费', text: `获得 ${money} 金币。`, money },
@@ -100,7 +106,7 @@ export function rewardChoices(run: RogueRun) {
 		const label = kind === 'offense' ? '攻击、特攻' : '防御、特防';
 		const name = kind === 'offense' ? '输出训练' : '耐久训练';
 		{
-			const nominal = enhanced ? 600 : 400;
+			const nominal = (enhanced ? 600 : 400) + (run.floor >= 80 ? 100 + Math.floor((run.floor - 80) / 40) * 50 : 0);
 			const targets = run.team.map(mon => ({ member: mon.id,
 				amount: run.floor <= 50 ? personalGrowthAmount(run, mon, kind, nominal, experience) :
 				Math.max(0, Math.min(nominal, PERSONAL_GROWTH_LIMIT - (mon.training?.[kind] || 0))) })).filter(entry => entry.amount > 0);
@@ -114,6 +120,8 @@ export function rewardChoices(run: RogueRun) {
 		choices.push({ id: 'efficiency', name: '经验心得', amount, disabled: !amount,
 			text: `全队本局战斗经验 +${growthPercent(amount)}，不影响经验糖果。` });
 	}
+	if (run.floor >= 80) choices.push({ id: 'shards', name: '幻想碎片', amount: 12 + Math.floor((run.floor - 80) / 10),
+		text: `获得幻想碎片 ×${12 + Math.floor((run.floor - 80) / 10)}，为伙伴积攒幻想的力量。` });
 	return choices;
 }
 
@@ -122,6 +130,7 @@ export function rewardSceneView(run: RogueRun) {
 	if (!scene) return;
 	const info = REWARD_SCENES[scene.id], type = `【${BLESSING_TYPES[scene.type!] || ''}】`;
 	const paragraphs: Record<RewardScene['id'], string[]> = {
+		breederegg: ['培育家将手心贴近蛋壳，仔细听了听，随后笑着望向你。', '「它一见到你就开始晃动。看来你们很有缘！带上这些培育物资，往后的旅程就拜托你照顾它了。」'],
 		chest: ['路边放着一个补给箱，上面贴着纸条：「带上需要的那份，路还长着呢。」'],
 		sketch: ['画家翻了翻画册，朝你招手。', `「还差一位${type}属性的模特。能让我看看你的伙伴吗？画完再多给你一份谢礼。」`],
 		research: ['研究员正整理一叠招式笔记。', `「我想看看${type}属性招式的样子。你的伙伴会的话，给我演示一下吧。谢礼已经备好了。」`],
@@ -132,7 +141,8 @@ export function rewardSceneView(run: RogueRun) {
 		paragraphs: scene.claimed ? [scene.result!] : scene.demonstrated ? ['「就是这个！谢谢啦，谢礼给你换成更好的。挑一份喜欢的吧。」'] : paragraphs[scene.id],
 		quality: scene.demonstrated ? '丰厚谢礼' : run.floor < 51 ? '旅途补给' : run.floor < 100 ? '进阶补给' : run.floor < 150 ? '高级补给' : '登顶补给',
 		demonstrations: demonstration(run), choices: rewardChoices(run),
-		baseText: `每份谢礼均附回复药 ×${scene.demonstrated ? 3 : 2}、活力碎片 ×1，以及 ${baseCoins(run.floor)} 金币。` };
+		baseText: `每份谢礼均附回复药 ×${(scene.demonstrated ? 3 : 2) - (run.floor < 20 ? 1 : 0)}` +
+			(run.floor >= 20 || scene.demonstrated ? '、活力碎片 ×1' : '') + `，以及 ${baseCoins(run.floor)} 金币。` };
 }
 
 export function chooseReward(run: RogueRun, content: RogueContent, random: RogueRandom, value: string, member?: string) {
@@ -155,6 +165,8 @@ export function chooseReward(run: RogueRun, content: RogueContent, random: Rogue
 			effect = `【${mon.set.species}】本局${value === 'offense' ? '攻击、特攻' : '防御、特防'} +${growthPercent(target.amount)}。`;
 		}
 	} else if (value === 'efficiency') grantGrowth(run, 'experience', choice.amount!);
+	else if (value === 'egg') giveEgg(run, content, random, '培育家结缘赠蛋');
+	else if (value === 'shards') normalizeBlessings(run).shards += choice.amount!;
 	const supplies = rewardRecovery(run.floor, !!scene.demonstrated);
 	for (const [id, count] of Object.entries(choice.items || {})) supplies[id] = (supplies[id] || 0) + count;
 	const items: Record<string, number> = {};

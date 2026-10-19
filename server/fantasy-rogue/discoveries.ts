@@ -18,8 +18,15 @@ export function rogueDiscoveries(account: RogueAccount) {
 		...(account.run?.node?.rocket ? ['encounter:rocket'] : []),
 	]);
 	const run = account.run;
+	if (run?.rival) events.add('rivalstory');
+	for (const card of cards) {
+		const rival = card.snapshot.rival;
+		if (!rival) continue;
+		for (let chapter = 1; chapter <= rival.completed; chapter++) events.add(`rival:${rival.id}:${chapter}`);
+	}
 	const trainers = new Set([
-		...(account.discoveries?.trainers || []),
+		...(account.discoveries?.trainers || []), ...(run?.rival ? [run.rival.id] : []),
+		...cards.flatMap(card => card.snapshot.rival ? [card.snapshot.rival.id] : []),
 		...(run?.blessings?.companions || []).map(c => c.id),
 		...cards.flatMap(card => (card.snapshot.blessingEffects?.companions || []).map(c => c.id)),
 		...(run?.seenBossDialogues || []).map(key => key.split(':').pop()!).filter(Boolean),

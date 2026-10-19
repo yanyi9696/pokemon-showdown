@@ -9,6 +9,8 @@ const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { storyView } = require('../../dist/server/fantasy-rogue/story');
+const { eventView } = require('../../dist/server/fantasy-rogue/events');
+const { rewardSceneView } = require('../../dist/server/fantasy-rogue/reward-scenes');
 const { chooseCompanions } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
@@ -77,14 +79,20 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						if (king && !king.ability) cmd('dragonking', { member: king.member, value: 'drizzle' });
 						cmd('battle');
 						const current = account().run;
+						if (current.phase !== 'battle') break;
+						const encounter = current.node.encounters[current.encounter], cooperative = encounter.cooperative;
+						const team = engine.battleState(user).team;
 						const battle = new Battle({
-							formatid: 'gen9fantasyrogue', seed: [1, 2, 3, 4], fantasyRogue: engine.battleState(user),
-							p1: { name: 'Player', team: current.team.map(mon => mon.set) },
-							p2: { name: 'Opponent', team: current.node.encounters[current.encounter].team },
+							formatid: cooperative ? 'gen9fantasyroguecoop' : 'gen9fantasyrogue', seed: [1, 2, 3, 4], fantasyRogue: engine.battleState(user),
+							p1: { name: 'Player', team: team.map(mon => mon.set) },
+							p2: { name: 'Opponent', team: cooperative ? encounter.team.slice(0, Math.ceil(encounter.team.length / 2)) : encounter.team },
+							...(cooperative ? {p3: {name: cooperative.name, team: cooperative.team},
+								p4: {name: 'Opponent2', team: encounter.team.slice(Math.ceil(encounter.team.length / 2))}} : {}),
 						});
 						try {
 							assert(battle.choose('p1', 'default'));
 							assert(battle.choose('p2', 'default'));
+							if (cooperative) { assert(battle.choose('p3', 'default')); assert(battle.choose('p4', 'default')); }
 							battle.win(battle.p1);
 							const result = rogueBattleResult(battle);
 							assert(result.won);
@@ -100,15 +108,22 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						break;
 					}
 					case 'rest': case 'reward':
-						if (run.node.rewardScene && !run.node.rewardScene.claimed) cmd('rewardchoice', {value: 'experience'});
+						if (run.node.rewardScene && !run.node.rewardScene.claimed) {
+							const choices = rewardSceneView(run).choices;
+							cmd('rewardchoice', {value: choices.find(o => o.id === 'experience')?.id || choices[0].id}); break;
+						}
 						if (account().run.mentorOffer) cmd('mentorcard', {value: 'balanced'}); cmd('continue');
 						break;
 					case 'event': {
 						const event = run.node.event;
-						assert(['auction', 'exclusivechallenge', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(event.id));
+						assert(['auction', 'exclusivechallenge', 'mushroomcollector', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory'].includes(event.id), event.id);
 						if (event.police?.choices) { cmd('event', {member: event.key, value: 'police:' + event.police.choices[0]}); break; }
 						if (event.id === 'mushroomcollector') { cmd('event', {member: event.key, value: 'collectorshop'}); break; }
 						if (event.stage === 'result') cmd('continue');
+						else if (event.rival) {
+							const choices = eventView(run).options;
+							cmd('event', {member: event.key, value: choices.find(o => ['warm', 'join', 'shards'].includes(o.id))?.id || choices[0].id});
+						}
 						else cmd('event', {member: event.key, value: run.auction.entered ? 'pass' : 'enter'});
 						break;
 					}

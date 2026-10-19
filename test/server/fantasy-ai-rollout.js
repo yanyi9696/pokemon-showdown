@@ -446,6 +446,16 @@ describe('Fantasy AI decision worker scheduling', function () {
 		assert.equal(result.decision.choice, 'move 2');
 		assert(result.totalMs < 1500);
 	});
+	it('caps campaign response time including the queue without lowering other battle budgets', async () => {
+		scheduler.register('busy', 'a'); scheduler.register('campaign', 'b');
+		const first = scheduler.submit(request('busy', 'a', 1, {budgetMs: 1000, maxRollouts: 100000}));
+		const second = await scheduler.submit(request('campaign', 'b', 1, {budgetMs: 1000, wallClockMs: 60}));
+		assert.equal(second.status, 'timeout');
+		assert(second.totalMs < 1000, 'the campaign request cannot wait for the long search ahead of it');
+		assert(second.queueMs >= 40, 'the deadline includes time spent waiting for a worker');
+		assert(second.decision.choice);
+		scheduler.cancel('busy', 'a'); await first;
+	});
 
 	it('cancels superseded requests and rejects results from an old battle instance', async () => {
 		scheduler.register('test', 'old');

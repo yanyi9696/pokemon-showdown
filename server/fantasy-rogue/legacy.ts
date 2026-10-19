@@ -8,6 +8,9 @@ import { startCard } from './story';
 import { blessing, type BlessingEffects } from '../../sim/rogue-blessing-data';
 import { blessingDisplay } from './blessing-text';
 import { clearMemberDetails, type ClearMemberDetails } from './clear-details';
+import { eggView } from './eggs';
+import type { RivalState } from './rivals';
+import { RIVALS } from './rival-data';
 
 export interface RogueClearCard {
 	version: 1;
@@ -25,7 +28,14 @@ export interface RogueClearCard {
 		hazards?: string[], blessings: { id: string, name?: string, floor?: number, text: string }[],
 		memberDetails?: Record<string, ClearMemberDetails>,
 		blessingEffects?: BlessingEffects,
+		rival?: RivalState & { name: string },
 	};
+}
+/** Keep the original hatch roll in storage, never expose it in public clear cards. */
+export function clearCardView(card: RogueClearCard) {
+	const view = structuredClone(card);
+	const display = (mon: RogueInventory['team'][number]) => mon.egg ? eggView(mon, 200) : mon;
+	return { ...view, snapshot: { ...view.snapshot, team: view.snapshot.team.map(display), box: view.snapshot.box?.map(display) } };
 }
 let fingerprint: string | undefined;
 /** A balance/engine change must not silently reinterpret an archived team. */
@@ -66,8 +76,9 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 		completedAt: Date.now(), public: false, contentVersion: run.contentVersion, rulesVersion: rogueRulesVersion(),
 		snapshot: {
 			team, box, bag: { ...run.bag }, money: run.money,
-			memberDetails: Object.fromEntries([...team, ...box].map(mon => [mon.id, clearMemberDetails(mon, detailsRun)])),
+			memberDetails: Object.fromEntries([...team, ...box].filter(mon => !mon.egg).map(mon => [mon.id, clearMemberDetails(mon, detailsRun)])),
 			growth: run.growth && { ...run.growth },
+			rival: run.rival && { ...run.rival, name: RIVALS[run.rival.id].name },
 			floor: 200, boosts: { ...run.boosts }, spirit: run.spirit, startCard: run.startCard,
 			eventBuff: !!run.eventBuff?.battles,
 			spiritName: rogueSpirit(run.spirit)?.name, spiritText: rogueSpirit(run.spirit)?.text,

@@ -23,7 +23,7 @@ describe('Fantasy Rogue midgame growth and intrinsic Meltan candy', function () 
 		const account = {run, captures: {}, unlocked: [], points: 0, slots: 1}; b.normalizeBlessings(run);
 		return {run, account, mon};
 	}
-	for (const [floor, min, max, cap] of [[51, 10, 12, 30], [100, 13, 15, 40], [150, 18, 20, 50]]) {
+	for (const [floor, min, max, cap] of [[51, 10, 12, 30], [100, 20, 22, 60], [150, 28, 30, 80]]) {
 		it(`persists a reward choice at floor ${floor}, excludes duplicate and incompatible payouts`, () => {
 			let {run, account} = setup(floor);
 			settleEventBattle(run, content, () => 0, true);
@@ -55,8 +55,8 @@ describe('Fantasy Rogue midgame growth and intrinsic Meltan candy', function () 
 			const {run} = setup(floor); settleEventBattle(run, content, () => 0, won, escaped);
 			assert(!run.node.event.fragmentOffer); assert(!run.eventFragments);
 		}
-		const {run} = setup(99); run.eventFragments = {'51': 30}; assert(!offerEventFragments(run, 'forest', () => 0));
-		run.floor = 100; assert(offerEventFragments(run, 'forest', () => 0)); assert.equal(run.node.event.fragmentOffer.amount, 10);
+		const {run} = setup(99); run.eventFragments = {'80': 45}; assert(!offerEventFragments(run, 'forest', () => 0));
+		run.floor = 100; assert(offerEventFragments(run, 'forest', () => 0)); assert.equal(run.node.event.fragmentOffer.amount, 16);
 	});
 	it('offers fragments in successful mediation and bandit victories, but not their negative outcomes', () => {
 		for (const id of ['forest', 'bandits']) {
@@ -73,9 +73,9 @@ describe('Fantasy Rogue midgame growth and intrinsic Meltan candy', function () 
 		const result = {won: true, encounterId: 'battle', defeated: [
 			{id: 'steel', species: 'Magnemite', participants: []}, {id: 'normal', species: 'Rattata', participants: [], captured: true}]};
 		b.settleBlessingBattle(account, run, content, result, () => 0, true); assert.equal(run.blessings.candy, 0);
-		b.settleBlessingBattle(account, run, content, {...result, won: false}, () => 0); assert.equal(run.blessings.candy, 11);
-		b.settleBlessingBattle(account, run, content, result, () => 0); assert.equal(run.blessings.candy, 11);
-		b.settleBlessingBattle(account, run, content, {...result, encounterId: 'retry'}, () => 0); assert.equal(run.blessings.candy, 11);
+		b.settleBlessingBattle(account, run, content, {...result, won: false}, () => 0); assert.equal(run.blessings.candy, 12);
+		b.settleBlessingBattle(account, run, content, result, () => 0); assert.equal(run.blessings.candy, 12);
+		b.settleBlessingBattle(account, run, content, {...result, encounterId: 'retry'}, () => 0); assert.equal(run.blessings.candy, 12);
 		assert.equal(run.blessings.owned.length, 0);
 	});
 	it('requires 400 candy through both normal and special evolution entry points regardless of level', () => {

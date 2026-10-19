@@ -248,7 +248,9 @@ describe('Fantasy Rogue archived PVP effects', function () {
 			begin(card('a', spirit), card('b', spirit));
 			for (const side of battle.sides) {
 				const target = side.foe.active[0], before = target.hp;
-				battle.damage(20, target, side.active[0], battle.dex.moves.get('tackle'));
+				const move = battle.dex.getActiveMove('tackle');
+				const damage = battle.runEvent('ModifyDamage', side.active[0], target, move, 20);
+				battle.damage(damage, target, side.active[0], move);
 				assert.equal(before - target.hp, expected);
 			}
 		});
