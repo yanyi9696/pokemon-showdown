@@ -6,8 +6,8 @@ import { beginPoliceEncounter } from './police-events';
 import { deferCompanionChallenge, opposingCompanion, settleRematch } from './companion-rematches';
 import { healNarrativeParty, queueNarrative } from './narrative';
 import { feedMushroom } from './mushroom-feeding';
-import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards, poppyRewardPickup } from './companions';
-import { companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
+import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards, poppyRewardPickup, recordCompanionPreference } from './companions';
+import { COMPANIONS, companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
 import { eventView } from './events';
 import { buyGrowth, syncGrowthParty, grantMushroomGrowth } from './growth';
@@ -266,6 +266,7 @@ export class RogueEngine {
 		requireRule(run.phase === 'choose', '本层已经选择了路线。');
 		const node = (run.choices || this.configured().floors[run.floor])?.find(option => option.id === id);
 		requireRule(node, '本层内容尚未配置或路线无效。');
+		recordCompanionPreference(run, [], id, this.random);
 		run.node = structuredClone(run.bossPreviews?.[run.floor] || node);
 		if (node.kind === 'trainer' && this.content?.events && beginPoliceEncounter(run, this.random)) {
 			if (run.node.event?.police?.revenge) {
@@ -873,6 +874,10 @@ export class RogueEngine {
 					!dragonKingAbilityOptions(run.team.find(mon => mon.id === run.blessings!.dragonKing!.member)!, run.team, run.blessings).length,
 					'请先在队伍面板中选择龙王的额外特性。');
 				// Old saves may predate persisted opponent gender; resolve it once before choosing the portrait.
+				for (const owned of run.blessings?.owned || []) {
+					const candidates = Object.entries(COMPANIONS).filter(([, c]) => c.family === owned.family).map(([id]) => id);
+					requireRule(candidates.length < 2 || run.blessings?.companions?.some(c => candidates.includes(c.id)), '请先选择同行训练家。');
+				}
 				requireRule(!run.blessings?.owned.some(b => b.family === 'companionai') ||
 					run.blessings.companions?.some(c => ['sada', 'turo'].includes(c.id)), '请先选择奥琳 AI 或弗图 AI。');
 				requireRule(!run.blessings?.owned.some(b => b.family === 'companionstreamer') ||
@@ -940,6 +945,7 @@ export class RogueEngine {
 				break;
 			}
 			case 'rewardchoice':
+				if (command.value !== 'show') recordCompanionPreference(run, [], command.value || '', this.random);
 				chooseReward(run, this.configured(), this.random, command.value || '', command.member);
 				break;
 			case 'buygrowth':
@@ -1099,6 +1105,7 @@ export class RogueEngine {
 				owned: run.blessings.owned, evolution: run.blessings.evolution, psychic: run.blessings.psychic,
 				dragonKing: run.blessings.dragonKing,
 				companions: structuredClone(run.blessings.companions),
+				companionZ: run.blessings.companionZ,
 			}),
 			blessingDefeated: run.blessings?.defeated.slice(),
 			blessingPsychicLosses: run.blessings?.psychicLosses?.slice(),
@@ -1165,6 +1172,9 @@ export class RogueEngine {
 	private settleResult(account: RogueAccount, run: RogueRun, result: RogueBattleResult) {
 		const token = run.battle!.token;
 		const retreated = !!run.battle!.retreatRequested;
+		// Memory encounters and postgame challenges bypass ordinary blessing payouts,
+		// but an actual release still consumes the one campaign opportunity.
+		if (!retreated && result.companionZUsed && run.blessings?.companionZ) run.blessings.companionZ.spent = true;
 		if (run.postgame?.stage === 'battle' && !retreated) {
 			this.finishGodChallenge(account, run, result.won ? 'won' : 'lost');
 			return;
@@ -1228,7 +1238,7 @@ export class RogueEngine {
 			run.recovery = 'retreat';
 			run.phase = 'ready';
 			run.attempt++;
-			run.notices = ['已逃跑，HP、PP、异常状态和道具消耗已保留；本场叠层恢复至开战前。可使用道具、调整队伍后再次挑战本场。'];
+			run.notices = ['已逃跑，HP、PP、异常状态和道具消耗已保留；本场叠层恢复至开战前，同行额外 Z 次数已返还。可使用道具、调整队伍后再次挑战本场。'];
 			if (run.pendingCaptures?.length) {
 				run.captureResume = 'ready';
 				run.phase = 'settlement';
@@ -1306,7 +1316,8 @@ export class RogueEngine {
 		}
 		delete run.recovery;
 		const baseLoot = run.node!.wildLoot?.[run.encounter];
-		const loot = baseLoot && blessingLoot(run, baseLoot, this.random, (result.defeated || []).filter(m => Dex.mod('gen9fantasy').species.get(m.species).types.includes('Rock')).length / Math.max(1, result.defeated?.length || 0));
+		const psychicFraction = (result.defeated || []).filter(d => !d.captured && run.team.some(mon => mon.id === d.killer && permanentMemberTypes(mon).includes('Psychic'))).length / Math.max(1, result.defeated?.length || 0);
+		const loot = baseLoot && blessingLoot(run, baseLoot, this.random, (result.defeated || []).filter(m => Dex.mod('gen9fantasy').species.get(m.species).types.includes('Rock')).length / Math.max(1, result.defeated?.length || 0), psychicFraction);
 		if (loot) {
 			const before = { money: run.money, bag: { ...run.bag } };
 			for (const [id, count] of Object.entries(loot)) run.bag[id] = (run.bag[id] || 0) + count;
@@ -1332,6 +1343,13 @@ export class RogueEngine {
 						if (companionOwned(run.blessings, 'bea') && permanentMemberTypes(mon).includes('Fighting')) {
 							for (const stat of ROGUE_STATS) yieldStats[stat] *= 2;
 							(run.notices ||= []).push('【同行训练家 - 彩豆】格斗系伙伴的努力值翻倍，战斗经验提升 30%。');
+						}
+						if (companionOwned(run.blessings, 'kahili') && permanentMemberTypes(mon).includes('Flying')) {
+							for (const stat of ROGUE_STATS) yieldStats[stat] *= 2;
+							run.notices.push('【同行训练家 - 卡希丽】飞行系伙伴的努力值翻倍，战斗经验提升 30%。');
+						}
+						if (companionOwned(run.blessings, 'giovanni') && defeated.killer === mon.id && permanentMemberTypes(mon).includes('Psychic')) {
+							run.notices.push('【同行训练家 - 坂木】超能系伙伴完成击倒，所得经验提升 20%。');
 						}
 						gainEffort(run, mon, yieldStats);
 					}

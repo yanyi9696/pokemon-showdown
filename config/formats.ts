@@ -77,7 +77,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				this.fantasyRogue?.boss?.kind === 'summit' && pokemon.baseSpecies.name.includes('Mewtwo'))) pokemon.trapped = true;
 		},
 		onDragOut(pokemon) { if (isRogueBoss(pokemon) && pokemon.baseSpecies.name.includes('Mewtwo')) return false; },
-		onFaint(pokemon, source) { blessingKO(this, pokemon, source); recordRogueDefeat(this, pokemon); },
+		onFaint(pokemon, source) { blessingKO(this, pokemon, source); recordRogueDefeat(this, pokemon, false, source); },
 		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},
 	{

@@ -71,9 +71,11 @@ export interface RogueDefeat {
 	participants: string[];
 	eligible: string[];
 	captured?: boolean;
+	killer?: string;
 }
 
 export interface RogueBattleState {
+	companionZUsed?: Partial<Record<SideID, boolean>>;
 	wild?: boolean;
 	environment?: { weather?: string, terrain?: string, name: string };
 	mentorCard?: 'attack' | 'guard' | 'balanced';
@@ -118,6 +120,7 @@ export interface RogueBattleState {
 }
 
 export interface RogueBattleResult {
+	companionZUsed?: boolean;
 	captures?: RoguePokemon[];
 	blessingProgress?: RogueBattleState['blessingProgress'];
 	encounterId: string;
@@ -237,12 +240,13 @@ export function markRogueParticipants(battle: Battle) {
 	if (!participants.includes(active.set.fantasyRogueId!)) participants.push(active.set.fantasyRogueId!);
 }
 
-export function recordRogueDefeat(battle: Battle, mon: Pokemon, captured = false) {
+export function recordRogueDefeat(battle: Battle, mon: Pokemon, captured = false, source?: Pokemon | null) {
 	const state = battle.fantasyRogue;
 	if (!state?.progression || mon.side.id !== 'p2') return;
 	markRogueParticipants(battle);
 	state.defeated!.push({
 		id: mon.set.fantasyRogueId,
+		killer: source?.side.id === 'p1' ? source.set.fantasyRogueId : undefined,
 		species: mon.set.species, level: mon.level, captured,
 		participants: [...(state.participants![mon.set.fantasyRogueId!] || [])],
 		eligible: battle.p1.pokemon.filter(member => member.hp > 0).map(member => member.set.fantasyRogueId!),
@@ -356,6 +360,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 export function rogueBattleResult(battle: Battle): RogueBattleResult {
 	const state = battle.fantasyRogue!;
 	return {
+		companionZUsed: !!state.companionZUsed?.p1,
 		encounterId: state.encounterId, won: battle.winner === battle.p1.name,
 		team: state.team.map(saved => {
 			const mon = battle.p1.pokemon.find(entry => entry.set.fantasyRogueId === saved.id)!;

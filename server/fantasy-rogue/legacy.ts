@@ -80,7 +80,8 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 				return { id: entry.id, name, floor: entry.floor, text };
 			}),
 			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution,
-				psychic: run.blessings.psychic, dragonKing: run.blessings.dragonKing, companions: run.blessings.companions }),
+				psychic: run.blessings.psychic, dragonKing: run.blessings.dragonKing, companions: run.blessings.companions,
+				companionZ: run.blessings.companionZ }),
 		},
 	};
 	const cards = account.cards ||= [];

@@ -13,6 +13,7 @@ export interface TypeEvolution {
 	stats: Partial<StatsTable>; power: number; extras: string[];
 }
 export interface BlessingEffects {
+	companionZ?: { companion: 'marnie' | 'roxie' | 'lacey', member: string, spent?: boolean };
 	companions?: import('./rogue-companions').RogueCompanion[];
 	dragonKing?: import('./rogue-blessing-permanent').DragonKing;
 	owned: OwnedBlessing[];
@@ -155,6 +156,12 @@ add('prismatic', 'mousefamily', '电气鼠大家庭', '获得 1 只随机电气�
 add('prismatic', 'eeveefamily', '伊布大家族', '获得【伊布】与 1 颗自选的伊布进化石。队伍六只均为伊布家族成员时，每只每场可额外使用 1 次【九彩升华齐聚顶】。');
 add('gold', 'duck', '嘶~头疼', '获得【可达鸭】（赠送等级达到 33 时改为【哥达鸭】）。最强的【可达鸭】或【哥达鸭】增加超能属性和额外特性【脑核之力】，特攻、速度种族值各 +20。');
 add('gold', 'ascent', '登龙', '切割招式命中后跃至空中。下一回合落地时可自由选择招式，该次招式威力提升 30%。落地回合及其下一回合不能再次跃起。');
+const companionZText = '额外 Z 不消耗常规 Z 次数，本局爬塔仅可释放一次；逃跑返还次数，通关卡每场对战重新获得一次机会。命中后使用者攻击、防御、特攻、特防、速度各提升 1 级。';
+add('gold', 'companionband', '少女乐队的呐喊', '选择【玛俐】或【霍米加】同行。【玛俐】使最强恶系伙伴自选额外特性【暗黑气场】或【威吓】，可为任意一名恶系伙伴将【大声咆哮】转化为恶系声音特殊额外 Z【熙熙攘攘我们的城市】；【霍米加】使最强毒系伙伴自选【毒污皮肤】或【朋克摇滚】，可为任意一名毒系伙伴将【污泥波】转化为毒系声音特殊额外 Z【熙熙攘攘我们的城市】。威力 185，选定伙伴后固定。' + companionZText);
+add('gold', 'companionlacey', '粉色妖精小姐♪', '【紫芋】同行，最强妖精系伙伴自选额外特性【妖精气场】或【天籁之音】。可为任意一名妖精系伙伴将【嬉闹】转化为妖精系群攻物理额外 Z【致以无瑕之人】，威力 185，选定伙伴后固定。' + companionZText);
+add('gold', 'companionkahili', '一杆青空', '【卡希丽】同行，最强飞行系伙伴自选额外特性【飞行皮肤】或【技术高手】。飞行系伙伴战斗经验提升 30%、获得的努力值翻倍。');
+add('gold', 'companionliko', '千恋万花', '【莉可】同行，最强草系伙伴自选额外特性【花之礼】或【青草制造者】。每次进入下一层时，每只草系伙伴各有 30% 概率拾来一份战利品。');
+add('gold', 'companiongiovanni', '黑衣人', '【坂木】同行，最强超能系伙伴自选额外特性【精神制造者】或【强行】。超能系伙伴击倒对手时，自身从该对手获得的经验提升 20%，该对手对应的战利品数量提升 20%。');
 add('gold', 'companionlysandre', '奥本海默', '【弗拉达利】同行，偏好战斗选项。完成精英区域后获得少量伤药。最强火系伙伴自选额外特性【火焰鬃毛】或【熔岩铠甲】。');
 add('gold', 'companionolivia', '石纪元', '【莉兹】同行，【赌石】出现权重提升 30%，开出高价值物品的概率提升。击倒或捕捉岩石系对手时，战利品数量提升 20%。最强岩石系伙伴自选额外特性【沙之力】或【扬沙】。');
 add('gold', 'companionwinter', '冰属性男子与酷酷女同事', '选择【古鲁夏】或【辛俐】同行，偏好遇见宝可梦的选项。【古鲁夏】使【雪山速滑】出现权重提升 30%、奖励提高一档；最强冰系伙伴自选【雪之力】或【降雪】。【辛俐】使每只地面系伙伴每场结束后有 30% 概率找到物资；最强地面系伙伴自选【持久力】或【遇水凝固】。');

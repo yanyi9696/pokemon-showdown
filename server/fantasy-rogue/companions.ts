@@ -1,12 +1,14 @@
 import { Dex } from '../../sim/dex';
 import { COMPANIONS, companionSource, companionOwned, strongestTypedMember, companionAbilityOptions,
-	syncCompanions, companionHasGift, type CompanionID, type RogueCompanion } from '../../sim/rogue-companions';
+	syncCompanions, companionHasGift, companionGiftOptions, COMPANION_PREFERENCES, COMPANION_REGIONS, type CompanionID, type RogueCompanion } from '../../sim/rogue-companions';
 import { permanentMemberTypes, memberStatTotal } from '../../sim/rogue-blessing-permanent';
 import type { RogueRun, RogueCommand } from './types';
 import type { RoguePokemon, RogueDefeat } from '../../sim/fantasy-rogue';
 import type { RogueRandom } from './biome-pools';
-import { COMPANION_DIALOGUE } from './companion-dialogue';
+import { COMPANION_DIALOGUE, COMPANION_GIFT_LINES } from './companion-dialogue';
 import { candyAtFloor } from './early-balance';
+import { companionZCandidates, companionZDefinition } from '../../sim/rogue-companion-z';
+import { rewardChoices } from './reward-scenes';
 
 export function grantCompanion(run: RogueRun, id: CompanionID) {
 	const list = run.blessings!.companions ||= [];
@@ -22,42 +24,57 @@ function speak(c: RogueCompanion, kind: 'chat' | 'praise', random: RogueRandom) 
 	const index = candidates[random(candidates.length)]; seen.push(index);
 	c.message = pool[index]; c.messageAt = Date.now(); c.smile = kind === 'chat' ? 'chat' : 'approval';
 }
-type Option = { id: string, name: string, disabled?: boolean, region?: string };
-export function companionRecommendation(run: RogueRun, c: RogueCompanion, options: Option[]) {
-	const event = run.node?.event;
-	if (!event || !['choice', 'fragments'].includes(event.stage) || ['iono', 'canari'].includes(c.id) && run.node?.kind !== 'event') return;
-	const available = options.filter(o => !o.disabled &&
-		!['leave', 'back', 'unavailable', 'fishtap', 'fishfinish'].includes(o.id));
-	const score = (o: Option) => {
-		if (o.id === `postcard:${COMPANIONS[c.id].region}` || o.region === COMPANIONS[c.id].region) return 100;
+export type CompanionOption = { id: string, name: string, disabled?: boolean, region?: string, preference?: string };
+export function companionOptions(run: RogueRun, options: CompanionOption[] = []): CompanionOption[] {
+	if (run.phase === 'choose') return (run.choices || []).filter(n => !n.fogged).map(n => ({ id: n.id, name: n.name,
+		preference: ['wild', 'elite', 'trainer', 'boss'].includes(n.kind) ? 'battle' : n.kind === 'reward' ? 'reward' : 'explore' }));
+	if (run.phase === 'reward') return rewardChoices(run).map(o => ({ ...o, preference: 'reward' }));
+	return options;
+}
+function consultationKey(run: RogueRun) {
+	return run.phase === 'choose' ? 'routes:' + run.floor : run.phase === 'reward' ? run.node?.rewardScene?.key : run.node?.event?.key;
+}
+export function companionRecommendation(run: RogueRun, c: RogueCompanion, options: CompanionOption[]) {
+	if (!['event', 'reward', 'choose'].includes(run.phase)) return;
+	const event = run.node?.event, preference = COMPANION_PREFERENCES[c.id];
+	const available = companionOptions(run, options).filter(o => !o.disabled &&
+		!['leave', 'back', 'unavailable', 'fishtap', 'fishfinish', 'continue', 'finish'].includes(o.id));
+	const score = (o: CompanionOption) => {
+		if (o.id === 'postcard:' + COMPANIONS[c.id].region || o.region === COMPANIONS[c.id].region ||
+			o.name.includes(COMPANION_REGIONS[COMPANIONS[c.id].region])) return 100;
 		if (c.id === 'grusha' && o.id === 'skistart') return 100;
-		if (['acerola', 'iris', 'grusha', 'rika'].includes(c.id) && event.id === 'legendarytracks' &&
-			(o.id === 'investigate' || o.id.startsWith('site:'))) return 80;
-		if (['bea', 'iono', 'canari', 'guzma', 'lysandre'].includes(c.id)) return ['fight', 'power', 'road', 'fantasy', 'honeymoonbattle'].includes(o.id) ? 80 : 0;
-		if (['acerola', 'iris', 'grusha', 'rika'].includes(c.id)) return (
-			['open', 'adopt', 'path', 'mediate', 'left', 'right', 'confirm', 'fishstart'].includes(o.id) ||
-			o.id.startsWith('swap:')
-		) ? 70 : 0;
-		if (c.id === 'lana') return o.id === 'fishstart' ? 100 : 0;
-		if (c.id === 'olivia') return o.id.startsWith('stone:') ? 100 : 0;
-		if (c.id === 'poppy') return ['open', 'reward', 'treasure', 'fragments', 'supplies', 'gift', 'accept', 'search', 'buy', 'trade'].includes(o.id) ? 80 : 0;
+		if (o.preference === preference) return 80;
+		if (preference === 'battle') return /^(fight|power|road|fantasy|honeymoonbattle|battle|acceptbattle)$/.test(o.id) ||
+			!/不|拒绝|离开|放弃|避开/.test(o.name) && /挑战|对战|战斗|迎战|切磋|交手/.test(o.name) ? 80 : 0;
+		if (preference === 'pokemon') return event?.id === 'legendarytracks' && (o.id === 'investigate' || o.id.startsWith('site:')) ||
+			['open', 'adopt', 'path', 'mediate', 'left', 'right', 'confirm', 'fishstart'].includes(o.id) || o.id.startsWith('swap:') ||
+			/领养|捕捉|遇见|展示.*宝可梦/.test(o.name) ? 70 : 0;
+		if (preference === 'fish') return o.id === 'fishstart' ? 100 : 0;
+		if (preference === 'stone') return o.id.startsWith('stone:') ? 100 : 0;
+		if (preference === 'reward') return ['open', 'reward', 'treasure', 'fragments', 'supplies', 'gift', 'accept', 'search', 'trade'].includes(o.id) ||
+			/领取|宝物|谢礼|奖励|补给|收下/.test(o.name) ? 80 : 0;
 		return ['open', 'enter', 'ask', 'skill', 'fragments'].includes(o.id) ? 50 : 0;
 	};
 	return available.filter(o => score(o) > 0).sort((a, b) => score(b) - score(a))[0]?.id;
 }
-export function companionView(run: RogueRun, options: Option[] = []) {
+export function companionView(run: RogueRun, options: CompanionOption[] = []) {
 	const event = run.node?.event;
+	const key = event?.companionKey || consultationKey(run);
 	return (run.blessings?.companions || []).map(c => {
+		const approvedHere = c.eventKey === key || c.eventKey === 'routes:' + run.floor;
 		const member = run.team.find(mon => mon.id === c.member);
 		const pendingType = !c.type && COMPANIONS[c.id].types.length;
 		return { ...c, name: COMPANIONS[c.id].name, source: companionSource(c.id),
 			smileUntil: c.smile === 'chat' ? (c.messageAt || 0) + 6000 : undefined,
-			smile: c.smile === 'approval' ? c.eventKey === (event?.companionKey || event?.key) :
+			smile: c.smile === 'approval' ? approvedHere :
 			c.smile === 'chat' && Date.now() - (c.messageAt || 0) < 6000,
-			message: c.smile === 'approval' && c.eventKey !== (event?.companionKey || event?.key) ? undefined : c.message,
+			message: c.smile === 'approval' && !approvedHere ? undefined : c.message,
 			giftCounter: companionHasGift(c.id),
-			canConsult: run.phase === 'event' && !!companionRecommendation(run, c, options),
-			recommended: c.consulted === event?.key ? companionRecommendation(run, c, options) : undefined,
+			giftOptions: c.giftPending && !c.rewarded ? companionGiftOptions(c.id) : [],
+			zMove: companionZDefinition(c.id), zGrant: run.blessings?.companionZ,
+			zCandidates: companionZCandidates(run.blessings!, run.team, c.id).map(mon => ({ id: mon.id, species: mon.set.species })),
+			canConsult: ['event', 'choose', 'reward'].includes(run.phase) && companionOptions(run, options).some(o => !o.disabled),
+			recommended: c.consulted === consultationKey(run) ? companionRecommendation(run, c, options) : undefined,
 			member: member && { id: member.id, species: member.set.species, total: memberStatTotal(member) },
 			typeOptions: pendingType ? COMPANIONS[c.id].types.map(type => ({ id: type,
 				member: strongestTypedMember(run.team, type)?.set.species })) : [],
@@ -65,35 +82,23 @@ export function companionView(run: RogueRun, options: Option[] = []) {
 		};
 	});
 }
-export function companionCommand(run: RogueRun, command: RogueCommand, random: RogueRandom, options: Option[]) {
+export function companionCommand(run: RogueRun, command: RogueCommand, random: RogueRandom, options: CompanionOption[]) {
 	if (run.phase === 'battle') throw new Error('请在战斗外与同行训练家交流。');
-	if (command.value === 'choosewinter') {
-		if (!run.blessings?.owned.some(b => b.family === 'companionwinter') ||
-			run.blessings.companions?.some(c => ['grusha', 'rika'].includes(c.id)) ||
-			!['grusha', 'rika'].includes(command.member || '')) throw new Error('请在古鲁夏与辛俐中选择一位。');
-		grantCompanion(run, command.member as CompanionID); return;
-	}
-	if (command.value === 'choosestreamer') {
-		if (!run.blessings?.owned.some(b => b.family === 'companionstreamer') ||
-			run.blessings.companions?.some(c => ['iono', 'canari'].includes(c.id)) ||
-			!['iono', 'canari'].includes(command.member || '')) throw new Error('请在奇树与卡娜莉中选择一位。');
-		grantCompanion(run, command.member as CompanionID); return;
-	}
-	if (command.value === 'chooseai') {
-		if (!run.blessings?.owned.some(b => b.family === 'companionai') ||
-			run.blessings.companions?.some(c => ['sada', 'turo'].includes(c.id)) ||
-			!['sada', 'turo'].includes(command.member || '')) {
-			throw new Error('请在奥琳 AI 与弗图 AI 中选择一位。');
-		}
+	const choiceFamilies: Record<string, string> = { choosewinter: 'companionwinter', choosestreamer: 'companionstreamer', chooseai: 'companionai', chooseband: 'companionband' };
+	const family = choiceFamilies[command.value || ''];
+	if (family) {
+		const candidates = (Object.keys(COMPANIONS) as CompanionID[]).filter(id => COMPANIONS[id].family === family);
+		if (!run.blessings?.owned.some(b => b.family === family) || run.blessings.companions?.some(c => candidates.includes(c.id)) ||
+			!candidates.includes(command.member as CompanionID)) throw new Error('请从当前同行祝福的训练家中选择一位。');
 		grantCompanion(run, command.member as CompanionID); return;
 	}
 	const c = run.blessings?.companions?.find(entry => entry.id === command.member);
 	if (!c) throw new Error('这位训练家尚未同行。');
 	if (command.value === 'chat') { speak(c, 'chat', random); return; }
 	if (command.value === 'advice') {
-		if (run.phase !== 'event' || !run.node?.event || !['choice', 'fragments'].includes(run.node.event.stage)) throw new Error('当前没有可以咨询的事件选项。');
-		c.consulted = run.node.event.key;
-		const recommended = options.find(o => o.id === companionRecommendation(run, c, options));
+		if (!['event', 'choose', 'reward'].includes(run.phase) || !companionOptions(run, options).length) throw new Error('当前没有可以咨询的选项。');
+		c.consulted = consultationKey(run);
+		const recommended = companionOptions(run, options).find(o => o.id === companionRecommendation(run, c, options));
 		const reason = c.id === 'bea' ? '实战也是修行。' : c.id === 'acerola' ? '去看看会遇到什么伙伴吧。' :
 			c.id === 'lana' ? '静下心来，看看这次能钓到什么。' : ['iono', 'canari'].includes(c.id) ? '来一场精彩的对战吧！' :
 			c.id === 'iris' ? '我想听听宝可梦们的声音！' : c.id === 'poppy' ? '把这些宝物好好收起来吧！' :
@@ -102,6 +107,13 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 		c.messageAt = Date.now(); delete c.smile; return;
 	}
 	const [action, value] = (command.value || '').split(':');
+	if (action === 'gift') { giveCompanionGift(run, c, value); return; }
+	if (action === 'z') {
+		const candidate = companionZCandidates(run.blessings!, run.team, c.id).find(mon => mon.id === value);
+		if (!candidate) throw new Error('请选择掌握对应招式的伙伴；额外 Z 的使用伙伴只能指定一次。');
+		run.blessings!.companionZ = { companion: c.id as 'marnie' | 'roxie' | 'lacey', member: candidate.id };
+		(run.notices ||= []).push(companionSource(c.id) + '已为这位伙伴解锁额外 Z 招式，普通招式仍可正常使用。'); return;
+	}
 	if (action === 'type' && !c.type && (COMPANIONS[c.id].types as readonly string[]).includes(value)) {
 		if (!strongestTypedMember(run.team, value)) throw new Error('队伍里还没有对应属性的伙伴。');
 		c.type = value; syncCompanions(run.blessings!, run.team); return;
@@ -116,49 +128,44 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 	const abilityName = Dex.mod('gen9fantasy').abilities.get(value).name;
 	(run.notices ||= []).push(`${companionSource(c.id)}${member.set.species} 获得额外特性 ${abilityName}。`);
 }
-export function recordCompanionPreference(run: RogueRun, options: Option[], choice: string, random: RogueRandom) {
-	const event = run.node!.event!;
-	const key = event.companionKey ||= event.key;
+export function recordCompanionPreference(run: RogueRun, options: CompanionOption[], choice: string, random: RogueRandom) {
+	const event = run.node?.event;
+	const key = run.phase === 'event' && event ? event.companionKey ||= event.key : consultationKey(run);
+	if (!key) return;
 	for (const c of run.blessings?.companions || []) {
-		const stoneFinished = c.id === 'olivia' && event.id === 'stones' && choice === 'stonefinish' && !!event.stonesOpened;
+		const stoneFinished = c.id === 'olivia' && event?.id === 'stones' && choice === 'stonefinish' && !!event.stonesOpened;
 		const recommended = companionRecommendation(run, c, options) === choice;
 		if (c.counted?.includes(key) || !stoneFinished && !recommended) continue;
 		c.eventKey = key; speak(c, 'praise', random);
 		// Olivia approves opening a stone immediately, but one completed visit counts only once.
-		if (c.id === 'olivia' && event.id === 'stones' && !stoneFinished) continue;
+		if (c.id === 'olivia' && event?.id === 'stones' && !stoneFinished) continue;
 		(c.counted ||= []).push(key);
-		if (['iono', 'canari'].includes(c.id) && run.node?.kind === 'event') event.streamerBonus = c.id;
+		if (['iono', 'canari'].includes(c.id) && run.node?.kind === 'event') event!.streamerBonus = c.id;
 		if (!companionHasGift(c.id)) continue;
-		if (c.id === 'lana' && !(event.id === 'fishing' && choice === 'fishstart')) continue;
+		if (c.id === 'lana' && !(event?.id === 'fishing' && choice === 'fishstart')) continue;
 		if (c.id === 'olivia' && choice !== 'stonefinish') continue;
 		c.preferences++;
-		if (c.preferences >= 15 && !c.rewarded) {
-			c.rewarded = true;
-			const candy = candyAtFloor(run.floor), money = 100 + 3 * run.floor;
-			const gifts: Record<string, { item: string, line: string }> = {
-				poppy: { item: 'prettyfeather', line: '闪闪亮亮的羽毛！波琵想把它送给你！' },
-				guzma: { item: 'superpotion', line: '拿着！养好精神，下次再狠狠干上一场！' },
-				lysandre: { item: 'hyperpotion', line: '让这些生命继续走下去吧。这是我的心意。' },
-				olivia: { item: 'pearl', line: '这颗珠子很适合你，可别拿去乱花哦。' },
-				grusha: { item: 'iceheal', line: '别冻着。下一个弯道，也要稳稳地过去。' },
-				rika: { item: 'superpotion', line: '表现不错嘛。这份小礼物，就当小小的合格奖啦。' },
-				bea: { item: candy, line: '训练后补充一点甜食。下一场也请全力以赴。' },
-				acerola: { item: 'ether', line: '嘿嘿，这是伙伴们藏起来的小礼物。收好哦！' },
-				iono: { item: 'greatball', line: '十五次默契配合！这是本期节目给你的特别小奖品！' },
-				canari: { item: 'greatball', line: '这是来电的纪念。希望下次也能遇见喜欢的伙伴。' },
-				iris: { item: candy, line: '大家的声音都很开心呢！这份点心要和伙伴一起分享哦！' },
-				lana: { item: 'lureball', line: '耐心也是钓鱼的本领。这颗球，留给下一次大收获吧。' },
-			};
-			const gift = gifts[c.id] || { item: 'potion', line: '这是我为伙伴准备的一点补给，收下吧。' };
-			run.money += money; run.bag[gift.item] = (run.bag[gift.item] || 0) + 1;
-			const itemName = gift.item.startsWith('expcandy') ? `经验糖果 ${gift.item.slice(8).toUpperCase()}` :
-				({ ether: 'PP 单项小补剂', greatball: '超级球', lureball: '诱饵球', prettyfeather: '美丽之羽', superpotion: '好伤药', hyperpotion: '厉害伤药', iceheal: '解冻药', pearl: '珍珠', potion: '伤药' } as Record<string, string>)[gift.item];
-			(run.notices ||= []).push(`${companionSource(c.id)}同行训练家的赠礼：「${gift.line}」金币 +${money}，【${itemName}】×1（已放入背包）。`);
+		if (c.preferences >= 15 && !c.rewarded && !c.giftPending) {
+			c.giftPending = true;
+			const gifts = companionGiftOptions(c.id);
+			if (gifts.length === 1) giveCompanionGift(run, c, gifts[0].id);
+			else (run.notices ||= []).push(companionSource(c.id) + '同行训练家的赠礼准备好了，请在同行面板中挑选一件。');
 		}
 	}
 }
+export function giveCompanionGift(run: RogueRun, c: RogueCompanion, item: string) {
+	const gift = companionGiftOptions(c.id).find(g => g.id === item);
+	if (!gift || !c.giftPending || c.rewarded) throw new Error('当前没有可领取的同行训练家赠礼。');
+	c.rewarded = true; delete c.giftPending;
+	run.bag[gift.id] = (run.bag[gift.id] || 0) + 1;
+	const line = COMPANION_GIFT_LINES[c.id];
+	(run.notices ||= []).push(companionSource(c.id) + '同行训练家的赠礼：「' + line + '」获得【' + gift.name + '】×1，对应属性招式威力 ×1.2。');
+}
+
 export function companionExperience(run: RogueRun, mon: RoguePokemon, defeated: RogueDefeat) {
 	let factor = 1;
+	if (companionOwned(run.blessings, 'kahili') && permanentMemberTypes(mon).includes('Flying')) factor *= 1.3;
+	if (companionOwned(run.blessings, 'giovanni') && defeated.killer === mon.id && !defeated.captured && permanentMemberTypes(mon).includes('Psychic')) factor *= 1.2;
 	if (companionOwned(run.blessings, 'bea') && permanentMemberTypes(mon).includes('Fighting')) factor *= 1.3;
 	if (companionOwned(run.blessings, 'lana') &&
 		Dex.mod('gen9fantasy').species.get(defeated.species).types.includes('Water')) factor *= 1.2;
@@ -192,15 +199,15 @@ export function boostCompanionEventRewards(run: RogueRun, before: { money: numbe
 	if (increased) (run.notices ||= []).push(`${companionSource(c.id)}这次事件的收获增加了，已一并收好。`);
 }
 export function companionPickup(run: RogueRun, encounterId: string, random: RogueRandom) {
-	const id = encounterId.startsWith('floor:') ? 'acerola' : 'rika';
+	const id = encounterId.startsWith('floor:') ? companionOwned(run.blessings, 'liko') ? 'liko' : 'acerola' : 'rika';
 	if (!companionOwned(run.blessings, id) || run.companionPickups?.settled.includes(encounterId)) return;
 	const pickups = run.companionPickups ||= { settled: [], items: {} };
 	pickups.settled.push(encounterId);
 	for (const mon of run.team) if (
-		permanentMemberTypes(mon).some(type => (id === 'acerola' ? ['Ghost', 'Normal'] : ['Ground']).includes(type)) && random(100) < 30
+		permanentMemberTypes(mon).some(type => (id === 'acerola' ? ['Ghost', 'Normal'] : id === 'liko' ? ['Grass'] : ['Ground']).includes(type)) && random(100) < 30
 	) {
-		const pool = ['potion', 'ether', candyAtFloor(run.floor), run.floor >= 50 ? 'bigmushroom' : 'tinymushroom'];
-		const id = pool[random(pool.length)]; pickups.items[id] = (pickups.items[id] || 0) + 1;
+		const pool = id === 'liko' ? ['tinymushroom', 'pearl', 'stardust', 'prettyfeather'] : ['potion', 'ether', candyAtFloor(run.floor), run.floor >= 50 ? 'bigmushroom' : 'tinymushroom'];
+		const item = pool[random(pool.length)]; pickups.items[item] = (pickups.items[item] || 0) + 1;
 	}
 }
 export function deliverCompanionPickup(run: RogueRun, random?: RogueRandom) {
@@ -208,7 +215,7 @@ export function deliverCompanionPickup(run: RogueRun, random?: RogueRandom) {
 	const items = run.companionPickups?.items;
 	if (!items || !Object.keys(items).length) return;
 	for (const [id, count] of Object.entries(items)) run.bag[id] = (run.bag[id] || 0) + count;
-	(run.notices ||= []).push(`${companionSource(companionOwned(run.blessings, 'rika') ? 'rika' : 'acerola')}伙伴们带回了旅途物资，已放入背包。`);
+	(run.notices ||= []).push(`${companionSource(companionOwned(run.blessings, 'rika') ? 'rika' : companionOwned(run.blessings, 'liko') ? 'liko' : 'acerola')}伙伴们带回了旅途物资，已放入背包。`);
 	run.companionPickups!.items = {};
 }
 

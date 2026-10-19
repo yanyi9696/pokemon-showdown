@@ -58,9 +58,13 @@ function commandAfterOpening(engine, user, command) {
 function chooseCompanions(engine, user, cmd) {
 	const { companionView } = require('../../dist/server/fantasy-rogue/companions');
 	let run = engine.store.get(user).run;
-	if (run.blessings?.owned.some(b => b.family === 'companionai') &&
-		!run.blessings.companions?.some(c => ['sada', 'turo'].includes(c.id))) {
-		cmd('companion', {member: 'sada', value: 'chooseai'});
+	for (const [family, members, choice] of [
+		['companionai', ['sada', 'turo'], 'chooseai'], ['companionstreamer', ['iono', 'canari'], 'choosestreamer'],
+		['companionwinter', ['grusha', 'rika'], 'choosewinter'], ['companionband', ['marnie', 'roxie'], 'chooseband'],
+	]) {
+		if (run.blessings?.owned.some(b => b.family === family) && !run.blessings.companions?.some(c => members.includes(c.id))) {
+			cmd('companion', {member: members[0], value: choice});
+		}
 	}
 	for (let n = 0; n < 8; n++) {
 		run = engine.store.get(user).run;
@@ -83,7 +87,8 @@ function prepareCompanionParty(run, family, level = 50) {
 	const types = require('../../dist/sim/rogue-companions').companionFamilyTypes(family);
 	if (!types.length) return;
 	const names = {Fire: 'Charmander', Water: 'Squirtle', Ice: 'Snorunt', Rock: 'Rockruff', Ground: 'Diglett',
-		Steel: 'Magnemite', Fighting: 'Machop', Ghost: 'Gastly', Electric: 'Pikachu', Bug: 'Caterpie', Dragon: 'Dratini'};
+		Steel: 'Magnemite', Fighting: 'Machop', Ghost: 'Gastly', Electric: 'Pikachu', Bug: 'Caterpie', Dragon: 'Dratini',
+		Dark: 'Poochyena', Poison: 'Ekans', Fairy: 'Clefairy', Flying: 'Pidgey', Grass: 'Bulbasaur', Psychic: 'Abra'};
 	const { Dex } = require('../../dist/sim/dex');
 	const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 	const species = Dex.mod('gen9fantasy').species.get(names[types[0]]);

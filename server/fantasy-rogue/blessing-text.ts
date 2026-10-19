@@ -1,6 +1,6 @@
 import { BLESSING_STAGES, BLESSING_TYPES, STAGED_BLESSING_FAMILIES, blessingTitle, blessingStage,
 	blessingCoins, medicRecovery, lateBlessingReward, emblemDescription, taskRewardTier, type BlessingDefinition } from '../../sim/rogue-blessing-data';
-import { COMPANIONS, companionFamily, companionFamilyTypes } from '../../sim/rogue-companions';
+import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceText, companionGiftOptions, type CompanionID } from '../../sim/rogue-companions';
 import { tonicDescription } from '../../sim/rogue-blessing-permanent';
 
 /** Player copy shared by selection cards, the codex, owned blessings and new clear cards. */
@@ -38,11 +38,12 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 	if (reward.toolboxes) text += `立即获得【${reward.advanced ? '高级工具箱' : '工具箱'}】×${reward.toolboxes}，每个可从四件随机装备中选一件。`;
 	if (companionFamily(def.family)) {
 		text = text.replace(/累计[^。]*【同行训练家的赠礼】。/g, '');
-		const regions: Record<string, string> = { kalos: '卡洛斯', alola: '阿罗拉', paldea: '帕底亚', galar: '伽勒尔', unova: '合众' };
-		const homes = [...new Set(Object.values(COMPANIONS).filter(c => c.family === def.family).map(c => regions[c.region]))];
-		text += `也偏好来自家乡（${homes.join('／')}）的选项。`;
+		text = text.replace(/，偏好[^。]*。/g, '。');
+		const people = (Object.keys(COMPANIONS) as CompanionID[]).filter(id => COMPANIONS[id].family === def.family);
+		text += '事件、遭遇、奖励等区域出现选项时，均可咨询同行训练家的意见。' + people.map(companionPreferenceText).join('');
 		if (def.family !== 'companionai') text += '累计听从 15 次偏好选择，本局获得一次【同行训练家的赠礼】。' +
-			(def.family === 'companionlana' ? '水莲按进入钓鱼计数。' : def.family === 'companionolivia' ? '莉兹按完成赌石事件计数。' : '');
+			(def.family === 'companionlana' ? '水莲按进入钓鱼计数。' : def.family === 'companionolivia' ? '莉兹按完成赌石事件计数。' : '') +
+			people.map(id => `【${COMPANIONS[id].name}】赠送${companionGiftOptions(id).map(gift => `【${gift.name}】`).join('或')}×1${id === 'acerola' ? '（二选一）' : ''}，携带后对应属性招式威力 ×1.2。`).join('');
 	}
 	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name, text };
 }

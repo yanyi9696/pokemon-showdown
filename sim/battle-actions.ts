@@ -277,7 +277,7 @@ export class BattleActions {
 		}
 		pokemon.lastDamage = 0;
 		let lockedMove;
-		if (!externalMove && !(this.battle.fantasyRogue && ['roguepsychicburst', 'rogueevoboost'].includes(move.id))) {
+		if (!externalMove && !(this.battle.fantasyRogue && ['roguepsychicburst', 'rogueevoboost', 'roguecitydark', 'roguecitypoison', 'rogueflawless'].includes(move.id))) {
 			lockedMove = this.battle.runEvent('LockMove', pokemon);
 			if (lockedMove === true) lockedMove = false;
 			if (!lockedMove) {

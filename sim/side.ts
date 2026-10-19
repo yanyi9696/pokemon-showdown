@@ -20,6 +20,7 @@
  */
 
 import { Utils } from '../lib/utils';
+import { companionZRequest, chooseCompanionZ } from './rogue-companion-z';
 import { waitingRogueCommander } from './rogue-bosses';
 import type { RequestState } from './battle';
 import { Pokemon, type EffectState } from './pokemon';
@@ -511,8 +512,10 @@ export class Side {
 		const rogue = this.id === 'p1' && !this.battle.fantasyRogue?.duel ? this.battle.fantasyRogue : undefined;
 		const psychic = psychicCharge(this.active[0]);
 		const eeveeZ = this.active.map(mon => eeveeZAvailable(mon));
+		const companionZ = this.active.map(mon => companionZRequest(mon));
 		const dragonKing = dragonKingRequest(this);
-		const payload = rogue || dragonKing || psychic !== undefined || eeveeZ.some(Boolean) ? { ...update, fantasyRogue: {
+		const payload = rogue || dragonKing || psychic !== undefined || eeveeZ.some(Boolean) || companionZ.some(Boolean) ? { ...update, fantasyRogue: {
+			companionZ,
 			dragonKing,
 			psychic,
 			eeveeZ,
@@ -1122,6 +1125,9 @@ export class Side {
 			}
 
 			switch (choiceType) {
+			case 'roguecompanionz':
+				if (!chooseCompanionZ(this, data || '1')) return false;
+				break;
 			case 'rogueeeveez':
 				if (!chooseRogueEeveeZ(this)) return false;
 				break;

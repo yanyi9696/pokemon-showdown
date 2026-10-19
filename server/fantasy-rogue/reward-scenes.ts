@@ -168,5 +168,5 @@ export function chooseReward(run: RogueRun, content: RogueContent, random: Rogue
 	run.node.reward = { money: baseCoins(run.floor) + (choice.money || 0), items };
 	scene.claimed = true;
 	scene.result = effect;
-	run.notices = [effect];
+	(run.notices ||= []).push(effect);
 }

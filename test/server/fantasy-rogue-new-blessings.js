@@ -111,7 +111,7 @@ describe('Fantasy Rogue companion gifts, railgun and rule breaker', function () 
 			recordCompanionPreference(run, options, 'fishstart', () => 0);
 		}
 		assert.equal(run.blessings.companions.find(c => c.id === 'lana').preferences, 15);
-		assert.equal(run.bag.lureball, 1); assert.equal(run.money, 250);
+		assert.equal(run.bag.mysticwater, 1); assert.equal(run.money, 0);
 		assert(run.notices.some(n => n.includes('同行训练家的赠礼')));
 	});
 	it('grants Poppy candy only after reward regions once and preserves the stated Guzma quantity', () => {

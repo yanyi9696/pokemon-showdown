@@ -119,7 +119,7 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 		const fail = run(); tracks.beginLegendaryTracks(fail, () => 0); tracks.chooseLegendaryTracks(fail, 'investigate', () => 0);
 		tracks.chooseLegendaryTracks(fail, 'site:1', () => 0); assert(fail.node.event.settled); assert.equal(fail.node.encounters.length, 0);
 	});
-	it('counts one preference per story, pays once, and accumulates 10% without doubling small drops', () => {
+	it('counts one preference per story, pays once, and accumulates 25% without doubling small drops', () => {
 		const r = run(); companions.grantCompanion(r, 'iono');
 		const c = r.blessings.companions[0]; c.ability = 'galvanize';
 		assert(assignedExtraAbilities(r.team[0], r.team, r.blessings).includes('galvanize'));
@@ -130,7 +130,7 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 			r.node.event.key += 'branch'; companions.recordCompanionPreference(r, options, 'fight', () => 0);
 		}
 		assert(companions.companionView(r, options)[0].smile);
-		assert.equal(c.preferences, 16); assert(c.rewarded); assert.equal(r.bag.greatball, 1);
+		assert.equal(c.preferences, 16); assert(c.rewarded); assert.equal(r.bag.magnet, 1);
 		r.bag.potion = 0;
 		for (let i = 0; i < 10; i++) {
 			const before = { money: r.money, bag: { ...r.bag }, shards: r.blessings.shards };

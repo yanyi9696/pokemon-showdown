@@ -4,6 +4,7 @@ import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
 import { assignedExtraAbilities, permanentMemberTypes, tonicDescription } from '../../sim/rogue-blessing-permanent';
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
 import { companionSource } from '../../sim/rogue-companions';
+import { COMPANION_Z } from '../../sim/rogue-companion-z';
 import { createRoguePokemon } from './progression';
 import { growthPercent } from './growth';
 import type { RogueRun } from './types';
@@ -32,6 +33,11 @@ export function clearMemberDetails(mon: RoguePokemon, run: RogueRun): ClearMembe
 	}
 	const sources: ClearMemberDetails['sources'] = [], mod = mon.statModifiers;
 	const add = (name: string, text: string) => sources.push({ name, text });
+	if (run.blessings?.companionZ?.member === mon.id) {
+		const grant = run.blessings.companionZ, move = COMPANION_Z[grant.companion];
+		add(companionSource(grant.companion), `额外 Z【${move.name}】：${BLESSING_TYPES[move.type]}系、${move.category === 'Physical' ? '群攻物理' : '声音特殊'}，威力 185，命中后五项能力各 +1。` +
+			`爬塔${grant.spent ? '已使用' : '尚未使用'}；通关卡每场对战重新获得一次机会，不占常规 Z 次数。`);
+	}
 	if (Object.values(run.boosts).some(Boolean)) add('局外六维加成', statList(run.boosts));
 	if ((mon.stars || 1) > 1) add('星级', `${mon.stars} 星，六维 ×${rogueStarScale(mon.stars)}`);
 	const training = (name: string, value?: { offense?: number, defense?: number }) => {

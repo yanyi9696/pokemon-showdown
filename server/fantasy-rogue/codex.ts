@@ -1,4 +1,4 @@
-import { COMPANIONS, companionHasGift } from '../../sim/rogue-companions';
+import { trainerCodex } from './trainer-codex';
 import { Dex } from '../../sim/dex';
 import { REWARD_SCENES } from './reward-scenes';
 import { ROGUE_BLESSINGS, FANTASY_BLESSING_ITEMS } from '../../sim/rogue-blessing-data';
@@ -98,19 +98,6 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			pages: { start: { text: [entry.text], options: [], battleSkipped: entry.category === 'encounter' } },
 		} } : {}) };
 	});
-	const companions = Object.entries(COMPANIONS).map(([id, c]) => {
-		const homes: Record<string, string> = { kalos: '卡洛斯', alola: '阿罗拉', paldea: '帕底亚', galar: '伽勒尔', unova: '合众' };
-		const preferences: Record<string, string> = { bea: '战斗', guzma: '战斗', lysandre: '战斗', iono: '战斗', canari: '战斗',
-			acerola: '接触或获得宝可梦', iris: '接触或获得宝可梦', grusha: '遇见宝可梦及雪山速滑', rika: '遇见宝可梦',
-			lana: '进入钓鱼', olivia: '赌石', poppy: '奖励', sada: '调查与探索', turo: '调查与探索' };
-		const gifts: Record<string, string> = { bea: '当前档位经验糖果', iris: '当前档位经验糖果', acerola: 'PP 单项小补剂',
-			iono: '超级球', canari: '超级球', lana: '诱饵球', poppy: '美丽之羽', guzma: '好伤药', lysandre: '厉害伤药',
-			olivia: '珍珠', grusha: '解冻药', rika: '好伤药' };
-		const def = ROGUE_BLESSINGS.find(b => b.family === c.family)!;
-		return { id: `companion:${id}`, category: 'companion', name: c.name, portrait: id, unlocked: true,
-			text: `来自${homes[c.region]}，偏好家乡与${preferences[id]}相关选项。` +
-				(companionHasGift(id as keyof typeof COMPANIONS) ? `累计 15 次${id === 'lana' ? '进入钓鱼' : id === 'olivia' ? '完成赌石事件' : '偏好选择'}后，本局获得一次【同行训练家的赠礼】：【${gifts[id]}】×1 及 100＋当前层数×3 金币。` : '通过预演帮助你熟悉对战，没有偏好赠礼。') +
-				`对应祝福：【${def.name}】。` };
-	});
+	const companions = trainerCodex();
 	return { section, preview, entries: [...events, ...visits, ...companions].sort(compareBlessingNames) };
 }

@@ -1,4 +1,30 @@
+import { spendCompanionZ } from '../../../sim/rogue-companion-z';
+
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+	roguecitydark: {
+		shortDesc: '同行额外Z。命中后攻击、防御、特攻、特防、速度各提升1级。',
+		name: 'Rogue City Dark', num: -31002, accuracy: true, basePower: 185, category: 'Special', pp: 1,
+		priority: 0, type: 'Dark', target: 'normal', flags: { sound: 1, bypasssub: 1 }, isZ: true, isNonstandard: 'Custom',
+		self: { boosts: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+		onTry(source, target, move) { return spendCompanionZ(source, move, target); },
+		onPrepareHit() { this.attrLastMove('[anim] Black Hole Eclipse'); },
+	},
+	roguecitypoison: {
+		shortDesc: '同行额外Z。命中后攻击、防御、特攻、特防、速度各提升1级。',
+		name: 'Rogue City Poison', num: -31003, accuracy: true, basePower: 185, category: 'Special', pp: 1,
+		priority: 0, type: 'Poison', target: 'normal', flags: { sound: 1, bypasssub: 1 }, isZ: true, isNonstandard: 'Custom',
+		self: { boosts: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+		onTry(source, target, move) { return spendCompanionZ(source, move, target); },
+		onPrepareHit() { this.attrLastMove('[anim] Acid Downpour'); },
+	},
+	rogueflawless: {
+		shortDesc: '同行额外Z。攻击所有对手，命中后五项能力各提升1级（一次）。',
+		name: 'Rogue Flawless', num: -31004, accuracy: true, basePower: 185, category: 'Physical', pp: 1,
+		priority: 0, type: 'Fairy', target: 'allAdjacentFoes', flags: {}, isZ: true, isNonstandard: 'Custom',
+		self: { boosts: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+		onTry(source, target, move) { return spendCompanionZ(source, move, target); },
+		onPrepareHit() { this.attrLastMove('[anim] Twinkle Tackle'); },
+	},
 	rogueevoboost: {
 		name: 'Rogue Evoboost', num: -31001, accuracy: true, basePower: 0,
 		category: 'Status', pp: 1, priority: 0, type: 'Normal', target: 'self', flags: {},

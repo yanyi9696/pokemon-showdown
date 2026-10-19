@@ -895,6 +895,7 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 	}
 	// Captured partners are retained, but an escape commits no combat stacks or defeat ledgers.
 	if (escaped || state.settled.includes(result.encounterId)) return;
+	if (result.companionZUsed && state.companionZ) state.companionZ.spent = true;
 	if (run.team.some(mon => toID(mon.set.species) === 'meltan')) {
 		const received = state.candyDefeated ||= [];
 		for (const [index, defeated] of (result.defeated || []).entries()) {
@@ -960,13 +961,15 @@ export function blessingExperience(run: RogueRun, mon: RoguePokemon, dragonKing 
 	return multiplier;
 }
 /** Stochastic rounding preserves the advertised expected quantity even for one-item drops. */
-export function blessingLoot(run: RogueRun, loot: Record<string, number>, random: RogueRandom, rockFraction = 0) {
+export function blessingLoot(run: RogueRun, loot: Record<string, number>, random: RogueRandom, rockFraction = 0, psychicFraction = 0) {
 	const entry = ownsBlessing(run.blessings, 'ordinary');
 	const ordinary = entry && run.team.every(mon => dex.species.get(mon.set.species).bst <= 500) ?
 		(Math.max(1, Math.floor(entry.floor / 50)) + 1) / 10 : 0;
 	const guzma = run.blessings?.companions?.some(c => c.id === 'guzma') ? 0.2 : 0;
 	const olivia = run.blessings?.companions?.some(c => c.id === 'olivia') ? 0.2 * rockFraction : 0;
-	const bonus = (1 + ordinary) * (1 + guzma) * (1 + olivia) - 1;
+	const giovanni = run.blessings?.companions?.some(c => c.id === 'giovanni') ? 0.2 * psychicFraction : 0;
+	const bonus = (1 + ordinary) * (1 + guzma) * (1 + olivia) * (1 + giovanni) - 1;
+	if (giovanni && Object.keys(loot).length) (run.notices ||= []).push('【同行训练家 - 坂木】超能系伙伴击倒对手的对应战利品提升 20%。');
 	if (olivia) (run.notices ||= []).push('【同行训练家 - 莉兹】岩石系对手的战利品数量提升 20%。');
 	if (!bonus) return { ...loot };
 	if (guzma && Object.keys(loot).length) (run.notices ||= []).push('【同行训练家 - 古兹马】战利品数量提升 20%。');

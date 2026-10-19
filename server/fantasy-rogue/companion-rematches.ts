@@ -11,7 +11,7 @@ export interface CompanionRematch {
 }
 export function opposingCompanion(run: RogueRun, trainer?: RogueTrainer): CompanionID | undefined {
 	if (!trainer) return undefined;
-	const name = trainer.name.split(' · ').pop()?.replace(/萝/g, '罗');
+	const name = trainer.name?.split(' · ').pop()?.replace(/萝/g, '罗');
 	return (Object.keys(COMPANIONS) as CompanionID[]).find(id => companionOwned(run.blessings, id) &&
 		(trainer.id === id || trainer.avatar === id || name === COMPANIONS[id].name));
 }

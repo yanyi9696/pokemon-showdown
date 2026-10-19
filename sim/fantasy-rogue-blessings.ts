@@ -9,6 +9,7 @@ import { reportRogueStatuses } from './fantasy-rogue-status';
 import { consumeRogueItem } from './fantasy-rogue-items';
 import { mentorCardProfile } from './rogue-mentor';
 import { companionSource } from './rogue-companions';
+import { companionZRequest } from './rogue-companion-z';
 import { railgunActive, rulebreakerActive } from './rogue-special-blessings';
 import { DRAGON_KING_ABILITIES, assignedExtraAbilities, strongestDragon, type DragonKingAbility } from './rogue-blessing-permanent';
 
@@ -124,6 +125,8 @@ export function rogueAbilityInfo(mon: Pokemon) {
 		if (owned) statSources.push(`【${blessing(owned.id)!.name}】已计入当前能力`);
 	}
 	const previewMoves = mon.moveSlots.map(slot => mon.battle.dex.moves.get(slot.id));
+	const companionZ = companionZRequest(mon);
+	if (companionZ) previewMoves.push(mon.battle.dex.moves.get(companionZ.move));
 	const zMoves = mon.battle.actions.canZMove(mon);
 	const maxMoves = mon.getDynamaxRequest(!!mon.volatiles.dynamax)?.maxMoves;
 	for (const variant of [...zMoves || [], ...maxMoves || []]) {
@@ -135,6 +138,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 		const typed = !!saved.tonics?.poison || !!effects?.evolution?.power ||
 			!!effects?.owned.some(b => ['typelink', 'hoopa'].includes(b.family));
 		return [move.id, { power: roguePowerModifiers(mon, move, true), damage: rogueDamageSources(mon, move),
+			...(move.id === companionZ?.move ? { name: companionZ.name, source: companionZ.source } : {}),
 			...(move.id === 'zapcannon' && railgunActive(mon) ? { name: '超电磁炮', accuracyFactor: 2, accuracySource: '某科学超电磁炮' } : {}),
 			...(typed ? { types: Object.fromEntries(mon.battle.dex.types.names().map(type =>
 				[type, roguePowerModifiers(mon, { ...move, type }, true)])) } : {}) }];

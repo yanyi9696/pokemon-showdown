@@ -60,7 +60,7 @@ describe('Rogue collections, companion eligibility and codex conditions', functi
 			c.recordCompanionPreference(run, options, 'postcard:kalos', () => 0);
 		}
 		assert.equal(run.blessings.companions[0].preferences, 20);
-		assert.equal(run.bag.hyperpotion, 1); assert.equal(run.money, 20250);
+		assert.equal(run.bag.charcoal, 1); assert.equal(run.money, 20000);
 	});
 	it('keeps mushroom feeding independent, diminishing, unlimited and batch-invariant', () => {
 		const run = party(); own(run, 'mushroomsynthesis'); run.bag.tinymushroom = 100000;

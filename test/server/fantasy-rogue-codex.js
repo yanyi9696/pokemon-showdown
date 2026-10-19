@@ -26,8 +26,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			const preview = rogueCodex(a, section, true);
 			assert(preview.preview);
 			assert(preview.entries.every(entry => entry.unlocked && entry.text !== '？？？'));
-			if (section === 'events') assert(preview.entries.filter(e => e.category !== 'companion').every(entry => entry.replay));
-			assert(rogueCodex(a, section).entries.filter(e => e.category !== 'companion').every(entry => !entry.unlocked));
+			if (section === 'events') assert(preview.entries.filter(e => !['companion', 'trainer'].includes(e.category)).every(entry => entry.replay));
+			assert(rogueCodex(a, section).entries.filter(e => !['companion', 'trainer'].includes(e.category)).every(entry => !entry.unlocked));
 		}
 		assert.equal(JSON.stringify(a), before);
 	});
@@ -41,7 +41,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const id of ['exclusivechallenge', 'policeassist', 'policerevenge']) assert.equal(events.find(e => e.id === id).category, 'encounter');
 		assert.equal(events.filter(e => e.category === 'trade').length, 9);
 		assert.equal(events.filter(e => e.category === 'reward').length, 5);
-		assert(events.filter(e => e.category !== 'companion').every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
+		assert(events.filter(e => !['companion', 'trainer'].includes(e.category)).every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 	});
 	it('records an actual selection once, never unlocks an offer, and keeps it after abandoning', () => {
 		store.change('codextest', a => {
@@ -74,7 +74,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		const legacy = { revision: 1, previousBlessings: ['friendwater', 'unknown'], cards: [{ snapshot: { blessings: [{ id: 'medic' }] } }],
 			pendingClear: { snapshot: { blessings: [{ id: 'psychic' }] } }, run: { blessings: { owned: [{ id: 'money' }] }, eventHistory: [{ id: 'forest', floor: 21 }] } };
 		assert.deepEqual(rogueDiscoveries(legacy), { blessings: ['friend', 'medic', 'money', 'psychic'], events: ['forest'] });
-		assert.equal(rogueCodex(legacy, 'events').entries.filter(e => e.category !== 'companion' && e.unlocked).length, 1);
+		assert.equal(rogueCodex(legacy, 'events').entries.filter(e => !['companion', 'trainer'].includes(e.category) && e.unlocked).length, 1);
 	});
 	it('does not record changes from rejected transactions or mutate during codex reading', () => {
 		const before = JSON.stringify(account());

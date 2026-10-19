@@ -78,7 +78,10 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		const run = account().run, eligible = new Set(blessingCandidates(run, content).map(b => b.id));
 		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound']);
 		for (const def of ROGUE_BLESSINGS) {
-			if (companionFamily(def.family)) { assert.equal(eligible.has(def.id), def.family === 'companionai'); continue; }
+			if (companionFamily(def.family)) {
+				assert.equal(eligible.has(def.id), ['companionai', 'companionband', 'companionliko'].includes(def.family), def.name);
+				continue;
+			}
 			if (def.family === 'overtime') { assert.equal(eligible.has(def.id), !!overtimeGiftPool(run, content, def.type).length); continue; }
 			if (def.floors) assert.equal(eligible.has(def.id), def.floors.includes(1), def.name);
 			else if (!requiresParty.has(def.family)) assert(eligible.has(def.id), def.name);

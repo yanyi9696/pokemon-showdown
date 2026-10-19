@@ -4,6 +4,7 @@ import { type RoguePokemon, type RogueBattleResult } from '../../sim/fantasy-rog
 import { rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { towerExperience } from './early-balance';
 import { drawBlessingGift, blessingExperience } from './blessings';
+import { companionExperience } from './companions';
 import { partyEvolutionLevel } from './evolution';
 import { gainExperience, levelMoves, rebuildMember, rememberMove } from './progression';
 import { clearIllegalMoves, legalFormMoves } from './event-learning';
@@ -109,6 +110,7 @@ export function restoreTravelBattle(run: RogueRun, result: RogueBattleResult) {
 			gainExperience(run, mon, Math.floor(towerExperience(rogueSpeciesData(defeated.species).baseExperience,
 				defeated.level, mon.set.level, defeated.participants.includes(mon.id), run.floor) *
 				(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing) *
+				companionExperience(run, mon, defeated) *
 				(1 + (run.growth?.experience || 0) / 10000)));
 		}
 	}
