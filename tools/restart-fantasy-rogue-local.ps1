@@ -1,0 +1,77 @@
+param([ValidateRange(1, 65535)][int]$Port = 8000)
+$ErrorActionPreference = 'Stop'
+$serverRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$clientRoot = Join-Path (Split-Path $serverRoot -Parent) 'pokemon-showdown-client'
+$previewScript = Join-Path $PSScriptRoot 'fantasy-rogue-preview.js'
+$maintenanceScript = Join-Path $PSScriptRoot 'fantasy-rogue-local-service.js'
+$nodeExecutable = (Get-Command node.exe -ErrorAction Stop).Source
+
+function Get-PreviewProcess {
+    $listeners = @(Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue)
+    if (!$listeners.Count) { return $null }
+    $owners = @($listeners.OwningProcess | Sort-Object -Unique)
+    if ($owners.Count -ne 1) { throw "端口 $Port 有多个所有者，停止自动重启。" }
+    $service = Get-CimInstance Win32_Process -Filter "ProcessId = $($owners[0])"
+    if ($service.CommandLine -notmatch [regex]::Escape($previewScript) -and
+        $service.CommandLine -match [regex]::Escape((Join-Path $serverRoot 'dist\server\sockets.js'))) {
+        $service = Get-CimInstance Win32_Process -Filter "ProcessId = $($service.ParentProcessId)"
+    }
+    if ($service.CommandLine -notmatch [regex]::Escape($previewScript) -or
+        $service.CommandLine -notmatch "--port\s+$Port(?:\s|$)") {
+        throw "端口 $Port 被其他启动方式占用。请先在原服务窗口按 Ctrl+C 关闭它，再运行此脚本。不会自动关闭不明进程。"
+    }
+    return $service
+}
+
+$originalLocation = Get-Location
+try {
+    $service = Get-PreviewProcess
+    Set-Location $clientRoot
+    & $nodeExecutable build full --local-server $serverRoot
+    if ($LASTEXITCODE -ne 0) { throw '构建失败，现有游戏服务未停止。' }
+    Set-Location $serverRoot
+    if ($service) {
+        & $nodeExecutable $maintenanceScript inspect $Port
+        if ($LASTEXITCODE -ne 0) { throw '服务检查未通过，现有游戏服务未停止。' }
+    }
+    & $nodeExecutable $maintenanceScript backup
+    if ($LASTEXITCODE -ne 0) { throw '存档备份未完成，现有游戏服务未停止。' }
+    $current = Get-PreviewProcess
+    if ($service -and (!$current -or $current.ProcessId -ne $service.ProcessId)) {
+        throw '构建期间服务进程发生变化，停止自动重启。'
+    }
+    if (!$service -and $current) { throw '构建期间端口被占用，停止自动重启。' }
+    if ($current) {
+        & $nodeExecutable $maintenanceScript inspect $Port
+        if ($LASTEXITCODE -ne 0) { throw '停止前检查未通过，现有游戏服务未停止。' }
+        $children = @(Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $current.ProcessId -and $_.Name -eq 'node.exe' })
+        foreach ($child in $children) {
+            if ($child.CommandLine -notmatch [regex]::Escape((Join-Path $serverRoot 'dist\server\'))) {
+                throw '发现无法确认来源的子进程，停止自动重启。'
+            }
+        }
+        Stop-Process -Id $current.ProcessId -ErrorAction Stop
+        foreach ($child in $children) { Stop-Process -Id $child.ProcessId -ErrorAction SilentlyContinue }
+    }
+    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+    $outputLog = Join-Path $serverRoot "tmp\rogue-local-$stamp.log"
+    $errorLog = Join-Path $serverRoot "tmp\rogue-local-$stamp.err"
+    $started = Start-Process -FilePath $nodeExecutable -ArgumentList @(('"' + $previewScript + '"'), '--port', "$Port") `
+        -WorkingDirectory $serverRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput $outputLog -RedirectStandardError $errorLog
+    $ready = $false
+    for ($attempt = 0; $attempt -lt 60; $attempt++) {
+        Start-Sleep -Milliseconds 500
+        $started.Refresh()
+        if ($started.HasExited) { throw "启动失败，请查看：$errorLog" }
+        $running = Get-PreviewProcess
+        if ($running -and $running.ProcessId -eq $started.Id) { $ready = $true; break }
+    }
+    if (!$ready) { throw "服务启动超时，请查看：$outputLog" }
+    & $nodeExecutable $maintenanceScript verify $Port
+    if ($LASTEXITCODE -ne 0) { throw "服务已启动，但新版内容检查未通过，请查看：$outputLog" }
+    Write-Output "已重启新版本地肉鸽，端口 $Port，进程 $($started.Id)。存档备份已完成。"
+    Write-Output '浏览器按 Ctrl+F5，然后使用原来的固定测试昵称读取存档。'
+    Write-Output "日志：$outputLog"
+} finally {
+    Set-Location $originalLocation
+}
