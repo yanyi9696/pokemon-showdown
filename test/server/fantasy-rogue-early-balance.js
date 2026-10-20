@@ -19,7 +19,8 @@ describe('Fantasy Rogue early growth and preparation', function () {
 	before(() => { content = createPreviewContent(); });
 	it('keeps actual first-elite EVs at zero, reduces only its base level, and preserves later elites', () => {
 		assert(eliteBossCandidates(10).every(mon => mon.level === 8));
-		assert(eliteBossCandidates(30).every(mon => mon.level === 20));
+		assert(eliteBossCandidates(30).every(mon => mon.level === Math.max(20,
+			require('../../dist/server/fantasy-rogue/evolution').minimumEvolutionLevel(mon.species))));
 		for (const enemy of eliteBossCandidates(10)) {
 			const mon = createRoguePokemon(set(), stats(0));
 			const battle = new Battle({ formatid: 'gen9fantasyrogue', seed: [1, 2, 3, 4],

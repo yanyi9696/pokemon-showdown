@@ -166,7 +166,9 @@ describe('Fantasy Rogue October 20 regression', () => {
 		settleRival(r, () => 0, false); assert.equal(r.rival.completed, 1); assert.equal(r.rival.affection, 0);
 		r.rival.completed = 5; r.floor = 94; assert.equal(rivalRoutes(r, nodes, () => 0)[0].id, 'wild');
 		r.floor = 100; assert.equal(rivalRoutes(r, nodes, () => 0)[0].id, 'rival');
-		r.floor = 150; r.rival.completed = 7; beginRival(r, () => 0); chooseRival(r, content, () => 0, 'start');
+			r.floor = 150; r.rival.completed = 7; beginRival(r, () => 0);
+			chooseRival(r, content, () => 0, 'greet:honest'); chooseRival(r, content, () => 0, 'greet:honest');
+			chooseRival(r, content, () => 0, 'start');
 		settleRival(r, () => 0, false); assert(r.rival.permanent); assert.equal(r.rival.completed, 8);
 	});
 	it('runs actual four-seat doubles, counts both opponents and preserves only the player party', () => {
@@ -214,7 +216,7 @@ describe('Fantasy Rogue October 20 regression', () => {
 				});
 				cmd('select', {value: 'rival'});
 				let steps = 0;
-				while (current().node.event.stage !== 'result' && steps++ < 30) {
+				while ((current().node.event.stage !== 'result' || current().phase === 'story') && steps++ < 50) {
 					const r = current();
 					if (r.phase === 'story') {
 						const key = storyView(account(), true, false).key;
@@ -233,9 +235,9 @@ describe('Fantasy Rogue October 20 regression', () => {
 						const paid = JSON.stringify(current());
 						engine.settle('rivaljourney', r.battle.token, result);
 						assert.equal(JSON.stringify(current()), paid);
-					} else throw new Error(`Unexpected chapter ${i + 1} phase ${r.phase}`);
+					} else throw new Error(`Unexpected chapter ${i + 1} phase ${r.phase}: ${JSON.stringify({pending: r.pendingMoves, capture: r.pendingCapture, resume: r.dialogue?.resume, stage: r.node.event.stage})}`);
 				}
-				assert(steps < 30, `Chapter ${i + 1} stalled`);
+				assert(steps < 50, `Chapter ${i + 1} stalled`);
 				assert.equal(current().rival.completed, i + 1);
 				if (i === 3) assert(current().rival.temporaryUsed); // The earlier invitation consumes this run's one temporary visit.
 			}

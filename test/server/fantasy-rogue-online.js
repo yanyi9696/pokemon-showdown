@@ -74,7 +74,7 @@ describe('Fantasy Rogue real rooms', function () {
 			const run = saved.run, foe = set('Magikarp', 'Swift Swim', 1, ['Splash']);
 			run.team = [createRoguePokemon(set('Mew', 'Synchronize', 100, ['Dragon Rage']), stats(0))];
 			run.node.encounters[0].team = [foe, {...foe}];
-			run.node.encounters[0].cooperative = {id: 'marnie', name: '玛俐', team: [set('Snorlax', 'Immunity', 100, ['Dragon Rage'])]};
+			run.node.encounters[0].cooperative = {id: 'marnie', name: '玛俐', team: [set('Dragonair', 'Shed Skin', 100, ['Dragon Rage'])]};
 		});
 		const initial = account().run;
 		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
@@ -102,7 +102,7 @@ describe('Fantasy Rogue real rooms', function () {
 				.map(s => createRoguePokemon(s, stats(0)));
 			normalizeBlessings(run).owned.push({ ...blessing('dragonking'), floor: 50 }); syncBlessingParty(run);
 			run.blessings.dragonKing.ability = 'drizzle'; run.team[0].hp = 1;
-			run.node.encounters[0].team = [set('Snorlax', 'Immunity', 50, ['Dragon Rage'])];
+			run.node.encounters[0].team = [set('Charmander', 'Blaze', 50, ['Dragon Rage'])];
 		});
 		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
 		await until(() => room.battle.p2.request.isWait === true, 'AI preview');

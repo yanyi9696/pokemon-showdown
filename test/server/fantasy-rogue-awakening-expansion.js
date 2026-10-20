@@ -238,7 +238,8 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
  });
  it('keeps Carmine affection and short company independent from Kieran', () => {
   const r = run(40); r.rival = {id: 'kieran', completed: 1, affection: 0, lastFloor: 1, carmine: {affection: 2}};
-  beginRival(r, () => 0); assert.equal(r.node.event.rival.step, 'carmine');
+  beginRival(r, () => 0); chooseRival(r, content, () => 0, 'greet:honest'); chooseRival(r, content, () => 0, 'greet:honest');
+  assert.equal(r.node.event.rival.step, 'carmine');
   chooseRival(r, content, () => 0, 'carmine:listen'); assert.equal(r.rival.carmine.affection, 4); assert.equal(r.rival.affection, 0);
   chooseRival(r, content, () => 0, 'start'); r.encounter = r.node.encounters.length - 1; settleRival(r, () => 0, true);
   const ids = rivalView(r).options.map(o => o.id); assert(ids.includes('joincarmine')); assert(!ids.includes('join'));
@@ -246,7 +247,8 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
  });
  it('offers Carmine permanent company after the final challenge while retaining Kieran as the main rival', () => {
   const r = run(150); r.rival = {id: 'kieran', completed: 7, affection: 8, lastFloor: 130, carmine: {affection: 6}};
-  beginRival(r, () => 0); chooseRival(r, content, () => 0, 'carmine:trust'); chooseRival(r, content, () => 0, 'start');
+  beginRival(r, () => 0); chooseRival(r, content, () => 0, 'greet:honest'); chooseRival(r, content, () => 0, 'greet:honest');
+  chooseRival(r, content, () => 0, 'carmine:trust'); chooseRival(r, content, () => 0, 'start');
   settleRival(r, () => 0, false); assert(r.rival.permanent); assert.equal(r.node.event.rival.step, 'carminefinal');
   chooseRival(r, content, () => 0, 'carmine:stay'); assert.equal(rivalCompanionViews(r).length, 2); assert.equal(r.rival.id, 'kieran');
  });

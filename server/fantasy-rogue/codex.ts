@@ -1,6 +1,7 @@
 import { trainerCodex } from './trainer-codex';
 import { createHash } from 'crypto';
 import { RIVALS, RIVAL_SCENES } from './rival-data';
+import { rivalChapterReplay } from './rival-dialogue';
 import { BEGINNER_GUIDE } from './beginner-guide';
 import { Dex } from '../../sim/dex';
 import { REWARD_SCENES } from './reward-scenes';
@@ -85,14 +86,14 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			id: `rival:${rival}:${index + 1}`, category: 'adventure',
 			name: `与${person.name}的相遇·其${'一二三四五六七八'[index]}`, portrait: rival,
 			text: [
-				'前 20 层可初遇劲敌。首次切磋确立关系，锁定这位伙伴的八段旅途，之后至少间隔 10 层才能再次相遇。',
+				'前 20 层可初遇劲敌。交谈与切磋后，开启这位劲敌的八段旅途。后续相遇间隔通常约 10～20 层；较早结识时会留出更长的旅行时间，错过多次相遇后会加快重逢。',
 				'与劲敌各自派出伙伴，双打共斗驱散多组拦路者。获胜后获得对战道具、招式学习机和路费。',
 				'与劲敌双打共斗，迎战高于本层普通精英 10 级的暴走精英。获胜可获得培育道具和稀有球种。',
 				'多段旅途闲谈。回应影响熟悉度，并决定低、中、高三档谢礼。熟悉之后，对话也更加亲近。',
 				'合作完成搜寻物资或清理暴走宝可梦的委托，得到稀有培育物资，并积累默契。',
-				'第 95 层起可以迎接约 100 层强度的再次切磋。获胜后选择解锁太晶化、超进化、Z 招式或领取 100 幻想碎片；战败也能继续剧情。',
+				'约第 100 层迎接再次切磋；如果前面的旅途耽搁，会缩短后续重逢间隔。获胜后选择解锁太晶化、超进化、Z 招式或领取 100 幻想碎片；战败也能继续剧情。',
 				'多轮双打共斗考验续航。获胜得到高阶物资，高熟悉度可邀请劲敌同行 8 层。',
-				'第 145 层起可以迎接约 150 层强度的全力对决。无论胜负，劲敌发出永久同行邀请；同行共用两个名额，满员时可选择替换。获胜另得大量幻想碎片与高阶培育资源。',
+				'约第 140～149 层迎接全力对决；需先完成之前的七段相遇。无论胜负，劲敌发出永久同行邀请；同行共用两个名额，满员时可选择替换。获胜另得大量幻想碎片与高阶培育资源。',
 			][index] + ` ${chapterName}：${person.lines[index]}` }))),
 		...Object.entries(REWARD_SCENES).map(([id, scene]) => ({ id: `reward:${id}`, category: 'reward', name: scene.name,
 			text: id === 'chest' ? '留给旅人的补给箱，以回复药与活力碎片为主。还可按需要挑选经验糖果、路费或本局永久训练；物资随楼层提升。' :
@@ -110,7 +111,8 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 	].map(entry => {
 		const unlocked = preview || discovered.events.includes(entry.id) ||
 			entry.id === 'trade:auction' && discovered.events.includes('auction');
-		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？', ...(unlocked ? { replay: entry.id === 'trade:auction' ? eventReplay('auction') : entry.id === 'trade:mushroom' ? eventReplay('mushroomcollector') : {
+		const rivalChapter = /^rival:([^:]+):(\d+)$/.exec(entry.id);
+		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？', ...(unlocked ? { replay: rivalChapter ? rivalChapterReplay(rivalChapter[1] as keyof typeof RIVALS, Number(rivalChapter[2])) : entry.id === 'trade:auction' ? eventReplay('auction') : entry.id === 'trade:mushroom' ? eventReplay('mushroomcollector') : {
 			title: entry.name, start: 'start',
 			pages: { start: { text: [entry.text], options: [], battleSkipped: entry.category === 'encounter' } },
 		} } : {}) };
@@ -119,7 +121,11 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 		const unlocked = preview || discovered.trainers.includes(entry.portrait);
 		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？' };
 	});
-	return { section, preview, entries: [...events, ...visits, ...companions].sort(compareBlessingNames) };
+	return { section, preview, entries: [...events, ...visits, ...companions].sort((a, b) => {
+		const ar = /^rival:([^:]+):(\d+)$/.exec(a.id), br = /^rival:([^:]+):(\d+)$/.exec(b.id);
+		if (ar && br) return compareBlessingNames({ name: a.name.split('·')[0] }, { name: b.name.split('·')[0] }) || Number(ar[2]) - Number(br[2]);
+		return compareBlessingNames(a, b);
+	}) };
 }
 
 let contentVersion: string | undefined;

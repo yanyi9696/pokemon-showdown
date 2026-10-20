@@ -3,6 +3,8 @@ import { ROGUE_FORMAT } from '../../sim/fantasy-rogue';
 import type { RogueContent, RogueTrainer } from './types';
 import { arceusChallengeReady } from './final-bosses';
 import { rogueCaptureCount, rogueSpeciesData, rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
+import { encounterSetProblems } from './encounter-legality';
+import { minimumEvolutionLevel } from './evolution';
 
 export const ELITE_BOSS_FLOORS = new Set([10, 30, 50, 70, 90, 110, 130, 150, 170]);
 export const BOSS_FLOORS = new Map<number, string>([
@@ -63,8 +65,11 @@ export function validateContent(content: RogueContent): RogueContent {
 		for (const set of sets) {
 			ensure(dex.species.get(set.species).exists, `物种 ${set.species} 不存在`);
 			ensure(Number.isSafeInteger(set.level) && set.level >= 1 && set.level <= 9999, '必须显式配置有效等级');
+			ensure(set.level >= minimumEvolutionLevel(set.species), `${set.species} 未达到进化等级`);
 			ensure(set.moves.length >= 1 && set.moves.length <= 4 && set.moves.every(move => dex.moves.get(move).exists), '招式无效');
 			ensure(dex.abilities.get(set.ability).exists && dex.natures.get(set.nature).exists, '特性或性格无效');
+			const problems = encounterSetProblems(set);
+			ensure(!problems.length, problems.join('；'));
 			ensure(!set.item || dex.items.get(set.item).exists, '持有物无效');
 			ensure(!set.fantasyRogueStats && !set.fantasyRogueId, '配置不能注入存档元数据');
 			if (content.progression) { rogueSpeciesData(set.species); ensure(set.level <= 100, '试玩版等级上限为 100'); }
@@ -142,7 +147,7 @@ export function validateContent(content: RogueContent): RogueContent {
 				if (encounter.boss) {
 					ensure(floor === 200 && node.kind === 'boss' && encounter.boss.kind === 'summit' &&
 						!encounter.catchable && encounter.team.length === 6 && encounter.boss.mewtwoY, '最终首领配置无效');
-					team([encounter.boss.mewtwoY!]);
+					team([encounter.boss.mewtwoY]);
 				}
 				ensure(encounter.name && ['balanced', 'aggressive', 'defensive'].includes(encounter.style), 'AI 名称或风格无效');
 				if (node.kind === 'wild' || encounter.catchable) ensure(encounter.team.length === 1 || !!pack, '野怪队伍必须使用连续野战配置');

@@ -78,6 +78,8 @@ export interface BlessingRound {
 	topClearMindEligible: boolean;
 	/** Refreshed-away attribute evolutions must not return as another attribute. */
 	familiesSeen: string[];
+	/** Every card offered in this round, including cards discarded from other slots. */
+	idsSeen?: string[];
 }
 
 export function blessingSlotTier(round: BlessingRound, slot: number): BlessingTier {
@@ -135,7 +137,7 @@ export function createBlessingRound(
 ): BlessingRound {
 	const round: BlessingRound = {
 		floor: context.floor, tier: drawBlessingTier(context, random), options: [],
-		remaining: context.spirit === 'jirachi' ? 2 : 1, familiesSeen: [],
+		remaining: context.spirit === 'jirachi' ? 2 : 1, familiesSeen: [], idsSeen: [],
 		topClearMindEligible: canOfferTopClearMind(context),
 	};
 	const count = context.spirit === 'jirachi' ? 2 : 3;
@@ -151,6 +153,7 @@ export function createBlessingRound(
 		const awakening = context.killlaReady && tier === 'prismatic' && !excluded.has('killlagirl') ? candidates.find(c => c.id === 'killlagirl') : undefined;
 		const candidate = awakening || guaranteed || drawCandidate(candidates, round, tier, excluded, random);
 		excluded.add(candidate.id);
+		round.idsSeen!.push(candidate.id);
 		round.options.push({ id: candidate.id, tier, refreshes: awakening ? 0 : context.spirit === 'victini' ? 2 : 1, chosen: false });
 		round.familiesSeen.push(candidate.family);
 	}
@@ -164,12 +167,14 @@ export function refreshBlessingOption(
 	if (!Number.isInteger(slot) || slot < 0 || slot >= saved.options.length || !saved.remaining ||
 		saved.options[slot].chosen || saved.options[slot].refreshes < 1) throw new Error('这个祝福位置不能刷新。');
 	const round = structuredClone(saved);
+	round.idsSeen = [...new Set([...(round.idsSeen || []), ...round.options.map(option => option.id)])];
 	if (round.options[slot].id === 'killlagirl' && candidates.some(candidate => candidate.id === 'killlagirl')) {
 		throw new Error('这项必定出现的祝福无需刷新。');
 	}
 	const next = drawCandidate(
-		candidates, round, blessingSlotTier(round, slot), new Set(round.options.map(option => option.id)), random
+		candidates, round, blessingSlotTier(round, slot), new Set(round.idsSeen), random
 	);
+	round.idsSeen.push(next.id);
 	round.options[slot].id = next.id;
 	round.options[slot].refreshes--;
 	round.familiesSeen.push(next.family);

@@ -35,6 +35,31 @@ describe(`Poison Touch`, () => {
 		assert.equal(battle.p2.active[0].status, '', `Regirock should not be poisoned`);
 	});
 
+	for (const [attackerPads, defenderPads] of [[true, false], [false, true], [true, true], [false, false]]) {
+		it(`should check the attacker's Protective Pads (attacker: ${attackerPads}, defender: ${defenderPads})`, () => {
+			battle = common.createBattle({ forceRandomChance: true }, [[
+				{ species: 'Muk-Alola', ability: 'poisontouch', item: attackerPads ? 'protectivepads' : 'leftovers', moves: ['pound'] },
+			], [
+				{ species: 'Avalugg', ability: 'sturdy', item: defenderPads ? 'protectivepads' : 'leftovers', moves: ['sleeptalk'] },
+			]]);
+			battle.makeChoices();
+			assert.equal(battle.p2.active[0].status, attackerPads ? '' : 'psn');
+		});
+	}
+
+	it(`should still respect Shield Dust and noncontact moves`, () => {
+		battle = common.createBattle({ forceRandomChance: true }, [[
+			{ species: 'Muk-Alola', ability: 'poisontouch', moves: ['pound', 'mudslap'] },
+		], [
+			{ species: 'Avalugg', ability: 'shielddust', item: 'protectivepads', moves: ['sleeptalk'] },
+		]]);
+		battle.makeChoices();
+		assert.equal(battle.p2.active[0].status, '');
+		battle.p2.active[0].setAbility('sturdy');
+		battle.makeChoices('move mudslap', 'auto');
+		assert.equal(battle.p2.active[0].status, '');
+	});
+
 	it(`should poison independently of and after regular secondary status effects`, () => {
 		battle = common.createBattle({ forceRandomChance: true }, [[
 			{ species: 'Wynaut', ability: 'poisontouch', moves: ['nuzzle'] },

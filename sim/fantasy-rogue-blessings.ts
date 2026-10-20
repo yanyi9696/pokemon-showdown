@@ -3,19 +3,17 @@ import { robeMember } from './rogue-awakening';
 import type { Battle } from './battle';
 import type { Pokemon } from './pokemon';
 import type { FormatData } from './dex-formats';
-import type { RoguePokemon } from './fantasy-rogue';
-import { rogueEventDamage } from './fantasy-rogue';
+import { rogueEventDamage, type RoguePokemon } from './fantasy-rogue';
 import { toID } from './dex';
 import { ownsBlessing, emblemType, addPsychicCharge, EEVEE_FAMILY, inBlessingFamily, blessing, type BlessingEffects } from './rogue-blessing-data';
 import type { Side } from './side';
 import { reportRogueStatuses } from './fantasy-rogue-status';
 import { consumeRogueItem } from './fantasy-rogue-items';
 import { mentorCardProfile } from './rogue-mentor';
-import { dragonKingActive } from './rogue-blessing-permanent';
 import { companionSource } from './rogue-companions';
 import { companionZRequest } from './rogue-companion-z';
 import { railgunActive, rulebreakerActive } from './rogue-special-blessings';
-import { DRAGON_KING_ABILITIES, assignedExtraAbilities, strongestDragon, type DragonKingAbility } from './rogue-blessing-permanent';
+import { DRAGON_KING_ABILITIES, assignedExtraAbilities, strongestDragon, dragonKingActive, type DragonKingAbility } from './rogue-blessing-permanent';
 
 interface MemberRuntime {
 	abilitiesPrepared?: boolean;
@@ -38,14 +36,15 @@ export interface SideRuntime {
 }
 export function blessingEffects(mon: Pokemon): BlessingEffects | undefined {
 	const state = mon.battle.fantasyRogue;
-	return mon.side.id === 'p1' ? state?.blessings : state?.duel?.blessings;
+	return mon.side.id === 'p1' ? state?.blessings : mon.side.id === 'p2' ? state?.duel?.blessings : undefined;
 }
 export const hasBlessing = (mon: Pokemon | null | undefined, family: string) =>
 	mon ? ownsBlessing(blessingEffects(mon), family) : undefined;
 const blessingSource = (mon: Pokemon, family: string) => blessing(hasBlessing(mon, family)!.id)!.name;
 export function savedBlessingMember(mon: Pokemon): RoguePokemon | undefined {
 	const state = mon.battle.fantasyRogue;
-	return (mon.side.id === 'p1' ? state?.team : state?.duel?.team)?.find(saved => saved.id === mon.set.fantasyRogueId);
+	if (!mon.set.fantasyRogueId) return undefined;
+	return (mon.side.id === 'p1' ? state?.team : mon.side.id === 'p2' ? state?.duel?.team : undefined)?.find(saved => saved.id === mon.set.fantasyRogueId);
 }
 /** The engine and private tooltips share this list; reading it never rolls RNG or spends an effect. */
 export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, preview = false) {
@@ -287,7 +286,7 @@ export function prepareBlessingMember(mon: Pokemon) {
 		if (!companion.away && companion.member === mon.set.fantasyRogueId && companion.ability) abilities.push(companion.ability);
 	}
 	for (const [family, ability] of [['hazards', 'yanbuzhen'], ['toxic', 'merciless']]) {
-		if (hasBlessing(mon, family)?.target === mon.set.fantasyRogueId) abilities.push(ability);
+		if (saved && hasBlessing(mon, family)?.target === saved.id) abilities.push(ability);
 	}
 	if (hasBlessing(mon, 'arsenal')) abilities.push('bianhuanziyou');
 	if (hasBlessing(mon, 'restinball')) abilities.push('regenerator', 'naturalcure');
@@ -621,7 +620,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 			member(pokemon).detectReady = false;
 		}
 		if (move.id === 'roguepsychicburst') return;
-		if (move.id === 'crushgrip' && hasBlessing(pokemon, 'regis')?.target === pokemon.set.fantasyRogueId) {
+		if (move.id === 'crushgrip' && pokemon.set.fantasyRogueId && hasBlessing(pokemon, 'regis')?.target === pokemon.set.fantasyRogueId) {
 			move.secondaries ||= [];
 			for (const status of ['fst', 'par']) if (!move.secondaries.some(s => s.status === status)) move.secondaries.push({ chance: 50, status });
 			move.drain = [1, 2]; move.flags.heal = 1;
@@ -693,7 +692,7 @@ export function blessingHit(damage: number, target: Pokemon, source: Pokemon, mo
 	if (!source.battle.fantasyRogue || !move || !Object.isExtensible(move) || damage <= 0 || target.side === source.side) return;
 	const targets = move.rogueHitTargets ||= [], id = target.set.fantasyRogueId || target.getSlot();
 	if (!targets.includes(id)) targets.push(id);
-	if (move.id === 'crushgrip' && hasBlessing(source, 'regis')?.target === source.set.fantasyRogueId && !move.hasSheerForce) {
+	if (move.id === 'crushgrip' && source.set.fantasyRogueId && hasBlessing(source, 'regis')?.target === source.set.fantasyRogueId && !move.hasSheerForce) {
 		target.side.addSideCondition('stealthrock', source, move); target.side.addSideCondition('gmaxsteelsurge', source, move);
 	}
 }

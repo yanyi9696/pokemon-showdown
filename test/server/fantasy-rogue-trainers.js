@@ -84,7 +84,8 @@ describe('Fantasy Rogue authored trainers', function () {
 					const authored = original[index];
 					const species = dex.species.get(authored.species);
 					assert.equal(mon.species.name, species.forme.includes('Mega') ? species.battleOnly : species.name);
-					assert.equal(mon.level, PreviewBalance.bossLevel(floor));
+					assert.equal(mon.level, Math.max(PreviewBalance.bossLevel(floor),
+						require('../../dist/server/fantasy-rogue/evolution').minimumEvolutionLevel(mon.species.name)));
 					assert.equal(mon.baseAbility, toID(authored.ability));
 					assert.equal(mon.item, toID(authored.item));
 					assert.deepEqual(mon.baseMoves, authored.moves.map(toID));

@@ -21,6 +21,7 @@ import { migrateGodrobeGift } from './blessings';
 import { buyGrowth, syncGrowthParty, grantMushroomGrowth, grantJourneyGrowth } from './growth';
 import { prepareRewardScene, chooseReward } from './reward-scenes';
 import { randomInt, randomUUID } from 'crypto';
+import { repairSavedEncounters } from './encounter-repair';
 import { Dex, toID } from '../../sim/dex';
 import {
 	ROGUE_STATS, type RogueBattleResult, type RogueBattleState, type RoguePokemon,
@@ -114,6 +115,7 @@ export class RogueEngine {
 		return account.run;
 	}
 	private normalizeRun(run: RogueRun) {
+		repairSavedEncounters(run);
 		normalizeTravellers(run);
 		migrateRetiredBalls(run);
 		if (run.node?.trade?.kind === 'balls' && this.content) prepareTrade(run, this.content, this.random);

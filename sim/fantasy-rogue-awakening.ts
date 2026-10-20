@@ -4,13 +4,13 @@ import { addSpiral, robeDurability, robeMember, SPIRAL_SURVIVAL, type RobeKind }
 import { strongestBlessingMember } from './rogue-blessing-permanent';
 
 export function robeActive(mon: Pokemon | null | undefined, kind: RobeKind) {
-	if (!mon?.battle.fantasyRogue || mon.transformed) return false;
+	if (!mon?.battle.fantasyRogue || !mon.set.fantasyRogueId || mon.transformed) return false;
 	const state = mon.battle.fantasyRogue;
 	const team = mon.side.id === 'p1' ? state.team : state.duel?.team || [];
 	return robeMember(team, blessingEffects(mon), kind)?.id === mon.set.fantasyRogueId;
 }
 export function spiralActive(mon: Pokemon) {
-	return hasBlessing(mon, 'spiral')?.target === mon.set.fantasyRogueId;
+	return !!mon.set.fantasyRogueId && hasBlessing(mon, 'spiral')?.target === mon.set.fantasyRogueId;
 }
 export function spiralPoints(mon: Pokemon): number {
 	return mon.m.rogueSpiral ?? savedBlessingMember(mon)?.spiral ?? 0;

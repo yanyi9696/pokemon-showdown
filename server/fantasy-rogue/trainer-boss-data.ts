@@ -836,8 +836,8 @@ Ability: Flame Body
 EVs: 252 SpA / 4 SpD / 252 Spe
 Timid Nature
 IVs: 0 Atk
-- Blue Flare
-- Dazzling Gleam
+- Flamethrower
+- Energy Ball
 - Shadow Ball
 - Calm Mind
 
@@ -1140,7 +1140,7 @@ IVs: 0 Atk
 - Toxic
 
 Slowbro-Galar
-Ability: Swarm
+Ability: Quick Draw
 Serious Nature
 - Shell Side Arm`,
 	},
@@ -2022,7 +2022,7 @@ Adamant Nature
 - Swords Dance
 
 Marowak-Alola-Totem-Fantasy @ Firium Z
-Ability: Dancer
+Ability: Gu Hun
 EVs: 248 HP / 252 Atk / 8 SpD
 Adamant Nature
 - Shadow Bone
@@ -2080,7 +2080,7 @@ Adamant Nature
 - Earthquake
 
 Marowak-Alola-Totem-Fantasy @ Firium Z
-Ability: Dancer
+Ability: Gu Hun
 EVs: 248 HP / 252 Atk / 8 SpD
 Adamant Nature
 - Shadow Bone
@@ -2139,7 +2139,7 @@ Jolly Nature
 - Jump Kick
 
 Marowak-Alola-Totem-Fantasy @ Firium Z
-Ability: Dancer
+Ability: Gu Hun
 EVs: 248 HP / 252 Atk / 8 SpD
 Adamant Nature
 - Shadow Bone
@@ -2231,7 +2231,7 @@ Jolly Nature
 - Stone Edge
 
 Golisopod @ Heavy-Duty Boots
-Ability: huibizaisheng
+Ability: Emergency Exit
 Tera Type: Water
 EVs: 252 HP / 4 Def / 252 SpD
 Sassy Nature
@@ -2247,7 +2247,7 @@ EVs: 252 HP / 252 Def / 4 SpD
 Bold Nature
 IVs: 0 Atk
 - Recover
-- Calm Mind
+- Coil
 - Scald
 - Ice Beam
 
@@ -2264,22 +2264,22 @@ IVs: 0 Atk / 0 Spe
 	{
 		id: 'nessa', name: '露璃娜（水）', role: 'gym', floor: 80,
 		team: `Drednaw @ Focus Sash
-Ability: yanbuzhen
+Ability: Strong Jaw
 EVs: 252 Atk / 4 SpD / 252 Spe
 Jolly Nature
 - Shell Smash
-- Wave Crash
+- Liquidation
 - Earthquake
 - Stone Edge
 
 Golisopod @ Heavy-Duty Boots
-Ability: huibizaisheng
+Ability: Emergency Exit
 Tera Type: Water
 EVs: 252 HP / 4 Def / 252 SpD
 Sassy Nature
 IVs: 0 Spe
 - First Impression
-- Wave Crash
+- Liquidation
 - U-turn
 - Spikes
 
@@ -2289,9 +2289,9 @@ EVs: 252 HP / 252 Def / 4 SpD
 Bold Nature
 IVs: 0 Atk
 - Recover
-- Calm Mind
+- Coil
 - Scald
-- raoliangzhiyin
+- Haze
 
 Slowbro @ fantasyprotector
 Ability: Regenerator
@@ -2972,7 +2972,7 @@ Jolly Nature
 - Fake Out
 
 Rotom @ Electric Gem
-Ability: Prankster
+Ability: Levitate
 EVs: 252 SpA / 4 SpD / 252 Spe
 Timid Nature
 IVs: 0 Atk
@@ -2998,7 +2998,7 @@ Ability: Magnet Pull
 EVs: 252 HP / 252 Def / 4 SpD
 Relaxed Nature
 IVs: 0 Atk / 0 Spe
-- Recover
+- Rest
 - Volt Switch
 - Flash Cannon
 - Thunderbolt
@@ -3985,7 +3985,7 @@ Jolly Nature
 - Jump Kick
 
 Marowak-Alola-Totem-Fantasy @ Firium Z
-Ability: Dancer
+Ability: Gu Hun
 EVs: 248 HP / 252 Atk / 8 SpD
 Adamant Nature
 - Shadow Bone

@@ -1,5 +1,6 @@
 /** User-authored Fantasy elite pools. One equally likely opponent per floor, drawn when entering it. */
 import { Dex } from '../../sim/dex';
+import { minimumEvolutionLevel } from './evolution';
 
 type EliteSet = Pick<PokemonSet, 'species' | 'ability' | 'moves'> &
 	Partial<Pick<PokemonSet, 'item' | 'gender' | 'teraType' | 'nature'>> & { ivs?: Partial<StatsTable> };
@@ -89,7 +90,7 @@ export function eliteBossCandidates(floor: number): PokemonSet[] {
 	return pool.candidates.map(set => {
 		const species = dex.species.get(set.species);
 		return {
-			name: species.name, species: species.name, level: pool.level,
+			name: species.name, species: species.name, level: Math.max(pool.level, minimumEvolutionLevel(species.name)),
 			ability: dex.abilities.get(set.ability).name, moves: set.moves.map(move => dex.moves.get(move).name),
 			item: set.item || '', gender: set.gender || species.gender || '', nature: set.nature || 'Hardy',
 			teraType: set.teraType || species.defaultTeraType,

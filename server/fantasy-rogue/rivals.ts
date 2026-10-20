@@ -10,14 +10,15 @@ import { rewardCandies, rewardExperience } from './reward-scenes';
 import { healNarrativeParty, queueNarrative, dialoguePage } from './narrative';
 import { COMPANIONS } from '../../sim/rogue-companions';
 import { requestCompanion, travellingRoster } from './travellers';
+import { rivalOpeningPages, rivalConversationOptions, rivalAnswerPages, rivalChatPages, rivalChatOptions } from './rival-dialogue';
 
 export interface RivalState {
 	id: RivalID; completed: number; lastFloor: number; affection: number;
 	temporaryUntil?: number; permanent?: boolean; away?: boolean; temporaryUsed?: boolean;
-	carmine?: { affection: number; temporaryUntil?: number; permanent?: boolean; away?: boolean; temporaryUsed?: boolean };
+	carmine?: { affection: number, temporaryUntil?: number, permanent?: boolean, away?: boolean, temporaryUsed?: boolean };
 }
-export interface RivalEvent { chapter: number; step?: 'talk' | 'search' | 'reward' | 'invite' | 'carmine' | 'carminefinal'; turn?: number; task?: 'search' | 'battle'; found?: number[]; answer?: number }
-const accompanying = (state: { permanent?: boolean; temporaryUntil?: number; away?: boolean } | undefined, floor: number) =>
+export interface RivalEvent { chapter: number; step?: 'conversation' | 'talk' | 'search' | 'reward' | 'invite' | 'carmine' | 'carminefinal'; conversationTurn?: number; turn?: number; task?: 'search' | 'battle'; found?: number[]; answer?: number }
+const accompanying = (state: { permanent?: boolean, temporaryUntil?: number, away?: boolean } | undefined, floor: number) =>
 	!state?.away && !!(state?.permanent || state?.temporaryUntil && floor <= state.temporaryUntil);
 const canInvite = (state: RivalState | RivalState['carmine']) =>
 	!!state && state.affection >= 4 && !state.permanent && !state.temporaryUsed && !state.temporaryUntil;
@@ -27,12 +28,24 @@ export function activeRivalTraveller(run: RogueRun) {
 	if (accompanying(run.rival?.carmine, run.floor)) return { id: 'carmine', ...CARMINE };
 }
 export const rivalActive = (run: RogueRun) => !!activeRivalTraveller(run);
+/** Stretch early meetings; catch up missed chapters before the two major challenges. */
+export function nextRivalFloor(rival: RivalState) {
+	const next = rival.completed + 1;
+	if (next > 8) return Infinity;
+	const target = [1, 31, 48, 65, 81, 99, 119, 139][next - 1];
+	const milestone = next <= 6 ? 6 : 8, deadline = milestone === 6 ? 102 : 149;
+	const remaining = milestone - rival.completed;
+	const preferred = Math.max(rival.lastFloor + 10, target);
+	if (preferred + (remaining - 1) * 10 <= deadline) return preferred;
+	return rival.lastFloor + Math.max(2, Math.min(10, Math.floor((deadline - rival.lastFloor) / remaining)));
+}
 export function rivalRoutes(run: RogueRun, nodes: RogueNode[], random: RogueRandom) {
 	const rival = run.rival;
 	if (rival?.completed === 8 || !rival && run.floor > 20) return nodes;
-	const gap = run.floor - (rival?.lastFloor || 0);
-	if (rival && (gap < 10 || rival.completed === 5 && run.floor < 95 || rival.completed === 7 && run.floor < 145)) return nodes;
-	const chance = rival ? Math.min(95, 25 + (gap - 10) * 7) : run.floor <= 10 ? 85 : 60;
+	const due = rival ? nextRivalFloor(rival) : 1;
+	if (run.floor < due) return nodes;
+	const catchingUp = rival && due - rival.lastFloor < 10;
+	const chance = rival ? Math.min(98, (catchingUp ? 80 : 45) + (run.floor - due) * 9) : run.floor <= 10 ? 85 : 60;
 	if (random(100) >= chance || !nodes.length) return nodes;
 	const result = [...nodes];
 	result[result.length - 1] = { id: 'rival', kind: 'adventure', name: rival ? rivalSceneName(rival.id, rival.completed + 1) : '旅途中的相遇', encounters: [], reward: { money: 0, items: {} } };
@@ -69,25 +82,22 @@ export function beginRival(run: RogueRun, random: RogueRandom) {
 	}
 	const r = run.rival, chapter = r.completed + 1;
 	run.node!.name = rivalSceneName(r.id, chapter);
-	run.node!.event = { id: 'rivalstory', key: randomUUID(), stage: 'choice', rival: { chapter },
+	run.node!.event = { id: 'rivalstory', key: randomUUID(), stage: 'choice', rival: { chapter, step: 'conversation', conversationTurn: 0 },
 		result: [RIVALS[r.id].lines[chapter - 1]] };
 	(run.eventHistory ||= []).push({ id: `rival:${r.id}:${chapter}`, floor: run.floor });
 	run.phase = 'event';
 	if (r.id === 'kieran') r.carmine ||= { affection: 0 };
-	if (r.id === 'kieran' && chapter > 1) {
-		run.node!.event.rival!.step = 'carmine';
-		run.node!.event.result = [CARMINE.lines[chapter - 1]];
-	} else prepareChapter(run, random);
-	queueNarrative(run, [dialoguePage(r.id, RIVALS[r.id].name,
-		(r.affection >= 4 ? '熟悉的脚步声靠近，伙伴朝你露出笑意。' : '') + RIVALS[r.id].lines[chapter - 1], r.affection >= 4),
-		...(r.id === 'kieran' ? [dialoguePage('carmine', CARMINE.name, CARMINE.lines[chapter - 1], (r.carmine?.affection || 0) >= 4, 'left')] : [])], chapter === 1 ? 'ready' : 'event');
+	queueNarrative(run, rivalOpeningPages(r.id, chapter, r.affection), 'event');
 }
 function prepareChapter(run: RogueRun, random: RogueRandom) {
 	const state = run.node!.event!.rival!, chapter = state.chapter;
 	delete state.step;
 	if (chapter === 1) setFight(run, random);
-	else if (chapter === 4) { state.step = 'talk'; state.turn = 0; }
-	else if (chapter === 5) { state.task = random(2) ? 'search' : 'battle'; state.answer = random(3); state.found = []; }
+	else if (chapter === 4) {
+		state.step = 'talk'; state.turn = 0;
+	} else if (chapter === 5) {
+		state.task = random(2) ? 'search' : 'battle'; state.answer = random(3); state.found = [];
+	}
 }
 function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 	const r = run.rival!, event = run.node!.event!, chapter = event.rival!.chapter;
@@ -119,8 +129,7 @@ function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 			event.stage = 'choice'; event.settled = false; event.rival!.step = 'carminefinal';
 			event.result.push(CARMINE.lines[7]);
 		}
-	}
-	else if (advanced && chapter > 1 && (canInvite(r) || canInvite(r.carmine)) && random(100) < (chapter === 7 ? 100 : 65)) {
+	} else if (advanced && chapter > 1 && (canInvite(r) || canInvite(r.carmine)) && random(100) < (chapter === 7 ? 100 : 65)) {
 		event.stage = 'choice'; event.settled = false; event.rival!.step = 'invite';
 		event.result.push(`「接下来这一段，和我结伴走吧？」${canInvite(r) ? RIVALS[r.id].name : '丹瑜'}向你发出邀请。`);
 	}
@@ -131,7 +140,8 @@ export function rivalView(run: RogueRun) {
 	const option = (id: string, name: string) => ({ id, name, text: '', disabled: false });
 	let options: ReturnType<typeof option>[] = [];
 	if (event.stage === 'choice') {
-		if (state.step === 'carmine') options = [option('carmine:listen', '认真听丹瑜说完，也请她与我们一起商量。'), option('carmine:trust', '告诉她：我们相信乌栗，也相信你的判断。'), option('carmine:dismiss', '让她别管，我们自己就能处理。')];
+		if (state.step === 'conversation') options = rivalConversationOptions(state.chapter, state.conversationTurn);
+		else if (state.step === 'carmine') options = [option('carmine:listen', '认真听丹瑜说完，也请她与我们一起商量。'), option('carmine:trust', '告诉她：我们相信乌栗，也相信你的判断。'), option('carmine:dismiss', '让她别管，我们自己就能处理。')];
 		else if (state.step === 'carminefinal') options = [option('carmine:stay', '当然，我们三个人一起走。'), option('carmine:later', '期待下一次再与你相遇。')];
 		else if (state.step === 'reward') options = [option('system:tera', '解锁太晶化并领取配套碎片'), option('system:mega', '解锁超进化并领取进化石'), option('system:z', '解锁 Z 招式并领取纯晶'), option('shards', '领取幻想碎片 ×100')];
 		else if (state.step === 'invite') options = [
@@ -139,8 +149,7 @@ export function rivalView(run: RogueRun) {
 			...(canInvite(r.carmine) ? [
 				...(canInvite(r) ? [option('joinboth', '邀请丹瑜也一起结伴走这一段。')] : []),
 				option('joincarmine', '与丹瑜同行，让乌栗先去独自训练。')] : []), option('solo', '这次想独自走走，下次再见。')];
-		else if (state.step === 'talk') options = [option('warm', ['认真回应，也谈谈自己与伙伴的约定。', '愿意试着理解彼此不同的想法。', '约好以后继续互相检验成长。'][state.turn || 0]),
-			option('honest', ['坦率地说，自己也还在寻找答案。', '先听对方把故事讲完。', '感谢这一路的帮助。'][state.turn || 0]), option('cold', '觉得没什么好谈的，催促继续赶路。')];
+		else if (state.step === 'talk') options = rivalChatOptions(state.turn);
 		else if (state.chapter === 5 && state.task === 'search') options = ['溪流边', '旧营地', '石桥下'].flatMap((site, i) => state.found!.includes(i) ? [] : [option(`search:${i}`, `与${c.name}一起搜寻${site}`)]);
 		else options = [option('start', '准备好了，开始吧。')];
 	}
@@ -151,7 +160,20 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 	const event = run.node!.event!, state = event.rival!, r = run.rival!;
 	if (!rivalView(run).options.some(option => option.id === choice)) throw new Error('请选择当前奇遇提供的选项。');
 	event.key = randomUUID();
-	if (state.step === 'carmine') {
+	if (state.step === 'conversation') {
+		const turn = state.conversationTurn || 0;
+		r.affection = Math.max(0, r.affection + (choice === 'greet:warm' ? 1 : choice === 'greet:cold' ? -1 : 0));
+		const pages = rivalAnswerPages(r.id, state.chapter, turn, choice, r.affection);
+		state.conversationTurn = turn + 1;
+		if (state.conversationTurn >= 2) {
+			if (r.id === 'kieran' && state.chapter > 1) {
+				state.step = 'carmine'; event.result = [CARMINE.lines[state.chapter - 1]];
+				pages.push(dialoguePage('carmine', '丹瑜', CARMINE.lines[state.chapter - 1], (r.carmine?.affection || 0) >= 4, 'left'));
+			} else prepareChapter(run, random);
+		}
+		event.result = pages.map(page => page.text);
+		queueNarrative(run, pages, run.phase === 'ready' ? 'ready' : 'event');
+	} else if (state.step === 'carmine') {
 		const accepted = choice !== 'carmine:dismiss';
 		r.carmine!.affection = Math.max(0, r.carmine!.affection + (accepted ? 2 : -2));
 		event.result = [accepted ? '丹瑜怔了一下，随即扬起嘴角：「好，那就一起把这件事做好！」' : '丹瑜别过脸：「行，我就在旁边看着。」'];
@@ -168,10 +190,12 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		event.result = [choice === 'cold' ? '对方收住话头，沉默了一小会儿。' : `${RIVALS[r.id].name}认真听着，语气比刚见面时柔和了许多。`,
 			['说到最初踏上旅途的那一天，你们又想起了各自的伙伴。', '聊过理想与挫折，话题终于转向下一次相遇。'][state.turn - 1] || ''];
 		if (state.turn >= 3) finish(run, random, true);
+		queueNarrative(run, rivalChatPages(r.id, state.turn - 1, choice, r.affection), 'event');
 	} else if (choice.startsWith('search:')) {
 		const index = Number(choice.slice(7)); state.found!.push(index);
-		if (index === state.answer) { r.affection++; finish(run, random, true); }
-		else event.result = ['这里没有委托物资，但发现了新的足迹。你们一起排除了这个方向。'];
+		if (index === state.answer) {
+			r.affection++; finish(run, random, true);
+		} else event.result = ['这里没有委托物资，但发现了新的足迹。你们一起排除了这个方向。'];
 	} else if (choice === 'shards' || choice.startsWith('system:')) {
 		if (choice === 'shards') normalizeBlessings(run).shards += 100;
 		else grantSystem(run, choice.slice(7), '劲敌的认可 · 选择配套道具');
@@ -188,7 +212,8 @@ export function settleRival(run: RogueRun, random: RogueRandom, won: boolean) {
 	const event = run.node!.event!, chapter = event.rival!.chapter;
 	if (won && run.encounter + 1 < run.node!.encounters.length) return;
 	if (won && chapter === 6) {
-		healNarrativeParty(run); event.stage = 'choice'; event.rival!.step = 'reward'; event.key = randomUUID();
+		healNarrativeParty(run); event.stage = 'choice';
+		event.rival!.step = 'reward'; event.key = randomUUID();
 		event.result = ['「这次是你赢了。我准备了几份礼物，选一份能帮你继续前进的吧。」']; run.phase = 'event'; return;
 	}
 	finish(run, random, won);

@@ -61,7 +61,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 	});
 	afterEach(() => store.close());
 
-	it('runs all 54 authored opponents at their exact levels, with their moves, abilities, IVs and Tera', () => {
+	it('runs all 54 authored opponents with legal evolution levels and their authored moves, abilities, IVs and Tera', () => {
 		const dex = Dex.mod('gen9fantasy');
 		let count = 0;
 		for (const [floor, pool] of Object.entries(FantasyEliteBosses)) {
@@ -73,7 +73,7 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 				try {
 					const mon = battle.p2.active[0];
 					assert.equal(mon.species.id, toID(original.species));
-					assert.equal(mon.level, Number(floor) === 10 ? 8 : 5 + Number(floor) / 2);
+					assert.equal(mon.level, Math.max(pool.level, require('../../dist/server/fantasy-rogue/evolution').minimumEvolutionLevel(mon.species.name)));
 					assert.equal(mon.baseAbility, toID(original.ability));
 					assert.deepEqual(mon.baseMoves, original.moves.map(toID));
 					assert.equal(mon.item, toID(original.item));

@@ -152,4 +152,24 @@ describe('Fantasy Rogue blessing selection rules', () => {
 		assert.throws(() => refreshBlessingOption(round, -1, candidates, () => 0));
 		assert.throws(() => chooseBlessingOption(round, 0.5));
 	});
+	it('remembers discarded cards across different slots, repeated rerolls and reconnects', () => {
+		let round = createBlessingRound({floor: 50, spirit: 'victini'}, pool, () => 0);
+		const seen = new Set(round.options.map(o => o.id));
+		for (const slot of [0, 1, 0, 2, 1]) {
+			round = refreshBlessingOption(JSON.parse(JSON.stringify(round)), slot, pool, () => 0);
+			assert(!seen.has(round.options[slot].id), `${round.options[slot].id} was already offered`);
+			seen.add(round.options[slot].id);
+			assert.deepEqual(new Set(round.idsSeen), seen);
+		}
+		const input = JSON.stringify(round);
+		assert.throws(() => refreshBlessingOption(round, 2, pool, () => 0), /没有符合条件/);
+		assert.equal(JSON.stringify(round), input);
+	});
+	it('seeds legacy reroll history from all visible slots and resets it for the next round', () => {
+		const round = createBlessingRound({floor: 50, spirit: 'silvally'}, pool, () => 0);
+		delete round.idsSeen;
+		const next = refreshBlessingOption(round, 0, pool, () => 0);
+		assert(round.options.every(o => next.idsSeen.includes(o.id)));
+		assert.equal(createBlessingRound({floor: 100, spirit: 'silvally'}, pool, () => 0).options[0].id, round.options[0].id);
+	});
 });
