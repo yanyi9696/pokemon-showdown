@@ -56,6 +56,18 @@ describe('Rogue compact beta revision', function () {
 		Config.fantasyrogue.enabled = false;
 		assert(!rogueAccess(user));
 	});
+	it('admits all five dedicated beta accounts from the deployment defaults after authentication only', () => {
+		Config.fantasyrogue = { ...require('../../config/config-example').fantasyrogue };
+		for (let number = 1; number <= 5; number++) {
+			const account = { ...user, id: `fcrbeta2610190${number}`, name: `FCRBeta2610190${number}` };
+			assert(rogueAccess(account), account.name);
+			assert(!rogueAccess({ ...account, registered: false }), 'a matching nickname must not grant access');
+			assert(!rogueAccess({ ...account, connected: false }), 'a disconnected account must not retain access');
+		}
+		assert.equal(Config.fantasyrogue.publicAccess, false);
+		assert(!rogueAccess({ ...user, id: 'fcrbeta26101906' }));
+		assert(!rogueAccess(user));
+	});
 	it('keeps active-run payloads lean and restores the starter catalogue after abandonment', () => {
 		const manager = new RogueManager(engine);
 		assert.equal(manager.state(user).starters.length, 0);
