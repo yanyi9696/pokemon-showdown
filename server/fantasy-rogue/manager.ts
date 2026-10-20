@@ -1,4 +1,5 @@
-import { rivalCompanionView } from './rivals';
+import { rivalCompanionView, rivalCompanionViews } from './rivals';
+import { robeMember, robeDurability } from '../../sim/rogue-awakening';
 import { eggView } from './eggs';
 import { centerCare } from './economy';
 import { rogueAccess } from './access';
@@ -78,14 +79,14 @@ export class RogueManager {
 		if (!rogueAccess(user)) return { userid: user.id, enabled: false, section, entries: [] };
 		let account;
 		try { this.authorize(user); account = this.engine.store.get(user.id); } catch {}
-		return { userid: user.id, revision: account?.revision, ...rogueCodex(account, section, this.engine.localSpirits) };
+		return { userid: user.id, revision: account?.revision, contentVersion: '20261020-awakening', ...rogueCodex(account, section, this.engine.localSpirits) };
 	}
 	duel(user: User, command: DuelCommand) {
 		this.authorize(user);
 		return this.duels.command(user, command);
 	}
 	state(user: User) {
-		const common = { userid: user.id, protocolVersion: 1, enabled: rogueAccess(user) };
+		const common = { userid: user.id, protocolVersion: 1, contentVersion: '20261020-awakening', enabled: rogueAccess(user) };
 		try { this.authorize(user); } catch (error) {
 			return { ...common, message: (error as Error).message, account: null };
 		}
@@ -175,7 +176,7 @@ export class RogueManager {
 					wildLoot: run.node.wildLoot, encounterLoot: run.node.wildLoot?.[run.encounter],
 					reward: { ...run.node.reward, points: run.postgame?.stage === 'battle' ? 20 : run.node.kind === 'boss' && !run.node.companionLoss ? 1 : 0 },
 				},
-				rival: run.rival, rivalCompanion: rivalCompanionView(run),
+				rival: run.rival, rivalCompanion: rivalCompanionView(run), rivalCompanions: rivalCompanionViews(run),
 				team: run.team.map(saved => {
 					if (saved.egg) return eggView(saved, run.floor);
 					const mon = structuredClone(saved);
@@ -183,8 +184,10 @@ export class RogueManager {
 					if (!mon.stats) rebuildMember(mon, run.boosts);
 					const species = Dex.mod('gen9fantasy').species.get(mon.set.species);
 					const baseStats = { ...species.baseStats };
+					const robe = (['godrobe', 'puregodrobe'] as const).find(kind => robeMember(run.team, run.blessings, kind)?.id === saved.id);
 					for (const [key, value] of Object.entries(mon.statModifiers?.baseStats || {})) baseStats[key as StatID] += value;
 					return { ...mon, baseStats, machineMoves: items.some(item => item.kind === 'machine') ? machineMoves(mon) : [],
+						robeInfo: robe ? {name: robe === 'godrobe' ? '神衣鲜血' : '神衣纯洁', durability: robeDurability(mon.hp, mon.maxhp, !!run.blessings?.owned.find(b => b.family === robe)?.completed)} : undefined,
 						abilityChanges: { abilitycapsule: abilityItemTarget(mon, 'abilitycapsule'), abilitypatch: abilityItemTarget(mon, 'abilitypatch') },
 						extraAbilities: assignedExtraAbilities(saved, run.team, run.blessings).filter(id => id !== toID(mon.set.ability)),
 						canReceiveSharpness: canGrantExtraAbility(saved, 'sharpness', run.team, run.blessings),

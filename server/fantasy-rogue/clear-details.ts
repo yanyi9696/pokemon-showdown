@@ -5,6 +5,7 @@ import { assignedExtraAbilities, permanentMemberTypes, tonicDescription } from '
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
 import { companionSource } from '../../sim/rogue-companions';
 import { COMPANION_Z } from '../../sim/rogue-companion-z';
+import { robeMember, robeDurability, SPIRAL_CAP, SPIRAL_SURVIVAL } from '../../sim/rogue-awakening';
 import { createRoguePokemon } from './progression';
 import { growthPercent } from './growth';
 import type { RogueRun } from './types';
@@ -67,6 +68,20 @@ export function clearMemberDetails(mon: RoguePokemon, run: RogueRun): ClearMembe
 	if (mod?.swap) add('攻守交换', '攻击与防御、特攻与特防互换。');
 	if (mon.bond) add('就决定是你了', `羁绊 ${mon.bond}${mon.bondReady ? '，已进入第二阶段' : ''}`);
 	if (mon.insight) add('濒死悟道', `领悟 ${mon.insight.points} / 100，每次积累 +${mon.insight.gain}`);
+	if (run.blessings?.owned.some(b => b.family === 'spiral' && b.target === mon.id)) {
+		const points = mon.spiral || 0;
+		add('我的钻头是可以突破天际的', `螺旋力 ${Number(points.toFixed(2))} / ${SPIRAL_CAP}，对战攻击 +${Number((points / 10).toFixed(2))}%；` +
+			`未计其他对战修正时：${mon.stats!.atk} → ${Math.floor(mon.stats!.atk * (1 + points / 1000))}。` +
+			`每场首次致命伤保留 1 HP：${points >= SPIRAL_SURVIVAL ? '已解锁' : `尚需达到 ${SPIRAL_SURVIVAL} 点`}。`);
+	}
+	for (const [kind, name] of [['godrobe', '神衣鲜血'], ['puregodrobe', '神衣纯洁']] as const) {
+		if (robeMember(run.team, run.blessings, kind)?.id !== mon.id) continue;
+		const upgraded = !!run.blessings!.owned.find(b => b.family === kind)?.completed;
+		const factor = robeDurability(mon.hp, mon.maxhp, upgraded);
+		add(name, `${upgraded ? '已完成传说强化' : '尚未完成传说强化'}。通关 HP 下双防耐久 ×${factor.toFixed(3)}，` +
+			`防御 ${mon.stats!.def} → ${Math.floor(mon.stats!.def * factor)}，特防 ${mon.stats!.spd} → ${Math.floor(mon.stats!.spd * factor)}（未计其他对战修正）。` +
+			'约战开始恢复满血后，耐久随当场 HP 重新计算。');
+	}
 	if (mon.tonics?.wine) add('酒', tonicDescription('wine', true));
 	if (mon.tonics?.cephalosporin) add('头孢', tonicDescription('cephalosporin', true));
 	if (run.eventBuff?.battles) add('蘑菇的活力', '造成的招式伤害 +20%，受到的招式伤害 -10%。');

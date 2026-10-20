@@ -359,12 +359,14 @@ describe('Fantasy Rogue real rooms', function () {
 		assert(!('checkpoint' in publicState.run));
 		assert(!('caught' in publicState.run));
 	});
-	it('rejects the campaign format through the normal imported-team challenge path', async () => {
-		let message = '';
-		const ready = await Ladders('gen9fantasyrogue').prepBattle(user.connections[0], 'challenge', '', false,
-			text => { message = text; });
-		assert.equal(ready, null);
-		assert(message.includes('专用入口'));
+	it('rejects campaign, co-op and clear-card formats through normal imported-team challenges', async () => {
+		for (const format of ['gen9fantasyrogue', 'gen9fantasyroguecoop', 'gen9fantasyrogueduel']) {
+			let message = '';
+			const ready = await Ladders(format).prepBattle(user.connections[0], 'challenge', '', false,
+				text => { message = text; });
+			assert.equal(ready, null);
+			assert(message.includes('专用入口'), format + ': ' + message);
+		}
 	});
 	it('announces a new adventure once and suppresses only rogue battle reports', async () => {
 		const existing = Rooms.get('lobby');

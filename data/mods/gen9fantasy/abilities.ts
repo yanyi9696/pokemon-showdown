@@ -1,4 +1,14 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	heavenpiercingdrill: {
+		name: 'Heaven Piercing Drill', rating: 4.5, num: -2001, isNonstandard: 'Custom', flags: {},
+		onModifyMove(move) {
+			move.ignoreAbility = true;
+			if (move.flags.contact) delete move.flags.protect;
+			if (move.type === 'Ground') move.ignoreImmunity = true;
+		},
+		shortDesc: '保留贯穿钻全部效果；招式无视目标特性，地面招式能命中飞行系。',
+	},
+
 	roguegreatmage: {
 		name: "Rogue Great Mage",
 		isNonstandard: "Custom",

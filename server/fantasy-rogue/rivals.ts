@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { RIVALS, RIVAL_SCENES, type RivalID } from './rival-data';
+import { RIVALS, RIVAL_SCENES, RIVAL_SNACK_GIFTS, RIVAL_FAREWELLS, CARMINE, type RivalID } from './rival-data';
 import type { RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet } from './encounter-sets';
@@ -13,9 +13,16 @@ import { COMPANIONS } from '../../sim/rogue-companions';
 export interface RivalState {
 	id: RivalID; completed: number; lastFloor: number; affection: number;
 	temporaryUntil?: number; permanent?: boolean;
+	carmine?: { affection: number; temporaryUntil?: number; permanent?: boolean };
 }
-export interface RivalEvent { chapter: number; step?: 'talk' | 'search' | 'reward' | 'invite'; turn?: number; task?: 'search' | 'battle'; found?: number[]; answer?: number }
-export const rivalActive = (run: RogueRun) => !!(run.rival?.permanent || run.rival?.temporaryUntil && run.floor <= run.rival.temporaryUntil);
+export interface RivalEvent { chapter: number; step?: 'talk' | 'search' | 'reward' | 'invite' | 'carmine' | 'carminefinal'; turn?: number; task?: 'search' | 'battle'; found?: number[]; answer?: number }
+const accompanying = (state: { permanent?: boolean; temporaryUntil?: number } | undefined, floor: number) =>
+	!!(state?.permanent || state?.temporaryUntil && floor <= state.temporaryUntil);
+export function activeRivalTraveller(run: RogueRun) {
+	if (accompanying(run.rival, run.floor)) return { id: run.rival!.id, ...RIVALS[run.rival!.id] };
+	if (accompanying(run.rival?.carmine, run.floor)) return { id: 'carmine', ...CARMINE };
+}
+export const rivalActive = (run: RogueRun) => !!activeRivalTraveller(run);
 export function rivalRoutes(run: RogueRun, nodes: RogueNode[], random: RogueRandom) {
 	const rival = run.rival;
 	if (rival?.completed === 8 || !rival && run.floor > 20) return nodes;
@@ -27,8 +34,8 @@ export function rivalRoutes(run: RogueRun, nodes: RogueNode[], random: RogueRand
 	result[result.length - 1] = { id: 'rival', kind: 'adventure', name: rival ? `${RIVALS[rival.id].name} · ${RIVAL_SCENES[rival.completed]}` : '旅途中的相遇', encounters: [], reward: { money: 0, items: {} } };
 	return result;
 }
-export function rivalTeam(run: RogueRun, lv: number, count = 3) {
-	return [...new Set(RIVALS[run.rival!.id].team.map(name => lowerToEligibleStage(name === 'Alolan Vulpix' ? 'Vulpix-Alola' : name, lv)))].slice(0, count)
+export function rivalTeam(run: RogueRun, lv: number, count = 3, travelling = false) {
+	return [...new Set((travelling && activeRivalTraveller(run)?.team || RIVALS[run.rival!.id].team).map(name => lowerToEligibleStage(name === 'Alolan Vulpix' ? 'Vulpix-Alola' : name, lv)))].slice(0, count)
 		.map(name => makeEncounterSet(name, lv, run.floor < 60 ? 18 : 24));
 }
 function setFight(run: RogueRun, random: RogueRandom) {
@@ -61,11 +68,21 @@ export function beginRival(run: RogueRun, random: RogueRandom) {
 		result: [RIVALS[r.id].lines[chapter - 1]] };
 	(run.eventHistory ||= []).push({ id: `rival:${r.id}:${chapter}`, floor: run.floor });
 	run.phase = 'event';
-	if (chapter === 1) setFight(run, random);
-	else if (chapter === 4) { run.node!.event.rival!.step = 'talk'; run.node!.event.rival!.turn = 0; }
-	else if (chapter === 5) { const state = run.node!.event.rival!; state.task = random(2) ? 'search' : 'battle'; state.answer = random(3); state.found = []; }
+	if (r.id === 'kieran') r.carmine ||= { affection: 0 };
+	if (r.id === 'kieran' && chapter > 1) {
+		run.node!.event.rival!.step = 'carmine';
+		run.node!.event.result = [CARMINE.lines[chapter - 1]];
+	} else prepareChapter(run, random);
 	queueNarrative(run, [dialoguePage(r.id, RIVALS[r.id].name,
-		(r.affection >= 4 ? '熟悉的脚步声靠近，伙伴朝你露出笑意。' : '') + RIVALS[r.id].lines[chapter - 1], r.affection >= 4)], chapter === 1 ? 'ready' : 'event');
+		(r.affection >= 4 ? '熟悉的脚步声靠近，伙伴朝你露出笑意。' : '') + RIVALS[r.id].lines[chapter - 1], r.affection >= 4),
+		...(r.id === 'kieran' ? [dialoguePage('carmine', CARMINE.name, CARMINE.lines[chapter - 1], (r.carmine?.affection || 0) >= 4, 'left')] : [])], chapter === 1 ? 'ready' : 'event');
+}
+function prepareChapter(run: RogueRun, random: RogueRandom) {
+	const state = run.node!.event!.rival!, chapter = state.chapter;
+	delete state.step;
+	if (chapter === 1) setFight(run, random);
+	else if (chapter === 4) { state.step = 'talk'; state.turn = 0; }
+	else if (chapter === 5) { state.task = random(2) ? 'search' : 'battle'; state.answer = random(3); state.found = []; }
 }
 function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 	const r = run.rival!, event = run.node!.event!, chapter = event.rival!.chapter;
@@ -90,10 +107,16 @@ function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 	event.stage = 'result'; event.settled = true;
 	event.result = [won ? '这一路的默契，成为了眼前实实在在的收获。' : advanced ? '切磋未能获胜，但对方认真肯定了你的进步，并帮全队恢复健康。你收到一份基础物资。' : '这次合作没能完成。先照顾好伙伴，下一次相遇再共同挑战。'];
 	if (chapter === 1) event.result.push('「以后在旅途中遇见，记得来找我。一起经历更多奇遇，我们会变得更强，也会收获更丰厚的旅途礼物。」');
-	if (chapter === 8) { r.permanent = true; delete r.temporaryUntil; event.result.push(`【${RIVALS[r.id].name}】正式成为永久同行的劲敌伙伴。原有同行训练家继续陪伴你。`); }
-	else if (advanced && chapter > 1 && r.affection >= 4 && random(100) < (chapter === 7 ? 100 : 65)) {
+	if (chapter === 8) {
+		r.permanent = true; delete r.temporaryUntil; event.result.push(`【${RIVALS[r.id].name}】正式成为永久同行的劲敌伙伴。原有同行训练家继续陪伴你。`);
+		if (r.carmine && r.carmine.affection >= 6) {
+			event.stage = 'choice'; event.settled = false; event.rival!.step = 'carminefinal';
+			event.result.push(CARMINE.lines[7]);
+		}
+	}
+	else if (advanced && chapter > 1 && (r.affection >= 4 || (r.carmine?.affection || 0) >= 4) && random(100) < (chapter === 7 ? 100 : 65)) {
 		event.stage = 'choice'; event.settled = false; event.rival!.step = 'invite';
-		event.result.push(`「接下来这一段，和我结伴走吧？」${RIVALS[r.id].name}向你发出邀请。`);
+		event.result.push(`「接下来这一段，和我结伴走吧？」${r.affection >= 4 ? RIVALS[r.id].name : '丹瑜'}向你发出邀请。`);
 	}
 	run.phase = 'event'; event.key = randomUUID();
 }
@@ -102,19 +125,38 @@ export function rivalView(run: RogueRun) {
 	const option = (id: string, name: string) => ({ id, name, text: '', disabled: false });
 	let options: ReturnType<typeof option>[] = [];
 	if (event.stage === 'choice') {
-		if (state.step === 'reward') options = [option('system:tera', '解锁太晶化并领取配套碎片'), option('system:mega', '解锁超进化并领取进化石'), option('system:z', '解锁 Z 招式并领取纯晶'), option('shards', '领取幻想碎片 ×100')];
-		else if (state.step === 'invite') options = [option('join', '好，一起走这一段。'), option('solo', '这次想独自走走，下次再见。')];
+		if (state.step === 'carmine') options = [option('carmine:listen', '认真听丹瑜说完，也请她与我们一起商量。'), option('carmine:trust', '告诉她：我们相信乌栗，也相信你的判断。'), option('carmine:dismiss', '让她别管，我们自己就能处理。')];
+		else if (state.step === 'carminefinal') options = [option('carmine:stay', '当然，我们三个人一起走。'), option('carmine:later', '期待下一次再与你相遇。')];
+		else if (state.step === 'reward') options = [option('system:tera', '解锁太晶化并领取配套碎片'), option('system:mega', '解锁超进化并领取进化石'), option('system:z', '解锁 Z 招式并领取纯晶'), option('shards', '领取幻想碎片 ×100')];
+		else if (state.step === 'invite') options = [
+			...(r.affection >= 4 ? [option('join', '好，一起走这一段。')] : []),
+			...(r.carmine && r.carmine.affection >= 4 ? [
+				...(r.affection >= 4 ? [option('joinboth', '邀请丹瑜也一起结伴走这一段。')] : []),
+				option('joincarmine', '与丹瑜同行，让乌栗先去独自训练。')] : []), option('solo', '这次想独自走走，下次再见。')];
 		else if (state.step === 'talk') options = [option('warm', ['认真回应，也谈谈自己与伙伴的约定。', '愿意试着理解彼此不同的想法。', '约好以后继续互相检验成长。'][state.turn || 0]),
 			option('honest', ['坦率地说，自己也还在寻找答案。', '先听对方把故事讲完。', '感谢这一路的帮助。'][state.turn || 0]), option('cold', '觉得没什么好谈的，催促继续赶路。')];
 		else if (state.chapter === 5 && state.task === 'search') options = ['溪流边', '旧营地', '石桥下'].flatMap((site, i) => state.found!.includes(i) ? [] : [option(`search:${i}`, `与${c.name}一起搜寻${site}`)]);
 		else options = [option('start', '准备好了，开始吧。')];
 	}
-	return { paragraphs: event.result || [c.lines[state.chapter - 1]], options, rivalPortrait: r.id, rivalApproval: r.affection >= 4 };
+	return { paragraphs: event.result || [c.lines[state.chapter - 1]], options,
+		rivalPortrait: state.step?.startsWith('carmine') ? 'carmine' : r.id, rivalApproval: state.step?.startsWith('carmine') ? (r.carmine?.affection || 0) >= 4 : r.affection >= 4 };
 }
 export function chooseRival(run: RogueRun, content: RogueContent, random: RogueRandom, choice: string) {
 	const event = run.node!.event!, state = event.rival!, r = run.rival!;
+	if (!rivalView(run).options.some(option => option.id === choice)) throw new Error('请选择当前奇遇提供的选项。');
 	event.key = randomUUID();
-	if (choice === 'start') setFight(run, random);
+	if (state.step === 'carmine') {
+		const accepted = choice !== 'carmine:dismiss';
+		r.carmine!.affection = Math.max(0, r.carmine!.affection + (accepted ? 2 : -2));
+		event.result = [accepted ? '丹瑜怔了一下，随即扬起嘴角：「好，那就一起把这件事做好！」' : '丹瑜别过脸：「行，我就在旁边看着。」'];
+		prepareChapter(run, random);
+		queueNarrative(run, [dialoguePage('carmine', '丹瑜', event.result[0], accepted, 'left')], 'event');
+	} else if (state.step === 'carminefinal') {
+		if (choice === 'carmine:stay') { r.carmine!.permanent = true; delete r.carmine!.temporaryUntil; }
+		event.stage = 'result'; event.settled = true;
+		event.result = [choice === 'carmine:stay' ? '丹瑜也加入了永久同行。乌栗站在你身边，认真约好下一次切磋。' : '丹瑜笑着挥手：「照顾好你们自己。我也会走出自己的路，下次再见！」'];
+		queueNarrative(run, [dialoguePage('carmine', '丹瑜', event.result[0], true, 'left')], 'event');
+	} else if (choice === 'start') setFight(run, random);
 	else if (['warm', 'honest', 'cold'].includes(choice)) {
 		r.affection = Math.max(0, r.affection + (choice === 'warm' ? 2 : choice === 'honest' ? 1 : -2)); state.turn = (state.turn || 0) + 1;
 		event.result = [choice === 'cold' ? '对方收住话头，沉默了一小会儿。' : `${RIVALS[r.id].name}认真听着，语气比刚见面时柔和了许多。`,
@@ -128,10 +170,12 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		if (choice === 'shards') normalizeBlessings(run).shards += 100;
 		else grantSystem(run, choice.slice(7), '劲敌的认可 · 选择配套道具');
 		finish(run, random, true);
-	} else if (choice === 'join' || choice === 'solo') {
-		if (choice === 'join') r.temporaryUntil = run.floor + (state.chapter === 7 ? 8 : 5 + random(4));
+	} else if (['join', 'solo', 'joinboth', 'joincarmine'].includes(choice)) {
+		const until = run.floor + (state.chapter === 7 ? 8 : 5 + random(4));
+		if (choice === 'join' || choice === 'joinboth') r.temporaryUntil = until;
+		if (choice === 'joinboth' || choice === 'joincarmine') r.carmine!.temporaryUntil = until;
 		event.stage = 'result'; event.settled = true;
-		event.result = [choice === 'join' ? `与${RIVALS[r.id].name}结伴同行至第 ${r.temporaryUntil} 层。普通战斗有机会并肩出战，战利品略微增加。` : '你们挥手道别，约好下一次再见。'];
+		event.result = [choice !== 'solo' ? `与${choice === 'joincarmine' ? '丹瑜' : RIVALS[r.id].name + (choice === 'joinboth' ? '、丹瑜' : '')}结伴同行至第 ${until} 层。普通战斗有机会并肩出战，战利品略微增加。` : '你们挥手道别，约好下一次再见。'];
 	}
 }
 export function settleRival(run: RogueRun, random: RogueRandom, won: boolean) {
@@ -143,16 +187,33 @@ export function settleRival(run: RogueRun, random: RogueRandom, won: boolean) {
 	}
 	finish(run, random, won);
 }
-export function expireRival(run: RogueRun) {
-	if (run.rival?.temporaryUntil && run.floor > run.rival.temporaryUntil) {
-		delete run.rival.temporaryUntil;
-		(run.notices ||= []).push(`${RIVALS[run.rival.id].name}暂时告别；累积的熟悉度仍然保留，期待下一次奇遇。`);
+export function expireRival(run: RogueRun, nextFloor = run.floor) {
+	const r = run.rival, pages = [];
+	if (!r) return false;
+	for (const id of [r.id, ...(r.carmine ? ['carmine' as const] : [])]) {
+		const state = id === 'carmine' ? r.carmine! : r;
+		if (state.permanent || !state.temporaryUntil || nextFloor <= state.temporaryUntil) continue;
+		delete state.temporaryUntil; // Transactional receipt: no second gift on reload.
+		const gift = id === 'carmine' ? { item: CARMINE.item, name: CARMINE.giftName } : RIVAL_SNACK_GIFTS[id];
+		const name = id === 'carmine' ? '丹瑜' : RIVALS[id].name;
+		run.bag[gift.item] = (run.bag[gift.item] || 0) + 1;
+		pages.push(dialoguePage(id, name, id === 'carmine' ? '我得先回北上乡看看。这个是给你的，才不是顺手捡的！照顾好伙伴，下次见面再跟我讲讲旅途吧。' : RIVAL_FAREWELLS[id], true, 'left'));
+		pages.push(dialoguePage(id, name, `获得【同行训练家的赠礼】：${gift.name} ×1。${name}暂时告别，累积的好感与奇遇进度保留。`, true, 'left'));
 	}
+	if (pages.length) queueNarrative(run, pages, 'advance');
+	return !!pages.length;
 }
 export function rivalCompanionView(run: RogueRun) {
-	if (!run.rival || !rivalActive(run)) return;
+	if (!run.rival || !accompanying(run.rival, run.floor)) return;
 	return { ...run.rival, name: RIVALS[run.rival.id].name, text: run.rival.permanent ? '永久同行' : `结伴至第 ${run.rival.temporaryUntil} 层`,
 		message: run.rival.affection >= 6 ? '一路走到这里，我们已经很有默契了。' : '下一段旅途，也一起加油吧。' };
+}
+export function rivalCompanionViews(run: RogueRun) {
+	const result = [];
+	if (run.rival && accompanying(run.rival, run.floor)) result.push(rivalCompanionView(run)!);
+	const c = run.rival?.carmine;
+	if (accompanying(c, run.floor)) result.push({ ...c!, id: 'carmine', name: '丹瑜', text: c!.permanent ? '永久同行' : `结伴至第 ${c!.temporaryUntil} 层`, message: '行啦，这段路一起走。要帮忙就说，不用一个人硬撑。' });
+	return result;
 }
 export function rivalBlessingAllowed(run: RogueRun, family: string) {
 	const people = Object.entries(COMPANIONS).filter(([, c]) => c.family === family);

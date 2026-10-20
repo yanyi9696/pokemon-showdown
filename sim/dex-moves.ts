@@ -315,6 +315,7 @@ export interface ActiveMove extends MutableMove {
 	rogueCoin?: number;
 	rogueLanding?: boolean;
 	rogueWine?: boolean;
+	rogueBloodFactor?: number;
 	/** Ordering bonus is separate from move priority; only these explicit blockers are bypassed. */
 	rogueTopClearMind?: boolean;
 	rogueHitTargets?: string[];

@@ -1,3 +1,5 @@
+import { awakeningUpdate, awakeningLethal, spiralLethal, spiralActive, spiralPoints, gainSpiral, robeMultiplier, bloodRequest, empowerBloodMove } from './fantasy-rogue-awakening';
+import { robeMember } from './rogue-awakening';
 import type { Battle } from './battle';
 import type { Pokemon } from './pokemon';
 import type { FormatData } from './dex-formats';
@@ -71,6 +73,8 @@ export function rogueDamageSources(mon: Pokemon, move: Move) {
 	if (move.category === 'Status' || move.ohko || move.damage || move.damageCallback) return [];
 	const sources: string[] = [], state = mon.battle.fantasyRogue!;
 	if (rulebreakerActive(mon)) sources.push('【规则，就是用来打破的】无视防御强化、减伤防护与属性免疫');
+	const blood = bloodRequest(mon);
+	if (blood) sources.push(`【神衣鲜血】可选消耗 ${blood.cost} HP，使本次伤害 +${Math.round((blood.factor - 1) * 100)}%`);
 	const ordinary = hasBlessing(mon, 'ordinary');
 	if (ordinary && mon.side.pokemon.every(p => mon.battle.dex.species.get(savedBlessingMember(p)?.set.species || p.baseSpecies.name).bst <= 500)) {
 		sources.push(`【愤怒的普通宝可梦】伤害 +${10 + Math.max(1, Math.floor(ordinary.floor / 50)) * 5}%`);
@@ -110,6 +114,8 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	const card = mon.side.id === 'p1' && state.mentorCard;
 	const stats = rogueStatSnapshot(mon);
 	const statSources: string[] = [];
+	if (spiralActive(mon)) statSources.push(`【螺旋力】${spiralPoints(mon).toFixed(1)} / 1000，攻击 +${(spiralPoints(mon) / 10).toFixed(1)}%（保命阈值 250）`);
+	if (robeMultiplier(mon) > 1) statSources.push(`【神衣耐久】当前双防 ×${robeMultiplier(mon).toFixed(3)}，已计入能力值`);
 	if (saved.mushroomTraining) statSources.push(`【合成大蘑菇】双攻 +${Number((saved.mushroomTraining.offense / 100).toFixed(2))}%，双防 +${Number((saved.mushroomTraining.defense / 100).toFixed(2))}%（已计入能力值）`);
 	if (rulebreakerActive(mon)) statSources.push('【规则，就是用来打破的】无视自身能力下降与天气减益');
 	if (railgunActive(mon)) statSources.push('【某科学超电磁炮】永久电磁漂浮');
@@ -148,6 +154,11 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	}));
 	const abilitySources = Object.fromEntries((blessingEffects(mon)?.companions || [])
 		.filter(c => c.member === saved.id && c.ability).map(c => [c.ability!, companionSource(c.id)]));
+	for (const [family, extra, source] of [['godrobe', ['sharpness', 'jiqususheng'], '神衣鲜血'],
+		['puregodrobe', ['stalwart', 'sheerforce'], '神衣纯洁']] as const) {
+		if (robeMember(team, effects, family)?.id === saved.id) for (const id of extra) abilitySources[id] = source;
+	}
+	if (ownsBlessing(effects, 'speedpower')?.target === saved.id) abilitySources.speedboost = '天下武功，唯快不破';
 	const king = battleDragonKing(mon.side);
 	if (king?.member === saved.id && king.ability) abilitySources[king.ability] = companionSource('iris');
 	return { abilities, active, abilitySources, stats, maxhp: mon.maxhp, statSources, moves, rulebreaker: rulebreakerActive(mon),
@@ -269,7 +280,8 @@ function qualifiesPrayer(mon: Pokemon) {
 export function prepareBlessingMember(mon: Pokemon) {
 	if (!mon.battle.fantasyRogue) return;
 	const runtime = member(mon), saved = savedBlessingMember(mon);
-	const abilities = [...saved?.extraAbilities || []];
+	const state = mon.battle.fantasyRogue;
+	const abilities: string[] = saved ? assignedExtraAbilities(saved, mon.side.id === 'p1' ? state.team : state.duel?.team || [], blessingEffects(mon), false) : [];
 	for (const companion of blessingEffects(mon)?.companions || []) {
 		if (companion.member === mon.set.fantasyRogueId && companion.ability) abilities.push(companion.ability);
 	}
@@ -298,6 +310,7 @@ export function prepareBlessingMember(mon: Pokemon) {
 	}
 }
 export function blessingSwitchIn(mon: Pokemon) {
+	if (spiralActive(mon) && !mon.m.rogueSpiralParticipated) { mon.m.rogueSpiralParticipated = true; gainSpiral(mon, 12); }
 	if (!mon.battle.fantasyRogue) return;
 	if (railgunActive(mon)) {
 		mon.addVolatile('magnetrise', mon, mon.battle.format);
@@ -380,7 +393,7 @@ export function blessingKO(battle: Battle, target: Pokemon, source?: Pokemon | n
 	const lossKey = `${battle.fantasyRogue.encounterId}:${target.set.fantasyRogueId}`;
 	const defeats = side(source).psychicDefeats ||= [];
 	if (!defeats.includes(id) && !battle.fantasyRogue.blessingDefeated?.includes(id)) {
-		defeats.push(id); gainBattlePsychic(source, 4);
+		defeats.push(id); gainBattlePsychic(source, 4); gainSpiral(source, 9);
 		if (hasBlessing(source, 'hpgrowth')) {
 			member(source).bonusHP = (member(source).bonusHP || 0) + 2;
 			source.baseMaxhp += 2; source.baseStoredStats.hp += 2;
@@ -404,8 +417,9 @@ export function blessingKO(battle: Battle, target: Pokemon, source?: Pokemon | n
 	}
 }
 export function blessingProgress(battle: Battle) {
-	const progress = battle.fantasyRogue?.blessingProgress;
+	const progress = battle.fantasyRogue && (battle.fantasyRogue.blessingProgress ||= { kos: [], swords: 0, insight: {} });
 	if (progress) for (const mon of battle.p1.pokemon) {
+		if (spiralActive(mon)) (progress.spiral ||= {})[mon.set.fantasyRogueId!] = spiralPoints(mon);
 		if (hasBlessing(mon, 'insight')) progress.insight[mon.set.fantasyRogueId!] = { ...member(mon).insight };
 	}
 	if (progress) progress.psychic = battle.fantasyRogue?.blessings?.psychic;
@@ -452,6 +466,9 @@ export function blessingDamage(damage: number, target: Pokemon, source: Pokemon 
 	if (['stealthrock', 'spikes', 'gmaxsteelsurge'].includes(effect.id) && source && hasBlessing(source, 'hazards')) damage *= 2;
 	const direct = effect.effectType === 'Move' || effect.id === 'confused';
 	const runtime = member(target);
+	const robeSave = awakeningLethal(damage, target, effect), spiralSave = robeSave === undefined ? spiralLethal(damage, target) : undefined;
+	if (robeSave !== undefined) return robeSave;
+	if (spiralSave !== undefined) return spiralSave;
 	if (direct && damage >= target.hp) {
 		if (hasBlessing(target, 'insight') && runtime.insight.points >= 100) {
 			runtime.insight.points = 0; runtime.insight.gain++;
@@ -530,6 +547,8 @@ export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<Stat
 		if (key === 'spe') stat = mon.battle.modify(stat, 1 + profile.speed / 100);
 	}
 	const runtime = member(mon), team = side(mon);
+	if (key === 'atk' && spiralActive(mon)) stat *= 1 + spiralPoints(mon) / 1000;
+	if (key === 'def' || key === 'spd') stat *= robeMultiplier(mon);
 	if (key === 'spe' && hasBlessing(mon, 'speedpower')) stat *= 1.5;
 	stat *= runtime.sword[key] || 1;
 	if (key === 'atk' || key === 'spa') {
@@ -568,6 +587,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onModifySpD(spd, pokemon) { return blessingModifyStat(spd, pokemon, 'spd'); },
 	onModifySpe(spe, pokemon) { return blessingModifyStat(spe, pokemon, 'spe'); },
 	onModifyMove(move, pokemon) {
+		empowerBloodMove(pokemon, move);
 		if (move.id === 'zapcannon' && railgunActive(pokemon)) {
 			Object.assign(move, { name: '超电磁炮' });
 			if (typeof move.accuracy === 'number') move.accuracy *= 2;
@@ -627,6 +647,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onModifyDamage(damage, source, target, move) {
 		// Apply boosts before the lethal-damage hooks (Focus Sash / Sturdy). Fixed damage bypasses this event.
 		damage = rogueEventDamage(damage, target, source, move);
+		if (move.rogueBloodFactor) damage *= move.rogueBloodFactor;
 		const ordinary = hasBlessing(source, 'ordinary');
 		if (ordinary && source.side.pokemon.every(p => this.dex.species.get(savedBlessingMember(p)?.set.species || p.baseSpecies.name).bst <= 500)) {
 			damage = damage * (110 + Math.max(1, Math.floor(ordinary.floor / 50)) * 5) / 100;
@@ -679,6 +700,7 @@ export function blessingUpdate(battle: Battle) {
 	if (!battle.fantasyRogue) return;
 	for (const mon of battle.getAllActive()) if (mon.hp) {
 		reportRogueStatuses(mon);
+		awakeningUpdate(mon);
 		const modifiers = mon.set.fantasyRogueModifiers;
 		if (!modifiers?.statsType || mon.transformed) continue;
 		const eligible = mon.getTypes().includes(modifiers.statsType);

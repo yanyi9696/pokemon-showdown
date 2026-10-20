@@ -35,6 +35,7 @@ export interface RoguePokemon {
 	bondFriendshipRemainder?: number;
 	bonusHP?: number;
 	insight?: { points: number, gain: number };
+	spiral?: number;
 	extraAbilities?: string[];
 	/** A removable type emblem has its own slot, independent of the held item. */
 	emblem?: string;
@@ -91,7 +92,7 @@ export interface RogueBattleState {
 	blessingPsychicLosses?: string[];
 	blessings?: import('./rogue-blessing-data').BlessingEffects;
 	blessingProgress?: { kos: { id: string, member: string }[], swords: number, insight: Record<string, { points: number, gain: number }>,
-		psychic?: number, psychicLosses?: string[] };
+		psychic?: number, psychicLosses?: string[], spiral?: Record<string, number> };
 	/** Trusted second archive, only for the dedicated, unranked legacy duel format. */
 	duel?: { team: RoguePokemon[], boosts: StatsTable, hazards?: string[], money?: number, eventBuff?: boolean,
 		blessings?: import('./rogue-blessing-data').BlessingEffects };

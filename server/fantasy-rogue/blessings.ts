@@ -55,6 +55,9 @@ export interface BlessingReward {
 	ability?: string;
 }
 export interface RogueBlessings extends BlessingEffects {
+	awakeningBattles?: string[]; awakeningLegends?: string[]; spiralStone?: boolean;
+	/** The added Speed Boost reward has been offered, including in pre-update saves. */
+	speedBoostOffered?: boolean;
 	version: 1; levels: number; bossLevels?: number; round?: BlessingRound;
 	/** Only new adventures opt in; never insert an opening round into an existing save. */
 	beforeAdventure?: boolean;
@@ -133,6 +136,13 @@ export function normalizeBlessings(run: RogueRun) {
 		run.team.some(mon => !state.prayer!.team.includes(mon.id)))) state.prayer.changed = true;
 	// Old unclaimed all-moves rewards become the new per-member learning entitlement.
 	state.pending = state.pending.filter(reward => !(reward.kind === 'target' && reward.blessing === 'learnall'));
+	const speed = ownsBlessing(state, 'speedpower');
+	if (speed && !state.speedBoostOffered) {
+		state.speedBoostOffered = true;
+		if (!speed.target && !state.pending.some(reward => reward.blessing === speed.id && reward.kind === 'target')) {
+			state.pending.push({ id: randomUUID(), title: blessing(speed.id)!.name, kind: 'target', blessing: speed.id });
+		}
+	}
 	for (const entry of state.owned) if (entry.family === 'friend') { entry.id = 'friend'; delete entry.type; }
 	// Paid historical first/second stars remain paid after changing the thresholds.
 	for (const entry of state.owned) if (entry.family === 'starquest') {
@@ -212,6 +222,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 		if (state.owned.some(entry => entry.id === def.id)) return false;
 		if (!companionAvailable(def.family, run.team.filter(mon => !mon.egg), state) || !rivalBlessingAllowed(run, def.family)) return false;
 		if (def.floors && !def.floors.includes(run.floor)) return false;
+		if (def.family === 'killlagirl' && !(run.floor >= 150 && has('godrobe') && has('puregodrobe'))) return false;
 		if (def.emblem && state.owned.some(entry => blessing(entry.id)?.emblem)) return false;
 		if (def.family === 'coin' && run.spirit === 'zygardeorder') return false;
 		if (def.family === 'pandorasilver' && has('pandoragold') || def.family === 'pandoragold' && has('pandorasilver')) return false;
@@ -430,6 +441,10 @@ function convertFantasy(run: RogueRun, mon: RoguePokemon) {
 export function syncBlessingParty(run: RogueRun) {
 	const state = normalizeBlessings(run);
 	const has = (id: string) => ownsBlessing(state, id);
+	if (has('spiral') && run.floor >= 100 && !state.spiralStone) {
+		state.spiralStone = true; give(run, 'excadrite'); run.megaUnlocked = true;
+		(run.notices ||= []).push('【我的钻头是可以突破天际的】获得龙头地鼠进化石，超进化系统已解锁。');
+	}
 	const meloetta = strongestMember(run.team, 'Meloetta'), melmetal = strongestMember(run.team, 'Melmetal');
 	const duck = has('duck') && strongestMember(run.team, 'Psyduck|Golduck');
 	const mouseMoves = has('mousefamily') && run.team.length === 6 && run.team.every(mon => inBlessingFamily(mon.set.species, ELECTRIC_MOUSE_FAMILY)) ?
@@ -526,7 +541,17 @@ export function prepareBlessingEncounter(run: RogueRun, random: RogueRandom) {
 	const state = run.blessings, node = run.node;
 	if (!state || !node || node.blessingPrepared) return;
 	node.blessingPrepared = true;
-	if (ownsBlessing(state, 'regis') && node.kind === 'elite' && state.regis.length < 5) {
+	if (ownsBlessing(state, 'killlagirl') && node.kind === 'elite' && (state.awakeningLegends || []).length < 2) {
+		const name = ['Yveltal', 'Reshiram'].find(name => !state.awakeningLegends?.includes(name))!;
+		const set = makeEncounterSet(name, Math.min(100, Math.ceil(run.floor / 2) + 10), 31);
+		set.evs = {hp: 252, atk: 252, def: 252, spa: 252, spd: 252, spe: 252};
+		set.item = 'Life Orb'; set.nature = 'Modest';
+		set.moves = name === 'Yveltal' ? ['oblivionwing', 'darkpulse', 'heatwave', 'roost'] : ['blueflare', 'dragonpulse', 'earthpower', 'roost'];
+		node.awakeningLegend = name; node.name = '斩服少女 · ' + (name === 'Yveltal' ? '伊裴尔塔尔' : '莱希拉姆');
+		node.encounters = [{name: node.name, style: 'aggressive', catchable: false, team: [set]}];
+	}
+
+	if (!node.awakeningLegend && ownsBlessing(state, 'regis') && node.kind === 'elite' && state.regis.length < 5) {
 		const pool = regis.filter(name => !state.regis.includes(name));
 		const name = pool[random(pool.length)];
 		node.encounters = [{ name, style: 'aggressive', catchable: true,
@@ -637,7 +662,7 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 		} else prepareEvolutionUpgrade(run, random);
 	} else if ([50, 100, 150].includes(run.floor)) {
 		state.round = createBlessingRound({ floor: run.floor as BlessingFloor, spirit: run.spirit,
-			prayerFloor: state.prayer?.floor, prayerPartyChanged: state.prayer?.changed }, blessingCandidates(run, content), random);
+			prayerFloor: state.prayer?.floor, prayerPartyChanged: state.prayer?.changed, killlaReady: !!(ownsBlessing(state, 'godrobe') && ownsBlessing(state, 'puregodrobe') && run.floor >= 150 && !ownsBlessing(state, 'killlagirl')) }, blessingCandidates(run, content), random);
 	}
 	syncBlessingParty(run);
 }
@@ -646,6 +671,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	const entry: OwnedBlessing = { id: def.id, family: def.family, tier: def.tier, floor: run.floor, type: def.type, grantedBy };
 	requireRule(companionAvailable(def.family, run.team, state), '同行祝福互斥，且需要对应属性的伙伴。');
 	state.owned.push(entry);
+	if (def.family === 'speedpower') state.speedBoostOffered = true;
 	if (def.family === 'compound') state.pending.push({ id: randomUUID(), title: def.name, kind: 'compound', blessing: def.id, compound: {} });
 	const companions = Object.entries(COMPANIONS).filter(([id, c]) => c.family === def.family && id !== run.rival?.id);
 	if (companions.length === 1) grantCompanion(run, companions[0][0] as keyof typeof COMPANIONS);
@@ -668,6 +694,15 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		const coins = ({ silver: 800, gold: 1800, prismatic: 3600 })[def.tier] * Math.max(1, blessingStage(run.floor));
 		run.money += coins;
 		(run.notices ||= []).push(`${def.name}：获得${received.name}及 ${coins} 金币，赠送祝福不额外加级。`);
+	}
+	if (['spiral', 'godrobe', 'puregodrobe'].includes(def.family)) {
+		const name = def.family === 'spiral' ? 'Excadrill' : def.family === 'godrobe' ? 'Seviper' : Math.ceil(run.floor / 2) >= 25 ? 'Meowstic-F' : 'Espurr';
+		const level = Math.max(def.family === 'spiral' ? 31 : 5, Math.min(100, Math.ceil(run.floor / 2)));
+		const mon = createRoguePokemon(makeEncounterSet(name, level, randomEncounterIVs(random)), run.boosts);
+		if (def.family === 'puregodrobe') mon.set.gender = 'F';
+		if (def.family === 'spiral') { entry.target = mon.id; mon.spiral = 0; }
+		mon.joinOrder = state.nextJoin++; initializeExperience(mon);
+		gift(account, run, content, mon, def.name);
 	}
 	if (def.family === 'psychic') state.psychic = 0;
 	if (def.family === 'insight') give(run, 'maxrevive', 10);
@@ -754,6 +789,14 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 }
 export function handleBlessingCommand(account: RogueAccount, run: RogueRun, content: RogueContent, command: RogueCommand, random: RogueRandom) {
 	const state = normalizeBlessings(run);
+	if (command.action === 'inheritrobe') {
+		requireRule(!['battle', 'intro', 'story', 'complete', 'defeated', 'postgame'].includes(run.phase), '请在对战与剧情外调整神衣。');
+		requireRule(ownsBlessing(state, 'killlagirl') && ['Yveltal', 'Reshiram'].every(name => run.team.some(m => toID(m.set.species) === toID(name))), '需要两位传说伙伴均捕获并在队伍中。');
+		const kind = command.value, entry = state.owned.find(b => b.family === kind);
+		requireRule(entry && ['godrobe', 'puregodrobe'].includes(kind!), '神衣类型无效。');
+		const name = kind === 'godrobe' ? 'Yveltal' : 'Reshiram';
+		entry.target = strongestMember(run.team, name)!.id; syncBlessingParty(run); return;
+	}
 	if (command.action === 'learnbonus') {
 		const mon = run.team.find(member => !member.egg && member.id === command.member);
 		const ledger = ownsBlessing(state, 'learnall') && mon && !state.learnedMembers?.includes(mon.id) ? 'learnedMembers' :
@@ -929,8 +972,23 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 		if (item) give(run, item);
 		(run.notices ||= []).push(`带资进组：获得 ${coins} 金币、经验糖果 ${candy.slice(8).toUpperCase()} ×${run.floor < 40 ? 4 : 1}${item ? '及 ' + content.items.find(entry => entry.id === item)!.name + ' ×1' : ''}。`);
 	}
+	for (const [kind, species] of [['godrobe', 'yveltal'], ['puregodrobe', 'reshiram']]) {
+		const robe = ownsBlessing(state, kind);
+		if (robe && [...(escaped ? [] : result.defeated || []), ...result.captures || [], ...(result.captured ? [result.captured] : [])].some(m => toID('set' in m ? m.set.species : m.species).startsWith(species))) robe.completed = true;
+	}
 	// Captured partners are retained, but an escape commits no combat stacks or defeat ledgers.
 	if (escaped || state.settled.includes(result.encounterId)) return;
+	if (!(state.awakeningBattles ||= []).includes(result.encounterId)) {
+		state.awakeningBattles.push(result.encounterId);
+		for (const mon of run.team) if (result.blessingProgress?.spiral?.[mon.id] !== undefined) mon.spiral = result.blessingProgress.spiral[mon.id];
+	}
+	if (result.won && run.node?.awakeningLegend && !(state.awakeningLegends ||= []).includes(run.node.awakeningLegend)) {
+		state.awakeningLegends.push(run.node.awakeningLegend);
+		const set = structuredClone(run.node.encounters[0].team[0]);
+		set.level -= run.node.encounters[0].blessingLevels || 0;
+		const mon = createRoguePokemon(set, run.boosts); initializeExperience(mon);
+		gift(account, run, content, mon, '斩服少女 · 必定成功的捕捉（可放弃）');
+	}
 	if (result.companionZUsed && state.companionZ) state.companionZ.spent = true;
 	if (run.team.some(mon => toID(mon.set.species) === 'meltan')) {
 		const received = state.candyDefeated ||= [];

@@ -17,7 +17,7 @@ export type WildEvolutionResolver = (
 /** Called only inside the save transaction when a floor's routes are first created. */
 export function createBiomeRoutes(
 	floor: number, templates: RogueNode[], evolve: WildEvolutionResolver = wildStageAtLevel,
-	random: RogueRandom = randomInt, spirit?: string, card?: string
+	random: RogueRandom = randomInt, spirit?: string, card?: string, attractedLegends: string[] = []
 ): RogueNode[] {
 	const allExtras = unlistedFamilies();
 	return templates.map(template => {
@@ -28,15 +28,19 @@ export function createBiomeRoutes(
 		const level = Math.min(100, Math.max(3, Math.ceil(floor / 2)) + (elite ? 5 : 0) +
 			rogueWildLevelBonus(floor, spirit));
 		const extraPool = allExtras.filter(s => randomSpeciesEligible(s, level));
+		const attracted = attractedLegends.filter(s => randomSpeciesEligible(s, level));
 		const majorBranch = elite && floor >= 161;
 		const majorChance = (floor <= 180 ? 25 : 50) + (spirit === 'mew' ? 25 : 0);
 		const seen = new Map<string, number>();
 		const encounter = (bonus = false): RogueEncounter => {
+			const attraction = !bonus && attracted.length && random(100) < (elite ? 12 : 4) ? attracted[random(attracted.length)] : undefined;
 			// Draw the legendary branch once; the card only reweights species inside that branch.
 			const major = !bonus && majorBranch && random(100) < majorChance;
 			const draw = () => {
 				let name: string;
-				if (bonus) {
+				if (attraction) {
+					name = attraction;
+				} else if (bonus) {
 					name = extraPool[random(extraPool.length)];
 				} else if (major) {
 					name = MajorLegendaryPool[random(MajorLegendaryPool.length)];

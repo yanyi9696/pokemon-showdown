@@ -43,7 +43,8 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 				cmd('blessing', { value: run.blessings.stage.options[0] });
 				continue;
 			}
-			if (reward.kind === 'gift') assert.equal(reward.pokemon.set.level, 5);
+			if (reward.kind === 'gift') assert.equal(reward.pokemon.set.level,
+				reward.pokemon.set.species === 'Excadrill' ? 31 : 5, 'gift respects its required evolution stage');
 			if (reward.kind === 'compound') { cmd('blessingreward', require('../fixtures/fantasy-rogue').compoundCommand(run, reward)); continue; }
 			cmd('blessingreward', { member: reward.id, value: reward.kind === 'gift' ?
 				run.team.length < 6 ? 'join' : 'release' : reward.options[0] });
@@ -76,7 +77,8 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	it('offers all migrated opening-only blessings and excludes other restricted floors', () => {
 		cmd('start', { starters: ['bulbasaur'] });
 		const run = account().run, eligible = new Set(blessingCandidates(run, content).map(b => b.id));
-		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound']);
+		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound', 'killlagirl']);
+		assert(!eligible.has('killlagirl'), 'requires both robes and floor 150');
 		for (const def of ROGUE_BLESSINGS) {
 			if (companionFamily(def.family)) {
 				assert.equal(eligible.has(def.id), ['companionai', 'companionband', 'companionliko'].includes(def.family), def.name);
@@ -94,7 +96,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 			}
 		}
 	});
-	for (const def of ROGUE_BLESSINGS.filter(b => (!b.floors || b.floors.includes(1)) && !['singer', 'dancer', 'swords', 'topclearmind', 'dragonking'].includes(b.family))) {
+	for (const def of ROGUE_BLESSINGS.filter(b => (!b.floors || b.floors.includes(1)) && !['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'killlagirl'].includes(b.family))) {
 		it(`claims the opening option ${def.id}, including any follow-up rewards`, () => {
 			cmd('start', { starters: ['bulbasaur'] });
 			if (def.family === 'overtime' && !overtimeGiftPool(account().run, content, def.type).length) {

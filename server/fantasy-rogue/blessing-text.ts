@@ -63,6 +63,8 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		if (types.length === 2) notes.push(`队内分别有${types.map(t => BLESSING_TYPES[t] + '系').join('与')}伙伴时更容易出现`);
 	}
 	const conditions: Record<string, string[]> = {
+		killlagirl: ['第 150 层及以后', '需同时拥有【神衣鲜血】和【神衣纯洁】；出现彩色选项时保证包含本祝福'],
+		speedpower: ['队伍需有尚未拥有【加速】的伙伴'],
 		medic: ['与【进球休息】互斥'], restinball: ['与【自带医疗队】互斥'],
 		compound: ['队伍需有完整进化链、最终进化型种族值总和不超过 500 的伙伴', '已最终进化的伙伴也可选择；每名伙伴限用一次'],
 		singer: ['队伍需有【美洛耶塔】', '与【舞！舞！舞！】互斥'],

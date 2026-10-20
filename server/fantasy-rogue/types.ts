@@ -55,6 +55,7 @@ export interface RogueNode {
 	rewardScene?: import('./reward-scenes').RewardScene;
 	event?: import('./events').RogueEvent;
 	blessingPrepared?: boolean;
+	awakeningLegend?: string;
 	regiBoss?: boolean;
 	id: string;
 	name: string;
@@ -175,7 +176,7 @@ export interface RogueRun extends RogueInventory {
 	blessingCheckpoint?: import('./blessings').RogueBlessings;
 	owner?: { id: string, name: string };
 	story?: { stage: RogueStoryStage, page: number, skip: boolean, canSkip: boolean };
-	dialogue?: { key: string, pages: import('./narrative').NarrativePage[], resume: 'ready' | 'event' | 'settlement' };
+	dialogue?: { key: string, pages: import('./narrative').NarrativePage[], resume: 'ready' | 'event' | 'settlement' | 'advance' };
 	rematches?: import('./companion-rematches').CompanionRematch[];
 	police?: import('./police-events').PoliceProgress;
 	/** Terminal receipt stays saved until explicitly acknowledged; distinct from a retryable challenge loss. */
@@ -276,7 +277,7 @@ export interface RogueCommand {
 		'shopchallenge' | 'event' | 'companion' | 'previewresult' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
-		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'learnbonus';
+		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus';
 	useSpirit?: boolean;
 	/** A previously cleared spirit; validated against the account ledger on the server. */
 	selectedSpirit?: string;

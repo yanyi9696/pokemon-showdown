@@ -1,5 +1,10 @@
 /** Species rosters from the named original encounters; level/moves use the tower's progression. */
 export const POLICE_REGIONS = {
+	hoennaqua: { name: '丰缘', group: '海洋队', grunt: 'aqua', boss: 'archie', bossName: '水梧桐',
+		grunts: [['Poochyena', 'Carvanha'], ['Mightyena', 'Golbat']], team: ['Mightyena', 'Muk', 'Crobat', 'Sharpedo'],
+		source: '阿尔法蓝宝石·海洋队基地队员、海底洞窟水梧桐', url: 'https://www.serebii.net/omegarubyalphasapphire/team.shtml',
+		challenge: '原来就是你让我的手下改了航向！来吧，让我看看你守护伙伴的决心有多强！',
+		approval: '哈哈，好样的！大海装得下不同的梦想。带上这些补给，继续向前吧！' },
 	kanto: { name: '关都', group: '火箭队', grunt: 'rocket', boss: 'giovanni', bossName: '坂木',
 		grunts: [['Koffing', 'Zubat'], ['Rattata', 'Raticate', 'Drowzee']], team: ['Onix', 'Rhyhorn', 'Kangaskhan'],
 		source: '红／绿／蓝·火箭队基地 B4F／B3F、坂木', url: 'https://www.serebii.net/pokearth/kanto/1st/rockethideout.shtml',
@@ -53,3 +58,13 @@ export const POLICE_REGIONS = {
 		approval: '好一段合奏！他们闹事的部分，我会好好说明白。收下这份谢礼，下次再一起对战。' },
 };
 export type PoliceRegion = keyof typeof POLICE_REGIONS;
+
+/** Original postgame rematch teams, ordered by the initial Starfall Street challenge levels. */
+export const STAR_BOSSES = [
+	{ id: 'giacomo', name: '皮拿', level: 21, team: ['Cacturne', 'Honchkrow', 'Mabosstiff', 'Krookodile', 'Kingambit'], line: '队员的做法不对。但在收拾残局之前，我想先听听你们的节拍。' },
+	{ id: 'mela', name: '梅洛可', level: 27, team: ['Torkoal', 'Coalossal', 'Houndoom', 'Arcanine', 'Armarouge'], line: '听说你很强？少废话，跟我打一场！至于他们乱来的事，我会让他们道歉。' },
+	{ id: 'atticus', name: '秋明', level: 33, team: ['Skuntank', 'Muk', 'Dragalge', 'Toxapex', 'Revavroom'], line: '阁下接连回应吾友的挑战，想必身怀绝技。在下亦愿讨教。' },
+	{ id: 'ortega', name: '奥尔迪加', level: 51, team: ['Klefki', 'Azumarill', 'Wigglytuff', 'Hatterene', 'Dachsbun'], line: '我可不会因为你赢了他们就客气。队伍可是我认真准备的，别小看它们！' },
+	{ id: 'eri', name: '枇琶', level: 56, team: ['Primeape', 'Toxicroak', 'Passimian', 'Lucario', 'Annihilape'], line: '他们都是我重要的朋友。谢谢你没有伤害他们，这一场让我认真回应你！' },
+	{ id: 'penny', name: '牡丹', level: 63, team: ['Umbreon', 'Flareon', 'Vaporeon', 'Leafeon', 'Jolteon', 'Sylveon'], line: '……仙后就是我。我一直没能开口，对不起。这一次不会躲在屏幕后面，我和布布们一起面对你。' },
+];

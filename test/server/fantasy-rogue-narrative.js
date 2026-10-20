@@ -69,6 +69,20 @@ describe('Fantasy Rogue narrative settlements and terminal recovery', function (
 		cmd('start', { starters: ['bulbasaur'] }); cmd('select', { value: 'grass' });
 	});
 	afterEach(() => store.close());
+	it('resumes an expiring rival farewell after reconnect without repeating the floor or gift', () => {
+		change(r => { r.rival = {id: 'kieran', completed: 3, affection: 7, lastFloor: 1, temporaryUntil: 1}; });
+		config.story = true; engine = new RogueEngine(store, config, () => 0);
+		for (let encounter = 0; encounter < 2; encounter++) { cmd('battle'); finish(true); }
+		cmd('battle'); const duplicate = finish(true);
+		assert.equal(run().floor, 1); assert.equal(run().phase, 'story');
+		assert.equal(run().dialogue.resume, 'advance'); assert.equal(run().bag.dragonfang, 1);
+		const money = run().money, key = storyView(account(), true, false).key;
+		engine = new RogueEngine(store, config, () => 0); engine.migrate(user);
+		assert.equal(storyView(account(), true, false).key, key);
+		duplicate(); skip(); assert.equal(run().floor, 2); assert.equal(run().bag.dragonfang, 1);
+		assert.equal(run().money, money); assert.equal(run().rival.affection, 7);
+		assert.throws(() => cmd('storyskip', {value: key})); assert.equal(run().floor, 2);
+	});
 	it('heals a boss winner before dialogue, survives reconnect and awards the floor only once', () => {
 		boss(); const duplicate = finish(true);
 		assert.equal(run().phase, 'story'); assert.equal(run().dialogue.pages[0].expression, 'approval');
@@ -128,9 +142,10 @@ describe('Fantasy Rogue narrative settlements and terminal recovery', function (
 			change(r => { delete r.pendingCapture; delete r.captureResume; });
 		}
 	});
-	it('offers three distinct mandatory regions, runs two fights and delays the independent leader encounter', () => {
+	it('offers three mandatory regions and delays each reinforcement round before the leader', () => {
 		police(); assert.equal(run().phase, 'story'); skip();
-		assert.deepEqual(run().node.encounters.map(e => e.team.map(s => s.species)), POLICE_REGIONS.kanto.grunts);
+		const lower = require('../../dist/server/fantasy-rogue/evolution').lowerToEligibleStage;
+		assert.deepEqual(run().node.encounters.map(e => e.team.map(s => s.species)), POLICE_REGIONS.kanto.grunts.map(t => t.map(s => lower(s, 15))));
 		assert(run().node.encounters.every(e => e.trainer.avatar === 'rocketgrunt'));
 		assert(run().node.encounters.every(e => !e.catchable)); assert(!eventView(run()).options.length);
 		cmd('battle'); finish(true); assert.equal(run().encounter, 1);
@@ -144,8 +159,17 @@ describe('Fantasy Rogue narrative settlements and terminal recovery', function (
 			assert(beginPoliceEncounter(r, () => 0));
 		});
 		engine.migrate(user); skip(); assert.equal(run().node.event.id, 'policerevenge');
-		assert.deepEqual(run().node.encounters[0].team.map(s => s.species), POLICE_REGIONS.kanto.team);
-		cmd('battle'); finish(true); assert.equal(run().police.regions.kanto.status, 'cleared');
+		for (let round = 1; round <= 3; round++) {
+			assert.equal(run().node.encounters.length, round < 3 ? round + 2 : 1);
+			if (round === 3) assert.equal(run().node.encounters[0].trainer.id, POLICE_REGIONS.kanto.boss);
+			const count = run().node.encounters.length;
+			for (let fight = 0; fight < count; fight++) { cmd('battle'); finish(true); skip(); }
+			if (round < 3) {
+				assert.equal(run().police.regions.kanto.status, 'pending');
+				change(r => { r.floor += 8; assert(beginPoliceEncounter(r, () => 0)); }); engine.migrate(user); skip();
+			}
+		}
+		assert.equal(run().police.regions.kanto.status, 'cleared');
 	});
 	it('lets a companion leader intervene from the left, paying Jenny and apology gifts without revenge', () => {
 		police('alola', 'guzma');

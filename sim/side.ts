@@ -1,3 +1,4 @@
+import { bloodRequest } from './fantasy-rogue-awakening';
 /**
  * Simulator Side
  * Pokemon Showdown - http://pokemonshowdown.com/
@@ -35,6 +36,7 @@ import {
 /** A single action that can be chosen. Choices will have one Action for each pokemon. */
 export interface ChosenAction {
 	rogueEeveeZ?: boolean;
+	rogueBlood?: boolean;
 	choice: 'move' | 'switch' | 'instaswitch' | 'revivalblessing' | 'team' | 'shift' | 'pass' | 'rogueball';// action type
 	pokemon?: Pokemon; // the pokemon doing the action
 	targetLoc?: number; // relative location of the target to pokemon (move action only)
@@ -326,7 +328,7 @@ export class Side {
 				if (action.zmove) details += ` zmove`;
 				if (action.maxMove) details += ` dynamax`;
 				if (action.terastallize) details += ` terastallize`;
-				return `${action.rogueEeveeZ ? 'rogueeeveez ' : ''}move ${action.moveid}${details}`;
+				return `${action.rogueBlood ? 'rogueblood ' : action.rogueEeveeZ ? 'rogueeeveez ' : ''}move ${action.moveid}${details}`;
 			case 'switch':
 			case 'instaswitch':
 			case 'revivalblessing':
@@ -515,11 +517,12 @@ export class Side {
 		const eeveeZ = this.active.map(mon => eeveeZAvailable(mon));
 		const companionZ = this.active.map(mon => companionZRequest(mon));
 		const dragonKing = dragonKingRequest(this);
-		const payload = rogue || dragonKing || psychic !== undefined || eeveeZ.some(Boolean) || companionZ.some(Boolean) ? { ...update, fantasyRogue: {
+		const blood = this.active.map(mon => bloodRequest(mon));
+		const payload = rogue || dragonKing || psychic !== undefined || eeveeZ.some(Boolean) || companionZ.some(Boolean) || blood.some(Boolean) ? { ...update, fantasyRogue: {
 			companionZ,
 			dragonKing,
 			psychic,
-			eeveeZ,
+			eeveeZ, blood,
 			catchable: !!rogue && rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
 			balls: (rogue?.balls || []).map(ball => ({
 				id: ball.id, name: ball.name, count: rogue!.bag[ball.id] || 0,
@@ -1120,6 +1123,11 @@ export class Side {
 		for (const choiceString of choiceStrings) {
 			let [choiceType, data] = Utils.splitFirst(choiceString.trim(), ' ');
 			data = data.trim();
+			const bloodBonus = choiceType === 'rogueblood';
+			if (bloodBonus) {
+				if (!data.startsWith('move ') || !bloodRequest(this.active[this.getChoiceIndex()])?.available) return this.emitChoiceError('当前无法发动神衣鲜血。');
+				choiceType = 'move'; data = data.slice(5).trim();
+			}
 			const eeveeBonus = choiceType === 'rogueeeveez';
 			if (eeveeBonus) {
 				if (!data.startsWith('move ') || !chooseRogueEeveeZ(this)) return this.emitChoiceError('请同时选择本回合要使用的招式。');
@@ -1200,6 +1208,7 @@ export class Side {
 				}
 				if (!this.chooseMove(data, targetLoc, event)) return false;
 				if (eeveeBonus) this.choice.actions[this.choice.actions.length - 1].rogueEeveeZ = true;
+				if (bloodBonus) this.choice.actions[this.choice.actions.length - 1].rogueBlood = true;
 				break;
 			case 'switch':
 				this.chooseSwitch(data);

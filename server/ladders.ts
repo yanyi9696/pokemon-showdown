@@ -16,6 +16,7 @@ const SECONDS = 1000;
 const PERIODIC_MATCH_INTERVAL = 60 * SECONDS;
 
 import type { ChallengeType } from './room-battle';
+import { isRogueFormat } from '../sim/fantasy-rogue';
 import { BattleReady, BattleChallenge, GameChallenge, BattleInvite, challenges } from './ladders-challenges';
 
 /**
@@ -64,7 +65,7 @@ class Ladder extends LadderStore {
 
 		try {
 			this.formatid = Dex.formats.validate(this.formatid);
-			if (Dex.formats.get(this.formatid).id === 'gen9fantasyrogue') {
+			if (isRogueFormat(Dex.formats.get(this.formatid).id)) {
 				onError('幻想杯肉鸽请从首页的专用入口进入，不能导入队伍发起普通挑战。');
 				return null;
 			}

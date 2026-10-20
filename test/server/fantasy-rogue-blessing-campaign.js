@@ -103,7 +103,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		assert(!saved.blessings.round, 'the restored second pick must finish the round');
 	});
 	for (const def of ROGUE_BLESSINGS) it(`grants and serializes ${def.id} with its required reward flow`, () => {
-		const floor = def.floors?.[0] || (def.family === 'overtime' ? 150 : 50), { run, account } = setup(floor);
+		const floor = def.floors?.[0] || (['overtime', 'killlagirl'].includes(def.family) ? 150 : 50), { run, account } = setup(floor);
 		prepareCompanionParty(run, def.family);
 		if (def.family === 'typeevolution') {
 			const species = dex.species.all().find(s => s.num > 0 && !s.battleOnly && s.types.includes(def.type));
@@ -114,6 +114,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		if (def.family === 'railgun') run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 50), run.boosts);
 		if (def.family === 'rulebreaker') run.team[0].extraAbilities = ['moldbreaker'];
 		if (def.family === 'compound') run.team[0] = createRoguePokemon(set('Paras', 'Effect Spore', 50), run.boosts);
+		if (def.family === 'killlagirl') run.blessings.owned.push(...['godrobe', 'puregodrobe'].map(id => ({...blessing(id), floor: 100})));
 		assert(b.blessingCandidates(run, content).some(entry => entry.id === def.id));
 		choose(account, run, def);
 		assert(run.blessings.owned.some(entry => entry.id === def.id));

@@ -18,6 +18,7 @@ The column value will be ignored for repeat sections.
 */
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
+import { drainPureRobe } from '../sim/fantasy-rogue-awakening';
 import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, startRogueArea } from '../sim/fantasy-rogue';
 import { isRogueBoss, megaRogueBoss } from '../sim/rogue-bosses';
 import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
@@ -38,7 +39,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onBegin() { initializeRogueBattle(this); },
 		onBattleStart() { startRogueArea(this); startRogueSpirit(this); },
 		onResidualOrder: 100,
-		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
+		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
 			blessingHit(damage, target, source, move);
@@ -81,7 +82,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 		onBattleStart() { startRogueSpirit(this); },
 		onResidualOrder: 100,
-		onResidual() { resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
+		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
 			blessingHit(damage, target, source, move);

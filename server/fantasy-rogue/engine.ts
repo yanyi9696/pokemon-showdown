@@ -1,5 +1,5 @@
-import { beginRival, rivalRoutes, rivalActive, rivalTeam, expireRival } from './rivals';
-import { RIVALS } from './rival-data';
+import { beginRival, rivalRoutes, rivalActive, rivalTeam, expireRival, activeRivalTraveller } from './rivals';
+import { prepareTravellingTrainer } from './travelling-trainers';
 import { beginTeraSolo } from './expedition-events';
 import { hatchEggs } from './eggs';
 import { rollRoutes, normalizeRouteHistory } from './routes';
@@ -259,7 +259,8 @@ export class RogueEngine {
 		if (this.content.blessings) templates = blessingRouteTemplates(run, templates);
 		if (this.content.events) templates = rivalRoutes(run, templates, this.random);
 		run.choices = this.content.biomeEncounters ?
-			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard) : structuredClone(templates);
+			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard,
+				(run.blessings?.owned || []).flatMap(b => b.family === 'godrobe' ? ['Yveltal'] : b.family === 'puregodrobe' ? ['Reshiram'] : [])) : structuredClone(templates);
 		if (this.content.wildTreasures) {
 			for (const node of run.choices) prepareEconomy(node, run.floor, this.random);
 		}
@@ -293,6 +294,7 @@ export class RogueEngine {
 			delete run.choices; return;
 		}
 		if (node.kind === 'trainer' && this.content?.events && !beginTeraSolo(run, this.random)) beginExclusiveEncounter(run, this.random);
+		if (this.content?.events) prepareTravellingTrainer(run, this.random);
 		const announced = run.bossPreviews?.[run.floor];
 		if (announced) for (const encounter of announced.encounters) {
 			const trainer = encounter.trainer;
@@ -329,7 +331,8 @@ export class RogueEngine {
 		}
 		if (node.kind === 'trainer' && !run.node.event && rivalActive(run) && this.random(100) < 40) {
 			for (const encounter of run.node.encounters) if (encounter.team.length >= 2) {
-				encounter.cooperative = { id: run.rival!.id, name: RIVALS[run.rival!.id].name, team: rivalTeam(run, Math.min(100, Math.max(5, Math.ceil(run.floor / 2))), 3) };
+				const traveller = activeRivalTraveller(run)!;
+				encounter.cooperative = { id: traveller.id, name: traveller.name, team: rivalTeam(run, Math.min(100, Math.max(5, Math.ceil(run.floor / 2))), 3, true) };
 				encounter.catchable = false;
 			}
 		}
@@ -393,9 +396,9 @@ export class RogueEngine {
 			run.story = { stage: 'leaguebriefing', page: 0, skip: false, canSkip: true };
 			return;
 		}
+		if (expireRival(run, run.floor + 1)) { this.presentNarrative(run); return; }
 		run.floor++;
 		hatchEggs(account, run, this.configured());
-		expireRival(run);
 		this.enterFloor(run);
 		deliverCompanionPickup(run, this.random);
 	}
@@ -583,8 +586,11 @@ export class RogueEngine {
 							delete run.story;
 							if (view.stage === 'interlude') {
 								const resume = run.dialogue!.resume; delete run.dialogue;
-								run.phase = resume;
-								if (resume === 'settlement') this.finishSettlement(account, run);
+								if (resume === 'advance') this.advanceCompletedFloor(account, run);
+								else {
+									run.phase = resume;
+									if (resume === 'settlement') this.finishSettlement(account, run);
+								}
 							}
 							if (view.stage === 'portal') this.enterFloor(run);
 							if (view.stage === 'gymgift' || view.stage === 'bossintro') rememberBossDialogue(run);
@@ -721,7 +727,7 @@ export class RogueEngine {
 			requireRule(run.preview?.stage !== 'result' || ['previewresult', 'abandon'].includes(command.action),
 				'请先接受预演结果，或选择亲自挑战。');
 			if (['blessing', 'blessingrefresh', 'blessingreward', 'fantasize', 'meltanevolve',
-				'swordreward', 'exchangeshards', 'settera', 'learnbonus'].includes(command.action)) {
+				'swordreward', 'exchangeshards', 'settera', 'inheritrobe', 'learnbonus'].includes(command.action)) {
 				requireRule(this.content?.blessings || (command.action === 'blessingreward' && run.blessings?.beforeGym),
 					'祝福系统尚未开放。');
 				handleBlessingCommand(account, run, this.configured(), command, this.random);

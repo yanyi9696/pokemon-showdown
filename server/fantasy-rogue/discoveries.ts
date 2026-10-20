@@ -27,6 +27,7 @@ export function rogueDiscoveries(account: RogueAccount) {
 	const trainers = new Set([
 		...(account.discoveries?.trainers || []), ...(run?.rival ? [run.rival.id] : []),
 		...cards.flatMap(card => card.snapshot.rival ? [card.snapshot.rival.id] : []),
+		...cards.flatMap(card => card.snapshot.rival?.carmine?.permanent ? ['carmine'] : []),
 		...(run?.blessings?.companions || []).map(c => c.id),
 		...cards.flatMap(card => (card.snapshot.blessingEffects?.companions || []).map(c => c.id)),
 		...(run?.seenBossDialogues || []).map(key => key.split(':').pop()!).filter(Boolean),

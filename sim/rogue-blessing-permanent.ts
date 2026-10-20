@@ -1,3 +1,4 @@
+import { robeMember } from './rogue-awakening';
 import { Dex, toID } from './dex';
 import type { RoguePokemon } from './fantasy-rogue';
 import { emblemType, ownsBlessing, type BlessingEffects } from './rogue-blessing-data';
@@ -6,7 +7,7 @@ export const DRAGON_KING_ABILITIES = ['longzhihuxi', 'drizzle'] as const;
 export type DragonKingAbility = typeof DRAGON_KING_ABILITIES[number];
 export interface DragonKing { member: string; ability?: DragonKingAbility }
 export interface RogueTonics { wine?: boolean; cephalosporin?: boolean; poison?: boolean }
-export const TARGET_BLESSING_ABILITIES: Record<string, string> = { hazards: 'yanbuzhen', toxic: 'merciless' };
+export const TARGET_BLESSING_ABILITIES: Record<string, string> = { hazards: 'yanbuzhen', toxic: 'merciless', speedpower: 'speedboost' };
 export const POWER_CHOICE_ABILITIES = ['hugepower', 'roguegreatmage'];
 export function strongestBlessingMember(team: RoguePokemon[], baseSpecies: string) {
 	const sum = (stats: Partial<StatsTable>) => Object.values(stats || {}).reduce((n, value) => n + (value || 0), 0);
@@ -25,6 +26,8 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 		if (ownsBlessing(effects, family)?.target === mon.id) add(ability);
 	}
 	if (team.includes(mon)) {
+		if (robeMember(team, effects, 'godrobe')?.id === mon.id) add('sharpness', 'jiqususheng');
+		if (robeMember(team, effects, 'puregodrobe')?.id === mon.id) add('stalwart', 'sheerforce');
 		for (const companion of effects?.companions || []) {
 			if (companion.member === mon.id && companion.ability) add(companion.ability);
 		}

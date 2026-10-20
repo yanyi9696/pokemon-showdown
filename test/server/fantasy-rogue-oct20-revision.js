@@ -159,7 +159,8 @@ describe('Fantasy Rogue October 20 regression', () => {
 		const r = run(1), nodes = [{id: 'wild'}];
 		assert.equal(rivalRoutes(r, nodes, () => 0)[0].id, 'rival');
 		r.floor = 21; assert.equal(rivalRoutes(r, nodes, () => 0)[0].id, 'wild');
-		r.floor = 1; beginRival(r, () => 0); assert.equal(r.rival.id, 'marnie');
+		r.floor = 1; beginRival(r, () => 0); assert.equal(r.rival.id, 'kieran');
+		r.rival.id = 'marnie';
 		assert(rivalBlessingAllowed(r, 'companionband')); // Roxie remains selectable.
 		r.rival.id = 'lana'; assert(!rivalBlessingAllowed(r, 'companionlana'));
 		settleRival(r, () => 0, false); assert.equal(r.rival.completed, 1); assert.equal(r.rival.affection, 0);
@@ -245,9 +246,10 @@ describe('Fantasy Rogue October 20 regression', () => {
 			const saved = structuredClone(current()), archive = {};
 			saved.owner = {id: 'rivaljourney', name: '旅人'};
 			require('../../dist/server/fantasy-rogue/legacy').recordClear(archive, saved);
-			assert.equal(archive.cards[0].snapshot.rival.name, '玛俐');
+			assert.equal(archive.cards[0].snapshot.rival.name, '乌栗');
 			assert(archive.cards[0].snapshot.rival.permanent);
-			assert(require('../../dist/server/fantasy-rogue/discoveries').rogueDiscoveries(archive).trainers.includes('marnie'));
+			assert(archive.cards[0].snapshot.rival.carmine.permanent);
+			assert(require('../../dist/server/fantasy-rogue/discoveries').rogueDiscoveries(archive).trainers.includes('kieran'));
 		} finally { store.close(); }
 	});
 });

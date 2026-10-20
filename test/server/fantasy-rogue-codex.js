@@ -43,7 +43,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert.equal(events.filter(e => e.category === 'reward').length, 6);
 		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 		const people = events.filter(e => ['companion', 'trainer'].includes(e.category));
-		assert.equal(people.length, 56);
+		assert.equal(people.length, 89);
 		for (const role of ['companion', 'gym', 'elitefour', 'champion', 'antagonist', 'other']) {
 			assert(people.some(e => e.roles.includes(role)), role);
 		}

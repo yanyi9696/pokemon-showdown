@@ -6,6 +6,7 @@ export type BlessingRandom = (max: number) => number;
 
 export interface BlessingSelectionContext {
 	floor: BlessingFloor;
+	killlaReady?: boolean;
 	spirit?: string;
 	/** The floor on which Gathering Wishes was actually acquired, not the current floor. */
 	prayerFloor?: BlessingFloor;
@@ -31,9 +32,9 @@ export function blessingQualityWeights(context: BlessingSelectionContext): Recor
 		context.spirit === 'necrozma' ? 'mixed' : undefined;
 	if (locked) return { silver: 0, gold: 0, prismatic: 0, mixed: 0, [locked]: 100 };
 	// Two offered cards cannot represent all three tiers. Keep Jirachi's original quality rolls.
-	if (context.spirit === 'jirachi') return hasPrayerQualityBonus(context) ?
+	if (context.spirit === 'jirachi') return context.killlaReady ? { silver: 32, gold: 28, prismatic: 40, mixed: 0 } : hasPrayerQualityBonus(context) ?
 		{ silver: 25, gold: 60, prismatic: 15, mixed: 0 } : { silver: 40, gold: 35, prismatic: 25, mixed: 0 };
-	return { ...(hasPrayerQualityBonus(context) ? PRAYER_BLESSING_WEIGHTS : NORMAL_BLESSING_WEIGHTS) };
+	return context.killlaReady ? { silver: 19, gold: 21, prismatic: 32, mixed: 28 } : { ...(hasPrayerQualityBonus(context) ? PRAYER_BLESSING_WEIGHTS : NORMAL_BLESSING_WEIGHTS) };
 }
 
 export function drawBlessingTier(context: BlessingSelectionContext, random: BlessingRandom): BlessingRoundTier {
@@ -147,9 +148,10 @@ export function createBlessingRound(
 		if (guarantees && !guaranteed) {
 			throw new Error('本轮祈愿所需的 Top Clear Mind 尚未配置。');
 		}
-		const candidate = guaranteed || drawCandidate(candidates, round, tier, excluded, random);
+		const awakening = context.killlaReady && tier === 'prismatic' && !excluded.has('killlagirl') ? candidates.find(c => c.id === 'killlagirl') : undefined;
+		const candidate = awakening || guaranteed || drawCandidate(candidates, round, tier, excluded, random);
 		excluded.add(candidate.id);
-		round.options.push({ id: candidate.id, tier, refreshes: context.spirit === 'victini' ? 2 : 1, chosen: false });
+		round.options.push({ id: candidate.id, tier, refreshes: awakening ? 0 : context.spirit === 'victini' ? 2 : 1, chosen: false });
 		round.familiesSeen.push(candidate.family);
 	}
 	return round;
@@ -162,6 +164,9 @@ export function refreshBlessingOption(
 	if (!Number.isInteger(slot) || slot < 0 || slot >= saved.options.length || !saved.remaining ||
 		saved.options[slot].chosen || saved.options[slot].refreshes < 1) throw new Error('这个祝福位置不能刷新。');
 	const round = structuredClone(saved);
+	if (round.options[slot].id === 'killlagirl' && candidates.some(candidate => candidate.id === 'killlagirl')) {
+		throw new Error('这项必定出现的祝福无需刷新。');
+	}
 	const next = drawCandidate(
 		candidates, round, blessingSlotTier(round, slot), new Set(round.options.map(option => option.id)), random
 	);

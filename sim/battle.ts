@@ -2802,6 +2802,7 @@ export class Battle {
 		case 'move':
 			if (!action.pokemon.isActive) return false;
 			if (action.pokemon.fainted) return false;
+			if (action.rogueBlood) action.pokemon.m.rogueBloodPending = this.turn;
 			if (action.rogueEeveeZ) this.actions.useMove('rogueevoboost', action.pokemon, { target: action.pokemon });
 			this.actions.runMove(action.move, action.pokemon, action.targetLoc, {
 				sourceEffect: action.sourceEffect, zMove: action.zmove,
