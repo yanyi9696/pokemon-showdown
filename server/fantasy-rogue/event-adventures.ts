@@ -69,7 +69,7 @@ function beginFight(run: RogueRun, team: PokemonSet[], text: string, bandits = f
 }
 function fishingReward(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom) {
 	const event = run.node!.event!, landed = event.fishing!.hits;
-	const companion = run.blessings?.companions?.some(c => c.id === 'lana');
+	const companion = run.blessings?.companions?.some(c => !c.away && c.id === 'lana');
 	const hits = landed ? Math.min(7, landed + (companion ? 1 : 0)) : 0;
 	if (landed && companion) (run.notices ||= []).push('【同行训练家 - 水莲】这次钓鱼的收获提高了一档。');
 	// The minigame supplies its own payout, including the zero-hit consolation.

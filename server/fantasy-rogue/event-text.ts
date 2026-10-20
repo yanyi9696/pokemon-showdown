@@ -2,6 +2,7 @@
 import { EXPEDITION_NAMES, EXPEDITION_OPENINGS } from './expedition-text';
 import { SERVICE_TEXT } from './event-service-text';
 export const EVENT_NAMES = {
+	travellermeeting: '旅途同行',
 	...EXPEDITION_NAMES, rivalstory: '劲敌奇遇',
 	companionrematch: '再来一场，好吗？', policeassist: '君莎的治安协助', policerevenge: '未散的风波',
 	honeymoon: '度蜜月的提案', honeymoonreturn: '度蜜月的提案·归程',
@@ -14,6 +15,7 @@ export const EVENT_NAMES = {
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
 	return {
+		travellermeeting: ['转过道路的弯角，一位训练家正在照顾自己的伙伴。你们打过招呼，聊起各自的旅途。'],
 		...EXPEDITION_OPENINGS, rivalstory: ['熟悉的身影出现在前方。属于你们的旅途故事，又翻开了新的一页。'],		companionrematch: ['同行伙伴提起了上一次切磋，邀请你检验这一路的进步。'],
 		policeassist: ['君莎正安抚受惊的旅人。几处道路有人闹事，她诚恳地请你帮忙，并把三个地区标在地图上。'],
 		policerevenge: ['前些日子那些队员口中的领头人，终于循着消息找到了你。'],

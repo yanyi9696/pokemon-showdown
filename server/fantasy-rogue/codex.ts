@@ -1,5 +1,7 @@
 import { trainerCodex } from './trainer-codex';
-import { RIVAL_SCENES } from './rival-data';
+import { createHash } from 'crypto';
+import { RIVALS, RIVAL_SCENES } from './rival-data';
+import { BEGINNER_GUIDE } from './beginner-guide';
 import { Dex } from '../../sim/dex';
 import { REWARD_SCENES } from './reward-scenes';
 import { ROGUE_BLESSINGS, FANTASY_BLESSING_ITEMS } from '../../sim/rogue-blessing-data';
@@ -16,7 +18,7 @@ const INTRO = [
 	{ title: '这座塔怎么玩？', text: '选择初始伙伴，带着偏爱卡片向 200 层前进。每层挑选路线，在战斗、捕捉、事件与补给间作出选择。打败首领、收集祝福，逐步养成自己的队伍。' },
 	{ title: '队伍与资源', text: '右侧“队伍及背包”可以查看伙伴、换招、装备道具和使用补给。HP、PP 与异常状态会带到下一场；野怪掉落的贵重物品要到商店换金币，训练家战斗则发放奖金。' },
 	{ title: '祝福与塔灵', text: '第一层开战前，以及通关 50、100、150 层后各选择一轮祝福，共四轮；基拉祈每轮可选两项。每张卡可独立刷新。黄金和棱彩按所选轮次累计提高对手等级，固定首领加成高于普通遭遇；开局祝福不提高普通遭遇等级。塔灵默认随机；使用某个塔灵通关 200 层后，永久解锁手动选择该塔灵，未通关塔灵仍在随机池中。' },
-	{ title: '战前准备与队伍成长', text: '普通战斗区域野怪击倒经验提升 37.5%，符合结算条件的存活后备伙伴仍获得一半战斗经验。休整时，黑袍老人会介绍下一层首领，并让你三选一领取仅用于该首领战的增益卡。精英与遭遇提供经验糖果，正面事件以金币和其他奖励为主。十八种属性提升道具从第 49 层休整商店开放；糖果 S／M／L／XL 分别从第 30／50／100／150 层开放。' },
+	{ title: '战前准备与队伍成长', text: '战斗经验已全局提高，普通战斗区域还有额外经验加成；符合结算条件的存活后备伙伴仍获得一半战斗经验。休整时，黑袍老人会介绍下一层首领，并让你三选一领取仅用于该首领战的增益卡。精英与遭遇提供经验糖果，正面事件提供金币、物资与永久训练等奖励。十八种属性提升道具从第 49 层休整商店开放；糖果 S／M／L／XL 分别从第 30／50／100／150 层开放。' },
 	{ title: '逃跑与急救', text: '所有肉鸽战斗均可逃跑，保留 HP、PP、异常状态及道具损耗，调整队伍后重打当前对手。逃跑不发胜利奖励、不触发自动急救。战败后全队倒下且没有复活道具时，会自动支付随层数增加的急救费；余额不足则不扣款、不复活。记得提前购买补给。' },
 	{ title: '下一次会更强', text: '捕捉会解锁初始伙伴与可指定的资质；击败首领获得局外成长点。无塔灵通关可解锁塔灵。通关后可以收藏队伍卡，展示成果，并用相同塔灵的通关队伍约战。' },
 ];
@@ -56,7 +58,7 @@ function buildFantasyGuide() {
 			'特定幻想宝可梦携带适配纯晶时，还能进行气场爆发；气场爆发占用本场 Z 招式机会，随后无法再释放 Z 招式。' },
 		{ id: 'typegems', name: '十八属性宝石', text: '使用对应属性的招式时，该次威力提升 30%，随后消耗。失去宝石后，本场对应属性招式威力仍提升 10%，换下再上场也保留。' },
 	];
-	return { intro: INTRO, itemNotes, modules: { items, moves, abilities, pokemon } };
+	return { intro: INTRO, beginner: BEGINNER_GUIDE, itemNotes, modules: { items, moves, abilities, pokemon } };
 }
 
 /** No mutation and no hidden effect text in locked entries. Loaded only when opening a codex. */
@@ -79,7 +81,9 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			...(unlocked ? { replay: eventReplay(id) } : {}) };
 	});
 	const visits = [
-		...RIVAL_SCENES.map((name, index) => ({ id: `adventure:rival:${index + 1}`, category: 'adventure', name,
+		...Object.entries(RIVALS).flatMap(([rival, person]) => RIVAL_SCENES.map((chapterName, index) => ({
+			id: `rival:${rival}:${index + 1}`, category: 'adventure',
+			name: `与${person.name}的相遇·其${'一二三四五六七八'[index]}`, portrait: rival,
 			text: [
 				'前 20 层可初遇劲敌。首次切磋确立关系，锁定这位伙伴的八段旅途，之后至少间隔 10 层才能再次相遇。',
 				'与劲敌各自派出伙伴，双打共斗驱散多组拦路者。获胜后获得对战道具、招式学习机和路费。',
@@ -88,8 +92,8 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 				'合作完成搜寻物资或清理暴走宝可梦的委托，得到稀有培育物资，并积累默契。',
 				'第 95 层起可以迎接约 100 层强度的再次切磋。获胜后选择解锁太晶化、超进化、Z 招式或领取 100 幻想碎片；战败也能继续剧情。',
 				'多轮双打共斗考验续航。获胜得到高阶物资，高熟悉度可邀请劲敌同行 8 层。',
-				'第 145 层起可以迎接约 150 层强度的全力对决。无论胜负，劲敌永久同行；获胜另得大量幻想碎片与高阶培育资源。',
-			][index] })),
+				'第 145 层起可以迎接约 150 层强度的全力对决。无论胜负，劲敌发出永久同行邀请；同行共用两个名额，满员时可选择替换。获胜另得大量幻想碎片与高阶培育资源。',
+			][index] + ` ${chapterName}：${person.lines[index]}` }))),
 		...Object.entries(REWARD_SCENES).map(([id, scene]) => ({ id: `reward:${id}`, category: 'reward', name: scene.name,
 			text: id === 'chest' ? '留给旅人的补给箱，以回复药与活力碎片为主。还可按需要挑选经验糖果、路费或本局永久训练；物资随楼层提升。' :
 			'以回复药与活力碎片为主的旅途补给。展示符合对方偏好的宝可梦或招式，可以提高谢礼品质。' })),
@@ -105,7 +109,6 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 		{ id: 'encounter:rocket', category: 'encounter', name: '火箭队拦路', text: '火箭队挡在店门口。战胜对手后，才能继续使用商店。' },
 	].map(entry => {
 		const unlocked = preview || discovered.events.includes(entry.id) ||
-			entry.id.startsWith('adventure:rival:') && discovered.events.some(id => id.startsWith('rival:') && id.endsWith(`:${entry.id.split(':').pop()}`)) ||
 			entry.id === 'trade:auction' && discovered.events.includes('auction');
 		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？', ...(unlocked ? { replay: entry.id === 'trade:auction' ? eventReplay('auction') : entry.id === 'trade:mushroom' ? eventReplay('mushroomcollector') : {
 			title: entry.name, start: 'start',
@@ -117,4 +120,13 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？' };
 	});
 	return { section, preview, entries: [...events, ...visits, ...companions].sort(compareBlessingNames) };
+}
+
+let contentVersion: string | undefined;
+/** Changes to any catalog are reflected without maintaining another version string by hand. */
+export function codexContentVersion() {
+	contentVersion ||= createHash('sha256').update(JSON.stringify(
+		(['guide', 'blessings', 'events'] as CodexSection[]).map(section => rogueCodex(undefined, section, true))
+	)).digest('hex').slice(0, 16);
+	return contentVersion;
 }

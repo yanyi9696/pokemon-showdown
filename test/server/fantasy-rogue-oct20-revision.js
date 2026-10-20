@@ -237,7 +237,7 @@ describe('Fantasy Rogue October 20 regression', () => {
 				}
 				assert(steps < 30, `Chapter ${i + 1} stalled`);
 				assert.equal(current().rival.completed, i + 1);
-				if (i === 3) assert(current().rival.temporaryUntil > floor);
+				if (i === 3) assert(current().rival.temporaryUsed); // The earlier invitation consumes this run's one temporary visit.
 			}
 			assert(current().rival.permanent);
 			assert.equal(current().team[0].hp, current().team[0].maxhp);

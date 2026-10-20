@@ -28,7 +28,7 @@ const owned = ids => ids.map(id => {
 });
 const member = s => createRoguePokemon(s, stats(0));
 function run(floor = 100, ids = []) {
- const r = {floor, team: [member(set('Seviper', 'Shed Skin', 50, ['Splash']))], bag: {}, money: 10000, boosts: stats(0),
+ const r = {floor, team: [member(set('Zangoose', 'Immunity', 50, ['Splash']))], bag: {}, money: 10000, boosts: stats(0),
   caught: [], phase: 'event', encounter: 0, node: {name: '测试', kind: 'trainer', reward: {money: 0, items: {}}, encounters: []}};
  normalizeBlessings(r); r.blessings.owned = owned(ids); return r;
 }
@@ -105,7 +105,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
   assert.deepEqual(assignedExtraAbilities(team[2], team, effects), []);
  });
  it('restores blood-robe HP on its first lethal hit, and calculates live defenses', () => {
-  const b = native([set('Seviper', 'Shed Skin', 50, ['Splash'])], ['godrobe']);
+  const b = native([set('Zangoose', 'Immunity', 50, ['Splash'])], ['godrobe']);
   try {
    const m = b.p1.active[0], foe = b.p2.active[0]; m.hp = Math.floor(m.maxhp / 2);
    assert(m.getStat('def') >= Math.floor(m.storedStats.def * 1.5)); assert(robeMultiplier(m) >= 1.5);
@@ -116,7 +116,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
  it('consumes the optional blood cost only for the selected damaging action and boosts its damage', () => {
   const damage = [];
   for (const selected of [false, true]) {
-   const b = native([set('Seviper', 'Shed Skin', 50, ['Flamethrower'])], ['godrobe']);
+   const b = native([set('Zangoose', 'Immunity', 50, ['Flamethrower'])], ['godrobe']);
    try {
     const mon = b.p1.active[0], foe = b.p2.active[0], hp = mon.hp;
     assert.equal(bloodRequest(mon).factor, 1.5);
@@ -129,7 +129,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
   assert(Math.abs(damage[1] / damage[0] - 1.5) < 0.06, String(damage));
  });
  it('does not amplify or charge blood for fixed damage, nor allow an ineligible user to select it', () => {
-  const b = native([set('Seviper', 'Shed Skin', 50, ['Dragon Rage'])], ['godrobe']);
+  const b = native([set('Zangoose', 'Immunity', 50, ['Dragon Rage'])], ['godrobe']);
   try { const m = b.p1.active[0], f = b.p2.active[0], hp = m.hp; b.makeChoices('rogueblood move 1', 'move 1'); assert.equal(f.maxhp - f.hp, 40); assert.equal(m.hp, hp); }
   finally { b.destroy(); }
   const other = native([set('Mew', 'Synchronize', 50, ['Tackle'])], ['godrobe']);
@@ -180,7 +180,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
  it('archives new effects and renders their actual sources on both sides of a clear-card duel', () => {
   const cards = [0, 1].map(index => {
    const r = run(200, ['spiral', index ? 'puregodrobe' : 'godrobe']);
-   const robe = member(index ? {...set('Meowstic-F', 'Keen Eye', 50, ['Splash']), gender: 'F'} : set('Seviper', 'Shed Skin', 50, ['Splash']));
+   const robe = member(index ? {...set('Meowstic-F', 'Keen Eye', 50, ['Splash']), gender: 'F'} : set('Zangoose', 'Immunity', 50, ['Splash']));
    const drill = member(set('Excadrill', 'Sand Rush', 50, ['Splash'])); drill.spiral = 300;
    r.team = [robe, drill]; r.blessings.owned[0].target = drill.id; robe.hp = Math.floor(robe.maxhp / 2);
    r.rival = {id: 'kieran', completed: 8, affection: 10, permanent: true, carmine: {affection: 8, permanent: true}};
@@ -294,7 +294,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
   const account = {captures: {}, unlocked: []}, before = JSON.stringify(account);
   const preview = rogueCodex(account, 'events', true).entries;
   for (const id of ['kieran', 'carmine', 'penny', 'giacomo', 'mela', 'atticus', 'ortega', 'eri', 'archie', 'hiker']) assert(preview.some(e => e.portrait === id && e.unlocked), id);
-  assert.equal(preview.filter(e => e.id.startsWith('adventure:rival:')).length, 8); assert.equal(JSON.stringify(account), before);
+  assert.equal(preview.filter(e => e.category === 'adventure').length, 96); assert.equal(JSON.stringify(account), before);
   assert(rogueCodex(account, 'events').entries.every(e => !e.unlocked));
   account.run = run(20); account.run.phase = 'story'; account.run.story = {stage: 'interlude', page: 0};
   account.run.dialogue = {pages: [{portrait: 'carmine'}, {portrait: 'penny'}]}; recordRogueDiscoveries(account);

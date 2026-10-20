@@ -14,7 +14,7 @@ export interface NarrativePage {
 	side?: 'left' | 'right';
 }
 /** Presentation only: rewards and healing must already be committed before this queue is shown. */
-export function queueNarrative(run: RogueRun, pages: NarrativePage[], resume: 'ready' | 'event' | 'settlement' | 'advance') {
+export function queueNarrative(run: RogueRun, pages: NarrativePage[], resume: NonNullable<RogueRun['dialogue']>['resume']) {
 	run.dialogue = { key: randomUUID(), pages, resume };
 }
 export function healNarrativeParty(run: RogueRun) {

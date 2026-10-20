@@ -9,12 +9,14 @@ import { COMPANION_DIALOGUE, COMPANION_GIFT_LINES } from './companion-dialogue';
 import { candyAtFloor } from './early-balance';
 import { companionZCandidates, companionZDefinition } from '../../sim/rogue-companion-z';
 import { rewardChoices } from './reward-scenes';
+import { requestCompanion, recordSocialPreference } from './travellers';
 
 export function grantCompanion(run: RogueRun, id: CompanionID) {
 	if (run.rival?.id === id) throw new Error('这位训练家已经是本局劲敌，不能重复成为祝福同行。');
 	const list = run.blessings!.companions ||= [];
 	if (list.some(c => c.id === id)) return;
-	list.push({ id, preferences: 0, ...(COMPANIONS[id].types.length === 1 ? { type: COMPANIONS[id].types[0] } : {}) });
+	list.push({ id, away: true, preferences: 0, ...(COMPANIONS[id].types.length === 1 ? { type: COMPANIONS[id].types[0] } : {}) });
+	requestCompanion(run, { id, origin: 'blessing' });
 	syncCompanions(run.blessings!, run.team);
 	(run.notices ||= []).push(`${companionSource(id)}加入了旅途。`);
 }
@@ -61,7 +63,7 @@ export function companionRecommendation(run: RogueRun, c: RogueCompanion, option
 export function companionView(run: RogueRun, options: CompanionOption[] = []) {
 	const event = run.node?.event;
 	const key = event?.companionKey || consultationKey(run);
-	return (run.blessings?.companions || []).map(c => {
+	return (run.blessings?.companions || []).filter(c => !c.away).map(c => {
 		const approvedHere = c.eventKey === key || c.eventKey === 'routes:' + run.floor;
 		const member = run.team.find(mon => mon.id === c.member);
 		const pendingType = COMPANIONS[c.id].types.length > 1;
@@ -93,7 +95,7 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 			!candidates.includes(command.member as CompanionID)) throw new Error('请从当前同行祝福的训练家中选择一位。');
 		grantCompanion(run, command.member as CompanionID); return;
 	}
-	const c = run.blessings?.companions?.find(entry => entry.id === command.member);
+	const c = run.blessings?.companions?.find(entry => entry.id === command.member && !entry.away);
 	if (!c) throw new Error('这位训练家尚未同行。');
 	if (command.value === 'chat') { speak(c, 'chat', random); return; }
 	if (command.value === 'advice') {
@@ -133,7 +135,9 @@ export function recordCompanionPreference(run: RogueRun, options: CompanionOptio
 	const event = run.node?.event;
 	const key = run.phase === 'event' && event ? event.companionKey ||= event.key : consultationKey(run);
 	if (!key) return;
+	recordSocialPreference(run, companionOptions(run, options), choice, key);
 	for (const c of run.blessings?.companions || []) {
+		if (c.away) continue;
 		const stoneFinished = c.id === 'olivia' && event?.id === 'stones' && choice === 'stonefinish' && !!event.stonesOpened;
 		const recommended = companionRecommendation(run, c, options) === choice;
 		if (c.counted?.includes(key) || !stoneFinished && !recommended) continue;

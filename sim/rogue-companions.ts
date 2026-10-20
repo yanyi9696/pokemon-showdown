@@ -6,6 +6,7 @@ import { assignedExtraAbilities, memberStatTotal, permanentMemberTypes } from '.
 export type CompanionID = keyof typeof COMPANIONS;
 export interface RogueCompanion {
 	id: CompanionID; member?: string; type?: string; ability?: string;
+	away?: boolean;
 	rewardRemainder?: Record<string, number>;
 	preferences: number; rewarded?: boolean; counted?: string[];
 	giftPending?: boolean;
@@ -77,7 +78,7 @@ export function companionPreferenceText(id: CompanionID) {
 }
 export const companionSource = (id: CompanionID) => `【同行训练家 - ${COMPANIONS[id].name}】`;
 export const companionOwned = (effects: BlessingEffects | undefined, id: CompanionID) =>
-	effects?.companions?.find(c => c.id === id);
+	effects?.companions?.find(c => c.id === id && !c.away);
 export const companionHasGift = (id: CompanionID) => COMPANIONS[id].family !== 'companionai';
 export const companionFamily = (family: string) => Object.values(COMPANIONS).some(c => c.family === family);
 export function companionFamilyTypes(family: string): string[] {

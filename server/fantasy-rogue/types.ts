@@ -72,6 +72,8 @@ export interface RogueNode {
 	/** Rolled once, saved with the route; each completed wild encounter pays its own entry. */
 	wildLoot?: Record<string, number>[];
 	economyPrepared?: boolean;
+	/** Additional training is rolled once when an eligible region is completed. */
+	journeyGrowthResolved?: boolean;
 	reward: { money: number, items: Record<string, number> };
 }
 export interface RogueItem {
@@ -131,6 +133,7 @@ export interface RogueContent {
 }
 export interface RogueInventory {
 	growth?: import('./growth').RogueGrowth;
+	journeyGrowth?: { offense: number, defense: number };
 	team: RoguePokemon[];
 	box?: RoguePokemon[];
 	bag: Record<string, number>;
@@ -142,6 +145,9 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	socialCompanions?: import('./travellers').SocialCompanion[];
+	companionInvitations?: import('./travellers').CompanionInvitation[];
+	companionsVersion?: number;
 	rival?: import('./rivals').RivalState;
 	previousRival?: import('./rival-data').RivalID;
 	honeymoon?: import('./honeymoon').HoneymoonTrip;
@@ -176,7 +182,7 @@ export interface RogueRun extends RogueInventory {
 	blessingCheckpoint?: import('./blessings').RogueBlessings;
 	owner?: { id: string, name: string };
 	story?: { stage: RogueStoryStage, page: number, skip: boolean, canSkip: boolean };
-	dialogue?: { key: string, pages: import('./narrative').NarrativePage[], resume: 'ready' | 'event' | 'settlement' | 'advance' };
+	dialogue?: { key: string, pages: import('./narrative').NarrativePage[], resume: Exclude<RogueRun['phase'], 'battle' | 'story'> | 'advance' };
 	rematches?: import('./companion-rematches').CompanionRematch[];
 	police?: import('./police-events').PoliceProgress;
 	/** Terminal receipt stays saved until explicitly acknowledged; distinct from a retryable challenge loss. */
@@ -274,7 +280,7 @@ export interface RogueCommand {
 	id: string;
 	revision: number;
 	action: 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
-		'shopchallenge' | 'event' | 'companion' | 'previewresult' |
+		'shopchallenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
 		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus';

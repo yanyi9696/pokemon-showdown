@@ -10,7 +10,10 @@ import { randomUUID } from 'crypto';
 import { emergencyCost, MENTOR_CARDS, mentorCardAtFloor, type MentorCard } from './early-balance';
 import { eventView, canRetreatRogue } from './events';
 import { needsOnboarding } from './onboarding';
-import { rogueCodex, type CodexSection } from './codex';
+import { rogueCodex, codexContentVersion, type CodexSection } from './codex';
+import { BEGINNER_GUIDE } from './beginner-guide';
+import { companionInvitationView, socialCompanionViews } from './travellers';
+import { companionOptions } from './companions';
 import { FS, Utils } from '../../lib';
 import { Dex, toID } from '../../sim/dex';
 import { rogueOpponentAvatar } from './trainer-bosses';
@@ -79,14 +82,14 @@ export class RogueManager {
 		if (!rogueAccess(user)) return { userid: user.id, enabled: false, section, entries: [] };
 		let account;
 		try { this.authorize(user); account = this.engine.store.get(user.id); } catch {}
-		return { userid: user.id, revision: account?.revision, contentVersion: '20261020-awakening', ...rogueCodex(account, section, this.engine.localSpirits) };
+		return { userid: user.id, revision: account?.revision, codexSchema: 2, contentVersion: codexContentVersion(), ...rogueCodex(account, section, this.engine.localSpirits) };
 	}
 	duel(user: User, command: DuelCommand) {
 		this.authorize(user);
 		return this.duels.command(user, command);
 	}
 	state(user: User) {
-		const common = { userid: user.id, protocolVersion: 1, contentVersion: '20261020-awakening', enabled: rogueAccess(user) };
+		const common = { userid: user.id, protocolVersion: 1, codexSchema: 2, contentVersion: codexContentVersion(), enabled: rogueAccess(user) };
 		try { this.authorize(user); } catch (error) {
 			return { ...common, message: (error as Error).message, account: null };
 		}
@@ -117,6 +120,7 @@ export class RogueManager {
 		return {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			storyEnabled: !!content?.story,
+			beginnerGuide: needsOnboarding(account) ? BEGINNER_GUIDE : undefined,
 			story: storyView(account, !!content?.story, this.engine.localSpirits),
 			cards: account.cards?.map(clearCardView) || [], pendingClear: account.pendingClear && clearCardView(account.pendingClear),
 			account: {
@@ -147,6 +151,9 @@ export class RogueManager {
 			items, shopItems: stock.map(item => item.id),
 			run: run ? {
 				companions: companionView(run, eventView(run)?.options || []),
+				selectedCompanions: run.blessings?.companions?.map(c => c.id),
+				companionInvitation: companionInvitationView(run),
+				socialCompanions: socialCompanionViews(run, companionOptions(run, eventView(run)?.options || [])),
 				preview: run.preview && { trainer: run.preview.trainer, stage: run.preview.stage, won: run.preview.result?.won },
 				growth: growthView(run), growthOffers: growthOffers(run), rewardScene: rewardSceneView(run),
 				blessings: blessingView(run, account.tonicSecret), moveSlots: run.blessings?.owned.some(b => b.family === 'learnall') ? 5 : 4,

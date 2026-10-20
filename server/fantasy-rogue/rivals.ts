@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { RIVALS, RIVAL_SCENES, RIVAL_SNACK_GIFTS, RIVAL_FAREWELLS, CARMINE, type RivalID } from './rival-data';
+import { RIVALS, RIVAL_SNACK_GIFTS, RIVAL_FAREWELLS, CARMINE, type RivalID } from './rival-data';
 import type { RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet } from './encounter-sets';
@@ -9,15 +9,19 @@ import { normalizeBlessings, grantSystem } from './blessings';
 import { rewardCandies, rewardExperience } from './reward-scenes';
 import { healNarrativeParty, queueNarrative, dialoguePage } from './narrative';
 import { COMPANIONS } from '../../sim/rogue-companions';
+import { requestCompanion, travellingRoster } from './travellers';
 
 export interface RivalState {
 	id: RivalID; completed: number; lastFloor: number; affection: number;
-	temporaryUntil?: number; permanent?: boolean;
-	carmine?: { affection: number; temporaryUntil?: number; permanent?: boolean };
+	temporaryUntil?: number; permanent?: boolean; away?: boolean; temporaryUsed?: boolean;
+	carmine?: { affection: number; temporaryUntil?: number; permanent?: boolean; away?: boolean; temporaryUsed?: boolean };
 }
 export interface RivalEvent { chapter: number; step?: 'talk' | 'search' | 'reward' | 'invite' | 'carmine' | 'carminefinal'; turn?: number; task?: 'search' | 'battle'; found?: number[]; answer?: number }
-const accompanying = (state: { permanent?: boolean; temporaryUntil?: number } | undefined, floor: number) =>
-	!!(state?.permanent || state?.temporaryUntil && floor <= state.temporaryUntil);
+const accompanying = (state: { permanent?: boolean; temporaryUntil?: number; away?: boolean } | undefined, floor: number) =>
+	!state?.away && !!(state?.permanent || state?.temporaryUntil && floor <= state.temporaryUntil);
+const canInvite = (state: RivalState | RivalState['carmine']) =>
+	!!state && state.affection >= 4 && !state.permanent && !state.temporaryUsed && !state.temporaryUntil;
+export const rivalSceneName = (id: RivalID, chapter: number) => `与${RIVALS[id].name}的相遇·其${'一二三四五六七八'[chapter - 1]}`;
 export function activeRivalTraveller(run: RogueRun) {
 	if (accompanying(run.rival, run.floor)) return { id: run.rival!.id, ...RIVALS[run.rival!.id] };
 	if (accompanying(run.rival?.carmine, run.floor)) return { id: 'carmine', ...CARMINE };
@@ -31,7 +35,7 @@ export function rivalRoutes(run: RogueRun, nodes: RogueNode[], random: RogueRand
 	const chance = rival ? Math.min(95, 25 + (gap - 10) * 7) : run.floor <= 10 ? 85 : 60;
 	if (random(100) >= chance || !nodes.length) return nodes;
 	const result = [...nodes];
-	result[result.length - 1] = { id: 'rival', kind: 'adventure', name: rival ? `${RIVALS[rival.id].name} · ${RIVAL_SCENES[rival.completed]}` : '旅途中的相遇', encounters: [], reward: { money: 0, items: {} } };
+	result[result.length - 1] = { id: 'rival', kind: 'adventure', name: rival ? rivalSceneName(rival.id, rival.completed + 1) : '旅途中的相遇', encounters: [], reward: { money: 0, items: {} } };
 	return result;
 }
 export function rivalTeam(run: RogueRun, lv: number, count = 3, travelling = false) {
@@ -58,12 +62,13 @@ function setFight(run: RogueRun, random: RogueRandom) {
 }
 export function beginRival(run: RogueRun, random: RogueRandom) {
 	if (!run.rival) {
-		const candidates = (Object.keys(RIVALS) as RivalID[]).filter(id => !run.blessings?.companions?.some(c => c.id === id));
+		const candidates = (Object.keys(RIVALS) as RivalID[]).filter(id => !travellingRoster(run).some(c => c.id === id) &&
+			!run.blessings?.companions?.some(c => c.id === id));
 		const pool = candidates.flatMap(id => Array.from({ length: id === run.previousRival ? 1 : 4 }, () => id));
 		run.rival = { id: pool[random(pool.length)], completed: 0, lastFloor: 0, affection: 0 };
 	}
 	const r = run.rival, chapter = r.completed + 1;
-	run.node!.name = `${RIVALS[r.id].name} · ${RIVAL_SCENES[chapter - 1]}`;
+	run.node!.name = rivalSceneName(r.id, chapter);
 	run.node!.event = { id: 'rivalstory', key: randomUUID(), stage: 'choice', rival: { chapter },
 		result: [RIVALS[r.id].lines[chapter - 1]] };
 	(run.eventHistory ||= []).push({ id: `rival:${r.id}:${chapter}`, floor: run.floor });
@@ -108,15 +113,16 @@ function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 	event.result = [won ? '这一路的默契，成为了眼前实实在在的收获。' : advanced ? '切磋未能获胜，但对方认真肯定了你的进步，并帮全队恢复健康。你收到一份基础物资。' : '这次合作没能完成。先照顾好伙伴，下一次相遇再共同挑战。'];
 	if (chapter === 1) event.result.push('「以后在旅途中遇见，记得来找我。一起经历更多奇遇，我们会变得更强，也会收获更丰厚的旅途礼物。」');
 	if (chapter === 8) {
-		r.permanent = true; delete r.temporaryUntil; event.result.push(`【${RIVALS[r.id].name}】正式成为永久同行的劲敌伙伴。原有同行训练家继续陪伴你。`);
+		requestCompanion(run, { id: r.id, origin: 'rival', permanent: true });
+		event.result.push(`【${RIVALS[r.id].name}】发出永久同行的邀请。同行名额已满时，可以选择和哪位伙伴告别。`);
 		if (r.carmine && r.carmine.affection >= 6) {
 			event.stage = 'choice'; event.settled = false; event.rival!.step = 'carminefinal';
 			event.result.push(CARMINE.lines[7]);
 		}
 	}
-	else if (advanced && chapter > 1 && (r.affection >= 4 || (r.carmine?.affection || 0) >= 4) && random(100) < (chapter === 7 ? 100 : 65)) {
+	else if (advanced && chapter > 1 && (canInvite(r) || canInvite(r.carmine)) && random(100) < (chapter === 7 ? 100 : 65)) {
 		event.stage = 'choice'; event.settled = false; event.rival!.step = 'invite';
-		event.result.push(`「接下来这一段，和我结伴走吧？」${r.affection >= 4 ? RIVALS[r.id].name : '丹瑜'}向你发出邀请。`);
+		event.result.push(`「接下来这一段，和我结伴走吧？」${canInvite(r) ? RIVALS[r.id].name : '丹瑜'}向你发出邀请。`);
 	}
 	run.phase = 'event'; event.key = randomUUID();
 }
@@ -129,9 +135,9 @@ export function rivalView(run: RogueRun) {
 		else if (state.step === 'carminefinal') options = [option('carmine:stay', '当然，我们三个人一起走。'), option('carmine:later', '期待下一次再与你相遇。')];
 		else if (state.step === 'reward') options = [option('system:tera', '解锁太晶化并领取配套碎片'), option('system:mega', '解锁超进化并领取进化石'), option('system:z', '解锁 Z 招式并领取纯晶'), option('shards', '领取幻想碎片 ×100')];
 		else if (state.step === 'invite') options = [
-			...(r.affection >= 4 ? [option('join', '好，一起走这一段。')] : []),
-			...(r.carmine && r.carmine.affection >= 4 ? [
-				...(r.affection >= 4 ? [option('joinboth', '邀请丹瑜也一起结伴走这一段。')] : []),
+			...(canInvite(r) ? [option('join', '好，一起走这一段。')] : []),
+			...(canInvite(r.carmine) ? [
+				...(canInvite(r) ? [option('joinboth', '邀请丹瑜也一起结伴走这一段。')] : []),
 				option('joincarmine', '与丹瑜同行，让乌栗先去独自训练。')] : []), option('solo', '这次想独自走走，下次再见。')];
 		else if (state.step === 'talk') options = [option('warm', ['认真回应，也谈谈自己与伙伴的约定。', '愿意试着理解彼此不同的想法。', '约好以后继续互相检验成长。'][state.turn || 0]),
 			option('honest', ['坦率地说，自己也还在寻找答案。', '先听对方把故事讲完。', '感谢这一路的帮助。'][state.turn || 0]), option('cold', '觉得没什么好谈的，催促继续赶路。')];
@@ -152,9 +158,9 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		prepareChapter(run, random);
 		queueNarrative(run, [dialoguePage('carmine', '丹瑜', event.result[0], accepted, 'left')], 'event');
 	} else if (state.step === 'carminefinal') {
-		if (choice === 'carmine:stay') { r.carmine!.permanent = true; delete r.carmine!.temporaryUntil; }
+		if (choice === 'carmine:stay') requestCompanion(run, { id: 'carmine', origin: 'carmine', permanent: true });
 		event.stage = 'result'; event.settled = true;
-		event.result = [choice === 'carmine:stay' ? '丹瑜也加入了永久同行。乌栗站在你身边，认真约好下一次切磋。' : '丹瑜笑着挥手：「照顾好你们自己。我也会走出自己的路，下次再见！」'];
+		event.result = [choice === 'carmine:stay' ? '丹瑜也发出了永久同行的邀请。乌栗认真约好下一次切磋。名额不足时，请先选择告别的伙伴。' : '丹瑜笑着挥手：「照顾好你们自己。我也会走出自己的路，下次再见！」'];
 		queueNarrative(run, [dialoguePage('carmine', '丹瑜', event.result[0], true, 'left')], 'event');
 	} else if (choice === 'start') setFight(run, random);
 	else if (['warm', 'honest', 'cold'].includes(choice)) {
@@ -172,10 +178,10 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		finish(run, random, true);
 	} else if (['join', 'solo', 'joinboth', 'joincarmine'].includes(choice)) {
 		const until = run.floor + (state.chapter === 7 ? 8 : 5 + random(4));
-		if (choice === 'join' || choice === 'joinboth') r.temporaryUntil = until;
-		if (choice === 'joinboth' || choice === 'joincarmine') r.carmine!.temporaryUntil = until;
+		if (choice === 'join' || choice === 'joinboth') requestCompanion(run, { id: r.id, origin: 'rival', until });
+		if (choice === 'joinboth' || choice === 'joincarmine') requestCompanion(run, { id: 'carmine', origin: 'carmine', until });
 		event.stage = 'result'; event.settled = true;
-		event.result = [choice !== 'solo' ? `与${choice === 'joincarmine' ? '丹瑜' : RIVALS[r.id].name + (choice === 'joinboth' ? '、丹瑜' : '')}结伴同行至第 ${until} 层。普通战斗有机会并肩出战，战利品略微增加。` : '你们挥手道别，约好下一次再见。'];
+		event.result = [choice !== 'solo' ? `与${choice === 'joincarmine' ? '丹瑜' : RIVALS[r.id].name + (choice === 'joinboth' ? '、丹瑜' : '')}约好结伴同行至第 ${until} 层。名额已满时，请先决定是否替换同行伙伴。同行期间，普通战斗有机会并肩出战，战利品略微增加。` : '你们挥手道别，约好下一次再见。'];
 	}
 }
 export function settleRival(run: RogueRun, random: RogueRandom, won: boolean) {
@@ -192,7 +198,8 @@ export function expireRival(run: RogueRun, nextFloor = run.floor) {
 	if (!r) return false;
 	for (const id of [r.id, ...(r.carmine ? ['carmine' as const] : [])]) {
 		const state = id === 'carmine' ? r.carmine! : r;
-		if (state.permanent || !state.temporaryUntil || nextFloor <= state.temporaryUntil) continue;
+		if (state.permanent || state.away || !state.temporaryUntil || nextFloor <= state.temporaryUntil) continue;
+		state.temporaryUsed = true;
 		delete state.temporaryUntil; // Transactional receipt: no second gift on reload.
 		const gift = id === 'carmine' ? { item: CARMINE.item, name: CARMINE.giftName } : RIVAL_SNACK_GIFTS[id];
 		const name = id === 'carmine' ? '丹瑜' : RIVALS[id].name;

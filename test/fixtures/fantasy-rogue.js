@@ -68,6 +68,10 @@ function chooseCompanions(engine, user, cmd) {
 	}
 	for (let n = 0; n < 8; n++) {
 		run = engine.store.get(user).run;
+		if (run.companionInvitations?.length) {
+			cmd('companioninvite', {member: run.companionInvitations[0].key, value: 'decline'});
+			continue;
+		}
 		const entry = companionView(run).find(c => !c.ability && (!c.type && c.typeOptions.some(t => t.member) || c.abilityOptions.length));
 		if (!entry) return;
 		const type = !entry.type && entry.typeOptions.find(t => t.member);

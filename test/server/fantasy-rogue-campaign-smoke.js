@@ -51,6 +51,10 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						continue;
 					}
 					if (run.phase === 'complete') break;
+					if (run.companionInvitations?.length) {
+						cmd('companioninvite', {member: run.companionInvitations[0].key, value: 'decline'});
+						continue;
+					}
 					if (run.floor % 25 === 0 && !restored.has(run.floor)) {
 						restored.add(run.floor);
 						engine = new RogueEngine(store, content, random, true);
@@ -116,10 +120,11 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						break;
 					case 'event': {
 						const event = run.node.event;
-						assert(['auction', 'exclusivechallenge', 'mushroomcollector', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory'].includes(event.id), event.id);
+						assert(['auction', 'exclusivechallenge', 'mushroomcollector', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory', 'travellermeeting'].includes(event.id), event.id);
 						if (event.police?.choices) { cmd('event', {member: event.key, value: 'police:' + event.police.choices[0]}); break; }
 						if (event.id === 'mushroomcollector') { cmd('event', {member: event.key, value: 'collectorshop'}); break; }
 						if (event.stage === 'result') cmd('continue');
+						else if (event.social) cmd('event', {member: event.key, value: 'leave'});
 						else if (event.rival) {
 							const choices = eventView(run).options;
 							cmd('event', {member: event.key, value: choices.find(o => ['warm', 'join', 'shards'].includes(o.id))?.id || choices[0].id});

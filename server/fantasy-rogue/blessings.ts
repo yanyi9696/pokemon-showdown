@@ -29,7 +29,7 @@ import { convertSpiritItem } from './spirits';
 import { drawGiftSpecies } from './gifts';
 import { lowerToEligibleStage } from './evolution';
 import { permanentMemberTypes, strongestDragon, memberStatTotal, strongestBlessingMember,
-	TARGET_BLESSING_ABILITIES, POWER_CHOICE_ABILITIES, canGrantExtraAbility, dragonKingAbilityOptions } from '../../sim/rogue-blessing-permanent';
+	TARGET_BLESSING_ABILITIES, POWER_CHOICE_ABILITIES, canGrantExtraAbility, dragonKingAbilityOptions, dragonKingActive } from '../../sim/rogue-blessing-permanent';
 import { tonicItems } from './blessing-consumables';
 import { blessingDisplay } from './blessing-text';
 import { compoundFinals } from '../../sim/rogue-compound';
@@ -58,6 +58,7 @@ export interface RogueBlessings extends BlessingEffects {
 	awakeningBattles?: string[]; awakeningLegends?: string[]; spiralStone?: boolean;
 	/** The added Speed Boost reward has been offered, including in pre-update saves. */
 	speedBoostOffered?: boolean;
+	godrobeGiftUpdated?: boolean;
 	version: 1; levels: number; bossLevels?: number; round?: BlessingRound;
 	/** Only new adventures opt in; never insert an opening round into an existing save. */
 	beforeAdventure?: boolean;
@@ -346,6 +347,22 @@ export function giveEquipment(run: RogueRun, content: RogueContent, random: Rogu
 export function gift(account: RogueAccount, run: RogueRun, content: RogueContent, mon: RoguePokemon, title: string) {
 	recordBlessingGift(account, run, content, mon);
 	run.blessings!.pending.push({ id: randomUUID(), title, kind: 'gift', pokemon: mon });
+}
+/** Keep an old trained partner; provide the replacement once without rewriting a completed card. */
+export function migrateGodrobeGift(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom) {
+	const state = run.blessings;
+	if (!state || state.godrobeGiftUpdated || !ownsBlessing(state, 'godrobe') ||
+		['battle', 'complete', 'postgame', 'defeated'].includes(run.phase)) return;
+	state.godrobeGiftUpdated = true;
+	const pending = state.pending.find(r => r.kind === 'gift' && r.title === '神衣鲜血' &&
+		toID(r.pokemon?.set.species) === 'seviper');
+	const mon = drawBlessingGift(run, content, random, { species: 'Zangoose', level: Math.max(3, Math.ceil(run.floor / 2)) });
+	if (pending) {
+		pending.pokemon = mon;
+		recordBlessingGift(account, run, content, mon);
+	} else if (![...run.team, ...(run.box || []), ...state.pending.flatMap(r => r.pokemon ? [r.pokemon] : [])]
+		.some(m => toID(m.set.species) === 'zangoose')) gift(account, run, content, mon, '神衣鲜血 · 更新伙伴');
+	(run.notices ||= []).push('【神衣鲜血】适用伙伴已更新为猫鼬斩；原有饭匙蛇及其培养数据保留。');
 }
 const commonEquipment: string[] = ['leftovers', 'lifeorb', 'focussash', 'assaultvest', 'rockyhelmet', 'choiceband', 'choicespecs',
 	'choicescarf', 'heavydutyboots', 'expertbelt', 'eviolite', 'scopelens', 'wide lens'].map(toID);
@@ -696,7 +713,8 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		(run.notices ||= []).push(`${def.name}：获得${received.name}及 ${coins} 金币，赠送祝福不额外加级。`);
 	}
 	if (['spiral', 'godrobe', 'puregodrobe'].includes(def.family)) {
-		const name = def.family === 'spiral' ? 'Excadrill' : def.family === 'godrobe' ? 'Seviper' : Math.ceil(run.floor / 2) >= 25 ? 'Meowstic-F' : 'Espurr';
+		if (def.family === 'godrobe') state.godrobeGiftUpdated = true;
+		const name = def.family === 'spiral' ? 'Excadrill' : def.family === 'godrobe' ? 'Zangoose' : Math.ceil(run.floor / 2) >= 25 ? 'Meowstic-F' : 'Espurr';
 		const level = Math.max(def.family === 'spiral' ? 31 : 5, Math.min(100, Math.ceil(run.floor / 2)));
 		const mon = createRoguePokemon(makeEncounterSet(name, level, randomEncounterIVs(random)), run.boosts);
 		if (def.family === 'puregodrobe') mon.set.gender = 'F';
@@ -1051,7 +1069,7 @@ export function blessingExperience(run: RogueRun, mon: RoguePokemon, dragonKing 
 	const ordinary = ownsBlessing(state, 'ordinary');
 	if (ordinary && run.team.every(member => dex.species.get(member.set.species).bst <= 500)) multiplier *= 1 + (Math.max(1, Math.floor(ordinary.floor / 50)) + 1) / 10;
 	for (const entry of state?.owned || []) if (entry.family === 'typexp' && blessingMemberTypes(mon).includes(entry.type!)) multiplier *= 1.3;
-	if (ownsBlessing(state, 'dragonking') && mon.id !== dragonKing && permanentMemberTypes(mon).includes('Dragon')) multiplier *= 1.3;
+	if (dragonKingActive(state) && mon.id !== dragonKing && permanentMemberTypes(mon).includes('Dragon')) multiplier *= 1.3;
 	return multiplier;
 }
 /** Stochastic rounding preserves the advertised expected quantity even for one-item drops. */
@@ -1059,9 +1077,9 @@ export function blessingLoot(run: RogueRun, loot: Record<string, number>, random
 	const entry = ownsBlessing(run.blessings, 'ordinary');
 	const ordinary = entry && run.team.every(mon => dex.species.get(mon.set.species).bst <= 500) ?
 		(Math.max(1, Math.floor(entry.floor / 50)) + 1) / 10 : 0;
-	const guzma = run.blessings?.companions?.some(c => c.id === 'guzma') ? 0.2 : 0;
-	const olivia = run.blessings?.companions?.some(c => c.id === 'olivia') ? 0.2 * rockFraction : 0;
-	const giovanni = run.blessings?.companions?.some(c => c.id === 'giovanni') ? 0.2 * psychicFraction : 0;
+	const guzma = run.blessings?.companions?.some(c => !c.away && c.id === 'guzma') ? 0.2 : 0;
+	const olivia = run.blessings?.companions?.some(c => !c.away && c.id === 'olivia') ? 0.2 * rockFraction : 0;
+	const giovanni = run.blessings?.companions?.some(c => !c.away && c.id === 'giovanni') ? 0.2 * psychicFraction : 0;
 	const bonus = (1 + ordinary) * (1 + guzma) * (1 + olivia) * (1 + giovanni) - 1;
 	if (giovanni && Object.keys(loot).length) (run.notices ||= []).push('【同行训练家 - 坂木】超能系伙伴击倒对手的对应战利品提升 20%。');
 	if (olivia) (run.notices ||= []).push('【同行训练家 - 莉兹】岩石系对手的战利品数量提升 20%。');
@@ -1085,8 +1103,8 @@ export function blessingView(run: RogueRun, discovered = false) {
 			levelCost: { normal: blessingLevelCost(def.tier, floor), boss: blessingLevelCost(def.tier, floor, true) } };
 	};
 	const king = run.team.find(mon => mon.id === state.dragonKing?.member);
-	return { ...state, dragonKing: state.dragonKing && { ...state.dragonKing, species: king?.set.species || '等待龙系伙伴', total: king ? memberStatTotal(king) : 0,
-		options: dragonKingAbilityOptions(king, run.team, state) },
+	return { ...state, dragonKing: dragonKingActive(state) && state.dragonKing ? { ...state.dragonKing, species: king?.set.species || '等待龙系伙伴', total: king ? memberStatTotal(king) : 0,
+		options: dragonKingAbilityOptions(king, run.team, state) } : undefined,
 		learning: run.team.filter(mon => !mon.egg).filter(mon => ownsBlessing(state, 'learnall') && !state.learnedMembers?.includes(mon.id) ||
 			ownsBlessing(state, 'inheritmoves') && !state.inheritedLearners?.includes(mon.id))
 			.map(mon => ({ member: mon.id, moves: blessingLearnChoices(mon) })),

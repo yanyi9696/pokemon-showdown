@@ -18,7 +18,10 @@ export function rogueDiscoveries(account: RogueAccount) {
 		...(account.run?.node?.rocket ? ['encounter:rocket'] : []),
 	]);
 	const run = account.run;
-	if (run?.rival) events.add('rivalstory');
+	if (run?.rival) {
+		events.add('rivalstory');
+		for (let chapter = 1; chapter <= run.rival.completed; chapter++) events.add(`rival:${run.rival.id}:${chapter}`);
+	}
 	for (const card of cards) {
 		const rival = card.snapshot.rival;
 		if (!rival) continue;
@@ -29,6 +32,8 @@ export function rogueDiscoveries(account: RogueAccount) {
 		...cards.flatMap(card => card.snapshot.rival ? [card.snapshot.rival.id] : []),
 		...cards.flatMap(card => card.snapshot.rival?.carmine?.permanent ? ['carmine'] : []),
 		...(run?.blessings?.companions || []).map(c => c.id),
+		...(run?.socialCompanions || []).map(c => c.id),
+		...(run?.node?.event?.social ? [run.node.event.social.trainer] : []),
 		...cards.flatMap(card => (card.snapshot.blessingEffects?.companions || []).map(c => c.id)),
 		...(run?.seenBossDialogues || []).map(key => key.split(':').pop()!).filter(Boolean),
 	]);

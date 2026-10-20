@@ -6,6 +6,8 @@ import { emblemType, ownsBlessing, type BlessingEffects } from './rogue-blessing
 export const DRAGON_KING_ABILITIES = ['longzhihuxi', 'drizzle'] as const;
 export type DragonKingAbility = typeof DRAGON_KING_ABILITIES[number];
 export interface DragonKing { member: string; ability?: DragonKingAbility }
+export const dragonKingActive = (effects?: BlessingEffects) =>
+	!!ownsBlessing(effects, 'dragonking') && !effects?.companions?.some(c => c.id === 'iris' && c.away);
 export interface RogueTonics { wine?: boolean; cephalosporin?: boolean; poison?: boolean }
 export const TARGET_BLESSING_ABILITIES: Record<string, string> = { hazards: 'yanbuzhen', toxic: 'merciless', speedpower: 'speedboost' };
 export const POWER_CHOICE_ABILITIES = ['hugepower', 'roguegreatmage'];
@@ -29,7 +31,7 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 		if (robeMember(team, effects, 'godrobe')?.id === mon.id) add('sharpness', 'jiqususheng');
 		if (robeMember(team, effects, 'puregodrobe')?.id === mon.id) add('stalwart', 'sheerforce');
 		for (const companion of effects?.companions || []) {
-			if (companion.member === mon.id && companion.ability) add(companion.ability);
+			if (!companion.away && companion.member === mon.id && companion.ability) add(companion.ability);
 		}
 		if (ownsBlessing(effects, 'arsenal')) add('bianhuanziyou');
 		if (ownsBlessing(effects, 'restinball')) add('regenerator', 'naturalcure');
@@ -38,7 +40,7 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 			if (ownsBlessing(effects, 'singer')) add('tianlaizhiyin', 'jizhineng');
 			if (ownsBlessing(effects, 'dancer')) add('dancer');
 		}
-		if (includeKing && effects?.dragonKing?.member === mon.id && effects.dragonKing.ability) add(effects.dragonKing.ability);
+		if (includeKing && dragonKingActive(effects) && effects?.dragonKing?.member === mon.id && effects.dragonKing.ability) add(effects.dragonKing.ability);
 	}
 	return [...new Set(result)];
 }

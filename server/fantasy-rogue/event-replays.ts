@@ -6,6 +6,7 @@ import { POLICE_REGIONS } from './police-data';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	travellermeeting: '事件与遭遇区域均可能遇到。与带立绘的训练家交谈，根据回应收获小礼物、展开切磋或接受常驻同行邀请。同行共用两个名额；常驻同行累计听从 15 次偏好选择可获专属赠礼。',
 	...EXPEDITION_OVERVIEWS, rivalstory: '前 20 层锁定一位劲敌，开启八段专属旅途；共同战斗、交谈提升熟悉度，最终成为永久同行伙伴。',
 	companionrematch: '同行训练家挑战失利后，至少再前进 5 层才可能收到切磋邀请。可接受或暂缓；胜利补发原挑战奖励，失败则恢复全队。每份奖励只能补领一次。',
 	policeassist: '在遭遇区域协助君莎，从随机三个地区中选一处，连续击败两名闹事队员。对应首领同行时可能出面制止并道歉；玛俐会劝导呐喊队粉丝，坂木会让城都的阿波罗与你安全切磋，牡丹则暂时保持沉默。',
@@ -43,6 +44,16 @@ export function eventReplay(id: EventID) {
 	const battle = (key: string, intro: string, room = false) => {
 		page(key, [intro], [['战斗获胜', room ? 'roomwin' : 'win'], ['战败', 'lose']], true);
 	};
+	if (id === 'travellermeeting') {
+		page('start', eventOpening(id), [['聊聊收获与馈赠', 'talk'], ['聊聊宝可梦', 'talk'], ['邀请切磋', 'battle'], ['挥手告别', 'leave']]);
+		page('talk', ['各自讲起旅途中的选择。回应训练家的偏好，会让彼此更投契。'], [['理念契合', 'invite'], ['各有想法', 'gift']]);
+		page('battle', ['训练家派出符合自己风格的伙伴；切磋结束会帮助全队恢复健康。'], [['获胜且对方喜爱战斗', 'invite'], ['获胜', 'gift'], ['战败', 'leave']], true);
+		page('invite', ['对方提出常驻同行。所有来源共用两个名额；满员时可先向一位旧伙伴告别。'], [['接受', 'joined'], ['婉拒', 'leave']]);
+		page('joined', ['常驻同行拥有家乡、区域与选项偏好，累计听从 15 次偏好选择可获得一次专属赠礼。']);
+		page('gift', ['训练家赠送少量补给，并祝你旅途顺利。']);
+		page('leave', ['你们互道珍重，期待之后再次相遇。']);
+		return { title: EVENT_NAMES[id], start: 'start', pages };
+	}
 	if (id in EXPEDITION_OVERVIEWS || id === 'rivalstory') {
 		if (id === 'identityquiz') {
 			page('start', eventOpening(id), [['付费抽一题', 'silhouette'], ['笑笑，继续赶路。', 'leave']]);

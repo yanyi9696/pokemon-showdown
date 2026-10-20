@@ -2,6 +2,7 @@ import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import { experienceAtLevel, levelAtExperience, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { createRoguePokemon, rebuildMember } from './progression';
 import type { RogueRun } from './types';
+import type { RogueRandom } from './biome-pools';
 
 /** Basis points, added before multiplication: 100 = 1%. All values are run-local. */
 export interface RogueGrowth { offense: number; defense: number; experience: number }
@@ -41,6 +42,34 @@ export function grantGrowth(run: RogueRun, kind: GrowthKind, amount: number) {
 	run.growth[kind] += granted;
 	syncGrowthParty(run);
 	return granted;
+}
+
+/** Additive rewards: never substitute existing money, candies, items or chosen training. */
+export function grantJourneyGrowth(run: RogueRun, random: RogueRandom) {
+	const node = run.node, event = node?.event;
+	if (!node || node.journeyGrowthResolved || run.postgame || node.companionLoss) return;
+	const successfulEvent = event?.settled && (event.journeyBattleWon ||
+		!event.trainingAidBlocked && event.journeyBattleWon !== false);
+	const eligible = event ? successfulEvent && node.kind !== 'trade' :
+		['elite', 'trainer', 'reward'].includes(node.kind);
+	if (!eligible) return;
+	node.journeyGrowthResolved = true;
+	const chance = run.floor < 50 ? 30 : run.floor < 80 ? 35 : run.floor < 150 ? 45 : 50;
+	if (random(100) >= chance) return;
+	const ledger = run.journeyGrowth ||= { offense: 0, defense: 0 };
+	const choices = (['offense', 'defense'] as const).filter(kind =>
+		ledger[kind] < 2000 && availableGrowth(run, kind, 1));
+	if (!choices.length) return;
+	const kind = choices[random(choices.length)];
+	const amount = grantGrowth(run, kind, Math.min(2000 - ledger[kind],
+		run.floor < 50 ? 50 : run.floor < 80 ? 75 : run.floor < 150 ? 100 : 150));
+	ledger[kind] += amount;
+	const source = node.kind === 'reward' ? '补给后的训练心得' : node.kind === 'elite' ? '精英历练' :
+		node.kind === 'trainer' ? '切磋心得' : '旅途心得';
+	const text = `【${source}】额外获得全队本局${kind === 'offense' ? '攻击、特攻' : '防御、特防'} +${growthPercent(amount)}；后来加入的伙伴同样生效。`;
+	(run.notices ||= []).push(text);
+	if (event?.result) event.result.push(text);
+	if (run.lastReward?.floor === run.floor) run.lastReward.effect = [run.lastReward.effect, text].filter(Boolean).join(' ');
 }
 
 /** Compare actual rounded stats, including existing boosts/nature/stars; EXP need not reach a level. */

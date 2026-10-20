@@ -87,7 +87,7 @@ export function clearMemberDetails(mon: RoguePokemon, run: RogueRun): ClearMembe
 	if (run.eventBuff?.battles) add('蘑菇的活力', '造成的招式伤害 +20%，受到的招式伤害 -10%。');
 	const extras = assignedExtraAbilities(mon, run.team, run.blessings).filter(id => id !== toID(mon.set.ability));
 	const extraAbilities = extras.map(id => {
-		const companion = run.blessings?.companions?.find(c => c.member === mon.id && c.ability === id);
+		const companion = run.blessings?.companions?.find(c => !c.away && c.member === mon.id && c.ability === id);
 		const king = run.blessings?.dragonKing;
 		return { id, source: companion ? companionSource(companion.id) :
 			king?.member === mon.id && king.ability === id ? companionSource('iris') :

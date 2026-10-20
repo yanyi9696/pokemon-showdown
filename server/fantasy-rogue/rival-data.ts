@@ -35,7 +35,7 @@ export const RIVAL_SNACK_GIFTS: Record<RivalID, { item: string; name: string; li
 	korrina: { item: 'blackbelt', name: '黑带', line: '补充完能量，又能好好修行啦！这条带子就当我们的约定！' },
 	nemona: { item: 'magnet', name: '磁铁', line: '好吃！吃完再来对战吧！对了，这个应该很适合你的伙伴！' },
 	blue: { item: 'sharpbeak', name: '锐利鸟嘴', line: '眼光不错。我可不会白收你的东西，拿着，下次让我看看你的进步。' },
-	gladion: { item: 'darkgem', name: '恶之宝石', line: '……谢谢。这个留给需要它的伙伴。路还长，记得照顾好自己。' },
+	gladion: { item: 'blackglasses', name: '黑色眼镜', line: '……谢谢。这个留给需要它的伙伴。路还长，记得照顾好自己。' },
 	bede: { item: 'twistedspoon', name: '弯曲的汤匙', line: '品味倒还不错。这份回礼就请你好好利用，别辜负我的期待。' },
 	n: { item: 'miracleseed', name: '奇迹种子', line: '分享让旅途的声音变得温暖。请带上这粒种子，继续描绘你们的未来。' },
 	silver: { item: 'nevermeltice', name: '不融冰', line: '……我没说不喜欢。这个给你。别多想，正好留着没用上。' },

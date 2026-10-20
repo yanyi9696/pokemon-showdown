@@ -93,18 +93,21 @@ describe('Fantasy Rogue companion gifts, railgun and rule breaker', function () 
 		c.type = 'Normal'; c.member = run.team[0].id; c.ability = 'stalwart'; syncBlessingParty(run);
 		assert.equal(c.ability, 'moldbreaker');
 		grantCompanion(run, 'poppy'); grantCompanion(run, 'guzma');
+		require('../../dist/server/fantasy-rogue/travellers').chooseCompanionInvitation(run, run.companionInvitations[0].key, 'acerola');
 		companionCommand(run, { member: 'poppy', value: 'ability:tiekai' }, () => 0, []);
 		companionCommand(run, { member: 'guzma', value: 'ability:huibizaisheng' }, () => 0, []);
 		assert.equal(run.blessings.companions[1].member, run.team[1].id);
 		assert.equal(run.blessings.companions[2].member, run.team[1].id);
 	});
 	it('streamers and Guzma prefer fights; Iris prefers partners and Lana counts fishing starts once', () => {
-		const run = party([set()]); run.phase = 'event';
 		const options = [{ id: 'fight', name: '战斗' }, { id: 'adopt', name: '照顾伙伴' }, { id: 'fishstart', name: '借我试试' }];
-		for (const id of ['iono', 'canari', 'guzma', 'iris', 'lana']) grantCompanion(run, id);
+		for (const id of ['iono', 'canari', 'guzma', 'iris']) {
+			const r = party([set()]); r.phase = 'event'; grantCompanion(r, id);
+			r.node = {kind: 'event', event: {id: 'fishing', key: 'fish', stage: 'choice'}};
+			assert.equal(companionRecommendation(r, r.blessings.companions[0], options), id === 'iris' ? 'adopt' : 'fight');
+		}
+		const run = party([set()]); run.phase = 'event'; grantCompanion(run, 'lana');
 		run.node = { kind: 'event', event: { id: 'fishing', key: 'fish', stage: 'choice' } };
-		for (const id of ['iono', 'canari', 'guzma']) assert.equal(companionRecommendation(run, run.blessings.companions.find(c => c.id === id), options), 'fight');
-		assert.equal(companionRecommendation(run, run.blessings.companions.find(c => c.id === 'iris'), options), 'adopt');
 		for (let i = 0; i < 15; i++) {
 			run.node.event = { id: 'fishing', key: 'fish' + i, stage: 'choice' };
 			recordCompanionPreference(run, options, 'fishstart', () => 0);

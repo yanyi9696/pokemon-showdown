@@ -11,6 +11,7 @@ import type { Side } from './side';
 import { reportRogueStatuses } from './fantasy-rogue-status';
 import { consumeRogueItem } from './fantasy-rogue-items';
 import { mentorCardProfile } from './rogue-mentor';
+import { dragonKingActive } from './rogue-blessing-permanent';
 import { companionSource } from './rogue-companions';
 import { companionZRequest } from './rogue-companion-z';
 import { railgunActive, rulebreakerActive } from './rogue-special-blessings';
@@ -153,7 +154,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 				[type, roguePowerModifiers(mon, { ...move, type }, true)])) } : {}) }];
 	}));
 	const abilitySources = Object.fromEntries((blessingEffects(mon)?.companions || [])
-		.filter(c => c.member === saved.id && c.ability).map(c => [c.ability!, companionSource(c.id)]));
+		.filter(c => !c.away && c.member === saved.id && c.ability).map(c => [c.ability!, companionSource(c.id)]));
 	for (const [family, extra, source] of [['godrobe', ['sharpness', 'jiqususheng'], '神衣鲜血'],
 		['puregodrobe', ['stalwart', 'sheerforce'], '神衣纯洁']] as const) {
 		if (robeMember(team, effects, family)?.id === saved.id) for (const id of extra) abilitySources[id] = source;
@@ -198,7 +199,7 @@ function battleKingOptions(mon: Pokemon) {
 /** The campaign king is immutable here; succession belongs only to this battle. */
 export function battleDragonKing(player: Side) {
 	const first = player.pokemon[0];
-	if (!hasBlessing(first, 'dragonking')) return undefined;
+	if (!dragonKingActive(blessingEffects(first))) return undefined;
 	const runtime = side(first);
 	if (!runtime.dragonKing) {
 		const saved = blessingEffects(first)?.dragonKing;
@@ -283,7 +284,7 @@ export function prepareBlessingMember(mon: Pokemon) {
 	const state = mon.battle.fantasyRogue;
 	const abilities: string[] = saved ? assignedExtraAbilities(saved, mon.side.id === 'p1' ? state.team : state.duel?.team || [], blessingEffects(mon), false) : [];
 	for (const companion of blessingEffects(mon)?.companions || []) {
-		if (companion.member === mon.set.fantasyRogueId && companion.ability) abilities.push(companion.ability);
+		if (!companion.away && companion.member === mon.set.fantasyRogueId && companion.ability) abilities.push(companion.ability);
 	}
 	for (const [family, ability] of [['hazards', 'yanbuzhen'], ['toxic', 'merciless']]) {
 		if (hasBlessing(mon, family)?.target === mon.set.fantasyRogueId) abilities.push(ability);
@@ -318,7 +319,7 @@ export function blessingSwitchIn(mon: Pokemon) {
 		mon.battle.add('-message', '【某科学超电磁炮】永久电磁漂浮；【电磁炮】升级为【超电磁炮】，威力与命中率翻倍。');
 	}
 	if (rulebreakerActive(mon)) mon.battle.add('-message', '【规则，就是用来打破的】破格伙伴无视能力下降、天气减益与对手的防护和属性免疫。');
-	for (const companion of blessingEffects(mon)?.companions || []) if (companion.member === mon.set.fantasyRogueId && companion.ability) {
+	for (const companion of blessingEffects(mon)?.companions || []) if (!companion.away && companion.member === mon.set.fantasyRogueId && companion.ability) {
 		mon.battle.add('-message', `${companionSource(companion.id)}${mon.name}获得额外特性【${mon.battle.dex.abilities.get(companion.ability).name}】。`);
 	}
 	if (mon.m.rogueCaptureRage) {

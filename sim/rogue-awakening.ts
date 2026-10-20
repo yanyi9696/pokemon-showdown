@@ -17,7 +17,7 @@ export function robeMember(team: RoguePokemon[], effects: BlessingEffects | unde
 	const owned = effects?.owned.find(b => b.family === kind);
 	if (!owned) return;
 	const transfer = kind === 'godrobe' ? 'yveltal' : 'reshiram';
-	const bases = owned.target ? [transfer] : kind === 'godrobe' ? ['seviper'] : ['espurr', 'meowstic'];
+	const bases = owned.target ? [transfer] : kind === 'godrobe' ? ['zangoose'] : ['espurr', 'meowstic'];
 	const sum = (v: Partial<StatsTable>) => Object.values(v || {}).reduce((n, x) => n + (x || 0), 0);
 	return team.filter(mon => !mon.egg && (!owned.target || owned.target === mon.id) &&
 		bases.includes(toID(Dex.mod('gen9fantasy').species.get(mon.set.species).baseSpecies).replace(/fantasy$/, '')) &&

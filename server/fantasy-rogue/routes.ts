@@ -1,6 +1,7 @@
 import type { RogueNode, RogueRun } from './types';
 import { weightedPick, type RogueRandom } from './biome-pools';
 import { tradeKind, TRADE_NAMES } from './trading';
+import { companionOwned } from '../../sim/rogue-companions';
 
 export const ROUTE_STAGES = [2, 4, 8, 12, 16];
 export const RED_ROUTES = ['wild', 'elite', 'trainer'];
@@ -23,7 +24,7 @@ export function normalizeRouteHistory(run: RogueRun) {
 /** One red, one blue, then a weighted third option; only wild/events can repeat. */
 export function rollRoutes(run: RogueRun, pool: RogueNode[], random: RogueRandom): RogueNode[] {
 	const history = normalizeRouteHistory(run), weights = baseRouteWeights(run.floor);
-	if (run.blessings?.owned.some(b => b.family === 'companionpoppy')) weights.reward *= 1.3;
+	if (companionOwned(run.blessings, 'poppy')) weights.reward *= 1.3;
 	const elapsed = Math.max(0, run.floor - history.floor);
 	const factors = Object.fromEntries(Object.keys(weights).map(kind =>
 		[kind, 1 - (1 - (history.factors[kind] ?? 1)) * 0.5 ** elapsed]));

@@ -4,7 +4,7 @@ import { GYM_GIFT_LINES, TRAINER_DIALOGUE, GYM_LEAGUE_LINES } from './trainer-di
 import { ELITE_FOUR_FLOORS } from './trainer-bosses';
 import { ELITE_BOSS_FLOORS } from './content';
 import { opposingCompanion } from './companion-rematches';
-import { COMPANIONS } from '../../sim/rogue-companions';
+import { TRAVELLERS } from './traveller-profiles';
 import { dialoguePage, type NarrativePage } from './narrative';
 
 export type RogueStoryStage = 'opening' | 'spirit' | 'spiritEffect' | 'climb' | 'cards' | 'portal' |
@@ -141,7 +141,7 @@ export function bossIntroPages(run: RogueRun): Page[] {
 	if (!trainer) return [];
 	const companion = opposingCompanion(run, trainer);
 	if (companion) return companionIntro(companion).map((text, i) => ({
-		...dialoguePage(companion, COMPANIONS[companion].name, text, i === 0), title: `第 ${run.floor} 层 · 同伴切磋`,
+		...dialoguePage(companion, TRAVELLERS[companion]?.name || trainer.name || companion, text, i === 0), title: `第 ${run.floor} 层 · 同伴切磋`,
 	}));
 	if (!['gym', 'elitefour', 'champion'].includes(trainer.role)) return [];
 	const lines = TRAINER_DIALOGUE[trainer.id]?.[trainer.role as 'gym' | 'elitefour' | 'champion'];
@@ -150,8 +150,8 @@ export function bossIntroPages(run: RogueRun): Page[] {
 		expression: 'neutral' as const,
 	}));
 }
-function companionIntro(id: keyof typeof COMPANIONS): string[] {
-	const lines: Partial<Record<keyof typeof COMPANIONS, string>> = {
+function companionIntro(id: string): string[] {
+	const lines: Partial<Record<string, string>> = {
 		bea: '一路上，你的步伐越来越稳了。今天让我站在对面，看看我们一起练习的成果。',
 		acerola: '嘻嘻，别露出那么紧张的表情嘛！平时一起旅行，今天换我来当你的对手。',
 		iono: '各位观众看好啦——今天登场的是我最熟悉的搭档！让我看看你最近练出了什么绝招！',

@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { companionOwned, type CompanionID } from '../../sim/rogue-companions';
+import { travellingRoster } from './travellers';
 import type { RogueRun, RogueEncounter } from './types';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
@@ -7,7 +7,6 @@ import { lowerToEligibleStage } from './evolution';
 import { encounterCoins, routeCandyReward } from './early-balance';
 import { dialoguePage, queueNarrative, healNarrativeParty } from './narrative';
 import { POLICE_REGIONS, STAR_BOSSES, type PoliceRegion } from './police-data';
-import { rivalActive } from './rivals';
 
 export interface PoliceProgress {
  nextFloor: number;
@@ -15,7 +14,7 @@ export interface PoliceProgress {
 }
 export interface PoliceEvent { choices?: PoliceRegion[]; region?: PoliceRegion; revenge?: boolean; round?: number; friendly?: boolean; fans?: boolean }
 const avatars: Record<string, string> = {rocket: 'rocketgrunt', magma: 'magmagrunt-rse', aqua: 'aquagrunt', archie: 'archie-gen6', galactic: 'galacticgrunt', plasma: 'plasmagrunt-gen5bw', flare: 'flaregrunt', skull: 'skullgrunt', yell: 'yellgrunt', teamstar: 'stargrunt-s'};
-const accompanying = (run: RogueRun, id: string) => !!companionOwned(run.blessings, id as CompanionID) || run.rival?.id === id && rivalActive(run);
+const accompanying = (run: RogueRun, id: string) => travellingRoster(run).some(c => c.id === id);
 const pennyAware = (run: RogueRun) => run.rival?.id === 'penny' || accompanying(run, 'penny');
 function leader(region: PoliceRegion, round: number) {
  const data = POLICE_REGIONS[region];

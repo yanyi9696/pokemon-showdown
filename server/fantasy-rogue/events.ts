@@ -1,4 +1,5 @@
 import { rivalView, chooseRival, settleRival, type RivalEvent } from './rivals';
+import { beginSocialEvent, socialCandidates, socialEventView, chooseSocialEvent, settleSocialEvent, type SocialEvent } from './social-events';
 import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView, chooseExpedition, settleExpedition, type ExpeditionEvent } from './expedition-events';
 import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
 import { eligibleRematches, prepareRematch, rematchView, chooseRematch } from './companion-rematches';
@@ -34,6 +35,7 @@ import { adventureEvent, adventureView, chooseAdventure, settleAdventure, bandit
 import { offerEventFragments, eventFragmentOptions, claimEventFragments, type EventFragmentOffer } from './event-fragments';
 export { EVENT_NAMES, type EventID } from './event-text';
 export interface RogueEvent {
+	social?: SocialEvent;
 	rival?: RivalEvent;
 	expedition?: ExpeditionEvent;
 	rematch?: string;
@@ -50,6 +52,7 @@ export interface RogueEvent {
 	trainingAidGranted?: boolean;
 	trainingAidBlocked?: boolean;
 	trainingAidBattleWin?: boolean;
+	journeyBattleWon?: boolean;
 	service?: import('./event-services').ServiceEvent;
 	memory?: import('./event-travel').TravelMemory;
 	exchange?: { before: string, after: string, member: string };
@@ -96,6 +99,7 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
 	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
 		!['rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
+		(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
 		(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
 		(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
 		(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
@@ -139,6 +143,7 @@ export function forestTeams(level: number, random: RogueRandom) {
 
 export function beginEvent(run: RogueRun, random: RogueRandom) {
 	const id = chooseEvent(run, random);
+	if (id === 'travellermeeting' && beginSocialEvent(run, random)) return;
 	if (id === 'legendarytracks') {
 		beginLegendaryTracks(run, random); (run.eventHistory ||= []).push({ id, floor: run.floor }); return;
 	}
@@ -232,6 +237,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	if (choice === 'leave') event.trainingAidBlocked = true;
 	else event.committed = true;
 	if (event.rival) { chooseRival(run, content, random, choice!); rewardReceipt(run, before); return; }
+	if (event.social) { chooseSocialEvent(run, choice!, random); rewardReceipt(run, before); return; }
 	if (event.expedition) { chooseExpedition(account, run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.rematch) { chooseRematch(run, choice!); return; }
 	if (event.police) { choosePoliceRegion(run, choice!, random); return; }
@@ -380,6 +386,14 @@ export function settleEventBattle(
 ) {
 	const event = run.node?.event;
 	if (!event || event.stage !== 'battle' || event.settled) return;
+	if (!retreated) event.journeyBattleWon = won;
+	if (event.social) {
+		if (!retreated) {
+			const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
+			settleSocialEvent(run, won); rewardReceipt(run, before);
+		}
+		return;
+	}
 	if (event.rival) {
 		if (!retreated) {
 			const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
@@ -437,6 +451,7 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (event.social) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...socialEventView(run) };
 	if (event.rival) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...rivalView(run) };
 	if (expeditionEvent(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...expeditionView(run) };
 	if (event.rematch) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...rematchView(run) };

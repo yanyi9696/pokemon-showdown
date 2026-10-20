@@ -1,4 +1,7 @@
 import { beginRival, rivalRoutes, rivalActive, rivalTeam, expireRival, activeRivalTraveller } from './rivals';
+import { normalizeTravellers, chooseCompanionInvitation, socialCompanionCommand } from './travellers';
+import { companionOptions } from './companions';
+import { beginSocialEvent } from './social-events';
 import { prepareTravellingTrainer } from './travelling-trainers';
 import { beginTeraSolo } from './expedition-events';
 import { hatchEggs } from './eggs';
@@ -14,7 +17,8 @@ import { companionCommand, companionExperience, companionPickup, deliverCompanio
 import { COMPANIONS, companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
 import { eventView } from './events';
-import { buyGrowth, syncGrowthParty, grantMushroomGrowth } from './growth';
+import { migrateGodrobeGift } from './blessings';
+import { buyGrowth, syncGrowthParty, grantMushroomGrowth, grantJourneyGrowth } from './growth';
 import { prepareRewardScene, chooseReward } from './reward-scenes';
 import { randomInt, randomUUID } from 'crypto';
 import { Dex, toID } from '../../sim/dex';
@@ -34,7 +38,7 @@ import { prepareTrade, tradeRouteTemplates, shopStock, machineMoves } from './tr
 import { recycleItems } from './buyback';
 import { canEditParty, inventoryItem, editParty, healingLocked, cureMember, abilityItemTarget, TEAM_ACTIONS } from './team';
 import { useTonic } from './blessing-consumables';
-import { dragonKingAbilityOptions, type DragonKingAbility, TONIC_SECRET } from '../../sim/rogue-blessing-permanent';
+import { dragonKingActive, dragonKingAbilityOptions, type DragonKingAbility, TONIC_SECRET } from '../../sim/rogue-blessing-permanent';
 import { createBiomeRoutes } from './biome-routes';
 import type { RogueRandom } from './biome-pools';
 import { recordStarterMoves, recordStarterTraits, starterMoves, starterTraits } from './starter-traits';
@@ -78,6 +82,7 @@ const inventory = (run: RogueInventory): RogueInventory => structuredClone({
 	team: run.team, bag: run.bag, money: run.money, teraUnlocked: !!run.teraUnlocked,
 	megaUnlocked: run.megaUnlocked, gmegaUnlocked: run.gmegaUnlocked, zUnlocked: run.zUnlocked,
 	growth: run.growth && { ...run.growth },
+	journeyGrowth: run.journeyGrowth && { ...run.journeyGrowth },
 	...(run.box ? { box: run.box } : {}),
 });
 
@@ -109,6 +114,7 @@ export class RogueEngine {
 		return account.run;
 	}
 	private normalizeRun(run: RogueRun) {
+		normalizeTravellers(run);
 		migrateRetiredBalls(run);
 		if (run.node?.trade?.kind === 'balls' && this.content) prepareTrade(run, this.content, this.random);
 		if (run.phase !== 'battle' && run.eventBuff?.battles) {
@@ -164,6 +170,7 @@ export class RogueEngine {
 	private normalizeAccount(account: RogueAccount) {
 		if (!this.content) return;
 		if (!needsOnboarding(account)) account.onboardingSeen = true;
+		if (account.run) migrateGodrobeGift(account, account.run, this.content, this.random);
 		const clears = [...account.cards || [], ...(account.pendingClear ? [account.pendingClear] : [])]
 			.filter(card => card.snapshot.floor === 200);
 		account.unlockedSpirits = [...new Set([...account.unlockedSpirits || [],
@@ -294,6 +301,8 @@ export class RogueEngine {
 			delete run.choices; return;
 		}
 		if (node.kind === 'trainer' && this.content?.events && !beginTeraSolo(run, this.random)) beginExclusiveEncounter(run, this.random);
+		if (node.kind === 'trainer' && this.content?.events && !run.node.event && this.random(100) < 12 &&
+			beginSocialEvent(run, this.random)) { delete run.choices; return; }
 		if (this.content?.events) prepareTravellingTrainer(run, this.random);
 		const announced = run.bossPreviews?.[run.floor];
 		if (announced) for (const encounter of announced.encounters) {
@@ -403,7 +412,7 @@ export class RogueEngine {
 		deliverCompanionPickup(run, this.random);
 	}
 	private beginPreview(run: RogueRun) {
-		const trainer = run.blessings?.companions?.find(c => c.id === 'sada' || c.id === 'turo');
+		const trainer = run.blessings?.companions?.find(c => !c.away && (c.id === 'sada' || c.id === 'turo'));
 		if (!trainer || !run.battle) return;
 		const key = `${run.battle.encounterId}:${run.attempt}`;
 		if (run.preview?.key !== key) run.preview = { key, trainer: trainer.id as 'sada' | 'turo', stage: 'running' };
@@ -448,6 +457,7 @@ export class RogueEngine {
 				...(run.node!.rewardScene?.result ? { effect: run.node!.rewardScene.result } : {}) };
 		}
 		delete run.battle;
+		if (this.content?.events) grantJourneyGrowth(run, this.random);
 		if (this.content?.blessings) completeBlessingFloor(account, run, this.configured(), this.random);
 		poppyRewardPickup(run, this.random);
 		if (run.node?.kind === 'elite' && companionOwned(run.blessings, 'lysandre')) {
@@ -541,6 +551,15 @@ export class RogueEngine {
 	command(userid: string, command: RogueCommand, name = userid) {
 		const updateAccount = (account: RogueAccount) => {
 			this.normalizeAccount(account);
+			if (command.action === 'companioninvite') {
+				requireRule(account.run, '当前没有进行中的冒险。');
+				chooseCompanionInvitation(account.run, command.member, command.value);
+				if (account.run.blessings) syncBlessingParty(account.run);
+				this.presentNarrative(account.run);
+				return;
+			}
+			requireRule(!account.run?.companionInvitations?.length ||
+				['storynext', 'storyskip', 'abandon'].includes(command.action), '请先处理同行邀请，选择保留的两位伙伴。');
 			if (command.action === 'ackfailure') {
 				requireRule(account.run?.phase === 'defeated' && account.run.failure?.key === command.value,
 					'本局结算已更新，请刷新后确认。');
@@ -702,6 +721,7 @@ export class RogueEngine {
 					honeymoon: account.honeymoon && { ...account.honeymoon },
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
 					owner: { id: userid, name },
+					companionsVersion: 1,
 					previousBlessings: [...account.previousBlessings || []],
 					previousRival: account.run?.rival?.id || account.previousRival,
 					encounter: 0, attempt: 0, boosts: { ...account.boosts }, startingSlots: account.slots,
@@ -781,6 +801,9 @@ export class RogueEngine {
 				break;
 			case 'companion':
 				companionCommand(run, command, this.random, eventView(run)?.options || []);
+				break;
+			case 'socialcompanion':
+				socialCompanionCommand(run, command, companionOptions(run, eventView(run)?.options || []));
 				break;
 			case 'previewresult': {
 				const preview = run.preview;
@@ -868,6 +891,7 @@ export class RogueEngine {
 			}
 			case 'dragonking': {
 				requireRule(canEditParty(run) || run.phase === 'blessing', '请在战斗外选择龙王的额外特性。');
+				requireRule(dragonKingActive(run.blessings), '请在爱丽丝同行时选择龙王的额外特性。');
 				syncBlessingParty(run);
 				const king = run.blessings?.dragonKing;
 				requireRule(king && king.member === command.member &&
@@ -905,7 +929,7 @@ export class RogueEngine {
 				} else if (this.beginBossDialogue(run)) break;
 				requireRule(run.phase === 'ready' && run.team.some(mon => mon.hp > 0), '当前不能进入战斗，请先复活至少一名队员。');
 				if (this.content?.blessings) syncBlessingParty(run);
-				requireRule(!run.blessings?.dragonKing || run.blessings.dragonKing.ability ||
+				requireRule(!dragonKingActive(run.blessings) || !run.blessings?.dragonKing || run.blessings.dragonKing.ability ||
 					!dragonKingAbilityOptions(run.team.find(mon => mon.id === run.blessings!.dragonKing!.member)!, run.team, run.blessings).length,
 					'请先在队伍面板中选择龙王的额外特性。');
 				// Old saves may predate persisted opponent gender; resolve it once before choosing the portrait.
@@ -918,6 +942,7 @@ export class RogueEngine {
 				requireRule(!run.blessings?.owned.some(b => b.family === 'companionstreamer') ||
 					run.blessings.companions?.some(c => ['iono', 'canari'].includes(c.id)), '请先选择奇树或卡娜莉。');
 				for (const c of run.blessings?.companions || []) {
+					if (c.away) continue;
 					const mon = run.team.find(p => p.id === c.member);
 					requireRule(c.id !== 'acerola' || c.type || !run.team.some(p => permanentMemberTypes(p).some(t => ['Ghost', 'Normal'].includes(t))), '请先选择阿塞罗拉指导的属性。');
 					requireRule(!mon || c.ability || !companionAbilityOptions(c, mon, run.team, run.blessings!).length, '请先选择同行训练家提供的额外特性。');

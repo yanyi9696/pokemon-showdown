@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Dex, toID } from '../../sim/dex';
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
-import { COMPANIONS, companionGiftOptions } from '../../sim/rogue-companions';
+import { companionGiftOptions } from '../../sim/rogue-companions';
 import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { drawBlessingGift, gift, normalizeBlessings } from './blessings';
@@ -12,7 +12,8 @@ import { rebuildMember } from './progression';
 import { themedEventTeam } from './event-teams';
 import { giveEgg, hatchEggs, eggEventWeight } from './eggs';
 import { EXPEDITION_NAMES, EXPEDITION_OPENINGS } from './expedition-text';
-import { rivalActive } from './rivals';
+import { travellingRoster } from './travellers';
+import { TRAVELLERS } from './traveller-profiles';
 import { RIVALS, RIVAL_SNACK_GIFTS } from './rival-data';
 
 const dex = Dex.mod('gen9fantasy');
@@ -85,8 +86,7 @@ export function expeditionView(run: RogueRun) {
 		} else if (id === 'fossillab') options = [option('restore', '交付一套完整化石，进行复活。', !availableFossils(run).length)];
 		else if (id === 'snacks') {
 			options = run.team.filter(m => !m.egg).map(m => option(`snackmon:${m.id}`, `送给【${m.set.species}】一份点心 · ${fee(run)} 金币`, run.money < fee(run)));
-			for (const c of run.blessings?.companions || []) options.push(option(`snacktrainer:${c.id}`, `请${COMPANIONS[c.id].name}吃点心 · ${fee(run)} 金币`, run.money < fee(run)));
-			if (rivalActive(run)) options.push(option('snackrival', `请${RIVALS[run.rival!.id].name}吃点心 · ${fee(run)} 金币`, run.money < fee(run)));
+			for (const c of travellingRoster(run)) options.push(option(c.origin === 'rival' ? 'snackrival' : `snacktrainer:${c.id}`, `请${c.name}吃点心 · ${fee(run)} 金币`, run.money < fee(run)));
 			options.push(option('leave', '先把香味记在心里。'));
 		} else if (id === 'starmaster') options = [option('challenge', '接受摘星试炼。'), option('leave', '下次准备得更充分再来。')];
 		else if (id === 'blackjack') options = state.step ? [
@@ -148,12 +148,15 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 			give(run, token.item);
 			finish(run, `【同行劲敌 - ${RIVALS[r.id].name}】接过点心，露出了愉快的神情。`, `「${token.line}」你收到了一份${token.name}回礼。`);
 		} else {
-			const c = run.blessings!.companions!.find(m => m.id === choice.slice(13))!;
-			c.smile = 'approval'; c.messageAt = Date.now(); c.message = '这份心意我收到了。下次也一起分享吧。';
-			const token = companionGiftOptions(c.id)[0];
+			const id = choice.slice(13), person = travellingRoster(run).find(c => c.id === id)!;
+			const c = run.blessings?.companions?.find(m => m.id === id && !m.away);
+			const message = '这份心意我收到了。下次也一起分享吧。';
+			if (c) { c.smile = 'approval'; c.messageAt = Date.now(); c.message = message; }
+			if (person.origin === 'carmine') run.rival!.carmine!.affection++;
+			const token = c ? companionGiftOptions(c.id)[0] : TRAVELLERS[id].gifts[0];
 			// A snack return is separate from the once-per-run fifteen-choice gift.
 			give(run, token ? toID((dex.items.get(token.id).name)) : 'sitrusberry');
-			finish(run, `【同行训练家 - ${COMPANIONS[c.id].name}】接过点心，露出了愉快的神情。`, `「${c.message}」你也收到了一份${token?.name || '文柚果'}回礼。`);
+			finish(run, `【同行训练家 - ${person.name}】接过点心，露出了愉快的神情。`, `「${message}」你也收到了一份${token?.name || '文柚果'}回礼。`);
 		}
 	} else if (choice === 'talk') {
 		state.step = 'reply'; event.result = ['聊起旅途见闻，你意外发现他总是在意那些被旁人忽略的病患。', '「有时救回一个生命，比得到谁的认可都难。」他看着炉火，声音低了下来。你决定……'];
