@@ -5,6 +5,7 @@ import { ROGUE_DUEL_FORMAT, ROGUE_STATS, type RogueBattleState } from '../../sim
 import { roguePartyLimit, rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 import { rogueRulesVersion, type RogueClearCard } from './legacy';
 import { rebuildMember } from './progression';
+import { rogueAccess } from './access';
 import type { RogueStore } from './store';
 
 function requireRule(ok: unknown, message: string): asserts ok { if (!ok) throw new Error(message); }
@@ -76,6 +77,7 @@ export class RogueDuels {
 	}
 	private available(user: User) {
 		requireRule(user.connected && user.named, '对方已离线。');
+		requireRule(rogueAccess(user), '对战双方都需要当前有效的幻想杯肉鸽内测权限。');
 		requireRule(![...user.games].some(id => Rooms.get(id)?.battle && !Rooms.get(id)!.battle!.ended), '玩家正在对战中，请结束后再约战。');
 	}
 	private card(id: string | undefined, owner?: string) {
@@ -129,10 +131,11 @@ export class RogueDuels {
 		this.card(invite.toCard, user.id);
 		const b = this.card(command.card || invite.toCard, user.id);
 		const state = buildRogueDuelState(a, b);
+		const closedBeta = Config.fantasyrogue?.publicAccess !== true;
 		const room = Rooms.createBattle({ format: ROGUE_DUEL_FORMAT, rated: false, allowRenames: false,
 			fantasyRogueDuel: state, players: [
-				{ user: challenger, team: Teams.pack(state.team.map(mon => mon.set)) },
-				{ user, team: Teams.pack(state.duel!.team.map(mon => mon.set)) },
+				{ user: challenger, team: Teams.pack(state.team.map(mon => mon.set)), hidden: closedBeta, inviteOnly: closedBeta },
+				{ user, team: Teams.pack(state.duel!.team.map(mon => mon.set)), hidden: closedBeta, inviteOnly: closedBeta },
 			] });
 		requireRule(room, '当前服务器暂不能创建对战，请稍后重试。');
 		this.invitations.delete(invite.id);

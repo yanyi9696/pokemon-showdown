@@ -51,6 +51,7 @@ describe('Fantasy Rogue real legacy invitations', function () {
 		const room = Rooms.get(result.roomid); rooms.push(room);
 		assert.equal(room.battle.p1.id, a.id); assert.equal(room.battle.p2.id, b.id);
 		assert(!room.battle.fantasyAI); assert(!room.battle.rated);
+		assert(!room.settings.isPrivate, 'explicit public access retains normal public duels');
 		assert.deepEqual(manager.duel(b, { action: 'accept', id: invite.invitation, card: cb.id }), result);
 		const start = Date.now();
 		while (!room.battle.p1.request.request) {
@@ -61,6 +62,33 @@ describe('Fantasy Rogue real legacy invitations', function () {
 		room.battle.forfeit(b);
 		await delay(40);
 		assert.deepEqual(store.get(a.id), beforeA); assert.deepEqual(store.get(b.id), beforeB);
+	});
+	it('keeps closed-beta duels out of battle listings and rejects uninvited direct spectators', async () => {
+		const [a, b, outsider] = users, ca = save(a), cb = save(b);
+		Config.fantasyailocal = false;
+		Config.fantasyrogue = { enabled: true, publicAccess: false, betaAccounts: [a.id, b.id] };
+		a.registered = b.registered = true;
+		const invite = manager.duel(a, { action: 'challenge', card: ca.id, target: cb.id });
+		const result = manager.duel(b, { action: 'accept', id: invite.invitation, card: cb.id });
+		const room = Rooms.get(result.roomid); rooms.push(room);
+		assert.equal(room.settings.isPrivate, 'hidden'); assert.equal(room.settings.modjoin, '%');
+		assert(a.inRooms.has(room.roomid)); assert(b.inRooms.has(room.roomid));
+		assert(!Rooms.global.getBattles('')[room.roomid]);
+		assert.equal(await outsider.tryJoinRoom(room.roomid, outsider.connections[0]), false);
+		assert(!outsider.inRooms.has(room.roomid));
+	});
+	it('checks both accounts before sending and again before accepting a beta invitation', () => {
+		const [a, b] = users, ca = save(a), cb = save(b);
+		Config.fantasyailocal = false;
+		Config.fantasyrogue = { enabled: true, publicAccess: false, betaAccounts: [a.id] };
+		a.registered = b.registered = true;
+		assert.throws(() => manager.duel(a, { action: 'challenge', card: ca.id, target: cb.id }), /内测权限/);
+		assert.equal(manager.duels.list(b.id).length, 0);
+		Config.fantasyrogue.betaAccounts.push(b.id);
+		const invite = manager.duel(a, { action: 'challenge', card: ca.id, target: cb.id });
+		Config.fantasyrogue.betaAccounts = [b.id];
+		assert.throws(() => manager.duel(b, { action: 'accept', id: invite.invitation, card: cb.id }), /内测权限/);
+		assert.equal(a.games.size, 0); assert.equal(b.games.size, 0);
 	});
 	it('checks public status, ownership, spirit groups and blocked challenges before sending', () => {
 		const [a, b] = users, ca = save(a), cb = save(b, 'kyogre');
