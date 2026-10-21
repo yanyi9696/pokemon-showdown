@@ -294,6 +294,7 @@ describe('Fantasy Rogue saved regional encounters', () => {
 		const migrated = account();
 		engine.migrate(user);
 		assert.deepEqual(account(), migrated);
-		assert.equal(migrated.run.choices.find(node => node.kind === 'wild').biome.name, '绿茵森林');
+		assert.notEqual(migrated.run.choices.find(node => node.kind === 'wild').biome.id, node.biome.id,
+			'the ecology already offered on this floor remains in its saved cooldown');
 	});
 });

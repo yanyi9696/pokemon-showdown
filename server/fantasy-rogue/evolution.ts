@@ -85,22 +85,57 @@ function wildAppearanceLevel(name: string, biome: RogueBiome): number {
 export function wildStageAtLevel(
 	name: string, level: number, biome: RogueBiome, tier: number, random: RogueRandom = randomInt
 ): string {
+	return resolveWildStages(name, level, biome, tier, random)[0];
+}
+
+/** The codex enumerates the same branches as encounter generation, without random sampling. */
+export function possibleWildStages(name: string, level: number, biome: RogueBiome, tier: number): string[] {
+	return resolveWildStages(name, level, biome, tier);
+}
+
+function wildEvolutionChoices(species: Species, previous: number, listed: Set<string>) {
+	return evolutionChildren(species.name).map(child => ({
+		child,
+		level: Math.max(minimumEvolutionLevel(child.name), child.evoLevel ||
+		(listed.has(child.name) ? 1 : Math.max(20, previous + 15))),
+	}));
+}
+
+/** Only these level boundaries can change the resolver's outcome. Avoid scanning
+ * all 98 levels per slot while building the lazy ecology catalog. */
+export function wildStageLevels(name: string, biome: RogueBiome, tier: number) {
+	const species = dex.species.get(name), levels = new Set([3, 51, 100]);
+	let parent: string | undefined = name;
+	while (parent) {
+		levels.add(minimumEvolutionLevel(parent));
+		parent = evolutionParent(parent);
+	}
+	const listed = new Set(biome.tiers[tier].flatMap(slot => slot.species));
+	const appearance = wildAppearanceLevel(name, biome);
+	const walk = (current: Species, anchor: number, depth: number) => {
+		if (depth >= 5) return;
+		for (const choice of wildEvolutionChoices(current, anchor, listed)) {
+			levels.add(choice.level);
+			walk(choice.child, choice.level, depth + 1);
+		}
+	};
+	walk(species, Number.isFinite(appearance) ? appearance : partyEvolutionLevel(name), 0);
+	return [...levels].filter(level => level >= 3 && level <= 100).sort((a, b) => a - b);
+}
+
+function resolveWildStages(name: string, level: number, biome: RogueBiome, tier: number, random?: RogueRandom): string[] {
 	let species = dex.species.get(lowerToEligibleStage(name, level));
 	// A too-early evolved slot becomes its own pre-evolution, never a different eligible branch.
-	if (species.name !== dex.species.get(name).name) return species.name;
+	if (species.name !== dex.species.get(name).name) return [species.name];
 	let previous = wildAppearanceLevel(species.name, biome);
 	if (!Number.isFinite(previous)) previous = partyEvolutionLevel(species.name);
 	const explicitlyListed = new Set(biome.tiers[tier].flatMap(slot => slot.species));
-	for (let depth = 0; depth < 5; depth++) {
-		const choices = evolutionChildren(species.name).map(child => ({
-			child,
-			level: Math.max(minimumEvolutionLevel(child.name), child.evoLevel ||
-				(explicitlyListed.has(child.name) ? 1 : Math.max(20, previous + 15))),
-		})).filter(option => option.level <= level);
-		if (!choices.length) break;
-		const selected = choices[random(choices.length)];
-		species = selected.child;
-		previous = selected.level;
-	}
-	return species.name;
+	const walk = (current: Species, anchor: number, depth: number): string[] => {
+		if (depth >= 5) return [current.name];
+		const choices = wildEvolutionChoices(current, anchor, explicitlyListed).filter(option => option.level <= level);
+		if (!choices.length) return [current.name];
+		const selected = random ? [choices[random(choices.length)]] : choices;
+		return selected.flatMap(option => walk(option.child, option.level, depth + 1));
+	};
+	return [...new Set(walk(species, previous, 0))];
 }

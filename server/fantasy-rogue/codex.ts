@@ -1,4 +1,5 @@
 import { trainerCodex } from './trainer-codex';
+import { biomeCodex } from './biome-codex';
 import { createHash } from 'crypto';
 import { RIVALS, RIVAL_SCENES } from './rival-data';
 import { rivalChapterReplay } from './rival-dialogue';
@@ -52,6 +53,7 @@ function buildFantasyGuide() {
 			abilities: [...new Set(Object.values(species.abilities))], stats: species.baseStats,
 			battleOnly: !!species.battleOnly, requiredItem: species.requiredItem }));
 	const itemNotes = [
+		{ id: 'leaderscrest', name: '头领凭证', text: '进化道具，与黑奇石归为一类。劈斩司令在队伍进化面板消耗一枚后，直接进化为仆刀将军。' },
 		{ id: 'greninjaashz', name: '智蛙 Z', text: '完成【甲贺忍蛙护林员】两阶段事件获得，并解锁本局 Z 招式。幻想甲贺忍蛙携带它，在肉鸽战斗中登场时切换为小智版形态；以【飞水手里剑】释放专属 Z 招式【黄金羁绊手里剑】。预定 Z 招式的赠送范围包含进化后拥有这类自制专属纯晶的伙伴。' },
 		{ id: 'megastones', name: '超级进化石与超巨进化许愿星',
 			text: '超级进化石由对应宝可梦携带，解锁超进化系统后可在战斗中使用。' +
@@ -67,7 +69,7 @@ function buildFantasyGuide() {
 export function rogueCodex(account: RogueAccount | undefined, section: CodexSection, preview = false) {
 	if (section === 'guide') {
 		guideCache ||= buildFantasyGuide();
-		return { section, guide: guideCache };
+		return { section, preview, guide: { ...guideCache, modules: { ...guideCache.modules, biomes: biomeCodex(account, preview) } } };
 	}
 	const discovered = account ? rogueDiscoveries(account) : { blessings: [], events: [], trainers: [] };
 	if (section === 'blessings') return { section, preview, entries: ROGUE_BLESSINGS.flatMap(def => blessingCodexFloors(def).map(floor => {

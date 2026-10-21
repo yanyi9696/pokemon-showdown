@@ -28,6 +28,13 @@ export function isFriendshipEvolution(species: Species) {
 	return species.evoType === 'levelFriendship' || species.id === 'sylveon';
 }
 
+function genderRequirement(mon: RoguePokemon, child: Species): EvolutionRequirement[] {
+	// Fixed gender is species metadata, not always an additional evolution condition.
+	// In particular N means genderless, never male.
+	if (!['M', 'F'].includes(child.gender) || dex.species.get(mon.set.species).gender === child.gender) return [];
+	return [{ text: `性别为${child.gender === 'F' ? '雌性' : '雄性'}`, met: mon.set.gender === child.gender }];
+}
+
 function friendshipRequirements(mon: RoguePokemon, child: Species, floor: number): EvolutionRequirement[] {
 	const conditions: EvolutionRequirement[] = [{
 		text: `亲密度达到 ${ROGUE_FRIENDSHIP_EVOLUTION}（当前 ${friendship(mon)}）`,
@@ -41,9 +48,7 @@ function friendshipRequirements(mon: RoguePokemon, child: Species, floor: number
 	if (child.id === 'espeon' || child.id === 'umbreon') {
 		conditions.push({ text: '当前未装备妖精属性招式（否则优先进化为仙子伊布）', met: !fairyMove });
 	}
-	if (child.gender) conditions.push({
-		text: `性别为${child.gender === 'F' ? '雌性' : '雄性'}`, met: mon.set.gender === child.gender,
-	});
+	conditions.push(...genderRequirement(mon, child));
 	return conditions;
 }
 
@@ -68,12 +73,13 @@ export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1
 				met: (context.money || 0) >= GHOLDENGO_EVOLUTION_COINS });
 		} else if (isFriendshipEvolution(child)) {
 			conditions.push(...friendshipRequirements(mon, child, context.floor));
+		} else if (child.id === 'kingambit') {
+			// Tower adaptation: use a Crest directly, with no additional level or KO counter.
+			item = 'leaderscrest';
 		} else {
 			const level = partyEvolutionLevel(child.name);
 			conditions.push({ text: `等级达到 Lv.${level}${child.evoLevel ? '' : '（塔内特殊进化等级）'}`, met: mon.set.level >= level });
-			if (child.gender) conditions.push({
-				text: `性别为${child.gender === 'F' ? '雌性' : '雄性'}`, met: mon.set.gender === child.gender,
-			});
+			conditions.push(...genderRequirement(mon, child));
 			if (child.evoType === 'useItem') item = toID(child.evoItem || (child.id === 'kleavor' ? 'Black Augurite' : ''));
 			if (child.evoType === 'trade') item = 'linkingcord';
 			if (['trade', 'levelHold'].includes(child.evoType || '') && child.evoItem) {
@@ -88,12 +94,12 @@ export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1
 				}
 				if (child.evoCondition === 'at night') conditions.push({ text: '夜晚', met: rogueTime(context.floor) === 'night' });
 			}
-			if (item) conditions.push({
-				text: item === 'linkingcord' ? '使用（塔内替代通信进化）' : '使用',
-				name: item === 'linkingcord' ? '联系绳' : dex.items.get(item).name,
-				met: (context.bag[item] || 0) > 0, resource: true,
-			});
 		}
+		if (item) conditions.push({
+			text: item === 'linkingcord' ? '使用（塔内替代通信进化）' : '使用',
+			name: item === 'linkingcord' ? '联系绳' : item === 'leaderscrest' ? '头领凭证' : dex.items.get(item).name,
+			met: (context.bag[item] || 0) > 0, resource: true,
+		});
 		return { species: child.name, ...(item ? { item } : {}), ...(heldItem ? { heldItem } : {}), requirements: conditions,
 			ready: conditions.every(condition => condition.met) && mon.hp > 0 };
 	});

@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-21",
+  "contentVersion": "c169611824913011",
+  "server": {
+    "build": "passed",
+    "typecheck": "passed: tsc --noEmit --ignoreDeprecations 5.0",
+    "rogueTests": {"passed": 2315, "failed": 0, "scope": "2300 in fantasy-rogue-*.js plus 15 in fantasy-rogue.js"},
+    "newEcologyEvolutionTests": 11,
+    "newModuleLint": "passed",
+    "diffWhitespace": "passed"
+  },
+  "client": {
+    "fullBuild": "passed: node build full --local-server ../pokemon-showdown",
+    "tests": {"passed": 305, "pending": 1, "failed": 0},
+    "newEcologyCrestTests": 2,
+    "javascriptSyntax": "passed",
+    "diffWhitespace": "passed",
+    "nonblockingBuildWarning": "PHP is unavailable for fetching news; checked both built entrypoints retain the configured announcement."
+  },
+  "localService": {
+    "port": 8000,
+    "activeBattlesBeforeRestart": 0,
+    "restart": "passed",
+    "backup": "databases/backups/local-restart-2026-10-21T04-33-54-408Z",
+    "webSocketRestore": "passed",
+    "restoredFloor": 1,
+    "restoredPhase": "choose",
+    "criticalSavePreserved": true,
+    "repeatedReadsDoNotMutate": true,
+    "otherAccountsUnchanged": 19,
+    "ecologyCodexEntries": 14,
+    "blessingEntries": 189,
+    "eventsAndTrainerEntries": 235,
+    "explicitPureRobeDescription": true,
+    "localCrestAsset": true
+  },
+  "campaign": {
+    "method": "native engine scripted campaign, isolated save",
+    "floor": 200,
+    "phase": "complete",
+    "startingSlots": 2,
+    "externalStatBoosts": 0,
+    "towerSpirit": false,
+    "battles": 148,
+    "turns": 799,
+    "actualCaptures": 23,
+    "battleLosses": 3,
+    "saveRewinds": 0,
+    "forcedWins": 0,
+    "resourceGrantsOutsideNormalGameplay": 0,
+    "hiddenEnemyStateRead": false,
+    "evidence": "campaign-evidence.json",
+    "caveat": "Trainer bosses follow production search; the probe also uses search for fixed wild bosses, which currently use immediate decisions in the live controller. This is not a browser/human playtest or a win-rate estimate."
+  },
+  "notValidated": ["browser click-through", "mobile frame rate", "human minigame controls", "all blessings through full campaigns", "remote service deployment"],
+  "publication": {
+    "policy": "Follow the prior user-approved main and Rogue synchronization policy.",
+    "serverTargets": ["master", "codex/fantasy-rogue"],
+    "clientTargets": ["fantasy", "codex/fantasy-rogue"],
+    "verification": "Branch publication is verified after this report is committed and reported in the final response. Remote deployment is separate."
+  }
+}

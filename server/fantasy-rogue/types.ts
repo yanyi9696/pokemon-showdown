@@ -145,6 +145,8 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	/** Ecologies offered on recent floors, shared by wild and elite routes. */
+	biomeHistory?: { id: string, floor: number }[];
 	greninjaTraining?: import('./greninja-training').GreninjaTraining;
 	socialCompanions?: import('./travellers').SocialCompanion[];
 	companionInvitations?: import('./travellers').CompanionInvitation[];
@@ -236,6 +238,8 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	/** Actual captures in each ecology; gifts and catches elsewhere never reveal an icon here. */
+	biomeCaptures?: Record<string, string[]>;
 	previousRival?: import('./rival-data').RivalID;
 	honeymoon?: import('./honeymoon').HoneymoonTrip;
 	/** Account-wide acknowledgement, independent of adventures and codex unlocks. */

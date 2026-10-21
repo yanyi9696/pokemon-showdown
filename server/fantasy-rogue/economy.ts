@@ -157,8 +157,9 @@ const PRICES: Record<string, number> = {
 /** Same quote for the client and transaction; no fee when there is nothing this center can restore. */
 export function centerCare(run: RogueRun) {
 	const revives = run.spirit !== 'yveltal';
-	const fainted = revives ? run.team.filter(mon => !mon.hp).length : 0;
-	const needed = run.team.some(mon => (revives || mon.hp > 0) &&
+	const partners = run.team.filter(mon => !mon.egg);
+	const fainted = revives ? partners.filter(mon => !mon.hp).length : 0;
+	const needed = partners.some(mon => (revives || mon.hp > 0) &&
 		(revives && mon.hp < mon.maxhp || mon.status || Object.keys(mon.statuses || {}).length ||
 			[...mon.pp, ...(mon.moveMemory || []), ...(mon.blessingPP || [])].some(slot => slot.pp < slot.maxpp)));
 	const base = Math.ceil((150 + 5 * run.floor) / 50) * 50;

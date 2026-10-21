@@ -189,6 +189,7 @@ export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
 	const slot = Object.entries(old.abilities).find(([, ability]) => ability === mon.set.ability)?.[0] || '0';
 	mon.set.species = next.name;
 	mon.set.name = next.name;
+	if (next.gender) mon.set.gender = next.gender;
 	mon.set.ability = next.abilities[slot as '0'] || next.abilities[0];
 	mon.abilityPool = mon.abilityPool!.map(entry => {
 		const oldSlot = Object.entries(old.abilities).find(([, ability]) => toID(ability) === entry.id)?.[0];

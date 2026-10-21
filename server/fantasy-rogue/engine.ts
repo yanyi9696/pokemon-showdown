@@ -116,6 +116,13 @@ export class RogueEngine {
 	}
 	private normalizeRun(run: RogueRun) {
 		repairSavedEncounters(run);
+		if (this.content?.biomeEncounters && !run.biomeHistory) {
+			// Legacy saves retain this floor's offers/opponent, but not older ecologies.
+			// Recover only that evidence; never invent the missing preceding five floors.
+			const known = [...(run.choices || []), ...(run.node ? [run.node] : [])];
+			const ids = [...new Set(known.flatMap(node => node.biome ? [node.biome.id] : []))];
+			if (ids.length) run.biomeHistory = ids.map(id => ({ id, floor: run.floor }));
+		}
 		normalizeTravellers(run);
 		migrateRetiredBalls(run);
 		if (run.node?.trade?.kind === 'balls' && this.content) prepareTrade(run, this.content, this.random);
@@ -269,7 +276,12 @@ export class RogueEngine {
 		if (this.content.events) templates = rivalRoutes(run, templates, this.random);
 		run.choices = this.content.biomeEncounters ?
 			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard,
-				(run.blessings?.owned || []).flatMap(b => b.family === 'godrobe' ? ['Yveltal'] : b.family === 'puregodrobe' ? ['Reshiram'] : [])) : structuredClone(templates);
+				(run.blessings?.owned || []).flatMap(b => b.family === 'godrobe' ? ['Yveltal'] : b.family === 'puregodrobe' ? ['Reshiram'] : []),
+				run.biomeHistory) : structuredClone(templates);
+		if (this.content.biomeEncounters) run.biomeHistory = [
+			...(run.biomeHistory || []).filter(entry => run.floor - entry.floor <= 5),
+			...run.choices.flatMap(node => node.biome ? [{ id: node.biome.id, floor: run.floor }] : []),
+		];
 		if (this.content.wildTreasures) {
 			for (const node of run.choices) prepareEconomy(node, run.floor, this.random);
 		}
@@ -1211,6 +1223,11 @@ export class RogueEngine {
 		account.caughtSpecies ||= [];
 		const species = toID(captured.set.species);
 		if (!account.caughtSpecies.includes(species)) account.caughtSpecies.push(species);
+		if (run.node?.biome) {
+			account.biomeCaptures ||= {};
+			const catches = account.biomeCaptures[run.node.biome.id] ||= [];
+			if (!catches.includes(species)) catches.push(species);
+		}
 		const count = account.captures[rule.starter] = (account.captures[rule.starter] || 0) + 1;
 		if (count >= rule.captures && !account.unlocked.includes(rule.starter)) account.unlocked.push(rule.starter);
 		recordStarterTraits(account, this.configured(), captured.set, true);

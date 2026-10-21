@@ -1,0 +1,9 @@
+# Keep reproducible summaries and reports in Git; raw local QA saves/logs stay on disk.
+run-*/campaign.db*
+run-*/actions.jsonl
+run-*/driver-state.json
+run-*/final-save.json
+run-*/progress.json
+run-*/summary.json
+run-*/battle-*.log
+run-*/battle-*-decisions.json

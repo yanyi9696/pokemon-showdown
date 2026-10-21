@@ -17,13 +17,24 @@ export type WildEvolutionResolver = (
 /** Called only inside the save transaction when a floor's routes are first created. */
 export function createBiomeRoutes(
 	floor: number, templates: RogueNode[], evolve: WildEvolutionResolver = wildStageAtLevel,
-	random: RogueRandom = randomInt, spirit?: string, card?: string, attractedLegends: string[] = []
+	random: RogueRandom = randomInt, spirit?: string, card?: string, attractedLegends: string[] = [],
+	history: { id: string, floor: number }[] = []
 ): RogueNode[] {
 	const allExtras = unlistedFamilies();
+	const blocked = new Set(history.filter(entry => entry.floor <= floor && floor - entry.floor <= 5).map(entry => entry.id));
 	return templates.map(template => {
 		if (template.kind !== 'wild' && template.kind !== 'elite') return structuredClone(template);
 		const elite = template.kind === 'elite';
-		const biome = weightedPick(RogueBiomes, random);
+		let available = RogueBiomes.filter(biome => !blocked.has(biome.id));
+		// Official routes offer at most two ecologies per floor (14 pools cover six floors).
+		// Retain compatibility with custom packs that offer more than the finite pool permits.
+		if (!available.length) {
+			const last = (id: string) => Math.max(-1, ...history.filter(entry => entry.id === id).map(entry => entry.floor));
+			const oldest = Math.min(...RogueBiomes.map(biome => last(biome.id)));
+			available = RogueBiomes.filter(biome => last(biome.id) === oldest);
+		}
+		const biome = weightedPick(available, random);
+		blocked.add(biome.id);
 		const tier = biomeTier(floor, elite);
 		const level = Math.min(100, Math.max(3, Math.ceil(floor / 2)) + (elite ? 5 : 0) +
 			rogueWildLevelBonus(floor, spirit));

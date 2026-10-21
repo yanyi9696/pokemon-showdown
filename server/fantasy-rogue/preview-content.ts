@@ -137,6 +137,8 @@ export function createPreviewContent(): RogueContent {
 				id: toID(`${name} Stone`), name: dex.items.get(`${name} Stone`).name, kind: 'evolution' as const, price: 1200,
 			})),
 			{ id: 'linkingcord', name: '联系绳（替代通信进化）', kind: 'evolution', price: 2000 },
+			{ id: 'leaderscrest', name: '头领凭证', kind: 'evolution', price: 1200, icon: 'leaderscrest',
+				description: '在队伍的进化面板使用，消耗一枚，让劈斩司令进化为仆刀将军。' },
 			{ id: 'oranberry', name: '橙橙果', kind: 'held', price: 200 },
 			{ id: 'sitrusberry', name: '文柚果', kind: 'held', price: 600 },
 			{ id: 'leftovers', name: '吃剩的东西', kind: 'held', price: 3000 },

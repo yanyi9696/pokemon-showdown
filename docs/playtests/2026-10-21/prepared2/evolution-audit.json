@@ -1,0 +1,4057 @@
+{
+  "basis": "Current local Gen 9 Dex and partyEvolutions. Regional generations may differ; not an official exhaustive evolution guide.",
+  "rows": [
+    {
+      "parent": "Rattata-Alola",
+      "child": "Raticate-Alola",
+      "originalMetadata": {
+        "level": 20,
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Pikachu",
+      "child": "Raichu",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Thunder Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Thunder Stone"
+          }
+        ],
+        "item": "thunderstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Pikachu",
+      "child": "Raichu-Alola",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Thunder Stone",
+        "region": "Alola"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Thunder Stone"
+          }
+        ],
+        "item": "thunderstone"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "regional-location-not-checked"
+      ]
+    },
+    {
+      "parent": "Sandshrew-Alola",
+      "child": "Sandslash-Alola",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Ice Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Ice Stone"
+          }
+        ],
+        "item": "icestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Nidorina",
+      "child": "Nidoqueen",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Moon Stone",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.31（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Moon Stone"
+          }
+        ],
+        "item": "moonstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Nidorino",
+      "child": "Nidoking",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Moon Stone",
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.31（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Moon Stone"
+          }
+        ],
+        "item": "moonstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Clefairy",
+      "child": "Clefable",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Moon Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Moon Stone"
+          }
+        ],
+        "item": "moonstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Vulpix",
+      "child": "Ninetales",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Fire Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Fire Stone"
+          }
+        ],
+        "item": "firestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Vulpix-Alola",
+      "child": "Ninetales-Alola",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Ice Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Ice Stone"
+          }
+        ],
+        "item": "icestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Jigglypuff",
+      "child": "Wigglytuff",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Moon Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Moon Stone"
+          }
+        ],
+        "item": "moonstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Golbat",
+      "child": "Crobat",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Gloom",
+      "child": "Vileplume",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Leaf Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.36（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Leaf Stone"
+          }
+        ],
+        "item": "leafstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Gloom",
+      "child": "Bellossom",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Sun Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.36（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Sun Stone"
+          }
+        ],
+        "item": "sunstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Meowth-Alola",
+      "child": "Persian-Alola",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Primeape",
+      "child": "Annihilape",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Use Rage Fist 20 times and level-up"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.43（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Growlithe",
+      "child": "Arcanine",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Fire Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Fire Stone"
+          }
+        ],
+        "item": "firestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Growlithe-Hisui",
+      "child": "Arcanine-Hisui",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Fire Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Fire Stone"
+          }
+        ],
+        "item": "firestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Poliwhirl",
+      "child": "Poliwrath",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Water Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.40（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Water Stone"
+          }
+        ],
+        "item": "waterstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Poliwhirl",
+      "child": "Politoed",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "King's Rock"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.40（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "King's Rock"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "kingsrock"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Kadabra",
+      "child": "Alakazam",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.31（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Machoke",
+      "child": "Machamp",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.43（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Weepinbell",
+      "child": "Victreebel",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Leaf Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.36（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Leaf Stone"
+          }
+        ],
+        "item": "leafstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Graveler",
+      "child": "Golem",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.40（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Graveler-Alola",
+      "child": "Golem-Alola",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.40（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Slowpoke",
+      "child": "Slowking",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "King's Rock"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "King's Rock"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "kingsrock"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Slowpoke-Galar",
+      "child": "Slowbro-Galar",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Galarica Cuff"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Galarica Cuff"
+          }
+        ],
+        "item": "galaricacuff"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Slowpoke-Galar",
+      "child": "Slowking-Galar",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Galarica Wreath"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Galarica Wreath"
+          }
+        ],
+        "item": "galaricawreath"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Magneton",
+      "child": "Magnezone",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Thunder Stone",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.45（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Thunder Stone"
+          }
+        ],
+        "item": "thunderstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Farfetch’d-Galar",
+      "child": "Sirfetch’d",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Land 3 critical hits in 1 battle"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Shellder",
+      "child": "Cloyster",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Water Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Water Stone"
+          }
+        ],
+        "item": "waterstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Haunter",
+      "child": "Gengar",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.40（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Onix",
+      "child": "Steelix",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Metal Coat"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Metal Coat"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "metalcoat"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Voltorb-Hisui",
+      "child": "Electrode-Hisui",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Leaf Stone",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Leaf Stone"
+          }
+        ],
+        "item": "leafstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Exeggcute",
+      "child": "Exeggutor",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Leaf Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Leaf Stone"
+          }
+        ],
+        "item": "leafstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Exeggcute",
+      "child": "Exeggutor-Alola",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Leaf Stone",
+        "region": "Alola"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Leaf Stone"
+          }
+        ],
+        "item": "leafstone"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "regional-location-not-checked"
+      ]
+    },
+    {
+      "parent": "Cubone",
+      "child": "Marowak-Alola",
+      "originalMetadata": {
+        "level": 28,
+        "condition": "at night",
+        "region": "Alola"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.28"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "regional-location-not-checked",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Lickitung",
+      "child": "Lickilicky",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Rollout"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Koffing",
+      "child": "Weezing-Galar",
+      "originalMetadata": {
+        "level": 35,
+        "region": "Galar"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "regional-location-not-checked"
+      ]
+    },
+    {
+      "parent": "Rhydon",
+      "child": "Rhyperior",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Protector"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.57（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Protector"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "protector"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Chansey",
+      "child": "Blissey",
+      "originalMetadata": {
+        "type": "levelFriendship",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Tangela",
+      "child": "Tangrowth",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Ancient Power"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Seadra",
+      "child": "Kingdra",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Dragon Scale"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.47（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Dragon Scale"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "dragonscale"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Staryu",
+      "child": "Starmie",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Water Stone",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Water Stone"
+          }
+        ],
+        "item": "waterstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Scyther",
+      "child": "Scizor",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Metal Coat"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Metal Coat"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "metalcoat"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Scyther",
+      "child": "Kleavor",
+      "originalMetadata": {
+        "type": "useItem",
+        "condition": "Black Augurite"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "blackaugurite"
+          }
+        ],
+        "item": "blackaugurite"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Electabuzz",
+      "child": "Electivire",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Electirizer"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.45（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Electirizer"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "electirizer"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Magmar",
+      "child": "Magmortar",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Magmarizer"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.45（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Magmarizer"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "magmarizer"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Eevee",
+      "child": "Vaporeon",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Water Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Water Stone"
+          }
+        ],
+        "item": "waterstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Eevee",
+      "child": "Jolteon",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Thunder Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Thunder Stone"
+          }
+        ],
+        "item": "thunderstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Eevee",
+      "child": "Flareon",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Fire Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Fire Stone"
+          }
+        ],
+        "item": "firestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Eevee",
+      "child": "Espeon",
+      "originalMetadata": {
+        "type": "levelFriendship",
+        "condition": "during the day"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          },
+          {
+            "text": "白天、黄昏或黎明"
+          },
+          {
+            "text": "当前未装备妖精属性招式（否则优先进化为仙子伊布）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Eevee",
+      "child": "Umbreon",
+      "originalMetadata": {
+        "type": "levelFriendship",
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          },
+          {
+            "text": "夜晚"
+          },
+          {
+            "text": "当前未装备妖精属性招式（否则优先进化为仙子伊布）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Eevee",
+      "child": "Leafeon",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Leaf Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Leaf Stone"
+          }
+        ],
+        "item": "leafstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Eevee",
+      "child": "Glaceon",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Ice Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Ice Stone"
+          }
+        ],
+        "item": "icestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Eevee",
+      "child": "Sylveon",
+      "originalMetadata": {
+        "type": "levelExtra",
+        "condition": "with a Fairy-type move and two levels of Affection"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          },
+          {
+            "text": "当前招式中有妖精属性招式"
+          }
+        ]
+      },
+      "status": "explicit-tower-adaptation",
+      "gaps": []
+    },
+    {
+      "parent": "Porygon",
+      "child": "Porygon2",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Up-Grade",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Up-Grade"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "upgrade"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Pichu",
+      "child": "Pikachu",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Cleffa",
+      "child": "Clefairy",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Igglybuff",
+      "child": "Jigglypuff",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Togepi",
+      "child": "Togetic",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Togetic",
+      "child": "Togekiss",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Shiny Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Shiny Stone"
+          }
+        ],
+        "item": "shinystone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Aipom",
+      "child": "Ambipom",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Double Hit"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Sunkern",
+      "child": "Sunflora",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Sun Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Sun Stone"
+          }
+        ],
+        "item": "sunstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Yanma",
+      "child": "Yanmega",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Ancient Power"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Murkrow",
+      "child": "Honchkrow",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Dusk Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Dusk Stone"
+          }
+        ],
+        "item": "duskstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Misdreavus",
+      "child": "Mismagius",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Dusk Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Dusk Stone"
+          }
+        ],
+        "item": "duskstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Girafarig",
+      "child": "Farigiraf",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Twin Beam"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Dunsparce",
+      "child": "Dudunsparce",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Hyper Drill"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Dunsparce",
+      "child": "Dudunsparce-Three-Segment",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Hyper Drill"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Gligar",
+      "child": "Gliscor",
+      "originalMetadata": {
+        "type": "levelHold",
+        "item": "Razor Fang",
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Razor Fang"
+          },
+          {
+            "text": "夜晚"
+          }
+        ],
+        "heldItem": "razorfang"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Qwilfish-Hisui",
+      "child": "Overqwil",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Use Strong style Barb Barrage 20 times"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Sneasel",
+      "child": "Weavile",
+      "originalMetadata": {
+        "type": "levelHold",
+        "item": "Razor Claw",
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Razor Claw"
+          },
+          {
+            "text": "夜晚"
+          }
+        ],
+        "heldItem": "razorclaw"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Sneasel-Hisui",
+      "child": "Sneasler",
+      "originalMetadata": {
+        "type": "levelHold",
+        "item": "Razor Claw",
+        "condition": "during the day"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Razor Claw"
+          },
+          {
+            "text": "白天、黄昏或黎明"
+          }
+        ],
+        "heldItem": "razorclaw"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Ursaring",
+      "child": "Ursaluna",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Peat Block when there's a full moon"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.45（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Piloswine",
+      "child": "Mamoswine",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Ancient Power"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.48（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Porygon2",
+      "child": "Porygon-Z",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Dubious Disc",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Dubious Disc"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "dubiousdisc"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Stantler",
+      "child": "Wyrdeer",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Use Agile style Psyshield Bash 20 times"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Tyrogue",
+      "child": "Hitmonlee",
+      "originalMetadata": {
+        "level": 20,
+        "condition": "with an Atk stat > its Def stat",
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Tyrogue",
+      "child": "Hitmonchan",
+      "originalMetadata": {
+        "level": 20,
+        "condition": "with an Atk stat < its Def stat",
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Tyrogue",
+      "child": "Hitmontop",
+      "originalMetadata": {
+        "level": 20,
+        "condition": "with an Atk stat equal to its Def stat",
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Linoone-Galar",
+      "child": "Obstagoon",
+      "originalMetadata": {
+        "level": 35,
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Lombre",
+      "child": "Ludicolo",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Water Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.29（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Water Stone"
+          }
+        ],
+        "item": "waterstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Nuzleaf",
+      "child": "Shiftry",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Leaf Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.29（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Leaf Stone"
+          }
+        ],
+        "item": "leafstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Kirlia",
+      "child": "Gallade",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Dawn Stone",
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "性别为雄性"
+          },
+          {
+            "text": "使用",
+            "name": "Dawn Stone"
+          }
+        ],
+        "item": "dawnstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Nincada",
+      "child": "Shedinja",
+      "originalMetadata": {
+        "level": 20,
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "empty-party-slot-and-pokeball-not-checked"
+      ]
+    },
+    {
+      "parent": "Azurill",
+      "child": "Marill",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Nosepass",
+      "child": "Probopass",
+      "originalMetadata": {
+        "type": "levelExtra",
+        "condition": "near a special magnetic field"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Skitty",
+      "child": "Delcatty",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Moon Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Moon Stone"
+          }
+        ],
+        "item": "moonstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Roselia",
+      "child": "Roserade",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Shiny Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Shiny Stone"
+          }
+        ],
+        "item": "shinystone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Feebas",
+      "child": "Milotic",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Prism Scale"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Prism Scale"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "prismscale"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Dusclops",
+      "child": "Dusknoir",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Reaper Cloth"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.52（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Reaper Cloth"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "reapercloth"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Snorunt",
+      "child": "Froslass",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Dawn Stone",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "性别为雌性"
+          },
+          {
+            "text": "使用",
+            "name": "Dawn Stone"
+          }
+        ],
+        "item": "dawnstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Clamperl",
+      "child": "Huntail",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Deep Sea Tooth"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Deep Sea Tooth"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "deepseatooth"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Clamperl",
+      "child": "Gorebyss",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Deep Sea Scale"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Deep Sea Scale"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "deepseascale"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Budew",
+      "child": "Roselia",
+      "originalMetadata": {
+        "type": "levelFriendship",
+        "condition": "during the day"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          },
+          {
+            "text": "白天、黄昏或黎明"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Burmy",
+      "child": "Wormadam",
+      "originalMetadata": {
+        "level": 20,
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          },
+          {
+            "text": "性别为雌性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Burmy",
+      "child": "Wormadam-Sandy",
+      "originalMetadata": {
+        "level": 20,
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          },
+          {
+            "text": "性别为雌性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Burmy",
+      "child": "Wormadam-Trash",
+      "originalMetadata": {
+        "level": 20,
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          },
+          {
+            "text": "性别为雌性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Burmy",
+      "child": "Mothim",
+      "originalMetadata": {
+        "level": 20,
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          },
+          {
+            "text": "性别为雄性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Combee",
+      "child": "Vespiquen",
+      "originalMetadata": {
+        "level": 21,
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.21"
+          },
+          {
+            "text": "性别为雌性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Buneary",
+      "child": "Lopunny",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Chingling",
+      "child": "Chimecho",
+      "originalMetadata": {
+        "type": "levelFriendship",
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          },
+          {
+            "text": "夜晚"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Bonsly",
+      "child": "Sudowoodo",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Mimic"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Mime Jr.",
+      "child": "Mr. Mime",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Mimic"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Mime Jr.",
+      "child": "Mr. Mime-Galar",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Mimic",
+        "region": "Galar"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked",
+        "regional-location-not-checked"
+      ]
+    },
+    {
+      "parent": "Happiny",
+      "child": "Chansey",
+      "originalMetadata": {
+        "type": "levelHold",
+        "item": "Oval Stone",
+        "condition": "during the day",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Oval Stone"
+          },
+          {
+            "text": "白天、黄昏或黎明"
+          }
+        ],
+        "heldItem": "ovalstone"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Munchlax",
+      "child": "Snorlax",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Riolu",
+      "child": "Lucario",
+      "originalMetadata": {
+        "type": "levelFriendship",
+        "condition": "during the day"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          },
+          {
+            "text": "白天、黄昏或黎明"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Mantyke",
+      "child": "Mantine",
+      "originalMetadata": {
+        "type": "levelExtra",
+        "condition": "with a Remoraid in party"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Pansage",
+      "child": "Simisage",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Leaf Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Leaf Stone"
+          }
+        ],
+        "item": "leafstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Pansear",
+      "child": "Simisear",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Fire Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Fire Stone"
+          }
+        ],
+        "item": "firestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Panpour",
+      "child": "Simipour",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Water Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Water Stone"
+          }
+        ],
+        "item": "waterstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Munna",
+      "child": "Musharna",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Moon Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Moon Stone"
+          }
+        ],
+        "item": "moonstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Boldore",
+      "child": "Gigalith",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.40（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Woobat",
+      "child": "Swoobat",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Gurdurr",
+      "child": "Conkeldurr",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.40（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Swadloon",
+      "child": "Leavanny",
+      "originalMetadata": {
+        "type": "levelFriendship"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Cottonee",
+      "child": "Whimsicott",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Sun Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Sun Stone"
+          }
+        ],
+        "item": "sunstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Petilil",
+      "child": "Lilligant",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Sun Stone",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Sun Stone"
+          }
+        ],
+        "item": "sunstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Petilil",
+      "child": "Lilligant-Hisui",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Sun Stone",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Sun Stone"
+          }
+        ],
+        "item": "sunstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Basculin-White-Striped",
+      "child": "Basculegion",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Receive 294+ recoil without fainting",
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "性别为雄性"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Basculin-White-Striped",
+      "child": "Basculegion-F",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Receive 294+ recoil without fainting",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "性别为雌性"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Darumaka-Galar",
+      "child": "Darmanitan-Galar",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Ice Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Ice Stone"
+          }
+        ],
+        "item": "icestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Yamask-Galar",
+      "child": "Runerigus",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Have 49+ HP lost and walk under stone sculpture in Dusty Bowl"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Minccino",
+      "child": "Cinccino",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Shiny Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Shiny Stone"
+          }
+        ],
+        "item": "shinystone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Karrablast",
+      "child": "Escavalier",
+      "originalMetadata": {
+        "type": "trade",
+        "condition": "with a Shelmet"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Eelektrik",
+      "child": "Eelektross",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Thunder Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.54（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Thunder Stone"
+          }
+        ],
+        "item": "thunderstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Lampent",
+      "child": "Chandelure",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Dusk Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.56（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Dusk Stone"
+          }
+        ],
+        "item": "duskstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Shelmet",
+      "child": "Accelgor",
+      "originalMetadata": {
+        "type": "trade",
+        "condition": "with a Karrablast"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Bisharp",
+      "child": "Kingambit",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Defeat 3 Bisharp leading Pawniard and level-up"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "使用",
+            "name": "头领凭证"
+          }
+        ],
+        "item": "leaderscrest"
+      },
+      "status": "explicit-tower-adaptation",
+      "gaps": []
+    },
+    {
+      "parent": "Floette",
+      "child": "Florges",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Shiny Stone",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.34（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Shiny Stone"
+          }
+        ],
+        "item": "shinystone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Pancham",
+      "child": "Pangoro",
+      "originalMetadata": {
+        "level": 32,
+        "condition": "with a Dark-type in the party"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.32"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Espurr",
+      "child": "Meowstic",
+      "originalMetadata": {
+        "level": 25,
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.25"
+          },
+          {
+            "text": "性别为雄性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Espurr",
+      "child": "Meowstic-F",
+      "originalMetadata": {
+        "level": 25,
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.25"
+          },
+          {
+            "text": "性别为雌性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Doublade",
+      "child": "Aegislash",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Dusk Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.50（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Dusk Stone"
+          }
+        ],
+        "item": "duskstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Spritzee",
+      "child": "Aromatisse",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Sachet"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Sachet"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "sachet"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Swirlix",
+      "child": "Slurpuff",
+      "originalMetadata": {
+        "type": "trade",
+        "item": "Whipped Dream"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "携带（进化后消耗）",
+            "name": "Whipped Dream"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord",
+        "heldItem": "whippeddream"
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "required-held-item-not-in-regular-shop"
+      ]
+    },
+    {
+      "parent": "Inkay",
+      "child": "Malamar",
+      "originalMetadata": {
+        "level": 30,
+        "condition": "with the console turned upside-down"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.30"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Helioptile",
+      "child": "Heliolisk",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Sun Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Sun Stone"
+          }
+        ],
+        "item": "sunstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Tyrunt",
+      "child": "Tyrantrum",
+      "originalMetadata": {
+        "level": 39,
+        "condition": "during the day"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.39"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Amaura",
+      "child": "Aurorus",
+      "originalMetadata": {
+        "level": 39,
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.39"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Sliggoo",
+      "child": "Goodra",
+      "originalMetadata": {
+        "level": 50,
+        "condition": "during rain"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.50"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Sliggoo-Hisui",
+      "child": "Goodra-Hisui",
+      "originalMetadata": {
+        "level": 50,
+        "condition": "during rain"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.50"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Phantump",
+      "child": "Trevenant",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Pumpkaboo",
+      "child": "Gourgeist",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Pumpkaboo-Small",
+      "child": "Gourgeist-Small",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Pumpkaboo-Large",
+      "child": "Gourgeist-Large",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Pumpkaboo-Super",
+      "child": "Gourgeist-Super",
+      "originalMetadata": {
+        "type": "trade"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用（塔内替代通信进化）",
+            "name": "联系绳"
+          }
+        ],
+        "item": "linkingcord"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Yungoos",
+      "child": "Gumshoos",
+      "originalMetadata": {
+        "level": 20,
+        "condition": "during the day"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Charjabug",
+      "child": "Vikavolt",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Thunder Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Thunder Stone"
+          }
+        ],
+        "item": "thunderstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Crabrawler",
+      "child": "Crabominable",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Ice Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Ice Stone"
+          }
+        ],
+        "item": "icestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Rockruff",
+      "child": "Lycanroc",
+      "originalMetadata": {
+        "level": 25,
+        "condition": "during the day"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.25"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Rockruff",
+      "child": "Lycanroc-Midnight",
+      "originalMetadata": {
+        "level": 25,
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.25"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Rockruff",
+      "child": "Lycanroc-Dusk",
+      "originalMetadata": {
+        "level": 25,
+        "condition": "from a special Rockruff during the evening"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.25"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked",
+        "special-rockruff-ability-not-checked"
+      ]
+    },
+    {
+      "parent": "Rockruff-Dusk",
+      "child": "Lycanroc-Dusk",
+      "originalMetadata": {
+        "level": 25,
+        "condition": "from a special Rockruff during the evening"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.25"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked",
+        "special-rockruff-ability-not-checked"
+      ]
+    },
+    {
+      "parent": "Fomantis",
+      "child": "Lurantis",
+      "originalMetadata": {
+        "level": 34,
+        "condition": "during the day"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.34"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Salandit",
+      "child": "Salazzle",
+      "originalMetadata": {
+        "level": 33,
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.33"
+          },
+          {
+            "text": "性别为雌性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Steenee",
+      "child": "Tsareena",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Stomp",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.33（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Type: Null",
+      "child": "Silvally",
+      "originalMetadata": {
+        "type": "levelFriendship",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Poipole",
+      "child": "Naganadel",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Dragon Pulse",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Meltan",
+      "child": "Melmetal",
+      "originalMetadata": {
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "专属糖果 0 / 400（携带美录坦击倒或捕捉：钢系 +10，其他 +1）"
+          }
+        ]
+      },
+      "status": "explicit-tower-adaptation",
+      "gaps": []
+    },
+    {
+      "parent": "Applin",
+      "child": "Flapple",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Tart Apple"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Tart Apple"
+          }
+        ],
+        "item": "tartapple"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Applin",
+      "child": "Appletun",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Sweet Apple"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Sweet Apple"
+          }
+        ],
+        "item": "sweetapple"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Applin",
+      "child": "Dipplin",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Syrupy Apple"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Syrupy Apple"
+          }
+        ],
+        "item": "syrupyapple"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Clobbopus",
+      "child": "Grapploct",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Taunt"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Sinistea",
+      "child": "Polteageist",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Cracked Pot",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Cracked Pot"
+          }
+        ],
+        "item": "crackedpot"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Sinistea-Antique",
+      "child": "Polteageist-Antique",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Chipped Pot",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Chipped Pot"
+          }
+        ],
+        "item": "chippedpot"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Milcery",
+      "child": "Alcremie",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "spin while holding a Sweet",
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Snom",
+      "child": "Frosmoth",
+      "originalMetadata": {
+        "type": "levelFriendship",
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "亲密度达到 160（当前 255）"
+          },
+          {
+            "text": "夜晚"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Duraludon",
+      "child": "Archaludon",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Metal Alloy"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Metal Alloy"
+          }
+        ],
+        "item": "metalalloy"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Kubfu",
+      "child": "Urshifu",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Defeat the Single Strike Tower"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Kubfu",
+      "child": "Urshifu-Rapid-Strike",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Defeat the Rapid Strike Tower"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Lechonk",
+      "child": "Oinkologne",
+      "originalMetadata": {
+        "level": 18,
+        "gender": "M"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.18"
+          },
+          {
+            "text": "性别为雄性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Lechonk",
+      "child": "Oinkologne-F",
+      "originalMetadata": {
+        "level": 18,
+        "gender": "F"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.18"
+          },
+          {
+            "text": "性别为雌性"
+          }
+        ]
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Pawmo",
+      "child": "Pawmot",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "walk 1000 steps in Let's Go"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.33（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Charcadet",
+      "child": "Armarouge",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Auspicious Armor"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Auspicious Armor"
+          }
+        ],
+        "item": "auspiciousarmor"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Charcadet",
+      "child": "Ceruledge",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Malicious Armor"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Malicious Armor"
+          }
+        ],
+        "item": "maliciousarmor"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Tadbulb",
+      "child": "Bellibolt",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Thunder Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Thunder Stone"
+          }
+        ],
+        "item": "thunderstone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Bramblin",
+      "child": "Brambleghast",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Walk 1000 steps in Let's Go"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Capsakid",
+      "child": "Scovillain",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Fire Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Fire Stone"
+          }
+        ],
+        "item": "firestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Rellor",
+      "child": "Rabsca",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "walk 1000 steps in Let's Go"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "special-action-replaced-by-level",
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Greavard",
+      "child": "Houndstone",
+      "originalMetadata": {
+        "level": 30,
+        "condition": "at night"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.30"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "extra-condition-not-checked"
+      ]
+    },
+    {
+      "parent": "Cetoddle",
+      "child": "Cetitan",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Ice Stone"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Ice Stone"
+          }
+        ],
+        "item": "icestone"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Gimmighoul",
+      "child": "Gholdengo",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Level up with 999 Coins in the bag",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          },
+          {
+            "text": "消耗 80000 金币（当前 0）"
+          }
+        ]
+      },
+      "status": "explicit-tower-adaptation",
+      "gaps": []
+    },
+    {
+      "parent": "Gimmighoul-Roaming",
+      "child": "Gholdengo",
+      "originalMetadata": {
+        "type": "other",
+        "condition": "Level up with 999 Coins in the bag",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20"
+          },
+          {
+            "text": "消耗 80000 金币（当前 0）"
+          }
+        ]
+      },
+      "status": "explicit-tower-adaptation",
+      "gaps": []
+    },
+    {
+      "parent": "Dipplin",
+      "child": "Hydrapple",
+      "originalMetadata": {
+        "type": "levelMove",
+        "move": "Dragon Cheer"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.35（塔内特殊进化等级）"
+          }
+        ]
+      },
+      "status": "simplified-or-missing",
+      "gaps": [
+        "move-not-checked"
+      ]
+    },
+    {
+      "parent": "Poltchageist",
+      "child": "Sinistcha",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Unremarkable Teacup",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Unremarkable Teacup"
+          }
+        ],
+        "item": "unremarkableteacup"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    },
+    {
+      "parent": "Poltchageist-Artisan",
+      "child": "Sinistcha-Masterpiece",
+      "originalMetadata": {
+        "type": "useItem",
+        "item": "Masterpiece Teacup",
+        "gender": "N"
+      },
+      "tower": {
+        "requirements": [
+          {
+            "text": "等级达到 Lv.20（塔内特殊进化等级）"
+          },
+          {
+            "text": "使用",
+            "name": "Masterpiece Teacup"
+          }
+        ],
+        "item": "masterpieceteacup"
+      },
+      "status": "core-condition-supported",
+      "gaps": []
+    }
+  ]
+}
