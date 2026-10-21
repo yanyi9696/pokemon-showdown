@@ -10,7 +10,8 @@ export const ROUTE_RETENTION: Record<string, number> = {
 	wild: 0.85, event: 0.85, reward: 0.8, elite: 0.35, trade: 0.35, trainer: 0.55,
 };
 export function baseRouteWeights(floor: number): Record<string, number> {
-	return { wild: 34, elite: floor < 30 ? 10 : floor < 60 ? 13 : 17, trainer: 14, event: 22, reward: 20,
+	// Elite has a slightly higher raw weight to compensate for its mandatory next-floor absence.
+	return { wild: 50, elite: floor < 30 ? 14 : 16, trainer: floor < 30 ? 10 : 12, event: 22, reward: 20,
 		trade: ROUTE_STAGES[Math.min(4, Math.floor((floor - 1) / 40))] };
 }
 
@@ -24,6 +25,9 @@ export function normalizeRouteHistory(run: RogueRun) {
 /** One red, one blue, then a weighted third option; only wild/events can repeat. */
 export function rollRoutes(run: RogueRun, pool: RogueNode[], random: RogueRandom): RogueNode[] {
 	const history = normalizeRouteHistory(run), weights = baseRouteWeights(run.floor);
+	// Remember offered elites, even if the player chose a different route.
+	const previousElite = history.lastEliteFloor ?? (history.floor > 0 && history.eliteMisses === 0 ? history.floor : -1);
+	if (previousElite === run.floor - 1) pool = pool.filter(node => node.kind !== 'elite');
 	if (companionOwned(run.blessings, 'poppy')) weights.reward *= 1.3;
 	const elapsed = Math.max(0, run.floor - history.floor);
 	const factors = Object.fromEntries(Object.keys(weights).map(kind =>
@@ -55,6 +59,7 @@ export function rollRoutes(run: RogueRun, pool: RogueNode[], random: RogueRandom
 	history.factors = factors;
 	history.tradeSeen ||= selected.some(node => node.kind === 'trade');
 	history.eliteMisses = selected.some(node => node.kind === 'elite') ? 0 : history.eliteMisses + 1;
+	if (history.eliteMisses === 0) history.lastEliteFloor = run.floor;
 	// Shuffle only presentation; IDs remain stable when reloading the saved choices.
 	for (let i = selected.length - 1; i > 0; i--) {
 		const j = random(i + 1);

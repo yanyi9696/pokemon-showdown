@@ -12,10 +12,17 @@ export interface NarrativePage {
 	portrait?: string;
 	expression?: 'neutral' | 'approval';
 	side?: 'left' | 'right';
+	/** Actual, already committed affinity. Only the first answer page carries the delta. */
+	affection?: number;
+	affectionGain?: number;
 }
 /** Presentation only: rewards and healing must already be committed before this queue is shown. */
 export function queueNarrative(run: RogueRun, pages: NarrativePage[], resume: NonNullable<RogueRun['dialogue']>['resume']) {
-	run.dialogue = { key: randomUUID(), pages, resume };
+	run.dialogue = { key: randomUUID(), pages: pages.map(page => {
+		const affection = run.rival && page.portrait === run.rival.id ? run.rival.affection :
+			page.portrait === 'carmine' ? run.rival?.carmine?.affection : undefined;
+		return affection === undefined ? page : { ...page, affection };
+	}), resume };
 }
 export function healNarrativeParty(run: RogueRun) {
 	for (const mon of run.team) {

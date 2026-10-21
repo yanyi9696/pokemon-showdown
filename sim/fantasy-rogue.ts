@@ -78,6 +78,8 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	/** Last actual faint was a self-sacrifice protected by Art of Explosion. */
+	selfDestructed?: string[];
 	cooperative?: { opponentOffset: number };
 	companionZUsed?: Partial<Record<SideID, boolean>>;
 	wild?: boolean;
@@ -125,6 +127,7 @@ export interface RogueBattleState {
 }
 
 export interface RogueBattleResult {
+	selfDestructed?: string[];
 	companionZUsed?: boolean;
 	captures?: RoguePokemon[];
 	blessingProgress?: RogueBattleState['blessingProgress'];
@@ -187,6 +190,7 @@ export function initializeRogueBattle(battle: Battle) {
 	const state = battle.fantasyRogue;
 	if (!state) throw new Error('幻想杯肉鸽必须从冒险存档进入。');
 	state.participants = {};
+	state.selfDestructed = [];
 	state.defeated = [];
 	state.blessingProgress = { kos: [], swords: 0, insight: {} };
 	if (state.boss?.kind === 'arceus') battle.add('-message', '神之挑战：阿尔宙斯拥有十九条生命。当前为第 1 / 19 条生命。');
@@ -258,6 +262,14 @@ export function markRogueParticipants(battle: Battle) {
 	}
 }
 
+/** Record before spread damage resolves: the user faints before Explosion hits its opponents. */
+export function recordRogueSelfDestruct(mon: Pokemon, source: Pokemon | null, effect: Effect | null) {
+	const state = mon.battle.fantasyRogue, id = mon.set.fantasyRogueId;
+	if (!state || mon.side.id !== 'p1' || !id) return;
+	state.selfDestructed = (state.selfDestructed || []).filter(old => old !== id);
+	if (source === mon && effect?.effectType === 'Move' && ['selfdestruct', 'explosion'].includes(effect.id) &&
+		hasBlessing(mon, 'explosionart')) state.selfDestructed.push(id);
+}
 export function recordRogueDefeat(battle: Battle, mon: Pokemon, captured = false, source?: Pokemon | null) {
 	const state = battle.fantasyRogue;
 	if (!state?.progression || mon.side.id !== 'p2' && !(state.cooperative && mon.side.id === 'p4')) return;
@@ -267,7 +279,8 @@ export function recordRogueDefeat(battle: Battle, mon: Pokemon, captured = false
 		killer: source?.side.id === 'p1' ? source.set.fantasyRogueId : undefined,
 		species: mon.set.species, level: mon.level, captured,
 		participants: [...(state.participants![mon.set.fantasyRogueId!] || [])],
-		eligible: battle.p1.pokemon.filter(member => member.hp > 0 || hasBlessing(member, 'insight'))
+		eligible: battle.p1.pokemon.filter(member => member.hp > 0 || hasBlessing(member, 'insight') ||
+			state.selfDestructed?.includes(member.set.fantasyRogueId!))
 			.map(member => member.set.fantasyRogueId!),
 		dragonKing: battleDragonKing(battle.p1)?.member || '',
 	});
@@ -380,6 +393,7 @@ export function rogueBattleResult(battle: Battle): RogueBattleResult {
 	const state = battle.fantasyRogue!;
 	return {
 		companionZUsed: !!state.companionZUsed?.p1,
+		selfDestructed: state.selfDestructed && [...state.selfDestructed],
 		encounterId: state.encounterId, won: battle.winner === battle.p1.name || !!state.cooperative && battle.winner === battle.p3!.name,
 		team: state.team.map(saved => {
 			const mon = battle.p1.pokemon.find(entry => entry.set.fantasyRogueId === saved.id)!;

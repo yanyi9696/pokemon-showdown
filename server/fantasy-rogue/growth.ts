@@ -33,6 +33,7 @@ export function syncGrowthParty(run: RogueRun) {
 }
 
 export function availableGrowth(run: RogueRun, kind: GrowthKind, amount: number) {
+	if (run.floor <= 20 && kind !== 'experience') return 0;
 	return Math.max(0, Math.min(amount, GROWTH_LIMITS[kind] - (run.growth?.[kind] || 0)));
 }
 export function grantGrowth(run: RogueRun, kind: GrowthKind, amount: number) {
@@ -47,7 +48,7 @@ export function grantGrowth(run: RogueRun, kind: GrowthKind, amount: number) {
 /** Additive rewards: never substitute existing money, candies, items or chosen training. */
 export function grantJourneyGrowth(run: RogueRun, random: RogueRandom) {
 	const node = run.node, event = node?.event;
-	if (!node || node.journeyGrowthResolved || run.postgame || node.companionLoss) return;
+	if (!node || node.journeyGrowthResolved || run.postgame || node.companionLoss || run.floor <= 20) return;
 	const successfulEvent = event?.settled && (event.journeyBattleWon ||
 		!event.trainingAidBlocked && event.journeyBattleWon !== false);
 	const eligible = event ? successfulEvent && node.kind !== 'trade' :
@@ -62,7 +63,7 @@ export function grantJourneyGrowth(run: RogueRun, random: RogueRandom) {
 	if (!choices.length) return;
 	const kind = choices[random(choices.length)];
 	const amount = grantGrowth(run, kind, Math.min(2000 - ledger[kind],
-		run.floor < 50 ? 50 : run.floor < 80 ? 75 : run.floor < 150 ? 100 : 150));
+		run.floor < 150 ? 75 : 100));
 	ledger[kind] += amount;
 	const source = node.kind === 'reward' ? '补给后的训练心得' : node.kind === 'elite' ? '精英历练' :
 		node.kind === 'trainer' ? '切磋心得' : '旅途心得';
@@ -75,7 +76,7 @@ export function grantJourneyGrowth(run: RogueRun, random: RogueRandom) {
 /** Compare actual rounded stats, including existing boosts/nature/stars; EXP need not reach a level. */
 export function personalGrowthAmount(run: RogueRun, mon: RoguePokemon, kind: PersonalGrowthKind,
 	nominal: number, experience: number) {
-	if (mon.fixedLevel) return 0;
+	if (mon.fixedLevel || run.floor <= 20) return 0;
 	const keys = kind === 'balanced' ? ['offense', 'defense'] as const : [kind];
 	const limit = Math.min(nominal, ...keys.map(key => PERSONAL_GROWTH_LIMIT - (mon.training?.[key] || 0)));
 	if (limit <= 0) return 0;
@@ -99,6 +100,7 @@ export function personalGrowthAmount(run: RogueRun, mon: RoguePokemon, kind: Per
 }
 
 export function grantPersonalGrowth(run: RogueRun, mon: RoguePokemon, kind: PersonalGrowthKind, amount: number) {
+	if (run.floor <= 20) return;
 	mon.training ||= {};
 	for (const key of kind === 'balanced' ? ['offense', 'defense'] as const : [kind]) {
 		mon.training[key] = Math.min(PERSONAL_GROWTH_LIMIT, (mon.training[key] || 0) + amount);
@@ -139,11 +141,10 @@ export function buyGrowth(run: RogueRun, id: string) {
 
 /** The successful mushroom branch replaces, rather than accompanies, the old temporary damage buff. */
 export function grantMushroomGrowth(run: RogueRun) {
-	const experience = Math.max(100, Math.round((200 + 0.6 * run.floor ** 2) / 100) * 100);
+	if (run.floor <= 20) return '伙伴们打起了精神，准备好继续旅行。';
 	for (const mon of run.team) {
-		const amount = run.floor <= 50 ? personalGrowthAmount(run, mon, 'balanced', 200, experience) :
-			Math.max(0, Math.min(200, PERSONAL_GROWTH_LIMIT - (mon.training?.offense || 0),
-				PERSONAL_GROWTH_LIMIT - (mon.training?.defense || 0)));
+		const amount = Math.max(0, Math.min(run.floor < 150 ? 200 : 250, PERSONAL_GROWTH_LIMIT - (mon.training?.offense || 0),
+			PERSONAL_GROWTH_LIMIT - (mon.training?.defense || 0)));
 		if (!amount) continue;
 		grantPersonalGrowth(run, mon, 'balanced', amount);
 		return `奇异活力留在了【${mon.set.species}】身上。本局双攻、双防各 +${growthPercent(amount)}。`;

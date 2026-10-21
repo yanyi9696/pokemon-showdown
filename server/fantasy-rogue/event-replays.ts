@@ -6,6 +6,8 @@ import { POLICE_REGIONS } from './police-data';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	greninjatraining: '携带幻想甲贺忍蛙并保留另一位能出战的伙伴时，可在森林遇到小智版甲贺忍蛙。派伙伴离队修行；至少 5 层后，在事件区域寻找归来的它们。',
+	greninjareturn: '迎回原先派出的幻想甲贺忍蛙，提升两次事件实际间隔的层数所对应的等级（最高 100 级）。获得智蛙 Z，并解锁 Z 招式；携带它可在登场时切换小智版形态。',
 	travellermeeting: '事件与遭遇区域均可能遇到。与带立绘的训练家交谈，根据回应收获小礼物、展开切磋或接受常驻同行邀请。同行共用两个名额；常驻同行累计听从 15 次偏好选择可获专属赠礼。',
 	...EXPEDITION_OVERVIEWS, rivalstory: '前 20 层锁定一位劲敌，开启八段专属旅途；共同战斗、交谈提升熟悉度，最终成为永久同行伙伴。',
 	companionrematch: '同行训练家挑战失利后，至少再前进 5 层才可能收到切磋邀请。可接受或暂缓；胜利补发原挑战奖励，失败则恢复全队。每份奖励只能补领一次。',
@@ -41,6 +43,14 @@ export function eventReplay(id: EventID) {
 		pages[key] = { text: paragraphs, options: options.map(([label, next]) => ({ label, next })), battleSkipped };
 	};
 	const possibilities = (key: string, options: [string, string][]) => page(key, ['选择想回顾的后续发展。'], options);
+	if (id === 'greninjatraining' || id === 'greninjareturn') {
+		page('start', eventOpening(id), id === 'greninjatraining' ? [['派出伙伴修行', 'training'], ['暂时不离队', 'leave']] : [['迎接伙伴归来', 'returned']]);
+		if (id === 'greninjatraining') {
+			page('training', ['伙伴暂时离队。至少再走 5 层后，事件区域会有机会刷新修行归来剧情；修行伙伴的养成数据全部保留。']);
+			page('leave', ['你与伙伴继续旅行。以后条件符合时，仍可再次遇到护林员。']);
+		} else page('returned', [EVENT_OVERVIEWS.greninjareturn]);
+		return { title: EVENT_NAMES[id], start: 'start', pages };
+	}
 	const battle = (key: string, intro: string, room = false) => {
 		page(key, [intro], [['战斗获胜', room ? 'roomwin' : 'win'], ['战败', 'lose']], true);
 	};

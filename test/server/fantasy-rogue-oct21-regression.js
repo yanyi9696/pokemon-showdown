@@ -10,6 +10,7 @@ const { makeEncounterSet } = require('../../dist/server/fantasy-rogue/encounter-
 const { RIVALS } = require('../../dist/server/fantasy-rogue/rival-data');
 const { rivalOpeningPages, rivalConversationOptions, rivalChapterReplay } = require('../../dist/server/fantasy-rogue/rival-dialogue');
 const { rivalTeam, beginRival, chooseRival, nextRivalFloor, rivalRoutes } = require('../../dist/server/fantasy-rogue/rivals');
+const { rivalAffectionGain } = require('../../dist/server/fantasy-rogue/rival-responses');
 const { TRAVELLING_TRAINERS } = require('../../dist/server/fantasy-rogue/travelling-trainers');
 const { EVENT_TEAM_POOLS } = require('../../dist/server/fantasy-rogue/event-teams');
 const { RogueBiomes } = require('../../dist/server/fantasy-rogue/biome-data');
@@ -112,9 +113,9 @@ describe('Fantasy Rogue October 21 regression', function () {
 			const r = { floor: 20, phase: 'event', team: [], bag: {}, blessings: { owned: [] },
 				rival: { id, completed: chapter - 1, affection: 3, lastFloor: 1 }, node: { encounters: [] } };
 			beginRival(r, () => 0); assert.equal(r.node.event.rival.step, 'conversation');
-			chooseRival(r, content, () => 0, 'greet:warm'); assert.equal(r.rival.affection, 4);
+			chooseRival(r, content, () => 0, 'greet:warm'); assert.equal(r.rival.affection, 3 + rivalAffectionGain(id, 'warm', chapter));
 			assert(r.dialogue.pages.length >= 2);
-			chooseRival(r, content, () => 0, 'greet:cold'); assert.equal(r.rival.affection, 3);
+			chooseRival(r, content, () => 0, 'greet:cold'); assert.equal(r.rival.affection, 3 + rivalAffectionGain(id, 'warm', chapter) + rivalAffectionGain(id, 'cold', chapter));
 			assert.notEqual(r.node.event.rival.step, 'conversation');
 			const entry = catalog.entries.find(e => e.id === `rival:${id}:${chapter}`);
 			assert.deepEqual(entry.replay, rivalChapterReplay(id, chapter));

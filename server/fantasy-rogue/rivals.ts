@@ -11,6 +11,7 @@ import { healNarrativeParty, queueNarrative, dialoguePage } from './narrative';
 import { COMPANIONS } from '../../sim/rogue-companions';
 import { requestCompanion, travellingRoster } from './travellers';
 import { rivalOpeningPages, rivalConversationOptions, rivalAnswerPages, rivalChatPages, rivalChatOptions } from './rival-dialogue';
+import { rivalAffectionGain } from './rival-responses';
 
 export interface RivalState {
 	id: RivalID; completed: number; lastFloor: number; affection: number;
@@ -141,7 +142,7 @@ export function rivalView(run: RogueRun) {
 	let options: ReturnType<typeof option>[] = [];
 	if (event.stage === 'choice') {
 		if (state.step === 'conversation') options = rivalConversationOptions(state.chapter, state.conversationTurn);
-		else if (state.step === 'carmine') options = [option('carmine:listen', '认真听丹瑜说完，也请她与我们一起商量。'), option('carmine:trust', '告诉她：我们相信乌栗，也相信你的判断。'), option('carmine:dismiss', '让她别管，我们自己就能处理。')];
+		else if (state.step === 'carmine') options = [option('carmine:listen', '欢迎丹瑜一起商量，也主动介绍自己的打算。'), option('carmine:trust', '温和地请她说说想法，认真听完。'), option('carmine:dismiss', '先说明当前情况，再请她一起确认计划。')];
 		else if (state.step === 'carminefinal') options = [option('carmine:stay', '当然，我们三个人一起走。'), option('carmine:later', '期待下一次再与你相遇。')];
 		else if (state.step === 'reward') options = [option('system:tera', '解锁太晶化并领取配套碎片'), option('system:mega', '解锁超进化并领取进化石'), option('system:z', '解锁 Z 招式并领取纯晶'), option('shards', '领取幻想碎片 ×100')];
 		else if (state.step === 'invite') options = [
@@ -154,7 +155,9 @@ export function rivalView(run: RogueRun) {
 		else options = [option('start', '准备好了，开始吧。')];
 	}
 	return { paragraphs: event.result || [c.lines[state.chapter - 1]], options,
-		rivalPortrait: state.step?.startsWith('carmine') ? 'carmine' : r.id, rivalApproval: state.step?.startsWith('carmine') ? (r.carmine?.affection || 0) >= 4 : r.affection >= 4 };
+		rivalPortrait: state.step?.startsWith('carmine') ? 'carmine' : r.id,
+		affection: state.step?.startsWith('carmine') ? r.carmine?.affection || 0 : r.affection,
+		rivalApproval: state.step?.startsWith('carmine') ? (r.carmine?.affection || 0) >= 4 : r.affection >= 4 };
 }
 export function chooseRival(run: RogueRun, content: RogueContent, random: RogueRandom, choice: string) {
 	const event = run.node!.event!, state = event.rival!, r = run.rival!;
@@ -162,8 +165,10 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 	event.key = randomUUID();
 	if (state.step === 'conversation') {
 		const turn = state.conversationTurn || 0;
-		r.affection = Math.max(0, r.affection + (choice === 'greet:warm' ? 1 : choice === 'greet:cold' ? -1 : 0));
+		const gain = rivalAffectionGain(r.id, choice, state.chapter);
+		r.affection += gain;
 		const pages = rivalAnswerPages(r.id, state.chapter, turn, choice, r.affection);
+		pages[0].affectionGain = gain;
 		state.conversationTurn = turn + 1;
 		if (state.conversationTurn >= 2) {
 			if (r.id === 'kieran' && state.chapter > 1) {
@@ -174,11 +179,13 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		event.result = pages.map(page => page.text);
 		queueNarrative(run, pages, run.phase === 'ready' ? 'ready' : 'event');
 	} else if (state.step === 'carmine') {
-		const accepted = choice !== 'carmine:dismiss';
-		r.carmine!.affection = Math.max(0, r.carmine!.affection + (accepted ? 2 : -2));
-		event.result = [accepted ? '丹瑜怔了一下，随即扬起嘴角：「好，那就一起把这件事做好！」' : '丹瑜别过脸：「行，我就在旁边看着。」'];
+		const gain = rivalAffectionGain('carmine', ({ 'carmine:listen': 'warm', 'carmine:trust': 'honest', 'carmine:dismiss': 'cold' } as Record<string, string>)[choice], state.chapter);
+		r.carmine!.affection += gain;
+		event.result = [choice === 'carmine:listen' ? '丹瑜扬起嘴角：「这就对了！先说好，遇到麻烦可别把我晾在一边。」' :
+			choice === 'carmine:trust' ? '「嗯，我是有些想法。」丹瑜放缓语气，认真补上了你们没注意到的细节。' :
+			'「倒是考虑得挺清楚嘛。」丹瑜指了指地图，「这里再留个后手，我来照看这一侧。」'];
 		prepareChapter(run, random);
-		queueNarrative(run, [dialoguePage('carmine', '丹瑜', event.result[0], accepted, 'left')], 'event');
+		queueNarrative(run, [{ ...dialoguePage('carmine', '丹瑜', event.result[0], true, 'left'), affectionGain: gain }], 'event');
 	} else if (state.step === 'carminefinal') {
 		if (choice === 'carmine:stay') requestCompanion(run, { id: 'carmine', origin: 'carmine', permanent: true });
 		event.stage = 'result'; event.settled = true;
@@ -186,11 +193,13 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		queueNarrative(run, [dialoguePage('carmine', '丹瑜', event.result[0], true, 'left')], 'event');
 	} else if (choice === 'start') setFight(run, random);
 	else if (['warm', 'honest', 'cold'].includes(choice)) {
-		r.affection = Math.max(0, r.affection + (choice === 'warm' ? 2 : choice === 'honest' ? 1 : -2)); state.turn = (state.turn || 0) + 1;
-		event.result = [choice === 'cold' ? '对方收住话头，沉默了一小会儿。' : `${RIVALS[r.id].name}认真听着，语气比刚见面时柔和了许多。`,
-			['说到最初踏上旅途的那一天，你们又想起了各自的伙伴。', '聊过理想与挫折，话题终于转向下一次相遇。'][state.turn - 1] || ''];
+		const gain = rivalAffectionGain(r.id, choice, state.chapter);
+		r.affection += gain; state.turn = (state.turn || 0) + 1;
+		const pages = rivalChatPages(r.id, state.turn - 1, choice, r.affection);
+		pages[0].affectionGain = gain;
+		event.result = pages.map(page => page.text);
 		if (state.turn >= 3) finish(run, random, true);
-		queueNarrative(run, rivalChatPages(r.id, state.turn - 1, choice, r.affection), 'event');
+		queueNarrative(run, pages, 'event');
 	} else if (choice.startsWith('search:')) {
 		const index = Number(choice.slice(7)); state.found!.push(index);
 		if (index === state.answer) {

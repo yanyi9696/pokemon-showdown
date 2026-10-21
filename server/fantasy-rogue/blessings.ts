@@ -244,7 +244,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 			POWER_CHOICE_ABILITIES.some(ability => canGrantExtraAbility(mon, ability, run.team, state)))) return false;
 		return true;
 	}).map(def => {
-		let weight = run.previousBlessings?.includes(def.id) ? 40 : 100;
+		let weight = run.previousBlessings?.includes(def.id) ? 20 : 100;
 		weight *= companionAppearance(def.family, run.team);
 		if (def.family === 'bond') weight *= Math.min(6, run.team.filter(mon => mon.initialPartner).length || run.team.length) / 6;
 		return { ...def, appearanceWeight: Math.max(1, Math.round(weight)) };
@@ -279,6 +279,8 @@ export function reservationGiftPool(run: RogueRun, content: RogueContent, system
 	const root = (name: string) => {
 		let species = baseDex.species.get(name.replace(/-Fantasy$/, '').replace(/-G-Mega$/, '').replace(/-Totem$/, ''));
 		if (!species.exists) species = baseDex.species.get(dex.species.get(name).baseSpecies.replace(/-Fantasy$/, ''));
+		// Battle/special formes often omit prevo; trace their normal species before the chain.
+		if (species.forme && !/^(Alola|Galar|Hisui|Paldea)(-|$)/.test(species.forme)) species = baseDex.species.get(species.baseSpecies);
 		for (let depth = 0; depth < 8 && species.prevo; depth++) species = baseDex.species.get(species.prevo);
 		return species.id;
 	};
@@ -692,7 +694,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	if (def.family === 'compound') state.pending.push({ id: randomUUID(), title: def.name, kind: 'compound', blessing: def.id, compound: {} });
 	const companions = Object.entries(COMPANIONS).filter(([id, c]) => c.family === def.family && id !== run.rival?.id);
 	if (companions.length === 1) grantCompanion(run, companions[0][0] as keyof typeof COMPANIONS);
-	if (def.family === 'railgun') state.pending.push({ id: randomUUID(), title: '某科学超电磁炮 · 选择学习【电磁炮】的伙伴',
+	if (def.family === 'railgun') state.pending.push({ id: randomUUID(), title: '某科学的超电磁炮 · 选择学习【电磁炮】的伙伴',
 		kind: 'target', blessing: def.id, options: run.team.filter(canLearnZapCannon).map(mon => mon.id) });
 	const lateReward = lateBlessingReward(def.family, run.floor);
 	if (lateReward.treasure) treasure(run, content, random);
@@ -714,8 +716,8 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	}
 	if (['spiral', 'godrobe', 'puregodrobe'].includes(def.family)) {
 		if (def.family === 'godrobe') state.godrobeGiftUpdated = true;
-		const name = def.family === 'spiral' ? 'Excadrill' : def.family === 'godrobe' ? 'Zangoose' : Math.ceil(run.floor / 2) >= 25 ? 'Meowstic-F' : 'Espurr';
-		const level = Math.max(def.family === 'spiral' ? 31 : 5, Math.min(100, Math.ceil(run.floor / 2)));
+		const name = def.family === 'spiral' ? 'Excadrill' : def.family === 'godrobe' ? 'Zangoose' : 'Meowstic-F';
+		const level = Math.max(5, Math.min(100, Math.ceil(run.floor / 2)));
 		const mon = createRoguePokemon(makeEncounterSet(name, level, randomEncounterIVs(random)), run.boosts);
 		if (def.family === 'puregodrobe') mon.set.gender = 'F';
 		if (def.family === 'spiral') { entry.target = mon.id; mon.spiral = 0; }

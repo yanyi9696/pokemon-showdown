@@ -9,7 +9,7 @@ import { State } from './state';
 import { fantasyMovePowers } from './fantasy-move-power';
 import { sharedRogueItems, consumeRogueItem } from './fantasy-rogue-items';
 import { toID } from './dex';
-import { isRogueFormat } from './fantasy-rogue';
+import { isRogueFormat, recordRogueSelfDestruct } from './fantasy-rogue';
 import { blessingActionUsed, blessingTypes, hasBlessing, rogueAbilityInfo, spendRogueEeveeZ, spendRoguePsychic } from './fantasy-rogue-blessings';
 import { canStackRogueStatus, clearRogueStatus, hasRogueStatus, rememberRogueStatus } from './fantasy-rogue-status';
 import type { DynamaxOptions, PokemonMoveRequestData, PokemonSwitchRequestData } from './side';
@@ -1570,6 +1570,7 @@ export class Pokemon {
 	 */
 	faint(source: Pokemon | null = null, effect: Effect | null = null) {
 		if (this.fainted || this.faintQueued) return 0;
+		recordRogueSelfDestruct(this, source, effect);
 		const d = this.hp;
 		this.hp = 0;
 		this.switchFlag = false;

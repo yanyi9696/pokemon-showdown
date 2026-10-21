@@ -40,7 +40,7 @@ export function battleFriendship(run: RogueRun, result: RogueBattleResult, token
 	progress.settled.push(token);
 	const participants = new Set((result.defeated || []).flatMap(entry => entry.participants));
 	for (const mon of run.team) {
-		if (!mon.hp && previous.some(old => old.id === mon.id && old.hp > 0)) {
+		if (!mon.hp && !result.selfDestructed?.includes(mon.id) && previous.some(old => old.id === mon.id && old.hp > 0)) {
 			const count = progress.fainted[mon.id] || 0;
 			if (count < 2) changeFriendship(mon, -5);
 			progress.fainted[mon.id] = count + 1;

@@ -198,7 +198,7 @@ describe('Fantasy Rogue expanded blessing campaign', function () {
 	it('reduces only last-run selections, without changing unrelated candidates', () => {
 		const {run} = setup(); run.previousBlessings = ['medic'];
 		const pool = blessings.blessingCandidates(run, content);
-		assert.equal(pool.find(entry => entry.id === 'medic').appearanceWeight, 40);
+		assert.equal(pool.find(entry => entry.id === 'medic').appearanceWeight, 20);
 		assert.equal(pool.find(entry => entry.id === 'lowhp').appearanceWeight, 100);
 	});
 	it('gives every individual one legal learning credit and retains a fifth move slot', () => {

@@ -8,7 +8,7 @@ import type { RogueRandom } from './biome-pools';
 import type { RogueContent, RogueRun } from './types';
 import { CANDY_SHOP, routeCandyReward, earlyCoinMultiplier } from './early-balance';
 import { convertSpiritItem } from './spirits';
-import { availableGrowth, grantGrowth, grantPersonalGrowth, growthPercent, personalGrowthAmount, PERSONAL_GROWTH_LIMIT } from './growth';
+import { availableGrowth, grantGrowth, grantPersonalGrowth, growthPercent, PERSONAL_GROWTH_LIMIT } from './growth';
 
 const dex = Dex.mod('gen9fantasy');
 const CANDIES = [['expcandyxl', 30000], ['expcandyl', 10000], ['expcandym', 3000], ['expcandys', 800], ['expcandyxs', 100]] as const;
@@ -102,17 +102,15 @@ export function rewardChoices(run: RogueRun) {
 		{ id: 'experience', name: '经验糖果', text: `获得共 ${experience} 点经验的糖果，可自由分给伙伴。`, items },
 		{ id: 'money', name: '路费', text: `获得 ${money} 金币。`, money },
 	];
-	for (const kind of ['offense', 'defense'] as const) {
+	for (const kind of run.floor > 20 ? ['offense', 'defense'] as const : []) {
 		const label = kind === 'offense' ? '攻击、特攻' : '防御、特防';
 		const name = kind === 'offense' ? '输出训练' : '耐久训练';
 		{
-			const nominal = (enhanced ? 600 : 400) + (run.floor >= 80 ? 100 + Math.floor((run.floor - 80) / 40) * 50 : 0);
+			const nominal = (enhanced ? 600 : 400) + (run.floor >= 150 ? 100 : 0);
 			const targets = run.team.map(mon => ({ member: mon.id,
-				amount: run.floor <= 50 ? personalGrowthAmount(run, mon, kind, nominal, experience) :
-				Math.max(0, Math.min(nominal, PERSONAL_GROWTH_LIMIT - (mon.training?.[kind] || 0))) })).filter(entry => entry.amount > 0);
+				amount: Math.max(0, Math.min(nominal, PERSONAL_GROWTH_LIMIT - (mon.training?.[kind] || 0))) })).filter(entry => entry.amount > 0);
 			choices.push({ id: kind, name, targets, disabled: !targets.length,
-				text: `选一位伙伴，本局${label}最高 +${growthPercent(nominal)}，升级、进化后仍然有效。` +
-					(run.floor <= 50 ? '当前阶段更推荐经验糖果。' : '') });
+				text: `选一位伙伴，本局${label}最高 +${growthPercent(nominal)}，升级、进化后仍然有效。` });
 		}
 	}
 	if (run.floor >= 51) {

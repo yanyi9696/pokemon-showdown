@@ -205,7 +205,9 @@ export class RogueManager {
 						evolutions: content?.progression ? evolutionOptions(mon, run) : [],
 					};
 				}), bag: run.bag, money: run.money, boosts: run.boosts, lastReward: run.lastReward,
-				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture, pendingMoves: run.pendingMoves || [],
+				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture,
+				returningPartner: run.captureResume === 'event' && run.node?.event?.id === 'greninjareturn',
+				pendingMoves: run.pendingMoves || [],
 				roomid: run.battle?.roomid, fixed: fixedFloor(run.floor), boss: BOSS_FLOORS.get(run.floor),
 				choices: run.phase === 'choose' ? (run.choices || content?.floors[run.floor] || []).map(node => node.fogged ? {
 					id: node.id, kind: 'fog', name: '迷雾区域', fogged: true, reward: { money: 0, items: {}, points: 0 },

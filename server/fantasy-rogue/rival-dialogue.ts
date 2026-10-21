@@ -1,8 +1,9 @@
 import { RIVALS, CARMINE, type RivalID } from './rival-data';
 import { dialoguePage, type NarrativePage } from './narrative';
+import { RIVAL_CHOICES, RIVAL_CHAT_CHOICES, RIVAL_CHAT_ANSWERS, rivalTopicAnswer, rivalVoicedAnswer } from './rival-responses';
 
 /** Shared by the playable conversations and their codex replays. No rewards or RNG here. */
-const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: string, honest: string, cold: string }> = {
+const VOICES: Record<RivalID, { intro: string[], chapters: string[] }> = {
 	kieran: {
 		intro: ['我、我叫乌栗，来自北上乡。刚才一直看着你和伙伴……对不起，不是故意偷看的。', '我以前总觉得，站在旁边就不会给别人添麻烦。可是这次，我想亲口向你提出挑战。'],
 		chapters: ['你的伙伴在等你开口，我的伙伴也一样。能不能先告诉我，你叫什么名字？这样下次见到你，我就不用只在心里打招呼了。',
@@ -13,7 +14,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'我试过一直追赶你的背影，也试过只练那些能赢的办法。现在这支队伍，是我和伙伴一起决定的。我想堂堂正正地让你看看。',
 			'这回不用你替我挡住所有麻烦。我记住了你指挥时的节奏，也和伙伴练过换位；遇到危险，我们互相提醒。',
 			'从第一次不敢抬头，到现在能把这句话说出来，花了很长时间。你是我的劲敌，也是我想继续一起旅行的朋友。'],
-		warm: '真的可以这么想吗……嗯！那我也会把自己的想法说出来。', honest: '原来你也会犹豫。我还以为，只有我总是想这么多。', cold: '啊，抱歉……我不是想拖住你。我会把该做的事做好的。',
 	},
 	penny: {
 		intro: ['我叫牡丹。平时……比较习惯在房间里处理事情。这个背包很显眼？嗯，是布布。', '我的朋友们鼓励我出来走走。刚才布布们一直看着你的伙伴，所以，想问问你愿不愿意陪我们练习。'],
@@ -25,7 +25,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'我不是突然变成很爱对战的人。只是这段时间，布布们一直陪我练习。我想把它们努力过的样子，认真展示给朋友看。',
 			'前面的通讯不太稳定，我准备了纸上的备用路线。很老派？有用就行。这一次，我们谁都不用独自留在后面。',
 			'要说多漂亮的话，我还是会卡住。那就用对战表达好了。等打完……我能把之后的路线也加入我们共同的行程吗？'],
-		warm: '……嗯，谢谢。能有人认真听进去，感觉还挺好的。', honest: '这样也可以。我把顾虑写下来，我们一项项确认。', cold: '哦。知道了。那我就只说必要的信息。',
 	},
 	marnie: {
 		intro: ['我叫玛俐，来自尖钉镇。你刚才和伙伴配合得不错，所以想来认识一下。', '别被我这副表情吓到，我没有生气。只是对战的时候，我可是认真想赢的。'],
@@ -37,7 +36,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'我和伙伴练了些新配合。放心，不是什么临时逞强。想和你再较量一次，这句话已经等了一路了。',
 			'你指挥的时候会先看一眼伙伴，这点我记住了。等会儿就用那个信号，一边出现空当，另一边马上补上。',
 			'我不太擅长把好听的话挂在嘴边。不过，能遇到你这样的劲敌，我很开心。先尽兴打一场，之后咱们继续一起走。'],
-		warm: '行，就按咱们说好的来。和你配合，挺让人放心的。', honest: '想清楚再说，也挺好。我会把自己的想法告诉你。', cold: '……你赶时间的话就直说。该认真做的事，我还是会做完。',
 	},
 	lana: {
 		intro: ['我是水莲，来自阿罗拉。刚才在想，你能不能钓起那边的一整座山……开玩笑的。', '水里的伙伴能从收线的动作认出训练家。你的伙伴也很相信你的动作，我想通过对战认识你们。'],
@@ -49,7 +47,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'这次不是平静的小波纹。伙伴们和我练习了很久，想让你看到更远处的浪。请准备好，认真接住我们。',
 			'前面几段路得一口气走过去。就像收一条很长的鱼线，手里的力气要留一点给后面。我们互相照应吧。',
 			'以前我会把好消息带回家，讲给妹妹们听。现在想讲的故事里，常常有你。今天再添一段精彩的，然后一起走向下一片水域吧。'],
-		warm: '嗯，像浮标轻轻动了一下。能听见你的回答，真好。', honest: '慢慢想就好。等一等，有时才能看清水面下面的东西。', cold: '……那先把线收好吧。等你愿意说的时候，我再听。',
 	},
 	lillie: {
 		intro: ['您好，我是莉莉艾，来自阿罗拉。这样突然打招呼，会不会有些冒昧？', '我以前总担心自己照顾不好宝可梦。现在想试着由自己迈出第一步，能请您和我切磋吗？'],
@@ -61,7 +58,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'这次的队伍，是我自己认真安排的。伙伴们也愿意再多练一会儿。我想让您看见，我们已经能一起面对更多事情了。',
 			'请把后面交给我。一直受到照顾的人，也会想成为让朋友放心的那一个。您需要帮助的时候，一定要告诉我。',
 			'第一次说想成为训练家时，我连声音都很小。现在能在这里全力向您挑战，我很珍惜。打完之后，请允许我继续和您一起旅行。'],
-		warm: '谢谢您这么认真地回应我。这样一来，好像又多了一点勇气。', honest: '能听到真实的想法，我已经很高兴了。我们一起慢慢想吧。', cold: '抱歉，可能是我说得太多了。不过伙伴们的事，我还是想认真确认。',
 	},
 	korrina: {
 		intro: ['哟！我是可尔尼，娑罗市道馆的训练家！刚才看你的步伐，应该已经练过不少对战了吧？', '我和路卡利欧正在外面修行。见到配合这么好的训练家，怎么能只打个招呼就走！'],
@@ -73,7 +69,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'和你第一次交手以后，我把那几个衔接练了好多次！这次可不是普通热身了，拿出你的真本事，让我看看！',
 			'连着打几场，最考验的就是默契。我的伙伴准备好了，你也调一下呼吸。累了要说，换我们顶上！',
 			'一路认识了这么多人，还是最期待和你再打一场！今天用尽全力，之后咱们换个方向继续修行，怎么样？'],
-		warm: '就是这股劲！说好了，咱们互相接住，谁也别掉队！', honest: '没事，把顾虑讲出来也是修行。先找稳自己的步子！', cold: '喂，别只顾催呀。伙伴的想法也要听进去，这才像个训练家。',
 	},
 	nemona: {
 		intro: ['你好！我是妮莫，来自帕底亚。刚才看到你和伙伴的配合，就忍不住跑过来了！', '你愿意对战吗？别紧张，我会认真挑一支适合现在切磋的队伍。最重要的是，咱们都拿出自己的想法！'],
@@ -85,7 +80,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'这回我真的认真准备了很久。不是想让你觉得难受，而是相信你能接住这样的挑战。告诉我，你也很期待吧？',
 			'连续挑战？太好了！啊，不对，先确认大家的体力。咱们一起走过这么多路，我可不能光顾着兴奋。',
 			'终于等到可以毫无保留的这一场了！输赢之后还会有下一场，只要我们继续一起走，就总有新的目标，对吧！'],
-		warm: '太好了！能和你认真聊这些，我已经开始期待接下来的路啦！', honest: '原来是这样！那我们就按你舒服的节奏来，把问题一个个解决。', cold: '啊……是我太兴奋了吗？那我收一点，但伙伴的状态一定要先确认。',
 	},
 	blue: {
 		intro: ['我是青绿，来自关都。看你刚才那几步指挥，应该不只是来碰运气的吧。', '既然走到同一条路上，就让我检验一下你的实力。名字也报一下，我可不想只记得一个背影。'],
@@ -97,7 +91,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'我调整了阵容，也把以前露出的空当补过了。你要是只照着旧印象出招，可要吃亏。让我看看你的进步。',
 			'我负责的那侧，你不用一直回头。倒是你遇到什么新情况，记得及时给信号。会合作也是实力的一部分。',
 			'能走到最后，还能不断给我新问题，你够资格做我的劲敌。今天都别留手，打完再讨论下一段路线。'],
-		warm: '判断不错。看来这一路你不只是跟着走，也在认真想事情。', honest: '至少你肯把没把握的部分说出来。那就把它弄清楚，再行动。', cold: '哼，只想着往前冲可不算本事。等你愿意认真判断局势再说。',
 	},
 	gladion: {
 		intro: ['格拉吉欧。来自阿罗拉。你和伙伴刚才的配合，我看见了。', '有些路只靠决心走不下去。我想确认你有保护伙伴的实力；如果准备好了，就和我打一场。'],
@@ -109,7 +102,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'熟悉不代表我会放水。我和伙伴都做过准备，希望你也一样。用这次对战，确认我们没有停在原地。',
 			'连续的危机最容易让人急着犯错。别乱，后方交给我。需要换位就喊我的名字，我会回应。',
 			'你的选择，我一路都看在眼里。今天拿出全部实力。之后无论碰到什么，我也会站在你和伙伴这一边。'],
-		warm: '……好。我相信你的判断，也会把我的判断告诉你。', honest: '能说清楚顾虑就够了。我们不是非得一个人解决所有事。', cold: '别把伙伴的安危当成赶路的代价。先冷静下来。',
 	},
 	bede: {
 		intro: ['彼特。伽勒尔的训练家。看来你还算懂得照顾自己伙伴的步调。', '我正在为道馆磨炼阵容，并不是随便谁来都能陪练。不过你既然有这份实力，倒值得切磋一次。'],
@@ -121,7 +113,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'请不要拿上一次的结果预测今天。我对阵容做过调整，伙伴们也付出了努力。认真应战，是对他们应有的尊重。',
 			'既然合作过这么多次，有些意思应该不必重复。你处理前面的空当，我会让另一侧保持安稳。',
 			'我承认，和你切磋已经成了值得期待的事情。今天用完整的实力交手吧。之后的同行邀请……我也是认真的。'],
-		warm: '这番回答还算有见地。我愿意继续听你讲下去。', honest: '坦白至少比逞强有风度。剩下的，我们可以再商量。', cold: '原来如此。希望你对伙伴的态度，比刚才这句话更认真。',
 	},
 	n: {
 		intro: ['我的名字是N。我从合众而来，想听见更多人与宝可梦共同旅行的声音。', '你的伙伴刚才很安心。我想知道，是什么让你们愿意互相信任。可以通过一次对战，让我更了解你们吗？'],
@@ -133,7 +124,6 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'这些日子，我听见了伙伴对新配合的期待。今天的对战不是证明某个人正确，而是让彼此的世界再宽一点。',
 			'每个人都看见一部分道路，合在一起，才是更完整的图景。你向前观察，我留意侧面的声音。',
 			'我们的道路曾从不同的地方出发，最后却能并肩站在这里。让我用全部实力回应你，之后再去听更远的声音。'],
-		warm: '我听见了。你的话和伙伴的声音，正在朝同一个方向靠近。', honest: '尚未确定的答案，也值得认真倾听。我们可以在旅途中继续寻找。', cold: '……那么，先让彼此安静一会儿。我仍愿意在你开口时倾听。',
 	},
 	silver: {
 		intro: ['……银。从城都来的。你的伙伴看起来不弱，训练得还算像样。', '我在找值得交手的人。别误会，不是来和你闲聊的。名字先说一下，然后打一场。'],
@@ -145,48 +135,47 @@ const VOICES: Record<RivalID, { intro: string[], chapters: string[], warm: strin
 			'我没有只练那些能立刻见效的东西。伙伴的步调，我也在学。这次你就亲眼看看，我有没有变强。',
 			'你前几次换位的习惯，我记住了。别一出问题就自己硬撑，需要我接手就说。反正我也不想看你在这里倒下。',
 			'你这家伙……一路还挺能坚持。今天拿出全部实力。打完以后一起走也行，我又没说不愿意。'],
-		warm: '……知道了。说到就做到，我会看着的。', honest: '至少没装作什么都懂。先把能做的事做好。', cold: '随你。但该照顾好的伙伴，一只也不能落下。',
 	},
 };
 
 const SCENES = [
 	{ setting: '你在路边停下整理行装。一位训练家看见你和伙伴的互动，犹豫片刻，朝你走来。', question: '正式切磋之前，你怎样回应这次相识？',
-		choices: ['报上自己的名字，期待在切磋中相互学习。', '简单介绍自己，认真听对方讲完。', '不作介绍，只催促赶快开始。'],
 		second: '对方没有急着取出精灵球，而是等着你的回答。你想让对方了解怎样的自己？',
-		answers: ['讲起自己与伙伴之间的一次互相信任。', '坦白自己也还有许多正在摸索的地方。', '只说自己一定会赢，不想听别的。'] },
+	},
 	{ setting: '狭窄的山路被几名训练家堵住。一位旅人的背包落在地上，对方却还在索要更多物资。熟悉的身影也赶到了路口。', question: '面对眼前的局面，你怎样与劲敌商量？',
-		choices: ['先一起保护旅人，再分工牵制堵路者。', '确认双方队伍状态，找一条安全的行动路线。', '让对方自己处理，表示不想费事。'],
 		second: '你们确认了路口的位置。对方再次望向你，想知道交战时怎样互相照应。',
-		answers: ['约定求援信号，谁出现空当就立刻补上。', '各自守住一边，有变化就及时说出来。', '表示自己不会失误，也不准备照看另一侧。'] },
+	},
 	{ setting: '前方的树林传来沉重撞击声。一只暴走的高阶宝可梦守在破损的巢穴旁，附近已经有旅人退了回来。劲敌正在查看留下的痕迹。', question: '对方邀请你一起制止暴走，你如何回应？',
-		choices: ['一起观察它受惊的原因，约好战后照看它。', '先检查地形和队伍，谨慎安排进攻。', '只在意战利品，催促立刻把它打倒。'],
 		second: '强大的对手又一次撞向树干。你们得在保护伙伴和阻止它继续受伤之间，找到合适的节奏。',
-		answers: ['轮流牵制，给彼此留出照顾伙伴的时间。', '提醒对方别勉强，先看清它行动的空隙。', '让对方顶在最前面，自己只负责最后一击。'] },
+	},
 	{ setting: '风把营地的火苗吹得轻轻摇晃。你和劲敌暂时不谈赶路，替伙伴摆好饮水，终于有时间坐下来聊一会儿。', question: '对方说起了旅途中不常向别人提起的心事。',
-		choices: ['认真听着，也分享一次自己的迷茫。', '不急着给建议，先让对方把故事说完。', '觉得这些烦恼没用，催促结束话题。'],
 		second: '杯中的热气渐渐淡了，对方的语气比刚坐下时更放松。话题转到你们为什么继续旅行。',
-		answers: ['说自己珍惜一路认识的伙伴与朋友。', '承认还没有完整答案，但愿意继续寻找。', '表示只在乎自己变强，其他人都无所谓。'] },
+	},
 	{ setting: '一封来自培育家协会的委托被摊在桌上：有人遗失了重要物资，附近又出现了骚扰运输的宝可梦。劲敌想邀请你共同完成这件事。', question: '接下委托前，你有什么想说的？',
-		choices: ['先了解委托人的困难，再一起把事情办妥。', '核对线索和物资清单，商量各自分工。', '只问报酬多少，表示其他事情不重要。'],
 		second: '清单上有一处模糊的标记。劲敌把纸推近了一点，耐心等着你的判断。',
-		answers: ['一起重新确认线索，避免让委托人白等。', '先做最有把握的部分，遇到新情况再商量。', '打算随便交差，不想再核对细节。'] },
+	},
 	{ setting: '再次碰面时，劲敌的行装上多了训练留下的痕迹。对方专门留出一片空地，想用一次正式切磋检验这段时间的成长。', question: '面对这次认真准备的邀请，你如何回答？',
-		choices: ['肯定对方的努力，约好双方全力以赴。', '认真确认规则与伙伴状态，表示已经准备好。', '拿旧时的结果嘲笑对方，认为没有必要。'],
 		second: '你们站到场地两端。劲敌最后看了一眼自己的伙伴，转向你，等着这场切磋开始。',
-		answers: ['表示期待看见对方与伙伴练出的新配合。', '提醒彼此尽力就好，结果之后再一起复盘。', '表示只想快点拿走奖励，不关心对方的成长。'] },
+	},
 	{ setting: '通往前方的路线接连传来求援消息。拦路者、走散的旅人与混乱的岔道挤在一起，你与劲敌需要连续配合，才能护送大家通过。', question: '连续行动之前，你怎样和对方确认计划？',
-		choices: ['按各自擅长的部分分工，并预留相互接应的空间。', '核对补给，提醒对方及时报告伙伴的状态。', '认为默契已经足够，拒绝再商量。'],
 		second: '你们听见下一段路的呼喊。劲敌整理好精灵球，却先停下来确认你的眼神。',
-		answers: ['告诉对方：需要帮助就喊我，我们一起走过去。', '用此前约好的信号确认，准备稳步前进。', '表示自己会先走，不准备等对方。'] },
+	},
 	{ setting: '高处的风吹开云层。经历七次相遇，劲敌终于带着准备已久的完整队伍，站在你面前。今天，双方都不会保留实力。', question: '这场全力挑战前，你想对劲敌说些什么？',
-		choices: ['感谢一路的相伴，期待以最好的表现回应彼此。', '认真握手，约好打完之后再一起回顾这段旅途。', '表示过去的相处无关紧要，只有输赢值得记住。'],
 		second: '对方伸出的手停在你面前。原来这一次挑战，也是在问你们之后想走向怎样的旅途。',
-		answers: ['表示无论胜负，都希望继续并肩见识更远的世界。', '承诺认真完成这一场，再一起商量未来的路线。', '拒绝谈以后，表示结束后就各走各的。'] },
+	},
+];
+const REUNIONS = [
+	'路口的身影很快认出了你，先朝你招手，又望向受困的旅人。打过招呼后，你们一起走近堵路的地方。',
+	'你沿着断枝找到熟悉的背影。对方把刚记下的痕迹指给你看，也腾出位置，让你的伙伴靠近观察。',
+	'营地旁已经摆着两只杯子。对方看见你，往火边挪了挪，给你和伙伴留出休息的位置。',
+	'你刚走进委托站，对方就抬起头，将桌上的清单转向你。上面已经用不同记号分好了物资与路线。',
+	'空地上的脚印还很新。对方收起训练笔记，认真看向你；这一次重逢，似乎已经期待了很久。',
+	'你们在求援的路口再次碰面。不用多作解释，彼此就开始清点补给，确认伙伴还能坚持多久。',
+	'远处的身影站在高处等你。你走近时，对方先招呼了你的伙伴，随后带你来到已经整理好的对战场地。',
 ];
 
 export function rivalConversationOptions(chapter: number, turn = 0) {
-	const scene = SCENES[chapter - 1];
-	return (turn ? scene.answers : scene.choices).map((name, index) => ({
+	return RIVAL_CHOICES[chapter - 1][turn].map((name, index) => ({
 		id: `greet:${['warm', 'honest', 'cold'][index]}`, name, text: '', disabled: false,
 	}));
 }
@@ -195,9 +184,8 @@ export function rivalOpeningPages(id: RivalID, chapter: number, affection: numbe
 	const page = (text: string, approval = false) => dialoguePage(id, person.name, text, approval);
 	return [
 		{ scene: 'arena', title: person.name, text: scene.setting, portrait: id, side: 'right' },
-		...(chapter === 1 ? voice.intro.map(text => page(text)) : [page(affection >= 6 ?
-			'熟悉的脚步声在你身旁停下。对方先照看了你的伙伴，随后自然地在你身边坐定，像是早已习惯这次重逢。' :
-			'你们在人群中认出了彼此。对方停下手里的事情，走过来和你打招呼，也问起了这段路的情况。', affection >= 6)]),
+		...(chapter === 1 ? voice.intro.map(text => page(text)) :
+		[{ scene: 'arena', title: person.name, portrait: id, text: REUNIONS[chapter - 2] }]),
 		page(person.lines[chapter - 1], affection >= 4), page(voice.chapters[chapter - 1], affection >= 4),
 		...(id === 'kieran' ? [dialoguePage('carmine', '丹瑜', chapter === 1 ?
 			'我是丹瑜，乌栗的姐姐。他这次鼓起勇气来找你，你可得认真回他。不过别有压力，先好好认识一下吧。' : CARMINE.lines[chapter - 1], affection >= 4, 'left')] : []),
@@ -205,25 +193,28 @@ export function rivalOpeningPages(id: RivalID, chapter: number, affection: numbe
 	];
 }
 export function rivalAnswerPages(id: RivalID, chapter: number, turn: number, choice: string, affection: number) {
-	const voice = VOICES[id], person = RIVALS[id], accepted = choice === 'greet:warm';
-	return [dialoguePage(id, person.name, choice === 'greet:cold' ? voice.cold : accepted ? voice.warm : voice.honest, affection >= 4),
-		dialoguePage(id, person.name, turn === 0 ? SCENES[chapter - 1].second :
-		chapter === 4 ? '你们又添了些热水，把接下来的时间留给彼此的故事。' :
-		chapter === 5 ? '委托单被仔细折好。商量过后，你们一起确认了这一次要完成的任务。' :
-		'你们确认了伙伴的状态，把刚才商量好的约定记在心里。对方握住精灵球，向你点了点头。', affection >= 4)];
+	const person = RIVALS[id];
+	return [dialoguePage(id, person.name, rivalVoicedAnswer(id, choice, rivalTopicAnswer(chapter, turn, choice)), affection >= 4),
+		turn === 0 ? { scene: 'arena', title: person.name, text: SCENES[chapter - 1].second, portrait: id } :
+		{ scene: 'arena', title: person.name, portrait: id, text: [
+			'你们分别走向场地两端，给伙伴留出熟悉环境的时间。新的相识，就从这一次认真切磋开始。',
+			'旅人带着背包退到安全的路边。你们各自握紧精灵球，准备按商量好的分工接应。',
+			'树叶又一次震动。你们压低脚步，从两个方向靠近，等待阻止冲撞的机会。',
+			'杯中的热气散了些。话题已经打开，你们往火堆里添了一根树枝，继续聊下去。',
+			'你们将确认过的位置标在委托单上，收好清单，一起踏上寻找物资的路。',
+			'场地两端的伙伴已经站稳。你们交换最后一个确认的眼神，准备迎接新的配合。',
+			'远处再次传来求援声。补给已经整理好，你们用约定的信号确认彼此的位置。',
+			'高处的云慢慢散开。你们在场地两端站定，让伙伴用最好的状态回应这场约定。',
+		][chapter - 1] }];
 }
 export function rivalChatPages(id: RivalID, turn: number, choice: string, affection: number) {
-	const voice = VOICES[id], name = RIVALS[id].name;
-	return [dialoguePage(id, name, choice === 'cold' ? voice.cold : choice === 'warm' ? voice.warm : voice.honest, affection >= 4),
-		dialoguePage(id, name, [voice.chapters[3], '你们聊起最初遇见伙伴时的模样，也说起后来那些不太顺利的日子。对方认真听着，没有打断你的话。',
-			'营火渐渐变成温暖的红色。你们收好杯子，又把下一次相遇时想讲的故事，留在了彼此的约定里。'][turn], affection >= 4)];
+	return [dialoguePage(id, RIVALS[id].name,
+		rivalVoicedAnswer(id, choice, RIVAL_CHAT_ANSWERS[turn][['warm', 'honest', 'cold'].indexOf(choice)]), affection >= 4)];
 }
 export function rivalChatOptions(turn = 0) {
-	return [
-		{ id: 'warm', name: ['认真回应，也谈谈自己与伙伴的约定。', '愿意试着理解彼此不同的想法。', '约好以后继续互相检验成长。'][turn] },
-		{ id: 'honest', name: ['坦率地说，自己也还在寻找答案。', '先听对方把故事讲完。', '感谢这一路的帮助。'][turn] },
-		{ id: 'cold', name: '觉得没什么好谈的，催促继续赶路。' },
-	].map(option => ({ ...option, text: '', disabled: false }));
+	return RIVAL_CHAT_CHOICES[turn].map((name, index) => ({
+		id: ['warm', 'honest', 'cold'][index], name, text: '', disabled: false,
+	}));
 }
 export function rivalChapterReplay(id: RivalID, chapter: number) {
 	type Page = { text: string[], options: { label: string, next: string }[], portrait?: string, battleSkipped?: boolean };
@@ -238,8 +229,9 @@ export function rivalChapterReplay(id: RivalID, chapter: number) {
 			options: turn === 0 ? rivalConversationOptions(chapter, 1).map(next => ({ label: next.name, next: `answer1:${next.id}` })) :
 			[{ label: chapter === 4 ? '继续旅途闲谈' : chapter === 5 ? '合作完成委托' : '继续这段奇遇', next: 'activity' }] };
 	}
-	pages.activity = { text: [RIVALS[id].lines[chapter - 1], VOICES[id].chapters[chapter - 1]], portrait: id,
-		options: [{ label: '查看后续', next: 'end' }], battleSkipped: ![4, 5].includes(chapter) };
+	pages.activity = { text: [chapter === 4 ? '你们坐在营火旁，接着聊起最初的伙伴与之后的打算。' :
+		chapter === 5 ? '你们拿起委托单，准备一起完成商量好的任务。' : '准备已经完成，你们带着伙伴走向这一次挑战。'], portrait: id,
+	options: [{ label: '查看后续', next: 'end' }], battleSkipped: ![4, 5].includes(chapter) };
 	if (chapter === 4) {
 		const options = (turn: number) => rivalChatOptions(turn).map(option => ({ label: option.name, next: `chat${turn}:${option.id}` }));
 		pages.activity.options = options(0);

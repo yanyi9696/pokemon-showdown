@@ -18,6 +18,8 @@ function requireRule(ok: unknown, message: string): asserts ok {
 	if (!ok) throw new Error(message);
 }
 export function inventoryItem(content: RogueContent, id: string): RogueItem | undefined {
+	if (id === 'greninjaashz') return { id, name: '智蛙 Z', kind: 'held', price: 0, shopFloor: false,
+		icon: 'greninjaashz', description: '幻想甲贺忍蛙携带，在肉鸽对战中登场时切换为小智版形态；解锁 Z 招式后，可将飞水手里剑变为黄金羁绊手里剑。' };
 	if (id === 'abilitycapsule' || id === 'abilitypatch') return { id, name: id === 'abilitycapsule' ? '特性胶囊' : '特性膏药',
 		kind: 'ability', price: id === 'abilitycapsule' ? 8000 : 12000, shopFloor: false,
 		description: id === 'abilitycapsule' ? '切换另一项普通特性；使用前可查看目标特性。' : '切换隐藏特性与第一项普通特性；使用前可查看目标特性。' };

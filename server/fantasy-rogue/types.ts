@@ -145,6 +145,7 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	greninjaTraining?: import('./greninja-training').GreninjaTraining;
 	socialCompanions?: import('./travellers').SocialCompanion[];
 	companionInvitations?: import('./travellers').CompanionInvitation[];
 	companionsVersion?: number;
@@ -158,7 +159,7 @@ export interface RogueRun extends RogueInventory {
 	rewardHistory?: string[];
 	/** Offered routes, not selected routes. Saved with the floor so reconnecting cannot reroll pity. */
 	routeHistory?: {
-		floor: number, factors: Record<string, number>, tradeSeen: boolean, eliteMisses: number,
+		floor: number, factors: Record<string, number>, tradeSeen: boolean, eliteMisses: number, lastEliteFloor?: number,
 	};
 	/** Persisted claims prevent duplicate elder supplies on reconnect or repeated dialogue. */
 	mentorGifts?: number[];
@@ -220,7 +221,7 @@ export interface RogueRun extends RogueInventory {
 	startingSlots: number;
 	pendingCapture?: RoguePokemon;
 	pendingCaptures?: RoguePokemon[];
-	captureResume?: 'ready' | 'failed' | 'shopclosed' | 'choose';
+	captureResume?: 'ready' | 'failed' | 'shopclosed' | 'choose' | 'event';
 	pendingMoves?: { member: string, move: string }[];
 	notices?: string[];
 	lastReward?: {

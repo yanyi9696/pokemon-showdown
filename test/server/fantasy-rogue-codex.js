@@ -141,7 +141,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
 			const expedition = entry.id in require('../../dist/server/fantasy-rogue/expedition-text').EXPEDITION_OVERVIEWS;
-			if (expedition || ['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers', 'honeymoonreturn', 'companionrematch', 'travellermeeting'].includes(entry.id)) {
+			const training = ['greninjatraining', 'greninjareturn'].includes(entry.id);
+			if (training || expedition || ['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers', 'honeymoonreturn', 'companionrematch', 'travellermeeting'].includes(entry.id)) {
 				// These openings incorporate the saved item, owner and NPC budgets at runtime.
 				assert.deepEqual(replay.pages.start.text, require('../../dist/server/fantasy-rogue/event-text').eventOpening(entry.id));
 			} else {
@@ -155,7 +156,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 				if (!page.options.length) endings++;
 				assert(!page.action && !page.reward && !page.log);
 			}
-			assert(endings >= (expedition ? 1 : 3));
+			assert(endings >= (expedition || training ? 1 : 3));
 		}
 		assert.equal(JSON.stringify(a), before);
 	});

@@ -59,7 +59,7 @@ describe('Fantasy Rogue companion gifts, railgun and rule breaker', function () 
 		battle.clearActiveMove();
 		const info = rogueAbilityInfo(mon);
 		assert.equal(info.moves.zapcannon.accuracyFactor, 2);
-		assert.deepEqual(info.moves.zapcannon.power, [{ source: '某科学超电磁炮', factor: 2 }]);
+		assert.deepEqual(info.moves.zapcannon.power, [{ source: '某科学的超电磁炮', factor: 2 }]);
 		battle.makeChoices('switch 2', 'move splash');
 		assert(!battle.p1.active[0].volatiles.magnetrise);
 		assert.equal(modified('zapcannon').accuracy, 50); battle.clearActiveMove();

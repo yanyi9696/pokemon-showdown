@@ -52,6 +52,7 @@ function buildFantasyGuide() {
 			abilities: [...new Set(Object.values(species.abilities))], stats: species.baseStats,
 			battleOnly: !!species.battleOnly, requiredItem: species.requiredItem }));
 	const itemNotes = [
+		{ id: 'greninjaashz', name: '智蛙 Z', text: '完成【甲贺忍蛙护林员】两阶段事件获得，并解锁本局 Z 招式。幻想甲贺忍蛙携带它，在肉鸽战斗中登场时切换为小智版形态；以【飞水手里剑】释放专属 Z 招式【黄金羁绊手里剑】。预定 Z 招式的赠送范围包含进化后拥有这类自制专属纯晶的伙伴。' },
 		{ id: 'megastones', name: '超级进化石与超巨进化许愿星',
 			text: '超级进化石由对应宝可梦携带，解锁超进化系统后可在战斗中使用。' +
 				'超巨进化许愿星用于对应幻想宝可梦的超巨进化，需要单独解锁超巨进化系统，占用独立的超巨进化机会。' },

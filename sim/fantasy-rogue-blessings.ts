@@ -51,7 +51,7 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 	const modifiers: { source: string, factor?: number, add?: number }[] = [];
 	const add = (source: string, factor: number) => modifiers.push({ source, factor });
 	if (move.category === 'Status') return modifiers;
-	if (move.id === 'zapcannon' && railgunActive(pokemon)) add('某科学超电磁炮', 2);
+	if (move.id === 'zapcannon' && railgunActive(pokemon)) add('某科学的超电磁炮', 2);
 	const activeMove = move as ActiveMove;
 	if (activeMove.rogueWine || preview && savedBlessingMember(pokemon)?.tonics?.wine && !member(pokemon).wineUsed) add('酒', 2);
 	if (move.type === 'Poison' && savedBlessingMember(pokemon)?.tonics?.poison) add('酒与头孢', 1.5);
@@ -80,6 +80,7 @@ export function rogueDamageSources(mon: Pokemon, move: Move) {
 		sources.push(`【愤怒的普通宝可梦】伤害 +${10 + Math.max(1, Math.floor(ordinary.floor / 50)) * 5}%`);
 	}
 	if (hasBlessing(mon, 'lifepower')) sources.push('【氪命】伤害 ×1.3');
+	if (hasBlessing(mon, 'explosionart') && ['selfdestruct', 'explosion'].includes(move.id)) sources.push('【艺术就是爆炸】最终伤害 +50%');
 	if (hasBlessing(mon, 'coin')) sources.push(hasBlessing(mon, 'dice') ? '【命运决定一切】伤害 ×1.5' : '【命运决定一切】伤害随机 ×0.5 或 ×1.5');
 	if (hasBlessing(mon, 'sound') && move.flags.sound) sources.push(`【${blessingSource(mon, 'sound')}】伤害 +${mon.side.pokemon.reduce((n, p) =>
 		n + p.moveSlots.filter(slot => mon.battle.dex.moves.get(slot.id).flags.sound).length, 0) * 5}%`);
@@ -118,7 +119,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	if (robeMultiplier(mon) > 1) statSources.push(`【神衣耐久】当前双防 ×${robeMultiplier(mon).toFixed(3)}，已计入能力值`);
 	if (saved.mushroomTraining) statSources.push(`【合成大蘑菇】双攻 +${Number((saved.mushroomTraining.offense / 100).toFixed(2))}%，双防 +${Number((saved.mushroomTraining.defense / 100).toFixed(2))}%（已计入能力值）`);
 	if (rulebreakerActive(mon)) statSources.push('【规则，就是用来打破的】无视自身能力下降与天气减益');
-	if (railgunActive(mon)) statSources.push('【某科学超电磁炮】永久电磁漂浮');
+	if (railgunActive(mon)) statSources.push('【某科学的超电磁炮】永久电磁漂浮');
 	const effects = blessingEffects(mon), modifiers = mon.set.fantasyRogueModifiers;
 	if (Object.values(mon.set.fantasyRogueStats || {}).some(Boolean)) statSources.push('局外六维加成已计入基础能力');
 	if ((mon.set.fantasyRogueScale || 1) !== 1) statSources.push(`星级：六维 ×${mon.set.fantasyRogueScale}`);
@@ -148,7 +149,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 			!!effects?.owned.some(b => ['typelink', 'hoopa'].includes(b.family));
 		return [move.id, { power: roguePowerModifiers(mon, move, true), damage: rogueDamageSources(mon, move),
 			...(move.id === companionZ?.move ? { name: companionZ.name, source: companionZ.source } : {}),
-			...(move.id === 'zapcannon' && railgunActive(mon) ? { name: '超电磁炮', accuracyFactor: 2, accuracySource: '某科学超电磁炮' } : {}),
+			...(move.id === 'zapcannon' && railgunActive(mon) ? { name: '超电磁炮', accuracyFactor: 2, accuracySource: '某科学的超电磁炮' } : {}),
 			...(typed ? { types: Object.fromEntries(mon.battle.dex.types.names().map(type =>
 				[type, roguePowerModifiers(mon, { ...move, type }, true)])) } : {}) }];
 	}));
@@ -315,7 +316,7 @@ export function blessingSwitchIn(mon: Pokemon) {
 	if (railgunActive(mon)) {
 		mon.addVolatile('magnetrise', mon, mon.battle.format);
 		if (mon.volatiles.magnetrise) mon.volatiles.magnetrise.duration = 0;
-		mon.battle.add('-message', '【某科学超电磁炮】永久电磁漂浮；【电磁炮】升级为【超电磁炮】，威力与命中率翻倍。');
+		mon.battle.add('-message', '【某科学的超电磁炮】永久电磁漂浮；【电磁炮】升级为【超电磁炮】，威力与命中率翻倍。');
 	}
 	if (rulebreakerActive(mon)) mon.battle.add('-message', '【规则，就是用来打破的】破格伙伴无视能力下降、天气减益与对手的防护和属性免疫。');
 	for (const companion of blessingEffects(mon)?.companions || []) if (!companion.away && companion.member === mon.set.fantasyRogueId && companion.ability) {
@@ -579,7 +580,13 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onTryBoost(boosts, pokemon) {
 		if (rulebreakerActive(pokemon)) for (const stat of Object.keys(boosts) as BoostID[]) if (boosts[stat]! < 0) delete boosts[stat];
 	},
-	onBeforeSwitchIn(pokemon) { prepareBlessingMember(pokemon); },
+	onBeforeSwitchIn(pokemon) {
+		if (pokemon.battle.fantasyRogue && pokemon.species.id === 'greninjafantasy' &&
+			pokemon.hasItem('greninjaashz') && !pokemon.transformed) {
+			pokemon.formeChange('Greninja-Ash-Fantasy', pokemon.battle.dex.items.get('greninjaashz'), true);
+		}
+		prepareBlessingMember(pokemon);
+	},
 	onBeforeSwitchOut(pokemon) { blessingLeave(pokemon); },
 	onModifyAtk(atk, pokemon) { return blessingModifyStat(atk, pokemon, 'atk'); },
 	onModifySpA(spa, pokemon) { return blessingModifyStat(spa, pokemon, 'spa'); },
@@ -647,6 +654,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onModifyDamage(damage, source, target, move) {
 		// Apply boosts before the lethal-damage hooks (Focus Sash / Sturdy). Fixed damage bypasses this event.
 		damage = rogueEventDamage(damage, target, source, move);
+		if (hasBlessing(source, 'explosionart') && ['selfdestruct', 'explosion'].includes(move.id)) damage *= 1.5;
 		if (move.rogueBloodFactor) damage *= move.rogueBloodFactor;
 		const ordinary = hasBlessing(source, 'ordinary');
 		if (ordinary && source.side.pokemon.every(p => this.dex.species.get(savedBlessingMember(p)?.set.species || p.baseSpecies.name).bst <= 500)) {

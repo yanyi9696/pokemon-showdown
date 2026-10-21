@@ -2,6 +2,7 @@
 import { EXPEDITION_NAMES, EXPEDITION_OPENINGS } from './expedition-text';
 import { SERVICE_TEXT } from './event-service-text';
 export const EVENT_NAMES = {
+	greninjatraining: '甲贺忍蛙护林员', greninjareturn: '甲贺忍蛙护林员·修行归来',
 	travellermeeting: '旅途同行',
 	...EXPEDITION_NAMES, rivalstory: '劲敌奇遇',
 	companionrematch: '再来一场，好吗？', policeassist: '君莎的治安协助', policerevenge: '未散的风波',
@@ -15,6 +16,10 @@ export const EVENT_NAMES = {
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
 	return {
+		greninjatraining: ['森林深处，一道黑影踏着水花从枝间跃出。那是一只小智版甲贺忍蛙，它没有摆出敌意，而是望向你的幻想甲贺忍蛙。',
+			'两者的力量隐隐共鸣。它指向林间的护林记号，邀请你的伙伴跟随自己修行，唤醒尚未掌握的潜能。'],
+		greninjareturn: ['熟悉的水声从树梢传来。小智版甲贺忍蛙带着完成修行的伙伴回到你面前，向你展示一枚闪着水光的纯晶。',
+			'你的伙伴落在你身边，回望一路走来的方向。它已经准备好，继续与你并肩前进。'],
 		travellermeeting: ['转过道路的弯角，一位训练家正在照顾自己的伙伴。你们打过招呼，聊起各自的旅途。'],
 		...EXPEDITION_OPENINGS, rivalstory: ['熟悉的身影出现在前方。属于你们的旅途故事，又翻开了新的一页。'],		companionrematch: ['同行伙伴提起了上一次切磋，邀请你检验这一路的进步。'],
 		policeassist: ['君莎正安抚受惊的旅人。几处道路有人闹事，她诚恳地请你帮忙，并把三个地区标在地图上。'],

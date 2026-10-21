@@ -1,4 +1,5 @@
 import { rivalView, chooseRival, settleRival, type RivalEvent } from './rivals';
+import { greninjaEvent, greninjaEventEligible, greninjaEventView, chooseGreninjaEvent } from './greninja-training';
 import { beginSocialEvent, socialCandidates, socialEventView, chooseSocialEvent, settleSocialEvent, type SocialEvent } from './social-events';
 import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView, chooseExpedition, settleExpedition, type ExpeditionEvent } from './expedition-events';
 import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
@@ -97,7 +98,7 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
 		!['rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
 		(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
 		(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
@@ -113,7 +114,7 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	});
 	const pool = unseen.length ? unseen : cooled.length ? cooled : candidates;
 	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
-	const weights = pool.map(id => Math.max(1, Math.round(expeditionWeight(run, id) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
+	const weights = pool.map(id => Math.max(1, Math.round((id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
 		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	return pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
@@ -237,6 +238,9 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	if (choice === 'leave') event.trainingAidBlocked = true;
 	else event.committed = true;
 	if (event.rival) { chooseRival(run, content, random, choice!); rewardReceipt(run, before); return; }
+	if (greninjaEvent(event.id)) {
+		chooseGreninjaEvent(run, choice!); rewardReceipt(run, before); return;
+	}
 	if (event.social) { chooseSocialEvent(run, choice!, random); rewardReceipt(run, before); return; }
 	if (event.expedition) { chooseExpedition(account, run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.rematch) { chooseRematch(run, choice!); return; }
@@ -451,6 +455,7 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (greninjaEvent(event.id)) return greninjaEventView(run);
 	if (event.social) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...socialEventView(run) };
 	if (event.rival) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...rivalView(run) };
 	if (expeditionEvent(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...expeditionView(run) };
