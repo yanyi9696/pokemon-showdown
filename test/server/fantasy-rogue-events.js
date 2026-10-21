@@ -202,7 +202,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(value, 1350);
 	});
 	it('retains permanent mushroom training across repeated battles', () => {
-		enter('mushrooms'); choose('taste');
+		enter('mushrooms', 40); choose('taste');
 		const training = account().run.team[0].training;
 		assert(training.offense > 0 && training.defense > 0);
 		assert(!account().run.eventBuff);

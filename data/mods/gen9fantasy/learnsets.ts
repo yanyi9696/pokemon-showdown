@@ -20376,7 +20376,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			earthpower: ["9M"],
 			spikes: ["9M"],
 			stealthrock: ["9M"],
-			flashcannon: ["9M"],
+			steelbeam: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M"],
 			afteryou: ["7T", "6T", "5T"],
@@ -20533,7 +20533,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			earthpower: ["9M"],
 			spikes: ["9M"],
 			stealthrock: ["9M"],
-			flashcannon: ["9M"],
+			steelbeam: ["9M"],
 			//幻想增添技能
 			aerialace: ["7M", "6M", "5M"],
 			afteryou: ["7T", "6T", "5T"],

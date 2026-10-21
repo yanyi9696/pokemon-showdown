@@ -19,6 +19,10 @@ export interface RogueTrainerCandidate {
 	team: PokemonSet[];
 }
 export interface RogueEncounter {
+	escortCount?: number;
+	blessingLevelOffsets?: number[];
+	/** Authored trial guardians keep their stated levels. */
+	fixedLevels?: boolean;
 	cooperative?: { id: string, name: string, team: PokemonSet[] };
 	forcedTera?: boolean;
 	/** Stable identity for successive fights inside one event; retries reuse it. */
@@ -145,6 +149,8 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	activityClaims?: string[];
+	environment?: import('./floor-environment').FloorEnvironment;
 	/** Ecologies offered on recent floors, shared by wild and elite routes. */
 	biomeHistory?: { id: string, floor: number }[];
 	greninjaTraining?: import('./greninja-training').GreninjaTraining;
@@ -288,7 +294,7 @@ export interface RogueCommand {
 		'shopchallenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
-		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus';
+		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';
 	useSpirit?: boolean;
 	/** A previously cleared spirit; validated against the account ledger on the server. */
 	selectedSpirit?: string;

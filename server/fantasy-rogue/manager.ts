@@ -10,7 +10,7 @@ import { randomUUID } from 'crypto';
 import { emergencyCost, MENTOR_CARDS, mentorCardAtFloor, type MentorCard } from './early-balance';
 import { eventView, canRetreatRogue } from './events';
 import { needsOnboarding } from './onboarding';
-import { rogueCodex, codexContentVersion, type CodexSection } from './codex';
+import { rogueCodex, codexContentVersion, ROGUE_CODEX_SCHEMA, type CodexSection } from './codex';
 import { BEGINNER_GUIDE } from './beginner-guide';
 import { companionInvitationView, socialCompanionViews } from './travellers';
 import { companionOptions } from './companions';
@@ -82,14 +82,14 @@ export class RogueManager {
 		if (!rogueAccess(user)) return { userid: user.id, enabled: false, section, entries: [] };
 		let account;
 		try { this.authorize(user); account = this.engine.store.get(user.id); } catch {}
-		return { userid: user.id, revision: account?.revision, codexSchema: 2, contentVersion: codexContentVersion(), ...rogueCodex(account, section, this.engine.localSpirits) };
+		return { userid: user.id, revision: account?.revision, codexSchema: ROGUE_CODEX_SCHEMA, contentVersion: codexContentVersion(), ...rogueCodex(account, section, this.engine.localSpirits) };
 	}
 	duel(user: User, command: DuelCommand) {
 		this.authorize(user);
 		return this.duels.command(user, command);
 	}
 	state(user: User) {
-		const common = { userid: user.id, protocolVersion: 1, codexSchema: 2, contentVersion: codexContentVersion(), enabled: rogueAccess(user) };
+		const common = { userid: user.id, protocolVersion: 1, codexSchema: ROGUE_CODEX_SCHEMA, contentVersion: codexContentVersion(), enabled: rogueAccess(user) };
 		try { this.authorize(user); } catch (error) {
 			return { ...common, message: (error as Error).message, account: null };
 		}
@@ -166,6 +166,7 @@ export class RogueManager {
                 mentorOffer: run.mentorOffer ? {floor: run.mentorOffer, cards: Object.keys(MENTOR_CARDS).map(id => ({id, ...mentorCardAtFloor(id as MentorCard, run.mentorOffer!)}))} : undefined,
                 mentorCard: run.mentorCard ? {...run.mentorCard, ...mentorCardAtFloor(run.mentorCard.kind, run.mentorCard.floor)} : undefined,
 				time: { id: rogueTime(run.floor), name: ROGUE_TIME_NAMES[rogueTime(run.floor)] },
+				floorEnvironment: run.environment,
 				recovery: run.recovery, retreating: !!run.battle?.retreatRequested,
 				emergencyRecovery: run.emergencyRecovery,
 				canRetreat: canRetreatRogue(run),
@@ -260,14 +261,15 @@ export class RogueManager {
 			const encounter = run.node!.encounters[run.encounter];
 			const broadcast = () => user.send(`|queryresponse|fantasyrogue|${JSON.stringify(this.state(user))}`);
 			try {
+				const battleState = this.engine.battleState(userid);
 				const room = this.ai().createRogueBattle(user, {
 					id: `rogue-${encounter.trainer?.id || run.node!.id}`, name: encounter.name,
 					avatar: rogueOpponentAvatar(run), description: '', format: encounter.cooperative ? ROGUE_COOP_FORMAT : ROGUE_FORMAT,
 					style: encounter.style, developmentOnly: false, packedTeam: Teams.pack(encounter.cooperative ? encounter.team.slice(0, Math.ceil(encounter.team.length / 2)) : encounter.team),
 					keyMembers: [], resourcePreferences: [],
-				}, Teams.pack(run.team.filter(mon => !mon.egg).map(mon => mon.set)), {
+				}, Teams.pack(battleState.team.map(mon => mon.set)), {
 					cooperative: encounter.cooperative && { name: encounter.cooperative.name, avatar: encounter.cooperative.id, ally: Teams.pack(encounter.cooperative.team), foe: Teams.pack(encounter.team.slice(Math.ceil(encounter.team.length / 2))), foeName: encounter.name },
-					state: this.engine.battleState(userid), floor: run.floor, boss: run.node!.kind === 'boss', canRetreat: canRetreatRogue(run),
+					state: battleState, floor: run.floor, boss: run.node!.kind === 'boss', canRetreat: canRetreatRogue(run),
 					preview: run.preview?.stage === 'running' ? run.preview.trainer : undefined,
 					wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',
 					onCapture: captured => { this.engine.capture(userid, token, captured); },

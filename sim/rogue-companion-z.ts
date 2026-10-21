@@ -13,7 +13,7 @@ export const COMPANION_Z = {
 		type: 'Poison', base: 'sludgewave', move: 'roguecitypoison', name: '熙熙攘攘我们的城市', category: 'Special', target: 'normal',
 	},
 	lacey: {
-		type: 'Fairy', base: 'playrough', move: 'rogueflawless', name: '致以无瑕之人', category: 'Physical', target: 'allAdjacentFoes',
+		type: 'Fairy', base: 'playrough', move: 'rogueflawless', name: '致以，「无瑕之人」', category: 'Physical', target: 'allAdjacentFoes',
 	},
 } as const;
 export function companionZDefinition(id: CompanionID) {

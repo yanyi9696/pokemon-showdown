@@ -99,7 +99,7 @@ function fishingReward(account: RogueAccount, run: RogueRun, content: RogueConte
 	if (random(10000) < hits * 5) mon.set.shiny = true;
 	const elite = random(100) < 8 + 3 * hits;
 	mon.set.ability = randomEncounterAbility(mon.set.species, random, elite);
-	mon.abilityPool = [{ id: toID(mon.set.ability), hidden: dex.species.get(mon.set.species).abilities.H === mon.set.ability }];
+	mon.abilityPool = [{ id: toID(mon.set.ability), hidden: toID(dex.species.get(mon.set.species).abilities.H) === toID(mon.set.ability) }];
 	rebuildMember(mon, run.boosts); mon.hp = mon.maxhp;
 	if (elite) {
 		// Fishing quality already raises the IV floor; an elite is not automatically perfect.

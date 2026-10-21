@@ -4,6 +4,8 @@ import { createHash } from 'crypto';
 import { RIVALS, RIVAL_SCENES } from './rival-data';
 import { rivalChapterReplay } from './rival-dialogue';
 import { BEGINNER_GUIDE } from './beginner-guide';
+import { addEvolutionSupplies } from './evolution-supplies';
+import type { RogueItem } from './types';
 import { Dex } from '../../sim/dex';
 import { REWARD_SCENES } from './reward-scenes';
 import { ROGUE_BLESSINGS, FANTASY_BLESSING_ITEMS } from '../../sim/rogue-blessing-data';
@@ -15,6 +17,7 @@ import { TRADE_NAMES } from './trading';
 import { blessingDisplay, blessingCodexFloors, blessingAvailabilityNotes, compareBlessingNames } from './blessing-text';
 
 export type CodexSection = 'guide' | 'blessings' | 'events';
+export const ROGUE_CODEX_SCHEMA = 3;
 const INTRO = [
 	{ title: '幻想杯是什么？', text: '在熟悉的宝可梦回合制对战中，加入幻想形态、新特性、新道具，以及部分招式与规则调整。同一只宝可梦在这里可能有全新的打法。下面可以按类别查阅。' },
 	{ title: '这座塔怎么玩？', text: '选择初始伙伴，带着偏爱卡片向 200 层前进。每层挑选路线，在战斗、捕捉、事件与补给间作出选择。打败首领、收集祝福，逐步养成自己的队伍。' },
@@ -37,14 +40,21 @@ function buildFantasyGuide() {
 		' 特定幻想宝可梦携带时，还可触发气场爆发。' : ''), icon: item.id, spritenum: item.spritenum,
 	category: item.itemUser?.length || item.id === 'lightball' ? 'exclusive' : 'general' }))
 		.sort((a, b) => Number(FANTASY_BLESSING_ITEMS.includes(b.id)) - Number(FANTASY_BLESSING_ITEMS.includes(a.id)));
+	const supplies: RogueItem[] = [];
+	addEvolutionSupplies(supplies);
+	for (const item of supplies) if (!items.some(entry => entry.id === item.id)) items.push({
+		id: item.id as ID, name: item.name, text: item.description || '用于特殊进化，在队伍面板检查对应条件。',
+		icon: item.id as ID, spritenum: dex.items.get(item.id).spritenum,
+		category: item.id === 'lightball' ? 'exclusive' : 'general',
+	});
 	const moves = dex.moves.all().filter(move => move.exists && !move.id.startsWith('rogue') && (
-		!base.moves.get(move.id).exists || ['type', 'category', 'basePower', 'accuracy', 'pp', 'priority', 'desc', 'shortDesc']
+		!base.moves.get(move.id).exists || /[+🔄]$/u.test(move.name) || ['type', 'category', 'basePower', 'accuracy', 'pp', 'priority', 'desc', 'shortDesc']
 			.some(key => (move as any)[key] !== (base.moves.get(move.id) as any)[key])
 	)).map(move => ({ id: move.id, name: move.name, text: move.shortDesc || move.desc,
 		origin: base.moves.get(move.id).exists ? 'enhanced' : 'fantasy',
 		type: move.type, category: move.category, power: move.basePower, accuracy: move.accuracy, pp: move.pp }));
 	const abilities = dex.abilities.all().filter(ability => ability.exists && !ability.id.startsWith('rogue') && (
-		!base.abilities.get(ability.id).exists || ability.desc !== base.abilities.get(ability.id).desc ||
+		!base.abilities.get(ability.id).exists || /[+🔄]$/u.test(ability.name) || ability.desc !== base.abilities.get(ability.id).desc ||
 		ability.shortDesc !== base.abilities.get(ability.id).shortDesc
 	)).map(ability => ({ id: ability.id, name: ability.name, text: ability.shortDesc || ability.desc,
 		origin: base.abilities.get(ability.id).exists ? 'enhanced' : 'fantasy' }));
@@ -69,7 +79,7 @@ function buildFantasyGuide() {
 export function rogueCodex(account: RogueAccount | undefined, section: CodexSection, preview = false) {
 	if (section === 'guide') {
 		guideCache ||= buildFantasyGuide();
-		return { section, preview, guide: { ...guideCache, modules: { ...guideCache.modules, biomes: biomeCodex(account, preview) } } };
+		return { section, preview, guide: guideCache };
 	}
 	const discovered = account ? rogueDiscoveries(account) : { blessings: [], events: [], trainers: [] };
 	if (section === 'blessings') return { section, preview, entries: ROGUE_BLESSINGS.flatMap(def => blessingCodexFloors(def).map(floor => {
@@ -79,6 +89,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			family: def.family, name: display.name, tier: def.tier, floors: floor ? [floor] : def.floors, variantFloor: floor,
 			unlocked, availability: blessingAvailabilityNotes(def), text: unlocked ? display.text : '？？？' };
 	})).sort(compareBlessingNames) };
+	const ecologies = biomeCodex(account, preview).map(biome => ({ ...biome, category: 'ecology', unlocked: true }));
 	const events = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => !['auction', 'mushroomcollector', 'rivalstory'].includes(id)).map(id => {
 		const unlocked = preview || discovered.events.includes(id);
 		return { id, category: ['policeassist', 'policerevenge', 'exclusivechallenge', 'terasolo'].includes(id) ? 'encounter' : 'event', name: EVENT_NAMES[id], unlocked, text: unlocked ? EVENT_OVERVIEWS[id] : '？？？',
@@ -99,7 +110,8 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 				'约第 140～149 层迎接全力对决；需先完成之前的七段相遇。无论胜负，劲敌发出永久同行邀请；同行共用两个名额，满员时可选择替换。获胜另得大量幻想碎片与高阶培育资源。',
 			][index] + ` ${chapterName}：${person.lines[index]}` }))),
 		...Object.entries(REWARD_SCENES).map(([id, scene]) => ({ id: `reward:${id}`, category: 'reward', name: scene.name,
-			text: id === 'chest' ? '留给旅人的补给箱，以回复药与活力碎片为主。还可按需要挑选经验糖果、路费或本局永久训练；物资随楼层提升。' :
+			text: id === 'catchup' ? '培育家为等级最低的两位可训练伙伴补课：80 层前各提升 3 级，81 层起各提升 5 级，最高 100 级。正常保留升级招式确认与基础治疗、路费奖励。' :
+			id === 'chest' ? '留给旅人的补给箱，以回复药与活力碎片为主。还可按需要挑选经验糖果、路费或本局永久训练；物资随楼层提升，永久能力训练从 40 层开始。' :
 			'以回复药与活力碎片为主的旅途补给。展示符合对方偏好的宝可梦或招式，可以提高谢礼品质。' })),
 		...Object.entries(TRADE_NAMES).map(([id, name]) => ({ id: `trade:${id}`, category: 'trade', name,
 			text: id === 'auction' ? '31 层起有机会遇到。每场上架 3～5 件珍品，观察竞拍者的预算与脾气，交替出价或运用话术，最高出价者在落槌时付款。' :
@@ -124,7 +136,8 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 		const unlocked = preview || discovered.trainers.includes(entry.portrait);
 		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？' };
 	});
-	return { section, preview, entries: [...events, ...visits, ...companions].sort((a, b) => {
+	return { section, preview, entries: [...ecologies, ...events, ...visits, ...companions].sort((a, b) => {
+		if ((a.category === 'ecology') !== (b.category === 'ecology')) return a.category === 'ecology' ? -1 : 1;
 		const ar = /^rival:([^:]+):(\d+)$/.exec(a.id), br = /^rival:([^:]+):(\d+)$/.exec(b.id);
 		if (ar && br) return compareBlessingNames({ name: a.name.split('·')[0] }, { name: b.name.split('·')[0] }) || Number(ar[2]) - Number(br[2]);
 		return compareBlessingNames(a, b);

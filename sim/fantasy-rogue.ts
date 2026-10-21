@@ -8,6 +8,7 @@ import { captureThresholds, rogueSpeciesData } from './fantasy-rogue-rules';
 import { blessingProgress, hasBlessing, failedTrainerCapture, battleDragonKing } from './fantasy-rogue-blessings';
 import { savedRogueStatuses } from './fantasy-rogue-status';
 import { mentorCardProfile } from './rogue-mentor';
+import { snapshotEvolutionProgress } from './rogue-evolution-progress';
 
 export const ROGUE_FORMAT = 'gen9fantasyrogue';
 export const ROGUE_DUEL_FORMAT = 'gen9fantasyrogueduel';
@@ -17,6 +18,8 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	evolutionProgress?: { followed?: number; lastFloor?: number; moves?: Record<string, number>; criticals?: number;
+		recoil?: number; lostHP?: number; scenes?: string[]; branch?: number };
 	egg?: { found: number, hatch: number };
 	compound?: import('./rogue-compound').RogueCompound;
 	/** Explicit provenance for extra abilities granted by a blessing, unlike event rewards. */
@@ -78,6 +81,7 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	escortCount?: number;
 	/** Last actual faint was a self-sacrifice protected by Art of Explosion. */
 	selfDestructed?: string[];
 	cooperative?: { opponentOffset: number };
@@ -127,6 +131,8 @@ export interface RogueBattleState {
 }
 
 export interface RogueBattleResult {
+	turns?: number;
+	allySurvived?: boolean;
 	selfDestructed?: string[];
 	companionZUsed?: boolean;
 	captures?: RoguePokemon[];
@@ -168,6 +174,7 @@ export function snapshotRoguePokemon(mon: Pokemon, original: RoguePokemon): Rogu
 	return {
 		...structuredClone(original),
 		id: original.id,
+		evolutionProgress: snapshotEvolutionProgress(mon, original),
 		set: { ...structuredClone(original.set), item: mon.item || '' },
 		hp: Math.min(maxhp, hp), maxhp,
 		bonusHP: (original.bonusHP || 0) + growth,
@@ -197,6 +204,7 @@ export function initializeRogueBattle(battle: Battle) {
 	if (state.boss?.kind === 'summit') battle.add('-message', '幻想超梦悬在塔顶，指挥五位守卫作战。击败它们后，超梦才会亲自下场。');
 	for (const [i, mon] of [...battle.p2.pokemon, ...(state.cooperative ? battle.p4!.pokemon : [])].entries()) {
 		mon.set.fantasyRogueId = `${state.encounterId}:foe:${i}`;
+		if (i < (state.escortCount || 0)) mon.canTerastallize = null;
 		if (!state.duel && (state.opponentStars?.[i] || 1) > 1) {
 			const stars = state.opponentStars![i];
 			battle.add('-message', `${mon.species.name}为${'★'.repeat(stars)}宝可梦，六项能力值 ×${[1, 1, 1.2, 1.5, 2, 3][stars]}。`);
@@ -245,6 +253,9 @@ export function canRogueSystem(pokemon: Pokemon, system: 'mega' | 'gmega' | 'z')
 }
 
 export function canRogueTerastallize(pokemon: Pokemon): boolean {
+	const state = pokemon.battle.fantasyRogue;
+	if (pokemon.side.id === 'p2' && state?.escortCount &&
+		Number(/:foe:(\d+)$/.exec(pokemon.set.fantasyRogueId || '')?.[1]) < state.escortCount) return false;
 	if (pokemon.side.id === 'p2' && pokemon.battle.fantasyRogue?.boss &&
 		(pokemon.battle.fantasyRogue.boss.kind === 'arceus' || pokemon.baseSpecies.baseSpecies === 'Mewtwo-Fantasy')) return false;
 	return pokemon.side.fantasyRogueTera !== false;
@@ -392,6 +403,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 export function rogueBattleResult(battle: Battle): RogueBattleResult {
 	const state = battle.fantasyRogue!;
 	return {
+		turns: battle.turn, allySurvived: battle.p3?.pokemon.some(mon => mon.hp > 0),
 		companionZUsed: !!state.companionZUsed?.p1,
 		selfDestructed: state.selfDestructed && [...state.selfDestructed],
 		encounterId: state.encounterId, won: battle.winner === battle.p1.name || !!state.cooperative && battle.winner === battle.p3!.name,

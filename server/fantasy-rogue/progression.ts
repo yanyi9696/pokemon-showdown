@@ -7,6 +7,7 @@ import type { RogueRun } from './types';
 import { GHOLDENGO_EVOLUTION_COINS, partyEvolutions } from './party-evolution';
 import { compoundEvolutionAllowed } from '../../sim/rogue-compound';
 import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
+import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 
 /** RPG move/evolution data uses ordinary species, never the locked Fantasy move pool. */
 const baseDex = Dex.mod('gen9');
@@ -85,7 +86,8 @@ export function rememberMove(mon: RoguePokemon, id: string) {
 
 export function levelMoves(name: string): { move: string, level: number, generation: number }[] {
 	const species = baseDex.species.get(name);
-	let learnset = baseDex.species.getLearnsetData(species.id).learnset;
+	const learnsetData = baseDex.species.getLearnsetData(species.id);
+	let learnset = learnsetData.learnset;
 	if (!learnset && species.baseSpecies !== species.name) {
 		return levelMoves(species.changesFrom || species.baseSpecies);
 	}
@@ -96,6 +98,11 @@ export function levelMoves(name: string): { move: string, level: number, generat
 			const match = /^([1-9])L(\d+)$/.exec(source);
 			if (match) entries.push({ move, generation: Number(match[1]), level: Number(match[2]) });
 		}
+	}
+	// Some stable forms only list additional event sources here and inherit all
+	// ordinary level-up moves from their base form (for example Super Pumpkaboo).
+	if (!entries.length && !learnsetData.eventOnly && species.baseSpecies !== species.name) {
+		return levelMoves(species.changesFrom || species.baseSpecies);
 	}
 	if (species.changesFrom && species.changesFrom !== species.name) {
 		entries.push(...levelMoves(species.changesFrom));
@@ -122,6 +129,7 @@ export function escapedMember(original: RoguePokemon, current: RoguePokemon): Ro
 		pp: Math.min(slot.maxpp, current.pp.find(move => move.id === slot.id)?.pp ?? slot.pp),
 	}));
 	restored.status = current.status;
+	restored.evolutionProgress = structuredClone(current.evolutionProgress || original.evolutionProgress);
 	restored.statusState = structuredClone(current.statusState);
 	restored.statuses = current.statuses && structuredClone(current.statuses);
 	ensureMemberMemory(restored);
@@ -185,8 +193,10 @@ export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
 	const heldItem = partyEvolutions(mon, run).find(option => toID(option.species) === toID(name))?.heldItem;
 	if (heldItem && toID(mon.set.item) === heldItem) mon.set.item = '';
 	const old = Dex.mod('gen9fantasy').species.get(mon.set.species);
+	const shedinja = old.id === 'nincada' && toID(name) === 'ninjask' &&
+		run.team.length < roguePartyLimit(run.spirit) && (run.bag.pokeball || 0) > 0 ? structuredClone(mon) : undefined;
 	const next = Dex.mod('gen9fantasy').species.get(name);
-	const slot = Object.entries(old.abilities).find(([, ability]) => ability === mon.set.ability)?.[0] || '0';
+	const slot = Object.entries(old.abilities).find(([, ability]) => toID(ability) === toID(mon.set.ability))?.[0] || '0';
 	mon.set.species = next.name;
 	mon.set.name = next.name;
 	if (next.gender) mon.set.gender = next.gender;
@@ -201,6 +211,14 @@ export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
 	rebuildMember(mon, run.boosts);
 	// Include evolution moves and the new species' level-up moves through the current level.
 	offerMoves(run, mon, 0, mon.set.level);
+	if (shedinja) {
+		run.bag.pokeball--;
+		const moves = levelMoves('Shedinja').filter(entry => entry.level <= mon.set.level).slice(-4).map(entry => entry.move);
+		const extra = createRoguePokemon({ ...shedinja.set, species: 'Shedinja', name: 'Shedinja',
+			ability: 'Wonder Guard', gender: 'N', item: '', moves }, run.boosts, randomUUID(), shedinja.stars || 1, shedinja.statModifiers);
+		extra.set.happiness = shedinja.set.happiness; extra.training = shedinja.training;
+		run.team.push(extra); run.notices.push('蜕下的外壳悄悄进入了精灵球……额外获得脱壳忍者！');
+	}
 }
 
 export function gainEffort(run: RogueRun, mon: RoguePokemon, yieldStats: StatsTable) {

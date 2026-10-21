@@ -1,4 +1,5 @@
 import { robeMember } from './rogue-awakening';
+import { petSpecies, defaultCatAbilities } from './rogue-pets';
 import { Dex, toID } from './dex';
 import type { RoguePokemon } from './fantasy-rogue';
 import { emblemType, ownsBlessing, type BlessingEffects } from './rogue-blessing-data';
@@ -28,6 +29,7 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 		if (ownsBlessing(effects, family)?.target === mon.id) add(ability);
 	}
 	if (team.includes(mon)) {
+		if (ownsBlessing(effects, 'cats') && petSpecies(mon.set.species, 'cats')) add(...(effects?.catAbilities?.[mon.id] || defaultCatAbilities(mon)));
 		if (robeMember(team, effects, 'godrobe')?.id === mon.id) add('sharpness', 'jiqususheng');
 		if (robeMember(team, effects, 'puregodrobe')?.id === mon.id) add('stalwart', 'sheerforce');
 		for (const companion of effects?.companions || []) {

@@ -290,9 +290,10 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		assert.equal(Object.keys(run.bag).filter(id => id.startsWith('rogueemblem')).length, 5);
 		run.floor = 170; run.node = { id: 'final', kind: 'boss', encounters: [] };
 		b.prepareBlessingEncounter(run, zero);
-		assert(run.node.regiBoss); assert.equal(run.node.encounters[0].team[0].species, 'Regigigas-Fantasy');
+		assert(run.node.regiBoss); assert.equal(run.node.encounters[0].team[2].species, 'Regigigas-Fantasy');
 		b.settleBlessingBattle(account, run, content, { won: true, encounterId: 'giant' }, zero);
 		assert.equal(run.blessings.shards, 50);
+		assert(run.blessings.pending.some(p => p.pokemon?.set.species === 'Regigigas-Fantasy'));
 		assert(run.blessings.pending.some(p => p.pokemon?.id === run.blessings.owned[0].target));
 		const late = setup(100); choose(late.account, late.run, blessing('regis')); late.run.blessings.regis = [...run.blessings.regis];
 		for (const floor of [175, 180, 185, 190, 200]) {

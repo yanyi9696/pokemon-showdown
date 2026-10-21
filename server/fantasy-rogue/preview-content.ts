@@ -13,6 +13,7 @@ import { MajorLegendaryPool, unlistedFamilies, validateBiomePools } from './biom
 import { makeEncounterSet } from './encounter-sets';
 import { evolutionChildren } from './evolution';
 import { configureShop } from './economy';
+import { addEvolutionSupplies } from './evolution-supplies';
 import { rogueCaptureCount, rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
 
 const dex = Dex.mod('gen9fantasy');
@@ -148,7 +149,7 @@ export function createPreviewContent(): RogueContent {
 		],
 	};
 	const registerCatch = (name: string) => {
-		const captured = ordinary.species.get(name);
+		const captured = dex.species.get(name);
 		const first = rogueStarterSpecies(name);
 		if (!content.starters.some(starter => starter.id === first.id)) {
 			content.starters.push({ id: first.id, set: makeEncounterSet(first.name, 5, 20), availableInitially: false });
@@ -176,6 +177,14 @@ export function createPreviewContent(): RogueContent {
 					content.items.push({ id, name: itemName, kind: 'evolution', price: 1200 });
 				}
 			}
+		}
+	}
+	// Special encounters also draw stable alternate and Fantasy forms outside biome slots.
+	// They share the original family unlock instead of creating Lv.5 battle-form starters.
+	for (const species of dex.species.all()) {
+		if (species.num > 0 && !species.battleOnly && !species.isMega && !species.isNonstandard &&
+			!content.unlocks[species.id] && rogueStarterSpecies(species.name).exists) {
+			registerCatch(species.name);
 		}
 	}
 	const encounter = (name: string, level: number, catchable: boolean, elite = false): RogueEncounter => {
@@ -239,5 +248,6 @@ export function createPreviewContent(): RogueContent {
 		content.floors[floor] = createBiomeRoutes(floor, [wild(0), wild(1), third], undefined, max => Math.min(1, max - 1));
 	}
 	configureShop(content.items);
+	addEvolutionSupplies(content.items);
 	return content;
 }

@@ -97,7 +97,7 @@ describe('Fantasy Rogue recalibrated preparation and blessing rules', function (
 			cmd('storynext', {value: storyView(account(), true, false).key});
 			const announced = storyView(account(), true, false).roster;
 			assert(announced.avatar && announced.pokemon.length);
-			engine = new RogueEngine(store, content, () => { throw Error('unexpected reroll'); });
+			engine = new RogueEngine(store, content, max => { if (max === 100) return 99; throw Error('unexpected reroll'); });
 			engine.migrate(user);
 			cmd('storyskip', {value: storyView(account(), true, false).key}); cmd('mentorcard', {value: 'guard'}); cmd('continue');
 			assert.deepEqual(account().run.node.encounters[0].team.map(s => s.species), announced.pokemon);

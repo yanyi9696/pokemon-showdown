@@ -104,7 +104,7 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		}
 	});
 	it('retains an early investment through evolution and level 100, while XP at 100 has no stat benefit', () => {
-		const run = account().run, mon = run.team[0]; run.floor = 21;
+		const run = account().run, mon = run.team[0]; run.floor = 40;
 		grantPersonalGrowth(run, mon, 'offense', 400);
 		const earlyGain = mon.stats.atk - createRoguePokemon(mon.set, run.boosts).stats.atk;
 		gainExperience(run, mon, 10000000); evolveMember(run, mon, 'Ivysaur'); evolveMember(run, mon, 'Venusaur');
@@ -133,7 +133,7 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		for (const floor of [51, 100, 150, 199]) {
 			enter(floor);
 			assert.equal(rewardChoices(account().run).find(c => c.id === 'offense').targets[0].amount,
-				400 + (floor >= 150 ? 100 : 0));
+				floor <= 80 ? 600 : floor <= 100 ? 750 : floor < 150 ? 450 : 600);
 		}
 	});
 	it('unlocks training trades only at 51, preserves stock, currency, receipts and run caps', () => {
@@ -171,7 +171,7 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		const saved = structuredClone(newcomer); syncBlessingParty(run); assert.deepEqual(newcomer, saved);
 	});
 	it('uses the same trained stats inside a real battle and after Mega Evolution, without modifying ordinary formats', () => {
-		const run = account().run; run.floor = 21;
+		const run = account().run; run.floor = 40;
 		const mon = createRoguePokemon({ ...set('Charizard', 'Blaze', 100, ['Flamethrower']), item: 'Charizardite X' }, run.boosts);
 		run.team = [mon]; grantPersonalGrowth(run, mon, 'offense', 400);
 		grantGrowth(run, 'offense', 800); syncBlessingParty(run);
@@ -190,16 +190,16 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		const run = account().run, mon = run.team[0]; run.floor = 61; run.phase = 'event';
 		run.node = { id: 'mushrooms', kind: 'event', encounters: [], reward: { money: 0, items: {} }, event: { id: 'mushrooms', key: 'taste', stage: 'choice' } };
 		chooseEventOption(account(), run, content, () => 0, 'taste', 'taste');
-		assert.deepEqual(mon.training, { offense: 200, defense: 200 }); assert(!run.eventBuff);
+		assert.deepEqual(mon.training, { offense: 300, defense: 300 }); assert(!run.eventBuff);
 		run.node.event = { id: 'mushrooms', key: 'again', stage: 'choice' }; run.money = 5000;
 		chooseEventOption(account(), run, content, () => 99, 'again', 'taste');
-		assert(run.money < 5000); assert.deepEqual(mon.training, { offense: 200, defense: 200 });
+		assert(run.money < 5000); assert.deepEqual(mon.training, { offense: 300, defense: 300 });
 		store.change(user, a => { a.run.floor = 61; a.run.eventBuff = { battles: 2 }; }); engine.migrate(user);
 		const migrated = account().run; assert(!migrated.eventBuff); assert(migrated.team[0].training.offense > 0);
 		engine.migrate(user); assert.deepEqual(account().run, migrated);
 	});
 	it('records growth in clear cards and keeps personal buffs when no blessing is selected', () => {
-		const a = account(), run = a.run; run.floor = 21;
+		const a = account(), run = a.run; run.floor = 40;
 		grantGrowth(run, 'defense', 1600); grantPersonalGrowth(run, run.team[0], 'offense', 400); syncBlessingParty(run);
 		run.floor = 200; run.phase = 'complete'; run.owner = { id: user, name: 'Growth' };
 		recordClear(a, run);

@@ -78,8 +78,8 @@ async function inspect(verify) {
 		const result = { port, activeBattles, codexSchema: blessings.codexSchema,
 			contentVersion: blessings.contentVersion, blessings: blessings.entries?.length };
 		if (verify) {
-			const { codexContentVersion, rogueCodex } = require('../dist/server/fantasy-rogue/codex');
-			if (blessings.codexSchema !== 2 || blessings.contentVersion !== codexContentVersion()) {
+			const { codexContentVersion, rogueCodex, ROGUE_CODEX_SCHEMA } = require('../dist/server/fantasy-rogue/codex');
+			if (blessings.codexSchema !== ROGUE_CODEX_SCHEMA || blessings.contentVersion !== codexContentVersion()) {
 				throw new Error('端口上的服务仍不是当前构建版本，请查看启动日志。');
 			}
 			const events = await query('fantasyroguecodex', 'events');

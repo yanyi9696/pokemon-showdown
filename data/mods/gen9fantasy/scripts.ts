@@ -1,9 +1,11 @@
 import { canRogueSystem } from '../../../sim/fantasy-rogue';
+import { applyAdjustmentLabels } from './adjustment-labels';
 
 export const Scripts: ModdedBattleScriptsData = {
     gen: 9,
 
     init() {
+        applyAdjustmentLabels(this);
         for (const id in this.data.FormatsData) {
             if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
             if (this.data.FormatsData[id].natDexTier) {

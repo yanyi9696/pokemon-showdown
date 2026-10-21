@@ -2,13 +2,14 @@ import { rivalBlessingAllowed } from './rivals';
 import { eggView } from './eggs';
 import { randomSpeciesEligible } from './species-eligibility';
 import { candyAtFloor } from './early-balance';
-import { mushroomGift } from './mushroom-feeding';
+import { mushroomGift, mushroomPayoffs } from './mushroom-feeding';
 import { grantCompanion } from './companions';
 import { memberHasMoldBreaker } from '../../sim/rogue-special-blessings';
 import { COMPANIONS, companionAvailable, companionAppearance, syncCompanions } from '../../sim/rogue-companions';
 import { growthModifiers } from './growth';
 import { randomUUID } from 'crypto';
 import { Dex, toID } from '../../sim/dex';
+import { petSpecies, CAT_ABILITIES, POWER_TRAINING_ITEMS, dogBoostCount, defaultCatAbilities } from '../../sim/rogue-pets';
 import { TeamValidator } from '../../sim/team-validator';
 import { Format } from '../../sim/dex-formats';
 import { ROGUE_STATS, type RoguePokemon, type RogueBattleResult } from '../../sim/fantasy-rogue';
@@ -28,6 +29,7 @@ import { ELITE_BOSS_FLOORS, fixedFloor } from './content';
 import { convertSpiritItem } from './spirits';
 import { drawGiftSpecies } from './gifts';
 import { lowerToEligibleStage } from './evolution';
+import { prepareEliteEscorts } from './elite-escorts';
 import { permanentMemberTypes, strongestDragon, memberStatTotal, strongestBlessingMember,
 	TARGET_BLESSING_ABILITIES, POWER_CHOICE_ABILITIES, canGrantExtraAbility, dragonKingAbilityOptions, dragonKingActive } from '../../sim/rogue-blessing-permanent';
 import { tonicItems } from './blessing-consumables';
@@ -55,6 +57,7 @@ export interface BlessingReward {
 	ability?: string;
 }
 export interface RogueBlessings extends BlessingEffects {
+	powerTrainingReward?: boolean;
 	awakeningBattles?: string[]; awakeningLegends?: string[]; spiralStone?: boolean;
 	/** The added Speed Boost reward has been offered, including in pre-update saves. */
 	speedBoostOffered?: boolean;
@@ -449,7 +452,7 @@ function convertFantasy(run: RogueRun, mon: RoguePokemon) {
 	if (!next) return false;
 	const old = dex.species.get(mon.set.species), species = dex.species.get(next);
 	if (ownsBlessing(run.blessings, 'kid') && toID(mon.set.item) === 'eviolite' && old.evos.length && !species.evos.length) return false;
-	const slot = Object.keys(old.abilities).find(key => old.abilities[key as '0'] === mon.set.ability) || '0';
+	const slot = Object.keys(old.abilities).find(key => toID(old.abilities[key as '0']) === toID(mon.set.ability)) || '0';
 	mon.set.species = mon.set.name = species.name;
 	mon.set.ability = species.abilities[slot as '0'] || species.abilities[0];
 	rebuildMember(mon, run.boosts);
@@ -460,6 +463,14 @@ function convertFantasy(run: RogueRun, mon: RoguePokemon) {
 export function syncBlessingParty(run: RogueRun) {
 	const state = normalizeBlessings(run);
 	const has = (id: string) => ownsBlessing(state, id);
+	if (has('weighttraining') && !state.powerTrainingReward && run.team.some(p => !p.egg && Object.values(p.set.evs).reduce((a, b) => a + b, 0) >= 510)) {
+		state.powerTrainingReward = true; give(run, 'fantasypowerlens');
+		(run.notices ||= []).push('【负重训练】全力训练的成果：获得幻之力量镜 ×1，本局仅一次。');
+	}
+	if (has('cats')) for (const mon of [...run.team, ...(run.box || [])]) if (!mon.egg && petSpecies(mon.set.species, 'cats')) {
+		const defaults = defaultCatAbilities(mon), selected = (state.catAbilities ||= {})[mon.id] ||= defaults;
+		for (let i = 0; i < selected.length; i++) if (selected[i] === toID(mon.set.ability)) selected[i] = defaults[i];
+	}
 	if (has('spiral') && run.floor >= 100 && !state.spiralStone) {
 		state.spiralStone = true; give(run, 'excadrite'); run.megaUnlocked = true;
 		(run.notices ||= []).push('【我的钻头是可以突破天际的】获得龙头地鼠进化石，超进化系统已解锁。');
@@ -585,10 +596,12 @@ export function prepareBlessingEncounter(run: RogueRun, random: RogueRandom) {
 		node.encounters = [{ name: node.name, style: 'aggressive', catchable: false, team: [set] }];
 		node.regiBoss = true;
 	}
+	prepareEliteEscorts(run, random);
 	for (const encounter of node.encounters) {
 		const levels = node.kind === 'boss' ? state.bossLevels ?? state.levels : state.levels;
-		encounter.blessingLevels = levels;
-		for (const set of encounter.team) set.level += levels;
+		encounter.blessingLevels = encounter.fixedLevels ? 0 : levels;
+		encounter.blessingLevelOffsets = encounter.team.map((_, index) => encounter.fixedLevels ? 0 : index < (encounter.escortCount || 0) ? state.levels : levels);
+		for (const [index, set] of encounter.team.entries()) set.level += encounter.blessingLevelOffsets[index];
 	}
 }
 function evolutionOptions(run: RogueRun, random: RogueRandom): string[] {
@@ -738,6 +751,21 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		gift(account, run, content, mon, def.name);
 	}
 	if (def.family === 'mushroomsynthesis') mushroomGift(account, run, content, random);
+	if (def.family === 'mushroomsynthesis') {
+		giveEquipment(run, content, random, 'tinymushroom', 5);
+		giveEquipment(run, content, random, 'bigmushroom', 2);
+		giveEquipment(run, content, random, 'balmmushroom', 1);
+	}
+	if (def.family === 'dogs' || def.family === 'cats') {
+		let pool = content.starters.map(s => s.set.species).filter(name => petSpecies(name, def.family as 'dogs' | 'cats'));
+		if (def.family === 'cats' && !pool.includes('Landorus-Therian')) pool.push('Landorus-Therian');
+		if (def.family === 'dogs') pool.push('Zygarde-10%');
+		const level = run.floor === 1 ? 5 : Math.max(3, Math.min(100, Math.ceil(run.floor / 2)));
+		pool = pool.filter(name => petSpecies(lowerToEligibleStage(name, level), def.family as 'dogs' | 'cats'));
+		gift(account, run, content, drawBlessingGift(run, content, random, { pool, legendaryReward: true }), def.name);
+		if (def.family === 'cats') for (const id of ['toxicorb', 'flameorb', 'lightball']) giveEquipment(run, content, random, id);
+	}
+	if (def.family === 'weighttraining') for (const id of POWER_TRAINING_ITEMS) giveEquipment(run, content, random, id);
 	if (def.family === 'wine' || def.family === 'cephalosporin') give(run, `rogue${def.family}`);
 	if (def.family === 'renewable') {
 		const pool = [...gems, 'focussash', 'whiteherb', 'mentalherb', 'powerherb', 'sitrusberry', 'lumberry', 'weaknesspolicy'];
@@ -809,6 +837,14 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 }
 export function handleBlessingCommand(account: RogueAccount, run: RogueRun, content: RogueContent, command: RogueCommand, random: RogueRandom) {
 	const state = normalizeBlessings(run);
+	if (command.action === 'catability') {
+		requireRule(['choose', 'ready', 'rest', 'reward', 'event'].includes(run.phase) && !run.node?.noHealing, '请在战外调整猫科伙伴的额外特性。');
+		const mon = run.team.find(p => p.id === command.member && !p.egg), [group, ability] = (command.value || '').split(':');
+		requireRule(ownsBlessing(state, 'cats') && mon && petSpecies(mon.set.species, 'cats') && ['0', '1'].includes(group) &&
+			ability !== toID(mon.set.ability) && (CAT_ABILITIES[Number(group)] as readonly string[]).includes(ability), '这项猫科特性选择无效，不能与原生特性重复。');
+		const selected = (state.catAbilities ||= {})[mon.id] ||= defaultCatAbilities(mon);
+		selected[Number(group)] = ability; syncBlessingParty(run); return;
+	}
 	if (command.action === 'inheritrobe') {
 		requireRule(!['battle', 'intro', 'story', 'complete', 'defeated', 'postgame'].includes(run.phase), '请在对战与剧情外调整神衣。');
 		requireRule(ownsBlessing(state, 'killlagirl') && ['Yveltal', 'Reshiram'].every(name => run.team.some(m => toID(m.set.species) === toID(name))), '需要两位传说伙伴均捕获并在队伍中。');
@@ -1054,8 +1090,9 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 	if (run.node?.regiBoss && !state.regiReward) {
 		state.regiReward = true; state.shards += 50;
 		treasure(run, content, random, 1000); toolbox(run, random, true);
-		const mon = createRoguePokemon({ ...run.node.encounters[0].team[0],
-			level: run.node.encounters[0].team[0].level - (run.node.encounters[0].blessingLevels || 0) }, run.boosts);
+		const encounter = run.node.encounters[0], index = encounter.escortCount || 0;
+		const mon = createRoguePokemon({ ...encounter.team[index],
+			level: encounter.team[index].level - (encounter.blessingLevelOffsets?.[index] ?? encounter.blessingLevels ?? 0) }, run.boosts);
 		initializeExperience(mon); ownsBlessing(state, 'regis')!.target = mon.id;
 		gift(account, run, content, mon, '传说的巨人们');
 	}
@@ -1105,8 +1142,14 @@ export function blessingView(run: RogueRun, discovered = false) {
 			levelCost: { normal: blessingLevelCost(def.tier, floor), boss: blessingLevelCost(def.tier, floor, true) } };
 	};
 	const king = run.team.find(mon => mon.id === state.dragonKing?.member);
+	const petView = ownsBlessing(state, 'cats') ? run.team.filter(p => !p.egg && petSpecies(p.set.species, 'cats')).map(p => ({
+		member: p.id, species: p.set.species, selected: state.catAbilities?.[p.id] || defaultCatAbilities(p),
+		groups: CAT_ABILITIES.map(group => group.filter(id => id !== toID(p.set.ability)).map(id => ({ id, name: dex.abilities.get(id).name }))),
+	})) : [];
 	return { ...state, dragonKing: dragonKingActive(state) && state.dragonKing ? { ...state.dragonKing, species: king?.set.species || '等待龙系伙伴', total: king ? memberStatTotal(king) : 0,
 		options: dragonKingAbilityOptions(king, run.team, state) } : undefined,
+		cats: petView, dogBoosts: ownsBlessing(state, 'dogs') ? dogBoostCount(run.team) : undefined,
+		mushroomPayoffs: mushroomPayoffs(run),
 		learning: run.team.filter(mon => !mon.egg).filter(mon => ownsBlessing(state, 'learnall') && !state.learnedMembers?.includes(mon.id) ||
 			ownsBlessing(state, 'inheritmoves') && !state.inheritedLearners?.includes(mon.id))
 			.map(mon => ({ member: mon.id, moves: blessingLearnChoices(mon) })),

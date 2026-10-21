@@ -26,8 +26,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			const preview = rogueCodex(a, section, true);
 			assert(preview.preview);
 			assert(preview.entries.every(entry => entry.unlocked && entry.text !== '？？？'));
-			if (section === 'events') assert(preview.entries.filter(e => !['companion', 'trainer'].includes(e.category)).every(entry => entry.replay));
-			assert(rogueCodex(a, section).entries.every(entry => !entry.unlocked));
+			if (section === 'events') assert(preview.entries.filter(e => !['companion', 'trainer', 'ecology'].includes(e.category)).every(entry => entry.replay));
+			assert(rogueCodex(a, section).entries.filter(e => e.category !== 'ecology').every(entry => !entry.unlocked));
 		}
 		assert.equal(JSON.stringify(a), before);
 	});
@@ -40,8 +40,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			!['auction', 'mushroomcollector', 'exclusivechallenge', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory'].includes(id)).length);
 		for (const id of ['exclusivechallenge', 'policeassist', 'policerevenge']) assert.equal(events.find(e => e.id === id).category, 'encounter');
 		assert.equal(events.filter(e => e.category === 'trade').length, 9);
-		assert.equal(events.filter(e => e.category === 'reward').length, 6);
-		assert(events.every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
+		assert.equal(events.filter(e => e.category === 'reward').length, 7);
+		assert(events.filter(e => e.category !== 'ecology').every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 		const people = events.filter(e => ['companion', 'trainer'].includes(e.category));
 		assert.equal(people.length, 89);
 		for (const role of ['companion', 'gym', 'elitefour', 'champion', 'antagonist', 'other']) {
@@ -79,7 +79,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		const legacy = { revision: 1, previousBlessings: ['friendwater', 'unknown'], cards: [{ snapshot: { blessings: [{ id: 'medic' }] } }],
 			pendingClear: { snapshot: { blessings: [{ id: 'psychic' }] } }, run: { blessings: { owned: [{ id: 'money' }] }, eventHistory: [{ id: 'forest', floor: 21 }] } };
 		assert.deepEqual(rogueDiscoveries(legacy), { blessings: ['friend', 'medic', 'money', 'psychic'], events: ['forest'], trainers: [] });
-		assert.equal(rogueCodex(legacy, 'events').entries.filter(e => !['companion', 'trainer'].includes(e.category) && e.unlocked).length, 1);
+		assert.equal(rogueCodex(legacy, 'events').entries.filter(e => !['companion', 'trainer', 'ecology'].includes(e.category) && e.unlocked).length, 1);
 	});
 	it('unlocks only the chosen companion and the opponent actually reached, keeping both across adventures', () => {
 		store.change('codextest', a => {
@@ -142,7 +142,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
 			const expedition = entry.id in require('../../dist/server/fantasy-rogue/expedition-text').EXPEDITION_OVERVIEWS;
 			const training = ['greninjatraining', 'greninjareturn'].includes(entry.id);
-			if (training || expedition || ['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers', 'honeymoonreturn', 'companionrematch', 'travellermeeting'].includes(entry.id)) {
+			const activity = entry.id in require('../../dist/server/fantasy-rogue/journey-activity-data').ACTIVITY_NAMES;
+			if (activity || training || expedition || ['exclusiveclue', 'exclusivechallenge', 'auction', 'feathers', 'honeymoonreturn', 'companionrematch', 'travellermeeting'].includes(entry.id)) {
 				// These openings incorporate the saved item, owner and NPC budgets at runtime.
 				assert.deepEqual(replay.pages.start.text, require('../../dist/server/fantasy-rogue/event-text').eventOpening(entry.id));
 			} else {
@@ -167,8 +168,9 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(modules.moves.some(move => move.id === 'recover' && move.pp === 10));
 		assert(modules.pokemon.length > 100 && modules.abilities.length > 10);
 		assert(Object.values(modules).every(entries => entries.every(e => !e.id.startsWith('rogue'))));
-		assert(modules.items.every(item => item.icon === item.id && item.spritenum > 0));
-		assert.equal(modules.items.filter(item => item.category === 'general').length, 11);
+		assert(modules.items.every(item => item.icon === item.id && (item.spritenum > 0 || item.id === 'peatblock')));
+		assert(modules.items.filter(item => item.category === 'general').length >= 11);
+		for (const id of ['powerlens', 'powerband', 'peatblock', 'strawberrysweet', 'prismscale']) assert(modules.items.some(item => item.id === id), id);
 		assert(modules.items.some(item => item.id === 'dadascloak' && item.category === 'exclusive'));
 		assert(!modules.items.some(item => ['firegem', 'charizarditex', 'firiumz'].includes(item.id)));
 		const { Dex } = require('../../dist/sim/dex');

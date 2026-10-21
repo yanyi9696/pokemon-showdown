@@ -1,0 +1,1851 @@
+{
+  "date": "2026-10-21",
+  "method": "isolated native-engine campaigns using real commands",
+  "samples": [
+    {
+      "name": "run-10-silver",
+      "seed": 10,
+      "target": 200,
+      "floor": 30,
+      "phase": "defeated",
+      "conditions": {
+        "spirit": false,
+        "statBoosts": 0,
+        "slotPurchase": 20,
+        "hiddenOpponentState": false,
+        "enemyBossSearchBudgetMs": 4500
+      },
+      "startingSlots": 2,
+      "actualBoosts": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+      },
+      "battles": 24,
+      "turns": 117,
+      "captures": 6,
+      "bosses": [
+        {
+          "floor": 10,
+          "turns": 3,
+          "faints": 0
+        },
+        {
+          "floor": 20,
+          "turns": 3,
+          "faints": 0
+        }
+      ],
+      "losses": [
+        {
+          "floor": 2,
+          "name": "玛俐",
+          "turns": 12,
+          "faints": 3
+        },
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 9,
+          "faints": 6
+        },
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 3,
+          "faints": 2,
+          "rescue": {
+            "cost": 3200,
+            "paid": true
+          }
+        },
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 9,
+          "faints": 6,
+          "rescue": {
+            "cost": 3200,
+            "paid": false
+          }
+        }
+      ],
+      "finalParty": [
+        {
+          "species": "Crocalor",
+          "level": 24,
+          "hp": 0,
+          "maxhp": 77
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23,
+          "hp": 0,
+          "maxhp": 70
+        },
+        {
+          "species": "Skorupi",
+          "level": 15,
+          "hp": 0,
+          "maxhp": 41
+        },
+        {
+          "species": "Minun",
+          "level": 16,
+          "hp": 0,
+          "maxhp": 49
+        },
+        {
+          "species": "Mime Jr.",
+          "level": 16,
+          "hp": 0,
+          "maxhp": 36
+        },
+        {
+          "species": "Stunfisk",
+          "level": 16,
+          "hp": 0,
+          "maxhp": 65
+        }
+      ],
+      "blessings": [
+        {
+          "floor": 1,
+          "id": "detect",
+          "tier": "silver"
+        }
+      ],
+      "terminalIssues": [
+        {
+          "floor": 30,
+          "reason": "actual-terminal-defeat",
+          "failure": {
+            "key": "87a4ed87-ca5d-43b4-8e64-bf8a489f64fe",
+            "floor": 30,
+            "title": "爬塔已无法推进",
+            "reason": "全队伙伴都已倒下，没有可用的复活道具或其他恢复途径，金币也不足以支付急救费用。本局爬塔失败；已获得的解锁与局外成长点会保留。"
+          }
+        }
+      ],
+      "summaryHash": "841213d49dca249778fcff6a4bedb946ed5777764d0c00d2003dc5310d19247a",
+      "actionsHash": "3f1a88586561c94c3f7f6eb3c8cfc12093165368fa8b6e9ef138450e042468f6",
+      "battleHashes": [
+        {
+          "floor": 1,
+          "won": true,
+          "sha256": "74ab4e2ea1da71957a7255d4e2176f3a6b519de2ba7ee4f51560b53f69d0ceda"
+        },
+        {
+          "floor": 2,
+          "won": false,
+          "sha256": "df39879fee8768b7b8977c00ae61acd81964a8c3d524671db5e032d95d5a2d59"
+        },
+        {
+          "floor": 3,
+          "won": true,
+          "sha256": "ce867a6f0ad900e18010a5c27f3bde7d272c17b94d0a1309cb5d8a35db319776"
+        },
+        {
+          "floor": 5,
+          "won": true,
+          "sha256": "8e7dad74b9b28c20a529323dd2f55b7d594560dbbcc704751e76394d091ee8d3"
+        },
+        {
+          "floor": 7,
+          "won": true,
+          "sha256": "492ae96d9963b7126028f5b2f6d6b9e4403cafa4e0cfbea44178d63730e08309"
+        },
+        {
+          "floor": 10,
+          "won": true,
+          "sha256": "28f460f23bb6cd890f2b821b5ebdad2cede4d80857759bb835a08c744683a83c"
+        },
+        {
+          "floor": 11,
+          "won": true,
+          "sha256": "70cdf72da6e8fee0b6b9218edbb14059b45b5b20c16f1847b3c8dc75cf3cd6e3"
+        },
+        {
+          "floor": 12,
+          "won": true,
+          "sha256": "b217644ea9cc73cc5c2083a47cf357ee5d7377b915993bceb2b42bc4eb92e445"
+        },
+        {
+          "floor": 13,
+          "won": true,
+          "sha256": "8b9130756041d0b9ae6f6757f599deefce1a865ff70ace5b9cb8a4842bd48317"
+        },
+        {
+          "floor": 14,
+          "won": true,
+          "sha256": "8d8efd5307032b5728160726cec1b665b0b531a6ada4ea224eab79b6f08dfa35"
+        },
+        {
+          "floor": 15,
+          "won": true,
+          "sha256": "f1ad3e7ab644c355cfba6f79524068a07e9305a78f5c858dfbaec0bb5415987f"
+        },
+        {
+          "floor": 17,
+          "won": true,
+          "sha256": "d19ca9c5921ea9d10e64c0175e94c6a087b8fb51826063d5fc62a802ea21ca20"
+        },
+        {
+          "floor": 18,
+          "won": true,
+          "sha256": "24ac45f33a7d654030f8a2fc1c8df33b96ea06303a2f87621b245d49a6fb97b6"
+        },
+        {
+          "floor": 20,
+          "won": true,
+          "sha256": "0f35ffe1305bbcbab6ac86a4cdeda07d11bf3245b5a957f7c4b08ad29acfdf4b"
+        },
+        {
+          "floor": 21,
+          "won": true,
+          "sha256": "de8d3320aaa48c94dd711b6376174e0a4ef50af8ad0f6c61c03b7faa660c247b"
+        },
+        {
+          "floor": 22,
+          "won": true,
+          "sha256": "50a6de815b852ee840f2d920cd3c1545ee314fd982a5b6333ed4a5aa1a933fb6"
+        },
+        {
+          "floor": 23,
+          "won": true,
+          "sha256": "688130f209c175ee4115452e485cec3019a07f459974aa1e7eb6f27df65325f6"
+        },
+        {
+          "floor": 25,
+          "won": true,
+          "sha256": "dfbc8e23bada2793311526e2dcab98acff7030caddd839dcb5a8daf2f07b6574"
+        },
+        {
+          "floor": 26,
+          "won": true,
+          "sha256": "f8240995bf6b8acf7e6b4f795a5cc73bc7feca535d54366eeeb2e3a35722b826"
+        },
+        {
+          "floor": 27,
+          "won": true,
+          "sha256": "1b2f4fb00e85af02fac563661d6b358131891caa3590527ba5f9cc52b7df8169"
+        },
+        {
+          "floor": 28,
+          "won": true,
+          "sha256": "dace77f15c7fffaac5934559dbf57ca7ac0e4e598447a63b2b902313ee3631bd"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "299e595df7017ea533ffa1d0c81672594c8f7a6654421b213494fc5806646c50"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "c431d1a09621295cb44d208309ab37c375ad5bc98a2f6cc843ceee2ee7910b3c"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "d14d4d3c6baaf9650f5f92284b4f3cdfa4dbf5fe2f3f3c603fe07a939b5f6b15"
+        }
+      ]
+    },
+    {
+      "name": "run-13-silver",
+      "seed": 13,
+      "target": 200,
+      "floor": 30,
+      "phase": "defeated",
+      "conditions": {
+        "spirit": false,
+        "statBoosts": 0,
+        "slotPurchase": 20,
+        "hiddenOpponentState": false,
+        "enemyBossSearchBudgetMs": 4500
+      },
+      "startingSlots": 2,
+      "actualBoosts": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+      },
+      "battles": 24,
+      "turns": 115,
+      "captures": 9,
+      "bosses": [
+        {
+          "floor": 10,
+          "turns": 9,
+          "faints": 0
+        },
+        {
+          "floor": 20,
+          "turns": 3,
+          "faints": 0
+        }
+      ],
+      "losses": [
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 10,
+          "faints": 6
+        },
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 4,
+          "faints": 3,
+          "rescue": {
+            "cost": 3200,
+            "paid": true
+          }
+        },
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 11,
+          "faints": 6,
+          "rescue": {
+            "cost": 3200,
+            "paid": false
+          }
+        }
+      ],
+      "finalParty": [
+        {
+          "species": "Crocalor",
+          "level": 23,
+          "hp": 0,
+          "maxhp": 74
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23,
+          "hp": 0,
+          "maxhp": 69
+        },
+        {
+          "species": "Shroodle",
+          "level": 16,
+          "hp": 0,
+          "maxhp": 42
+        },
+        {
+          "species": "Noibat",
+          "level": 14,
+          "hp": 0,
+          "maxhp": 38
+        },
+        {
+          "species": "Dedenne",
+          "level": 16,
+          "hp": 0,
+          "maxhp": 50
+        },
+        {
+          "species": "Nacli",
+          "level": 17,
+          "hp": 0,
+          "maxhp": 49
+        }
+      ],
+      "blessings": [
+        {
+          "floor": 1,
+          "id": "medic",
+          "tier": "silver"
+        }
+      ],
+      "terminalIssues": [
+        {
+          "floor": 30,
+          "reason": "actual-terminal-defeat",
+          "failure": {
+            "key": "8ab7c01a-8a85-4707-80d8-b98240a5f691",
+            "floor": 30,
+            "title": "爬塔已无法推进",
+            "reason": "全队伙伴都已倒下，没有可用的复活道具或其他恢复途径，金币也不足以支付急救费用。本局爬塔失败；已获得的解锁与局外成长点会保留。"
+          }
+        }
+      ],
+      "summaryHash": "005aa1e5dfd7853273324cddd43373a0410b273b604b9e0c2e40a70f31f5928a",
+      "actionsHash": "637046f6d727060cc5e73b847829658ea6d0096ca0fb8ec330dc772ef73bac31",
+      "battleHashes": [
+        {
+          "floor": 1,
+          "won": true,
+          "sha256": "c1311f7bdf97d254b4b6c94de5ac2b4246299d2d148a2e0095234d1ce6e2ed94"
+        },
+        {
+          "floor": 2,
+          "won": true,
+          "sha256": "a76660887d54b6df59f6953292dd67e6cddf123a4b1b4d38544bd16dabd8dcb6"
+        },
+        {
+          "floor": 3,
+          "won": true,
+          "sha256": "342bf936138e578b4da63880adb00724d9d57ed0c8200d7220208605135a44d3"
+        },
+        {
+          "floor": 5,
+          "won": true,
+          "sha256": "e08bb127859ab657a4c1d907f227c641de67cffbdfaf59e2b882223d1331e3cc"
+        },
+        {
+          "floor": 6,
+          "won": true,
+          "sha256": "b9b3145cb2143e372e8a929bfe5e2b287d9157585f99221d6edf42db5880c32f"
+        },
+        {
+          "floor": 7,
+          "won": true,
+          "sha256": "d27ffee71419afa6fe3ac7af4e9c4ac65ba64b67b706db462e613510e1d401c2"
+        },
+        {
+          "floor": 10,
+          "won": true,
+          "sha256": "b3dd85a42afec0e70959c2301e3271928e932dd127ea1543c868ec2b647a4358"
+        },
+        {
+          "floor": 11,
+          "won": true,
+          "sha256": "75936d2225d158ea56eaa37baa363de8dd7f296f15db2afdc0bd9ddbc2615704"
+        },
+        {
+          "floor": 12,
+          "won": true,
+          "sha256": "d323c63b5e9f03b1283aa98142e24c41d13afe4d5538aecf14c1f009dcae32fb"
+        },
+        {
+          "floor": 13,
+          "won": true,
+          "sha256": "a8ba3c9fa9351b49dbd7c99f132b3d8e029aeedbeae821ba184cb6610d0c73a5"
+        },
+        {
+          "floor": 14,
+          "won": true,
+          "sha256": "13ab701340c6c1bf57fc5c593371bd5fedab71cf348b9ff110f02de9d332e2cb"
+        },
+        {
+          "floor": 15,
+          "won": true,
+          "sha256": "687f0d94bc58ae8dce5216cca36f39d0e5902b1a8fce0b330c0db8580d28876a"
+        },
+        {
+          "floor": 16,
+          "won": true,
+          "sha256": "78cdabf25ed7252d62a34632e481ec91433f0352290f6d84e51a5f505ddc8afc"
+        },
+        {
+          "floor": 17,
+          "won": true,
+          "sha256": "2248621a1a7b22fb52a9aae8e5e5893528f0984da8a715b69c905ebeec5f771c"
+        },
+        {
+          "floor": 18,
+          "won": true,
+          "sha256": "d7750b25752d2afd92807e3ebfcf3f6f12b9f3f2b041274d95eee27498d2f393"
+        },
+        {
+          "floor": 20,
+          "won": true,
+          "sha256": "ab92031400c0ca085eee2b88d54ffeceac93d0bffa7567b5aa3022530c762689"
+        },
+        {
+          "floor": 22,
+          "won": true,
+          "sha256": "8d70c62e4fa935097ce45e1453bf24b9847343978a3bfbdffd78051e0f7dc8c3"
+        },
+        {
+          "floor": 23,
+          "won": true,
+          "sha256": "5a9f4e7fb5f6b2ab8a6bb2e39614a7988c9d82569481fd39c6ccd9d7ef4fe13d"
+        },
+        {
+          "floor": 25,
+          "won": true,
+          "sha256": "85b7130e3a3cf09cd1639ba556079e6e4afbf49e7f4c54b2a6b20448700a963b"
+        },
+        {
+          "floor": 26,
+          "won": true,
+          "sha256": "3a7119eba58c6b8802836273e3079ec2c3300b73226b55e1e70ff5afae6ee981"
+        },
+        {
+          "floor": 27,
+          "won": true,
+          "sha256": "31d949d99c01a5622512dcd16fab2b093621d3f1b4a638f6975a0d0afd8eec70"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "a26a5f0b89edde978c6cb1464913727327fbe298340a42bca191aaf93b37d31c"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "acd16019b1bf75a7a042e8a5ce276d817b7dfdecf944c7a1a00b3aabffab6feb"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "64accebb04b135314a9e6ae8ad4487e6530312f54760774fa92127996052412f"
+        }
+      ]
+    },
+    {
+      "name": "run-10-silver-gymcards",
+      "seed": 10,
+      "target": 200,
+      "floor": 35,
+      "phase": "battle",
+      "conditions": {
+        "spirit": false,
+        "statBoosts": 0,
+        "slotPurchase": 20,
+        "hiddenOpponentState": false,
+        "enemyBossSearchBudgetMs": 4500
+      },
+      "startingSlots": 2,
+      "actualBoosts": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+      },
+      "battles": 26,
+      "turns": 120,
+      "captures": 6,
+      "bosses": [
+        {
+          "floor": 10,
+          "turns": 3,
+          "faints": 0
+        },
+        {
+          "floor": 20,
+          "turns": 3,
+          "faints": 0
+        },
+        {
+          "floor": 30,
+          "turns": 6,
+          "faints": 0
+        }
+      ],
+      "losses": [
+        {
+          "floor": 2,
+          "name": "玛俐",
+          "turns": 12,
+          "faints": 3
+        }
+      ],
+      "finalParty": [
+        {
+          "species": "Crocalor",
+          "level": 26,
+          "hp": 63,
+          "maxhp": 83
+        },
+        {
+          "species": "Marshtomp",
+          "level": 26,
+          "hp": 70,
+          "maxhp": 77
+        },
+        {
+          "species": "Skorupi",
+          "level": 19,
+          "hp": 49,
+          "maxhp": 49
+        },
+        {
+          "species": "Minun",
+          "level": 20,
+          "hp": 59,
+          "maxhp": 59
+        },
+        {
+          "species": "Mime Jr.",
+          "level": 20,
+          "hp": 43,
+          "maxhp": 43
+        },
+        {
+          "species": "Stunfisk",
+          "level": 20,
+          "hp": 79,
+          "maxhp": 79
+        }
+      ],
+      "blessings": [
+        {
+          "floor": 1,
+          "id": "detect",
+          "tier": "silver"
+        }
+      ],
+      "terminalIssues": [
+        {
+          "floor": 35,
+          "reason": "driver-error",
+          "error": "Error: 缺少捕捉解锁配置。\n    at requireRule (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:90:18)\n    at RogueEngine.recordCatch (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:1355:5)\n    at RogueEngine.settleResult (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:1403:43)\n    at F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:1388:12\n    at Function.<anonymous> (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\store.js:82:7)\n    at Function.sqliteTransaction (F:\\fantasy\\pokemon-showdown\\node_modules\\better-sqlite3\\lib\\methods\\transaction.js:65:24)\n    at RogueStore.change (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\store.js:99:8)\n    at RogueEngine.settle (F:\\fantasy\\pokemon-showdown\\dist\\server\\fantasy-rogue\\engine.js:1377:23)\n    at combat (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-prepared-playtest.js:226:10)\n    at Object.<anonymous> (F:\\fantasy\\pokemon-showdown\\tools\\fantasy-rogue-prepared-playtest.js:267:30)"
+        }
+      ],
+      "summaryHash": "e0b97de9d79ed7c143264cf18b8f938ef5adebd450c3aa05e3133ccadbde4022",
+      "actionsHash": "87f9ea3f46835dac4e13afea8683b83c4b7d3391211cd389f40d290e3122ed12",
+      "battleHashes": [
+        {
+          "floor": 1,
+          "won": true,
+          "sha256": "478b4a39ad6d4a74229ea6e82bafefe9435dc0bb0649b801c1c5634e9254da5e"
+        },
+        {
+          "floor": 2,
+          "won": false,
+          "sha256": "1d2ddb1c3aa16bab44ab674ea446774759e369a8acfab4a6e8b9dc4a2c005d0c"
+        },
+        {
+          "floor": 3,
+          "won": true,
+          "sha256": "d8ccc925b51bb974e08897f878148e7ede76e1e3152d872f030d343a6ba84766"
+        },
+        {
+          "floor": 5,
+          "won": true,
+          "sha256": "af2979d7cfecbdd73d0cf9c1082d98c59b26698ee864ccdd47234c53aa42bc73"
+        },
+        {
+          "floor": 7,
+          "won": true,
+          "sha256": "3423aa07df4f3aaa18b1180a61451878a4221f2890e2aa2f8550c93c00a35236"
+        },
+        {
+          "floor": 10,
+          "won": true,
+          "sha256": "abc0349d3ec240bddfa488c723738096da34bd6db274d4d55bd9fbbca74566cf"
+        },
+        {
+          "floor": 11,
+          "won": true,
+          "sha256": "d8b85b4a685f605fe61d184c84c0e0c1bf49a23f412dbb8aad5e0b14eede8e7a"
+        },
+        {
+          "floor": 12,
+          "won": true,
+          "sha256": "3c1848eb192db626a1bd4e7bd4b77136ea1e03433c7554b333a53cfe7dde33f2"
+        },
+        {
+          "floor": 13,
+          "won": true,
+          "sha256": "ab9dfd820e67264a48516b68fc729a81fbcd5f1e27ebe9e23fa6447d398c828f"
+        },
+        {
+          "floor": 14,
+          "won": true,
+          "sha256": "501e22f0b53a5970f048ce5258957b338cde0fb04eab04d688a70c246d120a07"
+        },
+        {
+          "floor": 15,
+          "won": true,
+          "sha256": "e501ab91bb4e72752f8b98abd925a8c74c2bc631bca260e47315a8b837b12527"
+        },
+        {
+          "floor": 17,
+          "won": true,
+          "sha256": "fd842185b59a54b27a638d1efe001de55f8416a35cb9cd6275a2a082415d7a4c"
+        },
+        {
+          "floor": 18,
+          "won": true,
+          "sha256": "71b697cda6c6a31b45b06b0e48c73dbe64f04641b1e8d8fc279522c727de0b88"
+        },
+        {
+          "floor": 20,
+          "won": true,
+          "sha256": "f6c6768b695bc7370abd4ce11c6790300e2399eb436f76b53199cd8e20702f33"
+        },
+        {
+          "floor": 21,
+          "won": true,
+          "sha256": "433d9bb4740619571e1e213fd31482a4d30f5805c891b6fe97932acf925f9107"
+        },
+        {
+          "floor": 22,
+          "won": true,
+          "sha256": "67e551293412d89431adc2c499f2f8da1489360c7458f943f49f8a867184cf30"
+        },
+        {
+          "floor": 23,
+          "won": true,
+          "sha256": "0def97eb7dbbde750d815d41cdf98d3a47438f0cbde797c594e1b6336c401e3f"
+        },
+        {
+          "floor": 25,
+          "won": true,
+          "sha256": "18e87d0e52c1399130cde85577f92e28041a7ea653ce26cdd9b85a95c370e38f"
+        },
+        {
+          "floor": 26,
+          "won": true,
+          "sha256": "84baf8f67dd0eb73a6ccdc71cb68cd4f70340eeb0b86f58f645430a016c307b3"
+        },
+        {
+          "floor": 27,
+          "won": true,
+          "sha256": "2c54c38a794f492974c0b295d00b1c774b55b226a424e8be1508a0eacdb2c15e"
+        },
+        {
+          "floor": 28,
+          "won": true,
+          "sha256": "287a8a6ffa1d6c540ef24bf3d99be313b4fb0bca93de762c5b5f40fa77b96fa2"
+        },
+        {
+          "floor": 30,
+          "won": true,
+          "sha256": "e9b7dfed1c38281f39c46c86c0ee9a718b541c496e88f4d21c6eade3c2bf06db"
+        },
+        {
+          "floor": 32,
+          "won": true,
+          "sha256": "28d95f18e854ef77ef2285a398fae15cd841618177eb85fe8732f2fb1387593a"
+        },
+        {
+          "floor": 32,
+          "won": true,
+          "sha256": "fcbae66c38cc0e365de30cec62a3cd36e6298f4596dc00332d5cb339f21858aa"
+        },
+        {
+          "floor": 33,
+          "won": true,
+          "sha256": "7521c2648e429abe7018ac730fac331e6f51320798c2e4cf951426fb0fa76d7c"
+        },
+        {
+          "floor": 34,
+          "won": true,
+          "sha256": "8d2c1733309cd02a40f01d8274cfb4a6651e8280581d9693dd3995194450c513"
+        }
+      ]
+    },
+    {
+      "name": "run-13-silver-gymcards",
+      "seed": 13,
+      "target": 200,
+      "floor": 30,
+      "phase": "defeated",
+      "conditions": {
+        "spirit": false,
+        "statBoosts": 0,
+        "slotPurchase": 20,
+        "hiddenOpponentState": false,
+        "enemyBossSearchBudgetMs": 4500
+      },
+      "startingSlots": 2,
+      "actualBoosts": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+      },
+      "battles": 24,
+      "turns": 116,
+      "captures": 9,
+      "bosses": [
+        {
+          "floor": 10,
+          "turns": 5,
+          "faints": 0
+        },
+        {
+          "floor": 20,
+          "turns": 3,
+          "faints": 0
+        }
+      ],
+      "losses": [
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 8,
+          "faints": 6
+        },
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 4,
+          "faints": 3,
+          "rescue": {
+            "cost": 3200,
+            "paid": true
+          }
+        },
+        {
+          "floor": 30,
+          "name": "幻想精英",
+          "turns": 11,
+          "faints": 6,
+          "rescue": {
+            "cost": 3200,
+            "paid": false
+          }
+        }
+      ],
+      "finalParty": [
+        {
+          "species": "Crocalor",
+          "level": 23,
+          "hp": 0,
+          "maxhp": 74
+        },
+        {
+          "species": "Marshtomp",
+          "level": 23,
+          "hp": 0,
+          "maxhp": 69
+        },
+        {
+          "species": "Shroodle",
+          "level": 16,
+          "hp": 0,
+          "maxhp": 42
+        },
+        {
+          "species": "Noibat",
+          "level": 14,
+          "hp": 0,
+          "maxhp": 38
+        },
+        {
+          "species": "Dedenne",
+          "level": 16,
+          "hp": 0,
+          "maxhp": 50
+        },
+        {
+          "species": "Nacli",
+          "level": 18,
+          "hp": 0,
+          "maxhp": 51
+        }
+      ],
+      "blessings": [
+        {
+          "floor": 1,
+          "id": "medic",
+          "tier": "silver"
+        }
+      ],
+      "terminalIssues": [
+        {
+          "floor": 30,
+          "reason": "actual-terminal-defeat",
+          "failure": {
+            "key": "2273d4e4-bc7e-41d7-b2eb-9c6e79b4a387",
+            "floor": 30,
+            "title": "爬塔已无法推进",
+            "reason": "全队伙伴都已倒下，没有可用的复活道具或其他恢复途径，金币也不足以支付急救费用。本局爬塔失败；已获得的解锁与局外成长点会保留。"
+          }
+        }
+      ],
+      "summaryHash": "a9af92500d0164fa84e576a3b68b19d92651a12ddb33ad20c19327b4f49e5e37",
+      "actionsHash": "daccdd7e5c059944d829a2dfaf30c92826c6abd11f128795b7b57dc67768bca5",
+      "battleHashes": [
+        {
+          "floor": 1,
+          "won": true,
+          "sha256": "19353c1bd123ed4aa0ce22537a309f5692fd75dde2e1193d1118d257d2c41a58"
+        },
+        {
+          "floor": 2,
+          "won": true,
+          "sha256": "0fe6b5ae58d2086c4f0375dfc89c6097752db3f538ad5ade0cc5ff35a19db45f"
+        },
+        {
+          "floor": 3,
+          "won": true,
+          "sha256": "cd85e4b6ee4dcdc22393679eec25bf467ca0063719bf68284aa73657fd6f36c5"
+        },
+        {
+          "floor": 5,
+          "won": true,
+          "sha256": "03707b6084b36398b9892f83c62596c9999783326f49ca1b0fb73e5da5ca1dbf"
+        },
+        {
+          "floor": 6,
+          "won": true,
+          "sha256": "4d29d9ed86222c0cebf46a6962b00f24dca2af025ea654a105688d02046201d7"
+        },
+        {
+          "floor": 7,
+          "won": true,
+          "sha256": "8abd94091d6aa47e2880d86d5bb832b390bc74f32f5316f2667dcd74f724f77c"
+        },
+        {
+          "floor": 10,
+          "won": true,
+          "sha256": "57611645dc3fc4de207c395f2e63b4e399bee15de215d19f3e31234e32755f8d"
+        },
+        {
+          "floor": 11,
+          "won": true,
+          "sha256": "a266e308f3caebdf88652531ab9c0de28900c5effd0cfd1e4db8d36e633539eb"
+        },
+        {
+          "floor": 12,
+          "won": true,
+          "sha256": "4d02947ed42e2922ca172c5baadcf1e5eae67893eb42553c00cdda40c001c1c4"
+        },
+        {
+          "floor": 13,
+          "won": true,
+          "sha256": "6f38948b9f6dee60c64e7d0c0a9097d7abe954919f411dc46e0b979441372d91"
+        },
+        {
+          "floor": 14,
+          "won": true,
+          "sha256": "f3ebb077559aeafa65dc00504c12ad76c2a63f8be27d9fb08e1d02727ce7a673"
+        },
+        {
+          "floor": 15,
+          "won": true,
+          "sha256": "2d046100410b157fee2e5ae011ba98751704883812a8ce2c547d7c7f23edaedd"
+        },
+        {
+          "floor": 16,
+          "won": true,
+          "sha256": "b2387eac3a124106527bae6fb9ce1f36870f4be6e9ed199b6ca3a315defbc601"
+        },
+        {
+          "floor": 17,
+          "won": true,
+          "sha256": "50d1517cd4f62c1cde104258abf94f076d25869184720544f8962261636ac991"
+        },
+        {
+          "floor": 18,
+          "won": true,
+          "sha256": "23ddbbecf10df646b1dcac86e78a31c860b861af6e2566f1321783f8717274e0"
+        },
+        {
+          "floor": 20,
+          "won": true,
+          "sha256": "d01e481da3d89993fa2ec749f6e75e8665709f125d225c892b58d14c1a570cb0"
+        },
+        {
+          "floor": 22,
+          "won": true,
+          "sha256": "da791335b7cdff351bf071aa79e9b842669f3b5491dce8d082dc28c251521b73"
+        },
+        {
+          "floor": 23,
+          "won": true,
+          "sha256": "eb919377e5d3bbbf893e57b8a502df52e767524441b2901c5cef135e15769c82"
+        },
+        {
+          "floor": 25,
+          "won": true,
+          "sha256": "0ac5f5811092de298e2e452f586e57130e89229bef8268d083805e832632d181"
+        },
+        {
+          "floor": 26,
+          "won": true,
+          "sha256": "6f6c1d47f0ec85a572569a959e29f8451cfd3bb021ad8cc5a8ac22f64b97caf3"
+        },
+        {
+          "floor": 27,
+          "won": true,
+          "sha256": "d91d69462e8f3a3e8277f5072cac349184d62499b8be1d45332bd27a0d4312ac"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "756793332be45993752ddf34d42c01b829267694bd3e3567f6af241f1e05828e"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "e7ff8fcbb8f138034744410f5a177916fd5049e7093de64708a542fe7f060428"
+        },
+        {
+          "floor": 30,
+          "won": false,
+          "sha256": "d552ce9716d45494a6ecd2c7405b8e6c90eba608e5f98268beeab7da6fd49409"
+        }
+      ]
+    },
+    {
+      "name": "run-10-silver-gymcards-fixed",
+      "seed": 10,
+      "target": 200,
+      "floor": 156,
+      "phase": "defeated",
+      "conditions": {
+        "spirit": false,
+        "statBoosts": 0,
+        "slotPurchase": 20,
+        "hiddenOpponentState": false,
+        "enemyBossSearchBudgetMs": 4500
+      },
+      "startingSlots": 2,
+      "actualBoosts": {
+        "hp": 0,
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0
+      },
+      "battles": 115,
+      "turns": 526,
+      "captures": 17,
+      "bosses": [
+        {
+          "floor": 10,
+          "turns": 3,
+          "faints": 0
+        },
+        {
+          "floor": 20,
+          "turns": 3,
+          "faints": 0
+        },
+        {
+          "floor": 30,
+          "turns": 6,
+          "faints": 0
+        },
+        {
+          "floor": 40,
+          "turns": 10,
+          "faints": 0
+        },
+        {
+          "floor": 50,
+          "turns": 3,
+          "faints": 0
+        },
+        {
+          "floor": 60,
+          "turns": 8,
+          "faints": 0
+        },
+        {
+          "floor": 70,
+          "turns": 8,
+          "faints": 0
+        },
+        {
+          "floor": 80,
+          "turns": 6,
+          "faints": 1
+        },
+        {
+          "floor": 90,
+          "turns": 3,
+          "faints": 0
+        },
+        {
+          "floor": 100,
+          "turns": 19,
+          "faints": 4
+        },
+        {
+          "floor": 110,
+          "turns": 4,
+          "faints": 0
+        },
+        {
+          "floor": 120,
+          "turns": 13,
+          "faints": 2
+        },
+        {
+          "floor": 130,
+          "turns": 6,
+          "faints": 0
+        },
+        {
+          "floor": 140,
+          "turns": 21,
+          "faints": 0
+        },
+        {
+          "floor": 150,
+          "turns": 3,
+          "faints": 0
+        }
+      ],
+      "losses": [
+        {
+          "floor": 2,
+          "name": "玛俐",
+          "turns": 12,
+          "faints": 3
+        },
+        {
+          "floor": 93,
+          "name": "太晶空洞 · 精英",
+          "turns": 14,
+          "faints": 6
+        },
+        {
+          "floor": 93,
+          "name": "太晶空洞 · 精英",
+          "turns": 7,
+          "faints": 3,
+          "rescue": {
+            "cost": 6000,
+            "paid": true
+          }
+        },
+        {
+          "floor": 155,
+          "name": "进化研究家",
+          "turns": 20,
+          "faints": 6
+        },
+        {
+          "floor": 156,
+          "name": "进化研究家",
+          "turns": 1,
+          "faints": 1,
+          "rescue": {
+            "cost": 8900,
+            "paid": false
+          }
+        }
+      ],
+      "finalParty": [
+        {
+          "species": "Skeledirge-Fantasy",
+          "level": 96,
+          "hp": 0,
+          "maxhp": 355
+        },
+        {
+          "species": "Swampert-Fantasy",
+          "level": 96,
+          "hp": 0,
+          "maxhp": 329
+        },
+        {
+          "species": "Sneasler",
+          "level": 77,
+          "hp": 0,
+          "maxhp": 226
+        },
+        {
+          "species": "Togedemaru-Totem",
+          "level": 71,
+          "hp": 0,
+          "maxhp": 240,
+          "stars": 2
+        },
+        {
+          "species": "Palafin-Hero",
+          "level": 70,
+          "hp": 0,
+          "maxhp": 243
+        },
+        {
+          "species": "Dragonite-Fantasy",
+          "level": 81,
+          "hp": 0,
+          "maxhp": 261
+        }
+      ],
+      "growth": {
+        "offense": 1665,
+        "defense": 1250,
+        "experience": 500
+      },
+      "blessings": [
+        {
+          "floor": 1,
+          "id": "detect",
+          "tier": "silver"
+        },
+        {
+          "floor": 50,
+          "id": "friend",
+          "tier": "silver"
+        },
+        {
+          "floor": 100,
+          "id": "supercombo",
+          "tier": "silver"
+        },
+        {
+          "floor": 150,
+          "id": "ordinary",
+          "tier": "gold"
+        }
+      ],
+      "terminalIssues": [
+        {
+          "floor": 156,
+          "reason": "actual-terminal-defeat",
+          "failure": {
+            "key": "3652fb4d-667b-4cd4-b8d8-e01173bce8e9",
+            "floor": 156,
+            "title": "爬塔已无法推进",
+            "reason": "全队伙伴都已倒下，没有可用的复活道具或其他恢复途径，金币也不足以支付急救费用。本局爬塔失败；已获得的解锁与局外成长点会保留。"
+          }
+        }
+      ],
+      "summaryHash": "cccbfa15842b8e190517b686d270646250d104d2e24dcab5a311626c59f6be05",
+      "actionsHash": "1d7cc346de00a9d177d18e9f83bc6f908dd9fd45b8457179f6c2e92a79dd1e03",
+      "battleHashes": [
+        {
+          "floor": 1,
+          "won": true,
+          "sha256": "f00490dc440e4c51252e26224394fb6fd0684a7555c08a80d99e5cca17851453"
+        },
+        {
+          "floor": 2,
+          "won": false,
+          "sha256": "92deb7aec0ee33a1431058e7c7b2fb182a98a3b69b9533335b739d3ac6461b90"
+        },
+        {
+          "floor": 3,
+          "won": true,
+          "sha256": "56ed509150113871f9f30255131f3674f94d40ceff84996d4715e078b84c97a6"
+        },
+        {
+          "floor": 5,
+          "won": true,
+          "sha256": "e71798a74c3c9fbad7a5d8cb188b856be874c666efaf9d995103547dce24350b"
+        },
+        {
+          "floor": 7,
+          "won": true,
+          "sha256": "4577947feb37ce7fdb2b2c651f09e379fb7eefeb14c37d9d2ac7bf47a4bcae2b"
+        },
+        {
+          "floor": 10,
+          "won": true,
+          "sha256": "f106ceb8cc55236555cfbe4d8460808a31ae7d00d51e5ef6ccd2f858d1ef1c6b"
+        },
+        {
+          "floor": 11,
+          "won": true,
+          "sha256": "7107589dfb91f3ad4deca4da5cf37d4ff5d26ba01dcd7681d1eba933819563c4"
+        },
+        {
+          "floor": 12,
+          "won": true,
+          "sha256": "3c1ca77d7a25da11300e499687cea825d85a4bbd9fb6ce73373d28cb94be5d63"
+        },
+        {
+          "floor": 13,
+          "won": true,
+          "sha256": "62ff7519e4ea7f1658f4ad90cd22c3fb7e09574f86438ea3587dd9aa3f2a99a3"
+        },
+        {
+          "floor": 14,
+          "won": true,
+          "sha256": "04d165a1fa1dc6196e9e329ff7e23f38ef02d7d3ac148e080939ccae25e5162f"
+        },
+        {
+          "floor": 15,
+          "won": true,
+          "sha256": "3b0afb5e2505ab2e43bb1d92e1b9ee64f0c30c17311977bcc9afd19ebfb9f04c"
+        },
+        {
+          "floor": 17,
+          "won": true,
+          "sha256": "fcc40bf6884dea53b2b4665ec2feeb72d90e751a6912494baad7aef49d667fe8"
+        },
+        {
+          "floor": 18,
+          "won": true,
+          "sha256": "65862271ec5495fe8a66d794a35ff54d10112837c6d2b29f9d887f68eb0e3354"
+        },
+        {
+          "floor": 20,
+          "won": true,
+          "sha256": "64ed5795c77dc4d28bb044d53aa83ffff05c3a945a70071590fe1a0ca9a71be9"
+        },
+        {
+          "floor": 21,
+          "won": true,
+          "sha256": "26ac50563596e209ad2c99c4bb25c9079a990faf4a01c1a3dd8a7f8cbd32bb25"
+        },
+        {
+          "floor": 22,
+          "won": true,
+          "sha256": "cc6942e35ab326df30c3b23b49489b94055238a247c230dbbdd3306723c4340b"
+        },
+        {
+          "floor": 23,
+          "won": true,
+          "sha256": "f51f524aa30b5e2efadf77cddea5bda1232c9d44805d5b07147b7cff844f5909"
+        },
+        {
+          "floor": 25,
+          "won": true,
+          "sha256": "2cb7aa5fd86a48ab0398c650dcae7f7edff8fef6f304a06604de52ab4cbf31d7"
+        },
+        {
+          "floor": 26,
+          "won": true,
+          "sha256": "0981db217ed4a81cd6c35b79ba5d09cfc2ed14989ef9aeee4d6057d4fe476e9e"
+        },
+        {
+          "floor": 27,
+          "won": true,
+          "sha256": "cbaf892270594645817ec91bbc474464b02811262bc3b29d0fcad8303a660360"
+        },
+        {
+          "floor": 28,
+          "won": true,
+          "sha256": "46b501a4553d4c9ee23083865c3744e6a5ac6560b0109ae5ee69a14eb35bfc95"
+        },
+        {
+          "floor": 30,
+          "won": true,
+          "sha256": "92715f5239942d81c0c91e73403d3a1c37ba7d8967623ff1f40fa56efe038d00"
+        },
+        {
+          "floor": 32,
+          "won": true,
+          "sha256": "ff57034f3ac7c1ccd7c905ee1575844b9d69263323cc26158fe0ca97c61650d9"
+        },
+        {
+          "floor": 32,
+          "won": true,
+          "sha256": "ce7426cec8137e4826cb752d7f076e8e2ec737c47e70f3c5da12201e1b8fe25b"
+        },
+        {
+          "floor": 33,
+          "won": true,
+          "sha256": "23387055d1eb5e2cc408178f4696703b67f4589324f16fb2924feda6c74d9306"
+        },
+        {
+          "floor": 34,
+          "won": true,
+          "sha256": "d9662a08c9fddb897c6d8c5b4a0e342cbac6137f373a494d338ab557edc23f87"
+        },
+        {
+          "floor": 35,
+          "won": true,
+          "sha256": "ca17bf28841c15779f0c1a0f68ebc4b8d42777114263633cc16ce25f58d771bc"
+        },
+        {
+          "floor": 37,
+          "won": true,
+          "sha256": "f13cb4dd528f1a02663795413b9edb65730188a2f47ee66c1f8bda19f20b66ef"
+        },
+        {
+          "floor": 40,
+          "won": true,
+          "sha256": "98432a6612fe3e3b2a14fc6c65d542cc94f241a0d1786e015675a93f0c093efc"
+        },
+        {
+          "floor": 41,
+          "won": true,
+          "sha256": "b95f8153f732a45829f4d72c24bb155052a9402401da997553e416d99cc90a19"
+        },
+        {
+          "floor": 43,
+          "won": true,
+          "sha256": "8725bc39716466542c7fa84845d997811932f038c7a470c3eee971c61d5055cb"
+        },
+        {
+          "floor": 45,
+          "won": true,
+          "sha256": "a88745215c9bbfc556cfc8ac855e4707940e0bac5928667caaf987cfbecde031"
+        },
+        {
+          "floor": 46,
+          "won": true,
+          "sha256": "9d044ded50af1eca99726c983bd7e71f1be74165ce9a0bfb0d7681a4d52c4186"
+        },
+        {
+          "floor": 48,
+          "won": true,
+          "sha256": "17a39736fea37c626cd99dedb7ee5df4b0fa9a1815f10124974182a5cca5ef6b"
+        },
+        {
+          "floor": 50,
+          "won": true,
+          "sha256": "2d92c563ef5eda6149e3862232c8a759219250076d0310222d23dd0c539241ca"
+        },
+        {
+          "floor": 51,
+          "won": true,
+          "sha256": "c7fb349c35f64948ddc43308f78c544597d184ac21e57b44af532eeaa48c3e8d"
+        },
+        {
+          "floor": 53,
+          "won": true,
+          "sha256": "91ab7b4f72c6166f17f8a578d00e2fba828b4a3f36b76026145b81ec27e25e45"
+        },
+        {
+          "floor": 54,
+          "won": true,
+          "sha256": "ebf9420ba6e9fbe4e5e158528654f6cc6bd0639f55de4be2d9d22e4b883b807b"
+        },
+        {
+          "floor": 55,
+          "won": true,
+          "sha256": "40506b74fd0d5740c5a2f57af7230df16c6a95d88d931c5a6b52ba85ecc39ece"
+        },
+        {
+          "floor": 56,
+          "won": true,
+          "sha256": "0cbbace73d742f0057956d23786e054a9ca62ef0255092e78ed2514662742b50"
+        },
+        {
+          "floor": 57,
+          "won": true,
+          "sha256": "4cfb6cfbd7c8b713b9027f45caa9c4d5b886de14f930e38d1bc6bb8a6990f408"
+        },
+        {
+          "floor": 58,
+          "won": true,
+          "sha256": "7c78b21dc5b059b27e5e9c2714094585da8f536e494765f4e97274851f3ef657"
+        },
+        {
+          "floor": 60,
+          "won": true,
+          "sha256": "80b16cd43bd55c87482baae7cc47bebc393d61e222bba6fb03dac8dcbd13bfaa"
+        },
+        {
+          "floor": 61,
+          "won": true,
+          "sha256": "ee4ecd05821b2f2ff2de9b61fa776e80ceee9b1410090231e3a271a8a62519f8"
+        },
+        {
+          "floor": 62,
+          "won": true,
+          "sha256": "8e95a4a082edeee9fab0820ec9cfccd6a4a73b440d8ad78049eeb8b0dbdc331b"
+        },
+        {
+          "floor": 63,
+          "won": true,
+          "sha256": "82d33939b45536ef524ecfbdb19bb16f413728a20e5e563aa788b5050d32d11f"
+        },
+        {
+          "floor": 65,
+          "won": true,
+          "sha256": "29f20862d1cfdc1f9adf16599abd8fb493ddc336c0a7c8a19b230d3314aa1a87"
+        },
+        {
+          "floor": 70,
+          "won": true,
+          "sha256": "ba922df7e9e54d3331f8942425f51e421079891f0e9f99f84326b4c7083e5f16"
+        },
+        {
+          "floor": 71,
+          "won": true,
+          "sha256": "ed87d6659d420f665298020e944a30816493236918f57611896a56ff456616ad"
+        },
+        {
+          "floor": 72,
+          "won": true,
+          "sha256": "2ce1cd9ddee9257cc2b555e97202078e1e3678744e8a76e48c58120509e892c1"
+        },
+        {
+          "floor": 73,
+          "won": true,
+          "sha256": "2902cdcf5735b689e18b6f014e967d609c432f18ad2292861d1cc6e7bc0a43d8"
+        },
+        {
+          "floor": 74,
+          "won": true,
+          "sha256": "902aaffe83e93fd59c48b4b5eca3095daabef114973e74ba797e367caa056b51"
+        },
+        {
+          "floor": 75,
+          "won": true,
+          "sha256": "8518a0b6583c37883602d7ca763bbb92251d9439dbfc6c543f1b4d5635407ea5"
+        },
+        {
+          "floor": 77,
+          "won": true,
+          "sha256": "40dd958f84f3f7b8a5b4cc81632fc94cc6950b0ac5b705864b1b5e5a493d9483"
+        },
+        {
+          "floor": 78,
+          "won": true,
+          "sha256": "9e04a02104439e6f76132bcc9e878929f01cb363bbad53893e1a1709a8b7f4c1"
+        },
+        {
+          "floor": 80,
+          "won": true,
+          "sha256": "7b7366d97b9a3fad22668a083af5117bcabfc7cfc43ce63ece139a1433dfeef3"
+        },
+        {
+          "floor": 82,
+          "won": true,
+          "sha256": "9750eeb61ea63c2b129d5e338c06deed3be74e561c81892f785b7c6ef31bcfb3"
+        },
+        {
+          "floor": 83,
+          "won": true,
+          "sha256": "b5c1dfb8e71b5a98fc4103ae50db521272e000d61afe9a395760866e3f93eed2"
+        },
+        {
+          "floor": 84,
+          "won": true,
+          "sha256": "afbc67eb4557bff18da6cdb10a8e9b214c387548148e7e62ddd8ef13117f216d"
+        },
+        {
+          "floor": 85,
+          "won": true,
+          "sha256": "fb33e9058178eea912942f06706c584f50db18ced84c19d0cacff31ffdfdf266"
+        },
+        {
+          "floor": 86,
+          "won": true,
+          "sha256": "89a58ea8e25660ed9520cc5363ddbaa9ed51b3c8708270bc163c033f79bdb381"
+        },
+        {
+          "floor": 87,
+          "won": true,
+          "sha256": "a19ea4279ede27e32b45889bcf6491327c34643adc67a8315716260c1f8e6ab2"
+        },
+        {
+          "floor": 88,
+          "won": true,
+          "sha256": "d6f437939c97005470430f33bb04b2bde23b4eb593210db1c49414a9fc152671"
+        },
+        {
+          "floor": 90,
+          "won": true,
+          "sha256": "7b55c0a7526901740835c98baefc809b914a560e3043379f6ad289b84c6e5419"
+        },
+        {
+          "floor": 91,
+          "won": true,
+          "sha256": "160b387699131a841f1133f4f8a9647492134ba88788a4fa077a00e26680ebad"
+        },
+        {
+          "floor": 93,
+          "won": false,
+          "sha256": "c858cc8ea03bc094f03f50e2ec1d7706e1df503ea03ae82b57a3b33b5b63ee6e"
+        },
+        {
+          "floor": 93,
+          "won": false,
+          "sha256": "b77577fedec440ce8acac098d54dcd742fb53a96894ad5a16b297fcbb97709f8"
+        },
+        {
+          "floor": 93,
+          "won": true,
+          "sha256": "eeee863814b227e0b01bc998e849e834cf778689dfcbbd7bcac4442e00f97e1c"
+        },
+        {
+          "floor": 94,
+          "won": true,
+          "sha256": "a3615722aac22003c6d19737c6f9acdb44200f2b395b5bebb406300fb2730c6e"
+        },
+        {
+          "floor": 95,
+          "won": true,
+          "sha256": "751807431c7c7ac6057128b960221316b5bd4633bc8f7951d176c786dee4e806"
+        },
+        {
+          "floor": 96,
+          "won": true,
+          "sha256": "cfb146717a39ef688166350b0748e37967491765be003c7ddae3e8c5e30b77cd"
+        },
+        {
+          "floor": 97,
+          "won": true,
+          "sha256": "d0245a72152953b555d8dff743169c4035279c9f3ec9a5b45386606791dbc412"
+        },
+        {
+          "floor": 98,
+          "won": true,
+          "sha256": "430dff7906a4cbd199f382cc7a09dcc112b6ce3c217d1efb9713fd787c623185"
+        },
+        {
+          "floor": 100,
+          "won": true,
+          "sha256": "d02642e4f71a0b0f46c2454385e25d54eb8fe432a68acc02ea323e85229a62e6"
+        },
+        {
+          "floor": 101,
+          "won": true,
+          "sha256": "32f76bfff37d8e493e73190865e404754f896cbe706beb7015759922b7211fac"
+        },
+        {
+          "floor": 102,
+          "won": true,
+          "sha256": "225a8ee237e91f3e1850c6e26f690515b4bdcb0033fd76e26f8457efacaabfaa"
+        },
+        {
+          "floor": 103,
+          "won": true,
+          "sha256": "8f320552c9f82063a3425aab93e43811157d891ced6bd54755e173917925319f"
+        },
+        {
+          "floor": 105,
+          "won": true,
+          "sha256": "c6b906c83be2655b9fdc66ec8f79fe3353712edc517ed9aa16c13b428fa14145"
+        },
+        {
+          "floor": 106,
+          "won": true,
+          "sha256": "fbd07ab4f2fbff58fcee1b54aca93294194c47292f9c9b4d6437bc9eeeeaba8f"
+        },
+        {
+          "floor": 107,
+          "won": true,
+          "sha256": "f65e6927c92aa373dbc527a6ea72b1342c0b02200248bc2b66f0d0c08c394914"
+        },
+        {
+          "floor": 110,
+          "won": true,
+          "sha256": "818f64387b045c648470be2075f7744a84ebe6ba4d857b2227e4720212fd37bb"
+        },
+        {
+          "floor": 111,
+          "won": true,
+          "sha256": "3e4d22b2acc391008320ebb7329158d0fa13da3faa4bd4e269bf9a86f7ab939d"
+        },
+        {
+          "floor": 114,
+          "won": true,
+          "sha256": "884b799b4a16993ff27260666914e605a3abd9b43ba69c296c1b5b5e993fc6af"
+        },
+        {
+          "floor": 115,
+          "won": true,
+          "sha256": "336a6a5f6483d8e8be472a38d1f2f2ac4e6bb97ae4775dbbf6a8f5f7632656cc"
+        },
+        {
+          "floor": 117,
+          "won": true,
+          "sha256": "5e8b61bb7fe32300690babfe08176e89eec3f5966fcae739c60b645848c3e6fa"
+        },
+        {
+          "floor": 118,
+          "won": true,
+          "sha256": "d038de04803b39c26e428e4c0346b68e1183e216387503866d394ff74635bf0f"
+        },
+        {
+          "floor": 120,
+          "won": true,
+          "sha256": "d6378c91b32b9c7dae851447594a7cce5b6ba1bc933734024a8057c3574ad23c"
+        },
+        {
+          "floor": 121,
+          "won": true,
+          "sha256": "27aa93dad8f297714240213d5f6edceb04d449a8cf18fdc9ee2eac19abb84242"
+        },
+        {
+          "floor": 121,
+          "won": true,
+          "sha256": "88e3749c8b2fd49ccf2f5800d61da0f8ef3b50be2b867d81a56cbc6a9b001912"
+        },
+        {
+          "floor": 121,
+          "won": true,
+          "sha256": "8f441bae44966a31db356fe7775aad17a3c13d4f820ddc5b589e132eb89d86f4"
+        },
+        {
+          "floor": 122,
+          "won": true,
+          "sha256": "62aa6155cbac76a7b119c9c3138b5b35f99f697c79bb83a1e7edac737e31b69e"
+        },
+        {
+          "floor": 123,
+          "won": true,
+          "sha256": "be482b873298989bf05fb87637a0199faf803513e0156f50cefe556b0358eeee"
+        },
+        {
+          "floor": 124,
+          "won": true,
+          "sha256": "7f239c1dd9f030d21179c0cf4178315e3d3f1d0c8b93e37e74167dc1f8191a9d"
+        },
+        {
+          "floor": 125,
+          "won": true,
+          "sha256": "83e40a454d0897fcf14c329719981afb510d467bb9d0e7acee291ba72a92fe87"
+        },
+        {
+          "floor": 126,
+          "won": true,
+          "sha256": "e6ccd658a35896d95f7509b888386c500914a2ec1afa1b5988da48982bc58cf7"
+        },
+        {
+          "floor": 127,
+          "won": true,
+          "sha256": "26558ffed03ec8ff16584f503ce8aecb75e082897299561ef66352391724b6bd"
+        },
+        {
+          "floor": 128,
+          "won": true,
+          "sha256": "e1ee497eae56c23a093f3caf39ef9f7d88c351a890ec9dac11c79c04831dbf8a"
+        },
+        {
+          "floor": 130,
+          "won": true,
+          "sha256": "7bb20a92a5e0314c30cd918ae44b572819729100cbb31c6b9cea271da685e34e"
+        },
+        {
+          "floor": 131,
+          "won": true,
+          "sha256": "8a25cb78ec7f32e96b559a8c11ec80f6ad8892125a66776406ace4b604c29268"
+        },
+        {
+          "floor": 132,
+          "won": true,
+          "sha256": "1ee1c727b452b3ec11b70c8837c945d4ce3eb0843c585d15a8e78382fa140bbf"
+        },
+        {
+          "floor": 135,
+          "won": true,
+          "sha256": "358605b99f4b682ad18c27ac5c8537d41f2907291e828337daab36b44de6073d"
+        },
+        {
+          "floor": 138,
+          "won": true,
+          "sha256": "2296a05306c66026edc2b574c756924f3a0a65d490d0f767397690dbe2395392"
+        },
+        {
+          "floor": 140,
+          "won": true,
+          "sha256": "a81610d10d0e52e607196fe35fde8765379d5fcf57412fb9fa7d7d083ca65b51"
+        },
+        {
+          "floor": 141,
+          "won": true,
+          "sha256": "04a480cb1f3a09aa9388ecdff700e83e11c3a964c1eba5b65162a72520dc087d"
+        },
+        {
+          "floor": 142,
+          "won": true,
+          "sha256": "ff688da6f05a5db92fccb430c658493db5cef6e7ced39f4c3e54198e6e914b66"
+        },
+        {
+          "floor": 143,
+          "won": true,
+          "sha256": "e44b0c09e31cdd403ddd8fcec55408dfb12594b1d9fc4bdad8dcb2c79682e192"
+        },
+        {
+          "floor": 146,
+          "won": true,
+          "sha256": "c64479fef066e7e0e223e2a7e3d182dc9ebad9cfcec39bb576903a462746da7d"
+        },
+        {
+          "floor": 147,
+          "won": true,
+          "sha256": "f6ba30ad7021395a0665754b556fb8be63c8c031b871e601ea03e8b85f509285"
+        },
+        {
+          "floor": 150,
+          "won": true,
+          "sha256": "f674afe546d9fe2ebe004e7d9b4ab569d1e4fc3047dc9296b5871084100289f2"
+        },
+        {
+          "floor": 151,
+          "won": true,
+          "sha256": "a96ea7ac0ec42b0a56a5595c68b72656f27992b228f8028ebf41c7ed03157701"
+        },
+        {
+          "floor": 152,
+          "won": true,
+          "sha256": "6f21dc15238abdb693a543b413ea1bfdaf9c40e94deee233c11ecc6989e777f3"
+        },
+        {
+          "floor": 153,
+          "won": true,
+          "sha256": "9d3e3980d58fc4a2fd5dfb601c73d142d497b3a962d52ca07e1294c72c64cdc6"
+        },
+        {
+          "floor": 154,
+          "won": true,
+          "sha256": "238a0dc0d6f16fa517091c8456ecd908029998f1ba009462831af88fff011232"
+        },
+        {
+          "floor": 155,
+          "won": false,
+          "sha256": "a103f16b558512b534314f0b4ca00edc1ddcc01e541dc143ee719abdb89b7c4c"
+        },
+        {
+          "floor": 156,
+          "won": false,
+          "sha256": "64e756d5d4b53fe0bf46a7a1d16a40c9ae8b88babfce7a7296f62018c922ee0d"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "serverFull": {
+      "suites": 77,
+      "tests": 2389,
+      "passes": 2389,
+      "pending": 0,
+      "failures": 0,
+      "start": "2026-10-21T11:22:24.860Z",
+      "end": "2026-10-21T11:30:04.959Z",
+      "duration": 460099
+    },
+    "serverTargeted": {
+      "suites": 6,
+      "tests": 135,
+      "passes": 135,
+      "pending": 0,
+      "failures": 0,
+      "start": "2026-10-21T11:31:50.768Z",
+      "end": "2026-10-21T11:32:19.550Z",
+      "duration": 28782
+    },
+    "client": {
+      "suites": 25,
+      "tests": 311,
+      "passes": 310,
+      "pending": 1,
+      "failures": 0,
+      "start": "2026-10-21T11:34:52.711Z",
+      "end": "2026-10-21T11:34:59.005Z",
+      "duration": 6294
+    },
+    "captureLegality": {
+      "checked": 1441,
+      "issues": []
+    },
+    "build": "passed: node build full --local-server ../pokemon-showdown",
+    "typechecks": "server and client passed with --ignoreDeprecations 5.0",
+    "newModuleLint": "passed",
+    "whitespace": "git diff --check passed in both repositories",
+    "nonblockingBuildWarning": "PHP unavailable for news retrieval; both built entrypoints retain the configured announcement"
+  },
+  "localService": {
+    "port": 8000,
+    "codexSchema": 3,
+    "contentVersion": "36a6f466190ce9b3",
+    "savedAdventureRestored": true,
+    "restoredFloor": 1,
+    "restoredPhase": "choose",
+    "criticalSavePreserved": true,
+    "repeatedReadsDoNotMutate": true,
+    "otherAccountsUnchanged": 19,
+    "backup": "F:\\fantasy\\pokemon-showdown\\databases\\backups\\local-restart-2026-10-21T11-33-33-996Z",
+    "catalog": {
+      "blessings": 192,
+      "eventsAndTrainers": 268,
+      "ecologies": 14,
+      "newActivities": 18,
+      "newContentAndGymStrengthCardGuideVerifiedOverWebSocket": true,
+      "announcementInBothBuiltEntrypoints": true
+    }
+  }
+}

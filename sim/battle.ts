@@ -15,6 +15,7 @@
  */
 
 import { Dex, toID } from './dex';
+import { recordEvolutionDamage } from './rogue-evolution-progress';
 import { sharedRogueItems, sharedRogueItemData, rogueItemCallback } from './fantasy-rogue-items';
 import { Teams } from './teams';
 import { Field } from './field';
@@ -1026,9 +1027,9 @@ export class Battle {
 					handler.subOrder = 5;
 				}
 			} else if (handler.effect.effectType === 'Ability') {
-				if (handler.effect.name === 'Poison Touch' || handler.effect.name === 'Perish Body') {
+				if (handler.effect.id === 'poisontouch' || handler.effect.id === 'perishbody') {
 					handler.subOrder = 6;
-				} else if (handler.effect.name === 'Stall') {
+				} else if (handler.effect.id === 'stall') {
 					handler.subOrder = 9;
 				}
 			}
@@ -2129,6 +2130,7 @@ export class Battle {
 			}
 
 			retVals[i] = targetDamage = target.damage(targetDamage, source, effect);
+			if (this.fantasyRogue && targetDamage) recordEvolutionDamage(targetDamage, target, effect);
 			if (targetDamage !== 0) target.hurtThisTurn = target.hp;
 			if (source && effect.effectType === 'Move') source.lastDamage = targetDamage;
 
@@ -2253,6 +2255,7 @@ export class Battle {
 		}
 
 		damage = target.damage(damage, source, effect);
+		if (this.fantasyRogue && damage && effect) recordEvolutionDamage(damage, target, effect);
 		switch (effect.id) {
 		case 'strugglerecoil':
 			this.add('-damage', target, target.getHealth, '[from] recoil');

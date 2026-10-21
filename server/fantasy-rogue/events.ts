@@ -1,4 +1,5 @@
 import { rivalView, chooseRival, settleRival, type RivalEvent } from './rivals';
+import { activityEligible, activityWeight, isJourneyActivity, beginJourneyActivity, journeyActivityView, chooseJourneyActivity, settleJourneyActivity, type JourneyActivity } from './journey-activities';
 import { greninjaEvent, greninjaEventEligible, greninjaEventView, chooseGreninjaEvent } from './greninja-training';
 import { beginSocialEvent, socialCandidates, socialEventView, chooseSocialEvent, settleSocialEvent, type SocialEvent } from './social-events';
 import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView, chooseExpedition, settleExpedition, type ExpeditionEvent } from './expedition-events';
@@ -36,6 +37,7 @@ import { adventureEvent, adventureView, chooseAdventure, settleAdventure, bandit
 import { offerEventFragments, eventFragmentOptions, claimEventFragments, type EventFragmentOffer } from './event-fragments';
 export { EVENT_NAMES, type EventID } from './event-text';
 export interface RogueEvent {
+	activity?: JourneyActivity;
 	social?: SocialEvent;
 	rival?: RivalEvent;
 	expedition?: ExpeditionEvent;
@@ -98,7 +100,7 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && activityEligible(run, id) && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
 		!['rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
 		(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
 		(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
@@ -114,7 +116,7 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	});
 	const pool = unseen.length ? unseen : cooled.length ? cooled : candidates;
 	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
-	const weights = pool.map(id => Math.max(1, Math.round((id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
+	const weights = pool.map(id => Math.max(1, Math.round(activityWeight(id) * (id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
 		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	return pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
@@ -160,6 +162,7 @@ export function beginEvent(run: RogueRun, random: RogueRandom) {
 	if (id === 'forest') event.teams = forestTeams(ordinaryLevel(run.floor), random);
 	(run.eventHistory ||= []).push({ id, floor: run.floor });
 	run.node!.event = event;
+	beginJourneyActivity(run, random);
 	beginExpedition(run);
 	if (id === 'companionrematch') prepareRematch(run);
 	prepareHoneymoon(run, random);
@@ -237,6 +240,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	before.money = run.money; before.bag = { ...run.bag };
 	if (choice === 'leave') event.trainingAidBlocked = true;
 	else event.committed = true;
+	if (isJourneyActivity(event.id)) { chooseJourneyActivity(account, run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.rival) { chooseRival(run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (greninjaEvent(event.id)) {
 		chooseGreninjaEvent(run, choice!); rewardReceipt(run, before); return;
@@ -391,6 +395,11 @@ export function settleEventBattle(
 	const event = run.node?.event;
 	if (!event || event.stage !== 'battle' || event.settled) return;
 	if (!retreated) event.journeyBattleWon = won;
+	if (isJourneyActivity(event.id)) {
+		if (!account) throw new Error('活动结算缺少账号。');
+		const before = { money: run.money, bag: { ...run.bag } };
+		settleJourneyActivity(account, run, content, random, won, retreated); rewardReceipt(run, before); return;
+	}
 	if (event.social) {
 		if (!retreated) {
 			const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
@@ -455,6 +464,7 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (isJourneyActivity(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...journeyActivityView(run) };
 	if (greninjaEvent(event.id)) return greninjaEventView(run);
 	if (event.social) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...socialEventView(run) };
 	if (event.rival) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...rivalView(run) };

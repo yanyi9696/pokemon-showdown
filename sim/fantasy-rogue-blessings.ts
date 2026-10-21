@@ -1,5 +1,7 @@
 import { awakeningUpdate, awakeningLethal, spiralLethal, spiralActive, spiralPoints, gainSpiral, robeMultiplier, bloodRequest, empowerBloodMove } from './fantasy-rogue-awakening';
 import { robeMember } from './rogue-awakening';
+import { petSpecies, dogBoostCount } from './rogue-pets';
+import { recordEvolutionMove } from './rogue-evolution-progress';
 import type { Battle } from './battle';
 import type { Pokemon } from './pokemon';
 import type { FormatData } from './dex-formats';
@@ -313,6 +315,14 @@ export function prepareBlessingMember(mon: Pokemon) {
 export function blessingSwitchIn(mon: Pokemon) {
 	if (spiralActive(mon) && !mon.m.rogueSpiralParticipated) { mon.m.rogueSpiralParticipated = true; gainSpiral(mon, 12); }
 	if (!mon.battle.fantasyRogue) return;
+	if (hasBlessing(mon, 'dogs') && petSpecies(savedBlessingMember(mon)?.set.species || mon.baseSpecies.name, 'dogs')) {
+		const state = mon.battle.fantasyRogue;
+		const team = mon.side.id === 'p1' ? state.team : state.duel?.team || [];
+		const count = dogBoostCount(team), stats: BoostID[] = ['atk', 'def', 'spa', 'spd', 'spe'];
+		const boosts: SparseBoostsTable = {};
+		for (let i = 0; i < count; i++) boosts[stats.splice(mon.battle.random(stats.length), 1)[0]] = 1;
+		if (count) mon.battle.boost(boosts, mon, mon, mon.battle.format);
+	}
 	if (railgunActive(mon)) {
 		mon.addVolatile('magnetrise', mon, mon.battle.format);
 		if (mon.volatiles.magnetrise) mon.volatiles.magnetrise.duration = 0;
@@ -594,6 +604,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onModifySpD(spd, pokemon) { return blessingModifyStat(spd, pokemon, 'spd'); },
 	onModifySpe(spe, pokemon) { return blessingModifyStat(spe, pokemon, 'spe'); },
 	onModifyMove(move, pokemon) {
+		if (pokemon.side.id === 'p2' && this.fantasyRogue?.escortCount) delete move.selfSwitch;
 		empowerBloodMove(pokemon, move);
 		if (move.id === 'zapcannon' && railgunActive(pokemon)) {
 			Object.assign(move, { name: '超电磁炮' });
@@ -676,7 +687,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 		if (hasBlessing(target, 'starters') && starter(target)) damage *= 1 - 0.05 * target.side.pokemon.filter(starter).length;
 		return Math.floor(damage);
 	},
-	onAfterMove(pokemon, target, move) { blessingAfterAction(this, pokemon, move); },
+	onAfterMove(pokemon, target, move) { recordEvolutionMove(pokemon, move); blessingAfterAction(this, pokemon, move); },
 	onAfterMoveSecondarySelf(source, target, move) {
 		if (hasBlessing(source, 'lifepower') && source !== target && move.category !== 'Status' && !source.forceSwitchFlag) {
 			this.damage(source.baseMaxhp / 10, source, source, this.dex.items.get('lifeorb'));
@@ -726,8 +737,11 @@ export function blessingUpdate(battle: Battle) {
 		for (const stat of ['atk', 'def', 'spa', 'spd', 'spe'] as const) mon.storedStats[stat] = stats[stat];
 		if (change) battle.add('-heal', mon, mon.getHealth, '[silent]');
 	}
-	for (const mon of battle.getAllActive()) if (mon.hp && mon.hp < mon.maxhp / 3 && hasBlessing(mon, 'lowhp') && !member(mon).low) {
-		member(mon).low = true; battle.boost({ atk: 1, spa: 1 }, mon, mon, battle.format);
+	for (const mon of battle.getAllActive()) if (mon.hp && hasBlessing(mon, 'lowhp')) {
+		if (mon.hp >= mon.maxhp / 3) member(mon).low = false;
+		else if (!member(mon).low) {
+			member(mon).low = true; battle.boost({ atk: 1, spa: 1 }, mon, mon, battle.format);
+		}
 	}
 }
 export function extendBlessingEnvironment(battle: Battle, effect: string, source: Pokemon | null, state: { duration?: number }) {

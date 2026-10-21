@@ -41,7 +41,7 @@ const profile = 'prepared2', seed = Number(process.argv[2] || 1), stop = Number(
 const desiredTier = process.argv[4] || 'adaptive';
 const starters = [['fuecoco', 'mudkip'], ['bulbasaur', 'popplio'], ['torchic', 'mudkip']][(seed - 1) % 3];
 const starter = starters[0];
-const out = `docs/playtests/2026-10-21/prepared2/run-${seed}-${desiredTier}`;
+const out = process.argv[5] || `docs/playtests/2026-10-21/prepared2/run-${seed}-${desiredTier}`;
 fs.mkdirSync(out, {recursive: true});
 const resumed = fs.existsSync(out + '/driver-state.json');
 const savedDriver = resumed ? JSON.parse(fs.readFileSync(out + '/driver-state.json')) : undefined;

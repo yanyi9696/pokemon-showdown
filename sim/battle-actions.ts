@@ -1425,7 +1425,7 @@ export class BattleActions {
 		}
 
 		if (item.zMoveFrom) {
-			if (move.name === item.zMoveFrom) return item.zMove as string;
+			if (move.id === toID(item.zMoveFrom)) return item.zMove as string;
 		} else if (item.zMove === true) {
 			if (move.type === item.zMoveType) {
 				if (move.category === "Status") {
@@ -1440,7 +1440,7 @@ export class BattleActions {
 	getActiveZMove(move: Move, pokemon: Pokemon): ActiveMove {
 		if (pokemon) {
 			const item = pokemon.getItem();
-			if (move.name === item.zMoveFrom) {
+			if (item.zMoveFrom && move.id === toID(item.zMoveFrom)) {
 				const zMove = this.dex.getActiveMove(item.zMove as string);
 				zMove.isZOrMaxPowered = true;
 				return zMove;

@@ -1,7 +1,9 @@
 /** Shared narrative copy for live events and their read-only codex replays. */
 import { EXPEDITION_NAMES, EXPEDITION_OPENINGS } from './expedition-text';
 import { SERVICE_TEXT } from './event-service-text';
+import { ACTIVITY_NAMES, ACTIVITY_OPENINGS } from './journey-activity-data';
 export const EVENT_NAMES = {
+	...ACTIVITY_NAMES,
 	greninjatraining: '甲贺忍蛙护林员', greninjareturn: '甲贺忍蛙护林员·修行归来',
 	travellermeeting: '旅途同行',
 	...EXPEDITION_NAMES, rivalstory: '劲敌奇遇',
@@ -16,6 +18,7 @@ export const EVENT_NAMES = {
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
 	return {
+		...ACTIVITY_OPENINGS,
 		greninjatraining: ['森林深处，一道黑影踏着水花从枝间跃出。那是一只小智版甲贺忍蛙，它没有摆出敌意，而是望向你的幻想甲贺忍蛙。',
 			'两者的力量隐隐共鸣。它指向林间的护林记号，邀请你的伙伴跟随自己修行，唤醒尚未掌握的潜能。'],
 		greninjareturn: ['熟悉的水声从树梢传来。小智版甲贺忍蛙带着完成修行的伙伴回到你面前，向你展示一枚闪着水光的纯晶。',

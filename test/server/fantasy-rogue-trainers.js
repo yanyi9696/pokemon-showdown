@@ -108,7 +108,7 @@ describe('Fantasy Rogue authored trainers', function () {
 			.find(entry => entry.species === 'Espathra');
 		assert.equal(mon.ability, 'Speed Boost'); assert.equal(mon.item, 'Leftovers');
 		assert.equal(mon.nature, 'Bold'); assert.equal(mon.ivs.atk, 0); assert.equal(mon.teraType, 'Fairy');
-		assert.deepEqual(mon.moves, ['Calm Mind', 'Stored Power', 'Dazzling Gleam', 'Roost']);
+		assert.deepEqual(mon.moves, ['Calm Mind', 'Stored Power', 'Dazzling Gleam', 'Roost+']);
 		assert.deepEqual(mon.evs, { hp: 152, atk: 0, def: 244, spa: 0, spd: 0, spe: 112 });
 	});
 	it('allows every authored Mega and G-Mega forme to transform through its normal battle trigger', () => {

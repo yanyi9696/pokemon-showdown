@@ -40,10 +40,10 @@ describe('Fantasy Rogue friendship and evolution conditions', () => {
 	});
 	it('checks current tower time and preserves Sylveon priority over Espeon and Umbreon', () => {
 		const eevee = member('Eevee', 160);
-		assert.deepEqual(evolutionOptions(eevee, runFor(eevee, 1)), [{ species: 'Espeon' }]);
-		assert.deepEqual(evolutionOptions(eevee, runFor(eevee, 4)), [{ species: 'Umbreon' }]);
+		assert.deepEqual(evolutionOptions(eevee, runFor(eevee, 1)).filter(e => !e.item), [{ species: 'Espeon' }]);
+		assert.deepEqual(evolutionOptions(eevee, runFor(eevee, 4)).filter(e => !e.item), [{ species: 'Umbreon' }]);
 		eevee.set.moves = ['baby-doll eyes'];
-		assert.deepEqual(evolutionOptions(eevee, runFor(eevee, 4)), [{ species: 'Sylveon' }]);
+		assert.deepEqual(evolutionOptions(eevee, runFor(eevee, 4)).filter(e => !e.item), [{ species: 'Sylveon' }]);
 		for (const floor of [1, 3, 6]) {
 			const riolu = member('Riolu', 160);
 			assert.deepEqual(evolutionOptions(riolu, runFor(riolu, floor)), [{ species: 'Lucario' }]);

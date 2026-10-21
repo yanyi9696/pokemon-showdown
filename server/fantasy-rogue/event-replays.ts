@@ -1,4 +1,5 @@
 import { EXPEDITION_OVERVIEWS } from './expedition-text';
+import { ACTIVITY_NAMES, ACTIVITY_OPENINGS, ACTIVITY_OVERVIEWS, type ActivityID } from './journey-activity-data';
 import { EVENT_NAMES, EVENT_TEXT as text, eventOpening, type EventID } from './event-text';
 import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
 import { HONEYMOON_REGIONS } from './honeymoon';
@@ -6,6 +7,7 @@ import { POLICE_REGIONS } from './police-data';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	...ACTIVITY_OVERVIEWS,
 	greninjatraining: '携带幻想甲贺忍蛙并保留另一位能出战的伙伴时，可在森林遇到小智版甲贺忍蛙。派伙伴离队修行；至少 5 层后，在事件区域寻找归来的它们。',
 	greninjareturn: '迎回原先派出的幻想甲贺忍蛙，提升两次事件实际间隔的层数所对应的等级（最高 100 级）。获得智蛙 Z，并解锁 Z 招式；携带它可在登场时切换小智版形态。',
 	travellermeeting: '事件与遭遇区域均可能遇到。与带立绘的训练家交谈，根据回应收获小礼物、展开切磋或接受常驻同行邀请。同行共用两个名额；常驻同行累计听从 15 次偏好选择可获专属赠礼。',
@@ -38,6 +40,14 @@ export const EVENT_OVERVIEWS: Record<EventID, string> = {
 
 /** A dialogue graph only: no RNG, account access, combat calls, or reward commands. */
 export function eventReplay(id: EventID) {
+	if (id in ACTIVITY_NAMES) return { title: ACTIVITY_NAMES[id as ActivityID], start: 'start', pages: {
+		start: { text: ACTIVITY_OPENINGS[id as ActivityID], options: [{ label: '了解互动与完成条件', next: 'play' }, { label: '回顾告别', next: 'leave' }] },
+		play: { text: [ACTIVITY_OVERVIEWS[id as ActivityID]], options: [{ label: '回顾完成后的道别', next: 'end' }, { label: '回顾未完成的结果', next: 'unfinished' }],
+			battleSkipped: ['battlemetro', 'lostescort', 'repelwave', 'evolutiondojo', 'duskbreeder', 'kubfumaster', 'kubfuscroll', 'pokeflute'].includes(id) },
+		end: { text: ['你把这一段相遇和伙伴的成长记在手册中，准备继续上路。'], options: [] },
+		unfinished: { text: ['这次没有完成全部约定。已经发生的消耗与实际对战经验照常保留；尚未取得的额外奖励不会发放。对方请你先照顾好伙伴，期待下次再试。'], options: [] },
+		leave: { text: ['你向对方道别，约好以后有机会再来。'], options: [] },
+	} };
 	const pages: Record<string, ReplayPage> = {};
 	const page = (key: string, paragraphs: string[], options: [string, string][] = [], battleSkipped = false) => {
 		pages[key] = { text: paragraphs, options: options.map(([label, next]) => ({ label, next })), battleSkipped };

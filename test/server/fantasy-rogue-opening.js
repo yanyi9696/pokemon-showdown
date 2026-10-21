@@ -152,6 +152,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		}
 		assert.equal(run.blessings.levels, 30); assert.equal(run.blessings.bossLevels, 50);
 		for (const kind of ['wild', 'elite', 'event', 'encounter', 'boss']) {
+			run.floor = 100; // Gym floor: this assertion isolates the level surcharge from Fantasy-elite escorts.
 			run.node = { kind, encounters: [{ team: [set('Bulbasaur', 'Overgrow', 90)] }] };
 			prepareBlessingEncounter(run, () => 0); prepareBlessingEncounter(run, () => 0);
 			const encounter = run.node.encounters[0], cost = kind === 'boss' ? 50 : 30;

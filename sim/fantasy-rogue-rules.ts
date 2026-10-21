@@ -18,10 +18,21 @@ const effortAliases: Record<string, string> = {
 export function rogueStarterSpecies(name: string) {
 	const dex = Dex.mod('gen9');
 	let species = dex.species.get(name);
+	if (!species.exists) {
+		const custom = Dex.mod('gen9fantasy').species.get(name);
+		species = dex.species.get(custom.name.replace(/-Fantasy/g, ''));
+		if (!species.exists) species = dex.species.get(custom.baseSpecies.replace(/-Fantasy/g, ''));
+	}
 	for (let depth = 0; depth < 8; depth++) {
-		if (species.id === 'melmetal') species = dex.species.get('Meltan');
+		if (species.forme.endsWith('Totem')) species = dex.species.get(species.name.replace(/-Totem$/, ''));
+		else if (species.id === 'melmetal') species = dex.species.get('Meltan');
 		else if (species.prevo) species = dex.species.get(species.prevo);
-		else if (species.battleOnly || species.changesFrom || species.id === 'ursalunabloodmoon') {
+		else if (species.name !== species.baseSpecies && dex.species.get(species.baseSpecies).prevo) {
+			species = dex.species.get(species.baseSpecies);
+		} else if (species.name !== species.baseSpecies &&
+			(['Pikachu', 'Pichu', 'Greninja', 'Floette', 'Pumpkaboo', 'Magearna', 'Zarude', 'Eternatus'].includes(species.baseSpecies))) {
+			species = dex.species.get(species.baseSpecies);
+		} else if (species.battleOnly || species.changesFrom || species.id === 'ursalunabloodmoon') {
 			species = dex.species.get(species.changesFrom || species.baseSpecies);
 		} else break;
 	}

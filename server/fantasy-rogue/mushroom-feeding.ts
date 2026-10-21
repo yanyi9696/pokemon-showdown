@@ -10,6 +10,26 @@ export const MUSHROOM_FOOD = {
 	bigmushroom: { kind: 'defense', amount: 150, name: '大蘑菇', effect: '双防' },
 	balmmushroom: { kind: 'balanced', amount: 300, name: '芳香蘑菇', effect: '双攻、双防' },
 } as const;
+function feedingAmount(training: {offense: number, defense: number}, item: keyof typeof MUSHROOM_FOOD, count: number) {
+	const food = MUSHROOM_FOOD[item], total = training.offense + training.defense, axes = food.kind === 'balanced' ? 2 : 1;
+	const after = 2000 * (((1 + total / 2000) ** 1.5 + 1.5 * count * food.amount * axes / 2000) ** (2 / 3) - 1);
+	return (after - total) / axes;
+}
+/** Preview all current stock in the same small/big/balm order, with the real diminishing-return formula. */
+export function mushroomPayoffs(run: RogueRun) {
+	if (!ownsBlessing(run.blessings, 'mushroomsynthesis')) return [];
+	return run.team.filter(mon => !mon.egg && mushroomSpecies(mon.set.species)).map(mon => {
+		const before = mon.mushroomTraining || {offense: 0, defense: 0}, next = {...before};
+		for (const item of Object.keys(MUSHROOM_FOOD) as (keyof typeof MUSHROOM_FOOD)[]) {
+			const count = run.bag[item] || 0;
+			if (count <= 0) continue;
+			const amount = feedingAmount(next, item, count), kind = MUSHROOM_FOOD[item].kind;
+			if (kind !== 'defense') next.offense += amount;
+			if (kind !== 'offense') next.defense += amount;
+		}
+		return {member: mon.id, species: mon.set.species, offense: next.offense - before.offense, defense: next.defense - before.defense};
+	});
+}
 export function mushroomGift(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom) {
 	const pool = run.floor < 50 ? ['Paras', 'Paras', 'Morelull', 'Morelull', 'Shroomish', 'Foongus'] :
 		run.floor < 100 ? ['Foongus', 'Foongus', 'Breloom', 'Breloom', 'Parasect', 'Shiinotic'] :
@@ -32,11 +52,9 @@ export function feedMushroom(run: RogueRun, member: string, item: string, count:
 	}
 	const keys = food.kind === 'balanced' ? ['offense', 'defense'] as const : [food.kind];
 	const before = mon.mushroomTraining || { offense: 0, defense: 0 };
-	const total = before.offense + before.defense;
 	// Integrating the decreasing marginal rate makes 10 at once identical to ten single feeds.
-	const after = 2000 * (((1 + total / 2000) ** 1.5 + 1.5 * count * food.amount * keys.length / 2000) ** (2 / 3) - 1);
-	const amount = (after - total) / keys.length;
-	if (!Number.isFinite(after) || amount <= 0) throw new Error('投喂数量超出可计算范围。');
+	const amount = feedingAmount(before, item as keyof typeof MUSHROOM_FOOD, count);
+	if (!Number.isFinite(amount) || amount <= 0) throw new Error('投喂数量超出可计算范围。');
 	run.bag[item] -= count;
 	mon.mushroomTraining = { ...before };
 	for (const key of keys) mon.mushroomTraining[key] += amount;

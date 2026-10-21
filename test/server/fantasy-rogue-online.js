@@ -92,6 +92,35 @@ describe('Fantasy Rogue real rooms', function () {
 		assert.equal(account().run.team[0].id, initial.team[0].id);
 		assert.equal(account().run.encounter, initial.encounter + 1);
 	});
+	it('packs only the selected Kubfu through the production manager and retains the unplayed reserve after the scroll trial', async () => {
+		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		const kubfu = createRoguePokemon(set('Kubfu', 'Inner Focus', 100, ['Drain Punch']), stats(0));
+		const reserve = createRoguePokemon(set('Pikachu', 'Static', 50, ['Thunderbolt']), stats(0)); reserve.hp--; reserve.pp[0].pp--;
+		const {makeEncounterSet} = require('../../dist/server/fantasy-rogue/encounter-sets');
+		store.change(user.id, a => {
+			const r = a.run; r.team = [reserve, kubfu]; r.phase = 'ready'; r.encounter = 0;
+			r.node = {id: 'trial', kind: 'event', name: '卷轴前的独自修行', noHealing: true, reward: {money: 0, items: {}},
+				event: {id: 'kubfuscroll', stage: 'battle', key: 'trial', activity: {solo: kubfu.id, member: kubfu.id, target: 'Urshifu', choice: 'dark'}},
+				encounters: [{name: '守护者', style: 'balanced', catchable: false, fixedLevels: true,
+					trainer: {id: 'scrollguardian', name: '卷轴守护者', avatar: 'blackbelt', role: 'traveller'},
+					team: ['Poochyena', 'Houndour', 'Murkrow'].map(n => makeEncounterSet(n, 35))}]};
+		});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p2?.request.isWait === true, 'trial AI preview');
+		const preview = JSON.parse(room.battle.p1.request.request);
+		assert.equal(preview.side.pokemon.length, 1); assert(preview.side.pokemon[0].details.startsWith('Kubfu'));
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active, 'trial first move');
+		for (let i = 0; i < 12 && !room.battle.ended; i++) {
+			const rqid = room.battle.p1.request.rqid; room.battle.choose(user, `default|${rqid}`);
+			await until(() => room.battle.ended || room.battle.p1.request.rqid > rqid, 'trial turn');
+		}
+		await until(() => room.battle.ended && !account().run.battle, 'trial settlement');
+		assert.equal(account().run.team.length, 2);
+		assert.equal(account().run.team.find(p => p.id === kubfu.id).set.species, 'Urshifu');
+		const retained = account().run.team.find(p => p.id === reserve.id);
+		assert.equal(retained.hp, reserve.hp); assert.equal(retained.pp[0].pp, reserve.pp[0].pp);
+	});
 	it('delivers king succession through real room requests and resumes the native replacement choice', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {

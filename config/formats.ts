@@ -19,6 +19,7 @@ The column value will be ignored for repeat sections.
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
 import { drainPureRobe } from '../sim/fantasy-rogue-awakening';
+import { recordEvolutionHit, resetEvolutionDamageOnFaint } from '../sim/rogue-evolution-progress';
 import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, startRogueArea } from '../sim/fantasy-rogue';
 import { isRogueBoss, megaRogueBoss } from '../sim/rogue-bosses';
 import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
@@ -42,6 +43,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
+			recordEvolutionHit(damage, target, source, move);
 			blessingHit(damage, target, source, move);
 			if (this.fantasyRogue?.spirit?.id === 'yveltal' && source.side.id === 'p1' &&
 				!source.isAlly(target) && source.hp > 0 && damage > 0) {
@@ -65,8 +67,11 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				this.fantasyRogue?.boss?.kind === 'arceus' ||
 				this.fantasyRogue?.boss?.kind === 'summit' && pokemon.baseSpecies.name.includes('Mewtwo'))) pokemon.trapped = true;
 		},
-		onDragOut(pokemon) { if (isRogueBoss(pokemon) && pokemon.baseSpecies.name.includes('Mewtwo')) return false; },
-		onFaint(pokemon, source) { blessingKO(this, pokemon, source); recordRogueDefeat(this, pokemon, false, source); },
+		onDragOut(pokemon) {
+			if (pokemon.side.id === 'p2' && this.fantasyRogue?.escortCount ||
+				isRogueBoss(pokemon) && pokemon.baseSpecies.name.includes('Mewtwo')) return false;
+		},
+		onFaint(pokemon, source) { resetEvolutionDamageOnFaint(pokemon); blessingKO(this, pokemon, source); recordRogueDefeat(this, pokemon, false, source); },
 		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},
 	{

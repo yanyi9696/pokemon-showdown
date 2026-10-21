@@ -25,8 +25,9 @@ describe('Fantasy Rogue boss support revision', () => {
 		it(`uses the ${tier} card tier at floor ${floor}`, () => assert.equal(mentorTier(floor), tier));
 	}
 	for (const [kind, offense, defense, speed] of [['attack', 1.8, 1.4, 1], ['guard', 1.4, 1.9, 1], ['balanced', 1.6, 1.6, 1.3]]) {
-		it(`combines ${kind} gym support with permanent training and exposes the same values privately`, () => {
-			const battle = fight(kind), baseline = fight(undefined), untrained = fight(undefined, 20, false);
+		for (const floor of [10, 20, 30, 175]) it(`combines ${kind} support at floor ${floor} with training and exposes gym-strength values privately`, () => {
+			assert.deepEqual(mentorCardAtFloor(kind, floor), mentorCardAtFloor(kind, 20));
+			const battle = fight(kind, floor), baseline = fight(undefined, floor), untrained = fight(undefined, floor, false);
 			try {
 				const own = battle.p1.active[0], foe = battle.p2.active[0], base = baseline.p1.active[0];
 				assert.equal(own.storedStats.atk, Math.floor(untrained.p1.active[0].storedStats.atk * 1.08));

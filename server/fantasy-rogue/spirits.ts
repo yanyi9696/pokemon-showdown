@@ -92,7 +92,7 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 			if (encounter.catchable && !set.shiny) {
 				set.shiny = random(1000) < (run.spirit === 'hooh' ? 20 : 2) + (run.startCard === 'all' ? 1 : 0);
 			}
-			if (run.spirit === 'mew' && !node.biome) {
+			if (run.spirit === 'mew' && !node.biome && !encounter.fixedLevels) {
 				const level = set.level + rogueWildLevelBonus(run.floor, run.spirit);
 				set.level = encounter.boss ? level : Math.min(100, level);
 			}

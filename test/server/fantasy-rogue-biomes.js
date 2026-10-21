@@ -86,7 +86,7 @@ describe('Fantasy Rogue ecology building blocks', () => {
 		before.set.happiness = 160;
 		assert.deepEqual(evolutionOptions(before), [{ species: 'Crobat' }], 'party friendship evolution no longer uses the wild level gap');
 		const rockruff = createRoguePokemon(makeEncounterSet('Rockruff', 25), emptyRogueStats());
-		assert.equal(evolutionOptions(rockruff).length, 3);
+		assert.deepEqual(evolutionOptions(rockruff), [{species: 'Lycanroc'}], 'party evolution uses current time and the special Own Tempo requirement');
 	});
 	it('excludes every mentioned family and major legendary from the extra pool', () => {
 		const pool = unlistedFamilies();
@@ -245,6 +245,7 @@ describe('Fantasy Rogue saved regional encounters', () => {
 		expected.blessingPrepared = true;
 		expected.encounters.forEach((encounter, i) => {
 			encounter.blessingLevels = 0;
+			encounter.blessingLevelOffsets = encounter.team.map(() => 0);
 			encounter.team.forEach((set, j) => { set.nature = selected.encounters[i].team[j].nature; });
 		});
 		assert.deepEqual(selected, expected);

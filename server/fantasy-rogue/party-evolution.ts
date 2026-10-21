@@ -4,10 +4,11 @@ import type { RogueRun } from './types';
 import { evolutionChildren, partyEvolutionLevel } from './evolution';
 import { compoundEvolutionAllowed } from '../../sim/rogue-compound';
 import { friendship, ROGUE_FRIENDSHIP_EVOLUTION, rogueTime } from './friendship';
+import { extraEvolutionRequirements, evolutionBranchAllowed, MODERN_EVOLUTION_ITEMS, type EvolutionContext } from './evolution-conditions';
 
 const dex = Dex.mod('gen9');
 export const GHOLDENGO_EVOLUTION_COINS = 80000;
-type Context = Pick<RogueRun, 'floor' | 'bag'> & Partial<Pick<RogueRun, 'blessings' | 'money'>>;
+type Context = EvolutionContext;
 export interface EvolutionRequirement {
 	text: string;
 	/** Names are translated by the same client dictionary as the party editor. */
@@ -54,7 +55,7 @@ function friendshipRequirements(mon: RoguePokemon, child: Species, floor: number
 
 /** A single source drives the condition display and the server's evolution gate. */
 export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1, bag: {} }): PartyEvolution[] {
-	return evolutionChildren(mon.set.species).map(child => {
+	return evolutionChildren(mon.set.species).filter(child => evolutionBranchAllowed(mon, child)).map(child => {
 		const conditions: EvolutionRequirement[] = [];
 		if (!compoundEvolutionAllowed(mon, child.name)) conditions.push({
 			text: '五号化合物已锁定其他进化方向', met: false,
@@ -78,21 +79,17 @@ export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1
 			item = 'leaderscrest';
 		} else {
 			const level = partyEvolutionLevel(child.name);
-			conditions.push({ text: `等级达到 Lv.${level}${child.evoLevel ? '' : '（塔内特殊进化等级）'}`, met: mon.set.level >= level });
+			if (child.evoLevel) conditions.push({ text: `等级达到 Lv.${level}`, met: mon.set.level >= level });
 			conditions.push(...genderRequirement(mon, child));
 			if (child.evoType === 'useItem') item = toID(child.evoItem || (child.id === 'kleavor' ? 'Black Augurite' : ''));
+			item = MODERN_EVOLUTION_ITEMS[child.id] || item;
+			conditions.push(...extraEvolutionRequirements(mon, child, context));
 			if (child.evoType === 'trade') item = 'linkingcord';
 			if (['trade', 'levelHold'].includes(child.evoType || '') && child.evoItem) {
 				heldItem = toID(child.evoItem);
 				conditions.push({
 					text: '携带（进化后消耗）', name: dex.items.get(heldItem).name, met: toID(mon.set.item) === heldItem,
 				});
-			}
-			if (child.evoType === 'levelHold') {
-				if (child.evoCondition === 'during the day') {
-					conditions.push({ text: '白天、黄昏或黎明', met: rogueTime(context.floor) !== 'night' });
-				}
-				if (child.evoCondition === 'at night') conditions.push({ text: '夜晚', met: rogueTime(context.floor) === 'night' });
 			}
 		}
 		if (item) conditions.push({

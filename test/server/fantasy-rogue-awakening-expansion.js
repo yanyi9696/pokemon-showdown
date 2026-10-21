@@ -297,7 +297,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
   const preview = rogueCodex(account, 'events', true).entries;
   for (const id of ['kieran', 'carmine', 'penny', 'giacomo', 'mela', 'atticus', 'ortega', 'eri', 'archie', 'hiker']) assert(preview.some(e => e.portrait === id && e.unlocked), id);
   assert.equal(preview.filter(e => e.category === 'adventure').length, 96); assert.equal(JSON.stringify(account), before);
-  assert(rogueCodex(account, 'events').entries.every(e => !e.unlocked));
+		assert(rogueCodex(account, 'events').entries.filter(e => e.category !== 'ecology').every(e => !e.unlocked));
   account.run = run(20); account.run.phase = 'story'; account.run.story = {stage: 'interlude', page: 0};
   account.run.dialogue = {pages: [{portrait: 'carmine'}, {portrait: 'penny'}]}; recordRogueDiscoveries(account);
   assert(account.discoveries.trainers.includes('carmine')); assert(!account.discoveries.trainers.includes('penny'));

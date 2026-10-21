@@ -110,13 +110,16 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 					crypto.randomInt = max => {
 						if (max === 256) return 128; // Gender is resolved once, before saving the encounter.
 						if (max === 10000 || max === 2) return 0; // Independently persisted loot kind / count.
+						if (max === 100) return 99; // The next floor independently rolls weather and terrain.
+						if (max === 32) return 0; // Escort IVs.
+						if (max !== pool.candidates.length) return 0; // Same-type escort selection.
 						assert.equal(max, pool.candidates.length); draws++; return index;
 					};
 					restBefore(Number(floor));
 					const request = { id: crypto.randomUUID(), revision: account().revision, action: 'continue' };
 					engine.command(user, request);
 					const selected = account().run.node;
-					assert.equal(toID(selected.encounters[0].team[0].species), toID(pool.candidates[index].species));
+					assert.equal(toID(selected.encounters[0].team[2].species), toID(pool.candidates[index].species));
 					assert(['M', 'F', 'N'].includes(selected.encounters[0].team[0].gender));
 					assert(!selected.encounters[0].candidates);
 					engine.command(user, request);

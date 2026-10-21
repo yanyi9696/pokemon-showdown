@@ -173,6 +173,10 @@ export function chooseServiceOption(account: RogueAccount, run: RogueRun, conten
 	if (event.id === 'travel') {
 		if (action === 'postcard') {
 			s.region = member as Postcard; s.step = 'postcard';
+			for (const mon of run.team) if (!mon.egg) {
+				const progress = mon.evolutionProgress ||= {}, stamp = `region:${s.region}`;
+				progress.scenes = [...new Set([...(progress.scenes || []), stamp])];
+			}
 		} else if (choice === 'enter') s.step = 'paths';
 		else if (choice === 'back') s.step = s.step === 'postcard' ? '' : 'professor';
 		else if (choice === 'road') {

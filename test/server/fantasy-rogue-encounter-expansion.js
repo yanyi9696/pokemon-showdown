@@ -27,13 +27,13 @@ const runFor = species => ({ floor: 100, phase: 'choose', team: [member(species)
 
 describe('Fantasy Rogue continuous encounters and exclusive equipment', function () {
 	this.timeout(15000);
-	it('creates a single 3/4-member pack with three loot rolls and stable area weather', () => {
+	it('creates a single 3/4-member pack with three loot rolls and leaves weather to the floor', () => {
 		for (const extra of [false, true]) {
 			const [route] = createBiomeRoutes(45, [node('wild')], undefined, max => extra ? 0 : Math.min(1, max - 1));
 			assert.equal(route.encounters.length, 1);
 			assert.equal(route.encounters[0].team.length, extra ? 4 : 3);
 			assert.equal(route.encounters[0].wildPack.lootRolls, 3);
-			assert(route.encounters[0].environment);
+			assert(!route.encounters[0].environment);
 			const old = { ...node('wild'), encounters: Array.from({ length: 3 }, () => ({ team: [] })) };
 			const originalLoot = max => max === 100 ? 99 : 0;
 			prepareEconomy(old, 45, originalLoot); prepareEconomy(route, 45, originalLoot);

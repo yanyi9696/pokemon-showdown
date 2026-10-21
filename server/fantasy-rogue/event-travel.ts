@@ -49,7 +49,7 @@ function converted(run: RogueRun, original: RoguePokemon, target: string) {
 	const slot = Object.entries(old.abilities).find(([, name]) => toID(name) === toID(mon.set.ability))?.[0] || '0';
 	mon.set.species = next.name;
 	if (!mon.set.name || mon.set.name === old.name) mon.set.name = next.name;
-	mon.set.ability = Object.values(next.abilities).includes(mon.set.ability) ? mon.set.ability :
+	mon.set.ability = Object.values(next.abilities).some(ability => toID(ability) === toID(mon.set.ability)) ? mon.set.ability :
 		next.abilities[slot as '0' | '1' | 'H'] || next.abilities[0];
 	mon.abilityPool = [{ id: toID(mon.set.ability), hidden: toID(next.abilities.H) === toID(mon.set.ability) }];
 	clearIllegalMoves(mon, legal);

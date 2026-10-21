@@ -1,3 +1,4 @@
+import { prepareFloorEnvironment } from './floor-environment';
 import { beginRival, rivalRoutes, rivalActive, rivalTeam, expireRival, activeRivalTraveller } from './rivals';
 import { normalizeTravellers, chooseCompanionInvitation, socialCompanionCommand } from './travellers';
 import { companionOptions } from './companions';
@@ -16,6 +17,7 @@ import { feedMushroom } from './mushroom-feeding';
 import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards, poppyRewardPickup, recordCompanionPreference } from './companions';
 import { COMPANIONS, companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
+import { POWER_TRAINING_STATS } from '../../sim/rogue-pets';
 import { eventView } from './events';
 import { migrateGodrobeGift } from './blessings';
 import { buyGrowth, syncGrowthParty, grantMushroomGrowth, grantJourneyGrowth } from './growth';
@@ -241,6 +243,7 @@ export class RogueEngine {
 		}
 	}
 	private enterFloor(run: RogueRun) {
+		if (this.content?.biomeEncounters) prepareFloorEnvironment(run, this.random);
 		if (run.pendingSpiritGift) grantSpiritGift(run, this.configured(), this.random);
 		if (this.content?.blessings) beginBlessingFloor(run, this.random);
 		run.checkpoint = inventory(run);
@@ -400,7 +403,7 @@ export class RogueEngine {
 		if (this.content?.blessings) {
 			prepareBlessingEncounter(shadow, this.random);
 			for (const encounter of node.encounters) {
-				for (const set of encounter.team) set.level -= encounter.blessingLevels || 0;
+				for (const [index, set] of encounter.team.entries()) set.level -= encounter.blessingLevelOffsets?.[index] ?? encounter.blessingLevels ?? 0;
 				delete encounter.blessingLevels;
 			}
 			delete node.blessingPrepared;
@@ -421,6 +424,10 @@ export class RogueEngine {
 		}
 		if (expireRival(run, run.floor + 1)) { this.presentNarrative(run); return; }
 		run.floor++;
+		for (const mon of run.team) if (!mon.egg) {
+			const progress = mon.evolutionProgress ||= {};
+			if (progress.lastFloor !== run.floor) { progress.followed = (progress.followed || 0) + 1; progress.lastFloor = run.floor; }
+		}
 		hatchEggs(account, run, this.configured());
 		this.enterFloor(run);
 		deliverCompanionPickup(run, this.random);
@@ -761,7 +768,7 @@ export class RogueEngine {
 			requireRule(run.preview?.stage !== 'result' || ['previewresult', 'abandon'].includes(command.action),
 				'请先接受预演结果，或选择亲自挑战。');
 			if (['blessing', 'blessingrefresh', 'blessingreward', 'fantasize', 'meltanevolve',
-				'swordreward', 'exchangeshards', 'settera', 'inheritrobe', 'learnbonus'].includes(command.action)) {
+				'swordreward', 'exchangeshards', 'settera', 'inheritrobe', 'learnbonus', 'catability'].includes(command.action)) {
 				requireRule(this.content?.blessings || (command.action === 'blessingreward' && run.blessings?.beforeGym),
 					'祝福系统尚未开放。');
 				handleBlessingCommand(account, run, this.configured(), command, this.random);
@@ -942,6 +949,9 @@ export class RogueEngine {
 					run.phase = 'ready';
 				} else if (this.beginBossDialogue(run)) break;
 				requireRule(run.phase === 'ready' && run.team.some(mon => mon.hp > 0), '当前不能进入战斗，请先复活至少一名队员。');
+				if (run.node?.event?.activity?.solo) requireRule(run.team.some(mon =>
+					mon.id === run.node!.event!.activity!.solo && !mon.egg && mon.hp > 0 && toID(mon.set.species) === 'kubfu' && mon.set.level >= 35),
+					'请把选中的 Lv.35 以上熊徒弟带回队伍并恢复健康；卷轴试炼只允许它独自出战。');
 				if (this.content?.blessings) syncBlessingParty(run);
 				requireRule(!dragonKingActive(run.blessings) || !run.blessings?.dragonKing || run.blessings.dragonKing.ability ||
 					!dragonKingAbilityOptions(run.team.find(mon => mon.id === run.blessings!.dragonKing!.member)!, run.team, run.blessings).length,
@@ -1176,7 +1186,9 @@ export class RogueEngine {
 			cooperative: encounter.cooperative && { opponentOffset: Math.ceil(encounter.team.length / 2) },
 			boss: encounter.boss && structuredClone(encounter.boss),
 			wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',
-			environment: encounter.environment && { ...encounter.environment },
+			escortCount: encounter.escortCount,
+			environment: run.environment || encounter.environment ? { ...run.environment, ...encounter.environment,
+				name: encounter.environment?.name || run.environment?.name || '天气平稳' } : undefined,
 			mentorCard: run.node!.kind === 'boss' && run.mentorCard?.floor === run.floor ? run.mentorCard.kind : undefined,
 			mentorTier: run.node!.kind === 'boss' ? mentorTier(run.floor) : undefined,
 			fishingElite: run.node!.event?.id === 'fishing',
@@ -1186,13 +1198,15 @@ export class RogueEngine {
 				dragonKing: run.blessings.dragonKing,
 				companions: structuredClone(run.blessings.companions),
 				companionZ: run.blessings.companionZ,
+				catAbilities: structuredClone(run.blessings.catAbilities),
 			}),
 			blessingDefeated: run.blessings?.defeated.slice(),
 			blessingPsychicLosses: run.blessings?.psychicLosses?.slice(),
 			...(run.spirit ? { spirit: { id: run.spirit, floor: run.floor, hazards: encounter.spiritHazards,
 				money: run.spirit === 'gimmighoul' ? run.money : undefined } } : {}),
 			opponentStars: encounter.stars && [...encounter.stars],
-			encounterId: run.battle.encounterId, team: structuredClone(run.team.filter(mon => !mon.egg)), boosts: { ...run.boosts }, bag: { ...run.bag },
+			encounterId: run.battle.encounterId, team: structuredClone(run.team.filter(mon => !mon.egg &&
+				(!run.node!.event?.activity?.solo || mon.id === run.node!.event.activity.solo))), boosts: { ...run.boosts }, bag: { ...run.bag },
 			catchable: encounter.catchable || !!(run.blessings?.owned.some(entry => entry.family === 'rocketcatch') &&
 				run.node!.kind !== 'boss' && !run.node!.regiBoss &&
 				!['gym', 'elitefour', 'champion'].includes(encounter.trainer?.role || '')),
@@ -1271,6 +1285,10 @@ export class RogueEngine {
 		for (const captured of captures) this.recordCatch(account, run, captured);
 		const memoryBattle = run.node?.event?.id === 'travel' && !!run.node.event.memory;
 		const previousTeam = run.team;
+		if (run.node?.event?.activity) {
+			run.node.event.activity.lastTurns = result.turns;
+			run.node.event.activity.allySurvived = result.allySurvived;
+		}
 		const previousItems = new Map(run.team.map(mon => [mon.id, toID(mon.set.item)]));
 		delete run.battle;
 		// run.team is the saved battle-start party, independent of simulator snapshots.
@@ -1290,6 +1308,7 @@ export class RogueEngine {
 			const joined = run.team.filter(mon => !previousTeam.some(old => old.id === mon.id));
 			run.team = [...previousTeam.map(old => old.egg ? old : run.team.find(mon => mon.id === old.id)!).filter(Boolean), ...joined];
 		}
+		if (run.node?.event?.activity?.solo) run.team = previousTeam.map(old => run.team.find(p => p.id === old.id) || old);
 		run.bag = { ...result.bag };
 		migrateRetiredBalls(run);
 		for (const mon of run.team) ensureMemberMemory(mon);
@@ -1433,6 +1452,8 @@ export class RogueEngine {
 					if (!defeated.eligible.includes(mon.id)) continue;
 					if (!defeated.captured) {
 						const yieldStats = { ...rogueEffortYield(defeated.species) };
+						const powerStat = POWER_TRAINING_STATS[toID(mon.set.item)];
+						if (powerStat) yieldStats[powerStat] += 8;
 						if (companionOwned(run.blessings, 'bea') && permanentMemberTypes(mon).includes('Fighting')) {
 							for (const stat of ROGUE_STATS) yieldStats[stat] *= 2;
 							(run.notices ||= []).push('【同行训练家 - 彩豆】格斗系伙伴的努力值翻倍，战斗经验提升 30%。');

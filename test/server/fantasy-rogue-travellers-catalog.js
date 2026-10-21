@@ -197,7 +197,7 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 		const cat = r.blessings.pending[0].pokemon; r.team.push(cat); syncBlessingParty(r);
 		assert(assignedExtraAbilities(cat, r.team, r.blessings).includes('sharpness'));
 	});
-	for (const [floor, amount] of [[21, 75], [60, 75], [100, 75], [170, 100]]) {
+	for (const [floor, amount] of [[40, 115], [60, 115], [100, 150], [170, 115]]) {
 		it(`adds ${amount / 100}% training at floor ${floor} without reducing or re-paying any existing reward`, () => {
 			const r = run(floor); r.node.kind = 'elite'; r.team[0].hp -= 7; r.team[0].pp[0].pp = 1;
 			r.lastReward = {floor, name: '获胜', money: 500, items: {expcandym: 2}, points: 0};

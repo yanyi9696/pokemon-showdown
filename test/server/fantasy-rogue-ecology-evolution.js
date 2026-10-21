@@ -113,7 +113,7 @@ describe('Fantasy Rogue ecology collection and evolution conditions', function (
 		engine.capture(user, r.battle.token, caught); assert.deepEqual(account(), saved);
 		const species = Dex.toID(caught.set.species);
 		assert.deepEqual(saved.biomeCaptures[route.biome.id], [species]);
-		const guide = rogueCodex(saved, 'guide').guide.modules.biomes;
+		const guide = rogueCodex(saved, 'events').entries.filter(e => e.category === 'ecology');
 		const here = guide.find(b => b.id === route.biome.id);
 		assert(here.pokemon.some(p => Dex.toID(p.species) === species && p.caught));
 		assert(guide.filter(b => b !== here).every(b => [...b.pokemon, ...b.visitors].every(p => !p.caught)));
@@ -124,11 +124,11 @@ describe('Fantasy Rogue ecology collection and evolution conditions', function (
 	it('does not infer ecological captures from global captures or mutate records in local preview', () => {
 		const a = account(); a.caughtSpecies = ['caterpie']; a.captures.caterpie = 10;
 		const before = JSON.stringify(a);
-		const ordinary = rogueCodex(a, 'guide').guide.modules.biomes;
+		const ordinary = rogueCodex(a, 'events').entries.filter(e => e.category === 'ecology');
 		assert.equal(ordinary.length, 14);
 		assert(ordinary.every(b => b.pokemon.length && b.visitors.length));
 		assert(ordinary.every(b => [...b.pokemon, ...b.visitors].every(p => !p.caught)));
-		assert(rogueCodex(a, 'guide', true).guide.modules.biomes.every(b => b.pokemon.every(p => p.caught)));
+		assert(rogueCodex(a, 'events', true).entries.filter(e => e.category === 'ecology').every(b => b.pokemon.every(p => p.caught)));
 		assert.equal(JSON.stringify(a), before);
 	});
 	it('uses level boundaries without losing branching or early-stage ecology icons', () => {

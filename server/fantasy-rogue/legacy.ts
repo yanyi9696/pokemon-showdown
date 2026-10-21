@@ -92,7 +92,7 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 			}),
 			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution,
 				psychic: run.blessings.psychic, dragonKing: run.blessings.dragonKing, companions: run.blessings.companions,
-				companionZ: run.blessings.companionZ }),
+				companionZ: run.blessings.companionZ, catAbilities: run.blessings.catAbilities }),
 		},
 	};
 	const cards = account.cards ||= [];
