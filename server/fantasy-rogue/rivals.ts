@@ -12,6 +12,7 @@ import { COMPANIONS } from '../../sim/rogue-companions';
 import { requestCompanion, travellingRoster } from './travellers';
 import { rivalOpeningPages, rivalConversationOptions, rivalAnswerPages, rivalChatPages, rivalChatOptions } from './rival-dialogue';
 import { rivalAffectionGain } from './rival-responses';
+import { journeyCoins } from './early-balance';
 
 export interface RivalState {
 	id: RivalID; completed: number; lastFloor: number; affection: number;
@@ -109,7 +110,7 @@ function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 	if ([1, 6, 8].includes(chapter)) healNarrativeParty(run);
 	const scale = !won ? 0.35 : [4, 6, 8].includes(chapter) ? 1.8 : 1.15;
 	const quality = chapter === 4 ? r.affection >= 6 ? 1.4 : r.affection >= 3 ? 1 : 0.7 : 1;
-	const money = Math.round((180 + run.floor * 14) * scale * quality);
+	const money = journeyCoins(run.floor, (180 + run.floor * 14) * scale * quality);
 	run.money += money;
 	const items: Record<string, number> = { [chapter >= 6 ? 'hyperpotion' : 'superpotion']: won ? 2 : 1 };
 	if (won) Object.assign(items, rewardCandies(run.floor, rewardExperience(run.floor) * scale * quality));

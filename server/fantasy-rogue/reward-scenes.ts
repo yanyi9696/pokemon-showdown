@@ -6,7 +6,9 @@ import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
 import type { RogueRandom } from './biome-pools';
 import type { RogueContent, RogueRun } from './types';
-import { CANDY_SHOP, routeCandyReward, earlyCoinMultiplier } from './early-balance';
+import {
+	CANDY_SHOP, routeCandyReward, earlyCoinMultiplier, journeyIncomeMultiplier, journeyCoins,
+} from './early-balance';
 import { convertSpiritItem } from './spirits';
 import { gainExperience } from './progression';
 import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
@@ -61,16 +63,22 @@ export function rewardCandies(floor: number, experience: number) {
 }
 
 const moneyBudgets = new Map<string, number>();
-export function rewardMoney(floor: number, enhanced = false): number {
+function baseRewardMoney(floor: number, enhanced: boolean): number {
 	const f = Math.max(1, Math.min(200, Math.floor(floor))), key = `${f}:${enhanced}`;
 	const cached = moneyBudgets.get(key);
 	if (cached !== undefined) return cached;
 	const items = rewardCandies(f, rewardExperience(f, enhanced));
 	const value = Object.entries(items).reduce((sum, [id, count]) => sum + count * CANDY_SHOP[id].price, 0);
 	// A cheaper newly unlocked candy grade must not make the coin alternative regress.
-	const coins = Math.max(100, Math.round(value * 0.8 * earlyCoinMultiplier(f) / 50) * 50, f > 1 ? rewardMoney(f - 1, enhanced) : 0);
+	// Apply late income after smoothing, so an earlier payout plateau cannot absorb the bonus.
+	const multiplier = earlyCoinMultiplier(f) / journeyIncomeMultiplier(f);
+	const coins = Math.max(100, Math.round(value * 0.8 * multiplier / 50) * 50,
+		f > 1 ? baseRewardMoney(f - 1, enhanced) : 0);
 	moneyBudgets.set(key, coins);
 	return coins;
+}
+export function rewardMoney(floor: number, enhanced = false): number {
+	return Math.round(journeyCoins(floor, baseRewardMoney(floor, enhanced)) / 50) * 50;
 }
 
 function demonstration(run: RogueRun) {

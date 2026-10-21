@@ -3,7 +3,7 @@ import type { RogueRun, RogueContent } from './types';
 import type { RogueRandom } from './biome-pools';
 import { featheredSpecies, mushroomSpecies } from './nature-collections';
 import { companionOwned, companionSource } from '../../sim/rogue-companions';
-import { candyAtFloor, eventRewardBudget } from './early-balance';
+import { candyAtFloor, eventRewardBudget, journeyCoins } from './early-balance';
 import { FOSSILS } from './economy';
 
 export interface SkiState {
@@ -124,14 +124,14 @@ export function chooseCollection(
 			finish(run, ['「这些纹路太漂亮了！」爱好者小心地将羽毛夹进册子，把 6 根能力羽毛交给了你。']);
 		} else {
 			if (!run.team.some(m => m.id === choice.slice(5) && featheredSpecies(m.set.species))) throw new Error('这位伙伴不符合羽毛观察条件。');
-			const coins = 150 + run.floor * 3; run.money += coins; give(run, 'prettyfeather', 3);
+			const coins = journeyCoins(run.floor, 150 + run.floor * 3); run.money += coins; give(run, 'prettyfeather', 3);
 			finish(run, ['爱好者认真画下羽毛的形状，连声道谢：「原来近看是这样的纹路！」', `获得 ${coins} 金币与【美丽之羽】×3。`]);
 		}
 		return;
 	}
 	if (choice.startsWith('show:')) {
 		if (!run.team.some(m => m.id === choice.slice(5) && mushroomSpecies(m.set.species))) throw new Error('请展示蘑菇宝可梦。');
-		give(run, 'tinymushroom', 3); run.money += 100 + run.floor * 2;
+		give(run, 'tinymushroom', 3); run.money += journeyCoins(run.floor, 100 + run.floor * 2);
 		(run.notices ||= []).push('收藏家赞叹着伙伴的菌伞，赠送【小蘑菇】×3 和一小笔观察谢礼。');
 	}
 	event.settled = true; run.phase = 'rest';

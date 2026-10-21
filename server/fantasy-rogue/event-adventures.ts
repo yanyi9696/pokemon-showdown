@@ -4,7 +4,7 @@ import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { drawBlessingGift, gift, giveEquipment, recordNegativeBlessingEvent } from './blessings';
 import { themedEventTeam } from './event-teams';
-import { eventRewardBudget, eventCost } from './early-balance';
+import { eventRewardBudget, eventCost, journeyCoins } from './early-balance';
 import { rebuildMember } from './progression';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
 import { offerEventFragments } from './event-fragments';
@@ -75,7 +75,7 @@ function fishingReward(account: RogueAccount, run: RogueRun, content: RogueConte
 	// The minigame supplies its own payout, including the zero-hit consolation.
 	event.trainingAidBlocked = true;
 	if (!hits) {
-		const coins = 100 + 2 * run.floor;
+		const coins = journeyCoins(run.floor, 100 + 2 * run.floor);
 		run.money += coins;
 		finish(run, ['鱼线轻飘飘地收了回来。钓鱼佬拍拍你的肩膀：「第一次嘛，正常！这个拿着，就当今天的收获。」', `获得 ${coins} 金币。`]);
 		return;

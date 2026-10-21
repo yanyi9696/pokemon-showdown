@@ -1,7 +1,9 @@
 import { captureItems } from './capture-items';
 import type { RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
-import { CANDY_SHOP, routeCandyReward, eliteTreasureBudget, encounterCoins } from './early-balance';
+import {
+	CANDY_SHOP, routeCandyReward, eliteTreasureBudget, encounterCoins, journeyCoins, LATE_INCOME_BONUS_PERCENT,
+} from './early-balance';
 
 /** Tower sale prices: 60% of the previous ordinary-shop values. */
 export const TREASURES: RogueItem[] = [
@@ -43,6 +45,15 @@ export function rollWildLoot(floor: number, random: RogueRandom): Record<string,
 		const id = TREASURES[index].id;
 		loot[id] = (loot[id] || 0) + 1;
 	}
+	// Preserve every original drop, with a 12% chance of one extra copy per item.
+	// Roll only once with the route; this raises expected sale value without repricing saved bags.
+	if (floor >= 81) {
+		for (const [id, quantity] of Object.entries(loot)) {
+			for (let n = 0; n < quantity; n++) {
+				if (random(100) < LATE_INCOME_BONUS_PERCENT) loot[id]++;
+			}
+		}
+	}
 	return loot;
 }
 
@@ -55,6 +66,7 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 	if (trainer) {
 		node.reward.items = node.kind === 'trainer' ? routeCandyReward(floor, 'trainer') : {};
 		if (node.kind === 'trainer') node.reward.money = encounterCoins(floor);
+		else node.reward.money = journeyCoins(floor, node.reward.money);
 		if (node.kind === 'trainer') diversifyBattleReward(node.reward, floor, random);
 	} else {
 		node.reward = { money: 0, items: {} };

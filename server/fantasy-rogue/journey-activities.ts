@@ -12,6 +12,7 @@ import { legalFormMoves } from './event-learning';
 import { partyEvolutions } from './party-evolution';
 import { machineMoves, premiumMachine } from './trading';
 import { changeFriendship, rogueTime } from './friendship';
+import { journeyCoins } from './early-balance';
 
 const dex = Dex.mod('gen9fantasy');
 export interface JourneyActivity {
@@ -64,7 +65,7 @@ function finish(run: RogueRun, paragraphs: string[], rewarded = false) {
 function supplies(run: RogueRun, content: RogueContent, random: RogueRandom, score = 1) {
 	normalizeBlessings(run);
 	for (const [id, count] of [['ether', 1], ['oranberry', Math.max(1, score)]] as const) giveEquipment(run, content, random, id, count);
-	run.money += 100 + 5 * run.floor;
+	run.money += journeyCoins(run.floor, 100 + 5 * run.floor);
 }
 function markScene(run: RogueRun, mon: RoguePokemon, child: string) {
 	const progress = mon.evolutionProgress ||= {};

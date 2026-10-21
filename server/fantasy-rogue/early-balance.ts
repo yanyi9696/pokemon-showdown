@@ -21,6 +21,11 @@ export const candyRewardScale = (floor: number) => floor < 30 ? 1 - Math.max(0, 
 	0.88 + Math.min(0.72, (floor - 50) * 0.0048);
 export const lateCoinMultiplier = (floor: number) => 1 + Math.min(0.45, Math.max(0, floor - 50) * 0.003);
 
+/** Extra journey income from floor 81; never apply to costs, resale prices or fixed blessing grants. */
+export const LATE_INCOME_BONUS_PERCENT = 12;
+export const journeyIncomeMultiplier = (floor: number) => floor >= 81 ? 1 + LATE_INCOME_BONUS_PERCENT / 100 : 1;
+export const journeyCoins = (floor: number, coins: number) => Math.round(coins * journeyIncomeMultiplier(floor));
+
 /** One current grade per center. No advance unlocks and no free pre-boss experience. */
 export function restCandyOffer(floor: number) {
 	const id = candyAtFloor(floor), step = Math.min(3, Math.floor((floor - CANDY_SHOP[id].floor) / 10));
@@ -43,7 +48,8 @@ export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'rew
 	return result;
 }
 // Money grows more slowly than EXP: clean victories should not finance unlimited training.
-export const earlyCoinMultiplier = (floor: number) => (1 + Math.max(0, Math.min(30, 60 - floor)) / 120) * lateCoinMultiplier(floor);
+export const earlyCoinMultiplier = (floor: number) =>
+	(1 + Math.max(0, Math.min(30, 60 - floor)) / 120) * lateCoinMultiplier(floor) * journeyIncomeMultiplier(floor);
 export const eliteTreasureBudget = (floor: number) => Math.floor((200 + 20 * floor) * 0.9 * earlyCoinMultiplier(floor) / 150) * 150;
 export const encounterCoins = (floor: number) => Math.round((700 + 45 * floor) * 0.95 * earlyCoinMultiplier(floor) / 50) * 50;
 export const eventBaseBudget = (floor: number) => (350 + 20 * floor + 0.15 * floor * floor) * 0.9;

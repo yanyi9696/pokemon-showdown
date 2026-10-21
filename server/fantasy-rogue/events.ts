@@ -21,7 +21,7 @@ import type { RogueAccount, RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { lowerToEligibleStage } from './evolution';
-import { eventRewardBudget, eventCost } from './early-balance';
+import { eventRewardBudget, eventCost, journeyIncomeMultiplier } from './early-balance';
 import { eventSpeciesPool, themedEventTeam } from './event-teams';
 import {
 	drawBlessingGift, gift, giveEquipment, normalizeBlessings, recordNegativeBlessingEvent, toolbox,
@@ -87,7 +87,7 @@ export function eventBudget(floor: number, multiplier = 1) {
 export function expectedWildLoot(floor: number) {
 	const stage = LOOT_STAGES[Math.min(4, Math.floor((floor - 1) / 40))];
 	const value = stage.weights.reduce((sum, weight, i) => sum + weight * TREASURES[i].sellPrice!, 0);
-	return (stage.min + stage.max) / 2 * value / stage.weights.reduce((a, b) => a + b, 0);
+	return (stage.min + stage.max) / 2 * value / stage.weights.reduce((a, b) => a + b, 0) * journeyIncomeMultiplier(floor);
 }
 
 /** Preserve fixed floors and the third route. Ordinary battle slots can become authored events. */

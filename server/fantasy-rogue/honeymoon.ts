@@ -4,6 +4,7 @@ import { makeEncounterSet } from './encounter-sets';
 import { lowerToEligibleStage } from './evolution';
 import { ensureMemberMemory } from './progression';
 import { eventOpening } from './event-text';
+import { journeyCoins } from './early-balance';
 
 export interface HoneymoonTrip { region: string; run: string; floor: number; returned?: boolean }
 export const HONEYMOON_FLOOR = 80;
@@ -61,7 +62,7 @@ export function honeymoonView(run: RogueRun) {
 function souvenirs(run: RogueRun, content: RogueContent) {
 	const region = regionOf(run), id = region?.gift || 'bigpearl';
 	if (content.items.some(item => item.id === id)) run.bag[id] = (run.bag[id] || 0) + 1;
-	run.money += 200 + run.floor * 3;
+	run.money += journeyCoins(run.floor, 200 + run.floor * 3);
 }
 function finishTrip(account: RogueAccount, run: RogueRun) {
 	run.honeymoon!.returned = true;
@@ -78,7 +79,7 @@ export function chooseHoneymoon(
 		if (!choice.startsWith('region:') || !HONEYMOON_REGIONS[region]) throw new Error('请选择一个旅行地区。');
 		run.honeymoon = { region, run: run.id, floor: run.floor };
 		account.honeymoon = { ...run.honeymoon };
-		run.money += 150 + run.floor * 2 + random(4) * 50;
+		run.money += journeyCoins(run.floor, 150 + run.floor * 2 + random(4) * 50);
 		if (content.items.some(item => item.id === 'superpotion')) run.bag.superpotion = (run.bag.superpotion || 0) + 1;
 		Object.assign(event, { stage: 'result', settled: true, result: [
 			`「那就去${HONEYMOON_REGIONS[region].name}吧！」他们把地图折好，将一份小小的谢礼放进你的手里。`,

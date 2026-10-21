@@ -309,7 +309,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 	it('keeps wild loot budgets inclusive of the existing drop, not paid twice', () => {
 		assert.equal(eventBudget(21, 1.15), 1100);
 		assert.equal(expectedWildLoot(1), 254.4);
-		assert.equal(expectedWildLoot(161), 4464);
+		assert.equal(expectedWildLoot(161), 4999.68);
 	});
 	it('allows catching one wild event opponent without ending a multi-opponent battle', () => {
 		enter('forest'); choose('mediate', 99); cmd('battle');

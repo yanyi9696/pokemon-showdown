@@ -45,7 +45,7 @@ describe('Fantasy Rogue economy', () => {
 			const rare = stage.weights.reduce((total, weight, j) => total + (TREASURES[j].sellPrice >= 6000 ? weight : 0), 0) / sum;
 			assert(expected > previousValue && rare > previousRare);
 			previousValue = expected; previousRare = rare;
-			assert.equal(Object.values(rollWildLoot(i * 40 + 1, () => 0)).reduce((a, b) => a + b), stage.min);
+			assert.equal(Object.values(rollWildLoot(i * 40 + 1, () => 0)).reduce((a, b) => a + b), stage.min * (i >= 2 ? 2 : 1));
 			const rareDrop = rollWildLoot(i * 40 + 40, max => max - 1);
 			assert.equal(rareDrop.bignugget, stage.max);
 		});

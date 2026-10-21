@@ -4,7 +4,7 @@ import type { RogueRun, RogueEncounter } from './types';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { lowerToEligibleStage } from './evolution';
-import { encounterCoins, routeCandyReward } from './early-balance';
+import { encounterCoins, routeCandyReward, journeyCoins } from './early-balance';
 import { dialoguePage, queueNarrative, healNarrativeParty } from './narrative';
 import { POLICE_REGIONS, STAR_BOSSES, type PoliceRegion } from './police-data';
 
@@ -52,7 +52,7 @@ function pennyAside(run: RogueRun) {
 function pay(run: RogueRun, revenge: boolean, apology = false) {
  const potion = run.floor < 30 ? 'potion' : run.floor < 100 ? 'superpotion' : 'hyperpotion';
  const items = {...routeCandyReward(run.floor, 'trainer'), [potion]: 2, revive: 1};
- const money = Math.round(encounterCoins(run.floor) * (revenge ? 1.5 : 1.25) / 50) * 50 + (apology ? 100 + run.floor * 2 : 0);
+ const money = Math.round(encounterCoins(run.floor) * (revenge ? 1.5 : 1.25) / 50) * 50 + (apology ? journeyCoins(run.floor, 100 + run.floor * 2) : 0);
  if (apology) items.superpotion = (items.superpotion || 0) + 1;
  run.money += money;
  for (const [id, count] of Object.entries(items)) run.bag[id] = (run.bag[id] || 0) + count;
