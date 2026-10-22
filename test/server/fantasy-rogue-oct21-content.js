@@ -85,14 +85,14 @@ describe('Fantasy Rogue October 21 content and progression update', function () 
 		assert(Math.abs(counts.trainer - counts.elite) / Math.max(counts.trainer, counts.elite) < .2, JSON.stringify(counts));
 	});
 	it('blocks permanent rewards before 40 and cushions the late midgame', () => {
-		for (const floor of [1, 10, 20, 21, 39, 40, 50, 80, 81, 100, 149, 150, 199]) {
+		for (const floor of [1, 10, 20, 21, 39, 40, 50, 80, 81, 100, 101, 140, 141, 149, 150, 199]) {
 			const r = run(floor); r.node.event = {settled: true};
 			grantJourneyGrowth(r, () => 0);
-			assert.equal(r.growth?.offense || 0, floor < 40 ? 0 : floor <= 80 ? 115 : floor <= 100 ? 150 : floor < 150 ? 90 : 115);
+			assert.equal(r.growth?.offense || 0, floor < 40 ? 0 : floor <= 80 ? 115 : floor <= 100 ? 175 : floor <= 140 ? 200 : 225);
 			const before = JSON.stringify(r.growth); grantJourneyGrowth(r, () => 0); assert.equal(JSON.stringify(r.growth), before);
 			r.node.rewardScene = {id: 'chest'};
 			const offer = rewardChoices(r).find(e => e.id === 'offense');
-			assert.equal(offer?.targets[0].amount || 0, floor < 40 ? 0 : floor <= 80 ? 600 : floor <= 100 ? 750 : floor < 150 ? 450 : 600);
+			assert.equal(offer?.targets[0].amount || 0, floor < 40 ? 0 : floor <= 80 ? 600 : floor <= 100 ? 900 : floor <= 140 ? 1000 : 1100);
 			if (floor < 40) {
 				grantGrowth(r, 'defense', 100); grantPersonalGrowth(r, r.team[0], 'offense', 100);
 				assert(!r.growth?.defense && !r.team[0].training?.offense);

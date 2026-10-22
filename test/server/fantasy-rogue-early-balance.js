@@ -87,21 +87,30 @@ describe('Fantasy Rogue early growth and preparation', function () {
 			assert.deepEqual(node, saved);
 		}
 	});
-	it('increases actual candy EXP smoothly through all 200 floors without jumps when grades unlock', () => {
+	it('keeps candy EXP smooth between deliberate late-support steps, with no grade-unlock windfall', () => {
 		const exp = items => Object.entries(items).reduce((sum, [id, count]) => sum + count * content.items.find(i => i.id === id).amount, 0);
 		for (const kind of ['elite', 'trainer', 'reward']) {
-			let previous = 0;
+			let previous = 0, previousNormalized = 0;
 			for (let floor = 1; floor <= 200; floor++) {
 				const items = routeCandyReward(floor, kind), value = exp(items);
 				assert(value >= previous, `${kind}, floor ${floor}`);
-				// No tier-change payout cliff beyond the floor's ordinary growth increment.
-				// Later floors now deliberately grow faster; grade unlocks still cannot create a payout cliff.
-				if (floor > 1) assert(value - previous <= 200 + 12 * floor * (kind === 'trainer' ? 1.6 : kind === 'reward' ? .2 : 1));
+				// Remove the approved 81/101/141 support steps when checking the underlying curve.
+				const support = floor <= 80 ? 1 : floor <= 100 ? 1.15 : floor <= 140 ? 1.25 : 1.35;
+				const normalized = value / support;
+				if (floor > 1) assert(normalized - previousNormalized <= 200 + 12 * floor * (kind === 'trainer' ? 1.6 : kind === 'reward' ? .2 : 1));
 				for (const id of Object.keys(items)) assert(CANDY_SHOP[id].floor <= floor);
 				previous = value;
+				previousNormalized = normalized;
 			}
 		}
 		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [100, 400, 1000, 1900, 3500]);
+		for (const [floor, elite, trainer, reward] of [
+			[80, 16900, 27000, 3400], [81, 20000, 32000, 4000],
+			[100, 33100, 52900, 6600], [101, 36800, 58900, 7400],
+			[140, 82200, 131600, 16400], [141, 90400, 144700, 18100], [200, 220700, 353100, 44100],
+		]) {
+			assert.deepEqual(['elite', 'trainer', 'reward'].map(kind => exp(routeCandyReward(floor, kind))), [elite, trainer, reward]);
+		}
 		for (let f = 1; f <= 200; f++) {
 			assert(exp(routeCandyReward(f, 'trainer')) >= exp(routeCandyReward(f, 'elite')));
 			assert(encounterCoins(f) > eliteTreasureBudget(f) + expectedWildLoot(f));

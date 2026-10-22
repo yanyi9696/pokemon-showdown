@@ -197,7 +197,7 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 		const cat = r.blessings.pending[0].pokemon; r.team.push(cat); syncBlessingParty(r);
 		assert(assignedExtraAbilities(cat, r.team, r.blessings).includes('sharpness'));
 	});
-	for (const [floor, amount] of [[40, 115], [60, 115], [100, 150], [170, 115]]) {
+	for (const [floor, amount] of [[40, 115], [60, 115], [80, 115], [81, 175], [100, 175], [101, 200], [140, 200], [141, 225], [170, 225]]) {
 		it(`adds ${amount / 100}% training at floor ${floor} without reducing or re-paying any existing reward`, () => {
 			const r = run(floor); r.node.kind = 'elite'; r.team[0].hp -= 7; r.team[0].pp[0].pp = 1;
 			r.lastReward = {floor, name: '获胜', money: 500, items: {expcandym: 2}, points: 0};
@@ -226,10 +226,12 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 		]) {
 			const r = run(); r.node.event = event; grantJourneyGrowth(r, () => 0); assert(!r.growth);
 		}
-		const r = run(180); r.journeyGrowth = {offense: 1990, defense: 2000};
-		r.growth = {offense: 5000, defense: 6000, experience: 0}; r.node.kind = 'trainer';
-		grantJourneyGrowth(r, () => 0); assert.equal(r.journeyGrowth.offense, 2000); assert.equal(r.growth.offense, 5010);
-		r.node = {...r.node, journeyGrowthResolved: false};
-		grantJourneyGrowth(r, () => 0); assert.equal(r.growth.offense, 5010);
+		for (const [floor, cap] of [[80, 2000], [81, 3500], [180, 3500]]) {
+			const r = run(floor); r.journeyGrowth = { offense: cap - 10, defense: cap };
+			r.growth = { offense: 5000, defense: 6000, experience: 0 }; r.node.kind = 'trainer';
+			grantJourneyGrowth(r, () => 0); assert.equal(r.journeyGrowth.offense, cap); assert.equal(r.growth.offense, 5010);
+			r.node = { ...r.node, journeyGrowthResolved: false };
+			grantJourneyGrowth(r, () => 0); assert.equal(r.growth.offense, 5010);
+		}
 	});
 });

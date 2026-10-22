@@ -59,7 +59,8 @@ describe('Fantasy Pressure', () => {
 	it('should charge Nature Power only once without consuming the called move', () => {
 		const attacker = create({ moves: ['naturepower', 'triattack'] });
 		battle.makeChoices('move naturepower', 'move splash');
-		assert(battle.log.some(line => line.includes('|Tri Attack|') && line.includes('[from] move: Nature Power')));
+		const calledMove = battle.dex.moves.get('triattack').name;
+		assert(battle.log.some(line => line.includes(`|${calledMove}|`) && line.includes('[from] move: Nature Power')));
 		assert.equal(used(attacker, 'naturepower'), 2);
 		assert.equal(used(attacker, 'triattack'), 0);
 	});

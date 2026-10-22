@@ -46,13 +46,15 @@ describe('Fantasy Rogue boss support revision', () => {
 			} finally {battle.destroy(); baseline.destroy(); untrained.destroy();}
 		});
 	}
-	it('packages smaller candy budgets using the confirmed grade unlocks, without EXP jumps', () => {
+	it('keeps candy budgets within the approved late-support bands and grade unlocks', () => {
 		const xp = {expcandyxs: 100, expcandys: 800, expcandym: 3000, expcandyl: 10000, expcandyxl: 30000};
 		assert.deepEqual(Object.values(CANDY_SHOP).map(x => x.floor), [1, 30, 50, 100, 150]);
 		for (let floor = 1; floor <= 200; floor++) {
 			const reward = routeCandyReward(floor, 'elite');
 			const total = Object.entries(reward).reduce((n, [id, count]) => n + count * xp[id], 0);
-			assert(total <= Math.round((200 + 3 * floor ** 2) * (floor <= 50 ? 1 : 1.6) / 100) * 100);
+			// The October 22 support raises late budgets, not the available candy grades.
+			const support = floor <= 80 ? 1 : floor <= 100 ? 1.15 : floor <= 140 ? 1.25 : 1.35;
+			assert(total <= Math.round((200 + 3 * floor ** 2) * (floor <= 50 ? 1 : 1.6) * support / 100) * 100);
 			for (const id of Object.keys(reward)) assert(CANDY_SHOP[id].floor <= floor);
 			assert(CANDY_SHOP[restCandyOffer(floor).id].floor <= floor);
 			if (floor >= 30) assert((reward.expcandyxs || 0) < 8);

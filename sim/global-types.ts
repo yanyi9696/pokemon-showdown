@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+// The build requires Node 18+, but the pinned Node 14 typings predate this API.
+// Keep the simulator declaration build independent of incidental DOM typings.
+declare function structuredClone<T>(
+	value: T, options?: { transfer?: import('worker_threads').TransferListItem[] }
+): T;
+
 type Mutable<T> = {
 	-readonly [P in keyof T]: T[P];
 };

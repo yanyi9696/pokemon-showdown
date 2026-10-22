@@ -44,9 +44,17 @@ describe('Fantasy Rogue storage and campaign', () => {
 	});
 	it('does not invent production content, accept imported teams or bypass locked starters', () => {
 		assert.throws(() => new RogueEngine(store, null).command(user, {id: randomUUID(), revision: 0, action: 'start'}), /尚未配置/);
-		assert.throws(() => cmd('start', {starters: ['mew']}), /未解锁/);
+		store.change(user, account => { account.unlocked = []; account.slots = 1; });
+		const before = state();
+		assert.throws(() => cmd('start', { starters: ['magikarp'] }), /未解锁/);
 		assert.throws(() => cmd('start', {starters: ['bulbasaur', 'magikarp']}), /栏位/);
-		assert.equal(state().revision, 0);
+		assert.deepEqual(state(), before);
+	});
+	it('still rejects a locked mythical starter when its four-slot cost is affordable', () => {
+		store.change(user, account => { account.unlocked = []; account.slots = 4; });
+		const before = state();
+		assert.throws(() => cmd('start', { starters: ['mew'] }), /未解锁/);
+		assert.deepEqual(state(), before);
 	});
 	it('finishes three encounters per wild floor, awards loot once and no growth point', () => {
 		start();

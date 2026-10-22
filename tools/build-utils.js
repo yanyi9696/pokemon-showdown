@@ -60,7 +60,6 @@ exports.transpile = decl => {
 };
 
 exports.buildDecls = () => {
-	try {
-		child_process.execSync(`node ./node_modules/typescript/bin/tsc -p sim`, { stdio: 'inherit' });
-	} catch {}
+	// Declaration errors must fail the build, just like transpilation errors.
+	child_process.execFileSync(process.execPath, ['./node_modules/typescript/bin/tsc', '-p', 'sim'], { stdio: 'inherit' });
 };

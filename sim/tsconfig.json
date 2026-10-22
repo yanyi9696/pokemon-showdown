@@ -3,6 +3,7 @@
         "skipLibCheck": true,
         "rootDir": "..",
         "lib": ["es2020"],
+        "types": ["node"],
         "emitDeclarationOnly": true,
         "outDir": "../dist",
         
@@ -21,7 +22,6 @@
         "incremental": true,
         "allowUnreachableCode": false
     },
-    "types": ["node"],
     "include": [
         "./global-types.ts",
         "./index.ts" 

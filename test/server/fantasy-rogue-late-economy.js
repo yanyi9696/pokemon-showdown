@@ -27,18 +27,21 @@ describe('Fantasy Rogue income from floor 81', function () {
 		[150, 9200, 3600, 7868.25, 12500, 2450.25],
 		[200, 13350, 5400, 13506.75, 27600, 4464],
 	];
-	it('preserves early income and raises later budgets once, allowing existing payout rounding', () => {
+	it('preserves early income and applies late income once, including the revised reward choice budgets', () => {
+		// Reward-region coins also track the larger October 22 candy budgets, including grade smoothing.
+		const supportedRewards = { 81: 2500, 100: 4750, 150: 18150, 200: 41050 };
 		for (const [floor, trainer, elite, event, reward, wild] of baseline) {
 			const scale = floor >= 81 ? 1.12 : 1;
 			const sources = [
 				[encounterCoins(floor), trainer, 50], [eliteTreasureBudget(floor), elite, 150],
-				[eventRewardBudget(floor), event, 1e-8], [rewardMoney(floor), reward, 50],
+				[eventRewardBudget(floor), event, 1e-8],
 				[expectedWildLoot(floor), wild, 1e-8],
 			];
 			for (const [actual, previous, rounding] of sources) {
 				assert(Math.abs(actual - previous * scale) <= (floor >= 81 ? rounding : 1e-8), `${floor}: ${actual} / ${previous}`);
 				if (floor >= 81) assert(actual > previous);
 			}
+			assert.equal(rewardMoney(floor), supportedRewards[floor] || reward, `reward choice at ${floor}`);
 		}
 		for (let floor = 1; floor <= 200; floor++) {
 			assert.equal(eventCost(floor), Math.round((350 + 20 * floor + 0.15 * floor * floor) * 0.9 / 50) * 50);

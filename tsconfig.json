@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "lib": ["es2020"],
+        "types": ["node"],
         "noEmit": true,
         "jsx": "react",
         "jsxFactory": "Chat.h",
@@ -23,7 +24,6 @@
         "noImplicitOverride": true,
         "useDefineForClassFields": false
     },
-    "types": ["node"],
     "exclude": [
         "/Applications/Visual Studio Code.app/Contents/Resources/app/extensions/node_modules/typescript/lib/lib.dom.d.ts",
         "./dist/**/*",

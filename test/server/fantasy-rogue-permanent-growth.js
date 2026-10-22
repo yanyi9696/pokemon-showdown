@@ -8,6 +8,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { createRoguePokemon, initializeExperience, gainExperience, evolveMember } = require('../../dist/server/fantasy-rogue/progression');
 const { syncBlessingParty } = require('../../dist/server/fantasy-rogue/blessings');
+const { blessing } = require('../../dist/sim/rogue-blessing-data');
 const { recordClear } = require('../../dist/server/fantasy-rogue/legacy');
 const { tradeKind, prepareTrade } = require('../../dist/server/fantasy-rogue/trading');
 const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
@@ -73,6 +74,30 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		assert.equal(account().run.money, before.money + money);
 		assert.equal(account().run.floor, 62);
 		assert(rogueCodex(account(), 'events').entries.find(e => e.id === `reward:${scene}`).unlocked);
+	});
+	for (const enhanced of [false, true]) it(`credits base and selected PP supplies once, with initial inventory and blessings (demonstrated=${enhanced})`, () => {
+		assert.equal(account().run.bag.ether, 6);
+		enter(141, 'reward', 'sketch');
+		store.change(user, a => {
+			a.run.blessings.owned = ['medic', 'ordinary'].map(id => ({ ...blessing(id), floor: 1 }));
+			syncBlessingParty(a.run);
+		});
+		if (enhanced) cmd('rewardchoice', { value: 'show', member: account().run.team[0].id });
+		const bag = account().run.bag;
+		const choice = { id: randomUUID(), revision: account().revision, action: 'rewardchoice', value: 'recovery' };
+		engine.command(user, choice);
+		const claimed = account();
+		assert.equal(claimed.run.node.reward.items.ether, enhanced ? 3 : 2);
+		assert.equal(claimed.run.node.reward.items.elixir, 2);
+		assert.deepEqual(claimed.run.bag, bag, 'choice prepares a receipt; it does not credit the bag yet');
+		engine.command(user, choice); assert.deepEqual(account(), claimed);
+		const finish = { id: randomUUID(), revision: account().revision, action: 'continue' };
+		engine.command(user, finish);
+		const completed = account();
+		assert.equal(completed.run.bag.ether, enhanced ? 9 : 8);
+		assert.equal(completed.run.bag.elixir, 2);
+		assert.equal(completed.run.floor, 142);
+		engine.command(user, finish); assert.deepEqual(account(), completed);
 	});
 	it('keeps base rewards available without a matching partner; recognizes stored moves and permanent type changes', () => {
 		enter(21, 'reward', 'research');

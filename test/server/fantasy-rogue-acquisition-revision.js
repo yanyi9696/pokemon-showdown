@@ -63,15 +63,26 @@ describe('Fantasy Rogue acquisition and healing revision', () => {
 	});
 	it('always attaches recovery supplies, and adds rather than overwrites a selected recovery bundle', () => {
 		const content = createPreviewContent();
-		for (const floor of [1, 29, 69, 150]) for (const enhanced of [false, true]) {
+		for (const floor of [1, 19, 20, 28, 29, 68, 69, 80, 81, 140, 141, 150]) for (const enhanced of [false, true]) {
 			const run = {floor, phase: 'reward', team: [], node: {kind: 'reward', rewardScene: {id: 'chest', key: 'supplies',
 				...(enhanced ? {demonstrated: 'partner'} : {})}}};
 			const options = rewardChoices(run); assert.equal(options[0].id, 'recovery');
+			assert.equal(options[0].items.ether, enhanced ? 2 : 1, 'selected bundle, before the base supplies');
 			chooseReward(run, content, () => 0, 'recovery');
 			assert.equal(run.node.reward.items.revive || 0, floor >= 20 || enhanced ? 2 : 0);
 			assert.equal(run.node.reward.items[floor < 29 ? 'potion' : floor < 69 ? 'superpotion' : 'hyperpotion'], (enhanced ? 6 : 4) - (floor < 20 ? 2 : 0));
-			assert.equal(run.node.reward.items.ether, enhanced ? 2 : 1);
+			assert.equal(run.node.reward.items.ether, (enhanced ? 2 : 1) + (floor > 80 ? 1 : 0), `ether at floor ${floor}`);
+			assert.equal(run.node.reward.items.elixir || 0, floor > 140 ? 2 : 0, `elixir at floor ${floor}`);
 			assert.throws(() => chooseReward(run, content, () => 0, 'recovery'));
+		}
+	});
+	it('keeps late base PP supplies when selecting money instead of the extra recovery bundle', () => {
+		const content = createPreviewContent();
+		for (const [floor, ether, elixir] of [[80, 0, 0], [81, 1, 0], [140, 1, 0], [141, 1, 1]]) {
+			const run = { floor, phase: 'reward', team: [], node: { kind: 'reward', rewardScene: { id: 'chest', key: 'base-supplies' } } };
+			chooseReward(run, content, () => 0, 'money');
+			assert.equal(run.node.reward.items.ether || 0, ether);
+			assert.equal(run.node.reward.items.elixir || 0, elixir);
 		}
 	});
 	it('uses the supplied first Onix boss loadout', () => {
