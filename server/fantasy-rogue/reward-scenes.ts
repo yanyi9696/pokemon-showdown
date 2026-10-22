@@ -1,4 +1,6 @@
 import { randomUUID } from 'crypto';
+import { dueCatchup, catchupLevels } from './late-support';
+import { personalRewardGrowth } from './growth';
 import { giveEgg, eggEventWeight } from './eggs';
 import { normalizeBlessings } from './blessings';
 import { Dex, toID } from '../../sim/dex';
@@ -10,13 +12,14 @@ import {
 	CANDY_SHOP, routeCandyReward, earlyCoinMultiplier, journeyIncomeMultiplier, journeyCoins,
 } from './early-balance';
 import { convertSpiritItem } from './spirits';
-import { gainExperience } from './progression';
+import { gainExperience, ensureMemberMemory } from './progression';
 import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { availableGrowth, grantGrowth, grantPersonalGrowth, growthPercent, PERSONAL_GROWTH_LIMIT, JOURNEY_GROWTH_START } from './growth';
 
 const dex = Dex.mod('gen9fantasy');
 const CANDIES = [['expcandyxl', 30000], ['expcandyl', 10000], ['expcandym', 3000], ['expcandys', 800], ['expcandyxs', 100]] as const;
 export const REWARD_SCENES = {
+	pprest: { name: '招式补给站', avatar: 'scientist', preference: '' },
 	catchup: { name: '每一位伙伴都跟得上', avatar: 'breeder', preference: '' },
 	breederegg: { name: '这颗蛋与你有缘', avatar: 'breeder', preference: '' },
 	chest: { name: '留给后来的人', avatar: '', preference: '' },
@@ -27,16 +30,22 @@ export const REWARD_SCENES = {
 } as const;
 export interface RewardScene {
 	id: keyof typeof REWARD_SCENES; key: string; type?: string; demonstrated?: string;
-	claimed?: boolean; result?: string;
+	claimed?: boolean; result?: string; catchupCheckpoint?: number;
 }
 
 export function prepareRewardScene(run: RogueRun, random: RogueRandom) {
 	if (run.node?.kind !== 'reward' || run.node.rewardScene) return;
 	const last = run.rewardHistory?.[run.rewardHistory.length - 1];
-	const pool = (['chest', 'chest', 'sketch', 'research', 'picnic', 'coach', 'catchup'] as const).filter(id => id !== last &&
+	const candidates: RewardScene['id'][] = ['chest', 'chest', 'sketch', 'research', 'picnic', 'coach', 'catchup'];
+	if (run.floor >= 45 && run.floor <= 59) candidates.push('catchup', 'catchup', 'catchup');
+	if (run.floor >= 81) candidates.push('pprest', 'pprest');
+	const pool = candidates.filter(id => id !== last &&
 		(id !== 'catchup' || run.team.filter(p => !p.egg && !p.fixedLevel && p.set.level < 100).length > 0));
-	const id: RewardScene['id'] = last !== 'breederegg' && random(100) < eggEventWeight(run.floor) ? 'breederegg' : pool[random(pool.length)];
+	const checkpoint = dueCatchup(run);
+	const id: RewardScene['id'] = checkpoint && run.team.some(p => !p.egg && !p.fixedLevel && p.set.level < 100) ? 'catchup' :
+		last !== 'breederegg' && random(100) < eggEventWeight(run.floor) ? 'breederegg' : pool[random(pool.length)];
 	run.node.rewardScene = { id, key: randomUUID(),
+		...(checkpoint ? { catchupCheckpoint: checkpoint } : {}),
 		...(REWARD_SCENES[id].preference ? { type: Object.keys(BLESSING_TYPES)[random(18)] } : {}) };
 	run.node.name = REWARD_SCENES[id].name;
 	// Reward scenes never inherit an encounter or pay the old supply bundle as well.
@@ -96,15 +105,17 @@ function demonstration(run: RogueRun) {
 
 export function rewardRecovery(floor: number, enhanced = false): Record<string, number> {
 	return { [floor < 29 ? 'potion' : floor < 69 ? 'superpotion' : 'hyperpotion']: (enhanced ? 3 : 2) - (floor < 20 ? 1 : 0),
-		...(floor >= 20 || enhanced ? { revive: 1 } : {}) };
+		...(floor >= 20 || enhanced ? { revive: 1 } : {}), ...(floor > 80 ? { ether: 1 } : {}), ...(floor > 140 ? { elixir: 1 } : {}) };
 }
 const baseCoins = (floor: number) => Math.round((100 + 8 * floor) * earlyCoinMultiplier(floor));
 
 export function rewardChoices(run: RogueRun) {
 	const scene = run.node?.rewardScene;
 	if (!scene || scene.claimed) return [];
+	if (scene.id === 'pprest') return [{ id: 'pprest', name: '为伙伴补足招式 PP',
+		text: '恢复全队所有已掌握招式的 PP，另赠 PP 单项小补剂 ×3 与基础补给。', items: { ether: 3 } }];
 	if (scene.id === 'catchup') return [{ id: 'catchup', name: '让落后的伙伴参加特训',
-		text: `等级最低的两位可训练伙伴各提升 ${run.floor < 81 ? 3 : 5} 级（最高 100 级），另有基础补给。` }];
+		text: `等级最低的两位可训练伙伴各提升 ${catchupLevels(run.floor)} 级（最高 100 级），另有基础补给。` }];
 	if (scene.id === 'breederegg') return [{ id: 'egg', name: '接过培育家赠送的蛋', text: '获得一颗随机宝可梦蛋，附带少量金币与回复物资。经过 5～8 层自动孵化。', items: { ether: 1 } }];
 	const enhanced = !!scene.demonstrated, experience = rewardExperience(run.floor, enhanced);
 	const items = rewardCandies(run.floor, experience);
@@ -120,7 +131,7 @@ export function rewardChoices(run: RogueRun) {
 		const label = kind === 'offense' ? '攻击、特攻' : '防御、特防';
 		const name = kind === 'offense' ? '输出训练' : '耐久训练';
 		{
-			const base = run.floor <= 80 ? 600 : run.floor <= 100 ? 750 : run.floor < 150 ? 450 : 600;
+			const base = personalRewardGrowth(run.floor);
 			const nominal = base + (enhanced ? 200 : 0);
 			const targets = run.team.map(mon => ({ member: mon.id,
 				amount: Math.max(0, Math.min(nominal, PERSONAL_GROWTH_LIMIT - (mon.training?.[kind] || 0))) })).filter(entry => entry.amount > 0);
@@ -143,6 +154,7 @@ export function rewardSceneView(run: RogueRun) {
 	if (!scene) return;
 	const info = REWARD_SCENES[scene.id], type = `【${BLESSING_TYPES[scene.type!] || ''}】`;
 	const paragraphs: Record<RewardScene['id'], string[]> = {
+		pprest: ['补给站的研究员检查着伙伴们的招式记录。', '「长途战斗最怕关键时刻使不出招式。先把 PP 补足，再带几份补剂走吧！」'],
 		catchup: ['培育家铺开训练垫，没有先看你的王牌，而是蹲到队伍后方两位伙伴身边。',
 			'「不是谁更差，只是前面的伙伴走得快了些。把它们交给我一会儿吧，下一段路，要一起跟上。」'],
 		breederegg: ['培育家将手心贴近蛋壳，仔细听了听，随后笑着望向你。', '「它一见到你就开始晃动。看来你们很有缘！带上这些培育物资，往后的旅程就拜托你照顾它了。」'],
@@ -157,7 +169,8 @@ export function rewardSceneView(run: RogueRun) {
 		quality: scene.demonstrated ? '丰厚谢礼' : run.floor < 51 ? '旅途补给' : run.floor < 100 ? '进阶补给' : run.floor < 150 ? '高级补给' : '登顶补给',
 		demonstrations: demonstration(run), choices: rewardChoices(run),
 		baseText: `每份谢礼均附回复药 ×${(scene.demonstrated ? 3 : 2) - (run.floor < 20 ? 1 : 0)}` +
-			(run.floor >= 20 || scene.demonstrated ? '、活力碎片 ×1' : '') + `，以及 ${baseCoins(run.floor)} 金币。` };
+			(run.floor >= 20 || scene.demonstrated ? '、活力碎片 ×1' : '') + (run.floor > 80 ? '、PP 单项小补剂 ×1' : '') +
+			(run.floor > 140 ? '、PP 多项小补剂 ×1' : '') + `，以及 ${baseCoins(run.floor)} 金币。` };
 }
 
 export function chooseReward(run: RogueRun, content: RogueContent, random: RogueRandom, value: string, member?: string) {
@@ -171,12 +184,16 @@ export function chooseReward(run: RogueRun, content: RogueContent, random: Rogue
 	const choice = rewardChoices(run).find(entry => entry.id === value);
 	if (!choice || choice.disabled) throw new Error('当前不能领取这项奖励。');
 	let effect = choice.text;
+	if (value === 'pprest') for (const mon of run.team.filter(p => !p.egg)) {
+		ensureMemberMemory(mon);
+		for (const slot of [...mon.pp, ...mon.moveMemory || [], ...mon.blessingPP || []]) slot.pp = slot.maxpp;
+	}
 	if (value === 'catchup') {
 		const partners = run.team.filter(p => !p.egg && !p.fixedLevel && p.set.level < 100)
 			.map((p, index) => ({ p, index })).sort((a, b) => a.p.set.level - b.p.set.level || a.index - b.index).slice(0, 2);
 		const trained: string[] = [];
 		for (const { p } of partners) {
-			const level = Math.min(100, p.set.level + (run.floor < 81 ? 3 : 5));
+			const level = Math.min(100, p.set.level + catchupLevels(run.floor));
 			const total = experienceAtLevel(rogueSpeciesData(p.set.species).growth, level);
 			gainExperience(run, p, Math.max(0, total - (p.experience ?? experienceAtLevel(rogueSpeciesData(p.set.species).growth, p.set.level))));
 			trained.push(`${p.set.species} → Lv.${p.set.level}`);
@@ -205,6 +222,7 @@ export function chooseReward(run: RogueRun, content: RogueContent, random: Rogue
 	}
 	run.node.reward = { money: baseCoins(run.floor) + (choice.money || 0), items };
 	scene.claimed = true;
+	if (scene.catchupCheckpoint) run.catchupCheckpoint = scene.catchupCheckpoint;
 	scene.result = effect;
 	(run.notices ||= []).push(effect);
 }

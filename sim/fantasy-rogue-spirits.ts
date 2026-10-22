@@ -75,7 +75,8 @@ export const ROGUE_SPIRITS = [
 ];
 export const activeRogueSpirits = () => ROGUE_SPIRITS.filter(spirit => spirit.enabled);
 export const rogueSpirit = (id?: string) => ROGUE_SPIRITS.find(spirit => spirit.id === id);
-export const roguePartyLimit = (id?: string) => id === 'regigigas' ? 3 : 6;
+export const roguePartyLimit = (id?: string, blessings?: import('./rogue-blessing-data').BlessingEffects) =>
+	blessings?.owned.some(b => b.family === 'sololeveling') ? 1 : id === 'regigigas' ? 3 : 6;
 export const rogueStarScale = (stars = 1) => [1, 1, 1.2, 1.5, 2, 3][Math.max(1, Math.min(5, stars))];
 export const rogueWildLevelBonus = (floor: number, spirit?: string) =>
 	spirit === 'mew' ? Math.max(1, Math.min(5, Math.ceil(floor / 40))) : 0;

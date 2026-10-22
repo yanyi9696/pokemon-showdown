@@ -30,9 +30,12 @@ export function addPsychicCharge(current: number, amount: number) {
 	return Math.round((current + ordinary + (amount - ordinary) * 0.05) * 100) / 100;
 }
 export interface RogueStatModifiers {
+	fusion?: { baseStats: StatsTable, types: string[] };
 	compound?: boolean;
 	compoundBonus?: Partial<StatsTable>;
 	training?: Partial<StatsTable>;
+	teamBlessings?: Partial<StatsTable>;
+	firstType?: string;
 	nature?: string;
 	emblem?: string;
 	smallFinal?: boolean; swap?: boolean; stats?: Partial<StatsTable>; hp?: number;
@@ -148,6 +151,13 @@ function typed(tier: BlessingTier, family: string, title: (label: string) => str
 	}
 }
 add('silver', 'shopraid', '零元购', '可挑战商店守卫，获胜后随机获得店内三种商品，各 1 件。挑战结束后商店关闭。');
+add('silver', 'shoppingupgrade', '消费升级', '有等级分档的商店提前开放下一档商品，商品按原价出售。休整商店与所有交易区域累计每消费 3000 金币，全队每只伙伴获得其当前等级升一级所需经验的 25%；可重复领取，出售与 HP 支付不计入消费。');
+add('prismatic', 'ghidorah', '王者基多拉', '队伍中最强的三首恶龙第一属性变为？？？，第二属性保留为龙，战斗中覆盖金色光晕。使出恶、电、火属性招式前，第一属性切换为对应属性。额外拥有恶、电、火的抗性与超能力免疫，忽略这三种属性带来的弱点，保留龙属性自身的弱点；抗性按倍率叠加，不设下限。仅队伍内有三首恶龙时出现，幻想形态同样符合。');
+add('gold', 'youngprodigy', '虽然大器晚年成，卓荦全凭弱冠争', '自选一只大器晚成谱系的幼年伙伴。所有尚未最终进化的大器晚成伙伴战斗经验 ×2。由本祝福赠送的那只伙伴达到最终进化后，本祝福升级为【大方无隅，大器晚成，大音希声，大象无形】，不额外增加对手等级。仅第 1 层出现。', { floors: [1] });
+add('prismatic', 'latebloom', '大方无隅，大器晚成，大音希声，大象无形', '队伍中的大器晚成伙伴至少为二星，后来入队的同样生效。烈咬陆鲨／戟脊龙谱系提供攻击；巨金怪／杖尾鳞甲龙谱系提供防御；暴飞龙／三首恶龙谱系提供特攻；班基拉斯／黏美龙（含洗翠）谱系提供特防；快龙／多龙巴鲁托谱系提供速度。幼年形态也计入。队内有 1／2／3／4／5／6 个不同谱系时，每种已激活的能力全队 +6%／10%／14%／18%／22%／26%；同一能力不重复叠加，普通、地区与幻想形态按同一谱系计数。');
+const emissaryNames: Record<string, string> = { Flying: '风', Ground: '地', Rock: '岩', Fighting: '斗', Psychic: '超', Ghost: '灵', Fairy: '仙' };
+for (const [type, label] of Object.entries(BLESSING_TYPES)) add('silver', `emissary${type.toLowerCase()}`, `${emissaryNames[type] || label}之使者`,
+	`队伍内${label}属性伙伴的亲密度正向获取量 ×2，HP、攻击、防御、特攻、特防、速度均 ×1.1。幻想形态同样适用；若同时符合两种已持有使者祝福，能力倍率相乘，亲密度加速不重复叠加。`, { family: 'emissary', type });
 for (const [tier, suffix, total] of [['gold', '金', 525], ['prismatic', '彩', 650]] as const) {
 	add(tier, `compound${tier}`, `五号化合物·${suffix}`, `选一名伙伴，将选定最终进化型的种族值总和补至 ${total}，新增点数由你自由分配。` +
 		'只能增加原有种族值；进化前形态同步获得新增点数，分支进化锁定所选方向。当前形态原始种族值总和超过 500 时，新增点数失效。主特性永久锁定为【化学之力】，额外特性保留。', { family: 'compound' });
@@ -222,7 +232,12 @@ for (const [type, label] of Object.entries({ sunnyday: '大晴天', raindance: '
 	electricterrain: '电气场地', psychicterrain: '精神场地', grassyterrain: '青草场地', mistyterrain: '薄雾场地', trickroom: '戏法空间', tailwind: '顺风' })) {
 	add('gold', 'overtime' + type, '加时赛·' + label, `我方引起的【${label}】延长 3 回合。获得 1 只${OVERTIME_ABILITY_NAMES[type] ? `特性为【${OVERTIME_ABILITY_NAMES[type]}】` : `已学会【${label}】`}的随机宝可梦。`, { family: 'overtime', type });
 }
-add('gold', 'singer', '世界第一的公主殿下', '最强的【美洛耶塔】获得额外特性【天籁之音】与【极智能】。');
+add('gold', 'singer', '宝可世界的歌姬', '最强的【美洛耶塔】获得额外特性【天籁之音】与【极智能】。');
+add('gold', 'bignumber', '大数字', '每场一次，在选择招式前指定攻击、防御、特攻、特防或速度，本回合该项能力 ×2。若发动期间任一实际能力达到 3000，战斗结束后升级为【超大数字】，升级不追加对手等级。');
+add('prismatic', 'supernumber', '超大数字', '每场一次，在选择招式前发动，本回合攻击、防御、特攻、特防和速度全部 ×5（不含 HP、命中和闪避）。若发动期间任一实际能力达到 13000，战斗结束后获得同层馆主标准的奖金，每场最多一次。也可由【大数字】升级获得。');
+add('silver', 'sololeveling', '我独自升级', '仅第 1 层出现。选择一名伙伴，其余伙伴暂存；本局队伍最多一名伙伴，可替换，不能融合。战斗经验提升 50%，解除等级 100 上限；100 级及以下每通关一层升 1 级，超过 100 级后每通关两层升 1 级。', { floors: [1] });
+add('prismatic', 'potara', '波塔拉耳环', '在战斗外融合两名伙伴，占一个队伍名额。属性取第一只的第一属性与第二只的第二属性（单属性则取第一属性）；任选第一只提供三项种族值，另外三项取第二只。沿用较高等级和第一只的个体值、努力值；可选双方现有特性之一、任一外观，并使用双方全部可学招式。融合期间不能进化或改变形态。战外可解除，双方恢复原数据，第一只保留期间新增经验；解除后再通关 10 层可重新融合。');
+add('silver', 'spindance', '摇~摇~晃~摇', '获得一只【晃晃斑】。队伍中最强的晃晃斑登场时令对手混乱；受到对手攻击后，令攻击者混乱或刷新混乱时长，仍遵守混乱免疫。每场首次受到致命伤时保留 1 HP，自动进入两回合濒死睡眠，不能行动；期间再受对手攻击会倒下，熬到醒来则回复全部 HP。无需携带【睡觉】。');
 add('gold', 'dancer', '舞！舞！舞！', '最强的【美洛耶塔】登场时变为舞步形态，获得额外特性【舞者】，并学会【胜利之舞】。');
 add('gold', 'ordinary', '愤怒的普通宝可梦', '全队伙伴原始种族值总和均不超过 500 时，全队伤害、对战经验与战利品增加。第 1／50、100、150 层取得时，增伤分别为 15%、20%、25%，经验与战利品数量分别增加 20%、30%、40%。');
 add('gold', 'smallfinal', '谁说我到头了', '原始种族值总和不超过 400、且无法继续进化的伙伴，六项种族值提升 50%。');
@@ -246,13 +261,13 @@ add('prismatic', 'style', 'S级压轴秀', '成功用不同于上一次的招式
 add('silver', 'medic', '自带医疗队', '每场战斗结束后，存活伙伴恢复 15% 最大 HP，并解除异常状态。与【进球休息】互斥。');
 add('prismatic', 'insight', '濒死悟道', '获得 10 个【活力块】。伙伴击倒对手或从濒死复活时积累领悟，初始每次 +1。满 100 后，受到致命伤害时消耗全部领悟并回满 HP，此后每次积累量 +1。队伍中陷入濒死的伙伴也能获得应有的对战经验。', { floors: [1] });
 add('prismatic', 'inheritmoves', '这一招，交给你', '伙伴倒下后，将第一招和已继承的招式交给下一名上场伙伴。本场可额外使用这些招式，剩余 PP 一并继承。每只伙伴可自选学会 1 个可学但尚未掌握的招式，后来入队的伙伴同样可以领取。');
-add('prismatic', 'entrance', '闪亮再登场', '每次登场，本场招式威力累计提升 5%，换下保留，战后重置。');
+add('prismatic', 'entrance', '闪亮再登场', '每场对战中，任一队内伙伴每次登场，全队攻击、防御、特攻、特防、速度累计提升 5%。包含首次登场，换下保留，战后重置。');
 add('prismatic', 'meltan', '钢铁是糖炼的', '获得【美录坦】。携带它击倒或捕捉宝可梦可积累专属糖果：钢系每只 10 颗，非钢系每只 2 颗，集齐 400 颗可进化。最强的【美录梅塔】的钢系招式无视抵抗，并立即学会【钢拳双击】；其幻想化后立即获得一颗【超巨进化许愿星】，电系招式无视地面免疫，并立即学会【充电光束】。', { floors: [1] });
 add('prismatic', 'swords', '打磨圣剑', '【勾帕路翁】、【代拉基翁】与【毕力吉翁】使用【圣剑】时，本场随机一项非 HP 能力提升 10%。累计使用 15 次，可指定一种圣剑士获得额外特性【锋锐】，每种一次。');
 add('prismatic', 'execute', '飞身重...踢？', '每满 100 点最大 HP，处决线提升 5%。招式造成伤害后，若对手剩余 HP 比例低于处决线，立即将其击倒。');
 add('prismatic', 'hpgrowth', '越打命越硬', '每击倒一名对手，该伙伴本局永久增加 2 点最大 HP，并恢复 2 HP。', { floors: [1] });
 add('prismatic', 'regis', '传说的巨人们', '精英区域依次出现五神柱，击败或捕捉可获得对应属性转。集齐后，下一场固定幻想精英替换为【幻想雷吉奇卡斯】，获胜后获得该伙伴、50 幻想碎片、【藏宝袋】与【高级工具箱】各 1 个；其【捏碎】享有集齐五神柱的全部效果。须在第 170 层前集齐。', { floors: [100], emblem: true });
-add('prismatic', 'sound', '全队开麦', '全队每携带一个声音招式，所有声音招式伤害提升 5%。');
+add('prismatic', 'sound', '全队开麦', '全队每携带一个声音招式，所有声音招式伤害提升 5%。每只伙伴可自选学会一个合法可学但尚未掌握的声音类招式，后来入队的伙伴同样可以领取。');
 add('prismatic', 'multihit', '还没打完呢', '连续攻击招式的攻击次数翻倍。【三旋击】可连续攻击六次，每击威力依次为 20／40／60／80／100／120。');
 add('prismatic', 'hoopa', '猜猜下一招', '获得【胡帕】。最强的【胡帕】恶系与幽灵系招式威力提升 50%；使用【异次元洞】或【异次元猛攻】后，额外使出一个队伍携带的随机招式。', { floors: [100, 150] });
 typed('prismatic', 'typelink', label => `${label}是纽带 会不断传承`, '获得对应属性转；全队对应属性招式威力提升 50%；本场每有同属性伙伴倒下一次，再增加 5 个百分点，复活后再次倒下同样计数。', { emblem: true });

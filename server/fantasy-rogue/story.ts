@@ -10,7 +10,7 @@ import { dialoguePage, type NarrativePage } from './narrative';
 export type RogueStoryStage = 'opening' | 'spirit' | 'spiritEffect' | 'climb' | 'cards' | 'portal' |
 	'ending' | 'gymgift' | 'godinvite' | 'bossintro' | 'restguide' | 'leaguebriefing' | 'interlude';
 type Page = NarrativePage & {
-	roster?: { name: string, avatar?: string, pokemon: string[] } };
+	roster?: { name: string, avatar?: string, pokemon: string[], levels?: number[], escorts?: number } };
 const page = (scene: string, title: string, text: string, speaker?: string): Page => ({ scene, title, text, speaker });
 export const ROGUE_STORY: Partial<Record<RogueStoryStage, Page[]>> = {
 	opening: [
@@ -94,7 +94,7 @@ function mentorPages(run: RogueRun): Page[] {
 	return [
 		page('stranger', '楼梯前的提醒', `黑袍老人坐在休整处，见你走来，抬手指了指楼梯。「下一层${elite ? '是幻想精英' : '有强敌在等你'}，可比路上的对手难对付。先把伙伴照顾好，招式和道具也别忘了检查。」${levels ? `目前祝福使固定首领额外提高 ${levels} 级，请留意队伍等级。` : ''}`),
 		...(roster ? [{ ...page('arena', `第 ${run.floor + 1} 层 · 对手预告`,
-			`「下一层等着你的是${roster.avatar ? roster.name : '这些宝可梦'}。记住这些面孔，想好用哪些伙伴应对，再去挑战。」`, '黑袍老人'), roster }] : []),
+			`「下一层等着你的是${roster.avatar ? roster.name : '这些宝可梦'}。${elite ? '两只同属性跟班先登场且不会主动交换，之后才是幻想精英。跟班沿用本层普通精英等级，仅受普通遭遇的祝福加级；幻想精英受固定首领加级。' : ''}记住这些面孔，想好应对，再去挑战。」`, '黑袍老人'), roster }] : []),
 		page('stranger', '准备好了再出发', '「从这三张里选一张吧。它会帮你应付下一层的首领，战胜对手后就会消散。」老人把卡片摆开。「先照顾好伙伴，准备好了再上楼。」', '黑袍老人'),
 	];
 }
@@ -103,7 +103,10 @@ function bossRoster(run: RogueRun, floor: number) {
 	if (!node) return undefined;
 	const trainer = node.encounters[0]?.trainer;
 	return { name: trainer?.name || node.name, avatar: trainer?.avatar,
-		pokemon: node.encounters.flatMap(encounter => encounter.team.map(set => set.species)) };
+		pokemon: node.encounters.flatMap(encounter => encounter.team.map(set => set.species)),
+		levels: node.encounters.flatMap(encounter => encounter.team.map((set, index) => set.level +
+			(index < (encounter.escortCount || 0) ? run.blessings?.levels || 0 : run.blessings?.bossLevels ?? run.blessings?.levels ?? 0))),
+		escorts: node.encounters[0]?.escortCount || 0 };
 }
 export function leaguePages(run: RogueRun): Page[] {
 	const trainer = run.node?.encounters[0]?.trainer;

@@ -125,6 +125,19 @@ describe('Fantasy AI rule decisions', function () {
 		battle.p1.clearChoice();
 		return decision;
 	}
+	for (let count = 1; count <= 6; count++) {
+		it(`selects a legal Illusion preview order with ${count} party members`, () => {
+			const team = [{species: 'Zoroark', ability: 'Illusion', moves: ['nightdaze']},
+				...Array.from({length: count - 1}, () => ({species: 'Mew', ability: 'Synchronize', moves: ['psychic']}))];
+			battle = common.createBattle({formatid: trainer.format}, [team, [{species: 'Mew', ability: 'Synchronize', moves: ['psychic']}]]);
+			const previewPolicy = new RulePolicy({...trainer, packedTeam: Teams.pack(team)});
+			const previewView = new InformationView({ownSide: 'p1', difficulty: 'normal'});
+			previewView.receiveUpdate(battle.log.join('\n'));
+			const decision = previewPolicy.decide(previewView.observe(battle.p1.activeRequest), SEED);
+			assert(enumerateRequestChoices(battle.p1.activeRequest).includes(decision.choice));
+			assert(battle.p1.choose(decision.choice));
+		});
+	}
 
 	it('chooses reliable cleanup without spending an unnecessary Tera resource', () => {
 		setup({ species: 'Mewtwo', ability: 'Pressure', moves: ['thunder', 'thunderbolt'] }, { species: 'Mew', ability: 'Synchronize', moves: ['splash'] });

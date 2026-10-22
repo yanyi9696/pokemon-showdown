@@ -85,6 +85,7 @@ export function conversionPreview(run: RogueRun, member: string, target: string)
 export function convertRegional(run: RogueRun, member: string, target: string) {
 	const index = run.team.findIndex(mon => mon.id === member);
 	if (index < 0) throw new Error('伙伴已经不在队伍中。');
+	if (run.team[index].fusion) throw new Error('请先解除融合，再进行地区形态转换。');
 	run.team[index] = converted(run, run.team[index], target);
 }
 export function regionalGift(run: RogueRun, content: RogueContent, region: Postcard, random: RogueRandom) {

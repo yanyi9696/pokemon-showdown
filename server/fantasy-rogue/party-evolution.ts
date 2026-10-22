@@ -55,6 +55,7 @@ function friendshipRequirements(mon: RoguePokemon, child: Species, floor: number
 
 /** A single source drives the condition display and the server's evolution gate. */
 export function partyEvolutions(mon: RoguePokemon, context: Context = { floor: 1, bag: {} }): PartyEvolution[] {
+	if (mon.fusion) return [];
 	return evolutionChildren(mon.set.species).filter(child => evolutionBranchAllowed(mon, child)).map(child => {
 		const conditions: EvolutionRequirement[] = [];
 		if (!compoundEvolutionAllowed(mon, child.name)) conditions.push({

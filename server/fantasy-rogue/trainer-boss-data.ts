@@ -4014,24 +4014,23 @@ Jolly Nature
 - dongchadaji
 - Hammer Arm
 
-Miraidon-Fantasy @ Dragonium Z
-Ability: Hadron Engine
-EVs: 252 SpA / 4 SpD / 252 Spe
-Timid Nature
-IVs: 0 Atk
-- Huan Zhi Wu
-- Ke Ji Meng Chong
-- Draco Meteor
-- Overheat
-
-Kingambit @ Black Glasses
-Ability: Supreme Overlord
-EVs: 252 Atk / 4 SpD / 252 Spe
+Necrozma-Dusk-Mane @ Solganium Z
+Ability: Prism Armor
+EVs: 132 HP / 252 Atk / 124 Spe
 Adamant Nature
-- Swords Dance
-- Knock Off
-- Pursuit
-- Sucker Punch
+- Sunsteel Strike
+- Earthquake
+- Photon Geyser
+- Dragon Dance
+
+Kartana-Fantasy @ Fantasy Ultra Energy
+Ability: Sharpness
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
+- Cut+
+- Leaf Blade
+- Sacred Sword
+- Acrobatics
 
 Gholdengo @ Air Balloon
 Ability: Good as Gold

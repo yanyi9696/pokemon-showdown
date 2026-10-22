@@ -40,7 +40,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 			!['auction', 'mushroomcollector', 'exclusivechallenge', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory'].includes(id)).length);
 		for (const id of ['exclusivechallenge', 'policeassist', 'policerevenge']) assert.equal(events.find(e => e.id === id).category, 'encounter');
 		assert.equal(events.filter(e => e.category === 'trade').length, 9);
-		assert.equal(events.filter(e => e.category === 'reward').length, 7);
+		assert.equal(events.filter(e => e.category === 'reward').length, 8);
 		assert(events.filter(e => e.category !== 'ecology').every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 		const people = events.filter(e => ['companion', 'trainer'].includes(e.category));
 		assert.equal(people.length, 89);
@@ -157,7 +157,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 				if (!page.options.length) endings++;
 				assert(!page.action && !page.reward && !page.log);
 			}
-			assert(endings >= (expedition || training ? 1 : 3));
+			assert(endings >= (expedition || training || entry.id === 'coverageworkshop' ? 1 : 3));
 		}
 		assert.equal(JSON.stringify(a), before);
 	});
@@ -170,7 +170,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(Object.values(modules).every(entries => entries.every(e => !e.id.startsWith('rogue'))));
 		assert(modules.items.every(item => item.icon === item.id && (item.spritenum > 0 || item.id === 'peatblock')));
 		assert(modules.items.filter(item => item.category === 'general').length >= 11);
-		for (const id of ['powerlens', 'powerband', 'peatblock', 'strawberrysweet', 'prismscale']) assert(modules.items.some(item => item.id === id), id);
+		for (const id of ['powerlens', 'powerband', 'peatblock', 'strawberrysweet', 'prismscale', 'electirizer', 'protector']) assert(!modules.items.some(item => item.id === id), id);
 		assert(modules.items.some(item => item.id === 'dadascloak' && item.category === 'exclusive'));
 		assert(!modules.items.some(item => ['firegem', 'charizarditex', 'firiumz'].includes(item.id)));
 		const { Dex } = require('../../dist/sim/dex');

@@ -18,6 +18,8 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	fusion?: { first: RoguePokemon, second: RoguePokemon, baseStats: StatsTable, types: string[], moves: string[], experienceStart: number };
+	uncappedLevel?: boolean;
 	evolutionProgress?: { followed?: number; lastFloor?: number; moves?: Record<string, number>; criticals?: number;
 		recoil?: number; lostHP?: number; scenes?: string[]; branch?: number };
 	egg?: { found: number, hatch: number };
@@ -26,6 +28,7 @@ export interface RoguePokemon {
 	blessingExtraAbilities?: string[];
 	/** Run-local personal training in basis points; not EVs or account upgrades. */
 	training?: { offense?: number, defense?: number };
+	campTraining?: Partial<Record<StatIDExceptHP, number>>;
 	mushroomTraining?: { offense: number, defense: number };
 	evolutionNotice?: boolean;
 	tonics?: import('./rogue-blessing-permanent').RogueTonics;
@@ -81,6 +84,7 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	numberUses?: Partial<Record<SideID, boolean>>;
 	escortCount?: number;
 	/** Last actual faint was a self-sacrifice protected by Art of Explosion. */
 	selfDestructed?: string[];
@@ -89,6 +93,7 @@ export interface RogueBattleState {
 	wild?: boolean;
 	environment?: { weather?: string, terrain?: string, name: string };
 	mentorCard?: 'attack' | 'guard' | 'balanced';
+	comebackCard?: boolean;
 	mentorTier?: import('./rogue-mentor').MentorTier;
 	fishingElite?: boolean;
 	boss?: import('./rogue-bosses').RogueBossState;
@@ -98,7 +103,7 @@ export interface RogueBattleState {
 	blessingPsychicLosses?: string[];
 	blessings?: import('./rogue-blessing-data').BlessingEffects;
 	blessingProgress?: { kos: { id: string, member: string }[], swords: number, insight: Record<string, { points: number, gain: number }>,
-		psychic?: number, psychicLosses?: string[], spiral?: Record<string, number> };
+		psychic?: number, psychicLosses?: string[], spiral?: Record<string, number>, numberUpgrade?: boolean, numberPrize?: boolean };
 	/** Trusted second archive, only for the dedicated, unranked legacy duel format. */
 	duel?: { team: RoguePokemon[], boosts: StatsTable, hazards?: string[], money?: number, eventBuff?: boolean,
 		blessings?: import('./rogue-blessing-data').BlessingEffects };
@@ -154,6 +159,7 @@ export function rogueEventDamage(damage: number, target: Pokemon, source: Pokemo
 		!source || source.isAlly(target)) return damage;
 	const buff = (mon: Pokemon) => mon.side.id === 'p1' ? state.eventBuff : state.duel?.eventBuff;
 	if (source.side.id === 'p1' && state.mentorCard) damage *= 1 + mentorCardProfile(state.mentorCard, state.mentorTier).damage / 100;
+	if (source.side.id === 'p1' && state.comebackCard) damage *= 1.25;
 	if (buff(source)) damage *= 1.2;
 	if (buff(target)) damage *= 0.9;
 	const spirit = state.spirit;
@@ -246,6 +252,7 @@ export function startRogueArea(battle: Battle) {
 }
 
 export function canRogueSystem(pokemon: Pokemon, system: 'mega' | 'gmega' | 'z'): boolean {
+	if (system !== 'z' && isRogueFormat(pokemon.battle.format.id) && pokemon.set.fantasyRogueModifiers?.fusion) return false;
 	const state = pokemon.battle.fantasyRogue;
 	if (!state) return true;
 	if (pokemon.side.id === 'p1') return !!state.systems?.player[system];

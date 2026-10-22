@@ -1,3 +1,8 @@
+import { offerComeback, chooseComeback, completeComebackFloor, comebackExperience, comebackActive } from './comeback';
+import { rogueStarterSlotCost } from '../../sim/rogue-species-identity';
+import { catchupRoutes } from './late-support';
+import { recordShoppingSpend } from './shopping-upgrade';
+import { claimCoverage } from './coverage';
 import { prepareFloorEnvironment } from './floor-environment';
 import { beginRival, rivalRoutes, rivalActive, rivalTeam, expireRival, activeRivalTraveller } from './rivals';
 import { normalizeTravellers, chooseCompanionInvitation, socialCompanionCommand } from './travellers';
@@ -16,6 +21,7 @@ import { healNarrativeParty, queueNarrative } from './narrative';
 import { feedMushroom } from './mushroom-feeding';
 import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards, poppyRewardPickup, recordCompanionPreference } from './companions';
 import { COMPANIONS, companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
+import { editFusion } from './fusion';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
 import { POWER_TRAINING_STATS } from '../../sim/rogue-pets';
 import { eventView } from './events';
@@ -229,7 +235,8 @@ export class RogueEngine {
 		for (const slot of [...mon.pp, ...mon.moveMemory!]) slot.pp = slot.maxpp;
 		for (const slot of mon.blessingPP || []) slot.pp = slot.maxpp;
 	}
-	private autoEmergency(run: RogueRun) {
+	private autoEmergency(run: RogueRun, answered = false) {
+		if (run.comeback?.pending || !answered && this.content?.story && offerComeback(run, this.configured())) return;
 		if (run.node?.noHealing || run.postgame || run.team.some(mon => mon.hp > 0) ||
 			this.configured().items.some(item => item.kind === 'revive' && run.bag[item.id] > 0)) return;
 		const cost = emergencyCost(run.floor), paid = run.money >= cost;
@@ -277,6 +284,7 @@ export class RogueEngine {
 		}
 		if (this.content.blessings) templates = blessingRouteTemplates(run, templates);
 		if (this.content.events) templates = rivalRoutes(run, templates, this.random);
+		if (this.content.rewardScenes) templates = catchupRoutes(run, templates, this.content.routePools?.[run.floor] || templates);
 		run.choices = this.content.biomeEncounters ?
 			createBiomeRoutes(run.floor, templates, undefined, this.random, run.spirit, run.startCard,
 				(run.blessings?.owned || []).flatMap(b => b.family === 'godrobe' ? ['Yveltal'] : b.family === 'puregodrobe' ? ['Reshiram'] : []),
@@ -464,6 +472,7 @@ export class RogueEngine {
 			if (run.lastReward?.floor === run.floor) run.lastReward.money += run.money - credited;
 		}
 		completeSpiritRegion(run);
+		completeComebackFloor(run);
 		if (this.configured().progression) floorFriendship(run);
 		const reward = run.node!.reward;
 		run.money += reward.money;
@@ -525,6 +534,7 @@ export class RogueEngine {
 		if (this.content?.story) run.story = { stage: 'ending', page: 0, skip: false, canSkip: true };
 	}
 	private finishSettlement(account: RogueAccount, run: RogueRun) {
+		if (run.comeback?.pending) return;
 		if (run.dialogue) { this.presentNarrative(run); return; }
 		if (!run.pendingCapture && run.pendingCaptures?.length) run.pendingCapture = run.pendingCaptures.shift();
 		if (run.phase !== 'settlement' || run.pendingCapture || run.pendingMoves?.length) return;
@@ -572,6 +582,15 @@ export class RogueEngine {
 	command(userid: string, command: RogueCommand, name = userid) {
 		const updateAccount = (account: RogueAccount) => {
 			this.normalizeAccount(account);
+			if (command.action === 'comeback') {
+				const run = this.run(account);
+				if (chooseComeback(run, command.member, command.value)) {
+					this.autoEmergency(run, true);
+					this.finishSettlement(account, run);
+				}
+				return;
+			}
+			requireRule(!account.run?.comeback?.pending || command.action === 'abandon', '请先回应黑袍老人。');
 			if (command.action === 'companioninvite') {
 				requireRule(account.run, '当前没有进行中的冒险。');
 				chooseCompanionInvitation(account.run, command.member, command.value);
@@ -683,6 +702,8 @@ export class RogueEngine {
 				const selected = command.starters;
 				requireRule(Array.isArray(selected) && selected.length > 0 && selected.length <= account.slots &&
 					new Set(selected).size === selected.length, '请选择已解锁栏位内的不同初始宝可梦。');
+				requireRule(selected.reduce((used, id) => used + rogueStarterSlotCost(content.starters.find(s => s.id === id)?.set.species || ''), 0) <= account.slots,
+					'初始名额不足：普通伙伴占 1 格，传说宝可梦与幻之宝可梦占 4 格，一级神占 6 格。');
 				requireRule(command.starterBuilds === undefined || (command.starterBuilds &&
 					typeof command.starterBuilds === 'object' && !Array.isArray(command.starterBuilds) &&
 					Object.keys(command.starterBuilds).every(id => selected.includes(id))), '初始配置无效。');
@@ -784,6 +805,9 @@ export class RogueEngine {
 				return;
 			}
 			requireRule(!run.pendingMoves?.length || ['learn', 'replace'].includes(command.action), '请先处理待学习的招式。');
+			if (command.action === 'fusion' || command.action === 'unfusion') {
+				editFusion(run, command); return;
+			}
 			if (TEAM_ACTIONS.includes(command.action)) {
 				editParty(run, command, this.configured());
 				if (this.content?.blessings) syncBlessingParty(run);
@@ -791,6 +815,8 @@ export class RogueEngine {
 				syncExclusiveItems(run);
 				return;
 			}
+			const shopMoneyBefore = run.money;
+			const shoppingTransaction = ['trade', 'rest'].includes(run.node?.kind || '') && ['buy', 'buygrowth', 'event'].includes(command.action);
 			switch (command.action) {
 			case 'godchallenge': {
 				requireRule(run.phase === 'postgame' && run.postgame?.stage === 'offer' && !run.story,
@@ -853,7 +879,7 @@ export class RogueEngine {
 				}
 				break;
 			case 'spiritack':
-				requireRule(run.phase === 'intro' && !run.pendingCapture && run.team.length <= roguePartyLimit(run.spirit),
+				requireRule(run.phase === 'intro' && !run.pendingCapture && run.team.length <= roguePartyLimit(run.spirit, run.blessings),
 					'请先安置赠送伙伴或将队伍缩减至塔灵允许的数量。');
 				requireRule(!run.story || run.story.stage === 'spiritEffect', '请先读完塔灵现身的剧情。');
 				if (!afterSpirit(run)) this.enterFloor(run);
@@ -886,6 +912,7 @@ export class RogueEngine {
 					const index = run.team.findIndex(mon => mon.id === command.value);
 					requireRule(index >= 0, '替换成员无效。');
 					const removed = run.team[index].id;
+					requireRule(!run.team[index]?.fusion, '请先解除融合，再替换这位伙伴。');
 					run.team[index] = run.pendingCapture;
 					run.pendingMoves = run.pendingMoves?.filter(move => move.member !== removed);
 				}
@@ -1032,8 +1059,11 @@ export class RogueEngine {
 				if (command.value !== 'show') recordCompanionPreference(run, [], command.value || '', this.random);
 				chooseReward(run, this.configured(), this.random, command.value || '', command.member);
 				break;
+			case 'coverage':
+				claimCoverage(account, run, this.configured(), command.member, command.value);
+				break;
 			case 'buygrowth':
-				buyGrowth(run, command.value || '');
+				buyGrowth(run, command);
 				break;
 			case 'buy': case 'buyhp': {
 				requireRule(run.phase === 'rest', '只能在休整商店购买。');
@@ -1125,9 +1155,9 @@ export class RogueEngine {
 					run.notices = [];
 					gainEffort(run, mon, { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0, [stat]: item.amount! });
 				} else if (item.kind === 'candy') {
-					requireRule(this.configured().progression && mon.hp > 0 && mon.set.level < 100 && !mon.fixedLevel, '该成员不能再获得经验。');
+					requireRule(this.configured().progression && mon.hp > 0 && (mon.uncappedLevel || mon.set.level < 100) && !mon.fixedLevel, '该成员不能再获得经验。');
 					initializeExperience(mon);
-					const remaining = experienceAtLevel(rogueSpeciesData(mon.set.species).growth, 100) - mon.experience!;
+					const remaining = experienceAtLevel(rogueSpeciesData(mon.fusion?.first.set.species || mon.set.species).growth, mon.uncappedLevel ? 9999 : 100) - mon.experience!;
 					count = Math.min(count, Math.ceil(remaining / item.amount!));
 					requireRule(count > 0, '该成员不能再获得经验。');
 					run.notices = [];
@@ -1167,6 +1197,7 @@ export class RogueEngine {
 				break;
 			default: throw new Error('未知的肉鸽操作。');
 			}
+			if (shoppingTransaction) recordShoppingSpend(run, shopMoneyBefore - run.money);
 			for (const mon of run.team.filter(member => !member.egg)) recordStarterMoves(account, this.configured(), mon.set);
 			if (this.content?.blessings) syncBlessingParty(run);
 			syncGrowthParty(run);
@@ -1193,6 +1224,7 @@ export class RogueEngine {
 			mentorTier: run.node!.kind === 'boss' ? mentorTier(run.floor) : undefined,
 			fishingElite: run.node!.event?.id === 'fishing',
 			eventBuff: !!run.battle.eventBuff,
+			comebackCard: comebackActive(run) && run.comeback!.floor === run.floor,
 			blessings: run.blessings && structuredClone({
 				owned: run.blessings.owned, evolution: run.blessings.evolution, psychic: run.blessings.psychic,
 				dragonKing: run.blessings.dragonKing,
@@ -1320,7 +1352,7 @@ export class RogueEngine {
 		}
 		for (const captured of captures) {
 			if ([...run.team, ...(run.box || []), ...(run.pendingCaptures || [])].some(mon => mon.id === captured.id)) continue;
-			requireRule(run.team.length < roguePartyLimit(run.spirit) || this.configured().allowReplacement, '队伍已满。');
+			requireRule(run.team.length < roguePartyLimit(run.spirit, run.blessings) || this.configured().allowReplacement, '队伍已满。');
 			const mon = createRoguePokemon(
 				{ ...captured.set, level: captured.set.level - (run.node!.encounters[run.encounter].blessingLevels || 0),
 					happiness: captured.set.pokeball === 'friendball' ? 150 : ROGUE_INITIAL_FRIENDSHIP }, run.boosts, captured.id, captured.stars
@@ -1334,7 +1366,7 @@ export class RogueEngine {
 			if (mon.set.item) {
 				mon.set.item = convertSpiritItem(run, this.configured(), toID(mon.set.item), `capture:${mon.id}`, this.random);
 			}
-			if (run.team.length < roguePartyLimit(run.spirit)) run.team.push(mon);
+			if (run.team.length < roguePartyLimit(run.spirit, run.blessings)) run.team.push(mon);
 			else if (run.box && run.box.length < 30) run.box.push(mon);
 			else (run.pendingCaptures ||= []).push(mon);
 		}
@@ -1467,12 +1499,13 @@ export class RogueEngine {
 						}
 						gainEffort(run, mon, yieldStats);
 					}
+					if (comebackActive(run)) (run.comeback!.battleFloors ||= []).push(run.floor);
 					gainExperience(run, mon, Math.floor(towerExperience(rogueSpeciesData(defeated.species).baseExperience,
 						defeated.level, mon.set.level, defeated.participants.includes(mon.id), run.floor,
 						run.node!.kind === 'wild' && !run.node!.event && !defeated.captured,
 						run.node!.kind === 'wild' && !run.node!.event && !!defeated.captured) *
 						(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing) *
-						(1 + (run.growth?.experience || 0) / 10000) * companionExperience(run, mon, defeated)));
+						(1 + (run.growth?.experience || 0) / 10000) * companionExperience(run, mon, defeated) * comebackExperience(run)));
 				}
 			}
 		}
@@ -1493,11 +1526,13 @@ export class RogueEngine {
 		this.finishSettlement(account, run);
 	}
 	private presentNarrative(run: RogueRun) {
+		if (run.comeback?.pending) return;
 		if (!run.dialogue || run.story || run.phase === 'battle' || run.phase === 'defeated') return;
 		run.story = { stage: 'interlude', page: 0, skip: false, canSkip: true }; run.phase = 'story';
 	}
 	/** Only close a genuinely stranded run. Dialogues and unresolved rewards retain their recovery opportunities. */
 	private checkFailure(run: RogueRun) {
+		if (run.comeback?.pending) return;
 		if (['battle', 'intro', 'story', 'complete', 'defeated', 'postgame', 'blessing'].includes(run.phase) ||
 			run.postgame || !run.team.length || run.team.some(mon => mon.hp > 0) || run.dialogue) return;
 		if ([...(run.box || []), ...(run.pendingCaptures || []), ...(run.pendingCapture ? [run.pendingCapture] : [])].some(mon => mon.hp > 0)) return;

@@ -1,0 +1,393 @@
+{
+  "date": "2026-10-22",
+  "scope": "Controlled comparisons; no injected resources enter campaign saves",
+  "numbers": [
+    {
+      "family": "none",
+      "original": {
+        "atk": 236,
+        "def": 236,
+        "spa": 299,
+        "spd": 236,
+        "spe": 299
+      },
+      "during": {
+        "atk": 236,
+        "def": 236,
+        "spa": 299,
+        "spd": 236,
+        "spe": 299
+      },
+      "outgoing": 94,
+      "incoming": 61,
+      "foeMaxhp": 714,
+      "ownMaxhp": 341,
+      "after": {
+        "atk": 236,
+        "def": 236,
+        "spa": 299,
+        "spd": 236,
+        "spe": 299
+      }
+    },
+    {
+      "family": "bignumber",
+      "original": {
+        "atk": 236,
+        "def": 236,
+        "spa": 299,
+        "spd": 236,
+        "spe": 299
+      },
+      "during": {
+        "atk": 236,
+        "def": 236,
+        "spa": 598,
+        "spd": 236,
+        "spe": 299
+      },
+      "outgoing": 186,
+      "incoming": 61,
+      "foeMaxhp": 714,
+      "ownMaxhp": 341,
+      "after": {
+        "atk": 236,
+        "def": 236,
+        "spa": 299,
+        "spd": 236,
+        "spe": 299
+      }
+    },
+    {
+      "family": "supernumber",
+      "original": {
+        "atk": 236,
+        "def": 236,
+        "spa": 299,
+        "spd": 236,
+        "spe": 299
+      },
+      "during": {
+        "atk": 1180,
+        "def": 1180,
+        "spa": 1495,
+        "spd": 1180,
+        "spe": 1495
+      },
+      "outgoing": 462,
+      "incoming": 13,
+      "foeMaxhp": 714,
+      "ownMaxhp": 341,
+      "after": {
+        "atk": 236,
+        "def": 236,
+        "spa": 299,
+        "spd": 236,
+        "spe": 299
+      }
+    },
+    {
+      "family": "bignumber",
+      "setup": "Lv100 Adamant 252 Atk Huge Power Azumarill; Belly Drum then activate",
+      "attack": 3488,
+      "progress": {
+        "kos": [
+          {
+            "id": "lab:foe:0",
+            "member": "72ae26fe-0080-4a5f-8fa0-fb3e22e0b3d5"
+          }
+        ],
+        "swords": 0,
+        "insight": {},
+        "numberUpgrade": true
+      }
+    },
+    {
+      "family": "supernumber",
+      "setup": "Lv100 Adamant 252 Atk Huge Power Azumarill; Belly Drum then activate",
+      "attack": 8720,
+      "progress": {
+        "kos": [
+          {
+            "id": "lab:foe:0",
+            "member": "6be37af1-2694-485c-988d-1102f8c5ea13"
+          }
+        ],
+        "swords": 0,
+        "insight": {}
+      }
+    }
+  ],
+  "fusion": [
+    {
+      "first": "Slaking",
+      "second": "Dragapult",
+      "ability": "clearbody",
+      "baseStats": {
+        "hp": 150,
+        "atk": 160,
+        "def": 100,
+        "spa": 100,
+        "spd": 75,
+        "spe": 142
+      },
+      "types": [
+        "Normal",
+        "Ghost"
+      ],
+      "actual": {
+        "hp": 441,
+        "atk": 356,
+        "def": 236,
+        "spa": 236,
+        "spd": 186,
+        "spe": 320
+      },
+      "legalMovePool": 174,
+      "partySlots": 1
+    },
+    {
+      "first": "Rhyperior",
+      "second": "Alakazam",
+      "ability": "magicguard",
+      "baseStats": {
+        "hp": 115,
+        "atk": 140,
+        "def": 130,
+        "spa": 135,
+        "spd": 95,
+        "spe": 120
+      },
+      "types": [
+        "Ground",
+        "Psychic"
+      ],
+      "actual": {
+        "hp": 371,
+        "atk": 316,
+        "def": 296,
+        "spa": 306,
+        "spd": 226,
+        "spe": 276
+      },
+      "legalMovePool": 210,
+      "partySlots": 1
+    },
+    {
+      "first": "Slaking",
+      "second": "Azumarill",
+      "ability": "hugepower",
+      "baseStats": {
+        "hp": 150,
+        "atk": 160,
+        "def": 100,
+        "spa": 60,
+        "spd": 80,
+        "spe": 50
+      },
+      "types": [
+        "Normal",
+        "Fairy"
+      ],
+      "actual": {
+        "hp": 441,
+        "atk": 712,
+        "def": 236,
+        "spa": 156,
+        "spd": 196,
+        "spe": 136
+      },
+      "legalMovePool": 180,
+      "partySlots": 1
+    }
+  ],
+  "dogs": [
+    {
+      "count": 1,
+      "boostCount": 0,
+      "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 0,
+        "accuracy": 0,
+        "evasion": 0
+      }
+    },
+    {
+      "count": 2,
+      "boostCount": 1,
+      "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 0,
+        "spd": 0,
+        "spe": 1,
+        "accuracy": 0,
+        "evasion": 0
+      }
+    },
+    {
+      "count": 3,
+      "boostCount": 2,
+      "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 1,
+        "spd": 0,
+        "spe": 1,
+        "accuracy": 0,
+        "evasion": 0
+      }
+    },
+    {
+      "count": 4,
+      "boostCount": 3,
+      "boosts": {
+        "atk": 0,
+        "def": 0,
+        "spa": 1,
+        "spd": 1,
+        "spe": 1,
+        "accuracy": 0,
+        "evasion": 0
+      }
+    },
+    {
+      "count": 5,
+      "boostCount": 4,
+      "boosts": {
+        "atk": 1,
+        "def": 0,
+        "spa": 1,
+        "spd": 1,
+        "spe": 1,
+        "accuracy": 0,
+        "evasion": 0
+      }
+    },
+    {
+      "count": 6,
+      "boostCount": 5,
+      "boosts": {
+        "atk": 1,
+        "def": 1,
+        "spa": 1,
+        "spd": 1,
+        "spe": 1,
+        "accuracy": 0,
+        "evasion": 0
+      }
+    }
+  ],
+  "spinda": {
+    "samples": 512,
+    "triggered": 512,
+    "woke": 41,
+    "dead": 471,
+    "reviveRateGivenLethal": 0.080078125,
+    "totalConfusionSelfHits": 866,
+    "note": "Opponent is a deliberately overlevelled single-hit test attacker, not a generated campaign opponent; no support protects sleeping Spinda."
+  },
+  "soloFloorOnly": [
+    {
+      "floor": 20,
+      "minimumLevelBeforeBattle": 24
+    },
+    {
+      "floor": 40,
+      "minimumLevelBeforeBattle": 44
+    },
+    {
+      "floor": 80,
+      "minimumLevelBeforeBattle": 84
+    },
+    {
+      "floor": 100,
+      "minimumLevelBeforeBattle": 104
+    },
+    {
+      "floor": 150,
+      "minimumLevelBeforeBattle": 154
+    },
+    {
+      "floor": 200,
+      "minimumLevelBeforeBattle": 204
+    }
+  ],
+  "levelCosts": [
+    {
+      "floor": 1,
+      "tier": "silver",
+      "normal": 0,
+      "boss": 0
+    },
+    {
+      "floor": 1,
+      "tier": "gold",
+      "normal": 0,
+      "boss": 5
+    },
+    {
+      "floor": 1,
+      "tier": "prismatic",
+      "normal": 0,
+      "boss": 10
+    },
+    {
+      "floor": 50,
+      "tier": "silver",
+      "normal": 0,
+      "boss": 0
+    },
+    {
+      "floor": 50,
+      "tier": "gold",
+      "normal": 5,
+      "boss": 10
+    },
+    {
+      "floor": 50,
+      "tier": "prismatic",
+      "normal": 10,
+      "boss": 20
+    },
+    {
+      "floor": 100,
+      "tier": "silver",
+      "normal": 0,
+      "boss": 0
+    },
+    {
+      "floor": 100,
+      "tier": "gold",
+      "normal": 10,
+      "boss": 15
+    },
+    {
+      "floor": 100,
+      "tier": "prismatic",
+      "normal": 20,
+      "boss": 30
+    },
+    {
+      "floor": 150,
+      "tier": "silver",
+      "normal": 0,
+      "boss": 0
+    },
+    {
+      "floor": 150,
+      "tier": "gold",
+      "normal": 15,
+      "boss": 20
+    },
+    {
+      "floor": 150,
+      "tier": "prismatic",
+      "normal": 30,
+      "boss": 40
+    }
+  ]
+}

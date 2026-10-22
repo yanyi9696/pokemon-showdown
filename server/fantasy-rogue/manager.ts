@@ -1,3 +1,6 @@
+import { comebackView } from './comeback';
+import { coverageView } from './coverage';
+import { fusionAbilities } from './fusion';
 import { rivalCompanionView, rivalCompanionViews } from './rivals';
 import { robeMember, robeDurability } from '../../sim/rogue-awakening';
 import { eggView } from './eggs';
@@ -31,6 +34,7 @@ import { partyEvolutions } from './party-evolution';
 import { friendship, rogueTime, ROGUE_TIME_NAMES } from './friendship';
 import { healingLocked, inventoryItem, abilityItemTarget } from './team';
 import { starterMoves, starterTraits } from './starter-traits';
+import { rogueStarterSlotCost } from '../../sim/rogue-species-identity';
 import { spiritItems } from './spirits';
 import { shopStock, machineMoves } from './trading';
 import { recycleOffers } from './buyback';
@@ -140,6 +144,7 @@ export class RogueManager {
 			})),
 			starters: (!run || run.phase === 'complete' ? content?.starters : [])?.map(starter => ({
 				id: starter.id, species: starter.set.species, level: starter.set.level,
+				slotCost: rogueStarterSlotCost(starter.set.species),
 				available: starter.availableInitially || account.unlocked.includes(starter.id),
 				traits: starterTraits(account, starter.id),
 				abilities: Object.entries(Dex.mod('gen9fantasy').species.get(starter.set.species).abilities)
@@ -155,10 +160,10 @@ export class RogueManager {
 				companionInvitation: companionInvitationView(run),
 				socialCompanions: socialCompanionViews(run, companionOptions(run, eventView(run)?.options || [])),
 				preview: run.preview && { trainer: run.preview.trainer, stage: run.preview.stage, won: run.preview.result?.won },
-				growth: growthView(run), growthOffers: growthOffers(run), rewardScene: rewardSceneView(run),
+				comeback: comebackView(run), coverage: coverageView(run), growth: growthView(run), growthOffers: growthOffers(run), rewardScene: rewardSceneView(run),
 				blessings: blessingView(run, account.tonicSecret), moveSlots: run.blessings?.owned.some(b => b.family === 'learnall') ? 5 : 4,
 				story: run.story, startCard: startCard(run.startCard),
-				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit), box: run.box?.map(mon => mon.egg ? eggView(mon, run.floor) : mon),
+				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit, run.blessings), box: run.box?.map(mon => mon.egg ? eggView(mon, run.floor) : mon),
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
 				postgame: run.postgame?.stage,
 				failure: run.failure,
@@ -191,15 +196,15 @@ export class RogueManager {
 					ensureMemberMemory(mon);
 					if (!mon.stats) rebuildMember(mon, run.boosts);
 					const species = Dex.mod('gen9fantasy').species.get(mon.set.species);
-					const baseStats = { ...species.baseStats };
+					const baseStats = { ...(mon.fusion?.baseStats || species.baseStats) };
 					const robe = (['godrobe', 'puregodrobe'] as const).find(kind => robeMember(run.team, run.blessings, kind)?.id === saved.id);
 					for (const [key, value] of Object.entries(mon.statModifiers?.baseStats || {})) baseStats[key as StatID] += value;
-					return { ...mon, baseStats, machineMoves: items.some(item => item.kind === 'machine') ? machineMoves(mon) : [],
+					return { ...mon, baseStats, fusionAbilities: fusionAbilities(saved, run), machineMoves: items.some(item => item.kind === 'machine') ? machineMoves(mon) : [],
 						robeInfo: robe ? {name: robe === 'godrobe' ? '神衣鲜血' : '神衣纯洁', durability: robeDurability(mon.hp, mon.maxhp, !!run.blessings?.owned.find(b => b.family === robe)?.completed)} : undefined,
 						abilityChanges: { abilitycapsule: abilityItemTarget(mon, 'abilitycapsule'), abilitypatch: abilityItemTarget(mon, 'abilitypatch') },
 						extraAbilities: assignedExtraAbilities(saved, run.team, run.blessings).filter(id => id !== toID(mon.set.ability)),
 						canReceiveSharpness: canGrantExtraAbility(saved, 'sharpness', run.team, run.blessings),
-						types: blessingMemberTypes(mon), fantasyForm: fantasyForm(mon.set.species),
+						types: blessingMemberTypes(mon), fantasyForm: mon.fusion ? undefined : fantasyForm(mon.set.species),
 						experienceProgress: experienceProgress(mon),
 						friendship: friendship(mon),
 						evolutionDetails: content?.progression ? partyEvolutions(mon, run) : undefined,

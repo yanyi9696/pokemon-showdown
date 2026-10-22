@@ -1,20 +1,24 @@
 import { toID, type ModdedDex } from '../../../sim/dex';
 
-/** Explicit reviewed enhancements. Mixed trade-offs and replacements default to 🔄. */
-const MOVE_BUFFS = new Set('recover roost slackoff softboiled rest milkdrink cut wringout chargebeam darkvoid psystrike watershuriken landswrath mistyexplosion kingsshield'.split(' '));
+/** Reviewed gameplay differences: enhancements use +; changed mechanics use 🔄. */
+const MOVE_BUFFS = new Set('recover roost slackoff softboiled rest milkdrink cut wringout chargebeam darkvoid psystrike watershuriken landswrath mistyexplosion kingsshield supercellslam flyingpress'.split(' '));
 const ABILITY_BUFFS = new Set('shellarmor illuminate magmaarmor pressure cutecharm whitesmoke battlearmor heatproof slowstart icebody flowergift bigpecks infiltrator sandforce flowerveil watercompaction corrosion dancer stalwart transistor protosynthesis'.split(' '));
-const serial = (value: unknown) => JSON.stringify(value, (_key, v) => typeof v === 'function' ? v.toString() : v);
+// Reviewed gameplay changes, not source-text differences. Translation, visual sync,
+// custom-status compatibility and suppression guards do not rework the original effect.
+const MOVE_REWORKS = new Set('razorwind jumpkick rockthrow swift skullbash triattack powdersnow spark shadowpunch punishment crushgrip shadowbone overdrive bittermalice shelter nihillight'.split(' '));
+export function fantasyAdjustmentMarker(table: 'Moves' | 'Abilities', id: string): '+' | '🔄' | '' {
+	return (table === 'Moves' ? MOVE_BUFFS : ABILITY_BUFFS).has(id) ? '+' :
+		table === 'Moves' && MOVE_REWORKS.has(id) ? '🔄' : '';
+}
 export function applyAdjustmentLabels(dex: ModdedDex) {
 	const original = dex.mod('gen9');
 	for (const table of ['Moves', 'Abilities'] as const) {
-		const buffs = table === 'Moves' ? MOVE_BUFFS : ABILITY_BUFFS;
-		for (const [id, data] of Object.entries(dex.data[table])) {
+		for (const id of Object.keys(dex.data[table])) {
 			const base = original.data[table][id];
 			if (!base) continue; // New Fantasy content is not a changed original effect.
-			const changed = Object.keys(data).some(key => !['inherit', 'name', 'num', 'desc', 'shortDesc', 'rating', 'isNonstandard', 'gen', 'contestType'].includes(key) &&
-				serial((data)[key]) !== serial((base as any)[key]));
-			if (!changed && !buffs.has(id)) continue;
-			const entry = dex.modData(table, id), marker = buffs.has(id) ? '+' : '🔄';
+			const marker = fantasyAdjustmentMarker(table, id);
+			if (!marker) continue;
+			const entry = dex.modData(table, id);
 			entry.name = (base.name || entry.name).replace(/[+🔄]+$/u, '') + marker;
 		}
 	}

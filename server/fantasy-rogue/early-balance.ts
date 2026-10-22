@@ -1,4 +1,5 @@
 import { experienceYield } from '../../sim/fantasy-rogue-rules';
+import { lateRewardScale } from './late-support';
 import type { RogueRun } from './types';
 import { ELITE_BOSS_FLOORS } from './content';
 import { mentorCardProfile, type MentorCard } from '../../sim/rogue-mentor';
@@ -38,7 +39,7 @@ export function restCandyOffer(floor: number) {
 export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'reward') {
 	const f = Math.max(1, Math.min(200, floor));
 	const multiplier = (kind === 'trainer' ? 1.6 : kind === 'reward' ? 0.2 : 1) * (0.8 + 0.2 * Math.min(1, (f - 1) / 59));
-	let remaining = Math.max(100, Math.round((200 + 3 * f * f) * multiplier * 0.85 * candyRewardScale(f) / 100) * 100);
+	let remaining = Math.max(100, Math.round((200 + 3 * f * f) * multiplier * 0.85 * candyRewardScale(f) * lateRewardScale(f) / 100) * 100);
 	const result: Record<string, number> = {};
 	for (const [id, xp] of [['expcandyxl', 30000], ['expcandyl', 10000], ['expcandym', 3000], ['expcandys', 800], ['expcandyxs', 100]] as const) {
 		if (CANDY_SHOP[id].floor > f) continue;

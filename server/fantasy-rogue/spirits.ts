@@ -140,7 +140,7 @@ export function completeSpiritRegion(run: RogueRun) {
 }
 
 export function editSpiritBox(run: RogueRun, member: string, target?: string) {
-	requireRule(run.spirit === 'zygarde' && run.box && canEditParty(run) && !healingLocked(run), '当前不能整理宝可梦箱子。');
+	requireRule((run.spirit === 'zygarde' || run.blessings?.owned.some(b => b.family === 'sololeveling')) && run.box && canEditParty(run) && !healingLocked(run), '当前不能整理宝可梦箱子。');
 	const teamIndex = run.team.findIndex(mon => mon.id === member);
 	const boxIndex = run.box.findIndex(mon => mon.id === member);
 	if (teamIndex >= 0) {
@@ -152,7 +152,7 @@ export function editSpiritBox(run: RogueRun, member: string, target?: string) {
 		requireRule(!run.box[boxIndex].egg || replace < 0 || run.team.some((mon, i) => i !== replace && !mon.egg), '队伍中至少需要一名已孵化的伙伴。');
 		if (replace >= 0) [run.team[replace], run.box[boxIndex]] = [run.box[boxIndex], run.team[replace]];
 		else {
-			requireRule(run.team.length < roguePartyLimit(run.spirit), '队伍已满，请选择交换的队员。');
+			requireRule(run.team.length < roguePartyLimit(run.spirit, run.blessings), '队伍已满，请选择交换的队员。');
 			run.team.push(run.box.splice(boxIndex, 1)[0]);
 		}
 	}
@@ -162,6 +162,7 @@ export function mergeSpiritPokemon(run: RogueRun, member: string, consume: strin
 	requireRule(run.spirit === 'zygarde' && run.box && canEditParty(run) && !healingLocked(run), '当前不能升星。');
 	const owned = [...run.team, ...run.box].filter(mon => !mon.egg);
 	const keep = owned.find(mon => mon.id === member);
+	requireRule(!owned.some(mon => mon.fusion && (mon.id === member || consume?.includes(mon.id))), '请先解除融合，再进行升星合成。');
 	requireRule(keep && (keep.stars || 1) < 4 && Array.isArray(consume) && consume.length === 2 &&
 		new Set([member, ...consume]).size === 3, '请保留一只并选择两只相同伙伴，四星不能继续合成。');
 	const removed = consume.map(id => owned.find(mon => mon.id === id));

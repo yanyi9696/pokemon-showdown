@@ -23,7 +23,7 @@ const stats = (value: number): StatsTable => ({
 });
 
 export const PreviewBalance = {
-	version: 'preview-2026-10-v13',
+	version: 'preview-2026-10-v14',
 	initialMoney: 1500,
 	initialBag: { pokeball: 12, potion: 6, revive: 1, ether: 6, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
@@ -100,7 +100,7 @@ export function createPreviewContent(): RogueContent {
 	validateBiomePools();
 	const content: RogueContent = {
 		version: PreviewBalance.version, biomeEncounters: true, wildTreasures: true,
-		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8', 'preview-2026-10-v9', 'preview-2026-10-v10', 'preview-2026-10-v11', 'preview-2026-10-v12'],
+		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8', 'preview-2026-10-v9', 'preview-2026-10-v10', 'preview-2026-10-v11', 'preview-2026-10-v12', 'preview-2026-10-v13'],
 		...(arceusChallengeReady() ? { arceusMoves: ARCEUS_PHYSICAL_MOVES as Record<string, string> } : {}),
 		spirits: true, blessings: true, events: true, rewardScenes: true,
 		label: '幻想杯肉鸽 · 200 层试玩版',
@@ -129,6 +129,8 @@ export function createPreviewContent(): RogueContent {
 				cureStatuses: ['par'], description: '解除麻痹，保留其他异常状态。' },
 			{ id: 'ether', name: 'PP 单项小补剂（单招 +10）', kind: 'ether', singleMove: true, price: 400, amount: 10, icon: 'ether' },
 			{ id: 'elixir', name: 'PP 多项小补剂（各招 +10）', kind: 'ether', price: 800, amount: 10, icon: 'elixir' },
+			{ id: 'maxether', name: 'PP 单项全补剂', kind: 'ether', singleMove: true, price: 750, amount: 999, icon: 'ether', shopFloor: 81 },
+			{ id: 'maxelixir', name: 'PP 多项全补剂', kind: 'ether', price: 1600, amount: 999, icon: 'elixir', shopFloor: 141 },
 			{ id: 'expcandyxs', name: '经验糖果 XS（100 经验）', kind: 'candy', price: 100, amount: 100 },
 			{ id: 'expcandys', name: '经验糖果 S（800 经验）', kind: 'candy', price: 600, amount: 800 },
 			{ id: 'expcandym', name: '经验糖果 M（3000 经验）', kind: 'candy', price: 1800, amount: 3000 },

@@ -68,7 +68,7 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		medic: ['与【进球休息】互斥'], restinball: ['与【自带医疗队】互斥'],
 		compound: ['队伍需有完整进化链、最终进化型种族值总和不超过 500 的伙伴', '已最终进化的伙伴也可选择；每名伙伴限用一次'],
 		singer: ['队伍需有【美洛耶塔】', '与【舞！舞！舞！】互斥'],
-		dancer: ['队伍需有【美洛耶塔】', '与【世界第一的公主殿下】互斥'],
+		dancer: ['队伍需有【美洛耶塔】', '与【宝可世界的歌姬】互斥'],
 		swords: ['队伍需有【勾帕路翁】、【代拉基翁】或【毕力吉翁】'],
 		topclearmind: ['需已获得【聚集的祈愿】，且此后未在战斗外更换队员'],
 		railgun: ['队伍需有可合法学习【电磁炮】的伙伴'],

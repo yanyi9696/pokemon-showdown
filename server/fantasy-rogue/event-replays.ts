@@ -7,6 +7,7 @@ import { POLICE_REGIONS } from './police-data';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	coverageworkshop: '第 60 层起可遇见战术教练，免费获得一份补盲研习。战斗外指定一名伙伴，从其合法可学且未掌握的非本系攻击招式中自选一招；可留待后来入队的伙伴。只教授实用攻击，不提供数值训练或通用招式借用。',
 	...ACTIVITY_OVERVIEWS,
 	greninjatraining: '携带幻想甲贺忍蛙并保留另一位能出战的伙伴时，可在森林遇到小智版甲贺忍蛙。派伙伴离队修行；至少 5 层后，在事件区域寻找归来的它们。',
 	greninjareturn: '迎回原先派出的幻想甲贺忍蛙，提升两次事件实际间隔的层数所对应的等级（最高 100 级）。获得智蛙 Z，并解锁 Z 招式；携带它可在登场时切换小智版形态。',
@@ -53,6 +54,11 @@ export function eventReplay(id: EventID) {
 		pages[key] = { text: paragraphs, options: options.map(([label, next]) => ({ label, next })), battleSkipped };
 	};
 	const possibilities = (key: string, options: [string, string][]) => page(key, ['选择想回顾的后续发展。'], options);
+	if (id === 'coverageworkshop') {
+		page('start', eventOpening(id), [['和教练讨论队伍的薄弱环节', 'study']]);
+		page('study', [EVENT_OVERVIEWS.coverageworkshop]);
+		return { title: EVENT_NAMES[id], start: 'start', pages };
+	}
 	if (id === 'greninjatraining' || id === 'greninjareturn') {
 		page('start', eventOpening(id), id === 'greninjatraining' ? [['派出伙伴修行', 'training'], ['暂时不离队', 'leave']] : [['迎接伙伴归来', 'returned']]);
 		if (id === 'greninjatraining') {

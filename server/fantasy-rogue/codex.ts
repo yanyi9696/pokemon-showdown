@@ -4,10 +4,9 @@ import { createHash } from 'crypto';
 import { RIVALS, RIVAL_SCENES } from './rival-data';
 import { rivalChapterReplay } from './rival-dialogue';
 import { BEGINNER_GUIDE } from './beginner-guide';
-import { addEvolutionSupplies } from './evolution-supplies';
-import type { RogueItem } from './types';
 import { Dex } from '../../sim/dex';
 import { REWARD_SCENES } from './reward-scenes';
+import { catchupLevels } from './late-support';
 import { ROGUE_BLESSINGS, FANTASY_BLESSING_ITEMS } from '../../sim/rogue-blessing-data';
 import type { RogueAccount } from './types';
 import { rogueDiscoveries } from './discoveries';
@@ -40,22 +39,13 @@ function buildFantasyGuide() {
 		' 特定幻想宝可梦携带时，还可触发气场爆发。' : ''), icon: item.id, spritenum: item.spritenum,
 	category: item.itemUser?.length || item.id === 'lightball' ? 'exclusive' : 'general' }))
 		.sort((a, b) => Number(FANTASY_BLESSING_ITEMS.includes(b.id)) - Number(FANTASY_BLESSING_ITEMS.includes(a.id)));
-	const supplies: RogueItem[] = [];
-	addEvolutionSupplies(supplies);
-	for (const item of supplies) if (!items.some(entry => entry.id === item.id)) items.push({
-		id: item.id as ID, name: item.name, text: item.description || '用于特殊进化，在队伍面板检查对应条件。',
-		icon: item.id as ID, spritenum: dex.items.get(item.id).spritenum,
-		category: item.id === 'lightball' ? 'exclusive' : 'general',
-	});
 	const moves = dex.moves.all().filter(move => move.exists && !move.id.startsWith('rogue') && (
-		!base.moves.get(move.id).exists || /[+🔄]$/u.test(move.name) || ['type', 'category', 'basePower', 'accuracy', 'pp', 'priority', 'desc', 'shortDesc']
-			.some(key => (move as any)[key] !== (base.moves.get(move.id) as any)[key])
+		!base.moves.get(move.id).exists || /[+🔄]$/u.test(move.name)
 	)).map(move => ({ id: move.id, name: move.name, text: move.shortDesc || move.desc,
 		origin: base.moves.get(move.id).exists ? 'enhanced' : 'fantasy',
 		type: move.type, category: move.category, power: move.basePower, accuracy: move.accuracy, pp: move.pp }));
 	const abilities = dex.abilities.all().filter(ability => ability.exists && !ability.id.startsWith('rogue') && (
-		!base.abilities.get(ability.id).exists || /[+🔄]$/u.test(ability.name) || ability.desc !== base.abilities.get(ability.id).desc ||
-		ability.shortDesc !== base.abilities.get(ability.id).shortDesc
+		!base.abilities.get(ability.id).exists || /[+🔄]$/u.test(ability.name) || ability.num < 0
 	)).map(ability => ({ id: ability.id, name: ability.name, text: ability.shortDesc || ability.desc,
 		origin: base.abilities.get(ability.id).exists ? 'enhanced' : 'fantasy' }));
 	const pokemon = dex.species.all().filter(species => species.exists && species.name.includes('Fantasy'))
@@ -63,7 +53,6 @@ function buildFantasyGuide() {
 			abilities: [...new Set(Object.values(species.abilities))], stats: species.baseStats,
 			battleOnly: !!species.battleOnly, requiredItem: species.requiredItem }));
 	const itemNotes = [
-		{ id: 'leaderscrest', name: '头领凭证', text: '进化道具，与黑奇石归为一类。劈斩司令在队伍进化面板消耗一枚后，直接进化为仆刀将军。' },
 		{ id: 'greninjaashz', name: '智蛙 Z', text: '完成【甲贺忍蛙护林员】两阶段事件获得，并解锁本局 Z 招式。幻想甲贺忍蛙携带它，在肉鸽战斗中登场时切换为小智版形态；以【飞水手里剑】释放专属 Z 招式【黄金羁绊手里剑】。预定 Z 招式的赠送范围包含进化后拥有这类自制专属纯晶的伙伴。' },
 		{ id: 'megastones', name: '超级进化石与超巨进化许愿星',
 			text: '超级进化石由对应宝可梦携带，解锁超进化系统后可在战斗中使用。' +
@@ -108,9 +97,10 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 				'约第 100 层迎接再次切磋；如果前面的旅途耽搁，会缩短后续重逢间隔。获胜后选择解锁太晶化、超进化、Z 招式或领取 100 幻想碎片；战败也能继续剧情。',
 				'多轮双打共斗考验续航。获胜得到高阶物资，高熟悉度可邀请劲敌同行 8 层。',
 				'约第 140～149 层迎接全力对决；需先完成之前的七段相遇。无论胜负，劲敌发出永久同行邀请；同行共用两个名额，满员时可选择替换。获胜另得大量幻想碎片与高阶培育资源。',
-			][index] + ` ${chapterName}：${person.lines[index]}` }))),
+			][index] + (index + 1 === 4 || index + 1 === 6 || index + 1 === 7 ? ' 第 60 层起成功完成本段还会获赠一份补盲研习，可自选合法的非本系攻击招式。' : '') + ` ${chapterName}：${person.lines[index]}` }))),
 		...Object.entries(REWARD_SCENES).map(([id, scene]) => ({ id: `reward:${id}`, category: 'reward', name: scene.name,
-			text: id === 'catchup' ? '培育家为等级最低的两位可训练伙伴补课：80 层前各提升 3 级，81 层起各提升 5 级，最高 100 级。正常保留升级招式确认与基础治疗、路费奖励。' :
+			text: id === 'catchup' ? `培育家为等级最低的两位可训练伙伴补课：1～80／81～100／101～140／141 层起，各提升 ${[1, 81, 101, 141].map(catchupLevels).join('／')} 级，最高 100 级。45～59 层更容易遇见。保留升级招式确认与基础治疗、路费奖励。` :
+			id === 'pprest' ? '第 81 层起出现：恢复全队所有已掌握招式的 PP，另赠 PP 单项小补剂 ×3 和基础回复物资、路费。' :
 			id === 'chest' ? '留给旅人的补给箱，以回复药与活力碎片为主。还可按需要挑选经验糖果、路费或本局永久训练；物资随楼层提升，永久能力训练从 40 层开始。' :
 			'以回复药与活力碎片为主的旅途补给。展示符合对方偏好的宝可梦或招式，可以提高谢礼品质。' })),
 		...Object.entries(TRADE_NAMES).map(([id, name]) => ({ id: `trade:${id}`, category: 'trade', name,
@@ -119,7 +109,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			id === 'crowns' ? '51 层起低概率出现银色王冠商店，121 层起加售金色王冠。提升个体值，每店限购。' :
 			id === 'balls' ? '全程可能出现，各类捕捉球九折出售，每种限购 15 个。' :
 			id === 'mushroom' ? '以普通商店 125% 的价格回收各类蘑菇。展示蘑菇伙伴，还能获得小蘑菇与一份观察谢礼。' :
-			id === 'growth' ? '51 层起有机会遇到。花费金币，让全队获得本局永久的双攻、双防或战斗经验加成。每店限购；不占携带道具栏。' :
+			id === 'growth' ? '51 层起有机会遇到，100 层后略多。任选多位伙伴与攻击、防御、特攻、特防、速度项目，三档训练员分别提升 3%／8%／15%，按人数和项目计价，高档性价比更高。当场完成，伙伴不离队；每营地只确认一次，各项营地增幅最高 60%，持续本局。' :
 			`欢迎来到${name}！可以购买本店商品，也可以直接离开。商品与库存以当次交易为准。` })),
 		{ id: 'encounter:trainer', category: 'encounter', name: '旅行训练家', text: '路上的训练家向你发起挑战。战胜对手，可以获得金币奖励。' },
 		{ id: 'encounter:rocket', category: 'encounter', name: '火箭队拦路', text: '火箭队挡在店门口。战胜对手后，才能继续使用商店。' },

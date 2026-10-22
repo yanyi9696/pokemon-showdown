@@ -1,4 +1,5 @@
 import { robeMember } from './rogue-awakening';
+import { blessingSpeciesID } from './rogue-species-identity';
 import { petSpecies, defaultCatAbilities } from './rogue-pets';
 import { Dex, toID } from './dex';
 import type { RoguePokemon } from './fantasy-rogue';
@@ -14,8 +15,8 @@ export const TARGET_BLESSING_ABILITIES: Record<string, string> = { hazards: 'yan
 export const POWER_CHOICE_ABILITIES = ['hugepower', 'roguegreatmage'];
 export function strongestBlessingMember(team: RoguePokemon[], baseSpecies: string) {
 	const sum = (stats: Partial<StatsTable>) => Object.values(stats || {}).reduce((n, value) => n + (value || 0), 0);
-	const species = baseSpecies.split('|').map(toID);
-	return team.filter(mon => !mon.egg && species.includes(toID(Dex.mod('gen9fantasy').species.get(mon.set.species).baseSpecies).replace(/fantasy$/, '') as ID))
+	const species = baseSpecies.split('|').map(blessingSpeciesID);
+	return team.filter(mon => !mon.egg && species.includes(blessingSpeciesID(mon.set.species)))
 		.sort((a, b) => b.set.level - a.set.level || sum(b.set.evs) - sum(a.set.evs) ||
 			sum(b.set.ivs) - sum(a.set.ivs) || (b.set.happiness || 0) - (a.set.happiness || 0) ||
 			(a.joinOrder || 0) - (b.joinOrder || 0))[0];
@@ -55,7 +56,8 @@ export function dragonKingAbilityOptions(mon: RoguePokemon | undefined, team: Ro
 }
 export function permanentMemberTypes(mon: RoguePokemon) {
 	if (mon.egg) return [];
-	const types = [...Dex.mod('gen9fantasy').species.get(mon.set.species).types];
+	const types = [...(mon.fusion?.types || Dex.mod('gen9fantasy').species.get(mon.set.species).types)];
+	if (mon.statModifiers?.firstType) types[0] = mon.statModifiers.firstType;
 	if (mon.statModifiers?.extraType) types[1] = mon.statModifiers.extraType;
 	const emblem = emblemType(mon.emblem || toID(mon.set.item));
 	if (emblem) types[types.length > 1 ? 1 : types[0] === emblem ? 0 : 1] = emblem;

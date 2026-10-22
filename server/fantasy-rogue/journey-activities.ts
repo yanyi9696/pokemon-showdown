@@ -34,13 +34,13 @@ export const SCROLLS = {
 } as const;
 const TRAINING_MOVES: Record<string, string> = { primeape: 'ragefist', stantler: 'psyshieldbash', qwilfishhisui: 'barbbarrage', farfetchdgalar: 'leafblade' };
 const trainingMove = (mon: RoguePokemon) => TRAINING_MOVES[toID(mon.set.species)] || toID(evolutionChildren(mon.set.species).find(s => s.evoMove)?.evoMove);
-const sceneMembers = (run: RogueRun, id: string) => run.team.filter(p => !p.egg && p.set.level > 30 &&
+const sceneMembers = (run: RogueRun, id: string) => run.team.filter(p => !p.egg && !p.fusion && p.set.level > 30 &&
 	toID(p.set.species) === SCENES[id]?.[0] && !p.evolutionProgress?.scenes?.includes(SCENES[id][1]));
 export const isJourneyActivity = (id: string): id is ActivityID => id in ACTIVITY_NAMES;
 export function activityEligible(run: RogueRun, id: string) {
 	if (!isJourneyActivity(id)) return true;
 	if (SCENES[id]) return sceneMembers(run, id).length > 0 && (id !== 'peatmoon' || rogueTime(run.floor) === 'night');
-	if (id === 'kubfuscroll') return run.team.some(p => !p.egg && toID(p.set.species) === 'kubfu' && p.set.level >= 35 && p.hp > 0);
+	if (id === 'kubfuscroll') return run.team.some(p => !p.egg && !p.fusion && toID(p.set.species) === 'kubfu' && p.set.level >= 35 && p.hp > 0);
 	if (id === 'kubfumaster') return run.floor >= 51 && !run.activityClaims?.includes(id);
 	if (id === 'duskbreeder') return !run.activityClaims?.includes(id);
 	if (id === 'evolutiondojo') return run.team.some(p => !p.egg && !!trainingMove(p));
@@ -164,7 +164,7 @@ export function journeyActivityView(run: RogueRun) {
 				option('practice', '开始实战练习。', '真实对战会记录招式使用与单场要害次数。'), leave()]);
 	}
 	if (id === 'kubfuscroll') {
-		if (!a.member) return result(ACTIVITY_OPENINGS[id], run.team.filter(p => !p.egg && toID(p.set.species) === 'kubfu' && p.set.level >= 35 && p.hp).map(p => option('member:' + encodeURIComponent(p.id), p.set.species, `Lv.${p.set.level}`)).concat(leave()));
+		if (!a.member) return result(ACTIVITY_OPENINGS[id], run.team.filter(p => !p.egg && !p.fusion && toID(p.set.species) === 'kubfu' && p.set.level >= 35 && p.hp).map(p => option('member:' + encodeURIComponent(p.id), p.set.species, `Lv.${p.set.level}`)).concat(leave()));
 		return result(['守护者请你选定一幅卷轴。选择后，只有这只熊徒弟能进入道场。'],
 			Object.entries(SCROLLS).map(([key, [name]]) => option('scroll:' + key, name, '三只对应属性的守护伙伴，Lv.35～40；通过后直接进化。')).concat(leave()));
 	}

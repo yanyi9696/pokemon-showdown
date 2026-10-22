@@ -1,7 +1,7 @@
 import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import { experienceAtLevel, levelAtExperience, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { createRoguePokemon, rebuildMember } from './progression';
-import type { RogueRun } from './types';
+import type { RogueRun, RogueCommand } from './types';
 import type { RogueRandom } from './biome-pools';
 
 /** Basis points, added before multiplication: 100 = 1%. All values are run-local. */
@@ -11,8 +11,9 @@ export type PersonalGrowthKind = 'offense' | 'defense' | 'balanced';
 export const GROWTH_LIMITS: RogueGrowth = { offense: 12000, defense: 12000, experience: 4000 };
 export const PERSONAL_GROWTH_LIMIT = 6000;
 export const JOURNEY_GROWTH_START = 40;
-/** Catch up by floor 80, cushion the 81–100 spike, then increase gently. */
-export const journeyGrowthAmount = (floor: number) => floor < 40 ? 0 : floor <= 80 ? 115 : floor <= 100 ? 150 : floor < 150 ? 90 : 115;
+/** Preserve the first 80 floors; reinforce the two difficult late-game stretches. */
+export const journeyGrowthAmount = (floor: number) => floor < 40 ? 0 : floor <= 80 ? 115 : floor <= 100 ? 175 : floor <= 140 ? 200 : 225;
+export const personalRewardGrowth = (floor: number) => floor <= 80 ? 600 : floor <= 100 ? 900 : floor <= 140 ? 1000 : 1100;
 export const growthPercent = (amount: number) => `${Number((amount / 100).toFixed(2))}%`;
 export const growthStage = (floor: number) => floor < 100 ? 0 : floor < 150 ? 1 : 2;
 export const trainingStats = (kind: PersonalGrowthKind): StatIDExceptHP[] =>
@@ -21,8 +22,11 @@ export const trainingStats = (kind: PersonalGrowthKind): StatIDExceptHP[] =>
 export function growthModifiers(run: Pick<RogueRun, 'growth'>, mon: RoguePokemon) {
 	const offense = (run.growth?.offense || 0) + (mon.training?.offense || 0) + (mon.mushroomTraining?.offense || 0);
 	const defense = (run.growth?.defense || 0) + (mon.training?.defense || 0) + (mon.mushroomTraining?.defense || 0);
-	return offense || defense ? { atk: offense / 10000, spa: offense / 10000,
-		def: defense / 10000, spd: defense / 10000 } : undefined;
+	const camp = mon.campTraining || {};
+	return offense || defense || Object.values(camp).some(Boolean) ? {
+		atk: (offense + (camp.atk || 0)) / 10000, spa: (offense + (camp.spa || 0)) / 10000,
+		def: (defense + (camp.def || 0)) / 10000, spd: (defense + (camp.spd || 0)) / 10000,
+		spe: (camp.spe || 0) / 10000 } : undefined;
 }
 
 /** Also used in content packs without blessings. Rebuild never heals damage or restores PP. */
@@ -61,11 +65,12 @@ export function grantJourneyGrowth(run: RogueRun, random: RogueRandom) {
 	const chance = run.floor < 50 ? 30 : run.floor < 80 ? 35 : run.floor < 150 ? 45 : 50;
 	if (random(100) >= chance) return;
 	const ledger = run.journeyGrowth ||= { offense: 0, defense: 0 };
+	const cap = run.floor <= 80 ? 2000 : 3500;
 	const choices = (['offense', 'defense'] as const).filter(kind =>
-		ledger[kind] < 2000 && availableGrowth(run, kind, 1));
+		ledger[kind] < cap && availableGrowth(run, kind, 1));
 	if (!choices.length) return;
 	const kind = choices[random(choices.length)];
-	const amount = grantGrowth(run, kind, Math.min(2000 - ledger[kind],
+	const amount = grantGrowth(run, kind, Math.min(cap - ledger[kind],
 		journeyGrowthAmount(run.floor)));
 	ledger[kind] += amount;
 	const source = node.kind === 'reward' ? '补给后的训练心得' : node.kind === 'elite' ? '精英历练' :
@@ -111,42 +116,49 @@ export function grantPersonalGrowth(run: RogueRun, mon: RoguePokemon, kind: Pers
 	syncGrowthParty(run);
 }
 
+export const CAMP_STATS: StatIDExceptHP[] = ['atk', 'def', 'spa', 'spd', 'spe'];
+export const CAMP_TIERS = [
+	{ id: 'junior', name: '助理训练员', amount: 300, price: 150 },
+	{ id: 'expert', name: '资深训练员', amount: 800, price: 300 },
+	{ id: 'master', name: '王牌训练员', amount: 1500, price: 450 },
+];
 export function growthOffers(run: RogueRun) {
 	if (run.floor < 51 || run.node?.trade?.kind !== 'growth') return [];
-	const stage = growthStage(run.floor), purchases = run.node.trade.services || {};
-	return (['offense', 'defense', 'experience'] as const).map(kind => {
-		const amount = kind === 'experience' ? 500 : 400;
-		const price = (kind === 'experience' ? [1000, 1500, 2000] : [1600, 2400, 3200])[stage];
-		const granted = availableGrowth(run, kind, amount);
-		return { id: kind, name: kind === 'offense' ? '输出训练' : kind === 'defense' ? '耐久训练' : '经验心得',
-			amount: granted, price,
-			remaining: Math.max(0, (kind === 'experience' ? 1 : 2) - (purchases[kind] || 0)),
-			text: kind === 'experience' ? `全队本局战斗经验 +${growthPercent(granted)}，不影响经验糖果。` :
-			`全队本局${kind === 'offense' ? '攻击、特攻' : '防御、特防'} +${growthPercent(granted)}，后来加入的伙伴也有效。` };
-	});
+	const claimed = run.node.trade.trainingClaimed || run.node.trade.purchases > 0;
+	return CAMP_TIERS.map(tier => ({ ...tier,
+		price: Math.round(tier.price * [1, 1.3, 1.6][growthStage(run.floor)] / 10) * 10,
+		remaining: claimed ? 0 : 1,
+		text: `每位伙伴每项能力本局永久 +${growthPercent(tier.amount)}；个人各项训练上限 60%。` }));
 }
-
-export function buyGrowth(run: RogueRun, id: string) {
-	if (run.phase !== 'rest' || run.node?.kind !== 'trade' || run.node.trade?.kind !== 'growth') {
-		throw new Error('请在训练营购买训练。');
+export function buyGrowth(run: RogueRun, command: RogueCommand) {
+	if (run.phase !== 'rest' || run.node?.kind !== 'trade' || run.node.trade?.kind !== 'growth') throw new Error('请在训练营安排训练。');
+	const offer = growthOffers(run).find(entry => entry.id === command.value);
+	if (!offer?.remaining) throw new Error('本营地的训练已完成，或训练员无效。');
+	const ids = command.trainingMembers, stats = command.trainingStats;
+	if (!Array.isArray(ids) || !ids.length || new Set(ids).size !== ids.length ||
+		!Array.isArray(stats) || !stats.length || new Set(stats).size !== stats.length || !stats.every(s => CAMP_STATS.includes(s))) {
+		throw new Error('请选择至少一位伙伴与至少一项训练，不可重复选择。');
 	}
-	const offer = growthOffers(run).find(entry => entry.id === id);
-	if (!offer?.remaining || !offer.amount) throw new Error('该训练已售罄或达到本局上限。');
-	if (run.money < offer.price) throw new Error('金币余额不足。');
-	run.money -= offer.price;
-	const trade = run.node.trade;
-	trade.services ||= {};
-	trade.services[offer.id] = (trade.services[offer.id] || 0) + 1;
-	trade.purchases++;
-	grantGrowth(run, offer.id, offer.amount);
-	run.notices = [`完成${offer.name}，本局永久提升 ${growthPercent(offer.amount)}。`];
+	const members = ids.map(id => run.team.find(p => p.id === id && !p.egg && !p.fusion));
+	if (members.some(p => !p)) throw new Error('只能训练队内已孵化且未融合的伙伴。');
+	if (members.some(p => stats.some(s => (p!.campTraining?.[s] || 0) >= PERSONAL_GROWTH_LIMIT))) throw new Error('所选项目已有伙伴达到上限，请取消该项目或伙伴。');
+	const price = offer.price * ids.length * stats.length;
+	if (run.money < price) throw new Error(`本次训练需要 ${price} 金币，余额不足。`);
+	run.money -= price;
+	for (const mon of members) for (const stat of stats) {
+		mon!.campTraining ||= {};
+		mon!.campTraining[stat] = Math.min(PERSONAL_GROWTH_LIMIT, (mon!.campTraining[stat] || 0) + offer.amount);
+	}
+	run.node.trade.trainingClaimed = true; run.node.trade.purchases++;
+	syncGrowthParty(run);
+	run.notices = [`${offer.name}完成了 ${ids.length} 位伙伴的 ${stats.length} 项训练，花费 ${price} 金币；每项本局永久提升 ${growthPercent(offer.amount)}，接近上限时只提升至 60%。伙伴留在队伍中。`];
 }
 
 /** The successful mushroom branch replaces, rather than accompanies, the old temporary damage buff. */
 export function grantMushroomGrowth(run: RogueRun) {
 	if (run.floor < JOURNEY_GROWTH_START) return '伙伴们打起了精神，准备好继续旅行。';
 	for (const mon of run.team) {
-		const base = run.floor <= 80 ? 300 : run.floor <= 100 ? 375 : run.floor < 150 ? 225 : 300;
+		const base = personalRewardGrowth(run.floor) / 2;
 		const amount = Math.max(0, Math.min(base, PERSONAL_GROWTH_LIMIT - (mon.training?.offense || 0),
 			PERSONAL_GROWTH_LIMIT - (mon.training?.defense || 0)));
 		if (!amount) continue;

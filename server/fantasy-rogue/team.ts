@@ -34,7 +34,7 @@ export function inventoryItem(content: RogueContent, id: string): RogueItem | un
 	return item.exists ? { id: item.id, name: item.name, kind: 'held', price: 0, icon: item.id } : undefined;
 }
 export function abilityItemTarget(mon: RoguePokemon, item: string): string | undefined {
-	if (mon.compound) return;
+	if (mon.compound || mon.fusion) return;
 	const species = dex.species.get(mon.set.species), current = toID(mon.set.ability);
 	if (item === 'abilitypatch') return species.abilities.H ?
 		(toID(species.abilities.H) === current ? species.abilities[0] : species.abilities.H) : undefined;
@@ -89,7 +89,7 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 		}
 		if (old) run.bag[old] = (run.bag[old] || 0) + 1;
 		mon.set.item = id;
-		applyHeldForme(mon.set);
+		if (!mon.fusion) applyHeldForme(mon.set);
 		break;
 	}
 	case 'moves':

@@ -1,4 +1,5 @@
 import { bloodRequest } from './fantasy-rogue-awakening';
+import { numberRequest } from './rogue-number-blessings';
 /**
  * Simulator Side
  * Pokemon Showdown - http://pokemonshowdown.com/
@@ -37,6 +38,7 @@ import {
 export interface ChosenAction {
 	rogueEeveeZ?: boolean;
 	rogueBlood?: boolean;
+	rogueNumber?: string;
 	choice: 'move' | 'switch' | 'instaswitch' | 'revivalblessing' | 'team' | 'shift' | 'pass' | 'rogueball';// action type
 	pokemon?: Pokemon; // the pokemon doing the action
 	targetLoc?: number; // relative location of the target to pokemon (move action only)
@@ -328,7 +330,7 @@ export class Side {
 				if (action.zmove) details += ` zmove`;
 				if (action.maxMove) details += ` dynamax`;
 				if (action.terastallize) details += ` terastallize`;
-				return `${action.rogueBlood ? 'rogueblood ' : action.rogueEeveeZ ? 'rogueeeveez ' : ''}move ${action.moveid}${details}`;
+			return `${action.rogueNumber ? `roguenumber ${action.rogueNumber} ` : ''}${action.rogueBlood ? 'rogueblood ' : action.rogueEeveeZ ? 'rogueeeveez ' : ''}move ${action.moveid}${details}`;
 			case 'switch':
 			case 'instaswitch':
 			case 'revivalblessing':
@@ -518,11 +520,13 @@ export class Side {
 		const companionZ = this.active.map(mon => companionZRequest(mon));
 		const dragonKing = dragonKingRequest(this);
 		const blood = this.active.map(mon => bloodRequest(mon));
-		const payload = rogue || dragonKing || psychic !== undefined || eeveeZ.some(Boolean) || companionZ.some(Boolean) || blood.some(Boolean) ? { ...update, fantasyRogue: {
+		// makeRequest clears activeRequest before emitRequest, so use the new wire request here.
+		const number = numberRequest(this, 'active' in update);
+		const payload = rogue || number || dragonKing || psychic !== undefined || eeveeZ.some(Boolean) || companionZ.some(Boolean) || blood.some(Boolean) ? { ...update, fantasyRogue: {
 			companionZ,
 			dragonKing,
 			psychic,
-			eeveeZ, blood,
+			eeveeZ, blood, number,
 			catchable: !!rogue && rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
 			balls: (rogue?.balls || []).map(ball => ({
 				id: ball.id, name: ball.name, count: rogue!.bag[ball.id] || 0,
@@ -1123,6 +1127,15 @@ export class Side {
 		for (const choiceString of choiceStrings) {
 			let [choiceType, data] = Utils.splitFirst(choiceString.trim(), ' ');
 			data = data.trim();
+			let numberStat: string | undefined;
+			if (choiceType === 'roguenumber') {
+				[numberStat, data] = Utils.splitFirst(data, ' ');
+				const request = numberRequest(this);
+				if (!request?.available || !request.stats.includes(numberStat) ||
+					this.choice.actions.some(action => action.rogueNumber)) return this.emitChoiceError('本场数字祝福已使用，或能力选项无效。');
+				[choiceType, data] = Utils.splitFirst(data.trim(), ' ');
+				if (!['move', 'rogueblood', 'rogueeeveez'].includes(choiceType)) return this.emitChoiceError('请同时选择本回合的招式。');
+			}
 			const bloodBonus = choiceType === 'rogueblood';
 			if (bloodBonus) {
 				if (!data.startsWith('move ') || !bloodRequest(this.active[this.getChoiceIndex()])?.available) return this.emitChoiceError('当前无法发动神衣鲜血。');
@@ -1209,6 +1222,7 @@ export class Side {
 				if (!this.chooseMove(data, targetLoc, event)) return false;
 				if (eeveeBonus) this.choice.actions[this.choice.actions.length - 1].rogueEeveeZ = true;
 				if (bloodBonus) this.choice.actions[this.choice.actions.length - 1].rogueBlood = true;
+				if (numberStat) this.choice.actions[this.choice.actions.length - 1].rogueNumber = numberStat;
 				break;
 			case 'switch':
 				this.chooseSwitch(data);

@@ -18,6 +18,8 @@ npm-debug.log
 /tools/set-import/sets
 databases/*.db*
 /databases/backups/
+# Local playtest saves and per-battle traces; keep reports and compact evidence in Git.
+/docs/playtests/**/run-*/
 *.o
 *.o.dSYM
 # Typescript build artifacts

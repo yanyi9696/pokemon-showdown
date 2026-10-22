@@ -3,6 +3,7 @@ import { canRogueTerastallize, canRogueSystem } from './fantasy-rogue';
 import { queueRogueFutureAttack } from './fantasy-rogue-spirits';
 import { blessingExtraZ, spendBlessingZ } from './fantasy-rogue-blessings';
 import { hasRogueStatus } from './fantasy-rogue-status';
+import { ghidorahActive } from './rogue-ghidorah';
 
 const CHOOSABLE_TARGETS = new Set(['normal', 'any', 'adjacentAlly', 'adjacentAllyOrSelf', 'adjacentFoe']);
 
@@ -1816,7 +1817,8 @@ export class BattleActions {
 
 		// types
 		let typeMod = target.runEffectiveness(move);
-		typeMod = this.battle.clampIntRange(typeMod, -6, 6);
+		// Ghidorah's added resistances compose without an extra resistance floor.
+		typeMod = ghidorahActive(target) ? Math.min(typeMod, 6) : this.battle.clampIntRange(typeMod, -6, 6);
 		target.getMoveHitData(move).typeMod = typeMod;
 		if (typeMod > 0) {
 			if (!suppressMessages) this.battle.add('-supereffective', target);
@@ -1949,6 +1951,7 @@ export class BattleActions {
 	runMegaEvoY?: (this: BattleActions, pokemon: Pokemon) => boolean;
 
 	canTerastallize(pokemon: Pokemon) {
+		if (pokemon.set.fantasyRogueModifiers?.fusion && pokemon.battle.fantasyRogue) return null;
 		if (!canRogueTerastallize(pokemon)) return null;
 		const item = pokemon.getItem();
 		if (item.zMove || pokemon.canMegaEvo || this.dex.gen !== 9) {

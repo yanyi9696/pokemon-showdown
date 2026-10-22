@@ -21,7 +21,7 @@ export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): Rogue
 		// An unhatched egg is archived, but cannot become a battle-ready partner in PVP.
 		snap.team = snap.team.filter(mon => !mon.egg);
 		requireRule(!snap.blessings.length || snap.blessingEffects, '这张卡缺少可复现的祝福记录。');
-		requireRule(snap.team.length > 0 && snap.team.length <= roguePartyLimit(spirit), '通关卡的队伍数量无效。');
+		requireRule(snap.team.length > 0 && snap.team.length <= roguePartyLimit(spirit, snap.blessingEffects), '通关卡的队伍数量无效。');
 		for (const mon of snap.team) {
 			const expected = { ...mon.stats };
 			rebuildMember(mon, snap.boosts);

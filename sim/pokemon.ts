@@ -10,6 +10,7 @@ import { fantasyMovePowers } from './fantasy-move-power';
 import { sharedRogueItems, consumeRogueItem } from './fantasy-rogue-items';
 import { toID } from './dex';
 import { isRogueFormat, recordRogueSelfDestruct } from './fantasy-rogue';
+import { ghidorahActive } from './rogue-ghidorah';
 import { blessingActionUsed, blessingTypes, hasBlessing, rogueAbilityInfo, spendRogueEeveeZ, spendRoguePsychic } from './fantasy-rogue-blessings';
 import { canStackRogueStatus, clearRogueStatus, hasRogueStatus, rememberRogueStatus } from './fantasy-rogue-status';
 import type { DynamaxOptions, PokemonMoveRequestData, PokemonSwitchRequestData } from './side';
@@ -1234,6 +1235,7 @@ export class Pokemon {
 	}
 
 	transformInto(pokemon: Pokemon, effect?: Effect) {
+		if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueModifiers?.fusion) return false;
 		const species = pokemon.species;
 		if (
 			pokemon.fainted || this.illusion || pokemon.illusion || (pokemon.volatiles['substitute'] && this.battle.gen >= 5) ||
@@ -1349,11 +1351,20 @@ export class Pokemon {
 	 * Use formeChange to handle changes to ability and sending client messages.
 	 */
 	setSpecies(rawSpecies: Species, source: Effect | null = this.battle.effect, isTransform = false) {
+		const fusion = isRogueFormat(this.battle.format.id) && this.set.fantasyRogueModifiers?.fusion;
+		if (fusion && this.species && rawSpecies.id !== this.species.id) {
+			// Breaking a shell must still spend its shield when fusion freezes the appearance.
+			if (source?.effectType === 'Ability' && ['disguise', 'iceface'].includes(source.id)) {
+				this.m.rogueFusionSpentShell = source.id;
+			}
+			return null;
+		}
 		const species = this.battle.runEvent('ModifySpecies', this, null, source, rawSpecies);
 		if (!species) return null;
 		this.species = species;
 
 		this.setType(species.types, true);
+		if (fusion) this.setType(fusion.types, true);
 		this.apparentType = rawSpecies.types.join('/');
 		this.addedType = species.addedType || '';
 		this.knownType = true;
@@ -1362,7 +1373,7 @@ export class Pokemon {
 		const rogueModifiers = isRogueFormat(this.battle.format.id) ? this.set.fantasyRogueModifiers : undefined;
 		const stats = this.battle.spreadModify(this.species.baseStats,
 			rogueModifiers ? { ...this.set, species: this.species.name } : this.set);
-		if (this.species.maxHP) {
+		if (this.species.maxHP && !fusion) {
 			stats.hp = this.species.maxHP +
 				(rogueModifiers?.compound && species.bst <= 500 ? Math.floor(2 * (rogueModifiers.compoundBonus?.hp || 0) * this.level / 100) : 0) +
 				(isRogueFormat(this.battle.format.id) ? this.set.fantasyRogueStats?.hp || 0 : 0);
@@ -1373,6 +1384,7 @@ export class Pokemon {
 				const modifiers = this.set.fantasyRogueModifiers;
 				const eligible = !modifiers.statsType || this.getTypes().includes(modifiers.statsType);
 				stats.hp = Math.floor(stats.hp * (1 + (eligible ? modifiers.stats?.hp || 0 : 0))) + (modifiers.hp || 0);
+				stats.hp = Math.floor(stats.hp * (1 + (modifiers.teamBlessings?.hp || 0)) + 1e-9);
 			}
 		}
 
@@ -2232,7 +2244,7 @@ export class Pokemon {
 		if (this.fainted) return false;
 
 		const negateImmunity = !this.battle.runEvent('NegateImmunity', this, type);
-		const notImmune = type === 'Ground' ?
+		const notImmune = type === 'Psychic' && ghidorahActive(this) ? negateImmunity : type === 'Ground' ?
 			this.isGrounded(negateImmunity) :
 			negateImmunity || this.battle.dex.getImmunity(type, this);
 		if (notImmune) return true;

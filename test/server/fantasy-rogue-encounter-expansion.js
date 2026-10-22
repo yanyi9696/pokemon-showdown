@@ -259,10 +259,14 @@ describe('Fantasy Rogue tutor and auction save transactions', function () {
 	});
 	it('settles affordable winning bids once, rejects stale requests and suppresses the obtained exclusive', () => {
 		auction(); choose('enter');
-		store.change('expansiontester', a => { a.run.auction.lots[0].willingness = [0, 0, 0]; });
+		store.change('expansiontester', a => {
+			a.run.auction.lots[0].willingness = [0, 0, 0];
+			a.run.blessings.owned.push({...require('../../dist/sim/rogue-blessing-data').blessing('shoppingupgrade'), floor: 1});
+		});
 		const before = account().run, request = { id: randomUUID(), revision: account().revision, action: 'event', value: 'bid', member: before.node.event.key };
 		engine.command('expansiontester', request); engine.command('expansiontester', request);
 		const run = account().run; assert.equal(run.money, before.money - before.auction.lots[0].opening);
+		assert.equal(run.shoppingSpend.total, before.auction.lots[0].opening);
 		assert.equal(run.bag.shadowbottle, 1); assert.equal(run.auction.index, 1); assert.equal(neededExclusiveItems(run).length, 0);
 		assert.throws(() => choose('leave'), /选项/);
 		while (account().run.node.event.stage !== 'result') choose('pass');

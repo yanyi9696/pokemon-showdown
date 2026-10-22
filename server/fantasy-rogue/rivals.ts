@@ -1,3 +1,4 @@
+import { grantCoverage } from './coverage';
 import { randomUUID } from 'crypto';
 import { RIVALS, RIVAL_SNACK_GIFTS, RIVAL_FAREWELLS, CARMINE, type RivalID } from './rival-data';
 import type { RogueContent, RogueNode, RogueRun } from './types';
@@ -120,6 +121,7 @@ function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 	if (won && chapter >= 7) { items.goldbottlecap = 1; items.abilitypatch = 1; }
 	for (const [id, count] of Object.entries(items)) run.bag[id] = (run.bag[id] || 0) + count;
 	if (won && chapter === 8) normalizeBlessings(run).shards += 150;
+	if (won && run.floor >= 60 && [4, 6, 7].includes(chapter)) grantCoverage(run, `rival:${r.id}:${chapter}`);
 	event.trainingAidBlocked = !won;
 	event.stage = 'result'; event.settled = true;
 	event.result = [won ? '这一路的默契，成为了眼前实实在在的收获。' : advanced ? '切磋未能获胜，但对方认真肯定了你的进步，并帮全队恢复健康。你收到一份基础物资。' : '这次合作没能完成。先照顾好伙伴，下一次相遇再共同挑战。'];

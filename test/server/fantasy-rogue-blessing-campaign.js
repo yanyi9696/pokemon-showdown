@@ -46,6 +46,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 				let randomState = seed;
 				const random = max => ((randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0) % max);
 				let { run, account } = setup(); run.spirit = spirit;
+				let selectedLevels = 0, selectedBossLevels = 0;
 				for (const floor of [1, 50, 100, 150]) {
 					run.floor = floor; run.phase = 'blessing';
 					if (floor === 1) {
@@ -64,16 +65,19 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 						} else {
 							const available = state.round.options.map((option, slot) => ({ option, slot })).filter(({ option }) => !option.chosen);
 							const { option, slot } = available[random(available.length)];
+							if (!option.refreshes) {
+								const def = blessing(option.id);
+								selectedLevels += blessingLevelCost(def.tier, floor);
+								selectedBossLevels += blessingLevelCost(def.tier, floor, true);
+							}
 							b.handleBlessingCommand(account, run, content, { action: option.refreshes ? 'blessingrefresh' : 'blessing', slot }, random);
 						}
 						run = JSON.parse(JSON.stringify(run)); account.run = run;
 						b.syncBlessingParty(run);
 					}
-					assert.equal(run.blessings.levels, run.blessings.owned.reduce((sum, entry) => sum +
-						(entry.grantedBy ? 0 : blessingLevelCost(entry.tier, entry.floor)), 0) +
+					assert.equal(run.blessings.levels, selectedLevels +
 						(run.blessings.evolutionCosts || []).reduce((sum, floor) => sum + blessingLevelCost('prismatic', floor), 0));
-					assert.equal(run.blessings.bossLevels, run.blessings.owned.reduce((sum, entry) => sum +
-						(entry.grantedBy ? 0 : blessingLevelCost(entry.tier, entry.floor, true)), 0) +
+					assert.equal(run.blessings.bossLevels, selectedBossLevels +
 						(run.blessings.evolutionCosts || []).reduce((sum, floor) => sum + blessingLevelCost('prismatic', floor, true), 0));
 					delete run.blessings.beforeAdventure;
 					assert.equal(new Set(run.blessings.owned.map(entry => entry.id)).size, run.blessings.owned.length);
@@ -111,6 +115,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		}
 		if (def.family === 'topclearmind') run.blessings.prayer = { floor: 50, changed: false, team: run.team.map(m => m.id) };
 		if (def.family === 'dragonking') run.team[0] = createRoguePokemon(set('Dragonite', 'Inner Focus', 50), run.boosts);
+		if (def.family === 'ghidorah') run.team[0] = createRoguePokemon(set('Hydreigon', 'Levitate', 50), run.boosts);
 		if (def.family === 'railgun') run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 50), run.boosts);
 		if (def.family === 'rulebreaker') run.team[0].extraAbilities = ['moldbreaker'];
 		if (def.family === 'compound') run.team[0] = createRoguePokemon(set('Paras', 'Effect Spore', 50), run.boosts);
@@ -319,7 +324,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		try {
 			battle.makeChoices('team 1', 'team 1');
 			const a = battle.p1.active[0], z = battle.p2.active[0], move = battle.dex.getActiveMove('tackle');
-			assert.equal(battle.runEvent('BasePower', a, z, move, 40), 42);
+			assert.equal(battle.runEvent('BasePower', a, z, move, 40), 40);
+			assert.equal(a.getStat('atk'), Math.floor(z.getStat('atk') * 1.05));
 			assert.equal(battle.runEvent('BasePower', z, a, move, 40), 40);
 			assert.equal(battle.runEvent('ModifyDamage', z, a, battle.dex.getActiveMove('snore'), 100), 105);
 			assert.equal(JSON.stringify(cards), before);

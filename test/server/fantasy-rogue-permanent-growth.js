@@ -119,7 +119,7 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		const run = account().run, mon = run.team[0]; mon.fixedLevel = 5;
 		assert.equal(personalGrowthAmount(run, mon, 'offense', 600, 100000), 0);
 	});
-	it('scales candy quantities and quality without unlocking superior candy early; personal percentage stays the same', () => {
+	it('scales candy value without unlocking superior candy early and strengthens late personal growth', () => {
 		let previous = 0, previousMoney = 0;
 		for (let floor = 1; floor <= 200; floor++) {
 			const exp = rewardExperience(floor); assert(exp >= previous); previous = exp;
@@ -133,34 +133,27 @@ describe('Fantasy Rogue permanent growth and peaceful reward scenes', function (
 		for (const floor of [51, 100, 150, 199]) {
 			enter(floor);
 			assert.equal(rewardChoices(account().run).find(c => c.id === 'offense').targets[0].amount,
-				floor <= 80 ? 600 : floor <= 100 ? 750 : floor < 150 ? 450 : 600);
+				floor <= 80 ? 600 : floor <= 100 ? 900 : floor <= 140 ? 1000 : 1100);
 		}
 	});
-	it('unlocks training trades only at 51, preserves stock, currency, receipts and run caps', () => {
+	it('unlocks batch camps at 51 and preserves idempotency, currency and one-session limits', () => {
 		for (let roll = 0; roll < 100; roll++) assert.notEqual(tradeKind(50, () => roll), 'growth');
-		let draw = 0;
-		assert.equal(tradeKind(51, () => draw++ < 2 ? 99 : 0), 'growth');
-		assert.equal(tradeKind(150, () => 39), 'growth');
-		enter(50, 'trade'); assert.throws(() => cmd('buygrowth', { value: 'offense' }));
+		enter(50, 'trade'); assert.throws(() => cmd('buygrowth', { value: 'junior' }));
 		enter(51, 'trade'); const before = account().run;
-		assert.equal(growthOffers(before)[0].price, 1600);
-		assert.throws(() => cmd('buy', { value: 'offense' }));
-		assert.throws(() => cmd('buyhp', { value: 'offense', member: before.team[0].id }));
+		assert.equal(growthOffers(before)[0].price, 150);
 		assert.throws(() => cmd('shopchallenge'));
-		const request = { id: randomUUID(), revision: account().revision, action: 'buygrowth', value: 'offense' };
+		const request = { id: randomUUID(), revision: account().revision, action: 'buygrowth', value: 'master',
+			trainingMembers: [before.team[0].id], trainingStats: ['atk', 'spa'] };
 		engine.command(user, request); engine.command(user, request);
-		assert.equal(account().run.money, before.money - 1600); assert.equal(account().run.growth.offense, 400);
-		cmd('buygrowth', { value: 'offense' }); assert.throws(() => cmd('buygrowth', { value: 'offense' }));
+		assert.equal(account().run.money, before.money - 900); assert.equal(account().run.team[0].campTraining.atk, 1500);
+		assert.throws(() => cmd('buygrowth', { value: 'junior', trainingMembers: [before.team[0].id], trainingStats: ['def'] }));
 		const snapshot = account(); engine.migrate(user); assert.deepEqual(account().run, snapshot.run);
-		prepareTrade(account().run, content, () => { throw Error('must not roll a service stock'); });
-		store.change(user, a => { a.run.money = 1; });
-		assert.throws(() => cmd('buygrowth', { value: 'defense' }), /余额/); assert.equal(account().run.money, 1);
-		store.change(user, a => { a.run.money = 5000; a.run.growth.defense = 11900; });
-		cmd('buygrowth', { value: 'defense' }); assert.equal(account().run.growth.defense, 12000);
-		assert.throws(() => cmd('buygrowth', { value: 'defense' }));
+		enter(71, 'trade'); store.change(user, a => { a.run.money = 1; });
+		assert.throws(() => cmd('buygrowth', { value: 'junior', trainingMembers: [before.team[0].id], trainingStats: ['def'] }), /余额/);
+		assert.equal(account().run.money, 1);
 	});
 	it('shares team growth with newcomers and preserves HP, PP, items, and innate personal growth', () => {
-		enter(71, 'trade'); cmd('buygrowth', { value: 'offense' }); cmd('buygrowth', { value: 'defense' });
+		enter(71, 'trade'); store.change(user, a => { grantGrowth(a.run, 'offense', 400); grantGrowth(a.run, 'defense', 400); });
 		const run = account().run; const newcomer = createRoguePokemon(set('Charmander', 'Blaze', 36), run.boosts);
 		run.team.push(newcomer); newcomer.hp = 0; newcomer.pp[0].pp = 1;
 		grantPersonalGrowth(run, newcomer, 'offense', 600); syncBlessingParty(run);

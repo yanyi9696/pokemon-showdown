@@ -1,4 +1,4 @@
-import { Dex, toID } from './dex';
+import { blessingSpeciesID } from './rogue-species-identity';
 import type { RoguePokemon } from './fantasy-rogue';
 import type { BlessingEffects } from './rogue-blessing-data';
 
@@ -20,7 +20,7 @@ export function robeMember(team: RoguePokemon[], effects: BlessingEffects | unde
 	const bases = owned.target ? [transfer] : kind === 'godrobe' ? ['zangoose'] : ['espurr', 'meowstic'];
 	const sum = (v: Partial<StatsTable>) => Object.values(v || {}).reduce((n, x) => n + (x || 0), 0);
 	return team.filter(mon => !mon.egg && (!owned.target || owned.target === mon.id) &&
-		bases.includes(toID(Dex.mod('gen9fantasy').species.get(mon.set.species).baseSpecies).replace(/fantasy$/, '')) &&
+		bases.includes(blessingSpeciesID(mon.set.species)) &&
 		(owned.target || kind === 'godrobe' || mon.set.gender === 'F' || mon.set.species.includes('Meowstic-F')))
 		.sort((a, b) => b.set.level - a.set.level || sum(b.set.evs) - sum(a.set.evs) || sum(b.set.ivs) - sum(a.set.ivs) ||
 			(b.set.happiness || 0) - (a.set.happiness || 0) || (a.joinOrder || 0) - (b.joinOrder || 0))[0];

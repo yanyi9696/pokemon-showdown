@@ -66,15 +66,17 @@ export function rogueEffortYield(name: string): StatsTable {
 }
 
 export function experienceAtLevel(growth: number, level: number) {
-	if (!Number.isInteger(level) || level < 1 || level > 100 || !RogueExperienceTables[growth]) {
-		throw new Error('试玩版原作经验表支持 1～100 级。');
+	if (!Number.isInteger(level) || level < 1 || level > 9999 || !RogueExperienceTables[growth]) {
+		throw new Error('经验等级参数无效。');
 	}
+	// Original curves remain exact through 100; solo growth continues smoothly as a cubic.
+	if (level > 100) return Math.floor(RogueExperienceTables[growth][100] * (level / 100) ** 3);
 	return RogueExperienceTables[growth][level];
 }
 
-export function levelAtExperience(growth: number, experience: number) {
+export function levelAtExperience(growth: number, experience: number, maximum = 100) {
 	let level = 1;
-	while (level < 100 && experience >= experienceAtLevel(growth, level + 1)) level++;
+	while (level < maximum && experience >= experienceAtLevel(growth, level + 1)) level++;
 	return level;
 }
 

@@ -143,7 +143,7 @@ export class RulePolicy {
 		return choices.map(choice => {
 			const order = choice.slice(5).split('').map(Number);
 			const illusion = own.some(mon => mon.ability === 'illusion');
-			const badDisguise = illusion && own[order[5] - 1].ability === 'illusion';
+			const badDisguise = illusion && own[order[order.length - 1] - 1]?.ability === 'illusion';
 			return { choice, score: leads[order[0] - 1] - (badDisguise ? 8 : 0), reasons: ['preview-matchups'] };
 		});
 	}

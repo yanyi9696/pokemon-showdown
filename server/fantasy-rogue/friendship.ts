@@ -1,6 +1,7 @@
 import type { RoguePokemon, RogueBattleResult } from '../../sim/fantasy-rogue';
 import type { RogueRun } from './types';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
+import { emissaryCount } from '../../sim/rogue-late-bloomers';
 
 export const ROGUE_INITIAL_FRIENDSHIP = 70;
 export const ROGUE_FRIENDSHIP_EVOLUTION = 160;
@@ -17,6 +18,7 @@ export function friendship(mon: RoguePokemon) {
 }
 
 export function changeFriendship(mon: RoguePokemon, amount: number, run?: RogueRun) {
+	if (amount > 0 && emissaryCount(mon, run?.blessings)) amount *= 2;
 	if (amount > 0 && mon.set.pokeball === 'luxuryball') amount *= 2;
 	if (amount > 0 && mon.initialPartner && ownsBlessing(run?.blessings, 'bond')) {
 		const boosted = amount * 1.5 + (mon.bondFriendshipRemainder || 0);

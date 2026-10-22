@@ -51,7 +51,7 @@ export function chooseGreninjaEvent(run: RogueRun, choice: string) {
 		const target = Math.min(100, mon.set.level + levels);
 		const experience = experienceAtLevel(rogueSpeciesData(mon.set.species).growth, target);
 		gainExperience(run, mon, Math.max(0, experience - (mon.experience || 0)));
-		if (run.team.length < roguePartyLimit(run.spirit)) run.team.push(mon);
+		if (run.team.length < roguePartyLimit(run.spirit, run.blessings)) run.team.push(mon);
 		else {
 			run.pendingCapture = mon;
 			run.captureResume = 'event'; run.phase = 'settlement';

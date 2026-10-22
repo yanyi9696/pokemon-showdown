@@ -1,0 +1,17 @@
+{
+  "floor": 165,
+  "settledBattlesBeforeFix": 50,
+  "reason": "Fix missing number-control wire payload and short-party Illusion preview; all balance values unchanged. Continue same persisted campaign without restoring settled battles.",
+  "before": {
+    "dist/sim/side.js": "d76f5e218b430999064a86c9c34587995c1f17321f480818671bc28096c1cc89",
+    "dist/sim/rogue-number-blessings.js": "57ae56d4cee0dfd5d7852f47e9790cc1439fca2e9868b725d2e9f8ac80c822fc",
+    "dist/server/fantasy-ai/policy.js": "9335d0b7d12cd623f61e9d5da44ff9db9a8c19c446fac9aa1507ceb1868e0f0c"
+  },
+  "after": {
+    "dist/sim/side.js": "45a47e67ef2ccabf9f60c5f029c54b953dde397971fa664dcf4dfeff080c36e8",
+    "dist/sim/rogue-number-blessings.js": "b4b7cb76cff2e680be02a0149208798eb2928ae40384d0df3399207aa30b6782",
+    "dist/server/fantasy-ai/policy.js": "8097b4e0918c97ebdea30f2263a1338b315504cef426ef560e222989d05374c9"
+  },
+  "tests": "38 passing",
+  "additionalFix": "Number threshold calculation must supply a neutral move context for Overgrow and similar abilities."
+}

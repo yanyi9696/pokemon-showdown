@@ -8,6 +8,7 @@ import { spiritItems, spiritShopAvailable } from './spirits';
 import { CANDY_SHOP, restCandyOffer } from './early-balance';
 import { beginAuction } from './auction';
 import { BUYBACK_FLOOR } from './buyback';
+import { nextShopGrade } from './shopping-upgrade';
 
 const dex = Dex.mod('gen9fantasy');
 export const TRADE_NAMES = { buyback: '原价回收摊位', mushroom: '蘑菇收藏家', mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '落槌之前', balls: '宝可梦球商店', crowns: '王冠商店' };
@@ -20,7 +21,7 @@ export function tradeKind(floor: number, random: RogueRandom): keyof typeof TRAD
 	if (floor >= 31 && random(100) < 20) return 'auction';
 	const roll = random(100);
 	if (floor >= 51) {
-		const growthWeight = floor < 100 ? 30 : 40;
+		const growthWeight = floor <= 100 ? 30 : 46;
 		if (roll < growthWeight) return 'growth';
 		const next = (roll - growthWeight) / (100 - growthWeight);
 		return next < 0.45 ? 'candy' : next < 0.8 ? 'machine' : 'mint';
@@ -116,7 +117,7 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 	if (!trade || trade.kind === 'growth' || trade.kind === 'buyback') return;
 	if (trade.kind === 'balls' || trade.kind === 'crowns') {
 		const pool = content.items.filter(item => trade.kind === 'balls' ? item.kind === 'ball' && item.id !== 'masterball' :
-			item.kind === 'crown' && (item.id === 'bottlecap' || run.floor >= 121));
+			item.kind === 'crown' && (item.id === 'bottlecap' || nextShopGrade(run, [51, 121]) >= 121));
 		for (const item of pool) if (!trade.stock.some(stock => stock.id === item.id)) trade.stock.push({ ...item, shopFloor: 1,
 			price: Math.ceil(item.price * (trade.kind === 'balls' ? 0.9 : 1) * (run.spirit === 'meowth' ? 1.25 : 1)),
 			remaining: trade.kind === 'balls' ? 15 : item.id === 'bottlecap' ? 2 : 1 });
@@ -130,16 +131,17 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 	} else if (trade.kind === 'machine') {
 		pool = [...new Set(run.team.flatMap(machineMoves))].map(id => tradeItem(`roguetm${id}`)!);
 	} else {
-		pool = content.items.filter(item => item.kind === 'candy' && CANDY_SHOP[item.id]?.floor <= run.floor)
+		pool = content.items.filter(item => item.kind === 'candy' && CANDY_SHOP[item.id]?.floor <= nextShopGrade(run, Object.values(CANDY_SHOP).map(c => c.floor)))
 			.map(item => ({ ...item }));
 	}
-	const limit = trade.kind === 'machine' ? run.floor < 80 ? 6 : 8 : trade.kind === 'candy' ? 5 : 3;
+	const machineFloor = nextShopGrade(run, [1, 80]);
+	const limit = trade.kind === 'machine' ? machineFloor < 80 ? 6 : 8 : trade.kind === 'candy' ? 5 : 3;
 	while (pool.length && trade.stock.length < limit) {
 		let index = random(pool.length);
 		if (trade.kind === 'machine') {
 			let weighted = pool.map((item, i) => ({ i, weight: machineWeight(item.move!, run) }));
 			const practical = weighted.filter(entry => entry.weight >= 6);
-			if (trade.stock.length < 4 && practical.length) weighted = practical;
+			if (trade.stock.length < (machineFloor > run.floor ? 6 : 4) && practical.length) weighted = practical;
 			let roll = random(weighted.reduce((sum, entry) => sum + entry.weight, 0));
 			index = weighted.find(entry => { roll -= entry.weight; return roll < 0; })!.i;
 		}
@@ -154,10 +156,13 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 
 export function shopStock(content: RogueContent, run?: RogueRun): RogueItem[] {
 	if (run?.node?.kind === 'trade') return run.node.trade?.stock.filter(item => item.remaining > 0) || [];
-	const stock = spiritItems(content, run).filter(item => spiritShopAvailable(item, run?.floor || 1));
+	const allItems = spiritItems(content, run);
+	const stock = allItems.filter(item => spiritShopAvailable(item, run ? nextShopGrade(run,
+		allItems.filter(i => i.kind === item.kind && typeof i.shopFloor === 'number').map(i => i.shopFloor as number)) : 1))
+		.map(item => run && typeof item.shopFloor === 'number' && item.shopFloor > run.floor ? { ...item, shopFloor: run.floor } : { ...item });
 	// Meowth retains its existing unlimited, premium-priced spirit shop.
 	if (run?.node?.kind === 'rest' && run.floor >= 9 && run.spirit !== 'meowth') {
-		const offer = restCandyOffer(run.floor), item = content.items.find(entry => entry.id === offer.id);
+		const offer = restCandyOffer(nextShopGrade(run, Object.values(CANDY_SHOP).map(c => c.floor))), item = content.items.find(entry => entry.id === offer.id);
 		if (item) {
 			const candy = { ...item, price: offer.price, shopFloor: 9,
 				remaining: Math.max(0, offer.stock - (run.node.restCandyPurchases?.[item.id] || 0)) };

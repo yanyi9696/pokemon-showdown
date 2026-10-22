@@ -16,6 +16,7 @@
 
 import { Dex, toID } from './dex';
 import { recordEvolutionDamage } from './rogue-evolution-progress';
+import { commitNumberChoices } from './rogue-number-blessings';
 import { sharedRogueItems, sharedRogueItemData, rogueItemCallback } from './fantasy-rogue-items';
 import { Teams } from './teams';
 import { Field } from './field';
@@ -636,7 +637,8 @@ export class Battle {
 			this.debug(eventid + ' handler suppressed by Embargo, Klutz or Magic Room');
 			return relayVar;
 		}
-		if (eventid !== 'End' && effect.effectType === 'Ability' && (target instanceof Pokemon) && target.ignoringAbility()) {
+		if (eventid !== 'End' && effect.effectType === 'Ability' && (target instanceof Pokemon) &&
+			(target.ignoringAbility() || target.m.rogueFusionSpentShell === effect.id)) {
 			this.debug(eventid + ' handler suppressed by Gastro Acid or Neutralizing Gas');
 			return relayVar;
 		}
@@ -922,7 +924,8 @@ export class Battle {
 				continue;
 			} else if (
 				eventid !== 'End' && effect.effectType === 'Ability' &&
-				(effectHolder instanceof Pokemon) && effectHolder.ignoringAbility()
+				(effectHolder instanceof Pokemon) &&
+				(effectHolder.ignoringAbility() || effectHolder.m.rogueFusionSpentShell === effect.id)
 			) {
 				if (eventid !== 'Update') {
 					this.debug(eventid + ' handler suppressed by Gastro Acid or Neutralizing Gas');
@@ -2358,6 +2361,7 @@ export class Battle {
 	/** Given a table of base stats and a pokemon set, return the actual stats. */
 	spreadModify(baseStats: StatsTable, set: PokemonSet): StatsTable {
 		const rogue = isRogueFormat(this.format.id) ? set.fantasyRogueModifiers : undefined;
+		if (rogue?.fusion) baseStats = rogue.fusion.baseStats;
 		const compoundInactive = rogue?.compound && this.dex.species.get(set.species).bst > 500;
 		if (rogue?.baseStats) baseStats = Object.fromEntries(ROGUE_STATS.map(stat =>
 			[stat, baseStats[stat] + (rogue.baseStats?.[stat] || 0) -
@@ -2386,7 +2390,7 @@ export class Battle {
 			for (const stat of ROGUE_STATS) stats[stat] = Math.max(1, Math.floor(stats[stat] * set.fantasyRogueScale));
 		}
 		if (rogue) {
-			const types = [...this.dex.species.get(set.species).types];
+			const types = [...(rogue.fusion?.types || this.dex.species.get(set.species).types)];
 			if (rogue.extraType) types[1] = rogue.extraType;
 			const emblem = emblemType(rogue.emblem || toID(set.item));
 			if (emblem) types[1] = emblem;
@@ -2394,11 +2398,12 @@ export class Battle {
 				for (const stat of ROGUE_STATS) stats[stat] = Math.floor(stats[stat] * (1 + (rogue.stats?.[stat] || 0)));
 			}
 			stats.hp += rogue.hp || 0;
+			for (const stat of ROGUE_STATS) stats[stat] = Math.floor(stats[stat] * (1 + (rogue.teamBlessings?.[stat] || 0)) + 1e-9);
 			if (rogue.swap) {
 				[stats.atk, stats.def] = [stats.def, stats.atk];
 				[stats.spa, stats.spd] = [stats.spd, stats.spa];
 			}
-			for (const stat of ['atk', 'def', 'spa', 'spd'] as const) {
+			for (const stat of ['atk', 'def', 'spa', 'spd', 'spe'] as const) {
 				stats[stat] = Math.floor(stats[stat] * (1 + (rogue.training?.[stat] || 0)));
 			}
 		}
@@ -3103,6 +3108,7 @@ export class Battle {
 	}
 
 	commitChoices() {
+		if (this.fantasyRogue) commitNumberChoices(this);
 		this.updateSpeed();
 
 		// Sometimes you need to make switch choices mid-turn (e.g. U-turn,

@@ -55,7 +55,7 @@ export interface RogueNode {
 	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
 	restCandyPurchases?: Record<string, number>;
 	trade?: { kind: 'mint' | 'candy' | 'machine' | 'growth' | 'auction' | 'balls' | 'crowns' | 'mushroom' | 'buyback', stock: (RogueItem & { remaining: number })[], purchases: number,
-		services?: Partial<import('./growth').RogueGrowth>, };
+		services?: Partial<import('./growth').RogueGrowth>, trainingClaimed?: boolean, };
 	rewardScene?: import('./reward-scenes').RewardScene;
 	event?: import('./events').RogueEvent;
 	blessingPrepared?: boolean;
@@ -165,6 +165,8 @@ export interface RogueRun extends RogueInventory {
 	companionPickups?: { settled: string[], items: Record<string, number> };
 	preview?: { key: string, trainer: 'sada' | 'turo', stage: 'running' | 'result' | 'personal', result?: import('../../sim/fantasy-rogue').RogueBattleResult };
 	rewardHistory?: string[];
+	catchupCheckpoint?: number;
+	shoppingSpend?: { total: number; rewards: number };
 	/** Offered routes, not selected routes. Saved with the floor so reconnecting cannot reroll pity. */
 	routeHistory?: {
 		floor: number, factors: Record<string, number>, tradeSeen: boolean, eliteMisses: number, lastEliteFloor?: number,
@@ -202,6 +204,8 @@ export interface RogueRun extends RogueInventory {
 	bossPreviews?: Record<number, RogueNode>;
 	leagueBriefingDone?: boolean;
 	startCard?: string;
+	comeback?: import('./comeback').ComebackState;
+	coverageLessons?: { remaining: number; claimed: string[] };
 	clearRecorded?: boolean;
 	/** Per-floor friendship awards are not part of the inventory rollback. */
 	friendshipProgress?: {
@@ -290,8 +294,13 @@ export interface RogueStarterBuild {
 export interface RogueCommand {
 	id: string;
 	revision: number;
-	action: 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
-		'shopchallenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' |
+	fusionAbility?: string;
+	fusionStats?: StatID[];
+	trainingMembers?: string[];
+	trainingStats?: StatIDExceptHP[];
+	appearance?: string;
+	action: 'fusion' | 'unfusion' | 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+		'shopchallenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' | 'comeback' | 'coverage' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
 		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';

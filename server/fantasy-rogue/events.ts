@@ -1,3 +1,4 @@
+import { grantCoverage } from './coverage';
 import { rivalView, chooseRival, settleRival, type RivalEvent } from './rivals';
 import { activityEligible, activityWeight, isJourneyActivity, beginJourneyActivity, journeyActivityView, chooseJourneyActivity, settleJourneyActivity, type JourneyActivity } from './journey-activities';
 import { greninjaEvent, greninjaEventEligible, greninjaEventView, chooseGreninjaEvent } from './greninja-training';
@@ -100,7 +101,7 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && activityEligible(run, id) && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && (id !== 'coverageworkshop' || run.floor >= 60) && activityEligible(run, id) && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
 		!['rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
 		(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
 		(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
@@ -116,7 +117,7 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	});
 	const pool = unseen.length ? unseen : cooled.length ? cooled : candidates;
 	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
-	const weights = pool.map(id => Math.max(1, Math.round(activityWeight(id) * (id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
+	const weights = pool.map(id => Math.max(1, Math.round(activityWeight(id) * (['forest', 'identityquiz'].includes(id) ? 1.3 : 1) * (id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
 		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	return pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
@@ -240,6 +241,12 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	before.money = run.money; before.bag = { ...run.bag };
 	if (choice === 'leave') event.trainingAidBlocked = true;
 	else event.committed = true;
+	if (event.id === 'coverageworkshop') {
+		grantCoverage(run, `event:${event.key}`);
+		event.settled = true; event.stage = 'result';
+		event.result = ['你和伙伴跟着教练讨论了各自怕遇见的对手。他把研习券交给你：「准备好之后，在队伍面板选择伙伴和招式。合适的那一招，往往比一味加强更有用。」'];
+		rewardReceipt(run, before); return;
+	}
 	if (isJourneyActivity(event.id)) { chooseJourneyActivity(account, run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.rival) { chooseRival(run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (greninjaEvent(event.id)) {
@@ -464,6 +471,8 @@ export function settleEventBattle(
 export function eventView(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (event.id === 'coverageworkshop') return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id],
+		paragraphs: event.result || eventOpening(event.id), options: event.settled ? [] : [{id: 'study', name: '和教练讨论队伍的薄弱环节', text: '领取一份补盲研习，可在战斗外自选一个合法的非本系攻击招式。', disabled: false}] };
 	if (isJourneyActivity(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...journeyActivityView(run) };
 	if (greninjaEvent(event.id)) return greninjaEventView(run);
 	if (event.social) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...socialEventView(run) };

@@ -44,7 +44,8 @@ describe('Fantasy Rogue blessings in native battles', () => {
 		const a = battle.p1.active[0], b = battle.p2.active[0];
 		assert.equal(a.m.rogueBlessing.entries, 1);
 		const m = battle.dex.getActiveMove('tackle');
-		assert.equal(battle.runEvent('BasePower', a, b, m, 40), 42);
+		assert.equal(battle.runEvent('BasePower', a, b, m, 40), 40);
+		assert.equal(a.getStat('atk'), Math.floor(a.storedStats.atk * 1.05));
 		assert.equal(battle.runEvent('BasePower', b, a, m, 40), 40);
 	});
 	it('grants a fifth native move slot and preserves its PP', () => {

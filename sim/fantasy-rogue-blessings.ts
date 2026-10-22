@@ -1,6 +1,10 @@
 import { awakeningUpdate, awakeningLethal, spiralLethal, spiralActive, spiralPoints, gainSpiral, robeMultiplier, bloodRequest, empowerBloodMove } from './fantasy-rogue-awakening';
 import { robeMember } from './rogue-awakening';
 import { petSpecies, dogBoostCount } from './rogue-pets';
+import { numberStatMultiplier, recordNumberThreshold } from './rogue-number-blessings';
+import { spindaEntry, spindaHit, spindaDamage } from './rogue-spinda';
+import { ghidorahActive, ghidorahTypes, ghidorahEntry, ghidorahMove, ghidorahEffectiveness } from './rogue-ghidorah';
+import { blessingSpeciesID } from './rogue-species-identity';
 import { recordEvolutionMove } from './rogue-evolution-progress';
 import type { Battle } from './battle';
 import type { Pokemon } from './pokemon';
@@ -28,6 +32,7 @@ interface MemberRuntime {
 	wineUsed?: boolean;
 }
 export interface SideRuntime {
+	entries?: number;
 	combo: number; style: number; lastMove?: string; faintedTypes: string[];
 	drops: Record<string, Partial<BoostsTable>>;
 	prayer?: { atk: number, spa: number }; inheritance?: Pokemon['moveSlots'];
@@ -62,7 +67,6 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 	if (hasBlessing(pokemon, 'speedpower')) add('天下武功，唯快不破', 1 + pokemon.getStat('spe') / 2000);
 	if (move.id === 'bugbuzz' && hasBlessing(pokemon, 'bugchoir')) modifiers.push({ source: blessingSource(pokemon, 'bugchoir'),
 		add: 10 * pokemon.side.pokemon.reduce((n, p) => n + p.moveSlots.filter(slot => slot.id === 'bugbuzz').length, 0) });
-	if (hasBlessing(pokemon, 'entrance')) add(blessing(hasBlessing(pokemon, 'entrance')!.id)!.name, 1 + member(pokemon).entries * 0.05);
 	if (hasBlessing(pokemon, 'hoopa') && strongest(pokemon, 'hoopa') && ['Dark', 'Ghost'].includes(move.type)) add(blessingSource(pokemon, 'hoopa'), 1.5);
 	for (const b of blessingEffects(pokemon)?.owned || []) if (b.family === 'typelink' && b.type === move.type) {
 		add(blessing(b.id)!.name, 1.5 + side(pokemon).faintedTypes.filter(type => type === b.type).length * 0.05);
@@ -117,6 +121,14 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	const card = mon.side.id === 'p1' && state.mentorCard;
 	const stats = rogueStatSnapshot(mon);
 	const statSources: string[] = [];
+	if (mon.m.rogueNumber?.turn === mon.battle.turn) {
+		const names: Record<string, string> = { atk: '攻击', def: '防御', spa: '特攻', spd: '特防', spe: '速度', all: '五项能力' };
+		statSources.push(`【${mon.m.rogueNumber.factor === 5 ? '超大数字' : '大数字'}】本回合${names[mon.m.rogueNumber.stat]} ×${mon.m.rogueNumber.factor}，已计入当前能力`);
+	}
+	if (saved.fusion) statSources.push('【波塔拉耳环】融合种族值与属性已生效，形态变化暂停');
+	if (hasBlessing(mon, 'entrance')) statSources.push(`【闪亮再登场】全队累计登场 ${side(mon).entries || 0} 次，五项能力 +${(side(mon).entries || 0) * 5}%`);
+	if (mon.side.id === 'p1' && state.comebackCard) statSources.push('【再启程】本层伤害、防御、特防 +25%');
+	if (mon.volatiles.roguespindasleep) statSources.push('【濒死睡眠】暂时无法行动；再次受到对手攻击会倒下，成功醒来恢复全部 HP');
 	if (spiralActive(mon)) statSources.push(`【螺旋力】${spiralPoints(mon).toFixed(1)} / 1000，攻击 +${(spiralPoints(mon) / 10).toFixed(1)}%（保命阈值 250）`);
 	if (robeMultiplier(mon) > 1) statSources.push(`【神衣耐久】当前双防 ×${robeMultiplier(mon).toFixed(3)}，已计入能力值`);
 	if (saved.mushroomTraining) statSources.push(`【合成大蘑菇】双攻 +${Number((saved.mushroomTraining.offense / 100).toFixed(2))}%，双防 +${Number((saved.mushroomTraining.defense / 100).toFixed(2))}%（已计入能力值）`);
@@ -127,6 +139,12 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	if ((mon.set.fantasyRogueScale || 1) !== 1) statSources.push(`星级：六维 ×${mon.set.fantasyRogueScale}`);
 	if (modifiers?.hp) statSources.push(`越打命越硬：HP +${modifiers.hp}`);
 	if (modifiers?.stats && Object.values(modifiers.stats).some(Boolean)) statSources.push('属性进化的六维增幅已计入基础能力');
+	if (modifiers?.teamBlessings) {
+		const names = { hp: 'HP', atk: '攻击', def: '防御', spa: '特攻', spd: '特防', spe: '速度' };
+		statSources.push('队伍祝福：' + Object.entries(modifiers.teamBlessings).map(([key, value]) =>
+			`${names[key as StatID]} +${Number((value * 100).toFixed(2))}%`).join('、') + '（已计入能力值）');
+	}
+	if (ghidorahActive(mon)) statSources.push('【王者基多拉】额外拥有恶、电、火的抗性与超能力免疫；抗性倍率正常叠加');
 	if (modifiers?.smallFinal) statSources.push('【谁说我到头了】六项种族值提升 50%');
 	if (modifiers?.compound) statSources.push(mon.species.bst > 500 ?
 		'【五号化合物】当前形态原始种族值总和超过 500，新增点数停用；主特性仍锁定为【化学之力】' :
@@ -260,7 +278,7 @@ function strongest(mon: Pokemon, species: string) {
 	if (!mon.battle.fantasyRogue) return false;
 	const selected = side(mon).strongest ||= {};
 	if (selected[species] !== undefined) return selected[species] === mon.set.fantasyRogueId;
-	const members = mon.side.pokemon.filter(p => species.split('|').includes(toID(p.baseSpecies.baseSpecies).replace(/fantasy$/, '')));
+	const members = mon.side.pokemon.filter(p => species.split('|').map(blessingSpeciesID).includes(blessingSpeciesID(savedBlessingMember(p)?.set.species || p.baseSpecies.name)));
 	const sum = (stats: Partial<StatsTable>) => Object.values(stats).reduce((a, b) => a + (b || 0), 0);
 	members.sort((a, b) => b.level - a.level || sum(b.set.evs) - sum(a.set.evs) || sum(b.set.ivs) - sum(a.set.ivs) ||
 		(b.set.happiness || 0) - (a.set.happiness || 0) || (savedBlessingMember(a)?.joinOrder || 0) - (savedBlessingMember(b)?.joinOrder || 0));
@@ -313,6 +331,8 @@ export function prepareBlessingMember(mon: Pokemon) {
 	}
 }
 export function blessingSwitchIn(mon: Pokemon) {
+	ghidorahEntry(mon);
+	spindaEntry(mon);
 	if (spiralActive(mon) && !mon.m.rogueSpiralParticipated) { mon.m.rogueSpiralParticipated = true; gainSpiral(mon, 12); }
 	if (!mon.battle.fantasyRogue) return;
 	if (hasBlessing(mon, 'dogs') && petSpecies(savedBlessingMember(mon)?.set.species || mon.baseSpecies.name, 'dogs')) {
@@ -338,6 +358,10 @@ export function blessingSwitchIn(mon: Pokemon) {
 	}
 	const runtime = member(mon), team = side(mon);
 	runtime.entries++; runtime.actions = 0;
+	if (hasBlessing(mon, 'entrance')) {
+		team.entries = (team.entries || 0) + 1;
+		mon.battle.add('-message', `【闪亮再登场】全队攻击、防御、特攻、特防、速度累计 +${team.entries * 5}%。`);
+	}
 	if (savedBlessingMember(mon)?.tonics?.wine) mon.addVolatile('confusion', mon, mon.battle.format);
 	for (const move of runtime.inheritedSlots || []) if (!mon.moveSlots.some(slot => slot.id === move.id)) {
 		mon.moveSlots.push({ ...move, disabled: false });
@@ -470,6 +494,8 @@ export function spendRoguePsychic(mon: Pokemon) {
 	return true;
 }
 export function blessingDamage(damage: number, target: Pokemon, source: Pokemon | null, effect: Effect) {
+	const spinda = spindaDamage(damage, target, source, effect);
+	if (spinda !== undefined) return spinda;
 	if (rulebreakerActive(target) && (effect?.effectType === 'Weather' ||
 		['solarpower', 'dryskin'].includes(effect?.id) && target.battle.field.effectiveWeather())) return 0;
 	if (!target.battle.fantasyRogue) return damage;
@@ -515,7 +541,7 @@ export function blessingAfterAction(battle: Battle, source: Pokemon, move: Activ
 		battle.add('-message', `${source.name}触发了处决！`); target.faint(source, move);
 	}
 	if (move.id === 'detect' && source.volatiles.protect && hasBlessing(source, 'detect')) member(source).detectReady = true;
-	if (move.id === 'sacredsword' && hasBlessing(source, 'swords') && ['cobalion', 'terrakion', 'virizion'].includes(toID(source.baseSpecies.baseSpecies))) {
+	if (move.id === 'sacredsword' && hasBlessing(source, 'swords') && ['cobalion', 'terrakion', 'virizion'].includes(blessingSpeciesID(source.baseSpecies.name))) {
 		const stat = battle.sample(['atk', 'def', 'spa', 'spd', 'spe'] as const);
 		member(source).sword[stat] = (member(source).sword[stat] || 1) * 1.1;
 		(battle.fantasyRogue.blessingProgress ||= { kos: [], swords: 0, insight: {} }).swords++;
@@ -541,6 +567,7 @@ export function blessingFirstChoice(mon: Pokemon) { return !!hasBlessing(mon, 's
 export function blessingExtraZ(mon: Pokemon) { return !!hasBlessing(mon, 'style') && side(mon).style >= 6; }
 export function spendBlessingZ(mon: Pokemon) { side(mon).style = 0; member(mon).extraZ = true; }
 export function blessingTypes(mon: Pokemon, types: string[]) {
+	types = ghidorahTypes(mon, types);
 	if (mon.battle.fantasyRogue && mon.set.fantasyRogueModifiers?.extraType && !mon.transformed) {
 		types = [...new Set([types[0], mon.set.fantasyRogueModifiers.extraType])];
 	}
@@ -558,6 +585,8 @@ export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<Stat
 		if (key === 'spe') stat = mon.battle.modify(stat, 1 + profile.speed / 100);
 	}
 	const runtime = member(mon), team = side(mon);
+	if (hasBlessing(mon, 'entrance')) stat *= 1 + (team.entries || 0) * 0.05;
+	if (mon.side.id === 'p1' && mon.battle.fantasyRogue.comebackCard && (key === 'def' || key === 'spd')) stat *= 1.25;
 	if (key === 'atk' && spiralActive(mon)) stat *= 1 + spiralPoints(mon) / 1000;
 	if (key === 'def' || key === 'spd') stat *= robeMultiplier(mon);
 	if (key === 'spe' && hasBlessing(mon, 'speedpower')) stat *= 1.5;
@@ -568,10 +597,11 @@ export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<Stat
 	}
 	if ((key === 'def' || key === 'spd') && hasBlessing(mon, 'style')) stat *= 1 + team.style * 0.1;
 	// runEvent applies its chained ability/item modifier only to integer relay values.
-	return Math.floor(stat + 1e-9);
+	return Math.floor(stat * numberStatMultiplier(mon, key) + 1e-9);
 }
 export function blessingEffectiveness(typeMod: number, target: Pokemon | null, type: string, move: ActiveMove) {
 	if (!target) return typeMod;
+	typeMod = ghidorahEffectiveness(typeMod, target, type, move);
 	const source = target.battle.activePokemon;
 	const attack = source && blessingEffects(source)?.evolution, defense = blessingEffects(target)?.evolution;
 	if (attack?.type === move.type && attack.offense[type]) {
@@ -606,6 +636,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onModifyMove(move, pokemon) {
 		if (pokemon.side.id === 'p2' && this.fantasyRogue?.escortCount) delete move.selfSwitch;
 		empowerBloodMove(pokemon, move);
+		ghidorahMove(pokemon, move);
 		if (move.id === 'zapcannon' && railgunActive(pokemon)) {
 			Object.assign(move, { name: '超电磁炮' });
 			if (typeof move.accuracy === 'number') move.accuracy *= 2;
@@ -708,6 +739,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	},
 };
 export function blessingHit(damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) {
+	if (damage > 0) spindaHit(target, source);
 	if (!source.battle.fantasyRogue || !move || !Object.isExtensible(move) || damage <= 0 || target.side === source.side) return;
 	const targets = move.rogueHitTargets ||= [], id = target.set.fantasyRogueId || target.getSlot();
 	if (!targets.includes(id)) targets.push(id);
@@ -718,6 +750,7 @@ export function blessingHit(damage: number, target: Pokemon, source: Pokemon, mo
 export function blessingUpdate(battle: Battle) {
 	if (!battle.fantasyRogue) return;
 	for (const mon of battle.getAllActive()) if (mon.hp) {
+		recordNumberThreshold(mon);
 		reportRogueStatuses(mon);
 		awakeningUpdate(mon);
 		const modifiers = mon.set.fantasyRogueModifiers;

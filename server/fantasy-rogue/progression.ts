@@ -113,7 +113,7 @@ export function levelMoves(name: string): { move: string, level: number, generat
 }
 
 export function initializeExperience(mon: RoguePokemon) {
-	mon.experience ??= experienceAtLevel(rogueSpeciesData(mon.set.species).growth, mon.set.level);
+	mon.experience ??= experienceAtLevel(rogueSpeciesData(mon.fusion?.first.set.species || mon.set.species).growth, mon.set.level);
 	mon.seenMoves ??= mon.set.moves.map(toID);
 	ensureMemberMemory(mon);
 }
@@ -179,6 +179,7 @@ export function evolutionOptions(
 }
 
 export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
+	if (mon.fusion) throw new Error('请先解除融合，再进行进化。');
 	if (!compoundEvolutionAllowed(mon, name)) throw new Error('五号化合物已锁定其他进化方向。');
 	if (toID(mon.set.species) === 'meltan' && toID(name) === 'melmetal') {
 		if ((run.blessings?.candy || 0) < 400) throw new Error('需要 400 颗美录坦糖果。');
@@ -194,7 +195,7 @@ export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
 	if (heldItem && toID(mon.set.item) === heldItem) mon.set.item = '';
 	const old = Dex.mod('gen9fantasy').species.get(mon.set.species);
 	const shedinja = old.id === 'nincada' && toID(name) === 'ninjask' &&
-		run.team.length < roguePartyLimit(run.spirit) && (run.bag.pokeball || 0) > 0 ? structuredClone(mon) : undefined;
+		run.team.length < roguePartyLimit(run.spirit, run.blessings) && (run.bag.pokeball || 0) > 0 ? structuredClone(mon) : undefined;
 	const next = Dex.mod('gen9fantasy').species.get(name);
 	const slot = Object.entries(old.abilities).find(([, ability]) => toID(ability) === toID(mon.set.ability))?.[0] || '0';
 	mon.set.species = next.name;
@@ -242,12 +243,12 @@ export function gainEffort(run: RogueRun, mon: RoguePokemon, yieldStats: StatsTa
 export function gainExperience(run: RogueRun, mon: RoguePokemon, amount: number) {
 	initializeExperience(mon);
 	if (mon.fixedLevel) return;
-	const growth = rogueSpeciesData(mon.set.species).growth;
+	const growth = rogueSpeciesData(mon.fusion?.first.set.species || mon.set.species).growth;
 	const before = mon.experience!;
-	mon.experience = Math.min(experienceAtLevel(growth, 100), before + amount);
+	mon.experience = Math.min(experienceAtLevel(growth, mon.uncappedLevel ? 9999 : 100), before + amount);
 	run.notices ||= [];
 	if (mon.experience > before) run.notices.push(`${mon.set.species} 获得 ${mon.experience - before} 经验。`);
-	const level = levelAtExperience(growth, mon.experience);
+	const level = levelAtExperience(growth, mon.experience, mon.uncappedLevel ? 9999 : 100);
 	const previousLevel = mon.set.level;
 	if (level <= previousLevel) return;
 	mon.set.level = level;
@@ -260,11 +261,11 @@ export function gainExperience(run: RogueRun, mon: RoguePokemon, amount: number)
 
 export function experienceProgress(mon: RoguePokemon) {
 	if (mon.experience === undefined) return null;
-	const growth = rogueSpeciesData(mon.set.species).growth;
+	const growth = rogueSpeciesData(mon.fusion?.first.set.species || mon.set.species).growth;
 	const base = experienceAtLevel(growth, mon.set.level);
-	const next = experienceAtLevel(growth, Math.min(100, mon.set.level + 1));
+	const next = experienceAtLevel(growth, Math.min(mon.uncappedLevel ? 9999 : 100, mon.set.level + 1));
 	return { current: mon.experience - base, needed: next - base, total: mon.experience,
 		// Server-authored thresholds let the client preview every growth group without duplicating formulas.
-		levels: Array.from({ length: 100 }, (_, index) => experienceAtLevel(growth, index + 1)),
+		levels: Array.from({ length: mon.uncappedLevel ? Math.min(9999, mon.set.level + 100) : 100 }, (_, index) => experienceAtLevel(growth, index + 1)),
 	};
 }

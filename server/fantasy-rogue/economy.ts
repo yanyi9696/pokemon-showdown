@@ -132,6 +132,7 @@ const SHOP_FLOORS: Record<string, number | false> = {
 	pokeball: 9, potion: 9, revive: 9, oranberry: 9,
 	antidote: 9, burnheal: 9, iceheal: 9, awakening: 9, paralyzeheal: 9,
 	fullheal: 39, ether: 9,
+	maxether: 81, maxelixir: 141,
 	greatball: 29, superpotion: 29, sitrusberry: 29,
 	miracleseed: 69, mysticwater: 69, charcoal: 69,
 	firestone: 39, waterstone: 39, thunderstone: 39, leafstone: 39, moonstone: 39, sunstone: 39,
@@ -164,6 +165,7 @@ const PRICES: Record<string, number> = {
 	pokeball: 250, greatball: 750, ultraball: 1500, potion: 200, superpotion: 650, hyperpotion: 1500,
 	revive: 900, fullheal: 600, antidote: 500, burnheal: 500, iceheal: 500, awakening: 500, paralyzeheal: 500,
 	ether: 400, elixir: 1200, oranberry: 300, sitrusberry: 800, linkingcord: 2500,
+	maxether: 750, maxelixir: 1600,
 };
 
 /** Same quote for the client and transaction; no fee when there is nothing this center can restore. */
