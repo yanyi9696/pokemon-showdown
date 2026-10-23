@@ -344,6 +344,9 @@ export function blessingSwitchIn(mon: Pokemon) {
 	spindaEntry(mon);
 	if (spiralActive(mon) && !mon.m.rogueSpiralParticipated) { mon.m.rogueSpiralParticipated = true; gainSpiral(mon, 12); }
 	if (!mon.battle.fantasyRogue) return;
+	// Switching clears client volatiles. Reset on entry: an Update between
+	// BeforeSwitchOut and removal from the field can otherwise refill this cache.
+	delete mon.m.rogueStatusLabels;
 	if (hasBlessing(mon, 'dogs') && petSpecies(savedBlessingMember(mon)?.set.species || mon.baseSpecies.name, 'dogs')) {
 		const state = mon.battle.fantasyRogue;
 		const team = mon.side.id === 'p1' ? state.team : state.duel?.team || [];
@@ -407,7 +410,6 @@ export function failedTrainerCapture(battle: Battle) {
 }
 export function blessingLeave(mon: Pokemon, fainted = false) {
 	if (!mon.battle.fantasyRogue) return;
-	delete mon.m.rogueStatusLabels;
 	const team = side(mon);
 	member(mon).inheritedSlots = mon.moveSlots.filter(slot => member(mon).inherited.includes(slot.id)).map(slot => ({ ...slot }));
 	if (mon.foes(true).some(foe => hasBlessing(foe, 'passdrops'))) {

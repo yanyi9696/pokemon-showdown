@@ -44,6 +44,9 @@ export function wrapRogueStatus(mon: Pokemon, id: string, callback: Function | u
 			const next = surviving?.[previous] ? previous : Object.keys(surviving || {})[0] as ID;
 			mon.status = next || '' as ID;
 			mon.statusState = next ? surviving![next] : this.initEffectState({ id: '', target: mon });
+			// A native cure message clears the client's sole status slot. Sync the
+			// final primary status after restoring context, without restarting it.
+			if (!surviving?.[id] && next) this.add('-status', mon, next, '[silent]');
 		}
 	};
 }

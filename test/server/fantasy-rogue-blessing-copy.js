@@ -15,6 +15,13 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 	this.timeout(30000);
 	let content;
 	before(() => { content = createPreviewContent(); });
+	it('distinguishes status type immunity from move immunity in Stack Status copy', () => {
+		const text = blessingDisplay(data.blessing('stackstatus')).text;
+		assert(text.includes('异常状态可无视对方的属性免疫施加'));
+		assert(text.includes('不能无视招式本身的属性免疫'));
+		assert(text.includes('【催眠粉】仍对草属性宝可梦无效'));
+		assert(text.includes('特性、道具及场地的保护仍然生效'));
+	});
 	function setup(floor = 1, size = 1) {
 		const team = Array.from({length: size}, () => createRoguePokemon(set('Pikachu', 'Static', 50, ['Tackle']), stats(0)));
 		team.forEach(mon => { mon.initialPartner = true; });
