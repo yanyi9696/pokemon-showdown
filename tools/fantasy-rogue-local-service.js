@@ -8,35 +8,50 @@ const root = path.resolve(__dirname, '..');
 const databases = ['fantasy-rogue-preview.db', 'fantasy-rogue.db'];
 const [mode, portArgument = '8000'] = process.argv.slice(2);
 
-async function backup() {
+async function backup(serverRoot = root) {
 	const Database = require('better-sqlite3');
+	const config = path.join(serverRoot, 'config', 'config.js');
+	const configuredDatabase = fs.existsSync(config) ? require(config).fantasyrogue?.database : undefined;
+	const sources = databases.map(name => path.join(serverRoot, 'databases', name));
+	if (configuredDatabase && configuredDatabase !== ':memory:') {
+		sources.push(path.resolve(serverRoot, configuredDatabase));
+	}
 	const opened = [];
 	try {
-		for (const name of databases) {
-			const source = path.join(root, 'databases', name);
+		for (const candidate of sources) {
+			const source = fs.existsSync(candidate) ? fs.realpathSync(candidate) : candidate;
 			if (!fs.existsSync(source)) continue;
+			if (opened.some(entry => entry.source === source)) continue;
+			let name = path.basename(source);
+			if (opened.some(entry => entry.name === name)) name = `${opened.length}-${name}`;
 			const db = new Database(source, { readonly: true, fileMustExist: true });
-			opened.push({ name, db });
+			opened.push({ name, source, db });
 			const rows = db.prepare('SELECT userid, data FROM rogue_accounts ORDER BY userid').all();
 			if (rows.some(row => JSON.parse(row.data).run?.phase === 'battle')) {
 				throw new Error('存在进行中的肉鸽战斗，请先结束战斗再重启。');
 			}
 		}
-		const folder = path.join(root, 'databases', 'backups', 'local-restart-' + new Date().toISOString().replace(/[:.]/g, '-'));
-		fs.mkdirSync(folder, { recursive: true });
+		const backupRoot = path.join(serverRoot, 'databases', 'backups');
+		fs.mkdirSync(backupRoot, { recursive: true });
+		const folder = fs.mkdtempSync(path.join(backupRoot, 'local-restart-' + new Date().toISOString().replace(/[:.]/g, '-') + '-'));
 		const manifest = { at: new Date().toISOString(), folder, databases: [] };
-		for (const { name, db } of opened) {
+		for (const { name, source, db } of opened) {
 			await db.backup(path.join(folder, name));
-			const rows = db.prepare('SELECT userid, data FROM rogue_accounts ORDER BY userid').all();
-			manifest.databases.push({ name, accounts: rows.length,
+			const snapshot = new Database(path.join(folder, name), { readonly: true, fileMustExist: true });
+			let rows;
+			try {
+				rows = snapshot.prepare('SELECT userid, data FROM rogue_accounts ORDER BY userid').all();
+			} finally {
+				snapshot.close();
+			}
+			manifest.databases.push({ name, source, accounts: rows.length,
 				hash: crypto.createHash('sha256').update(JSON.stringify(rows)).digest('hex') });
 		}
-		const config = path.join(root, 'config', 'config.js');
 		if (fs.existsSync(config)) fs.copyFileSync(config, path.join(folder, 'config.js'));
 		fs.writeFileSync(path.join(folder, 'manifest.json'), JSON.stringify(manifest, null, 2));
-		fs.mkdirSync(path.join(root, 'tmp'), { recursive: true });
-		fs.writeFileSync(path.join(root, 'tmp', 'fantasy-rogue-last-backup.json'), JSON.stringify(manifest, null, 2));
-		console.log(JSON.stringify({ backup: folder, databases: manifest.databases.map(({ name, accounts }) => ({ name, accounts })) }));
+		fs.mkdirSync(path.join(serverRoot, 'tmp'), { recursive: true });
+		fs.writeFileSync(path.join(serverRoot, 'tmp', 'fantasy-rogue-last-backup.json'), JSON.stringify(manifest, null, 2));
+		return manifest;
 	} finally {
 		for (const { db } of opened) db.close();
 	}
@@ -82,6 +97,7 @@ async function inspect(verify) {
 			if (blessings.codexSchema !== ROGUE_CODEX_SCHEMA || blessings.contentVersion !== codexContentVersion()) {
 				throw new Error('端口上的服务仍不是当前构建版本，请查看启动日志。');
 			}
+			if (blessings.entries.length !== rogueCodex(undefined, 'blessings', true).entries.length) throw new Error('祝福图鉴条目数不符。');
 			const events = await query('fantasyroguecodex', 'events');
 			if (events.entries.length !== rogueCodex(undefined, 'events', true).entries.length) throw new Error('图鉴条目数不符。');
 			result.adventures = events.entries.filter(entry => entry.category === 'adventure').length;
@@ -93,6 +109,11 @@ async function inspect(verify) {
 	}
 }
 
-(mode === 'backup' ? backup() : mode === 'inspect' || mode === 'verify' ? inspect(mode === 'verify') :
+if (require.main === module) {
+	(mode === 'backup' ? backup().then(manifest => {
+		console.log(JSON.stringify({ backup: manifest.folder, databases: manifest.databases.map(({ name, accounts }) => ({ name, accounts })) }));
+	}) : mode === 'inspect' || mode === 'verify' ? inspect(mode === 'verify') :
 	Promise.reject(new Error('Usage: node tools/fantasy-rogue-local-service.js backup|inspect|verify [port]')))
-	.catch(error => { console.error(error.message); process.exitCode = 1; });
+		.catch(error => { console.error(error.message); process.exitCode = 1; });
+}
+module.exports = { backup };

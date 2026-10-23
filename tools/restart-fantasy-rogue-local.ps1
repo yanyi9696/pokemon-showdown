@@ -1,8 +1,18 @@
-﻿param([ValidateRange(1, 65535)][int]$Port = 8000)
+﻿param(
+    [ValidateRange(1, 65535)][int]$Port = 8000,
+    [string]$ClientRoot,
+    [ValidateSet('auto', 'normal', 'preview')][string]$StartMode = 'auto'
+)
 # Keep the UTF-8 BOM so Windows PowerShell 5.1 can read Chinese strings.
 $ErrorActionPreference = 'Stop'
 $serverRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$clientRoot = Join-Path (Split-Path $serverRoot -Parent) 'pokemon-showdown-client'
+if (!$ClientRoot) {
+    $ClientRoot = Join-Path (Split-Path $serverRoot -Parent) 'pokemon-showdown-client'
+}
+$clientRoot = (Resolve-Path -LiteralPath $ClientRoot -ErrorAction Stop).Path
+if (!(Test-Path -LiteralPath (Join-Path $clientRoot 'play.pokemonshowdown.com\testclient.template.html'))) {
+    throw 'ClientRoot 不是有效的客户端源码目录。'
+}
 $previewScript = Join-Path $PSScriptRoot 'fantasy-rogue-preview.js'
 $serverCli = Join-Path $serverRoot 'pokemon-showdown'
 $maintenanceScript = Join-Path $PSScriptRoot 'fantasy-rogue-local-service.js'
@@ -33,7 +43,11 @@ function Get-GameProcess {
 $originalLocation = Get-Location
 try {
     $service = Get-GameProcess
-    $startMode = if ($service) { $service.RogueStartMode } else { 'preview' }
+    if ($StartMode -eq 'auto') {
+        $startMode = if ($service) { $service.RogueStartMode } else { 'preview' }
+    } elseif ($service -and $StartMode -ne $service.RogueStartMode) {
+        throw '当前服务的存档模式与 StartMode 不一致，停止自动重启。'
+    }
     if ($startMode -eq 'normal') {
         Set-Location $serverRoot
         $settings = & $nodeExecutable -e "const {Config}=require('./dist/server/config-loader'); console.log(JSON.stringify({port:Config.port,bind:Config.bindaddress}));" | ConvertFrom-Json
@@ -87,6 +101,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "服务已启动，但新版内容检查未通过，请查看：$outputLog" }
     Write-Output "已重启新版本地肉鸽，端口 $Port，进程 $($started.Id)。存档备份已完成。"
     Write-Output '浏览器按 Ctrl+F5，然后使用原来的固定测试昵称读取存档。'
+    $clientUrl = ([Uri](Join-Path $clientRoot 'play.pokemonshowdown.com\testclient.html')).AbsoluteUri
+    Write-Output "本次构建的客户端入口：${clientUrl}?~~localhost:$Port#fantasyrogue"
     Write-Output "日志：$outputLog"
 } finally {
     Set-Location $originalLocation
