@@ -63,7 +63,7 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 	if (activeMove.rogueWine || preview && savedBlessingMember(pokemon)?.tonics?.wine && !member(pokemon).wineUsed) add('酒', 2);
 	if (move.type === 'Poison' && savedBlessingMember(pokemon)?.tonics?.poison) add('酒与头孢', 1.5);
 	if (activeMove.rogueLanding || preview && pokemon.volatiles.rogueascent &&
-		pokemon.battle.turn > pokemon.volatiles.rogueascent.turn) add('登龙', 1.3);
+		pokemon.battle.turn > pokemon.volatiles.rogueascent.turn) add('登龙', 1.2);
 	if (hasBlessing(pokemon, 'speedpower')) add('天下武功，唯快不破', 1 + pokemon.getStat('spe') / 2000);
 	if (move.id === 'bugbuzz' && hasBlessing(pokemon, 'bugchoir')) modifiers.push({ source: blessingSource(pokemon, 'bugchoir'),
 		add: 10 * pokemon.side.pokemon.reduce((n, p) => n + p.moveSlots.filter(slot => slot.id === 'bugbuzz').length, 0) });

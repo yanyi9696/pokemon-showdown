@@ -175,6 +175,27 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 			assert.throws(() => choose('sleep'), /已更新/);
 		}
 	});
+	it('resumes both saved floor-56 room reward choices without losing or duplicating loot', () => {
+		for (const choice of ['fragments', 'supplies']) {
+			enter('room', 56); choose('fight'); settle(true);
+			const saved = account().run, offer = saved.node.event.fragmentOffer;
+			assert.equal(saved.phase, 'event'); assert.equal(saved.node.event.stage, 'fragments');
+			engine = new RogueEngine(store, content, n => random(n));
+			engine.migrate('eventtester');
+			assert.deepEqual(account().run.node.event.fragmentOffer, offer);
+			assert.deepEqual(eventView(account().run).options.map(o => o.id), ['fragments', 'supplies']);
+			const shards = account().run.blessings.shards;
+			choose(choice);
+			assert.equal(account().run.blessings.shards - shards, choice === 'fragments' ? offer.amount : 3);
+			assert.throws(() => choose(choice), /已更新/);
+			while (account().run.blessings.pending.length) {
+				const reward = account().run.blessings.pending[0];
+				cmd('blessingreward', { member: reward.id, value: reward.options[0] });
+			}
+			assert.equal(account().run.node.event.stage, 'result');
+			cmd('continue'); assert.equal(account().run.floor, 57);
+		}
+	});
 	it('pays room loot and one four-choice toolbox plus stage shards exactly once', () => {
 		enter('room', 101); choose('fight');
 		const { run, result } = settle(true);

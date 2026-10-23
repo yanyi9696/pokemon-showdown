@@ -20,13 +20,13 @@ describe('Fantasy Rogue authoritative effect display and consumable persistence'
 		}, p1: { team: team.map(p => p.set) }, p2: { team: [set('Blissey', 'Natural Cure', 100, ['Splash'])] } });
 		battle.makeChoices('team 1', 'team 1'); return battle.p1.active[0];
 	}
-	it('shows 30% on the landing move and blocks both landing and following turns before the next leap', () => {
+	it('shows 20% on the landing move and blocks both landing and following turns before the next leap', () => {
 		const mon = begin(['ascent']); battle.makeChoices('move 1', 'move 1'); assert(mon.volatiles.rogueascent);
-		assert.equal(rogueAbilityInfo(mon).moves.cut.power.find(m => m.source === '登龙').factor, 1.3);
+		assert.equal(rogueAbilityInfo(mon).moves.cut.power.find(m => m.source === '登龙').factor, 1.2);
 		battle.makeChoices('move 1', 'move 1'); assert(!mon.volatiles.rogueascent);
 		battle.makeChoices('move 1', 'move 1'); assert(!mon.volatiles.rogueascent);
 		battle.makeChoices('move 1', 'move 1'); assert(mon.volatiles.rogueascent);
-		assert(battle.log.some(line => line.includes('威力提升 30%')));
+		assert(battle.log.some(line => line.includes('威力提升 20%')));
 	});
 	it('uses the same ordered blessing multipliers for previews and actual base-power events', () => {
 		const mon = begin(['speedpower', 'entrance', 'bugchoir'], { set: set('Mew', 'Synchronize', 50, ['Bug Buzz']) });

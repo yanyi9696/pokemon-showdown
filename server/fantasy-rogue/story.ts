@@ -5,6 +5,7 @@ import { ELITE_FOUR_FLOORS } from './trainer-bosses';
 import { ELITE_BOSS_FLOORS } from './content';
 import { opposingCompanion } from './companion-rematches';
 import { TRAVELLERS } from './traveller-profiles';
+import { trainerReunionPages } from './trainer-reunions';
 import { dialoguePage, type NarrativePage } from './narrative';
 
 export type RogueStoryStage = 'opening' | 'spirit' | 'spiritEffect' | 'climb' | 'cards' | 'portal' |
@@ -148,10 +149,10 @@ export function bossIntroPages(run: RogueRun): Page[] {
 	}));
 	if (!['gym', 'elitefour', 'champion'].includes(trainer.role)) return [];
 	const lines = TRAINER_DIALOGUE[trainer.id]?.[trainer.role as 'gym' | 'elitefour' | 'champion'];
-	return (lines || ['欢迎，你和伙伴已经走了很远。', '准备好了，就让我们开始这场对战吧。']).map(text => ({
+	return [...trainerReunionPages(run, trainer.id), ...(lines || ['欢迎，你和伙伴已经走了很远。', '准备好了，就让我们开始这场对战吧。']).map(text => ({
 		...page('arena', `第 ${run.floor} 层 · 战前`, text, trainer.name), avatar: trainer.avatar, portrait: trainer.id,
 		expression: 'neutral' as const,
-	}));
+	}))];
 }
 function companionIntro(id: string): string[] {
 	const lines: Partial<Record<string, string>> = {
@@ -173,6 +174,14 @@ export function bossVictoryPages(run: RogueRun): NarrativePage[] {
 	if (!trainer || !['gym', 'elitefour', 'champion'].includes(trainer.role)) return [];
 	const companion = opposingCompanion(run, trainer);
 	const lines: Record<string, string> = {
+		jasmine: '你和伙伴互相照顾、又彼此信赖……这样的坚强，我也想好好学习。',
+		winona: '你们找到了穿越逆风的道路。那份配合，比任何飞翔的姿态都更令人赞叹。',
+		gardenia: '这份成长真让人高兴！我们的防线也被你们突破了，要继续好好照顾伙伴哦！',
+		candice: '好厉害的集中力！刚才那一下，我和伙伴都心服口服啦！',
+		clair: '……是你赢了。你的指挥和伙伴的实力，都配得上这场胜利。下次我可不会输。',
+		clay: '行，有真本事。你和伙伴打下的基础，经得起考验，继续往前闯吧！',
+		nanu: '嗯，打得不错。没必要总看着我，夸夸一直在努力的伙伴吧。',
+		valerie: '您与伙伴的心意，我确实感受到了。那是一场无须言语、也能彼此明白的对话。',
 		brock: '像岩石一样坚定，又懂得在关键时刻改变。你和伙伴都做得很好。',
 		sabrina: '我看到的未来，也被你们的选择改变了。这份力量，值得相信。',
 		flannery: '好热烈的对战！这下我可不能再只靠气势了。你们真的很厉害！',
@@ -199,10 +208,10 @@ function gymGiftPages(run: RogueRun): Page[] {
 		return bossIntroPages(run).concat([{ ...page('arena', '准备好再开始',
 			'四种系统都已解锁。你可以先调整队伍，准备好了再开始对战。'), avatar: trainer?.avatar, portrait: trainer?.id, expression: 'approval' }]);
 	}
-	return [page('arena', '第一百层 · 馆主的赠礼',
+	return [...trainerReunionPages(run, trainer?.id || ''), ...[page('arena', '第一百层 · 馆主的赠礼',
 		GYM_GIFT_LINES[trainer?.id || ''] || '能来到第一百层，已经证明了你们的实力。开战之前，选一种新的力量吧。', trainer?.name),
 	page('arena', '选择新的力量', '你可以解锁一种尚未解锁的系统：超进化、超巨进化、Z 招式或太晶化，并领取配套的自选超级进化石、超巨进化许愿星、自选 Z 纯晶或 50 片自选属性太晶碎片。领完后先调整队伍，准备好了再来挑战。')]
-		.map(entry => ({ ...entry, avatar: trainer?.avatar, portrait: trainer?.id, expression: 'approval' }));
+		.map(entry => ({ ...entry, avatar: trainer?.avatar, portrait: trainer?.id, expression: 'approval' as const }))];
 }
 
 export function afterSpirit(run: RogueRun) {

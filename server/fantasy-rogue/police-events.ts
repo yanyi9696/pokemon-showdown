@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { travellingRoster } from './travellers';
+import { trainerReunionPages } from './trainer-reunions';
 import type { RogueRun, RogueEncounter } from './types';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
@@ -96,7 +97,7 @@ export function beginPoliceEncounter(run: RogueRun, random: RogueRandom) {
   if (region === 'paldea' && round === 8) pages.unshift(dialoguePage('penny', '牡丹', '……一直没能告诉你，天星队的幕后首领就是我。谢谢你一路认真对待大家。最后，也请和我打一场，让我亲自承担这件事。', false, accompanying(run, 'penny') ? 'left' : 'right'));
   if (region === 'galar' && fans) pages.push(dialoguePage('marnie', '玛俐', boss ? '哥，我是自己决定和他一起旅行的。不过你想确认的话，我们就认真打给你看吧。' : '大家的心意我收到了，不过别再堵路了。切磋完就让旅人先走，好吗？', false, 'left'));
   if (region === 'galar' && fans && boss) pages.unshift(dialoguePage('piers', '聂梓', '他们一路唱着你们的事。我得亲眼确认，玛俐跟着你旅行能不能安心。来一场认真的对战吧。'));
-  queueNarrative(run, pages, 'ready'); return true;
+		queueNarrative(run, [...(boss ? trainerReunionPages(run, chief.id) : []), ...pages], 'ready'); return true;
  }
  const available = (Object.keys(POLICE_REGIONS) as PoliceRegion[]).filter(id => !regions[id]);
  if (!available.length || random(100) >= 12) return false;

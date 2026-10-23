@@ -19,6 +19,14 @@ const GYM_PROFILES: Record<string, [string, TravellerProfile['preference'], stri
 	lorelei: ['关都', 'pokemon', ['event'], 'nevermeltice', '不融冰', '冷静观察伙伴的状态，比一味向前冲更重要。'],
 	lance: ['关都', 'battle', ['elite'], 'dragonfang', '龙之牙', '力量应当用来保护伙伴。让我听听你的想法。'],
 	steven: ['丰缘', 'reward', ['event'], 'metalcoat', '金属膜', '这条路上有许多值得留心的矿石。宝可梦也是，值得慢慢了解。'],
+	jasmine: ['城都', 'pokemon', ['event', 'reward'], 'metalcoat', '金属膜', '你、你好……我是浅葱市的阿蜜。刚才我在替一只迷路的宝可梦包扎。你的伙伴看起来很安心，平时一定受到很好的照顾吧。'],
+	winona: ['丰缘', 'battle', ['wild', 'elite'], 'sharpbeak', '锐利鸟嘴', '我是茵郁市的娜琪。我的伙伴刚从上空巡视回来，前面的风向变了。与飞行宝可梦同行，既要相信它们，也要留意它们传回的消息。'],
+	gardenia: ['神奥', 'pokemon', ['wild', 'event'], 'miracleseed', '奇迹种子', '嗨！我是百代市的菜种。看见那边的新芽了吗？草属性宝可梦特别喜欢这样的地方。来，我们轻一点靠近，别吓到它们。'],
+	candice: ['神奥', 'battle', ['wild', 'elite'], 'nevermeltice', '不融冰', '我是切锋市的小菘！这阵冷风真让人精神一振。你和伙伴也很有斗志嘛，要不要先活动一下，再继续赶路？'],
+	clair: ['城都', 'battle', ['elite', 'wild'], 'dragonfang', '龙之牙', '我是烟墨市的小椿。你刚才指挥伙伴通过岔路的样子，我看见了。光有自信可不够；想让龙宝可梦认可你，得拿出相称的本领。'],
+	clay: ['合众', 'reward', ['trade', 'reward'], 'softsand', '柔软沙子', '我是帆巴市的菊老大。前面那段地面松了，我刚让伙伴检查过。赶路归赶路，脚底下的情况得弄清楚，别把能避免的亏也吃了。'],
+	nanu: ['阿罗拉', 'pokemon', ['event', 'reward'], 'blackglasses', '黑色眼镜', '……默丹。乌拉乌拉岛的岛屿之王，还是个警察。别紧张，我只是在看看这几只喵喵有没有吃上东西。你那边的伙伴也照顾好了吧？'],
+	valerie: ['卡洛斯', 'pokemon', ['event', 'reward'], 'pixieplate', '妖精石板', '您好，我是香薰市的玛绣。方才在看伙伴追逐光点，不知不觉就走到了这里。若能听懂它们的语言，想必每一步都有许多故事吧。'],
 };
 export function travellerProfiles(): TravellerProfile[] {
 	const profiles = new Map<string, TravellerProfile>();

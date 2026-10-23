@@ -160,7 +160,7 @@ describe('Fantasy Rogue revised ascent and Life Orb compatibility', () => {
 		battle.randomizer = damage => damage;
 		return battle.p1.active[0];
 	}
-	it('gives the freely selected landing move 30% more power after an actual slicing hit', () => {
+	it('gives the freely selected landing move 20% more power after an actual slicing hit', () => {
 		const mon = begin(['ascent'], 'Synchronize', 'Tackle');
 		battle.makeChoices('move 2', 'move 1'); assert(mon.isSemiInvulnerable());
 		let landingPower;
@@ -171,7 +171,7 @@ describe('Fantasy Rogue revised ascent and Life Orb compatibility', () => {
 			return value;
 		};
 		battle.makeChoices('move 1', 'move 1');
-		assert.equal(landingPower, 52); assert.equal(mon.lastMove.id, 'tackle'); assert(!mon.isSemiInvulnerable());
+		assert.equal(landingPower, 48); assert.equal(mon.lastMove.id, 'tackle'); assert(!mon.isSemiInvulnerable());
 	});
 	for (const [ability, move, recoil] of [
 		['Sheer Force', 'Flamethrower', false], ['Sheer Force', 'Tackle', true],

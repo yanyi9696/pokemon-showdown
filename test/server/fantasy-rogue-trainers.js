@@ -57,11 +57,12 @@ describe('Fantasy Rogue authored trainers', function () {
 			const run = {floor: 20, trainerHistory: {gyms: [], eliteFour: []}};
 			counts[chooseTrainer(run, candidates, max => rng.random(max)).trainer.id]++;
 		}
-		for (const count of Object.values(counts)) assert(count > 850 && count < 1150, JSON.stringify(counts));
+		const expected = 10000 / identities.length;
+		for (const count of Object.values(counts)) assert(Math.abs(count - expected) < expected * 0.15, JSON.stringify(counts));
 	});
 
-	it('loads all 80 gym, 6 Elite Four and 1 champion rosters into native battles without rewriting authored choices', () => {
-		assert.equal(TrainerBossData.length, 87);
+	it('loads all 144 gym, 6 Elite Four and 1 champion rosters into native battles without rewriting authored choices', () => {
+		assert.equal(TrainerBossData.length, 151);
 		const dex = Dex.mod('gen9fantasy');
 		for (const source of TrainerBossData) {
 			const floor = source.floor || (source.role === 'elitefour' ? 165 : 190);
@@ -87,8 +88,11 @@ describe('Fantasy Rogue authored trainers', function () {
 					assert.equal(mon.level, Math.max(PreviewBalance.bossLevel(floor),
 						require('../../dist/server/fantasy-rogue/evolution').minimumEvolutionLevel(mon.species.name)));
 					assert.equal(mon.baseAbility, toID(authored.ability));
-					assert.equal(mon.item, toID(authored.item));
-					assert.deepEqual(mon.baseMoves, authored.moves.map(toID));
+					// Entry effects can immediately consume Booster Energy or a terrain seed.
+					assert.equal(mon.item || mon.lastItem, toID(authored.item));
+					assert.deepEqual(mon.baseMoves, authored.moves.map(move => dex.moves.get(move).id));
+					const hiddenPower = authored.moves.map(move => dex.moves.get(move)).find(move => move.id === 'hiddenpower');
+					if (hiddenPower) assert.equal(mon.hpType, hiddenPower.type);
 					assert.deepEqual(mon.set.evs, authored.evs);
 					assert.deepEqual(mon.set.ivs, authored.ivs);
 					assert.equal(mon.set.nature, authored.nature || 'Hardy');
@@ -137,7 +141,9 @@ describe('Fantasy Rogue authored trainers', function () {
 				} finally { battle.destroy(); }
 			}
 		}
-		assert.equal(seen.size, 15);
+		const expected = new Set(TrainerBossData.flatMap(entry => Teams.import(entry.team))
+			.map(mon => Dex.mod('gen9fantasy').species.get(mon.species)).filter(species => species.forme.includes('Mega')).map(species => species.id));
+		assert.deepEqual(seen, expected);
 	});
 	it('draws eight distinct gym leaders and persists their team and portrait through defeat, retreat and reload', () => {
 		const met = [];

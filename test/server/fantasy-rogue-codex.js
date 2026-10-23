@@ -43,7 +43,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert.equal(events.filter(e => e.category === 'reward').length, 8);
 		assert(events.filter(e => e.category !== 'ecology').every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 		const people = events.filter(e => ['companion', 'trainer'].includes(e.category));
-		assert.equal(people.length, 89);
+		assert.equal(people.length, 97); // The existing 89 characters plus eight new gym leaders.
 		for (const role of ['companion', 'gym', 'elitefour', 'champion', 'antagonist', 'other']) {
 			assert(people.some(e => e.roles.includes(role)), role);
 		}

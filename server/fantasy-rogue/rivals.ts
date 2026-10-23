@@ -1,4 +1,5 @@
 import { grantCoverage } from './coverage';
+import { trainerReunionPages } from './trainer-reunions';
 import { randomUUID } from 'crypto';
 import { RIVALS, RIVAL_SNACK_GIFTS, RIVAL_FAREWELLS, CARMINE, type RivalID } from './rival-data';
 import type { RogueContent, RogueNode, RogueRun } from './types';
@@ -90,7 +91,7 @@ export function beginRival(run: RogueRun, random: RogueRandom) {
 	(run.eventHistory ||= []).push({ id: `rival:${r.id}:${chapter}`, floor: run.floor });
 	run.phase = 'event';
 	if (r.id === 'kieran') r.carmine ||= { affection: 0 };
-	queueNarrative(run, rivalOpeningPages(r.id, chapter, r.affection), 'event');
+	queueNarrative(run, [...trainerReunionPages(run, r.id), ...rivalOpeningPages(r.id, chapter, r.affection)], 'event');
 }
 function prepareChapter(run: RogueRun, random: RogueRandom) {
 	const state = run.node!.event!.rival!, chapter = state.chapter;

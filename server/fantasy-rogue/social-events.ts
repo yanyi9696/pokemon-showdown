@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { RIVALS } from './rival-data';
 import { TRAVELLERS } from './traveller-profiles';
 import { travellingRoster, requestCompanion } from './travellers';
+import { trainerReunionPages } from './trainer-reunions';
 import { dialoguePage, queueNarrative, healNarrativeParty } from './narrative';
 import { lowerToEligibleStage } from './evolution';
 import { randomSpeciesEligible } from './species-eligibility';
@@ -25,7 +26,9 @@ export function beginSocialEvent(run: RogueRun, random: RogueRandom) {
 	run.node!.reward = { money: 0, items: {} };
 	run.node!.encounters = []; run.encounter = 0; run.phase = 'event';
 	(run.eventHistory ||= []).push({ id: 'travellermeeting', floor: run.floor });
-	queueNarrative(run, [dialoguePage(person.id, person.name, person.greeting)], 'event');
+	queueNarrative(run, [
+		...trainerReunionPages(run, person.id), dialoguePage(person.id, person.name, person.greeting),
+	], 'event');
 	return true;
 }
 export function socialEventView(run: RogueRun) {

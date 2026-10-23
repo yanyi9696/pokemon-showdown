@@ -22,6 +22,10 @@ export function encounterSetProblems(set: PokemonSet) {
 		problems.push(`${species.name} 不能拥有特性 ${set.ability}`);
 	}
 	const pool = encounterMovePool(species.name);
-	for (const move of set.moves) if (!pool.has(toID(move))) problems.push(`${species.name} 不能学习招式 ${move}`);
+	for (const move of set.moves) {
+		// Hidden Power's typed exports share the real move ID; a typed name is not a separate learnset entry.
+		const data = dex.moves.get(move);
+		if (!data.exists || !pool.has(data.id)) problems.push(`${species.name} 不能学习招式 ${move}`);
+	}
 	return problems;
 }

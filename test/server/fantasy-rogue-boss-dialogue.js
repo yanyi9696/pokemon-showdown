@@ -10,6 +10,7 @@ const { trainerBossCandidates } = require('../../dist/server/fantasy-rogue/train
 const { TRAINER_DIALOGUE, GYM_GIFT_LINES } = require('../../dist/server/fantasy-rogue/trainer-dialogue');
 const { storyView, bossIntroPages, bossDialogueKey } = require('../../dist/server/fantasy-rogue/story');
 const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
+const { requestCompanion } = require('../../dist/server/fantasy-rogue/travellers');
 
 describe('Fantasy Rogue boss openings', function () {
 	this.timeout(15000);
@@ -45,7 +46,7 @@ describe('Fantasy Rogue boss openings', function () {
 			roles.add(`${entry.id}:${entry.role}`);
 			if (entry.role === 'gym') assert(GYM_GIFT_LINES[entry.id]);
 		}
-		assert.equal(roles.size, 17);
+		assert.equal(roles.size, 25);
 		for (const id of ['larry', 'acerola']) assert.notDeepEqual(TRAINER_DIALOGUE[id].gym, TRAINER_DIALOGUE[id].elitefour);
 	});
 	for (const floor of [20, 40, 60, 80, 120, 140, 160, 165, 175, 180, 185, 190]) {
@@ -102,6 +103,31 @@ describe('Fantasy Rogue boss openings', function () {
 		assert.equal(run().phase, 'ready'); assert(!run().battle); assert(!view());
 		cmd('battle'); assert.equal(run().phase, 'battle');
 	});
+	for (const floor of [20, 100]) {
+		it(`saves the companion reunion at gym floor ${floor}, resumes its page and does not replay after defeat`, () => {
+			store.change(user, a => { requestCompanion(a.run, { id: 'lacey', origin: 'event' }); });
+			const candidates = trainerBossCandidates(floor, 50);
+			engine = new RogueEngine(store, content, n => n === candidates.length ? candidates.findIndex(c => c.trainer.id === 'clay') : 0);
+			enter(floor);
+			assert.equal(run().node.encounters[0].trainer.id, 'clay');
+			assert.equal(view().portrait, 'lacey'); assert.equal(view().side, 'left');
+			assert.equal(view().total, 8); next();
+			assert.equal(view().portrait, 'clay'); assert.equal(view().side, 'right');
+			const key = view().key;
+			engine = new RogueEngine(store, content, () => 0); engine.migrate(user);
+			assert.equal(view().key, key);
+			while (view()?.key) next();
+			if (floor === 100) {
+				const gift = run().blessings.pending[0];
+				cmd('blessingreward', { member: gift.id, value: 'gmega' });
+			}
+			assert.equal(run().phase, 'ready'); assert(run().seenBossDialogues.includes(bossDialogueKey(run())));
+			cmd('battle'); const current = run();
+			engine.settle(user, current.battle.token, { encounterId: current.battle.encounterId, won: false, team: current.team, bag: current.bag });
+			engine.migrate(user); assert(!view());
+			cmd('battle'); assert.equal(run().phase, 'battle');
+		});
+	}
 	it('does not promise an unavailable gift when all four systems are already unlocked', () => {
 		store.change(user, a => Object.assign(a.run, { megaUnlocked: true, gmegaUnlocked: true, teraUnlocked: true, zUnlocked: true }));
 		enter(100);

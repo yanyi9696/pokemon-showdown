@@ -85,6 +85,10 @@ describe('Fantasy Rogue October 21 regression', function () {
 		assert(encounterSetProblems(set('Cleffa', 'Yan Bu Zhen', 10, ['Splash'])).length);
 		assert(encounterSetProblems(set('Cleffa', 'Cute Charm', 10, ['Earthquake'])).length);
 		assert(encounterSetProblems(set('Vulpix-Alola', 'Snow Cloak', 10, ['Flamethrower'])).length);
+		assert.deepEqual(encounterSetProblems(set('Litten', 'Intimidate', 10, ['Hidden Power [Dark]'])), []);
+		assert.deepEqual(encounterSetProblems(set('Magnezone-Fantasy', 'Analytic', 80, ['Hidden Power Ice'])), []);
+		assert(encounterSetProblems(set('Litten', 'Intimidate', 10, ['Hidden Power Bad'])).length);
+		assert(encounterSetProblems(set('Magikarp', 'Swift Swim', 10, ['Hidden Power Ice'])).length);
 	});
 	it('audits dynamic wild, travelling trainer, themed event and rival species at early, middle and late levels', () => {
 		const species = new Set([...Object.values(EVENT_TEAM_POOLS).flat(), ...TRAVELLING_TRAINERS.flatMap(p => p.team),
