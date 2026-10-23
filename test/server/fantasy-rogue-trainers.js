@@ -61,8 +61,8 @@ describe('Fantasy Rogue authored trainers', function () {
 		for (const count of Object.values(counts)) assert(Math.abs(count - expected) < expected * 0.15, JSON.stringify(counts));
 	});
 
-	it('loads all 144 gym, 6 Elite Four and 1 champion rosters into native battles without rewriting authored choices', () => {
-		assert.equal(TrainerBossData.length, 151);
+	it('loads all 144 gym, 6 Elite Four and 6 champion rosters into native battles without rewriting authored choices', () => {
+		assert.equal(TrainerBossData.length, 156);
 		const dex = Dex.mod('gen9fantasy');
 		for (const source of TrainerBossData) {
 			const floor = source.floor || (source.role === 'elitefour' ? 165 : 190);
@@ -87,7 +87,8 @@ describe('Fantasy Rogue authored trainers', function () {
 					assert.equal(mon.species.name, species.forme.includes('Mega') ? species.battleOnly : species.name);
 					assert.equal(mon.level, Math.max(PreviewBalance.bossLevel(floor),
 						require('../../dist/server/fantasy-rogue/evolution').minimumEvolutionLevel(mon.species.name)));
-					assert.equal(mon.baseAbility, toID(authored.ability));
+					assert.equal(candidate.team[index].ability, dex.abilities.get(authored.ability).name);
+					assert.equal(mon.baseAbility, species.id === 'greninjaashfantasy' ? 'moldbreaker' : toID(authored.ability));
 					// Entry effects can immediately consume Booster Energy or a terrain seed.
 					assert.equal(mon.item || mon.lastItem, toID(authored.item));
 					assert.deepEqual(mon.baseMoves, authored.moves.map(move => dex.moves.get(move).id));
@@ -97,6 +98,7 @@ describe('Fantasy Rogue authored trainers', function () {
 					assert.deepEqual(mon.set.ivs, authored.ivs);
 					assert.equal(mon.set.nature, authored.nature || 'Hardy');
 					if (authored.gender) assert.equal(mon.gender, authored.gender);
+					assert.equal(!!mon.set.shiny, !!authored.shiny);
 					if (authored.happiness !== undefined) assert.equal(mon.happiness, authored.happiness);
 					if (authored.teraType) assert.equal(mon.teraType, authored.teraType);
 				}
@@ -115,6 +117,43 @@ describe('Fantasy Rogue authored trainers', function () {
 		assert.deepEqual(mon.moves, ['Calm Mind', 'Stored Power', 'Dazzling Gleam', 'Roost+']);
 		assert.deepEqual(mon.evs, { hp: 152, atk: 0, def: 244, spa: 0, spd: 0, spe: 112 });
 	});
+	it('uses the exact new Valerie final roster and keeps her earlier stages unchanged', () => {
+		const team = trainerBossCandidates(160, 90).find(c => c.trainer.id === 'valerie').team;
+		assert.deepEqual(team.map(s => s.species), ['Sylveon', 'Cresselia-Fantasy', 'Weezing-Galar-Fantasy',
+			'Tapu Bulu-Fantasy', 'Iron Valiant', 'Delphox-Fantasy']);
+		assert.equal(team[0].item, 'Grassy Seed');
+		assert.equal(team[1].ability, Dex.mod('gen9fantasy').abilities.get('meimenggongyou').name);
+		assert(team[2].moves.includes(Dex.mod('gen9fantasy').moves.get('mistyexplosion').name));
+		assert.equal(team[4].item, 'Fairy Gem');
+		assert(trainerBossCandidates(140, 80).find(c => c.trainer.id === 'valerie').team.some(s => s.species === 'Mienshao-Fantasy'));
+	});
+	it('reserves hidden champion Lance for an encountered or already announced Elite Four Lance', () => {
+		const candidates = trainerBossCandidates(190, 100);
+		const ordinary = candidates.filter(c => c.trainer.id !== 'lance');
+		for (let i = 0; i < ordinary.length; i++) {
+			const run = {floor: 190, trainerHistory: {gyms: [], eliteFour: ['rika']}};
+			assert.equal(chooseTrainer(run, candidates, () => i).trainer.id, ordinary[i].trainer.id);
+		}
+		for (const trainerHistory of [{gyms: [], eliteFour: ['lance']},
+			{gyms: [], eliteFour: [], elitePlan: {165: 'lance', 175: 'rika', 180: 'lorelei', 185: 'lacey'}}]) {
+			assert.equal(chooseTrainer({floor: 190, trainerHistory}, candidates,
+				() => {throw Error('guaranteed opponent must not consume random draw');}).trainer.id, 'lance');
+		}
+	});
+	it('repairs an unplayed legacy champion preview after Lance, but preserves an active saved champion', () => {
+		const old = structuredClone(content.floors[190][0]);
+		const steven = old.encounters[0].trainerCandidates.find(c => c.trainer.id === 'steven');
+		Object.assign(old.encounters[0], steven); delete old.encounters[0].trainerCandidates;
+		store.change(user, a => {
+			a.run.floor = 188; a.run.trainerHistory = {gyms: [], eliteFour: ['lance']};
+			a.run.bossPreviews = {190: old};
+		});
+		engine.migrate(user);
+		assert.equal(account().run.bossPreviews[190].encounters[0].trainer.id, 'lance');
+		store.change(user, a => {a.run.floor = 190; a.run.node = old; a.run.bossPreviews[190] = old;});
+		engine.migrate(user);
+		assert.equal(account().run.node.encounters[0].trainer.id, 'steven');
+	});
 	it('allows every authored Mega and G-Mega forme to transform through its normal battle trigger', () => {
 		const seen = new Set();
 		for (const source of TrainerBossData) {
@@ -122,8 +161,9 @@ describe('Fantasy Rogue authored trainers', function () {
 			const team = trainerBossCandidates(floor, PreviewBalance.bossLevel(floor)).find(entry => entry.trainer.id === source.id).team;
 			for (const [index, authored] of Teams.import(source.team).entries()) {
 				const target = Dex.mod('gen9fantasy').species.get(authored.species);
-				if (!target.forme.includes('Mega') || seen.has(target.id)) continue;
-				seen.add(target.id);
+				const configuration = `${target.id}:${toID(authored.item)}:${authored.moves.map(toID).join(',')}`;
+				if (!target.forme.includes('Mega') || seen.has(configuration)) continue;
+				seen.add(configuration);
 				const members = [createRoguePokemon(set('Blissey', 'Natural Cure', 100, ['Splash']), stats(0), 'qa')];
 				const battle = new Battle({
 					formatid: 'gen9fantasyrogue', seed: [1, 2, 3, 4],
@@ -142,7 +182,8 @@ describe('Fantasy Rogue authored trainers', function () {
 			}
 		}
 		const expected = new Set(TrainerBossData.flatMap(entry => Teams.import(entry.team))
-			.map(mon => Dex.mod('gen9fantasy').species.get(mon.species)).filter(species => species.forme.includes('Mega')).map(species => species.id));
+			.filter(mon => Dex.mod('gen9fantasy').species.get(mon.species).forme.includes('Mega'))
+			.map(mon => `${toID(mon.species)}:${toID(mon.item)}:${mon.moves.map(toID).join(',')}`));
 		assert.deepEqual(seen, expected);
 	});
 	it('draws eight distinct gym leaders and persists their team and portrait through defeat, retreat and reload', () => {
@@ -179,7 +220,7 @@ describe('Fantasy Rogue authored trainers', function () {
 			for (const hidden of ['larry', 'acerola']) assert.equal(met.includes(hidden), gyms.includes(hidden));
 			const expected = account().run.trainerHistory.elitePlan;
 			assert.deepEqual(Object.values(expected), met);
-			assert.equal(enter(190).trainer.id, 'steven', 'Lance champion rule is deliberately not enabled');
+			assert.equal(enter(190).trainer.id === 'lance', met.includes('lance'));
 		}
 	});
 	it('keeps legacy selected rosters intact and infers only past fixed gym identities', () => {

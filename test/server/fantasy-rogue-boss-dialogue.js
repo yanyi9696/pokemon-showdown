@@ -46,7 +46,8 @@ describe('Fantasy Rogue boss openings', function () {
 			roles.add(`${entry.id}:${entry.role}`);
 			if (entry.role === 'gym') assert(GYM_GIFT_LINES[entry.id]);
 		}
-		assert.equal(roles.size, 25);
+		assert.equal(roles.size, 30); // Five added champion roles; Lance already has an Elite Four role.
+		for (const id of ['leon', 'lance', 'diantha', 'cynthia', 'ash']) assert(roles.has(`${id}:champion`));
 		for (const id of ['larry', 'acerola']) assert.notDeepEqual(TRAINER_DIALOGUE[id].gym, TRAINER_DIALOGUE[id].elitefour);
 	});
 	for (const floor of [20, 40, 60, 80, 120, 140, 160, 165, 175, 180, 185, 190]) {

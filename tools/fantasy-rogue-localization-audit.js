@@ -24,7 +24,7 @@ for (const [category, filename, baseKey, modKey] of [
 		}
 	}
 }
-const output = 'docs/playtests/2026-10-17/acquisition-revision';
+const output = process.argv[3] || 'docs/playtests/2026-10-17/acquisition-revision';
 fs.mkdirSync(output, {recursive: true});
 fs.writeFileSync(`${output}/localization.json`, JSON.stringify(report, null, 2));
 console.log(JSON.stringify(report, null, 2));

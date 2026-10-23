@@ -279,6 +279,8 @@ export interface RogueAccount {
 	run?: RogueRun;
 }
 export interface RogueStarterTraits {
+	/** Unlocked only by a confirmed shiny capture in this starter's evolution family. */
+	shiny?: boolean;
 	natures: string[];
 	genders: string[];
 	abilities: string[];
@@ -286,6 +288,7 @@ export interface RogueStarterTraits {
 	ivs: { min: StatsTable, max: StatsTable };
 }
 export interface RogueStarterBuild {
+	shiny?: boolean;
 	nature: string;
 	ivs: StatsTable;
 	gender?: string;

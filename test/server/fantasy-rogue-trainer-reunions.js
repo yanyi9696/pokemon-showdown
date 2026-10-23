@@ -14,7 +14,7 @@ const { beginPoliceEncounter } = require('../../dist/server/fantasy-rogue/police
 const { bossIntroPages } = require('../../dist/server/fantasy-rogue/story');
 const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
 
-const newLeaders = ['jasmine', 'winona', 'gardenia', 'candice', 'clair', 'clay', 'nanu', 'valerie'];
+const newLeaders = ['jasmine', 'winona', 'gardenia', 'candice', 'clair', 'clay', 'nanu', 'valerie', 'leon', 'cynthia', 'diantha', 'ash'];
 const pairs = [['clay', 'lacey'], ['giovanni', 'silver'], ['nanu', 'acerola']];
 function run(companion) {
 	const r = { id: randomUUID(), floor: 60, phase: 'event', encounter: 0, money: 0, bag: {}, boosts: stats(0),
@@ -46,7 +46,7 @@ describe('Fantasy Rogue gym companions and relationship meetings', () => {
 			const options = [{ id: 'preferred', name: '同行建议', preference: p.preference }];
 			for (let i = 0; i < 16; i++) recordSocialPreference(r, options, 'preferred', 'choice' + i);
 			assert.equal(r.bag[p.gifts[0].id], 1, id);
-			assert(catalog.some(e => e.portrait === id && e.roles?.includes('gym') && e.roles.includes('companion')), id);
+			assert(catalog.some(e => e.portrait === id && (e.roles?.includes('gym') || e.roles?.includes('champion')) && e.roles.includes('companion')), id);
 		}
 	});
 	for (const pair of pairs) for (const [companion, visitor] of [pair, [...pair].reverse()]) {

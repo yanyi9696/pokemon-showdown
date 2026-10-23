@@ -256,6 +256,34 @@ describe('Fantasy Rogue real rooms', function () {
 			assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
 		}
 	});
+	it('keeps a captured shiny Slugma at its saved level in the next real AI room', async () => {
+		const config = manager.engine.content;
+		config.starters.push({id: 'slugma', set: set('Slugma', 'Magma Armor', 5, ['Ember']), availableInitially: false});
+		config.unlocks.slugma = {starter: 'slugma', captures: 1};
+		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		store.change(user.id, saved => {
+			saved.run.node.encounters = [{...saved.run.node.encounters[0], team: [
+				{...set('Slugma', 'Magma Armor', 8, ['Ember']), shiny: true},
+			]}];
+		});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p2.request.isWait === true, 'capture preview');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active, 'capture request');
+		room.battle.choose(user, `rogueball pokeball|${room.battle.p1.request.rqid}`);
+		await until(() => room.battle.ended && account().run.floor === 2, 'capture and next floor');
+		assert.equal(account().run.team[1].set.shiny, true);
+		assert.equal(account().starterTraits.slugma.shiny, true);
+		command('select', {value: 'grass'});
+		const next = Rooms.get(command('battle').run.roomid); rooms.push(next);
+		await until(() => next.battle.p2.request.isWait === true, 'next room preview');
+		next.battle.choose(user, `team 21|${next.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(next.battle.p1.request.request).active, 'shiny enters next room');
+		assert(next.log.log.some(line => line.startsWith('|switch|p1a:') && line.includes('Slugma, L8, M, shiny')));
+		manager.retreat(user.connections[0], next.roomid);
+		await until(() => next.battle.ended && account().run.phase === 'ready', 'shiny retreat settlement');
+		assert.equal(account().run.team.find(mon => mon.set.species === 'Slugma').set.shiny, true);
+	});
 	it('shares the existing AI quota, prevents duplicate battle creation, and recovers a destroyed room', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		const request = { id: randomUUID(), revision: account().revision, action: 'battle' };

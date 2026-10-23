@@ -197,6 +197,10 @@ export function bossVictoryPages(run: RogueRun): NarrativePage[] {
 		rika: '真有你的！这份实力可不是运气，好好为自己骄傲一下吧。',
 		lacey: '你的选择，和伙伴的回应，都很出色。这次是我输了。',
 		steven: '你们像原石一样，在旅途中磨出了自己的光芒。这场胜利属于你们。',
+		leon: '精彩！你和伙伴超越了我的预想。这场胜利属于你们，也让我找到了继续变强的理由！',
+		diantha: '多么动人的配合。你与伙伴共同创造的这一刻，我会一直记得。恭喜你们！',
+		cynthia: '你们以行动给出了答案。为伙伴作出的每一次判断，都成就了这场胜利。恭喜你。',
+		ash: '太厉害了！谢谢你们带来这么棒的对战！我们也不会停下脚步，下次一定再来挑战你们！',
 	};
 	return [dialoguePage(trainer.id, trainer.name,
 		(companion ? '搭档，这次是你赢了！' : '') + (lines[trainer.id] || '这是一场值得铭记的对战。你与伙伴配得上这份胜利。') +

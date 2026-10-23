@@ -1,4 +1,5 @@
 import { AdditionalTrainerBossData } from './trainer-boss-expansion';
+import { ChampionTrainerBossData } from './trainer-champions';
 
 /** User-authored rosters imported from the 2026-10-07 attachment.
  * Sabrina floor 100 Espathra uses the user's subsequent complete replacement.
@@ -4067,4 +4068,5 @@ IVs: 0 Atk
 - Body Press`,
 	},
 	...AdditionalTrainerBossData,
+	...ChampionTrainerBossData,
 ];

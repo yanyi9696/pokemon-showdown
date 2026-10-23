@@ -63,14 +63,14 @@ export function chooseSocialEvent(run: RogueRun, choice: string, random: RogueRa
 	}
 	if (choice === 'join') {
 		requestCompanion(run, { id: person.id, origin: 'event' });
-		result(run, '那就一起走吧。名额满了的话，也请认真和原来的伙伴道别。'); return;
+		result(run, person.chat?.join || '那就一起走吧。名额满了的话，也请认真和原来的伙伴道别。'); return;
 	}
 	if (choice === person.preference) social.affinity++;
 	if (social.step === 'talk' && choice !== 'battle') {
-		social.step = 'reply'; event.result = [social.affinity ? '「我也这么想。那你希望接下来怎样旅行呢？」' : '「原来是这样。我也想听听你对伙伴和旅途的想法。」']; return;
+		social.step = 'reply'; event.result = [person.chat?.reply || (social.affinity ? '「我也这么想。那你希望接下来怎样旅行呢？」' : '「原来是这样。我也想听听你对伙伴和旅途的想法。」')]; return;
 	}
 	if (social.affinity >= 2) {
-		social.step = 'invite'; event.result = ['「一路聊下来，我很认同你的想法。接下来，让我和你一起走一段更长的路吧？」']; return;
+		social.step = 'invite'; event.result = [person.chat?.invite || '「一路聊下来，我很认同你的想法。接下来，让我和你一起走一段更长的路吧？」']; return;
 	}
 	if (choice === 'battle') {
 		const level = Math.min(100, Math.max(3, Math.ceil(run.floor / 2)) + 2);
@@ -92,10 +92,11 @@ export function settleSocialEvent(run: RogueRun, won: boolean) {
 	if (won && person.preference === 'battle') {
 		event.key = randomUUID(); event.stage = 'choice'; social.step = 'invite';
 		run.phase = 'event';
-		event.result = ['「你的指挥让我看见了你对伙伴的信任。我想继续与你同行，看看你们接下来的成长。」'];
+		event.result = [person.chat?.win || '「你的指挥让我看见了你对伙伴的信任。我想继续与你同行，看看你们接下来的成长。」'];
 		queueNarrative(run, [dialoguePage(person.id, person.name, event.result[0], true)], 'event');
 	} else {
 		if (won) run.bag.superpotion = (run.bag.superpotion || 0) + 1;
-		result(run, won ? '这场切磋很精彩。先帮伙伴恢复健康，再收下这份好伤药吧！' : '这次先到这里。我帮伙伴们恢复好了，下次再来检验彼此的进步吧。');
+		result(run, won ? person.chat?.win || '这场切磋很精彩。先帮伙伴恢复健康，再收下这份好伤药吧！' :
+			person.chat?.loss || '这次先到这里。我帮伙伴们恢复好了，下次再来检验彼此的进步吧。');
 	}
 }

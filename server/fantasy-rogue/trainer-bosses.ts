@@ -12,7 +12,7 @@ const legacyGyms: Record<number, string> = {
 };
 const dex = Dex.mod('gen9fantasy');
 
-/** Normal Showdown exports may name a Mega forme but enter battle in its underlying forme. */
+/** Exports name the resulting form; Mega and Ash Greninja enter through their normal transformation. */
 export function trainerBossCandidates(floor: number, level: number): RogueTrainerCandidate[] {
 	const kind = BOSS_FLOORS.get(floor);
 	// Every configured gym leader has a roster at every gym floor. This selects roster strength,
@@ -26,7 +26,8 @@ export function trainerBossCandidates(floor: number, level: number): RogueTraine
 		},
 		team: Teams.import(entry.team)!.map(imported => {
 			const species = dex.species.get(imported.species);
-			const entrySpecies = species.forme.includes('Mega') && typeof species.battleOnly === 'string' ?
+			const entrySpecies = (species.forme.includes('Mega') || species.id === 'greninjaashfantasy') &&
+				typeof species.battleOnly === 'string' ?
 				species.battleOnly : species.name;
 			return {
 				...imported, name: '', species: entrySpecies, level: Math.max(level, minimumEvolutionLevel(entrySpecies)), nature: imported.nature || 'Hardy',
@@ -60,6 +61,12 @@ export function chooseTrainer(run: RogueRun, candidates: RogueTrainerCandidate[]
 	const role = candidates[0].trainer.role;
 	let pool = candidates;
 	if (role === 'gym') pool = candidates.filter(entry => !saved.gyms.includes(entry.trainer.id));
+	if (role === 'champion') {
+		// Floor 160 announces the already-fixed Elite Four plan before those battles are played.
+		const lance = saved.eliteFour.includes('lance') || Object.values(saved.elitePlan || {}).includes('lance');
+		pool = candidates.filter(entry => lance ?
+			entry.trainer.id === 'lance' : entry.trainer.id !== 'lance');
+	}
 	if (role === 'elitefour') {
 		if (!saved.elitePlan) {
 			const remainingFloors = ELITE_FOUR_FLOORS.filter(floor => floor >= run.floor);

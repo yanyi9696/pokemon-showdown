@@ -31,6 +31,7 @@ import { buyGrowth, syncGrowthParty, grantMushroomGrowth, grantJourneyGrowth } f
 import { prepareRewardScene, chooseReward } from './reward-scenes';
 import { randomInt, randomUUID } from 'crypto';
 import { repairSavedEncounters } from './encounter-repair';
+import { prepareEliteEscorts } from './elite-escorts';
 import { Dex, toID } from '../../sim/dex';
 import {
 	ROGUE_STATS, type RogueBattleResult, type RogueBattleState, type RoguePokemon,
@@ -51,7 +52,8 @@ import { useTonic } from './blessing-consumables';
 import { dragonKingActive, dragonKingAbilityOptions, type DragonKingAbility, TONIC_SECRET } from '../../sim/rogue-blessing-permanent';
 import { createBiomeRoutes } from './biome-routes';
 import type { RogueRandom } from './biome-pools';
-import { recordStarterMoves, recordStarterTraits, starterMoves, starterTraits, migrateZygardeStarter } from './starter-traits';
+import { recordStarterMoves, recordStarterTraits, starterMoves, starterTraits, migrateZygardeStarter,
+	recordShinyCapture, migrateShinyCaptures } from './starter-traits';
 import { chooseTrainer, ELITE_FOUR_FLOORS } from './trainer-bosses';
 import { centerCare, prepareEconomy } from './economy';
 import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
@@ -124,6 +126,7 @@ export class RogueEngine {
 		return account.run;
 	}
 	private normalizeRun(run: RogueRun) {
+		prepareEliteEscorts(run, this.random, true);
 		repairSavedEncounters(run);
 		if (this.content?.biomeEncounters && !run.biomeHistory) {
 			// Legacy saves retain this floor's offers/opponent, but not older ecologies.
@@ -133,6 +136,7 @@ export class RogueEngine {
 			if (ids.length) run.biomeHistory = ids.map(id => ({ id, floor: run.floor }));
 		}
 		normalizeTravellers(run);
+		if (run.floor < 190 && run.bossPreviews?.[190]) this.prepareBossPreview(run, 190);
 		migrateRetiredBalls(run);
 		if (run.node?.trade?.kind === 'balls' && this.content) prepareTrade(run, this.content, this.random);
 		if (run.phase !== 'battle' && run.eventBuff?.battles) {
@@ -219,6 +223,7 @@ export class RogueEngine {
 			}
 		}
 		// Recover confirmed starting configurations after migrating old capture ledgers.
+		migrateShinyCaptures(account, this.content);
 		for (const mon of account.run?.team || []) {
 			if (mon.initialPartner) recordStarterTraits(account, this.content, mon.set, true);
 		}
@@ -389,7 +394,13 @@ export class RogueEngine {
 		}
 	}
 	private prepareBossPreview(run: RogueRun, floor: number) {
-		if (run.bossPreviews?.[floor]) return;
+		const cached = run.bossPreviews?.[floor];
+		if (cached) {
+			const lance = run.trainerHistory?.eliteFour.includes('lance') ||
+				Object.values(run.trainerHistory?.elitePlan || {}).includes('lance');
+			// Repair only an unplayed legacy champion forecast, never an active opponent.
+			if (floor !== 190 || run.floor >= 190 || !lance || cached.encounters[0]?.trainer?.id === 'lance') return;
+		}
 		const template = this.content?.floors[floor]?.find(node => node.kind === 'boss');
 		if (!template) return;
 		const shadow = structuredClone(run);
@@ -714,6 +725,8 @@ export class RogueEngine {
 					requireRule(starter && (starter.availableInitially || account.unlocked.includes(id)), '初始宝可梦尚未解锁。');
 					const traits = starterTraits(account, id);
 					const build = command.starterBuilds?.[id];
+					requireRule(build?.shiny === undefined || typeof build.shiny === 'boolean', '闪光配置无效。');
+					requireRule(!build?.shiny || traits.shiny, '请先捕捉该谱系的闪光宝可梦，才能选择闪光初始伙伴。');
 					const nature = build?.nature ?? 'random';
 					requireRule(typeof nature === 'string' && (nature === 'random' || traits.natures.includes(toID(nature))),
 						'这个性格尚未解锁。');
@@ -737,7 +750,7 @@ export class RogueEngine {
 					requireRule(Array.isArray(moves) && moves.length >= 1 && moves.length <= 4 &&
 						moves.every(move => typeof move === 'string' && availableMoves.includes(toID(move))) &&
 						new Set(moves.map(toID)).size === moves.length, '请选择 1～4 个不重复、已解锁且初始形态可合法学习的招式。');
-					const set = { ...structuredClone(starter.set), ivs: { ...ivs }, happiness: ROGUE_INITIAL_FRIENDSHIP,
+					const set = { ...structuredClone(starter.set), shiny: !!build?.shiny, ivs: { ...ivs }, happiness: ROGUE_INITIAL_FRIENDSHIP,
 						ability: ability === 'random' ? normalAbilities[this.random(normalAbilities.length)]! :
 						Dex.mod('gen9fantasy').abilities.get(ability).name,
 						moves: moves.map(toID),
@@ -1283,6 +1296,7 @@ export class RogueEngine {
 		const count = account.captures[rule.starter] = (account.captures[rule.starter] || 0) + 1;
 		if (count >= rule.captures && !account.unlocked.includes(rule.starter)) account.unlocked.push(rule.starter);
 		recordStarterTraits(account, this.configured(), captured.set, true);
+		recordShinyCapture(account, this.configured(), captured.set);
 		recordStarterMoves(account, this.configured(), captured.set);
 	}
 	capture(userid: string, token: string, captured: RoguePokemon) {

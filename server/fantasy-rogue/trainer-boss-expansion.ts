@@ -2702,31 +2702,32 @@ IVs: 0 Atk
 	},
 	{
 		id: 'valerie', name: '玛绣（妖精）', role: 'gym' as const, floor: 160,
-		team: `Scream Tail-Fantasy @ fantasypowerlens
+		team: `Sylveon @ Grassy Seed
 Ability: Pixilate
-EVs: 252 SpA / 4 SpD / 252 Spe
-Timid Nature
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
 IVs: 0 Atk
-- Boomburst
+- Swift
 - Calm Mind
-- Focus Blast
-- Fire Blast
+- Hyper Voice
+- Mystical Fire
 
-Mawile-Fantasy @ fantasysyrupyapple
-Ability: Intimidate
-EVs: 252 HP / 4 Atk / 252 Def
-Impish Nature
-- Parting Shot
-- yaojingzhiya
-- Iron Head
-- Protect
+Cresselia-Fantasy (F) @ Leftovers
+Ability: meimenggongyou
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
+- Moonblast
+- Charge Beam
+- Moonlight
+- Ice Beam
 
 Weezing-Galar-Fantasy @ Heavy-Duty Boots
 Ability: Levitate
 EVs: 252 HP / 4 Atk / 252 Def
 Impish Nature
 - Recover
-- Defog
+- Misty Explosion
 - Gunk Shot
 - Will-O-Wisp
 
@@ -2739,14 +2740,14 @@ Adamant Nature
 - High Horsepower
 - Play Rough
 
-Mienshao-Fantasy @ fantasypowerlens
-Ability: Regenerator
+Iron Valiant @ Fairy Gem
+Ability: Quark Drive
 EVs: 252 Atk / 4 SpD / 252 Spe
 Jolly Nature
-- Fake Out
-- U-turn
-- High Jump Kick
-- Play Rough
+- Close Combat
+- Swords Dance
+- Spirit Break
+- Knock Off
 
 Delphox-Mega-Fantasy @ delphoxite
 Ability: Magic Bounce

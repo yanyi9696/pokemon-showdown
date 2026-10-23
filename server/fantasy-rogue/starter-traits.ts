@@ -17,6 +17,7 @@ export function migrateZygardeStarter(account: RogueAccount) {
 		const old = account.starterTraits?.[id];
 		if (!old) continue;
 		const current = starterTraits(account, target);
+		if (old.shiny) current.shiny = true;
 		for (const key of ['natures', 'genders', 'abilities', 'moves'] as const) current[key] = [...new Set([...current[key], ...old[key]])];
 		for (const stat of ROGUE_STATS) {
 			current.ivs.min[stat] = Math.min(current.ivs.min[stat], old.ivs.min[stat]);
@@ -32,6 +33,24 @@ export function starterTraits(account: RogueAccount, id: string): RogueStarterTr
 		natures: [], genders: [], abilities: [], moves: [], ivs: { min: baseIVs(), max: baseIVs() },
 		...account.starterTraits?.[id],
 	});
+}
+
+/** Gifts and random starting configurations are not captures. */
+export function recordShinyCapture(account: RogueAccount, content: RogueContent, set: PokemonSet) {
+	if (!set.shiny) return;
+	const id = content.unlocks[toID(set.species)]?.starter;
+	if (!id) return;
+	(account.starterTraits ||= {})[id] = { ...starterTraits(account, id), shiny: true };
+}
+
+/** Recover evidence retained by old saves, without guessing from ordinary capture counts. */
+export function migrateShinyCaptures(account: RogueAccount, content: RogueContent) {
+	const run = account.run;
+	if (!run) return;
+	for (const mon of [...run.team, ...(run.box || []), ...run.checkpoint.team,
+		...(run.pendingCaptures || []), ...(run.pendingCapture ? [run.pendingCapture] : [])]) {
+		if (!mon.egg && run.caught.includes(mon.id)) recordShinyCapture(account, content, mon.set);
+	}
 }
 
 /** Trusted captures, event gifts and confirmed starting partners expand permanent choices. */
