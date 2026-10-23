@@ -162,7 +162,7 @@ export function mergeSpiritPokemon(run: RogueRun, member: string, consume: strin
 	requireRule(run.spirit === 'zygarde' && run.box && canEditParty(run) && !healingLocked(run), '当前不能升星。');
 	const owned = [...run.team, ...run.box].filter(mon => !mon.egg);
 	const keep = owned.find(mon => mon.id === member);
-	requireRule(!owned.some(mon => mon.fusion && (mon.id === member || consume?.includes(mon.id))), '请先解除融合，再进行升星合成。');
+	requireRule(!owned.some(mon => (mon.fusion || mon.formFusion) && (mon.id === member || consume?.includes(mon.id))), '请先解除融合，再进行升星合成。');
 	requireRule(keep && (keep.stars || 1) < 4 && Array.isArray(consume) && consume.length === 2 &&
 		new Set([member, ...consume]).size === 3, '请保留一只并选择两只相同伙伴，四星不能继续合成。');
 	const removed = consume.map(id => owned.find(mon => mon.id === id));

@@ -5,6 +5,7 @@ import { numberStatMultiplier, recordNumberThreshold } from './rogue-number-bles
 import { spindaEntry, spindaHit, spindaDamage } from './rogue-spinda';
 import { ghidorahActive, ghidorahTypes, ghidorahEntry, ghidorahMove, ghidorahEffectiveness } from './rogue-ghidorah';
 import { blessingSpeciesID } from './rogue-species-identity';
+import { devotionBonus } from './rogue-devotion';
 import { recordEvolutionMove } from './rogue-evolution-progress';
 import type { Battle } from './battle';
 import type { Pokemon } from './pokemon';
@@ -47,6 +48,10 @@ export function blessingEffects(mon: Pokemon): BlessingEffects | undefined {
 }
 export const hasBlessing = (mon: Pokemon | null | undefined, family: string) =>
 	mon ? ownsBlessing(blessingEffects(mon), family) : undefined;
+export function battleDevotionBonus(mon: Pokemon) {
+	const name = (p: Pokemon) => savedBlessingMember(p)?.set.species || p.baseSpecies.name;
+	return devotionBonus(blessingEffects(mon), name(mon), mon.side.pokemon.map(name));
+}
 const blessingSource = (mon: Pokemon, family: string) => blessing(hasBlessing(mon, family)!.id)!.name;
 export function savedBlessingMember(mon: Pokemon): RoguePokemon | undefined {
 	const state = mon.battle.fantasyRogue;
@@ -58,6 +63,8 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 	const modifiers: { source: string, factor?: number, add?: number }[] = [];
 	const add = (source: string, factor: number) => modifiers.push({ source, factor });
 	if (move.category === 'Status') return modifiers;
+	const devotion = battleDevotionBonus(pokemon);
+	if (devotion.power) add('专一', 1 + devotion.power / 100);
 	if (move.id === 'zapcannon' && railgunActive(pokemon)) add('某科学的超电磁炮', 2);
 	const activeMove = move as ActiveMove;
 	if (activeMove.rogueWine || preview && savedBlessingMember(pokemon)?.tonics?.wine && !member(pokemon).wineUsed) add('酒', 2);
@@ -145,6 +152,8 @@ export function rogueAbilityInfo(mon: Pokemon) {
 			`${names[key as StatID]} +${Number((value * 100).toFixed(2))}%`).join('、') + '（已计入能力值）');
 	}
 	if (ghidorahActive(mon)) statSources.push('【王者基多拉】额外拥有恶、电、火的抗性与超能力免疫；抗性倍率正常叠加');
+	const devotion = battleDevotionBonus(mon);
+	if (devotion.reduction) statSources.push(`【专一】同品种 ${devotion.count} 只，受到招式伤害减免 ${devotion.reduction}%`);
 	if (modifiers?.smallFinal) statSources.push('【谁说我到头了】六项种族值提升 50%');
 	if (modifiers?.compound) statSources.push(mon.species.bst > 500 ?
 		'【五号化合物】当前形态原始种族值总和超过 500，新增点数停用；主特性仍锁定为【化学之力】' :
@@ -574,7 +583,7 @@ export function blessingTypes(mon: Pokemon, types: string[]) {
 	const type = mon.battle.fantasyRogue && emblemType(savedBlessingMember(mon)?.emblem || mon.item);
 	if (type) types = [...new Set([types[0], type])];
 	const tonics = savedBlessingMember(mon)?.tonics;
-	return tonics?.wine && tonics.cephalosporin ? [...new Set([types[0], 'Ghost'])] : types;
+	return tonics?.wine && tonics.cephalosporin ? [...new Set([...types, 'Ghost'])] : types;
 }
 export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<StatID, 'hp'>) {
 	if (!mon.battle.fantasyRogue) return stat;
@@ -716,6 +725,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 			damage /= 1 + 0.1 * Math.min(10, count);
 		}
 		if (hasBlessing(target, 'starters') && starter(target)) damage *= 1 - 0.05 * target.side.pokemon.filter(starter).length;
+		damage *= 1 - battleDevotionBonus(target).reduction / 100;
 		return Math.floor(damage);
 	},
 	onAfterMove(pokemon, target, move) { recordEvolutionMove(pokemon, move); blessingAfterAction(this, pokemon, move); },

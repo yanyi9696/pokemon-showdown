@@ -1882,6 +1882,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			"Drednaw-G-Mega-Fantasy",
 			"Melmetal-G-Mega-Fantasy",
 			"Gengar-G-Mega-Fantasy",
+			"Eternatus-Eternamax",
 		],
 		megaEvolves: [
 			"Garbodor-Fantasy",
@@ -1893,6 +1894,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			"Drednaw-Fantasy",
 			"Melmetal-Fantasy",
 			"Gengar-Fantasy",
+			"Eternatus",
 		],
 		itemUser: [
 			"Garbodor-Fantasy",
@@ -1904,6 +1906,7 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			"Drednaw-Fantasy",
 			"Melmetal-Fantasy",
 			"Gengar-Fantasy",
+			"Eternatus",
 		],
 		onTakeItem(item, source) {
 			const name = source.baseSpecies.name;

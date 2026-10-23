@@ -52,6 +52,7 @@ export function editFusion(run: RogueRun, command: RogueCommand) {
 		const second = run.team.find(p => p.id === command.value);
 		requireRule(second && second !== first && !second.egg, '请选择两位不同的已孵化伙伴。');
 		requireRule(first.hp > 0 && second.hp > 0, '请先复活参与融合的伙伴。');
+		requireRule(!first.formFusion && !second.formFusion, '请先使用专属道具解除合体。');
 		const ability = toID(command.fusionAbility);
 		requireRule([...fusionAbilities(first, run), ...fusionAbilities(second, run)].includes(ability), '请选择这两位伙伴已有的特性。');
 		requireRule(command.appearance === first.id || command.appearance === second.id, '请选择一位伙伴的外观。');

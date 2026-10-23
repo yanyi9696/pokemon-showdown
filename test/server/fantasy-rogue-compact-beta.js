@@ -155,14 +155,14 @@ describe('Rogue compact beta revision', function () {
 		prepareEconomy(node, 80, () => { throw Error('reroll'); });
 		assert.deepEqual(node, first);
 	});
-	it('runs a denser 15-second ski and sends idempotent lightweight input replies', () => {
+	it('runs a gentler 15-second ski and sends idempotent lightweight input replies', () => {
 		assert.equal(SKI_DURATION, 15000);
 		store.change(user.id, a => {
 			a.run.phase = 'event';
 			a.run.node = { id: 'ski', kind: 'event', name: '雪山速滑', encounters: [], reward: { money: 0, items: {} }, event: { id: 'skiing', key: 'ski-key', stage: 'choice' } };
 			chooseCollection(a.run, content, () => 0, 'skistart', Date.now());
 		});
-		assert(saved().run.node.event.ski.obstacles.length >= 18);
+		assert.equal(saved().run.node.event.ski.obstacles.length, 17);
 		const manager = new RogueManager(engine);
 		const request = { id: randomUUID(), revision: saved().revision, action: 'event', member: 'ski-key', value: 'skiright' };
 		const first = manager.ski({ user }, request), second = manager.ski({ user }, request);

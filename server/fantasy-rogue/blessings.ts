@@ -58,6 +58,8 @@ export interface BlessingReward {
 	ability?: string;
 }
 export interface RogueBlessings extends BlessingEffects {
+	dragonCharges?: string[];
+	dragonEncounters?: string[];
 	numberSettled?: string[];
 	fusionReadyFloor?: number;
 	powerTrainingReward?: boolean;
@@ -164,7 +166,7 @@ export function normalizeBlessings(run: RogueRun) {
 	for (const option of state.round?.options || []) if (blessing(option.id)?.family === 'friend') option.id = 'friend';
 	if (run.previousBlessings) run.previousBlessings = run.previousBlessings.map(id => blessing(id)?.id || id);
 	for (const reward of state.pending) {
-		if (reward.kind === 'gift' && reward.pokemon && !reward.pokemon.egg) {
+		if (reward.kind === 'gift' && reward.blessing !== 'devotion' && reward.pokemon && !reward.pokemon.egg) {
 			const mon = reward.pokemon, species = lowerToEligibleStage(mon.set.species, mon.set.level);
 			if (species !== mon.set.species) {
 				const set = makeEncounterSet(species, mon.set.level, mon.set.ivs);
@@ -228,6 +230,9 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 	const state = normalizeBlessings(run);
 	const has = (id: string) => ownsBlessing(state, id);
 	return ROGUE_BLESSINGS.filter(def => {
+		if (def.family === 'galarlegend' && !strongestMember(run.team, 'Eternatus')) return false;
+		if (def.family === 'originaldragon' && !strongestMember(run.team, 'Kyurem')) return false;
+		if (def.family === 'reorganizer' && run.team.some(mon => mon.egg || mon.fusion || mon.formFusion || mon.compound)) return false;
 		if (def.family === 'ghidorah' && !strongestMember(run.team, 'Hydreigon')) return false;
 		if (def.family === 'youngprodigy' && has('latebloom') || def.family === 'latebloom' && has('youngprodigy')) return false;
 		if (def.family === 'bignumber' && has('supernumber')) return false;
@@ -309,10 +314,10 @@ export function drawBlessingGift(run: RogueRun, content: RogueContent, random: R
 	options: { type?: string, uncaught?: boolean, fantasy?: boolean, species?: string, pool?: string[], eligibleStage?: boolean,
 		stars?: number, level?: number, perfect?: number, strong?: boolean, legendaryReward?: boolean, } = {}) {
 	const level = options.level || (run.floor === 1 ? 5 : Math.max(3, Math.min(100, Math.ceil(run.floor / 2))));
-	let name = options.species && lowerToEligibleStage(options.species, level);
+	let name = options.species && (options.eligibleStage === false ? options.species : lowerToEligibleStage(options.species, level));
 	if (!name) {
 		let pool = options.pool || giftPool(run, content, options.type, options.uncaught, options.fantasy).map(s => s.name);
-		pool = [...new Set(pool.map(s => lowerToEligibleStage(s, level)))].filter(s =>
+		pool = [...new Set(pool.map(s => options.eligibleStage === false ? s : lowerToEligibleStage(s, level)))].filter(s =>
 			randomSpeciesEligible(s, level, options.legendaryReward) && (!options.type || dex.species.get(s).types.includes(options.type)) &&
 			(!options.uncaught || !run.blessings?.caught.includes(toID(s))));
 		requireRule(pool.length, '当前等级没有符合条件的赠送伙伴。');
@@ -458,7 +463,7 @@ function taskReward(account: RogueAccount, run: RogueRun, content: RogueContent,
 	(run.notices ||= []).push(`${blessingTitle(entry)}：已完成 15 个区域，奖励已领取，此任务不会重复发放。`);
 }
 function convertFantasy(run: RogueRun, mon: RoguePokemon) {
-	if (mon.fusion) return false;
+	if (mon.fusion || mon.formFusion) return false;
 	const next = fantasyForm(mon.set.species);
 	if (!next) return false;
 	const old = dex.species.get(mon.set.species), species = dex.species.get(next);
@@ -597,7 +602,14 @@ export function prepareBlessingEncounter(run: RogueRun, random: RogueRandom) {
 	const state = run.blessings, node = run.node;
 	if (!state || !node || node.blessingPrepared) return;
 	node.blessingPrepared = true;
-	if (ownsBlessing(state, 'killlagirl') && node.kind === 'elite' && (state.awakeningLegends || []).length < 2) {
+	if (ownsBlessing(state, 'originaldragon') && node.kind === 'elite' && (state.dragonEncounters || []).length < 2) {
+		const name = ['Reshiram', 'Zekrom'].find(candidate => !state.dragonEncounters?.includes(candidate))!;
+		node.originalDragonLegend = name;
+		node.name = `最初之龙 · ${name === 'Reshiram' ? '莱希拉姆' : '捷克罗姆'}`;
+		node.encounters = [{ name: node.name, style: 'aggressive', catchable: true,
+			team: [makeEncounterSet(name, node.biome?.level || Math.min(100, Math.ceil(run.floor / 2) + 5), randomEncounterIVs(random, true))] }];
+	}
+	if (!node.originalDragonLegend && ownsBlessing(state, 'killlagirl') && node.kind === 'elite' && (state.awakeningLegends || []).length < 2) {
 		const name = ['Yveltal', 'Reshiram'].find(name => !state.awakeningLegends?.includes(name))!;
 		const set = makeEncounterSet(name, Math.min(100, Math.ceil(run.floor / 2) + 10), 31);
 		set.evs = {hp: 252, atk: 252, def: 252, spa: 252, spd: 252, spe: 252};
@@ -607,7 +619,7 @@ export function prepareBlessingEncounter(run: RogueRun, random: RogueRandom) {
 		node.encounters = [{name: node.name, style: 'aggressive', catchable: false, team: [set]}];
 	}
 
-	if (!node.awakeningLegend && ownsBlessing(state, 'regis') && node.kind === 'elite' && state.regis.length < 5) {
+	if (!node.originalDragonLegend && !node.awakeningLegend && ownsBlessing(state, 'regis') && node.kind === 'elite' && state.regis.length < 5) {
 		const pool = regis.filter(name => !state.regis.includes(name));
 		const name = pool[random(pool.length)];
 		node.encounters = [{ name, style: 'aggressive', catchable: true,
@@ -739,6 +751,33 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	const entry: OwnedBlessing = { id: def.id, family: def.family, tier: def.tier, floor: run.floor, type: def.type, grantedBy };
 	requireRule(companionAvailable(def.family, run.team, state), '同行祝福互斥，且需要对应属性的伙伴。');
 	state.owned.push(entry);
+	if (def.family === 'galarlegend') grantSystem(run, 'gmega', def.name);
+	if (def.family === 'originaldragon') give(run, 'dnasplicers');
+	if (def.family === 'swords') {
+		const options = ['Cobalion', 'Terrakion', 'Virizion'].filter(name =>
+			!run.team.some(mon => blessingSpeciesID(mon.set.species) === toID(name)));
+		if (options.length) state.pending.push({ id: randomUUID(), title: '打磨圣剑 · 选择一位新伙伴', kind: 'starter', blessing: def.id, options });
+	}
+	if (def.family === 'reorganizer') {
+		const pools = run.team.map(mon => giftPool(run, content).filter(species =>
+			permanentMemberTypes(mon).some(type => species.types.includes(type))).map(species => species.name));
+		requireRule(pools.every(pool => pool.length), '当前伙伴池中没有共享属性的替换伙伴。');
+		for (const [index, mon] of run.team.entries()) {
+			const next = drawBlessingGift(run, content, random, { pool: pools[index], level: mon.set.level, eligibleStage: false });
+			const hpRatio = mon.hp / mon.maxhp;
+			Object.assign(next.set, { evs: mon.set.evs, ivs: mon.set.ivs, item: mon.set.item, nature: mon.set.nature, happiness: mon.set.happiness });
+			// Keep the trained partner's identity and permanent cultivation, but never foreign moves or native abilities.
+			Object.assign(mon, { set: next.set, pp: next.pp, moveMemory: next.moveMemory, seenMoves: next.seenMoves,
+				abilityPool: next.abilityPool, experience: next.experience });
+			delete mon.originalDragonUnlocked;
+			delete mon.formMoveMemory;
+			delete mon.evolutionProgress;
+			if (index === 0) mon.stars = Math.max(2, mon.stars || 1);
+			rebuildMember(mon, run.boosts);
+			mon.hp = hpRatio ? Math.max(1, Math.ceil(mon.maxhp * hpRatio)) : 0;
+			recordBlessingGift(account, run, content, { ...mon, id: next.id });
+		}
+	}
 	if (def.family === 'youngprodigy') state.pending.push({ id: randomUUID(), title: def.name, kind: 'starter',
 		blessing: def.id, options: LATE_BLOOMERS.map(f => f.stages[0]) });
 	if (def.family === 'supernumber') state.owned = state.owned.filter(b => b.family !== 'bignumber');
@@ -1002,7 +1041,7 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 					const index = run.team.findIndex(member => member.id === command.value);
 					requireRule(index >= 0, '请选择加入、存入箱子、替换队员或放走。');
 					requireRule(!mon.egg || run.team.some((member, i) => i !== index && !member.egg), '队伍中至少需要一名已孵化的伙伴。');
-					requireRule(!run.team[index]?.fusion, '请先解除融合，再替换这位伙伴。');
+					requireRule(!run.team[index]?.fusion && !run.team[index]?.formFusion, '请先解除融合，再替换这位伙伴。');
 					run.team[index] = mon;
 				}
 			}
@@ -1029,6 +1068,14 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 				const ability = reward.ability || TARGET_BLESSING_ABILITIES[entry.family];
 				requireRule(mon && (!ability || canGrantExtraAbility(mon, ability, run.team, state)), '该伙伴已经拥有这个特性，不能重复赋予。');
 				entry.target = mon.id;
+				if (entry.family === 'devotion') {
+					entry.species = blessingSpeciesID(mon.set.species);
+					const set = makeEncounterSet(mon.set.species, mon.set.level, randomEncounterIVs(random));
+					const duplicate = createRoguePokemon(set, run.boosts);
+					duplicate.joinOrder = state.nextJoin++; initializeExperience(duplicate);
+					gift(account, run, content, duplicate, reward.title);
+					state.pending[state.pending.length - 1].blessing = 'devotion';
+				}
 				if (entry.family === 'railgun') {
 					requireRule(canLearnZapCannon(mon), '请选择可以合法学习【电磁炮】的伙伴。');
 					rememberMove(mon, 'zapcannon');
@@ -1105,6 +1152,11 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 	if (!(state.awakeningBattles ||= []).includes(result.encounterId)) {
 		state.awakeningBattles.push(result.encounterId);
 		for (const mon of run.team) if (result.blessingProgress?.spiral?.[mon.id] !== undefined) mon.spiral = result.blessingProgress.spiral[mon.id];
+	}
+	if (result.won && run.node?.originalDragonLegend && !(state.dragonEncounters ||= []).includes(run.node.originalDragonLegend)) {
+		state.dragonEncounters.push(run.node.originalDragonLegend);
+		(state.dragonCharges ||= []).push(run.node.originalDragonLegend);
+		(run.notices ||= []).push(`【基因之楔】获得${run.node.originalDragonLegend === 'Reshiram' ? '莱希拉姆' : '捷克罗姆'}的力量（${state.dragonCharges.length}／2）。`);
 	}
 	if (result.won && run.node?.awakeningLegend && !(state.awakeningLegends ||= []).includes(run.node.awakeningLegend)) {
 		state.awakeningLegends.push(run.node.awakeningLegend);

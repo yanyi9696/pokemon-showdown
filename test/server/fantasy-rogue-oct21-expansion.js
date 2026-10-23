@@ -222,7 +222,7 @@ describe('Fantasy Rogue October 21 complete expansion', function () {
 			grant(r, id, n => {if (first && n === 10000) {first = false; return rolls;} return 0;});
 			const pet = r.blessings.pending.find(p => p.kind === 'gift').pokemon;
 			assert(petSpecies(pet.set.species, id), pet.set.species); if (expected) assert.equal(pet.set.species, expected);
-			if (rolls === 9990) assert(['Zacian', 'Zamazenta'].includes(pet.set.species));
+			if (rolls === 9990) assert(['Zacian', 'Zamazenta', 'Zygarde-10%'].includes(pet.set.species));
 			if (id === 'cats') for (const item of ['toxicorb', 'flameorb', 'lightball']) assert.equal(r.bag[item], 1);
 		}
 		const r = grant(run(), 'weighttraining'); for (const id of POWER_TRAINING_ITEMS) assert.equal(r.bag[id], 1);

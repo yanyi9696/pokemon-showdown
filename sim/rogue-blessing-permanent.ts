@@ -45,6 +45,11 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 		}
 		if (includeKing && dragonKingActive(effects) && effects?.dragonKing?.member === mon.id && effects.dragonKing.ability) add(effects.dragonKing.ability);
 	}
+	if (ownsBlessing(effects, 'fierce') && team.includes(mon)) {
+		const abilities: string[] = [toID(mon.set.ability), ...result];
+		if (abilities.includes('intimidate')) add('zhenshe');
+		if (abilities.includes('zhenshe')) add('intimidate');
+	}
 	return [...new Set(result)];
 }
 export function canGrantExtraAbility(mon: RoguePokemon, ability: string, team: RoguePokemon[], effects?: BlessingEffects, includeKing = true) {
@@ -61,7 +66,7 @@ export function permanentMemberTypes(mon: RoguePokemon) {
 	if (mon.statModifiers?.extraType) types[1] = mon.statModifiers.extraType;
 	const emblem = emblemType(mon.emblem || toID(mon.set.item));
 	if (emblem) types[types.length > 1 ? 1 : types[0] === emblem ? 0 : 1] = emblem;
-	if (mon.tonics?.wine && mon.tonics.cephalosporin) types[1] = 'Ghost';
+	if (mon.tonics?.wine && mon.tonics.cephalosporin) types.push('Ghost');
 	return [...new Set(types)];
 }
 export function memberStatTotal(mon: RoguePokemon) {
@@ -72,7 +77,7 @@ export function strongestDragon(team: RoguePokemon[]) {
 	return team.filter(mon => permanentMemberTypes(mon).includes('Dragon'))
 		.sort((a, b) => memberStatTotal(b) - memberStatTotal(a) || (a.joinOrder || 0) - (b.joinOrder || 0))[0];
 }
-export const TONIC_SECRET = '同时使用【酒】与【头孢】后，副属性变为幽灵；原本为毒系的伙伴，毒属性招式威力永久提升 50%。';
+export const TONIC_SECRET = '同时使用【酒】与【头孢】后，追加幽灵属性；原本为毒系的伙伴，毒属性招式威力永久提升 50%。';
 export const TONIC_HINT = '【酒】与【头孢】同用会有特殊效果，尤其是毒系伙伴！';
 export function tonicDescription(id: string, discovered = false) {
 	const text = id === 'wine' ? '使用者每次登场陷入混乱；每场使出的第一个招式威力翻倍。' :

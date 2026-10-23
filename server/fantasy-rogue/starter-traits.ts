@@ -5,6 +5,28 @@ import type { RogueAccount, RogueContent, RogueStarterTraits } from './types';
 
 const baseIVs = (): StatsTable => ({ hp: 20, atk: 20, def: 20, spa: 20, spd: 20, spe: 20 });
 
+/** Preserve earned unlocks and breeding choices when all Zygarde starters become 10%. */
+export function migrateZygardeStarter(account: RogueAccount) {
+	const target = 'zygarde10';
+	const ids = new Set([...Object.keys(account.captures), ...account.unlocked, ...Object.keys(account.starterTraits || {})]);
+	for (const id of ids) {
+		if (id === target || Dex.species.get(id).baseSpecies !== 'Zygarde') continue;
+		account.captures[target] = (account.captures[target] || 0) + (account.captures[id] || 0);
+		delete account.captures[id];
+		account.unlocked = [...new Set(account.unlocked.map(key => key === id ? target : key))];
+		const old = account.starterTraits?.[id];
+		if (!old) continue;
+		const current = starterTraits(account, target);
+		for (const key of ['natures', 'genders', 'abilities', 'moves'] as const) current[key] = [...new Set([...current[key], ...old[key]])];
+		for (const stat of ROGUE_STATS) {
+			current.ivs.min[stat] = Math.min(current.ivs.min[stat], old.ivs.min[stat]);
+			current.ivs.max[stat] = Math.max(current.ivs.max[stat], old.ivs.max[stat]);
+		}
+		account.starterTraits![target] = current;
+		delete account.starterTraits![id];
+	}
+}
+
 export function starterTraits(account: RogueAccount, id: string): RogueStarterTraits {
 	return structuredClone({
 		natures: [], genders: [], abilities: [], moves: [], ivs: { min: baseIVs(), max: baseIVs() },

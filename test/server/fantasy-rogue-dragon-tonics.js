@@ -88,7 +88,7 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 			const mon = run.team[0]; mon.status = 'brn'; mon.statuses = { brn: {}, psn: {} };
 			for (const id of order) useTonic(account, mon, tonicItems().find(item => item.id === `rogue${id}`));
 			assert.equal(mon.status, ''); assert.equal(mon.statuses, undefined);
-			assert.deepEqual(permanentMemberTypes(mon), ['Grass', 'Ghost']); assert(mon.tonics.poison);
+			assert.deepEqual(permanentMemberTypes(mon), ['Grass', 'Poison', 'Ghost']); assert(mon.tonics.poison);
 			assert(account.tonicSecret);
 			assert.throws(() => useTonic(account, mon, tonicItems()[0]), /已经使用过/);
 			assert(b.blessingView(run, account.tonicSecret).owned.find(x => x.id === 'wine').text.includes('威力永久提升 50%'));
@@ -101,7 +101,7 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 		const { run, account } = campaign([set('Bulbasaur', 'Overgrow', 50)]), mon = run.team[0];
 		tonicItems().forEach(item => useTonic(account, mon, item));
 		mon.set.species = 'Ivysaur'; rebuildMember(mon, run.boosts); b.syncBlessingParty(run);
-		assert.deepEqual(permanentMemberTypes(mon), ['Grass', 'Ghost']); assert(mon.tonics.poison);
+		assert.deepEqual(permanentMemberTypes(mon), ['Grass', 'Poison', 'Ghost']); assert(mon.tonics.poison);
 		const other = createRoguePokemon(set('Charmander', 'Blaze'), stats(0));
 		tonicItems().forEach(item => useTonic(account, other, item)); assert(!other.tonics.poison);
 	});

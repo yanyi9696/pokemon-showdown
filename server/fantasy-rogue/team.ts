@@ -1,5 +1,6 @@
 import { tradeItem } from './trading';
 import { applyHeldForme } from './held-formes';
+import { formItem } from './form-item-data';
 import { tonicItems } from './blessing-consumables';
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
@@ -18,6 +19,7 @@ function requireRule(ok: unknown, message: string): asserts ok {
 	if (!ok) throw new Error(message);
 }
 export function inventoryItem(content: RogueContent, id: string): RogueItem | undefined {
+	if (formItem(id)) return formItem(id);
 	if (id === 'greninjaashz') return { id, name: '智蛙 Z', kind: 'held', price: 0, shopFloor: false,
 		icon: 'greninjaashz', description: '幻想甲贺忍蛙携带，在肉鸽对战中登场时切换为小智版形态；解锁 Z 招式后，可将飞水手里剑变为黄金羁绊手里剑。' };
 	if (id === 'abilitycapsule' || id === 'abilitypatch') return { id, name: id === 'abilitycapsule' ? '特性胶囊' : '特性膏药',

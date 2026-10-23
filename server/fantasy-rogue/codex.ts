@@ -1,4 +1,5 @@
 import { trainerCodex } from './trainer-codex';
+import { MOVE_CATEGORIES, moveCategories } from './move-categories';
 import { biomeCodex } from './biome-codex';
 import { createHash } from 'crypto';
 import { RIVALS, RIVAL_SCENES } from './rival-data';
@@ -14,6 +15,7 @@ import { EVENT_NAMES, type EventID } from './event-text';
 import { EVENT_OVERVIEWS, eventReplay } from './event-replays';
 import { TRADE_NAMES } from './trading';
 import { blessingDisplay, blessingCodexFloors, blessingAvailabilityNotes, compareBlessingNames } from './blessing-text';
+import { FORM_ITEMS } from './form-item-data';
 
 export type CodexSection = 'guide' | 'blessings' | 'events';
 export const ROGUE_CODEX_SCHEMA = 3;
@@ -39,29 +41,33 @@ function buildFantasyGuide() {
 		' 特定幻想宝可梦携带时，还可触发气场爆发。' : ''), icon: item.id, spritenum: item.spritenum,
 	category: item.itemUser?.length || item.id === 'lightball' ? 'exclusive' : 'general' }))
 		.sort((a, b) => Number(FANTASY_BLESSING_ITEMS.includes(b.id)) - Number(FANTASY_BLESSING_ITEMS.includes(a.id)));
-	const moves = dex.moves.all().filter(move => move.exists && !move.id.startsWith('rogue') && (
-		!base.moves.get(move.id).exists || /[+🔄]$/u.test(move.name)
-	)).map(move => ({ id: move.id, name: move.name, text: move.shortDesc || move.desc,
-		origin: base.moves.get(move.id).exists ? 'enhanced' : 'fantasy',
+	const signatureZ = new Set(dex.items.all().filter(item => typeof item.zMove === 'string' && item.itemUser?.length)
+		.map(item => dex.moves.get(item.zMove as string).id));
+	const moves = dex.moves.all().filter(move => move.exists && (!move.id.startsWith('rogue') || move.isZ)).map(move => ({
+		id: move.id, name: move.name, text: move.shortDesc || move.desc,
+		origin: !base.moves.get(move.id).exists ? 'fantasy' : /[+🔄]$/u.test(move.name) ? 'enhanced' : 'original',
+		groups: moveCategories(move, signatureZ), priority: move.priority,
 		type: move.type, category: move.category, power: move.basePower, accuracy: move.accuracy, pp: move.pp }));
 	const abilities = dex.abilities.all().filter(ability => ability.exists && !ability.id.startsWith('rogue') && (
 		!base.abilities.get(ability.id).exists || /[+🔄]$/u.test(ability.name) || ability.num < 0
 	)).map(ability => ({ id: ability.id, name: ability.name, text: ability.shortDesc || ability.desc,
 		origin: base.abilities.get(ability.id).exists ? 'enhanced' : 'fantasy' }));
-	const pokemon = dex.species.all().filter(species => species.exists && species.name.includes('Fantasy'))
+	const pokemon = dex.species.all().filter(species => species.exists &&
+		(species.name.includes('Fantasy') || ['kyuremoriginal', 'eternatuseternamax'].includes(species.id)))
 		.map(species => ({ id: species.id, name: species.name, types: species.types,
 			abilities: [...new Set(Object.values(species.abilities))], stats: species.baseStats,
 			battleOnly: !!species.battleOnly, requiredItem: species.requiredItem }));
 	const itemNotes = [
+		...FORM_ITEMS.map(item => ({ id: item.id, name: item.name, kind: item.kind, icon: item.icon, text: item.description })),
 		{ id: 'greninjaashz', name: '智蛙 Z', text: '完成【甲贺忍蛙护林员】两阶段事件获得，并解锁本局 Z 招式。幻想甲贺忍蛙携带它，在肉鸽战斗中登场时切换为小智版形态；以【飞水手里剑】释放专属 Z 招式【黄金羁绊手里剑】。预定 Z 招式的赠送范围包含进化后拥有这类自制专属纯晶的伙伴。' },
 		{ id: 'megastones', name: '超级进化石与超巨进化许愿星',
 			text: '超级进化石由对应宝可梦携带，解锁超进化系统后可在战斗中使用。' +
-				'超巨进化许愿星用于对应幻想宝可梦的超巨进化，需要单独解锁超巨进化系统，占用独立的超巨进化机会。' },
+				'超巨进化许愿星用于对应幻想宝可梦及无极汰那的超巨进化，需要单独解锁超巨进化系统，占用独立的超巨进化机会。' },
 		{ id: 'zcrystals', name: 'Z 纯晶', text: '解锁 Z 招式系统后，携带对应纯晶可释放 Z 招式。' +
 			'特定幻想宝可梦携带适配纯晶时，还能进行气场爆发；气场爆发占用本场 Z 招式机会，随后无法再释放 Z 招式。' },
 		{ id: 'typegems', name: '十八属性宝石', text: '使用对应属性的招式时，该次威力提升 30%，随后消耗。失去宝石后，本场对应属性招式威力仍提升 10%，换下再上场也保留。' },
 	];
-	return { intro: INTRO, beginner: BEGINNER_GUIDE, itemNotes, modules: { items, moves, abilities, pokemon } };
+	return { intro: INTRO, beginner: BEGINNER_GUIDE, itemNotes, moveCategories: MOVE_CATEGORIES, modules: { items, moves, abilities, pokemon } };
 }
 
 /** No mutation and no hidden effect text in locked entries. Loaded only when opening a codex. */
@@ -73,7 +79,7 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 	const discovered = account ? rogueDiscoveries(account) : { blessings: [], events: [], trainers: [] };
 	if (section === 'blessings') return { section, preview, entries: ROGUE_BLESSINGS.flatMap(def => blessingCodexFloors(def).map(floor => {
 		const unlocked = preview || discovered.blessings.includes(def.id);
-		const display = blessingDisplay(def, floor, account?.tonicSecret);
+		const display = blessingDisplay(def, floor, preview || account?.tonicSecret);
 		return { id: floor && floor !== 1 ? `${def.id}:${floor}` : def.id, blessingId: def.id,
 			family: def.family, name: display.name, tier: def.tier, floors: floor ? [floor] : def.floors, variantFloor: floor,
 			unlocked, availability: blessingAvailabilityNotes(def), text: unlocked ? display.text : '？？？' };

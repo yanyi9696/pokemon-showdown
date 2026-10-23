@@ -1,4 +1,34 @@
+import { hasBlessing } from '../../../sim/fantasy-rogue-blessings';
+
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	originaldragon: {
+		name: 'Original Dragon', num: -2010, rating: 5, flags: {}, isNonstandard: 'Custom',
+		shortDesc: '消除龙属性弱点；使用冰、火、电招式前将第二属性改为该属性；招式无视目标特性。',
+		onPrepareHit(source, target, move) {
+			if (!['Ice', 'Fire', 'Electric'].includes(move.type) || source.terastallized) return;
+			const types = source.getTypes();
+			if (types[1] === move.type) return;
+			if (source.setType([types[0], move.type])) this.add('-start', source, 'typechange', `${types[0]}/${move.type}`, '[from] ability: Original Dragon');
+		},
+		onModifyMove(move) { move.ignoreAbility = true; },
+		onEffectiveness(typeMod, target, type) { if (type === 'Dragon' && typeMod > 0) return 0; },
+	},
+	innerfocus: {
+		inherit: true,
+		onTryBoost(boost, target, source, effect) {
+			const stat = effect.id === 'intimidate' ? 'atk' : effect.id === 'zhenshe' ? 'spa' : undefined;
+			if (!stat || !boost[stat] || hasBlessing(source, 'fierce')) return;
+			delete boost[stat]; this.add('-immune', target, '[from] ability: Inner Focus');
+		},
+	},
+	scrappy: {
+		inherit: true,
+		onTryBoost(boost, target, source, effect) {
+			const stat = effect.id === 'intimidate' ? 'atk' : effect.id === 'zhenshe' ? 'spa' : undefined;
+			if (!stat || !boost[stat] || hasBlessing(source, 'fierce')) return;
+			delete boost[stat]; this.add('-immune', target, '[from] ability: Scrappy');
+		},
+	},
 	heavenpiercingdrill: {
 		name: 'Heaven Piercing Drill', rating: 4.5, num: -2001, isNonstandard: 'Custom', flags: {},
 		onModifyMove(move) {

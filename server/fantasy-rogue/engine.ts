@@ -22,6 +22,7 @@ import { feedMushroom } from './mushroom-feeding';
 import { companionCommand, companionExperience, companionPickup, deliverCompanionPickup, boostCompanionEventRewards, poppyRewardPickup, recordCompanionPreference } from './companions';
 import { COMPANIONS, companionOwned, companionAbilityOptions } from '../../sim/rogue-companions';
 import { editFusion } from './fusion';
+import { useFormItem } from './form-items';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
 import { POWER_TRAINING_STATS } from '../../sim/rogue-pets';
 import { eventView } from './events';
@@ -50,7 +51,7 @@ import { useTonic } from './blessing-consumables';
 import { dragonKingActive, dragonKingAbilityOptions, type DragonKingAbility, TONIC_SECRET } from '../../sim/rogue-blessing-permanent';
 import { createBiomeRoutes } from './biome-routes';
 import type { RogueRandom } from './biome-pools';
-import { recordStarterMoves, recordStarterTraits, starterMoves, starterTraits } from './starter-traits';
+import { recordStarterMoves, recordStarterTraits, starterMoves, starterTraits, migrateZygardeStarter } from './starter-traits';
 import { chooseTrainer, ELITE_FOUR_FLOORS } from './trainer-bosses';
 import { centerCare, prepareEconomy } from './economy';
 import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
@@ -186,6 +187,7 @@ export class RogueEngine {
 	}
 	private normalizeAccount(account: RogueAccount) {
 		if (!this.content) return;
+		if (this.content.starters.some(starter => starter.id === 'zygarde10')) migrateZygardeStarter(account);
 		if (!needsOnboarding(account)) account.onboardingSeen = true;
 		if (account.run) migrateGodrobeGift(account, account.run, this.content, this.random);
 		const clears = [...account.cards || [], ...(account.pendingClear ? [account.pendingClear] : [])]
@@ -808,6 +810,10 @@ export class RogueEngine {
 			if (command.action === 'fusion' || command.action === 'unfusion') {
 				editFusion(run, command); return;
 			}
+			if (command.action === 'forme') {
+				useFormItem(run, command.member || '', command.value || '');
+				syncBlessingParty(run); syncExclusiveItems(run); return;
+			}
 			if (TEAM_ACTIONS.includes(command.action)) {
 				editParty(run, command, this.configured());
 				if (this.content?.blessings) syncBlessingParty(run);
@@ -837,7 +843,7 @@ export class RogueEngine {
 				break;
 			}
 			case 'event':
-				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value, command.evs);
+				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value, command.evs, command.skiAt);
 				if (run.phase === 'ready') {
 					if (!run.node?.event?.police && !run.node?.event?.rematch) prepareEconomy(run.node!, run.floor, this.random);
 					prepareSpiritNode(run, run.node!, this.configured(), this.random);
@@ -912,7 +918,7 @@ export class RogueEngine {
 					const index = run.team.findIndex(mon => mon.id === command.value);
 					requireRule(index >= 0, '替换成员无效。');
 					const removed = run.team[index].id;
-					requireRule(!run.team[index]?.fusion, '请先解除融合，再替换这位伙伴。');
+					requireRule(!run.team[index]?.fusion && !run.team[index]?.formFusion, '请先解除融合，再替换这位伙伴。');
 					run.team[index] = run.pendingCapture;
 					run.pendingMoves = run.pendingMoves?.filter(move => move.member !== removed);
 				}

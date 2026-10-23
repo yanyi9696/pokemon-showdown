@@ -324,8 +324,8 @@ export class Species extends BasicEffect implements Readonly<BasicEffect & Speci
 		this.unreleasedHidden = data.unreleasedHidden || false;
 		this.maleOnlyHidden = !!data.maleOnlyHidden;
 		this.maxHP = data.maxHP || undefined;
-		this.isMega = this.forme.includes('Mega') || undefined;
-		this.isGMega = (this.isMega && this.name.includes('-G-Mega')) || undefined;
+		this.isMega = data.isMega || this.forme.includes('Mega') || undefined;
+		this.isGMega = data.isGMega || (this.isMega && this.name.includes('-G-Mega')) || undefined;
 		this.canGigantamax = data.canGigantamax || undefined;
 		this.gmaxUnreleased = !!data.gmaxUnreleased;
 		this.cannotDynamax = !!data.cannotDynamax;

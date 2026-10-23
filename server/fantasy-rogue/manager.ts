@@ -1,6 +1,7 @@
 import { comebackView } from './comeback';
 import { coverageView } from './coverage';
 import { fusionAbilities } from './fusion';
+import { formItemOptions } from './form-items';
 import { rivalCompanionView, rivalCompanionViews } from './rivals';
 import { robeMember, robeDurability } from '../../sim/rogue-awakening';
 import { eggView } from './eggs';
@@ -102,7 +103,7 @@ export class RogueManager {
 		const content = this.engine.content;
 		const run = account.run;
 		const stock = content ? shopStock(content, run) : [];
-		const items = content ? [...spiritItems(content, run), ...(content.blessings ? blessingItems(account.tonicSecret) : [])].map(item => ({ ...item })) : [];
+		const items = content ? [...spiritItems(content, run), ...(content.blessings ? blessingItems(this.engine.localSpirits || account.tonicSecret) : [])].map(item => ({ ...item })) : [];
 		if (run?.node) {
 			for (const item of run.node.trade?.stock || stock) {
 				const index = items.findIndex(entry => entry.id === item.id);
@@ -144,6 +145,8 @@ export class RogueManager {
 			})),
 			starters: (!run || run.phase === 'complete' ? content?.starters : [])?.map(starter => ({
 				id: starter.id, species: starter.set.species, level: starter.set.level,
+				gen: Dex.mod('gen9fantasy').species.get(starter.set.species).gen,
+				types: Dex.mod('gen9fantasy').species.get(starter.set.species).types,
 				slotCost: rogueStarterSlotCost(starter.set.species),
 				available: starter.availableInitially || account.unlocked.includes(starter.id),
 				traits: starterTraits(account, starter.id),
@@ -161,7 +164,7 @@ export class RogueManager {
 				socialCompanions: socialCompanionViews(run, companionOptions(run, eventView(run)?.options || [])),
 				preview: run.preview && { trainer: run.preview.trainer, stage: run.preview.stage, won: run.preview.result?.won },
 				comeback: comebackView(run), coverage: coverageView(run), growth: growthView(run), growthOffers: growthOffers(run), rewardScene: rewardSceneView(run),
-				blessings: blessingView(run, account.tonicSecret), moveSlots: run.blessings?.owned.some(b => b.family === 'learnall') ? 5 : 4,
+				blessings: blessingView(run, this.engine.localSpirits || account.tonicSecret), moveSlots: run.blessings?.owned.some(b => b.family === 'learnall') ? 5 : 4,
 				story: run.story, startCard: startCard(run.startCard),
 				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit, run.blessings), box: run.box?.map(mon => mon.egg ? eggView(mon, run.floor) : mon),
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
@@ -200,6 +203,7 @@ export class RogueManager {
 					const robe = (['godrobe', 'puregodrobe'] as const).find(kind => robeMember(run.team, run.blessings, kind)?.id === saved.id);
 					for (const [key, value] of Object.entries(mon.statModifiers?.baseStats || {})) baseStats[key as StatID] += value;
 					return { ...mon, baseStats, fusionAbilities: fusionAbilities(saved, run), machineMoves: items.some(item => item.kind === 'machine') ? machineMoves(mon) : [],
+						formOptions: formItemOptions(run, saved),
 						robeInfo: robe ? {name: robe === 'godrobe' ? '神衣鲜血' : '神衣纯洁', durability: robeDurability(mon.hp, mon.maxhp, !!run.blessings?.owned.find(b => b.family === robe)?.completed)} : undefined,
 						abilityChanges: { abilitycapsule: abilityItemTarget(mon, 'abilitycapsule'), abilitypatch: abilityItemTarget(mon, 'abilitypatch') },
 						extraAbilities: assignedExtraAbilities(saved, run.team, run.blessings).filter(id => id !== toID(mon.set.ability)),

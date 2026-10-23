@@ -8,9 +8,12 @@ import { FOSSILS } from './economy';
 
 export interface SkiState {
 	started: number; checked: number; lane: number; ended?: number; crashed?: boolean;
+	/** New runs allow a bounded input transit window; old in-progress saves keep their timing. */
+	inputWindow?: number;
 	obstacles: { at: number, lane: number, kind: string }[];
 }
 export const SKI_DURATION = 15000;
+export const SKI_INPUT_WINDOW = 250;
 export const collectionEvent = (id: string) => ['skiing', 'stones', 'feathers', 'mushroomcollector'].includes(id);
 const option = (id: string, name: string, text = '', disabled = false) => ({ id, name, text, disabled });
 export const stonePrice = (floor: number) => 350 + floor * 8;
@@ -56,7 +59,7 @@ export function advanceSki(ski: SkiState, now: number) {
 	ski.checked = elapsed;
 }
 export function chooseCollection(
-	run: RogueRun, content: RogueContent, random: RogueRandom, choice: string, now = Date.now()
+	run: RogueRun, content: RogueContent, random: RogueRandom, choice: string, now = Date.now(), skiAt?: number
 ) {
 	const event = run.node!.event!;
 	if (event.settled || event.stage !== 'choice') throw new Error('本次事件已经结束。');
@@ -66,23 +69,28 @@ export function chooseCollection(
 		if (choice === 'skistart') {
 			if (event.ski) throw new Error('这次滑行已经开始。');
 			const obstacles: SkiState['obstacles'] = [];
-			for (let at = 1800; at < SKI_DURATION; at += Math.round(850 - 350 * at / SKI_DURATION)) {
+			for (let at = 2100; at < SKI_DURATION; at += Math.round(980 - 320 * at / SKI_DURATION)) {
 				obstacles.push({ at, lane: random(3), kind: random(2) ? 'tree' : 'rock' });
 			}
-			event.ski = { started: now, checked: 0, lane: 1, obstacles };
+			event.ski = { started: now, checked: 0, lane: 1, obstacles, inputWindow: SKI_INPUT_WINDOW };
 			return;
 		}
 		const ski = event.ski!;
-		advanceSki(ski, now);
+		// Commit crossings a little behind the picture, so ordinary network transit does not
+		// turn a visible dodge into a hit. Never rewind committed crossings or trust future time.
+		const window = Math.min(SKI_INPUT_WINDOW, ski.inputWindow || 0);
+		const inputAt = Number.isFinite(skiAt) ? ski.started + skiAt! : now;
+		const effectiveNow = choice === 'skitick' ? now - window : Math.max(now - window, Math.min(now, inputAt));
+		advanceSki(ski, effectiveNow);
 		if (ski.ended === undefined) {
 			if (choice === 'skileft') ski.lane = Math.max(0, ski.lane - 1);
 			if (choice === 'skiright') ski.lane = Math.min(2, ski.lane + 1);
 			return;
 		}
 		const tier = Math.min(5, Math.floor(ski.ended / (SKI_DURATION / 5)) + (companionOwned(run.blessings, 'grusha') ? 1 : 0));
-		const coins = Math.round(eventRewardBudget(run.floor) * (0.1 + tier * 0.16));
+		const coins = Math.round(eventRewardBudget(run.floor) * (0.125 + tier * 0.2));
 		run.money += coins;
-		const candies = Math.max(tier ? 1 : 0, tier - (run.floor < 60 && tier >= 3 ? 1 : 0));
+		const candies = tier ? 1 + Math.max(1, tier - (run.floor < 60 && tier >= 3 ? 1 : 0)) : 0;
 		if (candies) give(run, candyAtFloor(run.floor), candies);
 		if (tier >= 4) give(run, 'revive', 1);
 		finish(run, [ski.crashed ? '雪板撞上障碍，身后的雪浪扑了上来。巡山员把你从松软的雪里拉出，拍掉你帽子上的积雪。' : '你越过终点，身后的雪浪停在防护坡外。巡山员朝你挥起了旗子。',

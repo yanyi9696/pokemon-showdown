@@ -167,7 +167,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const id of FANTASY_BLESSING_ITEMS) assert(modules.items.some(item => item.id === id), id);
 		assert(modules.moves.some(move => move.id === 'recover' && move.pp === 10));
 		assert(modules.pokemon.length > 100 && modules.abilities.length > 10);
-		assert(Object.values(modules).every(entries => entries.every(e => !e.id.startsWith('rogue'))));
+		for (const kind of ['items', 'abilities', 'pokemon']) assert(modules[kind].every(e => !e.id.startsWith('rogue')));
+		assert(modules.moves.filter(e => e.id.startsWith('rogue')).every(e => e.groups.includes('signaturez')));
 		assert(modules.items.every(item => item.icon === item.id && (item.spritenum > 0 || item.id === 'peatblock')));
 		assert(modules.items.filter(item => item.category === 'general').length >= 11);
 		for (const id of ['powerlens', 'powerband', 'peatblock', 'strawberrysweet', 'prismscale', 'electirizer', 'protector']) assert(!modules.items.some(item => item.id === id), id);
@@ -181,9 +182,37 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const kind of ['moves', 'abilities']) {
 			assert(modules[kind].some(item => item.origin === 'fantasy'));
 			assert(modules[kind].some(item => item.origin === 'enhanced'));
-			for (const item of modules[kind]) assert.equal(item.origin === 'enhanced', Dex.mod('gen9')[kind].get(item.id).exists);
+			for (const item of modules[kind]) assert.equal(item.origin !== 'fantasy', Dex.mod('gen9')[kind].get(item.id).exists);
 		}
 		assert(rogueCodex(account(), 'blessings').entries.every(item => item.family));
+	});
+	it('classifies native and Fantasy moves by their real flags and effect data', () => {
+		const { Dex } = require('../../dist/sim/dex'), dex = Dex.mod('gen9fantasy');
+		const guide = rogueCodex(undefined, 'guide', true).guide;
+		const moves = guide.modules.moves;
+		for (const [id, groups] of [['quickattack', ['contact']], ['bulletseed', ['bullet', 'multihit']],
+			['hyperbeam', ['recharge']], ['solarbeam', ['charge']], ['recover', ['heal']], ['gigadrain', ['drain']],
+			['toxicthread', ['lower']], ['strengthsap', ['heal', 'lower']], ['doubleedge', ['recoil']],
+			['explosion', ['explosion']], ['bite', ['bite']], ['machpunch', ['punch']], ['aurasphere', ['pulse']],
+			['hypervoice', ['sound']], ['spore', ['powder']], ['taunt', ['mental']], ['quiverdance', ['dance']],
+			['hurricane', ['wind']], ['leafblade', ['slicing']], ['wrap', ['binding']], ['nihillight', ['light']]]) {
+			const entry = moves.find(m => m.id === id); assert(entry, id);
+			for (const group of groups) assert(entry.groups.includes(group), `${id}: ${group}`);
+			assert.equal(entry.priority, dex.moves.get(id).priority);
+		}
+		for (const move of dex.moves.all().filter(move => move.flags.shooting)) {
+			assert(moves.find(m => m.id === move.id).groups.includes('shooting'), move.id);
+		}
+		assert.equal(moves.find(m => m.id === 'quickattack').priority, 1);
+		assert(moves.some(m => m.origin === 'original'));
+		assert(!moves.some(m => ['rogueescape', 'roguecatch'].includes(m.id)));
+		assert(guide.itemNotes.some(item => item.id === 'dnasplicers' && item.kind === 'forme' && item.icon === 'dna-splicers'));
+		assert(!guide.modules.items.some(item => item.id === 'dnasplicers'), 'native key items remain in special explanations');
+		assert(guide.modules.pokemon.some(p => p.id === 'kyuremoriginal'));
+		const a = account(), before = JSON.stringify(a);
+		const tonics = rogueCodex(a, 'blessings', true).entries.filter(e => ['wine', 'cephalosporin'].includes(e.id));
+		assert(tonics.every(e => e.text.includes('追加幽灵属性')));
+		assert.equal(JSON.stringify(a), before, 'preview never unlocks secrets in the real save');
 	});
 	it('does not advertise an unapproved battle exit in any authored event replay', () => {
 		for (const entry of rogueCodex(undefined, 'events', true).entries.filter(e => e.replay)) {

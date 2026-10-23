@@ -1,4 +1,7 @@
+import { Learnsets as OriginalLearnsets } from '../../learnsets';
+
 export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTable = {
+	kyuremoriginal: { learnset: Object.assign({}, ...['kyurem', 'reshiram', 'zekrom'].map(id => OriginalLearnsets[id as ID].learnset)) },
 	xerneas: {
 		learnset: {
 			punishment: ["9M"],

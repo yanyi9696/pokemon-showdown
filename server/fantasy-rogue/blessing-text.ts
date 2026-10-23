@@ -63,6 +63,10 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		if (types.length === 2) notes.push(`队内分别有${types.map(t => BLESSING_TYPES[t] + '系').join('与')}伙伴时更容易出现`);
 	}
 	const conditions: Record<string, string[]> = {
+		galarlegend: ['队伍需有【无极汰那】'], originaldragon: ['队伍需有【酋雷姆】'],
+		reorganizer: ['仅第 50 层出现', '队伍中不能有蛋、尚未解除融合或已使用【五号化合物】的伙伴'],
+		ghidorah: ['队伍需有【三首恶龙】，幻想形态同样符合'],
+		youngprodigy: ['仅第 1 层出现'],
 		killlagirl: ['第 150 层及以后', '需同时拥有【神衣鲜血】和【神衣纯洁】；出现彩色选项时保证包含本祝福'],
 		speedpower: ['队伍需有尚未拥有【加速】的伙伴'],
 		medic: ['与【进球休息】互斥'], restinball: ['与【自带医疗队】互斥'],

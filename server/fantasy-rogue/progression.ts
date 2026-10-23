@@ -85,6 +85,8 @@ export function rememberMove(mon: RoguePokemon, id: string) {
 }
 
 export function levelMoves(name: string): { move: string, level: number, generation: number }[] {
+	if (toID(name) === 'kyuremoriginal') return ['Kyurem', 'Reshiram', 'Zekrom'].flatMap(levelMoves)
+		.sort((a, b) => a.level - b.level || a.move.localeCompare(b.move));
 	const species = baseDex.species.get(name);
 	const learnsetData = baseDex.species.getLearnsetData(species.id);
 	let learnset = learnsetData.learnset;

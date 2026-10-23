@@ -1,5 +1,6 @@
 import { Dex, toID } from '../../sim/dex';
 import type { RogueRun } from './types';
+import { FORM_ITEMS } from './form-item-data';
 
 const dex = Dex.mod('gen9fantasy');
 export interface ExclusiveItem {
@@ -40,7 +41,7 @@ let catalog: ExclusiveItem[] | undefined;
 const suitableCache = new Map<string, ExclusiveItem[]>();
 export function exclusiveCatalog(): ExclusiveItem[] {
 	if (catalog) return catalog;
-	catalog = [];
+	catalog = FORM_ITEMS.map(item => ({ id: item.id, species: item.species, theme: 'relic', ...themes.relic }));
 	for (const item of dex.items.all()) {
 		if (!item.exists || ['CAP', 'Custom', 'Unobtainable'].includes(item.isNonstandard || '') ||
 			item.id.startsWith('rogue') || item.id === 'gmegawishingstar') continue;

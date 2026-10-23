@@ -24,6 +24,7 @@ export function rogueStarterSpecies(name: string) {
 		if (!species.exists) species = dex.species.get(custom.baseSpecies.replace(/-Fantasy/g, ''));
 	}
 	for (let depth = 0; depth < 8; depth++) {
+		if (species.baseSpecies === 'Zygarde') return dex.species.get('Zygarde-10%');
 		if (species.forme.endsWith('Totem')) species = dex.species.get(species.name.replace(/-Totem$/, ''));
 		else if (species.id === 'melmetal') species = dex.species.get('Meltan');
 		else if (species.prevo) species = dex.species.get(species.prevo);

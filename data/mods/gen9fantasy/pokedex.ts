@@ -1,4 +1,14 @@
 export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
+	kyuremoriginal: {
+		num: 646, name: 'Kyurem-Original', baseSpecies: 'Kyurem', forme: 'Original', gen: 9,
+		types: ['Dragon', 'Ice'], gender: 'N', baseStats: { hp: 125, atk: 170, def: 100, spa: 170, spd: 100, spe: 95 },
+		abilities: { 0: 'Original Dragon' }, heightm: 3, weightkg: 325, color: 'Gray', eggGroups: ['Undiscovered'],
+		isNonstandard: 'Custom', changesFrom: 'Kyurem', tags: ['Restricted Legendary'],
+	},
+	eternatuseternamax: {
+		inherit: true, isMega: true, isGMega: true, battleOnly: 'Eternatus', requiredItem: 'G-Mega Wishing Star',
+		abilities: { 0: 'Po Huai Yu' },
+	},
 
 	// 第1世代 (1-151)
 	pidgeot: {

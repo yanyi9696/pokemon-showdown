@@ -116,6 +116,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		if (def.family === 'topclearmind') run.blessings.prayer = { floor: 50, changed: false, team: run.team.map(m => m.id) };
 		if (def.family === 'dragonking') run.team[0] = createRoguePokemon(set('Dragonite', 'Inner Focus', 50), run.boosts);
 		if (def.family === 'ghidorah') run.team[0] = createRoguePokemon(set('Hydreigon', 'Levitate', 50), run.boosts);
+		if (def.family === 'galarlegend') run.team[0] = createRoguePokemon(set('Eternatus', 'Pressure', 50), run.boosts);
+		if (def.family === 'originaldragon') run.team[0] = createRoguePokemon(set('Kyurem', 'Pressure', 50), run.boosts);
 		if (def.family === 'railgun') run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 50), run.boosts);
 		if (def.family === 'rulebreaker') run.team[0].extraAbilities = ['moldbreaker'];
 		if (def.family === 'compound') run.team[0] = createRoguePokemon(set('Paras', 'Effect Spore', 50), run.boosts);

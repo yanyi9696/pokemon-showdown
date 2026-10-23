@@ -1,3 +1,4 @@
+import { formItem } from './form-item-data';
 import { randomUUID } from 'crypto';
 import { Dex } from '../../sim/dex';
 import type { RogueRun } from './types';
@@ -30,7 +31,7 @@ export function beginExclusiveEncounter(run: RogueRun, random: RogueRandom) {
 		if (!species.includes(name)) species.push(name);
 	}
 	const team = species.map(name => makeEncounterSet(name, lv, 27));
-	team[0].item = dex.items.get(item.id).name;
+	if (!formItem(item.id)) team[0].item = dex.items.get(item.id).name;
 	applyHeldForme(team[0]);
 	for (const set of team) {
 		const s = dex.species.get(set.species);
@@ -43,7 +44,7 @@ export function beginExclusiveEncounter(run: RogueRun, random: RogueRandom) {
 	node.event = { id: 'exclusivechallenge', key: randomUUID(), stage: 'battle', committed: true, trainingAidBlocked: true,
 		exclusive: { item: item.id, tried: [] }, result: [
 			`走过${item.place}，${item.trainer}拦住了你的去路，目光停在【${owner.set.species}】身上。`,
-			`对方举起【${dex.items.get(item.id).name}】：「它在等一个合适的伙伴。让我亲眼看看，你们能不能承担它的力量！」`,
+			`对方举起【${formItem(item.id)?.name || dex.items.get(item.id).name}】：「它在等一个合适的伙伴。让我亲眼看看，你们能不能承担它的力量！」`,
 			'精灵球已经划过半空。你握紧自己的精灵球，迎上对方的目光。',
 		] };
 	node.encounters = [{ name: item.trainer, team, catchable: false, style: 'balanced',
@@ -68,7 +69,7 @@ export function exclusiveEventView(run: RogueRun) {
 	const item = exclusiveCatalog().find(i => i.id === state.item)!;
 	const option = (id: string, name: string) => ({ id, name, text: '', disabled: false });
 	const intro = [`你走进${item.place}。队伍中的伙伴忽然停下脚步，朝一个方向轻轻叫了一声。`,
-		`一张发黄的纸片提到【${dex.items.get(item.id).name}】，却只留下了「${item.clue}」这点模糊线索。`];
+		`一张发黄的纸片提到【${formItem(item.id)?.name || dex.items.get(item.id).name}】，却只留下了「${item.clue}」这点模糊线索。`];
 	return { title: event.id === 'exclusivechallenge' ? `${item.trainer}的考验` : '遗落的共鸣',
 		paragraphs: event.result || intro,
 		options: event.stage !== 'choice' ? [] : !event.committed ?
@@ -88,7 +89,7 @@ export function chooseExclusiveEvent(run: RogueRun, choice: string, random: Rogu
 	if (index === state.answer) {
 		const granted = grantExclusiveItem(run, state.item);
 		event.stage = 'result'; event.settled = true;
-		event.result = [granted ? `伙伴兴奋地叫了起来。你在${item.sites[index]}找到了【${dex.items.get(state.item).name}】！` : '这里的物品已经由你收好。'];
+		event.result = [granted ? `伙伴兴奋地叫了起来。你在${item.sites[index]}找到了【${formItem(state.item)?.name || dex.items.get(state.item).name}】！` : '这里的物品已经由你收好。'];
 		return;
 	}
 	state.tried.push(index); state.battleElite = state.tried.length === 3;
@@ -115,7 +116,7 @@ export function settleExclusiveEvent(run: RogueRun, won: boolean) {
 			run.money += reward.money;
 			for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
 			grantExclusiveItem(run, state.item);
-			event.result = [`${item.trainer}收回精灵球，认真地点了点头。`, `「我看到了。交给你们，我很放心。」你接过了【${dex.items.get(state.item).name}】。`];
+			event.result = [`${item.trainer}收回精灵球，认真地点了点头。`, `「我看到了。交给你们，我很放心。」你接过了【${formItem(state.item)?.name || dex.items.get(state.item).name}】。`];
 		} else {
 			run.exclusiveItems![state.item].cooldown = run.floor + 8;
 			event.result = [`${item.trainer}扶稳你，摇了摇头：「还差一点。先照顾好伙伴，过一段路，我会再来测试你们的实力。」`];

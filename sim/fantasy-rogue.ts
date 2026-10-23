@@ -18,6 +18,10 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	formFusion?: { item: string, species: string, ability: string, donor: RoguePokemon };
+	/** PP of temporarily unavailable form moves; changing forms cannot refill them. */
+	formMoveMemory?: { id: string, pp: number, maxpp: number }[];
+	originalDragonUnlocked?: boolean;
 	fusion?: { first: RoguePokemon, second: RoguePokemon, baseStats: StatsTable, types: string[], moves: string[], experienceStart: number };
 	uncappedLevel?: boolean;
 	evolutionProgress?: { followed?: number; lastFloor?: number; moves?: Record<string, number>; criticals?: number;

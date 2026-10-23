@@ -11,6 +11,7 @@ const { feedMushroom, mushroomGift } = require('../../dist/server/fantasy-rogue/
 const { randomSpeciesEligible } = require('../../dist/server/fantasy-rogue/species-eligibility');
 const { featheredSpecies, mushroomSpecies } = require('../../dist/server/fantasy-rogue/nature-collections');
 const { collectionView, chooseCollection, advanceSki } = require('../../dist/server/fantasy-rogue/collection-events');
+const { candyAtFloor, eventRewardBudget } = require('../../dist/server/fantasy-rogue/early-balance');
 const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
 const { prepareTrade } = require('../../dist/server/fantasy-rogue/trading');
 const { stats, set } = require('../fixtures/fantasy-rogue');
@@ -115,6 +116,40 @@ describe('Rogue collections, companion eligibility and codex conditions', functi
 		const money = run.money;
 		assert.throws(() => chooseCollection(run, content, () => 0, 'skitick', 32000));
 		assert.equal(run.money, money);
+	});
+	it('allows a recent delayed dodge, but cannot rewind committed collisions or fast-forward the finish', () => {
+		function slope() {
+			const r = party(); event(r, 'skiing'); chooseCollection(r, content, () => 0, 'skistart', 1000);
+			r.node.event.ski.obstacles = [{ at: 3000, lane: 1, kind: 'tree' }]; return r;
+		}
+		const delayed = slope();
+		chooseCollection(delayed, content, () => 0, 'skitick', 4000);
+		chooseCollection(delayed, content, () => 0, 'skileft', 4100, 2950);
+		chooseCollection(delayed, content, () => 0, 'skitick', 4400);
+		assert(!delayed.node.event.ski.crashed); assert.equal(delayed.node.event.ski.lane, 0);
+		const tooLate = slope();
+		chooseCollection(tooLate, content, () => 0, 'skileft', 4400, 100);
+		assert(tooLate.node.event.ski.crashed);
+		const future = slope();
+		chooseCollection(future, content, () => 0, 'skileft', 2000, 999999);
+		assert.equal(future.node.event.ski.checked, 1000); assert(!future.node.event.settled);
+		const legacy = slope(); delete legacy.node.event.ski.inputWindow;
+		chooseCollection(legacy, content, () => 0, 'skileft', 4100, 2950);
+		assert(legacy.node.event.ski.crashed, 'Existing saves retain the original collision timeline');
+	});
+	it('reduces ski density and increases both consolation and successful-run rewards', () => {
+		for (const floor of [20, 80, 150]) for (const tier of [0, 1, 3, 5]) {
+			const r = party(); r.floor = floor; event(r, 'skiing');
+			chooseCollection(r, content, () => 0, 'skistart', 1000);
+			assert.equal(r.node.event.ski.obstacles.length, 17);
+			assert(r.node.event.ski.obstacles[0].at >= 2000);
+			r.node.event.ski.obstacles = tier === 5 ? [] : [{ at: Math.max(500, tier * 3000), lane: 1, kind: 'rock' }];
+			chooseCollection(r, content, () => 0, 'skitick', 16500);
+			const expected = Math.round(eventRewardBudget(floor) * (0.125 + tier * 0.2));
+			assert.equal(r.money - 20000, expected);
+			assert.equal(r.bag[candyAtFloor(floor)] || 0, tier ? 1 + Math.max(1, tier - (floor < 60 && tier >= 3 ? 1 : 0)) : 0);
+			assert.equal(r.bag.revive || 0, tier >= 4 ? 1 : 0);
+		}
 	});
 	it('opens stones individually or in bulk and counts one completed visit for Olivia', () => {
 		const run = party(['Rockruff']); event(run, 'stones'); c.grantCompanion(run, 'olivia');

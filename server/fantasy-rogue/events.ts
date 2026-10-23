@@ -226,7 +226,7 @@ function rewardReceipt(run: RogueRun, before: { money: number, bag: Record<strin
 }
 
 export function chooseEventOption(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom,
-	key: string | undefined, choice: string | undefined, evs?: StatsTable) {
+	key: string | undefined, choice: string | undefined, evs?: StatsTable, skiAt?: number) {
 	const event = run.node?.event;
 	const view = eventView(run), service = event?.id === 'fantasytutor' ? fantasyTutorView(run) : serviceEventView(run);
 	if (run.phase !== 'event' || !event || event.key !== key || event.settled ||
@@ -259,7 +259,11 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	if (event.id === 'honeymoon' || event.id === 'honeymoonreturn') {
 		chooseHoneymoon(account, run, content, random, choice!); rewardReceipt(run, before); return;
 	}
-	if (collectionEvent(event.id)) { chooseCollection(run, content, random, choice!); rewardReceipt(run, before); return; }
+	if (collectionEvent(event.id)) {
+		chooseCollection(run, content, random, choice!, Date.now(), skiAt);
+		rewardReceipt(run, before);
+		return;
+	}
 	if (event.tracks) {
 		chooseLegendaryTracks(run, choice!, random); rewardReceipt(run, before); return;
 	}
