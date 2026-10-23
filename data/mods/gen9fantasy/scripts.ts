@@ -4,15 +4,25 @@ import { applyAdjustmentLabels } from './adjustment-labels';
 export const Scripts: ModdedBattleScriptsData = {
     gen: 9,
 
-    init() {
-        applyAdjustmentLabels(this);
-        for (const id in this.data.FormatsData) {
-            if (this.data.FormatsData[id].isNonstandard === 'Past') delete this.data.FormatsData[id].isNonstandard;
-            if (this.data.FormatsData[id].natDexTier) {
-                this.data.FormatsData[id].tier = this.data.FormatsData[id].natDexTier;
-            }
-        }
-    },
+	init() {
+		applyAdjustmentLabels(this);
+		// Z-A Mega formes remain available here, but not in earlier official games or SV.
+		for (const id in this.data.Pokedex) {
+			const data = this.data.Pokedex[id];
+			if (data.gen === 9 && data.forme?.includes('Mega') && data.isNonstandard === 'Future') {
+				this.modData('Pokedex', id).isNonstandard = null;
+			}
+		}
+		for (const id in this.data.FormatsData) {
+			// Inherited entries are shared until modData makes a local copy.
+			// Fantasy availability and tiers must not change the ordinary formats.
+			const data = this.modData('FormatsData', id);
+			if (data.isNonstandard === 'Past') delete data.isNonstandard;
+			if (data.natDexTier) {
+				data.tier = data.natDexTier;
+			}
+		}
+	},
 
     actions: {
         // ==========================================

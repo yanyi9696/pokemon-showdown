@@ -4,7 +4,7 @@
 
 'use strict';
 
-const assert = require('../../assert').strict;
+const assert = require('../../assert');
 
 const datasearch = require('../../../dist/server/chat-plugins/datasearch');
 

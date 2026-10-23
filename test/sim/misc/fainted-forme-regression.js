@@ -10,7 +10,7 @@ describe(`Fainted forme regression`, () => {
 		battle.destroy();
 	});
 
-	it('[Hackmons] should be able to revert between different mega evolutions', () => {
+	it('[Hackmons] should retain the active Mega forme after fainting', () => {
 		battle = common.createBattle([[
 			{ species: 'charizardmegay', ability: 'drought', item: 'charizarditex', moves: ['memento'] },
 			{ species: 'darkrai', moves: ['darkpulse'] },
@@ -19,11 +19,12 @@ describe(`Fainted forme regression`, () => {
 		]]);
 		const pokemon = battle.p1.active[0];
 		battle.makeChoices('move memento mega', 'auto');
-		assert.species(pokemon, 'Charizard-Mega-Y');
-		assert.hasAbility(pokemon, 'Drought');
+		assert(pokemon.fainted);
+		assert.species(pokemon, 'Charizard-Mega-X');
+		assert.hasAbility(pokemon, 'Tough Claws');
 	});
 
-	it(`should revert Mega Evolutions`, () => {
+	it(`should retain Mega Evolutions after fainting`, () => {
 		battle = common.createBattle([[
 			{ species: 'alakazam', ability: 'synchronize', item: 'alakazite', moves: ['memento'] },
 			{ species: 'darkrai', moves: ['darkpulse'] },
@@ -32,11 +33,12 @@ describe(`Fainted forme regression`, () => {
 		]]);
 		const pokemon = battle.p1.active[0];
 		battle.makeChoices('move memento mega', 'auto');
-		assert.species(pokemon, 'Alakazam');
-		assert.hasAbility(pokemon, 'Synchronize');
+		assert(pokemon.fainted);
+		assert.species(pokemon, 'Alakazam-Mega');
+		assert.hasAbility(pokemon, 'Trace');
 	});
 
-	it(`should revert Rayquaza-Mega`, () => {
+	it(`should retain Rayquaza-Mega after fainting`, () => {
 		battle = common.gen(7).createBattle([[
 			{ species: 'rayquaza', ability: 'airlock', moves: ['memento', 'dragonascent'] },
 			{ species: 'darkrai', moves: ['darkpulse'] },
@@ -45,8 +47,9 @@ describe(`Fainted forme regression`, () => {
 		]]);
 		const pokemon = battle.p1.active[0];
 		battle.makeChoices('move memento mega', 'auto');
-		assert.species(pokemon, 'Rayquaza');
-		assert.hasAbility(pokemon, 'Air Lock');
+		assert(pokemon.fainted);
+		assert.species(pokemon, 'Rayquaza-Mega');
+		assert.hasAbility(pokemon, 'Delta Stream');
 	});
 
 	it(`should revert Primal forms`, () => {

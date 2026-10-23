@@ -1654,7 +1654,8 @@ export class RandomTeams {
 		// For Monotype
 		const isMonotype = !!this.forceMonotype || ruleTable.has('sametypeclause');
 		const isDoubles = this.format.gameType !== 'singles';
-		const typePool = this.dex.types.names().filter(name => name !== "Stellar");
+		// Stellar and the typeless placeholder cannot define a monotype team.
+		const typePool = this.dex.types.names().filter(name => name !== "Stellar" && name !== "???");
 		const type = this.forceMonotype || this.sample(typePool);
 
 		// PotD stuff

@@ -66,7 +66,8 @@ describe('Disguise', () => {
 		]]);
 		const pokemon = battle.p1.active[0];
 		assert.sets(() => pokemon.status, 'psn', () => battle.makeChoices());
-		assert.statStage(pokemon, 'spe', -1);
+		// Fantasy's Toxic Thread lowers Speed by two stages, even through Disguise.
+		assert.statStage(pokemon, 'spe', -2);
 		assert.false.fullHP(pokemon);
 	});
 

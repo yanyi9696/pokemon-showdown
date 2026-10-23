@@ -156,6 +156,11 @@ export default class TeamGenerator {
 			if (s.isNonstandard || s.isNonstandard === 'Unobtainable') return false;
 			if (s.nfe) return false;
 			if (s.battleOnly && (!s.requiredItems?.length || s.name.endsWith('-Tera'))) return false;
+			if (s.requiredItems?.length && !s.requiredItems.some(name => this.itemPool.some(item => item.name === name))) {
+				return false;
+			}
+			// Imported formes can exist without an obtainable move pool in this generation.
+			if (!this.dex.species.getMovePool(s.id).size) return false;
 
 			return true;
 		});
