@@ -1,0 +1,10 @@
+{
+  "serverRepository": "./pokemon-showdown",
+  "clientRepository": "./pokemon-showdown-client",
+  "toolsBranch": "codex/fantasy-rogue",
+  "serverBranch": "codex/fantasy-rogue",
+  "clientBranch": "codex/fantasy-rogue",
+  "stateRoot": "./local-development-state",
+  "saveDatabase": "./pokemon-showdown/databases/fantasy-rogue-preview.db",
+  "port": 8000
+}

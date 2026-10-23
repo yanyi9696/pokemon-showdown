@@ -1,0 +1,54 @@
+# Windows 本地 Pokémon Showdown 更新工具
+
+`更新并重启本地肉鸽.cmd` 现在是通用的本地更新入口，覆盖服务端规则、宝可梦数据、Rogue、客户端界面及回放页面。名称保留以兼容现有使用习惯。
+
+## 实际源码与运行目录
+
+当前 `F:\fantasy\release-audit-20261022\server` 和 `client` 是两个仓库登记的 Git worktree，检出 `codex/fantasy-rogue`。它们不是冻结的发布副本。入口不再写死包含日期的路径，而是根据 `F:\fantasy\local-development.json` 中的仓库和分支，查询 `git worktree list --porcelain` 找到当前目录。
+
+服务端直接编译所选工作区到其 `dist`，客户端直接在所选工作区生成测试页面与静态资源；客户端数据生成显式使用同一次更新选中的服务端。运行进程通过启动记录加载同一份 `dist`。不复制或同步源码，不操作其他工作区的源码，不执行 Git 拉取、切换、重置或清理。
+
+默认更新当前 Rogue 开发工作区，包括其中的普通对战改动。如果普通对战开发在另一个工作区进行，必须选择那个工作区；工具不会自动把不同分支合并。自动选择时，如果其他工作区存在未提交内容，会中止并列出目录，避免漏用修改。选择明确的目录后允许该目录有未提交内容。
+
+## 使用
+
+双击原 cmd 即可更新默认工作区。需要指定源码时，在 PowerShell 中运行：
+
+```powershell
+& F:\fantasy\launch-local-development.ps1 -ServerRoot F:\fantasy\pokemon-showdown -ClientRoot F:\fantasy\pokemon-showdown-client
+```
+
+上述目录只是选择示例，不会切换其中的分支。长期更换默认来源，可以修改 `local-development.json` 的 `serverBranch` / `clientBranch`，对应分支须已经检出到一个工作区。工具代码始终从 `toolsBranch` 所指工作区读取。
+
+```powershell
+# 只核对目录、Git 状态、存档路径和构建计划，不备份、不构建、不重启
+& F:\fantasy\launch-local-development.ps1 -CheckOnly
+# 强制重新构建两端（例如手动升级 node_modules 后）
+& F:\fantasy\launch-local-development.ps1 -Rebuild
+```
+
+两个源码目录都必须已安装依赖，服务端配置须使用回环地址、8000 端口及配置文件指定的原存档路径。工具不会替用户覆盖配置。当前主存档仍为 `F:\fantasy\pokemon-showdown\databases\fantasy-rogue-preview.db`，原固定测试昵称不变。
+
+## 构建与成功判定
+
+1. 读取已跟踪、未提交和未忽略的新文件，以及本地构建配置，计算内容指纹。Git 提交号只用于显示来源，不替代内容比较。
+2. 检查本地服务和进行中的对战，先备份配置与 SQLite 数据库（包括 WAL 中的数据）。其他活跃普通数据库也备份，既有历史备份不再重复备份。
+3. 仅停止能确认来源的本地游戏进程及其 Node 子进程。其他端口所有者、进行中的战斗或重复运行的更新器会导致中止。
+4. 内容或产物变化时，保存旧 `dist` 到本次记录目录，再执行服务端 `node build`、客户端 `node build full --local-server <所选服务端>` 和独立 `node build replays`。这不会把已经废弃的旧 dist 模块混入新版本。状态目录须与服务端位于同一磁盘，且在源码目录之外。
+5. 只有源码与产物均和上次成功记录相同才复用构建；依赖版本变化也必须重建，手动修改依赖内容后可用 `-Rebuild`。
+6. 启动时再次比较文件指纹，以本次随机标识、进程号和产物指纹核验启动记录，并检查普通 Showdown 格式列表及房间协议。不会仅靠“8000 能连接”或 Rogue 图鉴条数判断成功。
+7. 成功后显示两端绝对路径、分支、完整 SHA、有无未提交修改、构建结果、备份目录和端口。生成通用开发版及肉鸽开发版快捷方式；浏览器需要使用本次入口并按 Ctrl+F5。
+
+构建日志、备份、启动记录保存在 `local-development-state\runs\<本次目录>`；`last-success.json` 只记录最后一次完全通过检查的更新。失败会以非零退出码结束。构建失败后服务保持停止，不自动用旧版本冒充更新成功；可据日志修复后重新运行。旧源码、配置、数据库不会被回滚或替换。工具不自动清理备份，可定期人工归档。
+
+可选 PHP 公告生成失败时，客户端会使用已有的本地公告回退；构建日志保留此提示。这与必要的 JS、数据、页面构建失败分别报告。
+
+## 安装文件
+
+仓库中 `tools/launch-local-development.ps1` 是小型引导器，复制到两个仓库的父目录。将 `tools/update-local-development.cmd` 复制为原 cmd 名，将 `tools/local-development.example.json` 复制为 `local-development.json` 后按本机目录调整。现有入口和配置应先备份；不覆盖已定制的配置。
+
+该工具只支持 Windows 本地环境，无 SSH、远端部署或服务发布步骤。回归测试：
+
+```text
+node node_modules/mocha/bin/mocha.js --no-config test/server/local-development.js test/server/fantasy-rogue-local-maintenance.js --exit
+```
