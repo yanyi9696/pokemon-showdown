@@ -88,6 +88,17 @@ export function levelMoves(name: string): { move: string, level: number, generat
 	if (toID(name) === 'kyuremoriginal') return ['Kyurem', 'Reshiram', 'Zekrom'].flatMap(levelMoves)
 		.sort((a, b) => a.level - b.level || a.move.localeCompare(b.move));
 	const species = baseDex.species.get(name);
+	if (!species.exists) {
+		const fantasy = battleDex.species.get(name);
+		if (!fantasy.exists || !fantasy.name.endsWith('-Fantasy')) return [];
+		// Preserve regional forms. Custom/TM moves still require their own teaching route.
+		const ordinary = [fantasy.name.replace(/-Fantasy$/, ''), fantasy.changesFrom, fantasy.baseSpecies]
+			.find(candidate => candidate && baseDex.species.get(candidate).exists);
+		if (!ordinary) return [];
+		const legal = new Set(battleDex.species.getFullLearnset(fantasy.id)
+			.flatMap(data => Object.keys(data.learnset || {})));
+		return levelMoves(ordinary).filter(entry => legal.has(entry.move));
+	}
 	const learnsetData = baseDex.species.getLearnsetData(species.id);
 	let learnset = learnsetData.learnset;
 	if (!learnset && species.baseSpecies !== species.name) {
@@ -117,7 +128,29 @@ export function levelMoves(name: string): { move: string, level: number, generat
 export function initializeExperience(mon: RoguePokemon) {
 	mon.experience ??= experienceAtLevel(rogueSpeciesData(mon.fusion?.first.set.species || mon.set.species).growth, mon.set.level);
 	mon.seenMoves ??= mon.set.moves.map(toID);
+	rememberPastLevelMoves(mon);
+}
+
+/** Seed acquired partners and repair old saves, without equipping moves or refunding spent PP. */
+export function rememberPastLevelMoves(mon: RoguePokemon) {
 	ensureMemberMemory(mon);
+	if (mon.egg || mon.fusion) return;
+	const legal = new Set(battleDex.species.getFullLearnset(toID(mon.set.species))
+		.flatMap(data => Object.keys(data.learnset || {})));
+	const seen = new Set((mon.seenMoves || mon.set.moves).map(toID));
+	for (const { move, level } of levelMoves(mon.set.species)) {
+		if (level > mon.set.level || !legal.has(move)) continue;
+		if (!mon.moveMemory!.some(slot => slot.id === move)) {
+			// A temporarily unavailable form move or borrowed move may already have spent PP.
+			const previous = mon.formMoveMemory?.find(slot => slot.id === move) ||
+				mon.blessingPP?.find(slot => slot.id === move) || mon.pp.find(slot => slot.id === move);
+			const slot = previous ? { ...previous } : { id: move, pp: movePP(move), maxpp: movePP(move) };
+			normalizePP(slot);
+			mon.moveMemory!.push(slot);
+		}
+		seen.add(toID(move));
+	}
+	mon.seenMoves = [...seen];
 }
 
 /** The campaign party remains the battle-start snapshot until settlement. Escape commits resources only. */

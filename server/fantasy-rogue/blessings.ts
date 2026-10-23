@@ -23,7 +23,8 @@ import { ROGUE_BLESSINGS, BLESSING_TYPES, EMBLEM_PREFIX, EMBLEM_MOVES, FANTASY_B
 	type BlessingEffects, type OwnedBlessing, type BlessingDefinition } from '../../sim/rogue-blessing-data';
 import { createBlessingRound, refreshBlessingOption, chooseBlessingOption,
 	type BlessingRound, type BlessingFloor } from './blessing-selection';
-import { createRoguePokemon, rebuildMember, rememberMove, initializeExperience, evolveMember, gainExperience } from './progression';
+import { createRoguePokemon, rebuildMember, rememberMove, rememberPastLevelMoves,
+	initializeExperience, evolveMember, gainExperience } from './progression';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import type { RogueRandom } from './biome-pools';
 import { recordStarterTraits, recordStarterMoves } from './starter-traits';
@@ -472,6 +473,7 @@ function convertFantasy(run: RogueRun, mon: RoguePokemon) {
 	mon.set.species = mon.set.name = species.name;
 	mon.set.ability = species.abilities[slot as '0'] || species.abilities[0];
 	rebuildMember(mon, run.boosts);
+	rememberPastLevelMoves(mon);
 	(run.notices ||= []).push(`${old.name} 已幻想化为 ${species.name}。`);
 	return true;
 }

@@ -194,6 +194,29 @@ describe('Unified local development updater', function () {
 		write(path.join(server, 'config/config.js'), "exports.port = 9000; exports.bindaddress = '0.0.0.0';");
 		assert.throws(() => local.validateLocalConfig(server, record.settings), /loopback port 8000/);
 	});
+	(process.platform === 'win32' ? it : it.skip)('opens only the completed client entry and isolates browser association failures', () => {
+		const scriptPath = path.resolve(__dirname, '../../tools/restart-local-development.ps1').replace(/'/g, "''");
+		const script = `
+$ErrorActionPreference = 'Stop'
+$ast = [Management.Automation.Language.Parser]::ParseFile('${scriptPath}', [ref]$null, [ref]$null)
+$definition = $ast.Find({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq 'Open-UpdatedClient'}, $true)
+Invoke-Expression $definition.Extent.Text
+$script:opened = @()
+function Start-Process { param($FilePath, $WindowStyle) $script:opened += $FilePath }
+$url = 'file:///F:/current%20worktree/client/testclient.html?~~localhost:8000'
+foreach ($status in @('prepared', 'built', 'failed')) {
+    $refused = $false
+    try { Open-UpdatedClient @{status = $status; clientUrl = $url} } catch { $refused = $true }
+    if (!$refused -or $script:opened.Count) { throw 'Incomplete update opened a client.' }
+}
+Open-UpdatedClient @{status = 'success'; clientUrl = $url}
+if ($script:opened.Count -ne 1 -or $script:opened[0] -cne $url) { throw 'Wrong client entry opened.' }
+function Start-Process { throw 'Missing browser association' }
+Open-UpdatedClient @{status = 'success'; clientUrl = $url}
+Write-Output 'client-entry verified'
+`;
+		assert.match(execFileSync('powershell.exe', ['-NoProfile', '-Command', script], { encoding: 'utf8', windowsHide: true, timeout: 10000 }), /client-entry verified/);
+	});
 	(process.platform === 'win32' ? it : it.skip)('terminates the PowerShell process-tree walk at leaf nodes and refuses an unrelated child', () => {
 		const scriptPath = path.resolve(__dirname, '../../tools/restart-local-development.ps1').replace(/'/g, "''");
 		const script = `

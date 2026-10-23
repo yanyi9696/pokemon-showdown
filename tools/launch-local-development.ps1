@@ -3,7 +3,8 @@
     [string]$ServerRoot,
     [string]$ClientRoot,
     [switch]$Rebuild,
-    [switch]$CheckOnly
+    [switch]$CheckOnly,
+    [switch]$NoOpen
 )
 # Install this small bootstrap beside the .cmd and settings file.
 $ErrorActionPreference = 'Stop'
@@ -25,6 +26,7 @@ try {
     $script = Join-Path $toolsRoot 'tools\restart-local-development.ps1'
     if (!(Test-Path -LiteralPath $script)) { throw "Updater not found: $script" }
     $arguments = @{SettingsFile = $SettingsFile; Rebuild = $Rebuild; CheckOnly = $CheckOnly}
+    if ($NoOpen) { $arguments.NoOpen = $true }
     if ($ServerRoot) { $arguments.ServerRoot = $ServerRoot }
     if ($ClientRoot) { $arguments.ClientRoot = $ClientRoot }
     & $script @arguments

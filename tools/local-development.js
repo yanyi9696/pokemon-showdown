@@ -300,6 +300,7 @@ async function finish(recordFile, pid) {
 	for (const [name, fragment] of [['Pokémon Showdown 本地开发版.url', ''], ['本地肉鸽（开发版）.url', '#fantasyrogue']]) {
 		fs.writeFileSync(path.join(base, name), `[InternetShortcut]\r\nURL=${url}${fragment}\r\n`);
 	}
+	record.clientUrl = url;
 	record.status = 'success'; record.pid = Number(pid); record.finishedAt = new Date().toISOString();
 	writeJSON(recordFile, record);
 	writeJSON(path.join(record.settings.stateRoot, 'last-success.json'), record);

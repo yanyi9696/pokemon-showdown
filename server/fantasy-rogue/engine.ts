@@ -41,7 +41,7 @@ import type { RogueStore } from './store';
 import type { RogueAccount, RogueCommand, RogueContent, RogueInventory, RogueRun } from './types';
 import {
 	createRoguePokemon, ensureMemberMemory, evolveMember, evolutionOptions, gainEffort, gainExperience,
-	initializeExperience, rebuildMember, rememberMove, escapedMember,
+	initializeExperience, rebuildMember, rememberMove, rememberPastLevelMoves, escapedMember,
 } from './progression';
 import { experienceAtLevel, rogueEffortYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { towerExperience, grantEventTraining, MENTOR_CARDS, mentorTier, emergencyCost, type MentorCard } from './early-balance';
@@ -154,7 +154,7 @@ export class RogueEngine {
 		if (this.content && (run.contentVersion === this.content.version ||
 			this.content.compatibleVersions?.includes(run.contentVersion))) this.prepareChoices(run);
 		for (const mon of [...run.team, ...(run.box || []), ...run.checkpoint.team, ...(run.checkpoint.box || []),
-			...(run.pendingCapture ? [run.pendingCapture] : [])]) {
+			...(run.pendingCaptures || []), ...(run.pendingCapture ? [run.pendingCapture] : [])]) {
 			const legacyMemory = !mon.moveMemory;
 			ensureMemberMemory(mon);
 			if (legacyMemory && run.team.includes(mon)) {
@@ -165,6 +165,7 @@ export class RogueEngine {
 					learned.pp = learned.maxpp;
 				}
 			}
+			if (this.content?.progression) rememberPastLevelMoves(mon);
 		}
 		if (run.phase === 'failed' && !run.node?.noHealing) {
 			// Older versions discarded the loss snapshot. Do not silently restore their pre-fight HP.

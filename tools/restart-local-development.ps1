@@ -3,7 +3,8 @@
     [string]$ServerRoot,
     [string]$ClientRoot,
     [switch]$Rebuild,
-    [switch]$CheckOnly
+    [switch]$CheckOnly,
+    [switch]$NoOpen
 )
 # UTF-8 BOM is required when distributing this file to Windows PowerShell 5.1.
 $ErrorActionPreference = 'Stop'
@@ -20,6 +21,17 @@ function Read-Json([string]$File) {
 function Invoke-Helper([string[]]$Arguments) {
     & $nodeExecutable $helper @Arguments
     if ($LASTEXITCODE -ne 0) { throw "本地更新步骤失败：$($Arguments[0])（退出码 $LASTEXITCODE）" }
+}
+function Open-UpdatedClient($Completed) {
+    if ($Completed.status -ne 'success' -or !$Completed.clientUrl) {
+        throw '只有通过全部检查的本次更新才能打开客户端。'
+    }
+    try {
+        Start-Process -FilePath $Completed.clientUrl -WindowStyle Hidden
+    } catch {
+        # A browser association failure must not stop a verified running server.
+        Write-Warning "更新已完成，但浏览器未能打开。请使用本地开发版快捷方式：$($_.Exception.Message)"
+    }
 }
 function Test-CommandPath([string]$Command, [string]$File) {
     $normalized = $Command.Replace('/', '\')
@@ -152,7 +164,9 @@ try {
         if (!$ready) { throw "启动超时，查看 $errorLog 和 $outputLog" }
         Invoke-Helper @('finish', $recordFile, [string]$started.Id)
         Write-Host '更新并重启成功：已核对本次源码、构建指纹、启动进程及普通对战协议。' -ForegroundColor Green
-        Write-Host '请使用上面显示的客户端入口或本地开发版快捷方式，浏览器按 Ctrl+F5。原测试昵称和存档保持不变。'
+        $completed = Read-Json $recordFile
+        if (!$NoOpen) { Open-UpdatedClient $completed }
+        Write-Host '请使用本次客户端入口或本地开发版快捷方式。旧目录的浏览器标签不会自动升级，请关闭旧标签；原测试昵称和存档保持不变。'
     }
 } catch {
     $failure = $_.Exception.Message
