@@ -138,7 +138,7 @@ function prepare(settingsFile, serverOverride, clientOverride, force = false) {
 	const server = selectSource(settings.serverRepository, settings.serverBranch, serverOverride);
 	const client = selectSource(settings.clientRepository, settings.clientBranch, clientOverride);
 	for (const [root, required] of [[server, ['build', 'sim/dex.ts', 'server/index.ts']],
-		[client, ['build', 'build-tools/server-source.js', 'play.pokemonshowdown.com/testclient.template.html']]]) {
+		[client, ['build', 'build-tools/server-source.js', 'build-tools/local-development-server.js', 'play.pokemonshowdown.com/testclient.template.html']]]) {
 		for (const file of required) if (!fs.existsSync(path.join(root, file))) throw new Error(`Missing source: ${root}/${file}`);
 		if (inside(root, settings.stateRoot) || inside(settings.stateRoot, root) || settings.stateRoot === root) throw new Error('State directory must be outside source worktrees.');
 	}
@@ -288,13 +288,20 @@ async function inspect(port = 8000, guestLogin = false) {
 		if (guestLogin) {
 			// Check the real unregistered login path without opening or changing any player's save.
 			const name = `LocalCheck${Date.now().toString(36)}`;
+			// A real client sends a burst of UI queries before restoring its remembered nickname.
+			// This must not fill the public chat queue and silently discard the login command.
+			for (let i = 0; i < 8; i++) socket.send('|/cmd rooms');
 			socket.send(`|/trn ${name}`);
 			await wait('|updateuser|', line => {
 				const parts = line.split('|');
 				return parts[2] === ` ${name}` && parts[3] === '1';
 			});
+			socket.send('|/cmd fantasyrogueaccess');
+			const access = JSON.parse((await wait('|queryresponse|fantasyrogueaccess|')).slice('|queryresponse|fantasyrogueaccess|'.length));
+			if (!access?.enabled || access.userid !== name.toLowerCase()) throw new Error('Ordinary local nicknames cannot enter Fantasy Rogue.');
 		}
-		return { activeBattles: rooms.battleCount, formatsReceived: formats.length > 20, localGuestLogin: guestLogin };
+		return { activeBattles: rooms.battleCount, formatsReceived: formats.length > 20,
+			localGuestLogin: guestLogin, localRogueAccess: guestLogin };
 	} finally { socket.close(); }
 }
 async function finish(recordFile, pid) {
@@ -302,6 +309,11 @@ async function finish(recordFile, pid) {
 	const ready = readJSON(path.join(record.directory, 'runtime-ready.json'));
 	if (record.status !== 'built' || ready.id !== record.id || ready.pid !== Number(pid) || ready.outputHash !== record.outputs.hash) {
 		throw new Error('The started process does not match this build.');
+	}
+	if (!ready.localDevelopment || ready.clientPort !== 8080) throw new Error('Local development mode or HTTP client is missing.');
+	const clientStatus = await fetch('http://localhost:8080/__local/status', { signal: AbortSignal.timeout(5000) }).then(response => response.json());
+	if (clientStatus.buildId !== record.id || clientStatus.clientRoot !== record.sources.client.root || !clientStatus.localGuest) {
+		throw new Error('The HTTP client does not match this build.');
 	}
 	record.health = await inspect(8000, true);
 	if (!record.health.formatsReceived) throw new Error('The ordinary Showdown format list was not received.');
@@ -319,8 +331,9 @@ async function finish(recordFile, pid) {
 	console.log(JSON.stringify({ status: 'success', sources: record.sources, build: record.build, port: 8000, pid: record.pid, url,
 		saveDatabase: record.settings.saveDatabase, backup: record.backup, report: recordFile }, null, 2));
 }
-function clientURL(clientRoot) {
-	return require('url').pathToFileURL(path.join(clientRoot, 'play.pokemonshowdown.com/testclient.html')).href + '?~~localhost:8000&localguest=1';
+function clientURL() {
+	// Fixed HTTP origin preserves preferences across worktree moves and Windows shortcut launches.
+	return 'http://localhost:8080/testclient.html';
 }
 if (require.main === module) {
 	(async () => {

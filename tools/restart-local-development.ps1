@@ -132,6 +132,10 @@ try {
         Write-Host '只检查已完成，没有备份、构建或重启。'
     } else {
         $service = Get-GameProcess
+        $clientListeners = @(Get-NetTCPConnection -State Listen -LocalPort 8080 -ErrorAction SilentlyContinue)
+        if (@($clientListeners | Where-Object { $_.LocalAddress -ne '127.0.0.1' -or !$service -or $_.OwningProcess -ne $service.ProcessId }).Count) {
+            throw '8080 客户端端口被其他进程占用，停止更新。不会关闭未知进程。'
+        }
         if ($service) { Invoke-Helper @('inspect') }
         Invoke-Helper @('backup', $recordFile)
         $current = Get-GameProcess
@@ -163,7 +167,7 @@ try {
         }
         if (!$ready) { throw "启动超时，查看 $errorLog 和 $outputLog" }
         Invoke-Helper @('finish', $recordFile, [string]$started.Id)
-        Write-Host '更新并重启成功：已核对本次源码、构建指纹、启动进程及普通对战协议。' -ForegroundColor Green
+        Write-Host '更新并重启成功：已核对本次构建、HTTP 客户端、普通昵称登录和肉鸽权限。客户端 localhost:8080；对战 localhost:8000。' -ForegroundColor Green
         $completed = Read-Json $recordFile
         if (!$NoOpen) { Open-UpdatedClient $completed }
         Write-Host '请使用本次客户端入口或本地开发版快捷方式。旧目录的浏览器标签不会自动升级，请关闭旧标签；原测试昵称和存档保持不变。'

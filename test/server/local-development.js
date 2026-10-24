@@ -199,12 +199,11 @@ describe('Unified local development updater', function () {
 		write(path.join(server, 'config/config.js'), "exports.port = 8000; exports.bindaddress = '127.0.0.1'; exports.noguestsecurity = false;");
 		assert.throws(() => local.validateLocalConfig(server, record.settings), /noguestsecurity=true/);
 	});
-	it('opens the selected development client with explicit credential-free loopback login', () => {
-		const root = path.join(directory, 'current client');
-		const url = new URL(local.clientURL(root));
-		assert.equal(url.protocol, 'file:');
-		assert.equal(require('url').fileURLToPath(url), path.join(root, 'play.pokemonshowdown.com/testclient.html'));
-		assert.equal(url.search, '?~~localhost:8000&localguest=1');
+	it('uses a stable HTTP entry without relying on file URL query parameters', () => {
+		const url = new URL(local.clientURL());
+		assert.equal(url.origin, 'http://localhost:8080');
+		assert.equal(url.pathname, '/testclient.html');
+		assert.equal(url.search, '');
 	});
 	(process.platform === 'win32' ? it : it.skip)('opens only the completed client entry and isolates browser association failures', () => {
 		const scriptPath = path.resolve(__dirname, '../../tools/restart-local-development.ps1').replace(/'/g, "''");
@@ -215,7 +214,7 @@ $definition = $ast.Find({param($node) $node -is [Management.Automation.Language.
 Invoke-Expression $definition.Extent.Text
 $script:opened = @()
 function Start-Process { param($FilePath, $WindowStyle) $script:opened += $FilePath }
-$url = 'file:///F:/current%20worktree/client/testclient.html?~~localhost:8000&localguest=1'
+$url = 'http://localhost:8080/testclient.html'
 foreach ($status in @('prepared', 'built', 'failed')) {
     $refused = $false
     try { Open-UpdatedClient @{status = $status; clientUrl = $url} } catch { $refused = $true }

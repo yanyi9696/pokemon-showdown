@@ -1,5 +1,7 @@
 # 2026-10-24 本地入口测试昵称登录修复
 
+> 后续实际 Edge 验收证实：本记录中的 file 入口方案并未完整解决问题。本记录保留作为历史；当前修复、根因及实际浏览器结果见 [HTTP 本地入口验收](2026-10-24-local-http-login-acceptance.md)。下文的单元测试和协议模拟不能替代实际浏览器验收。
+
 ## 原因与范围
 
 旧入口在 `F:\fantasy\pokemon-showdown-client`，新入口在开发工作区 `F:\fantasy\release-audit-20261022\client`。两个目录的 `testclient.template.html`、`js/client.js`、`js/storage.js` 在修复前内容完全相同；两份本地服务器配置也都已经启用 `noguestsecurity=true`，绑定 `127.0.0.1:8000`。

@@ -11,14 +11,22 @@ if (!sameSources(record.sources, { server: sourceState(serverRoot), client: sour
 	outputs(serverRoot, clientRoot)?.hash !== record.outputs.hash) throw new Error('Build inputs or outputs changed before startup.');
 validateLocalConfig(serverRoot, record.settings);
 process.chdir(serverRoot);
+// Restore the proven preview preset before Config is loaded, including socket/simulator workers.
+// This entry is Windows-only, validates the loopback config and preserves the configured save database.
+process.env.FANTASY_AI_LOCAL = '1';
 const { Config } = require(path.join(serverRoot, 'dist/server/config-loader'));
 Config.watchconfig = false;
 Config.repl = false;
 Config.ssl = null;
+// The credential-free nickname arrives with the initial UI queries. The public chat
+// queue can drop it as excess traffic; the validated loopback-only runtime needs no chat throttle.
+Config.nothrottle = true;
 const previousHook = Config.startuphook;
 Config.startuphook = async () => {
 	if (previousHook) await previousHook();
+	await require(path.join(clientRoot, 'build-tools/local-development-server')).startLocalClientServer(clientRoot, record.id);
 	writeJSON(path.join(record.directory, 'runtime-ready.json'), { id: record.id, pid: process.pid,
-		outputHash: record.outputs.hash, startedAt: new Date().toISOString() });
+		outputHash: record.outputs.hash, localDevelopment: Config.fantasyailocal === true,
+		clientPort: 8080, startedAt: new Date().toISOString() });
 };
 require(path.join(serverRoot, 'dist/server')).listen(8000, '127.0.0.1', 1);
