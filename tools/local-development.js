@@ -121,6 +121,9 @@ function validateLocalConfig(root, settings) {
 	if (config.port !== 8000 || !['127.0.0.1', '::1', 'localhost'].includes(config.bindaddress) || config.ssl) {
 		throw new Error('Selected server config must use loopback port 8000 without SSL. Local config was not overwritten.');
 	}
+	if (config.noguestsecurity !== true) {
+		throw new Error('Local test nickname login requires noguestsecurity=true in the selected loopback server config. Local config was not overwritten.');
+	}
 	const database = path.resolve(root, config.fantasyrogue?.database || 'databases/fantasy-rogue.db');
 	if (fs.realpathSync(database) !== fs.realpathSync(settings.saveDatabase)) {
 		throw new Error('Selected config points to a different save database. Refusing to change local player saves.');
@@ -256,7 +259,7 @@ function build(recordFile, runner = runBuildStep) {
 		throw error;
 	} finally { writeJSON(recordFile, record); }
 }
-async function inspect(port = 8000) {
+async function inspect(port = 8000, guestLogin = false) {
 	if (Number(port) !== 8000) throw new Error('Only the local port 8000 is permitted.');
 	const socket = new WebSocket('ws://127.0.0.1:8000/showdown/websocket');
 	const messages = [];
@@ -266,10 +269,10 @@ async function inspect(port = 8000) {
 		if (data.startsWith('a[')) data = JSON.parse(data.slice(1)).join('\n');
 		messages.push(...data.split('\n'));
 	});
-	async function wait(prefix) {
+	async function wait(prefix, matches = () => true) {
 		const deadline = Date.now() + 10000;
 		while (Date.now() < deadline) {
-			const index = messages.findIndex(line => line.startsWith(prefix));
+			const index = messages.findIndex(line => line.startsWith(prefix) && matches(line));
 			if (index >= 0) return messages.splice(index, 1)[0];
 			if (socket.readyState === WebSocket.CLOSED) throw new Error('Local service disconnected.');
 			await new Promise(resolve => { setTimeout(resolve, 50); });
@@ -282,7 +285,16 @@ async function inspect(port = 8000) {
 		socket.send('|/cmd rooms');
 		const rooms = JSON.parse((await wait('|queryresponse|rooms|')).slice('|queryresponse|rooms|'.length));
 		if (!Number.isSafeInteger(rooms.battleCount) || rooms.battleCount < 0) throw new Error('Cannot confirm active battles.');
-		return { activeBattles: rooms.battleCount, formatsReceived: formats.length > 20 };
+		if (guestLogin) {
+			// Check the real unregistered login path without opening or changing any player's save.
+			const name = `LocalCheck${Date.now().toString(36)}`;
+			socket.send(`|/trn ${name}`);
+			await wait('|updateuser|', line => {
+				const parts = line.split('|');
+				return parts[2] === ` ${name}` && parts[3] === '1';
+			});
+		}
+		return { activeBattles: rooms.battleCount, formatsReceived: formats.length > 20, localGuestLogin: guestLogin };
 	} finally { socket.close(); }
 }
 async function finish(recordFile, pid) {
@@ -291,12 +303,12 @@ async function finish(recordFile, pid) {
 	if (record.status !== 'built' || ready.id !== record.id || ready.pid !== Number(pid) || ready.outputHash !== record.outputs.hash) {
 		throw new Error('The started process does not match this build.');
 	}
-	record.health = await inspect();
+	record.health = await inspect(8000, true);
 	if (!record.health.formatsReceived) throw new Error('The ordinary Showdown format list was not received.');
 	const now = { server: sourceState(record.sources.server.root), client: sourceState(record.sources.client.root) };
 	if (!sameSources(record.sources, now) || outputs(now.server.root, now.client.root)?.hash !== record.outputs.hash) throw new Error('Files changed while starting. Update was not accepted.');
 	const base = path.dirname(record.settingsFile);
-	const url = require('url').pathToFileURL(path.join(now.client.root, 'play.pokemonshowdown.com/testclient.html')).href + '?~~localhost:8000';
+	const url = clientURL(now.client.root);
 	for (const [name, fragment] of [['Pokémon Showdown 本地开发版.url', ''], ['本地肉鸽（开发版）.url', '#fantasyrogue']]) {
 		fs.writeFileSync(path.join(base, name), `[InternetShortcut]\r\nURL=${url}${fragment}\r\n`);
 	}
@@ -306,6 +318,9 @@ async function finish(recordFile, pid) {
 	writeJSON(path.join(record.settings.stateRoot, 'last-success.json'), record);
 	console.log(JSON.stringify({ status: 'success', sources: record.sources, build: record.build, port: 8000, pid: record.pid, url,
 		saveDatabase: record.settings.saveDatabase, backup: record.backup, report: recordFile }, null, 2));
+}
+function clientURL(clientRoot) {
+	return require('url').pathToFileURL(path.join(clientRoot, 'play.pokemonshowdown.com/testclient.html')).href + '?~~localhost:8000&localguest=1';
 }
 if (require.main === module) {
 	(async () => {
@@ -326,4 +341,4 @@ if (require.main === module) {
 		} else throw new Error('Unknown local development command.');
 	})().catch(error => { console.error(error.message); process.exitCode = 1; });
 }
-module.exports = { localPath, inside, worktrees, selectSource, sourceState, outputs, sameSources, buildPlan, prepare, backup, build, readJSON, writeJSON, validateLocalConfig, runBuildStep, finish };
+module.exports = { localPath, inside, worktrees, selectSource, sourceState, outputs, sameSources, buildPlan, prepare, backup, build, readJSON, writeJSON, validateLocalConfig, runBuildStep, finish, clientURL };

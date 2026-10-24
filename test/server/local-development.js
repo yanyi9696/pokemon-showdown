@@ -103,7 +103,7 @@ describe('Unified local development updater', function () {
 		const settingsFile = path.join(directory, 'settings.json');
 		const saveDatabase = path.join(directory, 'original/saves.db');
 		write(settingsFile, '{}');
-		write(path.join(server, 'config/config.js'), `exports.port = 8000; exports.bindaddress = '127.0.0.1'; exports.fantasyrogue = {database: ${JSON.stringify(saveDatabase)}};`);
+		write(path.join(server, 'config/config.js'), `exports.port = 8000; exports.bindaddress = '127.0.0.1'; exports.noguestsecurity = true; exports.fantasyrogue = {database: ${JSON.stringify(saveDatabase)}};`);
 		write(path.join(client, 'config/config.js'), 'local configuration');
 		const record = { id: 'test-update', status: 'prepared', directory: run, settingsFile,
 			settings: { stateRoot: state, saveDatabase, serverRepository: server },
@@ -194,6 +194,18 @@ describe('Unified local development updater', function () {
 		write(path.join(server, 'config/config.js'), "exports.port = 9000; exports.bindaddress = '0.0.0.0';");
 		assert.throws(() => local.validateLocalConfig(server, record.settings), /loopback port 8000/);
 	});
+	it('does not report nickname login as ready when local guest login is disabled', () => {
+		const { server, record } = fixtureRecord();
+		write(path.join(server, 'config/config.js'), "exports.port = 8000; exports.bindaddress = '127.0.0.1'; exports.noguestsecurity = false;");
+		assert.throws(() => local.validateLocalConfig(server, record.settings), /noguestsecurity=true/);
+	});
+	it('opens the selected development client with explicit credential-free loopback login', () => {
+		const root = path.join(directory, 'current client');
+		const url = new URL(local.clientURL(root));
+		assert.equal(url.protocol, 'file:');
+		assert.equal(require('url').fileURLToPath(url), path.join(root, 'play.pokemonshowdown.com/testclient.html'));
+		assert.equal(url.search, '?~~localhost:8000&localguest=1');
+	});
 	(process.platform === 'win32' ? it : it.skip)('opens only the completed client entry and isolates browser association failures', () => {
 		const scriptPath = path.resolve(__dirname, '../../tools/restart-local-development.ps1').replace(/'/g, "''");
 		const script = `
@@ -203,7 +215,7 @@ $definition = $ast.Find({param($node) $node -is [Management.Automation.Language.
 Invoke-Expression $definition.Extent.Text
 $script:opened = @()
 function Start-Process { param($FilePath, $WindowStyle) $script:opened += $FilePath }
-$url = 'file:///F:/current%20worktree/client/testclient.html?~~localhost:8000'
+$url = 'file:///F:/current%20worktree/client/testclient.html?~~localhost:8000&localguest=1'
 foreach ($status in @('prepared', 'built', 'failed')) {
     $refused = $false
     try { Open-UpdatedClient @{status = $status; clientUrl = $url} } catch { $refused = $true }
