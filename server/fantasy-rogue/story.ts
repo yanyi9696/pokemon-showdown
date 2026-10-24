@@ -7,10 +7,11 @@ import { opposingCompanion } from './companion-rematches';
 import { TRAVELLERS } from './traveller-profiles';
 import { trainerReunionPages } from './trainer-reunions';
 import { dialoguePage, type NarrativePage } from './narrative';
-import { CHARM_DESCRIPTION, difficultyDescription, difficultyLabel } from '../../sim/rogue-difficulty';
+import { CHARM_DESCRIPTION } from '../../sim/rogue-difficulty';
+import { difficultySpiritUnlocked } from './difficulty';
 
 export type RogueStoryStage = 'opening' | 'spirit' | 'spiritEffect' | 'climb' | 'cards' | 'portal' |
-	'charm' | 'difficultyconfirm' | 'ending' | 'gymgift' | 'godinvite' | 'bossintro' | 'restguide' | 'leaguebriefing' | 'interlude';
+	'charm' | 'charmeffect' | 'difficultyconfirm' | 'ending' | 'gymgift' | 'godinvite' | 'bossintro' | 'restguide' | 'leaguebriefing' | 'interlude';
 type Page = NarrativePage & {
 	roster?: { name: string, avatar?: string, pokemon: string[], levels?: number[], escorts?: number } };
 const page = (scene: string, title: string, text: string, speaker?: string): Page => ({ scene, title, text, speaker });
@@ -76,10 +77,13 @@ export function storyView(account: RogueAccount, enabled: boolean, local: boolea
 	const run = account.run;
 	const stage = run?.story?.stage || (!run ? 'opening' : undefined);
 	if (!stage) return null;
-	if (stage === 'charm' || stage === 'difficultyconfirm') return {
-		stage, title: stage === 'charm' ? '临行前的护符' : '准备出发', scene: 'stranger',
-		text: stage === 'charm' ? '「等一等。」老人从袍子里摸出一枚旧护符，轻轻放在你掌心。「头一回走这条路，带着它吧。它能帮你压一压对手的力量。碰上太强的家伙，也别硬撑，绕开就是了。」他往后退了半步。「要不要收下，由你。」' : difficultyDescription(run!.difficulty || 0),
-		difficulty: run!.difficulty || 0, difficultyLabel: difficultyLabel(run!.difficulty), charmText: CHARM_DESCRIPTION,
+	if (stage === 'charm' || stage === 'charmeffect') return {
+		stage, title: stage === 'charm' ? '临行前的护符' : '护符庇佑', scene: 'stranger',
+		text: stage === 'charm' ? '「等一等。」老人从袍子里摸出一枚护符，摊在掌心。「路上要是觉得吃力，就带着它吧。' +
+		'它能帮你压一压对手的力量，也能让你避开那些太强的家伙。」他把手往前递了递。「要收下吗？还是想靠自己试试？」' : CHARM_DESCRIPTION,
+		charmText: CHARM_DESCRIPTION,
+		canAccept: !run!.spirit || local || difficultySpiritUnlocked(account, 'easy'),
+		canDecline: !run!.spirit || local || difficultySpiritUnlocked(account, 0),
 	};
 	const index = stage === 'opening' ? account.opening?.page || 0 : run!.story!.page;
 	const pages = stage === 'interlude' ? run?.dialogue?.pages : stage === 'gymgift' ? gymGiftPages(run!) :

@@ -195,6 +195,15 @@ export class RogueEngine {
 	private normalizeAccount(account: RogueAccount) {
 		migrateDifficulty(account);
 		if (!this.content) return;
+		// Old clients stopped at a redundant confirmation page. Resume that saved departure once.
+		if (account.run?.story?.stage === 'difficultyconfirm') {
+			if (account.run.difficulty === 'easy') {
+				this.confirmStartingBuilds(account);
+				account.run.story.stage = 'charmeffect';
+			} else {
+				this.finishDeparture(account);
+			}
+		}
 		if (this.content.starters.some(starter => starter.id === 'zygarde10')) migrateZygardeStarter(account);
 		if (!needsOnboarding(account)) account.onboardingSeen = true;
 		if (account.run) migrateGodrobeGift(account, account.run, this.content, this.random);
@@ -686,6 +695,17 @@ export class RogueEngine {
 				}
 				return;
 			}
+			if (command.action === 'setdifficulty') {
+				requireRule(!account.run || account.run.phase === 'complete', '本局难度已锁定，请结束或放弃本局后再选择。');
+				requireRule(command.value === 'default' || /^[0-5]$/.test(command.value || ''), '难度档位无效。');
+				if (command.value === 'default') delete account.preferredDifficulty;
+				else {
+					const tier = Number(command.value) as NonNullable<RogueAccount['preferredDifficulty']>;
+					requireRule(tier <= account.difficulties!.highest || this.localSpirits, '请先通关上一档 200 层。');
+					account.preferredDifficulty = tier;
+				}
+				return;
+			}
 			if (command.action === 'upgrade') {
 				requireRule(!account.run || account.run.phase === 'complete', '进行中的冒险不能花费成长点数，请结束或放弃本局后再加点。');
 				if (command.value === 'slot') {
@@ -706,7 +726,8 @@ export class RogueEngine {
 			}
 			if (command.action === 'start') {
 				const content = this.configured();
-				const difficulty = command.difficulty ?? 0;
+				const chosenDifficulty = command.difficulty ?? account.preferredDifficulty;
+				const difficulty = chosenDifficulty ?? 0;
 				requireRule(isRogueDifficulty(difficulty), '难度档位无效。');
 				const unlocked = difficulty === 'easy' || difficulty <= account.difficulties!.highest;
 				requireRule(unlocked || this.localSpirits, '请先通关上一档 200 层。');
@@ -714,7 +735,10 @@ export class RogueEngine {
 				requireRule(!content.story || (!account.run && account.opening?.page === ROGUE_STORY.opening!.length),
 					'请先完成开场阅读，再选择初始伙伴。');
 				requireRule(command.useSpirit === undefined || typeof command.useSpirit === 'boolean', '塔灵选项无效。');
-				requireRule(!command.useSpirit || (content.spirits && (this.localSpirits || difficultySpiritUnlocked(account, difficulty))),
+				const spiritAllowed = chosenDifficulty === undefined ?
+					difficultySpiritUnlocked(account, 0) || difficultySpiritUnlocked(account, 'easy') :
+					difficultySpiritUnlocked(account, difficulty);
+				requireRule(!command.useSpirit || (content.spirits && (this.localSpirits || spiritAllowed)),
 					'请先通关当前难度的 200 层，才能在这个难度开启塔灵。');
 				requireRule(!command.testSpirit || (this.localSpirits && command.useSpirit), '指定塔灵仅在本地测试开放。');
 				requireRule(command.selectedSpirit === undefined || typeof command.selectedSpirit === 'string', '塔灵选项无效。');
@@ -785,7 +809,7 @@ export class RogueEngine {
 				account.run = {
 					difficulty, difficultyRulesVersion: ROGUE_DIFFICULTY_VERSION,
 					difficultyTest: !unlocked || !!(command.useSpirit && !difficultySpiritUnlocked(account, difficulty)),
-					charmChoicePending: !!content.story && !account.charmIntroduced && difficulty === 0 && !command.useSpirit,
+					charmChoicePending: !!content.story && chosenDifficulty === undefined,
 					startingBuilds: team.map(mon => structuredClone(mon.set)),
 					honeymoon: account.honeymoon && { ...account.honeymoon },
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
@@ -903,17 +927,32 @@ export class RogueEngine {
 				requireRule(run.phase === 'story' && run.story?.stage === 'cards' && !run.startCard && startCard(command.value),
 					'当前不能选择这张开局卡片。');
 				run.startCard = command.value;
-				run.story.stage = run.charmChoicePending ? 'charm' : run.startingBuilds ? 'difficultyconfirm' : 'portal';
-				run.story.page = 0;
-				if (run.story.stage === 'portal' && run.story.skip) { delete run.story; this.enterFloor(run); }
+				if (run.charmChoicePending) {
+					run.story.stage = 'charm'; run.story.page = 0;
+				} else {
+					this.finishDeparture(account);
+				}
 				break;
-			case 'charm':
+			case 'charm': {
 				requireRule(run.phase === 'story' && run.story?.stage === 'charm' && run.charmChoicePending, '现在不能领取护符。');
 				requireRule(command.value === 'accept' || command.value === 'decline', '护符选项无效。');
-				if (command.value === 'accept') run.difficulty = 'easy';
+				const tier = command.value === 'accept' ? 'easy' : 0;
+				requireRule(!run.spirit || this.localSpirits || difficultySpiritUnlocked(account, tier),
+					'请先通关这个档位的 200 层，才能在这个档位开启塔灵。');
+				run.difficulty = tier;
+				run.difficultyTest = !!run.spirit && !difficultySpiritUnlocked(account, tier);
 				delete run.charmChoicePending;
 				account.charmIntroduced = true;
-				run.story.stage = 'difficultyconfirm';
+				if (tier === 'easy') {
+					this.confirmStartingBuilds(account);
+					syncRunDifficulty(run);
+					run.story.stage = 'charmeffect';
+				} else this.finishDeparture(account);
+				break;
+			}
+			case 'charmack':
+				requireRule(run.phase === 'story' && run.story?.stage === 'charmeffect', '当前没有待收下的护符。');
+				this.finishDeparture(account);
 				break;
 			case 'restartsetup':
 				requireRule(run.phase === 'story' && run.story?.stage === 'difficultyconfirm' && run.startingBuilds, '本局已经开始。');
@@ -1260,13 +1299,23 @@ export class RogueEngine {
 		}, command);
 	}
 	private confirmStartingBuilds(account: RogueAccount) {
-		const run = account.run!, sets = run.startingBuilds || [];
+		if (!account.run?.startingBuilds) return;
+		const run = account.run, sets = run.startingBuilds || [];
 		delete run.startingBuilds;
 		for (const set of sets) {
 			recordStarterTraits(account, this.configured(), set, true);
 			recordStarterMoves(account, this.configured(), set);
 		}
-		if (run.difficulty === 'easy') (run.notices ||= []).push(`获得【古代护符】：${CHARM_DESCRIPTION}`);
+		if (run.difficulty === 'easy') (run.notices ||= []).push(`获得【替身护符】：${CHARM_DESCRIPTION}`);
+	}
+	private finishDeparture(account: RogueAccount) {
+		const run = account.run!;
+		this.confirmStartingBuilds(account);
+		if (run.story!.skip) {
+			delete run.story; this.enterFloor(run);
+		} else {
+			run.story!.stage = 'portal'; run.story!.page = 0;
+		}
 	}
 	battleState(userid: string): RogueBattleState {
 		const account = this.store.get(userid);

@@ -50,8 +50,8 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						cmd('charm', { value: 'decline' });
 						continue;
 					}
-					if (run.story?.stage === 'difficultyconfirm') {
-						cmd('confirmdifficulty');
+					if (run.story?.stage === 'charmeffect') {
+						cmd('charmack');
 						continue;
 					}
 					if (run.story?.stage === 'spiritEffect') {

@@ -257,6 +257,8 @@ export interface RogueRun extends RogueInventory {
 }
 export interface RogueAccount {
 	difficulties?: { highest: number, cleared: string[], spirits: string[] };
+	/** Absent means the elder offers a charm each adventure; explicit zero skips the offer. */
+	preferredDifficulty?: Exclude<import('../../sim/rogue-difficulty').RogueDifficulty, 'easy'>;
 	charmIntroduced?: boolean;
 	/** Actual captures in each ecology; gifts and catches elsewhere never reveal an icon here. */
 	biomeCaptures?: Record<string, string[]>;
@@ -319,7 +321,7 @@ export interface RogueCommand {
 		'shopchallenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' | 'comeback' | 'coverage' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
-		'charm' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';
+		'setdifficulty' | 'charm' | 'charmack' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';
 	useSpirit?: boolean;
 	/** A previously cleared spirit; validated against the account ledger on the server. */
 	selectedSpirit?: string;

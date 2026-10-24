@@ -133,6 +133,7 @@ export class RogueManager {
 			account: {
 				needsOnboarding: !!content && needsOnboarding(account),
 				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
+				preferredDifficulty: account.preferredDifficulty,
 				slotCost: rogueSlotCost(account.slots),
 				statCosts: Object.fromEntries(Object.entries(account.boosts).map(([stat, value]) => [stat, rogueStatCost(value)])),
 				captures: account.captures, unlocked: account.unlocked,
@@ -167,7 +168,7 @@ export class RogueManager {
 				difficulty: run.difficulty || 0, difficultyLabel: difficultyLabel(run.difficulty), difficultyTest: !!run.difficultyTest,
 				difficultyScales: { player: difficultyScale(run.difficulty, run.floor), opponent: difficultyScale(run.difficulty, run.floor, true) },
 				difficultyRewards: difficultyRewardDescription(run.difficulty),
-				charm: run.difficulty === 'easy' ? { name: '古代护符', description: CHARM_DESCRIPTION } : undefined,
+				charm: run.difficulty === 'easy' ? { name: '替身护符', description: CHARM_DESCRIPTION } : undefined,
 				companions: companionView(run, eventView(run)?.options || []),
 				selectedCompanions: run.blessings?.companions?.map(c => c.id),
 				companionInvitation: companionInvitationView(run),
