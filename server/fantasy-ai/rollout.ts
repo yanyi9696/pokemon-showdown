@@ -37,7 +37,7 @@ export interface SearchOptions {
 
 function observeHypothesis(battle: Battle, world: WorldHypothesis, side: SinglesSide): Observation {
 	const campaign = world.format === 'gen9fantasyrogue' ? {
-		partySize: battle.getSide(side === 'p1' ? 'p2' : 'p1').pokemon.length, rogueBoosts: world.rogueBoosts,
+		partySize: battle.getSide(side === 'p1' ? 'p2' : 'p1').pokemon.length, rogueBoosts: world.rogueBoosts, rogueDifficulty: world.rogueDifficulty,
 		rogueSpirit: world.rogueSpirit,
 	} : {};
 	const view = new InformationView(side === world.ownSide && world.initialOpponent ? {

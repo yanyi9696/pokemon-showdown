@@ -87,6 +87,7 @@ export interface PokemonSwitchRequestData {
 	active: boolean;
 	stats: StatsExceptHPTable;
 	fantasyRogueStats?: StatsTable;
+	fantasyRogueDifficulty?: number;
 	mechanicPowers?: import('./fantasy-move-power').FantasyMovePowers;
 	rogueAbilityInfo?: ReturnType<typeof import('./fantasy-rogue-blessings').rogueAbilityInfo>;
 	/**

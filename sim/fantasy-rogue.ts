@@ -18,6 +18,7 @@ export const ROGUE_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 export const emptyRogueStats = (): StatsTable => ({ hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 });
 
 export interface RoguePokemon {
+	difficulty?: import('./rogue-difficulty').RogueDifficultyContext;
 	formFusion?: { item: string, species: string, ability: string, donor: RoguePokemon };
 	/** PP of temporarily unavailable form moves; changing forms cannot refill them. */
 	formMoveMemory?: { id: string, pp: number, maxpp: number }[];
@@ -88,6 +89,7 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	difficulty?: import('./rogue-difficulty').RogueDifficultyContext;
 	numberUses?: Partial<Record<SideID, boolean>>;
 	escortCount?: number;
 	/** Last actual faint was a self-sacrifice protected by Art of Explosion. */
@@ -385,6 +387,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 	};
 	delete original.set.fantasyRogueStats;
 	delete original.set.fantasyRogueScale;
+	delete original.set.fantasyRogueDifficulty;
 	delete original.set.fantasyRogueModifiers;
 	delete original.set.fantasyRogueId;
 	state.captured = snapshotRoguePokemon(target, original);

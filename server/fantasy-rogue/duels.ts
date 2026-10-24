@@ -7,10 +7,11 @@ import { rogueRulesVersion, type RogueClearCard } from './legacy';
 import { rebuildMember } from './progression';
 import { rogueAccess } from './access';
 import type { RogueStore } from './store';
+import { ROGUE_DIFFICULTY_VERSION, difficultyCardScale, isRogueDifficulty } from '../../sim/rogue-difficulty';
 
 function requireRule(ok: unknown, message: string): asserts ok { if (!ok) throw new Error(message); }
 export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): RogueBattleState {
-	requireRule(a.version === 1 && b.version === 1 && a.rulesVersion === rogueRulesVersion() &&
+	requireRule([1, 2].includes(a.version) && [1, 2].includes(b.version) && a.rulesVersion === rogueRulesVersion() &&
 		b.rulesVersion === rogueRulesVersion(), '这张通关卡的对战规则版本已变化，仍可展示，但暂不能复现约战。');
 	requireRule(a.owner !== b.owner, '不能与自己的通关卡对战。');
 	const spirit = a.snapshot.spirit;
@@ -18,11 +19,16 @@ export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): Rogue
 	requireRule(!spirit || rogueSpirit(spirit)?.enabled, '这张通关卡的塔灵尚不支持约战。');
 	const snapshots = [a, b].map(card => {
 		const snap = structuredClone(card.snapshot);
+		if (card.version === 2) requireRule(snap.difficultyRulesVersion === ROGUE_DIFFICULTY_VERSION &&
+			isRogueDifficulty(snap.difficulty) && snap.difficultyScale === difficultyCardScale(snap.difficulty), '通关卡难度记录无效。');
 		// An unhatched egg is archived, but cannot become a battle-ready partner in PVP.
 		snap.team = snap.team.filter(mon => !mon.egg);
 		requireRule(!snap.blessings.length || snap.blessingEffects, '这张卡缺少可复现的祝福记录。');
 		requireRule(snap.team.length > 0 && snap.team.length <= roguePartyLimit(spirit, snap.blessingEffects), '通关卡的队伍数量无效。');
 		for (const mon of snap.team) {
+			if (card.version === 2) requireRule(mon.difficulty?.tier === snap.difficulty &&
+				mon.difficulty?.floor === 200 && mon.difficulty?.card, '通关卡难度与伙伴记录不一致。');
+			else requireRule(!mon.difficulty, '历史通关卡不能附加新的难度加成。');
 			const expected = { ...mon.stats };
 			rebuildMember(mon, snap.boosts);
 			requireRule(ROGUE_STATS.every(stat => mon.stats?.[stat] === expected[stat]), '通关卡最终数值与当前规则不一致，不能忽略差异开战。');

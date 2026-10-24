@@ -52,6 +52,10 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 			for (const [index, member] of world.teams[sideID].entries()) {
 				const mon = side.pokemon[index];
 				const { profile, seen } = member;
+				if (world.format === 'gen9fantasyrogue' && member.set.fantasyRogueDifficulty) {
+					mon.set.fantasyRogueDifficulty = member.set.fantasyRogueDifficulty;
+					mon.setSpecies(mon.species);
+				}
 				const species = battle.dex.species.get(profile.species);
 				if (mon.species.id !== species.id) {
 					mon.setSpecies(species);

@@ -36,6 +36,8 @@ describe('Fantasy Rogue story and legacy cards', function () {
 		readOpening(); cmd('start', { starters: ['bulbasaur'] });
 		while (view()?.key) advance();
 		cmd('startcard', { value: 'electric' });
+		if (view()?.stage === 'charm') cmd('charm', { value: 'decline' });
+		cmd('confirmdifficulty');
 		while (view()?.key) advance();
 	}
 	function complete() {
@@ -69,6 +71,11 @@ describe('Fantasy Rogue story and legacy cards', function () {
 		assert.equal(view().stage, 'cards'); assert.equal(view().cards.length, 19);
 		assert.throws(() => cmd('startcard', { value: 'bad' }), /卡片/);
 		cmd('startcard', { value: 'fire' });
+		assert.equal(view().stage, 'charm');
+		assert.throws(skip, /剧情|进度/);
+		cmd('charm', { value: 'decline' });
+		assert.equal(view().stage, 'difficultyconfirm');
+		cmd('confirmdifficulty');
 		assert.equal(view().stage, 'portal');
 		while (view()?.key) advance();
 		assert.equal(account().run.phase, 'choose');
@@ -83,11 +90,41 @@ describe('Fantasy Rogue story and legacy cards', function () {
 		assert.equal(account().run.story.stage, 'spiritEffect');
 		assert.throws(() => cmd('startcard', { value: 'all' }), /卡片/);
 		cmd('spiritack'); assert.equal(view().stage, 'cards');
-		cmd('startcard', { value: 'all' }); assert.equal(account().run.phase, 'choose');
+		cmd('startcard', { value: 'all' }); assert.equal(view().stage, 'difficultyconfirm');
+		cmd('confirmdifficulty'); assert.equal(account().run.phase, 'choose');
 		cmd('abandon');
 		engine = new RogueEngine(store, { ...createPreviewContent(), story: true }, () => 0);
 		skip(); cmd('start', { starters: ['bulbasaur'] });
 		assert.equal(view().stage, 'cards');
+	});
+	it('offers the charm after the preference card, explains it on receipt and fixes easy mode before entering', () => {
+		readOpening(); cmd('start', { starters: ['bulbasaur'] });
+		const previousTraits = structuredClone(account().starterTraits), points = account().points;
+		while (view()?.key) advance();
+		cmd('startcard', { value: 'all' });
+		assert.equal(view().stage, 'charm'); assert.match(view().text, /压一压对手/);
+		assert(!view().text.includes('98%'));
+		cmd('charm', { value: 'accept' }); assert.equal(view().stage, 'difficultyconfirm');
+		assert.match(view().charmText, /个体值上限为 10/); cmd('confirmdifficulty');
+		while (view()?.key) advance();
+		assert.equal(account().run.difficulty, 'easy'); assert.equal(account().run.phase, 'choose');
+		assert(Object.values(account().run.team[0].set.ivs).every(n => n <= 10));
+		assert.deepEqual(account().starterTraits, previousTraits); assert.equal(account().points, points);
+		assert.throws(() => cmd('charm', { value: 'decline' }), /护符/);
+		assert.throws(() => cmd('restartsetup'), /已经开始/);
+	});
+	it('can return from difficulty confirmation without committing a starter build or counting another adventure', () => {
+		readOpening(); cmd('start', { starters: ['bulbasaur'] });
+		while (view()?.key) advance();
+		cmd('startcard', { value: 'all' }); cmd('charm', { value: 'decline' });
+		const count = account().adventures, traits = structuredClone(account().starterTraits);
+		cmd('restartsetup'); assert(!account().run); assert.equal(account().adventures, count - 1);
+		assert.deepEqual(account().starterTraits, traits);
+		cmd('start', { starters: ['bulbasaur'], difficulty: 'easy' });
+		while (view()?.key) advance();
+		cmd('startcard', { value: 'all' }); assert.equal(view().stage, 'difficultyconfirm');
+		assert.deepEqual(account().starterTraits, traits); cmd('confirmdifficulty');
+		assert.equal(account().adventures, count);
 	});
 	it('shows the spirit apparition before effects and never retrofits an ongoing legacy adventure', () => {
 		store.change(user, a => { a.spiritUnlocked = true; });

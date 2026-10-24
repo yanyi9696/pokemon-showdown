@@ -1,3 +1,5 @@
+import { CHARM_DESCRIPTION, ROGUE_DIFFICULTY_VERSION, isRogueDifficulty } from '../../sim/rogue-difficulty';
+import { migrateDifficulty, difficultySpiritUnlocked, awardRoguePoints, syncRunDifficulty } from './difficulty';
 import { offerComeback, chooseComeback, completeComebackFloor, comebackExperience, comebackActive } from './comeback';
 import { rogueStarterSlotCost } from '../../sim/rogue-species-identity';
 import { catchupRoutes } from './late-support';
@@ -191,18 +193,19 @@ export class RogueEngine {
 		});
 	}
 	private normalizeAccount(account: RogueAccount) {
+		migrateDifficulty(account);
 		if (!this.content) return;
 		if (this.content.starters.some(starter => starter.id === 'zygarde10')) migrateZygardeStarter(account);
 		if (!needsOnboarding(account)) account.onboardingSeen = true;
 		if (account.run) migrateGodrobeGift(account, account.run, this.content, this.random);
 		const clears = [...account.cards || [], ...(account.pendingClear ? [account.pendingClear] : [])]
-			.filter(card => card.snapshot.floor === 200);
+			.filter(card => card.snapshot.floor === 200 && !card.snapshot.difficultyTest);
 		account.unlockedSpirits = [...new Set([...account.unlockedSpirits || [],
 			...clears.flatMap(card => card.snapshot.spirit ? [card.snapshot.spirit] : []),
-			...(account.run?.phase === 'complete' && account.run.floor === 200 && account.run.spirit ? [account.run.spirit] : []),
+			...(account.run?.phase === 'complete' && account.run.floor === 200 && !account.run.difficultyTest && account.run.spirit ? [account.run.spirit] : []),
 		])];
-		if (clears.some(card => !card.snapshot.spirit)) account.spiritUnlocked = true;
-		if (account.run?.phase === 'complete' && account.run.floor === 200 && !account.run.spirit) {
+		if (clears.some(card => !card.snapshot.spirit && !card.snapshot.difficulty)) account.spiritUnlocked = true;
+		if (account.run?.phase === 'complete' && account.run.floor === 200 && !account.run.difficultyTest && !account.run.spirit && !account.run.difficulty) {
 			account.spiritUnlocked = true;
 		}
 		const requirements = new Map<string, number>();
@@ -258,6 +261,7 @@ export class RogueEngine {
 		}
 	}
 	private enterFloor(run: RogueRun) {
+		syncRunDifficulty(run);
 		if (this.content?.biomeEncounters) prepareFloorEnvironment(run, this.random);
 		if (run.pendingSpiritGift) grantSpiritGift(run, this.configured(), this.random);
 		if (this.content?.blessings) beginBlessingFloor(run, this.random);
@@ -302,7 +306,7 @@ export class RogueEngine {
 			...run.choices.flatMap(node => node.biome ? [{ id: node.biome.id, floor: run.floor }] : []),
 		];
 		if (this.content.wildTreasures) {
-			for (const node of run.choices) prepareEconomy(node, run.floor, this.random);
+			for (const node of run.choices) prepareEconomy(node, run.floor, this.random, run.difficulty);
 		}
 		for (const node of run.choices) prepareSpiritNode(run, node, this.content, this.random);
 		if (run.spirit === 'darkrai') {
@@ -350,7 +354,7 @@ export class RogueEngine {
 			beginEvent(run, this.random);
 			return;
 		}
-		if (this.content?.wildTreasures) prepareEconomy(run.node, run.floor, this.random);
+		if (this.content?.wildTreasures) prepareEconomy(run.node, run.floor, this.random, run.difficulty);
 		delete run.choices;
 		for (const encounter of run.node.encounters) {
 			if (encounter.trainerCandidates) {
@@ -491,8 +495,7 @@ export class RogueEngine {
 		const reward = run.node!.reward;
 		run.money += reward.money;
 		for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
-		const points = run.node!.kind === 'boss' && !run.node!.companionLoss ? 1 : 0;
-		account.points += points;
+		const points = awardRoguePoints(account, run, run.node!.kind === 'boss' && !run.node!.companionLoss ? 1 : 0);
 		if (run.node!.wildLoot || run.node!.shopChallenge || run.node!.event) {
 			// Wild drops have already been credited per encounter; the final receipt only adds the Boss point.
 			if (run.lastReward?.floor === run.floor) run.lastReward.points += points;
@@ -519,7 +522,7 @@ export class RogueEngine {
 	private finishAdventure(account: RogueAccount, run: RogueRun) {
 		for (const mon of run.team) this.healMember(mon);
 		run.phase = 'complete';
-		if (!run.spirit) account.spiritUnlocked = true;
+		if (!run.spirit && !run.difficulty && !run.difficultyTest) account.spiritUnlocked = true;
 		recordClear(account, run);
 		if (this.content?.arceusMoves && !run.postgame) {
 			run.postgame = { stage: 'offer', before: inventory(run), node: structuredClone(run.node!), encounter: run.encounter };
@@ -540,10 +543,10 @@ export class RogueEngine {
 		delete run.recovery;
 		run.phase = 'complete';
 		if (outcome === 'won') {
-			account.points += 20;
-			run.lastReward = { floor: 200, name: '神之挑战', money: 0, items: {}, points: 20 };
+			const points = awardRoguePoints(account, run, 20);
+			run.lastReward = { floor: 200, name: '神之挑战', money: 0, items: {}, points };
 		}
-		run.notices = [outcome === 'won' ? '神之挑战成功，额外获得 20 点局外成长点数。通关卡保持原有成果。' :
+		run.notices = [outcome === 'won' ? (run.difficulty === 'easy' ? '神之挑战成功！护符庇佑下不获得局外点数，通关卡保持原有成果。' : '神之挑战成功，额外获得 20 点局外成长点数。通关卡保持原有成果。') :
 			'200 层通关成果已保留，这次旅程即将迎来结局。'];
 		if (this.content?.story) run.story = { stage: 'ending', page: 0, skip: false, canSkip: true };
 	}
@@ -596,6 +599,7 @@ export class RogueEngine {
 	command(userid: string, command: RogueCommand, name = userid) {
 		const updateAccount = (account: RogueAccount) => {
 			this.normalizeAccount(account);
+			requireRule(command.action === 'start' || command.difficulty === undefined, '本局难度已锁定，只能在新一局开始前选择。');
 			if (command.action === 'comeback') {
 				const run = this.run(account);
 				if (chooseComeback(run, command.member, command.value)) {
@@ -702,12 +706,16 @@ export class RogueEngine {
 			}
 			if (command.action === 'start') {
 				const content = this.configured();
+				const difficulty = command.difficulty ?? 0;
+				requireRule(isRogueDifficulty(difficulty), '难度档位无效。');
+				const unlocked = difficulty === 'easy' || difficulty <= account.difficulties!.highest;
+				requireRule(unlocked || this.localSpirits, '请先通关上一档 200 层。');
 				requireRule(!account.pendingClear, '请先选择保存或放下本次通关卡。');
 				requireRule(!content.story || (!account.run && account.opening?.page === ROGUE_STORY.opening!.length),
 					'请先完成开场阅读，再选择初始伙伴。');
 				requireRule(command.useSpirit === undefined || typeof command.useSpirit === 'boolean', '塔灵选项无效。');
-				requireRule(!command.useSpirit || (content.spirits && (this.localSpirits || account.spiritUnlocked)),
-					'无塔灵通关 200 层后解锁塔灵。');
+				requireRule(!command.useSpirit || (content.spirits && (this.localSpirits || difficultySpiritUnlocked(account, difficulty))),
+					'请先通关当前难度的 200 层，才能在这个难度开启塔灵。');
 				requireRule(!command.testSpirit || (this.localSpirits && command.useSpirit), '指定塔灵仅在本地测试开放。');
 				requireRule(command.selectedSpirit === undefined || typeof command.selectedSpirit === 'string', '塔灵选项无效。');
 				requireRule(!command.selectedSpirit || (command.useSpirit && !command.testSpirit &&
@@ -759,8 +767,7 @@ export class RogueEngine {
 						nature: nature === 'random' ? natures[this.random(natures.length)].name : Dex.natures.get(nature).name };
 					const mon = createRoguePokemon(set, account.boosts);
 					mon.initialPartner = true;
-					recordStarterTraits(account, content, set, true);
-					recordStarterMoves(account, content, set);
+					// Confirming the charm later must not leak this configuration into permanent growth.
 					// All unlocked legal moves are available immediately in the in-run editor.
 					mon.moveMemory = availableMoves.map(moveid => {
 						const move = Dex.mod('gen9fantasy').moves.get(moveid);
@@ -776,6 +783,10 @@ export class RogueEngine {
 						.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
 				}
 				account.run = {
+					difficulty, difficultyRulesVersion: ROGUE_DIFFICULTY_VERSION,
+					difficultyTest: !unlocked || !!(command.useSpirit && !difficultySpiritUnlocked(account, difficulty)),
+					charmChoicePending: !!content.story && !account.charmIntroduced && difficulty === 0 && !command.useSpirit,
+					startingBuilds: team.map(mon => structuredClone(mon.set)),
 					honeymoon: account.honeymoon && { ...account.honeymoon },
 					...initial, id: randomUUID(), contentVersion: content.version, floor: 1, phase: 'choose',
 					owner: { id: userid, name },
@@ -785,6 +796,8 @@ export class RogueEngine {
 					encounter: 0, attempt: 0, boosts: { ...account.boosts }, startingSlots: account.slots,
 					checkpoint: inventory(initial), caught: [], trainerHistory: { gyms: [], eliteFour: [] },
 				};
+				if (!content.story) this.confirmStartingBuilds(account);
+				syncRunDifficulty(account.run);
 				if (account.run.previousRival) account.previousRival = account.run.previousRival;
 				if (content.routePools) normalizeRouteHistory(account.run);
 				if (content.spirits) account.run.spiritVersion = 1;
@@ -859,7 +872,7 @@ export class RogueEngine {
 			case 'event':
 				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value, command.evs, command.skiAt);
 				if (run.phase === 'ready') {
-					if (!run.node?.event?.police && !run.node?.event?.rematch) prepareEconomy(run.node!, run.floor, this.random);
+					if (!run.node?.event?.police && !run.node?.event?.rematch) prepareEconomy(run.node!, run.floor, this.random, run.difficulty);
 					prepareSpiritNode(run, run.node!, this.configured(), this.random);
 					this.resolveOpponentGenders(run.node!.encounters.flatMap(encounter => encounter.team));
 					if (this.content?.blessings) prepareBlessingEncounter(run, this.random);
@@ -890,13 +903,30 @@ export class RogueEngine {
 				requireRule(run.phase === 'story' && run.story?.stage === 'cards' && !run.startCard && startCard(command.value),
 					'当前不能选择这张开局卡片。');
 				run.startCard = command.value;
-				if (run.story.skip) {
-					delete run.story;
-					this.enterFloor(run);
-				} else {
-					run.story.stage = 'portal';
-					run.story.page = 0;
-				}
+				run.story.stage = run.charmChoicePending ? 'charm' : run.startingBuilds ? 'difficultyconfirm' : 'portal';
+				run.story.page = 0;
+				if (run.story.stage === 'portal' && run.story.skip) { delete run.story; this.enterFloor(run); }
+				break;
+			case 'charm':
+				requireRule(run.phase === 'story' && run.story?.stage === 'charm' && run.charmChoicePending, '现在不能领取护符。');
+				requireRule(command.value === 'accept' || command.value === 'decline', '护符选项无效。');
+				if (command.value === 'accept') run.difficulty = 'easy';
+				delete run.charmChoicePending;
+				account.charmIntroduced = true;
+				run.story.stage = 'difficultyconfirm';
+				break;
+			case 'restartsetup':
+				requireRule(run.phase === 'story' && run.story?.stage === 'difficultyconfirm' && run.startingBuilds, '本局已经开始。');
+				delete account.run;
+				account.adventures = Math.max(0, (account.adventures || 1) - 1);
+				account.opening = { page: ROGUE_STORY.opening!.length, skip: !!run.story.skip };
+				// Do not run the old adventure's move-recording tail after removing it.
+				return;
+			case 'confirmdifficulty':
+				requireRule(run.phase === 'story' && run.story?.stage === 'difficultyconfirm' && run.startingBuilds, '本局难度已确认。');
+				this.confirmStartingBuilds(account);
+				if (run.story.skip) { delete run.story; this.enterFloor(run); }
+				else { run.story.stage = 'portal'; run.story.page = 0; }
 				break;
 			case 'spiritack':
 				requireRule(run.phase === 'intro' && !run.pendingCapture && run.team.length <= roguePartyLimit(run.spirit, run.blessings),
@@ -1141,8 +1171,9 @@ export class RogueEngine {
 				if (item.kind === 'crown') {
 					const stats = item.id === 'goldbottlecap' ? ROGUE_STATS : [ROGUE_STATS[command.slot!]];
 					requireRule(stats.every(stat => !!stat) && (item.id === 'goldbottlecap' || Number.isInteger(command.slot)), '请选择要提升的个体值。');
-					requireRule(stats.some(stat => mon.set.ivs[stat] < 31), '个体值已经达到上限，道具未消耗。');
-					for (const stat of stats) mon.set.ivs[stat] = 31;
+					const ceiling = run.difficulty === 'easy' ? 10 : 31;
+					requireRule(stats.some(stat => mon.set.ivs[stat] < ceiling), '个体值已经达到本档上限，道具未消耗。');
+					for (const stat of stats) mon.set.ivs[stat] = ceiling;
 					rebuildMember(mon, run.boosts);
 					run.notices = [`已使用【${item.name}】，伙伴的个体值得到了提升。`];
 				} else if (item.kind === 'tonic') {
@@ -1228,12 +1259,23 @@ export class RogueEngine {
 			if (account.run) { this.presentNarrative(account.run); this.checkFailure(account.run); }
 		}, command);
 	}
+	private confirmStartingBuilds(account: RogueAccount) {
+		const run = account.run!, sets = run.startingBuilds || [];
+		delete run.startingBuilds;
+		for (const set of sets) {
+			recordStarterTraits(account, this.configured(), set, true);
+			recordStarterMoves(account, this.configured(), set);
+		}
+		if (run.difficulty === 'easy') (run.notices ||= []).push(`获得【古代护符】：${CHARM_DESCRIPTION}`);
+	}
 	battleState(userid: string): RogueBattleState {
 		const account = this.store.get(userid);
 		const run = this.run(account);
 		requireRule(run.phase === 'battle' && run.battle, '当前没有待建立的战斗。');
+		syncRunDifficulty(run);
 		const encounter = run.node!.encounters[run.encounter];
 		return {
+			difficulty: { tier: run.difficulty || 0, floor: run.floor },
 			cooperative: encounter.cooperative && { opponentOffset: Math.ceil(encounter.team.length / 2) },
 			boss: encounter.boss && structuredClone(encounter.boss),
 			wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',

@@ -14,6 +14,7 @@
  * @license MIT
  */
 
+import { difficultyScale, memberDifficultyScale } from './rogue-difficulty';
 import { Dex, toID } from './dex';
 import { recordEvolutionDamage } from './rogue-evolution-progress';
 import { commitNumberChoices } from './rogue-number-blessings';
@@ -2407,6 +2408,9 @@ export class Battle {
 				stats[stat] = Math.floor(stats[stat] * (1 + (rogue.training?.[stat] || 0)));
 			}
 		}
+		if (isRogueFormat(this.format.id) && set.fantasyRogueDifficulty) {
+			for (const stat of ROGUE_STATS) stats[stat] = Math.max(1, Math.floor(stats[stat] * set.fantasyRogueDifficulty + 1e-9));
+		}
 		return stats;
 	}
 
@@ -3335,11 +3339,16 @@ export class Battle {
 					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 2, 3][this.fantasyRogue.opponentStars[i + (slot === 'p4' ? this.fantasyRogue.cooperative!.opponentOffset : 0)] || 1];
 				}
 			}
+			if (this.fantasyRogue?.difficulty && !this.fantasyRogue.duel) {
+				const { tier, floor } = this.fantasyRogue.difficulty;
+				for (const set of team) set.fantasyRogueDifficulty = difficultyScale(tier, floor, slot === 'p2' || slot === 'p4');
+			}
 			const rogueSide = slot === 'p1' ? this.fantasyRogue : this.fantasyRogue?.duel;
 			if (rogueSide) {
 				if (team.length !== rogueSide.team.length) throw new Error('Invalid rogue team');
 				for (const [i, set] of team.entries()) {
 					set.fantasyRogueStats = { ...rogueSide.boosts };
+					set.fantasyRogueDifficulty = memberDifficultyScale(rogueSide.team[i].difficulty);
 					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 2, 3][rogueSide.team[i].stars || 1];
 					set.fantasyRogueModifiers = structuredClone(rogueSide.team[i].statModifiers);
 					set.fantasyRogueId = rogueSide.team[i].id;

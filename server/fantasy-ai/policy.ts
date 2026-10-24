@@ -16,6 +16,7 @@ import { actionOpportunity, DELAYED_HEALING, effectiveAbility, effectiveItem, st
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
 import { getTrainerFormat } from './trainers';
 import { assessTrickRoom, trickRoomTurns } from './trick-room';
+import { entryField as teamEntryField, fieldID, leadPlanScores, teamFieldBenefit } from './team-plan';
 import { assessMegaPreference, isMegaEvent, type MegaPreference } from './mega';
 import {
 	observedDamage, observedImmunity, passiveRecovery, PIVOT_MOVES, recoveryAmount, remainingPP,
@@ -119,6 +120,7 @@ export class RulePolicy {
 		const opponents = memory.sides[foe].preview.flatMap(member =>
 			this.hypotheses.build(this.previewMember(member.species, member.level, foe), observation, memory));
 		const own = observation.request.side.pokemon.map(mon => this.hypotheses.own(mon));
+		const plans = leadPlanScores(own, dex);
 		const teams = observedHazardTeams(this.hypotheses, observation, memory, own, index => this.isKey(observation, index));
 		const room = own.some(mon => mon.moves.includes('trickroom')) ?
 			assessTrickRoom(teams[observation.ownSide], teams[foe], dex, memory) : undefined;
@@ -138,13 +140,13 @@ export class RulePolicy {
 				return hazard ? hazardCost({ [hazard]: 1 }, teams[foe], teams[observation.ownSide], dex, memory) * 0.12 : 0;
 			})));
 			const roomLead = mon.moves.includes('trickroom') ? Math.max(0, room?.value || 0) * 12 : 0;
-			return average / 10 + hazards + roomLead - (this.isKey(observation, index) ? 4 : 0);
+			return average / 10 + hazards + roomLead + plans[index] - (this.isKey(observation, index) ? 4 : 0);
 		});
 		return choices.map(choice => {
 			const order = choice.slice(5).split('').map(Number);
 			const illusion = own.some(mon => mon.ability === 'illusion');
 			const badDisguise = illusion && own[order[order.length - 1] - 1]?.ability === 'illusion';
-			return { choice, score: leads[order[0] - 1] - (badDisguise ? 8 : 0), reasons: ['preview-matchups'] };
+			return { choice, score: leads[order[0] - 1] - (badDisguise ? 8 : 0), reasons: ['preview-matchups', ...(plans[order[0] - 1] > 0 ? ['team-lead-plan'] : [])] };
 		});
 	}
 
@@ -585,6 +587,13 @@ export class RulePolicy {
 									attack.knockout * 75 + counterplay * 150)));
 							const futureChance = Math.max(0, ...future.map(move => move.canAct)) *
 								(1 - (takesEntryAction ? incoming.knockout : 0));
+							const field = teamEntryField(mon, dex);
+							if (field && fieldID(field.endsWith('terrain') ? memory.terrain : memory.weather) !== fieldID(field) &&
+								fieldID(field.endsWith('terrain') ? entryField.terrain : entryField.weather) === fieldID(field)) {
+								const benefit = Math.max(0, teamFieldBenefit(field, own, dex));
+								longTerm += futureChance * Math.min(28, benefit * 16);
+								if (benefit > 0.2) reasons.push('team-field-support');
+							}
 							const canRecover = future.some(({ id, canAct }) => canAct > 0.5 &&
 								recoveryAmount(dex.moves.get(id), afterEntry, memory) > incoming.worst.damage + incoming.followup - passive);
 							const discount = takesEntryAction ? 0.4 : 1;
@@ -767,6 +776,18 @@ export class RulePolicy {
 							value -= attack.selfDamage * 55;
 							value += survives * opportunity * (attack.substituteDamage || 0) * 60;
 							value += survives * (attack.field * 16 + attack.volatile * 12 + attack.utility * 12);
+							if (attack.field > 0 && (move.weather || move.terrain)) {
+								const field = move.weather || move.terrain!;
+								if (fieldID(move.weather ? memory.weather : memory.terrain) !== fieldID(field)) {
+									longTerm += survives * opportunity * Math.min(35, teamFieldBenefit(field, own, dex) * 20);
+									reasons.push('team-field-support');
+								}
+							}
+							if (attack.field > 0 && ['reflect', 'lightscreen', 'auroraveil'].includes(id)) {
+								longTerm += survives * opportunity * Math.min(18, Math.max(0, alive - 1) * 3) *
+									(effectiveItem(mon, memory) === 'lightclay' ? 1.25 : 1);
+								reasons.push('team-screen-support');
+							}
 							if (attack.destinyBond) {
 								const trade = incoming.responses.reduce((sum, entry) => sum +
 									entry.weight * (entry.estimate.selfKnockout || 0), 0);

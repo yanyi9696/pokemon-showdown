@@ -89,7 +89,9 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 		assert(Math.abs(saved.run.blessings.evolution.stats.hp - 3.15) < 1e-9);
 		assert.equal(saved.cards.length, 1);
 		assert.deepEqual(saved.cards[0].snapshot.blessingEffects.evolution, saved.run.blessings.evolution);
-		assert.deepEqual(saved.cards[0].snapshot.team, saved.run.team);
+		assert.deepEqual(saved.cards[0].snapshot.team, saved.run.team.map(mon => ({
+			...mon, difficulty: { tier: 0, floor: 200, card: true },
+		})));
 	});
 
 	it('gives Fighting 24 upgrades, preserving milestone upgrades across reloads and direction resets', () => {

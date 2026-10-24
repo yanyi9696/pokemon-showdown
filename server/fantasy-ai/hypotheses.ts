@@ -1,3 +1,4 @@
+import { difficultyScale } from '../../sim/rogue-difficulty';
 import { Dex, toID } from '../../sim/dex';
 import type { PokemonSwitchRequestData } from '../../sim/side';
 import type { Observation } from './information';
@@ -16,6 +17,7 @@ const fantasySamples: SetSamples = require('../../data/random-battles/gen9fantas
 const standardSamples: SetSamples = require('../../data/random-battles/gen9/sets.json');
 
 export interface Combatant {
+	rogueDifficulty?: number;
 	rogueBoosts?: StatsTable;
 	species: string;
 	level: number;
@@ -241,6 +243,17 @@ export class HypothesisBuilder {
 				}
 			}
 		}
+		if (this.format === 'gen9fantasyrogue' && observation.rogueDifficulty) {
+			const { tier, floor } = observation.rogueDifficulty;
+			for (const hypothesis of result) {
+				hypothesis.rogueDifficulty = difficultyScale(tier, floor, observation.ownSide === 'p1');
+				if (hypothesis.source === 'initial') continue;
+				for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) {
+					if (stat === 'hp' && this.dex.species.get(hypothesis.species).baseStats.hp === 1) continue;
+					hypothesis.stats[stat] = Math.max(1, Math.floor(hypothesis.stats[stat] * hypothesis.rogueDifficulty + 1e-9));
+				}
+			}
+		}
 		this.refineSpeed(result, seen, observation, memory);
 		this.refineDamage(result, seen, observation, memory);
 		const total = result.reduce((sum, hypothesis) => sum + hypothesis.probability, 0);
@@ -344,6 +357,7 @@ export class HypothesisBuilder {
 		const set = !seen?.transformed && matches.length === 1 ? matches[0] : undefined;
 		return {
 			species, level, stats: { hp, ...mon.stats }, moves: mon.moves.slice(), ability: mon.ability ?? mon.baseAbility,
+			rogueDifficulty: mon.fantasyRogueDifficulty,
 			rogueBoosts: mon.fantasyRogueStats && { ...mon.fantasyRogueStats },
 			item: mon.item, health: parseHealth(mon.condition, true), status: mon.condition.split(' ')[1] || '',
 			// A benched member has shed Salt Cure, stat stages and temporary types.

@@ -11,9 +11,11 @@ import { clearMemberDetails, type ClearMemberDetails } from './clear-details';
 import { eggView } from './eggs';
 import type { RivalState } from './rivals';
 import { RIVALS } from './rival-data';
+import { clearDifficulty, syncRunDifficulty } from './difficulty';
+import { difficultyCardScale, difficultyLabel, ROGUE_DIFFICULTY_VERSION, type RogueDifficulty } from '../../sim/rogue-difficulty';
 
 export interface RogueClearCard {
-	version: 1;
+	version: 1 | 2;
 	id: string;
 	runId: string;
 	owner: string;
@@ -23,6 +25,8 @@ export interface RogueClearCard {
 	contentVersion: string;
 	rulesVersion: string;
 	snapshot: RogueInventory & {
+		difficulty?: RogueDifficulty, difficultyRulesVersion?: number, difficultyLabel?: string,
+		difficultyScale?: number, difficultyTest?: boolean,
 		floor: 200, boosts: StatsTable, spirit?: string, startCard?: string, eventBuff?: boolean,
 		spiritName?: string, spiritText?: string, cardName?: string, cardText?: string,
 		hazards?: string[], blessings: { id: string, name?: string, floor?: number, text: string }[],
@@ -60,21 +64,28 @@ export function rogueRulesVersion() {
 	return fingerprint;
 }
 export function recordClear(account: RogueAccount, run: RogueRun) {
+	clearDifficulty(account, run);
 	if (run.floor === 200 && run.phase === 'complete') {
-		if (run.spirit) account.unlockedSpirits = [...new Set([...account.unlockedSpirits || [], run.spirit])];
-		else account.spiritUnlocked = true;
+		if (run.spirit && !run.difficultyTest) account.unlockedSpirits = [...new Set([...account.unlockedSpirits || [], run.spirit])];
+		else if (!run.difficulty && !run.difficultyTest) account.spiritUnlocked = true;
 	}
 	if (run.clearRecorded || !run.owner) return;
+	syncRunDifficulty(run);
 	run.clearRecorded = true;
 	const team = structuredClone(run.team);
-	for (const mon of team) if (!mon.stats) rebuildMember(mon, run.boosts);
 	const box = structuredClone(run.box || []);
-	for (const mon of box) if (!mon.stats) rebuildMember(mon, run.boosts);
+	for (const mon of [...team, ...box]) {
+		mon.difficulty = { tier: run.difficulty || 0, floor: 200, card: true };
+		rebuildMember(mon, run.boosts);
+	}
 	const detailsRun = { ...run, team, box };
 	const card: RogueClearCard = {
-		version: 1, id: randomUUID(), runId: run.id, owner: run.owner.id, name: run.owner.name,
+		version: 2, id: randomUUID(), runId: run.id, owner: run.owner.id, name: run.owner.name,
 		completedAt: Date.now(), public: false, contentVersion: run.contentVersion, rulesVersion: rogueRulesVersion(),
 		snapshot: {
+			difficulty: run.difficulty || 0, difficultyRulesVersion: ROGUE_DIFFICULTY_VERSION,
+			difficultyLabel: difficultyLabel(run.difficulty), difficultyScale: difficultyCardScale(run.difficulty),
+			difficultyTest: run.difficultyTest,
 			team, box, bag: { ...run.bag }, money: run.money,
 			memberDetails: Object.fromEntries([...team, ...box].filter(mon => !mon.egg).map(mon => [mon.id, clearMemberDetails(mon, detailsRun)])),
 			growth: run.growth && { ...run.growth },

@@ -32,6 +32,7 @@ export interface ChallengeMetrics {
 }
 export interface AIChallengeOptions extends TimeBudgetSettings {
 	rogue?: {
+		difficulty?: import('../../sim/rogue-difficulty').RogueDifficultyContext;
 		orderedBoss?: boolean;
 		immediate?: boolean,
 		wild?: boolean, partySize: number,
@@ -72,7 +73,7 @@ export class AIController {
 		this.options = options;
 		this.timing = new DecisionTimeManager(options);
 		if (options.difficulty === 'normal' || options.rogue) this.view = new InformationView({
-			ownSide: 'p2', difficulty: 'normal', partySize: options.rogue?.partySize,
+			ownSide: 'p2', difficulty: 'normal', partySize: options.rogue?.partySize, rogueDifficulty: options.rogue?.difficulty,
 		});
 		options.scheduler.register(this.schedulerRoomId, options.instanceId, milliseconds => {
 			// Refund queue waiting synchronously, including cancelled queued jobs,

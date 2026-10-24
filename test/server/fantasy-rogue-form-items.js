@@ -26,11 +26,11 @@ describe('Fantasy Rogue form items and new species blessings', function () {
 		for (const mon of r.team) initializeExperience(mon);
 		syncBlessingParty(r); return r;
 	}
-	function claim(r, id) {
+	function claim(r, id, random = () => 0) {
 		const account = { run: r, captures: {}, unlocked: [] }; r.phase = 'blessing';
 		r.blessings.round = { floor: r.floor, tier: blessing(id).tier, remaining: 1,
 			options: [{ id, refreshes: 1, chosen: false }], familiesSeen: [id] };
-		handleBlessingCommand(account, r, content, { action: 'blessing', slot: 0 }, () => 0);
+		handleBlessingCommand(account, r, content, { action: 'blessing', slot: 0 }, random);
 		return account;
 	}
 	function use(r, species, donor) {
@@ -164,6 +164,16 @@ describe('Fantasy Rogue form items and new species blessings', function () {
 		}
 		assert(r.team.some(p => p.stars >= 2));
 		for (const floor of [1, 100, 150]) assert(!blessingCandidates(run(['Pikachu'], floor), content).some(b => b.id === 'reorganizer'));
+	});
+	it('upgrades an actual eligible star rank, including two to three, without exceeding five', () => {
+		for (const selected of [0, 1]) {
+			const r = run(['Gyarados', 'Gengar', 'Pikachu']);
+			r.team.forEach((mon, i) => { mon.stars = [2, 4, 5][i]; });
+			claim(r, 'reorganizer', n => Math.min(selected, n - 1));
+			assert.deepEqual(r.team.map(mon => mon.stars), selected ? [2, 5, 5] : [3, 4, 5]);
+		}
+		const capped = run(['Pikachu']); capped.team[0].stars = 5;
+		assert(!blessingCandidates(capped, content).some(b => b.id === 'reorganizer'));
 	});
 	it('does not reroll partners whose sealed data or permanent evolution branch must be preserved', () => {
 		for (const field of ['egg', 'fusion', 'formFusion', 'compound']) {

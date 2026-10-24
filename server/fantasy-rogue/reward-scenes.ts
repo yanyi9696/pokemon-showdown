@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { advancedDifficulty, difficultyRewardScale } from '../../sim/rogue-difficulty';
 import { dueCatchup, catchupLevels } from './late-support';
 import { personalRewardGrowth } from './growth';
 import { giveEgg, eggEventWeight } from './eggs';
@@ -117,9 +118,10 @@ export function rewardChoices(run: RogueRun) {
 	if (scene.id === 'catchup') return [{ id: 'catchup', name: '让落后的伙伴参加特训',
 		text: `等级最低的两位可训练伙伴各提升 ${catchupLevels(run.floor)} 级（最高 100 级），另有基础补给。` }];
 	if (scene.id === 'breederegg') return [{ id: 'egg', name: '接过培育家赠送的蛋', text: '获得一颗随机宝可梦蛋，附带少量金币与回复物资。经过 5～8 层自动孵化。', items: { ether: 1 } }];
-	const enhanced = !!scene.demonstrated, experience = rewardExperience(run.floor, enhanced);
+	const scale = difficultyRewardScale(run.difficulty, run.floor);
+	const enhanced = !!scene.demonstrated, experience = Math.round(rewardExperience(run.floor, enhanced) * scale / 100) * 100;
 	const items = rewardCandies(run.floor, experience);
-	const money = rewardMoney(run.floor, enhanced);
+	const money = Math.round(rewardMoney(run.floor, enhanced) * scale);
 	const choices: { id: string, name: string, text: string, items?: Record<string, number>, money?: number,
 		amount?: number, targets?: { member: string, amount: number }[], disabled?: boolean, }[] = [
 		{ id: 'recovery', name: '多备一份药品', text: `额外领取一份回复药${run.floor >= 20 || enhanced ? '、活力碎片' : ''}和 PP 单项小补剂。`,
@@ -144,8 +146,11 @@ export function rewardChoices(run: RogueRun) {
 		choices.push({ id: 'efficiency', name: '经验心得', amount, disabled: !amount,
 			text: `全队本局战斗经验 +${growthPercent(amount)}，不影响经验糖果。` });
 	}
-	if (run.floor >= 80) choices.push({ id: 'shards', name: '幻想碎片', amount: 12 + Math.floor((run.floor - 80) / 10),
-		text: `获得幻想碎片 ×${12 + Math.floor((run.floor - 80) / 10)}，为伙伴积攒幻想的力量。` });
+	const d = advancedDifficulty(run.difficulty), shardFloor = run.floor + d * 3;
+	if (shardFloor >= 80) {
+		const amount = Math.round((12 + Math.floor((shardFloor - 80) / 10)) * (1 + d * 0.04));
+		choices.push({ id: 'shards', name: '幻想碎片', amount, text: `获得幻想碎片 ×${amount}，为伙伴积攒幻想的力量。` });
+	}
 	return choices;
 }
 
@@ -220,7 +225,7 @@ export function chooseReward(run: RogueRun, content: RogueContent, random: Rogue
 			items[received] = (items[received] || 0) + 1;
 		}
 	}
-	run.node.reward = { money: baseCoins(run.floor) + (choice.money || 0), items };
+	run.node.reward = { money: Math.round(baseCoins(run.floor) * difficultyRewardScale(run.difficulty, run.floor)) + (choice.money || 0), items };
 	scene.claimed = true;
 	if (scene.catchupCheckpoint) run.catchupCheckpoint = scene.catchupCheckpoint;
 	scene.result = effect;

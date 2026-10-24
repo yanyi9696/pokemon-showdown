@@ -191,7 +191,7 @@ describe('Fantasy Rogue post-clear snapshot and optional challenge settlement', 
 				a.run.growth = {offense: 2000, defense: 1200, experience: 500};
 				a.run.team[0].training = {offense: 600, defense: 400};
 			});
-			const card = complete(), points = account().points;
+			const card = complete(), points = account().points, beforeChallenge = structuredClone(account().run.team);
 			cmd('godchallenge', { value: 'accept' });
 			const run = account().run, state = engine.battleState(user);
 			assert.equal(state.boss.kind, 'arceus'); assert.equal(state.progression, false); assert.equal(state.catchable, false);
@@ -201,7 +201,10 @@ describe('Fantasy Rogue post-clear snapshot and optional challenge settlement', 
 			engine.settle(user, run.battle.token, result); engine.settle(user, run.battle.token, result);
 			assert.equal(account().points, points + (won ? 20 : 0));
 			assert.equal(account().run.phase, 'complete'); assert.equal(account().run.postgame.stage, won ? 'won' : 'lost');
-			assert.deepEqual(account().cards[0], card); assert.deepEqual(account().run.team, card.snapshot.team);
+			assert.deepEqual(account().cards[0], card); assert.deepEqual(account().run.team, beforeChallenge);
+			assert.deepEqual(card.snapshot.team, beforeChallenge.map(mon => ({
+				...mon, difficulty: { tier: 0, floor: 200, card: true },
+			})));
 			assert.deepEqual(account().run.growth, card.snapshot.growth);
 			assert.equal(card.snapshot.team[0].training.offense, 600);
 			assert.throws(() => cmd('godchallenge', { value: 'accept' }));

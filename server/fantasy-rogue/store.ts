@@ -3,6 +3,7 @@ import { emptyRogueStats } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueCommand } from './types';
 import type { RogueClearCard } from './legacy';
 import { recordRogueDiscoveries } from './discoveries';
+import { syncRunDifficulty } from './difficulty';
 
 export class RogueStore {
 	private readonly db: Database.Database;
@@ -61,6 +62,7 @@ export class RogueStore {
 			// Capture old evidence before an abandon/new run/card deletion, then the newly earned entries.
 			recordRogueDiscoveries(account);
 			update(account);
+			if (account.run) syncRunDifficulty(account.run);
 			recordRogueDiscoveries(account);
 			if (!command && JSON.stringify(account) === before) return account;
 			account.revision++;

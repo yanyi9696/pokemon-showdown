@@ -19,6 +19,7 @@ export interface WorldMember {
 	resourceValue?: number;
 }
 export interface WorldHypothesis {
+	rogueDifficulty?: Observation['rogueDifficulty'];
 	rogueBoosts?: StatsTable;
 	rogueSpirit?: { id: string, floor: number, money?: number };
 	rogueBlessings?: Observation['rogueBlessings'];
@@ -96,6 +97,7 @@ export class WorldBuilder {
 			const match = matches.length === 1 ? matches[0].index : -1;
 			if (match < 0) throw new Error('ambiguous-own-configuration');
 			const [set] = remaining.splice(match, 1);
+			if (rogue && profile.rogueDifficulty) set.fantasyRogueDifficulty = profile.rogueDifficulty;
 			if (rogue && side === 'p1' && observation.rogueBoosts) set.fantasyRogueStats = { ...observation.rogueBoosts };
 			return {
 				set, profile, exactStats: true, seen: seen && structuredClone(seen),
@@ -143,6 +145,11 @@ export class WorldBuilder {
 							base.ability = toID(dex.species.get(member.species).abilities['0']);
 						}
 						const spreadProfile = { ...base, stats: { ...base.stats } };
+						if (rogue && base.rogueDifficulty && (!changedForme || snapshot)) {
+							for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) {
+								spreadProfile.stats[stat] = Math.ceil(spreadProfile.stats[stat] / base.rogueDifficulty);
+							}
+						}
 						if (rogue && side === 'p2' && observation.rogueBoosts) {
 							for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) {
 								// Reconstruct ordinary IV/EV/nature first; add the known absolute bonus once in the simulator.
@@ -154,6 +161,7 @@ export class WorldBuilder {
 							ability: !changedForme && legalAbility && seen?.ability !== undefined && !!seen.ability,
 							item: seen?.item !== undefined,
 						});
+						if (rogue && base.rogueDifficulty) set.fantasyRogueDifficulty = base.rogueDifficulty;
 						// Synthetic names never encode the real opponent's initial position.
 						set.name = onField ? active.ident.split(': ').slice(1).join(': ') : `Hypothesis ${index + 1}`;
 						if (rogue && side === 'p2' && observation.rogueBoosts) set.fantasyRogueStats = { ...observation.rogueBoosts };
@@ -190,6 +198,7 @@ export class WorldBuilder {
 					worlds.push({
 						format: this.trainer.format, ownSide: side, turn: memory.turn, variant, probability: option.probability,
 						teams, memory: structuredClone(memory), publicLog: observation.publicLog.slice(), diagnostics,
+						rogueDifficulty: observation.rogueDifficulty && { ...observation.rogueDifficulty },
 						rogueBoosts: observation.rogueBoosts && { ...observation.rogueBoosts },
 						rogueSpirit: observation.rogueSpirit && { ...observation.rogueSpirit },
 						rogueBlessings: observation.rogueBlessings && structuredClone(observation.rogueBlessings),

@@ -17,8 +17,8 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 	this.timeout(60000);
 	// Exercise every floor transition and native battle setup/settlement, with controlled wins.
 	// Move mechanics, event branches and balance are covered by their dedicated suites.
-	for (const spirit of [undefined, 'necrozma', 'jirachi']) {
-		it(`finishes the prologue, 200 floors and a saved clear under ${spirit || 'no spirit'}`, () => {
+	for (const [spirit, difficulty] of [[undefined, 0], ['necrozma', 0], ['jirachi', 0], [undefined, 'easy'], [undefined, 5]]) {
+		it(`finishes the prologue, 200 floors and a saved clear under ${spirit || 'no spirit'}/${difficulty}`, () => {
 			const store = new RogueStore(':memory:');
 			const content = { ...createPreviewContent(), story: true };
 			const rng = new PRNG([10, 15, 20, 26]);
@@ -34,7 +34,7 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 			let battles = 0;
 			try {
 				while (view()?.key) cmd('storynext', { value: view().key });
-				cmd('start', { starters: ['bulbasaur'], useSpirit: !!spirit, testSpirit: spirit });
+				cmd('start', { starters: ['bulbasaur'], difficulty, useSpirit: !!spirit, testSpirit: spirit });
 				for (let steps = 0; steps < 3000; steps++) {
 					const run = account().run;
 					floors.add(run.floor);
@@ -44,6 +44,14 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 					}
 					if (run.story?.stage === 'cards') {
 						cmd('startcard', { value: 'grass' });
+						continue;
+					}
+					if (run.story?.stage === 'charm') {
+						cmd('charm', { value: 'decline' });
+						continue;
+					}
+					if (run.story?.stage === 'difficultyconfirm') {
+						cmd('confirmdifficulty');
 						continue;
 					}
 					if (run.story?.stage === 'spiritEffect') {
@@ -170,7 +178,15 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 				const card = completed.cards[0];
 				assert.equal(card.snapshot.spirit, spirit);
 				assert.equal(card.snapshot.startCard, 'grass');
-				assert.deepEqual(card.snapshot.team, completed.run.team);
+				assert.equal(card.snapshot.difficulty, difficulty);
+				assert.deepEqual(card.snapshot.team.map(mon => mon.set), completed.run.team.map(mon => mon.set));
+				assert(card.snapshot.team.every(mon => mon.difficulty.card && mon.difficulty.tier === difficulty));
+				if (difficulty === 0) assert.deepEqual(card.snapshot.team.map(mon => mon.stats), completed.run.team.map(mon => mon.stats));
+				if (difficulty === 'easy') {
+					assert.equal(completed.points, 20);
+					assert.deepEqual(completed.difficulties, { highest: 0, cleared: ['easy'], spirits: ['easy'] });
+				}
+				if (difficulty === 5) assert.deepEqual(completed.difficulties, { highest: 0, cleared: [], spirits: [] });
 				cmd('publishcard', { member: card.id, value: 'public' });
 				assert.equal(store.gallery()[0].id, card.id);
 				cmd('newstory');

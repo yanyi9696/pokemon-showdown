@@ -6,6 +6,7 @@ import type { Observation } from './information';
 import { effectiveAbility, effectiveItem } from './mechanics';
 import { ownSeen, readBattleMemory } from './memory';
 import { activeTypes, observedImmunity } from './strategy';
+import { fieldID, leadPlanScores, teamFieldBenefit } from './team-plan';
 
 /**
  * Worker unavailable before its first result: use public evidence/static type rules only.
@@ -17,6 +18,17 @@ export function emergencyChoice(
 	tacticalSwitches = false
 ): string {
 	const request = observation.request;
+	if (request.teamPreview && smart) {
+		const builder = new HypothesisBuilder(format);
+		const team = request.side.pokemon.map(mon => builder.own(mon));
+		const scores = leadPlanScores(team, builder.dex, true);
+		const choices = enumerateRequestChoices(request).filter(choice => !excluded.includes(choice));
+		const score = (choice: string) => {
+			const order = choice.slice(5).split('').map(Number);
+			return scores[order[0] - 1] - (team.some(mon => mon.ability === 'illusion') && team[order[order.length - 1] - 1].ability === 'illusion' ? 8 : 0);
+		};
+		return choices.sort((a, b) => score(b) - score(a))[0] || 'default';
+	}
 	if (request.wait || request.teamPreview || request.forceSwitch) {
 		return enumerateRequestChoices(request).find(choice => !excluded.includes(choice)) || 'default';
 	}
@@ -168,8 +180,11 @@ export function emergencyChoice(
 				if ((conditions[move.sideCondition] || 0) >= max) return -50;
 				return move.target === 'foeSide' && foeSide.preview.length <= 1 ? -20 : 55;
 			}
-			if (move.weather) return memory.weather === move.weather ? -50 : 20;
-			if (move.terrain) return memory.terrain === move.terrain ? -50 : 20;
+			if (move.weather || move.terrain) {
+				const field = move.weather || move.terrain!;
+				if (fieldID(move.weather ? memory.weather : memory.terrain) === fieldID(field)) return -50;
+				return Math.min(50, 8 + 20 * teamFieldBenefit(field, request.side.pokemon.map(mon => builder.own(mon)), dex));
+			}
 			if (move.volatileStatus) {
 				const target = move.target === 'self' ? own : foe;
 				if (target.volatiles.includes(move.volatileStatus)) return -50;

@@ -55,6 +55,7 @@ export function migrateShinyCaptures(account: RogueAccount, content: RogueConten
 
 /** Trusted captures, event gifts and confirmed starting partners expand permanent choices. */
 export function recordStarterTraits(account: RogueAccount, content: RogueContent, set: PokemonSet, nature: boolean) {
+	if (account.run?.difficulty === 'easy' || account.run?.startingBuilds) return;
 	const dex = Dex.mod('gen9fantasy');
 	const id = content.unlocks[dex.species.get(set.species).id]?.starter || content.starters.find(s => toID(s.set.species) === toID(set.species))?.id;
 	if (!id) return;
@@ -99,6 +100,7 @@ export function canStarterLearn(species: string, move: string) {
 }
 
 export function recordStarterMoves(account: RogueAccount, content: RogueContent, set: PokemonSet) {
+	if (account.run?.difficulty === 'easy' || account.run?.startingBuilds) return;
 	const id = content.unlocks[toID(set.species)]?.starter ||
 		content.starters.find(starter => toID(starter.set.species) === toID(set.species))?.id;
 	const starter = content.starters.find(entry => entry.id === id);

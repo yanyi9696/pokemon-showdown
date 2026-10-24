@@ -1,3 +1,4 @@
+import { awardRoguePoints } from './difficulty';
 import { randomUUID } from 'crypto';
 import { travellingRoster } from './travellers';
 import { TRAVELLERS } from './traveller-profiles';
@@ -80,10 +81,11 @@ export function settleRematch(account: RogueAccount, run: RogueRun, won: boolean
 	event.stage = 'result'; event.settled = true; event.trainingAidBlocked = true;
 	if (won && !debt.claimed) {
 		debt.claimed = true;
-		run.money += debt.reward.money; account.points += debt.reward.points;
+		run.money += debt.reward.money;
+		const points = awardRoguePoints(account, run, debt.reward.points);
 		for (const [item, count] of Object.entries(debt.reward.items)) run.bag[item] = (run.bag[item] || 0) + count;
 		if (debt.exclusiveItem) grantExclusiveItem(run, debt.exclusiveItem);
-		run.lastReward = { floor: run.floor, name: `第 ${debt.floor} 层 · 切磋补领奖励`, ...structuredClone(debt.reward) };
+		run.lastReward = { floor: run.floor, name: `第 ${debt.floor} 层 · 切磋补领奖励`, ...structuredClone(debt.reward), points };
 	} else debt.nextFloor = run.floor + 5;
 	const line = won ? '这次是你赢了！说好的奖励现在交给你。把这份默契带到下一场对战吧。' :
 		'我已经替伙伴们恢复好了。刚才那一步比上次更果断了，我很期待你们下一次的表现。';

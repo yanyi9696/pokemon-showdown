@@ -1,12 +1,14 @@
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
+import { difficultySupplyFloor } from '../../sim/rogue-difficulty';
 import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { gainExperience, initializeExperience } from './progression';
 import type { RogueRun } from './types';
 
 export const SHOPPING_THRESHOLD = 3000;
 export function nextShopGrade(run: RogueRun, thresholds: number[]) {
-	if (!ownsBlessing(run.blessings, 'shoppingupgrade')) return run.floor;
-	return [...thresholds].sort((a, b) => a - b).find(f => f > run.floor) || run.floor;
+	const floor = difficultySupplyFloor(run.difficulty, run.floor);
+	if (!ownsBlessing(run.blessings, 'shoppingupgrade')) return floor;
+	return [...thresholds].sort((a, b) => a - b).find(f => f > floor) || floor;
 }
 /** Called after a successful paid transaction; command IDs are deduplicated by the account store. */
 export function recordShoppingSpend(run: RogueRun, amount: number) {

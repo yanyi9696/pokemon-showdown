@@ -150,6 +150,13 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	difficulty?: import('../../sim/rogue-difficulty').RogueDifficulty;
+	difficultyRulesVersion?: number;
+	/** Only runs actually using a local permission bypass cannot grant normal progress. */
+	difficultyTest?: boolean;
+	charmChoicePending?: boolean;
+	/** Deferred until the final pre-tower confirmation, so practice cannot grant starter traits. */
+	startingBuilds?: PokemonSet[];
 	activityClaims?: string[];
 	environment?: import('./floor-environment').FloorEnvironment;
 	/** Ecologies offered on recent floors, shared by wild and elite routes. */
@@ -249,6 +256,8 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	difficulties?: { highest: number, cleared: string[], spirits: string[] };
+	charmIntroduced?: boolean;
 	/** Actual captures in each ecology; gifts and catches elsewhere never reveal an icon here. */
 	biomeCaptures?: Record<string, string[]>;
 	previousRival?: import('./rival-data').RivalID;
@@ -296,6 +305,7 @@ export interface RogueStarterBuild {
 	moves?: string[];
 }
 export interface RogueCommand {
+	difficulty?: import('../../sim/rogue-difficulty').RogueDifficulty;
 	id: string;
 	revision: number;
 	/** Milliseconds seen on the ski clock when pressed; server bounds the transit allowance. */
@@ -309,7 +319,7 @@ export interface RogueCommand {
 		'shopchallenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' | 'comeback' | 'coverage' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
-		'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';
+		'charm' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';
 	useSpirit?: boolean;
 	/** A previously cleared spirit; validated against the account ledger on the server. */
 	selectedSpirit?: string;

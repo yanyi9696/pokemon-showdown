@@ -14,6 +14,9 @@ export interface PokemonSet {
 	/** Internal Fantasy Rogue metadata; omitted by ordinary team import/packing. */
 	fantasyRogueStats?: StatsTable;
 	fantasyRogueScale?: number;
+	/** Independent campaign/card multiplier; never packed into submitted public teams. */
+	fantasyRogueDifficulty?: number;
+	fantasyRogueIVAdjusted?: boolean;
 	fantasyRogueId?: string;
 	fantasyRogueModifiers?: import('./rogue-blessing-data').RogueStatModifiers;
 	/**

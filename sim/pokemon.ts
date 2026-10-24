@@ -1119,6 +1119,8 @@ export class Pokemon {
 			details: this.details,
 			condition: this.getHealth().secret,
 			active: (this.position < this.side.active.length),
+			...(this.set.fantasyRogueDifficulty && isRogueFormat(this.battle.format.id) ?
+				{ fantasyRogueDifficulty: this.set.fantasyRogueDifficulty } : {}),
 			...(this.set.fantasyRogueStats && isRogueFormat(this.battle.format.id) ?
 				{ fantasyRogueStats: { ...this.set.fantasyRogueStats } } : {}),
 			stats: {

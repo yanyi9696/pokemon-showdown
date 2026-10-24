@@ -308,6 +308,8 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 			useSpirit: true, testSpirit: 'celebi' });
 		assert.equal(account().run.pendingSpiritGift, true); assert(!account().run.pendingCapture);
 		cmd('spiritack'); cmd('startcard', { value: 'grass' });
+		assert.equal(account().run.pendingSpiritGift, true);
+		cmd('confirmdifficulty');
 		assert.equal(account().run.pendingSpiritGift, undefined);
 		assert.equal(account().run.pendingCapture.fixedLevel, 40);
 		assert.equal(account().run.phase, 'settlement');

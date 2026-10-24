@@ -1,3 +1,4 @@
+import { advancedDifficulty } from '../../sim/rogue-difficulty';
 import { rivalBlessingAllowed } from './rivals';
 import { blessingSpeciesID } from '../../sim/rogue-species-identity';
 import { LATE_BLOOMERS, lateBloomer, finalLateBloomer, teamBlessingStats, lateBloomerSynergy } from '../../sim/rogue-late-bloomers';
@@ -234,6 +235,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 		if (def.family === 'galarlegend' && !strongestMember(run.team, 'Eternatus')) return false;
 		if (def.family === 'originaldragon' && !strongestMember(run.team, 'Kyurem')) return false;
 		if (def.family === 'reorganizer' && run.team.some(mon => mon.egg || mon.fusion || mon.formFusion || mon.compound)) return false;
+		if (def.family === 'reorganizer' && !run.team.some(mon => (mon.stars || 1) < 5)) return false;
 		if (def.family === 'ghidorah' && !strongestMember(run.team, 'Hydreigon')) return false;
 		if (def.family === 'youngprodigy' && has('latebloom') || def.family === 'latebloom' && has('youngprodigy')) return false;
 		if (def.family === 'bignumber' && has('supernumber')) return false;
@@ -729,6 +731,11 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 	if (ELITE_BOSS_FLOORS.has(run.floor)) state.shards += 10;
 	const trainer = run.node?.encounters[0]?.trainer;
 	if (trainer && ((trainer.role === 'gym' && run.floor >= 100) || ['elitefour', 'champion'].includes(trainer.role))) state.shards += 25;
+	if (trainer?.role === 'gym' && !run.node?.companionLoss && run.floor >= 20 && run.floor <= 160 && run.floor % 20 === 0) {
+		const bonus = advancedDifficulty(run.difficulty) * 2;
+		state.shards += bonus;
+		if (bonus) (run.notices ||= []).push(`${run.difficulty} 档道馆奖励：额外获得幻想碎片 ×${bonus}。`);
+	}
 	if (state.evolution && run.floor % 10 === 0 && run.floor >= 10 && run.floor <= 200) {
 		if ([50, 100, 150].includes(run.floor)) {
 			const paid = state.evolutionCosts ||= [];
@@ -761,6 +768,9 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		if (options.length) state.pending.push({ id: randomUUID(), title: '打磨圣剑 · 选择一位新伙伴', kind: 'starter', blessing: def.id, options });
 	}
 	if (def.family === 'reorganizer') {
+		const upgradeable = run.team.filter(mon => (mon.stars || 1) < 5);
+		requireRule(upgradeable.length, '全队已达最高星级，无法提升星级。');
+		const upgraded = upgradeable[random(upgradeable.length)];
 		const pools = run.team.map(mon => giftPool(run, content).filter(species =>
 			permanentMemberTypes(mon).some(type => species.types.includes(type))).map(species => species.name));
 		requireRule(pools.every(pool => pool.length), '当前伙伴池中没有共享属性的替换伙伴。');
@@ -774,7 +784,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 			delete mon.originalDragonUnlocked;
 			delete mon.formMoveMemory;
 			delete mon.evolutionProgress;
-			if (index === 0) mon.stars = Math.max(2, mon.stars || 1);
+			if (mon === upgraded) mon.stars = (mon.stars || 1) + 1;
 			rebuildMember(mon, run.boosts);
 			mon.hp = hpRatio ? Math.max(1, Math.ceil(mon.maxhp * hpRatio)) : 0;
 			recordBlessingGift(account, run, content, { ...mon, id: next.id });

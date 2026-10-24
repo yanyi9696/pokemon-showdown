@@ -1,4 +1,5 @@
 import { captureItems } from './capture-items';
+import { difficultyRewardScale, type RogueDifficulty } from '../../sim/rogue-difficulty';
 import type { RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import {
@@ -58,15 +59,17 @@ export function rollWildLoot(floor: number, random: RogueRandom): Record<string,
 }
 
 /** Does not modify selected legacy nodes or reroll a persisted route. */
-export function prepareEconomy(node: RogueNode, floor: number, random: RogueRandom) {
+export function prepareEconomy(node: RogueNode, floor: number, random: RogueRandom, difficulty: RogueDifficulty = 0) {
 	if (!node.encounters.length || node.wildLoot || node.economyPrepared) return;
 	node.economyPrepared = true;
+	const scale = difficultyRewardScale(difficulty, floor);
 	const trainer = node.kind === 'trainer' || node.encounters.some(encounter =>
 		encounter.trainer || encounter.trainerCandidates?.length);
 	if (trainer) {
-		node.reward.items = node.kind === 'trainer' ? routeCandyReward(floor, 'trainer') : {};
+		node.reward.items = node.kind === 'trainer' ? routeCandyReward(floor, 'trainer', scale) : {};
 		if (node.kind === 'trainer') node.reward.money = encounterCoins(floor);
 		else node.reward.money = journeyCoins(floor, node.reward.money);
+		node.reward.money = Math.round(node.reward.money * scale);
 		if (node.kind === 'trainer') diversifyBattleReward(node.reward, floor, random);
 	} else {
 		node.reward = { money: 0, items: {} };
@@ -81,7 +84,12 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 					const count = Math.floor(budget / item.sellPrice!);
 					if (count) { loot[item.id] = (loot[item.id] || 0) + count; budget -= count * item.sellPrice!; }
 				}
-				Object.assign(loot, routeCandyReward(floor, 'elite'));
+				Object.assign(loot, routeCandyReward(floor, 'elite', scale));
+			}
+			// Roll once with the saved route; scale expected treasure value without repricing bags or doubling every singleton.
+			if (scale > 1) for (const { id } of TREASURES) {
+				const original = loot[id] || 0;
+				for (let n = 0; n < original; n++) if (random(10000) < Math.round((scale - 1) * 10000)) loot[id]++;
 			}
 			if (node.kind !== 'boss') diversifyBattleReward({ money: 0, items: loot }, floor, random);
 			return loot;

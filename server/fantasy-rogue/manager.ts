@@ -1,3 +1,5 @@
+import { ROGUE_DIFFICULTIES, difficultyLabel, difficultyDescription, difficultyScale, difficultyRewardDescription, CHARM_DESCRIPTION } from '../../sim/rogue-difficulty';
+import { difficultySpiritUnlocked } from './difficulty';
 import { comebackView } from './comeback';
 import { coverageView } from './coverage';
 import { fusionAbilities } from './fusion';
@@ -136,6 +138,10 @@ export class RogueManager {
 				captures: account.captures, unlocked: account.unlocked,
 				spiritUnlocked: !!content?.spirits && (!!account.spiritUnlocked || this.engine.localSpirits),
 			},
+			difficulties: ROGUE_DIFFICULTIES.map(tier => ({ id: tier, name: difficultyLabel(tier), text: difficultyDescription(tier),
+				rewards: difficultyRewardDescription(tier),
+				unlocked: tier === 'easy' || tier <= account.difficulties!.highest,
+				spirit: !!content?.spirits && difficultySpiritUnlocked(account, tier) })),
 			localSpirits: this.engine.localSpirits,
 			selectableSpirits: content?.spirits ? activeRogueSpirits().filter(spirit => account.unlockedSpirits?.includes(spirit.id)) : [],
 			spirits: this.engine.localSpirits && content?.spirits ? activeRogueSpirits() : [],
@@ -158,6 +164,10 @@ export class RogueManager {
 			})) || [],
 			items, shopItems: stock.map(item => item.id),
 			run: run ? {
+				difficulty: run.difficulty || 0, difficultyLabel: difficultyLabel(run.difficulty), difficultyTest: !!run.difficultyTest,
+				difficultyScales: { player: difficultyScale(run.difficulty, run.floor), opponent: difficultyScale(run.difficulty, run.floor, true) },
+				difficultyRewards: difficultyRewardDescription(run.difficulty),
+				charm: run.difficulty === 'easy' ? { name: '古代护符', description: CHARM_DESCRIPTION } : undefined,
 				companions: companionView(run, eventView(run)?.options || []),
 				selectedCompanions: run.blessings?.companions?.map(c => c.id),
 				companionInvitation: companionInvitationView(run),
@@ -190,7 +200,7 @@ export class RogueManager {
 					wildPack: run.node.encounters[run.encounter]?.wildPack ? run.node.encounters[run.encounter].team.length : undefined,
 					environment: run.node.encounters[run.encounter]?.environment,
 					wildLoot: run.node.wildLoot, encounterLoot: run.node.wildLoot?.[run.encounter],
-					reward: { ...run.node.reward, points: run.postgame?.stage === 'battle' ? 20 : run.node.kind === 'boss' && !run.node.companionLoss ? 1 : 0 },
+					reward: { ...run.node.reward, points: run.difficulty === 'easy' ? 0 : run.postgame?.stage === 'battle' ? 20 : run.node.kind === 'boss' && !run.node.companionLoss ? 1 : 0 },
 				},
 				rival: run.rival, rivalCompanion: rivalCompanionView(run), rivalCompanions: rivalCompanionViews(run),
 				team: run.team.map(saved => {

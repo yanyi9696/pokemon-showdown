@@ -1,3 +1,4 @@
+import type { RogueDifficultyContext } from '../../sim/rogue-difficulty';
 import { extractChannelMessages } from '../../sim/battle';
 import type { ChoiceRequest, PokemonMoveRequestData } from '../../sim/side';
 import { copyInitialTeam, copyOpponentMoves, type InitialPokemon, type OpponentMoves } from './initial-snapshot';
@@ -25,13 +26,14 @@ const PUBLIC_EVENTS = new Set([
 	'-message', '-center',
 ]);
 
-type InformationOptions = { ownSide: 'p1' | 'p2', partySize?: number, rogueBoosts?: StatsTable, rogueSpirit?: PublicRogueSpirit, rogueBlessings?: BlessingEffects } & (
+type InformationOptions = { rogueDifficulty?: RogueDifficultyContext, ownSide: 'p1' | 'p2', partySize?: number, rogueBoosts?: StatsTable, rogueSpirit?: PublicRogueSpirit, rogueBlessings?: BlessingEffects } & (
 	{ difficulty: 'normal', initialOpponent?: never, opponentMoves?: readonly OpponentMoves[] } |
 	{ difficulty: 'hard', initialOpponent: readonly InitialPokemon[] }
 );
 
 export interface Observation {
 	/** Public p1 campaign modifiers, not IVs, EVs or current private state. */
+	rogueDifficulty?: RogueDifficultyContext;
 	rogueBoosts?: StatsTable;
 	rogueSpirit?: PublicRogueSpirit;
 	rogueBlessings?: BlessingEffects;
@@ -53,6 +55,7 @@ function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
 		...(request.side.fantasyRogueTera !== undefined ? { fantasyRogueTera: request.side.fantasyRogueTera } : {}),
 		pokemon: request.side.pokemon.map(mon => ({
 			ident: mon.ident, details: mon.details, condition: mon.condition, active: mon.active,
+			...(mon.fantasyRogueDifficulty ? { fantasyRogueDifficulty: mon.fantasyRogueDifficulty } : {}),
 			...(mon.fantasyRogueStats ? { fantasyRogueStats: { ...mon.fantasyRogueStats } } : {}),
 			stats: { atk: mon.stats.atk, def: mon.stats.def, spa: mon.stats.spa, spd: mon.stats.spd, spe: mon.stats.spe },
 			moves: mon.moves.slice(), baseAbility: mon.baseAbility, ability: mon.ability,
@@ -100,6 +103,7 @@ export class InformationView {
 	private readonly ownSide: 'p1' | 'p2';
 	private readonly difficulty: Difficulty;
 	private readonly partySize: number;
+	private readonly rogueDifficulty?: RogueDifficultyContext;
 	private readonly rogueBoosts?: StatsTable;
 	private readonly rogueSpirit?: PublicRogueSpirit;
 	private readonly rogueBlessings?: BlessingEffects;
@@ -114,6 +118,7 @@ export class InformationView {
 		this.difficulty = options.difficulty;
 		this.partySize = options.partySize ?? 6;
 		if (!Number.isInteger(this.partySize) || this.partySize < 1 || this.partySize > 6) throw new Error('AI 队伍大小无效。');
+		this.rogueDifficulty = options.rogueDifficulty && { tier: options.rogueDifficulty.tier, floor: options.rogueDifficulty.floor };
 		this.rogueBoosts = options.rogueBoosts && { ...options.rogueBoosts };
 		this.rogueSpirit = options.rogueSpirit && { id: options.rogueSpirit.id, floor: options.rogueSpirit.floor,
 			...(options.rogueSpirit.money !== undefined ? { money: options.rogueSpirit.money } : {}) };
@@ -162,6 +167,7 @@ export class InformationView {
 			publicLog: this.publicLog.slice(),
 		};
 		if (this.initialOpponent) observation.initialOpponent = copyInitialTeam(this.initialOpponent);
+		if (this.rogueDifficulty) observation.rogueDifficulty = { ...this.rogueDifficulty };
 		if (this.rogueBoosts) observation.rogueBoosts = { ...this.rogueBoosts };
 		if (this.rogueSpirit) observation.rogueSpirit = { ...this.rogueSpirit };
 		if (this.rogueBlessings) observation.rogueBlessings = structuredClone(this.rogueBlessings);

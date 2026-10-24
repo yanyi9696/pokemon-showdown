@@ -109,6 +109,9 @@ function probeSpread(format: string, mon: Combatant, sample: number) {
 	let spreads = spreadCache.get(key);
 	if (!spreads) {
 		const stats = { ...mon.stats };
+		if (format === 'gen9fantasyrogue' && mon.rogueDifficulty) {
+			for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) stats[stat] = Math.ceil(stats[stat] / mon.rogueDifficulty);
+		}
 		if (format === 'gen9fantasyrogue' && mon.rogueBoosts) {
 			for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) stats[stat] -= mon.rogueBoosts[stat];
 		}
@@ -165,6 +168,7 @@ export function createMatchup(
 		for (const [index, profile] of [attacker, defender].entries()) {
 			const team = battle.sides[index];
 			const mon = team.pokemon[0];
+			if (format === 'gen9fantasyrogue' && profile.rogueDifficulty) mon.set.fantasyRogueDifficulty = profile.rogueDifficulty;
 			if (format === 'gen9fantasyrogue' && profile.rogueBoosts) mon.set.fantasyRogueStats = { ...profile.rogueBoosts };
 			team.active[0] = mon;
 			mon.isActive = mon.isStarted = true;

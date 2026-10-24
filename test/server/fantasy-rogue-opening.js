@@ -187,9 +187,9 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		assert(!account().run.blessings.beforeAdventure);
 	});
 	it('keeps the access gate, rejects unearned manual selection, and leaves uncleared spirits in the random pool', () => {
-		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true }), /无塔灵通关/);
+		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true }), /通关当前难度/);
 		cmd('start', { starters: ['bulbasaur'] }); assert(!account().run.spirit); cmd('abandon');
-		store.change(user, a => { a.spiritUnlocked = true; a.unlockedSpirits = ['kyogre']; });
+		store.change(user, a => { a.spiritUnlocked = true; a.difficulties.spirits.push('0'); a.unlockedSpirits = ['kyogre']; });
 		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true, selectedSpirit: 'jirachi' }), /通关 200 层/);
 		assert.throws(() => cmd('start', { starters: ['bulbasaur'], selectedSpirit: 'kyogre' }));
 		cmd('start', { starters: ['bulbasaur'], useSpirit: true, selectedSpirit: 'kyogre' });

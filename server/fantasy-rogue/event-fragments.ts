@@ -1,18 +1,23 @@
 import type { RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
+import { advancedDifficulty, type RogueDifficulty } from '../../sim/rogue-difficulty';
 
 export type FragmentAlternative = 'forest' | 'room' | 'bandits';
 export interface EventFragmentOffer { stage: string; amount: number; alternative: FragmentAlternative }
 
-export function eventFragmentTier(floor: number) {
-	return floor < 51 ? undefined : floor < 80 ? { key: '51', min: 8, max: 12, cap: 30 } :
+export function eventFragmentTier(floor: number, difficulty: RogueDifficulty = 0) {
+	const d = advancedDifficulty(difficulty);
+	floor += 3 * d;
+	const tier = floor < 51 ? undefined : floor < 80 ? { key: '51', min: 8, max: 12, cap: 30 } :
 		floor < 100 ? { key: '80', min: 12, max: 18, cap: 45 } :
 		floor < 150 ? { key: '100', min: 16, max: 22, cap: 60 } : { key: '150', min: 20, max: 30, cap: 80 };
+	return tier && { key: tier.key, min: Math.round(tier.min * (1 + 0.04 * d)),
+		max: Math.round(tier.max * (1 + 0.04 * d)), cap: Math.round(tier.cap * (1 + 0.04 * d)) };
 }
 
 /** Offer only after the branch succeeds; the alternative reward has not been paid yet. */
 export function offerEventFragments(run: RogueRun, alternative: FragmentAlternative, random: RogueRandom) {
-	const tier = eventFragmentTier(run.floor), event = run.node!.event!;
+	const tier = eventFragmentTier(run.floor, run.difficulty), event = run.node!.event!;
 	if (!tier || !run.blessings) return false;
 	const remaining = tier.cap - (run.eventFragments?.[tier.key] || 0);
 	if (remaining < tier.min) return false;
@@ -34,7 +39,7 @@ export function eventFragmentOptions(run: RogueRun) {
 }
 
 export function claimEventFragments(run: RogueRun) {
-	const offer = run.node!.event!.fragmentOffer!, tier = eventFragmentTier(run.floor)!;
+	const offer = run.node!.event!.fragmentOffer!, tier = eventFragmentTier(run.floor, run.difficulty)!;
 	const ledger = run.eventFragments ||= {};
 	if (tier.key !== offer.stage || (ledger[offer.stage] || 0) + offer.amount > tier.cap) throw new Error('本阶段碎片奖励已更新。');
 	ledger[offer.stage] = (ledger[offer.stage] || 0) + offer.amount;

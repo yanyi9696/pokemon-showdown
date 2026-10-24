@@ -7,6 +7,7 @@ import type { RogueRun } from './types';
 import { GHOLDENGO_EVOLUTION_COINS, partyEvolutions } from './party-evolution';
 import { compoundEvolutionAllowed } from '../../sim/rogue-compound';
 import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
+import { difficultyIVs, memberDifficultyScale } from '../../sim/rogue-difficulty';
 import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 
 /** RPG move/evolution data uses ordinary species, never the locked Fantasy move pool. */
@@ -14,18 +15,22 @@ const baseDex = Dex.mod('gen9');
 const battleDex = Dex.mod('gen9fantasy');
 
 export function createRoguePokemon(set: PokemonSet, boosts: StatsTable, id: string = randomUUID(), stars = 1,
-	modifiers?: RoguePokemon['statModifiers']): RoguePokemon {
+	modifiers?: RoguePokemon['statModifiers'], difficulty?: RoguePokemon['difficulty']): RoguePokemon {
+	if (difficulty?.tier === 'easy') set = { ...set, ivs: difficultyIVs(set.ivs, 'easy') };
 	const battle = new Battle({ formatid: toID(ROGUE_FORMAT), deserialized: true });
 	try {
 		battle.setPlayer('p1', { name: 'Rogue', team: [{ ...structuredClone(set), fantasyRogueStats: { ...boosts },
-			fantasyRogueScale: rogueStarScale(stars), fantasyRogueModifiers: modifiers }] });
+			fantasyRogueScale: rogueStarScale(stars), fantasyRogueModifiers: modifiers,
+			fantasyRogueDifficulty: memberDifficultyScale(difficulty) }] });
 		const mon = battle.p1.pokemon[0];
 		const normalized = structuredClone(mon.set);
 		delete normalized.fantasyRogueStats;
 		delete normalized.fantasyRogueScale;
+		delete normalized.fantasyRogueDifficulty;
 		delete normalized.fantasyRogueId;
 		delete normalized.fantasyRogueModifiers;
 		const saved: RoguePokemon = {
+			...(difficulty ? { difficulty: { ...difficulty } } : {}),
 			...(stars > 1 ? { stars } : {}),
 			id, set: normalized, hp: mon.maxhp, maxhp: mon.maxhp, status: '', statusState: {},
 			pp: mon.moveSlots.map(slot => ({ id: slot.id, pp: slot.pp, maxpp: slot.maxpp })),
@@ -173,12 +178,13 @@ export function escapedMember(original: RoguePokemon, current: RoguePokemon): Ro
 
 /** Preserve damage, status, consumed items and PP. A stat rebuild cannot revive a fainted member. */
 export function rebuildMember(mon: RoguePokemon, boosts: StatsTable) {
+	if (mon.difficulty?.tier === 'easy') mon.set.ivs = difficultyIVs(mon.set.ivs, 'easy');
 	if (mon.compound) {
 		mon.set.ability = 'Power of Alchemy';
 		mon.abilityPool = [{ id: 'powerofalchemy', hidden: false }];
 	}
 	ensureMemberMemory(mon);
-	const rebuilt = createRoguePokemon(mon.set, boosts, mon.id, mon.stars, mon.statModifiers);
+	const rebuilt = createRoguePokemon(mon.set, boosts, mon.id, mon.stars, mon.statModifiers, mon.difficulty);
 	mon.hp = mon.hp > 0 ? Math.max(1, Math.min(rebuilt.maxhp, mon.hp + rebuilt.maxhp - mon.maxhp)) : 0;
 	mon.maxhp = rebuilt.maxhp;
 	mon.pp = rebuilt.pp.map(slot => ({
