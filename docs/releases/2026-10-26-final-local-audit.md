@@ -6,7 +6,7 @@
 
 本轮只整理既有开发内容和证据，没有调整游戏数值、业务行为或测试预期。全仓库 ESLint 尚未清零，详细情况见下文，不能把此结论解读成所有静态规范检查全部通过。
 
-实际工作区是 `F:\fantasy\release-audit-20261022\server` 与 `client`，均为 `codex/fantasy-rogue`。原 `F:\fantasy\pokemon-showdown` 的 master 和原 client 的 fantasy 没有遗漏的未提交业务修改；其当前正式分支提交均已包含在开发分支历史中。
+实际工作区是 `F:\fantasy\release-audit-20261022\server` 与 `client`，均为 `codex/fantasy-rogue`。原 `F:\fantasy\pokemon-showdown` 的 master 和原 client 的 fantasy 没有遗漏的未提交业务修改。client 的 fantasy 是开发分支祖先；server 的 master 只有一条独有提交 `5aa08dfbd23282becba29e26a4807973dc19c5a6`，仅在原 `pokemon-showdown` CLI 中增加 7 行本机 Windows 转接，调用仓库外 `../launch-local-development.cjs`，不包含游戏业务修改。该提交保留在原目录，不并入发布开发分支；其父提交及普通对战共享修复均已包含。
 
 ## 包含的主要内容
 
