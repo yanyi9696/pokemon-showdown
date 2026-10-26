@@ -8,29 +8,12 @@ import type { RogueAccount, RogueCommand } from './types';
 import type { RogueClearCard } from './legacy';
 import { recordRogueDiscoveries } from './discoveries';
 import { syncRunDifficulty } from './difficulty';
+import { openRogueDatabase } from './store-schema';
 
 export class RogueStore {
 	private readonly db: Database.Database;
 	constructor(path: string) {
-		const DatabaseConstructor: typeof Database = require('better-sqlite3');
-		this.db = new DatabaseConstructor(path);
-		this.db.pragma('journal_mode = WAL');
-		this.db.pragma('synchronous = FULL');
-		this.db.pragma('busy_timeout = 5000');
-		this.db.exec(`
-			CREATE TABLE IF NOT EXISTS rogue_history (userid TEXT NOT NULL, id TEXT NOT NULL, ended INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY (userid, id));
-			CREATE INDEX IF NOT EXISTS rogue_history_owner ON rogue_history(userid, ended DESC);
-			CREATE TABLE IF NOT EXISTS rogue_accounts (userid TEXT PRIMARY KEY, data TEXT NOT NULL);
-			CREATE TABLE IF NOT EXISTS rogue_requests (
-				userid TEXT NOT NULL, id TEXT NOT NULL, payload TEXT NOT NULL, revision INTEGER NOT NULL,
-				PRIMARY KEY (userid, id)
-			);
-			CREATE TABLE IF NOT EXISTS rogue_cards (
-				id TEXT PRIMARY KEY, userid TEXT NOT NULL, public INTEGER NOT NULL,
-				created INTEGER NOT NULL, data TEXT NOT NULL
-			);
-			CREATE INDEX IF NOT EXISTS rogue_cards_public ON rogue_cards(public, created DESC);
-		`);
+		this.db = openRogueDatabase(path);
 	}
 	card(id: string): RogueClearCard | undefined {
 		const row = this.db.prepare('SELECT data FROM rogue_cards WHERE id = ?').get(id) as { data: string } | undefined;

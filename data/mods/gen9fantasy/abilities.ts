@@ -2982,7 +2982,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
         name: "Zhen She",
         rating: 3.5,
         num: 10060,
-        shortDesc: "出场时使范围内的对手特攻下降1级",
+        shortDesc: "出场时使范围内的对手特攻下降1级。会被胆量和精神力无视。",
     },
 	kuangshazhili: {
 		// 效果1: 来自“扬沙”的登场发动天气效果
