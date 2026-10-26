@@ -22,6 +22,16 @@
 // on the side of caution and run `node build` to ensure we're always running
 // with the latest code.
 var fs = require('fs');
+// Opt in to this computer's Windows development launcher only when installed.
+// Other checkouts and production keep the normal CLI without any local config.
+if (process.platform === 'win32' && (!process.argv[2] || /^[0-9]+$/.test(process.argv[2]) ||
+	['start', '--skip-build'].includes(process.argv[2]))) {
+	var localLauncher = require('path').resolve(__dirname, '../launch-local-development.cjs');
+	if (fs.existsSync(localLauncher)) {
+		require(localLauncher);
+		return;
+	}
+}
 function build() {
 	if (process.argv.includes('--skip-build')) return;
 	require('child_process').execSync('node build', {stdio: 'inherit', cwd: __dirname});

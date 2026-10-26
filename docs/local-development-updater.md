@@ -13,7 +13,7 @@ node .\pokemon-showdown
 
 等终端显示“游戏已就绪”，打开 `http://localhost:8080/testclient.html#fantasyrogue`。保留窗口，按 Ctrl+C 同时停止对战和网页服务。8000 是对战端口，8080 是同次启动的客户端页面，不需要另开网页服务或先运行 cmd。重复执行时，若已有同一版本服务，会提示入口并退出，不重复启动；已有不同版本时提示先在原窗口停止。
 
-原目录中的 `pokemon-showdown` 仅有本机 Windows 启动转接：调用仓库外的 `F:\fantasy\launch-local-development.cjs`，再以 `-Foreground -NoOpen` 使用同一套构建、备份和进程验证。原文件已备份在 `local-development-state/checks/manual-start-20261024/pokemon-showdown.before`。此转接不提交到 master；其他 CLI 子命令保持原样。`更新并重启本地肉鸽.cmd` 仍是可选的后台更新工具。
+`pokemon-showdown` 保留可选的 Windows 启动转接：仅在 Windows 启动游戏服务器、且仓库上一级已安装 `launch-local-development.cjs` 时调用它。本机对应 `F:\fantasy\launch-local-development.cjs`，再以 `-Foreground -NoOpen` 使用同一套构建、备份和进程验证。未安装转接文件的 Windows 工作区，以及 Linux/macOS，均使用原生 CLI；帮助、回放等其他子命令也保持原样。桥接逻辑随开发分支发布，机器专用的转接文件、配置和存档不入 Git。原文件备份仍保留在 `local-development-state/checks/manual-start-20261024/pokemon-showdown.before`。`更新并重启本地肉鸽.cmd` 仍是可选的后台更新工具。
 
 固定 HTTP 来源继续保留已有浏览器昵称与偏好；不读取或使用 testclient-key.js，不需要复制登录验证。仅有网页快捷方式不会启动服务，必须先启动上述命令或可选更新工具。
 
