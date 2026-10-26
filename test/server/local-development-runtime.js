@@ -21,6 +21,7 @@ describe('Windows development runtime isolation', () => {
 		vm.runInNewContext(code, { process: processStub, require(name) {
 			if (name === 'path') return path;
 			if (name === './local-development') return helper;
+			if (name === './local-development-lifecycle') return { watchForegroundParent() { throw new Error('Background updater must remain independent of its parent.'); } };
 			if (name.endsWith('config-loader')) {
 				assert.equal(processStub.env.FANTASY_AI_LOCAL, '1', 'workers and the parent must receive the preset');
 				Config.fantasyailocal = true; return { Config };
@@ -35,5 +36,19 @@ describe('Windows development runtime isolation', () => {
 		assert.equal(written[0].id, record.id); assert.equal(written[0].outputHash, record.outputs.hash);
 		assert.equal(Config.repl, false);
 		assert.equal(Config.nothrottle, true, 'startup UI queries must not discard the local nickname');
+	});
+	it('stops a manual runtime if its console parent has exited, without treating other process-query failures as absence', () => {
+		const { watchForegroundParent } = require('../../tools/local-development-lifecycle');
+		let tick, killed, exited, unref = false;
+		const runtime = { pid: 12, kill(pid, signal) { killed = [pid, signal]; }, exit(code) { exited = code; } };
+		watchForegroundParent(10, runtime, (callback, interval) => {
+			tick = callback; assert.equal(interval, 500); return { unref() { unref = true; } };
+		});
+		tick(); assert.deepEqual(killed, [10, 0]); assert.equal(exited, undefined); assert(unref);
+		runtime.kill = () => { throw Object.assign(new Error('permission'), { code: 'EPERM' }); };
+		assert.throws(tick, /permission/); assert.equal(exited, undefined);
+		runtime.kill = () => { throw Object.assign(new Error('gone'), { code: 'ESRCH' }); };
+		tick(); assert.equal(exited, 0);
+		assert.throws(() => watchForegroundParent(12, runtime), /Invalid foreground/);
 	});
 });

@@ -2,9 +2,24 @@
 
 `更新并重启本地肉鸽.cmd` 现在是通用的本地更新入口，覆盖服务端规则、宝可梦数据、Rogue、客户端界面及回放页面。名称保留以兼容现有使用习惯。
 
+## 熟悉的 PowerShell 启动方式
+
+本机仍可直接运行：
+
+```powershell
+cd F:\fantasy\pokemon-showdown
+node .\pokemon-showdown
+```
+
+等终端显示“游戏已就绪”，打开 `http://localhost:8080/testclient.html#fantasyrogue`。保留窗口，按 Ctrl+C 同时停止对战和网页服务。8000 是对战端口，8080 是同次启动的客户端页面，不需要另开网页服务或先运行 cmd。重复执行时，若已有同一版本服务，会提示入口并退出，不重复启动；已有不同版本时提示先在原窗口停止。
+
+原目录中的 `pokemon-showdown` 仅有本机 Windows 启动转接：调用仓库外的 `F:\fantasy\launch-local-development.cjs`，再以 `-Foreground -NoOpen` 使用同一套构建、备份和进程验证。原文件已备份在 `local-development-state/checks/manual-start-20261024/pokemon-showdown.before`。此转接不提交到 master；其他 CLI 子命令保持原样。`更新并重启本地肉鸽.cmd` 仍是可选的后台更新工具。
+
+固定 HTTP 来源继续保留已有浏览器昵称与偏好；不读取或使用 testclient-key.js，不需要复制登录验证。仅有网页快捷方式不会启动服务，必须先启动上述命令或可选更新工具。
+
 ## 实际源码与运行目录
 
-当前 `F:\fantasy\release-audit-20261022\server` 和 `client` 是两个仓库登记的 Git worktree，检出 `codex/fantasy-rogue`。它们不是冻结的发布副本。入口不再写死包含日期的路径，而是根据 `F:\fantasy\local-development.json` 中的仓库和分支，查询 `git worktree list --porcelain` 找到当前目录。
+当前 `F:\fantasy\release-audit-20261022\server` 和 `client` 是两个仓库登记的 Git worktree，检出 `codex/fantasy-rogue`。它们不是冻结的发布副本。原 `pokemon-showdown` 和 `pokemon-showdown-client` 目录分别保留 master、fantasy 分支；直接运行它们的旧构建不会包含最新 Rogue 功能。本机 `local-development.json` 的 `serverSource` / `clientSource` 明确选择上述开发工作区；未设置时才按分支发现目录。
 
 服务端直接编译所选工作区到其 `dist`，客户端直接在所选工作区生成测试页面与静态资源；客户端数据生成显式使用同一次更新选中的服务端。运行进程通过启动记录加载同一份 `dist`。不复制或同步源码，不操作其他工作区的源码，不执行 Git 拉取、切换、重置或清理。
 
@@ -18,7 +33,7 @@
 & F:\fantasy\launch-local-development.ps1 -ServerRoot F:\fantasy\pokemon-showdown -ClientRoot F:\fantasy\pokemon-showdown-client
 ```
 
-上述目录只是选择示例，不会切换其中的分支。长期更换默认来源，可以修改 `local-development.json` 的 `serverBranch` / `clientBranch`，对应分支须已经检出到一个工作区。工具代码始终从 `toolsBranch` 所指工作区读取。
+上述目录只是选择示例，不会切换其中的分支。长期更换默认来源，可以修改 `local-development.json` 的 `serverSource` / `clientSource`；删除这两项后，改由 `serverBranch` / `clientBranch` 发现已检出的工作区。显式命令参数优先于配置。工具代码始终从 `toolsBranch` 所指工作区读取。
 
 ```powershell
 # 只核对目录、Git 状态、存档路径和构建计划，不备份、不构建、不重启

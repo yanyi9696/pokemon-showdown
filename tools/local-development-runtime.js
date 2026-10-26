@@ -3,8 +3,12 @@
 // Load exactly the compiled checkout in the receipt; do not rebuild at startup.
 const path = require('path');
 const { readJSON, writeJSON, sourceState, sameSources, outputs, validateLocalConfig } = require('./local-development');
+const { watchForegroundParent } = require('./local-development-lifecycle');
 const record = readJSON(process.argv[2]);
 if (process.platform !== 'win32' || record.status !== 'built' || record.port !== 8000) throw new Error('Invalid local build receipt.');
+// Closing a Windows console can kill PowerShell before its finally block runs.
+// A manual launch must never leave a detached game/HTTP service behind.
+if (process.env.PS_LOCAL_FOREGROUND === '1') watchForegroundParent(process.ppid);
 const serverRoot = record.sources.server.root;
 const clientRoot = record.sources.client.root;
 if (!sameSources(record.sources, { server: sourceState(serverRoot), client: sourceState(clientRoot) }) ||

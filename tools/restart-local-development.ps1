@@ -4,7 +4,8 @@
     [string]$ClientRoot,
     [switch]$Rebuild,
     [switch]$CheckOnly,
-    [switch]$NoOpen
+    [switch]$NoOpen,
+    [switch]$Foreground
 )
 # UTF-8 BOM is required when distributing this file to Windows PowerShell 5.1.
 $ErrorActionPreference = 'Stop'
@@ -136,6 +137,11 @@ try {
         if (@($clientListeners | Where-Object { $_.LocalAddress -ne '127.0.0.1' -or !$service -or $_.OwningProcess -ne $service.ProcessId }).Count) {
             throw '8080 客户端端口被其他进程占用，停止更新。不会关闭未知进程。'
         }
+        if ($Foreground -and $service) {
+            Invoke-Helper @('running', $recordFile, [string]$service.ProcessId)
+            Write-Host '本地服务已经启动。请保留原来的服务窗口，直接打开上面的网页。没有重复启动或重启服务。'
+            exit 0
+        }
         if ($service) { Invoke-Helper @('inspect') }
         Invoke-Helper @('backup', $recordFile)
         $current = Get-GameProcess
@@ -154,8 +160,15 @@ try {
         $errorLog = Join-Path $record.directory 'runtime.err'
         if (Get-NetTCPConnection -State Listen -LocalPort 8000 -ErrorAction SilentlyContinue) { throw '构建期间 8000 端口被其他进程占用。' }
         $launchArguments = @(('"' + $record.runtimeScript + '"'), ('"' + $recordFile + '"'))
-        $started = Start-Process -FilePath $nodeExecutable -ArgumentList $launchArguments -WindowStyle Hidden -PassThru `
-            -WorkingDirectory $record.sources.server.root -RedirectStandardOutput $outputLog -RedirectStandardError $errorLog
+        if ($Foreground) {
+            $env:PS_LOCAL_FOREGROUND = '1'
+            $started = Start-Process -FilePath $nodeExecutable -ArgumentList $launchArguments -NoNewWindow -PassThru `
+                -WorkingDirectory $record.sources.server.root -RedirectStandardOutput $outputLog -RedirectStandardError $errorLog
+        } else {
+            Remove-Item Env:\PS_LOCAL_FOREGROUND -ErrorAction SilentlyContinue
+            $started = Start-Process -FilePath $nodeExecutable -ArgumentList $launchArguments -WindowStyle Hidden -PassThru `
+                -WorkingDirectory $record.sources.server.root -RedirectStandardOutput $outputLog -RedirectStandardError $errorLog
+        }
         $ready = $false
         for ($attempt = 0; $attempt -lt 120; $attempt++) {
             Start-Sleep -Milliseconds 500
@@ -171,6 +184,17 @@ try {
         $completed = Read-Json $recordFile
         if (!$NoOpen) { Open-UpdatedClient $completed }
         Write-Host '请使用本次客户端入口或本地开发版快捷方式。旧目录的浏览器标签不会自动升级，请关闭旧标签；原测试昵称和存档保持不变。'
+        if ($Foreground) {
+            Write-Host "游戏已就绪：http://localhost:8080/testclient.html#fantasyrogue" -ForegroundColor Green
+            Write-Host '保留此 PowerShell 窗口；按 Ctrl+C 同时停止本次游戏服务器和网页服务。'
+            # Updating remains optional and can recognize/restart this same managed runtime.
+            $lock.Dispose()
+            $lock = $null
+            while (!$started.HasExited) {
+                Start-Sleep -Milliseconds 500
+                $started.Refresh()
+            }
+        }
     }
 } catch {
     $failure = $_.Exception.Message
@@ -189,6 +213,16 @@ try {
     if ($recordFile) { Write-Host "本次检查、备份和构建日志目录：$(Split-Path $recordFile -Parent)" }
     exit 1
 } finally {
+    if ($Foreground -and $started) {
+        # Also runs on Ctrl+C. Do not leave the hidden runtime behind after the console exits.
+        $started.Refresh()
+        if (!$started.HasExited) {
+            $manualService = Get-CimInstance Win32_Process -Filter "ProcessId = $($started.Id)"
+            if ($manualService -and (Test-CommandPath $manualService.CommandLine $recordFile)) {
+                Stop-GameTree $manualService
+            }
+        }
+    }
     if ($lock) { $lock.Dispose() }
 }
 exit 0

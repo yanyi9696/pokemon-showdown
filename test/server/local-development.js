@@ -194,6 +194,17 @@ describe('Unified local development updater', function () {
 		write(path.join(server, 'config/config.js'), "exports.port = 9000; exports.bindaddress = '0.0.0.0';");
 		assert.throws(() => local.validateLocalConfig(server, record.settings), /loopback port 8000/);
 	});
+	it('does not accept an old server or reused PID when the manual entry finds port 8000 occupied', async () => {
+		const { filename, record } = fixtureRecord();
+		const receipt = path.join(record.settings.stateRoot, 'last-success.json');
+		local.writeJSON(receipt, { ...record, status: 'success', pid: 123, outputs: { hash: 'old' } });
+		await assert.rejects(local.checkRunning(filename, 456), /different or outdated/);
+		local.writeJSON(receipt, { ...record, status: 'success', pid: 123,
+			sources: { ...record.sources, server: { ...record.sources.server, hash: 'old source' } } });
+		await assert.rejects(local.checkRunning(filename, 123), /different or outdated/);
+		local.writeJSON(receipt, { ...record, status: 'success', pid: 123, outputs: { hash: 'missing output' } });
+		await assert.rejects(local.checkRunning(filename, 123), /different or outdated/);
+	});
 	it('does not report nickname login as ready when local guest login is disabled', () => {
 		const { server, record } = fixtureRecord();
 		write(path.join(server, 'config/config.js'), "exports.port = 8000; exports.bindaddress = '127.0.0.1'; exports.noguestsecurity = false;");

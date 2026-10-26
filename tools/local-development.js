@@ -135,8 +135,10 @@ function prepare(settingsFile, serverOverride, clientOverride, force = false) {
 	const base = path.dirname(path.resolve(settingsFile));
 	for (const key of ['serverRepository', 'clientRepository', 'stateRoot', 'saveDatabase']) settings[key] = localPath(settings[key], base);
 	if (settings.port !== 8000) throw new Error('This local profile preserves port 8000.');
-	const server = selectSource(settings.serverRepository, settings.serverBranch, serverOverride);
-	const client = selectSource(settings.clientRepository, settings.clientBranch, clientOverride);
+	const server = selectSource(settings.serverRepository, settings.serverBranch,
+		serverOverride || (settings.serverSource && localPath(settings.serverSource, base)));
+	const client = selectSource(settings.clientRepository, settings.clientBranch,
+		clientOverride || (settings.clientSource && localPath(settings.clientSource, base)));
 	for (const [root, required] of [[server, ['build', 'sim/dex.ts', 'server/index.ts']],
 		[client, ['build', 'build-tools/server-source.js', 'build-tools/local-development-server.js', 'play.pokemonshowdown.com/testclient.template.html']]]) {
 		for (const file of required) if (!fs.existsSync(path.join(root, file))) throw new Error(`Missing source: ${root}/${file}`);
@@ -331,6 +333,21 @@ async function finish(recordFile, pid) {
 	console.log(JSON.stringify({ status: 'success', sources: record.sources, build: record.build, port: 8000, pid: record.pid, url,
 		saveDatabase: record.settings.saveDatabase, backup: record.backup, report: recordFile }, null, 2));
 }
+async function checkRunning(recordFile, pid) {
+	const record = readJSON(recordFile);
+	const previous = readJSON(path.join(record.settings.stateRoot, 'last-success.json'));
+	if (previous.status !== 'success' || previous.pid !== Number(pid) ||
+		!sameSources(previous.sources, record.sources) ||
+		outputs(record.sources.server.root, record.sources.client.root)?.hash !== previous.outputs?.hash) {
+		throw new Error('A different or outdated local server is running. Stop it in its PowerShell window before starting again.');
+	}
+	const status = await fetch('http://localhost:8080/__local/status', { signal: AbortSignal.timeout(5000) }).then(response => response.json());
+	if (status.buildId !== previous.id || status.clientRoot !== record.sources.client.root || !status.localGuest) {
+		throw new Error('The running HTTP client does not match the selected development worktree.');
+	}
+	await inspect(8000, true);
+	console.log(`Local server already running; no second server was started. ${clientURL()}#fantasyrogue`);
+}
 function clientURL() {
 	// Fixed HTTP origin preserves preferences across worktree moves and Windows shortcut launches.
 	return 'http://localhost:8080/testclient.html';
@@ -347,6 +364,7 @@ if (require.main === module) {
 			if (state.activeBattles) throw new Error('Active battles exist. Finish them before restarting.');
 			console.log(JSON.stringify(state));
 		} else if (mode === 'finish') await finish(args[0], args[1]);
+		else if (mode === 'running') await checkRunning(args[0], args[1]);
 		else if (mode === 'fail') {
 			const record = readJSON(args[0]);
 			record.status = 'failed'; record.error = args[1];
@@ -354,4 +372,4 @@ if (require.main === module) {
 		} else throw new Error('Unknown local development command.');
 	})().catch(error => { console.error(error.message); process.exitCode = 1; });
 }
-module.exports = { localPath, inside, worktrees, selectSource, sourceState, outputs, sameSources, buildPlan, prepare, backup, build, readJSON, writeJSON, validateLocalConfig, runBuildStep, finish, clientURL };
+module.exports = { localPath, inside, worktrees, selectSource, sourceState, outputs, sameSources, buildPlan, prepare, backup, build, readJSON, writeJSON, validateLocalConfig, runBuildStep, finish, checkRunning, clientURL };

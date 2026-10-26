@@ -4,7 +4,8 @@
     [string]$ClientRoot,
     [switch]$Rebuild,
     [switch]$CheckOnly,
-    [switch]$NoOpen
+    [switch]$NoOpen,
+    [switch]$Foreground
 )
 # Install this small bootstrap beside the .cmd and settings file.
 $ErrorActionPreference = 'Stop'
@@ -27,6 +28,7 @@ try {
     if (!(Test-Path -LiteralPath $script)) { throw "Updater not found: $script" }
     $arguments = @{SettingsFile = $SettingsFile; Rebuild = $Rebuild; CheckOnly = $CheckOnly}
     if ($NoOpen) { $arguments.NoOpen = $true }
+    if ($Foreground) { $arguments.Foreground = $true }
     if ($ServerRoot) { $arguments.ServerRoot = $ServerRoot }
     if ($ClientRoot) { $arguments.ClientRoot = $ClientRoot }
     & $script @arguments
