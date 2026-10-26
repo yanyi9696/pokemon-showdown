@@ -11,7 +11,7 @@ export interface DragonKing { member: string; ability?: DragonKingAbility }
 export const dragonKingActive = (effects?: BlessingEffects) =>
 	!!ownsBlessing(effects, 'dragonking') && !effects?.companions?.some(c => c.id === 'iris' && c.away);
 export interface RogueTonics { wine?: boolean; cephalosporin?: boolean; poison?: boolean }
-export const TARGET_BLESSING_ABILITIES: Record<string, string> = { hazards: 'yanbuzhen', toxic: 'merciless', speedpower: 'speedboost' };
+export const TARGET_BLESSING_ABILITIES: Record<string, string> = { hazards: 'yanbuzhen', toxic: 'merciless', speedpower: 'speedboost', veteransniper: 'sniper' };
 export const POWER_CHOICE_ABILITIES = ['hugepower', 'roguegreatmage'];
 export function strongestBlessingMember(team: RoguePokemon[], baseSpecies: string) {
 	const sum = (stats: Partial<StatsTable>) => Object.values(stats || {}).reduce((n, value) => n + (value || 0), 0);
@@ -75,6 +75,12 @@ export function memberStatTotal(mon: RoguePokemon) {
 }
 export function strongestDragon(team: RoguePokemon[]) {
 	return team.filter(mon => permanentMemberTypes(mon).includes('Dragon'))
+		.sort((a, b) => memberStatTotal(b) - memberStatTotal(a) || (a.joinOrder || 0) - (b.joinOrder || 0))[0];
+}
+/** Use saved stats, not temporary battle boosts, and retain training on each partner. */
+export function strongestSniperMember(team: RoguePokemon[], effects?: BlessingEffects) {
+	return team.filter(mon => !mon.egg && (toID(mon.set.ability) === 'sniper' ||
+		assignedExtraAbilities(mon, team, effects).includes(toID('sniper'))))
 		.sort((a, b) => memberStatTotal(b) - memberStatTotal(a) || (a.joinOrder || 0) - (b.joinOrder || 0))[0];
 }
 export const TONIC_SECRET = '同时使用【酒】与【头孢】后，追加幽灵属性；原本为毒系的伙伴，毒属性招式威力永久提升 50%。';

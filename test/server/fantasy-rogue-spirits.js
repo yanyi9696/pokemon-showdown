@@ -113,7 +113,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	});
 	it('grants the fixed-level partner once and rejects experience candy without consuming it', () => {
 		start('celebi'); const gift = account().run.team.find(mon => mon.fixedLevel);
-		assert(Object.values(gift.set.ivs).every(iv => Number.isInteger(iv) && iv >= 20 && iv <= 31));
+		assert(Object.values(gift.set.ivs).every(iv => Number.isInteger(iv) && iv >= 0 && iv <= 31));
 		assert.equal(gift.set.level, 40); cmd('spiritack');
 		assert.equal(account().run.team.length, 2);
 		assert.deepEqual(account().run.team.find(mon => mon.id === gift.id).set.ivs, gift.set.ivs);

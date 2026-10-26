@@ -1,3 +1,4 @@
+import { rollEchoShiny } from './echo';
 import { randomSpeciesEligible } from './species-eligibility';
 import { Dex, toID } from '../../sim/dex';
 import { activeRogueSpirits, roguePartyLimit, rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
@@ -5,9 +6,10 @@ import type { RogueRandom } from './biome-pools';
 import type { RogueContent, RogueItem, RogueNode, RogueRun } from './types';
 import { createRoguePokemon, initializeExperience, rebuildMember } from './progression';
 import { ROGUE_INITIAL_FRIENDSHIP } from './friendship';
-import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
+import { makeEncounterSet, randomEncounterIVs, randomEncounterAbility } from './encounter-sets';
 import { canEditParty, healingLocked, inventoryItem } from './team';
 import { drawGiftSpecies } from './gifts';
+import { qualityTier, rareEncounterScale } from './encounter-quality';
 import { CANDY_SHOP } from './early-balance';
 
 export const SPIRIT_HAZARDS = [
@@ -37,10 +39,11 @@ export function grantSpiritGift(run: RogueRun, content: RogueContent, random: Ro
 	if (run.spirit === 'celebi') {
 		// Use the configured starter families, excluding temporary battle-only forms.
 		const candidates = content.starters.filter(entry => randomSpeciesEligible(entry.set.species, 40) && !Dex.mod('gen9fantasy').species.get(entry.set.species).battleOnly);
-		const species = drawGiftSpecies(candidates.map(entry => entry.set.species), run.startCard, random);
-		const set = makeEncounterSet(species, 40, randomEncounterIVs(random));
+		const species = drawGiftSpecies(candidates.map(entry => entry.set.species), run.startCard, random, false, rareEncounterScale(run));
+		const set = makeEncounterSet(species, 40, randomEncounterIVs(random, false, qualityTier(run)));
+		if (qualityTier(run) !== undefined) set.ability = randomEncounterAbility(species, random, false, qualityTier(run));
 		set.happiness = ROGUE_INITIAL_FRIENDSHIP;
-		set.shiny = random(1000) < 2 + (run.startCard === 'all' ? 1 : 0);
+		set.shiny = rollEchoShiny(run, random, 2 + (run.startCard === 'all' ? 1 : 0));
 		const mon = createRoguePokemon(set, run.boosts);
 		mon.fixedLevel = 40;
 		initializeExperience(mon);
@@ -90,7 +93,7 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 		}
 		for (const set of encounter.team) {
 			if (encounter.catchable && !set.shiny) {
-				set.shiny = random(1000) < (run.spirit === 'hooh' ? 20 : 2) + (run.startCard === 'all' ? 1 : 0);
+				set.shiny = rollEchoShiny(run, random, (run.spirit === 'hooh' ? 20 : 2) + (run.startCard === 'all' ? 1 : 0));
 			}
 			if (run.spirit === 'mew' && !node.biome && !encounter.fixedLevels) {
 				const level = set.level + rogueWildLevelBonus(run.floor, run.spirit);

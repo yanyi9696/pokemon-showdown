@@ -13,6 +13,7 @@ const { beginRival } = require('../../dist/server/fantasy-rogue/rivals');
 const { beginPoliceEncounter } = require('../../dist/server/fantasy-rogue/police-events');
 const { bossIntroPages } = require('../../dist/server/fantasy-rogue/story');
 const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
+const { affectionFloor } = require('../../dist/server/fantasy-rogue/affection');
 
 const newLeaders = ['jasmine', 'winona', 'gardenia', 'candice', 'clair', 'clay', 'nanu', 'valerie', 'leon', 'cynthia', 'diantha', 'ash'];
 const pairs = [['clay', 'lacey'], ['giovanni', 'silver'], ['nanu', 'acerola']];
@@ -27,7 +28,7 @@ function run(companion) {
 }
 
 describe('Fantasy Rogue gym companions and relationship meetings', () => {
-	it('recruits each added gym leader through their own preference and pays the 15-choice gift once', () => {
+	it('recruits each added gym leader through affinity and pays the 50-affection gift once', () => {
 		const catalog = rogueCodex(undefined, 'events', true).entries;
 		for (const id of newLeaders) {
 			const r = run(), p = TRAVELLERS[id], pool = socialCandidates(r);
@@ -44,8 +45,12 @@ describe('Fantasy Rogue gym companions and relationship meetings', () => {
 			chooseSocialEvent(r, 'join', () => 0);
 			assert.deepEqual(travellingRoster(r).map(c => c.id), [id]);
 			const options = [{ id: 'preferred', name: '同行建议', preference: p.preference }];
-			for (let i = 0; i < 16; i++) recordSocialPreference(r, options, 'preferred', 'choice' + i);
+			for (let i = 0; i < 15; i++) recordSocialPreference(r, options, 'preferred', 'choice' + i);
+			assert(!r.bag[p.gifts[0].id], 'choices alone should not rush the journey gift');
+			for (let i = 0; i < 20; i++) { r.floor++; affectionFloor(r, () => 99); }
 			assert.equal(r.bag[p.gifts[0].id], 1, id);
+			for (let i = 0; i < 5; i++) recordSocialPreference(r, options, 'preferred', 'extra' + i);
+			assert.equal(r.bag[p.gifts[0].id], 1, 'the 50-point gift is paid only once');
 			assert(catalog.some(e => e.portrait === id && (e.roles?.includes('gym') || e.roles?.includes('champion')) && e.roles.includes('companion')), id);
 		}
 	});

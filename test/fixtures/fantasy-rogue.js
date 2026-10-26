@@ -47,6 +47,11 @@ function content() {
 // Older focused tests start at route selection with no blessing effects. Keep that explicit
 // fixture boundary; the opening suite and 200-floor smoke use unwrapped real commands.
 function commandAfterOpening(engine, user, command) {
+	if (command.action === 'start' && command.collapse === undefined) {
+		const tier = command.difficulty ?? engine.store.get(user).preferredDifficulty ?? 0;
+		if (typeof tier === 'number' && tier > 0) command = {...command,
+			collapse: require('../../dist/sim/rogue-collapse-data').COLLAPSE_ENTRIES.slice(0, tier * 2).map(e => e.id)};
+	}
 	const result = engine.command(user, command);
 	if (result.run?.floor !== 1 || result.run.phase !== 'blessing' || !result.run.blessings?.beforeAdventure) return result;
 	return engine.store.change(user, account => {

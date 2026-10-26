@@ -1,4 +1,5 @@
 import type { Move } from '../../sim/dex-moves';
+import { Dex } from '../../sim/dex';
 
 /** Categories describe the effective Fantasy move, including unchanged native moves. */
 export const MOVE_CATEGORIES: Record<string, string> = {
@@ -12,6 +13,38 @@ const mental = new Set(['attract', 'disable', 'encore', 'healblock', 'taunt', 't
 const explosions = new Set(['selfdestruct', 'explosion', 'mistyexplosion']);
 const callbackDrops = new Set(['partingshot', 'strengthsap', 'tickle', 'venomdrench', 'octolock', 'captivate']);
 const negative = (boosts?: SparseBoostsTable | null) => Object.values(boosts || {}).some(value => value < 0);
+const CATEGORY_ALIASES: Record<string, string[]> = {
+	slicing: ['切割招式', '切割类招式', '切斩招式'], multihit: ['多段招式'],
+	drain: ['吸取ＨＰ类招式', '吸取HP类招式'], pulse: ['波导类招式', '波导招式', '波动类招式'],
+	signaturez: ['专属Z招式', '专属 Z 招式'], binding: ['持续束缚招式'],
+};
+type CategoryHelp = Record<string, { name: string, aliases: readonly string[], moves: string[] }>;
+let categoryHelp: CategoryHelp | undefined;
+/** Shared with the codex: effective Fantasy flags, including untouched original moves. */
+export function moveCategoryHelp(): CategoryHelp {
+	if (categoryHelp) return categoryHelp;
+	const dex = Dex.mod('gen9fantasy');
+	const signatureZ = new Set(dex.items.all().filter(item => typeof item.zMove === 'string' && item.itemUser?.length)
+		.map(item => dex.moves.get(item.zMove as string).id));
+	const entries = Object.entries(MOVE_CATEGORIES).filter(([id]) => id !== 'all').map(([id, label]) => {
+		const name = label.endsWith('招式') ? label : label + '招式';
+		return [id, { name, aliases: [...new Set([name, name.replace('类招式', '招式'), ...CATEGORY_ALIASES[id] || []])], moves: [] as string[] }] as const;
+	});
+	const result: CategoryHelp = Object.fromEntries(entries);
+	for (const move of dex.moves.all().filter(m => m.exists && (!m.id.startsWith('rogue') || m.isZ))) {
+		for (const group of moveCategories(move, signatureZ)) result[group]?.moves.push(move.id);
+	}
+	return categoryHelp = result;
+}
+export function bracketMoveCategories(text: string) {
+	const aliases = Object.values(moveCategoryHelp()).flatMap(entry => entry.aliases.map(alias => ({ alias, name: entry.name })))
+		.sort((a, b) => b.alias.length - a.alias.length);
+	return text.split(/(【[^】]+】)/g).map(part => {
+		if (part.startsWith('【')) return part;
+		const names = new Map(aliases.map(entry => [entry.alias, entry.name]));
+		return part.replace(new RegExp(aliases.map(entry => entry.alias).join('|'), 'g'), name => `【${names.get(name)}】`);
+	}).join('');
+}
 export function moveCategories(move: Move, signatureZ: ReadonlySet<string>): string[] {
 	const groups = ['all'];
 	for (const flag of ['light', 'shooting', 'contact', 'recharge', 'charge', 'heal', 'bite', 'punch',

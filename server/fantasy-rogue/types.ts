@@ -85,7 +85,8 @@ export interface RogueItem {
 	id: string;
 	name: string;
 	singleMove?: boolean;
-	kind: 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic' | 'crown' | 'ability' | 'forme';
+	teraType?: string;
+	kind: 'terashard' | 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'rarecandy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic' | 'crown' | 'ability' | 'forme';
 	nature?: string; move?: string; description?: string;
 	/** Omitted on cure items means all persistent status conditions. */
 	cureStatuses?: string[];
@@ -150,6 +151,18 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	echo?: import('../../sim/rogue-echo').EchoUpgrades;
+	echoAwarded?: number;
+	echoIntroShown?: boolean;
+	trainerBonds?: Record<string, import('./affection').TrainerBond>;
+	affectionClaims?: string[];
+	affectionVersion?: number;
+	masterBallQuest?: import('./master-ball').MasterBallQuest;
+	masterBallLedger?: { remaining: number; used: number };
+	journey?: import('./history').JourneyLedger;
+	collapse?: import('../../sim/rogue-collapse-data').CollapseID[];
+	collapseClearRecorded?: boolean;
+	futureBossFloor?: number;
 	difficulty?: import('../../sim/rogue-difficulty').RogueDifficulty;
 	difficultyRulesVersion?: number;
 	/** Only runs actually using a local permission bypass cannot grant normal progress. */
@@ -158,6 +171,7 @@ export interface RogueRun extends RogueInventory {
 	/** Deferred until the final pre-tower confirmation, so practice cannot grant starter traits. */
 	startingBuilds?: PokemonSet[];
 	activityClaims?: string[];
+	rareCandyEvents?: string[];
 	environment?: import('./floor-environment').FloorEnvironment;
 	/** Ecologies offered on recent floors, shared by wild and elite routes. */
 	biomeHistory?: { id: string, floor: number }[];
@@ -169,6 +183,8 @@ export interface RogueRun extends RogueInventory {
 	previousRival?: import('./rival-data').RivalID;
 	honeymoon?: import('./honeymoon').HoneymoonTrip;
 	exclusiveItems?: Record<string, { since: number, misses: number, cooldown: number, obtained?: boolean }>;
+	/** Eligible event areas passed without an exclusive clue while an active partner still needs an item. */
+	exclusiveEventMisses?: number;
 	auction?: import('./auction').RogueAuction;
 	companionPickups?: { settled: string[], items: Record<string, number> };
 	preview?: { key: string, trainer: 'sada' | 'turo', stage: 'running' | 'result' | 'personal', result?: import('../../sim/fantasy-rogue').RogueBattleResult };
@@ -242,6 +258,8 @@ export interface RogueRun extends RogueInventory {
 	pendingCapture?: RoguePokemon;
 	pendingCaptures?: RoguePokemon[];
 	captureResume?: 'ready' | 'failed' | 'shopclosed' | 'choose' | 'event';
+	/** An out-of-band companion item choice returns to the exact interrupted screen. */
+	blessingRewardResume?: RogueRun['phase'];
 	pendingMoves?: { member: string, move: string }[];
 	notices?: string[];
 	lastReward?: {
@@ -256,6 +274,9 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	echo?: import('../../sim/rogue-echo').CollapseEcho;
+	masterBalls?: import('./master-ball').MasterBallCollection;
+	collapseHistory?: Record<string, import('../../sim/rogue-collapse-data').CollapseHistory>;
 	difficulties?: { highest: number, cleared: string[], spirits: string[] };
 	/** Absent means the elder offers a charm each adventure; explicit zero skips the offer. */
 	preferredDifficulty?: Exclude<import('../../sim/rogue-difficulty').RogueDifficulty, 'easy'>;
@@ -266,6 +287,7 @@ export interface RogueAccount {
 	honeymoon?: import('./honeymoon').HoneymoonTrip;
 	/** Account-wide acknowledgement, independent of adventures and codex unlocks. */
 	onboardingSeen?: boolean;
+	onboardingVersion?: string;
 	/** Once discovered, the combination's description remains visible across adventures. */
 	tonicSecret?: boolean;
 	/** Permanent codex collection, independent of the current and previous adventures. */
@@ -307,6 +329,7 @@ export interface RogueStarterBuild {
 	moves?: string[];
 }
 export interface RogueCommand {
+	collapse?: import('../../sim/rogue-collapse-data').CollapseID[];
 	difficulty?: import('../../sim/rogue-difficulty').RogueDifficulty;
 	id: string;
 	revision: number;
@@ -317,11 +340,11 @@ export interface RogueCommand {
 	trainingMembers?: string[];
 	trainingStats?: StatIDExceptHP[];
 	appearance?: string;
-	action: 'forme' | 'fusion' | 'unfusion' | 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+	action: 'echo' | 'affection' | 'forme' | 'fusion' | 'unfusion' | 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
 		'shopchallenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' | 'comeback' | 'coverage' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
-		'setdifficulty' | 'charm' | 'charmack' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';
+		'setdifficulty' | 'charm' | 'charmack' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingquality' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';
 	useSpirit?: boolean;
 	/** A previously cleared spirit; validated against the account ledger on the server. */
 	selectedSpirit?: string;

@@ -2,6 +2,17 @@ import { BLESSING_STAGES, BLESSING_TYPES, STAGED_BLESSING_FAMILIES, blessingTitl
 	blessingCoins, medicRecovery, lateBlessingReward, emblemDescription, taskRewardTier, type BlessingDefinition } from '../../sim/rogue-blessing-data';
 import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceText, companionGiftOptions, type CompanionID } from '../../sim/rogue-companions';
 import { tonicDescription } from '../../sim/rogue-blessing-permanent';
+import { bracketMoveCategories } from './move-categories';
+
+/** Supplies without a standard held-item Dex entry still use their Rogue rules in reference help. */
+export const BLESSING_SUPPLY_HELP = [
+	{ id: 'roguefantasyshard', name: '幻想碎片', description: '每集齐 100 片，可让一名符合条件的伙伴幻想化。碎片可继续积攒，本局使用。' },
+	{ id: 'rogueexpcandy', name: '经验糖果', description: '为选定伙伴增加经验；具体经验量由 XS、S、M、L、XL 规格决定。' },
+	{ id: 'rogueterashard', name: '太晶碎片', description: '按属性存入背包。同一属性集齐 50 片，可在战斗外将一名伙伴的太晶属性改为该属性；不会直接解锁太晶化系统。' },
+	{ id: 'roguetoolbox', name: '工具箱', description: '打开后展示四件随机装备，从中选择一件。' },
+	{ id: 'rogueadvancedtoolbox', name: '高级工具箱', description: '从四件随机装备中选择一件；比普通工具箱提供更多常用对战装备候选。' },
+	{ id: 'roguetreasurebag', name: '藏宝袋', description: '随机获得 3～6 组旅途物资，奖励随所在层数提升。' },
+];
 
 /** Player copy shared by selection cards, the codex, owned blessings and new clear cards. */
 export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSecret = false) {
@@ -41,11 +52,12 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 		text = text.replace(/，偏好[^。]*。/g, '。');
 		const people = (Object.keys(COMPANIONS) as CompanionID[]).filter(id => COMPANIONS[id].family === def.family);
 		text += '事件、遭遇、奖励等区域出现选项时，均可咨询同行训练家的意见。' + people.map(companionPreferenceText).join('');
-		if (def.family !== 'companionai') text += '累计听从 15 次偏好选择，本局获得一次【同行训练家的赠礼】。' +
-			(def.family === 'companionlana' ? '水莲按进入钓鱼计数。' : def.family === 'companionolivia' ? '莉兹按完成赌石事件计数。' : '') +
-			people.map(id => `【${COMPANIONS[id].name}】赠送${companionGiftOptions(id).map(gift => `【${gift.name}】`).join('或')}×1${id === 'acerola' ? '（二选一）' : ''}，携带后对应属性招式威力 ×1.2。`).join('');
+		text += '同行、专属奇遇与偏好回应会积累本局好感度；达到 50／100 时每局各获得一次专属赠礼与对话，新旅途重新积累。旅途中还会偶尔分享小补给，原有同行条件不变。';
 	}
-	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name, text };
+	// These are explicit supply names, not an unrestricted word matcher (e.g. ordinary “免疫”).
+	text = text.split(/(【[^】]+】)/g).map(part => part.startsWith('【') ? part :
+		part.replace(/幻想碎片|太晶碎片|经验糖果|小蘑菇|大蘑菇|芳香蘑菇|土地云/g, name => `【${name}】`)).join('');
+	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name, text: bracketMoveCategories(text) };
 }
 
 export function blessingCodexFloors(def: BlessingDefinition): (number | undefined)[] {
@@ -67,8 +79,10 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		reorganizer: ['仅第 50 层出现', '队伍中不能有蛋、尚未解除融合或已使用【五号化合物】的伙伴'],
 		ghidorah: ['队伍需有【三首恶龙】，幻想形态同样符合'],
 		youngprodigy: ['仅第 1 层出现'],
+		latebloom: ['队伍需有大器晚成谱系伙伴，幼年、地区与幻想形态同样符合；蛋不计入'],
 		killlagirl: ['第 150 层及以后', '需同时拥有【神衣鲜血】和【神衣纯洁】；出现彩色选项时保证包含本祝福'],
 		speedpower: ['队伍需有尚未拥有【加速】的伙伴'],
+		veteransniper: ['队伍需有尚未拥有【狙击手】的伙伴', '要害射击击倒进度按伙伴分别保存；逃跑不累计'],
 		medic: ['与【进球休息】互斥'], restinball: ['与【自带医疗队】互斥'],
 		compound: ['队伍需有完整进化链、最终进化型种族值总和不超过 500 的伙伴', '已最终进化的伙伴也可选择；每名伙伴限用一次'],
 		singer: ['队伍需有【美洛耶塔】', '与【舞！舞！舞！】互斥'],

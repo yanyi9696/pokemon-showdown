@@ -3,7 +3,7 @@ import { TeamValidator } from '../../sim/team-validator';
 import { ROGUE_STATS } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueContent, RogueStarterTraits } from './types';
 
-const baseIVs = (): StatsTable => ({ hp: 20, atk: 20, def: 20, spa: 20, spd: 20, spe: 20 });
+const baseIVs = (): StatsTable => ({ hp: 15, atk: 15, def: 15, spa: 15, spd: 15, spe: 15 });
 
 /** Preserve earned unlocks and breeding choices when all Zygarde starters become 10%. */
 export function migrateZygardeStarter(account: RogueAccount) {

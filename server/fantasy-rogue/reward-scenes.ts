@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { advancedDifficulty, difficultyRewardScale } from '../../sim/rogue-difficulty';
+import { difficultyRewardScale } from '../../sim/rogue-difficulty';
 import { dueCatchup, catchupLevels } from './late-support';
 import { personalRewardGrowth } from './growth';
 import { giveEgg, eggEventWeight } from './eggs';
@@ -146,9 +146,9 @@ export function rewardChoices(run: RogueRun) {
 		choices.push({ id: 'efficiency', name: '经验心得', amount, disabled: !amount,
 			text: `全队本局战斗经验 +${growthPercent(amount)}，不影响经验糖果。` });
 	}
-	const d = advancedDifficulty(run.difficulty), shardFloor = run.floor + d * 3;
+	const shardFloor = run.floor;
 	if (shardFloor >= 80) {
-		const amount = Math.round((12 + Math.floor((shardFloor - 80) / 10)) * (1 + d * 0.04));
+		const amount = 12 + Math.floor((shardFloor - 80) / 10);
 		choices.push({ id: 'shards', name: '幻想碎片', amount, text: `获得幻想碎片 ×${amount}，为伙伴积攒幻想的力量。` });
 	}
 	return choices;

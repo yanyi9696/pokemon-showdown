@@ -15,7 +15,7 @@ const { content, set, stats, commandAfterOpening } = require('../fixtures/fantas
 
 describe('Fantasy Rogue difficulty tiers', function () {
 	this.timeout(30000);
-	const makeRun = (difficulty, floor = 200) => ({ id: randomUUID(), difficulty, difficultyRulesVersion: 1, floor,
+	const makeRun = (difficulty, floor = 200) => ({ id: randomUUID(), difficulty, difficultyRulesVersion: 4, floor,
 		phase: 'complete', owner: { id: randomUUID(), name: 'Difficulty' }, contentVersion: 'test',
 		team: [createRoguePokemon(set('Bulbasaur', 'Overgrow', 80), stats(0))], boosts: stats(0), bag: {}, money: 0,
 		caught: [], notices: [], encounter: 0, node: { kind: 'boss', encounters: [], reward: { money: 0, items: {} } } });
@@ -25,7 +25,7 @@ describe('Fantasy Rogue difficulty tiers', function () {
 			const enemy = { ...set('Bulbasaur', 'Overgrow', 80), ivs: difficultyIVs(stats(20), tier, floor) };
 			const base = createRoguePokemon(enemy, stats(0));
 			const battle = new Battle({ formatid: 'gen9fantasyrogue', seed: [1, 2, 3, 4],
-				fantasyRogue: { difficulty: { tier, floor }, encounterId: 'scale', team: r.team, boosts: r.boosts, bag: {}, balls: [], catchable: false },
+				fantasyRogue: { difficulty: { tier, floor, version: 4 }, encounterId: 'scale', team: r.team, boosts: r.boosts, bag: {}, balls: [], catchable: false },
 				p1: { team: r.team.map(mon => mon.set) }, p2: { team: [enemy] } });
 			try {
 				const player = battle.p1.pokemon[0], foe = battle.p2.pokemon[0];
@@ -34,9 +34,9 @@ describe('Fantasy Rogue difficulty tiers', function () {
 					Math.max(1, Math.floor(base.stats[stat] * difficultyScale(tier, floor, true) + 1e-9)), stat);
 				const before = structuredClone(r.team[0]); rebuildMember(r.team[0], r.boosts); syncRunDifficulty(r);
 				assert.deepEqual(r.team[0].stats, before.stats);
-				if (tier === 'easy') assert(Object.values(r.team[0].set.ivs).every(iv => iv <= 10));
+				if (tier === 'easy') assert(Object.values(r.team[0].set.ivs).every(iv => iv <= 15));
 				const a = difficultyScale(tier, floor), b = difficultyScale(tier, floor, true);
-				assert(tier === 'easy' ? b < a && a < 1 : tier ? b > a && a > 1 : a === 1 && b === 1);
+				assert(tier === 'easy' ? b < a && a < 1 : a === 1 && b === 1);
 			} finally { battle.destroy(); }
 		});
 	}
@@ -47,7 +47,7 @@ describe('Fantasy Rogue difficulty tiers', function () {
 		const spentPP = mon.pp[0].pp; r.floor = 200; syncRunDifficulty(r);
 		assert.equal(mon.maxhp - mon.hp, 8); assert.equal(mon.pp[0].pp, spentPP);
 		assert.equal(mon.set.ivs.atk, 0); assert.equal(mon.set.ivs.spe, 0);
-		assert(Object.values(mon.formFusion.donor.set.ivs).every(iv => iv <= 10));
+		assert(Object.values(mon.formFusion.donor.set.ivs).every(iv => iv <= 15));
 		mon.hp = 0; mon.set.species = 'Ivysaur'; rebuildMember(mon, r.boosts);
 		assert.equal(mon.hp, 0);
 		const before = structuredClone(mon); syncMemberDifficulty(mon, r); assert.deepEqual(mon, before);
@@ -87,7 +87,8 @@ describe('Fantasy Rogue difficulty tiers', function () {
 			if (tier === 'easy') assert.equal(card.snapshot.difficultyLabel, '护符庇佑');
 			return card;
 		});
-		for (let i = 1; i < cards.length; i++) assert(cards[i].snapshot.team[0].stats.hp > cards[i - 1].snapshot.team[0].stats.hp);
+		assert(cards[1].snapshot.team[0].stats.hp > cards[0].snapshot.team[0].stats.hp);
+		for (let i = 2; i < cards.length; i++) assert.deepEqual(cards[i].snapshot.team[0].stats, cards[1].snapshot.team[0].stats);
 		const before = JSON.stringify(cards), state = buildRogueDuelState(cards[0], cards[6]);
 		const battle = new Battle({ formatid: 'gen9fantasyrogueduel', fantasyRogue: state,
 			p1: { team: state.team.map(m => m.set) }, p2: { team: state.duel.team.map(m => m.set) } });
@@ -104,7 +105,7 @@ describe('Fantasy Rogue difficulty tiers', function () {
 			const cmd = (action, extra = {}) => commandAfterOpening(engine, 'tier', { id: randomUUID(), revision: store.get('tier').revision, action, ...extra });
 			for (const difficulty of [1, 5, -1, '1', 7]) assert.throws(() => cmd('start', { starters: ['bulbasaur'], difficulty }));
 			cmd('start', { starters: ['bulbasaur'], difficulty: 'easy' });
-			assert(Object.values(store.get('tier').run.team[0].set.ivs).every(iv => iv <= 10));
+			assert(Object.values(store.get('tier').run.team[0].set.ivs).every(iv => iv <= 15));
 			assert.throws(() => cmd('select', { value: 'grass', difficulty: 0 }), /锁定/);
 			assert.throws(() => cmd('charm', { value: 'accept' }), /护符/);
 			assert.throws(() => cmd('restartsetup'), /已经开始/);
@@ -128,7 +129,7 @@ describe('Fantasy Rogue difficulty tiers', function () {
 			const saved = store.get('catchtier'), mon = saved.run.team.find(m => m.set.species === 'Magikarp');
 			assert.equal(mon.difficulty.tier, tier); assert.equal(mon.difficulty.floor, 2); assert(mon.set.shiny);
 			assert(saved.unlocked.includes('magikarp')); assert(saved.starterTraits.magikarp.shiny);
-			if (tier === 'easy') { assert(Object.values(mon.set.ivs).every(iv => iv <= 10)); assert(!saved.starterTraits.magikarp.natures?.length); }
+			if (tier === 'easy') { assert(Object.values(mon.set.ivs).every(iv => iv <= 15)); assert(!saved.starterTraits.magikarp.natures?.length); }
 			const expected = createRoguePokemon(mon.set, saved.run.boosts, mon.id, mon.stars, mon.statModifiers, mon.difficulty);
 			assert.deepEqual(mon.stats, expected.stats);
 			const again = structuredClone(mon); engine.migrate('catchtier');

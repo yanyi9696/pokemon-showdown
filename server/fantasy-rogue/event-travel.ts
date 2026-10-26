@@ -90,7 +90,7 @@ export function convertRegional(run: RogueRun, member: string, target: string) {
 }
 export function regionalGift(run: RogueRun, content: RogueContent, region: Postcard, random: RogueRandom) {
 	const level = Math.max(3, Math.min(100, Math.ceil(run.floor / 2)));
-	return drawBlessingGift(run, content, random, { level, pool: regionalPool(region, level, content) });
+	return drawBlessingGift(run, content, random, { eliteIVs: false, level, pool: regionalPool(region, level, content) });
 }
 export function snapshotTravelBattle(run: RogueRun) {
 	const event = run.node?.event;

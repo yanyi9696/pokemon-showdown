@@ -1,3 +1,4 @@
+import { gainAffection, affectionGreeting, AFFECTION_RULES } from './affection';
 import { grantCoverage } from './coverage';
 import { trainerReunionPages } from './trainer-reunions';
 import { randomUUID } from 'crypto';
@@ -15,13 +16,14 @@ import { requestCompanion, travellingRoster } from './travellers';
 import { rivalOpeningPages, rivalConversationOptions, rivalAnswerPages, rivalChatPages, rivalChatOptions } from './rival-dialogue';
 import { rivalAffectionGain } from './rival-responses';
 import { journeyCoins } from './early-balance';
+import { LUSAMINE_FAMILY_SCENES, LUSAMINE_REPLIES } from './lusamine-data';
 
 export interface RivalState {
 	id: RivalID; completed: number; lastFloor: number; affection: number;
 	temporaryUntil?: number; permanent?: boolean; away?: boolean; temporaryUsed?: boolean;
 	carmine?: { affection: number, temporaryUntil?: number, permanent?: boolean, away?: boolean, temporaryUsed?: boolean };
 }
-export interface RivalEvent { chapter: number; step?: 'conversation' | 'talk' | 'search' | 'reward' | 'invite' | 'carmine' | 'carminefinal'; conversationTurn?: number; turn?: number; task?: 'search' | 'battle'; found?: number[]; answer?: number }
+export interface RivalEvent { chapter: number; step?: 'conversation' | 'talk' | 'search' | 'reward' | 'invite' | 'carmine' | 'carminefinal' | 'lusamine'; conversationTurn?: number; turn?: number; task?: 'search' | 'battle'; found?: number[]; answer?: number }
 const accompanying = (state: { permanent?: boolean, temporaryUntil?: number, away?: boolean } | undefined, floor: number) =>
 	!state?.away && !!(state?.permanent || state?.temporaryUntil && floor <= state.temporaryUntil);
 const canInvite = (state: RivalState | RivalState['carmine']) =>
@@ -85,6 +87,7 @@ export function beginRival(run: RogueRun, random: RogueRandom) {
 		run.rival = { id: pool[random(pool.length)], completed: 0, lastFloor: 0, affection: 0 };
 	}
 	const r = run.rival, chapter = r.completed + 1;
+	gainAffection(run, r.id, AFFECTION_RULES.meeting, 'rival-meeting:' + chapter);
 	run.node!.name = rivalSceneName(r.id, chapter);
 	run.node!.event = { id: 'rivalstory', key: randomUUID(), stage: 'choice', rival: { chapter, step: 'conversation', conversationTurn: 0 },
 		result: [RIVALS[r.id].lines[chapter - 1]] };
@@ -109,6 +112,7 @@ function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 	const advanced = won || [1, 6, 8].includes(chapter);
 	if (advanced) r.completed = Math.max(r.completed, chapter);
 	if (chapter !== 1 && won && chapter !== 4) r.affection += 2;
+	if (won) gainAffection(run, r.id, AFFECTION_RULES.duel, 'rival-complete:' + chapter);
 	if ([1, 6, 8].includes(chapter)) healNarrativeParty(run);
 	const scale = !won ? 0.35 : [4, 6, 8].includes(chapter) ? 1.8 : 1.15;
 	const quality = chapter === 4 ? r.affection >= 6 ? 1.4 : r.affection >= 3 ? 1 : 0.7 : 1;
@@ -148,6 +152,13 @@ export function rivalView(run: RogueRun) {
 		if (state.step === 'conversation') options = rivalConversationOptions(state.chapter, state.conversationTurn);
 		else if (state.step === 'carmine') options = [option('carmine:listen', '欢迎丹瑜一起商量，也主动介绍自己的打算。'), option('carmine:trust', '温和地请她说说想法，认真听完。'), option('carmine:dismiss', '先说明当前情况，再请她一起确认计划。')];
 		else if (state.step === 'carminefinal') options = [option('carmine:stay', '当然，我们三个人一起走。'), option('carmine:later', '期待下一次再与你相遇。')];
+		else if (state.step === 'lusamine') options = [
+			option('lusamine:trust', '相信他们的选择，也给他们可以回来的地方。'),
+			option('lusamine:care', '先听听大家的想法，再一起照顾好伙伴。'),
+			...(state.chapter >= 4 && !travellingRoster(run).some(c => c.id === 'lusamine') &&
+				!run.companionInvitations?.some(c => c.id === 'lusamine') ?
+				[option('lusamine:join', '接下来的旅途，也邀请您一起同行吧。')] : []),
+		];
 		else if (state.step === 'reward') options = [option('system:tera', '解锁太晶化并领取配套碎片'), option('system:mega', '解锁超进化并领取进化石'), option('system:z', '解锁 Z 招式并领取纯晶'), option('shards', '领取幻想碎片 ×100')];
 		else if (state.step === 'invite') options = [
 			...(canInvite(r) ? [option('join', '好，一起走这一段。')] : []),
@@ -159,8 +170,8 @@ export function rivalView(run: RogueRun) {
 		else options = [option('start', '准备好了，开始吧。')];
 	}
 	return { paragraphs: event.result || [c.lines[state.chapter - 1]], options,
-		rivalPortrait: state.step?.startsWith('carmine') ? 'carmine' : r.id,
-		affection: state.step?.startsWith('carmine') ? r.carmine?.affection || 0 : r.affection,
+		rivalPortrait: state.step === 'lusamine' ? 'lusamine' : state.step?.startsWith('carmine') ? 'carmine' : r.id,
+		affection: run.trainerBonds?.[state.step === 'lusamine' ? 'lusamine' : state.step?.startsWith('carmine') ? 'carmine' : r.id]?.score || 0,
 		rivalApproval: state.step?.startsWith('carmine') ? (r.carmine?.affection || 0) >= 4 : r.affection >= 4 };
 }
 export function chooseRival(run: RogueRun, content: RogueContent, random: RogueRandom, choice: string) {
@@ -171,25 +182,41 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		const turn = state.conversationTurn || 0;
 		const gain = rivalAffectionGain(r.id, choice, state.chapter);
 		r.affection += gain;
+		const actualGain = gainAffection(run, r.id, Math.max(0, gain) * AFFECTION_RULES.preference, 'rival:' + state.chapter + ':' + state.step + ':' + (state.conversationTurn || 0) + ':' + (state.turn || 0));
 		const pages = rivalAnswerPages(r.id, state.chapter, turn, choice, r.affection);
-		pages[0].affectionGain = gain;
+		pages[0].affectionGain = actualGain;
 		state.conversationTurn = turn + 1;
 		if (state.conversationTurn >= 2) {
 			if (r.id === 'kieran' && state.chapter > 1) {
 				state.step = 'carmine'; event.result = [CARMINE.lines[state.chapter - 1]];
 				pages.push(dialoguePage('carmine', '丹瑜', CARMINE.lines[state.chapter - 1], (r.carmine?.affection || 0) >= 4, 'left'));
+			} else if ((r.id === 'lillie' || r.id === 'gladion') && LUSAMINE_FAMILY_SCENES[r.id][state.chapter]) {
+				state.step = 'lusamine';
+				gainAffection(run, 'lusamine', AFFECTION_RULES.meeting, `family:${r.id}:${state.chapter}:meeting`);
+				pages.push(...LUSAMINE_FAMILY_SCENES[r.id][state.chapter].map(([id, text]) =>
+					dialoguePage(id, id === 'lusamine' ? '露莎米奈' : RIVALS[id].name, text, true, id === 'lusamine' ? 'left' : 'right')));
 			} else prepareChapter(run, random);
 		}
 		event.result = pages.map(page => page.text);
 		queueNarrative(run, pages, run.phase === 'ready' ? 'ready' : 'event');
+	} else if (state.step === 'lusamine') {
+		const response = choice.slice('lusamine:'.length) as keyof typeof LUSAMINE_REPLIES;
+		const gain = gainAffection(run, 'lusamine', response === 'trust' ? AFFECTION_RULES.response : AFFECTION_RULES.preference,
+			`family:${r.id}:${state.chapter}:response`);
+		if (response === 'join') requestCompanion(run, { id: 'lusamine', origin: 'event' });
+		event.result = [LUSAMINE_REPLIES[response]];
+		prepareChapter(run, random);
+		queueNarrative(run, [{ ...dialoguePage('lusamine', '露莎米奈', event.result[0], true, 'left'), affectionGain: gain }],
+			run.phase === 'ready' ? 'ready' : 'event');
 	} else if (state.step === 'carmine') {
 		const gain = rivalAffectionGain('carmine', ({ 'carmine:listen': 'warm', 'carmine:trust': 'honest', 'carmine:dismiss': 'cold' } as Record<string, string>)[choice], state.chapter);
 		r.carmine!.affection += gain;
+		const actualGain = gainAffection(run, 'carmine', Math.max(0, gain) * AFFECTION_RULES.preference, 'rival:' + state.chapter + ':' + state.step);
 		event.result = [choice === 'carmine:listen' ? '丹瑜扬起嘴角：「这就对了！先说好，遇到麻烦可别把我晾在一边。」' :
 			choice === 'carmine:trust' ? '「嗯，我是有些想法。」丹瑜放缓语气，认真补上了你们没注意到的细节。' :
 			'「倒是考虑得挺清楚嘛。」丹瑜指了指地图，「这里再留个后手，我来照看这一侧。」'];
 		prepareChapter(run, random);
-		queueNarrative(run, [{ ...dialoguePage('carmine', '丹瑜', event.result[0], true, 'left'), affectionGain: gain }], 'event');
+		queueNarrative(run, [{ ...dialoguePage('carmine', '丹瑜', event.result[0], true, 'left'), affectionGain: actualGain }], 'event');
 	} else if (state.step === 'carminefinal') {
 		if (choice === 'carmine:stay') requestCompanion(run, { id: 'carmine', origin: 'carmine', permanent: true });
 		event.stage = 'result'; event.settled = true;
@@ -198,9 +225,10 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 	} else if (choice === 'start') setFight(run, random);
 	else if (['warm', 'honest', 'cold'].includes(choice)) {
 		const gain = rivalAffectionGain(r.id, choice, state.chapter);
-		r.affection += gain; state.turn = (state.turn || 0) + 1;
+		r.affection += gain;
+		const actualGain = gainAffection(run, r.id, Math.max(0, gain) * AFFECTION_RULES.preference, 'rival:' + state.chapter + ':' + state.step + ':' + (state.conversationTurn || 0) + ':' + (state.turn || 0)); state.turn = (state.turn || 0) + 1;
 		const pages = rivalChatPages(r.id, state.turn - 1, choice, r.affection);
-		pages[0].affectionGain = gain;
+		pages[0].affectionGain = actualGain;
 		event.result = pages.map(page => page.text);
 		if (state.turn >= 3) finish(run, random, true);
 		queueNarrative(run, pages, 'event');
@@ -251,13 +279,13 @@ export function expireRival(run: RogueRun, nextFloor = run.floor) {
 export function rivalCompanionView(run: RogueRun) {
 	if (!run.rival || !accompanying(run.rival, run.floor)) return;
 	return { ...run.rival, name: RIVALS[run.rival.id].name, text: run.rival.permanent ? '永久同行' : `结伴至第 ${run.rival.temporaryUntil} 层`,
-		message: run.rival.affection >= 6 ? '一路走到这里，我们已经很有默契了。' : '下一段旅途，也一起加油吧。' };
+		message: affectionGreeting(run, run.rival.id, run.rival.affection >= 6 ? '一路走到这里，我们已经很有默契了。' : '下一段旅途，也一起加油吧。') };
 }
 export function rivalCompanionViews(run: RogueRun) {
 	const result = [];
 	if (run.rival && accompanying(run.rival, run.floor)) result.push(rivalCompanionView(run)!);
 	const c = run.rival?.carmine;
-	if (accompanying(c, run.floor)) result.push({ ...c!, id: 'carmine', name: '丹瑜', text: c!.permanent ? '永久同行' : `结伴至第 ${c!.temporaryUntil} 层`, message: '行啦，这段路一起走。要帮忙就说，不用一个人硬撑。' });
+	if (accompanying(c, run.floor)) result.push({ ...c!, id: 'carmine', name: '丹瑜', text: c!.permanent ? '永久同行' : `结伴至第 ${c!.temporaryUntil} 层`, message: affectionGreeting(run, 'carmine', '行啦，这段路一起走。要帮忙就说，不用一个人硬撑。') });
 	return result;
 }
 export function rivalBlessingAllowed(run: RogueRun, family: string) {

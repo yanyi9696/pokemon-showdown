@@ -25,9 +25,9 @@ export function captureItems(): RogueItem[] {
 		['safariball', '狩猎球', 1250, '捕捉倍率为 1，与精灵球相同。'],
 		['sportball', '竞赛球', 1250, '捕捉倍率为 1，与精灵球相同。'],
 	];
-	return definitions.map(([id, name, price, description, ballRule]) => ({
+	return [{ id: 'masterball', name: '大师球', kind: 'ball', price: 0, shopFloor: false, multiplier: 1, icon: 'masterball', description: '必定捕获当前可捕捉的野生宝可梦。仅由稀有的极境馈赠获得，每局最多一个；仅在本局使用，不会带入下一局。' } as RogueItem, ...definitions.map(([id, name, price, description, ballRule]) => ({
 		id, name, price, description, ballRule, multiplier: 1, kind: 'ball' as const, icon: id, shopFloor: false as const,
-	}));
+	}))];
 }
 
 /** Retired prototype balls become official Ultra Balls, including rollback inventories. */

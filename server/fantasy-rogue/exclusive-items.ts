@@ -43,9 +43,11 @@ export function exclusiveCatalog(): ExclusiveItem[] {
 	if (catalog) return catalog;
 	catalog = FORM_ITEMS.map(item => ({ id: item.id, species: item.species, theme: 'relic', ...themes.relic }));
 	for (const item of dex.items.all()) {
-		if (!item.exists || ['CAP', 'Custom', 'Unobtainable'].includes(item.isNonstandard || '') ||
+		if (!item.exists || ['CAP', 'Unobtainable'].includes(item.isNonstandard || '') ||
 			item.id.startsWith('rogue') || item.id === 'gmegawishingstar') continue;
 		const users = [...(item.itemUser || []), ...[item.megaEvolves || []].flat()];
+		// Type Z crystals can also be the species-specific key for a Fantasy aura forme.
+		users.push(...Object.keys((item as Item & { auraBursts?: Record<string, unknown> }).auraBursts || {}));
 		// These native species boosts also recognize Fantasy forms by their original base species.
 		// Do not generalize this to Mega stones, Z crystals or form-changing artifacts.
 		if (['lightball', 'thickclub', 'luckypunch', 'metalpowder', 'quickpowder', 'souldew',
@@ -59,7 +61,8 @@ export function exclusiveCatalog(): ExclusiveItem[] {
 		if (item.onMemory) users.push('Silvally');
 		// Cover item-selected formes even when their item omits itemUser metadata.
 		for (const form of dex.species.all()) {
-			if (!form.isMega && (form.requiredItems || []).some(name => toID(name) === item.id)) users.push(form.name);
+			if (!form.isMega && [...form.requiredItems || [], ...(form.requiredItem ? [form.requiredItem] : [])]
+				.some(name => toID(name) === item.id)) users.push(form.name);
 		}
 		if (!users.length && item.forcedForme && !item.zMove) users.push(item.forcedForme);
 		const species = [...new Set(users)].filter(name => dex.species.get(name).exists);
@@ -110,5 +113,5 @@ export function grantExclusiveItem(run: RogueRun, id: string) {
 export function exclusiveEncounterChance(run: RogueRun, id: string) {
 	const entry = run.exclusiveItems?.[id];
 	return !entry || entry.obtained || run.floor < entry.cooldown ? 0 :
-		Math.min(85, 15 + Math.max(0, run.floor - entry.since) + entry.misses * 8);
+		Math.min(85, 35 + 2 * Math.max(0, run.floor - entry.since) + entry.misses * 15);
 }

@@ -137,15 +137,15 @@ describe('Fantasy Rogue continuous encounters and exclusive equipment', function
 	});
 	it('tracks waiting time and misses, enforces loss cooldown, and removes rewards across acquisition paths', () => {
 		const run = runFor('Lugia-Fantasy'); syncExclusiveItems(run);
-		assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 15);
+		assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 35);
 		assert.equal(beginExclusiveEncounter(run, max => max - 1), false);
-		assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 23);
-		run.floor += 5; assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 28);
+		assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 50);
+		run.floor += 5; assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 60);
 		assert(beginExclusiveEncounter(run, () => 0));
 		assert.equal(run.node.encounters[0].team[0].item, 'Shadow Bottle');
 		assert.equal(run.node.encounters[0].catchable, false); assert(run.node.event.committed);
 		settleExclusiveEvent(run, false); assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 0);
-		run.floor += 8; assert(exclusiveEncounterChance(run, 'shadowbottle') > 28);
+		run.floor += 8; assert(exclusiveEncounterChance(run, 'shadowbottle') > 60);
 		assert(beginExclusiveEncounter(run, () => 0)); settleExclusiveEvent(run, true);
 		assert.equal(run.bag.shadowbottle, 1); assert.equal(neededExclusiveItems(run).length, 0);
 		delete run.bag.shadowbottle; assert.equal(neededExclusiveItems(run).length, 0, 'one acquisition per run even after use');

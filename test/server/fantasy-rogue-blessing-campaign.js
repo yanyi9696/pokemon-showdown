@@ -29,6 +29,49 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		b.normalizeBlessings(run);
 		return { run, account };
 	}
+	it('limits number blessing offers to their requested floors in the shared candidate pool', () => {
+		for (const floor of [1, 50, 100, 150]) {
+			const {run} = setup(floor), ids = b.blessingCandidates(run, content).map(e => e.id);
+			assert.equal(ids.includes('bignumber'), floor === 1 || floor === 50);
+			assert.equal(ids.includes('supernumber'), floor === 100 || floor === 150);
+			assert.equal(ids.includes('hero'), floor === 1);
+			assert.equal(ids.includes('friend'), floor === 1);
+			assert.equal(ids.includes('prayer'), floor !== 150);
+		}
+		assert.deepEqual(blessing('bignumber').floors, [1, 50]);
+		assert.deepEqual(blessing('supernumber').floors, [100, 150]);
+		assert.deepEqual(blessing('hero').floors, [1]);
+		assert.deepEqual(blessing('friend').floors, [1]);
+		assert.deepEqual(blessing('prayer').floors, [1, 50, 100]);
+	});
+	it('requires a non-egg late-bloomer in the active party, including babies and regional or Fantasy forms', () => {
+		const {run} = setup();
+		const eligible = () => b.blessingCandidates(run, content).some(entry => entry.id === 'latebloom');
+		assert(!eligible());
+		run.box = [createRoguePokemon(set('Dratini', 'Shed Skin', 5), run.boosts)];
+		assert(!eligible(), 'boxed partners do not meet the party condition');
+		for (const name of ['Dratini', 'Goodra-Hisui', 'Dragonite-Fantasy', 'Baxcalibur']) {
+			run.team[0] = createRoguePokemon(set(name, dex.species.get(name).abilities[0], 50), run.boosts);
+			assert(eligible(), name);
+			run.team[0].hp = 0; assert(eligible(), 'a fainted party member still counts');
+			run.team[0].egg = {}; assert(!eligible(), 'an egg does not count');
+		}
+	});
+	it('spends the batch quality opportunity once per run, across JSON restore and later rounds', () => {
+		let {run, account} = setup(1);
+		run.blessings.beforeAdventure = true;
+		b.prepareOpeningBlessings(run, content, zero);
+		b.handleBlessingCommand(account, run, content, {action: 'blessingrefresh', slot: 0}, zero);
+		const remaining = run.blessings.round.options.map(o => o.refreshes), before = run.blessings.round.tier;
+		b.handleBlessingCommand(account, run, content, {action: 'blessingquality'}, zero);
+		assert.notEqual(run.blessings.round.tier, before); assert(run.blessings.qualityRerolled);
+		assert.deepEqual(run.blessings.round.options.map(o => o.refreshes), remaining);
+		account = JSON.parse(JSON.stringify(account)); run = account.run;
+		assert.throws(() => b.handleBlessingCommand(account, run, content, {action: 'blessingquality'}, zero), /已使用/);
+		delete run.blessings.round; delete run.blessings.beforeAdventure;
+		run.floor = 50; b.completeBlessingFloor(account, run, content, zero);
+		assert.throws(() => b.handleBlessingCommand(account, run, content, {action: 'blessingquality'}, zero), /已使用/);
+	});
 	function choose(account, run, def, random = zero) {
 		run.phase = 'blessing';
 		run.blessings.round = { floor: run.floor, tier: def.tier, remaining: 1,
@@ -57,6 +100,9 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 					while (run.blessings.pending.length || run.blessings.round || run.blessings.stage) {
 						assert(++actions <= 30, 'must leave every selection checkpoint');
 						const state = run.blessings;
+						if (floor !== 1 && state.round) {
+							assert(state.round.options.every(option => !['hero', 'friend'].includes(option.id)));
+						}
 						if (state.pending.length) {
 							const reward = state.pending[0];
 							resolve(account, run, reward.kind === 'gift' ? run.team[random(run.team.length)].id : reward.options?.[random(reward.options?.length || 1)]);
@@ -116,6 +162,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		if (def.family === 'topclearmind') run.blessings.prayer = { floor: 50, changed: false, team: run.team.map(m => m.id) };
 		if (def.family === 'dragonking') run.team[0] = createRoguePokemon(set('Dragonite', 'Inner Focus', 50), run.boosts);
 		if (def.family === 'ghidorah') run.team[0] = createRoguePokemon(set('Hydreigon', 'Levitate', 50), run.boosts);
+		if (def.family === 'latebloom') run.team[0] = createRoguePokemon(set('Dratini', 'Shed Skin', 50), run.boosts);
 		if (def.family === 'galarlegend') run.team[0] = createRoguePokemon(set('Eternatus', 'Pressure', 50), run.boosts);
 		if (def.family === 'originaldragon') run.team[0] = createRoguePokemon(set('Kyurem', 'Pressure', 50), run.boosts);
 		if (def.family === 'railgun') run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 50), run.boosts);

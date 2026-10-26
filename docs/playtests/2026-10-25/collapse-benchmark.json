@@ -1,0 +1,9549 @@
+{
+  "method": "4 three-member archetypes, 3 authored gym checkpoints, 3 paired seeds, tiers 0-5, old vs candidate player curve. Both use the new enemy modifiers. Lesser-impact selections first. RulePolicy player, existing NPC fallback. No blessings/items or campaign reward acquisition; levels and IV20 fixed across tiers to isolate the curve. Not a human/full-campaign balance verdict.",
+  "cases": [
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 19,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 4,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 68,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 20,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 15,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 0,
+      "version": 2,
+      "collapse": [],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 17,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 9,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 20,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "erosion": 5
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 67,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 20,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 1,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 1,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 1,
+      "triggers": {
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 68,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 22,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 11,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 24,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 59,
+      "playerRemaining": 0,
+      "enemyRemaining": 1,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 2,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 4
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 5
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 4
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 1,
+      "triggers": {
+        "adaptation": 6,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 6,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 17,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {
+        "adaptation": 10,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 5,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 4
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {
+        "adaptation": 5
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 5
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 70,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 14,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 11,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 19,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 5,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 15,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 4
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 3,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 4
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 1,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 3,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 3,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "steadfast": 1,
+        "adaptation": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 14,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 11,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "steadfast": 1,
+        "adaptation": 10,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 7,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 5,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 9,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {
+        "cleanse": 1,
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2,
+        "adaptation": 5,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 3,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 17,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 6,
+        "cleanse": 2,
+        "vitality": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 20,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 12,
+        "vitality": 3,
+        "cleanse": 1,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 3,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 2,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 3,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 4,
+        "vitality": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 3,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 68,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 15,
+        "vitality": 1,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "power": 5,
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 10,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 5,
+        "power": 6,
+        "vitality": 3,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 4,
+        "adaptation": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 15,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 1,
+        "power": 8
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 7,
+        "vitality": 3,
+        "steadfast": 1,
+        "power": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 19,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "power": 7
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "power": 7,
+        "adaptation": 8,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 4,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 14,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 7,
+        "adaptation": 4,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "power": 3,
+        "steadfast": 1,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 3,
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 5,
+        "adaptation": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 8,
+        "vitality": 2,
+        "power": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 9,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "power": 6,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 15,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "steadfast": 1,
+        "adaptation": 9,
+        "vitality": 2,
+        "power": 9
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 14,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 8,
+        "power": 10,
+        "cleanse": 1,
+        "vitality": 4,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 5,
+        "power": 4,
+        "vitality": 2,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "cleanse": 1,
+        "power": 4,
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 2,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "power": 6,
+        "adaptation": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2,
+        "adaptation": 4,
+        "power": 5,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 9,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 4,
+        "vitality": 2,
+        "power": 6,
+        "steadfast": 1,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "power": 4,
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": true,
+      "turns": 31,
+      "playerRemaining": 1,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 18,
+        "vitality": 6,
+        "power": 3,
+        "cleanse": 2,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 14,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "power": 5,
+        "adaptation": 10,
+        "vitality": 3,
+        "steadfast": 1,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "power": 4,
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 1,
+        "environment": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "environment": 5,
+        "steadfast": 3,
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "environment": 2,
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2,
+        "cleanse": 1,
+        "power": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "power": 5,
+        "environment": 1,
+        "adaptation": 2,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 3,
+        "vitality": 1,
+        "power": 5
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "power": 6,
+        "environment": 5,
+        "adaptation": 4,
+        "vitality": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 4,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 4,
+        "adaptation": 2,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 66,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 17,
+        "adaptation": 14,
+        "vitality": 2,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "power": 4,
+        "environment": 1,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "power": 5,
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 14,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 7,
+        "power": 11,
+        "erosion": 5,
+        "vitality": 3,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "erosion": 1,
+        "power": 3,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 4,
+        "adaptation": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 14,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 1,
+        "power": 8,
+        "erosion": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 15,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 2,
+        "cleanse": 1,
+        "power": 10,
+        "erosion": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 7,
+        "erosion": 4,
+        "vitality": 2,
+        "power": 7,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 15,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 2,
+        "power": 10,
+        "adaptation": 5,
+        "vitality": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 5,
+      "version": 2,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 5,
+        "adaptation": 4,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 19,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 4,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 68,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 20,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 15,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 0,
+      "version": 3,
+      "collapse": [],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 17,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "erosion": 7
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 4,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 67,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 20,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 1,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 17,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 6,
+      "triggers": {}
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 66,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 11,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 17,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {}
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 2,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 17,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {}
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 4
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 5,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 5
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 1,
+      "triggers": {
+        "adaptation": 6,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": true,
+      "turns": 24,
+      "playerRemaining": 1,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 12,
+        "cleanse": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 6,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 3,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 4,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 4
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 5
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 69,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 16,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 32,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 11
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 11,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 8,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 23,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 5
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 20,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {
+        "adaptation": 8,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 24,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 7
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 7,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 3,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 3
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 1,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 3,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 3,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "steadfast": 1,
+        "adaptation": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 14,
+      "playerRemaining": 0,
+      "enemyRemaining": 1,
+      "triggers": {
+        "adaptation": 11,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "steadfast": 1,
+        "adaptation": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 7,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 4
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 9,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {
+        "cleanse": 1,
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2,
+        "adaptation": 6,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "adaptation": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 31,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 10,
+        "cleanse": 2,
+        "vitality": 4,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 19,
+      "playerRemaining": 0,
+      "enemyRemaining": 2,
+      "triggers": {
+        "adaptation": 11,
+        "vitality": 4,
+        "cleanse": 2,
+        "erosion": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 3,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 3,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 9,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 2,
+        "cleanse": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 68,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 14,
+        "vitality": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 2,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "power": 5,
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 10,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 5,
+        "power": 6,
+        "vitality": 3,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 4,
+        "adaptation": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 4,
+        "vitality": 1,
+        "power": 8
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "steadfast": 1,
+        "power": 8
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 18,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "power": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "power": 7,
+        "adaptation": 8,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 4,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 15,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 4,
+        "power": 8,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "power": 3,
+        "steadfast": 1,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 3,
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 20,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 5,
+        "adaptation": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 8,
+        "vitality": 2,
+        "power": 6
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 100,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 9,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "power": 6,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 16,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 13,
+        "vitality": 2,
+        "power": 9
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 5,
+        "power": 5,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "direct",
+      "floor": 180,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "power"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 4,
+        "power": 3,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "cleanse": 1,
+        "power": 4,
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 2,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 20,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 6,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "power": 6,
+        "adaptation": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 13,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "cleanse": 2,
+        "adaptation": 5,
+        "power": 5,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 100,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 9,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 4,
+        "vitality": 2,
+        "power": 6,
+        "steadfast": 1,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 7,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 1,
+        "power": 4,
+        "adaptation": 3,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 20,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 11,
+        "power": 6,
+        "cleanse": 3,
+        "vitality": 4,
+        "vigilance": 1,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "setup",
+      "floor": 180,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "vigilance",
+        "power"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "power": 8,
+        "cleanse": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "power": 4,
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 1,
+        "environment": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "environment": 5,
+        "steadfast": 3,
+        "adaptation": 6,
+        "vitality": 3,
+        "power": 3
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 20,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "environment": 2,
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 2,
+        "cleanse": 1,
+        "power": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 4,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 4,
+        "environment": 1,
+        "steadfast": 1,
+        "adaptation": 1,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 11,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 3,
+        "vitality": 1,
+        "power": 5
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 100,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "power": 6,
+        "environment": 5,
+        "adaptation": 4,
+        "vitality": 2
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 4,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 4,
+        "adaptation": 2,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 68,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 6,
+        "adaptation": 15,
+        "vitality": 1,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "weather",
+      "floor": 180,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "vigilance",
+        "erosion",
+        "cleanse",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "steadfast",
+        "vitality",
+        "environment",
+        "power"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 5,
+        "vitality": 2,
+        "power": 4,
+        "environment": 1,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": true,
+      "turns": 7,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "power": 5,
+        "steadfast": 2,
+        "adaptation": 6,
+        "vitality": 3
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": true,
+      "turns": 13,
+      "playerRemaining": 2,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 7,
+        "power": 10,
+        "erosion": 5,
+        "vitality": 3,
+        "steadfast": 2
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 20,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": true,
+      "turns": 6,
+      "playerRemaining": 3,
+      "enemyRemaining": 0,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "erosion": 1,
+        "power": 3,
+        "steadfast": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 娜姿（超能）",
+      "won": false,
+      "turns": 5,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "power": 4,
+        "adaptation": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 亚莎（火）",
+      "won": false,
+      "turns": 14,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 4,
+        "vitality": 1,
+        "power": 7,
+        "erosion": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 100,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "道馆 · 霍米加（毒）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 3,
+      "triggers": {
+        "adaptation": 6,
+        "vitality": 3,
+        "steadfast": 1,
+        "power": 6
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 1,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "四天王 · 阿渡（龙）",
+      "won": false,
+      "turns": 17,
+      "playerRemaining": 0,
+      "enemyRemaining": 4,
+      "triggers": {
+        "adaptation": 8,
+        "erosion": 4,
+        "vitality": 2,
+        "power": 7,
+        "cleanse": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 2,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "四天王 · 辛俐（地面）",
+      "won": false,
+      "turns": 12,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "cleanse": 2,
+        "power": 9,
+        "adaptation": 5,
+        "vitality": 1
+      }
+    },
+    {
+      "build": "attrition",
+      "floor": 180,
+      "seed": 3,
+      "tier": 5,
+      "version": 3,
+      "collapse": [
+        "environment",
+        "vigilance",
+        "steadfast",
+        "inflation",
+        "medicine",
+        "adaptation",
+        "power",
+        "vitality",
+        "cleanse",
+        "erosion"
+      ],
+      "opponent": "四天王 · 紫芋（妖精）",
+      "won": false,
+      "turns": 10,
+      "playerRemaining": 0,
+      "enemyRemaining": 5,
+      "triggers": {
+        "adaptation": 4,
+        "power": 4,
+        "vitality": 1
+      }
+    }
+  ],
+  "summary": [
+    {
+      "version": 2,
+      "tier": 0,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 10.11111111111111
+    },
+    {
+      "version": 2,
+      "tier": 1,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 9.944444444444445
+    },
+    {
+      "version": 2,
+      "tier": 2,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 11.666666666666666
+    },
+    {
+      "version": 2,
+      "tier": 3,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 10.027777777777779
+    },
+    {
+      "version": 2,
+      "tier": 4,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 11.444444444444445
+    },
+    {
+      "version": 2,
+      "tier": 5,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 11.222222222222221
+    },
+    {
+      "version": 3,
+      "tier": 0,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 10.11111111111111
+    },
+    {
+      "version": 3,
+      "tier": 1,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 10
+    },
+    {
+      "version": 3,
+      "tier": 2,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 13,
+      "meanTurns": 9.777777777777779
+    },
+    {
+      "version": 3,
+      "tier": 3,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 14,
+      "meanTurns": 11.305555555555555
+    },
+    {
+      "version": 3,
+      "tier": 4,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 12,
+      "meanTurns": 11.694444444444445
+    },
+    {
+      "version": 3,
+      "tier": 5,
+      "battles": 36,
+      "timeouts": 0,
+      "wins": 12,
+      "meanTurns": 10.472222222222221
+    }
+  ],
+  "economy": [
+    {
+      "tier": 1,
+      "playerPeak": 1.01,
+      "coinMultiplier": 1.05,
+      "purchasingPowerWithInflation": 0.8400000000000001,
+      "healingPerCurrencyWithBoth": 0.6300000000000001
+    },
+    {
+      "tier": 2,
+      "playerPeak": 1.03,
+      "coinMultiplier": 1.1,
+      "purchasingPowerWithInflation": 0.8800000000000001,
+      "healingPerCurrencyWithBoth": 0.6600000000000001
+    },
+    {
+      "tier": 3,
+      "playerPeak": 1.06,
+      "coinMultiplier": 1.15,
+      "purchasingPowerWithInflation": 0.9199999999999999,
+      "healingPerCurrencyWithBoth": 0.69
+    },
+    {
+      "tier": 4,
+      "playerPeak": 1.1,
+      "coinMultiplier": 1.2,
+      "purchasingPowerWithInflation": 0.96,
+      "healingPerCurrencyWithBoth": 0.72
+    },
+    {
+      "tier": 5,
+      "playerPeak": 1.15,
+      "coinMultiplier": 1.25,
+      "purchasingPowerWithInflation": 1,
+      "healingPerCurrencyWithBoth": 0.75
+    }
+  ]
+}

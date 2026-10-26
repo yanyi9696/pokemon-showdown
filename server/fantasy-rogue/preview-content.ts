@@ -106,7 +106,7 @@ export function createPreviewContent(): RogueContent {
 		label: '幻想杯肉鸽 · 200 层试玩版',
 		progression: 'mainline7', allowReplacement: true,
 		initialMoney: PreviewBalance.initialMoney, initialBag: { ...PreviewBalance.initialBag },
-		starters: starters.map(name => ({ id: toID(name), set: makeSet(name, 5, 20), availableInitially: true })),
+		starters: starters.map(name => ({ id: toID(name), set: makeSet(name, 5, 15), availableInitially: true })),
 		unlocks: {}, floors: {}, routePools: {}, items: [
 			{ id: 'pokeball', name: '精灵球', kind: 'ball', price: 200, multiplier: 1, icon: 'pokeball' },
 			{ id: 'greatball', name: '超级球', kind: 'ball', price: 600, multiplier: 1.5, icon: 'greatball' },
@@ -131,6 +131,8 @@ export function createPreviewContent(): RogueContent {
 			{ id: 'elixir', name: 'PP 多项小补剂（各招 +10）', kind: 'ether', price: 800, amount: 10, icon: 'elixir' },
 			{ id: 'maxether', name: 'PP 单项全补剂', kind: 'ether', singleMove: true, price: 750, amount: 999, icon: 'ether', shopFloor: 81 },
 			{ id: 'maxelixir', name: 'PP 多项全补剂', kind: 'ether', price: 1600, amount: 999, icon: 'elixir', shopFloor: 141 },
+			{ id: 'rarecandy', name: '神奇糖果', kind: 'rarecandy', price: 0, shopFloor: false, icon: 'rarecandy',
+				description: '使一位存活的伙伴直接提升 1 级，正常学习招式并获得进化提示，不突破其当前等级上限。仅作少量特殊事件谢礼，不能购买。' },
 			{ id: 'expcandyxs', name: '经验糖果 XS（100 经验）', kind: 'candy', price: 100, amount: 100 },
 			{ id: 'expcandys', name: '经验糖果 S（800 经验）', kind: 'candy', price: 600, amount: 800 },
 			{ id: 'expcandym', name: '经验糖果 M（3000 经验）', kind: 'candy', price: 1800, amount: 3000 },
@@ -154,7 +156,7 @@ export function createPreviewContent(): RogueContent {
 		const captured = dex.species.get(name);
 		const first = rogueStarterSpecies(name);
 		if (!content.starters.some(starter => starter.id === first.id)) {
-			content.starters.push({ id: first.id, set: makeEncounterSet(first.name, 5, 20), availableInitially: false });
+			content.starters.push({ id: first.id, set: makeEncounterSet(first.name, 5, 15), availableInitially: false });
 		}
 		content.unlocks[captured.id] = { starter: first.id, captures: rogueCaptureCount(name) };
 	};

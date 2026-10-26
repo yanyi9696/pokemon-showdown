@@ -61,25 +61,21 @@ describe('Fantasy Rogue new companion roles, gifts and independent Z moves', fun
 		const run = party('marnie', [set('Ekans')]);
 		assert(!run.blessings.companions[0].member); // Choosing either trainer remains valid; assignment waits.
 	});
-	it('guarantees a type item at 15 preferences, with Acerola choosing one and no repeat rewards', () => {
+	it('automatically gives the personal gift at 50 affection without replaying the payout', () => {
 		for (const id of Object.keys(COMPANIONS).filter(id => !['sada', 'turo', 'lana', 'olivia'].includes(id))) {
 			const run = party(id, [set()]); run.phase = 'event';
-			const companion = run.blessings.companions[0]; companion.preferences = 14;
+			run.trainerBonds = { [id]: { score: 48, gifts: [], pending: [] } };
 			run.node = { kind: 'event', event: { key: 'gift', id: 'test' } };
 			const options = [{ id: 'home', name: '回乡看看', region: COMPANIONS[id].region }];
 			c.recordCompanionPreference(run, options, 'home', () => 0);
 			const gifts = companionGiftOptions(id);
-			if (id === 'acerola') {
-				assert(companion.giftPending); assert.deepEqual(run.bag, {});
-				assert.equal(c.companionView(run, options)[0].giftOptions.length, 2);
-				c.companionCommand(run, { member: id, value: 'gift:silkscarf' }, () => 0, options);
-				assert.equal(run.bag.silkscarf, 1);
-				assert.throws(() => c.companionCommand(run, { member: id, value: 'gift:spelltag' }, () => 0, options));
-			} else assert.equal(run.bag[gifts[0].id], 1);
+			assert.equal(run.bag[gifts[0].id], 1);
+			assert.deepEqual(run.trainerBonds[id].gifts, [50]);
+			assert.equal(c.companionView(run, options)[0].giftOptions.length, 0);
 			const before = { ...run.bag };
 			c.recordCompanionPreference(run, options, 'home', () => 0);
 			assert.deepEqual(run.bag, before); assert.equal(run.money, 1000);
-			assert(run.notices.some(s => s.includes('同行训练家的赠礼')));
+			assert(run.notices.some(s => s.includes('好感度达到 50')));
 		}
 	});
 	it('consults on encounter and route choices, with homeland and choice type in one consistent sentence', () => {
@@ -99,7 +95,7 @@ describe('Fantasy Rogue new companion roles, gifts and independent Z moves', fun
 		for (const family of new Set(Object.values(COMPANIONS).map(c => c.family))) {
 			const text = blessingDisplay(blessing(family), 50).text;
 			assert(text.includes('遭遇')); assert(!text.includes('也偏好'));
-			if (family !== 'companionai') assert(text.includes('同行训练家的赠礼'));
+			if (family !== 'companionai') assert(text.includes('好感度'));
 		}
 	});
 	it('restricts new experience and floor pickup benefits and prevents replayed pickups', () => {

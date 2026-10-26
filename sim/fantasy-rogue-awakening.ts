@@ -25,6 +25,9 @@ export function robeMultiplier(mon: Pokemon) {
 export function awakeningUpdate(mon: Pokemon) {
 	const battle = mon.battle, state = battle.fantasyRogue;
 	if (!state || !mon.hp) return;
+	const bloodAura = robeActive(mon, 'godrobe') && mon.baseSpecies.baseSpecies === 'Zangoose';
+	if (bloodAura && !mon.volatiles.roguebloodrobe) mon.addVolatile('roguebloodrobe', mon, battle.format);
+	else if (!bloodAura && mon.volatiles.roguebloodrobe) mon.removeVolatile('roguebloodrobe');
 	if (robeActive(mon, 'puregodrobe') && mon.hp <= mon.maxhp / 2 && !mon.m.roguePureHalf) {
 		mon.m.roguePureHalf = true;
 		if (!hasBlessing(mon, 'puregodrobe')?.completed) mon.addVolatile('confusion', mon, battle.format);

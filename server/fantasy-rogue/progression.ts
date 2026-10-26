@@ -16,7 +16,7 @@ const battleDex = Dex.mod('gen9fantasy');
 
 export function createRoguePokemon(set: PokemonSet, boosts: StatsTable, id: string = randomUUID(), stars = 1,
 	modifiers?: RoguePokemon['statModifiers'], difficulty?: RoguePokemon['difficulty']): RoguePokemon {
-	if (difficulty?.tier === 'easy') set = { ...set, ivs: difficultyIVs(set.ivs, 'easy') };
+	if (difficulty?.tier === 'easy') set = { ...set, ivs: difficultyIVs(set.ivs, 'easy', difficulty.floor, difficulty.version) };
 	const battle = new Battle({ formatid: toID(ROGUE_FORMAT), deserialized: true });
 	try {
 		battle.setPlayer('p1', { name: 'Rogue', team: [{ ...structuredClone(set), fantasyRogueStats: { ...boosts },
@@ -178,7 +178,7 @@ export function escapedMember(original: RoguePokemon, current: RoguePokemon): Ro
 
 /** Preserve damage, status, consumed items and PP. A stat rebuild cannot revive a fainted member. */
 export function rebuildMember(mon: RoguePokemon, boosts: StatsTable) {
-	if (mon.difficulty?.tier === 'easy') mon.set.ivs = difficultyIVs(mon.set.ivs, 'easy');
+	if (mon.difficulty?.tier === 'easy') mon.set.ivs = difficultyIVs(mon.set.ivs, 'easy', mon.difficulty.floor, mon.difficulty.version);
 	if (mon.compound) {
 		mon.set.ability = 'Power of Alchemy';
 		mon.abilityPool = [{ id: 'powerofalchemy', hidden: false }];

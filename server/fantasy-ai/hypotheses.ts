@@ -244,9 +244,9 @@ export class HypothesisBuilder {
 			}
 		}
 		if (this.format === 'gen9fantasyrogue' && observation.rogueDifficulty) {
-			const { tier, floor } = observation.rogueDifficulty;
+			const { tier, floor, version } = observation.rogueDifficulty;
 			for (const hypothesis of result) {
-				hypothesis.rogueDifficulty = difficultyScale(tier, floor, observation.ownSide === 'p1');
+				hypothesis.rogueDifficulty = difficultyScale(tier, floor, observation.ownSide === 'p1', version);
 				if (hypothesis.source === 'initial') continue;
 				for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) {
 					if (stat === 'hp' && this.dex.species.get(hypothesis.species).baseStats.hp === 1) continue;

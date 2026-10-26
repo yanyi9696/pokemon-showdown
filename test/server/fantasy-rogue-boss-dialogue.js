@@ -106,7 +106,9 @@ describe('Fantasy Rogue boss openings', function () {
 	});
 	for (const floor of [20, 100]) {
 		it(`saves the companion reunion at gym floor ${floor}, resumes its page and does not replay after defeat`, () => {
-			store.change(user, a => { requestCompanion(a.run, { id: 'lacey', origin: 'event' }); });
+			store.change(user, a => {
+				requestCompanion(a.run, { id: 'lacey', origin: 'event' });
+			});
 			const candidates = trainerBossCandidates(floor, 50);
 			engine = new RogueEngine(store, content, n => n === candidates.length ? candidates.findIndex(c => c.trainer.id === 'clay') : 0);
 			enter(floor);
@@ -129,14 +131,18 @@ describe('Fantasy Rogue boss openings', function () {
 			cmd('battle'); assert.equal(run().phase, 'battle');
 		});
 	}
-	it('does not promise an unavailable gift when all four systems are already unlocked', () => {
+	it('offers a replacement gift when all four systems are already unlocked', () => {
 		store.change(user, a => Object.assign(a.run, { megaUnlocked: true, gmegaUnlocked: true, teraUnlocked: true, zUnlocked: true }));
 		enter(100);
 		const lines = [];
 		while (view()?.key) { lines.push(view().text); next(); }
-		assert(lines.join('').includes('四种系统都已解锁'));
+		assert(lines.join('').includes('四种力量你都已经掌握'));
 		assert(!lines.join('').includes('选一种新的力量'));
-		assert.equal(run().phase, 'ready'); assert(!run().battle);
+		assert.equal(run().phase, 'blessing'); assert(!run().battle);
+		const reward = run().blessings.pending[0];
+		assert.equal(reward.kind, 'systemfallback');
+		cmd('blessingreward', {member: reward.id, value: 'shards'});
+		assert.equal(run().phase, 'ready'); assert.equal(run().blessings.shards, 100);
 	});
 	it('gives Mewtwo an unanswered opening and leaves the separate god challenge untouched', () => {
 		enter(200); const lines = [];

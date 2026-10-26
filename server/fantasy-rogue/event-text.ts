@@ -2,7 +2,9 @@
 import { EXPEDITION_NAMES, EXPEDITION_OPENINGS } from './expedition-text';
 import { SERVICE_TEXT } from './event-service-text';
 import { ACTIVITY_NAMES, ACTIVITY_OPENINGS } from './journey-activity-data';
+import { LUCK_EVENT_NAMES, LUCK_EVENT_TEXT, isLuckEvent } from './luck-event-data';
 export const EVENT_NAMES = {
+	masterballgift: '无垠极境的终极馈赠',
 	...ACTIVITY_NAMES, coverageworkshop: '换个角度出招',
 	greninjatraining: '甲贺忍蛙护林员', greninjareturn: '甲贺忍蛙护林员·修行归来',
 	travellermeeting: '旅途同行',
@@ -14,11 +16,17 @@ export const EVENT_NAMES = {
 	travel: '旅行的回忆', martial: '这是武术的胜利', tutor: '读万卷书，行万里路',
 	bandits: '双面山贼', dice: '骗小孩的把戏', fishing: '永不空军！',
 	fantasytutor: '让想象成为招式', exclusiveclue: '遗落的共鸣', exclusivechallenge: '托付的考验', auction: '落槌之前', legendarytracks: '追寻传说宝可梦的足迹',
+	...LUCK_EVENT_NAMES,
 };
 export type EventID = keyof typeof EVENT_NAMES;
 export function eventOpening(id: EventID, ball = '精灵球'): string[] {
+	if (isLuckEvent(id)) return LUCK_EVENT_TEXT[id].opening;
 	return {
 		...ACTIVITY_OPENINGS,
+		masterballgift: [
+			'高塔的岔路旁，一位联盟研究员将落满星尘的箱子轻轻放下。箱盖上，是你曾在宝可梦研究所见过的精灵球标记。',
+			'「你和伙伴也在寻找新的相遇吗？这是研究所托我保管的一份特别礼物。你想把它留给怎样的相遇？」',
+		],
 		coverageworkshop: ['路边的战术教练正在一块旧黑板上画着属性关系，几只伙伴围成一圈，轮流演示招式。', '「惯用的招式碰上克星，就试着换个角度。」他递来一张研习券，「选一位伙伴练一个非本系攻击吧。只教它本来就能学会的招式，今天用不上也可以留着。」'],
 		greninjatraining: ['森林深处，一道黑影踏着水花从枝间跃出。那是一只小智版甲贺忍蛙，它没有摆出敌意，而是望向你的幻想甲贺忍蛙。',
 			'两者的力量隐隐共鸣。它指向林间的护林记号，邀请你的伙伴跟随自己修行，唤醒尚未掌握的潜能。'],

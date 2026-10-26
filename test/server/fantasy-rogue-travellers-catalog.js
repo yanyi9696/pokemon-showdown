@@ -55,15 +55,22 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 		for (const p of Object.values(TRAVELLERS)) {
 			const e = entries.find(c => c.portrait === p.id && c.roles);
 			assert(e && e.roles.includes('companion'), p.id);
-			assert(e.text.includes('15') && e.text.includes(p.gifts[0].name), p.id);
+			assert(e.text.includes('50') && e.text.includes(p.gifts[0].name), p.id);
 		}
 		assert.deepEqual(rogueCodex(undefined, 'guide').guide.beginner, BEGINNER_GUIDE);
 		const account = {captures: {}, cards: [], adventures: 0};
 		assert(needsOnboarding(account));
-		account.onboardingSeen = true; assert(!needsOnboarding(account));
+		account.onboardingSeen = true; assert(needsOnboarding(account));
+		account.onboardingVersion = require('../../dist/server/fantasy-rogue/beginner-guide').BEGINNER_GUIDE_VERSION;
+		assert(!needsOnboarding(account));
+		account.onboardingVersion = 'older-guide'; account.adventures = 100;
+		assert(needsOnboarding(account), 'veterans acknowledge changed guide content');
 		delete account.onboardingSeen; account.run = run(); assert(!needsOnboarding(account));
+		account.run.phase = 'complete'; account.pendingClear = {};
+		assert(!needsOnboarding(account), 'finish the current clear before prompting');
+		delete account.pendingClear; assert(needsOnboarding(account));
 		assert(BEGINNER_GUIDE.some(e => e.text.includes('乌栗与丹瑜各有一次')));
-		assert(BEGINNER_GUIDE.some(e => e.text.includes('15 次偏好选择')));
+		assert(BEGINNER_GUIDE.some(e => e.text.includes('50') && e.title.includes('好感度')));
 	});
 	it('shares two slots across blessing, rival, Carmine and event companions and preserves departed rewards', () => {
 		const r = run(); r.rival = {id: 'kieran', affection: 9, completed: 4, lastFloor: 40, carmine: {affection: 8}};
@@ -128,12 +135,12 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 		r.rival = {id: 'kieran', completed: 4, affection: 9};
 		t.requestCompanion(r, {id: 'kieran', origin: 'rival', until: 66});
 		const options = [{id: 'meet', name: '接近宝可梦', preference: 'pokemon'}, {id: 'fight', name: '认真对战', preference: 'battle'}];
-		for (let i = 0; i < 15; i++) {
+		for (let i = 0; i < 25; i++) {
 			r.node.event = {key: 'choice' + i, id: 'travellermeeting'};
 			recordCompanionPreference(r, options, 'meet', () => 0);
 			recordCompanionPreference(r, options, 'meet', () => 0);
 		}
-		assert.equal(r.socialCompanions[0].preferences, 15); assert.equal(r.bag.hardstone, 1);
+		assert.equal(r.socialCompanions[0].preferences, 25); assert.equal(r.trainerBonds.brock.score, 50); assert.equal(r.bag.hardstone, 1);
 		assert(!r.socialCompanions.some(c => c.id === 'kieran'));
 		t.requestCompanion(r, {id: 'kieran', origin: 'rival', permanent: true});
 		t.recordSocialPreference(r, options, 'fight', 'newchoice');

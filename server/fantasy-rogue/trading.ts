@@ -9,6 +9,7 @@ import { CANDY_SHOP, restCandyOffer } from './early-balance';
 import { beginAuction } from './auction';
 import { BUYBACK_FLOOR } from './buyback';
 import { nextShopGrade } from './shopping-upgrade';
+import { collapseShopPrice } from './collapse';
 
 const dex = Dex.mod('gen9fantasy');
 export const TRADE_NAMES = { buyback: '原价回收摊位', mushroom: '蘑菇收藏家', mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '落槌之前', balls: '宝可梦球商店', crowns: '王冠商店' };
@@ -155,7 +156,8 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 }
 
 export function shopStock(content: RogueContent, run?: RogueRun): RogueItem[] {
-	if (run?.node?.kind === 'trade') return run.node.trade?.stock.filter(item => item.remaining > 0) || [];
+	if (run?.node?.kind === 'trade') return (run.node.trade?.stock.filter(item => item.remaining > 0) || [])
+		.map(item => ({ ...item, price: collapseShopPrice(run, item.price) }));
 	const allItems = spiritItems(content, run);
 	const stock = allItems.filter(item => spiritShopAvailable(item, run ? nextShopGrade(run,
 		allItems.filter(i => i.kind === item.kind && typeof i.shopFloor === 'number').map(i => i.shopFloor as number)) : 1))
@@ -170,5 +172,5 @@ export function shopStock(content: RogueContent, run?: RogueRun): RogueItem[] {
 			if (index >= 0) stock[index] = candy; else stock.push(candy);
 		}
 	}
-	return stock;
+	return stock.map(item => ({ ...item, price: collapseShopPrice(run, item.price) }));
 }

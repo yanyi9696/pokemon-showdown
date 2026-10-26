@@ -6,6 +6,10 @@ function canTakeMegaStone(item: Item, pokemon: Pokemon) {
 }
 
 export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
+	primariumz: {
+		inherit: true,
+		itemUser: ['Primarina', 'Primarina-Fantasy'],
+	},
 	// 新增气场爆发的相关原版Z纯晶
 	firiumz: {
         inherit: true, // 继承原火Z的所有属性

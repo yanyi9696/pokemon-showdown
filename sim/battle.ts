@@ -15,6 +15,7 @@
  */
 
 import { difficultyScale, memberDifficultyScale } from './rogue-difficulty';
+import { collapseBoost, collapseBlockBoost, collapseSteadfast, collapseEnvironment, collapseIndirectDamage, recordCollapseDamage } from './rogue-collapse';
 import { Dex, toID } from './dex';
 import { recordEvolutionDamage } from './rogue-evolution-progress';
 import { commitNumberChoices } from './rogue-number-blessings';
@@ -639,7 +640,7 @@ export class Battle {
 			return relayVar;
 		}
 		if (eventid !== 'End' && effect.effectType === 'Ability' && (target instanceof Pokemon) &&
-			(target.ignoringAbility() || target.m.rogueFusionSpentShell === effect.id)) {
+			(target.ignoringAbility(effect.id) || target.m.rogueFusionSpentShell === effect.id)) {
 			this.debug(eventid + ' handler suppressed by Gastro Acid or Neutralizing Gas');
 			return relayVar;
 		}
@@ -926,7 +927,7 @@ export class Battle {
 			} else if (
 				eventid !== 'End' && effect.effectType === 'Ability' &&
 				(effectHolder instanceof Pokemon) &&
-				(effectHolder.ignoringAbility() || effectHolder.m.rogueFusionSpentShell === effect.id)
+				(effectHolder.ignoringAbility(effect.id) || effectHolder.m.rogueFusionSpentShell === effect.id)
 			) {
 				if (eventid !== 'Update') {
 					this.debug(eventid + ' handler suppressed by Gastro Acid or Neutralizing Gas');
@@ -2028,9 +2029,11 @@ export class Battle {
 		if (!target?.hp) return 0;
 		if (!target.isActive) return false;
 		if (this.gen > 5 && !target.side.foePokemonLeft()) return false;
+		const collapseBefore = { ...target.boosts };
 		boost = this.runEvent('ChangeBoost', target, source, effect, { ...boost });
 		boost = target.getCappedBoost(boost);
 		boost = this.runEvent('TryBoost', target, source, effect, { ...boost });
+		collapseBlockBoost(target, source, boost);
 		let success = null;
 		let boosted = isSecondary;
 		let boostName: BoostID;
@@ -2080,6 +2083,7 @@ export class Battle {
 			}
 		}
 		this.runEvent('AfterBoost', target, source, effect, boost);
+		collapseBoost(target, collapseBefore);
 		if (success) {
 			if (Object.values(boost).some(x => x > 0)) target.statsRaisedThisTurn = true;
 			if (Object.values(boost).some(x => x < 0)) target.statsLoweredThisTurn = true;
@@ -2126,6 +2130,8 @@ export class Battle {
 			}
 			if (targetDamage !== 0) targetDamage = this.clampIntRange(targetDamage, 1);
 
+			targetDamage = collapseIndirectDamage(targetDamage, target, source, effect);
+			targetDamage = collapseSteadfast(targetDamage, target, effect);
 			if (this.gen <= 1) {
 				if (this.dex.currentMod === 'gen1stadium' ||
 					!['recoil', 'drain', 'leechseed'].includes(effect.id) && effect.effectType !== 'Status') {
@@ -2160,6 +2166,7 @@ export class Battle {
 				break;
 			}
 
+			recordCollapseDamage(target, source, effect, targetDamage);
 			if (targetDamage && effect.effectType === 'Move') {
 				if (this.gen <= 1 && effect.recoil && source) {
 					if (this.dex.currentMod !== 'gen1stadium' || target.hp > 0) {
@@ -2272,6 +2279,7 @@ export class Battle {
 			break;
 		}
 		if (target.fainted) this.faint(target);
+		recordCollapseDamage(target, source, effect, damage);
 		return damage;
 	}
 
@@ -2342,7 +2350,7 @@ export class Battle {
 			denominator = numerator[1];
 			numerator = numerator[0];
 		}
-		const nextMod = this.trunc(numerator * 4096 / denominator);
+		const nextMod = this.trunc(collapseEnvironment(this, numerator / denominator) * 4096);
 		this.event.modifier = ((previousMod * nextMod + 2048) >> 12) / 4096;
 	}
 
@@ -3340,8 +3348,8 @@ export class Battle {
 				}
 			}
 			if (this.fantasyRogue?.difficulty && !this.fantasyRogue.duel) {
-				const { tier, floor } = this.fantasyRogue.difficulty;
-				for (const set of team) set.fantasyRogueDifficulty = difficultyScale(tier, floor, slot === 'p2' || slot === 'p4');
+				const { tier, floor, version } = this.fantasyRogue.difficulty;
+				for (const set of team) set.fantasyRogueDifficulty = difficultyScale(tier, floor, slot === 'p2' || slot === 'p4', version);
 			}
 			const rogueSide = slot === 'p1' ? this.fantasyRogue : this.fantasyRogue?.duel;
 			if (rogueSide) {

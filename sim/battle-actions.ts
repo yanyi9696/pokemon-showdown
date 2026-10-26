@@ -3,7 +3,11 @@ import { canRogueTerastallize, canRogueSystem } from './fantasy-rogue';
 import { queueRogueFutureAttack } from './fantasy-rogue-spirits';
 import { blessingExtraZ, spendBlessingZ } from './fantasy-rogue-blessings';
 import { hasRogueStatus } from './fantasy-rogue-status';
+import { echoDamage } from './rogue-echo';
 import { ghidorahActive } from './rogue-ghidorah';
+import { beginCollapseMove, endCollapseMove, collapseCriticalMultiplier, collapseDirectDamage,
+	collapseOHKO, collapseSecondaries, finishCollapseSecondaries, collapseSecondaryEffect,
+	clearCollapseVigilance, collapseBoost } from './rogue-collapse';
 
 const CHOOSABLE_TARGETS = new Set(['normal', 'any', 'adjacentAlly', 'adjacentAllyOrSelf', 'adjacentFoe']);
 
@@ -104,6 +108,7 @@ export class BattleActions {
 			}
 
 			// will definitely switch out at this point
+			clearCollapseVigilance(oldActive);
 
 			this.battle.singleEvent('End', oldActive.getAbility(), oldActive.abilityState, oldActive);
 			this.battle.singleEvent('End', oldActive.getItem(), oldActive.itemState, oldActive);
@@ -135,6 +140,7 @@ export class BattleActions {
 		}
 		pokemon.isActive = true;
 		side.active[pos] = pokemon;
+		if ((sourceEffect as Move)?.selfSwitch === 'copyvolatile') collapseBoost(pokemon, {});
 		pokemon.activeTurns = 0;
 		pokemon.activeMoveActions = 0;
 		for (const moveSlot of pokemon.moveSlots) {
@@ -374,9 +380,14 @@ export class BattleActions {
 	) {
 		pokemon.moveThisTurnResult = undefined;
 		const oldMoveResult: boolean | null | undefined = pokemon.moveThisTurnResult;
-		const moveResult = this.useMoveInner(move, pokemon, options);
-		if (oldMoveResult === pokemon.moveThisTurnResult) pokemon.moveThisTurnResult = moveResult;
-		return moveResult;
+		beginCollapseMove(this.battle);
+		try {
+			const moveResult = this.useMoveInner(move, pokemon, options);
+			if (oldMoveResult === pokemon.moveThisTurnResult) pokemon.moveThisTurnResult = moveResult;
+			return moveResult;
+		} finally {
+			endCollapseMove(this.battle);
+		}
 	}
 	useMoveInner(
 		moveOrMoveName: Move | string, pokemon: Pokemon, options?: {
@@ -440,7 +451,9 @@ export class BattleActions {
 			target = this.battle.getRandomTarget(pokemon, move);
 		}
 		move = this.battle.runEvent('ModifyType', pokemon, target, move, move);
+		collapseSecondaries(move, pokemon);
 		move = this.battle.runEvent('ModifyMove', pokemon, target, move, move);
+		finishCollapseSecondaries(move);
 		if (baseTarget !== move.target) {
 			// Adjust again
 			target = this.battle.getRandomTarget(pokemon, move);
@@ -695,6 +708,7 @@ export class BattleActions {
 	hitStepAccuracy(targets: Pokemon[], pokemon: Pokemon, move: ActiveMove) {
 		const hitResults = [];
 		for (const [i, target] of targets.entries()) {
+			if (collapseOHKO(target, move)) { hitResults[i] = false; continue; }
 			this.battle.activeTarget = target;
 			// calculate true accuracy
 			let accuracy = move.accuracy;
@@ -1352,7 +1366,8 @@ export class BattleActions {
 				if (!isSecondary && moveData.self.boosts) {
 					const secondaryRoll = this.battle.random(100);
 					if (typeof moveData.self.chance === 'undefined' || secondaryRoll < moveData.self.chance) {
-						this.moveHit(source, source, move, moveData.self, isSecondary, true);
+						collapseSecondaryEffect(source, source, moveData.self,
+							() => this.moveHit(source, source, move, moveData.self!, isSecondary, true));
 					}
 					if (!move.multihit) move.selfDropped = true;
 				} else {
@@ -1374,7 +1389,8 @@ export class BattleActions {
 				const chance = secondary.chance !== undefined && secondaryOverflow ? secondary.chance % 256 : secondary.chance;
 				if (chance === undefined || (this.battle.fantasyRogue?.spirit?.id === 'zygardeorder' ?
 					chance >= 50 : secondaryRoll < chance)) {
-					this.moveHit(target, source, move, secondary, true, isSelf);
+					collapseSecondaryEffect(target, source, secondary,
+						() => this.moveHit(target, source, move, secondary, true, isSelf));
 				}
 			}
 		}
@@ -1623,11 +1639,14 @@ export class BattleActions {
 		}
 
 		if (move.ohko) return target.maxhp;
-		if (move.damageCallback) return move.damageCallback.call(this.battle, source, target);
+		if (move.damageCallback) {
+			const damage = move.damageCallback.call(this.battle, source, target);
+			return typeof damage === 'number' ? echoDamage(damage, target, source, move) : damage;
+		}
 		if (move.damage === 'level') {
-			return source.level;
+			return echoDamage(source.level, target, source, move);
 		} else if (move.damage) {
-			return move.damage;
+			return echoDamage(move.damage, target, source, move);
 		}
 
 		const category = this.battle.getCategory(move);
@@ -1771,7 +1790,7 @@ export class BattleActions {
 		// crit - not a modifier
 		const isCrit = target.getMoveHitData(move).crit;
 		if (isCrit) {
-			baseDamage = tr(baseDamage * (move.critModifier || (this.battle.gen >= 6 ? 1.5 : 2)));
+			baseDamage = tr(baseDamage * collapseCriticalMultiplier(target, move.critModifier || (this.battle.gen >= 6 ? 1.5 : 2)));
 		}
 
 		// random factor - also not a modifier
@@ -1848,6 +1867,8 @@ export class BattleActions {
 
 		// Final modifier. Modifiers that modify damage after min damage check, such as Life Orb.
 		baseDamage = this.battle.runEvent('ModifyDamage', pokemon, target, move, baseDamage);
+		baseDamage = collapseDirectDamage(baseDamage, pokemon, target, move);
+		baseDamage = echoDamage(baseDamage, target, pokemon, move);
 
 		if (move.isZOrMaxPowered && target.getMoveHitData(move).zBrokeProtect) {
 			baseDamage = this.battle.modify(baseDamage, 0.25);

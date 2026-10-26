@@ -108,14 +108,14 @@ describe('Fantasy Rogue companion gifts, railgun and rule breaker', function () 
 		}
 		const run = party([set()]); run.phase = 'event'; grantCompanion(run, 'lana');
 		run.node = { kind: 'event', event: { id: 'fishing', key: 'fish', stage: 'choice' } };
-		for (let i = 0; i < 15; i++) {
+		for (let i = 0; i < 25; i++) {
 			run.node.event = { id: 'fishing', key: 'fish' + i, stage: 'choice' };
 			recordCompanionPreference(run, options, 'fishstart', () => 0);
 			recordCompanionPreference(run, options, 'fishstart', () => 0);
 		}
-		assert.equal(run.blessings.companions.find(c => c.id === 'lana').preferences, 15);
+		assert.equal(run.blessings.companions.find(c => c.id === 'lana').preferences, 25);
 		assert.equal(run.bag.mysticwater, 1); assert.equal(run.money, 0);
-		assert(run.notices.some(n => n.includes('同行训练家的赠礼')));
+		assert(run.notices.some(n => n.includes('好感度达到 50')));
 	});
 	it('grants Poppy candy only after reward regions once and preserves the stated Guzma quantity', () => {
 		const run = party([set('Scizor'), set('Magnemite'), set('Eevee')]);

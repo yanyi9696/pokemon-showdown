@@ -1,3 +1,4 @@
+import { masterBallEventView } from './master-ball';
 import { grantCoverage } from './coverage';
 import { rivalView, chooseRival, settleRival, type RivalEvent } from './rivals';
 import { activityEligible, activityWeight, isJourneyActivity, beginJourneyActivity, journeyActivityView, chooseJourneyActivity, settleJourneyActivity, type JourneyActivity } from './journey-activities';
@@ -5,6 +6,8 @@ import { greninjaEvent, greninjaEventEligible, greninjaEventView, chooseGreninja
 import { beginSocialEvent, socialCandidates, socialEventView, chooseSocialEvent, settleSocialEvent, type SocialEvent } from './social-events';
 import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView, chooseExpedition, settleExpedition, type ExpeditionEvent } from './expedition-events';
 import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
+import { isLuckEvent } from './luck-event-data';
+import { luckEventEligible, luckEventView, chooseLuckEvent, type LuckEventResult } from './luck-events';
 import { eligibleRematches, prepareRematch, rematchView, chooseRematch } from './companion-rematches';
 import { policeView, choosePoliceRegion, settlePoliceBattle, type PoliceEvent } from './police-events';
 import { honeymoonEligible, prepareHoneymoon, honeymoonView, chooseHoneymoon, settleHoneymoon } from './honeymoon';
@@ -21,6 +24,7 @@ import { Dex } from '../../sim/dex';
 import type { RogueAccount, RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
+import { legendaryEventScale } from './encounter-quality';
 import { lowerToEligibleStage } from './evolution';
 import { eventRewardBudget, eventCost, journeyIncomeMultiplier } from './early-balance';
 import { eventSpeciesPool, themedEventTeam } from './event-teams';
@@ -53,6 +57,7 @@ export interface RogueEvent {
 	exclusive?: ExclusiveEvent;
 	fragmentOffer?: EventFragmentOffer;
 	fishing?: FishingState;
+	luck?: LuckEventResult;
 	trainingAidGranted?: boolean;
 	trainingAidBlocked?: boolean;
 	trainingAidBattleWin?: boolean;
@@ -101,7 +106,7 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && (id !== 'coverageworkshop' || run.floor >= 60) && activityEligible(run, id) && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && luckEventEligible(run.floor, id) && (id !== 'coverageworkshop' || run.floor >= 60) && activityEligible(run, id) && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
 		!['rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
 		(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
 		(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
@@ -116,11 +121,21 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 		return !old || run.floor - old.floor >= (limited ? 25 : 8) && history.length - index - 1 >= (limited ? 4 : 2);
 	});
 	const pool = unseen.length ? unseen : cooled.length ? cooled : candidates;
+	const needsClue = candidates.includes('exclusiveclue');
+	if (needsClue && !pool.includes('exclusiveclue')) pool.push('exclusiveclue');
+	// The fourth eligible event area offers a clue even while other unseen events remain.
+	if (needsClue && (run.exclusiveEventMisses || 0) >= 3) {
+		run.exclusiveEventMisses = 0;
+		return 'exclusiveclue';
+	}
 	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
-	const weights = pool.map(id => Math.max(1, Math.round(activityWeight(id) * (['forest', 'identityquiz'].includes(id) ? 1.3 : 1) * (id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
+	const weights = pool.map(id => Math.max(1, Math.round((id === 'exclusiveclue' ? 6 : 1) * legendaryEventScale(run, id) * activityWeight(id) * (['forest', 'identityquiz'].includes(id) ? 1.3 : 1) * (id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
 		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
-	return pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
+	const chosen = pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
+	if (chosen === 'exclusiveclue' || !neededExclusiveItems(run).length) run.exclusiveEventMisses = 0;
+	else if (needsClue) run.exclusiveEventMisses = (run.exclusiveEventMisses || 0) + 1;
+	return chosen;
 }
 
 export function forestTeams(level: number, random: RogueRandom) {
@@ -248,6 +263,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		rewardReceipt(run, before); return;
 	}
 	if (isJourneyActivity(event.id)) { chooseJourneyActivity(account, run, content, random, choice!); rewardReceipt(run, before); return; }
+	if (isLuckEvent(event.id)) { chooseLuckEvent(run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.rival) { chooseRival(run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (greninjaEvent(event.id)) {
 		chooseGreninjaEvent(run, choice!); rewardReceipt(run, before); return;
@@ -313,7 +329,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 			if (roll < 30) supplies(run, content, random, eventBudget(run.floor, 0.4));
 			outcome(run, [roll < 30 ? EVENT_TEXT.leaveBallGift : EVENT_TEXT.leaveBall]);
 		} else if (roll < 40) {
-			const mon = drawBlessingGift(run, content, random, {
+			const mon = drawBlessingGift(run, content, random, { eliteIVs: false,
 				level: Math.max(3, ordinaryLevel(run.floor) - 3), eligibleStage: true,
 			});
 			gift(account, run, content, mon, EVENT_NAMES[event.id]);
@@ -324,7 +340,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		} else if (roll < 70) {
 			outcome(run, [EVENT_TEXT.ballGrumpy]);
 		} else {
-			const mon = drawBlessingGift(run, content, random, { level, eligibleStage: true });
+			const mon = drawBlessingGift(run, content, random, { eliteIVs: false, level, eligibleStage: true });
 			// Wild shiny probability is rolled once by prepareSpiritNode, not again as a gift.
 			mon.set.shiny = false;
 			prepareBattle(run, [mon.set], 3, EVENT_TEXT.ballFight, true);
@@ -473,8 +489,12 @@ export function settleEventBattle(
 }
 
 export function eventView(run: RogueRun) {
+	const master = masterBallEventView(run);
+	if (master) return master;
 	const event = run.node?.event;
 	if (!event) return undefined;
+	if (isLuckEvent(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id],
+		paragraphs: event.result || eventOpening(event.id), ...luckEventView(run) };
 	if (event.id === 'coverageworkshop') return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id],
 		paragraphs: event.result || eventOpening(event.id), options: event.settled ? [] : [{id: 'study', name: '和教练讨论队伍的薄弱环节', text: '领取一份补盲研习，可在战斗外自选一个合法的非本系攻击招式。', disabled: false}] };
 	if (isJourneyActivity(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...journeyActivityView(run) };

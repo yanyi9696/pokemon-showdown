@@ -1,5 +1,7 @@
+import { echoPower, echoPowerMultiplier } from './rogue-echo';
 import { awakeningUpdate, awakeningLethal, spiralLethal, spiralActive, spiralPoints, gainSpiral, robeMultiplier, bloodRequest, empowerBloodMove } from './fantasy-rogue-awakening';
 import { robeMember } from './rogue-awakening';
+import { sniperCriticalKO, sniperIgnoresDefense, sniperTrainingProgress, SNIPER_TRAINING_KOS } from './rogue-sniper';
 import { petSpecies, dogBoostCount } from './rogue-pets';
 import { numberStatMultiplier, recordNumberThreshold } from './rogue-number-blessings';
 import { spindaEntry, spindaHit, spindaDamage } from './rogue-spinda';
@@ -80,6 +82,8 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 	}
 	const evo = blessingEffects(pokemon)?.evolution;
 	if (evo?.type === move.type && evo.power) add('宝可梦属性进化', 1 + evo.power);
+	// Actual echo power is applied after the integer blessing result in onBasePower.
+	if (preview && echoPowerMultiplier(pokemon, move) > 1) add('崩坏回响', echoPowerMultiplier(pokemon, move));
 	return modifiers;
 }
 export function rogueDamageSources(mon: Pokemon, move: Move) {
@@ -128,6 +132,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	const card = mon.side.id === 'p1' && state.mentorCard;
 	const stats = rogueStatSnapshot(mon);
 	const statSources: string[] = [];
+	if (mon.side.id === 'p1' && !state.duel && state.echo?.guard) statSources.push('【崩坏回响】受到敌方招式的直接伤害 ×0.9');
 	if (mon.m.rogueNumber?.turn === mon.battle.turn) {
 		const names: Record<string, string> = { atk: '攻击', def: '防御', spa: '特攻', spd: '特防', spe: '速度', all: '五项能力' };
 		statSources.push(`【${mon.m.rogueNumber.factor === 5 ? '超大数字' : '大数字'}】本回合${names[mon.m.rogueNumber.stat]} ×${mon.m.rogueNumber.factor}，已计入当前能力`);
@@ -174,7 +179,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 		if (move.exists && !previewMoves.some(known => known.id === move.id)) previewMoves.push(move);
 	}
 	const moves = Object.fromEntries(previewMoves.map(move => {
-		const typed = !!saved.tonics?.poison || !!effects?.evolution?.power ||
+		const typed = !!saved.tonics?.poison || !!effects?.evolution?.power || !!state.echo?.types.length ||
 			!!effects?.owned.some(b => ['typelink', 'hoopa'].includes(b.family));
 		return [move.id, { power: roguePowerModifiers(mon, move, true), damage: rogueDamageSources(mon, move),
 			...(move.id === companionZ?.move ? { name: companionZ.name, source: companionZ.source } : {}),
@@ -430,7 +435,7 @@ export function blessingLeave(mon: Pokemon, fainted = false) {
 		team.inheritance = mon.moveSlots.filter(slot => ids.has(slot.id)).map(slot => ({ ...slot }));
 	}
 }
-export function blessingKO(battle: Battle, target: Pokemon, source?: Pokemon | null) {
+export function blessingKO(battle: Battle, target: Pokemon, source?: Pokemon | null, effect?: Effect | null) {
 	if (!battle.fantasyRogue) return;
 	blessingLeave(target, true);
 	if (!source || source.side === target.side) return;
@@ -459,7 +464,13 @@ export function blessingKO(battle: Battle, target: Pokemon, source?: Pokemon | n
 	}
 	if (source.side.id === 'p1' && !progress.kos.some(ko => ko.id === id) &&
 		!battle.fantasyRogue.blessingDefeated?.includes(id)) {
-		progress.kos.push({ id, member: source.set.fantasyRogueId! });
+		const sniper = sniperCriticalKO(target, source, effect) && sniperTrainingProgress(source) < SNIPER_TRAINING_KOS;
+		progress.kos.push({ id, member: source.set.fantasyRogueId!, ...(sniper ? { sniper: true } : {}) });
+		if (sniper) {
+			const count = sniperTrainingProgress(source);
+			battle.add('-message', `【老练狙神】${source.name}的要害射击训练：${count}／${SNIPER_TRAINING_KOS}。` +
+				(count === SNIPER_TRAINING_KOS ? '射击类招式可无视 20% 防御与特防！' : ''));
+		}
 	}
 }
 export function blessingProgress(battle: Battle) {
@@ -641,8 +652,14 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onBeforeSwitchOut(pokemon) { blessingLeave(pokemon); },
 	onModifyAtk(atk, pokemon) { return blessingModifyStat(atk, pokemon, 'atk'); },
 	onModifySpA(spa, pokemon) { return blessingModifyStat(spa, pokemon, 'spa'); },
-	onModifyDef(def, pokemon) { return blessingModifyStat(def, pokemon, 'def'); },
-	onModifySpD(spd, pokemon) { return blessingModifyStat(spd, pokemon, 'spd'); },
+	onModifyDef(def, pokemon, source, move) {
+		if (sniperIgnoresDefense(pokemon, source, move)) this.chainModify(0.8);
+		return blessingModifyStat(def, pokemon, 'def');
+	},
+	onModifySpD(spd, pokemon, source, move) {
+		if (sniperIgnoresDefense(pokemon, source, move)) this.chainModify(0.8);
+		return blessingModifyStat(spd, pokemon, 'spd');
+	},
 	onModifySpe(spe, pokemon) { return blessingModifyStat(spe, pokemon, 'spe'); },
 	onModifyMove(move, pokemon) {
 		if (pokemon.side.id === 'p2' && this.fantasyRogue?.escortCount) delete move.selfSwitch;
@@ -702,7 +719,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 	onBasePower(basePower, pokemon, target, move) {
 		let result = basePower;
 		for (const modifier of roguePowerModifiers(pokemon, move)) result = result * (modifier.factor || 1) + (modifier.add || 0);
-		return Math.floor(result + 1e-9);
+		return echoPower(Math.floor(result + 1e-9), pokemon, move);
 	},
 	onModifyDamage(damage, source, target, move) {
 		// Apply boosts before the lethal-damage hooks (Focus Sash / Sturdy). Fixed damage bypasses this event.

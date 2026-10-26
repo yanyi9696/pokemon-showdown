@@ -1,3 +1,4 @@
+import { gainAffection, AFFECTION_RULES } from './affection';
 import { randomUUID } from 'crypto';
 import { RIVALS } from './rival-data';
 import { TRAVELLERS } from './traveller-profiles';
@@ -22,6 +23,7 @@ export function beginSocialEvent(run: RogueRun, random: RogueRandom) {
 	const person = pool[random(pool.length)];
 	run.node!.event = { id: 'travellermeeting', key: randomUUID(), stage: 'choice',
 		social: { trainer: person.id, step: 'talk', affinity: 0 } };
+	gainAffection(run, person.id, AFFECTION_RULES.meeting, 'meeting:' + run.node!.event.key);
 	run.node!.name = `旅途同行 · ${person.name}`;
 	run.node!.reward = { money: 0, items: {} };
 	run.node!.encounters = []; run.encounter = 0; run.phase = 'event';
@@ -65,7 +67,9 @@ export function chooseSocialEvent(run: RogueRun, choice: string, random: RogueRa
 		requestCompanion(run, { id: person.id, origin: 'event' });
 		result(run, person.chat?.join || '那就一起走吧。名额满了的话，也请认真和原来的伙伴道别。'); return;
 	}
-	if (choice === person.preference) social.affinity++;
+	if (choice === person.preference) {
+		social.affinity++; gainAffection(run, person.id, AFFECTION_RULES.response, 'response:' + run.floor + ':' + social.step);
+	}
 	if (social.step === 'talk' && choice !== 'battle') {
 		social.step = 'reply'; event.result = [person.chat?.reply || (social.affinity ? '「我也这么想。那你希望接下来怎样旅行呢？」' : '「原来是这样。我也想听听你对伙伴和旅途的想法。」')]; return;
 	}
@@ -89,6 +93,7 @@ export function chooseSocialEvent(run: RogueRun, choice: string, random: RogueRa
 export function settleSocialEvent(run: RogueRun, won: boolean) {
 	const event = run.node!.event!, social = event.social!, person = TRAVELLERS[social.trainer];
 	healNarrativeParty(run); event.trainingAidBlocked = !won;
+	if (won) gainAffection(run, person.id, AFFECTION_RULES.duel, 'duel:' + run.floor);
 	if (won && person.preference === 'battle') {
 		event.key = randomUUID(); event.stage = 'choice'; social.step = 'invite';
 		run.phase = 'event';

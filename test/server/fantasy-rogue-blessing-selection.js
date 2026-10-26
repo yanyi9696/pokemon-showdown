@@ -2,7 +2,7 @@
 const assert = require('assert').strict;
 const {
 	blessingQualityWeights, drawBlessingTier, hasPrayerQualityBonus, canOfferTopClearMind,
-	guaranteesTopClearMind, createBlessingRound, refreshBlessingOption, chooseBlessingOption, blessingSlotTier,
+	guaranteesTopClearMind, createBlessingRound, refreshBlessingOption, chooseBlessingOption, blessingSlotTier, rerollBlessingQuality,
 } = require('../../dist/server/fantasy-rogue/blessing-selection');
 
 describe('Fantasy Rogue blessing selection rules', () => {
@@ -12,6 +12,28 @@ describe('Fantasy Rogue blessing selection rules', () => {
 		id: `${tier}${i}`, family: `${tier}${i}`, tier,
 	})));
 	pool.push({ id: 'topclearmind', family: 'topclearmind', tier: 'gold' });
+	it('replaces batch quality while retaining per-slot budgets and offered-card history', () => {
+		const round = createBlessingRound(ordinary, pool, () => 0);
+		const spent = refreshBlessingOption(round, 0, pool, () => 0);
+		const changed = rerollBlessingQuality(spent, ordinary, pool, () => 0);
+		assert.equal(changed.tier, 'gold'); assert.deepEqual(changed.options.map(o => o.refreshes), [0, 1, 1]);
+		assert(spent.idsSeen.every(id => changed.idsSeen.includes(id)));
+		assert.deepEqual(spent.options.map(o => o.refreshes), [0, 1, 1]);
+		assert.throws(() => rerollBlessingQuality(chooseBlessingOption(round, 0), ordinary, pool, () => 0), /领取/);
+	});
+	it('refuses fixed-quality spirits and retains Jirachi and Victini rules', () => {
+		for (const spirit of ['gholdengo', 'silvally', 'terapagos', 'necrozma']) {
+			const context = {...ordinary, spirit}; const round = createBlessingRound(context, pool, () => 0);
+			assert.throws(() => rerollBlessingQuality(round, context, pool, () => 0), /固定/);
+		}
+		for (const spirit of ['jirachi', 'victini']) {
+			const context = {...ordinary, spirit}, round = createBlessingRound(context, pool, () => 0);
+			const changed = rerollBlessingQuality(round, context, pool, () => 0);
+			assert.equal(changed.options.length, spirit === 'jirachi' ? 2 : 3);
+			assert.equal(changed.remaining, spirit === 'jirachi' ? 2 : 1);
+			assert(changed.options.every(o => o.refreshes === (spirit === 'victini' ? 2 : 1)));
+		}
+	});
 	function countTiers(context) {
 		const counts = { silver: 0, gold: 0, prismatic: 0, mixed: 0 };
 		for (let i = 0; i < 100; i++) counts[drawBlessingTier(context, () => i)]++;
@@ -20,6 +42,9 @@ describe('Fantasy Rogue blessing selection rules', () => {
 	it('gives mixed offers 28 percent while retaining a 60 percent all-gold prayer chance', () => {
 		assert.deepEqual(countTiers(ordinary), { silver: 24, gold: 26, prismatic: 22, mixed: 28 });
 		assert.deepEqual(countTiers(prayer), { silver: 20, gold: 60, prismatic: 10, mixed: 10 });
+		assert.deepEqual(countTiers({floor: 50, prayerFloor: 1, prayerPartyChanged: false}), countTiers(prayer));
+		assert(guaranteesTopClearMind({floor: 50, prayerFloor: 1, prayerPartyChanged: false}, 'gold'));
+		assert(!hasPrayerQualityBonus({floor: 100, prayerFloor: 1, prayerPartyChanged: false}));
 		assert.deepEqual(countTiers({ ...prayer, floor: 150 }), countTiers(ordinary));
 		assert.deepEqual(countTiers({ ...prayer, floor: 150, prayerFloor: 100 }), countTiers(prayer));
 		assert.deepEqual(countTiers({ ...prayer, prayerPartyChanged: true }), countTiers(ordinary));

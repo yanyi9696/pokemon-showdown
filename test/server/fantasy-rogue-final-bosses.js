@@ -203,7 +203,7 @@ describe('Fantasy Rogue post-clear snapshot and optional challenge settlement', 
 			assert.equal(account().run.phase, 'complete'); assert.equal(account().run.postgame.stage, won ? 'won' : 'lost');
 			assert.deepEqual(account().cards[0], card); assert.deepEqual(account().run.team, beforeChallenge);
 			assert.deepEqual(card.snapshot.team, beforeChallenge.map(mon => ({
-				...mon, difficulty: { tier: 0, floor: 200, card: true },
+				...mon, difficulty: { tier: 0, floor: 200, card: true, version: 5 },
 			})));
 			assert.deepEqual(account().run.growth, card.snapshot.growth);
 			assert.equal(card.snapshot.team[0].training.offense, 600);

@@ -102,14 +102,14 @@ describe('Fantasy Rogue universal escape, rescue and route pacing', () => {
 		assert.equal(saved().run.money, 1480); assert.equal(saved().run.team[0].hp, 0);
 		assert.deepEqual(saved().run.emergencyRecovery, {cost: 1900, paid: false});
 	});
-	it('only prompts untouched accounts, persists acknowledgement, and does not mark story or adventure progress', () => {
+	it('prompts all accounts for a new guide revision and preserves progress', () => {
 		assert(needsOnboarding(saved())); engine.migrate(user); assert(needsOnboarding(saved()));
 		const request = {id: randomUUID(), revision: saved().revision, action: 'onboarding'};
 		engine.command(user, request); const after = saved(); engine.command(user, request);
 		assert.deepEqual(saved(), after); assert(!needsOnboarding(saved()));
 		assert(!saved().run && !saved().opening && !saved().adventures); assert(needsOnboarding(store.get('differentaccount')));
 		for (const evidence of [{opening: {page: 1}}, {adventures: 1}, {captures: {magikarp: 1}}]) {
-			assert(!needsOnboarding({...store.get('differentaccount'), ...evidence}));
+			assert(needsOnboarding({...store.get('differentaccount'), ...evidence}));
 		}
 	});
 	it('keeps travel committed even when returning to postcard selection', () => {

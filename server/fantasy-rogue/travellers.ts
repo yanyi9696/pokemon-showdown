@@ -1,3 +1,4 @@
+import { gainAffection, affectionChat, AFFECTION_RULES } from './affection';
 import { randomUUID } from 'crypto';
 import { COMPANIONS } from '../../sim/rogue-companions';
 import type { RogueRun, RogueCommand } from './types';
@@ -155,10 +156,7 @@ export function recordSocialPreference(run: RogueRun, options: CompanionOption[]
 		if (c.counted.includes(key) || socialRecommendation(run, c.id, options) !== choice) continue;
 		c.counted.push(key); c.preferences++;
 		c.message = TRAVELLERS[c.id].thanks;
-		if (c.preferences >= 15 && !c.rewarded) {
-			c.giftPending = true;
-			if (TRAVELLERS[c.id].gifts.length === 1) claimSocialGift(run, c, TRAVELLERS[c.id].gifts[0].id);
-		}
+		gainAffection(run, c.id, AFFECTION_RULES.preference, 'preference:' + key);
 	}
 }
 function claimSocialGift(run: RogueRun, c: SocialCompanion, item: string) {
@@ -174,6 +172,6 @@ export function socialCompanionCommand(run: RogueRun, command: RogueCommand, opt
 	else if (command.value === 'advice') {
 		const option = options.find(o => o.id === socialRecommendation(run, c.id, options));
 		c.message = option ? `我想选择「${option.name}」。${TRAVELLERS[c.id].greeting}` : '先看看眼前的选项吧，你来决定。';
-	} else if (command.value === 'chat') c.message = TRAVELLERS[c.id].greeting;
+	} else if (command.value === 'chat') c.message = affectionChat(run, c.id, TRAVELLERS[c.id].greeting);
 	else throw new Error('同行选项无效。');
 }

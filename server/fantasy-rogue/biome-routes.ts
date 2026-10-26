@@ -3,11 +3,12 @@ import { randomInt } from 'crypto';
 import { Dex } from '../../sim/dex';
 import { rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
 import { RogueBiomes, type RogueBiome } from './biome-data';
-import { biomeTier, isMajorLegendary, MajorLegendaryPool, pickBiomeSlot, unlistedFamilies, weightedPick,
+import { biomeTier, isMajorLegendary, MajorLegendaryPool, unlistedFamilies, weightedPick,
 	type RogueRandom } from './biome-pools';
 import { makeEncounterSet, randomEncounterIVs, randomEncounterAbility } from './encounter-sets';
 import { wildStageAtLevel } from './evolution';
-import type { RogueEncounter, RogueNode } from './types';
+import type { RogueEncounter, RogueNode, RogueRun } from './types';
+import { pickQualityBiomeSlot, pickQualitySpecies, rareEncounterScale } from './encounter-quality';
 import { cardBiasedSpecies } from './story';
 
 export type WildEvolutionResolver = (
@@ -18,7 +19,7 @@ export type WildEvolutionResolver = (
 export function createBiomeRoutes(
 	floor: number, templates: RogueNode[], evolve: WildEvolutionResolver = wildStageAtLevel,
 	random: RogueRandom = randomInt, spirit?: string, card?: string, attractedLegends: string[] = [],
-	history: { id: string, floor: number }[] = []
+	history: { id: string, floor: number }[] = [], run?: RogueRun
 ): RogueNode[] {
 	const allExtras = unlistedFamilies();
 	const blocked = new Set(history.filter(entry => entry.floor <= floor && floor - entry.floor <= 5).map(entry => entry.id));
@@ -41,10 +42,11 @@ export function createBiomeRoutes(
 		const extraPool = allExtras.filter(s => randomSpeciesEligible(s, level));
 		const attracted = attractedLegends.filter(s => randomSpeciesEligible(s, level));
 		const majorBranch = elite && floor >= 161;
-		const majorChance = (floor <= 180 ? 25 : 50) + (spirit === 'mew' ? 25 : 0);
+		const rarity = rareEncounterScale(run);
+		const majorChance = ((floor <= 180 ? 25 : 50) + (spirit === 'mew' ? 25 : 0)) * rarity;
 		const seen = new Map<string, number>();
 		const encounter = (bonus = false): RogueEncounter => {
-			const attraction = !bonus && attracted.length && random(100) < (elite ? 12 : 4) ? attracted[random(attracted.length)] : undefined;
+			const attraction = !bonus && attracted.length && random(10000) < (elite ? 1200 : 400) * rarity ? attracted[random(attracted.length)] : undefined;
 			// Draw the legendary branch once; the card only reweights species inside that branch.
 			const major = !bonus && majorBranch && random(100) < majorChance;
 			const draw = () => {
@@ -52,7 +54,7 @@ export function createBiomeRoutes(
 				if (attraction) {
 					name = attraction;
 				} else if (bonus) {
-					name = extraPool[random(extraPool.length)];
+					name = pickQualitySpecies(extraPool, random, run);
 				} else if (major) {
 					name = MajorLegendaryPool[random(MajorLegendaryPool.length)];
 				} else {
@@ -60,9 +62,7 @@ export function createBiomeRoutes(
 					const slots = biome.tiers[tier].map(slot => ({
 						...slot, species: slot.species.filter(species => randomSpeciesEligible(species, level) && (!majorBranch || !isMajorLegendary(species))),
 					})).filter(slot => slot.species.length);
-					name = pickBiomeSlot(spirit === 'mew' ? slots.map(slot => ({
-						...slot, weight: slot.weight < 6 ? slot.weight * 3 : slot.weight,
-					})) : slots, random);
+					name = pickQualityBiomeSlot(slots, random, run, spirit === 'mew');
 				}
 				return evolve(name, level, biome, tier, random);
 			};

@@ -1,3 +1,4 @@
+import { teraShardItems } from './tera-shards';
 import { captureItems } from './capture-items';
 import { difficultyRewardScale, type RogueDifficulty } from '../../sim/rogue-difficulty';
 import type { RogueItem, RogueNode, RogueRun } from './types';
@@ -132,7 +133,7 @@ export function diversifyBattleReward(reward: { money: number, items: Record<str
 }
 
 export function shopAvailable(item: RogueItem, floor: number): boolean {
-	return item.kind !== 'candy' && item.kind !== 'treasure' && item.shopFloor !== false && floor >= (item.shopFloor ?? 1);
+	return !['candy', 'rarecandy', 'treasure'].includes(item.kind) && item.shopFloor !== false && floor >= (item.shopFloor ?? 1);
 }
 
 const SHOP_FLOORS: Record<string, number | false> = {
@@ -191,7 +192,7 @@ export function centerCare(run: RogueRun) {
 
 export function configureShop(items: RogueItem[]) {
 	for (const item of items) {
-		item.shopFloor = item.kind === 'candy' ? false : SHOP_FLOORS[item.id] ?? (item.kind === 'evolution' ? 89 : 99);
+		item.shopFloor = item.kind === 'candy' || item.kind === 'rarecandy' ? false : SHOP_FLOORS[item.id] ?? (item.kind === 'evolution' ? 89 : 99);
 		item.price = CANDY_SHOP[item.id]?.price ?? PRICES[item.id] ?? (item.kind === 'evolution' ? 1600 : Math.ceil(item.price * 1.25 / 50) * 50);
 		if (item.id === 'blackaugurite') item.name = '黑奇石';
 	}
@@ -222,6 +223,6 @@ export function configureShop(items: RogueItem[]) {
 	});
 	items.push({ id: 'bottlecap', name: '银色王冠', kind: 'crown', price: 6000, shopFloor: false, icon: 'bottlecap', description: '将一名伙伴自选一项个体值提升至 31。' },
 		{ id: 'goldbottlecap', name: '金色王冠', kind: 'crown', price: 24000, shopFloor: false, icon: 'goldbottlecap', description: '将一名伙伴的六项个体值全部提升至 31。' });
-	items.push(...captureItems());
+	items.push(...captureItems(), ...teraShardItems());
 	items.push(...structuredClone(TREASURES), ...structuredClone(FOSSILS));
 }

@@ -109,8 +109,8 @@ describe('Fantasy Rogue October 21 content and progression update', function () 
 				beginRival(r, () => 0);
 				chooseRival(r, content, () => 0, 'greet:' + styles[0]);
 				assert.equal(r.rival.affection, rivalAffectionGain(id, styles[0], chapter));
-				assert.equal(r.dialogue.pages[0].affectionGain, r.rival.affection);
-				assert.equal(r.dialogue.pages[0].affection, r.rival.affection);
+				assert.equal(r.dialogue.pages[0].affectionGain, r.rival.affection * 2);
+				assert.equal(r.dialogue.pages[0].affection, r.trainerBonds[id].score);
 				assert.equal(new Set(['warm', 'honest', 'cold'].map(style => rivalAnswerPages(id, chapter, 0, 'greet:' + style, 0)[0].text)).size, 3);
 			}
 		}

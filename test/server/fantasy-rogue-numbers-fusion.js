@@ -72,7 +72,8 @@ describe('Fantasy Rogue numbers, fusion and codex boundaries', function () {
 	});
 	it('allows Super Number in direct offers and counts boosts and items toward thresholds', () => {
 		const run = party([set('Slaking', 'Truant', 100, ['Splash'])], ['supernumber']);
-		assert(blessingCandidates(party([set('Mew')], []), content()).some(x => x.id === 'supernumber'));
+		const offers = party([set('Mew')], []); offers.floor = 100;
+		assert(blessingCandidates(offers, content()).some(x => x.id === 'supernumber'));
 		run.team[0].set.item = 'Choice Band'; run.team[0].set.level = 300;
 		const mon = begin(run); mon.boosts.atk = 6;
 		battle.makeChoices('roguenumber all move splash', 'move splash');

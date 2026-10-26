@@ -1,3 +1,7 @@
+import { syncAffection } from './affection';
+import { syncMasterBalls } from './master-ball';
+import { trackJourney, journeyRecord, journeyDisplay, type JourneyRecord } from './history';
+import { migrateTeraShards } from './tera-shards';
 import type Database = require('better-sqlite3');
 import { emptyRogueStats } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueCommand } from './types';
@@ -14,6 +18,8 @@ export class RogueStore {
 		this.db.pragma('synchronous = FULL');
 		this.db.pragma('busy_timeout = 5000');
 		this.db.exec(`
+			CREATE TABLE IF NOT EXISTS rogue_history (userid TEXT NOT NULL, id TEXT NOT NULL, ended INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY (userid, id));
+			CREATE INDEX IF NOT EXISTS rogue_history_owner ON rogue_history(userid, ended DESC);
 			CREATE TABLE IF NOT EXISTS rogue_accounts (userid TEXT PRIMARY KEY, data TEXT NOT NULL);
 			CREATE TABLE IF NOT EXISTS rogue_requests (
 				userid TEXT NOT NULL, id TEXT NOT NULL, payload TEXT NOT NULL, revision INTEGER NOT NULL,
@@ -33,6 +39,11 @@ export class RogueStore {
 	gallery(offset = 0): RogueClearCard[] {
 		return (this.db.prepare('SELECT data FROM rogue_cards WHERE public = 1 ORDER BY created DESC, id LIMIT 12 OFFSET ?')
 			.all(offset) as { data: string }[]).map(row => JSON.parse(row.data));
+	}
+	history(userid: string, offset = 0) {
+		const total = (this.db.prepare('SELECT COUNT(*) AS count FROM rogue_history WHERE userid = ?').get(userid) as { count: number }).count;
+		const records = (this.db.prepare('SELECT data FROM rogue_history WHERE userid = ? ORDER BY ended DESC, id LIMIT 12 OFFSET ?').all(userid, offset) as { data: string }[]).map(row => JSON.parse(row.data) as JourneyRecord);
+		return { total, offset, records: records.map(journeyDisplay) };
 	}
 	get(userid: string): RogueAccount {
 		const row = this.db.prepare('SELECT data FROM rogue_accounts WHERE userid = ?')
@@ -61,8 +72,24 @@ export class RogueStore {
 			}
 			// Capture old evidence before an abandon/new run/card deletion, then the newly earned entries.
 			recordRogueDiscoveries(account);
+			syncAffection(account);
+			syncMasterBalls(account);
+			const masterBefore = account.run && { id: account.run.id, count: account.run.bag.masterball || 0 };
+			const priorRun = account.run;
+			if (priorRun) trackJourney(priorRun, account);
+			if (account.run) migrateTeraShards(account.run);
 			update(account);
-			if (account.run) syncRunDifficulty(account.run);
+			syncMasterBalls(account, masterBefore);
+			syncAffection(account);
+			if (account.run) { syncRunDifficulty(account.run); trackJourney(account.run, account); }
+			for (const run of [priorRun, account.run]) {
+				if (!run || !run.journey) continue;
+				const outcome = run.phase === 'complete' || run.phase === 'postgame' ? 'complete' : run.phase === 'defeated' ? 'defeated' : run !== account.run ? 'abandoned' : undefined;
+				if (!outcome) continue;
+				// Completed records are immutable; deleting a saved card never deletes history.
+				this.db.prepare('INSERT OR IGNORE INTO rogue_history (userid, id, ended, data) VALUES (?, ?, ?, ?)')
+					.run(userid, run.id, Date.now(), JSON.stringify(journeyRecord(run, outcome)));
+			}
 			recordRogueDiscoveries(account);
 			if (!command && JSON.stringify(account) === before) return account;
 			account.revision++;

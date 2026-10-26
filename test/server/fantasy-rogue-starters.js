@@ -44,11 +44,11 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 		assert.deepEqual(starterTraits(saved, 'vulpixalola').abilities, ['snowwarning']);
 		assert.deepEqual(starterTraits(saved, 'vulpix').abilities, []);
 	});
-	it('defaults to 20 IVs and random nature, and unlocks confirmed starting traits only once', () => {
+	it('defaults to 15 IVs and random nature, and unlocks confirmed starting traits only once', () => {
 		const request = { id: randomUUID(), revision: 0, action: 'start', starters: ['bulbasaur'] };
 		engine.command(user, request);
 		const first = account();
-		assert.deepEqual(first.run.team[0].set.ivs, stats(20));
+		assert.deepEqual(first.run.team[0].set.ivs, stats(15));
 		assert.equal(first.run.team[0].set.nature, 'Brave');
 		assert.deepEqual(starterTraits(first, 'bulbasaur').natures, ['brave']);
 		engine.command(user, request); assert.deepEqual(account(), first);
@@ -89,9 +89,9 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 		assert.deepEqual(saved.starterTraits.bulbasaur.natures, ['brave']);
 		assert.equal(saved.starterTraits.bulbasaur.ivs.max.atk, 29);
 		assert.equal(saved.starterTraits.bulbasaur.ivs.min.spe, 0);
-		assert.equal(saved.starterTraits.bulbasaur.ivs.max.def, 20);
+		assert.equal(saved.starterTraits.bulbasaur.ivs.max.def, 15);
 		cmd('abandon'); cmd('start', { starters: ['bulbasaur'] });
-		assert.equal(account().run.team[0].set.ivs.atk, 29); assert.equal(account().run.team[0].set.ivs.spe, 20);
+		assert.equal(account().run.team[0].set.ivs.atk, 29); assert.equal(account().run.team[0].set.ivs.spe, 15);
 		assert.throws(() => engine.setEventIVs(user, account().run.team[0].id, { atk: 32 }), /0～31/);
 		assert.throws(() => cmd('setEventIVs', { member: id, ivs: stats(31) }));
 	});

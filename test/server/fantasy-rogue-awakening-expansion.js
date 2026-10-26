@@ -113,6 +113,15 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
    b.damage(m.maxhp * 10, m, foe, b.dex.moves.get('tackle')); assert.equal(m.hp, 0);
   } finally { b.destroy(); }
  });
+ it('marks only the eligible Zangoose with the native blood aura and restores it on re-entry', () => {
+  const b=native([set('Zangoose','Immunity',50,['Splash']),set('Mew','Synchronize',50,['Splash'])],['godrobe']);
+  try {
+   assert(b.p1.active[0].volatiles.roguebloodrobe);assert(!b.p2.active[0].volatiles.roguebloodrobe);
+   b.makeChoices('switch 2','move 1');assert(!b.p1.active[0].volatiles.roguebloodrobe);
+   b.makeChoices('switch 2','move 1');assert(b.p1.active[0].volatiles.roguebloodrobe);
+   assert(b.log.some(line=>line.includes('|Rogue Blood Robe|[silent]')));
+  } finally {b.destroy();}
+ });
  it('consumes the optional blood cost only for the selected damaging action and boosts its damage', () => {
   const damage = [];
   for (const selected of [false, true]) {
@@ -247,6 +256,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
  });
  it('offers Carmine permanent company after the final challenge while retaining Kieran as the main rival', () => {
   const r = run(150); r.rival = {id: 'kieran', completed: 7, affection: 8, lastFloor: 130, carmine: {affection: 6}};
+  r.trainerBonds = { kieran: { score: 35, gifts: [], pending: [] }, carmine: { score: 25, gifts: [], pending: [] } };
   beginRival(r, () => 0); chooseRival(r, content, () => 0, 'greet:honest'); chooseRival(r, content, () => 0, 'greet:honest');
   chooseRival(r, content, () => 0, 'carmine:trust'); chooseRival(r, content, () => 0, 'start');
   settleRival(r, () => 0, false); assert(r.rival.permanent); assert.equal(r.node.event.rival.step, 'carminefinal');

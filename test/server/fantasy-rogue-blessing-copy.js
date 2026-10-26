@@ -15,6 +15,14 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 	this.timeout(30000);
 	let content;
 	before(() => { content = createPreviewContent(); });
+	it('marks supply and species names without adding nested brackets or converting ordinary immunity into an ability', () => {
+		const mushroom = blessingDisplay(data.blessing('mushroomsynthesis')).text;
+		for (const name of ['小蘑菇', '大蘑菇', '芳香蘑菇', '猛恶菇']) assert(mushroom.includes('【' + name + '】'));
+		assert(blessingDisplay(data.blessing('cats')).text.includes('【土地云】'));
+		assert(blessingDisplay(data.blessing('fantasysix')).text.includes('200 【幻想碎片】'));
+		for (const grade of ['XS', 'S', 'M', 'L', 'XL']) assert(blessingDisplay(data.blessing('capturebonus')).text.includes('【经验糖果 ' + grade + '】'));
+		for (const def of data.ROGUE_BLESSINGS) assert(!blessingDisplay(def).text.includes('【【'), def.id);
+	});
 	it('distinguishes status type immunity from move immunity in Stack Status copy', () => {
 		const text = blessingDisplay(data.blessing('stackstatus')).text;
 		assert(text.includes('异常状态可无视对方的属性免疫施加'));

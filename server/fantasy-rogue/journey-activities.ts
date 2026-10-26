@@ -62,10 +62,16 @@ function finish(run: RogueRun, paragraphs: string[], rewarded = false) {
 	if (!rewarded) event.trainingAidBlocked = true;
 	delete run.node!.noHealing; run.phase = 'event';
 }
-function supplies(run: RogueRun, content: RogueContent, random: RogueRandom, score = 1) {
+function supplies(run: RogueRun, content: RogueContent, random: RogueRandom, score = 1, rareSource?: string) {
 	normalizeBlessings(run);
-	for (const [id, count] of [['ether', 1], ['oranberry', Math.max(1, score)]] as const) giveEquipment(run, content, random, id, count);
+	const rare = !!rareSource && !run.rareCandyEvents?.includes(rareSource) && content.items.some(item => item.id === 'rarecandy');
+	if (rare) {
+		(run.rareCandyEvents ||= []).push(rareSource!);
+		run.bag.rarecandy = (run.bag.rarecandy || 0) + 1;
+	} else giveEquipment(run, content, random, 'ether', 1);
+	giveEquipment(run, content, random, 'oranberry', Math.max(1, score));
 	run.money += journeyCoins(run.floor, 100 + 5 * run.floor);
+	return rare;
 }
 function markScene(run: RogueRun, mon: RoguePokemon, child: string) {
 	const progress = mon.evolutionProgress ||= {};
@@ -259,7 +265,7 @@ export function chooseJourneyActivity(account: RogueAccount, run: RogueRun, cont
 			if (success) {
 				const name = a.safari[a.index || 0];
 				finish(run, [`狩猎用球轻轻晃了三下，${name}愿意跟你一起旅行。`], true);
-				gift(account, run, content, drawBlessingGift(run, content, random, { species: name, level: lv(run) }), '狩猎地带的相遇'); return;
+				gift(account, run, content, drawBlessingGift(run, content, random, { eliteIVs: false, species: name, level: lv(run) }), '狩猎地带的相遇'); return;
 			}
 			a.index = (a.index || 0) + 1;
 		}
@@ -271,8 +277,9 @@ export function chooseJourneyActivity(account: RogueAccount, run: RogueRun, cont
 		if (choice === 'type:' + correct) a.score = (a.score || 0) + 1; else a.mistakes = (a.mistakes || 0) + 1;
 		a.index = (a.index || 0) + 1;
 		if (a.index >= 3) {
-			supplies(run, content, random, a.score || 1);
-			finish(run, [`洛托姆替你把最后一点卡住的机关拨正。你解开了 ${a.score || 0} 道机关，收下研究队的谢礼。`], true);
+			const rare = supplies(run, content, random, a.score || 1, a.score === 3 ? id : undefined);
+			finish(run, [`洛托姆替你把最后一点卡住的机关拨正。你解开了 ${a.score || 0} 道机关，收下研究队的谢礼。`,
+				...(rare ? ['「全部解开了！这颗神奇糖果，一定要交给信赖的伙伴哦。」神奇糖果 ×1 已放入背包。'] : [])], true);
 		}
 		return;
 	}
@@ -347,7 +354,7 @@ export function settleJourneyActivity(account: RogueAccount, run: RogueRun, cont
 		(run.activityClaims ||= []).push(id);
 		const name = id === 'duskbreeder' ? 'Rockruff-Dusk' : 'Kubfu';
 		finish(run, ['老人认真地行了一礼。「看得出来，你会把同伴放在心上。它就拜托你了。」'], true);
-		gift(account, run, content, drawBlessingGift(run, content, random, { species: name, level: lv(run) }), ACTIVITY_NAMES[id]); return;
+		gift(account, run, content, drawBlessingGift(run, content, random, { eliteIVs: false, species: name, level: lv(run) }), ACTIVITY_NAMES[id]); return;
 	}
 	if (id === 'kubfuscroll') {
 		const mon = run.team.find(p => p.id === a.solo);
@@ -355,11 +362,12 @@ export function settleJourneyActivity(account: RogueAccount, run: RogueRun, cont
 		evolveMember(run, mon, a.target);
 		finish(run, ['熊徒弟向三位守护者行礼，随后展开卷轴。一路练习过的动作融为新的力量，它已成为对应流派的武道熊师！'], true); return;
 	}
-	supplies(run, content, random, id === 'battlemetro' ? 3 : 2);
+	const rare = supplies(run, content, random, id === 'battlemetro' ? 3 : 2, id === 'lostescort' ? id : undefined);
 	if (id === 'battlemetro') {
 		const legal = [...new Set(run.team.filter(p => !p.egg).flatMap(machineMoves))];
 		const premium = legal.filter(premiumMachine), pool = premium.length ? premium : legal;
 		giveEquipment(run, content, random, 'roguetm' + (pool.length ? pool[random(pool.length)] : 'protect'));
 	}
-	finish(run, ['你完成了约定。对方把备好的谢礼交给你，伙伴们也为这一次配合感到高兴。'], true);
+	finish(run, ['你完成了约定。对方把备好的谢礼交给你，伙伴们也为这一次配合感到高兴。',
+		...(rare ? ['拉鲁拉丝依偎在护林员身旁，向你挥了挥手。「谢谢你守护它。这颗神奇糖果，请留给你的伙伴。」神奇糖果 ×1 已放入背包。'] : [])], true);
 }

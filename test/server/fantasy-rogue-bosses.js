@@ -164,7 +164,10 @@ describe('Fantasy Rogue elite pools and Tera events', () => {
 		finish();
 		assert.equal(account().run.teraUnlocked, true, 'An encounter loss preserves event unlocks');
 		restBefore(10);
-		engine.unlockTerastallization(user); cmd('continue');
+		engine.unlockTerastallization(user);
+		assert.equal(account().run.blessings.pending[0].kind, 'systemfallback');
+		cmd('blessingreward', {member: account().run.blessings.pending[0].id, value: 'shards'});
+		cmd('continue');
 		assert.equal(account().run.checkpoint.teraUnlocked, true);
 		cmd('battle'); finish();
 		assert.equal(account().run.teraUnlocked, true, 'Earlier-floor unlock survives retry');

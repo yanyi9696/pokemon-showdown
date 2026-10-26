@@ -1,4 +1,9 @@
+import { moveCategoryHelp } from './move-categories';
+import { BLESSING_SUPPLY_HELP } from './blessing-text';
+import { difficultyMenuDescription } from '../../sim/rogue-difficulty';
+import { affectionView, affectionScene } from './affection';
 import { ROGUE_DIFFICULTIES, difficultyLabel, difficultyDescription, difficultyScale, difficultyRewardDescription, CHARM_DESCRIPTION } from '../../sim/rogue-difficulty';
+import { collapseEntries, collapseParameters } from '../../sim/rogue-collapse-data';
 import { difficultySpiritUnlocked } from './difficulty';
 import { comebackView } from './comeback';
 import { coverageView } from './coverage';
@@ -17,7 +22,7 @@ import { emergencyCost, MENTOR_CARDS, mentorCardAtFloor, type MentorCard } from 
 import { eventView, canRetreatRogue } from './events';
 import { needsOnboarding } from './onboarding';
 import { rogueCodex, codexContentVersion, ROGUE_CODEX_SCHEMA, type CodexSection } from './codex';
-import { BEGINNER_GUIDE } from './beginner-guide';
+import { BEGINNER_GUIDE, BEGINNER_GUIDE_VERSION } from './beginner-guide';
 import { companionInvitationView, socialCompanionViews } from './travellers';
 import { companionOptions } from './companions';
 import { FS, Utils } from '../../lib';
@@ -42,9 +47,10 @@ import { spiritItems } from './spirits';
 import { shopStock, machineMoves } from './trading';
 import { recycleOffers } from './buyback';
 import { activeRogueSpirits, rogueSpirit, roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
-import { storyView, startCard } from './story';
+import { storyView, startCard, bossRoster } from './story';
 import { RogueDuels, type DuelCommand } from './duels';
 import { rogueRulesVersion, clearCardView } from './legacy';
+import { echoView } from './echo';
 import { blessingView, blessingItems, blessingMemberTypes, fantasyForm, equipmentCategory } from './blessings';
 import { assignedExtraAbilities, canGrantExtraAbility } from '../../sim/rogue-blessing-permanent';
 
@@ -76,6 +82,10 @@ export class RogueManager {
 			this.engine.recover(userid, battle.token);
 		}
 	}
+	history(user: User, offset = 0) {
+		try { this.authorize(user); } catch { return { userid: user.id, records: [], total: 0, error: '请先登录可用的测试昵称或账号。' }; }
+		return { userid: user.id, ...this.engine.store.history(user.id, offset) };
+	}
 	gallery(user: User, offset = 0) {
 		if (!rogueAccess(user)) return { userid: user.id, enabled: false, cards: [], own: [] };
 		const account = this.state(user).account;
@@ -89,7 +99,7 @@ export class RogueManager {
 		if (!rogueAccess(user)) return { userid: user.id, enabled: false, section, entries: [] };
 		let account;
 		try { this.authorize(user); account = this.engine.store.get(user.id); } catch {}
-		return { userid: user.id, revision: account?.revision, codexSchema: ROGUE_CODEX_SCHEMA, contentVersion: codexContentVersion(), ...rogueCodex(account, section, this.engine.localSpirits) };
+		return { userid: user.id, revision: account?.revision, codexSchema: ROGUE_CODEX_SCHEMA, contentVersion: codexContentVersion(), moveCategoryHelp: moveCategoryHelp(), blessingSupplyHelp: BLESSING_SUPPLY_HELP, ...rogueCodex(account, section, this.engine.localSpirits) };
 	}
 	duel(user: User, command: DuelCommand) {
 		this.authorize(user);
@@ -107,7 +117,7 @@ export class RogueManager {
 		const stock = content ? shopStock(content, run) : [];
 		const items = content ? [...spiritItems(content, run), ...(content.blessings ? blessingItems(this.engine.localSpirits || account.tonicSecret) : [])].map(item => ({ ...item })) : [];
 		if (run?.node) {
-			for (const item of run.node.trade?.stock || stock) {
+			for (const item of stock) {
 				const index = items.findIndex(entry => entry.id === item.id);
 				if (index >= 0) items[index] = { ...item }; else items.push({ ...item });
 			}
@@ -120,6 +130,9 @@ export class RogueManager {
 			}
 		}
 		for (const item of items) item.category ||= equipmentCategory(item.id);
+		if (run?.collapse?.includes('medicine')) for (const item of items) {
+			if (item.kind === 'heal') item.description = `原回复量 ${item.amount} HP；本局受药效衰减影响，按原量与目标最大生命值中较小者的 ${Math.round(collapseParameters(run.difficultyRulesVersion ?? 3).medicine * 100)}% 回复（向下取整，至少 1 HP），不复活倒下成员。`;
+		}
 		if (run && content) for (const offer of recycleOffers(run, content)) {
 			const item = items.find(entry => entry.id === offer.id);
 			if (item) item.recyclePrice = offer.recyclePrice;
@@ -128,21 +141,26 @@ export class RogueManager {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
 			storyEnabled: !!content?.story,
 			beginnerGuide: needsOnboarding(account) ? BEGINNER_GUIDE : undefined,
+			beginnerGuideVersion: BEGINNER_GUIDE_VERSION,
+			moveCategoryHelp: moveCategoryHelp(), blessingSupplyHelp: BLESSING_SUPPLY_HELP,
 			story: storyView(account, !!content?.story, this.engine.localSpirits),
 			cards: account.cards?.map(clearCardView) || [], pendingClear: account.pendingClear && clearCardView(account.pendingClear),
 			account: {
+				echo: echoView(account),
 				needsOnboarding: !!content && needsOnboarding(account),
 				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
 				preferredDifficulty: account.preferredDifficulty,
+				difficultySettingsUnlocked: this.engine.localSpirits || account.difficulties!.highest > 0,
 				slotCost: rogueSlotCost(account.slots),
 				statCosts: Object.fromEntries(Object.entries(account.boosts).map(([stat, value]) => [stat, rogueStatCost(value)])),
 				captures: account.captures, unlocked: account.unlocked,
 				spiritUnlocked: !!content?.spirits && (!!account.spiritUnlocked || this.engine.localSpirits),
 			},
-			difficulties: ROGUE_DIFFICULTIES.map(tier => ({ id: tier, name: difficultyLabel(tier), text: difficultyDescription(tier),
+			difficulties: ROGUE_DIFFICULTIES.map(tier => ({ id: tier, name: difficultyLabel(tier), text: difficultyDescription(tier), menuText: difficultyMenuDescription(tier),
 				rewards: difficultyRewardDescription(tier),
 				unlocked: tier === 'easy' || tier <= account.difficulties!.highest,
 				spirit: !!content?.spirits && difficultySpiritUnlocked(account, tier) })),
+			collapseEntries: collapseEntries(run && run.phase !== 'complete' ? run.difficultyRulesVersion || 1 : 5),
 			localSpirits: this.engine.localSpirits,
 			selectableSpirits: content?.spirits ? activeRogueSpirits().filter(spirit => account.unlockedSpirits?.includes(spirit.id)) : [],
 			spirits: this.engine.localSpirits && content?.spirits ? activeRogueSpirits() : [],
@@ -166,9 +184,13 @@ export class RogueManager {
 			items, shopItems: stock.map(item => item.id),
 			run: run ? {
 				difficulty: run.difficulty || 0, difficultyLabel: difficultyLabel(run.difficulty), difficultyTest: !!run.difficultyTest,
-				difficultyScales: { player: difficultyScale(run.difficulty, run.floor), opponent: difficultyScale(run.difficulty, run.floor, true) },
+				difficultyScales: { player: difficultyScale(run.difficulty, run.floor, false, run.difficultyRulesVersion || 1), opponent: difficultyScale(run.difficulty, run.floor, true, run.difficultyRulesVersion || 1) },
+				collapse: run.collapse || [], difficultyRulesVersion: run.difficultyRulesVersion || 1,
+				futureSight: run.futureBossFloor && run.blessings?.owned.some(b => b.family === 'futuresight') ?
+					{ floor: run.futureBossFloor, roster: bossRoster(run, run.futureBossFloor) } : undefined,
 				difficultyRewards: difficultyRewardDescription(run.difficulty),
 				charm: run.difficulty === 'easy' ? { name: '替身护符', description: CHARM_DESCRIPTION } : undefined,
+				trainerBonds: affectionView(run), affectionScene: affectionScene(run),
 				companions: companionView(run, eventView(run)?.options || []),
 				selectedCompanions: run.blessings?.companions?.map(c => c.id),
 				companionInvitation: companionInvitationView(run),

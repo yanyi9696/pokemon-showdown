@@ -43,7 +43,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert.equal(events.filter(e => e.category === 'reward').length, 8);
 		assert(events.filter(e => e.category !== 'ecology').every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 		const people = events.filter(e => ['companion', 'trainer'].includes(e.category));
-		assert.equal(people.length, 101); // Four new people; Lance's existing entry gains the champion role.
+		assert.equal(people.length, 102); // Includes Lusamine's family/event companion entry.
 		for (const id of ['leon', 'lance', 'diantha', 'cynthia', 'ash']) {
 			assert(people.some(e => e.portrait === id && e.roles.includes('champion') && e.roles.includes('companion')));
 		}
@@ -53,8 +53,9 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 	});
 	it('records an actual selection once, never unlocks an offer, and keeps it after abandoning', () => {
 		store.change('codextest', a => {
-			a.run.floor = 50; a.run.phase = 'blessing';
-			a.run.blessings.round = { floor: 50, tier: 'silver', remaining: 1, familiesSeen: ['friend', 'medic'],
+			a.run.floor = 1; a.run.phase = 'blessing';
+			a.run.blessings.beforeAdventure = true;
+			a.run.blessings.round = { floor: 1, tier: 'silver', remaining: 1, familiesSeen: ['friend', 'medic'],
 				options: [{ id: 'friendfire', refreshes: 1, chosen: false }, { id: 'medic', refreshes: 1, chosen: false }] };
 		});
 		assert.equal(rogueDiscoveries(account()).blessings.length, 0);
@@ -143,6 +144,10 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event')) {
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
+			if (entry.id === 'masterballgift') {
+				run.phase = 'event'; run.node.id = entry.id; run.node.name = entry.name;
+				run.masterBallQuest = {floor: run.floor, stage: 'offer'};
+			}
 			const expedition = entry.id in require('../../dist/server/fantasy-rogue/expedition-text').EXPEDITION_OVERVIEWS;
 			const training = ['greninjatraining', 'greninjareturn'].includes(entry.id);
 			const activity = entry.id in require('../../dist/server/fantasy-rogue/journey-activity-data').ACTIVITY_NAMES;
@@ -160,7 +165,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 				if (!page.options.length) endings++;
 				assert(!page.action && !page.reward && !page.log);
 			}
-			assert(endings >= (expedition || training || entry.id === 'coverageworkshop' ? 1 : 3));
+			assert(endings >= (expedition || training || ['coverageworkshop', 'masterballgift'].includes(entry.id) ? 1 : 3));
 		}
 		assert.equal(JSON.stringify(a), before);
 	});

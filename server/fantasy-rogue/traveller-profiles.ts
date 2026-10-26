@@ -3,6 +3,7 @@ import { RIVALS, RIVAL_SNACK_GIFTS, RIVAL_FAREWELLS, CARMINE } from './rival-dat
 import { COMPANION_DIALOGUE, COMPANION_GIFT_LINES } from './companion-dialogue';
 import { TrainerBossData } from './trainer-boss-data';
 import { Teams } from '../../sim/teams';
+import { LUSAMINE } from './lusamine-data';
 
 export interface TravellerProfile {
 	id: string; name: string; region: string; preference: 'battle' | 'reward' | 'pokemon';
@@ -36,6 +37,7 @@ const GYM_PROFILES: Record<string, [string, TravellerProfile['preference'], stri
 };
 export function travellerProfiles(): TravellerProfile[] {
 	const profiles = new Map<string, TravellerProfile>();
+	profiles.set('lusamine', { ...LUSAMINE });
 	for (const [id, c] of Object.entries(COMPANIONS)) {
 		if (['sada', 'turo'].includes(id)) continue;
 		const key = id as CompanionID, p = COMPANION_PREFERENCES[key];

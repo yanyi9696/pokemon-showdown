@@ -24,7 +24,7 @@ describe('Fantasy Rogue boss support revision', () => {
 	for (const [floor, tier] of [[10, 'elite'], [30, 'elite'], [150, 'elite'], [20, 'gym'], [160, 'gym'], [175, 'gym'], [200, 'gym']]) {
 		it(`uses the ${tier} card tier at floor ${floor}`, () => assert.equal(mentorTier(floor), tier));
 	}
-	for (const [kind, offense, defense, speed] of [['attack', 1.8, 1.4, 1], ['guard', 1.4, 1.9, 1], ['balanced', 1.6, 1.6, 1.3]]) {
+	for (const [kind, offense, defense, speed] of [['attack', 1.9, 1.45, 1], ['guard', 1.45, 2, 1], ['speed', 1.3, 1.3, 2], ['balanced', 1.6, 1.6, 1.3]]) {
 		for (const floor of [10, 20, 30, 175]) it(`combines ${kind} support at floor ${floor} with training and exposes gym-strength values privately`, () => {
 			assert.deepEqual(mentorCardAtFloor(kind, floor), mentorCardAtFloor(kind, 20));
 			const battle = fight(kind, floor), baseline = fight(undefined, floor), untrained = fight(undefined, floor, false);
@@ -46,6 +46,23 @@ describe('Fantasy Rogue boss support revision', () => {
 			} finally {battle.destroy(); baseline.destroy(); untrained.destroy();}
 		});
 	}
+	it('lets speed support cross a useful turn-order threshold without changing priority or Trick Room', () => {
+		for (const [kind, priority, trickRoom, first] of [
+			['balanced', false, false, 'p2a'], ['speed', false, false, 'p1a'],
+			['speed', true, false, 'p2a'], ['speed', false, true, 'p2a'],
+		]) {
+			const battle = fight(kind);
+			try {
+				battle.p1.active[0].storedStats.spe = 100;
+				battle.p2.active[0].storedStats.spe = 150;
+				if (priority) battle.p2.active[0].moveSlots[0] = {move: 'Quick Attack', id: 'quickattack', pp: 30, maxpp: 30, target: 'normal', disabled: false, used: false};
+				if (trickRoom) battle.field.addPseudoWeather('trickroom', battle.p2.active[0]);
+				const start = battle.log.length;
+				battle.makeChoices('move 1', 'move 1');
+				assert(battle.log.slice(start).find(line => line.startsWith('|move|')).includes(`|${first}:`), `${kind}/${priority}/${trickRoom}`);
+			} finally { battle.destroy(); }
+		}
+	});
 	it('keeps candy budgets within the approved late-support bands and grade unlocks', () => {
 		const xp = {expcandyxs: 100, expcandys: 800, expcandym: 3000, expcandyl: 10000, expcandyxl: 30000};
 		assert.deepEqual(Object.values(CANDY_SHOP).map(x => x.floor), [1, 30, 50, 100, 150]);

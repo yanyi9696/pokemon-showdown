@@ -1,0 +1,136 @@
+{
+  "version": 4,
+  "iv": [
+    {
+      "tier": "easy",
+      "elite": false,
+      "mean": 9.993910176771262,
+      "anyAbove20": 0,
+      "perfectStat": 0,
+      "hiddenAbilityPercent": 1
+    },
+    {
+      "tier": "easy",
+      "elite": true,
+      "mean": 9.993910176771262,
+      "anyAbove20": 0,
+      "perfectStat": 0,
+      "hiddenAbilityPercent": 3
+    },
+    {
+      "tier": 0,
+      "elite": false,
+      "mean": 15.000035460285588,
+      "anyAbove20": 0.0059954858593469496,
+      "perfectStat": 0.000002216267849267191,
+      "hiddenAbilityPercent": 1
+    },
+    {
+      "tier": 0,
+      "elite": true,
+      "mean": 17.999822698572057,
+      "anyAbove20": 0.39245454779623357,
+      "perfectStat": 0.000002216267849267191,
+      "hiddenAbilityPercent": 3
+    },
+    {
+      "tier": 1,
+      "elite": false,
+      "mean": 16.999893619143236,
+      "anyAbove20": 0.13796052460785924,
+      "perfectStat": 0.000002216267849267191,
+      "hiddenAbilityPercent": 2
+    },
+    {
+      "tier": 1,
+      "elite": true,
+      "mean": 20.99960993685853,
+      "anyAbove20": 0.9965244068282778,
+      "perfectStat": 0.000002216267849267191,
+      "hiddenAbilityPercent": 6
+    },
+    {
+      "tier": 2,
+      "elite": false,
+      "mean": 19.999680857429706,
+      "anyAbove20": 0.948060968164826,
+      "perfectStat": 0.000002216267849267191,
+      "hiddenAbilityPercent": 4
+    },
+    {
+      "tier": 2,
+      "elite": true,
+      "mean": 23.99932624860097,
+      "anyAbove20": 0.9999999997857786,
+      "perfectStat": 0.00011524694983433251,
+      "hiddenAbilityPercent": 10
+    },
+    {
+      "tier": 3,
+      "elite": false,
+      "mean": 22.999468095716175,
+      "anyAbove20": 0.9999997432865954,
+      "perfectStat": 0.000011081339246335955,
+      "hiddenAbilityPercent": 6
+    },
+    {
+      "tier": 3,
+      "elite": true,
+      "mean": 26.96963611481351,
+      "anyAbove20": 1,
+      "perfectStat": 0.018869606693739997,
+      "hiddenAbilityPercent": 15
+    },
+    {
+      "tier": 4,
+      "elite": false,
+      "mean": 25.993253735846377,
+      "anyAbove20": 1,
+      "perfectStat": 0.004683118588719696,
+      "hiddenAbilityPercent": 9
+    },
+    {
+      "tier": 4,
+      "elite": true,
+      "mean": 28.705367011913047,
+      "anyAbove20": 1,
+      "perfectStat": 0.12989724485200801,
+      "hiddenAbilityPercent": 22
+    },
+    {
+      "tier": 5,
+      "elite": false,
+      "mean": 27.89205871061103,
+      "anyAbove20": 1,
+      "perfectStat": 0.056645607722067365,
+      "hiddenAbilityPercent": 12
+    },
+    {
+      "tier": 5,
+      "elite": true,
+      "mean": 30.80834011914456,
+      "anyAbove20": 0.9999999999999983,
+      "perfectStat": 0.9000128573265332,
+      "hiddenAbilityPercent": 30
+    }
+  ],
+  "translations": {
+    "move": {
+      "checked": 995,
+      "missing": []
+    },
+    "ability": {
+      "checked": 387,
+      "missing": []
+    },
+    "item": {
+      "checked": 603,
+      "missing": []
+    },
+    "species": {
+      "checked": 1645,
+      "missing": []
+    }
+  },
+  "exclusiveItems": 216
+}

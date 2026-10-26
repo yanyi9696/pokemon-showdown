@@ -5,6 +5,7 @@ import type { RogueRandom } from './biome-pools';
 import { neededExclusiveItems, syncExclusiveItems } from './exclusive-items';
 import { machineMoves, premiumMachine, tradeItem } from './trading';
 import { FANTASY_BLESSING_ITEMS } from '../../sim/rogue-blessing-data';
+import { formItem } from './form-item-data';
 
 export interface RogueAuction {
 	floor: number; entered: boolean; index: number;
@@ -16,7 +17,7 @@ export interface RogueAuction {
 const dex = Dex.mod('gen9fantasy');
 export function beginAuction(run: RogueRun, content: RogueContent, random: RogueRandom) {
 	const wanted = neededExclusiveItems(run);
-	const held = (id: string): RogueItem => ({
+	const held = (id: string): RogueItem => formItem(id) || ({
 		id, name: dex.items.get(id).name, kind: 'held', price: 0, shopFloor: false, icon: id,
 	});
 	const ids = [...new Set([...FANTASY_BLESSING_ITEMS, 'lifeorb', 'choiceband', 'choicespecs', 'choicescarf',

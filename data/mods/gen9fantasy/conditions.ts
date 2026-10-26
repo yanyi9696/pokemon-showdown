@@ -1,4 +1,11 @@
 export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDataTable = {
+	// Named healing source only; this does not add a volatile or an ability to the Pokemon.
+	rogueemergency: { name: 'Rogue Emergency' },
+	roguebloodrobe: {
+		name: 'Rogue Blood Robe', noCopy: true,
+		onStart(pokemon) { this.add('-start', pokemon, 'Rogue Blood Robe', '[silent]'); },
+		onEnd(pokemon) { this.add('-end', pokemon, 'Rogue Blood Robe', '[silent]'); },
+	},
 	rogueghidorah: {
 		name: 'Rogue Ghidorah', noCopy: true,
 		onStart(pokemon) { this.add('-start', pokemon, 'Rogue Ghidorah', '[silent]'); },

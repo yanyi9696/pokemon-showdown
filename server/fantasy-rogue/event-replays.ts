@@ -4,14 +4,18 @@ import { EVENT_NAMES, EVENT_TEXT as text, eventOpening, type EventID } from './e
 import { SERVICE_TEXT as service, POSTCARDS } from './event-service-text';
 import { HONEYMOON_REGIONS } from './honeymoon';
 import { POLICE_REGIONS } from './police-data';
+import { LUCK_EVENT_NAMES, LUCK_EVENT_TEXT, isLuckEvent, luckEventOptions, luckOutcomeText, type LuckEventID } from './luck-event-data';
 
 interface ReplayPage { text: string[]; options: { label: string, next: string }[]; battleSkipped?: boolean }
 export const EVENT_OVERVIEWS: Record<EventID, string> = {
+	masterballgift: '所有难度、所有阶段的可选路线楼层，每层独立 0.05% 概率出现，单局最多一次。完成交谈后开启本层专属奖励区域，领取大师球 ×1，只能捕捉可捕捉的野生宝可梦。大师球仅在本局使用，不带入下一局；原有路线不被替换。',
+	...Object.fromEntries(Object.entries(LUCK_EVENT_TEXT).map(([id, entry]) => [id,
+		entry.overview + '【灌铅骰子】使硬币必为正面、骰子必为 6 点；每次相遇仅结算一次。'])) as Record<LuckEventID, string>,
 	coverageworkshop: '第 60 层起可遇见战术教练，免费获得一份补盲研习。战斗外指定一名伙伴，从其合法可学且未掌握的非本系攻击招式中自选一招；可留待后来入队的伙伴。只教授实用攻击，不提供数值训练或通用招式借用。',
 	...ACTIVITY_OVERVIEWS,
 	greninjatraining: '携带幻想甲贺忍蛙并保留另一位能出战的伙伴时，可在森林遇到小智版甲贺忍蛙。派伙伴离队修行；至少 5 层后，在事件区域寻找归来的它们。',
 	greninjareturn: '迎回原先派出的幻想甲贺忍蛙，提升两次事件实际间隔的层数所对应的等级（最高 100 级）。获得智蛙 Z，并解锁 Z 招式；携带它可在登场时切换小智版形态。',
-	travellermeeting: '事件与遭遇区域均可能遇到。与带立绘的训练家交谈，根据回应收获小礼物、展开切磋或接受常驻同行邀请。同行共用两个名额；常驻同行累计听从 15 次偏好选择可获专属赠礼。',
+	travellermeeting: '事件与遭遇区域均可能遇到。与带立绘的训练家交谈，根据回应收获小礼物、展开切磋或接受常驻同行邀请。同行共用两个名额，邀请条件保持原有奇遇规则；本局好感度达到 50／100 时，各获得一次专属赠礼与对话。',
 	...EXPEDITION_OVERVIEWS, rivalstory: '前 20 层锁定一位劲敌，开启八段专属旅途；共同战斗、交谈提升熟悉度，最终成为永久同行伙伴。',
 	companionrematch: '同行训练家挑战失利后，至少再前进 5 层才可能收到切磋邀请。可接受或暂缓；胜利补发原挑战奖励，失败则恢复全队。每份奖励只能补领一次。',
 	policeassist: '在遭遇区域协助君莎，从随机三个地区中选一处，连续击败两名闹事队员。对应首领同行时可能出面制止并道歉；玛俐会劝导呐喊队粉丝，坂木会让城都的阿波罗与你安全切磋，牡丹则暂时保持沉默。',
@@ -41,6 +45,23 @@ export const EVENT_OVERVIEWS: Record<EventID, string> = {
 
 /** A dialogue graph only: no RNG, account access, combat calls, or reward commands. */
 export function eventReplay(id: EventID) {
+	if (id === 'masterballgift') return { title: EVENT_NAMES[id], start: 'start', pages: {
+		start: { text: eventOpening(id), options: [{label: '留给愿意一起走下去的伙伴。', next: 'reward'}, {label: '留给尚未见过的宝可梦。', next: 'reward'}] },
+		reward: { text: ['专属奖励区域开启。大师球 ×1 已准备好，等你前来领取。', EVENT_OVERVIEWS[id]], options: [] },
+	} };
+	if (isLuckEvent(id)) {
+		const entry = LUCK_EVENT_TEXT[id], faces = entry.kind === 'coin' ? [1, 2] : [1, 2, 3, 4, 5, 6];
+		const pages: Record<string, ReplayPage> = {
+			start: { text: eventOpening(id), options: luckEventOptions(id).map(option => ({ label: option.name,
+				next: option.id === 'leave' ? 'leave' : 'outcomes' })) },
+			outcomes: { text: [EVENT_OVERVIEWS[id]], options: faces.map(face => ({
+				label: entry.kind === 'coin' ? face === 1 ? '正面' : '反面' : `${face} 点`, next: `face${face}`,
+			})) },
+			leave: { text: [entry.farewell], options: [] },
+		};
+		for (const face of faces) pages[`face${face}`] = { text: luckOutcomeText(id, face), options: [] };
+		return { title: LUCK_EVENT_NAMES[id], start: 'start', pages };
+	}
 	if (id in ACTIVITY_NAMES) return { title: ACTIVITY_NAMES[id as ActivityID], start: 'start', pages: {
 		start: { text: ACTIVITY_OPENINGS[id as ActivityID], options: [{ label: '了解互动与完成条件', next: 'play' }, { label: '回顾告别', next: 'leave' }] },
 		play: { text: [ACTIVITY_OVERVIEWS[id as ActivityID]], options: [{ label: '回顾完成后的道别', next: 'end' }, { label: '回顾未完成的结果', next: 'unfinished' }],
@@ -75,7 +96,7 @@ export function eventReplay(id: EventID) {
 		page('talk', ['各自讲起旅途中的选择。回应训练家的偏好，会让彼此更投契。'], [['理念契合', 'invite'], ['各有想法', 'gift']]);
 		page('battle', ['训练家派出符合自己风格的伙伴；切磋结束会帮助全队恢复健康。'], [['获胜且对方喜爱战斗', 'invite'], ['获胜', 'gift'], ['战败', 'leave']], true);
 		page('invite', ['对方提出常驻同行。所有来源共用两个名额；满员时可先向一位旧伙伴告别。'], [['接受', 'joined'], ['婉拒', 'leave']]);
-		page('joined', ['常驻同行拥有家乡、区域与选项偏好，累计听从 15 次偏好选择可获得一次专属赠礼。']);
+		page('joined', ['常驻同行拥有家乡、区域与选项偏好，好感度达到 50／100 时自动获得阶段赠礼与对话。']);
 		page('gift', ['训练家赠送少量补给，并祝你旅途顺利。']);
 		page('leave', ['你们互道珍重，期待之后再次相遇。']);
 		return { title: EVENT_NAMES[id], start: 'start', pages };

@@ -44,7 +44,8 @@ describe('Fantasy Rogue recalibrated preparation and blessing rules', function (
 		assert.equal(content.items.find(i => i.id === 'maxrevive').amount, 1);
 		run.floor = 50; pick(run, account, 'bigmoney'); assert.equal(run.money, 20000);
 		pick(run, account, 'pandoragold');
-		assert(FANTASY_BLESSING_ITEMS.some(id => run.bag[id]));
+		assert.equal(FANTASY_BLESSING_ITEMS.reduce((sum, id) => sum + (run.bag[id] || 0), 0), 2);
+		assert(blessing('pandoragold').text.includes('2 个随机幻想通用道具'));
 		assert.equal(run.blessings.pending.filter(r => r.kind === 'toolbox').length, 2);
 	});
 	it('each overtime gift is level-eligible and actually carries the setter ability or learned move', () => {

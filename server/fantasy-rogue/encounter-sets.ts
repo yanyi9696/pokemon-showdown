@@ -1,21 +1,25 @@
 import { Dex } from '../../sim/dex';
 import { levelMoves } from './progression';
 import type { RogueRandom } from './biome-pools';
+import type { RogueDifficulty } from '../../sim/rogue-difficulty';
+import { hiddenAbilityChance, rollEncounterIVs } from '../../sim/rogue-quality';
 
 const ordinary = Dex.mod('gen9');
 const dex = Dex.mod('gen9fantasy');
 const stats = (value: number): StatsTable => ({
 	hp: value, atk: value, def: value, spa: value, spd: value, spe: value,
 });
-export function randomEncounterAbility(name: string, random: RogueRandom, elite = false) {
+export function randomEncounterAbility(name: string, random: RogueRandom, elite = false, tier?: RogueDifficulty) {
 	const abilities = dex.species.get(name).abilities;
-	if (elite && abilities.H && random(100) < 15) return abilities.H;
+	const chance = tier === undefined ? (elite ? 15 : 0) : hiddenAbilityChance(tier, elite);
+	if (chance && abilities.H && random(100) < chance) return abilities.H;
 	const normal = [abilities[0], abilities[1]].filter(Boolean) as string[];
 	return normal[random(normal.length)];
 }
 
 /** Roll once when creating a new wild encounter or gift, never when rebuilding a saved member. */
-export function randomEncounterIVs(random: RogueRandom, elite = false): StatsTable {
+export function randomEncounterIVs(random: RogueRandom, elite = false, tier?: RogueDifficulty): StatsTable {
+	if (tier !== undefined) return rollEncounterIVs(random, tier, elite);
 	const weights = elite ? [100, 70, 50, 35, 25, 15, 5] : [140, 140, 140, 140, 140, 100, 70, 50, 35, 25, 15, 5];
 	const roll = () => {
 		let value = random(weights.reduce((sum, weight) => sum + weight, 0));

@@ -51,16 +51,16 @@ describe('Rogue collections, companion eligibility and codex conditions', functi
 		run.team.push(createRoguePokemon(set('Diglett'), stats(0))); syncBlessingParty(run);
 		assert.equal(run.blessings.companions[0].member, run.team[1].id);
 	});
-	it('prefers home regions and counts exactly one modest gift after 15 events', () => {
+	it('prefers home regions and counts exactly one modest gift at 50 affection', () => {
 		const run = party(['Charmander']); c.grantCompanion(run, 'lysandre');
 		const options = [{ id: 'postcard:kalos', name: '卡洛斯' }, { id: 'fight', name: '挑战' }];
-		for (let i = 0; i < 20; i++) {
+		for (let i = 0; i < 30; i++) {
 			event(run, 'postcard', String(i));
 			assert.equal(c.companionRecommendation(run, run.blessings.companions[0], options), 'postcard:kalos');
 			c.recordCompanionPreference(run, options, 'postcard:kalos', () => 0);
 			c.recordCompanionPreference(run, options, 'postcard:kalos', () => 0);
 		}
-		assert.equal(run.blessings.companions[0].preferences, 20);
+		assert.equal(run.blessings.companions[0].preferences, 30);
 		assert.equal(run.bag.charcoal, 1); assert.equal(run.money, 20000);
 	});
 	it('keeps mushroom feeding independent, diminishing, unlimited and batch-invariant', () => {
@@ -179,7 +179,7 @@ describe('Rogue collections, companion eligibility and codex conditions', functi
 			assert(entries.find(e => e.family === family).availability.length, family);
 		}
 		assert(entries.find(e => e.family === 'companionlana').availability.some(s => s.includes('需有水系')));
-		assert(entries.filter(e => e.family.startsWith('companion') && e.family !== 'companionai').every(e => e.text.includes('累计听从 15 次')));
+		assert(entries.filter(e => e.family.startsWith('companion') && e.family !== 'companionai').every(e => e.text.includes('好感度')));
 		const companions = rogueCodex(undefined, 'events', true).entries.filter(e => e.category === 'companion');
 		assert.equal(companions.length, Object.keys(COMPANIONS).length);
 	});

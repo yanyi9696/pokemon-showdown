@@ -1,7 +1,8 @@
 import type { RogueAccount } from './types';
+import { BEGINNER_GUIDE_VERSION } from './beginner-guide';
 
-/** Existing adventures must not be interrupted by a new-account tutorial after an update. */
+/** New and veteran accounts acknowledge the current content; active adventures wait until their next start. */
 export function needsOnboarding(account: RogueAccount) {
-	return !account.onboardingSeen && !account.run && !account.adventures && !account.opening?.page &&
-		!account.cards?.length && !account.pendingClear && !Object.keys(account.captures).length;
+	return (!account.run || account.run.phase === 'complete' && !account.run.story && !account.pendingClear) &&
+		account.onboardingVersion !== BEGINNER_GUIDE_VERSION;
 }

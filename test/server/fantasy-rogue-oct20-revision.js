@@ -223,6 +223,9 @@ describe('Fantasy Rogue October 20 regression', () => {
 						engine = new RogueEngine(store, config, () => 0); engine.migrate('rivaljourney');
 						assert.equal(storyView(account(), true, false).key, key);
 						cmd('storyskip', {value: key});
+					} else if (r.phase === 'blessing' && r.blessings.pending[0]?.kind === 'item') {
+						const reward = r.blessings.pending[0];
+						cmd('blessingreward', {member: reward.id, value: reward.options[0]});
 					} else if (r.phase === 'event') {
 						const choices = eventView(r).options;
 						option(choices.find(o => o.id === 'warm' || o.id === 'shards' || o.id === 'join')?.id || choices[0].id);

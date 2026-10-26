@@ -1,6 +1,7 @@
+import { affectionThemeGift, AFFECTION_ADVANCED_REWARDS } from './affection-gifts';
 import { RIVALS, RIVAL_SNACK_GIFTS } from './rival-data';
 import {
-	COMPANIONS, companionHasGift, companionGiftOptions, companionPreferenceText, type CompanionID,
+	COMPANIONS, companionPreferenceText, type CompanionID,
 } from '../../sim/rogue-companions';
 import { ROGUE_BLESSINGS } from '../../sim/rogue-blessing-data';
 import { COMPANION_GIFT_LINES } from './companion-dialogue';
@@ -23,10 +24,11 @@ export function trainerCodex() {
 	for (const [id, c] of Object.entries(COMPANIONS)) {
 		const key = id as CompanionID;
 		const def = ROGUE_BLESSINGS.find(b => b.family === c.family)!;
+		const gift = affectionThemeGift(id, 50);
 		add(id, c.name, 'companion', '事件、遭遇、奖励等区域出现选项时均可咨询。' + companionPreferenceText(key) +
-		(companionHasGift(key) ? `累计 15 次${id === 'lana' ? '进入钓鱼' : id === 'olivia' ? '完成赌石事件' : '偏好选择'}，本局获得一次【同行训练家的赠礼】：` +
-		companionGiftOptions(key).map(g => `【${g.name}】`).join('或') + `×1${id === 'acerola' ? '（二选一）' : ''}，对应属性招式威力 ×1.2。` +
-		`「${COMPANION_GIFT_LINES[key]}」` : '提供战斗预演，没有偏好赠礼。') + `对应祝福：【${def.name}】。`);
+		`跟随爬塔、专属奇遇与偏好回应均可积累本局好感度。达到 50 时获得【${gift?.name || 'PP 全项小补剂'}】×1；` +
+		`达到 100 时获得进阶礼物【${affectionThemeGift(id, 100).name}】×1，以及${AFFECTION_ADVANCED_REWARDS}。两阶段分别触发专属对话，每局各一次，新一局重新积累；50／100 后日常对话也会逐渐亲近。` +
+		(COMPANION_GIFT_LINES[key] ? `「${COMPANION_GIFT_LINES[key]}」` : '') + `对应祝福：【${def.name}】。`);
 		people.get(id)!.category = 'companion'; people.get(id)!.id = `companion:${id}`;
 	}
 	for (const [id, rival] of Object.entries(RIVALS)) add(id, rival.name, 'rival', `来自${rival.region}的劲敌。前 20 层初识后锁定八段奇遇，至少间隔 10 层重逢，约 100、150 层迎来进阶与最终切磋。交谈与合作提升熟悉度，每局可短期同行一次、持续 5～8 层；短期没有偏好计数，告别自动赠送【${RIVAL_SNACK_GIFTS[id as keyof typeof RIVALS].name}】×1，最终无论胜负都会提出永久同行邀请。`);
@@ -39,6 +41,7 @@ export function trainerCodex() {
 		boss.id === 'penny' ? '天星队风波的最后一位挑战者。她会坦白自己的身份，并承诺解决伙伴们造成的麻烦。' :
 		'天星队帮班首领。在治安协助的连续后续中，按皮拿、梅洛可、秋明、奥尔迪加、枇琶的顺序接受挑战。');
 	const others: [string, string, string, string][] = [
+		['lusamine', '露莎米奈', 'other', '以太基金会代表，莉莉艾与格拉吉欧的母亲。关心孩子和需要帮助的宝可梦，也努力尊重孩子们自己的决定。两人的奇遇第 2、4、6、8 章中会出场；第 4 章起可以邀请同行。也可能在普通事件区域相遇、交谈后邀请同行，不必先完成两人的奇遇。'],
 		['carmine', '丹瑜', 'rival', '乌栗的姐姐。乌栗奇遇线中独立积累好感，可以短期同行；高好感完成最终章后可邀请永久同行。临别会赠送诅咒之符，乌栗仍是这条奇遇的主要劲敌。'],
 		['jenny', '君莎', 'other', '负责旅途治安，邀请训练家协助制止各地闹事者，并在完成协助后赠送谢礼。'],
 		['mewtwo', '幻想超梦', 'other', '第 200 层的特殊对手。先指挥五名伙伴，待它们全部倒下后亲自出战。'],
@@ -58,7 +61,7 @@ export function trainerCodex() {
 		if (!entry.roles.includes('companion')) entry.roles.push('companion');
 		const area = {wild: '战斗', elite: '精英', reward: '奖励', trade: '交易', event: '事件'};
 		entry.text += ` 常驻同行时偏好${person.region}相关、或${{battle: '战斗', reward: '奖励', pokemon: '宝可梦'}[person.preference]}取向的选项，喜欢${person.areas.map(id => area[id as keyof typeof area]).join('、')}区域。` +
-			`普通常驻同行累计听从 15 次偏好选择，赠送${person.gifts.map(g => `【${g.name}】`).join('或')}×1。全部同行共用两个名额。`;
+			`好感度在本局累积；50 时赠送【${person.gifts[0].name}】×1；100 时赠送进阶礼物【${affectionThemeGift(person.id, 100).name}】×1，以及${AFFECTION_ADVANCED_REWARDS}。阶段奖励每局各领一次，新一局重新积累；邀请条件保持原有奇遇规则。全部同行共用两个名额。`;
 	}
 	return [...people.values()];
 }

@@ -133,15 +133,18 @@ function drawCandidate(
 }
 
 export function createBlessingRound(
-	context: BlessingSelectionContext, candidates: readonly BlessingCandidate[], random: BlessingRandom
+	context: BlessingSelectionContext, candidates: readonly BlessingCandidate[], random: BlessingRandom,
+	replacement?: { tier: BlessingRoundTier, previous: BlessingRound }
 ): BlessingRound {
 	const round: BlessingRound = {
-		floor: context.floor, tier: drawBlessingTier(context, random), options: [],
-		remaining: context.spirit === 'jirachi' ? 2 : 1, familiesSeen: [], idsSeen: [],
+		floor: context.floor, tier: replacement?.tier ?? drawBlessingTier(context, random), options: [],
+		remaining: context.spirit === 'jirachi' ? 2 : 1,
+		familiesSeen: replacement?.previous.familiesSeen.slice() || [],
+		idsSeen: replacement ? [...new Set([...(replacement.previous.idsSeen || []), ...replacement.previous.options.map(o => o.id)])] : [],
 		topClearMindEligible: canOfferTopClearMind(context),
 	};
 	const count = context.spirit === 'jirachi' ? 2 : 3;
-	const excluded = new Set<string>();
+	const excluded = new Set<string>(round.idsSeen);
 	for (let i = 0; i < count; i++) {
 		const tier = blessingSlotTier(round, i);
 		const guarantees = i === (round.tier === 'mixed' ? 1 : 0) && guaranteesTopClearMind(context, tier);
@@ -150,14 +153,31 @@ export function createBlessingRound(
 		if (guarantees && !guaranteed) {
 			throw new Error('本轮祈愿所需的 Top Clear Mind 尚未配置。');
 		}
-		const awakening = context.killlaReady && tier === 'prismatic' && !excluded.has('killlagirl') ? candidates.find(c => c.id === 'killlagirl') : undefined;
+		const awakening = context.killlaReady && tier === 'prismatic' && !round.options.some(o => o.id === 'killlagirl') ? candidates.find(c => c.id === 'killlagirl') : undefined;
 		const candidate = awakening || guaranteed || drawCandidate(candidates, round, tier, excluded, random);
 		excluded.add(candidate.id);
 		round.idsSeen!.push(candidate.id);
-		round.options.push({ id: candidate.id, tier, refreshes: awakening ? 0 : context.spirit === 'victini' ? 2 : 1, chosen: false });
+		round.options.push({ id: candidate.id, tier,
+			refreshes: awakening ? 0 : replacement ? replacement.previous.options[i].refreshes : context.spirit === 'victini' ? 2 : 1,
+			chosen: false });
 		round.familiesSeen.push(candidate.family);
 	}
 	return round;
+}
+
+export function fixedBlessingQuality(spirit?: string) {
+	return ['terapagos', 'gholdengo', 'silvally', 'necrozma'].includes(spirit || '');
+}
+/** One campaign-level opportunity; callers persist its use only after this atomic draw succeeds. */
+export function rerollBlessingQuality(
+	saved: BlessingRound, context: BlessingSelectionContext, candidates: readonly BlessingCandidate[], random: BlessingRandom
+) {
+	if (fixedBlessingQuality(context.spirit)) throw new Error('本局塔灵已固定祝福品阶，不能更换。');
+	if (!saved.remaining || saved.options.some(o => o.chosen)) throw new Error('请在本轮领取任何祝福前更换品阶。');
+	const weights = blessingQualityWeights(context);
+	const tier = weighted(ROUND_TIERS.filter(t => t !== saved.tier && weights[t] > 0)
+		.map(t => ({ value: t, weight: weights[t] })), random);
+	return createBlessingRound(context, candidates, random, { tier, previous: saved });
 }
 
 /** Returns a new value: a failed draw never consumes a saved refresh or mutates the original round. */

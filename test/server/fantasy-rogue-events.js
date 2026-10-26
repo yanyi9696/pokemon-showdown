@@ -95,7 +95,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		const bst = t => t.reduce((sum, m) => sum + Dex.species.get(m.species).bst, 0);
 		assert(Math.max(bst(a), bst(b)) / Math.min(bst(a), bst(b)) <= 1.1);
 		const ivs = a.flatMap(mon => Object.values(mon.ivs));
-		assert(ivs.every(iv => iv >= 20 && iv <= 31));
+		assert(ivs.every(iv => iv >= 0 && iv <= 31));
 		assert(new Set(ivs).size > 1);
 	});
 	it('persists mystery-ball outcomes, queues a full-party gift, and refuses repeated payouts', () => {
@@ -108,7 +108,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		const run = account().run;
 		assert.equal(run.phase, 'blessing'); assert.equal(run.blessings.pending[0].pokemon.stars || 1, 1);
 		assert.equal(run.blessings.pending[0].pokemon.set.level, 8);
-		assert.ok(Object.values(run.blessings.pending[0].pokemon.set.ivs).every(v => v >= 20 && v <= 31));
+		assert.ok(Object.values(run.blessings.pending[0].pokemon.set.ivs).every(v => v >= 0 && v <= 31));
 		cmd('blessingreward', { member: run.blessings.pending[0].id, value: 'release' });
 		assert.equal(account().run.phase, 'event');
 		assert.throws(() => cmd('event', { member: run.node.event.key, value: 'open' }), /已更新/);
@@ -289,15 +289,15 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 	});
 	it('can claim a saved old typed friend card with the new unrestricted reward', () => {
 		store.change('eventtester', a => {
-			a.run.floor = 50; a.run.phase = 'blessing';
-			a.run.blessings.round = { floor: 50, tier: 'silver', remaining: 1, familiesSeen: ['friend'],
+			a.run.floor = 1; a.run.phase = 'blessing'; a.run.blessings.beforeAdventure = true;
+			a.run.blessings.round = { floor: 1, tier: 'silver', remaining: 1, familiesSeen: ['friend'],
 				topClearMindEligible: false, options: [{ id: 'friendfire', refreshes: 1, chosen: false }] };
 		});
 		cmd('blessing', { slot: 0 });
 		const run = account().run;
 		assert.equal(run.blessings.owned[0].id, 'friend');
 		assert.equal(run.blessings.pending[0].pokemon.stars, 2);
-		assert.equal(run.blessings.pending[0].pokemon.set.species, 'Ivysaur');
+		assert.equal(run.blessings.pending[0].pokemon.set.species, 'Charmander');
 	});
 	it('waits for the start card before drawing Celebi gifts and resumes a full party safely', () => {
 		const { storyView } = require('../../dist/server/fantasy-rogue/story');
@@ -309,12 +309,15 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(account().run.pendingSpiritGift, true); assert(!account().run.pendingCapture);
 		cmd('spiritack'); cmd('startcard', { value: 'grass' });
 		assert.equal(account().run.pendingSpiritGift, true);
-		cmd('confirmdifficulty');
+		cmd('charm', { value: 'decline' });
 		assert.equal(account().run.pendingSpiritGift, undefined);
 		assert.equal(account().run.pendingCapture.fixedLevel, 40);
 		assert.equal(account().run.phase, 'settlement');
 		cmd('replace', { value: 'release' });
-		assert.equal(account().run.phase, 'choose'); assert.equal(account().run.choices.length, 3);
+		assert.equal(account().run.phase, 'choose');
+		// The zero RNG also rolls the optional Master Ball event; it must not replace normal routes.
+		assert.equal(account().run.choices.filter(node => node.id !== 'masterballgift').length, 3);
+		assert.equal(account().run.choices.filter(node => node.id === 'masterballgift').length, 1);
 	});
 	it('reweights eligible gifts by 1.25 without changing rarity buckets, including restricted family rewards', () => {
 		const rng = new PRNG([1, 2, 3, 4]), random = n => rng.random(n);

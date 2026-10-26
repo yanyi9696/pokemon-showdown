@@ -1,4 +1,5 @@
 import { trainerCodex } from './trainer-codex';
+import { COLLAPSE_ENTRIES } from '../../sim/rogue-collapse-data';
 import { MOVE_CATEGORIES, moveCategories } from './move-categories';
 import { biomeCodex } from './biome-codex';
 import { createHash } from 'crypto';
@@ -20,6 +21,9 @@ import { FORM_ITEMS } from './form-item-data';
 export type CodexSection = 'guide' | 'blessings' | 'events';
 export const ROGUE_CODEX_SCHEMA = 3;
 const INTRO = [
+	{ title: '幻想崩坏 · 自选挑战', text: '1—5 档开局分别选择 2／4／6／8／10 条不同词条，所有选项公开，本局全部敌人获得所选机制。确认队伍开始冒险后锁定，断线重连不改变；0 档和护符庇佑不启用。我方增益沿用独立配置，敌方不再追加旧版全局六维倍率。已开始的旧局保留原规则至本局结束。' },
+	...COLLAPSE_ENTRIES.map(entry => ({ title: '幻想崩坏 · ' + entry.name, text: entry.text + ' ' + entry.detail })),
+	{ title: '查看祝福中的名称说明', text: '祝福说明中用【】标注招式、特性、道具、宝可梦名称，其中带下划线的名称可悬停或点击查看说明；宝可梦介绍包含属性、特性与种族值。未加括号的普通用词不触发介绍。白银祝福“未来视”可提前查看未来十层内下一处首领区域的敌方阵容，阵容随存档保存。' },
 	{ title: '幻想杯是什么？', text: '在熟悉的宝可梦回合制对战中，加入幻想形态、新特性、新道具，以及部分招式与规则调整。同一只宝可梦在这里可能有全新的打法。下面可以按类别查阅。' },
 	{ title: '这座塔怎么玩？', text: '选择初始伙伴，带着偏爱卡片向 200 层前进。每层挑选路线，在战斗、捕捉、事件与补给间作出选择。打败首领、收集祝福，逐步养成自己的队伍。' },
 	{ title: '队伍与资源', text: '右侧“队伍及背包”可以查看伙伴、换招、装备道具和使用补给。HP、PP 与异常状态会带到下一场；野怪掉落的贵重物品要到商店换金币，训练家战斗则发放奖金。' },
@@ -67,7 +71,9 @@ function buildFantasyGuide() {
 			'特定幻想宝可梦携带适配纯晶时，还能进行气场爆发；气场爆发占用本场 Z 招式机会，随后无法再释放 Z 招式。' },
 		{ id: 'typegems', name: '十八属性宝石', text: '使用对应属性的招式时，该次威力提升 30%，随后消耗。失去宝石后，本场对应属性招式威力仍提升 10%，换下再上场也保留。' },
 	];
-	return { intro: INTRO, beginner: BEGINNER_GUIDE, itemNotes, moveCategories: MOVE_CATEGORIES, modules: { items, moves, abilities, pokemon } };
+	return { intro: INTRO, beginner: BEGINNER_GUIDE, collapse: COLLAPSE_ENTRIES.map(entry =>
+		({ id: entry.id, name: entry.name, text: entry.text + ' ' + entry.detail })),
+		itemNotes, moveCategories: MOVE_CATEGORIES, modules: { items, moves, abilities, pokemon } };
 }
 
 /** No mutation and no hidden effect text in locked entries. Loaded only when opening a codex. */

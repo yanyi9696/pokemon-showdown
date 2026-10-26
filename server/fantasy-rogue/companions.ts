@@ -1,3 +1,4 @@
+import { gainAffection, affectionChat, AFFECTION_RULES } from './affection';
 import { Dex } from '../../sim/dex';
 import { COMPANIONS, companionSource, companionOwned, strongestTypedMember, companionAbilityOptions,
 	syncCompanions, companionHasGift, companionGiftOptions, COMPANION_PREFERENCES, COMPANION_REGIONS, type CompanionID, type RogueCompanion } from '../../sim/rogue-companions';
@@ -20,12 +21,13 @@ export function grantCompanion(run: RogueRun, id: CompanionID) {
 	syncCompanions(run.blessings!, run.team);
 	(run.notices ||= []).push(`${companionSource(id)}加入了旅途。`);
 }
-function speak(c: RogueCompanion, kind: 'chat' | 'praise', random: RogueRandom) {
+function speak(run: RogueRun, c: RogueCompanion, kind: 'chat' | 'praise', random: RogueRandom) {
 	const pool = COMPANION_DIALOGUE[c.id][kind], key = kind === 'chat' ? 'chatSeen' : 'praiseSeen';
 	if ((c[key]?.length || 0) >= pool.length) c[key] = [];
 	const seen = c[key] ||= [], candidates = pool.map((_, i) => i).filter(i => !seen.includes(i));
 	const index = candidates[random(candidates.length)]; seen.push(index);
-	c.message = pool[index]; c.messageAt = Date.now(); c.smile = kind === 'chat' ? 'chat' : 'approval';
+	c.message = kind === 'chat' ? affectionChat(run, c.id, pool[index]) : pool[index];
+	c.messageAt = Date.now(); c.smile = kind === 'chat' ? 'chat' : 'approval';
 }
 export type CompanionOption = { id: string, name: string, disabled?: boolean, region?: string, preference?: string };
 export function companionOptions(run: RogueRun, options: CompanionOption[] = []): CompanionOption[] {
@@ -72,7 +74,7 @@ export function companionView(run: RogueRun, options: CompanionOption[] = []) {
 			smile: c.smile === 'approval' ? approvedHere :
 			c.smile === 'chat' && Date.now() - (c.messageAt || 0) < 6000,
 			message: c.smile === 'approval' && !approvedHere ? undefined : c.message,
-			giftCounter: companionHasGift(c.id),
+			giftCounter: false,
 			giftOptions: c.giftPending && !c.rewarded ? companionGiftOptions(c.id) : [],
 			zMove: companionZDefinition(c.id), zGrant: run.blessings?.companionZ,
 			zCandidates: companionZCandidates(run.blessings!, run.team, c.id).map(mon => ({ id: mon.id, species: mon.set.species })),
@@ -97,7 +99,7 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 	}
 	const c = run.blessings?.companions?.find(entry => entry.id === command.member && !entry.away);
 	if (!c) throw new Error('这位训练家尚未同行。');
-	if (command.value === 'chat') { speak(c, 'chat', random); return; }
+	if (command.value === 'chat') { speak(run, c, 'chat', random); return; }
 	if (command.value === 'advice') {
 		if (!['event', 'choose', 'reward'].includes(run.phase) || !companionOptions(run, options).length) throw new Error('当前没有可以咨询的选项。');
 		c.consulted = consultationKey(run);
@@ -141,21 +143,13 @@ export function recordCompanionPreference(run: RogueRun, options: CompanionOptio
 		const stoneFinished = c.id === 'olivia' && event?.id === 'stones' && choice === 'stonefinish' && !!event.stonesOpened;
 		const recommended = companionRecommendation(run, c, options) === choice;
 		if (c.counted?.includes(key) || !stoneFinished && !recommended) continue;
-		c.eventKey = key; speak(c, 'praise', random);
+		c.eventKey = key; speak(run, c, 'praise', random);
 		// Olivia approves opening a stone immediately, but one completed visit counts only once.
 		if (c.id === 'olivia' && event?.id === 'stones' && !stoneFinished) continue;
 		(c.counted ||= []).push(key);
 		if (['iono', 'canari'].includes(c.id) && run.node?.kind === 'event') event!.streamerBonus = c.id;
-		if (!companionHasGift(c.id)) continue;
-		if (c.id === 'lana' && !(event?.id === 'fishing' && choice === 'fishstart')) continue;
-		if (c.id === 'olivia' && choice !== 'stonefinish') continue;
 		c.preferences++;
-		if (c.preferences >= 15 && !c.rewarded && !c.giftPending) {
-			c.giftPending = true;
-			const gifts = companionGiftOptions(c.id);
-			if (gifts.length === 1) giveCompanionGift(run, c, gifts[0].id);
-			else (run.notices ||= []).push(companionSource(c.id) + '同行训练家的赠礼准备好了，请在同行面板中挑选一件。');
-		}
+		gainAffection(run, c.id, AFFECTION_RULES.preference, 'preference:' + key);
 	}
 }
 export function giveCompanionGift(run: RogueRun, c: RogueCompanion, item: string) {

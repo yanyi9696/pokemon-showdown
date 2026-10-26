@@ -75,7 +75,7 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 	const team = structuredClone(run.team);
 	const box = structuredClone(run.box || []);
 	for (const mon of [...team, ...box]) {
-		mon.difficulty = { tier: run.difficulty || 0, floor: 200, card: true };
+		mon.difficulty = { tier: run.difficulty || 0, floor: 200, card: true, version: ROGUE_DIFFICULTY_VERSION };
 		rebuildMember(mon, run.boosts);
 	}
 	const detailsRun = { ...run, team, box };

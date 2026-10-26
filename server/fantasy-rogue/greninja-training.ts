@@ -4,6 +4,7 @@ import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
 import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { gainExperience, initializeExperience } from './progression';
 import { eventOpening } from './event-text';
+import { grantSystem } from './blessings';
 import type { RogueRun } from './types';
 
 export interface GreninjaTraining { member?: RoguePokemon; floor: number; returned?: boolean }
@@ -60,7 +61,7 @@ export function chooseGreninjaEvent(run: RogueRun, choice: string) {
 		}
 		trip.returned = true; delete trip.member;
 		run.bag.greninjaashz = (run.bag.greninjaashz || 0) + 1;
-		run.zUnlocked = true;
+		grantSystem(run, 'z', '护林员的赠礼', false);
 		event.result = [`两道水影从树梢跃下。你的伙伴完成了 ${levels} 层旅途间的修行，等级提升至 Lv.${mon.set.level}（最高 100 级），带着原本的养成与招式回来了。`,
 			'小智版甲贺忍蛙将【智蛙 Z】交到你手中。Z 招式系统已解锁；幻想甲贺忍蛙携带它后，登场时即可切换为小智版形态，并以【飞水手里剑】发动专属 Z 招式。'];
 	}

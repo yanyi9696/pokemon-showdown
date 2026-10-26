@@ -126,13 +126,13 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 		const c = r.blessings.companions[0]; c.ability = 'galvanize';
 		assert(assignedExtraAbilities(r.team[0], r.team, r.blessings).includes('galvanize'));
 		const options = [{ id: 'investigate', name: '探索' }, { id: 'fight', name: '对战' }];
-		for (let i = 0; i < 16; i++) {
+		for (let i = 0; i < 26; i++) {
 			r.node.event = { id: 'exclusiveclue', key: 'story' + i, stage: 'choice' };
 			companions.recordCompanionPreference(r, options, 'fight', () => 0);
 			r.node.event.key += 'branch'; companions.recordCompanionPreference(r, options, 'fight', () => 0);
 		}
 		assert(companions.companionView(r, options)[0].smile);
-		assert.equal(c.preferences, 16); assert(c.rewarded); assert.equal(r.bag.magnet, 1);
+		assert.equal(c.preferences, 26); assert.deepEqual(r.trainerBonds.iono.gifts, [50]); assert.equal(r.bag.magnet, 1);
 		r.bag.potion = 0;
 		for (let i = 0; i < 10; i++) {
 			const before = { money: r.money, bag: { ...r.bag }, shards: r.blessings.shards };
@@ -141,7 +141,7 @@ describe('Fantasy Rogue specialist shops, legend tracks and streamer companions'
 		}
 		assert.equal(r.bag.potion, 12); assert.equal(c.rewardRemainder.potion, 5);
 		r.node.kind = 'trade'; r.node.event.key = 'auction'; r.node.event.companionKey = 'auction';
-		companions.recordCompanionPreference(r, options, 'investigate', () => 0); assert.equal(c.preferences, 16);
+		companions.recordCompanionPreference(r, options, 'investigate', () => 0); assert.equal(c.preferences, 26);
 		const before = { money: r.money, bag: { ...r.bag } }; r.bag.potion += 10;
 		companions.boostCompanionEventRewards(r, before); assert.equal(r.bag.potion, 22);
 	});

@@ -77,7 +77,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	it('offers all migrated opening-only blessings and excludes other restricted floors', () => {
 		cmd('start', { starters: ['bulbasaur'] });
 		const run = account().run, eligible = new Set(blessingCandidates(run, content).map(b => b.id));
-		const requiresParty = new Set(['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound', 'killlagirl', 'ghidorah', 'galarlegend', 'originaldragon']);
+		const requiresParty = new Set(['latebloom', 'singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound', 'killlagirl', 'ghidorah', 'galarlegend', 'originaldragon']);
 		assert(!eligible.has('killlagirl'), 'requires both robes and floor 150');
 		assert(!eligible.has('ghidorah'), 'requires a Hydreigon in the party');
 		assert(!eligible.has('galarlegend'), 'requires Eternatus in the party');
@@ -110,6 +110,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 				a.run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 5), a.run.boosts);
 			});
 			if (def.family === 'rulebreaker') store.change(user, a => { a.run.team[0].extraAbilities = ['moldbreaker']; });
+			if (def.family === 'latebloom') store.change(user, a => { a.run.team[0] = createRoguePokemon(set('Gible', 'Sand Veil', 5), a.run.boosts); });
 			if (def.family === 'compound') store.change(user, a => { a.run.team[0] = createRoguePokemon(set('Paras', 'Effect Spore', 5), a.run.boosts); });
 			if (def.family === 'ghidorah') store.change(user, a => {
 				a.run.team[0] = createRoguePokemon(set('Hydreigon', 'Levitate', 64), a.run.boosts);

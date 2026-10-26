@@ -34,7 +34,8 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 			let battles = 0;
 			try {
 				while (view()?.key) cmd('storynext', { value: view().key });
-				cmd('start', { starters: ['bulbasaur'], difficulty, useSpirit: !!spirit, testSpirit: spirit });
+				cmd('start', { starters: ['bulbasaur'], difficulty, useSpirit: !!spirit, testSpirit: spirit,
+					collapse: difficulty === 5 ? require('../../dist/sim/rogue-collapse-data').COLLAPSE_ENTRIES.map(e => e.id) : [] });
 				for (let steps = 0; steps < 3000; steps++) {
 					const run = account().run;
 					floors.add(run.floor);

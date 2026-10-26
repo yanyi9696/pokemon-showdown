@@ -1,4 +1,6 @@
-import { advancedDifficulty } from '../../sim/rogue-difficulty';
+import { rollEchoShiny } from './echo';
+import { giveTeraShards, migrateTeraShards, teraShardID } from './tera-shards';
+import { qualityTier, rareEncounterScale } from './encounter-quality';
 import { rivalBlessingAllowed } from './rivals';
 import { blessingSpeciesID } from '../../sim/rogue-species-identity';
 import { LATE_BLOOMERS, lateBloomer, finalLateBloomer, teamBlessingStats, lateBloomerSynergy } from '../../sim/rogue-late-bloomers';
@@ -22,11 +24,11 @@ import { ROGUE_BLESSINGS, BLESSING_TYPES, EMBLEM_PREFIX, EMBLEM_MOVES, FANTASY_B
 	TYPE_EVOLUTION_EXTRAS, blessing, blessingTitle, blessingLevelCost, addPsychicCharge, ownsBlessing, emblemType,
 	blessingStage, blessingCoins, medicRecovery, treasureBudget, lateBlessingReward, OVERTIME_ABILITIES, emblemDescription, taskRewardTier,
 	type BlessingEffects, type OwnedBlessing, type BlessingDefinition } from '../../sim/rogue-blessing-data';
-import { createBlessingRound, refreshBlessingOption, chooseBlessingOption,
+import { createBlessingRound, refreshBlessingOption, chooseBlessingOption, rerollBlessingQuality, fixedBlessingQuality,
 	type BlessingRound, type BlessingFloor } from './blessing-selection';
 import { createRoguePokemon, rebuildMember, rememberMove, rememberPastLevelMoves,
 	initializeExperience, evolveMember, gainExperience } from './progression';
-import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
+import { makeEncounterSet, randomEncounterIVs, randomEncounterAbility } from './encounter-sets';
 import type { RogueRandom } from './biome-pools';
 import { recordStarterTraits, recordStarterMoves } from './starter-traits';
 import { ELITE_BOSS_FLOORS, fixedFloor } from './content';
@@ -34,7 +36,7 @@ import { convertSpiritItem } from './spirits';
 import { drawGiftSpecies } from './gifts';
 import { lowerToEligibleStage } from './evolution';
 import { prepareEliteEscorts } from './elite-escorts';
-import { permanentMemberTypes, strongestDragon, memberStatTotal, strongestBlessingMember,
+import { permanentMemberTypes, strongestDragon, memberStatTotal, strongestBlessingMember, strongestSniperMember,
 	TARGET_BLESSING_ABILITIES, POWER_CHOICE_ABILITIES, canGrantExtraAbility, dragonKingAbilityOptions, dragonKingActive } from '../../sim/rogue-blessing-permanent';
 import { tonicItems } from './blessing-consumables';
 import { blessingDisplay } from './blessing-text';
@@ -54,7 +56,8 @@ const regis = ['Regirock', 'Regice', 'Registeel', 'Regieleki', 'Regidrago'];
 const regiTypes = ['Rock', 'Ice', 'Steel', 'Electric', 'Dragon'];
 function requireRule(ok: unknown, message: string): asserts ok { if (!ok) throw new Error(message); }
 export interface BlessingReward {
-	id: string; title: string; kind: 'gift' | 'toolbox' | 'target' | 'starter' | 'ability' | 'tera' | 'stone' | 'system' | 'compound' | 'solo';
+	id: string; title: string; kind: 'gift' | 'toolbox' | 'item' | 'target' | 'starter' | 'ability' | 'tera' | 'stone' | 'system' | 'systemfallback' | 'compound' | 'solo';
+	text?: string;
 	compound?: { member?: string, final?: string };
 	pokemon?: RoguePokemon; options?: string[]; blessing?: string;
 	ability?: string;
@@ -70,6 +73,7 @@ export interface RogueBlessings extends BlessingEffects {
 	speedBoostOffered?: boolean;
 	godrobeGiftUpdated?: boolean;
 	version: 1; levels: number; bossLevels?: number; round?: BlessingRound;
+	qualityRerolled?: boolean;
 	/** Only new adventures opt in; never insert an opening round into an existing save. */
 	beforeAdventure?: boolean;
 	prayer?: { floor: BlessingFloor, changed: boolean, team: string[] };
@@ -97,21 +101,38 @@ export interface RogueBlessings extends BlessingEffects {
 	beforeGym?: boolean;
 }
 export const ROGUE_SYSTEM_NAMES: Record<string, string> = { mega: '超进化', gmega: '超巨进化', z: 'Z 招式', tera: '太晶化' };
-export function grantSystem(run: RogueRun, system: string, title: string) {
+export const hasSystem = (run: RogueRun, system: string) => !!run[`${system}Unlocked` as 'megaUnlocked' | 'gmegaUnlocked' | 'zUnlocked' | 'teraUnlocked'];
+export function systemItemGift(run: RogueRun, system: string, title: string) {
 	requireRule(Object.prototype.hasOwnProperty.call(ROGUE_SYSTEM_NAMES, system), '系统类型无效。');
 	const state = normalizeBlessings(run);
-	if (system === 'mega') run.megaUnlocked = true;
 	if (system === 'gmega') {
-		run.gmegaUnlocked = true;
 		give(run, 'gmegawishingstar');
-		(run.notices ||= []).push('超巨进化已解锁，获得超巨进化许愿星 ×1。准备好队伍后再进入战斗。');
+		(run.notices ||= []).push('获得【超巨进化许愿星】×1，已放入背包。');
 		return;
 	}
-	if (system === 'z') run.zUnlocked = true;
-	if (system === 'tera') run.teraUnlocked = true;
 	state.pending.push({ id: randomUUID(), title,
 		kind: system === 'tera' ? 'tera' : 'stone', options: system === 'tera' ? Object.keys(BLESSING_TYPES) :
 		dex.items.all().filter(item => system === 'mega' ? !!item.megaStone && item.id !== 'gmegawishingstar' : !!item.zMove).map(item => item.id) });
+}
+export function duplicateSystemGift(run: RogueRun, system: string | undefined, title: string) {
+	const systems = Object.keys(ROGUE_SYSTEM_NAMES);
+	normalizeBlessings(run).pending.push({ id: randomUUID(), title: title + ' · 换一份心意', kind: 'systemfallback',
+		text: '“既然你已经有了，那我就给你点别的奖励吧。”',
+		options: [...systems.filter(id => !hasSystem(run, id)).map(id => `unlock:${id}`),
+			...(system ? [system] : systems).map(id => `item:${id}`), 'shards', 'treasure'] });
+}
+/** All reward producers share this duplicate check; initial permanent unlocks never call it. */
+export function grantSystem(run: RogueRun, system: string, title: string, withItem = true) {
+	requireRule(Object.prototype.hasOwnProperty.call(ROGUE_SYSTEM_NAMES, system), '系统类型无效。');
+	if (hasSystem(run, system)) { duplicateSystemGift(run, system, title); return; }
+	run[`${system}Unlocked` as 'megaUnlocked' | 'gmegaUnlocked' | 'zUnlocked' | 'teraUnlocked'] = true;
+	if (withItem) systemItemGift(run, system, title);
+}
+function systemFallbackName(id: string) {
+	const [kind, system] = id.split(':');
+	const item = ({ mega: '自选超级进化石 ×1', z: '自选 Z 纯晶 ×1', tera: '自选属性太晶碎片 ×50', gmega: '超巨进化许愿星 ×1' } as Record<string, string>)[system];
+	return kind === 'unlock' ? `解锁${ROGUE_SYSTEM_NAMES[system]}，获得${item}` : kind === 'item' ? `额外获得${item}` :
+		id === 'shards' ? '幻想碎片 ×100' : '丰厚的藏宝袋 · 双倍物资预算';
 }
 export function gymSystemGift(run: RogueRun) {
 	const state = normalizeBlessings(run);
@@ -121,7 +142,11 @@ export function gymSystemGift(run: RogueRun) {
 		state.beforeGym = true;
 		state.pending.push({ id: randomUUID(), title: '馆主的赠礼 · 选择解锁一种系统', kind: 'system', options });
 		run.phase = 'blessing';
-	} else { run.phase = 'ready'; run.notices = ['四种系统均已解锁，馆主期待与你的对战。']; }
+	} else {
+		state.beforeGym = true;
+		duplicateSystemGift(run, undefined, '馆主的赠礼');
+		run.phase = 'blessing';
+	}
 }
 export function normalizeBlessings(run: RogueRun) {
 	const state = run.blessings ||= { version: 1, owned: [], levels: 0, pending: [], completed: [], settled: [],
@@ -238,6 +263,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 		if (def.family === 'reorganizer' && !run.team.some(mon => (mon.stars || 1) < 5)) return false;
 		if (def.family === 'ghidorah' && !strongestMember(run.team, 'Hydreigon')) return false;
 		if (def.family === 'youngprodigy' && has('latebloom') || def.family === 'latebloom' && has('youngprodigy')) return false;
+		if (def.family === 'latebloom' && !run.team.some(mon => !mon.egg && lateBloomer(mon.set.species))) return false;
 		if (def.family === 'bignumber' && has('supernumber')) return false;
 		if (def.family === 'potara' && has('sololeveling') || def.family === 'sololeveling' && has('potara')) return false;
 		if (def.family === 'sololeveling' && !run.team.some(p => !p.egg && !p.fixedLevel)) return false;
@@ -315,7 +341,7 @@ export function reservationGiftPool(run: RogueRun, content: RogueContent, system
 }
 export function drawBlessingGift(run: RogueRun, content: RogueContent, random: RogueRandom,
 	options: { type?: string, uncaught?: boolean, fantasy?: boolean, species?: string, pool?: string[], eligibleStage?: boolean,
-		stars?: number, level?: number, perfect?: number, strong?: boolean, legendaryReward?: boolean, } = {}) {
+		stars?: number, level?: number, perfect?: number, strong?: boolean, legendaryReward?: boolean, eliteIVs?: boolean } = {}) {
 	const level = options.level || (run.floor === 1 ? 5 : Math.max(3, Math.min(100, Math.ceil(run.floor / 2))));
 	let name = options.species && (options.eligibleStage === false ? options.species : lowerToEligibleStage(options.species, level));
 	if (!name) {
@@ -324,18 +350,20 @@ export function drawBlessingGift(run: RogueRun, content: RogueContent, random: R
 			randomSpeciesEligible(s, level, options.legendaryReward) && (!options.type || dex.species.get(s).types.includes(options.type)) &&
 			(!options.uncaught || !run.blessings?.caught.includes(toID(s))));
 		requireRule(pool.length, '当前等级没有符合条件的赠送伙伴。');
-		name = drawGiftSpecies(pool, run.startCard, random, options.strong);
+		name = drawGiftSpecies(pool, run.startCard, random, options.strong, rareEncounterScale(run));
 	}
-	const ivs = randomEncounterIVs(random);
+	const ivs = randomEncounterIVs(random, options.eliteIVs !== false, qualityTier(run));
 	const stats = [...ROGUE_STATS];
 	for (let i = 0; i < (options.perfect || 0); i++) ivs[stats.splice(random(stats.length), 1)[0]] = 31;
 	const set = makeEncounterSet(name, level, ivs);
+	if (qualityTier(run) !== undefined) set.fantasyRogueIVAdjusted = true;
 	const species = dex.species.get(name), natures = dex.natures.all();
 	set.nature = natures[random(natures.length)].name;
 	set.gender = species.gender || (random(256) < species.genderRatio.F * 256 ? 'F' : 'M');
 	const abilities = Object.values(species.abilities).filter(Boolean);
-	set.ability = abilities[random(abilities.length)];
-	set.shiny = random(1000) < (run.spirit === 'hooh' ? 20 : 2) + (!options.species && run.startCard === 'all' ? 1 : 0);
+	set.ability = qualityTier(run) === undefined ? abilities[random(abilities.length)] :
+		randomEncounterAbility(name, random, false, qualityTier(run));
+	set.shiny = rollEchoShiny(run, random, (run.spirit === 'hooh' ? 20 : 2) + (!options.species && run.startCard === 'all' ? 1 : 0));
 	set.happiness = 70;
 	const mon = createRoguePokemon(set, run.boosts, randomUUID(), options.stars || 1);
 	mon.joinOrder = normalizeBlessings(run).nextJoin++;
@@ -492,7 +520,7 @@ export function syncBlessingParty(run: RogueRun) {
 		for (let i = 0; i < selected.length; i++) if (selected[i] === toID(mon.set.ability)) selected[i] = defaults[i];
 	}
 	if (has('spiral') && run.floor >= 100 && !state.spiralStone) {
-		state.spiralStone = true; give(run, 'excadrite'); run.megaUnlocked = true;
+		state.spiralStone = true; give(run, 'excadrite'); grantSystem(run, 'mega', '钻头的力量', false);
 		(run.notices ||= []).push('【我的钻头是可以突破天际的】获得龙头地鼠进化石，超进化系统已解锁。');
 	}
 	const young = has('youngprodigy');
@@ -731,11 +759,6 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 	if (ELITE_BOSS_FLOORS.has(run.floor)) state.shards += 10;
 	const trainer = run.node?.encounters[0]?.trainer;
 	if (trainer && ((trainer.role === 'gym' && run.floor >= 100) || ['elitefour', 'champion'].includes(trainer.role))) state.shards += 25;
-	if (trainer?.role === 'gym' && !run.node?.companionLoss && run.floor >= 20 && run.floor <= 160 && run.floor % 20 === 0) {
-		const bonus = advancedDifficulty(run.difficulty) * 2;
-		state.shards += bonus;
-		if (bonus) (run.notices ||= []).push(`${run.difficulty} 档道馆奖励：额外获得幻想碎片 ×${bonus}。`);
-	}
 	if (state.evolution && run.floor % 10 === 0 && run.floor >= 10 && run.floor <= 200) {
 		if ([50, 100, 150].includes(run.floor)) {
 			const paid = state.evolutionCosts ||= [];
@@ -824,7 +847,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		if (def.family === 'godrobe') state.godrobeGiftUpdated = true;
 		const name = def.family === 'spiral' ? 'Excadrill' : def.family === 'godrobe' ? 'Zangoose' : 'Meowstic-F';
 		const level = Math.max(5, Math.min(100, Math.ceil(run.floor / 2)));
-		const mon = createRoguePokemon(makeEncounterSet(name, level, randomEncounterIVs(random)), run.boosts);
+		const mon = createRoguePokemon(makeEncounterSet(name, level, randomEncounterIVs(random, true, qualityTier(run))), run.boosts);
 		if (def.family === 'puregodrobe') mon.set.gender = 'F';
 		if (def.family === 'spiral') { entry.target = mon.id; mon.spiral = 0; }
 		mon.joinOrder = state.nextJoin++; initializeExperience(mon);
@@ -893,9 +916,12 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		}
 	}
 	if (def.family === 'kid') giveEquipment(run, content, random, 'eviolite');
+	if (def.family === 'veteransniper') give(run, 'fantasyscopelens');
 	if (def.family === 'pandoragold') {
 		toolbox(run, random); toolbox(run, random);
-		giveEquipment(run, content, random, FANTASY_BLESSING_ITEMS[random(FANTASY_BLESSING_ITEMS.length)]);
+		for (let i = 0; i < 2; i++) {
+			giveEquipment(run, content, random, FANTASY_BLESSING_ITEMS[random(FANTASY_BLESSING_ITEMS.length)]);
+		}
 	}
 	if (def.family === 'secondchoice') for (const id of ['choiceband', 'choicespecs', 'choicescarf']) giveEquipment(run, content, random, id);
 	if (def.family === 'prayer') state.prayer = { floor: run.floor as BlessingFloor, changed: false, team: run.team.map(mon => mon.id) };
@@ -961,12 +987,13 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 		run.notices = ['已学会新招式，可在队伍的招式栏自由装备。']; return;
 	}
 	if (command.action === 'settera') {
-		requireRule(['choose', 'ready', 'rest', 'reward'].includes(run.phase) && run.teraUnlocked, '请在解锁太晶化后，于对战外调整太晶属性。');
+		migrateTeraShards(run);
+		requireRule(['choose', 'ready', 'rest', 'reward'].includes(run.phase), '请在战斗外调整太晶属性。');
 		const mon = run.team.find(member => !member.egg && member.id === command.member), type = command.value!;
-		requireRule(mon && Object.keys(BLESSING_TYPES).includes(type) && (state.teraShards?.[type] || 0) >= 50,
+		requireRule(mon && Object.keys(BLESSING_TYPES).includes(type) && (run.bag[teraShardID(type)] || 0) >= 50,
 			'需要选择队员并拥有 50 片对应属性的太晶碎片。');
 		requireRule(mon.set.teraType !== type, '该伙伴已经是这个太晶属性。');
-		state.teraShards![type] -= 50; mon.set.teraType = type;
+		run.bag[teraShardID(type)] -= 50; mon.set.teraType = type;
 		run.notices = [`已消耗 50 片${BLESSING_TYPES[type]}太晶碎片，更改伙伴的太晶属性。`]; return;
 	}
 	if (command.action === 'exchangeshards') {
@@ -1003,6 +1030,16 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 		syncBlessingParty(run); return;
 	}
 	requireRule(run.phase === 'blessing', '当前没有待选择的祝福。');
+	if (command.action === 'blessingquality') {
+		requireRule(!state.qualityRerolled, '本局更换品阶的机会已使用。');
+		requireRule(state.round && !state.pending.length && !state.stage, '请先处理当前奖励。');
+		state.round = rerollBlessingQuality(state.round, {
+			floor: state.round.floor, spirit: run.spirit, prayerFloor: state.prayer?.floor,
+			prayerPartyChanged: state.prayer?.changed,
+			killlaReady: !!(ownsBlessing(state, 'godrobe') && ownsBlessing(state, 'puregodrobe') && run.floor >= 150 && !ownsBlessing(state, 'killlagirl')),
+		}, blessingCandidates(run, content), random);
+		state.qualityRerolled = true; return;
+	}
 	if (command.action === 'blessingrefresh') {
 		requireRule(state.round && !state.pending.length && !state.stage, '请先处理当前奖励。');
 		state.round = refreshBlessingOption(state.round, command.slot!, blessingCandidates(run, content), random); return;
@@ -1060,11 +1097,19 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 		} else {
 			requireRule(reward.options!.includes(command.value!), '奖励选项无效。');
 			if (reward.kind === 'toolbox') giveEquipment(run, content, random, command.value!);
-			if (reward.kind === 'stone') give(run, command.value!);
+			if (reward.kind === 'stone' || reward.kind === 'item') give(run, command.value!);
 			if (reward.kind === 'system') grantSystem(run, command.value!, `${ROGUE_SYSTEM_NAMES[command.value!]}已解锁 · 选择配套道具`);
+			if (reward.kind === 'systemfallback') {
+				const [kind, system] = command.value!.split(':');
+				if (kind === 'unlock') {
+					requireRule(!hasSystem(run, system), '这个系统已解锁，请选择另一份奖励。');
+					grantSystem(run, system, '新的力量 · 选择配套道具');
+				} else if (kind === 'item') systemItemGift(run, system, '额外的配套道具');
+				else if (command.value === 'shards') state.shards += 100;
+				else treasure(run, content, random, treasureBudget(run.floor));
+			}
 			if (reward.kind === 'tera') {
-				state.teraShards ||= {};
-				state.teraShards[command.value!] = (state.teraShards[command.value!] || 0) + 50;
+				giveTeraShards(run, command.value!, 50);
 			}
 			if (reward.kind === 'starter') {
 				const mon = drawBlessingGift(run, content, random, { species: command.value });
@@ -1082,7 +1127,7 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 				entry.target = mon.id;
 				if (entry.family === 'devotion') {
 					entry.species = blessingSpeciesID(mon.set.species);
-					const set = makeEncounterSet(mon.set.species, mon.set.level, randomEncounterIVs(random));
+					const set = makeEncounterSet(mon.set.species, mon.set.level, randomEncounterIVs(random, true, qualityTier(run)));
 					const duplicate = createRoguePokemon(set, run.boosts);
 					duplicate.joinOrder = state.nextJoin++; initializeExperience(duplicate);
 					gift(account, run, content, duplicate, reward.title);
@@ -1192,6 +1237,10 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 		if (state.defeated.includes(ko.id)) continue;
 		state.defeated.push(ko.id);
 		const mon = run.team.find(member => member.id === ko.member); if (!mon) continue;
+		if (ko.sniper && ownsBlessing(state, 'veteransniper')) {
+			mon.sniperKOs = Math.min(15, (mon.sniperKOs || 0) + 1);
+			if (mon.sniperKOs === 15) (run.notices ||= []).push(`【老练狙神】${mon.set.species}完成要害射击训练，射击类招式可无视 20% 防御与特防。`);
+		}
 		const star = ownsBlessing(state, 'starquest');
 		if (star?.target === mon.id) {
 			star.progress = (star.progress || 0) + 1;
@@ -1281,6 +1330,7 @@ export function blessingView(run: RogueRun, discovered = false) {
 		groups: CAT_ABILITIES.map(group => group.filter(id => id !== toID(p.set.ability)).map(id => ({ id, name: dex.abilities.get(id).name }))),
 	})) : [];
 	return { ...state,
+		qualityLocked: fixedBlessingQuality(run.spirit),
 		shopping: ownsBlessing(state, 'shoppingupgrade') ? { total: run.shoppingSpend?.total || 0, progress: (run.shoppingSpend?.total || 0) % 3000, threshold: 3000 } : undefined,
 		lateBloom: ownsBlessing(state, 'latebloom') ? lateBloomerSynergy(run.team) : undefined,
 		dragonKing: dragonKingActive(state) && state.dragonKing ? { ...state.dragonKing, species: king?.set.species || '等待龙系伙伴', total: king ? memberStatTotal(king) : 0,
@@ -1295,14 +1345,18 @@ export function blessingView(run: RogueRun, discovered = false) {
 		learning: run.team.filter(mon => !mon.egg).filter(mon => ownsBlessing(state, 'learnall') && !state.learnedMembers?.includes(mon.id) ||
 			ownsBlessing(state, 'inheritmoves') && !state.inheritedLearners?.includes(mon.id))
 			.map(mon => ({ member: mon.id, moves: blessingLearnChoices(mon) })),
+	sniperTraining: ownsBlessing(state, 'veteransniper') ? (() => {
+		const mon = strongestSniperMember(run.team, state);
+		return mon ? { member: mon.id, name: mon.set.species, progress: mon.sniperKOs || 0, required: 15 } : undefined;
+	})() : undefined,
 	owned: state.owned.map(entry => ({ ...entry, ...describe(entry.id, entry.floor),
 		targetName: [...run.team, ...(run.box || [])].find(mon => mon.id === entry.target)?.set.species })),
 	round: state.round && { ...state.round, options: state.round.options.map(option => ({ ...option, ...describe(option.id) })) },
 	stage: state.stage && { ...state.stage, options: state.stage.options.map(id => ({ id, name: upgradeName(id) })) },
 	pending: state.pending.map(reward => reward.kind === 'compound' ? compoundView(run, reward) : ({ ...reward, ...(reward.pokemon?.egg ? { pokemon: eggView(reward.pokemon, run.floor) } : {}), options: reward.options?.map(id => ({ id,
-		name: id === 'skip' ? '队伍已具备这些特性，无需重复赋予，继续冒险' : reward.kind === 'system' ? ROGUE_SYSTEM_NAMES[id] + (state.owned.some(entry => entry.family === `reserve${id}` && !entry.completed) ? '（已预定：战后也会解锁）' : '') :
+		name: reward.kind === 'systemfallback' ? systemFallbackName(id) : id === 'skip' ? '队伍已具备这些特性，无需重复赋予，继续冒险' : reward.kind === 'system' ? ROGUE_SYSTEM_NAMES[id] + (state.owned.some(entry => entry.family === `reserve${id}` && !entry.completed) ? '（已预定：战后也会解锁）' : '') :
 		reward.kind === 'tera' ? BLESSING_TYPES[id] + '太晶碎片 ×50' :
-		reward.kind === 'stone' ? dex.items.get(id).name :
+		['stone', 'item'].includes(reward.kind) ? dex.items.get(id).name :
 		reward.kind === 'ability' ? id === 'hugepower' ? '大力士：攻击 ×2' : '大法师：特攻 ×2' :
 		['target', 'solo'].includes(reward.kind) ? run.team.find(mon => mon.id === id)?.set.species :
 		reward.kind === 'toolbox' ? blessingItems().find(item => item.id === id)?.name || dex.items.get(id).name : id })) })) };

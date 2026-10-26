@@ -1,3 +1,4 @@
+import { rollEchoShiny } from './echo';
 import { randomEncounterAbility } from './encounter-sets';
 import { Dex, toID } from '../../sim/dex';
 import type { RogueAccount, RogueContent, RogueRun } from './types';
@@ -8,6 +9,8 @@ import { eventRewardBudget, eventCost, journeyCoins } from './early-balance';
 import { rebuildMember } from './progression';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
 import { offerEventFragments } from './event-fragments';
+import { qualityTier, rareEncounterScale } from './encounter-quality';
+import { qualityFor, EASY_IV_LIMIT } from '../../sim/rogue-quality';
 
 const dex = Dex.mod('gen9fantasy');
 export const adventureEvent = (id: string) => ['bandits', 'dice', 'fishing'].includes(id);
@@ -93,12 +96,15 @@ function fishingReward(account: RogueAccount, run: RogueRun, content: RogueConte
 		'Mantine', 'Bruxish', 'Corsola', 'Sharpedo', 'Kingdra', 'Dragalge', 'Clawitzer', 'Milotic', 'Gyarados',
 		'Gorebyss', 'Huntail', 'Barraskewda', 'Drednaw', 'Jellicent', 'Veluza', 'Golisopod'];
 	const special = ['Suicune', 'Keldeo', 'Manaphy', 'Walking Wake'];
-	const roll = random(1000), pool = hits >= 4 && roll < (hits - 3) * 5 ? special : roll < hits * 70 ? rare : common;
-	const mon = drawBlessingGift(run, content, random, { pool: pool.filter(s => content.unlocks[toID(s)]), level, eligibleStage: true, legendaryReward: pool === special });
-	for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) mon.set.ivs[stat] = Math.max(mon.set.ivs[stat], 20 + hits);
-	if (random(10000) < hits * 5) mon.set.shiny = true;
+	const roll = random(1000), pool = hits >= 4 && roll < (hits - 3) * 5 * rareEncounterScale(run) ? special : roll < hits * 70 ? rare : common;
+	const mon = drawBlessingGift(run, content, random, { eliteIVs: false, pool: pool.filter(s => content.unlocks[toID(s)]), level, eligibleStage: true, legendaryReward: pool === special });
+	const ivFloor = qualityTier(run) === undefined ? 20 + hits :
+		run.difficulty === 'easy' ? 10 : qualityFor(run.difficulty).wild + Math.floor(hits / 3);
+	for (const stat of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) mon.set.ivs[stat] =
+		Math.min(run.difficulty === 'easy' && qualityTier(run) !== undefined ? EASY_IV_LIMIT : 31, Math.max(mon.set.ivs[stat], ivFloor));
+	if (rollEchoShiny(run, random, hits * 5, 10000)) mon.set.shiny = true;
 	const elite = random(100) < 8 + 3 * hits;
-	mon.set.ability = randomEncounterAbility(mon.set.species, random, elite);
+	mon.set.ability = randomEncounterAbility(mon.set.species, random, elite, qualityTier(run));
 	mon.abilityPool = [{ id: toID(mon.set.ability), hidden: toID(dex.species.get(mon.set.species).abilities.H) === toID(mon.set.ability) }];
 	rebuildMember(mon, run.boosts); mon.hp = mon.maxhp;
 	if (elite) {

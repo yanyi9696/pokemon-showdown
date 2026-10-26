@@ -1,3 +1,5 @@
+import { giveTeraShards } from './tera-shards';
+import { gainAffection, AFFECTION_RULES } from './affection';
 import { randomUUID } from 'crypto';
 import { Dex, toID } from '../../sim/dex';
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
@@ -8,6 +10,7 @@ import { drawBlessingGift, gift, normalizeBlessings } from './blessings';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { lowerToEligibleStage } from './evolution';
 import { randomSpeciesEligible } from './species-eligibility';
+import { pickQualitySpecies } from './encounter-quality';
 import { rebuildMember } from './progression';
 import { themedEventTeam } from './event-teams';
 import { giveEgg, hatchEggs, eggEventWeight } from './eggs';
@@ -52,7 +55,7 @@ export function beginTeraSolo(run: RogueRun, random: RogueRandom) {
 	const lv = Math.min(100, level(run) + 5);
 	const pool = dex.species.all().filter(s => s.exists && !s.battleOnly && !s.isNonstandard &&
 		lowerToEligibleStage(s.name, lv) === s.name && randomSpeciesEligible(s.name, lv));
-	const species = pool[random(pool.length)];
+	const species = dex.species.get(pickQualitySpecies(pool.map(s => s.name), random, run));
 	const tera = Object.keys(BLESSING_TYPES)[random(18)], set = makeEncounterSet(species.name, lv, randomEncounterIVs(random, true));
 	set.teraType = tera;
 	run.node!.name = EXPEDITION_NAMES.terasolo;
@@ -133,7 +136,7 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 		startBattle(run, themedEventTeam(choice === 'challenge' ? 'martial' : 'tutor', Math.min(100, level(run) + (choice === 'challenge' ? 8 : 3)), choice === 'challenge' ? 4 : 3, random), choice === 'challenge' ? 2 + Math.floor(run.floor / 75) : 1);
 	} else if (choice === 'restore') {
 		const [items, species] = availableFossils(run)[0]; for (const item of items) run.bag[item]--;
-		gift(account, run, content, drawBlessingGift(run, content, random, { species, level: level(run) }), '化石复活');
+		gift(account, run, content, drawBlessingGift(run, content, random, { eliteIVs: false, species, level: level(run) }), '化石复活');
 		finish(run, '培养舱的光芒渐渐平息。研究员抱来苏醒的伙伴：「它记得远古的力量，也准备好与你踏上新的旅途了。」');
 	} else if (choice.startsWith('snack')) {
 		run.money -= fee(run);
@@ -145,6 +148,7 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 		} else if (choice === 'snackrival') {
 			const r = run.rival!, token = RIVAL_SNACK_GIFTS[r.id];
 			r.affection++;
+			gainAffection(run, r.id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key);
 			give(run, token.item);
 			finish(run, `【同行劲敌 - ${RIVALS[r.id].name}】接过点心，露出了愉快的神情。`, `「${token.line}」你收到了一份${token.name}回礼。`);
 		} else {
@@ -154,7 +158,8 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 			if (c) { c.smile = 'approval'; c.messageAt = Date.now(); c.message = message; }
 			if (person.origin === 'carmine') run.rival!.carmine!.affection++;
 			const token = c ? companionGiftOptions(c.id)[0] : TRAVELLERS[id].gifts[0];
-			// A snack return is separate from the once-per-run fifteen-choice gift.
+			gainAffection(run, id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key);
+			// A snack return is separate from the once-per-run affection gifts.
 			give(run, token ? toID((dex.items.get(token.id).name)) : 'sitrusberry');
 			finish(run, `【同行训练家 - ${person.name}】接过点心，露出了愉快的神情。`, `「${message}」你也收到了一份${token?.name || '文柚果'}回礼。`);
 		}
@@ -175,8 +180,8 @@ export function settleExpedition(run: RogueRun, won: boolean) {
 		for (const mon of run.team) if (!mon.egg) { mon.stars = Math.min(5, (mon.stars || 1) + 1); rebuildMember(mon, run.boosts); }
 		finish(run, '大师收回伙伴，郑重行礼：「你们配得上更高的星光。」全队星级提升一级，最高五星。');
 	} else if (id === 'terasolo') {
-		const type = run.node!.event!.expedition!.tera!, count = 15 + Math.floor(run.floor / 4), state = normalizeBlessings(run);
-		state.teraShards ||= {}; state.teraShards[type] = (state.teraShards[type] || 0) + count;
+		const type = run.node!.event!.expedition!.tera!, count = 15 + Math.floor(run.floor / 4);
+		giveTeraShards(run, type, count);
 		finish(run, `晶光散去，你收集到${BLESSING_TYPES[type]}属性太晶碎片 ×${count}。`);
 	} else { run.money += fee(run) * 3; give(run, 'ether', 2); finish(run, '「好了好了，算你厉害！」摊主悻悻地交出奖品。你拿回三倍报名费和 PP 单项小补剂 ×2，临走前提醒她要守规则。'); }
 }

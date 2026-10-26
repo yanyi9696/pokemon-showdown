@@ -199,7 +199,7 @@ describe('Rogue full-price recycling, honeymoon progression and Compound V', fun
 		assert.equal(JSON.stringify(run.team), before); assert.deepEqual(snapshot.boosts, run.boosts);
 		assert.deepEqual(snapshot.growth, run.growth); assert(snapshot.eventBuff);
 		assert.deepEqual(snapshot.team[0].set, expectedSet);
-		assert.deepEqual(snapshot.team[0], { ...mon, difficulty: { tier: 0, floor: 200, card: true } });
+		assert.deepEqual(snapshot.team[0], { ...mon, difficulty: { tier: 0, floor: 200, card: true, version: 5 } });
 		const detail = snapshot.memberDetails[mon.id];
 		assert.deepEqual(detail.final, mon.stats); assert(detail.baseline.atk < mon.stats.atk);
 		assert.equal(detail.delta.atk, mon.stats.atk - detail.baseline.atk);

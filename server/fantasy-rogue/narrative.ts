@@ -19,8 +19,7 @@ export interface NarrativePage {
 /** Presentation only: rewards and healing must already be committed before this queue is shown. */
 export function queueNarrative(run: RogueRun, pages: NarrativePage[], resume: NonNullable<RogueRun['dialogue']>['resume']) {
 	run.dialogue = { key: randomUUID(), pages: pages.map(page => {
-		const affection = run.rival && page.portrait === run.rival.id ? run.rival.affection :
-			page.portrait === 'carmine' ? run.rival?.carmine?.affection : undefined;
+		const affection = page.portrait ? run.trainerBonds?.[page.portrait]?.score : undefined;
 		return affection === undefined ? page : { ...page, affection };
 	}), resume };
 }

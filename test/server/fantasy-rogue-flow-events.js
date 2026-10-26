@@ -171,7 +171,7 @@ describe('Fantasy Rogue flow, adventures and ability visibility', function () {
 			assert(repaired.starterTraits.bulbasaur.natures.length); assert(repaired.starterTraits.magikarp.natures.length);
 		} finally { store.close(); }
 	});
-	it('keeps a boss card after defeat, applies it only at its boss and consumes it on victory', () => {
+	for (const card of ['guard', 'speed']) it('keeps ' + card + ' after defeat, applies it only at its boss and consumes it on victory', () => {
 		const store = new RogueStore(':memory:');
 		try {
 			const engine = new RogueEngine(store, require('../fixtures/fantasy-rogue').content(), () => 0), user = 'mentorflow';
@@ -179,15 +179,15 @@ describe('Fantasy Rogue flow, adventures and ability visibility', function () {
 			const cmd = (action, extra = {}) => engine.command(user, {id: randomUUID(), revision: saved().revision, action, ...extra});
 			commandAfterOpening(engine, user, {id: randomUUID(), revision: 0, action: 'start', starters: ['bulbasaur']});
 			cmd('select', {value: 'grass'});
-			store.change(user, a => {a.run.mentorCard = {floor: 10, kind: 'guard'};});
+			store.change(user, a => {a.run.mentorCard = {floor: 10, kind: card};});
 			cmd('battle'); assert.equal(engine.battleState(user).mentorCard, undefined);
 			store.change(user, a => {delete a.run.battle; a.run.floor = 9; a.run.phase = 'rest'; a.run.mentorOffer = 10;});
-			cmd('mentorcard', {value: 'guard'}); cmd('continue'); cmd('battle');
-			assert.equal(engine.battleState(user).mentorCard, 'guard');
+			cmd('mentorcard', {value: card}); cmd('continue'); cmd('battle');
+			assert.equal(engine.battleState(user).mentorCard, card);
 			let run = saved().run;
 			engine.settle(user, run.battle.token, {encounterId: run.battle.encounterId, won: false, team: run.team, bag: run.bag});
-			assert.deepEqual(saved().run.mentorCard, {floor: 10, kind: 'guard'});
-			engine.migrate(user); cmd('battle'); assert.equal(engine.battleState(user).mentorCard, 'guard');
+			assert.deepEqual(saved().run.mentorCard, {floor: 10, kind: card});
+			engine.migrate(user); cmd('battle'); assert.equal(engine.battleState(user).mentorCard, card);
 			run = saved().run;
 			engine.settle(user, run.battle.token, {encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag});
 			assert.equal(saved().run.floor, 11); assert.equal(saved().run.mentorCard, undefined);
@@ -233,7 +233,7 @@ describe('Fantasy Rogue flow, adventures and ability visibility', function () {
 			const mon = battle.p1.active[0], info = mon.getSwitchRequestData().rogueAbilityInfo;
 			assert.deepEqual(info.abilities, ['roguegreatmage', 'hugepower']);
 			assert.equal(mon.getStat('spa'), mon.storedStats.spa * 2); assert.equal(mon.getStat('atk'), mon.storedStats.atk * 2);
-			assert.equal(mon.getStat('def'), battle.modify(mon.storedStats.def, 1.9));
+			assert.equal(mon.getStat('def'), battle.modify(mon.storedStats.def, 2));
 			battle.sendUpdates(); const index = battle.log.findIndex(line => line.startsWith('|-rogueinfo|'));
 			assert(index > 0); assert.equal(battle.log[index - 1], '|split|p1'); assert.equal(battle.log[index + 1], '');
 			mon.addVolatile('gastroacid'); assert.equal(rogueAbilityInfo(mon).active, false);
@@ -251,14 +251,14 @@ describe('Fantasy Rogue flow, adventures and ability visibility', function () {
 		const baseline = makeBattle([], undefined, 'Immunity'), boosted = makeBattle([], card, 'Immunity');
 		try {
 			const source = boosted.p1.active[0], base = baseline.p1.active[0];
-			assert.equal(source.getStat('def'), boosted.modify(base.getStat('def'), card === 'guard' ? 1.9 : card === 'balanced' ? 1.6 : 1.4));
+			assert.equal(source.getStat('def'), boosted.modify(base.getStat('def'), card === 'guard' ? 2 : card === 'balanced' ? 1.6 : 1.45));
 			assert.equal(source.getStat('spe'), boosted.modify(base.getStat('spe'), card === 'balanced' ? 1.3 : 1));
 			baseline.randomizer = boosted.randomizer = n => n;
 			const damage = boosted.damage(boosted.actions.getDamage(source, boosted.p2.active[0], 'tackle'),
 				boosted.p2.active[0], source, boosted.dex.getActiveMove('tackle'));
 			const normal = baseline.damage(baseline.actions.getDamage(base, baseline.p2.active[0], 'tackle'),
 				baseline.p2.active[0], base, baseline.dex.getActiveMove('tackle'));
-			assert(Math.abs(damage / normal - (card === 'attack' ? 1.8 : card === 'balanced' ? 1.6 : 1.4)) < 0.08);
+			assert(Math.abs(damage / normal - (card === 'attack' ? 1.9 : card === 'balanced' ? 1.6 : 1.45)) < 0.08);
 		} finally { baseline.destroy(); boosted.destroy(); }
 	});
 });

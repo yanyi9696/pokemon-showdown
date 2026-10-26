@@ -106,10 +106,10 @@ function mentorPages(run: RogueRun): Page[] {
 		page('stranger', '楼梯前的提醒', `黑袍老人坐在休整处，见你走来，抬手指了指楼梯。「下一层${elite ? '是幻想精英' : '有强敌在等你'}，可比路上的对手难对付。先把伙伴照顾好，招式和道具也别忘了检查。」${levels ? `目前祝福使固定首领额外提高 ${levels} 级，请留意队伍等级。` : ''}`),
 		...(roster ? [{ ...page('arena', `第 ${run.floor + 1} 层 · 对手预告`,
 			`「下一层等着你的是${roster.avatar ? roster.name : '这些宝可梦'}。${elite ? '两只同属性跟班先登场且不会主动交换，之后才是幻想精英。跟班沿用本层普通精英等级，仅受普通遭遇的祝福加级；幻想精英受固定首领加级。' : ''}记住这些面孔，想好应对，再去挑战。」`, '黑袍老人'), roster }] : []),
-		page('stranger', '准备好了再出发', '「从这三张里选一张吧。它会帮你应付下一层的首领，战胜对手后就会消散。」老人把卡片摆开。「先照顾好伙伴，准备好了再上楼。」', '黑袍老人'),
+		page('stranger', '准备好了再出发', '「从这四张里选一张吧。它会帮你应付下一层的首领，战胜对手后就会消散。」老人把卡片摆开。「先照顾好伙伴，准备好了再上楼。」', '黑袍老人'),
 	];
 }
-function bossRoster(run: RogueRun, floor: number) {
+export function bossRoster(run: RogueRun, floor: number) {
 	const node = run.bossPreviews?.[floor];
 	if (!node) return undefined;
 	const trainer = node.encounters[0]?.trainer;
@@ -219,8 +219,8 @@ export function bossVictoryPages(run: RogueRun): NarrativePage[] {
 function gymGiftPages(run: RogueRun): Page[] {
 	const trainer = run.node?.encounters[0]?.trainer;
 	if (run.megaUnlocked && run.gmegaUnlocked && run.zUnlocked && run.teraUnlocked) {
-		return bossIntroPages(run).concat([{ ...page('arena', '准备好再开始',
-			'四种系统都已解锁。你可以先调整队伍，准备好了再开始对战。'), avatar: trainer?.avatar, portrait: trainer?.id, expression: 'approval' }]);
+		return [...trainerReunionPages(run, trainer?.id || ''), { ...page('arena', '馆主的赠礼',
+			'“四种力量你都已经掌握了啊。既然这样，我就给你点别的奖励吧。挑一份用得上的，照顾好你的伙伴。”', trainer?.name), avatar: trainer?.avatar, portrait: trainer?.id, expression: 'approval' }];
 	}
 	return [...trainerReunionPages(run, trainer?.id || ''), ...[page('arena', '第一百层 · 馆主的赠礼',
 		GYM_GIFT_LINES[trainer?.id || ''] || '能来到第一百层，已经证明了你们的实力。开战之前，选一种新的力量吧。', trainer?.name),

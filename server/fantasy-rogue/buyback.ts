@@ -10,7 +10,7 @@ export function baseRecyclePrice(item: RogueItem): number {
 	if (item.kind === 'mint') return 2000;
 	if (item.kind === 'emblem') return 4000;
 	if (item.kind === 'tonic') return 3000;
-	if (item.id === 'masterball') return 15000;
+	if (item.id === 'masterball' || item.kind === 'terashard') return 0;
 	if (item.id === 'gmegawishingstar') return 8000;
 	if (item.kind === 'held') return 5000;
 	return 1000;
@@ -18,7 +18,7 @@ export function baseRecyclePrice(item: RogueItem): number {
 export function recycleOffers(run: RogueRun, content: RogueContent) {
 	const fullPrice = run.node?.trade?.kind === 'buyback';
 	return Object.keys(run.bag).filter(id => run.bag[id] > 0).map(id => inventoryItem(content, id))
-		.filter((item): item is RogueItem => !!item && (fullPrice || item.kind === 'treasure'))
+		.filter((item): item is RogueItem => !!item && item.id !== 'masterball' && item.kind !== 'terashard' && (fullPrice || item.kind === 'treasure'))
 		.map(item => {
 			const premium = run.node?.trade?.kind === 'mushroom' && item.id.endsWith('mushroom');
 			return { ...item, recyclePrice: fullPrice ? baseRecyclePrice(item) :

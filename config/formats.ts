@@ -18,6 +18,7 @@ The column value will be ignored for repeat sections.
 */
 
 import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/visuals';
+import { collapseResidual, recordCollapseDamage, showCollapse } from '../sim/rogue-collapse';
 import { drainPureRobe } from '../sim/fantasy-rogue-awakening';
 import { recordEvolutionHit, resetEvolutionDamageOnFaint } from '../sim/rogue-evolution-progress';
 import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, startRogueArea } from '../sim/fantasy-rogue';
@@ -38,9 +39,10 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
 		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
 		onBegin() { initializeRogueBattle(this); },
-		onBattleStart() { startRogueArea(this); startRogueSpirit(this); },
+		onBattleStart() { startRogueArea(this); startRogueSpirit(this); showCollapse(this); },
 		onResidualOrder: 100,
-		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
+		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); collapseResidual(this); },
+		onAfterSubDamage(damage, target, source, move) { recordCollapseDamage(target, source, move, damage, true); },
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
 			recordEvolutionHit(damage, target, source, move);
@@ -60,7 +62,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			}
 			return blessingEffectiveness(typeMod, target, type, move);
 		},
-		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); },
+		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); showCollapse(this); },
 		onBeforeTurn(pokemon) { megaRogueBoss(pokemon); },
 		onTrapPokemon(pokemon) {
 			if ((pokemon.side.id === 'p2' || pokemon.side.id === 'p4') && (this.fantasyRogue?.wild ||
@@ -71,7 +73,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			if (pokemon.side.id === 'p2' && this.fantasyRogue?.escortCount ||
 				isRogueBoss(pokemon) && pokemon.baseSpecies.name.includes('Mewtwo')) return false;
 		},
-		onFaint(pokemon, source) { resetEvolutionDamageOnFaint(pokemon); blessingKO(this, pokemon, source); recordRogueDefeat(this, pokemon, false, source); },
+		onFaint(pokemon, source, effect) { resetEvolutionDamageOnFaint(pokemon); blessingKO(this, pokemon, source, effect); recordRogueDefeat(this, pokemon, false, source); },
 		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},
 	{
@@ -106,7 +108,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			return blessingEffectiveness(typeMod, target, type, move);
 		},
 		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); onFantasySwitchIn.call(this, pokemon); },
-		onFaint(pokemon, source) { blessingKO(this, pokemon, source); },
+		onFaint(pokemon, source, effect) { blessingKO(this, pokemon, source, effect); },
 		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},
 	{

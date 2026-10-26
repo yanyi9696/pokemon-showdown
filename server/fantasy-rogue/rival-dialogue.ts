@@ -1,6 +1,7 @@
 import { RIVALS, CARMINE, type RivalID } from './rival-data';
 import { dialoguePage, type NarrativePage } from './narrative';
 import { RIVAL_CHOICES, RIVAL_CHAT_CHOICES, RIVAL_CHAT_ANSWERS, rivalTopicAnswer, rivalVoicedAnswer } from './rival-responses';
+import { LUSAMINE_FAMILY_SCENES, LUSAMINE_REPLIES } from './lusamine-data';
 
 /** Shared by the playable conversations and their codex replays. No rewards or RNG here. */
 const VOICES: Record<RivalID, { intro: string[], chapters: string[] }> = {
@@ -219,6 +220,7 @@ export function rivalChatOptions(turn = 0) {
 export function rivalChapterReplay(id: RivalID, chapter: number) {
 	type Page = { text: string[], options: { label: string, next: string }[], portrait?: string, battleSkipped?: boolean };
 	const pages: Record<string, Page> = {};
+	const family = (id === 'lillie' || id === 'gladion') && LUSAMINE_FAMILY_SCENES[id][chapter];
 	const opening = rivalOpeningPages(id, chapter, 0);
 	for (const [index, page] of opening.entries()) pages[`intro${index}`] = { text: [page.text], portrait: page.portrait,
 		options: index + 1 < opening.length ? [{ label: '继续对话', next: `intro${index + 1}` }] :
@@ -227,7 +229,18 @@ export function rivalChapterReplay(id: RivalID, chapter: number) {
 		const key = `answer${turn}:${option.id}`;
 		pages[key] = { text: rivalAnswerPages(id, chapter, turn, option.id, 4).map(page => page.text), portrait: id,
 			options: turn === 0 ? rivalConversationOptions(chapter, 1).map(next => ({ label: next.name, next: `answer1:${next.id}` })) :
-			[{ label: chapter === 4 ? '继续旅途闲谈' : chapter === 5 ? '合作完成委托' : '继续这段奇遇', next: 'activity' }] };
+			[{ label: chapter === 4 ? '继续旅途闲谈' : chapter === 5 ? '合作完成委托' : '继续这段奇遇', next: family ? 'family0' : 'activity' }] };
+	}
+	if (family) {
+		for (const [index, [portrait, text]] of family.entries()) pages[`family${index}`] = { text: [text], portrait,
+			options: index + 1 < family.length ? [{ label: '继续对话', next: `family${index + 1}` }] : [
+				{ label: '相信孩子们的选择', next: 'family:trust' },
+				{ label: '倾听大家的想法', next: 'family:care' },
+				...(chapter >= 4 ? [{ label: '邀请露莎米奈同行', next: 'family:join' }] : []),
+			] };
+		for (const [response, text] of Object.entries(LUSAMINE_REPLIES)) pages[`family:${response}`] = {
+			text: [text], portrait: 'lusamine', options: [{ label: '继续这段奇遇', next: 'activity' }],
+		};
 	}
 	pages.activity = { text: [chapter === 4 ? '你们坐在营火旁，接着聊起最初的伙伴与之后的打算。' :
 		chapter === 5 ? '你们拿起委托单，准备一起完成商量好的任务。' : '准备已经完成，你们带着伙伴走向这一次挑战。'], portrait: id,

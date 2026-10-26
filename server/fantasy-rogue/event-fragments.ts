@@ -1,18 +1,15 @@
 import type { RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
-import { advancedDifficulty, type RogueDifficulty } from '../../sim/rogue-difficulty';
+import type { RogueDifficulty } from '../../sim/rogue-difficulty';
 
 export type FragmentAlternative = 'forest' | 'room' | 'bandits';
 export interface EventFragmentOffer { stage: string; amount: number; alternative: FragmentAlternative }
 
-export function eventFragmentTier(floor: number, difficulty: RogueDifficulty = 0) {
-	const d = advancedDifficulty(difficulty);
-	floor += 3 * d;
+export function eventFragmentTier(floor: number, _difficulty: RogueDifficulty = 0) {
 	const tier = floor < 51 ? undefined : floor < 80 ? { key: '51', min: 8, max: 12, cap: 30 } :
 		floor < 100 ? { key: '80', min: 12, max: 18, cap: 45 } :
 		floor < 150 ? { key: '100', min: 16, max: 22, cap: 60 } : { key: '150', min: 20, max: 30, cap: 80 };
-	return tier && { key: tier.key, min: Math.round(tier.min * (1 + 0.04 * d)),
-		max: Math.round(tier.max * (1 + 0.04 * d)), cap: Math.round(tier.cap * (1 + 0.04 * d)) };
+	return tier;
 }
 
 /** Offer only after the branch succeeds; the alternative reward has not been paid yet. */

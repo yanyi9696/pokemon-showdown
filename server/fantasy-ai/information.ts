@@ -118,7 +118,7 @@ export class InformationView {
 		this.difficulty = options.difficulty;
 		this.partySize = options.partySize ?? 6;
 		if (!Number.isInteger(this.partySize) || this.partySize < 1 || this.partySize > 6) throw new Error('AI 队伍大小无效。');
-		this.rogueDifficulty = options.rogueDifficulty && { tier: options.rogueDifficulty.tier, floor: options.rogueDifficulty.floor };
+		this.rogueDifficulty = options.rogueDifficulty && { ...options.rogueDifficulty };
 		this.rogueBoosts = options.rogueBoosts && { ...options.rogueBoosts };
 		this.rogueSpirit = options.rogueSpirit && { id: options.rogueSpirit.id, floor: options.rogueSpirit.floor,
 			...(options.rogueSpirit.money !== undefined ? { money: options.rogueSpirit.money } : {}) };

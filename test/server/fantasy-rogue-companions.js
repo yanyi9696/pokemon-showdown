@@ -93,16 +93,16 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 			assert.equal(seen.size, 10);
 		}
 	});
-	it('marks advised choices, praises them, resets the smile next event, and awards preference 15 only once', () => {
+	it('marks advised choices, praises them, resets the smile next event, and awards 50 affection once', () => {
 		const run = party([set('Machop')]); c.grantCompanion(run, 'bea'); run.phase = 'event';
 		const options = [{ id: 'skill', name: '观摩技巧' }, { id: 'power', name: '比试力量' }];
-		for (let i = 0; i < 15; i++) {
+		for (let i = 0; i < 25; i++) {
 			run.node = { event: { id: 'martial', key: 'event' + i, stage: 'choice' } };
 			c.companionCommand(run, { member: 'bea', value: 'advice' }, () => 0, options);
 			assert.equal(c.companionView(run, options)[0].recommended, 'power');
 			c.recordCompanionPreference(run, options, 'power', () => 0); c.recordCompanionPreference(run, options, 'power', () => 0);
 		}
-		assert.equal(run.blessings.companions[0].preferences, 15); assert(run.blessings.companions[0].rewarded);
+		assert.equal(run.blessings.companions[0].preferences, 25); assert.deepEqual(run.trainerBonds.bea.gifts, [50]);
 		assert.equal(run.money, 10000); assert.equal(run.bag.blackbelt, 1); assert(c.companionView(run, options)[0].smile);
 		run.node.event.key = 'next-dialogue'; assert(c.companionView(run, options)[0].smile);
 		run.node.event = { id: 'martial', key: 'new', stage: 'choice' };

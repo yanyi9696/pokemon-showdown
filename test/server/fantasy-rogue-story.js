@@ -103,10 +103,10 @@ describe('Fantasy Rogue story and legacy cards', function () {
 		assert(!view().text.includes('98%'));
 		cmd('charm', { value: 'accept' }); assert.equal(view().stage, 'charmeffect');
 		engine.migrate(user); assert.equal(view().stage, 'charmeffect');
-		assert.match(view().charmText, /个体值上限为 10/); cmd('charmack');
+		assert.match(view().charmText, /单项个体值超过 15/); cmd('charmack');
 		while (view()?.key) advance();
 		assert.equal(account().run.difficulty, 'easy'); assert.equal(account().run.phase, 'choose');
-		assert(Object.values(account().run.team[0].set.ivs).every(n => n <= 10));
+		assert(Object.values(account().run.team[0].set.ivs).every(n => n <= 15));
 		assert.deepEqual(account().starterTraits, previousTraits); assert.equal(account().points, points);
 		assert.throws(() => cmd('charm', { value: 'decline' }), /护符/);
 		assert.throws(() => cmd('restartsetup'), /已经开始/);

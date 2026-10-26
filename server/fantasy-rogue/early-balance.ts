@@ -61,6 +61,7 @@ export const eventCost = (floor: number, multiplier = 1) => Math.round(eventBase
 export const MENTOR_CARDS = {
 	attack: mentorCardProfile('attack'),
 	guard: mentorCardProfile('guard'),
+	speed: mentorCardProfile('speed'),
 	balanced: mentorCardProfile('balanced'),
 };
 export const mentorTier = (floor: number) => ELITE_BOSS_FLOORS.has(floor) ? 'elite' as const : 'gym' as const;

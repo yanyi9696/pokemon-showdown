@@ -90,7 +90,7 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 		assert.equal(saved.cards.length, 1);
 		assert.deepEqual(saved.cards[0].snapshot.blessingEffects.evolution, saved.run.blessings.evolution);
 		assert.deepEqual(saved.cards[0].snapshot.team, saved.run.team.map(mon => ({
-			...mon, difficulty: { tier: 0, floor: 200, card: true },
+			...mon, difficulty: { tier: 0, floor: 200, card: true, version: 5 },
 		})));
 	});
 

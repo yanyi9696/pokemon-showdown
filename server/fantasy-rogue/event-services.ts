@@ -3,6 +3,7 @@ import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueContent, RogueRun, RogueTrainer } from './types';
 import type { RogueRandom } from './biome-pools';
 import { drawGiftSpecies } from './gifts';
+import { rareEncounterScale } from './encounter-quality';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { themedEventTeam } from './event-teams';
 import { gift } from './blessings';
@@ -181,7 +182,7 @@ export function chooseServiceOption(account: RogueAccount, run: RogueRun, conten
 		else if (choice === 'back') s.step = s.step === 'postcard' ? '' : 'professor';
 		else if (choice === 'road') {
 			const lv = Math.min(100, level(run) + 3), pool = regionalPool(s.region!, lv, content);
-			const name = drawGiftSpecies(pool, run.startCard, random);
+			const name = drawGiftSpecies(pool, run.startCard, random, false, rareEncounterScale(run));
 			fight(run, [makeEncounterSet(name, lv, randomEncounterIVs(random, true))], [`沿着大路走了一段，一只 ${name} 挡在前面，看起来可不好惹。`,
 				'这场幻境战斗可捕捉；胜利或战败后恢复原队伍与背包的战前状态，仅保留捕捉与实际经验。主动逃跑仍保留本次损耗，重新准备后可再战。']);
 		} else if (choice === 'path') {

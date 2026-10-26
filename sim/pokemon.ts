@@ -6,6 +6,7 @@
  */
 
 import { State } from './state';
+import { collapseBlockStatus, collapseBoost, collapseMaxHP, collapseStat, collapseGasSuppresses } from './rogue-collapse';
 import { fantasyMovePowers } from './fantasy-move-power';
 import { sharedRogueItems, consumeRogueItem } from './fantasy-rogue-items';
 import { toID } from './dex';
@@ -564,6 +565,7 @@ export class Pokemon {
 		}
 
 		// stat boosts
+		stat = collapseStat(this, stat);
 		let boosts: SparseBoostsTable = {};
 		const boostName = statName as BoostID;
 		boosts[boostName] = boost;
@@ -601,6 +603,7 @@ export class Pokemon {
 		}
 
 		// stat boosts
+		stat = collapseStat(this, stat);
 		if (!unboosted) {
 			const boosts = this.battle.runEvent('ModifyBoost', this, null, null, { ...this.boosts });
 			let boost = boosts[statName];
@@ -841,16 +844,18 @@ export class Pokemon {
 		return { targets, pressureTargets };
 	}
 
-	ignoringAbility() {
+	ignoringAbility(ability = this.ability) {
 		if (this.battle.gen >= 5 && !this.isActive) return true;
 
 		// Certain Abilities won't activate while Transformed, even if they ordinarily couldn't be suppressed (e.g. Disguise)
-		if (this.getAbility().flags['notransform'] && this.transformed) return true;
-		if (this.getAbility().flags['cantsuppress']) return false;
+		const activeAbility = this.battle.dex.abilities.get(ability);
+		if (activeAbility.flags['notransform'] && this.transformed) return true;
+		if (activeAbility.flags['cantsuppress']) return false;
 		if (this.volatiles['gastroacid']) return true;
 
 		// Check if any active pokemon have the ability Neutralizing Gas
-		if (this.hasItem('Ability Shield') || this.ability === ('neutralizinggas' as ID)) return false;
+		if (this.hasItem('Ability Shield') || ability === ('neutralizinggas' as ID)) return false;
+		if (collapseGasSuppresses(this)) return true;
 		for (const pokemon of this.battle.getAllActive()) {
 			// can't use hasAbility because it would lead to infinite recursion
 			if (pokemon.ability === ('neutralizinggas' as ID) && !pokemon.volatiles['gastroacid'] &&
@@ -1206,10 +1211,12 @@ export class Pokemon {
 	}
 
 	setBoost(boosts: SparseBoostsTable) {
+		const collapseBefore = { ...this.boosts };
 		let boostName: BoostID;
 		for (boostName in boosts) {
 			this.boosts[boostName] = boosts[boostName]!;
 		}
+		collapseBoost(this, collapseBefore);
 	}
 
 	copyVolatileFrom(pokemon: Pokemon, switchCause?: string | boolean) {
@@ -1292,10 +1299,7 @@ export class Pokemon {
 				virtual: true,
 			});
 		}
-		let boostName: BoostID;
-		for (boostName in pokemon.boosts) {
-			this.boosts[boostName] = pokemon.boosts[boostName];
-		}
+		this.setBoost(pokemon.boosts);
 		if (this.battle.gen >= 6) {
 			// we need to remove all of the overlapping crit volatiles before adding any of them
 			const volatilesToCopy = ['dragoncheer', 'focusenergy', 'gmaxchistrike', 'laserfocus'];
@@ -1390,6 +1394,7 @@ export class Pokemon {
 			}
 		}
 
+		stats.hp = collapseMaxHP(this, stats.hp);
 		if (!this.maxhp) {
 			this.baseMaxhp = stats.hp;
 			this.maxhp = stats.hp;
@@ -1735,6 +1740,7 @@ export class Pokemon {
 			}
 		}
 
+		if (collapseBlockStatus(this, source, status.id)) return false;
 		this.status = status.id;
 		this.statusState = this.battle.initEffectState({ id: status.id, target: this });
 		if (source) this.statusState.source = source;
@@ -1973,7 +1979,7 @@ export class Pokemon {
 	hasAbility(ability: string | string[]) {
 		if (this.battle.fantasyRogue) {
 			const ids = (Array.isArray(ability) ? ability : [ability]).map(toID);
-			return ids.some(id => id === this.ability || !!this.volatiles['ability:' + id]) && !this.ignoringAbility();
+			return ids.some(id => (id === this.ability || !!this.volatiles['ability:' + id]) && !this.ignoringAbility(id));
 		}
 		if (Array.isArray(ability)) {
 			if (!ability.map(toID).includes(this.ability)) return false;
@@ -2021,6 +2027,7 @@ export class Pokemon {
 			this.battle.debug('add volatile [' + status.id + '] interrupted');
 			return result;
 		}
+		if (collapseBlockStatus(this, source, status.id)) return false;
 		this.volatiles[status.id] = this.battle.initEffectState({ id: status.id, name: status.name, target: this });
 		if (source) {
 			this.volatiles[status.id].source = source;
