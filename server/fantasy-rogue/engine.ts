@@ -280,7 +280,6 @@ export class RogueEngine {
 	}
 	private enterFloor(run: RogueRun) {
 		syncRunDifficulty(run);
-		if (this.content?.biomeEncounters) prepareFloorEnvironment(run, this.random);
 		if (run.pendingSpiritGift) grantSpiritGift(run, this.configured(), this.random);
 		if (this.content?.blessings) beginBlessingFloor(run, this.random);
 		run.checkpoint = inventory(run);
@@ -327,6 +326,7 @@ export class RogueEngine {
 			for (const node of run.choices) prepareEconomy(node, run.floor, this.random, run.difficulty);
 		}
 		for (const node of run.choices) prepareSpiritNode(run, node, this.content, this.random);
+		if (this.content.biomeEncounters) prepareFloorEnvironment(run, this.random);
 		if (this.content.events) addMasterBallRoute(run, this.random);
 		if (run.spirit === 'darkrai') {
 			const pool = [...run.choices];
@@ -1097,7 +1097,11 @@ export class RogueEngine {
 				king.ability = command.value as DragonKingAbility;
 				break;
 			}
-			case 'select': this.select(run, command.value || ''); break;
+			case 'select':
+				this.select(run, command.value || '');
+				// Legacy route saves may predate environments. Resolve their actual opponents first.
+				if (this.content?.biomeEncounters) prepareFloorEnvironment(run, this.random);
+				break;
 			case 'mentorcard':
 				requireRule(run.phase === 'rest' && run.mentorOffer === run.floor + 1 &&
 					Object.prototype.hasOwnProperty.call(MENTOR_CARDS, command.value || ''), '请在老人给出的卡片中选择一张。');

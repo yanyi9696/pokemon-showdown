@@ -30,12 +30,12 @@ export function trackJourney(run: RogueRun, account: RogueAccount) {
 		const { name, text } = blessingDisplay(def, entry.floor, account.tonicSecret);
 		ledger.blessings.push({ id: entry.id, name, text, floor: entry.floor, tier: def.tier });
 	}
-	if (run.phase === 'battle') for (const mon of run.team) {
-		if (mon.egg || !mon.hp) continue;
+	// Snapshot each current participant once. Building details also computes baseline battle stats.
+	// Boxed partners only update earlier evidence; entering the box does not count as participation.
+	for (const mon of run.team) if (ledger.participants[mon.id] || run.phase === 'battle' && !mon.egg && mon.hp) {
 		ledger.participants[mon.id] = { mon: structuredClone(mon), details: clearMemberDetails(mon, run), floor: run.floor };
 	}
-	// Update the last recorded participants after battle settlement without losing departed members.
-	for (const mon of [...run.team, ...run.box || []]) if (ledger.participants[mon.id]) {
+	for (const mon of run.box || []) if (ledger.participants[mon.id]) {
 		ledger.participants[mon.id] = { mon: structuredClone(mon), details: clearMemberDetails(mon, run), floor: run.floor };
 	}
 }

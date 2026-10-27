@@ -333,7 +333,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(mon.set.species, 'Pichu'); assert.equal(mon.set.shiny, true);
 	});
 	it('keeps wild loot budgets inclusive of the existing drop, not paid twice', () => {
-		assert.equal(eventBudget(21, 1.15), 1100);
+		assert.equal(eventBudget(21, 1.15), 1050);
 		assert.equal(expectedWildLoot(1), 254.4);
 		assert.equal(expectedWildLoot(161), 4999.68);
 	});

@@ -113,7 +113,7 @@ describe('Fantasy Rogue economy', () => {
 		assert(!before.node.wildLoot);
 		assert.deepEqual(before.node.reward.items, {});
 		fight();
-		assert.equal(account().run.money, before.money + 1600);
+		assert.equal(account().run.money, before.money + before.node.reward.money);
 		assert.deepEqual(account().run.bag, before.bag);
 		assert.equal(account().points, 21);
 		floor(30);

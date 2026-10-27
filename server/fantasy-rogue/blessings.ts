@@ -280,6 +280,9 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 		if (def.family === 'topclearmind' && (!state.prayer || state.prayer.changed)) return false;
 		if (def.family === 'medic' && has('restinball') || def.family === 'restinball' && has('medic')) return false;
 		if (def.family === 'railgun' && !run.team.some(canLearnZapCannon)) return false;
+		if (def.family === 'detect' && !run.team.some(mon => !mon.egg &&
+			[...mon.set.moves.map(toID), ...(mon.moveMemory || []).map(move => move.id),
+				...(mon.blessingMoves || [])].includes('detect'))) return false;
 		if (def.family === 'compound' && !run.team.some(mon => compoundFinals(mon).length)) return false;
 		if (def.family === 'rulebreaker' && !run.team.some(mon => memberHasMoldBreaker(mon, run.team, state))) return false;
 		if (def.family === 'typeevolution' && !giftPool(run, content, def.type).length) return false;

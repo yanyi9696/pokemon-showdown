@@ -1,7 +1,7 @@
 import { gainAffection, affectionChat, AFFECTION_RULES } from './affection';
 import { Dex } from '../../sim/dex';
 import { COMPANIONS, companionSource, companionOwned, strongestTypedMember, companionAbilityOptions,
-	syncCompanions, companionHasGift, companionGiftOptions, COMPANION_PREFERENCES, COMPANION_REGIONS, type CompanionID, type RogueCompanion } from '../../sim/rogue-companions';
+	syncCompanions, companionGiftOptions, COMPANION_PREFERENCES, COMPANION_REGIONS, type CompanionID, type RogueCompanion } from '../../sim/rogue-companions';
 import { permanentMemberTypes, memberStatTotal } from '../../sim/rogue-blessing-permanent';
 import type { RogueRun, RogueCommand } from './types';
 import type { RoguePokemon, RogueDefeat } from '../../sim/fantasy-rogue';
@@ -163,6 +163,7 @@ export function giveCompanionGift(run: RogueRun, c: RogueCompanion, item: string
 
 export function companionExperience(run: RogueRun, mon: RoguePokemon, defeated: RogueDefeat) {
 	let factor = 1;
+	if (companionOwned(run.blessings, 'sada') || companionOwned(run.blessings, 'turo')) factor *= 1.5;
 	if (companionOwned(run.blessings, 'kahili') && permanentMemberTypes(mon).includes('Flying')) factor *= 1.3;
 	if (companionOwned(run.blessings, 'giovanni') && defeated.killer === mon.id && !defeated.captured && permanentMemberTypes(mon).includes('Psychic')) factor *= 1.2;
 	if (companionOwned(run.blessings, 'bea') && permanentMemberTypes(mon).includes('Fighting')) factor *= 1.3;

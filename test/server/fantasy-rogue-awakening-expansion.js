@@ -265,8 +265,8 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
  it('shows a farewell and gives each expiring companion one personal gift, never replaying the payout', () => {
   const r = run(50); r.rival = {id: 'kieran', completed: 3, affection: 7, lastFloor: 45, temporaryUntil: 50, carmine: {affection: 6, temporaryUntil: 50}};
   assert(expireRival(r, 51)); assert.equal(r.dialogue.resume, 'advance'); assert.equal(r.dialogue.pages.length, 4);
-  assert.equal(r.bag.dragonfang, 1); assert.equal(r.bag.spelltag, 1); assert.equal(r.rival.affection, 7);
-  assert(!expireRival(r, 51)); assert.equal(r.bag.spelltag, 1);
+  assert.equal(r.bag.potion, 2); assert(!r.bag.dragonfang && !r.bag.spelltag); assert.equal(r.rival.affection, 7);
+  assert(!expireRival(r, 51)); assert.equal(r.bag.potion, 2);
  });
  it('stages police escalation as two, three and four grunts, then the complete ordered Star leadership', () => {
   const r = run(20); r.rival = {id: 'penny', completed: 1, affection: 0, lastFloor: 1};

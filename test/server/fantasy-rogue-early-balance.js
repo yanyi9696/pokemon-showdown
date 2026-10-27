@@ -103,11 +103,11 @@ describe('Fantasy Rogue early growth and preparation', function () {
 				previousNormalized = normalized;
 			}
 		}
-		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [100, 400, 1000, 1900, 3500]);
+		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [100, 100, 400, 900, 1900]);
 		for (const [floor, elite, trainer, reward] of [
-			[80, 16900, 27000, 3400], [81, 20000, 32000, 4000],
-			[100, 33100, 52900, 6600], [101, 36800, 58900, 7400],
-			[140, 82200, 131600, 16400], [141, 90400, 144700, 18100], [200, 220700, 353100, 44100],
+			[80, 12200, 19600, 2400], [81, 14600, 23300, 2900],
+			[100, 26500, 42300, 5300], [101, 29600, 47400, 5900],
+			[140, 79000, 126300, 15800], [141, 87200, 139500, 17400], [200, 220700, 353100, 44100],
 		]) {
 			assert.deepEqual(['elite', 'trainer', 'reward'].map(kind => exp(routeCandyReward(floor, kind))), [elite, trainer, reward]);
 		}

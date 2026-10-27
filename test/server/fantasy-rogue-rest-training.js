@@ -30,9 +30,9 @@ describe('Fantasy Rogue rest candy and batch training', function () {
 	afterEach(() => store.close());
 	it('offers only the current grade, with less stock than a random candy shop and no free candy', () => {
 		const bag = account().run.bag;
-		for (const [floor, id, stock] of [[9, 'expcandyxs', 4], [19, 'expcandyxs', 6], [29, 'expcandyxs', 8],
-			[39, 'expcandys', 3], [49, 'expcandys', 4], [79, 'expcandym', 4], [89, 'expcandym', 5],
-			[119, 'expcandyl', 2], [129, 'expcandyl', 3], [159, 'expcandyxl', 1], [169, 'expcandyxl', 1], [199, 'expcandyxl', 2]]) {
+		for (const [floor, id, stock] of [[9, 'expcandyxs', 1], [19, 'expcandyxs', 2], [29, 'expcandyxs', 3],
+			[39, 'expcandys', 1], [49, 'expcandys', 2], [79, 'expcandym', 2], [89, 'expcandym', 3],
+			[119, 'expcandyl', 1], [129, 'expcandyl', 2], [159, 'expcandyxl', 1], [169, 'expcandyxl', 1], [199, 'expcandyxl', 2]]) {
 			rest(floor); const candies = shopStock(content, account().run).filter(item => item.kind === 'candy');
 			assert.equal(candies.length, 1); assert.equal(candies[0].id, id); assert.equal(candies[0].remaining, stock);
 			assert.equal(candies[0].price, CANDY_SHOP[id].price); assert(stock < CANDY_SHOP[id].stock);
@@ -44,12 +44,12 @@ describe('Fantasy Rogue rest candy and batch training', function () {
 		engine.command(user, request); engine.command(user, request);
 		assert.equal(account().run.money, old.money - 80);
 		assert.equal(account().run.bag.expcandyxs, (old.bag.expcandyxs || 0) + 1);
-		for (let i = 0; i < 3; i++) cmd('buy', {value: 'expcandyxs'});
+		for (let i = 1; i < restCandyOffer(9).stock; i++) cmd('buy', {value: 'expcandyxs'});
 		for (let i = 0; i < 3; i++) engine.migrate(user);
 		assert.equal(shopStock(content, account().run).find(i => i.id === 'expcandyxs').remaining, 0);
 		const exhausted = account(); assert.throws(() => cmd('buy', {value: 'expcandyxs'}), /售罄/);
 		assert.deepEqual(account(), exhausted);
-		rest(19); assert.equal(shopStock(content, account().run).find(i => i.id === 'expcandyxs').remaining, 6);
+		rest(19); assert.equal(shopStock(content, account().run).find(i => i.id === 'expcandyxs').remaining, 2);
 	});
 	it('publishes price, quantity and growth thresholds without mutating the save or shared content', () => {
 		const before = account(), item = structuredClone(content.items.find(i => i.id === 'expcandyxs'));
@@ -58,18 +58,18 @@ describe('Fantasy Rogue rest candy and batch training', function () {
 		const state = manager.state({id: user, name: user, named: true, registered: true, connected: true});
 		Config.fantasyrogue = oldAccess;
 		assert(state.shopItems.includes('expcandyxs'));
-		assert.equal(state.items.find(i => i.id === 'expcandyxs').remaining, 4);
+		assert.equal(state.items.find(i => i.id === 'expcandyxs').remaining, 1);
 		assert.equal(state.items.find(i => i.id === 'expcandyxs').price, 80);
 		assert.equal(state.run.team[0].experienceProgress.levels.length, 100);
 		assert.deepEqual(content.items.find(i => i.id === 'expcandyxs'), item);
 		assert.deepEqual(account(), before);
 	});
 	it('shares the center quota between coin and HP purchases without removing Meowth special stock', () => {
-		store.change(user, a => {a.run.spirit = 'yveltal';});
+		rest(29); store.change(user, a => {a.run.spirit = 'yveltal';});
 		const mon = account().run.team[0]; cmd('buyhp', {value: 'expcandyxs', member: mon.id});
-		assert.equal(shopStock(content, account().run).find(i => i.id === 'expcandyxs').remaining, 3);
-		cmd('buy', {value: 'expcandyxs'});
 		assert.equal(shopStock(content, account().run).find(i => i.id === 'expcandyxs').remaining, 2);
+		cmd('buy', {value: 'expcandyxs'});
+		assert.equal(shopStock(content, account().run).find(i => i.id === 'expcandyxs').remaining, 1);
 		store.change(user, a => {a.run.spirit = 'meowth';});
 		const special = shopStock(content, account().run).find(i => i.id === 'expcandyxs');
 		assert.equal(special.remaining, undefined); assert.equal(special.price, 325);

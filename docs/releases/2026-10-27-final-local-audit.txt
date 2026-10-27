@@ -1,0 +1,88 @@
+Fantasy Rogue — 2026-10-27 本地发布整理
+
+结论
+本轮最新功能、修复、资源与必要测试均纳入 codex/fantasy-rogue 发布候选。
+本地功能回归、完整项目 TypeScript、干净构建、数据库及静态资源专项验证通过。
+未发现本轮新增的正确性或安全阻断问题，但 ESLint、既有跳过项和旧公共 API 检查脚本仍有明确债务；不能宣称 npm test / 正式 CI 全绿。
+本次只在 Windows 本地整理和验证。未连接腾讯云、未修改生产配置或真实玩家数据、未部署或重启服务、未移动 master/fantasy。
+
+整理前基线
+server: 82252831dbb5b7726f22dbd524808e288858603f
+client: d0f2abed35ac38f96c930b32e59c37b3ab207e92
+两个工作区均为 F:\fantasy\release-audit-20261022 下的 codex/fantasy-rogue 分支。
+这两个 SHA 是本次整理的比较基线，不是本次提交后的发布目标。最终提交 SHA 由交付报告提供。
+
+一、纳入的业务修改
+1. 乐园防卫程序升为黄金祝福，奥琳 AI 或弗图 AI 同行时全队战斗经验增加 50%；两者不重复叠加，不作用于糖果。核对双方已有完整同行、好感度和阶段奖励，补齐对应赠礼说明。
+2. 对战默认恢复官方 3D 动画元数据；保留原有 2D 偏好开关和不支持动画形态的回退。
+3. 队伍、可换招式和学习面板的觉醒力量显示实际属性。学习新招式改为独立确认弹窗，保留确认、失败、重连及进化队列处理。
+4. 固定馆主、天王、冠军配队使用统一楼层等级，不再因个别物种最低进化等级抬高等级；旧遭遇修复路径一致，野生进化规则保留。
+5. 新楼层天气概率 20%；无天气时场地 14%，有天气时场地 5%；总体场地约 12.2%，重叠约 1%。按潜在敌人的属性和天气特性调整天气权重，已有环境不重抽。
+6. 这才叫看穿只在队伍当前可装备招式池内含看穿时出现，不把未来可学或寄存箱伙伴计入。
+7. 王冠改为原作图标，经验糖果图标放大，Egg 显示为宝可梦蛋；泥炭块与黑奇石同商店门槛。
+8. 日常同行赠礼改为少量基础物资，降低频率，避免提前重复赠送 50 好感度主题装备；固定 50/100 奖励保留。
+9. 所有档位统一调整前期糖果、30—80 层收入增长以及 40 层后的补课。配置集中于 resource-pacing.ts；后期逐步恢复供应，补课优先低等级伙伴和整体落后的大队。既有背包及已生成商店库存不扣减或重抽。
+10. 图鉴、新手教程、同行说明及对应回归断言与上述已批准的规则同步。本次发布整理没有为通过测试另改游戏数值或测试预期。
+
+二、资源与文件边界
+客户端新增 build-tools/official-sprite-metadata.json 是离线构建所需的官方动画尺寸元数据（1,471 条），不是临时文件。
+sprites/fantasy-rogue/crowns/bottlecap.png、goldbottlecap.png 及 sources.json 是正式资源及来源/哈希记录，均须提交。
+构建继续生成 data/pokedex-mini.js 和 pokedex-mini-bw.js；它们是运行资源，虽不提交生成文件，部署时不能遗漏。
+服务端 resource-pacing.ts 属于业务代码；测试属于回归验证；tools/fantasy-rogue-pacing-audit.js 是开发审计工具，不会由生产运行入口自动执行。
+本轮未修改原有 Windows node .\pokemon-showdown 桥接、8000/8080 配置或普通本地昵称方式。
+未把数据库、玩家存档、真实配置、认证凭据、SSH 密钥、node_modules、临时构建目录加入提交。可选 testclient-key.js 未读取、未复制。
+
+三、性能整理
+历史记录 trackJourney 原来在 battle 阶段重复生成当前出战伙伴的完整详情，现统一为一次；后备及离队记录语义保留。
+不减少历史保留内容、不关闭存档、不改变事务或战斗规则、不增加跨请求状态缓存。
+12 组新旧深比较（battle/ready/complete/defeated，普通/倒下/寄存场景）全部一致。
+六人队合成数据、7 轮交替本地基准的中位数：
+- trackJourney: 0.582094 ms → 0.291540 ms，约降低 49.9%。
+- 内存数据库完整 RogueStore.change: 1.387005 ms → 0.843524 ms，约降低 39.2%。
+以上只衡量这个流程，不能等同于线上整体 CPU、吞吐量或玩家延迟改善比例；真实并发仍需上线后观察。
+另外只重命名补课循环中遮蔽外层参数的局部变量，并整理新增测试空格，没有大规模格式化。
+
+四、本次实际验证
+全部在从 Git 文件清单复制的隔离源码目录中执行；依赖使用本地已安装版本，不继承旧 dist 或真实数据库。
+- server 完整 TypeScript：node node_modules/typescript/bin/tsc --noEmit，通过；最终小改后再次通过。
+- server 干净构建及声明：node build --decl，通过，1,328 个产物，无无主 JavaScript。
+- server 完整 Mocha：覆盖 .mocharc.json 所有测试目录，以 --grep '.*' 包含 slow，--timeout 30000，8,054 passing / 85 pending / 0 failing，约 19 分钟。
+- 最后变量重命名及测试排版后：历史、DB、资源节奏、补课、HTTP/SockJS 专项 109 passing / 0 failing。全量结果与最后专项分开记录，没有虚称重新跑完整套件。
+- client 完整 TypeScript、node build full --local-server <隔离 server>、独立 node build replays：通过。
+- client 完整 Mocha：401 passing / 1 pending / 0 failing。
+- 嵌入 Showdex：55 个版本化文件及哈希全部通过。
+- 本地随机回环端口 HTTP：52 个页面脚本/样式、两个 mini-Pokedex、9 个人物立绘、6 个糖果图标、2 个王冠图标及来源哈希、Unknown 属性图标和露莎米奈头像均可正确加载。
+- git diff --check：通过。
+Windows 未安装可选 PHP 新闻生成程序，full 构建使用已有公告回退；游戏数据、脚本、样式、哈希及 replay 产物成功生成。此警告不记为 PHP 检查通过。
+前一功能开发阶段的实际 Edge 登录、3D/2D、学习弹窗、捕捉胜利验收有独立报告；本次没有重新进行浏览器实战或线上测试。
+
+五、数据库与 24 个旧 dist
+本轮没有新增或改动数据库 DDL。已包含的历史表升级逻辑重新通过 19 项专项测试：幂等、事务回滚、连接释放、读写锁、只读/损坏数据库、旧行内容逐字保留、旧版 SQL、备份副本校验、历史与账号原子写入。
+历史、好感度及特殊物资系统另外通过 16 项测试，覆盖历史分页、删除通关卡不丢历史、私有访问和旧碎片迁移。
+全部数据为合成旧结构/合成账号，不是生产备份。部署 Codex 仍须使用已验证的一致性生产备份的私有副本执行 tools/validate-fantasy-rogue-database.js，再安排受控初始化；不能把本地合成测试当成真实备份验证。
+历史表和索引继续使用 CREATE TABLE IF NOT EXISTS / CREATE INDEX IF NOT EXISTS，缺结构时 IMMEDIATE 事务，完整结构只读验证；原有数据不重置。
+24 个旧 dist：21 个顶层声明由 dist/sim 下新声明覆盖相应用途；1 个 tsbuildinfo 是缓存；2 个旧 gen9fantasy/rulesets.js/.map 不带入干净构建。
+20 个当前配置分级 × 8 组队伍共 160 组新旧规则/验证结果相同；旧 hook 在这些分级调用 0 次，显式加入旧规则的正控制调用 1 次。
+部署仍须检查生产额外私有分级是否显式使用 Fantasy Ability Rule。没有读取或断言腾讯云当前私有配置。
+
+六、没有通过的检查与风险
+ESLint 使用相同依赖、配置检查整理前 HEAD 与最终文本，未放宽规则：
+- server 基线 13,995 errors / 932 warnings；最终 13,995 errors / 939 warnings。
+- client 基线和最终均 1,123 errors / 55 warnings。
+服务端按消息与源码行比较有 7 条变动测试行的格式 error 和 19 条行长 warning；移除的旧消息抵消部分新增，不能把净增数当新增消息数。没有新增非格式诊断。新写快照测试的格式问题及补课局部变量遮蔽已清理。
+客户端另以现代语法/正确性规则复核，新增正确性诊断为 0，Rogue 主脚本为 0；旧 ES3 配置解析与历史格式问题仍在。
+CI 的 full-test/full-test-ci/npm test 包含 ESLint，因此当前严格门禁仍会失败；本报告不授权关闭或绕过门禁。
+
+85 项 server pending 和 1 项 client pending 的标题及对应 40 个文件，与前次风险评估及本次 HEAD 完全一致，没有新增 skip：
+- server 52 项普通/旧世代战斗边界，24 项外部 DB/插件集成，4 项计时测试，2 项随机队伍，3 项缺少模块的条件跳过。
+- client 1 项旧文本解析夹具测试。
+82 项 server 静态跳过由 dry-run 清点，3 项动态条件实际执行确认，合计与完整 Mocha 的 85 一致。前次曾临时启用旧战斗用例并复现历史失败，本次没有把那些旧失败改写成通过。
+
+额外检查的 npm run test-npm 原样失败：本机 TypeScript 6 要求显式 --ignoreConfig。补充该参数及既有配置所用的 --ignoreDeprecations 6.0 后，旧 Node/TS 声明组合又缺少 DateTimeRangeFormatPart。
+仅在诊断命令补入 --lib es2020,es2021.intl 后，保持 --target es2020 和 --strict 的公共模拟器 API 类型检查通过。
+package.json、tsconfig.json、依赖声明未在本轮修改。这是既有脚本/工具链兼容债务，原命令仍记为失败；没有借此修改业务代码或放宽项目类型检查。
+
+七、交付要求与证据
+完整本地日志、源码哈希清单、补丁、性能原始数据、逐条 lint 差异、pending 来源和构建清单位于 F:\fantasy\release-final-20261027。
+最终只提交并正常推送两个 codex/fantasy-rogue 分支；GitHub SSH 若继续拒绝认证，用户自行用原有 PowerShell 身份推送，禁止 force。发布前必须核实远端最终 SHA，而不是依赖陈旧 origin 跟踪状态。
+master/fantasy 与生产服务的合并、数据库受控初始化和部署均由部署阶段另行处理。

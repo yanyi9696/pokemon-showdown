@@ -1,6 +1,7 @@
 import { experienceYield } from '../../sim/fantasy-rogue-rules';
 import { difficultyRewardScale } from '../../sim/rogue-difficulty';
 import { lateRewardScale } from './late-support';
+import { candySupplyMultiplier, coinSupplyMultiplier } from './resource-pacing';
 import type { RogueRun } from './types';
 import { ELITE_BOSS_FLOORS } from './content';
 import { mentorCardProfile, type MentorCard } from '../../sim/rogue-mentor';
@@ -25,7 +26,7 @@ export const lateCoinMultiplier = (floor: number) => 1 + Math.min(0.45, Math.max
 
 /** Extra journey income from floor 81; never apply to costs, resale prices or fixed blessing grants. */
 export const LATE_INCOME_BONUS_PERCENT = 12;
-export const journeyIncomeMultiplier = (floor: number) => floor >= 81 ? 1 + LATE_INCOME_BONUS_PERCENT / 100 : 1;
+export const journeyIncomeMultiplier = (floor: number) => coinSupplyMultiplier(floor) * (floor >= 81 ? 1 + LATE_INCOME_BONUS_PERCENT / 100 : 1);
 export const journeyCoins = (floor: number, coins: number) => Math.round(coins * journeyIncomeMultiplier(floor));
 
 /** One current grade per center. No advance unlocks and no free pre-boss experience. */
@@ -33,14 +34,14 @@ export function restCandyOffer(floor: number) {
 	const id = candyAtFloor(floor), step = Math.min(3, Math.floor((floor - CANDY_SHOP[id].floor) / 10));
 	const stock = id === 'expcandyxs' ? 4 + step * 2 : id === 'expcandys' ? 3 + step :
 		id === 'expcandym' ? 2 + step : id === 'expcandyl' ? 1 + step : 1 + Math.floor(step / 2);
-	return { id, stock, price: CANDY_SHOP[id].price };
+	return { id, stock: Math.max(1, Math.floor(stock * candySupplyMultiplier(floor))), price: CANDY_SHOP[id].price };
 }
 
 /** Pay a smooth EXP budget using only candy grades available on this floor. */
 export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'reward', rewardScale = 1) {
 	const f = Math.max(1, Math.min(200, floor));
 	const multiplier = (kind === 'trainer' ? 1.6 : kind === 'reward' ? 0.2 : 1) * (0.8 + 0.2 * Math.min(1, (f - 1) / 59));
-	let remaining = Math.max(100, Math.round((200 + 3 * f * f) * multiplier * 0.85 * candyRewardScale(f) * lateRewardScale(f) * rewardScale / 100) * 100);
+	let remaining = Math.max(100, Math.round((200 + 3 * f * f) * multiplier * 0.85 * candyRewardScale(f) * candySupplyMultiplier(f) * lateRewardScale(f) * rewardScale / 100) * 100);
 	const result: Record<string, number> = {};
 	for (const [id, xp] of [['expcandyxl', 30000], ['expcandyl', 10000], ['expcandym', 3000], ['expcandys', 800], ['expcandyxs', 100]] as const) {
 		if (CANDY_SHOP[id].floor > f) continue;

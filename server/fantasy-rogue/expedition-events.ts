@@ -1,9 +1,9 @@
+import { companionTravelGift } from './affection-gifts';
 import { giveTeraShards } from './tera-shards';
 import { gainAffection, AFFECTION_RULES } from './affection';
 import { randomUUID } from 'crypto';
 import { Dex, toID } from '../../sim/dex';
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
-import { companionGiftOptions } from '../../sim/rogue-companions';
 import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { drawBlessingGift, gift, normalizeBlessings } from './blessings';
@@ -16,8 +16,7 @@ import { themedEventTeam } from './event-teams';
 import { giveEgg, hatchEggs, eggEventWeight } from './eggs';
 import { EXPEDITION_NAMES, EXPEDITION_OPENINGS } from './expedition-text';
 import { travellingRoster } from './travellers';
-import { TRAVELLERS } from './traveller-profiles';
-import { RIVALS, RIVAL_SNACK_GIFTS } from './rival-data';
+import { RIVALS, RIVAL_SNACK_GIFTS, RIVAL_TRAVEL_REPLIES } from './rival-data';
 
 const dex = Dex.mod('gen9fantasy');
 export interface ExpeditionEvent {
@@ -146,18 +145,18 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 			if (mon.hp) mon.hp = Math.min(mon.maxhp, mon.hp + Math.max(1, Math.floor(mon.maxhp * 0.15)));
 			finish(run, `【${mon.set.species}】开心地吃完了点心，亲密度大幅提升，存活时恢复 15% 最大生命值。`);
 		} else if (choice === 'snackrival') {
-			const r = run.rival!, token = RIVAL_SNACK_GIFTS[r.id];
+			const r = run.rival!, token = companionTravelGift(run.floor);
 			r.affection++;
 			gainAffection(run, r.id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key);
-			give(run, token.item);
-			finish(run, `【同行劲敌 - ${RIVALS[r.id].name}】接过点心，露出了愉快的神情。`, `「${token.line}」你收到了一份${token.name}回礼。`);
+			give(run, token.id);
+			finish(run, `【同行劲敌 - ${RIVALS[r.id].name}】接过点心，露出了愉快的神情。`, `「${RIVAL_TRAVEL_REPLIES[r.id] || RIVAL_SNACK_GIFTS[r.id].line}」你收到了一份${token.name}回礼。`);
 		} else {
 			const id = choice.slice(13), person = travellingRoster(run).find(c => c.id === id)!;
 			const c = run.blessings?.companions?.find(m => m.id === id && !m.away);
 			const message = '这份心意我收到了。下次也一起分享吧。';
 			if (c) { c.smile = 'approval'; c.messageAt = Date.now(); c.message = message; }
 			if (person.origin === 'carmine') run.rival!.carmine!.affection++;
-			const token = c ? companionGiftOptions(c.id)[0] : TRAVELLERS[id].gifts[0];
+			const token = companionTravelGift(run.floor);
 			gainAffection(run, id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key);
 			// A snack return is separate from the once-per-run affection gifts.
 			give(run, token ? toID((dex.items.get(token.id).name)) : 'sitrusberry');

@@ -70,15 +70,16 @@ describe('Fantasy Rogue late support and species blessings', function () {
 		assert(!rewardRecovery(80).ether); assert.equal(rewardRecovery(81).ether, 1); assert.equal(rewardRecovery(141).elixir, 1);
 	});
 	it('keeps catch-up available when skipped and consumes it only after a persisted reward claim', () => {
-		let r = run(); r.floor = 80;
+		let r = run(); r.floor = 80; r.catchupCheckpoint = 58;
 		const routes = [{id: 'rival', kind: 'event'}, {id: 'wild', kind: 'wild'}, {id: 'shop', kind: 'trade'}], reward = {id: 'gift', kind: 'reward'};
 		assert.deepEqual(catchupRoutes(r, routes, [reward]), routes);
 		r.floor = 82; assert.equal(dueCatchup(r), 82);
 		assert.deepEqual(catchupRoutes(r, routes, [reward]).map(n => n.id), ['rival', 'wild', 'gift']);
 		r.floor = 84; r.phase = 'reward'; r.node = structuredClone(reward); prepareRewardScene(r, () => 99);
-		assert.equal(r.node.rewardScene.id, 'catchup'); assert(!r.catchupCheckpoint);
-		r = structuredClone(r); const levels = r.team.map(p => p.set.level);
-		chooseReward(r, preview, () => 0, 'catchup'); assert.deepEqual(r.team.map(p => p.set.level), levels.map(l => l + 5));
+		assert.equal(r.node.rewardScene.id, 'catchup'); assert.equal(r.catchupCheckpoint, 58);
+		r = structuredClone(r);
+		// Floor 84's catch-up target is 54: do not turn the lesson into over-level farming.
+		chooseReward(r, preview, () => 0, 'catchup'); assert.deepEqual(r.team.map(p => p.set.level), [54, 54]);
 		assert.equal(r.catchupCheckpoint, 82); assert(!dueCatchup(r)); assert.throws(() => chooseReward(r, preview, () => 0, 'catchup'));
 		r.floor = 96; assert.equal(dueCatchup(r), 96);
 	});

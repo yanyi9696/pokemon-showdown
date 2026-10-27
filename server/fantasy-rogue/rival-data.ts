@@ -26,6 +26,14 @@ export const RIVALS = {
 		lines: ['你很有自信嘛。来对战，别让我失望。', '只会仗着人多吗？喂，你也一起上。', '硬碰硬不行……那就配合。别误会，我只是想赢。', '以前我以为，强大就什么都够了。现在……你怎么想？', '既然答应了就做到底。走吧，别磨蹭。', '我和伙伴都变强了。这次一定让你看清楚。', '我知道你会怎么出招。背后交给我。', '你是我愿意认真面对的劲敌。今天打个痛快。之后……一起走也不错。'] },
 } as const;
 export type RivalID = keyof typeof RIVALS;
+export const RIVAL_TRAVEL_REPLIES: Partial<Record<RivalID, string>> = {
+	kieran: '点心很好吃……这份药给你的伙伴吧，下次见面，我一定会更强的！',
+	penny: '这是给布布们准备的药，也分你一份。嗯……路上注意安全，有事记得找我。',
+	marnie: '甜的东西也不错嘛。这份药给你，照顾好伙伴，下一次可别输给我。',
+	lana: '像钓到大鱼一样开心呢。这份药，留给疲倦的伙伴吧。',
+	korrina: '补充完能量，又能好好修行啦！这份药给你，修行时也要照顾好伙伴！',
+	n: '分享让旅途的声音变得温暖。带上这份药，伙伴累了的时候，就陪它歇一会儿吧。',
+};
 export const RIVAL_SNACK_GIFTS: Record<RivalID, { item: string; name: string; line: string }> = {
 	kieran: { item: 'dragonfang', name: '龙之牙', line: '我把这个珍藏了很久。送给你……下次见面，我一定会更强的！' },
 	penny: { item: 'silkscarf', name: '丝绸围巾', line: '这个是给布布们准备的，也分你一条。嗯……路上注意安全，有事记得找我。' },

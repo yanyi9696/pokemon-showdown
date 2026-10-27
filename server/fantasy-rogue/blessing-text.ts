@@ -90,6 +90,7 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		swords: ['队伍需有【勾帕路翁】、【代拉基翁】或【毕力吉翁】'],
 		topclearmind: ['需已获得【聚集的祈愿】，且此后未在战斗外更换队员'],
 		railgun: ['队伍需有可合法学习【电磁炮】的伙伴'],
+		detect: ['队伍需有当前可更换招式中包含【看穿】的伙伴'],
 		rulebreaker: ['队伍需有主特性或额外特性为【破格】的伙伴'],
 		hazards: ['队伍需有尚未拥有【岩布阵】的伙伴'],
 		toxic: ['队伍需有尚未拥有【不仁不义】的伙伴'],

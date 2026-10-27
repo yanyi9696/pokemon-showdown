@@ -1,8 +1,9 @@
+import { companionTravelGift } from './affection-gifts';
 import { gainAffection, affectionGreeting, AFFECTION_RULES } from './affection';
 import { grantCoverage } from './coverage';
 import { trainerReunionPages } from './trainer-reunions';
 import { randomUUID } from 'crypto';
-import { RIVALS, RIVAL_SNACK_GIFTS, RIVAL_FAREWELLS, CARMINE, type RivalID } from './rival-data';
+import { RIVALS, RIVAL_FAREWELLS, CARMINE, type RivalID } from './rival-data';
 import type { RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet } from './encounter-sets';
@@ -267,9 +268,9 @@ export function expireRival(run: RogueRun, nextFloor = run.floor) {
 		if (state.permanent || state.away || !state.temporaryUntil || nextFloor <= state.temporaryUntil) continue;
 		state.temporaryUsed = true;
 		delete state.temporaryUntil; // Transactional receipt: no second gift on reload.
-		const gift = id === 'carmine' ? { item: CARMINE.item, name: CARMINE.giftName } : RIVAL_SNACK_GIFTS[id];
+		const gift = companionTravelGift(run.floor);
 		const name = id === 'carmine' ? '丹瑜' : RIVALS[id].name;
-		run.bag[gift.item] = (run.bag[gift.item] || 0) + 1;
+		run.bag[gift.id] = (run.bag[gift.id] || 0) + 1;
 		pages.push(dialoguePage(id, name, id === 'carmine' ? '我得先回北上乡看看。这个是给你的，才不是顺手捡的！照顾好伙伴，下次见面再跟我讲讲旅途吧。' : RIVAL_FAREWELLS[id], true, 'left'));
 		pages.push(dialoguePage(id, name, `获得【同行训练家的赠礼】：${gift.name} ×1。${name}暂时告别，累积的好感与奇遇进度保留。`, true, 'left'));
 	}

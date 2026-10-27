@@ -60,12 +60,13 @@ export function validateContent(content: RogueContent): RogueContent {
 		for (const [id, count] of Object.entries(items)) ensure(itemIds.has(id) && whole(count), `库存 ${id} 无效`);
 	};
 	inventory(content.initialBag);
-	const team = (sets: PokemonSet[]) => {
+	const team = (sets: PokemonSet[], authoredTrainer = false) => {
 		ensure(sets.length >= 1 && sets.length <= 6, '队伍必须为 1～6 只');
 		for (const set of sets) {
 			ensure(dex.species.get(set.species).exists, `物种 ${set.species} 不存在`);
 			ensure(Number.isSafeInteger(set.level) && set.level >= 1 && set.level <= 9999, '必须显式配置有效等级');
-			ensure(set.level >= minimumEvolutionLevel(set.species), `${set.species} 未达到进化等级`);
+			// Wild generation uses evolution thresholds; authored trainer rosters use one floor level.
+			if (!authoredTrainer) ensure(set.level >= minimumEvolutionLevel(set.species), `${set.species} 未达到进化等级`);
 			ensure(set.moves.length >= 1 && set.moves.length <= 4 && set.moves.every(move => dex.moves.get(move).exists), '招式无效');
 			ensure(dex.abilities.get(set.ability).exists && dex.natures.get(set.nature).exists, '特性或性格无效');
 			const problems = encounterSetProblems(set);
@@ -127,7 +128,7 @@ export function validateContent(content: RogueContent): RogueContent {
 				}
 			}
 			for (const encounter of node.encounters) {
-				team(encounter.team);
+				team(encounter.team, !!encounter.trainer || !!encounter.trainerCandidates?.length);
 				if (encounter.trainer || encounter.trainerCandidates) {
 					ensure(node.kind === 'boss' && !encounter.catchable && !encounter.candidates, '训练家候选只能用于不可捕捉的训练家 Boss');
 					if (encounter.trainer) trainer(encounter.trainer, floor);
@@ -135,7 +136,7 @@ export function validateContent(content: RogueContent): RogueContent {
 						const candidates = encounter.trainerCandidates;
 						ensure(candidates.length && new Set(candidates.map(entry => entry.trainer.id)).size === candidates.length,
 							'训练家候选不能为空或重复');
-						for (const candidate of candidates) { trainer(candidate.trainer, floor); team(candidate.team); }
+						for (const candidate of candidates) { trainer(candidate.trainer, floor); team(candidate.team, true); }
 					}
 				}
 				if (encounter.candidates) {

@@ -82,7 +82,7 @@ describe('Fantasy Rogue flow, adventures and ability visibility', function () {
 		assert.throws(() => chooseAdventure(account, run, content, () => 0, 'fishfinish', 101000), /没收完/);
 		const reloaded = JSON.parse(JSON.stringify(account));
 		chooseAdventure(reloaded, reloaded.run, content, () => 0, 'fishfinish', 114001);
-		assert.equal(reloaded.run.money, 10142); assert(reloaded.run.node.event.settled);
+		assert.equal(reloaded.run.money, 10137); assert(reloaded.run.node.event.settled);
 		assert.equal(adventureView(reloaded.run).options.length, 0);
 	});
 	it('keeps timing continuous, caps at six hits and rejects fast repeated taps', () => {

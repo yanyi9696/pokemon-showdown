@@ -77,7 +77,7 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	it('offers all migrated opening-only blessings and excludes other restricted floors', () => {
 		cmd('start', { starters: ['bulbasaur'] });
 		const run = account().run, eligible = new Set(blessingCandidates(run, content).map(b => b.id));
-		const requiresParty = new Set(['latebloom', 'singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound', 'killlagirl', 'ghidorah', 'galarlegend', 'originaldragon']);
+		const requiresParty = new Set(['detect', 'latebloom', 'singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound', 'killlagirl', 'ghidorah', 'galarlegend', 'originaldragon']);
 		assert(!eligible.has('killlagirl'), 'requires both robes and floor 150');
 		assert(!eligible.has('ghidorah'), 'requires a Hydreigon in the party');
 		assert(!eligible.has('galarlegend'), 'requires Eternatus in the party');
@@ -106,6 +106,9 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 				assert(!blessingCandidates(account().run, content).some(b => b.id === def.id)); return;
 			}
 			store.change(user, a => prepareCompanionParty(a.run, def.family, 5));
+			if (def.family === 'detect') store.change(user, a => {
+				a.run.team[0] = createRoguePokemon(set('Meditite', 'Pure Power', 5, ['Detect']), a.run.boosts);
+			});
 			if (def.family === 'railgun') store.change(user, a => {
 				a.run.team[0] = createRoguePokemon(set('Magnemite', 'Sturdy', 5), a.run.boosts);
 			});

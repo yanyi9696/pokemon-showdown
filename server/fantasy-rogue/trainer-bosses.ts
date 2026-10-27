@@ -2,7 +2,6 @@ import { Dex } from '../../sim/dex';
 import { Teams } from '../../sim/teams';
 import { BOSS_FLOORS } from './content';
 import { TrainerBossData } from './trainer-boss-data';
-import { minimumEvolutionLevel } from './evolution';
 import type { RogueRandom } from './biome-pools';
 import type { RogueRun, RogueTrainerCandidate } from './types';
 
@@ -30,7 +29,8 @@ export function trainerBossCandidates(floor: number, level: number): RogueTraine
 				typeof species.battleOnly === 'string' ?
 				species.battleOnly : species.name;
 			return {
-				...imported, name: '', species: entrySpecies, level: Math.max(level, minimumEvolutionLevel(entrySpecies)), nature: imported.nature || 'Hardy',
+				// Authored trainer rosters share the floor's level, including friendship/item evolutions.
+				...imported, name: '', species: entrySpecies, level, nature: imported.nature || 'Hardy',
 				ability: dex.abilities.get(imported.ability).name,
 				item: imported.item ? dex.items.get(imported.item).name : '',
 				moves: imported.moves.map(move => dex.moves.get(move).name),

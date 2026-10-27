@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { difficultyRewardScale } from '../../sim/rogue-difficulty';
-import { dueCatchup, catchupLevels } from './late-support';
+import { dueCatchup, catchupLevels, catchupPlan } from './late-support';
 import { personalRewardGrowth } from './growth';
 import { giveEgg, eggEventWeight } from './eggs';
 import { normalizeBlessings } from './blessings';
@@ -12,6 +12,7 @@ import type { RogueContent, RogueRun } from './types';
 import {
 	CANDY_SHOP, routeCandyReward, earlyCoinMultiplier, journeyIncomeMultiplier, journeyCoins,
 } from './early-balance';
+import { coinSupplyMultiplier } from './resource-pacing';
 import { convertSpiritItem } from './spirits';
 import { gainExperience, ensureMemberMemory } from './progression';
 import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
@@ -39,11 +40,12 @@ export function prepareRewardScene(run: RogueRun, random: RogueRandom) {
 	const last = run.rewardHistory?.[run.rewardHistory.length - 1];
 	const candidates: RewardScene['id'][] = ['chest', 'chest', 'sketch', 'research', 'picnic', 'coach', 'catchup'];
 	if (run.floor >= 45 && run.floor <= 59) candidates.push('catchup', 'catchup', 'catchup');
+	else if (run.floor >= 41 && run.floor <= 80) candidates.push('catchup');
 	if (run.floor >= 81) candidates.push('pprest', 'pprest');
 	const pool = candidates.filter(id => id !== last &&
-		(id !== 'catchup' || run.team.filter(p => !p.egg && !p.fixedLevel && p.set.level < 100).length > 0));
+		(id !== 'catchup' || catchupPlan(run).length > 0));
 	const checkpoint = dueCatchup(run);
-	const id: RewardScene['id'] = checkpoint && run.team.some(p => !p.egg && !p.fixedLevel && p.set.level < 100) ? 'catchup' :
+	const id: RewardScene['id'] = checkpoint && catchupPlan(run).length ? 'catchup' :
 		last !== 'breederegg' && random(100) < eggEventWeight(run.floor) ? 'breederegg' : pool[random(pool.length)];
 	run.node.rewardScene = { id, key: randomUUID(),
 		...(checkpoint ? { catchupCheckpoint: checkpoint } : {}),
@@ -81,14 +83,14 @@ function baseRewardMoney(floor: number, enhanced: boolean): number {
 	const value = Object.entries(items).reduce((sum, [id, count]) => sum + count * CANDY_SHOP[id].price, 0);
 	// A cheaper newly unlocked candy grade must not make the coin alternative regress.
 	// Apply late income after smoothing, so an earlier payout plateau cannot absorb the bonus.
-	const multiplier = earlyCoinMultiplier(f) / journeyIncomeMultiplier(f);
+	const multiplier = earlyCoinMultiplier(f) / journeyIncomeMultiplier(f) * coinSupplyMultiplier(f);
 	const coins = Math.max(100, Math.round(value * 0.8 * multiplier / 50) * 50,
 		f > 1 ? baseRewardMoney(f - 1, enhanced) : 0);
 	moneyBudgets.set(key, coins);
 	return coins;
 }
 export function rewardMoney(floor: number, enhanced = false): number {
-	return Math.round(journeyCoins(floor, baseRewardMoney(floor, enhanced)) / 50) * 50;
+	return Math.round(journeyCoins(floor, baseRewardMoney(floor, enhanced)) / coinSupplyMultiplier(floor) / 50) * 50;
 }
 
 function demonstration(run: RogueRun) {
@@ -116,7 +118,8 @@ export function rewardChoices(run: RogueRun) {
 	if (scene.id === 'pprest') return [{ id: 'pprest', name: '为伙伴补足招式 PP',
 		text: '恢复全队所有已掌握招式的 PP，另赠 PP 单项小补剂 ×3 与基础补给。', items: { ether: 3 } }];
 	if (scene.id === 'catchup') return [{ id: 'catchup', name: '让落后的伙伴参加特训',
-		text: `等级最低的两位可训练伙伴各提升 ${catchupLevels(run.floor)} 级（最高 100 级），另有基础补给。` }];
+		text: `为落后伙伴补课，每只最多提升 ${catchupLevels(run.floor)} 级，不超过本层训练目标；四只及以上伙伴整体落后时，扩大辅导人数。` +
+			catchupPlan(run).map(entry => `【${run.team.find(p => p.id === entry.member)!.set.species}】升至 ${entry.level} 级`).join('，') + '。另有基础补给。' }];
 	if (scene.id === 'breederegg') return [{ id: 'egg', name: '接过培育家赠送的蛋', text: '获得一颗随机宝可梦蛋，附带少量金币与回复物资。经过 5～8 层自动孵化。', items: { ether: 1 } }];
 	const scale = difficultyRewardScale(run.difficulty, run.floor);
 	const enhanced = !!scene.demonstrated, experience = Math.round(rewardExperience(run.floor, enhanced) * scale / 100) * 100;
@@ -194,11 +197,10 @@ export function chooseReward(run: RogueRun, content: RogueContent, random: Rogue
 		for (const slot of [...mon.pp, ...mon.moveMemory || [], ...mon.blessingPP || []]) slot.pp = slot.maxpp;
 	}
 	if (value === 'catchup') {
-		const partners = run.team.filter(p => !p.egg && !p.fixedLevel && p.set.level < 100)
-			.map((p, index) => ({ p, index })).sort((a, b) => a.p.set.level - b.p.set.level || a.index - b.index).slice(0, 2);
+		const partners = catchupPlan(run);
 		const trained: string[] = [];
-		for (const { p } of partners) {
-			const level = Math.min(100, p.set.level + catchupLevels(run.floor));
+		for (const { member: memberId, level } of partners) {
+			const p = run.team.find(mon => mon.id === memberId)!;
 			const total = experienceAtLevel(rogueSpeciesData(p.set.species).growth, level);
 			gainExperience(run, p, Math.max(0, total - (p.experience ?? experienceAtLevel(rogueSpeciesData(p.set.species).growth, p.set.level))));
 			trained.push(`${p.set.species} → Lv.${p.set.level}`);

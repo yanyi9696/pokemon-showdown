@@ -95,7 +95,7 @@ describe('Fantasy Rogue October 21 complete expansion', function () {
 		const rows = rogueCodex(undefined, 'events', true).entries;
 		for (const id of Object.keys(ACTIVITY_NAMES)) assert(rows.some(e => e.id === id && e.replay?.pages.start.text.length >= 3), id);
 		assert.equal(rows[0].category, 'ecology'); assert.equal(rows.filter(e => e.category === 'ecology').length, 14);
-		assert(rows.find(e => e.id === 'reward:catchup').text.includes('等级最低'));
+		assert(rows.find(e => e.id === 'reward:catchup').text.includes('落后'));
 		const blessings = rogueCodex(undefined, 'blessings', true).entries;
 		for (const id of ['dogs', 'cats', 'weighttraining']) assert(blessings.some(e => e.id === id), id);
 		assert(blessings.find(e => e.id === 'companionlacey').text.includes('致以，「无瑕之人」'));
@@ -208,13 +208,13 @@ describe('Fantasy Rogue October 21 complete expansion', function () {
 		assert(Math.abs(41 * journeyGrowthAmount(80) / (60 * 75) - 1) < .1);
 		assert(journeyGrowthAmount(81) > journeyGrowthAmount(80)); assert(journeyGrowthAmount(101) > 75);
 	});
-	it('trains exactly the two lowest levels and retains ordinary supplies and level-up confirmations', () => {
+	it('trains every lagging member of a collectively underlevelled party and retains ordinary supplies and level-up confirmations', () => {
 		const r = run(['Bulbasaur', 'Charmander', 'Squirtle', 'Caterpie'], 90);
 		r.team = ['Bulbasaur', 'Charmander', 'Squirtle', 'Caterpie'].map((n, i) => member(n, [30, 5, 8, 20][i]));
 		r.phase = 'reward'; r.node.kind = 'reward'; r.node.rewardScene = {id: 'catchup', key: 'catchup'};
-		chooseReward(r, content, () => 0, 'catchup'); assert.deepEqual(r.team.map(p => p.set.level), [30, 10, 13, 20]);
+		chooseReward(r, content, () => 0, 'catchup'); assert.deepEqual(r.team.map(p => p.set.level), [35, 10, 13, 25]);
 		assert(r.node.reward.money > 0 && r.node.reward.items.revive > 0); assert(r.pendingMoves?.length);
-		assert.throws(() => chooseReward(r, content, () => 0, 'catchup')); assert.deepEqual(r.team.map(p => p.set.level), [30, 10, 13, 20]);
+		assert.throws(() => chooseReward(r, content, () => 0, 'catchup')); assert.deepEqual(r.team.map(p => p.set.level), [35, 10, 13, 25]);
 	});
 	it('provides family-appropriate gifts and six Power items, with much rarer major legends', () => {
 		for (const [id, rolls, expected] of [['dogs', 0, undefined], ['dogs', 9900, 'Okidogi'], ['dogs', 9990, undefined], ['cats', 0, undefined]]) {

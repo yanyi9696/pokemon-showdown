@@ -155,6 +155,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 	for (const def of ROGUE_BLESSINGS) it(`grants and serializes ${def.id} with its required reward flow`, () => {
 		const floor = def.floors?.[0] || (['overtime', 'killlagirl'].includes(def.family) ? 150 : 50), { run, account } = setup(floor);
 		prepareCompanionParty(run, def.family);
+		if (def.family === 'detect') run.team[0] = createRoguePokemon(set('Meditite', 'Pure Power', 50, ['Detect']), run.boosts);
 		if (def.family === 'typeevolution') {
 			const species = dex.species.all().find(s => s.num > 0 && !s.battleOnly && s.types.includes(def.type));
 			run.team[0] = createRoguePokemon(set(species.name, species.abilities[0], 50), run.boosts);

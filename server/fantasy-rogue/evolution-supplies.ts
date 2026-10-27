@@ -20,7 +20,7 @@ export function addEvolutionSupplies(items: RogueItem[]) {
 			description: '进化用携带道具。装备后在队伍面板检查对应伙伴的条件；需要交换的进化另用联系绳，进化时消耗携带道具。' });
 	}
 	for (const [id, name] of [['peatblock', '泥炭块'], ['strawberrysweet', '草莓糖饰']]) {
-		if (!items.some(i => i.id === id)) items.push({ id, name, kind: 'evolution', icon: id, price: 1600, shopFloor: 49,
+		if (!items.some(i => i.id === id)) items.push({ id, name, kind: 'evolution', icon: id, price: 1600, shopFloor: id === 'peatblock' ? items.find(i => i.id === 'blackaugurite')?.shopFloor ?? 89 : 49,
 			description: '用于专属进化事件；满足条件后可交给研究人员或培育家。' });
 	}
 	for (const [id, name] of [['powerlens', '力量镜'], ['powerbracer', '力量护腕'], ['poweranklet', '力量护踝'],

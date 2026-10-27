@@ -85,8 +85,7 @@ describe('Fantasy Rogue authored trainers', function () {
 					const authored = original[index];
 					const species = dex.species.get(authored.species);
 					assert.equal(mon.species.name, species.forme.includes('Mega') ? species.battleOnly : species.name);
-					assert.equal(mon.level, Math.max(PreviewBalance.bossLevel(floor),
-						require('../../dist/server/fantasy-rogue/evolution').minimumEvolutionLevel(mon.species.name)));
+					assert.equal(mon.level, PreviewBalance.bossLevel(floor), 'Authored trainer rosters use one floor level');
 					assert.equal(candidate.team[index].ability, dex.abilities.get(authored.ability).name);
 					assert.equal(mon.baseAbility, species.id === 'greninjaashfantasy' ? 'moldbreaker' : toID(authored.ability));
 					// Entry effects can immediately consume Booster Energy or a terrain seed.

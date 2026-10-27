@@ -1,3 +1,4 @@
+import { companionTravelGift } from './affection-gifts';
 import { gainAffection, affectionChat, AFFECTION_RULES } from './affection';
 import { randomUUID } from 'crypto';
 import { COMPANIONS } from '../../sim/rogue-companions';
@@ -83,7 +84,7 @@ function farewell(run: RogueRun, id: string) {
 		state.away = true;
 		if (!state.permanent && state.temporaryUntil) {
 			delete state.temporaryUntil;
-			const gift = profile.gifts[0]; run.bag[gift.id] = (run.bag[gift.id] || 0) + 1;
+			const gift = companionTravelGift(run.floor); run.bag[gift.id] = (run.bag[gift.id] || 0) + 1;
 			pages.push(dialoguePage(id, person.name, `获得【同行训练家的赠礼】：${gift.name} ×1。`, true, 'left'));
 		}
 	}

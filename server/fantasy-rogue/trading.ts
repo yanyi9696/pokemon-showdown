@@ -6,6 +6,7 @@ import type { RogueContent, RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { spiritItems, spiritShopAvailable } from './spirits';
 import { CANDY_SHOP, restCandyOffer } from './early-balance';
+import { candySupplyMultiplier } from './resource-pacing';
 import { beginAuction } from './auction';
 import { BUYBACK_FLOOR } from './buyback';
 import { nextShopGrade } from './shopping-upgrade';
@@ -151,7 +152,7 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 		const adjusted = trade.kind === 'candy' ? CANDY_SHOP[item.id].price :
 			Math.ceil(price * 1.25 * (trade.kind === 'machine' ? 1 + Math.min(0.2, Math.max(0, run.floor - 30) / 500) : 1) / 10) * 10;
 		trade.stock.push({ ...item, price: Math.ceil(adjusted * (run.spirit === 'meowth' ? 1.25 : 1)),
-			shopFloor: 1, remaining: trade.kind === 'candy' ? CANDY_SHOP[item.id].stock : 1 });
+			shopFloor: 1, remaining: trade.kind === 'candy' ? Math.max(1, Math.floor(CANDY_SHOP[item.id].stock * candySupplyMultiplier(run.floor))) : 1 });
 	}
 }
 

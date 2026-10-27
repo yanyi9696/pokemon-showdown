@@ -93,7 +93,7 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 		const invite = r.companionInvitations[0];
 		t.chooseCompanionInvitation(r, invite.key, 'kieran');
 		assert(r.rival.away && r.rival.temporaryUsed);
-		assert.equal(r.bag[TRAVELLERS.kieran.gifts[0].id], 1);
+		assert.equal(r.bag.superpotion, 1);
 		assert.throws(() => t.chooseCompanionInvitation(r, invite.key, 'kieran'), /更新/);
 		assert.equal(t.travellingRoster(r).length, 2);
 		assert.equal(opposingCompanion(r, {id: 'brock'}), 'brock');
@@ -161,13 +161,13 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 		const r = run(); r.rival = {id: 'kieran', completed: 4, affection: 8, lastFloor: 30, carmine: {affection: 8}};
 		t.requestCompanion(r, {id: 'kieran', origin: 'rival', until: 61});
 		assert(expireRival(r, 62)); assert(!expireRival(r, 62));
-		assert.equal(r.bag[TRAVELLERS.kieran.gifts[0].id], 1);
+		assert.equal(r.bag.superpotion, 1);
 		r.node.event = {id: 'rivalstory', key: 'invite', stage: 'choice', rival: {chapter: 5, step: 'invite'}};
 		assert.deepEqual(rivalView(r).options.map(o => o.id), ['joincarmine', 'solo']);
 		chooseRival(r, content(), () => 0, 'joincarmine');
 		assert(r.rival.carmine.temporaryUsed); assert(!r.rival.temporaryUntil);
 		r.floor = 66; expireRival(r);
-		assert.equal(r.bag[TRAVELLERS.carmine.gifts[0].id], 1);
+		assert.equal(r.bag.superpotion, 2);
 		t.requestCompanion(r, {id: 'kieran', origin: 'rival', permanent: true});
 		assert(r.rival.permanent); assert.equal(t.travellingRoster(r).length, 1);
 	});

@@ -30,3 +30,9 @@ export function affectionThemeGift(id: string, stage: number) {
 /** Every item in the game's Fantasy equipment category, with no random shortlist. */
 export const AFFECTION_FANTASY_CHOICES = [...FANTASY_BLESSING_ITEMS];
 export const AFFECTION_ADVANCED_REWARDS = '神奇糖果 ×2、金色王冠 ×1、任意自选幻想道具 ×1';
+
+/** Ordinary returns never duplicate the once-per-journey themed equipment. */
+export function companionTravelGift(floor: number) {
+	return floor < 60 ? { id: 'potion', name: '伤药' } :
+		floor < 120 ? { id: 'superpotion', name: '好伤药' } : { id: 'hyperpotion', name: '厉害伤药' };
+}

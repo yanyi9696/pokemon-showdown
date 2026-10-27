@@ -6,7 +6,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 const { encounterCoins, eliteTreasureBudget, eventRewardBudget, eventCost, emergencyCost,
-	grantEventTraining } = require('../../dist/server/fantasy-rogue/early-balance');
+	grantEventTraining, journeyCoins } = require('../../dist/server/fantasy-rogue/early-balance');
 const { TREASURES, rollWildLoot, prepareEconomy } = require('../../dist/server/fantasy-rogue/economy');
 const { expectedWildLoot } = require('../../dist/server/fantasy-rogue/events');
 const { rewardMoney, rewardSceneView, chooseReward } = require('../../dist/server/fantasy-rogue/reward-scenes');
@@ -17,31 +17,28 @@ describe('Fantasy Rogue income from floor 81', function () {
 	this.timeout(20000);
 	let content;
 	before(() => { content = createPreviewContent(); });
-	// Captured from the preceding release: catches rounding and double-application regressions.
+	// Revised October 27 budgets: early candy reduction and slower midgame income,
+	// retaining the original floor-81 extra wild drop and late recovery.
 	const baseline = [
 		[1, 900, 150, 416.41875, 100, 254.4],
-		[40, 2750, 1050, 1459.5, 550, 254.4],
-		[80, 4450, 1650, 2854.71, 1950, 511.05],
-		[81, 4500, 1650, 2905.997355, 1950, 1496.25],
-		[100, 5700, 2250, 3984.75, 3750, 1496.25],
-		[150, 9200, 3600, 7868.25, 12500, 2450.25],
-		[200, 13350, 5400, 13506.75, 27600, 4464],
+		[40, 2400, 900, 1277.0625, 250, 254.4],
+		[80, 3200, 1200, 2055.3912, 950, 511.05],
+		[81, 3650, 1350, 2356.4151352224, 1250, 572.376],
+		[100, 5100, 1950, 3570.336, 3150, 572.376],
+		[150, 10000, 4050, 8548.0668, 17350, 2744.28],
+		[200, 14950, 6000, 15127.56, 41050, 4999.68],
 	];
-	it('preserves early income and applies late income once, including the revised reward choice budgets', () => {
-		// Reward-region coins also track the larger October 22 candy budgets, including grade smoothing.
-		const supportedRewards = { 81: 2500, 100: 4750, 150: 18150, 200: 41050 };
+	it('slows midgame income and applies late income once, including smoothed reward choice budgets', () => {
 		for (const [floor, trainer, elite, event, reward, wild] of baseline) {
-			const scale = floor >= 81 ? 1.12 : 1;
 			const sources = [
 				[encounterCoins(floor), trainer, 50], [eliteTreasureBudget(floor), elite, 150],
 				[eventRewardBudget(floor), event, 1e-8],
 				[expectedWildLoot(floor), wild, 1e-8],
 			];
 			for (const [actual, previous, rounding] of sources) {
-				assert(Math.abs(actual - previous * scale) <= (floor >= 81 ? rounding : 1e-8), `${floor}: ${actual} / ${previous}`);
-				if (floor >= 81) assert(actual > previous);
+				assert(Math.abs(actual - previous) < Math.min(rounding, 1e-7), `${floor}: ${actual} / ${previous}`);
 			}
-			assert.equal(rewardMoney(floor), supportedRewards[floor] || reward, `reward choice at ${floor}`);
+			assert.equal(rewardMoney(floor), reward, `reward choice at ${floor}`);
 		}
 		for (let floor = 1; floor <= 200; floor++) {
 			assert.equal(eventCost(floor), Math.round((350 + 20 * floor + 0.15 * floor * floor) * 0.9 / 50) * 50);
@@ -90,7 +87,7 @@ describe('Fantasy Rogue income from floor 81', function () {
 				team: [createRoguePokemon(set(), stats(0))], rival: { id: 'marnie', completed: 1, affection: 0, lastFloor: 1 },
 				node: { name: '并肩阻敌', kind: 'adventure', encounters: [{}], event: { id: 'rivalstory', stage: 'battle', rival: { chapter: 2 } } } };
 			settleRival(run, max => max - 1, true);
-			assert.equal(run.money, Math.round((180 + floor * 14) * 1.15 * (floor >= 81 ? 1.12 : 1)));
+			assert.equal(run.money, journeyCoins(floor, (180 + floor * 14) * 1.15));
 		}
 	});
 	it('credits the boosted gym prize exactly once through engine settlement and reload', () => {
@@ -108,12 +105,12 @@ describe('Fantasy Rogue income from floor 81', function () {
 			});
 			command('select', { value: 'boss' });
 			const before = store.get(user).run;
-			assert.equal(before.node.reward.money, 6272); // Previous prize: 5600.
+			assert.equal(before.node.reward.money, journeyCoins(120, 5600));
 			command('battle');
 			const run = store.get(user).run;
 			const result = { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag };
 			engine.settle(user, run.battle.token, result);
-			assert.equal(store.get(user).run.money, before.money + 6272);
+			assert.equal(store.get(user).run.money, before.money + before.node.reward.money);
 			const paid = store.get(user);
 			engine.settle(user, run.battle.token, result);
 			assert.deepEqual(store.get(user), paid);

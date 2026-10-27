@@ -13,9 +13,9 @@ const replacements: Record<string, string> = {
 export function repairSavedEncounters(run: RogueRun) {
 	if (run.phase === 'battle' || !run.node || run.node.event?.memory) return;
 	const fixed = run.node.kind === 'boss';
-	const repair = (set: PokemonSet) => {
-		if (fixed) set.level = Math.max(set.level, minimumEvolutionLevel(set.species));
-		else if (minimumEvolutionLevel(set.species) > set.level) {
+	const repair = (set: PokemonSet, authoredTrainer = false) => {
+		if (fixed && !authoredTrainer) set.level = Math.max(set.level, minimumEvolutionLevel(set.species));
+		else if (!authoredTrainer && minimumEvolutionLevel(set.species) > set.level) {
 			set.species = lowerToEligibleStage(set.species, set.level);
 			set.name = set.species;
 		}
@@ -31,7 +31,10 @@ export function repairSavedEncounters(run: RogueRun) {
 		set.moves = moves;
 	};
 	for (const encounter of run.node.encounters || []) {
-		for (const set of [...(encounter.team || []), ...(encounter.cooperative?.team || []), ...(encounter.candidates || []),
-			...(encounter.trainerCandidates || []).flatMap(candidate => candidate.team)]) repair(set);
+		for (const set of [...(encounter.team || []), ...(encounter.candidates || [])]) {
+			repair(set, !!encounter.trainer || !!encounter.trainerCandidates?.length);
+		}
+		for (const set of encounter.cooperative?.team || []) repair(set, true);
+		for (const candidate of encounter.trainerCandidates || []) for (const set of candidate.team) repair(set, true);
 	}
 }

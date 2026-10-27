@@ -26,12 +26,12 @@ import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { legendaryEventScale } from './encounter-quality';
 import { lowerToEligibleStage } from './evolution';
-import { eventRewardBudget, eventCost, journeyIncomeMultiplier } from './early-balance';
+import { eventRewardBudget, eventCost, LATE_INCOME_BONUS_PERCENT } from './early-balance';
 import { eventSpeciesPool, themedEventTeam } from './event-teams';
 import {
 	drawBlessingGift, gift, giveEquipment, normalizeBlessings, recordNegativeBlessingEvent, toolbox,
 } from './blessings';
-import { LOOT_STAGES, TREASURES } from './economy';
+import { lootStageAtFloor, TREASURES } from './economy';
 import { simulateForestBattle } from './event-battle';
 import {
 	trainingEvent, trainingFloor, serviceEventView, chooseServiceOption, settleServiceBattle,
@@ -91,9 +91,10 @@ export function eventBudget(floor: number, multiplier = 1) {
 	return Math.round(base * multiplier / 50) * 50;
 }
 export function expectedWildLoot(floor: number) {
-	const stage = LOOT_STAGES[Math.min(4, Math.floor((floor - 1) / 40))];
+	const stage = lootStageAtFloor(floor);
 	const value = stage.weights.reduce((sum, weight, i) => sum + weight * TREASURES[i].sellPrice!, 0);
-	return (stage.min + stage.max) / 2 * value / stage.weights.reduce((a, b) => a + b, 0) * journeyIncomeMultiplier(floor);
+	return (stage.min + stage.max) / 2 * value / stage.weights.reduce((a, b) => a + b, 0) *
+		(floor >= 81 ? 1 + LATE_INCOME_BONUS_PERCENT / 100 : 1);
 }
 
 /** Preserve fixed floors and the third route. Ordinary battle slots can become authored events. */

@@ -1,5 +1,6 @@
 import { teraShardItems } from './tera-shards';
 import { captureItems } from './capture-items';
+import { lootProgressFloor } from './resource-pacing';
 import { difficultyRewardScale, type RogueDifficulty } from '../../sim/rogue-difficulty';
 import type { RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
@@ -36,8 +37,9 @@ export const LOOT_STAGES = [
 	{ min: 2, max: 2, weights: [1000, 1900, 700, 500, 1300, 1050, 200, 850, 900, 400, 1100, 100] },
 ];
 
+export const lootStageAtFloor = (floor: number) => LOOT_STAGES[Math.min(4, Math.max(0, Math.floor((lootProgressFloor(floor) - 1) / 40)))];
 export function rollWildLoot(floor: number, random: RogueRandom): Record<string, number> {
-	const stage = LOOT_STAGES[Math.min(4, Math.max(0, Math.floor((floor - 1) / 40)))];
+	const stage = lootStageAtFloor(floor);
 	const count = stage.min + (stage.max > stage.min ? random(stage.max - stage.min + 1) : 0);
 	const total = stage.weights.reduce((sum, weight) => sum + weight, 0);
 	const loot: Record<string, number> = {};

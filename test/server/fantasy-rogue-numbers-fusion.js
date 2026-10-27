@@ -107,7 +107,7 @@ describe('Fantasy Rogue numbers, fusion and codex boundaries', function () {
 		assert(account.discoveries.blessings.includes('supernumber'));
 		const prize = {encounterId: 'threshold-prize', won: false, blessingProgress: {numberPrize: true, insight: {}}};
 		settleBlessingBattle(account, run, content(), prize, () => 0);
-		const money = run.money; assert.equal(money, 800 + run.floor * 40);
+		const money = run.money; assert.equal(money, require('../../dist/server/fantasy-rogue/early-balance').journeyCoins(run.floor, 800 + run.floor * 40));
 		settleBlessingBattle(account, run, content(), prize, () => 0); assert.equal(run.money, money);
 	});
 	it('keeps the sealed partner in placement when splitting a full party', () => {

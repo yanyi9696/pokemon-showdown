@@ -9,7 +9,7 @@ import { normalizeBlessings } from './blessings';
 import { randomUUID } from 'crypto';
 
 export interface TrainerBond { score: number; gifts: number[]; pending: number[]; responses?: Record<number, string>; chats?: number }
-export const AFFECTION_RULES = { stages: [50, 100], floor: 1, preference: 2, meeting: 2, response: 3, duel: 4, giftChance: 5 };
+export const AFFECTION_RULES = { stages: [50, 100], floor: 1, preference: 2, meeting: 2, response: 3, duel: 4, giftChance: 3 };
 const person = (id: string) => TRAVELLERS[id] || COMPANIONS[id as CompanionID];
 export function bond(run: RogueRun, id: string): TrainerBond {
 	return (run.trainerBonds ||= {})[id] ||= { score: 0, gifts: [], pending: [] };
@@ -62,9 +62,9 @@ export function affectionFloor(run: RogueRun, random: RogueRandom) {
 		if (random(100) >= AFFECTION_RULES.giftChance) continue;
 		const rewards = ['expcandyxs', 'potion', 'revive', 'shards'];
 		const item = rewards[random(rewards.length)];
-		if (item === 'shards' && run.blessings) run.blessings.shards += 3;
+		if (item === 'shards' && run.blessings) run.blessings.shards += 2;
 		else { const id = item === 'shards' ? 'potion' : item; run.bag[id] = (run.bag[id] || 0) + 1; }
-		(run.notices ||= []).push(`${c.name}将一份小补给交给你：${{ expcandyxs: '经验糖果 XS ×1', potion: '伤药 ×1', revive: '活力碎片 ×1', shards: run.blessings ? '幻想碎片 ×3' : '伤药 ×1' }[item]}。`);
+		(run.notices ||= []).push(`${c.name}将一份小补给交给你：${{ expcandyxs: '经验糖果 XS ×1', potion: '伤药 ×1', revive: '活力碎片 ×1', shards: run.blessings ? '幻想碎片 ×2' : '伤药 ×1' }[item]}。`);
 	}
 }
 /** New lines join ordinary conversation; repeatedly chatting never awards affection. */

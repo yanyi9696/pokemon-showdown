@@ -75,11 +75,11 @@ describe('Fantasy Rogue narrative settlements and terminal recovery', function (
 		for (let encounter = 0; encounter < 2; encounter++) { cmd('battle'); finish(true); }
 		cmd('battle'); const duplicate = finish(true);
 		assert.equal(run().floor, 1); assert.equal(run().phase, 'story');
-		assert.equal(run().dialogue.resume, 'advance'); assert.equal(run().bag.dragonfang, 1);
+		assert.equal(run().dialogue.resume, 'advance'); assert.equal(run().bag.potion, 1);
 		const money = run().money, key = storyView(account(), true, false).key;
 		engine = new RogueEngine(store, config, () => 0); engine.migrate(user);
 		assert.equal(storyView(account(), true, false).key, key);
-		duplicate(); skip(); assert.equal(run().floor, 2); assert.equal(run().bag.dragonfang, 1);
+		duplicate(); skip(); assert.equal(run().floor, 2); assert.equal(run().bag.potion, 1);
 		assert.equal(run().money, money); assert.equal(run().rival.affection, 7);
 		assert.throws(() => cmd('storyskip', {value: key})); assert.equal(run().floor, 2);
 	});

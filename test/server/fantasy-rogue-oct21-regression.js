@@ -72,14 +72,16 @@ describe('Fantasy Rogue October 21 regression', function () {
 	});
 	it('audits every configured party, candidate, starter and summit life, including legal evolution levels', () => {
 		let count = 0;
-		function visit(value, path = 'content') {
+		function visit(value, path = 'content', authoredTrainer = false) {
 			if (!value || typeof value !== 'object') return;
 			if (value.species && value.ability && Array.isArray(value.moves)) {
 				assert.deepEqual(encounterSetProblems(value), [], path + ': ' + value.species);
-				assert(value.level >= minimumEvolutionLevel(value.species), path + ': ' + value.species);
+				if (!authoredTrainer) assert(value.level >= minimumEvolutionLevel(value.species), path + ': ' + value.species);
 				count++; return;
 			}
-			for (const [key, child] of Object.entries(value)) visit(child, `${path}.${key}`);
+			for (const [key, child] of Object.entries(value)) {
+				visit(child, `${path}.${key}`, authoredTrainer || !!value.trainer || !!value.trainerCandidates?.length);
+			}
 		}
 		visit(createPreviewContent()); assert(count > 3000, String(count));
 		assert(encounterSetProblems(set('Cleffa', 'Yan Bu Zhen', 10, ['Splash'])).length);
