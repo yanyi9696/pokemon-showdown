@@ -26,30 +26,30 @@ describe('Fantasy Rogue October 27 pacing and companion regressions', function (
 			team: levels.map(level => createRoguePokemon(set('Eevee', 'Run Away', level), stats(0))) };
 		syncBlessingParty(r); return r;
 	}
-	it('gates Detect by the current move pool, including memory, but not future learning or boxed partners', () => {
-		const r = run(), m = r.team[0], offered = () => blessingCandidates(r, content).some(b => b.family === 'detect');
+	it('soft-weights Detect by the current move pool, including memory, but not future learning or boxed partners', () => {
+		const r = run(), m = r.team[0], weight = () => blessingCandidates(r, content).find(b => b.family === 'detect').appearanceWeight;
 		m.set.species = 'Meditite'; // Can learn Detect later, but cannot equip it yet.
-		assert(!offered());
-		m.moveMemory.push({ id: 'detect', pp: 0, maxpp: 5 }); assert(offered());
-		m.moveMemory = []; m.set.moves = ['Detect']; assert(offered());
-		m.set.moves = ['Tackle']; m.blessingMoves = ['detect']; assert(offered());
-		m.egg = { remainingFloors: 10 }; assert(!offered());
+		assert.equal(weight(), 20);
+		m.moveMemory.push({ id: 'detect', pp: 0, maxpp: 5 }); assert.equal(weight(), 100);
+		m.moveMemory = []; m.set.moves = ['Detect']; assert.equal(weight(), 100);
+		m.set.moves = ['Tackle']; m.blessingMoves = ['detect']; assert.equal(weight(), 100);
+		m.egg = { remainingFloors: 10 }; assert.equal(weight(), 20);
 		delete m.egg; delete m.blessingMoves;
-		r.box = [{ ...m, set: { ...m.set, moves: ['Detect'] } }]; assert(!offered());
+		r.box = [{ ...m, set: { ...m.set, moves: ['Detect'] } }]; assert.equal(weight(), 20);
 	});
-	it('makes Paradise gold and grants either AI a single 50 percent battle EXP bonus to every partner', () => {
+	it('makes Paradise gold and grants either AI a single 30 percent battle EXP bonus to every partner', () => {
 		assert.equal(blessing('companionai').tier, 'gold');
-		assert(blessing('companionai').text.includes('50%'));
+		assert(blessing('companionai').text.includes('30%'));
 		for (const id of ['sada', 'turo']) {
 			const r = run([10, 20]); grantCompanion(r, id);
 			for (const m of r.team) {
-				assert.equal(companionExperience(r, m, { species: 'Magikarp' }), 1.5);
-				assert.equal(companionExperience(r, m, { species: 'Magikarp', captured: true }), 1.5);
+				assert.equal(companionExperience(r, m, { species: 'Magikarp' }), 1.3);
+				assert.equal(companionExperience(r, m, { species: 'Magikarp', captured: true }), 1.3);
 			}
 			r.blessings.companions[0].away = true;
 			assert.equal(companionExperience(r, r.team[0], { species: 'Magikarp' }), 1);
 			r.blessings.companions = [{ id: 'sada' }, { id: 'turo' }];
-			assert.equal(companionExperience(r, r.team[0], { species: 'Magikarp' }), 1.5);
+			assert.equal(companionExperience(r, r.team[0], { species: 'Magikarp' }), 1.3);
 		}
 	});
 	it('gives both AIs the same once-per-run affection stages, improved second gift and daily supplies', () => {
@@ -104,11 +104,11 @@ describe('Fantasy Rogue October 27 pacing and companion regressions', function (
 		assert.deepEqual(catchupRoutes(strong, routes, [{ id: 'lesson', kind: 'reward' }]), routes);
 	});
 	it('reduces opening candy stock without repricing old bags or rerolling saved stock, and recovers late supply', () => {
-		assert.equal(restCandyOffer(19).stock, 2); assert.equal(restCandyOffer(39).stock, 1);
+		assert.equal(restCandyOffer(19).stock, 3); assert.equal(restCandyOffer(39).stock, 1);
 		assert.equal(candySupplyMultiplier(160), 1); assert.equal(coinSupplyMultiplier(160), 1);
 		const r = run([5], 20); r.bag = { expcandyxs: 30, nugget: 2 }; r.money = 99999;
 		r.node = { kind: 'trade', trade: { kind: 'candy', stock: [], purchases: 0 } };
-		prepareTrade(r, content, () => 0); assert.equal(r.node.trade.stock[0].remaining, 7);
+		prepareTrade(r, content, () => 0); assert.equal(r.node.trade.stock[0].remaining, 12);
 		const saved = structuredClone(r);
 		prepareTrade(r, content, () => { throw Error('do not reroll'); }); assert.deepEqual(r, saved);
 		const xp = floor => Object.entries(routeCandyReward(floor, 'elite')).reduce((sum, [id, n]) => sum + content.items.find(i => i.id === id).amount * n, 0);

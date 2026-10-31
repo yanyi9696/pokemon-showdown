@@ -84,17 +84,17 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 			const { run, account } = campaign([set('Bulbasaur', 'Overgrow', 50)]);
 			for (const id of order) grant(account, run, id);
 			assert.equal(run.bag.roguewine, 1); assert.equal(run.bag.roguecephalosporin, 1);
-			assert(!b.blessingView(run).owned.find(x => x.id === 'wine').text.includes('威力永久提升 50%'));
+			assert(!b.blessingView(run).owned.find(x => x.id === 'wine').text.includes('本局毒属性招式威力提升 50%'));
 			const mon = run.team[0]; mon.status = 'brn'; mon.statuses = { brn: {}, psn: {} };
 			for (const id of order) useTonic(account, mon, tonicItems().find(item => item.id === `rogue${id}`));
 			assert.equal(mon.status, ''); assert.equal(mon.statuses, undefined);
 			assert.deepEqual(permanentMemberTypes(mon), ['Grass', 'Poison', 'Ghost']); assert(mon.tonics.poison);
 			assert(account.tonicSecret);
 			assert.throws(() => useTonic(account, mon, tonicItems()[0]), /已经使用过/);
-			assert(b.blessingView(run, account.tonicSecret).owned.find(x => x.id === 'wine').text.includes('威力永久提升 50%'));
+			assert(b.blessingView(run, account.tonicSecret).owned.find(x => x.id === 'wine').text.includes('本局毒属性招式威力提升 50%'));
 			delete account.run;
 			const texts = rogueCodex(account, 'blessings', true).entries.filter(x => ['wine', 'cephalosporin'].includes(x.id));
-			assert(texts.every(x => x.text.includes('威力永久提升 50%')));
+			assert(texts.every(x => x.text.includes('本局毒属性招式威力提升 50%')));
 		}
 	});
 	it('keeps tonics and poison eligibility across rebuilding and does not give poison bonus to other species', () => {
@@ -149,7 +149,7 @@ describe('Fantasy Rogue dragon king and permanent tonics', function () {
 		assert.equal(b.blessingExperience(run, king), 1); assert.equal(b.blessingExperience(run, next), 1.3);
 		assert.equal(b.blessingExperience(run, king, next.id), 1.3); assert.equal(b.blessingExperience(run, next, next.id), 1);
 		run.blessings.owned.push({ ...owned('typexpdragon'), type: 'Dragon' });
-		assert.equal(b.blessingExperience(run, next), 1.3 * 1.3);
+		assert.equal(b.blessingExperience(run, next), 1.5 * 1.3);
 	});
 	it('requires a real outside-battle selection, applies items exactly once, and persists discovery across adventures', () => {
 		store = new RogueStore(':memory:'); const user = 'tonicplayer', engine = new RogueEngine(store, content, () => 0);

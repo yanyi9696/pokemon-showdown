@@ -1,10 +1,11 @@
 import { moveCategoryHelp } from './move-categories';
+import { optionalChallengeView } from './optional-challenges';
 import { BLESSING_SUPPLY_HELP } from './blessing-text';
 import { difficultyMenuDescription } from '../../sim/rogue-difficulty';
 import { affectionView, affectionScene } from './affection';
 import { ROGUE_DIFFICULTIES, difficultyLabel, difficultyDescription, difficultyScale, difficultyRewardDescription, CHARM_DESCRIPTION } from '../../sim/rogue-difficulty';
 import { collapseEntries, collapseParameters } from '../../sim/rogue-collapse-data';
-import { difficultySpiritUnlocked } from './difficulty';
+import { difficultySpiritUnlocked, preferredDifficulty } from './difficulty';
 import { comebackView } from './comeback';
 import { coverageView } from './coverage';
 import { fusionAbilities } from './fusion';
@@ -52,7 +53,7 @@ import { RogueDuels, type DuelCommand } from './duels';
 import { rogueRulesVersion, clearCardView } from './legacy';
 import { echoView } from './echo';
 import { blessingView, blessingItems, blessingMemberTypes, fantasyForm, equipmentCategory } from './blessings';
-import { assignedExtraAbilities, canGrantExtraAbility } from '../../sim/rogue-blessing-permanent';
+import { assignedExtraAbilities, canGrantExtraAbility, emblemBaseTypes } from '../../sim/rogue-blessing-permanent';
 
 export class RogueManager {
 	readonly engine: RogueEngine;
@@ -123,7 +124,8 @@ export class RogueManager {
 			}
 		}
 		if (run && content) {
-			for (const id of [...Object.keys(run.bag), ...[...run.team, ...(run.box || [])].flatMap(mon => [toID(mon.set.item), mon.emblem || ''])]) {
+			for (const id of [...Object.keys(run.bag), ...(run.node?.challenge?.prizes || []).flatMap(prize => Object.keys(prize.items)),
+				...[...run.team, ...(run.box || [])].flatMap(mon => [toID(mon.set.item), mon.emblem || ''])]) {
 				if (!id || items.some(item => item.id === id)) continue;
 				const item = inventoryItem(content, id);
 				if (item) items.push({ ...item });
@@ -149,7 +151,9 @@ export class RogueManager {
 				echo: echoView(account),
 				needsOnboarding: !!content && needsOnboarding(account),
 				revision: account.revision, points: account.points, boosts: account.boosts, slots: account.slots,
-				preferredDifficulty: account.preferredDifficulty,
+				boostRuleVersion: 2, unlockNotices: account.unlockNotices || [],
+				mainline: { completed: account.mainline?.completed.length || 0, total: 22, endingSeen: !!account.mainline?.endingSeen },
+				preferredDifficulty: preferredDifficulty(account),
 				difficultySettingsUnlocked: this.engine.localSpirits || account.difficulties!.highest > 0,
 				slotCost: rogueSlotCost(account.slots),
 				statCosts: Object.fromEntries(Object.entries(account.boosts).map(([stat, value]) => [stat, rogueStatCost(value)])),
@@ -186,8 +190,10 @@ export class RogueManager {
 				difficulty: run.difficulty || 0, difficultyLabel: difficultyLabel(run.difficulty), difficultyTest: !!run.difficultyTest,
 				difficultyScales: { player: difficultyScale(run.difficulty, run.floor, false, run.difficultyRulesVersion || 1), opponent: difficultyScale(run.difficulty, run.floor, true, run.difficultyRulesVersion || 1) },
 				collapse: run.collapse || [], difficultyRulesVersion: run.difficultyRulesVersion || 1,
-				futureSight: run.futureBossFloor && run.blessings?.owned.some(b => b.family === 'futuresight') ?
-					{ floor: run.futureBossFloor, roster: bossRoster(run, run.futureBossFloor) } : undefined,
+				futureSight: run.blessings?.owned.some(b => b.family === 'futuresight') ? {
+					bosses: Object.keys(run.bossPreviews || {}).map(Number).filter(floor => floor > run.floor)
+						.sort((a, b) => a - b).map(floor => ({ floor, roster: bossRoster(run, floor) })),
+				} : undefined,
 				difficultyRewards: difficultyRewardDescription(run.difficulty),
 				charm: run.difficulty === 'easy' ? { name: '替身护符', description: CHARM_DESCRIPTION } : undefined,
 				trainerBonds: affectionView(run), affectionScene: affectionScene(run),
@@ -202,8 +208,9 @@ export class RogueManager {
 				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit, run.blessings), box: run.box?.map(mon => mon.egg ? eggView(mon, run.floor) : mon),
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
 				postgame: run.postgame?.stage,
+				godEchoAwarded: run.postgame?.echoAwarded,
 				failure: run.failure,
-				event: eventView(run), eventBuff: run.eventBuff,
+				event: eventView(run), challenge: optionalChallengeView(run), eventBuff: run.eventBuff,
                 mentorOffer: run.mentorOffer ? {floor: run.mentorOffer, cards: Object.keys(MENTOR_CARDS).map(id => ({id, ...mentorCardAtFloor(id as MentorCard, run.mentorOffer!)}))} : undefined,
                 mentorCard: run.mentorCard ? {...run.mentorCard, ...mentorCardAtFloor(run.mentorCard.kind, run.mentorCard.floor)} : undefined,
 				time: { id: rogueTime(run.floor), name: ROGUE_TIME_NAMES[rogueTime(run.floor)] },
@@ -241,13 +248,13 @@ export class RogueManager {
 						abilityChanges: { abilitycapsule: abilityItemTarget(mon, 'abilitycapsule'), abilitypatch: abilityItemTarget(mon, 'abilitypatch') },
 						extraAbilities: assignedExtraAbilities(saved, run.team, run.blessings).filter(id => id !== toID(mon.set.ability)),
 						canReceiveSharpness: canGrantExtraAbility(saved, 'sharpness', run.team, run.blessings),
-						types: blessingMemberTypes(mon), fantasyForm: mon.fusion ? undefined : fantasyForm(mon.set.species),
+						types: blessingMemberTypes(mon), emblemBaseTypes: emblemBaseTypes(saved), fantasyForm: mon.fusion ? undefined : fantasyForm(mon.set.species),
 						experienceProgress: experienceProgress(mon),
 						friendship: friendship(mon),
 						evolutionDetails: content?.progression ? partyEvolutions(mon, run) : undefined,
 						evolutions: content?.progression ? evolutionOptions(mon, run) : [],
 					};
-				}), bag: run.bag, money: run.money, boosts: run.boosts, lastReward: run.lastReward,
+				}), bag: run.bag, money: run.money, boosts: run.boosts, boostRuleVersion: run.boostRuleVersion, lastReward: run.lastReward,
 				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture,
 				returningPartner: run.captureResume === 'event' && run.node?.event?.id === 'greninjareturn',
 				pendingMoves: run.pendingMoves || [],
@@ -255,7 +262,8 @@ export class RogueManager {
 				choices: run.phase === 'choose' ? (run.choices || content?.floors[run.floor] || []).map(node => node.fogged ? {
 					id: node.id, kind: 'fog', name: '迷雾区域', fogged: true, reward: { money: 0, items: {}, points: 0 },
 				} : ({
-					id: node.id, kind: node.kind, name: node.kind === 'trainer' ? '未知遭遇' : node.name, hidden: node.kind === 'trainer',
+					id: node.id, kind: node.kind, name: node.kind === 'trainer' && !node.challenge ? '未知遭遇' : node.name,
+					hidden: node.kind === 'trainer' && !node.challenge, challenge: !!node.challenge,
 					biome: node.biome,
 					wildLoot: node.wildLoot,
 					reward: { money: 0, items: {}, points: 0 },
@@ -312,6 +320,7 @@ export class RogueManager {
 				}, Teams.pack(battleState.team.map(mon => mon.set)), {
 					cooperative: encounter.cooperative && { name: encounter.cooperative.name, avatar: encounter.cooperative.id, ally: Teams.pack(encounter.cooperative.team), foe: Teams.pack(encounter.team.slice(Math.ceil(encounter.team.length / 2))), foeName: encounter.name },
 					state: battleState, floor: run.floor, boss: run.node!.kind === 'boss', canRetreat: canRetreatRogue(run),
+					optionalChallenge: !!run.node?.challenge,
 					preview: run.preview?.stage === 'running' ? run.preview.trainer : undefined,
 					wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',
 					onCapture: captured => { this.engine.capture(userid, token, captured); },

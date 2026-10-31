@@ -80,7 +80,8 @@ describe('Fantasy Rogue narrative settlements and terminal recovery', function (
 		engine = new RogueEngine(store, config, () => 0); engine.migrate(user);
 		assert.equal(storyView(account(), true, false).key, key);
 		duplicate(); skip(); assert.equal(run().floor, 2); assert.equal(run().bag.potion, 1);
-		assert.equal(run().money, money); assert.equal(run().rival.affection, 7);
+		assert.equal(run().money, money); assert.equal(run().rival.affection, 8);
+		assert.equal(run().rival.affection, run().trainerBonds.kieran.score);
 		assert.throws(() => cmd('storyskip', {value: key})); assert.equal(run().floor, 2);
 	});
 	it('heals a boss winner before dialogue, survives reconnect and awards the floor only once', () => {

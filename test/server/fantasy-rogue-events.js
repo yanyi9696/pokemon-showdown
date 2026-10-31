@@ -220,7 +220,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(account().run.money, 0);
 		const { TREASURES } = require('../../dist/server/fantasy-rogue/economy');
 		const value = TREASURES.reduce((sum, item) => sum + (account().run.bag[item.id] || 0) * item.sellPrice, 0);
-		assert.equal(value, 1350);
+		assert.equal(value, 1650);
 	});
 	it('retains permanent mushroom training across repeated battles', () => {
 		enter('mushrooms', 40); choose('taste');
@@ -333,7 +333,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(mon.set.species, 'Pichu'); assert.equal(mon.set.shiny, true);
 	});
 	it('keeps wild loot budgets inclusive of the existing drop, not paid twice', () => {
-		assert.equal(eventBudget(21, 1.15), 1050);
+		assert.equal(eventBudget(21, 1.15), 1350);
 		assert.equal(expectedWildLoot(1), 254.4);
 		assert.equal(expectedWildLoot(161), 4999.68);
 	});

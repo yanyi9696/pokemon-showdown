@@ -1,11 +1,11 @@
 import { Dex, toID } from '../../sim/dex';
 import { emptyRogueStats, ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
 import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
-import { assignedExtraAbilities, permanentMemberTypes, tonicDescription } from '../../sim/rogue-blessing-permanent';
+import { assignedExtraAbilities, monkeyKingBranch, permanentMemberTypes, tonicDescription } from '../../sim/rogue-blessing-permanent';
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
 import { companionSource } from '../../sim/rogue-companions';
 import { COMPANION_Z } from '../../sim/rogue-companion-z';
-import { robeMember, robeDurability, SPIRAL_CAP, SPIRAL_SURVIVAL } from '../../sim/rogue-awakening';
+import { robeMember, robeDurability, SPIRAL_SURVIVAL } from '../../sim/rogue-awakening';
 import { createRoguePokemon } from './progression';
 import { difficultyLabel, memberDifficultyScale } from '../../sim/rogue-difficulty';
 import { growthPercent } from './growth';
@@ -41,7 +41,8 @@ export function clearMemberDetails(mon: RoguePokemon, run: RogueRun): ClearMembe
 			`爬塔${grant.spent ? '已使用' : '尚未使用'}；通关卡每场对战重新获得一次机会，不占常规 Z 次数。`);
 	}
 	if (mon.difficulty) add(difficultyLabel(mon.difficulty.tier), `通关卡六维 ×${memberDifficultyScale(mon.difficulty)}（替代爬塔系数）`);
-	if (Object.values(run.boosts).some(Boolean)) add('局外六维加成', statList(run.boosts));
+	if (Object.values(run.boosts).some(Boolean)) add('局外六维加成', run.boostRuleVersion === 2 ?
+		ROGUE_STATS.filter(stat => run.boosts[stat]).map(stat => `${labels[stat]} +${run.boosts[stat]}%`).join('、') : statList(run.boosts));
 	if ((mon.stars || 1) > 1) add('星级', `${mon.stars} 星，六维 ×${rogueStarScale(mon.stars)}`);
 	const training = (name: string, value?: { offense?: number, defense?: number }) => {
 		if (value?.offense || value?.defense) add(name,
@@ -51,9 +52,11 @@ export function clearMemberDetails(mon: RoguePokemon, run: RogueRun): ClearMembe
 	training('个人永久训练', mon.training);
 	training('合成大蘑菇', mon.mushroomTraining);
 	if (run.growth?.experience) add('经验心得', `战斗经验 +${growthPercent(run.growth.experience)}`);
-	if (mon.compound) add('五号化合物', `分配的新增种族值：${statList(mon.compound.bonus)}；` +
-		`进化方向锁定为【${mon.compound.finalSpecies}】。` +
-		'当前形态原始种族值总和超过 500 时停用新增点数，主特性仍锁定为【化学之力】。');
+	if (mon.compound) {
+		const rules = mon.compound.reorganized ? '重组后保留原分配，不受新品种种族值总和限制，按新品种正常进化。' :
+			`进化方向锁定为【${mon.compound.finalSpecies}】。当前形态原始种族值总和超过 500 时停用新增点数。`;
+		add('五号化合物', `分配的新增种族值：${statList(mon.compound.bonus)}；${rules}主特性仍锁定为【化学之力】。`);
+	}
 	if (mod?.baseStats) {
 		const other = Object.fromEntries(ROGUE_STATS.map(s => [s, (mod.baseStats?.[s] || 0) - (mon.compound?.bonus[s] || 0)]));
 		if (Object.values(other).some(Boolean)) add('其他种族值增幅', statList(other));
@@ -68,11 +71,14 @@ export function clearMemberDetails(mon: RoguePokemon, run: RogueRun): ClearMembe
 		`${statList(mod.stats, true)}${mod.statsType ? `；适用于${BLESSING_TYPES[mod.statsType] || mod.statsType}属性伙伴` : ''}。`);
 	if (mod?.hp) add('越打命越硬', `最大 HP +${mod.hp}`);
 	if (mod?.swap) add('攻守交换', '攻击与防御、特攻与特防互换。');
-	if (mon.bond) add('就决定是你了', `羁绊 ${mon.bond}${mon.bondReady ? '，已进入第二阶段' : ''}`);
+	if (mon.bond) add('就决定是你了', `友好度 ${mon.bond} / 100`);
+	const monkey = monkeyKingBranch(mon, run.team, run.blessings);
+	if (monkey) add('大圣风采依旧', monkey === 'Rock' ? '受到对手招式的直接伤害降低 50%。' :
+		`对战速度提升 50%；未计其他对战修正时：${mon.stats!.spe} → ${Math.floor(mon.stats!.spe * 1.5)}。`);
 	if (mon.insight) add('濒死悟道', `领悟 ${mon.insight.points} / 100，每次积累 +${mon.insight.gain}`);
 	if (run.blessings?.owned.some(b => b.family === 'spiral' && b.target === mon.id)) {
 		const points = mon.spiral || 0;
-		add('我的钻头是可以突破天际的', `螺旋力 ${Number(points.toFixed(2))} / ${SPIRAL_CAP}，对战攻击 +${Number((points / 10).toFixed(2))}%；` +
+		add('我的钻头是可以突破天际的', `螺旋力 ${Number(points.toFixed(2))} 点，对战攻击 +${Number((points / 10).toFixed(2))}%；` +
 			`未计其他对战修正时：${mon.stats!.atk} → ${Math.floor(mon.stats!.atk * (1 + points / 1000))}。` +
 			`每场首次致命伤保留 1 HP：${points >= SPIRAL_SURVIVAL ? '已解锁' : `尚需达到 ${SPIRAL_SURVIVAL} 点`}。`);
 	}

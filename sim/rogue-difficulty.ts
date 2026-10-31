@@ -1,7 +1,6 @@
-import { qualityFor } from './rogue-quality';
+import { EASY_IV_LIMIT, qualityDescription, qualityFor } from './rogue-quality';
 /** Versioned, independent of star rank and permanent training. Missing legacy values mean tier 0. */
 export type RogueDifficulty = 'easy' | 0 | 1 | 2 | 3 | 4 | 5;
-import { EASY_IV_LIMIT, qualityDescription } from './rogue-quality';
 export const ROGUE_DIFFICULTY_VERSION = 5;
 /** Historical version-3 player allowance, used only to read old saves. */
 export const ROGUE_PLAYER_DIFFICULTY = { peak: [0, 0.01, 0.03, 0.06, 0.10, 0.15], initialFraction: 0.2 } as const;
@@ -18,7 +17,7 @@ export function difficultyProgress(floor: number) {
 }
 export function difficultyScale(tier: RogueDifficulty = 0, floor = 1, opponent = false, version = ROGUE_DIFFICULTY_VERSION): number {
 	const g = difficultyProgress(floor);
-	if (tier === 'easy') return opponent ? 0.95 - 0.30 * g : 0.98 - 0.08 * g;
+	if (tier === 'easy') return opponent ? 0.75 : 0.98 - 0.08 * g;
 	if (version >= 4) return 1;
 	if (opponent) return version < 2 ? 1 + tier * (0.012 + 0.088 * g) : 1;
 	if (version < 3) return 1 + tier * (0.006 + 0.044 * g);
@@ -50,12 +49,12 @@ export function difficultyIVs(ivs: StatsTable, tier: RogueDifficulty = 0, floor 
 		tier === 'easy' ? Math.min(value, 10) : value === 0 ? 0 : Math.min(31, value + delta),
 	])) as StatsTable;
 }
-export const CHARM_DESCRIPTION = '本局为新手简易档。双方六项能力随楼层降低，对手降幅更大；我方由 98% 降至 90%，敌方由 95% 降至 65%。遇到的宝可梦个体值约 10，六项独立随机，不会遇到任何单项个体值超过 15 的宝可梦；本局伙伴、首领与个体值培养也以 15 为上限。保留物种、闪光与图鉴收集，不获得局外点数，也不积累初始伙伴的资质、性格、特性和招式配置。通关解锁简易档塔灵，通关卡标记“护符庇佑”，不解锁进阶档位。';
+export const CHARM_DESCRIPTION = '本局为新手简易档。敌方六项能力整局固定为原本的 75%（降低 25%），不随楼层改变；我方六项能力由第 1 层的 98% 逐渐降至第 200 层的 90%。遇到的宝可梦个体值约 10，六项独立随机，不会遇到任何单项个体值超过 15 的宝可梦；本局伙伴、首领与个体值培养也以 15 为上限。保留物种、闪光与图鉴收集，不获得局外点数，也不积累初始伙伴的资质、性格、特性和招式配置。通关解锁简易档塔灵，通关卡标记“护符庇佑”，不解锁进阶档位。';
 export function difficultyDescription(tier: RogueDifficulty) {
 	if (tier === 'easy') return CHARM_DESCRIPTION;
-	if (!tier) return qualityDescription(tier) + '首次通关 200 层后解锁 1 档和本档塔灵模式。';
+	if (!tier) return qualityDescription(tier) + '通关 200 层解锁本档塔灵；完成本档故事并曾通关本档后，解锁 1 档。';
 	return qualityDescription(tier) + `开局自选 ${tier * 2} 条幻想崩坏，整局锁定。` +
-		`本档不额外提升我方能力或通关卡倍率，成果来自捕捉与培养。首次通关 200 层后${tier < 5 ? `解锁 ${tier + 1} 档和` : '解锁'}本档塔灵模式。`;
+		`本档不额外提升我方能力或通关卡倍率，成果来自捕捉与培养。通关 200 层解锁本档塔灵。${tier < 5 ? `完成本档故事并曾通关本档后，解锁 ${tier + 1} 档。` : ''}`;
 }
 
 /** Concise menu copy; the expandable detail retains precise capture probabilities. */

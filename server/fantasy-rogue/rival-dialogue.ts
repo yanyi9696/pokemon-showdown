@@ -2,6 +2,7 @@ import { RIVALS, CARMINE, type RivalID } from './rival-data';
 import { dialoguePage, type NarrativePage } from './narrative';
 import { RIVAL_CHOICES, RIVAL_CHAT_CHOICES, RIVAL_CHAT_ANSWERS, rivalTopicAnswer, rivalVoicedAnswer } from './rival-responses';
 import { LUSAMINE_FAMILY_SCENES, LUSAMINE_REPLIES } from './lusamine-data';
+import { characterSpeech } from './dialogue-copy';
 
 /** Shared by the playable conversations and their codex replays. No rewards or RNG here. */
 const VOICES: Record<RivalID, { intro: string[], chapters: string[] }> = {
@@ -177,7 +178,8 @@ const REUNIONS = [
 
 export function rivalConversationOptions(chapter: number, turn = 0) {
 	return RIVAL_CHOICES[chapter - 1][turn].map((name, index) => ({
-		id: `greet:${['warm', 'honest', 'cold'][index]}`, name, text: '', disabled: false,
+		id: `greet:${['warm', 'honest', 'cold'][index]}`,
+		name: chapter === 1 ? turn === 0 ? name.replace('报上名字：', '报上名字：⌈') + '⌋' : name : `⌈${name}⌋`, text: '', disabled: false,
 	}));
 }
 export function rivalOpeningPages(id: RivalID, chapter: number, affection: number): NarrativePage[] {
@@ -187,15 +189,15 @@ export function rivalOpeningPages(id: RivalID, chapter: number, affection: numbe
 		{ scene: 'arena', title: person.name, text: scene.setting, portrait: id, side: 'right' },
 		...(chapter === 1 ? voice.intro.map(text => page(text)) :
 		[{ scene: 'arena', title: person.name, portrait: id, text: REUNIONS[chapter - 2] }]),
-		page(person.lines[chapter - 1], affection >= 4), page(voice.chapters[chapter - 1], affection >= 4),
+		page(person.lines[chapter - 1], affection >= 8), page(voice.chapters[chapter - 1], affection >= 8),
 		...(id === 'kieran' ? [dialoguePage('carmine', '丹瑜', chapter === 1 ?
-			'我是丹瑜，乌栗的姐姐。他这次鼓起勇气来找你，你可得认真回他。不过别有压力，先好好认识一下吧。' : CARMINE.lines[chapter - 1], affection >= 4, 'left')] : []),
-		page(scene.question, affection >= 4),
+			'我是丹瑜，乌栗的姐姐。他这次鼓起勇气来找你，你可得认真回他。不过别有压力，先好好认识一下吧。' : CARMINE.lines[chapter - 1], affection >= 8, 'left')] : []),
+		{ scene: 'arena', title: '你的回应', text: scene.question, portrait: id, side: 'right' },
 	];
 }
 export function rivalAnswerPages(id: RivalID, chapter: number, turn: number, choice: string, affection: number) {
 	const person = RIVALS[id];
-	return [dialoguePage(id, person.name, rivalVoicedAnswer(id, choice, rivalTopicAnswer(chapter, turn, choice)), affection >= 4),
+	return [dialoguePage(id, person.name, rivalVoicedAnswer(id, choice, rivalTopicAnswer(chapter, turn, choice)), affection >= 8),
 		turn === 0 ? { scene: 'arena', title: person.name, text: SCENES[chapter - 1].second, portrait: id } :
 		{ scene: 'arena', title: person.name, portrait: id, text: [
 			'你们分别走向场地两端，给伙伴留出熟悉环境的时间。新的相识，就从这一次认真切磋开始。',
@@ -210,11 +212,11 @@ export function rivalAnswerPages(id: RivalID, chapter: number, turn: number, cho
 }
 export function rivalChatPages(id: RivalID, turn: number, choice: string, affection: number) {
 	return [dialoguePage(id, RIVALS[id].name,
-		rivalVoicedAnswer(id, choice, RIVAL_CHAT_ANSWERS[turn][['warm', 'honest', 'cold'].indexOf(choice)]), affection >= 4)];
+		rivalVoicedAnswer(id, choice, RIVAL_CHAT_ANSWERS[turn][['warm', 'honest', 'cold'].indexOf(choice)]), affection >= 8)];
 }
 export function rivalChatOptions(turn = 0) {
 	return RIVAL_CHAT_CHOICES[turn].map((name, index) => ({
-		id: ['warm', 'honest', 'cold'][index], name, text: '', disabled: false,
+		id: ['warm', 'honest', 'cold'][index], name: characterSpeech(name), text: '', disabled: false,
 	}));
 }
 export function rivalChapterReplay(id: RivalID, chapter: number) {
@@ -232,14 +234,14 @@ export function rivalChapterReplay(id: RivalID, chapter: number) {
 			[{ label: chapter === 4 ? '继续旅途闲谈' : chapter === 5 ? '合作完成委托' : '继续这段奇遇', next: family ? 'family0' : 'activity' }] };
 	}
 	if (family) {
-		for (const [index, [portrait, text]] of family.entries()) pages[`family${index}`] = { text: [text], portrait,
+		for (const [index, [portrait, text]] of family.entries()) pages[`family${index}`] = { text: [characterSpeech(text)], portrait,
 			options: index + 1 < family.length ? [{ label: '继续对话', next: `family${index + 1}` }] : [
 				{ label: '相信孩子们的选择', next: 'family:trust' },
 				{ label: '倾听大家的想法', next: 'family:care' },
 				...(chapter >= 4 ? [{ label: '邀请露莎米奈同行', next: 'family:join' }] : []),
 			] };
 		for (const [response, text] of Object.entries(LUSAMINE_REPLIES)) pages[`family:${response}`] = {
-			text: [text], portrait: 'lusamine', options: [{ label: '继续这段奇遇', next: 'activity' }],
+			text: [characterSpeech(text)], portrait: 'lusamine', options: [{ label: '继续这段奇遇', next: 'activity' }],
 		};
 	}
 	pages.activity = { text: [chapter === 4 ? '你们坐在营火旁，接着聊起最初的伙伴与之后的打算。' :

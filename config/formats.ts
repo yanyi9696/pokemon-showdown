@@ -1,3 +1,4 @@
+import { affectionResidual } from '../sim/rogue-affection';
 // Note: This is the list of formats
 // The rules that formats use are stored in data/rulesets.ts
 /*
@@ -22,7 +23,7 @@ import { collapseResidual, recordCollapseDamage, showCollapse } from '../sim/rog
 import { drainPureRobe } from '../sim/fantasy-rogue-awakening';
 import { recordEvolutionHit, resetEvolutionDamageOnFaint } from '../sim/rogue-evolution-progress';
 import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, startRogueArea } from '../sim/fantasy-rogue';
-import { isRogueBoss, megaRogueBoss } from '../sim/rogue-bosses';
+import { isRogueBoss, megaRogueBoss, showRogueBossPhase } from '../sim/rogue-bosses';
 import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
 	blessingEffectiveness, blessingHit } from '../sim/fantasy-rogue-blessings';
 import { maintainRogueEnvironment, startRogueSpirit,
@@ -41,7 +42,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onBegin() { initializeRogueBattle(this); },
 		onBattleStart() { startRogueArea(this); startRogueSpirit(this); showCollapse(this); },
 		onResidualOrder: 100,
-		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); collapseResidual(this); },
+		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); affectionResidual(this); collapseResidual(this); },
 		onAfterSubDamage(damage, target, source, move) { recordCollapseDamage(target, source, move, damage, true); },
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
@@ -62,7 +63,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			}
 			return blessingEffectiveness(typeMod, target, type, move);
 		},
-		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); showCollapse(this); },
+		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); showCollapse(this); showRogueBossPhase(pokemon); },
 		onBeforeTurn(pokemon) { megaRogueBoss(pokemon); },
 		onTrapPokemon(pokemon) {
 			if ((pokemon.side.id === 'p2' || pokemon.side.id === 'p4') && (this.fantasyRogue?.wild ||
@@ -89,7 +90,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 		onBattleStart() { startRogueSpirit(this); },
 		onResidualOrder: 100,
-		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); },
+		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); affectionResidual(this); },
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
 			blessingHit(damage, target, source, move);

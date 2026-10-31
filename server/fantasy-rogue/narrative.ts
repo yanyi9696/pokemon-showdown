@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import type { RogueRun } from './types';
 import { ensureMemberMemory } from './progression';
+import { characterSpeech } from './dialogue-copy';
 
 export interface NarrativePage {
 	scene: string;
@@ -35,6 +36,6 @@ export function healNarrativeParty(run: RogueRun) {
 export function dialoguePage(
 	id: string, name: string, text: string, approval = false, side: 'left' | 'right' = 'right'
 ): NarrativePage {
-	return { scene: 'arena', title: name, speaker: name, text, avatar: id, portrait: id,
+	return { scene: 'arena', title: name, speaker: name, text: characterSpeech(text), avatar: id, portrait: id,
 		expression: approval ? 'approval' : 'neutral', side };
 }

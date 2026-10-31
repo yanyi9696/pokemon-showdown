@@ -1,3 +1,4 @@
+import { emblemDescription } from '../../../sim/rogue-blessing-data';
 function canTakeMegaStone(item: Item, pokemon: Pokemon) {
 	// Keep complete forme names and protect both sides of a permanent Mega Evolution.
 	// itemUser also includes Zygarde's formes before Power Construct activates.
@@ -3912,10 +3913,10 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 const emblemTypes = { Bug: '虫', Dark: '恶', Dragon: '龙', Electric: '电', Fairy: '妖精', Fighting: '格斗', Fire: '火',
 	Flying: '飞行', Ghost: '幽灵', Grass: '草', Ground: '地面', Normal: '一般', Ice: '冰', Poison: '毒',
 	Psychic: '超能', Steel: '钢', Rock: '岩石', Water: '水' };
-for (const [type, label] of Object.entries(emblemTypes)) {
+for (const type of Object.keys(emblemTypes)) {
 	Items[('rogueemblem' + type.toLowerCase()) as ID] = {
 		name: `Rogue Emblem ${type}`, num: 31000 + Object.keys(emblemTypes).indexOf(type), gen: 9,
 		isNonstandard: 'Custom',
-		desc: `装在独立属性转栏位，可取下，不占携带道具位。将第二属性替换为${label}属性，并开放对应五个招式。`,
+		desc: emblemDescription(type),
 	};
 }

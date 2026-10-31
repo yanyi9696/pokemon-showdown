@@ -6,7 +6,7 @@ import type { RogueRandom } from './biome-pools';
 import {
 	exclusiveCatalog, neededExclusiveItems, exclusiveEncounterChance, grantExclusiveItem, suitableExclusiveItems,
 } from './exclusive-items';
-import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
+import { makeEncounterSet, randomEncounterIVs, regionalEncounterLevel } from './encounter-sets';
 import { lowerToEligibleStage } from './evolution';
 import { applyHeldForme } from './held-formes';
 
@@ -23,7 +23,8 @@ export function beginExclusiveEncounter(run: RogueRun, random: RogueRandom) {
 	for (const entry of needs) run.exclusiveItems![entry.id].misses++;
 	if (!success) return false;
 	const owner = run.team.find(mon => suitableExclusiveItems(mon.set.species).some(entry => entry.id === item.id))!;
-	const lv = Math.min(100, Math.max(8, Math.ceil(run.floor / 2) + 7));
+	// A surprise item encounter remains a modest test, below the separate challenge route.
+	const lv = Math.min(100, regionalEncounterLevel(run.floor, false) + 2);
 	const pool = [...item.guards];
 	const species = [lowerToEligibleStage(owner.set.species, lv)];
 	while (species.length < (run.floor >= 100 ? 4 : 3) && pool.length) {
@@ -35,8 +36,9 @@ export function beginExclusiveEncounter(run: RogueRun, random: RogueRandom) {
 	applyHeldForme(team[0]);
 	for (const set of team) {
 		const s = dex.species.get(set.species);
-		set.evs = { hp: 128, atk: s.baseStats.atk >= s.baseStats.spa ? 252 : 0, def: 0,
-			spa: s.baseStats.atk < s.baseStats.spa ? 252 : 0, spd: 0, spe: 128 };
+		const effort = Math.min(128, lv * 3);
+		set.evs = { hp: effort, atk: s.baseStats.atk >= s.baseStats.spa ? effort : 0, def: 0,
+			spa: s.baseStats.atk < s.baseStats.spa ? effort : 0, spd: 0, spe: 0 };
 	}
 	const node = run.node!;
 	node.name = `${item.trainer}的考验`;

@@ -72,6 +72,7 @@ describe('Fantasy Rogue continuous summit and nineteen-life challenge', function
 			assert.deepEqual(mon.baseMoves, ['suckerpunch', 'punishment', 'psystrike', 'icebeam']);
 			assert.deepEqual(mon.boosts, { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, accuracy: 0, evasion: 0 });
 			assert.equal(mon.fainted, false); assert.equal(battle.p2.pokemonLeft, 1);
+			assert(battle.log.some(line => line.startsWith('|-roguebossphase|p2') && line.endsWith('|summit|2|2')));
 			const actions = battle.log.filter(line => line.startsWith('|move|p2'));
 			assert.equal(actions.length, 1, battle.log.join('\n'));
 			const megaX = battle.log.findIndex(line => line.includes('|-mega|') && line.includes('Mewtwonite X'));
@@ -94,6 +95,7 @@ describe('Fantasy Rogue continuous summit and nineteen-life challenge', function
 			deplete(battle);
 			assert.equal(mon.fainted, false); assert.equal(battle.ended, false);
 			assert.equal(mon.hp, mon.maxhp); assert.equal(mon.status, '');
+			assert(battle.log.some(line => line.startsWith('|-roguebossphase|p2') && line.endsWith(`|arceus|${phase + 2}|19`)));
 			assert(!mon.volatiles.leechseed); assert.equal(mon.boosts.atk, phase === 17 ? 3 : 2);
 			assert.equal(mon.boosts.def, phase === 17 ? 1 : 0);
 			assert.equal(mon.baseMoves[2], (phase + 1) % 2 ? 'workup' : 'cosmicpower');
@@ -135,13 +137,14 @@ describe('Fantasy Rogue continuous summit and nineteen-life challenge', function
 		battle.actions.useMove(attack, battle.p1.active[0], { target: mon }); battle.faintMessages();
 		assert.equal(battle.fantasyRogue.boss.phase, 1); assert.equal(mon.hp, mon.maxhp);
 	});
-	it('applies the boss blessing and Mew level bonuses to both challenges and both Mewtwo phases', () => {
+	it('uses boss levels for all summit guards and preserves boss and Mew bonuses for both Mewtwo phases', () => {
 		for (const encounter of [summitEncounter(), arceusEncounter()]) {
 			const run = { floor: 200, spirit: 'mew', spiritVersion: 1,
 				blessings: { owned: [], levels: 60, bossLevels: 100 },
 				node: { kind: 'boss', encounters: [encounter], reward: { money: 0, items: {} } } };
 			prepareSpiritNode(run, run.node, {}, () => 0); prepareBlessingEncounter(run, () => 0);
-			assert(encounter.team.every(mon => mon.level === 205));
+			assert.deepEqual(encounter.team.map(mon => mon.level), encounter.boss.kind === 'summit' ?
+				[205, 205, 205, 205, 205, 205] : [205]);
 			if (encounter.boss.kind === 'summit') {
 				battle = native({ ...encounter, team: [encounter.team[5]] });
 				deplete(battle); assert.equal(battle.p2.active[0].level, 205);
@@ -218,6 +221,26 @@ describe('Fantasy Rogue post-clear snapshot and optional challenge settlement', 
 		cmd('godchallenge', { value: 'decline' });
 		assert.equal(account().run.phase, 'complete'); assert.equal(account().points, points);
 		assert.deepEqual(account().cards[0], card);
+	});
+	it('ends charm runs at floor 200 without a god invitation and preserves the clear', () => {
+		store.change(user, a => {
+			a.run.difficulty = 'easy'; a.run.floor = 200; a.run.phase = 'reward';
+			a.run.node = structuredClone(content.floors[200][0]);
+		});
+		cmd('continue');
+		assert.equal(account().run.phase, 'complete');
+		assert.equal(account().cards.length, 1); assert(!account().run.postgame);
+		assert.notEqual(storyView(account(), false, true)?.stage, 'godinvite');
+		assert.throws(() => cmd('godchallenge', { value: 'accept' }));
+	});
+	it('retires an old charm invitation without changing the saved clear or inventory', () => {
+		const card = complete();
+		store.change(user, a => { a.run.difficulty = 'easy'; });
+		const before = account(); engine.migrate(user); engine.migrate(user);
+		assert.equal(account().run.phase, 'complete');
+		assert.equal(account().run.postgame.stage, 'declined');
+		assert.deepEqual(account().run.bag, before.run.bag);
+		assert.deepEqual(account().cards[0], card); assert.equal(account().points, before.points);
 	});
 	it('charges each stat independently, preserves historical purchases and rejects an unaffordable next level', () => {
 		cmd('abandon');

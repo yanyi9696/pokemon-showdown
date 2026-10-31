@@ -33,11 +33,13 @@ const fossils: [string[], string][] = [
 ];
 export const availableFossils = (run: RogueRun) => fossils.filter(([items]) => items.every(id => run.bag[id] > 0));
 export function expeditionEligible(run: RogueRun, id: string) {
-	return id !== 'terasolo' && (id !== 'fossillab' || availableFossils(run).length > 0) &&
+	// Pure combat trials now belong to the challenge route. Existing events still settle normally.
+	return id !== 'terasolo' && id !== 'starmaster' && (id !== 'fossillab' || availableFossils(run).length > 0) &&
 		(id !== 'hatchhouse' || run.team.some(mon => mon.egg));
 }
 export const expeditionWeight = (run: RogueRun, id: string) => id === 'grassegg' ? eggEventWeight(run.floor) / 10 :
-	id === 'hatchhouse' ? 4 : id === 'starmaster' ? 0.12 : 1;
+	id === 'hatchhouse' ? 4 : id === 'starmaster' ? 0.12 :
+	id === 'blackjack' && run.floor >= 101 ? (run.floor >= 151 ? 2 : 1.5) : 1;
 const level = (run: RogueRun) => Math.min(100, Math.max(3, Math.ceil(run.floor / 2)));
 const fee = (run: RogueRun) => 80 + run.floor * 3;
 function finish(run: RogueRun, ...lines: string[]) {
@@ -84,7 +86,7 @@ export function expeditionView(run: RogueRun) {
 			else if (state.step === 'name') { silhouette = state.target; options = state.answers!.map((s, i) => option(`answer:${i}`, s)); }
 			else if (state.step === 'type') options = Object.entries(BLESSING_TYPES).map(([type, name]) => option(`type:${type}`, `选择${name}属性`, (state.types?.length || 0) >= 2 || state.types?.includes(type)))
 				.concat(state.types?.length ? [option('confirmtypes', `确定${state.types.length === 1 ? '单属性' : '双属性'}答案`)] : []);
-			else options = [option('fight', '别再偷偷换答案了，来对战吧！')];
+			else options = [option('fight', '⌈别再偷偷换答案了，来对战吧！⌋'), option('leave', '笑着揭穿她的小把戏，继续赶路。')];
 		} else if (id === 'fossillab') options = [option('restore', '交付一套完整化石，进行复活。', !availableFossils(run).length)];
 		else if (id === 'snacks') {
 			options = run.team.filter(m => !m.egg).map(m => option(`snackmon:${m.id}`, `送给【${m.set.species}】一份点心 · ${fee(run)} 金币`, run.money < fee(run)));
@@ -132,7 +134,7 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 		state.step = 'fight'; event.result = [`少女迅速翻过另一张题板：「错啦！答案是${claimed.types.map(t => BLESSING_TYPES[t]).join('、')}，我问的可是【${claimed.name}】！」`,
 			'你瞥见她桌下藏着两份不同的答案。她还在故作无辜地眨眼，你已经握住了精灵球。'];
 	} else if (choice === 'fight' || choice === 'challenge') {
-		startBattle(run, themedEventTeam(choice === 'challenge' ? 'martial' : 'tutor', Math.min(100, level(run) + (choice === 'challenge' ? 8 : 3)), choice === 'challenge' ? 4 : 3, random), choice === 'challenge' ? 2 + Math.floor(run.floor / 75) : 1);
+		startBattle(run, themedEventTeam(choice === 'challenge' ? 'martial' : 'tutor', Math.min(100, level(run) + (choice === 'challenge' ? 8 : 1)), choice === 'challenge' ? 4 : 2, random), choice === 'challenge' ? 2 + Math.floor(run.floor / 75) : 1);
 	} else if (choice === 'restore') {
 		const [items, species] = availableFossils(run)[0]; for (const item of items) run.bag[item]--;
 		gift(account, run, content, drawBlessingGift(run, content, random, { eliteIVs: false, species, level: level(run) }), '化石复活');
@@ -146,7 +148,7 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 			finish(run, `【${mon.set.species}】开心地吃完了点心，亲密度大幅提升，存活时恢复 15% 最大生命值。`);
 		} else if (choice === 'snackrival') {
 			const r = run.rival!, token = companionTravelGift(run.floor);
-			r.affection++;
+
 			gainAffection(run, r.id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key);
 			give(run, token.id);
 			finish(run, `【同行劲敌 - ${RIVALS[r.id].name}】接过点心，露出了愉快的神情。`, `「${RIVAL_TRAVEL_REPLIES[r.id] || RIVAL_SNACK_GIFTS[r.id].line}」你收到了一份${token.name}回礼。`);
@@ -155,7 +157,7 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 			const c = run.blessings?.companions?.find(m => m.id === id && !m.away);
 			const message = '这份心意我收到了。下次也一起分享吧。';
 			if (c) { c.smile = 'approval'; c.messageAt = Date.now(); c.message = message; }
-			if (person.origin === 'carmine') run.rival!.carmine!.affection++;
+
 			const token = companionTravelGift(run.floor);
 			gainAffection(run, id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key);
 			// A snack return is separate from the once-per-run affection gifts.

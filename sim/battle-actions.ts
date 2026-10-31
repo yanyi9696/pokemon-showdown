@@ -1,9 +1,11 @@
+import { affectionBenefits, battleAffection } from './rogue-affection';
 import { Dex, toID } from './dex';
 import { canRogueTerastallize, canRogueSystem } from './fantasy-rogue';
 import { queueRogueFutureAttack } from './fantasy-rogue-spirits';
 import { blessingExtraZ, spendBlessingZ } from './fantasy-rogue-blessings';
 import { hasRogueStatus } from './fantasy-rogue-status';
 import { echoDamage } from './rogue-echo';
+import { unityDamageFactor } from './rogue-unity';
 import { ghidorahActive } from './rogue-ghidorah';
 import { beginCollapseMove, endCollapseMove, collapseCriticalMultiplier, collapseDirectDamage,
 	collapseOHKO, collapseSecondaries, finishCollapseSecondaries, collapseSecondaryEffect,
@@ -1677,7 +1679,7 @@ export class BattleActions {
 		moveHit.crit = move.willCrit || false;
 		if (move.willCrit === undefined) {
 			if (critRatio) {
-				moveHit.crit = ordered ? critRatio > 1 : this.battle.randomChance(1, critMult[critRatio]);
+				moveHit.crit = ordered ? critRatio > 1 : this.battle.randomChance(affectionBenefits(battleAffection(source)).critical, critMult[critRatio]);
 			}
 		}
 
@@ -1835,7 +1837,8 @@ export class BattleActions {
 		}
 
 		// types
-		let typeMod = target.runEffectiveness(move);
+		const typeComponents: { type: string, mod: number }[] | undefined = this.battle.fantasyRogue ? [] : undefined;
+		let typeMod = target.runEffectiveness(move, typeComponents);
 		// Ghidorah's added resistances compose without an extra resistance floor.
 		typeMod = ghidorahActive(target) ? Math.min(typeMod, 6) : this.battle.clampIntRange(typeMod, -6, 6);
 		target.getMoveHitData(move).typeMod = typeMod;
@@ -1854,6 +1857,7 @@ export class BattleActions {
 			}
 		}
 
+		if (typeComponents) baseDamage = this.battle.modify(baseDamage, unityDamageFactor(pokemon, target, move, typeComponents));
 		if (isCrit && !suppressMessages) this.battle.add('-crit', target);
 
 		if (hasRogueStatus(pokemon, 'brn') && move.category === 'Physical' && !pokemon.hasAbility('guts') && !pokemon.hasItem('fantasylifeorb') && !pokemon.hasAbility('zhiliao')) {

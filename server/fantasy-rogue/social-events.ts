@@ -14,7 +14,7 @@ import type { RogueRandom } from './biome-pools';
 export interface SocialEvent { trainer: string; step: 'talk' | 'reply' | 'invite'; affinity: number }
 export function socialCandidates(run: RogueRun) {
 	const active = travellingRoster(run).map(c => c.id);
-	return Object.values(TRAVELLERS).filter(p => !(p.id in RIVALS) && p.id !== 'carmine' &&
+	return Object.values(TRAVELLERS).filter(p => !p.challengeOnly && !(p.id in RIVALS) && p.id !== 'carmine' &&
 		!active.includes(p.id) && !run.blessings?.companions?.some(c => c.id === p.id));
 }
 export function beginSocialEvent(run: RogueRun, random: RogueRandom) {

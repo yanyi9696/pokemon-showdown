@@ -8,7 +8,7 @@ export function pacingCurve(floor: number, points: readonly (readonly [number, n
 	return points[points.length - 1][1];
 }
 export const candySupplyMultiplier = (floor: number) => pacingCurve(floor,
-	[[1, 0.35], [20, 0.35], [30, 0.45], [40, 0.55], [60, 0.65], [100, 0.8], [150, 1]]);
+	[[1, 0.6], [30, 0.6], [40, 0.6], [60, 0.65], [100, 0.8], [150, 1]]);
 export const coinSupplyMultiplier = (floor: number) => pacingCurve(floor,
 	[[1, 1], [30, 0.95], [50, 0.8], [80, 0.72], [100, 0.8], [140, 0.94], [160, 1]]);
 export const lootProgressFloor = (floor: number) => pacingCurve(floor,

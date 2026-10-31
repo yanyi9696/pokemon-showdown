@@ -66,3 +66,9 @@ export function chooseLuckEvent(run: RogueRun, content: RogueContent, random: Ro
 		`获得${rewards.join('、')}。`,
 	] });
 }
+
+/** Applies only to eligible, cooled-down coin/die events; never bypasses their prerequisites. */
+export function loadedDiceEventWeight(run: RogueRun, id: string) {
+	return ownsBlessing(run.blessings, 'dice') &&
+		(['dice', 'bandits', ...Object.keys(LUCK_EVENT_TEXT)].includes(id)) ? 2 : 1;
+}

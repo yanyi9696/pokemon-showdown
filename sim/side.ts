@@ -29,6 +29,7 @@ import { Pokemon, type EffectState } from './pokemon';
 import { State } from './state';
 import { toID } from './dex';
 import { chooseRogueBall, rogueCaptureChance } from './fantasy-rogue';
+import { chooseRogueRevival, revivalRequest } from './rogue-revival';
 import {
 	chooseRoguePsychic, psychicCharge, chooseRogueEeveeZ, eeveeZAvailable,
 	battleDragonKing, dragonKingRequest, chooseDragonKing, extendBlessingEnvironment,
@@ -39,7 +40,7 @@ export interface ChosenAction {
 	rogueEeveeZ?: boolean;
 	rogueBlood?: boolean;
 	rogueNumber?: string;
-	choice: 'move' | 'switch' | 'instaswitch' | 'revivalblessing' | 'team' | 'shift' | 'pass' | 'rogueball';// action type
+	choice: 'move' | 'switch' | 'instaswitch' | 'revivalblessing' | 'team' | 'shift' | 'pass' | 'rogueball' | 'roguerevive';// action type
 	pokemon?: Pokemon; // the pokemon doing the action
 	targetLoc?: number; // relative location of the target to pokemon (move action only)
 	moveid: string; // a move to use (move action only)
@@ -322,6 +323,8 @@ export class Side {
 			switch (action.choice) {
 			case 'rogueball':
 				return `rogueball ${action.moveid}`;
+			case 'roguerevive':
+				return `roguerevive ${action.moveid} ${action.target!.position + 1}`;
 			case 'move':
 				let details = ``;
 				if (action.targetLoc && this.active.length > 1) details += ` ${action.targetLoc > 0 ? '+' : ''}${action.targetLoc}`;
@@ -527,7 +530,7 @@ export class Side {
 			companionZ,
 			dragonKing,
 			psychic,
-			eeveeZ, blood, number,
+			eeveeZ, blood, number, revival: revivalRequest(this, 'active' in update),
 			catchable: !!rogue && rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
 			balls: (rogue?.balls || []).map(ball => ({
 				id: ball.id, name: ball.name, count: rogue!.bag[ball.id] || 0,
@@ -1158,6 +1161,9 @@ export class Side {
 				break;
 			case 'roguepsychic':
 				if (!chooseRoguePsychic(this, data || '1')) return false;
+				break;
+			case 'roguerevive':
+				if (!chooseRogueRevival(this, data)) return false;
 				break;
 			case 'rogueball':
 				if (!chooseRogueBall(this, data)) return false;

@@ -172,13 +172,14 @@ describe('Fantasy Rogue story and legacy cards', function () {
 	});
 	it('records a clear once, keeps it immutable, defaults to private, and reopens the next prologue', () => {
 		start(); complete();
-		assert.equal(account().cards.length, 1); assert.equal(view().stage, 'ending');
+		assert.equal(account().cards.length, 1); assert.equal(view().stage, 'mainline');
+		assert.equal(account().mainlineDialogue.id, 'ending-loop');
 		const card = account().cards[0];
 		assert.equal(card.snapshot.startCard, 'electric'); assert.deepEqual(card.snapshot.blessings, []);
 		assert.equal(store.gallery().length, 0);
 		store.change(user, a => { a.run.team[0].hp = 0; a.run.boosts.hp = 9; });
 		engine.migrate(user); assert.deepEqual(account().cards[0], card);
-		assert.throws(() => cmd('newstory'), /终章/);
+		assert.throws(() => cmd('newstory'), /对话|终章/);
 		skip(); cmd('publishcard', { member: card.id, value: 'public' });
 		assert.equal(store.gallery()[0].id, card.id);
 		cmd('publishcard', { member: card.id, value: 'private' }); assert.equal(store.gallery().length, 0);

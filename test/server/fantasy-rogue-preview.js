@@ -170,7 +170,15 @@ describe('Fantasy Rogue playable preview', () => {
 		cmd('start', { starters: ['bulbasaur'] });
 		let points = 20;
 		for (let floor = 1; floor <= 200; floor++) {
-			if (account().run.phase === 'choose') cmd('select', { value: 'wild0' });
+			if (account().run.phase === 'choose') {
+				const route = account().run.choices.find(node => node.kind === 'wild') || account().run.choices.find(node => node.challenge);
+				cmd('select', { value: route.id });
+				if (account().run.node.challenge) {
+					cmd('challenge', { value: 'leave' });
+					assert.equal(account().points, points);
+					continue;
+				}
+			}
 			while (account().run.story?.stage === 'gymgift') cmd('storynext', {value: storyView(account(), false, false).key});
 			while (account().run.blessings?.beforeGym) {
 				const reward = account().run.blessings.pending[0];
@@ -195,13 +203,14 @@ describe('Fantasy Rogue playable preview', () => {
 				else if (blessings.stage) cmd('blessing', { value: blessings.stage.options[0] });
 				else cmd('blessing', { slot: blessings.round.options.findIndex(option => !option.chosen) });
 			}
+			if (floor === 200) points += 5; // The sole starter's first species clear is recorded once.
 			assert.equal(account().points, points);
 		}
 		assert.equal(account().run.phase, 'postgame');
 		cmd('storyskip', { value: storyView(account(), false, true).key });
 		cmd('godchallenge', { value: 'decline' });
 		assert.equal(account().run.phase, 'complete');
-		assert.equal(points, 43);
+		assert.equal(points, 48);
 		cmd('upgrade', { value: 'hp' });
 		assert.equal(account().points, points - 1);
 	});

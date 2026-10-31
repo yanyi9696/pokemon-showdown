@@ -16,6 +16,13 @@ export function isRogueBoss(pokemon: Pokemon) {
 	return pokemon.side.id === 'p2' && !!pokemon.battle.fantasyRogue?.boss;
 }
 
+/** Public presentation metadata only; no extra life or combat state is created by this message. */
+export function showRogueBossPhase(pokemon: Pokemon) {
+	const state = pokemon.battle.fantasyRogue?.boss;
+	if (!isRogueBoss(pokemon) || !state || state.kind === 'summit' && !pokemon.baseSpecies.name.includes('Mewtwo')) return;
+	pokemon.battle.add('-roguebossphase', pokemon, state.kind, (state.phase || 0) + 1, state.kind === 'arceus' ? 19 : 2);
+}
+
 export function waitingRogueCommander(pokemon: Pokemon) {
 	return pokemon.side.id === 'p2' && pokemon.battle.fantasyRogue?.boss?.kind === 'summit' &&
 		pokemon.baseSpecies.name.includes('Mewtwo') && pokemon.side.pokemon.some(mon =>
@@ -136,6 +143,7 @@ export function advanceRogueBoss(pokemon: Pokemon) {
 		battle.add('-heal', pokemon, pokemon.getHealth, '[from] 第二阶段');
 		pokemon.canMegaEvo = 'Mewtwo-Mega-Y-Fantasy';
 		battle.actions.runMegaEvo(pokemon);
+		showRogueBossPhase(pokemon);
 		renewQueuedMove(pokemon);
 		return true;
 	}
@@ -167,6 +175,7 @@ export function advanceRogueBoss(pokemon: Pokemon) {
 	battle.add('-message', type === 'Legend' ? '十八种属性的光芒汇为一体。阿尔宙斯显露了传说的姿态！' :
 		`阿尔宙斯切换属性，再次恢复了全部力量。（第 ${phase + 2} / 19 条生命）`);
 	battle.add('-heal', pokemon, pokemon.getHealth, '[from] 神之挑战');
+	showRogueBossPhase(pokemon);
 	renewQueuedMove(pokemon);
 	if (type === 'Legend') {
 		// Entry bonus: run the native move without consuming the already queued normal action.

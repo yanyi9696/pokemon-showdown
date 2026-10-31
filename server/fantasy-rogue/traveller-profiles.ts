@@ -4,6 +4,7 @@ import { COMPANION_DIALOGUE, COMPANION_GIFT_LINES } from './companion-dialogue';
 import { TrainerBossData } from './trainer-boss-data';
 import { Teams } from '../../sim/teams';
 import { LUSAMINE } from './lusamine-data';
+import { CHALLENGE_TRAVELLERS } from './challenge-travellers';
 
 export interface TravellerProfile {
 	id: string; name: string; region: string; preference: 'battle' | 'reward' | 'pokemon';
@@ -11,6 +12,7 @@ export interface TravellerProfile {
 	greeting: string; farewell: string; thanks: string;
 	/** Optional character-specific responses within the shared, saved travel-event flow. */
 	chat?: { reply: string; invite: string; join: string; win: string; loss: string };
+	challengeOnly?: boolean;
 }
 const GYM_PROFILES: Record<string, [string, TravellerProfile['preference'], string[], string, string, string]> = {
 	brock: ['关都', 'pokemon', ['reward'], 'hardstone', '硬石头', '路上有没有好好照顾伙伴？训练也好，休息也好，都不能马虎。'],
@@ -38,6 +40,7 @@ const GYM_PROFILES: Record<string, [string, TravellerProfile['preference'], stri
 export function travellerProfiles(): TravellerProfile[] {
 	const profiles = new Map<string, TravellerProfile>();
 	profiles.set('lusamine', { ...LUSAMINE });
+	for (const profile of CHALLENGE_TRAVELLERS) profiles.set(profile.id, { ...profile });
 	for (const [id, c] of Object.entries(COMPANIONS)) {
 		if (['sada', 'turo'].includes(id)) continue;
 		const key = id as CompanionID, p = COMPANION_PREFERENCES[key];

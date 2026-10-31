@@ -1,11 +1,10 @@
 import { randomSpeciesEligible } from './species-eligibility';
 import { randomInt } from 'crypto';
 import { Dex } from '../../sim/dex';
-import { rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
 import { RogueBiomes, type RogueBiome } from './biome-data';
 import { biomeTier, isMajorLegendary, MajorLegendaryPool, unlistedFamilies, weightedPick,
 	type RogueRandom } from './biome-pools';
-import { makeEncounterSet, randomEncounterIVs, randomEncounterAbility } from './encounter-sets';
+import { makeEncounterSet, randomEncounterIVs, randomEncounterAbility, regionalEncounterLevel } from './encounter-sets';
 import { wildStageAtLevel } from './evolution';
 import type { RogueEncounter, RogueNode, RogueRun } from './types';
 import { pickQualityBiomeSlot, pickQualitySpecies, rareEncounterScale } from './encounter-quality';
@@ -37,8 +36,7 @@ export function createBiomeRoutes(
 		const biome = weightedPick(available, random);
 		blocked.add(biome.id);
 		const tier = biomeTier(floor, elite);
-		const level = Math.min(100, Math.max(3, Math.ceil(floor / 2)) + (elite ? 5 : 0) +
-			rogueWildLevelBonus(floor, spirit));
+		const level = regionalEncounterLevel(floor, elite, spirit);
 		const extraPool = allExtras.filter(s => randomSpeciesEligible(s, level));
 		const attracted = attractedLegends.filter(s => randomSpeciesEligible(s, level));
 		const majorBranch = elite && floor >= 161;

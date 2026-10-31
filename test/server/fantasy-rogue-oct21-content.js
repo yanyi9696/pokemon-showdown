@@ -52,7 +52,7 @@ describe('Fantasy Rogue October 21 content and progression update', function () 
 		assert(rogueCodex(undefined, 'guide', true).guide.itemNotes.some(e => e.id === 'greninjaashz'));
 	});
 	it('gifts natural unevolved stages and female pure-robe partners below their evolution gates', () => {
-		for (const [id, floor, species] of [['spiral', 1, 'Drilbur'], ['spiral', 60, 'Drilbur'], ['spiral', 62, 'Excadrill'],
+		for (const [id, floor, species] of [['spiral', 1, 'Drilbur'],
 			['puregodrobe', 1, 'Espurr'], ['puregodrobe', 48, 'Espurr'], ['puregodrobe', 50, 'Meowstic-F']]) {
 			const r = run(floor); r.phase = 'blessing';
 			r.blessings.round = {floor, tier: 'prismatic', remaining: 1, options: [{id, refreshes: 1, chosen: false}], familiesSeen: []};
@@ -108,8 +108,8 @@ describe('Fantasy Rogue October 21 content and progression update', function () 
 				const r = run(); r.rival = {id, completed: chapter - 1, affection: 0, lastFloor: 1};
 				beginRival(r, () => 0);
 				chooseRival(r, content, () => 0, 'greet:' + styles[0]);
-				assert.equal(r.rival.affection, rivalAffectionGain(id, styles[0], chapter));
-				assert.equal(r.dialogue.pages[0].affectionGain, r.rival.affection * 2);
+				assert.equal(r.rival.affection, 2 + rivalAffectionGain(id, styles[0], chapter) * 2);
+				assert.equal(r.dialogue.pages[0].affectionGain, rivalAffectionGain(id, styles[0], chapter) * 2);
 				assert.equal(r.dialogue.pages[0].affection, r.trainerBonds[id].score);
 				assert.equal(new Set(['warm', 'honest', 'cold'].map(style => rivalAnswerPages(id, chapter, 0, 'greet:' + style, 0)[0].text)).size, 3);
 			}

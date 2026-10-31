@@ -35,6 +35,7 @@ export interface RogueRoomOptions {
 	wild?: boolean;
 	boss?: boolean;
 	canRetreat?: boolean;
+	optionalChallenge?: boolean;
 	defeat?: {
 		floor: number, encounter: number, encounters: number, retryFloor: boolean, noHealing: boolean, emergencyCost: number,
 	};
@@ -1048,6 +1049,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 				floor: this.options.fantasyRogue.floor, userid: user.id,
 				preview: this.options.fantasyRogue.preview,
 				canRetreat: this.options.fantasyRogue.canRetreat !== false,
+				optionalChallenge: !!this.options.fantasyRogue.optionalChallenge,
 			})}`);
 			if (this.options.fantasyRogue.defeat) {
 				(connection || user).sendTo(this.roomid, `|fantasyroguedefeat|${JSON.stringify(this.options.fantasyRogue.defeat)}`);

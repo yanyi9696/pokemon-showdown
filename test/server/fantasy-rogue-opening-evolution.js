@@ -8,6 +8,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { blessing, blessingLevelCost } = require('../../dist/sim/rogue-blessing-data');
 const b = require('../../dist/server/fantasy-rogue/blessings');
+const { blessingLevelsAt } = require('../../dist/server/fantasy-rogue/blessing-levels');
 
 describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 	this.timeout(20000);
@@ -60,7 +61,8 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 		assert.deepEqual(account(), claimed);
 		assert.equal(claimed.run.floor, 1); assert.equal(claimed.run.phase, 'choose');
 		assert.equal(claimed.run.blessings.evolution.stats.hp, 0.15);
-		assert.equal(claimed.run.blessings.bossLevels, 10); assert.equal(claimed.run.blessings.levels, 0);
+		assert.equal(claimed.run.blessings.bossLevels, 0); assert.equal(claimed.run.blessings.levels, 0);
+		assert.equal(blessingLevelsAt(claimed.run, 11).boss, 10);
 		assert.equal(claimed.run.team.find(mon => mon.id === reward.pokemon.id).statModifiers.stats.hp, 0.15);
 	});
 	it('grants all 21 upgrades, charges later prism costs once, and archives the final upgrade before the ending', () => {
@@ -74,7 +76,7 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 			if (direction) {
 				normal += blessingLevelCost('prismatic', floor); boss += blessingLevelCost('prismatic', floor, true);
 			}
-			assert.equal(run.blessings.levels, normal); assert.equal(run.blessings.bossLevels, boss);
+			assert.equal(blessingLevelsAt(run, 201).normal, normal); assert.equal(blessingLevelsAt(run, 201).boss, boss);
 			const snapshot = account(); engine.migrate(user); assert.deepEqual(account(), snapshot);
 			b.completeBlessingFloor(snapshot, run, content, () => 0);
 			assert.deepEqual(run.blessings, snapshot.run.blessings, 'repeated settlement grants nothing');
@@ -135,14 +137,14 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 		}
 		assert(changedDirection); assert.equal(account().run.phase, 'postgame');
 	});
-	it('does not include initial Meltan candy, while battle-earned candy remains available', () => {
+	it('adds fifty initial Meltan candy and twenty for defeating a Steel Pokemon', () => {
 		store.change(user, saved => { saved.run.blessings.candy = 20; });
 		choose('meltan'); gift();
 		const saved = account(), run = saved.run;
-		assert.equal(run.blessings.candy, 20);
+		assert.equal(run.blessings.candy, 70);
 		b.settleBlessingBattle(saved, run, content, { won: true, encounterId: 'steel',
 			defeated: [{ species: 'Magnemite', participants: [] }] }, () => 0);
-		assert.equal(run.blessings.candy, 30);
+		assert.equal(run.blessings.candy, 90);
 		assert(!blessing('meltan').text.includes('200'));
 	});
 	it('rewards 10, 90 and 180 unique knockouts and can raise an already boosted partner to five stars', () => {

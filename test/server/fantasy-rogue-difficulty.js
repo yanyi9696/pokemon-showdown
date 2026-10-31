@@ -15,6 +15,15 @@ const { content, set, stats, commandAfterOpening } = require('../fixtures/fantas
 
 describe('Fantasy Rogue difficulty tiers', function () {
 	this.timeout(30000);
+	it('keeps charm enemies at seventy-five percent throughout all two hundred floors', () => {
+		for (let floor = 1; floor <= 200; floor++) {
+			assert.equal(difficultyScale('easy', floor, true), 0.75);
+			assert.equal(difficultyScale(0, floor, true), 1);
+		}
+		assert.equal(difficultyScale('easy', 1), 0.98);
+		assert.equal(difficultyScale('easy', 200), 0.9);
+		assert(require('../../dist/sim/rogue-difficulty').CHARM_DESCRIPTION.includes('75%（降低 25%）'));
+	});
 	const makeRun = (difficulty, floor = 200) => ({ id: randomUUID(), difficulty, difficultyRulesVersion: 4, floor,
 		phase: 'complete', owner: { id: randomUUID(), name: 'Difficulty' }, contentVersion: 'test',
 		team: [createRoguePokemon(set('Bulbasaur', 'Overgrow', 80), stats(0))], boosts: stats(0), bag: {}, money: 0,
@@ -53,11 +62,13 @@ describe('Fantasy Rogue difficulty tiers', function () {
 		const before = structuredClone(mon); syncMemberDifficulty(mon, r); assert.deepEqual(mon, before);
 		assert.deepEqual(difficultyIVs({ ...stats(31), atk: 0, spe: 0 }, 5, 200), { ...stats(31), atk: 0, spe: 0 });
 	});
-	it('unlocks only the next highest cleared tier and its own spirit permission, independently of cards', () => {
+	it('unlocks only the next highest cleared tier with its completed chapter, independently of cards', () => {
 		const account = { points: 20 };
 		clearDifficulty(account, makeRun('easy')); assert.equal(account.difficulties.highest, 0);
 		assert.deepEqual(account.difficulties.spirits, ['easy']);
 		for (let tier = 0; tier <= 5; tier++) {
+			const {mainlineProgress, MAINLINE_CHAPTER_LENGTHS} = require('../../dist/server/fantasy-rogue/mainline-progress');
+			mainlineProgress(account).completed.push(...Array.from({length: MAINLINE_CHAPTER_LENGTHS[tier]}, (_, i) => `s${tier}-${i + 1}`));
 			const run = makeRun(tier); clearDifficulty(account, run);
 			assert.equal(account.difficulties.highest, Math.min(5, tier + 1));
 			const before = structuredClone(account); clearDifficulty(account, run); clearDifficulty(account, makeRun(0));

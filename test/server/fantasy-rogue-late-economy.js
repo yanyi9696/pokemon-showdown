@@ -17,16 +17,16 @@ describe('Fantasy Rogue income from floor 81', function () {
 	this.timeout(20000);
 	let content;
 	before(() => { content = createPreviewContent(); });
-	// Revised October 27 budgets: early candy reduction and slower midgame income,
-	// retaining the original floor-81 extra wild drop and late recovery.
+	// Challenge routes now carry part of encounter income; other route budgets,
+	// floor-81 extra wild drops and late recovery remain unchanged.
 	const baseline = [
-		[1, 900, 150, 416.41875, 100, 254.4],
-		[40, 2400, 900, 1277.0625, 250, 254.4],
-		[80, 3200, 1200, 2055.3912, 950, 511.05],
-		[81, 3650, 1350, 2356.4151352224, 1250, 572.376],
-		[100, 5100, 1950, 3570.336, 3150, 572.376],
-		[150, 10000, 4050, 8548.0668, 17350, 2744.28],
-		[200, 14950, 6000, 15127.56, 41050, 4999.68],
+		[1, 550, 150, 541.344375, 100, 254.4],
+		[40, 1500, 750, 1660.18125, 250, 254.4],
+		[80, 2000, 1200, 2672.00856, 900, 511.05],
+		[81, 2250, 1350, 3063.3396757891205, 1350, 572.376],
+		[100, 3150, 1800, 4641.4368, 3000, 572.376],
+		[150, 6150, 3750, 11112.48684, 16750, 2744.28],
+		[200, 9250, 5700, 19665.828, 38700, 4999.68],
 	];
 	it('slows midgame income and applies late income once, including smoothed reward choice budgets', () => {
 		for (const [floor, trainer, elite, event, reward, wild] of baseline) {

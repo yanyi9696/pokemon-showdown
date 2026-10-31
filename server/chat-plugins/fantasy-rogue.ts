@@ -13,7 +13,7 @@ export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
 		return { userid: user.id, enabled: !!trustable && rogueAccess(user) };
 	},
 	fantasyroguecodex(target, user, trustable) {
-		return trustable && (target === 'guide' || target === 'blessings' || target === 'events') ?
+		return trustable && (target === 'guide' || target === 'blessings' || target === 'events' || target === 'stories') ?
 			getRogueManager().codex(user, target) : null;
 	},
 	fantasyroguegallery(target, user, trustable) {

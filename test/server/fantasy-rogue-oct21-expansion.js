@@ -89,11 +89,17 @@ describe('Fantasy Rogue October 21 complete expansion', function () {
 				assert(g.modules[key].some(e => e.id === effect.id && e.name === effect.name), effect.name);
 			}
 		}
-		assert(!g.modules.biomes); assert(g.beginner.some(p => p.text.includes('固定首领 +20／+40')));
+		assert(!g.modules.biomes);
+		const costs = g.beginner.find(p => p.title === '高品质也有代价').text;
+		assert(costs.includes('固定首领追加等级') && costs.includes('150 层 +20／+40'));
 	});
 	it('has working codex entries for every activity, the catch-up reward, ecology, and all three new blessings', () => {
 		const rows = rogueCodex(undefined, 'events', true).entries;
-		for (const id of Object.keys(ACTIVITY_NAMES)) assert(rows.some(e => e.id === id && e.replay?.pages.start.text.length >= 3), id);
+		for (const id of Object.keys(ACTIVITY_NAMES)) {
+			const entry = rows.find(e => e.id === (id === 'battlemetro' ? 'challenge:battlemetro' : id));
+			assert(entry?.replay?.pages.start.text.length >= (id === 'battlemetro' ? 2 : 3), id);
+			if (id === 'battlemetro') assert.equal(entry.category, 'challenge');
+		}
 		assert.equal(rows[0].category, 'ecology'); assert.equal(rows.filter(e => e.category === 'ecology').length, 14);
 		assert(rows.find(e => e.id === 'reward:catchup').text.includes('落后'));
 		const blessings = rogueCodex(undefined, 'blessings', true).entries;

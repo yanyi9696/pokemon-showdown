@@ -14,6 +14,8 @@ import {
 } from './early-balance';
 import { coinSupplyMultiplier } from './resource-pacing';
 import { convertSpiritItem } from './spirits';
+import { machineMoves, premiumMachine, tradeItem } from './trading';
+import { natureMintSupplies } from './nature-mints';
 import { gainExperience, ensureMemberMemory } from './progression';
 import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { availableGrowth, grantGrowth, grantPersonalGrowth, growthPercent, PERSONAL_GROWTH_LIMIT, JOURNEY_GROWTH_START } from './growth';
@@ -33,6 +35,8 @@ export const REWARD_SCENES = {
 export interface RewardScene {
 	id: keyof typeof REWARD_SCENES; key: string; type?: string; demonstrated?: string;
 	claimed?: boolean; result?: string; catchupCheckpoint?: number;
+	/** Rolled once on entry; replaces repeat stat training with a permanent move or mint item. */
+	trainingAlternatives?: string[];
 }
 
 export function prepareRewardScene(run: RogueRun, random: RogueRandom) {
@@ -50,6 +54,15 @@ export function prepareRewardScene(run: RogueRun, random: RogueRandom) {
 	run.node.rewardScene = { id, key: randomUUID(),
 		...(checkpoint ? { catchupCheckpoint: checkpoint } : {}),
 		...(REWARD_SCENES[id].preference ? { type: Object.keys(BLESSING_TYPES)[random(18)] } : {}) };
+	if (run.floor >= 61 && !['catchup', 'pprest', 'breederegg'].includes(id) &&
+		run.team.some(mon => (mon.training?.offense || 0) + (mon.training?.defense || 0) > 0) && random(100) < 15) {
+		const moves = [...new Set(run.team.filter(mon => !mon.egg).flatMap(machineMoves))].filter(premiumMachine);
+		const natures = dex.natures.all().filter(nature => nature.plus && nature.minus);
+		run.node.rewardScene.trainingAlternatives = [
+			...(moves.length ? [`roguetm${moves[random(moves.length)]}`] : []),
+			`roguemint${natures[random(natures.length)].id}`,
+		];
+	}
 	run.node.name = REWARD_SCENES[id].name;
 	// Reward scenes never inherit an encounter or pay the old supply bundle as well.
 	run.node.encounters = [];
@@ -132,7 +145,8 @@ export function rewardChoices(run: RogueRun) {
 		{ id: 'experience', name: '经验糖果', text: `获得共 ${experience} 点经验的糖果，可自由分给伙伴。`, items },
 		{ id: 'money', name: '路费', text: `获得 ${money} 金币。`, money },
 	];
-	for (const kind of run.floor >= JOURNEY_GROWTH_START ? ['offense', 'defense'] as const : []) {
+	for (const kind of run.floor >= JOURNEY_GROWTH_START && !scene.trainingAlternatives ?
+		['offense', 'defense'] as const : []) {
 		const label = kind === 'offense' ? '攻击、特攻' : '防御、特防';
 		const name = kind === 'offense' ? '输出训练' : '耐久训练';
 		{
@@ -143,6 +157,13 @@ export function rewardChoices(run: RogueRun) {
 			choices.push({ id: kind, name, targets, disabled: !targets.length,
 				text: `选一位伙伴，本局${label}最高 +${growthPercent(nominal)}，升级、进化后仍然有效。` });
 		}
+	}
+	for (const id of scene.trainingAlternatives || []) {
+		const item = tradeItem(id);
+		if (item) choices.push({ id, name: item.name,
+			text: `获得【${item.name}】×1，存入背包后可选择伙伴使用。` +
+				(item.kind === 'mint' ? run.floor < 69 ? '另赠好伤药 ×1、PP 单项小补剂 ×2。' : '另赠厉害伤药 ×1。' : ''),
+			items: { [id]: 1, ...(item.kind === 'mint' ? natureMintSupplies(run.floor) : {}) } });
 	}
 	if (run.floor >= 51) {
 		const amount = availableGrowth(run, 'experience', enhanced ? 750 : 500);
@@ -221,7 +242,7 @@ export function chooseReward(run: RogueRun, content: RogueContent, random: Rogue
 	for (const [id, count] of Object.entries(choice.items || {})) supplies[id] = (supplies[id] || 0) + count;
 	const items: Record<string, number> = {};
 	for (const [id, count] of Object.entries(supplies)) {
-		if (!content.items.some(item => item.id === id)) continue;
+		if (!content.items.some(item => item.id === id) && !tradeItem(id)) continue;
 		for (let n = 0; n < count; n++) {
 			const received = convertSpiritItem(run, content, id, `reward:${scene.key}:${id}:${n}`, random);
 			items[received] = (items[received] || 0) + 1;

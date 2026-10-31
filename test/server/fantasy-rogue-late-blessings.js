@@ -151,14 +151,14 @@ describe('Fantasy Rogue late support and species blessings', function () {
 		const p = begin(r); assert.equal(p.maxhp, r.team[0].maxhp);
 		for (const stat of ['atk', 'def', 'spa', 'spd', 'spe']) assert.equal(p.storedStats[stat], r.team[0].stats[stat]);
 	});
-	it('applies all six emissary stats and doubled positive friendship, with dual-type composition', () => {
+	it('keeps all six stats and friendship unchanged by type emissaries', () => {
 		const ids = ROGUE_BLESSINGS.filter(b => b.family === 'emissary'); assert.equal(ids.length, 18);
 		const grass = ids.find(b => b.type === 'Grass'), poison = ids.find(b => b.type === 'Poison');
 		const plain = run([], ['Bulbasaur']), r = run([grass.id, poison.id], ['Bulbasaur']);
-		for (const key of ['hp', 'atk', 'def', 'spa', 'spd', 'spe']) assert.equal(r.team[0].stats[key], Math.floor(plain.team[0].stats[key] * 1.21 + 1e-9));
+		for (const key of ['hp', 'atk', 'def', 'spa', 'spd', 'spe']) assert.equal(r.team[0].stats[key], plain.team[0].stats[key]);
 		const mon = r.team[0]; mon.set.happiness = 100;
-		changeFriendship(mon, 3, r); assert.equal(mon.set.happiness, 106);
-		changeFriendship(mon, -3, r); assert.equal(mon.set.happiness, 103);
+		changeFriendship(mon, 3, r); assert.equal(mon.set.happiness, 103);
+		changeFriendship(mon, -3, r); assert.equal(mon.set.happiness, 100);
 		const p = begin(r); assert.equal(p.maxhp, mon.maxhp);
 		for (const stat of ['atk', 'def', 'spa', 'spd', 'spe']) assert.equal(p.storedStats[stat], mon.stats[stat]);
 	});

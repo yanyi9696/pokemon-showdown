@@ -4,7 +4,7 @@ import type { RogueStoryStage } from './story';
 import type { RogueClearCard } from './legacy';
 
 export type RogueNodeKind =
-	'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 'reward' | 'event' | 'adventure' | 'encounter' | 'trade';
+	'wild' | 'elite' | 'trainer' | 'rest' | 'boss' | 'reward' | 'event' | 'adventure' | 'encounter' | 'trade' | 'challenge' | 'story';
 export interface RogueTrainer {
 	id: string;
 	name: string;
@@ -50,6 +50,9 @@ export interface RogueEncounter {
 	catchChances?: Record<string, number>;
 }
 export interface RogueNode {
+	mainlineScene?: string;
+	elderScene?: string;
+	challenge?: import('./optional-challenges').OptionalChallenge;
 	/** A companion let the player advance without winning; reward is held in the rematch ledger. */
 	companionLoss?: boolean;
 	/** Per-center purchases survive saves and retries; a new center starts a new quota. */
@@ -151,6 +154,15 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	/** Missing on old adventures: preserve their additive stat rules. */
+	boostRuleVersion?: 2;
+	firstClearRewardsRecorded?: boolean;
+	mainline?: { scene: string; floor?: number; offered?: boolean; completed?: boolean; pitySettled?: boolean };
+	elderVisits?: string[];
+	elderServices?: string[];
+	elderStageLine?: string;
+	mainlineEnding?: string;
+	challengeHistory?: import('./optional-challenges').ChallengeRecord[];
 	echo?: import('../../sim/rogue-echo').EchoUpgrades;
 	echoAwarded?: number;
 	echoIntroShown?: boolean;
@@ -187,6 +199,7 @@ export interface RogueRun extends RogueInventory {
 	exclusiveEventMisses?: number;
 	auction?: import('./auction').RogueAuction;
 	companionPickups?: { settled: string[], items: Record<string, number> };
+	emblemLoot?: import('./emblem-loot').EmblemLootProgress;
 	preview?: { key: string, trainer: 'sada' | 'turo', stage: 'running' | 'result' | 'personal', result?: import('../../sim/fantasy-rogue').RogueBattleResult };
 	rewardHistory?: string[];
 	catchupCheckpoint?: number;
@@ -201,6 +214,7 @@ export interface RogueRun extends RogueInventory {
 	mentorCard?: { floor: number, kind: import('./early-balance').MentorCard };
 	postgame?: {
 		stage: 'offer' | 'battle' | 'won' | 'lost' | 'declined',
+		echoAwarded?: number,
 		before: RogueInventory,
 		node: RogueNode,
 		encounter: number,
@@ -274,6 +288,10 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	mainline?: import('./mainline-progress').MainlineProgress;
+	mainlineDialogue?: import('./mainline').MainlineDialogue;
+	firstClearSpecies?: string[];
+	unlockNotices?: import('./mainline-progress').UnlockNotice[];
 	echo?: import('../../sim/rogue-echo').CollapseEcho;
 	masterBalls?: import('./master-ball').MasterBallCollection;
 	collapseHistory?: Record<string, import('../../sim/rogue-collapse-data').CollapseHistory>;
@@ -340,11 +358,11 @@ export interface RogueCommand {
 	trainingMembers?: string[];
 	trainingStats?: StatIDExceptHP[];
 	appearance?: string;
-	action: 'echo' | 'affection' | 'forme' | 'fusion' | 'unfusion' | 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
-		'shopchallenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' | 'comeback' | 'coverage' |
+	action: 'mainlinechoice' | 'unlockack' | 'echo' | 'affection' | 'forme' | 'fusion' | 'unfusion' | 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+		'shopchallenge' | 'challenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' | 'comeback' | 'coverage' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
-		'setdifficulty' | 'charm' | 'charmack' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingquality' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability';
+		'setdifficulty' | 'charm' | 'charmack' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingquality' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability' | 'usecompound';
 	useSpirit?: boolean;
 	/** A previously cleared spirit; validated against the account ledger on the server. */
 	selectedSpirit?: string;

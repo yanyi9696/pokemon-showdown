@@ -39,13 +39,14 @@ const sceneMembers = (run: RogueRun, id: string) => run.team.filter(p => !p.egg 
 export const isJourneyActivity = (id: string): id is ActivityID => id in ACTIVITY_NAMES;
 export function activityEligible(run: RogueRun, id: string) {
 	if (!isJourneyActivity(id)) return true;
+	if (id === 'battlemetro') return false; // Moved to challenges; keep handlers for saved events.
 	if (SCENES[id]) return sceneMembers(run, id).length > 0 && (id !== 'peatmoon' || rogueTime(run.floor) === 'night');
 	if (id === 'kubfuscroll') return run.team.some(p => !p.egg && !p.fusion && toID(p.set.species) === 'kubfu' && p.set.level >= 35 && p.hp > 0);
 	if (id === 'kubfumaster') return run.floor >= 51 && !run.activityClaims?.includes(id);
 	if (id === 'duskbreeder') return !run.activityClaims?.includes(id);
 	if (id === 'evolutiondojo') return run.team.some(p => !p.egg && !!trainingMove(p));
 	if (id === 'pokeflute') return run.floor >= 60;
-	if (['battlemetro', 'lostescort', 'repelwave'].includes(id)) return run.floor >= 20;
+	if (['lostescort', 'repelwave'].includes(id)) return run.floor >= 20;
 	return run.team.some(p => !p.egg && p.hp > 0);
 }
 export function activityWeight(id: string) { return SCENES[id] || ['kubfuscroll', 'evolutiondojo'].includes(id) ? 3 : 1; }

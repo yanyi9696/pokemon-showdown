@@ -43,8 +43,9 @@ describe('Fantasy Rogue authoritative effect display and consumable persistence'
 		const info = rogueAbilityInfo(mon);
 		assert.equal(info.stats.atk, mon.getStat('atk')); assert.equal(info.stats.def, mon.getStat('def'));
 		assert.equal(info.stats.spe, mon.getStat('spe')); assert.equal(info.maxhp, mon.maxhp);
-		assert.equal(info.mentor.damage, 60); assert.equal(info.training.atk, 0.2);
-		assert(info.moves.tackle.damage.some(s => s.includes('首领卡') && s.includes('60%')));
+		assert.equal(info.mentor.offense, 60); assert.equal(info.training.atk, 0.2);
+		assert(!info.moves.tackle.damage.some(s => s.includes('首领卡')));
+		assert(info.statSources.some(s => s.includes('首领卡') && s.includes('60%')));
 		assert(info.moves.tackle.damage.some(s => s.includes('氪命'))); assert(!info.moves.tackle.power.length);
 	});
 	it('includes the current Z move and keeps Technician eligibility independent of later blessing multipliers', () => {
@@ -76,13 +77,17 @@ describe('Fantasy Rogue authoritative effect display and consumable persistence'
 			assert.deepEqual(battle.prng.getSeed(), seed, ability.name);
 		}
 	});
-	it('persists consumed berries and gems as empty held slots, while renewable keeps them', () => {
+	it('persists normal consumption and only waives the first use with renewable', () => {
 		for (const renewable of [false, true]) for (const item of ['oranberry', 'normalgem']) {
 			const mon = begin(renewable ? ['renewable'] : [], { set: { ...set('Mew', 'Synchronize', 50, ['Tackle']), item } });
 			if (item === 'oranberry') {
-				mon.hp = Math.floor(mon.maxhp / 3); battle.makeChoices('move 1', 'move 1');
+				mon.hp = Math.floor(mon.maxhp / 2); battle.runEvent('Update', mon);
 			} else battle.makeChoices('move 1', 'move 1');
 			assert.equal(rogueBattleResult(battle).team[0].set.item, renewable ? item : '', `${item}, renewable=${renewable}`);
+			if (item === 'oranberry') {
+				mon.hp = Math.floor(mon.maxhp / 2); battle.runEvent('Update', mon);
+			} else battle.makeChoices('move 1', 'move 1');
+			assert.equal(rogueBattleResult(battle).team[0].set.item, '', `${item} must be spent by the second use`);
 		}
 	});
 });

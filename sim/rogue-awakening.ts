@@ -2,10 +2,12 @@ import { blessingSpeciesID } from './rogue-species-identity';
 import type { RoguePokemon } from './fantasy-rogue';
 import type { BlessingEffects } from './rogue-blessing-data';
 
-export const SPIRAL_CAP = 1000;
-export const SPIRAL_SURVIVAL = 250;
+export const SPIRAL_SURVIVAL = 100;
+export const SPIRAL_STONE = 250;
+export const SPIRAL_PARTICIPATION = 1;
+export const SPIRAL_KO = 1;
 export function addSpiral(points: number, gain: number) {
-	return Math.min(SPIRAL_CAP, points + gain * Math.max(0, 1 - points / SPIRAL_CAP) ** 1.5);
+	return Math.max(0, points) + Math.max(0, gain);
 }
 /** Smooth between every HP value, with exact 1 / 1.5 / 3 reference anchors. */
 export function robeDurability(hp: number, maxhp: number, awakened = false) {

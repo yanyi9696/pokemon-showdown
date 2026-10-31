@@ -36,6 +36,8 @@ describe('Fantasy Rogue blessings in native battles', () => {
 		assert.deepEqual([1, 2, 3, 4, 5].map(rogueStarScale), [1, 1.2, 1.5, 2, 3]);
 		assert.deepEqual([50, 100, 150].map(f => blessingLevelCost('gold', f)), [5, 10, 15]);
 		assert.deepEqual([50, 100, 150].map(f => blessingLevelCost('prismatic', f)), [10, 20, 30]);
+		assert.deepEqual([1, 50, 100, 150].map(f => blessingLevelCost('gold', f, true)), [5, 10, 15, 20]);
+		assert.deepEqual([1, 50, 100, 150].map(f => blessingLevelCost('prismatic', f, true)), [10, 20, 30, 40]);
 		assert.equal(addPsychicCharge(99, 3), 100.1);
 		assert.equal(addPsychicCharge(120, 20), 121);
 	});
@@ -59,10 +61,22 @@ describe('Fantasy Rogue blessings in native battles', () => {
 		turn('move 1', 'move 2');
 		assert(battle.choose('p1', 'switch 2'));
 		assert.equal(battle.p1.active[0].moveSlots.length, 2);
+		assert.equal(battle.p1.active[0].moveSlots.find(m => m.id === 'splash').pp, 40);
 		turn('move 2');
 		turn('switch 3'); turn('switch 3');
 		assert.equal(battle.p1.active[0].moveSlots.find(m => m.id === 'splash').pp, 39);
 		assert.equal(rogueBattleResult(battle).team[1].set.moves.length, 1);
+	});
+	it('passes even an exhausted donor move at full PP without refilling existing recipient moves', () => {
+		begin(['inheritmoves'], [set('Magikarp', 'Swift Swim', 5, ['Splash']), set('Snorlax', 'Immunity', 50, ['Tackle'])], undefined, {
+			prepare(team) { team[0].pp[0].pp = 0; team[1].pp[0].pp = 2; },
+		});
+		turn('move struggle', 'move 2');
+		assert(battle.choose('p1', 'switch 2'));
+		const slots = battle.p1.active[0].moveSlots;
+		assert.equal(slots.find(m => m.id === 'splash').pp, 40);
+		assert.equal(slots.find(m => m.id === 'tackle').pp, 2);
+		turn('move 2'); assert.equal(slots.find(m => m.id === 'splash').pp, 39);
 	});
 	it('stacks all seven statuses and cures all of them together', () => {
 		begin(['stackstatus'], undefined, [set('Blissey', 'Natural Cure', 50, ['Splash'])]);
@@ -218,7 +232,7 @@ describe('Fantasy Rogue blessings in native battles', () => {
 		begin(['singer'], [set('Meloetta', 'Serene Grace', 30, ['Tackle']), set('Meloetta', 'Serene Grace', 50, ['Tackle'])]);
 		assert(!battle.p1.active[0].hasAbility('jizhineng'));
 		turn('switch 2'); const a = battle.p1.active[0];
-		assert(a.hasAbility('jizhineng')); assert(a.hasAbility('tianlaizhiyin')); assert(a.hasAbility('serenegrace'));
+		assert(!a.hasAbility('jizhineng')); assert(a.hasAbility('tianlaizhiyin')); assert(a.hasAbility('serenegrace'));
 	});
 	it('changes the strongest dancer to Pirouette and restores its campaign form on settlement', () => {
 		begin(['dancer'], [set('Meloetta', 'Serene Grace', 50, ['Tackle'])]);
@@ -226,10 +240,23 @@ describe('Fantasy Rogue blessings in native battles', () => {
 		assert(battle.p1.active[0].hasAbility('dancer'));
 		assert.equal(rogueBattleResult(battle).team[0].set.species, 'Meloetta');
 	});
-	it('doubles Triple Axel to six continuously increasing hits', () => {
+	it('doubles Triple Axel to six hits while capping each hit at its native maximum power', () => {
 		begin(['multihit'], [set('Mew', 'Skill Link', 10, ['Triple Axel'])], [set('Blissey', 'Natural Cure', 100, ['Splash'])]);
+		const powers = [];
+		battle.onEvent('BasePower', battle.format, function (power, user, target, move) {
+			if (move.id === 'tripleaxel') powers.push(power);
+		});
 		turn();
 		assert(battle.log.some(line => line.startsWith('|-hitcount|') && line.endsWith('|6')), battle.log.join('\n'));
+		assert.deepEqual(powers, [20, 40, 60, 60, 60, 60]);
+	});
+	it('limits inherited negative stages to minus two without transferring positive stages', () => {
+		begin(['passdrops'], undefined, [set('Blissey', 'Natural Cure', 100, ['Splash']), set('Snorlax', 'Immunity', 100, ['Splash'])]);
+		battle.boost({atk: -6, spa: -1, spe: -5, def: 2}, battle.p2.active[0]);
+		turn('move 2', 'switch 2');
+		const mon = battle.p2.active[0];
+		assert.equal(mon.boosts.atk, -2); assert.equal(mon.boosts.spa, -1);
+		assert.equal(mon.boosts.spe, -2); assert.equal(mon.boosts.def, 0);
 	});
 	it('extends weather and Trick Room without replacing their normal duration rules', () => {
 		begin(['overtimeraindance', 'overtimetrickroom'], [set('Mew', 'Synchronize', 50, ['Rain Dance', 'Trick Room'])]);

@@ -27,12 +27,14 @@ export interface RogueClearCard {
 	snapshot: RogueInventory & {
 		difficulty?: RogueDifficulty, difficultyRulesVersion?: number, difficultyLabel?: string,
 		difficultyScale?: number, difficultyTest?: boolean,
+		boostRuleVersion?: 2,
 		floor: 200, boosts: StatsTable, spirit?: string, startCard?: string, eventBuff?: boolean,
-		spiritName?: string, spiritText?: string, cardName?: string, cardText?: string,
+		spiritName?: string, spiritText?: string, spiritSpecies?: string, cardName?: string, cardText?: string,
 		hazards?: string[], blessings: { id: string, name?: string, floor?: number, text: string }[],
 		memberDetails?: Record<string, ClearMemberDetails>,
 		blessingEffects?: BlessingEffects,
 		rival?: RivalState & { name: string },
+		trainerBonds?: Record<string, import('./affection').TrainerBond>,
 	};
 }
 /** Keep the original hatch roll in storage, never expose it in public clear cards. */
@@ -89,16 +91,18 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 			team, box, bag: { ...run.bag }, money: run.money,
 			memberDetails: Object.fromEntries([...team, ...box].filter(mon => !mon.egg).map(mon => [mon.id, clearMemberDetails(mon, detailsRun)])),
 			growth: run.growth && { ...run.growth },
-			rival: run.rival && { ...run.rival, name: RIVALS[run.rival.id].name },
-			floor: 200, boosts: { ...run.boosts }, spirit: run.spirit, startCard: run.startCard,
+			rival: run.rival && { ...run.rival, affection: run.trainerBonds?.[run.rival.id]?.score ?? run.rival.affection, name: RIVALS[run.rival.id].name },
+			trainerBonds: structuredClone(run.trainerBonds),
+			floor: 200, boosts: { ...run.boosts }, boostRuleVersion: run.boostRuleVersion, spirit: run.spirit, startCard: run.startCard,
 			eventBuff: !!run.eventBuff?.battles,
 			spiritName: rogueSpirit(run.spirit)?.name, spiritText: rogueSpirit(run.spirit)?.text,
+			spiritSpecies: rogueSpirit(run.spirit)?.species,
 			cardName: startCard(run.startCard)?.name, cardText: startCard(run.startCard)?.text,
 			hazards: structuredClone(run.node?.encounters[run.encounter - 1]?.spiritHazards),
 			teraUnlocked: !!run.teraUnlocked,
 			megaUnlocked: run.megaUnlocked, gmegaUnlocked: run.gmegaUnlocked, zUnlocked: run.zUnlocked,
 			blessings: (run.blessings?.owned || []).map(entry => {
-				const { name, text } = blessingDisplay(blessing(entry.id)!, entry.floor, account.tonicSecret);
+				const { name, text } = blessingDisplay(blessing(entry.id)!, entry.floor, account.tonicSecret, entry.type);
 				return { id: entry.id, name, floor: entry.floor, text };
 			}),
 			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution,

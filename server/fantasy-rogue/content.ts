@@ -65,7 +65,7 @@ export function validateContent(content: RogueContent): RogueContent {
 		for (const set of sets) {
 			ensure(dex.species.get(set.species).exists, `物种 ${set.species} 不存在`);
 			ensure(Number.isSafeInteger(set.level) && set.level >= 1 && set.level <= 9999, '必须显式配置有效等级');
-			// Wild generation uses evolution thresholds; authored trainer rosters use one floor level.
+			// Wild generation uses evolution thresholds; authored bosses use their configured floor level.
 			if (!authoredTrainer) ensure(set.level >= minimumEvolutionLevel(set.species), `${set.species} 未达到进化等级`);
 			ensure(set.moves.length >= 1 && set.moves.length <= 4 && set.moves.every(move => dex.moves.get(move).exists), '招式无效');
 			ensure(dex.abilities.get(set.ability).exists && dex.natures.get(set.nature).exists, '特性或性格无效');
@@ -128,7 +128,7 @@ export function validateContent(content: RogueContent): RogueContent {
 				}
 			}
 			for (const encounter of node.encounters) {
-				team(encounter.team, !!encounter.trainer || !!encounter.trainerCandidates?.length);
+				team(encounter.team, node.kind === 'boss');
 				if (encounter.trainer || encounter.trainerCandidates) {
 					ensure(node.kind === 'boss' && !encounter.catchable && !encounter.candidates, '训练家候选只能用于不可捕捉的训练家 Boss');
 					if (encounter.trainer) trainer(encounter.trainer, floor);
@@ -143,7 +143,7 @@ export function validateContent(content: RogueContent): RogueContent {
 					ensure(node.kind === 'boss' && ELITE_BOSS_FLOORS.has(floor) && !encounter.catchable,
 						'随机候选仅用于固定幻想精英 Boss');
 					ensure(encounter.team.length === 1 && encounter.candidates.length > 0, '幻想精英候选不能为空且必须为单只对手');
-					for (const candidate of encounter.candidates) team([candidate]);
+					for (const candidate of encounter.candidates) team([candidate], true);
 				}
 				if (encounter.boss) {
 					ensure(floor === 200 && node.kind === 'boss' && encounter.boss.kind === 'summit' &&

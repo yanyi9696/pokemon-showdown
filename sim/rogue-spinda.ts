@@ -8,6 +8,12 @@ function active(mon: Pokemon) {
 	return !!hasBlessing(mon, 'spindance') && !!team &&
 		strongestBlessingMember(team, 'Spinda')?.id === savedBlessingMember(mon)?.id;
 }
+/** Only a newly established confusion counts; failed attempts and refreshes do not. */
+export function spindaConfused(target: Pokemon, source: Pokemon) {
+	if (!target.isAlly(source) && active(source)) {
+		target.battle.boost({ accuracy: -1 }, target, source, target.battle.format);
+	}
+}
 function confuse(target: Pokemon, source: Pokemon) {
 	if (!target.hp || target.fainted) return;
 	if (target.volatiles.confusion) {

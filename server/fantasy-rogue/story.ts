@@ -1,3 +1,4 @@
+import { encounterBlessingLevels, blessingLevelsAt } from './blessing-levels';
 import { Dex } from '../../sim/dex';
 import type { RogueAccount, RogueRun } from './types';
 import { GYM_GIFT_LINES, TRAINER_DIALOGUE, GYM_LEAGUE_LINES } from './trainer-dialogue';
@@ -9,6 +10,7 @@ import { trainerReunionPages } from './trainer-reunions';
 import { dialoguePage, type NarrativePage } from './narrative';
 import { CHARM_DESCRIPTION } from '../../sim/rogue-difficulty';
 import { difficultySpiritUnlocked } from './difficulty';
+import { mainlineView } from './mainline';
 
 export type RogueStoryStage = 'opening' | 'spirit' | 'spiritEffect' | 'climb' | 'cards' | 'portal' |
 	'charm' | 'charmeffect' | 'difficultyconfirm' | 'ending' | 'gymgift' | 'godinvite' | 'bossintro' | 'restguide' | 'leaguebriefing' | 'interlude';
@@ -73,6 +75,7 @@ export function cardBiasedSpecies(
 }
 
 export function storyView(account: RogueAccount, enabled: boolean, local: boolean) {
+	if (enabled && account.mainlineDialogue) return mainlineView(account);
 	if (!enabled && !['gymgift', 'godinvite', 'interlude'].includes(account.run?.story?.stage || '')) return null;
 	const run = account.run;
 	const stage = run?.story?.stage || (!run ? 'opening' : undefined);
@@ -80,7 +83,7 @@ export function storyView(account: RogueAccount, enabled: boolean, local: boolea
 	if (stage === 'charm' || stage === 'charmeffect') return {
 		stage, title: stage === 'charm' ? '临行前的护符' : '护符庇佑', scene: 'stranger',
 		text: stage === 'charm' ? '「等一等。」老人从袍子里摸出一枚护符，摊在掌心。「路上要是觉得吃力，就带着它吧。' +
-		'它能帮你压一压对手的力量，也能让你避开那些太强的家伙。」他把手往前递了递。「要收下吗？还是想靠自己试试？」' : CHARM_DESCRIPTION,
+		'它能**帮你压一压对手的力量，也能让你避开那些太强的家伙**。」他把手往前递了递。「要收下吗？还是想靠自己试试？」' : CHARM_DESCRIPTION,
 		charmText: CHARM_DESCRIPTION,
 		canAccept: !run!.spirit || local || difficultySpiritUnlocked(account, 'easy'),
 		canDecline: !run!.spirit || local || difficultySpiritUnlocked(account, 0),
@@ -100,9 +103,10 @@ export function storyView(account: RogueAccount, enabled: boolean, local: boolea
 
 function mentorPages(run: RogueRun): Page[] {
 	const elite = ELITE_BOSS_FLOORS.has(run.floor + 1);
-	const levels = run.blessings?.bossLevels ?? run.blessings?.levels ?? 0;
+	const levels = blessingLevelsAt(run, run.floor + 1).boss;
 	const roster = bossRoster(run, run.floor + 1);
 	return [
+		...(run.elderStageLine ? [page('stranger', '再会', run.elderStageLine, '黑袍老人')] : []),
 		page('stranger', '楼梯前的提醒', `黑袍老人坐在休整处，见你走来，抬手指了指楼梯。「下一层${elite ? '是幻想精英' : '有强敌在等你'}，可比路上的对手难对付。先把伙伴照顾好，招式和道具也别忘了检查。」${levels ? `目前祝福使固定首领额外提高 ${levels} 级，请留意队伍等级。` : ''}`),
 		...(roster ? [{ ...page('arena', `第 ${run.floor + 1} 层 · 对手预告`,
 			`「下一层等着你的是${roster.avatar ? roster.name : '这些宝可梦'}。${elite ? '两只同属性跟班先登场且不会主动交换，之后才是幻想精英。跟班沿用本层普通精英等级，仅受普通遭遇的祝福加级；幻想精英受固定首领加级。' : ''}记住这些面孔，想好应对，再去挑战。」`, '黑袍老人'), roster }] : []),
@@ -116,7 +120,7 @@ export function bossRoster(run: RogueRun, floor: number) {
 	return { name: trainer?.name || node.name, avatar: trainer?.avatar,
 		pokemon: node.encounters.flatMap(encounter => encounter.team.map(set => set.species)),
 		levels: node.encounters.flatMap(encounter => encounter.team.map((set, index) => set.level +
-			(index < (encounter.escortCount || 0) ? run.blessings?.levels || 0 : run.blessings?.bossLevels ?? run.blessings?.levels ?? 0))),
+			encounterBlessingLevels(run, node, encounter, index, floor))),
 		escorts: node.encounters[0]?.escortCount || 0 };
 }
 export function leaguePages(run: RogueRun): Page[] {

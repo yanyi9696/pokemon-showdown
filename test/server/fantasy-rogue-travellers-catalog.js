@@ -69,7 +69,7 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 		account.run.phase = 'complete'; account.pendingClear = {};
 		assert(!needsOnboarding(account), 'finish the current clear before prompting');
 		delete account.pendingClear; assert(needsOnboarding(account));
-		assert(BEGINNER_GUIDE.some(e => e.text.includes('乌栗与丹瑜各有一次')));
+		assert(BEGINNER_GUIDE.some(e => e.text.includes('每局重新累积')));
 		assert(BEGINNER_GUIDE.some(e => e.text.includes('50') && e.title.includes('好感度')));
 	});
 	it('shares two slots across blessing, rival, Carmine and event companions and preserves departed rewards', () => {

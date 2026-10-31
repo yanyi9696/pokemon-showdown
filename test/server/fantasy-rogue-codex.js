@@ -8,6 +8,7 @@ const { createPreviewContent } = require('../../dist/server/fantasy-rogue/previe
 const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
 const { rogueDiscoveries } = require('../../dist/server/fantasy-rogue/discoveries');
 const { EVENT_NAMES, eventView } = require('../../dist/server/fantasy-rogue/events');
+const {OPTIONAL_CHALLENGES} = require('../../dist/server/fantasy-rogue/challenge-data');
 const { ROGUE_BLESSINGS, STAGED_BLESSING_FAMILIES } = require('../../dist/sim/rogue-blessing-data');
 
 describe('Fantasy Rogue permanent codex and read-only event replays', function () {
@@ -37,13 +38,19 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
 		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).filter(id =>
-			!['auction', 'mushroomcollector', 'exclusivechallenge', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory'].includes(id)).length);
+			!['auction', 'mushroomcollector', 'exclusivechallenge', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory', 'starmaster', 'battlemetro'].includes(id)).length);
+		assert.equal(events.filter(e => e.category === 'challenge').length, OPTIONAL_CHALLENGES.length);
 		for (const id of ['exclusivechallenge', 'policeassist', 'policerevenge']) assert.equal(events.find(e => e.id === id).category, 'encounter');
 		assert.equal(events.filter(e => e.category === 'trade').length, 9);
 		assert.equal(events.filter(e => e.category === 'reward').length, 8);
 		assert(events.filter(e => e.category !== 'ecology').every(entry => !entry.unlocked && !entry.replay && entry.text === '？？？'));
 		const people = events.filter(e => ['companion', 'trainer'].includes(e.category));
-		assert.equal(people.length, 102); // Includes Lusamine's family/event companion entry.
+		assert.equal(people.length, 106); // Includes Lusamine and the four challenge-only companions.
+		for (const portrait of ['ingo', 'emmet', 'palmer', 'riley']) {
+			const entry = people.find(e => e.portrait === portrait);
+			assert(entry && entry.roles.includes('companion'), portrait);
+			assert(!entry.unlocked && !entry.replay && entry.text === '？？？', portrait);
+		}
 		for (const id of ['leon', 'lance', 'diantha', 'cynthia', 'ash']) {
 			assert(people.some(e => e.portrait === id && e.roles.includes('champion') && e.roles.includes('companion')));
 		}
@@ -141,7 +148,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 	it('has traversable narrative-only branches and the same opening text as live events', () => {
 		const a = account(); a.discoveries = { blessings: [], events: Object.keys(EVENT_NAMES) };
 		const before = JSON.stringify(a);
-		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event')) {
+		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event' && !e.id.startsWith('challenge:'))) {
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
 			if (entry.id === 'masterballgift') {
@@ -183,7 +190,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(modules.items.some(item => item.id === 'dadascloak' && item.category === 'exclusive'));
 		assert(!modules.items.some(item => ['firegem', 'charizarditex', 'firiumz'].includes(item.id)));
 		const { Dex } = require('../../dist/sim/dex');
-		for (const id of ['piercingdrill', 'spicyspray', 'eelevate', 'firemane', 'auraguard']) {
+		assert(modules.abilities.some(item => item.id === 'piercingdrill' && item.origin === 'enhanced'));
+		for (const id of ['spicyspray', 'eelevate', 'firemane', 'auraguard']) {
 			assert(Dex.abilities.get(id).exists);
 			assert(!modules.abilities.some(item => item.id === id));
 		}
@@ -225,7 +233,8 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 	it('does not advertise an unapproved battle exit in any authored event replay', () => {
 		for (const entry of rogueCodex(undefined, 'events', true).entries.filter(e => e.replay)) {
 			for (const page of Object.values(entry.replay.pages)) {
-				assert(page.options.every(option => !/撤退|退出战斗/.test(option.label)));
+				assert(page.options.every(option => !/撤退|退出战斗/.test(option.label) ||
+					entry.id.startsWith('challenge:') && option.label === '查看撤退后的对话'));
 			}
 		}
 	});

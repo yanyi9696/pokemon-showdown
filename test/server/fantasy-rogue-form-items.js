@@ -13,6 +13,10 @@ const { formItemOptions, useFormItem } = require('../../dist/server/fantasy-rogu
 const { suitableExclusiveItems } = require('../../dist/server/fantasy-rogue/exclusive-items');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { migrateZygardeStarter } = require('../../dist/server/fantasy-rogue/starter-traits');
+const { editFusion } = require('../../dist/server/fantasy-rogue/fusion');
+const { compoundFinals, compoundPoints } = require('../../dist/sim/rogue-compound');
+const { evolveMember } = require('../../dist/server/fantasy-rogue/progression');
+const { clearMemberDetails } = require('../../dist/server/fantasy-rogue/clear-details');
 const { stats, set } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue form items and new species blessings', function () {
@@ -26,11 +30,11 @@ describe('Fantasy Rogue form items and new species blessings', function () {
 		for (const mon of r.team) initializeExperience(mon);
 		syncBlessingParty(r); return r;
 	}
-	function claim(r, id, random = () => 0) {
+	function claim(r, id, random = () => 0, sourceContent = content) {
 		const account = { run: r, captures: {}, unlocked: [] }; r.phase = 'blessing';
 		r.blessings.round = { floor: r.floor, tier: blessing(id).tier, remaining: 1,
 			options: [{ id, refreshes: 1, chosen: false }], familiesSeen: [id] };
-		handleBlessingCommand(account, r, content, { action: 'blessing', slot: 0 }, random);
+		handleBlessingCommand(account, r, sourceContent, { action: 'blessing', slot: 0 }, random);
 		return account;
 	}
 	function use(r, species, donor) {
@@ -175,12 +179,67 @@ describe('Fantasy Rogue form items and new species blessings', function () {
 		const capped = run(['Pikachu']); capped.team[0].stars = 5;
 		assert(!blessingCandidates(capped, content).some(b => b.id === 'reorganizer'));
 	});
-	it('does not reroll partners whose sealed data or permanent evolution branch must be preserved', () => {
-		for (const field of ['egg', 'fusion', 'formFusion', 'compound']) {
+	it('requires an eligible non-fused, non-egg partner below the star cap', () => {
+		for (const field of ['egg', 'fusion', 'formFusion']) {
 			const r = run(['Pikachu']); r.team[0][field] = {};
+			assert(!blessingCandidates(r, content).some(b => b.id === 'reorganizer'), field);
+			r.team.push(run(['Gengar']).team[0]);
+			assert(blessingCandidates(r, content).some(b => b.id === 'reorganizer'), field);
+			r.team[1].stars = 5;
 			assert(!blessingCandidates(r, content).some(b => b.id === 'reorganizer'), field);
 		}
 	});
+	it('preserves eggs, form-fusion donors and Potara partners while rerolling the remaining party', () => {
+		const r = run(['Kyurem', 'Reshiram', 'Pikachu', 'Gengar', 'Squirtle', 'Pichu']);
+		r.bag.dnasplicers = 1; use(r, 'Kyurem-White');
+		r.blessings.owned.push({ ...blessing('potara'), floor: 1 });
+		const first = r.team[1], second = r.team[2];
+		editFusion(r, { action: 'fusion', member: first.id, value: second.id, appearance: first.id,
+			fusionAbility: first.set.ability, fusionStats: ['hp', 'def', 'spd'] });
+		r.team[3].egg = { found: 49, hatch: 59 };
+		syncBlessingParty(r);
+		const before = structuredClone(r.team);
+		assert(blessingCandidates(r, content).some(b => b.id === 'reorganizer'));
+		claim(r, 'reorganizer');
+		for (const index of [0, 1, 3]) assert.deepEqual(r.team[index], before[index]);
+		assert.equal(r.team[2].stars, 2);
+		assert.equal(r.caught.length, 1);
+		assert.equal(r.blessings.pending.length, 0);
+	});
+	for (const species of ['Gyarados', 'Wartortle']) {
+		it(`retains Compound V allocation after reorganizing into ${species}, including evolution and reconnection`, () => {
+			const r = run(['Sharpedo']), mon = r.team[0];
+			const account = claim(r, 'compoundgold');
+			const resolve = (value, evs) => handleBlessingCommand(account, r, content,
+				{ action: 'blessingreward', member: r.blessings.pending[0].id, value, evs }, () => 0);
+			resolve(mon.id);
+			const bonus = { ...stats(0), hp: 20, atk: compoundPoints('Sharpedo', 'gold') - 20 };
+			resolve('allocate', bonus);
+			const id = Dex.toID(species);
+			claim(r, 'reorganizer', () => 0, { ...content, unlocks: { [id]: content.unlocks[id] } });
+			assert.equal(mon.set.species, species);
+			assert.deepEqual(mon.compound.bonus, bonus);
+			assert(mon.compound.reorganized);
+			assert.equal(mon.set.ability, 'Power of Alchemy');
+			assert.equal(r.blessings.pending.length, 0);
+			assert.deepEqual(compoundFinals(mon), []);
+			if (species === 'Wartortle') {
+				r.phase = 'ready'; evolveMember(r, mon, 'Blastoise'); syncBlessingParty(r);
+			}
+			assert(Dex.mod('gen9fantasy').species.get(mon.set.species).bst > 500);
+			const restored = JSON.parse(JSON.stringify(r)); syncBlessingParty(restored);
+			assert.deepEqual(restored.team[0].stats, mon.stats);
+			const active = begin(restored);
+			assert.equal(active.storedStats.atk, mon.stats.atk);
+			assert.equal(active.maxhp, mon.maxhp);
+			const ordinary = createRoguePokemon(mon.set, r.boosts, mon.id, mon.stars);
+			assert(mon.stats.atk > ordinary.stats.atk);
+			assert(mon.maxhp > ordinary.maxhp);
+			const detail = clearMemberDetails(mon, r).sources.find(source => source.name === '五号化合物');
+			assert(detail.text.includes('重组后保留原分配'));
+			assert(!detail.text.includes('超过 500 时停用'));
+		});
+	}
 	it('uses Original Dragon to change only the second type and ignore target abilities', () => {
 		const r = run(['Kyurem-Original']); r.team[0].set.moves = ['flamethrower', 'thunderbolt', 'icebeam'];
 		const mon = begin(r, [set('Snorlax', 'Flash Fire', 100, ['Splash'])]);

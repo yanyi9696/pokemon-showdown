@@ -7,7 +7,7 @@ import { beginSocialEvent, socialCandidates, socialEventView, chooseSocialEvent,
 import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView, chooseExpedition, settleExpedition, type ExpeditionEvent } from './expedition-events';
 import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
 import { isLuckEvent } from './luck-event-data';
-import { luckEventEligible, luckEventView, chooseLuckEvent, type LuckEventResult } from './luck-events';
+import { loadedDiceEventWeight, luckEventEligible, luckEventView, chooseLuckEvent, type LuckEventResult } from './luck-events';
 import { eligibleRematches, prepareRematch, rematchView, chooseRematch } from './companion-rematches';
 import { policeView, choosePoliceRegion, settlePoliceBattle, type PoliceEvent } from './police-events';
 import { honeymoonEligible, prepareHoneymoon, honeymoonView, chooseHoneymoon, settleHoneymoon } from './honeymoon';
@@ -27,6 +27,7 @@ import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { legendaryEventScale } from './encounter-quality';
 import { lowerToEligibleStage } from './evolution';
 import { eventRewardBudget, eventCost, LATE_INCOME_BONUS_PERCENT } from './early-balance';
+import { eventPacingWeight, PREPARATION_EVENTS } from './event-pacing';
 import { eventSpeciesPool, themedEventTeam } from './event-teams';
 import {
 	drawBlessingGift, gift, giveEquipment, normalizeBlessings, recordNegativeBlessingEvent, toolbox,
@@ -107,8 +108,8 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && luckEventEligible(run.floor, id) && (id !== 'coverageworkshop' || run.floor >= 60) && activityEligible(run, id) && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
-		!['rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && eventPacingWeight(run.floor, id) > 0 && luckEventEligible(run.floor, id) && (id !== 'coverageworkshop' || run.floor >= 60) && activityEligible(run, id) && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
+		!['masterballgift', 'rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
 		(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
 		(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
 		(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
@@ -122,6 +123,13 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 		return !old || run.floor - old.floor >= (limited ? 25 : 8) && history.length - index - 1 >= (limited ? 4 : 2);
 	});
 	const pool = unseen.length ? unseen : cooled.length ? cooled : candidates;
+	for (const id of cooled) if (loadedDiceEventWeight(run, id) > 1 && !pool.includes(id)) pool.push(id);
+	// An unseen preparation event must not become compulsory after all simple events have been seen.
+	if (run.floor < 60 && pool.every(id => PREPARATION_EVENTS.has(id))) {
+		for (const id of (cooled.length ? cooled : candidates)) {
+			if (!PREPARATION_EVENTS.has(id) && !pool.includes(id)) pool.push(id);
+		}
+	}
 	const needsClue = candidates.includes('exclusiveclue');
 	if (needsClue && !pool.includes('exclusiveclue')) pool.push('exclusiveclue');
 	// The fourth eligible event area offers a clue even while other unseen events remain.
@@ -130,7 +138,7 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 		return 'exclusiveclue';
 	}
 	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
-	const weights = pool.map(id => Math.max(1, Math.round((id === 'exclusiveclue' ? 6 : 1) * legendaryEventScale(run, id) * activityWeight(id) * (['forest', 'identityquiz'].includes(id) ? 1.3 : 1) * (id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
+	const weights = pool.map(id => Math.max(1, Math.round(eventPacingWeight(run.floor, id) * loadedDiceEventWeight(run, id) * (id === 'exclusiveclue' ? 6 : 1) * legendaryEventScale(run, id) * activityWeight(id) * (['forest', 'identityquiz'].includes(id) ? 1.3 : 1) * (id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
 		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	const chosen = pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];

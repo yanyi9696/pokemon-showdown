@@ -243,7 +243,8 @@ export class AIChallengeManager {
 				players: [{ user, team, hidden: true, inviteOnly: true }], fantasyRogue: rogue,
 				fantasyAI: {
 					trainer, difficulty: 'normal', instanceId, scheduler: this.scheduler,
-					rogue: { difficulty: rogue.state.difficulty, orderedBoss: !!rogue.state.boss, immediate: rogue.boss === false, wild: rogue.wild, partySize: rogue.state.team.length },
+					rogue: { difficulty: rogue.state.difficulty, orderedBoss: !!rogue.state.boss,
+						immediate: rogue.boss === false && !rogue.optionalChallenge, wild: rogue.wild, partySize: rogue.state.team.length },
 					decisionMs: this.settings.decisionMs, disconnectMs: this.settings.disconnectMs, maxRollouts: this.maxRollouts,
 					criticalDecisionMs: this.settings.criticalDecisionMs, criticalDecisionLimit: this.settings.criticalDecisionLimit,
 					criticalDecisionCooldownTurns: this.settings.criticalDecisionCooldownTurns,

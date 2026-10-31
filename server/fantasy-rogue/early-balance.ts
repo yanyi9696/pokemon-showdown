@@ -38,9 +38,11 @@ export function restCandyOffer(floor: number) {
 }
 
 /** Pay a smooth EXP budget using only candy grades available on this floor. */
-export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'reward', rewardScale = 1) {
+export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'reward' | 'event', rewardScale = 1) {
 	const f = Math.max(1, Math.min(200, floor));
-	const multiplier = (kind === 'trainer' ? 1.6 : kind === 'reward' ? 0.2 : 1) * (0.8 + 0.2 * Math.min(1, (f - 1) / 59));
+	// Part of the old encounter windfall now funds the rarer, harder challenge route.
+	const multiplier = (kind === 'event' ? 0.35 : 0.95 * (kind === 'trainer' ? 0.9 : kind === 'reward' ? 0.2 : 1)) *
+		(0.8 + 0.2 * Math.min(1, (f - 1) / 59));
 	let remaining = Math.max(100, Math.round((200 + 3 * f * f) * multiplier * 0.85 * candyRewardScale(f) * candySupplyMultiplier(f) * lateRewardScale(f) * rewardScale / 100) * 100);
 	const result: Record<string, number> = {};
 	for (const [id, xp] of [['expcandyxl', 30000], ['expcandyl', 10000], ['expcandym', 3000], ['expcandys', 800], ['expcandyxs', 100]] as const) {
@@ -53,10 +55,10 @@ export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'rew
 // Money grows more slowly than EXP: clean victories should not finance unlimited training.
 export const earlyCoinMultiplier = (floor: number) =>
 	(1 + Math.max(0, Math.min(30, 60 - floor)) / 120) * lateCoinMultiplier(floor) * journeyIncomeMultiplier(floor);
-export const eliteTreasureBudget = (floor: number) => Math.floor((200 + 20 * floor) * 0.9 * earlyCoinMultiplier(floor) / 150) * 150;
-export const encounterCoins = (floor: number) => Math.round((700 + 45 * floor) * 0.95 * earlyCoinMultiplier(floor) / 50) * 50;
+export const eliteTreasureBudget = (floor: number) => Math.floor((200 + 20 * floor) * 0.9 * 0.95 * earlyCoinMultiplier(floor) / 150) * 150;
+export const encounterCoins = (floor: number) => Math.round((700 + 45 * floor) * 0.95 * 0.95 * 0.65 * earlyCoinMultiplier(floor) / 50) * 50;
 export const eventBaseBudget = (floor: number) => (350 + 20 * floor + 0.15 * floor * floor) * 0.9;
-export const eventRewardBudget = (floor: number) => eventBaseBudget(floor) * earlyCoinMultiplier(floor);
+export const eventRewardBudget = (floor: number) => eventBaseBudget(floor) * earlyCoinMultiplier(floor) * 1.3;
 export const eventCost = (floor: number, multiplier = 1) => Math.round(eventBaseBudget(floor) * multiplier / 50) * 50;
 
 export const MENTOR_CARDS = {
@@ -88,10 +90,16 @@ export function grantEventTraining(run: RogueRun) {
 	const event = run.node?.event;
 	if (!event?.settled || event.trainingAidGranted || event.trainingAidBlocked) return;
 	event.trainingAidGranted = true;
-	const coins = Math.round((75 + 4 * run.floor + 0.02 * run.floor * run.floor) * (event.trainingAidBattleWin ? 1.5 : 1) * 0.9 * earlyCoinMultiplier(run.floor) * difficultyRewardScale(run.difficulty, run.floor) / 50) * 50;
+	const scale = difficultyRewardScale(run.difficulty, run.floor);
+	const coins = Math.round((75 + 4 * run.floor + 0.02 * run.floor * run.floor) * (event.trainingAidBattleWin ? 1.5 : 1) * 0.9 * earlyCoinMultiplier(run.floor) * scale * 1.3 / 50) * 50;
+	const candies = routeCandyReward(run.floor, 'event', scale);
 	run.money += coins;
 	if (run.lastReward?.floor !== run.floor) {
 		run.lastReward = { floor: run.floor, name: run.node!.name, money: 0, items: {}, points: 0 };
 	}
 	run.lastReward.money += coins;
+	for (const [id, count] of Object.entries(candies)) {
+		run.bag[id] = (run.bag[id] || 0) + count;
+		run.lastReward.items[id] = (run.lastReward.items[id] || 0) + count;
+	}
 }

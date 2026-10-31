@@ -62,7 +62,7 @@ describe('Fantasy Rogue October 20 regression', () => {
 		assert.equal(r.blessings.pending[0].pokemon.set.species, 'Dracozolt');
 		assert.equal(r.blessings.pending[0].pokemon.set.level, 50);
 	});
-	it('uses the fantasy silhouette and forces the dishonest type quiz into a real battle', () => {
+	it('uses the fantasy silhouette and offers a lighter optional battle after the dishonest quiz', () => {
 		const r = run(100), account = {captures: {}, unlocked: []}, dex = Dex.mod('gen9fantasy');
 		r.node.event = {id: 'identityquiz', stage: 'choice', expedition: {}};
 		chooseExpedition(account, r, content, () => 0, 'enter');
@@ -74,8 +74,9 @@ describe('Fantasy Rogue October 20 regression', () => {
 		for (const type of target.types) chooseExpedition(account, r, content, () => 0, 'type:' + type);
 		chooseExpedition(account, r, content, () => 0, 'confirmtypes');
 		assert.equal(state.step, 'fight');
+		assert(expeditionView(r).options.some(option => option.id === 'leave'));
 		chooseExpedition(account, r, content, () => 0, 'fight');
-		assert.equal(r.phase, 'ready'); assert.equal(r.node.encounters[0].team.length, 3);
+		assert.equal(r.phase, 'ready'); assert.equal(r.node.encounters[0].team.length, 2);
 	});
 	it('does not multiply Endeavor or allow a delayed Endeavor to KO after its user faints', () => {
 		for (const delayed of [false, true]) {
@@ -163,7 +164,7 @@ describe('Fantasy Rogue October 20 regression', () => {
 		r.rival.id = 'marnie';
 		assert(rivalBlessingAllowed(r, 'companionband')); // Roxie remains selectable.
 		r.rival.id = 'lana'; assert(!rivalBlessingAllowed(r, 'companionlana'));
-		settleRival(r, () => 0, false); assert.equal(r.rival.completed, 1); assert.equal(r.rival.affection, 0);
+		settleRival(r, () => 0, false); assert.equal(r.rival.completed, 1); assert.equal(r.rival.affection, 2); // Meeting only; losing grants no duel affection.
 		r.rival.completed = 5; r.floor = 94; assert.equal(rivalRoutes(r, nodes, () => 0)[0].id, 'wild');
 		r.floor = 100; assert.equal(rivalRoutes(r, nodes, () => 0)[0].id, 'rival');
 			r.floor = 150; r.rival.completed = 7; beginRival(r, () => 0);

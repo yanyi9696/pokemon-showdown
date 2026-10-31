@@ -3,7 +3,7 @@ import { blessingSpeciesID } from './rogue-species-identity';
 import { petSpecies, defaultCatAbilities } from './rogue-pets';
 import { Dex, toID } from './dex';
 import type { RoguePokemon } from './fantasy-rogue';
-import { emblemType, ownsBlessing, type BlessingEffects } from './rogue-blessing-data';
+import { applyEmblemType, emblemType, ownsBlessing, type BlessingEffects } from './rogue-blessing-data';
 
 export const DRAGON_KING_ABILITIES = ['longzhihuxi', 'drizzle'] as const;
 export type DragonKingAbility = typeof DRAGON_KING_ABILITIES[number];
@@ -40,10 +40,17 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 		if (ownsBlessing(effects, 'restinball')) add('regenerator', 'naturalcure');
 		if (ownsBlessing(effects, 'duck') && strongestBlessingMember(team, 'psyduck|golduck')?.id === mon.id) add('neuroforce');
 		if (strongestBlessingMember(team, 'meloetta')?.id === mon.id) {
-			if (ownsBlessing(effects, 'singer')) add('tianlaizhiyin', 'jizhineng');
+			if (ownsBlessing(effects, 'singer')) add('tianlaizhiyin');
 			if (ownsBlessing(effects, 'dancer')) add('dancer');
 		}
 		if (includeKing && dragonKingActive(effects) && effects?.dragonKing?.member === mon.id && effects.dragonKing.ability) add(effects.dragonKing.ability);
+		const branch = monkeyKingBranch(mon, team, effects);
+		if (branch) {
+			add(...(branch === 'Rock' ? ['mishi', 'rockhead'] : ['serenegrace', 'bigpecks']));
+			const types = permanentMemberTypes(mon);
+			if (types.includes('Fire')) add('contrary');
+			if (types.includes('Fighting')) add('fierygoldeneyes');
+		}
 	}
 	if (ownsBlessing(effects, 'fierce') && team.includes(mon)) {
 		const abilities: string[] = [toID(mon.set.ability), ...result];
@@ -59,15 +66,25 @@ export function canGrantExtraAbility(mon: RoguePokemon, ability: string, team: R
 export function dragonKingAbilityOptions(mon: RoguePokemon | undefined, team: RoguePokemon[], effects?: BlessingEffects) {
 	return DRAGON_KING_ABILITIES.filter(ability => !mon || ability === effects?.dragonKing?.ability || canGrantExtraAbility(mon, ability, team, effects, false));
 }
-export function permanentMemberTypes(mon: RoguePokemon) {
+export function emblemBaseTypes(mon: RoguePokemon) {
 	if (mon.egg) return [];
 	const types = [...(mon.fusion?.types || Dex.mod('gen9fantasy').species.get(mon.set.species).types)];
 	if (mon.statModifiers?.firstType) types[0] = mon.statModifiers.firstType;
 	if (mon.statModifiers?.extraType) types[1] = mon.statModifiers.extraType;
+	return types;
+}
+export function permanentMemberTypes(mon: RoguePokemon) {
+	if (mon.egg) return [];
+	let types = emblemBaseTypes(mon);
 	const emblem = emblemType(mon.emblem || toID(mon.set.item));
-	if (emblem) types[types.length > 1 ? 1 : types[0] === emblem ? 0 : 1] = emblem;
+	if (emblem) types = applyEmblemType(types, emblem, mon.emblemSlot);
 	if (mon.tonics?.wine && mon.tonics.cephalosporin) types.push('Ghost');
 	return [...new Set(types)];
+}
+export function monkeyKingBranch(mon: RoguePokemon, team: RoguePokemon[], effects?: BlessingEffects) {
+	if (!ownsBlessing(effects, 'monkeyking') || strongestBlessingMember(team, 'infernape')?.id !== mon.id) return;
+	const type = emblemType(mon.emblem || '');
+	return type === 'Rock' || type === 'Flying' ? type : undefined;
 }
 export function memberStatTotal(mon: RoguePokemon) {
 	return mon.maxhp + (['atk', 'def', 'spa', 'spd', 'spe'] as const)
@@ -83,10 +100,10 @@ export function strongestSniperMember(team: RoguePokemon[], effects?: BlessingEf
 		assignedExtraAbilities(mon, team, effects).includes(toID('sniper'))))
 		.sort((a, b) => memberStatTotal(b) - memberStatTotal(a) || (a.joinOrder || 0) - (b.joinOrder || 0))[0];
 }
-export const TONIC_SECRET = '同时使用【酒】与【头孢】后，追加幽灵属性；原本为毒系的伙伴，毒属性招式威力永久提升 50%。';
-export const TONIC_HINT = '【酒】与【头孢】同用会有特殊效果，尤其是毒系伙伴！';
+export const TONIC_SECRET = '同时使用【酒】与【头孢】后，本局追加幽灵属性；原本为毒系的伙伴，本局毒属性招式威力提升 50%。';
+export const TONIC_HINT = '同时使用【酒】与【头孢】可产生特殊效果，毒系伙伴还会获得额外收益。';
 export function tonicDescription(id: string, discovered = false) {
 	const text = id === 'wine' ? '使用者每次登场陷入混乱；每场使出的第一个招式威力翻倍。' :
-		'永久免疫中毒、剧毒、烧伤、麻痹、睡眠、冰冻与冻伤，不免疫混乱。';
+		'使用者本局免疫中毒、剧毒、烧伤、麻痹、睡眠、冰冻与冻伤，不免疫混乱。';
 	return text + (discovered ? TONIC_SECRET : TONIC_HINT);
 }

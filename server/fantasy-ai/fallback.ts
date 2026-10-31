@@ -5,7 +5,7 @@ import { HypothesisBuilder, type Combatant } from './hypotheses';
 import type { Observation } from './information';
 import { effectiveAbility, effectiveItem } from './mechanics';
 import { ownSeen, readBattleMemory } from './memory';
-import { activeTypes, observedImmunity } from './strategy';
+import { activeTypes, observedImmunity, switchCycleCost } from './strategy';
 import { fieldID, leadPlanScores, teamFieldBenefit } from './team-plan';
 
 /**
@@ -18,6 +18,7 @@ export function emergencyChoice(
 	tacticalSwitches = false
 ): string {
 	const request = observation.request;
+	const activeRequests = 'active' in request ? request.active : [];
 	if (request.teamPreview && smart) {
 		const builder = new HypothesisBuilder(format);
 		const team = request.side.pokemon.map(mon => builder.own(mon));
@@ -29,7 +30,7 @@ export function emergencyChoice(
 		};
 		return choices.sort((a, b) => score(b) - score(a))[0] || 'default';
 	}
-	if (request.wait || request.teamPreview || request.forceSwitch) {
+	if (request.wait || request.teamPreview || request.forceSwitch && !smart) {
 		return enumerateRequestChoices(request).find(choice => !excluded.includes(choice)) || 'default';
 	}
 	const builder = new HypothesisBuilder(format);
@@ -41,7 +42,8 @@ export function emergencyChoice(
 	const active = memory.sides[side].active;
 	const foe = memory.sides[side === 'p1' ? 'p2' : 'p1'].active;
 	if (!foe) return choices[0] || 'default';
-	const current = request.side.pokemon.find(mon => mon.active)!;
+	const current = request.side.pokemon.find(mon => mon.active);
+	if (!current) return choices[0] || 'default';
 	const own = builder.own(current, active);
 	const types = foe.teraType && foe.teraType !== 'Stellar' ? [foe.teraType] :
 		foe.types || dex.species.get(foe.species).types;
@@ -77,15 +79,51 @@ export function emergencyChoice(
 		const [kind, slot, event] = choice.split(' ');
 		if (kind !== 'move') return false;
 		// A legal singles choice can still have no recipient (e.g. Helping Hand).
-		const target = request.active[0].moves[Number(slot) - 1]?.target;
-		if (target === 'adjacentAlly' && request.active.length === 1) return true;
+		const target = activeRequests[0].moves[Number(slot) - 1]?.target;
+		if (target === 'adjacentAlly' && activeRequests.length === 1) return true;
 		if (event && event !== 'terastallize') return false;
-		const id = request.active[0].moves[Number(slot) - 1]?.id;
+		const id = activeRequests[0].moves[Number(slot) - 1]?.id;
 		if (!id) return false;
 		if (!event && observedImmunity(memory, active, foe, id)) return true;
 		return typeImmune(own, id) || enhancedMoves && abilityImmune(id);
 	};
 	const available = choices.filter(choice => !blocked(choice));
+	// Cheap public-information pressure estimates: no native probes or additional search nodes.
+	const stageScale = (stage = 0) => stage >= 0 ? (2 + stage) / 2 : 2 / (2 - stage);
+	const foeSpecies = dex.species.get(foe.species);
+	const foeStat = (stat: StatIDExceptHP) => ((2 * foeSpecies.baseStats[stat] + 31) * foe.level / 100 + 5) * stageScale(foe.boosts[stat]);
+	const revealedAttacks = foe.moves.map(id => dex.moves.get(id)).filter(move => move.category !== 'Status');
+	const incomingCache = new Map<Combatant, number>();
+	const incomingPressure = (profile: Combatant) => {
+		if (incomingCache.has(profile)) return incomingCache.get(profile)!;
+		const pressure = Math.max(0, ...revealedAttacks.map(move => {
+			const targetTypes = [...activeTypes(profile, dex)];
+			if (!dex.getImmunity(move.type, targetTypes)) return 0;
+			const physical = move.category === 'Physical', defense = physical ? 'def' : 'spd';
+			const power = (move.basePower || 60) * (move.multihit ? typeof move.multihit === 'number' ? move.multihit : 3 : 1);
+			const damage = move.damage ? move.damage === 'level' ? foe.level : Number(move.damage) :
+				((2 * foe.level / 5 + 2) * power * foeStat(physical ? 'atk' : 'spa') /
+					(profile.stats[defense] * stageScale(profile.boosts[defense])) / 50 + 2) *
+					(types.includes(move.type) ? 1.5 : 1) * 2 ** dex.getEffectiveness(move.type, targetTypes);
+			return damage / Math.max(1, profile.stats.hp);
+		}));
+		incomingCache.set(profile, pressure);
+		return pressure;
+	};
+	const offensiveCache = new Map<Combatant, number>();
+	const offensivePressure = (profile: Combatant) => {
+		if (offensiveCache.has(profile)) return offensiveCache.get(profile)!;
+		const pressure = Math.max(0, ...profile.moves.map(id => {
+			const move = dex.moves.get(id);
+			if (move.category === 'Status' || typeImmune(profile, id)) return 0;
+			const stat = move.category === 'Physical' ? 'atk' : 'spa';
+			return (move.basePower || 50) * (move.accuracy === true ? 1 : move.accuracy / 100) *
+				(activeTypes(profile, dex).includes(move.type) ? 1.5 : 1) * 2 ** dex.getEffectiveness(move.type, types) *
+				profile.stats[stat] / Math.max(1, foeStat(stat === 'atk' ? 'def' : 'spd'));
+		}));
+		offensiveCache.set(profile, pressure);
+		return pressure;
+	};
 	const moves = available.filter(choice => choice.startsWith('move '));
 	if (moves.length && !smart) return moves[0];
 	if (moves.length) {
@@ -99,7 +137,7 @@ export function emergencyChoice(
 		const foeHP = estimateStat('hp') * foe.health.upper;
 		const score = (choice: string) => {
 			const [kind, slot, event] = choice.split(' ');
-			const move = dex.moves.get(request.active[0].moves[Number(slot) - 1]?.id);
+			const move = dex.moves.get(activeRequests[0].moves[Number(slot) - 1]?.id);
 			if (kind !== 'move' || !move.exists) return -100;
 			if (enhancedMoves && ['snore', 'sleeptalk'].includes(move.id) && own.status !== 'slp') return -90;
 			if (enhancedMoves && own.status === 'slp' && !move.sleepUsable) return -90;
@@ -107,22 +145,22 @@ export function emergencyChoice(
 			if (move.category !== 'Status') {
 				const stat = attackStat(move.category);
 				let power = move.basePower || (move.damage ? 70 : move.ohko ? 100 : 50);
-				// Preserve the existing trainer policy; this revision targets wild opponents.
+				// Preserve the lightweight policy for callers that do not request tactical scoring.
 				if (!enhancedMoves) {
 					if (move.multihit) power *= typeof move.multihit === 'number' ? move.multihit : (move.multihit[0] + move.multihit[1]) / 2;
-					if (move.flags.charge && !own.volatiles.includes(move.id)) power *= .65;
-					if (move.selfdestruct) power *= .6;
+					if (move.flags.charge && !own.volatiles.includes(move.id)) power *= 0.65;
+					if (move.selfdestruct) power *= 0.6;
 					return power * (activeTypes(own, dex).includes(move.type) ? 1.5 : 1) * 2 ** dex.getEffectiveness(move.type, types) *
 						(move.accuracy === true ? 1 : move.accuracy / 100) * own.stats[stat] * boost(own.boosts[stat]) / strongest +
-						(move.priority > 0 && foe.health.upper < .25 ? 25 : 0) + (event ? 1 : 0);
+						(move.priority > 0 && foe.health.upper < 0.25 ? 25 : 0) + (event ? 1 : 0);
 				}
 				if (['storedpower', 'powertrip'].includes(move.id)) power = 20 + 20 * Object.values(own.boosts).reduce((n, stage) => n + Math.max(0, stage), 0);
 				if (move.id === 'acrobatics' && !own.item) power *= 2;
 				if (move.id === 'hex' && foe.status || move.id === 'venoshock' && ['psn', 'tox'].includes(foe.status) ||
-					move.id === 'brine' && foe.health.upper <= .5 || move.id === 'facade' && own.status) power *= 2;
+					move.id === 'brine' && foe.health.upper <= 0.5 || move.id === 'facade' && own.status) power *= 2;
 				if (['eruption', 'waterspout', 'dragonenergy'].includes(move.id)) power = Math.max(1, 150 * own.health.upper);
 				if (['flail', 'reversal'].includes(move.id)) {
-					const hp = own.health.upper; power = hp <= .04 ? 200 : hp <= .1 ? 150 : hp <= .2 ? 100 : hp <= .35 ? 80 : hp <= .7 ? 40 : 20;
+					const hp = own.health.upper; power = hp <= 0.04 ? 200 : hp <= 0.1 ? 150 : hp <= 0.2 ? 100 : hp <= 0.35 ? 80 : hp <= 0.7 ? 40 : 20;
 				}
 				if (move.id === 'gyroball') power = Math.min(150, 25 * estimateStat('spe') * boost(foe.boosts.spe) / (own.stats.spe * boost(own.boosts.spe)) + 1);
 				if (move.ohko && (own.level < foe.level || foe.ability === 'sturdy')) return -90;
@@ -139,20 +177,26 @@ export function emergencyChoice(
 				const defensiveStat = move.overrideDefensiveStat || (stat === 'atk' ? 'def' : 'spd');
 				const defense = estimateStat(defensiveStat === 'def' ? 'def' : 'spd') * boost(foe.boosts[defensiveStat]);
 				let attack = own.stats[stat] * boost(own.boosts[stat]);
-				if (stat === 'atk' && own.status === 'brn' && effectiveAbility(own) !== 'guts' && move.id !== 'facade') attack *= .5;
-				let damage = ((2 * own.level / 5 + 2) * power * attack / defense / 50 + 2) * stab * effectiveness * .925;
+				if (stat === 'atk' && own.status === 'brn' && effectiveAbility(own) !== 'guts' && move.id !== 'facade') attack *= 0.5;
+				let damage = ((2 * own.level / 5 + 2) * power * attack / defense / 50 + 2) * stab * effectiveness * 0.925;
 				if (move.damage) damage = move.damage === 'level' ? own.level : Number(move.damage);
 				if (['superfang', 'naturesmadness', 'ruination'].includes(move.id)) damage = foeHP / 2;
 				if (move.id === 'endeavor') damage = Math.max(0, foeHP - own.stats.hp * own.health.upper);
 				// Prefer a reliable finish over setup or a needlessly risky stronger move.
-				if (damage * .85 >= foeHP && !move.flags.charge && !move.selfdestruct) return 500 + accuracy * 100 + Math.max(0, move.priority) * 5;
+				if (damage * 0.85 >= foeHP && !move.flags.charge && !move.selfdestruct) return 500 + accuracy * 100 + Math.max(0, move.priority) * 5;
 				return damage / Math.max(1, estimateStat('hp')) * 200 * accuracy +
 					(move.priority > 0 && foe.health.upper < 0.25 ? 25 : 0) + (event ? 1 : 0);
 			}
 			if (['splash', 'celebrate', 'holdhands', 'happyhour', 'teleport'].includes(move.id)) return -100;
 			if (move.heal || ['rest', 'strengthsap', 'wish'].includes(move.id)) {
 				if (enhancedMoves && (own.volatiles.includes('healblock') || move.id === 'wish' && own.volatiles.includes('wish'))) return -80;
+				if (enhancedMoves && own.stats.spe * boost(own.boosts.spe) < foeStat('spe') && incomingPressure(own) >= own.health.upper) return -80;
 				return own.health.upper > 0.75 ? -80 : (1 - own.health.upper) * 190;
+			}
+			if (enhancedMoves && ['haze', 'whirlwind', 'roar'].includes(move.id)) {
+				const boosts = Object.values(foe.boosts).reduce((sum, n) => sum + Math.max(0, n), 0);
+				if (move.forceSwitch && foeSide.preview.length <= 1) return -80;
+				return boosts >= 2 ? 120 + boosts * 12 : -40;
 			}
 			if (move.status) {
 				if (foe.status || !dex.getImmunity(move.status, types) ||
@@ -172,7 +216,7 @@ export function emergencyChoice(
 						dex.moves.get(id).category === (stat === 'atk' ? 'Physical' : 'Special'))) continue;
 					value += Math.min(2, Math.abs(amount)) * 30;
 				}
-				return own.health.upper < 0.4 || foe.health.upper < 0.3 ? -20 : value;
+				return own.health.upper < 0.4 || foe.health.upper < 0.3 || enhancedMoves && incomingPressure(own) * 2 >= own.health.upper ? -20 : value;
 			}
 			if (move.sideCondition) {
 				const conditions = (move.target === 'allySide' ? memory.sides[side] : foeSide).conditions;
@@ -191,6 +235,7 @@ export function emergencyChoice(
 				if (move.volatileStatus === 'leechseed' && types.includes('Grass')) return -80;
 				if (move.volatileStatus === 'protect') return own.lastMove === move.id ? -50 : foe.status ? 30 : 5;
 				if (['encore', 'disable'].includes(move.volatileStatus) && !foe.lastMove) return -50;
+				if (enhancedMoves && move.volatileStatus === 'encore') return dex.moves.get(foe.lastMove).category === 'Status' ? 95 : 10;
 				return 45;
 			}
 			return 5;
@@ -212,7 +257,13 @@ export function emergencyChoice(
 			}).filter(candidate => candidate.profile.health.lower > 0.5 && candidate.danger <= 1 &&
 				candidate.profile.moves.some(id => dex.moves.get(id).category !== 'Status' && !typeImmune(candidate.profile, id)))
 				.sort((a, b) => a.danger - b.danger || b.profile.health.lower - a.profile.health.lower);
-			if (danger >= 4 && candidates.length && !Object.values(own.boosts).some(stage => stage >= 2)) return candidates[0].choice;
+			const ownHealth = request.side.pokemon.reduce((sum, mon) => sum + builder.own(mon).health.upper, 0);
+			const useful = candidates.filter(candidate =>
+				incomingPressure(candidate.profile) < candidate.profile.health.lower * 0.5 &&
+				offensivePressure(candidate.profile) >= Math.max(45, offensivePressure(own) * 0.8) &&
+				switchCycleCost(memory, side, request.side.pokemon[Number(candidate.choice.split(' ')[1]) - 1].ident, ownHealth) < 20);
+			if ((danger >= 4 || incomingPressure(own) >= own.health.upper * 0.8) && useful.length &&
+				!Object.values(own.boosts).some(stage => stage >= 2)) return useful[0].choice;
 		}
 		if (best.value >= 0 || !available.some(choice => choice.startsWith('switch '))) return best.choice;
 	}
@@ -222,7 +273,8 @@ export function emergencyChoice(
 		const useful = profile.moves.filter(id => dex.moves.get(id).category !== 'Status' && !typeImmune(profile, id)).length;
 		const weaknesses = Math.max(0, ...foe.moves.map(id =>
 			dex.getEffectiveness(dex.moves.get(id).type, [...activeTypes(profile, dex)])));
-		return { choice, value: profile.health.upper * 20 + useful * 8 - weaknesses * 10 };
+		return { choice, value: profile.health.upper * 20 + useful * 8 - weaknesses * 10 +
+			(enhancedMoves ? Math.min(80, offensivePressure(profile) * 0.3) - incomingPressure(profile) * 80 : 0) };
 	}).sort((a, b) => b.value - a.value || a.choice.localeCompare(b.choice));
 	return switches[0]?.choice || choices[0] || 'default';
 }

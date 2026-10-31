@@ -41,7 +41,7 @@ describe('Fantasy Rogue blessing interaction audit', function () {
 		}
 	}
 	const families = ['coin', 'dice', 'supercombo', 'lowhp', 'pivot', 'swapstats', 'kid', 'slacker', 'passdrops', 'bond',
-		'detect', 'weakness', 'singer', 'dancer', 'smallfinal', 'prayer', 'topclearmind', 'hazards', 'toxic', 'stackstatus',
+		'detect', 'weakness', 'weaknessarmor', 'singer', 'dancer', 'smallfinal', 'prayer', 'topclearmind', 'hazards', 'toxic', 'stackstatus',
 		'starters', 'bugchoir', 'survive', 'seeds', 'secondchoice', 'learnall', 'style', 'insight', 'inheritmoves', 'entrance',
 		'swords', 'execute', 'hpgrowth', 'sound', 'multihit', 'hoopa', 'psychic', 'ascent', 'duck', 'lifepower',
 		'renewable', 'mousefamily', 'eeveefamily', 'restinball', 'arsenal', 'speedpower'];

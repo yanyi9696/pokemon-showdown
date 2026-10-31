@@ -1,8 +1,6 @@
+import type { RoguePokemon } from './fantasy-rogue';
 import { blessingSpeciesID } from './rogue-species-identity';
 import { toID } from './dex';
-import type { RoguePokemon } from './fantasy-rogue';
-import type { BlessingEffects } from './rogue-blessing-data';
-import { permanentMemberTypes } from './rogue-blessing-permanent';
 
 export const LATE_BLOOMERS = [
 	{ stages: ['Dratini', 'Dragonair', 'Dragonite'], stat: 'spe' },
@@ -32,17 +30,12 @@ export function lateBloomerSynergy(team: RoguePokemon[]) {
 	for (const family of families) stats[family!.stat] = amount;
 	return { count: families.size, stats };
 }
-export function emissaryCount(mon: RoguePokemon, effects?: BlessingEffects) {
-	if (mon.egg) return 0;
-	const types = permanentMemberTypes(mon);
-	return (effects?.owned || []).filter(b => b.family === 'emissary' && types.includes(b.type!)).length;
-}
 /** Multipliers are kept separate from type-evolution and training so they compose correctly. */
-export function teamBlessingStats(mon: RoguePokemon, effects: BlessingEffects, synergy: Partial<StatsTable>) {
+export function teamBlessingStats(synergy: Partial<StatsTable>) {
 	const result: Partial<StatsTable> = {};
-	const emissaries = emissaryCount(mon, effects), multiplier = 1.1 ** emissaries;
+	// Emissaries affect move power only; legacy six-stat modifiers are rebuilt without them.
 	for (const key of ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const) {
-		const value = multiplier * (1 + (synergy[key] || 0)) - 1;
+		const value = synergy[key] || 0;
 		if (value) result[key] = value;
 	}
 	return Object.keys(result).length ? result : undefined;

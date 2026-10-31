@@ -7,6 +7,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { activeRogueSpirits } = require('../../dist/sim/fantasy-rogue-spirits');
 const { blessing, blessingLevelCost, ROGUE_BLESSINGS } = require('../../dist/sim/rogue-blessing-data');
+const { blessingLevelsAt, activateBlessingLevels } = require('../../dist/server/fantasy-rogue/blessing-levels');
 const { blessingCandidates, prepareBlessingEncounter, handleBlessingCommand,
 	completeBlessingFloor, blessingView } = require('../../dist/server/fantasy-rogue/blessings');
 const { recordClear, editClearCard } = require('../../dist/server/fantasy-rogue/legacy');
@@ -64,7 +65,8 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		assert.deepEqual(account(), claimed);
 		finishRewards();
 		assert.equal(account().run.floor, 1); assert.equal(account().run.phase, 'choose');
-		assert.equal(account().run.blessings.levels, 0); assert.equal(account().run.blessings.bossLevels, 5);
+		assert.equal(account().run.blessings.levels, 0); assert.equal(account().run.blessings.bossLevels, 0);
+		assert.equal(blessingLevelsAt(account().run, 11).boss, 5);
 		assert.equal(account().run.blessings.owned.length, 2, 'one Fate and one free gold blessing');
 		assert.equal(account().run.money, content.initialMoney + 1800);
 		assert(!account().run.blessings.beforeAdventure);
@@ -77,7 +79,8 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	it('offers all migrated opening-only blessings and excludes other restricted floors', () => {
 		cmd('start', { starters: ['bulbasaur'] });
 		const run = account().run, eligible = new Set(blessingCandidates(run, content).map(b => b.id));
-		const requiresParty = new Set(['detect', 'latebloom', 'singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound', 'killlagirl', 'ghidorah', 'galarlegend', 'originaldragon']);
+		const requiresParty = new Set(['monkeyking', 'unity', 'detect', 'latebloom', 'singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'railgun', 'rulebreaker', 'compound', 'killlagirl', 'ghidorah', 'galarlegend', 'originaldragon']);
+		assert(!eligible.has('unity'), 'one partner cannot form a unified team');
 		assert(!eligible.has('killlagirl'), 'requires both robes and floor 150');
 		assert(!eligible.has('ghidorah'), 'requires a Hydreigon in the party');
 		assert(!eligible.has('galarlegend'), 'requires Eternatus in the party');
@@ -106,6 +109,12 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 				assert(!blessingCandidates(account().run, content).some(b => b.id === def.id)); return;
 			}
 			store.change(user, a => prepareCompanionParty(a.run, def.family, 5));
+			if (def.family === 'monkeyking') store.change(user, a => {
+				a.run.team[0] = createRoguePokemon(set('Infernape', 'Blaze', 36), a.run.boosts);
+			});
+			if (def.family === 'unity') store.change(user, a => {
+				a.run.team.push(createRoguePokemon(set('Oddish', 'Chlorophyll', 5), a.run.boosts));
+			});
 			if (def.family === 'detect') store.change(user, a => {
 				a.run.team[0] = createRoguePokemon(set('Meditite', 'Pure Power', 5, ['Detect']), a.run.boosts);
 			});
@@ -127,7 +136,8 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 			assert.equal(run.phase, 'choose'); assert.equal(run.floor, 1);
 			assert(run.blessings.owned.some(entry => entry.id === def.id));
 			assert.equal(run.blessings.levels, 0);
-			assert.equal(run.blessings.bossLevels, blessingLevelCost(def.tier, 1, true));
+			assert.equal(run.blessings.bossLevels, 0);
+			assert.equal(blessingLevelsAt(run, 11).boss, blessingLevelCost(def.tier, 1, true));
 			assert(Number.isSafeInteger(run.money)); assert(!Object.hasOwn(run.bag, 'undefined'));
 		});
 	}
@@ -158,11 +168,12 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		assert.deepEqual([1, 50, 100, 150].map(f => blessingLevelCost('prismatic', f)), [0, 10, 20, 30]);
 		cmd('start', { starters: ['bulbasaur'] }); forceOption('lifepower'); cmd('blessing', { slot: 0 });
 		const a = account(), run = a.run;
-		for (const [floor, id] of [[50, 'ascent'], [100, 'weakness'], [150, 'smallfinal']]) {
+		for (const [floor, id] of [[50, 'ascent'], [100, 'weaknessarmor'], [150, 'smallfinal']]) {
 			run.floor = floor; run.phase = 'blessing';
 			run.blessings.round = { floor, tier: 'gold', remaining: 1, options: [{ id }], familiesSeen: [] };
 			handleBlessingCommand(a, run, content, { action: 'blessing', slot: 0 }, () => 0);
 		}
+		run.floor = 161; activateBlessingLevels(run);
 		assert.equal(run.blessings.levels, 30); assert.equal(run.blessings.bossLevels, 50);
 		for (const kind of ['wild', 'elite', 'event', 'encounter', 'boss']) {
 			run.floor = 100; // Gym floor: this assertion isolates the level surcharge from Fantasy-elite escorts.

@@ -3,7 +3,7 @@ import type { RogueRandom } from './biome-pools';
 import { eventOpening } from './event-text';
 
 export const MASTER_BALL_EVENT = { chance: 5, denominator: 10000 };
-export interface MasterBallQuest { floor: number; stage: 'offer' | 'reward' | 'claimed' | 'declined' }
+export interface MasterBallQuest { floor: number; stage: 'offer' | 'reward' | 'claimed' | 'declined'; consumesFloor?: boolean }
 export interface MasterBallCollection {
 	obtained: { run: string, floor: number, at: number }[]; used: number;
 }
@@ -21,6 +21,19 @@ export function selectMasterBallRoute(run: RogueRun, id: string) {
 	if (!q || q.floor !== run.floor || !run.choices?.some(n => n.id === id) ||
 		id !== (q.stage === 'offer' ? 'masterballgift' : q.stage === 'reward' ? 'masterballreward' : '')) return false;
 	run.node = route(q.stage === 'reward'); run.phase = 'event'; return true;
+}
+/** Older ordinary-event pools could draw this special route without initializing its quest. */
+export function repairMasterBallEvent(run: RogueRun) {
+	const event = run.node?.event;
+	if (run.phase !== 'event' || event?.id !== 'masterballgift' || event.settled) return;
+	if (!run.masterBallQuest) {
+		run.masterBallQuest = { floor: run.floor, stage: 'offer', consumesFloor: true };
+		run.node = route(false);
+	} else {
+		// A previous offer/claim still owns this run's only opportunity; never grant a second ball.
+		event.stage = 'result'; event.settled = true; event.trainingAidBlocked = true;
+		event.result = ['研究员收好空箱，向你点点头。「这次的托付已经交出去了。祝你和伙伴一路顺风。」'];
+	}
 }
 export function masterBallEventView(run: RogueRun) {
 	const q = run.masterBallQuest;
@@ -49,6 +62,13 @@ export function chooseMasterBall(account: RogueAccount, run: RogueRun, command: 
 		q.stage = 'claimed'; run.masterBallLedger = { remaining: 1, used: 0 }; run.bag.masterball = 1;
 		run.choices = (run.choices || []).filter(n => n.id !== 'masterballreward');
 		(run.notices ||= []).push('大师球 ×1 已放入本局背包。本局仅能获得一次，开启下一局时不会保留。');
+		if (q.consumesFloor) {
+			// The malformed ordinary encounter already consumed its route; finish that floor normally.
+			run.node = { ...route(false), id: 'legacy-masterball', event: { id: 'masterballgift',
+				key: run.id + ':masterball:claimed', stage: 'result', settled: true, trainingAidBlocked: true,
+				result: ['你收好大师球，向研究员道别。继续旅程吧。'] } };
+			run.phase = 'event'; return true;
+		}
 	}
 	delete run.node; run.phase = 'choose'; return true;
 }

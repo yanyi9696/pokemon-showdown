@@ -4,7 +4,8 @@ import { formItem } from './form-item-data';
 import { tonicItems } from './blessing-consumables';
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
-import { emblemType, BLESSING_TYPES } from '../../sim/rogue-blessing-data';
+import { emblemType, emblemDescription, BLESSING_TYPES } from '../../sim/rogue-blessing-data';
+import { emblemBaseTypes } from '../../sim/rogue-blessing-permanent';
 import { ensureMemberMemory, rebuildMember } from './progression';
 import type { RogueCommand, RogueContent, RogueItem, RogueRun } from './types';
 
@@ -27,7 +28,7 @@ export function inventoryItem(content: RogueContent, id: string): RogueItem | un
 		description: id === 'abilitycapsule' ? '切换另一项普通特性；使用前可查看目标特性。' : '切换隐藏特性与第一项普通特性；使用前可查看目标特性。' };
 	const type = emblemType(id);
 	if (type) return {id, name: `${BLESSING_TYPES[type]}属性转`, kind: 'emblem', price: 0,
-		shopFloor: false, icon: toID(type + 'gem')};
+		shopFloor: false, icon: toID(type + 'gem'), description: emblemDescription(type)};
 	const configured = content.items.find(item => item.id === id);
 	if (configured) return configured;
 	const special = tradeItem(id) || tonicItems().find(item => item.id === id);
@@ -71,13 +72,16 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 	switch (command.action) {
 	case 'equipemblem': {
 		const id = command.value || '', old = mon.emblem || '';
-		if (old === id) return;
-		if (id) {
+		const slot = command.slot ?? mon.emblemSlot ?? 1;
+		requireRule(slot === 0 || slot === 1, '请选择替换第一或第二属性。');
+		if (id && old !== id) {
 			requireRule(emblemType(id) && run.bag[id] > 0, '背包中没有可用的属性转。');
 			run.bag[id]--;
 		}
-		if (old) run.bag[old] = (run.bag[old] || 0) + 1;
+		if (old && old !== id) run.bag[old] = (run.bag[old] || 0) + 1;
 		mon.emblem = id;
+		if (id) mon.emblemSlot = emblemBaseTypes(mon).length > 1 ? slot : 1;
+		else delete mon.emblemSlot;
 		break;
 	}
 	case 'equip': {

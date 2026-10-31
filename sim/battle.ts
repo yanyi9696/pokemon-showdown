@@ -1,3 +1,4 @@
+import { rogueMetaStat } from './rogue-meta-growth';
 /**
  * Simulator Battle
  * Pokemon Showdown - http://pokemonshowdown.com/
@@ -23,6 +24,7 @@ import { sharedRogueItems, sharedRogueItemData, rogueItemCallback } from './fant
 import { Teams } from './teams';
 import { Field } from './field';
 import { Pokemon, type EffectState, RESTORATIVE_BERRIES } from './pokemon';
+import { useRogueRevival } from './rogue-revival';
 import { PRNG, type PRNGSeed } from './prng';
 import { type MoveRequest, type ChoiceRequest, Side } from './side';
 import { State } from './state';
@@ -30,7 +32,7 @@ import { BattleQueue, type Action } from './battle-queue';
 import { BattleActions } from './battle-actions';
 import { Utils } from '../lib/utils';
 import { hasRogueStatus, rogueStatusStates, wrapRogueStatus } from './fantasy-rogue-status';
-import { emblemType } from './rogue-blessing-data';
+import { applyEmblemType, emblemType } from './rogue-blessing-data';
 import { chooseDragonKing, reportRogueAbilities } from './fantasy-rogue-blessings';
 import { advanceRogueBoss, waitingRogueCommander } from './rogue-bosses';
 import { rulebreakerActive, bypassRogueDefense, bypassRogueProtection } from './rogue-special-blessings';
@@ -2371,7 +2373,7 @@ export class Battle {
 	spreadModify(baseStats: StatsTable, set: PokemonSet): StatsTable {
 		const rogue = isRogueFormat(this.format.id) ? set.fantasyRogueModifiers : undefined;
 		if (rogue?.fusion) baseStats = rogue.fusion.baseStats;
-		const compoundInactive = rogue?.compound && this.dex.species.get(set.species).bst > 500;
+		const compoundInactive = rogue?.compound && !rogue.compoundReorganized && this.dex.species.get(set.species).bst > 500;
 		if (rogue?.baseStats) baseStats = Object.fromEntries(ROGUE_STATS.map(stat =>
 			[stat, baseStats[stat] + (rogue.baseStats?.[stat] || 0) -
 				(compoundInactive ? rogue.compoundBonus?.[stat] || 0 : 0)])) as StatsTable;
@@ -2393,16 +2395,17 @@ export class Battle {
 		}
 		const stats = this.natureModify(modStats as StatsTable, rogue?.nature ? { ...set, nature: rogue.nature } : set);
 		if (isRogueFormat(this.format.id) && set.fantasyRogueStats) {
-			for (const stat of ROGUE_STATS) stats[stat] += set.fantasyRogueStats[stat];
+			for (const stat of ROGUE_STATS) stats[stat] = rogueMetaStat(stats[stat], set.fantasyRogueStats[stat], set.fantasyRogueBoostPercent);
 		}
 		if (isRogueFormat(this.format.id) && set.fantasyRogueScale) {
 			for (const stat of ROGUE_STATS) stats[stat] = Math.max(1, Math.floor(stats[stat] * set.fantasyRogueScale));
 		}
 		if (rogue) {
-			const types = [...(rogue.fusion?.types || this.dex.species.get(set.species).types)];
+			let types = [...(rogue.fusion?.types || this.dex.species.get(set.species).types)];
+			if (rogue.firstType) types[0] = rogue.firstType;
 			if (rogue.extraType) types[1] = rogue.extraType;
 			const emblem = emblemType(rogue.emblem || toID(set.item));
-			if (emblem) types[1] = emblem;
+			if (emblem) types = applyEmblemType(types, emblem, rogue.emblemSlot);
 			if (!rogue.statsType || types.includes(rogue.statsType)) {
 				for (const stat of ROGUE_STATS) stats[stat] = Math.floor(stats[stat] * (1 + (rogue.stats?.[stat] || 0)));
 			}
@@ -2423,9 +2426,9 @@ export class Battle {
 	}
 
 	natureModify(stats: StatsTable, set: PokemonSet): StatsTable {
-		// Natures are calculated with 16-bit truncation.
-		// This only affects Eternatus-Eternamax in Pure Hackmons.
-		const tr = this.trunc;
+		// Cartridge nature calculations wrap at 16 bits. Rogue permits levels above
+		// 100 and permanent base-stat growth, so its nature modifiers must not wrap.
+		const tr = isRogueFormat(this.format.id) ? Math.trunc : this.trunc;
 		const nature = this.dex.natures.get(set.nature);
 		let s: StatIDExceptHP;
 		if (nature.plus) {
@@ -2747,6 +2750,9 @@ export class Battle {
 		let residualPokemon: (readonly [Pokemon, number])[] = [];
 		// returns whether or not we ended in a callback
 		switch (action.choice) {
+		case 'roguerevive':
+			useRogueRevival(action.pokemon, action.target, action.moveid);
+			break;
 		case 'rogueball':
 			throwRogueBall(this, action.moveid);
 			break;

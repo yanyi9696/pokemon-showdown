@@ -28,7 +28,7 @@ describe('Fantasy Rogue October 21 regression', function () {
 		const before = JSON.stringify(player);
 		repairSavedEncounters(r);
 		assert.equal(JSON.stringify(player), before); assert.deepEqual(encounterSetProblems(invalid), []);
-		assert(invalid.level >= minimumEvolutionLevel(invalid.species));
+		assert.equal(invalid.level, 25); // Fixed bosses retain their authored level, even below evolution level.
 		const normalized = JSON.stringify(r); repairSavedEncounters(r); assert.equal(JSON.stringify(r), normalized);
 		const ally = set('Chandelure', 'Flame Body', 40, ['Blue Flare', 'Dazzling Gleam']);
 		r.node.kind = 'adventure'; r.node.encounters = [{ team: [], cooperative: { team: [ally] } }];
@@ -80,7 +80,7 @@ describe('Fantasy Rogue October 21 regression', function () {
 				count++; return;
 			}
 			for (const [key, child] of Object.entries(value)) {
-				visit(child, `${path}.${key}`, authoredTrainer || !!value.trainer || !!value.trainerCandidates?.length);
+				visit(child, `${path}.${key}`, authoredTrainer || value.kind === 'boss' || !!value.trainer || !!value.trainerCandidates?.length);
 			}
 		}
 		visit(createPreviewContent()); assert(count > 3000, String(count));
@@ -119,9 +119,9 @@ describe('Fantasy Rogue October 21 regression', function () {
 			const r = { floor: 20, phase: 'event', team: [], bag: {}, blessings: { owned: [] },
 				rival: { id, completed: chapter - 1, affection: 3, lastFloor: 1 }, node: { encounters: [] } };
 			beginRival(r, () => 0); assert.equal(r.node.event.rival.step, 'conversation');
-			chooseRival(r, content, () => 0, 'greet:warm'); assert.equal(r.rival.affection, 3 + rivalAffectionGain(id, 'warm', chapter));
+			chooseRival(r, content, () => 0, 'greet:warm'); assert.equal(r.rival.affection, 5 + rivalAffectionGain(id, 'warm', chapter) * 2);
 			assert(r.dialogue.pages.length >= 2);
-			chooseRival(r, content, () => 0, 'greet:cold'); assert.equal(r.rival.affection, 3 + rivalAffectionGain(id, 'warm', chapter) + rivalAffectionGain(id, 'cold', chapter));
+			chooseRival(r, content, () => 0, 'greet:cold'); assert.equal(r.rival.affection, 5 + (rivalAffectionGain(id, 'warm', chapter) + rivalAffectionGain(id, 'cold', chapter)) * 2);
 			assert.notEqual(r.node.event.rival.step, 'conversation');
 			const entry = catalog.entries.find(e => e.id === `rival:${id}:${chapter}`);
 			assert.deepEqual(entry.replay, rivalChapterReplay(id, chapter));

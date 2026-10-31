@@ -108,7 +108,7 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 			c.id === 'lana' ? '静下心来，看看这次能钓到什么。' : ['iono', 'canari'].includes(c.id) ? '来一场精彩的对战吧！' :
 			c.id === 'iris' ? '我想听听宝可梦们的声音！' : c.id === 'poppy' ? '把这些宝物好好收起来吧！' :
 			c.id === 'guzma' ? '别缩着，痛快地打一场！' : '最终的决定由你来做。';
-		c.message = recommended ? `我想选择「${recommended.name}」。${reason}` : '先仔细看看眼前的情况吧。';
+		c.message = recommended ? `⌈我想选择【${recommended.name}】。${reason}⌋` : '⌈先仔细看看眼前的情况吧。⌋';
 		c.messageAt = Date.now(); delete c.smile; return;
 	}
 	const [action, value] = (command.value || '').split(':');
@@ -163,7 +163,7 @@ export function giveCompanionGift(run: RogueRun, c: RogueCompanion, item: string
 
 export function companionExperience(run: RogueRun, mon: RoguePokemon, defeated: RogueDefeat) {
 	let factor = 1;
-	if (companionOwned(run.blessings, 'sada') || companionOwned(run.blessings, 'turo')) factor *= 1.5;
+	if (companionOwned(run.blessings, 'sada') || companionOwned(run.blessings, 'turo')) factor *= 1.3;
 	if (companionOwned(run.blessings, 'kahili') && permanentMemberTypes(mon).includes('Flying')) factor *= 1.3;
 	if (companionOwned(run.blessings, 'giovanni') && defeated.killer === mon.id && !defeated.captured && permanentMemberTypes(mon).includes('Psychic')) factor *= 1.2;
 	if (companionOwned(run.blessings, 'bea') && permanentMemberTypes(mon).includes('Fighting')) factor *= 1.3;

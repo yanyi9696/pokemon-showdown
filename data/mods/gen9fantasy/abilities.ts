@@ -36,7 +36,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (move.flags.contact) delete move.flags.protect;
 			if (move.type === 'Ground') move.ignoreImmunity = true;
 		},
-		shortDesc: '保留贯穿钻全部效果；招式无视目标特性，地面招式能命中飞行系。',
+		shortDesc: '接触招式无视除极巨防壁外的防住效果，正常造成伤害；招式无视目标特性，地面招式可命中飞行系。',
+	},
+	fierygoldeneyes: {
+		name: 'Fiery Golden Eyes', rating: 4.5, num: -2011, isNonstandard: 'Custom', flags: { breakable: 1 },
+		shortDesc: '命中率不会被对手降低，出招必定命中；一般、格斗招式对幽灵属性效果绝佳，其他属性照常计算。',
+		onTryBoost(boost, target, source, effect) {
+			if (source === target || !boost.accuracy || boost.accuracy >= 0) return;
+			delete boost.accuracy;
+			if (!(effect as ActiveMove).secondaries) this.add('-fail', target, 'unboost', 'accuracy', '[from] ability: Fiery Golden Eyes');
+		},
+		onSourceAccuracy() { return true; },
+		onModifyMovePriority: -5,
+		onModifyMove(move) {
+			move.ignoreEvasion = true;
+			if (!['Normal', 'Fighting'].includes(move.type)) return;
+			if (!move.ignoreImmunity) move.ignoreImmunity = {};
+			if (move.ignoreImmunity !== true) move.ignoreImmunity[move.type] = true;
+			const previous = move.onEffectiveness;
+			move.onEffectiveness = function (typeMod, target, type, activeMove) {
+				const adjusted = previous?.call(this, typeMod, target, type, activeMove);
+				return type === 'Ghost' ? 1 : adjusted === undefined ? typeMod : adjusted;
+			};
+		},
 	},
 
 	roguegreatmage: {

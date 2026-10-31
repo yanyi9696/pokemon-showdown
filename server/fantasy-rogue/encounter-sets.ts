@@ -3,6 +3,11 @@ import { levelMoves } from './progression';
 import type { RogueRandom } from './biome-pools';
 import type { RogueDifficulty } from '../../sim/rogue-difficulty';
 import { hiddenAbilityChance, rollEncounterIVs } from '../../sim/rogue-quality';
+import { rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
+
+/** Regional elites and challenge rosters share exactly the same base level. Blessing offsets are applied later. */
+export const regionalEncounterLevel = (floor: number, elite: boolean, spirit?: string) =>
+	Math.min(100, Math.max(3, Math.ceil(floor / 2)) + (elite ? 5 : 0) + rogueWildLevelBonus(floor, spirit));
 
 const ordinary = Dex.mod('gen9');
 const dex = Dex.mod('gen9fantasy');
@@ -36,16 +41,36 @@ function movesFor(name: string, level: number): string[] {
 	}
 	const candidates = [...new Set(levelMoves(name).filter(entry => entry.level <= level).map(entry => entry.move))]
 		.map(move => dex.moves.get(move));
-	const ranked = candidates.filter(move => move.category !== 'Status').sort((a, b) => {
-		const score = (move: typeof a) => (move.basePower || 40) * (species.types.includes(move.type) ? 1.5 : 1);
-		return score(b) - score(a);
-	});
-	const selected = ranked.slice(0, 2).map(move => move.id as string);
-	const status = candidates.filter(move => move.category === 'Status').slice(-1)[0];
-	if (status) selected.push(status.id);
-	for (const move of ranked.concat(candidates.slice().reverse())) {
-		if (selected.length >= 4) break;
-		if (!selected.includes(move.id)) selected.push(move.id);
+	const selected: string[] = [];
+	const attacks = candidates.filter(move => move.category !== 'Status');
+	const bestStat = Math.max(species.baseStats.atk, species.baseStats.spa);
+	const score = (move: Move) => {
+		if (move.category === 'Status') {
+			if (selected.some(id => dex.moves.get(id).category === 'Status')) return -10;
+			if (move.heal || move.id === 'strengthsap') return 78;
+			if (move.status && move.target !== 'self' || move.volatileStatus === 'leechseed') return 70;
+			if (move.boosts && move.target === 'self') {
+				const offensive = attacks.some(attack => (attack.category === 'Physical' ? move.boosts!.atk : move.boosts!.spa));
+				return offensive ? 72 : move.boosts.spe ? 48 : 20;
+			}
+			if (move.sideCondition) return 48;
+			if (['encore', 'taunt', 'yawn'].includes(move.volatileStatus || '')) return 60;
+			if (move.id === 'protect' && candidates.some(m => m.status || m.volatileStatus === 'leechseed')) return 45;
+			return 0;
+		}
+		let power = move.basePower || (move.damage === 'level' ? 70 : typeof move.damage === 'number' ? move.damage : 40);
+		if (move.multihit) power *= typeof move.multihit === 'number' ? move.multihit : 3;
+		if (move.flags.charge || move.self?.volatileStatus === 'mustrecharge') power *= .55;
+		if (move.selfdestruct) power *= .18;
+		const stat = species.baseStats[move.category === 'Physical' ? 'atk' : 'spa'];
+		const duplicate = selected.some(id => { const prior = dex.moves.get(id); return prior.type === move.type && prior.category !== 'Status'; });
+		return power * (move.accuracy === true ? 1 : move.accuracy / 100) * stat / bestStat *
+			(species.types.includes(move.type) ? 1.5 : 1) * (duplicate ? .35 : 1) + (move.priority > 0 ? 12 : 0);
+	};
+	while (selected.length < Math.min(4, candidates.length)) {
+		const pool = candidates.filter(move => !selected.includes(move.id) && (selected.length || !attacks.length || move.category !== 'Status'));
+		pool.sort((a, b) => score(b) - score(a) || a.id.localeCompare(b.id));
+		selected.push(pool[0].id);
 	}
 	if (!selected.length && species.prevo) return movesFor(species.prevo, level);
 	if (!selected.length) throw new Error(`肉鸽初始招式缺失：${name} Lv.${level}`);

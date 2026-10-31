@@ -19,6 +19,12 @@ export function compoundView(run: RogueRun, reward: BlessingReward) {
 export function chooseCompound(run: RogueRun, reward: BlessingReward, command: RogueCommand) {
 	const selection = reward.compound ||= {};
 	const entry = run.blessings!.owned.find(b => b.id === reward.blessing)!;
+	if (entry.completed) throw new Error('这份五号化合物已使用。');
+	if (command.value === 'store') {
+		run.blessings!.pending.shift();
+		(run.notices ||= []).push('五号化合物已收存，可在战斗外从祝福面板使用。');
+		return;
+	}
 	if (command.value === 'back') {
 		delete selection.member; delete selection.final; return;
 	}

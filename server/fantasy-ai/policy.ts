@@ -187,6 +187,7 @@ export class RulePolicy {
 			const activeIndex = Math.max(0, request.side.pokemon.findIndex(mon => mon.active));
 			const current = own[activeIndex];
 			const dex = this.hypotheses.dex;
+			const rogueCaution = this.trainer.format.includes('fantasyrogue') ? 0.5 : 0.3;
 			// Keep both possibilities: a Mega stone does not disclose whether the
 			// player clicked Mega. Native forms carry the changed type/ability/speed.
 			if (!request.forceSwitch && !(observation.difficulty === 'hard' && observation.opponentMove === null)) {
@@ -454,9 +455,12 @@ export class RulePolicy {
 						followup += extra * response.weight * estimate.accuracy * opportunity;
 					}
 				}
+				// Rogue trainers respect the strongest response already evaluated, without
+				// extending the search budget or reading the player's hidden command.
+				const caution = rogueCaution;
 				return {
-					worst, damage: average('damage') * 0.7 + worst.damage * 0.3,
-					knockout: average('knockout') * 0.7 + worst.knockout * 0.3,
+					worst, damage: average('damage') * (1 - caution) + worst.damage * caution,
+					knockout: average('knockout') * (1 - caution) + worst.knockout * caution,
 					// Contact into a shield can lower Attack, but that alternative must
 					// not cancel the risk of a different response using Swords Dance.
 					setup: responses.reduce((sum, entry) => sum + entry.weight * Math.max(0, entry.estimate.boosts), 0),

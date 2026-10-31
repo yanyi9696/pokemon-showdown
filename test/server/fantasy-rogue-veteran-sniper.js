@@ -105,7 +105,8 @@ describe('Fantasy Rogue veteran sniper and reward refinements', function () {
   const data=require('../../dist/server/fantasy-rogue/preview-content').createPreviewContent();
   for(const tier of ['easy',0,1,2,3,4,5]) for(const id of ['spiral','godrobe','puregodrobe']) {
    const run=party();run.difficulty=tier;run.phase='blessing';run.caught=[];run.blessings.owned=[];
-   run.blessings.round={floor:50,tier:'prismatic',remaining:1,options:[{id,refreshes:1}],familiesSeen:[id]};
+   if(id==='spiral') run.floor=1;
+   run.blessings.round={floor:run.floor,tier:'prismatic',remaining:1,options:[{id,refreshes:1}],familiesSeen:[id]};
    const account={run,captures:{},unlocked:[]};
    b.handleBlessingCommand(account,run,data,{action:'blessing',slot:0},rng(17));
    const mon=run.blessings.pending.find(reward=>reward.kind==='gift').pokemon;

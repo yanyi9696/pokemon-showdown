@@ -2,6 +2,7 @@ import type { Battle } from './battle';
 import type { Pokemon } from './pokemon';
 import type { Side } from './side';
 import { hasBlessing, rogueStatSnapshot } from './fantasy-rogue-blessings';
+import { NUMBER_BLESSING_RULES as RULES } from './rogue-blessing-data';
 
 export const NUMBER_STATS = ['atk', 'def', 'spa', 'spd', 'spe'] as const;
 export function numberRequest(side: Side, isMoveRequest = side.requestState === 'move') {
@@ -19,8 +20,8 @@ export function commitNumberChoices(battle: Battle) {
 		const state = battle.fantasyRogue!;
 		(state.numberUses ||= {})[side.id] = true;
 		action.pokemon.m.rogueNumber = { turn: battle.turn, stat: action.rogueNumber,
-			factor: hasBlessing(action.pokemon, 'supernumber') ? 5 : 2 };
-		battle.add('-message', `【${action.pokemon.m.rogueNumber.factor === 5 ? '超大数字' : '大数字'}】本回合增幅已发动。`);
+			factor: hasBlessing(action.pokemon, 'supernumber') ? RULES.superFactor : RULES.factor };
+		battle.add('-message', `【${action.pokemon.m.rogueNumber.factor === RULES.superFactor ? '超大数字' : '大数字'}】本回合增幅已发动。`);
 		recordNumberThreshold(action.pokemon);
 	}
 }
@@ -35,6 +36,6 @@ export function recordNumberThreshold(mon: Pokemon) {
 	// has no move context and crashes abilities such as Overgrow; move-specific damage is not a stat.
 	const snapshot = rogueStatSnapshot(mon);
 	const maximum = Math.max(...NUMBER_STATS.map(stat => stat === 'spe' ? mon.getStat('spe') : snapshot[stat]));
-	if (boost.factor === 2 && maximum >= 3000) progress.numberUpgrade = true;
-	if (boost.factor === 5 && maximum >= 13000) progress.numberPrize = true;
+	if (boost.factor === RULES.factor && maximum >= RULES.upgrade) progress.numberUpgrade = true;
+	if (boost.factor === RULES.superFactor && maximum >= RULES.prize) progress.numberPrize = true;
 }

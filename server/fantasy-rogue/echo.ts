@@ -24,6 +24,16 @@ export function awardEcho(account: RogueAccount, run: RogueRun) {
 	(run.notices ||= []).push(`对抗幻想崩坏的力量留下了回响，获得【崩坏适性】×${points}。`);
 	return points;
 }
+/** Separate from the tower-clear award; settled atomically with the postgame result. */
+export function awardGodEcho(account: RogueAccount, run: RogueRun) {
+	if (!echoEligible(run) || run.postgame?.stage !== 'won' || run.postgame.echoAwarded !== undefined) return 0;
+	const echo = account.echo ||= { unlocked: true, points: 0, earned: 0, upgrades: emptyEchoUpgrades() };
+	echo.unlocked = true;
+	const points = collapseCount(run.difficulty);
+	echo.points += points; echo.earned += points;
+	run.postgame.echoAwarded = points;
+	return points;
+}
 export function growthMaxed(account: RogueAccount) { return account.slots >= 6 && ROGUE_STATS.every(stat => account.boosts[stat] >= 10); }
 export function buyEcho(account: RogueAccount, key: string) {
 	const echo = normalizeEcho(account);

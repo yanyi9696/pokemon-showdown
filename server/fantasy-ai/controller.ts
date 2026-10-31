@@ -183,7 +183,7 @@ export class AIController {
 			if (this.options.rogue.wild && !request.forceSwitch) {
 				excluded.push(...enumerateRequestChoices(request).filter(choice => choice.startsWith('switch ')));
 			}
-			const choice = rogueBossChoice(request) ||
+			const choice = (this.options.rogue.wild || this.options.rogue.orderedBoss ? rogueBossChoice(request) : undefined) ||
 				emergencyChoice(observation, this.options.trainer.format, excluded, true, true, !this.options.rogue.wild);
 			this.metrics.decisions++;
 			const elapsed = performance.now() - received;
@@ -210,7 +210,8 @@ export class AIController {
 		this.queuedWindow = window;
 		this.metrics.criticalDecisions = this.timing.criticalDecisions;
 		this.metrics.criticalDecisionReasons = { ...this.timing.criticalReasons };
-		const fallback = emergencyChoice(observation, this.options.trainer.format, excluded, !!this.options.rogue);
+		const fallback = emergencyChoice(observation, this.options.trainer.format, excluded, !!this.options.rogue,
+			!!this.options.rogue, !!this.options.rogue);
 		const submit = (choice: string) => this.sendChoice(choice, rqid, revision, choiceVersion);
 		void this.options.scheduler.submit({
 			key, trainer: this.options.trainer, observation, seed, excluded,

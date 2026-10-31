@@ -1,6 +1,5 @@
 /** User-authored Fantasy elite pools. One equally likely opponent per floor, drawn when entering it. */
 import { Dex } from '../../sim/dex';
-import { minimumEvolutionLevel } from './evolution';
 
 type EliteSet = Pick<PokemonSet, 'species' | 'ability' | 'moves'> &
 	Partial<Pick<PokemonSet, 'item' | 'gender' | 'teraType' | 'nature'>> & { ivs?: Partial<StatsTable> };
@@ -8,8 +7,7 @@ const mon = (species: string, ability: string, moves: string[], extra: Partial<E
 	({ species, ability, moves, ...extra });
 
 export const FantasyEliteBosses: Record<number, { level: number, candidates: EliteSet[] }> = {
-	// These opponents already have zero EVs. Lower the first base level instead of adding EVs to "halve" them.
-	10: { level: 8, candidates: [
+	10: { level: 10, candidates: [
 		mon('tyruntfantasy', 'Sand Rush', ['yaolan', 'Rock Tomb', 'Rock Polish']),
 		mon('zoruahisuifantasy', 'shiyingli', ['Swift', 'Hex', 'Pain Split']),
 		mon('duskullfantasy', 'Intimidate', ['Curse', 'Mean Look', 'Astonish']),
@@ -90,7 +88,7 @@ export function eliteBossCandidates(floor: number): PokemonSet[] {
 	return pool.candidates.map(set => {
 		const species = dex.species.get(set.species);
 		return {
-			name: species.name, species: species.name, level: Math.max(pool.level, minimumEvolutionLevel(species.name)),
+			name: species.name, species: species.name, level: pool.level,
 			ability: dex.abilities.get(set.ability).name, moves: set.moves.map(move => dex.moves.get(move).name),
 			item: set.item || '', gender: set.gender || species.gender || '', nature: set.nature || 'Hardy',
 			teraType: set.teraType || species.defaultTeraType,

@@ -86,6 +86,37 @@ describe('Fantasy Rogue numbers, fusion and codex boundaries', function () {
 		assert(battle.fantasyRogue.numberUses.p1);
 		assert(!battle.fantasyRogue.blessingProgress.numberUpgrade);
 	});
+	for (const [attack, expected] of [[1500, false], [2499, false], [2500, true]]) {
+		it(`uses the new 5000 threshold at an actual doubled stat of ${attack * 2}`, () => {
+			const mon = begin(party([set('Mew', 'Synchronize', 100, ['Splash'])], ['bignumber']));
+			mon.storedStats.atk = attack;
+			battle.makeChoices('roguenumber atk move splash', 'move splash');
+			assert.equal(!!battle.fantasyRogue.blessingProgress.numberUpgrade, expected);
+		});
+	}
+	it('includes Swords Dance stages, Huge Power, Choice Band and permanent training in the real threshold', () => {
+		const run = party([set('Mawile-Mega', 'Huge Power', 100, ['Splash'])], ['bignumber']);
+		run.team[0].set.nature = 'Adamant'; run.team[0].set.evs.atk = 252;
+		run.team[0].set.item = 'Choice Band'; run.growth = {offense: 2500, defense: 0, experience: 0};
+		syncBlessingParty(run);
+		const mon = begin(run); mon.boosts.atk = 2;
+		const {rogueStatSnapshot} = require('../../dist/sim/fantasy-rogue-blessings');
+		const before = rogueStatSnapshot(mon).atk;
+		let actual;
+		battle.onEvent('BeforeMove', battle.format, p => { if (p === mon) actual = rogueStatSnapshot(p).atk; });
+		battle.makeChoices('roguenumber atk move splash', 'move splash');
+		assert(actual >= 5000, String(actual)); assert(Math.abs(actual - before * 2) <= 4);
+		assert(battle.fantasyRogue.blessingProgress.numberUpgrade);
+	});
+	it('multiplies all five stats by five for one turn without multiplying HP', () => {
+		const mon = begin(party([set('Mew', 'Synchronize', 100, ['Splash'])], ['supernumber']));
+		const keys = ['atk', 'def', 'spa', 'spd', 'spe'], before = keys.map(k => mon.getStat(k)), hp = mon.maxhp;
+		let actual;
+		battle.onEvent('BeforeMove', battle.format, p => { if (p === mon) actual = keys.map(k => p.getStat(k)); });
+		battle.makeChoices('roguenumber all move splash', 'move splash');
+		assert.deepEqual(actual, before.map(n => n * 5)); assert.equal(mon.maxhp, hp);
+		assert.deepEqual(keys.map(k => mon.getStat(k)), before);
+	});
 	it('level 100 is not a limit for the solo partner and floor growth cannot be claimed twice', () => {
 		const run = party([set('Mew', 'Synchronize', 100, ['Splash'])], ['sololeveling']);
 		const account = {run, captures: {}, unlocked: [], revision: 1};
@@ -107,8 +138,29 @@ describe('Fantasy Rogue numbers, fusion and codex boundaries', function () {
 		assert(account.discoveries.blessings.includes('supernumber'));
 		const prize = {encounterId: 'threshold-prize', won: false, blessingProgress: {numberPrize: true, insight: {}}};
 		settleBlessingBattle(account, run, content(), prize, () => 0);
-		const money = run.money; assert.equal(money, require('../../dist/server/fantasy-rogue/early-balance').journeyCoins(run.floor, 800 + run.floor * 40));
-		settleBlessingBattle(account, run, content(), prize, () => 0); assert.equal(run.money, money);
+		assert.equal(run.money, 0); assert.equal(run.bag.bottlecap, 1); assert.equal(run.bag.maxelixir, 1);
+		assert(run.blessings.numberPrizeClaimed);
+		const after = structuredClone(run.bag);
+		settleBlessingBattle(account, run, content(), prize, () => 0); assert.deepEqual(run.bag, after);
+		const restored = JSON.parse(JSON.stringify(run));
+		settleBlessingBattle({run: restored}, restored, content(), {...prize, encounterId: 'another-battle'}, () => 1);
+		assert.deepEqual(restored.bag, after); assert.equal(restored.money, 0);
+	});
+	it('offers varied fixed-value prizes at every floor and a fresh prize in a new run', () => {
+		const {NUMBER_PRIZES} = require('../../dist/server/fantasy-rogue/number-prizes');
+		const full = require('../../dist/server/fantasy-rogue/preview-content').createPreviewContent();
+		for (const [index, prize] of NUMBER_PRIZES.entries()) {
+			assert.equal(Object.entries(prize.items).reduce((sum, [id, count]) => {
+				const item = full.items.find(i => i.id === id); assert(item, id);
+				return sum + (item.sellPrice || item.price) * count;
+			}, 0), 7600);
+			for (const floor of [10, 100, 150, 200]) {
+				const run = party([set('Mew')], ['supernumber']); run.floor = floor;
+				settleBlessingBattle({run}, run, full, {encounterId: 'prize', won: true,
+					blessingProgress: {numberPrize: true, insight: {}}}, () => index);
+				assert.deepEqual(run.bag, prize.items); assert.equal(run.money, 0);
+			}
+		}
 	});
 	it('keeps the sealed partner in placement when splitting a full party', () => {
 		const run = party([set('Mew'), set('Charizard', 'Blaze')], ['potara']);

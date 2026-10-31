@@ -2,7 +2,7 @@ import { toID, type ModdedDex } from '../../../sim/dex';
 
 /** Reviewed gameplay differences: enhancements use +; changed mechanics use 🔄. */
 const MOVE_BUFFS = new Set('recover roost slackoff softboiled rest milkdrink cut wringout chargebeam darkvoid psystrike watershuriken landswrath mistyexplosion kingsshield supercellslam flyingpress'.split(' '));
-const ABILITY_BUFFS = new Set('shellarmor illuminate magmaarmor pressure cutecharm whitesmoke battlearmor heatproof slowstart icebody flowergift bigpecks infiltrator sandforce flowerveil watercompaction corrosion dancer stalwart transistor protosynthesis'.split(' '));
+const ABILITY_BUFFS = new Set('piercingdrill shellarmor illuminate magmaarmor pressure cutecharm whitesmoke battlearmor heatproof slowstart icebody flowergift bigpecks infiltrator sandforce flowerveil watercompaction corrosion dancer stalwart transistor protosynthesis'.split(' '));
 // Reviewed gameplay changes, not source-text differences. Translation, visual sync,
 // custom-status compatibility and suppression guards do not rework the original effect.
 const MOVE_REWORKS = new Set('razorwind jumpkick rockthrow swift skullbash triattack powdersnow spark shadowpunch punishment crushgrip shadowbone overdrive bittermalice shelter nihillight'.split(' '));

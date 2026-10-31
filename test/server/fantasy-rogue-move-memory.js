@@ -57,6 +57,10 @@ describe('Fantasy Rogue level move memory for acquired partners', () => {
 	});
 	it('preserves spent PP in archived form moves and keeps illegal signatures out of memory', () => {
 		const mon = create('Kyurem-White', 100);
+		// Make this an archived move, regardless of the wild set's preferred coverage.
+		mon.set.moves = ['iceburn'];
+		mon.pp = [{ id: 'iceburn', pp: 5, maxpp: 5 }];
+		mon.moveMemory = [];
 		mon.formMoveMemory = [{ id: 'icebeam', pp: 2, maxpp: Dex.moves.get('icebeam').pp }];
 		initializeExperience(mon);
 		assert(!mon.moveMemory.some(move => move.id === 'glaciate'));

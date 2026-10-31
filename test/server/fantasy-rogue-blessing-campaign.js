@@ -10,6 +10,7 @@ const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const b = require('../../dist/server/fantasy-rogue/blessings');
+const { blessingLevelsAt, activateBlessingLevels } = require('../../dist/server/fantasy-rogue/blessing-levels');
 const { blessing, ROGUE_BLESSINGS, blessingLevelCost, FANTASY_BLESSING_ITEMS } = require('../../dist/sim/rogue-blessing-data');
 const { stats, set, prepareCompanionParty, compoundCommand } = require('../fixtures/fantasy-rogue');
 const dex = Dex.mod('gen9fantasy');
@@ -42,6 +43,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		assert.deepEqual(blessing('supernumber').floors, [100, 150]);
 		assert.deepEqual(blessing('hero').floors, [1]);
 		assert.deepEqual(blessing('friend').floors, [1]);
+		assert.equal(blessing('friend').tier, 'gold');
 		assert.deepEqual(blessing('prayer').floors, [1, 50, 100]);
 	});
 	it('requires a non-egg late-bloomer in the active party, including babies and regional or Fantasy forms', () => {
@@ -121,9 +123,9 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 						run = JSON.parse(JSON.stringify(run)); account.run = run;
 						b.syncBlessingParty(run);
 					}
-					assert.equal(run.blessings.levels, selectedLevels +
+					assert.equal(blessingLevelsAt(run, 201).normal, selectedLevels +
 						(run.blessings.evolutionCosts || []).reduce((sum, floor) => sum + blessingLevelCost('prismatic', floor), 0));
-					assert.equal(run.blessings.bossLevels, selectedBossLevels +
+					assert.equal(blessingLevelsAt(run, 201).boss, selectedBossLevels +
 						(run.blessings.evolutionCosts || []).reduce((sum, floor) => sum + blessingLevelCost('prismatic', floor, true), 0));
 					delete run.blessings.beforeAdventure;
 					assert.equal(new Set(run.blessings.owned.map(entry => entry.id)).size, run.blessings.owned.length);
@@ -155,6 +157,9 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 	for (const def of ROGUE_BLESSINGS) it(`grants and serializes ${def.id} with its required reward flow`, () => {
 		const floor = def.floors?.[0] || (['overtime', 'killlagirl'].includes(def.family) ? 150 : 50), { run, account } = setup(floor);
 		prepareCompanionParty(run, def.family);
+		if (def.family === 'monkeyking') run.team[0] = createRoguePokemon(set('Infernape', 'Blaze', 50), run.boosts);
+		if (def.family === 'unity') run.team = ['Squirtle', 'Totodile'].map(species =>
+			createRoguePokemon(set(species, 'Torrent', 50), run.boosts));
 		if (def.family === 'detect') run.team[0] = createRoguePokemon(set('Meditite', 'Pure Power', 50, ['Detect']), run.boosts);
 		if (def.family === 'typeevolution') {
 			const species = dex.species.all().find(s => s.num > 0 && !s.battleOnly && s.types.includes(def.type));
@@ -173,7 +178,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		assert(b.blessingCandidates(run, content).some(entry => entry.id === def.id));
 		choose(account, run, def);
 		assert(run.blessings.owned.some(entry => entry.id === def.id));
-		assert.equal(run.blessings.levels, blessingLevelCost(def.tier, floor));
+		assert.equal(run.blessings.levels, 0, 'new selections are deferred');
+		assert.equal(blessingLevelsAt(run, 201).normal, blessingLevelCost(def.tier, floor));
 		let steps = 0;
 		while (run.blessings.pending.length) {
 			assert(++steps < 8);
@@ -203,7 +209,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 			assert.equal(run.blessings.owned[1].tier, tier);
 			assert(!run.blessings.owned[1].family.startsWith('fate'));
 			assert.equal(run.blessings.owned[1].grantedBy, 'fate' + tier);
-			assert.equal(run.blessings.levels, blessingLevelCost(tier, floor));
+			assert.equal(run.blessings.levels, 0);
+			assert.equal(blessingLevelsAt(run, 201).normal, blessingLevelCost(tier, floor));
 			assert(run.money >= ({ silver: 800, gold: 1000, prismatic: 1200 })[tier] * floor / 50);
 		}
 	});
@@ -212,6 +219,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		for (const [floor, id] of [[50, 'lowhp'], [100, 'smallfinal'], [150, 'speedpower']]) {
 			run.floor = floor; choose(account, run, blessing(id));
 		}
+		run.floor = 161; activateBlessingLevels(run);
 		assert.equal(run.blessings.levels, 40);
 		run.node = { id: 'elite', kind: 'elite', encounters: [{ team: [set('Gyarados', 'Intimidate', 90)] }] };
 		b.prepareBlessingEncounter(run, zero);
@@ -232,7 +240,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 			assert.equal(view.round.tier, 'mixed');
 			assert.deepEqual(view.round.options.map(option => option.tier), ['silver', 'gold', 'prismatic']);
 			b.handleBlessingCommand(account, run, content, { action: 'blessing', slot }, zero);
-			assert.equal(run.blessings.levels, blessingLevelCost(candidates[slot].tier, floor));
+			assert.equal(run.blessings.levels, 0);
+			assert.equal(blessingLevelsAt(run, 201).normal, blessingLevelCost(candidates[slot].tier, floor));
 			assert.deepEqual(run.blessings.owned.map(entry => entry.id), [candidates[slot].id]);
 		}
 	});
@@ -313,7 +322,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stats' }, zero);
 		b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stat:hp' }, zero);
 		b.handleBlessingCommand(account, run, content, { action: 'blessing', slot: 1 }, zero);
-		assert.equal(run.blessings.levels, 0); assert.equal(run.blessings.bossLevels, 20);
+		assert.equal(run.blessings.levels, 0); assert.equal(run.blessings.bossLevels, 0);
+		assert.equal(blessingLevelsAt(run, 11).boss, 20);
 		let upgrades = 1;
 		for (let floor = 10; floor <= 200; floor += 10) {
 			run.floor = floor; run.node = { id: 'checkpoint', kind: 'boss', encounters: [] };

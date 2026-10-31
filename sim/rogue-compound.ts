@@ -1,7 +1,11 @@
 import { Dex, toID } from './dex';
 import type { RoguePokemon } from './fantasy-rogue';
 
-export interface RogueCompound { blessing: string; finalSpecies: string; bonus: StatsTable }
+export interface RogueCompound {
+	blessing: string; finalSpecies: string; bonus: StatsTable;
+	/** Reorganizer keeps the original allocation while replacing its species and evolution tree. */
+	reorganized?: boolean;
+}
 const ordinary = Dex.mod('gen9'), dex = Dex.mod('gen9fantasy');
 function plain(name: string) {
 	return ordinary.species.get(name.replace(/-Fantasy/g, ''));
@@ -33,7 +37,8 @@ export function compoundFinals(mon: RoguePokemon): string[] {
 	});
 }
 export function compoundEvolutionAllowed(mon: RoguePokemon, next: string) {
-	return !mon.compound || finals(next).some(name => toID(name) === plain(mon.compound!.finalSpecies).id);
+	return !mon.compound || !!mon.compound.reorganized ||
+		finals(next).some(name => toID(name) === plain(mon.compound!.finalSpecies).id);
 }
 export function compoundPoints(finalSpecies: string, tier: string) {
 	return (tier === 'prismatic' ? 650 : 525) - dex.species.get(finalSpecies).bst;

@@ -4,6 +4,9 @@ import { FANTASY_BLESSING_ITEMS } from '../../sim/rogue-blessing-data';
 
 /** Authored upgrades: distinct from the first gift and suited to the trainer's battle style. */
 const GIFTS: [string[], string, string][] = [
+	[['ingo', 'riley'], 'lifeorb', '生命宝珠'],
+	[['emmet'], 'choiceband', '讲究头带'],
+	[['palmer'], 'assaultvest', '突击背心'],
 	[['marnie', 'giovanni', 'guzma', 'bea', 'lance', 'clair', 'kieran'], 'choiceband', '讲究头带'],
 	[['roxie', 'liko', 'gardenia', 'n', 'lana', 'lusamine'], 'leftovers', '吃剩的东西'],
 	[['lacey', 'diantha', 'valerie', 'bede', 'sabrina', 'lorelei'], 'choicespecs', '讲究眼镜'],

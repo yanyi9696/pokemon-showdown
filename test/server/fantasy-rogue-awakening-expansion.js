@@ -21,6 +21,7 @@ const {rogueCodex} = require('../../dist/server/fantasy-rogue/codex');
 const {recordRogueDiscoveries} = require('../../dist/server/fantasy-rogue/discoveries');
 const {recordClear} = require('../../dist/server/fantasy-rogue/legacy');
 const {buildRogueDuelState} = require('../../dist/server/fantasy-rogue/duels');
+const {syncAffection} = require('../../dist/server/fantasy-rogue/affection');
 const content = createPreviewContent();
 const owned = ids => ids.map(id => {
  const {family, tier, type} = blessing(id);
@@ -74,23 +75,23 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
   for (let hp = 100; hp > 1; hp--) assert(robeDurability(hp - 1, 100) >= robeDurability(hp, 100));
   assert(robeDurability(50, 100, true) > 1.5); assert.equal(robeDurability(1, 100, true), 6);
  });
- it('reaches the early survival threshold after about ten focused pack battles, with diminishing gains', () => {
+ it('accumulates fixed participation and KO points without a cap or diminishing returns', () => {
   let points = 0;
-  for (let battle = 0; battle < 10; battle++) { points = addSpiral(points, 12); for (let ko = 0; ko < 3; ko++) points = addSpiral(points, 9); }
-  assert(points >= 250 && points < 400, String(points));
-  assert(addSpiral(800, 9) - 800 < addSpiral(100, 9) - 100); assert.equal(addSpiral(1000, 12), 1000);
+  for (let battle = 0; battle < 50; battle++) { points = addSpiral(points, 1); for (let ko = 0; ko < 4; ko++) points = addSpiral(points, 1); }
+  assert.equal(points, 250);
+  assert.equal(addSpiral(800, 1) - 800, addSpiral(100, 1) - 100); assert.equal(addSpiral(1000, 2), 1002);
  });
  it('persists participation without a KO and exposes the real attack increase', () => {
   const b = native([set('Excadrill', 'Sand Rush', 50, ['Splash'])], ['spiral'], s => { s.blessings.owned[0].target = s.team[0].id; });
   try {
    const m = b.p1.active[0];
-   assert(m.getStat('atk') > m.storedStats.atk);
+   assert.equal(m.getStat('atk'), Math.floor(m.storedStats.atk * 1.001));
    assert(rogueAbilityInfo(m).statSources.some(s => s.includes('螺旋力')));
-   assert.equal(rogueBattleResult(b).blessingProgress.spiral[m.set.fantasyRogueId], 12);
+   assert.equal(rogueBattleResult(b).blessingProgress.spiral[m.set.fantasyRogueId], 1);
   } finally { b.destroy(); }
  });
  it('survives lethal damage only once per battle after the spiral threshold', () => {
-  const b = native([set('Excadrill', 'Sand Rush', 50, ['Splash'])], ['spiral'], s => { s.blessings.owned[0].target = s.team[0].id; s.team[0].spiral = 250; });
+  const b = native([set('Excadrill', 'Sand Rush', 50, ['Splash'])], ['spiral'], s => { s.blessings.owned[0].target = s.team[0].id; s.team[0].spiral = 99; });
   try {
    const m = b.p1.active[0], foe = b.p2.active[0];
    b.damage(m.maxhp * 10, m, foe, b.dex.moves.get('tackle')); assert.equal(m.hp, 1);
@@ -168,8 +169,10 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
    } finally { b.destroy(); }
   }
  });
- it('gives the Mega stone once even when spiral is acquired after floor 100', () => {
-  const r = run(150, ['spiral']); syncBlessingParty(r); syncBlessingParty(r);
+ it('gives the Mega stone at 250 points once, independently of the current floor', () => {
+  const r = run(90, ['spiral']); r.blessings.owned[0].target = r.team[0].id;
+  r.team[0].spiral = 249; syncBlessingParty(r); assert(!r.bag.excadrite);
+  r.team[0].spiral = 250; syncBlessingParty(r); syncBlessingParty(r);
   assert.equal(r.bag.excadrite, 1); assert(r.megaUnlocked);
  });
  it('guarantees Kill la Girl in prismatic slots only with both robes after 150', () => {
@@ -247,9 +250,11 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
  });
  it('keeps Carmine affection and short company independent from Kieran', () => {
   const r = run(40); r.rival = {id: 'kieran', completed: 1, affection: 0, lastFloor: 1, carmine: {affection: 2}};
+  syncAffection({run: r}); // Import the legacy two-point relationship before continuing its story.
   beginRival(r, () => 0); chooseRival(r, content, () => 0, 'greet:honest'); chooseRival(r, content, () => 0, 'greet:honest');
   assert.equal(r.node.event.rival.step, 'carmine');
-  chooseRival(r, content, () => 0, 'carmine:listen'); assert.equal(r.rival.carmine.affection, 4); assert.equal(r.rival.affection, 4);
+  chooseRival(r, content, () => 0, 'carmine:listen'); assert.equal(r.rival.carmine.affection, 8); assert.equal(r.rival.affection, 10);
+  assert.equal(r.rival.carmine.affection, r.trainerBonds.carmine.score); assert.equal(r.rival.affection, r.trainerBonds.kieran.score);
   chooseRival(r, content, () => 0, 'start'); r.encounter = r.node.encounters.length - 1; settleRival(r, () => 0, true);
   const ids = rivalView(r).options.map(o => o.id); assert(ids.includes('joincarmine')); assert(ids.includes('join'));
   chooseRival(r, content, () => 0, 'joincarmine'); assert.equal(activeRivalTraveller(r).id, 'carmine');

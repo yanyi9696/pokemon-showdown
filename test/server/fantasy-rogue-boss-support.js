@@ -24,21 +24,27 @@ describe('Fantasy Rogue boss support revision', () => {
 	for (const [floor, tier] of [[10, 'elite'], [30, 'elite'], [150, 'elite'], [20, 'gym'], [160, 'gym'], [175, 'gym'], [200, 'gym']]) {
 		it(`uses the ${tier} card tier at floor ${floor}`, () => assert.equal(mentorTier(floor), tier));
 	}
-	for (const [kind, offense, defense, speed] of [['attack', 1.9, 1.45, 1], ['guard', 1.45, 2, 1], ['speed', 1.3, 1.3, 2], ['balanced', 1.6, 1.6, 1.3]]) {
+	for (const [kind, offense, defense, speed] of [['attack', 2, 1.4, 1], ['guard', 1.4, 2.2, 1], ['speed', 1.3, 1.3, 2], ['balanced', 1.6, 1.6, 1.5]]) {
 		for (const floor of [10, 20, 30, 175]) it(`combines ${kind} support at floor ${floor} with training and exposes gym-strength values privately`, () => {
 			assert.deepEqual(mentorCardAtFloor(kind, floor), mentorCardAtFloor(kind, 20));
 			const battle = fight(kind, floor), baseline = fight(undefined, floor), untrained = fight(undefined, floor, false);
 			try {
 				const own = battle.p1.active[0], foe = battle.p2.active[0], base = baseline.p1.active[0];
 				assert.equal(own.storedStats.atk, Math.floor(untrained.p1.active[0].storedStats.atk * 1.08));
+				assert.equal(own.getStat('atk'), battle.modify(base.getStat('atk'), offense));
+				assert.equal(own.getStat('spa'), battle.modify(base.getStat('spa'), offense));
 				assert.equal(own.getStat('def'), battle.modify(base.getStat('def'), defense));
 				assert.equal(own.getStat('spe'), battle.modify(base.getStat('spe'), speed));
-				const damage = battle.damage(battle.actions.getDamage(own, foe, 'tackle'), foe, own, battle.dex.getActiveMove('tackle'));
-				const normal = baseline.damage(baseline.actions.getDamage(base, baseline.p2.active[0], 'tackle'), baseline.p2.active[0], base, baseline.dex.getActiveMove('tackle'));
-				assert(Math.abs(damage / normal - offense) < .04);
+				// A stat boost belongs inside the damage formula, not in an extra final-damage multiplier.
+				base.storedStats.atk = own.getStat('atk');
+				base.storedStats.spa = own.getStat('spa');
+				for (const move of ['tackle', 'psychic', 'seismictoss']) {
+					assert.equal(battle.actions.getDamage(own, foe, move),
+						baseline.actions.getDamage(base, baseline.p2.active[0], move), move);
+				}
 				const info = own.getSwitchRequestData().rogueAbilityInfo;
 				assert.equal(info.training.atk, .08); assert.equal(info.training.def, .04);
-				assert.equal(info.mentor.damage, Math.round((offense - 1) * 100));
+				assert.equal(info.mentor.offense, Math.round((offense - 1) * 100));
 				assert.equal(info.mentor.text, mentorCardAtFloor(kind, 20).text);
 				battle.sendUpdates(); const index = battle.log.findIndex(l => l.startsWith('|-rogueinfo|'));
 				assert.equal(battle.log[index - 1], '|split|p1'); assert.equal(battle.log[index + 1], '');
@@ -54,7 +60,7 @@ describe('Fantasy Rogue boss support revision', () => {
 			const battle = fight(kind);
 			try {
 				battle.p1.active[0].storedStats.spe = 100;
-				battle.p2.active[0].storedStats.spe = 150;
+				battle.p2.active[0].storedStats.spe = 170;
 				if (priority) battle.p2.active[0].moveSlots[0] = {move: 'Quick Attack', id: 'quickattack', pp: 30, maxpp: 30, target: 'normal', disabled: false, used: false};
 				if (trickRoom) battle.field.addPseudoWeather('trickroom', battle.p2.active[0]);
 				const start = battle.log.length;

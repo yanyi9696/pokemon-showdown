@@ -1,11 +1,13 @@
-import { BLESSING_STAGES, BLESSING_TYPES, STAGED_BLESSING_FAMILIES, blessingTitle, blessingStage,
+import { BLESSING_STAGES, BLESSING_TYPES, EMBLEM_HELP, STAGED_BLESSING_FAMILIES, blessingTitle, blessingStage,
 	blessingCoins, medicRecovery, lateBlessingReward, emblemDescription, taskRewardTier, type BlessingDefinition } from '../../sim/rogue-blessing-data';
-import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceText, companionGiftOptions, type CompanionID } from '../../sim/rogue-companions';
+import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceText, type CompanionID } from '../../sim/rogue-companions';
 import { tonicDescription } from '../../sim/rogue-blessing-permanent';
 import { bracketMoveCategories } from './move-categories';
 
 /** Supplies without a standard held-item Dex entry still use their Rogue rules in reference help. */
 export const BLESSING_SUPPLY_HELP = [
+	{ id: 'rogueemblemhelp', name: '属性转', description: EMBLEM_HELP },
+	...Object.entries(BLESSING_TYPES).map(([type, name]) => ({ id: 'rogueemblem' + type.toLowerCase(), name: name + '属性转', description: emblemDescription(type) })),
 	{ id: 'roguefantasyshard', name: '幻想碎片', description: '每集齐 100 片，可让一名符合条件的伙伴幻想化。碎片可继续积攒，本局使用。' },
 	{ id: 'rogueexpcandy', name: '经验糖果', description: '为选定伙伴增加经验；具体经验量由 XS、S、M、L、XL 规格决定。' },
 	{ id: 'rogueterashard', name: '太晶碎片', description: '按属性存入背包。同一属性集齐 50 片，可在战斗外将一名伙伴的太晶属性改为该属性；不会直接解锁太晶化系统。' },
@@ -15,10 +17,10 @@ export const BLESSING_SUPPLY_HELP = [
 ];
 
 /** Player copy shared by selection cards, the codex, owned blessings and new clear cards. */
-export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSecret = false) {
+export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSecret = false, lockedType?: string) {
 	let text = def.text;
 	if (def.family === 'money' || def.family === 'bigmoney') text = `立即获得 ${blessingCoins(def.family, floor || 1)} 金币。`;
-	if (def.family === 'medic') text = `每场战斗结束后，存活伙伴恢复 ${medicRecovery(floor || 1)}% 最大 HP，并解除异常状态。与【进球休息】互斥。`;
+	if (def.family === 'medic') text = `每次战斗获胜后，存活伙伴恢复 ${medicRecovery(floor || 1)}% 最大 HP，并解除异常状态。与【进球休息】互斥。`;
 	if (['battletask', 'eventtask'].includes(def.family)) {
 		const reward = taskRewardTier(floor || 1), grade = reward.candy.slice(8).toUpperCase();
 		const candy = `【经验糖果 ${grade}】×${reward.candyCount}`;
@@ -38,12 +40,12 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 	}
 	if (['wine', 'cephalosporin'].includes(def.family)) text = `获得 1 份【${def.name}】，使用后消耗。` + tonicDescription(def.family, tonicSecret);
 	if (def.emblem && def.type) {
-		text = '获得 1 个' + emblemDescription(def.type) + (def.family === 'typexp' ?
-			`${BLESSING_TYPES[def.type]}属性伙伴的对战经验提升 30%。` :
+		text = `获得【${BLESSING_TYPES[def.type]}属性转】×1。` + (def.family === 'typexp' ?
+			`${BLESSING_TYPES[def.type]}属性伙伴的对战经验提升 50%。` :
 			`全队${BLESSING_TYPES[def.type]}属性招式威力提升 50%；本场每有同属性伙伴倒下一次，再增加 5 个百分点，复活后再次倒下同样计数。`);
 	}
 	if (def.family === 'typeevolution' && def.type === 'Fighting') text = text.replace('第 50／100／150 层可重选方向并立即强化', '第 50／100／150 层先按原方向强化，再重选方向并立即额外强化一次');
-	if (def.family === 'regis') text += '属性转不占道具位、可取下；赋予后改变副属性，并开放五个对应招式。';
+	if (def.family === 'regis') text = text.replace(/(?<!【)属性转/g, '【属性转】');
 	const reward = lateBlessingReward(def.family, floor || 1);
 	if (reward.treasure) text += '立即获得【藏宝袋】×1，随机开出 3～6 组物资，层数越高越丰厚。';
 	if (reward.toolboxes) text += `立即获得【${reward.advanced ? '高级工具箱' : '工具箱'}】×${reward.toolboxes}，每个可从四件随机装备中选一件。`;
@@ -51,12 +53,18 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 		text = text.replace(/累计[^。]*【同行训练家的赠礼】。/g, '');
 		text = text.replace(/，偏好[^。]*。/g, '。');
 		const people = (Object.keys(COMPANIONS) as CompanionID[]).filter(id => COMPANIONS[id].family === def.family);
-		text += '事件、遭遇、奖励等区域出现选项时，均可咨询同行训练家的意见。' + people.map(companionPreferenceText).join('');
-		text += '同行、专属奇遇与偏好回应会积累本局好感度；达到 50／100 时每局各获得一次专属赠礼与对话，新旅途重新积累。旅途中还会偶尔分享小补给，原有同行条件不变。';
+		text += '\n路线或遭遇出现选项时，可咨询同行训练家的意见。' + people.map(companionPreferenceText).join('');
+		text += '\n同行、专属奇遇与偏好回应提升本局好感度。达到 50／100 点，各触发一次专属赠礼与对话；新一局重新积累。旅途中还可能获赠少量补给。';
+	}
+	if (text.includes('最强')) {
+		text += '\n' + (['dragonking', 'veteransniper'].includes(def.family) ?
+			'“最强”按符合条件的在队伙伴的六项常驻能力值总和判定，不计战斗中的临时能力变化；相同时取较早入队者。' :
+			'“最强”在符合条件的在队伙伴中，依次比较等级、努力值总和、个体值总和与亲密度；均相同时取较早入队者。');
 	}
 	// These are explicit supply names, not an unrestricted word matcher (e.g. ordinary “免疫”).
 	text = text.split(/(【[^】]+】)/g).map(part => part.startsWith('【') ? part :
 		part.replace(/幻想碎片|太晶碎片|经验糖果|小蘑菇|大蘑菇|芳香蘑菇|土地云/g, name => `【${name}】`)).join('');
+	if (def.family === 'unity' && lockedType) text = `锁定属性：${BLESSING_TYPES[lockedType] || lockedType}。\n${text}`;
 	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name, text: bracketMoveCategories(text) };
 }
 
@@ -75,10 +83,11 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		if (types.length === 2) notes.push(`队内分别有${types.map(t => BLESSING_TYPES[t] + '系').join('与')}伙伴时更容易出现`);
 	}
 	const conditions: Record<string, string[]> = {
+		monkeyking: ['队伍需有【烈焰猴】，幻想形态同样符合'],
+		unity: ['队伍需有至少两名非蛋伙伴，且所有非蛋伙伴拥有共通属性；多个共通属性可自选其一'],
 		galarlegend: ['队伍需有【无极汰那】'], originaldragon: ['队伍需有【酋雷姆】'],
-		reorganizer: ['仅第 50 层出现', '队伍中不能有蛋、尚未解除融合或已使用【五号化合物】的伙伴'],
+		reorganizer: ['队伍需有至少一位可参与重组、尚未满星的伙伴'],
 		ghidorah: ['队伍需有【三首恶龙】，幻想形态同样符合'],
-		youngprodigy: ['仅第 1 层出现'],
 		latebloom: ['队伍需有大器晚成谱系伙伴，幼年、地区与幻想形态同样符合；蛋不计入'],
 		killlagirl: ['第 150 层及以后', '需同时拥有【神衣鲜血】和【神衣纯洁】；出现彩色选项时保证包含本祝福'],
 		speedpower: ['队伍需有尚未拥有【加速】的伙伴'],
@@ -90,7 +99,6 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 		swords: ['队伍需有【勾帕路翁】、【代拉基翁】或【毕力吉翁】'],
 		topclearmind: ['需已获得【聚集的祈愿】，且此后未在战斗外更换队员'],
 		railgun: ['队伍需有可合法学习【电磁炮】的伙伴'],
-		detect: ['队伍需有当前可更换招式中包含【看穿】的伙伴'],
 		rulebreaker: ['队伍需有主特性或额外特性为【破格】的伙伴'],
 		hazards: ['队伍需有尚未拥有【岩布阵】的伙伴'],
 		toxic: ['队伍需有尚未拥有【不仁不义】的伙伴'],
@@ -103,11 +111,11 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 	if (def.family === 'friend') notes.push('当前等级需有本局尚未获得的合法赠送伙伴');
 	if (def.family === 'typeevolution') notes.push(`当前等级需有可获得的${BLESSING_TYPES[def.type!]}系伙伴`);
 	if (def.family === 'overtime') notes.push('当前等级需有符合该天气、场地或招式要求的合法伙伴');
-	if (def.emblem) notes.push('与其他赋予属性转的祝福互斥');
+	if (def.emblem && def.family !== 'regis') notes.push('与其他赋予属性转的祝福互斥，【传说的巨人们】除外');
 	return notes;
 }
 
 const nameCollator = new Intl.Collator('zh-CN-u-co-pinyin', { sensitivity: 'base', ignorePunctuation: true, numeric: true });
-export function compareBlessingNames(a: {name: string, variantFloor?: number}, b: {name: string, variantFloor?: number}) {
+export function compareBlessingNames(a: { name: string, variantFloor?: number }, b: { name: string, variantFloor?: number }) {
 	return nameCollator.compare(a.name.replace(/\++$/, ''), b.name.replace(/\++$/, '')) || (a.variantFloor || 0) - (b.variantFloor || 0);
 }

@@ -140,7 +140,8 @@ describe('Rogue compact beta revision', function () {
 			cmd('mentorcard', { value: 'attack' });
 			cmd('continue');
 			assert.equal(saved().run.mentorCard.floor, floor + 1);
-			assert.equal(mentorCardAtFloor('attack', floor + 1).damage, mentorCardAtFloor('attack', 20).damage);
+			assert.equal(mentorCardAtFloor('attack', floor + 1).offense, 100);
+			assert.equal(mentorCardAtFloor('attack', floor + 1).offense, mentorCardAtFloor('attack', 20).offense);
 		});
 	it('exchanges reward budget for useful items rather than multiplying payouts or rerolling routes', () => {
 		const reward = { money: 0, items: { tinymushroom: 3 } };

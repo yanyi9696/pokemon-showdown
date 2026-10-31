@@ -49,8 +49,17 @@ export function sharedRogueItemData(mon: Pokemon, item: Item): Item & ItemData {
 }
 /** Return true for renewable items; otherwise spend the shared charge for the entire family. */
 export function consumeRogueItem(mon: Pokemon, item: Item): boolean {
-	if (hasBlessing(mon, 'renewable')) return true;
-	if (!mouseFamilyActive(mon) || !shareableRogueItem(item)) return false;
+	if (hasBlessing(mon, 'renewable') && !mon.m.rogueRenewableUsed) {
+		mon.m.rogueRenewableUsed = true;
+		return true;
+	}
+	const shared = mouseFamilyActive(mon) && shareableRogueItem(item);
+	if (item.id === 'weaknesspolicy' && mon.side.id === 'p1' && hasBlessing(mon, 'weakness')) {
+		const count = shared ? mon.side.pokemon.filter(owner => physicalItem(owner) === item.id).length : 1;
+		const state = mon.battle.fantasyRogue!;
+		state.weaknessPoliciesSpent = (state.weaknessPoliciesSpent || 0) + count;
+	}
+	if (!shared) return false;
 	for (const owner of mon.side.pokemon) {
 		if (physicalItem(owner) !== item.id) continue;
 		if (owner.m.rogueBlessing) owner.m.rogueBlessing.consumed = item.id;

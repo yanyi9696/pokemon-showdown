@@ -8,7 +8,6 @@ import { toID } from './dex';
 import { captureThresholds, rogueSpeciesData } from './fantasy-rogue-rules';
 import { blessingProgress, hasBlessing, failedTrainerCapture, battleDragonKing } from './fantasy-rogue-blessings';
 import { savedRogueStatuses } from './fantasy-rogue-status';
-import { mentorCardProfile } from './rogue-mentor';
 import { snapshotEvolutionProgress } from './rogue-evolution-progress';
 
 export const ROGUE_FORMAT = 'gen9fantasyrogue';
@@ -53,6 +52,8 @@ export interface RoguePokemon {
 	extraAbilities?: string[];
 	/** A removable type emblem has its own slot, independent of the held item. */
 	emblem?: string;
+	/** Dual-type slot replaced by the emblem; old saves keep the second slot. */
+	emblemSlot?: 0 | 1;
 	/** Temporary learning permissions are kept apart from permanently learned moves. */
 	blessingMoves?: string[];
 	blessingPP?: { id: string, pp: number, maxpp: number }[];
@@ -92,6 +93,8 @@ export interface RogueDefeat {
 }
 
 export interface RogueBattleState {
+	/** Actual physical policies consumed by the player's party; never counts transfers or renewable uses. */
+	weaknessPoliciesSpent?: number;
 	echo?: import('./rogue-echo').EchoUpgrades;
 	collapseGasEnded?: boolean;
 	collapseGasElapsed?: number;
@@ -173,7 +176,6 @@ export function rogueEventDamage(damage: number, target: Pokemon, source: Pokemo
 		effect.effectType !== 'Move' || effect.ohko || effect.damage || effect.damageCallback ||
 		!source || source.isAlly(target)) return damage;
 	const buff = (mon: Pokemon) => mon.side.id === 'p1' ? state.eventBuff : state.duel?.eventBuff;
-	if (source.side.id === 'p1' && state.mentorCard) damage *= 1 + mentorCardProfile(state.mentorCard, state.mentorTier).damage / 100;
 	if (source.side.id === 'p1' && state.comebackCard) damage *= 1.25;
 	if (buff(source)) damage *= 1.2;
 	if (buff(target)) damage *= 0.9;
@@ -219,6 +221,7 @@ export function initializeRogueBattle(battle: Battle) {
 	if (!state) throw new Error('幻想杯肉鸽必须从冒险存档进入。');
 	state.participants = {};
 	state.selfDestructed = [];
+	state.weaknessPoliciesSpent = 0;
 	state.defeated = [];
 	state.blessingProgress = { kos: [], swords: 0, insight: {} };
 	if (state.boss?.kind === 'arceus') battle.add('-message', '神之挑战：阿尔宙斯拥有十九条生命。当前为第 1 / 19 条生命。');
@@ -428,6 +431,9 @@ export function throwRogueBall(battle: Battle, id: string) {
 
 export function rogueBattleResult(battle: Battle): RogueBattleResult {
 	const state = battle.fantasyRogue!;
+	// Produce a pure snapshot: previews and repeated serialization cannot issue an extra refund.
+	const bag = { ...state.bag };
+	if (state.weaknessPoliciesSpent) bag.weaknesspolicy = (bag.weaknesspolicy || 0) + state.weaknessPoliciesSpent;
 	return {
 		turns: battle.turn, allySurvived: battle.p3?.pokemon.some(mon => mon.hp > 0),
 		collapseMetrics: state.collapseMetrics && structuredClone(state.collapseMetrics),
@@ -438,7 +444,7 @@ export function rogueBattleResult(battle: Battle): RogueBattleResult {
 			const mon = battle.p1.pokemon.find(entry => entry.set.fantasyRogueId === saved.id)!;
 			return snapshotRoguePokemon(mon, saved);
 		}),
-		bag: { ...state.bag }, captured: state.captured && structuredClone(state.captured),
+		bag, captured: state.captured && structuredClone(state.captured),
 		captures: state.captures && structuredClone(state.captures),
 		defeated: state.defeated && structuredClone(state.defeated),
 		blessingProgress: structuredClone(blessingProgress(battle)),

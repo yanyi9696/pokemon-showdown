@@ -11,6 +11,7 @@ import { beginAuction } from './auction';
 import { BUYBACK_FLOOR } from './buyback';
 import { nextShopGrade } from './shopping-upgrade';
 import { collapseShopPrice } from './collapse';
+import { natureMintPrice } from './nature-mints';
 
 const dex = Dex.mod('gen9fantasy');
 export const TRADE_NAMES = { buyback: '原价回收摊位', mushroom: '蘑菇收藏家', mint: '薄荷商店', candy: '经验糖果商店', machine: '招式学习机商店', growth: '训练营', auction: '落槌之前', balls: '宝可梦球商店', crowns: '王冠商店' };
@@ -22,8 +23,9 @@ export function tradeKind(floor: number, random: RogueRandom): keyof typeof TRAD
 	if (floor >= 51 && specialist < (floor >= 121 ? 36 : 34)) return 'crowns';
 	if (floor >= 31 && random(100) < 20) return 'auction';
 	const roll = random(100);
+	if (floor >= 101) return roll < 30 ? 'growth' : roll < 54 ? 'candy' : roll < 85 ? 'machine' : 'mint';
 	if (floor >= 51) {
-		const growthWeight = floor <= 100 ? 30 : 46;
+		const growthWeight = 30;
 		if (roll < growthWeight) return 'growth';
 		const next = (roll - growthWeight) / (100 - growthWeight);
 		return next < 0.45 ? 'candy' : next < 0.8 ? 'machine' : 'mint';
@@ -148,8 +150,8 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 			index = weighted.find(entry => { roll -= entry.weight; return roll < 0; })!.i;
 		}
 		const item = pool.splice(index, 1)[0];
-		const price = Math.round(budget * (trade.kind === 'mint' ? 0.6 : 0.75) / 50) * 50;
-		const adjusted = trade.kind === 'candy' ? CANDY_SHOP[item.id].price :
+		const price = Math.round(budget * 0.75 / 50) * 50;
+		const adjusted = trade.kind === 'mint' ? natureMintPrice(run.floor) : trade.kind === 'candy' ? CANDY_SHOP[item.id].price :
 			Math.ceil(price * 1.25 * (trade.kind === 'machine' ? 1 + Math.min(0.2, Math.max(0, run.floor - 30) / 500) : 1) / 10) * 10;
 		trade.stock.push({ ...item, price: Math.ceil(adjusted * (run.spirit === 'meowth' ? 1.25 : 1)),
 			shopFloor: 1, remaining: trade.kind === 'candy' ? Math.max(1, Math.floor(CANDY_SHOP[item.id].stock * candySupplyMultiplier(run.floor))) : 1 });

@@ -1,3 +1,5 @@
+import { rogueMetaStat } from './rogue-meta-growth';
+import { spindaConfused } from './rogue-spinda';
 /**
  * Simulator Pokemon
  * Pokemon Showdown - http://pokemonshowdown.com/
@@ -1127,7 +1129,7 @@ export class Pokemon {
 			...(this.set.fantasyRogueDifficulty && isRogueFormat(this.battle.format.id) ?
 				{ fantasyRogueDifficulty: this.set.fantasyRogueDifficulty } : {}),
 			...(this.set.fantasyRogueStats && isRogueFormat(this.battle.format.id) ?
-				{ fantasyRogueStats: { ...this.set.fantasyRogueStats } } : {}),
+				{ fantasyRogueStats: { ...this.set.fantasyRogueStats }, fantasyRogueBoostPercent: this.set.fantasyRogueBoostPercent } : {}),
 			stats: {
 				atk: this.baseStoredStats['atk'],
 				def: this.baseStoredStats['def'],
@@ -1380,9 +1382,11 @@ export class Pokemon {
 		const stats = this.battle.spreadModify(this.species.baseStats,
 			rogueModifiers ? { ...this.set, species: this.species.name } : this.set);
 		if (this.species.maxHP && !fusion) {
-			stats.hp = this.species.maxHP +
-				(rogueModifiers?.compound && species.bst <= 500 ? Math.floor(2 * (rogueModifiers.compoundBonus?.hp || 0) * this.level / 100) : 0) +
-				(isRogueFormat(this.battle.format.id) ? this.set.fantasyRogueStats?.hp || 0 : 0);
+			const compoundHP = rogueModifiers?.compound && (species.bst <= 500 || rogueModifiers.compoundReorganized) ?
+				Math.floor(2 * (rogueModifiers.compoundBonus?.hp || 0) * this.level / 100) : 0;
+			stats.hp = rogueMetaStat(this.species.maxHP + compoundHP,
+				isRogueFormat(this.battle.format.id) ? this.set.fantasyRogueStats?.hp || 0 : 0,
+				isRogueFormat(this.battle.format.id) && this.set.fantasyRogueBoostPercent);
 			if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueScale) {
 				stats.hp = Math.max(1, Math.floor(stats.hp * this.set.fantasyRogueScale));
 			}
@@ -2044,6 +2048,7 @@ export class Pokemon {
 			delete this.volatiles[status.id];
 			return result;
 		}
+		if (status.id === 'confusion' && this.battle.fantasyRogue) spindaConfused(this, source);
 		if (linkedStatus && source) {
 			if (!source.volatiles[linkedStatus.toString()]) {
 				source.addVolatile(linkedStatus, this, sourceEffect);
@@ -2218,7 +2223,7 @@ export class Pokemon {
         return weather;
     }
 
-	runEffectiveness(move: ActiveMove) {
+	runEffectiveness(move: ActiveMove, components?: { type: string, mod: number }[]) {
 		let totalTypeMod = 0;
 		if (this.terastallized && move.type === 'Stellar') {
 			totalTypeMod = 1;
@@ -2226,12 +2231,17 @@ export class Pokemon {
 			for (const type of this.getTypes()) {
 				let typeMod = this.battle.dex.getEffectiveness(move, type);
 				typeMod = this.battle.singleEvent('Effectiveness', move, null, this, type, move, typeMod);
-				totalTypeMod += this.battle.runEvent('Effectiveness', this, type, move, typeMod);
+				typeMod = this.battle.runEvent('Effectiveness', this, type, move, typeMod);
+				totalTypeMod += typeMod;
+				components?.push({ type, mod: typeMod });
 			}
 		}
 		if (this.species.name === 'Terapagos-Terastal' && this.hasAbility('Tera Shell') &&
 			!this.battle.suppressingAbility(this)) {
-			if (this.abilityState.resisted) return -1; // all hits of multi-hit move should be not very effective
+			if (this.abilityState.resisted) {
+				if (components) components.length = 0;
+				return -1; // all hits of multi-hit move should be not very effective
+			}
 			if (move.category === 'Status' || move.id === 'struggle' || !this.runImmunity(move.type) ||
 				totalTypeMod < 0 || this.hp < this.maxhp) {
 				return totalTypeMod;
@@ -2239,6 +2249,7 @@ export class Pokemon {
 
 			this.battle.add('-activate', this, 'ability: Tera Shell');
 			this.abilityState.resisted = true;
+			if (components) components.length = 0;
 			return -1;
 		}
 		return totalTypeMod;

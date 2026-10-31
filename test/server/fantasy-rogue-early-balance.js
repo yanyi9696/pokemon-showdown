@@ -5,10 +5,9 @@ const { Battle } = require('../../dist/sim');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine, createRoguePokemon } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
-const { CANDY_SHOP, mentorSupplies, towerExperience, grantEventTraining, routeCandyReward, eliteTreasureBudget, encounterCoins } = require('../../dist/server/fantasy-rogue/early-balance');
+const { CANDY_SHOP, mentorSupplies, towerExperience, grantEventTraining, routeCandyReward, eliteTreasureBudget } = require('../../dist/server/fantasy-rogue/early-balance');
 const { prepareTrade, tradeKind, machineMoves } = require('../../dist/server/fantasy-rogue/trading');
 const { prepareEconomy, TREASURES } = require('../../dist/server/fantasy-rogue/economy');
-const { expectedWildLoot } = require('../../dist/server/fantasy-rogue/events');
 const { eliteBossCandidates } = require('../../dist/server/fantasy-rogue/elite-bosses');
 const { storyView } = require('../../dist/server/fantasy-rogue/story');
 const { set, stats, commandAfterOpening } = require('../fixtures/fantasy-rogue');
@@ -17,10 +16,9 @@ describe('Fantasy Rogue early growth and preparation', function () {
 	this.timeout(15000);
 	let content;
 	before(() => { content = createPreviewContent(); });
-	it('keeps actual first-elite EVs at zero, reduces only its base level, and preserves later elites', () => {
-		assert(eliteBossCandidates(10).every(mon => mon.level === 8));
-		assert(eliteBossCandidates(30).every(mon => mon.level === Math.max(20,
-			require('../../dist/server/fantasy-rogue/evolution').minimumEvolutionLevel(mon.species))));
+	it('keeps authored elite levels at the floor baseline with zero EVs', () => {
+		assert(eliteBossCandidates(10).every(mon => mon.level === 10));
+		assert(eliteBossCandidates(30).every(mon => mon.level === 20));
 		for (const enemy of eliteBossCandidates(10)) {
 			const mon = createRoguePokemon(set(), stats(0));
 			const battle = new Battle({ formatid: 'gen9fantasyrogue', seed: [1, 2, 3, 4],
@@ -97,23 +95,23 @@ describe('Fantasy Rogue early growth and preparation', function () {
 				// Remove the approved 81/101/141 support steps when checking the underlying curve.
 				const support = floor <= 80 ? 1 : floor <= 100 ? 1.15 : floor <= 140 ? 1.25 : 1.35;
 				const normalized = value / support;
-				if (floor > 1) assert(normalized - previousNormalized <= 200 + 12 * floor * (kind === 'trainer' ? 1.6 : kind === 'reward' ? .2 : 1));
+				if (floor > 1) assert(normalized - previousNormalized <= 200 + 12 * floor * (kind === 'trainer' ? .9 : kind === 'reward' ? .2 : 1));
 				for (const id of Object.keys(items)) assert(CANDY_SHOP[id].floor <= floor);
 				previous = value;
 				previousNormalized = normalized;
 			}
 		}
-		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [100, 100, 400, 900, 1900]);
+		assert.deepEqual([1, 10, 20, 30, 40].map(f => exp(routeCandyReward(f, 'elite'))), [100, 200, 600, 1100, 2000]);
 		for (const [floor, elite, trainer, reward] of [
-			[80, 12200, 19600, 2400], [81, 14600, 23300, 2900],
-			[100, 26500, 42300, 5300], [101, 29600, 47400, 5900],
-			[140, 79000, 126300, 15800], [141, 87200, 139500, 17400], [200, 220700, 353100, 44100],
+			[80, 11600, 10500, 2300], [81, 13800, 12500, 2800],
+			[100, 25100, 22600, 5000], [101, 28100, 25300, 5600],
+			[140, 75000, 67500, 15000], [141, 82800, 74500, 16600], [200, 209700, 188700, 41900],
 		]) {
 			assert.deepEqual(['elite', 'trainer', 'reward'].map(kind => exp(routeCandyReward(floor, kind))), [elite, trainer, reward]);
 		}
 		for (let f = 1; f <= 200; f++) {
-			assert(exp(routeCandyReward(f, 'trainer')) >= exp(routeCandyReward(f, 'elite')));
-			assert(encounterCoins(f) > eliteTreasureBudget(f) + expectedWildLoot(f));
+			assert(exp(routeCandyReward(f, 'trainer')) <= exp(routeCandyReward(f, 'elite')));
+			assert(exp(routeCandyReward(f, 'trainer')) >= exp(routeCandyReward(f, 'reward')));
 		}
 	});
 	it('caps event aid to one payout and excludes loss, leave and memory battles', () => {
@@ -121,7 +119,8 @@ describe('Fantasy Rogue early growth and preparation', function () {
 			const run = { floor, money: 0, bag: {}, node: { name: '见闻', event: { settled: true, trainingAidBlocked: blocked } } };
 			grantEventTraining(run); const before = structuredClone(run); grantEventTraining(run);
 			assert.deepEqual(run, before);
-			assert.equal(Object.keys(run.bag).length, 0); assert.equal(run.money > 0, !blocked);
+			assert.equal(Object.keys(run.bag).length > 0, !blocked); assert.equal(run.money > 0, !blocked);
+			if (!blocked) assert.deepEqual(run.lastReward.items, run.bag);
 		}
 	});
 	it('improves candy EXP per coin by grade and persists stock across reloads', () => {

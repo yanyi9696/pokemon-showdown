@@ -1,12 +1,23 @@
+import { currentBlessingMoves, blessingMoveWeight } from './blessing-move-weight';
+import { SPIRAL_STONE } from '../../sim/rogue-awakening';
+import { NUMBER_PRIZES } from './number-prizes';
+import {
+	encounterBlessingLevels, deferBlessingLevels, activateBlessingLevels,
+	blessingLevelStart, blessingLevelsAt, type DeferredBlessingLevels,
+} from './blessing-levels';
+import { RogueBiomes } from './biome-data';
+import { affectionBenefits } from '../../sim/rogue-affection';
 import { rollEchoShiny } from './echo';
 import { giveTeraShards, migrateTeraShards, teraShardID } from './tera-shards';
 import { qualityTier, rareEncounterScale } from './encounter-quality';
 import { rivalBlessingAllowed } from './rivals';
 import { blessingSpeciesID } from '../../sim/rogue-species-identity';
+import { weaknessProfile } from '../../sim/rogue-weakness';
+import { sharedPartyTypes, unityState } from '../../sim/rogue-unity';
 import { LATE_BLOOMERS, lateBloomer, finalLateBloomer, teamBlessingStats, lateBloomerSynergy } from '../../sim/rogue-late-bloomers';
 import { eggView } from './eggs';
 import { randomSpeciesEligible } from './species-eligibility';
-import { candyAtFloor, journeyCoins } from './early-balance';
+import { candyAtFloor } from './early-balance';
 import { experienceAtLevel, rogueSpeciesData, rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
 import { mushroomGift, mushroomPayoffs } from './mushroom-feeding';
 import { grantCompanion } from './companions';
@@ -20,7 +31,7 @@ import { TeamValidator } from '../../sim/team-validator';
 import { Format } from '../../sim/dex-formats';
 import { ROGUE_STATS, type RoguePokemon, type RogueBattleResult } from '../../sim/fantasy-rogue';
 import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
-import { ROGUE_BLESSINGS, BLESSING_TYPES, EMBLEM_PREFIX, EMBLEM_MOVES, FANTASY_BLESSING_ITEMS, ELECTRIC_MOUSE_FAMILY, inBlessingFamily,
+import { ROGUE_BLESSINGS, NUMBER_BLESSING_RULES, BLESSING_TYPES, EMBLEM_PREFIX, EMBLEM_MOVES, FANTASY_BLESSING_ITEMS, ELECTRIC_MOUSE_FAMILY, inBlessingFamily,
 	TYPE_EVOLUTION_EXTRAS, blessing, blessingTitle, blessingLevelCost, addPsychicCharge, ownsBlessing, emblemType,
 	blessingStage, blessingCoins, medicRecovery, treasureBudget, lateBlessingReward, OVERTIME_ABILITIES, emblemDescription, taskRewardTier,
 	type BlessingEffects, type OwnedBlessing, type BlessingDefinition } from '../../sim/rogue-blessing-data';
@@ -56,7 +67,7 @@ const regis = ['Regirock', 'Regice', 'Registeel', 'Regieleki', 'Regidrago'];
 const regiTypes = ['Rock', 'Ice', 'Steel', 'Electric', 'Dragon'];
 function requireRule(ok: unknown, message: string): asserts ok { if (!ok) throw new Error(message); }
 export interface BlessingReward {
-	id: string; title: string; kind: 'gift' | 'toolbox' | 'item' | 'target' | 'starter' | 'ability' | 'tera' | 'stone' | 'system' | 'systemfallback' | 'compound' | 'solo';
+	id: string; title: string; kind: 'gift' | 'toolbox' | 'item' | 'target' | 'starter' | 'ability' | 'tera' | 'stone' | 'system' | 'systemfallback' | 'compound' | 'solo' | 'unity';
 	text?: string;
 	compound?: { member?: string, final?: string };
 	pokemon?: RoguePokemon; options?: string[]; blessing?: string;
@@ -66,6 +77,8 @@ export interface RogueBlessings extends BlessingEffects {
 	dragonCharges?: string[];
 	dragonEncounters?: string[];
 	numberSettled?: string[];
+	/** A run-wide receipt; repeated battles and reloads cannot pay another prize. */
+	numberPrizeClaimed?: boolean;
 	fusionReadyFloor?: number;
 	powerTrainingReward?: boolean;
 	awakeningBattles?: string[]; awakeningLegends?: string[]; spiralStone?: boolean;
@@ -73,6 +86,7 @@ export interface RogueBlessings extends BlessingEffects {
 	speedBoostOffered?: boolean;
 	godrobeGiftUpdated?: boolean;
 	version: 1; levels: number; bossLevels?: number; round?: BlessingRound;
+	deferredLevels?: DeferredBlessingLevels[];
 	qualityRerolled?: boolean;
 	/** Only new adventures opt in; never insert an opening round into an existing save. */
 	beforeAdventure?: boolean;
@@ -86,7 +100,7 @@ export interface RogueBlessings extends BlessingEffects {
 	shards: number; candy: number; swordUses: number; swordRewards: string[];
 	/** Intrinsic Meltan progress; retained here for compatibility with existing saves. */
 	candyDefeated?: string[];
-	regis: string[]; regiBoss?: boolean; regiReward?: boolean;
+	regis: string[]; regiBoss?: boolean; regiReward?: boolean; regiBonusMilestones?: number[];
 	wishStar?: boolean; pandoraFloor?: number;
 	bondBattles: string[];
 	psychicLosses?: string[];
@@ -153,6 +167,9 @@ export function normalizeBlessings(run: RogueRun) {
 		defeated: [], caught: [], nextJoin: 0, shards: 0, candy: 0, swordUses: 0, swordRewards: [], regis: [], bondBattles: [] };
 	// Preserve already-paid costs in old saves; only later selections use the new split costs.
 	state.bossLevels ??= state.levels;
+	activateBlessingLevels(run);
+	// A legacy final-boss payout already included every migrated milestone reward.
+	state.regiBonusMilestones ??= state.regiReward ? [1, 2, 3, 4, 5] : [];
 	// Checkpoints own their own inventory. Migrating one must not duplicate items in another.
 	for (const inventory of [run, run.checkpoint].filter(Boolean)) {
 		for (const mon of [...inventory.team, ...(inventory.box || []), ...(inventory === run ?
@@ -166,6 +183,9 @@ export function normalizeBlessings(run: RogueRun) {
 	}
 	for (const mon of [...run.team, ...(run.box || [])]) {
 		if (mon.egg) continue;
+		if (ownsBlessing(state, 'bond') || ownsBlessing(state, 'starters') && isStarterFamily(mon.set.species)) {
+			mon.bond ??= 0; mon.bondReady ||= (mon.set.happiness ?? 255) >= 255;
+		}
 		if (!ownsBlessing(state, 'insight')) delete mon.insight;
 		if (mon.joinOrder === undefined) mon.joinOrder = state.nextJoin++;
 		if (!state.caught.includes(toID(mon.set.species))) state.caught.push(toID(mon.set.species));
@@ -256,12 +276,15 @@ export function strongestMember(team: RoguePokemon[], baseSpecies: string) {
 export function blessingCandidates(run: RogueRun, content: RogueContent) {
 	const state = normalizeBlessings(run);
 	const has = (id: string) => ownsBlessing(state, id);
+	const currentMoves = currentBlessingMoves(run.team);
 	return ROGUE_BLESSINGS.filter(def => {
+		if (def.family === 'unity' && !sharedPartyTypes(run.team.filter(mon => !mon.egg).map(permanentMemberTypes)).length) return false;
 		if (def.family === 'galarlegend' && !strongestMember(run.team, 'Eternatus')) return false;
 		if (def.family === 'originaldragon' && !strongestMember(run.team, 'Kyurem')) return false;
-		if (def.family === 'reorganizer' && run.team.some(mon => mon.egg || mon.fusion || mon.formFusion || mon.compound)) return false;
-		if (def.family === 'reorganizer' && !run.team.some(mon => (mon.stars || 1) < 5)) return false;
+		if (def.family === 'reorganizer' && !run.team.some(mon =>
+			!mon.egg && !mon.fusion && !mon.formFusion && (mon.stars || 1) < 5)) return false;
 		if (def.family === 'ghidorah' && !strongestMember(run.team, 'Hydreigon')) return false;
+		if (def.family === 'monkeyking' && !strongestMember(run.team, 'Infernape')) return false;
 		if (def.family === 'youngprodigy' && has('latebloom') || def.family === 'latebloom' && has('youngprodigy')) return false;
 		if (def.family === 'latebloom' && !run.team.some(mon => !mon.egg && lateBloomer(mon.set.species))) return false;
 		if (def.family === 'bignumber' && has('supernumber')) return false;
@@ -271,7 +294,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 		if (!companionAvailable(def.family, run.team.filter(mon => !mon.egg), state) || !rivalBlessingAllowed(run, def.family)) return false;
 		if (def.floors && !def.floors.includes(run.floor)) return false;
 		if (def.family === 'killlagirl' && !(run.floor >= 150 && has('godrobe') && has('puregodrobe'))) return false;
-		if (def.emblem && state.owned.some(entry => blessing(entry.id)?.emblem)) return false;
+		if (def.emblem && def.family !== 'regis' && state.owned.some(entry => entry.family !== 'regis' && blessing(entry.id)?.emblem)) return false;
 		if (def.family === 'coin' && run.spirit === 'zygardeorder') return false;
 		if (def.family === 'pandorasilver' && has('pandoragold') || def.family === 'pandoragold' && has('pandorasilver')) return false;
 		if (['singer', 'dancer'].includes(def.family) && (!strongestMember(run.team, 'Meloetta') ||
@@ -280,9 +303,6 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 		if (def.family === 'topclearmind' && (!state.prayer || state.prayer.changed)) return false;
 		if (def.family === 'medic' && has('restinball') || def.family === 'restinball' && has('medic')) return false;
 		if (def.family === 'railgun' && !run.team.some(canLearnZapCannon)) return false;
-		if (def.family === 'detect' && !run.team.some(mon => !mon.egg &&
-			[...mon.set.moves.map(toID), ...(mon.moveMemory || []).map(move => move.id),
-				...(mon.blessingMoves || [])].includes('detect'))) return false;
 		if (def.family === 'compound' && !run.team.some(mon => compoundFinals(mon).length)) return false;
 		if (def.family === 'rulebreaker' && !run.team.some(mon => memberHasMoldBreaker(mon, run.team, state))) return false;
 		if (def.family === 'typeevolution' && !giftPool(run, content, def.type).length) return false;
@@ -296,7 +316,7 @@ export function blessingCandidates(run: RogueRun, content: RogueContent) {
 	}).map(def => {
 		let weight = run.previousBlessings?.includes(def.id) ? 20 : 100;
 		weight *= companionAppearance(def.family, run.team);
-		if (def.family === 'bond') weight *= Math.min(6, run.team.filter(mon => mon.initialPartner).length || run.team.length) / 6;
+		weight *= blessingMoveWeight(def, currentMoves);
 		return { ...def, appearanceWeight: Math.max(1, Math.round(weight)) };
 	});
 }
@@ -522,7 +542,8 @@ export function syncBlessingParty(run: RogueRun) {
 		const defaults = defaultCatAbilities(mon), selected = (state.catAbilities ||= {})[mon.id] ||= defaults;
 		for (let i = 0; i < selected.length; i++) if (selected[i] === toID(mon.set.ability)) selected[i] = defaults[i];
 	}
-	if (has('spiral') && run.floor >= 100 && !state.spiralStone) {
+	if (has('spiral') && !state.spiralStone && [...run.team, ...(run.box || [])].some(mon =>
+		mon.id === has('spiral')?.target && (mon.spiral || 0) >= SPIRAL_STONE)) {
 		state.spiralStone = true; give(run, 'excadrite'); grantSystem(run, 'mega', '钻头的力量', false);
 		(run.notices ||= []).push('【我的钻头是可以突破天际的】获得龙头地鼠进化石，超进化系统已解锁。');
 	}
@@ -549,6 +570,7 @@ export function syncBlessingParty(run: RogueRun) {
 		if (run.team.includes(mon)) extra.push(...mouseMoves);
 		if (type) extra.push(...EMBLEM_MOVES[type]);
 		if (has('dancer') && meloetta?.id === mon.id) extra.push('victorydance');
+		if (has('singer') && meloetta?.id === mon.id) rememberMove(mon, 'raoliangzhiyin');
 		if (has('meltan') && melmetal?.id === mon.id) {
 			extra.push('doubleironbash');
 			if (dex.species.get(mon.set.species).forme.includes('Fantasy')) {
@@ -572,15 +594,16 @@ export function syncBlessingParty(run: RogueRun) {
 		}
 		if (!mon.set.moves.length) mon.set.moves = [mon.moveMemory?.[0]?.id || 'struggle'];
 		const firstType = ghidorah && ghidorah.id === mon.id ? '???' : undefined;
-		const modifiers = { ...(mon.mintNature ? { nature: mon.mintNature } : {}), emblem: mon.emblem,
-			teamBlessings: teamBlessingStats({ ...mon, statModifiers: { ...mon.statModifiers, firstType } }, state, synergy),
+		const modifiers = { ...(mon.mintNature ? { nature: mon.mintNature } : {}), emblem: mon.emblem, emblemSlot: mon.emblemSlot,
+			teamBlessings: teamBlessingStats(synergy),
 			...(firstType ? { firstType } : {}),
 			...(mon.fusion ? { fusion: { baseStats: mon.fusion.baseStats, types: mon.fusion.types } } : {}),
 			...(growthModifiers(run, mon) ? { training: growthModifiers(run, mon) } : {}),
 			smallFinal: !!has('smallfinal'), swap: !!has('swapstats'), hp: mon.bonusHP || 0,
 			...(mon.compound || duck && duck.id === mon.id ? { baseStats: { ...mon.compound?.bonus,
 				...(duck?.id === mon.id ? {spa: (mon.compound?.bonus.spa || 0) + 20, spe: (mon.compound?.bonus.spe || 0) + 20} : {}) } } : {}),
-			...(mon.compound ? { compound: true, compoundBonus: { ...mon.compound.bonus } } : {}),
+			...(mon.compound ? { compound: true, compoundBonus: { ...mon.compound.bonus },
+				...(mon.compound.reorganized ? { compoundReorganized: true } : {}) } : {}),
 			...(duck && duck.id === mon.id ? { extraType: 'Psychic' } : {}),
 			stats: { ...state.evolution?.stats }, ...(state.evolution ? { statsType: state.evolution.type } : {}) };
 		if (promoted || oldMoves !== mon.set.moves.join(',') || JSON.stringify(mon.statModifiers) !== JSON.stringify(modifiers)) {
@@ -670,10 +693,11 @@ export function prepareBlessingEncounter(run: RogueRun, random: RogueRandom) {
 		node.regiBoss = true;
 	}
 	prepareEliteEscorts(run, random);
+	const activeLevels = blessingLevelsAt(run);
 	for (const encounter of node.encounters) {
-		const levels = node.kind === 'boss' ? state.bossLevels ?? state.levels : state.levels;
+		const levels = node.kind === 'boss' ? activeLevels.boss : activeLevels.normal;
 		encounter.blessingLevels = encounter.fixedLevels ? 0 : levels;
-		encounter.blessingLevelOffsets = encounter.team.map((_, index) => encounter.fixedLevels ? 0 : index < (encounter.escortCount || 0) ? state.levels : levels);
+		encounter.blessingLevelOffsets = encounter.team.map((_, index) => encounterBlessingLevels(run, node, encounter, index));
 		for (const [index, set] of encounter.team.entries()) set.level += encounter.blessingLevelOffsets[index];
 	}
 }
@@ -731,7 +755,6 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 		['reservemega', 'reservegmega', 'reservetera', 'reservez'].includes(entry.family)) {
 		entry.completed = true;
 		grantSystem(run, entry.family.slice('reserve'.length), blessing(entry.id)!.name + ' · 领取奖励');
-		if (entry.family === 'reservetera') state.pending.push({ id: randomUUID(), title: '预定太晶化 · 第二份太晶碎片', kind: 'tera', options: Object.keys(BLESSING_TYPES) });
 	}
 	const kind = run.node?.kind;
 	if (ownsBlessing(state, 'psychic') && ['event', 'adventure'].includes(kind || '')) {
@@ -752,11 +775,11 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 		if (entry.progress === 15) { entry.completed = true; taskReward(account, run, content, entry, random); }
 	}
 	for (const mon of run.team) {
-		if (!(ownsBlessing(state, 'bond') && mon.initialPartner || ownsBlessing(state, 'starters') && isStarterFamily(mon.set.species))) continue;
+		if (mon.egg || !(ownsBlessing(state, 'bond') || ownsBlessing(state, 'starters') && isStarterFamily(mon.set.species))) continue;
 		if (mon.hp && mon.bondReady) mon.bond = Math.min(100, (mon.bond || 0) +
-			(ownsBlessing(state, 'bond') && mon.initialPartner ? 10 : 3) +
+			(ownsBlessing(state, 'bond') ? 10 : 3) +
 			(state.bondBattles.includes(mon.id) || ['event', 'adventure'].includes(kind || '') ? 1 : 0));
-		mon.bondReady = (mon.set.happiness || 0) >= 255;
+		mon.bondReady ||= (mon.set.happiness ?? 255) >= 255;
 	}
 	state.bondBattles = [];
 	if (ELITE_BOSS_FLOORS.has(run.floor)) state.shards += 10;
@@ -766,8 +789,7 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 		if ([50, 100, 150].includes(run.floor)) {
 			const paid = state.evolutionCosts ||= [];
 			if (!paid.includes(run.floor)) {
-				state.bossLevels! += blessingLevelCost('prismatic', run.floor, true);
-				state.levels += blessingLevelCost('prismatic', run.floor);
+				deferBlessingLevels(run, 'prismatic');
 				paid.push(run.floor);
 			}
 			if (state.evolution.type === 'Fighting') {
@@ -786,6 +808,13 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	const entry: OwnedBlessing = { id: def.id, family: def.family, tier: def.tier, floor: run.floor, type: def.type, grantedBy };
 	requireRule(companionAvailable(def.family, run.team, state), '同行祝福互斥，且需要对应属性的伙伴。');
 	state.owned.push(entry);
+	if (def.family === 'unity') {
+		const options = sharedPartyTypes(run.team.filter(mon => !mon.egg).map(permanentMemberTypes));
+		requireRule(options.length, '队伍需有至少两名非蛋伙伴，并拥有共通属性。');
+		if (options.length === 1) entry.type = options[0];
+		else state.pending.push({ id: randomUUID(), kind: 'unity', blessing: def.id,
+			title: '统一队爱好者 · 锁定共通属性', options, text: '选择本局统一属性，锁定后不可更换。' });
+	}
 	if (def.family === 'galarlegend') grantSystem(run, 'gmega', def.name);
 	if (def.family === 'originaldragon') give(run, 'dnasplicers');
 	if (def.family === 'swords') {
@@ -794,13 +823,14 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		if (options.length) state.pending.push({ id: randomUUID(), title: '打磨圣剑 · 选择一位新伙伴', kind: 'starter', blessing: def.id, options });
 	}
 	if (def.family === 'reorganizer') {
-		const upgradeable = run.team.filter(mon => (mon.stars || 1) < 5);
-		requireRule(upgradeable.length, '全队已达最高星级，无法提升星级。');
+		const members = run.team.filter(mon => !mon.egg && !mon.fusion && !mon.formFusion);
+		const upgradeable = members.filter(mon => (mon.stars || 1) < 5);
+		requireRule(upgradeable.length, '没有可参与重组且尚未满星的伙伴。');
 		const upgraded = upgradeable[random(upgradeable.length)];
-		const pools = run.team.map(mon => giftPool(run, content).filter(species =>
+		const pools = members.map(mon => giftPool(run, content).filter(species =>
 			permanentMemberTypes(mon).some(type => species.types.includes(type))).map(species => species.name));
 		requireRule(pools.every(pool => pool.length), '当前伙伴池中没有共享属性的替换伙伴。');
-		for (const [index, mon] of run.team.entries()) {
+		for (const [index, mon] of members.entries()) {
 			const next = drawBlessingGift(run, content, random, { pool: pools[index], level: mon.set.level, eligibleStage: false });
 			const hpRatio = mon.hp / mon.maxhp;
 			Object.assign(next.set, { evs: mon.set.evs, ivs: mon.set.ivs, item: mon.set.item, nature: mon.set.nature, happiness: mon.set.happiness });
@@ -810,6 +840,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 			delete mon.originalDragonUnlocked;
 			delete mon.formMoveMemory;
 			delete mon.evolutionProgress;
+			if (mon.compound) mon.compound.reorganized = true;
 			if (mon === upgraded) mon.stars = (mon.stars || 1) + 1;
 			rebuildMember(mon, run.boosts);
 			mon.hp = hpRatio ? Math.max(1, Math.ceil(mon.maxhp * hpRatio)) : 0;
@@ -832,8 +863,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	if (lateReward.treasure) treasure(run, content, random);
 	for (let i = 0; i < lateReward.toolboxes; i++) toolbox(run, random, lateReward.advanced);
 	if (!grantedBy) {
-		state.bossLevels = (state.bossLevels ?? state.levels) + blessingLevelCost(def.tier, run.floor, true);
-		state.levels += blessingLevelCost(def.tier, run.floor);
+		deferBlessingLevels(run, def.tier);
 	}
 	if (def.family.startsWith('fate')) {
 		const candidates = blessingCandidates(run, content).filter(candidate => candidate.tier === def.tier && !candidate.family.startsWith('fate'));
@@ -848,8 +878,8 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	}
 	if (['spiral', 'godrobe', 'puregodrobe'].includes(def.family)) {
 		if (def.family === 'godrobe') state.godrobeGiftUpdated = true;
-		const name = def.family === 'spiral' ? 'Excadrill' : def.family === 'godrobe' ? 'Zangoose' : 'Meowstic-F';
-		const level = Math.max(5, Math.min(100, Math.ceil(run.floor / 2)));
+		const name = def.family === 'spiral' ? 'Drilbur' : def.family === 'godrobe' ? 'Zangoose' : 'Meowstic-F';
+		const level = def.family === 'spiral' ? 5 : Math.max(5, Math.min(100, Math.ceil(run.floor / 2)));
 		const mon = createRoguePokemon(makeEncounterSet(name, level, randomEncounterIVs(random, true, qualityTier(run))), run.boosts);
 		if (def.family === 'puregodrobe') mon.set.gender = 'F';
 		if (def.family === 'spiral') { entry.target = mon.id; mon.spiral = 0; }
@@ -857,6 +887,8 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 		gift(account, run, content, mon, def.name);
 	}
 	if (def.family === 'psychic') state.psychic = 0;
+	if (def.family === 'monkeyking') state.pending.push({ id: randomUUID(), title: '大圣风采依旧 · 选择属性转',
+		kind: 'item', options: ['rogueemblemrock', 'rogueemblemflying'] });
 	if (def.family === 'insight') give(run, 'maxrevive', 10);
 	if (def.family === 'overtime') {
 		const mon = drawBlessingGift(run, content, random, { pool: overtimeGiftPool(run, content, def.type!) });
@@ -918,7 +950,14 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 			gift(account, run, content, drawBlessingGift(run, content, random, { pool: eligible.pool }), def.name);
 		}
 	}
+	if (def.family === 'reservetera') {
+		const pool = RogueBiomes.find(biome => biome.id === 'biome14')!.tiers[0].flatMap(slot => slot.species);
+		gift(account, run, content, drawBlessingGift(run, content, random, { pool }), def.name);
+	}
+	if (def.family === 'meltan') state.candy += 50;
+	if (def.family === 'pandorasilver') giveEquipment(run, content, random, FANTASY_BLESSING_ITEMS[random(FANTASY_BLESSING_ITEMS.length)]);
 	if (def.family === 'kid') giveEquipment(run, content, random, 'eviolite');
+	if (def.family === 'weakness') give(run, 'weaknesspolicy');
 	if (def.family === 'veteransniper') give(run, 'fantasyscopelens');
 	if (def.family === 'pandoragold') {
 		toolbox(run, random); toolbox(run, random);
@@ -951,14 +990,26 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 				canGrantExtraAbility(mon, TARGET_BLESSING_ABILITIES[def.family], run.team, state))).map(mon => mon.id) });
 	}
 	if (def.family === 'bond' || def.family === 'starters') for (const mon of run.team) {
-		if (def.family === 'bond' ? mon.initialPartner : isStarterFamily(mon.set.species)) {
-			mon.bond ??= 0; mon.bondReady = (mon.set.happiness || 0) >= 255;
+		if (!mon.egg && (def.family === 'bond' || isStarterFamily(mon.set.species))) {
+			mon.bond ??= 0; mon.bondReady ||= (mon.set.happiness ?? 255) >= 255;
 		}
 	}
 	syncBlessingParty(run);
 }
 export function handleBlessingCommand(account: RogueAccount, run: RogueRun, content: RogueContent, command: RogueCommand, random: RogueRandom) {
 	const state = normalizeBlessings(run);
+	if (command.action === 'usecompound') {
+		requireRule(['choose', 'ready', 'rest', 'reward', 'event'].includes(run.phase) && !run.story && !run.dialogue &&
+			!run.node?.noHealing && !run.pendingMoves?.length && !run.pendingCapture &&
+			!state.pending.length && !state.round && !state.stage, '请先处理当前战斗、对话或奖励，再使用五号化合物。');
+		const entry = state.owned.find(b => b.id === command.value && b.family === 'compound' && !b.completed);
+		requireRule(entry, '没有尚未使用的这份五号化合物。');
+		requireRule(run.team.some(mon => compoundFinals(mon).length), '当前没有符合五号化合物条件的伙伴，可继续收存。');
+		state.pending.push({ id: randomUUID(), title: blessing(entry.id)!.name, kind: 'compound', blessing: entry.id, compound: {} });
+		run.blessingRewardResume = run.phase;
+		run.phase = 'blessing';
+		return;
+	}
 	if (command.action === 'catability') {
 		requireRule(['choose', 'ready', 'rest', 'reward', 'event'].includes(run.phase) && !run.node?.noHealing, '请在战外调整猫科伙伴的额外特性。');
 		const mon = run.team.find(p => p.id === command.member && !p.egg), [group, ability] = (command.value || '').split(':');
@@ -1099,6 +1150,11 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 			}
 		} else {
 			requireRule(reward.options!.includes(command.value!), '奖励选项无效。');
+			if (reward.kind === 'unity') {
+				const entry = ownsBlessing(state, 'unity');
+				requireRule(entry && !entry.type && sharedPartyTypes(run.team.filter(mon => !mon.egg).map(permanentMemberTypes)).includes(command.value!), '请选择当前全队共通的属性。');
+				entry.type = command.value;
+			}
 			if (reward.kind === 'toolbox') giveEquipment(run, content, random, command.value!);
 			if (reward.kind === 'stone' || reward.kind === 'item') give(run, command.value!);
 			if (reward.kind === 'system') grantSystem(run, command.value!, `${ROGUE_SYSTEM_NAMES[command.value!]}已解锁 · 选择配套道具`);
@@ -1201,12 +1257,15 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 			account.discoveries ||= { blessings: [], events: [], trainers: [] };
 			for (const id of ['bignumber', 'supernumber']) if (!account.discoveries.blessings.includes(id)) account.discoveries.blessings.push(id);
 			Object.assign(number, { id: 'supernumber', family: 'supernumber', tier: 'prismatic' });
-			(run.notices ||= []).push('【大数字】达成 3000 能力，升级为【超大数字】！不追加对手等级。');
+			(run.notices ||= []).push(`【大数字】达成 ${NUMBER_BLESSING_RULES.upgrade} 能力，升级为【超大数字】！不追加对手等级。`);
 		}
-		if (ownsBlessing(state, 'supernumber') && result.blessingProgress?.numberPrize) {
-			const amount = journeyCoins(run.floor, 800 + run.floor * 40);
-			run.money += amount;
-			(run.notices ||= []).push(`【超大数字】达成 13000 能力，获得奖金 ${amount} 金币！`);
+		if (ownsBlessing(state, 'supernumber') && result.blessingProgress?.numberPrize && !state.numberPrizeClaimed) {
+			const prize = NUMBER_PRIZES[random(NUMBER_PRIZES.length)];
+			state.numberPrizeClaimed = true;
+			for (const [id, count] of Object.entries(prize.items)) give(run, id, count);
+			const items = Object.entries(prize.items).map(([id, count]) =>
+				`【${content.items.find(item => item.id === id)?.name || dex.items.get(id).name}】×${count}`).join('、');
+			(run.notices ||= []).push(`【超大数字】达成 ${NUMBER_BLESSING_RULES.prize} 能力，获得${prize.name}：${items}。本局奖励已领取。`);
 		}
 	}
 	if (!(state.awakeningBattles ||= []).includes(result.encounterId)) {
@@ -1232,7 +1291,7 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 			const key = defeated.id || `${result.encounterId}:${index}`;
 			if (received.includes(key)) continue;
 			received.push(key);
-			state.candy += dex.species.get(defeated.species).types.includes('Steel') ? 10 : 2;
+			state.candy += dex.species.get(defeated.species).types.includes('Steel') ? 20 : 2;
 		}
 	}
 	// Count permanent defeats once across real defeats and retries.
@@ -1271,9 +1330,16 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 			state.regis.push(defeated.species); give(run, EMBLEM_PREFIX + regiTypes[regis.indexOf(defeated.species)].toLowerCase());
 		}
 	}
+	if (ownsBlessing(state, 'regis')) for (let count = 1; count <= state.regis.length; count++) {
+		if (state.regiBonusMilestones!.includes(count)) continue;
+		state.regiBonusMilestones!.push(count); state.shards += 10;
+		// Pay the former late-boss bag's value even when the third Regi is found earlier.
+		if (count === 3) treasure(run, content, random, 1000 + Math.max(0, treasureBudget(150) - treasureBudget(run.floor)));
+		if (count === 5) toolbox(run, random, true);
+		(run.notices ||= []).push(`传说的巨人们：集齐第 ${count} 种神柱，获得幻想碎片 ×10。`);
+	}
 	if (run.node?.regiBoss && !state.regiReward) {
-		state.regiReward = true; state.shards += 50;
-		treasure(run, content, random, 1000); toolbox(run, random, true);
+		state.regiReward = true;
 		const encounter = run.node.encounters[0], index = encounter.escortCount || 0;
 		const mon = createRoguePokemon({ ...encounter.team[index],
 			level: encounter.team[index].level - (encounter.blessingLevelOffsets?.[index] ?? encounter.blessingLevels ?? 0) }, run.boosts);
@@ -1288,12 +1354,12 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 	syncBlessingParty(run);
 }
 export function blessingExperience(run: RogueRun, mon: RoguePokemon, dragonKing = run.blessings?.dragonKing?.member) {
-	const state = run.blessings; let multiplier = 1;
+	const state = run.blessings; let multiplier = affectionBenefits(mon.bond || 0).experience;
 	if (ownsBlessing(state, 'youngprodigy') && lateBloomer(mon.set.species) && !finalLateBloomer(mon.set.species)) multiplier *= 2;
 	if (ownsBlessing(state, 'sololeveling')) multiplier *= 1.5;
 	const ordinary = ownsBlessing(state, 'ordinary');
 	if (ordinary && run.team.every(member => dex.species.get(member.set.species).bst <= 500)) multiplier *= 1 + (Math.max(1, Math.floor(ordinary.floor / 50)) + 1) / 10;
-	for (const entry of state?.owned || []) if (entry.family === 'typexp' && blessingMemberTypes(mon).includes(entry.type!)) multiplier *= 1.3;
+	for (const entry of state?.owned || []) if (entry.family === 'typexp' && blessingMemberTypes(mon).includes(entry.type!)) multiplier *= 1.5;
 	if (dragonKingActive(state) && mon.id !== dragonKing && permanentMemberTypes(mon).includes('Dragon')) multiplier *= 1.3;
 	return multiplier;
 }
@@ -1324,8 +1390,22 @@ export function blessingView(run: RogueRun, discovered = false) {
 	const state = run.blessings; if (!state) return undefined;
 	const describe = (id: string, floor = run.floor) => {
 		const def = blessing(id)!;
-		return { ...blessingDisplay(def, floor, discovered),
-			levelCost: { normal: blessingLevelCost(def.tier, floor), boss: blessingLevelCost(def.tier, floor, true) } };
+		const display = blessingDisplay(def, floor, discovered);
+		if (id === 'weaknessarmor') {
+			const count = run.team.filter(mon => !mon.egg).reduce((total, mon) =>
+				total + weaknessProfile(permanentMemberTypes(mon)).quadruple, 0);
+			display.text += `当前队伍共有 ${count} 个四倍弱点，符合条件的伙伴在战斗中双防 +${count * 10}%；随当前属性变化重新计算。`;
+		}
+		if (id === 'unity' && ownsBlessing(state, 'unity')) {
+			const unity = unityState(state, run.team.filter(mon => !mon.egg).map(permanentMemberTypes));
+			display.text = (unity.type ? `锁定属性：${BLESSING_TYPES[unity.type] || unity.type}。当前 ${unity.count} 名非蛋伙伴，${unity.active ? '人数增益已生效' : '暂未满足全队统一条件'}。` : '请选择要锁定的共通属性。') + display.text;
+		}
+		return { ...display,
+			levelCost: {
+				normal: blessingLevelCost(def.tier, floor), boss: blessingLevelCost(def.tier, floor, true),
+				startsAt: blessingLevelStart(floor),
+			},
+		};
 	};
 	const king = run.team.find(mon => mon.id === state.dragonKing?.member);
 	const petView = ownsBlessing(state, 'cats') ? run.team.filter(p => !p.egg && petSpecies(p.set.species, 'cats')).map(p => ({
@@ -1352,13 +1432,13 @@ export function blessingView(run: RogueRun, discovered = false) {
 		const mon = strongestSniperMember(run.team, state);
 		return mon ? { member: mon.id, name: mon.set.species, progress: mon.sniperKOs || 0, required: 15 } : undefined;
 	})() : undefined,
-	owned: state.owned.map(entry => ({ ...entry, ...describe(entry.id, entry.floor),
+	owned: state.owned.map(entry => ({ ...entry, ...describe(entry.id, entry.floor), type: entry.type,
 		targetName: [...run.team, ...(run.box || [])].find(mon => mon.id === entry.target)?.set.species })),
 	round: state.round && { ...state.round, options: state.round.options.map(option => ({ ...option, ...describe(option.id) })) },
 	stage: state.stage && { ...state.stage, options: state.stage.options.map(id => ({ id, name: upgradeName(id) })) },
 	pending: state.pending.map(reward => reward.kind === 'compound' ? compoundView(run, reward) : ({ ...reward, ...(reward.pokemon?.egg ? { pokemon: eggView(reward.pokemon, run.floor) } : {}), options: reward.options?.map(id => ({ id,
 		name: reward.kind === 'systemfallback' ? systemFallbackName(id) : id === 'skip' ? '队伍已具备这些特性，无需重复赋予，继续冒险' : reward.kind === 'system' ? ROGUE_SYSTEM_NAMES[id] + (state.owned.some(entry => entry.family === `reserve${id}` && !entry.completed) ? '（已预定：战后也会解锁）' : '') :
-		reward.kind === 'tera' ? BLESSING_TYPES[id] + '太晶碎片 ×50' :
+		reward.kind === 'unity' ? BLESSING_TYPES[id] + '属性' : reward.kind === 'tera' ? BLESSING_TYPES[id] + '太晶碎片 ×50' :
 		['stone', 'item'].includes(reward.kind) ? dex.items.get(id).name :
 		reward.kind === 'ability' ? id === 'hugepower' ? '大力士：攻击 ×2' : '大法师：特攻 ×2' :
 		['target', 'solo'].includes(reward.kind) ? run.team.find(mon => mon.id === id)?.set.species :

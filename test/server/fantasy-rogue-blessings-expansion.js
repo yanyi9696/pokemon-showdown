@@ -82,11 +82,15 @@ describe('Fantasy Rogue expanded blessings', function () {
 		assert.equal(battle.p1.pokemon[1].item, '');
 		assert(!a.hasItem('sitrusberry'));
 	});
-	it('renews a consumable without replacing another member’s real equipment', () => {
+	it('renews only the first shared consumable without replacing the real equipment', () => {
 		begin(['mousefamily', 'renewable'], mice(['leftovers', 'sitrusberry', '', '', '', '']));
 		const a = battle.p1.active[0];
-		for (let i = 0; i < 2; i++) { a.hp = Math.floor(a.maxhp / 3); battle.runEvent('Update', a); assert(a.hp > a.maxhp / 3); }
-		assert.equal(a.item, 'leftovers'); assert.equal(battle.p1.pokemon[1].item, 'sitrusberry');
+		for (let i = 0; i < 2; i++) {
+			a.hp = Math.floor(a.maxhp / 3); battle.runEvent('Update', a);
+			assert(a.hp > a.maxhp / 3); assert.equal(a.item, 'leftovers');
+			assert.equal(battle.p1.pokemon[1].item, i === 0 ? 'sitrusberry' : '');
+		}
+		assert.equal(rogueBattleResult(battle).team[1].set.item, '');
 	});
 	it('retains ordinary held items and respects Magic Room when sharing', () => {
 		begin(['mousefamily'], mice(['', 'lightball', '', '', '', '']));

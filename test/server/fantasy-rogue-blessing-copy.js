@@ -15,6 +15,20 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 	this.timeout(30000);
 	let content;
 	before(() => { content = createPreviewContent(); });
+	it('states each floor restriction once and documents Reorganizer exceptions', () => {
+		const entries = rogueCodex(undefined, 'blessings', true).entries;
+		for (const entry of entries) {
+			if (!entry.floors?.length) continue;
+			const note = `仅第 ${entry.floors.join('、')} 层出现`;
+			assert(!(entry.availability || []).some(text => text.replace(/\s+/g, '') === note.replace(/\s+/g, '')), entry.id);
+			assert(!entry.text.includes(note), entry.id);
+		}
+		const entry = entries.find(item => item.id === 'reorganizer');
+		assert.deepEqual(entry.floors, [50]);
+		for (const text of ['宝可梦蛋', '尚未解除融合', '【五号化合物】', '不重新分配', '不参与重组与升星']) {
+			assert(entry.text.includes(text), text);
+		}
+	});
 	it('marks supply and species names without adding nested brackets or converting ordinary immunity into an ability', () => {
 		const mushroom = blessingDisplay(data.blessing('mushroomsynthesis')).text;
 		for (const name of ['小蘑菇', '大蘑菇', '芳香蘑菇', '猛恶菇']) assert(mushroom.includes('【' + name + '】'));
@@ -53,7 +67,7 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 		it(`grants and describes exact coin totals at floor ${floor}`, () => {
 			for (const id of ['money', 'bigmoney']) {
 				const {run, account} = setup(floor); pick(run, account, id);
-				assert.equal(run.money, (id === 'money' ? [4000, 8000, 12000, 16000] : [10000, 20000, 30000, 40000])[stage]);
+				assert.equal(run.money, (id === 'money' ? [4000, 8000, 12000, 16000] : [11000, 22000, 33000, 44000])[stage]);
 				const view = b.blessingView(run).owned[0];
 				assert.equal(view.text, `立即获得 ${run.money} 金币。`);
 				assert.equal(view.name, data.blessing(id).name + '+'.repeat(stage));
@@ -123,24 +137,24 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 		assert(entries.filter(e => e.blessingId === 'medic').every(e => !e.unlocked && e.text === '？？？'));
 		assert.equal(JSON.stringify(account), before);
 	});
-	it('shows each emblem type, independent slot rule and its five named moves', () => {
+	it('keeps blessing text concise and the complete rules in emblem help', () => {
 		for (const type of Object.keys(data.BLESSING_TYPES)) for (const family of ['typexp', 'typelink']) {
 			const text = blessingDisplay(data.blessing(family + type.toLowerCase()), 50).text;
 			assert(text.includes(`【${data.BLESSING_TYPES[type]}属性转】`));
-			assert(text.includes('不占道具位，可取下')); assert(text.includes('副属性'));
-			for (const name of data.EMBLEM_MOVE_NAMES[type]) assert(text.includes(`【${name}】`));
+			assert(!text.includes('不占道具位'));
+			const help = data.emblemDescription(type);
+			assert(help.includes('第一或第二属性'));
+			for (const name of data.EMBLEM_MOVE_NAMES[type]) assert(help.includes(`【${name}】`));
 		}
 	});
-	it('offers bond only on floor one and reduces its weight with fewer initial partners', () => {
-		let previous = 0;
+	it('offers affection only on floor one at normal weight regardless of initial party size', () => {
 		for (let size = 1; size <= 6; size++) {
 			const {run} = setup(1, size), bond = b.blessingCandidates(run, content).find(e => e.id === 'bond');
-			assert(bond.appearanceWeight > previous); previous = bond.appearanceWeight;
+			assert.equal(bond.appearanceWeight, 100);
 			run.previousBlessings = ['bond'];
 			assert(b.blessingCandidates(run, content).find(e => e.id === 'bond').appearanceWeight < bond.appearanceWeight);
 			for (const floor of [50, 100, 150]) { run.floor = floor; assert(!b.blessingCandidates(run, content).some(e => e.id === 'bond')); }
 		}
-		assert.equal(previous, 100);
 		assert(!data.blessing('bond').text.includes('概率降低'));
 	});
 	it('removes the old late ordinary-team bonus but retains its stated graded damage and loot', () => {

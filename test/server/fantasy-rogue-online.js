@@ -61,6 +61,36 @@ describe('Fantasy Rogue real rooms', function () {
 			assert(!retry.battle.roguePreview); assert.deepEqual(account().run.team, before.team);
 		}
 	});
+	it('uses the gym search budget for challenges and returns to an explicit retry or leave decision', async () => {
+		const {challengeNode, prepareChallengePrizes} = require('../../dist/server/fantasy-rogue/optional-challenges');
+		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		store.change(user.id, saved => {
+			const run = saved.run;
+			run.floor = 8; run.node = challengeNode('schoolfinal', 8); run.encounter = 0; run.phase = 'event';
+			run.challengeHistory = [{id: 'schoolfinal', floor: 8}];
+			prepareChallengePrizes(run, () => 0);
+		});
+		command('challenge', {value: 'accept'});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		assert.equal(room.battle.fantasyAI.options.rogue.immediate, false);
+		assert.equal(room.battle.fantasyAI.options.decisionMs, 0);
+		assert.equal(room.battle.options.fantasyRogue.optionalChallenge, true);
+		await until(() => room.battle.p2.request.isWait === true, 'challenge AI preview');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active, 'challenge first move');
+		manager.retreat(user.connections[0], room.roomid);
+		await until(() => room.battle.ended && account().run.node.challenge.stage === 'paused', 'challenge retreat');
+		assert.equal(account().run.floor, 8);
+		command('challenge', {value: 'retry'});
+		const retry = Rooms.get(command('battle').run.roomid); rooms.push(retry);
+		assert.equal(retry.battle.fantasyAI.options.rogue.immediate, false);
+		await until(() => retry.battle.p2.request.isWait === true, 'challenge retry preview');
+		retry.battle.choose(user, `team 1|${retry.battle.p1.request.rqid}`);
+		await until(() => JSON.parse(retry.battle.p1.request.request).active, 'challenge retry first move');
+		manager.retreat(user.connections[0], retry.roomid);
+		await until(() => retry.battle.ended && account().run.node.challenge.stage === 'paused', 'second retreat');
+		command('challenge', {value: 'leave'}); assert.equal(account().run.floor, 9);
+	});
 	afterEach(async () => {
 		await ai.dispose();
 		for (const room of rooms.splice(0)) Rooms.get(room.roomid)?.destroy();

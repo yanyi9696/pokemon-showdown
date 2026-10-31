@@ -9,7 +9,7 @@ import { eggView } from './eggs';
 
 export interface JourneyLedger {
 	startedAt: number;
-	blessings: { id: string, name: string, text: string, floor: number, tier?: BlessingTier }[];
+	blessings: { id: string, name: string, text: string, floor: number, tier?: BlessingTier, type?: string }[];
 	participants: Record<string, { mon: RoguePokemon, details?: ClearMemberDetails, floor: number }>;
 }
 export interface JourneyRecord {
@@ -18,7 +18,8 @@ export interface JourneyRecord {
 	snapshot: {
 		team: (RoguePokemon | ReturnType<typeof eggView>)[], box: RoguePokemon[], memberDetails: Record<string, ClearMemberDetails>,
 		blessings: JourneyLedger['blessings'], difficulty: RogueRun['difficulty'], difficultyLabel: string,
-		spiritName?: string, collapse?: string[], boosts: StatsTable,
+		spiritName?: string, collapse?: string[], boosts: StatsTable, boostRuleVersion?: 2,
+		challenges?: import('./optional-challenges').ChallengeRecord[],
 	};
 }
 /** Called before and after each transaction, so replacement and abandonment cannot erase evidence. */
@@ -26,9 +27,12 @@ export function trackJourney(run: RogueRun, account: RogueAccount) {
 	const ledger = run.journey ||= { startedAt: Date.now(), blessings: [], participants: {} };
 	for (const entry of run.blessings?.owned || []) {
 		const def = blessing(entry.id);
-		if (!def || ledger.blessings.some(b => b.id === entry.id && b.floor === entry.floor)) continue;
-		const { name, text } = blessingDisplay(def, entry.floor, account.tonicSecret);
-		ledger.blessings.push({ id: entry.id, name, text, floor: entry.floor, tier: def.tier });
+		if (!def) continue;
+		const previous = ledger.blessings.find(b => b.id === entry.id && b.floor === entry.floor);
+		if (previous && !(def.family === 'unity' && entry.type && previous.type !== entry.type)) continue;
+		const { name, text } = blessingDisplay(def, entry.floor, account.tonicSecret, entry.type);
+		if (previous) Object.assign(previous, { text, type: entry.type });
+		else ledger.blessings.push({ id: entry.id, name, text, floor: entry.floor, tier: def.tier, type: entry.type });
 	}
 	// Snapshot each current participant once. Building details also computes baseline battle stats.
 	// Boxed partners only update earlier evidence; entering the box does not count as participation.
@@ -57,6 +61,7 @@ export function journeyRecord(run: RogueRun, outcome: JourneyRecord['outcome']):
 				...run.team.filter(mon => !mon.egg).map(mon => [mon.id, clearMemberDetails(mon, run)]),
 			]), blessings: structuredClone(ledger.blessings), difficulty: run.difficulty || 0,
 			difficultyLabel: difficultyLabel(run.difficulty), spiritName: rogueSpirit(run.spirit)?.name,
-			collapse: run.collapse?.slice(), boosts: { ...run.boosts },
+			collapse: run.collapse?.slice(), boosts: { ...run.boosts }, boostRuleVersion: run.boostRuleVersion,
+			challenges: run.challengeHistory && structuredClone(run.challengeHistory),
 		} };
 }

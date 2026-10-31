@@ -1,5 +1,6 @@
 import type { RogueContent, RogueItem, RogueRun } from './types';
 import { inventoryItem } from './team';
+import { NATURE_MINT_VALUE } from './nature-mints';
 
 export const BUYBACK_FLOOR = 80;
 /** Special items have an explicit, floor-independent valuation, never an auction receipt. */
@@ -7,7 +8,7 @@ export function baseRecyclePrice(item: RogueItem): number {
 	if (item.kind === 'treasure') return item.sellPrice || 600;
 	if (item.price > 0) return item.price;
 	if (item.kind === 'machine') return 2500;
-	if (item.kind === 'mint') return 2000;
+	if (item.kind === 'mint') return NATURE_MINT_VALUE;
 	if (item.kind === 'emblem') return 4000;
 	if (item.kind === 'tonic') return 3000;
 	if (item.id === 'masterball' || item.kind === 'terashard') return 0;

@@ -40,7 +40,9 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 					const run = account().run;
 					floors.add(run.floor);
 					if (view()?.key) {
-						cmd('storynext', { value: view().key });
+						const dialogue = view();
+						cmd(dialogue.options ? 'mainlinechoice' : 'storynext', { value: dialogue.key,
+							...(dialogue.options ? {member: dialogue.options[0].id} : {}) });
 						continue;
 					}
 					if (run.story?.stage === 'cards') {
@@ -128,6 +130,11 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 						if (account().run.mentorOffer) cmd('mentorcard', {value: 'balanced'}); cmd('continue');
 						break;
 					case 'event': {
+						if (run.node.challenge) {
+							const challenge = run.node.challenge;
+							cmd('challenge', {value: challenge.stage === 'offer' ? 'accept' : challenge.stage === 'won' ? 'supplies' : 'leave'});
+							break;
+						}
 						const event = run.node.event;
 						assert(['auction', 'exclusivechallenge', 'mushroomcollector', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory', 'travellermeeting'].includes(event.id), event.id);
 						if (event.police?.choices) { cmd('event', {member: event.key, value: 'police:' + event.police.choices[0]}); break; }
@@ -178,6 +185,7 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 				assert.equal(completed.cards.length, 1);
 				const card = completed.cards[0];
 				assert.equal(card.snapshot.spirit, spirit);
+				assert.equal(card.snapshot.spiritSpecies, require('../../dist/sim/fantasy-rogue-spirits').rogueSpirit(spirit)?.species);
 				assert.equal(card.snapshot.startCard, 'grass');
 				assert.equal(card.snapshot.difficulty, difficulty);
 				assert.deepEqual(card.snapshot.team.map(mon => mon.set), completed.run.team.map(mon => mon.set));
@@ -191,7 +199,8 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 				cmd('publishcard', { member: card.id, value: 'public' });
 				assert.equal(store.gallery()[0].id, card.id);
 				cmd('newstory');
-				assert.equal(view().stage, 'opening');
+				assert.equal(view().stage, account().mainline?.completed.length ? 'mainline' : 'opening');
+				if (account().mainline?.completed.length) assert.equal(account().mainlineDialogue.kind, 'opening');
 				assert.equal(account().cards[0].id, card.id);
 			} finally {
 				store.close();

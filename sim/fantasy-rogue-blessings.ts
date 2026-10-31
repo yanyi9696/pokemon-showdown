@@ -1,6 +1,8 @@
+import { rogueMetaStat } from './rogue-meta-growth';
+import { affectionEndure, affectionAccuracy } from './rogue-affection';
 import { echoPower, echoPowerMultiplier } from './rogue-echo';
 import { awakeningUpdate, awakeningLethal, spiralLethal, spiralActive, spiralPoints, gainSpiral, robeMultiplier, bloodRequest, empowerBloodMove } from './fantasy-rogue-awakening';
-import { robeMember } from './rogue-awakening';
+import { robeMember, SPIRAL_SURVIVAL, SPIRAL_PARTICIPATION, SPIRAL_KO } from './rogue-awakening';
 import { sniperCriticalKO, sniperIgnoresDefense, sniperTrainingProgress, SNIPER_TRAINING_KOS } from './rogue-sniper';
 import { petSpecies, dogBoostCount } from './rogue-pets';
 import { numberStatMultiplier, recordNumberThreshold } from './rogue-number-blessings';
@@ -8,13 +10,15 @@ import { spindaEntry, spindaHit, spindaDamage } from './rogue-spinda';
 import { ghidorahActive, ghidorahTypes, ghidorahEntry, ghidorahMove, ghidorahEffectiveness } from './rogue-ghidorah';
 import { blessingSpeciesID } from './rogue-species-identity';
 import { devotionBonus } from './rogue-devotion';
+import { weaknessProfile, weaknessDamageFactor } from './rogue-weakness';
+import { battleUnity } from './rogue-unity';
 import { recordEvolutionMove } from './rogue-evolution-progress';
 import type { Battle } from './battle';
 import type { Pokemon } from './pokemon';
 import type { FormatData } from './dex-formats';
 import { rogueEventDamage, type RoguePokemon } from './fantasy-rogue';
 import { toID } from './dex';
-import { ownsBlessing, emblemType, addPsychicCharge, EEVEE_FAMILY, inBlessingFamily, blessing, type BlessingEffects } from './rogue-blessing-data';
+import { ownsBlessing, emblemType, applyEmblemType, addPsychicCharge, EEVEE_FAMILY, inBlessingFamily, blessing, type BlessingEffects } from './rogue-blessing-data';
 import type { Side } from './side';
 import { reportRogueStatuses } from './fantasy-rogue-status';
 import { consumeRogueItem } from './fantasy-rogue-items';
@@ -22,13 +26,13 @@ import { mentorCardProfile } from './rogue-mentor';
 import { companionSource } from './rogue-companions';
 import { companionZRequest } from './rogue-companion-z';
 import { railgunActive, rulebreakerActive } from './rogue-special-blessings';
-import { DRAGON_KING_ABILITIES, assignedExtraAbilities, strongestDragon, dragonKingActive, type DragonKingAbility } from './rogue-blessing-permanent';
+import { DRAGON_KING_ABILITIES, assignedExtraAbilities, monkeyKingBranch, strongestDragon, dragonKingActive, type DragonKingAbility } from './rogue-blessing-permanent';
 
 interface MemberRuntime {
 	abilitiesPrepared?: boolean;
 	abilities: string[]; entries: number; actions: number; inherited: string[]; inheritedSlots?: Pokemon['moveSlots'];
 	sword: Partial<StatsTable>; prayer: { atk: number, spa: number };
-	low?: boolean; survived?: boolean; bondUsed?: boolean; detectReady?: boolean; extraZ?: boolean;
+	low?: boolean; survived?: boolean; detectReady?: boolean; extraZ?: boolean;
 	insight: { points: number, gain: number }; consumed?: string;
 	bonusHP?: number;
 	eeveeZUsed?: boolean;
@@ -50,6 +54,11 @@ export function blessingEffects(mon: Pokemon): BlessingEffects | undefined {
 }
 export const hasBlessing = (mon: Pokemon | null | undefined, family: string) =>
 	mon ? ownsBlessing(blessingEffects(mon), family) : undefined;
+export function weaknessArmorCount(mon: Pokemon) {
+	if (!hasBlessing(mon, 'weaknessarmor') || !weaknessProfile(mon.getTypes(), mon.battle.dex).quadruple) return 0;
+	return mon.side.pokemon.reduce((count, ally) =>
+		count + weaknessProfile(ally.getTypes(), mon.battle.dex).quadruple, 0);
+}
 export function battleDevotionBonus(mon: Pokemon) {
 	const name = (p: Pokemon) => savedBlessingMember(p)?.set.species || p.baseSpecies.name;
 	return devotionBonus(blessingEffects(mon), name(mon), mon.side.pokemon.map(name));
@@ -60,11 +69,19 @@ export function savedBlessingMember(mon: Pokemon): RoguePokemon | undefined {
 	if (!mon.set.fantasyRogueId) return undefined;
 	return (mon.side.id === 'p1' ? state?.team : mon.side.id === 'p2' ? state?.duel?.team : undefined)?.find(saved => saved.id === mon.set.fantasyRogueId);
 }
+function battleMonkeyBranch(mon: Pokemon) {
+	const saved = savedBlessingMember(mon), state = mon.battle.fantasyRogue;
+	if (!saved || !state) return;
+	return monkeyKingBranch(saved, mon.side.id === 'p1' ? state.team : state.duel?.team || [], blessingEffects(mon));
+}
 /** The engine and private tooltips share this list; reading it never rolls RNG or spends an effect. */
 export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, preview = false) {
 	const modifiers: { source: string, factor?: number, add?: number }[] = [];
 	const add = (source: string, factor: number) => modifiers.push({ source, factor });
 	if (move.category === 'Status') return modifiers;
+	if (hasBlessing(pokemon, 'coverage') && move.type !== '???' && !move.forceSTAB && !pokemon.hasType(move.type) && !pokemon.getTypes(false, true).includes(move.type)) add('补盲好手', 1.3);
+	const unity = battleUnity(pokemon);
+	if (unity.active && unity.count >= 6 && move.type === unity.type) add('统一队爱好者', 1.5);
 	const devotion = battleDevotionBonus(pokemon);
 	if (devotion.power) add('专一', 1 + devotion.power / 100);
 	if (move.id === 'zapcannon' && railgunActive(pokemon)) add('某科学的超电磁炮', 2);
@@ -79,6 +96,9 @@ export function roguePowerModifiers(pokemon: Pokemon, move: Move | ActiveMove, p
 	if (hasBlessing(pokemon, 'hoopa') && strongest(pokemon, 'hoopa') && ['Dark', 'Ghost'].includes(move.type)) add(blessingSource(pokemon, 'hoopa'), 1.5);
 	for (const b of blessingEffects(pokemon)?.owned || []) if (b.family === 'typelink' && b.type === move.type) {
 		add(blessing(b.id)!.name, 1.5 + side(pokemon).faintedTypes.filter(type => type === b.type).length * 0.05);
+	}
+	for (const entry of blessingEffects(pokemon)?.owned || []) if (entry.family === 'emissary' && entry.type === move.type) {
+		add(blessing(entry.id)!.name, 1.1);
 	}
 	const evo = blessingEffects(pokemon)?.evolution;
 	if (evo?.type === move.type && evo.power) add('宝可梦属性进化', 1 + evo.power);
@@ -101,10 +121,6 @@ export function rogueDamageSources(mon: Pokemon, move: Move) {
 	if (hasBlessing(mon, 'coin')) sources.push(hasBlessing(mon, 'dice') ? '【命运决定一切】伤害 ×1.5' : '【命运决定一切】伤害随机 ×0.5 或 ×1.5');
 	if (hasBlessing(mon, 'sound') && move.flags.sound) sources.push(`【${blessingSource(mon, 'sound')}】伤害 +${mon.side.pokemon.reduce((n, p) =>
 		n + p.moveSlots.filter(slot => mon.battle.dex.moves.get(slot.id).flags.sound).length, 0) * 5}%`);
-	if (mon.side.id === 'p1' && state.mentorCard && !move.ohko) {
-		const card = mentorCardProfile(state.mentorCard, state.mentorTier);
-		sources.push(`【首领卡 · ${card.name}】伤害 +${card.damage}%`);
-	}
 	if ((mon.side.id === 'p1' ? state.eventBuff : state.duel?.eventBuff) && !move.ohko) sources.push('【蘑菇的活力】伤害 +20%');
 	return sources;
 }
@@ -132,16 +148,28 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	const card = mon.side.id === 'p1' && state.mentorCard;
 	const stats = rogueStatSnapshot(mon);
 	const statSources: string[] = [];
+	const armor = weaknessArmorCount(mon);
+	if (armor) statSources.push(`【叠甲！过！】全队共 ${armor} 个四倍弱点，双防 +${armor * 10}%（已计入能力值）`);
+	if (hasBlessing(mon, 'weakness')) {
+		const points = weaknessProfile(mon.getTypes(), mon.battle.dex).points;
+		statSources.push(`【弱点多多益善】自身折算 ${points} 个弱点，效果绝佳的额外增幅降低 ${Math.min(10, points) * 10}%`);
+	}
+	if (card) {
+		const profile = mentorCardProfile(card, state.mentorTier);
+		statSources.push(`【首领卡 · ${profile.name}】双攻 +${profile.offense}%，双防 +${profile.defense}%${profile.speed ? `，速度 +${profile.speed}%` : ''}（已计入能力值）`);
+	}
 	if (mon.side.id === 'p1' && !state.duel && state.echo?.guard) statSources.push('【崩坏回响】受到敌方招式的直接伤害 ×0.9');
 	if (mon.m.rogueNumber?.turn === mon.battle.turn) {
 		const names: Record<string, string> = { atk: '攻击', def: '防御', spa: '特攻', spd: '特防', spe: '速度', all: '五项能力' };
-		statSources.push(`【${mon.m.rogueNumber.factor === 5 ? '超大数字' : '大数字'}】本回合${names[mon.m.rogueNumber.stat]} ×${mon.m.rogueNumber.factor}，已计入当前能力`);
+		statSources.push(`【${mon.m.rogueNumber.stat === 'all' ? '超大数字' : '大数字'}】本回合${names[mon.m.rogueNumber.stat]} ×${mon.m.rogueNumber.factor}，已计入当前能力`);
 	}
+	const monkey = battleMonkeyBranch(mon);
+	if (monkey) statSources.push(monkey === 'Rock' ? '【大圣风采依旧】受到对手招式的直接伤害降低 50%' : '【大圣风采依旧】速度提升 50%（已计入能力值）');
 	if (saved.fusion) statSources.push('【波塔拉耳环】融合种族值与属性已生效，形态变化暂停');
 	if (hasBlessing(mon, 'entrance')) statSources.push(`【闪亮再登场】全队累计登场 ${side(mon).entries || 0} 次，五项能力 +${(side(mon).entries || 0) * 5}%`);
 	if (mon.side.id === 'p1' && state.comebackCard) statSources.push('【再启程】本层伤害、防御、特防 +25%');
 	if (mon.volatiles.roguespindasleep) statSources.push('【濒死睡眠】暂时无法行动；再次受到对手攻击会倒下，成功醒来恢复全部 HP');
-	if (spiralActive(mon)) statSources.push(`【螺旋力】${spiralPoints(mon).toFixed(1)} / 1000，攻击 +${(spiralPoints(mon) / 10).toFixed(1)}%（保命阈值 250）`);
+	if (spiralActive(mon)) statSources.push(`【螺旋力】${spiralPoints(mon).toFixed(1)} 点，攻击 +${(spiralPoints(mon) / 10).toFixed(1)}%（保命阈值 ${SPIRAL_SURVIVAL} 点）`);
 	if (robeMultiplier(mon) > 1) statSources.push(`【神衣耐久】当前双防 ×${robeMultiplier(mon).toFixed(3)}，已计入能力值`);
 	if (saved.mushroomTraining) statSources.push(`【合成大蘑菇】双攻 +${Number((saved.mushroomTraining.offense / 100).toFixed(2))}%，双防 +${Number((saved.mushroomTraining.defense / 100).toFixed(2))}%（已计入能力值）`);
 	if (rulebreakerActive(mon)) statSources.push('【规则，就是用来打破的】无视自身能力下降与天气减益');
@@ -160,7 +188,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	const devotion = battleDevotionBonus(mon);
 	if (devotion.reduction) statSources.push(`【专一】同品种 ${devotion.count} 只，受到招式伤害减免 ${devotion.reduction}%`);
 	if (modifiers?.smallFinal) statSources.push('【谁说我到头了】六项种族值提升 50%');
-	if (modifiers?.compound) statSources.push(mon.species.bst > 500 ?
+	if (modifiers?.compound) statSources.push(mon.species.bst > 500 && !modifiers.compoundReorganized ?
 		'【五号化合物】当前形态原始种族值总和超过 500，新增点数停用；主特性仍锁定为【化学之力】' :
 		'【五号化合物】分配的新增种族值已计入基础能力，主特性锁定为【化学之力】');
 	if (modifiers?.swap) statSources.push('六维数值已经交换');
@@ -180,7 +208,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	}
 	const moves = Object.fromEntries(previewMoves.map(move => {
 		const typed = !!saved.tonics?.poison || !!effects?.evolution?.power || !!state.echo?.types.length ||
-			!!effects?.owned.some(b => ['typelink', 'hoopa'].includes(b.family));
+			!!effects?.owned.some(b => ['typelink', 'hoopa', 'unity', 'coverage'].includes(b.family));
 		return [move.id, { power: roguePowerModifiers(mon, move, true), damage: rogueDamageSources(mon, move),
 			...(move.id === companionZ?.move ? { name: companionZ.name, source: companionZ.source } : {}),
 			...(move.id === 'zapcannon' && railgunActive(mon) ? { name: '超电磁炮', accuracyFactor: 2, accuracySource: '某科学的超电磁炮' } : {}),
@@ -329,7 +357,7 @@ export function prepareBlessingMember(mon: Pokemon) {
 	if (king && king.member === mon.set.fantasyRogueId && king.ability) abilities.push(king.ability);
 	if (hasBlessing(mon, 'duck') && strongest(mon, 'psyduck|golduck')) abilities.push('neuroforce');
 	if (strongest(mon, 'meloetta')) {
-		if (hasBlessing(mon, 'singer')) abilities.push('tianlaizhiyin', 'jizhineng');
+		if (hasBlessing(mon, 'singer')) abilities.push('tianlaizhiyin');
 		if (hasBlessing(mon, 'dancer')) {
 			abilities.push('dancer');
 			mon.formeChange('Meloetta-Pirouette', mon.battle.format, false, '[silent]');
@@ -347,7 +375,7 @@ export function prepareBlessingMember(mon: Pokemon) {
 export function blessingSwitchIn(mon: Pokemon) {
 	ghidorahEntry(mon);
 	spindaEntry(mon);
-	if (spiralActive(mon) && !mon.m.rogueSpiralParticipated) { mon.m.rogueSpiralParticipated = true; gainSpiral(mon, 12); }
+	if (spiralActive(mon) && !mon.m.rogueSpiralParticipated) { mon.m.rogueSpiralParticipated = true; gainSpiral(mon, SPIRAL_PARTICIPATION); }
 	if (!mon.battle.fantasyRogue) return;
 	// Switching clears client volatiles. Reset on entry: an Update between
 	// BeforeSwitchOut and removal from the field can otherwise refill this cache.
@@ -375,7 +403,7 @@ export function blessingSwitchIn(mon: Pokemon) {
 	}
 	const runtime = member(mon), team = side(mon);
 	runtime.entries++; runtime.actions = 0;
-	if (hasBlessing(mon, 'entrance')) {
+	if (hasBlessing(mon, 'entrance') && runtime.entries <= 2 && (team.entries || 0) < 12) {
 		team.entries = (team.entries || 0) + 1;
 		mon.battle.add('-message', `【闪亮再登场】全队攻击、防御、特攻、特防、速度累计 +${team.entries * 5}%。`);
 	}
@@ -390,7 +418,7 @@ export function blessingSwitchIn(mon: Pokemon) {
 	}
 	if (team.inheritance) {
 		for (const move of team.inheritance) if (!mon.moveSlots.some(moveSlot => moveSlot.id === move.id)) {
-			mon.moveSlots.push({ ...move, disabled: false, used: false }); runtime.inherited.push(move.id);
+			mon.moveSlots.push({ ...move, pp: move.maxpp, disabled: false, used: false }); runtime.inherited.push(move.id);
 		}
 		delete team.inheritance;
 	}
@@ -413,13 +441,18 @@ export function failedTrainerCapture(battle: Battle) {
 		}
 	}
 }
+export function blessingRevived(mon: Pokemon) {
+	if (!hasBlessing(mon, 'insight')) return;
+	const insight = member(mon).insight;
+	insight.points = Math.min(100, insight.points + insight.gain);
+}
 export function blessingLeave(mon: Pokemon, fainted = false) {
 	if (!mon.battle.fantasyRogue) return;
 	const team = side(mon);
 	member(mon).inheritedSlots = mon.moveSlots.filter(slot => member(mon).inherited.includes(slot.id)).map(slot => ({ ...slot }));
 	if (mon.foes(true).some(foe => hasBlessing(foe, 'passdrops'))) {
 		const drops: Partial<BoostsTable> = {};
-		for (const key of Object.keys(mon.boosts) as BoostID[]) if (mon.boosts[key] < 0) drops[key] = mon.boosts[key];
+		for (const key of Object.keys(mon.boosts) as BoostID[]) if (mon.boosts[key] < 0) drops[key] = Math.max(-2, mon.boosts[key]);
 		team.drops[mon.getSlot()] = drops;
 	}
 	const seed = mon.volatiles.leechseed;
@@ -444,7 +477,7 @@ export function blessingKO(battle: Battle, target: Pokemon, source?: Pokemon | n
 	const lossKey = `${battle.fantasyRogue.encounterId}:${target.set.fantasyRogueId}`;
 	const defeats = side(source).psychicDefeats ||= [];
 	if (!defeats.includes(id) && !battle.fantasyRogue.blessingDefeated?.includes(id)) {
-		defeats.push(id); gainBattlePsychic(source, 4); gainSpiral(source, 9);
+		defeats.push(id); gainBattlePsychic(source, 4); gainSpiral(source, SPIRAL_KO);
 		if (hasBlessing(source, 'hpgrowth')) {
 			member(source).bonusHP = (member(source).bonusHP || 0) + 2;
 			source.baseMaxhp += 2; source.baseStoredStats.hp += 2;
@@ -523,6 +556,7 @@ export function blessingDamage(damage: number, target: Pokemon, source: Pokemon 
 	if (!target.battle.fantasyRogue) return damage;
 	if (['psn', 'tox'].includes(effect.id) && target.statusState.blessingToxic) damage *= 2;
 	if (['stealthrock', 'spikes', 'gmaxsteelsurge'].includes(effect.id) && source && hasBlessing(source, 'hazards')) damage *= 2;
+	if (effect.effectType === 'Move' && source && !source.isAlly(target) && battleMonkeyBranch(target) === 'Rock') damage *= 0.5;
 	const direct = effect.effectType === 'Move' || effect.id === 'confused';
 	const runtime = member(target);
 	const robeSave = awakeningLethal(damage, target, effect), spiralSave = robeSave === undefined ? spiralLethal(damage, target) : undefined;
@@ -534,9 +568,8 @@ export function blessingDamage(damage: number, target: Pokemon, source: Pokemon 
 			target.battle.heal(target.maxhp, target, target, target.battle.format);
 			target.battle.add('-message', `${target.name}领悟了生死，恢复全部 HP！`); return 0;
 		}
-		if ((savedBlessingMember(target)?.bond || 0) >= 100 && target.hp > 1 && !runtime.bondUsed && target.battle.randomChance(1, 10)) {
-			runtime.bondUsed = true; target.battle.add('-message', '因为怕你担心，它挺住了这次攻击'); return target.hp - 1;
-		}
+		const endured = affectionEndure(damage, target, source, effect);
+		if (endured !== undefined) return endured;
 		if (hasBlessing(target, 'survive') && !runtime.survived && target.side.pokemon.some(p => p.hp && !p.isActive)) {
 			runtime.survived = true; target.switchFlag = true;
 			target.battle.add('-message', `${target.name}留得青山在！`); return target.hp - 1;
@@ -594,7 +627,7 @@ export function blessingTypes(mon: Pokemon, types: string[]) {
 		types = [...new Set([types[0], mon.set.fantasyRogueModifiers.extraType])];
 	}
 	const type = mon.battle.fantasyRogue && emblemType(savedBlessingMember(mon)?.emblem || mon.item);
-	if (type) types = [...new Set([types[0], type])];
+	if (type) types = applyEmblemType(types, type, savedBlessingMember(mon)?.emblemSlot);
 	const tonics = savedBlessingMember(mon)?.tonics;
 	return tonics?.wine && tonics.cephalosporin ? [...new Set([...types, 'Ghost'])] : types;
 }
@@ -603,6 +636,7 @@ export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<Stat
 	const card = mon.side.id === 'p1' && mon.battle.fantasyRogue.mentorCard;
 	if (card) {
 		const profile = mentorCardProfile(card, mon.battle.fantasyRogue.mentorTier);
+		if (key === 'atk' || key === 'spa') stat = mon.battle.modify(stat, 1 + profile.offense / 100);
 		if (key === 'def' || key === 'spd') stat = mon.battle.modify(stat, 1 + profile.defense / 100);
 		if (key === 'spe') stat = mon.battle.modify(stat, 1 + profile.speed / 100);
 	}
@@ -610,14 +644,18 @@ export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<Stat
 	if (hasBlessing(mon, 'entrance')) stat *= 1 + (team.entries || 0) * 0.05;
 	if (mon.side.id === 'p1' && mon.battle.fantasyRogue.comebackCard && (key === 'def' || key === 'spd')) stat *= 1.25;
 	if (key === 'atk' && spiralActive(mon)) stat *= 1 + spiralPoints(mon) / 1000;
-	if (key === 'def' || key === 'spd') stat *= robeMultiplier(mon);
+	if (key === 'def' || key === 'spd') {
+		stat *= robeMultiplier(mon);
+		stat *= 1 + weaknessArmorCount(mon) / 10;
+	}
 	if (key === 'spe' && hasBlessing(mon, 'speedpower')) stat *= 1.5;
+	if (key === 'spe' && battleMonkeyBranch(mon) === 'Flying') stat *= 1.5;
 	stat *= runtime.sword[key] || 1;
 	if (key === 'atk' || key === 'spa') {
 		stat = (stat + runtime.prayer[key]) * (1 + team.combo * 0.1);
 		if (hasBlessing(mon, 'kid') && mon.hasItem('eviolite') && mon.species.evos.length) stat *= 1.3;
 	}
-	if ((key === 'def' || key === 'spd') && hasBlessing(mon, 'style')) stat *= 1 + team.style * 0.1;
+	if (key !== 'spe' && hasBlessing(mon, 'style')) stat *= 1 + team.style * 0.1;
 	// runEvent applies its chained ability/item modifier only to integer relay values.
 	return Math.floor(stat * numberStatMultiplier(mon, key) + 1e-9);
 }
@@ -636,6 +674,8 @@ export function blessingEffectiveness(typeMod: number, target: Pokemon | null, t
 	return typeMod;
 }
 export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
+	onAccuracyPriority: -100,
+	onAccuracy(accuracy, target, source) { return affectionAccuracy(accuracy, target, source); },
 	onModifyBoost(boosts, pokemon) {
 		if (rulebreakerActive(pokemon)) for (const stat of Object.keys(boosts) as BoostID[]) boosts[stat] = Math.max(0, boosts[stat] || 0);
 	},
@@ -703,7 +743,10 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 			move.drain = [1, 2]; move.flags.heal = 1;
 		}
 		if (hasBlessing(pokemon, 'pivot') && move.category !== 'Status') move.selfSwitch = true;
-		if (hasBlessing(pokemon, 'multihit') && move.multihit) move.multihit = typeof move.multihit === 'number' ? move.multihit * 2 : [move.multihit[0] * 2, move.multihit[1] * 2];
+		if (hasBlessing(pokemon, 'multihit') && move.multihit) {
+			move.multihit = typeof move.multihit === 'number' ? move.multihit * 2 : [move.multihit[0] * 2, move.multihit[1] * 2];
+			if (move.id === 'tripleaxel') move.basePowerCallback = (user, target, activeMove) => 20 * Math.min(3, activeMove.hit);
+		}
 		if (hasBlessing(pokemon, 'coin') && move.category !== 'Status') {
 			move.rogueCoin = hasBlessing(pokemon, 'dice') || this.randomChance(1, 2) ? 1.5 : 0.5;
 			this.add('-message', `命运决定一切：${move.rogueCoin === 1.5 ? '正面，伤害 ×1.5' : '反面，伤害 ×0.5'}。`);
@@ -739,9 +782,7 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 		if (move.rogueCoin) damage *= move.rogueCoin;
 		if (hasBlessing(source, 'sound') && move.flags.sound) damage *= 1 + source.side.pokemon.reduce((n, p) => n + p.moveSlots.filter(slot => this.dex.moves.get(slot.id).flags.sound).length, 0) * 0.05;
 		if (hasBlessing(target, 'weakness') && target.getMoveHitData(move).typeMod > 0) {
-			let count = 0;
-			for (const mon of target.side.pokemon) for (const type of this.dex.types.names()) if (this.dex.getImmunity(type, mon) && this.dex.getEffectiveness(type, mon) >= 2) count++;
-			damage /= 1 + 0.1 * Math.min(10, count);
+			damage *= weaknessDamageFactor(target.getMoveHitData(move).typeMod, weaknessProfile(target.getTypes(), this.dex).points);
 		}
 		if (hasBlessing(target, 'starters') && starter(target)) damage *= 1 - 0.05 * target.side.pokemon.filter(starter).length;
 		damage *= 1 - battleDevotionBonus(target).reduction / 100;
@@ -790,7 +831,7 @@ export function blessingUpdate(battle: Battle) {
 		mon.m.rogueTypeStats = key;
 		const stats = battle.spreadModify(mon.species.baseStats, { ...mon.set, species: mon.species.name,
 			fantasyRogueModifiers: { ...modifiers, statsType: undefined, stats: eligible ? modifiers.stats : {} } });
-		if (mon.species.maxHP) stats.hp = Math.floor((mon.species.maxHP + (mon.set.fantasyRogueStats?.hp || 0)) *
+		if (mon.species.maxHP) stats.hp = Math.floor(rogueMetaStat(mon.species.maxHP, mon.set.fantasyRogueStats?.hp, mon.set.fantasyRogueBoostPercent) *
 			(mon.set.fantasyRogueScale || 1) * (1 + (eligible ? modifiers.stats?.hp || 0 : 0))) + (modifiers.hp || 0);
 		const change = (stats.hp - mon.baseMaxhp) * (mon.volatiles.dynamax ? 2 : 1);
 		mon.baseMaxhp = stats.hp; mon.maxhp += change;

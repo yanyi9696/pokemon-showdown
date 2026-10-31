@@ -143,6 +143,10 @@ describe('Fantasy Rogue continuous encounters and exclusive equipment', function
 		run.floor += 5; assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 60);
 		assert(beginExclusiveEncounter(run, () => 0));
 		assert.equal(run.node.encounters[0].team[0].item, 'Shadow Bottle');
+		for (const mon of run.node.encounters[0].team) {
+			assert.equal(mon.level, Math.min(100, Math.max(3, Math.ceil(run.floor / 2)) + 2));
+			assert(Object.values(mon.evs).reduce((a, b) => a + b, 0) <= 256);
+		}
 		assert.equal(run.node.encounters[0].catchable, false); assert(run.node.event.committed);
 		settleExclusiveEvent(run, false); assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 0);
 		run.floor += 8; assert(exclusiveEncounterChance(run, 'shadowbottle') > 60);

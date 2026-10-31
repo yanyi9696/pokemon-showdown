@@ -1,0 +1,74 @@
+Fantasy Rogue — 2026-10-31 本地最终发布整理
+
+结论
+本轮源代码、必要资源与回归测试已整理为 codex/fantasy-rogue 发布候选。
+完整项目 TypeScript、干净构建及实际执行的业务回归通过；严格 CI 仍有下文明确列出的 ESLint 和 test-npm 债务，不能宣称 npm test / 正式 CI 全绿。
+本次没有连接腾讯云、操作真实玩家数据库、部署或重启服务，也没有移动 master/fantasy 分支。
+
+比较基线
+server: 91b031b7a4098d2186aacf9b1ccf909b0d2fa7b6
+client: 431d4983eba5c0e1d597e6a416ba4e893e7bab44
+以上为整理前 HEAD；最终提交 SHA 见交付报告，不能用这些基线代替发布目标。
+工作区：F:\fantasy\release-audit-20261022\server 与 client。
+
+一、纳入本轮的功能与修复
+1. 秘闻主线、22 段顺序推进、每局最多一段、落空保底、故事回顾和老人日常事件；最后揭露后首次通关的结局待办跨局保存。
+2. 局外六维百分比成长、按物种及地区形态记录首次通关奖励、故事与通关共同解锁难度；旧局成长方式、已解锁记录保留。
+3. 独立暗金色挑战区域、阶段配队、认真切磋与同行邀请、胜利奖励及永久训练；战斗退出与离开楼层分开处理，失败/逃跑不重复获取奖励。
+4. 祝福加级延后至 11/61/111/161 层，旧局已经生效的加级保留；资源节奏、事件阶段、祝福池、属性使者及各专项祝福修订。
+5. 属性转可选择替换双属性的其中一项、少量局内掉落与图鉴解释；大圣风采依旧、统一队爱好者、补盲好手、弱点类、螺旋力、数字祝福、五号化合物暂存等规则及测试。
+6. 友好度、同行好感度及关系回应统一展示，战斗复活道具、首领阶段复活和血条协议、护符及最终挑战边界。
+7. 普通对战共享的招式/特性/能力结算接入、Fantasy 新特性，以及限时决策预算内的 AI 威胁、换人和招式选择修复。
+8. 图鉴、攻略、祝福与道具解释、殿堂留影/雷达图/招式详情、半屏/展开阅读、秘闻入口；祝福图鉴入口金色和导航按钮放大均已包含。
+9. 登录等待与超时反馈、过期登录响应防护；原有 localhost 普通测试昵称与 Windows 启动桥接未改变。
+最终整理只清理重复导入、未使用变量、变量遮蔽和等价表达式，共 8 个文件；未为通过检查改变数值、奖励、业务规则或测试预期。
+
+二、源码与资源边界
+仅纳入 Git 受跟踪或非忽略的已核查源文件、测试、文档、必要图片及来源/哈希元数据。
+客户端新立绘 ingo.png、emmet.png、palmer.png、riley.png 与 challenges-20261030.json、README 均需发布：前者为项目制作的人物图，后者记录官方形象参考、双表情布局和文件哈希，不应当作临时文件丢弃。
+两个修改后的 tools/fantasy-rogue-*-playtest.js 属于开发验证工具，不由生产入口自动运行。
+数据库、账号存档、认证凭据、真实配置、SSH 密钥、node_modules、dist、临时审计目录均不进入提交。可选 testclient-key.js 未读取、未复制。
+本轮未修改原有 Windows 启动工具、8000/8080 端口或本地存档路径，未重启正在运行的本地游戏服务。
+
+三、实际执行的构建与测试
+使用从 Git 清单复制的独立源码，构建前没有旧 dist；依赖为本机已安装版本。
+环境：Windows / Node v22.14.0 / TypeScript 6.0.2 / ESLint 9.39.4 / Mocha 11.7.5。
+- 服务端完整 TypeScript：node node_modules/typescript/bin/tsc --noEmit，通过；最后清理后复查通过。
+- 服务端 node build --decl：通过；最终干净产物 1,375 个，无缺失源码的 JavaScript 残留。
+- 服务端完整 Mocha：使用 .mocharc 全部目录，--grep '.*' 包含 slow，--timeout 30000 --forbid-only；8233 passing / 85 pending / 13 failing。
+  13 项失败全部为 Windows 沙箱限制：12 项无法在临时目录初始化 Git，1 项无法创建目录链接；没有业务断言失败。
+- 最终专项：所有 test/server/fantasy-rogue*.js、fantasy-ai-rogue-responses.js、local-development.js、static-server.js，在允许临时 Git 与目录链接的环境中重跑：3198 passing / 0 pending / 0 failing。
+  已覆盖并通过上述全部 13 项。合并两轮证据为 8246 个不同用例通过、85 个既有 pending；这不是一次全量全绿的报告。
+- 客户端完整 TypeScript、node build full --local-server <隔离 server 源码>、node build replays 均通过；最终全量 Mocha 428 passing / 1 pending / 0 failing。
+- 静态 HTTP 响应及 SockJS、路径穿越、目录链接隔离、响应结束/错误生命周期回归通过，node-static 修复保留。
+- 52 个页面资源、两个生成 mini-Pokedex、13 个人物立绘、6 个糖果图标、2 个王冠图标及哈希、Unknown 属性和露莎米奈头像均在独立随机回环端口 HTTP 验证成功。
+- Showdex 55 个版本化文件及哈希通过。四张新立绘的尺寸、透明通道、元数据哈希通过。
+- 两工作区 git diff --check 通过；CRLF 提示不属于失败。
+Windows 缺少可选 PHP 新闻生成器，构建回退既有公告；离线文章索引有 NO ARTICLES 警告。没有将这些可选步骤写成通过。
+本轮没有重新进行 Edge 目视/手动完整通关，也没有验证生产网络延迟或负载。自动回归、资源加载不等同于这两项验收。
+
+四、数据库与旧构建兼容
+本轮未变更 store-schema.ts DDL、store.ts、权限配置或 Windows 本地桥接。
+合成旧结构数据库及合成账号测试覆盖重复初始化、IF NOT EXISTS、缺结构时 IMMEDIATE 事务、异常回滚与释放连接、写锁/只读/损坏数据库、旧存档读取与内容保留、历史和账号的原子写入。
+秘闻、首通物种、成长版本等新增状态走已有 JSON 存档及兼容迁移，不重置玩家数据。
+这里没有使用真实生产备份。部署方须在完整性验证过的一致性备份副本中运行 tools/validate-fantasy-rogue-database.js，不直接测试生产库或覆盖原备份。
+24 个旧 dist 结论重新核实：21 个旧顶层声明由 dist/sim 对应新声明替代；1 个 tsbuildinfo 是缓存；旧 gen9fantasy/rulesets.js 和 .map 不进入干净产物。
+20 个当前配置 Fantasy 分级 × 8 组队伍，160 组规则/验证完全一致；旧规则 hook 调用 0 次，显式启用旧规则的正控制调用 1 次。
+部署前仍需确认生产额外私有分级没有显式依赖旧 Fantasy Ability Rule；本次没有查看生产私有配置。
+
+五、未通过或未执行的检查
+ESLint 未修改规则，使用相同依赖/配置比较基线与本轮文本：
+- 服务端基线 13,995 errors / 939 warnings；最终 15,896 errors / 989 warnings。
+- 客户端基线 1,123 errors / 55 warnings；最终 1,134 errors / 56 warnings。
+本轮新增消息集中于缩进、逗号、空格、行长、同一行语句数；另外 4 条 prefer-arrow-callback 与 1 条 no-return-assign 为测试写法，回调返回值没有被业务使用。不能把新增格式债务全称为历史问题。
+按规则、消息、源码行和重复次数比较（忽略行号移动），最后清理后没有新增的正确性/安全类诊断；客户端另以现代语法正确性规则复查，新诊断为 0，Rogue 主脚本诊断为 0。
+服务端 full-test/full-test-ci 与客户端 npm test 均含 lint，因此现有严格 CI 仍会失败。本报告不更改或授权跳过 CI 门禁。
+85 项服务端 pending 与前次审计逐标题一致，涉及的 39 个文件与基线相同；客户端 1 项 Text parser 旧夹具测试所在 suite 与基线一致。没有新增 skip，也没有将 pending 计入通过数。
+npm run test-npm 原命令仍失败，报 TypeScript 6 的 TS5112。保持 strict/target，仅在诊断命令补 --ignoreConfig、--ignoreDeprecations 6.0 和 es2021.intl 后公共模拟器 API 检查通过。package.json、tsconfig 和依赖声明未改；原脚本仍记失败。
+Windows Node 22 验证不等于 GitHub Linux Node 18 矩阵或腾讯云环境验证。
+
+六、提交与交付
+源码哈希清单、初始补丁、逐项 lint 差异、pending 来源、测试 JSON、构建与资源清单位于本机 F:\fantasy\release-final-20261031。
+提交前逐文件核对暂存内容与已测试源码，仅允许 Git 正常换行归一化。两个开发分支提交后核验干净状态、父提交与正式分支引用未变。
+GitHub 非交互 SSH 刷新返回 Permission denied (publickey)，没有读取或修改私钥/SSH 配置。用户需在原 Windows PowerShell 中正常推送，不使用 --force；推送前不得把旧 origin 跟踪引用当作最新远端验证。
+本地候选可交付后续发布核查；严格 CI 债务、生产备份副本及生产特有配置检查仍须明确处理。此次未执行合并或部署。

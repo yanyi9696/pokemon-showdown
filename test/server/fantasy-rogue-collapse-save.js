@@ -107,7 +107,7 @@ describe('Fantasy Rogue collapse selections, legacy saves, scouting and telemetr
 			assert(!b.p2.pokemon[0].m.rogueCollapse?.shieldUsed); assert(!b.p2.pokemon[0].m.rogueCollapse?.emergencyUsed);
 		} finally { b.destroy(); }
 	});
-	it('scouts the next boss within ten floors, stores its roster and does not redraw it on reconnect', () => {
+	it('scouts all future bosses, stores their rosters and does not redraw on reconnect', () => {
 		assert.equal(blessing('futuresight').tier, 'silver');
 		config.floors[10][0].encounters[0].candidates = config.starters.map(s => s.set);
 		cmd('start', { starters: ['bulbasaur'], difficulty: 0, collapse: [] });
@@ -117,6 +117,7 @@ describe('Fantasy Rogue collapse selections, legacy saves, scouting and telemetr
 		});
 		engine.migrate(user); const first = structuredClone(account().run.bossPreviews[10]);
 		assert.equal(account().run.futureBossFloor, 10); assert(!first.encounters[0].candidates);
+		assert(account().run.bossPreviews[20]);
 		engine = new RogueEngine(store, config, n => n - 1, true); engine.migrate(user);
 		assert.deepEqual(account().run.bossPreviews[10], first);
 		store.change(user, a => {

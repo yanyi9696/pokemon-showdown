@@ -42,7 +42,7 @@ describe('Fantasy Rogue recalibrated preparation and blessing rules', function (
 		const {run, account} = setup(1); pick(run, account, 'insight');
 		assert.equal(run.bag.maxrevive, 10);
 		assert.equal(content.items.find(i => i.id === 'maxrevive').amount, 1);
-		run.floor = 50; pick(run, account, 'bigmoney'); assert.equal(run.money, 20000);
+		run.floor = 50; pick(run, account, 'bigmoney'); assert.equal(run.money, 22000);
 		pick(run, account, 'pandoragold');
 		assert.equal(FANTASY_BLESSING_ITEMS.reduce((sum, id) => sum + (run.bag[id] || 0), 0), 2);
 		assert(blessing('pandoragold').text.includes('2 个随机幻想通用道具'));
@@ -158,7 +158,7 @@ describe('Fantasy Rogue recalibration in native battles', () => {
 		battle.randomChance = () => true;
 		battle.damage(a.maxhp + 1, a, battle.p2.active[0], battle.dex.moves.get('tackle'));
 		assert.equal(a.hp, 1); assert(!a.switchFlag); assert(!a.m.rogueBlessing.survived);
-		assert(battle.log.some(line => line.includes('因为怕你担心，它挺住了这次攻击')));
+		assert(battle.log.some(line => line.includes('不想让你担心，奋力撑住了')));
 	});
 	it('extends own Tailwind by three turns without extending the opponent side', () => {
 		const a = begin(['overtimetailwind'], [set('Talonflame', 'Flame Body', 50, ['Tailwind'])]);

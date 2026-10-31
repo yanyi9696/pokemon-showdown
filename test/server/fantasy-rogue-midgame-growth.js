@@ -73,9 +73,9 @@ describe('Fantasy Rogue midgame growth and intrinsic Meltan candy', function () 
 		const result = {won: true, encounterId: 'battle', defeated: [
 			{id: 'steel', species: 'Magnemite', participants: []}, {id: 'normal', species: 'Rattata', participants: [], captured: true}]};
 		b.settleBlessingBattle(account, run, content, result, () => 0, true); assert.equal(run.blessings.candy, 0);
-		b.settleBlessingBattle(account, run, content, {...result, won: false}, () => 0); assert.equal(run.blessings.candy, 12);
-		b.settleBlessingBattle(account, run, content, result, () => 0); assert.equal(run.blessings.candy, 12);
-		b.settleBlessingBattle(account, run, content, {...result, encounterId: 'retry'}, () => 0); assert.equal(run.blessings.candy, 12);
+		b.settleBlessingBattle(account, run, content, {...result, won: false}, () => 0); assert.equal(run.blessings.candy, 22);
+		b.settleBlessingBattle(account, run, content, result, () => 0); assert.equal(run.blessings.candy, 22);
+		b.settleBlessingBattle(account, run, content, {...result, encounterId: 'retry'}, () => 0); assert.equal(run.blessings.candy, 22);
 		assert.equal(run.blessings.owned.length, 0);
 	});
 	it('requires 400 candy through both normal and special evolution entry points regardless of level', () => {

@@ -10,6 +10,7 @@ export function rogueDiscoveries(account: RogueAccount) {
 		...cards.flatMap(card => card.snapshot.blessings.map(entry => entry.id)),
 	].map(id => blessing(id)?.id).filter((id): id is string => !!id));
 	const events = new Set([
+		...(account.run?.challengeHistory || []).filter(entry => entry.accepted || entry.outcome).map(entry => `challenge:${entry.id}`),
 		...(account.discoveries?.events || []), ...(account.run?.eventHistory || []).map(entry => entry.id),
 		...(account.run?.node?.event ? [account.run.node.event.id] : []),
 		...(account.run?.node?.trade ? [`trade:${account.run.node.trade.kind}`] : []),
