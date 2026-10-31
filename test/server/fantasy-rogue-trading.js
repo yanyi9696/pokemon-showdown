@@ -33,11 +33,11 @@ describe('Fantasy Rogue trade routes and purchased training items', function () 
 		assert.equal(account().run.phase, 'rest');
 	}
 	it('lowers nature mint prices without resale profit and leaves ability tonics separately valued', () => {
-		const {baseRecyclePrice} = require('../../dist/server/fantasy-rogue/buyback');
+		const { baseRecyclePrice } = require('../../dist/server/fantasy-rogue/buyback');
 		for (const [floor, price] of [[1, 400], [50, 600], [100, 800], [150, 1000], [200, 1200]]) {
 			for (const spirit of [undefined, 'meowth']) {
 				const run = account().run; run.floor = floor; run.spirit = spirit;
-				run.node = {trade: {kind: 'mint', stock: [], purchases: 0}};
+				run.node = { trade: { kind: 'mint', stock: [], purchases: 0 } };
 				prepareTrade(run, content, () => 0);
 				for (const item of run.node.trade.stock) {
 					assert.equal(item.price, Math.ceil(price * (spirit ? 1.25 : 1)));
@@ -46,7 +46,7 @@ describe('Fantasy Rogue trade routes and purchased training items', function () 
 				}
 			}
 		}
-		assert.equal(baseRecyclePrice({id: 'ability-test', kind: 'tonic', price: 0}), 3000);
+		assert.equal(baseRecyclePrice({ id: 'ability-test', kind: 'tonic', price: 0 }), 3000);
 	});
 	it('buys a batch atomically, caps stock and funds, and deduplicates retries', () => {
 		enter('candy'); const item = account().run.node.trade.stock[0], before = account().run;

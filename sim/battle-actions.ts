@@ -1679,7 +1679,8 @@ export class BattleActions {
 		moveHit.crit = move.willCrit || false;
 		if (move.willCrit === undefined) {
 			if (critRatio) {
-				moveHit.crit = ordered ? critRatio > 1 : this.battle.randomChance(affectionBenefits(battleAffection(source)).critical, critMult[critRatio]);
+				moveHit.crit = ordered ? critRatio > 1 :
+					this.battle.randomChance(affectionBenefits(battleAffection(source)).critical, critMult[critRatio]);
 			}
 		}
 
@@ -1857,7 +1858,8 @@ export class BattleActions {
 			}
 		}
 
-		if (typeComponents) baseDamage = this.battle.modify(baseDamage, unityDamageFactor(pokemon, target, move, typeComponents));
+		if (typeComponents) baseDamage = this.battle.modify(baseDamage, unityDamageFactor(pokemon,
+			target, move, typeComponents));
 		if (isCrit && !suppressMessages) this.battle.add('-crit', target);
 
 		if (hasRogueStatus(pokemon, 'brn') && move.category === 'Physical' && !pokemon.hasAbility('guts') && !pokemon.hasItem('fantasylifeorb') && !pokemon.hasAbility('zhiliao')) {

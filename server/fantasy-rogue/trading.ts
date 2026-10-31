@@ -151,8 +151,10 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 		}
 		const item = pool.splice(index, 1)[0];
 		const price = Math.round(budget * 0.75 / 50) * 50;
-		const adjusted = trade.kind === 'mint' ? natureMintPrice(run.floor) : trade.kind === 'candy' ? CANDY_SHOP[item.id].price :
-			Math.ceil(price * 1.25 * (trade.kind === 'machine' ? 1 + Math.min(0.2, Math.max(0, run.floor - 30) / 500) : 1) / 10) * 10;
+		const adjusted = trade.kind === 'mint' ? natureMintPrice(run.floor) :
+			trade.kind === 'candy' ? CANDY_SHOP[item.id].price :
+			Math.ceil(price * 1.25 * (trade.kind === 'machine' ?
+				1 + Math.min(0.2, Math.max(0, run.floor - 30) / 500) : 1) / 10) * 10;
 		trade.stock.push({ ...item, price: Math.ceil(adjusted * (run.spirit === 'meowth' ? 1.25 : 1)),
 			shopFloor: 1, remaining: trade.kind === 'candy' ? Math.max(1, Math.floor(CANDY_SHOP[item.id].stock * candySupplyMultiplier(run.floor))) : 1 });
 	}

@@ -60,15 +60,19 @@ function movesFor(name: string, level: number): string[] {
 		}
 		let power = move.basePower || (move.damage === 'level' ? 70 : typeof move.damage === 'number' ? move.damage : 40);
 		if (move.multihit) power *= typeof move.multihit === 'number' ? move.multihit : 3;
-		if (move.flags.charge || move.self?.volatileStatus === 'mustrecharge') power *= .55;
-		if (move.selfdestruct) power *= .18;
+		if (move.flags.charge || move.self?.volatileStatus === 'mustrecharge') power *= 0.55;
+		if (move.selfdestruct) power *= 0.18;
 		const stat = species.baseStats[move.category === 'Physical' ? 'atk' : 'spa'];
-		const duplicate = selected.some(id => { const prior = dex.moves.get(id); return prior.type === move.type && prior.category !== 'Status'; });
+		const duplicate = selected.some(id => {
+			const prior = dex.moves.get(id);
+			return prior.type === move.type && prior.category !== 'Status';
+		});
 		return power * (move.accuracy === true ? 1 : move.accuracy / 100) * stat / bestStat *
-			(species.types.includes(move.type) ? 1.5 : 1) * (duplicate ? .35 : 1) + (move.priority > 0 ? 12 : 0);
+			(species.types.includes(move.type) ? 1.5 : 1) * (duplicate ? 0.35 : 1) + (move.priority > 0 ? 12 : 0);
 	};
 	while (selected.length < Math.min(4, candidates.length)) {
-		const pool = candidates.filter(move => !selected.includes(move.id) && (selected.length || !attacks.length || move.category !== 'Status'));
+		const pool = candidates.filter(move => !selected.includes(move.id) && (selected.length ||
+			!attacks.length || move.category !== 'Status'));
 		pool.sort((a, b) => score(b) - score(a) || a.id.localeCompare(b.id));
 		selected.push(pool[0].id);
 	}

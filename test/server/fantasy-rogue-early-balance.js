@@ -95,7 +95,7 @@ describe('Fantasy Rogue early growth and preparation', function () {
 				// Remove the approved 81/101/141 support steps when checking the underlying curve.
 				const support = floor <= 80 ? 1 : floor <= 100 ? 1.15 : floor <= 140 ? 1.25 : 1.35;
 				const normalized = value / support;
-				if (floor > 1) assert(normalized - previousNormalized <= 200 + 12 * floor * (kind === 'trainer' ? .9 : kind === 'reward' ? .2 : 1));
+				if (floor > 1) assert(normalized - previousNormalized <= 200 + 12 * floor * (kind === 'trainer' ? 0.9 : kind === 'reward' ? 0.2 : 1));
 				for (const id of Object.keys(items)) assert(CANDY_SHOP[id].floor <= floor);
 				previous = value;
 				previousNormalized = normalized;

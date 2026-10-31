@@ -4,7 +4,7 @@ const {randomUUID} = require('crypto');
 const {RogueStore} = require('../../dist/server/fantasy-rogue/store');
 const {RogueEngine} = require('../../dist/server/fantasy-rogue/engine');
 const {storyView} = require('../../dist/server/fantasy-rogue/story');
-const {echoView, rollEchoShiny, awardEcho, awardGodEcho} = require('../../dist/server/fantasy-rogue/echo');
+const { echoView, rollEchoShiny, awardEcho, awardGodEcho } = require('../../dist/server/fantasy-rogue/echo');
 const {emptyEchoUpgrades, ECHO_TYPES, ECHO_SYSTEMS} = require('../../dist/sim/rogue-echo');
 const {COLLAPSE_ENTRIES} = require('../../dist/sim/rogue-collapse-data');
 const {grantSystem, gymSystemGift, treasure} = require('../../dist/server/fantasy-rogue/blessings');
@@ -20,31 +20,31 @@ describe('Fantasy Rogue echo: persistence, clear awards and duplicate system gif
  const start=(difficulty=0)=>cmd('start',{starters:['bulbasaur'],difficulty});
  beforeEach(()=>{store=new RogueStore(':memory:');data=content();data.blessings=true;engine=new RogueEngine(store,data,()=>0,true);});
  afterEach(()=>store.close());
- it('awards another 2/4/6/8/10 only for legitimate god victories, once across reloads',()=>{
+	it('awards another 2/4/6/8/10 only for legitimate god victories, once across reloads', () => {
   for(let tier=1;tier<=5;tier++) {
-   const a={}; const r={floor:200,difficulty:tier,collapse:COLLAPSE_ENTRIES.slice(0,tier*2).map(e=>e.id),postgame:{stage:'won'}};
-   awardEcho(a,r); assert.equal(awardGodEcho(a,r),tier*2); assert.equal(a.echo.points,tier*4);
-   assert.equal(awardGodEcho(JSON.parse(JSON.stringify(a)),JSON.parse(JSON.stringify(r))),0);
-   assert.equal(r.postgame.echoAwarded,tier*2);
+			const a = {}; const r = { floor: 200, difficulty: tier, collapse: COLLAPSE_ENTRIES.slice(0, tier * 2).map(e => e.id), postgame: { stage: 'won' } };
+			awardEcho(a, r); assert.equal(awardGodEcho(a, r), tier * 2); assert.equal(a.echo.points, tier * 4);
+			assert.equal(awardGodEcho(JSON.parse(JSON.stringify(a)), JSON.parse(JSON.stringify(r))), 0);
+			assert.equal(r.postgame.echoAwarded, tier * 2);
   }
-  for(const override of [{postgame:{stage:'lost'}},{postgame:{stage:'declined'}},{difficulty:0},
-   {difficulty:'easy'},{difficultyTest:true},{floor:199},{collapse:[]}]) {
-   const a={},r={floor:200,difficulty:1,collapse:COLLAPSE_ENTRIES.slice(0,2).map(e=>e.id),postgame:{stage:'won'},...override};
-   assert.equal(awardGodEcho(a,r),0); assert(!a.echo);
+		for (const override of [{ postgame: { stage: 'lost' } }, { postgame: { stage: 'declined' } }, { difficulty: 0 },
+			{ difficulty: 'easy' }, { difficultyTest: true }, { floor: 199 }, { collapse: [] }]) {
+			const a = {}, r = { floor: 200, difficulty: 1, collapse: COLLAPSE_ENTRIES.slice(0, 2).map(e => e.id), postgame: { stage: 'won' }, ...override };
+			assert.equal(awardGodEcho(a, r), 0); assert(!a.echo);
   }
  });
- it('settles god echo and the existing twenty growth points in the same saved outcome',()=>{
-  start(1); seed(0);
-  store.change(user,a=>{
-   const r=a.run;r.floor=200;r.difficultyTest=false;
-   r.postgame={stage:'battle',before:structuredClone({team:r.team,bag:r.bag,money:r.money}),node:structuredClone(data.floors[20][0]),encounter:0};
-   engine.finishGodChallenge(a,r,'won');
-  });
-  const points=account().points;
-  assert.equal(account().echo.points,2); assert.equal(account().run.lastReward.points,20);
+	it('settles god echo and the existing twenty growth points in the same saved outcome', () => {
+		start(1); seed(0);
+		store.change(user, a => {
+			const r = a.run; r.floor = 200; r.difficultyTest = false;
+			r.postgame = { stage: 'battle', before: structuredClone({ team: r.team, bag: r.bag, money: r.money }), node: structuredClone(data.floors[20][0]), encounter: 0 };
+			engine.finishGodChallenge(a, r, 'won');
+		});
+		const points = account().points;
+		assert.equal(account().echo.points, 2); assert.equal(account().run.lastReward.points, 20);
   engine=new RogueEngine(store,data,()=>0,true);engine.migrate(user);
-  store.change(user,a=>engine.finishGodChallenge(a,a.run,'won'));
-  assert.equal(account().points,points);assert.equal(account().echo.points,2);
+		store.change(user, a => engine.finishGodChallenge(a, a.run, 'won'));
+		assert.equal(account().points, points); assert.equal(account().echo.points, 2);
  });
  it('is hidden before clearing and rejects spending; migrates old clear evidence without retroactive currency',()=>{
   assert(!echoView(account())); assert.throws(()=>cmd('echo',{value:'guard'}),/首次通关/);
@@ -56,7 +56,7 @@ describe('Fantasy Rogue echo: persistence, clear awards and duplicate system gif
   store.change(user,a=>{const r=a.run;r.floor=200;r.difficultyTest=false;r.phase='ready';
    r.node=structuredClone(data.floors[20][0]);r.encounter=r.node.encounters.length;engine.finishAdventure(a,r);});
   assert.equal(account().run.story.stage,'interlude');assert(!account().echo);
-  engine=new RogueEngine(store,data,()=>0,true);engine.migrate(user);
+		engine = new RogueEngine(store, data, () => 0, true); engine.migrate(user);
   const pages=[];
   while(account().run.story?.stage==='interlude') {
    const view=storyView(account(),false,true);pages.push(view.text);
@@ -68,14 +68,14 @@ describe('Fantasy Rogue echo: persistence, clear awards and duplicate system gif
   assert.equal(account().echo.points,2);assert.equal(account().run.echoAwarded,2);
  });
  it('awards 2/4/6/8/10 per legitimate clear and excludes practice and incomplete runs',()=>{
-  for(let tier=1;tier<=5;tier++) {
+		for (let tier = 1; tier <= 5; tier++) {
    const a={}; const r={floor:200,difficulty:tier,collapse:COLLAPSE_ENTRIES.slice(0,tier*2).map(e=>e.id)};
    assert.equal(awardEcho(a,r),tier*2);assert.equal(awardEcho(a,r),0);assert.equal(a.echo.points,tier*2);
   }
   for(const r of [{floor:199,difficulty:1,collapse:['power','vitality']}, {floor:200,difficulty:0,collapse:[]},
    {floor:200,difficulty:'easy',collapse:[]}, {floor:200,difficulty:1,difficultyTest:true,collapse:['power','vitality']}]) {
    const a={};assert.equal(awardEcho(a,r),0);assert(!a.echo);
-  }
+		}
  });
  it('charges exact costs, enforces maxima and snapshots purchases only into new runs without free items',()=>{
   seed();
@@ -86,7 +86,7 @@ describe('Fantasy Rogue echo: persistence, clear awards and duplicate system gif
   assert.equal(account().echo.points,510);
   for(const value of ['type/Fire','guard','shiny','catch','system/mega','type/Water/extra','system/no','__proto__']) {
    assert.throws(()=>cmd('echo',{value}));assert.equal(account().echo.points,510);
-  }
+		}
   start();const r=account().run;
   for(const system of Object.keys(ECHO_SYSTEMS)) {assert(r[system+'Unlocked']);assert(r.checkpoint[system+'Unlocked']);}
   assert.deepEqual(r.bag,data.initialBag);assert.deepEqual(r.echo,account().echo.upgrades);
@@ -138,9 +138,9 @@ describe('Fantasy Rogue echo: persistence, clear awards and duplicate system gif
   start();store.change(user,a=>{for(const s of Object.keys(ECHO_SYSTEMS))a.run[s+'Unlocked']=true;gymSystemGift(a.run);});
   const reward=account().run.blessings.pending[0];assert.equal(reward.kind,'systemfallback');
   assert(!reward.options.some(s=>s.startsWith('unlock:')));take('shards');assert.equal(account().run.phase,'ready');
- });
+	});
  it('grants the rich treasure bag through the normal reward generator with doubled budget',()=>{
   start();duplicate();const expected=structuredClone(account().run);treasure(expected,data,()=>0,treasureBudget(expected.floor));
   take('treasure');assert.deepEqual(account().run.bag,expected.bag);assert.equal(account().run.money,expected.money);
- });
+	});
 });

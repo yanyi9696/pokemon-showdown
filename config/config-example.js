@@ -376,6 +376,9 @@ exports.forcetimer = false;
 // The lobby is available while the owner's formal content configuration is pending.
 exports.fantasyrogue = {
 	enabled: true, database: 'databases/fantasy-rogue.db',
+	// Emergency forward-recovery mode: keep the matching new server/client and current database.
+	// Blocks new runs only; existing stories, battles, rewards and history retain their current semantics.
+	continueOnly: false,
 	// Closed by default. Add dedicated REGISTERED account names after confirming ownership.
 	betaAccounts: /** @type {string[]} */ ([
 		'fcrbeta26101901', 'fcrbeta26101902', 'fcrbeta26101903', 'fcrbeta26101904', 'fcrbeta26101905',

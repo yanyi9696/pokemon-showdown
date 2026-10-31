@@ -155,7 +155,7 @@ describe('Fantasy Rogue individual weaknesses and team armor', () => {
 		assert.equal(run.bag.weaknesspolicy, 1);
 		assert.equal(run.blessings.levels, 0);
 		assert.equal(run.blessings.bossLevels, 0);
-		assert.deepEqual(run.blessings.deferredLevels, [{floor: 50, startsAt: 61, normal: 5, boss: 10}]);
+		assert.deepEqual(run.blessings.deferredLevels, [{ floor: 50, startsAt: 61, normal: 5, boss: 10 }]);
 	});
 	it('returns a physically consumed policy to the result bag, once per snapshot', () => {
 		const run = party(['Aggron'], ['weakness']); run.team[0].set.item = 'Weakness Policy';

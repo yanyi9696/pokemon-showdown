@@ -161,11 +161,11 @@ describe('Fantasy Rogue journey history, relationships and special supplies', fu
   const {AFFECTION_CHAT_LINES}=require('../../dist/server/fantasy-rogue/affection-dialogue');
   const r=run();for(const id of Object.keys(AFFECTION_LINES)) {
    assert.equal(AFFECTION_CHAT_LINES[id]?.length,2,id);
-   assert.equal(affection.affectionChat(r,id,'original'),'⌈original⌋');
-   affection.gainAffection(r,id,50,'stage1');assert.equal(affection.affectionChat(r,id,'original'),'⌈'+AFFECTION_CHAT_LINES[id][0]+'⌋');
-   assert.equal(affection.affectionChat(r,id,'original'),'⌈original⌋');
+			assert.equal(affection.affectionChat(r, id, 'original'), '⌈original⌋');
+			affection.gainAffection(r, id, 50, 'stage1'); assert.equal(affection.affectionChat(r, id, 'original'), '⌈' + AFFECTION_CHAT_LINES[id][0] + '⌋');
+			assert.equal(affection.affectionChat(r, id, 'original'), '⌈original⌋');
    affection.gainAffection(r,id,50,'stage2');r.trainerBonds[id].chats=0;
-   assert.equal(affection.affectionChat(r,id,'original'),'⌈'+AFFECTION_CHAT_LINES[id][1]+'⌋');
+			assert.equal(affection.affectionChat(r, id, 'original'), '⌈' + AFFECTION_CHAT_LINES[id][1] + '⌋');
    for(let i=0;i<20;i++)affection.affectionChat(r,id,'original');assert.equal(r.trainerBonds[id].score,100);
   }
  });
@@ -184,35 +184,35 @@ describe('Fantasy Rogue journey history, relationships and special supplies', fu
  });
  it('orders the tower and routes before advanced difficulty and has one copy of every section', () => {
   assert.equal(BEGINNER_GUIDE[0].title,'幻想杯与这座塔');
-  assert(BEGINNER_GUIDE.findIndex(s=>s.title.startsWith('战斗区域'))<BEGINNER_GUIDE.findIndex(s=>s.title.startsWith('难度与塔灵')));
-  assert(!JSON.stringify(BEGINNER_GUIDE).includes('幻想崩坏'));
+		assert(BEGINNER_GUIDE.findIndex(s => s.title.startsWith('战斗区域')) < BEGINNER_GUIDE.findIndex(s => s.title.startsWith('难度与塔灵')));
+		assert(!JSON.stringify(BEGINNER_GUIDE).includes('幻想崩坏'));
   assert.equal(new Set(BEGINNER_GUIDE.map(s=>s.title)).size,BEGINNER_GUIDE.length);
  });
- it('unifies legacy affection without losing a higher score and pays completed stories only once', () => {
-  const r=run(180); r.affectionVersion=1;
-  r.rival={id:'korrina',completed:8,affection:67,permanent:true};
-  r.trainerBonds={korrina:{score:100,gifts:[50,100],pending:[]}};
-  affection.syncAffection({run:r}); affection.syncAffection({run:r});
-  assert.equal(r.rival.affection,100); assert.equal(r.trainerBonds.korrina.score,100);
-  assert(!r.bag.goldbottlecap); assert.deepEqual(r.trainerBonds.korrina.pending,[100]);
-  affection.affectionCommand(r,{member:'korrina',value:'bestfriend'});affection.syncAffection({run:r});
-  assert.deepEqual(r.trainerBonds.korrina.pending,[]);assert(!r.bag.goldbottlecap);
-  assert.equal(r.trainerBonds.korrina.relationship,'bestfriend');
-  const s=run(160);s.affectionVersion=1;s.rival={id:'kieran',completed:8,affection:40,carmine:{affection:20}};
-  s.trainerBonds={kieran:{score:40,gifts:[],pending:[]},carmine:{score:20,gifts:[],pending:[]}};
-  affection.syncAffection({run:s});const gifts=JSON.stringify(s.bag);affection.syncAffection({run:s});
-  assert.equal(s.rival.affection,100);assert.equal(s.rival.carmine.affection,100);
-  assert.equal(JSON.stringify(s.bag),gifts);assert.equal(s.bag.goldbottlecap,2);
- });
- it('records actual affection gains and explicit relationship responses without duplicate rewards', () => {
-  for(const [id,response,relationship] of [['nessa','accept','couple'],['lusamine','oldfriend','oldfriend'],['korrina','bestfriend','bestfriend']]) {
-   const r=run();affection.gainAffection(r,id,95,'first');affection.gainAffection(r,id,20,'second');
-   assert.equal(r.trainerBonds[id].lastGain.amount,5);
-   affection.affectionCommand(r,{member:id,value:'thanks'});
-   assert.throws(()=>affection.affectionCommand(r,{member:id,value:'forged'}));
-   const before=JSON.stringify(r.bag);affection.affectionCommand(r,{member:id,value:response});
-   assert.equal(r.trainerBonds[id].relationship,relationship);assert.equal(JSON.stringify(r.bag),before);
-   assert.throws(()=>affection.affectionCommand(r,{member:id,value:response}));
-  }
- });
+	it('unifies legacy affection without losing a higher score and pays completed stories only once', () => {
+		const r = run(180); r.affectionVersion = 1;
+		r.rival = { id: 'korrina', completed: 8, affection: 67, permanent: true };
+		r.trainerBonds = { korrina: { score: 100, gifts: [50, 100], pending: [] } };
+		affection.syncAffection({ run: r }); affection.syncAffection({ run: r });
+		assert.equal(r.rival.affection, 100); assert.equal(r.trainerBonds.korrina.score, 100);
+		assert(!r.bag.goldbottlecap); assert.deepEqual(r.trainerBonds.korrina.pending, [100]);
+		affection.affectionCommand(r, { member: 'korrina', value: 'bestfriend' }); affection.syncAffection({ run: r });
+		assert.deepEqual(r.trainerBonds.korrina.pending, []); assert(!r.bag.goldbottlecap);
+		assert.equal(r.trainerBonds.korrina.relationship, 'bestfriend');
+		const s = run(160); s.affectionVersion = 1; s.rival = { id: 'kieran', completed: 8, affection: 40, carmine: { affection: 20 } };
+		s.trainerBonds = { kieran: { score: 40, gifts: [], pending: [] }, carmine: { score: 20, gifts: [], pending: [] } };
+		affection.syncAffection({ run: s }); const gifts = JSON.stringify(s.bag); affection.syncAffection({ run: s });
+		assert.equal(s.rival.affection, 100); assert.equal(s.rival.carmine.affection, 100);
+		assert.equal(JSON.stringify(s.bag), gifts); assert.equal(s.bag.goldbottlecap, 2);
+	});
+	it('records actual affection gains and explicit relationship responses without duplicate rewards', () => {
+		for (const [id, response, relationship] of [['nessa', 'accept', 'couple'], ['lusamine', 'oldfriend', 'oldfriend'], ['korrina', 'bestfriend', 'bestfriend']]) {
+			const r = run(); affection.gainAffection(r, id, 95, 'first'); affection.gainAffection(r, id, 20, 'second');
+			assert.equal(r.trainerBonds[id].lastGain.amount, 5);
+			affection.affectionCommand(r, { member: id, value: 'thanks' });
+			assert.throws(() => affection.affectionCommand(r, { member: id, value: 'forged' }));
+			const before = JSON.stringify(r.bag); affection.affectionCommand(r, { member: id, value: response });
+			assert.equal(r.trainerBonds[id].relationship, relationship); assert.equal(JSON.stringify(r.bag), before);
+			assert.throws(() => affection.affectionCommand(r, { member: id, value: response }));
+		}
+	});
 });

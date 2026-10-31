@@ -3,7 +3,10 @@ import type { RogueRandom } from './biome-pools';
 import { eventOpening } from './event-text';
 
 export const MASTER_BALL_EVENT = { chance: 5, denominator: 10000 };
-export interface MasterBallQuest { floor: number; stage: 'offer' | 'reward' | 'claimed' | 'declined'; consumesFloor?: boolean }
+export interface MasterBallQuest {
+	floor: number;
+	stage: 'offer' | 'reward' | 'claimed' | 'declined'; consumesFloor?: boolean;
+}
 export interface MasterBallCollection {
 	obtained: { run: string, floor: number, at: number }[]; used: number;
 }

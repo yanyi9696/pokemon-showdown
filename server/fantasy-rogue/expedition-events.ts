@@ -134,7 +134,9 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 		state.step = 'fight'; event.result = [`少女迅速翻过另一张题板：「错啦！答案是${claimed.types.map(t => BLESSING_TYPES[t]).join('、')}，我问的可是【${claimed.name}】！」`,
 			'你瞥见她桌下藏着两份不同的答案。她还在故作无辜地眨眼，你已经握住了精灵球。'];
 	} else if (choice === 'fight' || choice === 'challenge') {
-		startBattle(run, themedEventTeam(choice === 'challenge' ? 'martial' : 'tutor', Math.min(100, level(run) + (choice === 'challenge' ? 8 : 1)), choice === 'challenge' ? 4 : 2, random), choice === 'challenge' ? 2 + Math.floor(run.floor / 75) : 1);
+		startBattle(run, themedEventTeam(choice === 'challenge' ? 'martial' : 'tutor', Math.min(100,
+			level(run) + (choice === 'challenge' ? 8 : 1)), choice === 'challenge' ? 4 : 2, random),
+		choice === 'challenge' ? 2 + Math.floor(run.floor / 75) : 1);
 	} else if (choice === 'restore') {
 		const [items, species] = availableFossils(run)[0]; for (const item of items) run.bag[item]--;
 		gift(account, run, content, drawBlessingGift(run, content, random, { eliteIVs: false, species, level: level(run) }), '化石复活');

@@ -2395,7 +2395,8 @@ export class Battle {
 		}
 		const stats = this.natureModify(modStats as StatsTable, rogue?.nature ? { ...set, nature: rogue.nature } : set);
 		if (isRogueFormat(this.format.id) && set.fantasyRogueStats) {
-			for (const stat of ROGUE_STATS) stats[stat] = rogueMetaStat(stats[stat], set.fantasyRogueStats[stat], set.fantasyRogueBoostPercent);
+			for (const stat of ROGUE_STATS) stats[stat] = rogueMetaStat(stats[stat],
+				set.fantasyRogueStats[stat], set.fantasyRogueBoostPercent);
 		}
 		if (isRogueFormat(this.format.id) && set.fantasyRogueScale) {
 			for (const stat of ROGUE_STATS) stats[stat] = Math.max(1, Math.floor(stats[stat] * set.fantasyRogueScale));

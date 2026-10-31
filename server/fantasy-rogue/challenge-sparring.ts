@@ -49,7 +49,8 @@ export const SERIOUS_CHALLENGES: OptionalChallengeDefinition[] = [
 			['Cradily', 'Storm Drain', 'Leftovers', ['gigadrain', 'recover', 'toxic', 'earthpower'], 'specialwall'],
 			['Claydol', 'Levitate', 'Light Clay', ['rapidspin', 'earthpower', 'reflect', 'lightscreen'], 'screens'],
 			['Aerodactyl', 'Pressure', 'Rockium Z', ['stoneedge', 'earthquake', 'taunt', 'roost'], 'physical'],
-			['Metagross-Fantasy', 'Clear Body', 'Metagrossite', ['meteormash', 'zenheadbutt', 'earthquake', 'icepunch'], 'physical'],
+			['Metagross-Fantasy', 'Clear Body', 'Metagrossite', ['meteormash', 'zenheadbutt',
+				'earthquake', 'icepunch'], 'physical'],
 		],
 	},
 	{
@@ -98,7 +99,8 @@ export const SERIOUS_CHALLENGES: OptionalChallengeDefinition[] = [
 		retreat: '⌈先停一下，让大家缓口气！下次再把剩下的本领拿出来。⌋丹帝朝安全的出口挥手。',
 		team: [
 			['Dragapult', 'Infiltrator', 'Choice Specs', ['shadowball', 'dracometeor', 'flamethrower', 'uturn'], 'special'],
-			['Aegislash', 'Stance Change', 'Leftovers', ['kingsshield', 'shadowball', 'flashcannon', 'shadowsneak'], 'bulkyspecial'],
+			['Aegislash', 'Stance Change', 'Leftovers', ['kingsshield', 'shadowball', 'flashcannon',
+				'shadowsneak'], 'bulkyspecial'],
 			['Seismitoad', 'Water Absorb', 'Rocky Helmet', ['stealthrock', 'scald', 'earthquake', 'toxic'], 'wall'],
 			['Rillaboom', 'Grassy Surge', 'Choice Band', ['grassyglide', 'woodhammer', 'uturn', 'knockoff'], 'physical'],
 			['Haxorus', 'Mold Breaker', 'Dragonium Z', ['dragondance', 'outrage', 'closecombat', 'poisonjab'], 'physical'],

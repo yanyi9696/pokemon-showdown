@@ -20,7 +20,8 @@ export function chapterComplete(account: RogueAccount, tier: number) {
 		.every(id => mainlineProgress(account).completed.includes(id));
 }
 export function nextMainlineScene(account: RogueAccount, tier: number): string | undefined {
-	if (!MAINLINE_CHAPTER_LENGTHS[tier] || Array.from({ length: tier }, (_, i) => i).some(i => !chapterComplete(account, i))) return;
+	if (!MAINLINE_CHAPTER_LENGTHS[tier] || Array.from({ length: tier }, (_,
+		i) => i).some(i => !chapterComplete(account, i))) return;
 	return Array.from({ length: MAINLINE_CHAPTER_LENGTHS[tier] }, (_, i) => `s${tier}-${i + 1}`)
 		.find(id => !mainlineProgress(account).completed.includes(id));
 }
@@ -32,7 +33,8 @@ export function notifyUnlock(account: RogueAccount, id: string, title: string, t
 export function unlockStoryDifficulty(account: RogueAccount) {
 	const progress = account.difficulties;
 	if (!progress) return;
-	while (progress.highest < 5 && progress.cleared.includes(String(progress.highest)) && chapterComplete(account, progress.highest)) {
+	while (progress.highest < 5 && progress.cleared.includes(String(progress.highest)) &&
+		chapterComplete(account, progress.highest)) {
 		progress.highest++;
 		notifyUnlock(account, `difficulty:${progress.highest}`, `已解锁 ${progress.highest} 档冒险`,
 			'上一档的通关与故事均已完成。下次出发前，可在局外成长中选择新的档位。');
@@ -41,7 +43,8 @@ export function unlockStoryDifficulty(account: RogueAccount) {
 /** At 100 floors, a genuinely missed eligible story reserves the next run's early window. */
 export function settleStoryPity(account: RogueAccount, run: RogueRun) {
 	const reservation = run.mainline;
-	if (!reservation || reservation.pitySettled || run.floor < 100 || run.difficulty === 'easy' || run.difficultyTest) return;
+	if (!reservation || reservation.pitySettled || run.floor < 100 || run.difficulty === 'easy' ||
+		run.difficultyTest) return;
 	reservation.pitySettled = true;
 	mainlineProgress(account).pity[String(run.difficulty || 0)] = !reservation.offered;
 }

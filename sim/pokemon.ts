@@ -1129,7 +1129,8 @@ export class Pokemon {
 			...(this.set.fantasyRogueDifficulty && isRogueFormat(this.battle.format.id) ?
 				{ fantasyRogueDifficulty: this.set.fantasyRogueDifficulty } : {}),
 			...(this.set.fantasyRogueStats && isRogueFormat(this.battle.format.id) ?
-				{ fantasyRogueStats: { ...this.set.fantasyRogueStats }, fantasyRogueBoostPercent: this.set.fantasyRogueBoostPercent } : {}),
+				{ fantasyRogueStats: { ...this.set.fantasyRogueStats },
+					fantasyRogueBoostPercent: this.set.fantasyRogueBoostPercent } : {}),
 			stats: {
 				atk: this.baseStoredStats['atk'],
 				def: this.baseStoredStats['def'],

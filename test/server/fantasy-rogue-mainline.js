@@ -139,7 +139,7 @@ describe('Fantasy Rogue mainline, identity ledger and percentage growth', functi
 		for (const page of Object.values(entries[0].replay.pages)) for (const option of page.options) assert(entries[0].replay.pages[option.next]);
 	});
 	it('opens every mystery and the true ending only in server-authorized local preview without completing them', () => {
-		const {rogueCodex} = require('../../dist/server/fantasy-rogue/codex');
+		const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
 		const a = account(), before = JSON.stringify(a);
 		const local = rogueCodex(a, 'stories', true), production = rogueCodex(a, 'stories');
 		assert(local.preview); assert.equal(local.entries.length, 23);

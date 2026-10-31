@@ -243,7 +243,7 @@ describe('Fantasy Rogue blessings in native battles', () => {
 	it('doubles Triple Axel to six hits while capping each hit at its native maximum power', () => {
 		begin(['multihit'], [set('Mew', 'Skill Link', 10, ['Triple Axel'])], [set('Blissey', 'Natural Cure', 100, ['Splash'])]);
 		const powers = [];
-		battle.onEvent('BasePower', battle.format, function (power, user, target, move) {
+		battle.onEvent('BasePower', battle.format, (power, user, target, move) => {
 			if (move.id === 'tripleaxel') powers.push(power);
 		});
 		turn();
@@ -252,7 +252,7 @@ describe('Fantasy Rogue blessings in native battles', () => {
 	});
 	it('limits inherited negative stages to minus two without transferring positive stages', () => {
 		begin(['passdrops'], undefined, [set('Blissey', 'Natural Cure', 100, ['Splash']), set('Snorlax', 'Immunity', 100, ['Splash'])]);
-		battle.boost({atk: -6, spa: -1, spe: -5, def: 2}, battle.p2.active[0]);
+		battle.boost({ atk: -6, spa: -1, spe: -5, def: 2 }, battle.p2.active[0]);
 		turn('move 2', 'switch 2');
 		const mon = battle.p2.active[0];
 		assert.equal(mon.boosts.atk, -2); assert.equal(mon.boosts.spa, -1);

@@ -28,7 +28,7 @@ export function inventoryItem(content: RogueContent, id: string): RogueItem | un
 		description: id === 'abilitycapsule' ? '切换另一项普通特性；使用前可查看目标特性。' : '切换隐藏特性与第一项普通特性；使用前可查看目标特性。' };
 	const type = emblemType(id);
 	if (type) return {id, name: `${BLESSING_TYPES[type]}属性转`, kind: 'emblem', price: 0,
-		shopFloor: false, icon: toID(type + 'gem'), description: emblemDescription(type)};
+		shopFloor: false, icon: toID(type + 'gem'), description: emblemDescription(type) };
 	const configured = content.items.find(item => item.id === id);
 	if (configured) return configured;
 	const special = tradeItem(id) || tonicItems().find(item => item.id === id);

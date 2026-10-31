@@ -107,7 +107,10 @@ export class RogueManager {
 		return this.duels.command(user, command);
 	}
 	state(user: User) {
-		const common = { userid: user.id, protocolVersion: 1, codexSchema: ROGUE_CODEX_SCHEMA, contentVersion: codexContentVersion(), enabled: rogueAccess(user) };
+		const common = {
+			userid: user.id, protocolVersion: 1, codexSchema: ROGUE_CODEX_SCHEMA,
+			contentVersion: codexContentVersion(), enabled: rogueAccess(user), continueOnly: this.engine.continueOnly,
+		};
 		try { this.authorize(user); } catch (error) {
 			return { ...common, message: (error as Error).message, account: null };
 		}
@@ -124,8 +127,9 @@ export class RogueManager {
 			}
 		}
 		if (run && content) {
-			for (const id of [...Object.keys(run.bag), ...(run.node?.challenge?.prizes || []).flatMap(prize => Object.keys(prize.items)),
-				...[...run.team, ...(run.box || [])].flatMap(mon => [toID(mon.set.item), mon.emblem || ''])]) {
+			for (const id of [...Object.keys(run.bag), ...(run.node?.challenge?.prizes ||
+				[]).flatMap(prize => Object.keys(prize.items)),
+			...[...run.team, ...(run.box || [])].flatMap(mon => [toID(mon.set.item), mon.emblem || ''])]) {
 				if (!id || items.some(item => item.id === id)) continue;
 				const item = inventoryItem(content, id);
 				if (item) items.push({ ...item });
@@ -248,13 +252,15 @@ export class RogueManager {
 						abilityChanges: { abilitycapsule: abilityItemTarget(mon, 'abilitycapsule'), abilitypatch: abilityItemTarget(mon, 'abilitypatch') },
 						extraAbilities: assignedExtraAbilities(saved, run.team, run.blessings).filter(id => id !== toID(mon.set.ability)),
 						canReceiveSharpness: canGrantExtraAbility(saved, 'sharpness', run.team, run.blessings),
-						types: blessingMemberTypes(mon), emblemBaseTypes: emblemBaseTypes(saved), fantasyForm: mon.fusion ? undefined : fantasyForm(mon.set.species),
+						types: blessingMemberTypes(mon), emblemBaseTypes: emblemBaseTypes(saved),
+						fantasyForm: mon.fusion ? undefined : fantasyForm(mon.set.species),
 						experienceProgress: experienceProgress(mon),
 						friendship: friendship(mon),
 						evolutionDetails: content?.progression ? partyEvolutions(mon, run) : undefined,
 						evolutions: content?.progression ? evolutionOptions(mon, run) : [],
 					};
-				}), bag: run.bag, money: run.money, boosts: run.boosts, boostRuleVersion: run.boostRuleVersion, lastReward: run.lastReward,
+				}), bag: run.bag, money: run.money, boosts: run.boosts,
+				boostRuleVersion: run.boostRuleVersion, lastReward: run.lastReward,
 				notices: run.notices?.slice(-16) || [], pendingCapture: run.pendingCapture,
 				returningPartner: run.captureResume === 'event' && run.node?.event?.id === 'greninjareturn',
 				pendingMoves: run.pendingMoves || [],
@@ -393,7 +399,9 @@ export function getRogueManager() {
 		FS('databases').mkdirpSync();
 		manager = new RogueManager(new RogueEngine(new RogueStore(
 			Config.fantasyrogue?.database || 'databases/fantasy-rogue.db'
-		), FantasyRogueContent, undefined, !!Config.fantasyailocal && ['127.0.0.1', '::1'].includes(Config.bindaddress || '')));
+		), FantasyRogueContent, undefined,
+		!!Config.fantasyailocal && ['127.0.0.1', '::1'].includes(Config.bindaddress || ''),
+		!!Config.fantasyrogue?.continueOnly));
 	}
 	return manager;
 }

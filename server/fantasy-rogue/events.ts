@@ -7,7 +7,8 @@ import { beginSocialEvent, socialCandidates, socialEventView, chooseSocialEvent,
 import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView, chooseExpedition, settleExpedition, type ExpeditionEvent } from './expedition-events';
 import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
 import { isLuckEvent } from './luck-event-data';
-import { loadedDiceEventWeight, luckEventEligible, luckEventView, chooseLuckEvent, type LuckEventResult } from './luck-events';
+import { loadedDiceEventWeight, luckEventEligible, luckEventView, chooseLuckEvent,
+	type LuckEventResult } from './luck-events';
 import { eligibleRematches, prepareRematch, rematchView, chooseRematch } from './companion-rematches';
 import { policeView, choosePoliceRegion, settlePoliceBattle, type PoliceEvent } from './police-events';
 import { honeymoonEligible, prepareHoneymoon, honeymoonView, chooseHoneymoon, settleHoneymoon } from './honeymoon';
@@ -108,13 +109,18 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 
 export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last && eventPacingWeight(run.floor, id) > 0 && luckEventEligible(run.floor, id) && (id !== 'coverageworkshop' || run.floor >= 60) && activityEligible(run, id) && greninjaEventEligible(run, id) && expeditionEligible(run, id) && run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
-		!['masterballgift', 'rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector', 'policeassist', 'policerevenge'].includes(id) &&
-		(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
-		(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
-		(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
-		(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
-		(id !== 'legendarytracks' || run.floor >= LEGENDARY_TRACKS_FLOOR));
+	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last &&
+		eventPacingWeight(run.floor, id) > 0 && luckEventEligible(run.floor, id) &&
+		(id !== 'coverageworkshop' || run.floor >= 60) && activityEligible(run, id) &&
+		greninjaEventEligible(run, id) && expeditionEligible(run, id) &&
+		run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
+		!['masterballgift', 'rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector',
+			'policeassist', 'policerevenge'].includes(id) &&
+			(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
+			(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
+			(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
+			(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
+			(id !== 'legendarytracks' || run.floor >= LEGENDARY_TRACKS_FLOOR));
 	const unseen = candidates.filter(id => !history.some(entry => entry.id === id));
 	// Companion encounter bonuses also apply while exploring unseen events.
 	const cooled = candidates.filter(id => {
@@ -138,8 +144,12 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 		return 'exclusiveclue';
 	}
 	// Prefer the least recent when all eligible events are on cooldown, without repeating the last event.
-	const weights = pool.map(id => Math.max(1, Math.round(eventPacingWeight(run.floor, id) * loadedDiceEventWeight(run, id) * (id === 'exclusiveclue' ? 6 : 1) * legendaryEventScale(run, id) * activityWeight(id) * (['forest', 'identityquiz'].includes(id) ? 1.3 : 1) * (id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 + history.length - history.map(entry => entry.id).lastIndexOf(id)) *
-		(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
+	const weights = pool.map(id => Math.max(1, Math.round(eventPacingWeight(run.floor, id) *
+		loadedDiceEventWeight(run, id) * (id === 'exclusiveclue' ? 6 : 1) * legendaryEventScale(run,
+		id) * activityWeight(id) * (['forest', 'identityquiz'].includes(id) ? 1.3 : 1) *
+		(id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 +
+			history.length - history.map(entry => entry.id).lastIndexOf(id)) *
+			(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	const chosen = pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
 	if (chosen === 'exclusiveclue' || !neededExclusiveItems(run).length) run.exclusiveEventMisses = 0;

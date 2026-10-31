@@ -11,39 +11,39 @@ const playerRoot = path.resolve(process.argv.find(a => a.startsWith('--player-en
 const playerLoad = id => require(path.join(playerRoot, id));
 const legacyController = process.argv.includes('--legacy-controller');
 const {randomUUID} = require('crypto');
-const {Dex, toID} = load('sim/dex');
-const {Teams} = load('sim/teams');
-const {Battle, extractChannelMessages} = load('sim/battle');
-const {PRNG} = load('sim/prng');
-const {rogueBattleResult} = load('sim/fantasy-rogue');
-const {rogueBossChoice} = load('sim/rogue-bosses');
-const {RogueStore} = load('server/fantasy-rogue/store');
-const {RogueEngine} = load('server/fantasy-rogue/engine');
-const {createPreviewContent} = load('server/fantasy-rogue/preview-content');
-const {evolutionOptions} = load('server/fantasy-rogue/progression');
-const {blessingView, fantasyForm} = load('server/fantasy-rogue/blessings');
-const {eventView} = load('server/fantasy-rogue/events');
-const {storyView} = load('server/fantasy-rogue/story');
-const {shopStock, machineMoves} = load('server/fantasy-rogue/trading');
-const {rewardSceneView} = load('server/fantasy-rogue/reward-scenes');
-const {coverageView} = load('server/fantasy-rogue/coverage');
-const {growthOffers} = load('server/fantasy-rogue/growth');
-const {centerCare} = load('server/fantasy-rogue/economy');
-const {inventoryItem, healingLocked} = load('server/fantasy-rogue/team');
-const {InformationView} = load('server/fantasy-ai/information');
-const {captureInitialMoves} = load('server/fantasy-ai/initial-snapshot');
-const {emergencyChoice} = load('server/fantasy-ai/fallback');
-const {RolloutPolicy} = load('server/fantasy-ai/rollout');
-const {DecisionTimeManager} = load('server/fantasy-ai/time-management');
-const {DEFAULT_LIMITS} = load('server/fantasy-ai/types');
-const {enumerateRequestChoices} = load('server/fantasy-ai/actions');
-const {companionView} = load('server/fantasy-rogue/companions');
-const {RIVAL_STYLES} = load('server/fantasy-rogue/rival-responses');
-const {BEGINNER_GUIDE} = load('server/fantasy-rogue/beginner-guide');
-const {roguePartyLimit} = load('sim/fantasy-rogue-spirits');
-const {travellingRoster} = load('server/fantasy-rogue/travellers');
-const {petSpecies} = load('sim/rogue-pets');
-const {emergencyCost} = load('server/fantasy-rogue/early-balance');
+const { Dex, toID } = load('sim/dex');
+const { Teams } = load('sim/teams');
+const { Battle, extractChannelMessages } = load('sim/battle');
+const { PRNG } = load('sim/prng');
+const { rogueBattleResult } = load('sim/fantasy-rogue');
+const { rogueBossChoice } = load('sim/rogue-bosses');
+const { RogueStore } = load('server/fantasy-rogue/store');
+const { RogueEngine } = load('server/fantasy-rogue/engine');
+const { createPreviewContent } = load('server/fantasy-rogue/preview-content');
+const { evolutionOptions } = load('server/fantasy-rogue/progression');
+const { blessingView, fantasyForm } = load('server/fantasy-rogue/blessings');
+const { eventView } = load('server/fantasy-rogue/events');
+const { storyView } = load('server/fantasy-rogue/story');
+const { shopStock, machineMoves } = load('server/fantasy-rogue/trading');
+const { rewardSceneView } = load('server/fantasy-rogue/reward-scenes');
+const { coverageView } = load('server/fantasy-rogue/coverage');
+const { growthOffers } = load('server/fantasy-rogue/growth');
+const { centerCare } = load('server/fantasy-rogue/economy');
+const { inventoryItem, healingLocked } = load('server/fantasy-rogue/team');
+const { InformationView } = load('server/fantasy-ai/information');
+const { captureInitialMoves } = load('server/fantasy-ai/initial-snapshot');
+const { emergencyChoice } = load('server/fantasy-ai/fallback');
+const { RolloutPolicy } = load('server/fantasy-ai/rollout');
+const { DecisionTimeManager } = load('server/fantasy-ai/time-management');
+const { DEFAULT_LIMITS } = load('server/fantasy-ai/types');
+const { enumerateRequestChoices } = load('server/fantasy-ai/actions');
+const { companionView } = load('server/fantasy-rogue/companions');
+const { RIVAL_STYLES } = load('server/fantasy-rogue/rival-responses');
+const { BEGINNER_GUIDE } = load('server/fantasy-rogue/beginner-guide');
+const { roguePartyLimit } = load('sim/fantasy-rogue-spirits');
+const { travellingRoster } = load('server/fantasy-rogue/travellers');
+const { petSpecies } = load('sim/rogue-pets');
+const { emergencyCost } = load('server/fantasy-rogue/early-balance');
 const assert = require('assert').strict;
 const profile = process.argv.find(a => a.startsWith('--profile='))?.split('=')[1] || 'prepared6';
 if (!['prepared6', 'newcomer', 'experienced'].includes(profile)) throw Error('Unknown playstyle');
@@ -66,9 +66,9 @@ const guided = fs.existsSync(out + '/guided-preparation.json') ? JSON.parse(fs.r
 const dex = Dex.mod('gen9fantasy'), content = {...createPreviewContent(), story: true};
 const rng = new PRNG(savedDriver?.rng || [2026, 10, 22, seed]);
 const store = new RogueStore(out + '/campaign.db'), engine = new RogueEngine(store, content, max => rng.random(max));
-const user = 'preparedqa', events = [], metrics = savedDriver?.metrics || {profile, seed, starter, starters, startingSlots: 2, desiredTier, difficulty, driverVersion: 9,
+const user = 'preparedqa', events = [], metrics = savedDriver?.metrics || { profile, seed, starter, starters, startingSlots: 2, desiredTier, difficulty, driverVersion: 9,
 	driverHash: require('crypto').createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
-	conditions: {playstyle: newcomer ? 'Knows Pokemon: balanced candy feeding, simple route/bonus choices, immediate battle policy, no blessing rerolls' : 'Knows Pokemon and Rogue: two-core training, reward-aware routes, blessing rerolls, boss search and displayed roster preparation', spirit: false, statBoosts: 0, slotPurchase: 20, hiddenOpponentState: false, enemyBossSearchBudgetMs: 4500},
+	conditions: { playstyle: newcomer ? 'Knows Pokemon: balanced candy feeding, simple route/bonus choices, immediate battle policy, no blessing rerolls' : 'Knows Pokemon and Rogue: two-core training, reward-aware routes, blessing rerolls, boss search and displayed roster preparation', spirit: false, statBoosts: 0, slotPurchase: 20, hiddenOpponentState: false, enemyBossSearchBudgetMs: 4500 },
 	battles: [], purchases: [], floors: [], choices: [], issues: [], started: new Date().toISOString()};
 const checkpoint = () => fs.writeFileSync(out + '/driver-state.json', JSON.stringify({rng: rng.getSeed(), metrics}));
 const account = () => store.get(user), run = () => account().run;
@@ -156,7 +156,7 @@ function preparation() {
 		const items = Object.keys(r.bag).filter(id => r.bag[id] > 0).map(id => inventoryItem(content, id)).filter(Boolean);
 		const revive = items.find(i => i.kind === 'revive'), faint = r.team.find(m => !m.hp && !m.egg);
 		if (faint && revive) {cmd('use', {member: faint.id, value: revive.id}); continue;}
-		if (engine.canEmergency(r) && r.money >= emergencyCost(r.floor)) {cmd('emergency'); continue;}
+		if (engine.canEmergency(r) && r.money >= emergencyCost(r.floor)) { cmd('emergency'); continue; }
 		const evolver = r.team.find(m => m.hp && evolutionOptions(m, r).some(e => !e.item || r.bag[e.item] > 0));
 		if (evolver) {cmd('evolve', {member: evolver.id, value: toID(evolutionOptions(evolver, r).find(e => !e.item || r.bag[e.item] > 0).species)}); continue;}
 		const fantasy = r.team.filter(m => m.hp && fantasyForm(m.set.species)).sort((a, b) => strength(b) - strength(a))[0];
@@ -164,7 +164,7 @@ function preparation() {
 		const candy = items.filter(i => i.kind === 'candy').sort((a, b) => b.amount - a.amount)[0];
 		if (candy) {
 		const eligible = r.team.filter(m => m.hp && !m.egg && !m.fixedLevel && (m.uncappedLevel || m.set.level < 100));
-		const core = newcomer ? eligible : eligible.sort((a, b) => b.set.level * 9 + synergy(b) - a.set.level * 9 - synergy(a)).slice(0, r.floor >= 80 ? 3 : 2);
+			const core = newcomer ? eligible : eligible.sort((a, b) => b.set.level * 9 + synergy(b) - a.set.level * 9 - synergy(a)).slice(0, r.floor >= 80 ? 3 : 2);
 			const nextEvolution = m => evolutionOptions(m, r).length ? 0 : Math.min(...dex.species.get(m.set.species).evos.map(e => dex.species.get(e).evoLevel || 100));
 			const nearEvolution = newcomer ? [] : core.filter(m => nextEvolution(m) - m.set.level > 0 && nextEvolution(m) - m.set.level <= 3);
 			const target = nearEvolution.sort((a, b) => nextEvolution(a) - a.set.level - (nextEvolution(b) - b.set.level))[0] || core.sort((a, b) => a.set.level - b.set.level)[0];
@@ -240,7 +240,7 @@ function preparation() {
 function combat() {
 	const r = run(), encounter = r.node.encounters[r.encounter], ticket = r.battle, state = engine.battleState(user);
 	if (r.node.kind === 'boss') fs.writeFileSync(`${out}/boss-${r.floor}-${metrics.battles.length + 1}.json`,
-		JSON.stringify({account: account(), encounter, state}));
+		JSON.stringify({ account: account(), encounter, state }));
 	const cooperative = encounter.cooperative, format = cooperative ? 'gen9fantasyroguecoop' : 'gen9fantasyrogue';
 	const ownTeam = state.team.filter(m => !m.egg), enemyTeam = cooperative ? encounter.team.slice(0, Math.ceil(encounter.team.length / 2)) : encounter.team;
 	const requests = {};
@@ -255,7 +255,7 @@ function combat() {
 		p1: {name: 'Prepared Player', team: ownTeam.map(m => m.set)}, p2: {name: 'NPC', team: enemyTeam},
 		...(cooperative ? {p3: {name: cooperative.name, team: cooperative.team},
 			p4: {name: 'NPC Partner', team: encounter.team.slice(Math.ceil(encounter.team.length / 2))}} : {})});
-	const {RogueCoopController} = load('server/fantasy-rogue/coop-controller');
+	const { RogueCoopController } = load('server/fantasy-rogue/coop-controller');
 	const wild = !encounter.trainer && r.node.kind !== 'trainer' && encounter.boss?.kind !== 'summit';
 	const coop = cooperative && new RogueCoopController({options: {fantasyRogue: {wild}}});
 	const views = [new InformationView({ownSide: 'p1', difficulty: 'normal', partySize: enemyTeam.length,
@@ -286,12 +286,12 @@ function combat() {
 				if (cooperative) {
 					choice = coop.choose(i === 0 ? 'p3' : side.id, request);
 					if (i === 0) choice = choice.replace(/^(move \d+) -([12])/, (_, move, loc) => move + ' -' + (loc === '1' ? '2' : '1'));
-				} else if (!i) choice = !newcomer && r.node.kind === 'boss' ?
+					} else if (!i) choice = !newcomer && r.node.kind === 'boss' ?
 					preparedPlayer.decide(observation, [2026, seed, r.floor, step + 1], {budgetMs: 4500, maxRollouts: null, excluded: avoidWastedMoves(observation)}).choice :
 					player.decide(observation, [2026, seed, r.floor, step + 1], avoidWastedMoves(observation)).choice;
 				else if (r.node.kind !== 'boss' || wild) {
 					const excluded = wild && !request.forceSwitch ? enumerateRequestChoices(request).filter(c => c.startsWith('switch ')) : [];
-					choice = (wild || state.boss || legacyController ? rogueBossChoice(request) : undefined) || emergencyChoice(observation, format, excluded, true, true, !wild);
+						choice = (wild || state.boss || legacyController ? rogueBossChoice(request) : undefined) || emergencyChoice(observation, format, excluded, true, true, !wild);
 				} else {
 					const excluded = [];
 					if (state.boss) {
@@ -397,7 +397,7 @@ try {
 		if (!opening?.key) break;
 		cmd('storynext', {value: opening.key});
 	}
-	cmd('start', {starters, useSpirit: false, difficulty});
+		cmd('start', { starters, useSpirit: false, difficulty });
 	}
 	let previousFloor = 0;
 	for (let step = 0; step < 50000; step++) {
@@ -457,7 +457,7 @@ try {
 				arsenal: 105, capturebonus: 70, bond: 90, insight: 65, cephalosporin: 60, reservation: 74, supercombo: 78,
 				godrobe: 102, puregodrobe: 99, spiral: 106, speedpower: 103, fantasysix: 108,
 				bignumber: 110, supernumber: 170, sololeveling: 110, spindance: 90, weighttraining: 78,
-				cats: 104, dogs: 80, potara: 45, companionai: 150, weakness: 95, weaknessarmor: 80};
+				cats: 104, dogs: 80, potara: 45, companionai: 150, weakness: 95, weaknessarmor: 80 };
 			const score = o => {
 				const family = o.family || o.id;
 				if (newcomer) return (['medic', 'hpgrowth', 'money', 'friend', 'hero', 'companionai'].includes(family) ? 75 : 30) + (o.tier === 'silver' ? 10 : o.tier === 'gold' ? 5 : 0);
@@ -557,7 +557,7 @@ try {
 						(2 * dex.species.get(name).baseStats.spe + 20) * roster.levels[i] / 100 + 5));
 					if (core && fast && core.stats.spe * 1.5 <= fast && core.stats.spe * 2 > fast) card = 'speed';
 				}
-				cmd('mentorcard', {value: card}); continue;
+				cmd('mentorcard', { value: card }); continue;
 			}
 			if (Object.keys(r.bag).some(id => r.bag[id] > 0 && inventoryItem(content, id)?.kind === 'treasure')) {cmd('sell', {value: 'all'}); continue;}
 			const care = r.node.kind === 'rest' && centerCare(r);

@@ -16,8 +16,10 @@ export function battleUnity(mon: Pokemon) {
 	return unityState(effects, mon.side.pokemon.map(p => p.getTypes()));
 }
 /** Ratios replace only the relevant type-chart component, after move-specific effectiveness. */
-export function unityDamageFactor(source: Pokemon, target: Pokemon, move: ActiveMove, components: { type: string, mod: number }[]) {
-	if (!source.battle.fantasyRogue || move.category === 'Status' || move.damage || move.damageCallback || move.ohko) return 1;
+export function unityDamageFactor(source: Pokemon, target: Pokemon, move: ActiveMove,
+	components: { type: string, mod: number }[]) {
+	if (!source.battle.fantasyRogue || move.category === 'Status' || move.damage ||
+		move.damageCallback || move.ohko) return 1;
 	const offense = battleUnity(source), defense = battleUnity(target);
 	let factor = 1;
 	for (const { type, mod } of components) {

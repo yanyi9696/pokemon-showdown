@@ -24,7 +24,8 @@ export function evolutionBranch(mon: RoguePokemon) {
 	return (value >>> 0) % 100;
 }
 export function evolutionBranchAllowed(mon: RoguePokemon, child: Species) {
-	if (mon.compound && !mon.compound.reorganized) return true; // The explicit Compound V final-form choice takes precedence.
+	if (mon.compound && !mon.compound.reorganized) return true;
+	// The explicit Compound V final-form choice takes precedence.
 	const parent = toID(mon.set.species), roll = ['wurmple', 'dunsparce'].includes(parent) ? evolutionBranch(mon) : 0;
 	if (parent === 'wurmple') return child.id === (roll < 50 ? 'silcoon' : 'cascoon');
 	if (parent === 'dunsparce') return child.id === (roll === 0 ? 'dudunsparcethreesegment' : 'dudunsparce');

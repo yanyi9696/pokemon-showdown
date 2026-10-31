@@ -8,7 +8,7 @@ const { createPreviewContent } = require('../../dist/server/fantasy-rogue/previe
 const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
 const { rogueDiscoveries } = require('../../dist/server/fantasy-rogue/discoveries');
 const { EVENT_NAMES, eventView } = require('../../dist/server/fantasy-rogue/events');
-const {OPTIONAL_CHALLENGES} = require('../../dist/server/fantasy-rogue/challenge-data');
+const { OPTIONAL_CHALLENGES } = require('../../dist/server/fantasy-rogue/challenge-data');
 const { ROGUE_BLESSINGS, STAGED_BLESSING_FAMILIES } = require('../../dist/sim/rogue-blessing-data');
 
 describe('Fantasy Rogue permanent codex and read-only event replays', function () {

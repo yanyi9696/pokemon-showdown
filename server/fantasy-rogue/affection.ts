@@ -126,7 +126,8 @@ export function affectionScene(run: RogueRun) {
 	const romantic = ['nessa', 'olivia'].includes(id);
 	return { id, stage, name: person(id).name, title: stage === 50 ? '一路同行的心意' : '想亲口告诉你的话',
 		narration: affectionNarration(id, person(id).name, stage),
-		text: characterSpeech(stage === 50 ? AFFECTION_GIFT_LINES[id] || (TRAVELLERS[id]?.thanks || '和你一起探索未知，是这段旅程里珍贵的收获。这份礼物请收下。') + '之后的路，我们也互相照应。' : AFFECTION_LINES[id]),
+		text: characterSpeech(stage === 50 ? AFFECTION_GIFT_LINES[id] || (TRAVELLERS[id]?.thanks ||
+			'和你一起探索未知，是这段旅程里珍贵的收获。这份礼物请收下。') + '之后的路，我们也互相照应。' : AFFECTION_LINES[id]),
 		options: stage === 50 ? [{ id: 'thanks', name: '谢谢，我会珍惜这份心意。接下来的路，也请多关照。' }] : romantic ? [
 			{ id: 'accept', name: '我也喜欢你。成为恋人，一起走下去吧。' },
 			{ id: 'friends', name: '谢谢你。我想作为挚友，继续与你同行。' },
@@ -143,5 +144,7 @@ export function affectionCommand(run: RogueRun, command: RogueCommand) {
 	const b = bond(run, scene.id); b.pending.shift(); (b.responses ||= {})[scene.stage] = command.value!;
 	if (scene.stage === 100) b.relationship = command.value === 'accept' ? 'couple' :
 		command.value === 'oldfriend' ? 'oldfriend' : 'bestfriend';
-	(run.notices ||= []).push(command.value === 'friends' ? `${scene.name}微笑着点头。⌈谢谢你认真告诉我。我们仍是很好的同行伙伴。⌋` : `${scene.name}珍重地收下了你的回应。`);
+	(run.notices ||= []).push(
+		command.value === 'friends' ? `${scene.name}微笑着点头。⌈谢谢你认真告诉我。我们仍是很好的同行伙伴。⌋` :
+		`${scene.name}珍重地收下了你的回应。`);
 }

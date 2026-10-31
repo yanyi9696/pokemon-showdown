@@ -67,8 +67,8 @@ describe('Fantasy Rogue difficulty tiers', function () {
 		clearDifficulty(account, makeRun('easy')); assert.equal(account.difficulties.highest, 0);
 		assert.deepEqual(account.difficulties.spirits, ['easy']);
 		for (let tier = 0; tier <= 5; tier++) {
-			const {mainlineProgress, MAINLINE_CHAPTER_LENGTHS} = require('../../dist/server/fantasy-rogue/mainline-progress');
-			mainlineProgress(account).completed.push(...Array.from({length: MAINLINE_CHAPTER_LENGTHS[tier]}, (_, i) => `s${tier}-${i + 1}`));
+			const { mainlineProgress, MAINLINE_CHAPTER_LENGTHS } = require('../../dist/server/fantasy-rogue/mainline-progress');
+			mainlineProgress(account).completed.push(...Array.from({ length: MAINLINE_CHAPTER_LENGTHS[tier] }, (_, i) => `s${tier}-${i + 1}`));
 			const run = makeRun(tier); clearDifficulty(account, run);
 			assert.equal(account.difficulties.highest, Math.min(5, tier + 1));
 			const before = structuredClone(account); clearDifficulty(account, run); clearDifficulty(account, makeRun(0));

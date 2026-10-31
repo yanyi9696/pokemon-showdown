@@ -179,7 +179,8 @@ const REUNIONS = [
 export function rivalConversationOptions(chapter: number, turn = 0) {
 	return RIVAL_CHOICES[chapter - 1][turn].map((name, index) => ({
 		id: `greet:${['warm', 'honest', 'cold'][index]}`,
-		name: chapter === 1 ? turn === 0 ? name.replace('报上名字：', '报上名字：⌈') + '⌋' : name : `⌈${name}⌋`, text: '', disabled: false,
+		name: chapter === 1 ? turn === 0 ? name.replace('报上名字：', '报上名字：⌈') +
+		'⌋' : name : `⌈${name}⌋`, text: '', disabled: false,
 	}));
 }
 export function rivalOpeningPages(id: RivalID, chapter: number, affection: number): NarrativePage[] {
@@ -197,18 +198,19 @@ export function rivalOpeningPages(id: RivalID, chapter: number, affection: numbe
 }
 export function rivalAnswerPages(id: RivalID, chapter: number, turn: number, choice: string, affection: number) {
 	const person = RIVALS[id];
-	return [dialoguePage(id, person.name, rivalVoicedAnswer(id, choice, rivalTopicAnswer(chapter, turn, choice)), affection >= 8),
-		turn === 0 ? { scene: 'arena', title: person.name, text: SCENES[chapter - 1].second, portrait: id } :
-		{ scene: 'arena', title: person.name, portrait: id, text: [
-			'你们分别走向场地两端，给伙伴留出熟悉环境的时间。新的相识，就从这一次认真切磋开始。',
-			'旅人带着背包退到安全的路边。你们各自握紧精灵球，准备按商量好的分工接应。',
-			'树叶又一次震动。你们压低脚步，从两个方向靠近，等待阻止冲撞的机会。',
-			'杯中的热气散了些。话题已经打开，你们往火堆里添了一根树枝，继续聊下去。',
-			'你们将确认过的位置标在委托单上，收好清单，一起踏上寻找物资的路。',
-			'场地两端的伙伴已经站稳。你们交换最后一个确认的眼神，准备迎接新的配合。',
-			'远处再次传来求援声。补给已经整理好，你们用约定的信号确认彼此的位置。',
-			'高处的云慢慢散开。你们在场地两端站定，让伙伴用最好的状态回应这场约定。',
-		][chapter - 1] }];
+	return [dialoguePage(id, person.name, rivalVoicedAnswer(id, choice, rivalTopicAnswer(chapter,
+		turn, choice)), affection >= 8),
+	turn === 0 ? { scene: 'arena', title: person.name, text: SCENES[chapter - 1].second, portrait: id } :
+	{ scene: 'arena', title: person.name, portrait: id, text: [
+		'你们分别走向场地两端，给伙伴留出熟悉环境的时间。新的相识，就从这一次认真切磋开始。',
+		'旅人带着背包退到安全的路边。你们各自握紧精灵球，准备按商量好的分工接应。',
+		'树叶又一次震动。你们压低脚步，从两个方向靠近，等待阻止冲撞的机会。',
+		'杯中的热气散了些。话题已经打开，你们往火堆里添了一根树枝，继续聊下去。',
+		'你们将确认过的位置标在委托单上，收好清单，一起踏上寻找物资的路。',
+		'场地两端的伙伴已经站稳。你们交换最后一个确认的眼神，准备迎接新的配合。',
+		'远处再次传来求援声。补给已经整理好，你们用约定的信号确认彼此的位置。',
+		'高处的云慢慢散开。你们在场地两端站定，让伙伴用最好的状态回应这场约定。',
+	][chapter - 1] }];
 }
 export function rivalChatPages(id: RivalID, turn: number, choice: string, affection: number) {
 	return [dialoguePage(id, RIVALS[id].name,
@@ -234,12 +236,14 @@ export function rivalChapterReplay(id: RivalID, chapter: number) {
 			[{ label: chapter === 4 ? '继续旅途闲谈' : chapter === 5 ? '合作完成委托' : '继续这段奇遇', next: family ? 'family0' : 'activity' }] };
 	}
 	if (family) {
-		for (const [index, [portrait, text]] of family.entries()) pages[`family${index}`] = { text: [characterSpeech(text)], portrait,
+		for (const [index, [portrait, text]] of family.entries()) pages[`family${index}`] = {
+			text: [characterSpeech(text)], portrait,
 			options: index + 1 < family.length ? [{ label: '继续对话', next: `family${index + 1}` }] : [
 				{ label: '相信孩子们的选择', next: 'family:trust' },
 				{ label: '倾听大家的想法', next: 'family:care' },
 				...(chapter >= 4 ? [{ label: '邀请露莎米奈同行', next: 'family:join' }] : []),
-			] };
+			],
+		};
 		for (const [response, text] of Object.entries(LUSAMINE_REPLIES)) pages[`family:${response}`] = {
 			text: [characterSpeech(text)], portrait: 'lusamine', options: [{ label: '继续这段奇遇', next: 'activity' }],
 		};

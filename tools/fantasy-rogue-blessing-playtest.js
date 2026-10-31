@@ -28,7 +28,7 @@ function begin(run, foes, seed = 1) {
 	b.makeChoices('team ' + run.team.map((_, i) => i + 1).join(''), 'team ' + foes.map((_, i) => i + 1).join(''));
 	return b;
 }
-const result = {date: new Date().toISOString(), scope: 'Controlled comparisons; no injected resources enter campaign saves', numbers: [], fusion: [], dogs: [], spinda: {}, soloFloorOnly: [], levelCosts: []};
+const result = { date: new Date().toISOString(), scope: 'Controlled comparisons; no injected resources enter campaign saves', numbers: [], fusion: [], dogs: [], spinda: {}, soloFloorOnly: [], levelCosts: [] };
 for (const family of [null, 'bignumber', 'supernumber']) {
 	const r = party([set('Mew', ['Psychic'], {evs: {...stats(0), spa: 252, spe: 252}})], family ? [family] : []);
 	const b = begin(r, [set('Blissey', ['Flamethrower'], {evs: {...stats(0), hp: 252, spd: 252}})]);

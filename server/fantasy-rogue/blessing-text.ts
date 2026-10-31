@@ -1,13 +1,15 @@
 import { BLESSING_STAGES, BLESSING_TYPES, EMBLEM_HELP, STAGED_BLESSING_FAMILIES, blessingTitle, blessingStage,
 	blessingCoins, medicRecovery, lateBlessingReward, emblemDescription, taskRewardTier, type BlessingDefinition } from '../../sim/rogue-blessing-data';
-import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceText, type CompanionID } from '../../sim/rogue-companions';
+import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceText,
+	type CompanionID } from '../../sim/rogue-companions';
 import { tonicDescription } from '../../sim/rogue-blessing-permanent';
 import { bracketMoveCategories } from './move-categories';
 
 /** Supplies without a standard held-item Dex entry still use their Rogue rules in reference help. */
 export const BLESSING_SUPPLY_HELP = [
 	{ id: 'rogueemblemhelp', name: '属性转', description: EMBLEM_HELP },
-	...Object.entries(BLESSING_TYPES).map(([type, name]) => ({ id: 'rogueemblem' + type.toLowerCase(), name: name + '属性转', description: emblemDescription(type) })),
+	...Object.entries(BLESSING_TYPES).map(([type, name]) => ({ id: 'rogueemblem' +
+		type.toLowerCase(), name: name + '属性转', description: emblemDescription(type) })),
 	{ id: 'roguefantasyshard', name: '幻想碎片', description: '每集齐 100 片，可让一名符合条件的伙伴幻想化。碎片可继续积攒，本局使用。' },
 	{ id: 'rogueexpcandy', name: '经验糖果', description: '为选定伙伴增加经验；具体经验量由 XS、S、M、L、XL 规格决定。' },
 	{ id: 'rogueterashard', name: '太晶碎片', description: '按属性存入背包。同一属性集齐 50 片，可在战斗外将一名伙伴的太晶属性改为该属性；不会直接解锁太晶化系统。' },
@@ -116,6 +118,7 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 }
 
 const nameCollator = new Intl.Collator('zh-CN-u-co-pinyin', { sensitivity: 'base', ignorePunctuation: true, numeric: true });
-export function compareBlessingNames(a: { name: string, variantFloor?: number }, b: { name: string, variantFloor?: number }) {
+export function compareBlessingNames(a: { name: string, variantFloor?: number },
+	b: { name: string, variantFloor?: number }) {
 	return nameCollator.compare(a.name.replace(/\++$/, ''), b.name.replace(/\++$/, '')) || (a.variantFloor || 0) - (b.variantFloor || 0);
 }

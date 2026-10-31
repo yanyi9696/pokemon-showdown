@@ -48,7 +48,8 @@ export function awardRoguePoints(account: RogueAccount, run: RogueRun, amount: n
 	account.points += earned;
 	return earned;
 }
-export function syncMemberDifficulty(mon: RoguePokemon, run: Pick<RogueRun, 'difficulty' | 'difficultyRulesVersion' | 'floor' | 'boosts' | 'boostRuleVersion'>) {
+export function syncMemberDifficulty(mon: RoguePokemon, run: Pick<RogueRun,
+ 'difficulty' | 'difficultyRulesVersion' | 'floor' | 'boosts' | 'boostRuleVersion'>) {
 	const tier = run.difficulty || 0;
 	const version = run.difficultyRulesVersion || 1;
 	let changed = mon.difficulty?.tier !== tier || mon.difficulty?.floor !== run.floor || mon.difficulty?.card ||

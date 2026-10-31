@@ -157,7 +157,7 @@ export interface RogueRun extends RogueInventory {
 	/** Missing on old adventures: preserve their additive stat rules. */
 	boostRuleVersion?: 2;
 	firstClearRewardsRecorded?: boolean;
-	mainline?: { scene: string; floor?: number; offered?: boolean; completed?: boolean; pitySettled?: boolean };
+	mainline?: { scene: string, floor?: number, offered?: boolean, completed?: boolean, pitySettled?: boolean };
 	elderVisits?: string[];
 	elderServices?: string[];
 	elderStageLine?: string;
@@ -288,6 +288,8 @@ export interface RogueRun extends RogueInventory {
 	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
 }
 export interface RogueAccount {
+	/** Minimum persisted-data contract; unrelated to the SQL schema and per-run growth rule. */
+	saveVersion?: 2;
 	mainline?: import('./mainline-progress').MainlineProgress;
 	mainlineDialogue?: import('./mainline').MainlineDialogue;
 	firstClearSpecies?: string[];

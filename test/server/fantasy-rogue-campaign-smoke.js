@@ -42,7 +42,7 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 					if (view()?.key) {
 						const dialogue = view();
 						cmd(dialogue.options ? 'mainlinechoice' : 'storynext', { value: dialogue.key,
-							...(dialogue.options ? {member: dialogue.options[0].id} : {}) });
+							...(dialogue.options ? { member: dialogue.options[0].id } : {}) });
 						continue;
 					}
 					if (run.story?.stage === 'cards') {
@@ -132,7 +132,7 @@ describe('Fantasy Rogue continuous 200-floor campaign smoke', function () {
 					case 'event': {
 						if (run.node.challenge) {
 							const challenge = run.node.challenge;
-							cmd('challenge', {value: challenge.stage === 'offer' ? 'accept' : challenge.stage === 'won' ? 'supplies' : 'leave'});
+							cmd('challenge', { value: challenge.stage === 'offer' ? 'accept' : challenge.stage === 'won' ? 'supplies' : 'leave' });
 							break;
 						}
 						const event = run.node.event;

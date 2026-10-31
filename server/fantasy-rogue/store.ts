@@ -9,6 +9,7 @@ import type { RogueClearCard } from './legacy';
 import { recordRogueDiscoveries } from './discoveries';
 import { syncRunDifficulty } from './difficulty';
 import { openRogueDatabase } from './store-schema';
+import { assertRogueSaveCompatible, ROGUE_SAVE_VERSION } from './save-compatibility';
 
 export class RogueStore {
 	private readonly db: Database.Database;
@@ -31,9 +32,11 @@ export class RogueStore {
 	get(userid: string): RogueAccount {
 		const row = this.db.prepare('SELECT data FROM rogue_accounts WHERE userid = ?')
 			.get(userid) as { data: string } | undefined;
-		return row ? JSON.parse(row.data) : {
+		const account: RogueAccount = row ? JSON.parse(row.data) : {
 			revision: 0, points: 20, boosts: emptyRogueStats(), slots: 1, captures: {}, unlocked: [],
 		};
+		assertRogueSaveCompatible(account);
+		return account;
 	}
 	/** Revision and idempotency checks execute in the same write transaction as the mutation. */
 	change(userid: string, update: (account: RogueAccount) => void, command?: RogueCommand): RogueAccount {
@@ -62,6 +65,7 @@ export class RogueStore {
 			if (priorRun) trackJourney(priorRun, account);
 			if (account.run) migrateTeraShards(account.run);
 			update(account);
+			assertRogueSaveCompatible(account);
 			syncMasterBalls(account, masterBefore);
 			syncAffection(account);
 			if (account.run) { syncRunDifficulty(account.run); trackJourney(account.run, account); }
@@ -75,6 +79,7 @@ export class RogueStore {
 			}
 			recordRogueDiscoveries(account);
 			if (!command && JSON.stringify(account) === before) return account;
+			account.saveVersion = ROGUE_SAVE_VERSION;
 			account.revision++;
 			this.db.prepare('INSERT OR REPLACE INTO rogue_accounts (userid, data) VALUES (?, ?)').run(userid, JSON.stringify(account));
 			if (JSON.stringify(account.cards || []) !== previousCards) {

@@ -42,7 +42,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onBegin() { initializeRogueBattle(this); },
 		onBattleStart() { startRogueArea(this); startRogueSpirit(this); showCollapse(this); },
 		onResidualOrder: 100,
-		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); affectionResidual(this); collapseResidual(this); },
+		onResidual() {
+			for (const mon of this.getAllActive()) drainPureRobe(mon);
+			resolveRogueFutureAttacks(this);
+			maintainRogueEnvironment(this);
+			affectionResidual(this);
+			collapseResidual(this);
+		},
 		onAfterSubDamage(damage, target, source, move) { recordCollapseDamage(target, source, move, damage, true); },
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
@@ -63,7 +69,13 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			}
 			return blessingEffectiveness(typeMod, target, type, move);
 		},
-		onSwitchIn(pokemon) { blessingSwitchIn(pokemon); markRogueParticipants(this); onFantasySwitchIn.call(this, pokemon); showCollapse(this); showRogueBossPhase(pokemon); },
+		onSwitchIn(pokemon) {
+			blessingSwitchIn(pokemon);
+			markRogueParticipants(this);
+			onFantasySwitchIn.call(this, pokemon);
+			showCollapse(this);
+			showRogueBossPhase(pokemon);
+		},
 		onBeforeTurn(pokemon) { megaRogueBoss(pokemon); },
 		onTrapPokemon(pokemon) {
 			if ((pokemon.side.id === 'p2' || pokemon.side.id === 'p4') && (this.fantasyRogue?.wild ||
@@ -90,7 +102,12 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 		onBattleStart() { startRogueSpirit(this); },
 		onResidualOrder: 100,
-		onResidual() { for (const mon of this.getAllActive()) drainPureRobe(mon); resolveRogueFutureAttacks(this); maintainRogueEnvironment(this); affectionResidual(this); },
+		onResidual() {
+			for (const mon of this.getAllActive()) drainPureRobe(mon);
+			resolveRogueFutureAttacks(this);
+			maintainRogueEnvironment(this);
+			affectionResidual(this);
+		},
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },
 		onDamagingHit(damage, target, source, move) {
 			blessingHit(damage, target, source, move);

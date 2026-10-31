@@ -44,7 +44,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onTryBoost(boost, target, source, effect) {
 			if (source === target || !boost.accuracy || boost.accuracy >= 0) return;
 			delete boost.accuracy;
-			if (!(effect as ActiveMove).secondaries) this.add('-fail', target, 'unboost', 'accuracy', '[from] ability: Fiery Golden Eyes');
+			if (!(effect as ActiveMove).secondaries) this.add('-fail', target, 'unboost', 'accuracy',
+				'[from] ability: Fiery Golden Eyes');
 		},
 		onSourceAccuracy() { return true; },
 		onModifyMovePriority: -5,

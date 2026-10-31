@@ -59,7 +59,7 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 		}
 	}
 	it('grants modest run-wide growth on a claimed victory, including early floors and later partners', () => {
-		const {syncGrowthParty, GROWTH_LIMITS} = require('../../dist/server/fantasy-rogue/growth');
+		const { syncGrowthParty, GROWTH_LIMITS } = require('../../dist/server/fantasy-rogue/growth');
 		const run = party(5); run.phase = 'event'; run.node = challengeNode('dojoinvitation', 5);
 		prepareChallengePrizes(run, () => 0);
 		run.team[0].hp -= 10; run.team[0].pp[0].pp = 1;
@@ -70,7 +70,7 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 			assert.equal(run.growth, undefined);
 		}
 		run.node.challenge.stage = 'won'; chooseChallengePrize(run, 'supplies');
-		assert.deepEqual(run.growth, {offense: 100, defense: 100, experience: 0});
+		assert.deepEqual(run.growth, { offense: 100, defense: 100, experience: 0 });
 		assert.equal(run.team[0].statModifiers.training.atk, 0.01);
 		assert.equal(run.team[0].statModifiers.training.spd, 0.01);
 		assert.equal(run.team[0].hp, before.hp); assert.equal(run.team[0].pp[0].pp, 1);
@@ -81,7 +81,7 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 		restored.team.push(createRoguePokemon(set('Mew'), stats(0)));
 		syncGrowthParty(restored);
 		assert.equal(restored.team[2].statModifiers.training.spa, 0.01);
-		restored.growth = {...GROWTH_LIMITS, offense: GROWTH_LIMITS.offense - 50};
+		restored.growth = { ...GROWTH_LIMITS, offense: GROWTH_LIMITS.offense - 50 };
 		restored.node = challengeNode('dojoinvitation', 6); prepareChallengePrizes(restored, () => 0);
 		restored.node.challenge.stage = 'won'; chooseChallengePrize(restored, 'supplies');
 		assert.deepEqual(restored.growth, GROWTH_LIMITS);
@@ -132,8 +132,8 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 	it('invites both subway bosses only after a win and prize claim while enforcing the two-companion limit', () => {
 		const run = party(120); run.phase = 'event'; run.node = challengeNode('battlemetro', 120);
 		prepareChallengePrizes(run, () => 0);
-		requestCompanion(run, {id: 'riley', origin: 'event'});
-		requestCompanion(run, {id: 'palmer', origin: 'event'});
+		requestCompanion(run, { id: 'riley', origin: 'event' });
+		requestCompanion(run, { id: 'palmer', origin: 'event' });
 		for (const stage of ['offer', 'battle', 'paused', 'closed']) {
 			run.node.challenge.stage = stage; assert.throws(() => chooseChallengePrize(run, 'supplies'));
 			assert(!run.companionInvitations?.length);
@@ -150,7 +150,7 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 	});
 	it('promotes a temporarily travelling rival without duplicating their story or companion slot', () => {
 		const run = party(60); run.phase = 'event'; run.node = challengeNode('korrinafullpower', 60);
-		run.rival = {id: 'korrina', temporaryUntil: 68, temporaryUsed: true, chapter: 7};
+		run.rival = { id: 'korrina', temporaryUntil: 68, temporaryUsed: true, chapter: 7 };
 		prepareChallengePrizes(run, () => 0); run.node.challenge.stage = 'won';
 		chooseChallengePrize(run, 'supplies');
 		assert.equal(run.rival.chapter, 7); assert.equal(run.rival.permanent, true);

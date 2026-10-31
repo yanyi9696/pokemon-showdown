@@ -3,7 +3,8 @@ import { ROGUE_STATS } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { MAINLINE_SCRIPT } from './mainline-data';
-import { mainlineProgress, nextMainlineScene, unlockStoryDifficulty, MAINLINE_CHAPTER_LENGTHS } from './mainline-progress';
+import { mainlineProgress, nextMainlineScene, unlockStoryDifficulty,
+	MAINLINE_CHAPTER_LENGTHS } from './mainline-progress';
 import { rewardCandies, rewardExperience, rewardMoney, rewardRecovery } from './reward-scenes';
 import { treasure } from './blessings';
 import { fantasyTutorMoves } from './fantasy-tutor';
@@ -47,10 +48,12 @@ function beginDialogue(account: RogueAccount, scene: ScriptScene, kind: Mainline
 }
 /** Existing in-progress openings retain their page numbers. New loops remember completed chapters. */
 export function beginRememberedOpening(account: RogueAccount) {
-	if (account.run || account.mainlineDialogue || (account.opening?.page || 0) > 0 || !account.mainline?.completed.length) return;
+	if (account.run || account.mainlineDialogue || (account.opening?.page || 0) > 0 ||
+		!account.mainline?.completed.length) return;
 	const progress = mainlineProgress(account);
 	let index = 0;
-	for (let tier = 0; tier < 6; tier++) if (progress.completed.includes(`s${tier}-${MAINLINE_CHAPTER_LENGTHS[tier]}`)) index = tier + 1;
+	for (let tier = 0; tier < 6;
+		tier++) if (progress.completed.includes(`s${tier}-${MAINLINE_CHAPTER_LENGTHS[tier]}`)) index = tier + 1;
 	if (progress.endingSeen) index = 7;
 	beginDialogue(account, script.openings[index], 'opening');
 }
@@ -61,7 +64,8 @@ export function reserveMainline(account: RogueAccount, run: RogueRun, random: Ro
 	if (!scene) return;
 	const guaranteed = mainlineProgress(account).pity[String(tier)];
 	// A single persisted roll per adventure; no reroll on reconnect or alternate route choices.
-	const eligible = Array.from({ length: guaranteed ? 29 : 79 }, (_, i) => i + 21).filter(floor => floor % 10 !== 0 && floor % 10 !== 9);
+	const eligible = Array.from({ length: guaranteed ? 29 : 79 }, (_, i) => i +
+		21).filter(floor => floor % 10 !== 0 && floor % 10 !== 9);
 	const floor = guaranteed || random(100) < 40 ? eligible[random(eligible.length)] : undefined;
 	run.mainline = { scene, floor };
 }
@@ -77,7 +81,8 @@ export function offerMainline(run: RogueRun) {
 }
 /** Ordinary elder meetings share the event route; they never consume main-story progress. */
 export function prepareElderMeeting(account: RogueAccount, run: RogueRun, random: RogueRandom) {
-	if (run.node?.kind !== 'event' || run.node.event || (run.elderVisits?.length || 0) >= 2 || random(100) < 92) return false;
+	if (run.node?.kind !== 'event' || run.node.event || (run.elderVisits?.length || 0) >= 2 ||
+		random(100) < 92) return false;
 	const pool = script.ordinary.filter(scene => !run.elderVisits?.includes(scene.id));
 	if (!pool.length) return false;
 	const scene = pool[random(pool.length)];
@@ -171,7 +176,8 @@ function finishDialogue(account: RogueAccount, run: RogueRun | undefined, conten
 		} else if (session.service === 'ev' || session.service === 'fantasy') {
 			const mon = run.team.find(member => !member.egg && member.id === session.member);
 			if (!mon || run.elderServices?.includes(session.service)) throw new Error('请重新选择能够接受指导的伙伴。');
-			if (session.service === 'ev') mon.evRespec = { total: Math.min(510, ROGUE_STATS.reduce((sum, stat) => sum + mon.set.evs[stat], 0)) };
+			if (session.service === 'ev') mon.evRespec = { total: Math.min(510, ROGUE_STATS.reduce((sum,
+				stat) => sum + mon.set.evs[stat], 0)) };
 			else for (const move of fantasyTutorMoves(mon)) teachMove(account, run, content, mon, move);
 			(run.elderServices ||= []).push(session.service);
 			(run.notices ||= []).push(session.service === 'ev' ? '已开放所选伙伴的努力值重新分配；请在队伍详情中调整已有努力值。' : '所选幻想伙伴的合法幻想招式已加入可更换招式池。');
@@ -206,7 +212,8 @@ export function advanceMainline(account: RogueAccount, content: RogueContent, ra
 		const reply = structuredClone(option.reply);
 		if (option.effect === 'ev' || option.effect === 'fantasy') {
 			if (!run || run.elderServices?.includes(option.effect)) throw new Error('本次指导已领取。');
-			const eligible = run.team.filter(mon => !mon.egg && (option.effect === 'ev' ? ROGUE_STATS.some(stat => mon.set.evs[stat]) : fantasyTutorMoves(mon).length));
+			const eligible = run.team.filter(mon => !mon.egg &&
+				(option.effect === 'ev' ? ROGUE_STATS.some(stat => mon.set.evs[stat]) : fantasyTutorMoves(mon).length));
 			reply.push({ kind: 'choice', prompt: '选择一位接受指导的伙伴。', options: eligible.map(mon => ({
 				label: `【${mon.set.species}】 · Lv.${mon.set.level}`, effect: `target:${option.effect}`, member: mon.id,
 				reply: [{ speaker: '黑袍老人', text: '我们慢慢来。练过的东西不会白费。' }],
@@ -229,15 +236,18 @@ export function advanceMainline(account: RogueAccount, content: RogueContent, ra
 /** Read-only replay; only server-authorized local previews expose uncollected scenes. */
 export function mainlineCodex(account?: RogueAccount, preview = false) {
 	const completed = account?.mainline?.completed || [];
-	const scenes = [...script.scenes, ...(preview || account?.mainline?.endingSeen ? [script.endings.find(s => s.id === 'ending-true')!] : [])];
+	const scenes = [...script.scenes, ...(preview ||
+		account?.mainline?.endingSeen ? [script.endings.find(s => s.id === 'ending-true')!] : [])];
 	return scenes.map(scene => {
-		const unlocked = preview || completed.includes(scene.id) || scene.id === 'ending-true' && !!account?.mainline?.endingSeen;
+		const unlocked = preview || completed.includes(scene.id) || scene.id === 'ending-true' &&
+			!!account?.mainline?.endingSeen;
 		if (!unlocked) return { id: scene.id, category: 'story', name: '尚未拾起的记忆', unlocked: false, text: '继续旅程，等待与老人再会。' };
 		const pages: Record<string, { text: string[], options: { label: string, next: string }[] }> = {};
 		const append = (list: ScriptPage[], prefix: string, after?: string) => {
 			list.forEach((page, index) => {
 				const id = `${prefix}${index}`, next = index + 1 < list.length ? `${prefix}${index + 1}` : after;
-				const text = page.options ? page.prompt || '' : page.speaker && page.speaker !== '旁白' ? characterSpeech(page.text || '') : page.text || '';
+				const text = page.options ? page.prompt || '' : page.speaker &&
+					page.speaker !== '旁白' ? characterSpeech(page.text || '') : page.text || '';
 				pages[id] = { text: [text], options: page.options ? page.options.map((option, n) => {
 					const child = `${id}r${n}-`; append(option.reply, child, next);
 					return { label: option.label, next: option.reply.length ? `${child}0` : next || 'end' };

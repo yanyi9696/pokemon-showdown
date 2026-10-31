@@ -134,7 +134,8 @@ function finish(run: RogueRun, random: RogueRandom, won: boolean) {
 	if (chapter === 8) {
 		gainAffection(run, r.id, 100, 'story-complete');
 		if (r.carmine) gainAffection(run, 'carmine', 100, 'story-complete');
-		if (['lillie', 'gladion'].includes(r.id) && run.trainerBonds?.lusamine) gainAffection(run, 'lusamine', 100, 'story-complete');
+		if (['lillie', 'gladion'].includes(r.id) && run.trainerBonds?.lusamine) gainAffection(run,
+			'lusamine', 100, 'story-complete');
 		requestCompanion(run, { id: r.id, origin: 'rival', permanent: true });
 		event.result.push(`【${RIVALS[r.id].name}】发出永久同行的邀请。同行名额已满时，可以选择和哪位伙伴告别。`);
 		if (r.carmine && r.carmine.affection >= 12) {

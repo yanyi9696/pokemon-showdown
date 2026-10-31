@@ -1,7 +1,8 @@
 import { Dex, toID } from '../../sim/dex';
 import { emptyRogueStats, ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
 import { rogueStarScale } from '../../sim/fantasy-rogue-spirits';
-import { assignedExtraAbilities, monkeyKingBranch, permanentMemberTypes, tonicDescription } from '../../sim/rogue-blessing-permanent';
+import { assignedExtraAbilities, monkeyKingBranch, permanentMemberTypes,
+	tonicDescription } from '../../sim/rogue-blessing-permanent';
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
 import { companionSource } from '../../sim/rogue-companions';
 import { COMPANION_Z } from '../../sim/rogue-companion-z';
@@ -42,7 +43,8 @@ export function clearMemberDetails(mon: RoguePokemon, run: RogueRun): ClearMembe
 	}
 	if (mon.difficulty) add(difficultyLabel(mon.difficulty.tier), `通关卡六维 ×${memberDifficultyScale(mon.difficulty)}（替代爬塔系数）`);
 	if (Object.values(run.boosts).some(Boolean)) add('局外六维加成', run.boostRuleVersion === 2 ?
-		ROGUE_STATS.filter(stat => run.boosts[stat]).map(stat => `${labels[stat]} +${run.boosts[stat]}%`).join('、') : statList(run.boosts));
+		ROGUE_STATS.filter(stat => run.boosts[stat])
+			.map(stat => `${labels[stat]} +${run.boosts[stat]}%`).join('、') : statList(run.boosts));
 	if ((mon.stars || 1) > 1) add('星级', `${mon.stars} 星，六维 ×${rogueStarScale(mon.stars)}`);
 	const training = (name: string, value?: { offense?: number, defense?: number }) => {
 		if (value?.offense || value?.defense) add(name,

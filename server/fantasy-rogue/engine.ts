@@ -9,11 +9,13 @@ import { CHARM_DESCRIPTION, ROGUE_DIFFICULTY_VERSION, isRogueDifficulty } from '
 import { EASY_IV_LIMIT } from '../../sim/rogue-quality';
 import { collapseCount, validCollapseSelection } from '../../sim/rogue-collapse-data';
 import { recordCollapseStart, recordCollapseBattle, recordCollapseClear, collapseMedicine, recordCollapseResource } from './collapse';
-import { migrateDifficulty, preferredDifficulty, difficultySpiritUnlocked, awardRoguePoints, syncRunDifficulty } from './difficulty';
+import { migrateDifficulty, preferredDifficulty, difficultySpiritUnlocked, awardRoguePoints,
+	syncRunDifficulty } from './difficulty';
 import { offerComeback, chooseComeback, completeComebackFloor, comebackExperience, comebackActive } from './comeback';
 import { rogueStarterSlotCost } from '../../sim/rogue-species-identity';
 import { catchupRoutes } from './late-support';
-import { offerOptionalChallenge, prepareChallengePrizes, chooseChallengePrize, challengeRecord } from './optional-challenges';
+import { offerOptionalChallenge, prepareChallengePrizes, chooseChallengePrize,
+	challengeRecord } from './optional-challenges';
 import { recordShoppingSpend } from './shopping-upgrade';
 import { claimCoverage } from './coverage';
 import { prepareFloorEnvironment } from './floor-environment';
@@ -117,10 +119,12 @@ export class RogueEngine {
 	readonly content: RogueContent | null;
 	readonly store: RogueStore;
 	readonly localSpirits: boolean;
+	readonly continueOnly: boolean;
 	private readonly random: RogueRandom;
 	constructor(store: RogueStore, content: RogueContent | null, random: RogueRandom = max => randomInt(max),
-		localSpirits = false) {
+		localSpirits = false, continueOnly = false) {
 		this.localSpirits = localSpirits;
+		this.continueOnly = continueOnly;
 		this.random = random;
 		this.store = store;
 		this.content = content && validateContent(content);
@@ -363,7 +367,8 @@ export class RogueEngine {
 		if (this.content.story) offerMainline(run);
 		if (run.spirit === 'darkrai') {
 			const pool = run.choices.filter(node => !node.challenge && node.kind !== 'story');
-			for (let i = 0, count = Math.min(2, pool.length); i < count; i++) pool.splice(this.random(pool.length), 1)[0].fogged = true;
+			for (let i = 0, count = Math.min(2, pool.length); i < count;
+				i++) pool.splice(this.random(pool.length), 1)[0].fogged = true;
 		}
 	}
 	private select(run: RogueRun, id: string, account?: RogueAccount) {
@@ -587,7 +592,8 @@ export class RogueEngine {
 		run.money += reward.money;
 		for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
 		const points = awardRoguePoints(account, run, run.node!.kind === 'boss' && !run.node!.companionLoss ? 1 : 0);
-		if (run.node!.wildLoot || run.node!.shopChallenge || run.node!.event || run.node!.challenge || run.node!.mainlineScene || run.node!.elderScene) {
+		if (run.node!.wildLoot || run.node!.shopChallenge || run.node!.event ||
+			run.node!.challenge || run.node!.mainlineScene || run.node!.elderScene) {
 			// Wild drops have already been credited per encounter; the final receipt only adds the Boss point.
 			if (run.lastReward?.floor === run.floor) run.lastReward.points += points;
 		} else {
@@ -651,7 +657,9 @@ export class RogueEngine {
 			awardGodEcho(account, run);
 			run.lastReward = { floor: 200, name: '神之挑战', money: 0, items: {}, points };
 		}
-		run.notices = [outcome === 'won' ? (run.difficulty === 'easy' ? '神之挑战成功！护符庇佑下不获得局外点数，通关卡保持原有成果。' : `神之挑战成功，额外获得 20 点局外成长点数${challenge.echoAwarded ? `与【崩坏适性】×${challenge.echoAwarded}` : ''}。通关卡保持原有成果。`) :
+		run.notices = [outcome === 'won' ? (run.difficulty === 'easy' ?
+			'神之挑战成功！护符庇佑下不获得局外点数，通关卡保持原有成果。' :
+			`神之挑战成功，额外获得 20 点局外成长点数${challenge.echoAwarded ? `与【崩坏适性】×${challenge.echoAwarded}` : ''}。通关卡保持原有成果。`) :
 			'200 层通关成果已保留，这次旅程即将迎来结局。'];
 		if (this.content?.story && run.mainlineEnding !== 'true-seen') beginMainlineEnding(account, run);
 	}
@@ -728,6 +736,9 @@ export class RogueEngine {
 	}
 	command(userid: string, command: RogueCommand, name = userid) {
 		const updateAccount = (account: RogueAccount) => {
+			// Inside the receipt transaction: a retry of a successful pre-maintenance start stays idempotent.
+			requireRule(!this.continueOnly || !['start', 'newstory'].includes(command.action),
+				'当前处于应急续玩模式，暂不开放新冒险；已有冒险、剧情与奖励可继续处理。');
 			this.normalizeAccount(account);
 			if (command.action === 'unlockack') {
 				account.unlockNotices = (account.unlockNotices || []).filter(notice => notice.id !== command.value);
@@ -738,13 +749,15 @@ export class RogueEngine {
 					command.action === 'mainlinechoice' ? command.member : undefined, command.action === 'storyskip');
 				if (kind === 'ending' && account.run?.mainlineEnding === 'ending-true') {
 					account.run.mainlineEnding = 'true-seen';
-					if (account.run.postgame?.stage === 'offer') account.run.story = { stage: 'godinvite', page: 0, skip: false, canSkip: true };
+					if (account.run.postgame?.stage === 'offer') account.run.story = { stage: 'godinvite',
+						page: 0, skip: false, canSkip: true };
 				}
 				return;
 			}
-			requireRule(!account.mainlineDialogue || ['onboarding', 'saveclear', 'publishcard', 'deletecard'].includes(command.action) ||
+			requireRule(!account.mainlineDialogue || ['onboarding', 'saveclear', 'publishcard',
+				'deletecard'].includes(command.action) ||
 				command.action === 'abandon' && account.mainlineDialogue.kind !== 'ending',
-				'请先读完当前对话并作出回应。');
+			'请先读完当前对话并作出回应。');
 			requireRule(command.action === 'start' || command.difficulty === undefined, '本局难度已锁定，只能在新一局开始前选择。');
 			requireRule(command.action === 'start' || command.collapse === undefined, '幻想崩坏词条已锁定，只能在新一局开始前选择。');
 			if (command.action === 'comeback') {
@@ -785,8 +798,9 @@ export class RogueEngine {
 				return;
 			}
 			if (command.action === 'newstory') {
-				requireRule(account.run?.phase === 'complete' && !account.run.story && !account.mainlineDialogue && !account.pendingClear,
-					'请先读完终章并处理待保存的通关卡。');
+				requireRule(account.run?.phase === 'complete' && !account.run.story &&
+					!account.mainlineDialogue && !account.pendingClear,
+				'请先读完终章并处理待保存的通关卡。');
 				account.previousBlessings = account.run.blessings?.owned.filter(entry => !entry.grantedBy).map(entry => entry.id) || [];
 				account.previousRival = account.run?.rival?.id || account.previousRival;
 				delete account.run;
@@ -1569,10 +1583,12 @@ export class RogueEngine {
 			opponentStars: encounter.stars && [...encounter.stars],
 			encounterId: run.battle.encounterId, team: structuredClone(run.team.filter(mon => !mon.egg &&
 				(!run.node!.event?.activity?.solo || mon.id === run.node!.event.activity.solo))), boosts: { ...run.boosts }, bag: { ...run.bag },
-			catchable: !run.node?.challenge && (encounter.catchable || !!(run.blessings?.owned.some(entry => entry.family === 'rocketcatch') &&
-				run.node!.kind !== 'boss' && !run.node!.regiBoss &&
-				!['gym', 'elitefour', 'champion'].includes(encounter.trainer?.role || ''))),
-			npcCapture: !run.node?.challenge && !!encounter.trainer && !!run.blessings?.owned.some(entry => entry.family === 'rocketcatch'),
+			catchable: !run.node?.challenge && (encounter.catchable ||
+				!!(run.blessings?.owned.some(entry => entry.family === 'rocketcatch') &&
+					run.node!.kind !== 'boss' && !run.node!.regiBoss &&
+					!['gym', 'elitefour', 'champion'].includes(encounter.trainer?.role || ''))),
+			npcCapture: !run.node?.challenge && !!encounter.trainer &&
+				!!run.blessings?.owned.some(entry => entry.family === 'rocketcatch'),
 			systems: { player: { mega: !!run.megaUnlocked, gmega: !!run.gmegaUnlocked, z: !!run.zUnlocked } },
 			forcedTera: encounter.forcedTera,
 			tera: { player: !!run.teraUnlocked, opponent: !!encounter.forcedTera || encounter.boss?.kind === 'summit' || !!encounter.trainer?.tera ||
@@ -1690,7 +1706,8 @@ export class RogueEngine {
 		if (memoryBattle && !retreated) restoreTravelBattle(run, result);
 		else if (!memoryBattle && !run.postgame) {
 			if (this.configured().progression && !failedChallenge) battleFriendship(run, result, token, previousTeam);
-			if (this.content?.blessings) settleBlessingBattle(account, run, this.configured(), result, this.random, retreated || failedChallenge);
+			if (this.content?.blessings) settleBlessingBattle(account, run, this.configured(), result,
+				this.random, retreated || failedChallenge);
 		}
 		for (const captured of captures) {
 			if ([...run.team, ...(run.box || []), ...(run.pendingCaptures || [])].some(mon => mon.id === captured.id)) continue;

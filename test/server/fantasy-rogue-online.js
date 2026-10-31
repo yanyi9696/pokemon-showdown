@@ -62,15 +62,18 @@ describe('Fantasy Rogue real rooms', function () {
 		}
 	});
 	it('uses the gym search budget for challenges and returns to an explicit retry or leave decision', async () => {
-		const {challengeNode, prepareChallengePrizes} = require('../../dist/server/fantasy-rogue/optional-challenges');
+		const { challengeNode, prepareChallengePrizes } = require('../../dist/server/fantasy-rogue/optional-challenges');
 		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
 		store.change(user.id, saved => {
 			const run = saved.run;
-			run.floor = 8; run.node = challengeNode('schoolfinal', 8); run.encounter = 0; run.phase = 'event';
-			run.challengeHistory = [{id: 'schoolfinal', floor: 8}];
+			run.floor = 8;
+			run.node = challengeNode('schoolfinal', 8);
+			run.encounter = 0;
+			run.phase = 'event';
+			run.challengeHistory = [{ id: 'schoolfinal', floor: 8 }];
 			prepareChallengePrizes(run, () => 0);
 		});
-		command('challenge', {value: 'accept'});
+		command('challenge', { value: 'accept' });
 		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
 		assert.equal(room.battle.fantasyAI.options.rogue.immediate, false);
 		assert.equal(room.battle.fantasyAI.options.decisionMs, 0);
@@ -81,7 +84,7 @@ describe('Fantasy Rogue real rooms', function () {
 		manager.retreat(user.connections[0], room.roomid);
 		await until(() => room.battle.ended && account().run.node.challenge.stage === 'paused', 'challenge retreat');
 		assert.equal(account().run.floor, 8);
-		command('challenge', {value: 'retry'});
+		command('challenge', { value: 'retry' });
 		const retry = Rooms.get(command('battle').run.roomid); rooms.push(retry);
 		assert.equal(retry.battle.fantasyAI.options.rogue.immediate, false);
 		await until(() => retry.battle.p2.request.isWait === true, 'challenge retry preview');
@@ -89,7 +92,7 @@ describe('Fantasy Rogue real rooms', function () {
 		await until(() => JSON.parse(retry.battle.p1.request.request).active, 'challenge retry first move');
 		manager.retreat(user.connections[0], retry.roomid);
 		await until(() => retry.battle.ended && account().run.node.challenge.stage === 'paused', 'second retreat');
-		command('challenge', {value: 'leave'}); assert.equal(account().run.floor, 9);
+		command('challenge', { value: 'leave' }); assert.equal(account().run.floor, 9);
 	});
 	afterEach(async () => {
 		await ai.dispose();
@@ -290,7 +293,7 @@ describe('Fantasy Rogue real rooms', function () {
 		const config = manager.engine.content;
 		config.starters.push({id: 'slugma', set: set('Slugma', 'Magma Armor', 5, ['Ember']), availableInitially: false});
 		config.unlocks.slugma = {starter: 'slugma', captures: 1};
-		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			saved.run.node.encounters = [{...saved.run.node.encounters[0], team: [
 				{...set('Slugma', 'Magma Armor', 8, ['Ember']), shiny: true},

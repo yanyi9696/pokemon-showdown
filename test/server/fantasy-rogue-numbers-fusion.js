@@ -97,10 +97,10 @@ describe('Fantasy Rogue numbers, fusion and codex boundaries', function () {
 	it('includes Swords Dance stages, Huge Power, Choice Band and permanent training in the real threshold', () => {
 		const run = party([set('Mawile-Mega', 'Huge Power', 100, ['Splash'])], ['bignumber']);
 		run.team[0].set.nature = 'Adamant'; run.team[0].set.evs.atk = 252;
-		run.team[0].set.item = 'Choice Band'; run.growth = {offense: 2500, defense: 0, experience: 0};
+		run.team[0].set.item = 'Choice Band'; run.growth = { offense: 2500, defense: 0, experience: 0 };
 		syncBlessingParty(run);
 		const mon = begin(run); mon.boosts.atk = 2;
-		const {rogueStatSnapshot} = require('../../dist/sim/fantasy-rogue-blessings');
+		const { rogueStatSnapshot } = require('../../dist/sim/fantasy-rogue-blessings');
 		const before = rogueStatSnapshot(mon).atk;
 		let actual;
 		battle.onEvent('BeforeMove', battle.format, p => { if (p === mon) actual = rogueStatSnapshot(p).atk; });
@@ -143,11 +143,11 @@ describe('Fantasy Rogue numbers, fusion and codex boundaries', function () {
 		const after = structuredClone(run.bag);
 		settleBlessingBattle(account, run, content(), prize, () => 0); assert.deepEqual(run.bag, after);
 		const restored = JSON.parse(JSON.stringify(run));
-		settleBlessingBattle({run: restored}, restored, content(), {...prize, encounterId: 'another-battle'}, () => 1);
+		settleBlessingBattle({ run: restored }, restored, content(), { ...prize, encounterId: 'another-battle' }, () => 1);
 		assert.deepEqual(restored.bag, after); assert.equal(restored.money, 0);
 	});
 	it('offers varied fixed-value prizes at every floor and a fresh prize in a new run', () => {
-		const {NUMBER_PRIZES} = require('../../dist/server/fantasy-rogue/number-prizes');
+		const { NUMBER_PRIZES } = require('../../dist/server/fantasy-rogue/number-prizes');
 		const full = require('../../dist/server/fantasy-rogue/preview-content').createPreviewContent();
 		for (const [index, prize] of NUMBER_PRIZES.entries()) {
 			assert.equal(Object.entries(prize.items).reduce((sum, [id, count]) => {
@@ -156,8 +156,8 @@ describe('Fantasy Rogue numbers, fusion and codex boundaries', function () {
 			}, 0), 7600);
 			for (const floor of [10, 100, 150, 200]) {
 				const run = party([set('Mew')], ['supernumber']); run.floor = floor;
-				settleBlessingBattle({run}, run, full, {encounterId: 'prize', won: true,
-					blessingProgress: {numberPrize: true, insight: {}}}, () => index);
+				settleBlessingBattle({ run }, run, full, { encounterId: 'prize', won: true,
+					blessingProgress: { numberPrize: true, insight: {} } }, () => index);
 				assert.deepEqual(run.bag, prize.items); assert.equal(run.money, 0);
 			}
 		}

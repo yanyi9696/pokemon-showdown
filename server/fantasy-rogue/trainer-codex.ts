@@ -32,7 +32,8 @@ export function trainerCodex() {
 		(COMPANION_GIFT_LINES[key] ? `「${COMPANION_GIFT_LINES[key]}」` : '') + `对应祝福：【${def.name}】。`);
 		people.get(id)!.category = 'companion'; people.get(id)!.id = `companion:${id}`;
 	}
-	for (const [id, rival] of Object.entries(RIVALS)) add(id, rival.name, 'rival', `来自${rival.region}的劲敌。前 20 层初识后锁定八段奇遇，至少间隔 10 层重逢，约 100、150 层迎来进阶与最终切磋。交谈与合作提升好感度，每局可短期同行一次、持续 5～8 层；短期没有偏好计数，告别赠送一份恢复药品，专属道具留在 50 好感度赠送，最终无论胜负都会提出永久同行邀请。`);
+	for (const [id, rival] of Object.entries(RIVALS)) add(id, rival.name, 'rival',
+		`来自${rival.region}的劲敌。前 20 层初识后锁定八段奇遇，至少间隔 10 层重逢，约 100、150 层迎来进阶与最终切磋。交谈与合作提升好感度，每局可短期同行一次、持续 5～8 层；短期没有偏好计数，告别赠送一份恢复药品，专属道具留在 50 好感度赠送，最终无论胜负都会提出永久同行邀请。`);
 	for (const trainer of TrainerBossData) add(trainer.id, trainer.name.replace(/[（(].*$/, ''), trainer.role,
 		trainer.role === 'gym' ? '以道馆馆主身份在塔中接受挑战。战胜后会认可你的实力，并恢复队伍状态。' :
 		trainer.role === 'elitefour' ? '塔中四天王之一，使用自己擅长的阵容检验训练家的战术。' : '塔中的冠军挑战者，会全力回应你与伙伴的默契。');
@@ -62,7 +63,7 @@ export function trainerCodex() {
 		const entry = people.get(person.id);
 		if (!entry) throw new Error(`同行人物尚未收录图鉴：${person.id}`);
 		if (!entry.roles.includes('companion')) entry.roles.push('companion');
-		const area = {wild: '战斗', elite: '精英', reward: '奖励', trade: '交易', event: '事件', challenge: '挑战'};
+		const area = { wild: '战斗', elite: '精英', reward: '奖励', trade: '交易', event: '事件', challenge: '挑战' };
 		entry.text += ` 常驻同行时偏好${person.region}相关、或${{battle: '战斗', reward: '奖励', pokemon: '宝可梦'}[person.preference]}取向的选项，喜欢${person.areas.map(id => area[id as keyof typeof area]).join('、')}区域。` +
 			`好感度在本局累积；50 时赠送【${person.gifts[0].name}】×1；100 时赠送进阶礼物【${affectionThemeGift(person.id, 100).name}】×1，以及${AFFECTION_ADVANCED_REWARDS}。阶段奖励每局各领一次，新一局重新积累；邀请条件保持原有奇遇规则。全部同行共用两个名额。`;
 	}

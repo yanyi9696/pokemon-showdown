@@ -91,7 +91,8 @@ export function emergencyChoice(
 	// Cheap public-information pressure estimates: no native probes or additional search nodes.
 	const stageScale = (stage = 0) => stage >= 0 ? (2 + stage) / 2 : 2 / (2 - stage);
 	const foeSpecies = dex.species.get(foe.species);
-	const foeStat = (stat: StatIDExceptHP) => ((2 * foeSpecies.baseStats[stat] + 31) * foe.level / 100 + 5) * stageScale(foe.boosts[stat]);
+	const foeStat = (stat: StatIDExceptHP) => ((2 * foeSpecies.baseStats[stat] + 31) *
+		foe.level / 100 + 5) * stageScale(foe.boosts[stat]);
 	const revealedAttacks = foe.moves.map(id => dex.moves.get(id)).filter(move => move.category !== 'Status');
 	const incomingCache = new Map<Combatant, number>();
 	const incomingPressure = (profile: Combatant) => {
@@ -160,7 +161,8 @@ export function emergencyChoice(
 					move.id === 'brine' && foe.health.upper <= 0.5 || move.id === 'facade' && own.status) power *= 2;
 				if (['eruption', 'waterspout', 'dragonenergy'].includes(move.id)) power = Math.max(1, 150 * own.health.upper);
 				if (['flail', 'reversal'].includes(move.id)) {
-					const hp = own.health.upper; power = hp <= 0.04 ? 200 : hp <= 0.1 ? 150 : hp <= 0.2 ? 100 : hp <= 0.35 ? 80 : hp <= 0.7 ? 40 : 20;
+					const hp = own.health.upper; power =
+ hp <= 0.04 ? 200 : hp <= 0.1 ? 150 : hp <= 0.2 ? 100 : hp <= 0.35 ? 80 : hp <= 0.7 ? 40 : 20;
 				}
 				if (move.id === 'gyroball') power = Math.min(150, 25 * estimateStat('spe') * boost(foe.boosts.spe) / (own.stats.spe * boost(own.boosts.spe)) + 1);
 				if (move.ohko && (own.level < foe.level || foe.ability === 'sturdy')) return -90;
@@ -183,14 +185,16 @@ export function emergencyChoice(
 				if (['superfang', 'naturesmadness', 'ruination'].includes(move.id)) damage = foeHP / 2;
 				if (move.id === 'endeavor') damage = Math.max(0, foeHP - own.stats.hp * own.health.upper);
 				// Prefer a reliable finish over setup or a needlessly risky stronger move.
-				if (damage * 0.85 >= foeHP && !move.flags.charge && !move.selfdestruct) return 500 + accuracy * 100 + Math.max(0, move.priority) * 5;
+				if (damage * 0.85 >= foeHP && !move.flags.charge && !move.selfdestruct) return 500 +
+					accuracy * 100 + Math.max(0, move.priority) * 5;
 				return damage / Math.max(1, estimateStat('hp')) * 200 * accuracy +
 					(move.priority > 0 && foe.health.upper < 0.25 ? 25 : 0) + (event ? 1 : 0);
 			}
 			if (['splash', 'celebrate', 'holdhands', 'happyhour', 'teleport'].includes(move.id)) return -100;
 			if (move.heal || ['rest', 'strengthsap', 'wish'].includes(move.id)) {
 				if (enhancedMoves && (own.volatiles.includes('healblock') || move.id === 'wish' && own.volatiles.includes('wish'))) return -80;
-				if (enhancedMoves && own.stats.spe * boost(own.boosts.spe) < foeStat('spe') && incomingPressure(own) >= own.health.upper) return -80;
+				if (enhancedMoves && own.stats.spe * boost(own.boosts.spe) < foeStat('spe') &&
+					incomingPressure(own) >= own.health.upper) return -80;
 				return own.health.upper > 0.75 ? -80 : (1 - own.health.upper) * 190;
 			}
 			if (enhancedMoves && ['haze', 'whirlwind', 'roar'].includes(move.id)) {
@@ -216,7 +220,8 @@ export function emergencyChoice(
 						dex.moves.get(id).category === (stat === 'atk' ? 'Physical' : 'Special'))) continue;
 					value += Math.min(2, Math.abs(amount)) * 30;
 				}
-				return own.health.upper < 0.4 || foe.health.upper < 0.3 || enhancedMoves && incomingPressure(own) * 2 >= own.health.upper ? -20 : value;
+				return own.health.upper < 0.4 || foe.health.upper < 0.3 || enhancedMoves &&
+					incomingPressure(own) * 2 >= own.health.upper ? -20 : value;
 			}
 			if (move.sideCondition) {
 				const conditions = (move.target === 'allySide' ? memory.sides[side] : foeSide).conditions;
@@ -235,7 +240,8 @@ export function emergencyChoice(
 				if (move.volatileStatus === 'leechseed' && types.includes('Grass')) return -80;
 				if (move.volatileStatus === 'protect') return own.lastMove === move.id ? -50 : foe.status ? 30 : 5;
 				if (['encore', 'disable'].includes(move.volatileStatus) && !foe.lastMove) return -50;
-				if (enhancedMoves && move.volatileStatus === 'encore') return dex.moves.get(foe.lastMove).category === 'Status' ? 95 : 10;
+				if (enhancedMoves &&
+					move.volatileStatus === 'encore') return dex.moves.get(foe.lastMove).category === 'Status' ? 95 : 10;
 				return 45;
 			}
 			return 5;

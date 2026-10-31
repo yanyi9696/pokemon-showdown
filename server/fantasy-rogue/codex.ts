@@ -19,21 +19,29 @@ import { CHALLENGE_GROWTH_TEXT } from './optional-challenges';
 import { TRAVELLERS } from './traveller-profiles';
 import { EVENT_OVERVIEWS, eventReplay } from './event-replays';
 import { TRADE_NAMES } from './trading';
-import { blessingDisplay, blessingCodexFloors, blessingAvailabilityNotes, compareBlessingNames, BLESSING_SUPPLY_HELP } from './blessing-text';
+import { blessingDisplay, blessingCodexFloors, blessingAvailabilityNotes, compareBlessingNames,
+	BLESSING_SUPPLY_HELP } from './blessing-text';
 import { FORM_ITEMS } from './form-item-data';
 
 export type CodexSection = 'guide' | 'blessings' | 'events' | 'stories';
 export const ROGUE_CODEX_SCHEMA = 5;
 const INTRO = [
-	{ title: '查看祝福中的名称说明', text: '祝福说明中用【】标注招式、特性、道具、宝可梦名称，其中带下划线的名称可悬停或点击查看说明；宝可梦介绍包含属性、特性与种族值。未加括号的普通用词不触发介绍。白银祝福“未来视”可提前查看本局后续所有首领区域的敌方阵容，阵容随存档保存。' },
+	{ title: '查看祝福中的名称说明', text: ("祝福说明中用【】标注招式、特性、道具、宝可梦名称，其中带下划线的名称可悬停或点击查看说明；宝可梦介绍包含属性、特性与种族值。未加括号的普通用词不触发介绍。白银祝" +
+		"福“未来视”可提前查看本局后续所有首领区域的敌方阵容，阵容随存档保存。") },
 	{ title: '幻想杯是什么？', text: '在熟悉的宝可梦回合制对战中，加入幻想形态、新特性、新道具，以及部分招式与规则调整。同一只宝可梦在这里可能有全新的打法。下面可以按类别查阅。' },
 	{ title: '这座塔怎么玩？', text: '选择初始伙伴，带着偏爱卡片向 200 层前进。每层挑选路线，在战斗、捕捉、事件与补给间作出选择。打败首领、收集祝福，逐步养成自己的队伍。' },
 	{ title: '队伍与资源', text: '右侧“队伍及背包”可以查看伙伴、换招、装备道具和使用补给。HP、PP 与异常状态会带到下一场；野怪掉落的贵重物品要到商店换金币，训练家战斗则发放奖金。' },
-	{ title: '属性转', text: '在队伍的独立属性转栏位使用，不占携带道具位。单属性伙伴新增该属性；双属性伙伴可选择替换第一或第二属性。可在战斗外更换、调整位置或取下，取下后恢复原有属性。赋予期间开放对应五个招式，取下后撤销临时招式权限；原本已掌握的招式保留，更换不会补充 PP。具体招式见道具页的各属性转。爬塔胜利掉落偶尔可将贵重物品替换为属性转，每局最多两件。' },
+	{ title: '属性转', text: ("在队伍的独立属性转栏位使用，不占携带道具位。单属性伙伴新增该属性；双属性伙伴可选择替换第一或第二属性。可在战斗外更换、调整位置或取下，取下后恢复原有属性。赋予期" +
+		"间开放对应五个招式，取下后撤销临时招式权限；原本已掌握的招式保留，更换不会补充 PP。具体招式见道具页的各属性转。爬塔胜利掉落偶尔可将贵重物品替换为属性转，每局" +
+		"最多两件。") },
 	{ title: '祝福与塔灵', text: '第一层开战前，以及通关 50、100、150 层后各选择一轮祝福，共四轮；基拉祈每轮可选两项。每张卡可独立刷新。黄金和棱彩按所选轮次累计提高对手等级，固定首领加成高于普通遭遇；开局祝福不提高普通遭遇等级。塔灵默认随机；使用某个塔灵通关 200 层后，永久解锁手动选择该塔灵，未通关塔灵仍在随机池中。' },
-	{ title: '战前准备与队伍成长', text: '普通战斗区域有额外经验加成；符合结算条件的存活后备伙伴仍获得一半战斗经验。休整时，黑袍老人会介绍下一层首领，并让你从四张卡中选择一张，领取仅用于该首领战的增益卡。精英与遭遇提供经验糖果，正面事件提供金币、物资与永久训练等奖励。十八种属性提升道具从第 49 层休整商店开放；糖果 S／M／L／XL 分别从第 30／50／100／150 层开放。' },
-	{ title: '逃跑与急救', text: '所有肉鸽战斗均可逃跑，保留 HP、PP、异常状态及道具损耗，调整队伍后重打当前对手。挑战区域中，退出战斗后可重试，或零收益逃离本层；阵容与奖励不会重抽。逃跑不发胜利奖励、不触发自动急救。战败后全队倒下且没有复活道具时，会自动支付随层数增加的急救费；余额不足则不扣款、不复活。记得提前购买补给。' },
-	{ title: '下一次会更强', text: '局外六项能力各可提升 1%—10%。常规档每种宝可梦首次随队通关额外获得 5 点成长点；地区形态分别记录，普通与幻想形态共用记录。曾通关本档 200 层并完成本档故事，即可开启下一档；通关本档会开启该档塔灵。简易档只保留收集解锁，不获得局外点数或资质成长。通关卡可以收藏、展示与约战。' },
+	{ title: '战前准备与队伍成长', text: ("普通战斗区域有额外经验加成；符合结算条件的存活后备伙伴仍获得一半战斗经验。休整时，黑袍老人会介绍下一层首领，并让你从四张卡中选择一张，领取仅用于该首领战的增益卡" +
+		"。精英与遭遇提供经验糖果，正面事件提供金币、物资与永久训练等奖励。十八种属性提升道具从第 49 层休整商店开放；糖果 S／M／L／XL 分别从第 30／50／1" +
+		"00／150 层开放。") },
+	{ title: '逃跑与急救', text: ("所有肉鸽战斗均可逃跑，保留 HP、PP、异常状态及道具损耗，调整队伍后重打当前对手。挑战区域中，退出战斗后可重试，或零收益逃离本层；阵容与奖励不会重抽。逃跑不发" +
+		"胜利奖励、不触发自动急救。战败后全队倒下且没有复活道具时，会自动支付随层数增加的急救费；余额不足则不扣款、不复活。记得提前购买补给。") },
+	{ title: '下一次会更强', text: ("局外六项能力各可提升 1%—10%。常规档每种宝可梦首次随队通关额外获得 5 点成长点；地区形态分别记录，普通与幻想形态共用记录。曾通关本档 200 层并完成本" +
+		"档故事，即可开启下一档；通关本档会开启该档塔灵。简易档只保留收集解锁，不获得局外点数或资质成长。通关卡可以收藏、展示与约战。") },
 	{ title: '秘闻与记忆', text: '常规档可能遇见秘闻区域，每局最多推进一段，按顺序跨局保存。在开始页的故事回顾中重读已经收集的片段。完成一章后，与老人的日常闲谈和下一次开场也会出现新的话题。' },
 ];
 let guideCache: ReturnType<typeof buildFantasyGuide> | undefined;
@@ -66,7 +74,8 @@ function buildFantasyGuide() {
 			abilities: [...new Set(Object.values(species.abilities))], stats: species.baseStats,
 			battleOnly: !!species.battleOnly, requiredItem: species.requiredItem }));
 	const itemNotes = [
-		...BLESSING_SUPPLY_HELP.filter(item => item.id.startsWith('rogueemblem')).map(item => ({ id: item.id, name: item.name, text: item.description })),
+		...BLESSING_SUPPLY_HELP.filter(item => item.id.startsWith('rogueemblem')).map(item => ({ id: item.id,
+			name: item.name, text: item.description })),
 		...FORM_ITEMS.map(item => ({ id: item.id, name: item.name, kind: item.kind, icon: item.icon, text: item.description })),
 		{ id: 'greninjaashz', name: '智蛙 Z', text: '完成【甲贺忍蛙护林员】两阶段事件获得，并解锁本局 Z 招式。幻想甲贺忍蛙携带它，在肉鸽战斗中登场时切换为小智版形态；以【飞水手里剑】释放专属 Z 招式【黄金羁绊手里剑】。预定 Z 招式的赠送范围包含进化后拥有这类自制专属纯晶的伙伴。' },
 		{ id: 'megastones', name: '超级进化石与超巨进化许愿星',
@@ -96,7 +105,8 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			unlocked, availability: blessingAvailabilityNotes(def), text: unlocked ? display.text : '？？？' };
 	})).sort(compareBlessingNames) };
 	const ecologies = biomeCodex(account, preview).map(biome => ({ ...biome, category: 'ecology', unlocked: true }));
-	const events = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => !['auction', 'mushroomcollector', 'rivalstory', 'starmaster', 'battlemetro'].includes(id)).map(id => {
+	const events = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => !['auction',
+		'mushroomcollector', 'rivalstory', 'starmaster', 'battlemetro'].includes(id)).map(id => {
 		const unlocked = preview || discovered.events.includes(id);
 		return { id, category: ['policeassist', 'policerevenge', 'exclusivechallenge', 'terasolo'].includes(id) ? 'encounter' : 'event', name: EVENT_NAMES[id], unlocked, text: unlocked ? EVENT_OVERVIEWS[id] : '？？？',
 			...(unlocked ? { replay: eventReplay(id) } : {}) };
@@ -137,10 +147,16 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 			entry.id === 'trade:auction' && discovered.events.includes('auction') ||
 			entry.id.startsWith('challenge:') && discovered.events.includes(entry.id.slice(10));
 		const rivalChapter = /^rival:([^:]+):(\d+)$/.exec(entry.id);
-		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？', ...(unlocked ? { replay: entry.id.startsWith('challenge:') ? optionalChallengeReplay(entry.id.slice(10)) : rivalChapter ? rivalChapterReplay(rivalChapter[1] as keyof typeof RIVALS, Number(rivalChapter[2])) : entry.id === 'trade:auction' ? eventReplay('auction') : entry.id === 'trade:mushroom' ? eventReplay('mushroomcollector') : {
-			title: entry.name, start: 'start',
-			pages: { start: { text: [entry.text], options: [], battleSkipped: entry.category === 'encounter' } },
-		} } : {}) };
+		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？',
+			...(unlocked ? { replay: entry.id.startsWith('challenge:') ?
+				optionalChallengeReplay(entry.id.slice(10)) :
+				rivalChapter ? rivalChapterReplay(rivalChapter[1] as keyof typeof RIVALS,
+					Number(rivalChapter[2])) :
+				entry.id === 'trade:auction' ? eventReplay('auction') :
+				entry.id === 'trade:mushroom' ? eventReplay('mushroomcollector') : {
+					title: entry.name, start: 'start',
+					pages: { start: { text: [entry.text], options: [], battleSkipped: entry.category === 'encounter' } },
+				} } : {}) };
 	});
 	const companions = trainerCodex().map(entry => {
 		const unlocked = preview || discovered.trainers.includes(entry.portrait);
@@ -158,7 +174,8 @@ let contentVersion: string | undefined;
 /** Changes to any catalog are reflected without maintaining another version string by hand. */
 export function codexContentVersion() {
 	contentVersion ||= createHash('sha256').update(JSON.stringify(
-		[MAINLINE_SCRIPT, ...(['guide', 'blessings', 'events'] as CodexSection[]).map(section => rogueCodex(undefined, section, true))]
+		[MAINLINE_SCRIPT, ...(['guide', 'blessings',
+			'events'] as CodexSection[]).map(section => rogueCodex(undefined, section, true))]
 	)).digest('hex').slice(0, 16);
 	return contentVersion;
 }

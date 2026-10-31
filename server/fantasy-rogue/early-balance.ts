@@ -55,8 +55,10 @@ export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'rew
 // Money grows more slowly than EXP: clean victories should not finance unlimited training.
 export const earlyCoinMultiplier = (floor: number) =>
 	(1 + Math.max(0, Math.min(30, 60 - floor)) / 120) * lateCoinMultiplier(floor) * journeyIncomeMultiplier(floor);
-export const eliteTreasureBudget = (floor: number) => Math.floor((200 + 20 * floor) * 0.9 * 0.95 * earlyCoinMultiplier(floor) / 150) * 150;
-export const encounterCoins = (floor: number) => Math.round((700 + 45 * floor) * 0.95 * 0.95 * 0.65 * earlyCoinMultiplier(floor) / 50) * 50;
+export const eliteTreasureBudget = (floor: number) => Math.floor((200 + 20 * floor) * 0.9 *
+	0.95 * earlyCoinMultiplier(floor) / 150) * 150;
+export const encounterCoins = (floor: number) => Math.round((700 + 45 * floor) * 0.95 * 0.95 *
+	0.65 * earlyCoinMultiplier(floor) / 50) * 50;
 export const eventBaseBudget = (floor: number) => (350 + 20 * floor + 0.15 * floor * floor) * 0.9;
 export const eventRewardBudget = (floor: number) => eventBaseBudget(floor) * earlyCoinMultiplier(floor) * 1.3;
 export const eventCost = (floor: number, multiplier = 1) => Math.round(eventBaseBudget(floor) * multiplier / 50) * 50;
@@ -91,7 +93,8 @@ export function grantEventTraining(run: RogueRun) {
 	if (!event?.settled || event.trainingAidGranted || event.trainingAidBlocked) return;
 	event.trainingAidGranted = true;
 	const scale = difficultyRewardScale(run.difficulty, run.floor);
-	const coins = Math.round((75 + 4 * run.floor + 0.02 * run.floor * run.floor) * (event.trainingAidBattleWin ? 1.5 : 1) * 0.9 * earlyCoinMultiplier(run.floor) * scale * 1.3 / 50) * 50;
+	const coins = Math.round((75 + 4 * run.floor + 0.02 * run.floor * run.floor) *
+		(event.trainingAidBattleWin ? 1.5 : 1) * 0.9 * earlyCoinMultiplier(run.floor) * scale * 1.3 / 50) * 50;
 	const candies = routeCandyReward(run.floor, 'event', scale);
 	run.money += coins;
 	if (run.lastReward?.floor !== run.floor) {
