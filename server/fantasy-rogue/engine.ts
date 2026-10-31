@@ -40,7 +40,6 @@ import { useFormItem } from './form-items';
 import { permanentMemberTypes } from '../../sim/rogue-blessing-permanent';
 import { POWER_TRAINING_STATS } from '../../sim/rogue-pets';
 import { eventView } from './events';
-import { migrateGodrobeGift } from './blessings';
 import { buyGrowth, syncGrowthParty, grantMushroomGrowth, grantJourneyGrowth } from './growth';
 import { prepareRewardScene, chooseReward } from './reward-scenes';
 import { randomInt, randomUUID } from 'crypto';
@@ -87,7 +86,8 @@ import { needsOnboarding } from './onboarding';
 import { BEGINNER_GUIDE_VERSION } from './beginner-guide';
 import { snapshotTravelBattle, restoreTravelBattle } from './event-travel';
 import { settleServiceBattle } from './event-services';
-import { normalizeBlessings, beginBlessingFloor, prepareOpeningBlessings, completeBlessingFloor, blessingRouteTemplates,
+import { normalizeBlessings, beginBlessingFloor, prepareOpeningBlessings, prepareEvolutionFloor,
+	completeBlessingFloor, blessingRouteTemplates, migrateGodrobeGift,
 	prepareBlessingEncounter, handleBlessingCommand, settleBlessingBattle, repairBlessingRound,
 	syncBlessingParty, blessingExperience, blessingLoot,
 	recordNegativeBlessingEvent, gymSystemGift, grantSystem } from './blessings';
@@ -175,6 +175,10 @@ export class RogueEngine {
 		if (this.content?.blessings) {
 			syncBlessingParty(run);
 			repairBlessingRound(run, this.content, this.random);
+			// Resume an unstarted legacy boss floor without changing its saved opponents.
+			if (!run.story && ['choose', 'ready'].includes(run.phase)) {
+				this.prepareFloorEvolution(run, run.phase as 'choose' | 'ready');
+			}
 		}
 		syncGrowthParty(run);
 		if (this.content && (run.contentVersion === this.content.version ||
@@ -297,6 +301,13 @@ export class RogueEngine {
 			(run.notices ||= []).push(`全队倒下且没有复活道具；急救需要 ${cost} 金币，余额不足，尚未扣款或复活。`);
 		}
 	}
+	private prepareFloorEvolution(run: RogueRun, resume: 'enter' | 'choose' | 'ready') {
+		if (!this.content?.blessings || run.postgame || run.battle || run.encounter || run.attempt || run.recovery ||
+			run.blessings?.afterFloor || !prepareEvolutionFloor(run, this.random)) return false;
+		run.blessings!.evolutionResume = resume;
+		run.phase = 'blessing';
+		return true;
+	}
 	private enterFloor(run: RogueRun) {
 		syncRunDifficulty(run);
 		if (run.pendingSpiritGift) grantSpiritGift(run, this.configured(), this.random);
@@ -315,6 +326,7 @@ export class RogueEngine {
 			run.captureResume = 'choose'; run.phase = 'settlement'; return;
 		}
 		if (this.content?.blessings && prepareOpeningBlessings(run, this.content, this.random)) return;
+		if (this.prepareFloorEvolution(run, 'enter')) return;
 		this.prepareChoices(run);
 		const options = this.configured().floors[run.floor];
 		if (options && fixedFloor(run.floor)) this.select(run, options[0].id);
@@ -695,6 +707,18 @@ export class RogueEngine {
 			run.checkpoint = inventory(run);
 			run.blessingCheckpoint = structuredClone(run.blessings);
 			run.phase = 'ready';
+			return;
+		}
+		if (run.blessings?.evolutionResume) {
+			const resume = run.blessings.evolutionResume;
+			delete run.blessings.evolutionResume;
+			if (resume === 'enter') this.enterFloor(run);
+			else {
+				run.phase = resume;
+				run.checkpoint = inventory(run);
+				run.blessingCheckpoint = structuredClone(run.blessings);
+				this.prepareChoices(run);
+			}
 			return;
 		}
 		if (run.blessings?.afterFloor) {
@@ -1242,6 +1266,7 @@ export class RogueEngine {
 					delete run.story;
 					run.phase = 'ready';
 				} else if (this.beginBossDialogue(run)) break;
+				if (run.phase === 'ready' && this.prepareFloorEvolution(run, 'ready')) break;
 				requireRule(run.phase === 'ready' && run.team.some(mon => mon.hp > 0), '当前不能进入战斗，请先复活至少一名队员。');
 				if (run.node?.event?.activity?.solo) requireRule(run.team.some(mon =>
 					mon.id === run.node!.event!.activity!.solo && !mon.egg && mon.hp > 0 && toID(mon.set.species) === 'kubfu' && mon.set.level >= 35),

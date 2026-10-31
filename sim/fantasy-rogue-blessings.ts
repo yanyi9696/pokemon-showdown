@@ -116,7 +116,7 @@ export function rogueDamageSources(mon: Pokemon, move: Move) {
 	if (ordinary && mon.side.pokemon.every(p => mon.battle.dex.species.get(savedBlessingMember(p)?.set.species || p.baseSpecies.name).bst <= 500)) {
 		sources.push(`【愤怒的普通宝可梦】伤害 +${10 + Math.max(1, Math.floor(ordinary.floor / 50)) * 5}%`);
 	}
-	if (hasBlessing(mon, 'lifepower')) sources.push('【氪命】伤害 ×1.3');
+	if (hasBlessing(mon, 'lifepower') && mon.hasItem('lifeorb')) sources.push('【自损一千，伤敌一万】生命宝珠伤害 ×1.6');
 	if (hasBlessing(mon, 'explosionart') && ['selfdestruct', 'explosion'].includes(move.id)) sources.push('【艺术就是爆炸】最终伤害 +50%');
 	if (hasBlessing(mon, 'coin')) sources.push(hasBlessing(mon, 'dice') ? '【命运决定一切】伤害 ×1.5' : '【命运决定一切】伤害随机 ×0.5 或 ×1.5');
 	if (hasBlessing(mon, 'sound') && move.flags.sound) sources.push(`【${blessingSource(mon, 'sound')}】伤害 +${mon.side.pokemon.reduce((n, p) =>
@@ -194,7 +194,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	if (modifiers?.swap) statSources.push('六维数值已经交换');
 	for (const family of ['speedpower', 'swords', 'prayer', 'supercombo', 'kid', 'style']) {
 		const owned = ownsBlessing(effects, family);
-		if (owned) statSources.push(`【${blessing(owned.id)!.name}】已计入当前能力`);
+		if (owned && (family !== 'kid' || mon.hasItem('eviolite'))) statSources.push(`【${blessing(owned.id)!.name}】已计入当前能力`);
 	}
 	const previewMoves = mon.moveSlots.map(slot => mon.battle.dex.moves.get(slot.id));
 	const companionZ = companionZRequest(mon);
@@ -653,7 +653,7 @@ export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<Stat
 	stat *= runtime.sword[key] || 1;
 	if (key === 'atk' || key === 'spa') {
 		stat = (stat + runtime.prayer[key]) * (1 + team.combo * 0.1);
-		if (hasBlessing(mon, 'kid') && mon.hasItem('eviolite') && mon.species.evos.length) stat *= 1.3;
+		if (hasBlessing(mon, 'kid') && mon.hasItem('eviolite')) stat *= 1.3;
 	}
 	if (key !== 'spe' && hasBlessing(mon, 'style')) stat *= 1 + team.style * 0.1;
 	// runEvent applies its chained ability/item modifier only to integer relay values.
@@ -773,7 +773,6 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 		if (ordinary && source.side.pokemon.every(p => this.dex.species.get(savedBlessingMember(p)?.set.species || p.baseSpecies.name).bst <= 500)) {
 			damage = damage * (110 + Math.max(1, Math.floor(ordinary.floor / 50)) * 5) / 100;
 		}
-		if (hasBlessing(source, 'lifepower')) damage = this.modify(damage, [5324, 4096]);
 		if (hasBlessing(target, 'arsenal')) {
 			const types = new Set(target.moveSlots.map(slot => this.dex.moves.get(slot.id))
 				.filter(attack => attack.category !== 'Status').map(attack => attack.type));
@@ -789,11 +788,6 @@ export const ROGUE_BLESSING_EVENTS: Partial<FormatData> = {
 		return Math.floor(damage);
 	},
 	onAfterMove(pokemon, target, move) { recordEvolutionMove(pokemon, move); blessingAfterAction(this, pokemon, move); },
-	onAfterMoveSecondarySelf(source, target, move) {
-		if (hasBlessing(source, 'lifepower') && source !== target && move.category !== 'Status' && !source.forceSwitchFlag) {
-			this.damage(source.baseMaxhp / 10, source, source, this.dex.items.get('lifeorb'));
-		}
-	},
 	onTakeItem(item, pokemon) { if (hasBlessing(pokemon, 'kid') && item.id === 'eviolite') return false; },
 	onTryAddVolatile(status, pokemon) { if (status.id === 'choicelock' && blessingFirstChoice(pokemon)) return false; },
 	onSetStatus(status, target) {

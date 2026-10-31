@@ -95,6 +95,9 @@ export interface RogueBlessings extends BlessingEffects {
 	caught: string[]; nextJoin: number; afterFloor?: boolean;
 	stage?: { kind: 'direction' | 'upgrade', options: string[] };
 	evolutionCosts?: number[];
+	/** Floors whose upgrade has been offered, including completed legacy floors. */
+	evolutionFloors?: number[];
+	evolutionResume?: 'enter' | 'choose' | 'ready';
 	/** Fighting receives its ten-floor upgrade before the milestone direction change. */
 	evolutionResetPending?: boolean;
 	shards: number; candy: number; swordUses: number; swordRewards: string[];
@@ -167,6 +170,9 @@ export function normalizeBlessings(run: RogueRun) {
 		defeated: [], caught: [], nextJoin: 0, shards: 0, candy: 0, swordUses: 0, swordRewards: [], regis: [], bondBattles: [] };
 	// Preserve already-paid costs in old saves; only later selections use the new split costs.
 	state.bossLevels ??= state.levels;
+	if (state.evolution) {
+		state.evolutionFloors ??= state.completed.filter(floor => floor >= 10 && floor <= 200 && floor % 10 === 0);
+	}
 	activateBlessingLevels(run);
 	// A legacy final-boss payout already included every migrated milestone reward.
 	state.regiBonusMilestones ??= state.regiReward ? [1, 2, 3, 4, 5] : [];
@@ -711,12 +717,14 @@ function evolutionOptions(run: RogueRun, random: RogueRandom): string[] {
 		while (pool.length && result.length < count) result.push(pool.splice(random(pool.length), 1)[0]);
 		return result;
 	};
-	if (evo.direction === 'stats') return sample(ROGUE_STATS.map(stat => 'stat:' + stat), 3);
+	if (evo.direction === 'stats') return sample(ROGUE_STATS.map(stat => 'stat:' + stat), 4);
 	if (evo.direction === 'resistance') {
-		let pool = Object.keys(BLESSING_TYPES).filter(type => effectiveness(type, evo.type) + (evo.defense[type] || 0) > 0);
-		if (!pool.length) pool = Object.keys(BLESSING_TYPES).filter(type => !immune(type, evo.type) &&
+		const weaknesses = Object.keys(BLESSING_TYPES).filter(type =>
+			effectiveness(type, evo.type) + (evo.defense[type] || 0) > 0);
+		const options = sample(weaknesses, 4);
+		const remaining = Object.keys(BLESSING_TYPES).filter(type => !options.includes(type) && !immune(type, evo.type) &&
 			effectiveness(type, evo.type) + (evo.defense[type] || 0) >= 0);
-		return sample(pool.map(type => 'defense:' + type), 3);
+		return [...options, ...sample(remaining, 4 - options.length)].map(type => 'defense:' + type);
 	}
 	let targets = Object.keys(BLESSING_TYPES).filter(type => !immune(evo.type, type) &&
 		effectiveness(evo.type, type) + (evo.offense[type] || 0) < 0);
@@ -724,12 +732,33 @@ function evolutionOptions(run: RogueRun, random: RogueRandom): string[] {
 	if (!targets.length) targets = Object.keys(BLESSING_TYPES).filter(type =>
 		effectiveness(evo.type, type) + (evo.offense[type] || 0) - (immune(evo.type, type) ? 1 : 0) < 1);
 	const extras = Object.keys(TYPE_EVOLUTION_EXTRAS).filter(id => !evo.extras.includes(id));
-	return [...sample(targets.map(type => 'offense:' + type), 1), 'power', ...sample(extras.map(id => 'extra:' + id), 1)];
+	const attacks = targets.map(type => 'offense:' + type), effects = extras.map(id => 'extra:' + id);
+	const options = [...sample(attacks, 1), 'power', ...sample(effects, 1)];
+	// Retain each existing kind of upgrade, then fill the fourth slot without duplicates.
+	return [...options, ...sample([...attacks, ...effects], 4 - options.length)];
 }
 function prepareEvolutionUpgrade(run: RogueRun, random: RogueRandom) {
 	const state = run.blessings!, options = evolutionOptions(run, random);
 	state.stage = options.length ? { kind: 'upgrade', options } : { kind: 'direction', options: ['moves', 'stats'] };
 	if (!options.length) (run.notices ||= []).push('抗性方向已全部强化，改选招式或数值方向后仍可领取本次强化。');
+}
+export function prepareEvolutionFloor(run: RogueRun, random: RogueRandom) {
+	const state = normalizeBlessings(run);
+	if (!state.evolution || run.floor < 10 || run.floor > 200 || run.floor % 10 ||
+		state.evolutionFloors!.includes(run.floor) || state.stage || state.round || state.pending.length) return false;
+	state.evolutionFloors!.push(run.floor);
+	if ([50, 100, 150].includes(run.floor)) {
+		const paid = state.evolutionCosts ||= [];
+		if (!paid.includes(run.floor)) {
+			deferBlessingLevels(run, 'prismatic');
+			paid.push(run.floor);
+		}
+		if (state.evolution.type === 'Fighting') {
+			state.evolutionResetPending = true;
+			prepareEvolutionUpgrade(run, random);
+		} else state.stage = { kind: 'direction', options: ['resistance', 'moves', 'stats'] };
+	} else prepareEvolutionUpgrade(run, random);
+	return true;
 }
 export function completeBlessingFloor(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom) {
 	const state = normalizeBlessings(run);
@@ -785,18 +814,10 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 	if (ELITE_BOSS_FLOORS.has(run.floor)) state.shards += 10;
 	const trainer = run.node?.encounters[0]?.trainer;
 	if (trainer && ((trainer.role === 'gym' && run.floor >= 100) || ['elitefour', 'champion'].includes(trainer.role))) state.shards += 25;
-	if (state.evolution && run.floor % 10 === 0 && run.floor >= 10 && run.floor <= 200) {
-		if ([50, 100, 150].includes(run.floor)) {
-			const paid = state.evolutionCosts ||= [];
-			if (!paid.includes(run.floor)) {
-				deferBlessingLevels(run, 'prismatic');
-				paid.push(run.floor);
-			}
-			if (state.evolution.type === 'Fighting') {
-				state.evolutionResetPending = true;
-				prepareEvolutionUpgrade(run, random);
-			} else state.stage = { kind: 'direction', options: ['resistance', 'moves', 'stats'] };
-		} else prepareEvolutionUpgrade(run, random);
+	if (state.evolution) {
+		// An old save may already be fighting this boss. Keep its unclaimed upgrade;
+		// new floor entries have a receipt and cannot receive another after winning.
+		prepareEvolutionFloor(run, random);
 	} else if ([50, 100, 150].includes(run.floor)) {
 		state.round = createBlessingRound({ floor: run.floor as BlessingFloor, spirit: run.spirit,
 			prayerFloor: state.prayer?.floor, prayerPartyChanged: state.prayer?.changed, killlaReady: !!(ownsBlessing(state, 'godrobe') && ownsBlessing(state, 'puregodrobe') && run.floor >= 150 && !ownsBlessing(state, 'killlagirl')) }, blessingCandidates(run, content), random);
@@ -957,6 +978,7 @@ function grantBlessing(account: RogueAccount, run: RogueRun, content: RogueConte
 	if (def.family === 'meltan') state.candy += 50;
 	if (def.family === 'pandorasilver') giveEquipment(run, content, random, FANTASY_BLESSING_ITEMS[random(FANTASY_BLESSING_ITEMS.length)]);
 	if (def.family === 'kid') giveEquipment(run, content, random, 'eviolite');
+	if (def.family === 'lifepower') giveEquipment(run, content, random, 'lifeorb');
 	if (def.family === 'weakness') give(run, 'weaknesspolicy');
 	if (def.family === 'veteransniper') give(run, 'fantasyscopelens');
 	if (def.family === 'pandoragold') {
@@ -1436,6 +1458,7 @@ export function blessingView(run: RogueRun, discovered = false) {
 		targetName: [...run.team, ...(run.box || [])].find(mon => mon.id === entry.target)?.set.species })),
 	round: state.round && { ...state.round, options: state.round.options.map(option => ({ ...option, ...describe(option.id) })) },
 	stage: state.stage && { ...state.stage, options: state.stage.options.map(id => ({ id, name: upgradeName(id) })) },
+		evolutionBeforeBattle: !!state.evolutionResume,
 	pending: state.pending.map(reward => reward.kind === 'compound' ? compoundView(run, reward) : ({ ...reward, ...(reward.pokemon?.egg ? { pokemon: eggView(reward.pokemon, run.floor) } : {}), options: reward.options?.map(id => ({ id,
 		name: reward.kind === 'systemfallback' ? systemFallbackName(id) : id === 'skip' ? '队伍已具备这些特性，无需重复赋予，继续冒险' : reward.kind === 'system' ? ROGUE_SYSTEM_NAMES[id] + (state.owned.some(entry => entry.family === `reserve${id}` && !entry.completed) ? '（已预定：战后也会解锁）' : '') :
 		reward.kind === 'unity' ? BLESSING_TYPES[id] + '属性' : reward.kind === 'tera' ? BLESSING_TYPES[id] + '太晶碎片 ×50' :

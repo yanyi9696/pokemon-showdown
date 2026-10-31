@@ -144,11 +144,11 @@ describe('Fantasy Rogue expanded blessings', function () {
 		turn('move 3'); assert(!battle.p1.active[0].isSemiInvulnerable());
 		assert.equal(battle.p1.active[0].lastMove.id, 'tackle');
 	});
-	it('Life Orb style blessing charges only a successful damaging attack and respects Magic Guard', () => {
+	it('enhanced Life Orb charges only a successful damaging attack and respects Magic Guard', () => {
 		for (const ability of ['Immunity', 'Magic Guard']) {
-			begin(['lifepower'], [set('Snorlax', ability, 50, ['Tackle', 'Splash'])]);
+			begin(['lifepower'], [{ ...set('Snorlax', ability, 50, ['Tackle', 'Splash']), item: 'Life Orb' }]);
 			const a = battle.p1.active[0], hp = a.hp; turn('move 2'); assert.equal(a.hp, hp);
-			turn('move 1'); assert.equal(a.hp, ability === 'Magic Guard' ? hp : hp - Math.floor(a.maxhp / 10));
+			turn('move 1'); assert.equal(a.hp, ability === 'Magic Guard' ? hp : hp - Math.floor(a.maxhp / 5));
 		}
 	});
 	it('captures an NPC member and continues until all opponents have been defeated or captured', () => {

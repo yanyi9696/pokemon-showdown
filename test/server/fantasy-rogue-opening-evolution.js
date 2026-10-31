@@ -37,11 +37,14 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 	function upgrade() {
 		if (account().run.blessings.stage.kind === 'direction') cmd('blessing', { value: 'stats' });
 		assert.equal(account().run.blessings.stage.kind, 'upgrade');
+		assert.equal(new Set(account().run.blessings.stage.options).size, 4);
 		cmd('blessing', { value: 'stat:hp' });
 	}
 	function complete(floor) {
 		store.change(user, saved => {
 			saved.run.floor = floor; saved.run.phase = 'reward';
+			delete saved.run.battle;
+			delete saved.run.story;
 			saved.run.node = { id: 'growth-checkpoint', name: '测试结算', kind: 'reward', encounters: [], reward: { money: 0, items: {} } };
 		});
 		cmd('continue');
@@ -65,24 +68,35 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 		assert.equal(blessingLevelsAt(claimed.run, 11).boss, 10);
 		assert.equal(claimed.run.team.find(mon => mon.id === reward.pokemon.id).statModifiers.stats.hp, 0.15);
 	});
-	it('grants all 21 upgrades, charges later prism costs once, and archives the final upgrade before the ending', () => {
+	it('grants all 21 upgrades before each boss, charges costs once, and archives only after winning floor 200', () => {
 		choose('typeevolutiongrass'); gift(); upgrade();
 		let upgrades = 1, normal = 0, boss = 10;
 		for (let floor = 10; floor <= 200; floor += 10) {
-			complete(floor);
+			complete(floor - 1);
 			const run = account().run, direction = [50, 100, 150].includes(floor);
+			assert.equal(run.floor, floor);
 			assert.equal(run.phase, 'blessing'); assert(!run.blessings.round);
+			assert.equal(run.blessings.evolutionResume, 'enter');
 			assert.equal(run.blessings.stage.kind, direction ? 'direction' : 'upgrade');
 			if (direction) {
 				normal += blessingLevelCost('prismatic', floor); boss += blessingLevelCost('prismatic', floor, true);
 			}
 			assert.equal(blessingLevelsAt(run, 201).normal, normal); assert.equal(blessingLevelsAt(run, 201).boss, boss);
 			const snapshot = account(); engine.migrate(user); assert.deepEqual(account(), snapshot);
-			b.completeBlessingFloor(snapshot, run, content, () => 0);
-			assert.deepEqual(run.blessings, snapshot.run.blessings, 'repeated settlement grants nothing');
+			assert.equal(b.prepareEvolutionFloor(run, () => 0), false);
+			assert.deepEqual(run.blessings, snapshot.run.blessings, 'repeated entry never rerolls the saved options');
 			assert(!account().cards?.length);
 			upgrade(); upgrades++;
+			const prepared = account().run;
+			assert.equal(prepared.floor, floor);
+			assert(prepared.phase === 'ready' || prepared.phase === 'story' && ['bossintro', 'gymgift'].includes(prepared.story.stage),
+				`floor ${floor}: upgrade must lead to the unstarted boss or its pre-battle gift`);
+			assert(!prepared.blessings.stage); assert(!prepared.blessings.evolutionResume);
+			assert.equal(prepared.blessingCheckpoint.evolution.stats.hp, prepared.blessings.evolution.stats.hp);
+			assert(!account().cards?.length, 'upgrading is not a boss victory');
+			complete(floor);
 			assert.equal(account().run.floor, floor === 200 ? 200 : floor + 1);
+			assert(!account().run.blessings.stage, 'winning cannot grant a second upgrade');
 		}
 		const saved = account();
 		assert.equal(upgrades, 21); assert.equal(saved.run.phase, 'postgame');
@@ -100,7 +114,7 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 		choose('typeevolutionfighting'); gift(); upgrade();
 		let upgrades = 1;
 		for (let floor = 10; floor <= 200; floor += 10) {
-			complete(floor);
+			complete(floor - 1);
 			assert.equal(account().run.blessings.stage.kind, 'upgrade');
 			if ([50, 100, 150].includes(floor)) {
 				const before = account(); engine.migrate(user); assert.deepEqual(account(), before);
@@ -112,6 +126,11 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 				const after = account(); engine.migrate(user); assert.deepEqual(account(), after);
 			}
 			upgrade(); upgrades++;
+			const prepared = account().run;
+			assert.equal(prepared.floor, floor);
+			assert(prepared.phase === 'ready' || prepared.phase === 'story' && ['bossintro', 'gymgift'].includes(prepared.story.stage),
+				`floor ${floor}: Fighting upgrades must finish before the boss`);
+			complete(floor);
 		}
 		const saved = account();
 		assert.equal(upgrades, 24); assert.equal(saved.run.blessings.bossLevels, 100);
@@ -124,7 +143,7 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 		cmd('blessing', { value: 'resistance' });
 		let changedDirection = false;
 		for (let i = 0; i <= 20; i++) {
-			if (i) complete(i * 10);
+			if (i) complete(i * 10 - 1);
 			if (account().run.blessings.stage.kind === 'direction') {
 				const stage = account().run.blessings.stage;
 				cmd('blessing', { value: stage.options.includes('resistance') ? 'resistance' : 'stats' });
@@ -134,8 +153,68 @@ describe('Fantasy Rogue opening rewards and attribute evolution', function () {
 			if (state.evolution.direction === 'stats') changedDirection = true;
 			assert.equal(state.stage.kind, 'upgrade'); assert(state.stage.options.length);
 			cmd('blessing', { value: state.stage.options[0] });
+			if (i) complete(i * 10);
 		}
 		assert(changedDirection); assert.equal(account().run.phase, 'postgame');
+	});
+	for (const direction of ['resistance', 'moves', 'stats']) it(`offers four distinct ${direction} upgrades and accepts the fourth`, () => {
+		choose('typeevolutionfire'); gift();
+		cmd('blessing', { value: direction });
+		const options = account().run.blessings.stage.options;
+		assert.equal(options.length, 4); assert.equal(new Set(options).size, 4);
+		const before = account(); engine.migrate(user); assert.deepEqual(account(), before);
+		cmd('blessing', { value: options[3] });
+		assert.equal(account().run.phase, 'choose'); assert(!account().run.blessings.stage);
+	});
+	it('preserves the pre-boss upgrade and its receipt when retrying a continuous boss floor', () => {
+		choose('typeevolutiongrass'); gift(); upgrade();
+		complete(159); upgrade();
+		store.change(user, saved => { saved.run.node.noHealing = true; });
+		const before = account().run;
+		assert(before.node.noHealing);
+		store.change(user, saved => {
+			saved.run.phase = 'failed';
+			saved.run.team.forEach(mon => { mon.hp = 0; });
+		});
+		cmd('retry');
+		const after = account().run;
+		assert.equal(after.phase, 'ready'); assert.equal(after.floor, 160);
+		assert.deepEqual(after.blessings.evolution, before.blessings.evolution);
+		assert.deepEqual(after.blessings.evolutionFloors, before.blessings.evolutionFloors);
+		assert(!after.blessings.stage);
+	});
+	it('migrates an unstarted old boss floor without rerolling opponents or replaying earlier upgrades', () => {
+		choose('typeevolutiongrass'); gift(); upgrade();
+		complete(9); upgrade();
+		store.change(user, saved => {
+			const state = saved.run.blessings;
+			delete state.evolutionFloors;
+			state.completed = [10]; saved.run.floor = 20;
+		});
+		const old = account(); engine.migrate(user);
+		const offered = account();
+		assert.equal(offered.run.phase, 'blessing'); assert.equal(offered.run.blessings.evolutionResume, 'ready');
+		assert.deepEqual(offered.run.node, old.run.node);
+		assert.deepEqual(offered.run.blessings.evolutionFloors, [10, 20]);
+		engine.migrate(user); assert.deepEqual(account(), offered);
+		upgrade();
+		assert.equal(account().run.floor, 20); assert.equal(account().run.phase, 'ready');
+		assert.deepEqual(account().run.node, old.run.node);
+	});
+	it('does not interrupt an old ongoing fight and preserves its unclaimed post-fight upgrade', () => {
+		choose('typeevolutiongrass'); gift(); upgrade();
+		complete(9); upgrade();
+		store.change(user, saved => {
+			const state = saved.run.blessings;
+			delete state.evolutionFloors; state.completed = [];
+			saved.run.phase = 'battle'; saved.run.battle = { token: 'legacy-fight' };
+		});
+		engine.migrate(user);
+		assert.equal(account().run.phase, 'battle'); assert(!account().run.blessings.stage);
+		complete(10);
+		assert.equal(account().run.floor, 10); assert.equal(account().run.phase, 'blessing');
+		const pending = account(); engine.migrate(user); assert.deepEqual(account(), pending);
+		upgrade(); assert.equal(account().run.floor, 11); assert(!account().run.blessings.stage);
 	});
 	it('adds fifty initial Meltan candy and twenty for defeating a Steel Pokemon', () => {
 		store.change(user, saved => { saved.run.blessings.candy = 20; });

@@ -70,12 +70,12 @@ describe('Fantasy Rogue blessing interaction audit', function () {
 		play('switch 2'); assert.equal(mon.hp, expected);
 	});
 	it('delayed attacks pay Life Orb recoil on arrival rather than launch, once per multi-hit move', () => {
-		begin(['lifepower', 'multihit'], 'dialga');
-		const mon = battle.p1.active[0]; mon.item = ''; const hp = mon.hp;
+		begin(['lifepower', 'multihit'], 'dialga', { prepare(run) { run.team[0].set.item = 'Life Orb'; } });
+		const mon = battle.p1.active[0], hp = mon.hp;
 		battle.p2.pokemon[0].moveSlots = battle.p2.pokemon[0].moveSlots.slice(1);
 		play('move 3'); assert.equal(mon.hp, hp);
 		play('move 4'); assert.equal(mon.hp, hp);
-		play('move 4'); assert.equal(mon.hp, hp - Math.floor(mon.baseMaxhp / 10));
+		play('move 4'); assert.equal(mon.hp, hp - Math.floor(mon.baseMaxhp / 5));
 	});
 	it('all blessing descriptions expose a nonempty name and effect without undefined placeholders', () => {
 		for (const def of ROGUE_BLESSINGS) {

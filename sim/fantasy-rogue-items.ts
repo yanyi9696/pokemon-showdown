@@ -39,7 +39,19 @@ export function rogueItemCallback(mon: Pokemon, item: Item, callback: any): any 
 		}
 	};
 }
-export function sharedRogueItemData(mon: Pokemon, item: Item): Item & ItemData {
+/** Modify the effective item, preserving native suppression and secondary-effect handling. */
+export function rogueItemData(mon: Pokemon, item: Item): Item & ItemData {
+	if (item.id === 'lifeorb' && hasBlessing(mon, 'lifepower')) {
+		return {
+			...item,
+			onModifyDamage(this: Battle) { return this.chainModify([6554, 4096]); },
+			onAfterMoveSecondarySelf(this: Battle, source: Pokemon, target: Pokemon, move: ActiveMove) {
+				if (source && source !== target && move && move.category !== 'Status' && !source.forceSwitchFlag) {
+					this.damage(source.baseMaxhp / 5, source, source, this.dex.items.get('lifeorb'));
+				}
+			},
+		};
+	}
 	if (item.id !== 'lightball' || !mouseFamilyActive(mon)) return item;
 	return {
 		...item,

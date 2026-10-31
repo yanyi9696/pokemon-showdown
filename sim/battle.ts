@@ -20,7 +20,7 @@ import { collapseBoost, collapseBlockBoost, collapseSteadfast, collapseEnvironme
 import { Dex, toID } from './dex';
 import { recordEvolutionDamage } from './rogue-evolution-progress';
 import { commitNumberChoices } from './rogue-number-blessings';
-import { sharedRogueItems, sharedRogueItemData, rogueItemCallback } from './fantasy-rogue-items';
+import { sharedRogueItems, rogueItemData, rogueItemCallback } from './fantasy-rogue-items';
 import { Teams } from './teams';
 import { Field } from './field';
 import { Pokemon, type EffectState, RESTORATIVE_BERRIES } from './pokemon';
@@ -1177,7 +1177,7 @@ export class Battle {
 		}
 		const sharedItems = sharedRogueItems(pokemon);
 		for (const id of sharedItems) {
-			const item = sharedRogueItemData(pokemon, this.dex.items.get(id));
+			const item = rogueItemData(pokemon, this.dex.items.get(id));
 			const state = pokemon.volatiles[`item:${id}`] ||= this.initEffectState({ id: `item:${id}`, target: pokemon, rogueSharedItem: true });
 			const sharedCallback = (item as any)[callbackName] ?? (this.gen >= 5 && callbackName === 'onSwitchIn' && !(item as any).onAnySwitchIn ? item.onStart : undefined);
 			if (sharedCallback !== undefined) handlers.push(this.resolvePriority({
@@ -1185,7 +1185,7 @@ export class Battle {
 				state, end: pokemon.removeVolatile, effectHolder: pokemon,
 			}, callbackName));
 		}
-		const item = sharedItems.includes(pokemon.item) ? this.dex.items.get('') : pokemon.getItem();
+		const item = sharedItems.includes(pokemon.item) ? this.dex.items.get('') : rogueItemData(pokemon, pokemon.getItem());
 		// @ts-expect-error dynamic lookup
 		callback = item[callbackName];
 		if (callback !== undefined || (getKey && pokemon.itemState[getKey])) {

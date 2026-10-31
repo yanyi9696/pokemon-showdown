@@ -97,7 +97,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 					if (floor === 1) {
 						run.blessings.beforeAdventure = true;
 						b.prepareOpeningBlessings(run, content, random);
-					} else b.completeBlessingFloor(account, run, content, random);
+					} else if (run.blessings.evolution) b.prepareEvolutionFloor(run, random);
+					else b.completeBlessingFloor(account, run, content, random);
 					let actions = 0;
 					while (run.blessings.pending.length || run.blessings.round || run.blessings.stage) {
 						assert(++actions <= 30, 'must leave every selection checkpoint');
@@ -327,15 +328,17 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 		let upgrades = 1;
 		for (let floor = 10; floor <= 200; floor += 10) {
 			run.floor = floor; run.node = { id: 'checkpoint', kind: 'boss', encounters: [] };
-			b.completeBlessingFloor(account, run, content, zero);
+			assert(b.prepareEvolutionFloor(run, zero));
 			assert(!run.blessings.round);
 			if (run.blessings.stage.kind === 'direction') {
 				b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stats' }, zero);
 			}
 			assert.equal(run.blessings.stage.kind, 'upgrade');
-			assert.equal(new Set(run.blessings.stage.options).size, 3);
+			assert.equal(new Set(run.blessings.stage.options).size, 4);
 			b.handleBlessingCommand(account, run, content, { action: 'blessing', value: 'stat:hp' }, zero);
 			upgrades++;
+			b.completeBlessingFloor(account, run, content, zero);
+			assert(!run.blessings.stage);
 		}
 		assert.equal(upgrades, 21); assert.equal(run.blessings.levels, 60); assert.equal(run.blessings.bossLevels, 110);
 		assert.deepEqual(run.blessings.evolutionCosts, [50, 100, 150]);

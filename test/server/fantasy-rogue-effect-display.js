@@ -37,7 +37,7 @@ describe('Fantasy Rogue authoritative effect display and consumable persistence'
 		assert.equal(modifiers.find(m => m.source === '天下武功，唯快不破').factor, 1 + mon.getStat('spe') / 2000);
 	});
 	it('keeps damage modifiers separate and shows boss-card, permanent-training and extra-ability values exactly once', () => {
-		const mon = begin(['lifepower', 'ordinary'], { set: set('Mew', 'Huge Power', 50, ['Tackle']),
+		const mon = begin(['lifepower', 'ordinary'], { set: { ...set('Mew', 'Huge Power', 50, ['Tackle']), item: 'Life Orb' },
 			prepare: saved => { saved.statModifiers = { training: { atk: 0.2, def: 0.1 } }; },
 			state: { mentorCard: 'balanced', mentorTier: 'gym' } });
 		const info = rogueAbilityInfo(mon);
@@ -46,7 +46,7 @@ describe('Fantasy Rogue authoritative effect display and consumable persistence'
 		assert.equal(info.mentor.offense, 60); assert.equal(info.training.atk, 0.2);
 		assert(!info.moves.tackle.damage.some(s => s.includes('首领卡')));
 		assert(info.statSources.some(s => s.includes('首领卡') && s.includes('60%')));
-		assert(info.moves.tackle.damage.some(s => s.includes('氪命'))); assert(!info.moves.tackle.power.length);
+		assert(info.moves.tackle.damage.some(s => s.includes('自损一千，伤敌一万') && s.includes('1.6'))); assert(!info.moves.tackle.power.length);
 	});
 	it('includes the current Z move and keeps Technician eligibility independent of later blessing multipliers', () => {
 		const mon = begin(['speedpower', 'bugchoir'], { set: { ...set('Mew', 'Technician', 50, ['Tackle', 'Bug Buzz']), item: 'buginiumz' }, state: { systems: { player: { z: true } } } });

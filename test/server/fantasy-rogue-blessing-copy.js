@@ -63,6 +63,16 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 			return value + count * (item ? item.sellPrice || item.price : Dex.mod('gen9fantasy').items.get(id).megaStone ? 6000 : 600);
 		}, 0);
 	}
+	for (const [id, item] of [['lifepower', 'lifeorb'], ['kid', 'eviolite']]) {
+		it(`grants one ${item} on selection and keeps repeated requests from duplicating it`, () => {
+			const { run, account } = setup(); pick(run, account, id);
+			assert.equal(run.bag[item], 1);
+			assert.throws(() => b.handleBlessingCommand(account, run, content, { action: 'blessing', slot: 0 }, zero));
+			b.syncBlessingParty(run); b.syncBlessingParty(run);
+			assert.equal(run.bag[item], 1);
+			assert.equal(b.blessingView(run).owned[0].name, data.blessing(id).name);
+		});
+	}
 	for (const [stage, floor] of data.BLESSING_STAGES.entries()) {
 		it(`grants and describes exact coin totals at floor ${floor}`, () => {
 			for (const id of ['money', 'bigmoney']) {
@@ -206,15 +216,16 @@ describe('Fantasy Rogue revised ascent and Life Orb compatibility', () => {
 		['Sheer Force', 'Flamethrower', false], ['Sheer Force', 'Tackle', true],
 		['Magic Guard', 'Flamethrower', false], ['Synchronize', 'Flamethrower', true],
 		['Synchronize', 'Splash', false],
-	]) it(`matches Life Orb damage and HP cost with ${ability} using ${move}`, () => {
+	]) it(`doubles the Life Orb bonus and cost with ${ability} using ${move}`, () => {
 		const results = [];
 		for (const blessing of [true, false]) {
-			const mon = begin(blessing ? ['lifepower'] : [], ability, move, blessing ? '' : 'Life Orb');
+			const mon = begin(blessing ? ['lifepower'] : [], ability, move, 'Life Orb');
 			const foe = battle.p2.active[0], hp = mon.hp, targetHP = foe.hp;
 			battle.makeChoices('move 1', 'move 1');
 			results.push({damage: targetHP - foe.hp, recoil: hp - mon.hp});
-			assert.equal(hp - mon.hp, recoil ? Math.floor(mon.maxhp / 10) : 0);
+			assert.equal(hp - mon.hp, recoil ? Math.floor(mon.maxhp / (blessing ? 5 : 10)) : 0);
 		}
-		assert.deepEqual(results[0], results[1]);
+		if (move === 'Splash') assert.equal(results[0].damage, 0);
+		else assert(Math.abs(results[0].damage / results[1].damage - 1.6 / 1.3) < 0.03);
 	});
 });

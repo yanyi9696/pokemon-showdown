@@ -222,6 +222,10 @@ export function evolutionOptions(
 export function evolveMember(run: RogueRun, mon: RoguePokemon, name: string) {
 	if (mon.fusion) throw new Error('请先解除融合，再进行进化。');
 	if (!compoundEvolutionAllowed(mon, name)) throw new Error('五号化合物已锁定其他进化方向。');
+	if (run.blessings?.owned.some(entry => entry.family === 'kid') && toID(mon.set.item) === 'eviolite' &&
+		!Dex.mod('gen9fantasy').species.get(name).evos.length) {
+		throw new Error('小鬼当家：携带进化奇石时不能进化为最终形态。');
+	}
 	if (toID(mon.set.species) === 'meltan' && toID(name) === 'melmetal') {
 		if ((run.blessings?.candy || 0) < 400) throw new Error('需要 400 颗美录坦糖果。');
 		run.blessings!.candy -= 400;
