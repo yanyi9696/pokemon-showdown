@@ -469,9 +469,14 @@ export function blessingLeave(mon: Pokemon, fainted = false) {
 	if (!fainted) return;
 	succeedDragonKing(mon);
 	team.faintedTypes.push(...mon.getTypes());
-	if (hasBlessing(mon, 'prayer') && qualifiesPrayer(mon) && !mon.species.isMega) team.prayer = {
-		atk: Math.floor(mon.getStat('atk', true) / 3), spa: Math.floor(mon.getStat('spa', true) / 3),
-	};
+	if (hasBlessing(mon, 'prayer') && qualifiesPrayer(mon) && !mon.species.isMega) {
+		// Faint has no outgoing move. Transfer panel stats and Rogue bonuses (including earlier prayer),
+		// not stat stages or native move/ability/item damage modifiers such as Torrent.
+		team.prayer = {
+			atk: Math.floor(blessingModifyStat(mon.getStat('atk', true, true), mon, 'atk') / 3),
+			spa: Math.floor(blessingModifyStat(mon.getStat('spa', true, true), mon, 'spa') / 3),
+		};
+	}
 	if (hasBlessing(mon, 'inheritmoves')) {
 		const ids = new Set([mon.baseMoveSlots[0]?.id, ...member(mon).inherited]);
 		team.inheritance = mon.moveSlots.filter(slot => ids.has(slot.id)).map(slot => ({ ...slot }));
