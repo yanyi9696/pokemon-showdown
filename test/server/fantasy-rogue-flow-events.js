@@ -249,13 +249,13 @@ describe('Fantasy Rogue flow, adventures and ability visibility', function () {
 			assert.deepEqual(blessingProgress(battle).insight, {});
 		} finally { battle.destroy(); }
 	});
-	for (const card of ['attack', 'guard', 'balanced']) it(`uses the confirmed ${card} boss-card modifiers`, () => {
+	for (const card of ['attack', 'guard', 'speed', 'balanced']) it(`uses the confirmed ${card} boss-card modifiers`, () => {
 		const baseline = makeBattle([], undefined, 'Immunity'), boosted = makeBattle([], card, 'Immunity');
 		try {
 			const source = boosted.p1.active[0], base = baseline.p1.active[0];
-			assert.equal(source.getStat('def'), boosted.modify(base.getStat('def'), card === 'guard' ? 2.2 : card === 'balanced' ? 1.6 : 1.4));
-			assert.equal(source.getStat('spe'), boosted.modify(base.getStat('spe'), card === 'balanced' ? 1.5 : 1));
-			const offense = card === 'attack' ? 2 : card === 'balanced' ? 1.6 : 1.4;
+			assert.equal(source.getStat('def'), boosted.modify(base.getStat('def'), card === 'guard' ? 2.2 : card === 'balanced' ? 1.5 : card === 'speed' ? 1.2 : 1.4));
+			assert.equal(source.getStat('spe'), boosted.modify(base.getStat('spe'), card === 'balanced' ? 1.5 : card === 'speed' ? 2 : 1));
+			const offense = card === 'attack' ? 2 : card === 'balanced' ? 1.5 : card === 'speed' ? 1.2 : 1.4;
 			assert.equal(source.getStat('atk'), boosted.modify(base.getStat('atk'), offense));
 			base.storedStats.atk = source.getStat('atk');
 			baseline.randomizer = boosted.randomizer = n => n;

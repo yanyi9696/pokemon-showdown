@@ -1171,6 +1171,7 @@ export class RogueEngine {
 					mon.set.moves[slot] = pending.move;
 					rebuildMember(mon, run.boosts);
 				}
+				recordStarterMoves(account, this.configured(), { ...mon.set, moves: [pending.move] });
 				run.pendingMoves!.shift();
 				this.finishSettlement(account, run);
 				break;
@@ -1446,6 +1447,9 @@ export class RogueEngine {
 					rememberMove(mon, item.move!);
 					recordStarterMoves(account, this.configured(), { ...mon.set, moves: [item.move!] });
 					run.notices = ['已加入伙伴的招式池，可在队伍面板中更换招式。'];
+					if (run.difficulty === 'easy') {
+						run.notices.push('护符庇佑：本局学会的招式不会解锁为下一局的初始招式。');
+					}
 				} else if (item.kind === 'revive') {
 					requireRule(!mon.hp, '活力碎片只能对倒下成员使用。');
 					mon.hp = Math.max(1, Math.floor(mon.maxhp * item.amount!));

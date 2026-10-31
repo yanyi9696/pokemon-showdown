@@ -7,6 +7,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
 const { rogueDiscoveries } = require('../../dist/server/fantasy-rogue/discoveries');
+const { MAINLINE_SCRIPT } = require('../../dist/server/fantasy-rogue/mainline-data');
 const { EVENT_NAMES, eventView } = require('../../dist/server/fantasy-rogue/events');
 const { OPTIONAL_CHALLENGES } = require('../../dist/server/fantasy-rogue/challenge-data');
 const { ROGUE_BLESSINGS, STAGED_BLESSING_FAMILIES } = require('../../dist/sim/rogue-blessing-data');
@@ -38,7 +39,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(data.entries.every(entry => !entry.unlocked && entry.text === '？？？' && entry.tier && entry.name));
 		const events = rogueCodex(undefined, 'events').entries;
 		assert.equal(events.filter(e => e.category === 'event').length, Object.keys(EVENT_NAMES).filter(id =>
-			!['auction', 'mushroomcollector', 'exclusivechallenge', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory', 'starmaster', 'battlemetro'].includes(id)).length);
+			!['auction', 'mushroomcollector', 'exclusivechallenge', 'policeassist', 'policerevenge', 'terasolo', 'rivalstory', 'starmaster', 'battlemetro'].includes(id)).length + MAINLINE_SCRIPT.ordinary.length);
 		assert.equal(events.filter(e => e.category === 'challenge').length, OPTIONAL_CHALLENGES.length);
 		for (const id of ['exclusivechallenge', 'policeassist', 'policerevenge']) assert.equal(events.find(e => e.id === id).category, 'encounter');
 		assert.equal(events.filter(e => e.category === 'trade').length, 9);
@@ -85,6 +86,35 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		cmd('abandon'); cmd('start', { starters: ['bulbasaur'] });
 		assert(rogueCodex(account(), 'events').entries.find(e => e.id === eventId).replay);
 		assert(!rogueCodex(account(), 'events').entries.find(e => e.id === 'forest').replay);
+	});
+	it('lists ordinary elder meetings separately and preserves visited replays across runs', () => {
+		const { prepareElderMeeting } = require('../../dist/server/fantasy-rogue/mainline');
+		store.change('codextest', a => {
+			a.run.node = { id: 'elder', kind: 'event', encounters: [], reward: { money: 0, items: {} } };
+			const rolls = [99, MAINLINE_SCRIPT.ordinary.findIndex(s => s.id === 'elder-window')];
+			assert(prepareElderMeeting(a, a.run, n => rolls.shift() % n));
+		});
+		const before = JSON.stringify(account());
+		const entries = rogueCodex(account(), 'events').entries;
+		const window = entries.find(e => e.id === 'elder-window');
+		assert.equal(window.name, '窗边的天气'); assert.equal(window.category, 'event');
+		assert(window.unlocked && window.replay);
+		assert.equal(window.replay.pages.p2.options.length, 2);
+		assert(!entries.find(e => e.id === 'elder-rest').unlocked);
+		assert.equal(JSON.stringify(account()), before);
+		assert.deepEqual(account().mainline.completed, []);
+		cmd('abandon'); cmd('start', { starters: ['bulbasaur'] });
+		assert(rogueCodex(account(), 'events').entries.find(e => e.id === 'elder-window').replay);
+		const local = rogueCodex(account(), 'events', true).entries;
+		for (const scene of MAINLINE_SCRIPT.ordinary) {
+			const replay = local.find(e => e.id === scene.id).replay;
+			assert(replay && replay.pages[replay.start]);
+			for (const page of Object.values(replay.pages)) {
+				assert(page.text.every(p => typeof p === 'string' && p.length));
+				for (const option of page.options) assert(replay.pages[option.next], option.next);
+				assert(!page.action && !page.reward && !page.log);
+			}
+		}
 	});
 	it('backfills retained legacy evidence without inventing lost older history', () => {
 		const legacy = { revision: 1, previousBlessings: ['friendwater', 'unknown'], cards: [{ snapshot: { blessings: [{ id: 'medic' }] } }],
@@ -148,7 +178,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 	it('has traversable narrative-only branches and the same opening text as live events', () => {
 		const a = account(); a.discoveries = { blessings: [], events: Object.keys(EVENT_NAMES) };
 		const before = JSON.stringify(a);
-		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event' && !e.id.startsWith('challenge:'))) {
+		for (const entry of rogueCodex(a, 'events').entries.filter(e => e.category === 'event' && e.id in EVENT_NAMES)) {
 			const replay = entry.replay;
 			const run = { ...a.run, node: { event: { id: entry.id, key: 'x', stage: 'choice' } } };
 			if (entry.id === 'masterballgift') {

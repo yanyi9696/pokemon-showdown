@@ -145,6 +145,10 @@ export class RogueManager {
 		}
 		return {
 			...common, configured: !!content, message: content ? content.label || '' : '正式队伍与数值等待配置，目前可查看局外成长。',
+			// Older clients cannot render mainline replies or challenge controls. Detect
+			// both route offers and saved challenges, before they become a blank screen.
+			protocolVersion: account.mainlineDialogue || run?.node?.challenge ||
+				run?.choices?.some(node => node.challenge) ? 2 : 1,
 			storyEnabled: !!content?.story,
 			beginnerGuide: needsOnboarding(account) ? BEGINNER_GUIDE : undefined,
 			beginnerGuideVersion: BEGINNER_GUIDE_VERSION,

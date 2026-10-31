@@ -233,6 +233,33 @@ export function advanceMainline(account: RogueAccount, content: RogueContent, ra
 	return undefined;
 }
 
+function sceneReplay(scene: ScriptScene) {
+	const pages: Record<string, { text: string[], options: { label: string, next: string }[] }> = {};
+	const append = (list: ScriptPage[], prefix: string, after?: string) => {
+		list.forEach((page, index) => {
+			const id = `${prefix}${index}`, next = index + 1 < list.length ? `${prefix}${index + 1}` : after;
+			const text = page.options ? page.prompt || '' : page.speaker &&
+				page.speaker !== '旁白' ? characterSpeech(page.text || '') : page.text || '';
+			pages[id] = { text: [text], options: page.options ? page.options.map((option, n) => {
+				const child = `${id}r${n}-`; append(option.reply, child, next);
+				return { label: option.label, next: option.reply.length ? `${child}0` : next || 'end' };
+			}) : next ? [{ label: '继续', next }] : [] };
+		});
+	};
+	append(scene.pages, 'p'); pages.end = { text: ['这段记忆暂时停在这里。'], options: [] };
+	return { title: scene.title, start: 'p0', pages };
+}
+
+/** Ordinary meetings belong in the event codex, independently of main-story unlocks. */
+export function elderEventCodex(discovered: readonly string[], preview = false) {
+	return script.ordinary.map(scene => {
+		const unlocked = preview || discovered.includes(scene.id);
+		return { id: scene.id, category: 'event', name: scene.title, unlocked,
+			text: unlocked ? '旅途中偶遇黑袍老人，与他交谈并作出回应，获得旅途补给或伙伴培养。老人的话会随秘闻进度变化；这类日常相遇不推进秘闻主线。' : '？？？',
+			...(unlocked ? { replay: sceneReplay(scene) } : {}) };
+	});
+}
+
 /** Read-only replay; only server-authorized local previews expose uncollected scenes. */
 export function mainlineCodex(account?: RogueAccount, preview = false) {
 	const completed = account?.mainline?.completed || [];
@@ -242,21 +269,8 @@ export function mainlineCodex(account?: RogueAccount, preview = false) {
 		const unlocked = preview || completed.includes(scene.id) || scene.id === 'ending-true' &&
 			!!account?.mainline?.endingSeen;
 		if (!unlocked) return { id: scene.id, category: 'story', name: '尚未拾起的记忆', unlocked: false, text: '继续旅程，等待与老人再会。' };
-		const pages: Record<string, { text: string[], options: { label: string, next: string }[] }> = {};
-		const append = (list: ScriptPage[], prefix: string, after?: string) => {
-			list.forEach((page, index) => {
-				const id = `${prefix}${index}`, next = index + 1 < list.length ? `${prefix}${index + 1}` : after;
-				const text = page.options ? page.prompt || '' : page.speaker &&
-					page.speaker !== '旁白' ? characterSpeech(page.text || '') : page.text || '';
-				pages[id] = { text: [text], options: page.options ? page.options.map((option, n) => {
-					const child = `${id}r${n}-`; append(option.reply, child, next);
-					return { label: option.label, next: option.reply.length ? `${child}0` : next || 'end' };
-				}) : next ? [{ label: '继续', next }] : [] };
-			});
-		};
-		append(scene.pages, 'p'); pages.end = { text: ['这段记忆暂时停在这里。'], options: [] };
 		return { id: scene.id, category: 'story', name: scene.title, unlocked: true,
 			text: preview ? '本地预览。阅读不会发放奖励或改变剧情进度。' : '已收集的故事。回顾不会发放奖励或改变进度。',
-			replay: { title: scene.title, start: 'p0', pages } };
+			replay: sceneReplay(scene) };
 	});
 }

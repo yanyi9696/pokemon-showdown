@@ -1,4 +1,4 @@
-import { mainlineCodex } from './mainline';
+import { elderEventCodex, mainlineCodex } from './mainline';
 import { MAINLINE_SCRIPT } from './mainline-data';
 import { trainerCodex } from './trainer-codex';
 import { MOVE_CATEGORIES, moveCategories } from './move-categories';
@@ -162,7 +162,8 @@ export function rogueCodex(account: RogueAccount | undefined, section: CodexSect
 		const unlocked = preview || discovered.trainers.includes(entry.portrait);
 		return { ...entry, unlocked, text: unlocked ? entry.text : '？？？' };
 	});
-	return { section, preview, entries: [...ecologies, ...events, ...visits, ...companions].sort((a, b) => {
+	return { section, preview, entries: [...ecologies, ...events, ...visits, ...companions,
+		...elderEventCodex(discovered.events, preview)].sort((a, b) => {
 		if ((a.category === 'ecology') !== (b.category === 'ecology')) return a.category === 'ecology' ? -1 : 1;
 		const ar = /^rival:([^:]+):(\d+)$/.exec(a.id), br = /^rival:([^:]+):(\d+)$/.exec(b.id);
 		if (ar && br) return compareBlessingNames({ name: a.name.split('·')[0] }, { name: b.name.split('·')[0] }) || Number(ar[2]) - Number(br[2]);

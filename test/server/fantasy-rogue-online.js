@@ -36,6 +36,37 @@ describe('Fantasy Rogue real rooms', function () {
 		manager = new RogueManager(new RogueEngine(store, content()), () => ai);
 		user = makeUser(`Rogue UI ${++serial}`, `127.0.3.${serial}`);
 	});
+	for (const choice of ['0', '1']) it(`resumes the window elder dialogue and explicitly answers branch ${choice}`, () => {
+		const { prepareElderMeeting } = require('../../dist/server/fantasy-rogue/mainline');
+		const { MAINLINE_SCRIPT } = require('../../dist/server/fantasy-rogue/mainline-data');
+		command('start', { starters: ['bulbasaur'] });
+		manager.engine.content.story = true;
+		store.change(user.id, saved => {
+			saved.run.node = { id: 'elder', kind: 'event', encounters: [], reward: { money: 0, items: {} } };
+			const rolls = [99, MAINLINE_SCRIPT.ordinary.findIndex(scene => scene.id === 'elder-window')];
+			assert(prepareElderMeeting(saved, saved.run, n => rolls.shift() % n));
+		});
+		let state = manager.state(user);
+		assert.equal(state.protocolVersion, 2);
+		for (let i = 0; i < 2; i++) state = command('storynext', { value: state.story.key });
+		assert.equal(state.story.text, '你抬头看了看窗外。');
+		assert.deepEqual(state.story.options.map(option => option.id), ['0', '1']);
+		const before = structuredClone(account());
+		assert.throws(() => command('storynext', { value: state.story.key }), /请先回应老人/);
+		assert.deepEqual(account(), before);
+		const reconnect = new RogueManager(manager.engine, () => ai).state(user);
+		assert.deepEqual(reconnect.story, state.story);
+		const request = { id: randomUUID(), revision: state.account.revision, action: 'mainlinechoice', value: state.story.key, member: choice };
+		state = manager.command(user.connections[0], request);
+		const answered = structuredClone(account());
+		manager.command(user.connections[0], request);
+		assert.deepEqual(account(), answered);
+		while (state.story) state = command('storynext', { value: state.story.key });
+		assert.equal(state.protocolVersion, 1);
+		assert.equal(state.run.phase, 'reward');
+		assert(account().run.lastReward);
+		assert.deepEqual(account().mainline.completed, []);
+	});
 	for (const win of [true, false]) it(`plays a complete native AI preview and ${win ? 'accepts the win' : 'discards the loss'}`, async () => {
 		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
 		store.change(user.id, saved => {
@@ -62,18 +93,34 @@ describe('Fantasy Rogue real rooms', function () {
 		}
 	});
 	it('uses the gym search budget for challenges and returns to an explicit retry or leave decision', async () => {
-		const { challengeNode, prepareChallengePrizes } = require('../../dist/server/fantasy-rogue/optional-challenges');
+		const { challengeNode } = require('../../dist/server/fantasy-rogue/optional-challenges');
 		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
 		store.change(user.id, saved => {
 			const run = saved.run;
 			run.floor = 8;
-			run.node = challengeNode('schoolfinal', 8);
+			delete run.node;
+			run.choices = [challengeNode('schoolfinal', 8)];
 			run.encounter = 0;
-			run.phase = 'event';
+			run.phase = 'choose';
 			run.challengeHistory = [{ id: 'schoolfinal', floor: 8 }];
-			prepareChallengePrizes(run, () => 0);
+			run.lastReward = { floor: 7, encounter: 1, money: 0, items: { pearl: 1 } };
 		});
-		command('challenge', { value: 'accept' });
+		const before = structuredClone(account().run);
+		assert.equal(manager.state(user).protocolVersion, 2);
+		const offered = command('select', { value: 'challenge:schoolfinal' });
+		assert.equal(offered.protocolVersion, 2);
+		assert.equal(offered.run.phase, 'event');
+		assert.equal(offered.run.challenge.stage, 'offer');
+		assert.equal(offered.run.lastReward.floor, 7);
+		assert.equal(offered.run.money, before.money);
+		assert.deepEqual(offered.run.bag, before.bag);
+		const reconnect = new RogueManager(manager.engine, () => ai).state(user);
+		assert.equal(reconnect.protocolVersion, 2);
+		assert.deepEqual(reconnect.run.challenge, offered.run.challenge);
+		assert.throws(() => command('challenge', { value: 'supplies' }));
+		const ready = command('challenge', { value: 'accept' });
+		assert.equal(ready.run.phase, 'ready');
+		assert.equal(ready.run.challenge.stage, 'battle');
 		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
 		assert.equal(room.battle.fantasyAI.options.rogue.immediate, false);
 		assert.equal(room.battle.fantasyAI.options.decisionMs, 0);

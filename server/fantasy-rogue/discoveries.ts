@@ -13,6 +13,9 @@ export function rogueDiscoveries(account: RogueAccount) {
 		...(account.run?.challengeHistory || []).filter(entry => entry.accepted ||
 			entry.outcome).map(entry => `challenge:${entry.id}`),
 		...(account.discoveries?.events || []), ...(account.run?.eventHistory || []).map(entry => entry.id),
+		...(account.run?.elderVisits || []),
+		...(account.run?.node?.elderScene ? [account.run.node.elderScene] : []),
+		...(account.mainlineDialogue?.kind === 'ordinary' ? [account.mainlineDialogue.id] : []),
 		...(account.run?.node?.event ? [account.run.node.event.id] : []),
 		...(account.run?.node?.trade ? [`trade:${account.run.node.trade.kind}`] : []),
 		...(account.run?.node?.rewardScene ? [`reward:${account.run.node.rewardScene.id}`] : []),

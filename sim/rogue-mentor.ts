@@ -5,7 +5,7 @@ export type MentorTier = 'elite' | 'gym';
 export function mentorCardProfile(kind: MentorCard, _tier: MentorTier = 'elite') {
 	// Retain the tier argument for old saves; all fixed bosses now share gym-strength cards.
 	const values = {
-		attack: [100, 40, 0], guard: [40, 120, 0], speed: [30, 30, 100], balanced: [60, 60, 50],
+		attack: [100, 40, 0], guard: [40, 120, 0], speed: [20, 20, 100], balanced: [50, 50, 50],
 	};
 	const [offense, defense, speed] = values[kind];
 	const name = { attack: '破阵之证', guard: '坚守之证', speed: '疾风之证', balanced: '同行之证' }[kind];
