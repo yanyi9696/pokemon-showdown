@@ -8,7 +8,7 @@ import { opposingCompanion } from './companion-rematches';
 import { TRAVELLERS } from './traveller-profiles';
 import { trainerReunionPages } from './trainer-reunions';
 import { dialoguePage, type NarrativePage } from './narrative';
-import { CHARM_DESCRIPTION } from '../../sim/rogue-difficulty';
+import { CHARM_DESCRIPTION, CHARM_PROGRESS_NOTICE } from '../../sim/rogue-difficulty';
 import { difficultySpiritUnlocked } from './difficulty';
 import { mainlineView } from './mainline';
 
@@ -85,6 +85,7 @@ export function storyView(account: RogueAccount, enabled: boolean, local: boolea
 		text: stage === 'charm' ? '「等一等。」老人从袍子里摸出一枚护符，摊在掌心。「路上要是觉得吃力，就带着它吧。' +
 		'它能**帮你压一压对手的力量，也能让你避开那些太强的家伙**。」他把手往前递了递。「要收下吗？还是想靠自己试试？」' : CHARM_DESCRIPTION,
 		charmText: CHARM_DESCRIPTION,
+		charmProgressNotice: CHARM_PROGRESS_NOTICE,
 		canAccept: !run!.spirit || local || difficultySpiritUnlocked(account, 'easy'),
 		canDecline: !run!.spirit || local || difficultySpiritUnlocked(account, 0),
 	};

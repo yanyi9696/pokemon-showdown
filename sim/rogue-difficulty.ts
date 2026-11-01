@@ -49,7 +49,14 @@ export function difficultyIVs(ivs: StatsTable, tier: RogueDifficulty = 0, floor 
 		tier === 'easy' ? Math.min(value, 10) : value === 0 ? 0 : Math.min(31, value + delta),
 	])) as StatsTable;
 }
-export const CHARM_DESCRIPTION = '本局为新手简易档。敌方六项能力整局固定为原本的 75%（降低 25%），不随楼层改变；我方六项能力由第 1 层的 98% 逐渐降至第 200 层的 90%。遇到的宝可梦个体值约 10，六项独立随机，不会遇到任何单项个体值超过 15 的宝可梦；本局伙伴、首领与个体值培养也以 15 为上限。保留物种、闪光与图鉴收集，不获得局外点数，也不积累初始伙伴的资质、性格、特性和招式配置。通关解锁简易档塔灵，通关卡标记“护符庇佑”，不解锁进阶档位。';
+export const CHARM_PROGRESS_NOTICE = '**本局新学招式（包括学习机）不会跨局解锁**，下一局的初始可选招式不会因此增加。' +
+	'**本局获得的个体值、性格、特性和性别不计入初始伙伴的跨局培养记录**。' +
+	'**不获得局外成长点数，也不解锁更高档位**。物种、闪光与图鉴收集照常保留，已有的跨局解锁不会丢失。';
+export const CHARM_DESCRIPTION = '本局为新手简易档。敌方六项能力整局为原本的 **75%（降低 25%）**；' +
+	'我方六项能力由第 1 层的 **98%** 逐渐降至第 200 层的 **90%**。\n\n' +
+	'遇到的宝可梦个体值约 10，六项独立随机，**不会遇到任何单项个体值超过 15 的宝可梦**；' +
+	'本局伙伴、首领与个体值培养也以 **15 为上限**。\n\n' + CHARM_PROGRESS_NOTICE + '\n\n' +
+	'通关解锁简易档塔灵，通关卡标记“护符庇佑”。';
 export function difficultyDescription(tier: RogueDifficulty) {
 	if (tier === 'easy') return CHARM_DESCRIPTION;
 	if (!tier) return qualityDescription(tier) + '通关 200 层解锁本档塔灵；完成本档故事并曾通关本档后，解锁 1 档。';

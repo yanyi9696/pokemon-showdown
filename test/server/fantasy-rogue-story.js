@@ -101,8 +101,13 @@ describe('Fantasy Rogue story and legacy cards', function () {
 		cmd('startcard', { value: 'all' });
 		assert.equal(view().stage, 'charm'); assert.match(view().text, /压一压对手/);
 		assert(!view().text.includes('98%'));
+		const progressNotice = view().charmProgressNotice;
+		assert(progressNotice.includes('**本局新学招式（包括学习机）不会跨局解锁**'));
+		assert(progressNotice.includes('**本局获得的个体值、性格、特性和性别不计入初始伙伴的跨局培养记录**'));
+		assert(progressNotice.includes('**不获得局外成长点数，也不解锁更高档位**'));
 		cmd('charm', { value: 'accept' }); assert.equal(view().stage, 'charmeffect');
 		engine.migrate(user); assert.equal(view().stage, 'charmeffect');
+		assert(view().charmText.includes(progressNotice));
 		assert.match(view().charmText, /单项个体值超过 15/); cmd('charmack');
 		while (view()?.key) advance();
 		assert.equal(account().run.difficulty, 'easy'); assert.equal(account().run.phase, 'choose');
