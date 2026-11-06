@@ -10,6 +10,7 @@ const {abilityItemTarget} = require('../../dist/server/fantasy-rogue/team');
 const {giveEgg, hatchEggs, eggView} = require('../../dist/server/fantasy-rogue/eggs');
 const {normalizeBlessings} = require('../../dist/server/fantasy-rogue/blessings');
 const {availableFossils, expeditionEligible, chooseExpedition, expeditionView} = require('../../dist/server/fantasy-rogue/expedition-events');
+const { chooseEventOption } = require('../../dist/server/fantasy-rogue/events');
 const {rivalRoutes, beginRival, settleRival, chooseRival, rivalBlessingAllowed} = require('../../dist/server/fantasy-rogue/rivals');
 const {rogueBattleResult} = require('../../dist/sim/fantasy-rogue');
 const {blessing} = require('../../dist/sim/rogue-blessing-data');
@@ -56,11 +57,35 @@ describe('Fantasy Rogue October 20 regression', () => {
 		const r = run(100), account = {captures: {}, unlocked: []};
 		r.bag = {fossilizedbird: 1, fossilizeddrake: 1, fossilizedfish: 1};
 		r.node.event = {id: 'fossillab', stage: 'choice', expedition: {}};
-		assert.equal(expeditionView(r).options.length, 1);
+		assert.deepEqual(expeditionView(r).options.map(option => option.id), ['restore', 'leave']);
 		chooseExpedition(account, r, content, () => 0, 'restore');
 		assert.deepEqual(r.bag, {fossilizedbird: 0, fossilizeddrake: 0, fossilizedfish: 1});
 		assert.equal(r.blessings.pending[0].pokemon.set.species, 'Dracozolt');
 		assert.equal(r.blessings.pending[0].pokemon.set.level, 50);
+	});
+	it('can leave a fossil laboratory without consuming or granting anything when no recipe remains', () => {
+		const r = run(70), account = { captures: {}, unlocked: [] };
+		r.node.event = { id: 'fossillab', stage: 'choice', key: 'fossil-visit', expedition: {} };
+		r.bag.fossilizedfish = 1;
+		assert(expeditionView(r).options.find(option => option.id === 'restore').disabled);
+		chooseEventOption(account, r, content, () => 0, 'fossil-visit', 'leave');
+		assert(r.node.event.settled); assert.deepEqual(r.bag, { fossilizedfish: 1 });
+		assert.equal(r.blessings.pending.length, 0); assert.deepEqual(account.captures, {});
+	});
+	it('rejects snack use on eggs and permanent losses but keeps fainted partners without revival', () => {
+		const r = run(70), account = { captures: {}, unlocked: [] };
+		r.team[0].hp = 0; r.team[0].set.happiness = 70;
+		r.team.push({ ...structuredClone(r.team[0]), id: 'dead', nuzlockeDead: true });
+		r.team.push({ ...structuredClone(r.team[0]), id: 'egg', egg: { found: 1, hatch: 99 } });
+		r.node.event = { id: 'snacks', stage: 'choice', key: 'snack-visit', expedition: {} };
+		const options = expeditionView(r).options.map(option => option.id);
+		assert(!options.includes('snackmon:dead')); assert(!options.includes('snackmon:egg'));
+		const before = structuredClone(r);
+		assert.throws(() => chooseEventOption(account, r, content, () => 0, 'snack-visit', 'snackmon:dead'), /无法选择/);
+		assert.deepEqual(r, before);
+		chooseEventOption(account, r, content, () => 0, 'snack-visit', 'snackmon:' + r.team[0].id);
+		assert.equal(r.team[0].hp, 0); assert.equal(r.team[0].set.happiness, 115);
+		assert.equal(r.money, before.money - 290);
 	});
 	it('uses the fantasy silhouette and offers a lighter optional battle after the dishonest quiz', () => {
 		const r = run(100), account = {captures: {}, unlocked: []}, dex = Dex.mod('gen9fantasy');

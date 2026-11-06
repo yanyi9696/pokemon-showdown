@@ -17,6 +17,10 @@ const { editFusion } = require('../../dist/server/fantasy-rogue/fusion');
 const { compoundFinals, compoundPoints } = require('../../dist/sim/rogue-compound');
 const { evolveMember } = require('../../dist/server/fantasy-rogue/progression');
 const { clearMemberDetails } = require('../../dist/server/fantasy-rogue/clear-details');
+const { isFantasySpecies } = require('../../dist/server/fantasy-rogue/species-eligibility');
+const { fantasyTutorMoves } = require('../../dist/server/fantasy-rogue/fantasy-tutor');
+const { exclusiveFamily } = require('../../dist/server/fantasy-rogue/exclusive-items');
+const { levelMoves } = require('../../dist/server/fantasy-rogue/progression');
 const { stats, set } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue form items and new species blessings', function () {
@@ -48,6 +52,19 @@ describe('Fantasy Rogue form items and new species blessings', function () {
 			p1: { team: r.team.map(p => p.set) }, p2: { team: foes } });
 		battle.makeChoices('team 1', 'team 1'); battle.randomizer = n => n; return battle.p1.active[0];
 	}
+	it('admits both triple Kyurem names to Fantasy events while preserving form-item and level learning rules', () => {
+		for (const name of ['Kyurem-Original', 'Kyurem-Original-Fantasy']) {
+			const r = run([name]); r.team[0].set.species = name;
+			assert.equal(isFantasySpecies(name), true, 'the latest rule explicitly includes the renamed Fantasy form');
+			assert(fantasyTutorMoves(r.team[0]).length > 0);
+			assert.equal(exclusiveFamily(name), 'kyurem');
+			assert.deepEqual(levelMoves(name), levelMoves('Kyurem-Original'));
+			r.bag.dnasplicers = 1; r.team[0].originalDragonUnlocked = true;
+			use(r, 'Kyurem');
+			useFormItem(r, r.team[0].id, 'dnasplicers:kyuremoriginal');
+			assert.equal(r.team[0].set.species, 'Kyurem-Original-Fantasy');
+		}
+	});
 	for (const [base, donorName, form, item] of [
 		['Kyurem', 'Reshiram', 'Kyurem-White', 'dnasplicers'], ['Kyurem', 'Zekrom', 'Kyurem-Black', 'dnasplicers'],
 		['Calyrex', 'Glastrier', 'Calyrex-Ice', 'reinsofunity'], ['Calyrex', 'Spectrier', 'Calyrex-Shadow', 'reinsofunity'],
@@ -149,9 +166,9 @@ describe('Fantasy Rogue form items and new species blessings', function () {
 			settleBlessingBattle(account, r, content, result, () => 0); settleBlessingBattle(account, r, content, result, () => 0);
 			assert.equal(r.blessings.dragonCharges.length, index + 1);
 		}
-		r = JSON.parse(JSON.stringify(r)); const mon = use(r, 'Kyurem-Original');
+		r = JSON.parse(JSON.stringify(r)); const mon = use(r, 'Kyurem-Original-Fantasy');
 		assert.equal(r.team.length, 2); assert.equal(mon.set.ability, 'Original Dragon'); assert.equal(r.blessings.dragonCharges.length, 0);
-		use(r, 'Kyurem'); use(r, 'Kyurem-Original');
+		use(r, 'Kyurem'); use(r, 'Kyurem-Original-Fantasy');
 		assert.deepEqual(Object.values(Dex.mod('gen9fantasy').species.get('Kyurem-Original').baseStats), [125, 170, 100, 170, 100, 95]);
 		const validator = new TeamValidator(new Format({ ...Dex.formats.get('gen9nationaldex'), name: 'Triple Dragon', mod: 'gen9fantasy' }));
 		for (const move of ['blueflare', 'boltstrike', 'glaciate']) assert.equal(validator.checkCanLearn(Dex.moves.get(move), Dex.mod('gen9fantasy').species.get('Kyurem-Original')), null, move);

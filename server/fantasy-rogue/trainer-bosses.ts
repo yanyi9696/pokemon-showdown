@@ -2,6 +2,9 @@ import { Dex } from '../../sim/dex';
 import { Teams } from '../../sim/teams';
 import { BOSS_FLOORS } from './content';
 import { TrainerBossData } from './trainer-boss-data';
+import { TrainerBossDoublesAuthored } from './trainer-boss-doubles-authored';
+import { TrainerBossDoublesHighTier } from './trainer-boss-doubles-high-tier';
+import { TrainerBossDoublesSamples } from './trainer-boss-doubles-samples';
 import type { RogueRandom } from './biome-pools';
 import type { RogueRun, RogueTrainerCandidate } from './types';
 
@@ -12,31 +15,38 @@ const legacyGyms: Record<number, string> = {
 const dex = Dex.mod('gen9fantasy');
 
 /** Exports name the resulting form; Mega and Ash Greninja enter through their normal transformation. */
-export function trainerBossCandidates(floor: number, level: number): RogueTrainerCandidate[] {
+export function trainerBossCandidates(floor: number, level: number, doubleBattle = false): RogueTrainerCandidate[] {
 	const kind = BOSS_FLOORS.get(floor);
 	// Every configured gym leader has a roster at every gym floor. This selects roster strength,
 	// not a fixed leader/type; chooseTrainer draws uniformly from all unvisited identities below.
-	return TrainerBossData.filter(entry => kind === '道馆' ? entry.role === 'gym' && entry.floor === floor :
-		kind === '四天王' ? entry.role === 'elitefour' : kind === '冠军' && entry.role === 'champion').map(entry => ({
-		trainer: {
-			id: entry.id, name: `${kind} · ${entry.name}`, role: entry.role,
-			avatar: entry.id === 'lorelei' ? 'lorelei-lgpe' : entry.id, tera: true,
-			...(entry.role === 'elitefour' && ['larry', 'acerola'].includes(entry.id) ? { requiresGym: entry.id } : {}),
-		},
-		team: Teams.import(entry.team)!.map(imported => {
-			const species = dex.species.get(imported.species);
-			const entrySpecies = (species.forme.includes('Mega') || species.id === 'greninjaashfantasy') &&
-				typeof species.battleOnly === 'string' ?
-				species.battleOnly : species.name;
-			return {
-				// Authored trainer rosters share the floor's level, including friendship/item evolutions.
-				...imported, name: '', species: entrySpecies, level, nature: imported.nature || 'Hardy',
-				ability: dex.abilities.get(imported.ability).name,
-				item: imported.item ? dex.items.get(imported.item).name : '',
-				moves: imported.moves.map(move => dex.moves.get(move).name),
-			};
-		}),
-	}));
+	const entries = TrainerBossData.filter(entry => kind === '道馆' ? entry.role === 'gym' && entry.floor === floor :
+		kind === '四天王' ? entry.role === 'elitefour' : kind === '冠军' && entry.role === 'champion');
+	return entries.flatMap(entry => {
+		const teamSource = doubleBattle ? TrainerBossDoublesSamples[`${entry.id}:${floor}`]?.team ||
+			TrainerBossDoublesAuthored[`${entry.id}:${floor}`] || TrainerBossDoublesHighTier[`${entry.id}:${floor}`] : entry.team;
+		if (!teamSource) return [];
+		const importedTeam = Teams.import(teamSource);
+		if (!importedTeam) throw new Error(`无法解析${doubleBattle ? '双打样板' : '单打阵容'}：${entry.id}:${floor}`);
+		return [{
+			trainer: {
+				id: entry.id, name: `${kind} · ${entry.name}`, role: entry.role,
+				avatar: entry.id === 'lorelei' ? 'lorelei-lgpe' : entry.id, tera: true,
+				...(entry.role === 'elitefour' && ['larry', 'acerola'].includes(entry.id) ? { requiresGym: entry.id } : {}),
+			},
+			team: importedTeam.map(imported => {
+				const species = dex.species.get(imported.species);
+				const entrySpecies = (species.forme.includes('Mega') || species.id === 'greninjaashfantasy') &&
+					typeof species.battleOnly === 'string' ? species.battleOnly : species.name;
+				return {
+					// Authored trainer rosters share the floor's level, including friendship/item evolutions.
+					...imported, name: '', species: entrySpecies, level, nature: imported.nature || 'Hardy',
+					ability: dex.abilities.get(imported.ability).name,
+					item: entry.role === 'gym' && floor <= 40 ? '' : imported.item ? dex.items.get(imported.item).name : '',
+					moves: imported.moves.map(move => dex.moves.get(move).name),
+				};
+			}),
+		}];
+	});
 }
 
 function history(run: RogueRun) {

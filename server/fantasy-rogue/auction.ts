@@ -15,8 +15,9 @@ export interface RogueAuction {
 	log: string[];
 }
 const dex = Dex.mod('gen9fantasy');
-export function beginAuction(run: RogueRun, content: RogueContent, random: RogueRandom) {
-	const wanted = neededExclusiveItems(run);
+export function beginAuction(
+	run: RogueRun, content: RogueContent, random: RogueRandom, wanted = neededExclusiveItems(run)
+) {
 	const held = (id: string): RogueItem => formItem(id) || ({
 		id, name: dex.items.get(id).name, kind: 'held', price: 0, shopFloor: false, icon: id,
 	});

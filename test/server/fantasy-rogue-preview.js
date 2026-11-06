@@ -1,5 +1,5 @@
 'use strict';
-const { commandAfterOpening } = require('../fixtures/fantasy-rogue');
+const { commandAfterOpening, resumeBattleGrowth } = require('../fixtures/fantasy-rogue');
 
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
@@ -87,11 +87,12 @@ describe('Fantasy Rogue playable preview', () => {
 		assert(captureThresholds(255, 100, 1, 'slp', 1, 0).guaranteed);
 		assert.equal(full.shake, Math.floor(65536 * (15 / 255) ** (3 / 16)));
 	});
-	it('collects real participant/defeat records and awards experience only once on settlement', () => {
+	it('collects real participant/defeat records and settles incremental experience only once', () => {
 		const run = nativeBattle();
 		for (let i = 0; i < run.node.encounters[0].team.length; i++) {
 			battle.p2.active[0].hp = 1;
 			battle.choose('p1', 'move 1'); battle.choose('p2', 'move 1');
+			resumeBattleGrowth(engine, user, battle);
 			if (!battle.ended) battle.choose('p2', 'default');
 		}
 		assert(battle.ended);
@@ -161,7 +162,7 @@ describe('Fantasy Rogue playable preview', () => {
 		assert.equal(account().run.pendingCapture.id, result.captured.id);
 		const permanent = structuredClone(account().captures);
 		assert.throws(() => cmd('battle'));
-		cmd('replace', { value: 'release' }); learnAll();
+		cmd('replace', { value: 'release', member: account().run.pendingCapture.id }); learnAll();
 		assert.deepEqual(account().captures, permanent);
 		assert.equal(account().run.phase, 'ready');
 		assert.equal(account().run.team.length, 6);
@@ -221,7 +222,7 @@ describe('Fantasy Rogue playable preview', () => {
 		const result = rogueBattleResult(battle);
 		engine.settle(user, run.battle.token, result);
 		const permanent = account().captures;
-		cmd('replace', { value: 'old:member:2' }); learnAll();
+		cmd('replace', { value: 'old:member:2', member: account().run.pendingCapture.id, confirmed: true }); learnAll();
 		assert.equal(account().run.team[2].id, result.captured.id);
 		assert.deepEqual(account().captures, permanent);
 		assert.equal(account().run.team.length, 6);

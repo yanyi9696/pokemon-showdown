@@ -43,9 +43,9 @@ describe('Fantasy Rogue authoritative effect display and consumable persistence'
 		const info = rogueAbilityInfo(mon);
 		assert.equal(info.stats.atk, mon.getStat('atk')); assert.equal(info.stats.def, mon.getStat('def'));
 		assert.equal(info.stats.spe, mon.getStat('spe')); assert.equal(info.maxhp, mon.maxhp);
-		assert.equal(info.mentor.offense, 60); assert.equal(info.training.atk, 0.2);
+		assert.equal(info.mentor.offense, 50); assert.equal(info.training.atk, 0.2);
 		assert(!info.moves.tackle.damage.some(s => s.includes('首领卡')));
-		assert(info.statSources.some(s => s.includes('首领卡') && s.includes('60%')));
+		assert(info.statSources.some(s => s.includes('首领卡') && s.includes('50%')));
 		assert(info.moves.tackle.damage.some(s => s.includes('自损一千，伤敌一万') && s.includes('1.6'))); assert(!info.moves.tackle.power.length);
 	});
 	it('includes the current Z move and keeps Technician eligibility independent of later blessing multipliers', () => {

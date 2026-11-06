@@ -15,12 +15,14 @@ import { gainAffection, AFFECTION_RULES } from './affection';
 import { TRAVELLERS } from './traveller-profiles';
 import { GROWTH_LIMITS, syncGrowthParty, growthPercent } from './growth';
 import { natureMintSupplies } from './nature-mints';
+import { rebalanceCandyReward, grantCandyTraining, candyRewardPreview } from './candy-rewards';
 
 export const CHALLENGE_GROWTH = 100;
 export const CHALLENGE_GROWTH_TEXT = '获胜并领取奖励后，全队本局双攻、双防各永久提升 1%；后来加入的伙伴同样生效。';
 
 export interface ChallengePrize {
 	id: string; name: string; money: number; items: Record<string, number>;
+	candyTraining?: number;
 	training?: { member: string, level: number, experience: number }[];
 	star?: { member: string, from: number, to: number };
 }
@@ -133,7 +135,7 @@ export function prepareChallengePrizes(run: RogueRun, random: RogueRandom) {
 				star: { member: mon.id, from: mon.stars || 1, to: (mon.stars || 1) + 1 } });
 		}
 	}
-	challenge.prizes = prizes;
+	challenge.prizes = prizes.map(prize => ({ ...prize, ...rebalanceCandyReward(run.floor, prize.items) }));
 }
 export function challengeRecord(run: RogueRun) {
 	return run.challengeHistory?.find(entry => entry.id === run.node?.challenge?.id && entry.floor === run.floor);
@@ -161,7 +163,8 @@ export function chooseChallengePrize(run: RogueRun, id: string) {
 	const record = challengeRecord(run);
 	if (record) record.prize = id;
 	run.money += prize.money;
-	for (const [item, count] of Object.entries(prize.items)) run.bag[item] = (run.bag[item] || 0) + count;
+	const payout = grantCandyTraining(run, prize);
+	for (const [item, count] of Object.entries(payout.items)) run.bag[item] = (run.bag[item] || 0) + count;
 	if (prize.star && starMember) { starMember.stars = prize.star.to; rebuildMember(starMember, run.boosts); }
 	for (const entry of prize.training || []) {
 		const mon = run.team.find(member => member.id === entry.member);
@@ -173,8 +176,8 @@ export function chooseChallengePrize(run: RogueRun, id: string) {
 		}
 	}
 	run.lastReward = { floor: run.floor, name: `${run.node!.name} · ${prize.name}`,
-		money: prize.money, items: { ...prize.items }, points: 0,
-		effect: (prize.star ? `【${starMember!.set.species}】提升至 ${prize.star.to} 星。` : '') + growthText };
+		money: prize.money, items: payout.items, points: 0,
+		effect: (prize.star ? `【${starMember!.set.species}】提升至 ${prize.star.to} 星。` : '') + growthText + payout.effect };
 	(run.notices ||= []).push(growthText);
 	for (const companionID of OPTIONAL_CHALLENGES.find(d => d.id === challenge.id)?.companions || []) {
 		gainAffection(run, companionID, AFFECTION_RULES.duel, `challenge:${challenge.key}`);
@@ -187,6 +190,9 @@ export function optionalChallengeView(run: RogueRun) {
 	const challenge = run.node?.challenge;
 	const def = OPTIONAL_CHALLENGES.find(entry => entry.id === challenge?.id);
 	if (!challenge || !def) return;
+	const afterVictory = { ...run, growth: { ...run.growth, experience: run.growth?.experience || 0,
+		offense: Math.min(GROWTH_LIMITS.offense, (run.growth?.offense || 0) + CHALLENGE_GROWTH),
+		defense: Math.min(GROWTH_LIMITS.defense, (run.growth?.defense || 0) + CHALLENGE_GROWTH) } };
 	return { ...challenge, name: def.name, speaker: def.speaker, avatar: def.avatar, hint: def.hint,
 		growthText: CHALLENGE_GROWTH_TEXT,
 		portraits: def.portraits || [], serious: !!def.serious,
@@ -195,7 +201,7 @@ export function optionalChallengeView(run: RogueRun) {
 		[challenge.outcome === 'won' ? def.victory : def.retreat],
 		team: run.node!.encounters[0].team.map(set => ({ species: set.species, level: set.level,
 			ability: set.ability, item: set.item, moves: set.moves })),
-		prizes: challenge.prizes?.map(prize => ({ ...prize,
+		prizes: challenge.prizes?.map(prize => ({ ...prize, ...candyRewardPreview(afterVictory, prize),
 			star: prize.star && { ...prize.star,
 				species: run.team.find(mon => mon.id === prize.star!.member)?.set.species || '伙伴' },
 			training: prize.training?.map(entry => ({ ...entry,

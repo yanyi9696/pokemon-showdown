@@ -22,6 +22,22 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		cmd('start', { starters: ['bulbasaur'] });
 	});
 	afterEach(() => store.close());
+	it('retains old triple Kyurem capture credit after the display rename', () => {
+		store.change('codextest', a => {
+			a.caughtSpecies = ['bulbasaur', 'kyuremoriginal', 'kyuremoriginalfantasy'];
+			a.biomeCaptures = { forest: ['bulbasaur', 'kyuremoriginal'] };
+			a.run.blessings.caught = ['bulbasaur', 'kyuremoriginal'];
+		});
+		const captures = { ...account().captures };
+		engine.migrate('codextest');
+		assert.deepEqual(account().caughtSpecies, ['bulbasaur', 'kyuremoriginalfantasy']);
+		assert.deepEqual(account().biomeCaptures.forest, ['bulbasaur', 'kyuremoriginalfantasy']);
+		assert(account().run.blessings.caught.includes('kyuremoriginalfantasy'));
+		assert(!account().run.blessings.caught.includes('kyuremoriginal'));
+		assert.deepEqual(account().captures, captures);
+		engine.migrate('codextest');
+		assert.deepEqual(account().caughtSpecies, ['bulbasaur', 'kyuremoriginalfantasy']);
+	});
 	it('exposes every entry for local preview without changing real discovery records', () => {
 		const a = account(), before = JSON.stringify(a);
 		for (const section of ['events', 'blessings']) {
@@ -254,7 +270,7 @@ describe('Fantasy Rogue permanent codex and read-only event replays', function (
 		assert(!moves.some(m => ['rogueescape', 'roguecatch'].includes(m.id)));
 		assert(guide.itemNotes.some(item => item.id === 'dnasplicers' && item.kind === 'forme' && item.icon === 'dna-splicers'));
 		assert(!guide.modules.items.some(item => item.id === 'dnasplicers'), 'native key items remain in special explanations');
-		assert(guide.modules.pokemon.some(p => p.id === 'kyuremoriginal'));
+		assert(guide.modules.pokemon.some(p => p.id === 'kyuremoriginalfantasy'));
 		const a = account(), before = JSON.stringify(a);
 		const tonics = rogueCodex(a, 'blessings', true).entries.filter(e => ['wine', 'cephalosporin'].includes(e.id));
 		assert(tonics.every(e => e.text.includes('追加幽灵属性')));

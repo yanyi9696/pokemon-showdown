@@ -39,7 +39,9 @@ export function formItemOptions(run: RogueRun, mon: RoguePokemon): FormOption[] 
 		let forms = item.forms || [];
 		if (item.id === 'revealglass') forms = [current.baseSpecies, current.baseSpecies + '-Therian'];
 		if (item.id === 'dnasplicers' && !mon.formFusion) {
-			if (mon.originalDragonUnlocked || ['Reshiram', 'Zekrom'].every(name => run.blessings?.dragonCharges?.includes(name))) forms = ['Kyurem', 'Kyurem-Original'];
+			if (mon.originalDragonUnlocked || ['Reshiram', 'Zekrom'].every(name => run.blessings?.dragonCharges?.includes(name))) {
+				forms = ['Kyurem', 'Kyurem-Original-Fantasy'];
+			}
 		}
 		for (const name of forms) if (name !== current.name && dex.species.get(name).exists) {
 			if (name === 'Shaymin-Sky' && (rogueTime(run.floor) !== 'day' || mon.status === 'frz' || mon.statuses?.frz)) continue;
@@ -105,7 +107,8 @@ export function useFormItem(run: RogueRun, member: string, optionID: string) {
 	requireRule(mon && mon.hp > 0, '请先选择并复活伙伴。');
 	const activity = run.node?.event?.activity;
 	requireRule(!activity?.member && !activity?.solo || run.node?.event?.settled, '请先完成当前伙伴的事件互动。');
-	const option = formItemOptions(run, mon).find(o => o.id === optionID);
+	const canonicalOptionID = optionID.replace(/:kyuremoriginal$/, ':kyuremoriginalfantasy');
+	const option = formItemOptions(run, mon).find(o => o.id === canonicalOptionID);
 	requireRule(option, '当前没有该形态变化的道具或伙伴条件。');
 	const previous = mon.set.species, previousAbility = mon.set.ability;
 	if (option.id === 'separate') {
@@ -120,7 +123,7 @@ export function useFormItem(run: RogueRun, member: string, optionID: string) {
 		mon.formFusion = { item: option.item, species: previous, ability: previousAbility, donor: structuredClone(donor) };
 		run.team = run.team.filter(p => p.id !== donor.id);
 	}
-	if (option.species === 'Kyurem-Original' && !mon.originalDragonUnlocked) {
+	if (option.species === 'Kyurem-Original-Fantasy' && !mon.originalDragonUnlocked) {
 		mon.originalDragonUnlocked = true; run.blessings!.dragonCharges = [];
 	}
 	mon.set.species = option.species;

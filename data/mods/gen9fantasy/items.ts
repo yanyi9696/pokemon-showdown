@@ -1,4 +1,6 @@
 import { emblemDescription } from '../../../sim/rogue-blessing-data';
+import { UNIVERSAL_ITEMS } from '../../../sim/rogue-universal-data';
+import { Items as StandardItems } from '../../items';
 function canTakeMegaStone(item: Item, pokemon: Pokemon) {
 	// Keep complete forme names and protect both sides of a permanent Mega Evolution.
 	// itemUser also includes Zygarde's formes before Power Construct activates.
@@ -7,6 +9,13 @@ function canTakeMegaStone(item: Item, pokemon: Pokemon) {
 }
 
 export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
+	...Object.fromEntries(UNIVERSAL_ITEMS.map((item, i) => [item.id, {
+		name: item.dexName, num: -2100 - i,
+		spritenum: item.kind === 'mega' ? 768 : item.kind === 'gmega' ? 3 : StandardItems[item.icon as ID].spritenum,
+		isNonstandard: 'Custom', onTakeItem: false,
+		...(item.kind === 'z' ? { zMove: true, zMoveType: item.type } : {}),
+		shortDesc: `仅肉鸽使用。${item.kind === 'gmega' ? '伙伴' : '最终形态'}携带，自选 ${item.points} 点非HP种族值，单项0～${item.cap}；HP固定+${item.hp}。占正常系统名额，模型与主特性不变，发动时重触发特性。不可拍落或交换，不受道具增幅。`,
+	}])),
 	primariumz: {
 		inherit: true,
 		itemUser: ['Primarina', 'Primarina-Fantasy'],

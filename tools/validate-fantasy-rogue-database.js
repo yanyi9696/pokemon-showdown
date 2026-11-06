@@ -61,9 +61,15 @@ function validateBackup(backup, expectedHash, output) {
 		}
 		assert.equal(after.userVersion, before.userVersion, 'user_version changed');
 		const added = after.schema.filter(entry => !before.schema.some(row => row.name === entry.name && row.type === entry.type));
-		assert(added.every(entry => ['rogue_history', 'rogue_history_owner', 'sqlite_autoindex_rogue_history_1'].includes(entry.name)),
-			'Unexpected added schema object');
-		if (!before.tables.rogue_history) assert.equal(after.tables.rogue_history.rows, 0, 'History should start empty');
+		assert(added.every(entry => [
+			'rogue_history', 'rogue_history_owner', 'sqlite_autoindex_rogue_history_1',
+			'rogue_coop_invites', 'rogue_coop_invites_to', 'sqlite_autoindex_rogue_coop_invites_1',
+			'rogue_coop_sessions', 'sqlite_autoindex_rogue_coop_sessions_1',
+		].includes(entry.name)),
+		'Unexpected added schema object');
+		for (const table of ['rogue_history', 'rogue_coop_invites', 'rogue_coop_sessions']) {
+			if (!before.tables[table]) assert.equal(after.tables[table].rows, 0, `${table} should start empty`);
+		}
 		initializeRogueSchema(db);
 		assert.deepEqual(snapshot(db), after, 'Repeated initialization changed the database');
 		checkIntegrity(db);

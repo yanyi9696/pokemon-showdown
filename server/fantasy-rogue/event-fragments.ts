@@ -5,7 +5,19 @@ import type { RogueDifficulty } from '../../sim/rogue-difficulty';
 export type FragmentAlternative = 'forest' | 'room' | 'bandits';
 export interface EventFragmentOffer { stage: string; amount: number; alternative: FragmentAlternative }
 
-export function eventFragmentTier(floor: number, _difficulty: RogueDifficulty = 0) {
+/** New adventures move 30 of the same 215 event fragments ahead of floor 100. */
+export const EVENT_FRAGMENT_TIERS_V2 = [
+	{ floor: 26, key: '26', min: 4, max: 6, cap: 20 },
+	{ floor: 51, key: '51', min: 8, max: 12, cap: 40 },
+	{ floor: 80, key: '80', min: 12, max: 18, cap: 45 },
+	{ floor: 100, key: '100', min: 14, max: 20, cap: 50 },
+	{ floor: 150, key: '150', min: 18, max: 24, cap: 60 },
+] as const;
+export function eventFragmentTier(floor: number, _difficulty: RogueDifficulty = 0, version = 1) {
+	if (version === 2) {
+		const tier = [...EVENT_FRAGMENT_TIERS_V2].reverse().find(entry => floor >= entry.floor);
+		return tier ? { key: tier.key, min: tier.min, max: tier.max, cap: tier.cap } : undefined;
+	}
 	const tier = floor < 51 ? undefined : floor < 80 ? { key: '51', min: 8, max: 12, cap: 30 } :
 		floor < 100 ? { key: '80', min: 12, max: 18, cap: 45 } :
 		floor < 150 ? { key: '100', min: 16, max: 22, cap: 60 } : { key: '150', min: 20, max: 30, cap: 80 };
@@ -13,14 +25,20 @@ export function eventFragmentTier(floor: number, _difficulty: RogueDifficulty = 
 }
 
 /** Offer only after the branch succeeds; the alternative reward has not been paid yet. */
-export function offerEventFragments(run: RogueRun, alternative: FragmentAlternative, random: RogueRandom) {
-	const tier = eventFragmentTier(run.floor, run.difficulty), event = run.node!.event!;
+export function offerEventFragments(run: RogueRun, alternative: FragmentAlternative, random: RogueRandom,
+	shared?: EventFragmentOffer) {
+	const tier = eventFragmentTier(run.floor, run.difficulty, run.eventFragmentRuleVersion), event = run.node!.event!;
 	if (!tier || !run.blessings) return false;
 	const remaining = tier.cap - (run.eventFragments?.[tier.key] || 0);
 	if (remaining < tier.min) return false;
 	const low = alternative === 'forest' ? tier.min : tier.max - 2;
 	const high = alternative === 'forest' ? Math.min(tier.max, tier.min + 2) : tier.max;
-	event.fragmentOffer = { stage: tier.key, alternative, amount: Math.min(remaining, low + random(high - low + 1)) };
+	if (shared && (shared.stage !== tier.key || shared.alternative !== alternative || !Number.isInteger(shared.amount) ||
+		shared.amount < Math.min(remaining, low) || shared.amount > Math.min(remaining, high))) {
+		throw new Error('共同碎片奖励与当前额度不一致。');
+	}
+	event.fragmentOffer = shared ? { ...shared } :
+		{ stage: tier.key, alternative, amount: Math.min(remaining, low + random(high - low + 1)) };
 	event.stage = 'fragments'; event.settled = false; run.phase = 'event';
 	event.result = [alternative === 'forest' ? '宝可梦们推来一堆果实。旁边还有几块发光的碎片，它们示意你挑一份带走。' :
 		alternative === 'room' ? '门终于打开了。门边放着一个工具箱和一袋发光的碎片，纸条上写着：「选一份，继续走吧。」' :
@@ -36,7 +54,8 @@ export function eventFragmentOptions(run: RogueRun) {
 }
 
 export function claimEventFragments(run: RogueRun) {
-	const offer = run.node!.event!.fragmentOffer!, tier = eventFragmentTier(run.floor, run.difficulty)!;
+	const offer = run.node!.event!.fragmentOffer!;
+	const tier = eventFragmentTier(run.floor, run.difficulty, run.eventFragmentRuleVersion)!;
 	const ledger = run.eventFragments ||= {};
 	if (tier.key !== offer.stage || (ledger[offer.stage] || 0) + offer.amount > tier.cap) throw new Error('本阶段碎片奖励已更新。');
 	ledger[offer.stage] = (ledger[offer.stage] || 0) + offer.amount;

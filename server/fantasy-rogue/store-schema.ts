@@ -17,6 +17,15 @@ export const ROGUE_SCHEMA_SQL = `
 		PRIMARY KEY (userid, id)
 	);
 	CREATE INDEX IF NOT EXISTS rogue_history_owner ON rogue_history(userid, ended DESC);
+	CREATE TABLE IF NOT EXISTS rogue_coop_invites (
+		id TEXT PRIMARY KEY, from_user TEXT NOT NULL, to_user TEXT NOT NULL,
+		created INTEGER NOT NULL, expires INTEGER NOT NULL, data TEXT NOT NULL
+	);
+	CREATE INDEX IF NOT EXISTS rogue_coop_invites_to ON rogue_coop_invites(to_user, expires DESC);
+	CREATE TABLE IF NOT EXISTS rogue_coop_sessions (
+		id TEXT PRIMARY KEY, host_user TEXT NOT NULL, guest_user TEXT NOT NULL,
+		status TEXT NOT NULL, updated INTEGER NOT NULL, data TEXT NOT NULL
+	);
 `;
 
 // name, declared type, NOT NULL, position in the primary key (0 = not in the key).
@@ -30,10 +39,19 @@ const TABLES: Record<string, readonly (readonly [string, string, number, number]
 		['created', 'INTEGER', 1, 0], ['data', 'TEXT', 1, 0],
 	],
 	rogue_history: [['userid', 'TEXT', 1, 1], ['id', 'TEXT', 1, 2], ['ended', 'INTEGER', 1, 0], ['data', 'TEXT', 1, 0]],
+	rogue_coop_invites: [
+		['id', 'TEXT', 0, 1], ['from_user', 'TEXT', 1, 0], ['to_user', 'TEXT', 1, 0],
+		['created', 'INTEGER', 1, 0], ['expires', 'INTEGER', 1, 0], ['data', 'TEXT', 1, 0],
+	],
+	rogue_coop_sessions: [
+		['id', 'TEXT', 0, 1], ['host_user', 'TEXT', 1, 0], ['guest_user', 'TEXT', 1, 0],
+		['status', 'TEXT', 1, 0], ['updated', 'INTEGER', 1, 0], ['data', 'TEXT', 1, 0],
+	],
 };
 const INDEXES = {
 	rogue_cards_public: { table: 'rogue_cards', columns: ['public', 'created'] },
 	rogue_history_owner: { table: 'rogue_history', columns: ['userid', 'ended'] },
+	rogue_coop_invites_to: { table: 'rogue_coop_invites', columns: ['to_user', 'expires'] },
 };
 
 interface SchemaColumn {

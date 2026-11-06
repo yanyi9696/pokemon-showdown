@@ -3,6 +3,7 @@ import type { RogueRandom } from './biome-pools';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
 import { eventRewardBudget, routeCandyReward } from './early-balance';
 import { giveEquipment } from './blessings';
+import { rebalanceCandyReward, grantCandyTraining } from './candy-rewards';
 import { isLuckEvent, LUCK_EVENT_TEXT, luckEventOptions, luckOutcomeText, type LuckEventID } from './luck-event-data';
 
 export interface LuckEventResult { kind: 'coin' | 'die'; face: number; loaded: boolean }
@@ -11,7 +12,7 @@ const DIE_PORTIONS = [1, 1, 2, 2, 3, 4];
 const MOON_SHARDS = [3, 4, 5, 6, 8, 15];
 
 /** Only the shown coin/die is overridden. Item-conversion and other RNG keep their normal rules. */
-function rollLuck(run: RogueRun, id: LuckEventID, random: RogueRandom): LuckEventResult {
+export function rollLuck(run: RogueRun, id: LuckEventID, random: RogueRandom): LuckEventResult {
 	const kind = LUCK_EVENT_TEXT[id].kind, loaded = !!ownsBlessing(run.blessings, 'dice');
 	return { kind, loaded, face: loaded ? kind === 'coin' ? 1 : 6 : random(kind === 'coin' ? 2 : 6) + 1 };
 }
@@ -30,9 +31,14 @@ export function chooseLuckEvent(run: RogueRun, content: RogueContent, random: Ro
 		Object.assign(event, { stage: 'result', settled: true, result: [LUCK_EVENT_TEXT[event.id].farewell] });
 		return;
 	}
-	const result = rollLuck(run, event.id, random), face = result.face;
+	const result = event.luck || rollLuck(run, event.id, random), face = result.face;
+	const kind = LUCK_EVENT_TEXT[event.id].kind;
+	if (result.kind !== kind || typeof result.loaded !== 'boolean' || !Number.isInteger(face) ||
+		face < 1 || face > (kind === 'coin' ? 2 : 6) || result.loaded && face !== (kind === 'coin' ? 1 : 6)) {
+		throw new Error('共同投掷结果无效，请刷新后重试。');
+	}
 	const items: Record<string, number> = {};
-	let money = 0, shards = 0;
+	let money = 0, shards = 0, candyTraining = 0;
 	if (event.id === 'meowthcoin') {
 		const base = Math.max(50, Math.round(eventRewardBudget(run.floor) / 3 / 50) * 50);
 		money = base * (face === 1 ? 3 : 1);
@@ -44,7 +50,9 @@ export function chooseLuckEvent(run: RogueRun, content: RogueContent, random: Ro
 		items[run.floor < 29 ? 'oranberry' : 'sitrusberry'] = DIE_PORTIONS[face - 1];
 		if (face === 6) { items.leppaberry = 1; items.lumberry = 1; }
 	} else if (event.id === 'delibirddice') {
-		for (const [id, count] of Object.entries(routeCandyReward(run.floor, 'reward'))) {
+		const parcel = rebalanceCandyReward(run.floor, routeCandyReward(run.floor, 'reward'));
+		candyTraining = (parcel.candyTraining || 0) * DIE_PORTIONS[face - 1];
+		for (const [id, count] of Object.entries(parcel.items)) {
 			items[id] = count * DIE_PORTIONS[face - 1];
 		}
 		if (face === 6) items.ether = 1;
@@ -53,7 +61,8 @@ export function chooseLuckEvent(run: RogueRun, content: RogueContent, random: Ro
 		if (face === 6) items.moonstone = 1;
 	}
 	const before = { ...run.bag };
-	for (const [id, count] of Object.entries(items)) giveEquipment(run, content, random, id, count);
+	const payout = grantCandyTraining(run, { items, candyTraining });
+	for (const [id, count] of Object.entries(payout.items)) giveEquipment(run, content, random, id, count);
 	run.money += money;
 	run.blessings!.shards += shards;
 	const rewards = Object.entries(run.bag).filter(([id, count]) => count > (before[id] || 0))
@@ -64,6 +73,7 @@ export function chooseLuckEvent(run: RogueRun, content: RogueContent, random: Ro
 		...luckOutcomeText(event.id, face),
 		...(result.loaded ? [`【灌铅骰子】生效：${result.kind === 'coin' ? '硬币必为正面' : '骰子必为 6 点'}。`] : []),
 		`获得${rewards.join('、')}。`,
+		...(payout.effect ? [payout.effect] : []),
 	] });
 }
 

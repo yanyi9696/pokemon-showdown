@@ -1,5 +1,6 @@
 import type { RogueEncounter, RogueNode, RogueRun } from './types';
 import { blessingLevelCost, type BlessingTier } from '../../sim/rogue-blessing-data';
+import { recordLakeQuestCost } from './lake-quest';
 
 /** Opening grace includes floors 1-10; milestone rewards cover the next ten floors. */
 export const BLESSING_LEVEL_GRACE = 10;
@@ -12,6 +13,7 @@ export interface DeferredBlessingLevels {
 /** Already-active legacy costs stay intact. Never reconstruct costs from owned blessings. */
 export function deferBlessingLevels(run: RogueRun, tier: BlessingTier) {
 	const normal = blessingLevelCost(tier, run.floor), boss = blessingLevelCost(tier, run.floor, true);
+	recordLakeQuestCost(run, { normal, boss });
 	if (!normal && !boss) return;
 	(run.blessings!.deferredLevels ||= []).push({
 		floor: run.floor, startsAt: blessingLevelStart(run.floor), normal, boss,

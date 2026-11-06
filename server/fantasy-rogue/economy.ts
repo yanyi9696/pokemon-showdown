@@ -1,6 +1,7 @@
 import { teraShardItems } from './tera-shards';
 import { captureItems } from './capture-items';
 import { lootProgressFloor } from './resource-pacing';
+import { rebalanceCandyReward } from './candy-rewards';
 import { difficultyRewardScale, type RogueDifficulty } from '../../sim/rogue-difficulty';
 import type { RogueItem, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
@@ -63,6 +64,11 @@ export function rollWildLoot(floor: number, random: RogueRandom): Record<string,
 
 /** Does not modify selected legacy nodes or reroll a persisted route. */
 export function prepareEconomy(node: RogueNode, floor: number, random: RogueRandom, difficulty: RogueDifficulty = 0) {
+	if (!node.economyPrepared && node.kind === 'reward' && !node.encounters.length) {
+		Object.assign(node.reward, rebalanceCandyReward(floor, node.reward.items));
+		node.economyPrepared = true;
+		return;
+	}
 	if (!node.encounters.length || node.wildLoot || node.economyPrepared) return;
 	node.economyPrepared = true;
 	const scale = difficultyRewardScale(difficulty, floor);
@@ -74,8 +80,10 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 		else node.reward.money = journeyCoins(floor, node.reward.money);
 		node.reward.money = Math.round(node.reward.money * scale);
 		if (node.kind === 'trainer') diversifyBattleReward(node.reward, floor, random);
+		Object.assign(node.reward, rebalanceCandyReward(floor, node.reward.items));
 	} else {
 		node.reward = { money: 0, items: {} };
+		node.wildCandyTraining = [];
 		node.wildLoot = node.encounters.map(encounter => {
 			const loot: Record<string, number> = {};
 			for (let n = 0; n < (encounter.wildPack?.lootRolls || 1); n++) {
@@ -95,7 +103,9 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 				for (let n = 0; n < original; n++) if (random(10000) < Math.round((scale - 1) * 10000)) loot[id]++;
 			}
 			if (node.kind !== 'boss') diversifyBattleReward({ money: 0, items: loot }, floor, random);
-			return loot;
+			const balanced = rebalanceCandyReward(floor, loot);
+			node.wildCandyTraining!.push(balanced.candyTraining || 0);
+			return balanced.items;
 		});
 	}
 }
@@ -172,15 +182,16 @@ export const BATTLE_GOODS: [string, string, number][] = [
 	['covertcloak', '密探斗篷', 6500], ['ejectbutton', '逃脱按键', 4000], ['redcard', '红牌', 4000],
 	['blunderpolicy', '打空保险', 4000], ['throatspray', '爽喉喷雾', 4500], ['terrainextender', '大地膜', 4500],
 ];
+export const ROGUE_LINKING_CORD_PRICE = 2500;
 const PRICES: Record<string, number> = {
 	pokeball: 250, greatball: 750, ultraball: 1500, potion: 200, superpotion: 650, hyperpotion: 1500,
 	revive: 900, fullheal: 600, antidote: 500, burnheal: 500, iceheal: 500, awakening: 500, paralyzeheal: 500,
-	ether: 400, elixir: 1200, oranberry: 300, sitrusberry: 800, linkingcord: 2500,
+	ether: 400, elixir: 1200, oranberry: 300, sitrusberry: 800, linkingcord: ROGUE_LINKING_CORD_PRICE,
 	maxether: 750, maxelixir: 1600,
 };
 
 /** Same quote for the client and transaction; no fee when there is nothing this center can restore. */
-export function centerCare(run: RogueRun) {
+export function centerCare(run: Pick<RogueRun, 'spirit' | 'team' | 'floor'>) {
 	const revives = run.spirit !== 'yveltal';
 	const partners = run.team.filter(mon => !mon.egg);
 	const fainted = revives ? partners.filter(mon => !mon.hp).length : 0;

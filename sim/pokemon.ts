@@ -1,4 +1,5 @@
 import { rogueMetaStat } from './rogue-meta-growth';
+import { universalKind } from './rogue-universal-evolution';
 import { spindaConfused } from './rogue-spinda';
 /**
  * Simulator Pokemon
@@ -61,7 +62,8 @@ export class Pokemon {
 	readonly name: string;
 	/** `` `${sideid}: ${name}` `` - used to refer to pokemon in the protocol */
 	readonly fullname: string;
-	readonly level: number;
+	/** Rogue progression can update the level at a paused decision boundary. */
+	level: number;
 	readonly gender: GenderName;
 	readonly happiness: number;
 	readonly pokeball: ID;
@@ -1104,7 +1106,7 @@ export class Pokemon {
 		if (!lockedMove) {
 			if (this.canMegaEvo) {
 				data.canMegaEvo = true;
-				if (this.battle.dex.species.get(this.canMegaEvo).isGMega) data.canGMegaEvo = true;
+				if (universalKind(this) === 'gmega' || this.battle.dex.species.get(this.canMegaEvo).isGMega) data.canGMegaEvo = true;
 			}
 			if (this.canMegaEvoX) data.canMegaEvoX = true;
 			if (this.canMegaEvoY) data.canMegaEvoY = true;
@@ -2190,7 +2192,7 @@ export class Pokemon {
 	isSkyDropped() {
 		if (this.volatiles['skydrop']) return true;
 		for (const foeActive of this.side.foe.active) {
-			if (foeActive.volatiles['skydrop'] && foeActive.volatiles['skydrop'].source === this) {
+			if (foeActive?.volatiles['skydrop']?.source === this) {
 				return true;
 			}
 		}

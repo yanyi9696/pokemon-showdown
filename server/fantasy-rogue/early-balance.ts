@@ -2,6 +2,7 @@ import { experienceYield } from '../../sim/fantasy-rogue-rules';
 import { difficultyRewardScale } from '../../sim/rogue-difficulty';
 import { lateRewardScale } from './late-support';
 import { candySupplyMultiplier, coinSupplyMultiplier } from './resource-pacing';
+import { grantCandyTraining, rebalanceCandyReward } from './candy-rewards';
 import type { RogueRun } from './types';
 import { ELITE_BOSS_FLOORS } from './content';
 import { mentorCardProfile, type MentorCard } from '../../sim/rogue-mentor';
@@ -37,7 +38,7 @@ export function restCandyOffer(floor: number) {
 	return { id, stock: Math.max(1, Math.floor(stock * candySupplyMultiplier(floor))), price: CANDY_SHOP[id].price };
 }
 
-/** Pay a smooth EXP budget using only candy grades available on this floor. */
+/** Baseline budget, also used for coin/catch-up valuation. Rebalance only actual free candy payouts. */
 export function routeCandyReward(floor: number, kind: 'elite' | 'trainer' | 'reward' | 'event', rewardScale = 1) {
 	const f = Math.max(1, Math.min(200, floor));
 	// Part of the old encounter windfall now funds the rarer, harder challenge route.
@@ -95,14 +96,15 @@ export function grantEventTraining(run: RogueRun) {
 	const scale = difficultyRewardScale(run.difficulty, run.floor);
 	const coins = Math.round((75 + 4 * run.floor + 0.02 * run.floor * run.floor) *
 		(event.trainingAidBattleWin ? 1.5 : 1) * 0.9 * earlyCoinMultiplier(run.floor) * scale * 1.3 / 50) * 50;
-	const candies = routeCandyReward(run.floor, 'event', scale);
+	const payout = grantCandyTraining(run, rebalanceCandyReward(run.floor, routeCandyReward(run.floor, 'event', scale)));
 	run.money += coins;
 	if (run.lastReward?.floor !== run.floor) {
 		run.lastReward = { floor: run.floor, name: run.node!.name, money: 0, items: {}, points: 0 };
 	}
 	run.lastReward.money += coins;
-	for (const [id, count] of Object.entries(candies)) {
+	for (const [id, count] of Object.entries(payout.items)) {
 		run.bag[id] = (run.bag[id] || 0) + count;
 		run.lastReward.items[id] = (run.lastReward.items[id] || 0) + count;
 	}
+	if (payout.effect) run.lastReward.effect = [run.lastReward.effect, payout.effect].filter(Boolean).join(' ');
 }

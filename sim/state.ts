@@ -46,6 +46,7 @@ const SIDE = new Set(['battle', 'team', 'pokemon', 'choice', 'activeRequest']);
 const POKEMON = new Set([
 	'side', 'battle', 'set', 'name', 'fullname', 'id',
 	'happiness', 'level', 'pokeball', 'baseMoveSlots',
+	'rogueUniversalSpecies',
 ]);
 const CHOICE = new Set(['switchIns']);
 const ACTIVE_MOVE = new Set(['move']);
@@ -212,6 +213,11 @@ export const State = new class {
 	serializePokemon(pokemon: Pokemon): /* Pokemon */ AnyObject {
 		const state: /* Pokemon */ AnyObject = this.serialize(pokemon, POKEMON, pokemon.battle);
 		state.set = pokemon.set;
+		if (pokemon.battle.fantasyRogue && pokemon.m.rogueUniversalKind) {
+			const snapshot = (species: Species) => ({ baseStats: { ...species.baseStats }, abilities: { ...species.abilities },
+				isMega: species.isMega, isGMega: species.isGMega, mod: 'gen9fantasy' });
+			state.rogueUniversalSpecies = { species: snapshot(pokemon.species), baseSpecies: snapshot(pokemon.baseSpecies) };
+		}
 		// Only serialize the baseMoveSlots if they differ from moveSlots. We could get fancy and
 		// only serialize the diff and its index but thats overkill for a pretty niche case anyway.
 		if (pokemon.baseMoveSlots.length !== pokemon.moveSlots.length ||
@@ -224,6 +230,10 @@ export const State = new class {
 	deserializePokemon(state: /* Pokemon */ AnyObject, pokemon: Pokemon) {
 		this.deserialize(state, pokemon, POKEMON, pokemon.battle);
 		(pokemon as any).set = state.set;
+		if (pokemon.battle.fantasyRogue && pokemon.m.rogueUniversalKind && state.rogueUniversalSpecies) {
+			pokemon.species = new Dex.Species({ ...pokemon.species, ...state.rogueUniversalSpecies.species });
+			pokemon.baseSpecies = new Dex.Species({ ...pokemon.baseSpecies, ...state.rogueUniversalSpecies.baseSpecies });
+		}
 		// baseMoveSlots and moveSlots need to point to the same objects (ie. identity, not equality).
 		// If we serialized the baseMoveSlots, replace any that match moveSlots to preserve the
 		// identity relationship requirement.

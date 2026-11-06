@@ -1,8 +1,8 @@
 /** Mark speech explicitly; presentation can distinguish it from narration without guessing keywords. */
 export function characterSpeech(text: string) {
 	if (!text) return '';
-	if (/[⌈「]/.test(text)) return text.replace(/「([^」]*)」/g, '⌈$1⌋');
-	return `⌈${text}⌋`;
+	if (/[『⌈「]/.test(text)) return text.replace(/[⌈「]/g, '『').replace(/[⌋」]/g, '』');
+	return `『${text}』`;
 }
 const QUIET_GESTURES: Record<string, string> = {
 	marnie: '玛俐把莫鲁贝可抱稳了些，等你走到身旁才开口。',

@@ -11,6 +11,7 @@
 
 import { Streams, Utils } from '../lib';
 import { Teams } from './teams';
+import { applyRogueGrowth } from './rogue-growth';
 import { Battle, extractChannelMessages } from './battle';
 import type { ChoiceRequest } from './side';
 
@@ -108,6 +109,10 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 			};
 			if (this.debug) options.debug = true;
 			this.battle = new Battle(options);
+			break;
+		case 'rogueprogress':
+			this.battle!.inputLog.push(`>rogueprogress ${message}`);
+			applyRogueGrowth(this.battle!, JSON.parse(message));
 			break;
 		case 'player':
 			const [slot, optionsText] = splitFirst(message, ' ');

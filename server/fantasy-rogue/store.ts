@@ -1,13 +1,15 @@
 import { syncAffection } from './affection';
 import { syncMasterBalls } from './master-ball';
+import { syncCoopMasterBalls } from './coop-master-ball';
 import { trackJourney, journeyRecord, journeyDisplay, type JourneyRecord } from './history';
 import { migrateTeraShards } from './tera-shards';
 import type Database = require('better-sqlite3');
 import { emptyRogueStats } from '../../sim/fantasy-rogue';
-import type { RogueAccount, RogueCommand } from './types';
+import type { RogueAccount, RogueCommand, RogueCoopInvite, RogueCoopSession, RogueRun } from './types';
 import type { RogueClearCard } from './legacy';
 import { recordRogueDiscoveries } from './discoveries';
-import { syncRunDifficulty } from './difficulty';
+import { clearCoopDifficulty, syncRunDifficulty } from './difficulty';
+import { assertNuzlockeRoster, syncNuzlocke } from './nuzlocke';
 import { openRogueDatabase } from './store-schema';
 import { assertRogueSaveCompatible, ROGUE_SAVE_VERSION } from './save-compatibility';
 
@@ -15,6 +17,10 @@ export class RogueStore {
 	private readonly db: Database.Database;
 	constructor(path: string) {
 		this.db = openRogueDatabase(path);
+	}
+	/** Synchronous result writes only. Emit battle/client notifications after this commits. */
+	commitCoopResult<T>(resolve: () => T): T {
+		return this.db.transaction(resolve).immediate();
 	}
 	card(id: string): RogueClearCard | undefined {
 		const row = this.db.prepare('SELECT data FROM rogue_cards WHERE id = ?').get(id) as { data: string } | undefined;
@@ -28,6 +34,138 @@ export class RogueStore {
 		const total = (this.db.prepare('SELECT COUNT(*) AS count FROM rogue_history WHERE userid = ?').get(userid) as { count: number }).count;
 		const records = (this.db.prepare('SELECT data FROM rogue_history WHERE userid = ? ORDER BY ended DESC, id LIMIT 12 OFFSET ?').all(userid, offset) as { data: string }[]).map(row => JSON.parse(row.data) as JourneyRecord);
 		return { total, offset, records: records.map(journeyDisplay) };
+	}
+	coopInvitations(userid: string): RogueCoopInvite[] {
+		this.db.prepare('DELETE FROM rogue_coop_invites WHERE expires <= ?').run(Date.now());
+		return (this.db.prepare('SELECT data FROM rogue_coop_invites WHERE (from_user = ? OR to_user = ?) AND expires > ? ORDER BY created DESC LIMIT 16')
+			.all(userid, userid, Date.now()) as { data: string }[]).map(row => JSON.parse(row.data));
+	}
+	coopInvitation(id: string): RogueCoopInvite | undefined {
+		const row = this.db.prepare('SELECT data FROM rogue_coop_invites WHERE id = ?').get(id) as { data: string } | undefined;
+		return row && JSON.parse(row.data);
+	}
+	coopSessionForUser(userid: string): RogueCoopSession | undefined {
+		const row = this.db.prepare("SELECT data FROM rogue_coop_sessions WHERE status IN ('lobby', 'active', 'paused') AND (host_user = ? OR guest_user = ?) ORDER BY updated DESC LIMIT 1")
+			.get(userid, userid) as { data: string } | undefined;
+		return row && JSON.parse(row.data);
+	}
+	coopSession(id: string): RogueCoopSession | undefined {
+		const row = this.db.prepare('SELECT data FROM rogue_coop_sessions WHERE id = ?').get(id) as { data: string } | undefined;
+		return row && JSON.parse(row.data);
+	}
+	private assertCoopSessionFree(userid: string) {
+		if (this.db.prepare("SELECT 1 FROM rogue_coop_sessions WHERE status IN ('lobby', 'active', 'paused') AND (host_user = ? OR guest_user = ?) LIMIT 1")
+			.get(userid, userid)) throw new Error('你或对方已经在进行另一场联机冒险。');
+	}
+	createCoopInvitation(invite: RogueCoopInvite) {
+		return this.db.transaction(() => {
+			this.assertCoopSessionFree(invite.fromUser);
+			this.assertCoopSessionFree(invite.toUser);
+			if (this.db.prepare('SELECT 1 FROM rogue_coop_invites WHERE from_user = ? AND expires > ? LIMIT 1')
+				.get(invite.fromUser, Date.now())) throw new Error('请先处理你已发出的联机邀请。');
+			const incoming = (this.db.prepare('SELECT COUNT(*) AS count FROM rogue_coop_invites WHERE to_user = ? AND expires > ?')
+				.get(invite.toUser, Date.now()) as { count: number }).count;
+			if (incoming >= 3) throw new Error('对方待处理的联机邀请较多，请稍后再试。');
+			this.db.prepare('INSERT INTO rogue_coop_invites (id, from_user, to_user, created, expires, data) VALUES (?, ?, ?, ?, ?, ?)')
+				.run(invite.id, invite.fromUser, invite.toUser, invite.createdAt, invite.expiresAt, JSON.stringify(invite));
+			return invite;
+		}).immediate();
+	}
+	removeCoopInvitation(id: string, userid: string, role: 'sender' | 'recipient') {
+		return this.db.transaction(() => {
+			const row = this.db.prepare('SELECT data FROM rogue_coop_invites WHERE id = ?').get(id) as { data: string } | undefined;
+			const invite: RogueCoopInvite | undefined = row && JSON.parse(row.data);
+			if (!invite || invite.expiresAt <= Date.now() || (role === 'sender' ? invite.fromUser !== userid : invite.toUser !== userid)) {
+				throw new Error('联机邀请已过期或你无权处理。');
+			}
+			this.db.prepare('DELETE FROM rogue_coop_invites WHERE id = ?').run(id);
+			return invite;
+		}).immediate();
+	}
+	acceptCoopInvitation(id: string, guestUser: string, session: RogueCoopSession) {
+		return this.db.transaction(() => {
+			const row = this.db.prepare('SELECT data FROM rogue_coop_invites WHERE id = ?').get(id) as { data: string } | undefined;
+			const invite: RogueCoopInvite | undefined = row && JSON.parse(row.data);
+			if (invite?.toUser !== guestUser || (invite?.expiresAt ?? 0) <= Date.now()) {
+				throw new Error('联机邀请已过期或你无权处理。');
+			}
+			if (session.hostUser !== invite.fromUser || session.guestUser !== invite.toUser ||
+				session.difficulty !== invite.difficulty || session.status !== 'lobby' || session.revision !== 1) {
+				throw new Error('联机大厅资料与邀请不一致。');
+			}
+			this.assertCoopSessionFree(invite.fromUser);
+			this.assertCoopSessionFree(invite.toUser);
+			this.db.prepare('INSERT INTO rogue_coop_sessions (id, host_user, guest_user, status, updated, data) VALUES (?, ?, ?, ?, ?, ?)')
+				.run(session.id, session.hostUser, session.guestUser, session.status, session.updatedAt, JSON.stringify(session));
+			this.db.prepare('DELETE FROM rogue_coop_invites WHERE id = ?').run(id);
+			this.db.prepare('DELETE FROM rogue_coop_invites WHERE from_user IN (?, ?) OR to_user IN (?, ?)')
+				.run(invite.fromUser, invite.toUser, invite.fromUser, invite.toUser);
+			return { invite, session };
+		}).immediate();
+	}
+	updateCoopSession(
+		session: RogueCoopSession, expectedRevision: number,
+		accountUpdates?: ReadonlyMap<string, (account: RogueAccount) => void>,
+	) {
+		return this.db.transaction(() => {
+			const row = this.db.prepare('SELECT data FROM rogue_coop_sessions WHERE id = ?').get(session.id) as { data: string } | undefined;
+			const current: RogueCoopSession | undefined = row && JSON.parse(row.data);
+			if (current?.revision !== expectedRevision || session.revision !== expectedRevision + 1) {
+				throw new Error('联机进度已更新，请刷新后重试。');
+			}
+			// Commit unlocks and their paid session action together. Nested account changes are
+			// SQLite savepoints and roll back if either an account or the session write fails.
+			for (const [userid, update] of accountUpdates || []) {
+				if (userid !== current.hostUser && userid !== current.guestUser) {
+					throw new Error('不能更新联机成员以外的账号。');
+				}
+				this.change(userid, update);
+			}
+			syncCoopMasterBalls(session, current, userid => this.get(userid), (userid, update) => {
+				this.change(userid, update);
+			});
+			if (session.status !== current.status && (session.status === 'complete' ||
+				session.status === 'abandoned' && session.adventure)) {
+				const adventure = session.adventure;
+				const completed = session.status === 'complete';
+				if (!adventure || !['active', 'paused'].includes(current.status) || completed &&
+					(current.status !== 'active' || adventure.phase !== 'complete' || adventure.floor !== 200)) {
+					throw new Error('联机通关结算状态无效。');
+				}
+				const members = [session.hostUser, session.guestUser];
+				for (const [index, userid] of members.entries()) {
+					const member = adventure.members[userid];
+					const account = this.get(userid);
+					const journey = member.journey || { startedAt: session.createdAt, blessings: [], participants: {} };
+					const run = {
+						id: `coop-${adventure.id}`, contentVersion: adventure.contentVersion, floor: adventure.floor,
+						phase: completed ? 'complete' : 'ready',
+						difficulty: adventure.difficulty, doubleBattle: true, encounter: adventure.encounter, attempt: 0,
+						team: member.team, box: member.box, money: member.money, bag: member.bag, boosts: member.boosts,
+						boostRuleVersion: 2, startingSlots: member.slots, blessings: member.blessings, journey,
+						megaUnlocked: member.systems.mega, gmegaUnlocked: member.systems.gmega,
+						zUnlocked: member.systems.z, teraUnlocked: member.systems.tera,
+						checkpoint: { team: [], box: [], money: member.money, bag: {} }, caught: account.caughtSpecies || [],
+					} as RogueRun;
+					if (completed) clearCoopDifficulty(account, adventure.difficulty);
+					trackJourney(run, account);
+					const record = journeyRecord(run, completed ? 'complete' : 'abandoned');
+					record.cooperative = { partnerName: index ? session.hostName : session.guestName };
+					this.db.prepare('INSERT OR IGNORE INTO rogue_history (userid, id, ended, data) VALUES (?, ?, ?, ?)')
+						.run(userid, record.id, record.endedAt, JSON.stringify(record));
+					if (completed) {
+						account.saveVersion = ROGUE_SAVE_VERSION;
+						account.revision++;
+						assertRogueSaveCompatible(account);
+						this.db.prepare('INSERT OR REPLACE INTO rogue_accounts (userid, data) VALUES (?, ?)')
+							.run(userid, JSON.stringify(account));
+					}
+				}
+			}
+			this.db.prepare('UPDATE rogue_coop_sessions SET status = ?, updated = ?, data = ? WHERE id = ?')
+				.run(session.status, session.updatedAt, JSON.stringify(session), session.id);
+			return session;
+		}).immediate();
 	}
 	get(userid: string): RogueAccount {
 		const row = this.db.prepare('SELECT data FROM rogue_accounts WHERE userid = ?')
@@ -64,11 +202,19 @@ export class RogueStore {
 			const priorRun = account.run;
 			if (priorRun) trackJourney(priorRun, account);
 			if (account.run) migrateTeraShards(account.run);
+			if (account.run) syncNuzlocke(account.run);
+			const deadBefore = account.run?.nuzlocke ? [...account.run.team, ...(account.run.box || [])]
+				.filter(mon => mon.nuzlockeDead).map(mon => mon.id) : [];
 			update(account);
+			if (account.run && account.run.id === priorRun?.id) assertNuzlockeRoster(account.run, deadBefore, command);
 			assertRogueSaveCompatible(account);
 			syncMasterBalls(account, masterBefore);
 			syncAffection(account);
-			if (account.run) { syncRunDifficulty(account.run); trackJourney(account.run, account); }
+			if (account.run) {
+				syncRunDifficulty(account.run);
+				syncNuzlocke(account.run);
+				trackJourney(account.run, account);
+			}
 			for (const run of [priorRun, account.run]) {
 				if (!run || !run.journey) continue;
 				const outcome = run.phase === 'complete' || run.phase === 'postgame' ? 'complete' : run.phase === 'defeated' ? 'defeated' : run !== account.run ? 'abandoned' : undefined;

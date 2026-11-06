@@ -1,7 +1,9 @@
 import { Dex, toID } from '../../sim/dex';
 import { TeamValidator } from '../../sim/team-validator';
 import { ROGUE_STATS } from '../../sim/fantasy-rogue';
-import type { RogueAccount, RogueContent, RogueStarterTraits } from './types';
+import type { RogueAccount, RogueContent, RogueRun, RogueStarterTraits } from './types';
+
+type StarterUnlockSource = Pick<RogueRun, 'difficulty' | 'startingBuilds'>;
 
 const baseIVs = (): StatsTable => ({ hp: 15, atk: 15, def: 15, spa: 15, spd: 15, spe: 15 });
 
@@ -54,8 +56,11 @@ export function migrateShinyCaptures(account: RogueAccount, content: RogueConten
 }
 
 /** Trusted captures, event gifts and confirmed starting partners expand permanent choices. */
-export function recordStarterTraits(account: RogueAccount, content: RogueContent, set: PokemonSet, nature: boolean) {
-	if (account.run?.difficulty === 'easy' || account.run?.startingBuilds) return;
+export function recordStarterTraits(
+	account: RogueAccount, content: RogueContent, set: PokemonSet, nature: boolean,
+	source: StarterUnlockSource | undefined = account.run,
+) {
+	if (source?.difficulty === 'easy' || source?.startingBuilds) return;
 	const dex = Dex.mod('gen9fantasy');
 	const id = content.unlocks[dex.species.get(set.species).id]?.starter || content.starters.find(s => toID(s.set.species) === toID(set.species))?.id;
 	if (!id) return;
@@ -99,8 +104,10 @@ export function canStarterLearn(species: string, move: string) {
 	return learnability.get(key)!;
 }
 
-export function recordStarterMoves(account: RogueAccount, content: RogueContent, set: PokemonSet) {
-	if (account.run?.difficulty === 'easy' || account.run?.startingBuilds) return;
+export function recordStarterMoves(
+	account: RogueAccount, content: RogueContent, set: PokemonSet, source: StarterUnlockSource | undefined = account.run,
+) {
+	if (source?.difficulty === 'easy' || source?.startingBuilds) return;
 	const id = content.unlocks[toID(set.species)]?.starter ||
 		content.starters.find(starter => toID(starter.set.species) === toID(set.species))?.id;
 	const starter = content.starters.find(entry => entry.id === id);

@@ -1,4 +1,5 @@
 import { affectionResidual } from '../sim/rogue-affection';
+import { nuzlockeFaint, nuzlockeSwitchIn } from '../sim/rogue-nuzlocke';
 // Note: This is the list of formats
 // The rules that formats use are stored in data/rulesets.ts
 /*
@@ -22,7 +23,8 @@ import { onFantasySwitchIn, onFantasyUpdate } from '../data/mods/gen9fantasy/vis
 import { collapseResidual, recordCollapseDamage, showCollapse } from '../sim/rogue-collapse';
 import { drainPureRobe } from '../sim/fantasy-rogue-awakening';
 import { recordEvolutionHit, resetEvolutionDamageOnFaint } from '../sim/rogue-evolution-progress';
-import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat, startRogueArea } from '../sim/fantasy-rogue';
+import { initializeRogueBattle, markRogueParticipants, recordRogueDefeat,
+	startRogueArea, rogueSwitchIn } from '../sim/fantasy-rogue';
 import { isRogueBoss, megaRogueBoss, showRogueBossPhase } from '../sim/rogue-bosses';
 import { ROGUE_BLESSING_EVENTS, blessingDamage, blessingKO, blessingSwitchIn, blessingUpdate,
 	blessingEffectiveness, blessingHit } from '../sim/fantasy-rogue-blessings';
@@ -40,6 +42,9 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		searchShow: false, challengeShow: false, tournamentShow: false, rated: false,
 		ruleset: ['Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Max Team Size = 6', 'Max Level = 9999'],
 		onBegin() { initializeRogueBattle(this); },
+		onTryMove(pokemon, target, move) {
+			if (this.fantasyRogue?.nuzlocke && pokemon.side.id === 'p1' && move.id === 'revivalblessing') return false;
+		},
 		onBattleStart() { startRogueArea(this); startRogueSpirit(this); showCollapse(this); },
 		onResidualOrder: 100,
 		onResidual() {
@@ -70,6 +75,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			return blessingEffectiveness(typeMod, target, type, move);
 		},
 		onSwitchIn(pokemon) {
+			rogueSwitchIn(pokemon);
+			nuzlockeSwitchIn(pokemon);
 			blessingSwitchIn(pokemon);
 			markRogueParticipants(this);
 			onFantasySwitchIn.call(this, pokemon);
@@ -86,7 +93,12 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			if (pokemon.side.id === 'p2' && this.fantasyRogue?.escortCount ||
 				isRogueBoss(pokemon) && pokemon.baseSpecies.name.includes('Mewtwo')) return false;
 		},
-		onFaint(pokemon, source, effect) { resetEvolutionDamageOnFaint(pokemon); blessingKO(this, pokemon, source, effect); recordRogueDefeat(this, pokemon, false, source); },
+		onFaint(pokemon, source, effect) {
+			nuzlockeFaint(pokemon);
+			resetEvolutionDamageOnFaint(pokemon);
+			blessingKO(this, pokemon, source, effect);
+			recordRogueDefeat(this, pokemon, false, source);
+		},
 		onUpdate(pokemon) { blessingUpdate(this); onFantasyUpdate.call(this, pokemon); },
 	},
 	{
@@ -175,7 +187,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Regigigas', 'Regigigas-Fantasy', 'Metagross-Mega-Fantasy', 'Greninja-Ash Z', 'Darmanitan-Fantasy', 'Greninja-Mega-Fantasy', 'Magearna-Mega',
 			'Magearna-Original-Mega', 'Melmetal-G-Mega-Fantasy', 'Darkrai-Mega-Fantasy','Mewtwo-Fantasy', 'Mewtwo-Mega-X-Fantasy', 'Mewtwo-Mega-Y-Fantasy',
 			'Kartana-Fantasy', 'Lugia-Fantasy', 'Xerneas-Fantasy', 'Koraidon-Fantasy', 'Miraidon-Fantasy', 'Tapu Koko-Fantasy', 'Arceus-Legend-Fantasy',
-			'Rayquaza-Fantasy', 'Rayquaza-Mega-Fantasy', 
+			'Rayquaza-Fantasy', 'Rayquaza-Mega-Fantasy', 'Kyurem-Original-Fantasy',
 		],
 		onSwitchIn: onFantasySwitchIn,
 		onUpdate: onFantasyUpdate,
@@ -5109,3 +5121,5 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 // Internal four-seat doubles: the player and rival each control their own party.
 const rogueCoopBase = Formats.find(format => 'name' in format && format.name === '[Gen 9] Fantasy Rogue') as import('../sim/dex-formats').FormatData;
 Formats.push({ ...rogueCoopBase, name: '[Gen 9] Fantasy Rogue Co-op', gameType: 'multi' });
+Formats.push({ ...rogueCoopBase, name: '[Gen 9] Fantasy Rogue Doubles',
+	gameType: 'doubles', ruleset: (rogueCoopBase.ruleset || []).filter(rule => rule !== 'Team Preview') });

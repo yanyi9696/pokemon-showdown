@@ -1,4 +1,7 @@
 import { canRogueSystem } from '../../../sim/fantasy-rogue';
+import { canUniversalEvolution, runUniversalEvolution, universalKind,
+	recordRogueEvolution } from '../../../sim/rogue-universal-evolution';
+import { universalItem } from '../../../sim/rogue-universal-data';
 import { applyAdjustmentLabels } from './adjustment-labels';
 
 export const Scripts: ModdedBattleScriptsData = {
@@ -30,6 +33,7 @@ export const Scripts: ModdedBattleScriptsData = {
         // ==========================================
         canUltraBurst(pokemon) {
             const item = pokemon.getItem();
+			if (universalItem(item.id)) return canUniversalEvolution(pokemon, 'z');
 
             // --- 原版奈克洛兹玛究极爆发 ---
             // 【设定】：究极爆发可以在太晶化的情况下进行，因此不被拦截
@@ -62,6 +66,7 @@ export const Scripts: ModdedBattleScriptsData = {
         // 2. 变身执行逻辑
         // ==========================================
         runMegaEvo(pokemon) {
+			if (universalItem(pokemon.item)) return runUniversalEvolution(pokemon);
             const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
             if (!speciesid) return false;
 
@@ -167,10 +172,13 @@ export const Scripts: ModdedBattleScriptsData = {
             }
 
             pokemon.battle.add('-ability', pokemon, pokemon.getAbility().name, '[from] Mega Evolution');
+			recordRogueEvolution(pokemon, targetSpecies.isGMega ? 'gmega' : 'mega');
 
             for (const ally of pokemon.side.pokemon) {
-                if (ally.canMegaEvo &&
-                    !!this.dex.species.get(ally.canMegaEvo).isGMega === !!targetSpecies.isGMega) {
+				const allyKind = universalKind(ally);
+				const allyForme = this.dex.species.get(ally.canMegaEvo || '');
+				const allyGMega = allyKind === 'gmega' || !!allyForme.isGMega;
+                if (ally.canMegaEvo && allyGMega === !!targetSpecies.isGMega) {
                     ally.canMegaEvo = null;
                 }
             }
@@ -188,6 +196,8 @@ export const Scripts: ModdedBattleScriptsData = {
             const item = pokemon.getItem();
 
             if (species.isMega) return null;
+			const universal = universalItem(item.id);
+			if (universal) return universal.kind === 'z' ? null : canUniversalEvolution(pokemon, universal.kind);
 
             const altFormes = species.otherFormes || (species.baseSpecies && pokemon.battle.dex.species.get(species.baseSpecies).otherFormes);
             if (altFormes) {

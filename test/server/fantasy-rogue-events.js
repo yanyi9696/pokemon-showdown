@@ -154,7 +154,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 			team: run.team, bag: run.bag, captures: [captured] });
 		assert.equal(account().run.phase, 'settlement');
 		assert.equal(account().run.pendingCapture.id, captured.id);
-		cmd('replace', { value: run.team[0].id });
+		cmd('replace', { value: run.team[0].id, member: captured.id, confirmed: true });
 		assert.equal(account().run.phase, 'event');
 		assert.equal(account().run.team[0].set.species, captured.set.species);
 		assert.equal(account().run.blessings.shards, 0);
@@ -313,7 +313,7 @@ describe('Fantasy Rogue authored events and preferred gifts', function () {
 		assert.equal(account().run.pendingSpiritGift, undefined);
 		assert.equal(account().run.pendingCapture.fixedLevel, 40);
 		assert.equal(account().run.phase, 'settlement');
-		cmd('replace', { value: 'release' });
+		cmd('replace', { value: 'release', member: account().run.pendingCapture.id });
 		assert.equal(account().run.phase, 'choose');
 		// The zero RNG also rolls the optional Master Ball event; it must not replace normal routes.
 		assert.equal(account().run.choices.filter(node => node.id !== 'masterballgift').length, 3);

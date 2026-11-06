@@ -7,6 +7,7 @@ import type { InitialPokemon, OpponentMoves } from './initial-snapshot';
 import type { OpponentChoiceState } from './opponent-choice';
 import { emergencyChoice } from './fallback';
 import { enumerateRequestChoices } from './actions';
+import { enumerateDoublesChoices } from './doubles-actions';
 import { rogueBossChoice } from '../../sim/rogue-bosses';
 import type { DecisionScheduler } from './scheduler';
 import { aiDifficulty, type ChallengeDifficulty, type ValidatedTrainer } from './types';
@@ -20,6 +21,7 @@ export interface ChallengeMetrics {
 	timeouts: number;
 	workerErrors: number;
 	searchFallbacks: number;
+	jointTurnDecisions?: number;
 	rollouts: number;
 	illegalChoices: number;
 	totalDecisionMs: number;
@@ -32,8 +34,8 @@ export interface ChallengeMetrics {
 }
 export interface AIChallengeOptions extends TimeBudgetSettings {
 	rogue?: {
-		difficulty?: import('../../sim/rogue-difficulty').RogueDifficultyContext;
-		orderedBoss?: boolean;
+		difficulty?: import('../../sim/rogue-difficulty').RogueDifficultyContext,
+		orderedBoss?: boolean,
 		immediate?: boolean,
 		wild?: boolean, partySize: number,
 	};
@@ -85,7 +87,7 @@ export class AIController {
 			decisions: 0, timeouts: 0, workerErrors: 0, searchFallbacks: 0, rollouts: 0, illegalChoices: 0,
 			totalDecisionMs: 0, maxDecisionMs: 0, endReason: '',
 			searchDepths: {}, fallbackReasons: {},
-			criticalDecisions: 0, criticalDecisionReasons: {},
+			criticalDecisions: 0, criticalDecisionReasons: {}, jointTurnDecisions: 0,
 		};
 	}
 
@@ -177,6 +179,49 @@ export class AIController {
 		if (this.fingerprint !== fingerprint) { this.rejected = []; this.fingerprint = fingerprint; }
 		this.submitted = rqid;
 		const revision = this.revision;
+		const doubleRequest = 'active' in request && request.active.length > 1 ||
+			'forceSwitch' in request && !!request.forceSwitch && request.forceSwitch.length > 1;
+		if (this.options.rogue && doubleRequest) {
+			const excluded = [...this.rejected];
+			if (this.options.rogue.orderedBoss && !request.teamPreview && !request.wait) {
+				const party = observation.request.side.pokemon;
+				const king = party.findIndex(mon => /^Mewtwo.*Fantasy/.test(mon.details));
+				const guards = party.some((mon, index) => index !== king && !mon.condition.endsWith(' fnt'));
+				if (king >= 0 && guards) for (const candidate of enumerateDoublesChoices(observation.request)) {
+					if (candidate.actions.some(action => action.kind === 'switch' && action.reserve === king + 1)) {
+						excluded.push(candidate.choice);
+					}
+				}
+			}
+			const seed = this.rng.getSeed();
+			this.rng.random();
+			void this.options.scheduler.submit({
+				key: { roomId: this.schedulerRoomId, instanceId: this.options.instanceId, rqid, revision },
+				trainer: this.options.trainer, observation, seed, excluded,
+				doubles: { allowSwitch: !this.options.rogue.wild, jointTurns: !this.options.rogue.wild },
+				budgetMs: 1500, wallClockMs: Math.max(0, received + 4500 - performance.now()),
+			}).then(result => {
+				if (this.closed || this.revision !== revision || this.pending?.rqid !== rqid ||
+					result.status === 'cancelled') return;
+				this.metrics.decisions++;
+				const elapsed = performance.now() - received;
+				this.metrics.totalDecisionMs += elapsed;
+				this.metrics.maxDecisionMs = Math.max(this.metrics.maxDecisionMs, elapsed);
+				if (result.status === 'timeout') this.metrics.timeouts++;
+				if (result.status === 'worker-error') this.metrics.workerErrors++;
+				if (result.decision?.doubles?.jointTurn) {
+					this.metrics.jointTurnDecisions = (this.metrics.jointTurnDecisions || 0) + 1;
+				}
+				if (!result.decision?.doubles?.candidates) {
+					this.metrics.searchFallbacks++;
+					const reason = result.status === 'completed' ? 'doubles-policy-no-candidate' : `doubles-${result.status}`;
+					const reasons = this.metrics.fallbackReasons!;
+					reasons[reason] = (reasons[reason] || 0) + 1;
+				}
+				this.sendChoice(result.decision?.choice || 'default', rqid, revision);
+			}).catch(() => { this.metrics.workerErrors++; this.sendChoice('default', rqid, revision); });
+			return;
+		}
 		if (this.options.rogue?.immediate || this.options.rogue?.wild) {
 			// Non-boss battles resolve immediately from public evidence, without the rollout queue.
 			const excluded = [...this.rejected];
@@ -263,6 +308,8 @@ export class AIController {
 	}
 
 	disconnected() {
+		// A human co-op partner keeps their seat and current request; never expire the shared room on a solo-AI timer.
+		if (this.battle.options.cooperativeGuest && this.battle.options.fantasyRogue) return;
 		if (this.closed || this.disconnectTimer) return;
 		this.disconnectTimer = setTimeout(() => {
 			if (this.closed) return;

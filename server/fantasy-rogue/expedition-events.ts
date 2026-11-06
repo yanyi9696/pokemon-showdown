@@ -6,6 +6,7 @@ import { Dex, toID } from '../../sim/dex';
 import { BLESSING_TYPES } from '../../sim/rogue-blessing-data';
 import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
+import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import { drawBlessingGift, gift, normalizeBlessings } from './blessings';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { lowerToEligibleStage } from './evolution';
@@ -21,6 +22,11 @@ import { RIVALS, RIVAL_SNACK_GIFTS, RIVAL_TRAVEL_REPLIES } from './rival-data';
 const dex = Dex.mod('gen9fantasy');
 export interface ExpeditionEvent {
 	step?: string; target?: string; answers?: string[]; types?: string[]; tera?: string;
+}
+/** Generated once for a common quiz; never accepted from a player's command. */
+export interface SharedQuizRoll {
+	question?: { target: string, answers: string[] };
+	team?: PokemonSet[];
 }
 export const expeditionEvent = (id: string): id is keyof typeof EXPEDITION_NAMES => id in EXPEDITION_NAMES;
 const fossils: [string[], string][] = [
@@ -42,6 +48,25 @@ export const expeditionWeight = (run: RogueRun, id: string) => id === 'grassegg'
 	id === 'blackjack' && run.floor >= 101 ? (run.floor >= 151 ? 2 : 1.5) : 1;
 const level = (run: RogueRun) => Math.min(100, Math.max(3, Math.ceil(run.floor / 2)));
 const fee = (run: RogueRun) => 80 + run.floor * 3;
+export { fee as expeditionFee };
+export function rollIdentityQuestion(run: RogueRun, random: RogueRandom) {
+	const eligible = dex.species.all().filter(s => s.exists && !s.battleOnly &&
+		lowerToEligibleStage(s.name, level(run)) === s.name && randomSpeciesEligible(s.name, level(run)));
+	const changed = eligible.filter(s => s.name.includes('Fantasy') && dex.species.get(s.baseSpecies).exists &&
+		s.types.join('/') !== dex.species.get(s.baseSpecies).types.join('/'));
+	const pool = changed.length && random(100) < 65 ? changed : eligible.filter(s => !s.isNonstandard);
+	const target = pool[random(pool.length)], answer = dex.species.get(target.baseSpecies).name;
+	const others = [...new Set(eligible.map(s => dex.species.get(s.baseSpecies).name))].filter(s => s !== answer);
+	const answers = [answer];
+	while (answers.length < 4 && others.length) answers.push(others.splice(random(others.length), 1)[0]);
+	for (let i = answers.length - 1; i > 0; i--) {
+		const j = random(i + 1);
+		[answers[i], answers[j]] = [answers[j], answers[i]];
+	}
+	return { target: target.name, answers };
+}
+export const rollIdentityTeam = (run: RogueRun, random: RogueRandom) =>
+	themedEventTeam('tutor', Math.min(100, level(run) + 1), 2, random);
 function finish(run: RogueRun, ...lines: string[]) {
 	const event = run.node!.event!;
 	event.key = randomUUID(); event.stage = 'result'; event.result = lines; event.settled = true;
@@ -86,11 +111,16 @@ export function expeditionView(run: RogueRun) {
 			else if (state.step === 'name') { silhouette = state.target; options = state.answers!.map((s, i) => option(`answer:${i}`, s)); }
 			else if (state.step === 'type') options = Object.entries(BLESSING_TYPES).map(([type, name]) => option(`type:${type}`, `选择${name}属性`, (state.types?.length || 0) >= 2 || state.types?.includes(type)))
 				.concat(state.types?.length ? [option('confirmtypes', `确定${state.types.length === 1 ? '单属性' : '双属性'}答案`)] : []);
-			else options = [option('fight', '⌈别再偷偷换答案了，来对战吧！⌋'), option('leave', '笑着揭穿她的小把戏，继续赶路。')];
-		} else if (id === 'fossillab') options = [option('restore', '交付一套完整化石，进行复活。', !availableFossils(run).length)];
+			else options = [option('fight', '『别再偷偷换答案了，来对战吧！』'), option('leave', '笑着揭穿她的小把戏，继续赶路。')];
+		} else if (id === 'fossillab') options = [
+			option('restore', '交付一套完整化石，进行复活。', !availableFossils(run).length),
+			option('leave', '收好化石，这次先继续赶路。'),
+		];
 		else if (id === 'snacks') {
-			options = run.team.filter(m => !m.egg).map(m => option(`snackmon:${m.id}`, `送给【${m.set.species}】一份点心 · ${fee(run)} 金币`, run.money < fee(run)));
-			for (const c of travellingRoster(run)) options.push(option(c.origin === 'rival' ? 'snackrival' : `snacktrainer:${c.id}`, `请${c.name}吃点心 · ${fee(run)} 金币`, run.money < fee(run)));
+			options = run.team.filter(m => !m.egg && !m.nuzlockeDead).map(m => option(
+				`snackmon:${m.id}`, `送给【${m.set.species}】一份点心 · ${fee(run)} 金币`, run.money < fee(run)));
+			for (const c of travellingRoster(run)) options.push(option(c.origin === 'rival' ? 'snackrival' :
+				`snacktrainer:${c.id}`, `请${c.name}吃点心 · ${fee(run)} 金币`, run.money < fee(run)));
 			options.push(option('leave', '先把香味记在心里。'));
 		} else if (id === 'starmaster') options = [option('challenge', '接受摘星试炼。'), option('leave', '下次准备得更充分再来。')];
 		else if (id === 'blackjack') options = state.step ? [
@@ -102,21 +132,16 @@ export function expeditionView(run: RogueRun) {
 	}
 	return { paragraphs: event.result || EXPEDITION_OPENINGS[id], options, silhouette };
 }
-export function chooseExpedition(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom, choice: string) {
+export function chooseExpedition(
+	account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom,
+	choice: string, sharedEgg?: RoguePokemon, sharedQuiz?: SharedQuizRoll
+) {
 	const event = run.node!.event!, state = event.expedition!;
 	event.key = randomUUID();
 	if (choice === 'leave') { finish(run, '你向对方点点头，继续赶路。'); return; }
 	if (choice === 'enter') {
 		run.money -= fee(run);
-		const eligible = dex.species.all().filter(s => s.exists && !s.battleOnly && lowerToEligibleStage(s.name, level(run)) === s.name && randomSpeciesEligible(s.name, level(run)));
-		const changed = eligible.filter(s => /Fantasy/.test(s.name) && dex.species.get(s.baseSpecies).exists &&
-			s.types.join('/') !== dex.species.get(s.baseSpecies).types.join('/'));
-		const pool = changed.length && random(100) < 65 ? changed : eligible.filter(s => !s.isNonstandard);
-		const target = pool[random(pool.length)]; state.target = target.name;
-		const answer = dex.species.get(target.baseSpecies).name;
-		const others = [...new Set(eligible.map(s => dex.species.get(s.baseSpecies).name))].filter(s => s !== answer);
-		state.answers = [answer]; while (state.answers.length < 4 && others.length) state.answers.push(others.splice(random(others.length), 1)[0]);
-		for (let i = state.answers.length - 1; i > 0; i--) { const j = random(i + 1); [state.answers[i], state.answers[j]] = [state.answers[j], state.answers[i]]; }
+		Object.assign(state, structuredClone(sharedQuiz?.question || rollIdentityQuestion(run, random)));
 		state.step = 'name'; event.result = ['「不许偷看后面的答案哦！剪影里的宝可梦是谁？」'];
 	} else if (choice.startsWith('answer:')) {
 		const target = dex.species.get(state.target!), answer = state.answers![Number(choice.slice(7))];
@@ -134,9 +159,9 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 		state.step = 'fight'; event.result = [`少女迅速翻过另一张题板：「错啦！答案是${claimed.types.map(t => BLESSING_TYPES[t]).join('、')}，我问的可是【${claimed.name}】！」`,
 			'你瞥见她桌下藏着两份不同的答案。她还在故作无辜地眨眼，你已经握住了精灵球。'];
 	} else if (choice === 'fight' || choice === 'challenge') {
-		startBattle(run, themedEventTeam(choice === 'challenge' ? 'martial' : 'tutor', Math.min(100,
-			level(run) + (choice === 'challenge' ? 8 : 1)), choice === 'challenge' ? 4 : 2, random),
-		choice === 'challenge' ? 2 + Math.floor(run.floor / 75) : 1);
+		const team = choice === 'challenge' ? themedEventTeam('martial', Math.min(100, level(run) + 8), 4, random) :
+			sharedQuiz?.team ? structuredClone(sharedQuiz.team) : rollIdentityTeam(run, random);
+		startBattle(run, team, choice === 'challenge' ? 2 + Math.floor(run.floor / 75) : 1);
 	} else if (choice === 'restore') {
 		const [items, species] = availableFossils(run)[0]; for (const item of items) run.bag[item]--;
 		gift(account, run, content, drawBlessingGift(run, content, random, { eliteIVs: false, species, level: level(run) }), '化石复活');
@@ -173,8 +198,13 @@ export function chooseExpedition(account: RogueAccount, run: RogueRun, content: 
 		give(run, item, key === 'revive' ? 2 : 1);
 		finish(run, key === 'revive' ? '他沉默片刻：「还是不要医死人比较好。」随后递给你两枚活力碎片。' : key === 'capsule' ?
 			'「说来也怪，听完这话，我总觉得这些胶囊和你很有缘。」他将一枚特性胶囊放到你手里。' : '「希望这能解决你的烦恼。」他送给你一份特性膏药，转身去查看那只受伤的宝可梦。');
-	} else if (choice === 'egg') { giveEgg(run, content, random, '草丛里的宝可梦蛋'); finish(run, '你把蛋安放在柔软的垫子上。往后的旅程又多了一份期待。'); }
-	else if (choice === 'hatch') { const n = hatchEggs(account, run, content, true); finish(run, `培育箱轻轻响起提示音，${n} 颗蛋孵化了！店长祝你和新伙伴一路顺利。`); }
+	} else if (choice === 'egg') {
+		giveEgg(run, content, random, '草丛里的宝可梦蛋', sharedEgg);
+		finish(run, '你把蛋安放在柔软的垫子上。往后的旅程又多了一份期待。');
+	} else if (choice === 'hatch') {
+		const n = hatchEggs(account, run, content, true);
+		finish(run, `培育箱轻轻响起提示音，${n} 颗蛋孵化了！店长祝你和新伙伴一路顺利。`);
+	}
 }
 export function settleExpedition(run: RogueRun, won: boolean) {
 	const id = run.node!.event!.id;

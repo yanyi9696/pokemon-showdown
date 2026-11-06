@@ -27,7 +27,7 @@ export const EVENT_OVERVIEWS: Record<EventID, string> = {
 	feathers: '交换美丽之羽，或展示拥有羽毛的伙伴，获得一份观察谢礼。',
 	mushroomcollector: '高价收购蘑菇，也乐意给带着蘑菇伙伴的旅人一份小礼物。',
 	legendarytracks: '51 层起追寻罕见宝可梦。选错地点可能惊走目标；越深入高塔，越可能遇到传说中的强大身影。',
-	fantasytutor: '第 81 层起，消耗少量幻想碎片，请研究员教会幻想伙伴一个合法的幻想招式。',
+	fantasytutor: '第 81 层起，每招消耗 10 幻想碎片，仅教已经幻想化的伙伴相对原形态新增的合法招式；不解锁基础全部招式，不补回丢失的招式。',
 	exclusiveclue: '追寻专属道具的线索。排除错误地点后，藏匿的宝可梦也会露出身影。',
 	exclusivechallenge: '专属道具的持有者想亲自检验你与伙伴的实力。',
 	auction: '看清对手的预算，在一声声加价中争取心仪的拍品。',

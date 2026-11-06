@@ -31,7 +31,7 @@ export interface AISettings extends Partial<TimeBudgetSettings> {
 export class AIChallengeManager {
 	readonly scheduler: DecisionScheduler;
 	private readonly registry: TrainerRegistry;
-	private readonly reservations = new Map<string, { user: User, room?: GameRoom }>();
+	private readonly reservations = new Map<string, { user: User, participants?: string[], room?: GameRoom }>();
 	private readonly completed: ChallengeMetrics[] = [];
 	private readonly clientRequests = new WeakMap<User, Map<string, ClientChallengeResult>>();
 	private disposed = false;
@@ -65,6 +65,11 @@ export class AIChallengeManager {
 	}
 
 	list() { return this.disposed ? [] : this.registry.list(); }
+
+	private reservationsFor(userid: string) {
+		return [...this.reservations.values()].filter(entry => entry.participants?.includes(userid) ||
+			entry.room?.battle?.players.some(player => player.id === userid));
+	}
 
 	getPublicState(user: User, requestId = '') {
 		return {
@@ -156,15 +161,15 @@ export class AIChallengeManager {
 		if (typeof packedTeam !== 'string' || !packedTeam || packedTeam.length > 20000) {
 			throw new Chat.ErrorMessage('请先选择并提交有效队伍。');
 		}
-		const existing = [...this.reservations.values()]
-			.filter(entry => (entry.room?.battle?.p1.id || entry.user.id) === userid);
-		if (existing.length >= this.settings.maxBattlesPerPlayer) throw new Chat.ErrorMessage('请先结束已有的 AI 对局。');
+		if (this.reservationsFor(userid).length >= this.settings.maxBattlesPerPlayer) {
+			throw new Chat.ErrorMessage('请先结束已有的 AI 对局。');
+		}
 		if (this.reservations.size >= this.settings.maxBattles) {
 			throw new Chat.ErrorMessage(`全服 AI 挑战名额已满（最多 ${this.settings.maxBattles} 场，所有训练家、赛制和难度共用），请稍后再试。`);
 		}
 		// Reserve before asynchronous validation so simultaneous requests cannot oversubscribe either limit.
 		const instanceId = randomUUID();
-		const reservation: { user: User, room?: GameRoom } = { user };
+		const reservation: { user: User, participants?: string[], room?: GameRoom } = { user, participants: [userid] };
 		this.reservations.set(instanceId, reservation);
 		let room: GameRoom | null = null;
 		let roomid: RoomID | undefined;
@@ -223,24 +228,36 @@ export class AIChallengeManager {
 	}
 
 	/** Only the server-owned campaign may supply this validated team and private checkpoint. */
-	createRogueBattle(user: User, trainer: ValidatedTrainer, team: string, rogue: RogueRoomOptions) {
+	createRogueBattle(user: User, trainer: ValidatedTrainer, team: string, rogue: RogueRoomOptions,
+		cooperativeGuest?: { user: User, team: string }) {
 		if (this.disposed || !this.settings.enabled) throw new Chat.ErrorMessage('AI 对战尚未开放。');
 		if (Rooms.global.lockdown && Rooms.global.lockdown !== 'pre') throw new Chat.ErrorMessage('服务器维护中，请稍后开始战斗。');
 		if (!user.named || !user.connected || Punishments.isBattleBanned(user)) throw new Chat.ErrorMessage('当前账号不能开始对局。');
-		if (trainer.format !== (rogue.cooperative ? 'gen9fantasyroguecoop' : 'gen9fantasyrogue') || !Teams.unpack(team)?.length ||
+		if (cooperativeGuest && (!rogue.cooperative || !cooperativeGuest.user.named || !cooperativeGuest.user.connected ||
+			cooperativeGuest.user.id === user.id || Punishments.isBattleBanned(cooperativeGuest.user))) {
+			throw new Chat.ErrorMessage('联机队友当前不能加入这场肉鸽战斗。');
+		}
+		const format = rogue.cooperative ? 'gen9fantasyroguecoop' :
+			rogue.doubleBattle ? 'gen9fantasyroguedoubles' : 'gen9fantasyrogue';
+		if (trainer.format !== format || !Teams.unpack(team)?.length ||
 			!Teams.unpack(trainer.packedTeam)?.length) throw new Error('Invalid internal rogue teams');
-		const existing = [...this.reservations.values()].filter(entry =>
-			(entry.room?.battle?.p1.id || entry.user.id) === user.id);
-		if (existing.length >= this.settings.maxBattlesPerPlayer) throw new Chat.ErrorMessage('请先结束已有的 AI 对局。');
+		if (this.reservationsFor(user.id).length >= this.settings.maxBattlesPerPlayer ||
+			cooperativeGuest && this.reservationsFor(cooperativeGuest.user.id).length >= this.settings.maxBattlesPerPlayer) {
+			throw new Chat.ErrorMessage('你或队友已有一场肉鸽战斗正在创建或进行。');
+		}
 		if (this.reservations.size >= this.settings.maxBattles) throw new Chat.ErrorMessage('AI 对战名额已满，请稍后重试。');
 		const instanceId = randomUUID();
-		const reservation: { user: User, room?: GameRoom } = { user };
+		const reservation: { user: User, participants?: string[], room?: GameRoom } = {
+			user, participants: [user.id, ...(cooperativeGuest ? [cooperativeGuest.user.id] : [])],
+		};
 		this.reservations.set(instanceId, reservation);
 		const roomid = Rooms.global.prepBattleRoom(trainer.format);
 		try {
 			const room = Rooms.createBattle({
 				roomid, format: trainer.format, rated: false, challengeType: 'challenge', allowRenames: false,
-				players: [{ user, team, hidden: true, inviteOnly: true }], fantasyRogue: rogue,
+				players: [{ user, team, hidden: true, inviteOnly: true }],
+				...(cooperativeGuest ? { cooperativeGuest: { ...cooperativeGuest, hidden: true, inviteOnly: true } } : {}),
+				fantasyRogue: rogue,
 				fantasyAI: {
 					trainer, difficulty: 'normal', instanceId, scheduler: this.scheduler,
 					rogue: { difficulty: rogue.state.difficulty, orderedBoss: !!rogue.state.boss,

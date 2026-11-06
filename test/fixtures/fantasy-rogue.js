@@ -109,4 +109,41 @@ function compoundCommand(run, reward) {
 	return {member: reward.id, value: view.compound.stage === 'allocate' ? 'allocate' : view.options[0].id,
 		...(view.compound.stage === 'allocate' ? {evs: {...stats(0), atk: view.compound.points}} : {})};
 }
-module.exports = { content, set, stats, commandAfterOpening, chooseCompanions, eventRoll, prepareCompanionParty, compoundCommand };
+// Native battle fixtures have no RoomBattle manager. Complete its persisted growth handshake
+// and explicitly defer learning/evolution, rather than disabling live progression in tests.
+function resumeBattleGrowth(engine, user, battle) {
+	if (!battle.fantasyRogue?.growthWaiting) return;
+	const { randomUUID } = require('crypto');
+	const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
+	const { applyRogueGrowth } = require('../../dist/sim/rogue-growth');
+	const ticket = engine.store.get(user).run.battle;
+	engine.progressBattle(user, ticket.token, battle.fantasyRogue.defeated.length, rogueBattleResult(battle, false));
+	for (let i = 0; i < 100; i++) {
+		const account = engine.store.get(user), run = account.run;
+		const pending = run.pendingMoves?.[0];
+		const evolution = run.team.find(mon => mon.hp > 0 && mon.evolutionNotice);
+		if (!pending && !evolution) break;
+		engine.command(user, { id: randomUUID(), revision: account.revision,
+			action: pending ? 'learn' : 'evolutionnotice', member: pending ? pending.member : evolution.id,
+			...(pending ? { value: 'skip' } : {}),
+		});
+	}
+	const run = engine.store.change(user, account => {
+		const current = account.run;
+		if (current.pendingMoves?.length || current.team.some(mon => mon.hp > 0 && mon.evolutionNotice)) {
+			throw new Error('Unresolved live battle growth choices');
+		}
+		current.battle.growthPaused = false;
+		current.battle.growthRevision = (current.battle.growthRevision || 0) + 1;
+		current.battle.checkpoint.team = structuredClone(current.team);
+		current.battle.checkpoint.bag = { ...current.bag };
+	}).run;
+	applyRogueGrowth(battle, { sequence: run.battle.growthSequence, revision: run.battle.growthRevision,
+		team: run.team, bag: run.bag, paused: false,
+	});
+	if (battle.fantasyRogue.growthWaiting) throw new Error('Battle did not resume after growth acknowledgement');
+}
+module.exports = {
+	content, set, stats, commandAfterOpening, chooseCompanions, eventRoll, prepareCompanionParty, compoundCommand,
+	resumeBattleGrowth,
+};

@@ -1,4 +1,4 @@
-import type { RoguePokemon } from '../../sim/fantasy-rogue';
+import type { RogueBattleResult, RoguePokemon } from '../../sim/fantasy-rogue';
 import type { TrainerStyle } from '../fantasy-ai/types';
 import type { RogueStoryStage } from './story';
 import type { RogueClearCard } from './legacy';
@@ -79,10 +79,12 @@ export interface RogueNode {
 	encounters: RogueEncounter[];
 	/** Rolled once, saved with the route; each completed wild encounter pays its own entry. */
 	wildLoot?: Record<string, number>[];
+	/** Same encounter indices as wildLoot; absent on legacy prepared nodes. */
+	wildCandyTraining?: number[];
 	economyPrepared?: boolean;
 	/** Additional training is rolled once when an eligible region is completed. */
 	journeyGrowthResolved?: boolean;
-	reward: { money: number, items: Record<string, number> };
+	reward: { money: number, items: Record<string, number>, candyTraining?: number };
 }
 export interface RogueItem {
 	id: string;
@@ -126,6 +128,8 @@ export interface RogueContent {
 	wildTreasures?: boolean;
 	/** Draw the authored 14-region routes once per floor and persist them in the run. */
 	biomeEncounters?: boolean;
+	/** New adventures can opt into full-party doubles while legacy saves keep their original format. */
+	doubleBattle?: boolean;
 	/** Explicitly compatible saves retain their current encounter and use new content on later floors. */
 	compatibleVersions?: string[];
 	label?: string;
@@ -154,10 +158,13 @@ export interface RogueInventory {
 	zUnlocked?: boolean;
 }
 export interface RogueRun extends RogueInventory {
+	/** Frozen at run creation so a content update never changes an existing save's battle mode. */
+	doubleBattle?: boolean;
+	nuzlocke?: import('./nuzlocke').NuzlockeRun;
 	/** Missing on old adventures: preserve their additive stat rules. */
 	boostRuleVersion?: 2;
 	firstClearRewardsRecorded?: boolean;
-	mainline?: { scene: string, floor?: number, offered?: boolean, completed?: boolean, pitySettled?: boolean };
+	mainline?: { scene: string, floor?: number, offered?: boolean, completed?: boolean, pitySettled?: boolean, missedClears?: number };
 	elderVisits?: string[];
 	elderServices?: string[];
 	elderStageLine?: string;
@@ -222,6 +229,8 @@ export interface RogueRun extends RogueInventory {
 	eventHistory?: { id: string, floor: number }[];
 	/** Extra event fragments, independent of boss and blessing rewards. */
 	eventFragments?: Record<string, number>;
+	/** Missing means the legacy schedule; only new adventures opt into frontloaded rewards. */
+	eventFragmentRuleVersion?: 1 | 2;
 	eventBuff?: { battles: number };
 	pendingSpiritGift?: boolean;
 	gymGiftReceived?: boolean;
@@ -285,11 +294,24 @@ export interface RogueRun extends RogueInventory {
 	checkpoint: RogueInventory;
 	/** Stable across retries. Only account-level catch counting uses this ledger. */
 	caught: string[];
-	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean, eventBuff?: boolean };
+	retryHealing?: import('./retry-healing').RetryHealing;
+	/** Defeated opponent identities already paid, retained across escape and retries. */
+	experienceReceipts?: string[];
+	battle?: { token: string, encounterId: string, roomid?: string, retreatRequested?: boolean,
+		retryRequested?: boolean, eventBuff?: boolean,
+		growthSequence?: number, growthRevision?: number, growthPaused?: boolean,
+		checkpoint?: RogueBattleResult,
+		/** Optional challenges still grant no progression when abandoned. */
+		growthBaseline?: { team: RoguePokemon[], receipts: string[], pendingMoves?: { member: string, move: string }[] },
+	};
 }
+export type RogueShopContext = Pick<RogueRun,
+	'floor' | 'difficulty' | 'blessings' | 'team' | 'spirit' | 'collapse' | 'difficultyRulesVersion' | 'node'>;
 export interface RogueAccount {
+	crates?: import('./starter-crates').StarterCrates;
 	/** Minimum persisted-data contract; unrelated to the SQL schema and per-run growth rule. */
-	saveVersion?: 2;
+	saveVersion?: 2 | 3;
+	preferredNuzlocke?: boolean;
 	mainline?: import('./mainline-progress').MainlineProgress;
 	mainlineDialogue?: import('./mainline').MainlineDialogue;
 	firstClearSpecies?: string[];
@@ -299,7 +321,7 @@ export interface RogueAccount {
 	collapseHistory?: Record<string, import('../../sim/rogue-collapse-data').CollapseHistory>;
 	difficulties?: { highest: number, cleared: string[], spirits: string[] };
 	/** Absent means the elder offers a charm each adventure; explicit zero skips the offer. */
-	preferredDifficulty?: Exclude<import('../../sim/rogue-difficulty').RogueDifficulty, 'easy'>;
+	preferredDifficulty?: import('../../sim/rogue-difficulty').RogueDifficulty;
 	charmIntroduced?: boolean;
 	/** Actual captures in each ecology; gifts and catches elsewhere never reveal an icon here. */
 	biomeCaptures?: Record<string, string[]>;
@@ -320,6 +342,8 @@ export interface RogueAccount {
 	spiritUnlocked?: boolean;
 	/** Earned by full clears, independently of the optional spirit-mode access gate. */
 	unlockedSpirits?: string[];
+	/** Highest proven clear with each spirit; easy ranks below 0. Independent of retained cards. */
+	spiritClearTiers?: Record<string, import('../../sim/rogue-difficulty').RogueDifficulty>;
 	revision: number;
 	points: number;
 	boosts: StatsTable;
@@ -329,7 +353,195 @@ export interface RogueAccount {
 	caughtSpecies?: string[];
 	/** Permanent, per-starter-family choices. Missing on legacy saves. */
 	starterTraits?: Record<string, RogueStarterTraits>;
+	/** Idempotency receipts for co-op captures, so reconnects cannot duplicate permanent unlocks. */
+	coopCaptureReceipts?: string[];
 	run?: RogueRun;
+}
+
+export type RogueCoopDifficulty = 0 | 1 | 2 | 3 | 4 | 5;
+export interface RogueCoopInvite {
+	id: string;
+	fromUser: string;
+	toUser: string;
+	fromName: string;
+	toName: string;
+	difficulty: RogueCoopDifficulty;
+	createdAt: number;
+	expiresAt: number;
+}
+export interface RogueCoopMemberState {
+	socialCompanions?: RogueRun['socialCompanions'];
+	companionInvitations?: RogueRun['companionInvitations'];
+	/** Irreversible per-member Master Ball stock, outside battle and travel inventory snapshots. */
+	masterBallLedger?: RogueRun['masterBallLedger'];
+	/** Each member's party, reserve, currency and items remain private save data within the shared session. */
+	team: RoguePokemon[];
+	box: RoguePokemon[];
+	/** Captures wait here when the party is full; admitting one requires a confirmed release. */
+	pendingCaptures?: RoguePokemon[];
+	money: number;
+	bag: Record<string, number>;
+	boosts: StatsTable;
+	slots: number;
+	systems: { tera: boolean, mega: boolean, gmega: boolean, z: boolean };
+	/** Growth receipts and pending level-up choices are private to this member. */
+	experienceReceipts?: string[];
+	pendingMoves?: { member: string, move: string }[];
+	notices?: string[];
+	/** Shared workshop rewards remain available independently until each member spends them. */
+	coverageLessons?: RogueRun['coverageLessons'];
+	/** Center-candy quotas and purchase request receipts are private to the purchasing member. */
+	restCandyPurchases?: Record<string, number>;
+	purchaseReceipts?: string[];
+	/** Only this member's qualifying purchases advance the shopping blessing. */
+	shoppingSpend?: RogueRun['shoppingSpend'];
+	/** Acquired exclusive-item history belongs to this player, including after selling or equipping it. */
+	exclusiveItems?: RogueRun['exclusiveItems'];
+	/** A paid training-camp visit is private to each member; the partner keeps their own opportunity. */
+	campVisits?: string[];
+	/** Retries of an already applied personal recovery request must not consume a second item or fee. */
+	recoveryReceipts?: string[];
+	/** Training supplies are consumed atomically with account unlocks and the shared session. */
+	supplyReceipts?: string[];
+	/** Shared blessing picks grant independent effects, inventories and follow-up choices to this member. */
+	blessings?: import('./blessings').RogueBlessings;
+	/** Run-wide stat growth is personal, even when granted by a shared event. */
+	growth?: import('./growth').RogueGrowth;
+	/** Companion progress and reward receipts stay with this member across shared steps and reconnects. */
+	trainerBonds?: RogueRun['trainerBonds'];
+	affectionClaims?: RogueRun['affectionClaims'];
+	/** Native once-per-adventure activity rewards stay claimed after shared routes and reconnects. */
+	rareCandyEvents?: RogueRun['rareCandyEvents'];
+	activityClaims?: RogueRun['activityClaims'];
+	/** The exact personal partner stays here while away and returns only to this owner. */
+	greninjaTraining?: RogueRun['greninjaTraining'];
+	/** Battle participants are archived into this member's personal journey history on a clear. */
+	journey?: import('./history').JourneyLedger;
+	/** The shared event keeps each member's private target/progress and event-local run effects. */
+	eventFragments?: RogueRun['eventFragments'];
+	coopEvent?: import('./events').RogueEvent;
+	coopEventReward?: RogueRun['lastReward'];
+	coopLootReward?: RogueRun['lastReward'];
+}
+export interface RogueCoopTradeProposal {
+	id: string;
+	fromUser: string;
+	fromMember: string;
+	toMember: string;
+	fee: number;
+	createdAt: number;
+}
+export interface RogueCoopCaptureProposal {
+	context?: 'safari';
+	id: string;
+	ownerUser: string;
+	recipientUser: string;
+	ball: string;
+	targetKey: string;
+	targetId: string;
+	targetName: string;
+	state: 'requested' | 'contested' | 'returned';
+	createdAt: number;
+	expiresAt: number;
+}
+export interface RogueCoopAdventure {
+	id: string;
+	contentVersion: string;
+	floor: number;
+	/** Current encounter within the selected node; wild routes can contain several sequential fights. */
+	encounter: number;
+	phase: 'area-selection' | 'battle-selection' | 'battle-starting' | 'route-interaction' | 'battle' | 'settlement' | 'complete' |
+		'blessing-selection' | 'blessing-reward' | 'affection';
+	difficulty: RogueCoopDifficulty;
+	doubleBattle: true;
+	members: Record<string, RogueCoopMemberState>;
+	/** Server-authored options are frozen in the session so both users see the same route after reconnecting. */
+	routeChoices?: RogueNode[];
+	/** A rare additional route; it does not replace or consume the floor's ordinary route. */
+	masterBallQuest?: RogueRun['masterBallQuest'];
+	masterBallRollFloor?: number;
+	challengeHistory?: RogueRun['challengeHistory'];
+	coopChallenge?: import('./coop-challenges').CoopChallenge;
+	/** Shared route pity and ecology history for the co-op run; never taken from either personal save. */
+	routeHistory?: RogueRun['routeHistory'];
+	biomeHistory?: RogueRun['biomeHistory'];
+	/** Shared consent to leave a legacy secret-area node without progressing personal mainline. */
+	routeRecovery?: { key: string, selections: Record<string, boolean> };
+	/** The agreed route is persisted before party selection or room creation. */
+	node?: RogueNode;
+	encounterId?: string;
+	battleToken?: string;
+	/** Full candidates are submitted to native Team Preview before selecting 1–3 battlers. */
+	nativeTeamPreview?: boolean;
+	nativeTeamSelected?: boolean;
+	/** A fresh room incarnation fences callbacks while the logical battle/capture receipt token stays stable. */
+	battleLease?: string;
+	battleCheckpoint?: import('../../sim/rogue-coop-checkpoint').RogueCoopCheckpoint;
+	battleRecoverySelections?: Record<string, boolean>;
+	battleResult?: {
+		won: boolean, turns?: number, reward?: { money: number, items: Record<string, number>, effect?: string },
+		partnerReward?: { money: number, items: Record<string, number>, effect?: string }, eventResolved?: boolean, retreated?: boolean,
+		memoryRestored?: boolean,
+	};
+	/** Both members must confirm settlement before the shared adventure advances. */
+	continueSelections?: Record<string, boolean>;
+	retrySelections?: Record<string, boolean>;
+	/** Both members confirm leaving a non-battle shared route such as a rest center. */
+	routeExitSelections?: Record<string, boolean>;
+	/** A single pending party swap; the proposer pays the one-time linking-cord-equivalent fee. */
+	tradeProposal?: RogueCoopTradeProposal;
+	tradeReceipts?: string[];
+	/** Capture ownership stays undecided until both players agree in the shared wild battle. */
+	captureProposal?: RogueCoopCaptureProposal;
+	captureReceipts?: string[];
+	/** Both members must choose the same opening branch before private target steps begin. */
+	coopEventChoices?: Record<string, string | null>;
+	coopEventBranchResolved?: boolean;
+	coopEventHistory?: RogueRun['eventHistory'];
+	/** One catalogue/NPC bidding process; each winning player's purchase remains personal. */
+	coopAuction?: import('./coop-auction').CoopAuction;
+	/** Coincides with the single-player fragment schedule; old co-op sessions had no fragment-offer events. */
+	eventFragmentRuleVersion?: 1 | 2;
+	/** One shared draft; each confirmed blessing is applied separately to both member states. */
+	coopBlessingRound?: import('./blessing-selection').BlessingRound;
+	coopBlessingChoices?: Record<string, string | null>;
+	/** Votes are scoped to one owner's current companion milestone, never reused for the next dialogue. */
+	coopAffection?: { visit: string, choices: Record<string, string | null> };
+	coopBlessingResume?: 'opening' | 'advance' | 'battle' | 'event';
+	lastReward?: { floor: number, name: string, money: number, items: Record<string, number>, effect?: string };
+}
+export interface RogueCoopSession {
+	id: string;
+	hostUser: string;
+	guestUser: string;
+	hostName: string;
+	guestName: string;
+	difficulty: RogueCoopDifficulty;
+	status: 'lobby' | 'active' | 'paused' | 'complete' | 'abandoned';
+	revision: number;
+	createdAt: number;
+	updatedAt: number;
+	/** Each owner will select and keep their own starter, team, wallet and save. */
+	starterSelections: Record<string, string[] | null>;
+	/** Initial builds use the same server-validated nature, gender, ability, IV and shiny rules as solo starts. */
+	starterBuildSelections: Record<string, Record<string, RogueStarterBuild> | null>;
+	/** Explicitly confirmed battle teams; changing a preview revokes that owner's confirmation. */
+	battleSelections: Record<string, string[]>;
+	/** Live picks are independent of confirmation, so an empty array is a meaningful cancellation. */
+	battlePreviews?: Record<string, string[]>;
+	battleSelectionVersion?: number;
+	/** A separate shared-run save; never stored in either member's personal account.run. */
+	adventure?: RogueCoopAdventure;
+	/** The same route choice must be submitted by both participants before it advances. */
+	areaSelections: Record<string, string | null>;
+	/** Only the transfer target may act while delegation is active. Either member can revoke it. */
+	delegatedTo?: string;
+	/** A scoped shared decision; a stale confirmation cannot end a different encounter or phase. */
+	exitProposal?: {
+		id: string, kind: 'retreat' | 'abandon', proposer: string, phase: RogueCoopAdventure['phase'],
+		battleToken?: string, expiresAt: number, confirmed?: boolean,
+	};
+	roomid?: string;
 }
 export interface RogueStarterTraits {
 	/** Unlocked only by a confirmed shiny capture in this starter's evolution family. */
@@ -361,10 +573,11 @@ export interface RogueCommand {
 	trainingStats?: StatIDExceptHP[];
 	appearance?: string;
 	action: 'mainlinechoice' | 'unlockack' | 'echo' | 'affection' | 'forme' | 'fusion' | 'unfusion' | 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+		'rematch' | 'retryheal' | 'retrycancel' | 'partyheal' | 'opencrate' | 'exchangecrate' | 'crateprediction' |
 		'shopchallenge' | 'challenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' | 'comeback' | 'coverage' |
-		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' |
+		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' | 'configureuniversal' |
 		'spiritack' | 'trimparty' | 'box' | 'merge' | 'buyhp' | 'storynext' | 'storyskip' | 'startcard' | 'newstory' |
-		'setdifficulty' | 'charm' | 'charmack' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingquality' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability' | 'usecompound';
+		'setnuzlocke' | 'release' | 'setdifficulty' | 'charm' | 'charmack' | 'confirmdifficulty' | 'restartsetup' | 'saveclear' | 'publishcard' | 'deletecard' | 'blessing' | 'blessingrefresh' | 'blessingquality' | 'blessingreward' | 'fantasize' | 'meltanevolve' | 'swordreward' | 'exchangeshards' | 'settera' | 'inheritrobe' | 'learnbonus' | 'catability' | 'usecompound';
 	useSpirit?: boolean;
 	/** A previously cleared spirit; validated against the account ledger on the server. */
 	selectedSpirit?: string;
@@ -374,9 +587,11 @@ export interface RogueCommand {
 	starters?: string[];
 	starterBuilds?: Record<string, RogueStarterBuild>;
 	member?: string;
-	/** Candy use only; omitted preserves single-item commands. */
+	/** Candy quantity, or 1/10 for starter crates; omitted preserves single-item commands. */
 	count?: number;
 	order?: string[];
 	slot?: number;
 	evs?: StatsTable;
+	aura?: StatIDExceptHP;
+	confirmed?: boolean;
 }

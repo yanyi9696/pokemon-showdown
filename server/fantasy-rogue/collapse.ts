@@ -28,7 +28,7 @@ export function recordCollapseBattle(account: RogueAccount, run: RogueRun, resul
 	}
 }
 
-export function collapseShopPrice(run: RogueRun | undefined, price: number) {
+export function collapseShopPrice(run: Pick<RogueRun, 'collapse' | 'difficultyRulesVersion'> | undefined, price: number) {
 	return run?.collapse?.includes('inflation') ? Math.ceil(price * collapseParameters(run.difficultyRulesVersion ?? 3).inflation) : price;
 }
 export function collapseMedicine(run: RogueRun, amount: number) {

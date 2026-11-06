@@ -1,5 +1,7 @@
 import { bloodRequest } from './fantasy-rogue-awakening';
+import { universalKind } from './rogue-universal-evolution';
 import { numberRequest } from './rogue-number-blessings';
+import { rogueCoopPreviewSide } from './rogue-coop-preview';
 /**
  * Simulator Side
  * Pokemon Showdown - http://pokemonshowdown.com/
@@ -59,6 +61,8 @@ export interface ChosenAction {
 
 /** One single turn's choice for one single player. */
 export interface Choice {
+	/** Trusted completed Team Preview choice; cleared by native undo. */
+	rogueTeamPreview?: string[];
 	cantUndo: boolean; // true if the choice can't be cancelled because of the maybeTrapped issue
 	error: string; // contains error text in the case of a choice error
 	actions: ChosenAction[]; // array of chosen actions
@@ -150,6 +154,7 @@ export interface TeamPreviewRequest {
 	teamPreview: true;
 	forceSwitch?: undefined;
 	maxChosenTeamSize?: number;
+	rogueCoopTeamPreview?: { members: string[] };
 	side: SideRequestData;
 	noCancel?: boolean;
 }
@@ -227,7 +232,10 @@ export class Side {
 		this.id = ['p1', 'p2', 'p3', 'p4'][sideNum] as SideID;
 		this.n = sideNum;
 		if (battle.fantasyRogue) {
-			this.fantasyRogueTera = !!battle.fantasyRogue.tera?.[this.id === 'p1' ? 'player' : 'opponent'];
+			const permission = this.id === 'p1' ? battle.fantasyRogue.tera?.player :
+				this.id === 'p3' && battle.fantasyRogue.partner ? battle.fantasyRogue.tera?.partner :
+				battle.fantasyRogue.tera?.opponent;
+			this.fantasyRogueTera = !!permission;
 		}
 
 		this.name = name;
@@ -518,7 +526,21 @@ export class Side {
 	}
 
 	emitRequest(update: ChoiceRequest) {
-		const rogue = this.id === 'p1' && !this.battle.fantasyRogue?.duel ? this.battle.fantasyRogue : undefined;
+		const battleRogue = this.battle.fantasyRogue;
+		const rogue = !battleRogue?.duel && (this.id === 'p1' || this.id === 'p3' && battleRogue?.cooperative) ? battleRogue : undefined;
+		const rogueTeam = this.id === 'p3' ? rogue?.partner?.team : rogue?.team;
+		const rogueBag = this.id === 'p3' ? rogue?.partnerBag : rogue?.bag;
+		const rogueCapacity = rogue?.cooperative ? !!rogue.coopCaptureCapacity?.[this.id as 'p1' | 'p3'] :
+			!!rogue && (!!rogueTeam && rogueTeam.length < 6 || rogue.allowReplacement);
+		const captureTargets = rogue?.cooperative && rogue.catchable ? [this.battle.p2, this.battle.p4].filter(Boolean)
+			.flatMap(side => side!.active.map((pokemon, index) => ({ pokemon, index, side: side!.id })))
+			.filter(target => !!target.pokemon?.hp && !!target.pokemon.set.fantasyRogueId)
+			.map(target => ({
+				key: `${target.side}:${target.index}`, id: target.pokemon.set.fantasyRogueId!, name: target.pokemon.species.name,
+				hp: target.pokemon.hp, maxhp: target.pokemon.maxhp,
+				chances: Object.fromEntries((rogue.balls || []).map(ball => [ball.id,
+					rogueCaptureChance(this.battle, ball, this, target.pokemon)])),
+			})) : undefined;
 		const psychic = psychicCharge(this.active[0]);
 		const eeveeZ = this.active.map(mon => eeveeZAvailable(mon));
 		const companionZ = this.active.map(mon => companionZRequest(mon));
@@ -527,14 +549,16 @@ export class Side {
 		// makeRequest clears activeRequest before emitRequest, so use the new wire request here.
 		const number = numberRequest(this, 'active' in update);
 		const payload = rogue || number || dragonKing || psychic !== undefined || eeveeZ.some(Boolean) || companionZ.some(Boolean) || blood.some(Boolean) ? { ...update, fantasyRogue: {
+			cooperativeCapture: !!rogue?.cooperative,
+			captureTargets,
 			companionZ,
 			dragonKing,
 			psychic,
 			eeveeZ, blood, number, revival: revivalRequest(this, 'active' in update),
-			catchable: !!rogue && rogue.catchable && (rogue.team.length < 6 || rogue.allowReplacement),
+			catchable: !!rogue && rogue.catchable && rogueCapacity,
 			balls: (rogue?.balls || []).map(ball => ({
-				id: ball.id, name: ball.name, count: rogue!.bag[ball.id] || 0,
-				chance: rogueCaptureChance(this.battle, ball),
+				id: ball.id, name: ball.name, count: rogueBag?.[ball.id] || 0,
+				chance: rogueCaptureChance(this.battle, ball, this),
 			})),
 		} } : update;
 		this.battle.send('sideupdate', `${this.id}\n|request|${JSON.stringify(payload)}`);
@@ -765,7 +789,8 @@ export class Side {
 
 		const mixandmega = this.battle.format.mod === 'mixandmega';
 		const mega = (event === 'mega');
-		const gmega = mega && !!this.battle.dex.species.get(pokemon.canMegaEvo || '').isGMega;
+		const gmega = mega && (universalKind(pokemon) === 'gmega' ||
+			!!this.battle.dex.species.get(pokemon.canMegaEvo || '').isGMega);
 		const megax = (event === 'megax');
 		const megay = (event === 'megay');
 		if (mega && !pokemon.canMegaEvo) {
@@ -972,6 +997,7 @@ export class Side {
 	 * supporting it.
 	 */
 	pickedTeamSize() {
+		if (rogueCoopPreviewSide(this)) return this.choice.rogueTeamPreview?.length || Math.min(3, this.pokemon.length);
 		return Math.min(this.pokemon.length, this.battle.ruleTable.pickedTeamSize || Infinity);
 	}
 
@@ -983,7 +1009,14 @@ export class Side {
 		const ruleTable = this.battle.ruleTable;
 		let positions = data.split(data.includes(',') ? ',' : '')
 			.map(datum => parseInt(datum) - 1);
-		const pickedTeamSize = this.pickedTeamSize();
+		const coopPreview = rogueCoopPreviewSide(this);
+		if (coopPreview && data && (!/^(?:[1-6](?:,[1-6])*|[1-6]+)$/.test(data) || positions.length > 3)) {
+			return this.emitChoiceError('请从自己的队伍中选择 1～3 只宝可梦。');
+		}
+		if (coopPreview && !data) positions = this.pokemon.map((mon, index) => mon.hp ? index : -1)
+			.filter(index => index >= 0).slice(0, 3);
+		const pickedTeamSize = coopPreview ? positions.length : this.pickedTeamSize();
+		if (coopPreview && !pickedTeamSize) return this.emitChoiceError('至少选择一只健康的宝可梦。');
 
 		// make sure positions is exactly of length pickedTeamSize
 		// - If too big: the client automatically sends a full list, so we just trim it down to size
@@ -1000,6 +1033,7 @@ export class Side {
 		}
 
 		for (const [index, pos] of positions.entries()) {
+			if (coopPreview && !this.pokemon[pos]?.hp) return this.emitChoiceError('只能选取仍可出战的宝可梦。');
 			if (index === 0 && this.pokemon[pos] && waitingRogueCommander(this.pokemon[pos])) {
 				return this.emitChoiceError('幻想超梦会在五位守卫倒下后出场。');
 			}
@@ -1047,6 +1081,7 @@ export class Side {
 				}
 			}
 		}
+		if (coopPreview) this.choice.rogueTeamPreview = positions.map(pos => this.pokemon[pos].set.fantasyRogueId!);
 		for (const [index, pos] of positions.entries()) {
 			this.choice.switchIns.add(pos);
 			this.choice.actions.push({
@@ -1244,7 +1279,12 @@ export class Side {
 			case 'pass':
 			case 'skip':
 				if (data) return this.emitChoiceError(`Unrecognized data after "pass": ${data}`);
-				if (!this.choosePass()) return false;
+				if (this.battle.fantasyRogue?.cooperative && this.battle.fantasyRogue.coopCapture &&
+					(this.id === 'p1' || this.id === 'p3') && this.requestState === 'move') {
+					this.choice.actions.push({ choice: 'pass' } as ChosenAction);
+				} else if (!this.choosePass()) {
+					return false;
+				}
 				break;
 			case 'auto':
 			case 'default':
@@ -1268,14 +1308,15 @@ export class Side {
 				// auto-pass
 				while (
 					index < this.active.length &&
-					(this.active[index].fainted || this.active[index].volatiles['commanding'] || this.active[index].volatiles['parasite'])
+					(!this.active[index] || this.active[index].fainted ||
+						this.active[index].volatiles['commanding'] || this.active[index].volatiles['parasite'])
 				) {
 					this.choosePass();
 					index++;
 				}
 				break;
 			case 'switch':
-				while (index < this.active.length && !this.active[index].switchFlag) {
+				while (index < this.active.length && !this.active[index]?.switchFlag) {
 					this.choosePass();
 					index++;
 				}
@@ -1293,7 +1334,7 @@ export class Side {
 
 		switch (this.requestState) {
 		case 'switch':
-			if (pokemon.switchFlag) { // This condition will always happen if called by Battle#choose()
+			if (pokemon?.switchFlag) { // This condition will always happen if called by Battle#choose()
 				if (!this.choice.forcedPassesLeft) {
 					return this.emitChoiceError(`Can't pass: You need to switch in a Pokémon to replace ${pokemon.name}`);
 				}
@@ -1301,7 +1342,7 @@ export class Side {
 			}
 			break;
 		case 'move':
-			if (!pokemon.fainted && !pokemon.volatiles['commanding'] && !pokemon.volatiles['parasite']) {
+			if (pokemon && !pokemon.fainted && !pokemon.volatiles['commanding'] && !pokemon.volatiles['parasite']) {
 				return this.emitChoiceError(`Can't pass: Your ${pokemon.name} must make a move (or switch)`);
 			}
 			break;

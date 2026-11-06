@@ -4,14 +4,16 @@ import { rivalView, chooseRival, settleRival, type RivalEvent } from './rivals';
 import { activityEligible, activityWeight, isJourneyActivity, beginJourneyActivity, journeyActivityView, chooseJourneyActivity, settleJourneyActivity, type JourneyActivity } from './journey-activities';
 import { greninjaEvent, greninjaEventEligible, greninjaEventView, chooseGreninjaEvent } from './greninja-training';
 import { beginSocialEvent, socialCandidates, socialEventView, chooseSocialEvent, settleSocialEvent, type SocialEvent } from './social-events';
-import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView, chooseExpedition, settleExpedition, type ExpeditionEvent } from './expedition-events';
+import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView,
+	chooseExpedition, settleExpedition, type ExpeditionEvent, type SharedQuizRoll } from './expedition-events';
 import { collectionEvent, collectionView, chooseCollection, type SkiState } from './collection-events';
 import { isLuckEvent } from './luck-event-data';
 import { loadedDiceEventWeight, luckEventEligible, luckEventView, chooseLuckEvent,
 	type LuckEventResult } from './luck-events';
 import { eligibleRematches, prepareRematch, rematchView, chooseRematch } from './companion-rematches';
 import { policeView, choosePoliceRegion, settlePoliceBattle, type PoliceEvent } from './police-events';
-import { honeymoonEligible, prepareHoneymoon, honeymoonView, chooseHoneymoon, settleHoneymoon } from './honeymoon';
+import { honeymoonEligible, prepareHoneymoon, honeymoonView, chooseHoneymoon, settleHoneymoon,
+	type HoneymoonTrip } from './honeymoon';
 import { randomUUID } from 'crypto';
 import { beginLegendaryTracks, legendaryTracksView, chooseLegendaryTracks, settleLegendaryTracks, LEGENDARY_TRACKS_FLOOR, type LegendaryTracks } from './legendary-tracks';
 import { beginExclusiveClue, exclusiveEventView, chooseExclusiveEvent, settleExclusiveEvent, type ExclusiveEvent } from './exclusive-events';
@@ -24,6 +26,8 @@ import { grantMushroomGrowth } from './growth';
 import { Dex } from '../../sim/dex';
 import type { RogueAccount, RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
+import type { RoguePokemon } from '../../sim/fantasy-rogue';
+import { createRoguePokemon, initializeExperience } from './progression';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { legendaryEventScale } from './encounter-quality';
 import { lowerToEligibleStage } from './evolution';
@@ -31,7 +35,7 @@ import { eventRewardBudget, eventCost, LATE_INCOME_BONUS_PERCENT } from './early
 import { eventPacingWeight, PREPARATION_EVENTS } from './event-pacing';
 import { eventSpeciesPool, themedEventTeam } from './event-teams';
 import {
-	drawBlessingGift, gift, giveEquipment, normalizeBlessings, recordNegativeBlessingEvent, toolbox,
+	drawBlessingGift, gift, giveEquipment, normalizeBlessings, recordNegativeBlessingEvent, toolbox, toolboxOptions,
 } from './blessings';
 import { lootStageAtFloor, TREASURES } from './economy';
 import { simulateForestBattle } from './event-battle';
@@ -40,10 +44,33 @@ import {
 } from './event-services';
 
 import { EVENT_NAMES, EVENT_TEXT, eventOpening, type EventID } from './event-text';
-import { adventureEvent, adventureView, chooseAdventure, settleAdventure, banditLoot, type FishingState } from './event-adventures';
-import { offerEventFragments, eventFragmentOptions, claimEventFragments, type EventFragmentOffer } from './event-fragments';
+import { adventureEvent, adventureView, chooseAdventure, settleAdventure, banditLoot,
+	type FishingState, type SharedAdventureRoll } from './event-adventures';
+import { offerEventFragments, eventFragmentOptions, claimEventFragments, eventFragmentTier, type EventFragmentOffer } from './event-fragments';
 export { EVENT_NAMES, type EventID } from './event-text';
+export type MushroomOutcome =
+	{ kind: 'trade', cost: number, money: number, items: Record<string, number>, treasures: boolean } |
+	{ kind: 'taste', vitality: boolean } | { kind: 'leave' };
+export type RoomSleepOutcome = { kind: 'gift', money: number, items: Record<string, number> } |
+	{ kind: 'nothing' | 'lost' };
+export type MysteryBallOutcome = { kind: 'leave' | 'empty' | 'grumpy' } |
+	{ kind: 'supplies', money: number, items: Record<string, number> } |
+	{ kind: 'gift', pokemon: RoguePokemon } | { kind: 'battle', team: PokemonSet[] };
+export interface RoomBattlePrize { fragments: EventFragmentOffer | null; toolbox: string[] }
+export type ForestOutcome = { choice: string } & (
+	{ kind: 'watch', support: number, replay: { log: string[], winner: number | null } } |
+	{ kind: 'battle', team: PokemonSet[], reward: number, text: string } |
+	{ kind: 'reward', supplies: { money: number, items: Record<string, number> },
+		fragments: EventFragmentOffer | null, text: string, }
+);
 export interface RogueEvent {
+	/** One public roll, applied to both co-op members; personal payments/training remain separate. */
+	mushroomOutcome?: MushroomOutcome;
+	roomSleepOutcome?: RoomSleepOutcome;
+	roomBattlePrize?: RoomBattlePrize;
+	mysteryBallOutcome?: MysteryBallOutcome;
+	forestOutcome?: ForestOutcome;
+	battleSupplies?: { money: number, items: Record<string, number> };
 	activity?: JourneyActivity;
 	social?: SocialEvent;
 	rival?: RivalEvent;
@@ -51,6 +78,11 @@ export interface RogueEvent {
 	rematch?: string;
 	police?: PoliceEvent;
 	honeymoonHappy?: boolean;
+	/** Shared encounter, separate persistent account trips; only these owners complete this journey. */
+	coopHoneymoon?: { trip: HoneymoonTrip, owners: Record<string, HoneymoonTrip> };
+	/** Temporary player-controlled escort; never inserted into either persistent personal party. */
+	coopEscort?: { owner: string, pokemon: RoguePokemon };
+	coopScroll?: import('./coop-scroll').CoopScrollTrial;
 	ski?: SkiState;
 	stonesOpened?: number;
 	tracks?: LegendaryTracks;
@@ -59,6 +91,7 @@ export interface RogueEvent {
 	exclusive?: ExclusiveEvent;
 	fragmentOffer?: EventFragmentOffer;
 	fishing?: FishingState;
+	banditFragments?: EventFragmentOffer | null;
 	luck?: LuckEventResult;
 	trainingAidGranted?: boolean;
 	trainingAidBlocked?: boolean;
@@ -107,13 +140,21 @@ export function eventRouteTemplates(templates: RogueNode[], random: RogueRandom)
 	} : node);
 }
 
-export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
+export function chooseEvent(
+	run: RogueRun, random: RogueRandom, allowed?: ReadonlySet<EventID>, otherParties: readonly RogueRun[] = []
+): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
-	const candidates = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => id !== last &&
+	const parties = [run, ...otherParties];
+	const tripEligible = (id: EventID) => id === 'honeymoon' ?
+		parties.every(party => honeymoonEligible(party, id)) : parties.some(party => honeymoonEligible(party, id));
+	const eligible = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => (!allowed || allowed.has(id)) &&
 		eventPacingWeight(run.floor, id) > 0 && luckEventEligible(run.floor, id) &&
-		(id !== 'coverageworkshop' || run.floor >= 60) && activityEligible(run, id) &&
-		greninjaEventEligible(run, id) && expeditionEligible(run, id) &&
-		run.floor >= trainingFloor(id) && honeymoonEligible(run, id) &&
+		(id !== 'coverageworkshop' || run.floor >= 60) &&
+		(activityEligible(run, id) || otherParties.some(party => activityEligible(party, id))) &&
+		parties.some(party => greninjaEventEligible(party, id)) &&
+		// Co-op parties qualify individually: do not combine incomplete fossil recipes across bags.
+		(expeditionEligible(run, id) || otherParties.some(party => expeditionEligible(party, id))) &&
+		run.floor >= trainingFloor(id) && tripEligible(id) &&
 		!['masterballgift', 'rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector',
 			'policeassist', 'policerevenge'].includes(id) &&
 			(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
@@ -121,6 +162,10 @@ export function chooseEvent(run: RogueRun, random: RogueRandom): EventID {
 			(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
 			(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
 			(id !== 'legendarytracks' || run.floor >= LEGENDARY_TRACKS_FLOOR));
+	const candidates = eligible.filter(id => id !== last);
+	// A restricted co-op pool can have just one eligible early event. Do not draw an undefined event.
+	if (!candidates.length) candidates.push(...eligible);
+	if (!candidates.length) throw new Error('当前楼层没有可用事件。');
 	const unseen = candidates.filter(id => !history.some(entry => entry.id === id));
 	// Companion encounter bonuses also apply while exploring unseen events.
 	const cooled = candidates.filter(id => {
@@ -190,10 +235,7 @@ export function beginEvent(run: RogueRun, random: RogueRandom) {
 		run.node!.reward = { money: 0, items: {} }; return;
 	}
 	const event: RogueEvent = { id, key: randomUUID(), stage: 'choice' };
-	if (id === 'mysteryball') {
-		const roll = random(100), weights = run.floor <= 40 ? [85, 99] : run.floor <= 100 ? [60, 90] : [40, 75];
-		event.ball = roll < weights[0] ? 'pokeball' : roll < weights[1] ? 'greatball' : 'ultraball';
-	}
+	if (id === 'mysteryball') event.ball = mysteryBallAtFloor(run.floor, random);
 	if (id === 'forest') event.teams = forestTeams(ordinaryLevel(run.floor), random);
 	(run.eventHistory ||= []).push({ id, floor: run.floor });
 	run.node!.event = event;
@@ -206,8 +248,9 @@ export function beginEvent(run: RogueRun, random: RogueRandom) {
 	run.phase = 'event';
 }
 
-function supplies(run: RogueRun, content: RogueContent, random: RogueRandom, budget: number, fruit = false) {
-	if (budget <= 0) return;
+function rollSupplies(content: RogueContent, random: RogueRandom, budget: number, fruit = false) {
+	const items: Record<string, number> = {};
+	if (budget <= 0) return { money: 0, items };
 	const pool = content.items.filter(item => fruit ?
 		['oranberry', 'sitrusberry'].includes(item.id) || item.kind === 'effort' && item.amount === 1 :
 		['ball', 'heal', 'revive', 'cure', 'ether', 'treasure'].includes(item.kind) &&
@@ -220,10 +263,128 @@ function supplies(run: RogueRun, content: RogueContent, random: RogueRandom, bud
 		if (!available.length) break;
 		const item = available[random(available.length)];
 		const count = Math.max(1, Math.floor(left / (3 - Math.min(i, 2)) / item.value));
-		giveEquipment(run, content, random, item.id, count);
+		items[item.id] = (items[item.id] || 0) + count;
 		left -= count * item.value;
 	}
-	if (left > 0) run.money += left;
+	return { money: Math.max(0, left), items };
+}
+function supplies(run: RogueRun, content: RogueContent, random: RogueRandom, budget: number, fruit = false) {
+	const reward = rollSupplies(content, random, budget, fruit);
+	for (const [item, count] of Object.entries(reward.items)) giveEquipment(run, content, random, item, count);
+	run.money += reward.money;
+}
+
+export function rollMushroomOutcome(floor: number, content: RogueContent, random: RogueRandom, choice: string): MushroomOutcome {
+	if (choice === 'trade') {
+		const cost = eventCost(floor, 0.4), treasures = random(100) < 75;
+		if (!treasures) return { kind: 'trade', cost, treasures,
+			...rollSupplies(content, random, cost + eventBudget(floor, 1.15)) };
+		const items: Record<string, number> = {};
+		const unit = TREASURES.find(item => item.id === 'tinymushroom')!.sellPrice!;
+		let value = Math.round((cost + eventBudget(floor, 1.15)) / unit) * unit;
+		for (const id of ['balmmushroom', 'bigmushroom', 'tinymushroom']) {
+			const price = TREASURES.find(item => item.id === id)!.sellPrice!;
+			const count = Math.floor(value / price);
+			if (count) items[id] = count;
+			value %= price;
+		}
+		return { kind: 'trade', cost, treasures, money: 0, items };
+	}
+	if (choice === 'taste') return { kind: 'taste', vitality: random(100) < 65 };
+	return { kind: 'leave' };
+}
+
+export function rollRoomSleepOutcome(floor: number, content: RogueContent, random: RogueRandom): RoomSleepOutcome {
+	const roll = random(100);
+	return roll < 50 ? { kind: 'gift', ...rollSupplies(content, random, eventBudget(floor, 2.6)) } :
+		{ kind: roll < 80 ? 'nothing' : 'lost' };
+}
+
+export function mysteryBallAtFloor(floor: number, random: RogueRandom) {
+	const roll = random(100), weights = floor <= 40 ? [85, 99] : floor <= 100 ? [60, 90] : [40, 75];
+	return roll < weights[0] ? 'pokeball' : roll < weights[1] ? 'greatball' : 'ultraball';
+}
+
+export function rollMysteryBallOutcome(
+	run: RogueRun, content: RogueContent, random: RogueRandom, choice: string
+): MysteryBallOutcome {
+	const roll = random(100);
+	if (choice === 'leave') return roll < 30 ?
+		{ kind: 'supplies', ...rollSupplies(content, random, eventBudget(run.floor, 0.4)) } : { kind: 'leave' };
+	if (roll < 40) return { kind: 'gift', pokemon: drawBlessingGift(run, content, random, {
+		eliteIVs: false, level: Math.max(3, ordinaryLevel(run.floor) - 3), eligibleStage: true,
+	}) };
+	if (roll < 60) return { kind: 'empty' };
+	if (roll < 70) return { kind: 'grumpy' };
+	const mon = drawBlessingGift(run, content, random, { eliteIVs: false,
+		level: Math.min(100, ordinaryLevel(run.floor) + 3), eligibleStage: true });
+	// Wild shiny probability is rolled once by prepareSpiritNode, not again as a gift.
+	mon.set.shiny = false;
+	return { kind: 'battle', team: [mon.set] };
+}
+
+export function rollEventBattleSupplies(run: RogueRun, content: RogueContent, random: RogueRandom) {
+	const reward = run.node!.event!.battleReward;
+	if (reward === 'room') return undefined;
+	return rollSupplies(content, random, Math.max(0, eventBudget(run.floor, reward) - expectedWildLoot(run.floor)));
+}
+/** Shared follow-up options fit both personal fragment ledgers; the alternative retains its original value. */
+export function sharedFragmentOffer(runs: RogueRun[], alternative: 'room' | 'forest' | 'bandits', random: RogueRandom) {
+	const preview = structuredClone(runs[0]);
+	const tier = eventFragmentTier(preview.floor, preview.difficulty, preview.eventFragmentRuleVersion);
+	if (tier) preview.eventFragments = { ...preview.eventFragments, [tier.key]:
+		Math.max(...runs.map(run => run.eventFragments?.[tier.key] || 0)) };
+	// A capped reward must still be a valid amount for both owners. If their legal ranges do not
+	// intersect, keep the common supplies alternative instead of creating an unclaimable choice.
+	if (tier) {
+		const lower = alternative === 'forest' ? tier.min : tier.max - 2;
+		const upper = alternative === 'forest' ? Math.min(tier.max, tier.min + 2) : tier.max;
+		const remaining = runs.map(run => tier.cap - (run.eventFragments?.[tier.key] || 0));
+		if (Math.max(...remaining.map(value => Math.min(value, lower))) >
+			Math.min(...remaining.map(value => Math.min(value, upper)))) return null;
+	}
+	const offered = offerEventFragments(preview, alternative, random);
+	return offered ? preview.node!.event!.fragmentOffer! : null;
+}
+export function rollSharedRoomPrize(runs: RogueRun[], random: RogueRandom): RoomBattlePrize {
+	return { fragments: sharedFragmentOffer(runs, 'room', random), toolbox: toolboxOptions(random) };
+}
+
+export function rollSharedForestOutcome(
+	runs: RogueRun[], content: RogueContent, random: RogueRandom, choice: string,
+): ForestOutcome {
+	const run = runs[0], event = run.node!.event!;
+	if (choice === 'left' || choice === 'right') {
+		return { choice, kind: 'watch', support: choice === 'left' ? 0 : 1,
+			replay: simulateForestBattle(event.teams!, random) };
+	}
+	let multiplier = 1.4, text = EVENT_TEXT.cheerWin;
+	if (choice === 'watched') {
+		const winner = event.replay!.winner;
+		if (winner === null) {
+			multiplier = 0.5; text = EVENT_TEXT.tie;
+		} else if (winner !== event.support) {
+			return { choice, kind: 'battle', team: structuredClone(event.teams![winner]),
+				reward: 2, text: EVENT_TEXT.cheerLose };
+		}
+	} else if (choice === 'mediate') {
+		const roll = random(100);
+		if (roll >= 75) return { choice, kind: 'battle', team: structuredClone(event.teams!.flat()),
+			reward: 3, text: EVENT_TEXT.mediateFight };
+		multiplier = roll < 30 ? 0.5 : 1.4;
+		text = roll < 30 ? EVENT_TEXT.mediateLeave : EVENT_TEXT.mediateGift;
+	} else {
+		throw new Error('森林事件共同步骤已变化。');
+	}
+	const fragments = multiplier === 1.4 ? sharedFragmentOffer(runs, 'forest', random) : null;
+	return { choice, kind: 'reward', fragments, text,
+		supplies: rollSupplies(content, random, eventBudget(run.floor, multiplier), true) };
+}
+
+function giveEventSupplies(run: RogueRun, content: RogueContent, random: RogueRandom,
+	reward: { money: number, items: Record<string, number> }) {
+	for (const [id, count] of Object.entries(reward.items)) giveEquipment(run, content, random, id, count);
+	run.money += reward.money;
 }
 
 function outcome(run: RogueRun, text: string[]) {
@@ -246,7 +407,7 @@ function prepareBattle(run: RogueRun, team: PokemonSet[], reward: number | 'room
 	run.encounter = 0; run.phase = 'ready';
 	if (punitive) recordNegativeBlessingEvent(run, 'outcome');
 }
-function rewardReceipt(run: RogueRun, before: { money: number, bag: Record<string, number>, shards?: number }) {
+export function rewardReceipt(run: RogueRun, before: { money: number, bag: Record<string, number>, shards?: number }) {
 	boostCompanionEventRewards(run, before);
 	const items: Record<string, number> = {};
 	for (const [id, count] of Object.entries(run.bag)) {
@@ -259,10 +420,23 @@ function rewardReceipt(run: RogueRun, before: { money: number, bag: Record<strin
 		money: (old?.money || 0) + run.money - before.money, points: 0 };
 }
 
+/** Authoritative co-op context, computed from saved parties; no command-supplied answers or capabilities. */
+export interface SharedActivityContext {
+	safari?: import('./journey-safari').SharedSafariContext;
+	adventure?: SharedAdventureRoll;
+	honeymoonTip?: number;
+	quiz?: SharedQuizRoll;
+	relicTypes?: readonly string[];
+	/** Trusted server time shared by both owners; never read from client input. */
+	now?: number;
+}
 export function chooseEventOption(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom,
-	key: string | undefined, choice: string | undefined, evs?: StatsTable, skiAt?: number) {
+	key: string | undefined, choice: string | undefined, evs?: StatsTable, skiAt?: number, sharedEgg?: RoguePokemon,
+	activityContext?: SharedActivityContext
+) {
 	const event = run.node?.event;
-	const view = eventView(run), service = event?.id === 'fantasytutor' ? fantasyTutorView(run) : serviceEventView(run);
+	const view = eventView(run, activityContext?.relicTypes);
+	const service = event?.id === 'fantasytutor' ? fantasyTutorView(run) : serviceEventView(run);
 	if (run.phase !== 'event' || !event || event.key !== key || event.settled ||
 		![...(view?.options || []), ...(service?.picker?.options || [])]
 			.some(option => option.id === choice && !option.disabled)) {
@@ -281,18 +455,25 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		event.result = ['你和伙伴跟着教练讨论了各自怕遇见的对手。他把研习券交给你：「准备好之后，在队伍面板选择伙伴和招式。合适的那一招，往往比一味加强更有用。」'];
 		rewardReceipt(run, before); return;
 	}
-	if (isJourneyActivity(event.id)) { chooseJourneyActivity(account, run, content, random, choice!); rewardReceipt(run, before); return; }
+	if (isJourneyActivity(event.id)) {
+		chooseJourneyActivity(account, run, content, random, choice!, activityContext?.now, activityContext?.safari);
+		rewardReceipt(run, before); return;
+	}
 	if (isLuckEvent(event.id)) { chooseLuckEvent(run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (event.rival) { chooseRival(run, content, random, choice!); rewardReceipt(run, before); return; }
 	if (greninjaEvent(event.id)) {
 		chooseGreninjaEvent(run, choice!); rewardReceipt(run, before); return;
 	}
 	if (event.social) { chooseSocialEvent(run, choice!, random); rewardReceipt(run, before); return; }
-	if (event.expedition) { chooseExpedition(account, run, content, random, choice!); rewardReceipt(run, before); return; }
+	if (event.expedition) {
+		chooseExpedition(account, run, content, random, choice!, sharedEgg, activityContext?.quiz);
+		rewardReceipt(run, before); return;
+	}
 	if (event.rematch) { chooseRematch(run, choice!); return; }
 	if (event.police) { choosePoliceRegion(run, choice!, random); return; }
 	if (event.id === 'honeymoon' || event.id === 'honeymoonreturn') {
-		chooseHoneymoon(account, run, content, random, choice!); rewardReceipt(run, before); return;
+		chooseHoneymoon(account, run, content, random, choice!, activityContext?.honeymoonTip);
+		rewardReceipt(run, before); return;
 	}
 	if (collectionEvent(event.id)) {
 		chooseCollection(run, content, random, choice!, Date.now(), skiAt);
@@ -309,7 +490,8 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		const alternative = event.fragmentOffer.alternative;
 		if (choice === 'fragments') outcome(run, [claimEventFragments(run)]);
 		else if (alternative === 'forest') {
-			supplies(run, content, random, eventBudget(run.floor, 1.4), true);
+			if (event.forestOutcome?.kind === 'reward') giveEventSupplies(run, content, random, event.forestOutcome.supplies);
+			else supplies(run, content, random, eventBudget(run.floor, 1.4), true);
 			outcome(run, ['你收下果实和补给，向宝可梦们挥手道别。']);
 		} else if (alternative === 'room') {
 			roomReward(run, random);
@@ -321,13 +503,26 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		rewardReceipt(run, before); return;
 	}
 	if (adventureEvent(event.id)) {
-		chooseAdventure(account, run, content, random, choice!);
+		chooseAdventure(account, run, content, random, choice!, activityContext?.now, activityContext?.adventure);
 		rewardReceipt(run, before); return;
 	}
 	if (trainingEvent(event.id)) {
 		chooseServiceOption(account, run, content, random, choice!, evs);
 		rewardReceipt(run, before);
 		return;
+	}
+	if (event.id === 'forest' && event.forestOutcome) {
+		const rolled = event.forestOutcome;
+		if (rolled.choice !== choice) throw new Error('森林事件共同结果与选择不一致。');
+		if (rolled.kind === 'watch') {
+			event.support = rolled.support; event.replay = structuredClone(rolled.replay); event.stage = 'watch';
+		} else if (rolled.kind === 'battle') {
+			prepareBattle(run, rolled.team, rolled.reward, rolled.text, true);
+		} else if (!rolled.fragments || !offerEventFragments(run, 'forest', random, rolled.fragments)) {
+			giveEventSupplies(run, content, random, rolled.supplies);
+			outcome(run, [rolled.text]);
+		}
+		rewardReceipt(run, before); return;
 	}
 	const level = Math.min(100, ordinaryLevel(run.floor) + 3);
 	if (event.stage === 'watch' && choice === 'watched') {
@@ -343,26 +538,30 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		} else prepareBattle(run, event.teams![winner], 2,
 			EVENT_TEXT.cheerLose, true);
 	} else if (event.id === 'mysteryball') {
-		const roll = random(100);
-		if (choice === 'leave') {
-			if (roll < 30) supplies(run, content, random, eventBudget(run.floor, 0.4));
-			outcome(run, [roll < 30 ? EVENT_TEXT.leaveBallGift : EVENT_TEXT.leaveBall]);
-		} else if (roll < 40) {
-			const mon = drawBlessingGift(run, content, random, { eliteIVs: false,
-				level: Math.max(3, ordinaryLevel(run.floor) - 3), eligibleStage: true,
-			});
+		const rolled = event.mysteryBallOutcome || rollMysteryBallOutcome(run, content, random, choice!);
+		if (rolled.kind === 'leave' || rolled.kind === 'supplies') {
+			if (rolled.kind === 'supplies') {
+				for (const [id, count] of Object.entries(rolled.items)) giveEquipment(run, content, random, id, count);
+				run.money += rolled.money;
+			}
+			outcome(run, [rolled.kind === 'supplies' ? EVENT_TEXT.leaveBallGift : EVENT_TEXT.leaveBall]);
+		} else if (rolled.kind === 'gift') {
+			const mon = event.mysteryBallOutcome ?
+				createRoguePokemon(structuredClone(rolled.pokemon.set), run.boosts, randomUUID(), rolled.pokemon.stars || 1) :
+				rolled.pokemon;
+			if (event.mysteryBallOutcome) {
+				mon.joinOrder = normalizeBlessings(run).nextJoin++;
+				initializeExperience(mon);
+			}
 			gift(account, run, content, mon, EVENT_NAMES[event.id]);
 			outcome(run, [EVENT_TEXT.ballFriend]);
-		} else if (roll < 60) {
+		} else if (rolled.kind === 'empty') {
 			giveEquipment(run, content, random, event.ball!);
 			outcome(run, [EVENT_TEXT.ballEmpty]);
-		} else if (roll < 70) {
+		} else if (rolled.kind === 'grumpy') {
 			outcome(run, [EVENT_TEXT.ballGrumpy]);
-		} else {
-			const mon = drawBlessingGift(run, content, random, { eliteIVs: false, level, eligibleStage: true });
-			// Wild shiny probability is rolled once by prepareSpiritNode, not again as a gift.
-			mon.set.shiny = false;
-			prepareBattle(run, [mon.set], 3, EVENT_TEXT.ballFight, true);
+		} else if (rolled.kind === 'battle') {
+			prepareBattle(run, rolled.team, 3, EVENT_TEXT.ballFight, true);
 		}
 	} else if (event.id === 'forest') {
 		if (choice === 'left' || choice === 'right') {
@@ -379,26 +578,15 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 			} else prepareBattle(run, event.teams!.flat(), 3, EVENT_TEXT.mediateFight, true);
 		}
 	} else if (event.id === 'mushrooms') {
-		if (choice === 'trade') {
-			const cost = eventCost(run.floor, 0.4);
-			run.money -= cost;
-			if (random(100) < 75) {
-				const unit = TREASURES.find(item => item.id === 'tinymushroom')!.sellPrice!;
-				let value = Math.round((cost + eventBudget(run.floor, 1.15)) / unit) * unit;
-				for (const id of ['balmmushroom', 'bigmushroom', 'tinymushroom']) {
-					const price = TREASURES.find(item => item.id === id)!.sellPrice!;
-					const count = Math.floor(value / price);
-					if (count) giveEquipment(run, content, random, id, count);
-					value %= price;
-				}
-				outcome(run, [EVENT_TEXT.tradeMushrooms]);
-			} else {
-				supplies(run, content, random, cost + eventBudget(run.floor, 1.15));
-				outcome(run, [EVENT_TEXT.tradeOther]);
-			}
-		} else if (choice === 'taste') {
+		const rolled = event.mushroomOutcome ||= rollMushroomOutcome(run.floor, content, random, choice!);
+		if (rolled.kind !== choice) throw new Error('蘑菇事件的共同结果与所选分支不匹配。');
+		if (rolled.kind === 'trade') {
+			run.money += rolled.money - rolled.cost;
+			for (const [id, count] of Object.entries(rolled.items)) giveEquipment(run, content, random, id, count);
+			outcome(run, [rolled.treasures ? EVENT_TEXT.tradeMushrooms : EVENT_TEXT.tradeOther]);
+		} else if (rolled.kind === 'taste') {
 			const intro = EVENT_TEXT.taste;
-			if (random(100) < 65) {
+			if (rolled.vitality) {
 				const effect = grantMushroomGrowth(run);
 				outcome(run, [intro, EVENT_TEXT.vitality,
 					effect]);
@@ -413,11 +601,12 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 			for (const set of team) set.ivs = randomEncounterIVs(random);
 			prepareBattle(run, team, 'room', EVENT_TEXT.roomFight);
 		} else {
-			const roll = random(100), text = [EVENT_TEXT.sleep];
-			if (roll < 50) {
-				supplies(run, content, random, eventBudget(run.floor, 2.6));
+			const rolled = event.roomSleepOutcome ||= rollRoomSleepOutcome(run.floor, content, random), text = [EVENT_TEXT.sleep];
+			if (rolled.kind === 'gift') {
+				for (const [id, count] of Object.entries(rolled.items)) giveEquipment(run, content, random, id, count);
+				run.money += rolled.money;
 				text.push(EVENT_TEXT.sleepGift);
-			} else if (roll < 80) {
+			} else if (rolled.kind === 'nothing') {
 				text.push(EVENT_TEXT.sleepNothing);
 			} else {
 				text.push(EVENT_TEXT.sleepLost(loseMoney(run)));
@@ -429,14 +618,15 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 }
 
 function roomReward(run: RogueRun, random: RogueRandom) {
-	toolbox(run, random);
+	toolbox(run, random, false, run.node!.event!.roomBattlePrize?.toolbox);
 	const shards = 2 + Math.min(4, Math.floor((run.floor - 1) / 40));
 	run.blessings!.shards += shards;
 	outcome(run, [EVENT_TEXT.roomWin, `获得工具箱 ×1（四件选一件）、幻想碎片 ×${shards}。`]);
 }
 
 export function settleEventBattle(
-	run: RogueRun, content: RogueContent, random: RogueRandom, won: boolean, retreated = false, account?: RogueAccount
+	run: RogueRun, content: RogueContent, random: RogueRandom, won: boolean, retreated = false,
+	account?: RogueAccount, sharedGift?: RoguePokemon
 ) {
 	const event = run.node?.event;
 	if (!event || event.stage !== 'battle' || event.settled) return;
@@ -444,7 +634,7 @@ export function settleEventBattle(
 	if (isJourneyActivity(event.id)) {
 		if (!account) throw new Error('活动结算缺少账号。');
 		const before = { money: run.money, bag: { ...run.bag } };
-		settleJourneyActivity(account, run, content, random, won, retreated); rewardReceipt(run, before); return;
+		settleJourneyActivity(account, run, content, random, won, retreated, sharedGift); rewardReceipt(run, before); return;
 	}
 	if (event.social) {
 		if (!retreated) {
@@ -496,10 +686,14 @@ export function settleEventBattle(
 	}
 	if (won) {
 		if (event.battleReward === 'room') {
-			if (!offerEventFragments(run, 'room', random)) roomReward(run, random);
+			const prize = event.roomBattlePrize;
+			const offered = prize ? !!prize.fragments && offerEventFragments(run, 'room', random, prize.fragments) :
+				offerEventFragments(run, 'room', random);
+			if (!offered) roomReward(run, random);
 		} else {
-			const extra = eventBudget(run.floor, event.battleReward) - expectedWildLoot(run.floor);
-			supplies(run, content, random, Math.max(0, extra));
+			const reward = event.battleSupplies || rollEventBattleSupplies(run, content, random)!;
+			for (const [id, count] of Object.entries(reward.items)) giveEquipment(run, content, random, id, count);
+			run.money += reward.money;
 			outcome(run, [EVENT_TEXT.fightWin]);
 		}
 	} else outcome(run, [retreated ? EVENT_TEXT.fightRetreat : EVENT_TEXT.fightLose,
@@ -507,7 +701,7 @@ export function settleEventBattle(
 	rewardReceipt(run, before);
 }
 
-export function eventView(run: RogueRun) {
+export function eventView(run: RogueRun, cooperativeRelicTypes?: readonly string[]) {
 	const master = masterBallEventView(run);
 	if (master) return master;
 	const event = run.node?.event;
@@ -516,7 +710,8 @@ export function eventView(run: RogueRun) {
 		paragraphs: event.result || eventOpening(event.id), ...luckEventView(run) };
 	if (event.id === 'coverageworkshop') return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id],
 		paragraphs: event.result || eventOpening(event.id), options: event.settled ? [] : [{id: 'study', name: '和教练讨论队伍的薄弱环节', text: '领取一份补盲研习，可在战斗外自选一个合法的非本系攻击招式。', disabled: false}] };
-	if (isJourneyActivity(event.id)) return { id: event.id, key: event.key, stage: event.stage, title: EVENT_NAMES[event.id], ...journeyActivityView(run) };
+	if (isJourneyActivity(event.id)) return { id: event.id, key: event.key, stage: event.stage,
+		title: EVENT_NAMES[event.id], ...journeyActivityView(run, cooperativeRelicTypes) };
 	if (greninjaEvent(event.id)) return greninjaEventView(run);
 	if (event.social) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...socialEventView(run) };
 	if (event.rival) return { id: event.id, key: event.key, stage: event.stage, title: run.node!.name, ...rivalView(run) };

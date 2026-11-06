@@ -1,8 +1,15 @@
 import { hasBlessing } from '../../../sim/fantasy-rogue-blessings';
+import { hasRogueItemModule } from '../../../sim/rogue-item-amplification';
 
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	rogueitemmodule: {
+		name: 'Rogue Item Module', num: -2020, rating: 4, isNonstandard: 'Custom',
+		shortDesc: '道具的正向能力、伤害及回复加成翻倍；副作用不变。不附带非本系增伤，可与增幅系统叠加使原加成变为4倍。',
+		flags: { failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1,
+			cantsuppress: 1, breakable: 1, notransform: 1 },
+	},
 	originaldragon: {
-		name: 'Original Dragon', num: -2010, rating: 5, flags: {}, isNonstandard: 'Custom',
+		name: 'Original Dragon', num: -2010, rating: 5, flags: {},
 		shortDesc: '消除龙属性弱点；使用冰、火、电招式前将第二属性改为该属性；招式无视目标特性。',
 		onPrepareHit(source, target, move) {
 			if (!['Ice', 'Fire', 'Electric'].includes(move.type) || source.terastallized) return;
@@ -1080,7 +1087,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (!this.canSwitch(target.side) || target.forceSwitchFlag || target.switchFlag) return;
 			for (const side of this.sides) {
 				for (const active of side.active) {
-					active.switchFlag = false;
+					if (active) active.switchFlag = false;
 				}
 			}
 			target.switchFlag = true;
@@ -2446,6 +2453,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	zengfuxitong: {
 		// 1. 恢复HP效果受到增幅变为2倍
 		onTryHeal(damage, target, source, effect) {
+			if (hasRogueItemModule(target)) return;
 			// 指定你要求增幅恢复效果的五个道具 ID
 			const healItems = ['leftovers', 'berryjuice', 'shellbell', 'blacksludge', 'fantasysyrupyapple'];
 			if (effect && effect.effectType === 'Item' && healItems.includes(effect.id)) {
@@ -2458,6 +2466,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifyAtkPriority: 5,
 		onModifyAtk(atk, pokemon) {
 			// 讲究头带：原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍（+100%）
+			if (hasRogueItemModule(pokemon)) return;
 			if (pokemon.hasItem('choiceband')) {
 				return this.chainModify([4, 3]);
 			}
@@ -2466,6 +2475,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifyDefPriority: 5,
 		onModifyDef(def, pokemon) {
 			// 进化奇石：必须满足可进化的条件，原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍（+100%）
+			if (hasRogueItemModule(pokemon)) return;
 			if (pokemon.hasItem('eviolite') && pokemon.baseSpecies.nfe) {
 				return this.chainModify([4, 3]); 
 			}
@@ -2478,6 +2488,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifySpAPriority: 5,
 		onModifySpA(spa, pokemon) {
 			// 讲究眼镜：原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍
+			if (hasRogueItemModule(pokemon)) return;
 			if (pokemon.hasItem('choicespecs')) {
 				return this.chainModify([4, 3]);
 			}
@@ -2486,6 +2497,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifySpDPriority: 5,
 		onModifySpD(spd, pokemon) {
 			// 进化奇石
+			if (hasRogueItemModule(pokemon)) return;
 			if (pokemon.hasItem('eviolite') && pokemon.baseSpecies.nfe) {
 				return this.chainModify([4, 3]); 
 			}
@@ -2502,6 +2514,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifySpePriority: 5,
 		onModifySpe(spe, pokemon) {
 			// 讲究围巾：原效果 1.5 倍（+50%），乘上 4/3 后变为 2.0 倍
+			if (hasRogueItemModule(pokemon)) return;
 			if (pokemon.hasItem('choicescarf')) {
 				return this.chainModify([4, 3]); 
 			}

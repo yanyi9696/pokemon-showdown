@@ -188,7 +188,7 @@ describe('Fantasy Rogue forward-compatible emergency continuation', function () 
 		const original = account();
 		const db = new Database(filename);
 		try {
-			for (const future of [{ ...original, saveVersion: 3 },
+			for (const future of [{ ...original, saveVersion: 4 },
 				{ ...original, run: { ...original.run, boostRuleVersion: 3 } }]) {
 				db.prepare('UPDATE rogue_accounts SET data = ? WHERE userid = ?').run(JSON.stringify(future), user);
 				const before = rows();
@@ -199,6 +199,34 @@ describe('Fantasy Rogue forward-compatible emergency continuation', function () 
 		} finally { db.close(); }
 		assert.deepEqual(rogueSaveCompatibilityIssues({ cards: [{ snapshot: { boostRuleVersion: 9 } }] }),
 			['unsupported-growth-rule']);
+	});
+	it('reopens Nuzlocke progress and history without refreshing lives, capture limits or earned points', () => {
+		cmd('setdifficulty', { value: '0' });
+		cmd('setnuzlocke', { value: 'on' });
+		cmd('start', { starters: ['bulbasaur'] });
+		store.change(user, a => {
+			a.run.phase = 'ready'; a.run.node = structuredClone(content().floors[1][0]);
+			a.run.team.push(structuredClone({ ...a.run.team[0], id: 'living-partner' }));
+		});
+		cmd('battle');
+		const run = account().run, token = run.battle.token, id = run.team[0].id;
+		engine.nuzlockeProgress(user, token, { captureAllowed: true, target: `${run.battle.encounterId}:foe:0`, dead: [id] });
+		const saved = account();
+		reopen(); engine.migrate(user);
+		assert.deepEqual(account().run.nuzlocke, saved.run.nuzlocke);
+		assert.equal(account().run.team[0].hp, 0);
+		assert.equal(account().points, saved.points);
+		cmd('retreat');
+		const result = { encounterId: run.battle.encounterId, won: false, team: run.team, bag: run.bag };
+		engine.settle(user, token, result); engine.settle(user, token, result);
+		assert.equal(account().run.team[0].hp, 0);
+		assert.equal(account().points, saved.points);
+		cmd('abandon');
+		reopen();
+		const history = rows().rogue_history;
+		assert.equal(history.length, 1);
+		assert(JSON.parse(history[0].data).snapshot.nuzlocke);
+		assert.equal(check(filename, path.resolve(__dirname, '../..')).compatible, true);
 	});
 	it('preflights a backup read-only, closes connections and refuses uncertified old builds', () => {
 		cmd('start', { starters: ['bulbasaur'] });

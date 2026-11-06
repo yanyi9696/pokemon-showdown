@@ -34,6 +34,6 @@ export function claimCoverage(account: RogueAccount, run: RogueRun, content: Rog
 		throw new Error('请在战斗外为队内伙伴选择合法、未掌握的非本系攻击招式。');
 	}
 	rememberMove(mon, move!); run.coverageLessons.remaining--;
-	recordStarterMoves(account, content, { ...mon.set, moves: [move!] });
+	recordStarterMoves(account, content, { ...mon.set, moves: [move!] }, run);
 	(run.notices ||= []).push('补盲研习完成，可在队伍面板装备新招式。');
 }

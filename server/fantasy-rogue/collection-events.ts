@@ -20,6 +20,17 @@ export const stonePrice = (floor: number) => 350 + floor * 8;
 const finish = (run: RogueRun, result: string[]) =>
 	Object.assign(run.node!.event!, { stage: 'result', settled: true, result });
 const give = (run: RogueRun, item: string, count: number) => { run.bag[item] = (run.bag[item] || 0) + count; };
+/** The same observation gift is used for each player in a shared collector visit. */
+export function rewardMushroomObservation(run: RogueRun) {
+	give(run, 'tinymushroom', 3); run.money += journeyCoins(run.floor, 100 + run.floor * 2);
+	(run.notices ||= []).push('收藏家赞叹着伙伴的菌伞，赠送【小蘑菇】×3 和一小笔观察谢礼。');
+}
+export function rewardFeatherObservation(run: RogueRun) {
+	const coins = journeyCoins(run.floor, 150 + run.floor * 3);
+	run.money += coins; give(run, 'prettyfeather', 3);
+	return ['爱好者认真画下羽毛的形状，连声道谢：「原来近看是这样的纹路！」',
+		`获得 ${coins} 金币与【美丽之羽】×3。`];
+}
 export function collectionView(run: RogueRun, now = Date.now()) {
 	const event = run.node!.event!;
 	if (event.stage !== 'choice') return { options: [] };
@@ -39,10 +50,12 @@ export function collectionView(run: RogueRun, now = Date.now()) {
 	}
 	if (event.id === 'feathers') return { options: [
 		option('feathertrade', '用美丽之羽交换训练羽毛', '5 根【美丽之羽】换 6 根随机能力羽毛。', (run.bag.prettyfeather || 0) < 5),
-		...run.team.filter(m => !m.egg && featheredSpecies(m.set.species)).map(m => option(`show:${m.id}`, `展示 ${m.set.species}`)),
+		...run.team.filter(m => !m.egg && !m.nuzlockeDead && featheredSpecies(m.set.species))
+			.map(m => option(`show:${m.id}`, `展示 ${m.set.species}`)),
 		option('leave', '把这次机会留到下次。')] };
 	return { options: [
-		...run.team.filter(m => !m.egg && mushroomSpecies(m.set.species)).map(m => option(`show:${m.id}`, `展示 ${m.set.species}`)),
+		...run.team.filter(m => !m.egg && !m.nuzlockeDead && mushroomSpecies(m.set.species))
+			.map(m => option(`show:${m.id}`, `展示 ${m.set.species}`)),
 		option('collectorshop', '看看蘑菇的回收价', '所有蘑菇按普通兑换价的 125% 回收。')] };
 }
 
@@ -132,15 +145,13 @@ export function chooseCollection(
 			finish(run, ['「这些纹路太漂亮了！」爱好者小心地将羽毛夹进册子，把 6 根能力羽毛交给了你。']);
 		} else {
 			if (!run.team.some(m => m.id === choice.slice(5) && featheredSpecies(m.set.species))) throw new Error('这位伙伴不符合羽毛观察条件。');
-			const coins = journeyCoins(run.floor, 150 + run.floor * 3); run.money += coins; give(run, 'prettyfeather', 3);
-			finish(run, ['爱好者认真画下羽毛的形状，连声道谢：「原来近看是这样的纹路！」', `获得 ${coins} 金币与【美丽之羽】×3。`]);
+			finish(run, rewardFeatherObservation(run));
 		}
 		return;
 	}
 	if (choice.startsWith('show:')) {
 		if (!run.team.some(m => m.id === choice.slice(5) && mushroomSpecies(m.set.species))) throw new Error('请展示蘑菇宝可梦。');
-		give(run, 'tinymushroom', 3); run.money += journeyCoins(run.floor, 100 + run.floor * 2);
-		(run.notices ||= []).push('收藏家赞叹着伙伴的菌伞，赠送【小蘑菇】×3 和一小笔观察谢礼。');
+		rewardMushroomObservation(run);
 	}
 	event.settled = true; run.phase = 'rest';
 }

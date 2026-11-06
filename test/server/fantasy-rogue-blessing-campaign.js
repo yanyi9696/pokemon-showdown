@@ -82,7 +82,7 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 	}
 	function resolve(account, run, value) {
 		const reward = run.blessings.pending[0];
-		b.handleBlessingCommand(account, run, content, { action: 'blessingreward',
+		b.handleBlessingCommand(account, run, content, { action: 'blessingreward', confirmed: true,
 			...(reward.kind === 'compound' ? compoundCommand(run, reward) : {member: reward.id, value}) }, zero);
 	}
 	for (const spirit of [undefined, ...require('../../dist/sim/fantasy-rogue-spirits').activeRogueSpirits().map(s => s.id)]) {
@@ -158,6 +158,8 @@ describe('Fantasy Rogue blessing campaign and saves', function () {
 	for (const def of ROGUE_BLESSINGS) it(`grants and serializes ${def.id} with its required reward flow`, () => {
 		const floor = def.floors?.[0] || (['overtime', 'killlagirl'].includes(def.family) ? 150 : 50), { run, account } = setup(floor);
 		prepareCompanionParty(run, def.family);
+		const system = { universalmega: 'mega', universalgmega: 'gmega', universaltotem: 'z' }[def.family];
+		if (system) run[system + 'Unlocked'] = true;
 		if (def.family === 'monkeyking') run.team[0] = createRoguePokemon(set('Infernape', 'Blaze', 50), run.boosts);
 		if (def.family === 'unity') run.team = ['Squirtle', 'Totodile'].map(species =>
 			createRoguePokemon(set(species, 'Torrent', 50), run.boosts));

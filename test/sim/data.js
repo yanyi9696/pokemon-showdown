@@ -176,6 +176,9 @@ describe('Dex data', () => {
 				assert.equal(Aliases[aliasid], Dex.data.Items[targetid].name, `Alias ${aliasid} has incorrect Item name "${Aliases[aliasid]}"`);
 			} else if (targetid in Dex.data.Rulesets) {
 				assert.equal(Aliases[aliasid], Dex.data.Rulesets[targetid].name, `Alias ${aliasid} has incorrect Ruleset name "${Aliases[aliasid]}"`);
+			} else if (targetid in Dex.mod('gen9fantasy').data.Pokedex) {
+				assert.equal(Aliases[aliasid], Dex.mod('gen9fantasy').data.Pokedex[targetid].name,
+					`Alias ${aliasid} has incorrect Fantasy species name "${Aliases[aliasid]}"`);
 			} else {
 				assert(false, `Alias ${aliasid} -> "${Aliases[aliasid]}" must be a pokemon/move/ability/item/format`);
 			}

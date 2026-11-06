@@ -38,6 +38,7 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 		}
 		if (ownsBlessing(effects, 'arsenal')) add('bianhuanziyou');
 		if (ownsBlessing(effects, 'lifepower')) add('reckless');
+		if (ownsBlessing(effects, 'itemcontest')) add('rogueitemmodule');
 		if (ownsBlessing(effects, 'restinball')) add('regenerator', 'naturalcure');
 		if (ownsBlessing(effects, 'duck') && strongestBlessingMember(team, 'psyduck|golduck')?.id === mon.id) add('neuroforce');
 		if (strongestBlessingMember(team, 'meloetta')?.id === mon.id) {

@@ -13,6 +13,7 @@ import {
 	CANDY_SHOP, routeCandyReward, earlyCoinMultiplier, journeyIncomeMultiplier, journeyCoins,
 } from './early-balance';
 import { coinSupplyMultiplier } from './resource-pacing';
+import { rebalanceCandyReward, candyRewardPreview, candyExperience } from './candy-rewards';
 import { convertSpiritItem } from './spirits';
 import { machineMoves, premiumMachine, tradeItem } from './trading';
 import { natureMintSupplies } from './nature-mints';
@@ -137,12 +138,16 @@ export function rewardChoices(run: RogueRun) {
 	const scale = difficultyRewardScale(run.difficulty, run.floor);
 	const enhanced = !!scene.demonstrated, experience = Math.round(rewardExperience(run.floor, enhanced) * scale / 100) * 100;
 	const items = rewardCandies(run.floor, experience);
+	const candyReward = rebalanceCandyReward(run.floor, items);
+	const candyPreview = candyRewardPreview(run, candyReward);
 	const money = Math.round(rewardMoney(run.floor, enhanced) * scale);
 	const choices: { id: string, name: string, text: string, items?: Record<string, number>, money?: number,
-		amount?: number, targets?: { member: string, amount: number }[], disabled?: boolean, }[] = [
+		amount?: number, targets?: { member: string, amount: number }[], disabled?: boolean, candyTraining?: number, }[] = [
 		{ id: 'recovery', name: '多备一份药品', text: `额外领取一份回复药${run.floor >= 20 || enhanced ? '、活力碎片' : ''}和 PP 单项小补剂。`,
 			items: { ...rewardRecovery(run.floor, enhanced), ether: enhanced ? 2 : 1 } },
-		{ id: 'experience', name: '经验糖果', text: `获得共 ${experience} 点经验的糖果，可自由分给伙伴。`, items },
+		{ id: 'experience', name: '经验糖果',
+			text: `获得共 ${candyExperience(candyPreview.items)} 点经验的糖果，可自由分给伙伴。${candyPreview.effect}`,
+			...candyReward },
 		{ id: 'money', name: '路费', text: `获得 ${money} 金币。`, money },
 	];
 	for (const kind of run.floor >= JOURNEY_GROWTH_START && !scene.trainingAlternatives ?
@@ -248,9 +253,11 @@ export function chooseReward(run: RogueRun, content: RogueContent, random: Rogue
 			items[received] = (items[received] || 0) + 1;
 		}
 	}
-	run.node.reward = { money: Math.round(baseCoins(run.floor) * difficultyRewardScale(run.difficulty, run.floor)) + (choice.money || 0), items };
+	run.node.reward = { money: Math.round(baseCoins(run.floor) * difficultyRewardScale(run.difficulty, run.floor)) +
+		(choice.money || 0), items, ...(choice.candyTraining ? { candyTraining: choice.candyTraining } : {}) };
 	scene.claimed = true;
 	if (scene.catchupCheckpoint) run.catchupCheckpoint = scene.catchupCheckpoint;
-	scene.result = effect;
+	// The claim receipt adds the actual conversion (including a cap refund), not this prospective text twice.
+	scene.result = value === 'experience' ? '经验糖果已领取。' : effect;
 	(run.notices ||= []).push(effect);
 }

@@ -5,6 +5,8 @@ export interface MainlineProgress {
 	version: 1;
 	completed: string[];
 	pity: Record<string, boolean>;
+	/** Consecutive missed full clears; consumed when reserving the next eligible adventure. */
+	missedClears?: Record<string, number>;
 	identityRevealed?: boolean;
 	endingPending?: boolean;
 	endingSeen?: boolean;
@@ -40,11 +42,18 @@ export function unlockStoryDifficulty(account: RogueAccount) {
 			'上一档的通关与故事均已完成。下次出发前，可在局外成长中选择新的档位。');
 	}
 }
-/** At 100 floors, a genuinely missed eligible story reserves the next run's early window. */
-export function settleStoryPity(account: RogueAccount, run: RogueRun) {
+export const MAINLINE_CHANCE = { base: 30, perClear: 15, maximum: 75 };
+export function mainlineChance(missedClears: number) {
+	return Math.min(MAINLINE_CHANCE.maximum, MAINLINE_CHANCE.base + missedClears * MAINLINE_CHANCE.perClear);
+}
+/** Only the successful 200-floor settlement grants compensation, never a loss or abandonment. */
+export function settleStoryPity(account: RogueAccount, run: RogueRun, cleared = false) {
 	const reservation = run.mainline;
-	if (!reservation || reservation.pitySettled || run.floor < 100 || run.difficulty === 'easy' ||
+	if (!cleared || !reservation || reservation.pitySettled || run.floor !== 200 || run.difficulty === 'easy' ||
 		run.difficultyTest) return;
 	reservation.pitySettled = true;
-	mainlineProgress(account).pity[String(run.difficulty || 0)] = !reservation.offered;
+	const progress = mainlineProgress(account), tier = String(run.difficulty || 0);
+	progress.pity[tier] = false;
+	(progress.missedClears ||= {})[tier] = reservation.offered ? 0 :
+		Math.min(3, (reservation.missedClears || 0) + 1);
 }

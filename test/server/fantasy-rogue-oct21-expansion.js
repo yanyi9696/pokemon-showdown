@@ -425,7 +425,10 @@ describe('Fantasy Rogue October 21 complete expansion', function () {
 			battle = new Battle({formatid: 'gen9fantasyrogue', seed: [1, 2, 3, 4], fantasyRogue: state,
 				p1: {name: user, team: state.team.map(p => p.set)}, p2: {team: before.node.encounters[0].team}});
 			battle.makeChoices('team 1', 'team 123');
-			for (let n = 0; !battle.ended && n < 30; n++) battle.makeChoices('default', 'default');
+			for (let n = 0; !battle.ended && n < 30; n++) {
+				battle.makeChoices('default', 'default');
+				require('../fixtures/fantasy-rogue').resumeBattleGrowth(engine, user, battle);
+			}
 			assert(battle.ended && rogueBattleResult(battle).won, battle.log.slice(-12).join('\n'));
 			engine.settle(user, before.battle.token, rogueBattleResult(battle)); const after = store.get(user).run;
 			assert.equal(after.team.find(p => p.id === kubfu.id).set.species, 'Urshifu');

@@ -145,6 +145,6 @@ export function affectionCommand(run: RogueRun, command: RogueCommand) {
 	if (scene.stage === 100) b.relationship = command.value === 'accept' ? 'couple' :
 		command.value === 'oldfriend' ? 'oldfriend' : 'bestfriend';
 	(run.notices ||= []).push(
-		command.value === 'friends' ? `${scene.name}微笑着点头。⌈谢谢你认真告诉我。我们仍是很好的同行伙伴。⌋` :
+		command.value === 'friends' ? `${scene.name}微笑着点头。『谢谢你认真告诉我。我们仍是很好的同行伙伴。』` :
 		`${scene.name}珍重地收下了你的回应。`);
 }

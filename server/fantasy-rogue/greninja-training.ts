@@ -5,13 +5,16 @@ import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rul
 import { gainExperience, initializeExperience } from './progression';
 import { eventOpening } from './event-text';
 import { grantSystem } from './blessings';
+import { releaseReason } from './release';
 import type { RogueRun } from './types';
 
 export interface GreninjaTraining { member?: RoguePokemon; floor: number; returned?: boolean }
 export const greninjaEvent = (id: string) => ['greninjatraining', 'greninjareturn'].includes(id);
 export function greninjaCandidates(run: RogueRun) {
-	return run.team.filter(mon => !mon.egg && toID(mon.set.species) === 'greninjafantasy' &&
-		run.team.some(other => other.id !== mon.id && !other.egg && other.hp > 0));
+	if (run.greninjaTraining) return [];
+	return run.team.filter(mon => !mon.egg && !mon.nuzlockeDead && toID(mon.set.species) === 'greninjafantasy' &&
+		!releaseReason(run, mon) && run.team.some(other => other.id !== mon.id &&
+			!other.egg && !other.nuzlockeDead && other.hp > 0));
 }
 export function greninjaEventEligible(run: RogueRun, id: string) {
 	if (id === 'greninjatraining') return !run.greninjaTraining && greninjaCandidates(run).length > 0;
@@ -60,10 +63,14 @@ export function chooseGreninjaEvent(run: RogueRun, choice: string) {
 			run.pendingMoves = run.pendingMoves?.filter(move => move.member !== mon.id);
 		}
 		trip.returned = true; delete trip.member;
-		run.bag.greninjaashz = (run.bag.greninjaashz || 0) + 1;
-		grantSystem(run, 'z', '护林员的赠礼', false);
+		grantGreninjaReturnGift(run);
 		event.result = [`两道水影从树梢跃下。你的伙伴完成了 ${levels} 层旅途间的修行，等级提升至 Lv.${mon.set.level}（最高 100 级），带着原本的养成与招式回来了。`,
 			'小智版甲贺忍蛙将【智蛙 Z】交到你手中。Z 招式系统已解锁；幻想甲贺忍蛙携带它后，登场时即可切换为小智版形态，并以【飞水手里剑】发动专属 Z 招式。'];
 	}
 	Object.assign(event, { stage: 'result', settled: true });
+}
+
+export function grantGreninjaReturnGift(run: RogueRun) {
+	run.bag.greninjaashz = (run.bag.greninjaashz || 0) + 1;
+	grantSystem(run, 'z', '护林员的赠礼', false);
 }

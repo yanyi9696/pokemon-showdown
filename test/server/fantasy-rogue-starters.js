@@ -6,6 +6,7 @@ const { RogueEngine, createRoguePokemon } = require('../../dist/server/fantasy-r
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { recordStarterTraits, starterTraits } = require('../../dist/server/fantasy-rogue/starter-traits');
+const { recordBlessingGift } = require('../../dist/server/fantasy-rogue/blessings');
 const { captureThresholds } = require('../../dist/sim/fantasy-rogue-rules');
 const { rogueCaptureChance } = require('../../dist/sim/fantasy-rogue');
 const { Battle } = require('../../dist/sim/battle');
@@ -52,6 +53,17 @@ describe('Fantasy Rogue starter traits and capture probability', () => {
 		assert.equal(first.run.team[0].set.nature, 'Brave');
 		assert.deepEqual(starterTraits(first, 'bulbasaur').natures, ['brave']);
 		engine.command(user, request); assert.deepEqual(account(), first);
+	});
+	it('keeps actual charm and custom-build gift sources from unlocking traits in an otherwise unrestricted account', () => {
+		cmd('start', { starters: ['bulbasaur'] });
+		for (const source of [{ difficulty: 'easy' }, { startingBuilds: {} }]) {
+			const saved = account(), run = { ...structuredClone(saved.run), ...source };
+			const original = structuredClone(starterTraits(saved, 'magikarp'));
+			const mon = createRoguePokemon({ ...set('Magikarp', 'Rattled', 20, ['Splash', 'Bounce']), nature: 'Jolly' }, stats(0));
+			recordBlessingGift(saved, run, engine.content, mon);
+			assert.equal(saved.captures.magikarp, 1);
+			assert.deepEqual(starterTraits(saved, 'magikarp'), original);
+		}
 	});
 	it('records captured evolved partners immediately, once, and preserves traits after abandonment', () => {
 		cmd('start', { starters: ['bulbasaur'] }); cmd('select', { value: 'wild0' }); cmd('battle');

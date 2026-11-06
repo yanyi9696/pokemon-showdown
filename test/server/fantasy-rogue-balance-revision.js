@@ -17,6 +17,23 @@ const makeRun = floor => ({ id: 'balance-fixture', floor, phase: 'choose', money
 	blessings: { owned: [], levels: 0, bossLevels: 0, shards: 0 }, boosts: stats(0), eventHistory: [] });
 
 describe('Fantasy Rogue October 27 pacing and boss regression', () => {
+	it('repairs pending early gym items without editing player items, active battles or later gyms', () => {
+		const node = () => ({ kind: 'boss', encounters: [{
+			team: [{ ...set('Pikachu', 'Static', 20), item: 'Light Ball' }],
+			trainerCandidates: [{ team: [{ ...set('Bulbasaur', 'Overgrow', 20), item: 'Eviolite' }] }],
+		}] });
+		const r = makeRun(20); r.node = node(); r.choices = [node()];
+		r.bossPreviews = { 40: node(), 60: node() };
+		r.team[0].set.item = 'Leftovers';
+		r.phase = 'battle'; const before = structuredClone(r);
+		repairSavedEncounters(r); assert.deepEqual(r, before);
+		r.phase = 'choose'; repairSavedEncounters(r);
+		for (const n of [r.node, r.choices[0], r.bossPreviews[40]]) {
+			assert.equal(n.encounters[0].team[0].item, '');
+			assert.equal(n.encounters[0].trainerCandidates[0].team[0].item, '');
+		}
+		assert.equal(r.team[0].set.item, 'Leftovers'); assert.equal(r.bossPreviews[60].encounters[0].team[0].item, 'Light Ball');
+	});
 	it('excludes every preparation event through floor 30 and restores its weight gradually', () => {
 		for (const id of PREPARATION_EVENTS) {
 			for (const floor of [1, 20, 30]) assert.equal(eventPacingWeight(floor, id), 0);

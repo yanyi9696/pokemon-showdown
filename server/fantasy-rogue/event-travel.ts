@@ -1,4 +1,4 @@
-import { randomSpeciesEligible } from './species-eligibility';
+import { randomSpeciesEligible, isFantasySpecies } from './species-eligibility';
 import { Dex, toID } from '../../sim/dex';
 import { type RoguePokemon, type RogueBattleResult } from '../../sim/fantasy-rogue';
 import { rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
@@ -22,7 +22,7 @@ export interface TravelMemory {
 }
 export function regionalSpecies(region: Postcard) {
 	const forme = POSTCARDS[region].forme;
-	return dex.species.all().filter(species => species.exists && !species.name.includes('Fantasy') &&
+	return dex.species.all().filter(species => species.exists && !isFantasySpecies(species.name) &&
 		!species.battleOnly && !species.isMega && species.baseSpecies !== 'Pikachu' &&
 		(species.forme === forme || forme === 'Paldea' && species.forme.startsWith('Paldea-')));
 }
@@ -34,7 +34,7 @@ export function regionalPool(region: Postcard, level: number, content: RogueCont
 export function conversionChoices(run: RogueRun, region: Postcard) {
 	return run.team.flatMap(mon => {
 		if (mon.egg) return [];
-		const old = dex.species.get(mon.set.species), fantasy = old.name.includes('Fantasy');
+		const old = dex.species.get(mon.set.species), fantasy = isFantasySpecies(old.name);
 		if (old.isMega || old.battleOnly || /Totem|Gmax/.test(old.forme)) return [];
 		return regionalSpecies(region).filter(species => species.baseSpecies === old.baseSpecies)
 			.map(species => fantasy ? dex.species.get(`${species.name}-Fantasy`) : species).filter(species =>
@@ -56,7 +56,7 @@ function converted(run: RogueRun, original: RoguePokemon, target: string) {
 	const ordinary = next.name.replace(/-Fantasy$/, '');
 	const learned = levelMoves(ordinary).filter(entry => entry.level <= mon.set.level).map(entry => entry.move);
 	// Custom forms may add their own level-up moves, while ordinary forms use their latest generation's list.
-	if (next.name.includes('Fantasy')) {
+	if (isFantasySpecies(next.name)) {
 		for (const [move, sources] of Object.entries(dex.species.getLearnsetData(next.id).learnset || {})) {
 			if (sources.some(source => /^[1-9]L\d+$/.test(source) && Number(source.slice(2)) <= mon.set.level)) learned.push(move);
 		}

@@ -116,7 +116,7 @@ describe('Fantasy Rogue midgame growth and intrinsic Meltan candy', function () 
 	it('settles a prepaid Fantasy reservation at floor 100 once instead of losing the reward', () => {
 		const {run, account, mon} = setup(70, 'Melmetal'); run.phase = 'choose';
 		run.blessings.owned = [{...blessing('reservation'), floor: 1, target: mon.id}]; run.blessings.shards = 100;
-		b.handleBlessingCommand(account, run, content, {action: 'fantasize', member: mon.id}, () => 0);
+		b.handleBlessingCommand(account, run, content, {action: 'fantasize', member: mon.id, confirmed: true}, () => 0);
 		assert.equal(run.blessings.shards, 0); assert.equal(run.blessings.owned[0].reservedShards, 100);
 		run.floor = 100; b.completeBlessingFloor(account, run, content, () => 0);
 		assert.equal(run.blessings.shards, 100); assert(run.blessings.owned[0].completed);

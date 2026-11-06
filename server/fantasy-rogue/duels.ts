@@ -22,7 +22,7 @@ export function buildRogueDuelState(a: RogueClearCard, b: RogueClearCard): Rogue
 		if (card.version === 2) requireRule(snap.difficultyRulesVersion === ROGUE_DIFFICULTY_VERSION &&
 			isRogueDifficulty(snap.difficulty) && snap.difficultyScale === difficultyCardScale(snap.difficulty), '通关卡难度记录无效。');
 		// An unhatched egg is archived, but cannot become a battle-ready partner in PVP.
-		snap.team = snap.team.filter(mon => !mon.egg);
+		snap.team = snap.team.filter(mon => !mon.egg && !mon.nuzlockeDead);
 		requireRule(!snap.blessings.length || snap.blessingEffects, '这张卡缺少可复现的祝福记录。');
 		requireRule(snap.team.length > 0 && snap.team.length <= roguePartyLimit(spirit, snap.blessingEffects), '通关卡的队伍数量无效。');
 		for (const mon of snap.team) {

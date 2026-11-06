@@ -1,4 +1,5 @@
 import { Dex, toID } from '../../sim/dex';
+import { awardRoguePoints } from './difficulty';
 import type { RogueAccount, RogueRun } from './types';
 
 /** National species, not evolution families. Regional identities survive Fantasy/battle-form folding. */
@@ -33,8 +34,7 @@ export function awardFirstClears(account: RogueAccount, run: RogueRun) {
 	const keys = [...new Set(run.team.filter(mon => !mon.egg).map(mon => firstClearSpeciesKey(mon.set.species))
 		.filter((id): id is string => !!id))].filter(id => !account.firstClearSpecies!.includes(id));
 	account.firstClearSpecies!.push(...keys);
-	const points = keys.length * 5;
-	account.points += points;
+	const points = awardRoguePoints(account, run, keys.length * 5);
 	if (points) (run.notices ||= []).push(`${keys.length} 种伙伴首次随队通关，额外获得 ${points} 点局外成长点。`);
 	return points;
 }

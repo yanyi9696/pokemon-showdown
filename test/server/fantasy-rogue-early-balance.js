@@ -8,6 +8,7 @@ const { createPreviewContent } = require('../../dist/server/fantasy-rogue/previe
 const { CANDY_SHOP, mentorSupplies, towerExperience, grantEventTraining, routeCandyReward, eliteTreasureBudget } = require('../../dist/server/fantasy-rogue/early-balance');
 const { prepareTrade, tradeKind, machineMoves } = require('../../dist/server/fantasy-rogue/trading');
 const { prepareEconomy, TREASURES } = require('../../dist/server/fantasy-rogue/economy');
+const { rebalanceCandyReward } = require('../../dist/server/fantasy-rogue/candy-rewards');
 const { eliteBossCandidates } = require('../../dist/server/fantasy-rogue/elite-bosses');
 const { storyView } = require('../../dist/server/fantasy-rogue/story');
 const { set, stats, commandAfterOpening } = require('../fixtures/fantasy-rogue');
@@ -80,7 +81,8 @@ describe('Fantasy Rogue early growth and preparation', function () {
 			const boosted = kind === 'elite';
 			const value = Object.entries(node.wildLoot[0]).reduce((sum, [id, count]) => sum + count * (TREASURES.find(t => t.id === id)?.sellPrice || 0), 0);
 			assert.equal(value, 150 + (boosted ? eliteTreasureBudget(floor) : 0));
-			for (const [id, count] of Object.entries(routeCandyReward(floor, 'elite'))) assert.equal(node.wildLoot[0][id] || 0, boosted ? count : 0);
+			const candies = rebalanceCandyReward(floor, routeCandyReward(floor, 'elite')).items;
+			for (const [id, count] of Object.entries(candies)) assert.equal(node.wildLoot[0][id] || 0, boosted ? count : 0);
 			const saved = structuredClone(node); prepareEconomy(node, floor, () => { throw Error('reroll'); });
 			assert.deepEqual(node, saved);
 		}

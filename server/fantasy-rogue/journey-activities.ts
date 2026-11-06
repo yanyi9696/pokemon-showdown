@@ -7,12 +7,13 @@ import { ACTIVITY_NAMES, ACTIVITY_OPENINGS, type ActivityID } from './journey-ac
 import { minimumEvolutionLevel, evolutionChildren } from './evolution';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { drawBlessingGift, gift, giveEquipment, normalizeBlessings } from './blessings';
-import { evolveMember, rememberMove } from './progression';
+import { createRoguePokemon, initializeExperience, evolveMember, rememberMove } from './progression';
 import { legalFormMoves } from './event-learning';
 import { partyEvolutions } from './party-evolution';
 import { machineMoves, premiumMachine } from './trading';
 import { changeFriendship, rogueTime } from './friendship';
 import { journeyCoins } from './early-balance';
+import { rollSafariChoice, type SharedSafariContext } from './journey-safari';
 
 const dex = Dex.mod('gen9fantasy');
 export interface JourneyActivity {
@@ -34,17 +35,23 @@ export const SCROLLS = {
 } as const;
 const TRAINING_MOVES: Record<string, string> = { primeape: 'ragefist', stantler: 'psyshieldbash', qwilfishhisui: 'barbbarrage', farfetchdgalar: 'leafblade' };
 const trainingMove = (mon: RoguePokemon) => TRAINING_MOVES[toID(mon.set.species)] || toID(evolutionChildren(mon.set.species).find(s => s.evoMove)?.evoMove);
-const sceneMembers = (run: RogueRun, id: string) => run.team.filter(p => !p.egg && !p.fusion && p.set.level > 30 &&
+export const evolutionDojoMembers = (run: RogueRun) => run.team.filter(mon =>
+	!mon.egg && !mon.nuzlockeDead && !mon.fusion && !mon.formFusion && !!trainingMove(mon));
+export const kubfuScrollMembers = (run: RogueRun) => run.team.filter(mon =>
+	!mon.egg && !mon.nuzlockeDead && !mon.fusion && !mon.formFusion && mon.hp > 0 &&
+	toID(mon.set.species) === 'kubfu' && mon.set.level >= 35);
+const sceneMembers = (run: RogueRun, id: string) => run.team.filter(p =>
+	!p.egg && !p.fusion && !p.nuzlockeDead && p.hp > 0 && p.set.level > 30 &&
 	toID(p.set.species) === SCENES[id]?.[0] && !p.evolutionProgress?.scenes?.includes(SCENES[id][1]));
 export const isJourneyActivity = (id: string): id is ActivityID => id in ACTIVITY_NAMES;
 export function activityEligible(run: RogueRun, id: string) {
 	if (!isJourneyActivity(id)) return true;
 	if (id === 'battlemetro') return false; // Moved to challenges; keep handlers for saved events.
 	if (SCENES[id]) return sceneMembers(run, id).length > 0 && (id !== 'peatmoon' || rogueTime(run.floor) === 'night');
-	if (id === 'kubfuscroll') return run.team.some(p => !p.egg && !p.fusion && toID(p.set.species) === 'kubfu' && p.set.level >= 35 && p.hp > 0);
+	if (id === 'kubfuscroll') return kubfuScrollMembers(run).length > 0;
 	if (id === 'kubfumaster') return run.floor >= 51 && !run.activityClaims?.includes(id);
 	if (id === 'duskbreeder') return !run.activityClaims?.includes(id);
-	if (id === 'evolutiondojo') return run.team.some(p => !p.egg && !!trainingMove(p));
+	if (id === 'evolutiondojo') return evolutionDojoMembers(run).length > 0;
 	if (id === 'pokeflute') return run.floor >= 60;
 	if (['lostescort', 'repelwave'].includes(id)) return run.floor >= 20;
 	return run.team.some(p => !p.egg && p.hp > 0);
@@ -107,15 +114,25 @@ export function beginJourneyActivity(run: RogueRun, random: RogueRandom) {
 	if (event.id === 'pokeflute') a.pattern = Array.from({ length: 3 }, () => ['低音', '中音', '高音'][random(3)]);
 	if (event.id === 'dittoshow') a.index = random(3);
 }
-export function journeyActivityView(run: RogueRun) {
+export function relicMoveTypes(run: RogueRun): string[] {
+	return [...new Set(run.team.filter(mon => !mon.egg && !mon.nuzlockeDead)
+		.flatMap(mon => mon.set.moves.map(move => dex.moves.get(move).type)))];
+}
+export function journeyActivityView(run: RogueRun, cooperativeRelicTypes?: readonly string[]) {
 	const event = run.node!.event!, id = event.id as ActivityID, a = event.activity || {}, mon = run.team.find(p => p.id === a.member);
 	const result = (paragraphs: string[], options: ReturnType<typeof option>[]) => ({ paragraphs, options,
 		activity: a.startedAt ? { kind: 'rhythm', startedAt: a.startedAt, now: Date.now(), duration: a.duration || 12000, period: 800, score: a.score || 0 } : undefined });
 	if (event.stage === 'result') return result(event.result || [], []);
 	if (event.stage === 'battle') return result(['考验已经开始。按约定完成对战，再来领取结果。'], []);
+	if (a.startedAt && SCENES[id] && (!mon || !sceneMembers(run, id).includes(mon))) {
+		return result(['参加仪式的伙伴已无法继续，已经发生的消耗保留。'], [leave()]);
+	}
 	if (a.startedAt) return result(['亮点经过中央的绿色区域时，点击一下节拍按钮。每拍最多计一次；也可以提前结束。', `当前${id === 'minicontest' ? '表现积分' : '成功节拍'}：${a.score || 0}`],
 		[option('tap', '跟上节拍'), option('finish', '收尾，看看成果。')]);
-	if (SCENES[id] && !a.member) return result(ACTIVITY_OPENINGS[id], [...sceneMembers(run, id).map(p => option('member:' + encodeURIComponent(p.id), p.set.species, `Lv.${p.set.level}`)), leave()]);
+	if (SCENES[id] && (!mon || !sceneMembers(run, id).includes(mon))) {
+		return result(ACTIVITY_OPENINGS[id], [...sceneMembers(run, id).map(p =>
+			option('member:' + encodeURIComponent(p.id), p.set.species, `Lv.${p.set.level}`)), leave()]);
+	}
 	if (id === 'stonegate') return result(['考古员示意你看向伙伴。只要它仍能站稳，这一次就由你陪它走过石门。'],
 		[option('cross', '陪它走过石门。', '若尚未累计承受 49 HP，将承受石门试炼的 49 HP；不会允许濒死。', !mon || !((mon.evolutionProgress?.lostHP || 0) >= 49 || mon.hp > 49)), leave()]);
 	if (id === 'unioncircle') return result(['伙伴们围成一个圈，你和训练家一起为波普海豚加油。它学着在水中护住游得慢的同伴，渐渐找到了自己的勇气。'],
@@ -147,9 +164,10 @@ export function journeyActivityView(run: RogueRun) {
 	}
 	if (id === 'relicpuzzle') {
 		const index = a.index || 0, clues = ['火盆只剩下一点余温，壁画上却画着熊熊火焰。', '水渠的闸门已经打开，底部干得发白。', '石板被落叶和灰尘盖住，需要一阵风。'];
+		const types = cooperativeRelicTypes || relicMoveTypes(run);
 		return result([clues[index], `第 ${index + 1} 道机关。选择队伍已经掌握的招式属性。`],
 			['Fire', 'Water', 'Flying', 'Electric', 'Grass'].map(type => option('type:' + type, ({ Fire: '火', Water: '水', Flying: '飞行', Electric: '电', Grass: '草' } as Record<string, string>)[type], '',
-				!run.team.some(p => !p.egg && p.set.moves.some(m => dex.moves.get(m).type === type)))).concat(option('help', '请洛托姆搭把手。', '可以继续，但这道机关不计入独立完成评价。'), leave()));
+				!types.includes(type))).concat(option('help', '请洛托姆搭把手。', '可以继续，但这道机关不计入独立完成评价。'), leave()));
 	}
 	if (id === 'pokeflute') {
 		if (!a.step) return result([...ACTIVITY_OPENINGS[id], `邮差示范：${a.pattern?.join(' · ')}。`], [option('listen', '记住了，试着吹一遍。'), leave()]);
@@ -163,21 +181,29 @@ export function journeyActivityView(run: RogueRun) {
 			names.map((name, i) => option('identify:' + i, `观察${name}。`)).concat(leave()));
 	}
 	if (id === 'evolutiondojo') {
-		if (!a.member) return result(ACTIVITY_OPENINGS[id], run.team.filter(p => !p.egg && trainingMove(p)).map(p => option('member:' + encodeURIComponent(p.id), p.set.species,
-			partyEvolutions(p, run).flatMap(e => e.requirements.filter(r => !r.met).map(r => r.text)).join('；'))).concat(leave()));
+		if (!mon || !evolutionDojoMembers(run).includes(mon)) {
+			return result(ACTIVITY_OPENINGS[id], evolutionDojoMembers(run).map(p =>
+				option('member:' + encodeURIComponent(p.id), p.set.species,
+					partyEvolutions(p, run).flatMap(e => e.requirements.filter(r => !r.met).map(r => r.text)).join('；'))).concat(leave()));
+		}
 		const move = mon && trainingMove(mon);
 		return result([`教练指了指记录板：「先把 ${dex.moves.get(move || '').name} 的动作练熟。真正使用的次数、击中要害会照常记录，不会只看一次演示就算完成。」`],
 			[option('lesson', '请教这个招式。', '只有伙伴原本能学会时才可教学。', !mon || !move || !legalFormMoves(mon.set.species).includes(move)),
 				option('practice', '开始实战练习。', '真实对战会记录招式使用与单场要害次数。'), leave()]);
 	}
 	if (id === 'kubfuscroll') {
-		if (!a.member) return result(ACTIVITY_OPENINGS[id], run.team.filter(p => !p.egg && !p.fusion && toID(p.set.species) === 'kubfu' && p.set.level >= 35 && p.hp).map(p => option('member:' + encodeURIComponent(p.id), p.set.species, `Lv.${p.set.level}`)).concat(leave()));
+		if (!mon || !kubfuScrollMembers(run).includes(mon)) return result(ACTIVITY_OPENINGS[id],
+			kubfuScrollMembers(run).map(p =>
+				option('member:' + encodeURIComponent(p.id), p.set.species, `Lv.${p.set.level}`)).concat(leave()));
 		return result(['守护者请你选定一幅卷轴。选择后，只有这只熊徒弟能进入道场。'],
 			Object.entries(SCROLLS).map(([key, [name]]) => option('scroll:' + key, name, '三只对应属性的守护伙伴，Lv.35～40；通过后直接进化。')).concat(leave()));
 	}
 	return result(ACTIVITY_OPENINGS[id], [option('accept', '接受邀请，准备好后开始。'), leave()]);
 }
-export function chooseJourneyActivity(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom, choice: string) {
+export function chooseJourneyActivity(
+	account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom, choice: string, now = Date.now(),
+	safari?: SharedSafariContext
+) {
 	const event = run.node!.event!, id = event.id as ActivityID, a = activity(run);
 	event.key = randomUUID();
 	if (choice === 'leave') { finish(run, ['你向对方道别，把这次相遇记在旅途中。']); return; }
@@ -193,7 +219,7 @@ export function chooseJourneyActivity(account: RogueAccount, run: RogueRun, cont
 		markScene(run, mon, 'palafin'); finish(run, ['大家击掌约定，下次再一起出游。波普海豚认真地点了点头，达到 Lv.38 后就能迈向新的姿态。'], true); return;
 	}
 	if (a.startedAt) {
-		const elapsed = Date.now() - a.startedAt, beat = Math.floor(elapsed / 800), phase = elapsed % 800;
+		const elapsed = now - a.startedAt, beat = Math.floor(elapsed / 800), phase = elapsed % 800;
 		if (choice === 'tap' && elapsed >= 0 && elapsed < (a.duration || 12000)) {
 			if (!(a.taps ||= []).includes(beat)) { a.taps.push(beat); if (phase >= 250 && phase <= 550) a.score = (a.score || 0) + 1; }
 			return;
@@ -215,7 +241,7 @@ export function chooseJourneyActivity(account: RogueAccount, run: RogueRun, cont
 		return;
 	}
 	const rhythm = (bonus = 0) => {
-		a.startedAt = Date.now(); a.duration = 12000;
+		a.startedAt = now; a.duration = 12000;
 		a.score = bonus; a.taps = [];
 	};
 	if (choice.startsWith('berry:')) {
@@ -254,23 +280,17 @@ export function chooseJourneyActivity(account: RogueAccount, run: RogueRun, cont
 		return;
 	}
 	if (id === 'safaripark') {
-		if (choice === 'approach') { a.wary = (a.wary || 0) + 1; if (random(100) < 15 + a.wary * 10) a.index = (a.index || 0) + 1; }
-		if (choice === 'bait') { a.bait = Math.min(2, (a.bait || 0) + 1); a.wary = Math.max(0, (a.wary || 0) - 1); }
-		if (choice === 'next') {
-			a.index = (a.index || 0) + 1; a.wary = 0; a.bait = 0;
+		const result = safari?.result || rollSafariChoice(a, random, choice);
+		event.activity = structuredClone(result.activity);
+		if (result.caught) {
+			const receive = safari?.receive !== false;
+			finish(run, [`狩猎用球轻轻晃了三下，${result.caught}愿意跟${receive ? '你' : '队友'}一起旅行。`], true);
+			if (receive) gift(account, run, content, drawBlessingGift(run, content, random, {
+				eliteIVs: false, species: result.caught, level: lv(run),
+			}), '狩猎地带的相遇');
+		} else if (result.ended) {
+			finish(run, ['管理员吹响集合哨。这次没有带回新伙伴，但你更熟悉了它们的习性。']);
 		}
-		if (choice === 'ball') {
-			if (!a.balls || !a.safari?.[a.index || 0]) throw new Error('这次狩猎已没有可投球的目标。');
-			a.balls--;
-			const success = random(100) < Math.min(85, 35 + (a.wary || 0) * 15 + (a.bait || 0) * 10);
-			if (success) {
-				const name = a.safari[a.index || 0];
-				finish(run, [`狩猎用球轻轻晃了三下，${name}愿意跟你一起旅行。`], true);
-				gift(account, run, content, drawBlessingGift(run, content, random, { eliteIVs: false, species: name, level: lv(run) }), '狩猎地带的相遇'); return;
-			}
-			a.index = (a.index || 0) + 1;
-		}
-		if ((a.index || 0) >= 3 || !a.balls) finish(run, ['管理员吹响集合哨。这次没有带回新伙伴，但你更熟悉了它们的习性。']);
 		return;
 	}
 	if (id === 'relicpuzzle') {
@@ -321,7 +341,7 @@ export function chooseJourneyActivity(account: RogueAccount, run: RogueRun, cont
 	}
 	if (id === 'kubfuscroll' && mon && choice.startsWith('scroll:')) {
 		const key = choice.slice(7) as keyof typeof SCROLLS, scroll = SCROLLS[key];
-		if (!scroll || toID(mon.set.species) !== 'kubfu' || mon.set.level < 35) throw new Error('卷轴修行条件不符。');
+		if (!scroll || !kubfuScrollMembers(run).includes(mon)) throw new Error('卷轴修行条件不符。');
 		a.solo = mon.id; a.target = scroll[2]; a.choice = key;
 		const team = Array.from({ length: 3 }, () => typedTeam(scroll[1], 35 + random(6), 1, random)[0]);
 		const guard = encounter(team, trainer('scrollguardian', scroll[0] + '守护者', 'blackbelt')); guard.fixedLevels = true;
@@ -343,7 +363,10 @@ export function chooseJourneyActivity(account: RogueAccount, run: RogueRun, cont
 			trainer(id, id === 'duskbreeder' ? '神秘的老培育家' : id === 'kubfumaster' ? '神秘的老武术家' : '山口的守护考验'))]);
 	}
 }
-export function settleJourneyActivity(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom, won: boolean, retreated: boolean) {
+export function settleJourneyActivity(
+	account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom,
+	won: boolean, retreated: boolean, sharedGift?: RoguePokemon
+) {
 	const event = run.node!.event!, id = event.id as ActivityID, a = activity(run);
 	if (retreated) return; // Keep spent resources; the normal retry route remains available.
 	if (!won) { finish(run, ['对方收起了伙伴，示意你先照顾好自己的队伍。这次考验到此为止；实际消耗与战斗经验照常保留。']); return; }
@@ -352,10 +375,20 @@ export function settleJourneyActivity(account: RogueAccount, run: RogueRun, cont
 		finish(run, [id === 'repelwave' ? '虽然赢下了战斗，旅人已先绕路离开。下次试试更快地完成目标吧。' : '护林员带着倒下的拉鲁拉丝先去治疗了。这次没有完成护送目标。']); return;
 	}
 	if (id === 'duskbreeder' || id === 'kubfumaster') {
+		if (run.activityClaims?.includes(id)) {
+			finish(run, ['本次冒险已领取过这位伙伴，老人向你致意；这次不会重复赠送。']); return;
+		}
 		(run.activityClaims ||= []).push(id);
 		const name = id === 'duskbreeder' ? 'Rockruff-Dusk' : 'Kubfu';
 		finish(run, ['老人认真地行了一礼。「看得出来，你会把同伴放在心上。它就拜托你了。」'], true);
-		gift(account, run, content, drawBlessingGift(run, content, random, { eliteIVs: false, species: name, level: lv(run) }), ACTIVITY_NAMES[id]); return;
+		const mon = sharedGift ?
+			createRoguePokemon(structuredClone(sharedGift.set), run.boosts, randomUUID(), sharedGift.stars) :
+			drawBlessingGift(run, content, random, { eliteIVs: false, species: name, level: lv(run) });
+		if (sharedGift) {
+			mon.joinOrder = normalizeBlessings(run).nextJoin++;
+			initializeExperience(mon);
+		}
+		gift(account, run, content, mon, ACTIVITY_NAMES[id]); return;
 	}
 	if (id === 'kubfuscroll') {
 		const mon = run.team.find(p => p.id === a.solo);

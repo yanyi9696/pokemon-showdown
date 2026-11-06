@@ -15,11 +15,13 @@ export interface JourneyLedger {
 export interface JourneyRecord {
 	id: string; startedAt: number; endedAt: number; floor: number;
 	outcome: 'complete' | 'defeated' | 'abandoned';
+	cooperative?: { partnerName: string };
 	snapshot: {
 		team: (RoguePokemon | ReturnType<typeof eggView>)[], box: RoguePokemon[], memberDetails: Record<string, ClearMemberDetails>,
 		blessings: JourneyLedger['blessings'], difficulty: RogueRun['difficulty'], difficultyLabel: string,
 		spiritName?: string, collapse?: string[], boosts: StatsTable, boostRuleVersion?: 2,
 		challenges?: import('./optional-challenges').ChallengeRecord[],
+		nuzlocke?: boolean,
 	};
 }
 /** Called before and after each transaction, so replacement and abandonment cannot erase evidence. */
@@ -29,10 +31,11 @@ export function trackJourney(run: RogueRun, account: RogueAccount) {
 		const def = blessing(entry.id);
 		if (!def) continue;
 		const previous = ledger.blessings.find(b => b.id === entry.id && b.floor === entry.floor);
-		if (previous && !(def.family === 'unity' && entry.type && previous.type !== entry.type)) continue;
-		const { name, text } = blessingDisplay(def, entry.floor, account.tonicSecret, entry.type);
-		if (previous) Object.assign(previous, { text, type: entry.type });
-		else ledger.blessings.push({ id: entry.id, name, text, floor: entry.floor, tier: def.tier, type: entry.type });
+		if (previous && def.family !== 'unity') continue;
+		const { name, text } = blessingDisplay(def, entry.floor, account.tonicSecret);
+		const type = def.family === 'unity' ? undefined : entry.type;
+		if (previous) Object.assign(previous, { text, type });
+		else ledger.blessings.push({ id: entry.id, name, text, floor: entry.floor, tier: def.tier, type });
 	}
 	// Snapshot each current participant once. Building details also computes baseline battle stats.
 	// Boxed partners only update earlier evidence; entering the box does not count as participation.
@@ -63,5 +66,6 @@ export function journeyRecord(run: RogueRun, outcome: JourneyRecord['outcome']):
 			difficultyLabel: difficultyLabel(run.difficulty), spiritName: rogueSpirit(run.spirit)?.name,
 			collapse: run.collapse?.slice(), boosts: { ...run.boosts }, boostRuleVersion: run.boostRuleVersion,
 			challenges: run.challengeHistory && structuredClone(run.challengeHistory),
+			nuzlocke: !!run.nuzlocke,
 		} };
 }

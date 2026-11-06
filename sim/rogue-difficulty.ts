@@ -59,9 +59,9 @@ export const CHARM_DESCRIPTION = '本局为新手简易档。敌方六项能力�
 	'通关解锁简易档塔灵，通关卡标记“护符庇佑”。';
 export function difficultyDescription(tier: RogueDifficulty) {
 	if (tier === 'easy') return CHARM_DESCRIPTION;
-	if (!tier) return qualityDescription(tier) + '通关 200 层解锁本档塔灵；完成本档故事并曾通关本档后，解锁 1 档。';
+	if (!tier) return qualityDescription(tier) + '任意档位通关 200 层后，全局开放随机塔灵；完成本档故事并曾通关本档后，解锁 1 档。';
 	return qualityDescription(tier) + `开局自选 ${tier * 2} 条幻想崩坏，整局锁定。` +
-		`本档不额外提升我方能力或通关卡倍率，成果来自捕捉与培养。通关 200 层解锁本档塔灵。${tier < 5 ? `完成本档故事并曾通关本档后，解锁 ${tier + 1} 档。` : ''}`;
+		`本档不额外提升我方能力或通关卡倍率，成果来自捕捉与培养。任意档位通关 200 层后，全局开放随机塔灵。${tier < 5 ? `完成本档故事并曾通关本档后，解锁 ${tier + 1} 档。` : ''}`;
 }
 
 /** Concise menu copy; the expandable detail retains precise capture probabilities. */

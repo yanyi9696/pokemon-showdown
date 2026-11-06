@@ -24,6 +24,7 @@ const stats = (value: number): StatsTable => ({
 
 export const PreviewBalance = {
 	version: 'preview-2026-10-v14',
+	doublesVersion: 'preview-2026-11-v15-doubles',
 	initialMoney: 1500,
 	initialBag: { pokeball: 12, potion: 6, revive: 1, ether: 6, expcandyxs: 3 },
 	wildLevel: (floor: number) => Math.min(100, Math.max(3, 2 + Math.ceil(floor / 2))),
@@ -96,11 +97,13 @@ function makeSet(name: string, level: number, quality = 15, boss = false): Pokem
 	};
 }
 
-export function createPreviewContent(): RogueContent {
+export function createPreviewContent(options: { doubleBattle?: boolean } = {}): RogueContent {
+	const doubleBattle = !!options.doubleBattle;
 	validateBiomePools();
 	const content: RogueContent = {
-		version: PreviewBalance.version, biomeEncounters: true, wildTreasures: true,
-		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8', 'preview-2026-10-v9', 'preview-2026-10-v10', 'preview-2026-10-v11', 'preview-2026-10-v12', 'preview-2026-10-v13'],
+		version: doubleBattle ? PreviewBalance.doublesVersion : PreviewBalance.version,
+		biomeEncounters: true, wildTreasures: true, doubleBattle,
+		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8', 'preview-2026-10-v9', 'preview-2026-10-v10', 'preview-2026-10-v11', 'preview-2026-10-v12', 'preview-2026-10-v13', PreviewBalance.version],
 		...(arceusChallengeReady() ? { arceusMoves: ARCEUS_PHYSICAL_MOVES as Record<string, string> } : {}),
 		spirits: true, blessings: true, events: true, rewardScenes: true,
 		label: '幻想杯肉鸽 · 200 层试玩版',

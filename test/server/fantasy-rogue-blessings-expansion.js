@@ -205,6 +205,25 @@ describe('Fantasy Rogue expanded blessing campaign', function () {
 		assert.equal(pool.find(entry => entry.id === 'medic').appearanceWeight, 20);
 		assert.equal(pool.find(entry => entry.id === 'lowhp').appearanceWeight, 100);
 	});
+	it('slightly favors matching emblems after a typed blessing without changing quality or exclusions', () => {
+		const {run} = setup();
+		const before = new Map(blessings.blessingCandidates(run, content).map(d => [d.id, d]));
+		run.blessings.owned.push(owned('companionlysandre'));
+		const after = new Map(blessings.blessingCandidates(run, content).map(d => [d.id, d]));
+		for (const id of ['typexpfire', 'typelinkfire']) {
+			assert.equal(after.get(id).appearanceWeight, Math.round(before.get(id).appearanceWeight * 1.2));
+			assert.equal(after.get(id).tier, before.get(id).tier);
+		}
+		for (const id of ['typexpwater', 'typelinkwater', 'lowhp', 'medic']) {
+			assert.equal(after.get(id).appearanceWeight, before.get(id).appearanceWeight);
+		}
+		run.blessings.owned.push(owned('emissaryfire'));
+		assert.equal(blessings.blessingCandidates(run, content).find(d => d.id === 'typexpfire').appearanceWeight, 120);
+		run.previousBlessings = ['typexpfire'];
+		assert.equal(blessings.blessingCandidates(run, content).find(d => d.id === 'typexpfire').appearanceWeight, 24);
+		run.blessings.owned.push(owned('typexpgrass'));
+		assert(!blessings.blessingCandidates(run, content).some(d => ['typexp', 'typelink'].includes(d.family)));
+	});
 	it('gives every individual one legal learning credit and retains a fifth move slot', () => {
 		const {run, account} = setup(); run.phase = 'ready'; run.blessings.owned.push(owned('learnall'));
 		const mon = run.team[0];
@@ -320,7 +339,7 @@ describe('Fantasy Rogue expanded blessing campaign', function () {
 			const bag = {...account().run.bag}; command('shopchallenge');
 			const run = account().run; assert.equal(run.phase, 'battle'); assert(engine.battleState('expansionqa').npcCapture);
 			assert(engine.battleState('expansionqa').catchable);
-			const result = {encounterId: run.battle.encounterId, won, team: run.team, bag: run.bag};
+			const result = { encounterId: run.battle.encounterId, won, team: run.team, bag: run.bag };
 			engine.settle('expansionqa', run.battle.token, result);
 			const after = account(); assert.equal(after.run.floor, 10);
 			for (const [id, count] of Object.entries(run.node.shopChallenge.rewards)) {

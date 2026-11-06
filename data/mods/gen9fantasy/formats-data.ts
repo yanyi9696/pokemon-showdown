@@ -1,6 +1,10 @@
 import {FantasySpeciesFormatsData} from './types';
 
 export const FormatsData: {[k: string]: FantasySpeciesFormatsData} = {
+	kyuremoriginalfantasy: {
+		tier: "Uber",
+		natDexTier: "Uber",
+	},
 	//还未定分级的宝可梦
 
 	//定好分级的fantasy宝可梦

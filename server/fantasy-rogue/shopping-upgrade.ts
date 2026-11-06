@@ -5,7 +5,7 @@ import { gainExperience, initializeExperience } from './progression';
 import type { RogueRun } from './types';
 
 export const SHOPPING_THRESHOLD = 3000;
-export function nextShopGrade(run: RogueRun, thresholds: number[]) {
+export function nextShopGrade(run: Pick<RogueRun, 'difficulty' | 'floor' | 'blessings'>, thresholds: number[]) {
 	const floor = difficultySupplyFloor(run.difficulty, run.floor);
 	if (!ownsBlessing(run.blessings, 'shoppingupgrade')) return floor;
 	return [...thresholds].sort((a, b) => a - b).find(f => f > floor) || floor;

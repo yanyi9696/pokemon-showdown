@@ -1489,6 +1489,7 @@ export class BattleActions {
 		)) return;
 		const item = pokemon.getItem();
 		if (!extraZ && !item.zMove) return;
+		if (!extraZ && item.id.startsWith('rogueuniversal')) return;
 		if (!extraZ && item.itemUser && !item.itemUser.includes(pokemon.species.name)) return;
 		let atLeastOne = false;
 		let mustStruggle = true;

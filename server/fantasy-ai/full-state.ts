@@ -37,6 +37,8 @@ export function restoreFullState(snapshot: FullBattleState, seed: PRNGSeed): Bat
 	state.prngSeed = seed;
 	const battle = Battle.fromJSON(state);
 	battle.prng = new PRNG(seed);
+	// Search branches never wait on the campaign manager.
+	if (battle.fantasyRogue) { battle.fantasyRogue.liveProgression = false; battle.fantasyRogue.growthWaiting = false; }
 	return battle;
 }
 

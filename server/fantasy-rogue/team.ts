@@ -1,4 +1,6 @@
 import { tradeItem } from './trading';
+import { universalItem } from '../../sim/rogue-universal-data';
+import { prepareUniversalConfiguration } from './universal-evolution';
 import { applyHeldForme } from './held-formes';
 import { formItem } from './form-item-data';
 import { tonicItems } from './blessing-consumables';
@@ -10,7 +12,8 @@ import { ensureMemberMemory, rebuildMember } from './progression';
 import type { RogueCommand, RogueContent, RogueItem, RogueRun } from './types';
 
 const dex = Dex.mod('gen9fantasy');
-export const TEAM_ACTIONS = ['order', 'setmove', 'moves', 'equip', 'equipemblem', 'ability', 'evs'];
+export const TEAM_ACTIONS = ['order', 'setmove', 'moves', 'equip', 'equipemblem', 'ability', 'evs',
+	'configureuniversal'];
 export const canEditParty = (run: RogueRun) => ['choose', 'ready', 'rest', 'reward', 'event'].includes(run.phase) &&
 	!run.pendingCapture && !run.pendingMoves?.length;
 export const healingLocked = (run: RogueRun) => !!run.node?.noHealing &&
@@ -70,6 +73,18 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 	requireRule(mon && !mon.egg, '蛋尚未孵化，不能调整战斗配置。');
 	ensureMemberMemory(mon);
 	switch (command.action) {
+	case 'configureuniversal': {
+		requireRule(!healingLocked(run), '请先完成当前战斗结算。');
+		const configuration = prepareUniversalConfiguration(run, mon, command.value || '', command.evs, command.aura);
+		// Reuse normal inventory transfer and Kid's immutable Eviolite restriction.
+		const previous = mon.universalEvolution;
+		mon.universalEvolution = configuration;
+		try { editParty(run, { ...command, action: 'equip' }, content); } catch (error) {
+			mon.universalEvolution = previous;
+			throw error;
+		}
+		break;
+	}
 	case 'equipemblem': {
 		const id = command.value || '', old = mon.emblem || '';
 		const slot = command.slot ?? mon.emblemSlot ?? 1;
@@ -88,6 +103,10 @@ export function editParty(run: RogueRun, command: RogueCommand, content: RogueCo
 		const id = command.value || '';
 		const old = toID(mon.set.item);
 		if (old === id) return;
+		if (universalItem(id)) {
+			requireRule(mon.universalEvolution?.item === id, '请先在万用道具配置中分配种族点。');
+			prepareUniversalConfiguration(run, mon, id, mon.universalEvolution.bonus, mon.universalEvolution.aura);
+		}
 		requireRule(!(old === 'eviolite' && run.blessings?.owned.some(entry => entry.family === 'kid')), '小鬼当家：进化奇石不可取下。');
 		if (id) {
 			requireRule(inventoryItem(content, id)?.kind === 'held' && run.bag[id] > 0, '背包中没有可用的携带道具。');

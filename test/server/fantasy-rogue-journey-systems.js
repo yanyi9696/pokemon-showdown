@@ -161,11 +161,11 @@ describe('Fantasy Rogue journey history, relationships and special supplies', fu
   const {AFFECTION_CHAT_LINES}=require('../../dist/server/fantasy-rogue/affection-dialogue');
   const r=run();for(const id of Object.keys(AFFECTION_LINES)) {
    assert.equal(AFFECTION_CHAT_LINES[id]?.length,2,id);
-			assert.equal(affection.affectionChat(r, id, 'original'), '⌈original⌋');
-			affection.gainAffection(r, id, 50, 'stage1'); assert.equal(affection.affectionChat(r, id, 'original'), '⌈' + AFFECTION_CHAT_LINES[id][0] + '⌋');
-			assert.equal(affection.affectionChat(r, id, 'original'), '⌈original⌋');
+			assert.equal(affection.affectionChat(r, id, 'original'), '『original』');
+			affection.gainAffection(r, id, 50, 'stage1'); assert.equal(affection.affectionChat(r, id, 'original'), '『' + AFFECTION_CHAT_LINES[id][0] + '』');
+			assert.equal(affection.affectionChat(r, id, 'original'), '『original』');
    affection.gainAffection(r,id,50,'stage2');r.trainerBonds[id].chats=0;
-			assert.equal(affection.affectionChat(r, id, 'original'), '⌈' + AFFECTION_CHAT_LINES[id][1] + '⌋');
+			assert.equal(affection.affectionChat(r, id, 'original'), '『' + AFFECTION_CHAT_LINES[id][1] + '』');
    for(let i=0;i<20;i++)affection.affectionChat(r,id,'original');assert.equal(r.trainerBonds[id].score,100);
   }
  });

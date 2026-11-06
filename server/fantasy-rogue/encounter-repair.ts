@@ -11,6 +11,14 @@ const replacements: Record<string, string> = {
 	blueflare: 'flamethrower', dazzlinggleam: 'energyball', wavecrash: 'liquidation',
 	calmmind: 'coil', raoliangzhiyin: 'haze', recover: 'rest',
 };
+/** Apply the early gym rule only to an opponent node, before starting a new battle. */
+export function removeEarlyGymItems(node: RogueNode, floor: number) {
+	if (node.kind !== 'boss' || ![20, 40].includes(floor) || node.event?.memory) return;
+	for (const encounter of node.encounters) {
+		for (const set of [...encounter.team, ...encounter.candidates || [],
+			...(encounter.trainerCandidates || []).flatMap(candidate => candidate.team)]) set.item = '';
+	}
+}
 /** Correct authored elite levels without rerolling rosters or reapplying blessing costs. */
 function repairEliteLevels(node: RogueNode, floor: number) {
 	const pool = node.kind === 'boss' && FantasyEliteBosses[floor];
@@ -31,9 +39,14 @@ function repairEliteLevels(node: RogueNode, floor: number) {
 export function repairSavedEncounters(run: RogueRun) {
 	if (run.phase === 'battle') return;
 	for (const [floor, node] of Object.entries(run.bossPreviews || {})) {
-		if (Number(floor) >= run.floor) repairEliteLevels(node, Number(floor));
+		if (Number(floor) >= run.floor) {
+			repairEliteLevels(node, Number(floor));
+			removeEarlyGymItems(node, Number(floor));
+		}
 	}
+	for (const node of run.choices || []) removeEarlyGymItems(node, run.floor);
 	if (!run.node || run.node.event?.memory) return;
+	removeEarlyGymItems(run.node, run.floor);
 	repairEliteLevels(run.node, run.floor);
 	if (run.node.blessingPrepared) for (const encounter of run.node.encounters) {
 		if (encounter.boss?.kind !== 'summit') continue;

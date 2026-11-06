@@ -274,14 +274,14 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 	});
 	it('limits Future Sight to the opening and distinguishes dialogue from narration', () => {
 		assert.deepEqual(blessing('futuresight').floors, [1]);
-		assert.equal(characterSpeech('你好。'), '⌈你好。⌋');
-		assert.equal(characterSpeech('她放下背包。「一起走吧。」'), '她放下背包。⌈一起走吧。⌋');
+		assert.equal(characterSpeech('你好。'), '『你好。』');
+		assert.equal(characterSpeech('她放下背包。「一起走吧。」'), '她放下背包。『一起走吧。』');
 		const pages = rivalOpeningPages('kieran', 1, 0);
-		assert(pages.filter(p => p.speaker).every(p => p.text.includes('⌈')));
-		assert(!pages[0].text.includes('⌈')); assert(!pages.at(-1).speaker);
-		assert(rivalConversationOptions(2).every(o => o.name.startsWith('⌈')));
-		assert(rivalChatOptions(0).every(o => o.name.startsWith('⌈') && o.name.endsWith('⌋')));
-		assert(rivalChapterReplay('lillie', 4).pages.family0.text[0].startsWith('⌈'));
+		assert(pages.filter(p => p.speaker).every(p => p.text.includes('『')));
+		assert(!pages[0].text.includes('『')); assert(!pages.at(-1).speaker);
+		assert(rivalConversationOptions(2).every(o => o.name.startsWith('『')));
+		assert(rivalChatOptions(0).every(o => o.name.startsWith('『') && o.name.endsWith('』')));
+		assert(rivalChapterReplay('lillie', 4).pages.family0.text[0].startsWith('『'));
 	});
 	it('replays each discovered challenge without exposing locked stories or changing saves', () => {
 		fixture(); const account = store.get(user), before = JSON.stringify(account);

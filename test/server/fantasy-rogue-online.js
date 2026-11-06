@@ -8,6 +8,9 @@ const { AIChallengeManager } = require('../../dist/server/fantasy-ai/manager');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine, createRoguePokemon } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
+const { Battle } = require('../../dist/sim/battle');
+const { Teams } = require('../../dist/sim/teams');
+const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const { content, set, stats } = require('../fixtures/fantasy-rogue');
 
 async function until(check, name) {
@@ -20,7 +23,7 @@ async function until(check, name) {
 
 describe('Fantasy Rogue real rooms', function () {
 	this.timeout(20000);
-	let ai, store, manager, user, oldLocal, oldReporting;
+	let ai, store, manager, user, guest, oldLocal, oldReporting;
 	let serial = 0;
 	const rooms = [];
 	const account = () => store.get(user.id);
@@ -35,6 +38,7 @@ describe('Fantasy Rogue real rooms', function () {
 		ai = new AIChallengeManager([], { enabled: true, decisionMs: 0, maxBattles: 1 }, 6);
 		manager = new RogueManager(new RogueEngine(store, content()), () => ai);
 		user = makeUser(`Rogue UI ${++serial}`, `127.0.3.${serial}`);
+		guest = makeUser(`Rogue Co-op ${++serial}`, `127.0.4.${serial}`);
 	});
 	for (const choice of ['0', '1']) it(`resumes the window elder dialogue and explicitly answers branch ${choice}`, () => {
 		const { prepareElderMeeting } = require('../../dist/server/fantasy-rogue/mainline');
@@ -68,7 +72,7 @@ describe('Fantasy Rogue real rooms', function () {
 		assert.deepEqual(account().mainline.completed, []);
 	});
 	for (const win of [true, false]) it(`plays a complete native AI preview and ${win ? 'accepts the win' : 'discards the loss'}`, async () => {
-		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			const {normalizeBlessings} = require('../../dist/server/fantasy-rogue/blessings');
 			const {grantCompanion} = require('../../dist/server/fantasy-rogue/companions');
@@ -94,7 +98,7 @@ describe('Fantasy Rogue real rooms', function () {
 	});
 	it('uses the gym search budget for challenges and returns to an explicit retry or leave decision', async () => {
 		const { challengeNode } = require('../../dist/server/fantasy-rogue/optional-challenges');
-		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			const run = saved.run;
 			run.floor = 8;
@@ -144,9 +148,68 @@ describe('Fantasy Rogue real rooms', function () {
 	afterEach(async () => {
 		await ai.dispose();
 		for (const room of rooms.splice(0)) Rooms.get(room.roomid)?.destroy();
-		user.disconnectAll(); user.destroy(); store.close();
+		user.disconnectAll(); user.destroy();
+		guest.disconnectAll(); guest.destroy();
+		store.close();
 		Config.fantasyailocal = oldLocal.local; Config.bindaddress = oldLocal.bind; Config.fantasyrogue = oldLocal.rogue;
 		Config.reportbattles = oldReporting;
+	});
+	for (const wild of [false, true]) it(`runs ${wild ? 'lightweight wild' : 'native-turn trainer'} doubles in a real room`, async () => {
+		// Exercise the real worker; the zero-budget default used by other room fixtures only tests fallback.
+		ai.scheduler.decisionMs = 5000;
+		command('start', { starters: ['bulbasaur'] });
+		command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			const run = saved.run;
+			run.doubleBattle = true;
+			run.team = [
+				createRoguePokemon(set('Pikachu', 'Static', 50, ['Thunderbolt', 'Protect']), stats(0)),
+				createRoguePokemon(set('Raichu', 'Static', 50, ['Thunderbolt', 'Protect']), stats(0)),
+			];
+			run.node.kind = wild ? 'battle' : 'trainer';
+			run.node.encounters[0].catchable = wild;
+			run.node.encounters[0].team = [
+				set('Charizard', 'Blaze', 50, ['Flamethrower', 'Protect']),
+				set('Blastoise', 'Torrent', 50, ['Water Gun', 'Protect']),
+			];
+		});
+		const room = Rooms.get(command('battle').run.roomid);
+		rooms.push(room);
+		assert.equal(room.battle.gameType, 'doubles');
+		assert.equal(room.battle.format, 'gen9fantasyroguedoubles');
+		await until(() => !!room.battle.p1?.request?.request, 'doubles player request');
+		const initialRequest = JSON.parse(room.battle.p1.request.request);
+		assert.equal(initialRequest.teamPreview, undefined);
+		assert.equal(initialRequest.active.length, 2);
+		await until(() => room.battle.p2.request.isWait === true && room.battle.p2.request.choice.startsWith('move '), 'doubles AI joint action');
+		assert(room.battle.p2.request.choice.includes(','), 'the AI submits both active actions together');
+		assert.equal(room.battle.fantasyAI.metrics.illegalChoices, 0);
+		assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
+		assert.equal(ai.scheduler.metrics.completed, 1);
+		assert.equal(room.battle.fantasyAI.metrics.searchFallbacks, 0);
+		assert.equal(room.battle.fantasyAI.metrics.jointTurnDecisions, wild ? 0 : 1);
+	});
+	it('keeps authored trainer leads with a single player Pokemon, without preview or lost reserves', async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			const run = saved.run;
+			run.doubleBattle = true;
+			run.node.kind = 'trainer';
+			Object.assign(run.node.encounters[0], { catchable: false, team: [
+				set('Pelipper', 'Drizzle', 50, ['Scald', 'Hurricane', 'Protect']),
+				set('Ludicolo', 'Swift Swim', 50, ['Hydro Pump', 'Giga Drain', 'Ice Beam', 'Protect']),
+				set('Magikarp', 'Swift Swim', 50, ['Splash']), set('Squirtle', 'Torrent', 50, ['Water Gun']),
+			] });
+		});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => !!room.battle.p1?.request?.request, 'solo doubles first request');
+		assert.equal(JSON.parse(room.battle.p1.request.request).teamPreview, undefined);
+		const native = room.battle.stream.battle;
+		assert.deepEqual(native.p2.active.map(mon => mon.species.name), ['Pelipper', 'Ludicolo']);
+		assert.deepEqual(native.fantasyRogue.opponentSlots, [0, 1, 2, 3]);
+		assert.equal(native.p2.pokemon.length, 4);
+		assert(native.p2.active[0].set.fantasyRogueId.endsWith(':foe:0'));
+		assert(native.p2.active[1].set.fantasyRogueId.endsWith(':foe:1'));
 	});
 	it('runs three independent AI seats in a cooperative room and settles the human party once', async () => {
 		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});
@@ -171,6 +234,216 @@ describe('Fantasy Rogue real rooms', function () {
 		assert.equal(account().run.team.length, 1);
 		assert.equal(account().run.team[0].id, initial.team[0].id);
 		assert.equal(account().run.encounter, initial.encounter + 1);
+	});
+	for (const wild of [false, true]) it(`keeps p1/p3 human seats with ${wild ? 'lightweight wild' : 'native-turn trainer'} enemies`, async () => {
+		ai.scheduler.decisionMs = 5000;
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		const partnerMon = createRoguePokemon(set('Pikachu', 'Static', 50, ['Thunderbolt', 'Protect']), stats(0));
+		partnerMon.hp = Math.max(1, partnerMon.hp - 13);
+		partnerMon.pp[0].pp--;
+		const guestPacked = Teams.pack([partnerMon.set]);
+		store.change(user.id, saved => {
+			const run = saved.run, foe = set('Magikarp', 'Swift Swim', 1, ['Splash']);
+			run.node.encounters[0].team = [foe, { ...foe }];
+			run.node.encounters[0].cooperative = { id: 'support', name: '支援训练家',
+				team: [set('Dragonair', 'Shed Skin', 50, ['Dragon Rage'])] };
+			run.phase = 'battle';
+			run.battle = { token: 'coop-human-seat', encounterId: 'coop-human-seat' };
+		});
+		const state = manager.engine.battleState(user.id), foeTeam = account().run.node.encounters[0].team;
+		state.partner = { team: [partnerMon], boosts: stats(0) };
+		state.systems.partner = { mega: false, z: false, gmega: false };
+		state.tera.partner = false;
+		const room = ai.createRogueBattle(user, {
+			id: 'coop-human-seat', name: '双人席位验证', avatar: '', format: 'gen9fantasyroguecoop',
+			packedTeam: Teams.pack(foeTeam.slice(0, 1)),
+		}, Teams.pack(account().run.team.map(mon => mon.set)), {
+			state, floor: 1, wild, cooperative: {
+				name: '支援训练家', avatar: 'support',
+				ally: Teams.pack([set('Dragonair', 'Shed Skin', 50, ['Dragon Rage'])]),
+				foe: Teams.pack(foeTeam.slice(1)), foeName: '对方队伍',
+			}, onCapture() {}, onResult() {}, onClose() {},
+		}, { user: guest, team: guestPacked });
+		rooms.push(room);
+		assert.equal(room.battle.gameType, 'multi');
+		assert.equal(room.battle.p1.getUser(), user);
+		assert.equal(room.battle.p3.getUser(), guest);
+		assert.equal(room.battle.p2.isAI, true);
+		assert.equal(room.battle.p3.isAI, false);
+		assert.equal(room.battle.p4.isAI, true);
+		await until(() => !!room.battle.p1.request.request && !!room.battle.p3.request.request, 'both human team requests');
+		assert.equal(JSON.parse(room.battle.p3.request.request).teamPreview, true);
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		room.battle.choose(guest, `team 1|${room.battle.p3.request.rqid}`);
+		await until(() => !!JSON.parse(room.battle.p3.request.request).active, 'human partner move request');
+		assert.equal(room.battle.p3.request.isWait, false);
+		await until(() => room.battle.p2.request.isWait === true && room.battle.p4.request.isWait === true,
+			'both NPC actions after complete request batch');
+		assert.equal(room.battle.rogueCoop.lastDecision.joint, true);
+		assert.equal(room.battle.rogueCoop.lastDecision.error, undefined);
+		assert.equal(room.battle.rogueCoop.lastDecision.workerStatus, 'completed');
+		assert.equal(room.battle.rogueCoop.lastDecision.nativeTurns, !wild);
+	});
+	it('keeps both human seats and pending requests across a co-op disconnect beyond the solo-AI timeout', async () => {
+		manager.coop.command(user, { action: 'invite', target: guest.name, difficulty: 0 });
+		manager.coop.command(guest, { action: 'accept', id: store.coopInvitations(guest.id)[0].id });
+		for (const player of [user, guest]) manager.coop.command(player, { action: 'selectstarters', starters: ['bulbasaur'] });
+		for (const player of [user, guest]) manager.coop.command(player, { action: 'selectarea', value: 'grass' });
+		for (const player of [user, guest]) manager.coop.command(player, { action: 'selectbattle',
+			members: [manager.coop.view(player).session.adventure.team[0].id] });
+		const room = Rooms.get(manager.coop.view(user).session.roomid); rooms.push(room);
+		await until(() => room.battle.p1.request.request && room.battle.p3.request.request, 'two human previews');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		room.battle.choose(guest, `team 1|${room.battle.p3.request.rqid}`);
+		await until(() => JSON.parse(room.battle.p1.request.request).active &&
+			JSON.parse(room.battle.p3.request.request).active, 'two human move requests');
+		const battle = room.battle;
+		battle.fantasyAI.options.disconnectMs = 20;
+		const hostRqid = battle.p1.request.rqid, guestRqid = battle.p3.request.rqid;
+		const originalSession = store.coopSessionForUser(user.id);
+		battle.onLeave(user); battle.onLeave(guest);
+		await delay(100);
+		assert.equal(Rooms.get(room.roomid), room); assert.equal(battle.ended, false);
+		assert.equal(battle.p1.getUser(), user); assert.equal(battle.p3.getUser(), guest);
+		assert.equal(battle.p1.request.rqid, hostRqid); assert.equal(battle.p3.request.rqid, guestRqid);
+		assert.equal(battle.p1.request.isWait, false); assert.equal(battle.p3.request.isWait, false);
+		assert(!battle.stream.battle.inputLog.some(line => /^>p[13] move /.test(line)), 'no automatic human moves');
+		assert.deepEqual(store.coopSessionForUser(user.id), originalSession, 'disconnect must not spend resources or alter progress');
+		battle.onConnect(user, user.connections[0]); battle.onConnect(guest, guest.connections[0]);
+		assert.equal(battle.p1.active, true); assert.equal(battle.p3.active, true);
+		battle.choose(user, `move 2|${hostRqid}`); battle.choose(guest, `move 2|${guestRqid}`);
+		await until(() => battle.p1.request.rqid > hostRqid && battle.p3.request.rqid > guestRqid, 'both humans resume original battle');
+	});
+	it('starts a shared co-op session in the native p1/p3 Rogue room from both saved selections', async () => {
+		manager.coop.command(user, { action: 'invite', target: guest.name, difficulty: 0 });
+		const invite = store.coopInvitations(guest.id)[0];
+		manager.coop.command(guest, { action: 'accept', id: invite.id });
+		manager.coop.command(user, { action: 'selectstarters', starters: ['bulbasaur'] });
+		manager.coop.command(guest, { action: 'selectstarters', starters: ['bulbasaur'] });
+		const route = manager.engine.content.floors[1].find(node => node.kind === 'wild' && node.encounters.length);
+		manager.coop.command(user, { action: 'selectarea', value: route.id });
+		manager.coop.command(guest, { action: 'selectarea', value: route.id });
+		const hostMon = manager.coop.view(user).session.adventure.team[0];
+		const guestMon = manager.coop.view(guest).session.adventure.team[0];
+		manager.coop.command(user, { action: 'selectbattle', members: [hostMon.id] });
+		manager.coop.command(guest, { action: 'selectbattle', members: [guestMon.id] });
+		const sessionView = manager.coop.view(user).session;
+		const room = Rooms.get(sessionView.roomid); rooms.push(room);
+		assert.equal(sessionView.adventure.phase, 'battle');
+		assert.equal(room.battle.gameType, 'multi');
+		assert.equal(room.battle.p1.getUser(), user);
+		assert.equal(room.battle.p3.getUser(), guest);
+		assert.equal(room.battle.p2.isAI, true);
+		assert.equal(room.battle.p4.isAI, true);
+		assert(room.battle.options.fantasyRogue.cooperative);
+		assert.equal(room.battle.options.fantasyRogue.state.opponentCount, 2,
+			'only the first encounter in this wild route is loaded into the first battle');
+		await until(() => !!room.battle.p1.request.request && !!room.battle.p3.request.request, 'co-op human team requests');
+		room.battle.choose(user, `team 1|${room.battle.p1.request.rqid}`);
+		room.battle.choose(guest, `team 1|${room.battle.p3.request.rqid}`);
+		await until(() => !!JSON.parse(room.battle.p1.request.request).active &&
+			!!JSON.parse(room.battle.p3.request.request).active, 'co-op human move requests');
+		const hostRequest = JSON.parse(room.battle.p1.request.request);
+		assert.equal(hostRequest.fantasyRogue.cooperativeCapture, true);
+		const captureTarget = hostRequest.fantasyRogue.captureTargets.find(target => target.key.startsWith('p4:'));
+		assert(captureTarget, 'the request exposes the selected wild target');
+		const hostTeamSize = manager.coop.view(user).session.adventure.team.length;
+		manager.coop.command(user, { action: 'proposecapture', ball: 'pokeball', captureTarget: captureTarget.key });
+		const proposal = manager.coop.view(guest).session.adventure.captureProposal;
+		assert.equal(proposal.targetName, captureTarget.name);
+		const captureRqid = room.battle.p1.request.rqid;
+		manager.coop.command(guest, { action: 'respondcapture', id: proposal.id, value: 'accept' });
+		await until(() => manager.coop.view(user).session.adventure.team.length === hostTeamSize + 1,
+			'immediate co-op capture persistence');
+		assert.equal(manager.coop.view(guest).session.adventure.team.length, 1, 'the catch belongs only to the player who used the ball');
+		assert(store.get(user.id).caughtSpecies.includes('magikarp'));
+		const captureInputLog = room.battle.stream.battle.inputLog;
+		assert(captureInputLog.includes('>p1 rogueball pokeball'));
+		assert(captureInputLog.includes('>p3 pass'), 'the partner passes instead of acting during the capture turn');
+		await until(() => room.battle.p1.request.rqid > captureRqid || room.battle.ended,
+			'co-op capture turn resolution');
+		assert(!room.battle.ended, 'the uncaught wild opponent remains in the battle');
+		manager.coop.command(user, { action: 'delegate', value: 'partner' });
+		await until(() => !!JSON.parse(room.battle.p1.request.request).active && !!JSON.parse(room.battle.p3.request.request).active,
+			'delegated co-op move requests');
+		const delegatedHostRqid = room.battle.p1.request.rqid, delegatedGuestRqid = room.battle.p3.request.rqid;
+		const humanInputsBefore = room.battle.stream.battle.inputLog.filter(line => /^>p[13] /.test(line));
+		room.battle.choose(user, `move 2|${delegatedHostRqid}`);
+		assert.equal(room.battle.p1.request.isWait, false, 'the delegator cannot choose their battle action after transfer');
+		assert.deepEqual(room.battle.stream.battle.inputLog.filter(line => /^>p[13] /.test(line)), humanInputsBefore,
+			'the rejected delegator command does not reach the simulator');
+		room.battle.choose(guest, `move 2|${delegatedGuestRqid}`);
+		assert.equal(room.battle.p3.request.isWait, false, 'the first delegated action remains staged until both sides are chosen');
+		assert.deepEqual(room.battle.stream.battle.inputLog.filter(line => /^>p[13] /.test(line)), humanInputsBefore,
+			'one staged action does not prematurely advance a side');
+		manager.coop.command(user, { action: 'delegate', value: 'revoke' });
+		assert.deepEqual(room.battle.stream.battle.inputLog.filter(line => /^>p[13] /.test(line)), humanInputsBefore,
+			'revoking a staged choice returns the uncommitted requests without submitting it');
+		room.battle.choose(user, `move 2|${delegatedHostRqid}`);
+		room.battle.choose(guest, `move 2|${delegatedGuestRqid}`);
+		await until(() => room.battle.ended || room.battle.p1.request.rqid > delegatedHostRqid &&
+		room.battle.p3.request.rqid > delegatedGuestRqid, 'independent co-op turn after revocation');
+		const delegatedInputLog = room.battle.stream.battle.inputLog;
+		assert(delegatedInputLog.includes('>p1 move growl'), 'the host can act after revocation');
+		assert(delegatedInputLog.includes('>p3 move growl'), 'the guest can act after revocation');
+		manager.coop.command(user, { action: 'delegate', value: 'partner' });
+		await until(() => !room.battle.ended && !!JSON.parse(room.battle.p1.request.request).active &&
+			!!JSON.parse(room.battle.p3.request.request).active, 'delegated requests after a new turn');
+		const secondHostRqid = room.battle.p1.request.rqid, secondGuestRqid = room.battle.p3.request.rqid;
+		room.battle.choose(guest, `move 2|${secondGuestRqid}`);
+		room.battle.choose(guest, `move 2|${secondHostRqid}`);
+		await until(() => room.battle.ended || room.battle.p1.request.rqid > secondHostRqid &&
+		room.battle.p3.request.rqid > secondGuestRqid, 'delegated co-op turn');
+		const allHumanInputs = room.battle.stream.battle.inputLog;
+		assert(allHumanInputs.filter(line => line === '>p1 move growl').length >= 2,
+			'the delegated controller submits the host seat action');
+		assert(allHumanInputs.filter(line => line === '>p3 move growl').length >= 2,
+			'the delegated controller submits the guest seat action');
+		manager.coop.command(user, { action: 'delegate', value: 'revoke' });
+		for (let turn = 0; turn < 10 && !room.battle.ended; turn++) {
+			const hostRqid = room.battle.p1.request.rqid, guestRqid = room.battle.p3.request.rqid;
+			room.battle.choose(user, `default|${hostRqid}`);
+			room.battle.choose(guest, `default|${guestRqid}`);
+			await until(() => room.battle.ended || room.battle.p1.request.rqid > hostRqid &&
+			room.battle.p3.request.rqid > guestRqid, 'co-op battle turn');
+		}
+		assert(room.battle.ended, 'the deliberately weak Magikarp encounter should finish promptly');
+		const settled = manager.coop.view(user).session.adventure;
+		assert.equal(settled.phase, 'settlement');
+		assert.equal(settled.battleResult.won, true);
+		assert(settled.team[0].hp > 0 && settled.partnerTeam[0].hp > 0);
+	});
+	it('restores and snapshots p3 from the second member private party', () => {
+		const hostMon = createRoguePokemon(set('Bulbasaur', 'Overgrow', 50, ['Tackle']), stats(0));
+		const partnerMon = createRoguePokemon(set('Pikachu', 'Static', 50, ['Thunderbolt', 'Protect']), stats(0));
+		partnerMon.hp = Math.max(1, partnerMon.hp - 13);
+		partnerMon.pp[0].pp--;
+		const state = {
+			encounterId: 'coop-partner-snapshot', team: [hostMon], partner: { team: [partnerMon], boosts: stats(0) },
+			boosts: stats(0), bag: {}, balls: [], catchable: false, cooperative: { opponentOffset: 1 },
+			systems: { player: { mega: false, z: false }, partner: { mega: false, z: false } },
+			tera: { player: false, partner: false, opponent: false },
+		};
+		const battle = new Battle({
+			formatid: 'gen9fantasyroguecoop', seed: [1, 2, 3, 4], fantasyRogue: state,
+			p1: { name: 'Host', team: [hostMon.set] },
+			p2: { name: 'Opponent A', team: [set('Magikarp', 'Swift Swim', 3, ['Splash'])] },
+			p3: { name: 'Guest', team: [partnerMon.set] },
+			p4: { name: 'Opponent B', team: [set('Caterpie', 'Shield Dust', 3, ['Tackle'])] },
+		});
+		try {
+			for (const slot of ['p1', 'p2', 'p3', 'p4']) battle.choose(slot, 'team 1');
+			const p3Mon = battle.p3.pokemon[0];
+			assert.equal(p3Mon.set.fantasyRogueId, partnerMon.id);
+			assert.equal(p3Mon.hp, partnerMon.hp);
+			p3Mon.hp--;
+			const result = rogueBattleResult(battle);
+			assert.equal(result.partnerTeam[0].id, partnerMon.id);
+			assert.equal(result.partnerTeam[0].hp, p3Mon.hp);
+			assert.equal(result.partnerTeam[0].pp[0].pp, p3Mon.baseMoveSlots[0].pp);
+		} finally {
+			battle.destroy();
+		}
 	});
 	it('packs only the selected Kubfu through the production manager and retains the unplayed reserve after the scroll trial', async () => {
 		command('start', {starters: ['bulbasaur']}); command('select', {value: 'grass'});

@@ -41,8 +41,8 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	}
 	beforeEach(() => { store = new RogueStore(':memory:'); engine = new RogueEngine(store, createPreviewContent(), () => 0, true); });
 	afterEach(() => store.close());
-	it('opens 35 complete spirits and rejects remote overrides or locked accounts', () => {
-		assert.equal(activeRogueSpirits().length, 35);
+	it('opens 36 spirits and rejects remote overrides or locked accounts', () => {
+		assert.equal(activeRogueSpirits().length, 36);
 		const remote = new RogueEngine(store, createPreviewContent());
 		assert.throws(() => remote.command(user, { id: randomUUID(), revision: 0, action: 'start', starters: ['bulbasaur'], useSpirit: true }), /通关/);
 		store.change(user, saved => { saved.spiritUnlocked = true; });
@@ -58,7 +58,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		cmd('spiritack'); assert.equal(account().run.phase, 'choose');
 		assert.equal(account().run.spirit, 'kyurem');
 	});
-	it('unlocks only after an unaided 200-floor clear and preserves legacy runs', () => {
+	it('preserves global spirit access from retained clear progress after cards are removed', () => {
 		cmd('start', { starters: ['bulbasaur'] }); floor(200); fight();
 		assert.equal(account().run.phase, 'postgame'); assert(account().spiritUnlocked);
 		cmd('storyskip', { value: account().run.id + ':godinvite:0' });
@@ -70,7 +70,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		engine.migrate(user); assert(account().spiritUnlocked, 'the retained no-spirit clear restores access');
 		assert(account().unlockedSpirits.includes('kyurem'));
 		store.change(user, a => { delete a.spiritUnlocked; a.cards = []; });
-		engine.migrate(user); assert(!account().spiritUnlocked, 'a spirit clear alone must not grant initial access');
+		engine.migrate(user); assert(account().spiritUnlocked, 'any valid clear keeps global access independently of cards');
 	});
 	it('uses at most three HP purchases per shop, includes healing, and never faints the payer', () => {
 		start('yveltal'); cmd('spiritack');
@@ -158,7 +158,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		engine.settle(user, token, result); assert.equal(account().run.money, before + 3000);
 		cmd('continue'); assert.equal(account().run.floor, 10);
 	});
-	it('stores a full-party capture in the box, preserves spent resources and manually merges chosen members', () => {
+	it('requires release for a full-party capture, then preserves resources when manually boxing and merging', () => {
 		start('zygarde'); cmd('spiritack');
 		store.change(user, a => {
 			const base = a.run.team[0];
@@ -169,6 +169,10 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		let run = account().run;
 		const captured = createRoguePokemon(run.team[0].set, run.boosts, run.battle.encounterId);
 		engine.settle(user, run.battle.token, { won: true, encounterId: run.battle.encounterId, team: run.team, bag: run.bag, captured });
+		assert.equal(account().run.box.length, 0);
+		assert.equal(account().run.pendingCapture.id, captured.id);
+		cmd('replace', { value: run.team[5].id, member: captured.id, confirmed: true });
+		cmd('box', { member: captured.id });
 		assert.equal(account().run.box.length, 1);
 		store.change(user, a => {
 			a.run.team[0].hp = 0; a.run.team[0].pp[0].pp = 1; a.run.team[1].set.item = 'Leftovers';
@@ -177,7 +181,7 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		cmd('merge', { member: run.team[0].id, order: [run.team[1].id, run.box[0].id] });
 		assert.equal(account().run.team[0].stars, 2); assert.equal(account().run.team[0].hp, 0);
 		assert.equal(account().run.team[0].pp[0].pp, 1); assert.equal(account().run.bag.leftovers, 1);
-		assert.equal(account().run.box.length, 0); assert.equal(account().run.team.length, 5);
+		assert.equal(account().run.box.length, 0); assert.equal(account().run.team.length, 4);
 		cmd('box', { member: run.team[0].id });
 		assert.equal(account().run.box[0].hp, 0);
 		cmd('box', { member: run.team[0].id }); assert.equal(account().run.team.at(-1).hp, 0);

@@ -15,6 +15,8 @@ import { RogueCoopController } from './fantasy-rogue/coop-controller';
 import { execSync } from "child_process";
 import { Repl, ProcessManager, type Streams } from '../lib';
 import { BattleStream } from "../sim/battle-stream";
+import { Battle } from '../sim/battle';
+import { captureCoopCheckpoint, validCoopCheckpoint, type RogueCoopCheckpoint } from '../sim/rogue-coop-checkpoint';
 import { RoomGamePlayer, RoomGame } from "./room-game";
 import type { Tournament } from './tournaments/index';
 import type { RoomSettings } from './rooms';
@@ -29,6 +31,12 @@ import type { RogueBattleResult, RogueBattleState, RoguePokemon } from '../sim/f
 
 export interface RogueRoomOptions {
 	cooperative?: { name: string, avatar: string, ally: string, foe: string, foeName: string };
+	/** Current co-op operation delegate, read from the persisted session for each choice. */
+	getCoopController?: () => string | undefined;
+	/** Trusted stored snapshot; never populated from a public battle command. */
+	resumeCheckpoint?: RogueCoopCheckpoint;
+	onCheckpoint?: (checkpoint: RogueCoopCheckpoint) => void;
+	doubleBattle?: boolean;
 	preview?: 'sada' | 'turo';
 	state: RogueBattleState;
 	floor: number;
@@ -39,7 +47,9 @@ export interface RogueRoomOptions {
 	defeat?: {
 		floor: number, encounter: number, encounters: number, retryFloor: boolean, noHealing: boolean, emergencyCost: number,
 	};
-	onCapture: (captured: RoguePokemon) => void;
+	onProgress?: (progress: { sequence: number, result: RogueBattleResult }) => void;
+	onCapture: (captured: RoguePokemon, result?: RogueBattleResult) => void;
+	onNuzlocke?: (progress: import('../sim/rogue-nuzlocke').NuzlockeBattle) => void;
 	onResult: (result: RogueBattleResult) => void;
 	onClose: () => void;
 }
@@ -508,6 +518,8 @@ export interface RoomBattleOptions {
 	fantasyAI?: AIChallengeOptions;
 	fantasyRogue?: RogueRoomOptions;
 	fantasyRogueDuel?: RogueBattleState;
+	/** Internal Rogue Multi battle partner assigned to human seat p3. */
+	cooperativeGuest?: RoomBattlePlayerOptions;
 	/**
 	 * length should be equal to the format's playerCount, except in two
 	 * special cases:
@@ -572,6 +584,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	 */
 	score: number[] | null = null;
 	inputLog: string[] | null = null;
+	private restoredCoopChoices?: Partial<Record<SideID, { choice: string, cantUndo: boolean }>>;
 	turn = 0;
 	rqid = 1;
 	requestCount = 0;
@@ -579,6 +592,9 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 	readonly fantasyAI?: AIController;
 	readonly roguePreview?: RoguePreviewController;
 	readonly rogueCoop?: RogueCoopController;
+	private coopDelegatedChoices: Partial<Record<'p1' | 'p3', { rqid: number, choice: string }>> = {};
+	private coopDelegatedVisibleSlot?: 'p1' | 'p3';
+	private coopDelegatedController?: string;
 	frozen?: boolean;
 	dataResolvers?: [((args: string[]) => void), ((error: Error) => void)][];
 	constructor(room: GameRoom, options: RoomBattleOptions) {
@@ -590,11 +606,31 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			options.players.length !== 2 || options.fantasyAI || options.fantasyRogue || options.rated || options.tour)) {
 			throw new Error('Invalid rogue duel options');
 		}
-		if (options.fantasyRogue && (!options.fantasyAI || options.format !== (options.fantasyRogue.cooperative ? 'gen9fantasyroguecoop' : 'gen9fantasyrogue'))) {
+		if (options.fantasyRogue?.cooperative && options.fantasyRogue.doubleBattle) {
 			throw new Error('Invalid rogue battle options');
 		}
+		if (options.cooperativeGuest && (!options.fantasyRogue?.cooperative || options.players.length !== 1 ||
+			options.cooperativeGuest.user.id === options.players[0].user.id || !options.cooperativeGuest.team)) {
+			throw new Error('Invalid rogue cooperative guest');
+		}
+		let rogueFormat = 'gen9fantasyrogue';
+		let validAIGame = format.gameType === 'singles' && format.playerCount === 2;
+		if (options.fantasyRogue?.cooperative) {
+			rogueFormat = 'gen9fantasyroguecoop';
+			validAIGame = format.gameType === 'multi' && format.playerCount === 4;
+		} else if (options.fantasyRogue?.doubleBattle) {
+			rogueFormat = 'gen9fantasyroguedoubles';
+			validAIGame = format.gameType === 'doubles' && format.playerCount === 2;
+		}
+		if (options.fantasyRogue && (!options.fantasyAI || options.format !== rogueFormat)) {
+			throw new Error('Invalid rogue battle options');
+		}
+		if (options.fantasyRogue?.resumeCheckpoint && (!options.cooperativeGuest ||
+			!validCoopCheckpoint(options.fantasyRogue.resumeCheckpoint, options.fantasyRogue.state.encounterId))) {
+			throw new Error('Invalid cooperative battle checkpoint');
+		}
 		if (options.fantasyAI && (options.players.length !== 1 || options.rated || options.tour ||
-			options.inputLog || (options.fantasyRogue?.cooperative ? format.gameType !== 'multi' || format.playerCount !== 4 : format.gameType !== 'singles' || format.playerCount !== 2))) {
+			options.inputLog || !validAIGame)) {
 			throw new Error('Invalid AI battle options');
 		}
 		if (!this.title.endsWith(" Battle")) this.title += " Battle";
@@ -641,9 +677,11 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			throw new Error(`${options.players.length} players passed to battle ${room.roomid} but ${this.playerCap} players expected`);
 		}
 		for (let i = 0; i < this.playerCap; i++) {
-			const p = options.players[i];
-			const player = this.addPlayer(p?.user || null, p ||
-				(i === 1 && options.fantasyAI ? { team: options.fantasyAI.trainer.packedTeam } : options.fantasyRogue?.cooperative && i >= 2 ? { team: i === 2 ? options.fantasyRogue.cooperative.ally : options.fantasyRogue.cooperative.foe } : null));
+			const p = i === 2 && options.cooperativeGuest ? options.cooperativeGuest : options.players[i];
+			const fallback = i === 1 && options.fantasyAI ? { team: options.fantasyAI.trainer.packedTeam } :
+				options.fantasyRogue?.cooperative && i >= 2 ?
+					{ team: i === 2 ? options.fantasyRogue.cooperative.ally : options.fantasyRogue.cooperative.foe } : null;
+			const player = this.addPlayer(p?.user || null, p || fallback);
 			if (!player) throw new Error(`failed to create player ${i + 1} in ${room.roomid}`);
 		}
 		if (options.inputLog) {
@@ -661,6 +699,9 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		this.timer = new RoomBattleTimer(this);
 		if (Config.forcetimer || this.format.includes('blitz')) this.timer.start();
 		this.start();
+		if (options.fantasyRogue?.resumeCheckpoint) {
+			void this.stream.write(`>resumecoop ${JSON.stringify(options.fantasyRogue.resumeCheckpoint)}`);
+		}
 	}
 
 	checkActive() {
@@ -669,6 +710,152 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		this.room.active = active;
 		this.active = active;
 		if (Rooms.global.battleCount === 0) Rooms.global.automaticKillRequest();
+	}
+	getCoopCaptureTarget(targetKey: string) {
+		if (this.ended || !this.options.fantasyRogue?.cooperative) return null;
+		if (!/^(p2|p4):([0-1])$/.test(targetKey)) return null;
+		for (const player of [this.p1, this.p3]) {
+			if (!player?.request.request) continue;
+			const request = JSON.parse(player.request.request);
+			const target = request.fantasyRogue?.captureTargets?.find((entry: { key: string, hp: number }) =>
+				entry.key === targetKey && entry.hp > 0);
+			if (target) return { key: target.key as string, id: target.id as string, name: target.name as string };
+		}
+		return null;
+	}
+	canStartCoopCapture(ownerUser: string, ballId: string, targetKey: string, targetId: string) {
+		if (this.ended || !this.options.fantasyRogue?.cooperative) return false;
+		const state = this.options.fantasyRogue.state;
+		const owner = this.playerTable[ownerUser];
+		if (!state?.cooperative || !state.catchable || !state.wild || !owner ||
+			(owner.slot !== 'p1' && owner.slot !== 'p3')) return false;
+		const partner = owner.slot === 'p1' ? this.p3 : this.p1;
+		if (!partner?.id || partner.id === ownerUser || partner.request.isWait !== false) return false;
+		const readableRequest = (player: RoomBattlePlayer) => {
+			if (player.request.isWait !== false || !player.request.request) return null;
+			try { return JSON.parse(player.request.request); } catch { return null; }
+		};
+		const ownerRequest = readableRequest(owner), partnerRequest = readableRequest(partner);
+		const activeHP = (request: AnyObject) =>
+			parseInt(request?.side?.pokemon?.find((mon: AnyObject) => mon.active)?.condition || '0');
+		const target = this.getCoopCaptureTarget(targetKey);
+		const targetRequest = ownerRequest?.fantasyRogue?.captureTargets?.find((entry: { key: string, id: string }) =>
+			entry.key === targetKey && entry.id === targetId);
+		if (!ownerRequest?.active?.length || ownerRequest.wait || ownerRequest.teamPreview ||
+			ownerRequest.forceSwitch === true ||
+			(Array.isArray(ownerRequest.forceSwitch) && ownerRequest.forceSwitch.some(Boolean)) ||
+			!partnerRequest?.active?.length || partnerRequest.wait || partnerRequest.teamPreview ||
+			partnerRequest.forceSwitch === true ||
+			(Array.isArray(partnerRequest.forceSwitch) && partnerRequest.forceSwitch.some(Boolean)) ||
+			!(activeHP(ownerRequest) > 0) || !(activeHP(partnerRequest) > 0)) return false;
+		const rogueRequest = ownerRequest.fantasyRogue;
+		return !!target && target.id === targetId && !!targetRequest && typeof targetRequest.chances?.[ballId] === 'number' &&
+			!!rogueRequest?.catchable && !!rogueRequest.balls?.some((entry: { id: string, count: number }) =>
+			entry.id === ballId && entry.count > 0);
+	}
+	private currentCoopController() {
+		if (!this.options.cooperativeGuest || !this.options.fantasyRogue?.cooperative) return undefined;
+		const controller = this.options.fantasyRogue.getCoopController?.();
+		const player = controller && this.playerTable[controller];
+		return player && (player.slot === 'p1' || player.slot === 'p3') ? controller : undefined;
+	}
+	private sendCoopWaitRequest(player: RoomBattlePlayer) {
+		if (!player.id) return;
+		player.sendRoom(`|request|${JSON.stringify({ wait: true, rqid: player.request.rqid, fantasyRogueDelegated: true })}`);
+	}
+	private syncCoopControlRequests(changedSlot?: 'p1' | 'p3') {
+		if (!this.options.cooperativeGuest || !this.options.fantasyRogue?.cooperative) return;
+		const controller = this.currentCoopController();
+		if (controller !== this.coopDelegatedController) {
+			this.coopDelegatedChoices = {};
+			this.coopDelegatedVisibleSlot = undefined;
+			this.coopDelegatedController = controller;
+		}
+		if (!controller) {
+			this.coopDelegatedChoices = {};
+			this.coopDelegatedVisibleSlot = undefined;
+			for (const slot of ['p1', 'p3'] as const) {
+				const player = this[slot];
+				if (player?.id && player.request.request) player.sendRoom(`|request|${player.request.request}` +
+					(player.request.choice ? `\n|sentchoice|${player.request.choice}` : ''));
+			}
+			return;
+		}
+		const delegatedPlayer = this.playerTable[controller];
+		const otherSlot: 'p1' | 'p3' = delegatedPlayer.slot === 'p1' ? 'p3' : 'p1';
+		const otherPlayer = this[otherSlot];
+		if (otherPlayer?.request.request) this.sendCoopWaitRequest(otherPlayer);
+		for (const slot of ['p1', 'p3'] as const) {
+			const staged = this.coopDelegatedChoices[slot];
+			const request = this[slot].request;
+			if (staged && (staged.rqid !== request.rqid || request.isWait !== false)) delete this.coopDelegatedChoices[slot];
+		}
+		if (changedSlot && this.coopDelegatedVisibleSlot === changedSlot) this.coopDelegatedVisibleSlot = undefined;
+		const pending = (['p1', 'p3'] as const).filter(slot => {
+			const request = this[slot].request;
+			if (request.isWait !== false || !request.request || this.coopDelegatedChoices[slot]) return false;
+			try { return !JSON.parse(request.request).wait; } catch { return false; }
+		});
+		if (this.coopDelegatedVisibleSlot && pending.includes(this.coopDelegatedVisibleSlot)) return;
+		this.coopDelegatedVisibleSlot = undefined;
+		const ownSlot = delegatedPlayer.slot as 'p1' | 'p3';
+		const nextSlot = pending.includes(ownSlot) ? ownSlot : pending[0];
+		if (nextSlot) {
+			this.coopDelegatedVisibleSlot = nextSlot;
+			const forwardedRequest = JSON.parse(this[nextSlot].request.request);
+			forwardedRequest.fantasyRogue ||= {};
+			forwardedRequest.fantasyRogue.coopOwnerUser = this[nextSlot].id;
+			delegatedPlayer.sendRoom(`|request|${JSON.stringify(forwardedRequest)}`);
+			return;
+		}
+		const requestsReady = (['p1', 'p3'] as const).every(slot => {
+			const request = this[slot].request;
+			if (!request.request) return false;
+			if (request.isWait !== false) return true;
+			try { return !!JSON.parse(request.request).wait || !!this.coopDelegatedChoices[slot]; } catch { return false; }
+		});
+		if (!requestsReady) {
+			this.sendCoopWaitRequest(delegatedPlayer);
+			return;
+		}
+		const inputs: string[] = [];
+		for (const slot of ['p1', 'p3'] as const) {
+			const staged = this.coopDelegatedChoices[slot];
+			if (!staged) continue;
+			const player = this[slot];
+			if (player.request.isWait !== false || player.request.rqid !== staged.rqid) continue;
+			player.request.isWait = true;
+			player.request.choice = staged.choice;
+			inputs.push(`>${slot} ${staged.choice}`);
+		}
+		if (inputs.length) void this.stream.write(inputs.join('\n'));
+		this.coopDelegatedChoices = {};
+		this.coopDelegatedVisibleSlot = undefined;
+	}
+	/** Re-route current p1/p3 requests after a persisted co-op delegation change. */
+	syncCoopControl() {
+		this.syncCoopControlRequests();
+	}
+	beginCoopCapture(ownerUser: string, ballId: string, targetKey: string, targetId: string) {
+		if (!this.canStartCoopCapture(ownerUser, ballId, targetKey, targetId)) throw new Error('当前无法发起共同捕捉，请刷新战斗状态后重试。');
+		const owner = this.playerTable[ownerUser];
+		const partner = owner.slot === 'p1' ? this.p3 : this.p1;
+		const ownerRequest = JSON.parse(owner.request.request);
+		const partnerRequest = JSON.parse(partner.request.request);
+		const ownerChoice = ownerRequest.active.map((_: unknown, index: number) =>
+			index ? 'pass' : `rogueball ${ballId}`).join(',');
+		const partnerChoice = partnerRequest.active.map(() => 'pass').join(',');
+		const [targetSide, targetIndex] = targetKey.split(':');
+		const inputs = [`>roguecoopcapture ${JSON.stringify({
+			ownerSide: owner.slot, ball: ballId, targetSide, targetSlot: Number(targetIndex), targetId,
+		})}`];
+		for (const [player, choice] of [[owner, ownerChoice], [partner, partnerChoice]] as const) {
+			player.request.isWait = 'cantUndo';
+			player.request.choice = choice;
+			inputs.push(`>${player.slot} ${choice}`);
+		}
+		void this.stream.write(inputs.join('\n'));
+		return true;
 	}
 	override choose(user: User, data: string) {
 		if (this.roguePreview) return;
@@ -679,6 +866,28 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const player = this.playerTable[user.id];
 		const [choice, rqid] = data.split('|', 2);
 		if (!player) return;
+		const controller = this.currentCoopController();
+		if (controller && (player.slot === 'p1' || player.slot === 'p3')) {
+			if (user.id !== controller) {
+				player.sendRoom('|error|操作权已移交给队友；你可以从肉鸽页面撤销移交。');
+				return;
+			}
+			const targetSlot = this.coopDelegatedVisibleSlot;
+			if (!targetSlot) {
+				player.sendRoom('|error|当前没有可代为提交的共同战斗指令。');
+				return;
+			}
+			const target = this[targetSlot];
+			if (target.request.isWait !== false || rqid && rqid !== `${target.request.rqid}`) {
+				player.sendRoom('|error|共同战斗指令已更新，请按当前请求重新选择。');
+				this.syncCoopControlRequests(targetSlot);
+				return;
+			}
+			this.coopDelegatedChoices[targetSlot] = { rqid: target.request.rqid, choice };
+			this.coopDelegatedVisibleSlot = undefined;
+			this.syncCoopControlRequests();
+			return;
+		}
 		const request = player.request;
 		if (request.isWait !== false && request.isWait !== true) {
 			player.sendRoom(`|error|[Invalid choice] There's nothing to choose`);
@@ -700,6 +909,32 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const player = this.playerTable[user.id];
 		const [, rqid] = data.split('|', 2);
 		if (!player) return;
+		const controller = this.currentCoopController();
+		if (controller && (player.slot === 'p1' || player.slot === 'p3')) {
+			if (user.id !== controller) {
+				player.sendRoom('|error|操作权已移交给队友；你可以从肉鸽页面撤销移交。');
+				return;
+			}
+			if (this.coopDelegatedVisibleSlot) {
+				this.coopDelegatedChoices = {};
+				this.coopDelegatedVisibleSlot = undefined;
+				this.syncCoopControlRequests();
+				return;
+			}
+			const coopPlayers = [this.p1, this.p3];
+			const allPlayersWait = this.players.every(p => !!p.request.isWait);
+			if (allPlayersWait || coopPlayers.some(p => p.request.isWait !== true) ||
+				rqid && coopPlayers.some(p => `${p.request.rqid}` !== rqid)) {
+				player.sendRoom('|error|[Invalid choice] Sorry, too late to cancel; the next turn has already started');
+				return;
+			}
+			for (const coopPlayer of coopPlayers) {
+				coopPlayer.request.isWait = false;
+				coopPlayer.request.choice = '';
+				void this.stream.write(`>${coopPlayer.slot} undo`);
+			}
+			return;
+		}
 		const request = player.request;
 		if (request.isWait !== true) {
 			player.sendRoom(`|error|[Invalid choice] There's nothing to cancel`);
@@ -825,9 +1060,27 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		for (const player of this.players) player.wantsTie = false;
 
 		switch (lines[0]) {
-		case 'fantasyroguecapture':
-			this.options.fantasyRogue?.onCapture(JSON.parse(lines[1]));
+		case 'fantasyroguecheckpoint':
+			this.options.fantasyRogue?.onCheckpoint?.(JSON.parse(lines[1]));
 			break;
+		case 'fantasyrogueresumechoices':
+			if (this.options.cooperativeGuest && this.options.fantasyRogue?.resumeCheckpoint) {
+				this.restoredCoopChoices = JSON.parse(lines[1]);
+				// The preceding update restores history; already connected clients should skip its old animations.
+				this.room.send('|fantasyrogueresumed|');
+			}
+			break;
+		case 'fantasyroguenuzlocke':
+			this.options.fantasyRogue?.onNuzlocke?.(JSON.parse(lines[1]));
+			break;
+		case 'fantasyrogueprogress':
+			this.options.fantasyRogue?.onProgress?.(JSON.parse(lines[1]));
+			break;
+		case 'fantasyroguecapture': {
+			const capture = JSON.parse(lines[1]);
+			this.options.fantasyRogue?.onCapture(capture.captured || capture, capture.result);
+			break;
+		}
 		case 'fantasyrogueresult':
 			this.options.fantasyRogue?.onResult(JSON.parse(lines[1]));
 			break;
@@ -841,6 +1094,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			this.fantasyAI?.opponentChoice(JSON.parse(lines[1]));
 			break;
 		case 'fantasyaiready':
+			this.rogueCoop?.flush();
 			this.fantasyAI?.flush();
 			break;
 		case 'requesteddata':
@@ -893,6 +1147,10 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 				const request = this[slot].request;
 				request.isWait = undoFailed ? 'cantUndo' : false;
 				request.choice = '';
+				if (this.options.cooperativeGuest && (slot === 'p1' || slot === 'p3')) {
+					this.coopDelegatedVisibleSlot = undefined;
+					this.syncCoopControlRequests(slot);
+				}
 			} else if (lines[2].startsWith(`|request|`)) {
 				this.rqid++;
 				const request = JSON.parse(lines[2].slice(9));
@@ -904,13 +1162,23 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 					isWait: request.wait && !request.fantasyRogue?.dragonKing?.pending ? 'cantUndo' : false,
 					choice: '',
 				};
+				const restoredChoice = this.restoredCoopChoices?.[slot];
+				if (restoredChoice) {
+					this[slot].request.isWait = restoredChoice.cantUndo ? 'cantUndo' : true;
+					this[slot].request.choice = restoredChoice.choice;
+					delete this.restoredCoopChoices![slot];
+				}
 				this.requestCount++;
 				if (player?.isAI) {
 					if (this.rogueCoop) this.rogueCoop.request(slot, request, this.rqid);
-					else this.fantasyAI?.request(request, this.rqid);
+					else if (!restoredChoice) this.fantasyAI?.request(request, this.rqid);
 				}
 				if (slot === 'p1') this.roguePreview?.request(request, this.rqid);
-				player?.sendRoom(`|request|${requestJSON}`);
+				if (this.options.cooperativeGuest && (slot === 'p1' || slot === 'p3')) {
+					this.syncCoopControlRequests(slot);
+				} else {
+					player?.sendRoom(`|request|${requestJSON}`);
+				}
 				break;
 			}
 			player?.sendRoom(lines[2]);
@@ -1047,6 +1315,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (this.options.fantasyRogue) {
 			(connection || user).sendTo(this.roomid, `|fantasyrogue|${JSON.stringify({
 				floor: this.options.fantasyRogue.floor, userid: user.id,
+				cooperative: !!this.options.cooperativeGuest,
 				preview: this.options.fantasyRogue.preview,
 				canRetreat: this.options.fantasyRogue.canRetreat !== false,
 				optionalChallenge: !!this.options.fantasyRogue.optionalChallenge,
@@ -1065,7 +1334,11 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (request.request) {
 			let data = `|request|${request.request}`;
 			if (request.choice) data += `\n|sentchoice|${request.choice}`;
-			(connection || user).sendTo(this.roomid, data);
+			if (this.options.cooperativeGuest && (player.slot === 'p1' || player.slot === 'p3')) {
+				this.syncCoopControlRequests();
+			} else {
+				(connection || user).sendTo(this.roomid, data);
+			}
 		}
 		if (!this.started) {
 			this.sendInviteForm(connection || user);
@@ -1187,11 +1460,13 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		if (playerOpts) {
 			const options = {
 				name: player.name,
-				avatar: player.isAI ? (player.slot === 'p3' ? this.options.fantasyRogue?.cooperative?.avatar : this.options.fantasyAI?.trainer.avatar) || '' : user ? `${user.avatar}` : '',
+				avatar: player.isAI ?
+					(player.slot === 'p3' ? this.options.fantasyRogue?.cooperative?.avatar : this.options.fantasyAI?.trainer.avatar) || '' :
+					user ? `${user.avatar}` : '',
 				team: playerOpts.team || undefined,
 				rating: Math.round(playerOpts.rating || 0),
 			};
-			void this.stream.write(`>player ${slot} ${JSON.stringify(options)}`);
+			if (!this.options.fantasyRogue?.resumeCheckpoint) void this.stream.write(`>player ${slot} ${JSON.stringify(options)}`);
 			player.hasTeam = true;
 		}
 
@@ -1264,9 +1539,15 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 
 	makePlayer(user: User) {
 		const coop = this.options.fantasyRogue?.cooperative;
-		if (coop && this.players.length >= 2) return new RoomBattleAIPlayer(this, (this.players.length + 1) as PlayerIndex, this.players.length === 2 ? coop.name : coop.foeName);
+		if (coop && this.players.length >= 2) {
+			if (this.options.cooperativeGuest && this.players.length === 2) return new RoomBattlePlayer(user, this, 3);
+			return new RoomBattleAIPlayer(this, (this.players.length + 1) as PlayerIndex,
+				this.players.length === 2 ? coop.name : coop.foeName);
+		}
 		if (this.options.fantasyAI && this.players.length === 1) {
-			return new RoomBattleAIPlayer(this, 2, this.options.fantasyRogue ? this.options.fantasyAI.trainer.name : `AI · ${this.options.fantasyAI.trainer.name}`);
+			const name = this.options.fantasyRogue ? this.options.fantasyAI.trainer.name :
+				`AI · ${this.options.fantasyAI.trainer.name}`;
+			return new RoomBattleAIPlayer(this, 2, name);
 		}
 		const num = (this.players.length + 1) as PlayerIndex;
 		return new RoomBattlePlayer(user, this, num);
@@ -1451,12 +1732,75 @@ export class RoomBattleStream extends BattleStream {
 	private fantasyAI?: Difficulty;
 	private snapshotSent = false;
 	private opponentChoiceVersion = 0;
+	/** Withhold observable co-op effects until their complete state has been emitted for durable storage. */
+	private coopPackets?: { type: string, data: string }[];
 	constructor() {
 		super({ keepAlive: true });
 		this.battle = null!;
 	}
 
 	override _writeLine(type: string, message: string) {
+		const authorization = this.battle?.fantasyRogue?.coopCapture;
+		if (authorization && (type === 'p1' || type === 'p3')) {
+			const approved = type === authorization.ownerSide ? `rogueball ${authorization.ball}` : 'pass';
+			if (message !== approved) {
+				this.pushMessage('sideupdate', `${type}\n|error|[Invalid choice] Can't undo a confirmed cooperative capture turn`);
+				return;
+			}
+			super._writeLine(type, message);
+			if (this.battle.fantasyRogue?.coopCapture) this.battle.getSide(type).choice.cantUndo = true;
+			return;
+		}
+		if (type === 'roguecoopexit') {
+			if (!this.battle?.fantasyRogue?.persistCoop || !this.battle.started ||
+				(message !== 'retreat' && message !== 'abandon')) throw new Error('Invalid cooperative exit');
+			if (!this.battle.ended) {
+				this.battle.fantasyRogue.coopExit = message;
+				this.battle.win(null);
+			}
+			return;
+		}
+		if (type === 'resumecoop') {
+			const checkpoint = JSON.parse(message) as RogueCoopCheckpoint;
+			if (!this.battle?.fantasyRogue?.persistCoop || this.battle.started || this.fantasyAI !== 'normal' ||
+				!validCoopCheckpoint(checkpoint, this.battle.fantasyRogue.encounterId) || checkpoint.state.ended) {
+				throw new Error('Invalid cooperative simulator restore');
+			}
+			const battle = Battle.fromJSON(checkpoint.state);
+			(this as BattleStream).battle = battle;
+			battle.restart((packetType, data) => this.pushMessage(packetType, Array.isArray(data) ? data.join('\n') : data));
+			this.pushMessage('update', battle.log.join('\n'));
+			const choices: Partial<Record<SideID, { choice: string, cantUndo: boolean }>> = {};
+			for (const side of battle.sides) {
+				if (side.isChoiceDone() && side.getChoice()) {
+					choices[side.id] = { choice: side.getChoice(), cantUndo: side.choice.cantUndo };
+				}
+			}
+			this.pushMessage('fantasyrogueresumechoices', JSON.stringify(choices));
+			for (const side of battle.sides) side.emitRequest(side.activeRequest || { wait: true, side: side.getRequestData() });
+			return;
+		}
+		if (type === 'roguecoopcapture') {
+			if (!this.battle?.started || !this.battle.fantasyRogue?.cooperative || this.battle.fantasyRogue.coopCapture) {
+				throw new Error('Invalid co-op capture authorization');
+			}
+			const capture: {
+				ownerSide: 'p1' | 'p3', ball: string, targetSide: 'p2' | 'p4',
+				targetSlot: number, targetId: string,
+			} = JSON.parse(message);
+			const state = this.battle.fantasyRogue;
+			const inventory = capture.ownerSide === 'p1' ? state.bag : state.partnerBag;
+			const targetSide = capture.targetSide === 'p2' ? this.battle.p2 : this.battle.p4;
+			const target = targetSide?.active[capture.targetSlot];
+			if (!['p1', 'p3'].includes(capture.ownerSide) || !state.catchable || !state.wild ||
+				!state.coopCaptureCapacity?.[capture.ownerSide] || !state.balls.some(ball => ball.id === capture.ball) ||
+				!inventory || !(inventory[capture.ball] > 0) || !['p2', 'p4'].includes(capture.targetSide) ||
+				!Number.isInteger(capture.targetSlot) || !target?.hp || target.set.fantasyRogueId !== capture.targetId) {
+				throw new Error('Invalid co-op capture request');
+			}
+			state.coopCapture = capture;
+			return;
+		}
 		if (type === 'fantasyai') {
 			if (!this.battle || this.battle.started || this.fantasyAI || !['normal', 'hard'].includes(message)) {
 				throw new Error('Invalid AI stream initialization');
@@ -1478,6 +1822,10 @@ export class RoomBattleStream extends BattleStream {
 	}
 
 	override pushMessage(type: string, data: string) {
+		if (this.coopPackets && this.battle?.fantasyRogue?.persistCoop) {
+			this.coopPackets.push({ type, data });
+			return;
+		}
 		if (this.fantasyAI === 'hard' && type === 'sideupdate' && data.startsWith('p2\n|request|')) {
 			this.opponentChoiceVersion++;
 		}
@@ -1492,12 +1840,20 @@ export class RoomBattleStream extends BattleStream {
 
 	override _write(chunk: string) {
 		const startTime = Date.now();
+		this.coopPackets = [];
 		if (this.battle && Config.debugsimprocesses && process.send) {
 			process.send('DEBUG\n' + this.battle.inputLog.join('\n') + '\n' + chunk);
 		}
 		try {
 			this._writeLines(chunk);
+			if (this.battle) this.battle.sendUpdates();
+			const checkpoint = this.battle && captureCoopCheckpoint(this.battle);
+			if (checkpoint) this.push(`fantasyroguecheckpoint\n${JSON.stringify(checkpoint)}`);
+			const packets = this.coopPackets;
+			this.coopPackets = undefined;
+			for (const packet of packets) this.pushMessage(packet.type, packet.data);
 		} catch (err: any) {
+			this.coopPackets = undefined;
 			const battle = this.battle;
 			Monitor.crashlog(err, 'A battle', {
 				chunk,
@@ -1515,12 +1871,16 @@ export class RoomBattleStream extends BattleStream {
 			}
 			// public crashlogs only have the stack anyways
 			this.push(`error\n${err.stack}`);
+			if (battle?.fantasyRogue?.persistCoop) {
+				// Do not expose a partially executed turn; recovery uses the previous durable checkpoint.
+				this.pushEnd();
+				return;
+			}
 		}
-		if (this.battle) this.battle.sendUpdates();
 		if (this.fantasyAI === 'hard' && this.snapshotSent) {
 			this.push(`fantasyaichoice\n${JSON.stringify(captureFullChoice(this.battle, 'p1', this.opponentChoiceVersion))}`);
 		}
-		if (this.fantasyAI) this.push('fantasyaiready\n');
+		if (this.fantasyAI || this.battle?.fantasyRogue?.cooperative) this.push('fantasyaiready\n');
 		const deltaTime = Date.now() - startTime;
 		if (deltaTime > 1000) {
 			Monitor.slow(`[slow battle] ${deltaTime}ms - ${chunk.replace(/\n/ig, ' | ')}`);

@@ -47,6 +47,7 @@ describe('Fantasy Rogue echo: persistence, clear awards and duplicate system gif
 		assert.equal(account().points, points); assert.equal(account().echo.points, 2);
  });
  it('is hidden before clearing and rejects spending; migrates old clear evidence without retroactive currency',()=>{
+  engine.localSpirits = false;
   assert(!echoView(account())); assert.throws(()=>cmd('echo',{value:'guard'}),/首次通关/);
   store.change(user,a=>{a.difficulties={highest:2,cleared:['0','1'],spirits:['0','1']};});
   engine.migrate(user);assert.equal(account().echo.points,0);assert(account().echo.unlocked);
@@ -94,16 +95,20 @@ describe('Fantasy Rogue echo: persistence, clear awards and duplicate system gif
   store.change(user,a=>{a.echo.upgrades.types=[];});
   engine.migrate(user);assert.equal(account().run.echo.types.length,18,'ongoing run snapshot stays fixed');
  });
- it('deduplicates purchases and guards overflow conversion with all old upgrades maxed',()=>{
-  seed(20); const request={action:'echo',value:'guard',id:randomUUID(),revision:account().revision};
-  engine.command(user,request);engine.command(user,request);assert.equal(account().echo.points,10);
-  assert.throws(()=>cmd('echo',{value:'system/mega'}),/不足/);assert.equal(account().echo.points,10);
-  store.change(user,a=>{a.points=200;a.boosts=stats(10);a.slots=5;});
-  assert.throws(()=>cmd('echo',{value:'exchange'}),/全部升满/);
-  store.change(user,a=>{a.slots=6;});cmd('echo',{value:'exchange'});
-  assert.equal(account().points,100);assert.equal(account().echo.points,11);
-  cmd('echo',{value:'exchange'});assert.throws(()=>cmd('echo',{value:'exchange'}),/100/);
- });
+	it('deduplicates purchases and guards overflow conversion with all old upgrades maxed', () => {
+		seed(20);
+		const request = { action: 'echo', value: 'guard', id: randomUUID(), revision: account().revision };
+		engine.command(user, request); engine.command(user, request); assert.equal(account().echo.points, 10);
+		assert.throws(() => cmd('echo', { value: 'system/mega' }), /不足/); assert.equal(account().echo.points, 10);
+		store.change(user, a => { a.points = 20; a.boosts = stats(10); a.slots = 5; });
+		assert.throws(() => cmd('echo', { value: 'exchange' }), /全部升满/);
+		store.change(user, a => { a.slots = 6; }); cmd('echo', { value: 'exchange' });
+		assert.equal(account().points, 10); assert.equal(account().echo.points, 11);
+		const exchange = { action: 'echo', value: 'exchange', id: randomUUID(), revision: account().revision };
+		engine.command(user, exchange); engine.command(user, exchange);
+		assert.equal(account().points, 0); assert.equal(account().echo.points, 12);
+		assert.throws(() => cmd('echo', { value: 'exchange' }), /10/);
+	});
  it('increases shiny chances with one draw and keeps old RNG semantics without the perk',()=>{
   let calls=0;
   assert(rollEchoShiny({},n=>{calls++;assert.equal(n,1000);return 9;},10));

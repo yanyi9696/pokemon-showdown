@@ -648,7 +648,9 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		onTeamPreview() {
 			this.add('clearpoke');
 			for (const pokemon of this.getAllPokemon()) {
-				let details = pokemon.details.replace(', shiny', '')
+				// Campaign previews show the same shiny appearance as the actual entrance.
+				const revealShiny = this.format.id.startsWith('gen9fantasyrogue');
+				let details = (revealShiny ? pokemon.details : pokemon.details.replace(', shiny', ''))
 					.replace(/(Zacian|Zamazenta)(?!-Crowned)/g, '$1-*'); // Hacked-in Crowned formes will be revealed
 				if (!this.ruleTable.has('speciesrevealclause')) {
 					// Mask by base species so we can selectively reveal Silvally fantasy formes

@@ -7,6 +7,25 @@ import { eventOpening } from './event-text';
 import { journeyCoins } from './early-balance';
 
 export interface HoneymoonTrip { region: string; run: string; floor: number; returned?: boolean }
+export function sameHoneymoonTrip(a?: HoneymoonTrip, b?: HoneymoonTrip) {
+	return !!a && !!b && a.region === b.region && a.run === b.run && a.floor === b.floor;
+}
+export function closeUpdatedHoneymoon(run: RogueRun) {
+	Object.assign(run.node!.event!, { stage: 'result', settled: true, result: [
+		'这段旅行的记录已在另一段冒险中更新，本次不重复领取谢礼。尚未结束的旅行会保留，之后仍可遇见。',
+	] });
+	run.phase = 'event';
+}
+/** A paused solo run may retain a trip that has since been completed in co-op. */
+function staleHoneymoon(account: RogueAccount, run: RogueRun) {
+	const trip = account.honeymoon;
+	const stale = run.node!.event!.id === 'honeymoon' ? trip && !trip.returned :
+		trip && (trip.returned || !sameHoneymoonTrip(trip, run.honeymoon));
+	if (!stale) return false;
+	run.honeymoon = { ...trip! };
+	closeUpdatedHoneymoon(run);
+	return true;
+}
 export const HONEYMOON_FLOOR = 80;
 export const HONEYMOON_REGIONS = {
 	kanto: { name: '关都', place: '华蓝海角与玉虹市', gift: 'nugget',
@@ -71,15 +90,16 @@ function finishTrip(account: RogueAccount, run: RogueRun) {
 	run.phase = 'event';
 }
 export function chooseHoneymoon(
-	account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom, choice: string
+	account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom, choice: string, sharedTip?: number
 ) {
 	const event = run.node!.event!;
+	if (staleHoneymoon(account, run)) return;
 	if (event.id === 'honeymoon') {
 		const region = choice.slice(7) as keyof typeof HONEYMOON_REGIONS;
 		if (!choice.startsWith('region:') || !HONEYMOON_REGIONS[region]) throw new Error('请选择一个旅行地区。');
 		run.honeymoon = { region, run: run.id, floor: run.floor };
 		account.honeymoon = { ...run.honeymoon };
-		run.money += journeyCoins(run.floor, 150 + run.floor * 2 + random(4) * 50);
+		run.money += journeyCoins(run.floor, 150 + run.floor * 2 + (sharedTip ?? random(4)) * 50);
 		if (content.items.some(item => item.id === 'superpotion')) run.bag.superpotion = (run.bag.superpotion || 0) + 1;
 		Object.assign(event, { stage: 'result', settled: true, result: [
 			`「那就去${HONEYMOON_REGIONS[region].name}吧！」他们把地图折好，将一份小小的谢礼放进你的手里。`,
@@ -104,6 +124,7 @@ export function chooseHoneymoon(
 export function settleHoneymoon(account: RogueAccount, run: RogueRun, content: RogueContent, won: boolean) {
 	const event = run.node!.event!;
 	if (event.id !== 'honeymoonreturn' || event.settled || event.stage !== 'battle') return;
+	if (staleHoneymoon(account, run)) return;
 	for (const mon of run.team) {
 		ensureMemberMemory(mon);
 		mon.hp = mon.maxhp; mon.status = '';

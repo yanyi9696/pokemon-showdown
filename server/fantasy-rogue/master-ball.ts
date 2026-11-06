@@ -10,20 +10,20 @@ export interface MasterBallQuest {
 export interface MasterBallCollection {
 	obtained: { run: string, floor: number, at: number }[]; used: number;
 }
-const route = (reward: boolean): RogueNode => ({ id: reward ? 'masterballreward' : 'masterballgift',
+export const masterBallRoute = (reward: boolean): RogueNode => ({ id: reward ? 'masterballreward' : 'masterballgift',
 	kind: reward ? 'reward' : 'event', name: reward ? '极境宝库 · 大师球' : '无垠极境的终极馈赠',
 	encounters: [], reward: { money: 0, items: {} } });
 export function addMasterBallRoute(run: RogueRun, random: RogueRandom) {
 	if (!run.choices || run.masterBallQuest) return;
 	if (random(MASTER_BALL_EVENT.denominator) >= MASTER_BALL_EVENT.chance) return;
 	run.masterBallQuest = { floor: run.floor, stage: 'offer' };
-	run.choices.push(route(false));
+	run.choices.push(masterBallRoute(false));
 }
 export function selectMasterBallRoute(run: RogueRun, id: string) {
 	const q = run.masterBallQuest;
 	if (!q || q.floor !== run.floor || !run.choices?.some(n => n.id === id) ||
 		id !== (q.stage === 'offer' ? 'masterballgift' : q.stage === 'reward' ? 'masterballreward' : '')) return false;
-	run.node = route(q.stage === 'reward'); run.phase = 'event'; return true;
+	run.node = masterBallRoute(q.stage === 'reward'); run.phase = 'event'; return true;
 }
 /** Older ordinary-event pools could draw this special route without initializing its quest. */
 export function repairMasterBallEvent(run: RogueRun) {
@@ -31,7 +31,7 @@ export function repairMasterBallEvent(run: RogueRun) {
 	if (run.phase !== 'event' || event?.id !== 'masterballgift' || event.settled) return;
 	if (!run.masterBallQuest) {
 		run.masterBallQuest = { floor: run.floor, stage: 'offer', consumesFloor: true };
-		run.node = route(false);
+		run.node = masterBallRoute(false);
 	} else {
 		// A previous offer/claim still owns this run's only opportunity; never grant a second ball.
 		event.stage = 'result'; event.settled = true; event.trainingAidBlocked = true;
@@ -56,7 +56,7 @@ export function chooseMasterBall(account: RogueAccount, run: RogueRun, command: 
 	const q = run.masterBallQuest!;
 	if (q.stage === 'offer') {
 		q.stage = 'reward';
-		run.choices = (run.choices || []).filter(n => n.id !== 'masterballgift').concat(route(true));
+		run.choices = (run.choices || []).filter(n => n.id !== 'masterballgift').concat(masterBallRoute(true));
 		(run.eventHistory ||= []).push({ id: 'masterballgift', floor: run.floor });
 	} else {
 		const collection = account.masterBalls ||= { obtained: [], used: 0 };
@@ -67,7 +67,7 @@ export function chooseMasterBall(account: RogueAccount, run: RogueRun, command: 
 		(run.notices ||= []).push('大师球 ×1 已放入本局背包。本局仅能获得一次，开启下一局时不会保留。');
 		if (q.consumesFloor) {
 			// The malformed ordinary encounter already consumed its route; finish that floor normally.
-			run.node = { ...route(false), id: 'legacy-masterball', event: { id: 'masterballgift',
+			run.node = { ...masterBallRoute(false), id: 'legacy-masterball', event: { id: 'masterballgift',
 				key: run.id + ':masterball:claimed', stage: 'result', settled: true, trainingAidBlocked: true,
 				result: ['你收好大师球，向研究员道别。继续旅程吧。'] } };
 			run.phase = 'event'; return true;

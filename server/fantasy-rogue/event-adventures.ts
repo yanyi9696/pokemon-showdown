@@ -1,12 +1,14 @@
 import { rollEchoShiny } from './echo';
+import { randomUUID } from 'crypto';
 import { randomEncounterAbility } from './encounter-sets';
 import { Dex, toID } from '../../sim/dex';
 import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
-import { drawBlessingGift, gift, giveEquipment, recordNegativeBlessingEvent } from './blessings';
+import { drawBlessingGift, gift, giveEquipment, normalizeBlessings, recordNegativeBlessingEvent } from './blessings';
 import { themedEventTeam } from './event-teams';
 import { eventRewardBudget, eventCost, journeyCoins } from './early-balance';
-import { rebuildMember } from './progression';
+import { createRoguePokemon, initializeExperience, rebuildMember } from './progression';
+import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
 import { offerEventFragments } from './event-fragments';
 import { qualityTier, rareEncounterScale } from './encounter-quality';
@@ -17,6 +19,17 @@ export const adventureEvent = (id: string) => ['bandits', 'dice', 'fishing'].inc
 export interface FishingState {
 	started: number; anchor: number; travel: number; hits: number; misses: number;
 	lastTap: number; center: number; feedback?: string;
+}
+export type FishingReward = { boosted?: boolean } & (
+	{ kind: 'coins', money: number } | { kind: 'loot', value: number } |
+	{ kind: 'gift', pokemon: RoguePokemon } | { kind: 'battle', team: PokemonSet[] }
+);
+/** Prepared by the co-op server, never accepted from a player's command. */
+export interface SharedAdventureRoll {
+	coin?: boolean;
+	face?: number;
+	fishingState?: FishingState;
+	fishingReward?: FishingReward;
 }
 export const fishingWidth = (hits: number) => Math.max(0.16, 0.32 - hits * 0.035);
 export const fishingPeriod = (hits: number) => 2400 / (1 + hits * 0.08);
@@ -70,23 +83,17 @@ function beginFight(run: RogueRun, team: PokemonSet[], text: string, bandits = f
 		...(bandits ? { trainer: { id: 'twofacebandit', name: '盗猎集团的头儿', avatar: 'burglar', role: 'traveller' as const, tera: false } } : {}) }];
 	run.encounter = 0; run.phase = 'ready';
 }
-function fishingReward(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom) {
+export function rollFishingReward(run: RogueRun, content: RogueContent, random: RogueRandom): FishingReward {
 	const event = run.node!.event!, landed = event.fishing!.hits;
 	const companion = run.blessings?.companions?.some(c => !c.away && c.id === 'lana');
 	const hits = landed ? Math.min(7, landed + (companion ? 1 : 0)) : 0;
-	if (landed && companion) (run.notices ||= []).push('【同行训练家 - 水莲】这次钓鱼的收获提高了一档。');
-	// The minigame supplies its own payout, including the zero-hit consolation.
-	event.trainingAidBlocked = true;
+	const boosted = !!(landed && companion);
 	if (!hits) {
 		const coins = journeyCoins(run.floor, 100 + 2 * run.floor);
-		run.money += coins;
-		finish(run, ['鱼线轻飘飘地收了回来。钓鱼佬拍拍你的肩膀：「第一次嘛，正常！这个拿着，就当今天的收获。」', `获得 ${coins} 金币。`]);
-		return;
+		return { kind: 'coins', money: coins };
 	}
 	if (random(100) < 30) {
-		loot(run, content, random, Math.round(budget(run.floor) * (0.5 + hits * 0.3)));
-		finish(run, ['鱼钩上挂着一个湿漉漉的藏宝袋。你和钓鱼佬一起拆开，把里面的东西收进背包。']);
-		return;
+		return { kind: 'loot', value: Math.round(budget(run.floor) * (0.5 + hits * 0.3)), boosted };
 	}
 	const level = Math.max(5, Math.min(100, Math.ceil(run.floor / 2)));
 	const common = ['Magikarp', 'Goldeen', 'Poliwag', 'Tentacool', 'Finneon', 'Remoraid', 'Barboach', 'Carvanha',
@@ -107,25 +114,62 @@ function fishingReward(account: RogueAccount, run: RogueRun, content: RogueConte
 	mon.set.ability = randomEncounterAbility(mon.set.species, random, elite, qualityTier(run));
 	mon.abilityPool = [{ id: toID(mon.set.ability), hidden: toID(dex.species.get(mon.set.species).abilities.H) === toID(mon.set.ability) }];
 	rebuildMember(mon, run.boosts); mon.hp = mon.maxhp;
-	if (elite) {
+	return elite ? { kind: 'battle', team: [mon.set], boosted } : { kind: 'gift', pokemon: mon, boosted };
+}
+function fishingReward(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom,
+	shared?: FishingReward) {
+	const reward = shared || rollFishingReward(run, content, random);
+	run.node!.event!.trainingAidBlocked = true;
+	if (reward.boosted) (run.notices ||= []).push('【同行训练家 - 水莲】这次钓鱼的收获提高了一档。');
+	if (reward.kind === 'coins') {
+		run.money += reward.money;
+		finish(run, ['鱼线轻飘飘地收了回来。钓鱼佬拍拍你的肩膀：「第一次嘛，正常！这个拿着，就当今天的收获。」', `获得 ${reward.money} 金币。`]);
+	} else if (reward.kind === 'loot') {
+		loot(run, content, random, reward.value);
+		finish(run, ['鱼钩上挂着一个湿漉漉的藏宝袋。你和钓鱼佬一起拆开，把里面的东西收进背包。']);
+	} else if (reward.kind === 'battle') {
 		// Fishing quality already raises the IV floor; an elite is not automatically perfect.
-		beginFight(run, [mon.set], '鱼竿猛地一沉！被拉上岸的精英甩了甩尾巴，摆出战斗姿势。钓鱼佬退到一旁：「拿下这条大家伙，我再送你一份好东西！」');
+		beginFight(run, structuredClone(reward.team), '鱼竿猛地一沉！被拉上岸的精英甩了甩尾巴，摆出战斗姿势。钓鱼佬退到一旁：「拿下这条大家伙，我再送你一份好东西！」');
 		// Its saved shiny roll and IVs belong to this catch, not a second wild roll.
 		run.node!.spiritPrepared = true;
 	} else {
+		const mon = shared ? createRoguePokemon(structuredClone(reward.pokemon.set), run.boosts,
+			randomUUID(), reward.pokemon.stars) : reward.pokemon;
+		if (shared) {
+			mon.abilityPool = structuredClone(reward.pokemon.abilityPool);
+			mon.joinOrder = normalizeBlessings(run).nextJoin++;
+			initializeExperience(mon);
+		}
 		gift(account, run, content, mon, '永不空军！');
 		finish(run, ['浮标一下沉入水中。你收起鱼竿，一只宝可梦跟着跃上了岸。', '钓鱼佬笑着竖起拇指：「不错！看来它很喜欢你。」']);
 	}
 }
+/** Mutate one authoritative float; true means its reward can now be rolled once. */
+export function stepFishing(fish: FishingState, now: number, random: RogueRandom, choice: string) {
+	const frame = fishingFrame(fish, now);
+	if (frame.progress >= 1 || fish.hits >= 6) return true;
+	if (choice === 'fishfinish') throw new Error('鱼线还没收完。');
+	if (now - fish.lastTap < 1000) return false;
+	fish.lastTap = now;
+	if (Math.abs(frame.cursor - fish.center) <= fishingWidth(fish.hits) / 2) {
+		fish.travel += Math.max(0, now - fish.anchor) * 2 / fishingPeriod(fish.hits);
+		fish.anchor = now; fish.hits++;
+		fish.center = 0.2 + random(601) / 1000;
+		fish.feedback = '收得漂亮！';
+		return fish.hits === 6;
+	}
+	fish.misses++; fish.feedback = '再看准一点。';
+	return false;
+}
 export function chooseAdventure(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom,
-	choice: string, now = Date.now()) {
+	choice: string, now = Date.now(), shared?: SharedAdventureRoll) {
 	const event = run.node!.event!;
 	if (event.id === 'bandits') {
 		if (choice === 'fight') {
 			const level = Math.min(100, Math.max(5, Math.ceil(run.floor / 2) + 3));
 			beginFight(run, themedEventTeam('bandits', level, 3, random),
 				'你挣开束缚，抛出了精灵球。「看来你想选第三种结果。」男人收起硬币，招呼手下一起动手。', true);
-		} else if (choice === 'coin' && (ownsBlessing(run.blessings, 'dice') || random(2) === 0)) {
+		} else if (choice === 'coin' && (shared?.coin ?? (ownsBlessing(run.blessings, 'dice') || random(2) === 0))) {
 			event.trainingAidBlocked = true;
 			finish(run, ['「叮！」硬币稳稳落在手背上，正面朝上。男人挥了挥手，这伙人居然真的放你走了。']);
 		} else {
@@ -142,7 +186,8 @@ export function chooseAdventure(account: RogueAccount, run: RogueRun, content: R
 			finish(run, ['摊主凑到你耳边：「大奖也能直接买，算你便宜点。」你还没反应过来，手里已经多了一个包裹。']);
 			return;
 		}
-		const fee = Math.round(eventCost(run.floor) * 0.3), face = ownsBlessing(run.blessings, 'dice') ? 6 : random(6) + 1;
+		const fee = Math.round(eventCost(run.floor) * 0.3);
+		const face = shared?.face ?? (ownsBlessing(run.blessings, 'dice') ? 6 : random(6) + 1);
 		run.money -= fee;
 		if (face === 6 || face === 1) loot(run, content, random, fee * (face === 6 ? 4 : 2));
 		else recordNegativeBlessingEvent(run, 'outcome');
@@ -152,28 +197,23 @@ export function chooseAdventure(account: RogueAccount, run: RogueRun, content: R
 	} else if (choice === 'leave') {
 		event.trainingAidBlocked = true; finish(run, ['你在岸边看了一会儿，向钓鱼佬挥手道别。']);
 	} else if (choice === 'fishstart') {
-		event.fishing = { started: now, anchor: now, travel: 0, hits: 0, misses: 0, lastTap: 0, center: 0.35 + random(301) / 1000 };
+		event.fishing = shared?.fishingState ? structuredClone(shared.fishingState) :
+			{ started: now, anchor: now, travel: 0, hits: 0, misses: 0, lastTap: 0, center: 0.35 + random(301) / 1000 };
 	} else {
-		const fish = event.fishing!;
-		const frame = fishingFrame(fish, now);
-		if (frame.progress >= 1 || fish.hits >= 6) { fishingReward(account, run, content, random); return; }
-		if (choice === 'fishfinish') throw new Error('鱼线还没收完。');
-		if (now - fish.lastTap < 1000) return;
-		fish.lastTap = now;
-		if (Math.abs(frame.cursor - fish.center) <= fishingWidth(fish.hits) / 2) {
-			fish.travel += Math.max(0, now - fish.anchor) * 2 / fishingPeriod(fish.hits);
-			fish.anchor = now; fish.hits++;
-			fish.center = 0.2 + random(601) / 1000;
-			fish.feedback = '收得漂亮！';
-			if (fish.hits === 6) fishingReward(account, run, content, random);
-		} else { fish.misses++; fish.feedback = '再看准一点。'; }
+		if (shared?.fishingState) event.fishing = structuredClone(shared.fishingState);
+		if (shared?.fishingReward || !shared?.fishingState && stepFishing(event.fishing!, now, random, choice)) {
+			fishingReward(account, run, content, random, shared?.fishingReward);
+		}
 	}
 }
 export function settleAdventure(run: RogueRun, content: RogueContent, random: RogueRandom, won: boolean) {
 	if (run.node!.event!.settled) return;
 	if (run.node!.event!.id === 'bandits') {
 		if (won) {
-			if (offerEventFragments(run, 'bandits', random)) return;
+			const event = run.node!.event!;
+			const offered = 'banditFragments' in event ? !!event.banditFragments &&
+				offerEventFragments(run, 'bandits', random, event.banditFragments) : offerEventFragments(run, 'bandits', random);
+			if (offered) return;
 			banditLoot(run, content, random);
 			finish(run, ['山贼们横七竖八地倒了一地。你觉得光教训一顿还不够，索性把搜出的财物装进了背包。']);
 		} else finish(run, ['猛烈的攻击让你失去了意识。再次醒来，四下只剩风声。', `损失 ${lose(run, 1)} 金币。`]);

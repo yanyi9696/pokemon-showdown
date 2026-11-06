@@ -1,3 +1,4 @@
+import { isFantasySpecies } from './species-eligibility';
 import { Dex, toID } from '../../sim/dex';
 import type { RogueRun } from './types';
 import { FORM_ITEMS } from './form-item-data';
@@ -33,7 +34,9 @@ const themes: Record<string, Omit<ExclusiveItem, 'id' | 'species' | 'theme'>> = 
 /** Keep regional forms and Fantasy membership distinct, but merge item-selected forms. */
 export function exclusiveFamily(name: string): string {
 	const s = dex.species.get(name);
-	const fantasy = s.name.includes('Fantasy') ? '-Fantasy' : '';
+	// Original Kyurem is a Fantasy event target but still uses Kyurem's DNA Splicers.
+	if (s.id === 'kyuremoriginalfantasy') return 'kyurem';
+	const fantasy = isFantasySpecies(s.name) ? '-Fantasy' : '';
 	const region = ['Alola', 'Galar', 'Hisui', 'Paldea'].find(r => s.name.includes(`-${r}`));
 	return toID(s.baseSpecies.replace(/-Fantasy$/, '') + (region ? `-${region}` : '') + fantasy);
 }

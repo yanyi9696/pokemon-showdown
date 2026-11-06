@@ -1,16 +1,19 @@
+import { isFantasySpecies } from './species-eligibility';
 import { randomUUID } from 'crypto';
 import { ROGUE_STATS } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { MAINLINE_SCRIPT } from './mainline-data';
 import { mainlineProgress, nextMainlineScene, unlockStoryDifficulty,
-	MAINLINE_CHAPTER_LENGTHS } from './mainline-progress';
+	MAINLINE_CHAPTER_LENGTHS, mainlineChance } from './mainline-progress';
 import { rewardCandies, rewardExperience, rewardMoney, rewardRecovery } from './reward-scenes';
 import { treasure } from './blessings';
 import { fantasyTutorMoves } from './fantasy-tutor';
 import { teachMove } from './event-learning';
 import { characterSpeech } from './dialogue-copy';
 import { natureMintSupplies } from './nature-mints';
+import { Dex, toID } from '../../sim/dex';
+import { ensureMemberMemory } from './progression';
 
 interface ScriptPage {
 	speaker?: string; text?: string; kind?: string; prompt?: string;
@@ -28,6 +31,7 @@ export interface MainlineDialogue {
 	kind: 'main' | 'ordinary' | 'opening' | 'ending';
 	reward?: string; service?: string; member?: string;
 }
+/** Only offer a shared scene when both accounts have the same next chapter and no solo reservation can conflict. */
 export function elderStageLine(account: RogueAccount) {
 	return [...script.stageLines].reverse().find(line => mainlineProgress(account).completed.includes(line.after))?.text;
 }
@@ -62,17 +66,21 @@ export function reserveMainline(account: RogueAccount, run: RogueRun, random: Ro
 	if (run.mainline || run.difficulty === 'easy' || run.difficultyTest) return;
 	const tier = run.difficulty || 0, scene = nextMainlineScene(account, tier);
 	if (!scene) return;
-	const guaranteed = mainlineProgress(account).pity[String(tier)];
+	const progress = mainlineProgress(account);
+	const missedClears = Math.max(0, Math.min(3, Math.floor(progress.missedClears?.[String(tier)] || 0)));
+	// Spend this next-run bonus once. Abandoning short runs cannot repeatedly reroll it.
+	(progress.missedClears ||= {})[String(tier)] = 0;
+	progress.pity[String(tier)] = false;
 	// A single persisted roll per adventure; no reroll on reconnect or alternate route choices.
-	const eligible = Array.from({ length: guaranteed ? 29 : 79 }, (_, i) => i +
+	const eligible = Array.from({ length: 178 }, (_, i) => i +
 		21).filter(floor => floor % 10 !== 0 && floor % 10 !== 9);
-	const floor = guaranteed || random(100) < 40 ? eligible[random(eligible.length)] : undefined;
-	run.mainline = { scene, floor };
+	const floor = random(100) < mainlineChance(missedClears) ? eligible[random(eligible.length)] : undefined;
+	run.mainline = { scene, floor, missedClears };
 }
 export function offerMainline(run: RogueRun) {
 	const reservation = run.mainline;
 	if (!reservation?.floor || reservation.offered || run.difficulty === 'easy' || !run.choices?.length ||
-		run.floor < reservation.floor || run.floor > 99) return;
+		run.floor < reservation.floor || run.floor > 198) return;
 	const slot = run.choices.findIndex(node => !node.challenge && !['boss', 'rest', 'adventure'].includes(node.kind));
 	if (slot < 0) return;
 	run.choices[slot] = { id: 'mainline', kind: 'story', name: '秘闻 · 黑袍老人的身影',
@@ -93,11 +101,16 @@ export function prepareElderMeeting(account: RogueAccount, run: RogueRun, random
 	beginDialogue(account, scene, 'ordinary');
 	const session = account.mainlineDialogue!;
 	if (run.elderStageLine) session.pages.splice(1, 0, { speaker: '黑袍老人', text: run.elderStageLine });
+	if (scene.id === 'elder-card' &&
+		run.team.some(mon => !mon.egg && !mon.nuzlockeDead && isFantasySpecies(mon.set.species))) {
+		session.pages.push({ speaker: '旁白', text: '老人注意到了你身旁的幻想宝可梦，停下了收拾留影的动作。' },
+			{ speaker: '黑袍老人', text: '这座塔留下的力量，并不只有一种模样。让我帮它们找一找，还没有发现的自己吧。' });
+	}
 	if (scene.id === 'elder-rest') {
 		const choice = session.pages.find(page => page.options)!, options = choice.options!;
 		options[0].effect = 'treasure'; options[1].effect = 'ev'; options[2].effect = 'fantasy';
 		choice.options = options.filter(option => option.effect === 'treasure' ||
-			!run.elderServices?.includes(option.effect!) && run.team.some(mon => !mon.egg &&
+			!run.elderServices?.includes(option.effect!) && run.team.some(mon => !mon.egg && !mon.nuzlockeDead &&
 				(option.effect === 'ev' ? ROGUE_STATS.some(stat => mon.set.evs[stat] > 0) : fantasyTutorMoves(mon).length > 0)));
 	}
 	run.phase = 'story'; delete run.choices;
@@ -174,7 +187,7 @@ function finishDialogue(account: RogueAccount, run: RogueRun | undefined, conten
 				rewardExperience(run.floor) * (session.reward === '丰厚' ? 1.5 : session.reward === '最低' ? 0.5 : 1)) };
 			for (const [id, count] of Object.entries(items)) run.bag[id] = (run.bag[id] || 0) + count;
 		} else if (session.service === 'ev' || session.service === 'fantasy') {
-			const mon = run.team.find(member => !member.egg && member.id === session.member);
+			const mon = run.team.find(member => !member.egg && !member.nuzlockeDead && member.id === session.member);
 			if (!mon || run.elderServices?.includes(session.service)) throw new Error('请重新选择能够接受指导的伙伴。');
 			if (session.service === 'ev') mon.evRespec = { total: Math.min(510, ROGUE_STATS.reduce((sum,
 				stat) => sum + mon.set.evs[stat], 0)) };
@@ -189,11 +202,22 @@ function finishDialogue(account: RogueAccount, run: RogueRun | undefined, conten
 			if (item.startsWith('roguemint')) for (const [id, count] of Object.entries(natureMintSupplies(run.floor))) {
 				run.bag[id] = (run.bag[id] || 0) + count;
 			}
+			if (session.id === 'elder-card') for (const mon of run.team) {
+				if (mon.egg || mon.nuzlockeDead || !isFantasySpecies(mon.set.species)) continue;
+				ensureMemberMemory(mon);
+				for (const [slot, name] of Object.entries(Dex.mod('gen9fantasy').species.get(mon.set.species).abilities)) {
+					const id = toID(name);
+					if (!mon.abilityPool!.some(ability => ability.id === id)) mon.abilityPool!.push({ id, hidden: slot === 'H' });
+				}
+			}
 		}
 		run.lastReward = { floor: run.floor, name: '黑袍老人给你的补给', money: run.money - before.money,
 			items: Object.fromEntries(Object.entries(run.bag).filter(([id, n]) => n > (before.bag[id] || 0))
 				.map(([id, n]) => [id, n - (before.bag[id] || 0)])), points: 0,
-			effect: session.service === 'ev' ? '已开放已有努力值重分配' : session.service === 'fantasy' ? '已学会合法幻想招式' : undefined };
+			effect: session.service === 'ev' ? '已开放已有努力值重分配' : session.service === 'fantasy' ? '已学会合法幻想招式' :
+			session.id === 'elder-card' &&
+			run.team.some(mon => !mon.egg && !mon.nuzlockeDead && isFantasySpecies(mon.set.species)) ?
+				'在队幻想伙伴已开放本形态可切换的全部特性，可在队伍详情中选择。' : undefined };
 		// The ordinary continue action advances the floor, without crediting the gift a second time.
 		run.phase = 'reward';
 	}
@@ -212,7 +236,7 @@ export function advanceMainline(account: RogueAccount, content: RogueContent, ra
 		const reply = structuredClone(option.reply);
 		if (option.effect === 'ev' || option.effect === 'fantasy') {
 			if (!run || run.elderServices?.includes(option.effect)) throw new Error('本次指导已领取。');
-			const eligible = run.team.filter(mon => !mon.egg &&
+			const eligible = run.team.filter(mon => !mon.egg && !mon.nuzlockeDead &&
 				(option.effect === 'ev' ? ROGUE_STATS.some(stat => mon.set.evs[stat]) : fantasyTutorMoves(mon).length));
 			reply.push({ kind: 'choice', prompt: '选择一位接受指导的伙伴。', options: eligible.map(mon => ({
 				label: `【${mon.set.species}】 · Lv.${mon.set.level}`, effect: `target:${option.effect}`, member: mon.id,
@@ -255,7 +279,8 @@ export function elderEventCodex(discovered: readonly string[], preview = false) 
 	return script.ordinary.map(scene => {
 		const unlocked = preview || discovered.includes(scene.id);
 		return { id: scene.id, category: 'event', name: scene.title, unlocked,
-			text: unlocked ? '旅途中偶遇黑袍老人，与他交谈并作出回应，获得旅途补给或伙伴培养。老人的话会随秘闻进度变化；这类日常相遇不推进秘闻主线。' : '？？？',
+			text: unlocked ? '旅途中偶遇黑袍老人，与他交谈并作出回应，获得旅途补给或伙伴培养。老人的话会随秘闻进度变化；这类日常相遇不推进秘闻主线。' +
+			(scene.id === 'elder-card' ? '队伍中有幻想伙伴时，还会开放它们本形态可切换的全部特性；不改变当前特性。' : '') : '？？？',
 			...(unlocked ? { replay: sceneReplay(scene) } : {}) };
 	});
 }

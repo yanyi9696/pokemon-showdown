@@ -173,7 +173,7 @@ describe('Fantasy Rogue October 21 content and progression update', function () 
 			assert.deepEqual(store.get(user), receipt); assert.equal(receipt.run.bag.greninjaashz, 1);
 			assert.throws(() => cmd('continue'));
 			const r = store.get(user).run; assert.equal(r.phase, 'settlement'); assert.equal(r.pendingCapture.id, 'command-frog');
-			cmd('replace', {value: r.team[0].id});
+			cmd('replace', {value: r.team[0].id, member: r.pendingCapture.id, confirmed: true});
 			const restored = engine.migrate(user).run;
 			assert.equal(restored.team.filter(m => m.id === 'command-frog').length, 1);
 			assert.equal(restored.team.find(m => m.id === 'command-frog').set.level, 46);

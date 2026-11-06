@@ -86,6 +86,10 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		assert(!eligible.has('galarlegend'), 'requires Eternatus in the party');
 		assert(!eligible.has('originaldragon'), 'requires Kyurem in the party');
 		for (const def of ROGUE_BLESSINGS) {
+			if (['universalmega', 'universalgmega', 'universaltotem'].includes(def.family)) {
+				assert(!eligible.has(def.id), def.name + ' requires its system to be unlocked');
+				continue;
+			}
 			if (companionFamily(def.family)) {
 				assert.equal(eligible.has(def.id), ['companionai', 'companionband', 'companionliko'].includes(def.family), def.name);
 				continue;
@@ -105,6 +109,8 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 	for (const def of ROGUE_BLESSINGS.filter(b => (!b.floors || b.floors.includes(1)) && !['singer', 'dancer', 'swords', 'topclearmind', 'dragonking', 'killlagirl'].includes(b.family))) {
 		it(`claims the opening option ${def.id}, including any follow-up rewards`, () => {
 			cmd('start', { starters: ['bulbasaur'] });
+			const system = { universalmega: 'mega', universalgmega: 'gmega', universaltotem: 'z' }[def.family];
+			if (system) store.change(user, a => { a.run[system + 'Unlocked'] = true; });
 			if (def.family === 'overtime' && !overtimeGiftPool(account().run, content, def.type).length) {
 				assert(!blessingCandidates(account().run, content).some(b => b.id === def.id)); return;
 			}
@@ -202,16 +208,34 @@ describe('Fantasy Rogue opening blessing and earned spirit selection', function 
 		assert(!account().run.blessings.beforeAdventure);
 	});
 	it('keeps the access gate, rejects unearned manual selection, and leaves uncleared spirits in the random pool', () => {
-		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true }), /通关当前难度/);
+		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true }), /通关任意档位/);
 		cmd('start', { starters: ['bulbasaur'] }); assert(!account().run.spirit); cmd('abandon');
-		store.change(user, a => { a.spiritUnlocked = true; a.difficulties.spirits.push('0'); a.unlockedSpirits = ['kyogre']; });
-		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true, selectedSpirit: 'jirachi' }), /通关 200 层/);
+		store.change(user, a => {
+			a.spiritUnlocked = true; a.difficulties.spirits.push('0'); a.unlockedSpirits = ['kyogre'];
+			a.spiritClearTiers = { kyogre: 0 };
+		});
+		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true, selectedSpirit: 'jirachi' }), /通关本档或更高档/);
 		assert.throws(() => cmd('start', { starters: ['bulbasaur'], selectedSpirit: 'kyogre' }));
 		cmd('start', { starters: ['bulbasaur'], useSpirit: true, selectedSpirit: 'kyogre' });
 		assert.equal(account().run.spirit, 'kyogre'); cmd('abandon');
 		engine = new RogueEngine(store, content, max => Math.min(activeRogueSpirits().findIndex(s => s.id === 'jirachi'), max - 1));
 		cmd('start', { starters: ['bulbasaur'], useSpirit: true });
 		assert.equal(account().run.spirit, 'jirachi'); assert(!account().unlockedSpirits.includes('jirachi'));
+	});
+	it('validates the selected spirit tier on the server and supports a direct charm-tier preference', () => {
+		store.change(user, a => {
+			a.difficulties = { highest: 1, cleared: ['easy'], spirits: ['easy'] };
+			a.spiritClearTiers = { kyogre: 'easy' };
+		});
+		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true, selectedSpirit: 'kyogre' }), /护符档/);
+		cmd('setdifficulty', { value: 'easy' });
+		cmd('start', { starters: ['bulbasaur'], useSpirit: true, selectedSpirit: 'kyogre' });
+		assert.equal(account().run.difficulty, 'easy'); assert.equal(account().run.spirit, 'kyogre');
+		assert(!account().run.difficultyTest); cmd('abandon');
+		cmd('setdifficulty', { value: '0' });
+		assert.throws(() => cmd('start', { starters: ['bulbasaur'], useSpirit: true, selectedSpirit: 'kyogre' }), /通关本档或更高档/);
+		cmd('start', { starters: ['bulbasaur'], useSpirit: true });
+		assert(account().run.spirit); assert(!account().run.difficultyTest);
 	});
 	it('earns a permanent unlock at a full clear even with full card slots, and recovers historical clear evidence', () => {
 		cmd('start', { starters: ['bulbasaur'] });

@@ -18,6 +18,25 @@ describe('Fantasy Rogue shiny persistence and starter unlocks', function () {
 		{id: randomUUID(), revision: account().revision, action, ...data});
 	beforeEach(() => {store = new RogueStore(':memory:'); engine = new RogueEngine(store, content(), () => 0);});
 	afterEach(() => {battle?.destroy(); battle = undefined; store.close();});
+	it('reveals both campaign shiny models before lead selection, keeping ordinary previews unchanged', () => {
+		const config = content();
+		config.floors[1][0].encounters[0].team[0].shiny = true;
+		engine = new RogueEngine(store, config, () => 0);
+		cmd('start', { starters: ['bulbasaur'] }); cmd('select', { value: 'grass' });
+		store.change(user, saved => { saved.run.team[0].set.shiny = true; });
+		cmd('battle');
+		const run = account().run;
+		for (const formatid of ['gen9fantasyrogue', 'gen9ou']) {
+			battle = new Battle({ formatid, seed: [1, 2, 3, 4],
+				...(formatid === 'gen9fantasyrogue' ? { fantasyRogue: engine.battleState(user) } : {}),
+				p1: { name: 'Player', team: Teams.pack(run.team.map(mon => mon.set)) },
+				p2: { name: 'Wild', team: Teams.pack(run.node.encounters[0].team) } });
+			const previews = battle.log.filter(line => line.startsWith('|poke|'));
+			assert.equal(previews.length, 2);
+			assert.equal(previews.filter(line => line.includes(', shiny')).length, formatid === 'gen9fantasyrogue' ? 2 : 0);
+			battle.destroy(); battle = undefined;
+		}
+	});
 	it('keeps a real capture shiny through settlement, the next floor, packing, battle entry and escape', () => {
 		const config = content();
 		config.starters.push({id: 'slugma', set: set('Slugma', 'Magma Armor', 5, ['Ember']), availableInitially: false});

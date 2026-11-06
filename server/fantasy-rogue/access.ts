@@ -10,3 +10,11 @@ export function rogueAccess(user: Pick<User, 'id' | 'named' | 'connected' | 'reg
 	return !!user.named && !!user.registered && (Config.fantasyrogue?.publicAccess === true ||
 		(Config.fantasyrogue?.betaAccounts || []).some(name => toID(name) === user.id));
 }
+
+/** The server owns this release gate; ordinary Rogue and NPC cooperation keep their existing access rules. */
+export function rogueCoopAccess(user: Pick<User, 'id' | 'named' | 'connected' | 'registered'>) {
+	if (!rogueAccess(user)) return false;
+	const enabled = Config.fantasyrogue?.coopEnabled;
+	if (enabled !== undefined) return enabled === true;
+	return !!Config.fantasyailocal && ['127.0.0.1', '::1', 'localhost'].includes(Config.bindaddress || '');
+}

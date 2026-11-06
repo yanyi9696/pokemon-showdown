@@ -8,6 +8,7 @@ type RevivalItem = keyof typeof REVIVAL_ITEMS;
 
 function permitted(side: Side) {
 	return side.id === 'p1' && !!side.battle.fantasyRogue && !side.battle.fantasyRogue.duel &&
+		!side.battle.fantasyRogue.nuzlocke &&
 		!side.battle.ended && !!side.pokemon.some(mon => hasBlessing(mon, 'insight'));
 }
 export function revivalRequest(side: Side, moveRequest = side.requestState === 'move') {

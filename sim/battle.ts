@@ -1,4 +1,7 @@
 import { rogueMetaStat } from './rogue-meta-growth';
+import { requestRogueGrowth } from './rogue-growth';
+import { rogueCoopPreviewSide, finalizeRogueCoopPreview } from './rogue-coop-preview';
+import { amplifyRogueItemEvent, rogueItemBonusFactor } from './rogue-item-amplification';
 /**
  * Simulator Battle
  * Pokemon Showdown - http://pokemonshowdown.com/
@@ -951,7 +954,12 @@ export class Battle {
 				this.effectState = handler.state || this.initEffectState({});
 				this.effectState.target = effectHolder;
 
+				const beforeModifier = this.event.modifier;
 				returnVal = handler.callback.apply(this, args);
+				if (this.fantasyRogue && effectHolder instanceof Pokemon) {
+					returnVal = amplifyRogueItemEvent(this, eventid, handler.effect, effectHolder,
+						this.effectState, beforeModifier, args[0], returnVal);
+				}
 
 				this.effect = parentEffect;
 				this.effectState = parentEffectState;
@@ -1429,6 +1437,7 @@ export class Battle {
 			this.add(`teampreview${pickedTeamSize ? `|${pickedTeamSize}` : ''}`);
 		}
 
+		if (requestRogueGrowth(this)) return;
 		const requests = this.getRequests(type);
 		for (let i = 0; i < this.sides.length; i++) {
 			this.sides[i].emitRequest(requests[i]);
@@ -1466,8 +1475,10 @@ export class Battle {
 		case 'teampreview':
 			for (let i = 0; i < this.sides.length; i++) {
 				const side = this.sides[i];
-				const maxChosenTeamSize = this.ruleTable.pickedTeamSize || undefined;
-				requests[i] = { teamPreview: true, maxChosenTeamSize, side: side.getRequestData() };
+				const coopPreview = rogueCoopPreviewSide(side);
+				const maxChosenTeamSize = coopPreview ? Math.min(3, side.pokemon.length) : this.ruleTable.pickedTeamSize || undefined;
+				requests[i] = { teamPreview: true, maxChosenTeamSize, side: side.getRequestData(),
+					...(coopPreview ? { rogueCoopTeamPreview: { members: side.pokemon.map(mon => mon.set.fantasyRogueId!) } } : {}) };
 			}
 			break;
 
@@ -2032,6 +2043,12 @@ export class Battle {
 		if (!target.isActive) return false;
 		if (this.gen > 5 && !target.side.foePokemonLeft()) return false;
 		const collapseBefore = { ...target.boosts };
+		if (effect?.effectType === 'Item' && rogueItemBonusFactor(target) > 1) {
+			boost = { ...boost };
+			for (const stat of Object.keys(boost) as BoostID[]) {
+				if (boost[stat]! > 0) boost[stat]! *= rogueItemBonusFactor(target);
+			}
+		}
 		boost = this.runEvent('ChangeBoost', target, source, effect, { ...boost });
 		boost = target.getCappedBoost(boost);
 		boost = this.runEvent('TryBoost', target, source, effect, { ...boost });
@@ -2116,6 +2133,9 @@ export class Battle {
 				continue;
 			}
 			if (targetDamage !== 0) targetDamage = this.clampIntRange(targetDamage, 1);
+			if (effect.effectType === 'Item' && source && source !== target && typeof targetDamage === 'number') {
+				targetDamage *= rogueItemBonusFactor(source);
+			}
 
 			if (effect.id !== 'struggle-recoil') { // Struggle recoil is not affected by effects
 				if (effect.effectType === 'Weather' && !target.runStatusImmunity(effect.id)) {
@@ -2295,6 +2315,7 @@ export class Battle {
 		if (damage && damage <= 1) damage = 1;
 		damage = this.trunc(damage);
 		// for things like Liquid Ooze, the Heal event still happens when nothing is healed.
+		if (effect?.effectType === 'Item' && damage > 0) damage *= rogueItemBonusFactor(target);
 		damage = this.runEvent('TryHeal', target, source, effect, damage);
 		if (!damage) return damage;
 		if (!target?.hp) return false;
@@ -2598,7 +2619,7 @@ export class Battle {
 	checkFainted() {
 		for (const side of this.sides) {
 			for (const pokemon of side.active) {
-				if (pokemon.fainted) {
+				if (pokemon?.fainted) {
 					pokemon.status = 'fnt' as ID;
 					pokemon.switchFlag = true;
 				}
@@ -2756,8 +2777,10 @@ export class Battle {
 			break;
 		case 'rogueball':
 			throwRogueBall(this, action.moveid);
+			if (this.fantasyRogue?.cooperative) delete this.fantasyRogue.coopCapture;
 			break;
 		case 'start': {
+			finalizeRogueCoopPreview(this);
 			for (const side of this.sides) {
 				if (side.pokemonLeft) side.pokemonLeft = side.pokemon.filter(mon => !mon.fainted).length;
 			}
@@ -2809,6 +2832,8 @@ export class Battle {
 
 			for (const side of this.sides) {
 				for (let i = 0; i < side.active.length; i++) {
+					// Rogue can enter doubles with a single partner. Leave the other field slot vacant.
+					if (!side.pokemon[i]) continue;
 					if (!side.pokemonLeft) {
 						// forfeited before starting
 						side.active[i] = side.pokemon[i];
@@ -2947,7 +2972,7 @@ export class Battle {
 		// phazing (Roar, etc)
 		for (const side of this.sides) {
 			for (const pokemon of side.active) {
-				if (pokemon.forceSwitchFlag) {
+				if (pokemon?.forceSwitchFlag) {
 					if (pokemon.hp) this.actions.dragIn(pokemon.side, pokemon.position);
 					pokemon.forceSwitchFlag = false;
 				}
@@ -3008,6 +3033,7 @@ export class Battle {
 			let reviveSwitch = false; // Used to ignore the fake switch for Revival Blessing
 			if (switches[i] && !this.canSwitch(this.sides[i])) {
 				for (const pokemon of this.sides[i].active) {
+					if (!pokemon) continue;
 					if (this.sides[i].slotConditions[pokemon.position]['revivalblessing']) {
 						reviveSwitch = true;
 						continue;
@@ -3018,7 +3044,7 @@ export class Battle {
 			} else if (switches[i]) {
 				for (const pokemon of this.sides[i].active) {
 					if (
-						pokemon.hp && pokemon.switchFlag && pokemon.switchFlag !== 'revivalblessing' &&
+						pokemon?.hp && pokemon.switchFlag && pokemon.switchFlag !== 'revivalblessing' &&
 						!pokemon.skipBeforeSwitchOutEventFlag
 					) {
 						this.runEvent('BeforeSwitchOut', pokemon);
@@ -3351,14 +3377,15 @@ export class Battle {
 			const team = this.getTeam(options);
 			if ((slot === 'p2' || slot === 'p4' && this.fantasyRogue?.cooperative) && this.fantasyRogue?.opponentStars && !this.fantasyRogue.duel) {
 				for (const [i, set] of team.entries()) {
-					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 2, 3][this.fantasyRogue.opponentStars[i + (slot === 'p4' ? this.fantasyRogue.cooperative!.opponentOffset : 0)] || 1];
+					set.fantasyRogueScale = [1, 1, 1.2, 1.5, 2, 3][this.fantasyRogue.opponentStars[this.fantasyRogue.opponentSlots?.[i + (slot === 'p4' ? this.fantasyRogue.cooperative!.opponentOffset : 0)] ?? i + (slot === 'p4' ? this.fantasyRogue.cooperative!.opponentOffset : 0)] || 1];
 				}
 			}
 			if (this.fantasyRogue?.difficulty && !this.fantasyRogue.duel) {
 				const { tier, floor, version } = this.fantasyRogue.difficulty;
 				for (const set of team) set.fantasyRogueDifficulty = difficultyScale(tier, floor, slot === 'p2' || slot === 'p4', version);
 			}
-			const rogueSide = slot === 'p1' ? this.fantasyRogue : this.fantasyRogue?.duel;
+			const rogueSide = slot === 'p1' ? this.fantasyRogue :
+				slot === 'p3' && this.fantasyRogue?.partner ? this.fantasyRogue.partner : this.fantasyRogue?.duel;
 			if (rogueSide) {
 				if (team.length !== rogueSide.team.length) throw new Error('Invalid rogue team');
 				for (const [i, set] of team.entries()) {

@@ -6,6 +6,7 @@ import type { RogueRandom } from './biome-pools';
 import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
 import { lowerToEligibleStage } from './evolution';
 import { encounterCoins, routeCandyReward, journeyCoins } from './early-balance';
+import { rebalanceCandyReward, grantCandyTraining } from './candy-rewards';
 import { dialoguePage, queueNarrative, healNarrativeParty } from './narrative';
 import { POLICE_REGIONS, STAR_BOSSES, type PoliceRegion } from './police-data';
 
@@ -52,12 +53,13 @@ function pennyAside(run: RogueRun) {
 }
 function pay(run: RogueRun, revenge: boolean, apology = false) {
  const potion = run.floor < 30 ? 'potion' : run.floor < 100 ? 'superpotion' : 'hyperpotion';
- const items = {...routeCandyReward(run.floor, 'trainer'), [potion]: 2, revive: 1};
+ const payout = grantCandyTraining(run, rebalanceCandyReward(run.floor, routeCandyReward(run.floor, 'trainer')));
+ const items = {...payout.items, [potion]: 2, revive: 1};
  const money = Math.round(encounterCoins(run.floor) * (revenge ? 1.5 : 1.25) / 50) * 50 + (apology ? journeyCoins(run.floor, 100 + run.floor * 2) : 0);
  if (apology) items.superpotion = (items.superpotion || 0) + 1;
  run.money += money;
  for (const [id, count] of Object.entries(items)) run.bag[id] = (run.bag[id] || 0) + count;
- run.lastReward = {floor: run.floor, name: revenge ? '切磋的认可' : apology ? '君莎的谢礼与同行伙伴的歉礼' : '君莎的谢礼', money, items, points: 0};
+ run.lastReward = {floor: run.floor, name: revenge ? '切磋的认可' : apology ? '君莎的谢礼与同行伙伴的歉礼' : '君莎的谢礼', money, items, points: 0, effect: payout.effect};
 }
 function giovanniIntervention(run: RogueRun, random: RogueRandom) {
  const node = run.node!, event = node.event!, police = event.police!;
@@ -170,5 +172,5 @@ export function settlePoliceBattle(run: RogueRun, won: boolean) {
  if (!round) pages.push(dialoguePage('jenny', '君莎', '谢谢你和伙伴，道路恢复通行了。路费和补给请收下，后面的善后交给我。', true));
  if (region === 'paldea' && !final) pages.push(...pennyAside(run));
  if (police.fans && final) pages.push(dialoguePage('marnie', '玛俐', '谢谢，哥。我们会好好走下去，下次再来听你的演出。', true, 'left'));
- queueNarrative(run, pages, 'settlement');
+	queueNarrative(run, pages, 'settlement');
 }

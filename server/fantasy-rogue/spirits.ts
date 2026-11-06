@@ -52,7 +52,7 @@ export function grantSpiritGift(run: RogueRun, content: RogueContent, random: Ro
 	}
 }
 
-export function spiritItems(content: RogueContent, run?: RogueRun): RogueItem[] {
+export function spiritItems(content: RogueContent, run?: Pick<RogueRun, 'spirit'>): RogueItem[] {
 	if (run?.spirit !== 'meowth') return content.items;
 	const candies: Record<string, number> = {
 		expcandyxs: 250, expcandys: 1125, expcandym: 3750, expcandyl: 10000, expcandyxl: 22500,

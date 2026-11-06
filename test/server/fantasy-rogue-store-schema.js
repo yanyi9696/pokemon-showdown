@@ -53,7 +53,7 @@ describe('Fantasy Rogue additive SQLite schema upgrade', function () {
 		if (db?.open) db.close();
 		fs.rmSync(directory, { recursive: true, force: true });
 	});
-	it('adds exactly the history table, primary-key autoindex and owner index without rewriting old rows', () => {
+	it('adds only supported history and cooperative tables without rewriting old rows', () => {
 		const before = snapshot(db);
 		initializeRogueSchema(db);
 		const after = snapshot(db);
@@ -61,8 +61,11 @@ describe('Fantasy Rogue additive SQLite schema upgrade', function () {
 		for (const [table, rows] of Object.entries(before.tables)) assert.deepEqual(after.tables[table], rows);
 		for (const object of before.schema) assert.deepEqual(after.schema.find(row => row.name === object.name), object);
 		assert.deepEqual(after.schema.filter(row => !before.schema.some(old => old.name === row.name)).map(row => row.name).sort(),
-			['rogue_history', 'rogue_history_owner', 'sqlite_autoindex_rogue_history_1']);
+			['rogue_coop_invites', 'rogue_coop_invites_to', 'rogue_coop_sessions', 'rogue_history', 'rogue_history_owner',
+				'sqlite_autoindex_rogue_coop_invites_1', 'sqlite_autoindex_rogue_coop_sessions_1', 'sqlite_autoindex_rogue_history_1']);
 		assert.equal(after.tables.rogue_history.rows, 0);
+		assert.equal(after.tables.rogue_coop_invites.rows, 0);
+		assert.equal(after.tables.rogue_coop_sessions.rows, 0);
 		assert(db.prepare('EXPLAIN QUERY PLAN SELECT data FROM rogue_history WHERE userid = ? ORDER BY ended DESC, id LIMIT 12')
 			.all('synthetic-player').some(row => row.detail.includes('rogue_history_owner')));
 	});

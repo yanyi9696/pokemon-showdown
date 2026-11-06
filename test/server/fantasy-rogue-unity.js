@@ -1,6 +1,9 @@
 'use strict';
 
 const assert = require('assert').strict;
+const { randomUUID } = require('crypto');
+const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
+const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { Battle } = require('../../dist/sim/battle');
 const { blessing } = require('../../dist/sim/rogue-blessing-data');
 const { battleUnity } = require('../../dist/sim/rogue-unity');
@@ -59,24 +62,68 @@ describe('Fantasy Rogue unified teams and coverage', () => {
 		assert(blessingCandidates(run, content()).some(b => b.id === 'unity'));
 		assert(blessingCandidates(run, content()).some(b => b.id === 'coverage' && b.tier === 'gold'));
 	});
-	it('asks once when several types are shared, persists the chosen type and records it in history', () => {
+	it('grants all common types without a picker and records the dynamic rule', () => {
 		const run = party(['Gyarados', 'Pelipper'], []), account = { discoveries: { blessings: [], events: [], trainers: [] } };
 		run.phase = 'blessing';
 		run.blessings.round = { floor: 1, tier: 'prismatic', remaining: 1, familiesSeen: [], topClearMindEligible: false,
 			options: [{ id: 'unity', refreshes: 1, chosen: false }] };
 		handleBlessingCommand(account, run, content(), { action: 'blessing', slot: 0 }, () => 0);
-		const reward = run.blessings.pending[0]; assert.equal(reward.kind, 'unity');
-		assert.deepEqual(new Set(reward.options), new Set(['Water', 'Flying']));
-		trackJourney(run, account);
-		assert.throws(() => handleBlessingCommand(account, run, content(), { action: 'blessingreward', member: reward.id, value: 'Fire' }, () => 0));
+		assert.deepEqual(run.blessings.pending, []);
+		assert.equal(run.blessings.owned[0].type, undefined);
 		const restored = JSON.parse(JSON.stringify(run));
-		handleBlessingCommand(account, restored, content(), { action: 'blessingreward', member: reward.id, value: 'Water' }, () => 0);
 		trackJourney(restored, account);
-		assert.equal(restored.blessings.owned[0].type, 'Water');
 		assert.equal(restored.journey.blessings.length, 1);
-		assert(restored.journey.blessings[0].text.includes('锁定属性：水'));
-		assert(blessingView(restored).owned[0].text.includes('锁定属性：水'));
-		assert.throws(() => handleBlessingCommand(account, restored, content(), { action: 'blessingreward', member: reward.id, value: 'Flying' }, () => 0));
+		assert(restored.journey.blessings[0].text.includes('所有共通属性同时生效'));
+		assert(blessingView(restored).owned[0].text.includes('共通属性：水、飞行'));
+		const mon = begin(restored);
+		assert.deepEqual(battleUnity(mon).types, ['Water', 'Flying']);
+		ratio('Electric', 2.25 / 4);
+	});
+	it('updates both Fire/Fighting bonuses as the current party changes, ignoring an old lock', () => {
+		const mon = begin(party(['Blaziken', 'Infernape', 'Emboar', 'Combusken', 'Monferno', 'Pignite']));
+		battle.fantasyRogue.blessings.owned[0].type = 'Water';
+		const modifier = id => roguePowerModifiers(mon, battle.dex.getActiveMove(id)).filter(m => m.source === '统一队爱好者');
+		assert.deepEqual(battleUnity(mon).types, ['Fire', 'Fighting']);
+		for (const id of ['flamethrower', 'aurasphere']) assert.deepEqual(modifier(id).map(m => m.factor), [1.5]);
+		assert.deepEqual(modifier('watergun'), []);
+		battle.p1.pokemon[5].setType(['Fire']);
+		assert.deepEqual(battleUnity(mon).types, ['Fire']);
+		assert.deepEqual(modifier('aurasphere'), []);
+		assert.deepEqual(modifier('flamethrower').map(m => m.factor), [1.5]);
+		for (const member of battle.p1.pokemon) member.setType(['Water']);
+		assert.deepEqual(battleUnity(mon).types, ['Water']);
+		assert.deepEqual(modifier('watergun').map(m => m.factor), [1.5]);
+		assert.deepEqual(modifier('flamethrower'), []);
+	});
+	it('resumes an old single-player picker exactly once without erasing other rewards or paid levels', () => {
+		const store = new RogueStore(':memory:');
+		try {
+			const config = content(); config.blessings = true;
+			const engine = new RogueEngine(store, config, () => 0);
+			engine.command('unityqa', { id: randomUUID(), revision: 0, action: 'start', starters: ['bulbasaur'] });
+			store.change('unityqa', account => {
+				const run = account.run;
+				run.phase = 'blessing'; run.blessingRewardResume = 'ready';
+				delete run.blessings.round; delete run.blessings.stage;
+				run.blessings.owned = [{ ...blessing('unity'), floor: 1, type: 'Water' }];
+				run.blessings.levels = 10; run.blessings.bossLevels = 20;
+				run.blessings.pending = [{ id: 'old-choice', kind: 'unity', blessing: 'unity', options: ['Water', 'Flying'] },
+					{ id: 'other', kind: 'item', title: 'Keep me', options: ['oranberry'] }];
+			});
+			engine.migrate('unityqa');
+			let run = store.get('unityqa').run;
+			assert.equal(run.phase, 'blessing');
+			assert.deepEqual(run.blessings.pending.map(r => r.id), ['other']);
+			assert.equal(run.blessings.owned[0].type, undefined);
+			assert.equal(run.blessings.levels, 10); assert.equal(run.blessings.bossLevels, 20);
+			store.change('unityqa', account => {
+				account.run.blessings.pending = [{ id: 'old-choice', kind: 'unity', blessing: 'unity', options: ['Water'] }];
+			});
+			engine.migrate('unityqa'); run = store.get('unityqa').run;
+			assert.equal(run.phase, 'ready'); assert.deepEqual(run.blessings.pending, []);
+			const stable = JSON.stringify(run); engine.migrate('unityqa');
+			assert.equal(JSON.stringify(store.get('unityqa').run), stable);
+		} finally { store.close(); }
 	});
 	it('changes only the common type weakness component: Water/Flying receives Electric x3', () => {
 		begin(party(['Gyarados', 'Squirtle']));
@@ -97,7 +144,7 @@ describe('Fantasy Rogue unified teams and coverage', () => {
 		enemy.setType(['Normal']); ratio('Water', 1, true, power);
 		assert.equal(damage('Dragon', true, 'dragonrage'), 40);
 	});
-	it('preserves immunity, counts fainted allies and suspends/restores without changing the lock', () => {
+	it('preserves immunity, counts fainted allies and updates common types through battle serialization', () => {
 		const mon = begin(party(['Swampert', 'Squirtle', 'Squirtle', 'Squirtle']));
 		assert.equal(damage('Electric'), false);
 		battle.p1.pokemon[1].hp = 0; battle.p1.pokemon[1].fainted = true;
@@ -107,7 +154,7 @@ describe('Fantasy Rogue unified teams and coverage', () => {
 		assert.equal(battleUnity(battle.p2.active[0]).active, false);
 		const json = JSON.stringify(battle.toJSON()); battle.destroy(); battle = Battle.fromJSON(json);
 		battle.randomizer = value => value;
-		assert.equal(battleUnity(battle.p1.active[0]).type, 'Water'); ratio('Fire', 0.5);
+		assert.deepEqual(battleUnity(battle.p1.active[0]).types, ['Water']); ratio('Fire', 0.5);
 	});
 	it('boosts coverage base power but never STAB, forced STAB, fixed damage or status moves', () => {
 		const mon = begin(party(['Squirtle', 'Squirtle'], ['coverage']));

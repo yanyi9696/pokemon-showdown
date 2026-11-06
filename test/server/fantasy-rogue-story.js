@@ -134,16 +134,21 @@ describe('Fantasy Rogue story and legacy cards', function () {
 			assert.equal(account().run.difficulty, decision === 'accept' ? 'easy' : 0);
 			cmd('abandon');
 		}
-		for (const value of ['easy', '-1', '6', '1', '00']) assert.throws(() => cmd('setdifficulty', { value }));
+		for (const value of ['-1', '6', '1', '00']) assert.throws(() => cmd('setdifficulty', { value }));
+		cmd('setdifficulty', { value: 'easy' }); assert.equal(account().preferredDifficulty, 'easy');
+		assert.throws(() => cmd('setnuzlocke', { value: 'on' }), /0—5/);
 	});
-	it('enforces separate easy and zero spirit permissions when choosing the default charm', () => {
-		for (const unlocked of ['easy', '0']) {
+	it('keeps both charm choices available after a clear in either tier, without marking the run as a test', () => {
+		for (const unlocked of ['easy', '0']) for (const value of ['accept', 'decline']) {
 			store.change(user, a => { a.difficulties = { highest: 0, cleared: [], spirits: [unlocked] }; a.adventures = 1; });
 			skip(); cmd('start', { starters: ['bulbasaur'], useSpirit: true });
 			cmd('spiritack'); cmd('startcard', { value: 'all' });
 			assert.equal(view().stage, 'charm');
-			assert.throws(() => cmd('charm', { value: unlocked === 'easy' ? 'decline' : 'accept' }), /这个档位/);
-			cmd('charm', { value: unlocked === 'easy' ? 'accept' : 'decline' });
+			assert(view().canAccept); assert(view().canDecline);
+			const spirit = account().run.spirit;
+			cmd('charm', { value });
+			assert.equal(account().run.spirit, spirit);
+			assert.equal(account().run.difficulty, value === 'accept' ? 'easy' : 0);
 			assert(!account().run.difficultyTest);
 			cmd('abandon');
 		}

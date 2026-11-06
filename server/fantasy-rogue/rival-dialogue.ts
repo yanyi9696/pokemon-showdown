@@ -179,8 +179,8 @@ const REUNIONS = [
 export function rivalConversationOptions(chapter: number, turn = 0) {
 	return RIVAL_CHOICES[chapter - 1][turn].map((name, index) => ({
 		id: `greet:${['warm', 'honest', 'cold'][index]}`,
-		name: chapter === 1 ? turn === 0 ? name.replace('报上名字：', '报上名字：⌈') +
-		'⌋' : name : `⌈${name}⌋`, text: '', disabled: false,
+		name: chapter === 1 ? turn === 0 ? name.replace('报上名字：', '报上名字：『') +
+		'』' : name : `『${name}』`, text: '', disabled: false,
 	}));
 }
 export function rivalOpeningPages(id: RivalID, chapter: number, affection: number): NarrativePage[] {

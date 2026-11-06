@@ -1,5 +1,8 @@
+import { isFantasySpecies } from './species-eligibility';
 import { randomUUID } from 'crypto';
 import { Dex } from '../../sim/dex';
+import { TeamValidator } from '../../sim/team-validator';
+import { Format } from '../../sim/dex-formats';
 import { teachingMoves, teachMove } from './event-learning';
 import { eventOpening } from './event-text';
 import type { RoguePokemon } from '../../sim/fantasy-rogue';
@@ -7,9 +10,20 @@ import type { RogueAccount, RogueContent, RogueRun } from './types';
 
 const dex = Dex.mod('gen9fantasy');
 export const FANTASY_TUTOR_FLOOR = 81, FANTASY_TUTOR_COST = 10;
+const baseDex = Dex.mod('gen9');
+const baseValidator = new TeamValidator(new Format({ ...Dex.formats.get('gen9nationaldex'),
+	name: 'Fantasy added move comparison', mod: 'gen9' }));
+const originalMoves = new Map<string, Set<string>>();
 export function fantasyTutorMoves(mon: RoguePokemon) {
-	if (!mon.set.species.includes('Fantasy')) return [];
-	return teachingMoves(mon).filter(id => !Dex.mod('gen9').moves.get(id).exists && !id.startsWith('rogue'));
+	if (mon.egg || mon.nuzlockeDead || !isFantasySpecies(mon.set.species)) return [];
+	const fantasy = dex.species.get(mon.set.species);
+	let base = baseDex.species.get(fantasy.name.replace(/-Fantasy$/, '').replace(/-2$/, ''));
+	if (!base.exists) base = baseDex.species.get(fantasy.baseSpecies);
+	if (!base.exists) return [];
+	if (!originalMoves.has(base.id)) originalMoves.set(base.id, new Set(baseDex.moves.all()
+		.filter(move => move.exists && !move.isZ && !move.isMax &&
+			!baseValidator.checkCanLearn(move, base, undefined, { level: 100 })).map(move => move.id)));
+	return teachingMoves(mon).filter(id => !originalMoves.get(base.id)!.has(id) && !id.startsWith('rogue'));
 }
 export function fantasyTutorView(run: RogueRun) {
 	const event = run.node!.event!, mon = run.team.find(p => p.id === event.service?.member);

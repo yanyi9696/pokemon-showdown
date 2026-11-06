@@ -1,5 +1,6 @@
 import { ROGUE_STATS, type RoguePokemon } from '../../sim/fantasy-rogue';
-import { difficultyIVs, difficultyLabel, type RogueDifficulty } from '../../sim/rogue-difficulty';
+import { difficultyIVs, difficultyLabel, isRogueDifficulty, type RogueDifficulty } from '../../sim/rogue-difficulty';
+import { rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 import type { RogueAccount, RogueNode, RogueRun } from './types';
 import { rebuildMember } from './progression';
 import { randomInt } from 'crypto';
@@ -11,19 +12,75 @@ import { notifyUnlock, unlockStoryDifficulty } from './mainline-progress';
 export function migrateDifficulty(account: RogueAccount) {
 	if (account.difficulties) return;
 	const cleared = [...account.cards || [], ...(account.pendingClear ? [account.pendingClear] : [])]
-		.some(card => card.snapshot.floor === 200 && !card.snapshot.difficultyRulesVersion) ||
-		account.run?.floor === 200 && account.run.phase === 'complete' && !account.run.difficultyRulesVersion;
+		.some(card => card.snapshot.floor === 200 && !card.snapshot.difficultyRulesVersion && !card.snapshot.difficultyTest) ||
+		account.run?.floor === 200 && account.run.phase === 'complete' &&
+		!account.run.difficultyRulesVersion && !account.run.difficultyTest;
 	account.difficulties = { highest: cleared ? 1 : 0, cleared: cleared ? ['0'] : [],
 		spirits: cleared || account.spiritUnlocked ? ['0'] : [] };
 }
-export function difficultySpiritUnlocked(account: RogueAccount, tier: RogueDifficulty = 0) {
+export function difficultySpiritUnlocked(account: RogueAccount, _tier: RogueDifficulty = 0) {
 	migrateDifficulty(account);
-	return account.difficulties!.spirits.includes(String(tier));
+	return !!account.spiritUnlocked || [...account.difficulties!.cleared, ...account.difficulties!.spirits]
+		.some(tier => /^(easy|[0-5])$/.test(tier));
+}
+
+const spiritTierRank = (tier: RogueDifficulty) => tier === 'easy' ? -1 : tier;
+export const SPIRIT_SELECTION_RULE = '使用某一塔灵通关 200 层后，仅可在该通关档位及更低档位指定它，护符档为最低档。' +
+	'例如用某塔灵通关 5 档后，可在护符档及 0～5 档指定该塔灵；随机塔灵不受此限制。';
+
+export function canSelectSpirit(account: RogueAccount, spirit: string, tier: RogueDifficulty) {
+	const cleared = account.spiritClearTiers?.[spirit];
+	return isRogueDifficulty(cleared) && spiritTierRank(tier) <= spiritTierRank(cleared);
+}
+
+function rememberSpiritClear(account: RogueAccount, spirit: string, tier: RogueDifficulty, announce: boolean) {
+	if (!rogueSpirit(spirit) || !isRogueDifficulty(tier)) return;
+	const tiers = account.spiritClearTiers ||= {};
+	const previous = tiers[spirit];
+	if (isRogueDifficulty(previous) && spiritTierRank(previous) >= spiritTierRank(tier)) return;
+	tiers[spirit] = tier;
+	account.unlockedSpirits = [...new Set([...account.unlockedSpirits || [], spirit])];
+	if (announce) notifyUnlock(account, `spirit-select:${spirit}:${tier}`, '指定塔灵范围已解锁',
+		`${rogueSpirit(spirit)!.name}：已通关${difficultyLabel(tier)}。${SPIRIT_SELECTION_RULE}`);
+}
+
+/** Preserve per-spirit evidence independently of deletable cards; never infer a higher tier from another spirit. */
+export function migrateSpiritProgress(account: RogueAccount) {
+	migrateDifficulty(account);
+	const firstMigration = !account.spiritClearTiers;
+	account.spiritClearTiers ||= {};
+	// Untiered legacy unlocks prove a clear, but not which tier. Retain at least the lowest-tier entitlement.
+	for (const spirit of account.unlockedSpirits || []) rememberSpiritClear(account, spirit, 'easy', false);
+	const evidence = [...(account.cards || []).map(card => card.snapshot),
+		...(account.pendingClear ? [account.pendingClear.snapshot] : []),
+		...(account.run?.phase === 'complete' ? [account.run] : [])]
+		.filter(clear => clear.floor === 200 && !clear.difficultyTest);
+	for (const clear of evidence) {
+		if (clear.spirit) rememberSpiritClear(account, clear.spirit, clear.difficulty ?? 0, !firstMigration);
+	}
+	account.unlockedSpirits = [...new Set([...account.unlockedSpirits || [], ...Object.keys(account.spiritClearTiers)])];
+	if (!account.spiritUnlocked && (difficultySpiritUnlocked(account) || evidence.length ||
+		Object.keys(account.spiritClearTiers).length)) {
+		account.spiritUnlocked = true;
+		notifyUnlock(account, 'spirit:global', '塔灵模式已全局解锁',
+			'通关任意档位 200 层后，今后可在所有已解锁档位开启随机塔灵，包括护符档。难度档位仍按原条件解锁。');
+	}
+	if (firstMigration && Object.keys(account.spiritClearTiers).length) {
+		notifyUnlock(account, 'spirit-select:rules', '指定塔灵按通关档位开放', SPIRIT_SELECTION_RULE +
+		'旧记录按保留的通关证据恢复；仅有塔灵名称、没有档位证据的旧记录暂保留护符档指定资格。');
+	}
+	for (const notice of account.unlockNotices || []) {
+		if (/^spirit:(easy|[0-5])$/.test(notice.id)) {
+			notice.title = '塔灵模式已全局解锁';
+			notice.text = '通关任意档位 200 层后，可在所有已解锁档位开启随机塔灵，包括护符档。';
+		}
+	}
 }
 /** Hidden local test preferences cannot silently select an unavailable tier on a new run. */
-export function preferredDifficulty(account: RogueAccount) {
+export function preferredDifficulty(account: RogueAccount, local = false) {
 	migrateDifficulty(account);
-	return account.preferredDifficulty !== undefined && account.preferredDifficulty <= account.difficulties!.highest ?
+	return account.preferredDifficulty !== undefined &&
+		(local || account.preferredDifficulty === 'easy' || account.preferredDifficulty <= account.difficulties!.highest) ?
 		account.preferredDifficulty : undefined;
 }
 export function clearDifficulty(account: RogueAccount, run: RogueRun) {
@@ -33,18 +90,30 @@ export function clearDifficulty(account: RogueAccount, run: RogueRun) {
 	if (run.difficultyTest) return;
 	if (!progress.spirits.includes(key)) {
 		progress.spirits.push(key);
-		notifyUnlock(account, `spirit:${key}`, '塔灵模式已解锁', `${difficultyLabel(tier)}的旅程中，今后可以开启塔灵。`);
 	}
-	if (tier === 0) account.spiritUnlocked = true;
 	const first = !progress.cleared.includes(key);
 	if (first) progress.cleared.push(key);
+	if (run.spirit) rememberSpiritClear(account, run.spirit, tier, true);
+	migrateSpiritProgress(account);
 	unlockStoryDifficulty(account);
-	if (first) (run.notices ||= []).push(`${difficultyLabel(tier)}通关！已解锁本档塔灵模式。` +
+	if (first) (run.notices ||= []).push(`${difficultyLabel(tier)}通关！所有已解锁档位均可开启随机塔灵。` +
 		`${tier === 'easy' ? '本次不获得局外成长点。' : '通关与本档故事均完成后，可解锁下一档。'}`);
+}
+/** Apply a co-op 200-floor clear to personal eligibility without creating or changing story progress. */
+export function clearCoopDifficulty(account: RogueAccount, tier: RogueRun['difficulty']) {
+	migrateDifficulty(account);
+	const key = String(tier || 0), progress = account.difficulties!;
+	if (!progress.spirits.includes(key)) {
+		progress.spirits.push(key);
+	}
+	if (!progress.cleared.includes(key)) progress.cleared.push(key);
+	migrateSpiritProgress(account);
+	// Co-op excludes the mainline, so only evaluate story requirements that already exist on this account.
+	if (account.mainline) unlockStoryDifficulty(account);
 }
 /** Every permanent point award uses the same policy, including delayed rematches. */
 export function awardRoguePoints(account: RogueAccount, run: RogueRun, amount: number) {
-	const earned = run.difficulty === 'easy' ? 0 : amount;
+	const earned = run.difficulty === 'easy' ? 0 : amount * (run.nuzlocke ? 2 : 1);
 	account.points += earned;
 	return earned;
 }

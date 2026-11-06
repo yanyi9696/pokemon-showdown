@@ -2,8 +2,15 @@ import { getRogueManager } from '../fantasy-rogue/manager';
 import { rogueAccess } from '../fantasy-rogue/access';
 import type { RogueCommand } from '../fantasy-rogue/types';
 import type { DuelCommand } from '../fantasy-rogue/duels';
+import type { RogueCoopCommand } from '../fantasy-rogue/coop-sessions';
 
 export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
+	fantasyroguedailyreplay(target, user, trustable) {
+		return trustable ? getRogueManager().dailyReplay(user, target) : null;
+	},
+	fantasyroguecrate(target, user, trustable) {
+		return trustable ? getRogueManager().crate(user) : null;
+	},
 	fantasyroguehistory(target, user, trustable) {
 		const offset = Number(target || 0);
 		if (!trustable || !Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) return null;
@@ -66,6 +73,29 @@ export const commands: Chat.ChatCommands = {
 				connection.send(`|queryresponse|fantasyrogueduel|${JSON.stringify({ userid: user.id, ok: true, ...result })}`);
 			} catch (error) {
 				connection.send(`|queryresponse|fantasyrogueduel|${JSON.stringify({ userid: user.id, ok: false, message: (error as Error).message })}`);
+			}
+		},
+		coop(target, room, user, connection) {
+			let action = '';
+			try {
+				if (target.length > 2048) throw new Error('请求过长。');
+				const command = JSON.parse(target) as RogueCoopCommand;
+				if (!command || typeof command !== 'object' || typeof command.action !== 'string') throw new Error('请求格式无效。');
+				action = command.action;
+				const state = getRogueManager().coop.command(user, command);
+				connection.send(`|queryresponse|fantasyroguecoop|${JSON.stringify({ userid: user.id, action, ok: true, state })}`);
+			} catch (error) {
+				connection.send(`|queryresponse|fantasyroguecoop|${JSON.stringify({
+					userid: user.id, action, ok: false, message: (error as Error).message,
+				})}`);
+			}
+		},
+		rematch(target, room, user, connection) {
+			try {
+				if (!room?.battle?.options.fantasyRogue) throw new Error('请在幻想杯肉鸽战斗中使用再战。');
+				getRogueManager().retreat(connection, room.roomid, 'rematch');
+			} catch (error) {
+				this.errorReply((error as Error).message);
 			}
 		},
 		retreat(target, room, user, connection) {

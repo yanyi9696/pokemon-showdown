@@ -1,6 +1,7 @@
 import { isMainThread, parentPort } from 'worker_threads';
 import { RolloutPolicy } from './rollout';
 import type { WorkerRequest } from './scheduler';
+import { decideDoubles } from './doubles-worker';
 
 if (!isMainThread && parentPort) {
 	const port = parentPort;
@@ -8,6 +9,12 @@ if (!isMainThread && parentPort) {
 	let policy: RolloutPolicy;
 	port.on('message', (message: WorkerRequest) => {
 		try {
+			if (message.doubles) {
+				const decision = decideDoubles(message.observation, message.trainer.format, message.excluded || [],
+					message.doubles, progress => port.postMessage({ type: 'progress', token: message.token, decision: progress }));
+				port.postMessage({ type: 'complete', token: message.token, decision });
+				return;
+			}
 			const key = JSON.stringify(message.trainer);
 			if (key !== cacheKey) { policy = new RolloutPolicy(message.trainer); cacheKey = key; }
 			const decision = policy.decide(message.observation, message.seed, {

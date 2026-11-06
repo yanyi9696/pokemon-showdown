@@ -81,13 +81,18 @@ describe('Fantasy Rogue mainline, identity ledger and percentage growth', functi
 		cmd('continue'); assert.equal(account().run.floor, 22);
 		assert.equal(account().run.money, settled.run.money);
 	});
-	it('reserves once per run, preserves reconnects and guarantees the next eligible run after a missed 100 floors', () => {
+	it('reserves once per run and replaces the old guarantee with compensation for a missed full clear', () => {
 		const a = account(), r = a.run; reserveMainline(a, r, n => n - 1);
 		assert.equal(r.mainline.floor, undefined);
-		r.floor = 99; settleStoryPity(a, r); assert(!a.mainline.pity['0']);
-		r.floor = 100; settleStoryPity(a, r); assert(a.mainline.pity['0']);
-		const next = { ...r, floor: 1 }; delete next.mainline; reserveMainline(a, next, n => n - 1);
-		assert(next.mainline.floor >= 21 && next.mainline.floor <= 48);
+		reserveMainline(a, r, () => 0); assert.equal(r.mainline.floor, undefined);
+		for (const floor of [99, 100, 199, 200]) {
+			r.floor = floor; settleStoryPity(a, r); assert.equal(a.mainline.missedClears['0'], 0);
+		}
+		settleStoryPity(a, r, true); assert.equal(a.mainline.missedClears['0'], 1);
+		settleStoryPity(a, r, true); assert.equal(a.mainline.missedClears['0'], 1);
+		const next = { ...r, floor: 1 }; delete next.mainline; reserveMainline(a, next, () => 44);
+		assert(next.mainline.floor >= 21 && next.mainline.floor <= 198);
+		assert.equal(a.mainline.missedClears['0'], 0);
 		next.floor = next.mainline.floor; next.choices = [{ id: 'event', kind: 'event' }]; offerMainline(next);
 		assert.equal(next.choices[0].kind, 'story');
 		next.floor++; next.choices = [{ id: 'event', kind: 'event' }]; offerMainline(next);
@@ -96,6 +101,48 @@ describe('Fantasy Rogue mainline, identity ledger and percentage growth', functi
 			const excluded = { ...r, difficulty, difficultyTest: difficulty === 0 }; delete excluded.mainline;
 			reserveMainline(a, excluded, () => 0); assert(!excluded.mainline);
 		}
+	});
+	it('stacks consecutive full-clear misses to 75 percent, never guarantees, and consumes a short-run bonus', () => {
+		const { mainlineChance } = require('../../dist/server/fantasy-rogue/mainline-progress');
+		const a = account();
+		for (let miss = 0; miss < 5; miss++) {
+			const r = { ...a.run, floor: 1 }; delete r.mainline;
+			reserveMainline(a, r, n => n - 1);
+			assert.equal(mainlineChance(r.mainline.missedClears), [30, 45, 60, 75, 75][miss]);
+			assert.equal(r.mainline.floor, undefined);
+			r.floor = 200; settleStoryPity(a, r, true);
+			assert.equal(a.mainline.missedClears['0'], Math.min(3, miss + 1));
+		}
+		const short = { ...a.run, floor: 1 }; delete short.mainline;
+		reserveMainline(a, short, n => n - 1); short.floor = 80; settleStoryPity(a, short);
+		const next = { ...a.run, floor: 1 }; delete next.mainline; reserveMainline(a, next, () => 30);
+		assert.equal(next.mainline.missedClears, 0); assert.equal(next.mainline.floor, undefined);
+	});
+	it('resets compensation when a secret was offered and ignores legacy guaranteed flags', () => {
+		const a = account(); mainlineProgress(a).pity['0'] = true;
+		reserveMainline(a, a.run, () => 99); assert.equal(a.run.mainline.floor, undefined);
+		const oldReservation = { ...a.run, mainline: { scene: 's0-1', floor: 40 } };
+		reserveMainline(a, oldReservation, () => 99); assert.equal(oldReservation.mainline.floor, 40);
+		const r = { ...a.run, floor: 200, mainline: { scene: 's0-1', floor: 40, offered: true, missedClears: 3 } };
+		a.mainline.missedClears['1'] = 2;
+		settleStoryPity(a, r, true);
+		assert.equal(a.mainline.missedClears['0'], 0); assert.equal(a.mainline.missedClears['1'], 2);
+	});
+	it('grants compensation through a real final-floor settlement only once', () => {
+		engine.content.story = false;
+		cmd('select', { value: 'grass' });
+		store.change(user, a => {
+			a.run.floor = 200;
+			a.run.node = structuredClone(engine.content.floors[20][0]);
+			a.run.mainline = { scene: 's0-1', missedClears: 1 };
+		});
+		cmd('battle'); const run = account().run;
+		const result = { encounterId: run.battle.encounterId, won: true, team: run.team, bag: run.bag };
+		engine.settle(user, run.battle.token, result);
+		assert.equal(account().run.phase, 'complete');
+		assert.equal(account().mainline.missedClears['0'], 2);
+		const after = account(); engine.settle(user, run.battle.token, result);
+		assert.deepEqual(account(), after);
 	});
 	it('requires both chapter and clear in either order, retains old unlocks and notifies only once', () => {
 		for (const storyFirst of [false, true]) {
@@ -107,7 +154,7 @@ describe('Fantasy Rogue mainline, identity ledger and percentage growth', functi
 			assert.equal(a.difficulties.highest, 1);
 			const before = JSON.stringify(a);
 			clearDifficulty(a, r); unlockStoryDifficulty(a); assert.equal(JSON.stringify(a), before);
-			assert.deepEqual(a.unlockNotices.map(n => n.id), ['spirit:0', 'difficulty:1']);
+			assert.deepEqual(a.unlockNotices.map(n => n.id), ['spirit:global', 'difficulty:1']);
 		}
 		const old = { difficulties: { highest: 5, cleared: [], spirits: [] } }; unlockStoryDifficulty(old); assert.equal(old.difficulties.highest, 5);
 	});
@@ -160,9 +207,9 @@ describe('Fantasy Rogue mainline, identity ledger and percentage growth', functi
 		assert.deepEqual(a.run.team[0].evRespec, { total: 136 }); assert.deepEqual(a.run.team[0].set.evs, before);
 		assert(a.run.elderServices.includes('ev')); assert.deepEqual(a.mainline.completed, []);
 	});
-	it('teaches only legal Fantasy moves to the chosen partner and retains PP already spent', () => {
+	for (const species of ['Pidgeot-Fantasy', 'Kyurem-Original', 'Kyurem-Original-Fantasy']) it(`teaches only legal Fantasy moves to ${species} and retains PP already spent`, () => {
 		engine.content = { ...createPreviewContent(), story: true };
-		const a = account(), mon = createRoguePokemon(set('Pidgeot-Fantasy', 'Keen Eye', 55, ['Tackle']), a.run.boosts);
+		const a = account(), mon = createRoguePokemon(set(species, 'Keen Eye', 55, ['Tackle']), a.run.boosts);
 		a.run.team = [mon]; const moves = fantasyTutorMoves(mon); assert(moves.length > 0);
 		mon.pp[0].pp = 1; a.run.node = { kind: 'event', encounters: [], reward: { money: 0, items: {} } };
 		const rolls = [99, 0]; assert(prepareElderMeeting(a, a.run, n => (rolls.shift() || 0) % n));

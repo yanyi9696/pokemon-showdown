@@ -4,7 +4,7 @@ export const ECHO_TYPES: Record<string, string> = { Normal: '一般', Fire: '火
 	Fighting: '格斗', Poison: '毒', Ground: '地面', Flying: '飞行', Psychic: '超能力', Bug: '虫', Rock: '岩石',
 	Ghost: '幽灵', Dragon: '龙', Dark: '恶', Steel: '钢', Fairy: '妖精' };
 export const ECHO_SYSTEMS = { mega: '超进化', z: 'Z 招式', tera: '太晶化', gmega: '超巨进化' } as const;
-export const ECHO_RULES = { cost: 10, systemCost: 50, exchange: 100, power: 1.1, damage: 0.9, chanceStep: 0.1, chanceCap: 5 } as const;
+export const ECHO_RULES = { cost: 10, systemCost: 50, exchange: 10, power: 1.1, damage: 0.9, chanceStep: 0.1, chanceCap: 5 } as const;
 export interface EchoUpgrades {
 	types: string[];
 	guard: boolean;

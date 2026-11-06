@@ -90,8 +90,10 @@ export function rememberMove(mon: RoguePokemon, id: string) {
 }
 
 export function levelMoves(name: string): { move: string, level: number, generation: number }[] {
-	if (toID(name) === 'kyuremoriginal') return ['Kyurem', 'Reshiram', 'Zekrom'].flatMap(levelMoves)
-		.sort((a, b) => a.level - b.level || a.move.localeCompare(b.move));
+	if (['kyuremoriginal', 'kyuremoriginalfantasy'].includes(toID(name))) {
+		return ['Kyurem', 'Reshiram', 'Zekrom'].flatMap(levelMoves)
+			.sort((a, b) => a.level - b.level || a.move.localeCompare(b.move));
+	}
 	const species = baseDex.species.get(name);
 	if (!species.exists) {
 		const fantasy = battleDex.species.get(name);
@@ -301,7 +303,7 @@ export function gainExperience(run: RogueRun, mon: RoguePokemon, amount: number)
 	run.notices.push(`${mon.set.species} 升到 Lv.${level}！`);
 	offerMoves(run, mon, previousLevel + 1, level);
 	if (partyEvolutions(mon, run).some(evo => evo.ready && !evo.item)) mon.evolutionNotice = true;
-	// Evolution is always a separate, confirmed action outside battle, including chained evolutions.
+	// Evolution is a separate, confirmed action, including at a safe pause during battle.
 }
 
 export function experienceProgress(mon: RoguePokemon) {

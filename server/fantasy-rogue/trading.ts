@@ -2,7 +2,7 @@ import { Dex, toID } from '../../sim/dex';
 import { TeamValidator } from '../../sim/team-validator';
 import { Format } from '../../sim/dex-formats';
 import type { RoguePokemon } from '../../sim/fantasy-rogue';
-import type { RogueContent, RogueItem, RogueNode, RogueRun } from './types';
+import type { RogueContent, RogueItem, RogueNode, RogueRun, RogueShopContext } from './types';
 import type { RogueRandom } from './biome-pools';
 import { spiritItems, spiritShopAvailable } from './spirits';
 import { CANDY_SHOP, restCandyOffer } from './early-balance';
@@ -160,7 +160,7 @@ export function prepareTrade(run: RogueRun, content: RogueContent, random: Rogue
 	}
 }
 
-export function shopStock(content: RogueContent, run?: RogueRun): RogueItem[] {
+export function shopStock(content: RogueContent, run?: RogueShopContext): RogueItem[] {
 	if (run?.node?.kind === 'trade') return (run.node.trade?.stock.filter(item => item.remaining > 0) || [])
 		.map(item => ({ ...item, price: collapseShopPrice(run, item.price) }));
 	const allItems = spiritItems(content, run);

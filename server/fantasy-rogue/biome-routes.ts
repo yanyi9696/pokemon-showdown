@@ -43,7 +43,7 @@ export function createBiomeRoutes(
 		const rarity = rareEncounterScale(run);
 		const majorChance = ((floor <= 180 ? 25 : 50) + (spirit === 'mew' ? 25 : 0)) * rarity;
 		const seen = new Map<string, number>();
-		const encounter = (bonus = false): RogueEncounter => {
+		const drawSet = (bonus = false): PokemonSet => {
 			const attraction = !bonus && attracted.length && random(10000) < (elite ? 1200 : 400) * rarity ? attracted[random(attracted.length)] : undefined;
 			// Draw the legendary branch once; the card only reweights species inside that branch.
 			const major = !bonus && majorBranch && random(100) < majorChance;
@@ -76,9 +76,15 @@ export function createBiomeRoutes(
 			set.ability = randomEncounterAbility(name, random, elite);
 			const species = Dex.mod('gen9').species.get(name);
 			set.gender = species.gender || (random(256) < species.genderRatio.F * 256 ? 'F' : 'M');
+			return set;
+		};
+		const encounter = (bonus = false): RogueEncounter => {
+			const team = [drawSet(bonus)];
+			// Elite wild encounters use a real two-on-two opening in new solo doubles runs.
+			if (elite && run?.doubleBattle) team.push(drawSet());
 			return {
 				name: bonus ? '额外野生宝可梦' : elite ? '区域精英' : '野生宝可梦',
-				team: [set], style: elite ? 'aggressive' : 'balanced', catchable: true,
+				team, style: elite ? 'aggressive' : 'balanced', catchable: true,
 				...(bonus ? { bonus: true } : {}),
 			};
 		};

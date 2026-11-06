@@ -1,4 +1,5 @@
 export const Aliases: import('../sim/dex').AliasesTable = {
+	kyuremoriginal: 'Kyurem-Original-Fantasy', // Legacy teams and saved runs.
 	// formats
 	randbats: "[Gen 9] Random Battle",
 	uber: "[Gen 9] Ubers",

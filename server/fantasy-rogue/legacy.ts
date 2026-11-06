@@ -28,6 +28,7 @@ export interface RogueClearCard {
 		difficulty?: RogueDifficulty, difficultyRulesVersion?: number, difficultyLabel?: string,
 		difficultyScale?: number, difficultyTest?: boolean,
 		boostRuleVersion?: 2,
+		nuzlocke?: boolean,
 		floor: 200, boosts: StatsTable, spirit?: string, startCard?: string, eventBuff?: boolean,
 		spiritName?: string, spiritText?: string, spiritSpecies?: string, cardName?: string, cardText?: string,
 		hazards?: string[], blessings: { id: string, name?: string, floor?: number, text: string }[],
@@ -88,6 +89,7 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 			difficulty: run.difficulty || 0, difficultyRulesVersion: ROGUE_DIFFICULTY_VERSION,
 			difficultyLabel: difficultyLabel(run.difficulty), difficultyScale: difficultyCardScale(run.difficulty),
 			difficultyTest: run.difficultyTest,
+			nuzlocke: !!run.nuzlocke,
 			team, box, bag: { ...run.bag }, money: run.money,
 			memberDetails: Object.fromEntries([...team, ...box].filter(mon => !mon.egg).map(mon => [mon.id, clearMemberDetails(mon, detailsRun)])),
 			growth: run.growth && { ...run.growth },
@@ -105,7 +107,7 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 			teraUnlocked: !!run.teraUnlocked,
 			megaUnlocked: run.megaUnlocked, gmegaUnlocked: run.gmegaUnlocked, zUnlocked: run.zUnlocked,
 			blessings: (run.blessings?.owned || []).map(entry => {
-				const { name, text } = blessingDisplay(blessing(entry.id)!, entry.floor, account.tonicSecret, entry.type);
+				const { name, text } = blessingDisplay(blessing(entry.id)!, entry.floor, account.tonicSecret);
 				return { id: entry.id, name, floor: entry.floor, text };
 			}),
 			blessingEffects: run.blessings && structuredClone({ owned: run.blessings.owned, evolution: run.blessings.evolution,

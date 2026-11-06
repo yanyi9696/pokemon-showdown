@@ -7,9 +7,12 @@ import { enumerateRequestChoices } from './actions';
 import type { Observation } from './information';
 import type { SearchDecision } from './rollout';
 import { DEFAULT_LIMITS, type ValidatedTrainer } from './types';
+import type { DoublesWorkerOptions } from './doubles-worker';
+import { enumerateDoublesChoices } from './doubles-actions';
 
 export interface RequestKey { roomId: string; instanceId: string; rqid: number; revision?: number }
 export interface ScheduledRequest {
+	doubles?: DoublesWorkerOptions;
 	key: RequestKey;
 	trainer: ValidatedTrainer;
 	observation: Observation;
@@ -24,6 +27,7 @@ export interface ScheduledRequest {
 	excluded?: string[];
 }
 export interface WorkerRequest {
+	doubles?: DoublesWorkerOptions;
 	token: number;
 	trainer: ValidatedTrainer;
 	observation: Observation;
@@ -55,8 +59,7 @@ interface Job {
 
 interface WorkerSlot { worker?: Worker; active?: Job; stopping?: Promise<number> }
 
-function fallback(observation: Observation, excluded: readonly string[] = [], preferred?: string): SearchDecision {
-	const choices = enumerateRequestChoices(observation.request).filter(choice => !excluded.includes(choice));
+function fallback(observation: Observation, choices: string[], preferred?: string): SearchDecision {
 	const choice = observation.request.wait ? null :
 		preferred && choices.includes(preferred) ? preferred : choices[0] || 'default';
 	return {
@@ -125,7 +128,7 @@ export class DecisionScheduler {
 		const created = performance.now();
 		const instance = this.instances.get(input.key.roomId);
 		const revision = input.key.revision ?? 0;
-		if (this.disposed || !instance || instance.id !== input.key.instanceId ||
+		if (this.disposed || instance?.id !== input.key.instanceId ||
 			!Number.isSafeInteger(input.key.rqid) || !Number.isSafeInteger(revision) || revision < 0 ||
 			input.key.rqid < instance.latest || input.key.rqid === instance.latest && revision <= instance.revision) {
 			this.metrics.cancelled++;
@@ -140,7 +143,10 @@ export class DecisionScheduler {
 		instance.latest = input.key.rqid;
 		instance.revision = revision;
 		this.cancelRoom(input.key.roomId);
-		const best = fallback(input.observation, input.excluded, input.fallbackChoice);
+		const choices = (input.doubles ? (input.doubles.candidates || enumerateDoublesChoices(input.observation.request,
+			{ allowSwitch: input.doubles.allowSwitch })).map(candidate => candidate.choice) :
+			enumerateRequestChoices(input.observation.request)).filter(choice => !input.excluded?.includes(choice));
+		const best = fallback(input.observation, choices, input.fallbackChoice);
 		if (this.queue.length + this.getStatus().active >= this.maxBattles) {
 			this.metrics.capacity++;
 			return Promise.resolve({ key: { ...input.key }, status: 'capacity', decision: best, queueMs: 0, totalMs: 0 });
@@ -156,8 +162,7 @@ export class DecisionScheduler {
 		return new Promise(resolve => {
 			const job: Job = {
 				token: ++this.sequence, input: structuredClone(input), created, deadline: Infinity, budgetMs, best,
-				choices: new Set(enumerateRequestChoices(input.observation.request)
-					.filter(choice => !input.excluded?.includes(choice))),
+				choices: new Set(choices),
 				resolve,
 			};
 			this.queue.push(job);
@@ -280,7 +285,7 @@ export class DecisionScheduler {
 			slot.worker = worker;
 			worker.on('message', (message: { token: number, type: string, decision?: SearchDecision }) => {
 				const active = slot.active;
-				if (worker !== slot.worker || !active || message.token !== active.token || !this.current(active)) {
+				if (worker !== slot.worker || message.token !== active?.token || !this.current(active)) {
 					this.metrics.staleResults++; return;
 				}
 				if (performance.now() >= active.deadline) { this.timeout(active); return; }
@@ -303,6 +308,7 @@ export class DecisionScheduler {
 		slot.active = job;
 		this.armTimeout(job);
 		const message: WorkerRequest = {
+			doubles: job.input.doubles,
 			token: job.token, trainer: job.input.trainer, observation: job.input.observation, seed: job.input.seed,
 			budgetMs: Number.isFinite(job.deadline) ? Math.max(0, job.deadline - performance.now()) : null,
 			critical: job.input.critical,

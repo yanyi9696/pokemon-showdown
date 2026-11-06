@@ -9,7 +9,8 @@ export function mouseFamilyActive(mon: Pokemon) {
 		mon.side.pokemon.every(p => inBlessingFamily(p.baseSpecies.name, ELECTRIC_MOUSE_FAMILY));
 }
 export function shareableRogueItem(item: Item) {
-	return item.exists && !item.megaStone && !item.zMove && !item.onPlate && !item.onMemory && !item.onDrive &&
+	return item.exists && !item.id.startsWith('rogueuniversal') && !item.megaStone && !item.zMove &&
+		!item.onPlate && !item.onMemory && !item.onDrive &&
 		!['redorb', 'blueorb', 'rustedsword', 'rustedshield', 'griseousorb', 'griseouscore', 'adamantcrystal',
 			'lustrousglobe', 'wellspringmask', 'hearthflamemask', 'cornerstonemask', 'gmegawishingstar'].includes(item.id);
 }

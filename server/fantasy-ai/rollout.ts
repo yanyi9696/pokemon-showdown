@@ -14,6 +14,7 @@ import { WorldBuilder, type WorldHypothesis } from './world';
 import { enumerateRequestChoices } from './actions';
 import { matchesOpponentMove } from './opponent-choice';
 import { adaptiveRisk, coverageAdjustedScore } from './planning';
+import type { DoublesScoredChoice } from './doubles-policy';
 
 export interface SearchDecision extends RuleDecision {
 	method: 'rules' | 'rollout';
@@ -23,6 +24,12 @@ export interface SearchDecision extends RuleDecision {
 	elapsedMs: number;
 	/** Deepest completed comparison. An interrupted deeper round never replaces it. */
 	searchDepth?: number;
+	/** Aggregate diagnostics only; no reconstructed opponent sets cross the worker result boundary. */
+	doubles?: {
+		candidates: number,
+		mechanics?: DoublesScoredChoice['mechanics'],
+		jointTurn?: DoublesScoredChoice['jointTurn'],
+	};
 }
 export interface SearchOptions {
 	/** Omission uses the normal deadline; null explicitly opts into an untimed plan. */

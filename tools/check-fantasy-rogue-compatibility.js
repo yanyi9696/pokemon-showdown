@@ -10,8 +10,8 @@ function check(database, target) {
 	const contractPath = path.resolve(target, 'dist/server/fantasy-rogue/save-compatibility.js');
 	if (!fs.existsSync(contractPath)) throw new Error('Target has no certified save contract; old-code rollback is NOT safe.');
 	const contract = require(contractPath);
-	const required = ['mainline-choice-v1', 'meta-boost-percent-v2', 'challenge-v1', 'history-v1'];
-	if (contract.ROGUE_SAVE_VERSION !== 2 || !required.every(id => contract.ROGUE_SAVE_CAPABILITIES?.includes(id)) ||
+	const required = ['mainline-choice-v1', 'meta-boost-percent-v2', 'challenge-v1', 'history-v1', 'nuzlocke-v1'];
+	if (contract.ROGUE_SAVE_VERSION !== 3 || !required.every(id => contract.ROGUE_SAVE_CAPABILITIES?.includes(id)) ||
 		typeof contract.rogueSaveCompatibilityIssues !== 'function') {
 		throw new Error('Unsupported target save contract. Use a verified forward-compatible build.');
 	}
@@ -31,7 +31,7 @@ function check(database, target) {
 				for (const row of db.prepare(`SELECT data FROM ${table}`).iterate()) {
 					let data;
 					try { data = JSON.parse(row.data); } catch { throw new Error(`${table}: invalid JSON.`); }
-					const issues = contract.rogueSaveCompatibilityIssues(table === 'rogue_accounts' ? data : { run: data.snapshot });
+					const issues = contract.rogueSaveCompatibilityIssues(table === 'rogue_accounts' ? data : { cards: [{ snapshot: data.snapshot }] });
 					if (issues.length) throw new Error(`${table}: unsupported data contract (${issues.join(', ')}).`);
 					rows[table]++;
 				}

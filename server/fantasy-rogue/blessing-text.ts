@@ -19,7 +19,7 @@ export const BLESSING_SUPPLY_HELP = [
 ];
 
 /** Player copy shared by selection cards, the codex, owned blessings and new clear cards. */
-export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSecret = false, lockedType?: string) {
+export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSecret = false) {
 	let text = def.text;
 	if (def.family === 'money' || def.family === 'bigmoney') text = `立即获得 ${blessingCoins(def.family, floor || 1)} 金币。`;
 	if (def.family === 'medic') text = `每次战斗获胜后，存活伙伴恢复 ${medicRecovery(floor || 1)}% 最大 HP，并解除异常状态。与【进球休息】互斥。`;
@@ -66,7 +66,6 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 	// These are explicit supply names, not an unrestricted word matcher (e.g. ordinary “免疫”).
 	text = text.split(/(【[^】]+】)/g).map(part => part.startsWith('【') ? part :
 		part.replace(/幻想碎片|太晶碎片|经验糖果|小蘑菇|大蘑菇|芳香蘑菇|土地云/g, name => `【${name}】`)).join('');
-	if (def.family === 'unity' && lockedType) text = `锁定属性：${BLESSING_TYPES[lockedType] || lockedType}。\n${text}`;
 	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name, text: bracketMoveCategories(text) };
 }
 
@@ -86,7 +85,7 @@ export function blessingAvailabilityNotes(def: BlessingDefinition): string[] {
 	}
 	const conditions: Record<string, string[]> = {
 		monkeyking: ['队伍需有【烈焰猴】，幻想形态同样符合'],
-		unity: ['队伍需有至少两名非蛋伙伴，且所有非蛋伙伴拥有共通属性；多个共通属性可自选其一'],
+		unity: ['队伍需有至少两名非蛋伙伴，且所有非蛋伙伴拥有共通属性；随当前队伍变化，自动对所有共通属性同时生效'],
 		galarlegend: ['队伍需有【无极汰那】'], originaldragon: ['队伍需有【酋雷姆】'],
 		reorganizer: ['队伍需有至少一位可参与重组、尚未满星的伙伴'],
 		ghidorah: ['队伍需有【三首恶龙】，幻想形态同样符合'],

@@ -14,6 +14,7 @@ const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { CANDY_SHOP } = require('../../dist/server/fantasy-rogue/early-balance');
+const { chooseLuckEvent } = require('../../dist/server/fantasy-rogue/luck-events');
 const { set, stats, commandAfterOpening, eventRoll } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue coin and die gifts', function () {
@@ -67,6 +68,13 @@ describe('Fantasy Rogue coin and die gifts', function () {
 			assert.deepEqual(loaded.run.bag, natural.run.bag);
 			assert.equal(loaded.run.blessings.shards, natural.run.blessings.shards);
 		});
+		it(`${id} reuses a validated shared result without rerolling for the other recipient`, () => {
+			const state = setup(id), face = coin ? 2 : 5;
+			state.run.node.event.luck = { kind: coin ? 'coin' : 'die', face, loaded: false };
+			assert.deepEqual(choose(state, 1), []);
+			assert.equal(state.run.node.event.luck.face, face);
+			assert(value(state.run) > 0);
+		});
 		it(`${id} gives a strictly better best-face reward at early and late floors`, () => {
 			for (const floor of [id === 'clefairydice' ? 51 : 1, 99, 200]) {
 				const best = setup(id, floor); choose(best, coin ? 1 : 6);
@@ -117,6 +125,20 @@ describe('Fantasy Rogue coin and die gifts', function () {
 			assert.equal(JSON.stringify(state.account), saved);
 		});
 	}
+	it('rejects malformed shared results before changing resources or settling the event', () => {
+		for (const result of [
+			{ kind: 'coin', face: 1, loaded: false }, { kind: 'die', face: 0, loaded: false },
+			{ kind: 'die', face: 7, loaded: false }, { kind: 'die', face: 1.5, loaded: false },
+			{ kind: 'die', face: NaN, loaded: false }, { kind: 'die', face: 1, loaded: true },
+			{ kind: 'die', face: 6 },
+		]) {
+			const state = setup('delibirddice');
+			state.run.node.event.luck = result;
+			const before = structuredClone(state.run);
+			assert.throws(() => chooseLuckEvent(state.run, content, () => 0, 'roll'), /投掷结果无效/);
+			assert.deepEqual(state.run, before);
+		}
+	});
 	it('keeps the fragment game out of the early event pool', () => {
 		assert.throws(() => eventRoll(setup('clefairydice', 50).run, 'clefairydice'), /unavailable/);
 		assert(eventRoll(setup('clefairydice', 51).run, 'clefairydice') >= 0);
