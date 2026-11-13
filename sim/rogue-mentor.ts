@@ -1,6 +1,13 @@
 export type MentorCard = 'attack' | 'guard' | 'speed' | 'balanced';
 export type MentorTier = 'elite' | 'gym';
 
+export function playerMentor(pokemon: import('./pokemon').Pokemon) {
+	const state = pokemon.battle.fantasyRogue;
+	if (!state || state.duel) return;
+	if (pokemon.side.id === 'p1') return state.mentorCard;
+	if (pokemon.side.id === 'p3' && state.cooperative) return state.partner?.mentorCard;
+}
+
 /** Percent bonuses, shared by the campaign, simulator and owner-only battle UI. */
 export function mentorCardProfile(kind: MentorCard, _tier: MentorTier = 'elite') {
 	// Retain the tier argument for old saves; all fixed bosses now share gym-strength cards.

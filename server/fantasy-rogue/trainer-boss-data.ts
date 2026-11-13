@@ -3766,27 +3766,27 @@ IVs: 0 Spe
 	},
 	{
 		id: 'rika', name: '辛俐（地面）', role: 'elitefour', floor: 0,
-		team: `Clodsire @ fantasyprotector
-Ability: Water Absorb
-Tera Type: Ground
-EVs: 252 HP / 4 Def / 252 SpD
-Careful Nature
-- Recover
-- Amnesia
-- Haze
-- Earthquake
+		team: `Landorus (M) @ Life Orb
+Ability: Sheer Force
+EVs: 252 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
+- Earth Power
+- Sludge Bomb
+- Focus Blast
+- Nasty Plot
 
-Golurk-Fantasy @ Choice Scarf
-Ability: No Guard
-EVs: 252 Atk / 4 SpD / 252 Spe
-Jolly Nature
-- Dynamic Punch
+Great Tusk @ Booster Energy
+Ability: Protosynthesis
+EVs: 252 Atk / 252 Spe
+Adamant Nature
+- Close Combat
 - Headlong Rush
-- Poltergeist
-- Stone Edge
+- Ice Spinner
+- Rapid Spin
 
-Sandy Shocks-Fantasy @ Firium Z
-Ability: Magnet Pull
+Sandy Shocks-Fantasy @ Booster Energy
+Ability: Protosynthesis
 Tera Type: Ground
 EVs: 96 HP / 160 SpA / 252 Spe
 Timid Nature

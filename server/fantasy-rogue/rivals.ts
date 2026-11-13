@@ -1,5 +1,5 @@
 import { companionTravelGift } from './affection-gifts';
-import { gainAffection, affectionGreeting, AFFECTION_RULES } from './affection';
+import { type AffectionRewards, gainAffection, affectionGreeting, AFFECTION_RULES } from './affection';
 import { grantCoverage } from './coverage';
 import { trainerReunionPages } from './trainer-reunions';
 import { randomUUID } from 'crypto';
@@ -18,6 +18,8 @@ import { rivalOpeningPages, rivalConversationOptions, rivalAnswerPages, rivalCha
 import { rivalAffectionGain } from './rival-responses';
 import { journeyCoins } from './early-balance';
 import { LUSAMINE_FAMILY_SCENES, LUSAMINE_REPLIES } from './lusamine-data';
+import { convertSpiritItem } from './spirits';
+import { inventoryItem } from './team';
 
 export interface RivalState {
 	id: RivalID; completed: number; lastFloor: number; affection: number;
@@ -80,7 +82,7 @@ function setFight(run: RogueRun, random: RogueRandom) {
 	delete run.node!.spiritPrepared; delete run.node!.blessingPrepared; delete run.node!.wildLoot;
 	run.encounter = 0; run.phase = 'ready';
 }
-export function beginRival(run: RogueRun, random: RogueRandom) {
+export function beginRival(run: RogueRun, random: RogueRandom, rewards: AffectionRewards | undefined) {
 	if (!run.rival) {
 		const candidates = (Object.keys(RIVALS) as RivalID[]).filter(id => !travellingRoster(run).some(c => c.id === id) &&
 			!run.blessings?.companions?.some(c => c.id === id));
@@ -88,7 +90,7 @@ export function beginRival(run: RogueRun, random: RogueRandom) {
 		run.rival = { id: pool[random(pool.length)], completed: 0, lastFloor: 0, affection: 0 };
 	}
 	const r = run.rival, chapter = r.completed + 1;
-	gainAffection(run, r.id, AFFECTION_RULES.meeting, 'rival-meeting:' + chapter);
+	gainAffection(run, r.id, AFFECTION_RULES.meeting, `rival-meeting:${chapter}`, rewards);
 	run.node!.name = rivalSceneName(r.id, chapter);
 	run.node!.event = { id: 'rivalstory', key: randomUUID(), stage: 'choice', rival: { chapter, step: 'conversation', conversationTurn: 0 },
 		result: [RIVALS[r.id].lines[chapter - 1]] };
@@ -107,35 +109,49 @@ function prepareChapter(run: RogueRun, random: RogueRandom) {
 		state.task = random(2) ? 'search' : 'battle'; state.answer = random(3); state.found = [];
 	}
 }
-function finish(run: RogueRun, random: RogueRandom, won: boolean) {
+function finish(run: RogueRun, random: RogueRandom, won: boolean, rewards: AffectionRewards | undefined) {
 	const r = run.rival!, event = run.node!.event!, chapter = event.rival!.chapter;
+	if (won && [2, 5].includes(chapter) && run.spirit === 'hoopagift' && !rewards) {
+		throw new Error('梦幻章节奖励缺少道具配置，未保存本次领取。');
+	}
 	r.lastFloor = run.floor;
 	const advanced = won || [1, 6, 8].includes(chapter);
 	if (advanced) r.completed = Math.max(r.completed, chapter);
-	if (won) gainAffection(run, r.id, AFFECTION_RULES.duel, 'rival-complete:' + chapter);
+	if (won) gainAffection(run, r.id, AFFECTION_RULES.duel, `rival-complete:${chapter}`, rewards);
 	if ([1, 6, 8].includes(chapter)) healNarrativeParty(run);
 	const scale = !won ? 0.35 : [4, 6, 8].includes(chapter) ? 1.8 : 1.15;
 	const quality = chapter === 4 ? r.affection >= 12 ? 1.4 : r.affection >= 6 ? 1 : 0.7 : 1;
 	const money = journeyCoins(run.floor, (180 + run.floor * 14) * scale * quality);
 	run.money += money;
 	const items: Record<string, number> = { [chapter >= 6 ? 'hyperpotion' : 'superpotion']: won ? 2 : 1 };
+	const equipment: Record<string, number> = {}, converted: Record<string, number> = {};
 	if (won) Object.assign(items, rewardCandies(run.floor, rewardExperience(run.floor) * scale * quality));
-	if (won && chapter === 2) { items.expertbelt = 1; items.roguetmprotect = 1; }
+	if (won && chapter === 2) { equipment.expertbelt = 1; items.roguetmprotect = 1; }
 	if (won && chapter === 3) { items.ultraball = 3; items.bottlecap = 1; }
-	if (won && chapter === 5) { items.abilitycapsule = 1; items.sitrusberry = 3; }
+	if (won && chapter === 5) { items.abilitycapsule = 1; equipment.sitrusberry = 3; }
 	if (won && chapter >= 7) { items.goldbottlecap = 1; items.abilitypatch = 1; }
+	// Chapter equipment is a common reward; affection milestones above remain personal.
+	for (const [id, count] of Object.entries(equipment)) for (let i = 0; i < count; i++) {
+		const received = rewards ? convertSpiritItem(run, rewards.content, id,
+			`rival:${r.id}:${chapter}:${id}:${i}`, rewards.random) : id;
+		items[received] = (items[received] || 0) + 1;
+		if (received !== id) converted[received] = (converted[received] || 0) + 1;
+	}
 	for (const [id, count] of Object.entries(items)) run.bag[id] = (run.bag[id] || 0) + count;
 	if (won && chapter === 8) normalizeBlessings(run).shards += 150;
 	if (won && run.floor >= 60 && [4, 6, 7].includes(chapter)) grantCoverage(run, `rival:${r.id}:${chapter}`);
 	event.trainingAidBlocked = !won;
 	event.stage = 'result'; event.settled = true;
 	event.result = [won ? '这一路的默契，成为了眼前实实在在的收获。' : advanced ? '切磋未能获胜，但对方认真肯定了你的进步，并帮全队恢复健康。你收到一份基础物资。' : '这次合作没能完成。先照顾好伙伴，下一次相遇再共同挑战。'];
+	if (Object.keys(converted).length) event.result.push('梦幻的奇赠将本章普通携带道具转换为：' +
+		Object.entries(converted).map(([id, count]) =>
+			`【${inventoryItem(rewards!.content, id)?.name || id}】×${count}`).join('、') + '。');
 	if (chapter === 1) event.result.push('「以后在旅途中遇见，记得来找我。一起经历更多奇遇，我们会变得更强，也会收获更丰厚的旅途礼物。」');
 	if (chapter === 8) {
-		gainAffection(run, r.id, 100, 'story-complete');
-		if (r.carmine) gainAffection(run, 'carmine', 100, 'story-complete');
+		gainAffection(run, r.id, 100, 'story-complete', rewards);
+		if (r.carmine) gainAffection(run, 'carmine', 100, 'story-complete', rewards);
 		if (['lillie', 'gladion'].includes(r.id) && run.trainerBonds?.lusamine) gainAffection(run,
-			'lusamine', 100, 'story-complete');
+			'lusamine', 100, 'story-complete', rewards);
 		requestCompanion(run, { id: r.id, origin: 'rival', permanent: true });
 		event.result.push(`【${RIVALS[r.id].name}】发出永久同行的邀请。同行名额已满时，可以选择和哪位伙伴告别。`);
 		if (r.carmine && r.carmine.affection >= 12) {
@@ -178,7 +194,10 @@ export function rivalView(run: RogueRun) {
 		affection: run.trainerBonds?.[state.step === 'lusamine' ? 'lusamine' : state.step?.startsWith('carmine') ? 'carmine' : r.id]?.score || 0,
 		rivalApproval: state.step?.startsWith('carmine') ? (r.carmine?.affection || 0) >= 8 : r.affection >= 8 };
 }
-export function chooseRival(run: RogueRun, content: RogueContent, random: RogueRandom, choice: string) {
+export function chooseRival(
+	run: RogueRun, content: RogueContent, random: RogueRandom, choice: string, rewardRandom: RogueRandom = random
+) {
+	const rewards = { content, random: rewardRandom };
 	const event = run.node!.event!, state = event.rival!, r = run.rival!;
 	if (!rivalView(run).options.some(option => option.id === choice)) throw new Error('请选择当前奇遇提供的选项。');
 	event.key = randomUUID();
@@ -186,7 +205,8 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		const turn = state.conversationTurn || 0;
 		const gain = rivalAffectionGain(r.id, choice, state.chapter);
 
-		const actualGain = gainAffection(run, r.id, Math.max(0, gain) * AFFECTION_RULES.preference, 'rival:' + state.chapter + ':' + state.step + ':' + (state.conversationTurn || 0) + ':' + (state.turn || 0));
+		const actualGain = gainAffection(run, r.id, Math.max(0, gain) * AFFECTION_RULES.preference,
+			`rival:${state.chapter}:${state.step}:${state.conversationTurn || 0}:${state.turn || 0}`, rewards);
 		const pages = rivalAnswerPages(r.id, state.chapter, turn, choice, r.affection);
 		pages[0].affectionGain = actualGain;
 		state.conversationTurn = turn + 1;
@@ -196,7 +216,7 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 				pages.push(dialoguePage('carmine', '丹瑜', CARMINE.lines[state.chapter - 1], (r.carmine?.affection || 0) >= 8, 'left'));
 			} else if ((r.id === 'lillie' || r.id === 'gladion') && LUSAMINE_FAMILY_SCENES[r.id][state.chapter]) {
 				state.step = 'lusamine';
-				gainAffection(run, 'lusamine', AFFECTION_RULES.meeting, `family:${r.id}:${state.chapter}:meeting`);
+				gainAffection(run, 'lusamine', AFFECTION_RULES.meeting, `family:${r.id}:${state.chapter}:meeting`, rewards);
 				pages.push(...LUSAMINE_FAMILY_SCENES[r.id][state.chapter].map(([id, text]) =>
 					dialoguePage(id, id === 'lusamine' ? '露莎米奈' : RIVALS[id].name, text, true, id === 'lusamine' ? 'left' : 'right')));
 			} else prepareChapter(run, random);
@@ -206,7 +226,7 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 	} else if (state.step === 'lusamine') {
 		const response = choice.slice('lusamine:'.length) as keyof typeof LUSAMINE_REPLIES;
 		const gain = gainAffection(run, 'lusamine', response === 'trust' ? AFFECTION_RULES.response : AFFECTION_RULES.preference,
-			`family:${r.id}:${state.chapter}:response`);
+			`family:${r.id}:${state.chapter}:response`, rewards);
 		if (response === 'join') requestCompanion(run, { id: 'lusamine', origin: 'event' });
 		event.result = [LUSAMINE_REPLIES[response]];
 		prepareChapter(run, random);
@@ -215,7 +235,8 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 	} else if (state.step === 'carmine') {
 		const gain = rivalAffectionGain('carmine', ({ 'carmine:listen': 'warm', 'carmine:trust': 'honest', 'carmine:dismiss': 'cold' } as Record<string, string>)[choice], state.chapter);
 
-		const actualGain = gainAffection(run, 'carmine', Math.max(0, gain) * AFFECTION_RULES.preference, 'rival:' + state.chapter + ':' + state.step);
+		const actualGain = gainAffection(run, 'carmine', Math.max(0, gain) * AFFECTION_RULES.preference,
+			`rival:${state.chapter}:${state.step}`, rewards);
 		event.result = [choice === 'carmine:listen' ? '丹瑜扬起嘴角：「这就对了！先说好，遇到麻烦可别把我晾在一边。」' :
 			choice === 'carmine:trust' ? '「嗯，我是有些想法。」丹瑜放缓语气，认真补上了你们没注意到的细节。' :
 			'「倒是考虑得挺清楚嘛。」丹瑜指了指地图，「这里再留个后手，我来照看这一侧。」'];
@@ -230,21 +251,23 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 	else if (['warm', 'honest', 'cold'].includes(choice)) {
 		const gain = rivalAffectionGain(r.id, choice, state.chapter);
 
-		const actualGain = gainAffection(run, r.id, Math.max(0, gain) * AFFECTION_RULES.preference, 'rival:' + state.chapter + ':' + state.step + ':' + (state.conversationTurn || 0) + ':' + (state.turn || 0)); state.turn = (state.turn || 0) + 1;
+		const actualGain = gainAffection(run, r.id, Math.max(0, gain) * AFFECTION_RULES.preference,
+			`rival:${state.chapter}:${state.step}:${state.conversationTurn || 0}:${state.turn || 0}`, rewards);
+		state.turn = (state.turn || 0) + 1;
 		const pages = rivalChatPages(r.id, state.turn - 1, choice, r.affection);
 		pages[0].affectionGain = actualGain;
 		event.result = pages.map(page => page.text);
-		if (state.turn >= 3) finish(run, random, true);
+		if (state.turn >= 3) finish(run, random, true, rewards);
 		queueNarrative(run, pages, 'event');
 	} else if (choice.startsWith('search:')) {
 		const index = Number(choice.slice(7)); state.found!.push(index);
 		if (index === state.answer) {
-			gainAffection(run, r.id, 2, `rival-search:${state.chapter}`); finish(run, random, true);
+			gainAffection(run, r.id, 2, `rival-search:${state.chapter}`, rewards); finish(run, random, true, rewards);
 		} else event.result = ['这里没有委托物资，但发现了新的足迹。你们一起排除了这个方向。'];
 	} else if (choice === 'shards' || choice.startsWith('system:')) {
 		if (choice === 'shards') normalizeBlessings(run).shards += 100;
 		else grantSystem(run, choice.slice(7), '劲敌的认可 · 选择配套道具');
-		finish(run, random, true);
+		finish(run, random, true, rewards);
 	} else if (['join', 'solo', 'joinboth', 'joincarmine'].includes(choice)) {
 		const until = run.floor + (state.chapter === 7 ? 8 : 5 + random(4));
 		if (choice === 'join' || choice === 'joinboth') requestCompanion(run, { id: r.id, origin: 'rival', until });
@@ -253,7 +276,7 @@ export function chooseRival(run: RogueRun, content: RogueContent, random: RogueR
 		event.result = [choice !== 'solo' ? `与${choice === 'joincarmine' ? '丹瑜' : RIVALS[r.id].name + (choice === 'joinboth' ? '、丹瑜' : '')}约好结伴同行至第 ${until} 层。名额已满时，请先决定是否替换同行伙伴。同行期间，普通战斗有机会并肩出战，战利品略微增加。` : '你们挥手道别，约好下一次再见。'];
 	}
 }
-export function settleRival(run: RogueRun, random: RogueRandom, won: boolean) {
+export function settleRival(run: RogueRun, random: RogueRandom, won: boolean, rewards: AffectionRewards | undefined) {
 	const event = run.node!.event!, chapter = event.rival!.chapter;
 	if (won && run.encounter + 1 < run.node!.encounters.length) return;
 	if (won && chapter === 6) {
@@ -261,7 +284,7 @@ export function settleRival(run: RogueRun, random: RogueRandom, won: boolean) {
 		event.rival!.step = 'reward'; event.key = randomUUID();
 		event.result = ['「这次是你赢了。我准备了几份礼物，选一份能帮你继续前进的吧。」']; run.phase = 'event'; return;
 	}
-	finish(run, random, won);
+	finish(run, random, won, rewards);
 }
 export function expireRival(run: RogueRun, nextFloor = run.floor) {
 	const r = run.rival, pages = [];

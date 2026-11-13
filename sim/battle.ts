@@ -25,6 +25,7 @@ import { recordEvolutionDamage } from './rogue-evolution-progress';
 import { commitNumberChoices } from './rogue-number-blessings';
 import { sharedRogueItems, rogueItemData, rogueItemCallback } from './fantasy-rogue-items';
 import { Teams } from './teams';
+import { emptyCoopBossSide } from './rogue-coop-boss';
 import { Field } from './field';
 import { Pokemon, type EffectState, RESTORATIVE_BERRIES } from './pokemon';
 import { useRogueRevival } from './rogue-revival';
@@ -1475,6 +1476,7 @@ export class Battle {
 		case 'teampreview':
 			for (let i = 0; i < this.sides.length; i++) {
 				const side = this.sides[i];
+				if (!side.pokemon.length && emptyCoopBossSide(side)) continue;
 				const coopPreview = rogueCoopPreviewSide(side);
 				const maxChosenTeamSize = coopPreview ? Math.min(3, side.pokemon.length) : this.ruleTable.pickedTeamSize || undefined;
 				requests[i] = { teamPreview: true, maxChosenTeamSize, side: side.getRequestData(),
@@ -1990,7 +1992,7 @@ export class Battle {
 			subFormat.onBegin?.call(this);
 		}
 
-		if (this.sides.some(side => !side.pokemon[0])) {
+		if (this.sides.some(side => !side.pokemon[0] && !emptyCoopBossSide(side))) {
 			throw new Error('Battle not started: A player has an empty team.');
 		}
 
@@ -2390,8 +2392,8 @@ export class Battle {
 		return tr((tr(value * modifier) + 2048 - 1) / 4096);
 	}
 
-	/** Given a table of base stats and a pokemon set, return the actual stats. */
-	spreadModify(baseStats: StatsTable, set: PokemonSet): StatsTable {
+	/** Base-stat effects only; shared by real stat calculation and public Rogue presentation. */
+	modifyBaseStats(baseStats: StatsTable, set: PokemonSet): StatsTable {
 		const rogue = isRogueFormat(this.format.id) ? set.fantasyRogueModifiers : undefined;
 		if (rogue?.fusion) baseStats = rogue.fusion.baseStats;
 		const compoundInactive = rogue?.compound && !rogue.compoundReorganized && this.dex.species.get(set.species).bst > 500;
@@ -2403,6 +2405,13 @@ export class Battle {
 			baseStats = { ...baseStats };
 			for (const stat of ROGUE_STATS) baseStats[stat] = Math.floor(baseStats[stat] * 1.5);
 		}
+		return baseStats;
+	}
+
+	/** Given a table of base stats and a pokemon set, return the actual stats. */
+	spreadModify(baseStats: StatsTable, set: PokemonSet): StatsTable {
+		const rogue = isRogueFormat(this.format.id) ? set.fantasyRogueModifiers : undefined;
+		baseStats = this.modifyBaseStats(baseStats, set);
 		const modStats: SparseStatsTable = { atk: 10, def: 10, spa: 10, spd: 10, spe: 10 };
 		const tr = this.trunc;
 		let statName: keyof StatsTable;
@@ -3413,7 +3422,7 @@ export class Battle {
 			}
 			if (options.team) throw new Error(`Player ${slot} already has a team!`);
 		}
-		if (options.team && typeof options.team !== 'string') {
+		if (options.team && typeof options.team !== 'string' && !(options.team.length === 0 && emptyCoopBossSide(side))) {
 			options.team = Teams.pack(options.team);
 		}
 		if (!didSomething) return;

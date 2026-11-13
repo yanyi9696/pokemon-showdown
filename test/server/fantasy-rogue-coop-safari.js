@@ -10,7 +10,7 @@ const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 const { rollSafariChoice } = require('../../dist/server/fantasy-rogue/journey-safari');
 const { chooseJourneyActivity } = require('../../dist/server/fantasy-rogue/journey-activities');
-const { content, set, stats } = require('../fixtures/fantasy-rogue');
+const { content, set, stats, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue shared safari capture ownership', () => {
 	let oldConfig, store, engine, manager, host, guest, soloSaves, serial = 0;
@@ -61,7 +61,9 @@ describe('Fantasy Rogue shared safari capture ownership', () => {
 			a.routeChoices = [{ id: 'safari', name: '共同狩猎', kind: 'event', encounters: [], reward: { money: 0, items: {} } }];
 			a.coopEventHistory = Object.keys(EVENT_NAMES).filter(id => id !== 'safaripark').map(id => ({ id, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'safari' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'safari' });
+		});
 		assert.equal(event().id, 'safaripark');
 	}
 	function knownTargets() {
@@ -85,6 +87,34 @@ describe('Fantasy Rogue shared safari capture ownership', () => {
 	}
 	function admit(user, value = 'join', confirmed = false) {
 		return manager.coop.command(user, { action: 'blessingreward', member: member(user).blessings.pending[0].id, value, confirmed });
+	}
+	for (const catcher of ['host', 'guest']) for (const roll of [29, 30]) {
+		it(`shares the higher non-catcher shiny level with ${catcher}, boundary ${roll}`, () => {
+			const { emptyEchoUpgrades } = require('../../dist/sim/rogue-echo');
+			knownTargets();
+			const owner = catcher === 'host' ? host : guest, other = owner === host ? guest : host;
+			change(s => {
+				for (const user of [host, guest]) s.adventure.members[user.id].echo = {
+					...emptyEchoUpgrades(), shiny: user === owner ? 1 : 5, catch: user === owner ? 2 : 4,
+				};
+			});
+			const before = [host, guest].map(user => member(user).echo), original = crypto.randomInt;
+			let rolls = 0;
+			try {
+				crypto.randomInt = max => {
+					if (max === 10000) { rolls++; return roll; }
+					return 0;
+				};
+				ask(owner); respond(other, 'accept');
+			} finally { crypto.randomInt = original; }
+			assert.equal(rolls, 1);
+			const gift = member(owner).blessings.pending.find(p => p.pokemon);
+			assert.equal(!!gift.pokemon.set.shiny, roll === 29);
+			assert(!member(other).blessings.pending.some(p => p.pokemon));
+			assert.deepEqual([host, guest].map(user => member(user).echo), before);
+			const saved = session(); newManager();
+			view(host); view(guest); assert.deepEqual(session(), saved);
+		});
 	}
 	it('rolls three shared targets once through the real pool, with no future-target leak or direct ball option', () => {
 		enter(); const saved = session(), a = saved.adventure.node.event.activity;

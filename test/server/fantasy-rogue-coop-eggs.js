@@ -8,7 +8,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op eggs and hatching', () => {
 	let oldConfig, store, engine, manager, host, guest;
@@ -59,7 +59,9 @@ describe('Fantasy Rogue co-op eggs and hatching', () => {
 				.map(other => ({ id: other, floor: 1 }));
 			shared.areaSelections = { [host.id]: null, [guest.id]: null };
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'eggroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'eggroute' });
+		});
 		assert.equal(event(host).id, id);
 	}
 	const choose = (user, value, visit = event(user).key) => manager.coop.command(user, { action: 'eventchoice', value, visit });
@@ -252,6 +254,11 @@ describe('Fantasy Rogue co-op eggs and hatching', () => {
 		try { manager.coop.command(guest, { action: 'respondtrade', id: proposal.id, accept: true }); } finally { guest.send = send; }
 		assert.deepEqual(member(guest).team[0].egg, egg.egg); assert.equal(member(guest).team[0].id, eggId);
 		assert(!packets.join(' ').includes('Magikarp')); assert(member(guest).notices.at(-1).includes('宝可梦蛋'));
+		const tradeNotice = packets.filter(packet => packet.startsWith('|queryresponse|fantasyroguecoopnotice|'))
+			.map(packet => JSON.parse(packet.slice('|queryresponse|fantasyroguecoopnotice|'.length)))
+			.find(packet => packet.tradeCompleted).tradeCompleted;
+		assert.deepEqual(tradeNotice.participants[0].before, { species: 'Egg', shiny: false, gender: '' });
+		assert.deepEqual(tradeNotice.participants[0].after, { species: 'Egg', shiny: false, gender: '' });
 		assert.equal(captures(host), 0); assert.equal(captures(guest), 0);
 		advance(); assert.equal(captures(host), 0); assert.equal(captures(guest), 1);
 		assert.equal(member(guest).team[0].set.shiny, true);

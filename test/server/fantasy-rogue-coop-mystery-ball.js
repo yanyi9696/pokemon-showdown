@@ -13,7 +13,7 @@ const { Teams } = require('../../dist/sim/teams');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const { mysteryBallAtFloor, rollMysteryBallOutcome } = require('../../dist/server/fantasy-rogue/events');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
-const { content, set, stats } = require('../fixtures/fantasy-rogue');
+const { content, set, stats, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue shared mystery ball event', () => {
 	let oldConfig, store, engine, manager, host, guest, created, items;
@@ -66,7 +66,9 @@ describe('Fantasy Rogue shared mystery ball event', () => {
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(id => id !== 'mysteryball')
 				.map(id => ({ id, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'mysteryroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'mysteryroute' });
+		});
 		assert.equal(member(host).coopEvent.id, 'mysteryball');
 		assert.deepEqual(member(host).coopEvent, member(guest).coopEvent);
 		assert(['pokeball', 'greatball', 'ultraball'].includes(member(host).coopEvent.ball));

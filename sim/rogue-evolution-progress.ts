@@ -6,22 +6,26 @@ function current(mon: Pokemon) {
 	mon.m.rogueEvolution ||= { moves: {} as Record<string, number>, criticals: 0, recoil: 0, lostHP: 0 };
 	return mon.m.rogueEvolution;
 }
+function owned(mon: Pokemon) {
+	const state = mon.battle.fantasyRogue;
+	return !!state && (mon.side.id === 'p1' || !!state.cooperative && !!state.partner && mon.side.id === 'p3');
+}
 export function recordEvolutionMove(mon: Pokemon, move: ActiveMove) {
-	if (!mon.battle.fantasyRogue || mon.side.id !== 'p1' || !mon.set.fantasyRogueId || mon.transformed || move.isZ || move.isMax) return;
+	if (!owned(mon) || !mon.set.fantasyRogueId || mon.transformed || move.isZ || move.isMax) return;
 	const state = current(mon); state.moves[move.id] = (state.moves[move.id] || 0) + 1;
 }
 export function recordEvolutionHit(damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) {
-	if (damage > 0 && source?.side.id === 'p1' && !source.isAlly(target) && source.battle.fantasyRogue && target.getMoveHitData(move).crit) {
+	if (damage > 0 && source && owned(source) && !source.isAlly(target) && target.getMoveHitData(move).crit) {
 		current(source).criticals++;
 	}
 }
 export function recordEvolutionDamage(damage: number, target: Pokemon, effect: Effect) {
-	if (!target.battle.fantasyRogue || target.side.id !== 'p1' || damage <= 0) return;
+	if (!owned(target) || damage <= 0) return;
 	const state = current(target); state.lostHP += damage;
 	if (effect?.id === 'recoil') state.recoil += damage;
 }
 export function resetEvolutionDamageOnFaint(mon: Pokemon) {
-	if (!mon.battle.fantasyRogue || mon.side.id !== 'p1') return;
+	if (!owned(mon)) return;
 	const state = current(mon);
 	state.recoil = 0; state.lostHP = 0; state.resetDamage = true;
 }

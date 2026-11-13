@@ -50,7 +50,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onResidual() {
 			for (const mon of this.getAllActive()) drainPureRobe(mon);
 			resolveRogueFutureAttacks(this);
-			maintainRogueEnvironment(this);
+			maintainRogueEnvironment(this, true);
 			affectionResidual(this);
 			collapseResidual(this);
 		},
@@ -59,7 +59,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onDamagingHit(damage, target, source, move) {
 			recordEvolutionHit(damage, target, source, move);
 			blessingHit(damage, target, source, move);
-			if (this.fantasyRogue?.spirit?.id === 'yveltal' && source.side.id === 'p1' &&
+			if (this.fantasyRogue?.spirit?.id === 'yveltal' &&
+				(source.side.id === 'p1' || source.side.id === 'p3' && !!this.fantasyRogue.partner) &&
 				!source.isAlly(target) && source.hp > 0 && damage > 0) {
 				this.heal(Math.max(1, Math.floor(damage / 2)), source, source, this.format);
 			}
@@ -117,7 +118,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onResidual() {
 			for (const mon of this.getAllActive()) drainPureRobe(mon);
 			resolveRogueFutureAttacks(this);
-			maintainRogueEnvironment(this);
+			maintainRogueEnvironment(this, true);
 			affectionResidual(this);
 		},
 		onDamage(damage, target, source, effect) { return blessingDamage(damage, target, source, effect); },

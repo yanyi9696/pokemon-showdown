@@ -26,6 +26,8 @@ export interface SeenPokemon {
 	lastMove?: string;
 	lastMoveTurn?: number;
 	activeMoveActions?: number;
+	/** Direct move slots used during this appearance; called moves do not count. */
+	usedMoves?: string[];
 	statusTurn?: number;
 	statusActivations?: number;
 	statusActions?: number;
@@ -287,7 +289,7 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				boosts: {}, volatiles: [], item: previous?.item, ability: previous?.fantasy?.baseAbility,
 				teraType: value.split(', ').find(part => part.startsWith('tera:'))?.slice(5) || previous?.teraType,
 				enteredTurn: memory.turn, effects: {},
-				activeMoveActions: 0,
+				activeMoveActions: 0, usedMoves: [],
 				statusTurn: previous?.statusTurn, statusActivations: previous?.statusActivations || 0,
 				statusActions: previous?.statusActions || 0,
 				statusTicks: 0, statusSource: previous?.statusSource,
@@ -337,6 +339,7 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 					if (move.exists && !move.isZ && !['struggle', 'recharge'].includes(move.id)) {
 						if (!mon.moves.includes(move.id)) mon.moves.push(move.id);
 						mon.moveUses[move.id] = (mon.moveUses[move.id] || 0) + 1;
+						if (!mon.usedMoves?.includes(move.id)) (mon.usedMoves ||= []).push(move.id);
 					}
 					mon.lastMove = move.id;
 					mon.lastMoveTurn = memory.turn;
@@ -501,7 +504,7 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				if (event === '-start' && value.startsWith('ability: ')) mon.ability = effect;
 				if (effect === 'typechange') { mon.types = event === '-start' ? extra.split('/') : undefined; break; }
 				if (effect === 'substitute') mon.substituteHP = event === '-start' ? { lower: 0.25, upper: 0.25 } : undefined;
-				if (effect === 'fantasystats') break;
+				if (effect === 'fantasystats' || effect === 'roguebasestats') break;
 				const type = gemType(value);
 				if (event === '-start' && type) {
 					const state = mon.fantasy ||= {};
@@ -528,6 +531,7 @@ export function readBattleMemory(log: readonly string[], dex: ModdedDex): Battle
 				if (transformed) { mon.species = transformed.species; mon.types = transformed.types?.slice(); }
 				mon.transformed = true;
 				mon.moves = [];
+				mon.usedMoves = [];
 			}
 			break;
 		case '-mega':

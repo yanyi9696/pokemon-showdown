@@ -2,7 +2,7 @@
 
 const assert = require('assert').strict;
 const { randomUUID } = require('crypto');
-const { set, stats } = require('../fixtures/fantasy-rogue');
+const { set, stats, content } = require('../fixtures/fantasy-rogue');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 const { normalizeBlessings } = require('../../dist/server/fantasy-rogue/blessings');
 const { trainerReunionPages } = require('../../dist/server/fantasy-rogue/trainer-reunions');
@@ -36,13 +36,13 @@ describe('Fantasy Rogue gym companions and relationship meetings', () => {
 			beginSocialEvent(r, () => pool.findIndex(person => person.id === id));
 			assert.equal(r.dialogue.pages[0].portrait, id);
 			assert(r.dialogue.pages[0].text.includes(p.name));
-			chooseSocialEvent(r, p.preference, () => 0);
+			chooseSocialEvent(r, content(), p.preference, () => 0);
 			if (p.preference === 'battle') {
 				assert.equal(r.phase, 'ready'); assert(r.node.encounters[0].team.length);
 				settleSocialEvent(r, true);
-			} else chooseSocialEvent(r, p.preference, () => 0);
+			} else chooseSocialEvent(r, content(), p.preference, () => 0);
 			assert.equal(r.node.event.social.step, 'invite');
-			chooseSocialEvent(r, 'join', () => 0);
+			chooseSocialEvent(r, content(), 'join', () => 0);
 			assert.deepEqual(travellingRoster(r).map(c => c.id), [id]);
 			const options = [{ id: 'preferred', name: '同行建议', preference: p.preference }];
 			for (let i = 0; i < 15; i++) recordSocialPreference(r, options, 'preferred', 'choice' + i);

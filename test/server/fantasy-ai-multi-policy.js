@@ -123,6 +123,20 @@ describe('Fantasy Rogue joint NPC multi decisions', () => {
 		assert(battle.p2.choose('switch 2'));
 		assert(ai.lastDecision.joint);
 	});
+	for (const fainted of [false, true]) it(`keeps ${fainted ? 'fainted' : 'pivoting'} replacements outside an attacking turn`, () => {
+		const cached = start([mon('Pikachu', ['Thunderbolt']), mon('Garchomp', ['Earthquake'])]);
+		if (fainted) { battle.p2.active[0].faint(); battle.faintMessages(); }
+		battle.p2.active[0].switchFlag = true;
+		battle.makeRequest('switch');
+		const ranked = rankMultiChoices({ p2: battle.p2.activeRequest, p4: cached.p4 }, log(), 'gen9fantasy',
+			{ jointTurns: true, fixed: { p4: null } });
+		assert(ranked.length);
+		assert.equal(ranked[0].commands.p2, 'switch 2');
+		assert.equal(ranked[0].commands.p4, 'pass');
+		assert(battle.p2.choose(ranked[0].commands.p2));
+		assert.equal(ranked[0].mechanics.turnProbes, 0);
+		assert.deepEqual(ranked[0].mechanics.turnFailures, []);
+	});
 	it('does not resubmit a stale request or act after finish', () => {
 		const input = start(), { ai, room, writes } = controller();
 		ai.request('p2', input.p2, 2);

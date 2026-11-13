@@ -5,6 +5,7 @@ import {
 	enumerateDoublesChoices, type DoublesAction, type DoublesChoice, type DoublesChoiceOptions,
 } from './doubles-actions';
 import { readBattleMemory } from './memory';
+import { COURT_CHANGE_CONDITIONS, DoublesFieldClock, type DoublesFieldDurations } from './doubles-field';
 import {
 	DoublesDamageModel, type DoublesMechanicsPokemon, type DoublesTurnAction, type DoublesTurnSample,
 } from './doubles-mechanics';
@@ -22,6 +23,8 @@ interface PublicPokemon {
 	status: string;
 	toxicStage?: number;
 	sleepTurns?: number;
+	confusionActions?: number;
+	confusionMinimum?: number;
 	volatiles: Set<string>;
 	ability?: string;
 	item?: string;
@@ -32,6 +35,8 @@ interface PublicPokemon {
 	boosts: SparseBoostsTable;
 	moves: Set<string>;
 	lastMove?: string;
+	encoreMove?: string;
+	yawnTurn?: number;
 	lastMoveTurn?: number;
 	protectStreak?: number;
 	lastTarget?: Position;
@@ -40,6 +45,8 @@ interface PublicPokemon {
 }
 
 interface PublicState {
+	fainted: Record<SideID, number>;
+	durations: DoublesFieldDurations;
 	turn: number;
 	active: Map<Position, PublicPokemon>;
 	preview: Record<SideID, { species: string, level: number }[]>;
@@ -98,6 +105,7 @@ const PROTECT_MOVES = new Set([
 	'protect', 'detect', 'kingsshield', 'spikyshield', 'banefulbunker', 'silktrap', 'burningbulwark', 'maxguard',
 ]);
 const REDIRECT_MOVES = new Set(['followme', 'ragepowder', 'spotlight']);
+const CONFUSING_BERRIES = new Set(['figyberry', 'wikiberry', 'magoberry', 'aguavberry', 'iapapaberry']);
 const plausibleMoveCache = new WeakMap<ModdedDex, Map<string, string[]>>();
 const threatEstimateCache = new WeakMap<PublicPokemon, WeakMap<OwnPokemon, number>>();
 
@@ -148,7 +156,12 @@ function newPublicPokemon(
 
 /** Parses only the filtered public protocol already held by InformationView. */
 function readPublicState(log: readonly string[], dex: ModdedDex): PublicState {
+	const clock = new DoublesFieldClock(dex);
+	let lastMover: PublicPokemon | undefined;
+	let berryHealing: Position | undefined;
 	const state: PublicState = {
+		fainted: { p1: 0, p2: 0 },
+		durations: clock.durations,
 		turn: 0, active: new Map(), preview: { p1: [], p2: [] },
 		conditions: { p1: new Set(), p2: new Set() }, weather: '', terrain: '', trickRoom: false,
 	};
@@ -165,8 +178,18 @@ function readPublicState(log: readonly string[], dex: ModdedDex): PublicState {
 		const ability = fields.find(field => field.startsWith('[from] ability: '))?.slice(16) ||
 			(event === '-activate' && value.startsWith('ability: ') ? value.slice(9) : '');
 		const item = fields.find(field => field.startsWith('[from] item: '))?.slice(13);
+		const afterBerry = position && berryHealing === position;
+		berryHealing = event === '-heal' && CONFUSING_BERRIES.has(toID(item)) ? position : undefined;
 		if (owner && ability) owner.ability = toID(ability);
-		if (owner && item) owner.item = toID(item);
+		// Consumption is followed by an effect message (e.g. Sitrus Berry healing).
+		// Its attribution does not restore the item. Only a new -item message can do that.
+		if (owner && item && owner.item !== '') owner.item = toID(item);
+		if (event === 'move') lastMover = mon;
+		if (event === 'upkeep' || event === 'turn') lastMover = undefined;
+		const source = owner || lastMover;
+		const itemSuppressed = state.magicRoom || source?.volatiles.has('embargo') ||
+			(source && publicAbility(source, state, dex) === 'klutz');
+		clock.observe(fields, itemSuppressed ? '' : source?.item);
 		if (event === 'turn') {
 			state.turn = Number(target) || state.turn;
 			continue;
@@ -183,20 +206,28 @@ function readPublicState(log: readonly string[], dex: ModdedDex): PublicState {
 				Object.assign(mon, { hp: extra ? mon.hp : previous.hp, status: extra ? mon.status : previous.status,
 					activeActions: previous.activeActions, boosts: previous.boosts,
 					toxicStage: previous.toxicStage, sleepTurns: previous.sleepTurns,
+					confusionActions: previous.confusionActions, confusionMinimum: previous.confusionMinimum,
 					moves: previous.moves, volatiles: previous.volatiles,
 					lastMove: previous.lastMove, lastMoveTurn: previous.lastMoveTurn, protectStreak: previous.protectStreak,
-					lastTarget: previous.lastTarget, chargeMove: previous.chargeMove });
+					encoreMove: previous.encoreMove, yawnTurn: previous.yawnTurn,
+					lastTarget: previous.lastTarget, chargeMove: previous.chargeMove, item: previous.item });
 			}
 			state.active.set(position, mon);
 			continue;
 		}
-		if (event === 'faint' && mon) {
-			mon.hp = 0;
+		if (event === 'faint') {
+			if (side === 'p1' || side === 'p2') state.fainted[side] = Math.min(100, state.fainted[side] + 1);
+			if (mon) mon.hp = 0;
 			continue;
 		}
 		if (['-damage', '-heal', '-sethp'].includes(event) && mon) {
 			mon.hp = parseHealth(value);
 			mon.status = value.split(' ')[1] || mon.status;
+			// Confusion self-hits consume an action without a move/cant message. In particular,
+			// Fake Out cannot be saved for next turn by failing to act on the entry turn.
+			if (event === '-damage' && fields.includes('[from] confusion')) {
+				mon.activeActions++; mon.protectStreak = 0;
+			}
 			if (event === '-damage' && mon.status === 'tox' && fields.includes('[from] psn')) {
 				mon.toxicStage = Math.min(15, (mon.toxicStage || 0) + 1);
 			}
@@ -212,21 +243,39 @@ function readPublicState(log: readonly string[], dex: ModdedDex): PublicState {
 		}
 		if (event === '-endability' && mon) { mon.volatiles.add('suppressability'); continue; }
 		if (event === '-item' && mon) { mon.item = toID(value); continue; }
-		if (event === '-enditem' && mon) { delete mon.item; continue; }
+		if (event === '-enditem' && mon) { mon.item = ''; continue; }
 		if ((event === '-start' || event === '-end') && mon) {
 			const effect = toID(value.replace(/^(move|ability): /i, ''));
+			if (effect === 'roguebasestats') continue; // Public display, not an engine volatile.
 			if (effect === 'typechange' && event === '-start') {
 				mon.baseTypes = extra.split('/');
 				if (!mon.terastallized) mon.types = mon.baseTypes.slice();
 				continue;
 			}
-			if (event === '-start') mon.volatiles.add(effect);
-			else {
+			if (event === '-start') {
+				mon.volatiles.add(effect);
+				if (effect === 'encore') mon.encoreMove = mon.lastMove;
+				if (effect === 'yawn') mon.yawnTurn = state.turn;
+				if (effect === 'confusion') {
+					mon.confusionActions = 0;
+					// A berry/ability/fatigue can confuse during another move's animation. Do not
+					// silently attribute that status to the last move's special duration.
+					mon.confusionMinimum = lastMover?.lastMove === 'axekick' && !afterBerry &&
+						!fields.includes('[fatigue]') && !fields.some(field => field.startsWith('[from] ')) ? 3 : 2;
+				}
+			} else {
 				mon.volatiles.delete(effect);
+				if (effect === 'encore') delete mon.encoreMove;
+				if (effect === 'yawn') delete mon.yawnTurn;
+				if (effect === 'confusion') { delete mon.confusionActions; delete mon.confusionMinimum; }
 				if (effect === 'protosynthesis' || effect === 'quarkdrive') {
 					for (const id of mon.volatiles) if (id.startsWith(effect)) mon.volatiles.delete(id);
 				}
 			}
+			continue;
+		}
+		if (event === '-activate' && mon && toID(value) === 'confusion') {
+			mon.confusionActions = (mon.confusionActions || 0) + 1;
 			continue;
 		}
 		if (event === '-transform' && mon) {
@@ -298,6 +347,16 @@ function readPublicState(log: readonly string[], dex: ModdedDex): PublicState {
 			const condition = toID(value.replace(/^(move|ability): /i, ''));
 			if (event === '-sidestart') state.conditions[side].add(condition);
 			else state.conditions[side].delete(condition);
+			continue;
+		}
+		if (event === '-swapsideconditions') {
+			for (const id of COURT_CHANGE_CONDITIONS) {
+				const left = state.conditions.p1.has(id), right = state.conditions.p2.has(id);
+				if (right) state.conditions.p1.add(id);
+				else state.conditions.p1.delete(id);
+				if (left) state.conditions.p2.add(id);
+				else state.conditions.p2.delete(id);
+			}
 			continue;
 		}
 		if (event === '-weather') {
@@ -442,12 +501,14 @@ function ownParty(request: ChoiceRequest, dex: ModdedDex): OwnPokemon[] {
 
 function nativeDamageModel(
 	request: ChoiceRequest, own: OwnPokemon[], party: OwnPokemon[], foes: PublicPokemon[],
-	state: PublicState, dex: ModdedDex,
+	state: PublicState, dex: ModdedDex, nativeSides?: Observation['doublesNativeSides'],
 ) {
 	const pokemon: DoublesMechanicsPokemon[] = party.map((reserve, index) => {
 		const mon = own[index] || reserve;
 		const seen = mon.position ? state.active.get(mon.position) : undefined;
+		const nativeSide = nativeSides?.own[index] || request.side.id;
 		return {
+			nativeSide, faintedAllies: nativeSides?.fainted[nativeSide] ?? state.fainted[request.side.id as SideID],
 			id: mon.position || `reserve-${index}`, side: request.side.id as SideID, position: mon.position,
 			species: mon.species, level: mon.level, health: mon.hp, stats: { hp: mon.maxHP, ...mon.request.stats },
 			ability: mon.ability, item: mon.request.item, moves: mon.request.moves.slice(),
@@ -455,21 +516,33 @@ function nativeDamageModel(
 			teraType: mon.teraType, terastallized: mon.request.terastallized || seen?.terastallized,
 			status: mon.status, boosts: mon.boosts, volatiles: [...mon.volatiles],
 			toxicStage: seen?.toxicStage, sleepTurns: seen?.sleepTurns,
+			confusionActions: seen?.confusionActions, confusionMinimum: seen?.confusionMinimum,
 			activeActions: seen?.activeActions || 0, lastMove: seen?.lastMove,
+			encoreMove: seen?.encoreMove,
+			yawnTurns: seen?.yawnTurn === undefined ? undefined : Math.max(1, 2 - (state.turn - seen.yawnTurn)),
 			protectStreak: seen?.lastMoveTurn === state.turn - 1 ? seen.protectStreak : 0,
 			lastTarget: seen?.lastTarget, chargeMove: seen?.chargeMove,
 		};
 	});
-	for (const mon of foes) pokemon.push({
-		id: mon.position, side: mon.position.slice(0, 2) as SideID, position: mon.position,
-		species: mon.species, level: mon.level, health: mon.hp, ability: mon.ability, item: mon.item,
-		moves: [...mon.moves], types: mon.baseTypes.slice(), teraType: mon.teraType, terastallized: mon.terastallized,
-		status: mon.status, boosts: mon.boosts, volatiles: [...mon.volatiles], activeActions: mon.activeActions,
-		toxicStage: mon.toxicStage, sleepTurns: mon.sleepTurns,
-		lastMove: mon.lastMove, lastTarget: mon.lastTarget, chargeMove: mon.chargeMove,
-		protectStreak: mon.lastMoveTurn === state.turn - 1 ? mon.protectStreak : 0,
-	});
+	for (const mon of foes) {
+		const side = mon.position.slice(0, 2) as SideID;
+		const nativeSide = nativeSides && mon.position[2] === 'b' ? (side === 'p1' ? 'p3' : 'p4') : side;
+		pokemon.push({
+			nativeSide, faintedAllies: nativeSides?.fainted[nativeSide] ?? state.fainted[side],
+			id: mon.position, side: mon.position.slice(0, 2) as SideID, position: mon.position,
+			species: mon.species, level: mon.level, health: mon.hp, ability: mon.ability, item: mon.item,
+			moves: [...mon.moves], types: mon.baseTypes.slice(), teraType: mon.teraType, terastallized: mon.terastallized,
+			status: mon.status, boosts: mon.boosts, volatiles: [...mon.volatiles], activeActions: mon.activeActions,
+			toxicStage: mon.toxicStage, sleepTurns: mon.sleepTurns,
+			confusionActions: mon.confusionActions, confusionMinimum: mon.confusionMinimum,
+			lastMove: mon.lastMove, lastTarget: mon.lastTarget, chargeMove: mon.chargeMove,
+			encoreMove: mon.encoreMove,
+			yawnTurns: mon.yawnTurn === undefined ? undefined : Math.max(1, 2 - (state.turn - mon.yawnTurn)),
+			protectStreak: mon.lastMoveTurn === state.turn - 1 ? mon.protectStreak : 0,
+		});
+	}
 	return new DoublesDamageModel({ mod: dex.currentMod, turn: state.turn, pokemon,
+		durations: state.durations,
 		weather: state.weather, terrain: state.terrain, trickRoom: state.trickRoom, magicRoom: state.magicRoom,
 		conditions: { p1: [...state.conditions.p1], p2: [...state.conditions.p2] } });
 }
@@ -541,9 +614,10 @@ function estimateThreat(
 		}
 		return threat;
 	};
-	const observedThreat = threatForMoves(foe.moves, true);
+	const locked = foe.volatiles.has('encore') && foe.encoreMove;
+	const observedThreat = threatForMoves(locked ? [locked] : foe.moves, true);
 	// Species and learnsets are public game knowledge; actual hidden sets are never read.
-	const plausibleThreat = threatForMoves(plausibleAttacks(dex, foe.species));
+	const plausibleThreat = locked ? 0 : threatForMoves(plausibleAttacks(dex, foe.species));
 	const estimate = Math.max(observedThreat, plausibleThreat * (foe.moves.size ? 0.25 : 0.5));
 	if (!redirectableOnly) estimatesByDefender.set(defender, estimate);
 	return estimate;
@@ -590,6 +664,28 @@ function publicAbility(mon: OwnPokemon | PublicPokemon, state: PublicState, dex:
 	return ability;
 }
 
+/** Removing Slow Start helps physical attackers much more than the special support receiving it. */
+function skillSwapSupport(
+	actor: OwnPokemon, target: OwnPokemon | PublicPokemon | undefined, state: PublicState, dex: ModdedDex,
+): { utility: number, reasons: string[] } {
+	if (!target || target === actor || !('request' in target)) {
+		return { utility: -12, reasons: ['skill-swap-no-proven-benefit'] };
+	}
+	const actorAbility = publicAbility(actor, state, dex), targetAbility = publicAbility(target, state, dex);
+	if (!actorAbility || !targetAbility || dex.abilities.get(actorAbility).flags.failskillswap ||
+		dex.abilities.get(targetAbility).flags.failskillswap || target.volatiles.has('dynamax') ||
+		[actor, target].some(mon => publicItem(mon, state) === 'abilityshield')) {
+		return { utility: -32, reasons: ['skill-swap-blocked'] };
+	}
+	const cost = (mon: OwnPokemon, ability: string, active = true) => ability === 'slowstart' && active ?
+		(mon.request.moves.some(id => dex.moves.get(id).category === 'Physical') ? 44 : 6) : 0;
+	const benefit = cost(actor, actorAbility, actor.volatiles.has('slowstart')) +
+		cost(target, targetAbility, target.volatiles.has('slowstart')) -
+		cost(actor, targetAbility) - cost(target, actorAbility);
+	return { utility: benefit || -12,
+		reasons: [benefit > 0 ? 'skill-swap-release-attacker' : 'skill-swap-no-proven-benefit'] };
+}
+
 function utilityForMove(
 	dex: ModdedDex, move: Move, action: DoublesAction, actor: OwnPokemon, target: OwnPokemon | PublicPokemon | undefined,
 	state: PublicState, ownSlots: OwnPokemon[], foes: PublicPokemon[], actorSlot: number,
@@ -611,12 +707,19 @@ function utilityForMove(
 			(move.priority + (prankster ? 1 : 0)) > 0 && state.terrain === 'psychicterrain' && grounded(targeted))) {
 			return { utility: -32, reasons: ['status-move-blocked'] };
 		}
+		const powderTargets = move.target === 'allAdjacentFoes' ? foes : [targeted];
+		if (move.flags.powder && powderTargets.every(mon => mon.types.some(type => toID(type) === 'grass') ||
+			publicItem(mon, state) === 'safetygoggles' || publicAbility(mon, state, dex) === 'overcoat' &&
+			(!ignoreAbility || publicItem(mon, state) === 'abilityshield'))) {
+			return { utility: -32, reasons: ['powder-move-blocked'] };
+		}
 	}
 	if (move.category === 'Status' && targeted && (move.status && targeted.status ||
 		move.volatileStatus && ['taunt', 'encore', 'disable', 'yawn', 'leechseed', 'torment', 'embargo', 'healblock']
 			.includes(move.volatileStatus) && targeted.volatiles.has(move.volatileStatus))) {
 		return { utility: -24, reasons: ['status-already-active'] };
 	}
+	if (id === 'skillswap') return skillSwapSupport(actor, targeted, state, dex);
 	if (PROTECT_MOVES.has(id)) {
 		const risk = foes.reduce((sum, foe) => sum +
 			estimateThreat(dex, foe, actor, ownSlots, foes.length, state.weather, false, state.damageModel), 0);
@@ -625,6 +728,7 @@ function utilityForMove(
 		if (previous?.lastMoveTurn === state.turn - 1 && PROTECT_MOVES.has(previous.lastMove || '')) utility -= 36;
 		if (risk > 0.2) reasons.push('protect-under-threat');
 	} else if (REDIRECT_MOVES.has(id)) {
+		if (!ally || ally.hp <= 0) return { utility: -24, reasons: ['redirection-no-partner'] };
 		const affected = foes.filter(foe => id !== 'ragepowder' ||
 			!foe.types.some(type => toID(type) === 'grass') && foe.ability !== 'overcoat' && foe.item !== 'safetygoggles');
 		const allyRisk = ally ? affected.reduce((sum, foe) =>
@@ -738,7 +842,6 @@ function statusImmune(
 ): boolean {
 	const types = new Set<string>(target.types.map(type => toID(type)));
 	const ability = target.ability || '';
-	const item = 'request' in target ? toID(target.request.item) : target.item || '';
 	const side: SideID = 'request' in target ? requestSide(target) : target.position.slice(0, 2) as SideID;
 	if (state.conditions[side].has('safeguard')) return true;
 	if (grounded(target) && state.terrain === 'mistyterrain') return true;
@@ -751,7 +854,6 @@ function statusImmune(
 		return true;
 	}
 	if (status === 'slp' && ['insomnia', 'vitalspirit', 'sweetveil'].includes(ability)) return true;
-	if (status === 'slp' && item === 'safetygoggles' && moveType === 'grass') return true;
 	return false;
 }
 
@@ -838,7 +940,8 @@ function moveValue(
 	const damage = new Map<string, number>();
 	const spread = ['allAdjacentFoes', 'allAdjacent'].includes(move.target) ? (foes.length > 1 ? 0.75 : 1) : 1;
 	const directedTarget = action.target ? slotForLoc(action.target, own, foes)?.position : undefined;
-	const native = move.category !== 'Status' && actor.position ?
+	const healingMove = !!move.heal || move.category === 'Status' && !!move.flags.heal || move.id === 'pollenpuff';
+	const native = (move.category !== 'Status' || healingMove) && actor.position ?
 		state.damageModel?.project(actor.position, action.move || move.id, directedTarget, action.transform) : undefined;
 	if (native) {
 		for (const [position, amount] of Object.entries(native.damage)) {
@@ -863,7 +966,7 @@ function moveValue(
 	const reasons = support.reasons.slice();
 	if (native) {
 		utility -= native.selfDamage * 45;
-		reasons.push('native-damage');
+		reasons.push(move.category === 'Status' ? 'native-healing' : 'native-damage');
 		if (native.charging) reasons.push('charging-turn');
 		if (native.conditional) reasons.push('conditional-attack-hypothesis');
 	} else if (move.category !== 'Status' && state.damageModel) {
@@ -879,12 +982,25 @@ function moveValue(
 		utility -= 24;
 		reasons.push('ineffective-target');
 	}
-	if (move.heal) {
+	if (healingMove && native) {
+		let restored = 0;
+		for (const [position, amount] of Object.entries(native.healing)) {
+			const friendly = own.find(mon => mon.position === position);
+			utility += friendly ? Math.min(32, amount * 58) : -amount * 72;
+			restored += amount;
+			if (amount > 0.1) reasons.push(friendly ? friendly === actor ? 'self-recovery' : 'heal-ally' : 'heals-opponent');
+		}
+		// An attack-mode Pollen Puff still has ordinary offensive value; a failed heal does not.
+		if (!restored && (move.category === 'Status' || target && own.includes(target as OwnPokemon))) {
+			utility -= 20; reasons.push('healing-no-benefit');
+		}
+	} else if (move.heal) {
 		const healingTargets = move.target === 'self' ? [actor] : move.target === 'allies' ? own : target ? [target] : [];
 		for (const healingTarget of healingTargets) {
 			const missing = 1 - healingTarget.hp;
-			utility += Math.min(32, missing * 58);
-			if (missing > 0.25) reasons.push(healingTarget === actor ? 'self-recovery' : 'heal-ally');
+			const friendly = own.includes(healingTarget as OwnPokemon);
+			utility += friendly ? Math.min(32, missing * 58) : -missing * 58;
+			if (missing > 0.25) reasons.push(friendly ? healingTarget === actor ? 'self-recovery' : 'heal-ally' : 'heals-opponent');
 		}
 	}
 	if (['mega', 'megax', 'megay', 'ultra'].includes(action.transform || '')) {
@@ -911,6 +1027,14 @@ function scoreChoice(
 ): DoublesScoredChoice {
 	const values = choice.actions.map(action => moveValue(request, action, own[action.slot], own, party, foes, state, dex));
 	for (const value of values) {
+		if (value.moveID === 'skillswap' && value.reasons.includes('skill-swap-release-attacker')) {
+			const partner = values.find(other => other.action.slot !== value.action.slot);
+			// Protect blocks this allied move too; a switch changes the intended recipient.
+			if (partner && (partner.action.kind === 'switch' || PROTECT_MOVES.has(partner.moveID || ''))) {
+				value.utility = -24;
+				value.reasons = ['skill-swap-partner-unavailable'];
+			}
+		}
 		if (value.moveID !== 'auroraveil' || ['hail', 'snowscape'].includes(state.weather)) continue;
 		// Do not discard a possible same-turn allied weather combination at the single-move stage.
 		// Its exact order belongs to the separately validated full-turn comparison.
@@ -975,8 +1099,9 @@ function scoreChoice(
 /** A small set of public-information replies, including attacks on either friendly slot. */
 function turnReplies(foes: PublicPokemon[], own: OwnPokemon[], state: PublicState, dex: ModdedDex) {
 	const alternatives = foes.map(foe => {
+		const locked = foe.volatiles.has('encore') && foe.encoreMove;
 		const known = [...foe.moves].filter(id => dex.moves.get(id).category !== 'Status');
-		const ids = known.length ? known : plausibleAttacks(dex, foe.species);
+		const ids = locked ? [locked] : known.length ? known : plausibleAttacks(dex, foe.species);
 		const byTarget = own.filter(mon => mon.hp > 0).map(target => {
 			const shortlist = ids.map(id => ({ id, value: damageFraction(dex, foe, target, dex.moves.get(id), 1, false,
 				state.weather) })).sort((a, b) => b.value - a.value).slice(0, 5);
@@ -991,8 +1116,8 @@ function turnReplies(foes: PublicPokemon[], own: OwnPokemon[], state: PublicStat
 			return ranked[0]?.action ||
 				{ actor: foe.position, kind: 'move', move: [...foe.moves][0] || 'splash' } as DoublesTurnAction;
 		});
-		const protect = [...foe.moves].find(id => PROTECT_MOVES.has(id));
-		if (protect) byTarget.push({ actor: foe.position, kind: 'move', move: protect });
+		const protect = [...foe.moves].find(id => PROTECT_MOVES.has(id) && (!locked || locked === id));
+		if (protect && !foe.volatiles.has('taunt')) byTarget.push({ actor: foe.position, kind: 'move', move: protect });
 		return byTarget.filter((action, index) => byTarget.findIndex(other =>
 			other.move === action.move && other.target === action.target) === index);
 	});
@@ -1004,12 +1129,16 @@ function turnReplies(foes: PublicPokemon[], own: OwnPokemon[], state: PublicStat
 }
 
 function turnPositionValue(
-	sample: DoublesTurnSample, own: OwnPokemon[], foes: PublicPokemon[], state: PublicState, dex: ModdedDex,
+	sample: DoublesTurnSample, own: OwnPokemon[], party: OwnPokemon[], foes: PublicPokemon[],
+	state: PublicState, dex: ModdedDex,
 ): number {
 	let value = 0;
-	const members = [...own.map(profile => [profile, true] as const), ...foes.map(profile => [profile, false] as const)];
-	for (const [mon, friendly] of members) {
-		const after = sample.pokemon[mon.position!];
+	const friends = party.map((profile, index) => [own[index] || profile,
+		own[index]?.position || `reserve-${index}`] as const);
+	const members = [...friends.map(([profile, id]) => [profile, id, true] as const),
+		...foes.map(profile => [profile, profile.position, false] as const)];
+	for (const [mon, id, friendly] of members) {
+		const after = sample.pokemon[id];
 		if (!after || mon.hp <= 0) continue;
 		const sign = friendly ? -1 : 1;
 		value += sign * ((mon.hp - after.health) * 92 + (after.fainted ? 40 : 0));
@@ -1020,18 +1149,17 @@ function turnPositionValue(
 			}
 		}
 	}
-	const nextState: PublicState = { ...state, weather: sample.weather, terrain: sample.terrain,
-		trickRoom: sample.trickRoom, magicRoom: sample.magicRoom,
-		conditions: { p1: new Set(sample.conditions.p1), p2: new Set(sample.conditions.p2) } };
-	const order = (a: OwnPokemon | PublicPokemon, b: OwnPokemon | PublicPokemon, field: PublicState) => {
-		const difference = effectiveSpeed(a, field, dex) - effectiveSpeed(b, field, dex);
-		return Math.sign(difference) * (field.trickRoom ? -1 : 1);
-	};
-	for (const mon of own) for (const foe of foes) {
-		const friendly = sample.pokemon[mon.position!], enemy = sample.pokemon[foe.position];
-		if (!friendly || !enemy || friendly.fainted || enemy.fainted) continue;
-		value += (order({ ...mon, boosts: friendly.boosts, status: friendly.status },
-			{ ...foe, boosts: enemy.boosts, status: enemy.status }, nextState) - order(mon, foe, state)) * 6;
+	for (const foe of foes) {
+		const enemy = sample.pokemon[foe.position];
+		if (!enemy || enemy.fainted) continue;
+		const beforeOrder = own.filter(mon => mon.hp > 0).reduce((sum, mon) => sum +
+			Math.sign(effectiveSpeed(mon, state, dex) - effectiveSpeed(foe, state, dex)) * (state.trickRoom ? -1 : 1), 0);
+		const afterOrder = friends.reduce((sum, [, id]) => {
+			const friendly = sample.pokemon[id];
+			return sum + (friendly?.position && !friendly.fainted ?
+				Math.sign(friendly.speed - enemy.speed) * (sample.trickRoom ? -1 : 1) : 0);
+		}, 0);
+		value += (afterOrder - beforeOrder) * 6;
 	}
 	for (const side of ['p1', 'p2'] as const) {
 		const sign = side === own[0].position?.slice(0, 2) ? 1 : -1;
@@ -1045,9 +1173,14 @@ function turnPositionValue(
 /** Bounded trainer joint search; incomplete horizons retain the completed single-move ranking. */
 function rankJointTurns(
 	request: ChoiceRequest, choices: DoublesChoice[], scored: DoublesScoredChoice[], own: OwnPokemon[],
-	foes: PublicPokemon[], state: PublicState, dex: ModdedDex,
+	party: OwnPokemon[], foes: PublicPokemon[], state: PublicState, dex: ModdedDex,
 ): DoublesScoredChoice[] {
 	if (!('active' in request) || !foes.length || !state.damageModel) return scored;
+	// Multi adapters retain two slots during forced replacements, with no move request for the
+	// replacing seat. This is not a new attacking turn: keep entry/matchup scoring, without
+	// making a fainted actor act or granting the opponents an extra hypothetical attack.
+	if (choices.some(choice => choice.actions.some(action =>
+		action.kind === 'switch' && !request.active[action.slot]?.moves.length))) return scored;
 	if (state.damageModel.hasIncompleteTurnState()) return scored;
 	const sorted = scored.slice().sort((a, b) => b.score - a.score || a.resourcesUsed - b.resourcesUsed);
 	const byChoice = new Map(choices.map(choice => [choice.choice, choice]));
@@ -1063,7 +1196,8 @@ function rankJointTurns(
 	}
 	// A support combination may look weak to a single-move score; give its best partner a chance.
 	const support = new Set([
-		'afteryou', 'helpinghand', 'trickroom', 'tailwind', 'followme', 'ragepowder', 'wideguard', 'fakeout',
+		'afteryou', 'helpinghand', 'trickroom', 'tailwind', 'followme', 'ragepowder', 'wideguard', 'fakeout', 'skillswap',
+		'healpulse', 'floralhealing', 'lifedew', 'pollenpuff',
 	]);
 	const roles = new Set<string>();
 	for (const result of sorted) {
@@ -1074,13 +1208,8 @@ function rankJointTurns(
 		}
 		if (shortlist.size >= 16) break;
 	}
-	// A shortlist containing a switch previously discarded ALL turn results after calculating them.
-	// Keep that conservative fallback, but decide it before spending time on unusable hypotheses.
-	const hasSwitch = [...shortlist.values()].some(result =>
-		byChoice.get(result.choice)!.actions.some(action => action.kind === 'switch'));
-	if (hasSwitch) {
-		return scored;
-	}
+	// Voluntary switches use the same complete-turn scale as attacks. Account for each reserve's
+	// actual incoming damage and entry effects; pivots that interrupt the horizon still fall back.
 	const replies = turnReplies(foes, own, state, dex);
 	if (!replies.length) return scored;
 	const evaluated: DoublesScoredChoice[] = [];
@@ -1092,7 +1221,7 @@ function rankJointTurns(
 			target: action.target ? slotForLoc(action.target, own, foes)?.position : undefined,
 			reserve: action.reserve ? `reserve-${action.reserve - 1}` : undefined,
 		}));
-		const values: number[] = [];
+		const values: { value: number, probability: number }[] = [];
 		for (const reply of replies) {
 			const outcome = state.damageModel.projectTurn([...actions, ...reply]);
 			// A pivot or missing state invalidates the entire decision. Do not calculate results
@@ -1100,16 +1229,36 @@ function rankJointTurns(
 			if (!outcome || outcome.omittedVolatiles.length || outcome.samples.some(sample => sample.interrupted)) {
 				return scored;
 			}
-			values.push(...outcome.samples.map(sample => turnPositionValue(sample, own, foes, state, dex)));
+			values.push(...outcome.samples.map(sample => ({
+				value: turnPositionValue(sample, own, party, foes, state, dex),
+				probability: sample.probability ?? 1 / outcome.samples.length,
+			})));
 		}
-		const average = values.reduce((sum, value) => sum + value, 0) / values.length;
-		evaluated.push({ ...result, score: average * 0.8 + Math.min(...values) * 0.2,
+		const average = values.reduce((sum, sample) => sum + sample.value * sample.probability, 0) /
+			values.reduce((sum, sample) => sum + sample.probability, 0);
+		evaluated.push({ ...result, score: average * 0.8 + Math.min(...values.map(sample => sample.value)) * 0.2,
 			reasons: [...result.reasons, 'joint-turn-public-hypotheses'] });
 	}
 	// Never mix partial-turn values with complete outcomes. Fall back for the entire decision.
 	if (!evaluated.length) return scored;
 	for (const entry of evaluated) entry.jointTurn = { hypotheses: replies.length, candidates: evaluated.length, skipped: 0 };
 	return evaluated;
+}
+
+/** Avoid a stationary Protect loop when the adapted single enemy has no partner to advance the turn. */
+function soloProtectHasPurpose(actor: OwnPokemon, foes: PublicPokemon[], state: PublicState) {
+	// A one-turn horizon otherwise prefers taking zero damage forever, even without a partner
+	// or an advancing board state. Keep actual waiting plans; do not outlaw defensive tactics.
+	if (state.weather || state.terrain || state.trickRoom ||
+		Object.values(state.conditions).some(conditions => conditions.has('tailwind'))) return true;
+	if (actor.hp < 1 && (actor.request.item === 'leftovers' ||
+		actor.request.item === 'blacksludge' && actor.types.includes('Poison') ||
+		actor.ability === 'poisonheal' && ['psn', 'tox'].includes(actor.status) || actor.volatiles.has('aquaring') ||
+		actor.volatiles.has('ingrain') || state.conditions[requestSide(actor)].has('wish'))) return true;
+	return foes.some(foe => !!foe.chargeMove || ['brn', 'psn', 'tox'].includes(foe.status) ||
+		['leechseed', 'saltcure', 'curse', 'yawn', 'perishsong', 'twoturnmove', 'fly', 'dig', 'dive', 'bounce',
+			'phantomforce', 'shadowforce', 'solarbeam', 'solarblade', 'electroshot', 'meteorbeam', 'skyattack']
+			.some(effect => foe.volatiles.has(effect)) || foe.activeActions === 0 && foe.moves.has('fakeout'));
 }
 
 /** Shared tactical scorer for Rogue doubles and the Multi adapter: own requests and public log only. */
@@ -1122,8 +1271,9 @@ export function rankDoublesChoices(
 ): DoublesScoredChoice[] {
 	const request = observation.request;
 	const doubleMove = 'active' in request && request.active.length === 2;
+	const adaptedSingleMove = !!candidates && 'active' in request && request.active.length === 1;
 	const doubleSwitch = 'forceSwitch' in request && !!request.forceSwitch && request.forceSwitch.length === 2;
-	if (request.wait || (!doubleMove && !doubleSwitch)) return [];
+	if (request.wait || (!doubleMove && !doubleSwitch && !adaptedSingleMove)) return [];
 	const dex = policyDex(format);
 	const state = readPublicState(observation.publicLog, dex);
 	const own = ownActiveSlots(request, state, dex);
@@ -1136,10 +1286,15 @@ export function rankDoublesChoices(
 		resources: readBattleMemory(observation.publicLog, dex).sides[request.side.id as SideID].resources,
 		allowSwitch,
 	};
-	const choices = (candidates || enumerateDoublesChoices(request, options))
+	let choices = (candidates || enumerateDoublesChoices(request, options))
 		.filter(choice => !excluded.includes(choice.choice));
+	if (adaptedSingleMove && !soloProtectHasPurpose(own[0], foes, state) &&
+		choices.some(choice => choice.actions.some(action =>
+			action.move && dex.moves.get(action.move).category !== 'Status'))) {
+		choices = choices.filter(choice => !choice.actions.some(action => action.move && PROTECT_MOVES.has(action.move)));
+	}
 	const party = ownParty(request, dex);
-	state.damageModel = nativeDamageModel(request, own, party, foes, state, dex);
+	state.damageModel = nativeDamageModel(request, own, party, foes, state, dex, observation.doublesNativeSides);
 	let scored = choices.map(choice => scoreChoice(request, choice, own, party, foes, state, dex));
 	const compare = (left: DoublesScoredChoice, right: DoublesScoredChoice) =>
 		right.score - left.score || left.resourcesUsed - right.resourcesUsed || left.choice.localeCompare(right.choice);
@@ -1147,7 +1302,7 @@ export function rankDoublesChoices(
 		for (const entry of scored) entry.mechanics = state.damageModel.diagnostics;
 		onBaseline([...scored].sort(compare));
 	}
-	if (jointTurns) scored = rankJointTurns(request, choices, scored, own, foes, state, dex);
+	if (jointTurns) scored = rankJointTurns(request, choices, scored, own, party, foes, state, dex);
 	for (const entry of scored) entry.mechanics = state.damageModel.diagnostics;
 	return scored.sort(compare);
 }

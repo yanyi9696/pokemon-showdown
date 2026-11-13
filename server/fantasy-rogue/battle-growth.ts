@@ -1,3 +1,4 @@
+import { soloDoublesExperience } from './solo-doubles-rewards';
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_STATS, rogueGrowthNotice, type RogueBattleResult } from '../../sim/fantasy-rogue';
 import { rogueEffortYield, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
@@ -12,7 +13,7 @@ import { comebackActive, comebackExperience } from './comeback';
 import type { RogueRun } from './types';
 
 /** Each opponent pays once; called both at safe battle pauses and final settlement. */
-export function awardBattleExperience(run: RogueRun, result: RogueBattleResult) {
+export function awardBattleExperience(run: RogueRun, result: RogueBattleResult, cooperative = false) {
 	run.notices ||= [];
 	const before = structuredClone(run.team);
 	const fresh = (result.defeated || []).filter((defeated, index) =>
@@ -56,7 +57,7 @@ export function awardBattleExperience(run: RogueRun, result: RogueBattleResult) 
 				run.node!.kind === 'wild' && !run.node!.event && !defeated.captured,
 				run.node!.kind === 'wild' && !run.node!.event && !!defeated.captured) *
 				(run.spirit === 'hooh' && mon.set.shiny ? 3 : 1) * blessingExperience(run, mon, defeated.dragonKing) *
-				(1 + (run.growth?.experience || 0) / 10000) * companionExperience(run, mon, defeated) * comebackExperience(run)));
+				(1 + (run.growth?.experience || 0) / 10000) * companionExperience(run, mon, defeated) * comebackExperience(run) * soloDoublesExperience(run, cooperative)));
 		}
 	}
 	return run.team.flatMap(mon => {

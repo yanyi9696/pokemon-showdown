@@ -22,7 +22,7 @@ describe('Fantasy Rogue solo doubles defaults', function () {
 		};
 	}
 
-	it('opts new configured runs into doubles while the old save mode stays frozen', () => {
+	it('starts ordinary solo runs in singles even with an old doubles content flag', () => {
 		const legacyContent = createPreviewContent();
 		const doubleContent = createPreviewContent({ doubleBattle: true });
 		assert.equal(legacyContent.doubleBattle, false);
@@ -33,7 +33,16 @@ describe('Fantasy Rogue solo doubles defaults', function () {
 		const user = 'doublesmodeqa';
 		const engine = new RogueEngine(store, doubleContent, () => 0);
 		engine.command(user, { id: randomUUID(), revision: store.get(user).revision, action: 'start', starters: ['bulbasaur'] });
-		assert.equal(store.get(user).run.doubleBattle, true);
+		assert.equal(store.get(user).run.doubleBattle, false);
+		store.change(user, a => {
+			a.run.doubleBattle = true; a.run.spirit = 'kyurem'; a.run.phase = 'battle';
+		});
+		engine.migrate(user); assert.equal(store.get(user).run.doubleBattle, true, 'do not change a live room');
+		store.change(user, a => { a.run.phase = 'ready'; });
+		engine.migrate(user); assert.equal(store.get(user).run.doubleBattle, false);
+		store.change(user, a => { a.run.spirit = 'latios'; });
+		engine.migrate(user); assert.equal(store.get(user).run.doubleBattle, true);
+		assert(legacyContent.compatibleVersions.includes(PreviewBalance.doublesVersion));
 	});
 
 	it('has no team preview and rotates every member of the full six-mon party', () => {
@@ -76,7 +85,7 @@ describe('Fantasy Rogue solo doubles defaults', function () {
 		for (const [floor, expectedSize] of [[20, 2], [100, 4], [165, 6]]) {
 			store.change(user, account => {
 				const run = account.run;
-				run.floor = floor;
+				run.floor = floor; run.spirit = 'latios'; run.doubleBattle = true;
 				run.phase = 'choose';
 				run.choices = structuredClone(content.floors[floor]);
 				run.trainerHistory = { gyms: [], eliteFour: [] };

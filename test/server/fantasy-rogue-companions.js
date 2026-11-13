@@ -54,11 +54,35 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 		};
 		return { engine, cmd, run, preview };
 	}
+	for (const social of [false, true]) {
+		it(`persists a single-player Mew ${social ? 'social' : 'blessing'} gift through the actual engine command`, () => {
+			const { engine, cmd, run } = campaign();
+			const id = social ? 'marnie' : 'liko', action = social ? 'socialcompanion' : 'companion';
+			const { companionGiftOptions } = require('../../dist/sim/rogue-companions');
+			const gift = companionGiftOptions(id)[0].id;
+			store.change('companiontest', a => {
+				a.run.spirit = 'hoopagift'; a.run.spiritVersion = 1; a.run.bag = {};
+				if (social) a.run.socialCompanions = [{ id, origin: 'event', preferences: 5, counted: [], giftPending: true }];
+				else {
+					c.grantCompanion(a.run, id);
+					a.run.blessings.companions.find(entry => entry.id === id).giftPending = true;
+				}
+			});
+			cmd(action, { member: id, value: 'gift:' + gift });
+			assert.equal(run().bag.fantasypowerlens, 1); assert(!run().bag[gift]);
+			assert.equal(run().spiritConversions[`${social ? 'social' : 'companion'}-gift:${id}`], 'fantasypowerlens');
+			const saved = store.get('companiontest');
+			const restarted = new RogueEngine(store, engine.content, () => { throw new Error('Repeated gift rerolled'); });
+			assert.throws(() => restarted.command('companiontest', { id: randomUUID(), revision: saved.revision,
+				action, member: id, value: 'gift:' + gift }), /赠礼/);
+			assert.deepEqual(store.get('companiontest'), saved);
+		});
+	}
 	it('uses the dragon king six-stat total and join-order rule, and moves the grant only when the strongest changes', () => {
 		const run = party([set('Machamp', 'No Guard', 50), set('Machop', 'No Guard', 20)]);
 		c.grantCompanion(run, 'bea'); const companion = run.blessings.companions[0];
 		assert.equal(companion.member, run.team[0].id);
-		c.companionCommand(run, { member: 'bea', value: 'ability:guts' }, () => 0, []);
+		c.companionCommand(run, { member: 'bea', value: 'ability:guts' }, content(), () => 0, []);
 		syncCompanions(run.blessings, run.team); assert.equal(companion.ability, 'guts');
 		assert(assignedExtraAbilities(run.team[0], run.team, run.blessings).includes('guts'));
 		run.team[1].set.level = 100; rebuildMember(run.team[1], stats(0));
@@ -72,8 +96,8 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 		run.team.push(createRoguePokemon(set('Machop', 'Guts', 30), stats(0))); syncCompanions(run.blessings, run.team);
 		const companion = run.blessings.companions[0], mon = run.team[1];
 		assert.deepEqual(companionAbilityOptions(companion, mon, run.team, run.blessings), ['hustle']);
-		assert.throws(() => c.companionCommand(run, { member: 'bea', value: 'ability:guts' }, () => 0, []), /额外特性/);
-		c.companionCommand(run, { member: 'bea', value: 'ability:hustle' }, () => 0, []);
+		assert.throws(() => c.companionCommand(run, { member: 'bea', value: 'ability:guts' }, content(), () => 0, []), /额外特性/);
+		c.companionCommand(run, { member: 'bea', value: 'ability:hustle' }, content(), () => 0, []);
 		assert.equal(companion.ability, 'hustle');
 	});
 	it('changes only the specified appearance weights and leaves AI neutral', () => {
@@ -89,7 +113,7 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 		for (const id of Object.keys(COMPANION_DIALOGUE)) {
 			assert.equal(new Set(COMPANION_DIALOGUE[id].chat).size, 10); assert.equal(new Set(COMPANION_DIALOGUE[id].praise).size, 5);
 			const run = party([set()]); c.grantCompanion(run, id); const seen = new Set();
-			for (let n = 0; n < 10; n++) { c.companionCommand(run, { member: id, value: 'chat' }, () => 0, []); seen.add(run.blessings.companions[0].message); }
+			for (let n = 0; n < 10; n++) { c.companionCommand(run, { member: id, value: 'chat' }, content(), () => 0, []); seen.add(run.blessings.companions[0].message); }
 			assert.equal(seen.size, 10);
 		}
 	});
@@ -98,7 +122,7 @@ describe('Fantasy Rogue companion trainers and native preview transactions', fun
 		const options = [{ id: 'skill', name: '观摩技巧' }, { id: 'power', name: '比试力量' }];
 		for (let i = 0; i < 25; i++) {
 			run.node = { event: { id: 'martial', key: 'event' + i, stage: 'choice' } };
-			c.companionCommand(run, { member: 'bea', value: 'advice' }, () => 0, options);
+			c.companionCommand(run, { member: 'bea', value: 'advice' }, content(), () => 0, options);
 			assert.equal(c.companionView(run, options)[0].recommended, 'power');
 			c.recordCompanionPreference(run, options, 'power', () => 0); c.recordCompanionPreference(run, options, 'power', () => 0);
 		}

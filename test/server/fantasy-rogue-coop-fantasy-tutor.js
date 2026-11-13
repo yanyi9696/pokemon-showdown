@@ -10,7 +10,7 @@ const { normalizeBlessings } = require('../../dist/server/fantasy-rogue/blessing
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 const { fantasyTutorMoves } = require('../../dist/server/fantasy-rogue/fantasy-tutor');
 const { recordStarterMoves, recordStarterTraits } = require('../../dist/server/fantasy-rogue/starter-traits');
-const { content, set } = require('../fixtures/fantasy-rogue');
+const { content, set, firstEventRoute } = require('../fixtures/fantasy-rogue');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
 const stats = value => ({ hp: value, atk: value, def: value, spa: value, spd: value, spe: value });
 
@@ -57,7 +57,9 @@ describe('Fantasy Rogue co-op Fantasy tutor and atomic unlocks', () => {
 		}
 		shared.revision++;
 		store.updateCoopSession(shared, revision);
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'teaching' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'teaching' });
+		});
 		return session();
 	}
 	function agree() { choose(host, 'lesson'); choose(guest, 'lesson'); }

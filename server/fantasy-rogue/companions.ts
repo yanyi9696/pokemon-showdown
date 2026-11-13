@@ -1,9 +1,9 @@
-import { gainAffection, affectionChat, AFFECTION_RULES } from './affection';
+import { type AffectionRewards, gainAffection, affectionChat, AFFECTION_RULES } from './affection';
 import { Dex } from '../../sim/dex';
 import { COMPANIONS, companionSource, companionOwned, strongestTypedMember, companionAbilityOptions,
 	syncCompanions, companionGiftOptions, COMPANION_PREFERENCES, COMPANION_REGIONS, type CompanionID, type RogueCompanion } from '../../sim/rogue-companions';
 import { permanentMemberTypes, memberStatTotal } from '../../sim/rogue-blessing-permanent';
-import type { RogueRun, RogueCommand } from './types';
+import type { RogueRun, RogueCommand, RogueContent } from './types';
 import type { RoguePokemon, RogueDefeat } from '../../sim/fantasy-rogue';
 import type { RogueRandom } from './biome-pools';
 import { COMPANION_DIALOGUE, COMPANION_GIFT_LINES } from './companion-dialogue';
@@ -11,6 +11,8 @@ import { candyAtFloor } from './early-balance';
 import { companionZCandidates, companionZDefinition } from '../../sim/rogue-companion-z';
 import { rewardChoices } from './reward-scenes';
 import { requestCompanion, recordSocialPreference } from './travellers';
+import { convertSpiritItem } from './spirits';
+import { inventoryItem } from './team';
 
 export function grantCompanion(run: RogueRun, id: CompanionID) {
 	if (run.rival?.id === id) throw new Error('这位训练家已经是本局劲敌，不能重复成为祝福同行。');
@@ -87,7 +89,9 @@ export function companionView(run: RogueRun, options: CompanionOption[] = []) {
 		};
 	});
 }
-export function companionCommand(run: RogueRun, command: RogueCommand, random: RogueRandom, options: CompanionOption[]) {
+export function companionCommand(
+	run: RogueRun, command: RogueCommand, content: RogueContent, random: RogueRandom, options: CompanionOption[]
+) {
 	if (run.phase === 'battle') throw new Error('请在战斗外与同行训练家交流。');
 	const choiceFamilies: Record<string, string> = { choosewinter: 'companionwinter', choosestreamer: 'companionstreamer', chooseai: 'companionai', chooseband: 'companionband' };
 	const family = choiceFamilies[command.value || ''];
@@ -112,7 +116,7 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 		c.messageAt = Date.now(); delete c.smile; return;
 	}
 	const [action, value] = (command.value || '').split(':');
-	if (action === 'gift') { giveCompanionGift(run, c, value); return; }
+	if (action === 'gift') { giveCompanionGift(run, c, value, content, random); return; }
 	if (action === 'z') {
 		const candidate = companionZCandidates(run.blessings!, run.team, c.id).find(mon => mon.id === value);
 		if (!candidate) throw new Error('请选择掌握对应招式的伙伴；额外 Z 的使用伙伴只能指定一次。');
@@ -133,11 +137,13 @@ export function companionCommand(run: RogueRun, command: RogueCommand, random: R
 	const abilityName = Dex.mod('gen9fantasy').abilities.get(value).name;
 	(run.notices ||= []).push(`${companionSource(c.id)}${member ? member.set.species + ' 获得' : '已预选，等待对应属性伙伴加入：'}额外特性 ${abilityName}；战斗外可随时更换。`);
 }
-export function recordCompanionPreference(run: RogueRun, options: CompanionOption[], choice: string, random: RogueRandom) {
+export function recordCompanionPreference(
+	run: RogueRun, options: CompanionOption[], choice: string, random: RogueRandom, rewards: AffectionRewards | undefined
+) {
 	const event = run.node?.event;
 	const key = run.phase === 'event' && event ? event.companionKey ||= event.key : consultationKey(run);
 	if (!key) return;
-	recordSocialPreference(run, companionOptions(run, options), choice, key);
+	recordSocialPreference(run, companionOptions(run, options), choice, key, rewards);
 	for (const c of run.blessings?.companions || []) {
 		if (c.away) continue;
 		const stoneFinished = c.id === 'olivia' && event?.id === 'stones' && choice === 'stonefinish' && !!event.stonesOpened;
@@ -149,16 +155,21 @@ export function recordCompanionPreference(run: RogueRun, options: CompanionOptio
 		(c.counted ||= []).push(key);
 		if (['iono', 'canari'].includes(c.id) && run.node?.kind === 'event') event!.streamerBonus = c.id;
 		c.preferences++;
-		gainAffection(run, c.id, AFFECTION_RULES.preference, 'preference:' + key);
+		gainAffection(run, c.id, AFFECTION_RULES.preference, 'preference:' + key, rewards);
 	}
 }
-export function giveCompanionGift(run: RogueRun, c: RogueCompanion, item: string) {
+export function giveCompanionGift(
+	run: RogueRun, c: RogueCompanion, item: string, content: RogueContent, random: RogueRandom
+) {
 	const gift = companionGiftOptions(c.id).find(g => g.id === item);
 	if (!gift || !c.giftPending || c.rewarded) throw new Error('当前没有可领取的同行训练家赠礼。');
 	c.rewarded = true; delete c.giftPending;
-	run.bag[gift.id] = (run.bag[gift.id] || 0) + 1;
+	const received = convertSpiritItem(run, content, gift.id, `companion-gift:${c.id}`, random);
+	run.bag[received] = (run.bag[received] || 0) + 1;
 	const line = COMPANION_GIFT_LINES[c.id];
-	(run.notices ||= []).push(companionSource(c.id) + '同行训练家的赠礼：「' + line + '」获得【' + gift.name + '】×1，对应属性招式威力 ×1.2。');
+	const receipt = received === gift.id ? `获得【${gift.name}】×1，对应属性招式威力 ×1.2。` :
+		`梦幻的奇赠将【${gift.name}】转换为【${inventoryItem(content, received)?.name || received}】×1。`;
+	(run.notices ||= []).push(companionSource(c.id) + '同行训练家的赠礼：「' + line + '」' + receipt);
 }
 
 export function companionExperience(run: RogueRun, mon: RoguePokemon, defeated: RogueDefeat) {

@@ -1,13 +1,16 @@
 import type { Pokemon } from './pokemon';
-import { hasBlessing, savedBlessingMember } from './fantasy-rogue-blessings';
+import { hasBlessing, savedBlessingMember, blessingEffects } from './fantasy-rogue-blessings';
 import { strongestBlessingMember } from './rogue-blessing-permanent';
 
 const ELEMENTS = ['Dark', 'Electric', 'Fire'];
 export function ghidorahActive(mon: Pokemon) {
 	if (!hasBlessing(mon, 'ghidorah')) return false;
 	const state = mon.battle.fantasyRogue;
-	const team = mon.side.id === 'p1' ? state?.team : state?.duel?.team;
-	return !!team && strongestBlessingMember(team, 'Hydreigon')?.id === savedBlessingMember(mon)?.id;
+	const team = mon.side.id === 'p1' ? state?.team : mon.side.id === 'p2' ? state?.duel?.team :
+		mon.side.id === 'p3' ? state?.partner?.team : undefined;
+	if (!team) return false;
+	const chosen = strongestBlessingMember(team, 'Hydreigon', blessingEffects(mon));
+	return !!chosen && chosen.id === savedBlessingMember(mon)?.id;
 }
 export function ghidorahTypes(mon: Pokemon, types: string[]) {
 	return ghidorahActive(mon) && !mon.transformed ? [...new Set([mon.m.rogueGhidorahType || '???', ...types.slice(1)])] : types;

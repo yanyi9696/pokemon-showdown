@@ -8,7 +8,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op adventure outcomes and fishing', () => {
 	let oldConfig, store, engine, manager, host, guest, created, preview;
@@ -72,7 +72,9 @@ describe('Fantasy Rogue co-op adventure outcomes and fishing', () => {
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(other => other !== id)
 				.map(other => ({ id: other, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'activityroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'activityroute' });
+		});
 		assert.equal(event(host).id, id);
 	}
 	function agree(choice) {
@@ -286,6 +288,37 @@ describe('Fantasy Rogue co-op adventure outcomes and fishing', () => {
 		admit(guest, replaced, true); assert.equal(member(guest).team.length, 6);
 		assert(!member(guest).team.some(mon => mon.id === replaced));
 	});
+	for (const high of ['host', 'guest']) for (const elite of [true, false]) for (const roll of [74, 75]) {
+		it(`uses the larger ${high} shiny level for fishing ${elite ? 'battle' : 'gift'} at boundary ${roll}`, () => {
+			const { emptyEchoUpgrades } = require('../../dist/sim/rogue-echo');
+			fishing(); readyFish(1);
+			change(shared => {
+				for (const user of [host, guest]) shared.adventure.members[user.id].echo = {
+					...emptyEchoUpgrades(), shiny: user === (high === 'host' ? host : guest) ? 5 : 1,
+				};
+			});
+			let hundreds = 0, shinyRolls = 0;
+			fixed(max => {
+				if (max === 100000) { shinyRolls++; return roll; }
+				if (max === 100) return ++hundreds === 1 || !elite ? 99 : 0;
+				return max - 1;
+			}, () => agree('fishfinish'));
+			assert.equal(shinyRolls, 1);
+			const expected = roll === 74;
+			if (elite) {
+				assert.equal(session().adventure.phase, 'battle-selection');
+				assert.equal(!!session().adventure.node.encounters[0].team[0].shiny, expected);
+				assert(session().adventure.node.spiritPrepared);
+			} else {
+				for (const user of [host, guest]) {
+					const reward = member(user).blessings.pending.find(p => p.pokemon);
+					assert.equal(!!reward.pokemon.set.shiny, expected);
+				}
+			}
+			const saved = session(); manager.coop.view(host); manager.coop.view(guest);
+			assert.deepEqual(session(), saved);
+		});
+	}
 	it('uses one saved elite encounter and keeps both players in the native doubles capture flow', () => {
 		fishing(); readyFish(1); let hundreds = 0;
 		fixed(max => max === 100 ? (++hundreds === 1 ? 99 : 0) : max - 1, () => agree('fishfinish'));
@@ -293,6 +326,8 @@ describe('Fantasy Rogue co-op adventure outcomes and fishing', () => {
 		const enemy = structuredClone(session().adventure.node.encounters[0].team);
 		startBattle(); assert.equal(created.rogue.state.catchable, true);
 		assert.equal(created.rogue.state.fishingElite, true);
+		assert.equal(created.rogue.state.captureEnvironment.fishing, true);
+		assert.equal(created.rogue.state.captureEnvironment.water, true);
 		const { Teams } = require('../../dist/sim/teams');
 		const opponents = [...Teams.unpack(created.trainer.packedTeam), ...Teams.unpack(created.rogue.cooperative.foe)];
 		assert.equal(opponents.length, 2, 'the existing co-op encounter splitter fills both enemy seats');

@@ -2,6 +2,7 @@ import { rogueSpeciesID, migrateRenamedSpeciesIds } from './species-eligibility'
 import { openLakeQuestRound } from './lake-quest';
 import { releasePartyMember } from './release';
 import { grantCandyTraining } from './candy-rewards';
+import { soloDoublesCoins } from './solo-doubles-rewards';
 import { awardBattleExperience } from './battle-growth';
 import { openStarterCrates, exchangeStarterCrate, emptyCrates } from './starter-crates';
 import { submitDailyCup } from './daily-crate-cup';
@@ -15,6 +16,7 @@ import { beginRememberedOpening, reserveMainline, offerMainline, beginMainline, 
 	advanceMainline, reserveTrueEnding, beginMainlineEnding } from './mainline';
 import { settleStoryPity, unlockStoryDifficulty, mainlineProgress } from './mainline-progress';
 import { initializeFirstClears, awardFirstClears } from './first-clears';
+import { recordMonthlyClear, claimMonthlyChallenge } from './monthly-challenges';
 import { affectionFloor, affectionCommand } from './affection';
 import { addMasterBallRoute, selectMasterBallRoute, chooseMasterBall, repairMasterBallEvent } from './master-ball';
 import { CHARM_DESCRIPTION, ROGUE_DIFFICULTY_VERSION, isRogueDifficulty } from '../../sim/rogue-difficulty';
@@ -70,6 +72,7 @@ import {
 	initializeExperience, rebuildMember, rememberMove, rememberPastLevelMoves, escapedMember,
 } from './progression';
 import { towerExperience, grantEventTraining, MENTOR_CARDS, mentorTier, emergencyCost, type MentorCard } from './early-balance';
+import { battleItemReward } from './battle-item-rewards';
 import { prepareTrade, tradeRouteTemplates, shopStock } from './trading';
 import { recycleItems } from './buyback';
 import { canEditParty, inventoryItem, editParty, healingLocked, TEAM_ACTIONS } from './team';
@@ -91,7 +94,7 @@ import {
 } from './story';
 import { recordClear, editClearCard } from './legacy';
 import { arceusEncounter } from './final-bosses';
-import { beginShopChallenge } from './shop-challenge';
+import { beginShopChallenge, grantShopChallengeReward } from './shop-challenge';
 import { beginEvent, chooseEventOption, eventRouteTemplates, settleEventBattle } from './events';
 import { needsOnboarding } from './onboarding';
 import { BEGINNER_GUIDE_VERSION } from './beginner-guide';
@@ -137,6 +140,7 @@ export class RogueEngine {
 		this.random = random;
 		this.store = store;
 		this.content = content && validateContent(content);
+		this.store.configureAffectionRewards(this.content ? { content: this.content, random: this.random } : undefined);
 	}
 	private configured(): RogueContent {
 		requireRule(this.content, '正式初始队伍、楼层和数值尚未配置，暂不能开始冒险。');
@@ -154,6 +158,8 @@ export class RogueEngine {
 		return account.run;
 	}
 	private normalizeRun(run: RogueRun) {
+		// Keep a running room stable; correct the mode at the next safe boundary.
+		if (run.phase !== 'battle') run.doubleBattle = run.spirit === 'latios';
 		if (run.difficulty === 'easy' && run.postgame?.stage === 'offer') {
 			// Retire an older unaccepted invitation without replaying settlement or changing its clear card.
 			Object.assign(run, inventory(run.postgame.before));
@@ -377,12 +383,12 @@ export class RogueEngine {
 	}
 	/** Create the shared, persisted floor offers for a co-op adventure. Member-specific perks are intentionally excluded. */
 	prepareCoopRoutes(floor: number, difficulty: RogueRun['difficulty'], routeHistory?: RogueRun['routeHistory'],
-		biomeHistory: NonNullable<RogueRun['biomeHistory']> = [], team: RoguePokemon[] = []) {
+		biomeHistory: NonNullable<RogueRun['biomeHistory']> = [], team: RoguePokemon[] = [], spirit?: RogueRun['spirit']) {
 		const content = this.configured();
 		const floorTemplates = content.floors[floor];
 		if (!floorTemplates) return { choices: [] as RogueNode[], routeHistory: structuredClone(routeHistory), biomeHistory };
 		const routeRun = { floor, difficulty, routeHistory: structuredClone(routeHistory), biomeHistory,
-			team, doubleBattle: true } as unknown as RogueRun;
+			team, doubleBattle: true, spirit } as unknown as RogueRun;
 		let templates = structuredClone(floorTemplates);
 		if (content.events && content.routePools?.[floor]) {
 			templates = rollRoutes(routeRun, structuredClone(content.routePools[floor]), this.random);
@@ -390,7 +396,7 @@ export class RogueEngine {
 			templates = tradeRouteTemplates(eventRouteTemplates(templates, this.random), this.random, floor);
 		}
 		if (content.biomeEncounters) {
-			templates = createBiomeRoutes(floor, templates, undefined, this.random, undefined, undefined, [],
+			templates = createBiomeRoutes(floor, templates, undefined, this.random, spirit, undefined, [],
 				routeRun.biomeHistory || [], routeRun);
 			routeRun.biomeHistory = [
 				...(routeRun.biomeHistory || []).filter(entry => floor - entry.floor <= 5),
@@ -401,6 +407,9 @@ export class RogueEngine {
 			for (const node of templates) prepareEconomy(node, floor, this.random, difficulty || 0);
 		}
 		for (const node of templates) {
+			// Production content defaults to singles. Co-op must select authored doubles
+			// rosters here, just as solo doubles does when selecting a route.
+			this.applyDoubleBossRoster(routeRun, node);
 			if (node.kind !== 'trade' || !node.trade ||
 				!['mint', 'candy', 'machine', 'balls', 'crowns'].includes(node.trade.kind)) continue;
 			const run = { floor, difficulty, team, node } as RogueRun;
@@ -427,7 +436,7 @@ export class RogueEngine {
 		const node = (run.choices || this.configured().floors[run.floor])?.find(option => option.id === id);
 		requireRule(node, '本层内容尚未配置或路线无效。');
 		if (account && run.mainline?.offered) mainlineProgress(account).pity[String(run.difficulty || 0)] = false;
-		recordCompanionPreference(run, [], id, this.random);
+		recordCompanionPreference(run, [], id, this.random, { content: this.configured(), random: this.random });
 		run.node = structuredClone(run.bossPreviews?.[run.floor] || node);
 		if (!run.bossPreviews?.[run.floor]) this.applyDoubleBossRoster(run, run.node);
 		if (node.mainlineScene) {
@@ -443,7 +452,7 @@ export class RogueEngine {
 			return;
 		}
 		if (node.id === 'rival') {
-			delete run.choices; beginRival(run, this.random);
+			delete run.choices; beginRival(run, this.random, { content: this.configured(), random: this.random });
 			if (run.node.encounters.length) {
 				prepareSpiritNode(run, run.node, this.configured(), this.random);
 				this.resolveOpponentGenders(run.node.encounters.flatMap(encounter => encounter.team));
@@ -461,7 +470,9 @@ export class RogueEngine {
 		}
 		if (node.kind === 'trainer' && this.content?.events && !beginTeraSolo(run, this.random)) beginExclusiveEncounter(run, this.random);
 		if (node.kind === 'trainer' && this.content?.events && !run.node.event && this.random(100) < 12 &&
-			beginSocialEvent(run, this.random)) { delete run.choices; return; }
+			beginSocialEvent(run, this.random, undefined, { content: this.configured(), random: this.random })) {
+			delete run.choices; return;
+		}
 		if (this.content?.events) prepareTravellingTrainer(run, this.random);
 		const announced = run.bossPreviews?.[run.floor];
 		if (announced) for (const encounter of announced.encounters) {
@@ -474,7 +485,7 @@ export class RogueEngine {
 		if (this.content?.events && node.kind === 'event') {
 			delete run.choices;
 			if (account && this.content.story && prepareElderMeeting(account, run, this.random)) return;
-			beginEvent(run, this.random);
+			beginEvent(run, this.random, this.configured());
 			return;
 		}
 		if (this.content?.wildTreasures) prepareEconomy(run.node, run.floor, this.random, run.difficulty);
@@ -680,7 +691,8 @@ export class RogueEngine {
 		if (this.configured().progression) floorFriendship(run);
 		const reward = run.node!.reward;
 		const candyPayout = grantCandyTraining(run, reward);
-		run.money += reward.money;
+		const doubleBonus = soloDoublesCoins(run, reward, this.configured().items);
+		run.money += reward.money + doubleBonus;
 		for (const [id, count] of Object.entries(candyPayout.items)) run.bag[id] = (run.bag[id] || 0) + count;
 		const points = awardRoguePoints(account, run, run.node!.kind === 'boss' && !run.node!.companionLoss ? 1 : 0);
 		if (run.node!.wildLoot || run.node!.shopChallenge || run.node!.event ||
@@ -691,13 +703,17 @@ export class RogueEngine {
 			run.lastReward = { floor: run.floor, name: run.node!.name, money: reward.money, items: candyPayout.items, points,
 				...(run.node!.rewardScene?.result ? { effect: run.node!.rewardScene.result } : {}) };
 		}
+		if (doubleBonus && run.lastReward?.floor === run.floor) {
+			run.lastReward.money += doubleBonus;
+			run.lastReward.effect = [run.lastReward.effect, `双打塔灵额外获得 ${doubleBonus} 金币。`].filter(Boolean).join(' ');
+		}
 		if (candyPayout.effect && run.lastReward?.floor === run.floor) {
 			run.lastReward.effect = [run.lastReward.effect, candyPayout.effect].filter(Boolean).join(' ');
 		}
 		delete run.battle;
 		if (this.content?.events) grantJourneyGrowth(run, this.random);
 		if (this.content?.blessings) completeBlessingFloor(account, run, this.configured(), this.random);
-		affectionFloor(run, this.random);
+		affectionFloor(run, this.random, { content: this.configured(), random: this.random });
 		poppyRewardPickup(run, this.random);
 		if (['wild', 'trainer', 'elite'].includes(run.node!.kind) && companionOwned(run.blessings, 'lysandre')) {
 			const item = run.floor < 50 ? 'potion' : run.floor < 100 ? 'superpotion' : 'hyperpotion';
@@ -724,6 +740,7 @@ export class RogueEngine {
 		for (const mon of run.team) this.healMember(mon);
 		run.phase = 'complete';
 		awardFirstClears(account, run);
+		recordMonthlyClear(account, run);
 		if (!run.spirit && !run.difficulty && !run.difficultyTest) account.spiritUnlocked = true;
 		recordClear(account, run);
 		const trueEnding = this.content?.story && reserveTrueEnding(account, run);
@@ -837,6 +854,10 @@ export class RogueEngine {
 			this.normalizeAccount(account);
 			if (command.action === 'crateprediction') {
 				submitDailyCup(account.crates ||= emptyCrates(), command.id, command.value || '');
+				return;
+			}
+			if (command.action === 'monthlyclaim') {
+				claimMonthlyChallenge(account, command.value || '');
 				return;
 			}
 			if (command.action === 'opencrate') {
@@ -1092,7 +1113,7 @@ export class RogueEngine {
 				}
 				account.run = {
 					nuzlocke: account.preferredNuzlocke ? { version: 1, encounters: {}, dead: [] } : undefined,
-					doubleBattle: !!content.doubleBattle,
+					doubleBattle: false,
 					echo,
 					difficulty, difficultyRulesVersion: ROGUE_DIFFICULTY_VERSION,
 					collapse: [...collapse],
@@ -1216,10 +1237,11 @@ export class RogueEngine {
 			case 'affection':
 				affectionCommand(run, command); break;
 			case 'companion':
-				companionCommand(run, command, this.random, eventView(run)?.options || []);
+				companionCommand(run, command, this.configured(), this.random, eventView(run)?.options || []);
 				break;
 			case 'socialcompanion':
-				socialCompanionCommand(run, command, companionOptions(run, eventView(run)?.options || []));
+				socialCompanionCommand(run, command, companionOptions(run, eventView(run)?.options || []),
+					this.configured(), this.random);
 				break;
 			case 'previewresult': {
 				const preview = run.preview;
@@ -1379,7 +1401,7 @@ export class RogueEngine {
 					if (challenge.stage === 'closed') this.advanceCompletedFloor(account, run);
 					else this.completeFloor(account, run);
 				} else {
-					chooseChallengePrize(run, command.value || '');
+					chooseChallengePrize(run, command.value || '', { content: this.configured(), random: this.random });
 				}
 				break;
 			}
@@ -1511,7 +1533,8 @@ export class RogueEngine {
 				break;
 			}
 			case 'rewardchoice':
-				if (command.value !== 'show') recordCompanionPreference(run, [], command.value || '', this.random);
+				if (command.value !== 'show') recordCompanionPreference(run, [], command.value || '', this.random,
+					{ content: this.configured(), random: this.random });
 				chooseReward(run, this.configured(), this.random, command.value || '', command.member);
 				break;
 			case 'coverage':
@@ -1654,6 +1677,7 @@ export class RogueEngine {
 			opponentStars: encounter.stars && [...encounter.stars],
 			encounterId: run.battle.encounterId, team: structuredClone(run.team.filter(mon => !mon.egg && !mon.nuzlockeDead &&
 				(!run.node!.event?.activity?.solo || mon.id === run.node!.event.activity.solo))), boosts: { ...run.boosts }, bag: { ...run.bag },
+			totemTrial: encounter.totemTrial && structuredClone(encounter.totemTrial),
 			catchable: !run.node?.challenge && (encounter.catchable ||
 				!!(run.blessings?.owned.some(entry => entry.family === 'rocketcatch') &&
 					run.node!.kind !== 'boss' && !run.node!.regiBoss &&
@@ -1809,7 +1833,6 @@ export class RogueEngine {
 			run.node.event.activity.lastTurns = result.turns;
 			run.node.event.activity.allySurvived = result.allySurvived;
 		}
-		const previousItems = new Map(run.team.map(mon => [mon.id, toID(mon.set.item)]));
 		delete run.battle;
 		// Preserve committed growth on retreat; failed trials restore their provisional growth baseline.
 		run.team = retreated || failedChallenge ? result.team.map(mon => {
@@ -1822,12 +1845,8 @@ export class RogueEngine {
 			}
 			return restored;
 		}) : structuredClone(result.team);
-		for (const mon of run.team) {
-			const item = toID(mon.set.item);
-			if (item && previousItems.get(mon.id) !== item) {
-				mon.set.item = convertSpiritItem(run, this.configured(), item,
-					`battle:${result.encounterId}:${mon.id}:${item}`, this.random);
-			}
+		if (!memoryBattle && !failedChallenge && !run.postgame) for (const mon of run.team) {
+			mon.set.item = battleItemReward(run, this.configured(), mon, result, this.random);
 		}
 		if (previousTeam.some(mon => mon.egg || mon.nuzlockeDead)) {
 			const joined = run.team.filter(mon => !previousTeam.some(old => old.id === mon.id));
@@ -1860,7 +1879,7 @@ export class RogueEngine {
 			mon.statuses = captured.statuses && structuredClone(captured.statuses);
 			if (this.configured().progression) initializeExperience(mon);
 			if (mon.set.item) {
-				mon.set.item = convertSpiritItem(run, this.configured(), toID(mon.set.item), `capture:${mon.id}`, this.random);
+				mon.set.item = battleItemReward(run, this.configured(), mon, result, this.random, true);
 			}
 			if (run.team.length < roguePartyLimit(run.spirit, run.blessings)) run.team.push(mon);
 			else (run.pendingCaptures ||= []).push(mon);
@@ -1917,12 +1936,9 @@ export class RogueEngine {
 			if (!run.node!.shopChallenge || run.node!.shopChallenge.closed) return false;
 			const challenge = run.node!.shopChallenge;
 			challenge.closed = true;
-			if (result.won) for (const [item, count] of Object.entries(challenge.rewards)) {
-				const received = convertSpiritItem(run, this.configured(), item, `shopchallenge:${run.floor}:${item}`, this.random);
-				run.bag[received] = (run.bag[received] || 0) + count;
-			}
+			const items = result.won ? grantShopChallengeReward(run, this.configured(), this.random) : {};
 			run.lastReward = { floor: run.floor, name: result.won ? '零元购 · 挑战成功' : '零元购 · 商店关闭',
-				money: 0, items: result.won ? { ...challenge.rewards } : {}, points: 0 };
+				money: 0, items, points: 0 };
 			run.node!.reward = { money: 0, items: {} };
 			run.captureResume = 'shopclosed';
 			run.phase = 'settlement';
@@ -1937,7 +1953,7 @@ export class RogueEngine {
 		if (!result.won) {
 			run.recovery = 'defeat';
 			if (run.node?.event?.rematch) {
-				settleRematch(account, run, false); run.phase = 'settlement';
+				settleRematch(account, run, false, this.configured(), this.random); run.phase = 'settlement';
 				this.finishSettlement(account, run); return;
 			}
 			const companion = opposingCompanion(run, run.node!.encounters[run.encounter]?.trainer);
@@ -1985,13 +2001,15 @@ export class RogueEngine {
 			const before = { money: run.money, bag: { ...run.bag } };
 			for (const [id, count] of Object.entries(loot)) run.bag[id] = (run.bag[id] || 0) + count;
 			boostCompanionEventRewards(run, before);
+			const doubleBonus = soloDoublesCoins(run, { items: loot }, this.configured().items);
+			run.money += doubleBonus;
 			run.lastReward = { floor: run.floor, encounter: run.encounter + 1, name: run.node!.name,
-				money: 0, items: Object.fromEntries(Object.keys(loot).map(id => [id, run.bag[id] - (before.bag[id] || 0)])),
-				points: 0, effect: candyPayout.effect };
+				money: doubleBonus, items: Object.fromEntries(Object.keys(loot).map(id => [id, run.bag[id] - (before.bag[id] || 0)])),
+				points: 0, effect: [candyPayout.effect, doubleBonus ? `双打塔灵额外获得 ${doubleBonus} 金币。` : ''].filter(Boolean).join(' ') };
 		}
 		if (run.node!.challenge) run.node!.challenge.stage = 'won';
 		if (finishShop()) return;
-		if (run.node!.event?.rematch) settleRematch(account, run, true);
+		if (run.node!.event?.rematch) settleRematch(account, run, true, this.configured(), this.random);
 		else if (run.node!.event) settleEventBattle(run, this.configured(), this.random, true, false, account);
 		else {
 			const pages = bossVictoryPages(run);

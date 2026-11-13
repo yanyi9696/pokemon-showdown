@@ -1,10 +1,29 @@
+import { coopGrowthAcknowledgement, coopGrowthKey, reviseCoopGrowth, preserveCoopGrowthResult } from './coop-growth';
+import { COOP_GUIDE, COOP_GUIDE_VERSION } from './coop-guide';
+import { offerCoopPostgame, coopPostgameView, chooseCoopPostgame, settleCoopPostgame } from './coop-postgame';
+import { coopRunRules, coopCollapseRules, prepareCoopCollapse, coopCollapseView, chooseCoopCollapse } from './coop-collapse';
+import { recordCollapseStart, recordCollapseBattle, recordCollapseResource } from './collapse';
+import { prepareCoopSpirit, coopSpiritChoiceView, chooseCoopSpirit } from './coop-spirits';
+import { companionCommand, companionView, companionOptions, recordCompanionPreference } from './companions';
+import { beginCoopPolice, chooseCoopPolice, coopPoliceOptions, settleCoopPolice } from './coop-police';
+import { fixedFloor } from './content';
+import { beginCoopRival, chooseCoopRival, coopRivalOptions, coopRivalRoutes, expireCoopRivals, settleCoopRival } from './coop-rivals';
+import { rivalView } from './rivals';
+import { deferCoopCompanionChallenge, beginCoopRematch, coopRematchOptions, coopRematchView,
+	chooseCoopRematch, settleCoopRematch } from './coop-rematches';
+import { beginCoopSocial, coopSocialOptions, chooseCoopSocial, settleCoopSocial } from './coop-social';
 import { createHash, randomInt, randomUUID } from 'crypto';
+import { beginCoopTracks, coopTracksOptions, chooseCoopTracks } from './coop-tracks';
+import { beginCoopExclusiveClue, coopExclusiveOptions, chooseCoopExclusiveClue,
+	beginCoopExclusiveEncounter, prepareCoopExclusiveReward } from './coop-exclusive';
+import { coopSkiOptions, chooseCoopSki, skiInput } from './coop-ski';
 import { battlePreview, battleSelectionKey, clearBattleSelections } from './coop-battle-selection';
 import { isCoopMasterBallRoute, prepareCoopMasterBallRoutes, selectCoopMasterBallRoute,
 	coopMasterBallView, chooseCoopMasterBall } from './coop-master-ball';
 import { offerCoopChallenge, beginCoopChallenge, coopChallengeView, chooseCoopChallenge,
 	failedCoopChallengeResult, settleCoopChallenge } from './coop-challenges';
-import { companionInvitationView, chooseCompanionInvitation, travellingRoster } from './travellers';
+import { companionInvitationView, chooseCompanionInvitation, travellingRoster,
+	socialCompanionCommand, socialCompanionViews } from './travellers';
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_STATS, type RogueBattleResult, type RoguePokemon } from '../../sim/fantasy-rogue';
 import { validCoopCheckpoint, type RogueCoopCheckpoint } from '../../sim/rogue-coop-checkpoint';
@@ -22,9 +41,18 @@ import { confirmPartyEvolution } from './evolution-action';
 import { fantasyConversionOptions } from './fantasy-conversion';
 import { formItemOptions, useFormItem } from './form-items';
 import { formItem } from './form-item-data';
-import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
+import { roguePartyLimit, rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 import { syncExclusiveItems } from './exclusive-items';
-import { prepareSpiritNode } from './spirits';
+import { convertSpiritItem, grantSpiritGift, completeSpiritRegion, editSpiritBox, mergeSpiritPokemon } from './spirits';
+import { coopStorageView } from './coop-storage';
+import { battleItemReward } from './battle-item-rewards';
+import { withSharedRewardRolls } from './shared-reward-rolls';
+import { prepareCoopSpiritNode } from './coop-spirit-items';
+import { coopHpShop, payCoopHp } from './coop-hp-shopping';
+import { sharedShinyEcho } from './coop-echo';
+import { prepareCoopMentor, coopMentorView, chooseCoopMentor } from './coop-mentor';
+import { offerComeback, completeComebackFloor, comebackView } from './comeback';
+import { coopComebackView, chooseCoopComeback } from './coop-comeback';
 import { rogueAccess, rogueCoopAccess } from './access';
 import { recordShinyCapture, recordStarterMoves, recordStarterTraits, starterMoves, starterTraits } from './starter-traits';
 import { rogueStarterSlotCost } from '../../sim/rogue-species-identity';
@@ -59,7 +87,7 @@ import { COOP_GRENINJA_EVENTS, coopGreninjaOptions, chooseCoopGreninja } from '.
 import {
 	activeCoopEscort, coopBattleParty, coopEscortOptions, beginCoopEscort, saveCoopEscortResult,
 } from './coop-escort';
-import { beginExpedition } from './expedition-events';
+import { beginExpedition, beginTeraSolo } from './expedition-events';
 import { hatchEggs } from './eggs';
 import { coopPartyPokemon, coopMemberName, canReceiveEgg } from './coop-eggs';
 import { affectionFloor, affectionView, affectionCommand } from './affection';
@@ -76,7 +104,10 @@ import { EVENT_NAMES } from './event-text';
 import { isLuckEvent, LUCK_EVENT_NAMES } from './luck-event-data';
 import { rollLuck } from './luck-events';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
-import { blessingCandidates, blessingView, beginBlessingFloor, completeBlessingFloor, handleBlessingCommand,
+import { coopShopChallengeView, chooseCoopShopChallenge, settleCoopShopChallenge } from './coop-shop-challenge';
+import { openCoopLakeQuest, settleCoopLakeQuest } from './coop-lake-quest';
+import { lakeQuestView } from './lake-quest';
+import { sharedBlessingCandidates, blessingView, beginBlessingFloor, completeBlessingFloor, handleBlessingCommand,
 	normalizeBlessings, syncBlessingParty, prepareBlessingEncounter, settleBlessingBattle, blessingLoot, blessingRouteTemplates } from './blessings';
 import { trackJourney } from './history';
 import { chooseBlessingOption, createBlessingRound, refreshBlessingOption, rerollBlessingQuality,
@@ -89,6 +120,7 @@ import type {
 
 const COOP_TRADE_SHOPS = new Set(['mint', 'candy', 'machine', 'balls', 'crowns']);
 const COOP_EVENTS = new Set<EventID>([
+	'skiing', 'exclusiveclue', 'legendarytracks', 'travellermeeting', 'companionrematch', 'rivalstory', 'policeassist', 'policerevenge',
 	'martial', 'tutor', 'mushrooms', 'room', 'mysteryball', 'forest', 'travel', 'fantasytutor', 'coverageworkshop',
 	...COOP_COLLECTION_EVENTS,
 	...COOP_RHYTHM_EVENTS,
@@ -110,17 +142,20 @@ type CoopEventView = {
 	silhouette?: string,
 	activity?: ReturnType<typeof coopRhythmView>['activity'],
 	fishing?: RogueEvent['fishing'] & { now: number, width: number },
+	ski?: RogueEvent['ski'] & { now: number, duration: number },
 	evAllocation?: { member: string, species: string, total: number, current: StatsTable, minimum: StatsTable },
 };
 
 export interface RogueCoopCommand {
 	action: 'search' | 'invite' | 'accept' | 'decline' | 'cancel' | 'leave' | 'refresh' | 'selectstarters' |
 		'selectarea' | 'selectbattle' | 'previewbattle' | 'preparebattle' | 'learn' | 'continuebattle' | 'retrybattle' | 'heal' | 'finishroute' | 'buy' |
-		'proposetrade' | 'respondtrade' | 'canceltrade' | 'proposecapture' | 'respondcapture' | 'cancelcapture' |
+		'proposetrade' | 'respondtrade' | 'canceltrade' | 'proposecapture' | 'respondcapture' | 'cancelcapture' | 'buyhp' | 'shopchallenge' |
 		'cancelarea' | 'eventchoice' | 'cancelevent' | 'delegate' | 'blessingchoice' | 'blessingreward' | 'useitem' | 'emergency' |
 		'recoverbattle' | 'resume' | 'proposeexit' | 'respondexit' | 'recoverroute' | 'release' | 'replace' | 'coverage' | 'setmove' |
 		'use' | 'equip' | 'equipemblem' | 'evolve' | 'configureuniversal' | 'fantasize' | 'forme' | 'buygrowth' | 'sell' | 'affection' |
-		'challenge' | 'companioninvite';
+		'challenge' | 'companioninvite' | 'companion' | 'socialcompanion' | 'evolutionnotice' | 'mentorcard' | 'comeback' | 'godchallenge' | 'collapse' | 'spirit' |
+		'box' | 'merge';
+	collapse?: string[];
 	target?: string;
 	difficulty?: number;
 	starters?: string[];
@@ -165,6 +200,8 @@ export class RogueCoopSessions {
 	}
 	private assertActionControl(user: User, session: RogueCoopSession | undefined, action: RogueCoopCommand['action']) {
 		if (action === 'delegate' || action === 'leave' || action === 'resume') return;
+		// Opening partners remain each owner's independent choice, even after a shared tower-spirit vote.
+		if (action === 'selectstarters' && session?.status === 'lobby') return;
 		requireRule(!session?.delegatedTo || session.delegatedTo === user.id,
 			'全部操作权已移交给队友；你可以随时撤销移交。');
 	}
@@ -180,16 +217,21 @@ export class RogueCoopSessions {
 	}
 	private setDelegation(user: User, value: string) {
 		const session = this.engine.store.coopSessionForUser(user.id);
-		requireRule(session && ['active', 'paused'].includes(session.status), '开始共同冒险后才能移交操作权。');
+		requireRule(session && ['lobby', 'active', 'paused'].includes(session.status), '请先建立共同冒险大厅。');
 		requireRule(value === 'partner' || value === 'revoke', '请选择移交给队友或撤销移交。');
 		const expectedRevision = session.revision;
 		if (value === 'revoke') delete session.delegatedTo;
 		else session.delegatedTo = session.hostUser === user.id ? session.guestUser : session.hostUser;
+		if (session.spiritChoice) session.spiritChoice.confirmed = {};
 		if (session.adventure) {
+			delete session.adventure.shopChallengeChoice;
+			if (session.adventure.collapseChoice) session.adventure.collapseChoice.confirmed = {};
+			if (session.adventure.postgame) session.adventure.postgame.choices = {};
 			if (session.adventure.coopChallenge) session.adventure.coopChallenge.votes = {};
 			if (session.adventure.captureProposal?.context === 'safari') delete session.adventure.captureProposal;
 			if (session.adventure.phase === 'battle-selection') clearBattleSelections(session, undefined, true);
 			delete session.adventure.coopAffection;
+			delete session.adventure.comebackChoices;
 			if (isCoopMasterBallRoute(session.adventure.node)) {
 				session.adventure.coopEventChoices = { [session.hostUser]: null, [session.guestUser]: null };
 			}
@@ -239,17 +281,21 @@ export class RogueCoopSessions {
 		const run = {
 			id: `${adventure.id}:${userid}`, contentVersion: adventure.contentVersion, floor: adventure.floor,
 			phase: 'blessing', difficulty: adventure.difficulty, doubleBattle: true, encounter: 0, attempt: 0,
+			...coopRunRules(adventure),
 			team: member.team, box: member.box, money: member.money, bag: member.bag, boosts: member.boosts,
 			startingSlots: member.slots, node: adventure.node,
 			checkpoint: { team: [], box: [], money: member.money, bag: {} }, caught: account.caughtSpecies || [],
-			previousBlessings: account.previousBlessings, blessings: member.blessings, growth: member.growth,
+			previousRival: account.previousRival, previousBlessings: account.previousBlessings, blessings: member.blessings, growth: member.growth,
+			spiritConversions: member.spiritConversions, comeback: member.comeback,
 			greninjaTraining: member.greninjaTraining,
+			echo: structuredClone(member.echo),
 			megaUnlocked: member.systems.mega, gmegaUnlocked: member.systems.gmega,
 			zUnlocked: member.systems.z, teraUnlocked: member.systems.tera,
 			notices: member.notices || [], pendingMoves: member.pendingMoves, coverageLessons: member.coverageLessons,
 			shoppingSpend: member.shoppingSpend, exclusiveItems: member.exclusiveItems,
 			trainerBonds: member.trainerBonds, affectionClaims: member.affectionClaims,
 			socialCompanions: member.socialCompanions, companionInvitations: member.companionInvitations,
+			rematches: member.rematches, rival: member.rival, police: structuredClone(adventure.coopPolice),
 			rareCandyEvents: member.rareCandyEvents, activityClaims: member.activityClaims,
 		} as RogueRun;
 		normalizeBlessings(run);
@@ -259,25 +305,44 @@ export class RogueCoopSessions {
 	private previewBlessingRun(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string): RogueRun {
 		const member = adventure.members[userid];
 		return {
+			spiritConversions: member.spiritConversions, comeback: member.comeback,
 			id: `${adventure.id}:${userid}`, contentVersion: adventure.contentVersion, floor: adventure.floor,
 			phase: 'blessing', difficulty: adventure.difficulty, doubleBattle: true, encounter: 0, attempt: 0,
+			...coopRunRules(adventure),
 			team: member.team, box: member.box, money: member.money, bag: member.bag, boosts: member.boosts,
 			startingSlots: member.slots, node: adventure.node, checkpoint: { team: [], box: [], money: member.money, bag: {} },
 			caught: [], blessings: member.blessings, growth: member.growth, coverageLessons: member.coverageLessons,
 			greninjaTraining: member.greninjaTraining,
+			echo: structuredClone(member.echo),
 			notices: member.notices || [], pendingMoves: member.pendingMoves, shoppingSpend: member.shoppingSpend,
 			exclusiveItems: member.exclusiveItems,
 			trainerBonds: member.trainerBonds, affectionClaims: member.affectionClaims,
 			socialCompanions: member.socialCompanions, companionInvitations: member.companionInvitations,
+			rematches: member.rematches, rival: member.rival, police: structuredClone(adventure.coopPolice),
 			rareCandyEvents: member.rareCandyEvents, activityClaims: member.activityClaims,
 			megaUnlocked: member.systems.mega, gmegaUnlocked: member.systems.gmega,
 			zUnlocked: member.systems.z, teraUnlocked: member.systems.tera,
 		} as RogueRun;
 	}
+	private sharedWildRun(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string): RogueRun {
+		return { ...this.blessingRun(adventure, userid), spiritVersion: 1,
+			echo: sharedShinyEcho(Object.values(adventure.members)) };
+	}
+	private prepareSharedEncounter(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string) {
+		const run = this.sharedWildRun(adventure, userid), node = adventure.node!;
+		const encounters = node.encounters;
+		if (this.engine.content?.blessings) prepareBlessingEncounter(run, randomInt);
+		// A blessing can replace a prepared route with an entirely new wild encounter.
+		if (node.encounters !== encounters) delete node.spiritPrepared;
+		prepareCoopSpiritNode(adventure, run, node, this.engine.content!, randomInt);
+		this.saveBlessingRun(adventure, userid, run);
+	}
 	private saveBlessingRun(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string, run: RogueRun) {
 		const member = adventure.members[userid];
+		member.spiritConversions = run.spiritConversions;
+		member.comeback = run.comeback;
 		member.team = run.team; member.box = run.box || [];
-		member.money = run.money; member.bag = run.bag;
+		member.money = run.money; member.bag = run.bag; member.boosts = run.boosts;
 		member.blessings = run.blessings; member.growth = run.growth;
 		member.notices = run.notices; member.pendingMoves = run.pendingMoves;
 		member.coverageLessons = run.coverageLessons;
@@ -285,21 +350,15 @@ export class RogueCoopSessions {
 		member.exclusiveItems = run.exclusiveItems;
 		member.trainerBonds = run.trainerBonds; member.affectionClaims = run.affectionClaims;
 		member.socialCompanions = run.socialCompanions; member.companionInvitations = run.companionInvitations;
+		member.rematches = run.rematches; member.rival = run.rival; adventure.coopPolice = run.police;
 		member.rareCandyEvents = run.rareCandyEvents;
 		member.activityClaims = run.activityClaims;
 		member.systems = { tera: !!run.teraUnlocked, mega: !!run.megaUnlocked,
 			gmega: !!run.gmegaUnlocked, z: !!run.zUnlocked };
 	}
 	private commonBlessingCandidates(adventure: NonNullable<RogueCoopSession['adventure']>, session: RogueCoopSession) {
-		const members = [session.hostUser, session.guestUser].map(userid => {
-			const run = this.blessingRun(adventure, userid);
-			return new Map(blessingCandidates(run, this.engine.content!).map(candidate => [candidate.id, candidate]));
-		});
-		return [...members[0]].flatMap(([id, first]) => {
-			const second = members[1].get(id);
-			return second ? [{ ...first, appearanceWeight: Math.max(1, Math.round(
-				((first.appearanceWeight || 100) + (second.appearanceWeight || 100)) / 2)) }] : [];
-		});
+		const runs = [session.hostUser, session.guestUser].map(userid => this.blessingRun(adventure, userid));
+		return sharedBlessingCandidates(runs, this.engine.content!);
 	}
 	/** Called only inside an agreed route/settlement transaction, once per owner. */
 	private creditNodeReward(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string,
@@ -329,24 +388,13 @@ export class RogueCoopSessions {
 		const prayerChanged = !firstPrayer || !secondPrayer || !!firstPrayer.changed || !!secondPrayer.changed ||
 			firstPrayer.floor !== secondPrayer.floor;
 		const candidates = this.commonBlessingCandidates(adventure, session);
-		let round: BlessingRound;
-		try {
-			round = createBlessingRound({ floor, prayerFloor: sharedPrayer,
-				prayerPartyChanged: prayerChanged, killlaReady: runs.every(run =>
-					!!run.blessings!.owned.find(entry => entry.family === 'godrobe') &&
-					!!run.blessings!.owned.find(entry => entry.family === 'puregodrobe') && !run.blessings!.owned.find(entry => entry.family === 'killlagirl')) ?
-					true : undefined }, candidates, max => randomInt(max));
-		} catch {
-			const eligible = candidates.filter(candidate => candidate.tier === 'silver');
-			const pool = eligible.length ? eligible : candidates;
-			requireRule(pool.length, '双方当前没有共同可选的祝福，无法生成相同的奖励选项。');
-			const selected = [...pool];
-			while (selected.length > 3) selected.splice(randomInt(selected.length), 1);
-			const tier = selected[0].tier;
-			round = { floor, tier, options: selected.map(candidate => ({ id: candidate.id, tier: candidate.tier,
-				refreshes: 0, chosen: false })), remaining: 1, topClearMindEligible: false,
-			familiesSeen: [], idsSeen: selected.map(candidate => candidate.id) };
-		}
+		// Preserve fixed qualities, wishes and refresh counts. A configuration/draw failure must
+		// roll back the common choice, never silently replace it with weaker silver rewards.
+		const round = createBlessingRound({ floor, spirit: adventure.spirit, prayerFloor: sharedPrayer,
+			prayerPartyChanged: prayerChanged, killlaReady: runs.every(run =>
+				!!run.blessings!.owned.find(entry => entry.family === 'godrobe') &&
+				!!run.blessings!.owned.find(entry => entry.family === 'puregodrobe') && !run.blessings!.owned.find(entry => entry.family === 'killlagirl')) ?
+				true : undefined }, candidates, max => randomInt(max));
 		adventure.coopBlessingRound = structuredClone(round);
 		adventure.coopBlessingChoices = { [session.hostUser]: null, [session.guestUser]: null };
 		adventure.coopBlessingResume = resume;
@@ -366,6 +414,12 @@ export class RogueCoopSessions {
 			adventure.phase = 'affection';
 			return;
 		}
+		if (resume === 'opening' || resume === 'advance') {
+			const owners = [session.hostUser, session.guestUser];
+			const runs = owners.map(userid => this.blessingRun(adventure, userid));
+			openCoopLakeQuest(runs, randomInt);
+			for (const [index, run] of runs.entries()) this.saveBlessingRun(adventure, owners[index], run);
+		}
 		delete adventure.coopBlessingRound;
 		delete adventure.coopBlessingChoices;
 		delete adventure.coopBlessingResume;
@@ -383,11 +437,24 @@ export class RogueCoopSessions {
 			adventure.phase = 'settlement';
 			return;
 		}
+		if (resume === 'battle-selection') {
+			adventure.phase = 'battle-selection';
+			return;
+		}
 		if (resume === 'event') {
-			adventure.phase = 'route-interaction';
+			const pendingBattle = adventure.node?.event?.stage === 'battle' &&
+				[session.hostUser, session.guestUser].every(userid => {
+					const event = adventure.members[userid].coopEvent;
+					return event?.stage === 'battle' && !event.settled;
+				});
+			adventure.phase = pendingBattle ? 'battle-selection' : 'route-interaction';
 			return;
 		}
 		if (adventure.floor >= 200) {
+			if (this.engine.content?.arceusMoves && !adventure.postgame) {
+				offerCoopPostgame(session);
+				return;
+			}
 			adventure.phase = 'complete';
 			session.status = 'complete';
 			session.roomid = undefined;
@@ -395,11 +462,15 @@ export class RogueCoopSessions {
 			return;
 		}
 		adventure.floor++;
+		if (adventure.mentor && adventure.mentor.floor < adventure.floor) delete adventure.mentor;
 		adventure.encounter = 0;
 		adventure.node = undefined;
+		delete adventure.shopChallengeChoice;
 		delete adventure.coopChallenge;
 		for (const userid of [session.hostUser, session.guestUser]) {
 			const run = this.blessingRun(adventure, userid);
+			expireCoopRivals([run], adventure.floor);
+			this.saveBlessingRun(adventure, userid, run);
 			if (![...run.team, ...(run.box || [])].some(mon => mon.egg && mon.egg.hatch <= run.floor)) continue;
 			this.engine.store.change(userid, account => { hatchEggs(account, run, this.engine.content!); });
 			this.saveBlessingRun(adventure, userid, run);
@@ -415,12 +486,30 @@ export class RogueCoopSessions {
 	}
 	private completeCoopFloor(session: RogueCoopSession, adventure: NonNullable<RogueCoopSession['adventure']>) {
 		const content = this.engine.content;
+		for (const owner of [session.hostUser, session.guestUser]) {
+			const run = this.blessingRun(adventure, owner);
+			completeComebackFloor(run);
+			this.saveBlessingRun(adventure, owner, run);
+		}
+		if (adventure.spirit === 'zacian' || adventure.spirit === 'mewtwo') {
+			for (const owner of [session.hostUser, session.guestUser]) {
+				const member = adventure.members[owner];
+				if (member.spiritRegionFloor === adventure.floor) continue;
+				const run = this.blessingRun(adventure, owner);
+				completeSpiritRegion(run);
+				this.saveBlessingRun(adventure, owner, run);
+				member.spiritRegionFloor = adventure.floor;
+			}
+		}
+		if (adventure.node?.kind === 'boss' && adventure.battleResult?.won && adventure.mentor?.floor === adventure.floor) {
+			delete adventure.mentor;
+		}
 		if (content?.blessings) {
 			for (const owner of [session.hostUser, session.guestUser]) {
 				const run = this.blessingRun(adventure, owner);
 				this.engine.store.change(owner, account => {
 					completeBlessingFloor(account, run, content, max => randomInt(max), true);
-					affectionFloor(run, max => randomInt(max));
+					affectionFloor(run, max => randomInt(max), { content: this.engine.content!, random: randomInt });
 					syncExclusiveItems(run);
 				});
 				this.saveBlessingRun(adventure, owner, run);
@@ -452,12 +541,14 @@ export class RogueCoopSessions {
 	private memberShopContext(adventure: NonNullable<RogueCoopSession['adventure']>, member: RogueCoopMemberState): RogueShopContext {
 		return {
 			floor: adventure.floor, difficulty: adventure.difficulty, team: member.team, blessings: member.blessings,
+			...coopRunRules(adventure),
 			node: { ...structuredClone(adventure.node!), restCandyPurchases: { ...member.restCandyPurchases } },
 		};
 	}
 	private routeAvailable(node: RogueNode, floor: number) {
 		// Reject story content before the generic battle shortcut, including old/misclassified routes.
 		if (secretRoute(node)) return false;
+		if (node.id === 'rival' && this.engine.content?.events) return true;
 		if (node.encounters.length || node.kind === 'rest' || node.kind === 'reward') return true;
 		if (node.kind === 'event') return floor >= 1;
 		if (node.kind === 'trade' && node.trade?.kind === 'growth') return floor >= 51;
@@ -466,6 +557,27 @@ export class RogueCoopSessions {
 		if (auctionRoute(node)) return floor >= 31;
 		return node.kind === 'trade' && !!node.trade && COOP_TRADE_SHOPS.has(node.trade.kind) &&
 			node.trade.stock.some(item => item.remaining > 0);
+	}
+	private openCoopTradeEvent(session: RogueCoopSession, adventure: NonNullable<RogueCoopSession['adventure']>) {
+		const node = adventure.node!;
+		if (node.rocket && !node.rocket.cleared || !collectorRoute(node) && !auctionRoute(node)) return;
+		let event: RogueEvent = { id: 'mushroomcollector', key: randomUUID(), stage: 'choice' };
+		if (auctionRoute(node)) {
+			const runs = [session.hostUser, session.guestUser].map(userid => ({ userid, run: this.blessingRun(adventure, userid) }));
+			const initial = beginCoopAuction(runs, this.engine.content!, randomInt);
+			adventure.coopAuction = initial.auction; event = initial.event;
+			for (const { userid, run } of runs) this.saveBlessingRun(adventure, userid, run);
+		}
+		node.name = EVENT_NAMES[event.id];
+		node.event = structuredClone(event); node.encounters = []; node.reward = { money: 0, items: {} };
+		adventure.phase = 'route-interaction';
+		delete adventure.lastReward;
+		for (const userid of [session.hostUser, session.guestUser]) {
+			adventure.members[userid].coopEvent = structuredClone(event);
+			delete adventure.members[userid].coopEventReward;
+		}
+		adventure.coopEventChoices = { [session.hostUser]: null, [session.guestUser]: null };
+		adventure.coopEventBranchResolved = false;
 	}
 	private campRun(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string) {
 		const run = this.previewBlessingRun(adventure, userid);
@@ -527,7 +639,7 @@ export class RogueCoopSessions {
 		if (command.action === 'replace') {
 			requireRule(pending && command.id === pending.id, '待接纳的伙伴已变化，请重新确认。');
 			if (command.value === 'join') {
-				requireRule(member.team.length < 6, '队伍已满，请先确认放生一位旧伙伴。');
+				requireRule(member.team.length < roguePartyLimit(adventure.spirit, member.blessings), '队伍已满，请先确认放生一位旧伙伴。');
 				run.team.push(pending);
 			} else if (command.value !== 'decline') {
 				releasePartyMember(run, command.member || '', !!command.confirmed, pending);
@@ -616,8 +728,11 @@ export class RogueCoopSessions {
 		member.notices ||= [];
 		member.pendingMoves ||= [];
 		return {
+			spiritConversions: member.spiritConversions, comeback: member.comeback,
 			id: `${adventure.id}:${userid}`, contentVersion: adventure.contentVersion, floor: adventure.floor,
 			phase: 'event', difficulty: adventure.difficulty, doubleBattle: true, encounter: adventure.encounter, attempt: 0,
+			...coopRunRules(adventure),
+			echo: structuredClone(member.echo),
 			honeymoon: COOP_HONEYMOON_EVENTS.has(node.event.id) ?
 				structuredClone(this.engine.store.get(userid).honeymoon) : undefined,
 			greninjaTraining: member.greninjaTraining,
@@ -628,6 +743,7 @@ export class RogueCoopSessions {
 			shoppingSpend: member.shoppingSpend, exclusiveItems: member.exclusiveItems, auction: adventure.coopAuction?.state,
 			trainerBonds: member.trainerBonds, affectionClaims: member.affectionClaims,
 			socialCompanions: member.socialCompanions, companionInvitations: member.companionInvitations,
+			rematches: member.rematches, rival: member.rival, police: structuredClone(adventure.coopPolice),
 			rareCandyEvents: member.rareCandyEvents, activityClaims: member.activityClaims,
 			eventFragments: member.eventFragments, eventFragmentRuleVersion: adventure.eventFragmentRuleVersion ?? 2,
 			startingSlots: member.slots, node, checkpoint: { team: [], box: [], money: member.money, bag: {} },
@@ -640,6 +756,48 @@ export class RogueCoopSessions {
 		return adventure.tradeProposal ? '请先完成或撤回交换请求。' :
 			member.pendingCaptures?.length ? '请先安置待接纳的新伙伴。' :
 			member.pendingMoves?.length ? '请先处理待学招式。' : '';
+	}
+	private storageView(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string) {
+		return coopStorageView(adventure, userid, this.recoveryRun(adventure, userid), this.partyEditLock(adventure, userid));
+	}
+	private editMemberStorage(user: User, command: RogueCoopCommand) {
+		const session = this.engine.store.coopSessionForUser(user.id);
+		requireRule(session?.status === 'active' && session.adventure, '请在共同冒险中整理箱子。');
+		const adventure = session.adventure, owner = this.delegatedOwner(user, session, command.owner);
+		const member = adventure.members[owner];
+		requireRule(typeof command.id === 'string' && command.id.length >= 8 && command.id.length <= 80, '箱子操作请求标识无效。');
+		if (member.supplyReceipts?.includes(command.id)) return session;
+		const view = this.storageView(adventure, owner);
+		requireRule(view && !view.locked, view?.locked || '当前不能整理箱子或升星。');
+		requireRule(command.quote === view.quote, '队伍或箱子已变化，请重新打开后确认。');
+		const run = this.recoveryRun(adventure, owner), expectedRevision = session.revision;
+		if (command.action === 'merge') {
+			requireRule(command.confirmed === true, '请确认保留成员及消耗的两位伙伴。');
+			mergeSpiritPokemon(run, command.member!, command.members);
+		} else {
+			const inTeam = run.team.some(mon => mon.id === command.member);
+			const inBox = run.box?.some(mon => mon.id === command.member);
+			requireRule(command.value === 'deposit' && inTeam && !command.target ||
+				command.value === 'withdraw' && inBox && !command.target ||
+				command.value === 'swap' && inBox && run.team.some(mon => mon.id === command.target),
+			'请从该玩家当前队伍与箱子选择存入、取出或交换的伙伴。');
+			editSpiritBox(run, command.member!, command.target);
+			run.notices = ['箱子已整理；伙伴的 HP、PP 和异常状态保持不变。'];
+		}
+		syncBlessingParty(run); syncGrowthParty(run); syncExclusiveItems(run);
+		this.saveBlessingRun(adventure, owner, run);
+		member.storageRevision = (member.storageRevision || 0) + 1;
+		(member.supplyReceipts ||= []).push(command.id);
+		if (member.supplyReceipts.length > 256) member.supplyReceipts.shift();
+		if (adventure.phase === 'battle-selection') clearBattleSelections(session, owner);
+		for (const votes of [adventure.retrySelections, adventure.continueSelections, adventure.routeExitSelections]) {
+			if (votes) delete votes[owner];
+		}
+		session.revision++; session.updatedAt = Date.now();
+		this.engine.store.updateCoopSession(session, expectedRevision);
+		Users.get(session.hostUser === user.id ? session.guestUser : session.hostUser)?.send(
+			`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({ session: session.id, storage: true })}`);
+		return session;
 	}
 	private moveTrainingView(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string) {
 		const locked = this.partyEditLock(adventure, userid);
@@ -814,6 +972,13 @@ export class RogueCoopSessions {
 		if (event.id === 'lostescort') {
 			return coopEscortOptions([hostUser, guestUser].map(userid => ({ userid, run: this.eventRun(adventure, userid) })));
 		}
+		if (event.police) return coopPoliceOptions([hostUser, guestUser].map(userid => this.eventRun(adventure, userid)));
+		if (event.id === 'rivalstory') return coopRivalOptions([hostUser, guestUser].map(userid => this.eventRun(adventure, userid)));
+		if (event.id === 'companionrematch') return coopRematchOptions([hostUser, guestUser].map(userid => this.eventRun(adventure, userid)));
+		if (event.id === 'travellermeeting') return coopSocialOptions([hostUser, guestUser].map(userid => this.eventRun(adventure, userid)));
+		if (event.id === 'legendarytracks') return coopTracksOptions([hostUser, guestUser].map(userid => this.eventRun(adventure, userid)));
+		if (event.id === 'exclusiveclue') return coopExclusiveOptions([hostUser, guestUser].map(userid => this.eventRun(adventure, userid)));
+		if (event.id === 'skiing') return coopSkiOptions([hostUser, guestUser].map(userid => this.eventRun(adventure, userid)));
 		if (COOP_COLLECTION_EVENTS.has(event.id)) {
 			return coopCollectionOptions([hostUser, guestUser].map(userid => ({ userid, run: this.eventRun(adventure, userid) })));
 		}
@@ -849,21 +1014,34 @@ export class RogueCoopSessions {
 				options.every(option => option.disabled) : options.some(option => option.disabled) }));
 	}
 	private prepareRouteChoices(adventure: NonNullable<RogueCoopSession['adventure']>, beginFloor = true) {
+		if (beginFloor && this.engine.content?.blessings) {
+			const owners = Object.keys(adventure.members), runs = owners.map(userid => this.blessingRun(adventure, userid));
+			for (const run of runs) beginBlessingFloor(run, randomInt, false);
+			settleCoopLakeQuest(runs);
+			for (const [index, run] of runs.entries()) this.saveBlessingRun(adventure, owners[index], run);
+		}
 		const result = this.engine.prepareCoopRoutes(adventure.floor, adventure.difficulty,
-			adventure.routeHistory, adventure.biomeHistory, Object.values(adventure.members).flatMap(member => member.team));
+			adventure.routeHistory, adventure.biomeHistory, Object.values(adventure.members).flatMap(member => member.team), adventure.spirit);
 		let choices = result.choices;
 		if (this.engine.content?.blessings) {
-			for (const userid of beginFloor ? Object.keys(adventure.members) : []) {
-				const run = this.blessingRun(adventure, userid);
-				beginBlessingFloor(run, max => randomInt(max));
-				this.saveBlessingRun(adventure, userid, run);
-			}
 			choices = blessingRouteTemplates(this.blessingRun(adventure, Object.keys(adventure.members)[0]), choices);
 		}
+		if (this.engine.content?.events && !fixedFloor(adventure.floor)) choices = coopRivalRoutes(Object.keys(adventure.members).map(userid =>
+			this.blessingRun(adventure, userid)), choices, randomInt);
 		adventure.routeChoices = choices.filter(node => !secretRoute(node));
 		if (this.engine.content?.events) offerCoopChallenge(adventure, Object.keys(adventure.members).map(userid =>
 			({ userid, run: this.blessingRun(adventure, userid) })), max => randomInt(max));
 		if (this.engine.content?.events) prepareCoopMasterBallRoutes(adventure, max => randomInt(max));
+		const sharedRun = this.sharedWildRun(adventure, Object.keys(adventure.members)[0]);
+		for (const node of adventure.routeChoices) {
+			prepareCoopSpiritNode(adventure, sharedRun, node, this.engine.content!, randomInt);
+		}
+		if (adventure.spirit === 'darkrai' && !fixedFloor(adventure.floor)) {
+			const pool = adventure.routeChoices.filter(node => !node.challenge && node.kind !== 'story');
+			for (let i = 0, count = Math.min(2, pool.length); i < count; i++) {
+				pool.splice(randomInt(pool.length), 1)[0].fogged = true;
+			}
+		}
 		adventure.routeHistory = result.routeHistory;
 		adventure.biomeHistory = result.biomeHistory;
 	}
@@ -879,7 +1057,28 @@ export class RogueCoopSessions {
 		players.sort((a, b) => toID(a.name).localeCompare(toID(b.name)));
 		return players.slice(0, 50);
 	}
-	view(user: User, search = '') {
+	private searchPlayers(user: User, query: string) {
+		const needle = query.trim().toLowerCase().slice(0, 24), idNeedle = toID(needle);
+		if (!needle) return [];
+		const matches = new Map<string, { userid: string, name: string, online: boolean }>();
+		for (const target of Users.users.values()) {
+			if (target.id === user.id || !target.named || target.id.startsWith('guest') ||
+				!target.name.toLowerCase().includes(needle) && !(idNeedle && target.id.includes(idNeedle))) continue;
+			// Online directory entries must have the same game access as the invitation list.
+			if (target.connected && rogueAccess(target)) {
+				matches.set(target.id, { userid: target.id, name: target.name, online: true });
+			}
+		}
+		for (const entry of this.engine.store.searchPlayerNames(needle)) {
+			if (entry.userid === user.id || entry.userid.startsWith('guest') || matches.has(entry.userid)) continue;
+			const target = Users.get(entry.userid);
+			if (target?.connected && !rogueAccess(target)) continue;
+			matches.set(entry.userid, { ...entry, online: !!target?.connected });
+		}
+		return [...matches.values()].sort((a, b) => Number(b.online) - Number(a.online) ||
+			a.userid.localeCompare(b.userid)).slice(0, 50);
+	}
+	view(user: User, search = '', includeRules = false) {
 		this.authorize(user);
 		this.migrateUnityChoices(user);
 		const session = this.engine.store.coopSessionForUser(user.id);
@@ -899,6 +1098,9 @@ export class RogueCoopSessions {
 		}) : [];
 		return {
 			userid: user.id,
+			accountRevision: account.revision,
+			rulesVersion: COOP_GUIDE_VERSION,
+			rules: includeRules ? COOP_GUIDE : undefined,
 			maxDifficulty: this.accountDifficulty(user.id),
 			starterSlots: account.slots,
 			natures: Dex.natures.all().map(nature => ({
@@ -923,6 +1125,9 @@ export class RogueCoopSessions {
 				delegatedToName: session.delegatedTo === session.hostUser ? session.hostName :
 				session.delegatedTo === session.guestUser ? session.guestName : null,
 				canControl: !session.delegatedTo || session.delegatedTo === user.id,
+				spirit: rogueSpirit(session.spirit), partyLimit: roguePartyLimit(session.spirit),
+				spiritChoice: coopSpiritChoiceView(session, user.id,
+					[session.hostUser, session.guestUser].map(owner => this.engine.store.get(owner))),
 				starterSelection: session.starterSelections[user.id] || [],
 				starterBuildSelection: session.starterBuildSelections?.[user.id] || {},
 				partnerStarterSelection: session.starterSelections[
@@ -945,6 +1150,8 @@ export class RogueCoopSessions {
 						const privateView = (auctionRoute(adventure.node) && adventure.coopAuction ?
 							coopAuctionView([session.hostUser, session.guestUser].map(userid =>
 								({ userid, run: this.eventRun(adventure, userid) })), adventure.coopAuction) :
+							ownMember.coopEvent.id === 'rivalstory' ? rivalView(eventRun) :
+							ownMember.coopEvent.id === 'companionrematch' ? coopRematchView(eventRun) :
 							ownMember.coopEvent.id === 'kubfuscroll' ? coopScrollView(eventRun) :
 							COOP_RHYTHM_EVENTS.has(ownMember.coopEvent.id) ? coopRhythmView(eventRun) :
 							COOP_HONEYMOON_EVENTS.has(ownMember.coopEvent.id) ? coopHoneymoonView(eventRun) :
@@ -954,6 +1161,10 @@ export class RogueCoopSessions {
 							id: ownMember.coopEvent.id, key: ownMember.coopEvent.key, title: adventure.node!.name,
 							partnerKey: session.delegatedTo === user.id ? adventure.members[partnerId].coopEvent?.key : undefined,
 							stage: ownMember.coopEvent.stage, teams: privateView?.teams,
+							rivalPortrait: ownMember.coopEvent.police ? 'jenny' : ownMember.coopEvent.id === 'rivalstory' ? rivalView(eventRun).rivalPortrait : ownMember.coopEvent.social?.trainer ||
+								ownMember.rematches?.find(debt => debt.id === ownMember.coopEvent?.rematch)?.companion,
+							rivalApproval: ownMember.coopEvent.id === 'rivalstory' ? rivalView(eventRun).rivalApproval :
+								(ownMember.coopEvent.social?.affinity || 0) > 0,
 							support: privateView?.support, replay: privateView?.replay,
 							auction: privateView?.auction,
 							silhouette: privateView?.silhouette,
@@ -966,6 +1177,7 @@ export class RogueCoopSessions {
 									choice: a?.choice };
 							}) : undefined,
 							fishing: privateView?.fishing,
+							ski: privateView?.ski,
 							sharedRhythm: COOP_RHYTHM_EVENTS.has(ownMember.coopEvent.id) && !adventure.coopEventBranchResolved,
 							partnerActivity: session.delegatedTo === user.id && adventure.coopEventBranchResolved &&
 								COOP_RHYTHM_EVENTS.has(ownMember.coopEvent.id) ?
@@ -1027,14 +1239,32 @@ export class RogueCoopSessions {
 					return {
 						id: adventure.id, floor: adventure.floor, encounter: adventure.encounter ?? 0, phase,
 						difficulty: adventure.difficulty, doubleBattle: adventure.doubleBattle,
-						routeChoices: routeChoices.filter(node => !secretRoute(node)).map(node => ({
+						...coopRunRules(adventure), collapseChoice: coopCollapseView(session, user.id),
+						collapseRules: coopCollapseRules(adventure),
+						lakeQuest: adventure.spirit === 'lakeguardians' ? {
+							own: lakeQuestView(this.previewBlessingRun(adventure, user.id)),
+							partner: lakeQuestView(this.previewBlessingRun(adventure, partnerId)),
+						} : undefined,
+						routeChoices: routeChoices.filter(node => !secretRoute(node)).map(node => node.fogged ? {
+							id: node.id, name: '迷雾区域', kind: 'fog', fogged: true, available: this.routeAvailable(node, adventure.floor),
+						} : ({
 							id: node.id, name: node.name, kind: node.kind,
 							biome: node.biome?.name || '', available: this.routeAvailable(node, adventure.floor) })),
 						selectedRoute: adventure.node ? { id: adventure.node.id,
 							name: adventure.node.name, kind: adventure.node.kind } : null,
-						coopEvent: masterBallEvent || coopEvent, coopBlessing,
+						shopRaid: adventure.node?.rocket && !adventure.node.shopChallenge ? { ...adventure.node.rocket } : null,
+						shopChallenge: coopShopChallengeView(session,
+							[session.hostUser, session.guestUser].map(owner => this.previewBlessingRun(adventure, owner)),
+							this.engine.content!, user.id),
+						coopEvent: masterBallEvent || coopEvent, coopBlessing, mentor: coopMentorView(session, user.id),
+						comeback: coopComebackView(session, user.id),
+						ownComeback: comebackView(this.previewBlessingRun(adventure, user.id)),
+						partnerComeback: comebackView(this.previewBlessingRun(adventure, partnerId)),
+						postgame: coopPostgameView(session, user.id),
 						coopChallenge: coopChallengeView(adventure, [session.hostUser, session.guestUser].map(userid =>
 							({ userid, run: this.previewBlessingRun(adventure, userid) })), user.id),
+						companionServices: this.companionServiceView(adventure, user.id),
+						partnerCompanionServices: this.companionServiceView(adventure, partnerId),
 						companionInvitation: companionInvitationView(this.previewBlessingRun(adventure, user.id)),
 						partnerCompanionInvitation: companionInvitationView(this.previewBlessingRun(adventure, partnerId)),
 						travellingRoster: travellingRoster(this.previewBlessingRun(adventure, user.id)),
@@ -1054,10 +1284,10 @@ export class RogueCoopSessions {
 						adventure.lastReward ? (ownMember.coopLootReward?.floor === adventure.lastReward.floor ?
 							ownMember.coopLootReward : adventure.lastReward) : null,
 						centerCare: adventure.node?.kind === 'rest' ? centerCare({
-							team: adventure.members[user.id]?.team || [], floor: adventure.floor, spirit: undefined,
+							team: adventure.members[user.id]?.team || [], floor: adventure.floor, spirit: adventure.spirit,
 						}) : null,
 						partnerCenterCare: adventure.node?.kind === 'rest' ? centerCare({
-							team: adventure.members[partnerId]?.team || [], floor: adventure.floor, spirit: undefined,
+							team: adventure.members[partnerId]?.team || [], floor: adventure.floor, spirit: adventure.spirit,
 						}) : null,
 						routeExitSelection: !!adventure.routeExitSelections?.[user.id],
 						partnerRouteExitSelection: !!adventure.routeExitSelections?.[partnerId],
@@ -1107,6 +1337,7 @@ export class RogueCoopSessions {
 								moveName: Dex.mod('gen9fantasy').moves.get(pending.move).name,
 								moves: mon.set.moves.map(move => ({ id: toID(move), name: Dex.mod('gen9fantasy').moves.get(move).name })) } : null;
 						})() : null,
+						liveGrowth: this.liveGrowthView(session, user.id),
 						notices: adventure.members[user.id]?.notices || [],
 						continueSelection: !!adventure.continueSelections?.[user.id],
 						partnerContinueSelection: !!adventure.continueSelections?.[partnerId],
@@ -1126,9 +1357,13 @@ export class RogueCoopSessions {
 						partnerMoveTraining: session.delegatedTo === user.id ? this.moveTrainingView(adventure, partnerId) : undefined,
 						inventory: this.inventoryView(adventure, user.id),
 						partnerInventory: session.delegatedTo === user.id ? this.inventoryView(adventure, partnerId) : undefined,
+						storage: this.storageView(adventure, user.id),
+						partnerStorage: session.delegatedTo === user.id ? this.storageView(adventure, partnerId) : undefined,
 						areaSelection: session.areaSelections?.[user.id] || null,
 						partnerAreaSelection: session.areaSelections?.[partnerId] || null,
 						team: memberView(user.id), partnerTeam: memberView(partnerId),
+						battleTeam: coopBattleParty(adventure, user.id).map(mon => coopPartyPokemon(mon, adventure.floor)),
+						partnerBattleTeam: coopBattleParty(adventure, partnerId).map(mon => coopPartyPokemon(mon, adventure.floor)),
 						battleSelection: session.battleSelections[user.id] || [],
 						partnerBattleSelection: session.battleSelections[partnerId] || [],
 						battlePreview: battlePreview(session, user.id), partnerBattlePreview: battlePreview(session, partnerId),
@@ -1147,6 +1382,8 @@ export class RogueCoopSessions {
 						partnerTrainingCamp: session.delegatedTo === user.id ? this.campView(adventure, partnerId) : null,
 						recycling: this.recycleView(adventure, user.id),
 						partnerRecycling: session.delegatedTo === user.id ? this.recycleView(adventure, partnerId) : null,
+						hpShop: coopHpShop(adventure, ownMember),
+						partnerHpShop: session.delegatedTo === user.id ? coopHpShop(adventure, adventure.members[partnerId]) : null,
 						shopItems: content && ['rest', 'trade'].includes(adventure.node?.kind || '') ?
 							shopStock(content, this.memberShopContext(adventure, ownMember)).map(item => ({
 								id: item.id, name: item.name, kind: item.kind, price: item.price,
@@ -1202,6 +1439,7 @@ export class RogueCoopSessions {
 		const echo = account.echo?.unlocked ? account.echo.upgrades : undefined;
 		return {
 			team, box: [], money: content.initialMoney, bag: { ...content.initialBag },
+			echo: echo && structuredClone(echo),
 			boosts: { ...account.boosts }, slots: account.slots,
 			systems: { tera: !!echo?.systems.includes('tera'), mega: !!echo?.systems.includes('mega'),
 				gmega: !!echo?.systems.includes('gmega'), z: !!echo?.systems.includes('z') },
@@ -1257,6 +1495,7 @@ export class RogueCoopSessions {
 			session.adventure.battleToken = token;
 			session.adventure.battleLease = token;
 			delete session.adventure.battleCheckpoint;
+			delete session.adventure.battleGrowth;
 			delete session.adventure.battleRecoverySelections;
 			session.adventure.encounterId = `coop-${session.id}-${session.adventure.floor}-${toID(session.adventure.node.id)}-${session.adventure.encounter}`;
 			for (const userid of [session.hostUser, session.guestUser]) {
@@ -1331,6 +1570,7 @@ export class RogueCoopSessions {
 				session: session.id, battleStarted: true,
 			})}`);
 		}
+		this.publishBattleGrowth(session.id, token, session.adventure.battleLease || token);
 	}
 	private resetBattleStart(hostUser: string, sessionId: string, token: string) {
 		const session = this.engine.store.coopSessionForUser(hostUser);
@@ -1360,15 +1600,18 @@ export class RogueCoopSessions {
 		return {
 			id: adventure.id, contentVersion: adventure.contentVersion, floor: adventure.floor, phase: 'settlement',
 			difficulty: adventure.difficulty, doubleBattle: true, blessings: member.blessings, growth: member.growth,
+			comeback: member.comeback,
+			...coopRunRules(adventure),
 			encounter: adventure.encounter, attempt: 0, boosts: member.boosts, startingSlots: member.slots,
 			team: member.team, box: member.box, money: member.money, bag: member.bag,
 			node: adventure.node, checkpoint: { team: [], box: [], money: member.money, bag: {} }, caught: [],
 			experienceReceipts: member.experienceReceipts, pendingMoves: member.pendingMoves,
-			notices: member.notices, shoppingSpend: member.shoppingSpend,
+			notices: member.notices, shoppingSpend: member.shoppingSpend, exclusiveItems: member.exclusiveItems,
 		} as RogueRun;
 	}
 	private awardMemberGrowth(
 		userid: string, adventure: NonNullable<RogueCoopSession['adventure']>, result: RogueBattleResult, partner = false,
+		recordDiscoveries = true,
 	) {
 		const content = this.engine.content;
 		if (!content?.progression) return;
@@ -1378,17 +1621,166 @@ export class RogueCoopSessions {
 		// lack the partner field; undefined preserves the normal own-party fallback.
 		awardBattleExperience(run, partner ? { ...result, defeated: result.defeated?.map(defeated => ({
 			...defeated, dragonKing: defeated.partnerDragonKing,
-		})) } : result);
+		})) } : result, true);
 		member.experienceReceipts = run.experienceReceipts;
 		member.pendingMoves = run.pendingMoves;
 		member.notices = run.notices;
-		this.engine.store.change(userid, account => {
+		if (recordDiscoveries) this.engine.store.change(userid, account => {
 			for (const mon of member.team.filter(entry => !entry.egg)) {
 				recordStarterMoves(account, content, mon.set, { difficulty: adventure.difficulty });
 			}
 		});
 	}
-	private resolveMemberMove(userid: string, adventure: NonNullable<RogueCoopSession['adventure']>, memberId: string, value: string) {
+	/** Trusted simulator checkpoint; both owners commit together before returning an acknowledgement. */
+	progressBattle(sessionId: string, token: string, lease: string, sequence: number, result: RogueBattleResult) {
+		return this.engine.store.commitCoopResult(() => {
+			if (!this.ownsBattleRoom(sessionId, token, lease) || !this.engine.content?.progression) return;
+			const session = this.engine.store.coopSession(sessionId)!, adventure = session.adventure!;
+			if (adventure.node?.event?.id === 'travel' || adventure.postgame?.stage === 'battle' ||
+				result.coopExit || result.won) return;
+			requireRule(result.encounterId === adventure.encounterId && Number.isSafeInteger(sequence) && sequence > 0 &&
+				sequence === result.defeated?.length, '共同成长进度与当前战斗不匹配。');
+			const old = adventure.battleGrowth?.token === token ? adventure.battleGrowth : undefined;
+			if (old && sequence <= old.sequence) return coopGrowthAcknowledgement(session);
+			requireRule((result.growthRevision || 0) >= (old?.revision || 0), '共同战斗尚未应用已保存的成长确认。');
+			const owners = [
+				{ userid: session.hostUser, team: result.team, bag: result.bag, effects: result.blessingEffects },
+				{ userid: session.guestUser, team: result.partnerTeam, bag: result.partnerBag, effects: result.partnerBlessingEffects },
+			];
+			for (const entry of owners) {
+				const selected = session.battleSelections[entry.userid];
+				requireRule(Array.isArray(entry.team) && entry.team.length === selected.length &&
+					new Set(entry.team.map(mon => mon.id)).size === selected.length &&
+						entry.team.every(mon => selected.includes(mon.id)) && entry.bag && typeof entry.bag === 'object',
+				'共同成长快照与出战队伍不匹配。');
+			}
+			const growth = adventure.battleGrowth = old || { token, sequence: 0, revision: 0, paused: false };
+			if (adventure.node?.challenge && !growth.baseline) growth.baseline = Object.fromEntries(owners.map(({ userid }) => {
+				const member = adventure.members[userid];
+				return [userid, structuredClone({ team: member.team, bag: member.bag,
+					experienceReceipts: member.experienceReceipts, pendingMoves: member.pendingMoves })];
+			}));
+			for (const [index, entry] of owners.entries()) {
+				const member = adventure.members[entry.userid], byId = new Map(entry.team!.map(mon => [mon.id, mon]));
+				const escort = saveCoopEscortResult(adventure, entry.userid, entry.team!);
+				if (!escort) member.team = member.team.map(mon => structuredClone(byId.get(mon.id) || mon));
+				member.bag = { ...entry.bag }; member.notices = [];
+				if (escort) continue;
+				if (member.blessings && entry.effects) {
+					const effects = structuredClone(entry.effects);
+					delete effects.party; delete effects.partyRoles; delete effects.unityParty;
+					Object.assign(member.blessings, effects);
+				}
+				this.awardMemberGrowth(entry.userid, adventure, result, !!index, !growth.baseline);
+				const run = this.growthRun(adventure, member);
+				if (this.engine.content?.blessings) syncBlessingParty(run);
+				syncGrowthParty(run);
+				member.team = run.team; member.blessings = run.blessings; member.growth = run.growth;
+			}
+			this.saveReserveItemCosts(session, result);
+			growth.sequence = sequence; reviseCoopGrowth(session);
+			const revision = session.revision;
+			session.revision++; session.updatedAt = Date.now();
+			this.engine.store.updateCoopSession(session, revision);
+			return coopGrowthAcknowledgement(session);
+		});
+	}
+	private liveGrowthView(session: RogueCoopSession, userid: string) {
+		const key = coopGrowthKey(session);
+		if (!key) return null;
+		const adventure = session.adventure!;
+		const evolutions = (owner: string) => {
+			const member = adventure.members[owner], run = this.growthRun(adventure, member);
+			return member.team.filter(mon => mon.hp > 0 && mon.evolutionNotice).map(mon => ({
+				member: mon.id, species: mon.set.species, shiny: !!mon.set.shiny, gender: mon.set.gender,
+				options: partyEvolutions(mon, run).filter(option => option.ready && !option.item),
+			}));
+		};
+		return { key, sequence: adventure.battleGrowth!.sequence, evolutions: evolutions(userid),
+			partnerEvolutions: evolutions(userid === session.hostUser ? session.guestUser : session.hostUser) };
+	}
+	private growthDiscovery(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string, set: PokemonSet) {
+		const growth = adventure.battleGrowth;
+		if (growth?.token === adventure.battleToken && growth?.baseline) {
+			((growth.discoveries ||= {})[userid] ||= []).push(structuredClone(set));
+			return;
+		}
+		return (account: RogueAccount) => recordStarterMoves(account, this.engine.content!, set,
+			{ difficulty: adventure.difficulty });
+	}
+	private notifyGrowth(session: RogueCoopSession) {
+		for (const userid of [session.hostUser, session.guestUser]) Users.get(userid)?.send(
+			`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({ session: session.id, growth: true })}`);
+		const token = session.adventure?.battleToken;
+		if (token) this.publishBattleGrowth(session.id, token, session.adventure!.battleLease || token);
+	}
+	/** Resend only committed growth to the currently leased room. A matching checkpoint proves its pause. */
+	publishBattleGrowth(sessionId: string, token: string, lease: string) {
+		if (!this.ownsBattleRoom(sessionId, token, lease)) return;
+		const session = this.engine.store.coopSession(sessionId)!, adventure = session.adventure!;
+		const room = session.roomid ? Rooms.get(session.roomid) : undefined, checkpoint = adventure.battleCheckpoint;
+		if (!room?.battle || room.battle.ended || session.exitProposal?.confirmed ||
+			room.battle.options.fantasyRogue?.state.encounterId !== adventure.encounterId ||
+			!checkpoint?.state.fantasyRogue?.liveProgression || !checkpoint.state.fantasyRogue.growthWaiting ||
+			checkpoint.state.ended) return;
+		const ack = coopGrowthAcknowledgement(session);
+		if (!ack || ack.sequence !== checkpoint.result.defeated?.length ||
+			ack.revision <= (checkpoint.result.growthRevision || 0)) return;
+		void Promise.resolve(room.battle.stream.write(`>rogueprogress ${JSON.stringify(ack)}`)).catch(error => {
+			Monitor.crashlog(error, 'Cooperative growth acknowledgement');
+		});
+	}
+	handleBattleGrowth(sessionId: string, token: string, lease: string, sequence: number, result: RogueBattleResult) {
+		if (!this.progressBattle(sessionId, token, lease, sequence, result)) return;
+		this.notifyGrowth(this.engine.store.coopSession(sessionId)!);
+	}
+	private retryBattleGrowth(userid: string) {
+		const session = this.engine.store.coopSessionForUser(userid), adventure = session?.adventure;
+		const checkpoint = adventure?.battleCheckpoint, token = adventure?.battleToken;
+		if (!session || !token || !checkpoint?.state.fantasyRogue?.liveProgression ||
+			!checkpoint.state.fantasyRogue.growthWaiting || checkpoint.state.ended) return;
+		const lease = adventure.battleLease || token;
+		if (!this.ownsBattleRoom(session.id, token, lease)) return;
+		const room = session.roomid ? Rooms.get(session.roomid) : undefined;
+		if (!room?.battle || room.battle.ended) return;
+		// A failed database write leaves the simulator waiting. Refresh retries from its trusted checkpoint.
+		if ((checkpoint.result.defeated?.length || 0) > (adventure.battleGrowth?.sequence || 0)) {
+			this.progressBattle(session.id, token, lease, checkpoint.result.defeated!.length, checkpoint.result);
+		}
+		this.publishBattleGrowth(session.id, token, lease);
+	}
+	private decideGrowthEvolution(user: User, command: RogueCoopCommand) {
+		const session = this.engine.store.coopSessionForUser(user.id), key = session && coopGrowthKey(session);
+		requireRule(session?.adventure && key && command.visit === key, '成长提示已变化，请刷新后重新选择。');
+		const adventure = session.adventure, owner = this.delegatedOwner(user, session, command.owner);
+		const member = adventure.members[owner], mon = member.team.find(entry => entry.id === command.member);
+		requireRule(!member.pendingMoves?.length, '请先处理本人的待学习招式。');
+		requireRule(mon?.hp && mon.evolutionNotice, '没有本次升级触发的进化提示。');
+		const revision = session.revision, updates: ((account: RogueAccount) => void)[] = [];
+		if (command.action === 'evolutionnotice') delete mon.evolutionNotice;
+		else {
+			const run = this.growthRun(adventure, member);
+			run.phase = 'battle'; run.battle = { growthPaused: true } as NonNullable<RogueRun['battle']>;
+			confirmPartyEvolution(run, this.engine.content!, command.member, command.value);
+			if (this.engine.content?.blessings) syncBlessingParty(run);
+			syncGrowthParty(run); syncExclusiveItems(run);
+			member.team = run.team; member.bag = run.bag; member.money = run.money;
+			member.blessings = run.blessings; member.growth = run.growth;
+			member.pendingMoves = run.pendingMoves; member.notices = run.notices;
+			member.exclusiveItems = run.exclusiveItems;
+			for (const pokemon of run.team.filter(entry => !entry.egg)) {
+				const update = this.growthDiscovery(adventure, owner, pokemon.set);
+				if (update) updates.push(update);
+			}
+		}
+		reviseCoopGrowth(session); session.revision++; session.updatedAt = Date.now();
+		this.engine.store.updateCoopSession(session, revision, updates.length ?
+			new Map([[owner, account => { for (const update of updates) update(account); }]]) : undefined);
+		return session;
+	}
+	private resolveMemberMove(
+		userid: string, adventure: NonNullable<RogueCoopSession['adventure']>, memberId: string, value: string,
+	) {
 		const member = adventure.members[userid];
 		const pending = member.pendingMoves?.[0];
 		const mon = member.team.find(entry => entry.id === pending?.member);
@@ -1402,21 +1794,25 @@ export class RogueCoopSessions {
 			rebuildMember(mon, member.boosts);
 		}
 		member.pendingMoves!.shift();
-		return (account: RogueAccount) => recordStarterMoves(account, this.engine.content!,
-			{ ...mon.set, moves: [pending.move] }, { difficulty: adventure.difficulty });
+		return this.growthDiscovery(adventure, userid, { ...mon.set, moves: [pending.move] });
 	}
-	private captureMember(member: RogueCoopMemberState, captured: RoguePokemon) {
+	private captureMember(member: RogueCoopMemberState, captured: RoguePokemon, spirit?: string, result?: RogueBattleResult) {
 		if ([...member.team, ...member.box, ...(member.pendingCaptures || [])].some(mon => mon.id === captured.id)) return;
 		const set = { ...structuredClone(captured.set),
 			happiness: toID(captured.set.pokeball) === 'friendball' ? 150 : ROGUE_INITIAL_FRIENDSHIP };
 		const mon = createRoguePokemon(set, member.boosts, captured.id, captured.stars);
+		if (spirit === 'hoopagift' && mon.set.item) {
+			const conversion = { spirit, spiritConversions: member.spiritConversions };
+			mon.set.item = battleItemReward(conversion, this.engine.content!, mon, result, randomInt, true);
+			member.spiritConversions = conversion.spiritConversions;
+		}
 		mon.hp = Math.max(1, mon.maxhp - (captured.maxhp - captured.hp));
 		mon.pp = structuredClone(captured.pp);
 		mon.status = captured.status;
 		mon.statusState = { ...captured.statusState };
 		mon.statuses = captured.statuses && structuredClone(captured.statuses);
 		if (this.engine.content?.progression) initializeExperience(mon);
-		if (member.team.length < 6) member.team.push(mon);
+		if (member.team.length < roguePartyLimit(spirit, member.blessings)) member.team.push(mon);
 		else (member.pendingCaptures ||= []).push(mon);
 	}
 	private recordCaptureUnlock(
@@ -1459,6 +1855,22 @@ export class RogueCoopSessions {
 		}
 		return session;
 	}
+	/** Persist only consumed reserve equipment, never a stale full-party battle snapshot. */
+	private saveReserveItemCosts(session: RogueCoopSession, result: RogueBattleResult) {
+		if (session.adventure!.node?.event?.id === 'travel' && !result.coopExit) return;
+		for (const [userid, effects] of [
+			[session.hostUser, result.blessingEffects], [session.guestUser, result.partnerBlessingEffects],
+		] as const) {
+			if (!ownsBlessing(effects, 'mousefamily')) continue;
+			const member = session.adventure!.members[userid];
+			for (const receipt of effects?.party || []) {
+				if (!receipt.consumedItem || receipt.item || session.battleSelections[userid].includes(receipt.id)) continue;
+				const owner = member.team.find(mon => mon.id === receipt.id);
+				// A capture can already have replaced this reserve. Never spend a new owner's item.
+				if (owner && toID(owner.set.item) === receipt.consumedItem) owner.set.item = '';
+			}
+		}
+	}
 	private recordCaptureResult(sessionId: string, token: string, captured: RoguePokemon, result?: RogueBattleResult) {
 		const session = this.engine.store.coopSession(sessionId);
 		requireRule(session?.id === sessionId && session.status === 'active' && session.adventure &&
@@ -1467,6 +1879,7 @@ export class RogueCoopSessions {
 		requireRule(result, '缺少共同捕获的战斗结果。');
 		requireRule(result.encounterId === session.adventure.encounterId, '捕获结果与当前共同战斗不匹配。');
 		const ownerSide = result.captureOwners?.[captured.id];
+		result = preserveCoopGrowthResult(session, result);
 		requireRule(ownerSide === 'p1' || ownerSide === 'p3', '捕获归属缺失，无法保存到个人存档。');
 		const ownerUser = ownerSide === 'p1' ? session.hostUser : session.guestUser;
 		const receipt = `${token}:${captured.id}`;
@@ -1488,7 +1901,8 @@ export class RogueCoopSessions {
 		}
 		if (result.bag) session.adventure.members[session.hostUser].bag = { ...result.bag };
 		if (result.partnerBag) session.adventure.members[session.guestUser].bag = { ...result.partnerBag };
-		this.captureMember(member, captured);
+		this.saveReserveItemCosts(session, result);
+		this.captureMember(member, captured, session.adventure.spirit, result);
 		session.adventure.captureReceipts ||= [];
 		if (!session.adventure.captureReceipts.includes(receipt)) session.adventure.captureReceipts.push(receipt);
 		delete session.adventure.captureProposal;
@@ -1507,6 +1921,7 @@ export class RogueCoopSessions {
 			const run = {
 				id: adventure.id, contentVersion: adventure.contentVersion, floor: adventure.floor,
 				phase: 'battle', difficulty: adventure.difficulty, doubleBattle: true, encounter: adventure.encounter, attempt: 0,
+				...coopRunRules(adventure),
 				team: member.team.filter(mon => selected.has(mon.id)), box: member.box, money: member.money, bag: member.bag,
 				boosts: member.boosts, startingSlots: member.slots, node: adventure.node,
 				checkpoint: { team: [], box: [], money: member.money, bag: {} }, caught: [], blessings: member.blessings,
@@ -1522,6 +1937,7 @@ export class RogueCoopSessions {
 			for (const userid of [session.hostUser, session.guestUser]) {
 				Users.get(userid)?.send(`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({
 					session: session.id, battleResult: true, abandoned: session.status === 'abandoned',
+					completed: session.status === 'complete',
 				})}`);
 				if (result.coopExit && session.roomid) Users.get(userid)?.sendTo(session.roomid as RoomID, '|fantasyrogueend|');
 			}
@@ -1544,6 +1960,7 @@ export class RogueCoopSessions {
 			'这场战斗已经结算或已被新的战斗取代。');
 		requireRule(result.encounterId === adventure.encounterId && typeof result.won === 'boolean', '战斗结果与当前联机战斗不匹配。');
 		const failedChallenge = !!adventure.node?.challenge && (!result.won || !!result.coopExit);
+		result = preserveCoopGrowthResult(session, result);
 		result = failedCoopChallengeResult(session, result);
 		const memoryBattle = adventure.node?.event?.id === 'travel';
 		const escort = activeCoopEscort(adventure);
@@ -1563,6 +1980,40 @@ export class RogueCoopSessions {
 		requireRule(result.partnerBag && typeof result.partnerBag === 'object', '缺少队友的战后道具背包快照。');
 		adventure.members[session.hostUser].bag = { ...result.bag };
 		adventure.members[session.guestUser].bag = { ...result.partnerBag };
+		this.saveReserveItemCosts(session, result);
+		for (const owner of [session.hostUser, session.guestUser]) {
+			const run = this.previewBlessingRun(adventure, owner);
+			if (run.collapse?.length) this.engine.store.change(owner, account => {
+				recordCollapseBattle(account, run, result.coopExit ? { ...result, won: false } : result);
+			});
+		}
+		if (adventure.postgame?.stage === 'battle') {
+			const revision = session.revision;
+			for (const [owner, used] of [[session.hostUser, result.companionZUsed],
+				[session.guestUser, result.partnerCompanionZUsed]] as const) {
+				const companion = adventure.members[owner].blessings?.companionZ;
+				if (used && companion) companion.spent = true;
+			}
+			if (result.coopExit === 'retreat') {
+				// Keep actual damage and costs for retry, but never turn postgame defeats into ordinary loot or unlocks.
+				adventure.phase = 'settlement';
+				adventure.continueSelections = {}; adventure.retrySelections = {};
+				delete adventure.battleCheckpoint; delete adventure.battleGrowth; delete adventure.battleRecoverySelections;
+				delete session.exitProposal;
+			} else {
+				settleCoopPostgame(session, result.won && !result.coopExit, (owner, update) => {
+					this.engine.store.change(owner, update);
+				});
+			}
+			adventure.battleResult = { won: result.won && !result.coopExit, turns: result.turns,
+				retreated: !!result.coopExit };
+			if (result.coopExit === 'abandon') {
+				session.status = 'complete'; adventure.phase = 'complete'; delete session.delegatedTo;
+			}
+			session.revision++; session.updatedAt = Date.now();
+			this.engine.store.updateCoopSession(session, revision);
+			return { session, changed: true };
+		}
 		const ownerResults = [
 			{ userid: session.hostUser, team: result.team, blessingProgress: result.blessingProgress,
 				blessingEffects: result.blessingEffects,
@@ -1575,6 +2026,11 @@ export class RogueCoopSessions {
 		];
 		for (const ownerResult of ownerResults) {
 			const member = adventure.members[ownerResult.userid];
+			if (adventure.spirit === 'hoopagift' && !memoryBattle && !failedChallenge) {
+				const run = this.previewBlessingRun(adventure, ownerResult.userid);
+				for (const mon of member.team) mon.set.item = battleItemReward(run, this.engine.content!, mon, result, randomInt);
+				member.spiritConversions = run.spiritConversions;
+			}
 			if (memoryBattle) {
 				const run = this.eventRun(adventure, ownerResult.userid);
 				if (result.coopExit) delete run.node!.event!.memory;
@@ -1583,7 +2039,10 @@ export class RogueCoopSessions {
 				continue;
 			}
 			if (ownerResult.blessingEffects && member.blessings) {
-				Object.assign(member.blessings, structuredClone(ownerResult.blessingEffects));
+				const effects = structuredClone(ownerResult.blessingEffects);
+				delete effects.party; delete effects.unityParty; delete effects.partyRoles;
+				Object.assign(member.blessings, effects);
+				delete member.blessings.party; delete member.blessings.unityParty; delete member.blessings.partyRoles;
 			}
 			if (this.engine.content?.blessings && member.blessings) {
 				const run = this.blessingRun(adventure, ownerResult.userid);
@@ -1602,7 +2061,7 @@ export class RogueCoopSessions {
 			}
 		}
 		for (const captured of result.captures || []) this.captureMember(
-			adventure.members[result.captureOwners?.[captured.id] === 'p3' ? session.guestUser : session.hostUser], captured);
+			adventure.members[result.captureOwners?.[captured.id] === 'p3' ? session.guestUser : session.hostUser], captured, adventure.spirit, result);
 		const rewards = [
 			{ money: 0, items: {} as Record<string, number>, effect: '' },
 			{ money: 0, items: {} as Record<string, number>, effect: '' },
@@ -1637,23 +2096,68 @@ export class RogueCoopSessions {
 		if (!result.coopExit && !memoryBattle && !failedChallenge) {
 			this.awardMemberGrowth(session.hostUser, adventure, result);
 			this.awardMemberGrowth(session.guestUser, adventure, result, true);
+			if (result.won && adventure.battleGrowth?.baseline) {
+				for (const userid of [session.hostUser, session.guestUser]) this.engine.store.change(userid, account => {
+					for (const set of adventure.battleGrowth?.discoveries?.[userid] || []) {
+						recordStarterMoves(account, this.engine.content!, set, { difficulty: adventure.difficulty });
+					}
+				});
+			}
+		}
+		let companionRescue = false;
+		if (!result.won && !result.coopExit && !failedChallenge && !memoryBattle && !adventure.node?.shopChallenge) {
+			const runs = [session.hostUser, session.guestUser].map(userid => {
+				const run = this.blessingRun(adventure, userid);
+				run.encounter = adventure.encounter;
+				return {userid, run};
+			});
+			companionRescue = deferCoopCompanionChallenge(runs.map(entry => entry.run));
+			if (companionRescue) {
+				for (const {userid, run} of runs) {
+					this.saveBlessingRun(adventure, userid, run);
+					if (run.node!.event) adventure.members[userid].coopEvent = structuredClone(run.node!.event);
+				}
+				adventure.node = runs[0].run.node;
+			}
 		}
 		const escortResolved = !!escort && (!result.coopExit || result.coopExit === 'retreat' && escort.pokemon.hp <= 0);
 		const scrollFailed = adventure.node?.event?.id === 'kubfuscroll' && result.coopExit === 'retreat' &&
 			[session.hostUser, session.guestUser].some(userid =>
 				coopBattleParty(adventure, userid).every(mon => !battleReady(mon)));
 		const challengeResolved = settleCoopChallenge(adventure, result);
-		const eventResolved = challengeResolved ||
+		let rivalResolved = false;
+		if (!companionRescue && !result.coopExit && adventure.node?.event?.id === 'rivalstory' &&
+			adventure.node.event.stage === 'battle') {
+			const runs = [session.hostUser, session.guestUser].map(userid => ({userid, run: this.eventRun(adventure, userid)}));
+			rivalResolved = settleCoopRival(runs.map(entry => entry.run), randomInt, result.won,
+				{ content: this.engine.content!, random: randomInt });
+			for (const {userid, run} of runs) this.applyCoopEventRun(adventure, userid, run);
+			adventure.node = structuredClone((runs.find(entry => !entry.run.node!.event!.settled) || runs[0]).run.node);
+			adventure.coopEventBranchResolved = runs.every(entry => entry.run.node!.event!.settled);
+			adventure.coopEventChoices = {[session.hostUser]: null, [session.guestUser]: null};
+		}
+		let policeResolved = false;
+		if (!result.coopExit && adventure.node?.event?.police && adventure.node.event.stage === 'battle') {
+			const runs = [session.hostUser, session.guestUser].map(userid => ({userid, run: this.eventRun(adventure, userid)}));
+			policeResolved = settleCoopPolice(runs.map(entry => entry.run), result.won);
+			for (const {userid, run} of runs) this.applyCoopEventRun(adventure, userid, run);
+			adventure.node = structuredClone(runs[0].run.node);
+			adventure.coopEventBranchResolved = policeResolved;
+			adventure.coopEventChoices = {[session.hostUser]: null, [session.guestUser]: null};
+		}
+		const eventResolved = policeResolved || rivalResolved || challengeResolved ||
 			adventure.node?.kind === 'event' && adventure.node.event?.stage === 'battle' &&
 			(['martial', 'tutor', 'room', 'mysteryball', 'forest'].includes(adventure.node.event.id) ||
 				escortResolved || scrollFailed ||
-				(['pokeflute', 'identityquiz', 'evolutiondojo', 'kubfuscroll'].includes(adventure.node.event.id) ||
+				(['pokeflute', 'identityquiz', 'evolutiondojo', 'kubfuscroll', 'exclusiveclue', 'exclusivechallenge', 'terasolo', 'legendarytracks', 'travellermeeting', 'companionrematch'].includes(adventure.node.event.id) ||
 					COOP_ACTIVITY_BATTLES.has(adventure.node.event.id) ||
 					COOP_HONEYMOON_EVENTS.has(adventure.node.event.id) ||
 					COOP_ADVENTURE_EVENTS.has(adventure.node.event.id)) && !result.coopExit ||
 					memoryBattle && !result.coopExit);
-		if (eventResolved && !challengeResolved) {
+		if (eventResolved && !challengeResolved && !rivalResolved && !policeResolved) {
 			const runs = [session.hostUser, session.guestUser].map(userid => ({ userid, run: this.eventRun(adventure, userid) }));
+			const social = adventure.node!.event!.id === 'travellermeeting';
+			if (social) settleCoopSocial(runs.map(entry => entry.run), this.engine.content!, randomInt, result.won);
 			const honeymoon = COOP_HONEYMOON_EVENTS.has(adventure.node!.event!.id);
 			if (honeymoon) settleCoopHoneymoon(runs.map(entry => ({ ...entry,
 				changeAccount: update => { this.engine.store.change(entry.userid, update); },
@@ -1670,12 +2174,17 @@ export class RogueCoopSessions {
 				sharedFragmentOffer(runs.map(({ run }) => run), 'bandits', randomInt) : null;
 			const battleSupplies = ['mysteryball', 'forest'].includes(adventure.node!.event!.id) && result.won && !result.coopExit ?
 				rollEventBattleSupplies(runs[0].run, this.engine.content!, randomInt) : undefined;
+			const itemRolls = new Map<string, unknown>();
 			for (const { userid, run } of runs) {
+				if (run.node!.event!.id === 'exclusivechallenge') prepareCoopExclusiveReward(run);
 				if (roomPrize) run.node!.event!.roomBattlePrize = structuredClone(roomPrize);
 				if (run.node!.event!.id === 'bandits') run.node!.event!.banditFragments = structuredClone(banditPrize);
 				if (battleSupplies) run.node!.event!.battleSupplies = structuredClone(battleSupplies);
-				if (honeymoon) {
+				if (social || honeymoon) {
 					// Both account trips and the shared welcome were settled together above.
+				} else if (run.node!.event!.id === 'companionrematch') {
+					withSharedRewardRolls(run, itemRolls, () => this.engine.store.change(userid, account =>
+						settleCoopRematch(run, account, result.won, this.engine.content!, randomInt)));
 				} else if (run.node!.event!.id === 'kubfuscroll') {
 					this.engine.store.change(userid, account => {
 						settleCoopScroll({ userid, run, account }, this.engine.content!, randomInt, result.won);
@@ -1705,35 +2214,67 @@ export class RogueCoopSessions {
 							.every(count => Number.isSafeInteger(count) && count >= 0), '共同活动奖励超出可保存范围。');
 					}
 				} else {
-					settleEventBattle(run, this.engine.content!, max => randomInt(max), result.won, !!result.coopExit);
+					withSharedRewardRolls(run, itemRolls, () =>
+						settleEventBattle(run, this.engine.content!, randomInt, result.won, !!result.coopExit));
 				}
-				if (COOP_ADVENTURE_EVENTS.has(run.node!.event!.id)) {
+				if (['exclusivechallenge', 'terasolo'].includes(run.node!.event!.id) || COOP_ADVENTURE_EVENTS.has(run.node!.event!.id)) {
 					requireRule(Number.isSafeInteger(run.money) && run.money >= 0 && Object.values(run.bag)
 						.every(count => Number.isSafeInteger(count) && count >= 0), '共同事件奖励超出可保存范围。');
 				}
 				this.applyCoopEventRun(adventure, userid, run);
 			}
-			if (COOP_ADVENTURE_EVENTS.has(adventure.node!.event!.id) || honeymoon || escortResolved ||
+			if (['exclusiveclue', 'exclusivechallenge', 'terasolo', 'legendarytracks', 'travellermeeting', 'companionrematch'].includes(adventure.node!.event!.id) ||
+				COOP_ADVENTURE_EVENTS.has(adventure.node!.event!.id) || honeymoon || escortResolved ||
 				adventure.node!.event!.id === 'kubfuscroll') {
 				adventure.node!.event = structuredClone(runs[0].run.node!.event!);
 			}
+			if (adventure.node!.event!.id === 'exclusivechallenge') adventure.node!.reward = { money: 0, items: {} };
 			if (adventure.node!.event!.id === 'kubfuscroll') delete adventure.node!.noHealing;
-			if (roomPrize?.fragments || banditPrize) {
+			if (roomPrize?.fragments || banditPrize || adventure.node!.event!.id === 'exclusiveclue' ||
+				social && !adventure.node!.event!.settled) {
+				const key = randomUUID();
+				if (adventure.node!.event!.id === 'exclusiveclue') {
+					adventure.node!.event!.key = key;
+					for (const userid of [session.hostUser, session.guestUser]) adventure.members[userid].coopEvent!.key = key;
+				}
 				adventure.coopEventBranchResolved = false;
 				adventure.coopEventChoices = { [session.hostUser]: null, [session.guestUser]: null };
 			}
 		}
+		const shopRuns = adventure.node?.shopChallenge && !adventure.node.shopChallenge.closed && !result.coopExit ?
+			[session.hostUser, session.guestUser].map(owner => this.blessingRun(adventure, owner)) : [];
+		const shopReceipts = shopRuns.length ? settleCoopShopChallenge(session, shopRuns, this.engine.content!, randomInt,
+			result.won, false) : null;
+		if (shopReceipts) for (const [index, owner] of [session.hostUser, session.guestUser].entries()) {
+			this.saveBlessingRun(adventure, owner, shopRuns[index]);
+			adventure.members[owner].coopLootReward = shopReceipts[index];
+			for (const [item, count] of Object.entries(shopReceipts[index].items)) {
+				rewards[index].items[item] = (rewards[index].items[item] || 0) + count;
+			}
+		}
+		// Offer only after real defeat and all temporary-party restorations. Unselected healthy partners prevent it.
+		if (!result.won && !result.coopExit && this.engine.content?.story && !failedChallenge) {
+			for (const owner of [session.hostUser, session.guestUser]) {
+				if (escort?.owner === owner) continue;
+				const run = this.blessingRun(adventure, owner);
+				run.phase = 'failed'; run.encounter = adventure.encounter;
+				if (offerComeback(run, this.engine.content)) this.saveBlessingRun(adventure, owner, run);
+			}
+		}
 		const expectedRevision = session.revision;
 		adventure.battleResult = { won: result.won, turns: result.turns,
+			...(shopReceipts ? { shopClosed: true } : {}),
 			reward: rewards[0], partnerReward: rewards[1], eventResolved: !!eventResolved, retreated: !!result.coopExit,
-			...(memoryBattle && !result.coopExit ? { memoryRestored: true } : {}) };
-		adventure.lastReward = result.won ? {
+			...(memoryBattle && !result.coopExit ? { memoryRestored: true } : {}),
+			...(companionRescue ? { companionRescue: true } : {}) };
+		adventure.lastReward = shopReceipts ? shopReceipts[0] : result.won ? {
 			floor: adventure.floor, name: adventure.node!.name, ...structuredClone(rewards[0]),
 		} : undefined;
 		adventure.continueSelections = {};
 		adventure.retrySelections = {};
 		delete adventure.captureProposal;
 		delete adventure.battleCheckpoint;
+		delete adventure.battleGrowth;
 		delete adventure.battleRecoverySelections;
 		delete session.exitProposal;
 		if (this.blessingFollowupsPending(adventure)) {
@@ -1754,6 +2295,36 @@ export class RogueCoopSessions {
 	private settleContinue(user: User, retry: boolean) {
 		return this.commitProgress(user, 'battleContinue', () => this.settleContinueResult(user, retry));
 	}
+	private choosePostgame(user: User, command: RogueCoopCommand) {
+		return this.commitProgress(user, 'battleContinue', () => {
+			const session = this.engine.store.coopSessionForUser(user.id);
+			requireRule(session?.adventure, '当前没有共同神之挑战。');
+			const revision = session.revision;
+			chooseCoopPostgame(session, user.id, command.visit || '', command.value || '', this.engine.content?.arceusMoves);
+			if (session.adventure.phase === 'battle-selection') {
+				clearBattleSelections(session);
+				this.prepareSharedEncounter(session.adventure, session.hostUser);
+			}
+			session.revision++; session.updatedAt = Date.now();
+			return this.engine.store.updateCoopSession(session, revision);
+		});
+	}
+	private chooseCollapse(user: User, command: RogueCoopCommand) {
+		return this.commitProgress(user, 'blessingChoice', () => {
+			const session = this.engine.store.coopSessionForUser(user.id);
+			requireRule(session?.adventure, '当前没有共同崩坏选择。');
+			const revision = session.revision;
+			if (chooseCoopCollapse(session, user.id, command.visit || '', command.collapse, command.confirmed === true)) {
+				for (const owner of [session.hostUser, session.guestUser]) {
+					this.engine.store.change(owner, account => recordCollapseStart(account, this.previewBlessingRun(session.adventure!, owner)));
+				}
+				this.prepareRouteChoices(session.adventure);
+				if (this.engine.content?.blessings) this.prepareCoopBlessingRound(session.adventure, session, 1, 'opening');
+			}
+			session.revision++; session.updatedAt = Date.now();
+			return this.engine.store.updateCoopSession(session, revision);
+		});
+	}
 	private settleContinueResult(user: User, retry: boolean) {
 		const session = this.engine.store.coopSessionForUser(user.id);
 		requireRule(session?.status === 'active' && session.adventure?.phase === 'settlement' &&
@@ -1761,7 +2332,8 @@ export class RogueCoopSessions {
 		const adventure = session.adventure;
 		const result = adventure.battleResult;
 		requireRule(result, '当前没有待确认的共同战斗结算。');
-		requireRule(retry ? !result.won && !result.eventResolved : result.won || result.eventResolved,
+		requireRule(retry ? !result.won && !result.eventResolved && !result.companionRescue && !result.shopClosed :
+			result.won || result.eventResolved || result.companionRescue || result.shopClosed,
 			retry ? '本场战斗已结算，不能重试。' : '本场未获胜，请先选择再战。');
 		const owners = session.delegatedTo === user.id ? [session.hostUser, session.guestUser] : [user.id];
 		for (const owner of owners) {
@@ -1785,6 +2357,12 @@ export class RogueCoopSessions {
 				adventure.retrySelections = {};
 				clearBattleSelections(session);
 				session.roomid = undefined;
+			} else if (result.shopClosed) {
+				// The guard's prize was committed with the battle result, even if the shop closed after defeat.
+				this.completeCoopFloor(session, adventure);
+			} else if (result.companionRescue) {
+				// Defeat is not a clear: the original node reward remains in both rematch ledgers.
+				this.completeCoopFloor(session, adventure);
 			} else if (result.eventResolved) {
 				// Training/teaching grants belong to each owner's full party, including unselected members.
 				// Keep this floor until both players finish their personal reward steps and confirm exit.
@@ -1801,6 +2379,19 @@ export class RogueCoopSessions {
 				adventure.retrySelections = {};
 				clearBattleSelections(session);
 				session.roomid = undefined;
+			} else if (adventure.node?.rocket && !adventure.node.rocket.cleared) {
+				const rocket = adventure.node.rocket;
+				rocket.cleared = true;
+				adventure.encounter = 0; adventure.node.encounters = [];
+				adventure.phase = 'route-interaction'; adventure.routeExitSelections = {};
+				session.roomid = undefined;
+				clearBattleSelections(session);
+				this.openCoopTradeEvent(session, adventure);
+				for (const userid of [session.hostUser, session.guestUser]) {
+					const receipt = this.creditNodeReward(adventure, userid, { money: rocket.reward, items: {} });
+					receipt.name = '击退火箭队';
+					if (userid === session.hostUser) adventure.lastReward = receipt;
+				}
 			} else {
 				const reward = adventure.node!.reward;
 				for (const userid of [session.hostUser, session.guestUser]) {
@@ -1997,8 +2588,15 @@ export class RogueCoopSessions {
 			session = this.engine.store.coopSession(sessionId)!;
 			if (proposal.kind === 'retreat') {
 				const current = session.adventure!;
-				current.phase = 'battle-selection';
+				// battle-selection auto-opens native preview. Wait outside until both explicitly retry.
+				// No battle has started: preserve the full parties and do not settle encounter rewards.
+				current.phase = 'settlement';
+				current.battleResult = { won: false, turns: 0, retreated: true };
+				current.continueSelections = {}; current.retrySelections = {};
 				delete current.battleToken; delete current.battleLease; delete current.encounterId;
+				delete current.battleCheckpoint; delete current.battleGrowth; delete current.battleRecoverySelections;
+				delete current.nativeTeamPreview; delete current.nativeTeamSelected; delete current.captureProposal;
+				delete current.lastReward;
 				clearBattleSelections(session);
 				delete session.roomid; delete session.exitProposal;
 				session.revision++; session.updatedAt = Date.now();
@@ -2187,10 +2785,17 @@ export class RogueCoopSessions {
 		if (session.delegatedTo === user.id) session.areaSelections[partnerId] = id;
 		adventure.routeChoices ||= structuredClone(choices);
 		if (session.areaSelections[partnerId] === id) {
+			for (const userid of [session.hostUser, session.guestUser]) {
+				const run = this.companionServiceContext(adventure, userid).run;
+				run.phase = 'choose';
+				recordCompanionPreference(run, [], selected.id, randomInt, { content: this.engine.content!, random: randomInt });
+				this.saveBlessingRun(adventure, userid, run);
+			}
 			adventure.node = structuredClone(selected);
 			delete adventure.coopAuction;
 			adventure.encounter = 0;
 			adventure.phase = selected.encounters.length ? 'battle-selection' : 'route-interaction';
+			prepareCoopMentor(adventure, this.engine.content!);
 			if (isCoopMasterBallRoute(selected)) {
 				selectCoopMasterBallRoute(session, selected.id);
 			} else if (selected.challenge) {
@@ -2200,20 +2805,46 @@ export class RogueCoopSessions {
 				for (const member of Object.values(adventure.members)) {
 					delete member.coopEvent; delete member.coopEventReward;
 				}
+			} else if (selected.id === 'rival') {
+				const parties = [session.hostUser, session.guestUser].map(userid =>
+					({userid, run: this.blessingRun(adventure, userid)}));
+				beginCoopRival(parties.map(entry => entry.run), randomInt, { content: this.engine.content!, random: randomInt });
+				adventure.node = structuredClone(parties[0].run.node!);
+				for (const {userid, run} of parties) {
+					this.applyCoopEventRun(adventure, userid, run);
+					this.engine.store.change(userid, account => { account.previousRival = run.rival!.id; });
+					delete adventure.members[userid].coopEventReward;
+				}
+				(adventure.coopEventHistory ||= []).push({id: 'rivalstory', floor: adventure.floor});
+				if (adventure.coopEventHistory.length > 64) adventure.coopEventHistory.shift();
+				adventure.phase = 'route-interaction';
+				delete adventure.lastReward;
+				adventure.coopEventChoices = {[session.hostUser]: null, [session.guestUser]: null};
+				adventure.coopEventBranchResolved = false;
+				if (this.blessingFollowupsPending(adventure)) {
+					adventure.coopBlessingResume = 'event'; adventure.phase = 'blessing-reward';
+				}
 			} else if (selected.kind === 'event') {
 				const run = this.blessingRun(adventure, session.hostUser);
 				const guestRun = this.previewBlessingRun(adventure, session.guestUser);
 				const parties = [{ userid: session.hostUser, run }, { userid: session.guestUser, run: guestRun }];
 				for (const entry of parties) entry.run.honeymoon = structuredClone(this.engine.store.get(entry.userid).honeymoon);
 				run.eventHistory = adventure.coopEventHistory;
+				run.exclusiveEventMisses = adventure.coopExclusiveEventMisses || 0;
 				const allowedEvents = this.engine.content?.blessings ? COOP_EVENTS :
 					new Set([...COOP_EVENTS].filter(eventId =>
 						!['room', 'mysteryball', 'forest', 'travel', 'grassegg', 'hatchhouse', 'fossillab',
 							'duskbreeder', 'kubfumaster', 'safaripark'].includes(eventId)));
 				const eventId = chooseEvent(run, max => randomInt(max), allowedEvents, [guestRun]);
+				adventure.coopExclusiveEventMisses = run.exclusiveEventMisses || 0;
 				(adventure.coopEventHistory ||= []).push({ id: eventId, floor: adventure.floor });
 				if (adventure.coopEventHistory.length > 64) adventure.coopEventHistory.shift();
-				const event: RogueEvent = { id: eventId, key: randomUUID(), stage: 'choice' };
+				const event: RogueEvent = eventId === 'companionrematch' ? beginCoopRematch(parties.map(entry => entry.run)) :
+					eventId === 'travellermeeting' ? beginCoopSocial(parties.map(entry => entry.run), randomInt,
+						{ content: this.engine.content!, random: randomInt }) :
+					eventId === 'legendarytracks' ? beginCoopTracks(run, randomInt) :
+					eventId === 'exclusiveclue' ? beginCoopExclusiveClue(parties.map(entry => entry.run), randomInt) :
+					{ id: eventId, key: randomUUID(), stage: 'choice' };
 				if (COOP_HONEYMOON_EVENTS.has(eventId)) beginCoopHoneymoon(parties, event, randomInt);
 				if (COOP_ACTIVITY_EVENTS.has(eventId) || COOP_EXPEDITION_SERVICES.has(eventId)) {
 					run.node = { ...adventure.node, event };
@@ -2225,7 +2856,10 @@ export class RogueCoopSessions {
 					const level = Math.max(3, Math.min(100, Math.ceil(adventure.floor / 2)));
 					event.teams = forestTeams(level, randomInt);
 				}
-				adventure.node.name = EVENT_NAMES[eventId];
+				adventure.node.name = eventId === 'travellermeeting' ? run.node!.name : EVENT_NAMES[eventId];
+				if (eventId === 'travellermeeting') {
+					for (const entry of parties) this.applyCoopEventRun(adventure, entry.userid, entry.run);
+				}
 				adventure.node.event = structuredClone(event);
 				adventure.node.encounters = [];
 				adventure.node.reward = { money: 0, items: {} };
@@ -2237,40 +2871,56 @@ export class RogueCoopSessions {
 				}
 				adventure.coopEventChoices = { [session.hostUser]: null, [session.guestUser]: null };
 				adventure.coopEventBranchResolved = false;
-			}
-			if (collectorRoute(selected) || auctionRoute(selected)) {
-				let event: RogueEvent = { id: 'mushroomcollector', key: randomUUID(), stage: 'choice' };
-				if (auctionRoute(selected)) {
-					const runs = [session.hostUser, session.guestUser].map(userid => ({
-						userid, run: this.blessingRun(adventure, userid),
-					}));
-					const initial = beginCoopAuction(runs, this.engine.content!, randomInt);
-					adventure.coopAuction = initial.auction; event = initial.event;
-					for (const { userid, run } of runs) this.saveBlessingRun(adventure, userid, run);
+				if (eventId === 'travellermeeting' && this.blessingFollowupsPending(adventure)) {
+					adventure.coopBlessingResume = 'event';
+					adventure.phase = 'blessing-reward';
 				}
-				adventure.node.name = EVENT_NAMES[event.id];
-				adventure.node.event = structuredClone(event);
-				adventure.node.encounters = [];
-				adventure.node.reward = { money: 0, items: {} };
-				adventure.phase = 'route-interaction';
-				delete adventure.lastReward;
-				for (const userid of [session.hostUser, session.guestUser]) {
-					adventure.members[userid].coopEvent = structuredClone(event);
-					delete adventure.members[userid].coopEventReward;
-				}
-				adventure.coopEventChoices = { [session.hostUser]: null, [session.guestUser]: null };
-				adventure.coopEventBranchResolved = false;
 			}
-			if (this.engine.content?.blessings && selected.encounters.length) {
-				const run = this.blessingRun(adventure, session.hostUser);
-				prepareBlessingEncounter(run, max => randomInt(max));
-				this.saveBlessingRun(adventure, session.hostUser, run);
+			this.openCoopTradeEvent(session, adventure);
+			if (selected.kind === 'trainer' && this.engine.content?.events && !selected.event && !selected.challenge) {
+				const entries = [session.hostUser, session.guestUser].map(userid => ({ userid, run: this.blessingRun(adventure, userid) }));
+				const police = beginCoopPolice(entries.map(entry => entry.run), randomInt);
+				const tera = !police && beginTeraSolo(entries[0].run, randomInt);
+				if (tera) {
+					entries[0].run.node!.kind = 'event';
+					entries[0].run.node!.name = '太晶协力战';
+					entries[0].run.node!.event!.result = ['晶光中的宝可梦挡住去路，头顶凝聚出太晶冠冕。',
+						'两人共同迎战，获胜后各自收集对应属性的太晶碎片。'];
+					entries[1].run.node = structuredClone(entries[0].run.node);
+				}
+				if (police || tera || beginCoopExclusiveEncounter(entries.map(entry => entry.run), randomInt)) {
+					adventure.node = structuredClone(entries[0].run.node);
+					adventure.phase = adventure.node!.event!.stage === 'battle' ? 'battle-selection' : 'route-interaction';
+					adventure.coopEventBranchResolved = adventure.node!.event!.stage !== 'choice';
+					(adventure.coopEventHistory ||= []).push({ id: adventure.node!.event!.id, floor: adventure.floor });
+					if (adventure.coopEventHistory.length > 64) adventure.coopEventHistory.shift();
+					for (const { userid, run } of entries) {
+						this.applyCoopEventRun(adventure, userid, run);
+						if (!police) delete adventure.members[userid].coopEventReward;
+					}
+				}
+				if (police) {
+					adventure.coopEventChoices = {[session.hostUser]: null, [session.guestUser]: null};
+					delete adventure.lastReward;
+					if (adventure.node!.event!.stage === 'battle' && this.engine.content?.blessings) {
+						prepareCoopSpiritNode(adventure, this.sharedWildRun(adventure, session.hostUser),
+							adventure.node!, this.engine.content, randomInt);
+					}
+				}
+				for (const { userid, run } of entries) this.saveBlessingRun(adventure, userid, run);
+			}
+			if (adventure.node?.encounters.length) {
+				this.prepareSharedEncounter(adventure, session.hostUser);
 			}
 			if (selected.kind === 'reward' && !isCoopMasterBallRoute(selected)) {
 				for (const userid of [session.hostUser, session.guestUser]) {
 					const receipt = this.creditNodeReward(adventure, userid, selected.reward);
 					if (userid === session.hostUser) adventure.lastReward = receipt;
 				}
+			}
+			if (this.blessingFollowupsPending(adventure) && adventure.phase !== 'blessing-reward') {
+				adventure.coopBlessingResume = adventure.phase === 'battle-selection' ? 'battle-selection' : 'event';
+				adventure.phase = 'blessing-reward';
 			}
 			adventure.routeExitSelections = {};
 			session.areaSelections[session.hostUser] = null;
@@ -2309,6 +2959,8 @@ export class RogueCoopSessions {
 	}
 	private applyCoopEventRun(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string, run: RogueRun) {
 		const member = adventure.members[userid];
+		member.spiritConversions = run.spiritConversions;
+		member.comeback = run.comeback;
 		member.team = run.team;
 		member.box = run.box || [];
 		member.money = run.money;
@@ -2324,6 +2976,8 @@ export class RogueCoopSessions {
 		member.shoppingSpend = run.shoppingSpend;
 		member.exclusiveItems = run.exclusiveItems;
 		member.trainerBonds = run.trainerBonds; member.affectionClaims = run.affectionClaims;
+		member.socialCompanions = run.socialCompanions; member.companionInvitations = run.companionInvitations;
+		member.rematches = run.rematches; member.rival = run.rival; adventure.coopPolice = run.police;
 		member.rareCandyEvents = run.rareCandyEvents;
 		member.activityClaims = run.activityClaims;
 		member.greninjaTraining = run.greninjaTraining;
@@ -2332,6 +2986,63 @@ export class RogueCoopSessions {
 		if (run.pendingCapture && !member.pendingCaptures?.some(mon => mon.id === run.pendingCapture!.id)) {
 			(member.pendingCaptures ||= []).push(run.pendingCapture);
 		}
+	}
+	private companionServiceContext(adventure: NonNullable<RogueCoopSession['adventure']>, owner: string) {
+		const run = structuredClone(this.previewBlessingRun(adventure, owner));
+		run.auction = adventure.coopAuction && structuredClone(adventure.coopAuction.state);
+		run.node = structuredClone(adventure.node);
+		if (run.node && adventure.members[owner].coopEvent) {
+			run.node.event = structuredClone(adventure.members[owner].coopEvent);
+		}
+		const members = Object.keys(adventure.members);
+		run.phase = adventure.phase === 'area-selection' ? 'choose' :
+			adventure.phase === 'route-interaction' && run.node?.event ? 'event' : 'ready';
+		run.choices = (adventure.routeChoices || []).filter(node => this.routeAvailable(node, adventure.floor));
+		const options = run.phase === 'event' ? adventure.coopEventBranchResolved ? eventView(run)?.options || [] :
+			this.sharedEventOptions(adventure, members[0], members[1]) : [];
+		const visit = createHash('sha256').update(JSON.stringify([adventure.id, owner, adventure.floor,
+			adventure.phase, adventure.node?.id, run.node?.event?.key])).digest('hex').slice(0, 24);
+		const locked = ['battle', 'battle-starting', 'complete', 'affection'].includes(adventure.phase) ?
+			'请在共同战斗和剧情对话之外与同行伙伴交流。' : adventure.tradeProposal ? '请先完成或撤回交换。' :
+			Object.values(adventure.members).some(member => member.companionInvitations?.length || member.pendingCaptures?.length ||
+				member.pendingMoves?.length) ? '请双方先处理待接纳伙伴、同行邀请和待学招式。' : '';
+		return { run, options, visit, locked };
+	}
+	private companionServiceView(adventure: NonNullable<RogueCoopSession['adventure']>, owner: string) {
+		const { run, options, visit, locked } = this.companionServiceContext(adventure, owner);
+		return { visit, locked, run: { phase: run.phase, companions: companionView(run, options),
+			socialCompanions: socialCompanionViews(run, companionOptions(run, options)),
+			selectedCompanions: run.blessings?.companions?.map(person => person.id),
+			blessings: { owned: run.blessings?.owned || [] },
+			team: run.team.filter(mon => !mon.egg).map(mon => ({ id: mon.id, species: mon.set.species })),
+			companionInvitation: companionInvitationView(run) } };
+	}
+	private chooseCompanionService(user: User, command: RogueCoopCommand) {
+		return this.commitProgress(user, 'eventChoice', () => {
+			const session = this.engine.store.coopSessionForUser(user.id);
+			requireRule(session?.status === 'active' && session.adventure, '当前没有进行中的共同冒险。');
+			const adventure = session.adventure, owner = this.delegatedOwner(user, session, command.owner);
+			const { run, options, visit, locked } = this.companionServiceContext(adventure, owner);
+			requireRule(!locked, locked);
+			requireRule(command.visit === visit, '同行服务所在阶段已变化，请刷新后重新选择。');
+			requireRule(typeof command.member === 'string' && command.member.length <= 60 &&
+				typeof command.value === 'string' && command.value.length <= 160, '同行操作无效。');
+			const native = { id: visit, revision: 0, action: command.action,
+				member: command.member, value: command.value } as RogueCommand;
+			if (command.action === 'companion') companionCommand(run, native, this.engine.content!, randomInt, options);
+			else socialCompanionCommand(run, native, companionOptions(run, options), this.engine.content!, randomInt);
+			requireRule(Number.isSafeInteger(run.money) && run.money >= 0 && Object.values(run.bag)
+				.every(count => Number.isSafeInteger(count) && count >= 0), '同行奖励超出可保存范围。');
+			syncBlessingParty(run);
+			this.saveBlessingRun(adventure, owner, run);
+			if (this.blessingFollowupsPending(adventure) && !['blessing-selection', 'blessing-reward'].includes(adventure.phase)) {
+				adventure.coopBlessingResume = adventure.phase === 'area-selection' ? 'opening' :
+					adventure.phase === 'battle-selection' ? 'battle-selection' : adventure.phase === 'settlement' ? 'battle' : 'event';
+				adventure.phase = 'blessing-reward';
+			}
+			session.revision++; session.updatedAt = Date.now();
+			return this.engine.store.updateCoopSession(session, session.revision - 1);
+		});
 	}
 	private coopAffectionScene(session: RogueCoopSession) {
 		if (!session.adventure) return null;
@@ -2378,7 +3089,8 @@ export class RogueCoopSessions {
 				'请先完成双方的招式学习或交换请求。');
 			const entries = [session.hostUser, session.guestUser].map(userid =>
 				({ userid, run: this.blessingRun(adventure, userid) }));
-			const result = chooseCoopChallenge(session, entries, owner, command.value || '', command.member);
+			const result = chooseCoopChallenge(session, entries, owner, command.value || '', command.member,
+				{ content: this.engine.content!, random: randomInt });
 			if (result === 'claimed') {
 				for (const { userid, run } of entries) {
 					this.saveBlessingRun(adventure, userid, run);
@@ -2448,7 +3160,7 @@ export class RogueCoopSessions {
 				session.adventure.node?.kind === 'event' && session.adventure.node.event &&
 				COOP_EVENTS.has(session.adventure.node.event.id)), '当前没有可处理的双人事件。');
 		const adventure = session.adventure;
-		if (COOP_COLLECTION_EVENTS.has(adventure.node!.event!.id)) {
+		if (['skiing', 'exclusiveclue', 'legendarytracks', 'travellermeeting', 'companionrematch', 'rivalstory', 'policeassist', 'policerevenge'].includes(adventure.node!.event!.id) || COOP_COLLECTION_EVENTS.has(adventure.node!.event!.id)) {
 			requireRule(visit && visit === adventure.node!.event!.key, '收集事件进度已变化，请刷新后重选。');
 		}
 		if (COOP_ACTIVITY_EVENTS.has(adventure.node!.event!.id)) {
@@ -2497,7 +3209,8 @@ export class RogueCoopSessions {
 				if (delegated) adventure.coopEventChoices[partnerId] = choice!;
 				if (adventure.coopEventChoices[partnerId] === choice ||
 					choice === 'tap' && COOP_RHYTHM_EVENTS.has(adventure.node!.event!.id) ||
-					choice === 'fishtap' && adventure.node!.event!.id === 'fishing') {
+					choice === 'fishtap' && adventure.node!.event!.id === 'fishing' ||
+					choice !== undefined && skiInput(choice) && adventure.node!.event!.id === 'skiing') {
 					const eventId = adventure.node!.event!.id;
 					let rhythmPersonal = false;
 					const mysteryBall = eventId === 'mysteryball' ? rollMysteryBallOutcome(
@@ -2518,6 +3231,41 @@ export class RogueCoopSessions {
 					const runs = (eventBattle && !COOP_ACTIVITY_EVENTS.has(eventId) ?
 						[session.hostUser] : [session.hostUser, session.guestUser])
 						.map(userid => ({ userid, run: this.eventRun(adventure, userid) }));
+					if (eventId === 'policeassist' || eventId === 'policerevenge') {
+						chooseCoopPolice(runs.map(entry => entry.run), randomInt, choice, { content: this.engine.content!, random: randomInt });
+						adventure.node = structuredClone(runs[0].run.node);
+						eventBattle = adventure.node!.event!.stage === 'battle';
+					}
+					if (eventId === 'rivalstory') {
+						chooseCoopRival(runs.map(entry => entry.run), this.engine.content!, randomInt, choice);
+						adventure.node = structuredClone((runs.find(entry => !entry.run.node!.event!.settled) || runs[0]).run.node);
+						eventBattle = adventure.node!.event!.stage === 'battle';
+					}
+					if (eventId === 'companionrematch') {
+						chooseCoopRematch(runs.map(entry => entry.run), choice);
+						adventure.node = structuredClone(runs[0].run.node);
+						eventBattle = adventure.node!.event!.stage === 'battle';
+					}
+					if (eventId === 'travellermeeting') {
+						chooseCoopSocial(runs.map(entry => ({ ...entry, account: this.engine.store.get(entry.userid) })),
+							this.engine.content!, randomInt, choice);
+						adventure.node = structuredClone(runs[0].run.node);
+						eventBattle = adventure.node!.event!.stage === 'battle';
+					}
+					if (eventId === 'legendarytracks') {
+						chooseCoopTracks(runs.map(entry => entry.run), randomInt, choice);
+						adventure.node = structuredClone(runs[0].run.node);
+						eventBattle = adventure.node!.event!.stage === 'battle';
+					}
+					if (eventId === 'exclusiveclue') {
+						chooseCoopExclusiveClue(runs.map(entry => entry.run), this.engine.content!, randomInt, choice);
+						adventure.node = structuredClone(runs[0].run.node);
+						eventBattle = adventure.node!.event!.stage === 'battle';
+					}
+					if (eventId === 'skiing') {
+						chooseCoopSki(runs.map(entry => entry.run), this.engine.content!, randomInt, choice);
+						adventure.node!.event = structuredClone(runs[0].run.node!.event!);
+					}
 					if (eventId === 'kubfuscroll') {
 						beginCoopScroll(runs.map(entry => ({ ...entry, account: this.engine.store.get(entry.userid) })),
 							this.engine.content!, randomInt, choice);
@@ -2599,7 +3347,7 @@ export class RogueCoopSessions {
 						rollLuck((runs.find(({ run }) => ownsBlessing(run.blessings, 'dice')) || runs[0]).run,
 							eventId, randomInt) : undefined;
 					for (const { userid, run } of runs) {
-						if (COOP_COLLECTION_EVENTS.has(eventId) || COOP_ACTIVITY_EVENTS.has(eventId) || COOP_ADVENTURE_EVENTS.has(eventId) ||
+						if (eventId === 'policeassist' || eventId === 'policerevenge' || eventId === 'rivalstory' || eventId === 'companionrematch' || eventId === 'travellermeeting' || eventId === 'legendarytracks' || eventId === 'exclusiveclue' || eventId === 'skiing' || COOP_COLLECTION_EVENTS.has(eventId) || COOP_ACTIVITY_EVENTS.has(eventId) || COOP_ADVENTURE_EVENTS.has(eventId) ||
 							COOP_HONEYMOON_EVENTS.has(eventId) ||
 							COOP_GRENINJA_EVENTS.has(eventId) || eventId === 'lostescort' || eventId === 'kubfuscroll' ||
 							COOP_EXPEDITION_SERVICES.has(eventId) || COOP_EVOLUTION_EVENTS.has(eventId) || COOP_RHYTHM_EVENTS.has(eventId) ||
@@ -2632,24 +3380,20 @@ export class RogueCoopSessions {
 							delete adventure.battleToken;
 							delete adventure.encounterId;
 							if (this.engine.content?.blessings) {
-								const battleRun = this.blessingRun(adventure, session.hostUser);
-								battleRun.spiritVersion = 1;
-								prepareSpiritNode(battleRun, adventure.node!, this.engine.content, randomInt);
-								prepareBlessingEncounter(battleRun, max => randomInt(max));
-								this.saveBlessingRun(adventure, session.hostUser, battleRun);
+								this.prepareSharedEncounter(adventure, session.hostUser);
 							}
-							if (this.engine.content?.wildTreasures && eventId !== 'travel') {
+							if (this.engine.content?.wildTreasures && !['travel', 'companionrematch', 'rivalstory', 'policeassist', 'policerevenge'].includes(eventId)) {
 								prepareEconomy(adventure.node!, adventure.floor, randomInt, adventure.difficulty);
 							}
 						}
 					}
 					adventure.coopEventBranchResolved = true;
-					const sharedStep = eventId === 'auction' || COOP_COLLECTION_EVENTS.has(eventId) || COOP_ADVENTURE_EVENTS.has(eventId) ||
+					const sharedStep = eventId === 'policeassist' || eventId === 'policerevenge' || eventId === 'rivalstory' || eventId === 'companionrematch' || eventId === 'travellermeeting' || eventId === 'legendarytracks' || eventId === 'exclusiveclue' || eventId === 'skiing' || eventId === 'auction' || COOP_COLLECTION_EVENTS.has(eventId) || COOP_ADVENTURE_EVENTS.has(eventId) ||
 						COOP_ACTIVITY_EVENTS.has(eventId) || COOP_EXPEDITION_SERVICES.has(eventId) ||
 						COOP_RHYTHM_EVENTS.has(eventId) && !rhythmPersonal;
 					if (['watch', 'fragments'].includes(adventure.members[session.hostUser].coopEvent!.stage) ||
 						sharedTravelStep(adventure.members[session.hostUser].coopEvent!) ||
-						sharedStep && !eventBattle && !adventure.members[session.hostUser].coopEvent!.settled) {
+						sharedStep && !eventBattle && [session.hostUser, session.guestUser].some(userid => !adventure.members[userid].coopEvent!.settled)) {
 						adventure.coopEventBranchResolved = false;
 						adventure.coopEventChoices = { [session.hostUser]: null, [session.guestUser]: null };
 					}
@@ -2708,11 +3452,7 @@ export class RogueCoopSessions {
 					clearBattleSelections(session);
 					delete adventure.battleResult; delete adventure.battleToken; delete adventure.encounterId;
 					if (this.engine.content?.blessings) {
-						const battleRun = this.blessingRun(adventure, session.hostUser);
-						battleRun.spiritVersion = 1;
-						prepareSpiritNode(battleRun, adventure.node!, this.engine.content, randomInt);
-						prepareBlessingEncounter(battleRun, randomInt);
-						this.saveBlessingRun(adventure, session.hostUser, battleRun);
+						this.prepareSharedEncounter(adventure, session.hostUser);
 					}
 				}
 			}
@@ -2803,7 +3543,7 @@ export class RogueCoopSessions {
 					const killlaReady = runs.every(run => !!run.blessings!.owned.find(entry => entry.family === 'godrobe') &&
 						!!run.blessings!.owned.find(entry => entry.family === 'puregodrobe') && round.floor >= 150 &&
 						!run.blessings!.owned.find(entry => entry.family === 'killlagirl'));
-					nextRound = rerollBlessingQuality(round, { floor: round.floor,
+					nextRound = rerollBlessingQuality(round, { floor: round.floor, spirit: adventure.spirit,
 						prayerFloor: samePrayer ? firstPrayer?.floor : undefined, prayerPartyChanged: prayerChanged,
 						killlaReady: killlaReady ? true : undefined }, candidates, max => randomInt(max));
 					for (const owner of [session.hostUser, session.guestUser]) {
@@ -2815,10 +3555,14 @@ export class RogueCoopSessions {
 				} else {
 					const slotIndex = Number(vote.slice('choose:'.length));
 					nextRound = chooseBlessingOption(round, slotIndex);
-					for (const owner of [session.hostUser, session.guestUser]) {
-						const run = this.blessingRun(adventure, owner);
+					const sharedRewards = new Map<string, unknown>();
+					const owners = [session.hostUser, session.guestUser];
+					const giftRuns = owners.map(owner => this.blessingRun(adventure, owner));
+					for (const [index, owner] of owners.entries()) {
+						const run = giftRuns[index];
 						run.blessings!.round = structuredClone(round);
-						this.applyCoopBlessingCommand(owner, adventure, run, { action: 'blessing', slot: slotIndex });
+						withSharedRewardRolls(run, sharedRewards, () =>
+							this.applyCoopBlessingCommand(owner, adventure, run, { action: 'blessing', slot: slotIndex }), giftRuns);
 					}
 				}
 				requireRule(nextRound, '共同祝福选项没有生成。');
@@ -2884,7 +3628,7 @@ export class RogueCoopSessions {
 				adventure.phase = 'blessing-selection';
 			} else if (adventure.coopBlessingRound?.remaining === 0) {
 				this.advanceCoopAfterBlessings(session, adventure);
-			} else if (adventure.coopBlessingResume === 'battle') {
+			} else if (adventure.coopBlessingResume === 'battle' || adventure.coopBlessingResume === 'battle-selection') {
 				this.advanceCoopAfterBlessings(session, adventure);
 			} else if (!adventure.coopBlessingRound && [50, 100, 150].includes(adventure.floor)) {
 				this.prepareCoopBlessingRound(adventure, session, adventure.floor as 50 | 100 | 150, 'advance');
@@ -2902,7 +3646,7 @@ export class RogueCoopSessions {
 		const adventure = session.adventure;
 		const owner = this.delegatedOwner(user, session, targetUser);
 		const member = adventure.members[owner];
-		const care = centerCare({ team: member.team, floor: adventure.floor, spirit: undefined });
+		const care = centerCare({ team: member.team, floor: adventure.floor, spirit: adventure.spirit });
 		requireRule(care.needed, '你的队伍状态良好，无需治疗。');
 		requireRule(member.money >= care.cost, `治疗需要 ${care.cost} 金币，余额不足。`);
 		const reservedTradeFee = adventure.tradeProposal?.fromUser === owner ? adventure.tradeProposal.fee : 0;
@@ -2910,8 +3654,15 @@ export class RogueCoopSessions {
 			`请保留 ${reservedTradeFee} 金币处理交换，或先撤回交换请求。`);
 		const expectedRevision = session.revision;
 		member.money -= care.cost;
-		for (const mon of member.team) restoreMember(mon);
-		member.notices = [`宝可梦中心已恢复你的队伍，支付 ${care.cost} 金币。`];
+		for (const mon of member.team) {
+			if (!mon.hp && !care.revives) continue;
+			const hp = mon.hp;
+			restoreMember(mon);
+			if (adventure.spirit === 'yveltal') mon.hp = hp;
+		}
+		member.notices = [adventure.spirit === 'yveltal' ?
+			`已清除存活伙伴的异常并恢复 PP，HP 保持不变；支付 ${care.cost} 金币。` :
+			`宝可梦中心已恢复你的队伍，支付 ${care.cost} 金币。`];
 		if (adventure.routeExitSelections) delete adventure.routeExitSelections[owner];
 		session.revision++;
 		session.updatedAt = Date.now();
@@ -2927,6 +3678,7 @@ export class RogueCoopSessions {
 			['rest', 'reward', 'trade', 'event'].includes(session.adventure.node?.kind || ''), '当前没有可共同离开的路线。');
 		const adventure = session.adventure;
 		requireRule(!isCoopMasterBallRoute(adventure.node), '请共同完成馈赠选择；随后仍可选择本层路线。');
+		requireRule(!coopMentorView(session, user.id) || !!adventure.mentor?.card, '请先与队友共同收下一张首领卡。');
 		requireRule(!adventure.node?.challenge, '请通过挑战的共同选项领取奖励或离开。');
 		requireRule(!adventure.tradeProposal, '请先接受、拒绝或撤回队伍交换请求，再离开休整中心。');
 		requireRule(!Object.values(adventure.members).some(member => member.pendingMoves?.length),
@@ -3005,6 +3757,9 @@ export class RogueCoopSessions {
 		const owner = this.delegatedOwner(user, session, command.owner);
 		const member = adventure.members[owner];
 		if (member.purchaseReceipts?.includes(command.id)) return session;
+		// A converted equipment receipt remains idempotent after the bounded UI request list is trimmed.
+		if (member.spiritConversions?.[`purchase:${command.id}:0`]) return session;
+		if (member.hpPurchases?.receipts.includes(command.id)) return session;
 		requireRule(!member.pendingMoves?.length, '请先处理自己队伍的待学习招式，再继续购买。');
 		const count = command.count ?? 1;
 		requireRule(Number.isSafeInteger(count) && count > 0 && count <= 999, '购买数量须为 1～999 的整数。');
@@ -3016,14 +3771,17 @@ export class RogueCoopSessions {
 		const sharedStock = adventure.node?.kind === 'trade' && item.remaining !== undefined ?
 			adventure.node.trade?.stock.find(entry => entry.id === item.id) : undefined;
 		requireRule(!sharedStock || sharedStock.remaining >= count, '该商品库存已被队友买完，请刷新后重选。');
-		const cost = item.price * count;
-		requireRule(Number.isSafeInteger(cost) && cost >= 0 && member.money >= cost, '你的金币余额不足。');
-		const reservedTradeFee = adventure.tradeProposal?.fromUser === owner ? adventure.tradeProposal.fee : 0;
-		requireRule(member.money - cost >= reservedTradeFee,
-			`请保留 ${reservedTradeFee} 金币处理交换，或先撤回交换请求。`);
 		const expectedRevision = session.revision;
-		member.money -= cost;
-		member.bag[item.id] = (member.bag[item.id] || 0) + count;
+		const hpPayment = command.action === 'buyhp' ? payCoopHp(adventure, member, item,
+			{ id: command.id, visit: command.visit, member: command.member, count }) : undefined;
+		const cost = hpPayment ? 0 : item.price * count;
+		requireRule(Number.isSafeInteger(cost) && cost >= 0 && member.money >= cost, '你的金币余额不足。');
+		if (!hpPayment) {
+			const reservedTradeFee = adventure.tradeProposal?.fromUser === owner ? adventure.tradeProposal.fee : 0;
+			requireRule(member.money - cost >= reservedTradeFee,
+				`请保留 ${reservedTradeFee} 金币处理交换，或先撤回交换请求。`);
+			member.money -= cost;
+		}
 		if (sharedStock) sharedStock.remaining -= count;
 		if (item.kind === 'candy' && item.remaining !== undefined) {
 			member.restCandyPurchases ||= {};
@@ -3032,15 +3790,31 @@ export class RogueCoopSessions {
 		member.purchaseReceipts ||= [];
 		member.purchaseReceipts.push(command.id);
 		if (member.purchaseReceipts.length > 256) member.purchaseReceipts.splice(0, member.purchaseReceipts.length - 256);
-		member.notices = [`购买 ${item.name} ×${count}，支付 ${cost} 金币。`];
+		member.notices = [hpPayment ? `购买 ${item.name} ×1，${hpPayment.species}支付 ${hpPayment.cost} HP。` :
+			`购买 ${item.name} ×${count}，支付 ${cost} 金币。`];
 		const run = this.previewBlessingRun(adventure, owner);
+		const receivedItems: Record<string, number> = {};
+		for (let n = 0; n < count; n++) {
+			const received = convertSpiritItem(run, this.engine.content!, item.id, `purchase:${command.id}:${n}`, randomInt);
+			run.bag[received] = (run.bag[received] || 0) + 1;
+			if (received !== item.id) receivedItems[received] = (receivedItems[received] || 0) + 1;
+		}
+		for (const [received, amount] of Object.entries(receivedItems)) {
+			member.notices.push(`梦幻的奇赠：${item.name}变为了${Dex.mod('gen9fantasy').items.get(received).name} ×${amount}。`);
+		}
 		run.phase = 'rest';
 		const accountUpdates = this.shoppingAccountUpdates(owner, run, cost);
+		const updates = accountUpdates || new Map<string, (account: RogueAccount) => void>();
+		const shoppingUpdate = updates.get(owner);
+		updates.set(owner, account => {
+			shoppingUpdate?.(account);
+			if (item.price > 0) recordCollapseResource(account, run, 'inflation');
+		});
 		this.saveBlessingRun(adventure, owner, run);
 		if (adventure.routeExitSelections) delete adventure.routeExitSelections[owner];
 		session.revision++;
 		session.updatedAt = Date.now();
-		this.engine.store.updateCoopSession(session, expectedRevision, accountUpdates);
+		this.engine.store.updateCoopSession(session, expectedRevision, updates);
 		const partnerId = session.hostUser === user.id ? session.guestUser : session.hostUser;
 		Users.get(partnerId)?.send(`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({
 			session: session.id, shopPurchase: true,
@@ -3363,6 +4137,10 @@ export class RogueCoopSessions {
 		requireRule(fromIndex >= 0 && toIndex >= 0, '交换队伍已变化，请重新发起请求。');
 		const offered = structuredClone(from.team[fromIndex]);
 		const requested = structuredClone(to.team[toIndex]);
+		// Public appearance only: an unhatched egg must not reveal its stored hatch roll.
+		const appearance = (mon: RoguePokemon) => ({ species: coopMemberName(mon),
+			shiny: !mon.egg && !!mon.set.shiny, gender: mon.egg ? '' : mon.set.gender || '' });
+		const offeredBefore = appearance(offered), requestedBefore = appearance(requested);
 		requireRule(canReceiveEgg(from.team, offered, requested) && canReceiveEgg(to.team, requested, offered),
 			'交换后双方都需要保留至少一只已孵化、未永久死亡的伙伴。');
 		from.team[fromIndex] = requested;
@@ -3391,7 +4169,13 @@ export class RogueCoopSessions {
 		session.updatedAt = Date.now();
 		this.engine.store.updateCoopSession(session, expectedRevision);
 		const tradeCompleted = { id: proposal.id, offeredPokemon: coopMemberName(offered),
-			requestedPokemon: coopMemberName(requested), fee: proposal.fee };
+			requestedPokemon: coopMemberName(requested), fee: proposal.fee,
+			participants: [
+				{ fromUser: proposal.fromUser, fromName: proposal.fromUser === session.hostUser ? session.hostName : session.guestName,
+					before: offeredBefore, after: appearance(offered) },
+				{ fromUser: owner, fromName: owner === session.hostUser ? session.hostName : session.guestName,
+					before: requestedBefore, after: appearance(requested) },
+			] };
 		for (const userid of [session.hostUser, session.guestUser]) {
 			Users.get(userid)?.send(`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({
 				session: session.id, tradeCompleted,
@@ -3399,11 +4183,29 @@ export class RogueCoopSessions {
 		}
 		return session;
 	}
+	private grantOpeningCoopSpirit(session: RogueCoopSession) {
+		const adventure = session.adventure!;
+		if (adventure.spirit !== 'celebi') return;
+		const run = this.sharedWildRun(adventure, session.hostUser);
+		run.team = [];
+		grantSpiritGift(run, this.engine.content!, randomInt);
+		const gift = run.team[0];
+		for (const owner of [session.hostUser, session.guestUser]) {
+			const member = adventure.members[owner];
+			const mon = createRoguePokemon(structuredClone(gift.set), member.boosts);
+			mon.fixedLevel = 40; initializeExperience(mon);
+			if (member.team.length < roguePartyLimit(adventure.spirit, member.blessings)) member.team.push(mon);
+			else (member.pendingCaptures ||= []).push(mon);
+			(member.notices ||= []).push('时拉比赠送了一位等级固定为 40 的共同伙伴，双方各自拥有。');
+		}
+	}
 	private selectStarters(user: User, ids: string[], suppliedBuilds?: Record<string, RogueStarterBuild>) {
 		const session = this.engine.store.coopSessionForUser(user.id);
 		requireRule(session?.status === 'lobby', '当前没有等待选初始队伍的联机大厅。');
+		requireRule(!session.spiritChoice, '请双方先共同确认塔灵选项。');
 		requireRule(Array.isArray(ids) && ids.length > 0 && ids.length <= 6 && ids.every(id => typeof id === 'string') &&
 			new Set(ids).size === ids.length, '请选择不同的初始宝可梦。');
+		requireRule(ids.length <= roguePartyLimit(session.spirit), '初始队伍超过本局塔灵允许的人数。');
 		const content = this.engine.content;
 		requireRule(content, '幻想杯肉鸽初始队伍尚未配置。');
 		const account = this.engine.store.get(user.id);
@@ -3456,6 +4258,7 @@ export class RogueCoopSessions {
 		if (session.starterSelections[session.hostUser] && session.starterSelections[session.guestUser]) {
 			session.adventure = {
 				id: randomUUID(), contentVersion: content.version, floor: 1, encounter: 0, phase: 'area-selection',
+				spirit: session.spirit, spiritVersion: content.spirits ? 1 : undefined,
 				difficulty: session.difficulty, doubleBattle: true, eventFragmentRuleVersion: 2,
 				members: {
 					[session.hostUser]: this.buildMemberState(session.hostUser, session.starterSelections[session.hostUser]!,
@@ -3464,9 +4267,13 @@ export class RogueCoopSessions {
 						session.starterBuildSelections[session.guestUser] || {}),
 				},
 			};
-			this.prepareRouteChoices(session.adventure);
 			session.status = 'active';
-			if (content.blessings) this.prepareCoopBlessingRound(session.adventure, session, 1, 'opening');
+			this.grantOpeningCoopSpirit(session);
+			prepareCoopCollapse(session.adventure);
+			if (session.adventure.phase !== 'collapse-selection') {
+				this.prepareRouteChoices(session.adventure);
+				if (content.blessings) this.prepareCoopBlessingRound(session.adventure, session, 1, 'opening');
+			}
 		}
 		session.revision++;
 		session.updatedAt = Date.now();
@@ -3481,7 +4288,12 @@ export class RogueCoopSessions {
 	command(user: User, command: RogueCoopCommand) {
 		this.authorize(user);
 		if (command.action === 'search' || command.action === 'refresh') {
-			return this.view(user, command.action === 'search' ? command.target : '');
+			if (command.action === 'search' && command.value === 'directory') {
+				const query = (typeof command.target === 'string' ? command.target : '').trim().slice(0, 24);
+				return { userid: user.id, playerSearch: { query, results: this.searchPlayers(user, query) } };
+			}
+			if (command.action === 'refresh') this.retryBattleGrowth(user.id);
+			return this.view(user, command.action === 'search' ? command.target : '', command.value === 'rules');
 		}
 		if (command.action === 'delegate') {
 			this.setDelegation(user, command.value || '');
@@ -3503,6 +4315,37 @@ export class RogueCoopSessions {
 			return this.view(user);
 		}
 		const currentSession = this.engine.store.coopSessionForUser(user.id);
+		if (command.action === 'comeback') {
+			this.commitProgress(user, 'eventChoice', () => {
+				const session = this.engine.store.coopSessionForUser(user.id);
+				const view = session && coopComebackView(session, user.id);
+				requireRule(session?.adventure && view, '当前没有待回应的共同再启程对话。');
+				const revision = session.revision, run = this.blessingRun(session.adventure, view.owner);
+				chooseCoopComeback(session, user.id, run, command.visit, command.value);
+				this.saveBlessingRun(session.adventure, view.owner, run);
+				session.revision++; session.updatedAt = Date.now();
+				return this.engine.store.updateCoopSession(session, revision);
+			});
+			return this.view(user);
+		}
+		requireRule(!currentSession || !coopComebackView(currentSession, user.id) ||
+			['leave', 'resume'].includes(command.action), '请先与队友共同回应再启程对话。');
+		if (command.action === 'spirit') {
+			this.commitProgress(user, 'blessingChoice', () => {
+				const session = this.engine.store.coopSessionForUser(user.id);
+				requireRule(session, '当前没有共同塔灵选择。');
+				const revision = session.revision;
+				chooseCoopSpirit(session, user.id, command.visit || '', command.value || '', command.confirmed === true,
+					[session.hostUser, session.guestUser].map(owner => this.engine.store.get(owner)), randomInt);
+				session.revision++; session.updatedAt = Date.now();
+				return this.engine.store.updateCoopSession(session, revision);
+			});
+			return this.view(user);
+		}
+		if (command.action === 'collapse') {
+			this.chooseCollapse(user, command);
+			return this.view(user);
+		}
 		requireRule(!currentSession || !this.coopAffectionScene(currentSession) ||
 			['affection', 'leave', 'resume'].includes(command.action), '请先共同回应当前的同行对话。');
 		if (command.action === 'affection') {
@@ -3510,14 +4353,16 @@ export class RogueCoopSessions {
 			return this.view(user);
 		}
 		if (['selectarea', 'selectbattle', 'previewbattle', 'preparebattle', 'continuebattle', 'retrybattle', 'finishroute',
-			'eventchoice', 'challenge', 'blessingchoice', 'blessingreward', 'proposetrade', 'respondtrade'].includes(command.action)) {
+			'eventchoice', 'challenge', 'godchallenge', 'blessingchoice', 'blessingreward', 'mentorcard',
+			'proposetrade', 'respondtrade'].includes(command.action)) {
 			requireRule(!Object.values(currentSession?.adventure?.members || {}).some(member => member.pendingCaptures?.length),
 				'请双方先安置满队时捕获的新伙伴，再继续共同旅程。');
 			requireRule(!Object.values(currentSession?.adventure?.members || {})
 				.some(member => member.companionInvitations?.length),
 			'请双方先接受、替换或婉拒待处理的同行邀请。');
 		}
-		if (['selectbattle', 'previewbattle', 'preparebattle', 'eventchoice', 'blessingchoice', 'blessingreward']
+		if (['selectbattle', 'previewbattle', 'preparebattle', 'eventchoice', 'godchallenge',
+			'blessingchoice', 'blessingreward']
 			.includes(command.action)) {
 			requireRule(!Object.values(currentSession?.adventure?.members || {}).some(member => member.pendingMoves?.length),
 				'请双方先处理待学习招式，再继续共同旅程。');
@@ -3525,12 +4370,25 @@ export class RogueCoopSessions {
 		requireRule(!currentSession || !this.storyRecoveryView(currentSession) ||
 			['leave', 'resume', 'learn', 'blessingchoice', 'blessingreward'].includes(command.action),
 		'联机冒险不进入秘闻，请先共同返回同层普通区域。');
+		if (command.action === 'godchallenge') {
+			this.choosePostgame(user, command);
+			return this.view(user);
+		}
 		if (command.action === 'release' || command.action === 'replace') {
 			this.releaseMember(user, command);
 			return this.view(user);
 		}
+		if (command.action === 'box' || command.action === 'merge') {
+			this.editMemberStorage(user, command);
+			return this.view(user);
+		}
 		if (['coverage', 'setmove', 'equip', 'equipemblem', 'configureuniversal'].includes(command.action)) {
 			this.trainMemberMoves(user, command);
+			return this.view(user);
+		}
+		if (command.action === 'evolutionnotice' || command.action === 'evolve' && currentSession?.adventure?.phase === 'battle') {
+			const session = this.engine.store.commitCoopResult(() => this.decideGrowthEvolution(user, command));
+			this.notifyGrowth(session);
 			return this.view(user);
 		}
 		if (['use', 'evolve', 'fantasize', 'forme'].includes(command.action)) {
@@ -3552,7 +4410,7 @@ export class RogueCoopSessions {
 			return this.view(user);
 		}
 		if (command.action === 'selectarea') {
-			this.selectArea(user, command.value || '');
+			this.engine.store.commitCoopResult(() => this.selectArea(user, command.value || ''));
 			return this.view(user);
 		}
 		if (command.action === 'cancelarea') {
@@ -3565,6 +4423,10 @@ export class RogueCoopSessions {
 		}
 		if (command.action === 'challenge') {
 			this.chooseChallenge(user, command);
+			return this.view(user);
+		}
+		if (command.action === 'companion' || command.action === 'socialcompanion') {
+			this.chooseCompanionService(user, command);
 			return this.view(user);
 		}
 		if (command.action === 'companioninvite') {
@@ -3595,11 +4457,37 @@ export class RogueCoopSessions {
 			this.recoverMember(user, command);
 			return this.view(user);
 		}
+		if (command.action === 'mentorcard') {
+			this.commitProgress(user, 'blessingChoice', () => {
+				const session = this.engine.store.coopSessionForUser(user.id);
+				requireRule(session, '当前没有共同冒险。');
+				const revision = session.revision;
+				chooseCoopMentor(session, user.id, command.visit, command.value);
+				session.revision++; session.updatedAt = Date.now();
+				this.engine.store.updateCoopSession(session, revision);
+				return session;
+			});
+			return this.view(user);
+		}
 		if (command.action === 'finishroute') {
 			this.finishRest(user);
 			return this.view(user);
 		}
-		if (command.action === 'buy') {
+		if (command.action === 'shopchallenge') {
+			this.commitProgress(user, 'eventChoice', () => {
+				const session = this.engine.store.coopSessionForUser(user.id);
+				requireRule(session?.adventure, '当前没有共同冒险。');
+				const revision = session.revision;
+				chooseCoopShopChallenge(session, [session.hostUser, session.guestUser].map(owner =>
+					this.blessingRun(session.adventure!, owner)), this.engine.content!, randomInt,
+				user.id, command.visit, command.confirmed === true);
+				session.revision++; session.updatedAt = Date.now();
+				this.engine.store.updateCoopSession(session, revision);
+				return session;
+			});
+			return this.view(user);
+		}
+		if (command.action === 'buy' || command.action === 'buyhp') {
 			this.buyRest(user, command);
 			return this.view(user);
 		}
@@ -3636,22 +4524,32 @@ export class RogueCoopSessions {
 			return this.view(user);
 		}
 		if (command.action === 'learn') {
-			const session = this.engine.store.coopSessionForUser(user.id);
-			const learningAllowed = ['area-selection', 'battle-selection', 'route-interaction', 'settlement',
-				'blessing-selection', 'blessing-reward'].includes(session?.adventure?.phase || '');
-			requireRule(session?.status === 'active' && session.adventure && learningAllowed &&
-				typeof command.member === 'string' && typeof command.value === 'string', '没有待处理的共同队伍招式。');
-			const expectedRevision = session.revision;
-			const owner = this.delegatedOwner(user, session, command.owner);
-			requireRule(command.move === undefined || command.move === session.adventure.members[owner].pendingMoves?.[0]?.move,
-				'待学习招式已变化，请刷新后重新选择。');
-			const updateAccount = this.resolveMemberMove(owner, session.adventure, command.member, command.value);
-			if (session.adventure.phase === 'battle-selection') clearBattleSelections(session, owner);
-			session.revision++;
-			session.updatedAt = Date.now();
-			this.engine.store.updateCoopSession(session, expectedRevision, new Map([[owner, updateAccount]]));
-			Users.get(session.hostUser === user.id ? session.guestUser : session.hostUser)?.send(
-				`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({ session: session.id, learned: true })}`);
+			const learnedSession = this.engine.store.commitCoopResult(() => {
+				const session = this.engine.store.coopSessionForUser(user.id);
+				const liveKey = session && coopGrowthKey(session);
+				const learningAllowed = liveKey || ['area-selection', 'battle-selection', 'route-interaction', 'settlement',
+					'blessing-selection', 'blessing-reward'].includes(session?.adventure?.phase || '');
+				requireRule(session?.status === 'active' && session.adventure && learningAllowed &&
+					typeof command.member === 'string' && typeof command.value === 'string', '没有待处理的共同队伍招式。');
+				const expectedRevision = session.revision;
+				const owner = this.delegatedOwner(user, session, command.owner);
+				if (liveKey) requireRule(command.visit === liveKey &&
+					command.move === session.adventure.members[owner].pendingMoves?.[0]?.move,
+				'成长提示已变化，请刷新后重新选择。');
+				requireRule(command.move === undefined || command.move === session.adventure.members[owner].pendingMoves?.[0]?.move,
+					'待学习招式已变化，请刷新后重新选择。');
+				const updateAccount = this.resolveMemberMove(owner, session.adventure, command.member, command.value);
+				if (session.adventure.phase === 'battle-selection') clearBattleSelections(session, owner);
+				if (liveKey) reviseCoopGrowth(session);
+				session.revision++;
+				session.updatedAt = Date.now();
+				this.engine.store.updateCoopSession(session, expectedRevision,
+					updateAccount ? new Map([[owner, updateAccount]]) : undefined);
+				return session;
+			});
+			if (learnedSession.adventure?.phase === 'battle') this.notifyGrowth(learnedSession);
+			else Users.get(learnedSession.hostUser === user.id ? learnedSession.guestUser : learnedSession.hostUser)?.send(
+				`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({ session: learnedSession.id, learned: true })}`);
 			return this.view(user);
 		}
 		if (command.action === 'continuebattle' || command.action === 'retrybattle') {
@@ -3711,6 +4609,8 @@ export class RogueCoopSessions {
 				battleSelections: { [host.id]: [], [user.id]: [] },
 				areaSelections: { [host.id]: null, [user.id]: null },
 			};
+			if (this.engine.content?.spirits) prepareCoopSpirit(session,
+				[session.hostUser, session.guestUser].map(owner => this.engine.store.get(owner)));
 			this.engine.store.acceptCoopInvitation(invite.id, user.id, session);
 			host.send(`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({ session: session.id })}`);
 			return this.view(user);

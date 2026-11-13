@@ -16,6 +16,7 @@ import { execSync } from "child_process";
 import { Repl, ProcessManager, type Streams } from '../lib';
 import { BattleStream } from "../sim/battle-stream";
 import { Battle } from '../sim/battle';
+import { isCoopBossState } from '../sim/rogue-coop-boss';
 import { captureCoopCheckpoint, validCoopCheckpoint, type RogueCoopCheckpoint } from '../sim/rogue-coop-checkpoint';
 import { RoomGamePlayer, RoomGame } from "./room-game";
 import type { Tournament } from './tournaments/index';
@@ -27,7 +28,7 @@ import { captureInitialTeam, captureInitialMoves } from './fantasy-ai/initial-sn
 import { captureFullChoice } from './fantasy-ai/full-state';
 import { aiDifficulty, type Difficulty } from './fantasy-ai/types';
 import { RoguePreviewController } from './fantasy-rogue/preview-controller';
-import type { RogueBattleResult, RogueBattleState, RoguePokemon } from '../sim/fantasy-rogue';
+import { rogueBattleResult, type RogueBattleResult, type RogueBattleState, type RoguePokemon } from '../sim/fantasy-rogue';
 
 export interface RogueRoomOptions {
 	cooperative?: { name: string, avatar: string, ally: string, foe: string, foeName: string };
@@ -1463,7 +1464,8 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 				avatar: player.isAI ?
 					(player.slot === 'p3' ? this.options.fantasyRogue?.cooperative?.avatar : this.options.fantasyAI?.trainer.avatar) || '' :
 					user ? `${user.avatar}` : '',
-				team: playerOpts.team || undefined,
+				team: slot === 'p4' && isCoopBossState(this.format, this.options.fantasyRogue?.state) ?
+					[] : playerOpts.team || undefined,
 				rating: Math.round(playerOpts.rating || 0),
 			};
 			if (!this.options.fantasyRogue?.resumeCheckpoint) void this.stream.write(`>player ${slot} ${JSON.stringify(options)}`);
@@ -1778,6 +1780,11 @@ export class RoomBattleStream extends BattleStream {
 			}
 			this.pushMessage('fantasyrogueresumechoices', JSON.stringify(choices));
 			for (const side of battle.sides) side.emitRequest(side.activeRequest || { wait: true, side: side.getRequestData() });
+			if (battle.fantasyRogue?.liveProgression && battle.fantasyRogue.growthWaiting) {
+				this.pushMessage('fantasyrogueprogress', JSON.stringify({
+					sequence: battle.fantasyRogue.defeated?.length || 0, result: rogueBattleResult(battle, false),
+				}));
+			}
 			return;
 		}
 		if (type === 'roguecoopcapture') {

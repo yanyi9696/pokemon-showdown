@@ -113,6 +113,7 @@ export function reconstructWorld(world: WorldHypothesis, seed: PRNGSeed): Battle
 					const request = member.request?.moves.find(move => move.id === slot.id) as
 						{ pp?: number, disabled?: boolean | string, disabledSource?: string } | undefined;
 					slot.pp = request?.pp ?? Math.max(0, slot.maxpp - (seen?.moveUses[slot.id] || 0));
+					slot.used = index === 0 && !!seen?.usedMoves?.includes(slot.id);
 					if (member.request?.moves[0]?.id === 'struggle') slot.pp = 0;
 					if (request?.disabled) { slot.disabled = true; slot.disabledSource = request.disabledSource || ''; }
 				}

@@ -47,6 +47,27 @@ describe('Fantasy Rogue cooperative invitations and lobby records', () => {
 		Config.bindaddress = oldLocal.bind;
 		Config.fantasyrogue = oldLocal.rogue;
 	});
+	it('serves versioned entry rules only on request without changing accounts or invitations', () => {
+		const before = structuredClone(store.get(host.id));
+		const { COOP_GUIDE, COOP_GUIDE_VERSION } = require('../../dist/server/fantasy-rogue/coop-guide');
+		const view = manager.coop.command(host, { action: 'refresh', value: 'rules' });
+		assert.deepEqual(view.rules, COOP_GUIDE);
+		assert.equal(view.accountRevision, before.revision);
+		assert.equal(view.rulesVersion, COOP_GUIDE_VERSION);
+		assert.equal(view.rulesVersion, crypto.createHash('sha256').update(JSON.stringify(view.rules)).digest('hex'));
+		for (const action of ['refresh', 'search']) {
+			const ordinary = manager.coop.command(host, { action });
+			assert.equal(ordinary.rules, undefined);
+			assert.equal(ordinary.rulesVersion, view.rulesVersion);
+		}
+		assert.deepEqual(store.get(host.id), before);
+		assert.equal(store.coopSessionForUser(host.id), undefined);
+		assert.equal(store.coopInvitations(host.id).length, 0);
+		Config.fantasyrogue.coopEnabled = false;
+		Config.fantasyailocal = false;
+		host.registered = true;
+		assert.throws(() => manager.coop.command(host, { action: 'refresh', value: 'rules' }), /联机游玩暂未开放/);
+	});
 	function forceSharedEvent(id) {
 		const session = store.coopSessionForUser(host.id), revision = session.revision;
 		const event = { id, key: randomUUID(), stage: 'choice' };
@@ -177,6 +198,27 @@ describe('Fantasy Rogue cooperative invitations and lobby records', () => {
 			action: 'invite', target: guest.name, difficulty: 1,
 		}), /对方不符合该档位游玩要求/);
 		assert.deepEqual(store.coopInvitations(host.id), []);
+	});
+	it('searches a single character across public names and saved offline identities without exposing accounts', () => {
+		engine.command(guest.id, { id: randomUUID(), revision: 0, action: 'start', starters: ['bulbasaur'] }, '离线小伙伴');
+		const before = structuredClone(store.get(guest.id));
+		const search = target => manager.coop.command(host, { action: 'search', value: 'directory', target }).playerSearch.results;
+		assert(search('g').some(player => player.userid === guest.id && player.online));
+		guest.disconnectAll();
+		const offline = search('伙').find(player => player.userid === guest.id);
+		assert.deepEqual(offline, { userid: guest.id, name: '离线小伙伴', online: false });
+		assert.deepEqual(Object.keys(offline).sort(), ['name', 'online', 'userid']);
+		assert.deepEqual(search('%'), []);
+		assert.deepEqual(search('_'), []);
+		assert.deepEqual(search(''), []);
+		assert(!search('coop').some(player => player.userid === host.id));
+		assert.throws(() => manager.coop.command(host, { action: 'invite', target: guest.id, difficulty: 0 }), /请先登录|在线/);
+		assert.deepEqual(store.get(guest.id), before);
+		assert.equal(store.coopInvitations(host.id).length, 0);
+	});
+	it('keeps directory search behind the existing co-op access gate', () => {
+		Config.fantasyailocal = false; host.registered = true; Config.fantasyrogue.coopEnabled = false;
+		assert.throws(() => manager.coop.command(host, { action: 'search', value: 'directory', target: 'c' }), /联机游玩暂未开放/);
 	});
 
 	it('accepts an invitation into a persistent lobby without changing either personal save', () => {
@@ -545,6 +587,7 @@ describe('Fantasy Rogue cooperative invitations and lobby records', () => {
 		}, member.boosts, randomUUID());
 		hostMember.team[0] = tradePokemon(hostMember, 'Machoke', 'Guts', 'lowkick');
 		guestMember.team[0] = tradePokemon(guestMember, 'Haunter', 'Levitate', 'lick');
+		hostMember.team[0].set.shiny = true; hostMember.team[0].set.gender = 'F';
 		hostMember.money = 6000; guestMember.money = 4000;
 		hostMember.pendingMoves = [{ member: hostMember.team[0].id, move: 'tackle' }];
 		guestMember.pendingMoves = [{ member: guestMember.team[0].id, move: 'growl' }];
@@ -589,7 +632,20 @@ describe('Fantasy Rogue cooperative invitations and lobby records', () => {
 		assert.equal(beforeTrade().members[host.id].team[0].set.species, 'Machoke');
 		propose();
 		proposal = manager.coop.view(guest).session.adventure.tradeProposal;
-		manager.coop.command(guest, { action: 'respondtrade', id: proposal.id, accept: true });
+		const originalSend = guest.send, packets = [];
+		guest.send = packet => { packets.push(packet); return originalSend.call(guest, packet); };
+		try {
+			manager.coop.command(guest, { action: 'respondtrade', id: proposal.id, accept: true });
+		} finally { guest.send = originalSend; }
+		const notice = packets.filter(packet => packet.startsWith('|queryresponse|fantasyroguecoopnotice|'))
+			.map(packet => JSON.parse(packet.slice('|queryresponse|fantasyroguecoopnotice|'.length)))
+			.find(packet => packet.tradeCompleted)?.tradeCompleted;
+		assert(notice, 'a committed exchange sends public visual information');
+		assert.equal(notice.participants[0].fromUser, host.id);
+		assert.deepEqual(notice.participants[0].before, { species: 'Machoke', shiny: true, gender: 'F' });
+		assert.deepEqual(notice.participants[0].after, { species: 'Machamp', shiny: true, gender: 'F' });
+		assert.equal(notice.participants[1].before.species, 'Haunter');
+		assert.equal(notice.participants[1].after.species, 'Gengar');
 		let adventure = beforeTrade();
 		assert.equal(adventure.members[host.id].team[0].set.species, 'Gengar');
 		assert.equal(adventure.members[guest.id].team[0].set.species, 'Machamp');

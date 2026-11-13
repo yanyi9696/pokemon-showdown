@@ -26,7 +26,8 @@ export const ROGUE_SPIRITS = [
 		text: '本局每轮祝福都以一银、一金、一彩的形式出现，从左到右依次为白银、黄金、棱彩。每个位置独立刷新且品质不变，领取时按所选祝福的品质承担等级代价。' },
 	{ id: 'yveltal', species: 'Yveltal', name: '伊裴尔塔尔的交易', enabled: true,
 		text: '我方招式造成实际伤害后，回复伤害量 50% 的 HP。每个商店最多用伙伴的 HP 购买 3 件商品，所有商品均可血付；休整只恢复 PP 和异常状态，不回血。' },
-	{ id: 'latios', species: 'Latios', name: '拉帝欧斯的协奏', enabled: false, text: '所有对战改为双打。等待双打馆主队伍，暂不开放。' },
+	{ id: 'latios', species: 'Latios', name: '拉帝欧斯的协奏', enabled: true,
+		text: '所有对战改为双打，全队轮换，不用六选四。奖励会增多：仅单人冒险的战斗经验 +35%，区域基础金币和战利品售值额外返还 25% 金币（向下取整）。不增加永久成长点、回响、赠送伙伴或稀有道具数量；联机不叠加此补偿。' },
 	{ id: 'hoopagift', species: 'Mew', name: '梦幻的奇赠', enabled: true,
 		text: '获得普通携带道具时，有 50% 概率转化为一件幻想道具。羽毛、增强剂、进化及恢复用品不参与；已持有的道具交换不会触发。' },
 	{ id: 'meowth', species: 'Meowth', name: '喵喵的商道', enabled: true,
@@ -50,7 +51,7 @@ export const ROGUE_SPIRITS = [
 		text: '默认天气为下雨，不随回合结束。其他天气可以覆盖；覆盖结束后恢复下雨。' },
 	{ id: 'tyranitar', species: 'Tyranitar', name: '班基拉斯的沙暴', enabled: true, weather: 'sandstorm',
 		text: '默认天气为沙暴，不随回合结束。其他天气可以覆盖；覆盖结束后恢复沙暴。' },
-	{ id: 'kyurem', species: 'Kyurem', name: '酋雷姆的霜天', enabled: true, weather: 'snow',
+	{ id: 'kyurem', species: 'Kyurem', name: '酋雷姆的霜天', enabled: true, weather: 'snowscape',
 		text: '默认天气为下雪，不随回合结束。其他天气可以覆盖；覆盖结束后恢复下雪。' },
 	{ id: 'tapukoko', species: 'Tapu Koko', name: '卡璞·鸣鸣的雷域', enabled: true, terrain: 'electricterrain',
 		text: '默认展开电气场地，不随回合结束。其他场地可以覆盖；覆盖结束后恢复电气场地。' },
@@ -141,35 +142,71 @@ export function resolveRogueFutureAttacks(battle: Battle) {
 	}
 }
 
+/** Announced field rules only; the AI can copy these without accessing campaign/player state. */
+export interface PublicRogueEnvironment { id: string; windSide?: number; duel?: boolean }
+
 /** Called at battle start and after native weather/terrain timers have expired. */
-export function maintainRogueEnvironment(battle: Battle) {
-	const state = battle.fantasyRogue?.spirit;
+export function maintainRogueEnvironment(battle: Battle, afterResidual = false, environment?: PublicRogueEnvironment) {
+	const state = environment || battle.fantasyRogue?.spirit;
 	if (!state) return;
 	const spirit = rogueSpirit(state.id);
 	const source = battle.p1.active.find(mon => mon?.hp) || battle.p2.active.find(mon => mon?.hp) || battle.p1.pokemon[0];
+	// Older spirit battles stored the move alias as a condition, which had no native weather effect.
+	// Repair that one alias in place, preserving its remaining duration and all player progress.
+	if (battle.field.weather === 'snow') {
+		const remaining = battle.field.weatherState.duration;
+		battle.field.clearWeather();
+		if (battle.field.setWeather('snowscape', source, battle.format)) {
+			if (remaining) {
+				battle.field.weatherState.duration = remaining;
+				battle.add('-message', `塔灵的雪天还将持续 ${remaining} 回合。`, '[roguefieldduration]',
+					'field', 'snowscape', remaining, ...(afterResidual ? ['[afterresidual]'] : []));
+			} else {
+				delete battle.field.weatherState.duration;
+				battle.add('-message', '塔灵的默认天气不会自然结束，可以被其他天气覆盖。', '[roguepermanentweather]');
+			}
+		}
+	}
 	const randomEnvironment = state.id === 'castform' && !battle.field.weather && !battle.field.terrain ?
 		battle.sample([
-			'sunnyday', 'raindance', 'sandstorm', 'snow', 'electricterrain', 'psychicterrain', 'grassyterrain', 'mistyterrain',
+			'sunnyday', 'raindance', 'sandstorm', 'snowscape', 'electricterrain', 'psychicterrain', 'grassyterrain', 'mistyterrain',
 		]) : '';
 	if (!battle.field.weather && (spirit?.weather || (randomEnvironment && !randomEnvironment.endsWith('terrain')))) {
-		const weather = spirit?.weather || randomEnvironment;
+		const weatherName = spirit?.weather || randomEnvironment;
+		const weather = weatherName === 'snow' ? 'snowscape' : weatherName;
 		if (battle.field.setWeather(weather, source, battle.format)) {
-			if (spirit?.weather) delete battle.field.weatherState.duration;
-			else battle.field.weatherState.duration = 5;
+			if (spirit?.weather) {
+				delete battle.field.weatherState.duration;
+				battle.add('-message', '塔灵的默认天气不会自然结束，可以被其他天气覆盖。', '[roguepermanentweather]');
+			} else {
+				battle.field.weatherState.duration = 5;
+				battle.add('-message', '塔灵本次随机天气持续 5 回合。', '[roguefieldduration]',
+					'field', battle.field.weather, 5, ...(afterResidual ? ['[afterresidual]'] : []));
+			}
 		}
 	}
 	if (!battle.field.terrain && (spirit?.terrain || randomEnvironment.endsWith('terrain'))) {
 		const terrain = spirit?.terrain || randomEnvironment;
 		if (battle.field.setTerrain(terrain, source, battle.format)) {
-			if (spirit?.terrain) delete battle.field.terrainState.duration;
-			else battle.field.terrainState.duration = 5;
+			if (spirit?.terrain) {
+				delete battle.field.terrainState.duration;
+				battle.add('-message', '塔灵的默认场地不会自然结束，可以被其他场地覆盖。', '[roguepermanentterrain]');
+			} else {
+				battle.field.terrainState.duration = 5;
+				battle.add('-message', '塔灵本次随机场地持续 5 回合。', '[roguefieldduration]',
+					'field', battle.field.terrain, 5, ...(afterResidual ? ['[afterresidual]'] : []));
+			}
 		}
 	}
 	if (state.id === 'tornadus') {
-		if (battle.fantasyRogue?.duel) {
+		if (environment ? environment.duel : battle.fantasyRogue?.duel) {
 			// Each archive starts its own ally-first cycle; simultaneous handoffs give both sides wind.
 			for (const side of battle.sides) {
-				if (!side.sideConditions.tailwind) side.addSideCondition('tailwind', source, battle.format);
+				if (!side.sideConditions.tailwind && side.addSideCondition('tailwind', source, battle.format)) {
+					battle.add('-message', `${side.name}的塔灵顺风已开启。`, '[roguefieldduration]',
+						side.id, 'tailwind', side.getSideConditionData('tailwind').duration,
+						...(afterResidual ? ['[afterresidual]'] : []));
+				}
 			}
 			return;
 		}
@@ -179,7 +216,11 @@ export function maintainRogueEnvironment(battle: Battle) {
 			state.windSide = next;
 			const side = battle.sides[next];
 			side.addSideCondition('tailwind', source, battle.format);
-			if (side.sideConditions.tailwind) side.sideConditions.tailwind.duration = 4;
+			if (side.sideConditions.tailwind) {
+				side.sideConditions.tailwind.duration = 4;
+				battle.add('-message', `${side.name}的塔灵顺风持续 4 回合。`, '[roguefieldduration]',
+					side.id, 'tailwind', 4, ...(afterResidual ? ['[afterresidual]'] : []));
+			}
 		}
 	}
 }
@@ -187,7 +228,8 @@ export function maintainRogueEnvironment(battle: Battle) {
 export function startRogueSpirit(battle: Battle) {
 	if (battle.deserialized || !battle.fantasyRogue?.spirit) return;
 	const state = battle.fantasyRogue.spirit;
-	battle.add('-message', `塔灵：${rogueSpirit(state.id)?.name || state.id}`);
+	battle.add('-message', `塔灵：${rogueSpirit(state.id)?.name || state.id}`, '[roguespirit]',
+		state.id, ...(battle.fantasyRogue.duel ? ['[duel]'] : []));
 	maintainRogueEnvironment(battle);
 	if (state.id === 'palkia') {
 		battle.field.addPseudoWeather('trickroom', battle.p1.pokemon[0], battle.format);
@@ -196,6 +238,8 @@ export function startRogueSpirit(battle: Battle) {
 	}
 	if (state.id === 'hoopamischief') {
 		for (const [i, side] of battle.sides.entries()) {
+			// Multi allies share one condition table: apply the saved roll once per alliance.
+			if (side.allySide && side.n > side.allySide.n) continue;
 			const effects = [state.hazards?.[i] || 'stealthrock'];
 			// The second archive has the opposite ally/foe orientation. Preserve both rolled pairs.
 			if (battle.fantasyRogue.duel) effects.push(battle.fantasyRogue.duel.hazards?.[1 - i] || 'stealthrock');

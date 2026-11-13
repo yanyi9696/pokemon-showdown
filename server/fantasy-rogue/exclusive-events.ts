@@ -1,14 +1,15 @@
 import { formItem } from './form-item-data';
 import { randomUUID } from 'crypto';
 import { Dex } from '../../sim/dex';
-import type { RogueRun } from './types';
+import type { RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import {
-	exclusiveCatalog, neededExclusiveItems, exclusiveEncounterChance, grantExclusiveItem, suitableExclusiveItems,
+	exclusiveCatalog, neededExclusiveItems, exclusiveEncounterChance, grantExclusiveItem, suitableExclusiveItems, type ExclusiveItem,
 } from './exclusive-items';
 import { makeEncounterSet, randomEncounterIVs, regionalEncounterLevel } from './encounter-sets';
 import { lowerToEligibleStage } from './evolution';
 import { applyHeldForme } from './held-formes';
+import { inventoryItem } from './team';
 
 const dex = Dex.mod('gen9fantasy');
 export interface ExclusiveEvent { item: string; answer?: number; tried: number[]; clue?: number; battleElite?: boolean }
@@ -22,6 +23,11 @@ export function beginExclusiveEncounter(run: RogueRun, random: RogueRandom) {
 	const item = best[random(best.length)], success = random(100) < exclusiveEncounterChance(run, item.id);
 	for (const entry of needs) run.exclusiveItems![entry.id].misses++;
 	if (!success) return false;
+	return prepareExclusiveEncounter(run, random, item);
+}
+
+/** Build the selected test after the caller has performed its one encounter roll. */
+export function prepareExclusiveEncounter(run: RogueRun, random: RogueRandom, item: ExclusiveItem) {
 	const owner = run.team.find(mon => suitableExclusiveItems(mon.set.species).some(entry => entry.id === item.id))!;
 	// A surprise item encounter remains a modest test, below the separate challenge route.
 	const lv = Math.min(100, regionalEncounterLevel(run.floor, false) + 2);
@@ -79,7 +85,7 @@ export function exclusiveEventView(run: RogueRun) {
 			item.sites.flatMap((site, i) => state.tried.includes(i) ? [] : [option(`site:${i}`, `查看${site}。`)]),
 	};
 }
-export function chooseExclusiveEvent(run: RogueRun, choice: string, random: RogueRandom) {
+export function chooseExclusiveEvent(run: RogueRun, content: RogueContent, choice: string, random: RogueRandom) {
 	const event = run.node!.event!, state = event.exclusive!, item = exclusiveCatalog().find(i => i.id === state.item)!;
 	if (choice === 'leave') {
 		event.stage = 'result'; event.settled = true;
@@ -89,9 +95,11 @@ export function chooseExclusiveEvent(run: RogueRun, choice: string, random: Rogu
 	if (choice === 'investigate') { event.result = ['你蹲下来端详地上的痕迹，伙伴也凑过来闻了闻。四处地方都有些可疑。']; return; }
 	const index = Number(choice.slice(5));
 	if (index === state.answer) {
-		const granted = grantExclusiveItem(run, state.item);
+		const granted = grantExclusiveItem(run, state.item, content, random);
 		event.stage = 'result'; event.settled = true;
-		event.result = [granted ? `伙伴兴奋地叫了起来。你在${item.sites[index]}找到了【${formItem(state.item)?.name || dex.items.get(state.item).name}】！` : '这里的物品已经由你收好。'];
+		event.result = [granted ?
+			`伙伴兴奋地叫了起来。你在${item.sites[index]}找到了【${inventoryItem(content, granted)?.name || granted}】！` : '这里的物品已经由你收好。'];
+		if (granted && granted !== state.item) event.result.push('梦幻的奇赠将本次新获得的携带道具转换成了幻想道具。');
 		return;
 	}
 	state.tried.push(index); state.battleElite = state.tried.length === 3;
@@ -108,7 +116,7 @@ export function chooseExclusiveEvent(run: RogueRun, choice: string, random: Rogu
 		catchable: true, style: 'balanced' }];
 	run.encounter = 0; run.phase = 'ready';
 }
-export function settleExclusiveEvent(run: RogueRun, won: boolean) {
+export function settleExclusiveEvent(run: RogueRun, content: RogueContent, random: RogueRandom, won: boolean) {
 	const event = run.node!.event!, state = event.exclusive!, item = exclusiveCatalog().find(i => i.id === state.item)!;
 	event.key = randomUUID();
 	if (event.id === 'exclusivechallenge') {
@@ -117,8 +125,10 @@ export function settleExclusiveEvent(run: RogueRun, won: boolean) {
 			const reward = run.node!.reward;
 			run.money += reward.money;
 			for (const [id, count] of Object.entries(reward.items)) run.bag[id] = (run.bag[id] || 0) + count;
-			grantExclusiveItem(run, state.item);
-			event.result = [`${item.trainer}收回精灵球，认真地点了点头。`, `「我看到了。交给你们，我很放心。」你接过了【${formItem(state.item)?.name || dex.items.get(state.item).name}】。`];
+			const granted = grantExclusiveItem(run, state.item, content, random);
+			event.result = [`${item.trainer}收回精灵球，认真地点了点头。`, granted ?
+				`「我看到了。交给你们，我很放心。」你接过了【${inventoryItem(content, granted)?.name || granted}】。` : '这件专属奖励已经领取。'];
+			if (granted && granted !== state.item) event.result.push('梦幻的奇赠将本次新获得的携带道具转换成了幻想道具。');
 		} else {
 			run.exclusiveItems![state.item].cooldown = run.floor + 8;
 			event.result = [`${item.trainer}扶稳你，摇了摇头：「还差一点。先照顾好伙伴，过一段路，我会再来测试你们的实力。」`];

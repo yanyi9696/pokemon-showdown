@@ -13,7 +13,7 @@ const { journeyCoins } = require('../../dist/server/fantasy-rogue/early-balance'
 const { Battle } = require('../../dist/sim/battle');
 const { Teams } = require('../../dist/sim/teams');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op flute, Ditto observation and doctor gifts', () => {
 	let oldConfig, store, engine, manager, host, guest, created, preview;
@@ -62,7 +62,7 @@ describe('Fantasy Rogue co-op flute, Ditto observation and doctor gifts', () => 
 		const shared = session(), revision = shared.revision;
 		update(shared); shared.revision++; store.updateCoopSession(shared, revision);
 	}
-	function enter(id, floor = 60) {
+	function enter(id, floor = 60, random) {
 		change(shared => {
 			shared.adventure.floor = floor;
 			shared.adventure.routeChoices = [{ id: 'activityroute', name: '共同事件', kind: 'event',
@@ -75,7 +75,9 @@ describe('Fantasy Rogue co-op flute, Ditto observation and doctor gifts', () => 
 				state.bag = { pokeball: user === host ? 5 : 12 };
 			}
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'activityroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'activityroute' });
+		}, random);
 		assert.equal(event(host).id, id);
 	}
 	function agree(choice) {
@@ -243,7 +245,7 @@ describe('Fantasy Rogue co-op flute, Ditto observation and doctor gifts', () => 
 		const random = crypto.randomInt; let notes = 0;
 		try {
 			crypto.randomInt = max => max === 3 ? notes++ % 3 : 0;
-			enter('pokeflute'); assert.equal(notes, 3);
+			enter('pokeflute', 60, crypto.randomInt); assert.equal(notes, 3);
 			assert.deepEqual(member(host).coopEvent.activity.pattern, ['低音', '中音', '高音']);
 			agree('listen'); agree('note:0'); assert.equal(notes, 3);
 			const visible = JSON.stringify(event(guest));

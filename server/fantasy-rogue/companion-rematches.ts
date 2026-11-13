@@ -2,7 +2,8 @@ import { awardRoguePoints } from './difficulty';
 import { randomUUID } from 'crypto';
 import { travellingRoster } from './travellers';
 import { TRAVELLERS } from './traveller-profiles';
-import type { RogueAccount, RogueEncounter, RogueRun, RogueTrainer } from './types';
+import type { RogueAccount, RogueContent, RogueEncounter, RogueRun, RogueTrainer } from './types';
+import type { RogueRandom } from './biome-pools';
 import { dialoguePage, healNarrativeParty, queueNarrative } from './narrative';
 import { grantExclusiveItem } from './exclusive-items';
 
@@ -21,6 +22,18 @@ export function opposingCompanion(run: RogueRun, trainer?: RogueTrainer): string
 export function eligibleRematches(run: RogueRun) {
 	return (run.rematches || []).filter(entry => !entry.claimed && run.floor >= entry.nextFloor &&
 		travellingRoster(run).some(c => c.id === entry.companion));
+}
+/** Shared debts must agree on the original encounter and reward; either traveller may still be present. */
+export function sharedRematches(runs: readonly RogueRun[]) {
+	if (runs.length !== 2 || runs[0].floor !== runs[1].floor) return [];
+	const candidates = [...new Map(runs.flatMap(run => eligibleRematches(run)).map(debt => [debt.id, debt])).values()];
+	return candidates.filter(debt => runs.every(run => {
+		const other = run.rematches?.find(entry => entry.id === debt.id);
+		return other && !other.claimed && run.floor >= other.nextFloor && other.companion === debt.companion &&
+			other.floor === debt.floor && other.exclusiveItem === debt.exclusiveItem &&
+			JSON.stringify(other.encounter) === JSON.stringify(debt.encounter) &&
+			JSON.stringify(other.reward) === JSON.stringify(debt.reward);
+	}));
 }
 export function deferCompanionChallenge(run: RogueRun, companion: string) {
 	const node = run.node!, encounter = node.encounters[run.encounter];
@@ -52,7 +65,8 @@ export function prepareRematch(run: RogueRun) {
 		`还记得第 ${debt.floor} 层那场对战吗？这一路，你和伙伴又进步了不少。现在想再试试吗？没准备好也没关系。`, true, 'left')], 'event');
 }
 export function rematchView(run: RogueRun) {
-	const event = run.node!.event!, debt = run.rematches!.find(entry => entry.id === event.rematch)!;
+	const event = run.node!.event!, debt = run.rematches?.find(entry => entry.id === event.rematch);
+	if (!debt) return { paragraphs: event.result || ['切磋记录已变化，请刷新后重新确认。'], options: [] };
 	return { paragraphs: event.result || [
 		`${companionName(run, debt.companion)}向你发出切磋邀请。对手沿用上次的队伍与等级；获胜后补领第 ${debt.floor} 层的奖励。`,
 	],
@@ -75,7 +89,9 @@ export function chooseRematch(run: RogueRun, choice: string) {
 	node.reward = { money: 0, items: {} }; delete node.wildLoot;
 	run.encounter = 0; run.phase = 'ready';
 }
-export function settleRematch(account: RogueAccount, run: RogueRun, won: boolean) {
+export function settleRematch(
+	account: RogueAccount, run: RogueRun, won: boolean, content: RogueContent, random: RogueRandom
+) {
 	const event = run.node!.event!, debt = run.rematches!.find(entry => entry.id === event.rematch)!;
 	healNarrativeParty(run);
 	event.stage = 'result'; event.settled = true; event.trainingAidBlocked = true;
@@ -83,9 +99,13 @@ export function settleRematch(account: RogueAccount, run: RogueRun, won: boolean
 		debt.claimed = true;
 		run.money += debt.reward.money;
 		const points = awardRoguePoints(account, run, debt.reward.points);
+		// Node supplies already passed the original encounter's conversion roll; do not reroll a failed conversion.
 		for (const [item, count] of Object.entries(debt.reward.items)) run.bag[item] = (run.bag[item] || 0) + count;
-		if (debt.exclusiveItem) grantExclusiveItem(run, debt.exclusiveItem);
 		run.lastReward = { floor: run.floor, name: `第 ${debt.floor} 层 · 切磋补领奖励`, ...structuredClone(debt.reward), points };
+		if (debt.exclusiveItem) {
+			const received = grantExclusiveItem(run, debt.exclusiveItem, content, random);
+			if (received) run.lastReward.items[received] = (run.lastReward.items[received] || 0) + 1;
+		}
 	} else debt.nextFloor = run.floor + 5;
 	const line = won ? '这次是你赢了！说好的奖励现在交给你。把这份默契带到下一场对战吧。' :
 		'我已经替伙伴们恢复好了。刚才那一步比上次更果断了，我很期待你们下一次的表现。';

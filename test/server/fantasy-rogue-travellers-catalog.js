@@ -177,16 +177,16 @@ describe('Fantasy Rogue live catalogs, shared companion slots and additive rewar
 			assert(pool.some(p => p.id === id));
 			beginSocialEvent(r, n => n === pool.length ? pool.findIndex(p => p.id === id) : 0);
 			assert.equal(r.dialogue.pages[0].portrait, id);
-			chooseSocialEvent(r, mode === 'battle' ? 'battle' : 'pokemon', () => 0);
+			chooseSocialEvent(r, content(), mode === 'battle' ? 'battle' : 'pokemon', () => 0);
 			if (mode === 'battle') {
 				assert.equal(r.phase, 'ready'); assert(r.node.encounters[0].team.length);
 				r.team[0].hp = 0; settleSocialEvent(r, true);
 				assert.equal(r.team[0].hp, r.team[0].maxhp);
 				assert.equal(r.node.event.social.step, 'invite');
 			} else {
-				chooseSocialEvent(r, mode === 'invite' ? 'pokemon' : 'reward', () => 0);
+				chooseSocialEvent(r, content(), mode === 'invite' ? 'pokemon' : 'reward', () => 0);
 				if (mode === 'gift') { assert.equal(r.bag.potion, 1); assert(r.node.event.settled); }
-				else { chooseSocialEvent(r, 'join', () => 0); assert.equal(t.travellingRoster(r)[0].id, 'brock'); }
+				else { chooseSocialEvent(r, content(), 'join', () => 0); assert.equal(t.travellingRoster(r)[0].id, 'brock'); }
 			}
 		}
 	});

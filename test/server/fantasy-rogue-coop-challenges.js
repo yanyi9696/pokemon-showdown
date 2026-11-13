@@ -87,6 +87,60 @@ describe('Fantasy Rogue cooperative optional challenge routes', () => {
 		for (const user of [host, guest]) manager.coop.command(user, { action: 'continuebattle' });
 		assert.equal(session().adventure.phase, 'route-interaction');
 	}
+	for (const ending of ['win', 'loss', 'retreat']) it(`settles live trial growth correctly on ${ending}`, () => {
+		engine.content.progression = 'mainline7'; enter(); start();
+		const before = session(), accounts = [host, guest].map(user => store.get(user.id)), result = outcome(false);
+		const ids = [...result.team, ...result.partnerTeam].map(mon => mon.id);
+		result.defeated = [{ id: 'live-first', species: 'Blissey', level: 90, participants: ids, eligible: ids, captured: false }];
+		result.team[0].hp -= 8; result.partnerTeam[0].hp -= 11;
+		result.team[0].pp[0].pp = 3; result.partnerTeam[0].pp[0].pp = 4;
+		result.bag.potion--; result.partnerBag.potion -= 2;
+		const ack = manager.coop.progressBattle(before.id, before.adventure.battleToken,
+			before.adventure.battleLease, 1, result);
+		let provisional = session();
+		assert(ack.paused, 'new moves or evolution pause both players');
+		const skipped = {};
+		for (const user of [host, guest]) {
+			for (let attempts = 0; member(user).pendingMoves.length && attempts < 40; attempts++) {
+				const pending = member(user).pendingMoves[0];
+				(skipped[user.id] ||= []).push(pending.move);
+				manager.coop.command(user, { action: 'learn', member: pending.member, move: pending.move,
+					value: 'skip', visit: view(user).liveGrowth.key });
+			}
+			assert.equal(member(user).pendingMoves.length, 0);
+		}
+		manager.coop.command(host, { action: 'evolve', member: member(host).team[0].id, value: 'ivysaur',
+			visit: view().liveGrowth.key });
+		assert.equal(member(host).team[0].set.species, 'Ivysaur');
+		provisional = session();
+		for (const [index, user] of [host, guest].entries()) {
+			assert(member(user).team[0].experience > before.adventure.members[user.id].team[0].experience);
+			assert.deepEqual(store.get(user.id), accounts[index], 'provisional discoveries never enter the account');
+			assert.deepEqual(provisional.adventure.battleGrowth.baseline[user.id].team, before.adventure.members[user.id].team);
+		}
+		// Deliver the original, pre-ack snapshot to exercise the commit/ack race as well as rollback.
+		result.won = ending === 'win';
+		if (ending === 'retreat') result.coopExit = 'retreat';
+		created.rogue.onResult(result);
+		for (const [index, user] of [host, guest].entries()) {
+			const saved = member(user), old = before.adventure.members[user.id];
+			const expected = ending === 'win' ? provisional.adventure.members[user.id] : old;
+			assert.equal(saved.team[0].experience, expected.team[0].experience);
+			assert.equal(saved.team[0].set.level, expected.team[0].set.level);
+			assert.deepEqual(saved.pendingMoves, expected.pendingMoves);
+			assert.deepEqual(saved.experienceReceipts || [], expected.experienceReceipts || []);
+			assert.equal(saved.team[0].maxhp - saved.team[0].hp, index ? 11 : 8);
+			assert.equal(saved.team[0].pp[0].pp, index ? 4 : 3);
+			assert.equal(saved.bag.potion, index ? 4 : 5);
+			if (ending !== 'win') assert.deepEqual(store.get(user.id), accounts[index]);
+			else {
+				const species = index ? 'pikachu' : 'bulbasaur';
+				for (const move of skipped[user.id] || []) assert(store.get(user.id).starterTraits[species]?.moves.includes(move),
+					'skipped provisional moves unlock only after winning');
+			}
+		}
+		assert.equal(session().adventure.battleGrowth, undefined);
+	});
 	function win() {
 		enter(); start(); created.rogue.onResult(outcome());
 		back();
@@ -310,6 +364,21 @@ describe('Fantasy Rogue cooperative optional challenge routes', () => {
 		manager.coop.command(host, { action: 'delegate', value: 'partner' });
 		manager.coop.command(guest, { action: 'companioninvite', owner: host.id, visit: invitation.key, value: 'decline' });
 		assert(!view().companionInvitation); assert.deepEqual(view().travellingRoster.map(p => p.id), ['ingo', 'emmet']);
+	});
+	for (const def of OPTIONAL_CHALLENGES.filter(d => d.totem)) it(`runs ${def.id} with the shared aura and one prize per owner`, () => {
+		enter(def.id, def.from); start(true);
+		assert.deepEqual(created.rogue.state.totemTrial, def.totem);
+		const battle = battleFromState();
+		try {
+			battle.makeChoices(...battle.sides.map(side => 'team ' + side.pokemon.map((_, i) => i + 1).join('')));
+			const boss = battle.getAllActive().find(mon => mon.species.name === def.totem.species);
+			assert(boss); assert(['p2', 'p4'].includes(boss.side.id));
+			for (const [stat, amount] of Object.entries(def.totem.boosts)) assert.equal(boss.boosts[stat], amount);
+		} finally { battle.destroy(); }
+		const result = outcome(); created.rogue.onResult(result); back();
+		agree('prize:supplies'); assert.equal(challenge().stage, 'claimed');
+		const saved = session();
+		assert.throws(() => choose(host, 'prize:supplies')); assert.deepEqual(session(), saved);
 	});
 	for (const def of OPTIONAL_CHALLENGES) it(`opens ${def.id} as a challenge without an ordinary-event reroll`, () => {
 		enter(def.id, Math.max(91, def.from));

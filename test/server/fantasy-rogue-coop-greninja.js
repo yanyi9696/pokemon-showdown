@@ -11,7 +11,7 @@ const { createRoguePokemon, initializeExperience } = require('../../dist/server/
 const { greninjaCandidates, greninjaEventEligible } = require('../../dist/server/fantasy-rogue/greninja-training');
 const { chooseEvent } = require('../../dist/server/fantasy-rogue/events');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
-const { content, set, stats } = require('../fixtures/fantasy-rogue');
+const { content, set, stats, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op Greninja departure and return', () => {
 	let oldConfig, store, engine, manager, host, guest, preview;
@@ -76,7 +76,9 @@ describe('Fantasy Rogue co-op Greninja departure and return', () => {
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(other => other !== id)
 				.map(other => ({ id: other, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'forest-route' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'forest-route' });
+		});
 		assert.equal(event(host).id, id);
 	}
 	function agree(choice) {

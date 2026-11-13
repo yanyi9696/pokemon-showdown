@@ -1,6 +1,6 @@
 import { robeMember } from './rogue-awakening';
 import { blessingSpeciesID } from './rogue-species-identity';
-import { petSpecies, defaultCatAbilities } from './rogue-pets';
+import { petSpecies, defaultCatAbilities, dogBoostCount } from './rogue-pets';
 import { Dex, toID } from './dex';
 import type { RoguePokemon } from './fantasy-rogue';
 import { applyEmblemType, emblemType, ownsBlessing, type BlessingEffects } from './rogue-blessing-data';
@@ -13,7 +13,9 @@ export const dragonKingActive = (effects?: BlessingEffects) =>
 export interface RogueTonics { wine?: boolean; cephalosporin?: boolean; poison?: boolean }
 export const TARGET_BLESSING_ABILITIES: Record<string, string> = { hazards: 'yanbuzhen', toxic: 'merciless', speedpower: 'speedboost', veteransniper: 'sniper' };
 export const POWER_CHOICE_ABILITIES = ['hugepower', 'roguegreatmage'];
-export function strongestBlessingMember(team: RoguePokemon[], baseSpecies: string) {
+export function strongestBlessingMember(team: RoguePokemon[], baseSpecies: string, effects?: BlessingEffects) {
+	const chosen = effects?.partyRoles?.species[baseSpecies.toLowerCase()];
+	if (chosen !== undefined) return team.find(mon => mon.id === chosen);
 	const sum = (stats: Partial<StatsTable>) => Object.values(stats || {}).reduce((n, value) => n + (value || 0), 0);
 	const species = baseSpecies.split('|').map(blessingSpeciesID);
 	return team.filter(mon => !mon.egg && species.includes(blessingSpeciesID(mon.set.species)))
@@ -40,8 +42,10 @@ export function assignedExtraAbilities(mon: RoguePokemon, team: RoguePokemon[], 
 		if (ownsBlessing(effects, 'lifepower')) add('reckless');
 		if (ownsBlessing(effects, 'itemcontest')) add('rogueitemmodule');
 		if (ownsBlessing(effects, 'restinball')) add('regenerator', 'naturalcure');
-		if (ownsBlessing(effects, 'duck') && strongestBlessingMember(team, 'psyduck|golduck')?.id === mon.id) add('neuroforce');
-		if (strongestBlessingMember(team, 'meloetta')?.id === mon.id) {
+		if (ownsBlessing(effects, 'duck') && strongestBlessingMember(team, 'psyduck|golduck', effects)?.id === mon.id) {
+			add('neuroforce');
+		}
+		if (strongestBlessingMember(team, 'meloetta', effects)?.id === mon.id) {
 			if (ownsBlessing(effects, 'singer')) add('tianlaizhiyin');
 			if (ownsBlessing(effects, 'dancer')) add('dancer');
 		}
@@ -84,7 +88,7 @@ export function permanentMemberTypes(mon: RoguePokemon) {
 	return [...new Set(types)];
 }
 export function monkeyKingBranch(mon: RoguePokemon, team: RoguePokemon[], effects?: BlessingEffects) {
-	if (!ownsBlessing(effects, 'monkeyking') || strongestBlessingMember(team, 'infernape')?.id !== mon.id) return;
+	if (!ownsBlessing(effects, 'monkeyking') || strongestBlessingMember(team, 'infernape', effects)?.id !== mon.id) return;
 	const type = emblemType(mon.emblem || '');
 	return type === 'Rock' || type === 'Flying' ? type : undefined;
 }
@@ -98,9 +102,24 @@ export function strongestDragon(team: RoguePokemon[]) {
 }
 /** Use saved stats, not temporary battle boosts, and retain training on each partner. */
 export function strongestSniperMember(team: RoguePokemon[], effects?: BlessingEffects) {
+	if (effects?.partyRoles) return team.find(mon => mon.id === effects.partyRoles!.sniper);
 	return team.filter(mon => !mon.egg && (toID(mon.set.ability) === 'sniper' ||
 		assignedExtraAbilities(mon, team, effects).includes(toID('sniper'))))
 		.sort((a, b) => memberStatTotal(b) - memberStatTotal(a) || (a.joinOrder || 0) - (b.joinOrder || 0))[0];
+}
+/** Recompute from campaign data only; never reuse a previous battle's role snapshot. */
+export function blessingPartyRoles(
+	team: RoguePokemon[], effects?: BlessingEffects,
+): NonNullable<BlessingEffects['partyRoles']> {
+	const source = effects && { ...effects, partyRoles: undefined };
+	return {
+		species: Object.fromEntries(['psyduck|golduck', 'meloetta', 'melmetal', 'hoopa', 'infernape',
+			'hydreigon', 'spinda', 'excadrill'].map(name => [name, strongestBlessingMember(team, name)?.id || ''])),
+		robes: { godrobe: robeMember(team, source, 'godrobe')?.id || '',
+			puregodrobe: robeMember(team, source, 'puregodrobe')?.id || '' },
+		sniper: strongestSniperMember(team, source)?.id || '', dogs: dogBoostCount(team),
+		dragonKingAlive: !!team.some(mon => mon.id === source?.dragonKing?.member && mon.hp > 0 && !mon.nuzlockeDead),
+	};
 }
 export const TONIC_SECRET = '同时使用【酒】与【头孢】后，本局追加幽灵属性；原本为毒系的伙伴，本局毒属性招式威力提升 50%。';
 export const TONIC_HINT = '同时使用【酒】与【头孢】可产生特殊效果，毒系伙伴还会获得额外收益。';

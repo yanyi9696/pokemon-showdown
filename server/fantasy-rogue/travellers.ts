@@ -1,11 +1,14 @@
 import { companionTravelGift } from './affection-gifts';
-import { gainAffection, affectionChat, AFFECTION_RULES } from './affection';
+import { type AffectionRewards, gainAffection, affectionChat, AFFECTION_RULES } from './affection';
 import { randomUUID } from 'crypto';
 import { COMPANIONS } from '../../sim/rogue-companions';
-import type { RogueRun, RogueCommand } from './types';
+import type { RogueRun, RogueCommand, RogueContent } from './types';
+import type { RogueRandom } from './biome-pools';
 import type { CompanionOption } from './companions';
 import { TRAVELLERS } from './traveller-profiles';
 import { dialoguePage, queueNarrative } from './narrative';
+import { convertSpiritItem } from './spirits';
+import { inventoryItem } from './team';
 
 export interface SocialCompanion {
 	id: string; origin: 'event' | 'rival' | 'carmine'; away?: boolean;
@@ -152,24 +155,31 @@ export function socialCompanionViews(run: RogueRun, options: CompanionOption[]) 
 		recommended: socialRecommendation(run, c.id, options), canConsult: !!options.length,
 		giftOptions: c.giftPending ? TRAVELLERS[c.id].gifts : [] }));
 }
-export function recordSocialPreference(run: RogueRun, options: CompanionOption[], choice: string, key: string) {
+export function recordSocialPreference(
+	run: RogueRun, options: CompanionOption[], choice: string, key: string, rewards: AffectionRewards | undefined
+) {
 	for (const c of socialActive(run)) {
 		if (c.counted.includes(key) || socialRecommendation(run, c.id, options) !== choice) continue;
 		c.counted.push(key); c.preferences++;
 		c.message = TRAVELLERS[c.id].thanks;
-		gainAffection(run, c.id, AFFECTION_RULES.preference, 'preference:' + key);
+		gainAffection(run, c.id, AFFECTION_RULES.preference, 'preference:' + key, rewards);
 	}
 }
-function claimSocialGift(run: RogueRun, c: SocialCompanion, item: string) {
+function claimSocialGift(run: RogueRun, c: SocialCompanion, item: string, content: RogueContent, random: RogueRandom) {
 	const gift = TRAVELLERS[c.id].gifts.find(g => g.id === item);
 	if (!gift || !c.giftPending || c.rewarded) throw new Error('当前没有这份待领取的赠礼。');
-	c.rewarded = true; delete c.giftPending; run.bag[item] = (run.bag[item] || 0) + 1;
-	(run.notices ||= []).push(`【同行训练家的赠礼】${TRAVELLERS[c.id].name}：「${TRAVELLERS[c.id].thanks}」获得${gift.name} ×1。`);
+	const received = convertSpiritItem(run, content, item, `social-gift:${c.id}`, random);
+	c.rewarded = true; delete c.giftPending; run.bag[received] = (run.bag[received] || 0) + 1;
+	const receipt = received === item ? `获得${gift.name} ×1。` :
+		`梦幻的奇赠将【${gift.name}】转换为【${inventoryItem(content, received)?.name || received}】×1。`;
+	(run.notices ||= []).push(`【同行训练家的赠礼】${TRAVELLERS[c.id].name}：「${TRAVELLERS[c.id].thanks}」${receipt}`);
 }
-export function socialCompanionCommand(run: RogueRun, command: RogueCommand, options: CompanionOption[]) {
+export function socialCompanionCommand(
+	run: RogueRun, command: RogueCommand, options: CompanionOption[], content: RogueContent, random: RogueRandom
+) {
 	const c = socialActive(run).find(entry => entry.id === command.member);
 	if (!c || run.phase === 'battle' || run.preview?.stage === 'result') throw new Error('这位训练家当前不能互动。');
-	if (command.value?.startsWith('gift:')) claimSocialGift(run, c, command.value.slice(5));
+	if (command.value?.startsWith('gift:')) claimSocialGift(run, c, command.value.slice(5), content, random);
 	else if (command.value === 'advice') {
 		const option = options.find(o => o.id === socialRecommendation(run, c.id, options));
 		c.message = option ? `我想选择「${option.name}」。${TRAVELLERS[c.id].greeting}` : '先看看眼前的选项吧，你来决定。';

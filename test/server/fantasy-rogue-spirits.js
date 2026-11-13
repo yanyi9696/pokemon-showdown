@@ -41,14 +41,14 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 	}
 	beforeEach(() => { store = new RogueStore(':memory:'); engine = new RogueEngine(store, createPreviewContent(), () => 0, true); });
 	afterEach(() => store.close());
-	it('opens 36 spirits and rejects remote overrides or locked accounts', () => {
-		assert.equal(activeRogueSpirits().length, 36);
+	it('opens 37 spirits and rejects remote overrides or locked accounts', () => {
+		assert.equal(activeRogueSpirits().length, 37);
 		const remote = new RogueEngine(store, createPreviewContent());
 		assert.throws(() => remote.command(user, { id: randomUUID(), revision: 0, action: 'start', starters: ['bulbasaur'], useSpirit: true }), /通关/);
 		store.change(user, saved => { saved.spiritUnlocked = true; });
 		assert.throws(() => remote.command(user, { id: randomUUID(), revision: account().revision,
 			action: 'start', starters: ['bulbasaur'], useSpirit: true, testSpirit: 'zygardeorder' }), /指定塔灵仅在本地/);
-		assert.throws(() => start('latios'), /尚未开放/);
+		assert.throws(() => start('missing-spirit'), /尚未开放/);
 		assert(activeRogueSpirits().some(spirit => spirit.id === 'terapagos'));
 		assert(activeRogueSpirits().some(spirit => spirit.id === 'necrozma' && spirit.species === 'Necrozma'));
 		start('kyurem'); const before = account();
@@ -192,6 +192,36 @@ describe('Fantasy Rogue tower spirit campaigns', () => {
 		assert(rolled.startsWith('fantasy'));
 		assert.equal(convertSpiritItem(run, engine.content, 'leftovers', 'test', () => { throw new Error('rerolled'); }), rolled);
 		for (const id of ['healthfeather', 'potion', 'fantasydefensegem']) assert.equal(convertSpiritItem(run, engine.content, id, id, () => 0), id);
+	});
+	it('protects evolution keys and all existing Fantasy equipment without rewriting historical conversions', () => {
+		start('hoopagift'); const run = account().run;
+		const forbidden = ['charizarditex', 'electriumz', 'greninjaashz', 'gmegawishingstar',
+			'rogueuniversalmegastone', 'rogueuniversalwishingstar', 'rogueuniversalfirez', 'fantasyultraenergy',
+			'shadowbottle', 'dadascloak', 'legendplate', 'thunderstone', 'potion', 'ether', 'healthfeather', 'rogueemblemfire'];
+		for (const id of forbidden) {
+			assert(inventoryItem(engine.content, id), `missing real item ${id}`);
+			assert.equal(convertSpiritItem(run, engine.content, id, `protected:${id}`, () => {
+				throw new Error(`Protected item rolled: ${id}`);
+			}), id);
+			assert(!run.spiritConversions?.[`protected:${id}`]);
+		}
+		run.spiritConversions = { legacy: 'fantasyultraenergy' };
+		assert.equal(convertSpiritItem(run, engine.content, 'charizarditex', 'legacy', () => {
+			throw new Error('Historical item rerolled');
+		}), 'fantasyultraenergy');
+		for (const id of ['lightball', 'thickclub', 'souldew', 'oranberry', 'sitrusberry', 'weaknesspolicy']) {
+			assert.equal(convertSpiritItem(run, engine.content, id, `ordinary:${id}`, () => 0), 'fantasypowerlens');
+		}
+	});
+	for (const owned of [false, true]) it(`settles ${owned ? 'owned' : 'foreign'} physical equipment without relying on previous item names`, () => {
+		start('hoopagift'); cmd('spiritack'); floor(2);
+		store.change(user, saved => { saved.run.team[0].set.item = 'leftovers'; });
+		cmd('battle'); const run = account().run, id = run.team[0].id;
+		const result = { won: true, encounterId: run.battle.encounterId, team: run.team, bag: run.bag,
+			itemSources: { [id]: { key: 'initial:p2:0:leftovers', item: 'leftovers', owned } } };
+		engine.settle(user, run.battle.token, result);
+		assert.equal(account().run.team[0].set.item, owned ? 'leftovers' : 'fantasypowerlens');
+		const saved = account(); engine.settle(user, run.battle.token, result); assert.deepEqual(account(), saved);
 	});
 	it('uses exactly the approved eleven fantasy items and preserves already saved conversion outcomes', () => {
 		start('hoopagift'); const run = account().run;

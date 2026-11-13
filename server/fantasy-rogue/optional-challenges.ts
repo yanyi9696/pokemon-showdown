@@ -4,6 +4,7 @@ import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rul
 import type { RogueRandom } from './biome-pools';
 import type { RogueRun, RogueNode } from './types';
 import { OPTIONAL_CHALLENGES, type ChallengeRole } from './challenge-data';
+import { CHALLENGE_DOUBLES } from './challenge-doubles';
 import { makeEncounterSet, regionalEncounterLevel } from './encounter-sets';
 import { fixedFloor } from './content';
 import { encounterCoins, routeCandyReward } from './early-balance';
@@ -11,7 +12,7 @@ import { catchupPlan } from './late-support';
 import { gainExperience, initializeExperience, rebuildMember } from './progression';
 import { machineMoves, premiumMachine } from './trading';
 import { requestCompanion } from './travellers';
-import { gainAffection, AFFECTION_RULES } from './affection';
+import { type AffectionRewards, gainAffection, AFFECTION_RULES } from './affection';
 import { TRAVELLERS } from './traveller-profiles';
 import { GROWTH_LIMITS, syncGrowthParty, growthPercent } from './growth';
 import { natureMintSupplies } from './nature-mints';
@@ -28,6 +29,8 @@ export interface ChallengePrize {
 }
 export interface OptionalChallenge {
 	id: string; key: string; stage: 'offer' | 'battle' | 'paused' | 'won' | 'closed' | 'claimed';
+	/** Written only when creating a new authored doubles roster; old saved encounters stay unchanged. */
+	doubles?: true;
 	prizes?: ChallengePrize[]; outcome?: 'won' | 'retreated' | 'lost' | 'skipped';
 }
 export interface ChallengeRecord {
@@ -62,14 +65,17 @@ function trainedSet(
 	if (!moves.some(id => dex.moves.get(id).category === 'Physical')) set.ivs.atk = 0;
 	return set;
 }
-export function challengeNode(id: string, floor: number, spirit?: string): RogueNode {
+export function challengeNode(id: string, floor: number, spirit?: string, doubles = false): RogueNode {
 	const def = OPTIONAL_CHALLENGES.find(entry => entry.id === id);
 	if (!def) throw new Error('挑战不存在。');
-	const team = def.team.map(entry => trainedSet(entry, regionalEncounterLevel(floor, true, spirit)));
-	return { id: `challenge:${id}`, name: def.name, kind: 'challenge', challenge: { id, key: randomUUID(), stage: 'offer' },
+	const plan = doubles ? CHALLENGE_DOUBLES[id] : undefined;
+	const team = (plan?.team || def.team).map(entry => trainedSet(entry, regionalEncounterLevel(floor, true, spirit)));
+	return { id: `challenge:${id}`, name: def.name, kind: 'challenge',
+		challenge: { id, key: randomUUID(), stage: 'offer', ...(plan ? { doubles: true as const } : {}) },
 		// These rewards have their own one-time ledger; normal route loot must not be generated again.
 		economyPrepared: true, spiritPrepared: true, reward: { money: 0, items: {} },
 		encounters: [{ key: randomUUID(), name: def.opponent || def.speaker, catchable: false, style: 'balanced', team,
+			...(def.totem ? { totemTrial: structuredClone(def.totem) } : {}),
 			trainer: { id: `challenge${id}`, name: def.opponent || def.speaker,
 				avatar: def.avatar, role: 'traveller', tera: false } }] };
 }
@@ -91,7 +97,7 @@ export function offerOptionalChallenge(run: RogueRun, random: RogueRandom) {
 	if (!available.length || random(100) >= challengeChance(run.floor)) return;
 	let roll = random(available.reduce((sum, d) => sum + (d.weight ?? 100), 0));
 	const def = available.find(d => { roll -= d.weight ?? 100; return roll < 0; })!;
-	run.choices[index] = challengeNode(def.id, run.floor, run.spirit);
+	run.choices[index] = challengeNode(def.id, run.floor, run.spirit, !!run.doubleBattle);
 	(run.challengeHistory ||= []).push({ id: def.id, floor: run.floor });
 }
 export function prepareChallengePrizes(run: RogueRun, random: RogueRandom) {
@@ -140,7 +146,7 @@ export function prepareChallengePrizes(run: RogueRun, random: RogueRandom) {
 export function challengeRecord(run: RogueRun) {
 	return run.challengeHistory?.find(entry => entry.id === run.node?.challenge?.id && entry.floor === run.floor);
 }
-export function chooseChallengePrize(run: RogueRun, id: string) {
+export function chooseChallengePrize(run: RogueRun, id: string, rewards: AffectionRewards | undefined) {
 	const challenge = run.node?.challenge;
 	if (run.phase !== 'event' || challenge?.stage !== 'won') throw new Error('请在挑战胜利后选择一份奖励。');
 	const prize = challenge.prizes?.find(entry => entry.id === id);
@@ -180,7 +186,7 @@ export function chooseChallengePrize(run: RogueRun, id: string) {
 		effect: (prize.star ? `【${starMember!.set.species}】提升至 ${prize.star.to} 星。` : '') + growthText + payout.effect };
 	(run.notices ||= []).push(growthText);
 	for (const companionID of OPTIONAL_CHALLENGES.find(d => d.id === challenge.id)?.companions || []) {
-		gainAffection(run, companionID, AFFECTION_RULES.duel, `challenge:${challenge.key}`);
+		gainAffection(run, companionID, AFFECTION_RULES.duel, `challenge:${challenge.key}`, rewards);
 		// A current rival keeps their story identity; other trainers use the usual event invitation.
 		requestCompanion(run, run.rival?.id === companionID ?
 			{ id: companionID, origin: 'rival', permanent: true } : { id: companionID, origin: 'event' });
@@ -193,7 +199,8 @@ export function optionalChallengeView(run: RogueRun) {
 	const afterVictory = { ...run, growth: { ...run.growth, experience: run.growth?.experience || 0,
 		offense: Math.min(GROWTH_LIMITS.offense, (run.growth?.offense || 0) + CHALLENGE_GROWTH),
 		defense: Math.min(GROWTH_LIMITS.defense, (run.growth?.defense || 0) + CHALLENGE_GROWTH) } };
-	return { ...challenge, name: def.name, speaker: def.speaker, avatar: def.avatar, hint: def.hint,
+	return { ...challenge, name: def.name, speaker: def.speaker, avatar: def.avatar,
+		hint: challenge.doubles ? CHALLENGE_DOUBLES[def.id]?.hint || def.hint : def.hint,
 		growthText: CHALLENGE_GROWTH_TEXT,
 		portraits: def.portraits || [], serious: !!def.serious,
 		companions: (def.companions || []).map(id => ({ id, name: TRAVELLERS[id].name })),

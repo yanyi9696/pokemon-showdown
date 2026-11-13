@@ -1,4 +1,7 @@
 import { rollEchoShiny } from './echo';
+import { sharedRewardRoll } from './shared-reward-rolls';
+import { shopDoublesTeam } from './shop-doubles';
+import { universalItem } from '../../sim/rogue-universal-data';
 import { randomSpeciesEligible } from './species-eligibility';
 import { Dex, toID } from '../../sim/dex';
 import { activeRogueSpirits, roguePartyLimit, rogueWildLevelBonus } from '../../sim/fantasy-rogue-spirits';
@@ -26,6 +29,7 @@ export function initializeSpirit(run: RogueRun, content: RogueContent, random: R
 	const spirit = chosen ? pool.find(entry => entry.id === chosen) : pool[random(pool.length)];
 	requireRule(spirit, '该塔灵尚未开放。');
 	run.spirit = spirit.id;
+	run.doubleBattle = spirit.id === 'latios';
 	run.phase = 'intro';
 	if (spirit.id === 'zygarde') run.box = [];
 	if (spirit.id === 'celebi') {
@@ -69,16 +73,25 @@ export function spiritShopAvailable(item: RogueItem, floor: number) {
 		item.shopFloor !== false && floor >= (item.shopFloor ?? 1);
 }
 export function hpPurchaseCost(item: RogueItem, maxhp: number) {
-	return Math.ceil(maxhp * Math.min(0.8, Math.max(0.1, Math.ceil(item.price / 250) * 0.05)));
+	// Integer percentages avoid e.g. 120 * (12 * .05) rounding 72 up to 73 HP.
+	return Math.ceil(maxhp * Math.min(80, Math.max(10, Math.ceil(item.price / 250) * 5)) / 100);
 }
 
-export function convertSpiritItem(run: RogueRun, content: RogueContent, id: string, key: string, random: RogueRandom) {
-	const item = inventoryItem(content, id);
-	if (run.spirit !== 'hoopagift' || item?.kind !== 'held' || FANTASY_ITEMS.includes(id) ||
-		id.startsWith('rogueemblem')) return id;
+export function convertSpiritItem(
+	run: Pick<RogueRun, 'spirit' | 'spiritConversions'>, content: RogueContent,
+	id: string, key: string, random: RogueRandom, shared = true
+) {
+	if (run.spirit !== 'hoopagift') return id;
+	// Recorded grants survive later eligibility corrections without being rerolled.
+	if (run.spiritConversions?.[key]) return run.spiritConversions[key];
+	const item = inventoryItem(content, id), native = Dex.mod('gen9fantasy').items.get(id);
+	if (item?.kind !== 'held' || id.startsWith('fantasy') || id.startsWith('rogueemblem') ||
+		native.megaStone || native.zMove || universalItem(id) ||
+		['gmegawishingstar', 'shadowbottle', 'dadascloak', 'legendplate'].includes(id)) return id;
 	const ledger = run.spiritConversions ||= {};
-	if (ledger[key]) return ledger[key];
-	ledger[key] = random(2) === 0 ? FANTASY_ITEMS[random(FANTASY_ITEMS.length)] : id;
+	const draw = () => random(2) === 0 ? FANTASY_ITEMS[random(FANTASY_ITEMS.length)] : id;
+	// Personal relationship milestones must not consume another participant's common reward roll.
+	ledger[key] = shared ? sharedRewardRoll(run, `spirit-item:${id}`, draw) : draw();
 	return ledger[key];
 }
 
@@ -116,8 +129,8 @@ export function prepareSpiritNode(run: RogueRun, node: RogueNode, content: Rogue
 			stage === 1 ? ['Raticate', 'Arbok', 'Golbat', 'Koffing', 'Persian'] :
 			['Raticate', 'Arbok', 'Golbat', 'Weezing', 'Muk', 'Persian'];
 		const pool = [...species];
-		const team: PokemonSet[] = [];
-		for (let i = 0; i < [2, 3, 3, 4, 5][stage]; i++) {
+		const team: PokemonSet[] = run.doubleBattle ? shopDoublesTeam('rocket', run.floor, level) : [];
+		for (let i = 0; !run.doubleBattle && i < [2, 3, 3, 4, 5][stage]; i++) {
 			team.push(makeEncounterSet(pool.splice(random(pool.length), 1)[0], level, 20));
 		}
 		node.rocket = { cleared: false, reward: [3000, 6000, 10000, 16000, 25000][stage] };
@@ -176,7 +189,7 @@ export function mergeSpiritPokemon(run: RogueRun, member: string, consume: strin
 	}
 	run.team = run.team.filter(mon => !consume.includes(mon.id));
 	run.box = run.box.filter(mon => !consume.includes(mon.id));
-	if (!run.team.length) { run.box = run.box.filter(mon => mon.id !== keep.id); run.team.push(keep); }
+	if (!run.team.some(mon => !mon.egg)) { run.box = run.box.filter(mon => mon.id !== keep.id); run.team.push(keep); }
 	keep.stars = (keep.stars || 1) + 1;
 	rebuildMember(keep, run.boosts);
 	run.notices = [`${keep.set.species} 已升至 ${keep.stars} 星。消耗成员的携带道具及属性转已返还背包。`];

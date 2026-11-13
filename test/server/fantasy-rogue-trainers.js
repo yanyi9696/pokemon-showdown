@@ -44,6 +44,18 @@ describe('Fantasy Rogue authored trainers', function () {
 		command('start', { starters: ['bulbasaur'] });
 	});
 	afterEach(() => store.close());
+	it('uses the revised Rika singles roster at every Elite Four floor', () => {
+		for (const floor of [165, 175, 180, 185]) {
+			const team = trainerBossCandidates(floor, 90).find(c => c.trainer.id === 'rika').team;
+			assert.deepEqual(team.map(m => m.species), ['Landorus', 'Great Tusk', 'Sandy Shocks-Fantasy',
+				'Excadrill-Fantasy', 'Tyranitar-Fantasy', 'Hippowdon']);
+			assert.equal(toID(team[0].ability), 'sheerforce'); assert.equal(toID(team[0].item), 'lifeorb');
+			assert.deepEqual(team[0].moves.map(toID), ['earthpower', 'sludgebomb', 'focusblast', 'nastyplot']);
+			assert.equal(toID(team[1].item), 'boosterenergy');
+			assert.equal(toID(team[2].ability), 'protosynthesis'); assert.equal(toID(team[2].item), 'boosterenergy');
+			assert.equal(team[2].ivs.atk, 0); assert.equal(team[2].evs.hp, 96);
+		}
+	});
 	it('removes all held items from every floor 20 and 40 gym in singles and doubles only', () => {
 		for (const doubles of [false, true]) {
 			for (const floor of [20, 40]) {
@@ -623,7 +635,10 @@ describe('Fantasy Rogue authored trainers', function () {
 			if (floor === 120) assert.deepEqual(legends.map(member => Dex.mod('gen9fantasy').species.get(member.species).name), ['Urshifu-Rapid-Strike-Fantasy']);
 			if (floor === 140) assert.deepEqual(legends.map(member => Dex.mod('gen9fantasy').species.get(member.species).name), ['Pheromosa']);
 			if (floor === 160) assert.deepEqual(legends.map(member => Dex.mod('gen9fantasy').species.get(member.species).name).sort(), ['Pheromosa', 'Urshifu-Rapid-Strike-Fantasy']);
-			if (floor >= 100) assert(team.some(member => toID(member.item) === 'galladite'), `${key} must keep Mega Gallade available`);
+			if (floor === 100) assert(team.some(member => member.species === 'Machamp'), `${key} keeps Bea's signature Machamp`);
+			if (floor >= 120) assert(team.some(member => toID(member.item) === 'galladite'), `${key} must keep Mega Gallade available`);
+			if (floor >= 100) assert(team.some(member => Dex.mod('gen9fantasy').species.get(member.species).isGMega),
+				`${key} must include the Galar G-Mega signature`);
 			const battle = new Battle({
 				format, seed: [33, 34, 35, floor],
 				p1: { name: 'Doubles QA', team: Teams.pack([
@@ -638,7 +653,7 @@ describe('Fantasy Rogue authored trainers', function () {
 					assert(slot >= 0, `${key} active member needs Protect for safe opening verification`);
 					return `move ${slot + 1}`;
 				}).join(', ');
-				if (floor === 100) assert(battle.p2.activeRequest.active[0].canMegaEvo, `${key} must make Mega Gallade available in battle`);
+				if (floor >= 100) assert(battle.p2.activeRequest.active[1].canGMegaEvo, `${key} must make G-Mega available in battle`);
 				assert(battle.choose('p1', 'move 2, move 2'));
 				assert(battle.choose('p2', opening), `${key} must accept a legal native double choice`);
 			} finally {

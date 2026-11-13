@@ -1,4 +1,6 @@
+import type { AffectionRewards } from './affection';
 import { randomUUID } from 'crypto';
+import { restoreCoopChallengeGrowth } from './coop-growth';
 import type { RogueCoopAdventure, RogueCoopSession, RogueRun } from './types';
 import type { RogueBattleResult } from '../../sim/fantasy-rogue';
 import type { RogueRandom } from './biome-pools';
@@ -17,7 +19,7 @@ export interface CoopChallenge {
 }
 
 export function offerCoopChallenge(adventure: RogueCoopAdventure, entries: Entry[], random: RogueRandom) {
-	const run = { ...entries[0].run, choices: adventure.routeChoices,
+	const run = { ...entries[0].run, doubleBattle: true, choices: adventure.routeChoices,
 		challengeHistory: adventure.challengeHistory, team: entries.flatMap(entry => entry.run.team),
 		blessings: { ...entries[0].run.blessings!, owned: entries.flatMap(entry => entry.run.blessings?.owned || []) },
 	};
@@ -85,7 +87,7 @@ function freshVote(state: CoopChallenge) {
 }
 
 export function chooseCoopChallenge(
-	session: RogueCoopSession, entries: Entry[], owner: string, value: string, member?: string
+	session: RogueCoopSession, entries: Entry[], owner: string, value: string, member?: string, rewards?: AffectionRewards
 ): 'none' | 'ready' | 'leave' | 'claimed' {
 	const adventure = session.adventure!, state = adventure.coopChallenge!, challenge = adventure.node!.challenge!;
 	const view = coopChallengeView(adventure, entries, owner)!;
@@ -143,7 +145,7 @@ export function chooseCoopChallenge(
 			id === 'training' ? personal.find(p => p.training) || common : common;
 		run.node = structuredClone(adventure.node); run.phase = 'event';
 		run.node!.challenge!.prizes = [structuredClone(prize)];
-		chooseChallengePrize(run, prize.id);
+		chooseChallengePrize(run, prize.id, rewards);
 	}
 	challenge.stage = 'claimed'; if (record) record.prize = id;
 	delete state.selected; state.targets = {};
@@ -154,6 +156,7 @@ export function chooseCoopChallenge(
 export function failedCoopChallengeResult(session: RogueCoopSession, result: RogueBattleResult) {
 	const adventure = session.adventure!;
 	if (!adventure.node?.challenge || result.won && !result.coopExit) return result;
+	restoreCoopChallengeGrowth(session);
 	const restore = (userid: string, team: RogueBattleResult['team'], bag: Record<string, number>) => {
 		const member = adventure.members[userid];
 		return {

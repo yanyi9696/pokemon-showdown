@@ -1,4 +1,7 @@
 import { rogueMetaStat } from './rogue-meta-growth';
+import { battleFusionSprite } from './rogue-fusion-art';
+import { rogueItemSource, takenRogueItem, setRogueItemSource, rememberUsedRogueItem, recoveredRogueItem } from './rogue-item-sources';
+import { coopBossMaxHP } from './rogue-coop-boss';
 import { universalKind } from './rogue-universal-evolution';
 import { spindaConfused } from './rogue-spinda';
 /**
@@ -1248,6 +1251,18 @@ export class Pokemon {
 		}
 	}
 
+	/** Keep campaign artwork lookup outside the standalone rules data. */
+	getRogueFusionSprite(): string | undefined {
+		if (!isRogueFormat(this.battle.format.id)) return undefined;
+		return battleFusionSprite(this);
+	}
+
+	/** Public effective base stats, without IVs, EVs, nature or final-stat multipliers. */
+	getRogueBaseStats(): StatsTable {
+		if (this.transformed && this.m.rogueCopiedBaseStats) return this.m.rogueCopiedBaseStats;
+		return this.battle.modifyBaseStats(this.species.baseStats, { ...this.set, species: this.species.name });
+	}
+
 	transformInto(pokemon: Pokemon, effect?: Effect) {
 		if (isRogueFormat(this.battle.format.id) && this.set.fantasyRogueModifiers?.fusion) return false;
 		const species = pokemon.species;
@@ -1268,9 +1283,12 @@ export class Pokemon {
 			return false;
 		}
 
+		const ownBaseHP = isRogueFormat(this.battle.format.id) ? this.getRogueBaseStats().hp : undefined;
 		if (!this.setSpecies(species, effect, true)) return false;
 
 		this.transformed = true;
+		if (ownBaseHP !== undefined) this.m.rogueCopiedBaseStats = { ...pokemon.getRogueBaseStats(), hp: ownBaseHP };
+		if (ownBaseHP !== undefined) this.m.rogueCopiedFusionSprite = battleFusionSprite(pokemon);
 		this.weighthg = pokemon.weighthg;
 
 		const types = pokemon.getTypes(true, true);
@@ -1401,7 +1419,7 @@ export class Pokemon {
 			}
 		}
 
-		stats.hp = collapseMaxHP(this, stats.hp);
+		stats.hp = coopBossMaxHP(this, collapseMaxHP(this, stats.hp));
 		if (!this.maxhp) {
 			this.baseMaxhp = stats.hp;
 			this.maxhp = stats.hp;
@@ -1515,6 +1533,8 @@ export class Pokemon {
 	}
 
 	clearVolatile(includeSwitchFlags = true) {
+		delete this.m.rogueCopiedBaseStats;
+		delete this.m.rogueCopiedFusionSprite;
 		this.boosts = {
 			atk: 0,
 			def: 0,
@@ -1822,6 +1842,7 @@ export class Pokemon {
 				this.pendingStaleness = undefined;
 			}
 
+			rememberUsedRogueItem(this, rogueItemSource(this));
 			this.lastItem = this.item;
 			if (!consumeRogueItem(this, item)) {
 				this.item = '';
@@ -1865,6 +1886,7 @@ export class Pokemon {
 
 			this.battle.singleEvent('Use', item, this.itemState, this, source, sourceEffect);
 
+			rememberUsedRogueItem(this, rogueItemSource(this));
 			this.lastItem = this.item;
 			if (!consumeRogueItem(this, item)) {
 				this.item = '';
@@ -1886,13 +1908,14 @@ export class Pokemon {
 		}
 		const item = this.getItem();
 		if (this.battle.runEvent('TakeItem', this, source, null, item)) {
+			const transferred = takenRogueItem(this, item);
 			this.item = '';
 			const oldItemState = this.itemState;
 			this.battle.clearEffectState(this.itemState);
 			this.pendingStaleness = undefined;
 			this.battle.singleEvent('End', item, oldItemState, this);
 			this.battle.runEvent('AfterTakeItem', this, null, null, item);
-			return item;
+			return transferred;
 		}
 		return false;
 	}
@@ -1912,6 +1935,7 @@ export class Pokemon {
 		}
 		const oldItem = this.getItem();
 		const oldItemState = this.itemState;
+		setRogueItemSource(this, item);
 		this.item = item.id;
 		this.itemState = this.battle.initEffectState({ id: item.id, target: this });
 		if (oldItem.exists) this.battle.singleEvent('End', oldItem, oldItemState, this);
@@ -1919,6 +1943,10 @@ export class Pokemon {
 			this.battle.singleEvent('Start', item, this.itemState, this, source, effect);
 		}
 		return true;
+	}
+
+	setRogueRecoveredItem(item: string, donor = this) {
+		return this.setItem(recoveredRogueItem(donor, item));
 	}
 
 	getItem() {

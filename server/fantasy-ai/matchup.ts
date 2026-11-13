@@ -134,6 +134,7 @@ function afterMove(mon: Pokemon, profile: Combatant): Combatant {
 		protectCounter: mon.volatiles.stall?.counter,
 		lastMove: mon.lastMove?.id,
 		activeMoveActions: mon.activeMoveActions,
+		usedMoves: mon.moveSlots.filter(slot => slot.used).map(slot => slot.id),
 		moveLocks: { encore: mon.volatiles.encore?.move, disable: mon.volatiles.disable?.move },
 	};
 }
@@ -185,7 +186,10 @@ export function createMatchup(
 			if (battle.dex.items.get(mon.item).isChoice && profile.lastMove && mon.hasMove(profile.lastMove)) {
 				mon.volatiles.choicelock = battle.initEffectState({ id: 'choicelock', target: mon, move: profile.lastMove });
 			}
-			for (const slot of mon.moveSlots) slot.pp = Math.max(0, slot.maxpp - (profile.moveUses?.[slot.id] || 0));
+			for (const slot of mon.moveSlots) {
+				slot.pp = Math.max(0, slot.maxpp - (profile.moveUses?.[slot.id] || 0));
+				slot.used = !!profile.usedMoves?.includes(slot.id);
+			}
 			Object.assign(mon.boosts, profile.boosts);
 			if (profile.types?.length) mon.setType(profile.types, true);
 			if (profile.terastallized) mon.terastallized = profile.terastallized;
@@ -267,6 +271,7 @@ export function estimateEntry(
 		const mon = battle.p1.active[0];
 		mon.isStarted = false;
 		mon.activeTurns = mon.activeMoveActions = 0;
+		for (const slot of mon.moveSlots) slot.used = false;
 		mon.lastMove = null;
 		delete mon.volatiles.choicelock;
 		mon.abilityState.effectOrder = battle.effectOrder++;
@@ -449,6 +454,10 @@ export function estimateMove(
 			}
 			// useMove bypasses runMove's first-action counter (Fake Out / First Impression).
 			source.activeMoveActions++;
+			if (!disabled) {
+				const slot = source.getMoveData(move);
+				if (slot) slot.used = true;
+			}
 			const didSomething = !disabled && battle.actions.useMove(move, source, { target, zMove });
 			// useMove queues faints; resolve Destiny Bond's native onFaint trade.
 			// Other probes do not need to finish an artificial battle here.

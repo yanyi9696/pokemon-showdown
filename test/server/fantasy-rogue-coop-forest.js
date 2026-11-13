@@ -8,7 +8,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
-const { content, set } = require('../fixtures/fantasy-rogue');
+const { content, set, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue shared forest spectators and mediation', () => {
 	let oldConfig, store, engine, manager, host, guest, created, preview;
@@ -63,7 +63,9 @@ describe('Fantasy Rogue shared forest spectators and mediation', () => {
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(id => id !== 'forest')
 				.map(id => ({ id, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'forestroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'forestroute' });
+		});
 		assert.equal(member(host).coopEvent.id, 'forest');
 	}
 	function agree(choice, roll = 0) {

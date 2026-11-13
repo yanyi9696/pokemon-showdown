@@ -40,7 +40,7 @@ describe('Fantasy Rogue additional tower spirits', () => {
 	it('keeps every name and Pokemon unique, including unavailable spirits', () => {
 		assert.equal(new Set(ROGUE_SPIRITS.map(s => s.name)).size, ROGUE_SPIRITS.length);
 		assert.equal(new Set(ROGUE_SPIRITS.map(s => s.species)).size, ROGUE_SPIRITS.length);
-		assert.equal(activeRogueSpirits().length, 36);
+		assert.equal(activeRogueSpirits().length, 37);
 	});
 	it('uses a linear, uncapped coin ratio and excludes opponent and residual damage', () => {
 		assert.equal(rogueCoinDamageMultiplier(50000), 1.01);

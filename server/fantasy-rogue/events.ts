@@ -10,7 +10,7 @@ import { collectionEvent, collectionView, chooseCollection, type SkiState } from
 import { isLuckEvent } from './luck-event-data';
 import { loadedDiceEventWeight, luckEventEligible, luckEventView, chooseLuckEvent,
 	type LuckEventResult } from './luck-events';
-import { eligibleRematches, prepareRematch, rematchView, chooseRematch } from './companion-rematches';
+import { eligibleRematches, sharedRematches, prepareRematch, rematchView, chooseRematch } from './companion-rematches';
 import { policeView, choosePoliceRegion, settlePoliceBattle, type PoliceEvent } from './police-events';
 import { honeymoonEligible, prepareHoneymoon, honeymoonView, chooseHoneymoon, settleHoneymoon,
 	type HoneymoonTrip } from './honeymoon';
@@ -157,9 +157,9 @@ export function chooseEvent(
 		run.floor >= trainingFloor(id) && tripEligible(id) &&
 		!['masterballgift', 'rivalstory', 'exclusivechallenge', 'auction', 'mushroomcollector',
 			'policeassist', 'policerevenge'].includes(id) &&
-			(id !== 'travellermeeting' || socialCandidates(run).length > 0) &&
-			(id !== 'companionrematch' || eligibleRematches(run).length > 0) &&
-			(id !== 'exclusiveclue' || neededExclusiveItems(run).length > 0) &&
+			(id !== 'travellermeeting' || socialCandidates(run, otherParties).length > 0) &&
+			(id !== 'companionrematch' || (otherParties.length ? sharedRematches(parties) : eligibleRematches(run)).length > 0) &&
+			(id !== 'exclusiveclue' || parties.some(party => neededExclusiveItems(party).length > 0)) &&
 			(id !== 'fantasytutor' || run.floor >= FANTASY_TUTOR_FLOOR) &&
 			(id !== 'legendarytracks' || run.floor >= LEGENDARY_TRACKS_FLOOR));
 	const candidates = eligible.filter(id => id !== last);
@@ -197,7 +197,7 @@ export function chooseEvent(
 			(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	const chosen = pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
-	if (chosen === 'exclusiveclue' || !neededExclusiveItems(run).length) run.exclusiveEventMisses = 0;
+	if (chosen === 'exclusiveclue' || !parties.some(party => neededExclusiveItems(party).length)) run.exclusiveEventMisses = 0;
 	else if (needsClue) run.exclusiveEventMisses = (run.exclusiveEventMisses || 0) + 1;
 	return chosen;
 }
@@ -224,9 +224,10 @@ export function forestTeams(level: number, random: RogueRandom) {
 	return result.teams.map(team => team.map(name => makeEncounterSet(name, level, randomEncounterIVs(random))));
 }
 
-export function beginEvent(run: RogueRun, random: RogueRandom) {
+export function beginEvent(run: RogueRun, random: RogueRandom, content: RogueContent | undefined) {
 	const id = chooseEvent(run, random);
-	if (id === 'travellermeeting' && beginSocialEvent(run, random)) return;
+	if (id === 'travellermeeting' &&
+		beginSocialEvent(run, random, undefined, content ? { content, random } : undefined)) return;
 	if (id === 'legendarytracks') {
 		beginLegendaryTracks(run, random); (run.eventHistory ||= []).push({ id, floor: run.floor }); return;
 	}
@@ -425,6 +426,7 @@ export interface SharedActivityContext {
 	safari?: import('./journey-safari').SharedSafariContext;
 	adventure?: SharedAdventureRoll;
 	honeymoonTip?: number;
+	socialGift?: 'potion' | 'ether' | 'oranberry';
 	quiz?: SharedQuizRoll;
 	relicTypes?: readonly string[];
 	/** Trusted server time shared by both owners; never read from client input. */
@@ -444,7 +446,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	}
 	normalizeBlessings(run);
 	const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
-	recordCompanionPreference(run, view?.options || [], choice!, random);
+	recordCompanionPreference(run, view?.options || [], choice!, random, { content, random });
 	// Milestone gifts are separate from the current event's rewards.
 	before.money = run.money; before.bag = { ...run.bag };
 	if (choice === 'leave') event.trainingAidBlocked = true;
@@ -464,7 +466,10 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	if (greninjaEvent(event.id)) {
 		chooseGreninjaEvent(run, choice!); rewardReceipt(run, before); return;
 	}
-	if (event.social) { chooseSocialEvent(run, choice!, random); rewardReceipt(run, before); return; }
+	if (event.social) {
+		chooseSocialEvent(run, content, choice!, random, activityContext?.socialGift);
+		rewardReceipt(run, before); return;
+	}
 	if (event.expedition) {
 		chooseExpedition(account, run, content, random, choice!, sharedEgg, activityContext?.quiz);
 		rewardReceipt(run, before); return;
@@ -483,9 +488,15 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	if (event.tracks) {
 		chooseLegendaryTracks(run, choice!, random); rewardReceipt(run, before); return;
 	}
-	if (event.exclusive) { chooseExclusiveEvent(run, choice!, random); rewardReceipt(run, before); return; }
+	if (event.exclusive) {
+		chooseExclusiveEvent(run, content, choice!, random);
+		rewardReceipt(run, before); return;
+	}
 	if (event.id === 'fantasytutor') { chooseFantasyTutor(account, run, content, choice!); rewardReceipt(run, before); return; }
-	if (event.id === 'auction') { chooseAuction(run, choice!); rewardReceipt(run, before); return; }
+	if (event.id === 'auction') {
+		chooseAuction(run, content, random, choice!);
+		rewardReceipt(run, before); return;
+	}
 	if (event.stage === 'fragments' && event.fragmentOffer) {
 		const alternative = event.fragmentOffer.alternative;
 		if (choice === 'fragments') outcome(run, [claimEventFragments(run)]);
@@ -639,14 +650,14 @@ export function settleEventBattle(
 	if (event.social) {
 		if (!retreated) {
 			const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
-			settleSocialEvent(run, won); rewardReceipt(run, before);
+			settleSocialEvent(run, won, { content, random }); rewardReceipt(run, before);
 		}
 		return;
 	}
 	if (event.rival) {
 		if (!retreated) {
 			const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
-			settleRival(run, random, won); rewardReceipt(run, before);
+			settleRival(run, random, won, { content, random }); rewardReceipt(run, before);
 		}
 		return;
 	}
@@ -668,7 +679,7 @@ export function settleEventBattle(
 	if (event.tracks) { settleLegendaryTracks(run, won); return; }
 	if (event.exclusive) {
 		const before = { money: run.money, bag: { ...run.bag }, shards: run.blessings?.shards || 0 };
-		settleExclusiveEvent(run, won);
+		settleExclusiveEvent(run, content, random, won);
 		if (!won && event.id === 'exclusivechallenge') {
 			const lost = Math.min(run.money, 500 + run.floor * 20);
 			run.money -= lost;

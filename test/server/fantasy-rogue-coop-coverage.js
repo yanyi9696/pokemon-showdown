@@ -9,7 +9,7 @@ const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { normalizeBlessings } = require('../../dist/server/fantasy-rogue/blessings');
 const { blessing } = require('../../dist/sim/rogue-blessing-data');
 const { createRoguePokemon, rememberMove } = require('../../dist/server/fantasy-rogue/progression');
-const { content, set } = require('../fixtures/fantasy-rogue');
+const { content, set, firstEventRoute } = require('../fixtures/fantasy-rogue');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
 const stats = value => ({ hp: value, atk: value, def: value, spa: value, spd: value, spe: value });
 
@@ -51,7 +51,9 @@ describe('Fantasy Rogue co-op coverage workshop and move equipment', () => {
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(id => id !== 'coverageworkshop')
 				.map(id => ({ id, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'workshop' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'workshop' });
+		});
 	}
 	function grant() {
 		enter(); choose(host); choose(guest);

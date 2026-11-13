@@ -23,6 +23,33 @@ describe('Fantasy doubles support prerequisites', () => {
 	}
 	const score = (choice, extraLog = []) => rank(extraLog).find(entry => entry.choice === choice);
 	const splash = () => mon('Magikarp', ['Splash']);
+	for (const [species, ability, item] of [
+		['Amoonguss', 'Regenerator', ''], ['Blastoise', 'Overcoat', ''], ['Blastoise', 'Torrent', 'Safety Goggles'],
+	]) it(`avoids powder into the disclosed immunity of ${species}/${ability}/${item}`, () => {
+		create([mon('Amoonguss', ['Spore', 'Pollen Puff'], 'Regenerator'), splash()],
+			[mon(species, ['Splash'], ability, { item }), splash()]);
+		const known = [`|-ability|p1a: ${species}|${ability}`, ...(item ? [`|-item|p1a: ${species}|${item}`] : [])];
+		assert(score('move 1 1, move 1', known).reasons.includes('powder-move-blocked'));
+		assert(!rank(known)[0].choice.startsWith('move 1 1,'));
+		battle.makeChoices('move 1, move 1', 'move 1 1, move 1');
+		assert.equal(battle.p1.active[0].status, '');
+	});
+	it('retains powder after a disclosed Overcoat bypass or suppressed Safety Goggles', () => {
+		create([mon('Amoonguss', ['Spore'], 'Mold Breaker'), splash()],
+			[mon('Blastoise', ['Splash'], 'Overcoat'), splash()]);
+		assert(!score('move 1 1, move 1', ['|-ability|p1a: Blastoise|Overcoat']).reasons.includes('powder-move-blocked'));
+		battle.makeChoices('move 1, move 1', 'move 1 1, move 1');
+		assert.equal(battle.p1.active[0].status, 'slp');
+		battle.destroy();
+		create([mon('Amoonguss', ['Spore'], 'Regenerator'), splash()],
+			[mon('Blastoise', ['Splash'], 'Torrent', { item: 'Safety Goggles' }), splash()]);
+		battle.field.addPseudoWeather('magicroom', battle.p2.active[0]);
+		const unshielded = score('move 1 1, move 1', ['|-item|p1a: Blastoise|Safety Goggles']);
+		assert(!unshielded.reasons.includes('powder-move-blocked'));
+		assert(!unshielded.reasons.includes('status-immunity'));
+		battle.makeChoices('move 1, move 1', 'move 1 1, move 1');
+		assert.equal(battle.p1.active[0].status, 'slp');
+	});
 
 	it('does not prefer an Aurora Veil that the native engine rejects outside snow', () => {
 		create([mon('Ninetales-Alola', ['Aurora Veil', 'Ice Beam'], 'Snow Cloak'), splash()]);

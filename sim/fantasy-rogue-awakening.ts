@@ -6,7 +6,8 @@ import { strongestBlessingMember } from './rogue-blessing-permanent';
 export function robeActive(mon: Pokemon | null | undefined, kind: RobeKind) {
 	if (!mon?.battle.fantasyRogue || !mon.set.fantasyRogueId || mon.transformed) return false;
 	const state = mon.battle.fantasyRogue;
-	const team = mon.side.id === 'p1' ? state.team : state.duel?.team || [];
+	const team = mon.side.id === 'p1' ? state.team :
+		mon.side.id === 'p3' ? state.partner?.team || [] : state.duel?.team || [];
 	return robeMember(team, blessingEffects(mon), kind)?.id === mon.set.fantasyRogueId;
 }
 export function spiralActive(mon: Pokemon) {
@@ -34,9 +35,11 @@ export function awakeningUpdate(mon: Pokemon) {
 		battle.boost({ spa: 1 }, mon, mon, battle.format);
 		battle.add('-message', '【神衣纯洁】半血觉醒：特攻提升，每场仅一次。');
 	}
-	const team = mon.side.id === 'p1' ? state.team : state.duel?.team || [];
+	const team = mon.side.id === 'p1' ? state.team :
+		mon.side.id === 'p3' ? state.partner?.team || [] : state.duel?.team || [];
 	if (hasBlessing(mon, 'spiral') && !mon.transformed && mon.species.isMega &&
-		strongestBlessingMember(team, 'excadrill')?.id === mon.set.fantasyRogueId && mon.ability !== 'heavenpiercingdrill') {
+		strongestBlessingMember(team, 'excadrill', blessingEffects(mon))?.id === mon.set.fantasyRogueId &&
+		mon.ability !== 'heavenpiercingdrill') {
 		mon.setAbility('heavenpiercingdrill', mon, true);
 		battle.add('-message', '【我的钻头是可以突破天际的】超进化特性变为【突破天际的钻头】。');
 	}

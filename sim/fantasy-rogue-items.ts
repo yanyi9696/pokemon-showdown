@@ -1,12 +1,14 @@
 import type { Pokemon } from './pokemon';
 import type { Battle } from './battle';
 import type { ItemData } from './dex-items';
-import { hasBlessing } from './fantasy-rogue-blessings';
+import { hasBlessing, blessingEffects } from './fantasy-rogue-blessings';
 import { ELECTRIC_MOUSE_FAMILY, inBlessingFamily } from './rogue-blessing-data';
 
 export function mouseFamilyActive(mon: Pokemon) {
-	return !!hasBlessing(mon, 'mousefamily') && mon.side.pokemon.length === 6 &&
-		mon.side.pokemon.every(p => inBlessingFamily(p.baseSpecies.name, ELECTRIC_MOUSE_FAMILY));
+	if (!hasBlessing(mon, 'mousefamily')) return false;
+	// Item discovery also runs during type events: this species-only condition must not call getTypes().
+	const party = blessingEffects(mon)?.party || mon.side.pokemon.map(p => ({ species: p.baseSpecies.name }));
+	return party.length === 6 && party.every(p => inBlessingFamily(p.species, ELECTRIC_MOUSE_FAMILY));
 }
 export function shareableRogueItem(item: Item) {
 	return item.exists && !item.id.startsWith('rogueuniversal') && !item.megaStone && !item.zMove &&
@@ -15,9 +17,17 @@ export function shareableRogueItem(item: Item) {
 			'lustrousglobe', 'wellspringmask', 'hearthflamemask', 'cornerstonemask', 'gmegawishingstar'].includes(item.id);
 }
 function physicalItem(mon: Pokemon): ID { return mon.m.rogueItemContext?.id ?? mon.item; }
+/** Selected owners use their real equipment; only unselected owners use the battle snapshot. */
+function reserveItemOwners(mon: Pokemon) {
+	const selected = new Set(mon.side.pokemon.map(owner => owner.set.fantasyRogueId));
+	return blessingEffects(mon)?.party?.filter(owner => !selected.has(owner.id)) || [];
+}
+function familyItems(mon: Pokemon): string[] {
+	return [...mon.side.pokemon.map(physicalItem), ...reserveItemOwners(mon).map(owner => owner.item || '')];
+}
 export function sharedRogueItems(mon: Pokemon): ID[] {
 	if (!mouseFamilyActive(mon)) return [];
-	return [...new Set(mon.side.pokemon.map(physicalItem).filter(id => shareableRogueItem(mon.battle.dex.items.get(id))))];
+	return [...new Set(familyItems(mon).filter(id => shareableRogueItem(mon.battle.dex.items.get(id))))] as ID[];
 }
 /** Borrow the native item callback context, without replacing the real carried item or its state. */
 export function rogueItemCallback(mon: Pokemon, item: Item, callback: any): any {
@@ -67,12 +77,20 @@ export function consumeRogueItem(mon: Pokemon, item: Item): boolean {
 		return true;
 	}
 	const shared = mouseFamilyActive(mon) && shareableRogueItem(item);
-	if (item.id === 'weaknesspolicy' && mon.side.id === 'p1' && hasBlessing(mon, 'weakness')) {
-		const count = shared ? mon.side.pokemon.filter(owner => physicalItem(owner) === item.id).length : 1;
+	if (item.id === 'weaknesspolicy' && hasBlessing(mon, 'weakness')) {
+		const count = shared ? familyItems(mon).filter(id => id === item.id).length : 1;
 		const state = mon.battle.fantasyRogue!;
-		state.weaknessPoliciesSpent = (state.weaknessPoliciesSpent || 0) + count;
+		if (mon.side.id === 'p1') state.weaknessPoliciesSpent = (state.weaknessPoliciesSpent || 0) + count;
+		else if (mon.side.id === 'p3' && state.cooperative && state.partner) {
+			state.partnerWeaknessPoliciesSpent = (state.partnerWeaknessPoliciesSpent || 0) + count;
+		}
 	}
 	if (!shared) return false;
+	for (const owner of reserveItemOwners(mon)) {
+		if (owner.item !== item.id) continue;
+		owner.consumedItem = item.id;
+		owner.item = '';
+	}
 	for (const owner of mon.side.pokemon) {
 		if (physicalItem(owner) !== item.id) continue;
 		if (owner.m.rogueBlessing) owner.m.rogueBlessing.consumed = item.id;

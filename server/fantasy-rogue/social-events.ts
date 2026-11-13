@@ -1,4 +1,4 @@
-import { gainAffection, AFFECTION_RULES } from './affection';
+import { type AffectionRewards, gainAffection, AFFECTION_RULES } from './affection';
 import { randomUUID } from 'crypto';
 import { RIVALS } from './rival-data';
 import { TRAVELLERS } from './traveller-profiles';
@@ -8,22 +8,25 @@ import { dialoguePage, queueNarrative, healNarrativeParty } from './narrative';
 import { lowerToEligibleStage } from './evolution';
 import { randomSpeciesEligible } from './species-eligibility';
 import { makeEncounterSet } from './encounter-sets';
-import type { RogueRun } from './types';
+import type { RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
+import { convertSpiritItem } from './spirits';
 
 export interface SocialEvent { trainer: string; step: 'talk' | 'reply' | 'invite'; affinity: number }
-export function socialCandidates(run: RogueRun) {
-	const active = travellingRoster(run).map(c => c.id);
+export function socialCandidates(run: RogueRun, otherParties: readonly RogueRun[] = []) {
+	const parties = [run, ...otherParties];
+	const active = parties.flatMap(party => travellingRoster(party).map(c => c.id));
 	return Object.values(TRAVELLERS).filter(p => !p.challengeOnly && !(p.id in RIVALS) && p.id !== 'carmine' &&
-		!active.includes(p.id) && !run.blessings?.companions?.some(c => c.id === p.id));
+		!active.includes(p.id) && !parties.some(party => party.blessings?.companions?.some(c => c.id === p.id)));
 }
-export function beginSocialEvent(run: RogueRun, random: RogueRandom) {
+export function beginSocialEvent(run: RogueRun, random: RogueRandom, visitor?: string, rewards?: AffectionRewards) {
 	const pool = socialCandidates(run);
 	if (!pool.length) return false;
-	const person = pool[random(pool.length)];
+	const person = visitor ? pool.find(entry => entry.id === visitor) : pool[random(pool.length)];
+	if (!person) return false;
 	run.node!.event = { id: 'travellermeeting', key: randomUUID(), stage: 'choice',
 		social: { trainer: person.id, step: 'talk', affinity: 0 } };
-	gainAffection(run, person.id, AFFECTION_RULES.meeting, 'meeting:' + run.node!.event.key);
+	gainAffection(run, person.id, AFFECTION_RULES.meeting, 'meeting:' + run.node!.event.key, rewards);
 	run.node!.name = `旅途同行 · ${person.name}`;
 	run.node!.reward = { money: 0, items: {} };
 	run.node!.encounters = []; run.encounter = 0; run.phase = 'event';
@@ -57,8 +60,11 @@ function result(run: RogueRun, text: string, smile = true) {
 	run.phase = 'event';
 	queueNarrative(run, [dialoguePage(person.id, person.name, text, smile)], 'event');
 }
-export function chooseSocialEvent(run: RogueRun, choice: string, random: RogueRandom) {
+export function chooseSocialEvent(
+	run: RogueRun, content: RogueContent, choice: string, random: RogueRandom, sharedGift?: 'potion' | 'ether' | 'oranberry'
+) {
 	const event = run.node!.event!, social = event.social!, person = TRAVELLERS[social.trainer];
+	const rewardKey = event.key;
 	event.key = randomUUID();
 	if (choice === 'leave' || choice === 'decline') {
 		event.trainingAidBlocked = true; result(run, person.farewell); return;
@@ -68,7 +74,8 @@ export function chooseSocialEvent(run: RogueRun, choice: string, random: RogueRa
 		result(run, person.chat?.join || '那就一起走吧。名额满了的话，也请认真和原来的伙伴道别。'); return;
 	}
 	if (choice === person.preference) {
-		social.affinity++; gainAffection(run, person.id, AFFECTION_RULES.response, 'response:' + run.floor + ':' + social.step);
+		social.affinity++;
+		gainAffection(run, person.id, AFFECTION_RULES.response, `response:${run.floor}:${social.step}`, { content, random });
 	}
 	if (social.step === 'talk' && choice !== 'battle') {
 		social.step = 'reply'; event.result = [person.chat?.reply || (social.affinity ? '「我也这么想。那你希望接下来怎样旅行呢？」' : '「原来是这样。我也想听听你对伙伴和旅途的想法。」')]; return;
@@ -86,14 +93,15 @@ export function chooseSocialEvent(run: RogueRun, choice: string, random: RogueRa
 		}];
 		event.stage = 'battle'; run.phase = 'ready'; return;
 	}
-	const item = ['potion', 'ether', 'oranberry'][random(3)];
-	run.bag[item] = (run.bag[item] || 0) + 1;
+	const item = sharedGift || ['potion', 'ether', 'oranberry'][random(3)];
+	const received = convertSpiritItem(run, content, item, `social:${rewardKey}:${item}`, random);
+	run.bag[received] = (run.bag[received] || 0) + 1;
 	result(run, '和你聊得很开心。这份小补给请收下，愿我们都能遇见更多美好的事。');
 }
-export function settleSocialEvent(run: RogueRun, won: boolean) {
+export function settleSocialEvent(run: RogueRun, won: boolean, rewards: AffectionRewards | undefined) {
 	const event = run.node!.event!, social = event.social!, person = TRAVELLERS[social.trainer];
 	healNarrativeParty(run); event.trainingAidBlocked = !won;
-	if (won) gainAffection(run, person.id, AFFECTION_RULES.duel, 'duel:' + run.floor);
+	if (won) gainAffection(run, person.id, AFFECTION_RULES.duel, `duel:${run.floor}`, rewards);
 	if (won && person.preference === 'battle') {
 		event.key = randomUUID(); event.stage = 'choice'; social.step = 'invite';
 		run.phase = 'event';

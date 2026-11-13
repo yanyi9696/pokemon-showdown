@@ -1,7 +1,8 @@
 'use strict';
 
 const assert = require('assert').strict;
-const { randomUUID } = require('crypto');
+const crypto = require('crypto');
+const { randomUUID } = crypto;
 const { makeUser } = require('../users-utils');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
@@ -16,8 +17,9 @@ const { experienceAtLevel, rogueSpeciesData } = require('../../dist/sim/fantasy-
 const { content, set, stats } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op shared auction and personal buyers', () => {
-	let previous, store, engine, manager, host, guest, serial = 0;
+	let previous, store, engine, manager, host, guest, oldRandom, serial = 0;
 	beforeEach(() => {
+		oldRandom = crypto.randomInt;
 		previous = { local: Config.fantasyailocal, bind: Config.bindaddress, rogue: Config.fantasyrogue };
 		Config.fantasyailocal = true; Config.bindaddress = '127.0.0.1';
 		Config.fantasyrogue = { enabled: true, publicAccess: true };
@@ -41,6 +43,7 @@ describe('Fantasy Rogue co-op shared auction and personal buyers', () => {
 		});
 	});
 	afterEach(() => {
+		crypto.randomInt = oldRandom;
 		host?.disconnectAll(); guest?.disconnectAll();
 		host?.destroy(); guest?.destroy(); store?.close();
 		Config.fantasyailocal = previous.local; Config.bindaddress = previous.bind; Config.fantasyrogue = previous.rogue;
@@ -140,6 +143,70 @@ describe('Fantasy Rogue co-op shared auction and personal buyers', () => {
 			assert.equal(auction().state.index, run.auction.index); assert.equal(member(user).money, run.money);
 			assert.deepEqual(member(user).bag, run.bag);
 			assert.equal(member(user === host ? guest : host).money, oldWallets[user === host ? 1 : 0]);
+		}
+	});
+	it('converts only the named Mew buyer reward, preserves the original search claim, and displays the actual receipt', () => {
+		enter(); fixedLots(1); agree('enter');
+		change(shared => {
+			const a = shared.adventure; a.spirit = 'hoopagift'; a.spiritVersion = 1;
+			a.members[guest.id].exclusiveItems = { lightball: { since: 1, misses: 0, cooldown: 0 } };
+			a.members[host.id].spiritConversions = { old: 'leftovers' };
+		});
+		assert(view(guest).coopEvent.paragraphs.some(line => line.includes('50%')));
+		const beforeHost = member(host), accounts = [host, guest].map(user => store.get(user.id));
+		let rolls = 0;
+		crypto.randomInt = max => { if (max === 2) rolls++; return 0; };
+		const requestBefore = request(guest, `bid:${guest.id}`);
+		choose(host, requestBefore.value); manager.coop.command(guest, requestBefore);
+		assert.equal(rolls, 1); assert.equal(member(guest).money, 57000);
+		assert.equal(member(guest).bag.fantasypowerlens, 1); assert(!member(guest).bag.lightball);
+		assert.equal(member(guest).spiritConversions['auction:81:0'], 'fantasypowerlens');
+		assert(member(guest).exclusiveItems.lightball.obtained);
+		assert.equal(member(host).money, beforeHost.money); assert.deepEqual(member(host).bag, beforeHost.bag);
+		assert.deepEqual(member(host).spiritConversions, beforeHost.spiritConversions);
+		assert.deepEqual(view(guest).lastReward.items, { fantasypowerlens: 1 });
+		assert(view(guest).coopEvent.paragraphs.some(line => line.includes('梦幻的奇赠')));
+		const saved = session(); manager = new RogueManager(new RogueEngine(store, engine.content));
+		manager.coop.command(guest, { action: 'refresh' }); assert.deepEqual(session(), saved);
+		assert.throws(() => manager.coop.command(guest, requestBefore)); assert.deepEqual(session(), saved);
+		for (const [i, user] of [host, guest].entries()) assert.deepEqual(store.get(user.id), accounts[i]);
+	});
+	it('rolls back conversion, payment and the lot on a failed purchase before a successful single retry', () => {
+		enter(); fixedLots(1); agree('enter');
+		change(shared => {
+			shared.adventure.spirit = 'hoopagift'; shared.adventure.spiritVersion = 1;
+			shared.adventure.members[guest.id].bag.fantasypowerlens = Number.MAX_SAFE_INTEGER;
+		});
+		crypto.randomInt = () => 0;
+		const bid = request(guest, `bid:${guest.id}`); choose(host, bid.value);
+		const before = session(); assert.throws(() => manager.coop.command(guest, bid), /可保存范围/);
+		assert.deepEqual(session(), before); assert(!member(guest).spiritConversions);
+		change(shared => { delete shared.adventure.members[guest.id].bag.fantasypowerlens; });
+		manager.coop.command(guest, bid);
+		assert.equal(member(guest).money, 57000); assert.equal(member(guest).bag.fantasypowerlens, 1);
+		assert.equal(auction().buyers[0], guest.id); assert.equal(auction().state.index, 1);
+	});
+	it('keeps nonconverted purchases and never transforms protected auction lots or NPC purchases', () => {
+		enter(); fixedLots(1); agree('enter');
+		change(shared => {
+			shared.adventure.spirit = 'hoopagift'; shared.adventure.spiritVersion = 1;
+			const state = shared.adventure.coopAuction.state, first = state.lots[0];
+			state.lots = ['lightball', 'charizarditex', 'fantasyultraenergy', 'rogueuniversalmegastone', 'leftovers']
+				.map(id => ({ ...structuredClone(first), item: { ...first.item, id, name: id } }));
+		});
+		let rolls = 0;
+		crypto.randomInt = max => {
+			assert.equal(max, 2); rolls++; return 1;
+		};
+		for (const id of ['lightball', 'charizarditex', 'fantasyultraenergy', 'rogueuniversalmegastone']) {
+			agree(`bid:${guest.id}`); assert.equal(member(guest).bag[id], 1);
+		}
+		assert.equal(rolls, 1); assert.deepEqual(member(guest).spiritConversions, { 'auction:81:0': 'lightball' });
+		const before = [host, guest].map(user => ({ bag: member(user).bag, money: member(user).money }));
+		change(shared => { shared.adventure.coopAuction.state.lots[4].willingness = [10000, 0, 0]; });
+		agree('pass'); assert.equal(rolls, 1); assert.equal(auction().state.lots[4].winner, 0);
+		for (const [i, user] of [host, guest].entries()) {
+			assert.deepEqual(member(user).bag, before[i].bag); assert.equal(member(user).money, before[i].money);
 		}
 	});
 	it('credits different winning players once, keeps separate receipts and preserves both paused solo saves', () => {

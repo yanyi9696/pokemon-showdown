@@ -29,7 +29,7 @@ const POSITIONS = 'abcdefghijklmnopqrstuvwx';
 // and thus can simply be reconsituted as needed.
 // NOTE: Species is not strictly immutable as some OM formats rely on an
 // onModifySpecies event - deserialization is not possible for such formats.
-type Referable = Battle | Field | Side | Pokemon | Condition | Ability | Item | Move | Species;
+type Referable = Battle | Field | Side | Pokemon | Condition | Ability | Item | Move | Species | Format;
 
 // Certain fields are either redundant (transient caches, constants, duplicate
 // information) or require special treatment. These sets contain the specific
@@ -135,6 +135,11 @@ export const State = new class {
 		for (const [i, side] of state.sides.entries()) {
 			this.deserializeSide(side, battle.sides[i]);
 			activeRequests = activeRequests || side.activeRequest === undefined;
+		}
+		// JSON duplicates plain objects. Restore the shared table established by Battle.start
+		// before requests or subsequent actions can see diverging ally hazards/screens/timers.
+		for (const side of battle.sides) {
+			if (side.allySide && side.n > side.allySide.n) side.sideConditions = side.allySide.sideConditions;
 		}
 		// Since battle.getRequests depends on the state of each side we can't combine
 		// this loop with the one above which deserializes the sides. We also only do this
@@ -378,7 +383,7 @@ export const State = new class {
 		if (!this.REFERABLE) {
 			this.REFERABLE = new Set([
 				Battle, Field, Side, Pokemon, Dex.Condition,
-				Dex.Ability, Dex.Item, Dex.Move, Dex.Species,
+				Dex.Ability, Dex.Item, Dex.Move, Dex.Species, Dex.Format,
 			]);
 		}
 		return this.REFERABLE.has(obj.constructor);
@@ -414,6 +419,7 @@ export const State = new class {
 		case 'Move': return battle.dex.moves.get(id);
 		case 'Condition': return battle.dex.conditions.get(id);
 		case 'Species': return battle.dex.species.get(id);
+		case 'Format': return id === battle.format.id ? battle.format : battle.dex.formats.get(id);
 		default: return undefined; // maybe we actually got unlucky and its a string
 		}
 	}

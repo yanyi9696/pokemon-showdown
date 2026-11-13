@@ -1,4 +1,4 @@
-import type { RogueAccount, RogueRun, RogueCommand } from './types';
+import type { RogueAccount, RogueRun, RogueCommand, RogueContent } from './types';
 import type { RogueRandom } from './biome-pools';
 import { TRAVELLERS } from './traveller-profiles';
 import { COMPANIONS, type CompanionID } from '../../sim/rogue-companions';
@@ -8,6 +8,10 @@ import { affectionThemeGift, AFFECTION_FANTASY_CHOICES, AFFECTION_ADVANCED_REWAR
 import { normalizeBlessings } from './blessings';
 import { randomUUID } from 'crypto';
 import { characterSpeech, affectionNarration } from './dialogue-copy';
+import { convertSpiritItem } from './spirits';
+import { inventoryItem } from './team';
+
+export interface AffectionRewards { content: RogueContent; random: RogueRandom }
 
 export interface TrainerBond {
 	score: number; gifts: number[]; pending: number[]; responses?: Record<number, string>; chats?: number;
@@ -22,7 +26,9 @@ export function bond(run: RogueRun, id: string): TrainerBond {
 	bonds[id] ||= { score: Math.max(0, Math.min(100, legacy || 0)), gifts: [], pending: [] };
 	return bonds[id];
 }
-export function gainAffection(run: RogueRun, id: string, amount: number, receipt: string) {
+export function gainAffection(
+	run: RogueRun, id: string, amount: number, receipt: string, rewards: AffectionRewards | undefined
+) {
 	if (!person(id) || amount <= 0) return 0;
 	const key = id + ':' + receipt, claims = run.affectionClaims ||= [];
 	if (claims.includes(key)) return 0;
@@ -33,21 +39,27 @@ export function gainAffection(run: RogueRun, id: string, amount: number, receipt
 	if (run.rival?.id === id) run.rival.affection = b.score;
 	if (id === 'carmine' && run.rival?.carmine) run.rival.carmine.affection = b.score;
 	for (const stage of AFFECTION_RULES.stages) if (b.score >= stage && !b.gifts.includes(stage)) {
+		if (run.spirit === 'hoopagift' && !rewards) throw new Error('梦幻好感奖励缺少道具配置，未保存本次领取。');
 		b.gifts.push(stage); b.pending.push(stage);
 		const gift = affectionThemeGift(id, stage);
-		if (gift) run.bag[gift.id] = (run.bag[gift.id] || 0) + 1;
+		const received = rewards ? convertSpiritItem(run, rewards.content, gift.id,
+			`affection:${id}:${stage}`, rewards.random, false) : gift.id;
+		run.bag[received] = (run.bag[received] || 0) + 1;
 		if (stage === 100) {
 			run.bag.rarecandy = (run.bag.rarecandy || 0) + 2;
 			run.bag.goldbottlecap = (run.bag.goldbottlecap || 0) + 1;
 			normalizeBlessings(run).pending.push({ id: randomUUID(), kind: 'item',
 				title: `${person(id).name}的心意 · 自选一件幻想道具`, options: [...AFFECTION_FANTASY_CHOICES] });
 		}
-		(run.notices ||= []).push(`【${person(id).name}】好感度达到 ${stage}。获得${gift.name} ×1${stage === 100 ? '、' + AFFECTION_ADVANCED_REWARDS + '（待选择）' : ''}，有一段话想对你说。`);
+		const name = received === gift.id ? gift.name : inventoryItem(rewards!.content, received)?.name || received;
+		(run.notices ||= []).push(`【${person(id).name}】好感度达到 ${stage}。获得${name} ×1` +
+			`${stage === 100 ? '、' + AFFECTION_ADVANCED_REWARDS + '（待选择）' : ''}，有一段话想对你说。`);
+		if (received !== gift.id) run.notices.push(`梦幻的奇赠将本次【${gift.name}】转换为【${name}】。`);
 	}
 	return b.score - before;
 }
 /** Migrate the current journey only. Each new run starts fresh; story invitation rules stay unchanged. */
-export function syncAffection(account: RogueAccount) {
+export function syncAffection(account: RogueAccount, rewards: AffectionRewards | undefined) {
 	const run = account.run;
 	if (!run) return;
 	run.trainerBonds ||= {};
@@ -66,10 +78,10 @@ export function syncAffection(account: RogueAccount) {
 		}
 	}
 	if (run.rival?.completed === 8 && !['complete', 'defeated'].includes(run.phase)) {
-		gainAffection(run, run.rival.id, 100, 'story-complete');
-		if (run.rival.carmine) gainAffection(run, 'carmine', 100, 'story-complete');
+		gainAffection(run, run.rival.id, 100, 'story-complete', rewards);
+		if (run.rival.carmine) gainAffection(run, 'carmine', 100, 'story-complete', rewards);
 		if (['lillie', 'gladion'].includes(run.rival.id) && run.trainerBonds.lusamine) {
-			gainAffection(run, 'lusamine', 100, 'story-complete');
+			gainAffection(run, 'lusamine', 100, 'story-complete', rewards);
 		}
 	}
 	if (run.rival) {
@@ -86,14 +98,14 @@ export function syncAffection(account: RogueAccount) {
 		}
 	}
 }
-export function affectionFloor(run: RogueRun, random: RogueRandom) {
+export function affectionFloor(run: RogueRun, random: RogueRandom, rewards: AffectionRewards | undefined) {
 	for (const c of travellingRoster(run)) {
 		const key = c.id + ':floor:' + run.floor;
 		if (run.affectionClaims?.includes(key)) continue;
-		gainAffection(run, c.id, AFFECTION_RULES.floor, 'floor:' + run.floor);
+		gainAffection(run, c.id, AFFECTION_RULES.floor, `floor:${run.floor}`, rewards);
 		if (random(100) >= AFFECTION_RULES.giftChance) continue;
-		const rewards = ['expcandyxs', 'potion', 'revive', 'shards'];
-		const item = rewards[random(rewards.length)];
+		const supplies = ['expcandyxs', 'potion', 'revive', 'shards'];
+		const item = supplies[random(supplies.length)];
 		if (item === 'shards' && run.blessings) run.blessings.shards += 2;
 		else { const id = item === 'shards' ? 'potion' : item; run.bag[id] = (run.bag[id] || 0) + 1; }
 		(run.notices ||= []).push(`${c.name}将一份小补给交给你：${{ expcandyxs: '经验糖果 XS ×1', potion: '伤药 ×1', revive: '活力碎片 ×1', shards: run.blessings ? '幻想碎片 ×2' : '伤药 ×1' }[item]}。`);

@@ -160,8 +160,23 @@ export class AIController {
 		this.submittedChoice = choice;
 		current.isWait = true;
 		current.choice = choice;
-		void this.battle.stream.write(choiceVersion === undefined ? `>p2 ${choice}` :
-			`>fantasyaichoose ${JSON.stringify({ version: choiceVersion, choice })}`);
+		const failed = (error: unknown) => {
+			Monitor.crashlog(error as Error, 'Fantasy AI choice delivery');
+			if (this.closed || this.battle.ended || this.revision !== revision) return;
+			try {
+				this.finish('stream-error');
+				// A broken transport cannot deliver a tie. Closing uses Rogue's checkpoint recovery.
+				this.battle.room.destroy();
+			} catch (recoveryError) {
+				Monitor.crashlog(recoveryError as Error, 'Fantasy AI choice recovery');
+			}
+		};
+		try {
+			void Promise.resolve(this.battle.stream.write(choiceVersion === undefined ? `>p2 ${choice}` :
+				`>fantasyaichoose ${JSON.stringify({ version: choiceVersion, choice })}`)).catch(failed);
+		} catch (error) {
+			failed(error);
+		}
 	}
 
 	private decide() {

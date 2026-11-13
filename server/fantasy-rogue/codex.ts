@@ -7,6 +7,7 @@ import { createHash } from 'crypto';
 import { RIVALS, RIVAL_SCENES } from './rival-data';
 import { rivalChapterReplay } from './rival-dialogue';
 import { BEGINNER_GUIDE } from './beginner-guide';
+import { CRATE_GUIDE } from './collection-guide';
 import { Dex } from '../../sim/dex';
 import { REWARD_SCENES } from './reward-scenes';
 import { catchupLevels } from './late-support';
@@ -42,7 +43,7 @@ const INTRO = [
 		"胜利奖励、不触发自动急救。战败后全队倒下且没有复活道具时，会自动支付随层数增加的急救费；余额不足则不扣款、不复活。记得提前购买补给。") },
 	{ title: '下一次会更强', text: ("局外六项能力各可提升 1%—10%。常规档每种宝可梦首次随队通关额外获得 5 点成长点；地区形态分别记录，普通与幻想形态共用记录。曾通关本档 200 层并完成本" +
 		"档故事，即可开启下一档；通关任意档位会在所有已解锁档位开放随机塔灵。护符档保留物种、闪光和图鉴收集，**不获得局外成长点数，不新增跨局招式、个体值、性格、特性或性别记录**。已有解锁仍保留。通关卡可以收藏、展示与约战。") },
-	{ title: '宝可梦开箱', text: '在局外消耗 10 点成长点单次开箱，或 100 点十连开箱，永久解锁初始伙伴。产出均为初始形态，六项个体值为 15，性格与特性随机；已有培养记录保留。可定向一个世代或属性，每累计 10 抽必中当前定向。最多 90 抽获得传说、180 抽获得当前定向传说，两项保底分别计数；提前获得对应传说会重置相应计数，切换定向不重置。每抽获得 1 点定向开箱点数，可用 100 点兑换每周轮换的传说伙伴。一级神也在开箱和兑换范围内。' },
+	...CRATE_GUIDE,
 	{ title: '秘闻与记忆', text: '常规档可能遇见秘闻区域，每局最多推进一段，按顺序跨局保存。在开始页的故事回顾中重读已经收集的片段。完成一章后，与老人的日常闲谈和下一次开场也会出现新的话题。' },
 ];
 let guideCache: ReturnType<typeof buildFantasyGuide> | undefined;

@@ -68,8 +68,9 @@ describe('Fantasy Rogue Lusamine family meetings and companion', () => {
  it('can meet and recruit her in ordinary event areas without choosing either child as rival', () => {
   const r=run('kieran');const index=socialCandidates(r).findIndex(c=>c.id==='lusamine');assert(index>=0);
   assert(beginSocialEvent(r,()=>index));assert.equal(r.node.event.social.trainer,'lusamine');
-  delete r.dialogue;chooseSocialEvent(r,'pokemon',()=>0);chooseSocialEvent(r,'pokemon',()=>0);
-  assert.equal(r.node.event.social.step,'invite');chooseSocialEvent(r,'join',()=>0);
+		delete r.dialogue;
+		chooseSocialEvent(r, content(), 'pokemon', () => 0); chooseSocialEvent(r, content(), 'pokemon', () => 0);
+		assert.equal(r.node.event.social.step, 'invite'); chooseSocialEvent(r, content(), 'join', () => 0);
   assert(travellingRoster(r).some(c=>c.id==='lusamine'));
   assert.equal(r.trainerBonds.lusamine.score,8);
  });

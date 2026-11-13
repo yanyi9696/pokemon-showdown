@@ -108,16 +108,12 @@ export function crateView(account: RogueAccount, content: RogueContent, now = Da
 	return { revision: account.revision, growthPoints: account.points, rules: CRATE_RULES,
 		shinyPerMillion: Math.round(CRATE_RULES.shinyPerMillion * echoChance(account.echo?.upgrades.shiny)),
 		ledger: crateSummary(account), daily: dailyCupView(account.crates, now),
-		locked: !!account.run && account.run.phase !== 'complete',
+		locked: false,
 		generations: [...new Set(pool.map(entry => entry.gen))].sort((a, b) => a - b),
 		types: [...new Set(pool.flatMap(entry => entry.types))].sort(),
 		weekly: { ...weekly, catalog: weekly.catalog.map(entry => ({ ...entry,
 			owned: account.unlocked.includes(entry.id) || !!content.starters.find(s => s.id === entry.id)?.availableInitially,
 		})) } };
-}
-
-function requireOutsideRun(account: RogueAccount) {
-	if (account.run && account.run.phase !== 'complete') throw new Error('开箱为局外成长，请结束或放弃本局后再使用。');
 }
 
 function grant(
@@ -166,7 +162,6 @@ function grant(
 /** Called only inside RogueStore.change: spending, unlocks, pity and receipt commit together. */
 export function openStarterCrates(account: RogueAccount, content: RogueContent, id: string, count: number,
 	target: string, random: Random) {
-	requireOutsideRun(account);
 	if (count !== 1 && count !== 10) throw new Error('请选择单次开箱或十连开箱。');
 	const pool = cratePool(content);
 	const targeted = targetPool(pool, target);
@@ -212,7 +207,6 @@ export function openStarterCrates(account: RogueAccount, content: RogueContent, 
 
 export function exchangeStarterCrate(account: RogueAccount, content: RogueContent, id: string,
 	value: string, random: Random, now = Date.now()) {
-	requireOutsideRun(account);
 	const weekly = crateWeekly(content, now);
 	const [week, species, extra] = value.split(':');
 	if (extra !== undefined || week !== weekly.key || !weekly.featured.includes(species)) {

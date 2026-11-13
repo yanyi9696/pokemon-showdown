@@ -4,6 +4,7 @@ import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { chooseEventOption, eventView } from './events';
 import { rollSafariChoice } from './journey-safari';
+import { sharedShinyEcho } from './coop-echo';
 
 export function coopSafariTarget(runs: RogueRun[]) {
 	const event = runs[0]?.node?.event, a = event?.activity;
@@ -30,8 +31,16 @@ export function settleCoopSafari(
 	}
 	const result = rollSafariChoice(entries[0].run.node!.event!.activity!, random, choice), key = randomUUID();
 	for (const [index, { run, account, changeAccount }] of entries.entries()) {
-		const apply = (owner: RogueAccount) => chooseEventOption(owner, run, content, random, run.node!.event!.key, choice,
-			undefined, undefined, undefined, { safari: { result, receive: index === ownerIndex } });
+		const apply = (owner: RogueAccount) => {
+			const personalEcho = run.echo;
+			run.echo = sharedShinyEcho(entries.map(entry => entry.run));
+			try {
+				chooseEventOption(owner, run, content, random, run.node!.event!.key, choice,
+					undefined, undefined, undefined, { safari: { result, receive: index === ownerIndex } });
+			} finally {
+				run.echo = personalEcho;
+			}
+		};
 		if (result.caught && index === ownerIndex) changeAccount!(apply);
 		else apply(account);
 		run.node!.event!.key = key;

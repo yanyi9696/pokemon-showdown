@@ -13,8 +13,11 @@ import { difficultyMenuDescription, ROGUE_DIFFICULTIES, difficultyLabel, difficu
 import { collapseEntries, collapseParameters } from '../../sim/rogue-collapse-data';
 import { difficultySpiritUnlocked, preferredDifficulty, canSelectSpirit } from './difficulty';
 import { comebackView } from './comeback';
+import { coopBattleMentor } from './coop-mentor';
+import { coopComebackCard } from './coop-comeback';
 import { coverageView } from './coverage';
 import { fusionAbilities } from './fusion';
+import { fusionArtworkChoices, memberFusionSprite } from '../../sim/rogue-fusion-art';
 import { formItemOptions } from './form-items';
 import { rivalCompanionView, rivalCompanionViews } from './rivals';
 import { robeMember, robeDurability } from '../../sim/rogue-awakening';
@@ -25,7 +28,7 @@ import { companionView, companionOptions } from './companions';
 import { growthView, growthOffers } from './growth';
 import { rewardSceneView } from './reward-scenes';
 import { randomUUID } from 'crypto';
-import { emergencyCost, MENTOR_CARDS, mentorCardAtFloor, type MentorCard } from './early-balance';
+import { emergencyCost, MENTOR_CARDS, mentorCardAtFloor, mentorTier, type MentorCard } from './early-balance';
 import { eventView, canRetreatRogue } from './events';
 import { needsOnboarding } from './onboarding';
 import { rogueCodex, codexContentVersion, ROGUE_CODEX_SCHEMA, type CodexSection } from './codex';
@@ -44,7 +47,8 @@ import { RogueEngine, rogueSlotCost, rogueStatCost } from './engine';
 import { ROGUE_CAPTURE_COUNTS } from '../../sim/fantasy-rogue-rules';
 import { RogueStore } from './store';
 import { BOSS_FLOORS, fixedFloor } from './content';
-import type { RogueCoopMemberState, RogueCoopSession, RogueCommand } from './types';
+import type { RogueCoopSession, RogueCommand } from './types';
+import { coopBattleBlessings } from './coop-growth';
 import { experienceProgress, evolutionOptions, ensureMemberMemory, rebuildMember } from './progression';
 import { partyEvolutions } from './party-evolution';
 import { friendship, rogueTime, ROGUE_TIME_NAMES } from './friendship';
@@ -60,10 +64,13 @@ import { storyView, startCard, bossRoster } from './story';
 import { RogueDuels, type DuelCommand } from './duels';
 import { rogueRulesVersion, clearCardView } from './legacy';
 import { echoView } from './echo';
+import { monthlyChallengeView } from './monthly-challenges';
 import { blessingView, blessingItems, blessingMemberTypes, fantasyForm, equipmentCategory } from './blessings';
 import { universalOptions } from './universal-evolution';
 import { fantasyConversionOptions } from './fantasy-conversion';
-import { assignedExtraAbilities, canGrantExtraAbility, emblemBaseTypes } from '../../sim/rogue-blessing-permanent';
+import {
+	assignedExtraAbilities, canGrantExtraAbility, emblemBaseTypes,
+} from '../../sim/rogue-blessing-permanent';
 import { RogueCoopSessions } from './coop-sessions';
 import type { ValidatedTrainer } from '../fantasy-ai/types';
 
@@ -95,7 +102,7 @@ export class RogueManager {
 		const escort = activeCoopEscort(adventure);
 		const battleMember = (userid: string) => {
 			const member = adventure.members[userid];
-			return escort?.owner !== userid ? member : { ...member, blessings: undefined,
+			return escort?.owner !== userid ? member : { ...member, blessings: undefined, echo: undefined,
 				boosts: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
 				systems: { mega: false, gmega: false, z: false, tera: false } };
 		};
@@ -111,9 +118,11 @@ export class RogueManager {
 		let opponentSets = encounter.team;
 		if (!opponentSets.length && encounter.trainerCandidates?.length) opponentSets = encounter.trainerCandidates[0].team;
 		opponentSets = structuredClone(opponentSets.slice(0, 6));
-		if (opponentSets.length === 1) opponentSets.push(structuredClone(opponentSets[0]));
+		const singleOpponent = encounter.boss?.kind === 'summit' || encounter.boss?.kind === 'arceus';
+		if (opponentSets.length === 1 && !singleOpponent) opponentSets.push(structuredClone(opponentSets[0]));
 		if (!opponentSets.length) throw new Error('所选区域的对手队伍尚未配置。');
-		const partition = splitCoopOpponents(opponentSets);
+		const partition = singleOpponent ? { first: opponentSets, second: [], opponentOffset: opponentSets.length,
+			opponentSlots: opponentSets.map((_, index) => index) } : splitCoopOpponents(opponentSets);
 		const firstOpponent = partition.first, secondOpponent = partition.second;
 		const opponentName = encounter.trainer?.name || encounter.name || node.name;
 		const content = this.engine.content!;
@@ -128,22 +137,24 @@ export class RogueManager {
 			style: encounter.style, developmentOnly: false, packedTeam: Teams.pack(firstOpponent), keyMembers: [],
 			resourcePreferences: [],
 		};
-		const blessingEffects = (
-			blessings: RogueCoopMemberState['blessings'], team: RogueCoopMemberState['team'],
-		) => blessings && structuredClone({
-			owned: blessings.owned, evolution: blessings.evolution, psychic: blessings.psychic,
-			dragonKing: blessings.dragonKing, companions: blessings.companions,
-			companionZ: blessings.companionZ, catAbilities: blessings.catAbilities,
-			unityParty: blessings.owned.some(entry => entry.family === 'unity') ?
-				team.filter(mon => !mon.egg).map(mon => ({ id: mon.id, types: blessingMemberTypes(mon) })) : undefined,
-		});
 		const state: RogueBattleState = {
 			persistCoop: true,
+			totemTrial: encounter.totemTrial && structuredClone(encounter.totemTrial),
 			coopTeamPreview: adventure.nativeTeamPreview, coopTeamSelected: adventure.nativeTeamSelected,
 			encounterId: adventure.encounterId, team: hostTeam, partner: { team: guestTeam, boosts: { ...guestEffects.boosts },
-				blessings: blessingEffects(guestEffects.blessings, guestMember.team) },
-			blessings: blessingEffects(hostEffects.blessings, hostMember.team),
+				money: guestMember.money,
+				comebackCard: escort?.owner !== session.guestUser && coopComebackCard(adventure, session.guestUser),
+				blessings: coopBattleBlessings(guestEffects.blessings, guestMember.team),
+				echo: guestEffects.echo && structuredClone(guestEffects.echo),
+				mentorCard: escort?.owner === session.guestUser ? undefined : coopBattleMentor(adventure) },
+			mentorCard: escort?.owner === session.hostUser ? undefined : coopBattleMentor(adventure),
+			comebackCard: escort?.owner !== session.hostUser && coopComebackCard(adventure, session.hostUser),
+			mentorTier: node.kind === 'boss' ? mentorTier(adventure.floor) : undefined,
+			echo: hostEffects.echo && structuredClone(hostEffects.echo),
+			blessings: coopBattleBlessings(hostEffects.blessings, hostMember.team),
 			boosts: { ...hostEffects.boosts }, bag: { ...hostMember.bag }, partnerBag: { ...guestMember.bag },
+			spirit: adventure.spirit ? { id: adventure.spirit, floor: adventure.floor,
+				money: hostMember.money, hazards: encounter.spiritHazards?.slice() } : undefined,
 			balls: content.items.filter(item => item.kind === 'ball' && (item.multiplier || item.id in (encounter.catchChances || {})) &&
 				(item.id !== 'masterball' || !encounter.trainer && encounter.catchable))
 				.map(item => ({ id: item.id, name: item.name, chance: encounter.catchChances?.[item.id],
@@ -163,18 +174,24 @@ export class RogueManager {
 			partnerCaughtSpecies: caughtSpecies(session.guestUser).length,
 			partnerCaughtSpeciesIds: [...caughtSpecies(session.guestUser)],
 			captureEnvironment: {
-				water: ['biome02', 'biome09'].includes(node.biome?.id || ''),
+				fishing: node.event?.id === 'fishing',
+				water: node.event?.id === 'fishing' || ['biome02', 'biome09'].includes(node.biome?.id || ''),
 				dark: rogueTime(adventure.floor) === 'night' || ['biome04', 'biome12', 'biome14'].includes(node.biome?.id || ''),
 			},
 			progression: !!this.engine.content?.progression,
-			difficulty: { tier: adventure.difficulty, floor: adventure.floor, version: 1 },
+			liveProgression: !!this.engine.content?.progression && node.event?.id !== 'travel' &&
+				adventure.postgame?.stage !== 'battle',
+			difficulty: { tier: adventure.difficulty, floor: adventure.floor, version: adventure.difficultyRulesVersion || 1 },
+			collapse: (adventure.difficultyRulesVersion || 1) >= 2 ? adventure.collapse?.slice() : undefined,
 			opponentCount: opponentSets.length, opponentSlots: partition.opponentSlots,
-			cooperative: { opponentOffset: partition.opponentOffset }, wild,
+			cooperative: { opponentOffset: partition.opponentOffset, singleOpponent: singleOpponent || undefined }, wild,
+			boss: singleOpponent ? structuredClone(encounter.boss) : undefined,
 			systems: {
 				player: { mega: hostEffects.systems.mega, gmega: hostEffects.systems.gmega, z: hostEffects.systems.z },
 				partner: { mega: guestEffects.systems.mega, gmega: guestEffects.systems.gmega, z: guestEffects.systems.z },
-				opponent: { mega: false, gmega: false, z: false },
+				opponent: { mega: encounter.boss?.kind === 'summit', gmega: false, z: false },
 			},
+			forcedTera: encounter.forcedTera,
 			tera: { player: hostEffects.systems.tera, partner: guestEffects.systems.tera, opponent: !!encounter.forcedTera },
 		};
 		const lease = adventure.battleLease || token;
@@ -185,6 +202,17 @@ export class RogueManager {
 			getCoopController: () => this.coop.delegatedController(session.id),
 			resumeCheckpoint: adventure.battleCheckpoint,
 			onCheckpoint: checkpoint => { this.coop.saveBattleCheckpoint(session.id, token, lease, checkpoint); },
+			onProgress: progress => {
+				if (!currentRoom()) return;
+				try {
+					this.coop.handleBattleGrowth(session.id, token, lease, progress.sequence, progress.result);
+				} catch (error) {
+					Monitor.crashlog(error as Error, 'Cooperative battle growth');
+					for (const user of [host, guest]) user.send(`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({
+						session: session.id, growthError: true,
+					})}`);
+				}
+			},
 			state, floor: adventure.floor, boss: node.kind === 'boss', wild, optionalChallenge: !!node.challenge,
 			onCapture: (captured, result) => { if (currentRoom()) this.coop.recordCapture(session.id, token, captured, result); },
 			onResult: (result: RogueBattleResult) => { if (currentRoom()) this.coop.settleBattle(session.id, token, result); },
@@ -220,6 +248,7 @@ export class RogueManager {
 		const account = this.state(user).account;
 		const own = account ? this.engine.store.get(user.id) : undefined;
 		return { userid: user.id, account, own: own?.cards?.map(clearCardView) || [], pending: own?.pendingClear && clearCardView(own.pendingClear),
+			pendingClearCount: (own?.pendingClear ? 1 : 0) + (own?.pendingClearQueue?.length || 0),
 			rulesVersion: rogueRulesVersion(), offset,
 			cards: this.engine.store.gallery(offset).map(card => ({ ...clearCardView(card), online: !!Users.get(card.owner)?.connected })),
 			invitations: account ? this.duels.list(user.id) : [] };
@@ -312,7 +341,9 @@ export class RogueManager {
 			moveCategoryHelp: moveCategoryHelp(), blessingSupplyHelp: BLESSING_SUPPLY_HELP,
 			story: storyView(account, !!content?.story, this.engine.localSpirits),
 			cards: account.cards?.map(clearCardView) || [], pendingClear: account.pendingClear && clearCardView(account.pendingClear),
+			pendingClearCount: (account.pendingClear ? 1 : 0) + (account.pendingClearQueue?.length || 0),
 			account: {
+				monthlyChallenges: monthlyChallengeView(account),
 				crates: crateSummary(account),
 				echo: echoView(account, this.engine.localSpirits),
 				needsOnboarding: !!content && needsOnboarding(account),
@@ -380,6 +411,7 @@ export class RogueManager {
 				story: run.story, startCard: startCard(run.startCard),
 				spirit: rogueSpirit(run.spirit), partyLimit: roguePartyLimit(run.spirit, run.blessings), box: run.box?.map(mon => mon.egg ? eggView(mon, run.floor) : mon),
 				id: run.id, floor: run.floor, phase: run.phase, encounter: run.encounter,
+				fusionArtwork: run.blessings?.owned.some(b => b.family === 'potara') ? fusionArtworkChoices(run.team) : [],
 				postgame: run.postgame?.stage,
 				godEchoAwarded: run.postgame?.echoAwarded,
 				failure: run.failure,
@@ -412,6 +444,7 @@ export class RogueManager {
 						replacementRelease: releaseView(run, saved, run.pendingCapture ||
 						run.blessings?.pending.find(reward => reward.kind === 'gift')?.pokemon) };
 					const mon = structuredClone(saved);
+					if (mon.fusion) mon.fusion.sprite = memberFusionSprite(saved);
 					ensureMemberMemory(mon);
 					if (!mon.stats) rebuildMember(mon, run.boosts);
 					const species = Dex.mod('gen9fantasy').species.get(mon.set.species);
@@ -480,10 +513,25 @@ export class RogueManager {
 				current.battle!.checkpoint.bag = { ...current.bag };
 			}
 		}).run!;
-		void room.battle.stream.write(`>rogueprogress ${JSON.stringify({
-			sequence: updated.battle!.growthSequence, revision: updated.battle!.growthRevision,
-			team: updated.team, bag: updated.bag, paused: updated.battle!.growthPaused,
-		})}`);
+		const failed = (error: unknown) => {
+			Monitor.crashlog(error as Error, 'Rogue battle growth delivery');
+			// Closing this room uses its existing onClose checkpoint recovery. A late failure
+			// must never close a newer encounter or roll back its already committed progress.
+			try {
+				if (this.engine.store.get(userid).run?.battle?.token !== updated.battle!.token) return;
+				room.destroy();
+			} catch (recoveryError) {
+				Monitor.crashlog(recoveryError as Error, 'Rogue battle growth recovery');
+			}
+		};
+		try {
+			void Promise.resolve(room.battle.stream.write(`>rogueprogress ${JSON.stringify({
+				sequence: updated.battle!.growthSequence, revision: updated.battle!.growthRevision,
+				team: updated.team, bag: updated.bag, paused: updated.battle!.growthPaused,
+			})}`)).catch(failed);
+		} catch (error) {
+			failed(error);
+		}
 	}
 	/** Never accepts a team, battle outcome, balance or capture count from the browser. */
 	command(connection: Connection, command: RogueCommand) {

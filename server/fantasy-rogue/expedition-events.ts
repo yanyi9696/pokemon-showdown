@@ -176,7 +176,7 @@ export function chooseExpedition(
 		} else if (choice === 'snackrival') {
 			const r = run.rival!, token = companionTravelGift(run.floor);
 
-			gainAffection(run, r.id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key);
+			gainAffection(run, r.id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key, { content, random });
 			give(run, token.id);
 			finish(run, `【同行劲敌 - ${RIVALS[r.id].name}】接过点心，露出了愉快的神情。`, `「${RIVAL_TRAVEL_REPLIES[r.id] || RIVAL_SNACK_GIFTS[r.id].line}」你收到了一份${token.name}回礼。`);
 		} else {
@@ -186,7 +186,7 @@ export function chooseExpedition(
 			if (c) { c.smile = 'approval'; c.messageAt = Date.now(); c.message = message; }
 
 			const token = companionTravelGift(run.floor);
-			gainAffection(run, id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key);
+			gainAffection(run, id, AFFECTION_RULES.response, 'snack:' + run.node!.event!.key, { content, random });
 			// A snack return is separate from the once-per-run affection gifts.
 			give(run, token ? toID((dex.items.get(token.id).name)) : 'sitrusberry');
 			finish(run, `【同行训练家 - ${person.name}】接过点心，露出了愉快的神情。`, `「${message}」你也收到了一份${token?.name || '文柚果'}回礼。`);

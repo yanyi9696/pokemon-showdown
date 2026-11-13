@@ -7,7 +7,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
-const { content, set } = require('../fixtures/fantasy-rogue');
+const { content, set, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op personal evolution scenes', () => {
 	let oldConfig, store, engine, manager, host, guest;
@@ -47,7 +47,9 @@ describe('Fantasy Rogue co-op personal evolution scenes', () => {
 			a.routeChoices = [{ id: 'scene', name: '共同事件', kind: 'event', encounters: [], reward: { money: 0, items: {} } }];
 			a.coopEventHistory = Object.keys(EVENT_NAMES).filter(key => key !== id).map(key => ({ id: key, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'scene' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'scene' });
+		});
 	}
 	function choose(user, value, owner, visit) {
 		const target = owner === guest.id ? guest : owner === host.id ? host : user;

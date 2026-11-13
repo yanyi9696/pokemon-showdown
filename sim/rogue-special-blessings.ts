@@ -14,8 +14,10 @@ export function strongestRailgunMember(team: RoguePokemon[]) {
 }
 export function railgunActive(mon: Pokemon) {
 	const state = mon.battle.fantasyRogue;
-	const effects = mon.side.id === 'p1' ? state?.blessings : state?.duel?.blessings;
-	const team = mon.side.id === 'p1' ? state?.team : state?.duel?.team;
+	const effects = mon.side.id === 'p1' ? state?.blessings : mon.side.id === 'p2' ? state?.duel?.blessings :
+		mon.side.id === 'p3' ? state?.partner?.blessings : undefined;
+	const team = mon.side.id === 'p1' ? state?.team : mon.side.id === 'p2' ? state?.duel?.team :
+		mon.side.id === 'p3' ? state?.partner?.team : undefined;
 	return !!effects?.owned.some(b => b.family === 'railgun') && !!team &&
 		strongestRailgunMember(team)?.id === mon.set.fantasyRogueId && mon.moveSlots.some(move => move.id === 'zapcannon');
 }
@@ -23,7 +25,8 @@ export function railgunActive(mon: Pokemon) {
 export function rulebreakerActive(mon: Pokemon | null | undefined): boolean {
 	if (!mon?.battle.fantasyRogue) return false;
 	const state = mon.battle.fantasyRogue;
-	const effects = mon.side.id === 'p1' ? state.blessings : state.duel?.blessings;
+	const effects = mon.side.id === 'p1' ? state.blessings : mon.side.id === 'p2' ? state.duel?.blessings :
+		mon.side.id === 'p3' ? state.partner?.blessings : undefined;
 	if (!effects?.owned.some(b => b.family === 'rulebreaker')) return false;
 	return mon.ability === 'moldbreaker' || !!mon.m.rogueBlessing?.abilities?.includes('moldbreaker');
 }

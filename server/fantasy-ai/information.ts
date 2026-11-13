@@ -32,6 +32,8 @@ type InformationOptions = { rogueDifficulty?: RogueDifficultyContext, ownSide: '
 );
 
 export interface Observation {
+	/** Multi-only native ownership and defeat counts, derived from own requests and spectator logs. */
+	doublesNativeSides?: { own: string[], fainted: Record<string, number> };
 	/** Public p1 campaign modifiers, not IVs, EVs or current private state. */
 	rogueDifficulty?: RogueDifficultyContext;
 	rogueBoosts?: StatsTable;
@@ -67,7 +69,10 @@ function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
 	if (request.wait) return { ...common, wait: true };
 	if (request.teamPreview) return { ...common, teamPreview: true, maxChosenTeamSize: request.maxChosenTeamSize };
 	if (request.forceSwitch) return { ...common, forceSwitch: request.forceSwitch.slice() };
-	const active: PokemonMoveRequestData[] = request.active.map(mon => ({
+	// Native doubles with a one-member party has an empty field slot; JSON turns
+	// its undefined request into null. Keep the slot index so target/pass mapping
+	// stays correct, rather than crashing or shifting the living member's request.
+	const active: PokemonMoveRequestData[] = request.active.map(mon => mon ? ({
 		moves: mon.moves.map(move => {
 			// The simulator includes PP in JSON although its shared request type
 			// currently omits these two fields.
@@ -90,7 +95,7 @@ function copyOwnRequest(request: ChoiceRequest): ChoiceRequest {
 			gigantamax: mon.maxMoves.gigantamax,
 			maxMoves: mon.maxMoves.maxMoves.map(move => ({ move: move.move, target: move.target, disabled: move.disabled })),
 		} : undefined,
-	}));
+	}) : { moves: [] });
 	return { ...common, active };
 }
 

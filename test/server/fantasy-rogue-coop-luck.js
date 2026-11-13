@@ -11,7 +11,7 @@ const { normalizeBlessings } = require('../../dist/server/fantasy-rogue/blessing
 const { LUCK_EVENT_NAMES, LUCK_EVENT_TEXT } = require('../../dist/server/fantasy-rogue/luck-event-data');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
 const { candyExperience } = require('../../dist/server/fantasy-rogue/candy-rewards');
-const { content, stats } = require('../fixtures/fantasy-rogue');
+const { content, stats, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op shared coin and die gifts', () => {
 	let oldConfig, store, engine, manager, host, guest, items, fixture;
@@ -66,7 +66,9 @@ describe('Fantasy Rogue co-op shared coin and die gifts', () => {
 				state.blessings.shards = user === host ? 2 : 17;
 			}
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'luck' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'luck' });
+		});
 	}
 	function agree(id, face, beforeSecond) {
 		const kind = LUCK_EVENT_TEXT[id].kind, value = kind === 'coin' ? 'coin' : 'roll';

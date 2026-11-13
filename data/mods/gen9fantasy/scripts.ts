@@ -1,4 +1,5 @@
 import { canRogueSystem } from '../../../sim/fantasy-rogue';
+import { coopBossMaxHP } from '../../../sim/rogue-coop-boss';
 import { canUniversalEvolution, runUniversalEvolution, universalKind,
 	recordRogueEvolution } from '../../../sim/rogue-universal-evolution';
 import { universalItem } from '../../../sim/rogue-universal-data';
@@ -160,6 +161,7 @@ export const Scripts: ModdedBattleScriptsData = {
             }
 
 			if (this.battle.format.id === 'gen9fantasyrogue') newMaxHp += pokemon.set.fantasyRogueStats?.hp || 0;
+			newMaxHp = coopBossMaxHP(pokemon, newMaxHp);
             if (newMaxHp !== prevMaxHp) {
                 pokemon.baseMaxhp = newMaxHp;
                 pokemon.maxhp = newMaxHp;

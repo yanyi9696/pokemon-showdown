@@ -10,7 +10,7 @@ const { createPreviewContent } = require('../../dist/server/fantasy-rogue/previe
 const { chooseEvent } = require('../../dist/server/fantasy-rogue/events');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
 const { affectionThemeGift } = require('../../dist/server/fantasy-rogue/affection-gifts');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op fossil and snack services', () => {
 	let previous, store, engine, manager, host, guest, serial = 0;
@@ -65,7 +65,9 @@ describe('Fantasy Rogue co-op fossil and snack services', () => {
 				.map(other => ({ id: other, floor: 1 }));
 			shared.areaSelections = { [host.id]: null, [guest.id]: null };
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'service-route' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'service-route' });
+		});
 		return event();
 	}
 	function choose(user, value, visit = event().key) {

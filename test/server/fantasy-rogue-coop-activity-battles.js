@@ -14,7 +14,7 @@ const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progress
 const { Battle } = require('../../dist/sim/battle');
 const { Teams } = require('../../dist/sim/teams');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op breeder, martial master and eight-turn activity battles', () => {
 	let oldConfig, store, engine, manager, host, guest, created, preview;
@@ -72,7 +72,9 @@ describe('Fantasy Rogue co-op breeder, martial master and eight-turn activity ba
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(other => other !== id)
 				.map(other => ({ id: other, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'activityroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'activityroute' });
+		});
 		assert.equal(event(host).id, id);
 	}
 	function agree(choice) {

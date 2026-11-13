@@ -14,6 +14,52 @@ const { makeUser } = require('../users-utils');
 const { content, set, stats } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue cooperative capture', () => {
+	for (const firstTarget of ['p2', 'p4']) {
+		for (const secondOwner of ['p1', 'p3']) {
+			it(`lets ${secondOwner} catch the remaining wild opponent after ${firstTarget} is captured`, () => {
+				const host = createRoguePokemon(set('Bulbasaur', 'Overgrow', 5, ['Splash']), stats(0));
+				const guest = createRoguePokemon(set('Squirtle', 'Torrent', 5, ['Splash']), stats(0));
+				const wild = species => ({ ...set(species, 'Swift Swim', 5, ['Splash']), fantasyRogueId: `wild-${species}` });
+				const battle = new Battle({ formatid: 'gen9fantasyroguecoop', seed: [1, 2, 3, 4], fantasyRogue: {
+					encounterId: 'sequential-capture', team: [host], partner: { team: [guest], boosts: stats(0) },
+					boosts: stats(0), bag: { pokeball: 2 }, partnerBag: { pokeball: 1 },
+					balls: [{ id: 'pokeball', name: '精灵球', chance: 1 }], catchable: true, wild: true,
+					cooperative: { opponentOffset: 1 }, opponentCount: 2, opponentSlots: [0, 1],
+					coopCaptureCapacity: { p1: true, p3: true }, coopCaptureSlots: { p1: 2, p3: 1 },
+				}, p1: { name: 'Host', team: [host.set] }, p2: { name: 'Wild A', team: [wild('Magikarp')] },
+				p3: { name: 'Guest', team: [guest.set] }, p4: { name: 'Wild B', team: [wild('Goldeen')] } });
+				try {
+					for (const slot of ['p1', 'p2', 'p3', 'p4']) battle.choose(slot, 'team 1');
+					const authorize = (ownerSide, targetSide) => {
+						battle.fantasyRogue.coopCapture = { ownerSide, ball: 'pokeball', targetSide, targetSlot: 0,
+							targetId: battle[targetSide].active[0].set.fantasyRogueId };
+					};
+					authorize('p1', firstTarget);
+					battle.makeChoices('rogueball pokeball', 'move 1', 'pass', 'move 1');
+					assert.equal(battle.ended, false);
+					const lastTarget = firstTarget === 'p2' ? 'p4' : 'p2';
+					authorize(secondOwner, lastTarget);
+					battle.fantasyRogue.coopCapture.targetId = 'stale-target';
+					assert.equal(battle.choose(secondOwner, 'rogueball pokeball'), false, 'stale authorization must be rejected');
+					assert.equal(battle.fantasyRogue.bag.pokeball, 1);
+					assert.equal(battle.fantasyRogue.partnerBag.pokeball, 1);
+					authorize(secondOwner, lastTarget);
+					assert.equal(battle.choose(secondOwner, 'rogueball pokeball'), true, 'the authorized living target is catchable');
+					battle.choose(secondOwner === 'p1' ? 'p3' : 'p1', 'pass');
+					battle.choose(lastTarget, 'move 1');
+					const result = require('../../dist/sim/fantasy-rogue').rogueBattleResult(battle);
+					assert.equal(result.captures.length, 2);
+					assert.equal(result.captureOwners[result.captures[1].id], secondOwner);
+					assert.equal(result.bag.pokeball, secondOwner === 'p1' ? 0 : 1);
+					assert.equal(result.partnerBag.pokeball, secondOwner === 'p3' ? 0 : 1);
+					assert.equal(battle.ended, true);
+				} finally {
+					battle.destroy();
+				}
+			});
+		}
+	}
+
 	it('lets p3 catch a selected p4 wild target with its own ball while p1 passes', () => {
 		const hostMon = createRoguePokemon(set('Bulbasaur', 'Overgrow', 5, ['Splash']), stats(0));
 		const guestMon = createRoguePokemon(set('Squirtle', 'Torrent', 5, ['Splash']), stats(0));

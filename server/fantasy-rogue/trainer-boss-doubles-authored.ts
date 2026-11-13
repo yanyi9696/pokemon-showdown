@@ -41,6 +41,8 @@ Ability: Guts
 - Protect`,
 	'brock:60': `Steelix @ Leftovers
 Ability: Rock Head
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - Rock Slide
 - Iron Head
 - Body Press
@@ -48,6 +50,8 @@ Ability: Rock Head
 
 Naclstack @ Eviolite
 Ability: Purifying Salt
+EVs: 252 HP / 156 Def / 100 SpD
+Careful Nature
 - Salt Cure
 - Rock Slide
 - Recover
@@ -55,6 +59,8 @@ Ability: Purifying Salt
 
 Aerodactyl @ Focus Sash
 Ability: Rock Head
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Rock Slide
 - Tailwind
 - Wide Guard
@@ -62,12 +68,16 @@ Ability: Rock Head
 
 Pupitar @ Eviolite
 Ability: Shed Skin
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Rock Slide
 - Stomping Tantrum
 - Crunch
 - Protect`,
 	'brock:80': `Steelix @ Leftovers
 Ability: Rock Head
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - Rock Slide
 - Iron Head
 - Body Press
@@ -75,6 +85,8 @@ Ability: Rock Head
 
 Garganacl @ Leftovers
 Ability: Purifying Salt
+EVs: 252 HP / 156 Def / 100 SpD
+Careful Nature
 - Salt Cure
 - Rock Slide
 - Recover
@@ -82,6 +94,8 @@ Ability: Purifying Salt
 
 Aerodactyl @ Focus Sash
 Ability: Rock Head
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Rock Slide
 - Tailwind
 - Wide Guard
@@ -89,12 +103,16 @@ Ability: Rock Head
 
 Tyranitar @ Assault Vest
 Ability: Sand Stream
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Rock Slide
 - Knock Off
 - Low Kick
 - Ice Punch`,
 	'brock:100': `Rhyperior @ Weakness Policy
 Ability: Solid Rock
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Rock Slide
 - High Horsepower
 - Ice Punch
@@ -102,6 +120,8 @@ Ability: Solid Rock
 
 Garganacl @ Leftovers
 Ability: Purifying Salt
+EVs: 252 HP / 156 Def / 100 SpD
+Careful Nature
 - Salt Cure
 - Rock Slide
 - Recover
@@ -109,6 +129,8 @@ Ability: Purifying Salt
 
 Aerodactyl @ Focus Sash
 Ability: Rock Head
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Rock Slide
 - Tailwind
 - Wide Guard
@@ -116,12 +138,16 @@ Ability: Rock Head
 
 Tyranitar @ Assault Vest
 Ability: Sand Stream
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Rock Slide
 - Knock Off
 - Low Kick
 - Ice Punch`,
 	'brock:120': `Rhyperior @ Weakness Policy
 Ability: Solid Rock
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Rock Slide
 - High Horsepower
 - Ice Punch
@@ -129,6 +155,8 @@ Ability: Solid Rock
 
 Garganacl @ Leftovers
 Ability: Purifying Salt
+EVs: 252 HP / 156 Def / 100 SpD
+Careful Nature
 - Salt Cure
 - Rock Slide
 - Recover
@@ -136,6 +164,8 @@ Ability: Purifying Salt
 
 Aerodactyl @ Focus Sash
 Ability: Rock Head
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Rock Slide
 - Tailwind
 - Wide Guard
@@ -143,6 +173,8 @@ Ability: Rock Head
 
 Tyranitar @ Assault Vest
 Ability: Sand Stream
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Rock Slide
 - Knock Off
 - Low Kick
@@ -150,6 +182,8 @@ Ability: Sand Stream
 
 Regirock @ Sitrus Berry
 Ability: Clear Body
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - Rock Slide
 - Body Press
 - Iron Defense
@@ -157,12 +191,16 @@ Ability: Clear Body
 
 Excadrill @ Life Orb
 Ability: Sand Rush
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - High Horsepower
 - Iron Head
 - Rock Slide
 - Protect`,
 	'brock:140': `Rhyperior @ Weakness Policy
 Ability: Solid Rock
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Rock Slide
 - High Horsepower
 - Ice Punch
@@ -170,6 +208,8 @@ Ability: Solid Rock
 
 Garganacl @ Leftovers
 Ability: Purifying Salt
+EVs: 252 HP / 156 Def / 100 SpD
+Careful Nature
 - Salt Cure
 - Rock Slide
 - Recover
@@ -177,6 +217,8 @@ Ability: Purifying Salt
 
 Aerodactyl @ Focus Sash
 Ability: Rock Head
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Rock Slide
 - Tailwind
 - Wide Guard
@@ -184,6 +226,8 @@ Ability: Rock Head
 
 Tyranitar @ Assault Vest
 Ability: Sand Stream
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Rock Slide
 - Knock Off
 - Low Kick
@@ -191,6 +235,8 @@ Ability: Sand Stream
 
 Regirock @ Sitrus Berry
 Ability: Clear Body
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - Rock Slide
 - Body Press
 - Iron Defense
@@ -198,12 +244,17 @@ Ability: Clear Body
 
 Glimmora @ Power Herb
 Ability: Toxic Debris
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Meteor Beam
 - Power Gem
 - Sludge Bomb
 - Protect`,
 	'brock:160': `Rhyperior @ Weakness Policy
 Ability: Solid Rock
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Rock Slide
 - High Horsepower
 - Ice Punch
@@ -211,6 +262,8 @@ Ability: Solid Rock
 
 Garganacl @ Leftovers
 Ability: Purifying Salt
+EVs: 252 HP / 156 Def / 100 SpD
+Careful Nature
 - Salt Cure
 - Rock Slide
 - Recover
@@ -218,6 +271,8 @@ Ability: Purifying Salt
 
 Aerodactyl @ Focus Sash
 Ability: Rock Head
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Rock Slide
 - Tailwind
 - Wide Guard
@@ -225,6 +280,8 @@ Ability: Rock Head
 
 Tyranitar @ Assault Vest
 Ability: Sand Stream
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Rock Slide
 - Knock Off
 - Low Kick
@@ -232,6 +289,8 @@ Ability: Sand Stream
 
 Terrakion @ Clear Amulet
 Ability: Justified
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Rock Slide
 - Close Combat
 - Quick Guard
@@ -239,6 +298,8 @@ Ability: Justified
 
 Excadrill @ Life Orb
 Ability: Sand Rush
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - High Horsepower
 - Iron Head
 - Rock Slide
@@ -283,6 +344,9 @@ Ability: Magic Bounce
 - Protect`,
 	'sabrina:60': `Alakazam @ Focus Sash
 Ability: Magic Guard
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Psychic
 - Shadow Ball
 - Focus Blast
@@ -290,6 +354,9 @@ Ability: Magic Guard
 
 Metagross @ Weakness Policy
 Ability: Clear Body
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Zen Headbutt
 - Meteor Mash
 - Bullet Punch
@@ -297,6 +364,9 @@ Ability: Clear Body
 
 Indeedee-F @ Psychic Seed
 Ability: Psychic Surge
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Follow Me
 - Helping Hand
 - Expanding Force
@@ -304,12 +374,18 @@ Ability: Psychic Surge
 
 Hattrem @ Eviolite
 Ability: Magic Bounce
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Psychic
 - Nuzzle
 - Reflect
 - Protect`,
 	'sabrina:80': `Alakazam @ Focus Sash
 Ability: Magic Guard
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Psychic
 - Shadow Ball
 - Focus Blast
@@ -317,6 +393,9 @@ Ability: Magic Guard
 
 Metagross @ Weakness Policy
 Ability: Clear Body
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Zen Headbutt
 - Meteor Mash
 - Bullet Punch
@@ -324,6 +403,9 @@ Ability: Clear Body
 
 Indeedee-F @ Psychic Seed
 Ability: Psychic Surge
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Follow Me
 - Helping Hand
 - Expanding Force
@@ -331,12 +413,18 @@ Ability: Psychic Surge
 
 Hatterene @ Life Orb
 Ability: Magic Bounce
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Expanding Force
 - Dazzling Gleam
 - Protect`,
 	'sabrina:100': `Alakazam-Mega @ Alakazite
 Ability: Trace
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Expanding Force
 - Focus Blast
 - Shadow Ball
@@ -344,6 +432,9 @@ Ability: Trace
 
 Metagross-Fantasy @ Weakness Policy
 Ability: Clear Body
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Zen Headbutt
 - Meteor Mash
 - Bullet Punch
@@ -351,6 +442,9 @@ Ability: Clear Body
 
 Indeedee-F @ Psychic Seed
 Ability: Psychic Surge
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Follow Me
 - Helping Hand
 - Expanding Force
@@ -358,12 +452,18 @@ Ability: Psychic Surge
 
 Hatterene @ Life Orb
 Ability: Magic Bounce
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Expanding Force
 - Dazzling Gleam
 - Protect`,
 	'sabrina:120': `Alakazam-Mega @ Alakazite
 Ability: Trace
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Expanding Force
 - Focus Blast
 - Shadow Ball
@@ -371,6 +471,9 @@ Ability: Trace
 
 Tapu Lele-Fantasy @ Choice Scarf
 Ability: Psychic Surge
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Expanding Force
 - Moonblast
 - Psyshock
@@ -378,6 +481,9 @@ Ability: Psychic Surge
 
 Metagross-Fantasy @ Weakness Policy
 Ability: Clear Body
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Zen Headbutt
 - Meteor Mash
 - Bullet Punch
@@ -385,6 +491,9 @@ Ability: Clear Body
 
 Indeedee-F @ Psychic Seed
 Ability: Psychic Surge
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Follow Me
 - Helping Hand
 - Expanding Force
@@ -392,6 +501,9 @@ Ability: Psychic Surge
 
 Espathra @ Life Orb
 Ability: Speed Boost
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Lumina Crash
 - Dazzling Gleam
 - Stored Power
@@ -399,12 +511,18 @@ Ability: Speed Boost
 
 Hatterene @ Babiri Berry
 Ability: Magic Bounce
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Expanding Force
 - Dazzling Gleam
 - Protect`,
 	'sabrina:140': `Alakazam-Mega @ Alakazite
 Ability: Trace
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Expanding Force
 - Focus Blast
 - Shadow Ball
@@ -412,6 +530,9 @@ Ability: Trace
 
 Metagross-Fantasy @ Weakness Policy
 Ability: Clear Body
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Zen Headbutt
 - Meteor Mash
 - Bullet Punch
@@ -419,6 +540,9 @@ Ability: Clear Body
 
 Indeedee-F @ Psychic Seed
 Ability: Psychic Surge
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Follow Me
 - Helping Hand
 - Expanding Force
@@ -426,6 +550,9 @@ Ability: Psychic Surge
 
 Espathra @ Life Orb
 Ability: Speed Boost
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Lumina Crash
 - Dazzling Gleam
 - Stored Power
@@ -433,6 +560,9 @@ Ability: Speed Boost
 
 Hatterene @ Babiri Berry
 Ability: Magic Bounce
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Expanding Force
 - Dazzling Gleam
@@ -440,12 +570,18 @@ Ability: Magic Bounce
 
 Cresselia-Fantasy @ Sitrus Berry
 Ability: Levitate
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Psychic
 - Trick Room
 - Helping Hand
 - Lunar Blessing`,
 	'sabrina:160': `Alakazam-Mega @ Alakazite
 Ability: Trace
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Expanding Force
 - Focus Blast
 - Shadow Ball
@@ -453,6 +589,9 @@ Ability: Trace
 
 Metagross-Fantasy @ Weakness Policy
 Ability: Clear Body
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Zen Headbutt
 - Meteor Mash
 - Bullet Punch
@@ -460,6 +599,9 @@ Ability: Clear Body
 
 Indeedee-F @ Psychic Seed
 Ability: Psychic Surge
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Follow Me
 - Helping Hand
 - Expanding Force
@@ -467,6 +609,9 @@ Ability: Psychic Surge
 
 Hatterene @ Babiri Berry
 Ability: Magic Bounce
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Expanding Force
 - Dazzling Gleam
@@ -474,6 +619,9 @@ Ability: Magic Bounce
 
 Cresselia-Fantasy @ Sitrus Berry
 Ability: Levitate
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Psychic
 - Trick Room
 - Helping Hand
@@ -481,6 +629,8 @@ Ability: Levitate
 
 Deoxys-Attack @ Life Orb
 Ability: Pressure+
+EVs: 4 Atk / 252 SpA / 252 Spe
+Naive Nature
 - Psycho Boost
 - Expanding Force
 - Shadow Ball
@@ -527,6 +677,9 @@ Ability: Flash Fire
 - Protect`,
 	'flannery:60': `Torkoal @ Sitrus Berry
 Ability: Drought
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Heat Wave
 - Eruption
 - Helping Hand
@@ -534,6 +687,9 @@ Ability: Drought
 
 Ninetales @ Heat Rock
 Ability: Drought
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Overheat
 - Encore
@@ -541,6 +697,8 @@ Ability: Drought
 
 Lilligant-Hisui @ Focus Sash
 Ability: Chlorophyll
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - After You
 - Sleep Powder
 - Leaf Blade
@@ -548,12 +706,18 @@ Ability: Chlorophyll
 
 Lampent @ Eviolite
 Ability: Flash Fire
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Heat Wave
 - Shadow Ball
 - Will-O-Wisp
 - Protect`,
 	'flannery:80': `Torkoal @ Sitrus Berry
 Ability: Drought
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Heat Wave
 - Eruption
 - Helping Hand
@@ -561,6 +725,9 @@ Ability: Drought
 
 Ninetales @ Heat Rock
 Ability: Drought
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Overheat
 - Encore
@@ -568,6 +735,8 @@ Ability: Drought
 
 Lilligant-Hisui @ Focus Sash
 Ability: Chlorophyll
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - After You
 - Sleep Powder
 - Leaf Blade
@@ -575,12 +744,18 @@ Ability: Chlorophyll
 
 Chandelure @ Choice Specs
 Ability: Flash Fire
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Shadow Ball
 - Energy Ball
 - Overheat`,
 	'flannery:100': `Charizard-Mega-Y @ Charizardite Y
 Ability: Drought
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Solar Beam
 - Air Slash
@@ -588,6 +763,9 @@ Ability: Drought
 
 Torkoal @ Charcoal
 Ability: Drought
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Eruption
 - Heat Wave
 - Helping Hand
@@ -595,6 +773,8 @@ Ability: Drought
 
 Lilligant-Hisui @ Focus Sash
 Ability: Chlorophyll
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - After You
 - Sleep Powder
 - Solar Blade
@@ -602,12 +782,18 @@ Ability: Chlorophyll
 
 Chandelure @ Choice Specs
 Ability: Flash Fire
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Shadow Ball
 - Energy Ball
 - Overheat`,
 	'flannery:120': `Charizard-Mega-Y @ Charizardite Y
 Ability: Drought
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Solar Beam
 - Air Slash
@@ -615,6 +801,9 @@ Ability: Drought
 
 Torkoal @ Charcoal
 Ability: Drought
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Eruption
 - Heat Wave
 - Helping Hand
@@ -622,6 +811,8 @@ Ability: Drought
 
 Lilligant-Hisui @ Focus Sash
 Ability: Chlorophyll
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - After You
 - Sleep Powder
 - Solar Blade
@@ -629,6 +820,9 @@ Ability: Chlorophyll
 
 Chandelure @ Choice Specs
 Ability: Flash Fire
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Shadow Ball
 - Energy Ball
@@ -636,19 +830,27 @@ Ability: Flash Fire
 
 Heatran @ Shuca Berry
 Ability: Flash Fire
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Heat Wave
 - Flash Cannon
 - Earth Power
 - Protect
 
-Incineroar @ Assault Vest
+Incineroar @ Sitrus Berry
 Ability: Intimidate
+EVs: 252 HP / 100 Def / 156 SpD
+Careful Nature
 - Fake Out
 - Flare Blitz
 - Parting Shot
 - Knock Off`,
 	'flannery:140': `Charizard-Mega-Y @ Charizardite Y
 Ability: Drought
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Solar Beam
 - Air Slash
@@ -656,6 +858,9 @@ Ability: Drought
 
 Torkoal @ Charcoal
 Ability: Drought
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Eruption
 - Heat Wave
 - Helping Hand
@@ -663,6 +868,8 @@ Ability: Drought
 
 Lilligant-Hisui @ Focus Sash
 Ability: Chlorophyll
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - After You
 - Sleep Powder
 - Solar Blade
@@ -670,6 +877,9 @@ Ability: Chlorophyll
 
 Volcarona @ Life Orb
 Ability: Flame Body
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Bug Buzz
 - Quiver Dance
@@ -677,19 +887,27 @@ Ability: Flame Body
 
 Heatran @ Shuca Berry
 Ability: Flash Fire
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Heat Wave
 - Flash Cannon
 - Earth Power
 - Protect
 
-Incineroar @ Assault Vest
+Incineroar @ Sitrus Berry
 Ability: Intimidate
+EVs: 252 HP / 100 Def / 156 SpD
+Careful Nature
 - Fake Out
 - Flare Blitz
 - Parting Shot
 - Knock Off`,
 	'flannery:160': `Charizard-Mega-Y @ Charizardite Y
 Ability: Drought
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Solar Beam
 - Air Slash
@@ -697,6 +915,9 @@ Ability: Drought
 
 Torkoal @ Charcoal
 Ability: Drought
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Eruption
 - Heat Wave
 - Helping Hand
@@ -704,6 +925,8 @@ Ability: Drought
 
 Lilligant-Hisui @ Focus Sash
 Ability: Chlorophyll
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - After You
 - Sleep Powder
 - Solar Blade
@@ -711,6 +934,9 @@ Ability: Chlorophyll
 
 Chi-Yu @ Choice Scarf
 Ability: Beads of Ruin
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Heat Wave
 - Overheat
 - Snarl
@@ -718,13 +944,18 @@ Ability: Beads of Ruin
 
 Heatran @ Shuca Berry
 Ability: Flash Fire
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Heat Wave
 - Flash Cannon
 - Earth Power
 - Protect
 
-Incineroar @ Assault Vest
+Incineroar @ Sitrus Berry
 Ability: Intimidate
+EVs: 252 HP / 100 Def / 156 SpD
+Careful Nature
 - Fake Out
 - Flare Blitz
 - Parting Shot
@@ -768,6 +999,8 @@ Ability: Wimp Out
 - Protect`,
 	'nessa:60': `Drednaw @ Life Orb
 Ability: Swift Swim
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Liquidation
 - Rock Slide
 - Jaw Lock
@@ -775,6 +1008,9 @@ Ability: Swift Swim
 
 Pelipper @ Damp Rock
 Ability: Drizzle
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Weather Ball
 - Hurricane
 - Tailwind
@@ -782,6 +1018,9 @@ Ability: Drizzle
 
 Milotic @ Leftovers
 Ability: Competitive
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Scald
 - Ice Beam
 - Recover
@@ -789,12 +1028,16 @@ Ability: Competitive
 
 Golisopod @ Sitrus Berry
 Ability: Emergency Exit
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - First Impression
 - Liquidation
 - Leech Life
 - Protect`,
 	'nessa:80': `Drednaw @ Life Orb
 Ability: Swift Swim
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Liquidation
 - Rock Slide
 - Jaw Lock
@@ -802,6 +1045,9 @@ Ability: Swift Swim
 
 Pelipper @ Damp Rock
 Ability: Drizzle
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Weather Ball
 - Hurricane
 - Tailwind
@@ -809,6 +1055,9 @@ Ability: Drizzle
 
 Milotic @ Leftovers
 Ability: Competitive
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Scald
 - Ice Beam
 - Recover
@@ -816,12 +1065,16 @@ Ability: Competitive
 
 Golisopod @ Sitrus Berry
 Ability: Emergency Exit
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - First Impression
 - Liquidation
 - Leech Life
 - Protect`,
 	'nessa:100': `drednawgmegafantasy @ gmegawishingstar
 Ability: Strong Jaw
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Liquidation
 - Rock Slide
 - Jaw Lock
@@ -829,6 +1082,9 @@ Ability: Strong Jaw
 
 Pelipper @ Damp Rock
 Ability: Drizzle
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Weather Ball
 - Hurricane
 - Tailwind
@@ -836,6 +1092,9 @@ Ability: Drizzle
 
 Milotic @ Leftovers
 Ability: Competitive
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Scald
 - Ice Beam
 - Recover
@@ -843,12 +1102,16 @@ Ability: Competitive
 
 Golisopod @ Sitrus Berry
 Ability: Emergency Exit
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - First Impression
 - Liquidation
 - Leech Life
 - Protect`,
 	'nessa:120': `drednawgmegafantasy @ gmegawishingstar
 Ability: Strong Jaw
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Liquidation
 - Rock Slide
 - Jaw Lock
@@ -856,6 +1119,9 @@ Ability: Strong Jaw
 
 Pelipper @ Damp Rock
 Ability: Drizzle
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Weather Ball
 - Hurricane
 - Tailwind
@@ -863,6 +1129,9 @@ Ability: Drizzle
 
 Milotic @ Leftovers
 Ability: Competitive
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Scald
 - Ice Beam
 - Recover
@@ -870,6 +1139,8 @@ Ability: Competitive
 
 Golisopod @ Sitrus Berry
 Ability: Emergency Exit
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - First Impression
 - Liquidation
 - Leech Life
@@ -877,6 +1148,9 @@ Ability: Emergency Exit
 
 Empoleon @ Assault Vest
 Ability: Defiant
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Hydro Pump
 - Flash Cannon
 - Ice Beam
@@ -884,12 +1158,17 @@ Ability: Defiant
 
 Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Hydro Pump
 - Draco Meteor
 - Ice Beam
 - Protect`,
 	'nessa:140': `drednawgmegafantasy @ gmegawishingstar
 Ability: Strong Jaw
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Liquidation
 - Rock Slide
 - Jaw Lock
@@ -897,6 +1176,9 @@ Ability: Strong Jaw
 
 Pelipper @ Damp Rock
 Ability: Drizzle
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Weather Ball
 - Hurricane
 - Tailwind
@@ -904,6 +1186,9 @@ Ability: Drizzle
 
 Milotic @ Leftovers
 Ability: Competitive
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Scald
 - Ice Beam
 - Recover
@@ -911,6 +1196,8 @@ Ability: Competitive
 
 Golisopod @ Sitrus Berry
 Ability: Emergency Exit
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - First Impression
 - Liquidation
 - Leech Life
@@ -918,6 +1205,9 @@ Ability: Emergency Exit
 
 Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Hydro Pump
 - Draco Meteor
 - Ice Beam
@@ -925,12 +1215,17 @@ Ability: Swift Swim
 
 Suicune @ Safety Goggles
 Ability: Inner Focus
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Scald
 - Snarl
 - Tailwind
 - Protect`,
 	'nessa:160': `drednawgmegafantasy @ gmegawishingstar
 Ability: Strong Jaw
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Liquidation
 - Rock Slide
 - Jaw Lock
@@ -938,6 +1233,9 @@ Ability: Strong Jaw
 
 Pelipper @ Damp Rock
 Ability: Drizzle
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Weather Ball
 - Hurricane
 - Tailwind
@@ -945,6 +1243,9 @@ Ability: Drizzle
 
 Milotic @ Leftovers
 Ability: Competitive
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Scald
 - Ice Beam
 - Recover
@@ -952,6 +1253,8 @@ Ability: Competitive
 
 Urshifu-Rapid-Strike @ Punching Glove
 Ability: Unseen Fist
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Surging Strikes
 - Close Combat
 - Aqua Jet
@@ -959,6 +1262,9 @@ Ability: Unseen Fist
 
 Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Hydro Pump
 - Draco Meteor
 - Ice Beam
@@ -966,6 +1272,9 @@ Ability: Swift Swim
 
 Suicune @ Safety Goggles
 Ability: Inner Focus
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Scald
 - Snarl
 - Tailwind
@@ -1014,6 +1323,9 @@ Tera Type: Electric
 - Protect`,
 	'iono:60': `Raichu @ Focus Sash
 Ability: Lightning Rod
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Fake Out
 - Nuzzle
 - Thunderbolt
@@ -1021,6 +1333,9 @@ Ability: Lightning Rod
 
 Kilowattrel @ Covert Cloak
 Ability: Volt Absorb
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Thunderbolt
 - Hurricane
@@ -1028,6 +1343,9 @@ Ability: Volt Absorb
 
 Pincurchin @ Terrain Extender
 Ability: Electric Surge
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Rising Voltage
 - Recover
 - Memento
@@ -1035,6 +1353,9 @@ Ability: Electric Surge
 
 Mismagius @ Sitrus Berry
 Ability: Levitate
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 Tera Type: Electric
 - Thunderbolt
 - Icy Wind
@@ -1042,6 +1363,9 @@ Tera Type: Electric
 - Protect`,
 	'iono:80': `Magnezone @ Leftovers
 Ability: Sturdy
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Thunderbolt
 - Flash Cannon
 - Volt Switch
@@ -1049,6 +1373,9 @@ Ability: Sturdy
 
 Kilowattrel @ Covert Cloak
 Ability: Volt Absorb
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Thunderbolt
 - Hurricane
@@ -1056,6 +1383,9 @@ Ability: Volt Absorb
 
 Pincurchin @ Terrain Extender
 Ability: Electric Surge
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Rising Voltage
 - Recover
 - Memento
@@ -1063,6 +1393,9 @@ Ability: Electric Surge
 
 Mismagius @ Sitrus Berry
 Ability: Levitate
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 Tera Type: Electric
 - Thunderbolt
 - Icy Wind
@@ -1070,6 +1403,9 @@ Tera Type: Electric
 - Protect`,
 	'iono:100': `raichumegay @ raichunitey
 Ability: No Guard
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Thunder
 - Zap Cannon
 - Focus Blast
@@ -1077,6 +1413,9 @@ Ability: No Guard
 
 Kilowattrel @ Covert Cloak
 Ability: Volt Absorb
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Thunderbolt
 - Hurricane
@@ -1084,6 +1423,9 @@ Ability: Volt Absorb
 
 Pincurchin @ Terrain Extender
 Ability: Electric Surge
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Rising Voltage
 - Recover
 - Memento
@@ -1091,6 +1433,9 @@ Ability: Electric Surge
 
 Mismagius @ Sitrus Berry
 Ability: Levitate
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 Tera Type: Electric
 - Thunderbolt
 - Icy Wind
@@ -1098,6 +1443,9 @@ Tera Type: Electric
 - Protect`,
 	'iono:120': `raichumegay @ raichunitey
 Ability: No Guard
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Thunder
 - Zap Cannon
 - Focus Blast
@@ -1105,6 +1453,9 @@ Ability: No Guard
 
 Kilowattrel @ Covert Cloak
 Ability: Volt Absorb
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Thunderbolt
 - Hurricane
@@ -1112,6 +1463,9 @@ Ability: Volt Absorb
 
 Pincurchin @ Terrain Extender
 Ability: Electric Surge
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Rising Voltage
 - Recover
 - Memento
@@ -1119,6 +1473,9 @@ Ability: Electric Surge
 
 Mismagius @ Sitrus Berry
 Ability: Levitate
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 Tera Type: Electric
 - Thunderbolt
 - Icy Wind
@@ -1127,6 +1484,9 @@ Tera Type: Electric
 
 Bellibolt @ Sitrus Berry
 Ability: Electromorphosis
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Thunderbolt
 - Chilling Water
 - Slack Off
@@ -1134,12 +1494,18 @@ Ability: Electromorphosis
 
 Rotom-Fantasy @ Light Clay
 Ability: Prankster
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Light Screen
 - Reflect
 - Thunder Wave
 - Parting Shot`,
 	'iono:140': `raichumegay @ raichunitey
 Ability: No Guard
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Thunder
 - Zap Cannon
 - Focus Blast
@@ -1147,6 +1513,9 @@ Ability: No Guard
 
 Kilowattrel @ Covert Cloak
 Ability: Volt Absorb
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Thunderbolt
 - Hurricane
@@ -1154,6 +1523,9 @@ Ability: Volt Absorb
 
 Tapu Koko-Fantasy @ Terrain Extender
 Ability: Electric Surge
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Rising Voltage
 - Dazzling Gleam
 - Volt Switch
@@ -1161,6 +1533,9 @@ Ability: Electric Surge
 
 Mismagius @ Sitrus Berry
 Ability: Levitate
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 Tera Type: Electric
 - Thunderbolt
 - Icy Wind
@@ -1169,6 +1544,9 @@ Tera Type: Electric
 
 Bellibolt @ Sitrus Berry
 Ability: Electromorphosis
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Thunderbolt
 - Chilling Water
 - Slack Off
@@ -1176,12 +1554,18 @@ Ability: Electromorphosis
 
 Rotom-Fantasy @ Light Clay
 Ability: Prankster
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Light Screen
 - Reflect
 - Thunder Wave
 - Parting Shot`,
 	'iono:160': `raichumegay @ raichunitey
 Ability: No Guard
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Thunder
 - Zap Cannon
 - Focus Blast
@@ -1189,6 +1573,9 @@ Ability: No Guard
 
 Kilowattrel @ Covert Cloak
 Ability: Volt Absorb
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Thunderbolt
 - Hurricane
@@ -1196,6 +1583,9 @@ Ability: Volt Absorb
 
 Tapu Koko-Fantasy @ Terrain Extender
 Ability: Electric Surge
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Rising Voltage
 - Dazzling Gleam
 - Volt Switch
@@ -1203,6 +1593,9 @@ Ability: Electric Surge
 
 Mismagius @ Sitrus Berry
 Ability: Levitate
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 Tera Type: Electric
 - Thunderbolt
 - Icy Wind
@@ -1211,6 +1604,8 @@ Tera Type: Electric
 
 Iron Hands @ Sitrus Berry
 Ability: Quark Drive
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Fake Out
 - Drain Punch
 - Thunder Punch
@@ -1218,6 +1613,9 @@ Ability: Quark Drive
 
 Raging Bolt @ Booster Energy
 Ability: Protosynthesis
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Thunderclap
 - Draco Meteor
 - Snarl
@@ -1264,6 +1662,8 @@ Ability: Flash Fire
 - Protect`,
 	'nanu:60': `Persian-Alola @ Sitrus Berry
 Ability: Fur Coat
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Fake Out
 - Parting Shot
 - Foul Play
@@ -1271,6 +1671,9 @@ Ability: Fur Coat
 
 Sableye @ Leftovers
 Ability: Prankster
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+IVs: 0 Atk
 - Foul Play
 - Will-O-Wisp
 - Quash
@@ -1278,6 +1681,8 @@ Ability: Prankster
 
 Bisharp @ Black Glasses
 Ability: Defiant
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Knock Off
 - Sucker Punch
 - Iron Head
@@ -1285,12 +1690,17 @@ Ability: Defiant
 
 Houndoom @ Wise Glasses
 Ability: Flash Fire
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Snarl
 - Dark Pulse
 - Flamethrower
 - Protect`,
 	'nanu:80': `Persian-Alola @ Sitrus Berry
 Ability: Fur Coat
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Fake Out
 - Parting Shot
 - Foul Play
@@ -1298,6 +1708,9 @@ Ability: Fur Coat
 
 Sableye @ Leftovers
 Ability: Prankster
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+IVs: 0 Atk
 - Foul Play
 - Will-O-Wisp
 - Quash
@@ -1305,6 +1718,8 @@ Ability: Prankster
 
 Krookodile @ Clear Amulet
 Ability: Intimidate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Knock Off
 - High Horsepower
 - Rock Slide
@@ -1312,12 +1727,18 @@ Ability: Intimidate
 
 Mandibuzz @ Covert Cloak
 Ability: Overcoat
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Tailwind
 - Snarl
 - Foul Play
 - Protect`,
 	'nanu:100': `Sableye @ Sablenite
 Ability: Prankster
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+IVs: 0 Atk
 - Foul Play
 - Will-O-Wisp
 - Recover
@@ -1325,6 +1746,8 @@ Ability: Prankster
 
 Persian-Alola @ Sitrus Berry
 Ability: Fur Coat
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Fake Out
 - Parting Shot
 - Foul Play
@@ -1332,6 +1755,8 @@ Ability: Fur Coat
 
 Krookodile @ Clear Amulet
 Ability: Intimidate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Knock Off
 - High Horsepower
 - Rock Slide
@@ -1339,12 +1764,18 @@ Ability: Intimidate
 
 Mandibuzz @ Covert Cloak
 Ability: Overcoat
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Tailwind
 - Snarl
 - Foul Play
 - Protect`,
 	'nanu:120': `Sableye @ Sablenite
 Ability: Prankster
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+IVs: 0 Atk
 - Foul Play
 - Will-O-Wisp
 - Recover
@@ -1352,6 +1783,8 @@ Ability: Prankster
 
 Persian-Alola @ Sitrus Berry
 Ability: Fur Coat
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Fake Out
 - Parting Shot
 - Foul Play
@@ -1359,6 +1792,8 @@ Ability: Fur Coat
 
 Krookodile @ Clear Amulet
 Ability: Intimidate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Knock Off
 - High Horsepower
 - Rock Slide
@@ -1366,6 +1801,9 @@ Ability: Intimidate
 
 Mandibuzz @ Covert Cloak
 Ability: Overcoat
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Tailwind
 - Snarl
 - Foul Play
@@ -1373,6 +1811,8 @@ Ability: Overcoat
 
 Bisharp @ Black Glasses
 Ability: Defiant
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Knock Off
 - Sucker Punch
 - Iron Head
@@ -1380,12 +1820,17 @@ Ability: Defiant
 
 Urshifu-Single-Strike @ Choice Band
 Ability: Unseen Fist
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Wicked Blow
 - Close Combat
 - U-turn
 - Sucker Punch`,
 	'nanu:140': `Sableye @ Sablenite
 Ability: Prankster
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+IVs: 0 Atk
 - Foul Play
 - Will-O-Wisp
 - Recover
@@ -1393,6 +1838,8 @@ Ability: Prankster
 
 Persian-Alola @ Sitrus Berry
 Ability: Fur Coat
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Fake Out
 - Parting Shot
 - Foul Play
@@ -1400,6 +1847,8 @@ Ability: Fur Coat
 
 Krookodile @ Clear Amulet
 Ability: Intimidate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Knock Off
 - High Horsepower
 - Rock Slide
@@ -1407,6 +1856,9 @@ Ability: Intimidate
 
 Mandibuzz @ Covert Cloak
 Ability: Overcoat
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Tailwind
 - Snarl
 - Foul Play
@@ -1414,6 +1866,8 @@ Ability: Overcoat
 
 Bisharp @ Black Glasses
 Ability: Defiant
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Knock Off
 - Sucker Punch
 - Iron Head
@@ -1421,12 +1875,18 @@ Ability: Defiant
 
 Moltres-Galar @ Safety Goggles
 Ability: Berserk
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Fiery Wrath
 - Air Slash
 - Nasty Plot
 - Protect`,
 	'nanu:160': `Sableye @ Sablenite
 Ability: Prankster
+EVs: 252 HP / 252 Def / 4 SpD
+Bold Nature
+IVs: 0 Atk
 - Foul Play
 - Will-O-Wisp
 - Recover
@@ -1434,6 +1894,8 @@ Ability: Prankster
 
 Persian-Alola @ Sitrus Berry
 Ability: Fur Coat
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Fake Out
 - Parting Shot
 - Foul Play
@@ -1441,6 +1903,8 @@ Ability: Fur Coat
 
 Krookodile @ Clear Amulet
 Ability: Intimidate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Knock Off
 - High Horsepower
 - Rock Slide
@@ -1448,6 +1912,9 @@ Ability: Intimidate
 
 Mandibuzz @ Covert Cloak
 Ability: Overcoat
+EVs: 252 HP / 156 Def / 100 SpD
+Calm Nature
+IVs: 0 Atk
 - Tailwind
 - Snarl
 - Foul Play
@@ -1455,6 +1922,8 @@ Ability: Overcoat
 
 Urshifu-Single-Strike @ Choice Band
 Ability: Unseen Fist
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Wicked Blow
 - Close Combat
 - U-turn
@@ -1462,6 +1931,9 @@ Ability: Unseen Fist
 
 Moltres-Galar @ Safety Goggles
 Ability: Berserk
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Fiery Wrath
 - Air Slash
 - Nasty Plot
@@ -1508,6 +1980,9 @@ Ability: Tinted Lens
 - Protect`,
 	'viola:60': `Masquerain @ Focus Sash
 Ability: Intimidate
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Air Slash
 - Struggle Bug
@@ -1515,6 +1990,9 @@ Ability: Intimidate
 
 Vivillon @ Sitrus Berry
 Ability: Compound Eyes
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Sleep Powder
 - Bug Buzz
@@ -1522,6 +2000,8 @@ Ability: Compound Eyes
 
 Lokix @ Silver Powder
 Ability: Tinted Lens
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - First Impression
 - U-turn
 - Sucker Punch
@@ -1529,12 +2009,18 @@ Ability: Tinted Lens
 
 Galvantula @ Wide Lens
 Ability: Compound Eyes
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Electroweb
 - Thunder
 - Bug Buzz
 - Protect`,
 	'viola:80': `Vivillon @ Focus Sash
 Ability: Compound Eyes
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Sleep Powder
 - Pollen Puff
@@ -1542,6 +2028,9 @@ Ability: Compound Eyes
 
 Galvantula @ Wide Lens
 Ability: Compound Eyes
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Sticky Web
 - Electroweb
 - Thunder
@@ -1549,6 +2038,8 @@ Ability: Compound Eyes
 
 Araquanid @ Mystic Water
 Ability: Water Bubble
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wide Guard
 - Liquidation
 - Leech Life
@@ -1556,12 +2047,16 @@ Ability: Water Bubble
 
 Scizor @ Metal Coat
 Ability: Technician
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Bullet Punch
 - U-turn
 - Swords Dance
 - Protect`,
 	'viola:100': `Pinsir @ Pinsirite
 Ability: Moxie
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Quick Attack
 - Close Combat
 - X-Scissor
@@ -1569,6 +2064,9 @@ Ability: Moxie
 
 Vivillon @ Focus Sash
 Ability: Compound Eyes
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Sleep Powder
 - Pollen Puff
@@ -1576,6 +2074,8 @@ Ability: Compound Eyes
 
 Araquanid @ Mystic Water
 Ability: Water Bubble
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wide Guard
 - Liquidation
 - Leech Life
@@ -1583,12 +2083,16 @@ Ability: Water Bubble
 
 Scizor @ Metal Coat
 Ability: Technician
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Bullet Punch
 - U-turn
 - Swords Dance
 - Protect`,
 	'viola:120': `Pinsir @ Pinsirite
 Ability: Moxie
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Quick Attack
 - Close Combat
 - X-Scissor
@@ -1596,6 +2100,9 @@ Ability: Moxie
 
 Vivillon @ Focus Sash
 Ability: Compound Eyes
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Sleep Powder
 - Pollen Puff
@@ -1603,6 +2110,8 @@ Ability: Compound Eyes
 
 Araquanid @ Mystic Water
 Ability: Water Bubble
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wide Guard
 - Liquidation
 - Leech Life
@@ -1610,6 +2119,8 @@ Ability: Water Bubble
 
 Scizor @ Metal Coat
 Ability: Technician
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Bullet Punch
 - U-turn
 - Swords Dance
@@ -1617,6 +2128,9 @@ Ability: Technician
 
 Volcarona @ Sitrus Berry
 Ability: Flame Body
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Quiver Dance
 - Heat Wave
 - Bug Buzz
@@ -1624,12 +2138,17 @@ Ability: Flame Body
 
 Galvantula @ Wide Lens
 Ability: Compound Eyes
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Sticky Web
 - Electroweb
 - Thunder
 - Protect`,
 	'viola:140': `Pinsir @ Pinsirite
 Ability: Moxie
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Quick Attack
 - Close Combat
 - X-Scissor
@@ -1637,6 +2156,9 @@ Ability: Moxie
 
 Vivillon @ Focus Sash
 Ability: Compound Eyes
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Sleep Powder
 - Pollen Puff
@@ -1644,6 +2166,8 @@ Ability: Compound Eyes
 
 Araquanid @ Mystic Water
 Ability: Water Bubble
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wide Guard
 - Liquidation
 - Leech Life
@@ -1651,6 +2175,8 @@ Ability: Water Bubble
 
 Scizor @ Metal Coat
 Ability: Technician
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Bullet Punch
 - U-turn
 - Swords Dance
@@ -1658,6 +2184,9 @@ Ability: Technician
 
 Volcarona @ Sitrus Berry
 Ability: Flame Body
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Quiver Dance
 - Heat Wave
 - Bug Buzz
@@ -1665,12 +2194,16 @@ Ability: Flame Body
 
 Pheromosa @ Life Orb
 Ability: Beast Boost
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - U-turn
 - Triple Axel
 - Protect`,
 	'viola:160': `Pinsir @ Pinsirite
 Ability: Moxie
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Quick Attack
 - Close Combat
 - X-Scissor
@@ -1678,6 +2211,9 @@ Ability: Moxie
 
 Vivillon @ Focus Sash
 Ability: Compound Eyes
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Sleep Powder
 - Pollen Puff
@@ -1685,6 +2221,8 @@ Ability: Compound Eyes
 
 Araquanid @ Mystic Water
 Ability: Water Bubble
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wide Guard
 - Liquidation
 - Leech Life
@@ -1692,6 +2230,9 @@ Ability: Water Bubble
 
 Genesect @ Life Orb
 Ability: Download
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Bug Buzz
 - Flash Cannon
 - Flamethrower
@@ -1699,6 +2240,9 @@ Ability: Download
 
 Volcarona @ Sitrus Berry
 Ability: Flame Body
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Quiver Dance
 - Heat Wave
 - Bug Buzz
@@ -1706,6 +2250,8 @@ Ability: Flame Body
 
 Pheromosa @ Choice Scarf
 Ability: Beast Boost
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - U-turn
 - Triple Axel
@@ -1752,6 +2298,9 @@ Ability: No Guard
 - Protect`,
 	'acerola:60': `Drifblim @ Sitrus Berry
 Ability: Unburden
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Shadow Ball
 - Will-O-Wisp
@@ -1759,6 +2308,9 @@ Ability: Unburden
 
 Mimikyu @ Lum Berry
 Ability: Disguise
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Play Rough
 - Shadow Sneak
 - Trick Room
@@ -1766,6 +2318,9 @@ Ability: Disguise
 
 Aegislash @ Leftovers
 Ability: Stance Change
+EVs: 252 HP / 4 Atk / 252 SpA
+Quiet Nature
+IVs: 0 Spe
 - King's Shield
 - Shadow Ball
 - Shadow Sneak
@@ -1773,12 +2328,18 @@ Ability: Stance Change
 
 Dusclops @ Eviolite
 Ability: Frisk
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Will-O-Wisp
 - Helping Hand
 - Night Shade`,
 	'acerola:80': `Drifblim @ Sitrus Berry
 Ability: Unburden
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Shadow Ball
 - Will-O-Wisp
@@ -1786,6 +2347,9 @@ Ability: Unburden
 
 Mimikyu @ Lum Berry
 Ability: Disguise
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Play Rough
 - Shadow Sneak
 - Trick Room
@@ -1793,6 +2357,9 @@ Ability: Disguise
 
 Aegislash @ Leftovers
 Ability: Stance Change
+EVs: 252 HP / 4 Atk / 252 SpA
+Quiet Nature
+IVs: 0 Spe
 - King's Shield
 - Shadow Ball
 - Shadow Sneak
@@ -1800,12 +2367,18 @@ Ability: Stance Change
 
 Jellicent @ Sitrus Berry
 Ability: Water Absorb
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Scald
 - Strength Sap
 - Protect`,
 	'acerola:100': `Banette @ Banettite
 Ability: Insomnia
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Trick Room
 - Poltergeist
 - Will-O-Wisp
@@ -1813,6 +2386,9 @@ Ability: Insomnia
 
 Mimikyu @ Lum Berry
 Ability: Disguise
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Play Rough
 - Shadow Sneak
 - Trick Room
@@ -1820,6 +2396,9 @@ Ability: Disguise
 
 Dusclops @ Eviolite
 Ability: Frisk
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Will-O-Wisp
 - Helping Hand
@@ -1827,12 +2406,18 @@ Ability: Frisk
 
 Jellicent @ Sitrus Berry
 Ability: Water Absorb
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Scald
 - Strength Sap
 - Protect`,
 	'acerola:120': `Banette @ Banettite
 Ability: Insomnia
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Trick Room
 - Poltergeist
 - Will-O-Wisp
@@ -1840,6 +2425,9 @@ Ability: Insomnia
 
 Mimikyu @ Lum Berry
 Ability: Disguise
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Play Rough
 - Shadow Sneak
 - Trick Room
@@ -1847,6 +2435,9 @@ Ability: Disguise
 
 Dusclops @ Eviolite
 Ability: Frisk
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Will-O-Wisp
 - Helping Hand
@@ -1854,6 +2445,9 @@ Ability: Frisk
 
 Jellicent @ Sitrus Berry
 Ability: Water Absorb
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Scald
 - Strength Sap
@@ -1861,6 +2455,9 @@ Ability: Water Absorb
 
 Drifblim @ Covert Cloak
 Ability: Unburden
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Shadow Ball
 - Icy Wind
@@ -1868,12 +2465,18 @@ Ability: Unburden
 
 Spectrier @ Spell Tag
 Ability: Grim Neigh
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Shadow Ball
 - Snarl
 - Will-O-Wisp
 - Protect`,
 	'acerola:140': `Banette @ Banettite
 Ability: Insomnia
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Trick Room
 - Poltergeist
 - Will-O-Wisp
@@ -1881,6 +2484,9 @@ Ability: Insomnia
 
 Mimikyu @ Lum Berry
 Ability: Disguise
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Play Rough
 - Shadow Sneak
 - Trick Room
@@ -1888,6 +2494,9 @@ Ability: Disguise
 
 Dusclops @ Eviolite
 Ability: Frisk
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Will-O-Wisp
 - Helping Hand
@@ -1895,6 +2504,9 @@ Ability: Frisk
 
 Gholdengo @ Metal Coat
 Ability: Good as Gold
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Make It Rain
 - Shadow Ball
 - Nasty Plot
@@ -1902,6 +2514,9 @@ Ability: Good as Gold
 
 Drifblim @ Covert Cloak
 Ability: Unburden
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Shadow Ball
 - Icy Wind
@@ -1909,12 +2524,18 @@ Ability: Unburden
 
 Spectrier @ Spell Tag
 Ability: Grim Neigh
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Shadow Ball
 - Snarl
 - Will-O-Wisp
 - Protect`,
 	'acerola:160': `Banette @ Banettite
 Ability: Insomnia
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Trick Room
 - Poltergeist
 - Will-O-Wisp
@@ -1922,6 +2543,9 @@ Ability: Insomnia
 
 Mimikyu @ Lum Berry
 Ability: Disguise
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Play Rough
 - Shadow Sneak
 - Trick Room
@@ -1929,6 +2553,9 @@ Ability: Disguise
 
 Dusclops @ Eviolite
 Ability: Frisk
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Will-O-Wisp
 - Helping Hand
@@ -1936,6 +2563,9 @@ Ability: Frisk
 
 Gholdengo @ Metal Coat
 Ability: Good as Gold
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Make It Rain
 - Shadow Ball
 - Nasty Plot
@@ -1943,6 +2573,9 @@ Ability: Good as Gold
 
 Spectrier @ Spell Tag
 Ability: Grim Neigh
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Shadow Ball
 - Snarl
 - Will-O-Wisp
@@ -1950,6 +2583,8 @@ Ability: Grim Neigh
 
 Marshadow @ Life Orb
 Ability: Technician
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Spectral Thief
 - Close Combat
 - Shadow Sneak
@@ -1996,6 +2631,8 @@ Ability: Prankster
 - Helping Hand`,
 	'gardenia:60': `Torterra @ Leftovers
 Ability: Overgrow
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wood Hammer
 - Stomping Tantrum
 - Rock Slide
@@ -2003,6 +2640,9 @@ Ability: Overgrow
 
 Roserade @ Black Sludge
 Ability: Natural Cure
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Energy Ball
 - Sludge Bomb
 - Sleep Powder
@@ -2010,6 +2650,9 @@ Ability: Natural Cure
 
 Whimsicott @ Focus Sash
 Ability: Prankster
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Encore
 - Moonblast
@@ -2017,12 +2660,17 @@ Ability: Prankster
 
 Lilligant @ Wide Lens
 Ability: Own Tempo
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Sleep Powder
 - After You
 - Petal Dance
 - Protect`,
 	'gardenia:80': `Torterra @ Leftovers
 Ability: Overgrow
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wood Hammer
 - Stomping Tantrum
 - Rock Slide
@@ -2030,6 +2678,9 @@ Ability: Overgrow
 
 Roserade @ Black Sludge
 Ability: Natural Cure
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Energy Ball
 - Sludge Bomb
 - Sleep Powder
@@ -2037,6 +2688,9 @@ Ability: Natural Cure
 
 Whimsicott @ Focus Sash
 Ability: Prankster
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Encore
 - Moonblast
@@ -2044,12 +2698,18 @@ Ability: Prankster
 
 Amoonguss @ Sitrus Berry
 Ability: Regenerator
+EVs: 252 HP / 4 Def / 252 SpD
+Sassy Nature
+IVs: 0 Atk / 0 Spe
 - Rage Powder
 - Spore
 - Pollen Puff
 - Protect`,
 	'gardenia:100': `Sceptile @ Sceptilite
 Ability: Overgrow
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Leaf Storm
 - Dragon Pulse
 - Focus Blast
@@ -2057,6 +2717,8 @@ Ability: Overgrow
 
 Rillaboom @ Miracle Seed
 Ability: Grassy Surge
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Fake Out
 - Grassy Glide
 - Wood Hammer
@@ -2064,6 +2726,9 @@ Ability: Grassy Surge
 
 Whimsicott @ Focus Sash
 Ability: Prankster
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Encore
 - Moonblast
@@ -2071,12 +2736,18 @@ Ability: Prankster
 
 Amoonguss @ Sitrus Berry
 Ability: Regenerator
+EVs: 252 HP / 4 Def / 252 SpD
+Sassy Nature
+IVs: 0 Atk / 0 Spe
 - Rage Powder
 - Spore
 - Pollen Puff
 - Protect`,
 	'gardenia:120': `Sceptile @ Sceptilite
 Ability: Overgrow
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Leaf Storm
 - Dragon Pulse
 - Focus Blast
@@ -2084,6 +2755,8 @@ Ability: Overgrow
 
 Rillaboom @ Miracle Seed
 Ability: Grassy Surge
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Fake Out
 - Grassy Glide
 - Wood Hammer
@@ -2091,6 +2764,9 @@ Ability: Grassy Surge
 
 Whimsicott @ Focus Sash
 Ability: Prankster
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Encore
 - Moonblast
@@ -2098,6 +2774,9 @@ Ability: Prankster
 
 Amoonguss @ Sitrus Berry
 Ability: Regenerator
+EVs: 252 HP / 4 Def / 252 SpD
+Sassy Nature
+IVs: 0 Atk / 0 Spe
 - Rage Powder
 - Spore
 - Pollen Puff
@@ -2105,6 +2784,9 @@ Ability: Regenerator
 
 Roserade @ Black Sludge
 Ability: Natural Cure
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Energy Ball
 - Sludge Bomb
 - Sleep Powder
@@ -2112,12 +2794,18 @@ Ability: Natural Cure
 
 Lilligant @ Wide Lens
 Ability: Own Tempo
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Sleep Powder
 - After You
 - Petal Dance
 - Protect`,
 	'gardenia:140': `Sceptile @ Sceptilite
 Ability: Overgrow
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Leaf Storm
 - Dragon Pulse
 - Focus Blast
@@ -2125,6 +2813,8 @@ Ability: Overgrow
 
 Rillaboom @ Miracle Seed
 Ability: Grassy Surge
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Fake Out
 - Grassy Glide
 - Wood Hammer
@@ -2132,6 +2822,9 @@ Ability: Grassy Surge
 
 Whimsicott @ Focus Sash
 Ability: Prankster
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Encore
 - Moonblast
@@ -2139,6 +2832,9 @@ Ability: Prankster
 
 Amoonguss @ Sitrus Berry
 Ability: Regenerator
+EVs: 252 HP / 4 Def / 252 SpD
+Sassy Nature
+IVs: 0 Atk / 0 Spe
 - Rage Powder
 - Spore
 - Pollen Puff
@@ -2146,6 +2842,9 @@ Ability: Regenerator
 
 Roserade @ Black Sludge
 Ability: Natural Cure
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Energy Ball
 - Sludge Bomb
 - Sleep Powder
@@ -2153,12 +2852,17 @@ Ability: Natural Cure
 
 Tapu Bulu @ Grassy Seed
 Ability: Grassy Surge
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Horn Leech
 - Wood Hammer
 - Close Combat
 - Protect`,
 	'gardenia:160': `Sceptile @ Sceptilite
 Ability: Overgrow
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Leaf Storm
 - Dragon Pulse
 - Focus Blast
@@ -2166,6 +2870,8 @@ Ability: Overgrow
 
 Rillaboom @ Miracle Seed
 Ability: Grassy Surge
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Fake Out
 - Grassy Glide
 - Wood Hammer
@@ -2173,6 +2879,9 @@ Ability: Grassy Surge
 
 Whimsicott @ Focus Sash
 Ability: Prankster
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tailwind
 - Encore
 - Moonblast
@@ -2180,6 +2889,9 @@ Ability: Prankster
 
 Amoonguss @ Sitrus Berry
 Ability: Regenerator
+EVs: 252 HP / 4 Def / 252 SpD
+Sassy Nature
+IVs: 0 Atk / 0 Spe
 - Rage Powder
 - Spore
 - Pollen Puff
@@ -2187,6 +2899,8 @@ Ability: Regenerator
 
 Tapu Bulu @ Grassy Seed
 Ability: Grassy Surge
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Horn Leech
 - Wood Hammer
 - Close Combat
@@ -2194,6 +2908,9 @@ Ability: Grassy Surge
 
 Celebi @ Leftovers
 Ability: Natural Cure
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Psychic
 - Leaf Storm
 - Recover
@@ -2240,6 +2957,9 @@ Ability: Hustle
 - Protect`,
 	'jasmine:60': `Steelix @ Leftovers
 Ability: Sturdy
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Iron Head
 - High Horsepower
 - Rock Slide
@@ -2247,6 +2967,9 @@ Ability: Sturdy
 
 Gholdengo @ Metal Coat
 Ability: Good as Gold
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Make It Rain
 - Shadow Ball
 - Nasty Plot
@@ -2254,6 +2977,8 @@ Ability: Good as Gold
 
 Aggron @ Leftovers
 Ability: Sturdy
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - Heavy Slam
 - Rock Slide
 - Body Press
@@ -2261,12 +2986,17 @@ Ability: Sturdy
 
 Durant @ Focus Sash
 Ability: Hustle
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Iron Head
 - X-Scissor
 - Rock Slide
 - Protect`,
 	'jasmine:80': `Steelix @ Leftovers
 Ability: Sturdy
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Iron Head
 - High Horsepower
 - Rock Slide
@@ -2274,6 +3004,9 @@ Ability: Sturdy
 
 Gholdengo @ Metal Coat
 Ability: Good as Gold
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Make It Rain
 - Shadow Ball
 - Nasty Plot
@@ -2281,6 +3014,8 @@ Ability: Good as Gold
 
 Aggron @ Leftovers
 Ability: Sturdy
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - Heavy Slam
 - Rock Slide
 - Body Press
@@ -2288,12 +3023,18 @@ Ability: Sturdy
 
 Magnezone @ Shuca Berry
 Ability: Analytic
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Thunderbolt
 - Flash Cannon
 - Electroweb
 - Protect`,
 	'jasmine:100': `Steelix @ Steelixite
 Ability: Sturdy
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Heavy Slam
 - High Horsepower
 - Curse
@@ -2301,6 +3042,9 @@ Ability: Sturdy
 
 Gholdengo @ Metal Coat
 Ability: Good as Gold
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Make It Rain
 - Shadow Ball
 - Nasty Plot
@@ -2308,6 +3052,9 @@ Ability: Good as Gold
 
 Bronzong @ Safety Goggles
 Ability: Levitate
+EVs: 252 HP / 100 Def / 156 SpD
+Sassy Nature
+IVs: 0 Spe
 - Trick Room
 - Gyro Ball
 - Helping Hand
@@ -2315,12 +3062,17 @@ Ability: Levitate
 
 Corviknight @ Covert Cloak
 Ability: Mirror Armor
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Tailwind
 - Iron Head
 - Brave Bird
 - Protect`,
 	'jasmine:120': `Steelix @ Steelixite
 Ability: Sturdy
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Heavy Slam
 - High Horsepower
 - Curse
@@ -2328,6 +3080,9 @@ Ability: Sturdy
 
 Gholdengo @ Metal Coat
 Ability: Good as Gold
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Make It Rain
 - Shadow Ball
 - Nasty Plot
@@ -2335,6 +3090,9 @@ Ability: Good as Gold
 
 Bronzong @ Safety Goggles
 Ability: Levitate
+EVs: 252 HP / 100 Def / 156 SpD
+Sassy Nature
+IVs: 0 Spe
 - Trick Room
 - Gyro Ball
 - Helping Hand
@@ -2342,6 +3100,8 @@ Ability: Levitate
 
 Corviknight @ Covert Cloak
 Ability: Mirror Armor
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Tailwind
 - Iron Head
 - Brave Bird
@@ -2349,6 +3109,8 @@ Ability: Mirror Armor
 
 Aggron @ Leftovers
 Ability: Sturdy
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - Heavy Slam
 - Rock Slide
 - Body Press
@@ -2356,12 +3118,18 @@ Ability: Sturdy
 
 Magnezone @ Shuca Berry
 Ability: Analytic
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Thunderbolt
 - Flash Cannon
 - Electroweb
 - Protect`,
 	'jasmine:140': `Steelix @ Steelixite
 Ability: Sturdy
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Heavy Slam
 - High Horsepower
 - Curse
@@ -2369,6 +3137,9 @@ Ability: Sturdy
 
 Gholdengo @ Metal Coat
 Ability: Good as Gold
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Make It Rain
 - Shadow Ball
 - Nasty Plot
@@ -2376,6 +3147,9 @@ Ability: Good as Gold
 
 Bronzong @ Safety Goggles
 Ability: Levitate
+EVs: 252 HP / 100 Def / 156 SpD
+Sassy Nature
+IVs: 0 Spe
 - Trick Room
 - Gyro Ball
 - Helping Hand
@@ -2383,6 +3157,8 @@ Ability: Levitate
 
 Corviknight @ Covert Cloak
 Ability: Mirror Armor
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Tailwind
 - Iron Head
 - Brave Bird
@@ -2390,6 +3166,8 @@ Ability: Mirror Armor
 
 Aggron @ Leftovers
 Ability: Sturdy
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - Heavy Slam
 - Rock Slide
 - Body Press
@@ -2397,12 +3175,18 @@ Ability: Sturdy
 
 Heatran @ Shuca Berry
 Ability: Flash Fire
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Heat Wave
 - Earth Power
 - Flash Cannon
 - Protect`,
 	'jasmine:160': `Steelix @ Steelixite
 Ability: Sturdy
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Heavy Slam
 - High Horsepower
 - Curse
@@ -2410,6 +3194,9 @@ Ability: Sturdy
 
 Gholdengo @ Metal Coat
 Ability: Good as Gold
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Make It Rain
 - Shadow Ball
 - Nasty Plot
@@ -2417,6 +3204,9 @@ Ability: Good as Gold
 
 Bronzong @ Safety Goggles
 Ability: Levitate
+EVs: 252 HP / 100 Def / 156 SpD
+Sassy Nature
+IVs: 0 Spe
 - Trick Room
 - Gyro Ball
 - Helping Hand
@@ -2424,6 +3214,8 @@ Ability: Levitate
 
 Corviknight @ Covert Cloak
 Ability: Mirror Armor
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Tailwind
 - Iron Head
 - Brave Bird
@@ -2431,6 +3223,9 @@ Ability: Mirror Armor
 
 Melmetal-Fantasy @ Assault Vest
 Ability: Iron Fist
+EVs: 252 HP / 252 Atk / 4 SpD
+Brave Nature
+IVs: 0 Spe
 - Double Iron Bash
 - High Horsepower
 - Thunder Punch
@@ -2438,6 +3233,9 @@ Ability: Iron Fist
 
 Heatran @ Shuca Berry
 Ability: Flash Fire
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Heat Wave
 - Earth Power
 - Flash Cannon
@@ -2484,6 +3282,8 @@ Ability: Inner Focus
 - Protect`,
 	'bea:60': `Machoke @ Eviolite
 Ability: Guts
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Cross Chop
 - Rock Tomb
 - Knock Off
@@ -2491,6 +3291,8 @@ Ability: Guts
 
 Grapploct @ Leftovers
 Ability: Technician
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Close Combat
 - Wide Guard
 - Liquidation
@@ -2498,6 +3300,8 @@ Ability: Technician
 
 Mienfoo @ Eviolite
 Ability: Regenerator
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Fake Out
 - U-turn
 - Coaching
@@ -2505,12 +3309,16 @@ Ability: Regenerator
 
 Sneasler @ White Herb
 Ability: Unburden
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Dire Claw
 - Coaching
 - Protect`,
 	'bea:80': `Machamp @ Clear Amulet
 Ability: Guts
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Close Combat
 - Rock Slide
 - Knock Off
@@ -2518,6 +3326,8 @@ Ability: Guts
 
 Grapploct @ Leftovers
 Ability: Technician
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Close Combat
 - Wide Guard
 - Liquidation
@@ -2525,6 +3335,8 @@ Ability: Technician
 
 Mienshao @ Focus Sash
 Ability: Regenerator
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Fake Out
 - U-turn
 - Coaching
@@ -2532,26 +3344,34 @@ Ability: Regenerator
 
 Sneasler @ White Herb
 Ability: Unburden
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Dire Claw
 - Coaching
 - Protect`,
-	'bea:100': `Gallade @ Galladite
-Ability: Justified
+	'bea:100': `Machamp @ Flame Orb
+Ability: Guts
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Close Combat
-- Psycho Cut
-- Wide Guard
+- Rock Slide
+- Knock Off
 - Protect
 
-Hawlucha @ Focus Sash
-Ability: Unburden
+Corviknight-G-Mega-Fantasy @ G-Mega Wishing Star
+Ability: Tie Kai
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Tailwind
-- Close Combat
-- Acrobatics
+- Brave Bird
+- Iron Head
 - Protect
 
 Mienshao @ Focus Sash
 Ability: Regenerator
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Fake Out
 - U-turn
 - Coaching
@@ -2559,26 +3379,34 @@ Ability: Regenerator
 
 Sneasler @ White Herb
 Ability: Unburden
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Dire Claw
 - Coaching
 - Protect`,
 	'bea:120': `Gallade @ Galladite
 Ability: Justified
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Psycho Cut
 - Wide Guard
 - Protect
 
-Hawlucha @ Focus Sash
-Ability: Unburden
+Corviknight-G-Mega-Fantasy @ G-Mega Wishing Star
+Ability: Tie Kai
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Tailwind
-- Close Combat
-- Acrobatics
+- Brave Bird
+- Iron Head
 - Protect
 
 Mienshao @ Focus Sash
 Ability: Regenerator
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Fake Out
 - U-turn
 - Coaching
@@ -2586,6 +3414,8 @@ Ability: Regenerator
 
 Sneasler @ White Herb
 Ability: Unburden
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Dire Claw
 - Coaching
@@ -2593,6 +3423,8 @@ Ability: Unburden
 
 Machamp @ Clear Amulet
 Ability: Guts
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Close Combat
 - Rock Slide
 - Knock Off
@@ -2600,26 +3432,34 @@ Ability: Guts
 
 Urshifu-Rapid-Strike-Fantasy @ Mystic Water
 Ability: Unseen Fist
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Surging Strikes
 - Close Combat
 - Aqua Jet
 - Protect`,
 	'bea:140': `Gallade @ Galladite
 Ability: Justified
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Psycho Cut
 - Wide Guard
 - Protect
 
-Hawlucha @ Focus Sash
-Ability: Unburden
+Corviknight-G-Mega-Fantasy @ G-Mega Wishing Star
+Ability: Tie Kai
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Tailwind
-- Close Combat
-- Acrobatics
+- Brave Bird
+- Iron Head
 - Protect
 
 Mienshao @ Focus Sash
 Ability: Regenerator
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Fake Out
 - U-turn
 - Coaching
@@ -2627,6 +3467,8 @@ Ability: Regenerator
 
 Sneasler @ White Herb
 Ability: Unburden
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Dire Claw
 - Coaching
@@ -2634,6 +3476,8 @@ Ability: Unburden
 
 Machamp @ Clear Amulet
 Ability: Guts
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Close Combat
 - Rock Slide
 - Knock Off
@@ -2641,26 +3485,34 @@ Ability: Guts
 
 Pheromosa @ Life Orb
 Ability: Beast Boost
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - U-turn
 - Triple Axel
 - Protect`,
 	'bea:160': `Gallade @ Galladite
 Ability: Justified
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Psycho Cut
 - Wide Guard
 - Protect
 
-Hawlucha @ Focus Sash
-Ability: Unburden
+Corviknight-G-Mega-Fantasy @ G-Mega Wishing Star
+Ability: Tie Kai
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Tailwind
-- Close Combat
-- Acrobatics
+- Brave Bird
+- Iron Head
 - Protect
 
 Mienshao @ Focus Sash
 Ability: Regenerator
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Fake Out
 - U-turn
 - Coaching
@@ -2668,6 +3520,8 @@ Ability: Regenerator
 
 Sneasler @ White Herb
 Ability: Unburden
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - Dire Claw
 - Coaching
@@ -2675,6 +3529,8 @@ Ability: Unburden
 
 Urshifu-Rapid-Strike-Fantasy @ Mystic Water
 Ability: Unseen Fist
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Surging Strikes
 - Close Combat
 - Aqua Jet
@@ -2682,6 +3538,8 @@ Ability: Unseen Fist
 
 Pheromosa @ Life Orb
 Ability: Beast Boost
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Close Combat
 - U-turn
 - Triple Axel
@@ -2728,6 +3586,9 @@ Ability: Thermal Exchange
 - Protect`,
 	'candice:60': `Ninetales-Alola @ Light Clay
 Ability: Snow Warning
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Aurora Veil
 - Blizzard
 - Moonblast
@@ -2735,6 +3596,9 @@ Ability: Snow Warning
 
 Abomasnow @ Sitrus Berry
 Ability: Snow Warning
+EVs: 252 HP / 4 Atk / 252 SpA
+Quiet Nature
+IVs: 0 Spe
 - Blizzard
 - Wood Hammer
 - Ice Shard
@@ -2742,6 +3606,9 @@ Ability: Snow Warning
 
 Frosmoth @ Weakness Policy
 Ability: Ice Scales
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Blizzard
 - Bug Buzz
 - Icy Wind
@@ -2749,12 +3616,17 @@ Ability: Ice Scales
 
 Arctibax @ Eviolite
 Ability: Thermal Exchange
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Icicle Crash
 - Dragon Claw
 - Ice Shard
 - Protect`,
 	'candice:80': `Ninetales-Alola @ Light Clay
 Ability: Snow Warning
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Aurora Veil
 - Blizzard
 - Moonblast
@@ -2762,6 +3634,9 @@ Ability: Snow Warning
 
 Abomasnow @ Occa Berry
 Ability: Snow Warning
+EVs: 252 HP / 4 Atk / 252 SpA
+Quiet Nature
+IVs: 0 Spe
 - Blizzard
 - Wood Hammer
 - Ice Shard
@@ -2769,6 +3644,9 @@ Ability: Snow Warning
 
 Frosmoth @ Focus Sash
 Ability: Ice Scales
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Blizzard
 - Bug Buzz
 - Icy Wind
@@ -2776,12 +3654,17 @@ Ability: Ice Scales
 
 Baxcalibur @ Loaded Dice
 Ability: Thermal Exchange
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Icicle Spear
 - Glaive Rush
 - Ice Shard
 - Protect`,
 	'candice:100': `Ninetales-Alola @ Light Clay
 Ability: Snow Warning
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Aurora Veil
 - Blizzard
 - Moonblast
@@ -2789,6 +3672,9 @@ Ability: Snow Warning
 
 Abomasnow-Fantasy @ Abomasite
 Ability: Snow Warning
+EVs: 252 HP / 4 Atk / 252 SpA
+Quiet Nature
+IVs: 0 Spe
 - Blizzard
 - Wood Hammer
 - Ice Shard
@@ -2796,6 +3682,9 @@ Ability: Snow Warning
 
 Frosmoth-Fantasy @ Leftovers
 Ability: Ice Scales
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Blizzard
 - Bug Buzz
 - Icy Wind
@@ -2803,12 +3692,17 @@ Ability: Ice Scales
 
 Baxcalibur @ Loaded Dice
 Ability: Thermal Exchange
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Icicle Spear
 - Glaive Rush
 - Ice Shard
 - Protect`,
 	'candice:120': `Ninetales-Alola @ Light Clay
 Ability: Snow Warning
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Aurora Veil
 - Blizzard
 - Moonblast
@@ -2816,6 +3710,9 @@ Ability: Snow Warning
 
 Abomasnow-Mega-Fantasy @ Abomasite
 Ability: Snow Warning
+EVs: 252 HP / 4 Atk / 252 SpA
+Quiet Nature
+IVs: 0 Spe
 - Blizzard
 - Wood Hammer
 - Ice Shard
@@ -2823,6 +3720,9 @@ Ability: Snow Warning
 
 Frosmoth-Fantasy @ Leftovers
 Ability: Ice Scales
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Blizzard
 - Bug Buzz
 - Icy Wind
@@ -2830,6 +3730,8 @@ Ability: Ice Scales
 
 Baxcalibur @ Loaded Dice
 Ability: Thermal Exchange
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Icicle Spear
 - Glaive Rush
 - Ice Shard
@@ -2837,6 +3739,9 @@ Ability: Thermal Exchange
 
 Iron Bundle @ Booster Energy
 Ability: Quark Drive
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Freeze-Dry
 - Hydro Pump
 - Icy Wind
@@ -2844,12 +3749,18 @@ Ability: Quark Drive
 
 Toxtricity-Low-Key-Fantasy @ Throat Spray
 Ability: Punk Rock
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Overdrive
 - Sludge Bomb
 - Snarl
 - Protect`,
 	'candice:140': `Ninetales-Alola @ Light Clay
 Ability: Snow Warning
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Aurora Veil
 - Blizzard
 - Moonblast
@@ -2857,6 +3768,9 @@ Ability: Snow Warning
 
 Abomasnow-Mega-Fantasy @ Abomasite
 Ability: Snow Warning
+EVs: 252 HP / 4 Atk / 252 SpA
+Quiet Nature
+IVs: 0 Spe
 - Blizzard
 - Wood Hammer
 - Ice Shard
@@ -2864,6 +3778,8 @@ Ability: Snow Warning
 
 Baxcalibur @ Loaded Dice
 Ability: Thermal Exchange
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Icicle Spear
 - Glaive Rush
 - Ice Shard
@@ -2871,6 +3787,9 @@ Ability: Thermal Exchange
 
 Articuno @ Covert Cloak
 Ability: Pressure
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Freeze-Dry
 - Hurricane
 - Tailwind
@@ -2878,6 +3797,9 @@ Ability: Pressure
 
 Frosmoth-Fantasy @ Leftovers
 Ability: Ice Scales
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Blizzard
 - Bug Buzz
 - Icy Wind
@@ -2885,12 +3807,18 @@ Ability: Ice Scales
 
 Toxtricity-Low-Key-Fantasy @ Throat Spray
 Ability: Punk Rock
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Overdrive
 - Sludge Bomb
 - Snarl
 - Protect`,
 	'candice:160': `Ninetales-Alola @ Light Clay
 Ability: Snow Warning
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Aurora Veil
 - Blizzard
 - Moonblast
@@ -2898,6 +3826,9 @@ Ability: Snow Warning
 
 Abomasnow-Mega-Fantasy @ Abomasite
 Ability: Snow Warning
+EVs: 252 HP / 4 Atk / 252 SpA
+Quiet Nature
+IVs: 0 Spe
 - Blizzard
 - Wood Hammer
 - Ice Shard
@@ -2905,6 +3836,9 @@ Ability: Snow Warning
 
 Frosmoth-Fantasy @ Leftovers
 Ability: Ice Scales
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Blizzard
 - Bug Buzz
 - Icy Wind
@@ -2912,6 +3846,8 @@ Ability: Ice Scales
 
 Baxcalibur @ Loaded Dice
 Ability: Thermal Exchange
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Icicle Spear
 - Glaive Rush
 - Ice Shard
@@ -2919,6 +3855,9 @@ Ability: Thermal Exchange
 
 Iron Bundle @ Booster Energy
 Ability: Quark Drive
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Freeze-Dry
 - Hydro Pump
 - Icy Wind
@@ -2926,6 +3865,9 @@ Ability: Quark Drive
 
 Articuno @ Covert Cloak
 Ability: Pressure
+EVs: 252 HP / 4 SpA / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Freeze-Dry
 - Hurricane
 - Tailwind
@@ -2972,6 +3914,9 @@ Ability: Unaware
 - Protect`,
 	'clair:60': `Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Rain Dance
 - Hydro Pump
 - Dragon Pulse
@@ -2979,6 +3924,8 @@ Ability: Swift Swim
 
 Dipplin @ Eviolite
 Ability: Supersweet Syrup
+EVs: 252 HP / 4 Def / 252 SpA
+Quiet Nature
 - Dragon Cheer
 - Pollen Puff
 - Grav Apple
@@ -2986,6 +3933,9 @@ Ability: Supersweet Syrup
 
 Tatsugiri @ Sitrus Berry
 Ability: Commander
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Muddy Water
 - Draco Meteor
 - Icy Wind
@@ -2993,12 +3943,17 @@ Ability: Commander
 
 Dondozo @ Leftovers
 Ability: Unaware
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wave Crash
 - Order Up
 - Heavy Slam
 - Protect`,
 	'clair:80': `Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Rain Dance
 - Hydro Pump
 - Dragon Pulse
@@ -3006,6 +3961,9 @@ Ability: Swift Swim
 
 Hydrapple @ Leftovers
 Ability: Regenerator
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Draco Meteor
 - Fickle Beam
 - Pollen Puff
@@ -3013,6 +3971,9 @@ Ability: Regenerator
 
 Tatsugiri @ Sitrus Berry
 Ability: Commander
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Muddy Water
 - Draco Meteor
 - Icy Wind
@@ -3020,12 +3981,17 @@ Ability: Commander
 
 Dondozo @ Leftovers
 Ability: Unaware
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wave Crash
 - Order Up
 - Heavy Slam
 - Protect`,
 	'clair:100': `Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Rain Dance
 - Hydro Pump
 - Dragon Pulse
@@ -3033,6 +3999,9 @@ Ability: Swift Swim
 
 Tatsugiri-Droopy-Mega @ Tatsugirinite
 Ability: Commander
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Muddy Water
 - Draco Meteor
 - Icy Wind
@@ -3040,6 +4009,9 @@ Ability: Commander
 
 Archaludon @ Assault Vest
 Ability: Stamina
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Electro Shot
 - Draco Meteor
 - Flash Cannon
@@ -3047,12 +4019,17 @@ Ability: Stamina
 
 Dondozo @ Leftovers
 Ability: Unaware
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wave Crash
 - Order Up
 - Heavy Slam
 - Protect`,
 	'clair:120': `Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Rain Dance
 - Hydro Pump
 - Dragon Pulse
@@ -3060,6 +4037,9 @@ Ability: Swift Swim
 
 Hydrapple @ Leftovers
 Ability: Regenerator
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Draco Meteor
 - Fickle Beam
 - Pollen Puff
@@ -3067,6 +4047,9 @@ Ability: Regenerator
 
 Tatsugiri-Droopy-Mega @ Tatsugirinite
 Ability: Commander
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Muddy Water
 - Draco Meteor
 - Icy Wind
@@ -3074,6 +4057,8 @@ Ability: Commander
 
 Dondozo @ Leftovers
 Ability: Unaware
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wave Crash
 - Order Up
 - Heavy Slam
@@ -3081,6 +4066,9 @@ Ability: Unaware
 
 Archaludon @ Assault Vest
 Ability: Stamina
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Electro Shot
 - Draco Meteor
 - Flash Cannon
@@ -3088,12 +4076,17 @@ Ability: Stamina
 
 Dracozolt @ Life Orb
 Ability: Hustle
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Bolt Beak
 - Dragon Claw
 - High Horsepower
 - Protect`,
 	'clair:140': `Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Rain Dance
 - Hydro Pump
 - Dragon Pulse
@@ -3101,6 +4094,9 @@ Ability: Swift Swim
 
 Hydrapple @ Leftovers
 Ability: Regenerator
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Draco Meteor
 - Fickle Beam
 - Pollen Puff
@@ -3108,6 +4104,9 @@ Ability: Regenerator
 
 Tatsugiri-Droopy-Mega @ Tatsugirinite
 Ability: Commander
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Muddy Water
 - Draco Meteor
 - Icy Wind
@@ -3115,6 +4114,8 @@ Ability: Commander
 
 Dondozo @ Leftovers
 Ability: Unaware
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wave Crash
 - Order Up
 - Heavy Slam
@@ -3122,6 +4123,9 @@ Ability: Unaware
 
 Archaludon @ Assault Vest
 Ability: Stamina
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Electro Shot
 - Draco Meteor
 - Flash Cannon
@@ -3129,12 +4133,17 @@ Ability: Stamina
 
 Dracovish @ Choice Scarf
 Ability: Strong Jaw
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Fishious Rend
 - Outrage
 - Psychic Fangs
 - Crunch`,
 	'clair:160': `Kingdra @ Life Orb
 Ability: Swift Swim
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Rain Dance
 - Hydro Pump
 - Dragon Pulse
@@ -3142,6 +4151,9 @@ Ability: Swift Swim
 
 Hydrapple @ Leftovers
 Ability: Regenerator
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Draco Meteor
 - Fickle Beam
 - Pollen Puff
@@ -3149,6 +4161,9 @@ Ability: Regenerator
 
 Tatsugiri-Droopy-Mega @ Tatsugirinite
 Ability: Commander
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Muddy Water
 - Draco Meteor
 - Icy Wind
@@ -3156,6 +4171,8 @@ Ability: Commander
 
 Dondozo @ Leftovers
 Ability: Unaware
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Wave Crash
 - Order Up
 - Heavy Slam
@@ -3163,6 +4180,9 @@ Ability: Unaware
 
 Archaludon @ Assault Vest
 Ability: Stamina
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Electro Shot
 - Draco Meteor
 - Flash Cannon
@@ -3170,6 +4190,9 @@ Ability: Stamina
 
 Raging Bolt @ Booster Energy
 Ability: Protosynthesis
+EVs: 252 HP / 252 SpA / 4 SpD
+Modest Nature
+IVs: 0 Atk
 - Thunderclap
 - Draco Meteor
 - Snarl
@@ -3216,6 +4239,8 @@ Ability: Arena Trap
 - Protect`,
 	'clay:60': `Golurk @ Focus Sash
 Ability: Iron Fist
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - High Horsepower
 - Shadow Punch
 - Ice Punch
@@ -3223,6 +4248,8 @@ Ability: Iron Fist
 
 Excadrill @ Life Orb
 Ability: Sand Rush
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - High Horsepower
 - Iron Head
 - Rock Slide
@@ -3230,6 +4257,8 @@ Ability: Sand Rush
 
 Hippowdon @ Smooth Rock
 Ability: Sand Stream
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Yawn
@@ -3237,12 +4266,16 @@ Ability: Sand Stream
 
 Piloswine @ Eviolite
 Ability: Thick Fat
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - High Horsepower
 - Icicle Crash
 - Ice Shard
 - Protect`,
 	'clay:80': `Sandaconda @ Rocky Helmet
 Ability: Sand Spit
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Glare
@@ -3250,6 +4283,8 @@ Ability: Sand Spit
 
 Excadrill @ Life Orb
 Ability: Sand Rush
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - High Horsepower
 - Iron Head
 - Rock Slide
@@ -3257,6 +4292,8 @@ Ability: Sand Rush
 
 Flygon @ Clear Amulet
 Ability: Levitate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Stomping Tantrum
 - Dragon Claw
 - Breaking Swipe
@@ -3264,12 +4301,16 @@ Ability: Levitate
 
 Mamoswine @ Assault Vest
 Ability: Thick Fat
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - High Horsepower
 - Icicle Crash
 - Ice Shard
 - Rock Slide`,
 	'clay:100': `Hippowdon @ Smooth Rock
 Ability: Sand Stream
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Yawn
@@ -3277,6 +4318,8 @@ Ability: Sand Stream
 
 Excadrill-Mega @ Excadrite
 Ability: Sand Rush
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - High Horsepower
 - Iron Head
 - Rock Slide
@@ -3284,6 +4327,8 @@ Ability: Sand Rush
 
 Golurk-Fantasy @ Focus Sash
 Ability: Iron Fist
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - High Horsepower
 - Shadow Punch
 - Ice Punch
@@ -3291,12 +4336,16 @@ Ability: Iron Fist
 
 Garchomp-Fantasy @ Ground Gem
 Ability: Rough Skin
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Stomping Tantrum
 - Dragon Claw
 - Rock Slide
 - Protect`,
 	'clay:120': `Hippowdon @ Smooth Rock
 Ability: Sand Stream
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Yawn
@@ -3304,6 +4353,8 @@ Ability: Sand Stream
 
 Excadrill-Mega-Fantasy @ Excadrite
 Ability: Sand Rush
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - High Horsepower
 - Iron Head
 - Rock Slide
@@ -3311,6 +4362,8 @@ Ability: Sand Rush
 
 Sandaconda-G-Mega-Fantasy @ G-Mega Wishing Star
 Ability: Sand Spit
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Glare
@@ -3318,6 +4371,8 @@ Ability: Sand Spit
 
 Garchomp-Fantasy @ Ground Gem
 Ability: Rough Skin
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Stomping Tantrum
 - Dragon Claw
 - Rock Slide
@@ -3325,6 +4380,8 @@ Ability: Rough Skin
 
 Mamoswine-Fantasy @ Power Lens
 Ability: Thick Fat
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - High Horsepower
 - Icicle Crash
 - Ice Shard
@@ -3332,12 +4389,17 @@ Ability: Thick Fat
 
 Ursaluna-Bloodmoon (M) @ Leftovers
 Ability: Mind's Eye
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Blood Moon
 - Earth Power
 - Hyper Voice
 - Protect`,
 	'clay:140': `Hippowdon @ Smooth Rock
 Ability: Sand Stream
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Yawn
@@ -3345,6 +4407,8 @@ Ability: Sand Stream
 
 Excadrill-Mega-Fantasy @ Excadrite
 Ability: Sand Rush
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - High Horsepower
 - Iron Head
 - Rock Slide
@@ -3352,6 +4416,8 @@ Ability: Sand Rush
 
 Sandaconda-G-Mega-Fantasy @ G-Mega Wishing Star
 Ability: Sand Spit
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Glare
@@ -3359,6 +4425,8 @@ Ability: Sand Spit
 
 Garchomp-Fantasy @ Ground Gem
 Ability: Rough Skin
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Stomping Tantrum
 - Dragon Claw
 - Rock Slide
@@ -3366,6 +4434,8 @@ Ability: Rough Skin
 
 Mamoswine-Fantasy @ Power Lens
 Ability: Thick Fat
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - High Horsepower
 - Icicle Crash
 - Ice Shard
@@ -3373,12 +4443,17 @@ Ability: Thick Fat
 
 Sandy Shocks-Fantasy @ Booster Energy
 Ability: Protosynthesis
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Earth Power
 - Thunderbolt
 - Volt Switch
 - Protect`,
 	'clay:160': `Hippowdon @ Smooth Rock
 Ability: Sand Stream
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Yawn
@@ -3386,6 +4461,8 @@ Ability: Sand Stream
 
 Excadrill-Mega-Fantasy @ Excadrite
 Ability: Sand Rush
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - High Horsepower
 - Iron Head
 - Rock Slide
@@ -3393,6 +4470,8 @@ Ability: Sand Rush
 
 Sandaconda-G-Mega-Fantasy @ G-Mega Wishing Star
 Ability: Sand Spit
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
 - High Horsepower
 - Rock Slide
 - Glare
@@ -3400,6 +4479,8 @@ Ability: Sand Spit
 
 Garchomp-Fantasy @ Ground Gem
 Ability: Rough Skin
+EVs: 252 Atk / 4 SpD / 252 Spe
+Jolly Nature
 - Stomping Tantrum
 - Dragon Claw
 - Rock Slide
@@ -3407,6 +4488,9 @@ Ability: Rough Skin
 
 Sandy Shocks-Fantasy @ Booster Energy
 Ability: Protosynthesis
+EVs: 252 SpA / 4 SpD / 252 Spe
+Modest Nature
+IVs: 0 Atk
 - Earth Power
 - Thunderbolt
 - Volt Switch
@@ -3414,6 +4498,9 @@ Ability: Protosynthesis
 
 Ursaluna-Bloodmoon (M) @ Leftovers
 Ability: Mind's Eye
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Blood Moon
 - Earth Power
 - Hyper Voice
@@ -3460,6 +4547,8 @@ Ability: Rivalry
 - Protect`,
 	'larry:60': `Staraptor @ Focus Sash
 Ability: Intimidate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Brave Bird
 - Close Combat
 - Tailwind
@@ -3467,6 +4556,9 @@ Ability: Intimidate
 
 Porygon2 @ Eviolite
 Ability: Download
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Tri Attack
 - Ice Beam
@@ -3474,6 +4566,9 @@ Ability: Download
 
 Zoroark-Hisui @ Normal Gem
 Ability: Illusion
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Hyper Voice
 - Shadow Ball
 - Snarl
@@ -3481,12 +4576,17 @@ Ability: Illusion
 
 Dusclops @ Eviolite
 Ability: Frisk
+EVs: 252 HP / 156 Def / 100 SpD
+Relaxed Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Helping Hand
 - Night Shade
 - Will-O-Wisp`,
 	'larry:80': `Staraptor @ Focus Sash
 Ability: Intimidate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Brave Bird
 - Close Combat
 - Tailwind
@@ -3494,6 +4594,9 @@ Ability: Intimidate
 
 Porygon-Z @ Life Orb
 Ability: Adaptability
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Tri Attack
 - Hyper Voice
 - Ice Beam
@@ -3501,6 +4604,9 @@ Ability: Adaptability
 
 Zoroark-Hisui @ Normal Gem
 Ability: Illusion
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Hyper Voice
 - Shadow Ball
 - Snarl
@@ -3508,12 +4614,17 @@ Ability: Illusion
 
 Dusknoir @ Sitrus Berry
 Ability: Frisk
+EVs: 252 HP / 100 Def / 156 SpD
+Sassy Nature
+IVs: 0 Spe
 - Trick Room
 - Helping Hand
 - Shadow Punch
 - Will-O-Wisp`,
 	'larry:100': `Staraptor @ Focus Sash
 Ability: Intimidate
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Brave Bird
 - Close Combat
 - Tailwind
@@ -3521,6 +4632,9 @@ Ability: Intimidate
 
 Porygon-Z-Fantasy @ Life Orb
 Ability: Adaptability
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Hyper Voice
 - Ice Beam
@@ -3528,6 +4642,9 @@ Ability: Adaptability
 
 Zoroark-Hisui-Fantasy @ Normal Gem
 Ability: Illusion
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Hyper Voice
 - Shadow Ball
 - Flamethrower
@@ -3535,12 +4652,17 @@ Ability: Illusion
 
 Pidgeot-Fantasy @ Pidgeotite
 Ability: Keen Eye
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Hurricane
 - Hyper Voice
 - Tailwind
 - Protect`,
 	'larry:120': `Staraptor-Mega @ Staraptite
 Ability: Reckless
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Brave Bird
 - Double-Edge
 - Close Combat
@@ -3548,6 +4670,9 @@ Ability: Reckless
 
 Porygon-Z-Fantasy @ Life Orb
 Ability: Adaptability
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Hyper Voice
 - Ice Beam
@@ -3555,6 +4680,9 @@ Ability: Adaptability
 
 Ursaluna-Bloodmoon (M) @ Leftovers
 Ability: Mind's Eye
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Blood Moon
 - Earth Power
 - Hyper Voice
@@ -3562,6 +4690,9 @@ Ability: Mind's Eye
 
 Zoroark-Hisui-Fantasy @ Normal Gem
 Ability: Illusion
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Hyper Voice
 - Shadow Ball
 - Snarl
@@ -3569,6 +4700,9 @@ Ability: Illusion
 
 Dusknoir-Fantasy @ Sitrus Berry
 Ability: Frisk
+EVs: 252 HP / 100 Def / 156 SpD
+Sassy Nature
+IVs: 0 Spe
 - Trick Room
 - Helping Hand
 - Shadow Punch
@@ -3576,12 +4710,16 @@ Ability: Frisk
 
 Dragonite @ Choice Band
 Ability: Multiscale
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Extreme Speed
 - Dragon Claw
 - Stomping Tantrum
 - Fire Punch`,
 	'larry:140': `Staraptor-Mega @ Staraptite
 Ability: Reckless
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Brave Bird
 - Double-Edge
 - Close Combat
@@ -3589,6 +4727,9 @@ Ability: Reckless
 
 Porygon-Z-Fantasy @ Life Orb
 Ability: Adaptability
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Hyper Voice
 - Ice Beam
@@ -3596,6 +4737,9 @@ Ability: Adaptability
 
 Ursaluna-Bloodmoon (M) @ Leftovers
 Ability: Mind's Eye
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Blood Moon
 - Earth Power
 - Hyper Voice
@@ -3603,6 +4747,9 @@ Ability: Mind's Eye
 
 Zoroark-Hisui-Fantasy @ Normal Gem
 Ability: Illusion
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Hyper Voice
 - Shadow Ball
 - Snarl
@@ -3610,6 +4757,9 @@ Ability: Illusion
 
 Dusknoir-Fantasy @ Sitrus Berry
 Ability: Frisk
+EVs: 252 HP / 100 Def / 156 SpD
+Sassy Nature
+IVs: 0 Spe
 - Trick Room
 - Helping Hand
 - Shadow Punch
@@ -3617,12 +4767,16 @@ Ability: Frisk
 
 Silvally-Fantasy @ Ghost Memory
 Ability: RKS System
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Multi-Attack
 - Parting Shot
 - Tailwind
 - Protect`,
 	'larry:160': `Staraptor-Mega @ Staraptite
 Ability: Reckless
+EVs: 252 Atk / 4 SpD / 252 Spe
+Adamant Nature
 - Brave Bird
 - Double-Edge
 - Close Combat
@@ -3630,6 +4784,9 @@ Ability: Reckless
 
 Porygon-Z-Fantasy @ Life Orb
 Ability: Adaptability
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Trick Room
 - Hyper Voice
 - Ice Beam
@@ -3637,6 +4794,9 @@ Ability: Adaptability
 
 Ursaluna-Bloodmoon (M) @ Leftovers
 Ability: Mind's Eye
+EVs: 252 HP / 252 SpA / 4 SpD
+Quiet Nature
+IVs: 0 Atk / 0 Spe
 - Blood Moon
 - Earth Power
 - Hyper Voice
@@ -3644,6 +4804,9 @@ Ability: Mind's Eye
 
 Zoroark-Hisui-Fantasy @ Normal Gem
 Ability: Illusion
+EVs: 252 SpA / 4 SpD / 252 Spe
+Timid Nature
+IVs: 0 Atk
 - Hyper Voice
 - Shadow Ball
 - Snarl
@@ -3651,6 +4814,8 @@ Ability: Illusion
 
 Silvally-Fantasy @ Ghost Memory
 Ability: RKS System
+EVs: 252 HP / 4 Atk / 252 Spe
+Jolly Nature
 - Multi-Attack
 - Parting Shot
 - Tailwind
@@ -3658,6 +4823,8 @@ Ability: RKS System
 
 Entei-Fantasy @ Safety Goggles
 Ability: Inner Focus
+EVs: 252 HP / 252 Atk / 4 SpD
+Adamant Nature
 - Sacred Fire
 - Extreme Speed
 - Snarl

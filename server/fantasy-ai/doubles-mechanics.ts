@@ -1,8 +1,10 @@
 import { Battle } from '../../sim/battle';
 import { Dex, toID } from '../../sim/dex';
 import { Format } from '../../sim/dex-formats';
-import type { Pokemon } from '../../sim/pokemon';
+import { Pokemon } from '../../sim/pokemon';
 import { gemType } from './fantasy-state';
+import type { DoublesFieldDurations } from './doubles-field';
+import { maintainRogueEnvironment } from '../../sim/fantasy-rogue-spirits';
 
 type SideID = 'p1' | 'p2';
 type Position = 'p1a' | 'p1b' | 'p2a' | 'p2b';
@@ -10,16 +12,24 @@ const STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 const SEEDS = ['gen5,0001000200030004', 'gen5,0011001200130014'] as const;
 const VOLATILES = new Set([
 	'gastroacid', 'smackdown', 'magnetrise', 'telekinesis', 'ingrain', 'roost', 'embargo',
-	'flashfire', 'charge', 'focusenergy', 'substitute', 'foresight', 'miracleeye',
+	'flashfire', 'charge', 'focusenergy', 'substitute', 'foresight', 'miracleeye', 'healblock', 'taunt', 'confusion',
+	'encore', 'saltcure', 'yawn',
 	'auraburstatk', 'auraburstdef', 'auraburstspa', 'auraburstspd', 'auraburstspe', 'auraburstall',
 	'gemdefensepermanentboost', 'fantasyultraenergyboost', 'suppressability',
 ]);
 const paradoxBoost = (id: string) => /^(protosynthesis|quarkdrive)(atk|def|spa|spd|spe)$/.exec(id);
-const supportedVolatile = (id: string) => VOLATILES.has(id) || !!paradoxBoost(id) || !!gemType(id);
+const overlordBoost = (id: string) => /^fallen([1-5])$/.exec(id);
+const supportedVolatile = (id: string, mon: DoublesMechanicsPokemon) =>
+	id === 'encore' ? !!mon.encoreMove :
+	VOLATILES.has(id) || !!paradoxBoost(id) || !!gemType(id) || !!overlordBoost(id);
 
 /** Copied own-request data or a hypothesis made only from public battle messages. */
 export interface DoublesMechanicsPokemon {
 	id: string;
+	/** Original player seat, retained when Multi is projected onto a doubles board. */
+	nativeSide?: string;
+	/** Public total defeats, including repeated defeats after revival. */
+	faintedAllies?: number;
 	side: SideID;
 	position?: Position;
 	species: string;
@@ -36,10 +46,17 @@ export interface DoublesMechanicsPokemon {
 	status: string;
 	toxicStage?: number;
 	sleepTurns?: number;
+	/** Public confusion activations, not the simulator's hidden duration. */
+	confusionActions?: number;
+	confusionMinimum?: number;
 	boosts: SparseBoostsTable;
 	volatiles: string[];
 	activeActions: number;
 	lastMove?: string;
+	/** Fixed when Encore starts, not overwritten by a later called/Z move. */
+	encoreMove?: string;
+	/** Known public turns until Yawn expires, including this turn's residual phase. */
+	yawnTurns?: number;
 	protectStreak?: number;
 	lastTarget?: Position;
 	chargeMove?: string;
@@ -54,11 +71,14 @@ export interface DoublesMechanicsSnapshot {
 	trickRoom: boolean;
 	magicRoom?: boolean;
 	conditions: Record<SideID, string[]>;
+	durations?: DoublesFieldDurations;
 }
 
 export interface DoublesDamageEstimate {
 	/** Expected HP fractions, with accuracy applied separately to each target/hit. */
 	damage: Record<string, number>;
+	/** Actual positive HP changes from the isolated native move, including callback-based ally healing. */
+	healing: Record<string, number>;
 	selfDamage: number;
 	omittedVolatiles: string[];
 	/** The move charges this turn instead of doing immediate damage. */
@@ -78,7 +98,13 @@ export interface DoublesTurnAction {
 }
 
 export interface DoublesTurnSample {
-	pokemon: Record<string, { health: number, fainted: boolean, status: string, boosts: SparseBoostsTable }>;
+	/** Public-state branch weight, including the two damage-roll samples. */
+	probability?: number;
+	/** IDs remain attached to individuals across switches; position reflects the resulting board. */
+	pokemon: Record<string, {
+		health: number, fainted: boolean, status: string, boosts: SparseBoostsTable,
+		position?: Position, speed: number,
+	}>;
 	weather: string;
 	terrain: string;
 	trickRoom: boolean;
@@ -93,6 +119,45 @@ export interface DoublesTurnSample {
 export interface DoublesTurnEstimate {
 	samples: DoublesTurnSample[];
 	omittedVolatiles: string[];
+}
+
+interface ConfusionBranch {
+	probability: number;
+	states: Record<string, { time: number, selfHit: boolean }>;
+}
+
+/** Exact for small public-state mixtures; bounded stratified coverage for crowded confused boards. */
+function confusionBranches(profiles: DoublesMechanicsPokemon[], actors: ReadonlySet<string>): ConfusionBranch[] {
+	let branches: ConfusionBranch[] = [{ probability: 1, states: {} }];
+	for (const mon of profiles) {
+		if (!mon.position || !mon.health || !actors.has(mon.id) || !mon.volatiles.includes('confusion')) continue;
+		const elapsed = Math.max(0, Math.min(4, mon.confusionActions || 0));
+		const minimum = mon.confusionMinimum === 3 ? 3 : 2;
+		// Native initial time is uniform [2, 5], or [3, 5] for Axe Kick. Each public activation
+		// proves the duration exceeded the number of activations already observed.
+		const possible = [2, 3, 4, 5].filter(time => time >= minimum && time > elapsed);
+		const expires = possible.filter(time => time === elapsed + 1).length / possible.length;
+		const states = [
+			{ probability: expires, time: 1, selfHit: false },
+			{ probability: (1 - expires) * 0.67, time: 2, selfHit: false },
+			{ probability: (1 - expires) * 0.33, time: 2, selfHit: true },
+		].filter(state => state.probability > 0);
+		branches = branches.flatMap(branch => states.map(state => ({
+			probability: branch.probability * state.probability,
+			states: { ...branch.states, [mon.id]: { time: state.time, selfHit: state.selfHit } },
+		})));
+	}
+	if (branches.length <= 6) return branches;
+	const bounded = new Map<ConfusionBranch, ConfusionBranch>();
+	for (let i = 0; i < 6; i++) {
+		let cumulative = 0;
+		const selected = branches.find(branch => (cumulative += branch.probability) >= (i + 0.5) / 6) ||
+			branches[branches.length - 1];
+		const found = bounded.get(selected);
+		if (found) found.probability += 1 / 6;
+		else bounded.set(selected, { probability: 1 / 6, states: selected.states });
+	}
+	return [...bounded.values()];
 }
 
 function restorePokemon(battle: Battle, mon: Pokemon, profile: DoublesMechanicsPokemon, sample: number) {
@@ -128,6 +193,11 @@ function restorePokemon(battle: Battle, mon: Pokemon, profile: DoublesMechanicsP
 	// Restore public state directly; replaying entry events would apply Intimidate/weather twice.
 	for (const id of profile.volatiles) {
 		const paradox = paradoxBoost(id), gem = gemType(id);
+		const fallen = overlordBoost(id);
+		if (fallen) {
+			if (mon.ability === 'supremeoverlord') mon.abilityState.fallen = Number(fallen[1]);
+			continue;
+		}
 		if (paradox) {
 			mon.volatiles[paradox[1]] = battle.initEffectState({ id: paradox[1], target: mon, bestStat: paradox[2] });
 			continue;
@@ -140,8 +210,13 @@ function restorePokemon(battle: Battle, mon: Pokemon, profile: DoublesMechanicsP
 			continue;
 		}
 		if (!VOLATILES.has(id)) continue;
+		if (id === 'encore' && !profile.encoreMove) continue;
 		mon.volatiles[id] = battle.initEffectState({ id, target: mon });
 		if (id === 'substitute') mon.volatiles[id].hp = Math.max(1, Math.floor(mon.maxhp / 4));
+		if (id === 'taunt') mon.volatiles[id].duration = 1; // Known active for this horizon's action phase.
+		if (id === 'confusion') mon.volatiles[id].time = 2; // Replaced by a public-state branch when acting.
+		if (id === 'encore') Object.assign(mon.volatiles[id], { move: toID(profile.encoreMove), duration: 1 });
+		if (id === 'yawn') mon.volatiles[id].duration = Math.max(1, Math.min(2, profile.yawnTurns || 1));
 	}
 	if (profile.chargeMove) {
 		const id = toID(profile.chargeMove);
@@ -170,10 +245,10 @@ export class DoublesDamageModel {
 
 	/** The joint scorer already rejects any omitted state; detect that before native probes. */
 	hasIncompleteTurnState() {
-		return this.snapshot.pokemon.some(mon => mon.volatiles.some(id => !supportedVolatile(id)));
+		return this.snapshot.pokemon.some(mon => mon.volatiles.some(id => !supportedVolatile(id, mon)));
 	}
 
-	private create(sample: number, actions: readonly DoublesTurnAction[] = []) {
+	private create(sample: number, actions: readonly DoublesTurnAction[] = [], confusion?: ConfusionBranch) {
 		const dex = Dex.mod(this.snapshot.mod);
 		const members = (side: SideID) => {
 			const team = this.snapshot.pokemon.filter(mon => mon.side === side);
@@ -188,14 +263,24 @@ export class DoublesDamageModel {
 		const teams = { p1: members('p1'), p2: members('p2') };
 		const set = (mon: DoublesMechanicsPokemon) => ({
 			species: mon.species, level: mon.level, ability: mon.ability || '', item: mon.item || '',
-			moves: [...new Set([...mon.moves, ...actions.filter(action => action.actor === mon.id && action.move)
-				.map(action => action.move!)])].concat(mon.moves.length ? [] : ['splash']), teraType: mon.teraType,
+			moves: [...new Set([...mon.moves, ...(mon.encoreMove ? [mon.encoreMove] : []),
+				...actions.filter(action => action.actor === mon.id && action.move)
+					.map(action => action.move!)])].concat(mon.moves.length ? [] : ['splash']), teraType: mon.teraType,
 			// Unknown opponents use a disclosed neutral hypothesis, not their actual configuration.
 			evs: { hp: 84, atk: 84, def: 84, spa: 84, spd: 84, spe: 84 }, nature: 'Serious',
 		}) as PokemonSet;
+		const environment = this.snapshot.durations?.environment ? { ...this.snapshot.durations.environment } : undefined;
+		const nativeOwners = new Map<Pokemon, string>(), defeats = new Map<string, number>();
 		const battle = new Battle({
 			formatid: toID('gen9fantasyroguedoubles'),
-			format: new Format({ name: 'Isolated doubles damage', mod: dex.currentMod, gameType: 'doubles', ruleset: [] }),
+			format: new Format({ name: 'Isolated doubles damage', mod: dex.currentMod, gameType: 'doubles', ruleset: [],
+				onResidualOrder: 100,
+				onResidual(this: Battle) { if (environment) maintainRogueEnvironment(this, true, environment); },
+				onFaint(target: Pokemon) {
+					const owner = nativeOwners.get(target);
+					if (owner) defeats.set(owner, Math.min(100, (defeats.get(owner) || 0) + 1));
+				},
+			}),
 			seed: SEEDS[sample], deserialized: true,
 			p1: { team: teams.p1.map(set) }, p2: { team: teams.p2.map(set) },
 		});
@@ -205,27 +290,65 @@ export class DoublesDamageModel {
 			battle.started = true;
 			battle.turn = this.snapshot.turn;
 			const pokemon = new Map<string, Pokemon>();
+			const singleEvent = battle.singleEvent.bind(battle);
+			battle.singleEvent = (...args) => {
+				const [event, effect, , target] = args;
+				if (event !== 'Start' || effect.id !== 'supremeoverlord' || !(target instanceof Pokemon)) {
+					return singleEvent(...args);
+				}
+				// Native onStart fixes its multiplier at entry. Only supply the original seat's
+				// public defeat count; the merged projection must not count a Multi ally's losses.
+				const previous = target.side.totalFainted;
+				target.side.totalFainted = defeats.get(nativeOwners.get(target) || '') || 0;
+				try { return singleEvent(...args); } finally { target.side.totalFainted = previous; }
+			};
+			const effectState = (id: string, target: Pokemon['side'] | Battle['field'], side?: SideID) => {
+				const state = battle.initEffectState({ id, target });
+				const duration = (side ? this.snapshot.durations?.sides[side][id] :
+					this.snapshot.durations?.field[id])?.[sample];
+				if (duration && Number.isFinite(duration)) state.duration = duration;
+				return state;
+			};
 			for (const side of [battle.p1, battle.p2]) {
 				for (const [index, profile] of teams[side.id as SideID].entries()) {
 					const mon = side.pokemon[index];
+					const owner = profile.nativeSide || profile.side;
+					nativeOwners.set(mon, owner);
+					defeats.set(owner, Math.max(defeats.get(owner) || 0, Math.min(100, profile.faintedAllies || 0)));
 					if (index < 2) side.active[index] = mon;
 					restorePokemon(battle, mon, profile, sample);
 					pokemon.set(profile.id, mon);
 				}
 				side.pokemonLeft = side.pokemon.filter(mon => !mon.fainted).length;
 				for (const id of this.snapshot.conditions[side.id as SideID]) {
-					side.sideConditions[id] = battle.initEffectState({ id, target: side });
+					side.sideConditions[id] = effectState(id, side, side.id as SideID);
 				}
 			}
 			battle.field.weather = toID(this.snapshot.weather);
-			battle.field.weatherState = battle.initEffectState({ id: this.snapshot.weather });
+			battle.field.weatherState = effectState(this.snapshot.weather, battle.field);
 			battle.field.terrain = toID(this.snapshot.terrain);
-			battle.field.terrainState = battle.initEffectState({ id: this.snapshot.terrain });
+			battle.field.terrainState = effectState(this.snapshot.terrain, battle.field);
 			if (this.snapshot.trickRoom) {
-				battle.field.pseudoWeather.trickroom = battle.initEffectState({ id: 'trickroom' });
+				battle.field.pseudoWeather.trickroom = effectState('trickroom', battle.field);
 			}
 			if (this.snapshot.magicRoom) {
-				battle.field.pseudoWeather.magicroom = battle.initEffectState({ id: 'magicroom' });
+				battle.field.pseudoWeather.magicroom = effectState('magicroom', battle.field);
+			}
+			if (confusion) {
+				const selfHits = new Map<Pokemon, boolean>();
+				for (const [id, state] of Object.entries(confusion.states)) {
+					const mon = pokemon.get(id)!;
+					mon.volatiles.confusion.time = state.time;
+					selfHits.set(mon, state.selfHit);
+				}
+				const randomChance = battle.randomChance.bind(battle);
+				battle.randomChance = (numerator, denominator) => {
+					const target = battle.effectState?.target as Pokemon;
+					if (battle.effect.id === 'confusion' && numerator === 33 && denominator === 100 && selfHits.has(target)) {
+						return selfHits.get(target)!;
+					}
+					return randomChance(numerator, denominator);
+				};
 			}
 			return { battle, pokemon };
 		} catch (error) {
@@ -268,11 +391,13 @@ export class DoublesDamageModel {
 		const key = JSON.stringify(actions);
 		if (this.turnCache.has(key)) return this.turnCache.get(key);
 		const result: DoublesTurnEstimate = { samples: [], omittedVolatiles: [...new Set(this.snapshot.pokemon
-			.flatMap(mon => mon.volatiles.filter(id => !supportedVolatile(id))))] };
+			.flatMap(mon => mon.volatiles.filter(id => !supportedVolatile(id, mon))))] };
 		try {
 			if (new Set(actions.map(action => action.actor)).size !== actions.length) throw new Error('duplicate-turn-actor');
-			for (let sample = 0; sample < SEEDS.length; sample++) {
-				const { battle, pokemon } = this.create(sample, actions);
+			const branches = confusionBranches(this.snapshot.pokemon,
+				new Set(actions.filter(action => action.kind === 'move').map(action => action.actor)));
+			for (const branch of branches) for (let sample = 0; sample < SEEDS.length; sample++) {
+				const { battle, pokemon } = this.create(sample, actions, branch);
 				this.diagnostics.turnProbes++;
 				try {
 					battle.randomizer = base => Math.floor(base * (sample ? 100 : 85) / 100);
@@ -338,9 +463,12 @@ export class DoublesDamageModel {
 					battle.turnLoop();
 					for (const [id, mon] of pokemon) byIdent.set(mon.toString(), id);
 					result.samples.push({
+						probability: branch.probability / SEEDS.length,
 						pokemon: Object.fromEntries([...pokemon].filter(([id]) => !id.startsWith('vacant-')).map(([id, mon]) =>
 							[id, { health: mon.hp / mon.maxhp, fainted: mon.fainted || !mon.hp,
-								status: mon.status, boosts: { ...mon.boosts } }])),
+								status: mon.status, boosts: { ...mon.boosts }, speed: mon.getStat('spe'),
+								position: mon.isActive && mon.hp ? `${mon.side.id}${mon.position ? 'b' : 'a'}` as Position : undefined,
+							}])),
 						weather: battle.field.weather, terrain: battle.field.terrain,
 						trickRoom: !!battle.field.pseudoWeather.trickroom,
 						magicRoom: !!battle.field.pseudoWeather.magicroom,
@@ -366,11 +494,13 @@ export class DoublesDamageModel {
 		const key = JSON.stringify([actorID, moveID, targetID, transform]);
 		if (this.cache.has(key)) return this.cache.get(key);
 		const result: DoublesDamageEstimate = {
-			damage: {}, selfDamage: 0, charging: false, conditional: false, omittedVolatiles: [],
+			damage: {}, healing: {}, selfDamage: 0, charging: false, conditional: false, omittedVolatiles: [],
 		};
 		try {
-			for (let sample = 0; sample < SEEDS.length; sample++) {
-				const { battle, pokemon } = this.create(sample);
+			const branches = confusionBranches(this.snapshot.pokemon, new Set([actorID]));
+			for (const branch of branches) for (let sample = 0; sample < SEEDS.length; sample++) {
+				const weight = branch.probability / SEEDS.length;
+				const { battle, pokemon } = this.create(sample, [], branch);
 				this.diagnostics.probes++;
 				try {
 					const actor = pokemon.get(actorID);
@@ -378,7 +508,13 @@ export class DoublesDamageModel {
 					const profile = this.snapshot.pokemon.find(mon => mon.id === actorID)!;
 					const target = pokemon.get(targetID || profile.lastTarget || '');
 					this.transform(battle, actor, transform);
-					const move = battle.dex.getActiveMove(moveID);
+					let move = battle.dex.getActiveMove(moveID);
+					// Single-move probes use useMove, which does not perform runMove's override hook.
+					// Keep native Z/Max/Struggle exceptions and let the original condition choose the move.
+					if (move.id !== 'struggle' && transform !== 'zmove' && transform !== 'dynamax' && !actor.volatiles.dynamax) {
+						const changedMove = battle.runEvent('OverrideAction', actor, target, move);
+						if (changedMove && changedMove !== true) move = battle.dex.getActiveMove(changedMove);
+					}
 					if (move.willCrit === undefined) move.willCrit = false;
 					battle.randomizer = base => Math.floor(base * (sample ? 100 : 85) / 100);
 					const chances = new Map<Pokemon, number>();
@@ -403,12 +539,13 @@ export class DoublesDamageModel {
 								if (!mon || mon === actor || typeof amount !== 'number') continue;
 								const id = ids.get(mon)!;
 								result.damage[id] = (result.damage[id] || 0) +
-									amount / mon.maxhp * (chances.get(mon) ?? 1) / SEEDS.length;
+									amount / mon.maxhp * (chances.get(mon) ?? 1) * weight;
 							}
 						}
 						return dealt;
 					};
 					const beforeHP = actor.hp;
+					const beforeHealth = new Map([...pokemon].map(([id, mon]) => [id, mon.hp]));
 					const zMove = transform === 'zmove' ? battle.actions.getZMove(move, actor) : undefined;
 					const maxMove = transform === 'dynamax' || actor.volatiles.dynamax ?
 						battle.actions.getMaxMove(move, actor)?.name : undefined;
@@ -424,13 +561,28 @@ export class DoublesDamageModel {
 						battle.queue.addChoice({ choice: 'move', pokemon: target, move: replyID });
 					}
 					actor.activeMoveActions++;
-					battle.actions.useMove(move, actor, { target, zMove, maxMove });
-					result.selfDamage += Math.max(0, beforeHP - actor.hp) / actor.maxhp / SEEDS.length;
+					// useMove bypasses BeforeMove. Apply only these restored public constraints here;
+					// the full-turn path already runs the complete native event order.
+					let canMove = true;
+					for (const id of ['taunt', 'confusion']) {
+						if (!actor.volatiles[id] || id === 'taunt' && (zMove || maxMove)) continue;
+						const effect = battle.dex.conditions.get(id);
+						if (battle.singleEvent('BeforeMove', effect, actor.volatiles[id], actor, target, move) === false) {
+							canMove = false; break;
+						}
+					}
+					if (canMove) battle.actions.useMove(move, actor, { target, zMove, maxMove });
+					for (const [id, mon] of pokemon) {
+						const gained = Math.max(0, mon.hp - beforeHealth.get(id)!);
+						if (gained) result.healing[id] = (result.healing[id] || 0) +
+							gained / mon.maxhp * (chances.get(mon) ?? 1) * weight;
+					}
+					result.selfDamage += Math.max(0, beforeHP - actor.hp) / actor.maxhp * weight;
 					result.charging ||= !!actor.volatiles.twoturnmove && !profile.chargeMove;
 				} finally { battle.destroy(); }
 			}
 			result.omittedVolatiles = [...new Set(this.snapshot.pokemon.flatMap(mon =>
-				mon.volatiles.filter(id => !supportedVolatile(id))))];
+				mon.volatiles.filter(id => !supportedVolatile(id, mon))))];
 			this.diagnostics.omittedVolatiles = result.omittedVolatiles;
 			this.cache.set(key, result);
 			return result;

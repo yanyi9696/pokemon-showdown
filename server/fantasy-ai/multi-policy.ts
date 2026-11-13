@@ -32,6 +32,17 @@ function mapPublicLine(line: string): string {
 	)).join('|');
 }
 
+/** Total defeats, not currently fainted party members: revival does not undo a prior defeat. */
+function nativeDefeats(log: readonly string[]): Record<string, number> {
+	const counts: Record<string, number> = { p1: 0, p2: 0, p3: 0, p4: 0 };
+	for (const line of log) {
+		const [, event, ident = ''] = line.split('|');
+		const side = ident.slice(0, 2);
+		if (event === 'faint' && side in counts) counts[side] = Math.min(100, counts[side] + 1);
+	}
+	return counts;
+}
+
 /**
  * Evaluate the two NPC enemies together. Inputs are copies of THEIR native requests plus the
  * spectator log. Human requests, selected actions, simulator state and its RNG are not inputs.
@@ -61,6 +72,7 @@ export function prepareMultiChoices(
 	}
 	const foes = ['p1', 'p3'].flatMap((seat, i) => alive.get(seat) !== false ? [i + 1] : []);
 	const pokemon = SEATS.map(seat => ({ ...requests[seat].side.pokemon[0] }));
+	const nativeOwners: string[] = [...SEATS];
 	// A waiting seat may not receive a fresh private request after damage/fainting. Update its
 	// cached field HP from public health instead of evaluating a dead/old partner as healthy.
 	for (const [slot, seat] of SEATS.entries()) {
@@ -79,6 +91,7 @@ export function prepareMultiChoices(
 	for (const seat of SEATS) {
 		for (const mon of requests[seat].side.pokemon.slice(1)) {
 			pokemon.push({ ...mon });
+			nativeOwners.push(seat);
 			reserveIndices[seat].push(pokemon.length);
 		}
 	}
@@ -106,7 +119,8 @@ export function prepareMultiChoices(
 		candidates.push({ choice, actions: [left, right], resources: [...left.resources, ...right.resources] });
 		commands.set(choice, { p2: left.command, p4: right.command });
 	}
-	return { observation: { ownSide: 'p2', difficulty: 'normal', request, publicLog: log }, candidates, commands };
+	return { observation: { ownSide: 'p2', difficulty: 'normal', request, publicLog: log,
+		doublesNativeSides: { own: nativeOwners, fainted: nativeDefeats(publicLog) } }, candidates, commands };
 }
 
 export function rankMultiChoices(
@@ -116,4 +130,30 @@ export function rankMultiChoices(
 	if (!prepared) return [];
 	return rankDoublesChoices(prepared.observation, format, [], options.allowSwitch, prepared.candidates, options.jointTurns)
 		.map(scored => ({ ...scored, commands: prepared.commands.get(scored.choice)! }));
+}
+
+/** One native enemy seat against two human slots; no fake ally is added to its request. */
+export function prepareSingleOpponentChoices(
+	request: ChoiceRequest, publicLog: readonly string[], excluded?: ReadonlySet<string>,
+): MultiDecisionInput | undefined {
+	if (!('active' in request) || request.active.length !== 1 || !request.side.pokemon.length) return;
+	const alive = new Map<string, boolean>();
+	for (const line of publicLog) {
+		const [, event, ident, value, condition] = line.split('|');
+		const seat = ident?.slice(0, 2);
+		if (['switch', 'drag', 'replace'].includes(event) && condition) alive.set(seat, !condition.includes('fnt'));
+		if (event === 'faint' || ['-damage', '-heal'].includes(event) && (value === '0' || value.endsWith(' fnt'))) {
+			alive.set(seat, false);
+		}
+	}
+	const candidates = enumerateDoublesChoices(request, { mod: 'gen9fantasy', allowSwitch: false, allyAlive: false,
+		foes: ['p1', 'p3'].flatMap((seat, index) => alive.get(seat) !== false ? [index + 1] : []),
+	}).filter(choice => !excluded?.has(choice.choice));
+	const mapped = structuredClone(request);
+	for (const mon of mapped.side.pokemon) mon.ident = mapPublicLine(mon.ident);
+	return {
+		observation: { ownSide: 'p2', difficulty: 'normal', request: mapped, publicLog: publicLog.map(mapPublicLine),
+			doublesNativeSides: { own: mapped.side.pokemon.map(() => 'p2'), fainted: nativeDefeats(publicLog) } },
+		candidates, commands: new Map(candidates.map(choice => [choice.choice, { p2: choice.choice, p4: 'pass' }])),
+	};
 }

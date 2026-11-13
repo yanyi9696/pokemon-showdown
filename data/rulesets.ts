@@ -672,7 +672,9 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 						}
 					}
 				}
-				this.add('poke', pokemon.side.id, details, '');
+				const fusion = pokemon.getRogueFusionSprite();
+				if (fusion) this.add('poke', pokemon.side.id, details, '', `[fusion] ${fusion}`);
+				else this.add('poke', pokemon.side.id, details, '');
 			}
 			this.makeRequest('teampreview');
 			if (this.ruleTable.has(`teratypepreview`)) {

@@ -103,7 +103,7 @@ export function createPreviewContent(options: { doubleBattle?: boolean } = {}): 
 	const content: RogueContent = {
 		version: doubleBattle ? PreviewBalance.doublesVersion : PreviewBalance.version,
 		biomeEncounters: true, wildTreasures: true, doubleBattle,
-		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8', 'preview-2026-10-v9', 'preview-2026-10-v10', 'preview-2026-10-v11', 'preview-2026-10-v12', 'preview-2026-10-v13', PreviewBalance.version],
+		compatibleVersions: ['preview-2026-09-v2', 'preview-2026-09-v3', 'preview-2026-09-v4', 'preview-2026-10-v5', 'preview-2026-10-v6', 'preview-2026-10-v7', 'preview-2026-10-v8', 'preview-2026-10-v9', 'preview-2026-10-v10', 'preview-2026-10-v11', 'preview-2026-10-v12', 'preview-2026-10-v13', PreviewBalance.version, PreviewBalance.doublesVersion],
 		...(arceusChallengeReady() ? { arceusMoves: ARCEUS_PHYSICAL_MOVES as Record<string, string> } : {}),
 		spirits: true, blessings: true, events: true, rewardScenes: true,
 		label: '幻想杯肉鸽 · 200 层试玩版',

@@ -16,6 +16,13 @@ export interface TypeEvolution {
 	stats: Partial<StatsTable>; power: number; extras: string[];
 }
 export interface BlessingEffects {
+	/** Battle-only roles chosen from the owner's complete party before selecting battlers. */
+	partyRoles?: {
+		species: Record<string, string>, robes: Record<'godrobe' | 'puregodrobe', string>,
+		sniper: string, dogs: number, dragonKingAlive?: boolean,
+	};
+	/** Battle-only roster and reserve item receipts. Live selected members override their snapshots. */
+	party?: { id: string, species: string, types: string[], moves: string[], item?: string, consumedItem?: string }[];
 	/** Battle-only co-op context: all non-egg members of this owner's party, never the partner's. */
 	unityParty?: { id: string, types: string[] }[];
 	catAbilities?: Record<string, string[]>;
@@ -35,7 +42,7 @@ export function addPsychicCharge(current: number, amount: number) {
 	return Math.round((current + ordinary + (amount - ordinary) * 0.05) * 100) / 100;
 }
 export interface RogueStatModifiers {
-	fusion?: { baseStats: StatsTable, types: string[] };
+	fusion?: { baseStats: StatsTable, types: string[], sprite?: string };
 	compound?: boolean;
 	compoundBonus?: Partial<StatsTable>;
 	compoundReorganized?: boolean;
@@ -266,7 +273,7 @@ add('gold', 'singer', '宝可世界的歌姬', '最强的【美洛耶塔】获�
 add('gold', 'bignumber', '大数字', `每场一次，在选择招式前指定攻击、防御、特攻、特防或速度，本回合该项能力 ×${NUMBER_BLESSING_RULES.factor}。若发动期间任一实际能力达到 ${NUMBER_BLESSING_RULES.upgrade}，战斗结束后升级为【超大数字】，升级不追加对手等级。`, { floors: [1, 50] });
 add('prismatic', 'supernumber', '超大数字', `每场一次，在选择招式前发动，本回合攻击、防御、特攻、特防和速度全部 ×${NUMBER_BLESSING_RULES.superFactor}（不含 HP、命中和闪避）。若发动期间任一实际能力达到 ${NUMBER_BLESSING_RULES.prize}，战斗结束后随机获得一份丰厚物资：培育补给、捕捉补给或珍贵战利品。奖励不随楼层变化，每局限领一次。也可由【大数字】升级获得，升级不受出现楼层限制。`, { floors: [100, 150] });
 add('silver', 'sololeveling', '我独自升级', '选择一名伙伴，其余伙伴暂存；本局队伍最多一名伙伴，可替换，不能融合。战斗经验提升 50%，解除等级 100 上限；100 级及以下每通关一层升 1 级，超过 100 级后每通关两层升 1 级。', { floors: [1] });
-add('prismatic', 'potara', '波塔拉耳环', '在战斗外融合两名伙伴，占一个队伍名额。属性取第一只的第一属性与第二只的第二属性（单属性则取第一属性）；任选第一只提供三项种族值，另外三项取第二只。沿用较高等级和第一只的个体值、努力值；可选双方现有特性之一、任一外观，并使用双方全部可学招式。融合期间不能进化或改变形态。战外可解除，双方恢复原数据，第一只保留期间新增经验；解除后再通关 10 层可重新融合。');
+add('prismatic', 'potara', '波塔拉耳环', '在战斗外融合两名伙伴，占一个队伍名额。属性取第一只的第一属性与第二只的第二属性（单属性则取第一属性）；任选第一只提供三项种族值，另外三项取第二只。沿用较高等级和第一只的个体值、努力值；可选双方现有特性之一，并使用双方全部可学招式。融合立绘按第一只头部、第二只身体匹配，交换顺序会改变结果；没有对应立绘或图片无法读取时，自选沿用其中一只的外观。融合期间不能进化或改变形态。战外可解除，双方恢复原数据，第一只保留期间新增经验；解除后再通关 10 层可重新融合。');
 add('silver', 'spindance', '摇~摇~晃~摇', '获得一只【晃晃斑】。队伍中最强的【晃晃斑】登场时令对手混乱；受到对手攻击后，令攻击者混乱或刷新混乱时长，仍遵守混乱免疫。因该晃晃斑新陷入混乱的对手，命中率降低 1 级；只刷新混乱时长不重复降低。每场首次受到致命伤时保留 1 HP，自动进入两回合濒死睡眠，不能行动；期间再受对手攻击会倒下，熬到醒来则回复全部 HP。无需携带【睡觉】。');
 add('gold', 'dancer', '舞！舞！舞！', '最强的【美洛耶塔】登场时变为舞步形态，获得额外特性【舞者】，并学会【胜利之舞】。');
 add('gold', 'ordinary', '愤怒的普通宝可梦', '全队伙伴原始种族值总和均不超过 500 时，全队伤害、对战经验与战利品增加。第 1／50、100、150 层取得时，增伤分别为 15%、20%、25%，经验与战利品数量分别增加 20%、30%、40%。');

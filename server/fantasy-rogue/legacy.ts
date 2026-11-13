@@ -11,10 +11,11 @@ import { clearMemberDetails, type ClearMemberDetails } from './clear-details';
 import { eggView } from './eggs';
 import type { RivalState } from './rivals';
 import { RIVALS } from './rival-data';
-import { clearDifficulty, syncRunDifficulty } from './difficulty';
+import { clearDifficulty, clearCoopDifficulty, syncRunDifficulty } from './difficulty';
 import { difficultyCardScale, difficultyLabel, ROGUE_DIFFICULTY_VERSION, type RogueDifficulty } from '../../sim/rogue-difficulty';
 
 export interface RogueClearCard {
+	cooperative?: { partnerName: string };
 	version: 1 | 2;
 	id: string;
 	runId: string;
@@ -66,8 +67,11 @@ export function rogueRulesVersion() {
 	fingerprint = `rogue-duel-v1:${hash.digest('hex')}`;
 	return fingerprint;
 }
-export function recordClear(account: RogueAccount, run: RogueRun) {
-	clearDifficulty(account, run);
+export function recordClear(
+	account: RogueAccount, run: RogueRun, cooperative?: RogueClearCard['cooperative']
+) {
+	if (cooperative) clearCoopDifficulty(account, run.difficulty, run.spirit);
+	else clearDifficulty(account, run);
 	if (run.floor === 200 && run.phase === 'complete') {
 		if (run.spirit && !run.difficultyTest) account.unlockedSpirits = [...new Set([...account.unlockedSpirits || [], run.spirit])];
 		else if (!run.difficulty && !run.difficultyTest) account.spiritUnlocked = true;
@@ -83,6 +87,7 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 	}
 	const detailsRun = { ...run, team, box };
 	const card: RogueClearCard = {
+		...(cooperative ? { cooperative: { ...cooperative } } : {}),
 		version: 2, id: randomUUID(), runId: run.id, owner: run.owner.id, name: run.owner.name,
 		completedAt: Date.now(), public: false, contentVersion: run.contentVersion, rulesVersion: rogueRulesVersion(),
 		snapshot: {
@@ -117,6 +122,7 @@ export function recordClear(account: RogueAccount, run: RogueRun) {
 	};
 	const cards = account.cards ||= [];
 	if (cards.length < 3) cards.push(card);
+	else if (account.pendingClear) (account.pendingClearQueue ||= []).push(card);
 	else account.pendingClear = card;
 }
 export function editClearCard(account: RogueAccount, command: RogueCommand) {
@@ -131,7 +137,8 @@ export function editClearCard(account: RogueAccount, command: RogueCommand) {
 				cards[index] = account.pendingClear;
 			}
 		}
-		delete account.pendingClear;
+		account.pendingClear = account.pendingClearQueue?.shift();
+		if (!account.pendingClearQueue?.length) delete account.pendingClearQueue;
 		return;
 	}
 	const index = cards.findIndex(card => card.id === command.member);

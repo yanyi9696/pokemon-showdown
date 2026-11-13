@@ -19,7 +19,7 @@ export function firstClearSpeciesKey(name: string): string | undefined {
 export function initializeFirstClears(account: RogueAccount) {
 	if (account.firstClearSpecies) return;
 	// Retained old clear cards are evidence, never a reason to grant retrospective duplicate points.
-	account.firstClearSpecies = [...new Set([...account.cards || [],
+	account.firstClearSpecies = [...new Set([...account.cards || [], ...(account.pendingClearQueue || []),
 		...(account.pendingClear ? [account.pendingClear] : [])]
 		.filter(card => card.snapshot.difficulty !== 'easy' && !card.snapshot.difficultyTest)
 		.flatMap(card => card.snapshot.team.filter(mon => !mon.egg).map(mon => firstClearSpeciesKey(mon.set.species)))

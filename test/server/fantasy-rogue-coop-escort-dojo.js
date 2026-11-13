@@ -7,6 +7,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
+const { exclusiveCatalog } = require('../../dist/server/fantasy-rogue/exclusive-items');
 const { Battle } = require('../../dist/sim/battle');
 const { Teams } = require('../../dist/sim/teams');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
@@ -57,6 +58,9 @@ describe('Fantasy Rogue cooperative escort and evolution dojo', () => {
 	function enter(id) {
 		change(s => {
 			const a = s.adventure; a.floor = 61; a.phase = 'area-selection';
+			// Exclusive clues intentionally bypass the normal recent-event filter. This fixture tests other events.
+			for (const m of Object.values(a.members)) m.exclusiveItems = Object.fromEntries(
+				exclusiveCatalog().map(item => [item.id, { obtained: true, since: 1, misses: 0, cooldown: 0 }]));
 			s.areaSelections = { [host.id]: null, [guest.id]: null };
 			a.routeChoices = [{ id: 'trainingroute', name: '共同相遇', kind: 'event', encounters: [], reward: { money: 0, items: {} } }];
 			a.coopEventHistory = Object.keys(EVENT_NAMES).filter(key => key !== id).map(key => ({ id: key, floor: 1 }));
@@ -85,6 +89,35 @@ describe('Fantasy Rogue cooperative escort and evolution dojo', () => {
 		return session().adventure.node.event.coopEscort.owner === host.id ? result.team[0] : result.partnerTeam[0];
 	}
 	function settle(result = outcome()) { created.rogue.onResult(result); }
+	for (const side of ['host', 'guest']) it(`keeps the ${side} escort temporary while the human partner grows`, () => {
+		engine.content.progression = 'mainline7';
+		const owner = side === 'host' ? host : guest, partner = side === 'host' ? guest : host;
+		change(saved => {
+			for (const player of Object.values(saved.adventure.members)) {
+				player.echo = { types: ['Psychic'], guard: true, shiny: 0, catch: 0, systems: [] };
+			}
+		});
+		prepareEscort(owner);
+		assert(created.rogue.state.liveProgression);
+		assert.equal((side === 'host' ? created.rogue.state : created.rogue.state.partner).echo, undefined);
+		assert((side === 'host' ? created.rogue.state.partner : created.rogue.state).echo.guard);
+		const before = session(), ownParty = member(owner).team, account = store.get(owner.id), result = outcome(false);
+		const ids = [...result.team, ...result.partnerTeam].map(mon => mon.id);
+		result.defeated = [{ id: 'escort-defeat', species: 'Blissey', level: 90, captured: false, eligible: ids, participants: ids }];
+		const npc = escortResult(result), originalNPC = structuredClone(npc);
+		npc.hp -= 4; npc.pp[0].pp--;
+		created.rogue.onProgress({ sequence: 1, result });
+		const saved = session(), escort = saved.adventure.node.event.coopEscort.pokemon;
+		assert.deepEqual(member(owner).team, ownParty, 'off-field personal party does not gain NPC training');
+		assert.deepEqual(store.get(owner.id), account, 'temporary Ralts never unlocks personal moves');
+		assert.equal(escort.set.species, 'Ralts'); assert.equal(escort.set.level, originalNPC.set.level);
+		assert.equal(escort.hp, originalNPC.hp - 4); assert.equal(escort.pp[0].pp, originalNPC.pp[0].pp - 1);
+		assert(member(partner).team[0].set.level > before.adventure.members[partner.id].team[0].set.level);
+		const { coopGrowthAcknowledgement } = require('../../dist/server/fantasy-rogue/coop-growth');
+		const ack = coopGrowthAcknowledgement(saved), temporary = side === 'host' ? ack : ack.partner;
+		assert.equal(temporary.team.length, 1); assert.equal(temporary.team[0].id, npc.id);
+		assert.equal(temporary.blessingRoster, undefined);
+	});
 	function battleFromState() {
 		const state = structuredClone(created.rogue.state);
 		return new Battle({ formatid: 'gen9fantasyroguecoop', seed: [1, 2, 3, 4], fantasyRogue: state,
@@ -148,6 +181,12 @@ describe('Fantasy Rogue cooperative escort and evolution dojo', () => {
 			const owner = seat === 'host' ? host : guest;
 			prepareEscort(owner, true); const before = session().adventure.members, battle = battleFromState();
 			try {
+				const partner = owner === host ? guest : host, escort = session().adventure.node.event.coopEscort.pokemon;
+				assert.deepEqual(view(owner).battleTeam.map(mon => mon.id), [escort.id]);
+				assert.deepEqual(view(partner).partnerBattleTeam.map(mon => mon.id), [escort.id]);
+				assert.equal(view(partner).partnerBattleTeam[0].species, 'Ralts');
+				assert.deepEqual(view(owner).team.map(mon => mon.id), before[owner.id].team.map(mon => mon.id));
+				assert.deepEqual(view(partner).partnerTeam.map(mon => mon.id), before[owner.id].team.map(mon => mon.id));
 				assert.equal(battle.turn, 0);
 				assert.equal((owner === host ? battle.p1 : battle.p3).pokemon.length, 1);
 				for (const side of battle.sides) assert(battle.choose(side.id,

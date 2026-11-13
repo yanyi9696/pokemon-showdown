@@ -95,6 +95,24 @@ describe('Fantasy Rogue echo: persistence, clear awards and duplicate system gif
   store.change(user,a=>{a.echo.upgrades.types=[];});
   engine.migrate(user);assert.equal(account().run.echo.types.length,18,'ongoing run snapshot stays fixed');
  });
+	it('converts adaptation back at one to ten with shared unlock guards and exactly-once accounting', () => {
+		seed(2);
+		assert.throws(() => cmd('echo', { value: 'exchangeback' }), /全部升满/);
+		store.change(user, a => { a.points = 0; a.boosts = stats(10); a.slots = 6; });
+		const before = account(), request = { action: 'echo', value: 'exchangeback', id: randomUUID(), revision: before.revision };
+		engine.command(user, request); engine.command(user, request);
+		assert.equal(account().echo.points, 1); assert.equal(account().points, 10);
+		assert.equal(account().echo.earned, before.echo.earned);
+		assert.deepEqual(account().echo.upgrades, before.echo.upgrades);
+		cmd('echo', { value: 'exchange' });
+		assert.equal(account().echo.points, 2); assert.equal(account().points, 0, 'round trip must not create currency');
+		cmd('echo', { value: 'exchangeback' }); cmd('echo', { value: 'exchangeback' });
+		assert.equal(account().points, 20); assert.equal(account().echo.points, 0);
+		const empty = account(); assert.throws(() => cmd('echo', { value: 'exchangeback' }), /需要 1 点/);
+		assert.deepEqual(account(), empty);
+		start(); assert.throws(() => cmd('echo', { value: 'exchangeback' }), /结束或放弃/);
+		assert.equal(echoView(account()).reverseExchangeGain, 10);
+	});
 	it('deduplicates purchases and guards overflow conversion with all old upgrades maxed', () => {
 		seed(20);
 		const request = { action: 'echo', value: 'guard', id: randomUUID(), revision: account().revision };

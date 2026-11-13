@@ -23,7 +23,9 @@ export function rogueSaveCompatibilityIssues(value: unknown): string[] {
 		issues.push('unsupported-save-version');
 	}
 	const cards = Array.isArray(account.cards) ? account.cards : [];
-	const snapshots = [account.run, ...cards.map(card => object(card)?.snapshot), object(account.pendingClear)?.snapshot];
+	const queued = Array.isArray(account.pendingClearQueue) ? account.pendingClearQueue : [];
+	const snapshots = [account.run, ...[...cards, ...queued].map(card => object(card)?.snapshot),
+		object(account.pendingClear)?.snapshot];
 	for (const snapshot of snapshots) {
 		const saved = object(snapshot);
 		for (const member of [...(Array.isArray(saved?.team) ? saved.team : []),

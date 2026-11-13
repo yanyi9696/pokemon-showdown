@@ -30,10 +30,10 @@ const directed = new Set(['normal', 'any', 'adjacentAlly', 'adjacentAllyOrSelf',
 const fainted = (condition: string) => condition === '0 fnt' || condition.endsWith(' fnt');
 
 /** Native target locations for doubles or a single seat of a four-seat multi battle. */
-function targets(type: string, self: number, allyAlive: boolean, foes: number[]) {
+function targets(type: string, self: number, allyAlive: boolean, foes: number[], allowAbsentAlly = false) {
 	if (!directed.has(type)) return [0];
 	const ally = self === -1 ? -2 : -1;
-	if (type === 'adjacentAlly') return allyAlive ? [ally] : [];
+	if (type === 'adjacentAlly') return allyAlive || allowAbsentAlly ? [ally] : [];
 	if (type === 'adjacentAllyOrSelf') return allyAlive ? [self, ally] : [self];
 	if (type === 'adjacentFoe') return foes;
 	// Native "normal" and "any" moves can also target a partner (e.g. justified/weakness-policy setups).
@@ -42,7 +42,7 @@ function targets(type: string, self: number, allyAlive: boolean, foes: number[])
 
 function moveActions(
 	request: PokemonMoveRequestData, slot: number, self: number, item: string,
-	options: DoublesChoiceOptions, allyAlive: boolean,
+	options: DoublesChoiceOptions, allyAlive: boolean, allowAbsentAlly = false,
 ): DoublesAction[] {
 	const used = options.resources || {};
 	const variants: { flag: Transform, resources: DoublesResource[] }[] = [{ flag: '', resources: [] }];
@@ -66,7 +66,7 @@ function moveActions(
 		// Supplying the Dex move's ordinary target here is rejected before LockMove is resolved.
 		const type = currentMax?.target || available.target || '';
 		const add = (flag: Transform, resources: DoublesResource[], targetType: string) => {
-			for (const target of targets(targetType, self, allyAlive, options.foes ?? [1, 2])) {
+			for (const target of targets(targetType, self, allyAlive, options.foes ?? [1, 2], allowAbsentAlly)) {
 				result.push({ slot, kind: 'move', move: available.id, target, transform: flag, resources,
 					command: `move ${index + 1}${target ? ` ${target}` : ''}${flag ? ` ${flag}` : ''}` });
 			}
@@ -147,6 +147,12 @@ export function enumerateDoublesChoices(request: ChoiceRequest, options: Doubles
 		const allyAlive = options.allyAlive ?? !!(ally && !fainted(ally.condition));
 		const choices = moveActions(active, slot, self, mon.item, options, allyAlive);
 		if (!active.trapped && options.allowSwitch !== false) choices.push(...bench.map(reserve => change(slot, reserve)));
+		// The native engine still requires a move when only ally support has PP and the ally is gone.
+		// Preserve that legal, inevitably failing move only if no useful move or permitted switch exists.
+		// Do not manufacture Struggle: remaining support PP prevents it under the battle rules.
+		if (!choices.length && !allyAlive) {
+			choices.push(...moveActions(active, slot, self, mon.item, options, allyAlive, true));
+		}
 		groups.push(choices);
 	}
 	let result = combineDoublesActions(groups);

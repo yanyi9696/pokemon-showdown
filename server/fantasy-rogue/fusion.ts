@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { fusionArtwork } from '../../sim/rogue-fusion-art';
 import { Dex, toID } from '../../sim/dex';
 import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rules';
 import { roguePartyLimit } from '../../sim/fantasy-rogue-spirits';
@@ -55,7 +56,10 @@ export function editFusion(run: RogueRun, command: RogueCommand) {
 		requireRule(!first.formFusion && !second.formFusion, '请先使用专属道具解除合体。');
 		const ability = toID(command.fusionAbility);
 		requireRule([...fusionAbilities(first, run), ...fusionAbilities(second, run)].includes(ability), '请选择这两位伙伴已有的特性。');
-		requireRule(command.appearance === first.id || command.appearance === second.id, '请选择一位伙伴的外观。');
+		const art = fusionArtwork(first.set.species, second.set.species);
+		requireRule(command.appearance === first.id || command.appearance === second.id ||
+			command.appearance === 'fusion' && art,
+			'没有可用的融合立绘，请选择第一位或第二位伙伴的外观。');
 		initializeExperience(first); initializeExperience(second);
 		const a = dex.species.get(first.set.species), b = dex.species.get(second.set.species);
 		const keys = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
@@ -72,6 +76,7 @@ export function editFusion(run: RogueRun, command: RogueCommand) {
 		const level = Math.max(first.set.level, second.set.level);
 		fused.fusion = { first: structuredClone(first), second: structuredClone(second), baseStats, types, moves,
 			experienceStart: experienceAtLevel(rogueSpeciesData(first.set.species).growth, level) };
+		if (command.appearance === 'fusion' && art) fused.fusion.sprite = art.sprite;
 		// Keep experience on the first partner's growth curve, regardless of the selected appearance.
 		fused.set.species = command.appearance === second.id ? second.set.species : first.set.species;
 		fused.set.name = fused.set.species;

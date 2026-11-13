@@ -132,6 +132,11 @@ export function emergencyChoice(
 		const attackStat = (category: string) => category === 'Physical' ? 'atk' : 'spa';
 		const strongest = Math.max(own.stats.atk * boost(own.boosts.atk), own.stats.spa * boost(own.boosts.spa));
 		const foeSide = memory.sides[side === 'p1' ? 'p2' : 'p1'];
+		// Delayed attacks occupy the opposing slot through the end of turn +2.
+		// Public move evidence survives both users switching; failed repeats do not restart it.
+		const futurePending = memory.moveEvidence?.some(action =>
+			action.user.startsWith(`${side}:`) && ['futuresight', 'doomdesire'].includes(action.move) &&
+			!action.failed && !action.missed && memory.turn <= action.turn + 2);
 		const species = dex.species.get(foe.species);
 		const estimateStat = (stat: 'hp' | 'def' | 'spd' | 'spe') => Math.floor((2 * species.baseStats[stat] + 31) * foe.level / 100) +
 			(stat === 'hp' ? foe.level + 10 : 5);
@@ -140,6 +145,12 @@ export function emergencyChoice(
 			const [kind, slot, event] = choice.split(' ');
 			const move = dex.moves.get(activeRequests[0].moves[Number(slot) - 1]?.id);
 			if (kind !== 'move' || !move.exists) return -100;
+			if (enhancedMoves && event !== 'zmove') {
+				if (move.id === 'yawn' && foe.status) return -90;
+				if (move.flags.futuremove && futurePending) return -90;
+				if (move.id === 'lastresort' && (own.moves.length < 2 ||
+					own.moves.some(id => id !== 'lastresort' && !active?.usedMoves?.includes(id)))) return -90;
+			}
 			if (enhancedMoves && ['snore', 'sleeptalk'].includes(move.id) && own.status !== 'slp') return -90;
 			if (enhancedMoves && own.status === 'slp' && !move.sleepUsable) return -90;
 			if (move.id === 'fakeout' && (active?.activeMoveActions || 0) > 0) return -90;

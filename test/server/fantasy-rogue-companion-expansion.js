@@ -34,7 +34,7 @@ describe('Fantasy Rogue new companion roles, gifts and independent Z moves', fun
 	}
 	function assign(run, index = 0) {
 		const id = run.blessings.companions[0].id;
-		c.companionCommand(run, { member: id, value: 'z:' + run.team[index].id }, () => 0, []);
+		c.companionCommand(run, { member: id, value: 'z:' + run.team[index].id }, content(), () => 0, []);
 	}
 	function begin(run, foes = [set('Blissey', 'Natural Cure', 100, ['Splash'])], doubles = false) {
 		const format = new Format({ ...Dex.formats.get('gen9fantasyrogue'), gameType: doubles ? 'doubles' : 'singles' });
@@ -82,13 +82,13 @@ describe('Fantasy Rogue new companion roles, gifts and independent Z moves', fun
 		const run = party('iono', [set('Pikachu')]); run.phase = 'event';
 		run.node = { kind: 'trainer', event: { id: 'police', key: 'police' } };
 		const options = [{ id: 'home', name: '前往帕底亚', region: 'paldea' }, { id: 'fight', name: '发起对战' }];
-		c.companionCommand(run, { member: 'iono', value: 'advice' }, () => 0, options);
+		c.companionCommand(run, { member: 'iono', value: 'advice' }, content(), () => 0, options);
 		assert.equal(c.companionView(run, options)[0].recommended, 'home');
 		c.recordCompanionPreference(run, options, 'home', () => 0);
 		assert.equal(run.blessings.companions[0].preferences, 1);
 		run.phase = 'choose'; delete run.node;
 		run.choices = [{ id: 'wild', name: '海岸', kind: 'wild' }, { id: 'reward', name: '补给', kind: 'reward' }];
-		c.companionCommand(run, { member: 'iono', value: 'advice' }, () => 0, []);
+		c.companionCommand(run, { member: 'iono', value: 'advice' }, content(), () => 0, []);
 		assert.equal(c.companionView(run)[0].recommended, 'wild');
 		c.recordCompanionPreference(run, [], 'wild', () => 0); run.phase = 'ready';
 		assert(c.companionView(run)[0].smile);
@@ -188,7 +188,7 @@ describe('Fantasy Rogue new companion roles, gifts and independent Z moves', fun
 			store.change(user, a => {
 				const next = party('marnie', [set('Umbreon', 'Synchronize', 30, ['Snarl'])]); assign(next);
 				a.run.blessings = next.blessings; a.run.team = next.team;
-				c.companionCommand(a.run, { member: 'marnie', value: 'ability:darkaura' }, () => 0, []);
+				c.companionCommand(a.run, { member: 'marnie', value: 'ability:darkaura' }, content(), () => 0, []);
 			});
 			cmd('battle');
 			const state = engine.battleState(user); assert(state.blessings.companionZ);

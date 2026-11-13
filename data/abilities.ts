@@ -1774,7 +1774,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		onResidual(pokemon) {
 			if (this.field.isWeather(['sunnyday', 'desolateland']) || this.randomChance(1, 2)) {
 				if (pokemon.hp && !pokemon.item && this.dex.items.get(pokemon.lastItem).isBerry) {
-					pokemon.setItem(pokemon.lastItem);
+					pokemon.setRogueRecoveredItem(pokemon.lastItem);
 					pokemon.lastItem = '';
 					this.add('-item', pokemon, pokemon.getItem(), '[from] ability: Harvest');
 				}
@@ -3228,7 +3228,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 			const item = randomTarget.lastItem;
 			randomTarget.lastItem = '';
 			this.add('-item', pokemon, this.dex.items.get(item), '[from] ability: Pickup');
-			pokemon.setItem(item);
+			pokemon.setRogueRecoveredItem(item, randomTarget);
 		},
 		flags: {},
 		name: "Pickup",

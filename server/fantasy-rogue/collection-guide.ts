@@ -1,0 +1,21 @@
+import { CRATE_RULES } from './starter-crates';
+
+/** Kept shared with the codex introduction, so rates cannot drift between the two guides. */
+export const CRATE_GUIDE = [
+	{ title: '开箱与重复伙伴', text:
+		`在开始页的局外成长打开“宝可梦开箱”，单次 **${CRATE_RULES.cost} 点**，十连 **${CRATE_RULES.cost * 10} 点**；有免费次数时优先抵扣。` +
+		'冒险进行中也可以返回开始页开箱、兑换，不必放弃本局；开箱入口不放在局内长页面。产出为初始形态，' +
+		'新伙伴六项个体值至少 **15**，性格与特性随机，直接解锁以后的初始携带资格，不会加入当前队伍。' +
+		'重复开箱使已解锁的六项个体值上限各 **+1，最高31**；已全部31时返还 **2成长点**。已有更好资质与招式不会被覆盖。' },
+	{ title: '定向、传说和闪光保底', text:
+		`保底前每抽传说基础概率 **${CRATE_RULES.legendaryPerMillion / 10000}%**，闪光基础概率 **${CRATE_RULES.shinyPerMillion / 10000}%**，闪光还可受自己的崩坏回响加点影响。` +
+		`世代／属性定向一次只能选一种，每累计 **${CRATE_RULES.targetPity} 抽**保证符合当前定向；最多 **${CRATE_RULES.legendaryPity} 抽**必得传说，` +
+		`最多 **${CRATE_RULES.targetedLegendaryPity} 抽**保证当前世代／属性定向传说，提前抽到对应传说重置相应计数。` +
+		`选择**闪光定向**时，另有独立的 **${CRATE_RULES.shinyTargetPity} 抽必闪**计数，只有选择闪光时才累计；期间出闪重置它，切走暂停、切回保留。` +
+		'闪光定向不提高自然概率、不保证指定物种，90抽传说保底仍保留；切换定向不清空其他保底进度。' +
+		'普通传说为金色背景，普通闪光为紫色，传说闪光为彩色。' },
+	{ title: '每周兑换与每日竞猜', text:
+		`每抽积累 **1点定向开箱点**，每周两位传说伙伴各需 **${CRATE_RULES.exchangeCost}点**兑换；全名单轮完才重复，每周一北京时间零点换新。` +
+		'兑换不影响开箱保底，也不享受重复开箱的个体值+1或满资质返点。' +
+		'每日竞猜先选两场胜者，再从中选冠军；当天提交后不能修改。次日可看三场回放和结果，**三场全中获得1次免费开箱**，只发一次。' },
+];

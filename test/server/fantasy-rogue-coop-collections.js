@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert').strict;
+const crypto = require('crypto');
 const { randomUUID } = require('crypto');
 const { makeUser } = require('../users-utils');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
@@ -15,7 +16,7 @@ const { stonePrice, collectionView, chooseCollection } = require('../../dist/ser
 const { grantCompanion } = require('../../dist/server/fantasy-rogue/companions');
 const { normalizeBlessings } = require('../../dist/server/fantasy-rogue/blessings');
 const { neededExclusiveItems } = require('../../dist/server/fantasy-rogue/exclusive-items');
-const { content, set, stats } = require('../fixtures/fantasy-rogue');
+const { content, set, stats, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op stones and feather collection', () => {
 	let previous, store, engine, manager, host, guest, serial = 0;
@@ -61,7 +62,9 @@ describe('Fantasy Rogue co-op stones and feather collection', () => {
 			a.routeChoices = [{ id: 'collection', kind: 'event', name: '共同事件', encounters: [], reward: { money: 0, items: {} } }];
 			a.coopEventHistory = Object.keys(EVENT_NAMES).filter(name => name !== id).map(name => ({ id: name, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'collection' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'collection' });
+		});
 		return view(host).coopEvent;
 	}
 	function request(user, value, action = 'eventchoice') { return { action, value, visit: view(user).coopEvent.key }; }
@@ -121,6 +124,31 @@ describe('Fantasy Rogue co-op stones and feather collection', () => {
 		assert.deepEqual([store.get(host.id), store.get(guest.id)], accounts);
 		agree('stonefinish'); const final = session();
 		assert.throws(() => choose(host, value), /变化/); assert.deepEqual(session(), final);
+	});
+	it('persists Mew stone prizes only for the payer, rolls back a failed write and fences replay after reconnect', () => {
+		enter('stones');
+		change(shared => { shared.spirit = shared.adventure.spirit = 'hoopagift'; shared.adventure.spiritVersion = 1; });
+		engine.content.items = [{ id: 'leftovers', name: '吃剩的东西', kind: 'held', price: 1000, shopFloor: 1 }];
+		const value = `stone:${guest.id}:5`; choose(host, value);
+		const command = request(guest, value), saved = session(), accounts = [store.get(host.id), store.get(guest.id)];
+		const original = crypto.randomInt; crypto.randomInt = max => max === 100 ? 50 : 0;
+		store.db.exec("CREATE TEMP TRIGGER mew_stone_fail BEFORE UPDATE ON rogue_coop_sessions BEGIN SELECT RAISE(ABORT, 'stone conversion failed'); END;");
+		try {
+			assert.throws(() => manager.coop.command(guest, command), /stone conversion failed/);
+			assert.deepEqual(session(), saved); assert.deepEqual([store.get(host.id), store.get(guest.id)], accounts);
+			store.db.exec('DROP TRIGGER mew_stone_fail');
+			manager.coop.command(guest, command);
+			assert.equal(member(guest).bag.fantasypowerlens, 5); assert(!member(host).bag.fantasypowerlens);
+			assert.deepEqual(Object.keys(member(guest).spiritConversions),
+				Array.from({ length: 5 }, (_, i) => `stone:81:${i}`));
+			assert(!member(host).spiritConversions);
+			assert.equal(member(guest).money, saved.adventure.members[guest.id].money - stonePrice(81) * 5);
+			assert.equal(member(host).money, saved.adventure.members[host.id].money);
+			assert.equal(view(guest).lastReward.items.fantasypowerlens, 5);
+			assert.deepEqual([store.get(host.id), store.get(guest.id)], accounts);
+			const settled = session(); manager = new RogueManager(engine);
+			assert.throws(() => manager.coop.command(guest, command), /进度已变化/); assert.deepEqual(session(), settled);
+		} finally { crypto.randomInt = original; }
 	});
 	it('uses exactly the native empty, ordinary and premium stone results without rolling for the other player', () => {
 		enter('stones'); const runs = entries(), solo = structuredClone(runs[1].run);

@@ -27,7 +27,8 @@ export function companionZCandidates(effects: BlessingEffects, team: RoguePokemo
 export function companionZRequest(mon: Pokemon | null | undefined) {
 	if (!mon?.hp || !mon.isActive || mon.volatiles.dynamax || mon.getLockedMove()) return;
 	const state = mon.battle.fantasyRogue;
-	const effects = mon.side.id === 'p1' ? state?.blessings : state?.duel?.blessings;
+	const effects = mon.side.id === 'p1' ? state?.blessings : mon.side.id === 'p2' ? state?.duel?.blessings :
+		mon.side.id === 'p3' ? state?.partner?.blessings : undefined;
 	const grant = effects?.companionZ;
 	if (!grant || grant.member !== mon.set.fantasyRogueId || state?.companionZUsed?.[mon.side.id] ||
 		!state?.duel && grant.spent || !effects?.companions?.some(c => c.id === grant.companion)) return;
@@ -51,7 +52,7 @@ export function chooseCompanionZ(player: Side, target = '1') {
 /** Called after BeforeMove, so sleep, flinching and full paralysis do not spend the opportunity. */
 export function spendCompanionZ(mon: Pokemon, move: ActiveMove, target: Pokemon) {
 	const def = companionZRequest(mon);
-	if (!def || def.move !== move.id || !mon.deductPP(def.base)) return false;
+	if (def?.move !== move.id || !mon.deductPP(def.base)) return false;
 	(mon.battle.fantasyRogue!.companionZUsed ||= {})[mon.side.id] = true;
 	mon.moveUsed(move, mon.getLocOf(target));
 	mon.battle.add('-message', `${def.source}${def.name}！本场已使用同行额外 Z，不占常规 Z 次数。`);

@@ -9,7 +9,7 @@ const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { eventCost } = require('../../dist/server/fantasy-rogue/early-balance');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op room event and shared follow-up choices', () => {
 	let oldConfig, store, engine, manager, host, guest, created, items;
@@ -68,7 +68,9 @@ describe('Fantasy Rogue co-op room event and shared follow-up choices', () => {
 				state.team[0].hp -= 1;
 			}
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'roomroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'roomroute' });
+		});
 		assert.equal(event(host).id, 'room');
 	}
 	function fight() {

@@ -18,6 +18,8 @@ export type RobeKind = 'godrobe' | 'puregodrobe';
 export function robeMember(team: RoguePokemon[], effects: BlessingEffects | undefined, kind: RobeKind) {
 	const owned = effects?.owned.find(b => b.family === kind);
 	if (!owned) return;
+	const chosen = effects?.partyRoles?.robes[kind];
+	if (chosen !== undefined) return team.find(mon => mon.id === chosen);
 	const transfer = kind === 'godrobe' ? 'yveltal' : 'reshiram';
 	const bases = owned.target ? [transfer] : kind === 'godrobe' ? ['zangoose'] : ['espurr', 'meowstic'];
 	const sum = (v: Partial<StatsTable>) => Object.values(v || {}).reduce((n, x) => n + (x || 0), 0);

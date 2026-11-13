@@ -148,32 +148,32 @@ describe('Fantasy Rogue continuous encounters and exclusive equipment', function
 			assert(Object.values(mon.evs).reduce((a, b) => a + b, 0) <= 256);
 		}
 		assert.equal(run.node.encounters[0].catchable, false); assert(run.node.event.committed);
-		settleExclusiveEvent(run, false); assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 0);
+		settleExclusiveEvent(run, createPreviewContent(), () => 0, false); assert.equal(exclusiveEncounterChance(run, 'shadowbottle'), 0);
 		run.floor += 8; assert(exclusiveEncounterChance(run, 'shadowbottle') > 60);
-		assert(beginExclusiveEncounter(run, () => 0)); settleExclusiveEvent(run, true);
+		assert(beginExclusiveEncounter(run, () => 0)); settleExclusiveEvent(run, createPreviewContent(), () => 0, true);
 		assert.equal(run.bag.shadowbottle, 1); assert.equal(neededExclusiveItems(run).length, 0);
 		delete run.bag.shadowbottle; assert.equal(neededExclusiveItems(run).length, 0, 'one acquisition per run even after use');
 	});
 	it('commits clue choices, keeps the answer across reloads and makes the third wrong guess elite', () => {
 		const run = runFor('Lugia-Fantasy'); beginExclusiveClue(run, () => 0);
 		assert(exclusiveEventView(run).options.some(o => o.id === 'leave'));
-		chooseExclusiveEvent(run, 'investigate', () => 0);
+		chooseExclusiveEvent(run, createPreviewContent(), 'investigate', () => 0);
 		assert(!exclusiveEventView(run).options.some(o => o.id === 'leave'));
 		for (const i of [1, 2, 3]) {
-			chooseExclusiveEvent(run, `site:${i}`, () => 0);
+			chooseExclusiveEvent(run, createPreviewContent(), `site:${i}`, () => 0);
 			assert.equal(run.node.event.exclusive.battleElite, i === 3);
 			assert.equal(run.node.encounters[0].catchable, true);
-			settleExclusiveEvent(run, true);
+			settleExclusiveEvent(run, createPreviewContent(), () => 0, true);
 			assert.equal(run.node.event.stage, 'choice');
 			assert.equal(JSON.parse(JSON.stringify(run)).node.event.exclusive.answer, 0);
 			assert(!exclusiveEventView(run).options.some(o => o.id === `site:${i}`));
 		}
-		chooseExclusiveEvent(run, 'site:0', () => 0); assert.equal(run.bag.shadowbottle, 1);
+		chooseExclusiveEvent(run, createPreviewContent(), 'site:0', () => 0); assert.equal(run.bag.shadowbottle, 1);
 		assert.equal(run.node.event.stage, 'result');
 	});
 	it('can find the clue reward at the first location without a battle', () => {
 		const run = runFor('Marowak'); beginExclusiveClue(run, () => 0);
-		chooseExclusiveEvent(run, 'investigate', () => 0); chooseExclusiveEvent(run, 'site:0', () => 0);
+		chooseExclusiveEvent(run, createPreviewContent(), 'investigate', () => 0); chooseExclusiveEvent(run, createPreviewContent(), 'site:0', () => 0);
 		assert.equal(run.bag.thickclub, 1); assert.equal(run.node.encounters.length, 0);
 	});
 	it('applies and removes held formes without turning ordinary forms into Fantasy or auto-Mega', () => {
@@ -204,6 +204,24 @@ describe('Fantasy Rogue tutor and auction save transactions', function () {
 			beginAuction(a.run, content, () => 0);
 		});
 	}
+	it('persists a native single-player auction conversion, price and actual reward after reload', () => {
+		auction();
+		store.change('expansiontester', a => {
+			a.run.spirit = 'hoopagift'; a.run.spiritVersion = 1;
+			const lot = a.run.auction.lots[0];
+			Object.assign(lot, { item: { id: 'lightball', name: '电气球', kind: 'held', price: 3000 },
+				opening: 3000, willingness: [0, 0, 0] });
+			a.run.auction.lots = [lot];
+		});
+		const before = account().run.money;
+		choose('enter'); choose('bid');
+		assert.equal(account().run.money, before - 3000);
+		assert.equal(account().run.bag.fantasypowerlens, 1); assert(!account().run.bag.lightball);
+		assert.equal(account().run.spiritConversions['auction:100:0'], 'fantasypowerlens');
+		assert.deepEqual(account().run.lastReward.items, { fantasypowerlens: 1 });
+		const saved = account(); engine = new RogueEngine(store, content, () => { throw new Error('Auction rerolled'); });
+		assert.throws(() => choose('bid')); assert.deepEqual(account(), saved);
+	});
 	it('pays the exclusive encounter prize only on victory and never again when continuing', () => {
 		for (const won of [false, true]) {
 			store.change('expansiontester', a => {

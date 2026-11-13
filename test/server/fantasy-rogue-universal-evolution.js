@@ -66,6 +66,9 @@ describe('Fantasy Rogue universal evolution', () => {
 			assert.equal(mon.m.rogueUniversalKind, kind); assert.equal(mon.species.name, 'Mew');
 			assert.equal(mon.ability, 'intimidate'); assert.equal(foe.boosts.atk, -3);
 			assert.equal(mon.species.baseStats.atk, 100 + bonuses[item].atk);
+			const publicStats = battle.log.filter(line => line.startsWith('|-start|p3b:') && line.includes('|roguebasestats|')).at(-1);
+			assert(publicStats, 'configured universal evolution publishes guest base stats');
+			assert.equal(publicStats.split('|')[4], ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].map(stat => 100 + bonuses[item][stat]).join('/'));
 			assert.equal(mon.maxhp, hp + (kind === 'gmega' ? 40 : 0));
 			assert.equal(mon.hp, mon.maxhp); assert.equal(mon.takeItem(foe), false);
 			assert(battle.fantasyRogue.evolutionUses.p3[kind]);

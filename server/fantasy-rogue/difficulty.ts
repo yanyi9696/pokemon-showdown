@@ -100,13 +100,14 @@ export function clearDifficulty(account: RogueAccount, run: RogueRun) {
 		`${tier === 'easy' ? '本次不获得局外成长点。' : '通关与本档故事均完成后，可解锁下一档。'}`);
 }
 /** Apply a co-op 200-floor clear to personal eligibility without creating or changing story progress. */
-export function clearCoopDifficulty(account: RogueAccount, tier: RogueRun['difficulty']) {
+export function clearCoopDifficulty(account: RogueAccount, tier: RogueRun['difficulty'], spirit?: string) {
 	migrateDifficulty(account);
 	const key = String(tier || 0), progress = account.difficulties!;
 	if (!progress.spirits.includes(key)) {
 		progress.spirits.push(key);
 	}
 	if (!progress.cleared.includes(key)) progress.cleared.push(key);
+	if (spirit) rememberSpiritClear(account, spirit, tier ?? 0, true);
 	migrateSpiritProgress(account);
 	// Co-op excludes the mainline, so only evaluate story requirements that already exist on this account.
 	if (account.mainline) unlockStoryDifficulty(account);

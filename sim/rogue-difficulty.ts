@@ -56,7 +56,7 @@ export const CHARM_DESCRIPTION = '本局为新手简易档。敌方六项能力�
 	'我方六项能力由第 1 层的 **98%** 逐渐降至第 200 层的 **90%**。\n\n' +
 	'遇到的宝可梦个体值约 10，六项独立随机，**不会遇到任何单项个体值超过 15 的宝可梦**；' +
 	'本局伙伴、首领与个体值培养也以 **15 为上限**。\n\n' + CHARM_PROGRESS_NOTICE + '\n\n' +
-	'通关解锁简易档塔灵，通关卡标记“护符庇佑”。';
+	'通关后，所有已解锁档位均可开启随机塔灵；使用塔灵通关后，只可在该档及以下指定它。通关卡标记“护符庇佑”。';
 export function difficultyDescription(tier: RogueDifficulty) {
 	if (tier === 'easy') return CHARM_DESCRIPTION;
 	if (!tier) return qualityDescription(tier) + '任意档位通关 200 层后，全局开放随机塔灵；完成本档故事并曾通关本档后，解锁 1 档。';

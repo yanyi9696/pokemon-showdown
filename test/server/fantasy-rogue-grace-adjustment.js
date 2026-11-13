@@ -2,6 +2,7 @@
 const assert = require('assert').strict;
 const { Battle } = require('../../dist/sim/battle');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
+const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
@@ -14,8 +15,11 @@ const { set, stats } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue grace-period adjustments', function () {
 	this.timeout(30000);
-	let battle;
-	afterEach(() => { battle?.destroy(); battle = undefined; });
+	let battle, store;
+	afterEach(() => {
+		battle?.destroy(); battle = undefined;
+		store?.close(); store = undefined;
+	});
 	function party(ids = [], floor = 70) {
 		return { id: 'adjustment', floor, phase: 'ready', boosts: stats(0), money: 0, bag: {}, notices: [],
 			team: [createRoguePokemon(set('Mew', 'Synchronize', 50, ['Splash', 'Self-Destruct']), stats(0)),
@@ -106,7 +110,7 @@ describe('Fantasy Rogue grace-period adjustments', function () {
 	});
 	it('plans every future boss once, without recording unplayed victories or duplicate gym leaders', () => {
 		const config = createPreviewContent(), run = party(['futuresight'], 1);
-		const engine = new RogueEngine({}, config, () => 0);
+		const engine = new RogueEngine(store = new RogueStore(':memory:'), config, () => 0);
 		engine.prepareFutureSight(run);
 		const floors = Object.keys(config.floors).map(Number).filter(f => f > 1 && config.floors[f].some(n => n.kind === 'boss'));
 		assert.deepEqual(Object.keys(run.bossPreviews).map(Number), floors);
@@ -170,7 +174,7 @@ describe('Fantasy Rogue grace-period adjustments', function () {
 	});
 	it('grants one Oppenheimer potion per completed battle area and none for other areas', () => {
 		const config = require('../fixtures/fantasy-rogue').content();
-		const engine = new RogueEngine({}, config, () => 99);
+		const engine = new RogueEngine(store = new RogueStore(':memory:'), config, () => 99);
 		engine.advanceCompletedFloor = () => {};
 		for (const floor of [5, 70, 110]) for (const kind of ['wild', 'trainer', 'elite', 'event', 'boss', 'rest']) {
 			const run = party(['companionlysandre'], floor);

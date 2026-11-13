@@ -30,8 +30,10 @@ export function numberStatMultiplier(mon: Pokemon, stat: StatIDExceptHP) {
 	return boost?.turn === mon.battle.turn && (boost.stat === 'all' || boost.stat === stat) ? boost.factor : 1;
 }
 export function recordNumberThreshold(mon: Pokemon) {
-	const boost = mon.m.rogueNumber, progress = mon.battle.fantasyRogue?.blessingProgress;
-	if (!progress || mon.side.id !== 'p1' || boost?.turn !== mon.battle.turn || !mon.hp) return;
+	const boost = mon.m.rogueNumber, state = mon.battle.fantasyRogue;
+	const progress = mon.side.id === 'p1' ? state?.blessingProgress :
+		mon.side.id === 'p3' && state?.partner ? state.partnerBlessingProgress : undefined;
+	if (!progress || boost?.turn !== mon.battle.turn || !mon.hp) return;
 	// Inspect actual neutral-context stats, like the private stat tooltip. Direct getStat(atk/spa)
 	// has no move context and crashes abilities such as Overgrow; move-specific damage is not a stat.
 	const snapshot = rogueStatSnapshot(mon);

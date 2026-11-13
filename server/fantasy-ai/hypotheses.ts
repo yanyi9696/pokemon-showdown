@@ -44,6 +44,7 @@ export interface Combatant {
 	lastMove?: string;
 	moveUses?: Record<string, number>;
 	activeMoveActions?: number;
+	usedMoves?: string[];
 	moveLocks?: { encore?: string, disable?: string };
 }
 export interface OpponentHypothesis extends Combatant {
@@ -214,6 +215,7 @@ export class HypothesisBuilder {
 					fantasy: seen.fantasy && structuredClone(seen.fantasy),
 					substituteHP: seen.substituteHP && { ...seen.substituteHP }, protectCounter: seen.protection?.counter,
 					lastMove: seen.lastMove, moveUses: { ...seen.moveUses }, activeMoveActions: seen.activeMoveActions,
+					usedMoves: seen.usedMoves?.slice(),
 					moveLocks: this.moveLocks(seen),
 					probability: (illusion ? 0.25 : 1) * (!snapshot && defensiveEvidence ? (variant ? 1.4 : 0.45) : 1),
 					source: snapshot ? 'initial' : 'prior', identity: illusion ? 'illusion' : 'visible',
@@ -373,6 +375,7 @@ export class HypothesisBuilder {
 			protectCounter: mon.active ? seen?.protection?.counter : undefined,
 			lastMove: mon.active ? seen?.lastMove : undefined, moveUses: { ...seen?.moveUses },
 			activeMoveActions: mon.active ? seen?.activeMoveActions : 0,
+			usedMoves: mon.active ? seen?.usedMoves?.slice() : [],
 			moveLocks: mon.active ? this.moveLocks(seen) : undefined,
 		};
 	}

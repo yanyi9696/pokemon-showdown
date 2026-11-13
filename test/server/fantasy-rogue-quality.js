@@ -75,7 +75,8 @@ describe('Fantasy Rogue capture quality and signature item access', function () 
   const r=run();r.team=[createRoguePokemon(set('Cubone','Rock Head'),stats(0))];
   assert(neededExclusiveItems(r).some(i=>i.id==='thickclub'));assert.equal(exclusiveEncounterChance(r,'thickclub'),35);
   const seen=[];for(let n=0;n<4;n++){const id=chooseEvent(r,max=>max-1);seen.push(id);(r.eventHistory||=[]).push({id,floor:r.floor});r.floor++;if(id==='exclusiveclue')break;}
-  assert(seen.includes('exclusiveclue'));assert(grantExclusiveItem(r,'thickclub'));delete r.bag.thickclub;
+		assert(seen.includes('exclusiveclue'));
+		assert(grantExclusiveItem(r, 'thickclub', createPreviewContent(), () => 0)); delete r.bag.thickclub;
   assert(!neededExclusiveItems(r).some(i=>i.id==='thickclub'));assert.equal(exclusiveEncounterChance(r,'thickclub'),0);
  });
  it('covers every usable species-specific item and form artifact without duplicates or missing inventory actions', () => {

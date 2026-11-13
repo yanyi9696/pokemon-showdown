@@ -1,3 +1,4 @@
+import { TOTEM_CHALLENGES } from './challenge-totems';
 import { NEW_CHALLENGES } from './challenge-rosters';
 import { SERIOUS_CHALLENGES } from './challenge-sparring';
 /** Tower adaptations of familiar Pokémon places and trainers; not reenactments of canonical events. */
@@ -7,6 +8,7 @@ export interface OptionalChallengeDefinition {
 	id: string; name: string; kind: 'event' | 'trainer'; from: number; through: number;
 	/** Relative weight inside the challenge pool; no influence on whether the route appears. */
 	weight?: number; starLesson?: boolean;
+	totem?: { species: string, boosts: SparseBoostsTable };
 	/** Portraits are also used before battle; companions are invited only after the one-time prize claim. */
 	portraits?: string[]; companions?: string[]; serious?: boolean;
 	speaker: string; opponent?: string; avatar: string; hint: string; opening: string[]; victory: string; retreat: string;
@@ -159,7 +161,7 @@ export const OPTIONAL_CHALLENGES: OptionalChallengeDefinition[] = [
 			['Mamoswine', 'Thick Fat', 'Never-Melt Ice', ['earthquake', 'iciclecrash', 'iceshard', 'knockoff']],
 		],
 	},
-	...NEW_CHALLENGES, ...SERIOUS_CHALLENGES,
+	...NEW_CHALLENGES, ...SERIOUS_CHALLENGES, ...TOTEM_CHALLENGES,
 ];
 
 /** Read-only story branches; replaying a challenge cannot start combat or grant prizes. */

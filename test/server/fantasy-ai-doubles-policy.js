@@ -43,6 +43,21 @@ describe('Fantasy Rogue doubles joint policy', () => {
 	function score(observation, choice) {
 		return rankDoublesChoices(observation, 'gen9fantasy', []).find(entry => entry.choice === choice);
 	}
+	it('does not resurrect an eaten berry from its subsequent healing attribution, while explicit restoration works', () => {
+		const observation = observe([mon('Amoonguss', ['Pollen Puff', 'Spore']), mon('Magikarp', ['Splash'])],
+			[mon('Amoonguss', ['Pollen Puff'], 'Sitrus Berry'), mon('Magikarp', ['Splash'])]);
+		const before = observation.publicLog.slice();
+		const ranked = extra => rankDoublesChoices({ ...observation, publicLog: [...before, ...extra] }, 'gen9fantasy', [], false);
+		const end = '|-enditem|p1a: Amoonguss|Sitrus Berry|[eat]';
+		const health = '|-sethp|p1a: Amoonguss|54/100';
+		const heal = '|-heal|p1a: Amoonguss|54/100|[from] item: Sitrus Berry';
+		assert.deepEqual(ranked([end, heal]), ranked([end, health]));
+		const held = ranked(['|-item|p1a: Amoonguss|Sitrus Berry', health]);
+		assert.deepEqual(ranked([end, heal, '|-item|p1a: Amoonguss|Sitrus Berry|[from] ability: Harvest']), held);
+		assert.deepEqual(ranked([end, heal, '|replace|p1a: Amoonguss|Amoonguss, L50|54/100']), ranked([end, health]));
+		assert.deepEqual(ranked(['|-heal|p1a: Amoonguss|54/100|[from] item: Leftovers']),
+			ranked(['|-item|p1a: Amoonguss|Leftovers', health]));
+	});
 
 	it('scores terrain-expanded native targets and reports projection failures separately from legal fallback', () => {
 		const observation = observe(

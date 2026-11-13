@@ -21,6 +21,21 @@ function run(floor = 1) {
 }
 describe('Fantasy Rogue journey history, relationships and special supplies', function () {
  this.timeout(20000);
+	it('keeps the entry dialog, codex and full guide aligned with live spirit and crate rules', () => {
+		const { COOP_GUIDE } = require('../../dist/server/fantasy-rogue/coop-guide');
+		const { CRATE_GUIDE } = require('../../dist/server/fantasy-rogue/collection-guide');
+		const { activeRogueSpirits } = require('../../dist/sim/fantasy-rogue-spirits');
+		const { rogueCodex } = require('../../dist/server/fantasy-rogue/codex');
+		const { guide } = rogueCodex(undefined, 'guide', true);
+		assert.deepEqual(guide.beginner, BEGINNER_GUIDE);
+		for (const section of [...COOP_GUIDE, ...CRATE_GUIDE]) {
+			assert.deepEqual(BEGINNER_GUIDE.find(entry => entry.title === section.title), section);
+		}
+		for (const section of CRATE_GUIDE) assert.deepEqual(guide.intro.find(entry => entry.title === section.title), section);
+		for (const spirit of activeRogueSpirits()) {
+			assert.equal(BEGINNER_GUIDE.find(entry => entry.title === spirit.name)?.text, spirit.text);
+		}
+	});
  it('archives abandonment, all observed blessings and departed battle members once, privately', () => {
   const store = new RogueStore(':memory:');
   try {

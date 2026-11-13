@@ -8,6 +8,7 @@ const { AIChallengeManager } = require('../../dist/server/fantasy-ai/manager');
 const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine, createRoguePokemon } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
+const { Monitor } = require('../../dist/server/monitor');
 const { Battle } = require('../../dist/sim/battle');
 const { Teams } = require('../../dist/sim/teams');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
@@ -145,6 +146,37 @@ describe('Fantasy Rogue real rooms', function () {
 		await until(() => retry.battle.ended && account().run.node.challenge.stage === 'paused', 'second retreat');
 		command('challenge', { value: 'leave' }); assert.equal(account().run.floor, 9);
 	});
+	it('recovers the real room checkpoint after a rejected growth acknowledgement', async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => room.battle.p1.request, 'growth failure room ready');
+		store.change(user.id, saved => { saved.run.battle.growthSequence = 1; });
+		const before = structuredClone(account().run);
+		const stream = room.battle.stream, write = stream.write;
+		const crashlog = Monitor.crashlog, errors = [];
+		stream.write = function (packet) {
+			if (typeof packet === 'string' && packet.startsWith('>rogueprogress ')) {
+				return Promise.reject(new Error('injected native room transport failure'));
+			}
+			return write.call(this, packet);
+		};
+		Monitor.crashlog = (error, phase) => errors.push({ error, phase });
+		try {
+			manager.resumeGrowth(user.id);
+			await until(() => !Rooms.get(room.roomid) && account().run.phase === 'ready', 'native checkpoint recovery');
+			assert.equal(errors.length, 1);
+			assert.equal(errors[0].phase, 'Rogue battle growth delivery');
+			assert(!account().run.battle);
+			assert.deepEqual(account().run.team, before.team);
+			assert.deepEqual(account().run.bag, before.bag);
+			assert.equal(account().run.money, before.money);
+		} finally {
+			stream.write = write;
+			// This suite runs serially; restore the temporary diagnostic spy after the room closes.
+			// eslint-disable-next-line require-atomic-updates
+			Monitor.crashlog = crashlog;
+		}
+	});
 	afterEach(async () => {
 		await ai.dispose();
 		for (const room of rooms.splice(0)) Rooms.get(room.roomid)?.destroy();
@@ -161,6 +193,7 @@ describe('Fantasy Rogue real rooms', function () {
 		command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			const run = saved.run;
+			run.spirit = 'latios';
 			run.doubleBattle = true;
 			run.team = [
 				createRoguePokemon(set('Pikachu', 'Static', 50, ['Thunderbolt', 'Protect']), stats(0)),
@@ -193,6 +226,7 @@ describe('Fantasy Rogue real rooms', function () {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		store.change(user.id, saved => {
 			const run = saved.run;
+			run.spirit = 'latios';
 			run.doubleBattle = true;
 			run.node.kind = 'trainer';
 			Object.assign(run.node.encounters[0], { catchable: false, team: [

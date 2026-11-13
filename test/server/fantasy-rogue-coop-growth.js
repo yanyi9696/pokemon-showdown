@@ -11,9 +11,10 @@ const { awardBattleExperience } = require('../../dist/server/fantasy-rogue/battl
 const { normalizeBlessings } = require('../../dist/server/fantasy-rogue/blessings');
 const { blessing } = require('../../dist/sim/rogue-blessing-data');
 const { Battle } = require('../../dist/sim/battle');
-const { recordRogueDefeat } = require('../../dist/sim/fantasy-rogue');
+const { recordRogueDefeat, rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const { battleDragonKing } = require('../../dist/sim/fantasy-rogue-blessings');
 const { captureCoopCheckpoint } = require('../../dist/sim/rogue-coop-checkpoint');
+const { applyRogueGrowth } = require('../../dist/sim/rogue-growth');
 const { content, set } = require('../fixtures/fantasy-rogue');
 const stats = value => ({ hp: value, atk: value, def: value, spa: value, spd: value, spe: value });
 
@@ -67,6 +68,214 @@ describe('Fantasy Rogue co-op personal growth context', () => {
 		return store.coopSessionForUser(host.id);
 	}
 	const owned = id => ({ ...blessing(id), floor: 1 });
+	it('does not apply the solo Latios experience bonus to either cooperative owner', () => {
+		const session = store.coopSessionForUser(host.id), revision = session.revision;
+		session.adventure.spirit = 'latios'; session.adventure.spiritVersion = 1; session.revision++;
+		store.updateCoopSession(session, revision);
+		const shared = configure(() => {});
+		verifySettlement(shared, result());
+	});
+	it('round trips a native four-seat knockout through the real XP transaction and checkpoint replay', () => {
+		const shared = configure(member => {
+			member.team[0] = createRoguePokemon(set('Machop', 'Guts', 20, ['Tackle']), stats(0));
+			initializeExperience(member.team[0]);
+		});
+		const state = structuredClone(created.rogue.state), messages = [];
+		state.liveProgression = true;
+		const foes = () => [set('Magikarp', 'Swift Swim', 5, ['Splash']), set('Magikarp', 'Swift Swim', 5, ['Splash'])];
+		battle = new Battle({ formatid: 'gen9fantasyroguecoop', fantasyRogue: state, seed: [1, 2, 3, 4],
+			p1: { name: host.name, team: state.team.map(mon => mon.set) },
+			p3: { name: guest.name, team: state.partner.team.map(mon => mon.set) },
+			p2: { name: 'Wild A', team: foes() }, p4: { name: 'Wild B', team: foes() },
+			send(type, payload) { if (type === 'fantasyrogueprogress') messages.push(JSON.parse(payload)); } });
+		battle.makeChoices('team 1', 'team 12', 'team 1', 'team 12');
+		battle.p2.active[0].hp = 1; battle.p4.active[0].hp = 1;
+		battle.makeChoices('move tackle 1', 'move splash', 'move tackle 2', 'move splash');
+		assert.equal(messages.length, 1); assert.equal(messages[0].sequence, 2);
+		const outcome = rogueBattleResult(battle, false), checkpoint = captureCoopCheckpoint(battle);
+		const ack = progress(shared, outcome);
+		assert.equal(ack.paused, false);
+		const saved = store.coopSessionForUser(host.id);
+		battle.destroy(); battle = Battle.fromJSON(checkpoint.state);
+		applyRogueGrowth(battle, progress(shared, outcome));
+		assert.deepEqual(store.coopSessionForUser(host.id), saved, 'replayed progress is not another award');
+		assert.equal(battle.fantasyRogue.growthRevision, ack.revision);
+		assert.equal(battle.fantasyRogue.team[0].experience, ack.team[0].experience);
+		assert.equal(battle.fantasyRogue.partner.team[0].experience, ack.partner.team[0].experience);
+		assert(battle.p2.activeRequest.forceSwitch); assert(battle.p4.activeRequest.forceSwitch);
+		battle.makeChoices('pass', 'switch 2', 'pass', 'switch 2');
+		assert(!battle.p1.activeRequest.wait); assert(!battle.p3.activeRequest.wait);
+		created.rogue.onResult({ ...rogueBattleResult(battle, false), coopExit: 'retreat' });
+		for (const user of [host, guest]) assert.equal(store.coopSessionForUser(host.id).adventure.members[user.id]
+			.team[0].experience, saved.adventure.members[user.id].team[0].experience);
+	});
+	function progress(shared, outcome, sequence = outcome.defeated.length) {
+		return manager.coop.progressBattle(shared.id, shared.adventure.battleToken,
+			shared.adventure.battleLease, sequence, outcome);
+	}
+	function growthCommand(user, action, fields = {}) {
+		const view = manager.coop.view(user).session.adventure;
+		return manager.coop.command(user, { action, visit: view.liveGrowth?.key, ...fields });
+	}
+	function skipMoves(user) {
+		for (let count = 0; count < 50; count++) {
+			const pending = store.coopSessionForUser(user.id).adventure.members[user.id].pendingMoves?.[0];
+			if (!pending) return;
+			growthCommand(user, 'learn', { member: pending.member, move: pending.move, value: 'skip' });
+		}
+		assert.fail('learning queue did not drain');
+	}
+	function startLearning(species = 'Bulbasaur', level = 5) {
+		const shared = configure(member => {
+			member.team[0] = createRoguePokemon(set(species, 'Run Away', level, ['Tackle', 'Growl', 'Splash', 'Protect']), stats(0));
+			initializeExperience(member.team[0]);
+		});
+		const outcome = { ...result(), won: false };
+		outcome.defeated[0].species = 'Blissey'; outcome.defeated[0].level = 90;
+		progress(shared, outcome);
+		return shared;
+	}
+	it('allows only fresh personal growth decisions and waits until both owners finish', () => {
+		startLearning();
+		let view = manager.coop.view(host).session.adventure;
+		assert(view.pendingMove && view.partnerPendingMove && view.liveGrowth);
+		assert.equal(view.liveGrowth.evolutions[0].shiny, false);
+		const command = { action: 'learn', visit: view.liveGrowth.key, member: view.pendingMove.member,
+			move: view.pendingMove.move, value: 'skip' };
+		const before = store.coopSessionForUser(host.id);
+		assert.throws(() => manager.coop.command(guest, { ...command, owner: host.id }), /自己的/);
+		assert.throws(() => manager.coop.command(host, { ...command, visit: 'stale' }), /提示已变化/);
+		assert.throws(() => growthCommand(host, 'evolve', { member: command.member, value: 'ivysaur' }), /待学习/);
+		assert.deepEqual(store.coopSessionForUser(host.id), before);
+		manager.coop.command(host, command);
+		assert.throws(() => manager.coop.command(host, command), /提示已变化/);
+		assert(store.get(host.id).starterTraits.bulbasaur.moves.includes(command.move));
+		skipMoves(host);
+		view = manager.coop.view(host).session.adventure;
+		for (const mon of view.liveGrowth.evolutions) growthCommand(host, 'evolutionnotice', { member: mon.member });
+		assert(store.coopSessionForUser(host.id).adventure.battleGrowth.paused, 'guest still has decisions');
+		skipMoves(guest);
+		view = manager.coop.view(guest).session.adventure;
+		for (const mon of view.liveGrowth.evolutions) growthCommand(guest, 'evolutionnotice', { member: mon.member });
+		assert.equal(store.coopSessionForUser(host.id).adventure.battleGrowth.paused, false);
+		assert.equal(manager.coop.view(host).session.adventure.liveGrowth, null);
+		assert.throws(() => growthCommand(host, 'evolutionnotice', { member: command.member }), /提示已变化/);
+	});
+	it('uses delegated learning and lets either player revoke before stale partner input', () => {
+		startLearning();
+		manager.coop.command(guest, { action: 'delegate', value: 'partner' });
+		const view = manager.coop.view(host).session.adventure, pending = view.partnerPendingMove;
+		const command = { action: 'learn', owner: guest.id, member: pending.member, move: pending.move,
+			value: 'skip', visit: view.liveGrowth.key };
+		assert.throws(() => manager.coop.command(guest, { ...command, owner: guest.id }), /操作权/);
+		manager.coop.command(host, command);
+		manager.coop.command(guest, { action: 'delegate', value: 'revoke' });
+		assert.throws(() => manager.coop.command(host, command), /自己的/);
+	});
+	it('evolves during the safe pause without healing or admitting a new Shedinja to battle', () => {
+		startLearning('Nincada', 19); skipMoves(host);
+		const view = manager.coop.view(host).session.adventure, id = view.liveGrowth.evolutions[0].member;
+		const before = store.coopSessionForUser(host.id), original = before.adventure.members[host.id];
+		assert(view.liveGrowth.evolutions[0].options.some(option => option.species === 'Ninjask'));
+		assert.throws(() => growthCommand(host, 'evolve', { member: id, value: 'shedinja' }), /满足条件/);
+		growthCommand(host, 'evolve', { member: id, value: 'ninjask' });
+		const saved = store.coopSessionForUser(host.id), member = saved.adventure.members[host.id];
+		assert.equal(member.team[0].set.species, 'Ninjask'); assert.equal(member.team.at(-1).set.species, 'Shedinja');
+		assert.equal(member.team.length, original.team.length + 1);
+		assert.equal(member.bag.pokeball, original.bag.pokeball - 1);
+		assert.equal(member.team[0].maxhp - member.team[0].hp, original.team[0].maxhp - original.team[0].hp);
+		assert.deepEqual(saved.battleSelections, before.battleSelections);
+		const { coopGrowthAcknowledgement } = require('../../dist/server/fantasy-rogue/coop-growth');
+		assert.equal(coopGrowthAcknowledgement(saved).team.length, 1);
+	});
+	it('rolls a failed evolution save back before notifying either owner', () => {
+		startLearning(); skipMoves(host);
+		const view = manager.coop.view(host).session.adventure, shared = store.coopSessionForUser(host.id);
+		const accounts = [host, guest].map(user => store.get(user.id)), update = store.updateCoopSession;
+		const command = { action: 'evolve', visit: view.liveGrowth.key,
+			member: view.liveGrowth.evolutions[0].member, value: 'ivysaur' };
+		try {
+			store.updateCoopSession = (...args) => { update.apply(store, args); throw new Error('evolution write failed'); };
+			// Wrap the injected post-commit fault just as normal write failures are covered by the transaction boundary.
+			assert.throws(() => manager.coop.command(host, command), /evolution write failed/);
+			assertUnchanged(shared, accounts);
+		} finally { store.updateCoopSession = update; }
+		manager.coop.command(host, command);
+		assert.equal(store.coopSessionForUser(host.id).adventure.members[host.id].team[0].set.species, 'Ivysaur');
+	});
+	it('commits both live XP receipts once, preserving private bonuses and untouched reserves', () => {
+		const shared = configure((member, user) => {
+			if (user === host) member.growth = { offense: 0, defense: 0, experience: 2500 };
+		});
+		const accounts = [host, guest].map(user => store.get(user.id)), outcome = { ...result(), won: false };
+		const expected = [host, guest].map((user, index) => expectedGrowth(shared.adventure, user.id, outcome, !!index));
+		const ack = progress(shared, outcome), saved = store.coopSessionForUser(host.id);
+		assert.equal(ack.sequence, 1); assert.equal(ack.revision, 1);
+		for (const [index, user] of [host, guest].entries()) {
+			const member = saved.adventure.members[user.id], before = shared.adventure.members[user.id];
+			assert.deepEqual(member.team.map(mon => [mon.experience, mon.set.evs, mon.set.level]),
+				expected[index].team.map(mon => [mon.experience, mon.set.evs, mon.set.level]));
+			assert.deepEqual(member.experienceReceipts, expected[index].experienceReceipts);
+			assert.deepEqual(member.team[1], before.team[1]);
+			assert.deepEqual(store.get(user.id).run, accounts[index].run);
+			assert.deepEqual((index ? ack.partner : ack).team, [member.team[0]]);
+		}
+		assert.deepEqual(progress(shared, outcome), ack);
+		assert.deepEqual(store.coopSessionForUser(host.id), saved);
+		created.rogue.onResult({ ...outcome, won: true });
+		const final = store.coopSessionForUser(host.id);
+		for (const user of [host, guest]) assert.equal(final.adventure.members[user.id].team[0].experience,
+			saved.adventure.members[user.id].team[0].experience, 'final stale snapshot cannot erase or duplicate awarded XP');
+		assert.equal(final.adventure.battleGrowth, undefined);
+	});
+	it('rejects wrong room ownership, mismatched parties and stale progression without partial writes', () => {
+		const shared = configure(() => {}), outcome = { ...result(), won: false };
+		const accounts = [host, guest].map(user => store.get(user.id));
+		assert.equal(manager.coop.progressBattle(shared.id, shared.adventure.battleToken, 'old-room', 1, outcome), undefined);
+		assert.throws(() => progress(shared, outcome, 2), /不匹配/);
+		assert.throws(() => progress(shared, { ...outcome, partnerTeam: outcome.team }), /不匹配/);
+		assertUnchanged(shared, accounts);
+		progress(shared, outcome);
+		const saved = store.coopSessionForUser(host.id);
+		const second = { ...outcome, defeated: [...outcome.defeated, { ...outcome.defeated[0], id: 'second' }] };
+		assert.throws(() => progress(shared, second), /尚未应用/);
+		assert.deepEqual(store.coopSessionForUser(host.id), saved);
+	});
+	for (const fault of ['session', 'guest']) it(`atomically rolls both live owners back on ${fault} write failure`, () => {
+		const shared = configure(() => {}), outcome = { ...result(), won: false };
+		const accounts = [host, guest].map(user => store.get(user.id));
+		const update = store.updateCoopSession, change = store.change;
+		try {
+			if (fault === 'session') store.updateCoopSession = (...args) => {
+				update.apply(store, args); throw new Error('live write failed');
+			};
+			else store.change = (...args) => {
+				const saved = change.apply(store, args);
+				if (args[0] === guest.id) throw new Error('live write failed');
+				return saved;
+			};
+			assert.throws(() => progress(shared, outcome), /live write failed/);
+			assertUnchanged(shared, accounts);
+		} finally { store.updateCoopSession = update; store.change = change; }
+		assert.equal(progress(shared, outcome).revision, 1);
+	});
+	it('awards only a fresh second receipt and preserves current damage when retreat races its acknowledgement', () => {
+		const shared = configure(() => {}), first = { ...result(), won: false };
+		const ack = progress(shared, first);
+		const second = { ...first, team: ack.team, partnerTeam: ack.partner.team, growthRevision: ack.revision,
+			defeated: [...first.defeated, { ...first.defeated[0], id: 'second' }] };
+		second.team[0].hp -= 7; second.partnerTeam[0].hp -= 9;
+		const next = progress(shared, second), saved = store.coopSessionForUser(host.id);
+		assert.equal(next.revision, 2); assert.equal(next.sequence, 2);
+		assert(next.team[0].experience > ack.team[0].experience);
+		created.rogue.onResult({ ...second, coopExit: 'retreat' });
+		const final = store.coopSessionForUser(host.id);
+		for (const [index, user] of [host, guest].entries()) {
+			const mon = final.adventure.members[user.id].team[0];
+			assert.equal(mon.experience, saved.adventure.members[user.id].team[0].experience);
+			assert.equal(mon.maxhp - mon.hp, index ? 9 : 7);
+		}
+	});
 	function result(captured = false) {
 		const state = created.rogue.state;
 		const ids = [...state.team, ...state.partner.team].map(mon => mon.id);
@@ -118,6 +327,33 @@ describe('Fantasy Rogue co-op personal growth context', () => {
 		const session = configure(member => { delete member.blessings; delete member.growth; });
 		verifySettlement(session, result());
 	});
+	it('discards battle-only full-party contexts while preserving each owner growth and effects', () => {
+		const shared = configure(() => {}), outcome = result();
+		engine.content.blessings = true;
+		const effects = owner => ({ ...structuredClone(shared.adventure.members[owner].blessings),
+			party: [{ id: 'reserve-context', species: 'Mew', types: ['Psychic'], moves: ['splash'] }],
+			partyRoles: { species: { hoopa: 'reserve-context' }, robes: { godrobe: '', puregodrobe: '' }, sniper: '', dogs: 0 },
+			unityParty: [{ id: 'reserve-context', types: ['Psychic'] }] });
+		outcome.blessingEffects = effects(host.id); outcome.partnerBlessingEffects = effects(guest.id);
+		const saved = verifySettlement(shared, outcome);
+		for (const user of [host, guest]) {
+			assert.equal(saved.adventure.members[user.id].blessings.party, undefined);
+			assert.equal(saved.adventure.members[user.id].blessings.unityParty, undefined);
+			assert.equal(saved.adventure.members[user.id].blessings.partyRoles, undefined);
+		}
+	});
+	it('supplies roles for the full owner party before constructing its selected battle team', () => {
+		const shared = configure(member => {
+			member.team = [20, 40].map(level => createRoguePokemon(set('Golduck', 'Run Away', level, ['Splash']), stats(0)));
+			member.blessings.owned.push(owned('duck'));
+		});
+		for (const [user, effects, team] of [[host, created.rogue.state.blessings, created.rogue.state.team],
+			[guest, created.rogue.state.partner.blessings, created.rogue.state.partner.team]]) {
+			assert.equal(team.length, 1);
+			assert.equal(effects.partyRoles.species['psyduck|golduck'], shared.adventure.members[user.id].team[1].id);
+			assert.notEqual(effects.partyRoles.species['psyduck|golduck'], team[0].id);
+		}
+	});
 	function capturedResult() {
 		const outcome = result(true);
 		const mon = createRoguePokemon(set('Magikarp', 'Swift Swim', 12, ['Splash']), stats(0));
@@ -125,6 +361,84 @@ describe('Fantasy Rogue co-op personal growth context', () => {
 		outcome.partnerBag.pokeball--;
 		return outcome;
 	}
+	function mouseBattle() {
+		const shared = configure(member => {
+			member.team = ['Pikachu', 'Raichu', 'Plusle', 'Minun', 'Pachirisu', 'Dedenne'].map((species, index) =>
+				createRoguePokemon({ ...set(species, 'Run Away', 30, ['Splash']), item: index === 4 ? 'sitrusberry' : '' }, stats(0)));
+			member.blessings.owned.push(owned('mousefamily'));
+		});
+		const state = created.rogue.state;
+		assert.equal(state.blessings.party[4].item, 'sitrusberry');
+		assert.equal(state.partner.blessings.party[4].item, 'sitrusberry');
+		battle = new Battle({ formatid: 'gen9fantasyroguecoop', fantasyRogue: state, seed: [1, 2, 3, 4],
+			p1: { name: host.name, team: state.team.map(mon => mon.set) },
+			p3: { name: guest.name, team: state.partner.team.map(mon => mon.set) },
+			p2: { name: 'Enemy A', team: [set('Blissey', 'Run Away', 30, ['Splash'])] },
+			p4: { name: 'Enemy B', team: [set('Blissey', 'Run Away', 30, ['Splash'])] } });
+		battle.makeChoices('team 1', 'team 1', 'team 1', 'team 1');
+		return shared;
+	}
+	it('keeps committed growth through a stale capture packet without awarding unselected new members', () => {
+		const shared = configure(() => {}), first = { ...result(), won: false };
+		progress(shared, first);
+		const trained = store.coopSessionForUser(host.id), capture = { ...capturedResult(), won: false };
+		capture.defeated[0].id = 'captured-second';
+		manager.coop.recordCapture(shared.id, shared.adventure.battleToken, capture.captures[0], capture);
+		const saved = store.coopSessionForUser(host.id);
+		for (const user of [host, guest]) assert.equal(saved.adventure.members[user.id].team[0].experience,
+			trained.adventure.members[user.id].team[0].experience);
+		assert.equal(saved.adventure.members[guest.id].team.length, 3);
+		const repeated = progress(shared, first);
+		assert.equal(repeated.partner.team.length, 1, 'capture must not expand the original battle selection');
+		assert.equal(repeated.partner.bag.pokeball, capture.partnerBag.pokeball);
+		const baseline = structuredClone(capture.captures[0]); initializeExperience(baseline);
+		assert.equal(saved.adventure.members[guest.id].team[2].experience, baseline.experience);
+	});
+	function mouseResult(side, extra = {}) {
+		const mon = battle[side].active[0]; mon.hp = Math.floor(mon.maxhp / 3); battle.runEvent('Update', mon);
+		assert(mon.hp > mon.maxhp / 3);
+		return { ...rogueBattleResult(battle), won: true, ...extra };
+	}
+	for (const side of ['p1', 'p3']) it(`saves ${side} native reserve item consumption once without affecting its partner`, () => {
+		const shared = mouseBattle(), outcome = mouseResult(side);
+		const saved = manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome);
+		for (const [index, user] of [host, guest].entries()) {
+			assert.equal(saved.adventure.members[user.id].team[4].set.item, side === (index ? 'p3' : 'p1') ? '' : 'sitrusberry');
+			assert.equal(saved.adventure.members[user.id].blessings.party, undefined);
+		}
+		const committed = store.coopSessionForUser(host.id);
+		manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome);
+		assert.deepEqual(store.coopSessionForUser(host.id), committed);
+	});
+	it('rolls reserve item costs back when the final session write fails', () => {
+		const shared = mouseBattle(), outcome = mouseResult('p3'), original = store.updateCoopSession;
+		const accounts = [host, guest].map(user => store.get(user.id));
+		try {
+			store.updateCoopSession = (...args) => { original.apply(store, args); throw new Error('reserve write failed'); };
+			assert.throws(() => manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome), /reserve write failed/);
+			assertUnchanged(shared, accounts);
+		} finally { store.updateCoopSession = original; }
+		assert.equal(manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome)
+			.adventure.members[guest.id].team[4].set.item, '');
+	});
+	it('saves reserve costs alongside a mid-battle capture and does not refund them on retreat', () => {
+		const shared = mouseBattle(), capture = capturedResult();
+		const outcome = mouseResult('p3', { captures: capture.captures, captureOwners: capture.captureOwners });
+		manager.coop.recordCapture(shared.id, shared.adventure.battleToken, capture.captures[0], outcome);
+		assert.equal(store.coopSessionForUser(host.id).adventure.members[guest.id].team[4].set.item, '');
+		outcome.coopExit = 'retreat'; outcome.won = false;
+		const saved = manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome);
+		assert.equal(saved.adventure.members[guest.id].team[4].set.item, '');
+		assert.equal(saved.adventure.members[host.id].team[4].set.item, 'sitrusberry');
+	});
+	it('ignores a stale reserve receipt for a different owner or item', () => {
+		const shared = mouseBattle(), outcome = mouseResult('p3');
+		outcome.partnerBlessingEffects.party[4].consumedItem = 'oranberry';
+		outcome.partnerBlessingEffects.party.push({ id: shared.adventure.members[host.id].team[4].id,
+			item: '', consumedItem: 'sitrusberry' });
+		const saved = manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome);
+		for (const user of [host, guest]) assert.equal(saved.adventure.members[user.id].team[4].set.item, 'sitrusberry');
+	});
 	function assertUnchanged(shared, accounts) {
 		assert.deepEqual(store.coopSessionForUser(host.id), shared);
 		for (const [index, user] of [host, guest].entries()) assert.deepEqual(store.get(user.id), accounts[index]);

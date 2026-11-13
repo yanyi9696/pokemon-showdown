@@ -5,6 +5,9 @@ import { featheredSpecies, mushroomSpecies } from './nature-collections';
 import { companionOwned, companionSource } from '../../sim/rogue-companions';
 import { candyAtFloor, eventRewardBudget, journeyCoins } from './early-balance';
 import { FOSSILS } from './economy';
+import { convertSpiritItem } from './spirits';
+import { inventoryItem } from './team';
+import { syncExclusiveItems } from './exclusive-items';
 
 export interface SkiState {
 	started: number; checked: number; lane: number; ended?: number; crashed?: boolean;
@@ -44,8 +47,9 @@ export function collectionView(run: RogueRun, now = Date.now()) {
 	}
 	if (event.id === 'stones') {
 		const price = stonePrice(run.floor);
-		return { options: [option('stone:1', '只开一块', `${price} 金币；可能没有收获。`, run.money < price),
-			option('stone:5', '连开五块', `${price * 5} 金币；每块独立开出物品或空石。`, run.money < price * 5),
+		const spiritHint = run.spirit === 'hoopagift' ? '新获得的普通携带道具各有50%概率转成幻想道具。' : '';
+		return { options: [option('stone:1', '只开一块', `${price} 金币；可能没有收获。${spiritHint}`, run.money < price),
+			option('stone:5', '连开五块', `${price * 5} 金币；每块独立开出物品或空石。${spiritHint}`, run.money < price * 5),
 			option('stonefinish', event.stonesOpened ? '收好东西，结束赌石。' : '今天先不买。')] };
 	}
 	if (event.id === 'feathers') return { options: [
@@ -115,8 +119,11 @@ export function chooseCollection(
 		if (choice === 'stonefinish') { finish(run, ['「下次再来啊！」摊主还想说些什么，你已经收好行囊，走出了集市。']); return; }
 		const count = Number(choice.split(':')[1]), price = stonePrice(run.floor) * count;
 		if (![1, 5].includes(count) || run.money < price) throw new Error('开石数量或金币不足。');
-		run.money -= price; event.stonesOpened = (event.stonesOpened || 0) + count;
+		const opened = event.stonesOpened || 0;
+		run.money -= price; event.stonesOpened = opened + count;
 		const prizes: Record<string, number> = {};
+		let converted = 0;
+		syncExclusiveItems(run);
 		const pool = content.items.filter(i => i.id !== 'linkingcord' && (i.kind === 'evolution' ||
 			i.kind === 'treasure' && (/pearl|nugget|star|comet/.test(i.id) || FOSSILS.some(f => f.id === i.id)) ||
 			i.kind === 'held' && !i.id.startsWith('fantasy')));
@@ -128,11 +135,17 @@ export function chooseCollection(
 				!!Dex.mod('gen9fantasy').items.get(p.id).megaStone || (p.sellPrice || p.price) >= 2000 :
 				!Dex.mod('gen9fantasy').items.get(p.id).megaStone && (p.sellPrice || p.price) <= 1800);
 			if (!options.length) continue;
-			const item = options[random(options.length)]; give(run, item.id, 1); prizes[item.name] = (prizes[item.name] || 0) + 1;
+			const item = options[random(options.length)];
+			const received = convertSpiritItem(run, content, item.id, `stone:${run.floor}:${opened + i}`, random, false);
+			const name = received === item.id ? item.name : inventoryItem(content, received)?.name || received;
+			give(run, received, 1); prizes[name] = (prizes[name] || 0) + 1;
+			if (run.exclusiveItems?.[item.id]) run.exclusiveItems[item.id].obtained = true;
+			if (received !== item.id) converted++;
 		}
 		const prizeText = Object.keys(prizes).length ?
 			'开出了：' + Object.entries(prizes).map(([name, n]) => `【${name}】×${n}`).join('、') : '这次都是空石';
-		event.result = [`石锤敲落最后一片碎屑。支付 ${price} 金币，${prizeText}。`,
+		event.result = [`石锤敲落最后一片碎屑。支付 ${price} 金币，${prizeText}。` +
+			(converted ? `其中 ${converted} 件普通携带道具经梦幻的奇赠转换为幻想道具，已按实际奖品放入背包。` : ''),
 			'「再看看这一块？纹路可漂亮了！」摊主又将几块原石推到面前。你摸了摸钱袋，决定是否继续。'];
 		return;
 	}

@@ -20,15 +20,17 @@ describe('Fantasy doubles bounded background decisions', function () {
 	let battle, scheduler;
 	beforeEach(() => { scheduler = new DecisionScheduler({ workers: 1, decisionMs: 5000 }); });
 	afterEach(async () => { await scheduler.dispose(); battle?.destroy(); });
-	function create(multi = false) {
+	function create(multi = false, reserves = false) {
 		const own = [mon('Garchomp', ['Earthquake', 'Dragon Claw', 'Protect']), mon('Gardevoir', ['Moonblast', 'Protect'])];
+		const bench = reserves ? [mon('Gastrodon', ['Earth Power', 'Protect']), mon('Pikachu', ['Thunderbolt', 'Protect'])] : [];
 		const foes = [mon('Blastoise', ['Water Gun', 'Protect']), mon('Blastoise', ['Water Gun', 'Protect'])];
 		battle = new Battle({
 			format: new Format({ name: 'Detached background fixture', mod: 'gen9fantasy',
 				gameType: multi ? 'multi' : 'doubles', ruleset: [] }),
 			strictChoices: true, seed,
-			p1: { team: multi ? foes.slice(0, 1) : foes }, p2: { team: multi ? own.slice(0, 1) : own },
-			...(multi ? { p3: { team: foes.slice(1) }, p4: { team: own.slice(1) } } : {}),
+			p1: { team: multi ? foes.slice(0, 1) : foes },
+			p2: { team: multi ? [own[0], ...bench.slice(0, 1)] : [...own, ...bench] },
+			...(multi ? { p3: { team: foes.slice(1) }, p4: { team: [own[1], ...bench.slice(1)] } } : {}),
 		});
 		for (const side of battle.sides) for (const active of side.activeRequest.active) delete active.canTerastallize;
 		return { ownSide: 'p2', difficulty: 'normal', request: structuredClone(battle.p2.activeRequest),
@@ -83,6 +85,54 @@ describe('Fantasy doubles bounded background decisions', function () {
 		assert.deepEqual(result.decision.candidates, expected.candidates);
 		assert(result.decision.doubles.jointTurn?.hypotheses > 0);
 		assert(battle.p2.choose(result.decision.choice));
+	});
+	for (const multi of [false, true]) it(`evaluates reserves off-thread with native ${multi ? 'Multi seat' : 'doubles'} ownership`, async () => {
+		const observation = create(multi, true);
+		const prepared = multi ? prepareMultiChoices({
+			p2: structuredClone(battle.p2.activeRequest), p4: structuredClone(battle.p4.activeRequest),
+		}, publicLog(battle), { allowSwitch: true }) : undefined;
+		const inputView = prepared?.observation || observation;
+		const options = { allowSwitch: true, jointTurns: true, candidates: prepared?.candidates };
+		const before = JSON.stringify(inputView), live = State.serializeBattle(battle);
+		const expected = decideDoubles(inputView, trainer.format, [], options);
+		assert(expected.doubles.jointTurn);
+		scheduler.register('background', 'first');
+		const result = await scheduler.submit(input(inputView, { doubles: options }));
+		assert.equal(result.status, 'completed');
+		assert.equal(result.decision.choice, expected.choice);
+		assert.deepEqual(result.decision.doubles.mechanics.turnFailures, []);
+		assert.equal(JSON.stringify(inputView), before);
+		assert.deepEqual(State.serializeBattle(battle), live);
+		const commands = prepared?.commands.get(result.decision.choice) || { p2: result.decision.choice };
+		for (const [seat, choice] of Object.entries(commands)) assert(battle[seat].choose(choice), `${seat}: ${choice}`);
+	});
+	for (const multi of [false, true]) it(`keeps four confused actors bounded in the ${multi ? 'Multi' : 'doubles'} worker`, async () => {
+		create(multi);
+		for (const side of battle.sides) for (const active of side.active) active.addVolatile('confusion');
+		const log = publicLog(battle);
+		const prepared = multi ? prepareMultiChoices({
+			p2: structuredClone(battle.p2.activeRequest), p4: structuredClone(battle.p4.activeRequest),
+		}, log, { allowSwitch: false }) : undefined;
+		const observation = prepared?.observation || { ownSide: 'p2', difficulty: 'normal',
+			request: structuredClone(battle.p2.activeRequest), publicLog: log };
+		const live = State.serializeBattle(battle), before = JSON.stringify(observation);
+		scheduler.register('background', 'first');
+		let ticks = 0;
+		const interval = setInterval(() => ticks++, 5);
+		try {
+			const result = await scheduler.submit(input(observation, {
+				doubles: { allowSwitch: false, jointTurns: true, candidates: prepared?.candidates },
+				budgetMs: 1500, wallClockMs: 4500,
+			}));
+			assert(['completed', 'timeout'].includes(result.status));
+			assert(result.decision?.choice); assert(ticks > 0);
+			assert.deepEqual(result.decision.doubles.mechanics?.turnFailures || [], []);
+			if (result.status === 'completed') assert(result.decision.doubles.jointTurn);
+			assert.deepEqual(State.serializeBattle(battle), live);
+			assert.equal(JSON.stringify(observation), before);
+			const commands = prepared?.commands.get(result.decision.choice) || { p2: result.decision.choice };
+			for (const [seat, choice] of Object.entries(commands)) assert(battle[seat].choose(choice));
+		} finally { clearInterval(interval); }
 	});
 	it('keeps the joint choice intact in zero-budget fallback and filters rejected actions', async () => {
 		const observation = create();

@@ -7,6 +7,7 @@ const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
+const { summitEncounter, arceusEncounter } = require('../../dist/server/fantasy-rogue/final-bosses');
 const { content, set, stats } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue native cooperative Team Preview', () => {
@@ -66,6 +67,59 @@ describe('Fantasy Rogue native cooperative Team Preview', () => {
 		const seat = user === host ? room.battle.p1 : room.battle.p3;
 		room.battle.choose(user, `team ${selection}|${seat.request.rqid}`);
 	}
+	for (const [kind, create] of [['summit', summitEncounter], ['arceus', arceusEncounter]]) {
+		it(`transmits a genuine empty fourth seat for ${kind}, preserves boss order and restores the room`, async () => {
+			// The ordinary preview fixtures intentionally use a zero-budget fallback scheduler.
+			const previousAI = ai;
+			ai = new AIChallengeManager([], { enabled: true, decisionMs: 5000, maxBattles: 1 }, 6);
+			await previousAI.dispose();
+			const session = saved(), revision = session.revision, encounter = create();
+			session.adventure.floor = 200;
+			session.adventure.node.kind = 'boss'; session.adventure.node.encounters = [encounter];
+			session.revision++; store.updateCoopSession(session, revision);
+			const room = await prepare(), native = room.battle.stream.battle;
+			assert.equal(native.fantasyRogue.boss.kind, kind);
+			assert.equal(native.fantasyRogue.catchable, false);
+			assert(native.log.includes(`|-roguecoopboss|${kind}`));
+			assert(native.log.some(line => line.includes('全员 HP ×2') && line.includes('不是极巨化')));
+			assert(native.log.indexOf(`|-roguecoopboss|${kind}`) < native.log.findIndex(line => line.startsWith('|teampreview')));
+			assert.equal(native.p2.pokemon.length, encounter.team.length);
+			assert.equal(native.p4.pokemon.length, 0);
+			assert.deepEqual(native.fantasyRogue.opponentSlots, encounter.team.map((_, index) => index));
+			assert.equal(native.fantasyRogue.cooperative.opponentOffset, encounter.team.length);
+			assert.equal(native.p4.activeRequest.wait, true);
+			assert(native.inputLog.some(line => line.startsWith('>player p4 ') && line.includes('"team":[]')));
+			confirm(room, host, '1,2,3'); confirm(room, guest, '1,2,3');
+			await until(() => native.turn === 1, 'boss turn one'); await checkpoint(room);
+			assert.equal(native.p2.pokemon.length, encounter.team.length);
+			assert.equal(native.p2.active[0].set.species, encounter.team[0].species);
+			const hp = native.p2.active[0].maxhp;
+			assert.equal(hp, native.spreadModify(native.p2.active[0].species.baseStats, native.p2.active[0].set).hp * 2);
+			await until(() => !!room.battle.rogueCoop.lastDecision || room.battle.p2.request.isWait === true,
+				'boss tactical worker decision');
+			assert(room.battle.rogueCoop.lastDecision?.candidates > 0, JSON.stringify({
+				decision: room.battle.rogueCoop.lastDecision, format: room.battle.format,
+				cooperative: room.battle.options.fantasyRogue.state.cooperative,
+				active: native.p2.activeRequest.active?.length, choice: room.battle.p2.request.choice,
+			}));
+			assert.equal(room.battle.rogueCoop.lastDecision.workerStatus, 'completed');
+			await checkpoint(room);
+			room.destroy(); await delay(0);
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'recoverbattle' });
+			const restored = Rooms.get(saved().roomid); rooms.push(restored);
+			await until(() => restored.battle.p1.request.request, 'restored boss request'); await checkpoint(restored);
+			const resumed = restored.battle.stream.battle;
+			assert.equal(resumed.p2.active[0].maxhp, hp); assert.equal(resumed.p4.pokemon.length, 0);
+			assert.equal(resumed.fantasyRogue.boss.kind, kind);
+			for (const user of [host, guest]) {
+				const side = user === host ? restored.battle.p1 : restored.battle.p3;
+				restored.battle.choose(user, `move 1|${side.request.rqid}`);
+			}
+			await until(() => resumed.turn >= 2 || resumed.requestState === 'switch', 'boss resolves turn');
+			assert(!resumed.log.some(line => /^\|(move|switch|drag)\|p4/.test(line)));
+			assert(resumed.log.some(line => line.startsWith('|move|p2')));
+		});
+	}
 	it('opens the actual native room with six candidates and no started turn; repeated prepare cannot create another room', async () => {
 		const room = await prepare(), request = JSON.parse(room.battle.p1.request.request);
 		assert(request.teamPreview); assert.equal(request.maxChosenTeamSize, 3);
@@ -75,6 +129,41 @@ describe('Fantasy Rogue native cooperative Team Preview', () => {
 		manager.coop.command(guest, { action: 'preparebattle', visit: 'old-client-key' });
 		assert.equal(saved().roomid, room.roomid);
 	});
+	for (const confirmed of [false, true]) {
+		it(`keeps a preview retreat outside battle until both explicitly retry (one confirmed: ${confirmed})`, async () => {
+			const room = await prepare();
+			if (confirmed) { confirm(room, host, '5,2'); await checkpoint(room); }
+			const before = structuredClone(saved()), adventure = before.adventure;
+			manager.coop.command(host, { action: 'proposeexit', value: 'retreat' });
+			manager.coop.command(guest, { action: 'respondexit', id: saved().exitProposal.id, value: 'accept' });
+			assert.equal(saved().adventure.phase, 'settlement');
+			assert.equal(saved().adventure.battleResult.retreated, true);
+			assert.equal(saved().adventure.battleResult.won, false);
+			assert.equal(saved().adventure.battleResult.turns, 0);
+			assert.equal(Rooms.get(room.roomid), undefined);
+			assert.equal(saved().roomid, undefined);
+			assert.equal(saved().adventure.battleCheckpoint, undefined);
+			assert.deepEqual(saved().adventure.members, adventure.members);
+			assert.deepEqual(saved().adventure.node, adventure.node);
+			assert.equal(saved().adventure.floor, adventure.floor);
+			assert.equal(saved().adventure.encounter, adventure.encounter);
+			const outside = structuredClone(saved());
+			manager.coop.saveBattleCheckpoint(before.id, adventure.battleToken,
+				adventure.battleLease || adventure.battleToken, adventure.battleCheckpoint);
+			assert.deepEqual(saved(), outside, 'late preview checkpoint cannot revive the exited room');
+			assert.throws(() => manager.coop.command(host, { action: 'preparebattle', visit: view().battleSelectionKey }));
+			assert.equal(saved().adventure.phase, 'settlement');
+			manager.coop.command(host, { action: 'retrybattle' });
+			assert.equal(saved().adventure.phase, 'settlement', 'one retry vote cannot start another room');
+			manager.coop.command(guest, { action: 'retrybattle' });
+			const next = await prepare();
+			assert.notEqual(next.roomid, room.roomid);
+			assert.equal(next.battle.stream.battle.turn, 0);
+			assert.equal(view().previewConfirmed, false);
+			assert.deepEqual(saved().adventure.members, adventure.members);
+			assert.deepEqual(saved().adventure.node, adventure.node);
+		});
+	}
 	it('synchronizes ordered draft and cancellation, rejects foreign, stale, duplicate and four-member drafts', async () => {
 		await prepare(); const own = ids();
 		for (const selection of [[own[4]], [own[4], own[1]], [own[1]], []]) {

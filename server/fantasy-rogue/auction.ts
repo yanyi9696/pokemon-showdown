@@ -6,6 +6,8 @@ import { neededExclusiveItems, syncExclusiveItems } from './exclusive-items';
 import { machineMoves, premiumMachine, tradeItem } from './trading';
 import { FANTASY_BLESSING_ITEMS } from '../../sim/rogue-blessing-data';
 import { formItem } from './form-item-data';
+import { convertSpiritItem } from './spirits';
+import { inventoryItem } from './team';
 
 export interface RogueAuction {
 	floor: number; entered: boolean; index: number;
@@ -50,6 +52,8 @@ export function beginAuction(
 }
 export function auctionView(run: RogueRun) {
 	const a = run.auction!, event = run.node!.event!, lot = a.lots[a.index];
+	const spiritNote = run.spirit === 'hoopagift' ?
+		['梦幻的奇赠：成交时，新获得的普通携带道具有50%概率转换为幻想道具；进化用品及已有幻想道具等不转换。'] : [];
 	const option = (id: string, name: string, text = '', disabled = false) => ({ id, name, text, disabled });
 	const catalog = a.lots.map((entry, i) => `${i + 1}. 【${entry.item.name}】` +
 		(entry.winner === -1 ? '（已拍得）' : entry.winner !== undefined ? '（已落槌）' : '')).join('；');
@@ -59,12 +63,13 @@ export function auctionView(run: RogueRun) {
 	const budgets = a.npcs.map(npc => `${npc.name}：${npc.budget} 金币`).join('；');
 	if (!a.entered) return { paragraphs: ['一块绒布铺在路边，几件珍贵的物品排得整整齐齐。摊主敲了敲小木槌：「价高者得，落槌才收钱！」',
 		`你用余光打量竞拍的人，看清他们翻出的预算签：${budgets}。行商怕吃亏，收藏家最受不得激将，训练家只肯为合用的东西加价。`,
-		'可以试着施压或诱导，但对手也有自己的底线。每件拍品只能使用一次话术；放弃后只能参加下一件。'],
+		'可以试着施压或诱导，但对手也有自己的底线。每件拍品只能使用一次话术；放弃后只能参加下一件。', ...spiritNote],
 	options: [option('enter', '坐下参加竞拍。'), option('leave', '看过拍品，继续赶路。')], auction: { catalog, npcs: a.npcs } };
 	const next = lot.price ? lot.price + lot.step : lot.opening;
 	return { paragraphs: [`第 ${a.index + 1} / ${a.lots.length} 件：【${lot.item.name}】。` +
 		`起拍价 ${lot.opening} 金币，每次至少加 ${lot.step} 金币。`,
-	`当前最高价：${lot.price} 金币（${lot.leader === -1 ? '你' : lot.leader < 0 ? '尚未出价' : a.npcs[lot.leader].name}）。`, ...a.log.slice(-5)],
+	`当前最高价：${lot.price} 金币（${lot.leader === -1 ? '你' : lot.leader < 0 ? '尚未出价' : a.npcs[lot.leader].name}）。`,
+	...spiritNote, ...a.log.slice(-5)],
 	auction: { catalog, npcs: a.npcs }, options: [
 		option('bid', `加价到 ${next} 金币。`, '', run.money < next),
 		option('jump', `直接出 ${next + lot.step * 2} 金币。`, '大幅加价，对犹豫的买家施压。', run.money < next + lot.step * 2),
@@ -73,15 +78,20 @@ export function auctionView(run: RogueRun) {
 		option('pass', '放弃这件，看看下一件。'),
 	] };
 }
-function finishLot(run: RogueRun) {
+function finishLot(run: RogueRun, content: RogueContent, random: RogueRandom) {
 	const a = run.auction!, lot = a.lots[a.index];
 	lot.winner = lot.leader;
 	if (lot.leader === -1) {
 		if (run.money < lot.price) throw new Error('金币不足，无法履行报价。');
 		run.money -= lot.price;
-		run.bag[lot.item.id] = (run.bag[lot.item.id] || 0) + 1;
+		const received = convertSpiritItem(run, content, lot.item.id, `auction:${a.floor}:${a.index}`, random);
+		run.bag[received] = (run.bag[received] || 0) + 1;
 		syncExclusiveItems(run);
-		a.log.push(`「成交！」你花费 ${lot.price} 金币，拍得【${lot.item.name}】。`);
+		// Buying a needed signature item completes that search even if Mew transforms the prize.
+		if (run.exclusiveItems?.[lot.item.id]) run.exclusiveItems[lot.item.id].obtained = true;
+		const name = received === lot.item.id ? lot.item.name : inventoryItem(content, received)?.name || received;
+		a.log.push(`「成交！」你花费 ${lot.price} 金币，获得【${name}】。`);
+		if (received !== lot.item.id) a.log.push(`梦幻的奇赠将本次拍得的【${lot.item.name}】转换成了【${name}】。`);
 	} else if (lot.leader >= 0) {
 		a.npcs[lot.leader].budget -= lot.price;
 		a.log.push(`小槌落下，${a.npcs[lot.leader].name}以 ${lot.price} 金币拍下【${lot.item.name}】。`);
@@ -91,7 +101,7 @@ function finishLot(run: RogueRun) {
 			result: [...a.log.slice(-5), '摊主收起绒布：「路还长，下次有好东西再请你来看！」'] });
 	}
 }
-function npcRound(run: RogueRun, playerPassed: boolean) {
+function npcRound(run: RogueRun, content: RogueContent, random: RogueRandom, playerPassed: boolean) {
 	const a = run.auction!, lot = a.lots[a.index];
 	// Circular seat order. One NPC reply after a player bid; passing lets the remaining bidders finish.
 	for (let rounds = 0; rounds < 200; rounds++) {
@@ -105,12 +115,12 @@ function npcRound(run: RogueRun, playerPassed: boolean) {
 			a.log.push(`${a.npcs[i].name}举起牌子：「${bid} 金币。」`);
 			break;
 		}
-		if (!raised) { finishLot(run); return; }
+		if (!raised) { finishLot(run, content, random); return; }
 		if (!playerPassed) return;
 	}
 	throw new Error('竞价未能正常收束。');
 }
-export function chooseAuction(run: RogueRun, choice: string) {
+export function chooseAuction(run: RogueRun, content: RogueContent, random: RogueRandom, choice: string) {
 	const a = run.auction!, event = run.node!.event!;
 	if (!a || a.floor !== run.floor) throw new Error('拍卖已经结束。');
 	event.key = randomUUID();
@@ -132,7 +142,7 @@ export function chooseAuction(run: RogueRun, choice: string) {
 		a.log.push(choice === 'pressure' ? '行商掂量着钱袋，放低了举牌的手。' : '收藏家挺直腰板：「可别小看我的眼光。」');
 		return;
 	}
-	if (choice === 'pass') { npcRound(run, true); return; }
+	if (choice === 'pass') { npcRound(run, content, random, true); return; }
 	const price = (lot.price ? lot.price + lot.step : lot.opening) + (choice === 'jump' ? lot.step * 2 : 0);
 	if (run.money < price) throw new Error('不能报出超出持有金币的价格。');
 	lot.price = price; lot.leader = -1;
@@ -140,5 +150,5 @@ export function chooseAuction(run: RogueRun, choice: string) {
 		if (npc.temperament === 'careful' && price >= lot.willingness[i] * 0.8 && !lot.dropped.includes(i)) lot.dropped.push(i);
 	});
 	a.log.push(`你举牌出价 ${price} 金币。`);
-	npcRound(run, false);
+	npcRound(run, content, random, false);
 }

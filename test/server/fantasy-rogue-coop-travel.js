@@ -9,7 +9,8 @@ const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { createPreviewContent } = require('../../dist/server/fantasy-rogue/preview-content');
 const { createRoguePokemon, initializeExperience } = require('../../dist/server/fantasy-rogue/progression');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
-const { content, set } = require('../fixtures/fantasy-rogue');
+const { blessing } = require('../../dist/sim/rogue-blessing-data');
+const { content, set, firstEventRoute } = require('../fixtures/fantasy-rogue');
 const stats = value => ({ hp: value, atk: value, def: value, spa: value, spd: value, spe: value });
 
 describe('Fantasy Rogue shared travel memories', () => {
@@ -67,7 +68,9 @@ describe('Fantasy Rogue shared travel memories', () => {
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(id => id !== 'travel')
 				.map(id => ({ id, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'travelroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'travelroute' });
+		});
 		assert.equal(member(host).coopEvent.id, 'travel');
 	}
 	function agree(choice) { choose(host, choice); choose(guest, choice); }
@@ -217,6 +220,26 @@ describe('Fantasy Rogue shared travel memories', () => {
 		const retry = start(); assert.equal(member(host).coopEvent.memory.team[0].hp, 1);
 		assert.equal(member(guest).coopEvent.memory.bag.pokeball, 9); retry.team[0].hp = 0;
 		created.rogue.onResult(retry); assert.equal(member(host).team[0].hp, 1);
+	});
+	for (const ending of ['win', 'loss', 'retreat']) it(`handles full-party reserve item costs on memory ${ending}`, () => {
+		enter(); path('road');
+		change(shared => {
+			for (const user of [host, guest]) {
+				const state = shared.adventure.members[user.id];
+				state.team = ['Pikachu', 'Raichu', 'Plusle', 'Minun', 'Pachirisu', 'Dedenne'].map((species, i) =>
+					createRoguePokemon({ ...set(species, 'Run Away', 30, ['Splash']), item: i === 4 ? 'sitrusberry' : '' }, stats(0)));
+				state.blessings.owned.push({ ...blessing('mousefamily'), floor: 1 });
+			}
+		});
+		const result = start(); result.won = ending === 'win';
+		if (ending === 'retreat') result.coopExit = 'retreat';
+		result.blessingEffects = structuredClone(created.rogue.state.blessings);
+		result.partnerBlessingEffects = structuredClone(created.rogue.state.partner.blessings);
+		for (const effects of [result.blessingEffects, result.partnerBlessingEffects]) {
+			effects.party[4].item = ''; effects.party[4].consumedItem = 'sitrusberry';
+		}
+		created.rogue.onResult(result);
+		for (const user of [host, guest]) assert.equal(member(user).team[4].set.item, ending === 'retreat' ? '' : 'sitrusberry');
 	});
 	it('rolls back a gift and permanent unlock if the session write fails', () => {
 		enter(); path(); const before = session(), account = store.get(host.id), update = store.updateCoopSession;

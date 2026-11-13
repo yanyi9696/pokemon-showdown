@@ -16,12 +16,14 @@ const { Teams } = load('sim/teams');
 const { Battle, extractChannelMessages } = load('sim/battle');
 const { PRNG } = load('sim/prng');
 const { rogueBattleResult } = load('sim/fantasy-rogue');
+const { applyRogueGrowth } = load('sim/rogue-growth');
 const { rogueBossChoice } = load('sim/rogue-bosses');
 const { RogueStore } = load('server/fantasy-rogue/store');
 const { RogueEngine } = load('server/fantasy-rogue/engine');
 const { createPreviewContent } = load('server/fantasy-rogue/preview-content');
 const { evolutionOptions } = load('server/fantasy-rogue/progression');
 const { blessingView, fantasyForm } = load('server/fantasy-rogue/blessings');
+const { fantasyConversionOptions } = load('server/fantasy-rogue/fantasy-conversion');
 const { eventView } = load('server/fantasy-rogue/events');
 const { storyView } = load('server/fantasy-rogue/story');
 const { shopStock, machineMoves } = load('server/fantasy-rogue/trading');
@@ -37,6 +39,10 @@ const { RolloutPolicy } = load('server/fantasy-ai/rollout');
 const { DecisionTimeManager } = load('server/fantasy-ai/time-management');
 const { DEFAULT_LIMITS } = load('server/fantasy-ai/types');
 const { enumerateRequestChoices } = load('server/fantasy-ai/actions');
+const { enumerateDoublesChoices } = load('server/fantasy-ai/doubles-actions');
+const { splitCoopOpponents } = load('server/fantasy-rogue/coop-team');
+const { PlaytestCoopNPC, PlaytestNPC } = require('./fantasy-rogue-playtest-npc');
+const { rankDoublesChoices } = playerLoad('server/fantasy-ai/doubles-policy');
 const { companionView } = load('server/fantasy-rogue/companions');
 const { RIVAL_STYLES } = load('server/fantasy-rogue/rival-responses');
 const { BEGINNER_GUIDE } = load('server/fantasy-rogue/beginner-guide');
@@ -48,6 +54,7 @@ const assert = require('assert').strict;
 const profile = process.argv.find(a => a.startsWith('--profile='))?.split('=')[1] || 'prepared6';
 if (!['prepared6', 'newcomer', 'experienced'].includes(profile)) throw Error('Unknown playstyle');
 const newcomer = profile === 'newcomer';
+const soloDoubles = process.argv.includes('--solo-doubles');
 const seed = Number(process.argv[2] || 1), stop = Number(process.argv[3] || 200);
 const desiredTier = process.argv[4] || 'adaptive';
 const difficultyArg = process.argv.find(a => a.startsWith('--difficulty='))?.split('=')[1] || '0';
@@ -66,9 +73,11 @@ const guided = fs.existsSync(out + '/guided-preparation.json') ? JSON.parse(fs.r
 const dex = Dex.mod('gen9fantasy'), content = {...createPreviewContent(), story: true};
 const rng = new PRNG(savedDriver?.rng || [2026, 10, 22, seed]);
 const store = new RogueStore(out + '/campaign.db'), engine = new RogueEngine(store, content, max => rng.random(max));
-const user = 'preparedqa', events = [], metrics = savedDriver?.metrics || { profile, seed, starter, starters, startingSlots: 2, desiredTier, difficulty, driverVersion: 9,
+const user = 'preparedqa', events = [], metrics = savedDriver?.metrics || { profile, seed, starter, starters, startingSlots: 2, desiredTier, difficulty, driverVersion: 14,
 	driverHash: require('crypto').createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
-	conditions: { playstyle: newcomer ? 'Knows Pokemon: balanced candy feeding, simple route/bonus choices, immediate battle policy, no blessing rerolls' : 'Knows Pokemon and Rogue: two-core training, reward-aware routes, blessing rerolls, boss search and displayed roster preparation', spirit: false, statBoosts: 0, slotPurchase: 20, hiddenOpponentState: false, enemyBossSearchBudgetMs: 4500 },
+	conditions: { playstyle: newcomer ? 'Knows Pokemon: balanced candy feeding, simple route/bonus choices, immediate battle policy, no blessing rerolls' : 'Knows Pokemon and Rogue: two-core training, reward-aware routes, blessing rerolls, boss search and displayed roster preparation', spirit: soloDoubles ? 'latios' : false,
+		spiritEntitlementFixture: soloDoubles, soloDoubles, playerDoublesPolicy: newcomer ? 'tactical-baseline' : 'joint-turn-ranking',
+		statBoosts: 0, slotPurchase: 20, hiddenOpponentState: false, enemyBossSearchBudgetMs: 4500 },
 	battles: [], purchases: [], floors: [], choices: [], issues: [], started: new Date().toISOString()};
 const checkpoint = () => fs.writeFileSync(out + '/driver-state.json', JSON.stringify({rng: rng.getSeed(), metrics}));
 const account = () => store.get(user), run = () => account().run;
@@ -159,8 +168,16 @@ function preparation() {
 		if (engine.canEmergency(r) && r.money >= emergencyCost(r.floor)) { cmd('emergency'); continue; }
 		const evolver = r.team.find(m => m.hp && evolutionOptions(m, r).some(e => !e.item || r.bag[e.item] > 0));
 		if (evolver) {cmd('evolve', {member: evolver.id, value: toID(evolutionOptions(evolver, r).find(e => !e.item || r.bag[e.item] > 0).species)}); continue;}
-		const fantasy = r.team.filter(m => m.hp && fantasyForm(m.set.species)).sort((a, b) => strength(b) - strength(a))[0];
-		if (r.blessings.shards >= 100 && fantasy && ['choose', 'ready', 'rest', 'reward'].includes(r.phase)) {cmd('fantasize', {member: fantasy.id}); continue;}
+		const fantasy = r.team.filter(m => m.hp && fantasyForm(m.set.species) &&
+			!m.fusion && !m.formFusion && !m.nuzlockeDead &&
+			!(r.blessings.owned.some(b => b.family === 'kid') && toID(m.set.item) === 'eviolite'))
+			.sort((a, b) => strength(b) - strength(a))[0];
+		if (r.blessings.shards >= 100 && fantasy && ['choose', 'ready', 'rest', 'reward'].includes(r.phase)) {
+			const preview = fantasyConversionOptions(fantasy)[0];
+			record('fantasy-confirmation', { floor: r.floor, member: fantasy.id, preview });
+			cmd('fantasize', { member: fantasy.id, value: preview.species, confirmed: true });
+			continue;
+		}
 		const candy = items.filter(i => i.kind === 'candy').sort((a, b) => b.amount - a.amount)[0];
 		if (candy) {
 		const eligible = r.team.filter(m => m.hp && !m.egg && !m.fixedLevel && (m.uncappedLevel || m.set.level < 100));
@@ -237,55 +254,150 @@ function preparation() {
 	}
 	throw Error('Preparation loop exceeded limit');
 }
-function combat() {
+async function combat() {
 	const r = run(), encounter = r.node.encounters[r.encounter], ticket = r.battle, state = engine.battleState(user);
 	if (r.node.kind === 'boss') fs.writeFileSync(`${out}/boss-${r.floor}-${metrics.battles.length + 1}.json`,
 		JSON.stringify({ account: account(), encounter, state }));
-	const cooperative = encounter.cooperative, format = cooperative ? 'gen9fantasyroguecoop' : 'gen9fantasyrogue';
-	const ownTeam = state.team.filter(m => !m.egg), enemyTeam = cooperative ? encounter.team.slice(0, Math.ceil(encounter.team.length / 2)) : encounter.team;
+	const cooperative = encounter.cooperative, doubles = !!r.doubleBattle && !cooperative;
+	const format = cooperative ? 'gen9fantasyroguecoop' : doubles ? 'gen9fantasyroguedoubles' : 'gen9fantasyrogue';
+	const ownTeam = state.team.filter(m => !m.egg);
+	const opponentTeam = encounter.team.filter((_, i) => state.opponentSlots.includes(i));
+	const partition = cooperative && splitCoopOpponents(opponentTeam, state.opponentSlots);
+	if (state.cooperative && partition) {
+		state.cooperative.opponentOffset = partition.opponentOffset;
+		state.opponentSlots = partition.opponentSlots;
+	}
+	const enemyTeam = partition?.first || opponentTeam;
 	const requests = {};
+	const npcRequests = [];
+	const notifications = [];
+	const choiceErrors = [];
 	const battle = new Battle({formatid: format, seed: [2026, seed, r.floor, metrics.battles.length + 1], fantasyRogue: state,
 		send(type, packet) {
+			if (type === 'sideupdate' && typeof packet === 'string' && /^\|error\|/.test(packet.slice(3))) {
+				choiceErrors.push({ side: packet.slice(0, 2), error: packet.slice(3) });
+			}
+			if (['fantasyrogueprogress', 'fantasyroguecapture', 'fantasyroguenuzlocke'].includes(type)) {
+				notifications.push({ type, data: JSON.parse(packet) });
+			}
 			// Campaign controls (balls, robe activation, etc.) are present in the wire
 			// request, not Side.activeRequest. Consume the same payload as the client.
 			if (type === 'sideupdate' && typeof packet === 'string' && packet.slice(3).startsWith('|request|')) {
 				requests[packet.slice(0, 2)] = JSON.parse(packet.slice(12));
+				if ((cooperative || doubles) && packet.slice(0, 2) !== 'p1') {
+					npcRequests.push({ side: packet.slice(0, 2), request: structuredClone(requests[packet.slice(0, 2)]) });
+				}
 			}
 		},
 		p1: {name: 'Prepared Player', team: ownTeam.map(m => m.set)}, p2: {name: 'NPC', team: enemyTeam},
 		...(cooperative ? {p3: {name: cooperative.name, team: cooperative.team},
-			p4: {name: 'NPC Partner', team: encounter.team.slice(Math.ceil(encounter.team.length / 2))}} : {})});
+			p4: { name: 'NPC Partner', team: partition.second } } : {}) });
 	const { RogueCoopController } = load('server/fantasy-rogue/coop-controller');
 	const wild = !encounter.trainer && r.node.kind !== 'trainer' && encounter.boss?.kind !== 'summit';
 	const coop = cooperative && new RogueCoopController({options: {fantasyRogue: {wild}}});
+	const npcDecisions = [];
+	const npc = (cooperative || doubles) && new (cooperative ? PlaytestCoopNPC : PlaytestNPC)(load, {
+		roomId: `playtest-${seed}-${r.floor}-${metrics.battles.length}`, format, state, wild,
+		boss: r.node.kind === 'boss', optionalChallenge: !!r.node.challenge,
+		trainer: { id: 'playtest-npc', format, style: encounter.style, packedTeam: Teams.pack(enemyTeam),
+			keyMembers: [], resourcePreferences: [] },
+		onDecision: decision => npcDecisions.push({ turn: battle.turn, ...decision }),
+	});
 	const views = [new InformationView({ownSide: 'p1', difficulty: 'normal', partySize: enemyTeam.length,
 		rogueBoosts: r.boosts, rogueBlessings: state.blessings}),
-	new InformationView({ownSide: 'p2', difficulty: 'normal', ...(!cooperative ? {opponentMoves: captureInitialMoves(battle, 'p1')} : {}), partySize: ownTeam.length,
+	new InformationView({ownSide: 'p2', difficulty: 'normal', ...(!cooperative && !doubles ? {opponentMoves: captureInitialMoves(battle, 'p1')} : {}), partySize: ownTeam.length,
 		rogueBoosts: r.boosts, rogueBlessings: state.blessings})];
 	const playerTrainer = {format, style: 'balanced', packedTeam: Teams.pack(ownTeam.map(m => m.set)), keyMembers: [], resourcePreferences: ['mega', 'zmove', 'terastallize']};
-	const player = !cooperative && new (playerLoad('server/fantasy-ai/policy').RulePolicy)(playerTrainer);
-	const preparedPlayer = !cooperative && new (playerLoad('server/fantasy-ai/rollout').RolloutPolicy)(playerTrainer);
-	const opponent = !cooperative && new RolloutPolicy({format, style: encounter.style, packedTeam: Teams.pack(enemyTeam), keyMembers: [], resourcePreferences: []});
+	const player = !cooperative && !doubles && new (playerLoad('server/fantasy-ai/policy').RulePolicy)(playerTrainer);
+	const preparedPlayer = !cooperative && !doubles && new (playerLoad('server/fantasy-ai/rollout').RolloutPolicy)(playerTrainer);
+	const opponent = !cooperative && !doubles && new RolloutPolicy({format, style: encounter.style, packedTeam: Teams.pack(enemyTeam), keyMembers: [], resourcePreferences: []});
 	const timing = new DecisionTimeManager(DEFAULT_LIMITS);
 	let cursor = 0, catches = 0, rejected = 0, decisions = 0, enemySearchMs = 0;
 	const decisionLog = [];
+	function acknowledgeGrowth() {
+		// The same trusted sequence/revision acknowledgement as RogueManager.resumeGrowth.
+		// Only protocol metadata changes here: experience and party changes come from engine commands.
+		const updated = store.change(user, saved => {
+			const current = saved.run;
+			assert.equal(current.battle.token, ticket.token);
+			current.battle.growthPaused = !!current.pendingMoves?.length ||
+				current.team.some(mon => mon.hp > 0 && mon.evolutionNotice);
+			current.battle.growthRevision = (current.battle.growthRevision || 0) + 1;
+			if (current.battle.checkpoint) {
+				current.battle.checkpoint.team = structuredClone(current.team);
+				current.battle.checkpoint.bag = { ...current.bag };
+			}
+		}).run;
+		applyRogueGrowth(battle, { sequence: updated.battle.growthSequence,
+			revision: updated.battle.growthRevision, team: updated.team, bag: updated.bag,
+			paused: updated.battle.growthPaused });
+	}
+	function drainNotifications() {
+		while (notifications.length) {
+			const { type, data } = notifications.shift();
+			if (type === 'fantasyroguecapture') engine.capture(user, ticket.token, data.captured, data.result);
+			else if (type === 'fantasyroguenuzlocke') engine.nuzlockeProgress(user, ticket.token, data);
+			else {
+				engine.progressBattle(user, ticket.token, data.sequence, data.result);
+				acknowledgeGrowth();
+				for (let choices = 0; run().battle?.growthPaused && choices < 100; choices++) {
+					const current = run(), pending = current.pendingMoves?.[0];
+					const evolved = current.team.find(mon => mon.hp > 0 && mon.evolutionNotice);
+					if (pending) {
+						const mon = current.team.find(entry => entry.id === pending.member);
+						const worst = mon.set.moves.map((move, slot) => ({ slot, value: moveValue(move, mon) }))
+							.sort((a, b) => a.value - b.value)[0];
+						const value = mon.set.moves.length < 4 ? String(mon.set.moves.length) :
+							moveValue(pending.move, mon) > worst.value ? String(worst.slot) : 'skip';
+						cmd('learn', { member: mon.id, value });
+					} else if (evolved) cmd('evolutionnotice', { member: evolved.id });
+					else throw Error('Growth pause has no supported player decision');
+					acknowledgeGrowth();
+				}
+				assert(!battle.fantasyRogue.growthWaiting, 'all current growth choices must finish before combat resumes');
+				record('live-growth', { floor: r.floor, sequence: data.sequence,
+					levels: run().team.map(mon => mon.set.level), waiting: false });
+			}
+		}
+	}
 	try {
 		for (let step = 0; !battle.ended && step < 4000; step++) {
+			drainNotifications();
 			if (step % 10 === 0) fs.writeFileSync(out + '/live-battle.json', JSON.stringify({floor: r.floor, name: encounter.trainer?.name || r.node.name, turn: battle.turn, step}));
 			if (battle.turn > 300) throw Error('Unfinished battle exceeded 300 turns; no forced settlement');
 			const update = battle.log.slice(cursor).join('\n'); cursor = battle.log.length;
 			const publicUpdate = extractChannelMessages(update, [0])[0].join('\n');
 			for (const view of views) view.receiveUpdate(publicUpdate);
 			if (coop) coop.update(publicUpdate);
+			if (npc) {
+				npc.update(publicUpdate);
+				for (const entry of npcRequests.splice(0)) npc.request(entry.side, entry.request);
+				for (let retry = 0; retry < 4; retry++) {
+					const commands = await npc.flush();
+					let invalid = false;
+					for (const { side, choice } of commands) {
+						decisionLog.push({ turn: battle.turn, side, choice, source: cooperative ? 'production-coop-controller' : 'production-ai-controller' }); decisions++;
+						if (!battle.choose(side, choice)) {
+							rejected++; invalid = true; npc.invalidChoice(side);
+						}
+					}
+					if (!invalid) break;
+					if (retry === 3) throw Error('Native NPC retries exceeded limit');
+				}
+			}
 			for (let i = 0; i < battle.sides.length; i++) {
+				if (npc && i > 0) continue;
 				const side = battle.sides[i], request = requests[side.id];
 				if (battle.ended || !request || request.wait || side.isChoiceDone()) continue;
 				const observation = i < 2 ? views[i].observe(request) : undefined;
 				let choice;
 				try {
 				if (cooperative) {
-					choice = coop.choose(i === 0 ? 'p3' : side.id, request);
-					if (i === 0) choice = choice.replace(/^(move \d+) -([12])/, (_, move, loc) => move + ' -' + (loc === '1' ? '2' : '1'));
+						choice = coop.choose('p3', request).replace(/^(move \d+) -([12])/, (_, move, loc) => move + ' -' + (loc === '1' ? '2' : '1'));
+						const legal = enumerateDoublesChoices(request, { mod: 'gen9fantasy', allowSwitch: true });
+						choice = legal.find(entry => entry.choice === choice)?.choice || legal[0]?.choice || 'default';
+					} else if (doubles) {
+						choice = rankDoublesChoices(observation, format, [], true, undefined, !newcomer)[0]?.choice || 'default';
 					} else if (!i) choice = !newcomer && r.node.kind === 'boss' ?
 					preparedPlayer.decide(observation, [2026, seed, r.floor, step + 1], {budgetMs: 4500, maxRollouts: null, excluded: avoidWastedMoves(observation)}).choice :
 					player.decide(observation, [2026, seed, r.floor, step + 1], avoidWastedMoves(observation)).choice;
@@ -310,13 +422,14 @@ function combat() {
 				} catch (error) {
 					// Production scheduler also returns its legal fallback when a worker fails.
 					metrics.issues.push({floor: r.floor, reason: 'policy-fallback', side: side.id, error: error.message});
-					choice = cooperative ? 'default' : emergencyChoice(observation, format, [], true);
+					choice = cooperative || doubles ? 'default' : emergencyChoice(observation, format, [], true);
 				}
 				if (!i && request.fantasyRogue?.dragonKing?.pending) {
 					const king = request.fantasyRogue.dragonKing; choice = 'rogueking ' + king.options[0] + ' ' + king.token;
 				}
 				if (!i && r.preview?.stage !== 'running' && request.fantasyRogue?.catchable && !request.forceSwitch && !request.teamPreview && catches < 5) {
-					const line = extractChannelMessages(battle.log.join('\n'), [0])[0].filter(l => /^\|(switch|drag)\|p2/.test(l)).at(-1);
+					const line = extractChannelMessages(battle.log.join('\n'), [0])[0]
+						.filter(l => (doubles ? /^\|(switch|drag)\|p2a:/ : /^\|(switch|drag)\|p2/).test(l)).at(-1);
 					const species = dex.species.get(line?.split('|')[3]?.split(',')[0] || '');
 					const level = Number(/, L(\d+)/.exec(line || '')?.[1]) || 1;
 					const candidate = {id: 'visible-foe', set: {species: species.name, level}};
@@ -326,7 +439,12 @@ function combat() {
 						!(battle.fantasyRogue.captures || []).some(m => dex.species.get(m.set.species).baseSpecies === species.baseSpecies) &&
 						(r.team.length < 6 || partyValue(candidate) > Math.min(...r.team.map(partyValue)) + 20);
 					const ball = request.fantasyRogue.balls?.filter(b => b.count > 0).sort((a, b) => b.chance - a.chance)[0];
-					if (want && ball && ball.chance >= (r.team.length < 4 || species.bst >= 600 ? .2 : .35)) {choice = 'rogueball ' + ball.id; catches++;}
+					if (want && ball && ball.chance >= (r.team.length < 4 || species.bst >= 600 ? .2 : .35)) {
+						// Solo doubles uses one player's first action for the ball; the second
+						// member still chooses normally, as in BattleRoom.nextChoice().
+						const partnerChoice = doubles ? choice.split(',').slice(1).join(',').trim() : '';
+						choice = 'rogueball ' + ball.id + (partnerChoice ? ', ' + partnerChoice : ''); catches++;
+					}
 				}
 				if (request.teamPreview && /^team [1-9]+$/.test(choice || '')) {
 					// The generic policy may rank an already fainted campaign member first.
@@ -349,17 +467,19 @@ function combat() {
 				decisionLog.push({turn: battle.turn, side: side.id, choice}); decisions++;
 				if (!choice || !battle.choose(side.id, choice)) {
 					rejected++;
-					const retry = cooperative ? 'default' : emergencyChoice(observation, format, choice ? [choice] : [], true);
+					const retry = doubles ? rankDoublesChoices(observation, format, choice ? [choice] : [], true)[0]?.choice || 'default' :
+						cooperative ? 'default' : emergencyChoice(observation, format, choice ? [choice] : [], true);
 					if (!battle.choose(side.id, retry)) throw Error(`Rejected combat choice: ${choice} / ${retry}`);
 				}
 			}
 		}
+		drainNotifications();
 		if (!battle.ended) throw Error('Native request loop exhausted; no forced settlement');
 		const result = rogueBattleResult(battle);
 		engine.settle(user, ticket.token, result);
 		const row = {floor: r.floor, kind: r.node.kind, name: encounter.trainer?.name || r.node.name, biome: r.node.biome?.id, preview: r.preview?.stage === 'running',
-			won: result.won, cooperative: !!cooperative, turns: battle.turn, faints: battle.log.filter(l => l.startsWith('|faint|p1')).length,
-			caught: result.captures?.length || 0, decisions, enemySearchMs, rejected,
+			won: result.won, cooperative: !!cooperative, doubles, format, turns: battle.turn, faints: battle.log.filter(l => l.startsWith('|faint|p1')).length,
+			caught: result.captures?.length || 0, decisions, enemySearchMs, rejected, choiceErrors, npcDecisions,
 			team: ownTeam.map(m => ({species: m.set.species, level: m.set.level, hp: m.hp, maxhp: m.maxhp, ability: m.set.ability, item: m.set.item, moves: m.set.moves, stats: m.stats})),
 			after: result.team.map(m => ({species: m.set.species, level: m.set.level, hp: m.hp, maxhp: m.maxhp})),
 			foe: encounter.team.map(m => ({species: m.species, level: m.level})),
@@ -373,229 +493,295 @@ function combat() {
 		fs.writeFileSync(`${out}/interrupted-${r.floor}.log`, battle.log.join('\n'));
 		fs.writeFileSync(`${out}/interrupted-${r.floor}-requests.json`, JSON.stringify(requests));
 		throw error;
-	} finally {battle.destroy();}
+	} finally { if (npc) await npc.finish(); battle.destroy(); }
 }
 
 
-try {
-	if (resumed) engine.migrate(user);
-	if (resumed) record('resume', {floor: run()?.floor, phase: run()?.phase, profile,
-		driverHash: require('crypto').createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
-		guided, reason: 'continue same persisted campaign after driver maintenance; all prior settled outcomes retained'});
-	if (resumed && process.argv.includes('--recover-interrupted') && run()?.phase === 'battle') {
-		const live = JSON.parse(fs.readFileSync(out + '/live-battle.json', 'utf8'));
-		record('interrupted-recovery', {floor: run().floor, lastObservedTurn: live.turn,
-			reason: 'Stopped an unsettled repeated-policy probe; production missing-room recovery preserves all previously settled losses. Not an uninterrupted clear.'});
-		engine.recover(user, run().battle.token);
-	}
-	if (!resumed) {
-		cmd('onboarding'); record('guide', {sections: BEGINNER_GUIDE}); cmd('upgrade', {value: 'slot'});
-		assert.equal(account().slots, 2); assert.equal(account().points, 0);
-		assert(Object.values(account().boosts).every(value => value === 0));
-	for (let i = 0; i < 20; i++) {
-		const opening = storyView(account(), true, false);
-		if (!opening?.key) break;
-		cmd('storynext', {value: opening.key});
-	}
-		cmd('start', { starters, useSpirit: false, difficulty });
-	}
-	let previousFloor = 0;
-	for (let step = 0; step < 50000; step++) {
-		let r = run();
-		if (r.floor !== previousFloor) {
-			previousFloor = r.floor; metrics.floors.push({floor: r.floor, money: r.money, team: r.team.map(m => ({species: m.egg ? 'Egg' : m.set.species, level: m.egg ? undefined : m.set.level, hp: m.hp, maxhp: m.maxhp})), bag: r.bag});
-			fs.writeFileSync(out + '/progress.json', JSON.stringify(metrics));
-			if (r.floor % 10 === 1) console.log(JSON.stringify({progress: r.floor, money: r.money, team: metrics.floors.at(-1).team}));
+async function main() {
+	try {
+		if (resumed) {
+			assert.equal(metrics.driverVersion, 14, 'Use a fresh output directory for the doubles campaign driver');
+			assert.equal(metrics.conditions.soloDoubles, soloDoubles, 'Cannot resume under a different battle mode');
+			assert.equal(metrics.conditions.spiritEntitlementFixture, soloDoubles, 'Cannot resume a local spirit test as a normal campaign');
+			assert.equal(metrics.profile, profile, 'Cannot resume under a different playstyle');
+			assert.equal(metrics.seed, seed, 'Cannot resume under a different seed');
+			assert.equal(metrics.difficulty, difficulty, 'Cannot resume under a different difficulty');
+			assert.equal(metrics.desiredTier, desiredTier, 'Cannot resume under a different blessing policy');
 		}
-		if (r.floor > stop || r.phase === 'complete' && !r.story) break;
-		if (r.comeback?.pending) {
-			const c = r.comeback.pending;
-			cmd('comeback', {member: c.key, value: c.answer ? 'continue' : !c.page ? 'next' : 'yes'}); continue;
+		if (resumed) engine.migrate(user);
+		if (resumed) record('resume', { floor: run()?.floor, phase: run()?.phase, profile,
+			driverHash: require('crypto').createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
+			guided, attritionRetry, tacticalRetry,
+			reason: 'continue same persisted campaign after driver maintenance; all prior settled outcomes retained' });
+		if (resumed && process.argv.includes('--recover-interrupted') && run()?.phase === 'battle') {
+			const live = JSON.parse(fs.readFileSync(out + '/live-battle.json', 'utf8'));
+			record('interrupted-recovery', { floor: run().floor, lastObservedTurn: live.turn,
+				reason: 'Stopped an unsettled repeated-policy probe; production missing-room recovery preserves all previously settled losses. Not an uninterrupted clear.' });
+			engine.recover(user, run().battle.token);
 		}
-		const story = storyView(account(), true, false);
-		if (story?.key) {record('dialogue', {floor: r.floor, story}); cmd('storynext', {value: story.key}); continue;}
-		if (story?.stage === 'cards') {cmd('startcard', {value: 'all'}); continue;}
-		if (r.phase === 'battle') {combat(); if (stopAfterBattle) break; continue;}
-		if (r.preview?.stage === 'result') {
-			const accept = r.preview.result.won && !(r.node.encounters[r.encounter].catchable && r.team.length < 6);
-			cmd('previewresult', {value: accept ? 'accept' : 'personal'}); continue;
-		}
-		if (r.phase === 'defeated') {metrics.issues.push({floor: r.floor, reason: 'actual-terminal-defeat', failure: r.failure}); break;}
-		if (r.companionInvitations?.length) {
-			const invitation = r.companionInvitations[0];
-			cmd('companioninvite', {member: invitation.key, value: travellingRoster(r).length < 2 ? 'accept' : 'decline'}); continue;
-		}
-		if (r.pendingMoves?.length) {
-			const p = r.pendingMoves[0], mon = r.team.find(m => m.id === p.member);
-			const worst = mon.set.moves.map((m, slot) => ({slot, value: moveValue(m, mon)})).sort((a, b) => a.value - b.value)[0];
-			cmd('learn', {member: mon.id, value: moveValue(p.move, mon) > worst.value ? String(worst.slot) : 'skip'}); continue;
-		}
-		if (r.pendingCapture) {
-			const worst = r.team.slice().sort((a, b) => partyValue(a) - partyValue(b))[0];
-			cmd('replace', {value: r.team.length < partyLimit() ? 'join' : partyValue(r.pendingCapture) > partyValue(worst) ? worst.id : 'release'}); continue;
-		}
-		if (r.phase === 'blessing') {
-			const b = blessingView(r), p = b.pending[0];
-			if (p) {
-				let value = p.options?.[0]?.id;
-				if (p.kind === 'gift') {const worst = r.team.slice().sort((a, b) => strength(a) - strength(b))[0]; value = r.team.length < partyLimit() ? 'join' : strength(p.pokemon) > strength(worst) ? worst.id : 'release';}
-				if (p.kind === 'ability') value = p.options.find(o => o.id !== 'hugepower' && o.id !== 'skip')?.id || value;
-				if (['target', 'solo'].includes(p.kind)) value = r.team.filter(m => p.options.some(o => o.id === m.id)).sort((a, b) =>
-					((b.stats?.spa || 0) + b.set.level * 3 + (b.initialPartner ? 50 : 0)) - ((a.stats?.spa || 0) + a.set.level * 3 + (a.initialPartner ? 50 : 0)))[0]?.id || value;
-				cmd('blessingreward', {member: p.id, value}); continue;
+		if (!resumed) {
+			cmd('onboarding'); record('guide', { sections: BEGINNER_GUIDE }); cmd('upgrade', { value: 'slot' });
+			assert.equal(account().slots, 2); assert.equal(account().points, 0);
+			assert(Object.values(account().boosts).every(value => value === 0));
+			if (soloDoubles) {
+				// Isolated fixture: the right to select Latios, no resources or past clear
+				// rewards. Use the real selector, so normal mainline/rules remain enabled.
+				store.change(user, saved => {
+					saved.spiritUnlocked = true;
+					saved.spiritClearTiers = { latios: difficulty };
+				});
+				record('isolated-spirit-entitlement', { spirit: 'latios', tier: difficulty,
+					reason: 'Selection permission only. No currency, inventory, stat boosts, or clear rewards granted.' });
 			}
-			if (b.stage) {cmd('blessing', {value: b.stage.options.find(o => o.id === 'moves' || o.id === 'power' || o.id === 'stat:spa')?.id || b.stage.options[0].id}); continue;}
-			const choices = b.round.options.map((o, slot) => ({...o, slot})).filter(o => !o.chosen);
-			// A Rogue-aware player can spend the public, once-per-run quality reroll
-			// to avoid an all-prismatic opening tax before a team has formed.
-			if (!newcomer && r.floor === 1 && !b.qualityLocked && !b.qualityRerolled &&
-				choices.every(o => o.tier === 'prismatic') && desiredTier === 'adaptive') {
-				cmd('blessingquality'); continue;
+			for (let i = 0; i < 20; i++) {
+				const opening = storyView(account(), true, false);
+				if (!opening?.key) break;
+				cmd('storynext', { value: opening.key });
+		}
+			cmd('start', { starters, useSpirit: soloDoubles, difficulty, ...(soloDoubles ? { selectedSpirit: 'latios' } : {}) });
+			assert.equal(run().doubleBattle, soloDoubles);
+			if (soloDoubles) {
+				assert.equal(run().spirit, 'latios');
+				assert.equal(run().difficultyTest, false);
 			}
-			const priority = {medic: 130, restinball: 135, hpgrowth: 115, powerchoice: 105, ordinary: 100, friend: 92,
-				eventtask: 88, battletask: 86, money: 84, bigmoney: 80, hero: 78, drain: 75, execute: 74,
-				arsenal: 105, capturebonus: 70, bond: 90, insight: 65, cephalosporin: 60, reservation: 74, supercombo: 78,
-				godrobe: 102, puregodrobe: 99, spiral: 106, speedpower: 103, fantasysix: 108,
-				bignumber: 110, supernumber: 170, sololeveling: 110, spindance: 90, weighttraining: 78,
-				cats: 104, dogs: 80, potara: 45, companionai: 150, weakness: 95, weaknessarmor: 80 };
-			const score = o => {
-				const family = o.family || o.id;
-				if (newcomer) return (['medic', 'hpgrowth', 'money', 'friend', 'hero', 'companionai'].includes(family) ? 75 : 30) + (o.tier === 'silver' ? 10 : o.tier === 'gold' ? 5 : 0);
-				let value = (priority[family] || 25) + (o.tier === 'silver' ? 10 : o.tier === 'gold' ? 0 : -15);
-				if (profile === 'experienced' && family === 'sololeveling') value -= 300;
-				if (family === 'cats' && r.team.filter(m => petSpecies(m.set.species, 'cats')).length < 2) value -= 70;
-				if (family === 'weaknessarmor' && !r.team.some(m => !m.egg &&
-					load('sim/rogue-weakness').weaknessProfile(dex.species.get(m.set.species).types).quadruple)) value -= 80;
-				if (family === desiredTier) value += 400;
-				if (r.floor === 1) {
-					value -= o.tier === 'prismatic' ? 30 : o.tier === 'gold' ? 15 : 0;
-					if (['fantasysix', 'bond', 'puregodrobe', 'ordinary'].includes(family)) value -= 40;
-					if (family === 'powerchoice') value += 60;
-					if (['godrobe', 'hero', 'friend'].includes(family)) value += 30;
+		}
+		let previousFloor = 0;
+		for (let step = 0; step < 50000; step++) {
+			let r = run();
+			if (r.floor !== previousFloor) {
+				previousFloor = r.floor; metrics.floors.push({ floor: r.floor, money: r.money, team: r.team.map(m => ({ species: m.egg ? 'Egg' : m.set.species, level: m.egg ? undefined : m.set.level, hp: m.hp, maxhp: m.maxhp })), bag: r.bag });
+				fs.writeFileSync(out + '/progress.json', JSON.stringify(metrics));
+				if (r.floor % 10 === 1) console.log(JSON.stringify({ progress: r.floor, money: r.money, team: metrics.floors.at(-1).team }));
+			}
+			if (r.floor > stop || r.phase === 'complete' && !r.story) break;
+			if (r.comeback?.pending) {
+				const c = r.comeback.pending;
+				cmd('comeback', { member: c.key, value: c.answer ? 'continue' : !c.page ? 'next' : 'yes' }); continue;
+			}
+			const story = storyView(account(), true, false);
+			if (story?.key) {
+				record('dialogue', { floor: r.floor, story });
+				const option = story.options?.find(entry => !entry.disabled);
+				if (option) cmd('mainlinechoice', { value: story.key, member: option.id });
+				else cmd('storynext', { value: story.key });
+				continue;
+			}
+			if (story?.stage === 'cards') { cmd('startcard', { value: 'all' }); continue; }
+			if (r.phase === 'intro' && r.spirit && (!r.story || r.story.stage === 'spiritEffect')) {
+				cmd('spiritack'); continue;
+			}
+			if (r.phase === 'battle') {
+				await combat();
+				if (stopAfterBattle) break;
+				continue;
+			}
+			if (r.preview?.stage === 'result') {
+				const accept = r.preview.result.won && !(r.node.encounters[r.encounter].catchable && r.team.length < 6);
+				cmd('previewresult', { value: accept ? 'accept' : 'personal' }); continue;
+			}
+			if (r.phase === 'defeated') { metrics.issues.push({ floor: r.floor, reason: 'actual-terminal-defeat', failure: r.failure }); break; }
+			if (r.companionInvitations?.length) {
+				const invitation = r.companionInvitations[0];
+				cmd('companioninvite', { member: invitation.key, value: travellingRoster(r).length < 2 ? 'accept' : 'decline' }); continue;
+			}
+			if (r.pendingMoves?.length) {
+				const p = r.pendingMoves[0], mon = r.team.find(m => m.id === p.member);
+				const worst = mon.set.moves.map((m, slot) => ({ slot, value: moveValue(m, mon) })).sort((a, b) => a.value - b.value)[0];
+				const value = mon.set.moves.length < 4 ? String(mon.set.moves.length) :
+					moveValue(p.move, mon) > worst.value ? String(worst.slot) : 'skip';
+				cmd('learn', { member: mon.id, value }); continue;
+			}
+			if (r.pendingCapture) {
+				const worst = r.team.slice().sort((a, b) => partyValue(a) - partyValue(b))[0];
+				cmd('replace', { member: r.pendingCapture.id, confirmed: true,
+					value: r.team.length < partyLimit() ? 'join' : partyValue(r.pendingCapture) > partyValue(worst) ? worst.id : 'release' });
+				continue;
+			}
+			if (r.phase === 'blessing') {
+				const b = blessingView(r), p = b.pending[0];
+				if (p) {
+					let value = p.options?.[0]?.id;
+					if (p.kind === 'compound' && p.compound.stage === 'allocate') {
+						const points = p.compound.points, stats = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+						const evs = Object.fromEntries(stats.map(stat => [stat, newcomer ? Math.floor(points / 6) : 0]));
+						const attack = p.compound.baseStats.atk > p.compound.baseStats.spa ? 'atk' : 'spa';
+						if (!newcomer) { evs.hp = Math.floor(points / 4); evs.spe = Math.floor(points / 4); }
+						evs[attack] += points - Object.values(evs).reduce((sum, amount) => sum + amount, 0);
+						cmd('blessingreward', { member: p.id, value: 'allocate', evs }); continue;
+					}
+					if (p.kind === 'gift') { const worst = r.team.slice().sort((a, b) => strength(a) - strength(b))[0]; value = r.team.length < partyLimit() ? 'join' : strength(p.pokemon) > strength(worst) ? worst.id : 'release'; }
+					if (p.kind === 'ability') value = p.options.find(o => o.id !== 'hugepower' && o.id !== 'skip')?.id || value;
+					if (['target', 'solo'].includes(p.kind)) value = r.team.filter(m => p.options.some(o => o.id === m.id)).sort((a, b) =>
+						((b.stats?.spa || 0) + b.set.level * 3 + (b.initialPartner ? 50 : 0)) - ((a.stats?.spa || 0) + a.set.level * 3 + (a.initialPartner ? 50 : 0)))[0]?.id || value;
+					cmd('blessingreward', { member: p.id, value, confirmed: p.kind === 'gift' }); continue;
 				}
-				return value;
-			};
-			choices.sort((a, b) => score(a) - score(b));
-			const matching = choices.filter(o => o.tier === desiredTier || o.family === desiredTier);
-			let pick = matching.at(-1) || choices.at(-1);
-			if (!newcomer && score(pick) < (r.floor === 1 ? 105 : 65)) {
-				const reroll = choices.find(o => o.refreshes > 0);
-				if (reroll) {cmd('blessingrefresh', {slot: reroll.slot}); continue;}
-			}
+				if (b.stage) { cmd('blessing', { value: b.stage.options.find(o => o.id === 'moves' || o.id === 'power' || o.id === 'stat:spa')?.id || b.stage.options[0].id }); continue; }
+				const choices = b.round.options.map((o, slot) => ({ ...o, slot })).filter(o => !o.chosen);
+				// A Rogue-aware player can spend the public, once-per-run quality reroll
+				// to avoid an all-prismatic opening tax before a team has formed.
+				if (!newcomer && r.floor === 1 && !b.qualityLocked && !b.qualityRerolled &&
+					choices.every(o => o.tier === 'prismatic') && desiredTier === 'adaptive') {
+					cmd('blessingquality'); continue;
+				}
+				const priority = { medic: 130, restinball: 135, hpgrowth: 115, powerchoice: 105, ordinary: 100, friend: 92,
+					eventtask: 88, battletask: 86, money: 84, bigmoney: 80, hero: 78, drain: 75, execute: 74,
+					arsenal: 105, capturebonus: 70, bond: 90, insight: 65, cephalosporin: 60, reservation: 74, supercombo: 78,
+					godrobe: 102, puregodrobe: 99, spiral: 106, speedpower: 103, fantasysix: 108,
+					bignumber: 110, supernumber: 170, sololeveling: 110, spindance: 90, weighttraining: 78,
+					cats: 104, dogs: 80, potara: 45, companionai: 150, weakness: 95, weaknessarmor: 80 };
+				const score = o => {
+					const family = o.family || o.id;
+					if (newcomer) return (['medic', 'hpgrowth', 'money', 'friend', 'hero', 'companionai'].includes(family) ? 75 : 30) + (o.tier === 'silver' ? 10 : o.tier === 'gold' ? 5 : 0);
+					let value = (priority[family] || 25) + (o.tier === 'silver' ? 10 : o.tier === 'gold' ? 0 : -15);
+					if (profile === 'experienced' && family === 'sololeveling') value -= 300;
+					if (family === 'cats' && r.team.filter(m => petSpecies(m.set.species, 'cats')).length < 2) value -= 70;
+					if (family === 'weaknessarmor' && !r.team.some(m => !m.egg &&
+						load('sim/rogue-weakness').weaknessProfile(dex.species.get(m.set.species).types).quadruple)) value -= 80;
+					if (family === desiredTier) value += 400;
+					if (r.floor === 1) {
+						value -= o.tier === 'prismatic' ? 30 : o.tier === 'gold' ? 15 : 0;
+						if (['fantasysix', 'bond', 'puregodrobe', 'ordinary'].includes(family)) value -= 40;
+						if (family === 'powerchoice') value += 60;
+						if (['godrobe', 'hero', 'friend'].includes(family)) value += 30;
+					}
+					return value;
+				};
+				choices.sort((a, b) => score(a) - score(b));
+				const matching = choices.filter(o => o.tier === desiredTier || o.family === desiredTier);
+				const pick = matching.at(-1) || choices.at(-1);
+				if (!newcomer && score(pick) < (r.floor === 1 ? 105 : 65)) {
+					const reroll = choices.find(o => o.refreshes > 0);
+					if (reroll) { cmd('blessingrefresh', { slot: reroll.slot }); continue; }
+				}
 
-			metrics.choices.push({floor: r.floor, blessing: pick.id, tier: pick.tier, offers: choices.map(o => ({id: o.id, name: o.name, tier: o.tier}))}); cmd('blessing', {slot: pick.slot}); continue;
-		}
-		if (r.phase === 'postgame') {cmd('godchallenge', {value: 'decline'}); continue;}
-		if (r.phase === 'event') {
-			const event = eventView(r);
-			if (event.stage === 'result') {
-				preparation();
-				if (run().pendingMoves?.length || run().pendingCapture || run().phase === 'blessing') continue;
-				if (!run().team.some(m => m.hp)) {metrics.issues.push({floor: r.floor, reason: 'no-living-member-no-revive', money: r.money}); break;}
+				metrics.choices.push({ floor: r.floor, blessing: pick.id, tier: pick.tier, offers: choices.map(o => ({ id: o.id, name: o.name, tier: o.tier })) }); cmd('blessing', { slot: pick.slot }); continue;
+			}
+			if (r.phase === 'postgame') { cmd('godchallenge', { value: 'decline' }); continue; }
+			if (r.phase === 'event') {
+				const event = eventView(r);
+				if (event.stage === 'result') {
+					preparation();
+					if (run().pendingMoves?.length || run().pendingCapture || run().phase === 'blessing') continue;
+					if (!run().team.some(m => m.hp)) { metrics.issues.push({ floor: r.floor, reason: 'no-living-member-no-revive', money: r.money }); break; }
+					cmd('continue'); continue;
+				}
+				if (event.stage === 'fragments') { cmd('event', { member: event.key, value: r.blessings.shards < 300 ? 'fragments' : 'supplies' }); continue; }
+				record('event', { floor: r.floor, event });
+				const preferred = { mysteryball: 'open', forest: 'mediate', mushrooms: 'trade', room: 'sleep', martial: 'technique', travel: 'leave', tutor: 'leave', bandits: 'coin', dice: 'leave', fishing: 'leave', quiz: 'leave' };
+				const options = event.options?.filter(o => !o.disabled) || [];
+				const style = RIVAL_STYLES[r.rival?.id]?.[0];
+				const pick = options.find(o => o.id === 'greet:' + style) || options.find(o => o.id === 'shards' && r.blessings.shards < 100) ||
+					options.find(o => o.id === 'join' || o.id === 'joinboth') ||
+					options.find(o => o.id === preferred[event.id]) || options.find(o => o.id === 'leave') || options[0];
+				if (!pick) { metrics.issues.push({ floor: r.floor, event, reason: 'needs-interactive-event-policy' }); break; }
+				cmd('event', { member: event.key, value: pick.id }); continue;
+			}
+			preparation(); r = run(); if (r.pendingMoves?.length || r.phase === 'blessing') continue;
+			if (!r.team.some(m => m.hp)) { metrics.issues.push({ floor: r.floor, reason: 'no-living-member-no-revive', money: r.money }); break; }
+			if (r.phase === 'choose') {
+				const healthy = r.team.filter(m => m.hp > m.maxhp * 0.65).length;
+				const healing = Object.entries(r.bag).reduce((total, [id, count]) => total + (inventoryItem(content, id)?.kind === 'heal' ? count : 0), 0);
+				const needsSupplies = healthy < Math.min(2, r.team.filter(p => !p.egg).length) || healing < 2;
+				const needsTraining = r.floor <= 60 && r.team.filter(m => !m.egg).length < 4 && !needsSupplies;
+				const noviceRank = n => n.kind === 'reward' && needsSupplies ? 90 : n.kind === 'wild' ? 75 : n.kind === 'event' ? 65 : n.kind === 'adventure' ? 60 : n.kind === 'trade' ? 45 : n.kind === 'elite' ? 40 : 35;
+				const rank = n => newcomer ? noviceRank(n) : n.kind === 'adventure' ? 88 : n.kind === 'trade' ? (n.trade?.kind === 'growth' && r.money > 2500 ? 90 : r.money > 1600 && n.trade?.kind === 'candy' ? 85 : 10) : n.kind === 'wild' ? (needsTraining ? 95 : needsSupplies ? 30 : 72) : n.kind === 'elite' ?
+					(r.floor >= 11 && r.team.filter(m => !m.egg && m.hp > m.maxhp * 0.8).length >= 4 &&
+						Math.max(...r.team.map(m => m.set.level)) >= 5 + Math.ceil(r.floor / 2) && healing >= 3 ? 80 : 20) : n.kind === 'event' ? (needsSupplies || r.floor % 4 === 0 ? 83 : 76) : n.kind === 'reward' ? (needsSupplies ? 85 : 60) :
+					['trainer', 'encounter'].includes(n.kind) ? (r.floor % 5 === 0 ? 78 : 55) : 25;
+				const pick = r.choices.slice().sort((a, b) => rank(b) - rank(a))[0];
+				record('route', { floor: r.floor, kind: pick.kind, name: pick.name, alternatives: r.choices.map(n => ({ id: n.id, kind: n.kind, name: n.name })) }); cmd('select', { value: pick.id }); continue;
+			}
+			if (r.phase === 'ready') {
+				for (const [family, members, value] of [['companionai', ['sada', 'turo'], 'chooseai'], ['companionstreamer', ['iono', 'canari'], 'choosestreamer'],
+					['companionwinter', ['grusha', 'rika'], 'choosewinter'], ['companionband', ['marnie', 'roxie'], 'chooseband']]) {
+					if (r.blessings.owned.some(b => b.family === family) && !r.blessings.companions?.some(c => members.includes(c.id))) cmd('companion', { member: members[0], value });
+				}
+				const c = companionView(run()).find(c => !c.ability && (c.abilityOptions.length || c.typeOptions.some(t => t.member)));
+				if (c) {
+					const type = !c.type && c.typeOptions.find(t => t.member);
+					cmd('companion', { member: c.id, value: type ? 'type:' + type.id : 'ability:' + c.abilityOptions[0] });
+					continue;
+				}
+				const attempts = metrics.battles.filter(b => b.floor === r.floor && !b.won && !b.preview).length;
+				if (!attritionRetry && attempts >= (tacticalRetry ? 8 : 4)) { metrics.issues.push({ floor: r.floor, reason: tacticalRetry ? 'eight-loss-wall-after-tactical-retry' : 'four-loss-wall' }); break; }
+				const king = blessingView(r)?.dragonKing;
+				if (king && !king.ability && king.options.length) { cmd('dragonking', { member: king.member, value: king.options[0] }); continue; }
+				cmd('battle'); continue;
+			}
+			if (r.phase === 'reward') {
+				const scene = rewardSceneView(r);
+				if (scene && !scene.claimed) {
+					if (scene.demonstrations.length) { cmd('rewardchoice', { value: 'show', member: scene.demonstrations[0].member }); continue; }
+					const core = r.team.slice().sort((a, b) => strength(b) - strength(a))[0];
+					const investment = scene.choices.find(c => c.id === ((core.training?.offense || 0) > (core.training?.defense || 0) ? 'defense' : 'offense'));
+					const target = investment?.targets?.find(t => t.member === core.id && t.amount >= 300);
+					const train = target && (core.set.level >= Math.ceil(r.floor / 2) + 8 || core.set.level === 100);
+					const pick = train ? investment : scene.choices.find(c => c.id === 'experience' && !c.disabled) || scene.choices.find(c => !c.disabled);
+					cmd('rewardchoice', { value: pick.id, ...(train ? { member: core.id } : {}) }); continue;
+				}
 				cmd('continue'); continue;
 			}
-			if (event.stage === 'fragments') {cmd('event', {member: event.key, value: r.blessings.shards < 300 ? 'fragments' : 'supplies'}); continue;}
-			record('event', {floor: r.floor, event});
-			const preferred = {mysteryball: 'open', forest: 'mediate', mushrooms: 'trade', room: 'sleep', martial: 'technique', travel: 'leave', tutor: 'leave', bandits: 'coin', dice: 'leave', fishing: 'leave', quiz: 'leave'};
-			const options = event.options?.filter(o => !o.disabled) || [];
-			const style = RIVAL_STYLES[r.rival?.id]?.[0];
-			const pick = options.find(o => o.id === 'greet:' + style) || options.find(o => o.id === 'shards' && r.blessings.shards < 100) ||
-				options.find(o => o.id === 'join' || o.id === 'joinboth') ||
-				options.find(o => o.id === preferred[event.id]) || options.find(o => o.id === 'leave') || options[0];
-			if (!pick) {metrics.issues.push({floor: r.floor, event, reason: 'needs-interactive-event-policy'}); break;}
-			cmd('event', {member: event.key, value: pick.id}); continue;
-		}
-		preparation(); r = run(); if (r.pendingMoves?.length || r.phase === 'blessing') continue;
-		if (!r.team.some(m => m.hp)) {metrics.issues.push({floor: r.floor, reason: 'no-living-member-no-revive', money: r.money}); break;}
-		if (r.phase === 'choose') {
-			const healthy = r.team.filter(m => m.hp > m.maxhp * .65).length;
-			const healing = Object.entries(r.bag).reduce((total, [id, count]) => total + (inventoryItem(content, id)?.kind === 'heal' ? count : 0), 0);
-			const needsSupplies = healthy < Math.min(2, r.team.filter(p => !p.egg).length) || healing < 2;
-			const needsTraining = r.floor <= 60 && r.team.filter(m => !m.egg).length < 4 && !needsSupplies;
-			const noviceRank = n => n.kind === 'reward' && needsSupplies ? 90 : n.kind === 'wild' ? 75 : n.kind === 'event' ? 65 : n.kind === 'adventure' ? 60 : n.kind === 'trade' ? 45 : n.kind === 'elite' ? 40 : 35;
-			const rank = n => newcomer ? noviceRank(n) : n.kind === 'adventure' ? 88 : n.kind === 'trade' ? (n.trade?.kind === 'growth' && r.money > 2500 ? 90 : r.money > 1600 && n.trade?.kind === 'candy' ? 85 : 10) : n.kind === 'wild' ? (needsTraining ? 95 : needsSupplies ? 30 : 72) : n.kind === 'elite' ?
-				(r.floor >= 11 && r.team.filter(m => !m.egg && m.hp > m.maxhp * .8).length >= 4 &&
-					Math.max(...r.team.map(m => m.set.level)) >= 5 + Math.ceil(r.floor / 2) && healing >= 3 ? 80 : 20) : n.kind === 'event' ? (needsSupplies || r.floor % 4 === 0 ? 83 : 76) : n.kind === 'reward' ? (needsSupplies ? 85 : 60) :
-				['trainer', 'encounter'].includes(n.kind) ? (r.floor % 5 === 0 ? 78 : 55) : 25;
-			const pick = r.choices.slice().sort((a, b) => rank(b) - rank(a))[0];
-				record('route', {floor: r.floor, kind: pick.kind, name: pick.name, alternatives: r.choices.map(n => ({id: n.id, kind: n.kind, name: n.name}))}); cmd('select', {value: pick.id}); continue;
-		}
-		if (r.phase === 'ready') {
-			for (const [family, members, value] of [['companionai', ['sada', 'turo'], 'chooseai'], ['companionstreamer', ['iono', 'canari'], 'choosestreamer'],
-				['companionwinter', ['grusha', 'rika'], 'choosewinter'], ['companionband', ['marnie', 'roxie'], 'chooseband']]) {
-				if (r.blessings.owned.some(b => b.family === family) && !r.blessings.companions?.some(c => members.includes(c.id))) cmd('companion', {member: members[0], value});
-			}
-			const c = companionView(run()).find(c => !c.ability && (c.abilityOptions.length || c.typeOptions.some(t => t.member)));
-			if (c) {const type = !c.type && c.typeOptions.find(t => t.member); cmd('companion', {member: c.id, value: type ? 'type:' + type.id : 'ability:' + c.abilityOptions[0]}); continue;}
-			const attempts = metrics.battles.filter(b => b.floor === r.floor && !b.won && !b.preview).length;
-			if (attempts >= (tacticalRetry ? 8 : 4)) {metrics.issues.push({floor: r.floor, reason: tacticalRetry ? 'eight-loss-wall-after-tactical-retry' : 'four-loss-wall'}); break;}
-			const king = blessingView(r)?.dragonKing;
-			if (king && !king.ability && king.options.length) {cmd('dragonking', {member: king.member, value: king.options[0]}); continue;}
-			cmd('battle'); continue;
-		}
-		if (r.phase === 'reward') {
-			const scene = rewardSceneView(r);
-			if (scene && !scene.claimed) {
-				if (scene.demonstrations.length) {cmd('rewardchoice', {value: 'show', member: scene.demonstrations[0].member}); continue;}
-				const core = r.team.slice().sort((a, b) => strength(b) - strength(a))[0];
-				const investment = scene.choices.find(c => c.id === ((core.training?.offense || 0) > (core.training?.defense || 0) ? 'defense' : 'offense'));
-				const target = investment?.targets?.find(t => t.member === core.id && t.amount >= 300);
-				const train = target && (core.set.level >= Math.ceil(r.floor / 2) + 8 || core.set.level === 100);
-				const pick = train ? investment : scene.choices.find(c => c.id === 'experience' && !c.disabled) || scene.choices.find(c => !c.disabled);
-				cmd('rewardchoice', {value: pick.id, ...(train ? {member: core.id} : {})}); continue;
-			}
-			cmd('continue'); continue;
-		}
-		if (r.phase === 'rest') {
-			if (r.mentorOffer) {
-				let card = 'balanced';
-				if (!newcomer) {
-					const roster = load('server/fantasy-rogue/story').bossRoster(r, r.floor + 1);
-					const core = r.team.filter(m => !m.egg).sort((a, b) => strength(b) - strength(a))[0];
-					// Only the shown species/level and our own stats: no hidden opponent moves, IVs or items.
-					const fast = roster && Math.max(...roster.pokemon.map((name, i) =>
-						(2 * dex.species.get(name).baseStats.spe + 20) * roster.levels[i] / 100 + 5));
-					if (core && fast && core.stats.spe * 1.5 <= fast && core.stats.spe * 2 > fast) card = 'speed';
+			if (r.phase === 'rest') {
+				if (r.mentorOffer) {
+					let card = 'balanced';
+					if (!newcomer) {
+						const roster = load('server/fantasy-rogue/story').bossRoster(r, r.floor + 1);
+						const core = r.team.filter(m => !m.egg).sort((a, b) => strength(b) - strength(a))[0];
+						// Only the shown species/level and our own stats: no hidden opponent moves, IVs or items.
+						const fast = roster && Math.max(...roster.pokemon.map((name, i) =>
+							(2 * dex.species.get(name).baseStats.spe + 20) * roster.levels[i] / 100 + 5));
+						if (core && fast && core.stats.spe * 1.5 <= fast && core.stats.spe * 2 > fast) card = 'speed';
+					}
+					cmd('mentorcard', { value: card }); continue;
 				}
-				cmd('mentorcard', { value: card }); continue;
+				if (Object.keys(r.bag).some(id => r.bag[id] > 0 && inventoryItem(content, id)?.kind === 'treasure')) { cmd('sell', { value: 'all' }); continue; }
+				const care = r.node.kind === 'rest' && centerCare(r);
+				if (care?.needed && r.money >= care.cost) { cmd('heal'); continue; }
+				const stock = shopStock(content, r), reserve = emergencyCost(r.floor + 1);
+				if (r.node.trade?.kind === 'growth') {
+					const members = r.team.filter(p => !p.egg && !p.fusion).sort((a, b) => strength(b) - strength(a));
+					const target = members.find(p => Object.values(p.campTraining || {}).reduce((a, b) => a + b, 0) < 15000);
+					const stats = target && [target.stats.atk > target.stats.spa ? 'atk' : 'spa', 'def', 'spd', 'spe'].filter(s => (target.campTraining?.[s] || 0) < 6000);
+					const offer = stats?.length && growthOffers(r).filter(o => o.remaining && r.money >= o.price * stats.length + reserve).at(-1);
+					if (offer) { cmd('buygrowth', { value: offer.id, trainingMembers: [target.id], trainingStats: stats }); continue; }
+				}
+				const essentials = { revive: 2, ether: r.floor >= 100 ? 12 : 5, potion: r.floor < 19 ? 6 : 0, superpotion: r.floor >= 19 && r.floor < 69 ? 5 : 0, hyperpotion: r.floor >= 69 ? 6 : 0 };
+				const supply = stock.find(i => (i.remaining ?? 1) > 0 && (r.bag[i.id] || 0) < (essentials[i.id] || 0) && r.money >= i.price + 250);
+				if (supply) { cmd('buy', { value: supply.id }); continue; }
+				const machine = stock.filter(i => i.kind === 'machine' && (i.remaining ?? 1) > 0 && r.money >= i.price + reserve).find(i => r.team.some(mon =>
+					machineMoves(mon).includes(i.move) && moveValue(i.move, mon) > 65 && !mon.set.moves.some(old => dex.moves.get(old).category !== 'Status' && dex.moves.get(old).type === dex.moves.get(i.move).type)));
+				if (machine) { cmd('buy', { value: machine.id }); continue; }
+				const candy = stock.filter(i => i.kind === 'candy' && r.money >= i.price + reserve && (i.remaining ?? 1) > 0)
+					.sort((a, b) => b.amount / b.price - a.amount / a.price)[0];
+				if (candy) { cmd('buy', { value: candy.id }); continue; }
+				const targets = { revive: 4, ether: r.floor >= 100 ? 20 : 8, potion: r.floor < 30 ? 8 : 0, superpotion: r.floor >= 20 && r.floor < 80 ? 10 : 0,
+					hyperpotion: r.floor >= 60 ? 10 : 0, fullheal: 3, pokeball: r.floor < 40 ? 10 : 0, greatball: r.floor >= 20 && r.floor < 80 ? 8 : 0, ultraball: r.floor >= 60 ? 8 : 0 };
+				const buy = stock.find(i => (i.remaining ?? 1) > 0 && (r.bag[i.id] || 0) < (targets[i.id] || 0) && r.money >= i.price + reserve);
+				if (buy) { cmd('buy', { value: buy.id }); continue; }
+				const held = stock.find(i => ['leftovers', 'shellbell', 'eviolite'].includes(i.id) && !r.bag[i.id] &&
+					r.team.some(m => !m.set.item) && r.money >= i.price + reserve);
+				if (held) { cmd('buy', { value: held.id }); continue; }
+				cmd('continue'); continue;
 			}
-			if (Object.keys(r.bag).some(id => r.bag[id] > 0 && inventoryItem(content, id)?.kind === 'treasure')) {cmd('sell', {value: 'all'}); continue;}
-			const care = r.node.kind === 'rest' && centerCare(r);
-			if (care?.needed && r.money >= care.cost) {cmd('heal'); continue;}
-			const stock = shopStock(content, r), reserve = emergencyCost(r.floor + 1);
-			if (r.node.trade?.kind === 'growth') {
-				const members = r.team.filter(p => !p.egg && !p.fusion).sort((a, b) => strength(b) - strength(a));
-				const target = members.find(p => Object.values(p.campTraining || {}).reduce((a, b) => a + b, 0) < 15000);
-				const stats = target && [target.stats.atk > target.stats.spa ? 'atk' : 'spa', 'def', 'spd', 'spe'].filter(s => (target.campTraining?.[s] || 0) < 6000);
-				const offer = stats?.length && growthOffers(r).filter(o => o.remaining && r.money >= o.price * stats.length + reserve).at(-1);
-				if (offer) {cmd('buygrowth', {value: offer.id, trainingMembers: [target.id], trainingStats: stats}); continue;}
-			}
-			const essentials = {revive: 2, ether: r.floor >= 100 ? 12 : 5, potion: r.floor < 19 ? 6 : 0, superpotion: r.floor >= 19 && r.floor < 69 ? 5 : 0, hyperpotion: r.floor >= 69 ? 6 : 0};
-			const supply = stock.find(i => (i.remaining ?? 1) > 0 && (r.bag[i.id] || 0) < (essentials[i.id] || 0) && r.money >= i.price + 250);
-			if (supply) {cmd('buy', {value: supply.id}); continue;}
-			const machine = stock.filter(i => i.kind === 'machine' && (i.remaining ?? 1) > 0 && r.money >= i.price + reserve).find(i => r.team.some(mon =>
-				machineMoves(mon).includes(i.move) && moveValue(i.move, mon) > 65 && !mon.set.moves.some(old => dex.moves.get(old).category !== 'Status' && dex.moves.get(old).type === dex.moves.get(i.move).type)));
-			if (machine) {cmd('buy', {value: machine.id}); continue;}
-			const candy = stock.filter(i => i.kind === 'candy' && r.money >= i.price + reserve && (i.remaining ?? 1) > 0)
-				.sort((a, b) => b.amount / b.price - a.amount / a.price)[0];
-			if (candy) {cmd('buy', {value: candy.id}); continue;}
-			const targets = {revive: 4, ether: r.floor >= 100 ? 20 : 8, potion: r.floor < 30 ? 8 : 0, superpotion: r.floor >= 20 && r.floor < 80 ? 10 : 0,
-				hyperpotion: r.floor >= 60 ? 10 : 0, fullheal: 3, pokeball: r.floor < 40 ? 10 : 0, greatball: r.floor >= 20 && r.floor < 80 ? 8 : 0, ultraball: r.floor >= 60 ? 8 : 0};
-			const buy = stock.find(i => (i.remaining ?? 1) > 0 && (r.bag[i.id] || 0) < (targets[i.id] || 0) && r.money >= i.price + reserve);
-			if (buy) {cmd('buy', {value: buy.id}); continue;}
-			const held = stock.find(i => ['leftovers', 'shellbell', 'eviolite'].includes(i.id) && !r.bag[i.id] &&
-				r.team.some(m => !m.set.item) && r.money >= i.price + reserve);
-			if (held) {cmd('buy', {value: held.id}); continue;}
-			cmd('continue'); continue;
+			if (r.phase === 'failed' && r.team.some(m => m.hp)) { cmd('retry'); continue; }
+			metrics.issues.push({ floor: r.floor, phase: r.phase, reason: 'unhandled-phase' }); break;
 		}
-		if (r.phase === 'failed' && r.team.some(m => m.hp)) {cmd('retry'); continue;}
-		metrics.issues.push({floor: r.floor, phase: r.phase, reason: 'unhandled-phase'}); break;
+	} catch (error) {
+		metrics.issues.push({ floor: run()?.floor, reason: 'driver-error', error: error.stack });
+		reportFailure(error);
+	} finally {
+		finishReport();
 	}
-} catch (error) {metrics.issues.push({floor: run()?.floor, reason: 'driver-error', error: error.stack}); console.error(error.stack);
-} finally {
+}
+function finishReport() {
 	metrics.lastFloor = run()?.floor; metrics.phase = run()?.phase;
 	checkpoint();
 	fs.writeFileSync(out + '/summary.json', JSON.stringify(metrics, null, 2));
 	fs.writeFileSync(out + '/final-save.json', JSON.stringify(account(), null, 2)); store.close();
-	console.log(JSON.stringify({profile, seed, lastFloor: metrics.lastFloor, phase: metrics.phase, battles: metrics.battles.length, issues: metrics.issues}));
+	console.log(JSON.stringify({ profile, seed, lastFloor: metrics.lastFloor, phase: metrics.phase, battles: metrics.battles.length, issues: metrics.issues }));
 }
+function reportFailure(error) {
+	console.error(error.stack);
+	process.exitCode = 1;
+}
+void main().catch(reportFailure);

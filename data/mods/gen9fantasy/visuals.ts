@@ -1,4 +1,14 @@
 import { Dex } from '../../../sim/dex';
+import { isRogueFormat } from '../../../sim/fantasy-rogue';
+import { battleFusionSprite } from '../../../sim/rogue-fusion-art';
+
+function visualState(pokemon: Pokemon) {
+	const visible = pokemon.illusion || pokemon;
+	const stats = visible.getRogueBaseStats();
+	const text = (['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const).map(stat => stats[stat]).join('/');
+	const fusion = isRogueFormat(pokemon.battle.format.id) ? battleFusionSprite(pokemon) : undefined;
+	return { visible, stats, text, fusion, key: `${pokemon.illusion ? 'illusion_' : ''}${visible.species.id}:${text}:${fusion || ''}` };
+}
 
 /**
  * Keep only data in Pokemon.m: functions stored there are lost by State's
@@ -8,6 +18,8 @@ import { Dex } from '../../../sim/dex';
 export function onFantasySwitchIn(this: Battle, pokemon: Pokemon) {
 	// Preserve the old hook's "has switched in" guard with serializable data.
 	pokemon.m.fantasyVisualsInitialized = true;
+	const visual = visualState(pokemon);
+	pokemon.m.lastVisualShown = visual.key;
 	const visualSpecies = pokemon.illusion ? pokemon.illusion.species : pokemon.species;
 	if (!Dex.species.get(visualSpecies.id).exists) {
 		const types = pokemon.illusion ? pokemon.illusion.species.types : pokemon.getTypes();
@@ -22,10 +34,23 @@ export function onFantasySwitchIn(this: Battle, pokemon: Pokemon) {
 			pokemon.m.fantasyUIAttached = false;
 		}
 	}
+	if (isRogueFormat(this.format.id)) {
+		if (visual.fusion || pokemon.m.lastFusionSprite) this.add('-roguefusion', pokemon, visual.fusion || '');
+		pokemon.m.lastFusionSprite = visual.fusion;
+		const original = this.dex.species.get(visual.visible.species.id).baseStats;
+		const changed = (Object.keys(visual.stats) as StatID[]).some(stat => visual.stats[stat] !== original[stat]);
+		if (changed) {
+			this.add('-start', pokemon, 'roguebasestats', visual.text, '[silent]');
+			pokemon.m.rogueStatsUIAttached = true;
+		} else if (pokemon.m.rogueStatsUIAttached) {
+			this.add('-end', pokemon, 'roguebasestats', '[silent]');
+			pokemon.m.rogueStatsUIAttached = false;
+		}
+	}
 }
 
 export function onFantasyUpdate(this: Battle, pokemon: Pokemon) {
-	const visualId = pokemon.illusion ? `illusion_${pokemon.illusion.species.id}` : pokemon.species.id;
+	const visualId = visualState(pokemon).key;
 	if (pokemon.m.lastVisualShown !== visualId) {
 		pokemon.m.lastVisualShown = visualId;
 		if (pokemon.m.fantasyVisualsInitialized) onFantasySwitchIn.call(this, pokemon);

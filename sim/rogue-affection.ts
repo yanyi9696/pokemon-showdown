@@ -13,7 +13,8 @@ export function affectionBenefits(value: number) {
 }
 export function battleAffection(mon: Pokemon) {
 	const state = mon.battle.fantasyRogue;
-	const team = mon.side.id === 'p1' ? state?.team : mon.side.id === 'p2' ? state?.duel?.team : undefined;
+	const team = mon.side.id === 'p1' ? state?.team : mon.side.id === 'p2' ? state?.duel?.team :
+		mon.side.id === 'p3' ? state?.partner?.team : undefined;
 	return team?.find(saved => saved.id === mon.set.fantasyRogueId)?.bond || 0;
 }
 export function affectionEndure(damage: number, target: Pokemon, source: Pokemon | null, effect: Effect) {

@@ -19,6 +19,7 @@ export interface RogueTrainerCandidate {
 	team: PokemonSet[];
 }
 export interface RogueEncounter {
+	totemTrial?: { species: string, boosts: SparseBoostsTable };
 	escortCount?: number;
 	blessingLevelOffsets?: number[];
 	/** Authored trial guardians keep their stated levels. */
@@ -164,6 +165,7 @@ export interface RogueRun extends RogueInventory {
 	/** Missing on old adventures: preserve their additive stat rules. */
 	boostRuleVersion?: 2;
 	firstClearRewardsRecorded?: boolean;
+	monthlyClearRecorded?: boolean;
 	mainline?: { scene: string, floor?: number, offered?: boolean, completed?: boolean, pitySettled?: boolean, missedClears?: number };
 	elderVisits?: string[];
 	elderServices?: string[];
@@ -308,6 +310,7 @@ export interface RogueRun extends RogueInventory {
 export type RogueShopContext = Pick<RogueRun,
 	'floor' | 'difficulty' | 'blessings' | 'team' | 'spirit' | 'collapse' | 'difficultyRulesVersion' | 'node'>;
 export interface RogueAccount {
+	monthlyChallenges?: import('./monthly-challenges').MonthlyChallenges;
 	crates?: import('./starter-crates').StarterCrates;
 	/** Minimum persisted-data contract; unrelated to the SQL schema and per-run growth rule. */
 	saveVersion?: 2 | 3;
@@ -339,6 +342,8 @@ export interface RogueAccount {
 	opening?: { page: number, skip: boolean };
 	cards?: RogueClearCard[];
 	pendingClear?: RogueClearCard;
+	/** Concurrent solo/co-op clears must never overwrite an unresolved keepsake decision. */
+	pendingClearQueue?: RogueClearCard[];
 	spiritUnlocked?: boolean;
 	/** Earned by full clears, independently of the optional spirit-mode access gate. */
 	unlockedSpirits?: string[];
@@ -370,6 +375,19 @@ export interface RogueCoopInvite {
 	expiresAt: number;
 }
 export interface RogueCoopMemberState {
+	/** Defeat assistance and its ten-floor experience window belong only to this owner. */
+	comeback?: RogueRun['comeback'];
+	/** Up to three HP-paid goods per personal shop visit, retained through reconnects. */
+	hpPurchases?: { visit: string, receipts: string[] };
+	/** Personal acquisitions retain their conversion outcome independently from shared route rewards. */
+	spiritConversions?: RogueRun['spiritConversions'];
+	/** Regional spirit growth is credited once, even while the floor waits for reward choices. */
+	spiritRegionFloor?: number;
+	/** Personal permanent echo upgrades are snapshotted when this shared adventure starts. */
+	echo?: RogueRun['echo'];
+	/** Deferred companion challenges retain the original encounter and unclaimed reward per owner. */
+	rematches?: RogueRun['rematches'];
+	rival?: RogueRun['rival'];
 	socialCompanions?: RogueRun['socialCompanions'];
 	companionInvitations?: RogueRun['companionInvitations'];
 	/** Irreversible per-member Master Ball stock, outside battle and travel inventory snapshots. */
@@ -403,6 +421,7 @@ export interface RogueCoopMemberState {
 	recoveryReceipts?: string[];
 	/** Training supplies are consumed atomically with account unlocks and the shared session. */
 	supplyReceipts?: string[];
+	storageRevision?: number;
 	/** Shared blessing picks grant independent effects, inventories and follow-up choices to this member. */
 	blessings?: import('./blessings').RogueBlessings;
 	/** Run-wide stat growth is personal, even when granted by a shared event. */
@@ -445,13 +464,28 @@ export interface RogueCoopCaptureProposal {
 	expiresAt: number;
 }
 export interface RogueCoopAdventure {
+	/** Shared dialogue votes are fenced to one owner's current page. */
+	comebackChoices?: { visit: string, choices: Record<string, string | undefined> };
+	/** Shared route reward conversion outcomes, outside rewindable inventory snapshots. */
+	spiritConversions?: RogueRun['spiritConversions'];
+	spirit?: string;
+	spiritVersion?: number;
+	difficultyRulesVersion?: number;
+	collapse?: import('../../sim/rogue-collapse-data').CollapseID[];
+	collapseChoice?: import('./coop-collapse').CoopCollapseChoice;
+	/** Written atomically with both personal clear histories, before the optional challenge begins. */
+	campaignCleared?: boolean;
+	postgame?: import('./coop-postgame').CoopPostgame;
+	mentor?: import('./coop-mentor').CoopMentor;
+	/** Shared police campaign, independent from either player's solo journey. */
+	coopPolice?: RogueRun['police'];
 	id: string;
 	contentVersion: string;
 	floor: number;
 	/** Current encounter within the selected node; wild routes can contain several sequential fights. */
 	encounter: number;
 	phase: 'area-selection' | 'battle-selection' | 'battle-starting' | 'route-interaction' | 'battle' | 'settlement' | 'complete' |
-		'blessing-selection' | 'blessing-reward' | 'affection';
+		'blessing-selection' | 'blessing-reward' | 'affection' | 'postgame' | 'collapse-selection';
 	difficulty: RogueCoopDifficulty;
 	doubleBattle: true;
 	members: Record<string, RogueCoopMemberState>;
@@ -477,17 +511,22 @@ export interface RogueCoopAdventure {
 	/** A fresh room incarnation fences callbacks while the logical battle/capture receipt token stays stable. */
 	battleLease?: string;
 	battleCheckpoint?: import('../../sim/rogue-coop-checkpoint').RogueCoopCheckpoint;
+	/** Persisted before acknowledging either human's live battle growth. */
+	battleGrowth?: import('./coop-growth').CoopBattleGrowth;
 	battleRecoverySelections?: Record<string, boolean>;
 	battleResult?: {
 		won: boolean, turns?: number, reward?: { money: number, items: Record<string, number>, effect?: string },
 		partnerReward?: { money: number, items: Record<string, number>, effect?: string }, eventResolved?: boolean, retreated?: boolean,
 		memoryRestored?: boolean,
+		companionRescue?: boolean,
+		shopClosed?: boolean,
 	};
 	/** Both members must confirm settlement before the shared adventure advances. */
 	continueSelections?: Record<string, boolean>;
 	retrySelections?: Record<string, boolean>;
 	/** Both members confirm leaving a non-battle shared route such as a rest center. */
 	routeExitSelections?: Record<string, boolean>;
+	shopChallengeChoice?: { key: string, selections: Record<string, boolean> };
 	/** A single pending party swap; the proposer pays the one-time linking-cord-equivalent fee. */
 	tradeProposal?: RogueCoopTradeProposal;
 	tradeReceipts?: string[];
@@ -498,6 +537,8 @@ export interface RogueCoopAdventure {
 	coopEventChoices?: Record<string, string | null>;
 	coopEventBranchResolved?: boolean;
 	coopEventHistory?: RogueRun['eventHistory'];
+	/** Shared missing-item clue pity; absent in older sessions means zero misses. */
+	coopExclusiveEventMisses?: number;
 	/** One catalogue/NPC bidding process; each winning player's purchase remains personal. */
 	coopAuction?: import('./coop-auction').CoopAuction;
 	/** Coincides with the single-player fragment schedule; old co-op sessions had no fragment-offer events. */
@@ -507,10 +548,12 @@ export interface RogueCoopAdventure {
 	coopBlessingChoices?: Record<string, string | null>;
 	/** Votes are scoped to one owner's current companion milestone, never reused for the next dialogue. */
 	coopAffection?: { visit: string, choices: Record<string, string | null> };
-	coopBlessingResume?: 'opening' | 'advance' | 'battle' | 'event';
+	coopBlessingResume?: 'opening' | 'advance' | 'battle' | 'event' | 'battle-selection';
 	lastReward?: { floor: number, name: string, money: number, items: Record<string, number>, effect?: string };
 }
 export interface RogueCoopSession {
+	spirit?: string;
+	spiritChoice?: import('./coop-spirits').CoopSpiritChoice;
 	id: string;
 	hostUser: string;
 	guestUser: string;
@@ -572,7 +615,7 @@ export interface RogueCommand {
 	trainingMembers?: string[];
 	trainingStats?: StatIDExceptHP[];
 	appearance?: string;
-	action: 'mainlinechoice' | 'unlockack' | 'echo' | 'affection' | 'forme' | 'fusion' | 'unfusion' | 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
+	action: 'monthlyclaim' | 'mainlinechoice' | 'unlockack' | 'echo' | 'affection' | 'forme' | 'fusion' | 'unfusion' | 'ackfailure' | 'feedmushroom' | 'rewardchoice' | 'buygrowth' | 'onboarding' | 'mentorcard' | 'evolutionnotice' | 'godchallenge' | 'dragonking' | 'start' | 'select' | 'battle' | 'retreat' | 'emergency' | 'retry' | 'heal' | 'buy' | 'sell' | 'use' | 'continue' | 'upgrade' | 'abandon' |
 		'rematch' | 'retryheal' | 'retrycancel' | 'partyheal' | 'opencrate' | 'exchangecrate' | 'crateprediction' |
 		'shopchallenge' | 'challenge' | 'event' | 'companion' | 'companioninvite' | 'socialcompanion' | 'previewresult' | 'comeback' | 'coverage' |
 		'learn' | 'replace' | 'evolve' | 'order' | 'setmove' | 'moves' | 'equip' | 'equipemblem' | 'ability' | 'evs' | 'configureuniversal' |

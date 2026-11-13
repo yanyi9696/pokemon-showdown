@@ -10,7 +10,7 @@ const { createPreviewContent } = require('../../dist/server/fantasy-rogue/previe
 const { createRoguePokemon } = require('../../dist/server/fantasy-rogue/progression');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
 const { journeyCoins } = require('../../dist/server/fantasy-rogue/early-balance');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op shared rhythm and personal sweet dance', () => {
 	let oldConfig, oldNow, now, store, manager, host, guest, preview;
@@ -66,9 +66,62 @@ describe('Fantasy Rogue co-op shared rhythm and personal sweet dance', () => {
 				encounters: [], reward: { money: 0, items: {} } }];
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(other => other !== id).map(other => ({ id: other, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'rhythmroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'rhythmroute' });
+		});
 		assert.equal(event(host).id, id);
 	}
+	it('shares the ski course, accepts either player input and rejects stale replays', () => {
+		enter('skiing'); const original = event(host).key;
+		choose(host, 'skistart'); assert.equal(event(host).ski, undefined);
+		choose(guest, 'skistart', original);
+		assert.deepEqual(event(host).ski, event(guest).ski);
+		assert.equal(event(host).ski.started, now);
+		const key = event(guest).key;
+		choose(guest, 'skileft', key);
+		assert.equal(event(host).ski.lane, 0);
+		assert.deepEqual(event(host).ski, event(guest).ski);
+		assert.throws(() => choose(host, 'skiright', key));
+		choose(host, 'skiright'); assert.equal(event(guest).ski.lane, 1);
+	});
+	it('settles a shared ski finish once into both inventories without duplicate claims', () => {
+		enter('skiing'); agree('skistart');
+		change(shared => {
+			for (const user of [host, guest]) shared.adventure.members[user.id].coopEvent.ski.obstacles = [];
+			shared.adventure.node.event.ski.obstacles = [];
+		});
+				const before = [host, guest].map(user => member(user).money);
+		now += 15251;
+		const stale = event(host).key;
+		choose(host, 'skitick');
+		assert.equal(event(host).stage, 'result'); assert.equal(event(guest).stage, 'result');
+		const gains = [host, guest].map((user, i) => member(user).money - before[i]);
+		assert(gains[0] > 0); assert.equal(gains[0], gains[1]);
+		assert.equal(member(host).bag.revive, 1); assert.equal(member(guest).bag.revive, 1);
+		assert.throws(() => choose(guest, 'skitick', stale));
+		assert.equal(member(host).money, before[0] + gains[0]);
+	});
+	it('restores the course after reconnect and settles collisions using the original clock', () => {
+		enter('skiing'); agree('skistart');
+		change(shared => {
+			for (const user of [host, guest]) shared.adventure.members[user.id].coopEvent.ski.obstacles = [{at: 2100, lane: 1, kind: 'tree'}];
+			shared.adventure.node.event.ski.obstacles = [{at: 2100, lane: 1, kind: 'tree'}];
+		});
+		const started = event(host).ski.started;
+		manager = new RogueManager(new RogueEngine(store, preview), () => ({enabled: true}));
+		assert.equal(event(guest).ski.started, started);
+		now += 2400; choose(guest, 'skitick');
+		assert.equal(event(host).stage, 'result');
+		assert.equal(member(host).coopEvent.ski.ended, 2100);
+		assert.equal(member(host).coopEvent.ski.crashed, true);
+		assert.deepEqual(member(host).coopEvent.ski, member(guest).coopEvent.ski);
+	});
+	it('requires consensus to leave a ski visit without creating rewards', () => {
+		enter('skiing'); const before = [host, guest].map(user => member(user).money);
+		choose(host, 'leave'); assert.equal(event(host).stage, 'choice');
+		choose(guest, 'leave'); assert.equal(event(host).stage, 'result');
+		assert.deepEqual([host, guest].map(user => member(user).money), before);
+	});
 	function kitchen() {
 		enter('poffinworkshop'); agree('berry:0'); agree('berry:1');
 		assert.equal(event(host).activity.startedAt, now); assert.deepEqual(event(host).activity, event(guest).activity);

@@ -15,9 +15,12 @@ export interface EchoUpgrades {
 export interface CollapseEcho { unlocked: boolean; points: number; earned: number; upgrades: EchoUpgrades; introSeen?: boolean }
 export const emptyEchoUpgrades = (): EchoUpgrades => ({ types: [], guard: false, shiny: 0, catch: 0, systems: [] });
 export function echoChance(level = 0) { return 1 + Math.max(0, Math.min(ECHO_RULES.chanceCap, level)) * ECHO_RULES.chanceStep; }
-function playerEcho(pokemon: Pokemon) {
-	return !pokemon.battle.fantasyRogue?.duel && (pokemon.side.id === 'p1' || pokemon.side.id === 'p3') ?
-		pokemon.battle.fantasyRogue?.echo : undefined;
+export function playerEcho(pokemon: Pokemon) {
+	const state = pokemon.battle.fantasyRogue;
+	if (!state || state.duel) return;
+	if (pokemon.side.id === 'p1') return state.echo;
+	// Native NPC allies retain the player's echo. A real co-op partner owns a separate run snapshot.
+	if (pokemon.side.id === 'p3') return state.cooperative ? state.partner?.echo : state.echo;
 }
 export function echoPowerMultiplier(source: Pokemon, move: Move | ActiveMove) {
 	return playerEcho(source)?.types.includes(move.type) ? ECHO_RULES.power : 1;

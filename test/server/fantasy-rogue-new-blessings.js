@@ -94,8 +94,8 @@ describe('Fantasy Rogue companion gifts, railgun and rule breaker', function () 
 		assert.equal(c.ability, 'moldbreaker');
 		grantCompanion(run, 'poppy'); grantCompanion(run, 'guzma');
 		require('../../dist/server/fantasy-rogue/travellers').chooseCompanionInvitation(run, run.companionInvitations[0].key, 'acerola');
-		companionCommand(run, { member: 'poppy', value: 'ability:tiekai' }, () => 0, []);
-		companionCommand(run, { member: 'guzma', value: 'ability:huibizaisheng' }, () => 0, []);
+		companionCommand(run, { member: 'poppy', value: 'ability:tiekai' }, content(), () => 0, []);
+		companionCommand(run, { member: 'guzma', value: 'ability:huibizaisheng' }, content(), () => 0, []);
 		assert.equal(run.blessings.companions[1].member, run.team[1].id);
 		assert.equal(run.blessings.companions[2].member, run.team[1].id);
 	});

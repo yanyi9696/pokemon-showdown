@@ -1,12 +1,13 @@
 import type { Pokemon } from './pokemon';
-import { hasBlessing, savedBlessingMember } from './fantasy-rogue-blessings';
+import { hasBlessing, savedBlessingMember, blessingEffects } from './fantasy-rogue-blessings';
 import { strongestBlessingMember } from './rogue-blessing-permanent';
 
 function active(mon: Pokemon) {
 	const state = mon.battle.fantasyRogue;
-	const team = mon.side.id === 'p1' ? state?.team : state?.duel?.team;
+	const team = mon.side.id === 'p1' ? state?.team : mon.side.id === 'p2' ? state?.duel?.team :
+		mon.side.id === 'p3' ? state?.partner?.team : undefined;
 	return !!hasBlessing(mon, 'spindance') && !!team &&
-		strongestBlessingMember(team, 'Spinda')?.id === savedBlessingMember(mon)?.id;
+		strongestBlessingMember(team, 'Spinda', blessingEffects(mon))?.id === savedBlessingMember(mon)?.id;
 }
 /** Only a newly established confusion counts; failed attempts and refreshes do not. */
 export function spindaConfused(target: Pokemon, source: Pokemon) {

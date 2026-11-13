@@ -40,8 +40,13 @@ export function buyEcho(account: RogueAccount, key: string, local = false) {
 	const echo = normalizeEcho(account);
 	requireRule(echo && (echo.unlocked || local), '首次通关 1 档后解锁崩坏回响。');
 	requireRule(!account.run || account.run.phase === 'complete', '请结束或放弃本局后，再点亮崩坏回响。');
-	if (key === 'exchange') {
+	if (key === 'exchange' || key === 'exchangeback') {
 		requireRule(growthMaxed(account), '请先将六项局外能力和初始栏位全部升满。');
+		if (key === 'exchangeback') {
+			requireRule(echo.points >= 1, '兑换需要 1 点崩坏适性。');
+			requireRule(Number.isSafeInteger(account.points + ECHO_RULES.exchange), '局外成长点数已达到可保存上限。');
+			echo.points--; account.points += ECHO_RULES.exchange; return;
+		}
 		requireRule(account.points >= ECHO_RULES.exchange, `兑换需要 ${ECHO_RULES.exchange} 点局外成长点数。`);
 		account.points -= ECHO_RULES.exchange; echo.points++; return;
 	}
@@ -64,6 +69,7 @@ export function echoView(account: RogueAccount, local = false) {
 		(local ? { unlocked: true, points: 0, earned: 0, upgrades: emptyEchoUpgrades() } : undefined);
 	return echo && (echo.unlocked || local) ? { ...structuredClone(echo), unlocked: true, canExchange: growthMaxed(account),
 		cost: ECHO_RULES.cost, systemCost: ECHO_RULES.systemCost, exchangeCost: ECHO_RULES.exchange,
+		reverseExchangeGain: ECHO_RULES.exchange,
 		types: ECHO_TYPES, systems: ECHO_SYSTEMS } : undefined;
 }
 /** Chance inputs use the producer's existing denominator; one RNG draw, no shiny reroll. */

@@ -224,7 +224,7 @@ describe('Fantasy doubles isolated joint turn', () => {
 		assert.equal(scored[0].mechanics.turnProbes, 0);
 		assert.equal(scored[0].jointTurn, undefined);
 	});
-	it('preserves the move/switch fallback ranking while skipping all discarded turn forecasts', () => {
+	it('compares voluntary switches and attacks on one complete-turn scale', () => {
 		const battle = create([set('Garchomp', ['Earthquake']), set('Gardevoir', ['Protect']), set('Pikachu')], foes());
 		const request = structuredClone(battle.p1.activeRequest);
 		for (const active of request.active) delete active.canTerastallize;
@@ -233,12 +233,12 @@ describe('Fantasy doubles isolated joint turn', () => {
 		const candidates = enumerateDoublesChoices(request, { foes: [1, 2], allowSwitch: true })
 			.filter(choice => ['move 1, move 1', 'switch 3, move 1'].includes(choice.choice));
 		assert.equal(candidates.length, 2);
-		const base = rankDoublesChoices(observation, 'gen9fantasy', [], true, candidates, false);
 		const native = rankDoublesChoices(observation, 'gen9fantasy', [], true, candidates, true);
-		const decisions = rows => rows.map(({ choice, score, reasons }) => ({ choice, score, reasons }));
-		assert.deepEqual(decisions(native), decisions(base));
-		assert.equal(native[0].mechanics.turnProbes, 0);
-		assert.equal(native[0].jointTurn, undefined);
+		assert.equal(native.length, 2);
+		assert(native.every(row => row.jointTurn && row.reasons.includes('joint-turn-public-hypotheses')));
+		assert(native[0].mechanics.turnProbes > 0);
+		assert.deepEqual(native[0].mechanics.turnFailures, []);
+		assert.equal(native[0].choice, 'move 1, move 1');
 	});
 	it('applies publicly counted toxic residual damage without an undefined native counter', () => {
 		const battle = create([set('Garchomp'), set('Magikarp')], foes());
@@ -274,6 +274,44 @@ describe('Fantasy doubles isolated joint turn', () => {
 			move('p1b', 'surf'), ...idle()]);
 		assert(result.every(sample => sample.weather === 'raindance'));
 		assert(result.every(sample => sample.pokemon.p1a.health === 1 && sample.pokemon['p1-reserve-2'].health < 1));
+		assert(result.every(sample => sample.pokemon.p1a.position === undefined));
+		assert(result.every(sample => sample.pokemon['p1-reserve-2'].position === 'p1a'));
+		assert(result.every(sample => sample.pokemon['p1-reserve-2'].speed > 0));
+	});
+	it('charges a switch for the incoming reserve damage, rather than treating the withdrawn ally as immune', () => {
+		const battle = create([set('Blastoise', ['Protect']), set('Magikarp'),
+			set('Charizard'), set('Gastrodon')], [set('Raichu', ['Thunderbolt']), set('Magikarp')]);
+		const request = structuredClone(battle.p1.activeRequest);
+		for (const active of request.active) delete active.canTerastallize;
+		const observation = { ownSide: 'p1', difficulty: 'normal', request,
+			publicLog: [...extractChannelMessages(battle.log.join('\n'), [0])[0],
+				'|move|p2a: Raichu|Thunderbolt|p1a: Blastoise'] };
+		const choices = enumerateDoublesChoices(request, { foes: [1, 2], allowSwitch: true })
+			.filter(choice => ['switch 3, move 1', 'switch 4, move 1'].includes(choice.choice));
+		const ranked = rankDoublesChoices(observation, 'gen9fantasy', [], true, choices, true);
+		assert(ranked.every(row => row.jointTurn));
+		assert.equal(ranked[0].choice, 'switch 4, move 1');
+		assert(ranked[0].score > ranked[1].score);
+		const actions = [{ actor: 'p1a', kind: 'switch', reserve: 'p1-reserve-2' }, move('p1b', 'splash'),
+			move('p2a', 'thunderbolt', 'p1a'), move('p2b', 'splash')];
+		const projected = project(battle, actions);
+		assert(projected.every(row => row.pokemon['p1-reserve-2'].health < 1 && row.pokemon.p1a.health === 1));
+	});
+	it('includes entry hazards and Regenerator recovery on the correct individuals', () => {
+		const battle = create([set('Slowbro', ['Protect'], { ability: 'Regenerator' }), set('Magikarp'),
+			set('Charizard')], foes());
+		battle.p1.active[0].hp = Math.floor(battle.p1.active[0].maxhp / 2);
+		battle.p1.addSideCondition('stealthrock', battle.p2.active[0]);
+		const actions = [{ actor: 'p1a', kind: 'switch', reserve: 'p1-reserve-2' }, move('p1b', 'splash'), ...idle()];
+		const result = project(battle, actions);
+		battle.makeChoices('switch 3, move 1', 'move 1, move 1');
+		const withdrawn = battle.p1.pokemon.find(mon => mon.species.id === 'slowbro');
+		for (const row of result) {
+			assert.equal(row.pokemon.p1a.health, withdrawn.hp / withdrawn.maxhp);
+			assert.equal(row.pokemon['p1-reserve-2'].health, battle.p1.active[0].hp / battle.p1.active[0].maxhp);
+			assert(row.pokemon.p1a.health > 0.5);
+			assert(row.pokemon['p1-reserve-2'].health <= 0.5);
+		}
 	});
 	it('runs a Z attack immediately and a Max attack with a single Dynamax activation', () => {
 		for (const transform of ['zmove', 'dynamax']) {

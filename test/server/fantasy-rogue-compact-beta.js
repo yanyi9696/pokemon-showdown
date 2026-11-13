@@ -97,17 +97,17 @@ describe('Rogue compact beta revision', function () {
 		run.phase = 'ready';
 		run.team = [];
 		grantCompanion(run, 'bea');
-		companionCommand(run, { member: 'bea', value: 'ability:guts' }, () => 0, []);
+		companionCommand(run, { member: 'bea', value: 'ability:guts' }, content, () => 0, []);
 		assert.equal(companionView(run)[0].ability, 'guts');
 		run.team.push(createRoguePokemon(set('Machop', 'No Guard', 30), stats(0)));
 		syncBlessingParty(run);
 		assert(assignedExtraAbilities(run.team[0], run.team, run.blessings).includes('guts'));
-		companionCommand(run, { member: 'bea', value: 'ability:hustle' }, () => 0, []);
+		companionCommand(run, { member: 'bea', value: 'ability:hustle' }, content, () => 0, []);
 		const extra = assignedExtraAbilities(run.team[0], run.team, run.blessings);
 		assert(extra.includes('hustle'));
 		assert(!extra.includes('guts'));
 		run.phase = 'battle';
-		assert.throws(() => companionCommand(run, { member: 'bea', value: 'ability:guts' }, () => 0, []));
+		assert.throws(() => companionCommand(run, { member: 'bea', value: 'ability:guts' }, content, () => 0, []));
 	});
 	it('requires level 20 plus the published coin fee and charges it exactly once', () => {
 		store.change(user.id, a => {

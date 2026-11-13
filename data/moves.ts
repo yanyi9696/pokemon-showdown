@@ -7424,7 +7424,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 						const item = pokemon.lastItem;
 						pokemon.lastItem = '';
 						this.add('-item', pokemon, this.dex.items.get(item), '[from] move: G-Max Replenish');
-						pokemon.setItem(item);
+						pokemon.setRogueRecoveredItem(item);
 					}
 				}
 			},
@@ -15449,7 +15449,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			const item = pokemon.lastItem;
 			pokemon.lastItem = '';
 			this.add('-item', pokemon, this.dex.items.get(item), '[from] move: Recycle');
-			pokemon.setItem(item);
+			pokemon.setRogueRecoveredItem(item);
 		},
 		secondary: null,
 		target: "self",

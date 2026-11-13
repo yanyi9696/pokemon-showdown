@@ -8,7 +8,7 @@ const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const { RogueManager } = require('../../dist/server/fantasy-rogue/manager');
 const { affectionThemeGift } = require('../../dist/server/fantasy-rogue/affection-gifts');
 const { EVENT_NAMES } = require('../../dist/server/fantasy-rogue/event-text');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op companion affection', () => {
 	let oldConfig, store, engine, manager, host, guest;
@@ -92,6 +92,37 @@ describe('Fantasy Rogue co-op companion affection', () => {
 		assert.deepEqual([store.get(host.id).run, store.get(guest.id).run], solo);
 		const bag = member(host).bag; rest(12); advance();
 		assert.equal(member(host).trainerBonds.olivia.score, 1); assert.deepEqual(member(host).bag, bag);
+	});
+	it('persists a personal Mew milestone conversion through real commands and reconnection', () => {
+		companion(host, 49); companion(guest, 12); rest();
+		change(shared => { shared.spirit = shared.adventure.spirit = 'hoopagift'; shared.adventure.spiritVersion = 1; });
+		const solo = [store.get(host.id).run, store.get(guest.id).run];
+		const original = crypto.randomInt;
+		crypto.randomInt = max => max === 100 ? 99 : 0;
+		try { advance(); } finally { crypto.randomInt = original; }
+		assert.equal(member(host).bag.fantasypowerlens, 1);
+		assert.equal(member(host).spiritConversions['affection:olivia:50'], 'fantasypowerlens');
+		assert(!member(guest).bag.fantasypowerlens); assert(!member(guest).spiritConversions);
+		const before = session(); manager = new RogueManager(engine, () => ({ enabled: true }));
+		view(host); view(guest); assert.deepEqual(session(), before);
+		agree(); assert.equal(member(host).bag.fantasypowerlens, 1);
+		assert.deepEqual([store.get(host.id).run, store.get(guest.id).run], solo);
+	});
+	it('rolls back both Mew conversion ledgers when the shared session write fails', () => {
+		companion(host, 49); companion(guest, 49); rest();
+		change(shared => { shared.spirit = shared.adventure.spirit = 'hoopagift'; shared.adventure.spiritVersion = 1; });
+		manager.coop.command(host, { action: 'finishroute' });
+		const before = session(), accounts = [store.get(host.id), store.get(guest.id)];
+		store.db.exec("CREATE TEMP TRIGGER mew_bond_fail BEFORE UPDATE ON rogue_coop_sessions BEGIN SELECT RAISE(ABORT, 'mew bond failure'); END;");
+		const original = crypto.randomInt;
+		crypto.randomInt = max => max === 100 ? 99 : 0;
+		try {
+			assert.throws(() => manager.coop.command(guest, { action: 'finishroute' }), /mew bond failure/);
+			assert.deepEqual(session(), before); assert.deepEqual([store.get(host.id), store.get(guest.id)], accounts);
+			store.db.exec('DROP TRIGGER mew_bond_fail');
+			manager.coop.command(guest, { action: 'finishroute' });
+			for (const user of [host, guest]) assert.equal(member(user).bag.fantasypowerlens, 1);
+		} finally { crypto.randomInt = original; }
 	});
 	it('does not reward an away companion', () => {
 		companion(host, 49); change(shared => { shared.adventure.members[host.id].blessings.companions[0].away = true; });
@@ -213,7 +244,9 @@ describe('Fantasy Rogue co-op companion affection', () => {
 				.map(id => ({ id, floor: 1 }));
 			shared.areaSelections = { [host.id]: null, [guest.id]: null };
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'stones' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'stones' });
+		});
 		let event = view(host).coopEvent;
 		const stone = event.branchOptions.find(option => option.id.startsWith(`stone:${host.id}:`));
 		for (const user of [host, guest]) manager.coop.command(user, { action: 'eventchoice', value: stone.id, visit: event.key });

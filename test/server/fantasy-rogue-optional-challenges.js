@@ -86,8 +86,8 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 		restored.node.challenge.stage = 'won'; chooseChallengePrize(restored, 'supplies');
 		assert.deepEqual(restored.growth, GROWTH_LIMITS);
 	});
-	it('provides 28 independent challenges with legal themed rosters at regional elite levels', () => {
-		assert.equal(new Set(OPTIONAL_CHALLENGES.map(d => d.id)).size, 28);
+	it('provides 31 independent challenges with legal themed rosters at regional elite levels', () => {
+		assert.equal(new Set(OPTIONAL_CHALLENGES.map(d => d.id)).size, 31);
 		for (const def of OPTIONAL_CHALLENGES) {
 			assert(def.from >= 5 && def.through <= 199);
 			const node = challengeNode(def.id, def.from), encounter = node.encounters[0];
@@ -286,7 +286,7 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 	it('replays each discovered challenge without exposing locked stories or changing saves', () => {
 		fixture(); const account = store.get(user), before = JSON.stringify(account);
 		const rows = rogueCodex(account, 'events').entries.filter(e => e.id.startsWith('challenge:'));
-		assert.equal(rows.length, 28);
+		assert.equal(rows.length, 31);
 		assert(rows.every(e => e.category === 'challenge'));
 		assert(rows.filter(e => !e.unlocked).every(e => !e.replay && e.text === '？？？'));
 		const all = rogueCodex(account, 'events', true).entries.filter(e => e.id.startsWith('challenge:'));

@@ -347,10 +347,16 @@ describe('Fantasy Rogue permanent starter crates', function () {
 		const before = account(); assert.throws(() => draw(), /不足/); assert.deepEqual(account(), before);
 	});
 
-	it('locks crates during adventures and emergency continuation without changing team or resources', () => {
+	it('allows crates and exchange during adventures while preserving the run and emergency guard', () => {
 		commandAfterOpening(engine, user, request({ action: 'start', starters: ['bulbasaur'], difficulty: 0 }));
-		const before = account(); assert(crateView(before, data).locked);
-		assert.throws(() => draw(), /结束或放弃/); assert.deepEqual(account(), before);
+		const before = account(); assert(!crateView(before, data).locked);
+		const payload = request(); engine.command(user, payload); const after = account();
+		engine.command(user, payload); assert.deepEqual(account(), after, 'same receipt cannot charge twice');
+		assert.equal(after.crates.total, 1); assert.deepEqual(after.run, before.run);
+		ledger({ points: 100 });
+		const weekly = crateWeekly(data);
+		draw({ action: 'exchangecrate', value: `${weekly.key}:${weekly.featured[0]}` });
+		assert.deepEqual(account().run, before.run); assert.equal(account().crates.points, 0);
 		const current = request({ action: 'abandon' }); engine.command(user, current);
 		engine.continueOnly = true;
 		assert.throws(() => draw(), /应急续玩/);

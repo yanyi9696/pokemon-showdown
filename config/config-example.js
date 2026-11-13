@@ -384,8 +384,9 @@ exports.fantasyrogue = {
 		'fcrbeta26101901', 'fcrbeta26101902', 'fcrbeta26101903', 'fcrbeta26101904', 'fcrbeta26101905',
 	]),
 	publicAccess: false,
-	// Two-player co-op is not part of the current public release. Only true enables it on a public server.
-	// Unset permits loopback development previews; false also disables those previews. Never sent by clients.
+	// Co-op follows the existing Rogue login and public/beta access rules when unset.
+	// Explicit false disables co-op (including local previews) without changing saves or single-player access.
+	// This setting is owned by the server, never supplied by clients.
 	coopEnabled: /** @type {boolean | undefined} */ (undefined),
 };
 

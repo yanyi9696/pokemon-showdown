@@ -3,8 +3,12 @@ import type { ChoiceRequest } from '../../sim/side';
 import { extractChannelMessages } from '../../sim/battle';
 import { Dex } from '../../sim/dex';
 import { enumerateDoublesChoices } from '../fantasy-ai/doubles-actions';
-import { prepareMultiChoices, rankMultiChoices, type MultiScoredChoice } from '../fantasy-ai/multi-policy';
+import { prepareMultiChoices, prepareSingleOpponentChoices, rankMultiChoices,
+	type MultiScoredChoice } from '../fantasy-ai/multi-policy';
+import { rankDoublesChoices } from '../fantasy-ai/doubles-policy';
 import type { SearchDecision } from '../fantasy-ai/rollout';
+import { rogueBossChoice } from '../../sim/rogue-bosses';
+import { isCoopBossState } from '../../sim/rogue-coop-boss';
 
 interface VisibleMon { species: string; hp: number; status?: string }
 const dex = Dex.mod('gen9fantasy');
@@ -93,11 +97,28 @@ export class RogueCoopController {
 				writes.push(`>${slot} ${choice}`);
 			}
 			// Mark every seat before writing: synchronous simulator replies cannot submit a seat twice.
-			void this.battle.stream.write(writes.join('\n'));
+			const failed = (error: unknown) => {
+				Monitor.crashlog(error as Error, 'Rogue co-op choice delivery');
+				if (this.closed || this.battle.ended || this.revision !== revision) return;
+				try {
+					this.finish();
+					// onClose restores the shared checkpoint instead of leaving both players waiting.
+					this.battle.room.destroy();
+				} catch (recoveryError) {
+					Monitor.crashlog(recoveryError as Error, 'Rogue co-op choice recovery');
+				}
+			};
+			try {
+				void Promise.resolve(this.battle.stream.write(writes.join('\n'))).catch(failed);
+			} catch (writeError) {
+				failed(writeError);
+			}
 		};
 		let scored: MultiScoredChoice[] = [];
 		let error: string | undefined;
-		if (seats.every(seat => this.latest.has(seat)) && pending.some(([slot]) => slot === 'p2' || slot === 'p4')) {
+		const singleBoss = isCoopBossState(this.battle.format, this.battle.options.fantasyRogue?.state);
+		if ((singleBoss && this.latest.has('p2') || seats.every(seat => this.latest.has(seat))) &&
+			pending.some(([slot]) => slot === 'p2' || slot === 'p4')) {
 			const fixed: Partial<Record<'p2' | 'p4', string | null>> = {};
 			for (const seat of seats) {
 				if (!pending.some(([slot]) => slot === seat)) fixed[seat] = this.battle[seat].request.choice || null;
@@ -105,10 +126,11 @@ export class RogueCoopController {
 			try {
 				const ai = this.battle.options.fantasyAI;
 				const options = { fixed, excluded: { p2: this.rejected.get('p2'), p4: this.rejected.get('p4') },
-					allowSwitch: !this.battle.options.fantasyRogue?.wild };
+					allowSwitch: !singleBoss && !this.battle.options.fantasyRogue?.wild };
 				const requests = { p2: this.latest.get('p2')!, p4: this.latest.get('p4')! };
+				const prepared = singleBoss ? prepareSingleOpponentChoices(requests.p2, this.publicLog, this.rejected.get('p2')) :
+					prepareMultiChoices(requests, this.publicLog, options);
 				if (ai) {
-					const prepared = prepareMultiChoices(requests, this.publicLog, options);
 					if (prepared?.candidates.length) {
 						const preferred = new Map(pending.map(([seat, entry]) => [seat, this.fallback(seat, entry.request)]));
 						const fallbackChoice = [...prepared.commands].find(([, commands]) =>
@@ -140,9 +162,12 @@ export class RogueCoopController {
 					return;
 				}
 				// Pure fixture/adaptor callers without a room scheduler keep the synchronous entry point.
-				scored = rankMultiChoices({ p2: this.latest.get('p2')!, p4: this.latest.get('p4')! }, this.publicLog,
-					'gen9fantasy', { fixed, excluded: { p2: this.rejected.get('p2'), p4: this.rejected.get('p4') },
-						allowSwitch: !this.battle.options.fantasyRogue?.wild });
+				if (singleBoss) {
+					scored = prepared ? rankDoublesChoices(prepared.observation, 'gen9fantasy', [], false,
+						prepared.candidates, true).map(entry => ({ ...entry, commands: prepared.commands.get(entry.choice)! })) : [];
+				} else {
+					scored = rankMultiChoices(requests, this.publicLog, 'gen9fantasy', options);
+				}
 			} catch {
 				// Keep a diagnostic without serializing any battle/request data; legal fallback stays available.
 				error = 'joint-policy-error';
@@ -154,12 +179,15 @@ export class RogueCoopController {
 		commit(scored[0]?.commands);
 	}
 	private fallback(slot: SideID, request: ChoiceRequest) {
+		const boss = slot === 'p2' && isCoopBossState(this.battle.format, this.battle.options.fantasyRogue?.state);
+		const ordered = boss && rogueBossChoice(request);
+		if (ordered) return ordered;
 		const foes: SideID[] = slot === 'p3' ? ['p2', 'p4'] : ['p1', 'p3'];
 		const partner = slot === 'p3' ? 'p1' : slot === 'p2' ? 'p4' : 'p2';
 		const native = enumerateDoublesChoices(request, { mod: 'gen9fantasy',
-			allowSwitch: slot === 'p3' || !this.battle.options.fantasyRogue?.wild,
+			allowSwitch: !boss && (slot === 'p3' || !this.battle.options.fantasyRogue?.wild),
 			foes: foes.flatMap((seat, index) => this.visible[seat]?.hp === 0 ? [] : [index + 1]),
-			allyAlive: this.visible[partner]?.hp !== 0 });
+			allyAlive: !boss && this.visible[partner]?.hp !== 0 });
 		const choices = native.filter(entry => !this.rejected.get(slot)?.has(entry.choice));
 		const preferred = this.choose(slot, request);
 		return choices.find(entry => entry.choice === preferred)?.choice || choices[0]?.choice || 'default';

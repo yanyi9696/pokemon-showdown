@@ -66,6 +66,95 @@ describe('Fantasy Rogue co-op blessing rounds', () => {
 		const session = store.coopSessionForUser(host.id), revision = session.revision;
 		update(session); session.revision++; store.updateCoopSession(session, revision);
 	}
+	it('creates shared Lake Guardians targets only after both opening blessing choices and exposes separate pure progress', () => {
+		startCoop(); forceRound(['lowhp']);
+		change(s => { s.adventure.spirit = 'lakeguardians'; });
+		manager.coop.command(host, { action: 'blessingchoice', slot: 0 });
+		assert(!store.coopSessionForUser(host.id).adventure.members[host.id].blessings.lakeQuest);
+		manager.coop.command(guest, { action: 'blessingchoice', slot: 0 });
+		const saved = store.coopSessionForUser(host.id);
+		const targets = saved.adventure.members[host.id].blessings.lakeQuest.rounds[0].types;
+		assert.equal(targets.length, 3);
+		assert.deepEqual(saved.adventure.members[guest.id].blessings.lakeQuest.rounds[0].types, targets);
+		for (const user of [host, guest]) {
+			const view = manager.coop.view(user).session.adventure.lakeQuest;
+			assert.deepEqual(view.own.rounds[0].types, targets); assert.deepEqual(view.partner.rounds[0].types, targets);
+		}
+		assert.deepEqual(store.coopSessionForUser(host.id), saved);
+	});
+	for (const [sourceFloor, checkpoint] of [[1, 50], [50, 100], [100, 150], [150, 200]]) {
+		it(`atomically settles shared lake stage ${sourceFloor} before generating floor ${checkpoint}, with retry after write failure`, () => {
+			const { deferBlessingLevels } = require('../../dist/server/fantasy-rogue/blessing-levels');
+			startCoop(); forceRound(['lowhp']);
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'blessingchoice', slot: 0 });
+			rogueContent.floors[checkpoint] = structuredClone(rogueContent.floors[20]);
+			change(s => {
+				const a = s.adventure;
+				a.spirit = 'lakeguardians'; a.floor = checkpoint - 1; a.phase = 'route-interaction';
+				a.node = { id: 'checkpoint', name: '测试结算', kind: 'reward', encounters: [], reward: { money: 0, items: {} } };
+				for (const user of [host, guest]) {
+					const member = a.members[user.id];
+					member.team = [createRoguePokemon(set('Bulbasaur', 'Overgrow', 40), stats(0)),
+						createRoguePokemon(set('Pikachu', 'Static', 40), stats(0))];
+					member.blessings.levels = 7; member.blessings.bossLevels = 13;
+					delete member.blessings.lakeQuest;
+					deferBlessingLevels({ ...member, floor: sourceFloor, spirit: 'lakeguardians' }, 'prismatic');
+					member.blessings.lakeQuest.rounds[0].types = ['Grass', 'Poison', 'Electric'];
+				}
+			});
+			manager.coop.command(host, { action: 'finishroute' });
+			const before = store.coopSessionForUser(host.id), accounts = [host, guest].map(user => store.get(user.id));
+			const update = store.updateCoopSession, routes = engine.prepareCoopRoutes, prepare = manager.coop.prepareRouteChoices;
+			let preparing, observed = 0;
+			try {
+				manager.coop.prepareRouteChoices = function (a, ...args) { preparing = a; return prepare.call(this, a, ...args); };
+				engine.prepareCoopRoutes = function (...args) {
+					for (const member of Object.values(preparing.members)) {
+						assert.equal(member.blessings.lakeQuest.rounds[0].result, 'reverted');
+						assert.equal(member.blessings.levels, 7); assert.equal(member.blessings.bossLevels, 13);
+					}
+					observed++; return routes.apply(this, args);
+				};
+				store.updateCoopSession = (...args) => { update.apply(store, args); throw Error('checkpoint write failed'); };
+				assert.throws(() => manager.coop.command(guest, { action: 'finishroute' }), /checkpoint write failed/);
+				assertUnchanged(before, accounts);
+				store.updateCoopSession = update;
+				manager.coop.command(guest, { action: 'finishroute' }); assert.equal(observed, 2);
+				const after = store.coopSessionForUser(host.id);
+				assert.equal(after.adventure.floor, checkpoint); assert.equal(after.adventure.phase, 'area-selection');
+				manager.coop.view(host); manager.coop.view(guest); assert.deepEqual(store.coopSessionForUser(host.id), after);
+			} finally {
+				store.updateCoopSession = update; engine.prepareCoopRoutes = routes; manager.coop.prepareRouteChoices = prepare;
+			}
+		});
+	}
+	it('rolls the shared shiny chance for a blessing replacement of an already prepared route', () => {
+		const { emptyEchoUpgrades } = require('../../dist/sim/rogue-echo');
+		startCoop();
+		change(s => {
+			const a = s.adventure;
+			a.phase = 'area-selection'; a.floor = 61; delete a.coopBlessingRound;
+			a.routeChoices = [{ id: 'legend', name: '精英', kind: 'elite', spiritPrepared: true,
+				reward: { money: 0, items: {} }, encounters: [{ name: '旧对手', catchable: true,
+					style: 'balanced', team: [set('Magikarp', 'Swift Swim')] }] }];
+			a.members[host.id].blessings.owned.push({ ...blessing('originaldragon'), floor: 1 });
+			for (const user of [host, guest]) {
+				delete a.members[user.id].blessings.round;
+				a.members[user.id].echo = { ...emptyEchoUpgrades(), shiny: user === guest ? 5 : 1 };
+			}
+		});
+		const original = crypto.randomInt; let rolls = 0;
+		try {
+			crypto.randomInt = max => {
+				if (max === 10000) { rolls++; return 29; }
+				return 0;
+			};
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'legend' });
+		} finally { crypto.randomInt = original; }
+		const node = store.coopSessionForUser(host.id).adventure.node;
+		assert.equal(node.encounters[0].team[0].species, 'Reshiram');
+		assert(node.encounters[0].team[0].shiny); assert(node.spiritPrepared); assert.equal(rolls, 1);
+	});
 	function assertUnchanged(session, accounts) {
 		assert.deepEqual(store.coopSessionForUser(host.id), session);
 		for (const [index, user] of [host, guest].entries()) assert.deepEqual(store.get(user.id), accounts[index]);
@@ -143,11 +232,12 @@ describe('Fantasy Rogue co-op blessing rounds', () => {
 	for (const action of ['finishroute', 'continuebattle']) {
 		it(`atomically completes the floor and its account gift through ${action}`, () => {
 			startCoop(); forceRound(['lowhp', 'swapstats', 'supercombo']);
-			for (const user of [host, guest]) manager.coop.command(user, { action: 'blessingchoice', slot: 1 });
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'blessingchoice', slot: 0 });
 			const isEvent = action === 'finishroute';
 			change(session => {
 				const adventure = session.adventure;
 				adventure.floor = 50; adventure.encounter = 0;
+				adventure.spirit = isEvent ? 'mewtwo' : 'zacian';
 				adventure.phase = isEvent ? 'route-interaction' : 'settlement';
 				adventure.node = { id: 'ending', name: '本层最后节点', kind: isEvent ? 'event' : 'wild',
 					encounters: [], reward: { money: 37, items: {} } };
@@ -159,6 +249,7 @@ describe('Fantasy Rogue co-op blessing rounds', () => {
 				}
 				for (const user of [host, guest]) {
 					const member = adventure.members[user.id], family = isEvent ? 'eventtask' : 'battletask';
+					member.box.push(createRoguePokemon(set('Pikachu', 'Static', 40), member.boosts));
 					member.blessings.owned.push({ id: family, family, tier: 'silver', floor: 1, progress: 14 });
 					if (isEvent) member.coopEvent = structuredClone(adventure.node.event);
 				}
@@ -179,7 +270,11 @@ describe('Fantasy Rogue co-op blessing rounds', () => {
 				assert.equal(saved.adventure.phase, 'blessing-reward');
 				assert.equal(saved.adventure.floor, 50);
 				for (const user of [host, guest]) {
-					const state = saved.adventure.members[user.id].blessings;
+					const member = saved.adventure.members[user.id], stat = isEvent ? 'spa' : 'atk';
+					const previous = before.adventure.members[user.id], state = member.blessings;
+					assert.equal(member.boosts[stat], previous.boosts[stat] + 1);
+					assert.equal(member.box[0].stats[stat], previous.box[0].stats[stat] + 1);
+					assert.equal(member.spiritRegionFloor, 50);
 					assert.equal(state.completed.filter(floor => floor === 50).length, 1);
 					assert.equal(state.pending.filter(reward => reward.kind === 'gift').length, 1);
 					assert.equal(store.get(user.id).captures.magikarp, 1);
@@ -187,9 +282,46 @@ describe('Fantasy Rogue co-op blessing rounds', () => {
 				assert.equal(notices, 1);
 				assert.throws(() => manager.coop.command(guest, { action }));
 				assert.equal(store.get(host.id).captures.magikarp, 1);
+				assert.deepEqual(store.coopSessionForUser(host.id).adventure.members[host.id].boosts,
+					saved.adventure.members[host.id].boosts, 'duplicate continuation cannot reapply region growth');
 			} finally { store.updateCoopSession = update; crypto.randomInt = random; host.send = send; }
 		});
 	}
+
+	it('quotes Yveltal care correctly and restores only living partners status and PP from each private wallet', () => {
+		startCoop(); forceRound(['lowhp']);
+		for (const user of [host, guest]) manager.coop.command(user, { action: 'blessingchoice', slot: 0 });
+		change(s => {
+			const a = s.adventure; a.spirit = 'yveltal'; a.floor = 9;
+			a.phase = 'route-interaction';
+			a.node = { id: 'center', name: '中心', kind: 'rest', encounters: [], reward: { money: 0, items: {} } };
+			for (const user of [host, guest]) {
+				const member = a.members[user.id]; member.money = 5000;
+				member.team = [createRoguePokemon(set('Bulbasaur', 'Overgrow', 40), stats(0)),
+					createRoguePokemon(set('Pikachu', 'Static', 40), stats(0))];
+				member.team[0].hp = 15; member.team[0].status = 'par'; member.team[0].pp[0].pp = 0;
+				member.team[1].hp = 0; member.team[1].pp[0].pp = 0;
+			}
+		});
+		const before = store.coopSessionForUser(host.id), view = manager.coop.view(host).session.adventure;
+		assert.equal(view.centerCare.revives, false); assert.equal(view.partnerCenterCare.revives, false);
+		assert.equal(view.centerCare.fainted, 0); assert(view.centerCare.needed);
+		assert.deepEqual(store.coopSessionForUser(host.id), before, 'quotes do not modify either party');
+		manager.coop.command(host, { action: 'heal' });
+		let after = store.coopSessionForUser(host.id), member = after.adventure.members[host.id];
+		assert.equal(member.money, 5000 - view.centerCare.cost);
+		assert.equal(member.team[0].hp, 15); assert.equal(member.team[0].status, '');
+		assert.equal(member.team[0].pp[0].pp, member.team[0].pp[0].maxpp);
+		assert.deepEqual(member.team[1], before.adventure.members[host.id].team[1]);
+		assert.deepEqual(after.adventure.members[guest.id], before.adventure.members[guest.id]);
+		assert.throws(() => manager.coop.command(host, { action: 'heal' }), /无需治疗/);
+		change(s => { s.delegatedTo = host.id; });
+		manager.coop.command(host, { action: 'heal', owner: guest.id });
+		after = store.coopSessionForUser(host.id); member = after.adventure.members[guest.id];
+		assert.equal(member.money, 5000 - view.partnerCenterCare.cost); assert.equal(member.team[0].hp, 15);
+		assert.equal(member.team[1].hp, 0); assert.equal(member.team[1].pp[0].pp, 0);
+		assert.equal(after.adventure.members[host.id].money, 5000 - view.centerCare.cost);
+	});
 
 	it('uses one shared offer and grants it to both only after matching votes', () => {
 		startCoop(); forceRound(['lowhp', 'swapstats', 'supercombo']);
@@ -379,6 +511,10 @@ describe('Fantasy Rogue co-op blessing rounds', () => {
 		manager.coop.command(guest, { action: 'selectbattle', members: adventure.partnerTeam.slice(0, 3).map(m => m.id) });
 		const state = createdBattle.rogue.state;
 		assert.equal(state.blessings.unityParty.length, 6); assert.equal(state.partner.blessings.unityParty.length, 6);
+		assert.equal(state.blessings.party.length, 6); assert.equal(state.partner.blessings.party.length, 6);
+		assert(state.blessings.party.every(mon => mon.species === 'Blaziken'));
+		assert(state.partner.blessings.party.every(mon => mon.species === 'Gyarados'));
+		assert.equal(store.coopSessionForUser(host.id).adventure.members[host.id].blessings.party, undefined);
 		assert.equal(store.coopSessionForUser(host.id).adventure.members[host.id].blessings.unityParty, undefined);
 		const battle = new Battle({ formatid: 'gen9fantasyroguecoop', fantasyRogue: structuredClone(state), seed: [1, 2, 3, 4],
 			p1: { team: state.team.map(m => m.set) }, p3: { team: state.partner.team.map(m => m.set) },

@@ -16,8 +16,10 @@ export interface PoliceProgress {
 }
 export interface PoliceEvent { choices?: PoliceRegion[]; region?: PoliceRegion; revenge?: boolean; round?: number; friendly?: boolean; fans?: boolean }
 const avatars: Record<string, string> = {rocket: 'rocketgrunt', magma: 'magmagrunt-rse', aqua: 'aquagrunt', archie: 'archie-gen6', galactic: 'galacticgrunt', plasma: 'plasmagrunt-gen5bw', flare: 'flaregrunt', skull: 'skullgrunt', yell: 'yellgrunt', teamstar: 'stargrunt-s'};
-const accompanying = (run: RogueRun, id: string) => travellingRoster(run).some(c => c.id === id);
-const pennyAware = (run: RogueRun) => run.rival?.id === 'penny' || accompanying(run, 'penny');
+const accompanying = (run: RogueRun, id: string, otherParties: readonly RogueRun[] = []) =>
+ [run, ...otherParties].some(party => travellingRoster(party).some(c => c.id === id));
+const pennyAware = (run: RogueRun, otherParties: readonly RogueRun[] = []) =>
+ [run, ...otherParties].some(party => party.rival?.id === 'penny') || accompanying(run, 'penny', otherParties);
 function leader(region: PoliceRegion, round: number) {
  const data = POLICE_REGIONS[region];
  return region === 'paldea' ? STAR_BOSSES[Math.max(0, Math.min(5, round - 3))] : {id: data.boss, name: data.bossName, team: data.team, line: data.challenge};
@@ -48,8 +50,8 @@ function progress(run: RogueRun, region: PoliceRegion, status: 'pending' | 'clea
  run.police.nextFloor = run.floor + 8;
  run.police.regions[region] = {floor: run.floor, revengeAfter: run.floor + 8, status, round, fans};
 }
-function pennyAside(run: RogueRun) {
- return pennyAware(run) ? [dialoguePage('penny', '牡丹', accompanying(run, 'penny') ? '……（她攥紧了背包肩带，没有接上队员的话。）' : '……（你瞥见远处熟悉的身影，她停下脚步，似乎有什么话始终没能说出口。）', false, 'left')] : [];
+function pennyAside(run: RogueRun, otherParties: readonly RogueRun[] = []) {
+ return pennyAware(run, otherParties) ? [dialoguePage('penny', '牡丹', accompanying(run, 'penny', otherParties) ? '……（她攥紧了背包肩带，没有接上队员的话。）' : '……（你瞥见远处熟悉的身影，她停下脚步，似乎有什么话始终没能说出口。）', false, 'left')] : [];
 }
 function pay(run: RogueRun, revenge: boolean, apology = false) {
  const potion = run.floor < 30 ? 'potion' : run.floor < 100 ? 'superpotion' : 'hyperpotion';
@@ -69,17 +71,17 @@ function giovanniIntervention(run: RogueRun, random: RogueRandom) {
   dialoguePage('rocket', '火箭队队员', '是、是！我们马上去整理！'), dialoguePage('archer', '阿波罗', '遵命。这是一场切磋，我会负责赛后恢复，请尽管展示你的本领。')], 'ready');
 }
 /** A saved round advances only on victory, never on opening or reconnecting. */
-export function beginPoliceEncounter(run: RogueRun, random: RogueRandom) {
+export function beginPoliceEncounter(run: RogueRun, random: RogueRandom, otherParties: readonly RogueRun[] = []) {
  if (run.floor < (run.police?.nextFloor || 1)) return false;
  const regions = run.police?.regions || {};
  const pending = (Object.keys(regions) as PoliceRegion[]).filter(id => regions[id]!.status === 'pending' && run.floor >= regions[id]!.revengeAfter);
  if (pending.length && random(100) < 25) {
   const region = pending[random(pending.length)], data = POLICE_REGIONS[region], saved = regions[region]!;
-  const round = (saved.round ?? 0) + 1, fans = !!saved.fans || region === 'galar' && accompanying(run, 'marnie');
-  if (region === 'johto' && accompanying(run, 'giovanni')) {
+  const round = (saved.round ?? 0) + 1, fans = !!saved.fans || region === 'galar' && accompanying(run, 'marnie', otherParties);
+  if (region === 'johto' && accompanying(run, 'giovanni', otherParties)) {
    mark(run, {region, revenge: true, round}); giovanniIntervention(run, random); return true;
   }
-  if (!['galar', 'paldea', 'johto'].includes(region) && accompanying(run, data.boss)) {
+  if (!['galar', 'paldea', 'johto'].includes(region) && accompanying(run, data.boss, otherParties)) {
    mark(run, {region, revenge: true, round}); run.node!.encounters = [];
    progress(run, region, 'averted', round);
    run.bag.superpotion = (run.bag.superpotion || 0) + 1;
@@ -95,8 +97,8 @@ export function beginPoliceEncounter(run: RogueRun, random: RogueRandom) {
   run.node!.encounters = Array.from({length: boss ? 1 : 2 + round}, (_, i) => encounter(run, region, i, round, random));
   const pages = [dialoguePage(boss ? chief.id : data.grunt, boss ? chief.name : `${data.group}队员`, boss ? chief.line : fans ?
    `这次又多来了一位支持者！我们也想看看你和玛俐的默契，请再跟我们打一场吧！` : `上次是我们准备不足！这回来了 ${2 + round} 个人，队伍也练得更强了！`)];
-  if (region === 'paldea' && round < 8) pages.push(...pennyAside(run));
-  if (region === 'paldea' && round === 8) pages.unshift(dialoguePage('penny', '牡丹', '……一直没能告诉你，天星队的幕后首领就是我。谢谢你一路认真对待大家。最后，也请和我打一场，让我亲自承担这件事。', false, accompanying(run, 'penny') ? 'left' : 'right'));
+  if (region === 'paldea' && round < 8) pages.push(...pennyAside(run, otherParties));
+  if (region === 'paldea' && round === 8) pages.unshift(dialoguePage('penny', '牡丹', '……一直没能告诉你，天星队的幕后首领就是我。谢谢你一路认真对待大家。最后，也请和我打一场，让我亲自承担这件事。', false, accompanying(run, 'penny', otherParties) ? 'left' : 'right'));
   if (region === 'galar' && fans) pages.push(dialoguePage('marnie', '玛俐', boss ? '哥，我是自己决定和他一起旅行的。不过你想确认的话，我们就认真打给你看吧。' : '大家的心意我收到了，不过别再堵路了。切磋完就让旅人先走，好吗？', false, 'left'));
   if (region === 'galar' && fans && boss) pages.unshift(dialoguePage('piers', '聂梓', '他们一路唱着你们的事。我得亲眼确认，玛俐跟着你旅行能不能安心。来一场认真的对战吧。'));
 		queueNarrative(run, [...(boss ? trainerReunionPages(run, chief.id) : []), ...pages], 'ready'); return true;
@@ -117,16 +119,16 @@ export function policeView(run: RogueRun) {
   options: event.stage !== 'choice' ? [] : (police.choices || []).map(id => ({id: `police:${id}`, region: id === 'hoennaqua' ? 'hoenn' : id,
    name: `前往${POLICE_REGIONS[id].name} · ${POLICE_REGIONS[id].group}`, text: '道路旁出现了骚动。', disabled: false}))};
 }
-export function choosePoliceRegion(run: RogueRun, choice: string, random: RogueRandom) {
+export function choosePoliceRegion(run: RogueRun, choice: string, random: RogueRandom, otherParties: readonly RogueRun[] = []) {
  const node = run.node!, event = node.event!, police = event.police!, region = choice.slice(7) as PoliceRegion;
  if (!choice.startsWith('police:') || !police.choices?.includes(region)) throw new Error('请选择地图上标出的地区。');
  police.region = region; delete police.choices; event.key = randomUUID();
  const data = POLICE_REGIONS[region];
- if (region === 'johto' && accompanying(run, 'giovanni')) {
+ if (region === 'johto' && accompanying(run, 'giovanni', otherParties)) {
   giovanniIntervention(run, random); return;
  }
- police.fans = region === 'galar' && accompanying(run, 'marnie');
- if (!['galar', 'paldea'].includes(region) && accompanying(run, data.boss)) {
+ police.fans = region === 'galar' && accompanying(run, 'marnie', otherParties);
+ if (!['galar', 'paldea'].includes(region) && accompanying(run, data.boss, otherParties)) {
   progress(run, region, 'averted', 0); pay(run, false, true); event.stage = 'result'; event.settled = true;
   event.result = ['同行伙伴制止了闹事者。君莎送来谢礼，伙伴也递来一份歉礼；这次风波不会再有后续。'];
   queueNarrative(run, [dialoguePage(data.boss, data.bossName, data.boss === 'guzma' ? '喂，你们两个！把路让开！别给我丢脸，赶紧去把弄乱的东西收拾好！' : '到此为止。把道路恢复原样，向受到影响的人道歉。', false, 'left'),
@@ -135,11 +137,11 @@ export function choosePoliceRegion(run: RogueRun, choice: string, random: RogueR
  }
  node.encounters = [encounter(run, region, 0, 0, random), encounter(run, region, 1, 0, random)]; event.stage = 'battle'; run.phase = 'ready';
  const pages = [dialoguePage(data.grunt, `${data.group}队员`, police.fans ? '玛俐！我们只是想替你加油。既然和你同行，也让我们看看这位训练家的本事吧！' : '你也想从这里过去？要插手，就先和我的宝可梦过两招！')];
- if (region === 'paldea') pages.push(...pennyAside(run));
+ if (region === 'paldea') pages.push(...pennyAside(run, otherParties));
  if (police.fans) pages.push(dialoguePage('marnie', '玛俐', '不要给别人添麻烦。真想切磋，就好好按规则来，结束后向大家道歉。', false, 'left'));
  queueNarrative(run, pages, 'ready');
 }
-export function settlePoliceBattle(run: RogueRun, won: boolean) {
+export function settlePoliceBattle(run: RogueRun, won: boolean, otherParties: readonly RogueRun[] = []) {
  const node = run.node!, event = node.event!, police = event.police!, region = police.region!, data = POLICE_REGIONS[region];
  if (event.settled) return;
  const round = police.round ?? (police.revenge ? 3 : 0);
@@ -149,7 +151,7 @@ export function settlePoliceBattle(run: RogueRun, won: boolean) {
   run.encounter = node.encounters.length;
   queueNarrative(run, [dialoguePage('giovanni', '坂木', won ? '配合得不错。阿波罗，你也该从中学到些什么。走吧，我们还有自己的旅途。' : '胜负不是切磋的全部。先恢复伙伴，回头再想想刚才的应对。', true, 'left')], 'settlement'); return;
  }
- if (!won && region === 'paldea' && round === 8 && accompanying(run, 'penny')) {
+ if (!won && region === 'paldea' && round === 8 && accompanying(run, 'penny', otherParties)) {
   healNarrativeParty(run); progress(run, region, 'pending', 7);
   event.settled = true; event.stage = 'result'; run.encounter = node.encounters.length;
   event.result = ['牡丹帮全队恢复健康。这次切磋未获胜，奖励暂未领取；之后仍有机会再次较量。'];
@@ -170,7 +172,7 @@ export function settlePoliceBattle(run: RogueRun, won: boolean) {
  event.result = [line];
  const pages = [dialoguePage(round >= 3 ? chief.id : data.grunt, round >= 3 ? chief.name : `${data.group}队员`, line, true)];
  if (!round) pages.push(dialoguePage('jenny', '君莎', '谢谢你和伙伴，道路恢复通行了。路费和补给请收下，后面的善后交给我。', true));
- if (region === 'paldea' && !final) pages.push(...pennyAside(run));
+ if (region === 'paldea' && !final) pages.push(...pennyAside(run, otherParties));
  if (police.fans && final) pages.push(dialoguePage('marnie', '玛俐', '谢谢，哥。我们会好好走下去，下次再来听你的演出。', true, 'left'));
 	queueNarrative(run, pages, 'settlement');
 }

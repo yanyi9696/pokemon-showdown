@@ -92,6 +92,13 @@ function eventRoll(run, id) {
 	for (let roll = 0; roll < maximum; roll++) if (chooseEvent(run, () => roll) === id) return roll;
 	throw new Error(`Event ${id} is unavailable at floor ${run.floor}`);
 }
+// Event history only weights the pool: needed exclusive clues can legitimately re-enter it.
+// Fixtures that leave one ordinary event unseen select the first legal roll explicitly.
+function firstEventRoute(action, random = (min, max) => max === undefined ? 0 : min) {
+	const crypto = require('crypto'), original = crypto.randomInt;
+	crypto.randomInt = random;
+	try { return action(); } finally { crypto.randomInt = original; }
+}
 function prepareCompanionParty(run, family, level = 50) {
 	const types = require('../../dist/sim/rogue-companions').companionFamilyTypes(family);
 	if (!types.length) return;
@@ -145,5 +152,5 @@ function resumeBattleGrowth(engine, user, battle) {
 }
 module.exports = {
 	content, set, stats, commandAfterOpening, chooseCompanions, eventRoll, prepareCompanionParty, compoundCommand,
-	resumeBattleGrowth,
+	resumeBattleGrowth, firstEventRoute,
 };

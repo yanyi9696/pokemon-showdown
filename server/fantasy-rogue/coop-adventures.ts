@@ -4,6 +4,7 @@ import type { RogueRandom } from './biome-pools';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
 import { chooseEventOption, eventView, type EventID } from './events';
 import { fishingFrame, rollFishingReward, stepFishing, type SharedAdventureRoll } from './event-adventures';
+import { sharedShinyEcho } from './coop-echo';
 
 export const COOP_ADVENTURE_EVENTS = new Set<EventID>(['bandits', 'dice', 'fishing']);
 
@@ -55,6 +56,7 @@ export function chooseCoopAdventure(
 		if (stepFishing(shared.fishingState, now, random, choice)) {
 			const source = runs.find(run => run.blessings?.companions?.some(c => c.id === 'lana' && !c.away)) || runs[0];
 			const preview = structuredClone(source);
+			preview.echo = sharedShinyEcho(runs);
 			preview.node!.event!.fishing = shared.fishingState;
 			shared.fishingReward = rollFishingReward(preview, content, random);
 		}

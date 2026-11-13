@@ -13,7 +13,7 @@ const { Teams } = require('../../dist/sim/teams');
 const { Dex } = require('../../dist/sim/dex');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const { captureCoopCheckpoint } = require('../../dist/sim/rogue-coop-checkpoint');
-const { content, set, stats } = require('../fixtures/fantasy-rogue');
+const { content, set, stats, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue cooperative Kubfu scroll trials', () => {
 	let oldConfig, store, engine, manager, host, guest, created;
@@ -60,7 +60,9 @@ describe('Fantasy Rogue cooperative Kubfu scroll trials', () => {
 			a.routeChoices = [{ id: 'scrollroute', name: '卷轴修行', kind: 'event', encounters: [], reward: { money: 0, items: {} } }];
 			a.coopEventHistory = Object.keys(EVENT_NAMES).filter(key => key !== 'kubfuscroll').map(key => ({ id: key, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'scrollroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'scrollroute' });
+		});
 		assert.equal(event().id, 'kubfuscroll');
 	}
 	function choose(user, value, owner, visit) {

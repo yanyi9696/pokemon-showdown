@@ -1,4 +1,4 @@
-import { syncAffection } from './affection';
+import { syncAffection, type AffectionRewards } from './affection';
 import { syncMasterBalls } from './master-ball';
 import { syncCoopMasterBalls } from './coop-master-ball';
 import { trackJourney, journeyRecord, journeyDisplay, type JourneyRecord } from './history';
@@ -8,15 +8,37 @@ import { emptyRogueStats } from '../../sim/fantasy-rogue';
 import type { RogueAccount, RogueCommand, RogueCoopInvite, RogueCoopSession, RogueRun } from './types';
 import type { RogueClearCard } from './legacy';
 import { recordRogueDiscoveries } from './discoveries';
-import { clearCoopDifficulty, syncRunDifficulty } from './difficulty';
+import { syncRunDifficulty } from './difficulty';
+import { recordClear } from './legacy';
+import { awardFirstClears } from './first-clears';
+import { recordMonthlyClear } from './monthly-challenges';
+import { restoreMember } from './recovery-items';
+import { coopRunRules } from './coop-collapse';
+import { awardEcho } from './echo';
+import { recordCollapseClear } from './collapse';
 import { assertNuzlockeRoster, syncNuzlocke } from './nuzlocke';
 import { openRogueDatabase } from './store-schema';
 import { assertRogueSaveCompatible, ROGUE_SAVE_VERSION } from './save-compatibility';
 
 export class RogueStore {
 	private readonly db: Database.Database;
+	private affectionRewards?: AffectionRewards;
 	constructor(path: string) {
 		this.db = openRogueDatabase(path);
+	}
+	/** Runtime dependencies only; migration rewards remain inside the existing account transaction. */
+	configureAffectionRewards(rewards: AffectionRewards | undefined) {
+		this.affectionRewards = rewards;
+	}
+	/** Public directory only: never deserialize or return another player's account. */
+	searchPlayerNames(query: string): { userid: string, name: string }[] {
+		const needle = query.trim().toLowerCase().slice(0, 24);
+		if (!needle) return [];
+		return this.db.prepare(`SELECT userid,
+			COALESCE(json_extract(data, '$.run.owner.name'), userid) AS name FROM rogue_accounts
+			WHERE instr(lower(userid), ?) > 0 OR
+			instr(lower(COALESCE(json_extract(data, '$.run.owner.name'), '')), ?) > 0
+			ORDER BY userid LIMIT 50`).all(needle, needle) as { userid: string, name: string }[];
 	}
 	/** Synchronous result writes only. Emit battle/client notifications after this commits. */
 	commitCoopResult<T>(resolve: () => T): T {
@@ -124,30 +146,45 @@ export class RogueStore {
 			syncCoopMasterBalls(session, current, userid => this.get(userid), (userid, update) => {
 				this.change(userid, update);
 			});
-			if (session.status !== current.status && (session.status === 'complete' ||
-				session.status === 'abandoned' && session.adventure)) {
+			const postgameClear = session.adventure?.postgame?.stage === 'offer' &&
+				session.adventure.phase === 'postgame' && !current.adventure?.campaignCleared;
+			// An optional postgame loss/abandon must not replace the already committed tower clear.
+			if (current.adventure?.campaignCleared && session.adventure) session.adventure.campaignCleared = true;
+			if (!current.adventure?.campaignCleared && (postgameClear || session.status !== current.status &&
+				(session.status === 'complete' || session.status === 'abandoned' && session.adventure))) {
 				const adventure = session.adventure;
-				const completed = session.status === 'complete';
+				const completed = postgameClear || session.status === 'complete';
 				if (!adventure || !['active', 'paused'].includes(current.status) || completed &&
-					(current.status !== 'active' || adventure.phase !== 'complete' || adventure.floor !== 200)) {
+					(current.status !== 'active' || (!postgameClear && adventure.phase !== 'complete') || adventure.floor !== 200)) {
 					throw new Error('联机通关结算状态无效。');
 				}
 				const members = [session.hostUser, session.guestUser];
 				for (const [index, userid] of members.entries()) {
 					const member = adventure.members[userid];
 					const account = this.get(userid);
+					const previousCards = JSON.stringify(account.cards || []);
 					const journey = member.journey || { startedAt: session.createdAt, blessings: [], participants: {} };
 					const run = {
+						owner: { id: userid, name: index ? session.guestName : session.hostName },
 						id: `coop-${adventure.id}`, contentVersion: adventure.contentVersion, floor: adventure.floor,
 						phase: completed ? 'complete' : 'ready',
 						difficulty: adventure.difficulty, doubleBattle: true, encounter: adventure.encounter, attempt: 0,
+						...coopRunRules(adventure),
 						team: member.team, box: member.box, money: member.money, bag: member.bag, boosts: member.boosts,
 						boostRuleVersion: 2, startingSlots: member.slots, blessings: member.blessings, journey,
+						growth: member.growth, trainerBonds: member.trainerBonds, rival: member.rival,
 						megaUnlocked: member.systems.mega, gmegaUnlocked: member.systems.gmega,
 						zUnlocked: member.systems.z, teraUnlocked: member.systems.tera,
 						checkpoint: { team: [], box: [], money: member.money, bag: {} }, caught: account.caughtSpecies || [],
 					} as RogueRun;
-					if (completed) clearCoopDifficulty(account, adventure.difficulty);
+					if (completed) {
+						awardEcho(account, run); recordCollapseClear(account, run);
+						for (const mon of member.team) restoreMember(mon);
+						awardFirstClears(account, run);
+						recordMonthlyClear(account, run);
+						recordClear(account, run, { partnerName: index ? session.hostName : session.guestName });
+						member.notices = [...(member.notices || []), ...(run.notices || [])];
+					}
 					trackJourney(run, account);
 					const record = journeyRecord(run, completed ? 'complete' : 'abandoned');
 					record.cooperative = { partnerName: index ? session.hostName : session.guestName };
@@ -159,13 +196,20 @@ export class RogueStore {
 						assertRogueSaveCompatible(account);
 						this.db.prepare('INSERT OR REPLACE INTO rogue_accounts (userid, data) VALUES (?, ?)')
 							.run(userid, JSON.stringify(account));
+						if (JSON.stringify(account.cards || []) !== previousCards) this.saveCards(userid, account.cards || []);
 					}
 				}
 			}
+			if (postgameClear || session.status === 'complete') session.adventure!.campaignCleared = true;
 			this.db.prepare('UPDATE rogue_coop_sessions SET status = ?, updated = ?, data = ? WHERE id = ?')
 				.run(session.status, session.updatedAt, JSON.stringify(session), session.id);
 			return session;
 		}).immediate();
+	}
+	private saveCards(userid: string, cards: RogueClearCard[]) {
+		this.db.prepare('DELETE FROM rogue_cards WHERE userid = ?').run(userid);
+		const insert = this.db.prepare('INSERT INTO rogue_cards (id, userid, public, created, data) VALUES (?, ?, ?, ?, ?)');
+		for (const card of cards) insert.run(card.id, userid, Number(card.public), card.completedAt, JSON.stringify(card));
 	}
 	get(userid: string): RogueAccount {
 		const row = this.db.prepare('SELECT data FROM rogue_accounts WHERE userid = ?')
@@ -196,7 +240,7 @@ export class RogueStore {
 			}
 			// Capture old evidence before an abandon/new run/card deletion, then the newly earned entries.
 			recordRogueDiscoveries(account);
-			syncAffection(account);
+			syncAffection(account, this.affectionRewards);
 			syncMasterBalls(account);
 			const masterBefore = account.run && { id: account.run.id, count: account.run.bag.masterball || 0 };
 			const priorRun = account.run;
@@ -209,7 +253,7 @@ export class RogueStore {
 			if (account.run && account.run.id === priorRun?.id) assertNuzlockeRoster(account.run, deadBefore, command);
 			assertRogueSaveCompatible(account);
 			syncMasterBalls(account, masterBefore);
-			syncAffection(account);
+			syncAffection(account, this.affectionRewards);
 			if (account.run) {
 				syncRunDifficulty(account.run);
 				syncNuzlocke(account.run);
@@ -229,11 +273,7 @@ export class RogueStore {
 			account.revision++;
 			this.db.prepare('INSERT OR REPLACE INTO rogue_accounts (userid, data) VALUES (?, ?)').run(userid, JSON.stringify(account));
 			if (JSON.stringify(account.cards || []) !== previousCards) {
-				this.db.prepare('DELETE FROM rogue_cards WHERE userid = ?').run(userid);
-				const insert = this.db.prepare('INSERT INTO rogue_cards (id, userid, public, created, data) VALUES (?, ?, ?, ?, ?)');
-				for (const card of account.cards || []) {
-					insert.run(card.id, userid, Number(card.public), card.completedAt, JSON.stringify(card));
-				}
+				this.saveCards(userid, account.cards || []);
 			}
 			if (command) {
 				this.db.prepare('INSERT INTO rogue_requests (userid, id, payload, revision) VALUES (?, ?, ?, ?)')

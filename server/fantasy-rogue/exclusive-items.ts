@@ -1,7 +1,9 @@
 import { isFantasySpecies } from './species-eligibility';
 import { Dex, toID } from '../../sim/dex';
-import type { RogueRun } from './types';
+import type { RogueContent, RogueRun } from './types';
+import type { RogueRandom } from './biome-pools';
 import { FORM_ITEMS } from './form-item-data';
+import { convertSpiritItem } from './spirits';
 
 const dex = Dex.mod('gen9fantasy');
 export interface ExclusiveItem {
@@ -106,12 +108,14 @@ export function neededExclusiveItems(run: RogueRun) {
 	const available = new Set(run.team.filter(mon => !mon.egg).flatMap(mon => suitableExclusiveItems(mon.set.species).map(item => item.id)));
 	return exclusiveCatalog().filter(item => available.has(item.id) && !run.exclusiveItems![item.id].obtained);
 }
-export function grantExclusiveItem(run: RogueRun, id: string) {
+export function grantExclusiveItem(run: RogueRun, id: string, content: RogueContent, random: RogueRandom) {
 	syncExclusiveItems(run);
 	if (!run.exclusiveItems![id] || run.exclusiveItems![id].obtained) return false;
-	run.bag[id] = (run.bag[id] || 0) + 1;
+	const received = convertSpiritItem(run, content, id, `exclusive:${id}`, random);
+	run.bag[received] = (run.bag[received] || 0) + 1;
+	// Completing this search is permanent even when Mew transforms its prize.
 	run.exclusiveItems![id].obtained = true;
-	return true;
+	return received;
 }
 export function exclusiveEncounterChance(run: RogueRun, id: string) {
 	const entry = run.exclusiveItems?.[id];

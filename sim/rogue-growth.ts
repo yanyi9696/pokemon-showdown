@@ -1,13 +1,20 @@
 import type { Battle } from './battle';
 import { rogueBattleResult, rogueGrowthNotice, type RoguePokemon } from './fantasy-rogue';
 import { toID } from './dex';
+import type { Side } from './side';
+import type { BlessingEffects } from './rogue-blessing-data';
+import { prepareBlessingMember } from './fantasy-rogue-blessings';
 
-export interface RogueGrowthUpdate {
-	sequence: number;
-	revision: number;
+export interface RogueGrowthPartyUpdate {
 	team: RoguePokemon[];
 	bag: Record<string, number>;
+	blessingRoster?: Pick<BlessingEffects, 'party' | 'partyRoles' | 'unityParty'>;
+}
+export interface RogueGrowthUpdate extends RogueGrowthPartyUpdate {
+	sequence: number;
+	revision: number;
 	paused: boolean;
+	partner?: RogueGrowthPartyUpdate;
 }
 
 /** Pause only between simulator decisions, never halfway through a move or faint queue. */
@@ -28,19 +35,55 @@ export function requestRogueGrowth(battle: Battle): boolean {
 export function applyRogueGrowth(battle: Battle, update: RogueGrowthUpdate) {
 	const state = battle.fantasyRogue;
 	if (!state?.liveProgression || !state.growthWaiting || battle.ended ||
+		!Number.isSafeInteger(update.sequence) || !Number.isSafeInteger(update.revision) ||
 		update.sequence !== state.defeated?.length || update.revision <= (state.growthRevision || 0)) return;
+	const cooperative = !!state.persistCoop && !!state.partner;
+	if (cooperative) {
+		if (!battle.p3) return;
+		// Validate both owners before touching either side. A partial acknowledgement must not resume battle.
+		const matches = (original: RoguePokemon[], incoming?: RogueGrowthPartyUpdate) =>
+			!!incoming && Array.isArray(incoming.team) && !!incoming.bag &&
+			incoming.team.length === original.length && new Set(incoming.team.map(mon => mon.id)).size === original.length &&
+			incoming.team.every(mon => original.some(saved => saved.id === mon.id) && !mon.egg && !mon.nuzlockeDead);
+		if (!matches(state.team, update) || !matches(state.partner!.team, update.partner)) return;
+	}
+	state.team = applyGrowthParty(battle, battle.p1, state.team, update, !cooperative);
+	state.bag = { ...update.bag };
+	if (cooperative) {
+		state.partner!.team = applyGrowthParty(battle, battle.p3!, state.partner!.team, update.partner!, false);
+		state.partnerBag = { ...update.partner!.bag };
+	}
+	for (const [player, effects, roster] of [
+		[battle.p1, state.blessings, update.blessingRoster],
+		[battle.p3, state.partner?.blessings, cooperative ? update.partner?.blessingRoster : undefined],
+	] as const) {
+		if (!player || !effects || !roster) continue;
+		Object.assign(effects, structuredClone(roster));
+		for (const mon of player.pokemon) if (!mon.transformed) prepareBlessingMember(mon);
+	}
+	state.growthSequence = update.sequence;
+	state.growthRevision = update.revision;
+	state.growthWaiting = update.paused;
+	if (!update.paused) battle.makeRequest();
+}
+
+function applyGrowthParty(
+	battle: Battle, player: Side, originalTeam: RoguePokemon[],
+	update: RogueGrowthPartyUpdate, allowEvolutionPartner: boolean,
+) {
 	for (const saved of update.team) {
 		if (saved.egg || saved.nuzlockeDead) continue;
-		const original = state.team.find(mon => mon.id === saved.id);
-		let mon = battle.p1.pokemon.find(pokemon => pokemon.set.fantasyRogueId === saved.id);
+		const original = originalTeam.find(mon => mon.id === saved.id);
+		let mon = player.pokemon.find(pokemon => pokemon.set.fantasyRogueId === saved.id);
 		if (!original || !mon) {
 			// Only evolution-created partners (e.g. Shedinja) may join during this pause.
-			const shedinjaEvolution = !original && toID(saved.set.species) === 'shedinja' && state.team.some(old =>
-				toID(old.set.species) === 'nincada' && update.team.some(next =>
-					next.id === old.id && toID(next.set.species) === 'ninjask'));
+			const shedinjaEvolution = allowEvolutionPartner && !original && toID(saved.set.species) === 'shedinja' &&
+				originalTeam.some(old =>
+					toID(old.set.species) === 'nincada' && update.team.some(next =>
+						next.id === old.id && toID(next.set.species) === 'ninjask'));
 			if (shedinjaEvolution) {
-				const template = battle.p1.pokemon[0].set;
-				mon = battle.p1.addPokemon({ ...saved.set, fantasyRogueId: saved.id,
+				const template = player.pokemon[0].set;
+				mon = player.addPokemon({ ...saved.set, fantasyRogueId: saved.id,
 					fantasyRogueStats: template.fantasyRogueStats,
 					fantasyRogueBoostPercent: template.fantasyRogueBoostPercent,
 					fantasyRogueScale: 1, fantasyRogueModifiers: saved.statModifiers }) || undefined;
@@ -117,11 +160,6 @@ export function applyRogueGrowth(battle: Battle, update: RogueGrowthUpdate) {
 		const notice = rogueGrowthNotice(previous, saved);
 		if (notice) battle.add('-roguegrowth', JSON.stringify(notice));
 	}
-	state.team = structuredClone(update.team.filter(mon =>
-		battle.p1.pokemon.some(pokemon => pokemon.set.fantasyRogueId === mon.id)));
-	state.bag = { ...update.bag };
-	state.growthSequence = update.sequence;
-	state.growthRevision = update.revision;
-	state.growthWaiting = update.paused;
-	if (!update.paused) battle.makeRequest();
+	return structuredClone(update.team.filter(mon =>
+		player.pokemon.some(pokemon => pokemon.set.fantasyRogueId === mon.id)));
 }

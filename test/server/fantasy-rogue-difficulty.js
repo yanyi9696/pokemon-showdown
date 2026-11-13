@@ -163,7 +163,7 @@ describe('Fantasy Rogue difficulty tiers', function () {
 			run.postgame = { stage: 'battle', before: structuredClone(run), node: structuredClone(run.node), encounter: run.encounter };
 			engine.finishGodChallenge(a, run, 'won'); assert.equal(a.points, points); assert.equal(run.lastReward.points, 0);
 			run.node = { event: { id: 'rematch', rematch: 'r' } }; run.rematches = [{ id: 'r', companion: 'brock', floor: 20, reward: { points: 2, money: 100, items: { potion: 1 } } }];
-			settleRematch(a, run, true);
+			settleRematch(a, run, true, engine.content, () => 0);
 			assert.equal(a.points, points); assert.equal(run.lastReward.points, 0); assert(run.bag.potion);
 		} finally { store.close(); }
 	});

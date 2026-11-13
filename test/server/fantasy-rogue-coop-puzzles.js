@@ -15,7 +15,7 @@ const { Battle } = require('../../dist/sim/battle');
 const { Teams } = require('../../dist/sim/teams');
 const { Dex } = require('../../dist/sim/dex');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
-const { content } = require('../fixtures/fantasy-rogue');
+const { content, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue co-op silhouette quiz and relic puzzles', () => {
 	let oldConfig, store, engine, manager, host, guest, created, preview;
@@ -72,7 +72,9 @@ describe('Fantasy Rogue co-op silhouette quiz and relic puzzles', () => {
 			shared.adventure.coopEventHistory = Object.keys(EVENT_NAMES).filter(other => other !== id)
 				.map(other => ({ id: other, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'puzzleroute' });
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'puzzleroute' });
+		});
 		assert.equal(view().id, id);
 	}
 	function agree(choice) {

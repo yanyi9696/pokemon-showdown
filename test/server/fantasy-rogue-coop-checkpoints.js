@@ -15,6 +15,7 @@ const { RoomBattleStream } = require('../../dist/server/room-battle');
 const { Battle } = require('../../dist/sim/battle');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const { content, set, stats } = require('../fixtures/fantasy-rogue');
+const Monitor = global.Monitor;
 
 async function until(check, name) {
 	const start = Date.now();
@@ -98,6 +99,105 @@ describe('Fantasy Rogue durable native cooperative battle checkpoints', () => {
 		await checkpointReady(resumed);
 		return resumed;
 	}
+	async function growthRoom() {
+		fixture.progression = 'mainline7';
+		for (const item of fixture.items) if (item.kind === 'ball') item.multiplier = 1;
+		fixture.floors[1][0].kind = 'trainer';
+		fixture.floors[1][0].encounters = fixture.floors[1][0].encounters.slice(0, 1);
+		fixture.floors[1][0].encounters[0].team = Array.from({ length: 4 }, () => set('Blissey', 'Natural Cure', 90, ['Growl']));
+		fixture.floors[1][0].encounters[0].catchable = false;
+		manager = makeManager();
+		return start(adventure => {
+			for (const member of Object.values(adventure.members)) {
+				member.team = [createRoguePokemon(set('Bulbasaur', 'Overgrow', 5,
+					['Magical Leaf', 'Growl', 'Tackle', 'Protect']), stats(0))];
+				member.team[0].hp -= 3;
+			}
+		});
+	}
+	async function growthKnockout(room) {
+		const battle = room.battle.stream.battle;
+		assert(battle.fantasyRogue.liveProgression);
+		battle.p2.active[0].hp = 1; battle.p4.active[0].hp = 1;
+		room.battle.choose(host, `move 1 1|${room.battle.p1.request.rqid}`);
+		room.battle.choose(guest, `move 1 2|${room.battle.p3.request.rqid}`);
+		await until(() => point()?.state.fantasyRogue.growthWaiting && point().result.defeated.length === 2,
+			'two defeats durably pause both owners');
+	}
+	function finishGrowth(user) {
+		for (let step = 0; step < 50; step++) {
+			const view = manager.coop.view(user).session.adventure;
+			const pending = view.pendingMove, evolution = view.liveGrowth?.evolutions[0];
+			if (pending) manager.coop.command(user, { action: 'learn', visit: view.liveGrowth.key,
+				member: pending.member, move: pending.move, value: 'skip' });
+			else if (evolution) manager.coop.command(user, { action: 'evolutionnotice', visit: view.liveGrowth.key, member: evolution.member });
+			else return;
+		}
+		assert.fail('growth decisions did not drain');
+	}
+	for (const lost of ['progress', 'acknowledgement', 'completion']) it(`recovers real live growth after losing ${lost}`, async () => {
+		const room = await growthRoom();
+		const write = room.battle.stream.write.bind(room.battle.stream);
+		if (lost === 'progress') room.battle.options.fantasyRogue.onProgress = () => {};
+		else room.battle.stream.write = chunk => String(chunk).startsWith('>rogueprogress ') ? Promise.resolve() : write(chunk);
+		await growthKnockout(room);
+		if (lost === 'progress') assert.equal(saved().adventure.battleGrowth, undefined);
+		else await until(() => saved().adventure.battleGrowth?.sequence === 2, 'growth committed before ack');
+		if (lost === 'completion') {
+			finishGrowth(host); finishGrowth(guest);
+			assert(!saved().adventure.battleGrowth.paused);
+		}
+		const stored = saved(), experience = stored.adventure.members[host.id].team[0].experience;
+		const resumed = await restore(room);
+		await until(() => saved().adventure.battleGrowth && resumed.battle.stream.battle.fantasyRogue.growthRevision ===
+		saved().adventure.battleGrowth.revision, 'restored room acknowledges durable growth');
+		const state = resumed.battle.stream.battle.fantasyRogue;
+		if (lost !== 'progress') assert.equal(saved().adventure.members[host.id].team[0].experience, experience);
+		for (const [index, user] of [host, guest].entries()) {
+			const mon = saved().adventure.members[user.id].team[0];
+			assert(mon.experience > 135); assert.equal((index ? state.partner.team : state.team)[0].experience, mon.experience);
+			assert.equal(mon.maxhp - mon.hp, 3);
+			assert.equal(saved().adventure.members[user.id].experienceReceipts.length, 2);
+		}
+		if (lost !== 'completion') {
+			assert(state.growthWaiting);
+			finishGrowth(host); assert(saved().adventure.battleGrowth.paused, 'guest decisions still block both seats');
+			finishGrowth(guest);
+		}
+		await until(() => !resumed.battle.stream.battle.fantasyRogue.growthWaiting &&
+			JSON.parse(resumed.battle.p1.request.request).active && JSON.parse(resumed.battle.p3.request.request).active,
+		'both humans receive their next native move requests');
+		await checkpointReady(resumed);
+		const final = saved();
+		// The former process/store has been closed. Deliver its stale room lease to the new manager.
+		manager.coop.handleBattleGrowth(stored.id, stored.adventure.battleToken,
+			stored.adventure.battleLease, 2, point().result);
+		assert.deepEqual(saved(), final, 'replaced room lease cannot commit or send another acknowledgement');
+	});
+	it('retries a failed growth write from the trusted checkpoint without terminating the real room', async () => {
+		const room = await growthRoom(), testStore = store;
+		const update = testStore.updateCoopSession, crashlog = Monitor.crashlog;
+		const restoreWrite = () => { testStore.updateCoopSession = update; };
+		const restoreLog = () => { Monitor.crashlog = crashlog; };
+		let rejected = false, reported = 0;
+		Monitor.crashlog = () => { reported++; };
+		try {
+			testStore.updateCoopSession = (...args) => {
+				const value = update.apply(testStore, args);
+				if (!rejected && args[0].adventure.battleGrowth) { rejected = true; throw new Error('isolated growth save failure'); }
+				return value;
+			};
+			await growthKnockout(room);
+			await until(() => rejected && reported, 'failed transaction reported');
+			assert.equal(saved().adventure.battleGrowth, undefined); assert(!room.battle.ended);
+			restoreWrite();
+			manager.coop.command(host, { action: 'refresh' });
+			await until(() => room.battle.stream.battle.fantasyRogue.growthRevision === 1, 'refresh safely retries saved progress');
+			assert.equal(saved().adventure.members[guest.id].experienceReceipts.length, 2);
+			finishGrowth(host); finishGrowth(guest);
+			await until(() => !room.battle.stream.battle.fantasyRogue.growthWaiting, 'room resumes after both decisions');
+		} finally { restoreWrite(); restoreLog(); }
+	});
 	it('starts the first authored pair in a real shared room and preserves its encounter IDs on recovery', async () => {
 		fixture.floors[1][0].kind = 'trainer';
 		fixture.floors[1][0].encounters = [fixture.floors[1][0].encounters[0]];

@@ -45,7 +45,7 @@ describe('Rogue collections, companion eligibility and codex conditions', functi
 	});
 	it('always lets Grusha/Rika be selected, deferring the missing-type grant', () => {
 		const run = party(['Snorunt']); own(run, 'companionwinter');
-		c.companionCommand(run, { value: 'choosewinter', member: 'rika' }, () => 0, []);
+		c.companionCommand(run, { value: 'choosewinter', member: 'rika' }, content, () => 0, []);
 		assert.equal(run.blessings.companions[0].id, 'rika');
 		assert(!run.blessings.companions[0].member);
 		run.team.push(createRoguePokemon(set('Diglett'), stats(0))); syncBlessingParty(run);

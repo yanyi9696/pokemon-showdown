@@ -23,20 +23,30 @@ describe('Fantasy Rogue cooperative release access', () => {
 		store.close(); Config.fantasyrogue = saved.rogue;
 		Config.fantasyailocal = saved.local; Config.bindaddress = saved.bind;
 	});
-	it('keeps public single-player access and hides co-op by default', () => {
-		assert(rogueAccess(host)); assert(!rogueCoopAccess(host));
-		const state = manager.state(host); assert(state.enabled); assert.equal(state.coopEnabled, false);
-		assert.throws(() => manager.coop.view(host), /暂未开放/);
+	it('exposes co-op by default to players with ordinary Rogue access', () => {
+		assert(rogueAccess(host)); assert(rogueCoopAccess(host));
+		const state = manager.state(host); assert(state.enabled); assert.equal(state.coopEnabled, true);
+		assert.doesNotThrow(() => manager.coop.view(host));
+		manager.coop.command(host, { action: 'invite', target: guest.id, difficulty: 0 });
+		const invitation = store.coopInvitations(guest.id)[0];
+		manager.coop.command(guest, { action: 'accept', id: invitation.id });
+		assert.equal(store.coopSessionForUser(host.id).id, store.coopSessionForUser(guest.id).id);
 	});
-	it('requires explicit server opt-in without bypassing login, beta or global access checks', () => {
-		Config.fantasyrogue.coopEnabled = true; assert(rogueCoopAccess(host));
-		host.registered = false; assert(!rogueCoopAccess(host)); host.registered = true;
-		Config.fantasyrogue.publicAccess = false; assert(!rogueCoopAccess(host));
-		Config.fantasyrogue.betaAccounts = [host.id]; assert(rogueCoopAccess(host));
-		Config.fantasyrogue.enabled = false; assert(!rogueCoopAccess(host));
+	it('keeps login, beta, connection and global access checks with either default or explicit enablement', () => {
+		for (const enabled of [undefined, true]) {
+			Config.fantasyrogue = { enabled: true, publicAccess: true, coopEnabled: enabled };
+			assert(rogueCoopAccess(host));
+			host.registered = false; assert(!rogueCoopAccess(host)); host.registered = true;
+			host.named = false; assert(!rogueCoopAccess(host)); host.named = true;
+			assert(!rogueCoopAccess({ ...host, connected: false }));
+			Config.fantasyrogue.publicAccess = false; assert(!rogueCoopAccess(host));
+			Config.fantasyrogue.betaAccounts = [host.id]; assert(rogueCoopAccess(host));
+			Config.fantasyrogue.enabled = false; assert(!rogueCoopAccess(host));
+		}
 	});
-	it('allows an unset gate only for server-configured loopback development', () => {
+	it('never expands unauthenticated development access beyond server-configured loopback', () => {
 		Config.fantasyailocal = true;
+		host.registered = false;
 		for (const bind of ['0.0.0.0', '::', '192.168.1.2', '']) {
 			Config.bindaddress = bind; assert(!rogueCoopAccess(host));
 		}
@@ -46,6 +56,7 @@ describe('Fantasy Rogue cooperative release access', () => {
 		Config.fantasyrogue.coopEnabled = false; assert(!rogueCoopAccess(host)); assert(rogueAccess(host));
 	});
 	it('rejects direct and forged requests before creating or modifying any state', () => {
+		Config.fantasyrogue.coopEnabled = false;
 		const before = store.db.prepare('SELECT count(*) AS n FROM rogue_accounts').get().n;
 		for (const action of ['refresh', 'search', 'invite', 'accept', 'resume', 'selectstarters', 'preparebattle',
 			'eventchoice', 'challenge', 'delegate', 'proposetrade', 'capture', 'leave']) {
