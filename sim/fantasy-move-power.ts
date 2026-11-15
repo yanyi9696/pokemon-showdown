@@ -1,6 +1,6 @@
 import type { Pokemon } from './pokemon';
 
-export type FantasyMovePowers = Record<string, { power: number, source: string }>;
+export type FantasyMovePowers = Record<string, { power: number, source: string, stalwart?: number }>;
 
 /** Preview the next use without calling callbacks which advance their own counters. */
 export function fantasyMovePowers(pokemon: Pokemon): FantasyMovePowers {
@@ -19,6 +19,16 @@ export function fantasyMovePowers(pokemon: Pokemon): FantasyMovePowers {
 			const echo = pokemon.battle.field.pseudoWeather.echoedvoice;
 			result[id] = { power: base * (echo ? Math.min(5, echo.multiplier + (echo.duration === 2 ? 0 : 1)) : 1),
 				source: '回声·连续回合' };
+		}
+		const streak = pokemon.volatiles.stalwart;
+		const move = pokemon.battle.dex.moves.get(id);
+		if (streak && pokemon.hasAbility('stalwart') && move.category !== 'Status' && !move.damage && !move.damageCallback) {
+			// Mirror Stalwart's TryMove counter, without running its stateful callback.
+			// The client receives a separate modifier: this must not alter Technician's threshold.
+			const same = streak.lastMove === id;
+			const count = move.callsMove ? streak.numConsecutive : same && pokemon.moveLastTurnResult ?
+				streak.numConsecutive + 1 : pokemon.volatiles.twoturnmove ? (same ? streak.numConsecutive + 1 : 1) : 0;
+			(result[id] ||= { power: base, source: '' }).stalwart = Math.min(5, Math.max(0, count || 0));
 		}
 	}
 	return result;

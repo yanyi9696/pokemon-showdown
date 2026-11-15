@@ -12,7 +12,7 @@ const { Battle } = require('../../dist/sim/battle');
 const { Teams } = require('../../dist/sim/teams');
 const { rogueBattleResult } = require('../../dist/sim/fantasy-rogue');
 const { captureCoopCheckpoint } = require('../../dist/sim/rogue-coop-checkpoint');
-const { content, set, stats } = require('../fixtures/fantasy-rogue');
+const { content, set, stats, firstEventRoute } = require('../fixtures/fantasy-rogue');
 
 describe('Fantasy Rogue cooperative escort and evolution dojo', () => {
 	let oldConfig, store, engine, manager, host, guest, created;
@@ -65,7 +65,11 @@ describe('Fantasy Rogue cooperative escort and evolution dojo', () => {
 			a.routeChoices = [{ id: 'trainingroute', name: '共同相遇', kind: 'event', encounters: [], reward: { money: 0, items: {} } }];
 			a.coopEventHistory = Object.keys(EVENT_NAMES).filter(key => key !== id).map(key => ({ id: key, floor: 1 }));
 		});
-		for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'trainingroute' });
+		// Ready evolution events can now re-enter the unseen pool. Select the authored
+		// first route explicitly; the escort assertions below must not depend on RNG.
+		firstEventRoute(() => {
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'trainingroute' });
+		});
 		assert.equal(event().id, id);
 	}
 	function choose(user, value, owner, visit) {

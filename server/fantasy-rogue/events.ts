@@ -1,7 +1,10 @@
 import { masterBallEventView } from './master-ball';
 import { grantCoverage } from './coverage';
 import { rivalView, chooseRival, settleRival, type RivalEvent } from './rivals';
-import { activityEligible, activityWeight, isJourneyActivity, beginJourneyActivity, journeyActivityView, chooseJourneyActivity, settleJourneyActivity, type JourneyActivity } from './journey-activities';
+import {
+	activityEligible, activityWeight, evolutionEventReady, isJourneyActivity, beginJourneyActivity,
+	journeyActivityView, chooseJourneyActivity, settleJourneyActivity, type JourneyActivity,
+} from './journey-activities';
 import { greninjaEvent, greninjaEventEligible, greninjaEventView, chooseGreninjaEvent } from './greninja-training';
 import { beginSocialEvent, socialCandidates, socialEventView, chooseSocialEvent, settleSocialEvent, type SocialEvent } from './social-events';
 import { beginExpedition, expeditionEvent, expeditionEligible, expeditionWeight, expeditionView,
@@ -145,10 +148,12 @@ export function chooseEvent(
 ): EventID {
 	const history = run.eventHistory || [], last = history[history.length - 1]?.id;
 	const parties = [run, ...otherParties];
+	const evolutionReady = new Set((Object.keys(EVENT_NAMES) as EventID[])
+		.filter(id => parties.some(party => evolutionEventReady(party, id))));
 	const tripEligible = (id: EventID) => id === 'honeymoon' ?
 		parties.every(party => honeymoonEligible(party, id)) : parties.some(party => honeymoonEligible(party, id));
 	const eligible = (Object.keys(EVENT_NAMES) as EventID[]).filter(id => (!allowed || allowed.has(id)) &&
-		eventPacingWeight(run.floor, id) > 0 && luckEventEligible(run.floor, id) &&
+		(eventPacingWeight(run.floor, id) > 0 || evolutionReady.has(id)) && luckEventEligible(run.floor, id) &&
 		(id !== 'coverageworkshop' || run.floor >= 60) &&
 		(activityEligible(run, id) || otherParties.some(party => activityEligible(party, id))) &&
 		parties.some(party => greninjaEventEligible(party, id)) &&
@@ -174,6 +179,8 @@ export function chooseEvent(
 		return !old || run.floor - old.floor >= (limited ? 25 : 8) && history.length - index - 1 >= (limited ? 4 : 2);
 	});
 	const pool = unseen.length ? unseen : cooled.length ? cooled : candidates;
+	// An unfinished evolution must remain reachable even if the player saw its event earlier.
+	for (const id of candidates) if (evolutionReady.has(id) && !pool.includes(id)) pool.push(id);
 	for (const id of cooled) if (loadedDiceEventWeight(run, id) > 1 && !pool.includes(id)) pool.push(id);
 	// An unseen preparation event must not become compulsory after all simple events have been seen.
 	if (run.floor < 60 && pool.every(id => PREPARATION_EVENTS.has(id))) {
@@ -195,6 +202,15 @@ export function chooseEvent(
 		(id === 'greninjareturn' ? 6 : expeditionWeight(run, id)) * (1 +
 			history.length - history.map(entry => entry.id).lastIndexOf(id)) *
 			(id === 'fishing' && companionOwned(run.blessings, 'lana') || id === 'stones' && companionOwned(run.blessings, 'olivia') || id === 'skiing' && companionOwned(run.blessings, 'grusha') ? 13 : 10))));
+	// At an ordinary event draw, ready evolution opportunities share at least half the weight.
+	// Preserve route cadence, last-event avoidance and the existing exclusive-clue guarantee.
+	const evolutionWeight = weights.reduce((sum, weight, i) => sum + (evolutionReady.has(pool[i]) ? weight : 0), 0);
+	const otherWeight = weights.reduce((sum, weight, i) => sum + (evolutionReady.has(pool[i]) ? 0 : weight), 0);
+	if (evolutionWeight && evolutionWeight < otherWeight) {
+		for (let i = 0; i < weights.length; i++) {
+			if (evolutionReady.has(pool[i])) weights[i] = Math.ceil(weights[i] * otherWeight / evolutionWeight);
+		}
+	}
 	let roll = random(weights.reduce((a, b) => a + b, 0));
 	const chosen = pool[weights.findIndex(weight => { roll -= weight; return roll < 0; })];
 	if (chosen === 'exclusiveclue' || !parties.some(party => neededExclusiveItems(party).length)) run.exclusiveEventMisses = 0;

@@ -40,6 +40,7 @@ export interface CalcInput {
 	useZ?: boolean;
 	useMax?: boolean;
 	mechanicBasePower?: number;
+	stalwartBoost?: number;
 	moveOverrides?: { basePower?: number, type?: string, category?: string };
 }
 export interface CalcResult {
@@ -109,6 +110,7 @@ export function normalizeInput(input: CalcInput): CalcInput {
 		pseudoWeather: ids(input.pseudoWeather), attackerSide: ids(input.attackerSide), defenderSide: ids(input.defenderSide),
 		critical: !!input.critical, hits: int(input.hits, Array.isArray(move.multihit) ? 3 : 1, 1, 10),
 		useZ: !!input.useZ, useMax: !!input.useMax,
+		stalwartBoost: int(input.stalwartBoost, 0, 0, 5),
 		mechanicBasePower: ['furycutter', 'rollout', 'iceball', 'echoedvoice'].includes(move.id) &&
 			typeof input.mechanicBasePower === 'number' ? int(input.mechanicBasePower, move.basePower, 1, 960) : undefined,
 		moveOverrides: {
@@ -239,6 +241,12 @@ export function calculateFantasyDamage(raw: CalcInput): CalcResult {
 			if (result.statusMove) return result;
 			battle.randomizer = damage => Math.floor(damage * roll / 100);
 			let move = battle.dex.getActiveMove(input.move);
+			if (!input.useZ && !input.useMax && input.stalwartBoost && attacker.hasAbility('stalwart')) {
+				// Reconstruct the previous counter; useMove advances it exactly once.
+				attacker.addVolatile('stalwart');
+				Object.assign(attacker.volatiles.stalwart, { lastMove: move.id, numConsecutive: input.stalwartBoost - 1 });
+				attacker.moveLastTurnResult = true;
+			}
 			if (input.useMax && move.category !== 'Status') {
 				battle.singleEvent('ModifyType', move, null, attacker, defender, move, move);
 				battle.runEvent('ModifyType', attacker, defender, move, move);

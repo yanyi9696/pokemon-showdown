@@ -41,7 +41,7 @@ export const kubfuScrollMembers = (run: RogueRun) => run.team.filter(mon =>
 	!mon.egg && !mon.nuzlockeDead && !mon.fusion && !mon.formFusion && mon.hp > 0 &&
 	toID(mon.set.species) === 'kubfu' && mon.set.level >= 35);
 const sceneMembers = (run: RogueRun, id: string) => run.team.filter(p =>
-	!p.egg && !p.fusion && !p.nuzlockeDead && p.hp > 0 && p.set.level > 30 &&
+	!p.egg && !p.fusion && !p.formFusion && !p.nuzlockeDead && p.hp > 0 && p.set.level > 30 &&
 	toID(p.set.species) === SCENES[id]?.[0] && !p.evolutionProgress?.scenes?.includes(SCENES[id][1]));
 export const isJourneyActivity = (id: string): id is ActivityID => id in ACTIVITY_NAMES;
 export function activityEligible(run: RogueRun, id: string) {
@@ -57,6 +57,23 @@ export function activityEligible(run: RogueRun, id: string) {
 	return run.team.some(p => !p.egg && p.hp > 0);
 }
 export function activityWeight(id: string) { return SCENES[id] || ['kubfuscroll', 'evolutiondojo'].includes(id) ? 3 : 1; }
+/** Only favour an actionable, unfinished evolution opportunity, using the live eligibility rules. */
+export function evolutionEventReady(run: RogueRun, id: string) {
+	if (!activityEligible(run, id)) return false;
+	if (id === 'kubfuscroll') return kubfuScrollMembers(run).length > 0;
+	if (id === 'evolutiondojo') return evolutionDojoMembers(run).some(mon => mon.hp > 0 &&
+		!partyEvolutions(mon, run).some(evolution => evolution.ready));
+	if (!SCENES[id]) return false;
+	return sceneMembers(run, id).some(mon => {
+		if (id === 'stonegate' && (mon.evolutionProgress?.lostHP || 0) < 49 && mon.hp <= 49) return false;
+		if (id === 'sweetdance' && !(run.bag.strawberrysweet > 0 || run.money >= 1600)) return false;
+		if (id === 'peatmoon' && !(run.bag.peatblock > 0 || run.money >= 1600)) return false;
+		// Check remaining level / branch / blessing requirements without mutating the partner.
+		const scenes = [...(mon.evolutionProgress?.scenes || []), SCENES[id][1]];
+		return partyEvolutions({ ...mon, evolutionProgress: { ...mon.evolutionProgress, scenes } }, run)
+			.some(evolution => toID(evolution.species) === SCENES[id][1] && evolution.ready);
+	});
+}
 const lv = (run: RogueRun) => Math.max(3, Math.min(100, Math.ceil(run.floor / 2)));
 const option = (id: string, name: string, text = '', disabled = false) => ({ id, name, text, disabled });
 const leave = () => option('leave', '今天先到这里。', '保留已经发生的消耗，结束互动。');
