@@ -1204,8 +1204,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onAfterMoveSecondarySelfPriority: -1,
 		onAfterMoveSecondarySelf(pokemon, target, move) {
 			if (move.totalDamage && !pokemon.forceSwitchFlag) {
-				this.add('-ability', pokemon, this.effect, '[from] move: ' + move.name);
-				this.heal((move.totalDamage / 3) | 0, pokemon);
+				// The holder heals itself; the event source is the attacked Pokemon.
+				// Use the actual ability even when a Rogue blessing supplies it as a volatile.
+				this.heal((move.totalDamage / 3) | 0, pokemon, pokemon, this.dex.abilities.get('jiqususheng'));
 			}
 		},
 		flags: {},
