@@ -221,7 +221,9 @@ export function forestTeams(level: number, random: RogueRandom) {
 		const drawn = partition(Array.from({length: 6}, () => available.splice(random(available.length), 1)[0]));
 		if (drawn.ratio <= 1.1) { result = drawn; break; }
 	}
-	return result.teams.map(team => team.map(name => makeEncounterSet(name, level, randomEncounterIVs(random))));
+	return result.teams.map(team => team.map(name => ({
+		...makeEncounterSet(name, level, randomEncounterIVs(random)), item: '',
+	})));
 }
 
 export function beginEvent(run: RogueRun, random: RogueRandom, content: RogueContent | undefined) {
@@ -431,6 +433,8 @@ export interface SharedActivityContext {
 	relicTypes?: readonly string[];
 	/** Trusted server time shared by both owners; never read from client input. */
 	now?: number;
+	/** Client-visible tap time; the activity validates the maximum transit allowance. */
+	rhythmAt?: number;
 }
 export function chooseEventOption(account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom,
 	key: string | undefined, choice: string | undefined, evs?: StatsTable, skiAt?: number, sharedEgg?: RoguePokemon,
@@ -458,7 +462,8 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		rewardReceipt(run, before); return;
 	}
 	if (isJourneyActivity(event.id)) {
-		chooseJourneyActivity(account, run, content, random, choice!, activityContext?.now, activityContext?.safari);
+		chooseJourneyActivity(account, run, content, random, choice!,
+			activityContext?.now, activityContext?.safari, activityContext?.rhythmAt);
 		rewardReceipt(run, before); return;
 	}
 	if (isLuckEvent(event.id)) { chooseLuckEvent(run, content, random, choice!); rewardReceipt(run, before); return; }

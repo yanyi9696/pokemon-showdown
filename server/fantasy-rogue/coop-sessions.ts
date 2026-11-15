@@ -176,6 +176,7 @@ export interface RogueCoopCommand {
 	slot?: number;
 	confirmed?: boolean;
 	visit?: string;
+	rhythmAt?: number;
 	quote?: string;
 	trainingMembers?: string[];
 	trainingStats?: StatIDExceptHP[];
@@ -3126,13 +3127,13 @@ export class RogueCoopSessions {
 		});
 	}
 	private chooseCoopEvent(
-		user: User, choice?: string, cancel = false, evs?: StatsTable, targetUser?: string, visit?: string
+		user: User, choice?: string, cancel = false, evs?: StatsTable, targetUser?: string, visit?: string, rhythmAt?: number
 	) {
 		return this.commitProgress(user, 'eventChoice',
-			() => this.chooseCoopEventResult(user, choice, cancel, evs, targetUser, visit));
+			() => this.chooseCoopEventResult(user, choice, cancel, evs, targetUser, visit, rhythmAt));
 	}
 	private chooseCoopEventResult(
-		user: User, choice?: string, cancel = false, evs?: StatsTable, targetUser?: string, visit?: string
+		user: User, choice?: string, cancel = false, evs?: StatsTable, targetUser?: string, visit?: string, rhythmAt?: number
 	) {
 		const session = this.engine.store.coopSessionForUser(user.id);
 		if (session?.status === 'active' && session.adventure?.phase === 'route-interaction' &&
@@ -3318,7 +3319,7 @@ export class RogueCoopSessions {
 					}
 					if (COOP_RHYTHM_EVENTS.has(eventId)) {
 						rhythmPersonal = chooseCoopRhythm(runs.map(entry => ({ ...entry, account: this.engine.store.get(entry.userid) })),
-							this.engine.content!, randomInt, choice);
+							this.engine.content!, randomInt, choice, rhythmAt);
 						adventure.node!.event = structuredClone(runs[0].run.node!.event!);
 					}
 					if (COOP_COLLECTION_EVENTS.has(eventId)) {
@@ -3423,7 +3424,8 @@ export class RogueCoopSessions {
 				chooseCoopScroll({ userid: owner, run, account: this.engine.store.get(owner) },
 					this.engine.content!, randomInt, choice!);
 			} else if (rhythm) {
-				chooseCoopRhythmPersonal({ run, account: this.engine.store.get(owner) }, this.engine.content!, randomInt, choice!);
+				chooseCoopRhythmPersonal({ run, account: this.engine.store.get(owner) },
+					this.engine.content!, randomInt, choice!, rhythmAt);
 			} else if (fantasyTutor || evolutionScene || greninja) {
 				if (choice!.startsWith('fantasymove:')) learnedMove = choice!.slice(12);
 				chooseEventOption(this.engine.store.get(owner), run, this.engine.content!,
@@ -4418,7 +4420,7 @@ export class RogueCoopSessions {
 			return this.view(user);
 		}
 		if (command.action === 'eventchoice') {
-			this.chooseCoopEvent(user, command.value || '', false, command.evs, command.owner, command.visit);
+			this.chooseCoopEvent(user, command.value || '', false, command.evs, command.owner, command.visit, command.rhythmAt);
 			return this.view(user);
 		}
 		if (command.action === 'challenge') {

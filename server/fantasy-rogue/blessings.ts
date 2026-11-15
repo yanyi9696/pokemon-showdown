@@ -6,7 +6,9 @@ import { settleLakeQuestRound, lakeQuestView, type LakeQuestState } from './lake
 import { releasePartyMember } from './release';
 import { REGI_EMBLEM_TYPES, strengthenedBlessingTypes, blessingEmblemWeight } from './blessing-type-weight';
 import { UNIVERSAL_ITEMS } from '../../sim/rogue-universal-data';
-import { fantasyVariants, fantasyConversionOptions, applyFantasyConversion } from './fantasy-conversion';
+import {
+	fantasyVariants, fantasyConversionOptions, applyFantasyConversion, FANTASY_CONVERSION_COST,
+} from './fantasy-conversion';
 import { SPIRAL_STONE } from '../../sim/rogue-awakening';
 import { NUMBER_PRIZES } from './number-prizes';
 import {
@@ -1166,14 +1168,16 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 		const mon = run.team.find(member => !member.egg && member.id === command.member);
 		requireRule(mon?.hp, '请选择存活队员。');
 		if (command.action === 'fantasize') {
-			requireRule(state.shards >= 100 && fantasyForm(mon.set.species), '需要 100 幻想碎片及对应幻想形态。');
+			requireRule(state.shards >= FANTASY_CONVERSION_COST && fantasyForm(mon.set.species),
+				`需要 ${FANTASY_CONVERSION_COST} 幻想碎片及对应幻想形态。`);
 			const options = fantasyConversionOptions(mon);
 			const preview = options.find(option => option.species === command.value) ||
 				(!command.value && options.length === 1 ? options[0] : undefined);
 			requireRule(preview, '请选择要转换的幻想分支。');
 			const changesMoves = preview.removed.length || preview.replacements.length || preview.lostMoves.length;
 			requireRule(!changesMoves || command.confirmed === true, '请先确认幻想化时丢失或替换的招式。');
-			requireRule(convertFantasy(run, mon, preview.species), '进化奇石限制当前伙伴转换为最终形态。'); state.shards -= 100;
+			requireRule(convertFantasy(run, mon, preview.species), '进化奇石限制当前伙伴转换为最终形态。');
+			state.shards -= FANTASY_CONVERSION_COST;
 			const reserved = ownsBlessing(state, 'reservation');
 			if (reserved?.target === mon.id && !reserved.completed && run.floor < 100) reserved.reservedShards = 100;
 		} else if (command.action === 'meltanevolve') {
@@ -1495,12 +1499,15 @@ export function blessingView(run: RogueRun, discovered = false) {
 			const count = run.team.filter(mon => !mon.egg).reduce((total, mon) =>
 				total + weaknessProfile(permanentMemberTypes(mon)).quadruple, 0);
 			display.text += `当前队伍共有 ${count} 个四倍弱点，符合条件的伙伴在战斗中双防 +${count * 10}%；随当前属性变化重新计算。`;
+			display.shortText += `当前共有 ${count} 个四倍弱点。`;
 		}
 		if (id === 'unity' && ownsBlessing(state, 'unity')) {
 			const unity = unityState(state, run.team.filter(mon => !mon.egg).map(permanentMemberTypes));
-			display.text = `当前 ${unity.count} 名非蛋伙伴，${unity.active ?
+			const status = `当前 ${unity.count} 名非蛋伙伴，${unity.active ?
 				'共通属性：' + unity.types.map(type => BLESSING_TYPES[type] || type).join('、') + '，对应人数增益均已生效' :
-				'暂未满足全队统一条件'}。\n` + display.text;
+				'暂未满足全队统一条件'}。\n`;
+			display.text = status + display.text;
+			display.shortText = status + display.shortText;
 		}
 		return { ...display,
 			levelCost: {

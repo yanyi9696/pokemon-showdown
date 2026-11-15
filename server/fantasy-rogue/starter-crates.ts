@@ -3,7 +3,8 @@ import { Dex, toID } from '../../sim/dex';
 import { rogueCaptureCount, rogueStarterSpecies } from '../../sim/fantasy-rogue-rules';
 import { echoChance } from '../../sim/rogue-echo';
 import { starterTraits } from './starter-traits';
-import { dailyCupSummary, dailyCupView, settleDailyCup, type CratePrediction } from './daily-crate-cup';
+import { DAILY_CUP_SEASON, dailyCupSummary, dailyCupView,
+	settleDailyCup, type CratePrediction } from './daily-crate-cup';
 import type { RogueAccount, RogueContent } from './types';
 
 export const CRATE_RULES = {
@@ -37,6 +38,8 @@ export interface StarterCrates {
 	/** Separate evidence: opening a crate must never fabricate capture counts. */
 	unlocked: string[];
 	freeDraws?: number;
+	/** Missing means legacy predictions, reset once when the account is next updated. */
+	cupSeason?: number;
 	predictions?: { [day: string]: CratePrediction };
 	lastBatch?: { id: string, source: 'draw' | 'exchange', results: CrateResult[] };
 }
@@ -68,7 +71,8 @@ export function cratePool(content: RogueContent): readonly CrateEntry[] {
 }
 
 export function emptyCrates(): StarterCrates {
-	return { version: 2, total: 0, legendaryMisses: 0, targetedMisses: 0, points: 0, target: 'none', unlocked: [] };
+	return { version: 2, cupSeason: DAILY_CUP_SEASON, total: 0, legendaryMisses: 0,
+		targetedMisses: 0, points: 0, target: 'none', unlocked: [] };
 }
 export function crateSummary(account: RogueAccount) {
 	const ledger = account.crates || emptyCrates();

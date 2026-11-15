@@ -4,6 +4,7 @@ import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceT
 	type CompanionID } from '../../sim/rogue-companions';
 import { tonicDescription } from '../../sim/rogue-blessing-permanent';
 import { bracketMoveCategories } from './move-categories';
+import { BLESSING_SUMMARIES } from './blessing-summaries';
 
 /** Supplies without a standard held-item Dex entry still use their Rogue rules in reference help. */
 export const BLESSING_SUPPLY_HELP = [
@@ -66,7 +67,17 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 	// These are explicit supply names, not an unrestricted word matcher (e.g. ordinary “免疫”).
 	text = text.split(/(【[^】]+】)/g).map(part => part.startsWith('【') ? part :
 		part.replace(/幻想碎片|太晶碎片|经验糖果|小蘑菇|大蘑菇|芳香蘑菇|土地云/g, name => `【${name}】`)).join('');
-	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name, text: bracketMoveCategories(text) };
+	let shortText = BLESSING_SUMMARIES[def.id] || text;
+	if (['money', 'bigmoney', 'medic', 'wine', 'cephalosporin'].includes(def.family)) shortText = text;
+	if (['reservation', 'reservemega', 'reservegmega', 'reservetera', 'reservez'].includes(def.family)) {
+		shortText = '立即获得 500 金币。' + shortText;
+	}
+	if (def.family === 'reservation') shortText += '提前完成指定伙伴幻想化，通关 100 层返还碎片。';
+	if (reward.treasure) shortText += '另获藏宝袋，物资随楼层提升。';
+	if (reward.toolboxes) shortText += `另获${reward.advanced ? '高级' : ''}工具箱 ×${reward.toolboxes}。`;
+	if (companionFamily(def.family)) shortText += '同行可咨询意见，回应偏好、同行和专属奇遇提升本局好感；50／100 点各有一次赠礼。';
+	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name,
+		text: bracketMoveCategories(text), shortText: bracketMoveCategories(shortText) };
 }
 
 export function blessingCodexFloors(def: BlessingDefinition): (number | undefined)[] {

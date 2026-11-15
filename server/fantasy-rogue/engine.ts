@@ -1186,7 +1186,8 @@ export class RogueEngine {
 				}
 				return;
 			}
-			requireRule(!run.pendingMoves?.length || ['learn', 'replace'].includes(command.action), '请先处理待学习的招式。');
+			requireRule(!run.pendingMoves?.length || ['learn', 'replace'].includes(command.action),
+				'请先处理新学习的招式再进行下一步；请退出对话以更替招式。');
 			if (command.action === 'fusion' || command.action === 'unfusion') {
 				editFusion(run, command); return;
 			}
@@ -1225,7 +1226,8 @@ export class RogueEngine {
 			}
 			case 'event':
 				if (chooseMasterBall(account, run, command)) break;
-				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value, command.evs, command.skiAt);
+				chooseEventOption(account, run, this.configured(), this.random, command.member, command.value,
+					command.evs, command.skiAt, undefined, { rhythmAt: command.rhythmAt });
 				if (run.phase === 'ready') {
 					if (!run.node?.event?.police && !run.node?.event?.rematch) prepareEconomy(run.node!, run.floor, this.random, run.difficulty);
 					prepareSpiritNode(run, run.node!, this.configured(), this.random);

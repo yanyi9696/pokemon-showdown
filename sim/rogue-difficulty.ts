@@ -17,7 +17,7 @@ export function difficultyProgress(floor: number) {
 }
 export function difficultyScale(tier: RogueDifficulty = 0, floor = 1, opponent = false, version = ROGUE_DIFFICULTY_VERSION): number {
 	const g = difficultyProgress(floor);
-	if (tier === 'easy') return opponent ? 0.75 : 0.98 - 0.08 * g;
+	if (tier === 'easy') return opponent ? 0.75 : 1;
 	if (version >= 4) return 1;
 	if (opponent) return version < 2 ? 1 + tier * (0.012 + 0.088 * g) : 1;
 	if (version < 3) return 1 + tier * (0.006 + 0.044 * g);
@@ -36,7 +36,7 @@ export function difficultyRewardDescription(tier: RogueDifficulty = 0) {
 	return qualityDescription(tier) + '金币、糖果、幻想碎片和商店解锁进度不因档位额外提高。';
 }
 export function difficultyCardScale(tier: RogueDifficulty = 0, version = ROGUE_DIFFICULTY_VERSION) {
-	return tier === 'easy' ? 0.9 : version < 4 ? 1 + tier * 0.02 : 1;
+	return tier === 'easy' ? 1 : version < 4 ? 1 + tier * 0.02 : 1;
 }
 export function memberDifficultyScale(context?: RogueDifficultyContext) {
 	return !context ? 1 : context.card ? difficultyCardScale(context.tier, context.version) : difficultyScale(context.tier, context.floor, false, context.version);
@@ -53,7 +53,7 @@ export const CHARM_PROGRESS_NOTICE = '**本局新学招式（包括学习机）�
 	'**本局获得的个体值、性格、特性和性别不计入初始伙伴的跨局培养记录**。' +
 	'**不获得局外成长点数，也不解锁更高档位**。物种、闪光与图鉴收集照常保留，已有的跨局解锁不会丢失。';
 export const CHARM_DESCRIPTION = '本局为新手简易档。敌方六项能力整局为原本的 **75%（降低 25%）**；' +
-	'我方六项能力由第 1 层的 **98%** 逐渐降至第 200 层的 **90%**。\n\n' +
+	'我方六项能力不受护符百分比调整。\n\n' +
 	'遇到的宝可梦个体值约 10，六项独立随机，**不会遇到任何单项个体值超过 15 的宝可梦**；' +
 	'本局伙伴、首领与个体值培养也以 **15 为上限**。\n\n' + CHARM_PROGRESS_NOTICE + '\n\n' +
 	'通关后，所有已解锁档位均可开启随机塔灵；使用塔灵通关后，只可在该档及以下指定它。通关卡标记“护符庇佑”。';

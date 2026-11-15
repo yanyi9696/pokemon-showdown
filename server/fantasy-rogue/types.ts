@@ -610,6 +610,7 @@ export interface RogueCommand {
 	revision: number;
 	/** Milliseconds seen on the ski clock when pressed; server bounds the transit allowance. */
 	skiAt?: number;
+	rhythmAt?: number;
 	fusionAbility?: string;
 	fusionStats?: StatID[];
 	trainingMembers?: string[];

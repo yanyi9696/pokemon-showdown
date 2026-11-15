@@ -36,7 +36,7 @@ describe('Fantasy Rogue capture-quality difficulty: softened native mechanics', 
    assert.equal(difficultyCardScale(tier), 1);
   }
   assert.equal(difficultyScale(5, 200, false, 3), 1.15);
-  assert.equal(difficultyCardScale('easy'), 0.9);
+  assert.equal(difficultyCardScale('easy'), 1);
  });
  it('keeps all ten choices, softens numbers and adds no common opening guard', () => {
   assert.equal(collapseEntries(4).length, 10);

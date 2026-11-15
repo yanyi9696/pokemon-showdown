@@ -202,7 +202,7 @@ export function journeyActivityView(run: RogueRun, cooperativeRelicTypes?: reado
 }
 export function chooseJourneyActivity(
 	account: RogueAccount, run: RogueRun, content: RogueContent, random: RogueRandom, choice: string, now = Date.now(),
-	safari?: SharedSafariContext
+	safari?: SharedSafariContext, rhythmAt?: number
 ) {
 	const event = run.node!.event!, id = event.id as ActivityID, a = activity(run);
 	event.key = randomUUID();
@@ -219,7 +219,16 @@ export function chooseJourneyActivity(
 		markScene(run, mon, 'palafin'); finish(run, ['大家击掌约定，下次再一起出游。波普海豚认真地点了点头，达到 Lv.38 后就能迈向新的姿态。'], true); return;
 	}
 	if (a.startedAt) {
-		const elapsed = now - a.startedAt, beat = Math.floor(elapsed / 800), phase = elapsed % 800;
+		const received = now - a.startedAt;
+		// Compensate bounded input transit, without widening the green scoring zone or allowing replayed beats.
+		let elapsed = received;
+		if (choice === 'tap' && rhythmAt !== undefined) {
+			if (!Number.isFinite(rhythmAt) || rhythmAt < 0 || rhythmAt > received || received - rhythmAt > 200) {
+				throw new Error('节拍请求延迟过高，请按当前画面继续点击。');
+			}
+			elapsed = rhythmAt;
+		}
+		const beat = Math.floor(elapsed / 800), phase = elapsed % 800;
 		if (choice === 'tap' && elapsed >= 0 && elapsed < (a.duration || 12000)) {
 			if (!(a.taps ||= []).includes(beat)) { a.taps.push(beat); if (phase >= 250 && phase <= 550) a.score = (a.score || 0) + 1; }
 			return;

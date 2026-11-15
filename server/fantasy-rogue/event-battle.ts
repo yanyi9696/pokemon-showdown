@@ -46,8 +46,8 @@ export function simulateForestBattle(teams: PokemonSet[][], random: RogueRandom)
 		ruleset: ['HP Percentage Mod', 'Max Team Size = 6', 'Max Level = 100'] });
 	const battle = new Battle({ format, formatid: format.id,
 		seed: `gen5,${[random(65536), random(65536), random(65536), random(65536)].join(',')}`,
-		p1: { name: '左边的队伍', avatar: 'unknown', team: structuredClone(teams[0]) },
-		p2: { name: '右边的队伍', avatar: 'unknown', team: structuredClone(teams[1]) },
+		p1: { name: '左边的队伍', avatar: 'unknown', team: structuredClone(teams[0]).map(set => ({ ...set, item: '' })) },
+		p2: { name: '右边的队伍', avatar: 'unknown', team: structuredClone(teams[1]).map(set => ({ ...set, item: '' })) },
 	});
 	try {
 		for (let decisions = 0; !battle.ended && decisions < 800; decisions++) {

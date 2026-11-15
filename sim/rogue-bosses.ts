@@ -154,7 +154,8 @@ export function advanceRogueBoss(pokemon: Pokemon) {
 	state.phase = phase + 1;
 	const type = nextArceusType(battle, defeated, pokemon.foes().find(mon => mon.hp > 0));
 	const species = type === 'Legend' ? 'Arceus-Legend-Fantasy' : type === 'Normal' ? 'Arceus' : `Arceus-${type}`;
-	const plate = type === 'Legend' ? 'Legend Plate' : battle.dex.items.all().find(item => item.onPlate === type)?.name || '';
+	const plate = type === 'Legend' ? 'Legend Plate' :
+		battle.dex.items.all().find(item => item.onPlate === type && !item.zMove)?.name || '';
 	const fourth = state.arceusMoves?.[type];
 	if (!fourth) throw new Error(`Missing Arceus boss move: ${type}`);
 	const set = { ...pokemon.set, species, item: plate, ability: type === 'Legend' ? 'Chuan Shuo Zhi Li' : 'Multitype',
@@ -172,6 +173,8 @@ export function advanceRogueBoss(pokemon: Pokemon) {
 	for (const id of Object.keys(pokemon.volatiles)) if (!positive.has(id)) pokemon.removeVolatile(id);
 	clearBossStatus(pokemon);
 	replaceBossSet(pokemon, set, true);
+	// Phase equipment is public. Keep tooltips and damage calculators in sync with Judgment.
+	if (pokemon.item) battle.add('-item', pokemon, pokemon.getItem().name);
 	battle.add('-message', type === 'Legend' ? '十八种属性的光芒汇为一体。阿尔宙斯显露了传说的姿态！' :
 		`阿尔宙斯切换属性，再次恢复了全部力量。（第 ${phase + 2} / 19 条生命）`);
 	battle.add('-heal', pokemon, pokemon.getHealth, '[from] 神之挑战');

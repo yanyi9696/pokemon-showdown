@@ -121,7 +121,7 @@ describe('Fantasy Rogue playable preview', () => {
 		assert.equal(after.maxhp - after.hp, 3); assert.equal(after.status, 'par');
 		assert.equal(after.pp.find(move => move.id === before.pp[0].id).pp, 1);
 		assert(account().run.pendingMoves.length);
-		assert.throws(() => cmd('battle'), /待学习/);
+		assert.throws(() => cmd('battle'), /请先处理新学习的招式再进行下一步；请退出对话以更替招式/);
 		cmd('learn', { member: before.id, value: '1' }); learnAll();
 		cmd('evolve', { member: before.id, value: 'ivysaur' }); learnAll();
 		const evolved = account().run.team[0];

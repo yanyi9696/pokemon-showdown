@@ -20,8 +20,8 @@ describe('Fantasy Rogue difficulty tiers', function () {
 			assert.equal(difficultyScale('easy', floor, true), 0.75);
 			assert.equal(difficultyScale(0, floor, true), 1);
 		}
-		assert.equal(difficultyScale('easy', 1), 0.98);
-		assert.equal(difficultyScale('easy', 200), 0.9);
+		for (let floor = 1; floor <= 200; floor++) assert.equal(difficultyScale('easy', floor), 1);
+		assert.equal(difficultyCardScale('easy'), 1);
 		assert(require('../../dist/sim/rogue-difficulty').CHARM_DESCRIPTION.includes('75%（降低 25%）'));
 	});
 	const makeRun = (difficulty, floor = 200) => ({ id: randomUUID(), difficulty, difficultyRulesVersion: 4, floor,
@@ -45,7 +45,7 @@ describe('Fantasy Rogue difficulty tiers', function () {
 				assert.deepEqual(r.team[0].stats, before.stats);
 				if (tier === 'easy') assert(Object.values(r.team[0].set.ivs).every(iv => iv <= 15));
 				const a = difficultyScale(tier, floor), b = difficultyScale(tier, floor, true);
-				assert(tier === 'easy' ? b < a && a < 1 : a === 1 && b === 1);
+				assert(tier === 'easy' ? b < a && a === 1 : a === 1 && b === 1);
 			} finally { battle.destroy(); }
 		});
 	}

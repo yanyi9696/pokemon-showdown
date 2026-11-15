@@ -1,9 +1,10 @@
 import { gunzipSync } from 'zlib';
-import { DAILY_CUP_V1 } from './daily-cup-data';
+import { DAILY_CUP_V2 } from './daily-cup-data';
 import type { StarterCrates } from './starter-crates';
 
 const DAY = 86400000;
-const ANCHOR = Date.UTC(2026, 10, 3);
+const ANCHOR = Date.UTC(2026, 10, 15);
+export const DAILY_CUP_SEASON = 2;
 export interface CratePrediction {
 	id: string;
 	picks: [number, number, number];
@@ -21,20 +22,27 @@ function tournament(day: string) {
 	if (!Number.isFinite(stamp) || new Date(stamp).toISOString().slice(0, 10) !== day || stamp < ANCHOR) {
 		throw new Error('赛事日期无效。');
 	}
-	const entry = DAILY_CUP_V1[Math.floor((stamp - ANCHOR) / DAY)];
+	const entry = DAILY_CUP_V2[Math.floor((stamp - ANCHOR) / DAY)];
 	if (!entry) throw new Error('新一轮赛事正在筹备，请稍后查看。');
 	return entry;
 }
 export function dailyCupSummary(ledger?: StarterCrates, now = Date.now()) {
 	const day = cupDay(now);
-	return { day, submitted: !!ledger?.predictions?.[day], requestId: ledger?.predictions?.[day]?.id };
+	const prediction = ledger?.cupSeason === DAILY_CUP_SEASON ? ledger.predictions?.[day] : undefined;
+	return { day, season: DAILY_CUP_SEASON, submitted: !!prediction, requestId: prediction?.id };
 }
 export function needsCupSettlement(ledger?: StarterCrates, now = Date.now()) {
 	const today = cupDay(now);
+	if (ledger && ledger.cupSeason !== DAILY_CUP_SEASON) return true;
 	return Object.entries(ledger?.predictions || {}).some(([day, bet]) => day < today && !bet.settled);
 }
 /** Runs in the same account transaction as the balance and receipt. Never simulates battles. */
 export function settleDailyCup(ledger: StarterCrates, now = Date.now()) {
+	// Explicitly authorized season restart: only predictions are reset. Earned draws stay intact.
+	if (ledger.cupSeason !== DAILY_CUP_SEASON) {
+		ledger.predictions = {};
+		ledger.cupSeason = DAILY_CUP_SEASON;
+	}
 	const today = cupDay(now);
 	for (const [day, bet] of Object.entries(ledger.predictions || {})) {
 		if (day >= today || bet.settled) continue;
@@ -46,13 +54,14 @@ export function settleDailyCup(ledger: StarterCrates, now = Date.now()) {
 	}
 }
 export function submitDailyCup(ledger: StarterCrates, id: string, value: string, now = Date.now()) {
-	const [day, first, second, champion, extra] = value.split(':');
+	const [season, day, first, second, champion, extra] = value.split(':');
+	if (season !== String(DAILY_CUP_SEASON)) throw new Error('竞猜赛程已更新，请刷新页面后重新预测。');
 	if (extra !== undefined || day !== cupDay(now)) throw new Error('竞猜已跨日，请刷新后参与新一轮。');
 	tournament(day);
 	if (!/^[AB]$/.test(first || '') || !/^[CD]$/.test(second || '') ||
 		(champion !== first && champion !== second)) throw new Error('请选定两场胜者，再从这两队中预测冠军。');
-	if (ledger.predictions?.[day]) throw new Error('今日预测已提交，不能更改。');
 	settleDailyCup(ledger, now);
+	if (ledger.predictions?.[day]) throw new Error('今日预测已提交，不能更改。');
 	ledger.version = 2;
 	(ledger.predictions ||= {})[day] = {
 		id, picks: [first, second, champion].map(team => 'ABCD'.indexOf(team)) as [number, number, number],
@@ -61,23 +70,27 @@ export function submitDailyCup(ledger: StarterCrates, id: string, value: string,
 export function dailyCupView(ledger?: StarterCrates, now = Date.now()) {
 	const day = cupDay(now);
 	const previous = cupDay(now - DAY);
-	const days = [...new Set([previous, ...Object.keys(ledger?.predictions || {}).filter(date => date < day)])]
+	const predictions = ledger?.cupSeason === DAILY_CUP_SEASON ? ledger.predictions || {} : {};
+	const days = [...new Set([previous, ...Object.keys(predictions).filter(date => date < day)])]
 		.filter(date => {
 			const stamp = Date.parse(`${date}T00:00:00Z`);
-			return stamp >= ANCHOR && stamp < ANCHOR + DAILY_CUP_V1.length * DAY;
+			return stamp >= ANCHOR && stamp < ANCHOR + DAILY_CUP_V2.length * DAY;
 		}).sort().reverse();
 	let teams: string[][];
+	let sets: typeof DAILY_CUP_V2[number]['sets'];
 	try {
 		teams = tournament(day).teams;
+		sets = tournament(day).sets;
 	} catch {
 		teams = [];
+		sets = [];
 	}
 	return {
-		day, refreshAt: Date.parse(`${day}T00:00:00+08:00`) + DAY,
-		teams, prediction: ledger?.predictions?.[day],
+		day, season: DAILY_CUP_SEASON, refreshAt: Date.parse(`${day}T00:00:00+08:00`) + DAY,
+		teams, sets, prediction: predictions[day],
 		// Only past results are public. Today's winners and logs must never reach the client.
-		results: days.map(date => ({ day: date, teams: tournament(date).teams,
-			winners: tournament(date).winners, prediction: ledger?.predictions?.[date] })),
+		results: days.map(date => ({ day: date, teams: tournament(date).teams, sets: tournament(date).sets,
+			winners: tournament(date).winners, prediction: predictions[date] })),
 	};
 }
 const replayCache = new Map<string, string[]>();

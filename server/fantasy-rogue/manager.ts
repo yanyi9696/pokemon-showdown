@@ -67,7 +67,7 @@ import { echoView } from './echo';
 import { monthlyChallengeView } from './monthly-challenges';
 import { blessingView, blessingItems, blessingMemberTypes, fantasyForm, equipmentCategory } from './blessings';
 import { universalOptions } from './universal-evolution';
-import { fantasyConversionOptions } from './fantasy-conversion';
+import { fantasyConversionOptions, fantasyConversionInfo } from './fantasy-conversion';
 import {
 	assignedExtraAbilities, canGrantExtraAbility, emblemBaseTypes,
 } from '../../sim/rogue-blessing-permanent';
@@ -464,6 +464,7 @@ export class RogueManager {
 						types: blessingMemberTypes(mon), emblemBaseTypes: emblemBaseTypes(saved),
 						fantasyForm: mon.fusion ? undefined : fantasyForm(mon.set.species),
 						fantasyOptions: fantasyConversionOptions(mon),
+						fantasyInfo: fantasyConversionInfo(mon, run.blessings?.shards || 0),
 						experienceProgress: experienceProgress(mon),
 						friendship: friendship(mon),
 						evolutionDetails: content?.progression ? partyEvolutions(mon, run) : undefined,

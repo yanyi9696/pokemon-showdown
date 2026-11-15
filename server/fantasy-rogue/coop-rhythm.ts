@@ -62,7 +62,8 @@ function validateResources(run: RogueRun) {
 }
 
 /** Shared branches and prizes use consensus. Taps use one server clock and the native per-beat limit. */
-export function chooseCoopRhythm(entries: Entry[], content: RogueContent, random: RogueRandom, choice: string) {
+export function chooseCoopRhythm(entries: Entry[], content: RogueContent, random: RogueRandom,
+	choice: string, rhythmAt?: number) {
 	const runs = entries.map(entry => entry.run);
 	if (!coopRhythmOptions(runs).some(entry => entry.id === choice && !entry.disabled)) {
 		throw new Error('共同节奏活动已变化，请刷新后重选。');
@@ -89,7 +90,7 @@ export function chooseCoopRhythm(entries: Entry[], content: RogueContent, random
 			a.taps = []; a.score = bonus;
 		} else {
 			chooseEventOption(account, run, content, random, ownEvent.key, choice,
-				undefined, undefined, undefined, { now });
+				undefined, undefined, undefined, { now, rhythmAt });
 		}
 		validateResources(run);
 		ownEvent.key = privateStep ? randomUUID() : key;
@@ -97,7 +98,8 @@ export function chooseCoopRhythm(entries: Entry[], content: RogueContent, random
 	return privateStep;
 }
 
-export function chooseCoopRhythmPersonal(entry: Entry, content: RogueContent, random: RogueRandom, choice: string) {
+export function chooseCoopRhythmPersonal(entry: Entry, content: RogueContent, random: RogueRandom,
+	choice: string, rhythmAt?: number) {
 	const { run, account } = entry, event = run.node!.event!, oldKey = event.key;
 	if (!coopRhythmView(run).options.some(entryOption => entryOption.id === choice && !entryOption.disabled)) {
 		throw new Error('个人节奏活动步骤已变化，请刷新后重选。');
@@ -106,7 +108,7 @@ export function chooseCoopRhythmPersonal(entry: Entry, content: RogueContent, ra
 		event.activity = { style: event.activity!.style, step: 'prepare' };
 		event.key = randomUUID();
 	} else {
-		chooseEventOption(account, run, content, random, event.key, choice);
+		chooseEventOption(account, run, content, random, event.key, choice, undefined, undefined, undefined, { rhythmAt });
 		if (event.id === 'minicontest' && choice.startsWith('perform:')) {
 			delete event.activity!.startedAt;
 			delete event.activity!.taps;

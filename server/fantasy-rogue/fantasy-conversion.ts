@@ -3,6 +3,26 @@ import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import { blessingLearnChoices } from './blessings';
 import { ensureMemberMemory, rebuildMember, rememberPastLevelMoves } from './progression';
 import type { RogueRun } from './types';
+import { evolutionChildren } from './evolution';
+
+export const FANTASY_CONVERSION_COST = 100;
+
+/** Display-only view derived from the same variant and evolution data used by gameplay. */
+export function fantasyConversionInfo(mon: RoguePokemon, shards: number) {
+	const current = fantasyVariants(mon.set.species);
+	const finals = new Set<string>(), visited = new Set<string>();
+	const visit = (name: string) => {
+		if (visited.has(name)) return;
+		visited.add(name);
+		const children = evolutionChildren(name);
+		if (!children.length && name !== mon.set.species && fantasyVariants(name).length) finals.add(name);
+		for (const child of children) visit(child.name);
+	};
+	if (!current.length) visit(mon.set.species);
+	const blocked = mon.egg ? '孵化后才能幻想化。' : mon.fusion || mon.formFusion ? '融合／合体状态不能幻想化。' :
+		mon.nuzlockeDead ? '已永久倒下的伙伴不能幻想化。' : '';
+	return { current: current.length > 0, finals: [...finals], shards, cost: FANTASY_CONVERSION_COST, blocked };
+}
 
 const dex = Dex.mod('gen9fantasy');
 const signatures: Record<string, [string, string]> = {

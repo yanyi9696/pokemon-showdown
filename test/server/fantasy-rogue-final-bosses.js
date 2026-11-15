@@ -40,6 +40,35 @@ describe('Fantasy Rogue continuous summit and nineteen-life challenge', function
 	this.timeout(15000);
 	let battle;
 	afterEach(() => { battle?.destroy(); battle = null; });
+	it('equips an actual plate and reveals it after every Arceus phase, so Judgment hits Fantasy Mienshao', () => {
+		battle = native(arceusEncounter());
+		const target = battle.p1.active[0], boss = battle.p2.active[0];
+		target.formeChange('Mienshao-Fantasy', undefined, true);
+		// The supplied battle screenshot has a Ghost type replacement on this partner.
+		target.setType(['Fighting', 'Ghost']);
+		assert.deepEqual(target.getTypes(), ['Fighting', 'Ghost']);
+		// A Z-Crystal carries onPlate for Multitype, but deliberately does not change Judgment.
+		boss.item = 'ghostiumz';
+		const oldHP = target.hp;
+		battle.actions.useMove('judgment', boss, {target});
+		assert.equal(target.hp, oldHP);
+		assert(battle.log.some(line => line.startsWith('|-immune|p1')));
+		let sawFlying = false;
+		for (let phase = 0; phase < 17; phase++) {
+			deplete(battle);
+			const type = boss.species.types[0], item = boss.getItem();
+			assert.equal(item.onPlate, type);
+			assert(!item.zMove, `${type} must use a plate, not ${item.name}`);
+			assert(battle.log.some(line => line.startsWith('|-item|p2') && line.endsWith(`|${item.name}`)));
+			if (type !== 'Flying') continue;
+			sawFlying = true;
+			const before = target.hp, start = battle.log.length;
+			battle.actions.useMove('judgment', boss, {target});
+			assert(target.hp < before, battle.log.slice(start).join('\n'));
+			assert(battle.log.slice(start).some(line => line.startsWith('|-supereffective|p1')));
+		}
+		assert(sawFlying);
+	});
 	it('keeps the authored guard team and the seventh export only as Mewtwo Y', () => {
 		const encounter = summitEncounter();
 		assert.deepEqual(encounter.team.map(mon => mon.species), ['Koraidon-Fantasy', 'Miraidon-Fantasy',
@@ -191,8 +220,8 @@ describe('Fantasy Rogue post-clear snapshot and optional challenge settlement', 
 	for (const won of [true, false]) {
 		it(`${won ? 'wins for twenty points' : 'loses without losing the clear'} and never rewrites the card or carries challenge growth back`, () => {
 			store.change(user, a => {
-				a.run.growth = {offense: 2000, defense: 1200, experience: 500};
-				a.run.team[0].training = {offense: 600, defense: 400};
+				a.run.growth = { offense: 2000, defense: 1200, experience: 500 };
+				a.run.team[0].training = { offense: 600, defense: 400 };
 			});
 			const card = complete(), points = account().points, beforeChallenge = structuredClone(account().run.team);
 			cmd('godchallenge', { value: 'accept' });
