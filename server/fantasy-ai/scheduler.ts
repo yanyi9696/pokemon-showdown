@@ -92,7 +92,8 @@ export class DecisionScheduler {
 		this.decisionMs = options.decisionMs === undefined ? DEFAULT_LIMITS.decisionMs : options.decisionMs;
 		this.criticalDecisionMs = options.criticalDecisionMs ?? DEFAULT_LIMITS.criticalDecisionMs;
 		const workers = options.workers ?? Math.max(1, Math.min(DEFAULT_LIMITS.workers, cpus().length));
-		if (!Number.isInteger(this.maxBattles) || this.maxBattles < 1 || this.maxBattles > 16 ||
+		// Room registrations are lightweight; CPU concurrency is bounded separately by workers.
+		if (!Number.isInteger(this.maxBattles) || this.maxBattles < 1 || this.maxBattles > 1024 ||
 			!Number.isInteger(workers) || workers < 1 || workers > 16 ||
 			this.decisionMs !== null && (!Number.isFinite(this.decisionMs) || this.decisionMs < 0) ||
 			!Number.isFinite(this.criticalDecisionMs) || this.criticalDecisionMs < 0) {

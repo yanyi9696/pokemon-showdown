@@ -42,7 +42,8 @@ import {
 	ROGUE_FORMAT, ROGUE_COOP_FORMAT, ROGUE_DOUBLES_FORMAT, type RoguePokemon, type RogueBattleResult, type RogueBattleState,
 } from '../../sim/fantasy-rogue';
 import { FantasyRogueContent } from '../../config/fantasy-rogue';
-import { getAIManager, type AIChallengeManager } from '../fantasy-ai/manager';
+import type { AIChallengeManager } from '../fantasy-ai/manager';
+import { getRogueAIManager } from './battle-capacity';
 import { RogueEngine, rogueSlotCost, rogueStatCost } from './engine';
 import { ROGUE_CAPTURE_COUNTS } from '../../sim/fantasy-rogue-rules';
 import { RogueStore } from './store';
@@ -79,7 +80,7 @@ export class RogueManager {
 	readonly coop: RogueCoopSessions;
 	private readonly ai: () => AIChallengeManager;
 	readonly duels: RogueDuels;
-	constructor(engine: RogueEngine, ai: () => AIChallengeManager = getAIManager) {
+	constructor(engine: RogueEngine, ai: () => AIChallengeManager = getRogueAIManager) {
 		this.engine = engine;
 		this.ai = ai;
 		this.coop = new RogueCoopSessions(engine, (session, token) => this.startCoopBattle(session, token));

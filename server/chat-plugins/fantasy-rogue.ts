@@ -1,4 +1,6 @@
 import { getRogueManager } from '../fantasy-rogue/manager';
+import { getRogueAIManager } from '../fantasy-rogue/battle-capacity';
+import { Utils } from '../../lib';
 import { rogueAccess } from '../fantasy-rogue/access';
 import type { RogueCommand } from '../fantasy-rogue/types';
 import type { DuelCommand } from '../fantasy-rogue/duels';
@@ -35,6 +37,11 @@ export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
 
 export const commands: Chat.ChatCommands = {
 	fantasyrogue: {
+		status() {
+			this.checkCan('lock');
+			const { enabled, active, maxBattles, worker } = getRogueAIManager().getStatus();
+			this.sendReplyBox(`<pre>${Utils.escapeHTML(JSON.stringify({ enabled, active, maxBattles, worker }, null, 2))}</pre>`);
+		},
 		ski(target, room, user, connection) {
 			let id = '';
 			try {

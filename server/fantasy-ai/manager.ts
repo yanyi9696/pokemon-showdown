@@ -230,7 +230,7 @@ export class AIChallengeManager {
 	/** Only the server-owned campaign may supply this validated team and private checkpoint. */
 	createRogueBattle(user: User, trainer: ValidatedTrainer, team: string, rogue: RogueRoomOptions,
 		cooperativeGuest?: { user: User, team: string }) {
-		if (this.disposed || !this.settings.enabled) throw new Chat.ErrorMessage('AI 对战尚未开放。');
+		if (this.disposed || !this.settings.enabled) throw new Chat.ErrorMessage('肉鸽对战尚未开放。');
 		if (Rooms.global.lockdown && Rooms.global.lockdown !== 'pre') throw new Chat.ErrorMessage('服务器维护中，请稍后开始战斗。');
 		if (!user.named || !user.connected || Punishments.isBattleBanned(user)) throw new Chat.ErrorMessage('当前账号不能开始对局。');
 		if (cooperativeGuest && (!rogue.cooperative || !cooperativeGuest.user.named || !cooperativeGuest.user.connected ||
@@ -245,14 +245,17 @@ export class AIChallengeManager {
 			cooperativeGuest && this.reservationsFor(cooperativeGuest.user.id).length >= this.settings.maxBattlesPerPlayer) {
 			throw new Chat.ErrorMessage('你或队友已有一场肉鸽战斗正在创建或进行。');
 		}
-		if (this.reservations.size >= this.settings.maxBattles) throw new Chat.ErrorMessage('AI 对战名额已满，请稍后重试。');
+		if (this.reservations.size >= this.settings.maxBattles) {
+			throw new Chat.ErrorMessage(`肉鸽战斗名额暂满（最多 ${this.settings.maxBattles} 场），请稍后重试。`);
+		}
 		const instanceId = randomUUID();
 		const reservation: { user: User, participants?: string[], room?: GameRoom } = {
 			user, participants: [user.id, ...(cooperativeGuest ? [cooperativeGuest.user.id] : [])],
 		};
 		this.reservations.set(instanceId, reservation);
-		const roomid = Rooms.global.prepBattleRoom(trainer.format);
+		let roomid: RoomID | undefined;
 		try {
+			roomid = Rooms.global.prepBattleRoom(trainer.format);
 			const room = Rooms.createBattle({
 				roomid, format: trainer.format, rated: false, challengeType: 'challenge', allowRenames: false,
 				players: [{ user, team, hidden: true, inviteOnly: true }],
@@ -277,8 +280,10 @@ export class AIChallengeManager {
 			room.add(`|-message|幻想杯肉鸽第 ${rogue.floor} 层；永久六维加成 ${Object.values(rogue.state.boosts).join('/')}。`).update();
 			return room;
 		} catch (error) {
-			Rooms.get(roomid)?.destroy();
-			this.scheduler.unregister(roomid, instanceId);
+			if (roomid) {
+				Rooms.get(roomid)?.destroy();
+				this.scheduler.unregister(roomid, instanceId);
+			}
 			this.reservations.delete(instanceId);
 			throw error;
 		}

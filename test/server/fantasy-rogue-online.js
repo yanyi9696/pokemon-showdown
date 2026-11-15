@@ -671,7 +671,7 @@ describe('Fantasy Rogue real rooms', function () {
 		await until(() => next.battle.ended && account().run.phase === 'ready', 'shiny retreat settlement');
 		assert.equal(account().run.team.find(mon => mon.set.species === 'Slugma').set.shiny, true);
 	});
-	it('shares the existing AI quota, prevents duplicate battle creation, and recovers a destroyed room', async () => {
+	it('reserves its campaign quota, prevents duplicate battle creation, and recovers a destroyed room', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		const request = { id: randomUUID(), revision: account().revision, action: 'battle' };
 		const first = manager.command(user.connections[0], request);

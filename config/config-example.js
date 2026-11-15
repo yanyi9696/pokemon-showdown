@@ -376,6 +376,12 @@ exports.forcetimer = false;
 // The lobby is available while the owner's formal content configuration is pending.
 exports.fantasyrogue = {
 	enabled: true, database: 'databases/fantasy-rogue.db',
+	// Dedicated capacity: solo, doubles and co-op share one pool, separate from fantasyai.
+	// Counts live battle rooms (a co-op room counts once), not saved adventures. Range: 1-1024.
+	maxBattles: 128,
+	// Optional dedicated AI calculation threads (1-16). Omit for up to 2, capped by CPU count.
+	// More room slots do not create more threads. Tune on a test server before increasing.
+	battleWorkers: /** @type {number | undefined} */ (undefined),
 	// Emergency forward-recovery mode: keep the matching new server/client and current database.
 	// Blocks new runs only; existing stories, battles, rewards and history retain their current semantics.
 	continueOnly: false,
