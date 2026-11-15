@@ -1025,7 +1025,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	fengchao: {
 		onEffectivenessPriority: -1,
 		onEffectiveness(typeMod, target, type, move) {
-			if (!target || target.getAbility().id !== 'fengchao') return typeMod;
+			if (!target?.hasAbility('fengchao')) return typeMod;
 			if (!move) return typeMod;
 			if (move?.id === 'stealthrock') return typeMod; // 显式排除隐形岩
 			if (move?.ignoreAbility) return typeMod;
@@ -1038,7 +1038,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 		onBasePowerPriority: 23,
 		onBasePower(basePower, attacker, defender, move) {
-			if (attacker.getAbility().id !== 'fengchao') return;
+			if (!attacker.hasAbility('fengchao')) return;
 			if (move.type === 'Bug') {
 				this.debug('Fengchao Bug move power boost');
 				return this.chainModify(1.5);
@@ -1046,13 +1046,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 
 		onModifyMove(move, pokemon) {
-			if (pokemon.getAbility().id === 'fengchao' && move.type === 'Bug') {
+			if (pokemon.hasAbility('fengchao') && move.type === 'Bug') {
 				(move as any).fengchaoBoost = true;
 			}
 		},
 
 		onAfterMoveSecondarySelf(pokemon, target, move) {
-			if (pokemon.getAbility().id !== 'fengchao') return;
+			if (!pokemon.hasAbility('fengchao')) return;
 			if (!(move as any)?.fengchaoBoost) return;
 			// 触发回血时，来源宝可梦就是使用者自身
 			// this.heal 的第三个参数是 'source' (来源)
@@ -1091,7 +1091,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 			target.switchFlag = true;
-			this.add('-activate', target, 'Huibizaisheng');
+			this.add('-activate', target, 'ability: Hui Bi Zai Sheng');
 		},
 		onSwitchOut(pokemon) {
 			pokemon.heal(pokemon.baseMaxhp / 4);
@@ -1179,7 +1179,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					target.item = stolenItem.id;
 					return;
 				}
-				this.add('-item', source, stolenItem, '[from] ability: Magician\'s Red', `[of] ${target}`);
+				this.add('-item', source, stolenItem, '[from] ability: Mo Shu Shi Zhi Hong', `[of] ${target}`);
 			}
 			// 【逻辑 B】使用者已有道具 -> 检查“先手 + 火系招式”来烧毁对方道具
 			else {
@@ -1188,7 +1188,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (move.type === 'Fire' && this.queue.willMove(target)) {
 					const removedItem = target.takeItem(source);
 					if (removedItem) {
-						this.add('-enditem', target, removedItem.name, '[from] ability: Magician\'s Red', `[of] ${source}`);
+						this.add('-enditem', target, removedItem.name, '[from] ability: Mo Shu Shi Zhi Hong', `[of] ${source}`);
 						this.add('-message', `${source.name} 的火焰在 ${target.name} 出手前将其 ${removedItem.name} 烧毁了！`);
 					}
 				}
@@ -1348,13 +1348,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// 如果是物理招式，但特攻更高，则给招式打上一个标记
 			// 表示“在计算攻击力时，请使用特攻的数值”
 			if (move.category === 'Physical' && spa > atk) {
-				this.add('-ability', attacker, '极智能');
+				this.add('-ability', attacker, 'Ji Zhi Neng');
 				move.overrideOffensiveStat = 'spa'; // 打上标记
 			}
 			// 如果是特殊招式，但物攻更高，也打上标记
 			// 表示“在计算特攻力时，请使用物攻的数值”
 			else if (move.category === 'Special' && atk > spa) {
-				this.add('-ability', attacker, '极智能');
+				this.add('-ability', attacker, 'Ji Zhi Neng');
 				move.overrideOffensiveStat = 'atk'; // 打上标记
 			}
 		},
@@ -1390,7 +1390,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				return;
 			}
 			// --- 执行特性效果 ---
-			this.add('-ability', source, '极光行者');
+			this.add('-ability', source, 'Ji Guang Xing Zhe');
 			this.add('-message', '“极光行者”踏着极光幕而来。');
 			// 3. “贴标签”：为auroraveil技能传递信息，让它知道要开5回合
 			(source as any).jiguangxingzheIsActivating = true;
@@ -1408,7 +1408,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	huoshanxingzhe: {
 		onStart(source) {
 			if (source.side.foe.getSideCondition('seaoffire')) return;
-			this.add('-ability', source, '火山行者');
+			this.add('-ability', source, 'Huo Shan Xing Zhe');
 			source.side.foe.addSideCondition('seaoffire', source);
 		},
 		onEnd(source) {
@@ -1429,7 +1429,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	leitingxingzhe: {
 		// onStart 和 onEnd 确保登场和离场时能正确处理
 		onStart(pokemon) {
-			this.add('-ability', pokemon, '雷霆行者');
+			this.add('-ability', pokemon, 'Lei Ting Xing Zhe');
 			// 登场时尝试创造等离子浴
 			if (this.field.addPseudoWeather('iondeluge')) {
 				// 【新增】登场时显示提示信息
@@ -1565,7 +1565,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onTryHit(target, source, move) {
 			if (target !== source && move.type === 'Bug') {
 				// 步骤 1: 显示免疫信息，这部分是正确的
-				this.add('-immune', target, '[from] ability: 食虫');
+				this.add('-immune', target, '[from] ability: Shi Chong');
 
 				// 步骤 2: [修正] 执行回血，并明确指定回血的来源是 target 自己
 				// heal( amount, target, source )
@@ -2896,11 +2896,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		shortDesc: "处于灼伤状态时不会损失HP和物攻减半，每回合回复1/8最大HP",
 	},
 	chaojiyushui: {
+		onWeatherModifyDamagePriority: 1,
+		onWeatherModifyDamage(damage, attacker, defender, move) {
+			this.dex.data.Conditions['raindance'].onWeatherModifyDamage!.call(this, damage, attacker, defender, move);
+			return damage;
+		},
+		onModifyMove(move, pokemon) {
+			if (this.field.effectiveWeather() !== 'raindance' &&
+				(['Water', 'Fire'].includes(move.type) || [
+					'weatherball', 'thunder', 'hurricane', 'bleakwindstorm', 'wildboltstorm', 'sandsearstorm',
+					'solarbeam', 'solarblade', 'morningsun', 'moonlight', 'synthesis',
+				].includes(move.id))) {
+				this.add('-activate', pokemon, 'ability: Chao Ji Yu Shui');
+			}
+		},
 		flags: {},
 		name: "Chao Ji Yu Shui",
 		rating: 3,
         num: 10054,
-		shortDesc: "即使天气不是下雨状态，也能以下雨态使用招式",
+		shortDesc: "使用招式时视为雨天：水招×1.5、火招×0.5，暴风与打雷必中。不改变全场天气。",
+		desc: "使用招式时视为下雨：水属性招式威力提升50%，火属性招式威力降低50%；气象球变为水属性并提升至100基础威力；暴风、打雷与风暴类招式必中。招式相关天气判定优先于场上天气，不会使同伴或对手获得雨天，也不会发动悠游自如等被动天气特性。气闸与无关天气不影响此效果；特性被压制时失效。始源之海禁止火属性攻击、终结之地禁止水属性攻击的规则仍然保留。",
     },
 	bingnenglizhe: {
 		onModifyAtkPriority: 5,

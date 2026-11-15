@@ -1292,7 +1292,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			return 5;
 		},
 		onWeatherModifyDamage(damage, attacker, defender, move) {
-			if (defender.hasItem('utilityumbrella')) return;
+			if (defender.effectiveWeather() !== 'raindance') return;
 			if (move.type === 'Water') {
 				this.debug('rain water boost');
 				return this.chainModify(1.5);
@@ -1333,7 +1333,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			}
 		},
 		onWeatherModifyDamage(damage, attacker, defender, move) {
-			if (defender.hasItem('utilityumbrella')) return;
+			if (defender.effectiveWeather() !== 'primordialsea') return;
 			if (move.type === 'Water') {
 				this.debug('Rain water boost');
 				return this.chainModify(1.5);
@@ -1362,11 +1362,11 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			return 5;
 		},
 		onWeatherModifyDamage(damage, attacker, defender, move) {
-			if (move.id === 'hydrosteam' && !attacker.hasItem('utilityumbrella')) {
+			if (move.id === 'hydrosteam' && attacker.effectiveWeather() === 'sunnyday') {
 				this.debug('Sunny Day Hydro Steam boost');
 				return this.chainModify(1.5);
 			}
-			if (defender.hasItem('utilityumbrella')) return;
+			if (defender.effectiveWeather() !== 'sunnyday') return;
 			if (move.type === 'Fire') {
 				this.debug('Sunny Day fire boost');
 				return this.chainModify(1.5);
@@ -1411,7 +1411,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 			}
 		},
 		onWeatherModifyDamage(damage, attacker, defender, move) {
-			if (defender.hasItem('utilityumbrella')) return;
+			if (defender.effectiveWeather() !== 'desolateland') return;
 			if (move.type === 'Fire') {
 				this.debug('Sunny Day fire boost');
 				return this.chainModify(1.5);
@@ -1447,7 +1447,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		// So we give it increased priority.
 		onModifySpDPriority: 10,
 		onModifySpD(spd, pokemon) {
-			if (pokemon.hasType('Rock') && this.field.isWeather('sandstorm')) {
+			if (pokemon.hasType('Rock') && pokemon.effectiveWeather() === 'sandstorm') {
 				return this.modify(spd, 1.5);
 			}
 		},
@@ -1513,7 +1513,7 @@ export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
 		},
 		onModifyDefPriority: 10,
 		onModifyDef(def, pokemon) {
-			if (pokemon.hasType('Ice') && this.field.isWeather('snowscape')) {
+			if (pokemon.hasType('Ice') && pokemon.effectiveWeather() === 'snowscape') {
 				return this.modify(def, 1.5);
 			}
 		},

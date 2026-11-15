@@ -2242,6 +2242,16 @@ export class Pokemon {
 	 */
 	effectiveWeather() {
 		const weather = this.battle.field.effectiveWeather();
+		// Personal weather belongs to the move user, including callbacks which
+		// query the target (Thunder accuracy and weather defensive bonuses).
+		// Passive abilities must still read the real field weather.
+		const effect = this.battle.effect;
+		if (effect && ['Move', 'Weather', 'Ability'].includes(effect.effectType) &&
+			(effect.effectType !== 'Ability' || ['chaojiyushui', 'megasol'].includes(effect.id.replace(/^ability:/, '')))) {
+			const source = this.battle.activePokemon;
+			if (source?.hasAbility('chaojiyushui')) return 'raindance';
+			if (source?.hasAbility('megasol')) return 'sunnyday';
+		}
 		switch (weather) {
 		case 'sunnyday':
 		case 'raindance':
@@ -2249,10 +2259,8 @@ export class Pokemon {
 		case 'primordialsea':
 			if (this.hasItem('utilityumbrella')) return '';
 		}
-		if (this.hasAbility('chaojiyushui') && this.battle.activePokemon === this) return 'raindance';
-        if (this.hasAbility('megasol') && this.battle.activePokemon === this) return 'sunnyday';
-        return weather;
-    }
+		return weather;
+	}
 
 	runEffectiveness(move: ActiveMove, components?: { type: string, mod: number }[]) {
 		let totalTypeMod = 0;

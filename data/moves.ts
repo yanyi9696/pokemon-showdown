@@ -870,7 +870,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			if ((source as any).jiguangxingzheIsActivating) {
 				return;
 			}
-			return this.field.isWeather(['hail', 'snowscape']);
+			return ['hail', 'snowscape'].includes(source.effectiveWeather());
 		},
 		condition: {
 			duration: 5,
@@ -1552,8 +1552,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pp: 5,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1, wind: 1 },
-		onModifyMove(move) {
-			if (this.field.isWeather(['hail', 'snowscape'])) move.accuracy = true;
+		onModifyMove(move, source) {
+			if (['hail', 'snowscape'].includes(source.effectiveWeather())) move.accuracy = true;
 		},
 		secondary: {
 			chance: 10,
@@ -17049,7 +17049,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		flags: { snatch: 1, heal: 1, metronome: 1 },
 		onHit(pokemon) {
 			let factor = 0.5;
-			if (this.field.isWeather('sandstorm')) {
+			if (pokemon.effectiveWeather() === 'sandstorm') {
 				factor = 0.667;
 			}
 			const success = !!this.heal(this.modify(pokemon.maxhp, factor));

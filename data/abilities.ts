@@ -2526,11 +2526,27 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		num: 178,
 	},
 	megasol: {
+		onWeatherModifyDamagePriority: 1,
+		onWeatherModifyDamage(damage, attacker, defender, move) {
+			// Rogue can supply both abilities; effectiveWeather prioritizes rain.
+			if (attacker.hasAbility('chaojiyushui')) return;
+			this.dex.data.Conditions['sunnyday'].onWeatherModifyDamage!.call(this, damage, attacker, defender, move);
+			// Stop the real weather from applying a second damage modifier.
+			return damage;
+		},
+		onModifyMove(move, pokemon) {
+			if (!pokemon.hasAbility('chaojiyushui') && this.field.effectiveWeather() !== 'sunnyday' &&
+				(['Water', 'Fire'].includes(move.type) || [
+					'weatherball', 'thunder', 'hurricane', 'solarbeam', 'solarblade', 'morningsun', 'moonlight', 'synthesis',
+				].includes(move.id))) {
+				this.add('-activate', pokemon, 'ability: Mega Sol');
+			}
+		},
 		flags: {},
 		name: "Mega Sol",
 		rating: 3,
 		num: 311, // TODO confirm with generation shift
-		// Partially implemented in Pokemon.effectiveWeather() in sim/pokemon.ts
+		// Move-specific weather is resolved in Pokemon.effectiveWeather().
 	},
 	merciless: {
 		onModifyCritRatio(critRatio, source, target) {

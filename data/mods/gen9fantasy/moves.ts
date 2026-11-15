@@ -1997,7 +1997,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 }, 
 		onBasePower(basePower, pokemon, target) {
-			if (this.field.isWeather('sandstorm')) {
+			if (pokemon.effectiveWeather() === 'sandstorm') {
 				this.debug('Zhi Sha Re She boost'); 
 				return this.chainModify(1.5);
 			}
