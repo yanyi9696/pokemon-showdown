@@ -72,7 +72,7 @@ import {
 	initializeExperience, rebuildMember, rememberMove, rememberPastLevelMoves, escapedMember,
 } from './progression';
 import { towerExperience, grantEventTraining, MENTOR_CARDS, mentorTier, emergencyCost, type MentorCard } from './early-balance';
-import { battleItemReward } from './battle-item-rewards';
+import { battleItemReward, restoreKnockedOffItems } from './battle-item-rewards';
 import { prepareTrade, tradeRouteTemplates, shopStock } from './trading';
 import { recycleItems } from './buyback';
 import { canEditParty, inventoryItem, editParty, healingLocked, TEAM_ACTIONS } from './team';
@@ -1832,6 +1832,10 @@ export class RogueEngine {
 			nuzlockeResult(run, result);
 		}
 		const previousTeam = run.team;
+		result = restoreKnockedOffItems(run, this.configured(), result, this.random, {
+			failedChallengeTeam: failedChallenge ? previousTeam : undefined,
+			convertRewards: !memoryBattle && !failedChallenge && !run.postgame,
+		});
 		if (run.node?.event?.activity) {
 			run.node.event.activity.lastTurns = result.turns;
 			run.node.event.activity.allySurvived = result.allySurvived;

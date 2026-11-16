@@ -1,5 +1,7 @@
 import { echoChance, playerEcho } from './rogue-echo';
-import { initializeRogueItemSources, rogueItemSource, type RogueItemSource } from './rogue-item-sources';
+import {
+	initializeRogueItemSources, rogueItemSource, type RogueItemSource, type RogueKnockedOffItem,
+} from './rogue-item-sources';
 import { isCoopBossBattle } from './rogue-coop-boss';
 import { nuzlockeCanCatch } from './rogue-nuzlocke';
 import { rogueBallMultiplier, rogueBallCatchRate, type RogueBallRule } from './rogue-balls';
@@ -207,6 +209,8 @@ export interface RogueBattleState {
 export interface RogueBattleResult {
 	/** Trusted physical equipment origins; absent in checkpoints created before source tracking. */
 	itemSources?: Record<string, RogueItemSource>;
+	/** Equipment removed by Knock Off, returned once at settlement, never during live growth. */
+	knockedOffItems?: Record<string, RogueKnockedOffItem[]>;
 	/** Last persisted growth acknowledgement applied by the simulator. */
 	growthRevision?: number;
 	coopExit?: 'retreat' | 'abandon';
@@ -641,6 +645,14 @@ export function throwRogueBall(battle: Battle, id: string) {
 
 export function rogueBattleResult(battle: Battle, final = true): RogueBattleResult {
 	const state = battle.fantasyRogue!;
+	const knockedOffItems: Record<string, RogueKnockedOffItem[]> = {};
+	for (const side of [battle.p1, ...(state.partner ? [battle.p3!] : [])]) {
+		for (const mon of side.pokemon) {
+			if (mon.set.fantasyRogueId && mon.m.rogueKnockedOffItems?.length) {
+				knockedOffItems[mon.set.fantasyRogueId] = structuredClone(mon.m.rogueKnockedOffItems);
+			}
+		}
+	}
 	const itemSources = state.itemSourceVersion ? { ...state.capturedItemSources } : undefined;
 	if (itemSources) for (const side of [battle.p1, ...(state.partner ? [battle.p3!] : [])]) {
 		for (const mon of side.pokemon) {
@@ -657,6 +669,7 @@ export function rogueBattleResult(battle: Battle, final = true): RogueBattleResu
 	}
 	return {
 		itemSources, growthRevision: state.growthRevision,
+		...(Object.keys(knockedOffItems).length ? { knockedOffItems } : {}),
 		turns: battle.turn, allySurvived: battle.p3?.pokemon.some(mon => mon.hp > 0),
 		coopExit: state.coopExit,
 		nuzlocke: state.nuzlocke && structuredClone(state.nuzlocke),

@@ -45,7 +45,7 @@ import { roguePartyLimit, rogueSpirit } from '../../sim/fantasy-rogue-spirits';
 import { syncExclusiveItems } from './exclusive-items';
 import { convertSpiritItem, grantSpiritGift, completeSpiritRegion, editSpiritBox, mergeSpiritPokemon } from './spirits';
 import { coopStorageView } from './coop-storage';
-import { battleItemReward } from './battle-item-rewards';
+import { battleItemReward, restoreKnockedOffItems } from './battle-item-rewards';
 import { withSharedRewardRolls } from './shared-reward-rolls';
 import { prepareCoopSpiritNode } from './coop-spirit-items';
 import { coopHpShop, payCoopHp } from './coop-hp-shopping';
@@ -1982,6 +1982,16 @@ export class RogueCoopSessions {
 		result = preserveCoopGrowthResult(session, result);
 		result = failedCoopChallengeResult(session, result);
 		const memoryBattle = adventure.node?.event?.id === 'travel';
+		for (const userid of [session.hostUser, session.guestUser]) {
+			const member = adventure.members[userid];
+			const run = this.previewBlessingRun(adventure, userid);
+			result = restoreKnockedOffItems(run, this.engine.content!, result, randomInt, {
+				partner: userid === session.guestUser,
+				failedChallengeTeam: failedChallenge ? adventure.battleGrowth?.baseline?.[userid]?.team || member.team : undefined,
+				convertRewards: !memoryBattle && !failedChallenge && !adventure.postgame,
+			});
+			member.spiritConversions = run.spiritConversions;
+		}
 		const escort = activeCoopEscort(adventure);
 		if (memoryBattle) requireRule([session.hostUser, session.guestUser].every(userid =>
 			adventure.members[userid].coopEvent?.memory), '旅行战斗缺少双方的战前恢复记录。');

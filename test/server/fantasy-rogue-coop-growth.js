@@ -113,6 +113,48 @@ describe('Fantasy Rogue co-op personal growth context', () => {
 		return manager.coop.progressBattle(shared.id, shared.adventure.battleToken,
 			shared.adventure.battleLease, sequence, outcome);
 	}
+	for (const exit of ['win', 'retreat']) it(`returns knocked-off equipment to the correct co-op owner on ${exit} after reconnect`, () => {
+		const shared = configure((member, user) => {
+			member.team[0] = createRoguePokemon({ ...set('Snorlax', 'Immunity', 50, ['Thief', 'Splash']),
+				item: user === host ? 'Choice Band' : 'Assault Vest' }, stats(0));
+			initializeExperience(member.team[0]);
+		});
+		const state = created.rogue.state;
+		battle = new Battle({ formatid: 'gen9fantasyroguecoop', fantasyRogue: state, seed: [1, 2, 3, 4],
+			p1: { name: host.name, team: state.team.map(mon => mon.set) },
+			p3: { name: guest.name, team: state.partner.team.map(mon => mon.set) },
+			p2: { team: [{ ...set('Mew', 'Synchronize', 5, ['Knock Off']), item: 'Leftovers' }] },
+			p4: { team: [set('Mew', 'Synchronize', 5, ['Knock Off'])] } });
+		battle.makeChoices('team 1', 'team 1', 'team 1', 'team 1');
+		battle.actions.useMove('knockoff', battle.p2.active[0], { target: battle.p1.active[0] });
+		battle.actions.useMove('knockoff', battle.p4.active[0], { target: battle.p3.active[0] });
+		assert.equal(battle.p1.active[0].item, ''); assert.equal(battle.p3.active[0].item, '');
+		battle.p2.active[0].hp = battle.p2.active[0].maxhp = 9999;
+		battle.actions.useMove('thief', battle.p1.active[0], { target: battle.p2.active[0] });
+		const checkpoint = JSON.parse(JSON.stringify(captureCoopCheckpoint(battle)));
+		battle.destroy(); battle = Battle.fromJSON(checkpoint.state);
+		assert.equal(battle.p1.active[0].item, 'leftovers'); assert.equal(battle.p3.active[0].item, '');
+		assert.deepEqual(rogueBattleResult(battle).knockedOffItems, checkpoint.result.knockedOffItems);
+		battle.win(exit === 'win' ? battle.p1 : battle.p2);
+		const outcome = rogueBattleResult(battle);
+		if (exit === 'retreat') outcome.coopExit = 'retreat';
+		if (exit === 'win') {
+			const before = store.coopSessionForUser(host.id), update = store.updateCoopSession;
+			try {
+				store.updateCoopSession = (...args) => { update.apply(store, args); throw new Error('injected settlement failure'); };
+				assert.throws(() => manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome), /injected settlement failure/);
+				assert.deepEqual(store.coopSessionForUser(host.id), before, 'failed transaction must not return any item');
+			} finally { store.updateCoopSession = update; }
+		}
+		manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome);
+		const saved = store.coopSessionForUser(host.id), a = saved.adventure.members[host.id], b = saved.adventure.members[guest.id];
+		assert.equal(a.team[0].set.item, 'leftovers'); assert.equal(a.bag.choiceband, 1);
+		assert.equal(b.team[0].set.item, 'assaultvest'); assert.equal(b.bag.choiceband, undefined);
+		assert.deepEqual(a.team[1], shared.adventure.members[host.id].team[1]);
+		assert.deepEqual(b.team[1], shared.adventure.members[guest.id].team[1]);
+		manager.coop.settleBattle(shared.id, shared.adventure.battleToken, outcome);
+		assert.deepEqual(store.coopSessionForUser(host.id), saved, 'duplicate delivery cannot return items again');
+	});
 	function growthCommand(user, action, fields = {}) {
 		const view = manager.coop.view(user).session.adventure;
 		return manager.coop.command(user, { action, visit: view.liveGrowth?.key, ...fields });

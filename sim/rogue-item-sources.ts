@@ -7,6 +7,10 @@ export interface RogueItemSource {
 	/** Already belonged to either human before this encounter, including equipment later recovered. */
 	owned: boolean;
 }
+export interface RogueKnockedOffItem {
+	item: string;
+	source?: RogueItemSource;
+}
 const transfers = new WeakMap<Item, RogueItemSource>();
 
 export function initializeRogueItemSources(battle: Battle) {
@@ -35,6 +39,13 @@ export function rogueItemSource(mon: Pokemon): RogueItemSource | undefined {
 /** A transfer carries the physical item's identity without mutating global Dex item definitions. */
 export function takenRogueItem(mon: Pokemon, item: Item): Item {
 	const source = rogueItemSource(mon);
+	const state = mon.battle.fantasyRogue;
+	// Keep removal effective in battle. Only the trusted final settlement returns this equipment.
+	if (state && mon.battle.effect.id === 'knockoff' &&
+		(mon.side.id === 'p1' || mon.side.id === 'p3' && state.partner)) {
+		(mon.m.rogueKnockedOffItems ||= []).push(
+			{ item: item.id, ...(source ? { source } : {}) } satisfies RogueKnockedOffItem);
+	}
 	if (!source) return item;
 	const copy: Item = Object.assign(Object.create(Object.getPrototypeOf(item)), item);
 	transfers.set(copy, source);
