@@ -243,7 +243,7 @@ export function rogueEventDamage(damage: number, target: Pokemon, source: Pokemo
 		effect.effectType !== 'Move' || effect.ohko || effect.damage || effect.damageCallback ||
 		!source || source.isAlly(target)) return damage;
 	const buff = (mon: Pokemon) => mon.side.id === 'p1' ? state.eventBuff : state.duel?.eventBuff;
-	if (rogueComebackCard(source)) damage *= 1.25;
+	if (rogueComebackCard(source)) damage *= 1.2;
 	if (buff(source)) damage *= 1.2;
 	if (buff(target)) damage *= 0.9;
 	const spirit = state.spirit;

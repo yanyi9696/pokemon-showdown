@@ -197,7 +197,7 @@ export function rogueAbilityInfo(mon: Pokemon) {
 	if (monkey) statSources.push(monkey === 'Rock' ? '【大圣风采依旧】受到对手招式的直接伤害降低 50%' : '【大圣风采依旧】速度提升 50%（已计入能力值）');
 	if (saved.fusion) statSources.push('【波塔拉耳环】融合种族值与属性已生效，形态变化暂停');
 	if (hasBlessing(mon, 'entrance')) statSources.push(`【闪亮再登场】全队累计登场 ${side(mon).entries || 0} 次，五项能力 +${(side(mon).entries || 0) * 5}%`);
-	if (rogueComebackCard(mon)) statSources.push('【再启程】本层伤害、防御、特防 +25%');
+	if (rogueComebackCard(mon)) statSources.push('【再启程】本层伤害、防御、特防 +20%');
 	if (mon.volatiles.roguespindasleep) statSources.push('【濒死睡眠】暂时无法行动；再次受到对手攻击会倒下，成功醒来恢复全部 HP');
 	if (spiralActive(mon)) statSources.push(
 		`【螺旋力】${spiralPoints(mon).toFixed(1)} 点，攻击 +${(spiralPoints(mon) / 10).toFixed(1)}%（保命阈值 ${SPIRAL_SURVIVAL} 点）`);
@@ -691,7 +691,7 @@ export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<Stat
 	}
 	const runtime = member(mon), team = side(mon);
 	if (hasBlessing(mon, 'entrance')) stat *= 1 + (team.entries || 0) * 0.05;
-	if (rogueComebackCard(mon) && (key === 'def' || key === 'spd')) stat *= 1.25;
+	if (rogueComebackCard(mon) && (key === 'def' || key === 'spd')) stat *= 1.2;
 	if (key === 'atk' && spiralActive(mon)) stat *= 1 + spiralPoints(mon) / 1000;
 	if (key === 'def' || key === 'spd') {
 		stat *= robeMultiplier(mon);

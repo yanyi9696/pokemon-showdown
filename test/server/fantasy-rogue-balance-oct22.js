@@ -72,8 +72,8 @@ describe('Fantasy Rogue October 22 balance and recovery', function () {
 			p1: {team: r.team.map(p => p.set)}, p2: {team: [set('Mew', 'Synchronize', 50, ['Splash'])]}});
 		battle.makeChoices('team 1', 'team 1'); const own = battle.p1.active[0], foe = battle.p2.active[0];
 		assert.equal(own.maxhp, foe.maxhp); assert.equal(own.getStat('atk'), foe.getStat('atk'));
-		for (const stat of ['def', 'spd']) assert.equal(own.getStat(stat), Math.floor(foe.getStat(stat) * 1.25));
-		assert.equal(rogueEventDamage(100, foe, own, battle.dex.moves.get('psychic')), 125);
+		for (const stat of ['def', 'spd']) assert.equal(own.getStat(stat), Math.floor(foe.getStat(stat) * 1.2));
+		assert.equal(rogueEventDamage(100, foe, own, battle.dex.moves.get('psychic')), 120);
 		assert.equal(rogueEventDamage(100, own, foe, battle.dex.moves.get('psychic')), 100);
 		assert.equal(rogueEventDamage(50, foe, own, battle.dex.moves.get('seismictoss')), 50);
 	});
@@ -87,19 +87,23 @@ describe('Fantasy Rogue October 22 balance and recovery', function () {
 		assert.equal(mon.stats.def, before.def); assert.equal(mon.hp, 0); assert.equal(mon.pp[0].pp, 1); assert(!r.team[1].campTraining);
 		assert.throws(() => buyGrowth(r, command), /已完成/); assert.equal(r.money, 9100);
 	});
-	it('preserves the elder opportunity after no, replaces the card only after yes and never revives', () => {
+	it('preserves the elder opportunity after no and replaces the card with free recovery only after yes', () => {
 		const r = run(); r.team[0].hp = 0; r.bag.revive = 1;
 		assert(offerComeback(r, content())); let key = r.comeback.pending.key;
 		assert(!offerComeback(r, content())); chooseComeback(r, key, 'next'); chooseComeback(r, key, 'no'); chooseComeback(r, key, 'continue');
 		assert(!r.comeback.accepted); assert.equal(r.startCard, 'Fire'); assert.equal(r.team[0].hp, 0);
 		assert(offerComeback(r, content())); key = r.comeback.pending.key;
 		assert.equal(r.comeback.pending.page, 1); chooseComeback(r, key, 'yes'); chooseComeback(r, key, 'continue');
-		assert(!r.startCard); assert.equal(r.team[0].hp, 0); assert.equal(r.bag.revive, 1); assert.equal(r.money, 10000);
+		assert(!r.startCard); assert.equal(r.team[0].hp, r.team[0].maxhp); assert.equal(r.bag.revive, 1); assert.equal(r.money, 10000);
 		assert(!offerComeback(r, content())); assert.equal(comebackExperience(r), 2);
 	});
 	it('pays noncombat experience once per floor and expires after ten inclusive floors', () => {
 		const r = run(); r.comeback = {accepted: true, floor: 51, expires: 60, battleFloors: [52]};
+		const { experienceAtLevel, rogueSpeciesData } = require('../../dist/sim/fantasy-rogue-rules');
+		const growth = rogueSpeciesData(r.team[0].set.species).growth, level = r.team[0].set.level;
+		const expected = Math.max(1, Math.floor((experienceAtLevel(growth, level + 1) - experienceAtLevel(growth, level)) / 5));
 		require('../../dist/server/fantasy-rogue/progression').initializeExperience(r.team[0]); const before = r.team[0].experience; completeComebackFloor(r); const after = r.team[0].experience; assert(after > before);
+		assert.equal(after - before, expected);
 		completeComebackFloor(r); assert.equal(r.team[0].experience, after);
 		r.floor = 52; completeComebackFloor(r); assert.equal(r.team[0].experience, after);
 		r.floor = 60; assert.equal(comebackExperience(r), 2); r.floor = 61; assert.equal(comebackExperience(r), 1);
@@ -124,7 +128,7 @@ describe('Fantasy Rogue October 22 balance and recovery', function () {
 			store.change(user, a => {a.run.team[0].hp = 0; engine.autoEmergency(a.run);});
 			r = store.get(user).run; assert(r.comeback.pending); assert.equal(r.money, 10000);
 			assert.equal(r.comeback.pending.page, 1); cmd('comeback', {member: r.comeback.pending.key, value: 'yes'}); cmd('comeback', {member: r.comeback.pending.key, value: 'continue'});
-			r = store.get(user).run; assert(r.team[0].hp > 0); assert(r.money < 10000); assert(r.emergencyRecovery.paid); assert(r.comeback.accepted);
+			r = store.get(user).run; assert.equal(r.team[0].hp, r.team[0].maxhp); assert.equal(r.money, 10000); assert(!r.emergencyRecovery); assert(r.comeback.accepted);
 		} finally { store.close(); }
 	});
 	it('keeps coverage legal, excludes STAB/status moves and consumes one voucher', () => {

@@ -361,6 +361,24 @@ export class RogueCoopSessions {
 		const runs = [session.hostUser, session.guestUser].map(userid => this.blessingRun(adventure, userid));
 		return sharedBlessingCandidates(runs, this.engine.content!);
 	}
+	private rescueStrandedComebacks(session: RogueCoopSession) {
+		const adventure = session.adventure;
+		if (!this.engine.content?.story || !adventure || adventure.postgame || adventure.node?.challenge ||
+			adventure.node?.noHealing || activeCoopEscort(adventure) || adventure.node?.event?.id === 'travel' ||
+			!['settlement', 'blessing-reward'].includes(adventure.phase) ||
+			!adventure.battleResult || adventure.battleResult.won) return false;
+		let changed = false;
+		for (const owner of [session.hostUser, session.guestUser]) {
+			const member = adventure.members[owner];
+			if (member.comeback?.accepted || member.comeback?.pending || member.team.some(battleReady)) continue;
+			const run = this.blessingRun(adventure, owner);
+			run.phase = 'failed'; run.encounter = adventure.encounter;
+			run.pendingCaptures = member.pendingCaptures;
+			if (!offerComeback(run, this.engine.content, true)) continue;
+			this.saveBlessingRun(adventure, owner, run); changed = true;
+		}
+		return changed;
+	}
 	/** Called only inside an agreed route/settlement transaction, once per owner. */
 	private creditNodeReward(adventure: NonNullable<RogueCoopSession['adventure']>, userid: string,
 		reward: CandyReward & { money: number }) {
@@ -2288,6 +2306,7 @@ export class RogueCoopSessions {
 			session.status = 'abandoned';
 			delete session.delegatedTo;
 		}
+		if (session.status === 'active') this.rescueStrandedComebacks(session);
 		session.revision++;
 		session.updatedAt = Date.now();
 		this.engine.store.updateCoopSession(session, expectedRevision);
@@ -4294,7 +4313,20 @@ export class RogueCoopSessions {
 				const query = (typeof command.target === 'string' ? command.target : '').trim().slice(0, 24);
 				return { userid: user.id, playerSearch: { query, results: this.searchPlayers(user, query) } };
 			}
-			if (command.action === 'refresh') this.retryBattleGrowth(user.id);
+			if (command.action === 'refresh') {
+				this.retryBattleGrowth(user.id);
+				// Repair an older stranded settlement through the same atomic state transition as a new defeat.
+				const rescued = this.engine.store.commitCoopResult(() => {
+					const session = this.engine.store.coopSessionForUser(user.id);
+					if (session?.status !== 'active') return;
+					const revision = session.revision;
+					if (!this.rescueStrandedComebacks(session)) return;
+					session.revision++; session.updatedAt = Date.now();
+					return this.engine.store.updateCoopSession(session, revision);
+				});
+				if (rescued) Users.get(rescued.hostUser === user.id ? rescued.guestUser : rescued.hostUser)?.send(
+					`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({ session: rescued.id, eventChoice: true })}`);
+			}
 			return this.view(user, command.action === 'search' ? command.target : '', command.value === 'rules');
 		}
 		if (command.action === 'delegate') {
@@ -4325,6 +4357,7 @@ export class RogueCoopSessions {
 				const revision = session.revision, run = this.blessingRun(session.adventure, view.owner);
 				chooseCoopComeback(session, user.id, run, command.visit, command.value);
 				this.saveBlessingRun(session.adventure, view.owner, run);
+				this.rescueStrandedComebacks(session);
 				session.revision++; session.updatedAt = Date.now();
 				return this.engine.store.updateCoopSession(session, revision);
 			});
@@ -4650,7 +4683,9 @@ export class RogueCoopSessions {
 			requireRule(Users.get(session.hostUser)?.connected && Users.get(session.guestUser)?.connected,
 				'双方都需要在线才能继续共同冒险。');
 			const revision = session.revision;
-			session.status = 'active'; session.revision++; session.updatedAt = Date.now();
+			session.status = 'active';
+			this.rescueStrandedComebacks(session);
+			session.revision++; session.updatedAt = Date.now();
 			this.engine.store.updateCoopSession(session, revision);
 			Users.get(session.hostUser === user.id ? session.guestUser : session.hostUser)?.send(
 				`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({ session: session.id, resumed: true })}`);

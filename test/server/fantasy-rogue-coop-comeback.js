@@ -78,10 +78,10 @@ describe('Fantasy Rogue cooperative comeback ownership and shared dialogue', () 
 		choose(host, 'yes'); choose(guest, 'no'); assert(!member(owner).comeback.accepted);
 		choose(guest, ''); assert.equal(view(guest).comeback.ownChoice, undefined);
 		choose(guest, 'yes'); assert(member(owner).comeback.accepted); assert.equal(member(partner).comeback, undefined);
-		assert.equal(member(owner).team[0].hp, 0, 'assistance does not revive');
+		assert.equal(member(owner).team[0].hp, member(owner).team[0].maxhp, 'assistance revives its owner for free');
+		assert.equal(member(owner).bag.revive, 3); assert.equal(member(partner).team[0].hp, 0);
 		assert.throws(() => cmd(host, 'retrybattle'), /再启程/);
 		answer('yes'); assert.equal(view(owner).ownComeback.remaining, 10);
-		cmd(owner, 'useitem', { id: randomUUID(), value: 'revive', member: member(owner).team[0].id });
 		cmd(partner, 'useitem', { id: randomUUID(), value: 'revive', member: member(partner).team[0].id });
 		both('retrybattle'); startBattle();
 		assert.equal(created.state.comebackCard, owner === host);
@@ -121,7 +121,7 @@ describe('Fantasy Rogue cooperative comeback ownership and shared dialogue', () 
 	it('doubles only the owner battle experience and never credits the same defeat twice', () => {
 		engine.content.progression = true;
 		settle(false, [guest]); answer('yes');
-		cmd(guest, 'useitem', { id: randomUUID(), value: 'revive', member: member(guest).team[0].id });
+		assert.equal(member(guest).team[0].hp, member(guest).team[0].maxhp); assert.equal(member(guest).bag.revive, 3);
 		both('retrybattle'); startBattle();
 		const before = [host, guest].map(user => member(user).team[0].experience);
 		const ids = [host, guest].map(user => member(user).team[0].id);
@@ -150,12 +150,57 @@ describe('Fantasy Rogue cooperative comeback ownership and shared dialogue', () 
 		change(session => { session.adventure.floor = 10; }); assert.equal(view().ownComeback.remaining, 1);
 		change(session => { session.adventure.floor = 11; }); assert.equal(view().ownComeback, undefined);
 	});
-	for (const condition of ['no-resources', 'healthy-reserve', 'retreat', 'win', 'no-healing']) it(`does not offer for ${condition}`, () => {
+	for (const ownerSide of ['host', 'guest']) it(`automatically rescues only the stranded ${ownerSide} and keeps the receipt idempotent`, () => {
+		const owner = ownerSide === 'host' ? host : guest, partner = owner === host ? guest : host;
+		change(session => {
+			const own = session.adventure.members[owner.id]; own.bag = {}; own.money = 0;
+			own.comeback = { declines: 1 };
+			const reserve = structuredClone(own.team[0]); reserve.id = randomUUID(); reserve.hp = 0;
+			reserve.status = 'psn'; reserve.pp[0].pp = 0; own.team.push(reserve);
+		});
+		if (owner === host) created.state.bag = {}; else created.state.partnerBag = {};
+		const result = settle(false, [owner]);
+		assert.equal(view().comeback.owner, owner.id); assert.equal(view().comeback.answer, 'yes');
+		assert.equal(view().comeback.choosing, false); assert(view().comeback.text.includes('我也有我的坚持'));
+		assert(member(owner).team.every(mon => mon.hp === mon.maxhp && !mon.status && mon.pp.every(p => p.pp === p.maxpp)));
+		assert.equal(member(owner).money, 0); assert.deepEqual(member(owner).bag, {});
+		assert.equal(member(partner).comeback, undefined); assert.equal(member(partner).bag.revive, 3);
+		const after = saved(); rebuild();
+		cmd(owner, 'refresh'); cmd(partner, 'refresh'); assert.deepEqual(saved(), after);
+		created.onResult(result); assert.deepEqual(saved(), after);
+		answer('yes'); both('retrybattle'); startBattle();
+		assert.equal(created.state.comebackCard, owner === host); assert.equal(created.state.partner.comebackCard, owner === guest);
+		settle(false, [owner]); assert.equal(view().comeback, null, 'the single rescue cannot be reused');
+	});
+	for (const action of ['refresh', 'resume']) it(`recovers an older stranded settlement on ${action} without a partial write`, () => {
+		settle(false, [host]); answer('no');
+		change(session => {
+			const own = session.adventure.members[host.id]; own.bag = {}; own.money = 0;
+			if (action === 'resume') session.status = 'paused';
+		});
+		const before = saved(), update = store.updateCoopSession;
+		if (action === 'refresh') {
+			try {
+				store.updateCoopSession = (...args) => { update.apply(store, args); throw new Error('rescue write failed'); };
+				assert.throws(() => cmd(host, action), /rescue write failed/); assert.deepEqual(saved(), before);
+			} finally { store.updateCoopSession = update; }
+		}
+		rebuild(); cmd(host, action, { id: saved().id });
+		assert.equal(member(host).team[0].hp, member(host).team[0].maxhp);
+		assert.equal(view().comeback.answer, 'yes'); assert.equal(member(host).money, 0);
+		assert.equal(member(guest).comeback, undefined);
+	});
+	it('does not auto-rescue while a healthy boxed partner remains available', () => {
+		change(session => {
+			const own = session.adventure.members[host.id]; own.bag = {}; own.money = 0;
+			const reserve = structuredClone(own.team[0]); reserve.id = randomUUID(); own.box.push(reserve);
+		});
+		created.state.bag = {}; settle(false, [host]); cmd(host, 'refresh');
+		assert.equal(view().comeback, null); assert.equal(member(host).team[0].hp, 0);
+	});
+	for (const condition of ['healthy-reserve', 'retreat', 'win', 'no-healing']) it(`does not offer for ${condition}`, () => {
 		change(session => {
 			const own = session.adventure.members[host.id];
-			if (condition === 'no-resources') {
-				own.bag = {}; own.money = 0; created.state.bag = {};
-			}
 			if (condition === 'healthy-reserve') {
 				const reserve = structuredClone(own.team[0]); reserve.id = randomUUID(); own.team.push(reserve);
 			}
@@ -185,7 +230,7 @@ describe('Fantasy Rogue native Multi personal comeback modifiers', () => {
 		for (let restore = 0; restore < 2; restore++) {
 			const reference = battle.p2.active[0];
 			for (const side of battle.sides) {
-				const mon = side.active[0], factor = side.id === owner ? 1.25 : 1;
+				const mon = side.active[0], factor = side.id === owner ? 1.2 : 1;
 				assert.equal(mon.maxhp, reference.maxhp);
 				for (const stat of ['def', 'spd']) assert.equal(mon.getStat(stat), Math.floor(reference.getStat(stat) * factor));
 				const target = side.id === 'p1' || side.id === 'p3' ? reference : battle.p1.active[0];

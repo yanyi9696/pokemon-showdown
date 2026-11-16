@@ -15,8 +15,9 @@ export function coopComebackView(session: RogueCoopSession, userid: string) {
 	return { ...view, visit, owner, ownChoice: votes[userid],
 		partnerChoice: votes[owners.find(id => id !== userid)!],
 		// Co-op does not have the solo opening preference card.
-		text: pending.answer === 'yes' ? '老人轻轻点头。「承认疲惫，不代表放弃。再试一次吧，和你的伙伴一起。」温暖的光落在你和伙伴身上。等你抬头，他已经走远。' :
-		'text' in view ? view.text : '' };
+		text: pending.answer === 'yes' && pending.page !== 2 ?
+			'老人轻轻点头。「承认疲惫，不代表放弃。再试一次吧，和你的伙伴一起。」温暖的光落在你的全队伙伴身上，免费恢复了它们的力量。等你抬头，他已经走远。' :
+			'text' in view ? view.text : '' };
 }
 
 export function chooseCoopComeback(session: RogueCoopSession, userid: string, run: RogueRun,

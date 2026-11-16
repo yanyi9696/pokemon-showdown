@@ -2058,6 +2058,8 @@ export class RogueEngine {
 			if (run.node?.kind === 'rest' && care.revives && availableMoney >= care.cost) return;
 			if (shopStock(this.configured(), run).some(item => item.kind === 'revive' && item.remaining !== 0 && availableMoney >= item.price)) return;
 		}
+		// Only consume the remaining elder opportunity after all ordinary recovery paths have been checked.
+		if (this.content?.story && offerComeback(run, this.configured(), true)) return;
 		run.failure = { key: randomUUID(), floor: run.floor, title: '爬塔已无法推进',
 			reason: '全队伙伴都已倒下，没有可用的复活道具或其他恢复途径，金币也不足以支付急救费用。本局爬塔失败；已获得的解锁与局外成长点会保留。' };
 		run.phase = 'defeated'; delete run.battle;
