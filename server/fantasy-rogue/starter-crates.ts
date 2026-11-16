@@ -48,7 +48,8 @@ type Random = (max: number) => number;
 const pools = new WeakMap<RogueContent, CrateEntry[]>();
 const WEEK = 7 * 24 * 60 * 60 * 1000;
 // Monday 00:00, Asia/Shanghai. Rotation is shared by all accounts and survives restarts.
-const WEEK_ANCHOR = Date.UTC(2026, 10, 1, 16);
+// Restart the shared rotation on 2026-11-16 without changing any player ledger.
+const WEEK_ANCHOR = Date.UTC(2026, 10, 15, 16);
 
 export function cratePool(content: RogueContent): readonly CrateEntry[] {
 	let pool = pools.get(content);
@@ -101,7 +102,7 @@ export function crateWeekly(content: RogueContent, now = Date.now()) {
 	const week = Math.max(0, Math.floor((now - WEEK_ANCHOR) / WEEK));
 	const featured = legends.length < 2 ? legends.map(entry => entry.id) :
 		[legends[(week * 2) % legends.length].id, legends[(week * 2 + 1) % legends.length].id];
-	return { key: String(week), refreshAt: WEEK_ANCHOR + (week + 1) * WEEK, featured,
+	return { key: `20261116-${week}`, refreshAt: WEEK_ANCHOR + (week + 1) * WEEK, featured,
 		catalog: legends.map((entry, index) => ({ id: entry.id, species: entry.species,
 			seen: index < Math.min(legends.length, week * 2 + 2) })) };
 }

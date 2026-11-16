@@ -365,7 +365,7 @@ describe('Fantasy Rogue permanent starter crates', function () {
 
 	it('rotates two distinct legends weekly, visits the whole pool before repeating and avoids adjacent repeats', () => {
 		const real = require('../../dist/config/fantasy-rogue').FantasyRogueContent;
-		const anchor = Date.UTC(2026, 10, 1, 16), weekLength = 7 * 86400000;
+		const anchor = Date.UTC(2026, 10, 15, 16), weekLength = 7 * 86400000;
 		const size = cratePool(real).filter(p => p.legendary).length, seen = new Set();
 		let prior = [], count = 0;
 		for (let week = 0; week < size + 3; week++) {
@@ -382,6 +382,30 @@ describe('Fantasy Rogue permanent starter crates', function () {
 			prior = rotation.featured;
 		}
 		assert.equal(seen.size, size);
+	});
+
+	it('restarts the weekly catalog on November 16 and keeps all player assets and draw records', () => {
+		const real = require('../../dist/config/fantasy-rogue').FantasyRogueContent;
+		ledger({ total: 130, points: 102, freeDraws: 3, legendaryMisses: 30, targetedMisses: 130 });
+		const before = structuredClone(account()), anchor = Date.UTC(2026, 10, 15, 16);
+		const view = crateView(account(), real, anchor);
+		assert.deepEqual(view.weekly.featured, ['ironcrown', 'enamorus']);
+		assert.equal(view.weekly.key, '20261116-0');
+		assert.equal(view.weekly.catalog.filter(entry => entry.seen).length, 2);
+		assert.equal(view.weekly.refreshAt, Date.UTC(2026, 10, 22, 16));
+		assert.deepEqual(crateView(account(), real, view.weekly.refreshAt - 1).weekly, view.weekly);
+		const next = crateView(account(), real, view.weekly.refreshAt);
+		assert.equal(next.weekly.key, '20261116-1');
+		assert.equal(next.weekly.catalog.filter(entry => entry.seen).length, 4);
+		assert.deepEqual(account(), before);
+	});
+	it('rejects pre-reset exchange tokens without charging or unlocking anything', () => {
+		ledger({ points: 200 });
+		const before = structuredClone(account()), species = crateWeekly(data).featured[0];
+		for (const key of ['0', '1', '2']) {
+			assert.throws(() => draw({ action: 'exchangecrate', value: `${key}:${species}` }), /更新/);
+			assert.deepEqual(account(), before);
+		}
 	});
 
 	it('exchanges exactly 100 tokens without spending growth or changing draw pity; rejects stale weeks', () => {
