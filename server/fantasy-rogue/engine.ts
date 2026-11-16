@@ -1320,6 +1320,7 @@ export class RogueEngine {
 				const pending = run.pendingMoves?.[0];
 				const mon = run.team.find(entry => entry.id === pending?.member);
 				requireRule(pending && mon && command.member === mon.id, '没有对应的待学习招式。');
+				requireRule(command.move === undefined || command.move === pending.move, '待学习招式已变化，请刷新后重新选择。');
 				rememberMove(mon, pending.move);
 				if (command.value !== 'skip') {
 					const slot = Number(command.value);

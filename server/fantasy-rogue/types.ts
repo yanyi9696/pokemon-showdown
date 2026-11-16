@@ -631,6 +631,8 @@ export interface RogueCommand {
 	starters?: string[];
 	starterBuilds?: Record<string, RogueStarterBuild>;
 	member?: string;
+	/** Expected pending move for learning; optional for clients loaded before this guard. */
+	move?: string;
 	/** Candy quantity, or 1/10 for starter crates; omitted preserves single-item commands. */
 	count?: number;
 	order?: string[];
