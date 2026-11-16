@@ -21,7 +21,7 @@ import { TRAVELLERS } from './traveller-profiles';
 import { EVENT_OVERVIEWS, eventReplay } from './event-replays';
 import { TRADE_NAMES } from './trading';
 import { blessingDisplay, blessingCodexFloors, blessingAvailabilityNotes, compareBlessingNames,
-	BLESSING_SUPPLY_HELP } from './blessing-text';
+	BLESSING_SUPPLY_HELP, blessingUpgradeHelp } from './blessing-text';
 import { FORM_ITEMS } from './form-item-data';
 
 export type CodexSection = 'guide' | 'blessings' | 'events' | 'stories';
@@ -177,7 +177,7 @@ let contentVersion: string | undefined;
 /** Changes to any catalog are reflected without maintaining another version string by hand. */
 export function codexContentVersion() {
 	contentVersion ||= createHash('sha256').update(JSON.stringify(
-		[MAINLINE_SCRIPT, ...(['guide', 'blessings',
+		[MAINLINE_SCRIPT, blessingUpgradeHelp(), ...(['guide', 'blessings',
 			'events'] as CodexSection[]).map(section => rogueCodex(undefined, section, true))]
 	)).digest('hex').slice(0, 16);
 	return contentVersion;

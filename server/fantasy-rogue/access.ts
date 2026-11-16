@@ -1,4 +1,5 @@
 import { toID } from '../../sim/dex';
+import { ROGUE_BETA_ACCOUNTS } from './beta-accounts';
 
 /** Only the authentication layer sets registered. A display name is never a beta credential. */
 export function rogueAccess(user: Pick<User, 'id' | 'named' | 'connected' | 'registered'>) {
@@ -8,6 +9,7 @@ export function rogueAccess(user: Pick<User, 'id' | 'named' | 'connected' | 'reg
 	if (!user.connected) return false;
 	if (local) return true;
 	return !!user.named && !!user.registered && (Config.fantasyrogue?.publicAccess === true ||
+		ROGUE_BETA_ACCOUNTS.has(user.id) ||
 		(Config.fantasyrogue?.betaAccounts || []).some(name => toID(name) === user.id));
 }
 

@@ -3,7 +3,7 @@ const assert = require('assert').strict;
 const {Battle, Dex} = require('../../dist/sim');
 const {createRoguePokemon} = require('../../dist/server/fantasy-rogue/progression');
 const {createPreviewContent} = require('../../dist/server/fantasy-rogue/preview-content');
-const {rogueCodex} = require('../../dist/server/fantasy-rogue/codex');
+const {rogueCodex, codexContentVersion} = require('../../dist/server/fantasy-rogue/codex');
 const {blessingDisplay, compareBlessingNames, blessingUpgradeHelp} = require('../../dist/server/fantasy-rogue/blessing-text');
 const b = require('../../dist/server/fantasy-rogue/blessings');
 const data = require('../../dist/sim/rogue-blessing-data');
@@ -15,30 +15,44 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 	this.timeout(30000);
 	let content;
 	before(() => { content = createPreviewContent(); });
-	it('previews every authored blessing upgrade with the canonical full effect and the brief-name alias', () => {
+	it('previews every referenced blessing with canonical effects without changing game data', () => {
 		const before = JSON.stringify(data.ROGUE_BLESSINGS), help = blessingUpgradeHelp();
-		assert.deepEqual(help.map(entry => entry.id), ['latebloom', 'supernumber']);
+		assert.deepEqual(help.map(entry => entry.id), [
+			'bignumber', 'cephalosporin', 'godrobe', 'latebloom', 'medic', 'puregodrobe',
+			'restinball', 'supernumber', 'topclearmind', 'wine',
+		]);
 		assert(help.find(entry => entry.id === 'latebloom').aliases.includes('大器晚成'));
 		for (const target of help) {
 			const expected = blessingDisplay(data.blessing(target.id));
 			assert.equal(target.name, expected.name); assert.equal(target.tier, expected.tier);
 			assert.equal(target.text, expected.text);
 		}
-		const referenced = new Set();
+		const referenced = new Set(), upgrades = new Set();
 		for (const def of data.ROGUE_BLESSINGS) {
 			const display = blessingDisplay(def);
 			for (const text of [display.text, display.shortText]) {
-				for (const match of text.matchAll(/升级为【([^】]+)】/g)) {
+				for (const match of text.matchAll(/【([^】]+)】/g)) {
 					const target = data.ROGUE_BLESSINGS.find(entry => entry.name === match[1]) ||
 						help.find(entry => entry.aliases.includes(match[1]));
-					if (!target) continue; // Move upgrades retain the existing move reference path.
+					if (!target || target.id === def.id) continue; // Non-blessings retain their existing references.
 					referenced.add(target.id);
+					if (text.slice(0, match.index).endsWith('升级为')) upgrades.add(target.id);
 					assert(help.some(entry => entry.id === target.id), def.id + ' -> ' + target.id);
 				}
 			}
 		}
-		assert.deepEqual([...referenced].sort(), ['latebloom', 'supernumber']);
+		assert.deepEqual([...referenced].sort(), help.map(entry => entry.id));
+		assert.deepEqual([...upgrades].sort(), ['latebloom', 'supernumber']);
+		assert.equal(blessingUpgradeHelp(), help, 'repeated state queries reuse reference data');
 		assert.equal(JSON.stringify(data.ROGUE_BLESSINGS), before);
+	});
+	it('invalidates old codex caches when blessing reference help changes', () => {
+		const { createHash } = require('crypto');
+		const { MAINLINE_SCRIPT } = require('../../dist/server/fantasy-rogue/mainline-data');
+		const catalogues = ['guide', 'blessings', 'events'].map(section => rogueCodex(undefined, section, true));
+		const version = data => createHash('sha256').update(JSON.stringify(data)).digest('hex').slice(0, 16);
+		assert.equal(codexContentVersion(), version([MAINLINE_SCRIPT, blessingUpgradeHelp(), ...catalogues]));
+		assert.notEqual(codexContentVersion(), version([MAINLINE_SCRIPT, ...catalogues]));
 	});
 	it('states each floor restriction once and documents Reorganizer exceptions', () => {
 		const entries = rogueCodex(undefined, 'blessings', true).entries;

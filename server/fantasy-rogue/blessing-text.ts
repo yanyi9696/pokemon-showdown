@@ -1,5 +1,6 @@
-import { BLESSING_STAGES, BLESSING_TYPES, EMBLEM_HELP, STAGED_BLESSING_FAMILIES, blessing, blessingTitle, blessingStage,
-	blessingCoins, medicRecovery, lateBlessingReward, emblemDescription, taskRewardTier, type BlessingDefinition } from '../../sim/rogue-blessing-data';
+import { BLESSING_STAGES, BLESSING_TYPES, EMBLEM_HELP, ROGUE_BLESSINGS, STAGED_BLESSING_FAMILIES,
+	blessing, blessingTitle, blessingStage, blessingCoins, medicRecovery, lateBlessingReward,
+	emblemDescription, taskRewardTier, type BlessingDefinition } from '../../sim/rogue-blessing-data';
 import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceText,
 	type CompanionID } from '../../sim/rogue-companions';
 import { tonicDescription } from '../../sim/rogue-blessing-permanent';
@@ -80,15 +81,30 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 		text: bracketMoveCategories(text), shortText: bracketMoveCategories(shortText) };
 }
 
-/** Read-only previews of named upgrade outcomes; does not grant or discover these blessings. */
+let referenceHelp: { id: string, aliases: string[], name: string, tier: BlessingDefinition['tier'], text: string }[];
+
+/** Canonical previews of referenced blessings, including upgrades; never grants or discovers them. */
 export function blessingUpgradeHelp() {
-	return [
-		{ id: 'latebloom', aliases: ['大器晚成'] },
-		{ id: 'supernumber', aliases: [] },
-	].map(({ id, aliases }) => {
+	if (referenceHelp) return referenceHelp;
+	const aliases: Record<string, string[]> = { latebloom: ['大器晚成'] };
+	const names = new Map(ROGUE_BLESSINGS.flatMap(def =>
+		[def.name, ...(aliases[def.id] || [])].map(name => [name, def.id] as const)));
+	const referenced = new Set<string>();
+	for (const def of ROGUE_BLESSINGS) {
+		const display = blessingDisplay(def);
+		for (const text of [display.text, display.shortText]) {
+			for (const [, name] of text.matchAll(/【([^】]+)】/g)) {
+				const id = names.get(name);
+				if (id && id !== def.id) referenced.add(id);
+			}
+		}
+	}
+	// Cache only referenced definitions; avoid rescanning the entire codex on every state response.
+	referenceHelp = [...referenced].sort().map(id => {
 		const display = blessingDisplay(blessing(id)!);
-		return { id, aliases, name: display.name, tier: display.tier, text: display.text };
+		return { id, aliases: aliases[id] || [], name: display.name, tier: display.tier, text: display.text };
 	});
+	return referenceHelp;
 }
 
 export function blessingCodexFloors(def: BlessingDefinition): (number | undefined)[] {
