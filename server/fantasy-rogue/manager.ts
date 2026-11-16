@@ -7,7 +7,7 @@ import { crateSummary, crateView } from './starter-crates';
 import { needsCupSettlement, settleDailyCup, dailyCupReplay } from './daily-crate-cup';
 import { retryHealingView } from './retry-healing';
 import { optionalChallengeView } from './optional-challenges';
-import { BLESSING_SUPPLY_HELP } from './blessing-text';
+import { BLESSING_SUPPLY_HELP, blessingUpgradeHelp } from './blessing-text';
 import { affectionView, affectionScene } from './affection';
 import { difficultyMenuDescription, ROGUE_DIFFICULTIES, difficultyLabel, difficultyDescription, difficultyScale, difficultyRewardDescription, CHARM_DESCRIPTION } from '../../sim/rogue-difficulty';
 import { collapseEntries, collapseParameters } from '../../sim/rogue-collapse-data';
@@ -258,7 +258,10 @@ export class RogueManager {
 		if (!rogueAccess(user)) return { userid: user.id, enabled: false, section, entries: [] };
 		let account;
 		try { this.authorize(user); account = this.engine.store.get(user.id); } catch {}
-		return { userid: user.id, revision: account?.revision, codexSchema: ROGUE_CODEX_SCHEMA, contentVersion: codexContentVersion(), moveCategoryHelp: moveCategoryHelp(), blessingSupplyHelp: BLESSING_SUPPLY_HELP, ...rogueCodex(account, section, this.engine.localSpirits) };
+		return { userid: user.id, revision: account?.revision, codexSchema: ROGUE_CODEX_SCHEMA,
+			contentVersion: codexContentVersion(), moveCategoryHelp: moveCategoryHelp(),
+			blessingSupplyHelp: BLESSING_SUPPLY_HELP, blessingUpgradeHelp: blessingUpgradeHelp(),
+			...rogueCodex(account, section, this.engine.localSpirits) };
 	}
 	duel(user: User, command: DuelCommand) {
 		this.authorize(user);
@@ -340,6 +343,7 @@ export class RogueManager {
 			beginnerGuide: needsOnboarding(account) ? BEGINNER_GUIDE : undefined,
 			beginnerGuideVersion: BEGINNER_GUIDE_VERSION,
 			moveCategoryHelp: moveCategoryHelp(), blessingSupplyHelp: BLESSING_SUPPLY_HELP,
+			blessingUpgradeHelp: blessingUpgradeHelp(),
 			story: storyView(account, !!content?.story, this.engine.localSpirits),
 			cards: account.cards?.map(clearCardView) || [], pendingClear: account.pendingClear && clearCardView(account.pendingClear),
 			pendingClearCount: (account.pendingClear ? 1 : 0) + (account.pendingClearQueue?.length || 0),

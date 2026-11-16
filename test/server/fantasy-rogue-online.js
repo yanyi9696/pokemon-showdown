@@ -803,6 +803,18 @@ describe('Fantasy Rogue real rooms', function () {
 		assert(!('checkpoint' in publicState.run));
 		assert(!('caught' in publicState.run));
 	});
+	it('publishes read-only upgrade references without unlocking or granting their blessing effects', () => {
+		const { blessingUpgradeHelp } = require('../../dist/server/fantasy-rogue/blessing-text');
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		manager.state(user); // Complete existing lazy display preparation before comparing saved state.
+		const before = structuredClone(account());
+		assert.deepEqual(manager.state(user).blessingUpgradeHelp, blessingUpgradeHelp());
+		const codex = manager.codex(user, 'blessings');
+		assert.deepEqual(codex.blessingUpgradeHelp, blessingUpgradeHelp());
+		assert(codex.entries.filter(entry => ['latebloom', 'supernumber'].includes(entry.id))
+			.every(entry => !entry.unlocked && entry.text === '？？？'));
+		assert.deepEqual(account(), before);
+	});
 	it('rejects campaign, co-op and clear-card formats through normal imported-team challenges', async () => {
 		for (const format of ['gen9fantasyrogue', 'gen9fantasyroguecoop', 'gen9fantasyrogueduel']) {
 			let message = '';

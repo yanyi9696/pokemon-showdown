@@ -1,4 +1,4 @@
-import { BLESSING_STAGES, BLESSING_TYPES, EMBLEM_HELP, STAGED_BLESSING_FAMILIES, blessingTitle, blessingStage,
+import { BLESSING_STAGES, BLESSING_TYPES, EMBLEM_HELP, STAGED_BLESSING_FAMILIES, blessing, blessingTitle, blessingStage,
 	blessingCoins, medicRecovery, lateBlessingReward, emblemDescription, taskRewardTier, type BlessingDefinition } from '../../sim/rogue-blessing-data';
 import { COMPANIONS, companionFamily, companionFamilyTypes, companionPreferenceText,
 	type CompanionID } from '../../sim/rogue-companions';
@@ -78,6 +78,17 @@ export function blessingDisplay(def: BlessingDefinition, floor?: number, tonicSe
 	if (companionFamily(def.family)) shortText += '同行可咨询意见，回应偏好、同行和专属奇遇提升本局好感；50／100 点各有一次赠礼。';
 	return { ...def, name: floor ? blessingTitle({ id: def.id, floor }) : def.name,
 		text: bracketMoveCategories(text), shortText: bracketMoveCategories(shortText) };
+}
+
+/** Read-only previews of named upgrade outcomes; does not grant or discover these blessings. */
+export function blessingUpgradeHelp() {
+	return [
+		{ id: 'latebloom', aliases: ['大器晚成'] },
+		{ id: 'supernumber', aliases: [] },
+	].map(({ id, aliases }) => {
+		const display = blessingDisplay(blessing(id)!);
+		return { id, aliases, name: display.name, tier: display.tier, text: display.text };
+	});
 }
 
 export function blessingCodexFloors(def: BlessingDefinition): (number | undefined)[] {

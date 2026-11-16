@@ -4,7 +4,7 @@ const {Battle, Dex} = require('../../dist/sim');
 const {createRoguePokemon} = require('../../dist/server/fantasy-rogue/progression');
 const {createPreviewContent} = require('../../dist/server/fantasy-rogue/preview-content');
 const {rogueCodex} = require('../../dist/server/fantasy-rogue/codex');
-const {blessingDisplay, compareBlessingNames} = require('../../dist/server/fantasy-rogue/blessing-text');
+const {blessingDisplay, compareBlessingNames, blessingUpgradeHelp} = require('../../dist/server/fantasy-rogue/blessing-text');
 const b = require('../../dist/server/fantasy-rogue/blessings');
 const data = require('../../dist/sim/rogue-blessing-data');
 const {recordClear} = require('../../dist/server/fantasy-rogue/legacy');
@@ -15,6 +15,31 @@ describe('Fantasy Rogue player copy and four-stage blessing rewards', function (
 	this.timeout(30000);
 	let content;
 	before(() => { content = createPreviewContent(); });
+	it('previews every authored blessing upgrade with the canonical full effect and the brief-name alias', () => {
+		const before = JSON.stringify(data.ROGUE_BLESSINGS), help = blessingUpgradeHelp();
+		assert.deepEqual(help.map(entry => entry.id), ['latebloom', 'supernumber']);
+		assert(help.find(entry => entry.id === 'latebloom').aliases.includes('大器晚成'));
+		for (const target of help) {
+			const expected = blessingDisplay(data.blessing(target.id));
+			assert.equal(target.name, expected.name); assert.equal(target.tier, expected.tier);
+			assert.equal(target.text, expected.text);
+		}
+		const referenced = new Set();
+		for (const def of data.ROGUE_BLESSINGS) {
+			const display = blessingDisplay(def);
+			for (const text of [display.text, display.shortText]) {
+				for (const match of text.matchAll(/升级为【([^】]+)】/g)) {
+					const target = data.ROGUE_BLESSINGS.find(entry => entry.name === match[1]) ||
+						help.find(entry => entry.aliases.includes(match[1]));
+					if (!target) continue; // Move upgrades retain the existing move reference path.
+					referenced.add(target.id);
+					assert(help.some(entry => entry.id === target.id), def.id + ' -> ' + target.id);
+				}
+			}
+		}
+		assert.deepEqual([...referenced].sort(), ['latebloom', 'supernumber']);
+		assert.equal(JSON.stringify(data.ROGUE_BLESSINGS), before);
+	});
 	it('states each floor restriction once and documents Reorganizer exceptions', () => {
 		const entries = rogueCodex(undefined, 'blessings', true).entries;
 		for (const entry of entries) {
