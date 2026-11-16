@@ -122,9 +122,10 @@ describe('Fantasy Rogue live battle growth', function () {
 		assert.equal(battle.p1.active[0].level, 16);
 		assert.equal(battle.p2.pokemonLeft, 2);
 		battle.makeChoices('pass', 'switch 2');
-		battle.makeChoices('move 1', 'move 1');
+		// Force the next KO too: Scratch's ordinary damage roll can leave this Magikarp at 1 HP.
+		knockOut();
 		if (battle.fantasyRogue.growthWaiting) { checkpoint(); skipGrowth(); }
-		assert(!battle.ended); assert.equal(battle.p2.pokemonLeft, 1);
+		assert(!battle.ended); assert.equal(battle.p2.pokemonLeft, 1, battle.log.slice(-12).join('\n'));
 		assert(battle.p2.activeRequest.forceSwitch[0]);
 		battle.makeChoices('pass', 'switch 3');
 		assert.equal(battle.turn, 3);
@@ -198,6 +199,23 @@ describe('Fantasy Rogue live battle growth', function () {
 		assert.equal(mon.moveSlots[0].id, 'splash'); assert.equal(mon.baseMoveSlots[0].id, 'transform');
 		assert.equal(account().run.team[0].set.species, 'Ditto');
 		assert.equal(rogueBattleResult(battle, false).team[0].set.species, 'Ditto');
+	});
+	it('publishes an Illusion holder level-up without revealing its real species or replaying a transformation', () => {
+		start(set('Zoroark', 'Illusion', 8, ['Night Shade']));
+		store.change(user, a => {
+			a.run.team.push(createRoguePokemon(set('Audino', 'Healer', 8, ['Splash']), a.run.boosts));
+		});
+		enterBattle();
+		const mon = battle.p1.active[0];
+		assert.equal(mon.illusion.species.name, 'Audino');
+		const before = battle.log.length;
+		knockOut(); checkpoint();
+		const updates = battle.log.slice(before).filter(line => line.startsWith('|detailschange|'));
+		assert(updates.length > 0);
+		assert(updates.every(line => /\|Audino, L\d+, M\|\[levelchange\]$/.test(line)), updates.join('\n'));
+		assert.equal(mon.species.name, 'Zoroark');
+		assert.equal(mon.illusion.species.name, 'Audino');
+		assert.equal(account().run.team[0].set.species, 'Zoroark');
 	});
 	it('rolls back an interrupted checkpoint transaction and can retry it safely', () => {
 		start(); enterBattle(); knockOut();

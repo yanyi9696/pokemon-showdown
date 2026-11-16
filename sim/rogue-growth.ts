@@ -154,7 +154,11 @@ function applyGrowthParty(
 		if (mon.m.rogueBlessing) mon.m.rogueBlessing.bonusHP = 0;
 		mon.details = mon.getUpdatedDetails();
 		if (mon.isActive && (evolved || levelChanged)) {
-			battle.add('detailschange', mon, mon.details);
+			// Growth must not reveal an Illusion disguise or reset temporary forms on the client.
+			const publicDetails = mon.illusion ? mon.illusion.getUpdatedDetails(
+				battle.ruleTable.has('illusionlevelmod') ? mon.illusion.level : mon.level
+			) : mon.details;
+			battle.add('detailschange', mon, publicDetails, ...(!evolved ? ['[levelchange]'] : []));
 			battle.add('-sethp', mon, mon.getHealth, '[silent]');
 		}
 		const notice = rogueGrowthNotice(previous, saved);

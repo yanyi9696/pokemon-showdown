@@ -368,6 +368,16 @@ export function initializeRogueBattle(battle: Battle) {
 		}
 		side.pokemonLeft = side.pokemon.filter(mon => mon.hp > 0).length;
 		if (!side.pokemonLeft) throw new Error('没有可出战的宝可梦。');
+		// Solo doubles skips Team Preview. Publish only already-fainted partners;
+		// unrevealed healthy members and the existing lead-selection rules stay intact.
+		if (!battle.ruleTable.has('teampreview')) {
+			for (const mon of side.pokemon) {
+				if (!mon.fainted) continue;
+				const fusion = mon.getRogueFusionSprite();
+				battle.add('poke', side.id, mon.details, '', `[fainted] ${mon.name}`,
+					...(fusion ? [`[fusion] ${fusion}`] : []));
+			}
+		}
 	}
 	initializeRogueItemSources(battle);
 }

@@ -673,8 +673,11 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 					}
 				}
 				const fusion = pokemon.getRogueFusionSprite();
-				if (fusion) this.add('poke', pokemon.side.id, details, '', `[fusion] ${fusion}`);
-				else this.add('poke', pokemon.side.id, details, '');
+				const previewFlags = fusion ? [`[fusion] ${fusion}`] : [];
+				// Campaign partners can enter a battle already fainted, without a faint event.
+				// Include their public identity so a later bench revival updates this same icon.
+				if (revealShiny && pokemon.fainted) previewFlags.push(`[fainted] ${pokemon.name}`);
+				this.add('poke', pokemon.side.id, details, '', ...previewFlags);
 			}
 			this.makeRequest('teampreview');
 			if (this.ruleTable.has(`teratypepreview`)) {
