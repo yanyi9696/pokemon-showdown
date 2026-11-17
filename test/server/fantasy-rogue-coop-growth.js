@@ -361,7 +361,7 @@ describe('Fantasy Rogue co-op personal growth context', () => {
 		});
 		const before = session.adventure.members, saved = verifySettlement(session, result(captured)).adventure.members;
 		const gain = user => saved[user.id].team[0].experience - before[user.id].team[0].experience;
-		assert(gain(host) > gain(guest) * 3);
+		assert(gain(host) > gain(guest) * 2 && gain(host) < gain(guest) * 3, 'type XP, growth and companion remain; solo no longer adds 50%');
 		assert.equal(saved[host.id].team[1].experience, before[host.id].team[1].experience, 'unselected reserve gains no XP');
 		assert.equal(saved[host.id].team[0].set.evs.spe, captured ? 0 : saved[guest.id].team[0].set.evs.spe * 2);
 	});

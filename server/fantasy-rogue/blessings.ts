@@ -1457,7 +1457,6 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 export function blessingExperience(run: RogueRun, mon: RoguePokemon, dragonKing = run.blessings?.dragonKing?.member) {
 	const state = run.blessings; let multiplier = affectionBenefits(mon.bond || 0).experience;
 	if (ownsBlessing(state, 'youngprodigy') && lateBloomer(mon.set.species) && !finalLateBloomer(mon.set.species)) multiplier *= 2;
-	if (ownsBlessing(state, 'sololeveling')) multiplier *= 1.5;
 	const ordinary = ownsBlessing(state, 'ordinary');
 	if (ordinary && run.team.every(member => dex.species.get(member.set.species).bst <= 500)) multiplier *= 1 + (Math.max(1, Math.floor(ordinary.floor / 50)) + 1) / 10;
 	for (const entry of state?.owned || []) if (entry.family === 'typexp' &&

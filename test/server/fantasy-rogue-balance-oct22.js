@@ -33,13 +33,28 @@ describe('Fantasy Rogue October 22 balance and recovery', function () {
 			for (const key of keys) assert.equal(r.team[0].fusion.baseStats[key], Dex.mod('gen9fantasy').species.get(chosen.includes(key) ? 'Scyther' : 'Charizard').baseStats[key]);
 		}
 	});
-	it('gives solo battle XP +50% and exactly one late level per two completed floors, across reloads', () => {
+	it('removes solo bonus XP but preserves exactly one late level per two completed floors, across reloads', () => {
 		let r = run(['sololeveling'], [set('Mew', 'Synchronize', 100, ['Splash'])]);
-		assert.equal(blessingExperience(r, r.team[0]), 1.5);
+		assert.equal(blessingExperience(r, r.team[0]), 1);
 		completeBlessingFloor({run: r}, r, content(), () => 0); assert.equal(r.team[0].set.level, 101);
 		r.floor++; completeBlessingFloor({run: r}, r, content(), () => 0); assert.equal(r.team[0].set.level, 101);
 		r = structuredClone(r); completeBlessingFloor({run: r}, r, content(), () => 0); assert.equal(r.blessings.soloLateFloors, 1);
 		r.floor++; completeBlessingFloor({run: r}, r, content(), () => 0); assert.equal(r.team[0].set.level, 102);
+	});
+	it('keeps other XP multipliers identical with or without solo and removes the bonus from both descriptions', () => {
+		const { BLESSING_SUMMARIES } = require('../../dist/server/fantasy-rogue/blessing-summaries');
+		for (const species of ['Mew', 'Machop', 'Dratini']) {
+			const r = run([], [set(species, 'Run Away', 50, ['Splash'])]);
+			const mon = r.team[0]; mon.bond = 100;
+			r.blessings.owned.push({ ...blessing('ordinary'), floor: 51 }, { ...blessing('youngprodigy'), floor: 1 },
+				{ id: 'typexpfighting', family: 'typexp', type: 'Fighting', floor: 1 });
+			const original = blessingExperience(r, mon);
+			r.blessings.owned.push({ ...blessing('sololeveling'), floor: 1 });
+			assert.equal(blessingExperience(r, mon), original, species);
+		}
+		const definition = blessing('sololeveling');
+		assert(!/50%|1\.5|战斗经验/.test(definition.text));
+		assert(!/50%|1\.5|战斗经验/.test(BLESSING_SUMMARIES.sololeveling));
 	});
 	it('shares entry stats with the bench, stacks on switches and resets in a new battle', () => {
 		const r = run(['entrance'], [set('Mew', 'Synchronize', 50, ['Splash']), set('Mew', 'Synchronize', 50, ['Splash'])]);
