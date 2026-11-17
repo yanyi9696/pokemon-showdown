@@ -2,6 +2,7 @@ import { Dex } from '../../sim/dex';
 import { ownsBlessing } from '../../sim/rogue-blessing-data';
 import { makeEncounterSet } from './encounter-sets';
 import { shopDoublesTeam } from './shop-doubles';
+import { shopGuardTeam } from './shop-guard-teams';
 import { shopStock } from './trading';
 import { SPIRIT_HAZARDS, convertSpiritItem } from './spirits';
 import { syncExclusiveItems } from './exclusive-items';
@@ -21,7 +22,8 @@ export function beginShopChallenge(
 		['Blissey', 'Audino', 'Alomomola', 'Comfey', 'Wigglytuff']) : (level < 28 ?
 		['Meowth', 'Skwovet', 'Delibird'] : ['Persian', 'Greedent', 'Delibird', 'Murkrow', 'Gholdengo']);
 	const count = Math.min(roster.length, 3 + Math.floor((run.floor - 1) / 80));
-	const team = run.doubleBattle ? shopDoublesTeam(nurse ? 'nurse' : 'merchant', run.floor, Math.min(100, level)) :
+	const team = run.floor <= 150 ? shopGuardTeam(run, nurse) : run.doubleBattle ?
+		shopDoublesTeam(nurse ? 'nurse' : 'merchant', run.floor, Math.min(100, level)) :
 		roster.slice(0, count).map((name, i) => {
 			const set = makeEncounterSet(name, Math.min(100, level), 25);
 			const themed = (nurse ? { Blissey: ['softboiled', 'seismictoss', 'thunderwave', 'protect'],
