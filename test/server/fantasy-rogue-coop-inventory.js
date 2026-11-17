@@ -399,8 +399,11 @@ describe('Fantasy Rogue co-op personal inventory use', () => {
 		use(host, 'carbos'); assert.equal(member(host).team[0].set.evs.spe, 10);
 		use(host, 'abilitypatch'); mon = member(host).team[0];
 		assert.equal(mon.set.ability, 'Chlorophyll'); assert.equal(mon.abilityPool[0].id, 'chlorophyll');
-		const before = session();
-		assert.throws(() => use(host, 'carbos', { count: 2 }), /仅经验糖果/); assert.deepEqual(session(), before);
+		const guestBefore = structuredClone(member(guest));
+		const command = use(host, 'carbos', { count: 2 });
+		assert.equal(member(host).team[0].set.evs.spe, 30);
+		const after = session(); manager.coop.command(host, command); assert.deepEqual(session(), after);
+		assert.deepEqual(member(guest), guestBefore);
 	});
 	it('keeps tonic effects on the selected member and records their account discovery atomically', () => {
 		prepare({ roguewine: 2, roguecephalosporin: 1 });

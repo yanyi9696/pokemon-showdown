@@ -43,7 +43,10 @@ export function trainingItemTargets(run: RogueRun, content: RogueContent, item: 
 		} else {
 			available = !!content.progression && mon.hp > 0 && !mon.fixedLevel && mon.set.level < (mon.uncappedLevel ? 9999 : 100);
 		}
-		return available ? [{ member: mon.id, ...(slots ? { slots } : {}) }] : [];
+		return available ? [{ member: mon.id, ...(slots ? { slots } : {}), ...(item.kind === 'effort' ? {
+			maxCount: Math.min(run.bag[item.id] || 0, Math.ceil(Math.min(252 - mon.set.evs[item.stat!],
+				510 - ROGUE_STATS.reduce((sum, stat) => sum + mon.set.evs[stat], 0)) / item.amount!)),
+		} : {}) }] : [];
 	});
 }
 
@@ -57,7 +60,7 @@ export function useInventoryItem(account: RogueAccount, run: RogueRun, content: 
 	requireRule(item && mon && !mon.egg && run.bag[item.id] > 0, '道具、数量或目标无效。');
 	let count = command.count ?? 1;
 	requireRule(Number.isSafeInteger(count) && count > 0 && count <= run.bag[item.id], '道具使用数量无效或库存不足。');
-	requireRule(item.kind === 'candy' || count === 1, '仅经验糖果支持批量使用。');
+	requireRule(item.kind === 'candy' || item.kind === 'effort' || count === 1, '仅经验糖果与基础点数增强道具支持批量使用。');
 	if (item.kind === 'crown') {
 		const stats = item.id === 'goldbottlecap' ? ROGUE_STATS : [ROGUE_STATS[command.slot!]];
 		requireRule(stats.every(stat => !!stat) && (item.id === 'goldbottlecap' || Number.isInteger(command.slot)),
@@ -90,7 +93,10 @@ export function useInventoryItem(account: RogueAccount, run: RogueRun, content: 
 		requireRule(mon.set.evs[stat] < 252 && ROGUE_STATS.reduce((sum, key) => sum + mon.set.evs[key], 0) < 510,
 			'该项基础点数或总基础点数已达上限，道具未消耗。');
 		run.notices = [];
-		gainEffort(run, mon, { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0, [stat]: item.amount! });
+		const remaining = Math.min(252 - mon.set.evs[stat], 510 - ROGUE_STATS.reduce((sum, key) => sum + mon.set.evs[key], 0));
+		count = Math.min(count, Math.ceil(remaining / item.amount!));
+		gainEffort(run, mon, { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0, [stat]: item.amount! * count });
+		run.notices.push(`已使用 ${item.name} ×${count}，达到上限后不再消耗。`);
 	} else if (item.kind === 'rarecandy') {
 		requireRule(content.progression && mon.hp > 0 && !mon.fixedLevel &&
 			mon.set.level < (mon.uncappedLevel ? 9999 : 100), '该伙伴不能再升级，神奇糖果未消耗。');
