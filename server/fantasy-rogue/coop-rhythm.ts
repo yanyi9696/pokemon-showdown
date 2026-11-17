@@ -73,7 +73,8 @@ export function chooseCoopRhythm(entries: Entry[], content: RogueContent, random
 		event.id === 'minicontest' && (choice.startsWith('style:') || choice === 'prepare');
 	const bonus = Math.max(...runs.map(run => run.node!.event!.activity?.score || 0));
 	if (choice === 'tap' && (!event.activity?.startedAt || now < event.activity.startedAt ||
-		now - event.activity.startedAt >= 12000)) {
+		now - event.activity.startedAt >= 12000 && (rhythmAt === undefined ||
+			rhythmAt >= 12000 || now - event.activity.startedAt - rhythmAt > 1500))) {
 		throw new Error('本轮节奏已结束，请双方确认查看成果。');
 	}
 	const key = choice === 'tap' ? oldKey : randomUUID();
@@ -88,6 +89,7 @@ export function chooseCoopRhythm(entries: Entry[], content: RogueContent, random
 			delete a.step;
 			a.startedAt = now; a.duration = 12000;
 			a.taps = []; a.score = bonus;
+			delete a.tapResult;
 		} else {
 			chooseEventOption(account, run, content, random, ownEvent.key, choice,
 				undefined, undefined, undefined, { now, rhythmAt });

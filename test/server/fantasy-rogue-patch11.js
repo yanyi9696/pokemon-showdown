@@ -79,7 +79,20 @@ describe('Fantasy Rogue localized patch boundaries', function () {
 		const r = run(); press(r, 620, 500); assert.equal(r.node.event.activity.score, 1);
 		press(r, 650, 520); assert.equal(r.node.event.activity.score, 1);
 		const miss = run(); press(miss, 620, 560); assert.equal(miss.node.event.activity.score, 0);
-		for (const invalid of [-1, NaN, Infinity, 700, 100]) assert.throws(() => press(run(), 620, invalid), /延迟/);
+		for (const invalid of [-1, NaN, Infinity, 700]) assert.throws(() => press(run(), 620, invalid), /延迟/);
+		assert.throws(() => press(run(), 2201, 500), /延迟/);
+		for (const delay of [0, 200, 600, 1000, 1500]) {
+			const delayed = run(); press(delayed, 400 + delay, 400);
+			assert.equal(delayed.node.event.activity.score, 1);
+			assert.equal(delayed.node.event.activity.tapResult, 'hit');
+			press(delayed, 400 + delay, 400);
+			assert.equal(delayed.node.event.activity.score, 1);
+			assert.equal(delayed.node.event.activity.tapResult, 'duplicate');
+		}
+		assert.equal(miss.node.event.activity.tapResult, 'miss');
+		const ended = run(); press(ended, 12100, 12100);
+		assert.equal(ended.node.event.activity.tapResult, 'late');
+		assert.equal(ended.node.event.stage, 'choice');
 		const legacy = run(); press(legacy, 500); assert.equal(legacy.node.event.activity.score, 1);
 	});
 	it('removes items at spectator battle entry without mutating the supplied ordinary teams', () => {

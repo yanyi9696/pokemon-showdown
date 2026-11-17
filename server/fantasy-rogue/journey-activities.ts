@@ -20,6 +20,7 @@ export interface JourneyActivity {
 	step?: string; member?: string; choice?: string; target?: string; score?: number; mistakes?: number;
 	style?: string;
 	pattern?: string[]; index?: number; startedAt?: number; taps?: number[]; duration?: number;
+	tapResult?: 'hit' | 'miss' | 'duplicate' | 'late';
 	balls?: number; wary?: number; bait?: number; safari?: string[]; solo?: string;
 	lastTurns?: number; allySurvived?: boolean;
 }
@@ -138,7 +139,8 @@ export function relicMoveTypes(run: RogueRun): string[] {
 export function journeyActivityView(run: RogueRun, cooperativeRelicTypes?: readonly string[]) {
 	const event = run.node!.event!, id = event.id as ActivityID, a = event.activity || {}, mon = run.team.find(p => p.id === a.member);
 	const result = (paragraphs: string[], options: ReturnType<typeof option>[]) => ({ paragraphs, options,
-		activity: a.startedAt ? { kind: 'rhythm', startedAt: a.startedAt, now: Date.now(), duration: a.duration || 12000, period: 800, score: a.score || 0 } : undefined });
+		activity: a.startedAt ? { kind: 'rhythm', startedAt: a.startedAt, now: Date.now(), duration: a.duration || 12000,
+			period: 800, score: a.score || 0, tapResult: a.tapResult } : undefined });
 	if (event.stage === 'result') return result(event.result || [], []);
 	if (event.stage === 'battle') return result(['考验已经开始。按约定完成对战，再来领取结果。'], []);
 	if (a.startedAt && SCENES[id] && (!mon || !sceneMembers(run, id).includes(mon))) {
@@ -240,14 +242,19 @@ export function chooseJourneyActivity(
 		// Compensate bounded input transit, without widening the green scoring zone or allowing replayed beats.
 		let elapsed = received;
 		if (choice === 'tap' && rhythmAt !== undefined) {
-			if (!Number.isFinite(rhythmAt) || rhythmAt < 0 || rhythmAt > received || received - rhythmAt > 200) {
+			if (!Number.isFinite(rhythmAt) || rhythmAt < 0 || rhythmAt > received || received - rhythmAt > 1500) {
 				throw new Error('节拍请求延迟过高，请按当前画面继续点击。');
 			}
 			elapsed = rhythmAt;
 		}
 		const beat = Math.floor(elapsed / 800), phase = elapsed % 800;
-		if (choice === 'tap' && elapsed >= 0 && elapsed < (a.duration || 12000)) {
-			if (!(a.taps ||= []).includes(beat)) { a.taps.push(beat); if (phase >= 250 && phase <= 550) a.score = (a.score || 0) + 1; }
+		if (choice === 'tap') {
+			// A late tap must never turn into an implicit finish/reward request.
+			if (elapsed < 0 || elapsed >= (a.duration || 12000)) { a.tapResult = 'late'; return; }
+			if ((a.taps ||= []).includes(beat)) { a.tapResult = 'duplicate'; return; }
+			a.taps.push(beat);
+			a.tapResult = phase >= 250 && phase <= 550 ? 'hit' : 'miss';
+			if (a.tapResult === 'hit') a.score = (a.score || 0) + 1;
 			return;
 		}
 		const score = a.score || 0; delete a.startedAt;
@@ -269,6 +276,7 @@ export function chooseJourneyActivity(
 	const rhythm = (bonus = 0) => {
 		a.startedAt = now; a.duration = 12000;
 		a.score = bonus; a.taps = [];
+		delete a.tapResult;
 	};
 	if (choice.startsWith('berry:')) {
 		if (a.choice === undefined) a.choice = choice.slice(6); else rhythm();

@@ -134,6 +134,22 @@ describe('Fantasy Rogue co-op shared rhythm and personal sweet dance', () => {
 		}
 		assert.equal(event(host).branchResolved, false); assert(event(host).branchOptions.some(o => o.id === 'start'));
 	}
+	it('synchronizes delayed displayed-frame hits and duplicates, including the final in-flight beat', () => {
+		kitchen(); const start = now, visit = event(host).key;
+		now = start + 1000;
+		manager.coop.command(host, { action: 'eventchoice', value: 'tap', visit, rhythmAt: 400 });
+		assert.equal(event(host).activity.score, 1);
+		assert.equal(event(guest).activity.tapResult, 'hit');
+		manager.coop.command(guest, { action: 'eventchoice', value: 'tap', visit, rhythmAt: 400 });
+		assert.equal(event(host).activity.score, 1);
+		assert.equal(event(guest).activity.tapResult, 'duplicate');
+		now = start + 12200;
+		manager.coop.command(host, { action: 'eventchoice', value: 'tap', visit, rhythmAt: 11600 });
+		assert.equal(event(host).activity.score, 2);
+		assert.deepEqual(member(host).coopEvent.activity, member(guest).coopEvent.activity);
+		agree('finish');
+		assert(member(host).coopEvent.settled && member(guest).coopEvent.settled);
+	});
 	function milcery(user, sweets = 1) {
 		change(shared => {
 			const state = shared.adventure.members[user.id];
