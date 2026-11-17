@@ -109,7 +109,9 @@ export function expeditionView(run: RogueRun) {
 		if (id === 'identityquiz') {
 			if (!state.step) options = [option('enter', `交 ${fee(run)} 金币，抽一题。`, run.money < fee(run)), option('leave', '笑笑，继续赶路。')];
 			else if (state.step === 'name') { silhouette = state.target; options = state.answers!.map((s, i) => option(`answer:${i}`, s)); }
-			else if (state.step === 'type') options = Object.entries(BLESSING_TYPES).map(([type, name]) => option(`type:${type}`, `选择${name}属性`, (state.types?.length || 0) >= 2 || state.types?.includes(type)))
+			else if (state.step === 'type') options = Object.entries(BLESSING_TYPES).map(([type, name]) => option(
+				`type:${type}`, `第${state.types?.length ? '二' : '一'}属性：${name}`,
+				(state.types?.length || 0) >= 2 || state.types?.includes(type)))
 				.concat(state.types?.length ? [option('confirmtypes', `确定${state.types.length === 1 ? '单属性' : '双属性'}答案`)] : []);
 			else options = [option('fight', '『别再偷偷换答案了，来对战吧！』'), option('leave', '笑着揭穿她的小把戏，继续赶路。')];
 		} else if (id === 'fossillab') options = [
@@ -142,22 +144,26 @@ export function chooseExpedition(
 	if (choice === 'enter') {
 		run.money -= fee(run);
 		Object.assign(state, structuredClone(sharedQuiz?.question || rollIdentityQuestion(run, random)));
-		state.step = 'name'; event.result = ['「不许偷看后面的答案哦！剪影里的宝可梦是谁？」'];
+		state.step = 'name'; event.result = ['少女收下报名费，拍了拍抽题箱：「自己抽，可别说我偏心。」',
+			'你抽出一张只有纯色剪影的题板。她抱起胳膊：「四个名字，选一个。连它都认不出来的话，可就丢脸啦！」'];
 	} else if (choice.startsWith('answer:')) {
 		const target = dex.species.get(state.target!), answer = state.answers![Number(choice.slice(7))];
 		if (answer !== dex.species.get(target.baseSpecies).name) { finish(run, '「哎呀，真的没认出来？下次先翻翻图鉴吧！」摊主把题板收了起来。'); return; }
 		if (/Fantasy/.test(target.name) && target.types.join('/') !== dex.species.get(target.baseSpecies).types.join('/')) {
-			state.step = 'type'; state.types = []; event.result = ['「第一题算你对。接下来，告诉我它的属性！单属性就只选一个哦。」'];
+			state.step = 'type'; state.types = []; event.result = ['「哼，名字倒是蒙对了。别急着伸手领奖，再说说它的属性！」',
+				'先选第一属性，再选第二属性；若认为是单属性，可以直接确认。少女的手悄悄移向桌下。'];
 		} else { give(run, 'superpotion', 2); run.money += fee(run) * 2; finish(run, '「哼，还算有点本事。奖品拿去！」你收下双倍报名费和好伤药 ×2。'); }
 	} else if (choice.startsWith('type:')) {
 		if ((state.types?.length || 0) >= 2) throw new Error('最多选择两种属性，请先确认答案。');
 		(state.types ||= []).push(choice.slice(5));
-		event.result = [`已选择：${state.types.map(t => BLESSING_TYPES[t]).join('、')}。可以确认，也可继续选择第二属性。`];
+		event.result = [`已选择：${state.types.map(t => BLESSING_TYPES[t]).join('、')}。` +
+			(state.types.length === 1 ? '可以确认，也可继续选择第二属性。' : '两种属性已选好，请确认答案。')];
 	} else if (choice === 'confirmtypes') {
 		const target = dex.species.get(state.target!), same = target.types.length === state.types!.length && target.types.every(t => state.types!.includes(t));
 		const claimed = same ? dex.species.get(target.baseSpecies) : target;
 		state.step = 'fight'; event.result = [`少女迅速翻过另一张题板：「错啦！答案是${claimed.types.map(t => BLESSING_TYPES[t]).join('、')}，我问的可是【${claimed.name}】！」`,
-			'你瞥见她桌下藏着两份不同的答案。她还在故作无辜地眨眼，你已经握住了精灵球。'];
+			'「不是自称什么都懂吗？这就没话说啦？」她扬起下巴，把刚才的题板藏到身后。',
+			'你瞥见她桌下藏着两份不同的答案，握住精灵球：「别再偷偷换答案了，来对战吧！」'];
 	} else if (choice === 'fight' || choice === 'challenge') {
 		const team = choice === 'challenge' ? themedEventTeam('martial', Math.min(100, level(run) + 8), 4, random) :
 			sharedQuiz?.team ? structuredClone(sharedQuiz.team) : rollIdentityTeam(run, random);
