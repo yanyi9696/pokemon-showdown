@@ -81,6 +81,7 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 		node.reward.money = Math.round(node.reward.money * scale);
 		if (node.kind === 'trainer') diversifyBattleReward(node.reward, floor, random);
 		Object.assign(node.reward, rebalanceCandyReward(floor, node.reward.items));
+		if (node.kind === 'trainer') addBattleSupply(node.reward.items, floor, random);
 	} else {
 		node.reward = { money: 0, items: {} };
 		node.wildCandyTraining = [];
@@ -107,7 +108,25 @@ export function prepareEconomy(node: RogueNode, floor: number, random: RogueRand
 			node.wildCandyTraining!.push(balanced.candyTraining || 0);
 			return balanced.items;
 		});
+		// Additional consumables are rolled after all original drops and persisted with the route.
+		if (node.kind === 'wild' || node.kind === 'elite') {
+			for (const loot of node.wildLoot) addBattleSupply(loot, floor, random);
+		}
 	}
+}
+
+/** Small additive supplies; existing treasure/equipment pools and late-game budgets stay intact. */
+export function battleSupplyPlan(floor: number) {
+	const chance = floor < 30 ? 20 : floor < 60 ? 20 : floor < 100 ? 15 : floor < 150 ? 10 : 0;
+	const medicine = floor < 30 ? 'potion' : floor < 100 ? 'superpotion' : 'hyperpotion';
+	return { chance, pool: [medicine, medicine, 'ether', 'oranberry', 'cheriberry', 'pechaberry',
+		'rawstberry', 'chestoberry', ...(floor >= 30 ? ['sitrusberry', 'leppaberry'] : [])] };
+}
+export function addBattleSupply(items: Record<string, number>, floor: number, random: RogueRandom) {
+	const { chance, pool } = battleSupplyPlan(floor);
+	if (!chance || random(100) >= chance) return;
+	const item = pool[random(pool.length)];
+	items[item] = (items[item] || 0) + 1;
 }
 
 /** Unchosen equipment is budgeted at half retail. Never replaces healing or unique story gifts. */
