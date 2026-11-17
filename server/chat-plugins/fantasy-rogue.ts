@@ -7,6 +7,12 @@ import type { DuelCommand } from '../fantasy-rogue/duels';
 import type { RogueCoopCommand } from '../fantasy-rogue/coop-sessions';
 
 export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
+	fantasyroguewatch(target, user, trustable) {
+		if (!trustable || target.length > 64) return null;
+		try { return getRogueManager().watch(user, target); } catch (error) {
+			return { owner: target.split(',')[0], error: (error as Error).message };
+		}
+	},
 	fantasyroguedailyreplay(target, user, trustable) {
 		return trustable ? getRogueManager().dailyReplay(user, target) : null;
 	},
@@ -37,6 +43,10 @@ export const crqHandlers: { [key: string]: Chat.CRQHandler } = {
 
 export const commands: Chat.ChatCommands = {
 	fantasyrogue: {
+		watchfocus(target, room, user) {
+			if (target.length > 120) return;
+			try { getRogueManager().watchFocus(user, target); } catch {}
+		},
 		status() {
 			this.checkCan('lock');
 			const { enabled, active, maxBattles, worker } = getRogueAIManager().getStatus();

@@ -1,4 +1,5 @@
 import { moveCategoryHelp } from './move-categories';
+import { JourneyWatch, journeyWatchView, publicJourneyBattle } from './journey-watch';
 import { releaseView } from './release';
 import { candyRewardPreview } from './candy-rewards';
 import { splitCoopOpponents } from './coop-team';
@@ -76,6 +77,25 @@ import { RogueCoopSessions } from './coop-sessions';
 import type { ValidatedTrainer } from '../fantasy-ai/types';
 
 export class RogueManager {
+	private readonly journeyWatch = new JourneyWatch();
+	watch(user: User, target: string) {
+		this.authorize(user);
+		const [owner, version = ''] = target.split(',');
+		if (!/^[a-z0-9]{1,18}(?:,(?:[a-f0-9]{20})?)?$/.test(target)) throw new Error('观战入口无效。');
+		return this.journeyWatch.read(owner, version, () => {
+			const account = this.engine.store.get(owner), content = this.engine.content;
+			if (!content || !account.run?.announced) return null;
+			const view = journeyWatchView(account, content, Users.get(owner)?.name || account.run.owner?.name || owner);
+			const room = account.run.battle?.roomid && Rooms.get(account.run.battle.roomid);
+			const battle = room && room.battle?.options.fantasyRogue && room.battle.p1.id === owner ?
+				{ id: room.roomid, log: publicJourneyBattle(room.getLog(0)) } : undefined;
+			return { ...view, online: !!Users.get(owner)?.connected, battle };
+		});
+	}
+	watchFocus(user: User, value: string) {
+		this.authorize(user);
+		this.journeyWatch.setFocus(user.id, value);
+	}
 	readonly engine: RogueEngine;
 	readonly coop: RogueCoopSessions;
 	private readonly ai: () => AIChallengeManager;
@@ -565,7 +585,9 @@ export class RogueManager {
 		}
 		if (command.action === 'start' && run && run.id !== previousRun && !run.announced) {
 			this.engine.store.change(user.id, saved => { saved.run!.announced = true; });
-			if (Config.fantasyrogue?.publicAccess) Rooms.get('lobby')?.add(`|raw|${Utils.escapeHTML(user.name)} 开启了幻想杯肉鸽之旅`).update();
+			if (Config.fantasyrogue?.publicAccess) Rooms.get('lobby')?.add(
+				`|raw|<a href="/fantasyroguewatch-${user.id}">${Utils.escapeHTML(user.name)}开启了幻想杯肉鸽爬塔之旅！</a>`
+			).update();
 		}
 		if (['battle', 'shopchallenge', 'godchallenge', 'retryheal'].includes(command.action) &&
 			run?.phase === 'battle' && run.battle && !run.battle.roomid) {
