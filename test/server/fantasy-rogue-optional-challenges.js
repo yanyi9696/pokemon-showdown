@@ -271,6 +271,23 @@ describe('Fantasy Rogue optional high-difficulty invitations', function () {
 		}
 		const before = run.team.map(m => m.experience); run.node.challenge.stage = 'won'; chooseChallengePrize(run, 'training');
 		assert.deepEqual(run.team.map(m => m.experience), before); assert.deepEqual(run.bag, { potion: 3, revive: 2 });
+		assert(optionalChallengeView(run).prizes.find(p => p.id === 'training').training.every(p => p.experience === 0));
+		assert(run.lastReward.effect.includes('获得 0 经验'));
+	});
+	it('credits actual catch-up EXP to bench partners, restores it from JSON, and rejects a second claim', () => {
+		const run = party(120); run.node = challengeNode('clubroom', 120); run.phase = 'event';
+		prepareChallengePrizes(run, () => 0); run.node.challenge.stage = 'won';
+		const preview = optionalChallengeView(run).prizes.find(p => p.id === 'training');
+		const before = run.team.map(m => { initializeExperience(m); return m.experience; });
+		chooseChallengePrize(run, 'training');
+		for (let i = 0; i < run.team.length; i++) {
+			assert.equal(run.team[i].experience - before[i], preview.training.find(p => p.member === run.team[i].id).experience);
+			assert(run.team[i].experience > before[i]);
+		}
+		assert(run.lastReward.effect.includes('复盘训练'));
+		const restored = JSON.parse(JSON.stringify(run)), snapshot = JSON.stringify(restored);
+		assert.throws(() => chooseChallengePrize(restored, 'training'), /挑战胜利后/);
+		assert.equal(JSON.stringify(restored), snapshot);
 	});
 	it('limits Future Sight to the opening and distinguishes dialogue from narration', () => {
 		assert.deepEqual(blessing('futuresight').floors, [1]);

@@ -11,6 +11,7 @@ import { makeEncounterSet } from './encounter-sets';
 import type { RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { convertSpiritItem } from './spirits';
+import { TRAVELLER_TRANSITIONS } from './traveller-transitions';
 
 export interface SocialEvent { trainer: string; step: 'talk' | 'reply' | 'invite'; affinity: number }
 export function socialCandidates(run: RogueRun, otherParties: readonly RogueRun[] = []) {
@@ -78,7 +79,7 @@ export function chooseSocialEvent(
 		gainAffection(run, person.id, AFFECTION_RULES.response, `response:${run.floor}:${social.step}`, { content, random });
 	}
 	if (social.step === 'talk' && choice !== 'battle') {
-		social.step = 'reply'; event.result = [person.chat?.reply || (social.affinity ? '「我也这么想。那你希望接下来怎样旅行呢？」' : '「原来是这样。我也想听听你对伙伴和旅途的想法。」')]; return;
+		social.step = 'reply'; event.result = [TRAVELLER_TRANSITIONS[person.id], ...(person.chat?.reply ? [person.chat.reply] : [])]; return;
 	}
 	if (social.affinity >= 2) {
 		social.step = 'invite'; event.result = [person.chat?.invite || '「一路聊下来，我很认同你的想法。接下来，让我和你一起走一段更长的路吧？」']; return;
@@ -91,6 +92,7 @@ export function chooseSocialEvent(
 				.filter(name => randomSpeciesEligible(name, level)).slice(0, 3)
 				.map(name => makeEncounterSet(name, level, 20)),
 		}];
+		event.result = [TRAVELLER_TRANSITIONS[person.id]];
 		event.stage = 'battle'; run.phase = 'ready'; return;
 	}
 	const item = sharedGift || ['potion', 'ether', 'oranberry'][random(3)];

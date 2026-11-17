@@ -1,3 +1,4 @@
+import { fixedFloor } from './content';
 import { Dex, toID } from '../../sim/dex';
 import { TeamValidator } from '../../sim/team-validator';
 import { Format } from '../../sim/dex-formats';
@@ -176,6 +177,11 @@ export function shopStock(content: RogueContent, run?: RogueShopContext): RogueI
 			const index = stock.findIndex(entry => entry.id === item.id);
 			if (index >= 0) stock[index] = candy; else stock.push(candy);
 		}
+	}
+	if (run?.node?.kind === 'rest' && run.floor >= 99 && fixedFloor(run.floor + 1) === 'boss') {
+		const ppmax = content.items.find(item => item.id === 'ppmax');
+		if (ppmax) stock.push({ ...ppmax, shopFloor: 99,
+			remaining: Math.max(0, 1 - (run.node.restCandyPurchases?.ppmax || 0)) });
 	}
 	return stock.map(item => ({ ...item, price: collapseShopPrice(run, item.price) }));
 }

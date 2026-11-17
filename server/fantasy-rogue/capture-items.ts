@@ -6,7 +6,7 @@ export function captureItems(): RogueItem[] {
 		['netball', '捕网球', 1250, '水系或虫系目标的捕捉倍率为 3.5，其他目标为 1。', { types: ['Water', 'Bug'], bonus: 3.5 }],
 		['diveball', '潜水球', 1250, '水域及钓鱼遭遇中捕捉倍率为 3.5，其他场合为 1。', { condition: 'water' }],
 		['duskball', '黑暗球', 1250, '夜晚或洞窟中捕捉倍率为 3，其他场合为 1。', { condition: 'dark' }],
-		['quickball', '先机球', 1500, '本场第一回合捕捉倍率为 5，此后为 1。', { condition: 'quick' }],
+		['quickball', '先机球', 1500, '本场第一回合捕捉倍率为 5.5，此后为 1。', { condition: 'quick' }],
 		['timerball', '计时球', 1250, '捕捉倍率从 1 开始，每经过一回合增加 0.3，最高为 4。', { condition: 'timer' }],
 		['repeatball', '重复球', 1250, '曾经捕捉过的物种，捕捉倍率为 3.5，其他物种为 1。', { condition: 'repeat' }],
 		['nestball', '巢穴球', 1250, '目标等级越低越容易捕捉：倍率为（41－等级）÷10，最低为 1。', { condition: 'nest' }],

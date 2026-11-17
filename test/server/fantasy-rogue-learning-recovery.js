@@ -47,6 +47,26 @@ describe('Fantasy Rogue persisted learning recovery', function () {
 		assert.equal(account().run.pendingMoves[0].move, 'leechseed');
 		return command;
 	}
+	it('queues every intermediate move for a bench member after bulk Rare Candy and resumes once', () => {
+		store.change(userid, a => {
+			a.run.team.unshift(createRoguePokemon(set('Mew', 'Synchronize', 20, ['Splash']), a.run.boosts));
+		});
+		const bench = account().run.team[1].id;
+		const command = request('use', { value: 'rarecandy', member: bench, count: 12 });
+		engine.command(userid, command); const after = account();
+		assert.equal(after.run.team[1].set.level, 20); assert.equal(after.run.bag.rarecandy, 0);
+		assert(after.run.pendingMoves.length >= 3);
+		assert(after.run.pendingMoves.every(p => p.member === bench));
+		assert.equal(new Set(after.run.pendingMoves.map(p => p.move)).size, after.run.pendingMoves.length);
+		engine.command(userid, command); assert.deepEqual(account(), after);
+		while (account().run.pendingMoves.length) {
+			const choose = request('learn', { ...choice(), value: 'skip' });
+			engine.command(userid, choose); const settled = account();
+			engine.command(userid, choose); assert.deepEqual(account(), settled);
+		}
+		assert.equal(account().run.team[1].experience, after.run.team[1].experience);
+		cmd('battle'); assert.equal(account().run.phase, 'battle');
+	});
 	it('generates, persists and sends the pending choice, then accepts the original client protocol', () => {
 		grow();
 		const user = { id: userid, name: userid, named: true, registered: true, connected: true };

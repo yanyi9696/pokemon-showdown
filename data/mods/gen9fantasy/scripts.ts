@@ -160,8 +160,9 @@ export const Scripts: ModdedBattleScriptsData = {
                 ) + 10;
             }
 
-			if (this.battle.format.id === 'gen9fantasyrogue') newMaxHp += pokemon.set.fantasyRogueStats?.hp || 0;
-			newMaxHp = coopBossMaxHP(pokemon, newMaxHp);
+			// setSpecies has already applied stars, permanent growth and all Rogue modifiers.
+			// Replacing that value with the ordinary formula loses those effects until an Update.
+			newMaxHp = this.battle.fantasyRogue ? pokemon.baseStoredStats.hp : coopBossMaxHP(pokemon, newMaxHp);
             if (newMaxHp !== prevMaxHp) {
                 pokemon.baseMaxhp = newMaxHp;
                 pokemon.maxhp = newMaxHp;

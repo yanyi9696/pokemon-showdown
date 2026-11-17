@@ -86,6 +86,8 @@ export interface BlessingReward {
 	ability?: string;
 }
 export interface RogueBlessings extends BlessingEffects {
+	/** Failed eligible wild visits; old saves begin at zero. */
+	eeveeMisses?: number;
 	dragonCharges?: string[];
 	dragonEncounters?: string[];
 	numberSettled?: string[];
@@ -1351,6 +1353,16 @@ export function settleBlessingBattle(account: RogueAccount, run: RogueRun, conte
 	}
 	// Captured partners are retained, but an escape commits no combat stacks or defeat ledgers.
 	if (escaped || state.settled.includes(result.encounterId)) return;
+	if (result.won && ownsBlessing(state, 'dogs') && !run.postgame && !run.node?.event?.memory) {
+		const roll = random(100);
+		const feathers = ['healthfeather', 'musclefeather', 'resistfeather', 'geniusfeather', 'cleverfeather', 'swiftfeather'];
+		const item = roll < 40 ? run.floor < 29 ? 'potion' : run.floor < 69 ? 'superpotion' : 'hyperpotion' :
+			roll < 70 ? 'ether' : roll < 90 ? candyAtFloor(run.floor) : feathers[random(feathers.length)];
+		const count = run.floor >= 100 ? 1 + random(2) : 1;
+		give(run, item, count);
+		const itemName = content.items.find(rewardItem => rewardItem.id === item)?.name || dex.items.get(item).name;
+		(run.notices ||= []).push(`【汪汪队立大功】战后补给：${itemName} ×${count}。`);
+	}
 	if (!(state.numberSettled ||= []).includes(result.encounterId)) {
 		state.numberSettled.push(result.encounterId);
 		const number = ownsBlessing(state, 'bignumber');

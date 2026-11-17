@@ -1,3 +1,4 @@
+import { TRAVELLER_TRANSITIONS } from './traveller-transitions';
 import { RIVALS, CARMINE, type RivalID } from './rival-data';
 import { dialoguePage, type NarrativePage } from './narrative';
 import { RIVAL_CHOICES, RIVAL_CHAT_CHOICES, RIVAL_CHAT_ANSWERS, rivalTopicAnswer, rivalVoicedAnswer } from './rival-responses';
@@ -200,7 +201,8 @@ export function rivalAnswerPages(id: RivalID, chapter: number, turn: number, cho
 	const person = RIVALS[id];
 	return [dialoguePage(id, person.name, rivalVoicedAnswer(id, choice, rivalTopicAnswer(chapter,
 		turn, choice)), affection >= 8),
-	turn === 0 ? { scene: 'arena', title: person.name, text: SCENES[chapter - 1].second, portrait: id } :
+	turn === 0 ? { scene: 'arena', title: person.name, portrait: id,
+		text: chapter === 1 ? TRAVELLER_TRANSITIONS[id] : SCENES[chapter - 1].second } :
 	{ scene: 'arena', title: person.name, portrait: id, text: [
 		'你们分别走向场地两端，给伙伴留出熟悉环境的时间。新的相识，就从这一次认真切磋开始。',
 		'旅人带着背包退到安全的路边。你们各自握紧精灵球，准备按商量好的分工接应。',

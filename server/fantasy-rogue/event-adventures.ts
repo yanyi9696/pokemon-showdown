@@ -182,7 +182,7 @@ export function chooseAdventure(account: RogueAccount, run: RogueRun, content: R
 		if (choice === 'leave') { finish(run, ['你摇摇头，离开了摊位。']); return; }
 		if (choice === 'buy') {
 			run.money -= eventCost(run.floor);
-			loot(run, content, random, Math.round(budget(run.floor) * 1.15));
+			loot(run, content, random, Math.round(budget(run.floor) * 1.10));
 			finish(run, ['摊主凑到你耳边：「大奖也能直接买，算你便宜点。」你还没反应过来，手里已经多了一个包裹。']);
 			return;
 		}
@@ -225,5 +225,5 @@ export function settleAdventure(run: RogueRun, content: RogueContent, random: Ro
 	}
 }
 export function banditLoot(run: RogueRun, content: RogueContent, random: RogueRandom) {
-	loot(run, content, random, budget(run.floor) * 3);
+	loot(run, content, random, Math.round(budget(run.floor) * 3.3));
 }

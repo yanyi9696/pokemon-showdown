@@ -3391,13 +3391,13 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 		},
 		// 效果2：回合结束时恢复HP
 		onResidual(pokemon) {
-			// 为宝可梦恢复其最大HP的1/8
-			this.heal(pokemon.baseMaxhp / 8);
+			// 为宝可梦恢复其最大HP的1/10
+			this.heal(pokemon.baseMaxhp / 10);
 		},
 		num: 30005,
 		gen: 9,
-		desc: "携带后,回合结束时恢复最大HP的1/8,但物攻和特攻降低20%",
-		shortDesc: "携带后,回合结束时恢复最大HP的1/8,但物攻和特攻降低20%",
+		desc: "携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
+		shortDesc: "携带后,回合结束时恢复最大HP的1/10,但物攻和特攻降低20%",
 	},
 	fantasyprotector: {
 		name: "Fantasy Protector",

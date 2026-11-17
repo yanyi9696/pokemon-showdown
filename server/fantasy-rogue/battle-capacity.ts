@@ -1,4 +1,5 @@
 import { AIChallengeManager, type AISettings } from '../fantasy-ai/manager';
+import { rogueServicePriority, rogueReservedSlots } from './service-priority';
 
 export const DEFAULT_ROGUE_BATTLES = 128;
 export interface RogueBattleCapacity {
@@ -20,6 +21,8 @@ export function createRogueAIManager(
 		maxBattlesPerPlayer: 1,
 		// Undefined uses the scheduler's CPU-capped default, not the ordinary AI pool's setting.
 		workers: rogue?.battleWorkers,
+	}, undefined, {
+		matches: rogueServicePriority, reserved: rogueReservedSlots(rogue?.maxBattles ?? DEFAULT_ROGUE_BATTLES),
 	});
 }
 

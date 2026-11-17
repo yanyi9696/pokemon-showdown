@@ -12,8 +12,9 @@ import { legalFormMoves } from './event-learning';
 import { partyEvolutions } from './party-evolution';
 import { machineMoves, premiumMachine } from './trading';
 import { changeFriendship, rogueTime } from './friendship';
-import { journeyCoins } from './early-balance';
+import { journeyCoins, candyAtFloor } from './early-balance';
 import { rollSafariChoice, type SharedSafariContext } from './journey-safari';
+import { drawSafariTargets, safariTargets } from './journey-safari-pool';
 
 const dex = Dex.mod('gen9fantasy');
 export interface JourneyActivity {
@@ -124,10 +125,8 @@ export function beginJourneyActivity(run: RogueRun, random: RogueRandom) {
 	const event = run.node!.event!;
 	if (!isJourneyActivity(event.id)) return;
 	const a = event.activity ||= {};
-	if (event.id === 'safaripark') {
-		const pool = dex.species.all().filter(s => s.num > 0 && !s.battleOnly && !s.forme && !s.tags.some(t => t.includes('Legendary') || t.includes('Mythical')) &&
-			minimumEvolutionLevel(s.name) <= lv(run));
-		a.safari = Array.from({ length: 3 }, () => pool[random(pool.length)].name); a.balls = 3; a.index = 0;
+	if (event.id === 'safaripark' && !a.safari) {
+		a.safari = drawSafariTargets(run.floor, random); a.balls = 3; a.index = 0;
 	}
 	if (event.id === 'pokeflute') a.pattern = Array.from({ length: 3 }, () => ['低音', '中音', '高音'][random(3)]);
 	if (event.id === 'dittoshow') a.index = random(3);
@@ -176,7 +175,7 @@ export function journeyActivityView(run: RogueRun, cooperativeRelicTypes?: reado
 			(mon?.set.moves || []).map(move => option('perform:' + move, dex.moves.get(move).name, `${dex.moves.get(move).category === 'Status' ? '用巧妙的动作' : '用招式的气势'}衔接音乐。`)).concat(leave()));
 	}
 	if (id === 'safaripark') {
-		const name = a.safari?.[a.index || 0];
+		const name = safariTargets(run.floor, a.safari)[a.index || 0];
 		return result([`草丛边出现了 ${name}。剩余狩猎用球 ${a.balls} 颗。`,
 			`它${(a.wary || 0) > 0 ? '正紧张地盯着你' : (a.bait || 0) > 0 ? '正在认真吃着食物' : '还没有跑远'}。靠近能提高成功率，也会增加惊跑风险。`],
 		[option('approach', '轻轻靠近。'), option('bait', '放下一份诱饵。'), option('ball', '投出狩猎用球。'), option('next', '看看另一边。'), leave()]);
@@ -224,6 +223,7 @@ export function chooseJourneyActivity(
 	safari?: SharedSafariContext, rhythmAt?: number
 ) {
 	const event = run.node!.event!, id = event.id as ActivityID, a = activity(run);
+	if (event.settled) return;
 	event.key = randomUUID();
 	if (choice === 'leave') { finish(run, ['你向对方道别，把这次相遇记在旅途中。']); return; }
 	if (choice.startsWith('member:')) { a.member = decodeURIComponent(choice.slice(7)); return; }
@@ -314,7 +314,7 @@ export function chooseJourneyActivity(
 		return;
 	}
 	if (id === 'safaripark') {
-		const result = safari?.result || rollSafariChoice(a, random, choice);
+		const result = safari?.result || rollSafariChoice(a, random, choice, run.floor);
 		event.activity = structuredClone(result.activity);
 		if (result.caught) {
 			const receive = safari?.receive !== false;
@@ -402,6 +402,7 @@ export function settleJourneyActivity(
 	won: boolean, retreated: boolean, sharedGift?: RoguePokemon
 ) {
 	const event = run.node!.event!, id = event.id as ActivityID, a = activity(run);
+	if (event.settled) return;
 	if (retreated) return; // Keep spent resources; the normal retry route remains available.
 	if (!won) { finish(run, ['对方收起了伙伴，示意你先照顾好自己的队伍。这次考验到此为止；实际消耗与战斗经验照常保留。']); return; }
 	if (run.encounter + 1 < run.node!.encounters.length) return;
@@ -431,11 +432,13 @@ export function settleJourneyActivity(
 		finish(run, ['熊徒弟向三位守护者行礼，随后展开卷轴。一路练习过的动作融为新的力量，它已成为对应流派的武道熊师！'], true); return;
 	}
 	const rare = supplies(run, content, random, id === 'battlemetro' ? 3 : 2, id === 'lostescort' ? id : undefined);
+	if (id === 'lostescort') giveEquipment(run, content, random, candyAtFloor(run.floor), 1);
 	if (id === 'battlemetro') {
 		const legal = [...new Set(run.team.filter(p => !p.egg).flatMap(machineMoves))];
 		const premium = legal.filter(premiumMachine), pool = premium.length ? premium : legal;
 		giveEquipment(run, content, random, 'roguetm' + (pool.length ? pool[random(pool.length)] : 'protect'));
 	}
 	finish(run, ['你完成了约定。对方把备好的谢礼交给你，伙伴们也为这一次配合感到高兴。',
+		...(id === 'lostescort' ? ['护送成功，额外获得一颗当前楼层档位的经验糖果。'] : []),
 		...(rare ? ['拉鲁拉丝依偎在护林员身旁，向你挥了挥手。「谢谢你守护它。这颗神奇糖果，请留给你的伙伴。」神奇糖果 ×1 已放入背包。'] : [])], true);
 }

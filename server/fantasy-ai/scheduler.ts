@@ -75,8 +75,9 @@ export class DecisionScheduler {
 	private readonly slots: WorkerSlot[];
 	private readonly queue: Job[] = [];
 	private readonly instances = new Map<string, {
-		id: string, latest: number, revision: number, onQueueTime?: (milliseconds: number) => void,
+		id: string, latest: number, revision: number, priority?: boolean, onQueueTime?: (milliseconds: number) => void,
 	}>();
+	private priorityStreak = 0;
 	private readonly terminating = new Set<Promise<number>>();
 	private sequence = 0;
 	private disposed = false;
@@ -106,13 +107,13 @@ export class DecisionScheduler {
 		return { workers: this.slots.length, active: this.slots.filter(slot => slot.active).length, queued: this.queue.length };
 	}
 
-	register(roomId: string, instanceId: string, onQueueTime?: (milliseconds: number) => void) {
+	register(roomId: string, instanceId: string, onQueueTime?: (milliseconds: number) => void, priority = false) {
 		if (this.disposed || !roomId || !instanceId) throw new Error('invalid-scheduler-instance');
 		const previous = this.instances.get(roomId);
 		if (previous?.id === instanceId) return;
 		if (!previous && this.instances.size >= this.maxBattles) throw new Error('ai-battle-capacity');
 		this.cancelRoom(roomId);
-		this.instances.set(roomId, { id: instanceId, latest: -1, revision: -1, onQueueTime });
+		this.instances.set(roomId, { id: instanceId, latest: -1, revision: -1, priority, onQueueTime });
 	}
 
 	unregister(roomId: string, instanceId: string) {
@@ -261,7 +262,11 @@ export class DecisionScheduler {
 	}
 
 	private startNext(slot: WorkerSlot) {
-		const job = this.queue[0];
+		const priorityIndex = this.queue.findIndex(j => this.instances.get(j.input.key.roomId)?.priority);
+		const ordinaryIndex = this.queue.findIndex(j => !this.instances.get(j.input.key.roomId)?.priority);
+		// Never interrupt a running decision. Serve an ordinary job after at most three priority jobs.
+		const index = ordinaryIndex >= 0 && this.priorityStreak >= 3 ? ordinaryIndex : priorityIndex >= 0 ? priorityIndex : 0;
+		const job = this.queue[index];
 		if (!job) return;
 		if (!this.current(job)) {
 			this.metrics.cancelled++;
@@ -305,7 +310,8 @@ export class DecisionScheduler {
 			worker.on('error', () => this.failure(slot, worker));
 			worker.on('exit', () => this.failure(slot, worker));
 		}
-		this.queue.shift();
+		this.queue.splice(index, 1);
+		this.priorityStreak = this.instances.get(job.input.key.roomId)?.priority ? this.priorityStreak + 1 : 0;
 		slot.active = job;
 		this.armTimeout(job);
 		const message: WorkerRequest = {

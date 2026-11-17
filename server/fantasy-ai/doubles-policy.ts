@@ -1280,7 +1280,7 @@ export function rankDoublesChoices(
 	if (!own.length || own.length > 2) return [];
 	const foeSide: SideID = request.side.id === 'p1' ? 'p2' : 'p1';
 	const foes = POSITION_ORDER.filter(position => position.startsWith(foeSide) && state.active.has(position))
-		.map(position => state.active.get(position)!).filter(mon => mon.hp > 0);
+		.map(position => state.active.get(position)!).filter(mon => mon.hp > 0 && !mon.volatiles.has('rogueescort'));
 	const options: DoublesChoiceOptions = {
 		foes: foes.map(mon => positionLocation(mon.position)),
 		resources: readBattleMemory(observation.publicLog, dex).sides[request.side.id as SideID].resources,
@@ -1317,6 +1317,6 @@ export function chooseDoublesAction(
 	const request = observation.request;
 	const foeSide: SideID = request.side.id === 'p1' ? 'p2' : 'p1';
 	const foes = POSITION_ORDER.filter(position => position.startsWith(foeSide) && state.active.has(position) &&
-		state.active.get(position)!.hp > 0).map(positionLocation);
+		state.active.get(position)!.hp > 0 && !state.active.get(position)!.volatiles.has('rogueescort')).map(positionLocation);
 	return { choice: scored[0].choice, scored, foes, turn: state.turn };
 }

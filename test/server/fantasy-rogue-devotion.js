@@ -6,12 +6,23 @@ const { measure } = require('../../tools/fantasy-rogue-devotion-balance');
 
 describe('Fantasy Rogue Devotion', () => {
 	const effects = { owned: [{ ...blessing('devotion'), species: 'pikachu', floor: 1 }] };
-	it('locks species across regions and Fantasy forms but never evolves the lock', () => {
+	it('keeps old anchors and includes their whole declared evolutionary family', () => {
 		const party = ['Pikachu', 'Pikachu-Fantasy', 'Pikachu-Gmax', 'Raichu', 'Pichu', 'Ditto'];
-		assert.equal(devotionBonus(effects, 'Pikachu-Fantasy', party).count, 3);
-		assert.equal(devotionBonus(effects, 'Raichu', party).power, 0);
-		assert.equal(devotionBonus(effects, 'Pichu', party).reduction, 0);
+		assert.equal(devotionBonus(effects, 'Pikachu-Fantasy', party).count, 5);
+		assert.equal(devotionBonus(effects, 'Raichu', party).power, 60);
+		assert.equal(devotionBonus(effects, 'Pichu', party).reduction, 20);
+		assert.equal(devotionBonus(effects, 'Ditto', party).power, 0);
 		assert.equal(devotionBonus(undefined, 'Pikachu', party).power, 0);
+	});
+	it('follows branched, regional and battle forms without grouping similar names', () => {
+		for (const family of [
+			['Eevee', 'Vaporeon', 'Sylveon'], ['Zigzagoon', 'Linoone-Galar', 'Obstagoon'],
+			['Charmander', 'Charizard-Mega-X', 'Charizard-Gmax'], ['Onix', 'Onix-Fantasy', 'Steelix-Mega'],
+		]) {
+			const e = { owned: [{ ...blessing('devotion'), species: family[0], floor: 1 }] };
+			for (const name of family) assert.equal(devotionBonus(e, name, [...family, 'Ditto']).count, 3, name);
+			assert.equal(devotionBonus(e, 'Ditto', family).count, 0);
+		}
 	});
 	it('grows power nonlinearly while retaining the confirmed five-point reduction steps', () => {
 		const power = [0, 12, 25, 40, 60, 85];

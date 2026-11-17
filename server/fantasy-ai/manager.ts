@@ -31,13 +31,18 @@ export interface AISettings extends Partial<TimeBudgetSettings> {
 export class AIChallengeManager {
 	readonly scheduler: DecisionScheduler;
 	private readonly registry: TrainerRegistry;
-	private readonly reservations = new Map<string, { user: User, participants?: string[], room?: GameRoom }>();
+	private readonly reservations = new Map<string, {
+		user: User, participants?: string[], room?: GameRoom, priority?: boolean,
+	}>();
 	private readonly completed: ChallengeMetrics[] = [];
 	private readonly clientRequests = new WeakMap<User, Map<string, ClientChallengeResult>>();
 	private disposed = false;
 	readonly settings: Required<AISettings>;
 	private readonly maxRollouts?: number;
-	constructor(definitions: readonly unknown[], settings: AISettings = {}, maxRollouts?: number) {
+	private readonly priorityPolicy?: { matches: (user: User) => boolean, reserved: number };
+	constructor(definitions: readonly unknown[], settings: AISettings = {}, maxRollouts?: number,
+		priorityPolicy?: { matches: (user: User) => boolean, reserved: number }) {
+		this.priorityPolicy = priorityPolicy;
 		this.maxRollouts = maxRollouts;
 		this.scheduler = new DecisionScheduler(settings);
 		this.settings = {
@@ -245,12 +250,16 @@ export class AIChallengeManager {
 			cooperativeGuest && this.reservationsFor(cooperativeGuest.user.id).length >= this.settings.maxBattlesPerPlayer) {
 			throw new Chat.ErrorMessage('你或队友已有一场肉鸽战斗正在创建或进行。');
 		}
-		if (this.reservations.size >= this.settings.maxBattles) {
+		const priority = !!this.priorityPolicy && (this.priorityPolicy.matches(user) ||
+			!!cooperativeGuest && this.priorityPolicy.matches(cooperativeGuest.user));
+		const ordinaryLimit = this.settings.maxBattles - (this.priorityPolicy?.reserved || 0);
+		if (this.reservations.size >= this.settings.maxBattles || !priority &&
+			[...this.reservations.values()].filter(r => !r.priority).length >= ordinaryLimit) {
 			throw new Chat.ErrorMessage(`肉鸽战斗名额暂满（最多 ${this.settings.maxBattles} 场），请稍后重试。`);
 		}
 		const instanceId = randomUUID();
-		const reservation: { user: User, participants?: string[], room?: GameRoom } = {
-			user, participants: [user.id, ...(cooperativeGuest ? [cooperativeGuest.user.id] : [])],
+		const reservation: { user: User, participants?: string[], room?: GameRoom, priority?: boolean } = {
+			user, priority, participants: [user.id, ...(cooperativeGuest ? [cooperativeGuest.user.id] : [])],
 		};
 		this.reservations.set(instanceId, reservation);
 		let roomid: RoomID | undefined;
@@ -262,7 +271,7 @@ export class AIChallengeManager {
 				...(cooperativeGuest ? { cooperativeGuest: { ...cooperativeGuest, hidden: true, inviteOnly: true } } : {}),
 				fantasyRogue: rogue,
 				fantasyAI: {
-					trainer, difficulty: 'normal', instanceId, scheduler: this.scheduler,
+					trainer, difficulty: 'normal', instanceId, scheduler: this.scheduler, priority,
 					rogue: { difficulty: rogue.state.difficulty, orderedBoss: !!rogue.state.boss,
 						immediate: rogue.boss === false && !rogue.optionalChallenge, wild: rogue.wild, partySize: rogue.state.team.length },
 					decisionMs: this.settings.decisionMs, disconnectMs: this.settings.disconnectMs, maxRollouts: this.maxRollouts,

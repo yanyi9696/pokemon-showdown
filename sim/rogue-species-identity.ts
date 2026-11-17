@@ -7,6 +7,19 @@ export function blessingSpeciesID(name: string): ID {
 	return toID(original.exists ? original.baseSpecies : name.replace(/-Fantasy\b/g, ''));
 }
 
+/** Follow declared species and evolution data; regional branches share their original root. */
+export function blessingFamilyID(name: string): ID {
+	let id = blessingSpeciesID(name);
+	const seen = new Set<ID>();
+	while (!seen.has(id)) {
+		seen.add(id);
+		const species = Dex.mod('gen9').species.get(id);
+		if (!species.exists || !species.prevo) return id;
+		id = blessingSpeciesID(species.prevo);
+	}
+	return id;
+}
+
 /** Only the initial selection pays slots. Captures and the travelling party keep their normal limit. */
 export function rogueStarterSlotCost(name: string): number {
 	const species = Dex.mod('gen9fantasy').species.get(name);

@@ -53,6 +53,20 @@ describe('Fantasy Rogue cooperative personal recovery', () => {
 		host?.destroy(); guest?.destroy(); store?.close();
 		Config.fantasyailocal = oldConfig.local; Config.bindaddress = oldConfig.bind; Config.fantasyrogue = oldConfig.rogue;
 	});
+	it('counts only consumed bulk healing items in the owner history, once per request', () => {
+		edit(adventure => {
+			adventure.collapse = ['medicine'];
+			const member = adventure.members[host.id]; member.bag.potion = 10; member.team[0].hp = 1;
+		});
+		const before = own(), partner = structuredClone(own(guest)), id = randomUUID();
+		use('potion', { id, count: 10 });
+		const after = own(), count = before.bag.potion - after.bag.potion;
+		assert(count > 0); assert.equal(after.team[0].hp, after.team[0].maxhp);
+		const history = Object.values(store.get(host.id).collapseHistory);
+		assert.equal(history.reduce((n, entry) => n + (entry.triggers.medicine || 0), 0), count);
+		use('potion', { id, count: 10 }); assert.deepEqual(own(), after); assert.deepEqual(own(guest), partner);
+		assert.deepEqual(Object.values(store.get(host.id).collapseHistory), history);
+	});
 	it('revives from the private bag once and preserves the partner, PP and personal solo saves', () => {
 		for (const user of [host, guest]) manager.engine.command(user.id, {
 			action: 'start', id: randomUUID(), revision: store.get(user.id).revision, starters: ['bulbasaur'],

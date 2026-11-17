@@ -8,7 +8,9 @@ export const RECOVERY_ITEM_KINDS = new Set(['heal', 'revive', 'cure', 'ether']);
 function requireRule(ok: unknown, message: string): asserts ok { if (!ok) throw new Error(message); }
 
 /** Effect only. The caller owns inventory consumption, permissions and the save transaction. */
-export function applyRecoveryItem(run: RogueRun, mon: RoguePokemon, item: RogueItem, moveSlot?: number) {
+export function applyRecoveryItem(run: RogueRun, mon: RoguePokemon, item: RogueItem, moveSlot?: number, count = 1) {
+	requireRule(Number.isSafeInteger(count) && count > 0 &&
+		(['heal', 'ether'].includes(item.kind) || count === 1), '恢复数量无效。');
 	requireRule(!mon.egg && !mon.nuzlockeDead, '该伙伴不能接受恢复，道具未消耗。');
 	if (item.kind === 'revive') {
 		requireRule(!mon.hp, '活力碎片只能对倒下成员使用。');
@@ -24,7 +26,7 @@ export function applyRecoveryItem(run: RogueRun, mon: RoguePokemon, item: RogueI
 		requireRule(!item.singleMove || Number.isInteger(moveSlot) && slots[0] && slots[0].pp < slots[0].maxpp,
 			'请选择需要恢复 PP 的招式。');
 		for (const slot of slots) {
-			slot.pp = Math.min(slot.maxpp, slot.pp + item.amount!);
+			slot.pp = Math.min(slot.maxpp, slot.pp + item.amount! * count);
 			const memory = mon.moveMemory?.find(move => move.id === slot.id);
 			if (memory) memory.pp = slot.pp;
 		}
@@ -32,8 +34,17 @@ export function applyRecoveryItem(run: RogueRun, mon: RoguePokemon, item: RogueI
 		cureMember(mon, item);
 	} else {
 		requireRule(item.kind === 'heal' && mon.hp > 0 && mon.hp < mon.maxhp, '该目标不能使用治疗道具。');
-		mon.hp = Math.min(mon.maxhp, mon.hp + collapseMedicine(run, Math.min(mon.maxhp, item.amount!)));
+		mon.hp = Math.min(mon.maxhp, mon.hp + collapseMedicine(run, Math.min(mon.maxhp, item.amount!)) * count);
 	}
+}
+
+export function maximumRecoveryCount(run: RogueRun, mon: RoguePokemon, item: RogueItem, slot?: number) {
+	const preview = structuredClone(mon);
+	applyRecoveryItem(run, preview, item, slot);
+	if (item.kind === 'heal') return Math.ceil((mon.maxhp - mon.hp) / Math.max(1, preview.hp - mon.hp));
+	if (item.kind === 'ether') return Math.max(...(item.singleMove ? [mon.pp[slot!]] : mon.pp)
+		.map(move => Math.ceil((move.maxpp - move.pp) / item.amount!)));
+	return 1;
 }
 
 export function restoreMember(mon: RoguePokemon) {

@@ -40,12 +40,12 @@ describe('Fantasy Rogue rare candy is a limited event reward, separate from expe
   assert.equal(account().run.team[0].set.level,9);assert.equal(account().run.bag.rarecandy,2);
   assert(account().run.pendingMoves?.length,'level-nine move must be offered');
  });
- it('caps at the actual level limit and rejects fixed, fainted, egg and bulk targets without consumption',()=>{
+	it('caps at the actual level limit and rejects fixed, fainted and egg targets without consumption', () => {
   const id=setup(99);cmd('use',{value:'rarecandy',member:id});assert.equal(account().run.team[0].set.level,100);
   assert.throws(()=>cmd('use',{value:'rarecandy',member:id}));assert.equal(account().run.bag.rarecandy,2);
-  for(const change of [{fixedLevel:true},{hp:0},{egg:{cycles:1}},{bulk:true}]){
+		for (const change of [{ fixedLevel: true }, { hp: 0 }, { egg: { cycles: 1 } }]) {
    store.change(user,a=>{a.run.pendingMoves=[];const m=createRoguePokemon(set('Bulbasaur','Overgrow',20),stats(0));m.id=id;Object.assign(m,change);a.run.team=[m];});
-   assert.throws(()=>cmd('use',{value:'rarecandy',member:id,count:change.bulk?2:1}));assert.equal(account().run.bag.rarecandy,2);
+			assert.throws(() => cmd('use', { value: 'rarecandy', member: id, count: 1 })); assert.equal(account().run.bag.rarecandy, 2);
   }
  });
  it('respects an existing uncapped-level blessing without granting more than one level',()=>{
@@ -69,17 +69,19 @@ describe('Fantasy Rogue rare candy is a limited event reward, separate from expe
  it('awards escort candy only after victory with the ally alive, once per run',()=>{
   const r=eventRun('lostescort');r.node.encounters=[{team:[]}];r.node.event.activity.allySurvived=true;
   settleJourneyActivity({run:r},r,content,()=>0,true,false);assert.equal(r.bag.rarecandy,1);
+		const candyCount = r.bag.expcandys; assert(candyCount > 0); const awarded = structuredClone(r.bag);
+		settleJourneyActivity({ run: r }, r, content, () => 0, true, false); assert.deepEqual(r.bag, awarded);
   r.node=eventRun('lostescort').node;r.node.encounters=[{team:[]}];r.node.event.activity.allySurvived=true;
   settleJourneyActivity({run:r},r,content,()=>0,true,false);assert.equal(r.bag.rarecandy,1);assert.equal(r.bag.ether,1);
   for(const [won,alive] of [[false,true],[true,false]]){
-   const f=eventRun('lostescort');f.node.encounters=[{team:[]}];f.node.event.activity.allySurvived=alive;
-   settleJourneyActivity({run:f},f,content,()=>0,won,false);assert(!f.bag.rarecandy);
+			const f = eventRun('lostescort'); f.node.encounters = [{ team: [] }]; f.node.event.activity.allySurvived = alive;
+			settleJourneyActivity({ run: f }, f, content, () => 0, won, false); assert(!f.bag.rarecandy);
   }
  });
- it('never enters ordinary candy, shop or configured route reward pools',()=>{
-  const candy=content.items.find(i=>i.id==='rarecandy');assert.equal(candy.kind,'rarecandy');assert.equal(candy.shopFloor,false);
-  assert(content.items.filter(i=>i.kind==='candy').every(i=>i.id.startsWith('expcandy')));
+	it('never enters ordinary candy, shop or configured route reward pools', () => {
+		const candy = content.items.find(i => i.id === 'rarecandy'); assert.equal(candy.kind, 'rarecandy'); assert.equal(candy.shopFloor, false);
+		assert(content.items.filter(i => i.kind === 'candy').every(i => i.id.startsWith('expcandy')));
   for(const routes of Object.values(content.floors))for(const node of routes)assert(!node.reward?.items?.rarecandy);
-  assert(!content.initialBag.rarecandy);
+		assert(!content.initialBag.rarecandy);
  });
 });

@@ -2016,7 +2016,7 @@ export class BattleActions {
 		}
 		if (pokemon.species.name === 'Terapagos-Terastal' && type === 'Stellar') {
 			pokemon.formeChange('Terapagos-Stellar', null, true);
-			pokemon.baseMaxhp = Math.floor(Math.floor(
+			pokemon.baseMaxhp = this.battle.fantasyRogue ? pokemon.baseStoredStats.hp : Math.floor(Math.floor(
 				2 * pokemon.species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
 			) * pokemon.level / 100 + 10);
 			const newMaxHP = pokemon.baseMaxhp;

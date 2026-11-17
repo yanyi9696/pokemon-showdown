@@ -145,20 +145,47 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
   const other = native([set('Mew', 'Synchronize', 50, ['Tackle'])], ['godrobe']);
   try { assert.equal(other.p1.choose('rogueblood move 1'), false); } finally { other.destroy(); }
  });
- it('triggers pure-robe half-HP awakening only once, and its upgrade removes confusion and reduces drain', () => {
+	it('triggers pure-robe awakening once per entry, and its upgrade removes confusion and reduces drain', () => {
   for (const upgraded of [false, true]) {
    const b = native([{...set('Meowstic-F', 'Keen Eye', 50, ['Splash']), gender: 'F'}], ['puregodrobe'], s => { s.blessings.owned[0].completed = upgraded; });
    try {
     const m = b.p1.active[0]; m.hp = Math.floor(m.maxhp / 2); const hp = m.hp;
     b.makeChoices('move 1', 'move 1');
     assert.equal(m.hp, hp - Math.ceil(hp * (upgraded ? 0.07 : 0.1)));
-    assert.equal(m.boosts.spa, 1); assert.equal(!!m.volatiles.confusion, !upgraded);
+				assert.equal(m.boosts.spa, 2); assert.equal(!!m.volatiles.confusion, !upgraded);
     m.removeVolatile('confusion'); m.hp = m.maxhp;
     b.makeChoices('move 1', 'move 1'); m.hp = Math.floor(m.maxhp / 2); b.makeChoices('move 1', 'move 1');
-    assert.equal(m.boosts.spa, 1);
+				assert.equal(m.boosts.spa, 2);
    } finally { b.destroy(); }
   }
  });
+	for (const ability of ['Own Tempo', 'Keen Eye']) it(`checks pure robe on re-entry and respects ${ability} confusion rules`, () => {
+		const b = native([{ ...set('Meowstic-F', ability, 50, ['Splash']), gender: 'F' }, set('Mew', 'Synchronize', 50, ['Splash'])],
+			['puregodrobe'], s => { s.team[0].hp = Math.floor(s.team[0].maxhp / 2); });
+		try {
+			const mon = b.p1.active[0];
+			assert.equal(mon.boosts.spa, 2); assert.equal(!!mon.volatiles.confusion, ability !== 'Own Tempo');
+			mon.removeVolatile('confusion'); mon.hp = mon.maxhp;
+			b.makeChoices('move 1', 'move 1');
+			assert.equal(mon.boosts.spa, 2); assert(!mon.volatiles.confusion);
+			mon.hp = Math.floor(mon.maxhp / 2);
+			b.makeChoices('move 1', 'move 1'); assert.equal(mon.boosts.spa, 2);
+			b.makeChoices('switch 2', 'move 1'); b.makeChoices('switch 2', 'move 1');
+			assert.equal(b.p1.active[0], mon); assert.equal(mon.boosts.spa, 2);
+			assert.equal(!!mon.volatiles.confusion, ability !== 'Own Tempo');
+		} finally { b.destroy(); }
+	});
+	it('awakens on the half-HP boundary after damage without exceeding the boost cap', () => {
+		const b = native([{ ...set('Meowstic-F', 'Own Tempo', 50, ['Splash']), gender: 'F' }], ['puregodrobe']);
+		try {
+			const mon = b.p1.active[0]; assert.equal(mon.boosts.spa, 0);
+			mon.boosts.spa = 5;
+			b.damage(Math.ceil(mon.maxhp / 2), mon, b.p2.active[0], b.dex.moves.get('tackle'));
+			b.runEvent('Update', mon); assert.equal(mon.boosts.spa, 6);
+			b.runEvent('Update', mon); assert.equal(mon.boosts.spa, 6);
+			assert(!mon.volatiles.confusion);
+		} finally { b.destroy(); }
+	});
  it('uses the Mega drill ability against Flying immunity, Levitate and contact protection', () => {
   for (const [species, ability, foeMove] of [['Zapdos', 'Pressure', 'Protect'], ['Weezing', 'Levitate', 'Splash']]) {
    const b = native([{...set('Excadrill', 'Sand Rush', 50, ['Drill Run']), item: 'Excadrite'}], ['spiral'], s => { s.systems = {player: {mega: true, z: false}}; s.blessings.owned[0].target = s.team[0].id; }, [set(species, ability, 50, [foeMove])]);
@@ -230,7 +257,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
    settleBlessingBattle(account, r, content, result, () => 0); const size = r.blessings.pending.length;
    settleBlessingBattle(account, r, content, result, () => 0); assert.equal(r.blessings.pending.length, size);
    const gift = r.blessings.pending.find(p => p.pokemon?.set.species === name); assert(gift); r.team.push(gift.pokemon);
-   if (!index) assert.throws(() => handleBlessingCommand(account, r, content, {action: 'inheritrobe', value: 'godrobe'}, () => 0));
+			if (!index) assert.throws(() => handleBlessingCommand(account, r, content, { action: 'inheritrobe', value: 'godrobe' }, () => 0));
   }
   handleBlessingCommand(account, r, content, {action: 'inheritrobe', value: 'godrobe'}, () => 0);
   const transferred = r.team.find(m => m.set.species === 'Yveltal');
@@ -240,7 +267,7 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
   const r = run(120, ['godrobe', 'puregodrobe']), account = {captures: {}, unlocked: []};
   const capture = member(set('Yveltal', 'Dark Aura', 60));
   settleBlessingBattle(account, r, content, {encounterId: 'escape', won: false, team: r.team, bag: {}, captures: [capture],
-   defeated: [{species: 'Reshiram'}], blessingProgress: {kos: [], insight: {}, swords: 0, spiral: {[r.team[0].id]: 300}}}, () => 0, true);
+			defeated: [{ species: 'Reshiram' }], blessingProgress: { kos: [], insight: {}, swords: 0, spiral: { [r.team[0].id]: 300 } } }, () => 0, true);
   assert(r.blessings.owned[0].completed); assert(!r.blessings.owned[1].completed); assert.equal(r.team[0].spiral, undefined);
  });
  it('attracts robe legends only at legal wild levels', () => {
@@ -279,11 +306,11 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
   choosePoliceRegion(r, 'police:paldea', () => 0);
   assert.equal(r.node.encounters.length, 2); assert(r.dialogue.pages.some(p => p.portrait === 'penny' && p.text.includes('……')));
   for (let round = 0; round <= 8; round++) {
-   assert.equal(r.node.encounters.length, round < 3 ? round + 2 : 1);
-   if (round >= 3) assert.equal(r.node.encounters[0].trainer.id, ['giacomo', 'mela', 'atticus', 'ortega', 'eri', 'penny'][round - 3]);
-   r.encounter = r.node.encounters.length - 1; settlePoliceBattle(r, true);
-   const money = r.money; settlePoliceBattle(r, true); assert.equal(r.money, money);
-   if (round < 8) { r.floor += 8; assert(beginPoliceEncounter(r, () => 0)); }
+			assert.equal(r.node.encounters.length, round < 3 ? round + 2 : 1);
+			if (round >= 3) assert.equal(r.node.encounters[0].trainer.id, ['giacomo', 'mela', 'atticus', 'ortega', 'eri', 'penny'][round - 3]);
+			r.encounter = r.node.encounters.length - 1; settlePoliceBattle(r, true);
+			const money = r.money; settlePoliceBattle(r, true); assert.equal(r.money, money);
+			if (round < 8) { r.floor += 8; assert(beginPoliceEncounter(r, () => 0)); }
   }
   assert.equal(r.police.regions.paldea.status, 'cleared'); assert(r.dialogue.pages[0].text.includes('解决'));
  });
@@ -297,33 +324,33 @@ describe('Fantasy Rogue awakening and narrative expansion', function () {
  });
  it('applies a newly joined leader’s intervention to an already pending police chain', () => {
   for (const [region, id] of [['johto', 'giovanni'], ['alola', 'guzma']]) {
-   const r = run(80); r.blessings.companions = [{id}];
-   r.police = {nextFloor: 60, regions: {[region]: {floor: 52, revengeAfter: 60, status: 'pending', round: 1}}};
-   assert(beginPoliceEncounter(r, () => 0)); assert(r.dialogue.pages.some(p => p.portrait === id && p.side === 'left'));
-   if (region === 'johto') {
+			const r = run(80); r.blessings.companions = [{ id }];
+			r.police = { nextFloor: 60, regions: { [region]: { floor: 52, revengeAfter: 60, status: 'pending', round: 1 } } };
+			assert(beginPoliceEncounter(r, () => 0)); assert(r.dialogue.pages.some(p => p.portrait === id && p.side === 'left'));
+			if (region === 'johto') {
     assert(r.node.event.police.friendly); assert.equal(r.node.encounters[0].trainer.id, 'archer');
     r.team[0].hp = 0; settlePoliceBattle(r, false); assert.equal(r.team[0].hp, r.team[0].maxhp);
-   } else { assert.equal(r.node.encounters.length, 0); assert.equal(r.bag.superpotion, 1); }
-   assert.equal(r.police.regions[region].status, 'averted');
+			} else { assert.equal(r.node.encounters.length, 0); assert.equal(r.bag.superpotion, 1); }
+			assert.equal(r.police.regions[region].status, 'averted');
   }
  });
- it('includes all new people and eight chapters in the local codex without unlocking remote accounts', () => {
+	it('includes all new people and eight chapters in the local codex without unlocking remote accounts', () => {
   const account = {captures: {}, unlocked: []}, before = JSON.stringify(account);
   const preview = rogueCodex(account, 'events', true).entries;
   for (const id of ['kieran', 'carmine', 'penny', 'giacomo', 'mela', 'atticus', 'ortega', 'eri', 'archie', 'hiker']) assert(preview.some(e => e.portrait === id && e.unlocked), id);
   assert.equal(preview.filter(e => e.category === 'adventure').length, 96); assert.equal(JSON.stringify(account), before);
 		assert(rogueCodex(account, 'events').entries.filter(e => e.category !== 'ecology').every(e => !e.unlocked));
-  account.run = run(20); account.run.phase = 'story'; account.run.story = {stage: 'interlude', page: 0};
-  account.run.dialogue = {pages: [{portrait: 'carmine'}, {portrait: 'penny'}]}; recordRogueDiscoveries(account);
-  assert(account.discoveries.trainers.includes('carmine')); assert(!account.discoveries.trainers.includes('penny'));
- });
- it('creates all authored travelling trainers with legal early stages and thematic teams', () => {
-  assert(TRAVELLING_TRAINERS.length >= 20);
-  for (let index = 0; index < TRAVELLING_TRAINERS.length; index++) {
-   const r = run(10); prepareTravellingTrainer(r, n => n === TRAVELLING_TRAINERS.length ? index : 0);
-   const encounter = r.node.encounters[0]; assert.equal(encounter.trainer.id, TRAVELLING_TRAINERS[index].id);
-   assert.equal(encounter.team.length, 3); assert(!encounter.catchable);
-   for (const mon of encounter.team) { assert(Dex.mod('gen9fantasy').species.get(mon.species).exists); assert(minimumEvolutionLevel(mon.species) <= mon.level, mon.species); }
-  }
- });
+		account.run = run(20); account.run.phase = 'story'; account.run.story = { stage: 'interlude', page: 0 };
+		account.run.dialogue = { pages: [{ portrait: 'carmine' }, { portrait: 'penny' }] }; recordRogueDiscoveries(account);
+		assert(account.discoveries.trainers.includes('carmine')); assert(!account.discoveries.trainers.includes('penny'));
+	});
+	it('creates all authored travelling trainers with legal early stages and thematic teams', () => {
+		assert(TRAVELLING_TRAINERS.length >= 20);
+		for (let index = 0; index < TRAVELLING_TRAINERS.length; index++) {
+			const r = run(10); prepareTravellingTrainer(r, n => n === TRAVELLING_TRAINERS.length ? index : 0);
+			const encounter = r.node.encounters[0]; assert.equal(encounter.trainer.id, TRAVELLING_TRAINERS[index].id);
+			assert.equal(encounter.team.length, 3); assert(!encounter.catchable);
+			for (const mon of encounter.team) { assert(Dex.mod('gen9fantasy').species.get(mon.species).exists); assert(minimumEvolutionLevel(mon.species) <= mon.level, mon.species); }
+		}
+	});
 });

@@ -141,10 +141,23 @@ export function prepareChallengePrizes(run: RogueRun, random: RogueRandom) {
 				star: { member: mon.id, from: mon.stars || 1, to: (mon.stars || 1) + 1 } });
 		}
 	}
-	challenge.prizes = prizes.map(prize => ({ ...prize, ...rebalanceCandyReward(run.floor, prize.items) }));
+	const serious = OPTIONAL_CHALLENGES.find(def => def.id === challenge.id)?.serious;
+	if (serious && run.floor >= 99) {
+		prizes.push({ id: 'ppmax', name: '招式极限研习箱', money: 0, items: { ppmax: 1 } });
+	}
+	challenge.prizes = prizes.map(prize => ({ ...prize,
+		money: serious ? Math.round(prize.money * 1.1) : prize.money,
+		...rebalanceCandyReward(run.floor, prize.items) }));
 }
 export function challengeRecord(run: RogueRun) {
 	return run.challengeHistory?.find(entry => entry.id === run.node?.challenge?.id && entry.floor === run.floor);
+}
+function trainingExperience(run: RogueRun, entry: { member: string, level: number, experience: number }) {
+	const mon = run.team.find(member => member.id === entry.member);
+	if (!mon || mon.egg || mon.fixedLevel || mon.nuzlockeDead) return 0;
+	const growth = rogueSpeciesData(mon.fusion?.first.set.species || mon.set.species).growth;
+	const current = mon.experience ?? experienceAtLevel(growth, mon.set.level);
+	return Math.max(0, Math.min(entry.experience, experienceAtLevel(growth, entry.level) - current));
 }
 export function chooseChallengePrize(run: RogueRun, id: string, rewards: AffectionRewards | undefined) {
 	const challenge = run.node?.challenge;
@@ -172,18 +185,21 @@ export function chooseChallengePrize(run: RogueRun, id: string, rewards: Affecti
 	const payout = grantCandyTraining(run, prize);
 	for (const [item, count] of Object.entries(payout.items)) run.bag[item] = (run.bag[item] || 0) + count;
 	if (prize.star && starMember) { starMember.stars = prize.star.to; rebuildMember(starMember, run.boosts); }
+	const trainingResults: string[] = [];
 	for (const entry of prize.training || []) {
 		const mon = run.team.find(member => member.id === entry.member);
-		if (mon && !mon.egg && !mon.fixedLevel) {
+		if (mon && !mon.egg && !mon.fixedLevel && !mon.nuzlockeDead) {
 			initializeExperience(mon);
-			const growthRate = rogueSpeciesData(mon.fusion?.first.set.species || mon.set.species).growth;
-			const target = experienceAtLevel(growthRate, entry.level);
-			gainExperience(run, mon, Math.max(0, Math.min(entry.experience, target - mon.experience!)));
+			const before = mon.experience!;
+			gainExperience(run, mon, trainingExperience(run, entry));
+			trainingResults.push(`【${mon.set.species}】获得 ${mon.experience! - before} 经验（Lv.${mon.set.level}）`);
 		}
 	}
+	const trainingText = trainingResults.length ? `复盘训练：${trainingResults.join('，')}。已达到训练目标的伙伴不再增加经验。` : '';
 	run.lastReward = { floor: run.floor, name: `${run.node!.name} · ${prize.name}`,
 		money: prize.money, items: payout.items, points: 0,
-		effect: (prize.star ? `【${starMember!.set.species}】提升至 ${prize.star.to} 星。` : '') + growthText + payout.effect };
+		effect: (prize.star ? `【${starMember!.set.species}】提升至 ${prize.star.to} 星。` : '') +
+			growthText + payout.effect + trainingText };
 	(run.notices ||= []).push(growthText);
 	for (const companionID of OPTIONAL_CHALLENGES.find(d => d.id === challenge.id)?.companions || []) {
 		gainAffection(run, companionID, AFFECTION_RULES.duel, `challenge:${challenge.key}`, rewards);
@@ -212,6 +228,7 @@ export function optionalChallengeView(run: RogueRun) {
 			star: prize.star && { ...prize.star,
 				species: run.team.find(mon => mon.id === prize.star!.member)?.set.species || '伙伴' },
 			training: prize.training?.map(entry => ({ ...entry,
+				experience: trainingExperience(run, entry),
 				species: run.team.find(mon => mon.id === entry.member)?.set.species || '伙伴' })) })),
 	};
 }

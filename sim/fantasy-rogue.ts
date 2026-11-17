@@ -1,3 +1,4 @@
+import { rogueMovePP } from './rogue-pp';
 import { echoChance, playerEcho } from './rogue-echo';
 import {
 	initializeRogueItemSources, rogueItemSource, type RogueItemSource, type RogueKnockedOffItem,
@@ -82,6 +83,8 @@ export interface RoguePokemon {
 	seenMoves?: string[];
 	/** Learned moves retain their remaining PP even while not equipped. */
 	moveMemory?: { id: string, pp: number, maxpp: number }[];
+	/** Explicit PP Max receipts for this run and its clear card; absent in old saves. */
+	ppMaxed?: string[];
 	abilityPool?: { id: string, hidden: boolean }[];
 	/** A server-granted event permits one redistribution of this many EVs. */
 	evRespec?: { total: number };
@@ -130,7 +133,7 @@ export interface RogueBattleState {
 	escortCount?: number;
 	/** Last actual faint was a self-sacrifice protected by Art of Explosion. */
 	selfDestructed?: string[];
-	cooperative?: { opponentOffset: number, singleOpponent?: boolean };
+	cooperative?: { opponentOffset: number, singleOpponent?: boolean, escortSide?: 'p1' | 'p3' };
 	/** Select each player's 1–3 battlers inside the native battle room. */
 	coopTeamPreview?: boolean;
 	coopTeamSelected?: boolean;
@@ -356,7 +359,9 @@ export function initializeRogueBattle(battle: Battle) {
 		for (const mon of side.pokemon) {
 			const saved = team.find(entry => entry.id === mon.set.fantasyRogueId);
 			if (!saved) throw new Error('Missing rogue party member');
-			mon.hp = Math.min(mon.maxhp, saved.hp);
+			// Match rebuildMember's existing missing-HP rule when an older snapshot's
+			// maximum differs from the current battle modifiers. Fainted stays fainted.
+			mon.hp = saved.hp > 0 ? Math.max(1, Math.min(mon.maxhp, mon.maxhp - (saved.maxhp - saved.hp))) : 0;
 			mon.fainted = !mon.hp;
 			mon.status = toID(saved.status);
 			mon.statusState = battle.initEffectState({ id: mon.status, target: mon, ...saved.statusState });
@@ -367,6 +372,7 @@ export function initializeRogueBattle(battle: Battle) {
 			}
 			for (const slot of mon.moveSlots) {
 				const pp = saved.pp.find(entry => entry.id === slot.id);
+				slot.maxpp = rogueMovePP(saved, slot.id);
 				if (pp) slot.pp = Math.min(slot.maxpp, pp.pp);
 			}
 		}

@@ -19,7 +19,7 @@ export function rogueBallMultiplier(battle: Battle, ball: RogueBattleState['ball
 	switch (rule.condition) {
 	case 'water': return state.captureEnvironment?.water ? 3.5 : base;
 	case 'dark': return state.captureEnvironment?.dark ? 3 : base;
-	case 'quick': return battle.turn === 1 ? 5 : base;
+	case 'quick': return battle.turn === 1 ? 5.5 : base;
 	case 'timer': return Math.min(4, 1 + 0.3 * Math.max(0, battle.turn - 1));
 	case 'repeat': return caught?.includes(target.species.id) ? 3.5 : base;
 	case 'nest': return Math.max(1, (41 - target.level) / 10);

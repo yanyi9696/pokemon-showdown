@@ -1424,8 +1424,8 @@ export class Pokemon {
 			this.baseMaxhp = stats.hp;
 			this.maxhp = stats.hp;
 			this.hp = stats.hp;
-		} else if (!isTransform && (rogueModifiers?.smallFinal || rogueModifiers?.compound) && this.baseMaxhp !== stats.hp) {
-			// A battle forme can enter or leave the low-BST blessing's eligibility.
+		} else if (!isTransform && isRogueFormat(this.battle.format.id) && this.baseMaxhp !== stats.hp) {
+			// Recalculate a Rogue forme immediately, preserving damage already taken.
 			const change = (stats.hp - this.baseMaxhp) * (this.volatiles.dynamax ? 2 : 1);
 			this.baseMaxhp = stats.hp;
 			this.maxhp += change;
@@ -1520,7 +1520,8 @@ export class Pokemon {
 			this.apparentType = this.terastallized;
 		}
 		const newSpecies = this.species; // 此时 this.species 已经是 newSpecies
-		this.battle.add('-start', this, 'typechange', newSpecies.types.join('/'), '[silent]');
+		this.battle.add('-start', this, 'typechange',
+			(this.battle.fantasyRogue ? this.getTypes() : newSpecies.types).join('/'), '[silent]');
 
 		// [!!] 修改点：使用 (newSpecies as any) 来访问 .mod 属性
 		// 检查这个新形态是否属于你的 'gen9fc' mod

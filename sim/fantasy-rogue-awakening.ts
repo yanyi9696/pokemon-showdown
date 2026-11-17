@@ -32,8 +32,8 @@ export function awakeningUpdate(mon: Pokemon) {
 	if (robeActive(mon, 'puregodrobe') && mon.hp <= mon.maxhp / 2 && !mon.m.roguePureHalf) {
 		mon.m.roguePureHalf = true;
 		if (!hasBlessing(mon, 'puregodrobe')?.completed) mon.addVolatile('confusion', mon, battle.format);
-		battle.boost({ spa: 1 }, mon, mon, battle.format);
-		battle.add('-message', '【神衣纯洁】半血觉醒：特攻提升，每场仅一次。');
+		battle.boost({ spa: 2 }, mon, mon, battle.format);
+		battle.add('-message', '【神衣纯洁】半血觉醒：特攻提升两级，本次登场不再重复触发。');
 	}
 	const team = mon.side.id === 'p1' ? state.team :
 		mon.side.id === 'p3' ? state.partner?.team || [] : state.duel?.team || [];

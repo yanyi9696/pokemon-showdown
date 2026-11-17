@@ -1,3 +1,4 @@
+import { routeAdvice } from './route-advice';
 import { type AffectionRewards, gainAffection, affectionChat, AFFECTION_RULES } from './affection';
 import { Dex } from '../../sim/dex';
 import { COMPANIONS, companionSource, companionOwned, strongestTypedMember, companionAbilityOptions,
@@ -41,7 +42,7 @@ export function companionOptions(run: RogueRun, options: CompanionOption[] = [])
 function consultationKey(run: RogueRun) {
 	return run.phase === 'choose' ? 'routes:' + run.floor : run.phase === 'reward' ? run.node?.rewardScene?.key : run.node?.event?.key;
 }
-export function companionRecommendation(run: RogueRun, c: RogueCompanion, options: CompanionOption[]) {
+function companionPreferenceRecommendation(run: RogueRun, c: RogueCompanion, options: CompanionOption[]) {
 	if (!['event', 'reward', 'choose'].includes(run.phase)) return;
 	const event = run.node?.event, preference = COMPANION_PREFERENCES[c.id];
 	const available = companionOptions(run, options).filter(o => !o.disabled &&
@@ -64,6 +65,9 @@ export function companionRecommendation(run: RogueRun, c: RogueCompanion, option
 	};
 	return available.filter(o => score(o) > 0).sort((a, b) => score(b) - score(a))[0]?.id;
 }
+export function companionRecommendation(run: RogueRun, c: RogueCompanion, options: CompanionOption[]) {
+	return routeAdvice(run)?.id || companionPreferenceRecommendation(run, c, options);
+}
 export function companionView(run: RogueRun, options: CompanionOption[] = []) {
 	const event = run.node?.event;
 	const key = event?.companionKey || consultationKey(run);
@@ -75,7 +79,8 @@ export function companionView(run: RogueRun, options: CompanionOption[] = []) {
 			smileUntil: c.smile === 'chat' ? (c.messageAt || 0) + 6000 : undefined,
 			smile: c.smile === 'approval' ? approvedHere :
 			c.smile === 'chat' && Date.now() - (c.messageAt || 0) < 6000,
-			message: c.smile === 'approval' && !approvedHere ? undefined : c.message,
+			message: c.consulted === consultationKey(run) && routeAdvice(run) ?
+				`『我想选择【${routeAdvice(run)!.name}】。${routeAdvice(run)!.reason}』` : c.smile === 'approval' && !approvedHere ? undefined : c.message,
 			giftCounter: false,
 			giftOptions: c.giftPending && !c.rewarded ? companionGiftOptions(c.id) : [],
 			zMove: companionZDefinition(c.id), zGrant: run.blessings?.companionZ,
@@ -112,7 +117,7 @@ export function companionCommand(
 			c.id === 'lana' ? '静下心来，看看这次能钓到什么。' : ['iono', 'canari'].includes(c.id) ? '来一场精彩的对战吧！' :
 			c.id === 'iris' ? '我想听听宝可梦们的声音！' : c.id === 'poppy' ? '把这些宝物好好收起来吧！' :
 			c.id === 'guzma' ? '别缩着，痛快地打一场！' : '最终的决定由你来做。';
-		c.message = recommended ? `『我想选择【${recommended.name}】。${reason}』` : '『先仔细看看眼前的情况吧。』';
+		c.message = recommended ? `『我想选择【${recommended.name}】。${routeAdvice(run)?.reason || reason}』` : '『先仔细看看眼前的情况吧。』';
 		c.messageAt = Date.now(); delete c.smile; return;
 	}
 	const [action, value] = (command.value || '').split(':');
@@ -147,7 +152,7 @@ export function recordCompanionPreference(
 	for (const c of run.blessings?.companions || []) {
 		if (c.away) continue;
 		const stoneFinished = c.id === 'olivia' && event?.id === 'stones' && choice === 'stonefinish' && !!event.stonesOpened;
-		const recommended = companionRecommendation(run, c, options) === choice;
+		const recommended = companionPreferenceRecommendation(run, c, options) === choice;
 		if (c.counted?.includes(key) || !stoneFinished && !recommended) continue;
 		c.eventKey = key; speak(run, c, 'praise', random);
 		// Olivia approves opening a stone immediately, but one completed visit counts only once.

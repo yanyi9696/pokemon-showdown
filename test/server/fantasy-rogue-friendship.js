@@ -78,10 +78,10 @@ describe('Fantasy Rogue friendship and evolution conditions', () => {
 			battleFriendship(run, result, `battle${battle}`, structuredClone(run.team));
 		}
 		floorFriendship(run); floorFriendship(run);
-		assert.equal(friendship(mon), 75); assert.equal(friendship(bench), 73); assert.equal(friendship(box), 70);
+		assert.equal(friendship(mon), 76); assert.equal(friendship(bench), 74); assert.equal(friendship(box), 70);
 		run.floor++;
 		floorFriendship(run);
-		assert.equal(friendship(mon), 78); assert.equal(friendship(bench), 76);
+		assert.equal(friendship(mon), 80); assert.equal(friendship(bench), 78);
 	});
 	it('deducts real faints up to twice per floor without rewarding retreats or repeated settlement', () => {
 		const mon = member('Bulbasaur'), run = runFor(mon);

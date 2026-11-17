@@ -4,6 +4,7 @@ import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import { chooseEventOption, eventView } from './events';
 import { rollSafariChoice } from './journey-safari';
+import { safariTargets } from './journey-safari-pool';
 import { sharedShinyEcho } from './coop-echo';
 
 export function coopSafariTarget(runs: RogueRun[]) {
@@ -16,7 +17,8 @@ export function coopSafariTarget(runs: RogueRun[]) {
 		(a.bait || 0) > 2 || runs.some(run => run.node?.kind !== 'event' || run.node.event?.id !== event.id ||
 			run.node.event.key !== event.key || run.node.event.stage !== 'choice' || run.node.event.settled ||
 			run.floor !== runs[0].floor || JSON.stringify(run.node.event.activity) !== JSON.stringify(a))) return null;
-	return { key: event.key, id: `${event.key}:${a.index}`, name: a.safari[a.index!], balls: a.balls! };
+	return { key: event.key, id: `${event.key}:${a.index}`,
+		name: safariTargets(runs[0].floor, a.safari)[a.index!], balls: a.balls! };
 }
 
 /** Only the negotiated capturer receives a partner and permanent unlocks; the ball stock is shared. */
@@ -29,7 +31,8 @@ export function settleCoopSafari(
 		choice === 'ball' && (ownerIndex === undefined || ![0, 1].includes(ownerIndex) || !entries[ownerIndex].changeAccount)) {
 		throw new Error('共同狩猎进度或捕捉归属已变化，请重新协商。');
 	}
-	const result = rollSafariChoice(entries[0].run.node!.event!.activity!, random, choice), key = randomUUID();
+	const result = rollSafariChoice(entries[0].run.node!.event!.activity!, random, choice, entries[0].run.floor);
+	const key = randomUUID();
 	for (const [index, { run, account, changeAccount }] of entries.entries()) {
 		const apply = (owner: RogueAccount) => {
 			const personalEcho = run.echo;

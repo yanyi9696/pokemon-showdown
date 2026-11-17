@@ -1,3 +1,4 @@
+import { rogueMovePP } from '../../sim/rogue-pp';
 import { randomUUID } from 'crypto';
 import { Battle } from '../../sim/battle';
 import { Dex, toID } from '../../sim/dex';
@@ -46,20 +47,21 @@ function movePP(id: string) {
 }
 
 /** Remove legacy PP Ups without refunding uses already spent. Safe to apply repeatedly. */
-function normalizePP(slot: RoguePokemon['pp'][number]) {
-	const maxpp = movePP(slot.id);
-	slot.pp = Math.max(0, Math.min(maxpp, slot.pp - Math.max(0, slot.maxpp - maxpp)));
+function normalizePP(slot: RoguePokemon['pp'][number], mon: RoguePokemon) {
+	const maxpp = rogueMovePP(mon, slot.id);
+	slot.pp = Math.max(0, Math.min(maxpp, mon.ppMaxed?.includes(slot.id) ?
+		maxpp - (slot.maxpp - slot.pp) : slot.pp - Math.max(0, slot.maxpp - maxpp)));
 	slot.maxpp = maxpp;
 }
 
 /** Older saves remember seen moves; unknown historical PP starts at zero until healing. */
 export function ensureMemberMemory(mon: RoguePokemon) {
 	mon.moveMemory ||= [];
-	for (const slot of [...mon.pp, ...mon.moveMemory]) normalizePP(slot);
+	for (const slot of [...mon.pp, ...mon.moveMemory]) normalizePP(slot, mon);
 	for (const id of [...new Set([...(mon.seenMoves || []), ...mon.set.moves].map(toID))]) {
 		if ((mon.blessingMoves?.includes(id) || mon.blessingPP?.some(move => move.id === id)) &&
 			!mon.moveMemory.some(move => move.id === id)) continue;
-		if (!mon.moveMemory.some(move => move.id === id)) mon.moveMemory.push({ id, pp: 0, maxpp: movePP(id) });
+		if (!mon.moveMemory.some(move => move.id === id)) mon.moveMemory.push({ id, pp: 0, maxpp: rogueMovePP(mon, id) });
 	}
 	for (const slot of mon.pp) {
 		if ((mon.blessingMoves?.includes(slot.id) || mon.blessingPP?.some(move => move.id === slot.id)) &&
@@ -85,7 +87,7 @@ export function rememberMove(mon: RoguePokemon, id: string) {
 	ensureMemberMemory(mon);
 	id = toID(id);
 	if (!mon.moveMemory!.some(move => move.id === id)) {
-		mon.moveMemory!.push({ id, pp: movePP(id), maxpp: movePP(id) });
+		mon.moveMemory!.push({ id, pp: rogueMovePP(mon, id), maxpp: rogueMovePP(mon, id) });
 	}
 }
 
@@ -152,7 +154,7 @@ export function rememberPastLevelMoves(mon: RoguePokemon) {
 			const previous = mon.formMoveMemory?.find(slot => slot.id === move) ||
 				mon.blessingPP?.find(slot => slot.id === move) || mon.pp.find(slot => slot.id === move);
 			const slot = previous ? { ...previous } : { id: move, pp: movePP(move), maxpp: movePP(move) };
-			normalizePP(slot);
+			normalizePP(slot, mon);
 			mon.moveMemory!.push(slot);
 		}
 		seen.add(toID(move));
@@ -190,7 +192,8 @@ export function rebuildMember(mon: RoguePokemon, boosts: StatsTable) {
 	mon.hp = mon.hp > 0 ? Math.max(1, Math.min(rebuilt.maxhp, mon.hp + rebuilt.maxhp - mon.maxhp)) : 0;
 	mon.maxhp = rebuilt.maxhp;
 	mon.pp = rebuilt.pp.map(slot => ({
-		...slot, pp: Math.min(slot.maxpp, mon.moveMemory!.find(old => old.id === slot.id)?.pp ??
+		...slot, maxpp: rogueMovePP(mon, slot.id),
+		pp: Math.min(rogueMovePP(mon, slot.id), mon.moveMemory!.find(old => old.id === slot.id)?.pp ??
 			mon.blessingPP?.find(old => old.id === slot.id)?.pp ?? slot.pp),
 	}));
 	mon.stats = rebuilt.stats;
@@ -203,7 +206,7 @@ function offerMoves(run: RogueRun, mon: RoguePokemon, from: number, to: number) 
 		rememberMove(mon, entry.move);
 		mon.seenMoves!.push(entry.move);
 		if (mon.set.moves.some(move => toID(move) === entry.move)) continue;
-		if (mon.set.moves.length < (run.blessings?.owned.some(entry => entry.family === 'learnall') ? 5 : 4)) {
+		if (mon.set.moves.length < (run.blessings?.owned.some(blessing => blessing.family === 'learnall') ? 5 : 4)) {
 			mon.set.moves.push(entry.move);
 			rebuildMember(mon, run.boosts);
 			run.notices!.push(`${mon.set.species} 学会了 ${baseDex.moves.get(entry.move).name}。`);

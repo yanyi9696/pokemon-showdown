@@ -185,7 +185,8 @@ export class RogueManager {
 			difficulty: { tier: adventure.difficulty, floor: adventure.floor, version: adventure.difficultyRulesVersion || 1 },
 			collapse: (adventure.difficultyRulesVersion || 1) >= 2 ? adventure.collapse?.slice() : undefined,
 			opponentCount: opponentSets.length, opponentSlots: partition.opponentSlots,
-			cooperative: { opponentOffset: partition.opponentOffset, singleOpponent: singleOpponent || undefined }, wild,
+			cooperative: { opponentOffset: partition.opponentOffset, singleOpponent: singleOpponent || undefined,
+				escortSide: escort ? escort.owner === session.hostUser ? 'p1' : 'p3' : undefined }, wild,
 			boss: singleOpponent ? structuredClone(encounter.boss) : undefined,
 			systems: {
 				player: { mega: hostEffects.systems.mega, gmega: hostEffects.systems.gmega, z: hostEffects.systems.z },

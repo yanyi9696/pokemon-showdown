@@ -1,3 +1,4 @@
+import { rogueMovePP } from '../../sim/rogue-pp';
 import { Dex, toID } from '../../sim/dex';
 import { ROGUE_STATS } from '../../sim/fantasy-rogue';
 import { EASY_IV_LIMIT } from '../../sim/rogue-quality';
@@ -5,17 +6,19 @@ import { experienceAtLevel, rogueSpeciesData } from '../../sim/fantasy-rogue-rul
 import { TONIC_SECRET } from '../../sim/rogue-blessing-permanent';
 import { recordCollapseResource } from './collapse';
 import { useTonic } from './blessing-consumables';
-import { gainEffort, gainExperience, initializeExperience, rebuildMember, rememberMove } from './progression';
+import {
+	gainEffort, gainExperience, initializeExperience, rebuildMember, rememberMove, ensureMemberMemory,
+} from './progression';
 import { machineMoves } from './trading';
 import { abilityItemTarget, healingLocked, inventoryItem } from './team';
-import { applyRecoveryItem } from './recovery-items';
+import { applyRecoveryItem, maximumRecoveryCount } from './recovery-items';
 import { recordStarterMoves } from './starter-traits';
 import type { RogueAccount, RogueCommand, RogueContent, RogueItem, RogueRun } from './types';
 
 function requireRule(ok: unknown, message: string): asserts ok { if (!ok) throw new Error(message); }
 
 export const TRAINING_ITEM_KINDS = new Set([
-	'crown', 'tonic', 'mint', 'machine', 'effort', 'rarecandy', 'candy', 'ability',
+	'ppmax', 'crown', 'tonic', 'mint', 'machine', 'effort', 'rarecandy', 'candy', 'ability',
 ]);
 
 /** Cheap availability preview; the effect function always validates again before consumption. */
@@ -24,7 +27,13 @@ export function trainingItemTargets(run: RogueRun, content: RogueContent, item: 
 	return run.team.filter(mon => !mon.egg && !mon.nuzlockeDead).flatMap(mon => {
 		let available = false;
 		let slots: number[] | undefined;
-		if (item.kind === 'crown') {
+		if (item.kind === 'ppmax') {
+			slots = mon.pp.flatMap((slot, index) => {
+				const move = Dex.mod('gen9fantasy').moves.get(slot.id);
+				return !move.noPPBoosts && !mon.ppMaxed?.includes(slot.id) && !mon.blessingMoves?.includes(slot.id) ? [index] : [];
+			});
+			available = mon.hp > 0 && slots.length > 0;
+		} else if (item.kind === 'crown') {
 			const ceiling = run.difficulty === 'easy' ? ((run.difficultyRulesVersion || 1) >= 4 ? EASY_IV_LIMIT : 10) : 31;
 			slots = ROGUE_STATS.flatMap((stat, index) => mon.set.ivs[stat] < ceiling ? [index] : []);
 			available = slots.length > 0;
@@ -43,7 +52,9 @@ export function trainingItemTargets(run: RogueRun, content: RogueContent, item: 
 		} else {
 			available = !!content.progression && mon.hp > 0 && !mon.fixedLevel && mon.set.level < (mon.uncappedLevel ? 9999 : 100);
 		}
-		return available ? [{ member: mon.id, ...(slots ? { slots } : {}), ...(item.kind === 'effort' ? {
+		return available ? [{ member: mon.id, ...(slots ? { slots } : {}), ...(item.kind === 'ppmax' ? {
+			slotNames: mon.pp.map(slot => Dex.mod('gen9fantasy').moves.get(slot.id).name),
+		} : {}), ...(item.kind === 'effort' ? {
 			maxCount: Math.min(run.bag[item.id] || 0, Math.ceil(Math.min(252 - mon.set.evs[item.stat!],
 				510 - ROGUE_STATS.reduce((sum, stat) => sum + mon.set.evs[stat], 0)) / item.amount!)),
 		} : {}) }] : [];
@@ -60,8 +71,21 @@ export function useInventoryItem(account: RogueAccount, run: RogueRun, content: 
 	requireRule(item && mon && !mon.egg && run.bag[item.id] > 0, '道具、数量或目标无效。');
 	let count = command.count ?? 1;
 	requireRule(Number.isSafeInteger(count) && count > 0 && count <= run.bag[item.id], '道具使用数量无效或库存不足。');
-	requireRule(item.kind === 'candy' || item.kind === 'effort' || count === 1, '仅经验糖果与基础点数增强道具支持批量使用。');
-	if (item.kind === 'crown') {
+	requireRule(['candy', 'rarecandy', 'effort', 'heal', 'ether'].includes(item.kind) || count === 1,
+		'此道具一次即可完成效果，请逐个选择目标使用。');
+	if (item.kind === 'heal' || item.kind === 'ether') {
+		count = Math.min(count, maximumRecoveryCount(run, mon, item, command.slot));
+	}
+	if (item.kind === 'ppmax') {
+		ensureMemberMemory(mon);
+		const slot = Number.isInteger(command.slot) && mon.pp[command.slot!];
+		requireRule(slot && mon.hp > 0 && !mon.nuzlockeDead && !mon.ppMaxed?.includes(slot.id) &&
+			!mon.blessingMoves?.includes(slot.id) && !Dex.mod('gen9fantasy').moves.get(slot.id).noPPBoosts,
+		'该招式已达 PP 上限或不可提升，道具未消耗。');
+		(mon.ppMaxed ||= []).push(slot.id);
+		ensureMemberMemory(mon);
+		run.notices = [`PP极限提升剂：${Dex.mod('gen9fantasy').moves.get(slot.id).name} 的 PP 上限提升至 ${rogueMovePP(mon, slot.id)}。`];
+	} else if (item.kind === 'crown') {
 		const stats = item.id === 'goldbottlecap' ? ROGUE_STATS : [ROGUE_STATS[command.slot!]];
 		requireRule(stats.every(stat => !!stat) && (item.id === 'goldbottlecap' || Number.isInteger(command.slot)),
 			'请选择要提升的个体值。');
@@ -102,11 +126,12 @@ export function useInventoryItem(account: RogueAccount, run: RogueRun, content: 
 			mon.set.level < (mon.uncappedLevel ? 9999 : 100), '该伙伴不能再升级，神奇糖果未消耗。');
 		initializeExperience(mon);
 		const growth = rogueSpeciesData(mon.fusion?.first.set.species || mon.set.species).growth;
-		const needed = experienceAtLevel(growth, mon.set.level + 1) - mon.experience!;
+		count = Math.min(count, (mon.uncappedLevel ? 9999 : 100) - mon.set.level);
+		const needed = experienceAtLevel(growth, mon.set.level + count) - mon.experience!;
 		requireRule(needed > 0, '伙伴的经验记录需要刷新，神奇糖果未消耗。');
 		run.notices = [];
 		gainExperience(run, mon, needed);
-		run.notices.push('已使用神奇糖果 ×1，伙伴直接提升了 1 级。');
+		run.notices.push(`已使用神奇糖果 ×${count}，伙伴直接提升了 ${count} 级。`);
 	} else if (item.kind === 'candy') {
 		requireRule(content.progression && mon.hp > 0 && (mon.uncappedLevel || mon.set.level < 100) && !mon.fixedLevel,
 			'该成员不能再获得经验。');
@@ -119,7 +144,8 @@ export function useInventoryItem(account: RogueAccount, run: RogueRun, content: 
 		gainExperience(run, mon, item.amount! * count);
 		run.notices.push(`已使用 ${item.name} ×${count}。`);
 	} else if (item.kind === 'ether') {
-		applyRecoveryItem(run, mon, item, command.slot);
+		applyRecoveryItem(run, mon, item, command.slot, count);
+		run.notices = [`已使用 ${item.name} ×${count}，恢复 PP；达到上限后的道具已保留。`];
 	} else if (item.kind === 'ability') {
 		const ability = abilityItemTarget(mon, item.id);
 		requireRule(ability, '该伙伴无法使用此特性道具，道具未消耗。');
@@ -129,8 +155,9 @@ export function useInventoryItem(account: RogueAccount, run: RogueRun, content: 
 	} else if (item.kind === 'cure') {
 		applyRecoveryItem(run, mon, item);
 	} else {
-		applyRecoveryItem(run, mon, item);
-		recordCollapseResource(account, run, 'medicine');
+		applyRecoveryItem(run, mon, item, undefined, count);
+		run.notices = [`已使用 ${item.name} ×${count}，恢复 HP；达到上限后的道具已保留。`];
+		recordCollapseResource(account, run, 'medicine', count);
 	}
 	run.bag[item.id] -= count;
 }

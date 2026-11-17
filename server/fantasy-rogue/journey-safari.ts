@@ -1,5 +1,6 @@
 import type { RogueRandom } from './biome-pools';
 import type { JourneyActivity } from './journey-activities';
+import { safariTargets } from './journey-safari-pool';
 
 export interface SafariResult {
 	activity: JourneyActivity;
@@ -8,8 +9,11 @@ export interface SafariResult {
 }
 
 /** Native safari rules. Roll once before applying the common outcome to either player. */
-export function rollSafariChoice(activity: JourneyActivity, random: RogueRandom, choice: string): SafariResult {
+export function rollSafariChoice(
+	activity: JourneyActivity, random: RogueRandom, choice: string, floor = 200
+): SafariResult {
 	const a = structuredClone(activity);
+	if (a.safari) a.safari = safariTargets(floor, a.safari);
 	if (!['approach', 'bait', 'next', 'ball', 'leave'].includes(choice)) throw new Error('请选择当前狩猎选项。');
 	if (choice === 'approach') {
 		a.wary = (a.wary || 0) + 1;

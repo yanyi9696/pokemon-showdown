@@ -255,6 +255,9 @@ export function configureShop(items: RogueItem[]) {
 	});
 	items.push({ id: 'bottlecap', name: '银色王冠', kind: 'crown', price: 6000, shopFloor: false, icon: 'bottlecap', description: '将一名伙伴自选一项个体值提升至 31。' },
 		{ id: 'goldbottlecap', name: '金色王冠', kind: 'crown', price: 24000, shopFloor: false, icon: 'goldbottlecap', description: '将一名伙伴的六项个体值全部提升至 31。' });
+	items.push({ id: 'ppmax', name: 'PP极限提升剂', kind: 'ppmax', price: 12000, shopFloor: false,
+		icon: 'ppmax', singleMove: true,
+		description: '本局为所选已掌握招式提升至原生 PP 上限，保留已经消耗的次数；不可提升的招式不消耗道具。' });
 	items.push(...captureItems(), ...teraShardItems());
 	items.push(...structuredClone(TREASURES), ...structuredClone(FOSSILS));
 }

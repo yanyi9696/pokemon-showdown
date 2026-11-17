@@ -9,6 +9,29 @@ const { RogueStore } = require('../../dist/server/fantasy-rogue/store');
 const { RogueEngine } = require('../../dist/server/fantasy-rogue/engine');
 const data = createPreviewContent();
 describe('Bulk effort supplies', () => {
+	for (const id of ['potion', 'ether', 'elixir']) it(`uses only effective ${id} units, preserving excess stock`, () => {
+		const mon = createRoguePokemon(set('Mew', 'Synchronize', 100, ['Splash', 'Surf']), stats(0));
+		mon.hp -= 43; for (const slot of mon.pp) slot.pp = 0;
+		const run = { phase: 'ready', floor: 100, team: [mon], bag: { [id]: 20 }, boosts: stats(0), notices: [] };
+		const item = data.items.find(i => i.id === id);
+		const needed = id === 'potion' ? Math.ceil(43 / item.amount) : Math.ceil((id === 'ether' ? mon.pp[0].maxpp : Math.max(...mon.pp.map(s => s.maxpp))) / item.amount);
+		useInventoryItem({}, run, data, { member: mon.id, value: id, count: 20, slot: 0 });
+		assert.equal(run.bag[id], 20 - needed);
+		if (id === 'potion') assert.equal(mon.hp, mon.maxhp);
+		else assert.equal(mon.pp[0].pp, mon.pp[0].maxpp);
+		const saved = structuredClone(run);
+		assert.throws(() => useInventoryItem({}, run, data, { member: mon.id, value: id, count: 1, slot: 0 }));
+		assert.deepEqual(run, saved);
+	});
+	it('caps bulk Rare Candy at level 100 and queues every intermediate learned move only once', () => {
+		const mon = createRoguePokemon(set('Bulbasaur', 'Overgrow', 98, ['Tackle']), stats(0));
+		const run = { phase: 'ready', floor: 100, team: [mon], bag: { rarecandy: 10 }, boosts: stats(0), notices: [] };
+		useInventoryItem({}, run, data, { member: mon.id, value: 'rarecandy', count: 10 });
+		assert.equal(mon.set.level, 100); assert.equal(run.bag.rarecandy, 8);
+		const saved = structuredClone(run);
+		assert.throws(() => useInventoryItem({}, run, data, { member: mon.id, value: 'rarecandy', count: 1 }));
+		assert.deepEqual(run, saved);
+	});
 	for (const item of data.items.filter(i => i.kind === 'effort')) {
 		it(`caps ${item.id}, preserves excess stock and rejects unusable targets`, () => {
 			const mon = createRoguePokemon(set(), stats(0));

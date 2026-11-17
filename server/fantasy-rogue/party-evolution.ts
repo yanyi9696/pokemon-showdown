@@ -13,6 +13,7 @@ export interface EvolutionRequirement {
 	text: string;
 	/** Names are translated by the same client dictionary as the party editor. */
 	name?: string;
+	status?: string;
 	met: boolean;
 	resource?: boolean;
 }

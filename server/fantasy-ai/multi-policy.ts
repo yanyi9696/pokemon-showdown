@@ -57,10 +57,15 @@ export function prepareMultiChoices(
 	}
 	const log = publicLog.map(mapPublicLine);
 	const alive = new Map<string, boolean>();
+	const protectedEscorts = new Set<string>();
 	const publicHealth = new Map<string, string>();
 	for (const line of publicLog) {
 		const [, event, ident, value, condition] = line.split('|');
 		const seat = ident?.slice(0, 2);
+		if (event === '-start' && value === 'rogueescort') protectedEscorts.add(seat);
+		if (event === '-end' && value === 'rogueescort' || ['switch', 'drag', 'faint'].includes(event)) {
+			protectedEscorts.delete(seat);
+		}
 		if (['switch', 'drag', 'replace'].includes(event) && condition) {
 			alive.set(seat, !condition.includes('fnt'));
 			publicHealth.set(seat, condition);
@@ -70,7 +75,7 @@ export function prepareMultiChoices(
 			alive.set(seat, false);
 		}
 	}
-	const foes = ['p1', 'p3'].flatMap((seat, i) => alive.get(seat) !== false ? [i + 1] : []);
+	const foes = ['p1', 'p3'].flatMap((seat, i) => alive.get(seat) !== false && !protectedEscorts.has(seat) ? [i + 1] : []);
 	const pokemon = SEATS.map(seat => ({ ...requests[seat].side.pokemon[0] }));
 	const nativeOwners: string[] = [...SEATS];
 	// A waiting seat may not receive a fresh private request after damage/fainting. Update its

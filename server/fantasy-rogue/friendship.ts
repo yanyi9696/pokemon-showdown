@@ -57,5 +57,5 @@ export function floorFriendship(run: RogueRun) {
 	const progress = ledger(run);
 	if (progress.completed) return;
 	progress.completed = true;
-	for (const mon of run.team) if (mon.hp > 0) changeFriendship(mon, 3, run);
+	for (const mon of run.team) if (mon.hp > 0) changeFriendship(mon, 4, run);
 }

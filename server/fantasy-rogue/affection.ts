@@ -45,6 +45,10 @@ export function gainAffection(
 		const received = rewards ? convertSpiritItem(run, rewards.content, gift.id,
 			`affection:${id}:${stage}`, rewards.random, false) : gift.id;
 		run.bag[received] = (run.bag[received] || 0) + 1;
+		if (stage === 50) {
+			run.bag.ether = (run.bag.ether || 0) + 1;
+			run.bag.oranberry = (run.bag.oranberry || 0) + 1;
+		}
 		if (stage === 100) {
 			run.bag.rarecandy = (run.bag.rarecandy || 0) + 2;
 			run.bag.goldbottlecap = (run.bag.goldbottlecap || 0) + 1;
@@ -53,7 +57,7 @@ export function gainAffection(
 		}
 		const name = received === gift.id ? gift.name : inventoryItem(rewards!.content, received)?.name || received;
 		(run.notices ||= []).push(`【${person(id).name}】好感度达到 ${stage}。获得${name} ×1` +
-			`${stage === 100 ? '、' + AFFECTION_ADVANCED_REWARDS + '（待选择）' : ''}，有一段话想对你说。`);
+			`${stage === 100 ? '、' + AFFECTION_ADVANCED_REWARDS + '（待选择）' : '、PP 单项小补剂 ×1、橙橙果 ×1'}，有一段话想对你说。`);
 		if (received !== gift.id) run.notices.push(`梦幻的奇赠将本次【${gift.name}】转换为【${name}】。`);
 	}
 	return b.score - before;

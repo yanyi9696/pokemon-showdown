@@ -427,6 +427,24 @@ describe('Fantasy AI decision worker scheduling', function () {
 			assert.equal(scheduler.metrics.completed, 1);
 		} finally { clearInterval(timer); }
 	});
+	it('prioritizes trusted registrations while serving ordinary work after at most three priority decisions', async () => {
+		const previous = scheduler; scheduler = new DecisionScheduler({ workers: 1, maxBattles: 8, decisionMs: 5000 });
+		await previous.dispose();
+		const slot = scheduler.slots[0], promises = [], order = [];
+		slot.stopping = Promise.resolve(0);
+		slot.worker = { postMessage() {}, terminate: () => Promise.resolve(0) };
+		for (const name of ['ordinary0', 'ordinary1', 'priority0', 'priority1', 'priority2', 'priority3', 'priority4']) {
+			scheduler.register(name, name, undefined, name.startsWith('priority'));
+			promises.push(scheduler.submit(request(name, name, 1)));
+		}
+		slot.stopping = undefined; scheduler.pump();
+		while (slot.active) {
+			const active = slot.active; order.push(active.input.key.roomId);
+			scheduler.finish(active, 'completed'); scheduler.pump();
+		}
+		assert.deepEqual(order, ['priority0', 'priority1', 'priority2', 'ordinary0', 'priority3', 'priority4', 'ordinary1']);
+		assert((await Promise.all(promises)).every(result => result.status === 'completed'));
+	});
 
 	it('preserves queued thinking time and the best completed candidate on timeout', async () => {
 		scheduler.register('first', 'a');
@@ -448,8 +466,8 @@ describe('Fantasy AI decision worker scheduling', function () {
 	});
 	it('caps campaign response time including the queue without lowering other battle budgets', async () => {
 		scheduler.register('busy', 'a'); scheduler.register('campaign', 'b');
-		const first = scheduler.submit(request('busy', 'a', 1, {budgetMs: 1000, maxRollouts: 100000}));
-		const second = await scheduler.submit(request('campaign', 'b', 1, {budgetMs: 1000, wallClockMs: 60}));
+		const first = scheduler.submit(request('busy', 'a', 1, { budgetMs: 1000, maxRollouts: 100000 }));
+		const second = await scheduler.submit(request('campaign', 'b', 1, { budgetMs: 1000, wallClockMs: 60 }));
 		assert.equal(second.status, 'timeout');
 		assert(second.totalMs < 1000, 'the campaign request cannot wait for the long search ahead of it');
 		assert(second.queueMs >= 40, 'the deadline includes time spent waiting for a worker');

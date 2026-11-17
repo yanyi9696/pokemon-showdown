@@ -51,6 +51,8 @@ export interface RogueEncounter {
 	catchChances?: Record<string, number>;
 }
 export interface RogueNode {
+	/** Actual-entry roll, not route-preview RNG. */
+	eeveeVisitResolved?: boolean;
 	mainlineScene?: string;
 	elderScene?: string;
 	challenge?: import('./optional-challenges').OptionalChallenge;
@@ -92,7 +94,7 @@ export interface RogueItem {
 	name: string;
 	singleMove?: boolean;
 	teraType?: string;
-	kind: 'terashard' | 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'rarecandy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic' | 'crown' | 'ability' | 'forme';
+	kind: 'terashard' | 'ball' | 'revive' | 'heal' | 'ether' | 'cure' | 'candy' | 'rarecandy' | 'evolution' | 'held' | 'emblem' | 'treasure' | 'effort' | 'mint' | 'machine' | 'tonic' | 'crown' | 'ability' | 'forme' | 'ppmax';
 	nature?: string; move?: string; description?: string;
 	/** Omitted on cure items means all persistent status conditions. */
 	cureStatuses?: string[];

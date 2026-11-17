@@ -35,10 +35,10 @@ export function collapseMedicine(run: RogueRun, amount: number) {
 	return run.collapse?.includes('medicine') ? Math.max(1, Math.floor(amount * collapseParameters(run.difficultyRulesVersion ?? 3).medicine)) : amount;
 }
 /** Count committed purchases / medicine uses separately from battle triggers. */
-export function recordCollapseResource(account: RogueAccount, run: RogueRun, id: 'inflation' | 'medicine') {
+export function recordCollapseResource(account: RogueAccount, run: RogueRun, id: 'inflation' | 'medicine', count = 1) {
 	if (!run.collapse?.includes(id)) return;
 	const h = history(account, run)!;
-	h.triggers[id] = (h.triggers[id] || 0) + 1;
+	h.triggers[id] = (h.triggers[id] || 0) + count;
 }
 export function recordCollapseClear(account: RogueAccount, run: RogueRun) {
 	const h = history(account, run);

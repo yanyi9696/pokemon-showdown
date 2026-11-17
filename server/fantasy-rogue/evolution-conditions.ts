@@ -40,7 +40,8 @@ export function extraEvolutionRequirements(mon: RoguePokemon, child: Species, co
 	const requirements: EvolutionRequirement[] = [], progress = mon.evolutionProgress || {};
 	const check = (text: string, met: boolean) => requirements.push({ text, met });
 	const known = [...mon.set.moves, ...(mon.moveMemory || []).map(m => m.id)].map(toID);
-	if (child.evoMove) check(`已学会 ${dex.moves.get(child.evoMove).name}`, known.includes(toID(child.evoMove)));
+	if (child.evoMove) requirements.push({ text: '需要学会', name: dex.moves.get(child.evoMove).name,
+		met: known.includes(toID(child.evoMove)), status: known.includes(toID(child.evoMove)) ? '已学会' : '未学会' });
 	const condition = child.evoCondition || '', time = rogueTime(context.floor);
 	if (condition === 'at night') check('夜晚', time === 'night');
 	if (condition === 'during the day') check('白天、黎明或黄昏', time !== 'night');

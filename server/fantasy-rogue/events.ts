@@ -377,7 +377,7 @@ export function rollSharedForestOutcome(
 		return { choice, kind: 'watch', support: choice === 'left' ? 0 : 1,
 			replay: simulateForestBattle(event.teams!, random) };
 	}
-	let multiplier = 1.4, text = EVENT_TEXT.cheerWin;
+	let multiplier = 1.3, text = EVENT_TEXT.cheerWin;
 	if (choice === 'watched') {
 		const winner = event.replay!.winner;
 		if (winner === null) {
@@ -390,12 +390,12 @@ export function rollSharedForestOutcome(
 		const roll = random(100);
 		if (roll >= 75) return { choice, kind: 'battle', team: structuredClone(event.teams!.flat()),
 			reward: 3, text: EVENT_TEXT.mediateFight };
-		multiplier = roll < 30 ? 0.5 : 1.4;
+		multiplier = roll < 30 ? 0.5 : 1.3;
 		text = roll < 30 ? EVENT_TEXT.mediateLeave : EVENT_TEXT.mediateGift;
 	} else {
 		throw new Error('森林事件共同步骤已变化。');
 	}
-	const fragments = multiplier === 1.4 ? sharedFragmentOffer(runs, 'forest', random) : null;
+	const fragments = multiplier === 1.3 ? sharedFragmentOffer(runs, 'forest', random) : null;
 	return { choice, kind: 'reward', fragments, text,
 		supplies: rollSupplies(content, random, eventBudget(run.floor, multiplier), true) };
 }
@@ -523,7 +523,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 		if (choice === 'fragments') outcome(run, [claimEventFragments(run)]);
 		else if (alternative === 'forest') {
 			if (event.forestOutcome?.kind === 'reward') giveEventSupplies(run, content, random, event.forestOutcome.supplies);
-			else supplies(run, content, random, eventBudget(run.floor, 1.4), true);
+			else supplies(run, content, random, eventBudget(run.floor, 1.3), true);
 			outcome(run, ['你收下果实和补给，向宝可梦们挥手道别。']);
 		} else if (alternative === 'room') {
 			roomReward(run, random);
@@ -564,7 +564,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 			outcome(run, [EVENT_TEXT.tie]);
 		} else if (winner === event.support) {
 			if (!offerEventFragments(run, 'forest', random)) {
-				supplies(run, content, random, eventBudget(run.floor, 1.4), true);
+				supplies(run, content, random, eventBudget(run.floor, 1.3), true);
 				outcome(run, [EVENT_TEXT.cheerWin]);
 			}
 		} else prepareBattle(run, event.teams![winner], 2,
@@ -604,7 +604,7 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 			const roll = random(100);
 			if (roll < 75) {
 				if (roll < 30 || !offerEventFragments(run, 'forest', random)) {
-					supplies(run, content, random, eventBudget(run.floor, roll < 30 ? 0.5 : 1.4), true);
+					supplies(run, content, random, eventBudget(run.floor, roll < 30 ? 0.5 : 1.3), true);
 					outcome(run, [roll < 30 ? EVENT_TEXT.mediateLeave : EVENT_TEXT.mediateGift]);
 				}
 			} else prepareBattle(run, event.teams!.flat(), 3, EVENT_TEXT.mediateFight, true);

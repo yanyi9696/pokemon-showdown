@@ -1,3 +1,4 @@
+import { routeAdvice } from './route-advice';
 import { companionTravelGift } from './affection-gifts';
 import { type AffectionRewards, gainAffection, affectionChat, AFFECTION_RULES } from './affection';
 import { randomUUID } from 'crypto';
@@ -136,7 +137,7 @@ function socialActive(run: RogueRun) {
 	const active = travellingRoster(run).filter(c => c.origin !== 'blessing' && !c.temporary);
 	return (run.socialCompanions || []).filter(c => active.some(a => a.id === c.id));
 }
-export function socialRecommendation(run: RogueRun, id: string, options: CompanionOption[]) {
+function socialPreferenceRecommendation(run: RogueRun, id: string, options: CompanionOption[]) {
 	const p = TRAVELLERS[id];
 	const score = (o: CompanionOption) => {
 		if (o.disabled || /^(leave|back|continue|finish|solo)$/.test(o.id)) return 0;
@@ -149,9 +150,14 @@ export function socialRecommendation(run: RogueRun, id: string, options: Compani
 	};
 	return options.filter(o => score(o)).sort((a, b) => score(b) - score(a))[0]?.id;
 }
+export function socialRecommendation(run: RogueRun, id: string, options: CompanionOption[]) {
+	return routeAdvice(run)?.id || socialPreferenceRecommendation(run, id, options);
+}
 export function socialCompanionViews(run: RogueRun, options: CompanionOption[]) {
 	return socialActive(run).map(c => ({ ...c, name: TRAVELLERS[c.id].name, region: TRAVELLERS[c.id].region,
 		preference: TRAVELLERS[c.id].preference, areas: TRAVELLERS[c.id].areas,
+		message: c.message && routeAdvice(run) ?
+			`【${routeAdvice(run)!.name}】${routeAdvice(run)!.reason} ${TRAVELLERS[c.id].greeting}` : c.message,
 		recommended: socialRecommendation(run, c.id, options), canConsult: !!options.length,
 		giftOptions: c.giftPending ? TRAVELLERS[c.id].gifts : [] }));
 }
@@ -159,7 +165,7 @@ export function recordSocialPreference(
 	run: RogueRun, options: CompanionOption[], choice: string, key: string, rewards: AffectionRewards | undefined
 ) {
 	for (const c of socialActive(run)) {
-		if (c.counted.includes(key) || socialRecommendation(run, c.id, options) !== choice) continue;
+		if (c.counted.includes(key) || socialPreferenceRecommendation(run, c.id, options) !== choice) continue;
 		c.counted.push(key); c.preferences++;
 		c.message = TRAVELLERS[c.id].thanks;
 		gainAffection(run, c.id, AFFECTION_RULES.preference, 'preference:' + key, rewards);
@@ -182,7 +188,8 @@ export function socialCompanionCommand(
 	if (command.value?.startsWith('gift:')) claimSocialGift(run, c, command.value.slice(5), content, random);
 	else if (command.value === 'advice') {
 		const option = options.find(o => o.id === socialRecommendation(run, c.id, options));
-		c.message = option ? `我想选择「${option.name}」。${TRAVELLERS[c.id].greeting}` : '先看看眼前的选项吧，你来决定。';
+		c.message = option ? `我想选择「${option.name}」。${routeAdvice(run)?.reason || TRAVELLERS[c.id].greeting}` :
+			'先看看眼前的选项吧，你来决定。';
 	} else if (command.value === 'chat') c.message = affectionChat(run, c.id, TRAVELLERS[c.id].greeting);
 	else throw new Error('同行选项无效。');
 }

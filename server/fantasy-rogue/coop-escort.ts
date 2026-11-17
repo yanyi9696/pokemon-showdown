@@ -17,7 +17,7 @@ export function coopEscortOptions(entries: { userid: string, run: RogueRun }[]) 
 		run.node.event.settled || run.floor !== entries[0].run.floor)) return [];
 	return [...entries.map(({ userid }, index) => ({
 		id: 'escort:' + userid, name: `由 ${index + 1}P 接过拉鲁拉丝。`,
-		text: '拉鲁拉丝临时占用护送者的战位并由其操作，原队伍留在场外；另一人照常选最多三只。获胜时它须存活，谢礼双方各得一份。',
+		text: '拉鲁拉丝临时占用护送者的战位，原队伍留在场外；另一人照常选最多三只，并独自迎战两名敌人。伙伴在场时拉鲁拉丝受到保护，不行动、无法被招式命中；获胜时它须存活，谢礼双方各得一份。',
 		disabled: !entries[1 - index].run.team.some(healthy),
 	})), { id: 'leave', name: '这次先不接下护送。', text: '双方共同离开。', disabled: false }];
 }

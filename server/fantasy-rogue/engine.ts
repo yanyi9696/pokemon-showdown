@@ -60,6 +60,7 @@ import { prepareRewardScene, chooseReward } from './reward-scenes';
 import { randomInt, randomUUID } from 'crypto';
 import { repairSavedEncounters } from './encounter-repair';
 import { prepareEliteEscorts } from './elite-escorts';
+import { prepareEeveeEncounter } from './eevee-encounter';
 import { Dex, toID } from '../../sim/dex';
 import {
 	ROGUE_STATS, type RogueBattleResult, type RogueBattleState, type RoguePokemon,
@@ -488,6 +489,7 @@ export class RogueEngine {
 			beginEvent(run, this.random, this.configured());
 			return;
 		}
+		prepareEeveeEncounter(run.node, [run], this.random);
 		if (this.content?.wildTreasures) prepareEconomy(run.node, run.floor, this.random, run.difficulty);
 		delete run.choices;
 		for (const encounter of run.node.encounters) {
@@ -1570,7 +1572,7 @@ export class RogueEngine {
 				if (run.node?.trade) {
 					run.node.trade.stock.find(entry => entry.id === item.id)!.remaining -= count;
 					run.node.trade.purchases += count;
-				} else if (run.node?.kind === 'rest' && item.kind === 'candy' && item.remaining !== undefined) {
+				} else if (run.node?.kind === 'rest' && item.remaining !== undefined) {
 					run.node.restCandyPurchases ||= {};
 					run.node.restCandyPurchases[item.id] = (run.node.restCandyPurchases[item.id] || 0) + count;
 				}
@@ -1654,7 +1656,8 @@ export class RogueEngine {
 			difficulty: { tier: run.difficulty || 0, floor: run.floor, version: run.difficultyRulesVersion || 1 },
 			nuzlocke: nuzlockeBattle(run),
 			collapse: (run.difficultyRulesVersion || 1) >= 2 ? run.collapse?.slice() : undefined,
-			cooperative: encounter.cooperative && { opponentOffset: Math.ceil(encounter.team.length / 2) },
+			cooperative: encounter.cooperative && { opponentOffset: Math.ceil(encounter.team.length / 2),
+				escortSide: run.node?.event?.id === 'lostescort' && encounter.cooperative.id === 'escort' ? 'p3' : undefined },
 			boss: encounter.boss && structuredClone(encounter.boss),
 			wild: !encounter.trainer && run.node!.kind !== 'trainer' && encounter.boss?.kind !== 'summit',
 			escortCount: encounter.escortCount,

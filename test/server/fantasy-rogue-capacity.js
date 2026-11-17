@@ -98,6 +98,21 @@ describe('Fantasy Rogue dedicated battle capacity', function () {
 		}
 		assert.throws(() => createRogueAIManager({ enabled: true, battleWorkers: 17 }), /limits/);
 	});
+	it('reserves bounded admission for authenticated priority identities without evicting ordinary battles', async () => {
+		const { rogueServicePriority, rogueReservedSlots } = require('../../dist/server/fantasy-rogue/service-priority');
+		assert.equal(rogueReservedSlots(128), 5); assert.equal(rogueReservedSlots(1), 0);
+		const previous = campaign; campaign = createRogueAIManager({ enabled: true, maxBattles: 4 }, { decisionMs: 0 });
+		await previous.dispose();
+		const rooms = Array.from({ length: 3 }, () => startBattle(prepare()));
+		const candidate = human(); candidate.forceRename('FCRBeta26101901');
+		assert(!rogueServicePriority(candidate), 'a matching guest nickname cannot acquire priority');
+		prepare(candidate); assert.throws(() => startBattle(candidate), /名额暂满/);
+		candidate.registered = true; assert(rogueServicePriority(candidate));
+		const priority = startBattle(candidate); assert(priority);
+		assert.equal(campaign.getStatus().active, 4); assert(rooms.every(room => !room.battle.ended));
+		assert.throws(() => startBattle(prepare()), /名额暂满/);
+		rooms[0].destroy(); assert(startBattle(prepare()), 'ordinary admission resumes when its slot is released');
+	});
 	it('continues solo and doubles when both ordinary AI slots are full, including the same player', async () => {
 		const first = human(), second = human();
 		await ordinaryBattle(first); await ordinaryBattle(second);
@@ -185,7 +200,9 @@ describe('Fantasy Rogue dedicated battle capacity', function () {
 		const baseMemory = process.memoryUsage(), started = performance.now();
 		const entries = [];
 		for (let i = 0; i < count; i++) {
-			const user = prepare(); entries.push({ user, room: startBattle(user) });
+			const user = human();
+			if (count === 128 && i < 5) { user.forceRename(`FCRBeta2610190${i + 1}`); user.registered = true; }
+			prepare(user); entries.push({ user, room: startBattle(user) });
 		}
 		const createdMs = performance.now() - started;
 		assert.equal(campaign.getStatus().active, count);
@@ -194,7 +211,8 @@ describe('Fantasy Rogue dedicated battle capacity', function () {
 		for (const { room } of entries) assert.equal(room.battle.fantasyAI.metrics.workerErrors, 0);
 		if (count === DEFAULT_ROGUE_BATTLES) {
 			const next = prepare(); assert.throws(() => startBattle(next), /肉鸽战斗名额暂满/);
-			entries[0].room.destroy(); assert(startBattle(next));
+			// The first five rooms occupy authenticated reserved slots; free an ordinary slot here.
+			entries[5].room.destroy(); assert(startBattle(next));
 		}
 		const memory = process.memoryUsage();
 		console.log('ROGUE_CAPACITY_SAMPLE', JSON.stringify({ rooms: count, createdMs: Math.round(createdMs),

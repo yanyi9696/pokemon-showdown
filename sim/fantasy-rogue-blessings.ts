@@ -1,4 +1,5 @@
 import { rogueMetaStat } from './rogue-meta-growth';
+import { updateRogueEscort } from './rogue-escort';
 import { rogueItemBonusFactor } from './rogue-item-amplification';
 import { affectionEndure, affectionAccuracy } from './rogue-affection';
 import { echoPower, echoPowerMultiplier, playerEcho } from './rogue-echo';
@@ -410,6 +411,9 @@ export function prepareBlessingMember(mon: Pokemon) {
 	}
 }
 export function blessingSwitchIn(mon: Pokemon) {
+	updateRogueEscort(mon.battle);
+	// One awakening per entry; healing does not reset it or undo its effects.
+	delete mon.m.roguePureHalf;
 	ghidorahEntry(mon);
 	spindaEntry(mon);
 	if (spiralActive(mon) && !mon.m.rogueSpiralParticipated) {
@@ -866,6 +870,7 @@ export function blessingHit(damage: number, target: Pokemon, source: Pokemon, mo
 }
 export function blessingUpdate(battle: Battle) {
 	if (!battle.fantasyRogue) return;
+	updateRogueEscort(battle);
 	for (const mon of battle.getAllActive()) if (mon.hp) {
 		recordNumberThreshold(mon);
 		reportRogueStatuses(mon);

@@ -13,6 +13,7 @@ import { deferCoopCompanionChallenge, beginCoopRematch, coopRematchOptions, coop
 	chooseCoopRematch, settleCoopRematch } from './coop-rematches';
 import { beginCoopSocial, coopSocialOptions, chooseCoopSocial, settleCoopSocial } from './coop-social';
 import { createHash, randomInt, randomUUID } from 'crypto';
+import { prepareEeveeEncounter } from './eevee-encounter';
 import { beginCoopTracks, coopTracksOptions, chooseCoopTracks } from './coop-tracks';
 import { beginCoopExclusiveClue, coopExclusiveOptions, chooseCoopExclusiveClue,
 	beginCoopExclusiveEncounter, prepareCoopExclusiveReward } from './coop-exclusive';
@@ -63,7 +64,9 @@ import { centerCare, prepareEconomy, ROGUE_LINKING_CORD_PRICE } from './economy'
 import { emergencyCost } from './early-balance';
 import { editParty, healingLocked, inventoryItem } from './team';
 import { claimCoverage, coverageView } from './coverage';
-import { applyRecoveryItem, RECOVERY_ITEM_KINDS, recoveryItemOptions, restoreMember } from './recovery-items';
+import {
+	applyRecoveryItem, maximumRecoveryCount, RECOVERY_ITEM_KINDS, recoveryItemOptions, restoreMember,
+} from './recovery-items';
 import { shopStock } from './trading';
 import { recordShoppingSpend } from './shopping-upgrade';
 import { BUYBACK_FLOOR, recycleOffers, recycleItems } from './buyback';
@@ -706,6 +709,7 @@ export class RogueCoopSessions {
 		requireRule(!quote.pendingLearning, '请先处理这位玩家的待学招式，再进行场外恢复。');
 		const run = this.recoveryRun(adventure, owner), expectedRevision = session.revision;
 		let notice: string;
+		let medicineCount = 0;
 		if (command.action === 'emergency') {
 			requireRule(quote.emergency, '仅在全队濒死、没有复活道具且允许场外治疗时可急救。');
 			requireRule(member.money >= quote.cost, `急救需要 ${quote.cost} 金币，当前余额不足。`);
@@ -719,12 +723,16 @@ export class RogueCoopSessions {
 			const mon = member.team.find(entry => entry.id === command.member);
 			requireRule(item && RECOVERY_ITEM_KINDS.has(item.kind) && mon && member.bag[item.id] > 0,
 				'恢复道具、库存或本人队伍目标无效。');
-			requireRule(command.count === undefined || command.count === 1, '恢复道具每次使用一件。');
+			let count = command.count ?? 1;
+			requireRule(Number.isSafeInteger(count) && count > 0 && count <= member.bag[item.id] &&
+				(['heal', 'ether'].includes(item.kind) || count === 1), '恢复数量或库存无效。');
 			requireRule(!adventure.tradeProposal || ![adventure.tradeProposal.fromMember, adventure.tradeProposal.toMember].includes(mon.id),
 				'请先完成或撤回这位伙伴的交换请求。');
-			applyRecoveryItem(run, mon, item, command.slot);
-			member.bag[item.id]--;
-			notice = `已使用 ${item.name} ×1，恢复所选伙伴，仅消耗该玩家的背包道具。`;
+			count = Math.min(count, maximumRecoveryCount(run, mon, item, command.slot));
+			applyRecoveryItem(run, mon, item, command.slot, count);
+			member.bag[item.id] -= count;
+			if (item.kind === 'heal') medicineCount = count;
+			notice = `已使用 ${item.name} ×${count}，恢复所选伙伴，仅消耗该玩家的背包道具。`;
 		}
 		(member.notices ||= []).push(notice);
 		(member.recoveryReceipts ||= []).push(command.id);
@@ -735,7 +743,8 @@ export class RogueCoopSessions {
 		}
 		session.revision++;
 		session.updatedAt = Date.now();
-		this.engine.store.updateCoopSession(session, expectedRevision);
+		this.engine.store.updateCoopSession(session, expectedRevision, medicineCount ?
+			new Map([[owner, account => recordCollapseResource(account, run, 'medicine', medicineCount)]]) : undefined);
 		Users.get(session.hostUser === user.id ? session.guestUser : session.hostUser)?.send(
 			`|queryresponse|fantasyroguecoopnotice|${JSON.stringify({ session: session.id, recovery: true })}`);
 		return session;
@@ -2822,6 +2831,8 @@ export class RogueCoopSessions {
 				this.saveBlessingRun(adventure, userid, run);
 			}
 			adventure.node = structuredClone(selected);
+			const eeveeParties = [session.hostUser, session.guestUser].map(userid => this.blessingRun(adventure, userid));
+			prepareEeveeEncounter(adventure.node, eeveeParties, randomInt);
 			delete adventure.coopAuction;
 			adventure.encounter = 0;
 			adventure.phase = selected.encounters.length ? 'battle-selection' : 'route-interaction';
@@ -3814,7 +3825,7 @@ export class RogueCoopSessions {
 			member.money -= cost;
 		}
 		if (sharedStock) sharedStock.remaining -= count;
-		if (item.kind === 'candy' && item.remaining !== undefined) {
+		if (item.remaining !== undefined) {
 			member.restCandyPurchases ||= {};
 			member.restCandyPurchases[item.id] = (member.restCandyPurchases[item.id] || 0) + count;
 		}

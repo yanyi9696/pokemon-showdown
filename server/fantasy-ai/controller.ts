@@ -33,6 +33,8 @@ export interface ChallengeMetrics {
 	criticalDecisionReasons?: Record<string, number>;
 }
 export interface AIChallengeOptions extends TimeBudgetSettings {
+	/** Trusted admission policy; does not change search quality or battle rules. */
+	priority?: boolean;
 	rogue?: {
 		difficulty?: import('../../sim/rogue-difficulty').RogueDifficultyContext,
 		orderedBoss?: boolean,
@@ -81,7 +83,7 @@ export class AIController {
 			// Refund queue waiting synchronously, including cancelled queued jobs,
 			// before an undo/retry reads the same turn's remaining thinking budget.
 			if (this.queuedWindow && !this.options.rogue) this.queuedWindow.deadline += milliseconds;
-		});
+		}, options.priority);
 		this.metrics = {
 			roomId: battle.roomid, trainer: options.trainer.id, difficulty: options.difficulty,
 			decisions: 0, timeouts: 0, workerErrors: 0, searchFallbacks: 0, rollouts: 0, illegalChoices: 0,
