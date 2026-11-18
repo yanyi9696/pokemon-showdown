@@ -838,6 +838,8 @@ export function completeBlessingFloor(account: RogueAccount, run: RogueRun, cont
 			state.soloLateFloors = (state.soloLateFloors || 0) + 1;
 			if (state.soloLateFloors % 2) continue;
 		}
+		// Candy and ordinary experience share this cap; completing a floor must still succeed there.
+		if (mon.set.level >= 9999) continue;
 		const next = experienceAtLevel(rogueSpeciesData(mon.set.species).growth, mon.set.level + 1);
 		gainExperience(run, mon, Math.max(0, next - (mon.experience || 0)));
 	}

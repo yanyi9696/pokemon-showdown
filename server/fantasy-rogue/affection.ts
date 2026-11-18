@@ -135,6 +135,9 @@ export function affectionView(run: RogueRun) {
 }
 export function affectionScene(run: RogueRun) {
 	if (run.phase === 'battle' || run.story || run.dialogue || run.pendingMoves?.length) return;
+	// Invitations block replies in the command handler. Keep the saved scene queued
+	// instead of sending an unanswerable dialogue to an older/cached client.
+	if (run.companionInvitations?.length) return;
 	const entry = Object.entries(run.trainerBonds || {}).find(([, b]) => b.pending.length);
 	if (!entry) return;
 	const [id, b] = entry, stage = b.pending[0];
