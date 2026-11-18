@@ -1922,20 +1922,11 @@ export const Items: import("../../../sim/dex-items").ModdedItemDataTable = {
 			"Gengar-Fantasy",
 			"Eternatus",
 		],
-		onTakeItem(item, source) {
-			const name = source.baseSpecies.name;
-			const allValidForms = [
-				...(Array.isArray(item.megaEvolves) ? item.megaEvolves : [item.megaEvolves!]),
-				...(Array.isArray(item.megaStone) ? item.megaStone : [item.megaStone!]),
-			];
-
-			if (allValidForms.includes(name)) return false;
-			return true;
-		},
+		onTakeItem: false,
 		num: 9999,
 		gen: 9,
-		desc: "让超巨进化宝可梦携带后,在战斗时就能进行超级进化的一种神奇许愿星",
-		shortDesc: "让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化",
+		desc: "让超巨进化宝可梦携带后,在战斗时就能进行超级进化的一种神奇许愿星。不可被拍落、夺取或交换。",
+		shortDesc: "让可以超巨进化的宝可梦携带后,在战斗时就能进行超级进化。不可被拍落、夺取或交换。",
 	},
 	victreebelite: {
 		name: "Victreebelite",
