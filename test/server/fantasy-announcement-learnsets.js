@@ -4,7 +4,7 @@ const { Dex } = require('../../dist/sim');
 const { Learnsets } = require('../../dist/data/learnsets');
 const dex = Dex.mod('gen9fantasy');
 const additions = {
-	psychup: 'alakazam starmie mrmime mawile altaria drifblim absol roserade weavile rotom rotomheat rotomwash rotomfrost rotomfan rotommow liepard musharna audino cofagrigus slurpuff drampa annihilape',
+	psychup: 'alakazam starmie mrmime mawile altaria castform absol roserade weavile rotom rotomheat rotomwash rotomfrost rotomfan rotommow liepard musharna audino cofagrigus slurpuff drampa annihilape',
 	slackoff: 'emboar', roost: 'beedrill hydreigon', tailwind: 'emolga', wonderroom: 'umbreon',
 	playrough: 'vaporeon jolteon flareon espeon umbreon leafeon glaceon',
 };
@@ -13,6 +13,14 @@ const variants = {
 	slackoff: 'emboarfantasy emboarmegafantasy',
 };
 describe('Fantasy announcement learnsets', () => {
+	it('teaches Castform and its weather forms, matching the supplied 飘浮泡泡 announcement', () => {
+		for (const id of ['castform', 'castformsunny', 'castformrainy', 'castformsnowy']) {
+			assert(dex.species.getFullLearnset(id).some(l => l.learnset.psychup?.includes('9M')), id);
+		}
+	});
+	it('does not add the announcement move to unlisted Drifblim', () => {
+		assert.deepEqual(dex.species.getLearnsetData('drifblim').learnset, Learnsets.drifblim.learnset);
+	});
 	for (const [move, names] of Object.entries(additions)) for (const id of names.split(' ')) {
 		it(`adds ${move} to ${id} without removing existing moves or official sources`, () => {
 			assert(dex.species.getFullLearnset(id).some(l => l.learnset[move]?.includes('9M')));

@@ -97,9 +97,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		inherit: true,
 		learnset: { ...OriginalLearnsets.roserade.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
 	},
-	drifblim: {
+	castform: {
 		inherit: true,
-		learnset: { ...OriginalLearnsets.drifblim.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+		learnset: { ...OriginalLearnsets.castform.learnset, psychup: ["9M", "7M", "6M", "5M", "4M", "4E", "3T", "3E"] },
 	},
 	altaria: {
 		inherit: true,
