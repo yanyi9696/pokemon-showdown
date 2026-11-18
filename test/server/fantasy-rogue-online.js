@@ -617,6 +617,53 @@ describe('Fantasy Rogue real rooms', function () {
 			assert(!observation.opponentMoves?.length, 'unrevealed initial moves must not be supplied');
 		}
 	});
+	for (const first of [1, 2]) it(`captures both Latios positions in a real room, starting with ${first}, without replaying a stale choice`, async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			const run = saved.run; run.spirit = 'latios'; run.doubleBattle = true;
+			run.team = [createRoguePokemon(set('Bulbasaur', 'Overgrow', 50, ['Splash']), stats(0))];
+			run.bag.pokeball = 5;
+			run.node.encounters[0].team = [set('Magikarp', 'Swift Swim', 5, ['Splash']), set('Magikarp', 'Swift Swim', 5, ['Splash'])];
+		});
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		await until(() => JSON.parse(room.battle.p1.request.request || '{}').active && room.battle.p2.request.isWait, 'Latios first turn');
+		const rqid = room.battle.p1.request.rqid, choice = `rogueball pokeball ${first}, pass|${rqid}`;
+		room.battle.choose(user, choice);
+		await until(() => account().captures.magikarp === 1 && room.battle.p1.request.rqid > rqid, 'first capture persisted');
+		const remaining = JSON.parse(room.battle.p1.request.request).fantasyRogue.captureTargets;
+		assert.equal(remaining.length, 1); assert.equal(remaining[0].key, `p2:${first === 1 ? 1 : 0}`);
+		const original = structuredClone(account());
+		room.battle.choose(user, choice); await delay(20);
+		assert.deepEqual(account(), original, 'a stale rqid cannot spend another ball or grant another catch');
+		assert.equal(new RogueManager(manager.engine, () => ai).state(user).run.roomid, room.roomid);
+		room.battle.choose(user, `rogueball pokeball ${first === 1 ? 2 : 1}, pass|${room.battle.p1.request.rqid}`);
+		await until(() => room.battle.ended && !account().run.battle, 'both catches settled');
+		assert.equal(account().captures.magikarp, 2); assert.equal(account().run.bag.pokeball, 3);
+		assert.equal(account().run.team.length, 3);
+	});
+	for (const companion of ['sada', 'turo']) it(`keeps fainted partners off the field in a Latios autonomous ${companion} preview`, async () => {
+		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
+		store.change(user.id, saved => {
+			const { normalizeBlessings } = require('../../dist/server/fantasy-rogue/blessings');
+			const { grantCompanion } = require('../../dist/server/fantasy-rogue/companions');
+			const { blessing } = require('../../dist/sim/rogue-blessing-data');
+			const run = saved.run; run.spirit = 'latios'; run.doubleBattle = true;
+			normalizeBlessings(run).owned.push({ ...blessing('companionai'), floor: 1 }); grantCompanion(run, companion);
+			run.team = [createRoguePokemon(set('Mew', 'Synchronize', 100, ['Psychic']), stats(0)),
+				createRoguePokemon(set('Zubat', 'Inner Focus', 5, ['Splash']), stats(0))];
+			run.team[1].hp = 0;
+			run.node.encounters[0].team = [set('Magikarp', 'Swift Swim', 1, ['Splash']), set('Magikarp', 'Swift Swim', 1, ['Splash'])];
+		});
+		const original = structuredClone(account().run.team);
+		const room = Rooms.get(command('battle').run.roomid); rooms.push(room);
+		assert(room.battle.roguePreview);
+		await until(() => room.battle.ended && account().run.preview?.stage === 'result', 'Latios automatic preview');
+		assert(account().run.preview.result.won);
+		assert(!room.battle.stream.battle.log.some(line => line.startsWith('|switch|p1') && line.includes('Zubat')));
+		assert.deepEqual(account().run.team, original);
+		command('previewresult', { value: 'accept' });
+		assert.equal(account().run.team.find(mon => mon.id === original[1].id).hp, 0);
+	});
 	it('opens a one-versus-one real AI room, captures, saves, and continues with two party members', async () => {
 		command('start', { starters: ['bulbasaur'] }); command('select', { value: 'grass' });
 		for (let encounter = 0; encounter < 2; encounter++) {

@@ -504,38 +504,43 @@ function caughtIDs(state: RogueBattleState, side: 'p1' | 'p3') {
 	return side === 'p3' ? (state.partnerCaughtSpeciesIds ||= []) : (state.caughtSpeciesIds ||= []);
 }
 
-export function chooseRogueBall(side: Side, id: string) {
+export function chooseRogueBall(side: Side, text: string) {
 	const state = side.battle.fantasyRogue;
+	const match = /^([a-z0-9]+)(?: ([1-3]))?$/.exec(text);
+	if (!match || state?.cooperative && match[2]) return side.emitChoiceError('捕捉目标无效。');
+	const id = match[1], index = side.getChoiceIndex(), catcher = side.active[index];
 	const permittedSide = state && (state.cooperative ?
 		state.coopCapture?.ownerSide === side.id && state.coopCapture.ball === id : side.id === 'p1');
 	const inventory = state && captureInventory(state, side.id === 'p3' ? 'p3' : 'p1');
 	const target = state?.coopCapture ?
 		(state.coopCapture.targetSide === 'p2' ? side.battle.p2 : side.battle.p4)?.active[state.coopCapture.targetSlot] :
-		side.foe.active[0];
+		match[2] ? side.foe.active[Number(match[2]) - 1] : side.foe.active.find(mon => mon?.hp && !mon.fainted);
 	const capacity = state?.cooperative ? !!state.coopCaptureCapacity?.[side.id as 'p1' | 'p3'] :
 		!!state && (state.team.length < 6 || state.allowReplacement);
 	if (!state || !permittedSide || side.requestState !== 'move' || !state.catchable || !capacity ||
 		!nuzlockeCanCatch(side.battle, target) ||
 		(id === 'masterball' && (!state.wild || state.npcCapture)) || !state.balls.some(ball => ball.id === id) ||
 		!inventory || !(inventory[id] > 0) ||
-		!side.active[0]?.hp || !target?.hp ||
+		!catcher?.hp || catcher.fainted || !target?.hp || target.fainted ||
 		state.coopCapture && target.set.fantasyRogueId !== state.coopCapture.targetId) {
 		return side.emitChoiceError('当前不能使用这个精灵球。');
 	}
-	side.choice.actions.push({ choice: 'rogueball', pokemon: side.active[0], moveid: id });
+	side.choice.actions.push({ choice: 'rogueball', pokemon: catcher, target, targetLoc: target.position + 1, moveid: id });
 	return true;
 }
 
 /** Uses the exact integer shake/critical thresholds used by throwRogueBall, without drawing RNG. */
 export function rogueCaptureChance(battle: Battle, ball: RogueBattleState['balls'][number], requestedSide?: Side,
-	requestedTarget?: Pokemon): number | null {
+	requestedTarget?: Pokemon, requestedCatcher?: Pokemon): number | null {
 	const state = battle.fantasyRogue;
 	const target = requestedTarget || (state?.coopCapture ?
-		(state.coopCapture.targetSide === 'p2' ? battle.p2 : battle.p4)?.active[state.coopCapture.targetSlot] : battle.p2?.active[0]);
+		(state.coopCapture.targetSide === 'p2' ? battle.p2 : battle.p4)?.active[state.coopCapture.targetSlot] :
+		battle.p2?.active.find(mon => mon?.hp && !mon.fainted));
 	if (!state?.catchable || !target?.hp || !nuzlockeCanCatch(battle, target)) return null;
 	if (ball.id === 'masterball') return state.wild && !state.npcCapture ? 1 : null;
 	const ownerSide = captureSide(state, requestedSide);
-	const catcher = (ownerSide === 'p3' ? battle.p3 : battle.p1)?.active[0];
+	const catcher = requestedCatcher ||
+		(ownerSide === 'p3' ? battle.p3 : battle.p1)?.active.find(mon => mon?.hp && !mon.fainted);
 	if (!catcher?.hp) return null;
 	const multiplier = (state.spirit?.id === 'mew' ? 2 : 1) *
 		(hasBlessing(catcher, 'catcher') ? 1.5 : 1) * echoChance(playerEcho(catcher)?.catch);
@@ -548,16 +553,19 @@ export function rogueCaptureChance(battle: Battle, ball: RogueBattleState['balls
 	return Math.min(1, (critical * shake + (1 - critical) * shake ** 4) * multiplier);
 }
 
-export function throwRogueBall(battle: Battle, id: string) {
+export function throwRogueBall(battle: Battle, id: string, requestedCatcher?: Pokemon, requestedTarget?: Pokemon) {
 	const state = battle.fantasyRogue!;
 	const ownerSide = captureSide(state);
-	const catcher = (ownerSide === 'p3' ? battle.p3 : battle.p1)?.active[0];
-	if (!catcher?.hp) return;
+	const catcherSide = ownerSide === 'p3' ? battle.p3 : battle.p1;
+	const catcher = requestedCatcher || catcherSide?.active.find(mon => mon?.hp && !mon.fainted);
+	if (!catcher?.hp || catcher.fainted || !catcherSide?.active.includes(catcher)) return;
 	const inventory = captureInventory(state, ownerSide);
 	const ball = state.balls.find(entry => entry.id === id)!;
 	const target = state.coopCapture ?
-		(state.coopCapture.targetSide === 'p2' ? battle.p2 : battle.p4)?.active[state.coopCapture.targetSlot] : battle.p2.active[0];
-	if (!state.catchable || !target?.hp || !nuzlockeCanCatch(battle, target) || !inventory || !(inventory[id] > 0) ||
+		(state.coopCapture.targetSide === 'p2' ? battle.p2 : battle.p4)?.active[state.coopCapture.targetSlot] :
+		requestedTarget || battle.p2.active.find(mon => mon?.hp && !mon.fainted);
+	if (!ball || !state.catchable || !target?.hp || target.fainted || !target.side.active.includes(target) ||
+		!nuzlockeCanCatch(battle, target) || !inventory || !(inventory[id] > 0) ||
 		state.coopCapture && target.set.fantasyRogueId !== state.coopCapture.targetId ||
 		id === 'masterball' && (!state.wild || state.npcCapture)) return;
 	inventory[id]--;
@@ -571,7 +579,7 @@ export function throwRogueBall(battle: Battle, id: string) {
 	if (id === 'masterball') {
 		success = true; shakes = 3;
 	} else if (state.spirit?.id === 'mew' || hasBlessing(catcher, 'catcher') || playerEcho(catcher)?.catch) {
-		success = chance(Math.round(rogueCaptureChance(battle, ball, battle[ownerSide])! * 1000000), 1000000);
+		success = chance(Math.round(rogueCaptureChance(battle, ball, battle[ownerSide], target, catcher)! * 1000000), 1000000);
 		shakes = success ? 3 : 1;
 	} else if (ball.chance !== undefined) {
 		success = chance(Math.round(ball.chance * 1000000), 1000000);

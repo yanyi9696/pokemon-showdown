@@ -38,8 +38,10 @@ describe('Rogue pre-battle fainted party presentation', () => {
 			const flagged = battle.log.filter(line => line.startsWith('|poke|') && line.includes('|[fainted]'));
 			assert.equal(flagged.length, format.endsWith('coop') ? 2 : 1);
 			assert(flagged.some(line => line.startsWith('|poke|p1|Bulbasaur,') && line.endsWith('|[fainted] OwnBench')));
-			assert.equal(battle.p1.pokemon[0].hp, 0);
-			assert.equal(battle.p1.pokemon[0].fainted, true);
+			const fainted = battle.p1.pokemon.find(mon => mon.name === 'OwnBench');
+			assert.equal(fainted.hp, 0);
+			assert.equal(fainted.fainted, true);
+			assert(!battle.p1.active.includes(fainted), 'an already-fainted member stays on the bench');
 			assert.equal(battle.p1.pokemonLeft, 2);
 			assert(!battle.log.some(line => line.startsWith('|faint|')), 'no KO animation, counter or reward is created');
 			for (const channel of [0, 1, 2, 3]) {

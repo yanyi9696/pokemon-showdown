@@ -2785,7 +2785,7 @@ export class Battle {
 			useRogueRevival(action.pokemon, action.target, action.moveid);
 			break;
 		case 'rogueball':
-			throwRogueBall(this, action.moveid);
+			throwRogueBall(this, action.moveid, action.pokemon, action.target);
 			if (this.fantasyRogue?.cooperative) delete this.fantasyRogue.coopCapture;
 			break;
 		case 'start': {
@@ -2843,13 +2843,22 @@ export class Battle {
 				for (let i = 0; i < side.active.length; i++) {
 					// Rogue can enter doubles with a single partner. Leave the other field slot vacant.
 					if (!side.pokemon[i]) continue;
+					const lead = this.fantasyRogue && (!side.pokemon[i].hp || side.pokemon[i].fainted) ?
+						side.pokemon.find(mon => mon.hp && !mon.fainted && !mon.isActive) : side.pokemon[i];
+					if (!lead) continue;
+					// Initial switchIn has no old active to swap with; keep native positions aligned.
+					if (lead !== side.pokemon[i]) {
+						const displaced = side.pokemon[i];
+						displaced.position = lead.position; side.pokemon[displaced.position] = displaced;
+						lead.position = i; side.pokemon[i] = lead;
+					}
 					if (!side.pokemonLeft) {
 						// forfeited before starting
 						side.active[i] = side.pokemon[i];
 						side.active[i].fainted = true;
 						side.active[i].hp = 0;
 					} else {
-						this.actions.switchIn(side.pokemon[i], i);
+						this.actions.switchIn(lead, i);
 					}
 				}
 			}

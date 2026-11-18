@@ -330,7 +330,7 @@ export class Side {
 		return this.choice.actions.map(action => {
 			switch (action.choice) {
 			case 'rogueball':
-				return `rogueball ${action.moveid}`;
+				return `rogueball ${action.moveid}${this.battle.fantasyRogue?.cooperative ? '' : ` ${action.targetLoc || 1}`}`;
 			case 'roguerevive':
 				return `roguerevive ${action.moveid} ${action.target!.position + 1}`;
 			case 'move':
@@ -532,15 +532,19 @@ export class Side {
 		const rogueBag = this.id === 'p3' ? rogue?.partnerBag : rogue?.bag;
 		const rogueCapacity = rogue?.cooperative ? !!rogue.coopCaptureCapacity?.[this.id as 'p1' | 'p3'] :
 			!!rogue && (!!rogueTeam && rogueTeam.length < 6 || rogue.allowReplacement);
-		const captureTargets = rogue?.cooperative && rogue.catchable ? [this.battle.p2, this.battle.p4].filter(Boolean)
-			.flatMap(side => side!.active.map((pokemon, index) => ({ pokemon, index, side: side!.id })))
-			.filter(target => !!target.pokemon?.hp && !!target.pokemon.set.fantasyRogueId)
-			.map(target => ({
-				key: `${target.side}:${target.index}`, id: target.pokemon.set.fantasyRogueId!, name: target.pokemon.species.name,
-				hp: target.pokemon.hp, maxhp: target.pokemon.maxhp,
-				chances: Object.fromEntries((rogue.balls || []).map(ball => [ball.id,
-					rogueCaptureChance(this.battle, ball, this, target.pokemon)])),
-			})) : undefined;
+		const captureTargets = rogue?.catchable && (rogue.cooperative || this.active.length > 1) ?
+			(rogue.cooperative ? [this.battle.p2, this.battle.p4] : [this.battle.p2]).filter(Boolean)
+				.flatMap(side => side!.active.map((pokemon, index) => ({ pokemon, index, side: side!.id })))
+				.filter(target => !!target.pokemon?.hp && !!target.pokemon.set.fantasyRogueId)
+				.map(target => ({
+					key: `${target.side}:${target.index}`, id: target.pokemon.set.fantasyRogueId!, name: target.pokemon.species.name,
+					hp: target.pokemon.hp, maxhp: target.pokemon.maxhp,
+					chances: Object.fromEntries((rogue.balls || []).map(ball => [ball.id,
+						rogueCaptureChance(this.battle, ball, this, target.pokemon)])),
+					...(!rogue.cooperative ? { slotChances: this.active.map(mon => mon?.hp ?
+						Object.fromEntries((rogue.balls || []).map(ball => [ball.id,
+							rogueCaptureChance(this.battle, ball, this, target.pokemon, mon)])) : null) } : {}),
+				})) : undefined;
 		const psychic = psychicCharge(this.active[0]);
 		const eeveeZ = this.active.map(mon => eeveeZAvailable(mon));
 		const companionZ = this.active.map(mon => companionZRequest(mon));

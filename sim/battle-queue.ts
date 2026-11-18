@@ -115,6 +115,7 @@ export interface RogueBallAction {
 	priority: number;
 	speed: number;
 	pokemon: Pokemon;
+	target?: Pokemon;
 	moveid: string;
 }
 
