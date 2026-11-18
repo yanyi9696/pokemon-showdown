@@ -13,6 +13,7 @@ import { Battle } from './battle';
 import { Dex } from './dex';
 import { Field } from './field';
 import { Pokemon } from './pokemon';
+import { restoreEmblemSpeciesTypes, syncRestoredEmblemTypes } from './fantasy-rogue-blessings';
 import { PRNG } from './prng';
 import { type Choice, Side } from './side';
 
@@ -136,6 +137,9 @@ export const State = new class {
 			this.deserializeSide(side, battle.sides[i]);
 			activeRequests = activeRequests || side.activeRequest === undefined;
 		}
+		for (const side of battle.sides) {
+			for (const pokemon of side.pokemon) restoreEmblemSpeciesTypes(pokemon, state.log);
+		}
 		// JSON duplicates plain objects. Restore the shared table established by Battle.start
 		// before requests or subsequent actions can see diverging ally hazards/screens/timers.
 		for (const side of battle.sides) {
@@ -157,6 +161,12 @@ export const State = new class {
 		battle.queue.list = queue;
 		(battle as any).hints = new Set(state.hints);
 		(battle as any).log = state.log;
+		if (battle.fantasyRogue) {
+			(battle as any).log = [...state.log]; // Do not append corrections to the caller's saved snapshot.
+			for (const side of battle.sides) {
+				for (const pokemon of side.pokemon) syncRestoredEmblemTypes(pokemon);
+			}
+		}
 		return battle;
 	}
 

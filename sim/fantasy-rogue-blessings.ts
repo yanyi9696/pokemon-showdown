@@ -674,14 +674,61 @@ export function blessingActionUsed(mon: Pokemon) { if (mon.battle.fantasyRogue) 
 export function blessingFirstChoice(mon: Pokemon) { return !!hasBlessing(mon, 'secondchoice') && member(mon).actions < 2; }
 export function blessingExtraZ(mon: Pokemon) { return !!hasBlessing(mon, 'style') && side(mon).style >= 6; }
 export function spendBlessingZ(mon: Pokemon) { side(mon).style = 0; member(mon).extraZ = true; }
+/** Equipment changes a form's base types once; moves and abilities may then replace them. */
+export function emblemSpeciesTypes(mon: Pokemon, types: string[]) {
+	if (!mon.battle.fantasyRogue) return types;
+	const saved = savedBlessingMember(mon), type = emblemType(saved?.emblem || mon.item);
+	if (!type) return types;
+	const base = [...types], modifiers = mon.set.fantasyRogueModifiers;
+	if (modifiers?.firstType) base[0] = modifiers.firstType;
+	if (modifiers?.extraType) base[1] = modifiers.extraType;
+	return applyEmblemType(base, type, saved?.emblemSlot);
+}
+/** Older checkpoints stored natural base types and applied emblems only when reading them. */
+export function restoreEmblemSpeciesTypes(mon: Pokemon, log: string[]) {
+	if (!mon.battle.fantasyRogue || mon.transformed) return;
+	const natural = mon.set.fantasyRogueModifiers?.fusion?.types || mon.species.types;
+	if (mon.types.join('/') !== natural.join('/')) return; // Already converted or temporarily changed.
+	const base = emblemSpeciesTypes(mon, natural);
+	if (base.join('/') === mon.types.join('/')) return;
+	if (mon.isActive) {
+		const slot = `${mon.getSlot()}:`;
+		for (let i = log.length - 1; i >= 0; i--) {
+			const [, event, target, effect, ...args] = log[i].split('|');
+			if (!target?.startsWith(slot)) continue;
+			if (event === '-houbaxi') return; // The custom move publishes its type silently before this marker.
+			// A move can deliberately change a single-type partner back to its natural type.
+			// Silent end-of-turn readback lines from the old emblem implementation are not such a change.
+			if (event === '-start' && effect === 'typechange' && !args.includes('[silent]')) return;
+			if (['switch', 'drag', '-formechange'].includes(event) ||
+				event === '-activate' && effect === 'ability: Mimicry' ||
+				event === 'detailschange' && !args.includes('[levelchange]')) break;
+		}
+	}
+	// Do not clear added types, Roost, visible disguise, HP, PP or any other battle state.
+	mon.types = base;
+}
+/** Reconnect must correct the old displayed overlay as well as the damage calculation. */
+export function syncRestoredEmblemTypes(mon: Pokemon) {
+	if (!mon.isActive || mon.terastallized) return;
+	const seen = mon.illusion || mon;
+	if (!emblemType(savedBlessingMember(seen)?.emblem || seen.item)) return;
+	const types = seen.getTypes(true).join('/');
+	if (types === seen.apparentType) return;
+	mon.battle.add('-start', mon, 'typechange', types, '[silent]');
+	seen.apparentType = types;
+	if (mon.addedType) mon.battle.add('-start', mon, 'typeadd', mon.addedType, '[silent]');
+}
 export function blessingTypes(mon: Pokemon, types: string[]) {
 	types = ghidorahTypes(mon, types);
-	if (mon.battle.fantasyRogue && mon.set.fantasyRogueModifiers?.extraType && !mon.transformed) {
+	const saved = savedBlessingMember(mon);
+	const emblem = mon.battle.fantasyRogue && emblemType(saved?.emblem || mon.item);
+	// With an emblem, the permanent extra slot was already incorporated before replacement.
+	// Keep the unrelated no-emblem blessing behavior unchanged.
+	if (mon.battle.fantasyRogue && mon.set.fantasyRogueModifiers?.extraType && !mon.transformed && !emblem) {
 		types = [...new Set([types[0], mon.set.fantasyRogueModifiers.extraType])];
 	}
-	const type = mon.battle.fantasyRogue && emblemType(savedBlessingMember(mon)?.emblem || mon.item);
-	if (type) types = applyEmblemType(types, type, savedBlessingMember(mon)?.emblemSlot);
-	const tonics = savedBlessingMember(mon)?.tonics;
+	const tonics = saved?.tonics;
 	return tonics?.wine && tonics.cephalosporin ? [...new Set([...types, 'Ghost'])] : types;
 }
 export function blessingModifyStat(stat: number, mon: Pokemon, key: Exclude<StatID, 'hp'>) {

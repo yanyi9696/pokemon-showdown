@@ -150,6 +150,7 @@ export function emblemType(item: string) {
 	return Object.keys(BLESSING_TYPES).find(type => item === EMBLEM_PREFIX + type.toLowerCase());
 }
 export const EMBLEM_HELP = '属性转使用独立栏位，不占携带道具位。单属性伙伴新增该属性；双属性伙伴可选择替换第一或第二属性。' +
+	'它改变伙伴及其 Mega、达摩模式等形态的基础属性；局内特性或招式仍可正常改变当前属性，不会被属性转反复覆盖。' +
 	'战斗外可更换或取下，取下后恢复原有属性。赋予期间开放对应的五个招式；取下后撤销临时招式权限，原本已掌握的招式保留，更换不会补充 PP。';
 /** Apply to the original slots before deduplicating equal types. */
 export function applyEmblemType(types: readonly string[], type: string, slot: 0 | 1 = 1) {

@@ -2547,7 +2547,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			const item = pokemon.getItem();
 			// 读取存储碟对应的属性，如果没有则默认为一般系
 			const firstType = item.onMemory ? (item.onMemory as string) : "Normal";
-			const dexTypes = pokemon.species.types;
+			const dexTypes = pokemon.getBaseTypes();
 
 			let newTypes;
 			if (dexTypes.length > 1) {
@@ -2567,7 +2567,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 			const item = pokemon.getItem();
 			const firstType = item.onMemory ? (item.onMemory as string) : "Normal";
-			const dexTypes = pokemon.species.types;
+			const dexTypes = pokemon.getBaseTypes();
 
 			let newTypes;
 			if (dexTypes.length > 1) {

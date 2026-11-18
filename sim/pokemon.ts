@@ -18,7 +18,10 @@ import { sharedRogueItems, consumeRogueItem } from './fantasy-rogue-items';
 import { toID } from './dex';
 import { isRogueFormat, recordRogueSelfDestruct } from './fantasy-rogue';
 import { ghidorahActive } from './rogue-ghidorah';
-import { blessingActionUsed, blessingTypes, hasBlessing, rogueAbilityInfo, spendRogueEeveeZ, spendRoguePsychic } from './fantasy-rogue-blessings';
+import {
+	blessingActionUsed, blessingTypes, emblemSpeciesTypes, hasBlessing,
+	rogueAbilityInfo, spendRogueEeveeZ, spendRoguePsychic,
+} from './fantasy-rogue-blessings';
 import { canStackRogueStatus, clearRogueStatus, hasRogueStatus, rememberRogueStatus } from './fantasy-rogue-status';
 import type { DynamaxOptions, PokemonMoveRequestData, PokemonSwitchRequestData } from './side';
 
@@ -1392,8 +1395,8 @@ export class Pokemon {
 		if (!species) return null;
 		this.species = species;
 
-		this.setType(species.types, true);
-		if (fusion) this.setType(fusion.types, true);
+		const baseTypes = fusion ? fusion.types : species.types;
+		this.setType(isTransform || this.transformed ? baseTypes : this.getBaseTypes(), true);
 		this.apparentType = rawSpecies.types.join('/');
 		this.addedType = species.addedType || '';
 		this.knownType = true;
@@ -2157,9 +2160,13 @@ export class Pokemon {
 		return { side: this.side.id, secret, shared };
 	};
 
-	/**
-	 * Sets a type (except on Arceus, who resists type changes)
-	 */
+	/** Base typing of a form, including Rogue equipment but excluding temporary type changes. */
+	getBaseTypes(species = this.species): string[] {
+		const fusion = isRogueFormat(this.battle.format.id) && this.set.fantasyRogueModifiers?.fusion;
+		return emblemSpeciesTypes(this, fusion ? fusion.types : species.types);
+	}
+
+	/** Sets current typing; never reapplies equipment over a move or ability. */
 	setType(newType: string | string[], enforce = false) {
 		if (!enforce) {
 			// No Pokemon should be able to have Stellar as a base type

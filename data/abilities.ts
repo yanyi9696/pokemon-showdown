@@ -2578,13 +2578,13 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				types = ['Psychic'];
 				break;
 			default:
-				types = pokemon.baseSpecies.types;
+				types = pokemon.getBaseTypes(pokemon.baseSpecies);
 			}
 			const oldTypes = pokemon.getTypes();
 			if (oldTypes.join() === types.join() || !pokemon.setType(types)) return;
-			if (this.field.terrain || pokemon.transformed) {
+			if (this.field.terrain || pokemon.transformed || types.join() !== pokemon.baseSpecies.types.join()) {
 				this.add('-start', pokemon, 'typechange', types.join('/'), '[from] ability: Mimicry');
-				if (!this.field.terrain) this.hint("Transform Mimicry changes you to your original un-transformed types.");
+				if (!this.field.terrain && pokemon.transformed) this.hint("Transform Mimicry changes you to your original un-transformed types.");
 			} else {
 				this.add('-activate', pokemon, 'ability: Mimicry');
 				this.add('-end', pokemon, 'typechange', '[silent]');
