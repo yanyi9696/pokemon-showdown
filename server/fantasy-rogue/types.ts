@@ -230,7 +230,7 @@ export interface RogueRun extends RogueInventory {
 		node: RogueNode,
 		encounter: number,
 	};
-	eventHistory?: { id: string, floor: number }[];
+	eventHistory?: { id: string, floor: number, observation?: string[] }[];
 	/** Extra event fragments, independent of boss and blessing rewards. */
 	eventFragments?: Record<string, number>;
 	/** Missing means the legacy schedule; only new adventures opt into frontloaded rewards. */

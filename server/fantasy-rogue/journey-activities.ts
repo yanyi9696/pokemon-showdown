@@ -15,6 +15,7 @@ import { changeFriendship, rogueTime } from './friendship';
 import { journeyCoins, candyAtFloor } from './early-balance';
 import { rollSafariChoice, type SharedSafariContext } from './journey-safari';
 import { drawSafariTargets, safariTargets } from './journey-safari-pool';
+import { drawObservation, observationModels, observationMachines, type ObservationModel } from './ditto-observation';
 
 const dex = Dex.mod('gen9fantasy');
 export interface JourneyActivity {
@@ -24,6 +25,7 @@ export interface JourneyActivity {
 	tapResult?: 'hit' | 'miss' | 'duplicate' | 'late';
 	balls?: number; wary?: number; bait?: number; safari?: string[]; solo?: string;
 	lastTurns?: number; allySurvived?: boolean;
+	observation?: ObservationModel[];
 }
 const SCENES: Record<string, [string, string]> = {
 	stonegate: ['yamaskgalar', 'runerigus'], invertedstars: ['inkay', 'malamar'],
@@ -129,7 +131,17 @@ export function beginJourneyActivity(run: RogueRun, random: RogueRandom) {
 		a.safari = drawSafariTargets(run.floor, random); a.balls = 3; a.index = 0;
 	}
 	if (event.id === 'pokeflute') a.pattern = Array.from({ length: 3 }, () => ['低音', '中音', '高音'][random(3)]);
-	if (event.id === 'dittoshow') a.index = random(3);
+	if (event.id === 'dittoshow' && a.index === undefined) {
+		const history = run.eventHistory || [];
+		const previous = [...history].reverse().find(entry => entry.id === 'dittoshow' && entry.observation);
+		const question = drawObservation(previous?.observation || [], random);
+		a.index = question.index; a.observation = question.models;
+		if (question.special) a.step = 'smeargle';
+		const current = history[history.length - 1];
+		if (current?.id === 'dittoshow' && current.floor === run.floor) {
+			current.observation = question.models.map(model => model.species);
+		}
+	}
 }
 export function relicMoveTypes(run: RogueRun): string[] {
 	return [...new Set(run.team.filter(mon => !mon.egg && !mon.nuzlockeDead)
@@ -138,6 +150,10 @@ export function relicMoveTypes(run: RogueRun): string[] {
 export function journeyActivityView(run: RogueRun, cooperativeRelicTypes?: readonly string[]) {
 	const event = run.node!.event!, id = event.id as ActivityID, a = event.activity || {}, mon = run.team.find(p => p.id === a.member);
 	const result = (paragraphs: string[], options: ReturnType<typeof option>[]) => ({ paragraphs, options,
+		observation: id === 'dittoshow' ? observationModels(a).map((model, i) => ({ ...model,
+			...((a.step === 'prize' || event.stage === 'result' && a.choice !== 'leave') && i === a.index ?
+				{ species: 'Ditto', disguise: model.species } : {}) })) : undefined,
+		picker: undefined as { label: string, buttonLabel: string, options: ReturnType<typeof option>[] } | undefined,
 		activity: a.startedAt ? { kind: 'rhythm', startedAt: a.startedAt, now: Date.now(), duration: a.duration || 12000,
 			period: 800, score: a.score || 0, tapResult: a.tapResult } : undefined });
 	if (event.stage === 'result') return result(event.result || [], []);
@@ -194,9 +210,18 @@ export function journeyActivityView(run: RogueRun, cooperativeRelicTypes?: reado
 		return result([`该吹第 ${(a.index || 0) + 1} 个音符了。`], ['低音', '中音', '高音'].map((name, i) => option('note:' + i, name)).concat(leave()));
 	}
 	if (id === 'dittoshow') {
-		const names = ['皮卡丘', '杰尼龟', '小火龙'], correct = a.index || 0;
-		return result([...ACTIVITY_OPENINGS[id], ...names.map((name, i) => `${name}展示了${i === correct ? ['水枪', '电击', '藤鞭'][i] : ['电击', '水枪', '火花'][i]}，随后${i === correct ? '悄悄瞄了一眼同伴的动作' : '很自然地整理好姿势'}。`)],
-			names.map((name, i) => option('identify:' + i, `观察${name}。`)).concat(leave()));
+		const models = observationModels(a);
+		if (a.step === 'prize') return { ...result(['研究员笑笑：「看来今天的百变怪状态很好嘛，但是这样的话就没办法判断啦。」',
+			'百变怪变回原样，得意地晃了晃。研究员递来学习机盒：「这一张由你挑，当作今天的观察纪念吧。」',
+			'选择一张学习机放入背包；伙伴仍须符合原有学习条件。'], []), picker: {
+			label: '自选招式学习机', buttonLabel: '领取学习机',
+			options: observationMachines().map(move => option('machine:' + move, dex.moves.get(move).name, '招式学习机 ×1')),
+		} };
+		const demonstration = models.map(model => `${model.species} 使出了【${dex.moves.get(model.move).name}】！`);
+		if (a.step === 'smeargle') return result([...ACTIVITY_OPENINGS[id], ...demonstration],
+			[option('astonished', `${dex.moves.get(models[a.index || 0].move).name}！？`)]);
+		return result([...ACTIVITY_OPENINGS[id], ...demonstration],
+			models.map((model, i) => option(`identify:${i}`, model.species)).concat(leave()));
 	}
 	if (id === 'evolutiondojo') {
 		if (!mon || !evolutionDojoMembers(run).includes(mon)) {
@@ -225,7 +250,10 @@ export function chooseJourneyActivity(
 	const event = run.node!.event!, id = event.id as ActivityID, a = activity(run);
 	if (event.settled) return;
 	event.key = randomUUID();
-	if (choice === 'leave') { finish(run, ['你向对方道别，把这次相遇记在旅途中。']); return; }
+	if (choice === 'leave') {
+		if (id === 'dittoshow') a.choice = 'leave';
+		finish(run, ['你向对方道别，把这次相遇记在旅途中。']); return;
+	}
 	if (choice.startsWith('member:')) { a.member = decodeURIComponent(choice.slice(7)); return; }
 	const mon = run.team.find(p => p.id === a.member);
 	if (id === 'minicontest' && a.step === 'prize' && choice.startsWith('prize:') && mon) {
@@ -357,10 +385,21 @@ export function chooseJourneyActivity(
 		}
 		if (choice === 'challenge') { fight(run, [encounter([makeEncounterSet('Snorlax', Math.max(30, lv(run)))])]); return; }
 	}
+	if (id === 'dittoshow' && a.step === 'smeargle' && choice === 'astonished') { a.step = 'prize'; return; }
+	if (id === 'dittoshow' && a.step === 'prize' && choice.startsWith('machine:')) {
+		const move = choice.slice(8);
+		if (!observationMachines().includes(move)) throw new Error('请选择有效的招式学习机。');
+		const item = 'roguetm' + move;
+		run.bag[item] = (run.bag[item] || 0) + 1;
+		finish(run, [`百变怪恢复原样，研究员把你挑选的【${dex.moves.get(move).name}】学习机交到你手中。`, '招式学习机 ×1 已放入背包。'], true);
+		return;
+	}
 	if (id === 'dittoshow' && choice.startsWith('identify:')) {
+		const model = observationModels(a)[a.index || 0];
 		if (Number(choice.slice(9)) === a.index) {
 			supplies(run, content, random, 2);
-			finish(run, ['“模特”笑着恢复百变怪的样子。研究员把观察记录递给你：「看动作比只看外貌可靠多了。」'], true);
+			finish(run, [`研究员打趣道：「${model.species} 根本没有这样的招式，你把【${dex.moves.get(model.move).name}】也拿出来用了呀！」`,
+				'“模特”不好意思地变回百变怪。研究员把观察谢礼交给你：「这次看得很仔细！」'], true);
 		} else finish(run, ['真正的百变怪扑哧一笑，恢复了原样。研究员邀请你下次再来观察。']);
 		return;
 	}

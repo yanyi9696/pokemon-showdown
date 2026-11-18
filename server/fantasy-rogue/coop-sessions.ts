@@ -143,6 +143,7 @@ type CoopEventView = {
 	preview?: ServiceView['preview'], exchange?: RogueEvent['exchange'],
 	auction?: ReturnType<typeof coopAuctionView>['auction'],
 	silhouette?: string,
+	observation?: { species: string, move: string, disguise?: string }[],
 	activity?: ReturnType<typeof coopRhythmView>['activity'],
 	fishing?: RogueEvent['fishing'] & { now: number, width: number },
 	ski?: RogueEvent['ski'] & { now: number, duration: number },
@@ -1197,6 +1198,7 @@ export class RogueCoopSessions {
 							auction: privateView?.auction,
 							silhouette: privateView?.silhouette,
 							activity: privateView?.activity,
+							observation: privateView?.observation,
 							safari: ownMember.coopEvent.id === 'safaripark' ? this.safariTarget(session) : undefined,
 							scrollPartners: ownMember.coopEvent.id === 'kubfuscroll' ? [session.hostUser, session.guestUser].map(userid => {
 								const a = adventure.members[userid].coopEvent?.activity;
@@ -2889,6 +2891,7 @@ export class RogueCoopSessions {
 				if (COOP_HONEYMOON_EVENTS.has(eventId)) beginCoopHoneymoon(parties, event, randomInt);
 				if (COOP_ACTIVITY_EVENTS.has(eventId) || COOP_EXPEDITION_SERVICES.has(eventId)) {
 					run.node = { ...adventure.node, event };
+					run.eventHistory = adventure.coopEventHistory;
 					if (COOP_ACTIVITY_EVENTS.has(eventId)) beginCoopActivity(run, randomInt);
 					else beginExpedition(run);
 				}

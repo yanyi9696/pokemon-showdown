@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import type { RogueAccount, RogueContent, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
-import { activityEligible, beginJourneyActivity, relicMoveTypes } from './journey-activities';
+import { activityEligible, beginJourneyActivity, journeyActivityView, relicMoveTypes } from './journey-activities';
 import { beginExpedition, expeditionFee, rollIdentityQuestion, rollIdentityTeam } from './expedition-events';
 import { chooseEventOption, eventView, type EventID } from './events';
 import { syncExclusiveItems } from './exclusive-items';
@@ -41,9 +41,12 @@ export function coopActivityOptions(runs: RogueRun[]) {
 		JSON.stringify(run.node.event.expedition) !== JSON.stringify(event.expedition))) return [];
 	const relicTypes = event.id === 'relicpuzzle' ? runs.flatMap(relicMoveTypes) : undefined;
 	const views = runs.map(run => eventView(run, relicTypes));
-	return (views[0]?.options || []).flatMap(option => {
+	const choices = views.map((view, i) => [...(view?.options || []),
+		...(event.id === 'dittoshow' ? journeyActivityView(runs[i]).picker?.options || [] : [])]);
+	const partnerOptions = new Map(choices[1].map(option => [option.id, option]));
+	return choices[0].flatMap(option => {
 		if (event.id === 'safaripark' && option.id === 'ball') return [];
-		const partner = views[1]?.options?.find(other => other.id === option.id);
+		const partner = partnerOptions.get(option.id);
 		if (!partner) return [];
 		const shared = { ...option, disabled: !!option.disabled || !!partner.disabled };
 		if (COOP_ACTIVITY_BATTLES.has(event.id) && option.id === 'accept') {

@@ -188,6 +188,58 @@ describe('Fantasy Rogue co-op flute, Ditto observation and doctor gifts', () => 
 			assert.equal(member(user).money, before[user.id].money);
 		}
 	});
+	it('shares Smeargle demonstrations, requires agreement and gives each owner exactly one selected TM', () => {
+		enter('dittoshow', 60, n => n === 100 ? 99 : 0);
+		assert.equal(member(host).coopEvent.activity.step, 'smeargle');
+		const before = structuredClone(session().adventure.members), first = event(host);
+		assert.deepEqual(first.observation, event(guest).observation);
+		assert.deepEqual(first.branchOptions.map(o => o.id), ['astonished']);
+		assert(!JSON.stringify(first).includes('"index"'));
+		agree('astonished');
+		assert(event(host).paragraphs.join('').includes('没办法判断'));
+		assert(event(host).branchOptions.some(o => o.id === 'machine:protect'));
+		const step = event(host).key;
+		choose(host, 'machine:protect'); choose(guest, 'machine:icebeam');
+		assert.equal(member(host).bag.roguetmprotect, undefined);
+		const reconnect = new RogueManager(engine, () => ({ enabled: true }));
+		assert.deepEqual(reconnect.coop.view(guest).session.adventure.coopEvent, event(guest));
+		choose(guest, 'machine:protect');
+		for (const user of [host, guest]) {
+			assert.equal(member(user).bag.roguetmprotect, 1);
+			assert.equal(member(user).bag.roguetmicebeam, undefined);
+			assert.equal(member(user).money, before[user.id].money);
+			assert.deepEqual(member(user).team, before[user.id].team);
+			assert(member(user).coopEvent.settled);
+			assert.throws(() => choose(user, 'machine:protect', step), /进度已变化|选项已变化/);
+			manager.coop.command(user, { action: 'finishroute' });
+		}
+		assert.equal(session().adventure.floor, 61);
+	});
+	it('preserves shared specimen history and avoids the previous normal trio', () => {
+		enter('dittoshow');
+		const first = event(host).observation.map(model => model.species);
+		assert.deepEqual(session().adventure.coopEventHistory.at(-1).observation, first);
+		agree('leave');
+		for (const user of [host, guest]) manager.coop.command(user, { action: 'finishroute' });
+		enter('dittoshow', 62);
+		// enter() deliberately creates a fresh route history; install a prior saved specimen record before native initialization.
+		const { beginCoopActivity } = require('../../dist/server/fantasy-rogue/coop-activities');
+		const run = { floor: 62, eventHistory: [{ id: 'dittoshow', floor: 60, observation: first }, { id: 'dittoshow', floor: 62 }],
+			node: { event: { id: 'dittoshow', stage: 'choice' } } };
+		beginCoopActivity(run, () => 0);
+		assert(!run.node.event.activity.observation.some(model => first.includes(model.species)));
+	});
+	it('rolls back both selected TMs on a session write failure and allows one safe retry', () => {
+		enter('dittoshow', 60, n => n === 100 ? 99 : 0); agree('astonished'); choose(host, 'machine:protect');
+		const before = session();
+		store.db.exec("CREATE TEMP TRIGGER ditto_fail BEFORE UPDATE ON rogue_coop_sessions BEGIN SELECT RAISE(ABORT, 'ditto write failed'); END;");
+		try {
+			assert.throws(() => choose(guest, 'machine:protect'), /ditto write failed/);
+			assert.deepEqual(session(), before);
+		} finally { store.db.exec('DROP TRIGGER ditto_fail'); }
+		choose(guest, 'machine:protect');
+		assert.equal(member(host).bag.roguetmprotect, 1); assert.equal(member(guest).bag.roguetmprotect, 1);
+	});
 	for (const [key, item, count] of [['revive', 'revive', 2], ['capsule', 'abilitycapsule', 1], ['patch', 'abilitypatch', 1]]) {
 		it(`shares the doctor's ${key} branch and gives the native quantity to both players`, () => {
 			enter('blackjack'); const before = session().adventure.members;

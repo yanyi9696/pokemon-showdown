@@ -460,7 +460,8 @@ export function chooseEventOption(account: RogueAccount, run: RogueRun, content:
 	const view = eventView(run, activityContext?.relicTypes);
 	const service = event?.id === 'fantasytutor' ? fantasyTutorView(run) : serviceEventView(run);
 	if (run.phase !== 'event' || !event || event.key !== key || event.settled ||
-		![...(view?.options || []), ...(service?.picker?.options || [])]
+		![...(view?.options || []), ...(service?.picker?.options || []),
+			...(event.id === 'dittoshow' ? journeyActivityView(run).picker?.options || [] : [])]
 			.some(option => option.id === choice && !option.disabled)) {
 		throw new Error('事件选项已更新或无法选择。');
 	}
