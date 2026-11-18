@@ -1,6 +1,122 @@
 import { Learnsets as OriginalLearnsets } from '../../learnsets';
 
 export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTable = {
+	glaceon: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.glaceon.learnset, playrough: ["9M"] },
+	},
+	leafeon: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.leafeon.learnset, playrough: ["9M"] },
+	},
+	espeon: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.espeon.learnset, playrough: ["9M"] },
+	},
+	flareon: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.flareon.learnset, playrough: ["9M"] },
+	},
+	jolteon: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.jolteon.learnset, playrough: ["9M"] },
+	},
+	vaporeon: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.vaporeon.learnset, playrough: ["9M"] },
+	},
+	umbreon: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.umbreon.learnset, wonderroom: ["9M", "8M", "7T", "6T", "5T"], playrough: ["9M"] },
+	},
+	emolga: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.emolga.learnset, tailwind: ["9M", "7T", "6T", "5T"] },
+	},
+	hydreigon: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.hydreigon.learnset, roost: ["9M", "7M", "6M", "5T"] },
+	},
+	beedrill: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.beedrill.learnset, roost: ["9M", "8V", "7M", "6M", "5T", "4M"] },
+	},
+	annihilape: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.annihilape.learnset, psychup: ["9M"] },
+	},
+	slurpuff: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.slurpuff.learnset, psychup: ["9M", "7M", "6M"] },
+	},
+	cofagrigus: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.cofagrigus.learnset, psychup: ["9M", "7M", "6M", "5M"] },
+	},
+	audino: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.audino.learnset, psychup: ["9M", "7M", "6M", "5M"] },
+	},
+	musharna: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.musharna.learnset, psychup: ["9M", "7M", "6M", "5M"] },
+	},
+	liepard: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.liepard.learnset, psychup: ["9M", "7M", "6M", "5M"] },
+	},
+	rotommow: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.rotommow.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	rotomfan: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.rotomfan.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	rotomfrost: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.rotomfrost.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	rotomwash: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.rotomwash.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	rotomheat: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.rotomheat.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	rotom: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.rotom.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	weavile: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.weavile.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	roserade: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.roserade.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	drifblim: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.drifblim.learnset, psychup: ["9M", "7M", "6M", "5M", "4M"] },
+	},
+	altaria: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.altaria.learnset, psychup: ["9M", "7M", "6M", "5M", "4M", "3T"] },
+	},
+	mawile: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.mawile.learnset, psychup: ["9M", "7M", "6M", "5M", "4E", "3T", "3E"] },
+	},
+	mrmime: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.mrmime.learnset, psychup: ["9M", "7M", "7V", "6M", "5M", "4M", "4E", "3T", "3E"] },
+	},
+	alakazam: {
+		inherit: true,
+		learnset: { ...OriginalLearnsets.alakazam.learnset, psychup: ["9M", "7M", "7V", "6M", "5M", "4M", "3T"] },
+	},
 	kyuremoriginalfantasy: { learnset: Object.assign({}, ...['kyurem', 'reshiram', 'zekrom'].map(id => OriginalLearnsets[id as ID].learnset)) },
 	xerneas: {
 		learnset: {
@@ -3225,6 +3341,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	emboar: {
 		learnset: {
+			slackoff: ["9M"],
 			circlethrow: ["9M"],
 			flamewheel: ["9M"],
 			cometpunch: ["9M"],
@@ -4772,7 +4889,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			playnice: ["8L1", "7L1", "7S0"],
 			playrough: ["8M", "7E"],
 			protect: ["8M", "8L10", "7M", "7L9"],
-			psychup: ["7M"],
+			psychup: ["9M", "7M"],
 			raindance: ["8M", "7M"],
 			razorwind: ["7E"],
 			rest: ["8M", "7M"],
@@ -4876,7 +4993,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			psybeam: ["8L1"],
 			psychic: ["8M", "8L1", "8V", "7M", "7V", "6M", "5M", "4M", "3M"],
 			psychocut: ["8M"],
-			psychup: ["7M", "7V", "6M", "5M", "4M", "3T"],
+			psychup: ["9M", "7M", "7V", "6M", "5M", "4M", "3T"],
 			psyshock: ["8M", "7M", "6M", "5M"],
 			psywave: ["8V", "7V"],
 			rage: ["7V"],
@@ -9074,7 +9191,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			playrough: ["8M", "7E", "6E"],
 			protect: ["8M", "7M", "6M", "5M", "4M", "3M"],
 			psychocut: ["8M", "7L37", "6L37", "5L49", "4L60"],
-			psychup: ["7M", "6M", "5M", "4M", "3T"],
+			psychup: ["9M", "7M", "6M", "5M", "4M", "3T"],
 			punishment: ["7E", "6E", "5E", "4E"],
 			pursuit: ["7L10", "6L10", "5L12", "4L20"],
 			quickattack: ["8L1", "7L1", "6L1", "5L9", "4L12", "3L13"],
@@ -9213,7 +9330,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			playrough: ["8M", "7E", "6E"],
 			protect: ["8M", "7M", "6M", "5M", "4M", "3M"],
 			psychocut: ["8M", "7L37", "6L37", "5L49", "4L60"],
-			psychup: ["7M", "6M", "5M", "4M", "3T"],
+			psychup: ["9M", "7M", "6M", "5M", "4M", "3T"],
 			punishment: ["7E", "6E", "5E", "4E"],
 			pursuit: ["7L10", "6L10", "5L12", "4L20"],
 			quickattack: ["8L1", "7L1", "6L1", "5L9", "4L12", "3L13"],
@@ -9352,7 +9469,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			playrough: ["8M", "7E", "6E"],
 			protect: ["8M", "7M", "6M", "5M", "4M", "3M"],
 			psychocut: ["8M", "7L37", "6L37", "5L49", "4L60"],
-			psychup: ["7M", "6M", "5M", "4M", "3T"],
+			psychup: ["9M", "7M", "6M", "5M", "4M", "3T"],
 			punishment: ["7E", "6E", "5E", "4E"],
 			pursuit: ["7L10", "6L10", "5L12", "4L20"],
 			quickattack: ["8L1", "7L1", "6L1", "5L9", "4L12", "3L13"],
@@ -9491,7 +9608,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			playrough: ["8M", "7E", "6E"],
 			protect: ["8M", "7M", "6M", "5M", "4M", "3M"],
 			psychocut: ["8M", "7L37", "6L37", "5L49", "4L60"],
-			psychup: ["7M", "6M", "5M", "4M", "3T"],
+			psychup: ["9M", "7M", "6M", "5M", "4M", "3T"],
 			punishment: ["7E", "6E", "5E", "4E"],
 			pursuit: ["7L10", "6L10", "5L12", "4L20"],
 			quickattack: ["8L1", "7L1", "6L1", "5L9", "4L12", "3L13"],
@@ -11563,7 +11680,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			pluck: ["9L1", "8L1", "7L1", "6L1", "5M", "5L1", "4M", "4L1"],
 			powerswap: ["8M"],
 			protect: ["9M", "8M", "7M", "6M", "6S3", "5M", "4M", "3M"],
-			psychup: ["7M", "6M", "5M", "4M", "3T"],
+			psychup: ["9M", "7M", "6M", "5M", "4M", "3T"],
 			raindance: ["9M", "8M", "7M", "6M", "5M", "4M", "3M"],
 			refresh: ["7L26", "6L26", "5L29", "4L46", "3L45", "3S0"],
 			rest: ["9M", "8M", "7M", "6M", "5M", "4M", "3M"],
@@ -11678,7 +11795,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			pluck: ["9L1", "8L1", "7L1", "6L1", "5M", "5L1", "4M", "4L1"],
 			powerswap: ["8M"],
 			protect: ["9M", "8M", "7M", "6M", "6S3", "5M", "4M", "3M"],
-			psychup: ["7M", "6M", "5M", "4M", "3T"],
+			psychup: ["9M", "7M", "6M", "5M", "4M", "3T"],
 			raindance: ["9M", "8M", "7M", "6M", "5M", "4M", "3M"],
 			refresh: ["7L26", "6L26", "5L29", "4L46", "3L45", "3S0"],
 			rest: ["9M", "8M", "7M", "6M", "5M", "4M", "3M"],
@@ -12998,7 +13115,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			present: ["5S1", "5S2"],
 			protect: ["8M", "7M", "6M", "5M"],
 			psychic: ["8M", "7M", "6M", "5M"],
-			psychup: ["7M", "6M", "5M"],
+			psychup: ["9M", "7M", "6M", "5M"],
 			psyshock: ["8M", "7M", "6M", "5M"],
 			raindance: ["8M", "7M", "6M", "5M"],
 			reflect: ["8M", "7M", "6M", "5M"],
@@ -13125,7 +13242,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			present: ["5S1", "5S2"],
 			protect: ["8M", "7M", "6M", "5M"],
 			psychic: ["8M", "7M", "6M", "5M"],
-			psychup: ["7M", "6M", "5M"],
+			psychup: ["9M", "7M", "6M", "5M"],
 			psyshock: ["8M", "7M", "6M", "5M"],
 			raindance: ["8M", "7M", "6M", "5M"],
 			reflect: ["8M", "7M", "6M", "5M"],
@@ -22322,7 +22439,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			painsplit: ["9M", "7T", "6T", "5T", "4T"],
 			poltergeist: ["9M", "8T"],
 			protect: ["9M", "8M", "7M", "6M", "5M", "4M"],
-			psychup: ["7M", "6M", "5M", "4M"],
+			psychup: ["9M", "7M", "6M", "5M", "4M"],
 			raindance: ["9M", "8M", "7M", "6M", "5M", "4M"],
 			reflect: ["9M", "8M", "7M", "6M", "5M", "4M"],
 			rest: ["9M", "8M", "7M", "6M", "5M", "4M"],
@@ -22422,7 +22539,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			poisonsting: ["8L1", "7L1", "6L1", "5L1", "4L1"],
 			powerwhip: ["8M"],
 			protect: ["8M", "7M", "6M", "5M", "4M"],
-			psychup: ["7M", "6M", "5M", "4M"],
+			psychup: ["9M", "7M", "6M", "5M", "4M"],
 			raindance: ["8M", "7M", "6M", "5M", "4M"],
 			rest: ["8M", "7M", "6M", "5M", "4M"],
 			return: ["7M", "6M", "5M", "4M"],
@@ -31417,7 +31534,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			poweruppunch: ["8E", "7E", "6M"],
 			protect: ["8M", "7M", "6M", "6S3", "5M", "4M", "3M"],
 			psychicfangs: ["8M"],
-			psychup: ["7M", "6M", "5M", "4E", "3T", "3E"],
+			psychup: ["9M", "7M", "6M", "5M", "4E", "3T", "3E"],
 			punishment: ["7E", "6E", "5E", "4E"],
 			raindance: ["8M", "7M", "6M", "5M", "4M", "3M"],
 			rest: ["8M", "7M", "6M", "5M", "4M", "3M"],
@@ -31545,7 +31662,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			poweruppunch: ["8E", "7E", "6M"],
 			protect: ["8M", "7M", "6M", "6S3", "5M", "4M", "3M"],
 			psychicfangs: ["8M"],
-			psychup: ["7M", "6M", "5M", "4E", "3T", "3E"],
+			psychup: ["9M", "7M", "6M", "5M", "4E", "3T", "3E"],
 			punishment: ["7E", "6E", "5E", "4E"],
 			raindance: ["8M", "7M", "6M", "5M", "4M", "3M"],
 			rest: ["8M", "7M", "6M", "5M", "4M", "3M"],

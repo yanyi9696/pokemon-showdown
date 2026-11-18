@@ -1,7 +1,34 @@
 import { hasBlessing } from '../../../sim/fantasy-rogue-blessings';
 import { hasRogueItemModule } from '../../../sim/rogue-item-amplification';
+import { Abilities as StandardAbilities } from '../../abilities';
 
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	flashfire: {
+		inherit: true,
+		onEnd(pokemon) {
+			const boost = pokemon.volatiles.flashfire;
+			if (boost?.megaEvolving) {
+				boost.megaInherited = true;
+				return;
+			}
+			pokemon.removeVolatile('flashfire');
+		},
+		condition: {
+			...StandardAbilities.flashfire.condition,
+			onModifyAtk(atk, attacker, defender, move) {
+				if (move.type === 'Fire' && (this.effectState.megaInherited || attacker.hasAbility('flashfire'))) {
+					return this.chainModify(1.5);
+				}
+			},
+			onModifySpA(spa, attacker, defender, move) {
+				if (move.type === 'Fire' && (this.effectState.megaInherited || attacker.hasAbility('flashfire'))) {
+					return this.chainModify(1.5);
+				}
+			},
+		},
+		shortDesc: '免疫火属性招式，触发后火属性招式伤害提升50%；已触发的提升可保留至超级进化后，换出时清除。',
+		desc: '受到火属性招式攻击时免疫该招式，并使自己的火属性招式伤害提升50%。已触发的提升可保留至超级进化后，换出时清除。',
+	},
 	rogueitemmodule: {
 		name: 'Rogue Item Module', num: -2020, rating: 4, isNonstandard: 'Custom',
 		shortDesc: '道具的正向能力、伤害及回复加成翻倍；副作用不变。不附带非本系增伤，可与增幅系统叠加使原加成变为4倍。',
@@ -844,6 +871,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			// most of the implementation is in Battle#getTarget
 			// 无视具有吸引对手招式效果的影响 (坚毅的基础效果)
 			move.tracksTarget = move.target !== 'scripted';
+			move.flags = { ...move.flags, bypasssub: 1 };
 		},
 		condition: {
 			onStart(pokemon) {
@@ -888,7 +916,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Stalwart",
 		rating: 3,
 		num: 242,
-		shortDesc: "无视具有吸引对手招式效果的影响。若重复使用同一个招式,每次威力提升20%,至多提升100%",
+		shortDesc: "无视吸引招式的效果和对手的替身。若重复使用同一个招式,每次威力提升20%,至多提升100%",
+		desc: '无视吸引招式的效果和对手的替身。若重复使用同一个招式，每次威力提升20%，至多提升100%。',
 	},
 	transistor: {
 		onModifyAtkPriority: 5,

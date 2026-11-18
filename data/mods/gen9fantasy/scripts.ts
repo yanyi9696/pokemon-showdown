@@ -67,7 +67,15 @@ export const Scripts: ModdedBattleScriptsData = {
         // 2. 变身执行逻辑
         // ==========================================
         runMegaEvo(pokemon) {
-			if (universalItem(pokemon.item)) return runUniversalEvolution(pokemon);
+			if (universalItem(pokemon.item)) {
+				const flashFire = pokemon.volatiles.flashfire;
+				if (flashFire && universalKind(pokemon) !== 'z') flashFire.megaEvolving = true;
+				try {
+					return runUniversalEvolution(pokemon);
+				} finally {
+					if (flashFire) delete flashFire.megaEvolving;
+				}
+			}
             const speciesid = pokemon.canMegaEvo || pokemon.canUltraBurst;
             if (!speciesid) return false;
 
@@ -149,7 +157,14 @@ export const Scripts: ModdedBattleScriptsData = {
             const prevHp = pokemon.hp;
             const prevMaxHp = pokemon.maxhp;
 
-            pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
+			// Preserve an already-triggered Flash Fire boost only across this Mega transition.
+			const flashFire = pokemon.volatiles.flashfire;
+			if (flashFire) flashFire.megaEvolving = true;
+			try {
+				pokemon.formeChange(targetSpecies, pokemon.getItem(), true);
+			} finally {
+				if (flashFire) delete flashFire.megaEvolving;
+			}
 
             let newMaxHp = 1; 
             if (targetSpecies.baseStats.hp !== 1) {

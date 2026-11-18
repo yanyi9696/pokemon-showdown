@@ -1,6 +1,16 @@
 import { spendCompanionZ } from '../../../sim/rogue-companion-z';
 
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+	// Champions announcement adopted only by Fantasy formats; ordinary generations are unchanged.
+	screech: { inherit: true, accuracy: 100 },
+	rockslide: {
+		inherit: true, accuracy: 95, secondary: { chance: 20, volatileStatus: 'flinch' },
+		shortDesc: '有20%的几率使目标畏缩。攻击所有相邻的对手。',
+		desc: '攻击所有相邻的对手，各有20%的几率使其畏缩。',
+	},
+	steelwing: { inherit: true, accuracy: 100 },
+	metalsound: { inherit: true, accuracy: 100 },
+	frostbreath: { inherit: true, accuracy: 100 },
 	roguecitydark: {
 		shortDesc: '同行额外Z。命中后攻击、防御、特攻、特防、速度各提升1级。',
 		name: 'Rogue City Dark', num: -31002, accuracy: true, basePower: 185, category: 'Special', pp: 1,
