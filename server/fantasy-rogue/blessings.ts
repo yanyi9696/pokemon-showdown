@@ -88,6 +88,8 @@ export interface BlessingReward {
 export interface RogueBlessings extends BlessingEffects {
 	/** Failed eligible wild visits; old saves begin at zero. */
 	eeveeMisses?: number;
+	/** Independent Devotion encounter pity; matching Eevee targets share the larger counter. */
+	devotionMisses?: number;
 	dragonCharges?: string[];
 	dragonEncounters?: string[];
 	numberSettled?: string[];
@@ -1291,6 +1293,7 @@ export function handleBlessingCommand(account: RogueAccount, run: RogueRun, cont
 				entry.target = mon.id;
 				if (entry.family === 'devotion') {
 					entry.species = blessingSpeciesID(mon.set.species);
+					entry.encounterSpecies = mon.set.species;
 					const set = makeEncounterSet(mon.set.species, mon.set.level, randomEncounterIVs(random, true, qualityTier(run)));
 					const duplicate = createRoguePokemon(set, run.boosts);
 					duplicate.joinOrder = state.nextJoin++; initializeExperience(duplicate);

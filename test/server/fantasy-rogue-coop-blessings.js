@@ -155,6 +155,45 @@ describe('Fantasy Rogue co-op blessing rounds', () => {
 		assert.equal(node.encounters[0].team[0].species, 'Reshiram');
 		assert(node.encounters[0].team[0].shiny); assert(node.spiritPrepared); assert.equal(rolls, 1);
 	});
+	it('persists separate co-op extra-encounter guarantees and redeems the displaced one next area', () => {
+		startCoop();
+		function nextArea() {
+			change(s => {
+				const a = s.adventure;
+				a.phase = 'area-selection'; a.floor = 61; delete a.coopBlessingRound;
+				s.areaSelections = {};
+				a.routeChoices = [{ id: 'wild', name: '战斗区域', kind: 'wild', spiritPrepared: true,
+					reward: { money: 0, items: {} }, encounters: [{ name: '野生伙伴', wildPack: true, catchable: true,
+						style: 'balanced', team: Array.from({ length: 3 }, () => set('Magikarp', 'Swift Swim')) }] }];
+				for (const user of [host, guest]) delete a.members[user.id].blessings.round;
+			});
+		}
+		nextArea();
+		change(s => {
+			const a = s.adventure.members[host.id].blessings, b = s.adventure.members[guest.id].blessings;
+			a.owned = [{ ...blessing('eeveefamily'), floor: 1 }]; a.eeveeMisses = 9;
+			b.owned = [{ ...blessing('devotion'), floor: 1, species: 'pikachu', encounterSpecies: 'Pikachu' }]; b.devotionMisses = 9;
+		});
+		const original = crypto.randomInt;
+		try {
+			crypto.randomInt = () => 0;
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'wild' });
+			let saved = store.coopSessionForUser(host.id);
+			assert.equal(saved.adventure.node.encounters[0].team.length, 4);
+			assert.equal(saved.adventure.node.encounters[0].team[3].species, 'Eevee');
+			assert.equal(saved.adventure.members[host.id].blessings.eeveeMisses, 0);
+			assert.equal(saved.adventure.members[guest.id].blessings.devotionMisses, 9);
+			for (const user of [host, guest]) { manager.coop.view(user); manager.coop.view(user); }
+			assert.deepEqual(store.coopSessionForUser(host.id), saved, 'repeated views cannot consume pending guarantees');
+			nextArea();
+			crypto.randomInt = max => max - 1;
+			for (const user of [host, guest]) manager.coop.command(user, { action: 'selectarea', value: 'wild' });
+			saved = store.coopSessionForUser(host.id);
+			assert.equal(saved.adventure.node.encounters[0].team.length, 4);
+			assert.equal(saved.adventure.node.encounters[0].team[3].species, 'Pikachu');
+			assert.equal(saved.adventure.members[guest.id].blessings.devotionMisses, 0);
+		} finally { crypto.randomInt = original; }
+	});
 	function assertUnchanged(session, accounts) {
 		assert.deepEqual(store.coopSessionForUser(host.id), session);
 		for (const [index, user] of [host, guest].entries()) assert.deepEqual(store.get(user.id), accounts[index]);
