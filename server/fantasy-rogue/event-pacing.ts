@@ -13,6 +13,7 @@ const OPENING_REWARDS = new Set<EventID>([
 
 /** Weight only newly drawn ordinary events. Existing stories and invitation conditions stay intact. */
 export function eventPacingWeight(floor: number, id: EventID) {
+	if (id === 'forest') return 1.8;
 	if (PREPARATION_EVENTS.has(id)) return floor <= 30 ? 0 :
 		pacingCurve(floor, [[31, 0.15], [50, 0.35], [60, 1]]);
 	return OPENING_REWARDS.has(id) ? pacingCurve(floor, [[1, 1.8], [30, 1.8], [50, 1]]) : 1;

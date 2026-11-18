@@ -44,7 +44,7 @@ describe('Fantasy Rogue October 27 pacing and boss regression', () => {
 		}
 		for (const id of ['forest', 'identityquiz']) {
 			assert.equal(eventPacingWeight(1, id), 1.8);
-			assert.equal(eventPacingWeight(50, id), 1);
+			assert.equal(eventPacingWeight(50, id), id === 'forest' ? 1.8 : 1);
 		}
 	});
 	it('keeps preparation events out of early draws even with inventory, moves, and event history', () => {

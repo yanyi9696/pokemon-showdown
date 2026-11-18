@@ -31,12 +31,13 @@ import type { RogueAccount, RogueContent, RogueNode, RogueRun } from './types';
 import type { RogueRandom } from './biome-pools';
 import type { RoguePokemon } from '../../sim/fantasy-rogue';
 import { createRoguePokemon, initializeExperience } from './progression';
-import { makeEncounterSet, randomEncounterIVs } from './encounter-sets';
+import { randomEncounterIVs } from './encounter-sets';
 import { legendaryEventScale } from './encounter-quality';
 import { lowerToEligibleStage } from './evolution';
 import { eventRewardBudget, eventCost, LATE_INCOME_BONUS_PERCENT } from './early-balance';
 import { eventPacingWeight, PREPARATION_EVENTS } from './event-pacing';
-import { eventSpeciesPool, themedEventTeam } from './event-teams';
+import { themedEventTeam } from './event-teams';
+import { forestEncounterSet, forestSpeciesPool } from './forest-teams';
 import {
 	drawBlessingGift, gift, giveEquipment, normalizeBlessings, recordNegativeBlessingEvent, toolbox, toolboxOptions,
 } from './blessings';
@@ -219,7 +220,7 @@ export function chooseEvent(
 }
 
 export function forestTeams(level: number, random: RogueRandom) {
-	const pool = eventSpeciesPool('forest', level);
+	const pool = forestSpeciesPool(level);
 	const partition = (chosen: string[]) => {
 		let best: string[][] = [], ratio = Infinity;
 		// Keep individual strengths varied while comparing all ten ways to split six partners.
@@ -237,9 +238,7 @@ export function forestTeams(level: number, random: RogueRandom) {
 		const drawn = partition(Array.from({length: 6}, () => available.splice(random(available.length), 1)[0]));
 		if (drawn.ratio <= 1.1) { result = drawn; break; }
 	}
-	return result.teams.map(team => team.map(name => ({
-		...makeEncounterSet(name, level, randomEncounterIVs(random)), item: '',
-	})));
+	return result.teams.map(team => team.map(name => forestEncounterSet(name, level, randomEncounterIVs(random))));
 }
 
 export function beginEvent(run: RogueRun, random: RogueRandom, content: RogueContent | undefined) {
