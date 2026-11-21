@@ -225,7 +225,7 @@ describe('Fantasy Rogue dedicated battle capacity', function () {
 		try {
 			for (let i = 0; i < 1024; i++) scheduler.register(`quota-${i}`, `instance-${i}`);
 			assert.throws(() => scheduler.register('excess', 'excess'), /capacity/);
-			assert.deepEqual(scheduler.getStatus(), { workers: 2, active: 0, queued: 0 });
+			assert.deepEqual(scheduler.getStatus(), { workers: 2, active: 0, queued: 0, urgentActive: false });
 			scheduler.unregister('quota-0', 'instance-0'); scheduler.register('replacement', 'new');
 		} finally { await scheduler.dispose(); }
 	});

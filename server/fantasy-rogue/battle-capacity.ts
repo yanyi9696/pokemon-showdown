@@ -21,6 +21,8 @@ export function createRogueAIManager(
 		maxBattlesPerPlayer: 1,
 		// Undefined uses the scheduler's CPU-capped default, not the ordinary AI pool's setting.
 		workers: rogue?.battleWorkers,
+		// Keep one prewarmed, bounded lane for required replacements and their immediate follow-up.
+		urgentLane: true,
 	}, undefined, {
 		matches: rogueServicePriority, reserved: rogueReservedSlots(rogue?.maxBattles ?? DEFAULT_ROGUE_BATTLES),
 	});

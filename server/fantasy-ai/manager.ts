@@ -25,6 +25,8 @@ export interface AISettings extends Partial<TimeBudgetSettings> {
 	maxBattles?: number;
 	maxBattlesPerPlayer?: number;
 	workers?: number;
+	/** Rogue-only bounded replacement lane; does not change the base worker count. */
+	urgentLane?: boolean;
 	disconnectMs?: number;
 }
 
@@ -50,6 +52,7 @@ export class AIChallengeManager {
 			maxBattles: settings.maxBattles ?? DEFAULT_LIMITS.maxBattles,
 			maxBattlesPerPlayer: settings.maxBattlesPerPlayer ?? DEFAULT_LIMITS.maxBattlesPerPlayer,
 			workers: this.scheduler.getStatus().workers,
+			urgentLane: settings.urgentLane === true,
 			decisionMs: settings.decisionMs === undefined ? DEFAULT_LIMITS.decisionMs : settings.decisionMs,
 			criticalDecisionMs: settings.criticalDecisionMs ?? DEFAULT_LIMITS.criticalDecisionMs,
 			criticalDecisionLimit: settings.criticalDecisionLimit ?? DEFAULT_LIMITS.criticalDecisionLimit,

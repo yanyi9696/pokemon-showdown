@@ -63,6 +63,8 @@ export class AIController {
 	private rejected: string[] = [];
 	private closed = false;
 	private disconnectTimer?: NodeJS.Timeout;
+	/** Keep the first action after a required replacement on the same urgent lane. */
+	private urgentNextRequest = false;
 	readonly metrics: ChallengeMetrics;
 	private readonly battle: RoomBattle;
 	/** Privacy settings can rename the room after its controller is constructed. */
@@ -122,6 +124,7 @@ export class AIController {
 
 	request(request: ChoiceRequest, rqid: number) {
 		if (this.closed) return;
+		this.urgentNextRequest = !!this.pending && 'forceSwitch' in this.pending.request && !!this.pending.request.forceSwitch;
 		this.revision++;
 		this.options.scheduler.cancel(this.schedulerRoomId, this.options.instanceId);
 		this.pending = { request, rqid, received: performance.now() };
@@ -198,6 +201,13 @@ export class AIController {
 		const revision = this.revision;
 		const doubleRequest = 'active' in request && request.active.length > 1 ||
 			'forceSwitch' in request && !!request.forceSwitch && request.forceSwitch.length > 1;
+		// Short doubles decisions have a 1.5s budget; when both ordinary move
+		// searches occupy the base workers, queueing them behind the 4.5s
+		// single-battle jobs can exhaust their own wall clock before they start.
+		// Keep the base worker count and budget unchanged, but let the existing
+		// bounded urgent lane serve this already-short request.
+		const urgent = !!request.forceSwitch || this.urgentNextRequest || doubleRequest;
+		this.urgentNextRequest = false;
 		if (this.options.rogue && doubleRequest) {
 			const excluded = [...this.rejected];
 			if (this.options.rogue.orderedBoss && !request.teamPreview && !request.wait) {
@@ -217,6 +227,7 @@ export class AIController {
 				trainer: this.options.trainer, observation, seed, excluded,
 				doubles: { allowSwitch: !this.options.rogue.wild, jointTurns: !this.options.rogue.wild },
 				budgetMs: 1500, wallClockMs: Math.max(0, received + 4500 - performance.now()),
+				urgent,
 			}).then(result => {
 				if (this.closed || this.revision !== revision || this.pending?.rqid !== rqid ||
 					result.status === 'cancelled') return;
@@ -281,6 +292,7 @@ export class AIController {
 			...(this.options.rogue ? { wallClockMs: Math.max(0, received + 4500 - performance.now()) } : {}),
 			critical: !!window.criticalReason, fallbackChoice: fallback,
 			maxRollouts: this.options.maxRollouts,
+			urgent,
 		}).then(result => {
 			if (this.closed || this.revision !== revision || this.pending?.rqid !== rqid || result.status === 'cancelled') return;
 			if (choiceVersion !== undefined && this.opponent?.version !== choiceVersion) return;

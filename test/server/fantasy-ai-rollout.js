@@ -526,13 +526,33 @@ describe('Fantasy AI decision worker scheduling', function () {
 		scheduler.register('second', 'b');
 		const first = scheduler.submit(request('first', 'a', 1));
 		const second = scheduler.submit(request('second', 'b', 1));
-		assert.deepEqual(scheduler.getStatus(), { workers: 2, active: 2, queued: 0 });
+		assert.deepEqual(scheduler.getStatus(), { workers: 2, active: 2, queued: 0, urgentActive: false });
 		scheduler.cancel('first', 'a');
 		assert.equal((await first).status, 'cancelled');
 		const result = await second;
 		assert.equal(result.status, 'completed');
 		assert.equal(result.decision.method, 'rollout');
 		assert(result.queueMs < 100);
+	});
+
+	it('starts one bounded urgent lane for a required replacement behind two long searches', async () => {
+		const previous = scheduler;
+		scheduler = new DecisionScheduler({ workers: 2, maxBattles: 8, urgentLane: true });
+		await previous.dispose();
+		const fakeWorker = { postMessage() {}, terminate: () => Promise.resolve(0) };
+		for (const slot of scheduler.slots) {
+			slot.stopping = Promise.resolve(0);
+			slot.worker = fakeWorker;
+		}
+		scheduler.urgentSlot.worker = fakeWorker;
+		for (const name of ['long-a', 'long-b', 'replacement']) scheduler.register(name, name);
+		for (const slot of scheduler.slots) slot.stopping = undefined;
+		const first = scheduler.submit(request('long-a', 'long-a', 1));
+		const second = scheduler.submit(request('long-b', 'long-b', 1));
+		const replacement = scheduler.submit(request('replacement', 'replacement', 1, { urgent: true }));
+		assert.deepEqual(scheduler.getStatus(), { workers: 2, active: 3, queued: 0, urgentActive: true });
+		scheduler.cancel('long-a', 'long-a'); scheduler.cancel('long-b', 'long-b'); scheduler.cancel('replacement', 'replacement');
+		assert((await Promise.all([first, second, replacement])).every(result => result.status === 'cancelled'));
 	});
 
 	it('gives both simultaneous battles the same search work budget without blocking the server thread', async () => {

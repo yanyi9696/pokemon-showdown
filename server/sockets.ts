@@ -18,6 +18,7 @@ import * as path from 'path';
 import { crashlogger, ProcessManager, Streams, Repl } from '../lib';
 import { IPTools } from './ip-tools';
 import { type ChannelID, extractChannelMessages } from '../sim/battle';
+import { SocketMetrics, type RoomTrafficKind } from './socket-metrics';
 
 type StreamWorker = ProcessManager.StreamWorker;
 
@@ -113,6 +114,12 @@ export const Sockets = new class {
 	}
 
 	roomAdd(worker: StreamWorker, roomid: RoomID, socketid: string) {
+		if (Config.socketmetrics) {
+			const battle = Rooms.get(roomid)?.battle;
+			const kind: RoomTrafficKind = battle?.options.fantasyRogue ? 'rogue-battle' :
+				battle?.fantasyAI ? 'ai-battle' : battle ? 'battle' : 'other';
+			void worker.stream.write(`%${roomid}\n${kind}`);
+		}
 		void worker.stream.write(`+${roomid}\n${socketid}`);
 	}
 
@@ -146,10 +153,21 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 	server: http.Server;
 	serverSsl: https.Server | null;
 	socketCounter = 0;
+	metrics?: SocketMetrics;
+	metricRooms = new Map<string, RoomTrafficKind>();
+	messageRoomKind(message: string): RoomTrafficKind {
+		return message.startsWith('>') ? this.metricRooms.get(message.slice(1, message.indexOf('\n'))) || 'other' : 'other';
+	}
 
 	isTrustedProxyIp: (ip: string) => boolean;
 
 	receivers: { [k: string]: (this: ServerStream, data: string) => void } = {
+		'%'(data) {
+			if (!this.metrics) return;
+			const index = data.indexOf('\n');
+			const kind = data.slice(index + 1) as RoomTrafficKind;
+			if (['battle', 'rogue-battle', 'ai-battle', 'other'].includes(kind)) this.metricRooms.set(data.slice(1, index), kind);
+		},
 		'$'(data) {
 			// $code
 			// eslint-disable-next-line no-eval
@@ -169,6 +187,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 				if (roomChannel) roomChannel.delete(socketid);
 				if (!curRoom.size) {
 					this.rooms.delete(curRoomid);
+					this.metricRooms.delete(curRoomid);
 					if (roomChannel) this.roomChannels.delete(curRoomid);
 				}
 			}
@@ -182,6 +201,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 			if (!socket) return;
 			const message = data.substr(nlLoc + 1);
 			socket.write(message);
+			this.metrics?.record(message, 1, this.messageRoomKind(message));
 		},
 		'#'(data) {
 			// #roomid, message
@@ -194,6 +214,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 			if (!room) return;
 			const message = data.substr(nlLoc + 1);
 			for (const curSocket of room.values()) curSocket.write(message);
+			this.metrics?.record(message, room.size, this.metricRooms.get(roomid) || 'other', true);
 		},
 		'+'(data) {
 			// +roomid, socketid
@@ -223,6 +244,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 			if (roomChannel) roomChannel.delete(socketid);
 			if (!room.size) {
 				this.rooms.delete(roomid);
+				this.metricRooms.delete(roomid);
 				if (roomChannel) this.roomChannels.delete(roomid);
 			}
 		},
@@ -260,10 +282,15 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 			const message = data.substr(nlLoc + 1);
 			const channelMessages = extractChannelMessages(message, [0, 1, 2, 3, 4]);
 			const roomChannel = this.roomChannels.get(roomid);
+			const recipients = this.metrics ? [0, 0, 0, 0, 0] : null;
 			for (const [curSocketid, curSocket] of room) {
 				const channelid = roomChannel?.get(curSocketid) || 0;
 				if (!messages[channelid]) messages[channelid] = channelMessages[channelid].join('\n');
 				curSocket.write(messages[channelid]);
+				if (recipients) recipients[channelid]++;
+			}
+			if (recipients) for (let i = 0; i < 5; i++) {
+				if (recipients[i]) this.metrics!.record(messages[i]!, recipients[i], this.metricRooms.get(roomid) || 'other', true);
 			}
 		},
 	};
@@ -276,8 +303,10 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 		proxyip?: typeof Config.proxyip,
 		customhttpresponse?: typeof Config.customhttpresponse,
 		disablenodestatic?: boolean,
+		socketmetrics?: boolean,
 	}) {
 		super();
+		if (config.socketmetrics) this.metrics = new SocketMetrics(record => console.log(JSON.stringify(record)));
 		if (!config.bindaddress) config.bindaddress = '0.0.0.0';
 
 		this.isTrustedProxyIp = config.proxyip ? IPTools.checker(config.proxyip) : () => false;
@@ -406,6 +435,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 	 * Afterwards, the worker process will die on its own
 	 */
 	cleanup() {
+		this.metrics?.close();
 		for (const socket of this.sockets.values()) {
 			try {
 				socket.destroy();
@@ -414,6 +444,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 		this.sockets.clear();
 		this.rooms.clear();
 		this.roomChannels.clear();
+		this.metricRooms.clear();
 
 		this.server.close();
 		if (this.serverSsl) this.serverSsl.close();
@@ -438,6 +469,7 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 
 		const socketid = `${++this.socketCounter}`;
 		this.sockets.set(socketid, socket);
+		this.metrics?.connection(true);
 
 		let socketip = socket.remoteAddress;
 		if (this.isTrustedProxyIp(socketip)) {
@@ -458,9 +490,10 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 			if (!message) return;
 			// drop messages over 100KB
 			if (message.length > (100 * 1024)) {
-				socket.write(`|popup|Your message must be below 100KB`);
+				const popup = `|popup|Your message must be below 100KB`;
+				socket.write(popup);
+				this.metrics?.record(popup);
 				console.log(`Dropping client message ${message.length / 1024} KB...`);
-				console.log(message.slice(0, 160));
 				return;
 			}
 			// drop legacy JSON messages
@@ -473,9 +506,13 @@ export class ServerStream extends Streams.ObjectReadWriteStream<string> {
 		});
 
 		socket.once('close', () => {
+			this.metrics?.connection(false);
 			this.push(`!${socketid}`);
 			this.sockets.delete(socketid);
-			for (const room of this.rooms.values()) room.delete(socketid);
+			for (const [roomid, room] of this.rooms) {
+				room.delete(socketid);
+				if (!room.size) this.metricRooms.delete(roomid);
+			}
 		});
 	}
 

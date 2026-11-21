@@ -42,6 +42,9 @@ exports.workers = 1;
  */
 exports.wsdeflate = null;
 
+/** Emit aggregate per-minute UTF-8 socket payload counters; no messages or user IDs. */
+exports.socketmetrics = false;
+
 /*
 // example:
 exports.wsdeflate = {

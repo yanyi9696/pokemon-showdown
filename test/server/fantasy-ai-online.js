@@ -328,6 +328,7 @@ describe('Fantasy AI online challenges', function () {
 		await until(() => inputs.some(input => input.observation.request.forceSwitch), 'AI-only replacement search');
 		const input = inputs.find(entry => entry.observation.request.forceSwitch);
 		assert.equal(input.observation.fullState.choice, null);
+		assert.equal(input.urgent, true, 'required replacements use the urgent scheduler lane');
 		await until(() => JSON.parse(battle.p2.request.request).active, 'replacement finishes without human input');
 		assert.equal(battle.fantasyAI.metrics.illegalChoices, 0);
 	});

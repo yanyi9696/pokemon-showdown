@@ -25,6 +25,8 @@ export interface ScheduledRequest {
 	fallbackChoice?: string;
 	maxRollouts?: number;
 	excluded?: string[];
+	/** Trusted phase hint for a required replacement and its immediate follow-up. */
+	urgent?: boolean;
 }
 export interface WorkerRequest {
 	doubles?: DoublesWorkerOptions;
@@ -73,6 +75,9 @@ function fallback(observation: Observation, choices: string[], preferred?: strin
 /** Bounded worker pool. Each decision keeps its search budget while waiting for a slot. */
 export class DecisionScheduler {
 	private readonly slots: WorkerSlot[];
+	/** A bounded overflow lane is created only while an urgent request is blocked by all base slots. */
+	private readonly urgentSlot: WorkerSlot = {};
+	private readonly urgentLane: boolean;
 	private readonly queue: Job[] = [];
 	private readonly instances = new Map<string, {
 		id: string, latest: number, revision: number, priority?: boolean, onQueueTime?: (milliseconds: number) => void,
@@ -88,10 +93,12 @@ export class DecisionScheduler {
 
 	constructor(options: {
 		workers?: number, maxBattles?: number, decisionMs?: number | null, criticalDecisionMs?: number,
+		urgentLane?: boolean,
 	} = {}) {
 		this.maxBattles = options.maxBattles ?? DEFAULT_LIMITS.maxBattles;
 		this.decisionMs = options.decisionMs === undefined ? DEFAULT_LIMITS.decisionMs : options.decisionMs;
 		this.criticalDecisionMs = options.criticalDecisionMs ?? DEFAULT_LIMITS.criticalDecisionMs;
+		this.urgentLane = options.urgentLane === true;
 		const workers = options.workers ?? Math.max(1, Math.min(DEFAULT_LIMITS.workers, cpus().length));
 		// Room registrations are lightweight; CPU concurrency is bounded separately by workers.
 		if (!Number.isInteger(this.maxBattles) || this.maxBattles < 1 || this.maxBattles > 1024 ||
@@ -104,11 +111,15 @@ export class DecisionScheduler {
 	}
 
 	getStatus() {
-		return { workers: this.slots.length, active: this.slots.filter(slot => slot.active).length, queued: this.queue.length };
+		return {
+			workers: this.slots.length, active: this.slots.filter(slot => slot.active).length + (this.urgentSlot.active ? 1 : 0),
+			queued: this.queue.length, urgentActive: !!this.urgentSlot.active,
+		};
 	}
 
 	register(roomId: string, instanceId: string, onQueueTime?: (milliseconds: number) => void, priority = false) {
 		if (this.disposed || !roomId || !instanceId) throw new Error('invalid-scheduler-instance');
+		if (this.urgentLane) this.ensureWorker(this.urgentSlot);
 		const previous = this.instances.get(roomId);
 		if (previous?.id === instanceId) return;
 		if (!previous && this.instances.size >= this.maxBattles) throw new Error('ai-battle-capacity');
@@ -184,7 +195,7 @@ export class DecisionScheduler {
 
 	private finish(job: Job, status: ScheduledResult['status']) {
 		if (job.timer) clearTimeout(job.timer);
-		const slot = this.slots.find(entry => entry.active === job);
+		const slot = [...this.slots, this.urgentSlot].find(entry => entry.active === job);
 		if (slot) slot.active = undefined;
 		const index = this.queue.indexOf(job);
 		if (index >= 0) this.queue.splice(index, 1);
@@ -222,7 +233,7 @@ export class DecisionScheduler {
 	}
 
 	private timeout(job: Job) {
-		const slot = this.slots.find(entry => entry.active === job);
+		const slot = this.slots.concat(this.urgentSlot).find(entry => entry.active === job);
 		if (!slot && !this.queue.includes(job)) return;
 		this.metrics.timeouts++;
 		job.best.stopReason = 'budget';
@@ -232,9 +243,9 @@ export class DecisionScheduler {
 	}
 
 	private cancelRoom(roomId: string) {
-		for (const job of [...this.queue, ...this.slots.flatMap(slot => slot.active ? [slot.active] : [])]) {
+		for (const job of [...this.queue, ...this.slots.concat(this.urgentSlot).flatMap(slot => slot.active ? [slot.active] : [])]) {
 			if (job.input.key.roomId !== roomId) continue;
-			const slot = this.slots.find(entry => entry.active === job);
+			const slot = this.slots.concat(this.urgentSlot).find(entry => entry.active === job);
 			this.metrics.cancelled++;
 			this.finish(job, 'cancelled');
 			if (slot) this.retire(slot);
@@ -259,15 +270,25 @@ export class DecisionScheduler {
 		for (const slot of this.slots) {
 			if (!slot.active && !slot.stopping) this.startNext(slot);
 		}
+		// Required replacements must not wait behind two long ordinary searches.
+		// This lane is bounded to one extra worker and is only opened while every
+		// base slot is occupied; it does not alter a job's search budget or rules.
+		if (this.queue.some(job => job.input.urgent) && this.slots.every(slot => slot.active || slot.stopping) &&
+			!this.urgentSlot.active && !this.urgentSlot.stopping) {
+			this.startNext(this.urgentSlot, true);
+		}
 	}
 
-	private startNext(slot: WorkerSlot) {
+	private startNext(slot: WorkerSlot, urgentOnly = false) {
+		const urgentIndex = this.queue.findIndex(j => j.input.urgent);
+		if (urgentOnly && urgentIndex < 0) return;
 		const priorityIndex = this.queue.findIndex(j => this.instances.get(j.input.key.roomId)?.priority);
 		const ordinaryIndex = this.queue.findIndex(j => !this.instances.get(j.input.key.roomId)?.priority);
 		// Never interrupt a running decision. Serve an ordinary job after at most three priority jobs.
-		const index = ordinaryIndex >= 0 && this.priorityStreak >= 3 ? ordinaryIndex : priorityIndex >= 0 ? priorityIndex : 0;
+		const index = urgentIndex >= 0 ? urgentIndex :
+			ordinaryIndex >= 0 && this.priorityStreak >= 3 ? ordinaryIndex : priorityIndex >= 0 ? priorityIndex : 0;
 		const job = this.queue[index];
-		if (!job) return;
+		if (!job || urgentOnly && !job.input.urgent) return;
 		if (!this.current(job)) {
 			this.metrics.cancelled++;
 			this.finish(job, 'cancelled');
@@ -278,37 +299,11 @@ export class DecisionScheduler {
 		this.reportQueueTime(job, job.started - job.created);
 		job.deadline = Math.min(job.deadline, job.started + job.budgetMs);
 		if (job.timer) clearTimeout(job.timer);
-		if (!slot.worker) {
-			let worker: Worker;
-			try {
-				worker = new Worker(path.join(__dirname, 'worker.js'), { resourceLimits: { maxOldGenerationSizeMb: 384 } });
-			} catch {
-				this.metrics.workerErrors++;
-				this.finish(job, 'worker-error');
-				this.pump();
-				return;
-			}
-			slot.worker = worker;
-			worker.on('message', (message: { token: number, type: string, decision?: SearchDecision }) => {
-				const active = slot.active;
-				if (worker !== slot.worker || message.token !== active?.token || !this.current(active)) {
-					this.metrics.staleResults++; return;
-				}
-				if (performance.now() >= active.deadline) { this.timeout(active); return; }
-				if (message.type === 'error') { this.failure(slot, worker); return; }
-				const decision = message.decision;
-				if (decision && ((decision.choice === null && active.input.observation.request.wait) ||
-					decision.choice === 'default' || (decision.choice !== null && active.choices.has(decision.choice)))) {
-					active.best = decision;
-				}
-				if (message.type === 'complete') {
-					this.metrics.completed++;
-					this.finish(active, 'completed');
-					this.pump();
-				}
-			});
-			worker.on('error', () => this.failure(slot, worker));
-			worker.on('exit', () => this.failure(slot, worker));
+		if (!this.ensureWorker(slot)) {
+			this.metrics.workerErrors++;
+			this.finish(job, 'worker-error');
+			this.pump();
+			return;
 		}
 		this.queue.splice(index, 1);
 		this.priorityStreak = this.instances.get(job.input.key.roomId)?.priority ? this.priorityStreak + 1 : 0;
@@ -321,14 +316,47 @@ export class DecisionScheduler {
 			critical: job.input.critical,
 			maxRollouts: job.input.maxRollouts, excluded: job.input.excluded,
 		};
-		try { slot.worker.postMessage(message); } catch { this.failure(slot, slot.worker); }
+		try { slot.worker!.postMessage(message); } catch { this.failure(slot, slot.worker!); }
+	}
+
+	private ensureWorker(slot: WorkerSlot) {
+		if (slot.worker) return true;
+		let worker: Worker;
+		try {
+			worker = new Worker(path.join(__dirname, 'worker.js'), { resourceLimits: { maxOldGenerationSizeMb: 384 } });
+		} catch {
+			return false;
+		}
+		slot.worker = worker;
+		worker.on('message', (message: { token: number, type: string, decision?: SearchDecision }) => {
+			const active = slot.active;
+			if (worker !== slot.worker || message.token !== active?.token || !this.current(active)) {
+				this.metrics.staleResults++; return;
+			}
+			if (performance.now() >= active.deadline) { this.timeout(active); return; }
+			if (message.type === 'error') { this.failure(slot, worker); return; }
+			const decision = message.decision;
+			if (decision && ((decision.choice === null && active.input.observation.request.wait) ||
+				decision.choice === 'default' || (decision.choice !== null && active.choices.has(decision.choice)))) {
+				active.best = decision;
+			}
+			if (message.type === 'complete') {
+				this.metrics.completed++;
+				this.finish(active, 'completed');
+				if (slot === this.urgentSlot && !this.queue.some(job => job.input.urgent)) this.retire(slot);
+				this.pump();
+			}
+		});
+		worker.on('error', () => this.failure(slot, worker));
+		worker.on('exit', () => this.failure(slot, worker));
+		return true;
 	}
 
 	async dispose() {
 		this.disposed = true;
 		for (const roomId of this.instances.keys()) this.cancelRoom(roomId);
 		this.instances.clear();
-		for (const slot of this.slots) this.retire(slot);
+		for (const slot of this.slots.concat(this.urgentSlot)) this.retire(slot);
 		await Promise.allSettled([...this.terminating]);
 	}
 }
