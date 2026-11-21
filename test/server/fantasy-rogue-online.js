@@ -881,7 +881,7 @@ describe('Fantasy Rogue real rooms', function () {
 			manager.command(user.connections[0], request);
 			manager.command(user.connections[0], request);
 			manager.state(user);
-			assert.equal(lobby.log.log.slice(startIndex).filter(line => line.includes('开启了幻想杯肉鸽之旅')).length, 1);
+			assert.equal(lobby.log.log.slice(startIndex).filter(line => line.includes('开启了幻想杯肉鸽爬塔之旅！')).length, 1);
 			command('select', { value: 'grass' });
 			const state = command('battle');
 			const room = Rooms.get(state.run.roomid); rooms.push(room);
